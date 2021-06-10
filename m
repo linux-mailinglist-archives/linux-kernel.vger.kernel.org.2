@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EFF3A313E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DA53A313C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhFJQr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:47:58 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:48054 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbhFJQr4 (ORCPT
+        id S231467AbhFJQrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:47:52 -0400
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:46038 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230262AbhFJQru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:47:56 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D402B8D4;
-        Thu, 10 Jun 2021 18:45:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623343559;
-        bh=Dy9AkWJ+lxryWOuKwyfMEDCTmEOcXm1vEzTBB1ta4p4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vXTHT5fDBwRHyydVuiQR1CYa/CsQeLR4YtoXgAOFgJBWycd5eyqh2VU9+RKGIpq7o
-         IpPRF+vj70HA8h9Q/fs6tA0vm2I1tyV5i9CKWGWatIdX3AhyGZfc9QXuAZwD2mj2j7
-         Kn8wbyw1b/1NmcN8uDRygkkF6CBV2ckgVL0SI3dg=
-Date:   Thu, 10 Jun 2021 19:45:39 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-Subject: Re: [PATCH v9 11/22] media: uvcvideo: Set unique vdev name based in
- type
-Message-ID: <YMJBsysskTVelGLO@pendragon.ideasonboard.com>
-References: <20210326095840.364424-1-ribalda@chromium.org>
- <20210326095840.364424-12-ribalda@chromium.org>
+        Thu, 10 Jun 2021 12:47:50 -0400
+Received: by mail-pg1-f178.google.com with SMTP id q15so210651pgg.12;
+        Thu, 10 Jun 2021 09:45:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cP6G4cxMVx0EwF3yOM58gwJwnU2DrynFPBO8vVoT25c=;
+        b=c3qrFcPCAWuk1SwAh3onzp9n8U/GlwRQg3g13dEyS3wrQrLEHh+maT35240/HfR3so
+         STPYTZI5257WpAh41SQl26oXE6+wuxb9+YGJgiUG3Dovz4xtMm3/9hyQlNynVG5adULR
+         J0yX4T+CVwUI5hcJaFn1CwUhAuy51iq9WIPe5IvuGPcsUfvUDciR5GSyjK1dWANlvzFZ
+         t/N/PutuHRPSDa3KvVHcDQHbsasG6huDI8WHzlBLaifbnq/SgKYbE+DwRCVxoLeNtm5M
+         BcXP91g6xrqBdXzwBMq+7LEu9XDdKzngfgJSRZqiAnCapxkwUeS1Tk9x6YkVAICW32uz
+         VlvQ==
+X-Gm-Message-State: AOAM530ugiyCbhL0GfrEu/Uxqd918RdVALZmYxjG5Qv1keWe01uAQJv1
+        /Oe4D4Dm3yOAn3q3w98j7+E=
+X-Google-Smtp-Source: ABdhPJzpQGivVOYAW2RIXlCqghUKslbJyT6lfkoCas5S9KrQfbmjwVSHOUTEQzm5dQb6u0HN49LCYA==
+X-Received: by 2002:aa7:8431:0:b029:2e9:dcb1:148f with SMTP id q17-20020aa784310000b02902e9dcb1148fmr3864748pfn.29.1623343553489;
+        Thu, 10 Jun 2021 09:45:53 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id k9sm3069519pgq.27.2021.06.10.09.45.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 09:45:52 -0700 (PDT)
+Subject: Re: [PATCH v36 1/4] scsi: ufs: Introduce HPB feature
+To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+References: <20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
+ <CGME20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
+ <20210607041755epcms2p271195b24f4a10e777d240ff5d844168f@epcms2p2>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <5694e1e0-1c8c-12ef-3215-3d3413a86ea2@acm.org>
+Date:   Thu, 10 Jun 2021 09:45:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210607041755epcms2p271195b24f4a10e777d240ff5d844168f@epcms2p2>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210326095840.364424-12-ribalda@chromium.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+On 6/6/21 9:17 PM, Daejun Park wrote:
+> +What:		/sys/class/scsi_device/*/device/hpb_sysfs/hit_cnt
+> +Date:		June 2021
+> +Contact:	Daejun Park <daejun7.park@samsung.com>
+> +Description:	This entry shows the number of reads that changed to HPB read.
+> +
+> +		The file is read only.
 
-Thank you for the patch.
+This patch introduces the hit_cnt attribute in the hpb_sysfs directory
+and patch 4 moves that attribute to the hpb_stats directory. That is not
+how sysfs attributes should be introduced. Please introduce the hit_cnt
+attribute in the hpb_stats directory in this patch such that the sysfs
+directory does not have to be modified in patch 4.
 
-On Fri, Mar 26, 2021 at 10:58:29AM +0100, Ricardo Ribalda wrote:
-> All the entities must have a unique name. We can have a descriptive and
-> unique name by appending the function and the entity->id.
-> 
-> This is even resilent to multi chain devices.
-> 
-> Fixes v4l2-compliance:
-> Media Controller ioctls:
->                 fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
->         test MEDIA_IOC_G_TOPOLOGY: FAIL
->                 fail: v4l2-test-media.cpp(394): num_data_links != num_links
-> 	test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 35873cf2773d..76ab6acecbc9 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -2163,6 +2163,7 @@ int uvc_register_video_device(struct uvc_device *dev,
->  			      const struct v4l2_ioctl_ops *ioctl_ops)
->  {
->  	int ret;
-> +	const char *name;
+Thanks,
 
-Please swap the two variables.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
->  
->  	/* Initialize the video buffers queue. */
->  	ret = uvc_queue_init(queue, type, !uvc_no_drop_param);
-> @@ -2190,16 +2191,20 @@ int uvc_register_video_device(struct uvc_device *dev,
->  	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
->  	default:
->  		vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
-> +		name = "Video Capture";
->  		break;
->  	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
->  		vdev->device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_STREAMING;
-> +		name = "Video Output";
->  		break;
->  	case V4L2_BUF_TYPE_META_CAPTURE:
->  		vdev->device_caps = V4L2_CAP_META_CAPTURE | V4L2_CAP_STREAMING;
-> +		name = "Metadata";
->  		break;
->  	}
->  
-> -	strscpy(vdev->name, dev->name, sizeof(vdev->name));
-> +	snprintf(vdev->name, sizeof(vdev->name), "%s %u", name,
-> +		 stream->header.bTerminalLink);
->  
->  	/*
->  	 * Set the driver data before calling video_register_device, otherwise
-
--- 
-Regards,
-
-Laurent Pinchart
+Bart.
