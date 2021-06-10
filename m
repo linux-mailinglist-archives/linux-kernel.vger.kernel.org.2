@@ -2,61 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676033A21D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE9A3A21DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhFJBYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 21:24:10 -0400
-Received: from mail-ej1-f49.google.com ([209.85.218.49]:35572 "EHLO
-        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFJBYJ (ORCPT
+        id S229941AbhFJBcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 21:32:53 -0400
+Received: from mail-pg1-f175.google.com ([209.85.215.175]:34759 "EHLO
+        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhFJBcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 21:24:09 -0400
-Received: by mail-ej1-f49.google.com with SMTP id h24so41330063ejy.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 18:22:01 -0700 (PDT)
+        Wed, 9 Jun 2021 21:32:52 -0400
+Received: by mail-pg1-f175.google.com with SMTP id l1so21249555pgm.1;
+        Wed, 09 Jun 2021 18:30:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=uHHzInAq0hJfdAhDUN7XpXEX6yMAOEMfv+NvOITUYbs=;
-        b=ltcXq3Y7hwjQwAuci+mu7Hgf0+WU6RMQ8lKbGlBpzgEMQE6CMnkAhbqDFPBw9796IT
-         p9YaFlmc3r5K+56xIt1659HtFy3LCjq3URxZ2tMlzS8BmQVFihvfdenszQYYN8JidgXR
-         l/iUserGSNjhG+sEDtQ+TKyebUskyQ/itg0nNLrDt8AEivYTGrGzwe4TCReZJCbNEZES
-         hL6S6Vm0INfGAynj6WLAmTXYG1IButFmPLa5V+qKx6YX/jOoVWvwW/UFefSbVUmtmNQp
-         8XT6h8t4SI158gIzxwwHB/RFvcxSMiqDARGpC2fd+WwLE9xfeTKuNljEjH3ylZJNoZBm
-         s5Fw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=04JQUBj5ojtPgamHPjVaFmIunywue518T+c+n9FraKc=;
+        b=pq+yZjguSpqkV/6RKRqOXHV4/j1clvSjJFb50W4sJMya4++9w2S7o+RIrl34XrPEfH
+         yWHMCw0IyPK7wVE5sepswVWZw5bUtSrpBf1Jx8UVY5mJLhgLFjYrwSJSJINVWThoNpYa
+         lUwtZD+zaW3Fhazr8Zl6lvCxxKiyQOT8spRXVzWw2PSIiRYstidRw5OjNrn4wyRlyW/y
+         u6iW5+Pi3EjVefWQXjwPsjbwzatKn1nd3ovZP9+/mwaK20+m51MywH1iGXNdxxxfoV+T
+         c600JiDCYauKvdL4kEHRf+3KVkHb739CeERa7WtHob3pTxGSw72J0CPiW6LC40zoyCY/
+         IS4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=uHHzInAq0hJfdAhDUN7XpXEX6yMAOEMfv+NvOITUYbs=;
-        b=HcLEN32v0408POL6ifM44d7isNAQIgS7BoL0YpaEPhN4D8XDwxiJ/SYBJialfczBne
-         yO5zB5VMCXBciknhbORHtTHilcKPfLmBe2CbHiTw7yGfCCJrtiXTKgX/HKW10rW55jKt
-         lUBhYVaT4gJ4O9g+vjFkC9yup4HPj7TF00D76oxOAoxw9HLxHvKk6aOEkHK1wbnxGJvN
-         OAVEra+fc39a3pD1nes6CIH+YXB4nSpcpAmSNczYhs4L0wP+GqC7m35J93PszGCBvZOW
-         66Dw38qc7nQm8TpOv3gTyatMGcnqcr50sWvBddXHTswBSlMatVFVPnZFcZ9HYhKFqucy
-         /38w==
-X-Gm-Message-State: AOAM532GfaaZuV2lqu0ofs3krlsrVcDOliWi+oP2oGG+/jx3ojfQblFD
-        uJEgETPvryzsGH6gPZE3UsVhMvP9pKua3oHfGdg=
-X-Google-Smtp-Source: ABdhPJybSyA74y5VND0BlYkcyOojtz2UaNoUeXvPF4Aqo9EAqKU38J/TTGkqAVqM5M8dEWGlTydbQkAiUSKHqumERsk=
-X-Received: by 2002:a17:906:365a:: with SMTP id r26mr2281358ejb.340.1623288060590;
- Wed, 09 Jun 2021 18:21:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=04JQUBj5ojtPgamHPjVaFmIunywue518T+c+n9FraKc=;
+        b=gyTVmlQWswvyV5Z8Kw361XvglLMionskT1n/21L/u6aPq8aqV+nuZb3sfYggw86w+L
+         srJGwgLG6nvgprAIEy2CVjdF5OoIYfFGw5sGgndoBQMf/i99TcQdVqP7RQXc2/IL+0fq
+         zuKOWoczWD2mwxkH3reEsvHZiQxqr8t6N4drOeVKbP4ihbEt3lL0mhwUKcxLHMZEUXp9
+         8rranGD6bm/Ft1Ljjr9c7/lfMqeO6+I2DdadULMyPyhLmvuIZkthxpCfIazaVFBlVxxt
+         /ioKLGzCtfthDkdCvUvfhMtOdqZe6oCVYC87XlQsZI1ZtDPQ9vXSU5HOurFS9CW/wAnT
+         /xCw==
+X-Gm-Message-State: AOAM5328APvDGpRdL4w0xEJ7FVE0bs/flmn/xrVWZF9bBDq3S3xmdXeP
+        /oCrUkhGyEx7eUgZj8bySx0=
+X-Google-Smtp-Source: ABdhPJxQZRnUnOuLeBHoJ0EgR9cfbWnwbyCBeKqcENQjPhDF8qbc36iBxieuEvq6YQjLI+FdL/fSJw==
+X-Received: by 2002:a05:6a00:1a88:b029:2ea:548:5ed4 with SMTP id e8-20020a056a001a88b02902ea05485ed4mr523658pfv.47.1623288596641;
+        Wed, 09 Jun 2021 18:29:56 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id d12sm633856pfo.113.2021.06.09.18.29.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 18:29:56 -0700 (PDT)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>
+Subject: [PATCH] counter: 104-quad-8: Return error when invalid mode during ceiling_write
+Date:   Thu, 10 Jun 2021 10:29:23 +0900
+Message-Id: <20210610012923.146727-1-vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:a17:906:3a8c:0:0:0:0 with HTTP; Wed, 9 Jun 2021 18:21:00
- -0700 (PDT)
-Reply-To: westernunion8289@zohomail.com
-From:   WESTERN UNION AGENT <adedihapeter@gmail.com>
-Date:   Wed, 9 Jun 2021 18:21:00 -0700
-Message-ID: <CAN_ZWHacO3sBET4+dGwcZZ5U04-=Ej-BLbWgEwQnBmeEubjwng@mail.gmail.com>
-Subject: WESTERN UNION AGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day
+The 104-QUAD-8 only has two count modes where a ceiling value makes
+sense: Range Limit and Modulo-N. Outside of these two modes, setting a
+ceiling value is an invalid operation -- so let's report it as such by
+returning -EINVAL.
 
-l need to know if you got my message
+Fixes: fc069262261c ("counter: 104-quad-8: Add lock guards - generic interface")
+Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+---
+ drivers/counter/104-quad-8.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Best Regards.
-WESTERN UNION AGENT
+diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+index 09a9a77cce06..81f9642777fb 100644
+--- a/drivers/counter/104-quad-8.c
++++ b/drivers/counter/104-quad-8.c
+@@ -715,12 +715,13 @@ static ssize_t quad8_count_ceiling_write(struct counter_device *counter,
+ 	case 1:
+ 	case 3:
+ 		quad8_preset_register_set(priv, count->id, ceiling);
+-		break;
++		mutex_unlock(&priv->lock);
++		return len;
+ 	}
+ 
+ 	mutex_unlock(&priv->lock);
+ 
+-	return len;
++	return -EINVAL;
+ }
+ 
+ static ssize_t quad8_count_preset_enable_read(struct counter_device *counter,
+-- 
+2.32.0
+
