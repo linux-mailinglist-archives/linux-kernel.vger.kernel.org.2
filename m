@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6853A24FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B20A43A24FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhFJHG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        id S230136AbhFJHGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhFJHG0 (ORCPT
+        with ESMTP id S230059AbhFJHG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:06:26 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6920BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:04:27 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id e1so472703pld.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:04:27 -0700 (PDT)
+        Thu, 10 Jun 2021 03:06:29 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB40C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:04:33 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 27so21843476pgy.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:04:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=68pDiFNuiNAnDxPi9NXUEirmvtndBB2jkdTjxfCQjTc=;
-        b=i7jGSxz1sRZzashx/SP0GekR6y/YLAECGqykgI0XppaKEkw/RYDfUhd6O91ZqQDhK1
-         NjTseqHM/M7+ETYyiM0kVAxmbVVT1PJkLUzS82LkW0136G0965IQnHvdupRjPmpCpzmR
-         Oj5Na6WB7wzlRkKbKiqgm+1xB2q31I+UOw3pjZLhvASU8y0NZP+qjSZvRutT975JMb/D
-         vaV/Ra/lUUo7ymH0OZOfGU16ezNUpEY6QjRWFgL1o073mKK9EjKZuTmKMwCrlqLHyil2
-         i/xl8hVbv30nJk/SNN5qKHB136T3TjnkVNEKp+D9wXGlJZ0M9LtBMKaN5IAvgYdkAtGy
-         V/Vw==
+        bh=wowS9S0+74HOyg59G1HxzyUoJNUg4XMSp6qmBnId03g=;
+        b=DSRkJ+QLRWdBNl0PvX9aNt9Ue9lalAf4M+pRXemlmISeSiIiYJpA4LRmG6tF5lS2Pb
+         cG/J2XwcTr0GPlImXxWAISm472NQ7mVXBz4NpZ+NH2twea+AMU8eDuDCasSNepIbTd5i
+         pa86lEGmY4c6rs8/vySPv4osHlhBAd8RdslrbUBBujwBjjJXxaKE9yYgbzxYFtP7Emlw
+         6Af0WhPzEtEseI1xm/BNOj8VWg3PlLJCkpod2c9vKtI9IiB0Bz6Z+kJPfn6NQSwy//UD
+         u3RQDvyq2j0uIjPlMdo16dJ8sCyubqDTcinRgvvfKVYiw8/pUde74gWMENkiKaT+CAU9
+         doRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=68pDiFNuiNAnDxPi9NXUEirmvtndBB2jkdTjxfCQjTc=;
-        b=EjbSMBh3dqav/0lAdtNTNhpgg8cXAtQ0tZvP5PiktQL78VGnLTsl2IVhAh9EaaF9f3
-         3AsP01XiXPKY6/k9lah60oGvvqH18UJ30HCUB2C+TJpn1YhFm4/rpLVqAJ8p4LKt756D
-         LG8W4fAVsJwkQnJwGXGjaxmqeziO0jDzv7nLj5r2NSIq5pH5fkBd0CVKhxIicbSQLTij
-         xDQ1WEBY5olVAKGKkqOt+AepQy0HBJt4B7fVt0MVDrXOjg0To71xnZsKYYwfCQv3QQ3u
-         mpfBcDlVO6HZdoxt0CQeQTcGAn27BqZI5nrL6eewb1iFiay5pKR0WSnzESdQn4XNu/f8
-         8x3A==
-X-Gm-Message-State: AOAM53259P00iLwl1H2EpPKyLuK/8W52IPvuTcp5suqei7jn54FTaMl7
-        J4xL04dzmUQU5pXhKoDP0KI=
-X-Google-Smtp-Source: ABdhPJzVYB/RWkK1efdTgrucTwD2phPUqqKAQ4n9bXgog8f4i2CBXOWIv0Q/Bu64sdmSsY/g49aerQ==
-X-Received: by 2002:a17:90b:ecd:: with SMTP id gz13mr1852143pjb.107.1623308666977;
-        Thu, 10 Jun 2021 00:04:26 -0700 (PDT)
+        bh=wowS9S0+74HOyg59G1HxzyUoJNUg4XMSp6qmBnId03g=;
+        b=NJTEE6FKVC4nrEFYNOewioO0Y6Rfj2rN+3oIyIwnFns6OnDLof2f0xiSppTpyu6wSt
+         u7yP9YEfk/OtoiDl12d4t9xXfLw09qksDpO9/YQM1wqnPC6YBaiMVdm6+rHOu6sTdl1e
+         lNvbw8V7QZZne1s/BuXuE+GSAibTxAre760nA2N4xjppvZJ0CVBHEqI5DVAyUtraBvmH
+         uVQ7b/uADQnzJWpzep7hRaInX8illi4IrV+WgpXo5r0lBu7DHSPNplyuJ+k0k/Wi8YTF
+         z3hJFRcvLGFHsVlySoZ4uWnVbDjnn93qTH8aAiu2rtuvwlSdFusDGhBSed0RCJL5OfJ/
+         n19Q==
+X-Gm-Message-State: AOAM533XyR9MUYSN8hc9PP7WThw/ZimvRobuuB4J33FisOFQ3gKFKCcl
+        Ptf28uLGO14yYeYYfo+yn/8=
+X-Google-Smtp-Source: ABdhPJxxnmtXOYMln3q/b9V4lWAlkfdb2J9ymAvyaaQItl5bNAm6Co1M21fvTm8/RfVCXCCtUMiXtw==
+X-Received: by 2002:a05:6a00:26d8:b029:2ea:1101:8acf with SMTP id p24-20020a056a0026d8b02902ea11018acfmr1576201pfw.67.1623308673410;
+        Thu, 10 Jun 2021 00:04:33 -0700 (PDT)
 Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id k7sm6864170pjj.46.2021.06.10.00.04.26
+        by smtp.gmail.com with ESMTPSA id ge13sm6859249pjb.2.2021.06.10.00.04.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Jun 2021 00:04:26 -0700 (PDT)
+        Thu, 10 Jun 2021 00:04:33 -0700 (PDT)
 From:   brookxu <brookxu.cn@gmail.com>
-To:     bsingharora@gmail.com
+To:     jolsa@kernel.org, rostedt@goodmis.org, Viktor.Rosendahl@bmw.de
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3] delayacct: refactor the code to simplify the implementation
-Date:   Thu, 10 Jun 2021 15:04:24 +0800
-Message-Id: <1623308664-17589-1-git-send-email-brookxu.cn@gmail.com>
+Subject: [PATCH] tools: tools/Makefile supports the compilation of getdelay
+Date:   Thu, 10 Jun 2021 15:04:30 +0800
+Message-Id: <1623308670-17648-1-git-send-email-brookxu.cn@gmail.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -59,349 +59,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chunguang Xu <brookxu@tencent.com>
 
-The existing data structure is not very convenient for
-expansion, and part of the code can be saved. Here, try
-to optimize, which can make the code more concise and
-easy to expand.
-
-V3: Nothing change, just port to lastest branch.
-v2: Fix some errors prompted by the kernel test robot.
+tools/Makefile supports the compilation of getdelay, which
+can simplify our compilation.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- include/linux/delayacct.h | 123 +++++++++++++++++++---------------------------
- kernel/delayacct.c        |  88 +++++++--------------------------
- 2 files changed, 68 insertions(+), 143 deletions(-)
+ tools/Makefile | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/delayacct.h b/include/linux/delayacct.h
-index 21651f9..b81a2ed 100644
---- a/include/linux/delayacct.h
-+++ b/include/linux/delayacct.h
-@@ -2,12 +2,15 @@
- /* delayacct.h - per-task delay accounting
-  *
-  * Copyright (C) Shailabh Nagar, IBM Corp. 2006
-+ * Copyright (C) Chunguang Xu, Tencent Corp. 2021
-  */
+diff --git a/tools/Makefile b/tools/Makefile
+index 7e9d34d..62546ff 100644
+--- a/tools/Makefile
++++ b/tools/Makefile
+@@ -10,6 +10,7 @@ help:
+ 	@echo 'Possible targets:'
+ 	@echo ''
+ 	@echo '  acpi                   - ACPI tools'
++	@echo '  accounting             - delay accounting tools'
+ 	@echo '  bpf                    - misc BPF tools'
+ 	@echo '  cgroup                 - cgroup tools'
+ 	@echo '  cpupower               - a tool for all things x86 CPU power'
+@@ -65,7 +66,7 @@ acpi: FORCE
+ cpupower: FORCE
+ 	$(call descend,power/$@)
  
- #ifndef _LINUX_DELAYACCT_H
- #define _LINUX_DELAYACCT_H
+-cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing: FORCE
++accounting cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing: FORCE
+ 	$(call descend,$@)
  
- #include <uapi/linux/taskstats.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
+ bpf/%: FORCE
+@@ -100,7 +101,7 @@ freefall: FORCE
+ kvm_stat: FORCE
+ 	$(call descend,kvm/$@)
  
- /*
-  * Per-task flags relevant to delay accounting
-@@ -15,71 +18,39 @@
-  * Used to set current->delays->flags
-  */
- #define DELAYACCT_PF_SWAPIN	0x00000001	/* I am doing a swapin */
--#define DELAYACCT_PF_BLKIO	0x00000002	/* I am waiting on IO */
+-all: acpi cgroup cpupower gpio hv firewire liblockdep \
++all: acpi accounting cgroup cpupower gpio hv firewire liblockdep \
+ 		perf selftests bootconfig spi turbostat usb \
+ 		virtio vm bpf x86_energy_perf_policy \
+ 		tmon freefall iio objtool kvm_stat wmi \
+@@ -112,7 +113,7 @@ acpi_install:
+ cpupower_install:
+ 	$(call descend,power/$(@:_install=),install)
  
- #ifdef CONFIG_TASK_DELAY_ACCT
-+enum delayacct_item {
-+	DELAYACCT_BLKIO,     /* block IO latency */
-+	DELAYACCT_SWAPIN,    /* swapin IO latency*/
-+	DELAYACCT_THRASHING, /* pagecache thrashing IO latency*/
-+	DELAYACCT_FREEPAGES, /* memory reclaim latency*/
-+	DELAYACCT_NR_ITEMS
-+};
-+
-+struct delayacct_count {
-+	u64 start;  /* start timestamp of XXX operation */
-+	u32 count;  /* incremented on every XXX operation */
-+	u64 delay;  /* accumulated delay time in nanoseconds */
-+};
-+
- struct task_delay_info {
- 	raw_spinlock_t	lock;
- 	unsigned int	flags;	/* Private per-task flags */
--
--	/* For each stat XXX, add following, aligned appropriately
--	 *
--	 * struct timespec XXX_start, XXX_end;
--	 * u64 XXX_delay;
--	 * u32 XXX_count;
--	 *
--	 * Atomicity of updates to XXX_delay, XXX_count protected by
--	 * single lock above (split into XXX_lock if contention is an issue).
--	 */
--
--	/*
--	 * XXX_count is incremented on every XXX operation, the delay
--	 * associated with the operation is added to XXX_delay.
--	 * XXX_delay contains the accumulated delay time in nanoseconds.
--	 */
--	u64 blkio_start;	/* Shared by blkio, swapin */
--	u64 blkio_delay;	/* wait for sync block io completion */
--	u64 swapin_delay;	/* wait for swapin block io completion */
--	u32 blkio_count;	/* total count of the number of sync block */
--				/* io operations performed */
--	u32 swapin_count;	/* total count of the number of swapin block */
--				/* io operations performed */
--
--	u64 freepages_start;
--	u64 freepages_delay;	/* wait for memory reclaim */
--
--	u64 thrashing_start;
--	u64 thrashing_delay;	/* wait for thrashing page */
--
--	u32 freepages_count;	/* total count of memory reclaim */
--	u32 thrashing_count;	/* total count of thrash waits */
-+	struct delayacct_count items[DELAYACCT_NR_ITEMS];
- };
--#endif
--
--#include <linux/sched.h>
--#include <linux/slab.h>
+-cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install:
++accounting_install cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install:
+ 	$(call descend,$(@:_install=),install)
  
--#ifdef CONFIG_TASK_DELAY_ACCT
- extern int delayacct_on;	/* Delay accounting turned on/off */
- extern struct kmem_cache *delayacct_cache;
- extern void delayacct_init(void);
- extern void __delayacct_tsk_init(struct task_struct *);
--extern void __delayacct_tsk_exit(struct task_struct *);
--extern void __delayacct_blkio_start(void);
--extern void __delayacct_blkio_end(struct task_struct *);
--extern int __delayacct_add_tsk(struct taskstats *, struct task_struct *);
--extern __u64 __delayacct_blkio_ticks(struct task_struct *);
--extern void __delayacct_freepages_start(void);
--extern void __delayacct_freepages_end(void);
--extern void __delayacct_thrashing_start(void);
--extern void __delayacct_thrashing_end(void);
--
--static inline int delayacct_is_task_waiting_on_io(struct task_struct *p)
-+extern int  __delayacct_add_tsk(struct taskstats *d, struct task_struct *tsk);
-+extern u64  __delayacct_blkio_ticks(struct task_struct *tsk);
-+extern void __delayacct_end(struct task_delay_info *delays, int item);
-+
-+static inline void __delayacct_start(struct task_delay_info *delays, int item)
- {
--	if (p->delays)
--		return (p->delays->flags & DELAYACCT_PF_BLKIO);
--	else
--		return 0;
-+	delays->items[item].start = ktime_get_ns();
- }
+ liblockdep_install:
+@@ -133,7 +134,7 @@ freefall_install:
+ kvm_stat_install:
+ 	$(call descend,kvm/$(@:_install=),install)
  
- static inline void delayacct_set_flag(struct task_struct *p, int flag)
-@@ -112,20 +83,6 @@ static inline void delayacct_tsk_free(struct task_struct *tsk)
- 	tsk->delays = NULL;
- }
+-install: acpi_install cgroup_install cpupower_install gpio_install \
++install: acpi_install accounting_install cgroup_install cpupower_install gpio_install \
+ 		hv_install firewire_install iio_install liblockdep_install \
+ 		perf_install selftests_install turbostat_install usb_install \
+ 		virtio_install vm_install bpf_install x86_energy_perf_policy_install \
+@@ -147,7 +148,7 @@ acpi_clean:
+ cpupower_clean:
+ 	$(call descend,power/cpupower,clean)
  
--static inline void delayacct_blkio_start(void)
--{
--	delayacct_set_flag(current, DELAYACCT_PF_BLKIO);
--	if (current->delays)
--		__delayacct_blkio_start();
--}
--
--static inline void delayacct_blkio_end(struct task_struct *p)
--{
--	if (p->delays)
--		__delayacct_blkio_end(p);
--	delayacct_clear_flag(p, DELAYACCT_PF_BLKIO);
--}
--
- static inline int delayacct_add_tsk(struct taskstats *d,
- 					struct task_struct *tsk)
- {
-@@ -141,28 +98,50 @@ static inline __u64 delayacct_blkio_ticks(struct task_struct *tsk)
- 	return 0;
- }
+-cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean:
++accounting_clean cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean:
+ 	$(call descend,$(@:_clean=),clean)
  
-+static inline void delayacct_blkio_start(void)
-+{
-+	if (!current->delays)
-+		return;
-+
-+	if (current->delays->flags & DELAYACCT_PF_SWAPIN)
-+		__delayacct_start(current->delays, DELAYACCT_SWAPIN);
-+	else
-+		__delayacct_start(current->delays, DELAYACCT_BLKIO);
-+}
-+
-+static inline void delayacct_blkio_end(struct task_struct *p)
-+{
-+	if (!p->delays)
-+		return;
-+
-+	if (p->delays->flags & DELAYACCT_PF_SWAPIN)
-+		__delayacct_end(p->delays, DELAYACCT_SWAPIN);
-+	else
-+		__delayacct_end(p->delays, DELAYACCT_BLKIO);
-+}
-+
- static inline void delayacct_freepages_start(void)
- {
- 	if (current->delays)
--		__delayacct_freepages_start();
-+		__delayacct_start(current->delays, DELAYACCT_FREEPAGES);
- }
+ liblockdep_clean:
+@@ -181,7 +182,7 @@ freefall_clean:
+ build_clean:
+ 	$(call descend,build,clean)
  
- static inline void delayacct_freepages_end(void)
- {
- 	if (current->delays)
--		__delayacct_freepages_end();
-+		__delayacct_end(current->delays, DELAYACCT_FREEPAGES);
- }
- 
- static inline void delayacct_thrashing_start(void)
- {
- 	if (current->delays)
--		__delayacct_thrashing_start();
-+		__delayacct_start(current->delays, DELAYACCT_THRASHING);
- }
- 
- static inline void delayacct_thrashing_end(void)
- {
- 	if (current->delays)
--		__delayacct_thrashing_end();
-+		__delayacct_end(current->delays, DELAYACCT_THRASHING);
- }
- 
- #else
-@@ -185,8 +164,6 @@ static inline int delayacct_add_tsk(struct taskstats *d,
- { return 0; }
- static inline __u64 delayacct_blkio_ticks(struct task_struct *tsk)
- { return 0; }
--static inline int delayacct_is_task_waiting_on_io(struct task_struct *p)
--{ return 0; }
- static inline void delayacct_freepages_start(void)
- {}
- static inline void delayacct_freepages_end(void)
-diff --git a/kernel/delayacct.c b/kernel/delayacct.c
-index 27725754..f44d559 100644
---- a/kernel/delayacct.c
-+++ b/kernel/delayacct.c
-@@ -2,6 +2,7 @@
- /* delayacct.c - per-task delay accounting
-  *
-  * Copyright (C) Shailabh Nagar, IBM Corp. 2006
-+ * Copyright (C) Chunguang Xu, Tencent Corp. 2021
-  */
- 
- #include <linux/sched.h>
-@@ -42,46 +43,20 @@ void __delayacct_tsk_init(struct task_struct *tsk)
-  * Finish delay accounting for a statistic using its timestamps (@start),
-  * accumalator (@total) and @count
-  */
--static void delayacct_end(raw_spinlock_t *lock, u64 *start, u64 *total,
--			  u32 *count)
-+void __delayacct_end(struct task_delay_info *delays, int item)
- {
--	s64 ns = ktime_get_ns() - *start;
-+	struct delayacct_count *delay = &delays->items[item];
-+	s64 ns = ktime_get_ns() - delay->start;
- 	unsigned long flags;
- 
- 	if (ns > 0) {
--		raw_spin_lock_irqsave(lock, flags);
--		*total += ns;
--		(*count)++;
--		raw_spin_unlock_irqrestore(lock, flags);
-+		raw_spin_lock_irqsave(&delays->lock, flags);
-+		delay->delay += ns;
-+		delay->count++;
-+		raw_spin_unlock_irqrestore(&delays->lock, flags);
- 	}
- }
- 
--void __delayacct_blkio_start(void)
--{
--	current->delays->blkio_start = ktime_get_ns();
--}
--
--/*
-- * We cannot rely on the `current` macro, as we haven't yet switched back to
-- * the process being woken.
-- */
--void __delayacct_blkio_end(struct task_struct *p)
--{
--	struct task_delay_info *delays = p->delays;
--	u64 *total;
--	u32 *count;
--
--	if (p->delays->flags & DELAYACCT_PF_SWAPIN) {
--		total = &delays->swapin_delay;
--		count = &delays->swapin_count;
--	} else {
--		total = &delays->blkio_delay;
--		count = &delays->blkio_count;
--	}
--
--	delayacct_end(&delays->lock, &delays->blkio_start, total, count);
--}
--
- int __delayacct_add_tsk(struct taskstats *d, struct task_struct *tsk)
- {
- 	u64 utime, stime, stimescaled, utimescaled;
-@@ -120,18 +95,18 @@ int __delayacct_add_tsk(struct taskstats *d, struct task_struct *tsk)
- 	/* zero XXX_total, non-zero XXX_count implies XXX stat overflowed */
- 
- 	raw_spin_lock_irqsave(&tsk->delays->lock, flags);
--	tmp = d->blkio_delay_total + tsk->delays->blkio_delay;
-+	tmp = d->blkio_delay_total + tsk->delays->items[DELAYACCT_BLKIO].delay;
- 	d->blkio_delay_total = (tmp < d->blkio_delay_total) ? 0 : tmp;
--	tmp = d->swapin_delay_total + tsk->delays->swapin_delay;
-+	tmp = d->swapin_delay_total + tsk->delays->items[DELAYACCT_SWAPIN].delay;
- 	d->swapin_delay_total = (tmp < d->swapin_delay_total) ? 0 : tmp;
--	tmp = d->freepages_delay_total + tsk->delays->freepages_delay;
-+	tmp = d->freepages_delay_total + tsk->delays->items[DELAYACCT_FREEPAGES].delay;
- 	d->freepages_delay_total = (tmp < d->freepages_delay_total) ? 0 : tmp;
--	tmp = d->thrashing_delay_total + tsk->delays->thrashing_delay;
-+	tmp = d->thrashing_delay_total + tsk->delays->items[DELAYACCT_THRASHING].delay;
- 	d->thrashing_delay_total = (tmp < d->thrashing_delay_total) ? 0 : tmp;
--	d->blkio_count += tsk->delays->blkio_count;
--	d->swapin_count += tsk->delays->swapin_count;
--	d->freepages_count += tsk->delays->freepages_count;
--	d->thrashing_count += tsk->delays->thrashing_count;
-+	d->blkio_count += tsk->delays->items[DELAYACCT_BLKIO].count;
-+	d->swapin_count += tsk->delays->items[DELAYACCT_SWAPIN].count;
-+	d->freepages_count += tsk->delays->items[DELAYACCT_FREEPAGES].count;
-+	d->thrashing_count += tsk->delays->items[DELAYACCT_THRASHING].count;
- 	raw_spin_unlock_irqrestore(&tsk->delays->lock, flags);
- 
- 	return 0;
-@@ -143,35 +118,8 @@ __u64 __delayacct_blkio_ticks(struct task_struct *tsk)
- 	unsigned long flags;
- 
- 	raw_spin_lock_irqsave(&tsk->delays->lock, flags);
--	ret = nsec_to_clock_t(tsk->delays->blkio_delay +
--				tsk->delays->swapin_delay);
-+	ret = nsec_to_clock_t(tsk->delays->items[DELAYACCT_BLKIO].delay +
-+			      tsk->delays->items[DELAYACCT_SWAPIN].delay);
- 	raw_spin_unlock_irqrestore(&tsk->delays->lock, flags);
- 	return ret;
- }
--
--void __delayacct_freepages_start(void)
--{
--	current->delays->freepages_start = ktime_get_ns();
--}
--
--void __delayacct_freepages_end(void)
--{
--	delayacct_end(
--		&current->delays->lock,
--		&current->delays->freepages_start,
--		&current->delays->freepages_delay,
--		&current->delays->freepages_count);
--}
--
--void __delayacct_thrashing_start(void)
--{
--	current->delays->thrashing_start = ktime_get_ns();
--}
--
--void __delayacct_thrashing_end(void)
--{
--	delayacct_end(&current->delays->lock,
--		      &current->delays->thrashing_start,
--		      &current->delays->thrashing_delay,
--		      &current->delays->thrashing_count);
--}
+-clean: acpi_clean cgroup_clean cpupower_clean hv_clean firewire_clean \
++clean: acpi_clean accounting_clean cgroup_clean cpupower_clean hv_clean firewire_clean \
+ 		perf_clean selftests_clean turbostat_clean bootconfig_clean spi_clean usb_clean virtio_clean \
+ 		vm_clean bpf_clean iio_clean x86_energy_perf_policy_clean tmon_clean \
+ 		freefall_clean build_clean libbpf_clean libsubcmd_clean liblockdep_clean \
 -- 
 1.8.3.1
 
