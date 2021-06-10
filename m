@@ -2,188 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1D13A2E9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C30E3A2EA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhFJOwH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Jun 2021 10:52:07 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:58711 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbhFJOwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:52:06 -0400
-Received: (Authenticated sender: paul@opendingux.net)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 41C4B1BF219;
-        Thu, 10 Jun 2021 14:50:06 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 15:49:58 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/2] iio: core: Add "extended_name" attribute to all
- channels
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <AJQHUQ.F2KTDP14GT7T2@crapouillou.net>
-In-Reply-To: <20210610153425.000029b6@Huawei.com>
-References: <20210610124556.34507-1-paul@crapouillou.net>
-        <20210610124556.34507-3-paul@crapouillou.net>
-        <20210610153425.000029b6@Huawei.com>
-X-Mailer: geary/40.0
+        id S231511AbhFJOwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:52:20 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:8321 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231336AbhFJOwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:52:16 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G16Mt6NybzBBTQ;
+        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id IgLzEJiZ-597; Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G16Mt5QJzzBB9r;
+        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 375368B81B;
+        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id DzO9RJN6YzIB; Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B07968B80F;
+        Thu, 10 Jun 2021 16:50:17 +0200 (CEST)
+Subject: Re: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
+To:     Chris Mason <clm@fb.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
+References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+ <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
+Date:   Thu, 10 Jun 2021 16:50:09 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Le jeu., juin 10 2021 at 15:34:25 +0100, Jonathan Cameron 
-<Jonathan.Cameron@Huawei.com> a �crit :
-> On Thu, 10 Jun 2021 13:45:56 +0100
-> Paul Cercueil <paul@crapouillou.net> wrote:
+Le 10/06/2021 à 15:54, Chris Mason a écrit :
 > 
->>  The point of this new attribute is to make the IIO tree actually
->>  parsable.
->> 
->>  Before, given this attribute as a filename:
->>  in_voltage0_aux_sample_rate
->> 
->>  Userspace had no way to know if the attribute name was
->>  "aux_sample_rate" with no extended name, or "sample_rate" with 
->> "aux" as
->>  the extended name, or just "rate" with "aux_sample" as the extended
->>  name.
->> 
->>  This was somewhat possible to deduce when there was more than one
->>  attribute present for a given channel, e.g:
->>  in_voltage0_aux_sample_rate
->>  in_voltage0_aux_frequency
->> 
->>  There, it was possible to deduce that "aux" was the extended name. 
->> But
->>  even with more than one attribute, this wasn't very robust, as two
->>  attributes starting with the same prefix (e.g. "sample_rate" and
->>  "sample_size") would result in the first part of the prefix being
->>  interpreted as being part of the extended name.
->> 
->>  To address this issue, add an "extended_name" attribute to all 
->> channels
->>  that actually do have an extended name.
+>> On Jun 10, 2021, at 1:23 AM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+>>
+>> With a config having PAGE_SIZE set to 256K, BTRFS build fails
+>> with the following message
+>>
+>> include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+>>
+>> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
+>> 256K pages at the time being.
+>>
+>> There are two platforms that can select 256K pages:
+>> - hexagon
+>> - powerpc
+>>
+>> Disable BTRFS when 256K page size is selected.
+>>
 > 
-> Change the patch title to make it clear that it only applies to those
-> that have extended_name set.
+> We’ll have other subpage blocksize concerns with 256K pages, but this BTRFS_MAX_COMPRESSED #define is arbitrary.  It’s just trying to have an upper bound on the amount of memory we’ll need to uncompress a single page’s worth of random reads.
 > 
->>  For this attribute, the extended
->>  name is not present in the filename; so in this example, the file 
->> name
->>  would be "in_voltage0_extended_name", and reading it would return 
->> "aux".
-> 
-> Ah. Now I see the slightly issue with my immediate thought that we 
-> should
-> just put this in the label attribute (and not allow both extended_name
-> and label to be provided).
-
-Are there cases where extended_name and label are both used?
-
-If they are exclusive, then it would be fine to put it in the label 
-attribute. Parsing would be a bit more awkward because of the extended 
-name but still possible (e.g. libiio would read 'in_voltage0_foo_label' 
-and check that it returns 'foo').
-
--Paul
-
-> Hmm. It's a bit ugly but given it hopefully doesn't effect that many 
-> drivers
-> I could probably live with it.
-> 
-> However, needs a patch to Documentation/ABI/testing/sysfs-bus-iio
-> and a clear statement that this is for backwards compatibility 
-> reasons.
-> I don't want to see extended_name getting added to new drivers!
-> 
-> Jonathan
-> 
->> 
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/iio/industrialio-core.c | 41 
->> +++++++++++++++++++++++++++++++++
->>   1 file changed, 41 insertions(+)
->> 
->>  diff --git a/drivers/iio/industrialio-core.c 
->> b/drivers/iio/industrialio-core.c
->>  index ec34d930920c..4cdf9f092d73 100644
->>  --- a/drivers/iio/industrialio-core.c
->>  +++ b/drivers/iio/industrialio-core.c
->>  @@ -723,6 +723,16 @@ static ssize_t iio_read_channel_label(struct 
->> device *dev,
->>   	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
->>   }
->> 
->>  +static ssize_t iio_read_channel_extended_name(struct device *dev,
->>  +					      struct device_attribute *attr,
->>  +					      char *buf)
->>  +{
->>  +	const struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
->>  +	const struct iio_chan_spec *chan = this_attr->c;
->>  +
->>  +	return sprintf(buf, "%s\n", chan->extend_name);
->>  +}
->>  +
->>   static ssize_t iio_read_channel_info(struct device *dev,
->>   				     struct device_attribute *attr,
->>   				     char *buf)
->>  @@ -1185,6 +1195,32 @@ static int 
->> iio_device_add_channel_label(struct iio_dev *indio_dev,
->>   	return 1;
->>   }
->> 
->>  +static int
->>  +iio_device_add_channel_extended_name(struct iio_dev *indio_dev,
->>  +				     struct iio_chan_spec const *chan)
->>  +{
->>  +	struct iio_dev_opaque *iio_dev_opaque = 
->> to_iio_dev_opaque(indio_dev);
->>  +	int ret;
->>  +
->>  +	if (!chan->extend_name)
->>  +		return 0;
->>  +
->>  +	ret = __iio_add_chan_devattr("extended_name",
->>  +				     chan,
->>  +				     &iio_read_channel_extended_name,
->>  +				     NULL,
->>  +				     0,
->>  +				     IIO_SEPARATE,
->>  +				     &indio_dev->dev,
->>  +				     NULL,
->>  +				     &iio_dev_opaque->channel_attr_list,
->>  +				     false);
->>  +	if (ret < 0)
->>  +		return ret;
->>  +
->>  +	return 1;
->>  +}
->>  +
->>   static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
->>   					 struct iio_chan_spec const *chan,
->>   					 enum iio_shared_by shared_by,
->>  @@ -1327,6 +1363,11 @@ static int 
->> iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
->>   		return ret;
->>   	attrcount += ret;
->> 
->>  +	ret = iio_device_add_channel_extended_name(indio_dev, chan);
->>  +	if (ret < 0)
->>  +		return ret;
->>  +	attrcount += ret;
->>  +
->>   	if (chan->ext_info) {
->>   		unsigned int i = 0;
->>   		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
+> We could change it to max(PAGE_SIZE, 128K) or just bump to 256K.
 > 
 
+But if 256K is problematic in other ways, is it worth bumping BTRFS_MAX_COMPRESSED to 256K ?
 
+David, in below mail, said that 256K support would require deaper changes. So disabling BTRFS 
+support seems the easiest solution for the time being, at least for Stable (I forgot the Fixes: tag 
+and the CC: to stable).
+
+On powerpc, 256k pages is a corner case, it requires customised binutils, so I don't think disabling 
+BTRFS is a issue there. For hexagon I don't know.
+
+
+https://lkml.org/lkml/2021/6/9/978
+
+Le 09/06/2021 à 17:22, David Sterba a écrit :
+ > On Wed, Jun 09, 2021 at 04:01:20PM +0200, Christophe Leroy wrote:
+ >> Le 09/06/2021 à 15:55, kernel test robot a écrit :
+ >>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+ >>> head:   368094df48e680fa51cedb68537408cfa64b788e
+ >>> commit: 4eeef098b43242ed145c83fba9989d586d707589 powerpc/44x: Remove STDBINUTILS kconfig option
+ >>> date:   4 months ago
+ >>> config: powerpc-randconfig-r012-20210609 (attached as .config)
+ >>> compiler: powerpc-linux-gcc (GCC) 9.3.0
+ >>
+ >> That's a BTRFS issue, and not directly linked to the above mentioned commit. Before that commit the
+ >> problem was already present.
+ >>
+ >> Problem is that with 256k PAGE_SIZE, following BUILD_BUG() pops up:
+ >>
+ >> BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0)
+ >
+ > A 256K page is a problem for btrfs, until now I was not even aware
+ > there's an architecture supporting that so. That the build fails is
+ > probably best thing. Maximum metadata nodesize supported is 64K and
+ > having that on a 256K page would need deeper changes, no top of the
+ > currently developed subpage changes (that do 4K blocks on 64K pages).
+ >
