@@ -2,101 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB31D3A24B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EA43A24B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhFJGqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:46:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39876 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhFJGqh (ORCPT
+        id S229792AbhFJGtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:49:42 -0400
+Received: from mail-qv1-f41.google.com ([209.85.219.41]:46844 "EHLO
+        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJGtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:46:37 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lrEQj-0005Iy-2W
-        for linux-kernel@vger.kernel.org; Thu, 10 Jun 2021 06:44:41 +0000
-Received: by mail-wm1-f71.google.com with SMTP id v25-20020a1cf7190000b0290197a4be97b7so2661058wmh.9
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:44:41 -0700 (PDT)
+        Thu, 10 Jun 2021 02:49:40 -0400
+Received: by mail-qv1-f41.google.com with SMTP id w9so14152042qvi.13
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:47:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=2OT9ZOT1k9Jrl0NBTEVPMljz+ghdujF4gPDHMzwzXkI=;
+        b=fItDKAwEWa27P6UoPqgsJmxWxx+88uY7YcweWA0CjJkHQ/a0qq3VMLFQGCheHOetC3
+         thbHJ+GkAgYvV9MvOGSd1SedriGSLoRyUGD7SHaGqOJaIRvBfO6VzJLBx101C7QOIdqe
+         7d/xyw4cAq1x1sC14413xqHk+aX9nGDcmYOH6HsbEY3Sq0M8O6KTTCRTfTwfZUc0oO74
+         9qz1oWxVUORVI69H72mEyT4hMad64PunjlNNCmPyWhv6XK2woi+jrJlx4x0eMuLLOvL4
+         gNsTLQ7nISZaJNkvP4IIVj25ZkvW+15nQxnmN9XZOX9TYBCNpUuD3it60s6CWLrEjfHl
+         19ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZIH1YbpeqNHlMEBnKgKmQmbv724BvB7zNbPXQ0+g4iI=;
-        b=KXALFmUP64DQAPX7WbUVDAen17u8uknAJiSTHOf5Uum31YUgYc9xxeZpunYul3IY38
-         FrHKRUDVv3U1QSVeKCstvIShLiVmqj0ABgL2Np8O77LINEsH00jbOeB5+1cL+oiunX2w
-         OW6M+DrZRplwHk3Z51497kWpESS7tTI/y09NlkNogNQyBpsWS/NlVF7kJ4Jwq81dY12E
-         xArgMg0pN4x2IMDf16Bt6tnkUZkedaCIObsDqY7nMcfwBWY3K6tnSTRU+m05/LcVpoG+
-         T1NxZE7dN7MXiQxy5t8JNDSDbL3HGK13eMPgzjJB5O5zutWyxxjLUoKLQtidx11jDLn8
-         diIQ==
-X-Gm-Message-State: AOAM531/kKNU4I4BvbK1LTNhk50QOHvyt62jbD99ErOxXQpQwfAnl0EF
-        lz5ng8E+yHtpImqSaxfq3E8cJh/x4C6JqOjjACDqFXMg0ui3TQ5MvDtFsD7qVhDwbQdCFmU20F4
-        NFdLlU9ZMOy1jzW+OUTQwcrc0PGCCoidlH88ovN0R/g==
-X-Received: by 2002:a7b:c44f:: with SMTP id l15mr13534859wmi.151.1623307480514;
-        Wed, 09 Jun 2021 23:44:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPyiGqI2GWbCsI6J6N5fwz5wdl2B6k+bXM/ln08oHjXkJRT4CwBQGCjoKdKK7cFdZIe6d06g==
-X-Received: by 2002:a7b:c44f:: with SMTP id l15mr13534844wmi.151.1623307480347;
-        Wed, 09 Jun 2021 23:44:40 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id i9sm2854026wrn.54.2021.06.09.23.44.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 23:44:39 -0700 (PDT)
-Subject: Re: [PATCH 1/1] irqchip/exynos-combiner: remove unnecessary oom
- message
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210609140335.14425-1-thunder.leizhen@huawei.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <99380b46-d677-822a-fb46-7a1a59e559ad@canonical.com>
-Date:   Thu, 10 Jun 2021 08:44:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=2OT9ZOT1k9Jrl0NBTEVPMljz+ghdujF4gPDHMzwzXkI=;
+        b=KZAkNtSpE0WgTV+q312JEKTUWl9006u6BmKjSRu45rRATmBvfOhm00qKsJjSp6AQ39
+         p6/EA5NCd2dcL4PKVG/CQvXFXmhW3FEZ6/fRtz/JRshkk7e28LfRwCMXXMsOhleCIxz5
+         YoV1WSRqL0mMLtimlW83Ym9em8XF/7suVvYu5O0XUs4G+haxxk7PT6pPkMqrwyqBbAfv
+         Et4zfQegyjNxAeU/0VnOAUau7EyVBU8BwKZi5HT3Un/QknHAD6aTmPvTx3N/H46D2cm9
+         JYCbBbYRJmBuMYgzxaPloaM9IdIfyQjrOBezs26TBE2dQaWsRIkYfJF5U+mqXhwcFweV
+         zQgg==
+X-Gm-Message-State: AOAM531I+zd52p7gR7xJYgoEyZGIPeBpqzRf6NOiZJi1RF2QfE4ty9HA
+        i51l2mRdbBoExxJdpVnppPxncg==
+X-Google-Smtp-Source: ABdhPJzebxEMV8nIRPyxc3ps1IgHzw1v6T3H/U3jGmnUmUAEsDFERk8zIQP7dpPhp/qi25qO4XO93A==
+X-Received: by 2002:a0c:d610:: with SMTP id c16mr3670609qvj.13.1623307593003;
+        Wed, 09 Jun 2021 23:46:33 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x8sm1675789qkb.54.2021.06.09.23.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 23:46:32 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 23:46:30 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 07/11] mm: page_vma_mapped_walk(): add a level of
+ indentation
+In-Reply-To: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+Message-ID: <efde211-f3e2-fe54-977-ef481419e7f3@google.com>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210609140335.14425-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/2021 16:03, Zhen Lei wrote:
-> Fixes scripts/checkpatch.pl warning:
-> WARNING: Possible unnecessary 'out of memory' message
-> 
-> Remove it can help us save a bit of memory.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  drivers/irqchip/exynos-combiner.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/irqchip/exynos-combiner.c b/drivers/irqchip/exynos-combiner.c
-> index 14106126cbf3262..552aa04ff063123 100644
-> --- a/drivers/irqchip/exynos-combiner.c
-> +++ b/drivers/irqchip/exynos-combiner.c
-> @@ -177,10 +177,8 @@ static void __init combiner_init(void __iomem *combiner_base,
->  	nr_irq = max_nr * IRQ_IN_COMBINER;
->  
->  	combiner_data = kcalloc(max_nr, sizeof (*combiner_data), GFP_KERNEL);
-> -	if (!combiner_data) {
-> -		pr_warn("%s: could not allocate combiner data\n", __func__);
-> +	if (!combiner_data)
->  		return;
-> -	}
->  
->  	combiner_irq_domain = irq_domain_add_linear(np, nr_irq,
->  				&combiner_irq_domain_ops, combiner_data);
-> 
+page_vma_mapped_walk() cleanup: add a level of indentation to much of
+the body, making no functional change in this commit, but reducing the
+later diff when this is all converted to a loop.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: <stable@vger.kernel.org>
+---
+ mm/page_vma_mapped.c | 109 +++++++++++++++++++++++----------------------
+ 1 file changed, 56 insertions(+), 53 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+index 0fe6e558d336..0840079ef7d2 100644
+--- a/mm/page_vma_mapped.c
++++ b/mm/page_vma_mapped.c
+@@ -173,65 +173,68 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 	if (pvmw->pte)
+ 		goto next_pte;
+ restart:
+-	pgd = pgd_offset(mm, pvmw->address);
+-	if (!pgd_present(*pgd))
+-		return false;
+-	p4d = p4d_offset(pgd, pvmw->address);
+-	if (!p4d_present(*p4d))
+-		return false;
+-	pud = pud_offset(p4d, pvmw->address);
+-	if (!pud_present(*pud))
+-		return false;
+-
+-	pvmw->pmd = pmd_offset(pud, pvmw->address);
+-	/*
+-	 * Make sure the pmd value isn't cached in a register by the
+-	 * compiler and used as a stale value after we've observed a
+-	 * subsequent update.
+-	 */
+-	pmde = pmd_read_atomic(pvmw->pmd);
+-	barrier();
+-
+-	if (pmd_trans_huge(pmde) || is_pmd_migration_entry(pmde)) {
+-		pvmw->ptl = pmd_lock(mm, pvmw->pmd);
+-		pmde = *pvmw->pmd;
+-		if (likely(pmd_trans_huge(pmde))) {
+-			if (pvmw->flags & PVMW_MIGRATION)
+-				return not_found(pvmw);
+-			if (pmd_page(pmde) != page)
+-				return not_found(pvmw);
+-			return true;
+-		}
+-		if (!pmd_present(pmde)) {
+-			swp_entry_t entry;
++	{
++		pgd = pgd_offset(mm, pvmw->address);
++		if (!pgd_present(*pgd))
++			return false;
++		p4d = p4d_offset(pgd, pvmw->address);
++		if (!p4d_present(*p4d))
++			return false;
++		pud = pud_offset(p4d, pvmw->address);
++		if (!pud_present(*pud))
++			return false;
+ 
+-			if (!thp_migration_supported() ||
+-			    !(pvmw->flags & PVMW_MIGRATION))
+-				return not_found(pvmw);
+-			entry = pmd_to_swp_entry(pmde);
+-			if (!is_migration_entry(entry) ||
+-			    migration_entry_to_page(entry) != page)
+-				return not_found(pvmw);
+-			return true;
+-		}
+-		/* THP pmd was split under us: handle on pte level */
+-		spin_unlock(pvmw->ptl);
+-		pvmw->ptl = NULL;
+-	} else if (!pmd_present(pmde)) {
++		pvmw->pmd = pmd_offset(pud, pvmw->address);
+ 		/*
+-		 * If PVMW_SYNC, take and drop THP pmd lock so that we
+-		 * cannot return prematurely, while zap_huge_pmd() has
+-		 * cleared *pmd but not decremented compound_mapcount().
++		 * Make sure the pmd value isn't cached in a register by the
++		 * compiler and used as a stale value after we've observed a
++		 * subsequent update.
+ 		 */
+-		if ((pvmw->flags & PVMW_SYNC) && PageTransCompound(page)) {
+-			spinlock_t *ptl = pmd_lock(mm, pvmw->pmd);
++		pmde = pmd_read_atomic(pvmw->pmd);
++		barrier();
++
++		if (pmd_trans_huge(pmde) || is_pmd_migration_entry(pmde)) {
++			pvmw->ptl = pmd_lock(mm, pvmw->pmd);
++			pmde = *pvmw->pmd;
++			if (likely(pmd_trans_huge(pmde))) {
++				if (pvmw->flags & PVMW_MIGRATION)
++					return not_found(pvmw);
++				if (pmd_page(pmde) != page)
++					return not_found(pvmw);
++				return true;
++			}
++			if (!pmd_present(pmde)) {
++				swp_entry_t entry;
+ 
+-			spin_unlock(ptl);
++				if (!thp_migration_supported() ||
++				    !(pvmw->flags & PVMW_MIGRATION))
++					return not_found(pvmw);
++				entry = pmd_to_swp_entry(pmde);
++				if (!is_migration_entry(entry) ||
++				    migration_entry_to_page(entry) != page)
++					return not_found(pvmw);
++				return true;
++			}
++			/* THP pmd was split under us: handle on pte level */
++			spin_unlock(pvmw->ptl);
++			pvmw->ptl = NULL;
++		} else if (!pmd_present(pmde)) {
++			/*
++			 * If PVMW_SYNC, take and drop THP pmd lock so that we
++			 * cannot return prematurely, while zap_huge_pmd() has
++			 * cleared *pmd but not decremented compound_mapcount().
++			 */
++			if ((pvmw->flags & PVMW_SYNC) &&
++			    PageTransCompound(page)) {
++				spinlock_t *ptl = pmd_lock(mm, pvmw->pmd);
++
++				spin_unlock(ptl);
++			}
++			return false;
+ 		}
+-		return false;
++		if (!map_pte(pvmw))
++			goto next_pte;
+ 	}
+-	if (!map_pte(pvmw))
+-		goto next_pte;
+ 	while (1) {
+ 		unsigned long end;
+ 
+-- 
+2.26.2
+
