@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9500D3A33ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F3C3A33E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhFJTZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:25:54 -0400
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:37411 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbhFJTZw (ORCPT
+        id S230436AbhFJTZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhFJTZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:25:52 -0400
-Received: by mail-pj1-f47.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so4365942pjs.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:23:40 -0700 (PDT)
+        Thu, 10 Jun 2021 15:25:24 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF85C0617A6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:23:17 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id g38so830767ybi.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:23:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q60JAm9iJyX+IT1BVb08j+OKVYIcmui1mNiKIc2o95A=;
-        b=FyARXhggC2pK8LeaLL5HzTYgmhxYyXd9tj1XbSmLsO99Ov4/vYm+21l/swFIQTVDLy
-         B0KxUZQ9VfHHECcdBtR9tZOyUiLBUDKtk+1e4ECd593H5O9ehHo7mBdAkMBsEm/kGett
-         d95PLn0bf1KWgcIZIE62kCCAfnSNKA2VSp48ND88lNtgMeqj22hmdwGoA9wcA7FZPfVO
-         gXsgIlqGt0zjTnIAp+Nbu+Vgd297Y5h7I94iBICM1OibHMeNVMyvOpfyprpjHXamRM0g
-         +DPEJBJVyng6hN5H7ldwJJH/NkfuHRfbFbxBAfhnJLGCxZsHGeEjA0AI4BBtJ/PXreyt
-         MJdA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gQphGNrsQVc6Q0YYwVGOzKhEd2TXPeimqt9/SG3ENbM=;
+        b=HNu/tkELvJ4a+B1TPnYPtjuhEgzqchyygmwkUc+Ymu22PrIS+ipMTC8zKeNCPw+Tke
+         HMQsW4UPGIft+MTxbgSZe1ibjbsMXoIwgIzufHSNmuOTbuqaBMYk3O3n41stEumqPGAm
+         x4o2XP6D88vN0OtadvrvsyAavFEChIAIXw4UKL8InnSHLYQsqZs9lqkpktmZyl1U67xj
+         6W+MNevFWRQKRBby0JMVXbG2gaR24C+ynr0dafEDsgpFvo3QfJku0Uvw4INyju85XMcV
+         hkEwcFdzCrE3iZdM6+LCk/KiOwkQVJgBebynywFhpqU5Ji9IAViMk5huG2vHDz/t9Ygy
+         U7ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q60JAm9iJyX+IT1BVb08j+OKVYIcmui1mNiKIc2o95A=;
-        b=bjyH6LCQtpGM8v2SxI2rwMGJivG65wMwlFd9sAEKLGhpMwrfPI/autCiW88DWOd+Z3
-         Nyw5r4z4tyeiPb/P+NB+lH1z0U6UyBT8B6VLuPZHgn5wLRK8pV4szS3PqBYOZeoiFnSR
-         4Zb5/fKS1+KZXDLCidiniQcc1i+qhv05OlmMzr7nK4ahlSG2jQpDSddLvZN99BWwRPg4
-         UQqiKHouU3ZjIoi1C/Lk2Tdgma7KyoLWCh0BODcN8zDcM2jrOPEf8Tn5TL9ZCE+3OGSU
-         ONfZceT+8aPvAWVgE6AlDePy+j8Cy8d0bc8+SJ3P3TXm6ciCJSgrnHrt+2GLJG6ukmEC
-         gO0Q==
-X-Gm-Message-State: AOAM533CVBp6aSTIMy2OfZTQX4LVDNFgQQwNUTiBi9PEUh391kabfBy8
-        5G57Q3A73dpKts3N6j3mTpF4Sg==
-X-Google-Smtp-Source: ABdhPJyC58KxFV2meI/htR9vylJrOiDouyjMt32X8u8rqNytwI3x3Lr2z+/BjHCU72ocaVuR4ottZg==
-X-Received: by 2002:a17:902:b683:b029:ee:f0e3:7a50 with SMTP id c3-20020a170902b683b02900eef0e37a50mr259675pls.7.1623352959723;
-        Thu, 10 Jun 2021 12:22:39 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w142sm3187946pff.154.2021.06.10.12.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 12:22:38 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 19:22:35 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/43] KVM: x86: vCPU RESET/INIT fixes and consolidation
-Message-ID: <YMJme5wSgerifcb5@google.com>
-References: <20210424004645.3950558-1-seanjc@google.com>
- <6ac56ad5-7475-c99f-0ca4-171bc3da45b5@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gQphGNrsQVc6Q0YYwVGOzKhEd2TXPeimqt9/SG3ENbM=;
+        b=SmEkGau7YJI91TmIb6Wxy1j8sEEnAEf6VHnO5mg/A3Sm6A8DyrNcZF0TI0Ryek3Xct
+         L5XRF7pFlhTjubhTd8bUCLJLamBrkHXz/dqlxfOMXAkQdKnSqdJAwGPmQ8KCmTy8cEj7
+         kkjvtokQoIOL05cXxeIy27aS5TZqLGJmQFOs6BM78D4F4AKvjJpea7RnP1RIjebTcK//
+         uU7MkqlLRCQaRRsoAELJ7BVrFrdq5hiY7gXiXBayH1Dq+jRh7dGmWlMu+Xd8wVqIZ62e
+         KNa56cW0W36igc7VbK1yiB6xNskPxQUyIvOJAZ110pmIU00NGcaXNRjyUPQKMaBoKHQK
+         DR9Q==
+X-Gm-Message-State: AOAM530euhyF2DpUhZjm+gF5fz9IEHxh8oBxfCYQ1EwPTAZitCv3XUJV
+        G3Ji7RenV28xusDaJUYHuzzJ37iJfsIgKYV8Fn9gzb81vUE=
+X-Google-Smtp-Source: ABdhPJz5PsyiXF7cgGWZ3EBGO76+X9MNLhn4t5cRchMebYKoKVfX75PgrLQlhxIda1GWq/ONRadC1BDt/nGdYRaw3oA=
+X-Received: by 2002:a25:3f47:: with SMTP id m68mr512340yba.228.1623352996603;
+ Thu, 10 Jun 2021 12:23:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6ac56ad5-7475-c99f-0ca4-171bc3da45b5@redhat.com>
+References: <20210603170734.3168284-1-sashal@kernel.org> <20210603170734.3168284-3-sashal@kernel.org>
+ <20210606111028.GA20948@wunner.de> <YMJR/FNCwDllHIDG@sashalap>
+In-Reply-To: <YMJR/FNCwDllHIDG@sashalap>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 10 Jun 2021 12:22:40 -0700
+Message-ID: <CAGETcx_w8pHs3OXQyVXYWV1CY4qGTWrZ9QNEwz=TL8SLbyq1bA@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.12 03/43] spi: Fix spi device unregister flow
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Lukas Wunner <lukas@wunner.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021, Paolo Bonzini wrote:
-> I'm waiting for a v2 of this; it applies with relatively few conflicts, but
-> there were some comments so it's better if you take care of updating it.
+On Thu, Jun 10, 2021 at 10:55 AM Sasha Levin <sashal@kernel.org> wrote:
+>
+> On Sun, Jun 06, 2021 at 01:10:28PM +0200, Lukas Wunner wrote:
+> >On Thu, Jun 03, 2021 at 01:06:53PM -0400, Sasha Levin wrote:
+> >> From: Saravana Kannan <saravanak@google.com>
+> >>
+> >> [ Upstream commit c7299fea67696db5bd09d924d1f1080d894f92ef ]
+> >
+> >This commit shouldn't be backported to stable by itself, it requires
+> >that the following fixups are applied on top of it:
+> >
+> >* Upstream commit 27e7db56cf3d ("spi: Don't have controller clean up spi
+> >  device before driver unbind")
+> >
+> >* spi.git commit 2ec6f20b33eb ("spi: Cleanup on failure of initial setup")
+> >  https://git.kernel.org/broonie/spi/c/2ec6f20b33eb
+> >
+> >Note that the latter is queued for v5.13, but hasn't landed there yet.
+> >So you probably need to back out c7299fea6769 from the stable queue and
+> >wait for 2ec6f20b33eb to land in upstream.
+> >
+> >Since you've applied c7299fea6769 to v5.12, v5.10, v5.4, v4.14 and v4.19
+> >stable trees, the two fixups listed above need to be backported to all
+> >of them.
+>
+> I took those two patches into 5.12-5.4, but as they needed a more
+> complex backport for 4.14 and 4.19, I've dropped c7299fea67 from those
+> trees.
 
-Ya, slowly getting there...  Something in this series (I can't even remember what)
-sent me into the morass that is unsync shadow pages and I've been thrashing around
-in there for a while.
+Sounds good. Also, there was a subsequent "Fixes" for this patch and I
+think another "Fixes" for the "Fixes". So, before picking this up,
+maybe make sure those Fixes patches are pickable too?
+
+-Saravana
