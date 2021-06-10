@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5483A2C42
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433923A2C43
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFJNBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:01:13 -0400
-Received: from out28-121.mail.aliyun.com ([115.124.28.121]:35411 "EHLO
-        out28-121.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbhFJNBD (ORCPT
+        id S230502AbhFJNBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230247AbhFJNBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:01:03 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1723083|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0591475-0.0029278-0.937925;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.KQVfrD4_1623329936;
-Received: from zhouyanjie-virtual-machine.lan(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KQVfrD4_1623329936)
-          by smtp.aliyun-inc.com(10.147.41.137);
-          Thu, 10 Jun 2021 20:59:04 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     ulf.hansson@linaro.org, robh+dt@kernel.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com, paul@crapouillou.net
-Subject: [PATCH v2 2/2] mmc: JZ4740: Add support for JZ4775.
-Date:   Thu, 10 Jun 2021 20:58:50 +0800
-Message-Id: <1623329930-14387-3-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623329930-14387-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1623329930-14387-1-git-send-email-zhouyanjie@wanyeetech.com>
+        Thu, 10 Jun 2021 09:01:04 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC37C061574;
+        Thu, 10 Jun 2021 05:59:08 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id k15so1557136pfp.6;
+        Thu, 10 Jun 2021 05:59:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kZv55UI1lotbt6zxOJeYG+FLk45h3yJ74p2M096WCtA=;
+        b=U5+g07bCY5xpjLYOIJ95c7kfKcGWVCukCh/hkexG2hfL8FpBgSB2XB8hPvcoWyzQs6
+         os0gvieM9b0xaQO9vUMjxpBrTVs8ZIw3qa2i3t1VYFGaucT+heTHWAUEC+S92Jseeuy0
+         oaRMs2pljiVgfpiDW6SVLfmtwmW8CLEheAZYFgJO1wPY4vEHxJ7W199QenpeogQ01hV3
+         bsROdqbznE8iyA41F1p0rUYUmBZb3jyQgqhA8dNQD87SY5uxD1lnqGJEUpjymBvoCjze
+         rlx1x/mzU7lwHMIH02MNxW5KCU19eKlsFHcrvV3w/e/ZzqV5WissAfj1LnNB9v1YI5Uz
+         FyTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kZv55UI1lotbt6zxOJeYG+FLk45h3yJ74p2M096WCtA=;
+        b=ti3wBWLL3ARZCLsSyCNDe4JxqN4A2yXplPVKt3w/D0Y49V2rXB6CXCt0KM/pkBbIUR
+         QPjt3JRH4GhDyZso5S+l9xfaUh9ww24/4F56QRj3R3AzeVJ0N0i3Xbuf3d56DykB4nKd
+         OKzqyyMI/tUwZ84wIhnXhTk2j5H9W/dk9kSyUqHDYmw9rLm+pI2NkvJr0r851mPNvxkx
+         Cr+zIpKI1pKVSKW80NrhMOILKymek0a+OBwrQWXadRjpOSiOzBJiPauSmwqLfJ/MfPp2
+         JfP6e2QVOXmfgPvpisEJZ9Z7ENRFEgHSohuvZqVzeSHbFqe3vsraYzZAbrZwl7F4+JE0
+         0tNg==
+X-Gm-Message-State: AOAM532T37Msae4dwLhYLe43r29nFvlcVNk8eLijRQ9zx9jAbQayzGqt
+        yzeYVD6fjMBl2SEm1IpcPFnOHK6O1H6D+YbMr5k=
+X-Google-Smtp-Source: ABdhPJxo0dArsVVa15jkG0z2+o8+BBtD16pdCH9utQQm9Rioi2HgsM5klfnl10H0RraA/MDpcBijswWHv4naDqeCFVE=
+X-Received: by 2002:a63:b507:: with SMTP id y7mr4905365pge.74.1623329947859;
+ Thu, 10 Jun 2021 05:59:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210610124556.34507-1-paul@crapouillou.net> <20210610124556.34507-2-paul@crapouillou.net>
+In-Reply-To: <20210610124556.34507-2-paul@crapouillou.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 10 Jun 2021 15:58:51 +0300
+Message-ID: <CAHp75VfR5jjMjDhFRvtT01EbuSTwDBi3HERDKi306mRK22+Fnw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iio: core: Support removing extended name in
+ attribute filename
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Add support for probing mmc driver on the JZ4775 SoC from Ingenic.
-2.The drive clock selection and sample clock selection have been
-  supported since JZ4775, not X1000. So support for these two
-  functions has been added for JZ4775 and JZ4780.
+On Thu, Jun 10, 2021 at 3:47 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> By default, when a channel has an extended name, it will appear in the
+> filename of channel attributes. E.g. if the extended name is "aux", the
+> filename of a "sample_rate" attribute will be something like:
+> in_voltage0_aux_sample_rate
+>
+> Add a mechanism to disable this feature. This will be used to add a
+> "extended_name" channel attribute.
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+I'm afraid, NAK. Otherwise, please put an explanation that clearly
+shows that it will be no ABI breakage.
+I.o.w. users for the existing drivers and devices will always get
+those attributes at the same platform configuration(s).
 
-Notes:
-    v1->v2:
-    1.Remove unnecessary renaming as Paul Cercueil's suggestion.
-    2.Reuse the ID of JZ4775 and JZ4780 to simplify the code.
-    3.Add support of drive clock selection and sample clock
-      selection for JZ4775 and JZ4780.
-
- drivers/mmc/host/jz4740_mmc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mmc/host/jz4740_mmc.c b/drivers/mmc/host/jz4740_mmc.c
-index b3c636e..f3172e5 100644
---- a/drivers/mmc/host/jz4740_mmc.c
-+++ b/drivers/mmc/host/jz4740_mmc.c
-@@ -674,7 +674,7 @@ static void jz4740_mmc_send_command(struct jz4740_mmc_host *host,
- 			cmdat |= JZ_MMC_CMDAT_WRITE;
- 		if (host->use_dma) {
- 			/*
--			 * The 4780's MMC controller has integrated DMA ability
-+			 * The JZ4780's MMC controller has integrated DMA ability
- 			 * in addition to being able to use the external DMA
- 			 * controller. It moves DMA control bits to a separate
- 			 * register. The DMA_SEL bit chooses the external
-@@ -866,7 +866,7 @@ static int jz4740_mmc_set_clock_rate(struct jz4740_mmc_host *host, int rate)
- 	writew(div, host->base + JZ_REG_MMC_CLKRT);
- 
- 	if (real_rate > 25000000) {
--		if (host->version >= JZ_MMC_X1000) {
-+		if (host->version >= JZ_MMC_JZ4780) {
- 			writel(JZ_MMC_LPM_DRV_RISING_QTR_PHASE_DLY |
- 				   JZ_MMC_LPM_SMP_RISING_QTR_OR_HALF_PHASE_DLY |
- 				   JZ_MMC_LPM_LOW_POWER_MODE_EN,
-@@ -959,6 +959,7 @@ static const struct of_device_id jz4740_mmc_of_match[] = {
- 	{ .compatible = "ingenic,jz4740-mmc", .data = (void *) JZ_MMC_JZ4740 },
- 	{ .compatible = "ingenic,jz4725b-mmc", .data = (void *)JZ_MMC_JZ4725B },
- 	{ .compatible = "ingenic,jz4760-mmc", .data = (void *) JZ_MMC_JZ4760 },
-+	{ .compatible = "ingenic,jz4775-mmc", .data = (void *) JZ_MMC_JZ4780 },
- 	{ .compatible = "ingenic,jz4780-mmc", .data = (void *) JZ_MMC_JZ4780 },
- 	{ .compatible = "ingenic,x1000-mmc", .data = (void *) JZ_MMC_X1000 },
- 	{},
 -- 
-2.7.4
-
+With Best Regards,
+Andy Shevchenko
