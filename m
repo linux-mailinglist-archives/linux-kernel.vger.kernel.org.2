@@ -2,131 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7163A2BC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120843A2BC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFJMk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:40:56 -0400
-Received: from mail-dm6nam12on2064.outbound.protection.outlook.com ([40.107.243.64]:17071
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230130AbhFJMkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:40:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jJfN3HN1UUGo0V9oK4QRw0RYEyI9wqilvb+xceW6BYJIFh7vT8zUJCO5+3INcQd0E8MFWt785Xav6omsL9GK85GVezV5tRs5n2TUTGmHSpjFcYNQzMzVX25QM47GG9PbJjWJAKkXptBrAfbbujL4wjyoZbb0G1/WZU20m6jMtrdM111WpEwDTDXu9mV8wo+nsWUGOcYHM/WD5Fu+TPXXXQF3vUJ+2zzVnhypN/v5gtnSfVZMx96ykQcP5OYb1+yfDEF4rXf1itli3IwaJNzQaoJ6XC/2WO0sbrRxuErDdqk+CgWDfuqsx/AVRgMiyDtTZLph1Sj3RTYCP2ZLTj+9xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5kWXBYZcEGMOZi/tWUYMzbBEX2GD5ZasoJhk4VaExMg=;
- b=JxcKKDjnb6qmhgMegwavYknA5ca8EyG3E1gfT+em0HAXooCG0h74/2w4U+BVZAGhSdBptiMtDe5y9/5Gn4UPwG6IesyxYu/NA0QCjn9CPAdKnbgD7eSpUuBhoC+PtBYzStUmY+nuOQK6OUvdsFtIYkk2UEPXzUiRqKi6K9fxEXdLn32Po+fDlmGSSx2o968tj3N8dqeuxSlySBjo6gN6ZYRaW9Xkqo9NYO0p/LBiW7+C79MFy9GupBYiW7W8/APmJr/klNjb8xv9iExaWGUdBiQ7rnThBNqGDZxYUnRUnQ8+yt/8hla3Nr8UU3+bMPQK/QfeCK4yyyNL/Jri99ltyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5kWXBYZcEGMOZi/tWUYMzbBEX2GD5ZasoJhk4VaExMg=;
- b=RFuMqnMN+uZlisnZ29Iv7MlQzT859EDuE9AufHqr5cqQqg6D+uyAThOSLGPSJ2izMgwUCtVTERSz2sUiuWILAo0IzaAVyhLjtcG1zWIjMK0y2Ov68l15PNsShFMFVlV4ncQbuRsczuHdn2j96nu2GxMW3uDuZ5TFABEYMCB3ziyjx1H8HgriNuUkNbdXODlr9iZZGO7zItzew66nAITQQprd56pgxRE/56vLMH8FtewGglvc4OUkCheIhb1hhtdbIC8nJOqkuHYVkePae+XzID/TYFyCg6wHJT7NwV6gzHGy9NBTwjAH0ddnA319gxv5N4+PWehENCDxQHrpZQ7E9w==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5173.namprd12.prod.outlook.com (2603:10b6:208:308::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Thu, 10 Jun
- 2021 12:38:57 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Thu, 10 Jun 2021
- 12:38:57 +0000
-Date:   Thu, 10 Jun 2021 09:38:56 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        Alaa Hleihel <alaa@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
-Subject: Re: [PATCH rdma-rc 0/3] Collection of small fixes to mlx5_ib
-Message-ID: <20210610123856.GA1261016@nvidia.com>
-References: <cover.1623309971.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1623309971.git.leonro@nvidia.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0272.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::7) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S230346AbhFJMle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230130AbhFJMlc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:41:32 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD58C061574;
+        Thu, 10 Jun 2021 05:39:23 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g4so3607662pjk.0;
+        Thu, 10 Jun 2021 05:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uE9zevDQxYaPIwjXbI4q8ct+lsgcgQZE9rB/G5VDkeY=;
+        b=tfuH4+B0VFYjWqiSQLaN//4EBznKsfARI33Ch7bU9AhJOO00FOQ/nwwCpv3oDUHKmn
+         xlymOjdXAWB+dE074vCopkAVBGypU9xAnqG7cQQWcq/0Ku8wvNp5shy9pARAQGrjEs5h
+         terbxPsfMgP8003YEWFWdVskSlFfYwkcWWZkDKodEtjotkQjbEhSrNaX6cI1AXBau0jJ
+         jm5mZYdykZiBtliCuaMsp8cD7dZeq2i44A+gFpWeYBPGxuW+7boHiMm2YYLeD6rfgY1P
+         IokS3SXa6csaThGR/iK/XQVhZhqwlYAv7mzObfB7ivmEKWyP5ClYn2p4kys/vH9kpaeP
+         fNNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uE9zevDQxYaPIwjXbI4q8ct+lsgcgQZE9rB/G5VDkeY=;
+        b=aRzEgOmxsvbnpitOtMvQUpSLQ2p1/ioH2EO1vPCXh4qJ323npb5b9+y23hzqt+eUJS
+         4coa/u9TxIbGCaCsJsHbS2s8a99LQnbx+bbdAIhHoNemdzPx2rk4OOHkvYs3ZC5lKNwO
+         eY7VM3HPRo8ZnIYgKurzvAyvC4jRf7lgtyiXLnYbZcfDu1H0vfkAli+ghlgn+IIQojk/
+         Fu3KmenCjfimIuQ++Kcx+fePGBTcVOCESMRL/i3s/KoiNE56NNEbBJW/sfVs4JzciV2v
+         Mm0vX1ydjjF81s85pGnOLMUy971pMAvjVWo9uKAcv3hKOYE226XqmqYcd5RRQK0G82jB
+         U0Vg==
+X-Gm-Message-State: AOAM531GWbKdIgouJUE2ZvcHv6jNmnsWHDwWivfgfEskoxYy0NWZqPUQ
+        tc6O/tofXTfS9MhVmXUVjYUmysTvi1aEjoWd0iJ3tZ2NOqk=
+X-Google-Smtp-Source: ABdhPJy5MSsAX/mTKbGgXWIYp1rrkDUDDWHFKkv3ve1Af0GBq+dfT0dZIVMUV3px1MkLOYRk5gR/Vnn5pf0lZbUYbis=
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr3236175pja.181.1623328762809;
+ Thu, 10 Jun 2021 05:39:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0272.namprd13.prod.outlook.com (2603:10b6:208:2bc::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend Transport; Thu, 10 Jun 2021 12:38:57 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lrJxY-005I3W-UK; Thu, 10 Jun 2021 09:38:56 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 82880acf-c232-4814-c414-08d92c0cb74f
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5173:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB517344A16B0835014409AD45C2359@BL1PR12MB5173.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SB9ZlBPmLtBNXh9XqN9sLt3z9Vji3fqEU4slkdf0+MVrDQSsS5YNtqUsXQKZPhQb6zazlw8kj1ZVAbyWLGAR6aD1tSSFH9uYWCEzUmp2t5jg5tAbKPAp+dXXglAbGt+VOLYZ8XIFtNDjVxYJIHsWsBqwB9eFxV4zrqrlZ/8i6j8Lrb/NRyIPVENZNLR1cXYRJ03EqxYaL25K8HhfBSCs4UpE7EaGhtksAhr9P9EOidF0B3LxBCIeAQuEeywPCP79xtTgZ54mQGLcBoHHqRnxfmEqr3T8R2UFnYi8UonSFdROLFgbiMR+ic8AEOo7TXYAYwXPRoRIFtp5TKEuOTlMKTu9D+WuBHQLWtuYxxKNRCgpwlqtZtY4JJlqI3KeLvrmyGxCnp4iO9CTnS74BkSSzxTX4iZs/Lt/HU5PDl9STScYjokWsfl9Mb9i+pXzJt7X100fod9FVPRVdnMuxiTTa/g1YBAWtGKGgeAb4z98VN1ixuP+gjF+/rF2DzIsz1jpAH86vOVmHqaoTZxL+Uaf4MS4Bfo9MxJ/2rGpT9sQfGKhzVAOo4t0Ul3d1RSWm+O/mDlBd28AR0u+naXAULqpbE50Jb/FAczcJFLvR86MNeU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(366004)(396003)(66476007)(4744005)(66946007)(6916009)(66556008)(5660300002)(186003)(26005)(54906003)(316002)(33656002)(1076003)(36756003)(8936002)(4326008)(86362001)(9786002)(478600001)(2906002)(8676002)(107886003)(9746002)(38100700002)(83380400001)(2616005)(426003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mk+GEsyThlPVT+EqLDNgmIUuPdd4VueMXCAVhnpM/XZK1d3U9CBRE0yt79Ag?=
- =?us-ascii?Q?tHGo1f5F4D1WdV30jh8pIkkhKqlHcOwSw6RiwTAmGvNCWUqLJOht/EH73ymY?=
- =?us-ascii?Q?SjgrVVhlpxERdMgj8YG5fma8AwXe2hfDAzQtMFZ8YAdqSAeeKgfJ/VPWGmTO?=
- =?us-ascii?Q?xrndIo46YQmPQ3yI/nyPusYiGQrfgWjLvqKYe4vwq3hnXRXT6EhcAAGAHEPf?=
- =?us-ascii?Q?i+Xm4vCEQ4yVJBMV94aiDFqaPbDuWNYZxnfma0AFTHsSYmp8hsPFXyoYacdy?=
- =?us-ascii?Q?m/OXl6YYnRulj1cs5cDa7h09XtU8JcsStvbEP9dF5wecXLeJc6xrWOCFy+rT?=
- =?us-ascii?Q?Jdv9KB3Np1hcEh48VD3lrFQJqRB1Ikl9buYVrioN4NZleHCewd+siB5bDZIo?=
- =?us-ascii?Q?5GZsLbX202GaY3Ce0HYPSY/WZ8JgE6VGZaqR0axtpPRANzOVW+1NxTO20h/h?=
- =?us-ascii?Q?YFpZqRkD51dexiUUk5VsZM7eMfPjo4VP0qAfjEk8LxQstg9QbGr9AB0K1Few?=
- =?us-ascii?Q?wP6/NexSwm79+Gn3WUmEHjtnrnPeXHOdXOKELQuLOOhEYJ86OATaL4y9j1bx?=
- =?us-ascii?Q?eaQwD988Ih5dIEgxMj16HanZswz8v36dVd4LmN2k/08/IQr1YG5nKDWSLg6T?=
- =?us-ascii?Q?9oxxX81eWyB9jsO7Zzq4IREydLDIcfwYD0mVgaUJiy1wqnCxsket2V2k9znA?=
- =?us-ascii?Q?W0wXkjYl46KAm9yjn4s05zcPNdPubs6V+6aGqNiTKqu7bRDwg7NQjTyOnKqK?=
- =?us-ascii?Q?RfyYydH056gzyOauwV4RSnv90Rzocy+Yg7SDIsqIsNzLtzqX4W14K0I/aQq5?=
- =?us-ascii?Q?imWQmr7LcnBTGjly6h8+wuQr3EBsMjtUiUHBEXVOrWXpXSB7ANUJFIFo8/NL?=
- =?us-ascii?Q?j1N1d3XdvLKE1KmoFla58qmL7MWemv1gglJmrmaLo9yVeih/xcdBRJb6Q5Ih?=
- =?us-ascii?Q?YdtM3SW3qfbMoW9E+HPwLBDqOJ6oEMjuk8x+B7eqbylQcpMv8r/WfcqJL5BQ?=
- =?us-ascii?Q?RcseYDOC1lnHgSIoEd/vKaa/q5XlfTzwnDllwvGLYWJhu5ix0LQ5qWl1DTS+?=
- =?us-ascii?Q?/CK9O9H5bQ1BSnDuSW4LptSBS02mq7xiZFriZZOuOj4Od93MwQf/LroCeLQj?=
- =?us-ascii?Q?WiqaZwfquy8n69Fk+KJxPBQHXu8XvcUNcUrPG4ciRlH+6HUqlRUvGLUKkcO0?=
- =?us-ascii?Q?cvMe1sRXKE6XucaY5LzcZx+5n6/d9kmxDpHWiLSz3HOdlmvfducfQ74Kwpsz?=
- =?us-ascii?Q?8MgPrzEzbCSbEHwMVacamHVqjjAsDuHdAk+pndta862FzBX2BF0bo5HzZoYn?=
- =?us-ascii?Q?oI7wpaSvhUpTADzccbTaK0sd?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82880acf-c232-4814-c414-08d92c0cb74f
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 12:38:57.8314
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1dGamiUvNBj+6X22naslDyRv83Nd9jhey9+RLBMO/Z2HmIZVvYdz9GFcIw0mHYQZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5173
+References: <20210609233730.164082-1-andrealmeid@collabora.com>
+ <YMHX1mKuqoRCiHAF@smile.fi.intel.com> <CABVgOS=5xkYKD18YfU++u8snpUnL2s=V6bK1e4qc_jTmAuazkw@mail.gmail.com>
+In-Reply-To: <CABVgOS=5xkYKD18YfU++u8snpUnL2s=V6bK1e4qc_jTmAuazkw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 10 Jun 2021 15:39:06 +0300
+Message-ID: <CAHp75VdRaztt6gPUuznCa_5yBRNF3WFYq78Tq-ozh=DBA5-FEQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/1] lib: Convert UUID runtime test to KUnit
+To:     David Gow <davidgow@google.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
+        Daniel Latypov <dlatypov@google.com>, tales.aparecida@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:34:24AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Hi,
-> 
-> This is unrelated batch of fixes to mlx5_ib.
-> 
-> Thanks
-> 
-> Aharon Landau (1):
->   RDMA/mlx5: Delete right entry from MR signature database
-> 
-> Alaa Hleihel (1):
->   IB/mlx5: Fix initializing CQ fragments buffer
-> 
-> Maor Gottlieb (1):
->   RDMA: Verify port when creating flow rule
+On Thu, Jun 10, 2021 at 2:54 PM David Gow <davidgow@google.com> wrote:
+> On Thu, Jun 10, 2021 at 5:14 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Wed, Jun 09, 2021 at 08:37:29PM -0300, Andr=C3=A9 Almeida wrote:
 
-Applied to for-rc, thanks
+...
 
-Jason
+> Note that this output is from the kunit_tool script, which parses the
+> test output.
+> It does include a summary line:
+> [04:41:01] Testing complete. 4 tests run. 0 failed. 0 crashed.
+
+> Note that this does only count the number of "tests" run --- the
+> individual UUIDs are parameters to the same test, so aren't counted
+> independently by the wrapper at the moment.
+>
+> That being said, the raw output looks like this (all tests passed):
+> TAP version 14
+> 1..1
+>    # Subtest: uuid
+>    1..4
+>    # uuid_correct_be: ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+>    # uuid_correct_be: ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+>    # uuid_correct_be: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+>    ok 1 - uuid_correct_be
+>    # uuid_correct_le: ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+>    # uuid_correct_le: ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+>    # uuid_correct_le: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+>    ok 2 - uuid_correct_le
+>    # uuid_wrong_be: ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+>    # uuid_wrong_be: ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+>    # uuid_wrong_be: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+>    ok 3 - uuid_wrong_be
+>    # uuid_wrong_le: ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+>    # uuid_wrong_le: ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+>    # uuid_wrong_le: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+>    ok 4 - uuid_wrong_le
+> ok 1 - uuid
+>
+> A test which failed could look like this:
+>     # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+>    Expected guid_parse(data->uuid, &le) =3D=3D 0, but
+>        guid_parse(data->uuid, &le) =3D=3D -22
+>
+> failed to parse 'c33f499x5-3701-450e-9fbf-206a2e98e576'
+>    # uuid_correct_le: not ok 1 - c33f499x5-3701-450e-9fbf-206a2e98e576
+>    # uuid_correct_le: ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+>    # uuid_correct_le: ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+>    not ok 2 - uuid_correct_le
+>
+> >
+> > Thanks!
+> >
+> > It's not your fault but I think we need to defer this until KUnit gains=
+ support
+> > of the run statistics. My guts telling me if we allow more and more con=
+versions
+> > like this the point will vanish and nobody will care.
+>
+> Did the test statistics patch we sent out before meet your expectations?
+> https://patchwork.kernel.org/project/linux-kselftest/patch/20201211072319=
+.533803-1-davidgow@google.com/
+
+Let me look at it at some point.
+
+> If so, we can tidy it up and try to push it through straight away, we
+> were just waiting for a review from someone who wanted the feature.
+>
+>
+> > I like the code, but I can give my tag after KUnit prints some kind of =
+this:
+> >
+> >  * This is how the current output looks like in success:
+> >
+> >    test_uuid: all 18 tests passed
+> >
+> >  * And when it fails:
+> >
+> >    test_uuid: failed 18 out of 18 tests
+> >
+>
+> There are some small restrictions on the exact format KUnit can use
+> for this if we want to continue to match the (K)TAP specification
+> which is being adopted by kselftest. The patch linked above should
+> give something formatted like:
+>
+> # test_uuid: (0 / 4) tests failed (0 / 12 test parameters)
+>
+> Would that work for you?
+
+Can you decode it for me, please?
+
+(Assuming that the above question arisen, perhaps some rephrasing is
+needed. The idea that user should have clear understanding on how many
+test cases were run and how many of them successfully finished or
+failed. According to this thread I have to see the cumulative number
+of 18 (either as one number or sum over test cases or how you call
+them, I see 4 here).
+
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
