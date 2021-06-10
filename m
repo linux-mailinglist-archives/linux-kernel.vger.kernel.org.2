@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4743A2257
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CE83A225B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhFJCqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 22:46:13 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:56687 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229557AbhFJCqM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 22:46:12 -0400
-X-UUID: dadec77041434efda46e582c0246c266-20210610
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5vOS/Pawx2igF/OjJqE41kmDlZ4xFVZV9zAtz+OMj9U=;
-        b=egw/okHwtRyMn7wM/Ksfw3mYbZCqr3TYKsNgb+CtzNNDPizLeXvuvu/H/Sgt1u23kPW6XIdloQW9COn0D5nk1strAcSgHsfr2YsckBpFfwBN0YioqBC6Vt5W2Tdp4I7FdDg4W2amMp8hNdG17XAlKmnZPhgdRwDeWcNArHzH4XQ=;
-X-UUID: dadec77041434efda46e582c0246c266-20210610
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <james.lo@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1072800198; Thu, 10 Jun 2021 10:44:13 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 10 Jun 2021 10:44:12 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 10 Jun 2021 10:44:12 +0800
-Message-ID: <2a117e5fe9fe0ece39e9165a463082ef42be973f.camel@mediatek.com>
-Subject: Re: [PATCH 2/2] soc: mediatek: pwrap: add pwrap driver for MT8195
- SoC
-From:   James Lo <james.lo@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Fei Shao <fshao@chromium.org>
-CC:     Sascha Hauer <s.hauer@pengutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Henry Chen <henryc.chen@mediatek.com>
-Date:   Thu, 10 Jun 2021 10:44:12 +0800
-In-Reply-To: <87ab50ff-bae3-b2a3-1e54-642cdce3600d@gmail.com>
-References: <20210602112050.12338-1-james.lo@mediatek.com>
-         <20210602112050.12338-3-james.lo@mediatek.com>
-         <CAC=S1nhUB=6y1SXUvAuhdj69S36FQnp9nr9V65TtS72pxuoRTg@mail.gmail.com>
-         <87ab50ff-bae3-b2a3-1e54-642cdce3600d@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S230027AbhFJCsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:48:23 -0400
+Received: from m12-18.163.com ([220.181.12.18]:58568 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229692AbhFJCsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 22:48:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=qQF+Mfd/W4sXUIec0/
+        FlJ4NKUAQca2lB2YNmUFlOk5o=; b=CQK4R+oq/f+CLZV6c6Xay7Os2VYlaIT9lL
+        g5Eb77AIXKTx6qojodfLftWBFHR+yt2IaAcnzlp/0pCWrkjxO01VoKlmG5b38Juu
+        W+7bhL4SKvyDGfHbOzVJryR7l1EXdtWK/gRfqwJHbq6IkxqH094QIbz9iPrAOC0w
+        fFpYau4BY=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp14 (Coremail) with SMTP id EsCowACnr9fvfMFgYRxEog--.31055S2;
+        Thu, 10 Jun 2021 10:46:10 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
+        kuba@kernel.org, unixbhaskar@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] nfc: fdp: remove unnecessary labels
+Date:   Thu, 10 Jun 2021 10:46:16 +0800
+Message-Id: <20210610024616.1804-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EsCowACnr9fvfMFgYRxEog--.31055S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18Cw43CF47XFy3Ar18Xwb_yoW8Gr1UpF
+        45XFWqyr4rJ3WrX3Z8Ar4DZFyYga1xAryDGrWxt3s7AF45trn7JFZ5tFW8ZrWxurZ5Gw12
+        vF4qqwn3ua1jqw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jpWlkUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiqwSjsVUMZnxVgAABsq
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA2LTA5IGF0IDEwOjA2ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
-Og0KPiANCj4gT24gMDkvMDYvMjAyMSAwOTo1MSwgRmVpIFNoYW8gd3JvdGU6DQo+ID4gT24gV2Vk
-LCBKdW4gMiwgMjAyMSBhdCA3OjIxIFBNIEphbWVzIExvIDxqYW1lcy5sb0BtZWRpYXRlay5jb20+
-DQo+ID4gd3JvdGU6DQo+ID4gPiANCj4gPiA+IEZyb206IEhlbnJ5IENoZW4gPGhlbnJ5Yy5jaGVu
-QG1lZGlhdGVrLmNvbT4NCj4gPiA+IA0KPiA+ID4gTVQ4MTk1IGFyZSBoaWdobHkgaW50ZWdyYXRl
-ZCBTb0MgYW5kIHVzZSBQTUlDX01UNjM1OSBmb3INCj4gPiA+IHBvd2VyIG1hbmFnZW1lbnQuIFRo
-aXMgcGF0Y2ggYWRkcyBwd3JhcCBtYXN0ZXIgZHJpdmVyIHRvDQo+ID4gPiBhY2Nlc3MgUE1JQ19N
-VDYzNTkuDQo+ID4gPiANCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEhlbnJ5IENoZW4gPGhlbnJ5Yy5j
-aGVuQG1lZGlhdGVrLmNvbT4NCj4gPiA+IC0tLQ0KPiA+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVr
-L210ay1wbWljLXdyYXAuYyB8IDM1DQo+ID4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-DQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDM1IGluc2VydGlvbnMoKykNCj4gPiA+IA0KPiA+ID4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbWljLXdyYXAuYw0KPiA+ID4g
-Yi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMNCj4gPiA+IGluZGV4IGU0ZGU3
-NWYzNWMzMy4uOTUyYmM1NTRmNDQzIDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9zb2MvbWVk
-aWF0ZWsvbXRrLXBtaWMtd3JhcC5jDQo+ID4gPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9t
-dGstcG1pYy13cmFwLmMNCj4gPiA+IEBAIC05NjEsNiArOTYxLDIzIEBAIHN0YXRpYyBpbnQgbXQ4
-MTgzX3JlZ3NbXSA9IHsNCj4gPiA+ICAgICAgICAgW1BXUkFQX1dBQ1MyX1ZMRENMUl0gPSAgICAg
-ICAgICAgICAgICAgIDB4QzI4LA0KPiA+ID4gIH07DQo+ID4gPiANCj4gPiA+ICtzdGF0aWMgaW50
-IG10ODE5NV9yZWdzW10gPSB7DQo+ID4gPiArICAgICAgIFtQV1JBUF9JTklUX0RPTkUyXSA9ICAg
-ICAgICAgICAgMHgwLA0KPiA+ID4gKyAgICAgICBbUFdSQVBfU1RBVVBEX0NUUkxdID0gICAgICAg
-ICAgIDB4NEMsDQo+ID4gPiArICAgICAgIFtQV1JBUF9USU1FUl9FTl0gPSAgICAgICAgICAgICAg
-MHgzRTQsDQo+ID4gPiArICAgICAgIFtQV1JBUF9JTlRfRU5dID0gICAgICAgICAgICAgICAgMHg0
-MjAsDQo+ID4gPiArICAgICAgIFtQV1JBUF9JTlRfRkxHXSA9ICAgICAgICAgICAgICAgMHg0Mjgs
-DQo+ID4gPiArICAgICAgIFtQV1JBUF9JTlRfQ0xSXSA9ICAgICAgICAgICAgICAgMHg0MkMsDQo+
-ID4gPiArICAgICAgIFtQV1JBUF9JTlQxX0VOXSA9ICAgICAgICAgICAgICAgMHg0NTAsDQo+ID4g
-PiArICAgICAgIFtQV1JBUF9JTlQxX0ZMR10gPSAgICAgICAgICAgICAgMHg0NTgsDQo+ID4gPiAr
-ICAgICAgIFtQV1JBUF9JTlQxX0NMUl0gPSAgICAgICAgICAgICAgMHg0NUMsDQo+ID4gPiArICAg
-ICAgIFtQV1JBUF9XQUNTMl9DTURdID0gICAgICAgICAgICAgMHg4ODAsDQo+ID4gPiArICAgICAg
-IFtQV1JBUF9TV0lORl8yX1dEQVRBXzMxXzBdID0gICAgMHg4ODQsDQo+ID4gPiArICAgICAgIFtQ
-V1JBUF9TV0lORl8yX1JEQVRBXzMxXzBdID0gICAgMHg4OTQsDQo+ID4gPiArICAgICAgIFtQV1JB
-UF9XQUNTMl9WTERDTFJdID0gICAgICAgICAgMHg4QTQsDQo+ID4gPiArICAgICAgIFtQV1JBUF9X
-QUNTMl9SREFUQV0gPSAgICAgICAgICAgMHg4QTgsDQo+ID4gPiArfTsNCj4gPiA+ICsNCj4gPiA+
-ICBzdGF0aWMgaW50IG10ODUxNl9yZWdzW10gPSB7DQo+ID4gPiAgICAgICAgIFtQV1JBUF9NVVhf
-U0VMXSA9ICAgICAgICAgICAgICAgMHgwLA0KPiA+ID4gICAgICAgICBbUFdSQVBfV1JBUF9FTl0g
-PSAgICAgICAgICAgICAgIDB4NCwNCj4gPiA+IEBAIC0xMDY2LDYgKzEwODMsNyBAQCBlbnVtIHB3
-cmFwX3R5cGUgew0KPiA+ID4gICAgICAgICBQV1JBUF9NVDgxMzUsDQo+ID4gPiAgICAgICAgIFBX
-UkFQX01UODE3MywNCj4gPiA+ICAgICAgICAgUFdSQVBfTVQ4MTgzLA0KPiA+ID4gKyAgICAgICBQ
-V1JBUF9NVDgxOTUsDQo+ID4gPiAgICAgICAgIFBXUkFQX01UODUxNiwNCj4gPiA+ICB9Ow0KPiA+
-ID4gDQo+ID4gPiBAQCAtMTUyNSw2ICsxNTQzLDcgQEAgc3RhdGljIGludCBwd3JhcF9pbml0X2Np
-cGhlcihzdHJ1Y3QNCj4gPiA+IHBtaWNfd3JhcHBlciAqd3JwKQ0KPiA+ID4gICAgICAgICAgICAg
-ICAgIGJyZWFrOw0KPiA+ID4gICAgICAgICBjYXNlIFBXUkFQX01UNjg3MzoNCj4gPiA+ICAgICAg
-ICAgY2FzZSBQV1JBUF9NVDgxODM6DQo+ID4gPiArICAgICAgIGNhc2UgUFdSQVBfTVQ4MTk1Og0K
-PiA+ID4gICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+ID4gICAgICAgICB9DQo+ID4gPiANCj4g
-PiA+IEBAIC0yMDI1LDYgKzIwNDQsMTkgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBwbWljX3dyYXBw
-ZXJfdHlwZQ0KPiA+ID4gcHdyYXBfbXQ4MTgzID0gew0KPiA+ID4gICAgICAgICAuaW5pdF9zb2Nf
-c3BlY2lmaWMgPSBwd3JhcF9tdDgxODNfaW5pdF9zb2Nfc3BlY2lmaWMsDQo+ID4gPiAgfTsNCj4g
-PiA+IA0KPiA+ID4gK3N0YXRpYyBzdHJ1Y3QgcG1pY193cmFwcGVyX3R5cGUgcHdyYXBfbXQ4MTk1
-ID0gew0KPiA+ID4gKyAgICAgICAucmVncyA9IG10ODE5NV9yZWdzLA0KPiA+ID4gKyAgICAgICAu
-dHlwZSA9IFBXUkFQX01UODE5NSwNCj4gPiA+ICsgICAgICAgLmFyYl9lbl9hbGwgPSAweDc3N2Ys
-IC8qIE5FRUQgQ09ORklSTSAqLw0KPiA+ID4gKyAgICAgICAuaW50X2VuX2FsbCA9IDB4MTgwMDAw
-LCAvKiBORUVEIENPTkZJUk0gKi8NCj4gPiANCj4gPiBQbGVhc2UgZ2V0IHRoZSBjb25maXJtYXRp
-dmUgdmFsdWVzIGhlcmUgdGhlbiBzZW5kIHRoZSBuZXh0IHBhdGNoLA0KPiA+IHRoYW5rcy4NCj4g
-PiANCj4gDQo+IFllcyBwbGVhc2UuIFlvdSBjYW4gc2VuZCB0aGlzIGFzIGEgZm9sbG93LXVwIHBh
-dGNoLCBvdGhlcndpc2UgSSdkDQo+IG5lZWQgdG8gcmVtb3ZlDQo+IHRoaXMgZnJvbSBteSBxdWV1
-ZSwgYXMgSSBoYXZlIG92ZXJzZWVuIHRoZSBmYWN0IHRoYXQgbm90IGFsbCB2YWx1ZXMNCj4gYXJl
-IGNvbmZpcm1lZC4NCj4gDQo+IFJlZ2FyZHMsDQo+IE1hdHRoaWFzDQoNCkFsbCB2YWx1ZXMgYXJl
-IGNvbmZpcm1lZCBhbmQgc29ycnkgZm9yIEkgZm9yZ2V0IHRvIHJlbW92ZSB0aG9zZQ0KY29tbWVu
-dHMuIENvdWxkIHlvdSBwbGVhc2UgaGVscCB1cyB0byByZW1vdmUgdGhvc2UgY29tbWVudHMgPw0K
-DQpCZWZvcmUgOg0KLmFyYl9lbl9hbGwgPSAweDc3N2YsIC8qIE5FRUQgQ09ORklSTSAqLw0KLmlu
-dF9lbl9hbGwgPSAweDE4MDAwMCwgLyogTkVFRCBDT05GSVJNICovDQoNCkFmdGVyIDoNCi5hcmJf
-ZW5fYWxsID0gMHg3NzdmLA0KLmludF9lbl9hbGwgPSAweDE4MDAwMCwNCg0KTWFueSB0aGFua3MN
-CkphbWVzIExvDQo=
+From: wengjianfeng <wengjianfeng@yulong.com>
+
+Some labels are meaningless, so we delete them and use the
+return statement instead of the goto statement.
+
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/nfc/fdp/fdp.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
+index 7863b25..5287458 100644
+--- a/drivers/nfc/fdp/fdp.c
++++ b/drivers/nfc/fdp/fdp.c
+@@ -266,7 +266,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
+ 	r = request_firmware(&info->ram_patch, FDP_RAM_PATCH_NAME, dev);
+ 	if (r < 0) {
+ 		nfc_err(dev, "RAM patch request error\n");
+-		goto error;
++		return r;
+ 	}
+ 
+ 	data = (u8 *) info->ram_patch->data;
+@@ -283,7 +283,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
+ 	r = request_firmware(&info->otp_patch, FDP_OTP_PATCH_NAME, dev);
+ 	if (r < 0) {
+ 		nfc_err(dev, "OTP patch request error\n");
+-		goto out;
++		return 0;
+ 	}
+ 
+ 	data = (u8 *) info->otp_patch->data;
+@@ -295,10 +295,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
+ 
+ 	dev_dbg(dev, "OTP patch version: %d, size: %d\n",
+ 		 info->otp_patch_version, (int) info->otp_patch->size);
+-out:
+ 	return 0;
+-error:
+-	return r;
+ }
+ 
+ static void fdp_nci_release_firmware(struct nci_dev *ndev)
+-- 
+1.9.1
+
 
