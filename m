@@ -2,186 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5B53A256A
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1243A256B
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhFJH0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:26:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56593 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230492AbhFJH0A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:26:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623309844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5tlPw+fNQnyyXsv0Z5PViUY/ZrTm7CI6pUHe7QloYKE=;
-        b=EyW3fiK9gRqTF+M8k80TUrqwZZZkGl1HfU/RIEKeNjGVuF396XMBFa3S3upfIgtVO3lU/O
-        ZexDTpgta9yTqkpanS3dPLV+atPokpyBE+zIPhIhsMwzu2F3Xg0ng2yywJhFtLzxxFQtfz
-        IDxGXX5E1OYOp9VzQuVLLSxMmDbj/QY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-266-rjIBf0XlO-aJNZOYpO23bg-1; Thu, 10 Jun 2021 03:24:02 -0400
-X-MC-Unique: rjIBf0XlO-aJNZOYpO23bg-1
-Received: by mail-ed1-f69.google.com with SMTP id df3-20020a05640230a3b029039179c0f290so12010980edb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:24:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5tlPw+fNQnyyXsv0Z5PViUY/ZrTm7CI6pUHe7QloYKE=;
-        b=P5pevUGXZIgMk0R9107+8WUXzGogVLmHcCz1elQKuePrJ52Q8MKzgy9YnlJLCjoY4s
-         gDl+evU7uGYhO5l8PKTFLxr7YMi9bVoDgskHG2mKOvC7YjyUAHsO7tMeyPXWwiV+N4Gt
-         ka4lGYtdiewqXDnzkz0PzGFj2EX3bFdNvIHP9p5zgGVrB4BN1cQAJfdmYa/O0+aoo3gY
-         vS1+Au/jwwc9RjbArjamUs/VfUMRfTHxOuXq/+R5c9JMSpYVPUVy7Z+NV9KTWr+WnyT8
-         Fk4IE7jKbx3obBR5M16vltSl2+e/pJ5O1akNzJK1KXw5Y2iMUHh5tb445RrDz9YI/lzQ
-         9SVQ==
-X-Gm-Message-State: AOAM531zT4GsL+Fz1XiEK0gDeAUYqJgXfkjtYYwfKuCyBzGqT251hI1V
-        q/seevEWqgmTgxIRLqa4Cl3CS35yuMwgX6FJyyvXDb/muX5ZPEyXxhNbha3DWiG3XL36FGkUtVq
-        sBLYhj2o++gPAozt5AtqFhPE/
-X-Received: by 2002:a05:6402:31a2:: with SMTP id dj2mr3327561edb.206.1623309841253;
-        Thu, 10 Jun 2021 00:24:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQjjBWn2tn5Hz5WlWbOxelGasgbyypBGGNi74+KR/G3TdCo5Fjc4YzbciAEeQef5nBrmemKQ==
-X-Received: by 2002:a05:6402:31a2:: with SMTP id dj2mr3327543edb.206.1623309841108;
-        Thu, 10 Jun 2021 00:24:01 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id o21sm651992ejg.49.2021.06.10.00.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 00:24:00 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 09:23:58 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Jiang Wang ." <jiang.wang@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        jhansen@vmware.comments, cong.wang@bytedance.com,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?utf-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v1 0/6] virtio/vsock: introduce SOCK_DGRAM support
-Message-ID: <20210610072358.3fuvsahxec2sht4y@steredhat>
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <da90f17a-1c24-b475-76ef-f6a7fc2bcdd5@redhat.com>
- <CAP_N_Z_VDd+JUJ_Y-peOEc7FgwNGB8O3uZpVumQT_DbW62Jpjw@mail.gmail.com>
- <ac0c241c-1013-1304-036f-504d0edc5fd7@redhat.com>
+        id S231143AbhFJH0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:26:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230490AbhFJH0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:26:12 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CDFA613BD;
+        Thu, 10 Jun 2021 07:24:17 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lrF30-006flK-AX; Thu, 10 Jun 2021 08:24:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ac0c241c-1013-1304-036f-504d0edc5fd7@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Jun 2021 08:24:14 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 21/39] irqdomain: Introduce irq_resolve_mapping()
+In-Reply-To: <cd57cdf8-0385-acc5-c971-666942351f57@quicinc.com>
+References: <20210520163751.27325-1-maz@kernel.org>
+ <20210520163751.27325-22-maz@kernel.org>
+ <cd57cdf8-0385-acc5-c971-666942351f57@quicinc.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <17df9e7d665973cba9120e9c2908e2c7@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: quic_qiancai@quicinc.com, linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 12:02:35PM +0800, Jason Wang wrote:
->
->在 2021/6/10 上午11:43, Jiang Wang . 写道:
->>On Wed, Jun 9, 2021 at 6:51 PM Jason Wang <jasowang@redhat.com> wrote:
->>>
->>>在 2021/6/10 上午7:24, Jiang Wang 写道:
->>>>This patchset implements support of SOCK_DGRAM for virtio
->>>>transport.
->>>>
->>>>Datagram sockets are connectionless and unreliable. To avoid unfair contention
->>>>with stream and other sockets, add two more virtqueues and
->>>>a new feature bit to indicate if those two new queues exist or not.
->>>>
->>>>Dgram does not use the existing credit update mechanism for
->>>>stream sockets. When sending from the guest/driver, sending packets
->>>>synchronously, so the sender will get an error when the virtqueue is 
->>>>full.
->>>>When sending from the host/device, send packets asynchronously
->>>>because the descriptor memory belongs to the corresponding QEMU
->>>>process.
->>>
->>>What's the use case for the datagram vsock?
->>>
->>One use case is for non critical info logging from the guest
->>to the host, such as the performance data of some applications.
->
->
->Anything that prevents you from using the stream socket?
->
->
->>
->>It can also be used to replace UDP communications between
->>the guest and the host.
->
->
->Any advantage for VSOCK in this case? Is it for performance (I guess 
->not since I don't exepct vsock will be faster).
+On 2021-06-10 03:22, Qian Cai wrote:
+> On 5/20/2021 12:37 PM, Marc Zyngier wrote:
+>> Rework irq_find_mapping() to return an irq_desc pointer, and
+>> rename the result to irq_resolve_mapping().
+>> 
+>> irq_find_mapping() is then rewritten in terms of ir_resolve_mapping().
+>> 
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> 
+> Marc, there is an use-after-free that "git blame" pointed to this
+> commit. Any thoughts?
+> 
+> __irq_resolve_mapping+0x34c/0x360:
+> __irq_resolve_mapping at /usr/src/linux-next/kernel/irq/irqdomain.c:917
 
-I think the general advantage to using vsock are for the guest agents 
-that potentially don't need any configuration.
+Yup, this was reported yesterday by John Gary. I'm on it.
 
->
->An obvious drawback is that it breaks the migration. Using UDP you can 
->have a very rich features support from the kernel where vsock can't.
->
-
-Thanks for bringing this up!
-What features does UDP support and datagram on vsock could not support?
-
->
->>
->>>>The virtio spec patch is here:
->>>>https://www.spinics.net/lists/linux-virtualization/msg50027.html
->>>
->>>Have a quick glance, I suggest to split mergeable rx buffer into an
->>>separate patch.
->>Sure.
->>
->>>But I think it's time to revisit the idea of unifying the virtio-net 
->>>and
->>>virtio-vsock. Otherwise we're duplicating features and bugs.
->>For mergeable rxbuf related code, I think a set of common helper
->>functions can be used by both virtio-net and virtio-vsock. For other
->>parts, that may not be very beneficial. I will think about more.
->>
->>If there is a previous email discussion about this topic, could you 
->>send me
->>some links? I did a quick web search but did not find any related
->>info. Thanks.
->
->
->We had a lot:
->
->[1] 
->https://patchwork.kernel.org/project/kvm/patch/5BDFF537.3050806@huawei.com/
->[2] 
->https://lists.linuxfoundation.org/pipermail/virtualization/2018-November/039798.html
->[3] https://www.lkml.org/lkml/2020/1/16/2043
->
-
-When I tried it, the biggest problem that blocked me were all the 
-features strictly related to TCP/IP stack and ethernet devices that 
-vsock device doesn't know how to handle: TSO, GSO, checksums, MAC, napi, 
-xdp, min ethernet frame size, MTU, etc.
-
-So in my opinion to unify them is not so simple, because vsock is not 
-really an ethernet device, but simply a socket.
-
-But I fully agree that we shouldn't duplicate functionality and code, so 
-maybe we could find those common parts and create helpers to be used by 
-both.
-
-Thanks,
-Stefano
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
