@@ -2,157 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F1E3A21F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 03:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB973A2229
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbhFJBxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 21:53:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53215 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229655AbhFJBxI (ORCPT
+        id S229874AbhFJCM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:12:27 -0400
+Received: from exvmail3.skhynix.com ([166.125.252.90]:61831 "EHLO
+        invmail3.skhynix.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229705AbhFJCM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 21:53:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623289872;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vz0jGs3iC3Z2zxb/bDk+em2UI3NrnLgN9D+cOWfKhFk=;
-        b=Yrzytv6PKW21b4rht+4QPtuF61AOvPhNi4KhJR5Mr3HdZzNN+5a65++AVo6PPiJuSVtZgp
-        fLV2Yz9hn8Q4Kxr+ZKwlAX4gt7fSlqGObUUwKqUg4w6JXFH7FXzTUfZbdzXpQt/M8mb5cK
-        LAYdEB6LlfOOaffJ+TO6CdqRSp8Yp5c=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-307-fyfpNyg9M3iQ4LsjzMZNjA-1; Wed, 09 Jun 2021 21:51:11 -0400
-X-MC-Unique: fyfpNyg9M3iQ4LsjzMZNjA-1
-Received: by mail-pg1-f198.google.com with SMTP id b17-20020a63eb510000b029021a1da627beso15414168pgk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 18:51:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Vz0jGs3iC3Z2zxb/bDk+em2UI3NrnLgN9D+cOWfKhFk=;
-        b=DhxXlt5HMcxXWJfUgDiyZCyXtlWL4pkb2OUrCgMD65Xyj/QhTGtfUlfd7zTXTny5eE
-         gqfPbQhEa8Sd7JQNnR0qojvunPicCv+qgsRBMTndGBY/Cq0yyCzbRJEJ1Nf5ETD+krTM
-         s/Jg94/MbnAC84McKqFFlLDcgNCxsBmyWAdGAZBZQSCx3MJcKaEDdbveUSWsOUkpXJP2
-         1TLTTz9sIlQNNCR2cuZtzlrlnGsszHuD+DeP84rUBLrvKQo49w97bgRW+uMj/lfxJbAw
-         jAOnF+F9ijSNKuqyNzIeDchZdS3N0sKb6I50+LcqYJpNJn3C02fJ4H+xuvDQghRvo+7O
-         SzBQ==
-X-Gm-Message-State: AOAM53028UY6rmmtkJnChradn1Ekv4jIcjj90EQQubogRYe4jOEUU4sl
-        gzQWZPDMJB6yp/M6X27alLdhliKSQ/sxbkNznNh9FSztyRuo8xLf6cjHL7thFLgnyp1lNehOE0J
-        jqUiQRxGuK9/fir1ZhIfqdDyvi6715aWyPTNYsL411diWwsyvMntFOF32uwuAau47OdhR0lL9Ol
-        WI
-X-Received: by 2002:a63:1f57:: with SMTP id q23mr2540940pgm.398.1623289869914;
-        Wed, 09 Jun 2021 18:51:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTPUVSAZdPB8Qre6f3DbTbUGZcOx/a9zlBz8i8IQXThi6iMQgKG/iGcFooiYctC9c43+Gg/Q==
-X-Received: by 2002:a63:1f57:: with SMTP id q23mr2540893pgm.398.1623289869521;
-        Wed, 09 Jun 2021 18:51:09 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l3sm846806pgb.77.2021.06.09.18.51.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 18:51:09 -0700 (PDT)
-Subject: Re: [RFC v1 0/6] virtio/vsock: introduce SOCK_DGRAM support
-To:     Jiang Wang <jiang.wang@bytedance.com>, sgarzare@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, stefanha@redhat.com,
-        mst@redhat.com, arseny.krasnov@kaspersky.com,
-        jhansen@vmware.comments, cong.wang@bytedance.com,
-        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <da90f17a-1c24-b475-76ef-f6a7fc2bcdd5@redhat.com>
-Date:   Thu, 10 Jun 2021 09:50:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Wed, 9 Jun 2021 22:12:27 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 22:12:26 EDT
+X-AuditID: a67dfc59-d75ff70000008761-6f-60c1710d3855
+Received: from hymail21.hynixad.com (10.156.135.51) by hymail19.hynixad.com
+ (10.156.135.49) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.792.3; Thu, 10 Jun 2021
+ 10:55:24 +0900
+Received: from hymail21.hynixad.com ([10.156.135.51]) by hymail21.hynixad.com
+ ([10.156.135.51]) with mapi id 15.02.0792.010; Thu, 10 Jun 2021 10:55:24
+ +0900
+From:   =?utf-8?B?7KCV7JqU7ZWcKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
+        <yohan.joung@sk.com>
+To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v36 4/4] scsi: ufs: Add HPB 2.0 support
+Thread-Topic: [PATCH v36 4/4] scsi: ufs: Add HPB 2.0 support
+Thread-Index: AQHXW1RTlN1ifpMXPEWIYMQnD3fis6sMe1SA
+Date:   Thu, 10 Jun 2021 01:55:24 +0000
+Message-ID: <e540ec7b6d3e4adc97780fcdf87f46aa@sk.com>
+References: <20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
+        <CGME20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p7>
+ <20210607041927epcms2p707781de1678af1e1d0f4d88782125f7b@epcms2p7>
+In-Reply-To: <20210607041927epcms2p707781de1678af1e1d0f4d88782125f7b@epcms2p7>
+Accept-Language: ko-KR, en-US
+Content-Language: ko-KR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.152.36.34]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210609232501.171257-1-jiang.wang@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-CFilter-Loop: Reflected
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsXCNUdUWZe38GCCwe9ufovLu+awWXRf38Hm
+        wOTxeZNcAGMUl01Kak5mWWqRvl0CV8b9VbMYC26xV2xe2sDUwHiAvYuRk0NCwETi4Zx3LF2M
+        XBxCAq8YJS48/c8O4SxglLjYuJUJpIpNIFTixu2VjCAJEYEpLBL/1j5jA0kwC9RJ7J7zB8wW
+        FrCWuNi+BWgUB1CRjUTnZQuQsIiAkcStWa+ZQWwWAVWJh0cnMYOU8AqYSrz6xw2x6wGjxNbm
+        92BjOAX8JA5uf8MOUsMoICtx9ZoMxCZxicVfrzFDHC0gsWTPeShbVOLl43+sELaCxMrvF5hA
+        WpkFNCXW79KHaFWUmNL9EOxfXgFBiZMzn7BAlEtKHFxxg2UCo9gsJBtmIXTPQtI9C0n3AkaW
+        VYwimXlluYmZOcZ6xdkZlXmZFXrJ+bmbGIHRsqz2T+QOxm8Xgg8xCnAwKvHwZlw4kCDEmlhW
+        XJl7iFGCg1lJhLfMcF+CEG9KYmVValF+fFFpTmrxIUZpDhYlcd5vYakJQgLpiSWp2ampBalF
+        MFkmDk6pBsY1XDxbGjesd0k6Ff7/0qvKe1t2bdJ3PRYeasqrbeKlvHO+0ALX6/YL2XiEQ9U0
+        1sjzvtxvPSu1ijlS1uLIj5qeLzpbFyV7uq67/27iceEf2iIJTYtKIt8IG3iccZpxXNjqxoWa
+        zH9eG41Mpsa5KrinKmXeX9DabL656n6jRG7HtfDf+mtr/yuxFGckGmoxFxUnAgB+qaEPkgIA
+        AA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/6/10 上午7:24, Jiang Wang 写道:
-> This patchset implements support of SOCK_DGRAM for virtio
-> transport.
->
-> Datagram sockets are connectionless and unreliable. To avoid unfair contention
-> with stream and other sockets, add two more virtqueues and
-> a new feature bit to indicate if those two new queues exist or not.
->
-> Dgram does not use the existing credit update mechanism for
-> stream sockets. When sending from the guest/driver, sending packets
-> synchronously, so the sender will get an error when the virtqueue is full.
-> When sending from the host/device, send packets asynchronously
-> because the descriptor memory belongs to the corresponding QEMU
-> process.
-
-
-What's the use case for the datagram vsock?
-
-
->
-> The virtio spec patch is here:
-> https://www.spinics.net/lists/linux-virtualization/msg50027.html
-
-
-Have a quick glance, I suggest to split mergeable rx buffer into an 
-separate patch.
-
-But I think it's time to revisit the idea of unifying the virtio-net and 
-virtio-vsock. Otherwise we're duplicating features and bugs.
-
-Thanks
-
-
->
-> For those who prefer git repo, here is the link for the linux kernel：
-> https://github.com/Jiang1155/linux/tree/vsock-dgram-v1
->
-> qemu patch link:
-> https://github.com/Jiang1155/qemu/tree/vsock-dgram-v1
->
->
-> To do:
-> 1. use skb when receiving packets
-> 2. support multiple transport
-> 3. support mergeable rx buffer
->
->
-> Jiang Wang (6):
->    virtio/vsock: add VIRTIO_VSOCK_F_DGRAM feature bit
->    virtio/vsock: add support for virtio datagram
->    vhost/vsock: add support for vhost dgram.
->    vsock_test: add tests for vsock dgram
->    vhost/vsock: add kconfig for vhost dgram support
->    virtio/vsock: add sysfs for rx buf len for dgram
->
->   drivers/vhost/Kconfig                              |   8 +
->   drivers/vhost/vsock.c                              | 207 ++++++++--
->   include/linux/virtio_vsock.h                       |   9 +
->   include/net/af_vsock.h                             |   1 +
->   .../trace/events/vsock_virtio_transport_common.h   |   5 +-
->   include/uapi/linux/virtio_vsock.h                  |   4 +
->   net/vmw_vsock/af_vsock.c                           |  12 +
->   net/vmw_vsock/virtio_transport.c                   | 433 ++++++++++++++++++---
->   net/vmw_vsock/virtio_transport_common.c            | 184 ++++++++-
->   tools/testing/vsock/util.c                         | 105 +++++
->   tools/testing/vsock/util.h                         |   4 +
->   tools/testing/vsock/vsock_test.c                   | 195 ++++++++++
->   12 files changed, 1070 insertions(+), 97 deletions(-)
->
-
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaHBiLmggYi9kcml2ZXJzL3Njc2kvdWZz
+L3Vmc2hwYi5oIGluZGV4IDZlNmEwMjUyZGMxNS4uYjExMjhiMGNlNDg2IDEwMDY0NA0KLS0tIGEv
+ZHJpdmVycy9zY3NpL3Vmcy91ZnNocGIuaA0KKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNocGIu
+aA0KQEAgLTMwLDE5ICszMCwyOSBAQA0KICNkZWZpbmUgUElOTkVEX05PVF9TRVQJCQkJVTMyX01B
+WA0KIA0KIC8qIGhwYiBzdXBwb3J0IGNodW5rIHNpemUgKi8NCi0jZGVmaW5lIEhQQl9NVUxUSV9D
+SFVOS19ISUdICQkJMQ0KKyNkZWZpbmUgSFBCX0xFR0FDWV9DSFVOS19ISUdICQkJMQ0KKyNkZWZp
+bmUgSFBCX01VTFRJX0NIVU5LX0xPVwkJCTcNCisjZGVmaW5lIEhQQl9NVUxUSV9DSFVOS19ISUdI
+CQkJMTI4DQogDQpBY2NvcmRpbmcgdG8gdGhlIEpFREVDIHNwZWMsIGJNQVhfIERBVEFfU0laRV9G
+T1JfSFBCX1NJTkdMRV9DTUQgY2FuIGJlIHNldCBmcm9tIDRrYiB0byAxMDI0a2IuIA0KVGhlIHRy
+YW5zZmVyIGxlbmd0aCBzaG91bGQgYmUgcHJvdmlkZWQgdXAgdG8gMTAyMGtiIG9yIDEwMjRrYi4N
+CldoeSBkaWQgeW91IHNldCBIUEJfTVVMVElfQ0hVTktfSElHSCB0byAxMjg/IA0KSXQgY2FuIHNl
+bmRzIHRoZSBocGIgY29tbWFuZCB1cCB0byA1MTJrYi4gDQpUaGlzIGRvZXNuJ3Qgc2VlbSB0byBt
+YXRjaCB0aGUgc3BlY3MuDQoNClRoYW5rcw0KWW9oYW4uDQo=
