@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224923A2784
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC9C3A2786
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhFJI6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:58:51 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:30426 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFJI6u (ORCPT
+        id S230146AbhFJI7B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Jun 2021 04:59:01 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:65075 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhFJI7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:58:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623315414; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=UPJ0taLEBb3jkwcs8gildde6vVSayjTGVrrycTxL2Vo=; b=BjFyc9voJIuW054EbIkcseypbHrDN//rA6zjQj3LDXDy7IGXqzAPLo0bCCn8cy6LSTTIKBtW
- /MV0RK5WdEIxAkKTHmAT01V+d32rdLeYC5uoFR/5IQisEyKmZ5B+2qD1Wz+WrlqXd05ePwCo
- 9/J+HqDYiYsvETSTlgdYFjUAWSA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60c1d3d4e27c0cc77fdfa9e9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 10 Jun 2021 08:56:52
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 20B21C43144; Thu, 10 Jun 2021 08:56:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.105] (unknown [49.204.182.221])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6425DC433D3;
-        Thu, 10 Jun 2021 08:56:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6425DC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH v11] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg KH <greg@kroah.com>, glittao@gmail.com,
-        vinmenon@codeaurora.org, Vlastimil Babka <vbabka@suse.cz>
-References: <1623141934-7699-1-git-send-email-faiyazm@codeaurora.org>
- <CAHp75VcwW6RGALAjzcK4W9xy_hDPyFti4cNY_pCwJnjUr+VYVQ@mail.gmail.com>
- <b84892d5-06ed-fdbe-b5b3-0956140573ec@codeaurora.org>
- <78fc8848-bde8-769e-f8e9-6157d232a60f@suse.cz>
- <47842d8d-2747-3d0f-8695-122dc23d90e6@codeaurora.org>
-Message-ID: <7d652fca-23f3-fc03-c7b2-310edcafebb3@codeaurora.org>
-Date:   Thu, 10 Jun 2021 14:26:43 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 10 Jun 2021 04:59:00 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 9633340010;
+        Thu, 10 Jun 2021 08:56:54 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 10:56:53 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>,
+        Amit Kumar Mahapatra <akumarma@xilinx.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
+        Siva Durga Prasad Paladugu <sivadur@xilinx.com>
+Subject: Re: [PATCH v23 17/18] dt-bindings: mtd: pl353-nand: Describe this
+ hardware controller
+Message-ID: <20210610105653.2d732c4b@xps13>
+In-Reply-To: <ce97c460-14eb-a758-31f6-124585e733f1@canonical.com>
+References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
+        <20210610082040.2075611-18-miquel.raynal@bootlin.com>
+        <ce97c460-14eb-a758-31f6-124585e733f1@canonical.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <47842d8d-2747-3d0f-8695-122dc23d90e6@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Hi Krzysztof,
 
-On 6/8/2021 11:43 PM, Faiyaz Mohammed wrote:
-> 
-> 
-> On 6/8/2021 11:05 PM, Vlastimil Babka wrote:
->> On 6/8/21 7:11 PM, Faiyaz Mohammed wrote:
->>>
->>>
->>> On 6/8/2021 5:20 PM, Andy Shevchenko wrote:
->>>> On Tue, Jun 8, 2021 at 11:45 AM Faiyaz Mohammed <faiyazm@codeaurora.org> wrote:
->>>>>
->>>>> alloc_calls and free_calls implementation in sysfs have two issues,
->>>>> one is PAGE_SIZE limitation of sysfs and other is it does not adhere
->>>>> to "one value per file" rule.
->>>>>
->>>>> To overcome this issues, move the alloc_calls and free_calls
->>>>> implementation to debugfs.
->>>>>
->>>>> Debugfs cache will be created if SLAB_STORE_USER flag is set.
->>>>>
->>>>> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
->>>>> to be inline with what it does.
->>>>>
->>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
->>>>> ---
->>>>
->>>> It seems you missed the version bump along with changelog.
->>>> Note, some maintainers (actually quite many I think) are using tools
->>>> to fetch up the patches and two patches with the same version is a
->>>> problem. Hence I do not consider it a nit-pick.
->>>>
->>> Hmmm, I think to avoid same version problem I have to push same patch
->>> with new version number and thank you for your patience.
->>
->> I *think* Andrew wouldn't have this issue, so maybe resend only if he says it's
->> needed.
-> Sure, I will send if he ask.
-Do I need to send patch with new version number?.
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote on Thu,
+10 Jun 2021 10:48:16 +0200:
 
->> On the other hand I did have troubles to apply the last version locally, patch
->> (tool) complained of patch (file) being malformed at the end. Did you add or
->> delete lines from it after generating the patch? I had to use the recountdiff
-> Yes, I added one line manually, I think that causes the issue.
+> On 10/06/2021 10:20, Miquel Raynal wrote:
+> > Add a yaml description of this NAND controller which is described as a
+> > subnode of the SMC bus.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 53 +++++++++++++++++++
+> >  1 file changed, 53 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> > new file mode 100644
+> > index 000000000000..5f126bb9b202
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> > @@ -0,0 +1,53 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mtd/arm,pl353-nand-r2p1.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: PL353 NAND Controller device tree bindings
+> > +
+> > +allOf:
+> > +  - $ref: "nand-controller.yaml"
+> > +
+> > +maintainers:
+> > +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> > +  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:  
 > 
->> tool to fix this. If you're going to resend, please make sure it's without the
->> same issue.
->>
-> Okay
-> 
->>> Thanks and regards,
->>> Mohammed Faiyaz
->>>
->>
+> I think you can skip the "items" here and leave only "const: foo".
+
+Crap, I missed that one, you're right. I'll wait a bit for Rob's
+feedback and eventually fix it when applying or resend (hopefully) only
+the NAND bits.
+
+Thanks,
+Miquèl
