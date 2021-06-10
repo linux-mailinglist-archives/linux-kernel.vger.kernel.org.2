@@ -2,250 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07F23A31A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E6B3A31A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 19:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhFJREv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 13:04:51 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:45743 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhFJREt (ORCPT
+        id S231559AbhFJRFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 13:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229895AbhFJRFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:04:49 -0400
-Received: by mail-oi1-f179.google.com with SMTP id w127so2821203oig.12;
-        Thu, 10 Jun 2021 10:02:38 -0700 (PDT)
+        Thu, 10 Jun 2021 13:05:50 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26D8C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:03:53 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id l9so6602763wms.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 10:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=bXhxyKfILOtbokM8zhO9ev3eR2f27dRG5A7af/C4DQw=;
+        b=DMyaY3PS/UuBOCcAv0WKwICkJXkmfeM1e89x3xj9HxEmJIz6oMmNdMb5eAxBcJE0Ys
+         bBYF6hJmSOu1r9AXjTt02A+9yWHb2AUNUR5G68af8Izv9M/m9oQ+7um/mBKwUI+Oj8jY
+         uFZavM16DaPHRWGnWxm8xL8lk3c2OR+yJKUuHP6C21C2wlGRBlUfkopWVLIIZeEv9Zoo
+         DuMiThPgXP3rTj7udUcSIJRmiJcB1D3p8tjJvPngix5g94LRqb3vPJubGySqimN2h/qh
+         sthYQNqh7TJB6t+6mhomwCA7RYVht4W0QLKOtvLb4Txkoesmu75s7JE07l+BFw7aq4u8
+         cDHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e4a/91iYGoY9yr3GZI7DZxVbEUDYySZoo2P+z2xpl9o=;
-        b=FOUAGVAnbnMa0yUNcaRKkGMUbaUFcBS31PIafbrsrNs6fUNu7RlD5dsVeHO+mbV099
-         ChfKUHR+jdPzqoF8MjqTa2XjL6Q2of4gx+74Iok6AWNJSR3A7icLmLofNLIb01+/x1Uo
-         6Zt8hlOJ7LVgGwqIS2S7lPCmwfbdGMsrC74G9ap+71WvaMxfyHsa5tZBY+ME3TJQNM4h
-         5yp6ayUhS8y8a41eiPzv20djrpIRRXJ7VtoMORA7gCUw5rG7Ve46xdTVM0gcHQrbfSsf
-         7p24yM/sN5nhYCLFKop2O0P576g3VEVEcf8h+u/3QLo2zRjG1Z/y8a1GhNeQPdxQe4gd
-         4QAA==
-X-Gm-Message-State: AOAM533MmcdgPEMXc3Eq/y8rzX4FGHjoj3MfKNYdH6g7jqdXNFSzmBXl
-        ukkJ1FbaRTroZ2f9wVUtoA==
-X-Google-Smtp-Source: ABdhPJyCN2rSyQvYwP+VJ4DJWxdMIfMOuh00l62oVRXcHyvCP+ksagzHArpBvff/UlxQnvCH8/uMrQ==
-X-Received: by 2002:aca:ea85:: with SMTP id i127mr4198702oih.176.1623344558097;
-        Thu, 10 Jun 2021 10:02:38 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.113])
-        by smtp.gmail.com with ESMTPSA id l128sm651998oif.16.2021.06.10.10.02.35
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bXhxyKfILOtbokM8zhO9ev3eR2f27dRG5A7af/C4DQw=;
+        b=Pm3BW+m2sIGcPqM0aEla3xQpnVzTKuhgup30LZtNZ6Ps/UxWhsTKr7nl06zf/0UY0T
+         8o62PTJm4FTC6+RZ1eGVjvOjukSCCtQhHCdnS7ukBiyCU86XTn6kgK5L9KAJzCxwOqN0
+         fCaJwPJWu4MyJmDPnE3RfZeLkp90YFgLEhhObAzkGEnUKW5Tq2w5IA3nIx8pjWPBuYEB
+         1klQMtn0VCXyBTzX1robAvTF9qsJVECkaSvpacFLtXHLOMu9MAXGnr7zLC4v9S+apBU7
+         s9npHhBcRYLSVUKktKNiNAHM1k0lO+9Mxfqf5EaGuhiLcDR0w6rPIKqQkYu8ydJafcr5
+         N3vw==
+X-Gm-Message-State: AOAM532L0ipaA3TNXCv54RN5qctgTDtLYsigthCS5MJX3EIrB8giVQOS
+        NfhVlBmlYpYRtDP7YT8ECHA7Rw==
+X-Google-Smtp-Source: ABdhPJxKsTVP9wK9UsF+G/NtCMnej7AiNjRbbyOwhC+0A8plqOW12aHey11nmX6sZiUmWulu0ZQt1Q==
+X-Received: by 2002:a05:600c:b50:: with SMTP id k16mr6024505wmr.137.1623344632456;
+        Thu, 10 Jun 2021 10:03:52 -0700 (PDT)
+Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
+        by smtp.gmail.com with ESMTPSA id 4sm3823543wry.74.2021.06.10.10.03.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:02:36 -0700 (PDT)
-Received: (nullmailer pid 1967937 invoked by uid 1000);
-        Thu, 10 Jun 2021 17:02:33 -0000
-Date:   Thu, 10 Jun 2021 12:02:33 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     festevam@gmail.com, krzk@kernel.org,
-        laurent.pinchart@ideasonboard.com, devicetree@vger.kernel.org,
-        kernel@pengutronix.de, kernel@puri.sm,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mchehab@kernel.org,
-        phone-devel@vger.kernel.org, shawnguo@kernel.org,
-        slongerbeam@gmail.com
-Subject: Re: [PATCH v3 1/3] dt-bindings: media: document the
- nxp,imx8mq-mipi-csi2 receiver phy and controller
-Message-ID: <20210610170233.GA1961013@robh.at.kernel.org>
-References: <20210608104128.1616028-1-martin.kepplinger@puri.sm>
- <20210608104128.1616028-2-martin.kepplinger@puri.sm>
+        Thu, 10 Jun 2021 10:03:51 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 19:03:33 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [Stratos-dev] [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <YMJF5fF31ksmSdiq@myrica>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
+ <01000179f6a7715c-cd106846-7770-4088-bb7c-a696bfcbf83e-000000@email.amazonses.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210608104128.1616028-2-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <01000179f6a7715c-cd106846-7770-4088-bb7c-a696bfcbf83e-000000@email.amazonses.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 12:41:26PM +0200, Martin Kepplinger wrote:
-> The i.MX8MQ SoC integrates a different MIPI CSI receiver as the i.MX8MM so
-> describe the DT bindings for it.
+On Thu, Jun 10, 2021 at 04:00:39PM +0000, Enrico Weigelt, metux IT consult via Stratos-dev wrote:
+> On 10.06.21 15:22, Arnd Bergmann wrote:
 > 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 161 ++++++++++++++++++
->  1 file changed, 161 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+> > Can you give an example of how this would be hooked up to other drivers
+> > using those gpios. Can you give an example of how using the "gpio-keys" or
+> > "gpio-leds" drivers in combination with virtio-gpio looks like in the DT?
 > 
-> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
-> new file mode 100644
-> index 000000000000..6eafdf803d36
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
-> @@ -0,0 +1,161 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/nxp,imx8mq-mipi-csi2.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX8MQ MIPI CSI-2 receiver
-> +
-> +maintainers:
-> +  - Martin Kepplinger <martin.kepplinger@puri.sm>
-> +
-> +description: |-
-> +  This binding covers the CSI-2 RX PHY and host controller included in the
-> +  NXP i.MX8MQ SoC. It handles the sensor/image input and process for all the
-> +  input imaging devices.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8mq-mipi-csi2
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: core is the RX Controller Core Clock input. This clock
-> +                     must be exactly equal to or faster than the receive
-> +                     byteclock from the RX DPHY.
-> +      - description: esc is the Rx Escape Clock. This must be the same escape
-> +                     clock that the RX DPHY receives.
-> +      - description: pxl is the pixel clock (phy_ref up to 333Mhz).
-> +      - description: clko2 is the CLKO2 clock root.
-> +                     See the reference manual for details.
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core
-> +      - const: esc
-> +      - const: pxl
-> +      - const: clko2
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  reset:
+> Connecting between self-probing bus'es and DT is generally tricky. IMHO
+> we don't have any generic mechanism for that.
 
-resets
+DT does have a generic description of PCI endpoints, which virtio-iommu
+relies on to express the relation between IOMMU and endpoint nodes [1].
+I think the problem here is similar: the client node needs a phandle to
+the GPIO controller which may use virtio-pci transport?
 
-> +    description:
-> +      The phandle to the imx8mq reset-controller.
+Note that it mostly works if the device is on the root PCI bus. Behind a
+bridge the OS may change the device's bus number as needed, so the BDF
+reference in DT is only valid if the software providing the DT description
+(VMM or firmware) initializes bus numbers accordingly (and I don't
+remember if Linux supports this case well).
 
-Drop. What the reset controller is is out of scope for a binding.
+Thanks,
+Jean
 
-> +    maxItems: 1
-> +
-> +  phy:
+[1] Documentation/devicetree/bindings/virtio/iommu.txt
 
-phys? Assuming this is using the PHY binding. If it is not, then why 
-not?
-
-> +    description:
-> +      The phandle to the imx8mq syscon iomux-gpr.
-> +    maxItems: 1
-> +
-> +  interconnects:
-> +    maxItems: 1
-> +
-> +  interconnect-names:
-> +    const: dram
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/$defs/port-base
-> +        unevaluatedProperties: false
-> +        description:
-> +          Input port node, single endpoint describing the CSI-2 transmitter.
-> +
-> +        properties:
-> +          endpoint:
-> +            $ref: video-interfaces.yaml#
-> +            unevaluatedProperties: false
-> +
-> +            properties:
-> +              data-lanes:
-> +                items:
-> +                  minItems: 1
-> +                  maxItems: 4
-> +                  items:
-> +                    - const: 1
-> +                    - const: 2
-> +                    - const: 3
-> +                    - const: 4
-> +
-> +            required:
-> +              - data-lanes
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description:
-> +          Output port node
-> +
-> +    required:
-> +      - port@0
-> +      - port@1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - power-domains
-> +  - reset
-> +  - phy
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8mq-clock.h>
-> +    #include <dt-bindings/interconnect/imx8mq.h>
-> +
-> +    csi@30a70000 {
-> +        compatible = "fsl,imx8mq-mipi-csi2";
-> +        reg = <0x30a70000 0x1000>;
-> +        clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-> +                 <&clk IMX8MQ_CLK_CSI1_ESC>,
-> +                 <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
-> +                 <&clk IMX8MQ_CLK_CLKO2>;
-> +        clock-names = "core", "esc", "pxl", "clko2";
-> +        assigned-clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-> +                          <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
-> +                          <&clk IMX8MQ_CLK_CSI1_ESC>;
-> +        assigned-clock-rates = <266000000>, <200000000>, <66000000>;
-> +        assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_266M>,
-> +                                 <&clk IMX8MQ_SYS2_PLL_1000M>,
-> +                                 <&clk IMX8MQ_SYS1_PLL_800M>;
-> +        power-domains = <&pgc_mipi_csi1>;
-> +        reset = <&src>;
-> +        phy = <&iomuxc_gpr>;
-> +        interconnects = <&noc IMX8MQ_ICM_CSI1 &noc IMX8MQ_ICS_DRAM>;
-> +        interconnect-names = "dram";
-> +
-> +        ports {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +
-> +                imx8mm_mipi_csi_in: endpoint {
-> +                    remote-endpoint = <&imx477_out>;
-> +                    data-lanes = <1 2 3 4>;
-> +                };
-> +            };
-> +
-> +            port@1 {
-> +                reg = <1>;
-> +
-> +                imx8mm_mipi_csi_out: endpoint {
-> +                    remote-endpoint = <&csi_in>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
+> 
+> I've made a few attempts, but nothing practically useful, which would be
+> accepted by the corresponding maintainers, yet. We'd either need some
+> very special logic in DT probing or pseudo-bus'es for the mapping.
+> (DT wants to do those connections via phandle's, which in turn need the
+> referenced nodes to be present in the DT).
+> 
+> >  From what I can tell, both the mmio and pci variants of virtio can have their
+> > dev->of_node populated, but I don't see the logic in register_virtio_device()
+> > that looks up the of_node of the virtio_device that the of_gpio code then
+> > tries to refer to.
+> 
+> Have you ever successfully bound a virtio device via DT ?
+> 
+> 
+> --mtx
+> 
 > -- 
-> 2.30.2
+> ---
+> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+> GPG/PGP-Schlüssel zu.
+> ---
+> Enrico Weigelt, metux IT consult
+> Free software and Linux embedded engineering
+> info@metux.net -- +49-151-27565287
+> -- 
+> Stratos-dev mailing list
+> Stratos-dev@op-lists.linaro.org
+> https://op-lists.linaro.org/mailman/listinfo/stratos-dev
