@@ -2,101 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2943A2F29
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E503A2F2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhFJPTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:19:13 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:59412 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231625AbhFJPTK (ORCPT
+        id S231560AbhFJPVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:21:02 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:41851 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231365AbhFJPVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:19:10 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:51970 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lrMQi-0002Ys-MC; Thu, 10 Jun 2021 11:17:12 -0400
-Message-ID: <274c764afe34abdf06abc6a7eaf753a2911c967b.camel@trillion01.com>
-Subject: Re: [RFC] coredump: Do not interrupt dump for TIF_NOTIFY_SIGNAL
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Date:   Thu, 10 Jun 2021 11:17:11 -0400
-In-Reply-To: <87pmwt6biw.fsf@disp2133>
-References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
-         <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
-         <87h7i694ij.fsf_-_@disp2133>
-         <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
-         <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
-         <87eeda7nqe.fsf@disp2133>
-         <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
-         <87pmwt6biw.fsf@disp2133>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        Thu, 10 Jun 2021 11:21:00 -0400
+Received: by mail-wm1-f51.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so6705151wmq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 08:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries.io; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QEizWV9pqKWtA3I5Lx6+foWFKHfovLYz8YJh/nQGyU4=;
+        b=TFqIO+3MbdpOkGxMHxhf2SMlQfMu8eqMvfqrW1sYdwpXawEhQH5qQtIWG2wJ+NtGOZ
+         +GLTcPsWzCM9GbR48Q0mfrkrlulZmsBB0hA4rIQoX8JG7heVNOK6M7+by/eWfKjZaBh0
+         JiQhpN2tJ02ztr3eq3TnHdM/r8TLl5blt/S5wRdb1E1wI/UzvzNOgCl/HQXLmC+a4Qgd
+         K9eYU4gvoJXUpNroAn3DU+nFDM188KF+CJvS8vUNlqtYJWao4KPfiwaVRpPoQS+49kI2
+         rZ2EzPEsGsKRzd2083lRUCIPP35YD3UOKqx3ecQ2dIkZxoscTkkKqPEjGfduyjLtGbvh
+         Tuog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QEizWV9pqKWtA3I5Lx6+foWFKHfovLYz8YJh/nQGyU4=;
+        b=CIxvIu/RbE5K//XJpgVVERSgifHa24u0PvCbDxXBfBPCoMjhLmgnACtR1GhQ15NaDG
+         T0Q0qHlWsxVvzgqD9clIEs7yGGx1FvMajnzhFS/POTZM4pAvpLY5xlxQnA9LO6c+ktq/
+         nOMt48EvT+JUyDUI831I3TT8NNk5ouohx9hsmLRQcrTaDcJvkptxMlEJLKi59dx2xvuT
+         /03GeW1OaXjpGX9R6zZH0CUZA5QsRR34UGFlTnGsuOF3Smi8vZKrvYOOyklHv63i2BPg
+         nR8oeiUty1gN0C2SeEVIyiy1D9roCHzsDvW0MgfQ7iVFB4bU2Hnaj9Qof3UQf3LzZ0rr
+         h08g==
+X-Gm-Message-State: AOAM531MrtwCpluH/Aq5ke0MOgW/5AlLEDxZE4VjS8J7PTIpiBZ8vt+/
+        h/kWfEfTKOGPSMDLSEzuooGXFQ==
+X-Google-Smtp-Source: ABdhPJzynRmYYLsE07cE4IrH1eJB2NV4sziNEvi4rO5rP72ty1783TeIcwOygbWysK8ka+DMFrBoOw==
+X-Received: by 2002:a05:600c:5112:: with SMTP id o18mr5396432wms.15.1623338283125;
+        Thu, 10 Jun 2021 08:18:03 -0700 (PDT)
+Received: from trex (138.red-79-146-80.dynamicip.rima-tde.net. [79.146.80.138])
+        by smtp.gmail.com with ESMTPSA id n18sm3584960wmq.41.2021.06.10.08.18.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 10 Jun 2021 08:18:02 -0700 (PDT)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Thu, 10 Jun 2021 17:18:01 +0200
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>
+Subject: Re: ima - wait for tpm load
+Message-ID: <20210610151801.GA19687@trex>
+References: <20210610071633.GA30216@trex>
+ <b3c1f5a0a37419fac51d570cd1c8e521f59cee14.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3c1f5a0a37419fac51d570cd1c8e521f59cee14.camel@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-10 at 09:26 -0500, Eric W. Biederman wrote:
-> Olivier Langlois <olivier@trillion01.com> writes:
+On 10/06/21, Mimi Zohar wrote:
+> [Cc'ing Jarkko]
 > 
-> > On Wed, 2021-06-09 at 16:05 -0500, Eric W. Biederman wrote:
-> > > > 
-> > > > So the TIF_NOTIFY_SIGNAL does get set WHILE the core dump is
-> > > > written.
-> > > 
-> > > Did you mean?
-> > > 
-> > > So the TIF_NOTIFY_SIGNAL does _not_ get set WHILE the core dump
-> > > is
-> > > written.
-> > > 
-> > > 
-> > Absolutely not. I did really mean what I have said. Bear with me
-> > that,
-> > I am not qualifying myself as an expert kernel dev yet so feel free
-> > to
-> > correct me if I say some heresy...
+> On Thu, 2021-06-10 at 09:16 +0200, Jorge Ramirez-Ortiz, Foundries
+> wrote:
+> > I am enabling IMA on a ZynqMP based platform using an SPI based TPM
+> > from Infineon.
+> > 
+> > The SPI TPM driver is built-in but since the IMA is initalized from a
+> > late_initcall, IMA never finds the TPM.
+> > 
+> > Is there a recomended way to work around this issue?
+> > 
+> > fio@uz3cg-dwg:~$ dmesg | grep tpm
+> > [    3.381181] tpm_tis_spi spi1.1: 2.0 TPM (device-id 0x1B, rev-id 22)
+> > [    3.423608] tpm tpm0: A TPM error (256) occurred attempting the self test
+> > [    3.430406] tpm tpm0: starting up the TPM manually
+> > 
+> > fio@uz3cg-dwg:~$ dmesg | grep ima
+> > [    3.525741] ima: No TPM chip found, activating TPM-bypass!
+> > [    3.531233] ima: Allocated hash algorithm: sha1
 > 
-> No.  I was just asking to make certain I understood what you said.
-> 
-> I thought you said you were getting a consistent 0 byte coredump,
-> and that implied that TIF_NOTIFY_SIGNAL was coming in before
-> the coredump even started.
+> Lengthening the TPM timeout, executing the TPM self test have been past
+> reasons for the TPM not to initialize prior to IMA.
 
-due to the asynchronous nature of the problem, it is all random.
+right, I can understand this.
 
-Sometimes, I do get 0 byte coredump.
-Most of the times, I get a truncated one
-and very rarely (this is why the issue was so annoying), I get a full
-coredump.
+The problem in this case is that tpm_chip_register() is taking too
+long so by the time it executes tpm_add_char_device(chip) is called,
+ima has already given up.
+
+The way I am working around this is just by adding a new flag and
+providing the chip in idr_alloc (so ima can find it).
+
+Then add an 'enable' flag to the chip structure that ima can use to
+wait on.
+
+@@ -333,8 +345,13 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+
+        chip->ops = ops;
+
++ if (ops->flags & TPM_OPS_SLOW_STARTUP)
++         chip->flags |= TPM_CHIP_FLAG_SLOW_STARTUP;
++
+        mutex_lock(&idr_lock);
+-   rc = idr_alloc(&dev_nums_idr, NULL, 0, TPM_NUM_DEVICES, GFP_KERNEL);
++ rc = idr_alloc(&dev_nums_idr,
++                chip->flags & TPM_CHIP_FLAG_SLOW_STARTUP ? chip : NULL,
++                0, TPM_NUM_DEVICES, GFP_KERNEL);
+        mutex_unlock(&idr_lock);
+        if (rc < 0) {
+                dev_err(pdev, "No available tpm device numbers\n");
+
+
 > 
-> So I will spin up a good version of my patch (based on your patch)
-> so we can unbreak coredumps.
+> (Missing from this bug report is the kernel version.)
+
+um, didnt think of it as a bug report - the feature is clearly not
+synchronized so there can be no guarantees about available TPMs being
+used. 
+
+but yes, this is happening on 5.10.42 using tpm_tis_spi to connect to
+infineon SLM9670
+
 > 
-That is super nice. I am looking forward it!
-
-Greetings,
-Olivier
-
+> thanks,
+> 
+> Mimi
+> 
