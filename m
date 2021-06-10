@@ -2,228 +2,628 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F603A2803
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B2F3A280A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhFJJQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:16:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54770 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230201AbhFJJQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:16:07 -0400
-IronPort-SDR: Ayf+1JNF8Lva0pZXNgcoX/dFJYxc1b9m11XptDAjMpRdppyKP1pyknaxpu5GG3oYBdBfrb7ty+
- xgvx53N8D0iA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192577962"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="192577962"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 02:14:05 -0700
-IronPort-SDR: p5N3I7jmtnH/kcXT1MOWh1aqoleSR/qsHi/7TQBhDm0AQjy48YaIOzGpWAztUj5A1WpfYpEgpb
- LprCGKIcsX0Q==
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="402797595"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 02:14:01 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lrGlC-0015yn-Cy; Thu, 10 Jun 2021 12:13:58 +0300
-Date:   Thu, 10 Jun 2021 12:13:58 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
-        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
-        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
-        David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>, tales.aparecida@gmail.com
-Subject: Re: [PATCH v2 0/1] lib: Convert UUID runtime test to KUnit
-Message-ID: <YMHX1mKuqoRCiHAF@smile.fi.intel.com>
-References: <20210609233730.164082-1-andrealmeid@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210609233730.164082-1-andrealmeid@collabora.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S230199AbhFJJSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:18:33 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:38937 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229993AbhFJJSa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:18:30 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 10 Jun 2021 02:16:33 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 10 Jun 2021 02:16:31 -0700
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 10 Jun 2021 14:46:07 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id 851E450B8; Thu, 10 Jun 2021 14:46:06 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, satya priya <skakit@codeaurora.org>
+Subject: [RESEND PATCH V4] dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom pmic gpio bindings to YAML
+Date:   Thu, 10 Jun 2021 14:45:57 +0530
+Message-Id: <1623316557-7810-1-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 08:37:29PM -0300, André Almeida wrote:
-> Hi,
-> 
-> This patch converts existing UUID runtime test to use KUnit framework.
-> 
-> Below, there's a comparison between the old output format and the new
-> one. Keep in mind that even if KUnit seems very verbose, this is the
-> corner case where _every_ test has failed.
-> 
-> * This is how the current output looks like in success:
-> 
->   test_uuid: all 18 tests passed
-> 
-> * And when it fails:
-> 
->   test_uuid: conversion test #1 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: cmp test #2 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: cmp test #2 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: conversion test #3 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: cmp test #4 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: cmp test #4 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: conversion test #5 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: cmp test #6 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: cmp test #6 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: conversion test #7 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: cmp test #8 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: cmp test #8 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: conversion test #9 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: cmp test #10 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: cmp test #10 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: conversion test #11 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: cmp test #12 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: cmp test #12 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: negative test #13 passed on wrong LE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
->   test_uuid: negative test #14 passed on wrong BE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
->   test_uuid: negative test #15 passed on wrong LE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
->   test_uuid: negative test #16 passed on wrong BE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
->   test_uuid: negative test #17 passed on wrong LE data: '0cb4ddff-a545-4401-9d06-688af53e'
->   test_uuid: negative test #18 passed on wrong BE data: '0cb4ddff-a545-4401-9d06-688af53e'
->   test_uuid: failed 18 out of 18 tests
-> 
-> 
-> * Now, here's how it looks like with KUnit:
-> 
->   ======== [PASSED] uuid ========
->   [PASSED] uuid_correct_be
->   [PASSED] uuid_correct_le
->   [PASSED] uuid_wrong_be
->   [PASSED] uuid_wrong_le
-> 
-> * And if every test fail with KUnit:
-> 
->   ======== [FAILED] uuid ========
->   [FAILED] uuid_correct_be
->       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
->       Expected uuid_parse(data->uuid, &be) == 1, but
->           uuid_parse(data->uuid, &be) == 0
->   
->   failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
->       # uuid_correct_be: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
->       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
->       Expected uuid_parse(data->uuid, &be) == 1, but
->           uuid_parse(data->uuid, &be) == 0
->   
->   failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
->       # uuid_correct_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
->       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
->       Expected uuid_parse(data->uuid, &be) == 1, but
->           uuid_parse(data->uuid, &be) == 0
->   
->   failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
->       # uuid_correct_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
->       not ok 1 - uuid_correct_be
->   
->   [FAILED] uuid_correct_le
->       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
->       Expected guid_parse(data->uuid, &le) == 1, but
->           guid_parse(data->uuid, &le) == 0
->   
->   failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
->       # uuid_correct_le: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
->       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
->       Expected guid_parse(data->uuid, &le) == 1, but
->           guid_parse(data->uuid, &le) == 0
->   
->   failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
->       # uuid_correct_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
->       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
->       Expected guid_parse(data->uuid, &le) == 1, but
->           guid_parse(data->uuid, &le) == 0
->   
->   failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
->       # uuid_correct_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
->       not ok 2 - uuid_correct_le
->   
->   [FAILED] uuid_wrong_be
->       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
->       Expected uuid_parse(*data, &be) == 0, but
->           uuid_parse(*data, &be) == -22
->   
->   parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
->       # uuid_wrong_be: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
->       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
->       Expected uuid_parse(*data, &be) == 0, but
->           uuid_parse(*data, &be) == -22
->   
->   parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
->       # uuid_wrong_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
->       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
->       Expected uuid_parse(*data, &be) == 0, but
->           uuid_parse(*data, &be) == -22
->   
->   parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
->       # uuid_wrong_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
->       not ok 3 - uuid_wrong_be
->   
->   [FAILED] uuid_wrong_le
->       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
->       Expected guid_parse(*data, &le) == 0, but
->           guid_parse(*data, &le) == -22
->   
->   parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
->       # uuid_wrong_le: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
->       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
->       Expected guid_parse(*data, &le) == 0, but
->           guid_parse(*data, &le) == -22
->   
->   parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
->       # uuid_wrong_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
->       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
->       Expected guid_parse(*data, &le) == 0, but
->           guid_parse(*data, &le) == -22
->   
->   parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
->       # uuid_wrong_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
->       not ok 4 - uuid_wrong_le
+Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
 
-Thanks!
+Signed-off-by: satya priya <skakit@codeaurora.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes in V2:
+ - As per Rob's comments fixed bot erros.
+ - Moved this patch to end of the series so that other patches are not
+   blocked on this.
 
-It's not your fault but I think we need to defer this until KUnit gains support
-of the run statistics. My guts telling me if we allow more and more conversions
-like this the point will vanish and nobody will care.
+Changes in V3:
+ - As per Rob's comments, added maxItems for reg and interrupts.
+   Added reference of "pinmux-node.yaml" and "pincfg-node.yaml".
+   Made 'additionalProperties' as false.
 
-I like the code, but I can give my tag after KUnit prints some kind of this:
+Changes in V4:
+ - As per Rob's comments, added description for interrupts, defined
+   constraints for "qcom,drive-strength", dropped description for function
+   property.
 
- * This is how the current output looks like in success:
+Changes in RESEND V4:
+ - Rebased on linux-next and sent.
 
-   test_uuid: all 18 tests passed
+ .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 288 ---------------------
+ .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 256 ++++++++++++++++++
+ 2 files changed, 256 insertions(+), 288 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
 
- * And when it fails:
-
-   test_uuid: failed 18 out of 18 tests
-
-> Changes from v1:
->  - Test suite name: uuid_test -> uuid
->  - Config name: TEST_UUID -> UUID_KUNIT_TEST
->  - Config entry in the Kconfig file left where it is
->  - Converted tests to use _MSG variant
-> 
-> André Almeida (1):
->   lib: Convert UUID runtime test to KUnit
-> 
->  lib/Kconfig.debug |  11 +++-
->  lib/Makefile      |   2 +-
->  lib/test_uuid.c   | 137 +++++++++++++++++++---------------------------
->  3 files changed, 67 insertions(+), 83 deletions(-)
-> 
-> -- 
-> 2.31.1
-> 
-
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+deleted file mode 100644
+index 161216d..0000000
+--- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
++++ /dev/null
+@@ -1,288 +0,0 @@
+-Qualcomm PMIC GPIO block
+-
+-This binding describes the GPIO block(s) found in the 8xxx series of
+-PMIC's from Qualcomm.
+-
+-- compatible:
+-	Usage: required
+-	Value type: <string>
+-	Definition: must be one of:
+-		    "qcom,pm8005-gpio"
+-		    "qcom,pm8018-gpio"
+-		    "qcom,pm8038-gpio"
+-		    "qcom,pm8058-gpio"
+-		    "qcom,pm8916-gpio"
+-		    "qcom,pm8917-gpio"
+-		    "qcom,pm8921-gpio"
+-		    "qcom,pm8941-gpio"
+-		    "qcom,pm8950-gpio"
+-		    "qcom,pm8994-gpio"
+-		    "qcom,pm8998-gpio"
+-		    "qcom,pma8084-gpio"
+-		    "qcom,pmi8950-gpio"
+-		    "qcom,pmi8994-gpio"
+-		    "qcom,pmi8998-gpio"
+-		    "qcom,pms405-gpio"
+-		    "qcom,pm660-gpio"
+-		    "qcom,pm660l-gpio"
+-		    "qcom,pm8150-gpio"
+-		    "qcom,pm8150b-gpio"
+-		    "qcom,pm8350-gpio"
+-		    "qcom,pm8350b-gpio"
+-		    "qcom,pm8350c-gpio"
+-		    "qcom,pmk8350-gpio"
+-		    "qcom,pm7325-gpio"
+-		    "qcom,pmr735a-gpio"
+-		    "qcom,pmr735b-gpio"
+-		    "qcom,pm6150-gpio"
+-		    "qcom,pm6150l-gpio"
+-		    "qcom,pm8008-gpio"
+-		    "qcom,pmx55-gpio"
+-
+-		    And must contain either "qcom,spmi-gpio" or "qcom,ssbi-gpio"
+-		    if the device is on an spmi bus or an ssbi bus respectively
+-
+-- reg:
+-	Usage: required
+-	Value type: <prop-encoded-array>
+-	Definition: Register base of the GPIO block and length.
+-
+-- interrupts:
+-	Usage: required
+-	Value type: <prop-encoded-array>
+-	Definition: Must contain an array of encoded interrupt specifiers for
+-		    each available GPIO
+-
+-- gpio-controller:
+-	Usage: required
+-	Value type: <none>
+-	Definition: Mark the device node as a GPIO controller
+-
+-- #gpio-cells:
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 2;
+-		    the first cell will be used to define gpio number and the
+-		    second denotes the flags for this gpio
+-
+-Please refer to ../gpio/gpio.txt and ../interrupt-controller/interrupts.txt for
+-a general description of GPIO and interrupt bindings.
+-
+-Please refer to pinctrl-bindings.txt in this directory for details of the
+-common pinctrl bindings used by client devices, including the meaning of the
+-phrase "pin configuration node".
+-
+-The pin configuration nodes act as a container for an arbitrary number of
+-subnodes. Each of these subnodes represents some desired configuration for a
+-pin or a list of pins. This configuration can include the
+-mux function to select on those pin(s), and various pin configuration
+-parameters, as listed below.
+-
+-
+-SUBNODES:
+-
+-The name of each subnode is not important; all subnodes should be enumerated
+-and processed purely based on their content.
+-
+-Each subnode only affects those parameters that are explicitly listed. In
+-other words, a subnode that lists a mux function but no pin configuration
+-parameters implies no information about any pin configuration parameters.
+-Similarly, a pin subnode that describes a pullup parameter implies no
+-information about e.g. the mux function.
+-
+-The following generic properties as defined in pinctrl-bindings.txt are valid
+-to specify in a pin configuration subnode:
+-
+-- pins:
+-	Usage: required
+-	Value type: <string-array>
+-	Definition: List of gpio pins affected by the properties specified in
+-		    this subnode.  Valid pins are:
+-		    gpio1-gpio4 for pm8005
+-		    gpio1-gpio6 for pm8018
+-		    gpio1-gpio12 for pm8038
+-		    gpio1-gpio40 for pm8058
+-		    gpio1-gpio4 for pm8916
+-		    gpio1-gpio38 for pm8917
+-		    gpio1-gpio44 for pm8921
+-		    gpio1-gpio36 for pm8941
+-		    gpio1-gpio8 for pm8950 (hole on gpio3)
+-		    gpio1-gpio22 for pm8994
+-		    gpio1-gpio26 for pm8998
+-		    gpio1-gpio22 for pma8084
+-		    gpio1-gpio2 for pmi8950
+-		    gpio1-gpio10 for pmi8994
+-		    gpio1-gpio12 for pms405 (holes on gpio1, gpio9 and gpio10)
+-		    gpio1-gpio10 for pm8150 (holes on gpio2, gpio5, gpio7
+-					     and gpio8)
+-		    gpio1-gpio12 for pm8150b (holes on gpio3, gpio4, gpio7)
+-		    gpio1-gpio12 for pm8150l (hole on gpio7)
+-		    gpio1-gpio10 for pm8350
+-		    gpio1-gpio8 for pm8350b
+-		    gpio1-gpio9 for pm8350c
+-		    gpio1-gpio4 for pmk8350
+-		    gpio1-gpio10 for pm7325
+-		    gpio1-gpio4 for pmr735a
+-		    gpio1-gpio4 for pmr735b
+-		    gpio1-gpio10 for pm6150
+-		    gpio1-gpio12 for pm6150l
+-		    gpio1-gpio2 for pm8008
+-		    gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, gpio10
+-					    and gpio11)
+-
+-- function:
+-	Usage: required
+-	Value type: <string>
+-	Definition: Specify the alternative function to be configured for the
+-		    specified pins.  Valid values are:
+-		    "normal",
+-		    "paired",
+-		    "func1",
+-		    "func2",
+-		    "dtest1",
+-		    "dtest2",
+-		    "dtest3",
+-		    "dtest4",
+-		    And following values are supported by LV/MV GPIO subtypes:
+-		    "func3",
+-		    "func4"
+-
+-- bias-disable:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins should be configured as no pull.
+-
+-- bias-pull-down:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins should be configured as pull down.
+-
+-- bias-pull-up:
+-	Usage: optional
+-	Value type: <empty>
+-	Definition: The specified pins should be configured as pull up.
+-
+-- qcom,pull-up-strength:
+-	Usage: optional
+-	Value type: <u32>
+-	Definition: Specifies the strength to use for pull up, if selected.
+-		    Valid values are; as defined in
+-		    <dt-bindings/pinctrl/qcom,pmic-gpio.h>:
+-		    1: 30uA                     (PMIC_GPIO_PULL_UP_30)
+-		    2: 1.5uA                    (PMIC_GPIO_PULL_UP_1P5)
+-		    3: 31.5uA                   (PMIC_GPIO_PULL_UP_31P5)
+-		    4: 1.5uA + 30uA boost       (PMIC_GPIO_PULL_UP_1P5_30)
+-		    If this property is omitted 30uA strength will be used if
+-		    pull up is selected
+-
+-- bias-high-impedance:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins will put in high-Z mode and disabled.
+-
+-- input-enable:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins are put in input mode.
+-
+-- output-high:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins are configured in output mode, driven
+-		    high.
+-
+-- output-low:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins are configured in output mode, driven
+-		    low.
+-
+-- power-source:
+-	Usage: optional
+-	Value type: <u32>
+-	Definition: Selects the power source for the specified pins. Valid
+-		    power sources are defined per chip in
+-		    <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+-
+-- qcom,drive-strength:
+-	Usage: optional
+-	Value type: <u32>
+-	Definition: Selects the drive strength for the specified pins. Value
+-		    drive strengths are:
+-		    0: no (PMIC_GPIO_STRENGTH_NO)
+-		    1: high (PMIC_GPIO_STRENGTH_HIGH) 0.9mA @ 1.8V - 1.9mA @ 2.6V
+-		    2: medium (PMIC_GPIO_STRENGTH_MED) 0.6mA @ 1.8V - 1.25mA @ 2.6V
+-		    3: low (PMIC_GPIO_STRENGTH_LOW) 0.15mA @ 1.8V - 0.3mA @ 2.6V
+-		    as defined in <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+-
+-- drive-push-pull:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins are configured in push-pull mode.
+-
+-- drive-open-drain:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins are configured in open-drain mode.
+-
+-- drive-open-source:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins are configured in open-source mode.
+-
+-- qcom,analog-pass:
+-	Usage: optional
+-	Value type: <none>
+-	Definition: The specified pins are configured in analog-pass-through mode.
+-
+-- qcom,atest:
+-	Usage: optional
+-	Value type: <u32>
+-	Definition: Selects ATEST rail to route to GPIO when it's configured
+-		    in analog-pass-through mode.
+-		    Valid values are 1-4 corresponding to ATEST1 to ATEST4.
+-
+-- qcom,dtest-buffer:
+-	Usage: optional
+-	Value type: <u32>
+-	Definition: Selects DTEST rail to route to GPIO when it's configured
+-		    as digital input.
+-		    Valid values are 1-4 corresponding to DTEST1 to DTEST4.
+-
+-Example:
+-
+-	pm8921_gpio: gpio@150 {
+-		compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
+-		reg = <0x150 0x160>;
+-		interrupts = <192 1>, <193 1>, <194 1>,
+-			     <195 1>, <196 1>, <197 1>,
+-			     <198 1>, <199 1>, <200 1>,
+-			     <201 1>, <202 1>, <203 1>,
+-			     <204 1>, <205 1>, <206 1>,
+-			     <207 1>, <208 1>, <209 1>,
+-			     <210 1>, <211 1>, <212 1>,
+-			     <213 1>, <214 1>, <215 1>,
+-			     <216 1>, <217 1>, <218 1>,
+-			     <219 1>, <220 1>, <221 1>,
+-			     <222 1>, <223 1>, <224 1>,
+-			     <225 1>, <226 1>, <227 1>,
+-			     <228 1>, <229 1>, <230 1>,
+-			     <231 1>, <232 1>, <233 1>,
+-			     <234 1>, <235 1>;
+-
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-
+-		pm8921_gpio_keys: gpio-keys {
+-			volume-keys {
+-				pins = "gpio20", "gpio21";
+-				function = "normal";
+-
+-				input-enable;
+-				bias-pull-up;
+-				drive-push-pull;
+-				qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+-				power-source = <PM8921_GPIO_S4>;
+-			};
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+new file mode 100644
+index 0000000..d9024eb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+@@ -0,0 +1,256 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm PMIC GPIO block
++
++maintainers:
++  - Bjorn Andersson <bjorn.andersson@sonymobile.com>
++
++description: |
++  This binding describes the GPIO block(s) found in the 8xxx series of
++  PMIC's from Qualcomm.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - qcom,pm8005-gpio
++          - qcom,pm8018-gpio
++          - qcom,pm8038-gpio
++          - qcom,pm8058-gpio
++          - qcom,pm8916-gpio
++          - qcom,pm8917-gpio
++          - qcom,pm8921-gpio
++          - qcom,pm8941-gpio
++          - qcom,pm8950-gpio
++          - qcom,pm8994-gpio
++          - qcom,pm8998-gpio
++          - qcom,pma8084-gpio
++          - qcom,pmi8950-gpio
++          - qcom,pmi8994-gpio
++          - qcom,pmi8998-gpio
++          - qcom,pms405-gpio
++          - qcom,pm660-gpio
++          - qcom,pm660l-gpio
++          - qcom,pm8150-gpio
++          - qcom,pm8150b-gpio
++          - qcom,pm8350-gpio
++          - qcom,pm8350b-gpio
++          - qcom,pm8350c-gpio
++          - qcom,pmk8350-gpio
++          - qcom,pm6150-gpio
++          - qcom,pm6150l-gpio
++          - qcom,pm7325-gpio
++          - qcom,pmr735a-gpio
++          - qcom,pmr735b-gpio
++          - qcom,pm8008-gpio
++          - qcom,pmx55-gpio
++
++      - enum:
++          - qcom,spmi-gpio
++          - qcom,ssbi-gpio
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    maxItems: 44
++    description: |
++        Must contain an array of encoded interrupt specifiers for
++        each available GPIO
++
++  '#interrupt-cells':
++    const: 2
++
++  interrupt-controller: true
++
++  gpio-controller: true
++
++  gpio-ranges:
++    maxItems: 1
++
++  '#gpio-cells':
++    const: 2
++    description: |
++        The first cell will be used to define gpio number and the
++        second denotes the flags for this gpio
++
++  gpio-keys:
++    type: object
++    properties:
++      volume-keys:
++        type: object
++        anyOf:
++          - $ref: "pinmux-node.yaml"
++          - $ref: "pincfg-node.yaml"
++        properties:
++          pins:
++            description: |
++                List of gpio pins affected by the properties specified in
++                this subnode.  Valid pins are
++                     - gpio1-gpio4 for pm8005
++                     - gpio1-gpio6 for pm8018
++                     - gpio1-gpio12 for pm8038
++                     - gpio1-gpio40 for pm8058
++                     - gpio1-gpio4 for pm8916
++                     - gpio1-gpio38 for pm8917
++                     - gpio1-gpio44 for pm8921
++                     - gpio1-gpio36 for pm8941
++                     - gpio1-gpio8 for pm8950 (hole on gpio3)
++                     - gpio1-gpio22 for pm8994
++                     - gpio1-gpio26 for pm8998
++                     - gpio1-gpio22 for pma8084
++                     - gpio1-gpio2 for pmi8950
++                     - gpio1-gpio10 for pmi8994
++                     - gpio1-gpio12 for pms405 (holes on gpio1, gpio9
++                                                and gpio10)
++                     - gpio1-gpio10 for pm8150 (holes on gpio2, gpio5,
++                                                gpio7 and gpio8)
++                     - gpio1-gpio12 for pm8150b (holes on gpio3, gpio4
++                                                 and gpio7)
++                     - gpio1-gpio12 for pm8150l (hole on gpio7)
++                     - gpio1-gpio10 for pm8350
++                     - gpio1-gpio8 for pm8350b
++                     - gpio1-gpio9 for pm8350c
++                     - gpio1-gpio4 for pmk8350
++                     - gpio1-gpio10 for pm6150
++                     - gpio1-gpio12 for pm6150l
++                     - gpio1-gpio10 for pm7325
++                     - gpio1-gpio4 for pmr735a
++                     - gpio1-gpio4 for pmr735b
++                     - gpio1-gpio2 for pm8008
++                     - gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, gpio10
++                                                and gpio11)
++
++            items:
++              pattern: "^gpio([0-9]+)$"
++
++          function:
++            items:
++              - enum:
++                  - normal
++                  - paired
++                  - func1
++                  - func2
++                  - dtest1
++                  - dtest2
++                  - dtest3
++                  - dtest4
++                  - func3  # supported by LV/MV GPIO subtypes
++                  - func4  # supported by LV/MV GPIO subtypes
++
++          bias-disable: true
++
++          bias-pull-down: true
++
++          bias-pull-up: true
++
++          qcom,pull-up-strength:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description: |
++                Specifies the strength to use for pull up, if selected.
++                Valid values are defined in
++                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
++                If this property is omitted 30uA strength will be used
++                if pull up is selected
++
++          bias-high-impedance: true
++
++          input-enable: true
++
++          output-high: true
++
++          output-low: true
++
++          power-source: true
++
++          qcom,drive-strength:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description: |
++                Selects the drive strength for the specified pins
++                Valid drive strength values are defined in
++                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
++            enum: [0, 1, 2, 3]
++
++          drive-push-pull: true
++
++          drive-open-drain: true
++
++          drive-open-source: true
++
++          qcom,analog-pass:
++            $ref: /schemas/types.yaml#/definitions/flag
++            description: |
++                The specified pins are configured in
++                analog-pass-through mode.
++
++          qcom,atest:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description: |
++                Selects ATEST rail to route to GPIO when it's
++                configured in analog-pass-through mode.
++            enum: [1, 2, 3, 4]
++
++          qcom,dtest-buffer:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description: |
++                Selects DTEST rail to route to GPIO when it's
++                configured as digital input.
++            enum: [1, 2, 3, 4]
++
++        required:
++          - pins
++          - function
++
++        additionalProperties: false
++
++additionalProperties: false
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
++
++    pm8921_gpio: gpio@150 {
++      compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
++      reg = <0x150 0x160>;
++      interrupts = <192 1>, <193 1>, <194 1>,
++                   <195 1>, <196 1>, <197 1>,
++                   <198 1>, <199 1>, <200 1>,
++                   <201 1>, <202 1>, <203 1>,
++                   <204 1>, <205 1>, <206 1>,
++                   <207 1>, <208 1>, <209 1>,
++                   <210 1>, <211 1>, <212 1>,
++                   <213 1>, <214 1>, <215 1>,
++                   <216 1>, <217 1>, <218 1>,
++                   <219 1>, <220 1>, <221 1>,
++                   <222 1>, <223 1>, <224 1>,
++                   <225 1>, <226 1>, <227 1>,
++                   <228 1>, <229 1>, <230 1>,
++                   <231 1>, <232 1>, <233 1>,
++                   <234 1>, <235 1>;
++
++      gpio-controller;
++      #gpio-cells = <2>;
++
++      pm8921_gpio_keys: gpio-keys {
++        volume-keys {
++          pins = "gpio20", "gpio21";
++          function = "normal";
++
++          input-enable;
++          bias-pull-up;
++          drive-push-pull;
++          qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
++          power-source = <PM8921_GPIO_S4>;
++        };
++      };
++    };
++...
 -- 
-With Best Regards,
-Andy Shevchenko
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
