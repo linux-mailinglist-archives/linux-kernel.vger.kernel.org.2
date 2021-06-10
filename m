@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F7E3A2932
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A473A2929
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 12:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhFJKUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 06:20:02 -0400
-Received: from mail-pl1-f169.google.com ([209.85.214.169]:35792 "EHLO
-        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhFJKT7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 06:19:59 -0400
-Received: by mail-pl1-f169.google.com with SMTP id x19so754008pln.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 03:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3j652hMSmumnPjiwDEzvETKW8nYLEioOK5CINNUshec=;
-        b=vBYAOfgSwASBg0zI9JRdcm4Pyz8/ddzff5dfbynz/oO8GfgCbzW47MegVETl9bjakN
-         ktlE+WPeWxs9leXWL/R+xXX5fge1J4vg+Xy5AeXQNarAe60IrBaNoMddhw6LcaAY4Cfa
-         tQa4HoP/TJ79NzyNFCcDDc60yv5zEMn/mvU5ugACPthCuVPRzHar0jyQNYwNmob06yXE
-         L97O4PtgaMM4ydG6D1vHKQd8ix2d0+3WFi16jBiY13MEJu79Z9zm8TFRLfFHsg/gupCp
-         Cxg874UeTI0yINFqmB0FDOmD96hbbImxzIXD/xh0FslIk4bhsNBdxtYffN79cuECecw2
-         6dQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3j652hMSmumnPjiwDEzvETKW8nYLEioOK5CINNUshec=;
-        b=AzoNRmP/2TEE3P+EZu5FPQtcSRjNfdExm7zN4MQq7/YkrcTo/xrtK7yBHvlBXwaXmD
-         6L9STqc8V9JgcWDvuXQsM1xG3FdkegQmOhRbsAqp7opVy+oIkXp20moWwsKvvTo2XxLv
-         lObcF2VbKHAPC8c4OEuBkQgxL7xt1W1aQGjBJH/Aj44fin3CmSg0cnPjVNw5FQyZnkHs
-         wlqG5oQFkG7isGS7lAJa/e8DLS5ot+LFUg+JXg7loDEDZ2SUir5Lng16vqCv5WGTMIeX
-         W4bs+lwvXthvU6St/CTCfDh4XVW1KitarweJo1ZgvXuTTo6/hDFzFrCtXiUcJ3NGwKB0
-         wmHQ==
-X-Gm-Message-State: AOAM530Hw7cVfGdp2XZzA2i6uqzVxceCJQyh6nBsLYO/SLP6u+KGEOJ9
-        APXZ0CgRI8A2y885Ey4BlXvh44ytMGInZ6B0ugI=
-X-Google-Smtp-Source: ABdhPJwFnwjQNLsalt0geh3MXPOsUOTOv3Q+03lVckIBHeA/JbJqTjX6mF5dTdvP0O0fLSwKM3q2VVqR7Ok12zsKXOg=
-X-Received: by 2002:a17:90b:818:: with SMTP id bk24mr2640093pjb.228.1623320209431;
- Thu, 10 Jun 2021 03:16:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <1623141934-7699-1-git-send-email-faiyazm@codeaurora.org>
- <CAHp75VcwW6RGALAjzcK4W9xy_hDPyFti4cNY_pCwJnjUr+VYVQ@mail.gmail.com>
- <b84892d5-06ed-fdbe-b5b3-0956140573ec@codeaurora.org> <78fc8848-bde8-769e-f8e9-6157d232a60f@suse.cz>
- <47842d8d-2747-3d0f-8695-122dc23d90e6@codeaurora.org> <7d652fca-23f3-fc03-c7b2-310edcafebb3@codeaurora.org>
-In-Reply-To: <7d652fca-23f3-fc03-c7b2-310edcafebb3@codeaurora.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 10 Jun 2021 13:16:33 +0300
-Message-ID: <CAHp75Vc8itj5ZEeqSH2UueLoYuODqUqD_ode4WqAag=jk5uj_Q@mail.gmail.com>
-Subject: Re: [PATCH v11] mm: slub: move sysfs slab alloc/free interfaces to debugfs
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg KH <greg@kroah.com>, glittao@gmail.com,
-        vinmenon@codeaurora.org, Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+        id S230211AbhFJKSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 06:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230190AbhFJKSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 06:18:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29844613C6;
+        Thu, 10 Jun 2021 10:16:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623320206;
+        bh=6+nLeDoiuIVoMIimwxK/LqVQ2x7nzoElsByfywPVNkY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OrWJbkTKlJqWvMNBauFZK3YK5P1EjdI/N94S6lEqwGjhg5lZbEMR6Msy+5f0UOOfz
+         DYpDsOF4+EKxh4BRh1l+OSO/lZuMGIqbYFD2fpbDmYBAQPqYckMRw5irjHGJJqC1Eh
+         2QhY5mWDbD0w3DVwTXaobkTMDxZordeKqjdmjzKr+6eEYXI+ZCuluBQYgyJ8iYNVMt
+         bPFpSzFMM8eZi53fdCJafE+mkhHQ6o+M9tnT4cJ8BpFYAs6+uhiY8YAbMdyXm1Gwog
+         9l58+rmZIqVx26U7OFC5TgKyHBdFZlKvKtZsY3IXuUlEyy029HWmIYIqokJAeRRJMb
+         u9Ze3yDKJCxUw==
+Date:   Thu, 10 Jun 2021 19:16:43 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
+Message-Id: <20210610191643.d24e7d56d102567070fe8386@kernel.org>
+In-Reply-To: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
+References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:57 AM Faiyaz Mohammed <faiyazm@codeaurora.org> wrote:
-> On 6/8/2021 11:43 PM, Faiyaz Mohammed wrote:
-> > On 6/8/2021 11:05 PM, Vlastimil Babka wrote:
-> >> On 6/8/21 7:11 PM, Faiyaz Mohammed wrote:
+Hi Naveen,
 
-...
+On Thu, 10 Jun 2021 14:26:17 +0530
+"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
 
-> >> I *think* Andrew wouldn't have this issue, so maybe resend only if he says it's
-> >> needed.
-> > Sure, I will send if he ask.
-> Do I need to send patch with new version number?.
+> When probing at different locations in the kernel, it is not always
+> evident if the location can be probed or not. As an example:
+> 
+>     $ perf probe __radix__flush_tlb_range:35
+>     Failed to write event: Invalid argument
+>       Error: Failed to add events.
+> 
+> The probed line above is:
+>      35         if (!mmu_has_feature(MMU_FTR_GTSE) && type == FLUSH_TYPE_GLOBAL) {
+> 
+> This ends up trying to probe on BUILD_BUG_ON(), which is rejected.
+> However, the user receives no indication at all as to why the probe
+> failed. Print an error in such cases so that it is clear that the probe
+> was rejected.
 
-Always make your intentions clear. Currently they are unclear (two
-different submissions with the same versions => confusing).
+Hmm, Nack for this way, but I understand that is a problem.
+If you got the error in perf probe, which uses ftrace dynamic-event interface.
+In that case, the errors should not be output in the dmesg, but are reported
+via error_log in tracefs.
+And kprobes itself should return different error code to the caller, instead
+of printing error in dmesg. See below.
 
-> >> On the other hand I did have troubles to apply the last version locally, patch
-> >> (tool) complained of patch (file) being malformed at the end. Did you add or
-> >> delete lines from it after generating the patch? I had to use the recountdiff
-> > Yes, I added one line manually, I think that causes the issue.
-> >
-> >> tool to fix this. If you're going to resend, please make sure it's without the
-> >> same issue.
-> >>
-> > Okay
+[...]
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1542,8 +1542,10 @@ static int check_kprobe_address_safe(struct kprobe *p,
+>  	int ret;
+>  
+>  	ret = arch_check_ftrace_location(p);
+> -	if (ret)
+> +	if (ret) {
+> +		pr_err("kprobes: can't probe at the provided ftrace location\n");
+>  		return ret;
+
+This must be -EBUSY. (or arch depend return value)
+
+> +	}
+>  	jump_label_lock();
+>  	preempt_disable();
+>  
+> @@ -1552,6 +1554,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+>  	    within_kprobe_blacklist((unsigned long) p->addr) ||
+>  	    jump_label_text_reserved(p->addr, p->addr) ||
+>  	    find_bug((unsigned long)p->addr)) {
+> +		pr_err("kprobes: can't probe at address in reject list\n");
+>  		ret = -EINVAL;
+
+This maybe -EACCESS.
+
+>  		goto out;
+>  	}
+> @@ -1976,8 +1979,10 @@ int register_kretprobe(struct kretprobe *rp)
+>  	void *addr;
+>  
+>  	ret = kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset);
+> -	if (ret)
+> +	if (ret) {
+> +		pr_err("kretprobes: can't probe at address outside function entry\n");
+>  		return ret;
+
+return -ERANGE.
+
+> +	}
+>  
+>  	/* If only rp->kp.addr is specified, check reregistering kprobes */
+>  	if (rp->kp.addr && warn_kprobe_rereg(&rp->kp))
+> @@ -1989,8 +1994,10 @@ int register_kretprobe(struct kretprobe *rp)
+>  			return PTR_ERR(addr);
+>  
+>  		for (i = 0; kretprobe_blacklist[i].name != NULL; i++) {
+> -			if (kretprobe_blacklist[i].addr == addr)
+> +			if (kretprobe_blacklist[i].addr == addr) {
+> +				pr_err("kretprobes: can't probe at address in reject list\n");
+>  				return -EINVAL;
+
+return -EACCESS too.
+
+Thank you,
+
+> +			}
+>  		}
+>  	}
+>  
+> 
+> base-commit: 2e38eb04c95e5546b71bb86ee699a891c7d212b5
+> -- 
+> 2.31.1
+> 
 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Masami Hiramatsu <mhiramat@kernel.org>
