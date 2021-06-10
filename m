@@ -2,133 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69FD3A27DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CB83A27FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 11:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbhFJJMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 05:12:20 -0400
-Received: from mga03.intel.com ([134.134.136.65]:12131 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230113AbhFJJMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:12:15 -0400
-IronPort-SDR: m55rjNS1u+twcMoOl3kygSxHmUvaQvIMllXfyEBA2z+OYMVTActMW9iZlRknv97VoMm8+nSOhe
- 0MMZVyCVv1BQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205292782"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="205292782"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 02:10:16 -0700
-IronPort-SDR: bxFcL31JFW33VUDlSzLMRq5Nj3B5KVEI2KPFoicP+8jr3T05unnqpYJFC1a8V8dVEChfTatMBX
- A0pf0ozQNK2Q==
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="552985062"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 02:10:14 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1lrGhX-0015vb-RQ; Thu, 10 Jun 2021 12:10:11 +0300
-Date:   Thu, 10 Jun 2021 12:10:11 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] lib: remove leading spaces before tabs
-Message-ID: <YMHW80wUyFpW6Utf@smile.fi.intel.com>
-References: <20210608071430.12687-1-thunder.leizhen@huawei.com>
- <CAHp75VfuMJ5kfRDB4tE2zr2Em79HiwrDJVROnw+kD3H+QNM4sg@mail.gmail.com>
- <da4915c5-fa13-0cf2-f2d2-02779a64af1b@huawei.com>
- <8a70d592e14f93822bf40832c7374d8e491c3afc.camel@perches.com>
- <26ee1009-259d-07a6-495f-87557be9ed8a@huawei.com>
- <3211e76c-d2a0-1e26-940b-9710073ee7d4@huawei.com>
- <CAHp75VfQq=RkjyZQsc-PHLTLRCzXovm-D_Z+Pp3A6vWGA-GKug@mail.gmail.com>
- <7e0f67a63b7093f4d20e0c0ccb076d9244e26a9a.camel@perches.com>
+        id S230401AbhFJJOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 05:14:32 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:43993 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230033AbhFJJOZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 05:14:25 -0400
+Received: by mail-lj1-f181.google.com with SMTP id r14so3820134ljd.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 02:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VVMbJej1FTbaisAevh80awqWcvyycTYvDnQBtjJT+Jw=;
+        b=xvDSK3zQYTWu+tGyKmSO1rvDbhMaQ1BxliXpbV1+uIYNpywe93R/nEjL8R2GaJ34Nj
+         6FvG1S3oCcquNM6s+a3E1hran9fupMpALCJgPkGqyNT8Jjc6zlMjfrspjbO2BEBupyaz
+         lY2Ky0j9DQLYsRqabHOWngp9Rx/BL1P7dLewd5evK6vRUwgY8LLC7/5Tmd9fjcKf1u9T
+         zV4Vn/sOjCcr9dSl1iW5MPgihRuyqVIKLFAG0IwXEB7Icr8hxwzX7Xzzig5uaNjWlYPS
+         EaviYRqekOZXgoy8r8tWU/JlFVu8T055ecy7WwNRQKlwRkws+2UxpkKyu6WE+us68lxp
+         kx+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VVMbJej1FTbaisAevh80awqWcvyycTYvDnQBtjJT+Jw=;
+        b=WbcR0h5pAZ0TgwZBiX6s6gtbx4lsHM+VFyNrAZ63qi7Bc6NGM3hOMn5WkXjPMUQgCS
+         xt+KdrrgLuqqfPbLyEF1/FQOQ0KauiRq6qqVV4XB+Zpwu7eAyHTfIr0vWAAFJaaseXcv
+         wUwMYkgqr3M+K88LRdcs0kQGajC4aqK1WkXf2StBSDGIFu2LdDDriix6jbsWpA0h+sSi
+         GGlDTMctgLkdzRovUhnHGZlcLwrqvLoBsIHzdXSzCwX0ZtU2Ly8vaO0/gzZI819YyLha
+         u7m4QnFtkcUW++O/U6G+3BNHyBhzIiSOaPCEmShWw8fLvJGrxdGIUrmoDWQtOyk2o1X1
+         aZiQ==
+X-Gm-Message-State: AOAM532eMTtjTsbd+xgUss9Ksrq22ni8mjToucvIogqnZ2KhpbbtQAPn
+        8PHH+mzwGDXCh3VGXgG7TdCsJaYOocTmsnfdwyL84w==
+X-Google-Smtp-Source: ABdhPJx2IxVWiTgbv+LyFheEGzSV011jB0bKXGxjeo+B9g+EDNVXRQNcUpopCAqMGvPEc828UnDBSckzsFyIq4+w5rA=
+X-Received: by 2002:a05:651c:4cf:: with SMTP id e15mr1370170lji.401.1623316273623;
+ Thu, 10 Jun 2021 02:11:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7e0f67a63b7093f4d20e0c0ccb076d9244e26a9a.camel@perches.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210604080954.13915-1-lukasz.luba@arm.com> <20210604080954.13915-2-lukasz.luba@arm.com>
+ <CAKfTPtA0j-hgXC2_LUcbRcWLkLsAB6H_EYewEHJJW+3dVu_hLQ@mail.gmail.com> <b01020e5-9f52-87aa-30e3-284e8f86a9df@arm.com>
+In-Reply-To: <b01020e5-9f52-87aa-30e3-284e8f86a9df@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 10 Jun 2021 11:11:02 +0200
+Message-ID: <CAKfTPtCA0svSBp=GG2XjLFqAdNY1FRFmsWNNOVADZf_CVqyORw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] sched/fair: Take thermal pressure into account
+ while estimating energy
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Quentin Perret <qperret@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Beata Michalska <Beata.Michalska@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 02:44:54PM -0700, Joe Perches wrote:
-> On Wed, 2021-06-09 at 13:30 +0300, Andy Shevchenko wrote:
-> > On Wed, Jun 9, 2021 at 9:21 AM Leizhen (ThunderTown)
-> > <thunder.leizhen@huawei.com> wrote:
-> > > On 2021/6/9 13:15, Leizhen (ThunderTown) wrote:
-> > > > On 2021/6/9 0:03, Joe Perches wrote:
-> > > > > On Tue, 2021-06-08 at 17:00 +0800, Leizhen (ThunderTown) wrote:
-> > > > > > On 2021/6/8 16:44, Andy Shevchenko wrote:
-> > > > > > > On Tue, Jun 8, 2021 at 10:14 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> > > > > > > > 
-> > > > > > > > 1) Run the following command to find and remove the leading spaces before
-> > > > > > > >    tabs:
-> > > > > > > >    find lib/ -type f | xargs sed -r -i 's/^[ ]+\t/\t/'
-> > > > > > > 
-> > > > > > > Hint for the future, try to use what Git provides, for example `git
-> > > > > > > ls-files -- lib/`.
-> > > > > > 
-> > > > > > Okay, thanks. I learned a new trick.
-> > 
-> > > > > For instance:
-> > > > > 
-> > > > > $ git diff --stat lib
-> > > > > $ git ls-files lib/ | \
-> > > > >   xargs ./scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace
-> > > 
-> > > I just tried it. It's too slow.
-> > 
-> > If checkpath accepts infinite positional arguments, then proper way of
-> > use (that's how I do with simple perl regexps) is to
-> > 
-> > scripts/checkpatch.pl --types=SPACE_BEFORE_TAB --fix-inplace -- $(git ls-files lib/)
-> 
-> That won't always work:
-> 
-> $ git ls-files | xargs | wc -c
-> 2716737
-> 
-> Nothing accepts infinite positional arguments.
-> You are always limited by the maximum length of a command line
-> 
-> $ getconf ARG_MAX
-> 2097152
-> 
-> xargs has:
-> 
-> $ xargs --show-limits
-> Your environment variables take up 3517 bytes
-> POSIX upper limit on argument length (this system): 2091587
-> POSIX smallest allowable upper limit on argument length (all systems): 4096
-> Maximum length of command we could actually use: 2088070
-> Size of command buffer we are actually using: 131072
-> Maximum parallelism (--max-procs must be no greater): 2147483647
+On Thu, 10 Jun 2021 at 10:42, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+>
+>
+> On 6/10/21 8:59 AM, Vincent Guittot wrote:
+> > On Fri, 4 Jun 2021 at 10:10, Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> Energy Aware Scheduling (EAS) needs to be able to predict the frequency
+> >> requests made by the SchedUtil governor to properly estimate energy used
+> >> in the future. It has to take into account CPUs utilization and forecast
+> >> Performance Domain (PD) frequency. There is a corner case when the max
+> >> allowed frequency might be reduced due to thermal. SchedUtil is aware of
+> >> that reduced frequency, so it should be taken into account also in EAS
+> >> estimations.
+> >>
+> >> SchedUtil, as a CPUFreq governor, knows the maximum allowed frequency of
+> >> a CPU, thanks to cpufreq_driver_resolve_freq() and internal clamping
+> >> to 'policy::max'. SchedUtil is responsible to respect that upper limit
+> >> while setting the frequency through CPUFreq drivers. This effective
+> >> frequency is stored internally in 'sugov_policy::next_freq' and EAS has
+> >> to predict that value.
+> >>
+> >> In the existing code the raw value of arch_scale_cpu_capacity() is used
+> >> for clamping the returned CPU utilization from effective_cpu_util().
+> >> This patch fixes issue with too big single CPU utilization, by introducing
+> >> clamping to the allowed CPU capacity. The allowed CPU capacity is a CPU
+> >> capacity reduced by thermal pressure signal. We rely on this load avg
+> >> geometric series in similar way as other mechanisms in the scheduler.
+> >>
+> >> Thanks to knowledge about allowed CPU capacity, we don't get too big value
+> >> for a single CPU utilization, which is then added to the util sum. The
+> >> util sum is used as a source of information for estimating whole PD energy.
+> >> To avoid wrong energy estimation in EAS (due to capped frequency), make
+> >> sure that the calculation of util sum is aware of allowed CPU capacity.
+> >>
+> >> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> >> ---
+> >>   kernel/sched/fair.c | 17 ++++++++++++++---
+> >>   1 file changed, 14 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >> index 161b92aa1c79..1aeddecabc20 100644
+> >> --- a/kernel/sched/fair.c
+> >> +++ b/kernel/sched/fair.c
+> >> @@ -6527,6 +6527,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+> >>          struct cpumask *pd_mask = perf_domain_span(pd);
+> >>          unsigned long cpu_cap = arch_scale_cpu_capacity(cpumask_first(pd_mask));
+> >>          unsigned long max_util = 0, sum_util = 0;
+> >> +       unsigned long _cpu_cap = cpu_cap;
+> >>          int cpu;
+> >>
+> >>          /*
+> >> @@ -6558,14 +6559,24 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+> >>                                  cpu_util_next(cpu, p, -1) + task_util_est(p);
+> >>                  }
+> >>
+> >> +               /*
+> >> +                * Take the thermal pressure from non-idle CPUs. They have
+> >> +                * most up-to-date information. For idle CPUs thermal pressure
+> >> +                * signal is not updated so often.
+> >
+> > What do you mean by "not updated so often" ? Do you have a value ?
+> >
+> > Thermal pressure is updated at the same rate as other PELT values of
+> > an idle CPU. Why is it a problem there ?
+> >
+>
+>
+> For idle CPU the value is updated 'remotely' by some other CPU
+> running nohz_idle_balance(). That goes into
+> update_blocked_averages() if the flags and checks are OK inside
+> update_nohz_stats(). Sometimes this is not called
+> because other_have_blocked() returned false. It can happen for a long
 
-If you care about parallelism, the checkpatch should be doing it itself.
+So i miss that you were in a loop and the below was called for each
+cpu and _cpu_cap was overwritten
 
-Currently it's one perl interpreter with a single queue vs. zillions of perl
-invocations (with all downsides of this). And I'm not sure which one is a
-winning.
++               if (!idle_cpu(cpu))
++                       _cpu_cap = cpu_cap - thermal_load_avg(cpu_rq(cpu));
 
-And yes, I'm aware of why xargs is ever exists (including handling of the
-special file names).
+But that also means that if the 1st cpus of the pd are idle, they will
+use original capacity whereas the other ones will remove the thermal
+pressure. Isn't this a problem  ?  You don't use the same capacity for
+all cpus in the performance domain regarding the thermal pressure?
 
-> > Seems like we have a shell lesson :-)
-> 
-> Maybe so.
-> 
-> Using xargs allows use of -P to invoke parallelism.
-> Or you could just use gnu parallel instead of xargs.
-> 
-> Using './scripts/checkpatch.pl -- $(git ls-files <path>)' will only
-> allow a single process to be invoked for the files to be scanned.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> idle CPU, which all signals in that function has 0 [1].
+>
+> This will cause that we don't check what is a new value stored by
+> thermal cpufreq_cooling for the thermal pressure [2]. We should feed
+> that value into the 'signal' machinery inside the
+> __update_blocked_others() [3]. Unfortunately, in a corner case there's
+> a flag (rq->has_blocked_load) which blocks the check of a
+> raw thermal value and prevents feeding it into thermal pressure signal
+> (since it's a long idle CPU, there is no load) [4].
+>
+> It has implication on this patch, because I cannot e.g. take first
+> CPU from the PD mask and blindly check it's thermal pressure,
+> because it can be idle for a long time. I don't want to have two
+> loop, first just for taking the latest thermal pressure for the PD.
+> Thus, I want to re-use the existing loop to take the latest information
+> from non-idle CPU and pass use.
+>
+> Regards,
+> Lukasz
+>
+>
+> [1] https://elixir.bootlin.com/linux/latest/source/kernel/sched/fair.c#L7909
+> [2]
+> https://elixir.bootlin.com/linux/latest/source/drivers/thermal/cpufreq_cooling.c#L494
+> [3] https://elixir.bootlin.com/linux/latest/source/kernel/sched/fair.c#L7958
+> [4] https://elixir.bootlin.com/linux/latest/source/kernel/sched/fair.c#L8433
