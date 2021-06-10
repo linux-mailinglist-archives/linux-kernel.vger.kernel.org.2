@@ -2,111 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2823A37E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837EE3A37DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhFJXbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 19:31:13 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:44926 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhFJXbM (ORCPT
+        id S231262AbhFJX3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 19:29:55 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:48067 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230212AbhFJX3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 19:31:12 -0400
-Received: by mail-wr1-f43.google.com with SMTP id f2so4016878wri.11;
-        Thu, 10 Jun 2021 16:29:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NkHOILVMygEEoZYONCaDsk6m76wqea7EMgUYfwAkp6E=;
-        b=AyrM6aYYpCk/W3IH4jtqrK0gdAw7TpdyWoH75b18wAoaCzycuAPB/OMesODG2n27Ak
-         CJhmqFVk5R6G7f3zjKNhxwJvEeqTKVRhaNjSv2oHwSwzcLmMANt4ydOCjHqWDhPgCjQs
-         qwYoIk+YNbxnj+/Ww8DLfV+gwj7y0KZD5oFvuo36CxEu8kwPKfdsCuvI4UU4vFk+OeoR
-         Ij93lWV/1GQ94JZ+/TbrCxe2vQrhrZ4sfAvO/IvSqSpICf1n1iK3f7VoVeZPHCsgGSRO
-         jFx74kMtQU5BaLC7+huYoNyI6c9N1alScZmUAyg0a9oYC50y+820qMlRIIPt6AuIa4YQ
-         0nfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NkHOILVMygEEoZYONCaDsk6m76wqea7EMgUYfwAkp6E=;
-        b=RBHRpBIHpeCxGqH8LnglD2g27wgv6rw7tDnGE5ECbgCl7dx9KdX2eHY2cZ4oygHA1t
-         mLcwgfIFg1has3m4B5Skhohjj/4TjhIIGJ1Fmk65u1Xu9tsOUaFw59bSi4Af+umjgbNq
-         gSDruRcb/YN3WhGyrLsWb2GeH3y5C2agLn5mK/9lx5zzwEg0Q3FD9RfAZDSkeVOSMJKy
-         n/pbkrwGZ3E85pZ9qWo+B+9gIFUDoGtqYpyKXgRvLsqm02Hnl6jnmmAYa9KsUlxfPh4W
-         gzNBkkADGhZlWDOXrB3Vu+D6hWYMu3X9wG7lSoLaOkTBbwKgE/t2ykaXOf1l3+xcQOlr
-         xfdw==
-X-Gm-Message-State: AOAM531EeP9y2T7F8cTWYbJALYLAd1XOJo3HYlHlYsHX8JeTg9CR2Rnd
-        +YUEVRHWxqssiqOfecNDIIs9/eWmrsY=
-X-Google-Smtp-Source: ABdhPJypWTWUMZFBvZneUf16gGGhOmY/Vj3MErZvt8ucDJz8tXaOY9ccvLRmQnYzWdMk9kcOr9TuVA==
-X-Received: by 2002:adf:e8cb:: with SMTP id k11mr754337wrn.127.1623367694702;
-        Thu, 10 Jun 2021 16:28:14 -0700 (PDT)
-Received: from cluster5 ([80.76.206.81])
-        by smtp.gmail.com with ESMTPSA id w13sm5478549wrc.31.2021.06.10.16.28.13
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 10 Jun 2021 16:28:14 -0700 (PDT)
-From:   Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Matthew Hagan <mnhagan88@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 0/5] ARM: dts: NSP: add Meraki MX64/MX65
-Date:   Fri, 11 Jun 2021 00:27:12 +0100
-Message-Id: <20210610232727.1383117-1-mnhagan88@gmail.com>
-X-Mailer: git-send-email 2.26.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Thu, 10 Jun 2021 19:29:53 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2ACB45806C7;
+        Thu, 10 Jun 2021 19:27:56 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Thu, 10 Jun 2021 19:27:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=cFF/8oG3M1dicXtAwlQThY8CTKYnxK4
+        oe2z09qMEzC0=; b=I1WmP4JUnIzWVed7DF0ufUJB30mobzScfiDXaiW34NhRCDN
+        KZkL+KxdedDIbprjITw2lA9ngO8scHP7Pgvf0AL4jAMDSROXYd3xO1PpaPOsmgfu
+        OkYjgL5dnVjMJxyVV9eG+0xcQC/kEWxHg0NM/bskbIZDxD5dvtod48L1nENhQCp9
+        s4HA74Ts5s+magBEjvWyW2ABZSH1zpiOXSxWI0TOXMg5CgHh1JUYZIFA01y/tr7K
+        lkj8/0TyJlspWfYEmCsMtK+12VR9gK7pt0k7nZB7n2BOGQoSwWHcv1LiFj+bBbgi
+        ShShN3zFatpYmxDSf5NqkKuqjjzsVYn1xCcVpmQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=cFF/8o
+        G3M1dicXtAwlQThY8CTKYnxK4oe2z09qMEzC0=; b=EnisUU2J9adx4JKrNozsKF
+        o+FxpHPpBKo3EOYlitCFjioTJjA9LlKAu07URV9pyyT9/H8058gvbhAHbyumqDwR
+        +jYaZr+QxINa4Iq1FNPF+ITq9Ryj56bneQ2DvVoZQF0UK5q+sKktQmk2kN0TE0lZ
+        7bCIZnqXmjUk8Rp9qzyh8IAolLXofilztZhYFmEK9vgg7hMfw4wTN/rpGaGaw1iG
+        N33f0CW1yMZtOcv/FNOO96luD9H80CLB91So4H3w457s0HVxGC+Q9UEelI+Ru7I5
+        6X+7jDJr74P6ytX0dtIc60CXXC8SmirU4BHI9ymrn5JoJbATjf3BCiD0QCn0Yjjw
+        ==
+X-ME-Sender: <xms:-p_CYH0gycjPd9wXY7FtXAecNkq9NJWOgOlYAEiVxGfkY2RXoVGrnA>
+    <xme:-p_CYGE_BdJYPhy7RaPGRPn97NtXyX5JfRi_RsHVObE-o92l1j-ne6PeyFj0EPNLd
+    9FlkJgszfmGJbpraA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeduiedgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepudehtddtleektedvfeeitdeljeekveelkeegvdfhtdejhefgfedtfedv
+    jeejledtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:-p_CYH56-aVJHv5U-UOQJwdtkZoaY4UlYTXTZpKmtuw5HkzlRZ0CQw>
+    <xmx:-p_CYM3HUUSylPIDcaK_I4awiiUE3joXqxjLdTNH3LhF-4yO9XDaNw>
+    <xmx:-p_CYKEElMOBf29gl-rPh26uz3wSodiotYvxCtqHKwVWqSvgbLVUMg>
+    <xmx:_J_CYC8B-dmfCOHgLBquuxksa1axY5h4MVpVHYrGLX-kfp879vBYFQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 09798A0007A; Thu, 10 Jun 2021 19:27:54 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <f639f1bb-fe53-4c15-a6dd-91b45ea7eef1@www.fastmail.com>
+In-Reply-To: <20210610162320.GA1910317@robh.at.kernel.org>
+References: <20210608102547.4880-1-steven_lee@aspeedtech.com>
+ <20210608102547.4880-3-steven_lee@aspeedtech.com>
+ <20210610162320.GA1910317@robh.at.kernel.org>
+Date:   Fri, 11 Jun 2021 08:57:12 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Rob Herring" <robh@kernel.org>,
+        "Steven Lee" <steven_lee@aspeedtech.com>
+Cc:     "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v5_02/10]_dt-bindings:_aspeed-sgpio:_Add_ast2600_sg?=
+ =?UTF-8?Q?pio_compatibles.?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes from v1:
-- add dtb entries to Makefile
-- add bindings entries to brcm,nsp.yaml
-- change naming to include Meraki name
-- remove unnecessary portions, including pinctrl from meraki-mx6x-common
-- add A0 variant for MX64
 
-Matthew Hagan (5):
-  dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
-  ARM: dts: NSP: Add Meraki MX64/MX65 to Makefile
-  ARM: dts: NSP: Add common bindings for MX64/MX65
-  ARM: dts: NSP: Add DT files for Meraki MX64 series
-  ARM: dts: NSP: Add DT files for Meraki MX65 series
 
- .../devicetree/bindings/arm/bcm/brcm,nsp.yaml |   6 +
- arch/arm/boot/dts/Makefile                    |   6 +
- arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi | 298 ++++++++++++++++++
- .../boot/dts/bcm958625-meraki-kingpin.dtsi    | 131 ++++++++
- .../arm/boot/dts/bcm958625-meraki-mx64-a0.dts |  45 +++
- arch/arm/boot/dts/bcm958625-meraki-mx64.dts   |  15 +
- .../boot/dts/bcm958625-meraki-mx64w-a0.dts    |  55 ++++
- arch/arm/boot/dts/bcm958625-meraki-mx64w.dts  |  23 ++
- arch/arm/boot/dts/bcm958625-meraki-mx65.dts   |  15 +
- arch/arm/boot/dts/bcm958625-meraki-mx65w.dts  |  23 ++
- .../dts/bcm958625-meraki-mx6x-common.dtsi     | 148 +++++++++
- 11 files changed, 765 insertions(+)
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-kingpin.dtsi
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64-a0.dts
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64.dts
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64w-a0.dts
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64w.dts
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx65.dts
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx65w.dts
- create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
+On Fri, 11 Jun 2021, at 01:53, Rob Herring wrote:
+> On Tue, Jun 08, 2021 at 06:25:37PM +0800, Steven Lee wrote:
+> > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+> > with 80 pins. Add ast2600-sgpiom0-80 and ast2600-sgpiom-128 compatibles
+> > and update descriptions to introduce the max number of available gpio
+> > pins that AST2600 supported.
+> > 
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> > ---
+> >  Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml b/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> > index b2ae211411ff..0e42eded3c1e 100644
+> > --- a/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> > +++ b/Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> > @@ -10,9 +10,10 @@ maintainers:
+> >    - Andrew Jeffery <andrew@aj.id.au>
+> >  
+> >  description:
+> > -  This SGPIO controller is for ASPEED AST2500 SoC, it supports up to 80 full
+> > -  featured Serial GPIOs. Each of the Serial GPIO pins can be programmed to
+> > -  support the following options
+> > +  This SGPIO controller is for ASPEED AST2400, AST2500 and AST2600 SoC,
+> > +  AST2600 have two sgpio master one with 128 pins another one with 80 pins,
+> > +  AST2500/AST2400 have one sgpio master with 80 pins. Each of the Serial
+> > +  GPIO pins can be programmed to support the following options
+> >    - Support interrupt option for each input port and various interrupt
+> >      sensitivity option (level-high, level-low, edge-high, edge-low)
+> >    - Support reset tolerance option for each output port
+> > @@ -25,6 +26,8 @@ properties:
+> >      enum:
+> >        - aspeed,ast2400-sgpio
+> >        - aspeed,ast2500-sgpio
+> > +      - aspeed,ast2600-sgpiom-80
+> > +      - aspeed,ast2600-sgpiom-128
+> 
+> If the number of GPIOs is the only difference, then I don't think you 
+> should get rid of ngpios. It's one thing if it varies from one SoC to 
+> the next, but if something is per instance we should have a property.
+> 
 
--- 
-2.26.3
+There are two issues:
 
+1. The maximum number of GPIOs supported by the controller
+2. The maximum number of GPIOs supported by the platform
+
+These are different because of what the controller does - here's some previous discussion on the topic:
+
+https://lore.kernel.org/linux-gpio/f2875111-9ba9-43b7-b2a4-d00c8725f5a0@www.fastmail.com/
+
+We've used ngpios to describe 2; this decision was made prior to the 2600 design - the SGPIO controller for both the 2400 and 2500 supported a maximum of 80 GPIOs. With the 2600 we have to differentiate between the two SGPIO controllers because they support a different maximum number of GPIOs. The proposed approach of different compatibles keeps the behaviour of ngpios the same across all controller implementations.
+
+Cheers,
+
+Andrew
