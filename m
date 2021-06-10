@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B6B3A2E6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A03F3A2E6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhFJOkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbhFJOkq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:40:46 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BACBC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:38:36 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id md2-20020a17090b23c2b029016de4440381so3963753pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=OK46pHpOVUybV/KZ7Bt0/6twU6Juk2lFFYoymsWHjFU=;
-        b=mqn8i2X5UjF3efV1fcihguqArksnqikAXUozAMs915tW/2TRQPANEdHlX72O+4OeVL
-         X91iD7my4fhkBOm7T7mYutAvUEhu+2qKOKr7P13wut0zz6B8012e+6yMX/xaITqcvuwD
-         WbK4nnnoNG6sRY/YsXXxnlG0gtsEXPxNzXJVLGN0dztwa/dTQ8jDUiEFWsCoDiNnvIWJ
-         Pq27jB7yfLHTGg6jSxP7syTCoaGuQHmq07WHbvY5jGWV/GlINgpklt26ho6Fr1RRdw9I
-         wLTxRGji8JB6lREuvAPEKzTxliiG9/ZfBK92NbA/J0m6JpwZA/m1QF7avwCuYxNEY4Xm
-         rOwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=OK46pHpOVUybV/KZ7Bt0/6twU6Juk2lFFYoymsWHjFU=;
-        b=sJWOPBwTJwx2FfH+bGRguNwBH9YeZMCcf+WYhd39wA0ECUQWjSmckqaZjI10dWg/RD
-         Q9GSxbnStp9OnHcgtPxCruNC2+6p1rUVK4VVVbLyfqKDk0zc+CanYfyZkvsaO8bXQIjj
-         xPDwebOeMK6irRJCAuftNlYHR+qcED2hCEFJ7g4ySPv24YuaAzp35OTiwbirQHkRgdRM
-         MCk5O0MhPyXup2mGjK0d247a+99GFMYPS8J0nfsBxT5TDeWQK7prvjUzZAMExNRaxtmA
-         Lewi14TRU1ScFunZuRbSCL0+Tm9Vwh3Lk/c0MAM/Jr952g9gqRMT7LfbhyxbpxlGGRxh
-         PplQ==
-X-Gm-Message-State: AOAM531Y3SEIF9YozPaBusxreQEY9GUgobr0QUTnMOD27jOjLa40Aqpi
-        X3EXZ39mysSF1sSPaKg+bCI=
-X-Google-Smtp-Source: ABdhPJxZffbd8uclwb0dPtIQo728xidTXFks9EpawsMixanY5NR9TQDc4Foh7F6h5DwAz0PCEDrGnQ==
-X-Received: by 2002:a17:90a:a40a:: with SMTP id y10mr3619826pjp.151.1623335916065;
-        Thu, 10 Jun 2021 07:38:36 -0700 (PDT)
-Received: from localhost.localdomain (1-171-3-218.dynamic-ip.hinet.net. [1.171.3.218])
-        by smtp.gmail.com with ESMTPSA id g204sm2693864pfb.107.2021.06.10.07.38.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Jun 2021 07:38:35 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org
-Cc:     linux-kernel@vger.kernel.org, cy_huang@richtek.com
-Subject: [PATCH] regulator: rt6160: Remove dummy line and add module description
-Date:   Thu, 10 Jun 2021 22:38:30 +0800
-Message-Id: <1623335910-5385-1-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S231501AbhFJOl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:41:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231213AbhFJOl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:41:26 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B510613E3;
+        Thu, 10 Jun 2021 14:39:29 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 10:39:27 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-users@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>, eranian@google.com
+Subject: Re: [RFC PATCH] libtraceevent: Increase libtraceevent logging when
+ verbose
+Message-ID: <20210610103927.44462e35@oasis.local.home>
+In-Reply-To: <20210610060643.595673-1-irogers@google.com>
+References: <20210610060643.595673-1-irogers@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Wed,  9 Jun 2021 23:06:43 -0700
+Ian Rogers <irogers@google.com> wrote:
 
-Remove dummy line and add module description.
+> libtraceevent has added more levels of debug printout and with changes
+> like:
+> https://lore.kernel.org/linux-trace-devel/20210507095022.1079364-3-tz.stoyanov@gmail.com
+> previously generated output like "registering plugin" is no longer
+> displayed. This change makes it so that if perf's verbose debug output
+> is enabled then the debug and info libtraceevent messages can be
+> displayed.
+> As this API isn't present in the deprecated tools version of
+> libtracevent I'm uploading this as an RFC.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- drivers/regulator/rt6160-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Ian,
 
-diff --git a/drivers/regulator/rt6160-regulator.c b/drivers/regulator/rt6160-regulator.c
-index 4588ae0..1d18e4d 100644
---- a/drivers/regulator/rt6160-regulator.c
-+++ b/drivers/regulator/rt6160-regulator.c
-@@ -77,7 +77,6 @@ static int rt6160_disable(struct regulator_dev *rdev)
- 	gpiod_set_value_cansleep(priv->enable_gpio, 0);
- 
- 	return 0;
--
- }
- 
- static int rt6160_is_enabled(struct regulator_dev *rdev)
-@@ -328,5 +327,6 @@ static struct i2c_driver rt6160_driver = {
- };
- module_i2c_driver(rt6160_driver);
- 
-+MODULE_DESCRIPTION("Richtek RT6160 voltage regulator driver");
- MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
- MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+We need to start porting perf to using the upstream libtraceevent
+library. I think the best way to do that is what we did with trace-cmd.
+That is to have the make files check if the minimum version of
+libtraceevent is installed, and if so, use that instead of the local
+version. If it is not installed, produce a message encouraging the
+developer to install the upstream libtraceevent and warn that it will
+be using a deprecated older versino, then build the deprecated local
+version. After some time, we could simply remove it and make it a
+dependency, but I want to do that when all the main distros being used
+have it.
 
+Currently its in the latest Debian, Ubuntu, and Fedora. I also believe
+its in SUSE but have not checked. It's in Fedora 34, but it doesn't
+appear to be in Fedora 33. As that's not too old, I don't think we
+should make it a dependency as of yet.
+
+-- Steve
