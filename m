@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F1D3A2BE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1F53A2BE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhFJMtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:49:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43721 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230130AbhFJMs6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:48:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623329222;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rIo7QsXKfR+Ud9QvSm9SxMz/ksJEa+v8MBZQvrHcOtU=;
-        b=X9C/+d+P4sGkkYwcHjkK3PzJzHaxgVs0xSTeVqNT9SD8+2MebGmpWg2ROFtfgPwvjE98WQ
-        KtywsohztsYBQ0WDq1j7f5tmA+dE0u9ms/ieZ9t5SkMk7NNP+1CsznVIlyjosJ+xC8rt0H
-        7qaKTx5WFMl5pT793U0n2ZUyINC/vRQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-zdM2f2LYOxC_p-6YlViXcg-1; Thu, 10 Jun 2021 08:47:01 -0400
-X-MC-Unique: zdM2f2LYOxC_p-6YlViXcg-1
-Received: by mail-wr1-f72.google.com with SMTP id x9-20020adfffc90000b02901178add5f60so856400wrs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:47:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rIo7QsXKfR+Ud9QvSm9SxMz/ksJEa+v8MBZQvrHcOtU=;
-        b=fYaSjP4RboSysMj4VCw//eQts8JNK/B7eQC3kMX5D0dHLpKYWkQ5MaM+yGiuQ54VCa
-         Z4yYRPZUjK5JXP5hSAhk8jlBvZOBEDKkWB/hIbDz0jNAlK3zxtua1dKxgTxfPP+Kyc/q
-         cO8mdFmekMPwGqYmBIN4Unm/jwqYHUyxYmSl5sHgeVtLk6LWoOchkNRHYnjf2/JDzBjt
-         mOZFrUMicRF+2p9e7KnBiiH+AJRRQM24/EigAAnuqh/yWioKUqp4GnjxembxNtoT9O+T
-         hApIyIrMVpiLAH5F+hI+qTbwTDNVRgFDx3ywALGHsp0HpfiVZrd/69OG/cznxHD0fOfH
-         5wcg==
-X-Gm-Message-State: AOAM53176cAHDOdlmnJZxx21kA5y1FWLMj2Ns7yEjhSReeidY8JT2tHX
-        c5G/IJUHlT0/RoXohQmz/O/iTIeUyxaVJUNv3rihn1tIPGK1XnKiYvOum8NY7e9vxL9ekbSqG9m
-        D1VUAgzAEdRvgWJDrwTcM2iF+
-X-Received: by 2002:adf:ea49:: with SMTP id j9mr5194299wrn.366.1623329219956;
-        Thu, 10 Jun 2021 05:46:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZB3xjQhnCDxz2y3ZgDSZ1YuFlZYtPAav5/zpKGksBc1bg3v3xqk2UE+bf+zKEzQRX61XFLg==
-X-Received: by 2002:adf:ea49:: with SMTP id j9mr5194286wrn.366.1623329219801;
-        Thu, 10 Jun 2021 05:46:59 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id f14sm8341494wmq.10.2021.06.10.05.46.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 05:46:59 -0700 (PDT)
-Subject: Re: [RFC PATCH 00/10] KVM: x86/mmu: simplify argument to kvm page
- fault handler
-To:     Sean Christopherson <seanjc@google.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, isaku.yamahata@gmail.com
-References: <cover.1618914692.git.isaku.yamahata@intel.com>
- <YK65V++S2Kt1OLTu@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <936b00e2-1bcc-d5cc-5ae1-59f43ab5325f@redhat.com>
-Date:   Thu, 10 Jun 2021 14:45:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230400AbhFJMsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:48:21 -0400
+Received: from aposti.net ([89.234.176.197]:54540 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230396AbhFJMsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:48:18 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 2/2] iio: core: Add "extended_name" attribute to all channels
+Date:   Thu, 10 Jun 2021 13:45:56 +0100
+Message-Id: <20210610124556.34507-3-paul@crapouillou.net>
+In-Reply-To: <20210610124556.34507-1-paul@crapouillou.net>
+References: <20210610124556.34507-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <YK65V++S2Kt1OLTu@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/21 23:10, Sean Christopherson wrote:
->    - Have kvm_mmu_do_page_fault() handle initialization of the struct.  That
->      will allow making most of the fields const, and will avoid the rather painful
->      kvm_page_fault_init().
-> 
->    - Pass @vcpu separately.  Yes, it's associated with the fault, but literally
->      the first line in every consumer is "struct kvm_vcpu *vcpu = kpf->vcpu;".
-> 
->    - Use "fault" instead of "kpf", mostly because it reads better for people that
->      aren't intimately familiar with the code, but also to avoid having to refactor
->      a huge amount of code if we decide to rename kvm_page_fault, e.g. if we decide
->      to use that name to return fault information to userspace.
-> 
->    - Snapshot anything that is computed in multiple places, even if it is
->      derivative of existing info.  E.g. it probably makes sense to grab
+The point of this new attribute is to make the IIO tree actually
+parsable.
 
-I agree with all of these (especially it was a bit weird not to see vcpu 
-in the prototypes).  Thanks Sean for the review!
+Before, given this attribute as a filename:
+in_voltage0_aux_sample_rate
 
-Paolo
+Userspace had no way to know if the attribute name was
+"aux_sample_rate" with no extended name, or "sample_rate" with "aux" as
+the extended name, or just "rate" with "aux_sample" as the extended
+name.
+
+This was somewhat possible to deduce when there was more than one
+attribute present for a given channel, e.g:
+in_voltage0_aux_sample_rate
+in_voltage0_aux_frequency
+
+There, it was possible to deduce that "aux" was the extended name. But
+even with more than one attribute, this wasn't very robust, as two
+attributes starting with the same prefix (e.g. "sample_rate" and
+"sample_size") would result in the first part of the prefix being
+interpreted as being part of the extended name.
+
+To address this issue, add an "extended_name" attribute to all channels
+that actually do have an extended name. For this attribute, the extended
+name is not present in the filename; so in this example, the file name
+would be "in_voltage0_extended_name", and reading it would return "aux".
+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/iio/industrialio-core.c | 41 +++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index ec34d930920c..4cdf9f092d73 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -723,6 +723,16 @@ static ssize_t iio_read_channel_label(struct device *dev,
+ 	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
+ }
+ 
++static ssize_t iio_read_channel_extended_name(struct device *dev,
++					      struct device_attribute *attr,
++					      char *buf)
++{
++	const struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
++	const struct iio_chan_spec *chan = this_attr->c;
++
++	return sprintf(buf, "%s\n", chan->extend_name);
++}
++
+ static ssize_t iio_read_channel_info(struct device *dev,
+ 				     struct device_attribute *attr,
+ 				     char *buf)
+@@ -1185,6 +1195,32 @@ static int iio_device_add_channel_label(struct iio_dev *indio_dev,
+ 	return 1;
+ }
+ 
++static int
++iio_device_add_channel_extended_name(struct iio_dev *indio_dev,
++				     struct iio_chan_spec const *chan)
++{
++	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
++	int ret;
++
++	if (!chan->extend_name)
++		return 0;
++
++	ret = __iio_add_chan_devattr("extended_name",
++				     chan,
++				     &iio_read_channel_extended_name,
++				     NULL,
++				     0,
++				     IIO_SEPARATE,
++				     &indio_dev->dev,
++				     NULL,
++				     &iio_dev_opaque->channel_attr_list,
++				     false);
++	if (ret < 0)
++		return ret;
++
++	return 1;
++}
++
+ static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+ 					 struct iio_chan_spec const *chan,
+ 					 enum iio_shared_by shared_by,
+@@ -1327,6 +1363,11 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+ 		return ret;
+ 	attrcount += ret;
+ 
++	ret = iio_device_add_channel_extended_name(indio_dev, chan);
++	if (ret < 0)
++		return ret;
++	attrcount += ret;
++
+ 	if (chan->ext_info) {
+ 		unsigned int i = 0;
+ 		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
+-- 
+2.30.2
 
