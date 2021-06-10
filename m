@@ -2,159 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA7C3A2E53
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D792C3A2E55
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhFJOgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhFJOgR (ORCPT
+        id S231510AbhFJOga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:36:30 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3198 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231417AbhFJOg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:36:17 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E25C0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:34:21 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id u18so497728plc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 07:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6NoG4kcVr4onmC8GwKi74Fb0Au47jb6GQBPdI6ViJks=;
-        b=hb+gFlMZ5lsfye5orD2HfDm69xWdh0ImWNrad0GfmspEQe/MBdHf3Bdn/pBUdOTIMz
-         vJgQTkk6IKqPDE90d3GqXyh2lMetjiVYCHaV3koKdOWnzzgID5ZwFFkHT+ZPX+IB4CRY
-         pr3dfjU5mxgGZ6w4+rjHvKSGJTz66UdEwz0sLR7CbGHIgFF9Ym2QTPX2/GfUF6D8DPss
-         P5BIPLEtBNrVMVFTSElQ8fkBu7PASbQnkln+1NhijjL2ZqG9AHFg0BgVQZkSQhqzgSiZ
-         VTYSdElUzNXQ+Edo5gyAV9Pb5duRU0lNkY4AGZLZZQYR/ytYXMkQjCTeZICrqj64Nehu
-         zhVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6NoG4kcVr4onmC8GwKi74Fb0Au47jb6GQBPdI6ViJks=;
-        b=YNDHpdKFJjOwgi2hng8IV72MajAlGt40BeYatpowXouCMwSCEzIbM4dlnsrrSSh7S9
-         5L0l4ondPf6/yQes3HEJShx+qCbg1XGEVKLg8LCYVy1MUwj7PSIyXnABknP4Y66arS1o
-         L/zNooQ9aiHlXO90OmVgU0LStv6GC/IkV8Lx9Pd4qas1MvI2aZe2v2Q6hi9ELhOkiLnK
-         JuYJj7QvjGwEVryCnjnAqFtjjyjyokkZFrvm/xR91UvngNBCNq/+U46WkJ9vqdudSOvt
-         uo0eaKruIba+MJY9fpbDVjZf1x7sdrt/ojkkyWZqtC71vkUxi4ZxZ8cjD6evvbBVGdvY
-         DPvg==
-X-Gm-Message-State: AOAM5310iAHP+WZe3goWTXvxnCUyUx/GISsI6i6iv63fTaDnUN40ehPL
-        f1vha5F1YKrncaNVKQvR8rir
-X-Google-Smtp-Source: ABdhPJzbF7Z0yYFRdKQ/8/O7a/ocykejjMhtwCjk3txcAfux7Dj9U26puqA3/fd1ViStsxX6YI8mJw==
-X-Received: by 2002:a17:902:d917:b029:107:eca4:d5b4 with SMTP id c23-20020a170902d917b0290107eca4d5b4mr5063870plz.79.1623335661194;
-        Thu, 10 Jun 2021 07:34:21 -0700 (PDT)
-Received: from thinkpad ([2409:4072:6d9e:80ad:d341:9a16:2c5c:2249])
-        by smtp.gmail.com with ESMTPSA id o133sm2804262pfd.49.2021.06.10.07.34.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 07:34:20 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 20:04:13 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] clk: actions: Fix AHPPREDIV-H-AHB clock chain on
- Owl S500 SoC
-Message-ID: <20210610143413.GC315240@thinkpad>
-References: <cover.1622119892.git.cristian.ciocaltea@gmail.com>
- <107776b4a4e752ef83b143114d2baf52bf8c4107.1622119892.git.cristian.ciocaltea@gmail.com>
+        Thu, 10 Jun 2021 10:36:27 -0400
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G15pq07q1z689MW;
+        Thu, 10 Jun 2021 22:25:07 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 16:34:29 +0200
+Received: from localhost (10.52.126.112) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
+ 2021 15:34:28 +0100
+Date:   Thu, 10 Jun 2021 15:34:25 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] iio: core: Add "extended_name" attribute to all
+ channels
+Message-ID: <20210610153425.000029b6@Huawei.com>
+In-Reply-To: <20210610124556.34507-3-paul@crapouillou.net>
+References: <20210610124556.34507-1-paul@crapouillou.net>
+        <20210610124556.34507-3-paul@crapouillou.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <107776b4a4e752ef83b143114d2baf52bf8c4107.1622119892.git.cristian.ciocaltea@gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.126.112]
+X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 04:16:42PM +0300, Cristian Ciocaltea wrote:
-> There are a few issues with the setup of the Actions Semi Owl S500 SoC's
-> clock chain involving AHPPREDIV, H and AHB clocks:
+On Thu, 10 Jun 2021 13:45:56 +0100
+Paul Cercueil <paul@crapouillou.net> wrote:
+
+> The point of this new attribute is to make the IIO tree actually
+> parsable.
 > 
-> * AHBPREDIV clock is defined as a muxer only, although it also acts as
->   a divider.
-> * H clock is using a wrong divider register offset
-> * AHB is defined as a multi-rate factor clock, but it is actually just
->   a fixed pass clock.
+> Before, given this attribute as a filename:
+> in_voltage0_aux_sample_rate
 > 
-> Let's provide the following fixes:
+> Userspace had no way to know if the attribute name was
+> "aux_sample_rate" with no extended name, or "sample_rate" with "aux" as
+> the extended name, or just "rate" with "aux_sample" as the extended
+> name.
 > 
-> * Change AHBPREDIV clock to an ungated OWL_COMP_DIV definition.
-> * Use the correct register shift value in the OWL_DIVIDER definition
->   for H clock
-> * Drop the unneeded 'ahb_factor_table[]' and change AHB clock to an
->   ungated OWL_COMP_FIXED_FACTOR definition.
+> This was somewhat possible to deduce when there was more than one
+> attribute present for a given channel, e.g:
+> in_voltage0_aux_sample_rate
+> in_voltage0_aux_frequency
 > 
-> Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> There, it was possible to deduce that "aux" was the extended name. But
+> even with more than one attribute, this wasn't very robust, as two
+> attributes starting with the same prefix (e.g. "sample_rate" and
+> "sample_size") would result in the first part of the prefix being
+> interpreted as being part of the extended name.
+> 
+> To address this issue, add an "extended_name" attribute to all channels
+> that actually do have an extended name. 
+
+Change the patch title to make it clear that it only applies to those
+that have extended_name set.
+
+> For this attribute, the extended
+> name is not present in the filename; so in this example, the file name
+> would be "in_voltage0_extended_name", and reading it would return "aux".
+
+Ah. Now I see the slightly issue with my immediate thought that we should
+just put this in the label attribute (and not allow both extended_name
+and label to be provided). 
+
+Hmm. It's a bit ugly but given it hopefully doesn't effect that many drivers
+I could probably live with it.
+
+However, needs a patch to Documentation/ABI/testing/sysfs-bus-iio
+and a clear statement that this is for backwards compatibility reasons.
+I don't want to see extended_name getting added to new drivers!
+
+Jonathan
+
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
-> Changes in v2:
->  - Reverted the addition of the clock div table for H clock to support the
->    '1' divider (according to the datasheet), even though the vendor
->    implementation marks it as reserved
->  
->  drivers/clk/actions/owl-s500.c | 19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
+>  drivers/iio/industrialio-core.c | 41 +++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
 > 
-> diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
-> index 42d6899755e6..257923bd5386 100644
-> --- a/drivers/clk/actions/owl-s500.c
-> +++ b/drivers/clk/actions/owl-s500.c
-> @@ -153,11 +153,6 @@ static struct clk_factor_table hde_factor_table[] = {
->  	{ 0, 0, 0 },
->  };
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index ec34d930920c..4cdf9f092d73 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -723,6 +723,16 @@ static ssize_t iio_read_channel_label(struct device *dev,
+>  	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
+>  }
 >  
-> -static struct clk_factor_table ahb_factor_table[] = {
-> -	{ 1, 1, 2 }, { 2, 1, 3 },
-> -	{ 0, 0, 0 },
-> -};
-> -
->  static struct clk_div_table rmii_ref_div_table[] = {
->  	{ 0, 4 }, { 1, 10 },
->  	{ 0, 0 },
-> @@ -186,7 +181,6 @@ static struct clk_div_table nand_div_table[] = {
->  
->  /* mux clock */
->  static OWL_MUX(dev_clk, "dev_clk", dev_clk_mux_p, CMU_DEVPLL, 12, 1, CLK_SET_RATE_PARENT);
-> -static OWL_MUX(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p, CMU_BUSCLK1, 8, 3, CLK_SET_RATE_PARENT);
->  
->  /* gate clocks */
->  static OWL_GATE(gpio_clk, "gpio_clk", "apb_clk", CMU_DEVCLKEN0, 18, 0, 0);
-> @@ -199,16 +193,25 @@ static OWL_GATE(timer_clk, "timer_clk", "hosc", CMU_DEVCLKEN1, 27, 0, 0);
->  static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
->  
->  /* divider clocks */
-> -static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
-> +static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 2, 2, NULL, 0, 0);
->  static OWL_DIVIDER(apb_clk, "apb_clk", "ahb_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
->  static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
->  
->  /* factor clocks */
-> -static OWL_FACTOR(ahb_clk, "ahb_clk", "h_clk", CMU_BUSCLK1, 2, 2, ahb_factor_table, 0, 0);
->  static OWL_FACTOR(de1_clk, "de_clk1", "de_clk", CMU_DECLK, 0, 4, de_factor_table, 0, 0);
->  static OWL_FACTOR(de2_clk, "de_clk2", "de_clk", CMU_DECLK, 4, 4, de_factor_table, 0, 0);
->  
->  /* composite clocks */
-> +static OWL_COMP_DIV(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p,
-> +			OWL_MUX_HW(CMU_BUSCLK1, 8, 3),
-> +			{ 0 },
-> +			OWL_DIVIDER_HW(CMU_BUSCLK1, 12, 2, 0, NULL),
-> +			0);
+> +static ssize_t iio_read_channel_extended_name(struct device *dev,
+> +					      struct device_attribute *attr,
+> +					      char *buf)
+> +{
+> +	const struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+> +	const struct iio_chan_spec *chan = this_attr->c;
 > +
-> +static OWL_COMP_FIXED_FACTOR(ahb_clk, "ahb_clk", "h_clk",
-> +			{ 0 },
-> +			1, 1, CLK_SET_RATE_PARENT);
-
-I think you swapped the flags between "ahbprediv_clk" and "ahb_clk"...
-
+> +	return sprintf(buf, "%s\n", chan->extend_name);
+> +}
 > +
->  static OWL_COMP_FACTOR(vce_clk, "vce_clk", hde_clk_mux_p,
->  			OWL_MUX_HW(CMU_VCECLK, 4, 2),
->  			OWL_GATE_HW(CMU_DEVCLKEN0, 26, 0),
-> -- 
-> 2.31.1
-> 
+>  static ssize_t iio_read_channel_info(struct device *dev,
+>  				     struct device_attribute *attr,
+>  				     char *buf)
+> @@ -1185,6 +1195,32 @@ static int iio_device_add_channel_label(struct iio_dev *indio_dev,
+>  	return 1;
+>  }
+>  
+> +static int
+> +iio_device_add_channel_extended_name(struct iio_dev *indio_dev,
+> +				     struct iio_chan_spec const *chan)
+> +{
+> +	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+> +	int ret;
+> +
+> +	if (!chan->extend_name)
+> +		return 0;
+> +
+> +	ret = __iio_add_chan_devattr("extended_name",
+> +				     chan,
+> +				     &iio_read_channel_extended_name,
+> +				     NULL,
+> +				     0,
+> +				     IIO_SEPARATE,
+> +				     &indio_dev->dev,
+> +				     NULL,
+> +				     &iio_dev_opaque->channel_attr_list,
+> +				     false);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 1;
+> +}
+> +
+>  static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+>  					 struct iio_chan_spec const *chan,
+>  					 enum iio_shared_by shared_by,
+> @@ -1327,6 +1363,11 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+>  		return ret;
+>  	attrcount += ret;
+>  
+> +	ret = iio_device_add_channel_extended_name(indio_dev, chan);
+> +	if (ret < 0)
+> +		return ret;
+> +	attrcount += ret;
+> +
+>  	if (chan->ext_info) {
+>  		unsigned int i = 0;
+>  		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
+
