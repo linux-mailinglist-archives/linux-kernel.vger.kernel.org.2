@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CAA3A2DF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FEA3A2DF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhFJOWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:22:00 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:40837 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhFJOV4 (ORCPT
+        id S231341AbhFJOWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:22:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41182 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231336AbhFJOWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:21:56 -0400
-Received: by mail-pf1-f173.google.com with SMTP id q25so1744617pfh.7;
-        Thu, 10 Jun 2021 07:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=S7U7wM1689XPFk0ln7YagGhi2kwC7oBCIYjLHGTATmA=;
-        b=j1ssCm/VIao3T0Xc2kwXH6tQqWfrySQ1IoYffbIUZhSffD09z3SFuktT6padpAZaa/
-         O6dOSr9MfmJ3BaiaCjc0PA9hj1D56rpnhXvTnUEKbRnxOiqwlkMuTGEQqMho8+laNO3A
-         Ps4g2Ewhuj5lqgG3+vb3Pr6h4xORMt0ouVqwcSeoFvA+lTlqRvdEpC++3hJnHyetmZQS
-         Y1STui7T1ekgTq6zzEkx3p9dSbyB7UT0DfPgF2o16fgVpJiH+bKr87Q/n9chxbr1Li1Z
-         sUz1mgnrmF2Vvd/rNoSeF09YxbBnVBhhC9qN6Rqm62kNLgrUCEgGYVPXMjW1fXotfIvd
-         p8kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S7U7wM1689XPFk0ln7YagGhi2kwC7oBCIYjLHGTATmA=;
-        b=kWJ0n92EMSemDX8LCjIXl8nXzyu0NXPmNfJA/KwwaLVT59wFJ6d9CXrx+1thVckuQm
-         OloP7fD0zPnEPSKzo++vi2GpXMKgMFR/69Qr5ezRaGS7CT3OhhJOraSAJ1899mXft0ke
-         sbA8v7XnLGOa65igfE9KGrhkGaGO57CB9CpaADqu8QKMlv4xBpEtLL3wX5/xdLkcBro/
-         kT9X8WOy5QW5ISwoWH+0SuOyacepYUq/T2TupIAwYzL+P1cejLGpBoYqCt73P8PEvvay
-         cBUDhpdVdZWwmxPf4okrjk+DLXa9pab5VZTbSZii8ZYigACwvLmaAqoMQ2p6eQO4oEQE
-         dsrg==
-X-Gm-Message-State: AOAM530Bxq8Bw8GdvqHfhlwO8NSPrVUZZD9qoYds0///pQywi5vf1hvT
-        0I3PrlCNQA8LquJmQjTlWO0=
-X-Google-Smtp-Source: ABdhPJykpYU7kOZkoptn+vRUH+LpqhlVAnDQIkp8KIQpRwT8RFYkpZNT1LtsR90ESObN7s+cfunBTA==
-X-Received: by 2002:a63:7404:: with SMTP id p4mr5123864pgc.405.1623334740224;
-        Thu, 10 Jun 2021 07:19:00 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id s22sm2725797pfd.94.2021.06.10.07.18.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 07:18:59 -0700 (PDT)
-Subject: Re: [RFC PATCH V3 03/11] x86/Hyper-V: Add new hvcall guest address
- host visibility support
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        rppt@kernel.org, hannes@cmpxchg.org, cai@lca.pw,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        Tianyu.Lan@microsoft.com, konrad.wilk@oracle.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
-        xen-devel@lists.xenproject.org, davem@davemloft.net,
-        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        sunilmut@microsoft.com
-References: <20210530150628.2063957-1-ltykernel@gmail.com>
- <20210530150628.2063957-4-ltykernel@gmail.com>
- <878s3iyrtg.fsf@vitty.brq.redhat.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <2a0170a9-e4d5-1c63-7901-416094f6ab64@gmail.com>
-Date:   Thu, 10 Jun 2021 22:18:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 10 Jun 2021 10:22:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623334810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vPeoXcqrS3MIzkBmzsxPXiPd+AVSGxxS032+qPVyFQc=;
+        b=T6qdBr3FPLk20HMihxZe2RAAurUjN3YdouD4OHt5s7i1lfUAxBlGQivFhGG47hnZMX4Zer
+        OFCWpWLy8SJDw4kkbAgyvdGLS103JyusaOpgfxVYMEO/knyRLfn/UgtHcybC81Sk+1Ijw6
+        WW4cl0Ki/moQI7j6GLTXqsqFrY+e94U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-4Iz9mnYoM26GMVnPmhD8sw-1; Thu, 10 Jun 2021 10:20:06 -0400
+X-MC-Unique: 4Iz9mnYoM26GMVnPmhD8sw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB3378030A0;
+        Thu, 10 Jun 2021 14:20:01 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.8.122])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 95DAB60C5E;
+        Thu, 10 Jun 2021 14:19:49 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 10:19:47 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH 0/5] cgroup/cpuset: Enable cpuset partition with no load
+ balancing
+Message-ID: <YMIfg0Aa2HZQPEy+@lorien.usersys.redhat.com>
+References: <20210603212416.25934-1-longman@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <878s3iyrtg.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603212416.25934-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vitaly:
-	Thanks for your review.
+Hi Waiman,
 
-On 6/10/2021 5:47 PM, Vitaly Kuznetsov wrote:
->> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
->> index 606f5cc579b2..632281b91b44 100644
->> --- a/arch/x86/include/asm/hyperv-tlfs.h
->> +++ b/arch/x86/include/asm/hyperv-tlfs.h
->> @@ -262,6 +262,17 @@ enum hv_isolation_type {
->>   #define HV_X64_MSR_TIME_REF_COUNT	HV_REGISTER_TIME_REF_COUNT
->>   #define HV_X64_MSR_REFERENCE_TSC	HV_REGISTER_REFERENCE_TSC
->>   
->> +/* Hyper-V GPA map flags */
->> +#define HV_MAP_GPA_PERMISSIONS_NONE            0x0
->> +#define HV_MAP_GPA_READABLE                    0x1
->> +#define HV_MAP_GPA_WRITABLE                    0x2
->> +
->> +enum vmbus_page_visibility {
->> +	VMBUS_PAGE_NOT_VISIBLE = 0,
->> +	VMBUS_PAGE_VISIBLE_READ_ONLY = 1,
->> +	VMBUS_PAGE_VISIBLE_READ_WRITE = 3
->> +};
->> +
-> Why do we need both flags and the enum? I don't see HV_MAP_GPA_* being
-> used anywhere and VMBUS_PAGE_VISIBLE_READ_WRITE looks like
-> HV_MAP_GPA_READABLE | HV_MAP_GPA_WRITABLE.
+On Thu, Jun 03, 2021 at 05:24:11PM -0400 Waiman Long wrote:
+> This patchset makes the following two major changes to the cpuset v2 code:
 > 
-> As this is used to communicate with the host, I'd suggest to avoid using
-> enum and just use flags everywhere.
+>  Patch 2: Add a new partition state "root-nolb" to create a partition
+>  root with load balancing disabled. This is for handling intermitten
+>  workloads that have a strict low latency requirement.
+> 
+>  Patch 3: Allow partition roots that are not the top cpuset to distribute
+>  all its cpus to child partitions as long as there is no task associated
+>  with that partition root. This allows more flexibility for middleware
+>  to manage multiple partitions.
+
+Thanks!  This looks like it will be a usable replacement for the functionality
+lost when SD_LOAD_BALANCE went away.
+
+
+Cheers,
+Phil
+
+> 
+> Patch 4 updates the cgroup-v2.rst file accordingly. Patch 5 adds a test
+> to test the new cpuset partition code.
+> 
+> Waiman Long (5):
+>   cgroup/cpuset: Don't call validate_change() for some flag changes
+>   cgroup/cpuset: Add new cpus.partition type with no load balancing
+>   cgroup/cpuset: Allow non-top parent partition root to distribute out
+>     all CPUs
+>   cgroup/cpuset: Update description of cpuset.cpus.partition in
+>     cgroup-v2.rst
+>   kselftest/cgroup: Add cpuset v2 partition root state test
+> 
+>  Documentation/admin-guide/cgroup-v2.rst       |  19 ++-
+>  kernel/cgroup/cpuset.c                        | 124 +++++++++++----
+>  tools/testing/selftests/cgroup/Makefile       |   2 +-
+>  .../selftests/cgroup/test_cpuset_prs.sh       | 141 ++++++++++++++++++
+>  4 files changed, 247 insertions(+), 39 deletions(-)
+>  create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
+> 
+> -- 
+> 2.18.1
 > 
 
-Nice catch. Will update in the next version.
+-- 
 
-Thanks.
