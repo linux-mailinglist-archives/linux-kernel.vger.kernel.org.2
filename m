@@ -2,79 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8773A2B31
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A1B3A2B3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhFJMQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhFJMQX (ORCPT
+        id S230370AbhFJMST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:18:19 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:38588 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230343AbhFJMSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:16:23 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E16C061574;
-        Thu, 10 Jun 2021 05:14:27 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 487A6C6487; Thu, 10 Jun 2021 13:14:25 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1623327265; bh=VCd2WjTRQnKoY2fCzfIO2bs3Y/3iauQT+KXtkIwkbiQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tGxfWksSG1Sfd9zFYQDob4MbCHTnRYUa920c9hLJ8d8G8diiUAPiDtiLlhnjn60Gh
-         uh+ew7ZMpLENkPnvTrdDbkrmm+KPW+5ouNsCRvrJfwSjLfu8TkRvvlo+fqJR/tz7w3
-         oEMTELpnKNOk2/4yLxi78QTOYtjn8fQ78oidCG3f7EXZGmiEbeZX2CbfTSW85r7qUs
-         CS5Bn8veFRzJ9+BriXLadoVo6ug2A/d7Ykg1Vxnwvalk/xZcKD61eAeZXAy7+OH99D
-         ngbQk4s9bMp9aeGadDg8UWyNYvvtabTqHvXK0v1vYvWbKqrVcvXbfJ9zAQ3sRTKPqF
-         zOH5I12bJL1fA==
-Date:   Thu, 10 Jun 2021 13:14:25 +0100
-From:   Sean Young <sean@mess.org>
-To:     lijian_8010a29@163.com
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lijian <lijian@yulong.com>
-Subject: Re: [PATCH] media: rc: rc-main.c: deleted the repeated word
-Message-ID: <20210610121425.GA32388@gofer.mess.org>
-References: <20210610092725.68415-1-lijian_8010a29@163.com>
+        Thu, 10 Jun 2021 08:18:18 -0400
+Received: by mail-lf1-f52.google.com with SMTP id r5so2904720lfr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BEHGV38tYEPn87F7ElGb2eufRjx+4X3yWFCCfxgeqDk=;
+        b=Ln6RW2k/ezYgUxzfevzOB7aA62Gl4OBWbiCqXt7hsqErTgvEh4iYeu8GBZbc5xLP6W
+         xW2NA29qk/4xxoHrXYO9DH/A8JKq1XANimnfGoicLulDRjN7ZD5gBPiZ/LtF0L6t7J+r
+         J6VT/I9oxzSCnmzVM/dZWH1CHRQxRZBS7gcF4EPn+OGtzngGBFvJdJB+YUJ1xZZLSB/a
+         pXa9ju508CJ/8yjqly2u5tGrLQRcvfRWY8lIf7TZpzIWiu/B/c8i/5q/9oJNWsQSUWmW
+         azX1kTMRL/AdnvdLCmoeA1fUZYlJ1yydIoL8dc5r3IuI3dZGrRYGpHIQSLGIdOp77cwy
+         ZkEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BEHGV38tYEPn87F7ElGb2eufRjx+4X3yWFCCfxgeqDk=;
+        b=oAQ1BrgzIyhX4pa36cHorRbv6AiFLAr5zmvjlXNKgcMOl4si2N4ph96Hd9Tit2UjeM
+         QQvjt7YL4VhBqcfz1XeXPW2L5s19xvn0t0sA7TBF7hm3DcwwWUvoQzjPjhWwFJ420b/L
+         KF8UzCb9xNVUWOuH0U1S11cYpcekP81S4t418fchOesO8D15lR8qfKKHapvp0jj+nekg
+         SQu9+Osh9Zher02iybzdBScMB8/m0UnBuzntFRwWfGLUUai2PM9/jpyeQhTQJ6G70gHh
+         epbqzLCYHOU3xWHMXkHd3IfJcca/2UE5m3GJPvuDFVDA0FCRHOWsgxQD6E1RObqjYZ6A
+         1sBg==
+X-Gm-Message-State: AOAM531MMjOcYJFRXe1CZyjldlRwuY30zezz28rFqbf9VQ2mwTB+qGNP
+        YF4aCsnvsR47wdDihF4+NIEmNMzKQIr6V4Sr654VMA==
+X-Google-Smtp-Source: ABdhPJyMCbkh9CFAVVhBBJsx2k/zNGlXYWTroK3U0XkVnEVH3PrhM6l6hkBIxL2RP+m0uiesanfs7OadlWe6WPxkz9Q=
+X-Received: by 2002:a19:7d89:: with SMTP id y131mr1714908lfc.108.1623327307719;
+ Thu, 10 Jun 2021 05:15:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610092725.68415-1-lijian_8010a29@163.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210609002326.210024-1-tyhicks@linux.microsoft.com>
+ <20210609002326.210024-6-tyhicks@linux.microsoft.com> <CAFA6WYOZC0iHzZm6pOxz31eW_=8g2wyJdm4wiOGKggO6-a9MdA@mail.gmail.com>
+ <20210609054621.GB4910@sequoia> <CAFA6WYOYt2vcQ4ng=Nwu2R7d6=R=DGXQKpQ-+UiENerEtQRKWg@mail.gmail.com>
+ <20210610071812.GA2753553@jade>
+In-Reply-To: <20210610071812.GA2753553@jade>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 10 Jun 2021 17:44:56 +0530
+Message-ID: <CAFA6WYMXPHvm1tGcCJkTejAa23WCz=_D3E69-i-5+9A8sydE3g@mail.gmail.com>
+Subject: Re: [PATCH v3 5/7] tee: Support shm registration without dma-buf backing
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Rijo-john.Thomas@amd.com, Allen Pais <apais@linux.microsoft.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 05:27:25PM +0800, lijian_8010a29@163.com wrote:
-> From: lijian <lijian@yulong.com>
-> 
-> deleted the repeated word 'the' in the comments.
-> 
-> Signed-off-by: lijian <lijian@yulong.com>
+Hi Jens,
 
-Thanks for this patch and the other patches; the patches look good. The kernel
-does have a policy of wanting a full name. Now, please forgive my ignorance
-but I can't tell if this your full name.
+On Thu, 10 Jun 2021 at 12:48, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> On Wed, Jun 09, 2021 at 04:22:49PM +0530, Sumit Garg wrote:
+> > + Rijo
+> >
+> > On Wed, 9 Jun 2021 at 11:16, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+> [snip]
+> >
+> > > - tee_shm_alloc() performs allocations using contiguous pages
+> > >   from alloc_pages() while tee_shm_register() performs non-contiguous
+> > >   allocations with kcalloc(). I suspect this would be fine but I don't
+> > >   know the secure world side of these things well enough to assess the
+> > >   risk involved with such a change on the kernel side.
+> > >
+> >
+> > I don't think that would make any difference.
+>
+> Agree.
+>
+> >
+> > > I should have mentioned this in the cover letter but my hope was that
+> > > these minimal changes would be accepted and then additional work could
+> > > be done to merge tee_shm_alloc() and tee_shm_register() in a way that
+> > > would allow the caller to request contiguous or non-contiguous pages,
+> > > fix up the additional issues mentioned above, and then adjust the
+> > > call sites in ftpm and tee_bnxt_fw as appropriate.
+> > >
+> > > I think that's a bigger set of changes because there are several things
+> > > that still confuse/concern me:
+> > >
+> > > - Why does tee_shm_alloc() use TEE_SHM_MAPPED while tee_shm_register()
+> > >   uses TEE_SHM_KERNEL_MAPPED or TEE_SHM_USER_MAPPED? Why do all three
+> > >   exist?
+> >
+> > AFAIK, its due the the inherent nature of tee_shm_alloc() and
+> > tee_shm_register() where tee_shm_alloc() doesn't need to know whether
+> > its a kernel or user-space memory since it is the one that allocates
+> > whereas tee_shm_register() need to know that since it has to register
+> > pre-allocated client memory.
+> >
+> > > - Why does tee_shm_register() unconditionally use non-contiguous
+> > >   allocations without ever taking into account whether or not
+> > >   OPTEE_SMC_SEC_CAP_DYNAMIC_SHM was set? It sounds like that's required
+> > >   from my reading of https://optee.readthedocs.io/en/latest/architecture/core.html#noncontiguous-shared-buffers.
+> >
+> > Yeah, but do we have platforms in OP-TEE that don't support dynamic
+> > shared memory? I guess it has become the sane default which is a
+> > mandatory requirement when it comes to OP-TEE driver in u-boot.
+> >
+> > > - Why is TEE_SHM_REGISTER implemented at the TEE driver level when it is
+> > >   specific to OP-TEE? How to better abstract that away?
+> > >
+> >
+> > I would like you to go through Section "3.2.4. Shared Memory" in TEE
+> > Client API Specification. There are two standard ways for shared
+> > memory approach with TEE:
+> >
+> > 1. A Shared Memory block can either be existing Client Application
+> > memory (kernel driver in our case) which is subsequently registered
+> > with the TEE Client API (using tee_shm_register() in our case).
+> >
+> > 2. Or memory which is allocated on behalf of the Client Application
+> > using the TEE
+> > Client API (using tee_shm_alloc() in our case).
+> >
+> > > Let me know if you agree with the more minimal approach that I took for
+> > > these bug fix series or still feel like tee_shm_register() should be
+> > > fixed up so that it is usable. Thanks!
+> >
+> > From drivers perspective I think the change should be:
+> >
+> > tee_shm_alloc()
+> >
+> > to
+> >
+> > kcalloc()
+> > tee_shm_register()
+>
+> I had another approach in mind in "[PATCH 0/7] tee: shared memory updates",
+> https://lore.kernel.org/lkml/20210609102324.2222332-1-jens.wiklander@linaro.org/
+>
+> The flags needed by tee_shm_alloc() and tee_shm_register() aren't
+> very intuitive and in fact only accept quite few combinations. So my
+> idea was to hide those flags from callers outside of the TEE subsystem
+> with tee_shm_alloc_kernel_buf().
+>
 
-Thanks,
+That looks like a good idea to hide flags from users. BTW, my only
+objection earlier with Tyler's and your patch-set is the usage of
+TEE_SHM_REGISTER flag in generic TEE methods: tee_shm_alloc*. AFAIU,
+the only reason for such an additional flag is in case of OP-TEE only
+because the OP-TEE driver could implement allocated shared memory via
+re-using dynamic shared memory approach as well. And that additional
+flag is only needed to differentiate that OP-TEE driver's private
+memory shouldn't be registered with OP-TEE. If this understanding is
+correct then we should introduce a separate flag as TEE_SHM_PRIV that
+should only be set inside tee_shm_alloc_anon_kernel_buf().
 
-Sean
+As otherwise passing TEE_SHM_REGISTER flag for shared memory alloc API
+for other TEEs like AMD-TEE etc. would be useless.
 
-> ---
->  drivers/media/rc/rc-main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-> index 8e88dc8ea6c5..b90438a71c80 100644
-> --- a/drivers/media/rc/rc-main.c
-> +++ b/drivers/media/rc/rc-main.c
-> @@ -1940,7 +1940,7 @@ int rc_register_device(struct rc_dev *dev)
->  	kfree(path);
->  
->  	/*
-> -	 * once the the input device is registered in rc_setup_rx_device,
-> +	 * once the input device is registered in rc_setup_rx_device,
->  	 * userspace can open the input device and rc_open() will be called
->  	 * as a result. This results in driver code being allowed to submit
->  	 * keycodes with rc_keydown, so lirc must be registered first.
-> -- 
-> 2.25.1
-> 
+> The approach with tee_shm_register() you suggest above has the drawback
+> that the TEE driver is forced to be able to handle any kernel memory.
+
+That's the value-add in the problem that Tyler is trying to resolve
+that driver should be able to free up the memory as needed as a
+private buffer.
+
+> This is OK with OP-TEE and dynamic shared memory enabled, but there are
+> platforms where dynamic shared memory isn't enabled. In those case must
+> the memory be allocated from a special pool.
+
+Is there any limitation for those platforms to not support dynamic
+shared memory in OP-TEE? If there isn't then we should able to handle
+this via match for TEE_GEN_CAP_REG_MEM in the ftpm_tee_match() and
+optee_ctx_match() APIs.
+
+>
+> Do you see any problem with instead replacing tee_shm_alloc()
+> with tee_shm_alloc_kernel_buf()?
+
+I don't see any problems apart from one mentioned above.
+
+-Sumit
+
+>
+> Cheers,
+> Jens
