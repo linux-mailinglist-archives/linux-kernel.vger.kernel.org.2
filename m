@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCCA3A343B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D533A3441
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhFJToq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:44:46 -0400
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:43564 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFJToo (ORCPT
+        id S230284AbhFJTrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:47:05 -0400
+Received: from mail-yb1-f177.google.com ([209.85.219.177]:43999 "EHLO
+        mail-yb1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJTrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:44:44 -0400
-Received: by mail-lj1-f179.google.com with SMTP id r14so6466130ljd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:42:48 -0700 (PDT)
+        Thu, 10 Jun 2021 15:47:05 -0400
+Received: by mail-yb1-f177.google.com with SMTP id b9so931946ybg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:45:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ubXcbWgPRSI/FTTW821ibjosi1m1kp9EFIWEYpojr7U=;
-        b=bZ1vnoT4gwchAfrORftPU/AdkdJzWMgCfShdVVXXijvp8wDeUduK7IBl//RUT2Ulm6
-         XHwuXVz/fsjsDcz4/BqhCamb74xI5Th27omkUefoltHlyZNm8IN025o/5HJtRgCTEN5C
-         XqraxBQxk3IbfMlBbb/rG1fSyDxIiTuTaPetc=
+        bh=45VPwdGqjIQ5wCNrWGGIfoD9uraRT5+Atyz+alwmg38=;
+        b=X5XJumtlyeIp5HPzFMv/nxvx9JvtKffDFFV6O/lnyD5ZR+9p5P2VUaFv+EUJQyja2B
+         I9j8zfUHK9W3A4/mQyMifOqryoycwEAYFLDIBcJ1M1UZ+zI1zn9AQY4bU+Q2WJ10saM6
+         BOJ7sQO6yzKyrlrWQ8LopHq9VFQa4kQRYSAzP4yRdwJmefGoSeGZh2I9ebgiM7JFnKzP
+         Aoon5mYwjUo53jIRWIWEQT5W/OGfWeG+t/nxzbr0QBwLy9dSBDgSXwc6xj5EN1lHxswf
+         WH01VrxLrnt143A2CXXVaw4J01eRqD5SuMZBlM5EE0obnCv7a+7Y8r7m3wofLF0sAjVL
+         oNgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ubXcbWgPRSI/FTTW821ibjosi1m1kp9EFIWEYpojr7U=;
-        b=oO7yOqVrNlSP7wlBZQclQOzoppiPzrDYRfY5Q/39x65YuWuGpRqkgbs4ZAZXpRr3aF
-         YlC+0zGXBAAl7oSBWN0AZaxM40e8INbH2wDmA0tJdMazNa94LIn/5nrr8p8XKg6enXRs
-         kcz8Sl2PP1v23RTZCekovxeaKkk5hYW0I1Qa8vzvLbYUP80KEDU+TXnQMH3CHAehI0Ht
-         1aNE/jcn8TneM8lNoTcLBSVUK7JOA7RVU2k/J3ra19Z6Ma1PcXu/AQ7sSh5vO1sNV5ht
-         3kZtCJbraJdFZsy+itZNY00xubpR2Cz6K6XV6Dmq6dxYGvJ9fklD1wOo9buM+zP1lgwW
-         DOJw==
-X-Gm-Message-State: AOAM530afX8viBSXW+vVzVHMxfGQRKbNoBehaRvuP07Acv2LrJlWd4/g
-        FyTVZpwXfoFYc1mA55UVYlqWDNyAydyR3WCYsVs=
-X-Google-Smtp-Source: ABdhPJwu0Flg8jLTF93E+yDP9YlEIm8qm2FnAxMSttX81e1c9FnTmx5lE4ACDL0H9V/aH3yXktg/3g==
-X-Received: by 2002:a2e:824c:: with SMTP id j12mr158638ljh.490.1623354107214;
-        Thu, 10 Jun 2021 12:41:47 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id m29sm382701lfp.203.2021.06.10.12.41.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 12:41:45 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id n17so6520262ljg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:41:43 -0700 (PDT)
-X-Received: by 2002:a05:651c:383:: with SMTP id e3mr174508ljp.220.1623354103227;
- Thu, 10 Jun 2021 12:41:43 -0700 (PDT)
+        bh=45VPwdGqjIQ5wCNrWGGIfoD9uraRT5+Atyz+alwmg38=;
+        b=SU8L2sKQDg9OgW899WnKMlowJjSQTQjHgoJHp7uE3XVBHkfxUDUzm8nopnEC6Na1C5
+         QBflddoB0z3QpWWv5kNbv+TlfLjZGv1EnUE20scv5RFW8cUHk2ONN+9K9tLZxsFVv2Ou
+         64uIFfXPEUNtP4SJPutBY3MwH3gnDiJYhmiayBylCZojsU4vWmAJF6qAFrGFBvyssCko
+         YY7YlWjVoju5nkn30e4RKyY9HL6M3E5ALWDltnlkF7nlok3xOOf8CQWnV8TGNv/RbDwA
+         Qe4fGc/NPMFjK77McL9juF7WsHMIQ/h29Zs5nneq+2Emg2G4uq19CiPZAcSO4lHypNxf
+         +Uxg==
+X-Gm-Message-State: AOAM531E7rsiL/EXVGYvUbEcN6Y9aUp8/C1yiw/r+0jpxBT/sm4yDUgR
+        sYGdw/cF/wcON72yNzf+mKyzRVUBWAonTS6kiQPyYw==
+X-Google-Smtp-Source: ABdhPJzoKZQlsWpGV3/ZGR29r5DYP0gR065zjq7rsav3u4YyrM3IZHe/SUegHDfMVWiXnikw9MrAounrShi73wpZMoQ=
+X-Received: by 2002:a25:6409:: with SMTP id y9mr558728ybb.235.1623354247973;
+ Thu, 10 Jun 2021 12:44:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local> <YL7XXNOnbaDgmTB9@atmark-techno.com>
- <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
-In-Reply-To: <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Jun 2021 12:41:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiKAdWpSav4+qYT4_LDSQm=7pO8RqKEoQoJsyDVtTCk3Q@mail.gmail.com>
-Message-ID: <CAHk-=wiKAdWpSav4+qYT4_LDSQm=7pO8RqKEoQoJsyDVtTCk3Q@mail.gmail.com>
-Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb) stable/for-linus-5.12)
-To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Dominique MARTINET <dominique.martinet@atmark-techno.com>,
-        Jianxiong Gao <jxgao@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lukas Hartmann <lukas@mntmn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Content-Type: multipart/mixed; boundary="000000000000ab0cc405c46e9439"
+References: <20210506193352.719596001@infradead.org> <20210506194157.452881700@infradead.org>
+ <YMJWmzXgSipOqXAf@DESKTOP-1V8MEUQ.localdomain> <CABCJKudzC-Nss_LGrpYwRqwdDxeWOf1o6Bvp3J2fBQthEB=WGg@mail.gmail.com>
+ <YMJpGLuGNsGtA5JJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YMJpGLuGNsGtA5JJ@hirez.programming.kicks-ass.net>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Thu, 10 Jun 2021 12:43:56 -0700
+Message-ID: <CABCJKudpajMRFGpn4Vh-JWzyfprEVrtYzX79iwp++rPu6rQWHw@mail.gmail.com>
+Subject: Re: [PATCH 01/13] objtool: Rewrite hashtable sizing
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>, X86 ML <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000ab0cc405c46e9439
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jun 10, 2021 at 7:52 AM Horia Geant=C4=83 <horia.geanta@nxp.com> wr=
-ote:
+On Thu, Jun 10, 2021 at 12:33 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> Documentation/core-api/dma-api.rst explicitly allows for partial syncs:
-> Synchronise a single contiguous or scatter/gather mapping for the CPU
-> and device. With the sync_sg API, all the parameters must be the same
-> as those passed into the single mapping API. With the sync_single API,
-> you can use dma_handle and size parameters that aren't identical to
-> those passed into the single mapping API to do a partial sync.
+> On Thu, Jun 10, 2021 at 11:50:36AM -0700, Sami Tolvanen wrote:
+> > On Thu, Jun 10, 2021 at 11:14 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> > > Adding Sami because I am not sure why this patch would have much of an impact
+> > > in relation to LTO. https://git.kernel.org/tip/25cf0d8aa2a3 is the patch in
+> > > question.
+> >
+> > It's because LLVM enables -ffunction-sections with LTO, so using .text
+> > section size to estimate the reloc hash table size isn't going to be
+> > accurate, as confirmed by objtool output with --stats:
+> >
+> >   OBJTOOL vmlinux.o
+> > nr_sections: 141481
+> > section_bits: 17
+> > nr_symbols: 215262
+> > symbol_bits: 17
+> > max_reloc: 24850
+> > tot_reloc: 590890
+> > reloc_bits: 10
 >
-> AFAICS commit 16fc3cef33a0 ("swiotlb: don't modify orig_addr in swiotlb_t=
-bl_sync_single")
-> is breaking this functionality.
+> Bah. Would something like the *completely* untested below help with that?
 
-How about a patch like the attached? Does that fix things for you.
+Yes, that seems to work:
 
-Christoph? Comments - that commit removed the offset calculation
-entirely, because the old
+tot_reloc: 590890
+reloc_bits: 19
 
-        (unsigned long)tlb_addr & (IO_TLB_SIZE - 1)
+Nathan, can you confirm if this fixes the regression for you?
 
-was wrong, but instead of removing it, I think it should have just
-fixed it to be
-
-        (tlb_addr - mem->start) & (IO_TLB_SIZE - 1);
-
-instead. That way the slot offset always matches the slot index calculation=
-.
-
-I also made it then take the offset into account for the alloc_size checks.
-
-Does this UNTESTED patch perhaps do the right thing?
-
-                    Linus
-
---000000000000ab0cc405c46e9439
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kprb3vx00>
-X-Attachment-Id: f_kprb3vx00
-
-IGtlcm5lbC9kbWEvc3dpb3RsYi5jIHwgOSArKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA5IGlu
-c2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9rZXJuZWwvZG1hL3N3aW90bGIuYyBiL2tlcm5lbC9k
-bWEvc3dpb3RsYi5jCmluZGV4IDhjYTdkNTA1ZDYxYy4uZjYzZDE1ZTk0ZDM1IDEwMDY0NAotLS0g
-YS9rZXJuZWwvZG1hL3N3aW90bGIuYworKysgYi9rZXJuZWwvZG1hL3N3aW90bGIuYwpAQCAtMzQy
-LDYgKzM0Miw3IEBAIHN0YXRpYyB2b2lkIHN3aW90bGJfYm91bmNlKHN0cnVjdCBkZXZpY2UgKmRl
-diwgcGh5c19hZGRyX3QgdGxiX2FkZHIsIHNpemVfdCBzaXplCiB7CiAJc3RydWN0IGlvX3RsYl9t
-ZW0gKm1lbSA9IGlvX3RsYl9kZWZhdWx0X21lbTsKIAlpbnQgaW5kZXggPSAodGxiX2FkZHIgLSBt
-ZW0tPnN0YXJ0KSA+PiBJT19UTEJfU0hJRlQ7CisJdW5zaWduZWQgbG9uZyBvZmZzZXQgPSAodGxi
-X2FkZHIgLSBtZW0tPnN0YXJ0KSAmIChJT19UTEJfU0laRSAtIDEpOwogCXBoeXNfYWRkcl90IG9y
-aWdfYWRkciA9IG1lbS0+c2xvdHNbaW5kZXhdLm9yaWdfYWRkcjsKIAlzaXplX3QgYWxsb2Nfc2l6
-ZSA9IG1lbS0+c2xvdHNbaW5kZXhdLmFsbG9jX3NpemU7CiAJdW5zaWduZWQgbG9uZyBwZm4gPSBQ
-Rk5fRE9XTihvcmlnX2FkZHIpOwpAQCAtMzUwLDYgKzM1MSwxNCBAQCBzdGF0aWMgdm9pZCBzd2lv
-dGxiX2JvdW5jZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHBoeXNfYWRkcl90IHRsYl9hZGRyLCBzaXpl
-X3Qgc2l6ZQogCWlmIChvcmlnX2FkZHIgPT0gSU5WQUxJRF9QSFlTX0FERFIpCiAJCXJldHVybjsK
-IAorCWlmIChvZmZzZXQgPiBhbGxvY19zaXplKSB7CisJCWRldl9XQVJOX09OQ0UoZGV2LCAxLAor
-CQkJIkJ1ZmZlciBvdmVyZmxvdyBkZXRlY3RlZC4gT2Zmc2V0OiAlbHUuIE1hcHBpbmcgc2l6ZTog
-JXp1LlxuIiwKKwkJCW9mZnNldCwgc2l6ZSk7CisJCXJldHVybjsKKwl9CisJYWxsb2Nfc2l6ZSAt
-PSBvZmZzZXQ7CisJb3JpZ19hZGRyICs9IG9mZnNldDsKIAlpZiAoc2l6ZSA+IGFsbG9jX3NpemUp
-IHsKIAkJZGV2X1dBUk5fT05DRShkZXYsIDEsCiAJCQkiQnVmZmVyIG92ZXJmbG93IGRldGVjdGVk
-LiBBbGxvY2F0aW9uIHNpemU6ICV6dS4gTWFwcGluZyBzaXplOiAlenUuXG4iLAo=
---000000000000ab0cc405c46e9439--
+Sami
