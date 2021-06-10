@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86A43A23D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 07:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCCF3A23DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 07:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFJFYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 01:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhFJFYp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 01:24:45 -0400
-Received: from mout-u-107.mailbox.org (mout-u-107.mailbox.org [IPv6:2001:67c:2050:1::465:107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A76FC061574;
-        Wed,  9 Jun 2021 22:22:49 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-u-107.mailbox.org (Postfix) with ESMTPS id 4G0sn12lfgzQjZ5;
-        Thu, 10 Jun 2021 07:22:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de [80.241.56.117]) (amavisd-new, port 10030)
-        with ESMTP id 3etomxc0zP3G; Thu, 10 Jun 2021 07:22:42 +0200 (CEST)
-Subject: Re: [PATCH v6 2/3] MAINTAINERS: add entry for Altera mSGDMA
-To:     Olivier Dautricourt <olivier.dautricourt@orolia.com>,
-        Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <7487a25cdb240d1be4a8593aa602c3c73d8f5acb.1623251990.git.olivier.dautricourt@orolia.com>
- <4258cb93e0f7ff57c4e116c3e8cd9a1a3159cec6.1623251990.git.olivier.dautricourt@orolia.com>
-From:   Stefan Roese <sr@denx.de>
-Message-ID: <31a0e56b-3cb7-122a-ec44-b504ea2c0960@denx.de>
-Date:   Thu, 10 Jun 2021 07:22:41 +0200
+        id S230184AbhFJFZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 01:25:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230154AbhFJFY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 01:24:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72635613E1;
+        Thu, 10 Jun 2021 05:22:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623302566;
+        bh=kKp8oU7QwWVcxL3bQAssMPPgzG6/DfWTtdrYTafZCoc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R6Ye10hhufA/hdgGi3PrCWos3nqsMj0z2K+vp2phrtLj+tKIkHYnbxMRIjBcbcixv
+         L2ZXSltM7yJcJFb8uo4Pf+jk3XqMH3DvP1qzY5W/o5ZXcF650En0iIfHsEslM3O6lQ
+         FWSQycXuLbFhHSEKWkpbSS6I//mdskUeQgBj66PQ=
+Date:   Thu, 10 Jun 2021 07:22:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pascal Giard <pascal.giard@etsmtl.ca>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Daniel Nguyen <daniel.nguyen.1@ens.etsmtl.ca>
+Subject: Re: [PATCH] HID: sony: fix freeze when inserting ghlive ps3/wii
+ dongles
+Message-ID: <YMGhotmI1kHFe3gL@kroah.com>
+References: <20210604161023.1498582-1-pascal.giard@etsmtl.ca>
+ <YLsdEtbAWJxLB+GF@kroah.com>
+ <CAJNNDmk7z=aJtx00C+8kpBOk0j_XVOk2fDMG9Xf9Na_ChXM2OA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4258cb93e0f7ff57c4e116c3e8cd9a1a3159cec6.1623251990.git.olivier.dautricourt@orolia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -7.14 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 4CC0017FC
-X-Rspamd-UID: 930263
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJNNDmk7z=aJtx00C+8kpBOk0j_XVOk2fDMG9Xf9Na_ChXM2OA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.06.21 17:20, Olivier Dautricourt wrote:
-> This entry is for the standalone driver in drivers/dma/altera-msgdma.c
-> Add myself as 'Odd fixes' maintainer for this driver as i am currently
-> writing new code and have access to the hardware.
-> Add Stefan Roese as reviewer.
+On Wed, Jun 09, 2021 at 08:25:47PM -0400, Pascal Giard wrote:
+> On Sat, Jun 5, 2021 at 2:44 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, Jun 04, 2021 at 12:10:23PM -0400, Pascal Giard wrote:
+> > > This commit fixes a freeze on insertion of a Guitar Hero Live PS3/WiiU
+> > > USB dongle. Indeed, with the current implementation, inserting one of
+> > > those USB dongles will lead to a hard freeze. I apologize for not
+> > > catching this earlier, it didn't occur on my old laptop.
+> > >
+> > > While the issue was isolated to memory alloc/free, I could not figure
+> > > out why it causes a freeze. So this patch fixes this issue by
+> > > simplifying memory allocation and usage.
+> > >
+> > > We remind that for the dongle to work properly, a control URB needs to
+> > > be sent periodically. We used to alloc/free the URB each time this URB
+> > > needed to be sent.
+> > >
+> > > With this patch, the memory for the URB is allocated on the probe, reused
+> > > for as long as the dongle is plugged in, and freed once the dongle is
+> > > unplugged.
+> > >
+> > > Signed-off-by: Pascal Giard <pascal.giard@etsmtl.ca>
+> > > ---
+> > >  drivers/hid/hid-sony.c | 98 +++++++++++++++++++++---------------------
+> > >  1 file changed, 49 insertions(+), 49 deletions(-)
+> >
+> > <formletter>
+> >
+> > This is not the correct way to submit patches for inclusion in the
+> > stable kernel tree.  Please read:
+> >     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> > for how to do this properly.
+> >
+> > </formletter>
 > 
-> Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
+> Dear Greg,
+> 
+> I apologize for failing to follow the procedure. I had already read
+> these guidelines, and I actually thought I was following Option 1 :-/
 
-Acked-by: Stefan Roese <sr@denx.de>
+Is this commit already in Linus's tree?  If so then we just need a git
+commit id and we can queue it up.
 
-Thanks,
-Stefan
+> I thought that I had to get my patch merged into next first (patch
+> against dtor's git) and that by adding stable@ as CC, it would
+> automatically get considered for inclusion into stable once merged
+> into Linus' tree. Based on your email, I got that wrong...
 
-> ---
-> 
-> Notes:
->      splitted commit, introduced in v5
-> 
->      v6:
->        add Stefan Roese as Reviewer (after consulting him)
-> 
->   MAINTAINERS | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b706dd20ff2b..3167d26f0718 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -783,6 +783,14 @@ M:	Ley Foon Tan <ley.foon.tan@intel.com>
->   S:	Maintained
->   F:	drivers/mailbox/mailbox-altera.c
-> 
-> +ALTERA MSGDMA IP CORE DRIVER
-> +M:	Olivier Dautricourt <olivier.dautricourt@orolia.com>
-> +R:	Stefan Roese <sr@denx.de>
-> +L:	dmaengine@vger.kernel.org
-> +S:	Odd Fixes
-> +F:	Documentation/devicetree/bindings/dma/altr,msgdma.yaml
-> +F:	drivers/dma/altera-msgdma.c
-> +
->   ALTERA PIO DRIVER
->   M:	Joyce Ooi <joyce.ooi@intel.com>
->   L:	linux-gpio@vger.kernel.org
-> --
-> 2.31.0.rc2
-> 
-> 
-> --
-> Olivier Dautricourt
-> 
+It will, but you need to add that to the signed-off-by: area, as the
+document says.
 
+thanks,
 
-Viele Grüße,
-Stefan
-
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-51 Fax: (+49)-8142-66989-80 Email: sr@denx.de
+greg k-h
