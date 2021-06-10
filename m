@@ -2,118 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAC13A2235
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA333A223D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhFJCS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 22:18:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38781 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229507AbhFJCS1 (ORCPT
+        id S229770AbhFJCXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:23:24 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:37060
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S229507AbhFJCXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 22:18:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623291391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NnaUokRoNM6Q2FbT2TvIPzJXqmr5yWwj9gPCdPyZQmw=;
-        b=acHl2IrkP8FXvHOBYUSrLuFY4278K3gD+L939k2a2VK8+9TzC6WP/9KgOulVW0TtqDY/mh
-        8qtuGU/kJ2uCLj6xSbVS3854lk0yWJns5tqYnQGi9jNdKE92/Fnkls1OlVVNWt1NmuHQlL
-        DFkZCo/lLLZ3zxyCc7KvcZs8jruxzm0=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-VaDRKLUUOfK2kPQk-YyJSA-1; Wed, 09 Jun 2021 22:16:30 -0400
-X-MC-Unique: VaDRKLUUOfK2kPQk-YyJSA-1
-Received: by mail-pj1-f69.google.com with SMTP id e12-20020a17090a630cb029016de1736f41so2859202pjj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 19:16:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=NnaUokRoNM6Q2FbT2TvIPzJXqmr5yWwj9gPCdPyZQmw=;
-        b=YgQv3cK2N17KiivoTtPPlE7owI2ssHRHJlNxVQUGtdK/tQxO0w5lExF5FBU/a0MoXB
-         4fUQQdXTtI+x2mIS4QGB3pKSYYWDkxjwTOysJ8NVE1SigkBdEOnsTn4uEUOZXIOrMt9w
-         rCJE+F2tI22CkK6JjuCeuJOKPFO0nwak9pVUGEW5DWTwlvlUItXDqEEOw3M8d3VxkcmK
-         QvV2wkjRcR75U3MyP/sLAT+7+k+npyjFMHG+Wta/1sxTAGsnt/jIGaSeMngdBz1fIFF0
-         DjvXeRZPENCdXyZfdxeTmUHoGssCM2xM6plfGByG2UvA0aK8pGWvZSPh88Kaz1PweJmL
-         BAkA==
-X-Gm-Message-State: AOAM5317BDalud8Bc0Zj8fO+u8sDotYLQqFEIzs5YCiWa7IyfxpI1yJn
-        pcu+zaR99UOkHEKZqBEExE2eJdteApitPcNPKAvmB0F8JySO6F6/jO4DKwccqgWSe1DQJiXAyg8
-        xxS+NoBtuGCz1bfZvgub9VZB2
-X-Received: by 2002:a63:4814:: with SMTP id v20mr2691507pga.8.1623291389544;
-        Wed, 09 Jun 2021 19:16:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGFH3+Zi1qg8fLvGeVh2H1tnJw2kTEQ1WuxGNYkVj+kLoxCEbUmdaVO29Ee6FLnMdfVVUCXA==
-X-Received: by 2002:a63:4814:: with SMTP id v20mr2691486pga.8.1623291389293;
-        Wed, 09 Jun 2021 19:16:29 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b14sm889674pgl.52.2021.06.09.19.16.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 19:16:28 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Liu Yi L <yi.l.liu@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
-        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
-References: <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
- <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
- <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
- <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
- <20210601173138.GM1002214@nvidia.com>
- <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
- <20210602172154.GC1002214@nvidia.com>
- <51e060a3-fc59-0a13-5955-71692b14eed8@metux.net>
- <20210607180144.GL1002214@nvidia.com>
- <633b00c1-b388-856a-db71-8d74e52c2702@metux.net>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <0f9224eb-2158-4769-f709-6e8f56c24bd3@redhat.com>
-Date:   Thu, 10 Jun 2021 10:16:17 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Wed, 9 Jun 2021 22:23:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=NMsSgl6f+0/76cM6TWJIRwVGyQWYDV2Tj3+p
+        XgGcVjw=; b=h0DdnxmDGdxo/ZvlIym9A/BSoYA8FvRFABsDpIC8PpAroL2Fg8Q7
+        eMnqA0rb9qKSRA0+qUfiTrQuALWbYnYgGcy0NpfWsvH25n66Ow/yXHrH5ZI9ZyxF
+        tYYPBkrc22ILJ7++iGriysV4XdC8KFb8NJ42oEyjuZlrvPZUGRe3aIg=
+Received: by ajax-webmail-app2 (Coremail) ; Thu, 10 Jun 2021 10:20:24 +0800
+ (GMT+08:00)
+X-Originating-IP: [10.162.161.90]
+Date:   Thu, 10 Jun 2021 10:20:24 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "Xiyu Yang" <19210240158@fudan.edu.cn>
+To:     "Robin Murphy" <robin.murphy@arm.com>
+Cc:     "Will Deacon" <will@kernel.org>, "Joerg Roedel" <joro@8bytes.org>,
+        "Nicolin Chen" <nicoleotsuka@gmail.com>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        "Krishna Reddy" <vdumpa@nvidia.com>,
+        "Jordan Crouse" <jordan@cosmicpenguin.net>,
+        "Sai Prakash Ranjan" <saiprakash.ranjan@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        yuanxzhang@fudan.edu.cn, "Xin Tan" <tanxin.ctf@gmail.com>
+Subject: Re: Re: [PATCH] iommu/arm-smmu: Fix arm_smmu_device refcount leak
+ when arm_smmu_rpm_get fails
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20200917(8294e55f) Copyright (c) 2002-2021 www.mailtech.cn fudan.edu.cn
+In-Reply-To: <e5b8d7f6-862e-bca4-a1e9-35e0de47440e@arm.com>
+References: <1623245709-11123-1-git-send-email-xiyuyang19@fudan.edu.cn>
+ <e5b8d7f6-862e-bca4-a1e9-35e0de47440e@arm.com>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: 7bit
+X-CM-CTRLDATA: ZmoaFmZvb3Rlcl90eHQ9Mzk1ODoxMA==
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-In-Reply-To: <633b00c1-b388-856a-db71-8d74e52c2702@metux.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Message-ID: <3da0a67a.3d4d.179f3b87d02.Coremail.19210240158@fudan.edu.cn>
+X-Coremail-Locale: en_US
+X-CM-TRANSID: XQUFCgCHTGvodsFgpJpUAw--.21437W
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/1tbiAQwIAVKp4t+ptgACsf
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-在 2021/6/8 下午6:45, Enrico Weigelt, metux IT consult 写道:
-> On 07.06.21 20:01, Jason Gunthorpe wrote:
->> <shrug> it is what it is, select has a fixed size bitmap of FD #s and
->> a hard upper bound on that size as part of the glibc ABI - can't be
->> fixed.
->
-> in glibc ABI ? Uuuuh!
->
-
-Note that dealing with select() or try to overcome the limitation via 
-epoll() directly via the application is not a good practice (or it's not 
-portable).
-
-It's suggested to use building blocks provided by glib, e.g the main 
-event loop[1]. That is how Qemu solve the issues of dealing with a lot 
-of file descriptors.
-
-Thanks
-
-[1] https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html
+Thanks for your advice, I'll send a v2 patch soon.
 
 
->
-> --mtx
->
+> -----Original Messages-----
+> From: "Robin Murphy" <robin.murphy@arm.com>
+> Sent Time: 2021-06-09 22:12:11 (Wednesday)
+> To: "Xiyu Yang" <xiyuyang19@fudan.edu.cn>, "Will Deacon" <will@kernel.org>, "Joerg Roedel" <joro@8bytes.org>, "Nicolin Chen" <nicoleotsuka@gmail.com>, "Bjorn Andersson" <bjorn.andersson@linaro.org>, "Krishna Reddy" <vdumpa@nvidia.com>, "Jordan Crouse" <jordan@cosmicpenguin.net>, "Sai Prakash Ranjan" <saiprakash.ranjan@codeaurora.org>, linux-arm-kernel@lists.infradead.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+> Cc: yuanxzhang@fudan.edu.cn, "Xin Tan" <tanxin.ctf@gmail.com>
+> Subject: Re: [PATCH] iommu/arm-smmu: Fix arm_smmu_device refcount leak when arm_smmu_rpm_get fails
+> 
+> On 2021-06-09 14:35, Xiyu Yang wrote:
+> > arm_smmu_rpm_get() invokes pm_runtime_get_sync(), which increases the
+> > refcount of the "smmu" even though the return value is less than 0.
+> > 
+> > The reference counting issue happens in some error handling paths of
+> > arm_smmu_rpm_get() in its caller functions. When arm_smmu_rpm_get()
+> > fails, the caller functions forget to decrease the refcount of "smmu"
+> > increased by arm_smmu_rpm_get(), causing a refcount leak.
+> > 
+> > Fix this issue by calling arm_smmu_rpm_put() or jumping to the "rpm_put"
+> > label when arm_smmu_rpm_get() fails.
+> 
+> If only there was some kind of helper function which could encapsulate 
+> the correct expected behaviour in a single place...
+> 
+> In fact with the new pm_runtime_resume_and_get() API I think these two 
+> patches boil down to a one-line change.
+> 
+> Thanks,
+> Robin.
+> 
+> > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> > ---
+> >   drivers/iommu/arm/arm-smmu/arm-smmu.c | 13 +++++++++----
+> >   1 file changed, 9 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > index 6f72c4d208ca..177ee54c5534 100644
+> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > @@ -840,7 +840,7 @@ static void arm_smmu_destroy_domain_context(struct iommu_domain *domain)
+> >   
+> >   	ret = arm_smmu_rpm_get(smmu);
+> >   	if (ret < 0)
+> > -		return;
+> > +		goto rpm_put;
+> >   
+> >   	/*
+> >   	 * Disable the context bank and free the page tables before freeing
+> > @@ -857,6 +857,7 @@ static void arm_smmu_destroy_domain_context(struct iommu_domain *domain)
+> >   	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
+> >   	__arm_smmu_free_bitmap(smmu->context_map, cfg->cbndx);
+> >   
+> > +rpm_put:
+> >   	arm_smmu_rpm_put(smmu);
+> >   }
+> >   
+> > @@ -1153,7 +1154,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+> >   
+> >   	ret = arm_smmu_rpm_get(smmu);
+> >   	if (ret < 0)
+> > -		return ret;
+> > +		goto rpm_put;
+> >   
+> >   	/* Ensure that the domain is finalised */
+> >   	ret = arm_smmu_init_domain_context(domain, smmu, dev);
+> > @@ -1404,7 +1405,7 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
+> >   
+> >   	ret = arm_smmu_rpm_get(smmu);
+> >   	if (ret < 0)
+> > -		goto out_cfg_free;
+> > +		goto rpm_put;
+> >   
+> >   	ret = arm_smmu_master_alloc_smes(dev);
+> >   	arm_smmu_rpm_put(smmu);
+> > @@ -1417,6 +1418,8 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
+> >   
+> >   	return &smmu->iommu;
+> >   
+> > +rpm_put:
+> > +	arm_smmu_rpm_put(smmu);
+> >   out_cfg_free:
+> >   	kfree(cfg);
+> >   out_free:
+> > @@ -1438,8 +1441,10 @@ static void arm_smmu_release_device(struct device *dev)
+> >   	smmu = cfg->smmu;
+> >   
+> >   	ret = arm_smmu_rpm_get(smmu);
+> > -	if (ret < 0)
+> > +	if (ret < 0) {
+> > +		arm_smmu_rpm_put(smmu);
+> >   		return;
+> > +	}
+> >   
+> >   	arm_smmu_master_free_smes(cfg, fwspec);
+> >   
+> > 
+
+
+
+
+
 
