@@ -2,313 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6766E3A2203
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6363A221D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhFJCEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 22:04:20 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9054 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFJCET (ORCPT
+        id S229935AbhFJCGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:06:22 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:49810 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFJCGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 22:04:19 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0nGS5byxzYrPZ;
-        Thu, 10 Jun 2021 09:59:28 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 10:02:12 +0800
-Received: from [10.67.102.248] (10.67.102.248) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 10:02:11 +0800
-Subject: Re: [PATCH v2] perf annotate: Add itrace options support
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210607025918.118603-1-yangjihong1@huawei.com>
- <YL+kovO5jK1zlR1j@kernel.org>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <8e33080d-d2a1-cc57-3ec7-179ea7af1577@huawei.com>
-Date:   Thu, 10 Jun 2021 10:02:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 9 Jun 2021 22:06:21 -0400
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 15A249gX001734;
+        Thu, 10 Jun 2021 11:04:09 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 15A249gX001734
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1623290650;
+        bh=rm9Djr4WdlFHkftclLH40/YooROTedjrpz+eDOHOrcY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TpGYPe5Uf7c1NYcWuLgGTpYrNvoFtofbDbQuTNwbNJ7eJXq7b7Ux1y0TBMGSVO+wq
+         KPj0ZMjWsSKN2fuTjHAD05rUPDbSGE9hAape7W4ER5KBc8fCljjhoChobohFvJMtts
+         VVu5jQgWQEt/Cpnk/3Hp17ubLFOBD2AMwtw/h3DIgCmWcO2PkgGu9YdFnKXM4/mHHK
+         FeFjToi7773PrSMYL84tqJRbL3b0xX/TcfaUWENY3bhKP3steKoGOLZYYiAeTdp51I
+         NKnaw06NT7frJnAfqA3XsqQySwDHwD2dZAGrwjswRaUTThJ+nqiWR6THzqHwcrrWWw
+         U8osCScf/KHqA==
+X-Nifty-SrcIP: [209.85.215.179]
+Received: by mail-pg1-f179.google.com with SMTP id j12so21282924pgh.7;
+        Wed, 09 Jun 2021 19:04:09 -0700 (PDT)
+X-Gm-Message-State: AOAM532VcEPSdvcXMU80sU9DHIVnGMoFn/VWHV1DeP8AKn5DPTNfLk1K
+        44A4DHw5AJnawaieiExU7KGwuWADj82eLXyeepQ=
+X-Google-Smtp-Source: ABdhPJzuC0PRj07bmjql5kCYvt57Vwjnsr8YFtHMyiydC1Bs2Y8l8YeXM5uSByx5lB1/dWCBMezdjrdCnwYuHRf5Z08=
+X-Received: by 2002:a63:6841:: with SMTP id d62mr2613776pgc.7.1623290648993;
+ Wed, 09 Jun 2021 19:04:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YL+kovO5jK1zlR1j@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+References: <892b6ab7-862c-1c0a-2996-0f8408e5043d@linux.ee> <89515325-fc21-31da-d238-6f7a9abbf9a0@gmx.de>
+In-Reply-To: <89515325-fc21-31da-d238-6f7a9abbf9a0@gmx.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 10 Jun 2021 11:03:31 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATuzry1MUj-VruOVUwU_nH2xJd_2SxD_s_Z1QBb3PVnQw@mail.gmail.com>
+Message-ID: <CAK7LNATuzry1MUj-VruOVUwU_nH2xJd_2SxD_s_Z1QBb3PVnQw@mail.gmail.com>
+Subject: Re: linux-parisc compile failure in current git
+To:     Helge Deller <deller@gmx.de>
+Cc:     Parisc List <linux-parisc@vger.kernel.org>,
+        Meelis Roos <mroos@linux.ee>,
+        Linux Kernel Development <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000008039e105c45fceaf"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hell Arnaldo,
+--0000000000008039e105c45fceaf
+Content-Type: text/plain; charset="UTF-8"
 
-On 2021/6/9 1:10, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Jun 07, 2021 at 10:59:18AM +0800, Yang Jihong escreveu:
->> The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
->> "annotate". As a result, perf annotate does not support parsing itrace data.
->>
->> A simple example is as follows:
->>
->>    # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
->>    [ perf record: Woken up 9 times to write data ]
->>    [ perf record: Captured and wrote 20.874 MB perf.data ]
->>    # perf annotate --stdio
->>    Error:
->>    The perf.data data has no samples!
-> 
-> Can I get an Acked-by/Reviewed-by for this? I don't have a machine where
-> I can test this.
-> 
+Hi Helge,
 
-I have tested the patch on a machine that supports ARM SPE.
-The test result is as follows:
-# perf annotate --stdio
-# perf record --all-user -e arm_spe_0/branch_filter=1/ ls
-Couldn't synthesize bpf events.
-perf.data  perf.data.old
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.010 MB perf.data ]
-# perf annotate --stdio
-  Percent |      Source code & Disassembly of libc-2.28.so for 
-branch-miss (1 samples, percent: local period)
-------------------------------------------------------------------------------------------------------------
-          :
-          :
-          :
-          :           Disassembly of section .text:
-          :
-          :           0000000000066180 <__getdelim@@GLIBC_2.17>:
-     0.00 :   66180:  stp     x29, x30, [sp, #-96]!
-     0.00 :   66184:  cmp     x0, #0x0
-     0.00 :   66188:  ccmp    x1, #0x0, #0x4, ne  // ne = any
-     0.00 :   6618c:  mov     x29, sp
-     0.00 :   66190:  stp     x24, x25, [sp, #56]
-     0.00 :   66194:  stp     x26, x27, [sp, #72]
-     0.00 :   66198:  str     x28, [sp, #88]
-     0.00 :   6619c:  b.eq    66450 <__getdelim@@GLIBC_2.17+0x2d0>  // 
-b.none
-     0.00 :   661a0:  stp     x22, x23, [x29, #40]
-     0.00 :   661a4:  mov     x22, x1
-     0.00 :   661a8:  ldr     w1, [x3]
-     0.00 :   661ac:  mov     w23, w2
-     0.00 :   661b0:  stp     x20, x21, [x29, #24]
-     0.00 :   661b4:  mov     x20, x3
-     0.00 :   661b8:  mov     x21, x0
-     0.00 :   661bc:  tbnz    w1, #15, 66360 <__getdelim@@GLIBC_2.17+0x1e0>
-     0.00 :   661c0:  ldr     x0, [x3, #136]
-     0.00 :   661c4:  ldr     x2, [x0, #8]
-     0.00 :   661c8:  str     x19, [x29, #16]
-     0.00 :   661cc:  mrs     x19, tpidr_el0
-     0.00 :   661d0:  sub     x19, x19, #0x700
-     0.00 :   661d4:  cmp     x2, x19
-     0.00 :   661d8:  b.eq    663f0 <__getdelim@@GLIBC_2.17+0x270>  // 
-b.none
-     0.00 :   661dc:  mov     w1, #0x1                        // #1
-     0.00 :   661e0:  ldaxr   w2, [x0]
-     0.00 :   661e4:  cmp     w2, #0x0
-     0.00 :   661e8:  b.ne    661f4 <__getdelim@@GLIBC_2.17+0x74>  // b.any
-     0.00 :   661ec:  stxr    w3, w1, [x0]
-     0.00 :   661f0:  cbnz    w3, 661e0 <__getdelim@@GLIBC_2.17+0x60>
-     0.00 :   661f4:  b.ne    66448 <__getdelim@@GLIBC_2.17+0x2c8>  // b.any
-     0.00 :   661f8:  ldr     x0, [x20, #136]
-     0.00 :   661fc:  ldr     w1, [x20]
-     0.00 :   66200:  ldr     w2, [x0, #4]
-     0.00 :   66204:  str     x19, [x0, #8]
-     0.00 :   66208:  add     w2, w2, #0x1
-     0.00 :   6620c:  str     w2, [x0, #4]
-     0.00 :   66210:  tbnz    w1, #5, 66388 <__getdelim@@GLIBC_2.17+0x208>
-     0.00 :   66214:  ldr     x19, [x29, #16]
-     0.00 :   66218:  ldr     x0, [x21]
-     0.00 :   6621c:  cbz     x0, 66228 <__getdelim@@GLIBC_2.17+0xa8>
-     0.00 :   66220:  ldr     x0, [x22]
-     0.00 :   66224:  cbnz    x0, 6623c <__getdelim@@GLIBC_2.17+0xbc>
-     0.00 :   66228:  mov     x0, #0x78                       // #120
-     0.00 :   6622c:  str     x0, [x22]
-     0.00 :   66230:  bl      20710 <malloc@plt>
-     0.00 :   66234:  str     x0, [x21]
-     0.00 :   66238:  cbz     x0, 66428 <__getdelim@@GLIBC_2.17+0x2a8>
-     0.00 :   6623c:  ldr     x27, [x20, #8]
-     0.00 :   66240:  str     x19, [x29, #16]
-     0.00 :   66244:  ldr     x19, [x20, #16]
-     0.00 :   66248:  sub     x19, x19, x27
-     0.00 :   6624c:  cmp     x19, #0x0
-     0.00 :   66250:  b.le    66398 <__getdelim@@GLIBC_2.17+0x218>
-     0.00 :   66254:  mov     x25, #0x0                       // #0
-     0.00 :   66258:  b       662d8 <__getdelim@@GLIBC_2.17+0x158>
-     0.00 :   6625c:  nop
-     0.00 :   66260:  add     x24, x19, x25
-     0.00 :   66264:  ldr     x3, [x22]
-     0.00 :   66268:  add     x26, x24, #0x1
-     0.00 :   6626c:  ldr     x0, [x21]
-     0.00 :   66270:  cmp     x3, x26
-     0.00 :   66274:  b.cs    6629c <__getdelim@@GLIBC_2.17+0x11c>  // 
-b.hs, b.nlast
-     0.00 :   66278:  lsl     x3, x3, #1
-     0.00 :   6627c:  cmp     x3, x26
-     0.00 :   66280:  csel    x26, x3, x26, cs  // cs = hs, nlast
-     0.00 :   66284:  mov     x1, x26
-     0.00 :   66288:  bl      206f0 <realloc@plt>
-     0.00 :   6628c:  cbz     x0, 66438 <__getdelim@@GLIBC_2.17+0x2b8>
-     0.00 :   66290:  str     x0, [x21]
-     0.00 :   66294:  ldr     x27, [x20, #8]
-     0.00 :   66298:  str     x26, [x22]
-     0.00 :   6629c:  mov     x2, x19
-     0.00 :   662a0:  mov     x1, x27
-     0.00 :   662a4:  add     x0, x0, x25
-     0.00 :   662a8:  bl      87390 <explicit_bzero@@GLIBC_2.25+0x50>
-     0.00 :   662ac:  ldr     x0, [x20, #8]
-     0.00 :   662b0:  add     x19, x0, x19
-     0.00 :   662b4:  str     x19, [x20, #8]
-     0.00 :   662b8:  cbnz    x28, 66410 <__getdelim@@GLIBC_2.17+0x290>
-     0.00 :   662bc:  mov     x0, x20
-     0.00 :   662c0:  bl      73b80 <__underflow@@GLIBC_2.17>
-     0.00 :   662c4:  cmn     w0, #0x1
-     0.00 :   662c8:  b.eq    66410 <__getdelim@@GLIBC_2.17+0x290>  // 
-b.none
-     0.00 :   662cc:  ldp     x27, x19, [x20, #8]
-     0.00 :   662d0:  mov     x25, x24
-     0.00 :   662d4:  sub     x19, x19, x27
-     0.00 :   662d8:  mov     x2, x19
-     0.00 :   662dc:  mov     w1, w23
-     0.00 :   662e0:  mov     x0, x27
-     0.00 :   662e4:  bl      807b0 <memchr@@GLIBC_2.17>
-     0.00 :   662e8:  cmp     x0, #0x0
-     0.00 :   662ec:  mov     x28, x0
-     0.00 :   662f0:  sub     x0, x0, x27
-     0.00 :   662f4:  csinc   x19, x19, x0, eq  // eq = none
-     0.00 :   662f8:  mov     x0, #0x7fffffffffffffff         // 
-#9223372036854775807
-     0.00 :   662fc:  sub     x0, x0, x25
-     0.00 :   66300:  cmp     x19, x0
-     0.00 :   66304:  b.lt    66260 <__getdelim@@GLIBC_2.17+0xe0>  // 
-b.tstop
-     0.00 :   66308:  adrp    x0, 17f000 <sys_sigabbrev@@GLIBC_2.17+0x320>
-     0.00 :   6630c:  ldr     x0, [x0, #3624]
-     0.00 :   66310:  mrs     x2, tpidr_el0
-     0.00 :   66314:  ldr     x19, [x29, #16]
-     0.00 :   66318:  mov     w3, #0x4b                       // #75
-     0.00 :   6631c:  ldr     w1, [x20]
-     0.00 :   66320:  mov     x24, #0xffffffffffffffff        // #-1
-     0.00 :   66324:  str     w3, [x2, x0]
-     0.00 :   66328:  tbnz    w1, #15, 66340 <__getdelim@@GLIBC_2.17+0x1c0>
-     0.00 :   6632c:  ldr     x0, [x20, #136]
-     0.00 :   66330:  ldr     w1, [x0, #4]
-     0.00 :   66334:  sub     w1, w1, #0x1
-     0.00 :   66338:  str     w1, [x0, #4]
-     0.00 :   6633c:  cbz     w1, 663b8 <__getdelim@@GLIBC_2.17+0x238>
-     0.00 :   66340:  mov     x0, x24
-     0.00 :   66344:  ldr     x28, [sp, #88]
-     0.00 :   66348:  ldp     x20, x21, [x29, #24]
-     0.00 :   6634c:  ldp     x22, x23, [x29, #40]
-     0.00 :   66350:  ldp     x24, x25, [sp, #56]
-     0.00 :   66354:  ldp     x26, x27, [sp, #72]
-     0.00 :   66358:  ldp     x29, x30, [sp], #96
-     0.00 :   6635c:  ret
-   100.00 :   66360:  tbz     w1, #5, 66218 <__getdelim@@GLIBC_2.17+0x98>
-     0.00 :   66364:  ldp     x20, x21, [x29, #24]
-     0.00 :   66368:  mov     x24, #0xffffffffffffffff        // #-1
-     0.00 :   6636c:  ldp     x22, x23, [x29, #40]
-     0.00 :   66370:  mov     x0, x24
-     0.00 :   66374:  ldp     x24, x25, [sp, #56]
-     0.00 :   66378:  ldp     x26, x27, [sp, #72]
-     0.00 :   6637c:  ldr     x28, [sp, #88]
-     0.00 :   66380:  ldp     x29, x30, [sp], #96
-     0.00 :   66384:  ret
-     0.00 :   66388:  mov     x24, #0xffffffffffffffff        // #-1
-     0.00 :   6638c:  ldr     x19, [x29, #16]
-     0.00 :   66390:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
-     0.00 :   66394:  nop
-     0.00 :   66398:  mov     x0, x20
-     0.00 :   6639c:  bl      73b80 <__underflow@@GLIBC_2.17>
-     0.00 :   663a0:  cmn     w0, #0x1
-     0.00 :   663a4:  b.eq    66438 <__getdelim@@GLIBC_2.17+0x2b8>  // 
-b.none
-     0.00 :   663a8:  ldp     x27, x19, [x20, #8]
-     0.00 :   663ac:  sub     x19, x19, x27
-     0.00 :   663b0:  b       66254 <__getdelim@@GLIBC_2.17+0xd4>
-     0.00 :   663b4:  nop
-     0.00 :   663b8:  str     xzr, [x0, #8]
-     0.00 :   663bc:  ldxr    w2, [x0]
-     0.00 :   663c0:  stlxr   w3, w1, [x0]
-     0.00 :   663c4:  cbnz    w3, 663bc <__getdelim@@GLIBC_2.17+0x23c>
-     0.00 :   663c8:  cmp     w2, #0x1
-     0.00 :   663cc:  b.le    66340 <__getdelim@@GLIBC_2.17+0x1c0>
-     0.00 :   663d0:  mov     x1, #0x81                       // #129
-     0.00 :   663d4:  mov     x2, #0x1                        // #1
-     0.00 :   663d8:  mov     x3, #0x0                        // #0
-     0.00 :   663dc:  mov     x8, #0x62                       // #98
-     0.00 :   663e0:  svc     #0x0
-     0.00 :   663e4:  ldp     x20, x21, [x29, #24]
-     0.00 :   663e8:  ldp     x22, x23, [x29, #40]
-     0.00 :   663ec:  b       66370 <__getdelim@@GLIBC_2.17+0x1f0>
-     0.00 :   663f0:  ldr     w2, [x0, #4]
-     0.00 :   663f4:  add     w2, w2, #0x1
-     0.00 :   663f8:  str     w2, [x0, #4]
-     0.00 :   663fc:  tbz     w1, #5, 66214 <__getdelim@@GLIBC_2.17+0x94>
-     0.00 :   66400:  mov     x24, #0xffffffffffffffff        // #-1
-     0.00 :   66404:  ldr     x19, [x29, #16]
-     0.00 :   66408:  b       66330 <__getdelim@@GLIBC_2.17+0x1b0>
-     0.00 :   6640c:  nop
-     0.00 :   66410:  ldr     x0, [x21]
-     0.00 :   66414:  strb    wzr, [x0, x24]
-     0.00 :   66418:  ldr     w1, [x20]
-     0.00 :   6641c:  ldr     x19, [x29, #16]
-     0.00 :   66420:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
-     0.00 :   66424:  nop
-     0.00 :   66428:  mov     x24, #0xffffffffffffffff        // #-1
-     0.00 :   6642c:  ldr     w1, [x20]
-     0.00 :   66430:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
-     0.00 :   66434:  nop
-     0.00 :   66438:  mov     x24, #0xffffffffffffffff        // #-1
-     0.00 :   6643c:  ldr     w1, [x20]
-     0.00 :   66440:  ldr     x19, [x29, #16]
-     0.00 :   66444:  b       66328 <__getdelim@@GLIBC_2.17+0x1a8>
-     0.00 :   66448:  bl      e3ba0 <pthread_setcanceltype@@GLIBC_2.17+0x30>
-     0.00 :   6644c:  b       661f8 <__getdelim@@GLIBC_2.17+0x78>
-     0.00 :   66450:  adrp    x0, 17f000 <sys_sigabbrev@@GLIBC_2.17+0x320>
-     0.00 :   66454:  ldr     x0, [x0, #3624]
-     0.00 :   66458:  mrs     x1, tpidr_el0
-     0.00 :   6645c:  mov     w2, #0x16                       // #22
-     0.00 :   66460:  mov     x24, #0xffffffffffffffff        // #-1
-     0.00 :   66464:  str     w2, [x1, x0]
-     0.00 :   66468:  b       66370 <__getdelim@@GLIBC_2.17+0x1f0>
-     0.00 :   6646c:  ldr     w1, [x20]
-     0.00 :   66470:  mov     x4, x0
-     0.00 :   66474:  tbnz    w1, #15, 6648c <__getdelim@@GLIBC_2.17+0x30c>
-     0.00 :   66478:  ldr     x0, [x20, #136]
-     0.00 :   6647c:  ldr     w1, [x0, #4]
-     0.00 :   66480:  sub     w1, w1, #0x1
-     0.00 :   66484:  str     w1, [x0, #4]
-     0.00 :   66488:  cbz     w1, 66494 <__getdelim@@GLIBC_2.17+0x314>
-     0.00 :   6648c:  mov     x0, x4
-     0.00 :   66490:  bl      20e40 <gnu_get_libc_version@@GLIBC_2.17+0x130>
-     0.00 :   66494:  str     xzr, [x0, #8]
-     0.00 :   66498:  ldxr    w2, [x0]
-     0.00 :   6649c:  stlxr   w3, w1, [x0]
-     0.00 :   664a0:  cbnz    w3, 66498 <__getdelim@@GLIBC_2.17+0x318>
-     0.00 :   664a4:  cmp     w2, #0x1
-     0.00 :   664a8:  b.le    6648c <__getdelim@@GLIBC_2.17+0x30c>
-     0.00 :   664ac:  mov     x1, #0x81                       // #129
-     0.00 :   664b0:  mov     x2, #0x1                        // #1
-     0.00 :   664b4:  mov     x3, #0x0                        // #0
-     0.00 :   664b8:  mov     x8, #0x62                       // #98
-     0.00 :   664bc:  svc     #0x0
-     0.00 :   664c0:  b       6648c <__getdelim@@GLIBC_2.17+0x30c>
 
-Intel PT and ARM SPE share auxtrace functions of itrace framework. 
-Therefore, this patch can be verified on computers that support Intel PT.
+On Thu, Jun 10, 2021 at 7:50 AM Helge Deller <deller@gmx.de> wrote:
+>
+> On 6/1/21 12:21 PM, Meelis Roos wrote:
+> > Upstream Linux git fails to compile on gentoo hppa -  .config below.
+> > I have 2 gcc-s as always:
+> > $ gcc-config -l
+> >   [1] hppa2.0-unknown-linux-gnu-9.3.0
+> >   [2] hppa2.0-unknown-linux-gnu-10.2.0 *
+> >
+> >   [3] hppa64-unknown-linux-gnu-10.2.0 *
+>
+>
+> I see the same issue too, but only when compiling natively on a parisc machine.
+> Cross-compiling on a x86 box works nicely.
+>
+> First I thought it's a problem with setting the "cross_compiling" flag in ./Makefile.
+> But that's not sufficient.
+>
+> On a x86 machine (which builds fine) I get
+> SRCARCH=parisc SUBARCH=x86 UTS_MACHINE=parisc
+> The arch/parisc/kernel/asm-offsets.c file gets preprocessed via:
+> hppa64-linux-gnu-gcc
+>
+> On a native 32bit parisc machine I have:
+> SRCARCH=parisc SUBARCH=parisc UTS_MACHINE=parisc
+> Here the arch/parisc/kernel/asm-offsets.c file gets preprocessed via:
+> gcc
+> Instead here the native hppa64-linux-gnu-gcc (cross compiler) should have been used too, since
+> we build a 64-bit hppa kernel (CONFIG_64BIT is set).
+> Note, on hppa we don't have an "-m64" compiler flag as on x86.
 
-Because I do not have a machine that supports Intel PT, I cannot verify 
-the Intel PT scenario. :)
+I see.
+hppa is not a bi-arch compiler, in other words,
+http- and hppa64- are separate compilers.
 
-Thanks,
-Yang
+
+
+>
+> Mashahiro, do you maybe have an idea what gets wrong here, or which
+> patch has changed the behaviour how the asm-offsets.c file gets preprocessed?
+
+
+Presumably, commit 23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3
+
+Prior to that commit, arch/parisc/Makefile was like this:
+
+ifneq ($(SUBARCH),$(UTS_MACHINE))
+        ifeq ($(CROSS_COMPILE),)
+                    ...
+
+Now I understand why arch/parisc/Makefile was written this way.
+
+Reverting the change in arch/parisc/Makefile will restore the original behavior.
+
+But, please keep in mind that there is an issue remaining.
+
+Please see this code:
+
+ifdef CONFIG_64BIT
+UTS_MACHINE := parisc64
+CHECKFLAGS += -D__LP64__=1
+CC_ARCHES = hppa64
+LD_BFD := elf64-hppa-linux
+else # 32-bit
+CC_ARCHES = hppa hppa2.0 hppa1.1
+LD_BFD := elf32-hppa-linux
+endif
+
+
+UTS_MACHINE is determined by CONFIG_64BIT.
+
+CONFIG_64BIT is defined only after Kconfig is finished.
+When you are trying to configure the .config,
+CONFIG_64BIT is not defined yet.
+So UTS_MACHINE is always 'parisc'.
+
+As you know, Kconfig files now have a bunch of 'cc-option' syntax
+to check the compiler capability in Kconfig time.
+Hence, you need to provide a proper compiler in Kconfig time too.
+
+When you build a 64-bit parisc kernel on a 32-bit parisc machine,
+Kconfig is passed with CC=gcc since SUBARCH==UTS_MACHINE==parisc.
+After Kconfig, CROSS_COMPILE=hppa64-* is set,
+and the kernel is built by CC=hppa64-*-gcc.
+So, Kconfig evaluated a compiletely different compiler. This is pointless.
+
+
+There are some options
+
+[option 1]
+  revert the parisc bit of 23243c1ace9fb4eae2f75e0fe0ece8e3219fb4f3
+  This will restore the functionality you may want, but
+  as I said above, Kconfig is doing pointless things.
+
+[option 2]
+   Stop using cc-cross-prefix, and pass CROSS_COMPILE explicitly.
+   This is what many architectures including arm, arm64 do.
+   You need to explicitly pass CROSS_COMPILE=aarch64-linux-gnu- etc.
+   if you are cross-compiling arm64.
+
+[option 3]
+   Introduce ARCH=parisc64.
+
+   When you are building 64-bit kernel, you can pass ARCH=parisc64
+
+    A patch attached.  (but not tested much)
+
+
+
+--
+Best Regards
+
+Masahiro Yamada
+
+--0000000000008039e105c45fceaf
+Content-Type: application/x-patch; name="parisc64.diff"
+Content-Disposition: attachment; filename="parisc64.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kpq940k00>
+X-Attachment-Id: f_kpq940k00
+
+ZGlmZiAtLWdpdCBhL01ha2VmaWxlIGIvTWFrZWZpbGUKaW5kZXggN2I2NDNhMWE3ODg2Li5mYTM3
+NjE1ZjUzMzIgMTAwNjQ0Ci0tLSBhL01ha2VmaWxlCisrKyBiL01ha2VmaWxlCkBAIC00MDYsNiAr
+NDA2LDExIEBAIGlmZXEgKCQoQVJDSCksc3BhcmM2NCkKICAgICAgICBTUkNBUkNIIDo9IHNwYXJj
+CiBlbmRpZgogCisjIEFkZGl0aW9uYWwgQVJDSCBzZXR0aW5ncyBmb3IgcGFyaXNjCitpZmVxICgk
+KEFSQ0gpLHBhcmlzYzY0KQorICAgICAgIFNSQ0FSQ0ggOj0gcGFyaXNjCitlbmRpZgorCiBleHBv
+cnQgY3Jvc3NfY29tcGlsaW5nIDo9CiBpZm5lcSAoJChTUkNBUkNIKSwkKFNVQkFSQ0gpKQogY3Jv
+c3NfY29tcGlsaW5nIDo9IDEKZGlmZiAtLWdpdCBhL2FyY2gvcGFyaXNjL01ha2VmaWxlIGIvYXJj
+aC9wYXJpc2MvTWFrZWZpbGUKaW5kZXggYWVkOGVhMjkyNjhiLi4yZDAxOWFhNzNiOGYgMTAwNjQ0
+Ci0tLSBhL2FyY2gvcGFyaXNjL01ha2VmaWxlCisrKyBiL2FyY2gvcGFyaXNjL01ha2VmaWxlCkBA
+IC0yNSwxOCArMjUsMTggQEAgQ0hFQ0tGTEFHUwkrPSAtRF9faHBwYV9fPTEKIGlmZGVmIENPTkZJ
+R182NEJJVAogVVRTX01BQ0hJTkUJOj0gcGFyaXNjNjQKIENIRUNLRkxBR1MJKz0gLURfX0xQNjRf
+Xz0xCi1DQ19BUkNIRVMJPSBocHBhNjQKIExEX0JGRAkJOj0gZWxmNjQtaHBwYS1saW51eAogZWxz
+ZSAjIDMyLWJpdAotQ0NfQVJDSEVTCT0gaHBwYSBocHBhMi4wIGhwcGExLjEKIExEX0JGRAkJOj0g
+ZWxmMzItaHBwYS1saW51eAogZW5kaWYKIAogIyBzZWxlY3QgZGVmY29uZmlnIGJhc2VkIG9uIGFj
+dHVhbCBhcmNoaXRlY3R1cmUKLWlmZXEgKCQoc2hlbGwgdW5hbWUgLW0pLHBhcmlzYzY0KQoraWZl
+cSAoJChBUkNIKSxwYXJpc2M2NCkKIAlLQlVJTERfREVGQ09ORklHIDo9IGdlbmVyaWMtNjRiaXRf
+ZGVmY29uZmlnCisJQ0NfQVJDSEVTIDo9IGhwcGE2NAogZWxzZQogCUtCVUlMRF9ERUZDT05GSUcg
+Oj0gZ2VuZXJpYy0zMmJpdF9kZWZjb25maWcKKwlDQ19BUkNIRVMgOj0gaHBwYSBocHBhMi4wIGhw
+cGExLjEKIGVuZGlmCiAKIGV4cG9ydCBMRF9CRkQKZGlmZiAtLWdpdCBhL3NjcmlwdHMvc3ViYXJj
+aC5pbmNsdWRlIGIvc2NyaXB0cy9zdWJhcmNoLmluY2x1ZGUKaW5kZXggNjUwNjgyODIxMTI2Li43
+NzY4NDlhM2M1MDAgMTAwNjQ0Ci0tLSBhL3NjcmlwdHMvc3ViYXJjaC5pbmNsdWRlCisrKyBiL3Nj
+cmlwdHMvc3ViYXJjaC5pbmNsdWRlCkBAIC03LDcgKzcsNyBAQAogU1VCQVJDSCA6PSAkKHNoZWxs
+IHVuYW1lIC1tIHwgc2VkIC1lIHMvaS44Ni94ODYvIC1lIHMveDg2XzY0L3g4Ni8gXAogCQkJCSAg
+LWUgcy9zdW40dS9zcGFyYzY0LyBcCiAJCQkJICAtZSBzL2FybS4qL2FybS8gLWUgcy9zYTExMC9h
+cm0vIFwKLQkJCQkgIC1lIHMvczM5MHgvczM5MC8gLWUgcy9wYXJpc2M2NC9wYXJpc2MvIFwKKwkJ
+CQkgIC1lIHMvczM5MHgvczM5MC8gXAogCQkJCSAgLWUgcy9wcGMuKi9wb3dlcnBjLyAtZSBzL21p
+cHMuKi9taXBzLyBcCiAJCQkJICAtZSBzL3NoWzIzNF0uKi9zaC8gLWUgcy9hYXJjaDY0LiovYXJt
+NjQvIFwKIAkJCQkgIC1lIHMvcmlzY3YuKi9yaXNjdi8pCg==
+--0000000000008039e105c45fceaf--
