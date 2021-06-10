@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369363A2CD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BC93A2CED
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhFJNZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:25:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39229 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230322AbhFJNZ2 (ORCPT
+        id S231147AbhFJN1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhFJN1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:25:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623331412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=88ww2xQY0H+0+XkZE9y7YZG1xhuZT7Zms2aalO6pzRo=;
-        b=dN/SKWoOMtsPnwSsqg61lvd5Pjqpc2bKrciIu9DNRD7PxgmdSnea/NJht8BX7ikzN70d3L
-        V4gTBD6YnptLwiLitinPROxd+Bcwdc31IuNvrwhfZMx2aj3RKMdRJKocgidqs8FQJaVo95
-        oXZnxq+cFNV5vZj0Oq3baslnSUSg3Us=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-164-An8N__SWOheIqPQNPs594g-1; Thu, 10 Jun 2021 09:23:30 -0400
-X-MC-Unique: An8N__SWOheIqPQNPs594g-1
-Received: by mail-wm1-f69.google.com with SMTP id m31-20020a05600c3b1fb02901bd331ed39fso456070wms.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 06:23:30 -0700 (PDT)
+        Thu, 10 Jun 2021 09:27:10 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB03C061574;
+        Thu, 10 Jun 2021 06:25:00 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id r7so18624300edv.12;
+        Thu, 10 Jun 2021 06:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fHjU2WEAbMZiarjhmO6iycYFdVSmDuuGt5Qz3UrBd+Y=;
+        b=I/TRvtWBf2DDlmtgj9SJsOmWLpYOaIfcq4VrtTsAp2XaC6+XhDPuz1BzWHvp4mo7t6
+         fIcEaPfX63674bKdSVX+mNCqw59k+dqXNz2wAPa5apypTXMiLrHB1ivA1Nb/wtVW5jeL
+         0IbwQhmZb3QLvOzEIl6We35cXPxTp/G28sGN53xTwHwBEz3HkMOdFBAtTY2MyWg9f89r
+         txcxLqCUQGMj45LVm2dBp+ym/RXADi2xenGYWrVHloTLpPHCQP72hlxXgKlK+k0k0Pbe
+         wkrT/wtmhAKJ1j43VNNzoyaI3wPZRKnbCrJhd+BNQbXeSkTTLimAi6KEmkeO62R345v2
+         jHYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=88ww2xQY0H+0+XkZE9y7YZG1xhuZT7Zms2aalO6pzRo=;
-        b=ieD5ial7HBpeP7/Mi7TnHj2ToDM1mn//Jb9T9gMXRhxLCm63hNZxoT6F8zqK4n/rev
-         bdrdbvVWacOSNXP+5t7veM6Zg67wGz/RW4MiZo2Ja9jBo3xbFdlTuxQiEpD9lbMbi7tj
-         ZDqqSs51lvypVBfVLhIazOrB5DugghLX+xdIL+SF2cxSzp46RPIt29lJWoX3k0/oHhXc
-         crK99piS54p1Eq8G6N9MjqUHMfHuYkPgyx3Wii79+o3LFgFlzDdKfJKMBh0rG5pez5rC
-         CJ6ADE4WGBMI1O6Y5THF/hJ+BsFJtNPXriIZu0wvnMU4nP5X0kiE4GlZLR67ZL8mKi4q
-         +hsA==
-X-Gm-Message-State: AOAM53169PahKv0GDoCRpT8DpetMiGIdqMDKmLZVdmUTAF8kCetQ60O9
-        IU+dGLoPcj3m89gRLcnAEaHanQtsI+hE5GHORH09iXYppjenuBmV4xbHimLD1xI4rLrFjek45O2
-        PQ8iY85SKswOkX0ltJ8n/J44V
-X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr5114454wmq.164.1623331409582;
-        Thu, 10 Jun 2021 06:23:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw79lNKYMmKsJc+6kNvOS13CVwEmBkp0QyLoPEBLj7gbej3FcuzIUPP6197YkoOsIew2kREgw==
-X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr5114437wmq.164.1623331409407;
-        Thu, 10 Jun 2021 06:23:29 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id o3sm4347353wrc.0.2021.06.10.06.23.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 06:23:28 -0700 (PDT)
-Subject: Re: [PATCH 2/9] KVM: x86: Emulate triple fault shutdown if RSM
- emulation fails
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+fb0b6a7e8713aeb0319c@syzkaller.appspotmail.com
-References: <20210609185619.992058-1-seanjc@google.com>
- <20210609185619.992058-3-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <520185e2-fe95-6ab6-163c-a46bfaa1f5d5@redhat.com>
-Date:   Thu, 10 Jun 2021 15:23:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        bh=fHjU2WEAbMZiarjhmO6iycYFdVSmDuuGt5Qz3UrBd+Y=;
+        b=dQ23py5UeZkKUiIGgnc9ec2EMv5jxRoejmGRMqgyY/qMi7cRlqaY1lb5+7yeUbPYyH
+         0awGL9w+d6qP+KqFBy57/qXWQA/8OE2VqeublrYJLp5VJHvX6+KXBsV2zlkFABaHS69k
+         7yN+dln76K1QWyW5/p5vbyBFTuKS10S7n1MiLwx8JHxH+phBR0YjGzZoLdP5FPUz6nCW
+         r3G3xHkaiE5yglzm7DNsP4rMyP86E9JelMSBdcbqVfJrKemZl7yF+i5nZcEsBDMNVv9A
+         QzJUtI9DWZvsljsJ5QuM6lyLxG5nxvXa1rbtkKvVZ7ssWcuOtNqqCx10z74hPKJM9G1H
+         3EpQ==
+X-Gm-Message-State: AOAM53174bmLJQNUiwKhcRzNJtKFVGYSZDrd+1ugV/vdHheJhlbSLmsE
+        UOEsFh70PBqFRcz6LX6hRCE=
+X-Google-Smtp-Source: ABdhPJyuG6UoPJnv1fm5wbYE3JVsU3eu0AejdDreusBw8vLID7l2lSp5Fp6bM8JsuY+V/qGFKUtM/g==
+X-Received: by 2002:a05:6402:14d8:: with SMTP id f24mr4823204edx.79.1623331498736;
+        Thu, 10 Jun 2021 06:24:58 -0700 (PDT)
+Received: from lab-pc01.sra.uni-hannover.de (lab.sra.uni-hannover.de. [130.75.33.87])
+        by smtp.gmail.com with ESMTPSA id du16sm999619ejc.42.2021.06.10.06.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 06:24:58 -0700 (PDT)
+From:   Andreas Kaessens <akaessens@gmail.com>
+To:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-kernel@i4.cs.fau.de, Andreas Kaessens <akaessens@gmail.com>,
+        Darian Biastoch <d.biastoch@gmail.com>
+Subject: [PATCH 1/2] pinctrl: mcp23s08: Add optional reset GPIO
+Date:   Thu, 10 Jun 2021 15:24:37 +0200
+Message-Id: <20210610132438.3085841-1-akaessens@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210609185619.992058-3-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06/21 20:56, Sean Christopherson wrote:
-> For recent Intel CPUs, restoring NMI blocking is technically wrong, but
-> so is restoring NMI blocking in the first place, and Intel's RSM
-> "architecture" is such a mess that just about anything is allowed and can
-> be justified as micro-architectural behavior.
+The MCP23x port expander RESET# line can be connected to a host GPIO.
+The optional reset-gpio must be set to LOW if the reset is asserted
+at probing time.
 
-The Intel manual is an absolute mess with respect to NMI blocking, and 
-for once AMD followed suit.
+On page 5 in the datasheet [0] the "Device Active After Reset high"
+time is specified at 0 µs. Therefore no waiting is needed after the
+reset transition.
 
-Some versions of the AMD BIOS and Kernel Developer Manual provide the 
-offset of the "NMI masked" flag in the SMM state save area, but 
-unfortunately that was discovered too late.
+[0] https://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
 
-Paolo
+Signed-off-by: Andreas Kaessens <akaessens@gmail.com>
+Signed-off-by: Darian Biastoch <d.biastoch@gmail.com>
+---
+ drivers/pinctrl/pinctrl-mcp23s08.c | 3 +++
+ drivers/pinctrl/pinctrl-mcp23s08.h | 1 +
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
+index 799d596a1a4b..8ab254170d99 100644
+--- a/drivers/pinctrl/pinctrl-mcp23s08.c
++++ b/drivers/pinctrl/pinctrl-mcp23s08.c
+@@ -9,6 +9,7 @@
+ #include <linux/module.h>
+ #include <linux/export.h>
+ #include <linux/gpio/driver.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/slab.h>
+ #include <asm/byteorder.h>
+ #include <linux/interrupt.h>
+@@ -558,6 +559,8 @@ int mcp23s08_probe_one(struct mcp23s08 *mcp, struct device *dev,
+ 	mcp->chip.parent = dev;
+ 	mcp->chip.owner = THIS_MODULE;
+ 
++	mcp->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
++
+ 	/* verify MCP_IOCON.SEQOP = 0, so sequential reads work,
+ 	 * and MCP_IOCON.HAEN = 1, so we work with all chips.
+ 	 */
+diff --git a/drivers/pinctrl/pinctrl-mcp23s08.h b/drivers/pinctrl/pinctrl-mcp23s08.h
+index 90dc27081a3c..b8d15939e0c2 100644
+--- a/drivers/pinctrl/pinctrl-mcp23s08.h
++++ b/drivers/pinctrl/pinctrl-mcp23s08.h
+@@ -43,6 +43,7 @@ struct mcp23s08 {
+ 
+ 	struct pinctrl_dev	*pctldev;
+ 	struct pinctrl_desc	pinctrl_desc;
++	struct gpio_desc        *reset_gpio;
+ };
+ 
+ extern const struct regmap_config mcp23x08_regmap;
+-- 
+2.25.1
 
