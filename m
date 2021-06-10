@@ -2,262 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150833A300B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E813A300F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhFJQEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:04:38 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3203 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFJQEh (ORCPT
+        id S230080AbhFJQGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:06:00 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:43743 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJQF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:04:37 -0400
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G17hY43GQz6M4gy;
-        Thu, 10 Jun 2021 23:49:49 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 18:02:39 +0200
-Received: from localhost (10.52.126.112) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 17:02:38 +0100
-Date:   Thu, 10 Jun 2021 17:02:35 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-CC:     <maz@kernel.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <pbonzini@redhat.com>,
-        <corbet@lwn.net>, <james.morse@arm.com>,
-        <alexandru.elisei@arm.com>, <suzuki.poulose@arm.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <lorenzo.pieralisi@arm.com>, <salil.mehta@huawei.com>,
-        <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [RFC PATCH 4/5] KVM: arm64: Pass hypercalls to userspace
-Message-ID: <20210610170235.00003494@Huawei.com>
-In-Reply-To: <20210608154805.216869-5-jean-philippe@linaro.org>
-References: <20210608154805.216869-1-jean-philippe@linaro.org>
-        <20210608154805.216869-5-jean-philippe@linaro.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Thu, 10 Jun 2021 12:05:58 -0400
+Received: by mail-oi1-f175.google.com with SMTP id x196so2635595oif.10;
+        Thu, 10 Jun 2021 09:03:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a5oo7TWTKnejB/NSyi1wnjYclDhZO0+JNnZ0T3JYfKU=;
+        b=DlbuS8U5MRTOzvFc2JjRWFzKkFWP8RUQNJYHATdP69KNi1rsuT3UsecltxNkJcaNy0
+         yAof0hJjP0n7hxwpo+LqnV4IAfFPfzHAyP/O7uKyK1FHCtek24TQdEH/phxXH3rtsa1n
+         au09HfOkpJkv11OzV7Cm6Gc70/1GgVYByLUqGnxuWpBoPPBx9sV20l091YwVn9fue08B
+         0q5JuuhyXqF5LDX9W7sK3TXrUpEcODRMJSEhMnsa/v23akxSjrDiptAj0B0LwqmfvK0D
+         ArgAXd7tsjXdrQpBp+inur5EDvX0XNnUDOpEe/EgJrOsTT+MwUxo89WQB3gjRNMiBz/I
+         dD3w==
+X-Gm-Message-State: AOAM530z8Jc3FDITL5I2WRdhvfnmU3xvvkAS9Lgn//o2tri2xQf6X/eU
+        l8npocA2huPgZg4ay+bt3A==
+X-Google-Smtp-Source: ABdhPJxwAL0yW2ShIIl0STCx2/tb/hEmiPJpgxZ2+n9NW7+yPvslHVmkAwQwapoq9KYASfSAdmTouA==
+X-Received: by 2002:aca:ac47:: with SMTP id v68mr3958872oie.160.1623341026947;
+        Thu, 10 Jun 2021 09:03:46 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.113])
+        by smtp.gmail.com with ESMTPSA id h1sm675077otq.59.2021.06.10.09.03.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 09:03:46 -0700 (PDT)
+Received: (nullmailer pid 1890719 invoked by uid 1000);
+        Thu, 10 Jun 2021 16:03:42 -0000
+Date:   Thu, 10 Jun 2021 11:03:42 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     michal.simek@xilinx.com, mdf@kernel.org, trix@redhat.com,
+        arnd@arndb.de, rajan.vaja@xilinx.com, gregkh@linuxfoundation.org,
+        amit.sunil.dhamne@xilinx.com, tejas.patel@xilinx.com,
+        zou_wei@huawei.com, lakshmi.sai.krishna.potthuri@xilinx.com,
+        ravi.patel@xilinx.com, iwamatsu@nigauri.org,
+        wendy.liang@xilinx.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, git@xilinx.com,
+        chinnikishore369@gmail.com
+Subject: Re: [PATCH v7 3/4] dt-bindings: firmware: Add bindings for xilinx
+ firmware
+Message-ID: <20210610160342.GA1883933@robh.at.kernel.org>
+References: <20210604113332.1394-1-nava.manne@xilinx.com>
+ <20210604113332.1394-4-nava.manne@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.126.112]
-X-ClientProxiedBy: lhreml728-chm.china.huawei.com (10.201.108.79) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604113332.1394-4-nava.manne@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  8 Jun 2021 17:48:05 +0200
-Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
-
-> Let userspace request to handle all hypercalls that aren't handled by
-> KVM, by setting the KVM_CAP_ARM_HVC_TO_USER capability.
+On Fri, Jun 04, 2021 at 05:03:31PM +0530, Nava kishore Manne wrote:
+> Add documentation to describe Xilinx firmware driver bindings.
+> Firmware driver provides an interface to firmware APIs.
+> Interface APIs can be used by any driver to communicate
+> to Platform Management Unit.
 > 
-> With the help of another capability, this will allow userspace to handle
-> PSCI calls.
-> 
-> Suggested-by: James Morse <james.morse@arm.com>
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-
-Trivial question inline.
-
-
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
 > ---
+> Changes for v4:
+>               -Added new yaml file for xilinx firmware
+>                as suggested by Rob.
 > 
-> Notes on this implementation:
+> Changes for v5:
+>               -Fixed some minor issues and updated the fpga node name to versal_fpga.
 > 
-> * A similar mechanism was proposed for SDEI some time ago [1]. This RFC
->   generalizes the idea to all hypercalls, since that was suggested on
->   the list [2, 3].
+> Changes for v6:
+>               -Added AES and Clk nodes as a sub nodes to the firmware node.
 > 
-> * We're reusing kvm_run.hypercall. I copied x0-x5 into
->   kvm_run.hypercall.args[] to help userspace but I'm tempted to remove
->   this, because:
->   - Most user handlers will need to write results back into the
->     registers (x0-x3 for SMCCC), so if we keep this shortcut we should
->     go all the way and synchronize them on return to kernel.
->   - QEMU doesn't care about this shortcut, it pulls all vcpu regs before
->     handling the call.
->   - SMCCC uses x0-x16 for parameters.
->   x0 does contain the SMCCC function ID and may be useful for fast
->   dispatch, we could keep that plus the immediate number.
+> Changes for v7:
+>               -Fixed child nodes format ssues.
 > 
-> * Should we add a flag in the kvm_run.hypercall telling whether this is
->   HVC or SMC?  Can be added later in those bottom longmode and pad
->   fields.
-> 
-> * On top of this we could share with userspace which HVC ranges are
->   available and which ones are handled by KVM. That can actually be
->   added independently, through a vCPU/VM device attribute (which doesn't
->   consume a new ioctl):
->   - userspace issues HAS_ATTR ioctl on the VM fd to query whether this
->     feature is available.
->   - userspace queries the number N of HVC ranges using one GET_ATTR.
->   - userspace passes an array of N ranges using another GET_ATTR.
->     The array is filled and returned by KVM.
-> 
-> * Untested for AArch32 guests.
-> 
-> [1] https://lore.kernel.org/linux-arm-kernel/20170808164616.25949-12-james.morse@arm.com/
-> [2] https://lore.kernel.org/linux-arm-kernel/bf7e83f1-c58e-8d65-edd0-d08f27b8b766@arm.com/
-> [3] https://lore.kernel.org/linux-arm-kernel/f56cf420-affc-35f0-2355-801a924b8a35@arm.com/
-> ---
->  Documentation/virt/kvm/api.rst    | 17 +++++++++++++++--
->  arch/arm64/include/asm/kvm_host.h |  1 +
->  include/kvm/arm_psci.h            |  4 ++++
->  include/uapi/linux/kvm.h          |  1 +
->  arch/arm64/kvm/arm.c              |  5 +++++
->  arch/arm64/kvm/hypercalls.c       | 28 +++++++++++++++++++++++++++-
->  6 files changed, 53 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index e4fe7fb60d5d..3d8c1661e7b2 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -5228,8 +5228,12 @@ to the byte array.
->  			__u32 pad;
->  		} hypercall;
->  
-> -Unused.  This was once used for 'hypercall to userspace'.  To implement
-> -such functionality, use KVM_EXIT_IO (x86) or KVM_EXIT_MMIO (all except s390).
-> +On x86 this was once used for 'hypercall to userspace'.  To implement such
-> +functionality, use KVM_EXIT_IO (x86) or KVM_EXIT_MMIO (all except s390).
-> +
-> +On arm64 it is used for hypercalls, when the KVM_CAP_ARM_HVC_TO_USER capability
-> +is enabled. 'nr' contains the HVC or SMC immediate. 'args' contains registers
-> +x0 - x5. The other parameters are unused.
->  
->  .. note:: KVM_EXIT_IO is significantly faster than KVM_EXIT_MMIO.
->  
-> @@ -6894,3 +6898,12 @@ This capability is always enabled.
->  This capability indicates that the KVM virtual PTP service is
->  supported in the host. A VMM can check whether the service is
->  available to the guest on migration.
-> +
-> +8.33 KVM_CAP_ARM_HVC_TO_USER
-> +----------------------------
-> +
-> +:Architecture: arm64
-> +
-> +This capability indicates that KVM can pass unhandled hypercalls to userspace,
-> +if the VMM enables it. Hypercalls are passed with KVM_EXIT_HYPERCALL in
-> +kvm_run::hypercall.
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 3ca732feb9a5..25554ce97045 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -123,6 +123,7 @@ struct kvm_arch {
->  	 * supported.
->  	 */
->  	bool return_nisv_io_abort_to_user;
-> +	bool hvc_to_user;
->  
->  	/*
->  	 * VM-wide PMU filter, implemented as a bitmap and big enough for
-> diff --git a/include/kvm/arm_psci.h b/include/kvm/arm_psci.h
-> index 5b58bd2fe088..d6b71a48fbb1 100644
-> --- a/include/kvm/arm_psci.h
-> +++ b/include/kvm/arm_psci.h
-> @@ -16,6 +16,10 @@
->  
->  #define KVM_ARM_PSCI_LATEST	KVM_ARM_PSCI_1_0
->  
-> +#define KVM_PSCI_FN_LAST	KVM_PSCI_FN(3)
-> +#define PSCI_0_2_FN_LAST	PSCI_0_2_FN(0x3f)
-> +#define PSCI_0_2_FN64_LAST	PSCI_0_2_FN64(0x3f)
+>  .../firmware/xilinx/xlnx,zynqmp-firmware.yaml | 94 +++++++++++++++++++
+>  1 file changed, 94 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
 
-Why 3f?  Perhaps a spec reference if appropriate.
+You need to remove xlnx,zynqmp-firmware.txt
 
+> 
+> diff --git a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+> new file mode 100644
+> index 000000000000..8e0241c4c137
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+> @@ -0,0 +1,94 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/firmware/xilinx/xlnx,zynqmp-firmware.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  /*
->   * We need the KVM pointer independently from the vcpu as we can call
->   * this from HYP, and need to apply kern_hyp_va on it...
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 06ba64c49737..aa831986a399 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1084,6 +1084,7 @@ struct kvm_ppc_resize_hpt {
->  #define KVM_CAP_VM_COPY_ENC_CONTEXT_FROM 197
->  #define KVM_CAP_PTP_KVM 198
->  #define KVM_CAP_ARM_MP_HALTED 199
-> +#define KVM_CAP_ARM_HVC_TO_USER 200
->  
->  #ifdef KVM_CAP_IRQ_ROUTING
->  
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index d6ad977fea5f..074197721e97 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -93,6 +93,10 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->  		r = 0;
->  		kvm->arch.return_nisv_io_abort_to_user = true;
->  		break;
-> +	case KVM_CAP_ARM_HVC_TO_USER:
-> +		r = 0;
-> +		kvm->arch.hvc_to_user = true;
-> +		break;
->  	default:
->  		r = -EINVAL;
->  		break;
-> @@ -208,6 +212,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->  	case KVM_CAP_VCPU_ATTRIBUTES:
->  	case KVM_CAP_PTP_KVM:
->  	case KVM_CAP_ARM_MP_HALTED:
-> +	case KVM_CAP_ARM_HVC_TO_USER:
->  		r = 1;
->  		break;
->  	case KVM_CAP_SET_GUEST_DEBUG2:
-> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> index 30da78f72b3b..ccc2015eddf9 100644
-> --- a/arch/arm64/kvm/hypercalls.c
-> +++ b/arch/arm64/kvm/hypercalls.c
-> @@ -58,6 +58,28 @@ static void kvm_ptp_get_time(struct kvm_vcpu *vcpu, u64 *val)
->  	val[3] = lower_32_bits(cycles);
->  }
->  
-> +static int kvm_hvc_user(struct kvm_vcpu *vcpu)
-> +{
-> +	int i;
-> +	struct kvm_run *run = vcpu->run;
+> +title: Xilinx firmware driver
 > +
-> +	if (!vcpu->kvm->arch.hvc_to_user) {
-> +		smccc_set_retval(vcpu, SMCCC_RET_NOT_SUPPORTED, 0, 0, 0);
-> +		return 1;
-> +	}
+> +maintainers:
+> +  - Nava kishore Manne <nava.manne@xilinx.com>
 > +
-> +	run->exit_reason = KVM_EXIT_HYPERCALL;
-> +	run->hypercall.nr = kvm_vcpu_hvc_get_imm(vcpu);
-> +	/* Copy the first parameters for fast access */
-> +	for (i = 0; i < 6; i++)
-> +		run->hypercall.args[i] = vcpu_get_reg(vcpu, i);
-> +	run->hypercall.ret = 0;
-> +	run->hypercall.longmode = 0;
-> +	run->hypercall.pad = 0;
+> +description:
+> +  The zynqmp-firmware node describes the interface to platform firmware.
+> +  ZynqMP has an interface to communicate with secure firmware. Firmware
+> +  driver provides an interface to firmware APIs. Interface APIs can be
+> +  used by any driver to communicate to PMUFW(Platform Management Unit).
+> +  These requests include clock management, pin control, device control,
+> +  power management service, FPGA service and other platform management
+> +  services.
 > +
-> +	return 0;
-> +}
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - description:
+> +          For implementations complying for Zynq Ultrascale+ MPSoC.
+> +        const: xlnx,zynqmp-firmware
 > +
->  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
->  {
->  	u32 func_id = smccc_get_function(vcpu);
-> @@ -139,8 +161,12 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
->  	case ARM_SMCCC_TRNG_RND32:
->  	case ARM_SMCCC_TRNG_RND64:
->  		return kvm_trng_call(vcpu);
-> -	default:
-> +	case KVM_PSCI_FN_BASE...KVM_PSCI_FN_LAST:
-> +	case PSCI_0_2_FN_BASE...PSCI_0_2_FN_LAST:
-> +	case PSCI_0_2_FN64_BASE...PSCI_0_2_FN64_LAST:
->  		return kvm_psci_call(vcpu);
-> +	default:
-> +		return kvm_hvc_user(vcpu);
->  	}
->  
->  	smccc_set_retval(vcpu, val[0], val[1], val[2], val[3]);
+> +      - description:
+> +          For implementations complying for Versal.
+> +        const: xlnx,versal-firmware
+> +
+> +  method:
+> +    description: |
+> +                 The method of calling the PM-API firmware layer.
+> +                 Permitted values are.
+> +                 - "smc" : SMC #0, following the SMCCC
+> +                 - "hvc" : HVC #0, following the SMCCC
+> +
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +    enum:
+> +      - smc
+> +      - hvc
+> +
+> +  "versal_fpga":
 
+Don't need quotes
+
+> +    $ref: /schemas/fpga/xlnx,versal-fpga.yaml#
+> +    description: Compatible of the FPGA device.
+> +    type: object
+> +
+> +  "zynqmp-aes":
+
+Don't need quotes
+
+> +    $ref: /schemas/crypto/xlnx,zynqmp-aes.yaml#
+> +    description: |
+> +                 The ZynqMP AES-GCM hardened cryptographic accelerator is
+> +                 used to encrypt or decrypt the data with provided key and
+> +                 initialization vector.
+
+Don't need '|' here (there's no formatting) and indent 2 more than 
+'description'.
+
+> +    type: object
+> +
+> +  "clock-controller":
+> +    $ref: /schemas/clock/xlnx,versal-clk.yaml#
+> +    description: |
+> +                 The clock controller is a hardware block of Xilinx versal
+> +                 clock tree. It reads required input clock frequencies from
+> +                 the devicetree and acts as clock provider for all clock
+> +                 consumers of PS clocks.list of clock specifiers which are
+> +                 external input clocks to the given clock controller.
+> +    type: object
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    versal-firmware {
+> +      compatible = "xlnx,versal-firmware";
+> +      method = "smc";
+> +
+> +      versal_fpga: versal_fpga {
+> +        compatible = "xlnx,versal-fpga";
+> +      };
+> +
+> +      xlnx_aes: zynqmp-aes {
+> +        compatible = "xlnx,zynqmp-aes";
+> +      };
+> +
+> +      versal_clk: clock-controller {
+> +        #clock-cells = <1>;
+> +        compatible = "xlnx,versal-clk";
+> +        clocks = <&ref>, <&alt_ref>, <&pl_alt_ref>;
+> +        clock-names = "ref", "alt_ref", "pl_alt_ref";
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.17.1
