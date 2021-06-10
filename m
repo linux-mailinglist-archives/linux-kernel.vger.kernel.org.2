@@ -2,227 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DF13A2BE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F1D3A2BE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhFJMsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:48:13 -0400
-Received: from aposti.net ([89.234.176.197]:54506 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230265AbhFJMsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:48:11 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 1/2] iio: core: Support removing extended name in attribute filename
-Date:   Thu, 10 Jun 2021 13:45:55 +0100
-Message-Id: <20210610124556.34507-2-paul@crapouillou.net>
-In-Reply-To: <20210610124556.34507-1-paul@crapouillou.net>
-References: <20210610124556.34507-1-paul@crapouillou.net>
+        id S230405AbhFJMtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:49:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43721 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230130AbhFJMs6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:48:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623329222;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rIo7QsXKfR+Ud9QvSm9SxMz/ksJEa+v8MBZQvrHcOtU=;
+        b=X9C/+d+P4sGkkYwcHjkK3PzJzHaxgVs0xSTeVqNT9SD8+2MebGmpWg2ROFtfgPwvjE98WQ
+        KtywsohztsYBQ0WDq1j7f5tmA+dE0u9ms/ieZ9t5SkMk7NNP+1CsznVIlyjosJ+xC8rt0H
+        7qaKTx5WFMl5pT793U0n2ZUyINC/vRQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-zdM2f2LYOxC_p-6YlViXcg-1; Thu, 10 Jun 2021 08:47:01 -0400
+X-MC-Unique: zdM2f2LYOxC_p-6YlViXcg-1
+Received: by mail-wr1-f72.google.com with SMTP id x9-20020adfffc90000b02901178add5f60so856400wrs.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:47:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rIo7QsXKfR+Ud9QvSm9SxMz/ksJEa+v8MBZQvrHcOtU=;
+        b=fYaSjP4RboSysMj4VCw//eQts8JNK/B7eQC3kMX5D0dHLpKYWkQ5MaM+yGiuQ54VCa
+         Z4yYRPZUjK5JXP5hSAhk8jlBvZOBEDKkWB/hIbDz0jNAlK3zxtua1dKxgTxfPP+Kyc/q
+         cO8mdFmekMPwGqYmBIN4Unm/jwqYHUyxYmSl5sHgeVtLk6LWoOchkNRHYnjf2/JDzBjt
+         mOZFrUMicRF+2p9e7KnBiiH+AJRRQM24/EigAAnuqh/yWioKUqp4GnjxembxNtoT9O+T
+         hApIyIrMVpiLAH5F+hI+qTbwTDNVRgFDx3ywALGHsp0HpfiVZrd/69OG/cznxHD0fOfH
+         5wcg==
+X-Gm-Message-State: AOAM53176cAHDOdlmnJZxx21kA5y1FWLMj2Ns7yEjhSReeidY8JT2tHX
+        c5G/IJUHlT0/RoXohQmz/O/iTIeUyxaVJUNv3rihn1tIPGK1XnKiYvOum8NY7e9vxL9ekbSqG9m
+        D1VUAgzAEdRvgWJDrwTcM2iF+
+X-Received: by 2002:adf:ea49:: with SMTP id j9mr5194299wrn.366.1623329219956;
+        Thu, 10 Jun 2021 05:46:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZB3xjQhnCDxz2y3ZgDSZ1YuFlZYtPAav5/zpKGksBc1bg3v3xqk2UE+bf+zKEzQRX61XFLg==
+X-Received: by 2002:adf:ea49:: with SMTP id j9mr5194286wrn.366.1623329219801;
+        Thu, 10 Jun 2021 05:46:59 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id f14sm8341494wmq.10.2021.06.10.05.46.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 05:46:59 -0700 (PDT)
+Subject: Re: [RFC PATCH 00/10] KVM: x86/mmu: simplify argument to kvm page
+ fault handler
+To:     Sean Christopherson <seanjc@google.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, isaku.yamahata@gmail.com
+References: <cover.1618914692.git.isaku.yamahata@intel.com>
+ <YK65V++S2Kt1OLTu@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <936b00e2-1bcc-d5cc-5ae1-59f43ab5325f@redhat.com>
+Date:   Thu, 10 Jun 2021 14:45:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YK65V++S2Kt1OLTu@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By default, when a channel has an extended name, it will appear in the
-filename of channel attributes. E.g. if the extended name is "aux", the
-filename of a "sample_rate" attribute will be something like:
-in_voltage0_aux_sample_rate
+On 26/05/21 23:10, Sean Christopherson wrote:
+>    - Have kvm_mmu_do_page_fault() handle initialization of the struct.  That
+>      will allow making most of the fields const, and will avoid the rather painful
+>      kvm_page_fault_init().
+> 
+>    - Pass @vcpu separately.  Yes, it's associated with the fault, but literally
+>      the first line in every consumer is "struct kvm_vcpu *vcpu = kpf->vcpu;".
+> 
+>    - Use "fault" instead of "kpf", mostly because it reads better for people that
+>      aren't intimately familiar with the code, but also to avoid having to refactor
+>      a huge amount of code if we decide to rename kvm_page_fault, e.g. if we decide
+>      to use that name to return fault information to userspace.
+> 
+>    - Snapshot anything that is computed in multiple places, even if it is
+>      derivative of existing info.  E.g. it probably makes sense to grab
 
-Add a mechanism to disable this feature. This will be used to add a
-"extended_name" channel attribute.
+I agree with all of these (especially it was a bit weird not to see vcpu 
+in the prototypes).  Thanks Sean for the review!
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/iio/iio_core.h            |  3 ++-
- drivers/iio/industrialio-buffer.c | 12 ++++++++----
- drivers/iio/industrialio-core.c   | 32 ++++++++++++++++++++-----------
- drivers/iio/industrialio-event.c  |  3 ++-
- 4 files changed, 33 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-index 8f4a9b264962..2e1a251d5550 100644
---- a/drivers/iio/iio_core.h
-+++ b/drivers/iio/iio_core.h
-@@ -50,7 +50,8 @@ int __iio_add_chan_devattr(const char *postfix,
- 			   enum iio_shared_by shared_by,
- 			   struct device *dev,
- 			   struct iio_buffer *buffer,
--			   struct list_head *attr_list);
-+			   struct list_head *attr_list,
-+			   bool extend_name);
- void iio_free_chan_devattr_list(struct list_head *attr_list);
- 
- int iio_device_register_sysfs_group(struct iio_dev *indio_dev,
-diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-index 9a8e16c7e9af..053f8896c81c 100644
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -492,7 +492,8 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
- 				     IIO_SEPARATE,
- 				     &indio_dev->dev,
- 				     buffer,
--				     &buffer->buffer_attr_list);
-+				     &buffer->buffer_attr_list,
-+				     true);
- 	if (ret)
- 		return ret;
- 	attrcount++;
-@@ -504,7 +505,8 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
- 				     0,
- 				     &indio_dev->dev,
- 				     buffer,
--				     &buffer->buffer_attr_list);
-+				     &buffer->buffer_attr_list,
-+				     true);
- 	if (ret)
- 		return ret;
- 	attrcount++;
-@@ -517,7 +519,8 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
- 					     0,
- 					     &indio_dev->dev,
- 					     buffer,
--					     &buffer->buffer_attr_list);
-+					     &buffer->buffer_attr_list,
-+					     true);
- 	else
- 		ret = __iio_add_chan_devattr("en",
- 					     chan,
-@@ -527,7 +530,8 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
- 					     0,
- 					     &indio_dev->dev,
- 					     buffer,
--					     &buffer->buffer_attr_list);
-+					     &buffer->buffer_attr_list,
-+					     true);
- 	if (ret)
- 		return ret;
- 	attrcount++;
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 59efb36db2c7..ec34d930920c 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -981,7 +981,8 @@ int __iio_device_attr_init(struct device_attribute *dev_attr,
- 						struct device_attribute *attr,
- 						const char *buf,
- 						size_t len),
--			   enum iio_shared_by shared_by)
-+			   enum iio_shared_by shared_by,
-+			   bool extend_name)
- {
- 	int ret = 0;
- 	char *name = NULL;
-@@ -990,25 +991,28 @@ int __iio_device_attr_init(struct device_attribute *dev_attr,
- 
- 	/* Build up postfix of <extend_name>_<modifier>_postfix */
- 	if (chan->modified && (shared_by == IIO_SEPARATE)) {
--		if (chan->extend_name)
-+		if (extend_name && chan->extend_name) {
- 			full_postfix = kasprintf(GFP_KERNEL, "%s_%s_%s",
- 						 iio_modifier_names[chan
- 								    ->channel2],
- 						 chan->extend_name,
- 						 postfix);
--		else
-+		} else {
- 			full_postfix = kasprintf(GFP_KERNEL, "%s_%s",
- 						 iio_modifier_names[chan
- 								    ->channel2],
- 						 postfix);
-+		}
- 	} else {
--		if (chan->extend_name == NULL || shared_by != IIO_SEPARATE)
-+		if (!extend_name || chan->extend_name == NULL
-+		    || shared_by != IIO_SEPARATE) {
- 			full_postfix = kstrdup(postfix, GFP_KERNEL);
--		else
-+		} else {
- 			full_postfix = kasprintf(GFP_KERNEL,
- 						 "%s_%s",
- 						 chan->extend_name,
- 						 postfix);
-+		}
- 	}
- 	if (full_postfix == NULL)
- 		return -ENOMEM;
-@@ -1118,7 +1122,8 @@ int __iio_add_chan_devattr(const char *postfix,
- 			   enum iio_shared_by shared_by,
- 			   struct device *dev,
- 			   struct iio_buffer *buffer,
--			   struct list_head *attr_list)
-+			   struct list_head *attr_list,
-+			   bool extend_name)
- {
- 	int ret;
- 	struct iio_dev_attr *iio_attr, *t;
-@@ -1128,7 +1133,8 @@ int __iio_add_chan_devattr(const char *postfix,
- 		return -ENOMEM;
- 	ret = __iio_device_attr_init(&iio_attr->dev_attr,
- 				     postfix, chan,
--				     readfunc, writefunc, shared_by);
-+				     readfunc, writefunc,
-+				     shared_by, extend_name);
- 	if (ret)
- 		goto error_iio_dev_attr_free;
- 	iio_attr->c = chan;
-@@ -1171,7 +1177,8 @@ static int iio_device_add_channel_label(struct iio_dev *indio_dev,
- 				     IIO_SEPARATE,
- 				     &indio_dev->dev,
- 				     NULL,
--				     &iio_dev_opaque->channel_attr_list);
-+				     &iio_dev_opaque->channel_attr_list,
-+				     true);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1197,7 +1204,8 @@ static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
- 					     shared_by,
- 					     &indio_dev->dev,
- 					     NULL,
--					     &iio_dev_opaque->channel_attr_list);
-+					     &iio_dev_opaque->channel_attr_list,
-+					     true);
- 		if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
- 			continue;
- 		else if (ret < 0)
-@@ -1234,7 +1242,8 @@ static int iio_device_add_info_mask_type_avail(struct iio_dev *indio_dev,
- 					     shared_by,
- 					     &indio_dev->dev,
- 					     NULL,
--					     &iio_dev_opaque->channel_attr_list);
-+					     &iio_dev_opaque->channel_attr_list,
-+					     true);
- 		kfree(avail_postfix);
- 		if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
- 			continue;
-@@ -1331,7 +1340,8 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
- 					ext_info->shared,
- 					&indio_dev->dev,
- 					NULL,
--					&iio_dev_opaque->channel_attr_list);
-+					&iio_dev_opaque->channel_attr_list,
-+					true);
- 			i++;
- 			if (ret == -EBUSY && ext_info->shared)
- 				continue;
-diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
-index d0732eac0f0a..e693d1374c9b 100644
---- a/drivers/iio/industrialio-event.c
-+++ b/drivers/iio/industrialio-event.c
-@@ -387,7 +387,8 @@ static int iio_device_add_event(struct iio_dev *indio_dev,
- 		ret = __iio_add_chan_devattr(postfix, chan, show, store,
- 			 (i << 16) | spec_index, shared_by, &indio_dev->dev,
- 			 NULL,
--			&iio_dev_opaque->event_interface->dev_attr_list);
-+			&iio_dev_opaque->event_interface->dev_attr_list,
-+			true);
- 		kfree(postfix);
- 
- 		if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
--- 
-2.30.2
+Paolo
 
