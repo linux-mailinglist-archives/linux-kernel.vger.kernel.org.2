@@ -2,208 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FCE3A22B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F393A22BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhFJDXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 23:23:05 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55504 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229802AbhFJDW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 23:22:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=jWmr2xlRwn6JQaehy4GwAbYBW8L4D3ESDbeB+eyjFlI=; b=hhiJjKT6WeE4zxbXF0IMfq/cIp
-        4f29LBeN15gfX1AVIvAng+bg3qf9bFv4B9FvdCvxTnIDHot3hU6fdyvFxCB+L1skt3f3wTRAu4Y/K
-        XQ44pUFutdRWIB7WN+v7catNdKHEgF0mCEaMjZLPh97X6hBkFGOR19LeXsxGtklpHdko=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lrBE2-008axE-Ng; Thu, 10 Jun 2021 05:19:22 +0200
-Date:   Thu, 10 Jun 2021 05:19:22 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com, paul@crapouillou.net
-Subject: Re: [PATCH v2 2/2] net: stmmac: Add Ingenic SoCs MAC support.
-Message-ID: <YMGEutCet7fP1NZ9@lunn.ch>
-References: <1623260110-25842-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1623260110-25842-3-git-send-email-zhouyanjie@wanyeetech.com>
+        id S229972AbhFJDYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 23:24:21 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50008 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhFJDYT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 23:24:19 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15A3H9Oc196357;
+        Thu, 10 Jun 2021 03:22:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=smjqdgeIrbkNRsAguGapSxCHO12ynPgGPiNMa2g1oH8=;
+ b=soSSBAWpuLrhEZ+2QeEjQVkPlPSwL7BohKpdLkeUZuWQyqhVT21aOyfmkKR7pwkAfFcK
+ LoxuBmcDQ8wc+EC3hlGGOkuMTgXLkMMiHZkaezHZHTPQVYP1Gj2Z9Jy77jEsjdD266DR
+ tZEeWoZ38mFXGT0u4Q/8QQVXa6v+z7QX0gNHpp8eAIvUkIGi44M/o9wjzvM6enLz+o91
+ ODyC5hfm4TQEb0dVmruq61M46XL7H5mrULnhbkUOagHTzt47rcrleQ2KB2vK2BZIYUz7
+ fkcfhB9r9m7kZke+gMqpakmsRzm28RF0z7BH1AMFB6Iv1p8UJ14gc4h3qAkpxS8wY7JJ hA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 39017njqqp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 03:22:12 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15A3AeDj112800;
+        Thu, 10 Jun 2021 03:22:12 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
+        by aserp3020.oracle.com with ESMTP id 3922wwwvms-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 03:22:12 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ecxYz/vXVKMBoYE451jO5FNX3vq1IA9hAGy7jsV7oDdav3FEL/QoVkUqITJIWGQEKaTbaWhznP+5NukBgz5smTO9HRtUtcfnVtFH8W4iKFp02CiqjEpjIml1xQxUv5m8Wr60AGKLGzveQcvP7daibTZ3PZRWMNmkO8YGwIOfNQA0mxYeHxdNOofcdGcPw46sU7dc9AfgeC6xSbuqjCjOxVnl8Glk1iTVsY+kOpBkspTIvp1JsiEzc7S7/M6aMtWitgk8ICqB3+upquZGPvvz6FKTyKQM7Pb3M5gkGHXFkNvxX1mRQE1TXoE8y+z31TpPH95V1Olu0a5weGV1eLEGew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=smjqdgeIrbkNRsAguGapSxCHO12ynPgGPiNMa2g1oH8=;
+ b=ac2wNQ+ciOCBrW5Y3yX8YLB7Te1s8yNLGM8rdvUjAzMsg94GMeRWomoUaanV7iTuRa6UhBsSGWNmt8T7Hc8RHSQ+fTOlJZjNGpC0WO7W7VfPeq1Fgk1+14cllZZ0OKW7kx7qgbaMMId/w7qu3tNrrU88yJfcXdGDYrXruHbaV/YGMsZOXVD1PRRGKotfAgKb7ieez1TGQknQhHQkdhyEmT9cEIYKVn5OcukxgalE0hdM+7WMBvlcujdhJFf/EqRVvhINQZsM+rLdQUYIpnxu3oELOArsjRKu3Jw/feeyqPDuH4lhZvwWfUOki1yA6E+MdMJcJ06wKck7KQqPO7Xnyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=smjqdgeIrbkNRsAguGapSxCHO12ynPgGPiNMa2g1oH8=;
+ b=zFdo4vStK2clf/IdABNEoRtmwH6qNldFNEGogmGry1HpMcE+BqO2jB9pQB8nWucq0XXOBk4Hk1iLHc74AVcLv+obdiBYYlPO0RFym0c7+DPEvkFYKQqj5+zrkfpoXw6gdWI1TyOHgkWhm7MSHufEBhGRVocGDmUqDLyB4iuLyfM=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5433.namprd10.prod.outlook.com (2603:10b6:510:e0::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Thu, 10 Jun
+ 2021 03:22:10 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4219.022; Thu, 10 Jun 2021
+ 03:22:10 +0000
+To:     John Garry <john.garry@huawei.com>
+Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: Re: [PATCH 0/5] hisi_sas: Some error handling improvements
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1czsuflpk.fsf@ca-mkp.ca.oracle.com>
+References: <1623058179-80434-1-git-send-email-john.garry@huawei.com>
+Date:   Wed, 09 Jun 2021 23:22:06 -0400
+In-Reply-To: <1623058179-80434-1-git-send-email-john.garry@huawei.com> (John
+        Garry's message of "Mon, 7 Jun 2021 17:29:34 +0800")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SN6PR01CA0013.prod.exchangelabs.com (2603:10b6:805:b6::26)
+ To PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623260110-25842-3-git-send-email-zhouyanjie@wanyeetech.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN6PR01CA0013.prod.exchangelabs.com (2603:10b6:805:b6::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22 via Frontend Transport; Thu, 10 Jun 2021 03:22:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f0636629-7fb0-4d8e-1c63-08d92bbeeef8
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5433:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB54339F62DA1BBAC710BCD7E58E359@PH0PR10MB5433.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 938UlbZ7RfIUWjvBJX3kit4YoReIzAWXuZBIq/9Yez711G5MUOmXgr8nywTzYyuGi/uhUqErYjTZKAdyBmnKUH22xw1/Iec2bG6pv1mrkk6+b8i4nUfdqn46nI0B7cmqxiK9Sh1A0480DbrUeu1kniyBTpZjJ7jI5JDnuzzWGHcNJ/llvy+3I62lkOlStF1jsauokEFIpKQuCAaRymnAbqkxxYVyqri451YDr/NKEvD/qZPFMPUdRmqyrosbTFbSfPyZbWUIS74+mFSvZrnmErDNSXTznmBog+46Qkdxx2xy/X+1NS+PrzQClm3NefKVSqugs/+py0bLkuHmg/s5IdMeVDzAwY5j27dQoNsfluxjuWdCAr8dkvpX/BluNCsAycRdBkPN9vfeQglyNsRdv3mDakZSLVl+o69eUIk4qhANdtm9FoAaSqbKKKa8v6fl9X7buMpMxj0eYTFHPWKfoG++oSo9Us8EoWJc+F5A3Mnc8U6jYKeXdcjw4pm4fmhhLHVJLm6ps0YLQsXf9RAwdQ3NmGuKJjWq8rXEopgpwbvC4DlvQ8Ce9sM1GVgg+wsKHJuSfIJqJTArMoCzD5FtCS7rZM9UIncgxqkVkZ9Rb4NwevigbvWNj3/Dt79b/dsACb1hVHvG6Hf0V0hT8L1wOw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(39860400002)(366004)(396003)(346002)(83380400001)(66556008)(7696005)(36916002)(52116002)(8936002)(55016002)(16526019)(186003)(6666004)(2906002)(478600001)(26005)(38100700002)(8676002)(956004)(66476007)(66946007)(86362001)(4326008)(54906003)(38350700002)(5660300002)(316002)(4744005)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3H1mnX39gxk/B/vlpQZLmCABVj7AY2bXRZNQsi7Xb+C85tmEStvCGAJCYz20?=
+ =?us-ascii?Q?QtlZBEuOXq0J0NEGsGUOdzQRZV+qhRhpx1nThElKPwycYmwj2PMNg73ll9mL?=
+ =?us-ascii?Q?ZEor1v3wUCNOAS+intYW3OJ6f6KQPvsWTaBfQyBVFc8GzO1NLWjo34urhkca?=
+ =?us-ascii?Q?B9nit///l/UwqhycmQ/9Fh27PhvvhQ6cBwxnxl23WVMR/qpYkmx+tsgD5z/t?=
+ =?us-ascii?Q?a8rlSPa8ALjSLAcLr223CNP0XkCyVnCefK2l9K5qrMGu0wk/Wpy/IU8snlui?=
+ =?us-ascii?Q?HSTjQRBFrF2qPIYs546gT41ldz9FDgbvfH5/OQabg5Q1VEKo5oRRgKRFF3M+?=
+ =?us-ascii?Q?b9+WfR/jeLK2VjsMIMtOEUrHI0DkDhsdqqk+M/LomRy+tImATR0s0LGDBV9E?=
+ =?us-ascii?Q?+yu0TM8PMlbi53aUJflXO/aNnAvJH+uHsYfB3mlW+RoTHHOQTUOZaBPq+1NQ?=
+ =?us-ascii?Q?g+4BnquZsWFP7Og0/+altuOsT+K9n9jgnKyYhZ+yMornULRXZye/lQcOfe2R?=
+ =?us-ascii?Q?8xT8b0N+xG+qbD1UC+uRVpenMRbOJQdKvEEggi711v+3ZMtQwOWwT4E50Lgn?=
+ =?us-ascii?Q?xjpJaRVPfgOEG1Se9N7/YnTP7c/StLBql/+MV7w1yxJh+CYwgM8fRBgGzsLn?=
+ =?us-ascii?Q?xPnAey/ynziaC0xmyGL+APWuzIv/gO+r7srGntynt4bCEn1iLs9BcR0c8AY0?=
+ =?us-ascii?Q?GPN66Ns9DrEcXK4yjQiJe2+W8WfZJTPr1O+xl41ihmgu97nWV+WIZKqjIPyH?=
+ =?us-ascii?Q?KN1YQNcBWSo66Ik7IJWsD7NL2GIKGpL1D0zRs1ovIIYhDGAy7rpZWztkX65v?=
+ =?us-ascii?Q?L6tcPGapV1Uu4Q+AL09wg1/221PsOfAeTacoSORKFqf86LnMufOjNtEhJxPp?=
+ =?us-ascii?Q?AOPyUnIRNhrj8RJyG3yL8nmzgVQ13CTBek5+NQlQ889wzTpQXY3UhZ+wnxZs?=
+ =?us-ascii?Q?pddR3FGLgyFeHme2LOdSVxclAhKHANo5GJXoKyB7xQLo68m1tmaPeweaE6X9?=
+ =?us-ascii?Q?jg7Lt56SMcVNBPNhQNCRXGJYIpXoXT9y6oGkus0sbWH6kUuvV5Cn6+OYbyas?=
+ =?us-ascii?Q?H8PxKRHsi30gUVTakkOUZbGAgl0YTEOc7wcdutZ9VmZQNMEtMAcmZvhHUD1l?=
+ =?us-ascii?Q?aouwZdu4YRcjyBvuf7P0V80uifGen3u48HeoM20BdJfezWQOq4MuZeIk7XhO?=
+ =?us-ascii?Q?KcZM8bdzPYZ8Ob2lpWeVh4+AyiB3Y8QIb2J6F2DnxbMay1GB79El9JpPXnDe?=
+ =?us-ascii?Q?KFGBa/uWISNIGN1MmjSZAaPiqgqM3ibxJyqp7U9+B3w5x0l8+SOKhvua6/kn?=
+ =?us-ascii?Q?hsz+mBes7hGCRFXUxaOIf86F?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0636629-7fb0-4d8e-1c63-08d92bbeeef8
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 03:22:10.3759
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: v53mTlENr5417cf5dQuBlTeIsLcFAvry+YLb/2qJgjQb+j5RvgWq3jFx2xWQPyJGUC+eZ92pgd35ajW5I3C/Ic+WKPvuGhIgKinCs98tWgo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5433
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10010 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 phishscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100019
+X-Proofpoint-GUID: L0ba15sq-7UFyKnF_2TukO_K1tVNtySd
+X-Proofpoint-ORIG-GUID: L0ba15sq-7UFyKnF_2TukO_K1tVNtySd
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10010 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 phishscore=0 impostorscore=0 suspectscore=0 clxscore=1015
+ mlxscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106100019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int jz4775_mac_set_mode(struct plat_stmmacenet_data *plat_dat)
-> +{
-> +	struct ingenic_mac *mac = plat_dat->bsp_priv;
-> +	unsigned int val;
 
+John,
 
-> +	case PHY_INTERFACE_MODE_RGMII:
-> +	case PHY_INTERFACE_MODE_RGMII_ID:
-> +	case PHY_INTERFACE_MODE_RGMII_RXID:
-> +	case PHY_INTERFACE_MODE_RGMII_TXID:
-> +		val = FIELD_PREP(MACPHYC_TXCLK_SEL_MASK, MACPHYC_TXCLK_SEL_INPUT) |
-> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII);
-> +		dev_dbg(mac->dev, "MAC PHY Control Register: PHY_INTERFACE_MODE_RGMII\n");
-> +		break;
+> This series contains a few error handling improvements, generally
+> speed-ups:
+> - Put a limit on link resets retries
+> - Always reset controller for internal abort - it was only occurring
+>   as part of final host adapter reset in error handling process
+> - Speed up error handling when internal abort occurs
 
-So this does what DT writes expect. They put 'rgmii-id' as phy
-mode. The MAC does not add a delay. PHY_INTERFACE_MODE_RGMII_ID is
-passed to the PHY and it adds the delay. And frames flow to/from the
-PHY and users are happy. The majority of MAC drivers are like this.
+Applied to 5.14/scsi-staging, thanks!
 
-> +static int x2000_mac_set_mode(struct plat_stmmacenet_data *plat_dat)
-> +{
-> +	struct ingenic_mac *mac = plat_dat->bsp_priv;
-> +	unsigned int val;
-
-Here we have a complete different story. 
-
-
-> +	case PHY_INTERFACE_MODE_RGMII:
-> +		val = FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII);
-> +
-> +		if (mac->tx_delay == 0) {
-> +			val |= FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_ORIGIN);
-> +		} else {
-> +			val |= FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_DELAY);
-> +
-> +			if (mac->tx_delay > MACPHYC_TX_DELAY_MAX)
-> +				val |= FIELD_PREP(MACPHYC_TX_DELAY_MASK, MACPHYC_TX_DELAY_MAX - 1);
-> +			else
-> +				val |= FIELD_PREP(MACPHYC_TX_DELAY_MASK, mac->tx_delay - 1);
-> +		}
-
-What are the units of tx_delay. The DT binding should be pS, and you
-need to convert from that to whatever the hardware is using.
-
-If mac->tx_delay is greater than MACPHYC_TX_DELAY_MAX, please return
--EINVAL when parsing the binding. We want the DT writer to know they
-have requested something the hardware cannot do.
-
-So if the device tree contains 'rgmii' for PHY mode, you can use this
-for when you have long clock lines on your board adding the delay, and
-you just need to fine tune the delay, add a few pS. The PHY will also
-not add a delay, due to receiving PHY_INTERFACE_MODE_RGMII.
-
-> +
-> +		if (mac->rx_delay == 0) {
-> +			val |= FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN);
-> +		} else {
-> +			val |= FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_DELAY);
-> +
-> +			if (mac->rx_delay > MACPHYC_RX_DELAY_MAX)
-> +				val |= FIELD_PREP(MACPHYC_RX_DELAY_MASK, MACPHYC_RX_DELAY_MAX - 1);
-> +			else
-> +				val |= FIELD_PREP(MACPHYC_RX_DELAY_MASK, mac->rx_delay - 1);
-> +		}
-> +
-> +		dev_dbg(mac->dev, "MAC PHY Control Register: PHY_INTERFACE_MODE_RGMII\n");
-> +		break;
-> +
-> +	case PHY_INTERFACE_MODE_RGMII_ID:
-> +		val = FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_ORIGIN) |
-> +			  FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN) |
-> +			  FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII);
-> +		dev_dbg(mac->dev, "MAC PHY Control Register: PHY_INTERFACE_MODE_RGMII_ID\n");
-> +		break;
-
-So this one is pretty normal. The MAC does not add a delay,
-PHY_INTERFACE_MODE_RGMII_ID is passed to the PHY, and it adds the
-delay. The interface will likely work.
-
-> +
-> +	case PHY_INTERFACE_MODE_RGMII_RXID:
-> +		val = FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII) |
-> +			  FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN);
-> +
-> +		if (mac->tx_delay == 0) {
-> +			val |= FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_ORIGIN);
-> +		} else {
-> +			val |= FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_DELAY);
-> +
-> +			if (mac->tx_delay > MACPHYC_TX_DELAY_MAX)
-> +				val |= FIELD_PREP(MACPHYC_TX_DELAY_MASK, MACPHYC_TX_DELAY_MAX - 1);
-> +			else
-> +				val |= FIELD_PREP(MACPHYC_TX_DELAY_MASK, mac->tx_delay - 1);
-> +		}
-
-So here, the PHY is going to be passed PHY_INTERFACE_MODE_RGMII_RXID.
-The PHY will add a delay in the receive path. The MAC needs to add the
-delay in the transmit path. So tx_delay needs to be the full 2ns, not
-just a small fine tuning value, or the PCB is adding the delay. And
-you also cannot fine tune the RX delay, since rx_delay is ignored.
-
-> +
-> +		dev_dbg(mac->dev, "MAC PHY Control Register: PHY_INTERFACE_MODE_RGMII_RXID\n");
-> +		break;
-> +
-> +	case PHY_INTERFACE_MODE_RGMII_TXID:
-> +		val = FIELD_PREP(MACPHYC_PHY_INFT_MASK, MACPHYC_PHY_INFT_RGMII) |
-> +			  FIELD_PREP(MACPHYC_TX_SEL_MASK, MACPHYC_TX_SEL_ORIGIN);
-> +
-> +		if (mac->rx_delay == 0) {
-> +			val |= FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_ORIGIN);
-> +		} else {
-> +			val |= FIELD_PREP(MACPHYC_RX_SEL_MASK, MACPHYC_RX_SEL_DELAY);
-> +
-> +			if (mac->rx_delay > MACPHYC_RX_DELAY_MAX)
-> +				val |= FIELD_PREP(MACPHYC_RX_DELAY_MASK, MACPHYC_RX_DELAY_MAX - 1);
-> +			else
-> +				val |= FIELD_PREP(MACPHYC_RX_DELAY_MASK, mac->rx_delay - 1);
-> +		}
-
-And here we have the opposite to PHY_INTERFACE_MODE_RGMII_RXID.
-
-So you need to clearly document in the device tree binding when
-rx_delay and tx_delay are used, and when they are ignored. You don't
-want to have DT writers having to look deep into the code to figure
-this out.
-
-Personally, i would simply this, in a big way. I see two options:
-
-1) The MAC never adds a delay. The hardware is there, but simply don't
-use it, to keep thing simple, and the same as nearly every other MAC.
-
-2) If the hardware can do small steps of delay, allow this delay, both
-RX and TX, to be configured in all four modes, in order to allow for
-fine tuning. Leave the PHY to insert the majority of the delay.
-
-> +	/* Get MAC PHY control register */
-> +	mac->regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "mode-reg");
-> +	if (IS_ERR(mac->regmap)) {
-> +		dev_err(&pdev->dev, "%s: failed to get syscon regmap\n", __func__);
-> +		goto err_remove_config_dt;
-> +	}
-
-Please document this in the device tree binding.
-
-> +
-> +	ret = of_property_read_u32(pdev->dev.of_node, "rx-clk-delay", &mac->rx_delay);
-> +	if (ret)
-> +		mac->rx_delay = 0;
-> +
-> +	ret = of_property_read_u32(pdev->dev.of_node, "tx-clk-delay", &mac->tx_delay);
-> +	if (ret)
-> +		mac->tx_delay = 0;
-
-Please take a look at dwmac-mediatek.c. It handles delays nicely. I
-would suggest that is the model to follow.
-
-       Andrew
+-- 
+Martin K. Petersen	Oracle Linux Engineering
