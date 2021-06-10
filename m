@@ -2,136 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D4B3A2115
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 01:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D10C3A211E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 02:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhFJABI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 20:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFJABH (ORCPT
+        id S229943AbhFJAFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 20:05:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15972 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229557AbhFJAFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 20:01:07 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73CEC061574;
-        Wed,  9 Jun 2021 16:59:04 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id l1so21097284pgm.1;
-        Wed, 09 Jun 2021 16:59:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sZzSiPNuS6HzP3W3kJeux2YhF8hkdCu7Hs+HpWnk32I=;
-        b=g+mnOJ9CPb2aZZkhrxZSjQEA3l0xsT28NQFB8tWfdHx+kD1J02obbOj4obmpXt1Ru0
-         dssAnA5M4elwWQW7f0NTx2UP273vVpzNCCRZj80dHfdkUumjBuKwmAhFyPMk9M1y++N3
-         e/cDpxK7XCgTerPLo3tVhrsZR0biCzSYfQZjz/Tg9GurHsOdhkUhpkXG4dv09Q478gJk
-         FxAcCXTP3Y0ZNqnxYoaAHmChIciPilU753kDk0dvklM8xp0FydoO/Z2SvUGulTK3ZMZz
-         BtcHPLj5FlienrXMZmOJJtoANDOjxuu1FN5VGKv1myOQNTfl8VA/5A224xY02mbXc2N+
-         Fx0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sZzSiPNuS6HzP3W3kJeux2YhF8hkdCu7Hs+HpWnk32I=;
-        b=Qvt0PN20Ws6st6SCVuAupYwXrZBLJ/vOa/NaSdrRbkNRjdoTW7iscMwloXaNasVm19
-         GmpEmgcjyNAvPIOaGsKezhR9T3HvsjX3ZlDMBfmccO9wDhNosW/Yx2OFrtZoRKGW5JsS
-         EYVjg8lg2f52euWDux/Dm3on70J+uslrev25prlplWI3Z/Dqu5iCFLRw8eKGRnZwzwi7
-         RJpnfsoybZPUIyM20ebFQ4V7KwmtYY9dq67uKaRGBdA0MiLxcw8VyU84ugCbaXjUb9oV
-         pV5LFNNhWbQ1v7jBt2RUrZcpJfb/cVzxDUDIwzt4pVHxhc/tIZkyvn0G0xY4yQzFACmq
-         ED+Q==
-X-Gm-Message-State: AOAM532oZlM2kiJn1wpyxpjCqK/Z/5I2h4JXZUvPivkA4Xmj2gi8Y7RP
-        US7yG/zL+bveM35EYsaJ7/0=
-X-Google-Smtp-Source: ABdhPJwgXo7n2Yno/auZncv+or4D/adXE63ZaZroShaZjM5hYoDhPmOuGVGxmf0W81DyS+VuzrBqAQ==
-X-Received: by 2002:a65:6118:: with SMTP id z24mr2130369pgu.325.1623283144265;
-        Wed, 09 Jun 2021 16:59:04 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id r11sm742619pgl.34.2021.06.09.16.59.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 16:59:03 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
- controller on the BCM7211
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>
-References: <20210602192758.38735-1-alcooperx@gmail.com>
- <20210602192758.38735-2-alcooperx@gmail.com>
- <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
- <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
- <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com>
-Date:   Wed, 9 Jun 2021 16:59:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        Wed, 9 Jun 2021 20:05:54 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15A02o0p074336;
+        Wed, 9 Jun 2021 20:03:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ in-reply-to : references : date : message-id : mime-version : content-type
+ : content-transfer-encoding; s=pp1;
+ bh=F6WgotYe22yAg0yOKScNhwDZoIn93FGjRm8a8GOZQqs=;
+ b=nk9iySYy9voXpvJmM7oh3VzYfRGUBvobwFIQTYFWoXQfZ0dQziKuhUgH753KPmgXi5U8
+ D+LDztYca2klqJbuYbXe06hurt3In1T44uaFXD2KsU9bhv+fIh3ino3Nw21v6ac3y/n/
+ 6h12Kz+b0WWxJlgvyTP6+RM7zIsc8si0b7THccIHVAEWZsvTDgBzgrDWHhm/+OmL+CJB
+ DxQA/3TNu6TC4RUQz7JtcordPpVEAP9TyGv1yexmnfkIzThyhni5tHzv5MiBwcQxa7Cr
+ j+XamASy+79R2xXA100xMbovgdJ4VOEdHbnhlOInjAwH+k7WXSkl/bAz0gh03GVkC5aj tA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39368ea58p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Jun 2021 20:03:39 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15A03dol079418;
+        Wed, 9 Jun 2021 20:03:39 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39368ea58c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Jun 2021 20:03:38 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15A03UPk013360;
+        Thu, 10 Jun 2021 00:03:38 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma01dal.us.ibm.com with ESMTP id 3900w9vjqd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 00:03:37 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15A03Zwa40042822
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 00:03:35 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81E66AE066;
+        Thu, 10 Jun 2021 00:03:35 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D7F7AE05C;
+        Thu, 10 Jun 2021 00:03:34 +0000 (GMT)
+Received: from localhost (unknown [9.211.54.4])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Thu, 10 Jun 2021 00:03:34 +0000 (GMT)
+From:   Fabiano Rosas <farosas@linux.ibm.com>
+To:     Pratik Sampat <psampat@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
+Subject: Re: [RFC] powerpc/pseries: Interface to represent PAPR firmware
+ attributes
+In-Reply-To: <5c9cb57b-e9d8-0361-8be7-60dc9618db34@linux.ibm.com>
+References: <20210604163501.51511-1-psampat@linux.ibm.com>
+ <87wnr4uhs9.fsf@linux.ibm.com>
+ <5c9cb57b-e9d8-0361-8be7-60dc9618db34@linux.ibm.com>
+Date:   Wed, 09 Jun 2021 21:03:31 -0300
+Message-ID: <87tum6vb58.fsf@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: P2yKf2gNLDKnZrUi8UZJHdAF9nFrRA7u
+X-Proofpoint-GUID: aIel7PAvBVIQvxN7lsSU4w8Jd3joZuRO
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-09_07:2021-06-04,2021-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ impostorscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 suspectscore=0 priorityscore=1501 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106090130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Pratik Sampat <psampat@linux.ibm.com> writes:
 
+>>> 3. version info                      - 1 byte
+>>> 4. A data array of size num attributes, which contains the following:
+>>>    a. attribute ID              - 8 bytes
+>>>    b. attribute value in number - 8 bytes
+>>>    c. attribute name in string  - 64 bytes
+>>>    d. attribute value in string - 64 bytes
+>> Is this new hypercall already present in the spec? These seem a bit
+>> underspecified to me.
+>
+> Yes, it is present in the spec. I probably summarized a little more than =
+needed
+> here and I could expand upon below.
+>
+> The input buffer recives the following data:
+>
+> 1. =E2=80=9Cflags=E2=80=9D:
+> 	a. Bit 0: singleAttribute
+> 		If set to 1, only return the single attribute matching firstAttributeId.
+> 	b. Bits 1-63: Reserved
+> 2. =E2=80=9CfirstAttributeId=E2=80=9D: The first attribute to retrieve
+> 3. =E2=80=9CbufferAddress=E2=80=9D: The logical real address of the start=
+ of the output buffer
+> 4. =E2=80=9CbufferSize=E2=80=9D: The size in bytes of the output buffer
+>=20=09
+>
+>  From the document, the format of the output buffer is as follows:
+>
+> Table 1 --> output buffer
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> | Field Name           | Byte   | Length   |  Description
+> |                      | Offset | in Bytes |
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> | NumberOf             |        |          | Number of Attributes in Buff=
+er
+> | AttributesInBuffer   | 0x000  | 0x08     |
+> -------------------------------------------------------------------------=
+-------
+> | AttributeArrayOffset | 0x008  | 0x08     | Byte offset to start of Array
+> |                      |        |          | of Attributes
+> |                      |        |          |
+> -------------------------------------------------------------------------=
+-------
+> | OutputBufferData     |        |          | Version of the Header.
+> | HeaderVersion        | 0x010  | 0x01     | The header will be always
+> | AttributesInBuffer   |        |          | backward compatible, and cha=
+nges
+> |                      |        |          | will not impact the Array of
+> |                      |        |          | attributes.
+> |                      |        |          | Current version =3D 0x01
 
-On 6/9/2021 2:22 AM, Ulf Hansson wrote:
-> On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
+This is not clear to me. In the event of a header version change, is the
+total set of attributes guaranteed to remain the same? Or only the array
+layout? We might not need to expose the version information after all.
+
+> -------------------------------------------------------------------------=
+-------
+> | ArrayOfAttributes    |        |          | The array will contain
+> |                      |        |          | "NumberOfAttributesInBuffer"
+> |                      |        |          | array elements not to exceed
+> |                      |        |          | the size of the buffer.
+> |                      |        |          | Layout of the array is
+> |                      |        |          | detailed in Table 2.
+> -------------------------------------------------------------------------=
+-------
+>
+>
+> Table 2 --> Array of attributes
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> | Field Name           | Byte   | Length   |  Description
+> |                      | Offset | in Bytes |
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> | 1st AttributeId      | 0x000  | 0x08     | The ID of the Attribute
+> -------------------------------------------------------------------------=
+-------
+> | 1st AttributeValue   | 0x008  | 0x08     | The numerical value of
+> |                      |        |          | the attribute
+> -------------------------------------------------------------------------=
+-------
+> | 1st AttributeString  | 0x010  | 0x40     | The ASCII string
+> | Description          |        |          | description of the
+> |                      |        |          | attribute, up to 63
+> |                      |        |          | characters plus a NULL
+> |                      |        |          | terminator.
+
+There is a slight disconnect in that this is called "description" by the
+spec, which makes me think they could eventually have something more
+verbose than what you'd expect from "name".
+
+So they could give us either: "Frequency" or "The Frequency in GigaHertz".
+
+> -------------------------------------------------------------------------=
+-------
+> | 1st AttributeValue   | 0x050  | 0x40     | The ASCII string
+> | StringDescription    |        |          | description of the
+> |                      |        |          | attribute value, up to 63
+> |                      |        |          | characters plus a NULL
+> |                      |        |          | terminator. If this
+> |                      |        |          | contains only a NULL
+> |                      |        |          | terminator, then there is
+> |                      |        |          | no ASCII string
+> |                      |        |          | associated with AttributeVal=
+ue.
+> -------------------------------------------------------------------------=
+-------
+> | ....                 |        |          |
+>
+>
 >>
+>>> The new H_CALL exports information in direct string value format, hence
+>>> a new interface has been introduced in /sys/firmware/papr to export
+>> Hm.. Maybe this should be something less generic than "papr"?
+>
+> The interface naming was inspired from /sys/firmware/opal's naming conven=
+tion.
+> We believed the name PAPR could serve as more generic name to be used by =
+both
+> Linux running on PHYP and linux on KVM.
+
+Right, I agree with that rationale, but /opal has identifiable elements
+in it whereas /papr would have the generic "attr_X_name", which does not
+give much hint about what they are.
+
+We also expect people to iterate the "attr_X_*" files, so if we decide
+to add something else under /papr in the future, that would potentially
+cause issues with any tool that just lists the content of the directory.
+
+So maybe we should be proactive and put the hcall stuff inside a
+subdirectory already. /papr/energy_scale_attrs comes to mind, but I
+don't have a strong opinion on the particular name.
+
+>
+> If you have something more concrete in mind, please let me know. I'm open=
+ to
+> suggestions.
+>
 >>
+>>> this information to userspace in an extensible pass-through format.
+>>> The H_CALL returns the name, numeric value and string value. As string
+>>> values are in human readable format, therefore if the string value
+>>> exists then that is given precedence over the numeric value.
+>> So the hypervisor could simply not send the string representation? How
+>> will the userspace tell the difference since they are reading everything
+>> from a file?
 >>
->> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
->>> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
->>>>
->>>> Add support for the legacy Arasan sdhci controller on the BCM7211 and
->>>> related SoC's. This includes adding a .shutdown callback to increase
->>>> the power savings during S5.
+>> Overall I'd say we should give the data in a more structured way and let
+>> the user-facing tool do the formatting and presentation.
+>
+> That's a valid concern, the design for this was inspired from hwmon's int=
+erface
+> to housing the sensor information.
+>
+> One alternative to add more structure to this format could be to introduc=
+e:
+> attr_X_name, attr_X_num_val, attr_X_str_val
+>
+> However, in some cases like min/max frequency the string value is empty. =
+In
+> that case the file attr_X_str_val will also be empty.
+> Is that an acceptable format of having empty files that in some cases will
+> never be populated?
+
+I'm thinking yes, but I'm not sure. Let's see if someone else has a say
+in this.
+
+> We also went ahead to confirm with the SPEC team that if a string value e=
+xists
+> in their buffer, that must be given precedence.
+
+Huh.. That must be a recommendation only. The hypervisor has no control
+over how people present the information in userspace.
+
+>
+> Another alternative format could to keep attr_X_name, attr_X_val intact b=
+ut
+> change what X means. Currently X is just an iteratively increasing number=
+. But
+> X can also serve as an ID which we get from H_CALL output buffer.
+
+This seems like a good idea. It makes it easier to correlate the
+attribute with what is in PAPR.
+
+>
+> In this case, we should also include some versioning so that the tool now=
+ also
+> has cognizance of contents of each file.
+>
+>>> The format of exposing the sysfs information is as follows:
+>>> /sys/firmware/papr/
+>>>    |-- attr_0_name
+>>>    |-- attr_0_val
+>>>    |-- attr_1_name
+>>>    |-- attr_1_val
+>>> ...
+>> How do we keep a stable interface with userspace? Say the hypervisor
+>> decides to add or remove attributes, change their order, string
+>> representation, etc? It will inform us via the version field, but that
+>> is lost when we output this to sysfs.
+>>
+>> I get that if the userspace just iterate over the contents of the
+>> directory then nothing breaks, but there is not much else it could do it
+>> seems.
+>
+> Fair point, having the version exposed to the sysfs does seem crucial.
+>
+> Currently in ppc-utils we iterate over all the information, however as you
+> rightly pointed out there may be other tools needing just specific inform=
+ation.
+> The alternative I suggested a few sentences above to include ID based att=
+ribute
+> naming and versioning maybe a more elegant way of solving this problem.
+>
+> What are your thoughts on a design like this?
+>
+
+Based on all the new information you provided, I'd say present all the
+data and group it under the ID:
+
+/sys/firmware/papr/energy_scale_attrs/
+   |-- <id>/
+     |-- desc
+     |-- value
+     |-- value_desc
+   |-- <id>/
+     |-- desc
+     |-- value
+     |-- value_desc
+
+Is that workable?
+
+>>> The energy information that is exported is useful for userspace tools
+>>> such as powerpc-utils. Currently these tools infer the
+>>> "power_mode_data" value in the lparcfg, which in turn is obtained from
+>>> the to be deprecated H_GET_EM_PARMS H_CALL.
+>>> On future platforms, such userspace utilities will have to look at the
+>>> data returned from the new H_CALL being populated in this new sysfs
+>>> interface and report this information directly without the need of
+>>> interpretation.
 >>>
->>> Please split this into two separate changes.
->>>
->>> May I also ask about the ->shutdown() callback and in relation to S5.
->>> What makes the ->shutdown callback only being invoked for S5?
->>
->> It is not only called for S5 (entered via poweroff on a prompt) but also
->> during kexec or reboot. The poweroff path is via:
->>
->> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
->> .shutdown()
->>
->> For kexec or reboot we do not really care about power savings since we
->> are about to load a new image anyway, however for S5/poweroff we do care
->> about quiescing the eMMC controller in a way that its clocks and the
->> eMMC device can be put into low power mode since we will stay in that
->> mode for seconds/hours/days until someone presses a button on their
->> remote (or other wake-up sources).
-> 
-> Hmm, I am not sure I understand correctly. At shutdown we don't care
-> about wake-up sources from the kernel point of view, instead we treat
-> everything as if it will be powered off.
-
-The same .shutdown() path is used whether you kexec, reboot or poweroff,
-but for poweroff we do care about allowing specific wake-up sources
-configured as such to wake-up the system at a later time, like GPIOs,
-RTC, etc.
-
-> 
-> We put devices into low power state at system suspend and potentially
-> also during some of the hibernation phases.
-> 
-> Graceful shutdown of the eMMC is also managed by the mmc core.
-
-AFAICT that calls mmc_blk_shutdown() but that is pretty much it, the
-SDHCI platform_driver still needs to do something in order to conserve
-power including disabling host->clk, otherwise we would not have done
-that for sdhci-brcmstb.c.
--- 
-Florian
+>>> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+>
+> Thanks
+> Pratik
