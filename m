@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8CA3A2493
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793623A2499
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhFJGil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:38:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39741 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhFJGik (ORCPT
+        id S229778AbhFJGkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhFJGkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:38:40 -0400
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lrEJ1-0004aL-JE
-        for linux-kernel@vger.kernel.org; Thu, 10 Jun 2021 06:36:43 +0000
-Received: by mail-wr1-f72.google.com with SMTP id x9-20020a5d49090000b0290118d8746e06so414693wrq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:36:43 -0700 (PDT)
+        Thu, 10 Jun 2021 02:40:11 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16A5C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 23:38:15 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id z4so17122833qts.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=sJXaknDNqIwNp1rWQgx+PfiGckf+KTxU5H8H8+f9QU0=;
+        b=b1XjZwsGuZXQBj/2tSNWtimTETxoUPqdgZyvsNvx8vkkjvIi8Ygjkp1bT84QOB3lNJ
+         ixcBPLAR/OAzhh7P3V0jtbZh1ooj6X0xFHLsy7KQXcbQ8aOSQ6l5kFOJe3AOYcBv3NqT
+         E7KEwyIfiR+iWAyTglS9872q46W0IfZLa0SZYfNtlhT4vzUpAaLa4jBB11OLKKxErsCz
+         AUCWU0p9KNTvh9jcrLiiaQLay/yDLrASCVHxeq4MehjsqX2LfiSe0CDrQJRsXa/g5jgy
+         b4/ByIHtTGaaggP1grvtIyVnLQrgK0I/cXPR2CZPovkVvpl3KwUUFq2Epp/oDGC+1osu
+         yznw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WtLXS+0tm1k1bpg9yjdyBFk1R42VryqZ5m7j5SsaTlI=;
-        b=XpN4LSOsYC0G9kDKSNqJlh7N8RKS7Qjg3r2aOdh1a3tu4Lt8ZeSHN/6Yg2r8ERy+ZL
-         sLby4KIf8TK+Ts9CAQMYM+ZoNnO40SNlHw5qLToznrNqyJVj4I524rkIn35BD5adcdwP
-         YKktSpi1Hq+3U4hmduXibVertCv+mS8ikRWzJDypJCxPXXLOSBpG5IQrt0dA4mjRxLUn
-         z08EF5k7bnflFDR5ZujaRr1kO4zBDVCIuD5Iep/4yESkU0o4CQl11+5B68aPq702ox/l
-         IB5nZc7IDFraAA/GlVPm0qUZcbkJiC60cRAwiIi38doyaAMxsiZXQiA/PoYhkWKVbQpl
-         EN/w==
-X-Gm-Message-State: AOAM531+BbC5H1HfHtQePriF+XXkRpQZekAY2lqYxeXD0ASU31IRru1P
-        W0MO8jctfKtzeBasxaeRhkfJSVM3b++ondGmrBRwIfaa7X0DYeEiDAstPxqTFB91PuNVBrTbaqX
-        ftTMgjmmAKRcSElWnwLjuH+JRnWOfheBsVF+MeI6yiA==
-X-Received: by 2002:a7b:c453:: with SMTP id l19mr12784106wmi.154.1623307003334;
-        Wed, 09 Jun 2021 23:36:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrKbTB2dPyTcgsNWbqMxfPi2n18eMS3fGLXwsHyavospcUWmdxoXbYyMBB4fiIvgtYPSOVfQ==
-X-Received: by 2002:a7b:c453:: with SMTP id l19mr12784093wmi.154.1623307003211;
-        Wed, 09 Jun 2021 23:36:43 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id a10sm459607wrr.48.2021.06.09.23.36.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 23:36:42 -0700 (PDT)
-Subject: Re: [PATCH] nfc: fdp: remove unnecessary labels
-To:     samirweng1979 <samirweng1979@163.com>, davem@davemloft.net,
-        kuba@kernel.org, unixbhaskar@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-References: <20210610024616.1804-1-samirweng1979@163.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <a4dd4569-2f81-7aac-e8f7-405866bb1b7d@canonical.com>
-Date:   Thu, 10 Jun 2021 08:36:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=sJXaknDNqIwNp1rWQgx+PfiGckf+KTxU5H8H8+f9QU0=;
+        b=bVnxRqdqfODlSE6s1OitbSuGMlA4yli1fgx+UwEpKN80w/t4Vt8bhoMabQ0goBvuY2
+         cCBZfp39ioOw0GMEnP/CJc8tB72ogvQayu/bKAZse7VCJOjjg5y7P/PPTzlS5QQGiY2K
+         LBXfUbOeGYp9l0g3BnLBBRkVmIj6BzUS20Vo+ST+xaCcB73+lrdeTkS2BRHGIQs+L+Sh
+         B2zGjmhq2d5aypBkicmHB6RlTYdS1eSZcPtYLo2w/2JeGVMk0LA/Rx8Eap+kuGdKN3TJ
+         rsSTDJahYxQip1IEfUhdC32Trk8bP/ZA8QWdICko289I9lqP6AhsZz9MJm5rbMT2KW9D
+         3x0Q==
+X-Gm-Message-State: AOAM533tzduX/fT9ASufKMsnZoUuExJtyVNojcutUbvP1ZN1k30YbtPc
+        HOQaV80pvFBJTTtDeZRvBIHR7Q==
+X-Google-Smtp-Source: ABdhPJy5ZcKX50ID5llLhv4bLtcmcu81J9Dm4F8WNmXVszglwbobG1CeiGKZ+cv2mz2wkusrlKG8cg==
+X-Received: by 2002:ac8:4ccf:: with SMTP id l15mr3701125qtv.174.1623307094084;
+        Wed, 09 Jun 2021 23:38:14 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id c20sm1716101qtm.52.2021.06.09.23.38.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 23:38:13 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 23:38:11 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 03/11] mm: page_vma_mapped_walk(): use pmd_read_atomic()
+In-Reply-To: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
+Message-ID: <594c1f0-d396-5346-1f36-606872cddb18@google.com>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210610024616.1804-1-samirweng1979@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/2021 04:46, samirweng1979 wrote:
-> From: wengjianfeng <wengjianfeng@yulong.com>
-> 
-> Some labels are meaningless, so we delete them and use the
-> return statement instead of the goto statement.
-> 
-> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
-> ---
->  drivers/nfc/fdp/fdp.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
+page_vma_mapped_walk() cleanup: use pmd_read_atomic() with barrier()
+instead of READ_ONCE() for pmde: some architectures (e.g. i386 with PAE)
+have a multi-word pmd entry, for which READ_ONCE() is not good enough.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: <stable@vger.kernel.org>
+---
+ mm/page_vma_mapped.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Best regards,
-Krzysztof
+diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+index 7c0504641fb8..973c3c4e72cc 100644
+--- a/mm/page_vma_mapped.c
++++ b/mm/page_vma_mapped.c
+@@ -182,13 +182,16 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 	pud = pud_offset(p4d, pvmw->address);
+ 	if (!pud_present(*pud))
+ 		return false;
++
+ 	pvmw->pmd = pmd_offset(pud, pvmw->address);
+ 	/*
+ 	 * Make sure the pmd value isn't cached in a register by the
+ 	 * compiler and used as a stale value after we've observed a
+ 	 * subsequent update.
+ 	 */
+-	pmde = READ_ONCE(*pvmw->pmd);
++	pmde = pmd_read_atomic(pvmw->pmd);
++	barrier();
++
+ 	if (pmd_trans_huge(pmde) || is_pmd_migration_entry(pmde)) {
+ 		pvmw->ptl = pmd_lock(mm, pvmw->pmd);
+ 		if (likely(pmd_trans_huge(*pvmw->pmd))) {
+-- 
+2.26.2
 
-> diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
-> index 7863b25..5287458 100644
-> --- a/drivers/nfc/fdp/fdp.c
-> +++ b/drivers/nfc/fdp/fdp.c
-> @@ -266,7 +266,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
->  	r = request_firmware(&info->ram_patch, FDP_RAM_PATCH_NAME, dev);
->  	if (r < 0) {
->  		nfc_err(dev, "RAM patch request error\n");
-> -		goto error;
-> +		return r;
->  	}
->  
->  	data = (u8 *) info->ram_patch->data;
-> @@ -283,7 +283,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
->  	r = request_firmware(&info->otp_patch, FDP_OTP_PATCH_NAME, dev);
->  	if (r < 0) {
->  		nfc_err(dev, "OTP patch request error\n");
-> -		goto out;
-> +		return 0;
->  	}
->  
->  	data = (u8 *) info->otp_patch->data;
-> @@ -295,10 +295,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
->  
->  	dev_dbg(dev, "OTP patch version: %d, size: %d\n",
->  		 info->otp_patch_version, (int) info->otp_patch->size);
-> -out:
->  	return 0;
-> -error:
-> -	return r;
->  }
->  
->  static void fdp_nci_release_firmware(struct nci_dev *ndev)
-> 
