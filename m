@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7EC3A3011
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326643A3025
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhFJQGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:06:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:35554 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229802AbhFJQGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:06:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91672ED1;
-        Thu, 10 Jun 2021 09:04:44 -0700 (PDT)
-Received: from [10.57.74.218] (unknown [10.57.74.218])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0A0CB3F719;
-        Thu, 10 Jun 2021 09:04:41 -0700 (PDT)
-Subject: Re: [PATCH v1 0/3] coresight: Fix for snapshot mode
-To:     Denis Nikitin <denik@google.com>, Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-References: <20210528161552.654907-1-leo.yan@linaro.org>
- <CAOYpmdEvkSZaei-_SWrUC4YJ7rOUOoOaxM7+qc6dw=P+b_ivgA@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <5cf3effb-fccc-9385-6328-6d1e2e5ccdf3@arm.com>
-Date:   Thu, 10 Jun 2021 17:04:40 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S230468AbhFJQI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:08:26 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:60182 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230365AbhFJQIR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:08:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:Message-Id:Date:Cc:To:From
+        :references:content-disposition:in-reply-to;
+        bh=uTuIg5mKeN6pJVVu/O7o+wA1lV0rKGuorgSswjSfG3E=; b=B2UPU8PGdl4qQMrZIsQmEW9Coq
+        AtisDEAON2S5Igmn3dg0JPEn00jxtyda1xznM7k2ha8j2LZD+UxeEgmCjIt9GT0hFZ20LLNozgRYd
+        zL8rN6HJtuAxzckW9Er1mSKMQDQHYFzAQPVBaBX7T13TI4dzK9xB3+wmJ6eeW/yC3YjVHtNE85uRf
+        VoZTQnDteQgvbEe/taVw77O96UaqOj6wS/ABR3tTrk2J2VZDkYZz1WeDZTn6vd94yR14hqaxE7kod
+        E+mErARPmMKXMQQD6uYQaGd7sLCTSVUiHUNaugFlrqkhKkBUx12ZsmHHhSu+cIo6qu0sEWTZWf4Bg
+        XSJ5vrYw==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1lrNCA-0000Jg-Kn; Thu, 10 Jun 2021 10:06:21 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1lrNC8-0007Pe-9x; Thu, 10 Jun 2021 10:06:12 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Thu, 10 Jun 2021 10:06:03 -0600
+Message-Id: <20210610160609.28447-1-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAOYpmdEvkSZaei-_SWrUC4YJ7rOUOoOaxM7+qc6dw=P+b_ivgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, helgaas@kernel.org, sbates@raithlin.com, hch@lst.de, dan.j.williams@intel.com, jgg@ziepe.ca, christian.koenig@amd.com, jhubbard@nvidia.com, ddutile@redhat.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_NO_TEXT autolearn=no autolearn_force=no version=3.4.2
+Subject: [PATCH v1 0/6] P2PDMA Cleanup
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Denis
+Hi Bjorn,
 
-On 10/06/2021 07:43, Denis Nikitin wrote:
-> Hi Leo,
-> 
-> On Fri, May 28, 2021 at 9:16 AM Leo Yan <leo.yan@linaro.org> wrote:
->>
->> This patch series is to correct the pointer usages for the snapshot
->> mode.
->>
->> Patch 01 allows the AUX trace in the free run mode and only syncs the
->> AUX ring buffer when taking snapshot.
->>
->> Patch 02 is to polish code, it removes the redundant header maintained
->> in tmc-etr driver and directly uses pointer perf_output_handle::head.
->>
->> Patch 03 removes the callback cs_etm_find_snapshot() which wrongly
->> calculates the buffer headers; we can simply use the perf's common
->> function __auxtrace_mmap__read() for headers calculation.
->>
->> This patch can be cleanly applied on the mainline kernel with:
->>
->>    commit 97e5bf604b7a ("Merge branch 'for-5.13-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu")
->>
->> And it has been tested on Arm64 Juno board.
-> 
-> I have verified the patches on Chrome OS Trogdor device.
-> They fixed the problem discussed in
-> https://lists.linaro.org/pipermail/coresight/2021-May/006411.html.
+This patch series consists of the P2PDMA cleanup and prep patches based
+on feedback from  my P2PDMA mapping operations series (most recently
+posted at [1]). I've reduced the recipient list of this series to those
+that I thought would be interested or have provided the feedback that
+inspired these patches.
 
-Are you able to confirm if the patch 3 alone fixes the above issue ?
-I am not convinced that Patch 1 is necessary.
+Please consider taking these patches in the near term ahead of my mapping
+ops series. These patches are largely cleanup and other minor fixes. The only
+functional change is Patch 4 which adds a new warning that was suggested by
+Don.
 
-Suzuki
+Patch 6 arguably isn't necessary yet as we don't care about sleeping
+yet -- but it'd be a nice to have to reduce the number of prep patches for my
+other series. However, if you don't want to take this patch now, I can
+carry it in my other series.
+
+I'm happy to make further fixes and update this series if anyone finds any
+additional issues on review.
+
+Thanks,
+
+Logan
+
+[1] https://lore.kernel.org/linux-block/20210513223203.5542-1-logang@deltatee.com/
+
+--
+
+Logan Gunthorpe (6):
+  PCI/P2PDMA: Rename upstream_bridge_distance() and rework documentation
+  PCI/P2PDMA: Use a buffer on the stack for collecting the acs list
+  PCI/P2PDMA: Cleanup type for return value of calc_map_type_and_dist()
+  PCI/P2PDMA: Print a warning if the host bridge is not in the whitelist
+  PCI/P2PDMA: Refactor pci_p2pdma_map_type() to take pagemap and device
+  PCI/P2PDMA: Avoid pci_get_slot() which sleeps
+
+ drivers/pci/p2pdma.c | 157 +++++++++++++++++++++++++------------------
+ 1 file changed, 92 insertions(+), 65 deletions(-)
+
+
+base-commit: 614124bea77e452aa6df7a8714e8bc820b489922
+--
+2.20.1
