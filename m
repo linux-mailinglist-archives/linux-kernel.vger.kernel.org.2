@@ -2,216 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0413A3A2D76
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2A53A2D7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhFJNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:53:27 -0400
-Received: from mout.gmx.net ([212.227.15.18]:45035 "EHLO mout.gmx.net"
+        id S231191AbhFJNya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:54:30 -0400
+Received: from mga03.intel.com ([134.134.136.65]:32401 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230322AbhFJNxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:53:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623333079;
-        bh=FhMPsDuNTkIcroGrocTv4Th0r3ifg2AX/Ou/LtkyD9w=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=BiEwTRBehru6TfGJTBvOvDehaU04aZ2JPWlbqgTiNkYiSQZCKw9axNjrAeleXMOYA
-         cyrE6xEwHr568LYnX/0/Enyjr/mck1FR2PHJHW6psEZnGP0smMHTPlCjO2zx/krKqO
-         3s5F9KUC5S0CSdRs3kJxGc/1DG40TeDwiR4cIMU0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MrQIv-1lWKLg2EdT-00oaTm; Thu, 10
- Jun 2021 15:51:19 +0200
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     gregkh@linuxfoundation.org
-Cc:     linux@armlinux.org.uk, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Subject: [PATCH] serial: amba-pl011: add RS485 support
-Date:   Thu, 10 Jun 2021 15:50:04 +0200
-Message-Id: <20210610135004.7585-1-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.31.1
+        id S230311AbhFJNy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 09:54:29 -0400
+IronPort-SDR: s9VGNOvOMpwEgInoWWMu2RJcP3F1M+HksPfKTg7KilSrkXYLsr/D5CppjkykPfHvqilqBjL1uA
+ viNTcniLunuQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="205333297"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="205333297"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 06:52:31 -0700
+IronPort-SDR: MuGrgesiWmaRa0UuXRLSbWL2lbq/9F/WAmv6aWlMOml/DHQ3us83Qh/cJks0ndZT0hKEXI/0AN
+ ET3w1OGZDtvQ==
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="552361345"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 06:52:27 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1lrL6e-001A8E-FK; Thu, 10 Jun 2021 16:52:24 +0300
+Date:   Thu, 10 Jun 2021 16:52:24 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     David Gow <davidgow@google.com>, Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
+        Daniel Latypov <dlatypov@google.com>, tales.aparecida@gmail.com
+Subject: Re: [PATCH v2 0/1] lib: Convert UUID runtime test to KUnit
+Message-ID: <YMIZGG/zGk0wv42V@smile.fi.intel.com>
+References: <20210609233730.164082-1-andrealmeid@collabora.com>
+ <YMHX1mKuqoRCiHAF@smile.fi.intel.com>
+ <CABVgOS=5xkYKD18YfU++u8snpUnL2s=V6bK1e4qc_jTmAuazkw@mail.gmail.com>
+ <CAHp75VdRaztt6gPUuznCa_5yBRNF3WFYq78Tq-ozh=DBA5-FEQ@mail.gmail.com>
+ <63b2e441-f72d-6602-8680-defd96c21ac7@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:SnbNrTGSw/Dk5Z77Um92lL9RApvFqWM9OyYcRkT18i759IWDWHa
- dXa/Sk0oPoKWsoogaKj3u9dBf1sBpfmcruoNVmSUByJgfl/7dVuP5oNcjute+vjzrl6X22O
- 9SvfUUSTiOWlX9ec0CrztB3i/2LZexfXRd9jtYoFT4B8nTls/qsuGxpoxnx3DzWAyBkJg1X
- TX/C/lP5TdSVaLMldm/8Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9EmTWMNaGhc=:xwR3pbxMImgeBCm9Ug6+y6
- zrIC0rlDFhfMtxY16wwLj83SfhMxoNSaQcY1VmUZFGJ0jwOVFI3c0ZHQTSYBMK3xg7dzveG5u
- JQc2byn40bNSepdeJcmM2+A5ff7KrPddreTCX7Wg29FqlasXQj9fKVZUuowQOUt3uBRGwCQzy
- INQia0lKCTEyCYvW41nI1OyVvNO7D9rleApmP2xapvbPieMzK6CstPgixF7KP0WTh3XIiqlw+
- Fdi7Vk8vQCkI1ABFawEKS1DYVBp3XHl5+dCLGIRVtJbQLbHJ1A8qy2pMclYmnl27jW+jFEphH
- pFxNDWPM3xTdT9dUvzBBGV0rzOq/C7sxoFiw4FFM3sxwNC8sT7I7IcIT4biXeBf5S/3cE5dbs
- Q493Wf4GXjoAGNWUuP+W2Fo65EOEx8zQYhO5I68BmGK/EEFhSmhh5A4EuWCuc1cbTlQsgILn9
- LJMbB+zwhcdznk5WENbuybO1/ASBob8H4qoVLSGHfyqL2An5XVaoFqAjirr8VHT3KxnaFHAuX
- XXt2YALP2ObLR84fzQ/+i6a7DKOKGvpZm0jYH7qhNBUzXrgqbMtyCPZXAuuXzY2e3mM5BeZ/D
- fCQmk0fmJPorHKqjTJPscwXlLv6iNyx+Kfot5Ncg8IPhcWL7kJbRvG0H038cJymwpvQDC7KEs
- PjtH2Mrfkf9sP7pA5dHyNhrf1o3okXneKDMCJYNQr6gWm6IdZULSyQJWAsKVxKntlOFGoAuqd
- rdaxDWJq8MXVIJx8Ebo+A3JAVkMdy2mrA6mTgquJT+ZsOxe6JxoLTNw8pTMf8IChfCB/uZMsX
- M5SGqIyUdQGSasXFNYqm4yW0XxNuKKOlLExelmv0bo6mh5H+2PA/j1UbFawl1TZv08h8w/QBa
- wHoIT6U+XdN+iTbkd+c1nJng+aqghNKagWSFV56tzkWUrPuHh89LrbQs6ZiCmfmf4YZazqMiQ
- tOoRfAdiIecRqsUYxY9WRk7BFLg9AAM1k8437hP4jc3yz/3l1vcy+iOxH/lo2nZ+gpgozIuPw
- XRUNJerr2z5BpU5ULEW5gG6yaX4m7CaB6FzWJyYh2N2yjHmw1EIPSJ96U6CyxwXi8G3YHU4jW
- GtiCR2ETYJ9FdJ6Bh0q5DAtsar+MAOt1Yl5JyJ5CxNGgkxEwwMm1+oKOA==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63b2e441-f72d-6602-8680-defd96c21ac7@collabora.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIGJhc2ljIHN1cHBvcnQgZm9yIFJTNDg1OiBQcm92aWRlIGEgY2FsbGJhY2sgdG8gY29uZmln
-dXJlIHJzNDg1CnNldHRpbmdzLiBIYW5kbGUgdGhlIFJTNDg1IHNwZWNpZmljIHBhcnQgaW4gdGhl
-IGZ1bmN0aW9ucwpwbDAxMV9yczQ4NV90eF9zdGFydCgpIGFuZCBwbDAxMV9yczQ4NV90eF9zdG9w
-KCkgd2hpY2ggZXh0ZW5kIHRoZSBnZW5lcmljCnN0YXJ0L3N0b3AgY2FsbGJhY2tzLgpCZXNpZGUg
-dmlhIElPQ1RMIGZyb20gdXNlcnNwYWNlIFJTNDg1IGNhbiBiZSBlbmFibGVkIGJ5IG1lYW5zIG9m
-IHRoZQpkZXZpY2UgdHJlZSBwcm9wZXJ0eSAicnM0ODUtZW5hYmxlZC1hdC1ib290LXRpbWUiLgoK
-U2lnbmVkLW9mZi1ieTogTGlubyBTYW5maWxpcHBvIDxMaW5vU2FuZmlsaXBwb0BnbXguZGU+Ci0t
-LQpUaGlzIHBhdGNoIGhhcyBiZWVuIHRlc3RlZCB3aXRoIGEgUmFzcGJlcnJ5IFBpIENNMy4KCiBk
-cml2ZXJzL3R0eS9zZXJpYWwvYW1iYS1wbDAxMS5jIHwgMTQzICsrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKystCiAxIGZpbGUgY2hhbmdlZCwgMTQwIGluc2VydGlvbnMoKyksIDMgZGVsZXRp
-b25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy90dHkvc2VyaWFsL2FtYmEtcGwwMTEuYyBiL2Ry
-aXZlcnMvdHR5L3NlcmlhbC9hbWJhLXBsMDExLmMKaW5kZXggNzg2ODJjMTIxNTZhLi4zNmU4Yjkz
-OGNkYmEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvdHR5L3NlcmlhbC9hbWJhLXBsMDExLmMKKysrIGIv
-ZHJpdmVycy90dHkvc2VyaWFsL2FtYmEtcGwwMTEuYwpAQCAtMjY1LDYgKzI2NSw4IEBAIHN0cnVj
-dCB1YXJ0X2FtYmFfcG9ydCB7CiAJdW5zaWduZWQgaW50CQlvbGRfY3I7CQkvKiBzdGF0ZSBkdXJp
-bmcgc2h1dGRvd24gKi8KIAl1bnNpZ25lZCBpbnQJCWZpeGVkX2JhdWQ7CS8qIHZlbmRvci1zZXQg
-Zml4ZWQgYmF1ZCByYXRlICovCiAJY2hhcgkJCXR5cGVbMTJdOworCWJvb2wJCQlyczQ4NV90eF9z
-dGFydGVkOworCXVuc2lnbmVkIGludAkJcnM0ODVfdHhfZHJhaW5faW50ZXJ2YWw7IC8qIHVzZWNz
-ICovCiAjaWZkZWYgQ09ORklHX0RNQV9FTkdJTkUKIAkvKiBETUEgc3R1ZmYgKi8KIAlib29sCQkJ
-dXNpbmdfdHhfZG1hOwpAQCAtMjc1LDYgKzI3Nyw4IEBAIHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCB7
-CiAjZW5kaWYKIH07CiAKK3N0YXRpYyB1bnNpZ25lZCBpbnQgcGwwMTFfdHhfZW1wdHkoc3RydWN0
-IHVhcnRfcG9ydCAqcG9ydCk7CisKIHN0YXRpYyB1bnNpZ25lZCBpbnQgcGwwMTFfcmVnX3RvX29m
-ZnNldChjb25zdCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCwKIAl1bnNpZ25lZCBpbnQgcmVn
-KQogewpAQCAtMTI4Miw2ICsxMjg2LDM0IEBAIHN0YXRpYyBpbmxpbmUgYm9vbCBwbDAxMV9kbWFf
-cnhfcnVubmluZyhzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCkKICNkZWZpbmUgcGwwMTFfZG1h
-X2ZsdXNoX2J1ZmZlcglOVUxMCiAjZW5kaWYKIAorc3RhdGljIGludCBwbDAxMV9yczQ4NV90eF9z
-dG9wKHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwKQoreworCXN0cnVjdCB1YXJ0X3BvcnQgKnBv
-cnQgPSAmdWFwLT5wb3J0OworCXUzMiBjcjsKKworCS8qIFdhaXQgdW50aWwgaGFyZHdhcmUgdHgg
-cXVldWUgaXMgZW1wdHkgKi8KKwl3aGlsZSAoIXBsMDExX3R4X2VtcHR5KHBvcnQpKQorCQl1ZGVs
-YXkodWFwLT5yczQ4NV90eF9kcmFpbl9pbnRlcnZhbCk7CisKKwlpZiAocG9ydC0+cnM0ODUuZGVs
-YXlfcnRzX2FmdGVyX3NlbmQpCisJCW1kZWxheShwb3J0LT5yczQ4NS5kZWxheV9ydHNfYWZ0ZXJf
-c2VuZCk7CisKKwljciA9IHBsMDExX3JlYWQodWFwLCBSRUdfQ1IpOworCisJaWYgKHBvcnQtPnJz
-NDg1LmZsYWdzICYgU0VSX1JTNDg1X1JUU19BRlRFUl9TRU5EKQorCQljciAmPSB+VUFSVDAxMV9D
-Ul9SVFM7CisJZWxzZQorCQljciB8PSBVQVJUMDExX0NSX1JUUzsKKwkvKiBEaXNhYmxlIHRoZSB0
-cmFuc21pdHRlciBhbmQgcmVlbmFibGUgdGhlIHRyYW5zY2VpdmVyICovCisJY3IgJj0gflVBUlQw
-MTFfQ1JfVFhFOworCWNyIHw9IFVBUlQwMTFfQ1JfUlhFOworCXBsMDExX3dyaXRlKGNyLCB1YXAs
-IFJFR19DUik7CisKKwl1YXAtPnJzNDg1X3R4X3N0YXJ0ZWQgPSBmYWxzZTsKKworCXJldHVybiAw
-OworfQorCiBzdGF0aWMgdm9pZCBwbDAxMV9zdG9wX3R4KHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQp
-CiB7CiAJc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXAgPQpAQCAtMTI5MCw2ICsxMzIyLDkgQEAg
-c3RhdGljIHZvaWQgcGwwMTFfc3RvcF90eChzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0KQogCXVhcC0+
-aW0gJj0gflVBUlQwMTFfVFhJTTsKIAlwbDAxMV93cml0ZSh1YXAtPmltLCB1YXAsIFJFR19JTVND
-KTsKIAlwbDAxMV9kbWFfdHhfc3RvcCh1YXApOworCisJaWYgKChwb3J0LT5yczQ4NS5mbGFncyAm
-IFNFUl9SUzQ4NV9FTkFCTEVEKSAmJiB1YXAtPnJzNDg1X3R4X3N0YXJ0ZWQpCisJCXBsMDExX3Jz
-NDg1X3R4X3N0b3AodWFwKTsKIH0KIAogc3RhdGljIGJvb2wgcGwwMTFfdHhfY2hhcnMoc3RydWN0
-IHVhcnRfYW1iYV9wb3J0ICp1YXAsIGJvb2wgZnJvbV9pcnEpOwpAQCAtMTM4MCw2ICsxNDE1LDMx
-IEBAIHN0YXRpYyBib29sIHBsMDExX3R4X2NoYXIoc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXAs
-IHVuc2lnbmVkIGNoYXIgYywKIAlyZXR1cm4gdHJ1ZTsKIH0KIAorc3RhdGljIHZvaWQgcGwwMTFf
-cnM0ODVfdHhfc3RhcnQoc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXApCit7CisJc3RydWN0IHVh
-cnRfcG9ydCAqcG9ydCA9ICZ1YXAtPnBvcnQ7CisJdTMyIGNyOworCisJLyogRW5hYmxlIHRyYW5z
-bWl0dGVyICovCisJY3IgPSBwbDAxMV9yZWFkKHVhcCwgUkVHX0NSKTsKKwljciB8PSBVQVJUMDEx
-X0NSX1RYRTsKKwkvKiBEaXNhYmxlIHJlY2VpdmVyIGlmIGhhbGYtZHVwbGV4ICovCisJaWYgKCEo
-cG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0ODVfUlhfRFVSSU5HX1RYKSkKKwkJY3IgJj0gflVB
-UlQwMTFfQ1JfUlhFOworCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1X1JUU19P
-Tl9TRU5EKQorCQljciAmPSB+VUFSVDAxMV9DUl9SVFM7CisJZWxzZQorCQljciB8PSBVQVJUMDEx
-X0NSX1JUUzsKKworCXBsMDExX3dyaXRlKGNyLCB1YXAsIFJFR19DUik7CisKKwlpZiAocG9ydC0+
-cnM0ODUuZGVsYXlfcnRzX2JlZm9yZV9zZW5kKQorCQltZGVsYXkocG9ydC0+cnM0ODUuZGVsYXlf
-cnRzX2JlZm9yZV9zZW5kKTsKKworCXVhcC0+cnM0ODVfdHhfc3RhcnRlZCA9IHRydWU7Cit9CisK
-IC8qIFJldHVybnMgdHJ1ZSBpZiB0eCBpbnRlcnJ1cHRzIGhhdmUgdG8gYmUgKGtlcHQpIGVuYWJs
-ZWQgICovCiBzdGF0aWMgYm9vbCBwbDAxMV90eF9jaGFycyhzdHJ1Y3QgdWFydF9hbWJhX3BvcnQg
-KnVhcCwgYm9vbCBmcm9tX2lycSkKIHsKQEAgLTEzOTcsNiArMTQ1NywxMCBAQCBzdGF0aWMgYm9v
-bCBwbDAxMV90eF9jaGFycyhzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCwgYm9vbCBmcm9tX2ly
-cSkKIAkJcmV0dXJuIGZhbHNlOwogCX0KIAorCWlmICgodWFwLT5wb3J0LnJzNDg1LmZsYWdzICYg
-U0VSX1JTNDg1X0VOQUJMRUQpICYmCisJICAgICF1YXAtPnJzNDg1X3R4X3N0YXJ0ZWQpCisJCXBs
-MDExX3JzNDg1X3R4X3N0YXJ0KHVhcCk7CisKIAkvKiBJZiB3ZSBhcmUgdXNpbmcgRE1BIG1vZGUs
-IHRyeSB0byBzZW5kIHNvbWUgY2hhcmFjdGVycy4gKi8KIAlpZiAocGwwMTFfZG1hX3R4X2lycSh1
-YXApKQogCQlyZXR1cm4gdHJ1ZTsKQEAgLTE1NDIsNiArMTYwNiw5IEBAIHN0YXRpYyB2b2lkIHBs
-MDExX3NldF9tY3RybChzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0LCB1bnNpZ25lZCBpbnQgbWN0cmwp
-CiAJICAgIGNvbnRhaW5lcl9vZihwb3J0LCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQsIHBvcnQpOwog
-CXVuc2lnbmVkIGludCBjcjsKIAorCWlmIChwb3J0LT5yczQ4NS5mbGFncyAmIFNFUl9SUzQ4NV9F
-TkFCTEVEKQorCQltY3RybCAmPSB+VElPQ01fUlRTOworCiAJY3IgPSBwbDAxMV9yZWFkKHVhcCwg
-UkVHX0NSKTsKIAogI2RlZmluZQlUSU9DTUJJVCh0aW9jbWJpdCwgdWFydGJpdCkJCVwKQEAgLTE3
-NjMsNyArMTgzMCwxNyBAQCBzdGF0aWMgaW50IHBsMDExX3N0YXJ0dXAoc3RydWN0IHVhcnRfcG9y
-dCAqcG9ydCkKIAogCS8qIHJlc3RvcmUgUlRTIGFuZCBEVFIgKi8KIAljciA9IHVhcC0+b2xkX2Ny
-ICYgKFVBUlQwMTFfQ1JfUlRTIHwgVUFSVDAxMV9DUl9EVFIpOwotCWNyIHw9IFVBUlQwMXhfQ1Jf
-VUFSVEVOIHwgVUFSVDAxMV9DUl9SWEUgfCBVQVJUMDExX0NSX1RYRTsKKwljciB8PSBVQVJUMDF4
-X0NSX1VBUlRFTiB8IFVBUlQwMTFfQ1JfUlhFOworCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYg
-U0VSX1JTNDg1X0VOQUJMRUQpIHsKKwkJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1
-X1JUU19BRlRFUl9TRU5EKQorCQkJY3IgJj0gflVBUlQwMTFfQ1JfUlRTOworCQllbHNlCisJCQlj
-ciB8PSBVQVJUMDExX0NSX1JUUzsKKwl9IGVsc2UgeworCQljciB8PSBVQVJUMDExX0NSX1RYRTsK
-Kwl9CisKIAlwbDAxMV93cml0ZShjciwgdWFwLCBSRUdfQ1IpOwogCiAJc3Bpbl91bmxvY2tfaXJx
-KCZ1YXAtPnBvcnQubG9jayk7CkBAIC0xODY0LDYgKzE5NDEsOSBAQCBzdGF0aWMgdm9pZCBwbDAx
-MV9zaHV0ZG93bihzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0KQogCiAJcGwwMTFfZG1hX3NodXRkb3du
-KHVhcCk7CiAKKwlpZiAoKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1X0VOQUJMRUQpICYm
-IHVhcC0+cnM0ODVfdHhfc3RhcnRlZCkKKwkJcGwwMTFfcnM0ODVfdHhfc3RvcCh1YXApOworCiAJ
-ZnJlZV9pcnEodWFwLT5wb3J0LmlycSwgdWFwKTsKIAogCXBsMDExX2Rpc2FibGVfdWFydCh1YXAp
-OwpAQCAtMTk0MSw2ICsyMDIxLDcgQEAgcGwwMTFfc2V0X3Rlcm1pb3Moc3RydWN0IHVhcnRfcG9y
-dCAqcG9ydCwgc3RydWN0IGt0ZXJtaW9zICp0ZXJtaW9zLAogCXVuc2lnbmVkIGludCBsY3JfaCwg
-b2xkX2NyOwogCXVuc2lnbmVkIGxvbmcgZmxhZ3M7CiAJdW5zaWduZWQgaW50IGJhdWQsIHF1b3Qs
-IGNsa2RpdjsKKwl1bnNpZ25lZCBpbnQgYml0czsKIAogCWlmICh1YXAtPnZlbmRvci0+b3ZlcnNh
-bXBsaW5nKQogCQljbGtkaXYgPSA4OwpAQCAtMTk2OCwyNSArMjA0OSwzMiBAQCBwbDAxMV9zZXRf
-dGVybWlvcyhzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0LCBzdHJ1Y3Qga3Rlcm1pb3MgKnRlcm1pb3Ms
-CiAJc3dpdGNoICh0ZXJtaW9zLT5jX2NmbGFnICYgQ1NJWkUpIHsKIAljYXNlIENTNToKIAkJbGNy
-X2ggPSBVQVJUMDF4X0xDUkhfV0xFTl81OworCQliaXRzID0gNzsKIAkJYnJlYWs7CiAJY2FzZSBD
-UzY6CiAJCWxjcl9oID0gVUFSVDAxeF9MQ1JIX1dMRU5fNjsKKwkJYml0cyA9IDg7CiAJCWJyZWFr
-OwogCWNhc2UgQ1M3OgogCQlsY3JfaCA9IFVBUlQwMXhfTENSSF9XTEVOXzc7CisJCWJpdHMgPSA5
-OwogCQlicmVhazsKIAlkZWZhdWx0OiAvLyBDUzgKIAkJbGNyX2ggPSBVQVJUMDF4X0xDUkhfV0xF
-Tl84OworCQliaXRzID0gMTA7CiAJCWJyZWFrOwogCX0KLQlpZiAodGVybWlvcy0+Y19jZmxhZyAm
-IENTVE9QQikKKwlpZiAodGVybWlvcy0+Y19jZmxhZyAmIENTVE9QQikgewogCQlsY3JfaCB8PSBV
-QVJUMDF4X0xDUkhfU1RQMjsKKwkJYml0cysrOworCX0KIAlpZiAodGVybWlvcy0+Y19jZmxhZyAm
-IFBBUkVOQikgewogCQlsY3JfaCB8PSBVQVJUMDF4X0xDUkhfUEVOOwogCQlpZiAoISh0ZXJtaW9z
-LT5jX2NmbGFnICYgUEFST0REKSkKIAkJCWxjcl9oIHw9IFVBUlQwMXhfTENSSF9FUFM7CiAJCWlm
-ICh0ZXJtaW9zLT5jX2NmbGFnICYgQ01TUEFSKQogCQkJbGNyX2ggfD0gVUFSVDAxMV9MQ1JIX1NQ
-UzsKKwkJYml0cysrOwogCX0KIAlpZiAodWFwLT5maWZvc2l6ZSA+IDEpCiAJCWxjcl9oIHw9IFVB
-UlQwMXhfTENSSF9GRU47CkBAIC0xOTk3LDEyICsyMDg1LDIxIEBAIHBsMDExX3NldF90ZXJtaW9z
-KHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQsIHN0cnVjdCBrdGVybWlvcyAqdGVybWlvcywKIAkgKiBV
-cGRhdGUgdGhlIHBlci1wb3J0IHRpbWVvdXQuCiAJICovCiAJdWFydF91cGRhdGVfdGltZW91dChw
-b3J0LCB0ZXJtaW9zLT5jX2NmbGFnLCBiYXVkKTsKKwkvKgorCSAqIENhbGN1bGF0ZSB0aGUgYXBw
-cm94aW1hdGVkIHRpbWUgaXQgdGFrZXMgdG8gdHJhbnNtaXQgb25lIGNoYXJhY3RlcgorCSAqIHdp
-dGggdGhlIGdpdmVuIGJhdWQgcmF0ZS4gV2UgdXNlIHRoaXMgYXMgdGhlIHBvbGwgaW50ZXJ2YWwg
-d2hlbiB3ZQorCSAqIHdhaXQgZm9yIHRoZSB0eCBxdWV1ZSB0byBlbXB0eS4KKwkgKi8KKwl1YXAt
-PnJzNDg1X3R4X2RyYWluX2ludGVydmFsID0gKGJpdHMgKiAxMDAwICogMTAwMCkgLyBiYXVkOwog
-CiAJcGwwMTFfc2V0dXBfc3RhdHVzX21hc2tzKHBvcnQsIHRlcm1pb3MpOwogCiAJaWYgKFVBUlRf
-RU5BQkxFX01TKHBvcnQsIHRlcm1pb3MtPmNfY2ZsYWcpKQogCQlwbDAxMV9lbmFibGVfbXMocG9y
-dCk7CiAKKwlpZiAocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0ODVfRU5BQkxFRCkKKwkJdGVy
-bWlvcy0+Y19jZmxhZyAmPSB+Q1JUU0NUUzsKKwogCS8qIGZpcnN0LCBkaXNhYmxlIGV2ZXJ5dGhp
-bmcgKi8KIAlvbGRfY3IgPSBwbDAxMV9yZWFkKHVhcCwgUkVHX0NSKTsKIAlwbDAxMV93cml0ZSgw
-LCB1YXAsIFJFR19DUik7CkBAIC0yMTI0LDYgKzIyMjEsNDEgQEAgc3RhdGljIGludCBwbDAxMV92
-ZXJpZnlfcG9ydChzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0LCBzdHJ1Y3Qgc2VyaWFsX3N0cnVjdCAq
-c2VyKQogCXJldHVybiByZXQ7CiB9CiAKK3N0YXRpYyBpbnQgcGwwMTFfcnM0ODVfY29uZmlnKHN0
-cnVjdCB1YXJ0X3BvcnQgKnBvcnQsCisJCQkgICAgICBzdHJ1Y3Qgc2VyaWFsX3JzNDg1ICpyczQ4
-NSkKK3sKKwlzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCA9CisJCWNvbnRhaW5lcl9vZihwb3J0
-LCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQsIHBvcnQpOworCisJLyogcGljayBzYW5lIHNldHRpbmdz
-IGlmIHRoZSB1c2VyIGhhc24ndCAqLworCWlmICghIShyczQ4NS0+ZmxhZ3MgJiBTRVJfUlM0ODVf
-UlRTX09OX1NFTkQpID09CisJICAgICEhKHJzNDg1LT5mbGFncyAmIFNFUl9SUzQ4NV9SVFNfQUZU
-RVJfU0VORCkpIHsKKwkJcnM0ODUtPmZsYWdzIHw9IFNFUl9SUzQ4NV9SVFNfT05fU0VORDsKKwkJ
-cnM0ODUtPmZsYWdzICY9IH5TRVJfUlM0ODVfUlRTX0FGVEVSX1NFTkQ7CisJfQorCisJcnM0ODUt
-PmRlbGF5X3J0c19iZWZvcmVfc2VuZCA9IG1pbihyczQ4NS0+ZGVsYXlfcnRzX2JlZm9yZV9zZW5k
-LCAxMDAwVSk7CisJcnM0ODUtPmRlbGF5X3J0c19hZnRlcl9zZW5kID0gbWluKHJzNDg1LT5kZWxh
-eV9ydHNfYWZ0ZXJfc2VuZCwgMTAwMFUpOworCW1lbXNldChyczQ4NS0+cGFkZGluZywgMCwgc2l6
-ZW9mKHJzNDg1LT5wYWRkaW5nKSk7CisKKwlpZiAocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0
-ODVfRU5BQkxFRCkKKwkJcGwwMTFfcnM0ODVfdHhfc3RvcCh1YXApOworCisJLyogU2V0IG5ldyBj
-b25maWd1cmF0aW9uICovCisJcG9ydC0+cnM0ODUgPSAqcnM0ODU7CisJLyogTWFrZSBzdXJlIGF1
-dG8gUlRTIGlzIGRpc2FibGVkICovCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1
-X0VOQUJMRUQpIHsKKwkJdTMyIGNyID0gcGwwMTFfcmVhZCh1YXAsIFJFR19DUik7CisKKwkJY3Ig
-Jj0gflVBUlQwMTFfQ1JfUlRTRU47CisJCXBsMDExX3dyaXRlKGNyLCB1YXAsIFJFR19DUik7CisJ
-CXBvcnQtPnN0YXR1cyAmPSB+VVBTVEFUX0FVVE9SVFM7CisJfQorCisKKwlyZXR1cm4gMDsKK30K
-Kwogc3RhdGljIGNvbnN0IHN0cnVjdCB1YXJ0X29wcyBhbWJhX3BsMDExX3BvcHMgPSB7CiAJLnR4
-X2VtcHR5CT0gcGwwMTFfdHhfZW1wdHksCiAJLnNldF9tY3RybAk9IHBsMDExX3NldF9tY3RybCwK
-QEAgLTI1OTIsNiArMjcyNCw3IEBAIHN0YXRpYyBpbnQgcGwwMTFfc2V0dXBfcG9ydChzdHJ1Y3Qg
-ZGV2aWNlICpkZXYsIHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwLAogCQkJICAgIHN0cnVjdCBy
-ZXNvdXJjZSAqbW1pb2Jhc2UsIGludCBpbmRleCkKIHsKIAl2b2lkIF9faW9tZW0gKmJhc2U7CisJ
-aW50IHJldDsKIAogCWJhc2UgPSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoZGV2LCBtbWlvYmFzZSk7
-CiAJaWYgKElTX0VSUihiYXNlKSkKQEAgLTI2MDgsNiArMjc0MSwxMCBAQCBzdGF0aWMgaW50IHBs
-MDExX3NldHVwX3BvcnQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQg
-KnVhcCwKIAl1YXAtPnBvcnQuZmxhZ3MgPSBVUEZfQk9PVF9BVVRPQ09ORjsKIAl1YXAtPnBvcnQu
-bGluZSA9IGluZGV4OwogCisJcmV0ID0gdWFydF9nZXRfcnM0ODVfbW9kZSgmdWFwLT5wb3J0KTsK
-KwlpZiAocmV0KQorCQlyZXR1cm4gcmV0OworCiAJYW1iYV9wb3J0c1tpbmRleF0gPSB1YXA7CiAK
-IAlyZXR1cm4gMDsKQEAgLTI2NjUsNyArMjgwMiw3IEBAIHN0YXRpYyBpbnQgcGwwMTFfcHJvYmUo
-c3RydWN0IGFtYmFfZGV2aWNlICpkZXYsIGNvbnN0IHN0cnVjdCBhbWJhX2lkICppZCkKIAl1YXAt
-PnBvcnQuaW90eXBlID0gdmVuZG9yLT5hY2Nlc3NfMzJiID8gVVBJT19NRU0zMiA6IFVQSU9fTUVN
-OwogCXVhcC0+cG9ydC5pcnEgPSBkZXYtPmlycVswXTsKIAl1YXAtPnBvcnQub3BzID0gJmFtYmFf
-cGwwMTFfcG9wczsKLQorCXVhcC0+cG9ydC5yczQ4NV9jb25maWcgPSBwbDAxMV9yczQ4NV9jb25m
-aWc7CiAJc25wcmludGYodWFwLT50eXBlLCBzaXplb2YodWFwLT50eXBlKSwgIlBMMDExIHJldiV1
-IiwgYW1iYV9yZXYoZGV2KSk7CiAKIAlyZXQgPSBwbDAxMV9zZXR1cF9wb3J0KCZkZXYtPmRldiwg
-dWFwLCAmZGV2LT5yZXMsIHBvcnRucik7CgpiYXNlLWNvbW1pdDogY2QxMjQ1ZDc1Y2U5M2I4ZmQy
-MDZmNGIzNGViNThiY2ZlMTU2ZDVlOQotLSAKMi4zMS4xCgo=
+On Thu, Jun 10, 2021 at 10:08:30AM -0300, André Almeida wrote:
+> Às 09:39 de 10/06/21, Andy Shevchenko escreveu:
+> > On Thu, Jun 10, 2021 at 2:54 PM David Gow <davidgow@google.com> wrote:
+> >> On Thu, Jun 10, 2021 at 5:14 PM Andy Shevchenko
+> >> <andriy.shevchenko@linux.intel.com> wrote:
+> >>> On Wed, Jun 09, 2021 at 08:37:29PM -0300, André Almeida wrote:
+
+...
+
+> >>> It's not your fault but I think we need to defer this until KUnit gains support
+> >>> of the run statistics. My guts telling me if we allow more and more conversions
+> >>> like this the point will vanish and nobody will care.
+> >>
+> >> Did the test statistics patch we sent out before meet your expectations?
+> >> https://patchwork.kernel.org/project/linux-kselftest/patch/20201211072319.533803-1-davidgow@google.com/
+> > 
+> > Let me look at it at some point.
+> > 
+> >> If so, we can tidy it up and try to push it through straight away, we
+> >> were just waiting for a review from someone who wanted the feature.
+> >>
+> >>
+> >>> I like the code, but I can give my tag after KUnit prints some kind of this:
+> >>>
+> >>>  * This is how the current output looks like in success:
+> >>>
+> >>>    test_uuid: all 18 tests passed
+> >>>
+> >>>  * And when it fails:
+> >>>
+> >>>    test_uuid: failed 18 out of 18 tests
+> >>>
+> >>
+> >> There are some small restrictions on the exact format KUnit can use
+> >> for this if we want to continue to match the (K)TAP specification
+> >> which is being adopted by kselftest. The patch linked above should
+> >> give something formatted like:
+> >>
+> >> # test_uuid: (0 / 4) tests failed (0 / 12 test parameters)
+> >>
+> >> Would that work for you?
+> > 
+> > Can you decode it for me, please?
+> > 
+> > (Assuming that the above question arisen, perhaps some rephrasing is
+> > needed. The idea that user should have clear understanding on how many
+> > test cases were run and how many of them successfully finished or
+> > failed. According to this thread I have to see the cumulative number
+> > of 18 (either as one number or sum over test cases or how you call
+> > them, I see 4 here).
+> 
+> In the original code, each `if(uuid/guid_parse/equal)` was considered as
+> a test, so there were 4 tests for the 3 correct inputs and 2 tests for
+> the 3 wrong inputs: 4 * 3 + 2 * 3 = 18 tests.
+> 
+> In my patch, I've organized in a different way, with 4 test cases:
+> 
+> - A test case for guid_parse and guid_equal for correct inputs
+> - A test case for uuid_parse and uuid_equal for correct inputs
+> - A test case for guid_parse for incorrect inputs
+> - A test case for uuid_parse for incorrect inputs
+> 
+> So now we have 4 test cases, instead of the 6 test cases in the original
+> code, because I've united _parse and _equal in a single test case. Given
+> that each test has 3 parameters, this is why we see 12 test parameters
+> and that's why there's no "18 tests" around anymore.
+
+I see, is it mentioned in the commit message? If no, please add this
+explanation.
+
+Let's assume 12 now is the correct number, then the output can be somehow
+rephrased, but again, it's not in your patch anyway :-)
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
