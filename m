@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809A53A2723
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8593A2721
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhFJIf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:35:57 -0400
-Received: from nautica.notk.org ([91.121.71.147]:42159 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhFJIfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:35:55 -0400
-X-Greylist: delayed 125520 seconds by postgrey-1.27 at vger.kernel.org; Thu, 10 Jun 2021 04:35:54 EDT
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 0AEFBC020; Thu, 10 Jun 2021 10:33:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623314038; bh=iZa1+1qRIau0JA4G4mFy2PSaXoZ0Z9gDo5Hw1Npi34I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QRM+WQ2kQ9sx5Y4/XpGwbQkVDQYGGG6kTh5bNn3v+wNTCxV1GgyxeL+y/vxWOwW77
-         jNSv+/4WpMaiIgTDWQi/MLMov+9COh71KPjjyWf5wIMLkeTqtpVTcPPn/57G5Yy4xP
-         EmLrh9hgh+L3Cx6nydAsBPJogUXxerfIBBKvsqX2mIWhs5hdLIv5taAPze6B7l0lEc
-         787LsGpnHNb4Ab88lbksT5Vkrn2ZrxN7PnJo4OG8xFCujkSE7vYgUVwjQFOrjPZ+D5
-         VxJMgHGoOpwvR5siK6P5HqFA2v9Ejp4KS5MqQjAHVeYU0vpvDkK1jhKY1Tf3N+fahB
-         sfy0uOuQ8ngPA==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id CBA7FC01A;
-        Thu, 10 Jun 2021 10:33:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623314037; bh=iZa1+1qRIau0JA4G4mFy2PSaXoZ0Z9gDo5Hw1Npi34I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kGqKC7AFVeIEp0fUgzcQS2c8VETAH1wLr0t3yFTzhPwRejmEg9Zcpu+JsrUWANfGB
-         3EOPQYGvGI1CxHfxsK5+jACZk9LTEbrng404FtnrBelEryaGPAwAwZrmyyq+KhEt08
-         To2C+BRqzZjyQTUwQL2nPUdfE6UvVGC5O/ADjTWNawEXw3q0gaZrQo8uByM8sXtow1
-         Ehr+RutqLn8WN8yavzhmGLXakaHLFKfUHmvYaXr0ojkZZ4f/L1aGdHFVhmk3VjuwMl
-         QodbN244pHG/7FS6g0TX8hpoyWc03/Vv5Rk1wcXbTqrq0HG4Wrpm2a4jP7K/vA8DXe
-         W8mIarOt8lKJw==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 8d60faf2;
-        Thu, 10 Jun 2021 08:33:49 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 17:33:34 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        dgilbert@redhat.com, v9fs-developer@lists.sourceforge.net,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] init/do_mounts.c: Add root="fstag:<tag>" syntax for root
- device
-Message-ID: <YMHOXn2cpGh1T9vz@codewreck.org>
-References: <20210608153524.GB504497@redhat.com>
- <YMCPPCbjbRoPAEcL@stefanha-x1.localdomain>
- <20210609154543.GA579806@redhat.com>
- <YMHKZhfT0CUgeLno@stefanha-x1.localdomain>
+        id S230203AbhFJIfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:35:38 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:34864 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229823AbhFJIfh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 04:35:37 -0400
+Received: from [77.244.183.192] (port=63482 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lrG8B-000FMr-2O; Thu, 10 Jun 2021 10:33:39 +0200
+Subject: Re: [PATCH v6] dt-bindings: clk: versaclock5: Miscellaneous fixes and
+ improvements:
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Sean Anderson <sean.anderson@seco.com>
+References: <46310530171886c6ccf4046518e07510274a506c.1623308843.git.geert+renesas@glider.be>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <ec070c68-5b5e-0366-434e-9d9b571e95a8@lucaceresoli.net>
+Date:   Thu, 10 Jun 2021 10:33:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <46310530171886c6ccf4046518e07510274a506c.1623308843.git.geert+renesas@glider.be>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YMHKZhfT0CUgeLno@stefanha-x1.localdomain>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stefan Hajnoczi wrote on Thu, Jun 10, 2021 at 09:16:38AM +0100:
-> virtio-9p should be simple. I'm not sure how much additional setup the
-> other 9p transports require. TCP and RDMA seem doable if there are
-> kernel parameters to configure things before the root file system is
-> mounted.
+Hi Geert, All,
 
-For TCP, we can probably piggyback on what nfs does for this, see the
-ip= parameter in Documentation/admin-guide/nfs/nfsroot.rst -- it lives
-in net/ipv4/ipconfig.c so should just work out of the box
+On 10/06/21 09:09, Geert Uytterhoeven wrote:
+>   - Add missing "additionalProperties: false" for subnodes, to catch
+>     typos in properties,
+>   - Fix property names in example.
+> 
+> Fixes: 45c940184b501fc6 ("dt-bindings: clk: versaclock5: convert to yaml")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
 
-For RDMA I'm less optimistic, technically if we can setup ipoib with an
-ip with the same parameter it should work, but I have nothing to test it
-on anyway so that'll wait until someone who cares actually does try...
+Thanks for resending.
 
+In the meanwhile this patch has got shorter and shorter, and now I
+realize it has now become identical (except for an empty line
+difference) to patch "dt-bindings: clk: vc5: Fix example" send by Sean
+Anderson on June 7 and Reviewed-by me yesterday.
 
-Either way, we've got to start somewhere, so it's good there's something :)
+To the maintainer: either one can be applied, it's technically
+identical. If it were me I'd choose this one as it's out since way longer.
+
+Thanks everybody for your patience.
+
 -- 
-Dominique
-
-
+Luca
