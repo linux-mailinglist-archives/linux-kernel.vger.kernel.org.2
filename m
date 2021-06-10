@@ -2,129 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EAF3A3183
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CABC3A318A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 18:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhFJQ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 12:57:44 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58470 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230345AbhFJQ5j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:57:39 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lrNy1-0004L4-FD; Thu, 10 Jun 2021 16:55:41 +0000
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        Erik Rosen <erik.rosen@metormote.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: hwmon: (pmbus) Add support for reading direct mode coefficients
-Message-ID: <68276e1d-f262-d379-4600-88abdbecddd8@canonical.com>
-Date:   Thu, 10 Jun 2021 17:55:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231665AbhFJQ6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 12:58:30 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:56898 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230291AbhFJQ62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:58:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=NVa3X1j+fsnPH5/Ju/TMeZbGLDoT3Mwb3nTRMPGmAS4=; b=R11xA4+CYfxGLXxeg9CpOba5S6
+        f+etBL+dddvusFVgiuvRxRivnEQclSKo/ZqaHb7yKlVwKSD48fQR6uXVNOHgwWt7A7aLNHNVtgIB/
+        zbbvseMhj65nmVM8/wzAP/Y92xzV4GXob+coU/V7BxhMYd9aZf7MHMddb7+gDToqkxbE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lrNyb-008hGe-M1; Thu, 10 Jun 2021 18:56:17 +0200
+Date:   Thu, 10 Jun 2021 18:56:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ioana Ciornei <ciorneiioana@gmail.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>, calvin.johnson@nxp.com,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux.cj@gmail.com, netdev@vger.kernel.org,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: Re: [PATCH net-next v8 00/15] ACPI support for dpaa2 driver
+Message-ID: <YMJEMXEDAE/m9MhA@lunn.ch>
+References: <20210610163917.4138412-1-ciorneiioana@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610163917.4138412-1-ciorneiioana@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jun 10, 2021 at 07:39:02PM +0300, Ioana Ciornei wrote:
+> From: Ioana Ciornei <ioana.ciornei@nxp.com>
+> 
+> This patch set provides ACPI support to DPAA2 network drivers.
 
-Static analysis with Coverity on linux-next has detected a potential
-issue in drivers/hwmon/pmbus/pmbus_core.c with the following commit:
+Just to be clear and avoid confusion, there is a standing NACK against
+this patchset. Please see the discussion here:
 
-commit 999d577d7c007d38ab83eee4532d107c2233f78f
-Author: Erik Rosen <erik.rosen@metormote.com>
-Date:   Wed Jun 9 11:32:06 2021 +0200
+https://patchwork.kernel.org/project/linux-acpi/patch/20200715090400.4733-2-calvin.johnson@oss.nxp.com/#23518385
 
-    hwmon: (pmbus) Add support for reading direct mode coefficients
+So far, i've not seen any indication the issues raised there have been
+resolved. I don't see any Acked-by from an ACPI maintainer. So this
+code remains NACKed.
 
-The analysis is as follows:
-
-2219 static int pmbus_init_coefficients(struct i2c_client *client,
-2220                                   struct pmbus_driver_info *info)
-2221 {
-
-    1. var_decl: Declaring variable ret without initializer.
-
-2222        int i, n, ret;
-2223        const struct pmbus_class_attr_map *map;
-2224        const struct pmbus_sensor_attr *attr;
-2225
-
-    2. Condition i < 6UL /* sizeof (class_attr_map) / sizeof
-(class_attr_map[0]) + (int)sizeof (struct
-pmbus_init_coefficients::[unnamed type]) */, taking true branch.
-
-    5. Condition i < 6UL /* sizeof (class_attr_map) / sizeof
-(class_attr_map[0]) + (int)sizeof (struct
-pmbus_init_coefficients::[unnamed type]) */, taking true branch.
-
-    8. Condition i < 6UL /* sizeof (class_attr_map) / sizeof
-(class_attr_map[0]) + (int)sizeof (struct
-pmbus_init_coefficients::[unnamed type]) */, taking true branch.
-
-2226        for (i = 0; i < ARRAY_SIZE(class_attr_map); i++) {
-2227                map = &class_attr_map[i];
-
-    3. Condition info->format[map->class] != direct, taking true branch.
-    6. Condition info->format[map->class] != direct, taking true branch.
-    9. Condition info->format[map->class] != direct, taking false branch.
-
-2228                if (info->format[map->class] != direct)
-
-    4. Continuing loop.
-    7. Continuing loop.
-
-2229                        continue;
-
-    10. Condition n < map->nattr, taking true branch.
-    13. Condition n < map->nattr, taking true branch.
-    16. Condition n < map->nattr, taking false branch.
-
-2230                for (n = 0; n < map->nattr; n++) {
-2231                        attr = &map->attr[n];
-
-    11. Condition map->class != attr->class, taking true branch.
-    14. Condition map->class != attr->class, taking true branch.
-2232                        if (map->class != attr->class)
-    12. Continuing loop.
-    15. Continuing loop.
-
-2233                                continue;
-2234                        ret = pmbus_read_coefficients(client, info,
-attr);
-2235                        if (ret >= 0)
-2236                                break;
-2237                }
-
-Uninitialized scalar variable (UNINIT)
-    17. uninit_use: Using uninitialized value ret.
-
-2238                if (ret < 0) {
-2239                        dev_err(&client->dev,
-2240                                "No coefficients found for sensor
-class %d\n",
-2241                                map->class);
-2242                        return -EINVAL;
-2243                }
-2244        }
-2245
-2246        return 0;
-2247 }
-
-With the continue statements on line 2233 (or if map->nattr is zero) it
-may be possible that ret is never assigned a value and so the check on
-line 2238 could be checking an uninitialized variable ret. I'm not sure
-if this is a false positive, but it may be worth initializing ret to
-some sane value to catch these corner cases.
-
-Colin
-
+	Andrew
