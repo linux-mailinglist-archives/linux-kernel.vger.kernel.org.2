@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104813A2C08
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D91C3A2C0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhFJMzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:55:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:59212 "EHLO foss.arm.com"
+        id S230364AbhFJMzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:55:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:59248 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhFJMzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:55:18 -0400
+        id S230035AbhFJMzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:55:52 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B68F106F;
-        Thu, 10 Jun 2021 05:53:20 -0700 (PDT)
-Received: from [10.57.4.220] (unknown [10.57.4.220])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C24F3F73D;
-        Thu, 10 Jun 2021 05:53:17 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] sched/fair: Take thermal pressure into account
- while estimating energy
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6309C106F;
+        Thu, 10 Jun 2021 05:53:56 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF4FA3F73D;
+        Thu, 10 Jun 2021 05:53:53 -0700 (PDT)
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+To:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Beata Michalska <Beata.Michalska@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-References: <20210604080954.13915-1-lukasz.luba@arm.com>
- <20210604080954.13915-2-lukasz.luba@arm.com>
- <2f2fc758-92c6-5023-4fcb-f9558bf3369e@arm.com>
- <905f1d29-50f9-32be-4199-fc17eab79d04@arm.com>
- <3cfa5690-644b-ba80-3fc3-7c5a3f292e70@arm.com>
- <c77d00b9-d7a3-0e8a-a528-ab0c1773496f@arm.com>
- <CAKfTPtAc62gyjxSiSY2vD_qr-WjqbC91_GF-LXgNXh8T0Xx-yw@mail.gmail.com>
- <d4383b7a-a5e7-18ca-14ed-c533b4d43f62@arm.com>
- <CAKfTPtBD2qa3qwpoLuLNuF-hZAGpDvsahx6Tx_enLT2DAs4fiQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <80283949-8a07-5aed-1e56-0a1094ba3ba0@arm.com>
-Date:   Thu, 10 Jun 2021 13:53:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
+References: <20210608231132.32012-1-joshdon@google.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <e3fc3338-c469-0c0c-ada2-a0bbc9f969fe@arm.com>
+Date:   Thu, 10 Jun 2021 14:53:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtBD2qa3qwpoLuLNuF-hZAGpDvsahx6Tx_enLT2DAs4fiQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210608231132.32012-1-joshdon@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Josh,
 
+On 09/06/2021 01:11, Josh Don wrote:
 
-On 6/10/21 1:40 PM, Vincent Guittot wrote:
-> On Thu, 10 Jun 2021 at 14:30, Lukasz Luba <lukasz.luba@arm.com> wrote:
+[...]
 
-[snip]
+>  static void __maybe_unused cpu_period_quota_print(struct seq_file *sf,
+> @@ -10306,6 +10318,12 @@ static struct cftype cpu_files[] = {
+>  		.read_s64 = cpu_weight_nice_read_s64,
+>  		.write_s64 = cpu_weight_nice_write_s64,
+>  	},
+> +	{
+> +		.name = "idle",
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +		.read_s64 = cpu_idle_read_s64,
+> +		.write_s64 = cpu_idle_write_s64,
+> +	},
 
->>
->> So for this scenario, where we want to just align EAS with SchedUtil
->> frequency decision, which is instantaneous and has 'raw' value
->> of capping from policy->max, shouldn't we use:
->>
->> thermal_pressure = arch_scale_thermal_pressure(cpu_id)
-> 
-> Yes you should probably use arch_scale_thermal_pressure(cpu) instead
-> of thermal_load_avg(rq) in this case
-> 
+Any reason why this should only work on cgroup-v2?
 
-Thank you Vincent for valuable opinions!
-I will rewrite it and experiment with a new approach,
-then send a v3.
+struct cftype cpu_legacy_files[] vs. cpu_files[]
 
-Regards,
-Lukasz
+[...]
+
+> @@ -11340,10 +11408,14 @@ void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
+>  
+>  static DEFINE_MUTEX(shares_mutex);
+>  
+> -int sched_group_set_shares(struct task_group *tg, unsigned long shares)
+> +#define IDLE_WEIGHT sched_prio_to_weight[ARRAY_SIZE(sched_prio_to_weight) - 1]
+
+Why not 3 ? Like for tasks (WEIGHT_IDLEPRIO)?
+
+[...]
