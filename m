@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CD43A351C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9862A3A351B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 22:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhFJUwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 16:52:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41702 "EHLO mail.kernel.org"
+        id S230136AbhFJUwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 16:52:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230294AbhFJUwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230286AbhFJUwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Jun 2021 16:52:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C58A96141D;
+Received: by mail.kernel.org (Postfix) with ESMTPS id BB75461410;
         Thu, 10 Jun 2021 20:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623358206;
-        bh=OLCtVh65ZZU77JY37oRtbRO+WOtkt2lNHnP3NDBNhgY=;
+        bh=U7LNjFx8abNmPYqpajg/EzHWz8ZdPu3fWg+a1qGbGPc=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EV3xdYcCusyEb6JMiFEEAN7etTWJmibglbbJudJTbEKKq5rL4qVjSiJ58YU+Iq1oF
-         tBe8D9JYEq461LufvnFDUb/I0ivHNB9p9OizM08BZXuUFiTrJnMAR7maPywm/iCRJI
-         1Yydv11JNlm7hDPMK1qPUPR91X/PXjY572jxcMJj0BxHOUZ4mVKccgOPA3fmGbkfbi
-         grS0uogMIAqkjvgVxd8dINgaNkP4q52YkdLJnpe6nXB00nUBBY1hSdb+BM+rdpvyGH
-         56a93AAG2rVLChTm2iBkXQYVsowkuT9freaTmg7a+LxC2XIVArP0kj7mdtT9ihHZRH
-         XQNYOf0tuaKGw==
+        b=PMd89B+OXVrAiB0iV4hPkmGfRUpB8QdTEjjWVjhquNVBdjfHj3jRZHo4gVBY/iZBw
+         2HCZahsUdafY3EsE1q4zBKTLVfTQZTN3L0eM+0hyZbruFxMsesSun1HRMv7fnfsKgT
+         HNpmB1fDRKD1+uIBR3xFNudGBm4bWaTNHFM3rH23g2cYObqPwUMHS6FEmmYepZmwUl
+         itZHxJrtp3atO9BdWcpA6QnKTVpzuU5Kz/GC4r0k4O57VqlzBLY4R3YMOxEl2jVHmb
+         wKh3jpuEKRU7eXkudAMAqPMJzjQNtnZx++FLPqK8BXrzt9puFGM5E+l6R53ZmgkrJm
+         w+uMG5woo33kw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BF61F60BE2;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B5B43609E4;
         Thu, 10 Jun 2021 20:50:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] tipc: socket.c: fix the use of copular verb
+Subject: Re: [PATCH] af_unix: remove the repeated word "and"
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162335820677.975.10680513951676624271.git-patchwork-notify@kernel.org>
+Message-Id: <162335820673.975.4091644362333955050.git-patchwork-notify@kernel.org>
 Date:   Thu, 10 Jun 2021 20:50:06 +0000
-References: <20210610061853.38137-1-13145886936@163.com>
-In-Reply-To: <20210610061853.38137-1-13145886936@163.com>
+References: <20210610030935.35402-1-13145886936@163.com>
+In-Reply-To: <20210610030935.35402-1-13145886936@163.com>
 To:     None <13145886936@163.com>
-Cc:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, gushengxian@yulong.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,19 +46,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed,  9 Jun 2021 23:18:53 -0700 you wrote:
+On Wed,  9 Jun 2021 20:09:35 -0700 you wrote:
 > From: gushengxian <gushengxian@yulong.com>
 > 
-> Fix the use of copular verb.
+> Remove the repeated word "and".
 > 
 > Signed-off-by: gushengxian <gushengxian@yulong.com>
 > ---
->  net/tipc/socket.c | 2 +-
+>  net/unix/af_unix.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - tipc: socket.c: fix the use of copular verb
-    https://git.kernel.org/netdev/net-next/c/326af505ca1f
+  - af_unix: remove the repeated word "and"
+    https://git.kernel.org/netdev/net-next/c/4e03d073afc4
 
 You are awesome, thank you!
 --
