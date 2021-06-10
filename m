@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775943A2F01
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0B63A2F07
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhFJPIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:08:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32893 "EHLO
+        id S231608AbhFJPIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:08:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59724 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231467AbhFJPIF (ORCPT
+        by vger.kernel.org with ESMTP id S231603AbhFJPIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:08:05 -0400
+        Thu, 10 Jun 2021 11:08:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623337569;
+        s=mimecast20190719; t=1623337579;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ed14xuc5GLdj1NrbGE3OdC+GrAhtNU/6LCzI+jZmJEs=;
-        b=aW7kIPNAJgu0194i8vVJvhJ7wap+iPm6lCM4QPedbhEtn4wOvIZK5onFf4MqUWE2FaAFo8
-        29MK6TfMUilVTl2S4Nc6BL8fMbHxjJrsGqMnxEgFCUGT8ANr1d0ysDfFdbkbYQN1uwUp7R
-        PR6Su2V2MCHPIWICpGo6xIbWmdiI2WA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-Z3wXpCWQNGCwcuOzGps6iQ-1; Thu, 10 Jun 2021 11:06:07 -0400
-X-MC-Unique: Z3wXpCWQNGCwcuOzGps6iQ-1
-Received: by mail-wm1-f70.google.com with SMTP id n21-20020a7bcbd50000b02901a2ee0826aeso3895373wmi.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 08:06:07 -0700 (PDT)
+        bh=Cf6hot6ZLRcduczNi4lA10wsSd7+V1kWMUGJekCYcy4=;
+        b=T0Us7d5eYqvBMz3nV5Enu6ASdANwysXgnbaeyFNKJaAHJHcu8tplionE61l9tFZOa72s4i
+        tBPIz458c39TEUw9l9y2F1OaeXF7ijcUawhSt6TRqXrMdyOcrPSQ0bzpHMbeAlOKATQKRb
+        E/2Tlnfr6yteNwnwdRKhKyf6+5bTPls=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-mQe1ExQxNP6mlyxyDN8UFw-1; Thu, 10 Jun 2021 11:06:16 -0400
+X-MC-Unique: mQe1ExQxNP6mlyxyDN8UFw-1
+Received: by mail-wr1-f71.google.com with SMTP id h10-20020a5d688a0000b0290119c2ce2499so989292wru.19
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 08:06:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Ed14xuc5GLdj1NrbGE3OdC+GrAhtNU/6LCzI+jZmJEs=;
-        b=UAbv0snBnEPj3USOcYmbsHMd/9Hy1/x+C748DkVYZOO7LXIwRrMYZZ5dn8aVXTadCn
-         4FhaIznjC3GYKnM1K7HJT/kfqaGMVQUkOoE78kvNFUz5gqtFxMqP9advcmg6J0nBMN0/
-         Oy0wY/vQZsMYNJBJAjgK3H9oi64cfMiWyOXEUBcJ0l4w0Qd2c6RDuD4wRPepE03I+t7S
-         bKgWH5Prigv5+NpRE1Cg2TltBfk2BaANJE4dn2sNzzljoX2pHWLrd2/yuUYh0aFR+u7C
-         y7QAZWXxSBXMCfQHx8qbZ9HipzkMV1R/z747al9QDZ6zRxlVavCjtOaJeBxKU+mEU3hK
-         i2GA==
-X-Gm-Message-State: AOAM530aSVad5GF5hUE4H2ImT2KxpnSEqcwiZugzkP4inwY1p4/IY35C
-        0Pb/tDZq3UE/hKRkDHWyWn3+QG7BdFQCVbKzzf5446bdcC9cK0sXlvJSf2llgKipFTxpoTfsBtk
-        XAkYjpT71O5IW3I447+UBiTPZ
-X-Received: by 2002:a7b:c098:: with SMTP id r24mr15327303wmh.35.1623337566497;
-        Thu, 10 Jun 2021 08:06:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyHf4OlESk6cmnALRE3mUEXEeyjVHsEEQZzI40uQXGVsfJoMugcGZk20BYFlr8EDnNLDWIA9w==
-X-Received: by 2002:a7b:c098:: with SMTP id r24mr15327292wmh.35.1623337566335;
-        Thu, 10 Jun 2021 08:06:06 -0700 (PDT)
+        bh=Cf6hot6ZLRcduczNi4lA10wsSd7+V1kWMUGJekCYcy4=;
+        b=bNHEL3BqpFIBHm8flshu+pMfJ5HxcBHdMA9Znw+jM9VhDCgC744AsUzUavHw3qDc3M
+         cckYiv4LPXNsvvZENs6y7V7om7s7YqijPEKKfRRXL5mLObFUSd88eo+k3bMPm+T3IW+9
+         Yo8HUKU0iM+oGWrTi/8esmEFF8ku1k+aR6yXxYz7ZIcvact0wnfVrAN/Ah56w8BTSO0l
+         eiMFUvcXPq3akvbuQPEozxeIFRxO+f1ixH8wCiindxXHIoSncZoIVSF0gGMmOyJ39SKc
+         IkVa+uIjCrNhnpba3VvmprHLSlmW0i65bkHLXrlqWh/kglHOOVPrKOmp4+xOrL4Le9pK
+         K6gw==
+X-Gm-Message-State: AOAM531IzWYIc2MNuTaOz1r4tjPHH9xQiXxQ8kx05QMTq5ZCbkpdyiU1
+        NpX+yl4mkE10QCy0L0LX5OqI/Ys41AyZiE//+OXjXy+sxc6h3m9Fwq5cnFiH9h3dApitXcXyKP1
+        f13GKlCgBKQ492u/RGDW8LSzh
+X-Received: by 2002:a1c:2507:: with SMTP id l7mr5529083wml.188.1623337575750;
+        Thu, 10 Jun 2021 08:06:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw3c6aC4X4il2k5fq/qtSdT+15bADFk4BGyt6elhfFXTSPG/U5yVnl1Y004HOWePu0JJfDfUA==
+X-Received: by 2002:a1c:2507:: with SMTP id l7mr5529068wml.188.1623337575587;
+        Thu, 10 Jun 2021 08:06:15 -0700 (PDT)
 Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
-        by smtp.gmail.com with ESMTPSA id u15sm8514366wmq.1.2021.06.10.08.06.04
+        by smtp.gmail.com with ESMTPSA id m23sm3214631wmc.29.2021.06.10.08.06.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 08:06:05 -0700 (PDT)
-Subject: Re: [PATCH v3 7/8] KVM: x86: Introduce KVM_GET_SREGS2 /
- KVM_SET_SREGS2
+        Thu, 10 Jun 2021 08:06:13 -0700 (PDT)
+Subject: Re: [PATCH v3 0/8] Introduce KVM_{GET|SET}_SREGS2 and fix PDPTR
+ migration
 To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
 Cc:     open list <linux-kernel@vger.kernel.org>,
         "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
@@ -68,14 +68,13 @@ Cc:     open list <linux-kernel@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
         "H. Peter Anvin" <hpa@zytor.com>
 References: <20210607090203.133058-1-mlevitsk@redhat.com>
- <20210607090203.133058-8-mlevitsk@redhat.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f6a0aed8-2cfe-0af3-dd6f-26e4f203be9e@redhat.com>
-Date:   Thu, 10 Jun 2021 17:06:04 +0200
+Message-ID: <90393d4d-2057-b8d1-6867-275ba99efe3f@redhat.com>
+Date:   Thu, 10 Jun 2021 17:06:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210607090203.133058-8-mlevitsk@redhat.com>
+In-Reply-To: <20210607090203.133058-1-mlevitsk@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -83,72 +82,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/06/21 11:02, Maxim Levitsky wrote:
-> +static int __set_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2)
-> +{
-> +	int mmu_reset_needed = 0;
-> +	bool valid_pdptrs = sregs2->flags & KVM_SREGS2_FLAGS_PDPTRS_VALID;
-> +	int i, ret;
->   
-> +	if (sregs2->flags & ~KVM_SREGS2_FLAGS_PDPTRS_VALID)
-> +		return -EINVAL;
-> +
-> +	ret = __set_sregs_common(vcpu, (struct kvm_sregs *)sregs2,
-> +				 &mmu_reset_needed, !valid_pdptrs);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (valid_pdptrs) {
-> +		if (!is_pae_paging(vcpu))
-> +			return -EINVAL;
-> +		if (vcpu->arch.guest_state_protected)
-> +			return -EINVAL;
-> +		for (i = 0 ; i < 4 ; i++)
-> +			kvm_pdptr_write(vcpu, i, sregs2->pdptrs[i]);
-> +
-> +		kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
-> +		mmu_reset_needed = 1;
-> +	}
-> +	if (mmu_reset_needed)
-> +		kvm_mmu_reset_context(vcpu);
-> +	return 0;
->   }
+On 07/06/21 11:01, Maxim Levitsky wrote:
+> This patch set aims to fix few flaws that were discovered
+> in KVM_{GET|SET}_SREGS on x86:
+> 
+> * There is no support for reading/writing PDPTRs although
+>    these are considered to be part of the guest state.
+> 
+> * There is useless interrupt bitmap which isn't needed
+> 
+> * No support for future extensions (via flags and such)
+> 
+> Also if the user doesn't use the new SREG2 api, the PDPTR
+> load after migration is now done on KVM_REQ_GET_NESTED_STATE_PAGES
+> to at least read them correctly in cases when guest memory
+> map is not up to date when nested state is loaded.
+> 
+> This patch series was tested by doing nested migration test
+> of 32 bit PAE L1 + 32 bit PAE L2 on AMD and Intel and by
+> nested migration test of 64 bit L1 + 32 bit PAE L2 on AMD.
+> The later test currently fails on Intel (regardless of my patches).
+> 
+> Changes from V2:
+>    - I took in the patch series from Sean Christopherson that
+>      removes the pdptrs_changed function and rebased my code
+>      on top of it.
+>    - I updated the SET_SREGS2 ioctl to load PDPTRS from memory
+>      when user haven't given PDPTRS.
+>    - Minor refactoring all over the place.
+> 
+> Changes from V1:
+>    - move only PDPTRS load to KVM_REQ_GET_NESTED_STATE_PAGES on VMX
+>    - rebase on top of kvm/queue
+>    - improve the KVM_GET_SREGS2 to have flag for PDPTRS
+>      and remove padding
+> 
+> Patches to qemu to enable this feature were sent as well.
+> 
+> Maxim Levitsky (5):
+>    KVM: nSVM: refactor the CR3 reload on migration
+>    KVM: nVMX: delay loading of PDPTRs to KVM_REQ_GET_NESTED_STATE_PAGES
+>    KVM: x86: introduce kvm_register_clear_available
+>    KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2
+>    KVM: x86: avoid loading PDPTRs after migration when possible
+> 
+> Sean Christopherson (3):
+>    KVM: nVMX: Drop obsolete (and pointless) pdptrs_changed() check
+>    KVM: nSVM: Drop pointless pdptrs_changed() check on nested transition
+>    KVM: x86: Always load PDPTRs on CR3 load for SVM w/o NPT and a PAE
+>      guest
+> 
+>   Documentation/virt/kvm/api.rst  |  48 +++++++++
+>   arch/x86/include/asm/kvm_host.h |   7 +-
+>   arch/x86/include/uapi/asm/kvm.h |  13 +++
+>   arch/x86/kvm/kvm_cache_regs.h   |  12 +++
+>   arch/x86/kvm/svm/nested.c       |  39 +++++--
+>   arch/x86/kvm/svm/svm.c          |   6 +-
+>   arch/x86/kvm/vmx/nested.c       |  32 ++++--
+>   arch/x86/kvm/x86.c              | 176 +++++++++++++++++++++-----------
+>   include/uapi/linux/kvm.h        |   4 +
+>   9 files changed, 253 insertions(+), 84 deletions(-)
+> 
 
-It's a bit nicer if the checks are done early:
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index f20c7c06bd4a..c6f8fec78c53 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10248,22 +10248,23 @@ static int __set_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2)
-  {
-         int mmu_reset_needed = 0;
-         bool valid_pdptrs = sregs2->flags & KVM_SREGS2_FLAGS_PDPTRS_VALID;
-+       bool pae = (sregs2->cr0 & X86_CR0_PG) && (sregs2->cr4 & X86_CR4_PAE) &&
-+               !(sregs2->efer & EFER_LMA);
-         int i, ret;
-  
-         if (sregs2->flags & ~KVM_SREGS2_FLAGS_PDPTRS_VALID)
-                 return -EINVAL;
-  
-+       if (valid_pdptrs && (!pae || vcpu->arch.guest_state_protected))
-+               return -EINVAL;
-+
-         ret = __set_sregs_common(vcpu, (struct kvm_sregs *)sregs2,
-                                  &mmu_reset_needed, !valid_pdptrs);
-         if (ret)
-                 return ret;
-  
-         if (valid_pdptrs) {
--               if (!is_pae_paging(vcpu))
--                       return -EINVAL;
--               if (vcpu->arch.guest_state_protected)
--                       return -EINVAL;
--               for (i = 0 ; i < 4 ; i++)
-+               for (i = 0; i < 4 ; i++)
-                         kvm_pdptr_write(vcpu, i, sregs2->pdptrs[i]);
-  
-                 kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
+Queued, thanks.
 
 Paolo
 
