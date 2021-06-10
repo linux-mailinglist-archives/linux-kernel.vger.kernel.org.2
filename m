@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C0F3A2B19
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B8C3A2B21
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhFJMJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:09:36 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25024 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230281AbhFJMJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:09:34 -0400
-IronPort-SDR: GfL2YwfCIgCBLbmdJc5NL4Ivj3pQ678Z+Psgd4yjveXfcFExWgvjlbUvSfIfuIxipfyXEwj5Ej
- UB6ANpV8WMGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="192599704"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="192599704"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 05:07:38 -0700
-IronPort-SDR: +wOVCgWo6QMRCUZl/vz1ixHeCTfdjqX7IVzlMy5+2xqf7VkB1ARy//upM1I8E/gx/jBXPMbljm
- xM1NKTnjVp8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="553043320"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 10 Jun 2021 05:07:35 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 10 Jun 2021 15:07:35 +0300
-Date:   Thu, 10 Jun 2021 15:07:35 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Benjamin Berg <bberg@redhat.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/7] usb: typec: ucsi: Polling the alt modes and PDOs
-Message-ID: <YMIAh1uDgeglJYNN@kuha.fi.intel.com>
-References: <20210607131442.20121-1-heikki.krogerus@linux.intel.com>
- <4a76d2152f016b58298bec16aa2003a6ec55f8a8.camel@redhat.com>
- <YL8RPiVsEFOM9PBo@kuha.fi.intel.com>
- <YL8UD+nlBSSQGIMO@kuha.fi.intel.com>
- <f9e1640d4d1a2acbaacf83dee021cd4aa55f233f.camel@redhat.com>
- <YMClRTC8wW82IrDT@kuha.fi.intel.com>
- <YMCxfC+S9EJNEiwq@kuha.fi.intel.com>
- <YMC6fgoWiAe1C3uZ@kuha.fi.intel.com>
- <0bf4d8fc6d64ac553a319b8c5af49a3d7705842d.camel@redhat.com>
+        id S230301AbhFJMKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:10:46 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:58116 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230113AbhFJMKo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:10:44 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15AC7nn3032110;
+        Thu, 10 Jun 2021 12:08:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=R5gIkfYOSlyle2Ew7mpz5qlfjYV2KAyBhHNWTShZO74=;
+ b=c43PC1hU8JRYaDrPBQY5LQocJX0187FwIjTNPnVlqQ5bku5BWN8krS4HuvKiZCUbokmV
+ muRIqQPPQNJ1XifpE6yvVPR4cZssAelzDmPmx6N54MGFBqLsNvQ84xx0sqjbgro6AOjz
+ SvKlI6DJsBQab3j8/cHnNGLYF2DDtuyspuevsLDtsxOkorlyPoCqAbYXLFyydNs4s6hQ
+ xuXrk1xohgw31U6qpivQwHw828yjcT7aREWy+TW32Vj33Q9q5Yu3CNfXg7bd7Ee8WtvU
+ Iqc3cKQU0eetW5OTxXeGeolaWgtYdIzC2sZVnDlEcKzgOumM2ywx6Nxo0GdQmQtwPc7v 3g== 
+Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3930d50c0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 12:08:44 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15AC3WW8037943;
+        Thu, 10 Jun 2021 12:08:42 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 390k1sxmqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 12:08:42 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15AC8eve020233;
+        Thu, 10 Jun 2021 12:08:40 GMT
+Received: from [10.175.195.97] (/10.175.195.97)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 10 Jun 2021 05:08:40 -0700
+From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+Subject: __gfn_to_hva_memslot Spectre patch for stable (Was: Re: [GIT PULL]
+ KVM fixes for 5.13-rc6)
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Artemiy Margaritov <artemiy.margaritov@gmail.com>
+References: <20210609000743.126676-1-pbonzini@redhat.com>
+Message-ID: <341559af-911e-d85f-f966-2bbc88a72114@oracle.com>
+Date:   Thu, 10 Jun 2021 14:08:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0bf4d8fc6d64ac553a319b8c5af49a3d7705842d.camel@redhat.com>
+In-Reply-To: <20210609000743.126676-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10010 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 phishscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106100079
+X-Proofpoint-ORIG-GUID: UCcEalI8v6TgT1kDdx1_1ueW_X78sQEW
+X-Proofpoint-GUID: UCcEalI8v6TgT1kDdx1_1ueW_X78sQEW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 07:39:41PM +0200, Benjamin Berg wrote:
-> My thought when I first ran into the issue was that the PPM simply
-> resets the change bitfield on ACK, effectively discarding any changes
-> that happened after the last GET_CONNECTOR_STATUS call. I believed to
-> have confirmed this by inserting an msleep in between.
-> However, I have to admit that I have never really looked for
-> alternative explanations.
+On 09.06.2021 02:07, Paolo Bonzini wrote:
+(..)
+> Paolo Bonzini (1):
+>        kvm: avoid speculation-based attacks from out-of-range memslot accesses
+> 
 
-Thanks a lot for testing these. I now have pretty good idea about the
-problem. The problem is not what you though it is, but the driver is
-also not too slow like I suspected.
+That commit looks like something that stable kernels might benefit from, too -
+any plans to submit it for stable?
 
-I'm quite certain now that the PPM simply does not create the event at
-all in this case, regardless of what the driver does. We do need to
-workaround that problem, but I think we can do it in a better way. I
-have an idea for that.
+Responding to the pull request since I can't find that patch posted on
+a mailing list.
 
-thanks,
-
--- 
-heikki
+Thanks,
+Maciej
