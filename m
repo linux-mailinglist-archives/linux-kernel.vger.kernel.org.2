@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147603A2EE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684023A2EE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 17:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhFJPDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 11:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44508 "EHLO mail.kernel.org"
+        id S231558AbhFJPEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 11:04:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230332AbhFJPDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 11:03:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D60C61406;
-        Thu, 10 Jun 2021 15:01:21 +0000 (UTC)
+        id S231451AbhFJPEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 11:04:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D475613E9;
+        Thu, 10 Jun 2021 15:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623337281;
-        bh=B8YUrdGtvh1GlX9DXPYnLvrAiv1MGNWen6/6xy5xNj0=;
+        s=k20201202; t=1623337326;
+        bh=p+H8s0egdv3BGUJk4DbOgLzpOhw4FBnL6dPXfrgDCc0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZOOKAHQiUBk7P4XwofeAx9bYWQKbqO2Y4+luqnSOASsoYUCFy7CkXg/H5OaGC1GyJ
-         yzRam3hEWbUK2dAXhmukaB+YzI9AbDvXVYANRTARIvfLKa03eXFEjyYDCtqaQjt2hl
-         0IMAjOxWnoWmIhYvh6jl5/ZvEJaMK6SNbvqNWc02vhyjPCcy35jQNSFlUQcZ2dLPqD
-         sHFPhNeBHPuo9MDNeYvAt1DziEiU8Vg199tHAZZYCDGOsP5360qwF224ioWL7UTibn
-         igH3wAqxExu+RCXjqWJkxZaswAnquByLVHSHqZCLiJ78s+gQROtrgurLGNODv817MY
-         MHXDpw4gnFctg==
-Received: by mail-oi1-f173.google.com with SMTP id r17so2422692oic.7;
-        Thu, 10 Jun 2021 08:01:21 -0700 (PDT)
-X-Gm-Message-State: AOAM533RdzuBF9F50uzpSSvex/19/SyV5W3ycw3VTDjlusx5+wR7U6b3
-        JXvEElh6h1fyeki+536XpgGBd64wcI/uNuNw3jk=
-X-Google-Smtp-Source: ABdhPJxibo6JABGA7bE+zFOtcntl98rQdpSxCh/xGWjytPaZ+l9cdgGdrTsv+YQbvAM2joKHZSGRQzNlq6GWTM6SPeM=
-X-Received: by 2002:aca:eb55:: with SMTP id j82mr3640527oih.174.1623337280475;
- Thu, 10 Jun 2021 08:01:20 -0700 (PDT)
+        b=cq8/V0Fpo8XOlZkPj+d/rVs3in/wDRFomFDz6ZeoQWR6G4Ok3yX5uSFkxuNU02eBb
+         PZwLF0VzB7opk+RJs51k4s1BH47qvnTYO9CHvm6w/IK63s/ugXRl3kdBR72Ej5gd3d
+         uhQXpRTdpuIdSbWl8rydlMOWYvGtl97ngU7HfU6yfm3Xr4xoEpalr5jrEzD9YVCqB9
+         5J50D2D20P37Ki3WNZDt/eGXVpE9z9hzzNZQJpT/l3lILuqoJBUhhLkp2qM4jecyDA
+         IC4Cav5iNZzrMdBwAcpIOJnWguN+7OdshvXSaJ2rpmbzk/gRS4XJvrMIA086TQTw4X
+         SlLpfIciQZ1ow==
+Received: by mail-oi1-f175.google.com with SMTP id z3so2420686oib.5;
+        Thu, 10 Jun 2021 08:02:06 -0700 (PDT)
+X-Gm-Message-State: AOAM533LnU/FxMm4phO3JehjJfAGkZPPq2juz10fK7/LIlRDV3wG21Vi
+        uQkSFmYBJiCIJoPjHw1kAZD3ejKYq8TonKyN80A=
+X-Google-Smtp-Source: ABdhPJzwc9dtTqV4JuYFW4MyFIjIJUhIi1DCsWgsdHf5pQ3cE8Zc4m+2QBQ9n5BXeIej8L3/LPhxI861X/0qqbQMsWI=
+X-Received: by 2002:a54:460a:: with SMTP id p10mr10583973oip.47.1623337325826;
+ Thu, 10 Jun 2021 08:02:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210609163211.3467449-1-boqun.feng@gmail.com>
-In-Reply-To: <20210609163211.3467449-1-boqun.feng@gmail.com>
+References: <cover.1623174621.git.ashish.kalra@amd.com> <13d4bdd5fc0cf9aa0ad81d43da975deb37f0d39c.1623174621.git.ashish.kalra@amd.com>
+In-Reply-To: <13d4bdd5fc0cf9aa0ad81d43da975deb37f0d39c.1623174621.git.ashish.kalra@amd.com>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 10 Jun 2021 17:01:08 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGwa28T5Cr_64OC4rqE3qhwWQz+BJPwjdr54G-pVf9+pA@mail.gmail.com>
-Message-ID: <CAMj1kXGwa28T5Cr_64OC4rqE3qhwWQz+BJPwjdr54G-pVf9+pA@mail.gmail.com>
-Subject: Re: [RFC v3 0/7] PCI: hv: Support host bridge probing on ARM64
-To:     Boqun Feng <boqun.feng@gmail.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+Date:   Thu, 10 Jun 2021 17:01:54 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGOaTR6bCHYtdapgM4wfzNTFQ5f-n5Jf0q28JEmsKimZw@mail.gmail.com>
+Message-ID: <CAMj1kXGOaTR6bCHYtdapgM4wfzNTFQ5f-n5Jf0q28JEmsKimZw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] EFI: Introduce the new AMD Memory Encryption GUID.
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, kvm@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org, PCI <linux-pci@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>
+        Steve Rutherford <srutherford@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-efi <linux-efi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 18:32, Boqun Feng <boqun.feng@gmail.com> wrote:
+On Tue, 8 Jun 2021 at 20:07, Ashish Kalra <Ashish.Kalra@amd.com> wrote:
 >
-> Hi Bjorn, Arnd and Marc,
+> From: Ashish Kalra <ashish.kalra@amd.com>
 >
+> Introduce a new AMD Memory Encryption GUID which is currently
+> used for defining a new UEFI environment variable which indicates
+> UEFI/OVMF support for the SEV live migration feature. This variable
+> is setup when UEFI/OVMF detects host/hypervisor support for SEV
+> live migration and later this variable is read by the kernel using
+> EFI runtime services to verify if OVMF supports the live migration
+> feature.
+>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 
-Instead of cc'ing Arnd, you cc'ed me (Ard)
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-> This is the v3 for the preparation of virtual PCI support on Hyper-V
-> ARM64. Previous versions:
+> ---
+>  include/linux/efi.h | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> v1:     https://lore.kernel.org/lkml/20210319161956.2838291-1-boqun.feng@gmail.com/
-> v2:     https://lore.kernel.org/lkml/20210503144635.2297386-1-boqun.feng@gmail.com/
+> diff --git a/include/linux/efi.h b/include/linux/efi.h
+> index 6b5d36babfcc..dbd39b20e034 100644
+> --- a/include/linux/efi.h
+> +++ b/include/linux/efi.h
+> @@ -362,6 +362,7 @@ void efi_native_runtime_setup(void);
 >
-> Changes since last version:
+>  /* OEM GUIDs */
+>  #define DELLEMC_EFI_RCI2_TABLE_GUID            EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
+> +#define AMD_SEV_MEM_ENCRYPT_GUID               EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
 >
-> *       Use a sentinel value approach instead of calling
->         pci_bus_find_domain_nr() for every CONFIG_PCI_DOMAIN_GENERIC=y
->         arch as per suggestion from
->
-> *       Improve the commit log and comments for patch #6.
->
-> *       Rebase to the latest mainline.
->
-> The basic problem we need to resolve is that ARM64 is an arch with
-> PCI_DOMAINS_GENERIC=y, so the bus sysdata is pci_config_window. However,
-> Hyper-V PCI provides a paravirtualized PCI interface, so there is no
-> actual pci_config_window for a PCI host bridge, so no information can be
-> retrieve from the pci_config_window of a Hyper-V virtual PCI bus. Also
-> there is no corresponding ACPI device for the Hyper-V PCI root bridge.
->
-> With this patchset, we could enable the virtual PCI on Hyper-V ARM64
-> guest with other code under development.
->
-> Comments and suggestions are welcome.
->
-> Regards,
-> Boqun
->
-> Arnd Bergmann (1):
->   PCI: hv: Generify PCI probing
->
-> Boqun Feng (6):
->   PCI: Introduce domain_nr in pci_host_bridge
->   PCI: Allow msi domain set-up at host probing time
->   PCI: hv: Use pci_host_bridge::domain_nr for PCI domain
->   PCI: hv: Set up msi domain at bridge probing time
->   arm64: PCI: Support root bridge preparation for Hyper-V PCI
->   PCI: hv: Turn on the host bridge probing on ARM64
->
->  arch/arm64/kernel/pci.c             |  7 ++-
->  drivers/pci/controller/pci-hyperv.c | 87 +++++++++++++++++------------
->  drivers/pci/probe.c                 |  9 ++-
->  include/linux/pci.h                 | 10 ++++
->  4 files changed, 73 insertions(+), 40 deletions(-)
->
+>  typedef struct {
+>         efi_guid_t guid;
 > --
-> 2.30.2
+> 2.17.1
 >
