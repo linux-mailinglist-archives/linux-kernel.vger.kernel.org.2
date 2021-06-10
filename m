@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB0B3A2B07
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA213A2B09
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFJMHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:07:39 -0400
-Received: from smtprelay0164.hostedemail.com ([216.40.44.164]:60338 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230301AbhFJMHi (ORCPT
+        id S230351AbhFJMIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:08:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37680 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229935AbhFJMIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:07:38 -0400
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id D785D837F24D;
-        Thu, 10 Jun 2021 12:05:41 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id D2E5B13D97;
-        Thu, 10 Jun 2021 12:05:40 +0000 (UTC)
-Message-ID: <c8671b993095e58ca8f3f82cc69e2651666331c6.camel@perches.com>
-Subject: Re: [PATCH 1/1] lib: remove leading spaces before tabs
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Thu, 10 Jun 2021 05:05:39 -0700
-In-Reply-To: <YMHW80wUyFpW6Utf@smile.fi.intel.com>
-References: <20210608071430.12687-1-thunder.leizhen@huawei.com>
-         <CAHp75VfuMJ5kfRDB4tE2zr2Em79HiwrDJVROnw+kD3H+QNM4sg@mail.gmail.com>
-         <da4915c5-fa13-0cf2-f2d2-02779a64af1b@huawei.com>
-         <8a70d592e14f93822bf40832c7374d8e491c3afc.camel@perches.com>
-         <26ee1009-259d-07a6-495f-87557be9ed8a@huawei.com>
-         <3211e76c-d2a0-1e26-940b-9710073ee7d4@huawei.com>
-         <CAHp75VfQq=RkjyZQsc-PHLTLRCzXovm-D_Z+Pp3A6vWGA-GKug@mail.gmail.com>
-         <7e0f67a63b7093f4d20e0c0ccb076d9244e26a9a.camel@perches.com>
-         <YMHW80wUyFpW6Utf@smile.fi.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 10 Jun 2021 08:08:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623326779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=A2UDZiK1B1BG+nJJuHhQBE+ymkNJbiMVhdukooVpXDs=;
+        b=XOosOUCBqYeo7D7a6LN7wJvhtnRRHoC1Eeq8Vt/h7KlAOaxNh78CKgPs2wBPzZQEBDeuZr
+        CX5hziW1Y05QeVOs0lt8d38wV3diGzh5vTBeGo2+m2pG6iDrnJLa5/xdl9QOmytPgg3tpd
+        Zq0U7IHBAs9QeNo3H02Ow9guWj1DOIo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-bBEVSxSxOGKi1jgpt2W1SQ-1; Thu, 10 Jun 2021 08:06:17 -0400
+X-MC-Unique: bBEVSxSxOGKi1jgpt2W1SQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EFBCC801B12;
+        Thu, 10 Jun 2021 12:06:16 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8279B19C45;
+        Thu, 10 Jun 2021 12:06:16 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com, bgardon@google.com
+Subject: [PATCH 0/2] KVM: Don't take mmu_lock for range invalidation unless necessary
+Date:   Thu, 10 Jun 2021 08:06:13 -0400
+Message-Id: <20210610120615.172224-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.60
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: D2E5B13D97
-X-Stat-Signature: z3xsqei7c8kq88nousuibsybqqmswc4z
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+d4z/nAXJADwvBfwOEcNkpZUKMByUC0cc=
-X-HE-Tag: 1623326740-28987
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-10 at 12:10 +0300, Andy Shevchenko wrote:
-> If you care about parallelism, the checkpatch should be doing it itself.
+This is my take on Sean's patch to restrict taking the mmu_lock in the
+MMU notifiers.  The first patch includes the locking changes, while
+the second is the optimization.
 
-ridiculous argument.  g'night...
+Paolo Bonzini (1):
+  KVM: Block memslot updates across range_start() and range_end()
 
+Sean Christopherson (1):
+  KVM: Don't take mmu_lock for range invalidation unless necessary
 
+ Documentation/virt/kvm/locking.rst |  6 +++
+ include/linux/kvm_host.h           | 10 +++-
+ virt/kvm/kvm_main.c                | 79 ++++++++++++++++++++++++------
+ 3 files changed, 78 insertions(+), 17 deletions(-)
+
+-- 
+2.27.0
 
