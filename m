@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D746A3A2B8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5566D3A2B8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhFJM3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:29:55 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3835 "EHLO
+        id S230466AbhFJMaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:30:07 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9067 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbhFJM3R (ORCPT
+        with ESMTP id S230435AbhFJM3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Jun 2021 08:29:17 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G135C0rWrzWsWR;
-        Thu, 10 Jun 2021 20:22:23 +0800 (CST)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G137Z0QDZzYWFY;
+        Thu, 10 Jun 2021 20:24:26 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -32,9 +32,9 @@ CC:     Catalin Marinas <catalin.marinas@arm.com>,
         Jungseung Lee <js07.lee@gmail.com>,
         Will Deacon <will@kernel.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 5/6] ARM: mm: Provide die_kernel_fault() helper
-Date:   Thu, 10 Jun 2021 20:35:55 +0800
-Message-ID: <20210610123556.171328-6-wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 6/6] ARM: mm: Fix PXN process with LPAE feature
+Date:   Thu, 10 Jun 2021 20:35:56 +0800
+Message-ID: <20210610123556.171328-7-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
 References: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
@@ -49,72 +49,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide die_kernel_fault() helper to do the kernel fault reporting,
-which with msg argument, it could report different message in different
-scenes, and the later patch "ARM: mm: Fix PXN process with LPAE feature"
-will use it.
+When user code execution with privilege mode, it will lead to
+infinite loop in the page fault handler if ARM_LPAE enabled,
 
+The issue could be reproduced with
+  "echo EXEC_USERSPACE > /sys/kernel/debug/provoke-crash/DIRECT"
+
+As Permission fault shows in ARM spec,
+  IFSR format when using the Short-descriptor translation table format
+    Permission fault:       01101 First level      01111 Second level
+  IFSR format when using the Long-descriptor translation table format
+    Permission fault:       0011LL LL bits indicate levelb.
+
+Add is_permission_fault() function to check permission fault and die
+if permission fault occurred under instruction fault in do_page_fault().
+
+Fixes: 1d4d37159d01 ("ARM: 8235/1: Support for the PXN CPU feature on ARMv7")
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- arch/arm/mm/fault.c | 30 +++++++++++++++++++++---------
- 1 file changed, 21 insertions(+), 9 deletions(-)
+ arch/arm/mm/fault.c | 20 +++++++++++++++++++-
+ arch/arm/mm/fault.h |  4 ++++
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
-index 76aced067b12..82bcfe57de20 100644
+index 82bcfe57de20..bc8779d54a64 100644
 --- a/arch/arm/mm/fault.c
 +++ b/arch/arm/mm/fault.c
-@@ -99,6 +99,21 @@ void show_pte(const char *lvl, struct mm_struct *mm, unsigned long addr)
- { }
- #endif					/* CONFIG_MMU */
+@@ -194,6 +194,19 @@ void do_bad_area(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ #define VM_FAULT_BADMAP		0x010000
+ #define VM_FAULT_BADACCESS	0x020000
  
-+static void die_kernel_fault(const char *msg, struct mm_struct *mm,
-+			     unsigned long addr, unsigned int fsr,
-+			     struct pt_regs *regs)
++static inline bool is_permission_fault(unsigned int fsr)
 +{
-+	bust_spinlocks(1);
-+	pr_alert("8<--- cut here ---\n");
-+	pr_alert("Unable to handle kernel %s at virtual address %08lx\n",
-+		 msg, addr);
-+
-+	show_pte(KERN_ALERT, mm, addr);
-+	die("Oops", regs, fsr);
-+	bust_spinlocks(0);
-+	do_exit(SIGKILL);
++	int fs = fsr_fs(fsr);
++#ifdef CONFIG_ARM_LPAE
++	if ((fs & FS_PERM_NOLL_MASK) == FS_PERM_NOLL)
++		return true;
++#else
++	if (fs == FS_L1_PERM || fs == FS_L2_PERM)
++		return true;
++#endif
++	return false;
 +}
 +
- /*
-  * Oops.  The kernel tried to access some page that wasn't present.
-  */
-@@ -106,6 +121,7 @@ static void
- __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
- 		  struct pt_regs *regs)
+ static vm_fault_t __kprobes
+ __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int flags,
+ 		unsigned long vma_flags, struct pt_regs *regs)
+@@ -253,9 +266,14 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 		vm_flags = VM_WRITE;
+ 	}
+ 
+-	if (fsr & FSR_LNX_PF)
++	if (fsr & FSR_LNX_PF) {
+ 		vm_flags = VM_EXEC;
+ 
++		if (is_permission_fault(fsr) && !user_mode(regs))
++			die_kernel_fault("execution of memory",
++					 mm, addr, fsr, regs);
++	}
++
+ 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
+ 
+ 	/*
+diff --git a/arch/arm/mm/fault.h b/arch/arm/mm/fault.h
+index 9ecc2097a87a..83b5ab32d7a4 100644
+--- a/arch/arm/mm/fault.h
++++ b/arch/arm/mm/fault.h
+@@ -14,6 +14,8 @@
+ 
+ #ifdef CONFIG_ARM_LPAE
+ #define FSR_FS_AEA		17
++#define FS_PERM_NOLL		0xC
++#define FS_PERM_NOLL_MASK	0x3C
+ 
+ static inline int fsr_fs(unsigned int fsr)
  {
-+	const char *msg;
- 	/*
- 	 * Are we prepared to handle this kernel fault?
- 	 */
-@@ -115,16 +131,12 @@ __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
- 	/*
- 	 * No handler, we'll have to terminate things with extreme prejudice.
- 	 */
--	bust_spinlocks(1);
--	pr_alert("8<--- cut here ---\n");
--	pr_alert("Unable to handle kernel %s at virtual address %08lx\n",
--		 (addr < PAGE_SIZE) ? "NULL pointer dereference" :
--		 "paging request", addr);
-+	if (addr < PAGE_SIZE)
-+		msg = "NULL pointer dereference";
-+	else
-+		msg = "paging request";
- 
--	show_pte(KERN_ALERT, mm, addr);
--	die("Oops", regs, fsr);
--	bust_spinlocks(0);
--	do_exit(SIGKILL);
-+	die_kernel_fault(msg, mm, addr, fsr, regs);
+@@ -21,6 +23,8 @@ static inline int fsr_fs(unsigned int fsr)
  }
+ #else
+ #define FSR_FS_AEA		22
++#define FS_L1_PERM             0xD
++#define FS_L2_PERM             0xF
  
- /*
+ static inline int fsr_fs(unsigned int fsr)
+ {
 -- 
 2.26.2
 
