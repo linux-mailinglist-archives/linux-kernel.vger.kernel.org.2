@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F32E3A35C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7533A35C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhFJVUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:20:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhFJVUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:20:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8483F61362;
-        Thu, 10 Jun 2021 21:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623359895;
-        bh=so8eXo9V+y7UW0kzOqL7D9DbbcWmGxu3kpYV0WhOpbs=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=XxfqYczG8QwvrY8aclg9g8W9rROovo/65gGEIPDu6ebReuz/5cMhF1AWPIVjHJAIf
-         iJ3BIOxgP6Iu8OWz7FdO53fpWcGSO91yX+QWoEx1KkxyLnn2Z5roke4g5SDHyblGo9
-         mjU/4NXXLmRxUMKdpH9BY/q2f7R/1rh38udM8WlQZy58BDO81olRVp+XtFkCMjN4QS
-         JPqJ3GUWyQ1Lxg9YkZvNZWyKRr+zOk6h/YC6snjaKw7HpabO6ZJHmnx8bWwAhqkxX1
-         4UhCt6F8SumFGEAfyMjW4ggcEyKeyBroECNAeqHEdYUYaGbT3aNrHaF/+eDN/zT8AG
-         r7Aj/HxTJ0a+g==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <e9849007-8169-cb32-b0f1-5be6210f1319@geanix.com>
-References: <20210610071758.1560592-1-sean@geanix.com> <e9849007-8169-cb32-b0f1-5be6210f1319@geanix.com>
-Subject: Re: [PATCH] clk: fix possible circular locking in clk_notifier_register()
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Sean Nyekjaer <sean@geanix.com>
-Date:   Thu, 10 Jun 2021 14:18:14 -0700
-Message-ID: <162335989440.9598.5831025849742947247@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S230401AbhFJVUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:20:42 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:50394 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhFJVUl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 17:20:41 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id AFEAA4F7DFB96;
+        Thu, 10 Jun 2021 14:18:43 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 14:18:43 -0700 (PDT)
+Message-Id: <20210610.141843.1491689012491247186.davem@davemloft.net>
+To:     changbin.du@gmail.com
+Cc:     viro@zeniv.linux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        xiyou.wangcong@gmail.com, David.Laight@ACULAB.COM,
+        christian.brauner@ubuntu.com
+Subject: Re: [PATCH v3] net: make get_net_ns return error if NET_NS is
+ disabled
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20210610153941.118945-1-changbin.du@gmail.com>
+References: <20210610153941.118945-1-changbin.du@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Thu, 10 Jun 2021 14:18:44 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sean Nyekjaer (2021-06-10 00:23:30)
-> On 10/06/2021 09.17, Sean Nyekjaer wrote:
-> > Allocating memory with prepare_lock mutex held makes lockdep unhappy
-> > when memory pressure makes the system do fs_reclaim on eg. rawnand using
-> > clk.
-> >=20
-> > Push the allocation outside the lock.
-> >=20
-> [...]
-> >=20
-> > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> Fixes: b2476490ef111 ("clk: introduce the common clock framework")
->=20
-> We could possibly add this fixes tag ^^
+From: Changbin Du <changbin.du@gmail.com>
+Date: Thu, 10 Jun 2021 23:39:41 +0800
 
-Sure.
+> There is a panic in socket ioctl cmd SIOCGSKNS when NET_NS is not enabled.
+> The reason is that nsfs tries to access ns->ops but the proc_ns_operations
+> is not implemented in this case.
+> 
+> [7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+> [7.670268] pgd = 32b54000
+> [7.670544] [00000010] *pgd=00000000
+> [7.671861] Internal error: Oops: 5 [#1] SMP ARM
+> [7.672315] Modules linked in:
+> [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
+> [7.673309] Hardware name: Generic DT based system
+> [7.673642] PC is at nsfs_evict+0x24/0x30
+> [7.674486] LR is at clear_inode+0x20/0x9c
+> 
+> The same to tun SIOCGSKNS command.
+> 
+> To fix this problem, we make get_net_ns() return -EINVAL when NET_NS is
+> disabled. Meanwhile move it to right place net/core/net_namespace.c.
+> 
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> Cc: Cong Wang <xiyou.wangcong@gmail.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: David Laight <David.Laight@ACULAB.COM>
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+
+As this is a bug fix please rebase on the 'net' tree and provide a proper Fixes: tag.
+
+Thank you.
