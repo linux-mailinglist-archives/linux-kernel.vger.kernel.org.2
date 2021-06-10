@@ -2,136 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F3F3A250B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AEB3A250F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhFJHLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S229935AbhFJHLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhFJHLC (ORCPT
+        with ESMTP id S229990AbhFJHLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:11:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE74C061574;
-        Thu, 10 Jun 2021 00:09:06 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 07:09:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623308945;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G6U6xdWOxkx89xGsforOnu8yvR/5Ov7V6ehYrAu4K7g=;
-        b=2gnd4GDTabfGWAQ9nZwRcZQNzwNSU/9rTHOPUEistQiJvcp4nwkk1qVFDccY+8l78M27s0
-        NiD1R9nNjJyP6f+uk8fyk5Wl3iNj1fA0Vi2IppyFSqXoqDPJB6hV1VRbqgUWcdArFsF1/j
-        4x5tJy5euEFFJgFDYGhPcX5HB+9RHAOR6Sz3c4ffzj0Jisv1RtMAzeVjQ6vBEGZ1+h4VVi
-        Zu3cqIInUNJBOYHkfhReWOXOCDOUfW0WAeYG/nVd+xnWpsjJ0vfTFVdQEj3/oJg7zdm8fT
-        +4zdrpF+a57xNb35Z/LxdtGv9xNlBz35NiNS59IOMp1qAp9EGLtjcPoe5XDPHg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623308945;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G6U6xdWOxkx89xGsforOnu8yvR/5Ov7V6ehYrAu4K7g=;
-        b=DBtX8pmWGcOqPrrPJRTA3WNpXIfaLlto6meo3/YycZg9hHdZXSopcNQvy6fdqKCYn471Yq
-        WITQTunrBiwcnzAA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/urgent] objtool: Fix .symtab_shndx handling for
- elf_create_undef_symbol()
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <BA@hirez.programming.kicks-ass.net>
-References: <BA@hirez.programming.kicks-ass.net>
+        Thu, 10 Jun 2021 03:11:45 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30946C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:09:49 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:a946:bccb:b1a1:3055])
+        by albert.telenet-ops.be with bizsmtp
+        id FK9j250030wnyou06K9jcq; Thu, 10 Jun 2021 09:09:44 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lrEow-00FAQa-Le; Thu, 10 Jun 2021 09:09:42 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lrEow-00B8dc-5T; Thu, 10 Jun 2021 09:09:42 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v6] dt-bindings: clk: versaclock5: Miscellaneous fixes and improvements:
+Date:   Thu, 10 Jun 2021 09:09:40 +0200
+Message-Id: <46310530171886c6ccf4046518e07510274a506c.1623308843.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <162330894430.29796.13585465645704694671.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/urgent branch of tip:
+  - Add missing "additionalProperties: false" for subnodes, to catch
+    typos in properties,
+  - Fix property names in example.
 
-Commit-ID:     f17777cc267523a21815a4ae7489f0d796b1fc07
-Gitweb:        https://git.kernel.org/tip/f17777cc267523a21815a4ae7489f0d796b1fc07
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 07 Jun 2021 11:45:58 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 08 Jun 2021 20:04:02 +02:00
-
-objtool: Fix .symtab_shndx handling for elf_create_undef_symbol()
-
-When an ELF object uses extended symbol section indexes (IOW it has a
-.symtab_shndx section), these must be kept in sync with the regular
-symbol table (.symtab).
-
-So for every new symbol we emit, make sure to also emit a
-.symtab_shndx value to keep the arrays of equal size.
-
-Note: since we're writing an UNDEF symbol, most GElf_Sym fields will
-be 0 and we can repurpose one (st_size) to host the 0 for the xshndx
-value.
-
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lkml.kernel.org/r/YL3q1qFO9QIRL/BA@hirez.programming.kicks-ass.net
+Fixes: 45c940184b501fc6 ("dt-bindings: clk: versaclock5: convert to yaml")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Stephen Boyd <sboyd@kernel.org>
 ---
- tools/objtool/elf.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+This depends on dt-schema v2021.2.1.
 
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 743c2e9..41bca1d 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -717,7 +717,7 @@ static int elf_add_string(struct elf *elf, struct section *strtab, char *str)
+v6:
+  - Rebase on top of commit c17611592d9635c4 ("dt-bindings: More
+    removals of type references on common properties"), which already
+    removed unneeded references for "idt,xtal-load-femtofarads" and
+    "idt,slew-percent",
+
+v5:
+  - Drop reference for "idt,xtal-load-femtofarads",
+
+v4:
+  - Add Reviewed-by, Acked-by,
+
+v3:
+  - Drop references for "idt,voltage-microvolt" and "idt,slew-percent",
+
+v2:
+  - Settle on "idt,voltage-microvolt", cfr. commit 4b003f5fcadfa2d0
+    ('clk: vc5: Use "idt,voltage-microvolt" instead of
+    "idt,voltage-microvolts"'),
+  - Drop reference to clock.yaml, which is already applied
+    unconditionally,
+  - Drop removal of allOf around if condition, as it is unnecessary
+    churn.
+---
+ .../devicetree/bindings/clock/idt,versaclock5.yaml        | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+index 28675b0b80f1ba53..434212320c9aa7ab 100644
+--- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
++++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+@@ -85,6 +85,8 @@ patternProperties:
+         description: The Slew rate control for CMOS single-ended.
+         enum: [ 80, 85, 90, 100 ]
  
- struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
- {
--	struct section *symtab;
-+	struct section *symtab, *symtab_shndx;
- 	struct symbol *sym;
- 	Elf_Data *data;
- 	Elf_Scn *s;
-@@ -769,6 +769,29 @@ struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
- 	symtab->len += data->d_size;
- 	symtab->changed = true;
++    additionalProperties: false
++
+ required:
+   - compatible
+   - reg
+@@ -139,13 +141,13 @@ examples:
+             clock-names = "xin";
  
-+	symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
-+	if (symtab_shndx) {
-+		s = elf_getscn(elf->elf, symtab_shndx->idx);
-+		if (!s) {
-+			WARN_ELF("elf_getscn");
-+			return NULL;
-+		}
-+
-+		data = elf_newdata(s);
-+		if (!data) {
-+			WARN_ELF("elf_newdata");
-+			return NULL;
-+		}
-+
-+		data->d_buf = &sym->sym.st_size; /* conveniently 0 */
-+		data->d_size = sizeof(Elf32_Word);
-+		data->d_align = 4;
-+		data->d_type = ELF_T_WORD;
-+
-+		symtab_shndx->len += 4;
-+		symtab_shndx->changed = true;
-+	}
-+
- 	sym->sec = find_section_by_index(elf, 0);
+             OUT1 {
+-                idt,drive-mode = <VC5_CMOSD>;
+-                idt,voltage-microvolts = <1800000>;
++                idt,mode = <VC5_CMOSD>;
++                idt,voltage-microvolt = <1800000>;
+                 idt,slew-percent = <80>;
+             };
  
- 	elf_add_symbol(elf, sym);
+             OUT4 {
+-                idt,drive-mode = <VC5_LVDS>;
++                idt,mode = <VC5_LVDS>;
+             };
+         };
+     };
+-- 
+2.25.1
+
