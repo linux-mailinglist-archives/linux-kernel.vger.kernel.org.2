@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1243A256B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393A83A2573
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 09:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhFJH0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 03:26:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230490AbhFJH0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:26:12 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CDFA613BD;
-        Thu, 10 Jun 2021 07:24:17 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1lrF30-006flK-AX; Thu, 10 Jun 2021 08:24:14 +0100
+        id S229990AbhFJH3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 03:29:14 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40893 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhFJH3M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:29:12 -0400
+Received: from mail-wr1-f71.google.com ([209.85.221.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lrF5v-0000UA-Vz
+        for linux-kernel@vger.kernel.org; Thu, 10 Jun 2021 07:27:16 +0000
+Received: by mail-wr1-f71.google.com with SMTP id r17-20020a5d52d10000b0290119976473fcso460193wrv.15
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 00:27:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fTOdYztHGax6sYftx+TrBNeuOAueU3PeXK4xtH+0vXE=;
+        b=UOFgQqQKI0TKpZVUz0DsCcy105Rz0qx5DibgApuOEjnDt3hxRs1dOnSFCBjTLSzSUD
+         Lwc+xlwb/HG/MJ/zFjhq88FkdDtGtlGSCSBl1ngcRzZGJEdumfoUkUiBBs4Z6s7V3rVF
+         0zXFeTarDlqLzvkUeMudrzcMfgKTImUDXtci2/YbV6oJOWAqmJxuaU0Ilof2zB5GxN/e
+         B17eylLGFYtonSPaDRXQyw/hv1+dyjw4WoFQxmFh4JId95SCfcdt4osXX3W43CZncZ8n
+         ghNgbMjl7+aK93bZQGb2Ut9DlULwOsmTD5KnrJukd3s9yF51/JVTwgSL34wZLSvXKKbJ
+         SEgA==
+X-Gm-Message-State: AOAM5338si9NFG2UDOYKWVx7t1H1HP/yJHXWcyj3VF8jKQZOZJDIYZ/d
+        5ZNUTkgqLP52SZjp7jgO0ItC2n4ep3uIubVmmXK0OL1Q+ObwicdTWfb29GBJw8zhF1dK5L6xp7q
+        82HlKZGsnv2+0qF2MzAb+Q8502kWpSDLGRduXxgOPYg==
+X-Received: by 2002:a05:600c:4f44:: with SMTP id m4mr3597202wmq.91.1623310035438;
+        Thu, 10 Jun 2021 00:27:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsuxsB+zakKEculdhLhfpxLID7n7eZVQ9X6EZmvVZqqmAY10NJsVOcTH83Cx07T1wuXCUIoA==
+X-Received: by 2002:a05:600c:4f44:: with SMTP id m4mr3597194wmq.91.1623310035328;
+        Thu, 10 Jun 2021 00:27:15 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id b10sm1868636wrx.57.2021.06.10.00.27.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 00:27:14 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Aneesh V <aneesh@ti.com>
+Subject: Re: [RFC PATCH] memory: emif: remove unused frequency and voltage notifiers
+Date:   Thu, 10 Jun 2021 09:27:09 +0200
+Message-Id: <162331002598.10998.5385076435904723873.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210527154101.80556-1-krzysztof.kozlowski@canonical.com>
+References: <20210527154101.80556-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Jun 2021 08:24:14 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 21/39] irqdomain: Introduce irq_resolve_mapping()
-In-Reply-To: <cd57cdf8-0385-acc5-c971-666942351f57@quicinc.com>
-References: <20210520163751.27325-1-maz@kernel.org>
- <20210520163751.27325-22-maz@kernel.org>
- <cd57cdf8-0385-acc5-c971-666942351f57@quicinc.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <17df9e7d665973cba9120e9c2908e2c7@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: quic_qiancai@quicinc.com, linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-10 03:22, Qian Cai wrote:
-> On 5/20/2021 12:37 PM, Marc Zyngier wrote:
->> Rework irq_find_mapping() to return an irq_desc pointer, and
->> rename the result to irq_resolve_mapping().
->> 
->> irq_find_mapping() is then rewritten in terms of ir_resolve_mapping().
->> 
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
+On Thu, 27 May 2021 11:41:01 -0400, Krzysztof Kozlowski wrote:
+> The driver defined several functions related to handling of frequency
+> and voltage changes:
+>  - freq_post_notify_handling
+>  - freq_pre_notify_handling
+>  - volt_notify_handling
 > 
-> Marc, there is an use-after-free that "git blame" pointed to this
-> commit. Any thoughts?
+> All these are static, not used inside the driver or outside, and marked
+> with comment: "TODO: voltage notify handling should be hooked up to
+> regulator framework as soon as the necessary support is available in
+> mainline kernel. This function is un-used right now.".
 > 
-> __irq_resolve_mapping+0x34c/0x360:
-> __irq_resolve_mapping at /usr/src/linux-next/kernel/irq/irqdomain.c:917
+> [...]
 
-Yup, this was reported yesterday by John Gary. I'm on it.
+Applied, thanks!
 
-         M.
+[1/1] memory: emif: remove unused frequency and voltage notifiers
+      commit: 729a611e6f53da00ed62a181f2d5d2bcf22d74d1
+
+Best regards,
 -- 
-Jazz is not dead. It just smells funny...
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
