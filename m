@@ -2,108 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330823A22BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FB33A22C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhFJDZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 23:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhFJDZs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 23:25:48 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13EFC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 20:23:52 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lrBIK-0005oq-3y; Thu, 10 Jun 2021 05:23:48 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lrBIJ-0002a5-A4; Thu, 10 Jun 2021 05:23:47 +0200
-Date:   Thu, 10 Jun 2021 05:23:47 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, linux@rempel-privat.de,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH] counter: interrupt-cnt: Add const qualifier for
- actions_list array
-Message-ID: <20210610032347.wb4wcwr37p7qn7j7@pengutronix.de>
-References: <20210610013642.149961-1-vilhelm.gray@gmail.com>
+        id S229937AbhFJD1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 23:27:16 -0400
+Received: from m12-11.163.com ([220.181.12.11]:60675 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229557AbhFJD1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 23:27:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=qlDdq
+        u2OZeBY5YQAhNVQrYpOCpyh1jjGKwNL9do3Hrg=; b=LehbY7G1wKonYfR0Ck9bZ
+        0xPpceD6McDwqLp/PC9ro3CqVZ1gzC8a7avPIhHnGGN8tfAfJwbWPEDHyu5aO1/C
+        e9akGtvERQR+7IyhqioC0+JAQHeDgCSS6QqUkx2RYG4M13+KfBNYbK2jQxAlZlgD
+        K1g9v8zGjRdgRQHFVdMzE4=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp7 (Coremail) with SMTP id C8CowABnopoVhsFgcHjDhA--.17690S2;
+        Thu, 10 Jun 2021 11:25:11 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     sean@mess.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] media: rc: redrat3: Fix a typo
+Date:   Thu, 10 Jun 2021 11:24:13 +0800
+Message-Id: <20210610032413.35868-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210610013642.149961-1-vilhelm.gray@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 05:22:36 up 189 days, 17:28, 37 users,  load average: 0.01, 0.03,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowABnopoVhsFgcHjDhA--.17690S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Gw1UKry8CFW5Cr13Ary8uFg_yoW3Cwc_Ww
+        1fXFn7Z34DtrW7uw1FywsIvr9rta95uFnaqFs5t3yayFyUZa9rGF1q9ryxJr1UWr4IvF9x
+        WFyDXFWxCr43GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnCoGDUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiqxetUFUMZxOpxAAAsB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi William,
+From: lijian <lijian@yulong.com>
 
-On Thu, Jun 10, 2021 at 10:36:42AM +0900, William Breathitt Gray wrote:
-> The struct counter_synapse actions_list member expects a const enum
-> counter_synapse_action array. This patch renames
-> interrupt_cnt_synapse_actionss to interrupt_cnt_synapse_actions and adds
-> a const qualifier to match actions_list.
-> 
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Change 'an' to 'on'.
 
-Reviewed-by: <o.rempel@pengutronix.de>
+Signed-off-by: lijian <lijian@yulong.com>
+---
+ drivers/media/rc/redrat3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thank you!
-
-> ---
->  drivers/counter/interrupt-cnt.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrupt-cnt.c
-> index 827d785e19b4..5df7cd13d4c7 100644
-> --- a/drivers/counter/interrupt-cnt.c
-> +++ b/drivers/counter/interrupt-cnt.c
-> @@ -77,7 +77,7 @@ static const struct counter_count_ext interrupt_cnt_ext[] = {
->  	},
->  };
->  
-> -static enum counter_synapse_action interrupt_cnt_synapse_actionss[] = {
-> +static const enum counter_synapse_action interrupt_cnt_synapse_actions[] = {
->  	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
->  };
->  
-> @@ -194,8 +194,8 @@ static int interrupt_cnt_probe(struct platform_device *pdev)
->  	priv->counter.signals = &priv->signals;
->  	priv->counter.num_signals = 1;
->  
-> -	priv->synapses.actions_list = interrupt_cnt_synapse_actionss;
-> -	priv->synapses.num_actions = ARRAY_SIZE(interrupt_cnt_synapse_actionss);
-> +	priv->synapses.actions_list = interrupt_cnt_synapse_actions;
-> +	priv->synapses.num_actions = ARRAY_SIZE(interrupt_cnt_synapse_actions);
->  	priv->synapses.signal = &priv->signals;
->  
->  	priv->cnts.name = "Channel 0 Count";
-> -- 
-> 2.32.0
-> 
-> 
-> 
-
+diff --git a/drivers/media/rc/redrat3.c b/drivers/media/rc/redrat3.c
+index 2cf3377ec63a..ac85464864b9 100644
+--- a/drivers/media/rc/redrat3.c
++++ b/drivers/media/rc/redrat3.c
+@@ -6,7 +6,7 @@
+  *  based heavily on the work of Stephen Cox, with additional
+  *  help from RedRat Ltd.
+  *
+- * This driver began life based an an old version of the first-generation
++ * This driver began life based on an old version of the first-generation
+  * lirc_mceusb driver from the lirc 0.7.2 distribution. It was then
+  * significantly rewritten by Stephen Cox with the aid of RedRat Ltd's
+  * Chris Dodge.
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.25.1
+
