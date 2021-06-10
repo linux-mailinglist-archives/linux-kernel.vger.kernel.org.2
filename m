@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A35D3A354F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527C33A354B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhFJVCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44286 "EHLO mail.kernel.org"
+        id S230405AbhFJVCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230280AbhFJVCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229941AbhFJVCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Jun 2021 17:02:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 41DB261407;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2E824613B3;
         Thu, 10 Jun 2021 21:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623358807;
-        bh=j3Fg/2KkrA3YJIojxPi8cc0hvXTKXJx5IHHfvyYfnlc=;
+        bh=EbwC/lV3KZTkyB+8efzPfbKjWeM+XpbUJb6LeTtnTO8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hI5xJYMWPvUFvOj1JFmYWiSCIxpVKrYxfE51YTYNUH++n9PED1Sb/u+UOgICRGR+v
-         Iv+itttNdJrJzi4zSms9DDFrhHQTRwMeOP0ppu1d08B5rhUf1F4fmbZcp5ZvIPgZT9
-         h6CJnzIuq+NQQIRn6fHfuF6uX1GNwS6Dmsy4scyKM/dXTKq4+OthrLRWHM2M2ubxsg
-         QCxr6CovY6B8UO9YTKhxbDvRAeUaVYH9CLDrUZtWIfWCZr7+jhdmLH3Qd0Grz1ioJy
-         eShQLLjm3LJvq8Qii9TXBY5bo3nAT0w4vVrPPiIcSMBAr1hRpDCQb8BxVlUi4qqyeB
-         N7BFqlpkQUdYA==
+        b=r8CG2zoGNz9bOq0kie3QQhXlboCO18x0ZVAIjOAtdbsDKzcimZbP+R2D1tMqa4mDQ
+         mJl8DBtHsn1KzcoLzeyB9aHVC8nVbXGFwtlNEoZBwd/9qtlatmFj8JoukGkz9r89fI
+         lzLG/TRA/ABJwmanUXW4cLMtGyCLKgnX581EDu3xx2LHZtGZa1dGxZxBgG8v29Wqg9
+         fLFaneBYycgIcjMoJdMtMlqYvuVNwu59j+ZumnrOc6dGMiU/ZCyQ4E/bTTqmSMZkfe
+         yWr73lRhQVKwK8HsZR7D7i5iBMdiuwluLZMekRAggjqwc9s6jDJKdPm1BgxkJGIwsW
+         KPb37AZv22Sbg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 33D0560D02;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 205CF60A6C;
         Thu, 10 Jun 2021 21:00:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] fjes: check return value after calling
- platform_get_resource()
+Subject: Re: [PATCH net-next] net: w5100: Use
+ devm_platform_get_and_ioremap_resource()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162335880720.5408.916608200329009216.git-patchwork-notify@kernel.org>
+Message-Id: <162335880712.5408.16486670396324481340.git-patchwork-notify@kernel.org>
 Date:   Thu, 10 Jun 2021 21:00:07 +0000
-References: <20210610080243.4097179-1-yangyingliang@huawei.com>
-In-Reply-To: <20210610080243.4097179-1-yangyingliang@huawei.com>
+References: <20210610072933.4074571-1-yangyingliang@huawei.com>
+In-Reply-To: <20210610072933.4074571-1-yangyingliang@huawei.com>
 To:     Yang Yingliang <yangyingliang@huawei.com>
 Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         davem@davemloft.net, kuba@kernel.org
@@ -47,18 +47,18 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu, 10 Jun 2021 16:02:43 +0800 you wrote:
-> It will cause null-ptr-deref if platform_get_resource() returns NULL,
-> we need check the return value.
+On Thu, 10 Jun 2021 15:29:33 +0800 you wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 > 
 > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->  drivers/net/fjes/fjes_main.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  drivers/net/ethernet/wiznet/w5100.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
 
 Here is the summary with links:
-  - [net-next] fjes: check return value after calling platform_get_resource()
-    https://git.kernel.org/netdev/net-next/c/f18c11812c94
+  - [net-next] net: w5100: Use devm_platform_get_and_ioremap_resource()
+    https://git.kernel.org/netdev/net-next/c/0b462d017caf
 
 You are awesome, thank you!
 --
