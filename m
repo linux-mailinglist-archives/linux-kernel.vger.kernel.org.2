@@ -2,75 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8812D3A26F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C833A26F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 10:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhFJI1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 04:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhFJI1h (ORCPT
+        id S230311AbhFJI2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 04:28:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54671 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229993AbhFJI2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 04:27:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C306C0617A6;
-        Thu, 10 Jun 2021 01:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OnS/2ehcGiHcLjbKewQz+Ha41vC4MyWtSGk/UFBkrDU=; b=B8wSJz/Q0jDIs9+hr+OC+RIGnZ
-        CDUbj2W+Ls9G+Z9ipnrJXFzjBgQyV94hpAU0gD099Mbd0cBcpaEOT983mSI4dl4tk/QWn4AWbNYGP
-        fej1hQlbiWI9iyZJdm8H60Zxso/AJK+nWBfYsQk4SX+u+SHpYaD9Vxe9Fu3nCXYJHXb4vUVi7Vx7f
-        m0tcj1E1JvShiUwrh3YESMlvPnBivViCsxqDJQViUI+BdybYhounILpF5SLUR/cg3EB+ZkfeCNyET
-        50z7/Xonri0qvIPhMQ1Bs2Y2dnwUGwQ1gJqD6vvznGNt3o9Ocls0QGTeldffKUltemOT1+wVDeUjA
-        rBVA623Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lrG0A-005NZz-11; Thu, 10 Jun 2021 08:25:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3B6C5300299;
-        Thu, 10 Jun 2021 10:25:28 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E513C233CB080; Thu, 10 Jun 2021 10:25:27 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 10:25:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org, Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [for-linus][PATCH 5/5] recordmcount: Correct st_shndx handling
-Message-ID: <YMHMdxpzkuZx12Uf@hirez.programming.kicks-ass.net>
-References: <20210610003344.783752614@goodmis.org>
- <20210610003736.777268599@goodmis.org>
+        Thu, 10 Jun 2021 04:28:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623313581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IxDiLLKbBP7VVWgtaIeDaWWb6I6XeS9OjppFccyzfog=;
+        b=GyvllgCeKBdWp0E696/MsEswPevKbNSgPXZkxyyYO433GlLJcGXWxENrsQzxEhL8rfxGtN
+        H7Ut9Xa0hYHuvjuwimgmvaQka0Q0vtKPTPKahrZsnIi83cPCcetmlKZB6GxvOHvrF3Ze6E
+        bAvfuB3x3F4va51C197Vvs4t/khbddo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-311-iCewAX3aM6a56v_krGrUIQ-1; Thu, 10 Jun 2021 04:26:19 -0400
+X-MC-Unique: iCewAX3aM6a56v_krGrUIQ-1
+Received: by mail-wr1-f70.google.com with SMTP id n2-20020adfb7420000b029010e47b59f31so529834wre.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 01:26:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=IxDiLLKbBP7VVWgtaIeDaWWb6I6XeS9OjppFccyzfog=;
+        b=F+h1LlCOXaPW7v67z48vfu34GP9FrLc6QlBoKR463SoCw9iJE3PMY+cn2S+ZyfyQVE
+         JRV5JELvp4AmY6FfAvuZGDRzY3KgwL86ZbzkadgqSa8khY7KfoGcHtlNN6dOtNbmmUMT
+         xpYxuyaGY/nqwSB3O7isy+bjokVUcVHcvOf9lDGZl5R8zfvl9RFEdLspb8GRPjJwz6YR
+         p9cngJ3yurn/0aE0iKwkIfxgxQdpoLodOBXAR8hmmmu7+mw5xXnhLW8lGIhwBiF/w0HM
+         K2O9IK4h2LER4ptlwV2kghPq1GpLo9pD6jme1DdJEFodQk+9zBMFR9OP/9iDN2zYozro
+         z8nQ==
+X-Gm-Message-State: AOAM533z3pXx9yaXEGb/SYilC+IKADm3NaZZmUf5Gp2TMljkYy92kFm+
+        K6MT2Vg+Tu3RwSuKaZuLMv5jbhfPKPUy13gPLR/Qkswr+qOPt2L1s1mnNl97vBmuBNFCAXGJaip
+        SbIkiNOFjS2FBBY3QcMBykBTw
+X-Received: by 2002:a1c:a484:: with SMTP id n126mr13928941wme.34.1623313578634;
+        Thu, 10 Jun 2021 01:26:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4mp8AEpvc2ZmmFyARIcMXmgGfN8Rf5IGJjfKAPH7g/9Kk7QuOX4mU92zI6A+N6A5GmzQ2vg==
+X-Received: by 2002:a1c:a484:: with SMTP id n126mr13928922wme.34.1623313578440;
+        Thu, 10 Jun 2021 01:26:18 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id m23sm2159738wmc.29.2021.06.10.01.26.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 01:26:17 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fb0b6a7e8713aeb0319c@syzkaller.appspotmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 2/9] KVM: x86: Emulate triple fault shutdown if RSM
+ emulation fails
+In-Reply-To: <20210609185619.992058-3-seanjc@google.com>
+References: <20210609185619.992058-1-seanjc@google.com>
+ <20210609185619.992058-3-seanjc@google.com>
+Date:   Thu, 10 Jun 2021 10:26:16 +0200
+Message-ID: <87eedayvkn.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610003736.777268599@goodmis.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 08:33:49PM -0400, Steven Rostedt wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> One should only use st_shndx when >SHN_UNDEF and <SHN_LORESERVE. When
-> SHN_XINDEX, then use .symtab_shndx. Otherwise use 0.
-> 
-> This handles the case: st_shndx >= SHN_LORESERVE && st_shndx != SHN_XINDEX.
-> 
-> Link: https://lkml.kernel.org/r/YL9HxEc/l0yrl5o8@hirez.programming.kicks-ass.net
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 4ef57b21d6fb4 ("recordmcount: support >64k sections")
-> Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> Acked-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Sean Christopherson <seanjc@google.com> writes:
 
-This is apperently causing trouble for Stephen in -next. Please hold.
+> Use the recently introduced KVM_REQ_TRIPLE_FAULT to properly emulate
+> shutdown if RSM from SMM fails.
+>
+> Note, entering shutdown after clearing the SMM flag and restoring NMI
+> blocking is architecturally correct with respect to AMD's APM, which KVM
+> also uses for SMRAM layout and RSM NMI blocking behavior.  The APM says:
+>
+>   An RSM causes a processor shutdown if an invalid-state condition is
+>   found in the SMRAM state-save area. Only an external reset, external
+>   processor-initialization, or non-maskable external interrupt (NMI) can
+>   cause the processor to leave the shutdown state.
+>
+> Of note is processor-initialization (INIT) as a valid shutdown wake
+> event, as INIT is blocked by SMM, implying that entering shutdown also
+> forces the CPU out of SMM.
+>
+> For recent Intel CPUs, restoring NMI blocking is technically wrong, but
+> so is restoring NMI blocking in the first place, and Intel's RSM
+> "architecture" is such a mess that just about anything is allowed and can
+> be justified as micro-architectural behavior.
+>
+> Per the SDM:
+>
+>   On Pentium 4 and later processors, shutdown will inhibit INTR and A20M
+>   but will not change any of the other inhibits. On these processors,
+>   NMIs will be inhibited if no action is taken in the SMI handler to
+>   uninhibit them (see Section 34.8).
+>
+> where Section 34.8 says:
+>
+>   When the processor enters SMM while executing an NMI handler, the
+>   processor saves the SMRAM state save map but does not save the
+>   attribute to keep NMI interrupts disabled. Potentially, an NMI could be
+>   latched (while in SMM or upon exit) and serviced upon exit of SMM even
+>   though the previous NMI handler has still not completed.
+>
+> I.e. RSM unconditionally unblocks NMI, but shutdown on RSM does not,
+> which is in direct contradiction of KVM's behavior.  But, as mentioned
+> above, KVM follows AMD architecture and restores NMI blocking on RSM, so
+> that micro-architectural detail is already lost.
+>
+> And for Pentium era CPUs, SMI# can break shutdown, meaning that at least
+> some Intel CPUs fully leave SMM when entering shutdown:
+>
+>   In the shutdown state, Intel processors stop executing instructions
+>   until a RESET#, INIT# or NMI# is asserted.  While Pentium family
+>   processors recognize the SMI# signal in shutdown state, P6 family and
+>   Intel486 processors do not.
+>
+> In other words, the fact that Intel CPUs have implemented the two
+> extremes gives KVM carte blanche when it comes to honoring Intel's
+> architecture for handling shutdown during RSM.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/emulate.c     | 12 +++++++-----
+>  arch/x86/kvm/kvm_emulate.h |  1 +
+>  arch/x86/kvm/x86.c         |  6 ++++++
+>  3 files changed, 14 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+> index 5e5de05a8fbf..0603a2c79093 100644
+> --- a/arch/x86/kvm/emulate.c
+> +++ b/arch/x86/kvm/emulate.c
+> @@ -2683,7 +2683,7 @@ static int em_rsm(struct x86_emulate_ctxt *ctxt)
+>  	 * state-save area.
+>  	 */
+>  	if (ctxt->ops->pre_leave_smm(ctxt, buf))
+> -		return X86EMUL_UNHANDLEABLE;
+> +		goto emulate_shutdown;
+>  
+>  #ifdef CONFIG_X86_64
+>  	if (emulator_has_longmode(ctxt))
+> @@ -2692,14 +2692,16 @@ static int em_rsm(struct x86_emulate_ctxt *ctxt)
+>  #endif
+>  		ret = rsm_load_state_32(ctxt, buf);
+>  
+> -	if (ret != X86EMUL_CONTINUE) {
+> -		/* FIXME: should triple fault */
+> -		return X86EMUL_UNHANDLEABLE;
+> -	}
+> +	if (ret != X86EMUL_CONTINUE)
+> +		goto emulate_shutdown;
+>  
+>  	ctxt->ops->post_leave_smm(ctxt);
+>  
+>  	return X86EMUL_CONTINUE;
+> +
+> +emulate_shutdown:
+> +	ctxt->ops->triple_fault(ctxt);
+> +	return X86EMUL_UNHANDLEABLE;
+
+I'm probably missing something, but what's the desired effect of both
+raising KVM_REQ_TRIPLE_FAULT and returning X86EMUL_UNHANDLEABLE here?
+
+I've modified smm selftest to see what's happening:
+
+diff --git a/tools/testing/selftests/kvm/x86_64/smm_test.c b/tools/testing/selftests/kvm/x86_64/smm_test.c
+index 613c42c5a9b8..cf215cd2c6e2 100644
+--- a/tools/testing/selftests/kvm/x86_64/smm_test.c
++++ b/tools/testing/selftests/kvm/x86_64/smm_test.c
+@@ -147,6 +147,11 @@ int main(int argc, char *argv[])
+                            "Unexpected stage: #%x, got %x",
+                            stage, stage_reported);
+ 
++               if (stage_reported == SMRAM_STAGE) {
++                       /* corrupt smram */
++                       memset(addr_gpa2hva(vm, SMRAM_GPA) + 0xfe00, 0xff, 512);
++               }
++
+                state = vcpu_save_state(vm, VCPU_ID);
+                kvm_vm_release(vm);
+                kvm_vm_restart(vm, O_RDWR);
+
+What I see is:
+
+        smm_test-7600  [002]  4497.073918: kvm_exit:             reason EXIT_RSM rip 0x8004 info 0 0
+        smm_test-7600  [002]  4497.073921: kvm_emulate_insn:     1000000:8004: 0f aa
+        smm_test-7600  [002]  4497.073924: kvm_smm_transition:   vcpu 1: leaving SMM, smbase 0x1000000
+        smm_test-7600  [002]  4497.073928: kvm_emulate_insn:     0:8004: 0f aa FAIL
+        smm_test-7600  [002]  4497.073929: kvm_fpu:              unload
+        smm_test-7600  [002]  4497.073930: kvm_userspace_exit:   reason KVM_EXIT_INTERNAL_ERROR (17)
+
+If I change X86EMUL_UNHANDLEABLE to X86EMUL_CONTINUE tripple fault is
+happening indeed (why don't we have triple fault printed in trace by
+default BTW???):
+
+        smm_test-16810 [006]  5117.007220: kvm_exit:             reason EXIT_RSM rip 0x8004 info 0 0
+        smm_test-16810 [006]  5117.007222: kvm_emulate_insn:     1000000:8004: 0f aa
+        smm_test-16810 [006]  5117.007225: kvm_smm_transition:   vcpu 1: leaving SMM, smbase 0x1000000
+        smm_test-16810 [006]  5117.007229: bputs:                vcpu_enter_guest: KVM_REQ_TRIPLE_FAULT
+        smm_test-16810 [006]  5117.007230: kvm_fpu:              unload
+        smm_test-16810 [006]  5117.007230: kvm_userspace_exit:   reason KVM_EXIT_SHUTDOWN (8)
+
+So should we actually have X86EMUL_CONTINUE when we queue
+KVM_REQ_TRIPLE_FAULT here?
+
+(Initially, my comment was supposed to be 'why don't you add
+TRIPLE_FAULT to smm selftest?' but the above overshadows it)
+
+>  }
+>  
+>  static void
+> diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
+> index 3e870bf9ca4d..9c34aa60e45f 100644
+> --- a/arch/x86/kvm/kvm_emulate.h
+> +++ b/arch/x86/kvm/kvm_emulate.h
+> @@ -233,6 +233,7 @@ struct x86_emulate_ops {
+>  	int (*pre_leave_smm)(struct x86_emulate_ctxt *ctxt,
+>  			     const char *smstate);
+>  	void (*post_leave_smm)(struct x86_emulate_ctxt *ctxt);
+> +	void (*triple_fault)(struct x86_emulate_ctxt *ctxt);
+>  	int (*set_xcr)(struct x86_emulate_ctxt *ctxt, u32 index, u64 xcr);
+>  };
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 54d212fe9b15..cda148cf06fa 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7123,6 +7123,11 @@ static void emulator_post_leave_smm(struct x86_emulate_ctxt *ctxt)
+>  	kvm_smm_changed(emul_to_vcpu(ctxt));
+>  }
+>  
+> +static void emulator_triple_fault(struct x86_emulate_ctxt *ctxt)
+> +{
+> +	kvm_make_request(KVM_REQ_TRIPLE_FAULT, emul_to_vcpu(ctxt));
+> +}
+> +
+>  static int emulator_set_xcr(struct x86_emulate_ctxt *ctxt, u32 index, u64 xcr)
+>  {
+>  	return __kvm_set_xcr(emul_to_vcpu(ctxt), index, xcr);
+> @@ -7172,6 +7177,7 @@ static const struct x86_emulate_ops emulate_ops = {
+>  	.set_hflags          = emulator_set_hflags,
+>  	.pre_leave_smm       = emulator_pre_leave_smm,
+>  	.post_leave_smm      = emulator_post_leave_smm,
+> +	.triple_fault        = emulator_triple_fault,
+>  	.set_xcr             = emulator_set_xcr,
+>  };
+
+-- 
+Vitaly
+
