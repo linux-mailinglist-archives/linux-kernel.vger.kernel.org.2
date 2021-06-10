@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCA93A2485
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47C83A248A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhFJG3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:29:11 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:36610 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhFJG3J (ORCPT
+        id S229845AbhFJGc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:32:57 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:53256 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229634AbhFJGcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:29:09 -0400
-Received: by mail-wm1-f43.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so5272296wmq.1;
-        Wed, 09 Jun 2021 23:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=YrivazYwkr91Xd/9+WFVv/iP2qA8QwOcCFwtvnhPSIM=;
-        b=NCwzIZfpPwXIlXu6flWD/EM27Vwp1YAV6K0fyywFmmsMceE90hPRC9UBrd1aL18KYv
-         uDxcV9/k7kSWpDB7s6N2m+RjQ1ECeltGX4+OWI3U72Y3PvGXQfTsGfQenDZ859sqo+MH
-         7f8TNNzJSh5h29KxeZAo/eSZCmFKQv+iMJdOH1oi0+ntq+Bm7isRzH4R+uUP69G0K6L4
-         wZYG5CYN2KRzaTdeYcPj9mSg0CZflzGbPJm7LSaFOeVV0Q44uhDJ0/Flta7jlVLWjGRD
-         8dZt4d2pQwGSsWPF+4tpTmZnIgLu6w3Q7+GuhiBGRqTIl8YAmGu8teDVukYj7SV9Kb0i
-         wGPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=YrivazYwkr91Xd/9+WFVv/iP2qA8QwOcCFwtvnhPSIM=;
-        b=HmO8HdnvETuSUpwxlaSEK2rLVxgsLrI1/SbkdTM8yKoFu1y4Y9AQruTSjA+knvG9mj
-         s8z4OY0nCT1WjQD09a+V9dsxAb+qsElUAcZNxZQTLHbZ11AnsHD7z6zXE2UJeTdG7xPI
-         dnJIffbv20GWfkGTOnXRGwv8KaS2gv4lYS68qdHYeXGhNV4mSZr82EEhZKlHP28BfYUI
-         sDIlcaVojwwoD2lfYqrLAv7qcIoC7JAOUQJIKMT5+idfBVasR9UwD0AbeWYVVnk7auEj
-         NzlApUYTsx9JO7DZ16U62GtFvVgM9twTuLIC/qMYyW9Mkw4WtJ38VJXxRJEQ7kPxK4hp
-         aUqw==
-X-Gm-Message-State: AOAM531/ds+j2KAgFHdXX5bDuOkdw+lm2hrCVmM9C8dmnWI/YiRc8Spo
-        xotQkAuH4DU2DZ8EHUufTcS8aoApajs=
-X-Google-Smtp-Source: ABdhPJzIxfi8yEfk+pXW0scEHANgddg+SkoYG17mAJHDsaPNZD4npmxfJmbvjx/zzVkAJiT5uE3Ndw==
-X-Received: by 2002:a1c:e10b:: with SMTP id y11mr3372482wmg.45.1623306356709;
-        Wed, 09 Jun 2021 23:25:56 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id b15sm2096986wru.64.2021.06.09.23.25.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 23:25:56 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 08:25:54 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     linux-ide@vger.kernel.org, davem@davemloft.net
-Cc:     linux-kernel@vger.kernel.org
-Subject: ide: ali14xx: intent to convert driver
-Message-ID: <YMGwciP+Sm9y+u5r@Red>
+        Thu, 10 Jun 2021 02:32:55 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15A6I0bY023582;
+        Thu, 10 Jun 2021 06:29:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=jmv9dMHpJzbTvHPIEC9RUwKK2b0+RbpO0gWzBaQjnPA=;
+ b=rvB3TUyfEdXytYeS9BC3SDJGTC69GpTrLTnpi9EA9KjGyQI+91nUN1a67f0239YOt57a
+ XPpZDeGPF0drBHqaMAy8FN8zILVSr+mnQqa7BWF0jjiS9ya06GP7BryL9K+t7rWNgTQE
+ l1ABv/Mn0sqE2ri4034nUxJ9qzEeTqNfuk2kxSzYRL7FCjFrFcCskoJxMJHjJeqEDDte
+ 2+8jF+igGpmIQc9TGg+5jOesqtnrTC56RSRPICURf+yxWQH6r23mfC//3cDucog+6THv
+ 1sLAwI4LFyytenFOX2PWRDFRnjHncowN01Q76bYLdPHn3tQv1ZKWKkC6DsLv+hDmUAi/ PA== 
+Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 392jmw0j8f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 06:29:52 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15A6TqOg169680;
+        Thu, 10 Jun 2021 06:29:52 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 390k1smbfy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 06:29:52 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15A6Tp3K169666;
+        Thu, 10 Jun 2021 06:29:51 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 390k1smbfu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Jun 2021 06:29:51 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15A6TnRH020945;
+        Thu, 10 Jun 2021 06:29:49 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Jun 2021 23:29:49 -0700
+Date:   Thu, 10 Jun 2021 09:29:39 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] ACPI: scan: ensure ret is initialized to avoid
+ garbage being returned
+Message-ID: <20210610062939.GI1955@kadam>
+References: <20210609173312.298414-1-colin.king@canonical.com>
+ <CAFLoDVE03-Eqmrji66P-b79ezgD0PayWqO5u3L7nyjMX1+LBtg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAFLoDVE03-Eqmrji66P-b79ezgD0PayWqO5u3L7nyjMX1+LBtg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: edcHlkvzb8oDBi8lztWaSoIhhRFPQJ5t
+X-Proofpoint-ORIG-GUID: edcHlkvzb8oDBi8lztWaSoIhhRFPQJ5t
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Wed, Jun 09, 2021 at 10:38:04PM +0100, Daniel Scally wrote:
+> Hi Colin
+> 
+> On Wed, Jun 9, 2021 at 6:33 PM Colin King <colin.king@canonical.com> wrote:
+> >
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > In the unlikely event that there are no callback calls made then ret
+> > will be returned as an uninitialized value. Clean up static analysis
+> > warnings by ensuring ret is initialized.
+> 
+> Ah, thanks - good spot.
+> 
+> > Addresses-Coverity: ("Uninitialized scalar variable")
+> > Fixes: a9e10e587304 ("ACPI: scan: Extend acpi_walk_dep_device_list()")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> Reviewed-by: Daniel Scally <djrscally@gmail.com>
+> 
+> I'm still bad at Git; will the commit hash here be right, since the
+> patch that this fixes isn't upstream yet?
 
-I just booted my 486 with Linux add see:
-[    2.118009] Uniform Multi-Platform E-IDE driver
-[    2.124262] legacy IDE will be removed in 2021, please switch to libata
-[    2.124262] Report any missing HW support to linux-ide@vger.kernel.org
-[    2.395244] hda: ST31720A, ATA DISK drive
-[    3.550069] ide0 at 0x1f0-0x1f7,0x3f6 on irq 14
-[    3.555100] ide1 at 0x170-0x177,0x376 on irq 15
-[    3.559085] ide-gd driver 1.18
-[    3.562115] hda: max request size: 128KiB
-[    3.564174] hda: 3329424 sectors (1704 MB), CHS=3303/16/63
-[    3.565513] hda: cache flushes not supported
-[    3.623033]  hda: hda1
+The hash is stable unless the branch rebases.  When maintainers rebase a
+branch, they're expected to update the Fixes tags as well.  Most people
+probably have a script to do it.  I think Stephen Rothwell has a script
+which checks whether Fixes tags are correct?
 
-So I plan to convert ali14xx to libata.
+regards,
+dan carpenter
 
-Do you know some ""recent"" ide->libata conversion from which I can learn something ?
-
-Regards
