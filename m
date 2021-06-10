@@ -2,182 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28D93A339A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D343A33A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFJS6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:58:50 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:43614 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230080AbhFJS6t (ORCPT
+        id S230468AbhFJTC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:02:57 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:40716 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230363AbhFJTC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:58:49 -0400
-Received: from mailhost.synopsys.com (badc-mailhost1.synopsys.com [10.192.0.17])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id AF66540ED7;
-        Thu, 10 Jun 2021 18:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1623351413; bh=+BK8jrgm27sEi5WIqxbhFgDp139RjGl05vTTDOtaow0=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=TVj7WDvV99RLylpdsUp6eQwqfsMK/TFAk0CM5sGq8y4tPo1ll86KjOU7vs4sdPIaT
-         R2RHQEj5mFKzA8BowyjTXXhmx1eu+MAgwZPfvdjaw2HURWVQ9yjAE9/endAdG8ENE1
-         ov/FCE12b4s8qpaW3LcbqDk491vZ8vuGxcW9UZccHkVkDEBXa+kHNyt/CHA+qvEAvu
-         IfoEa4JzxpghtjzwPstCP3Tm6Az3sbb6d2vXxT+gqx2rrI8lAWgXoo8P4Pa6hdSsM2
-         C40/jfvHvpIXD348tRpmQeqHwoxNJOjvLlGLoezzLPenlks/utvBQYXJi2Z0BglDjO
-         3Izx4EMKrIN/g==
-Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
-        by mailhost.synopsys.com (Postfix) with ESMTPS id B119CA0071;
-        Thu, 10 Jun 2021 18:56:51 +0000 (UTC)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id CD587400A1;
-        Thu, 10 Jun 2021 18:56:50 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="ZyOcKP2/";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UTv6oXEBFLxoK8vnAUPYqloADOPXoP+IG4j0bmjcyYwBI9/KPL/dC+TAh1cPX6OaVSYLjE7QJ7VuFHVcd/PLpY/kYRFS/BYxGrDdp3s8IOdtGHOjLdKzqbKqLmtOScTTBSsvnDkHdOOD6mxkaPC4S7cRDLUhv9EpTdokwkfwgW47PaZ+QKMpR6t5gjKEyOnB0DTR5nI6OWxJFoDxaGQYvVGUVPif6+KTqZ3Cd3+vpQA2rrsIub/HhoSikVAOkupPh63080Oz4vNH8MU0FV/XvR/sM/sQNNCrwLIDXsJonLosweJdEExGf/u7m2WKR1P9Ae51leC1h0VlP4CVQf29cQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+BK8jrgm27sEi5WIqxbhFgDp139RjGl05vTTDOtaow0=;
- b=UlhDKXEVD5o6mwf3euOoTbsoydcGF+WYnNMN3xew90ncDCIhdSD2vcaINIf1Z6GnD8oUjUydhqylt27bSDBkMU9odnZuvPxmDY7b5wqPE0zlDfZKynVdewqX0+thHgj/fkpH+CV4ek+SKCUfEeFFjhr39Tp5r+eXUl2nfVZK76cgfRsIBUEtOsmXCRlBphVBeix54kUcF7F0DkV23NhO68jYyG16grHy9rM2o0vuxMxnCUls9Ex8e9mSB9zuimmbr0/RSuLhOBuVkC1+8lLpbsl+ivJ4omAIZ1kmlKPxQm2VzUY6ffk/9FAIm4nxzEUhdMeG8TG9vgnXvqx1keQpNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+BK8jrgm27sEi5WIqxbhFgDp139RjGl05vTTDOtaow0=;
- b=ZyOcKP2/afV9xyCsu3ru1MDkRq28368+9DIJkOPHwHLrcQs/w/gHykK1F/6WZC2WVABOFpb2GJyE9fAkfUDLApckgs1I8VvYT2sD2VskEzsMjT9zV3NjrLijd++ZKBXKFGCpCzr8vRH3weLkxY0BVC84PLBNGRfRA6SjFl5Q+qY=
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com (2603:10b6:a03:dc::26)
- by BYAPR12MB3096.namprd12.prod.outlook.com (2603:10b6:a03:ad::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Thu, 10 Jun
- 2021 18:56:48 +0000
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d]) by BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d%7]) with mapi id 15.20.4195.030; Thu, 10 Jun 2021
- 18:56:48 +0000
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     Kees Cook <keescook@chromium.org>
-CC:     "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Evgeniy Didin <Evgeniy.Didin@synopsys.com>
-Subject: Re: [PATCH] ARC: fix CONFIG_HARDENED_USERCOPY
-Thread-Topic: [PATCH] ARC: fix CONFIG_HARDENED_USERCOPY
-Thread-Index: AQHXXXyCf5WMbw9WXk6TXeQTkLP8BasNeb0AgAAgA4A=
-Date:   Thu, 10 Jun 2021 18:56:48 +0000
-Message-ID: <53daee07-9c5b-9cf9-f08a-524afaee762a@synopsys.com>
-References: <20210609221211.2457203-1-vgupta@synopsys.com>
- <202106101001.C736237@keescook>
-In-Reply-To: <202106101001.C736237@keescook>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-authentication-results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=synopsys.com;
-x-originating-ip: [149.117.75.13]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8ebdb7f3-a986-4be6-f7d2-08d92c41802f
-x-ms-traffictypediagnostic: BYAPR12MB3096:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB309681E77197A1C9BD772892B6359@BYAPR12MB3096.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 32/X2Ha+WJiN1KOSKhCQE2Ts6wC/g9bncOxd+OHXq6+fhdwta1VFYnaT8v9OrRrH9/aBGpCCILsk1heG98enLHIhesDljyfwJApnlo8VyA4+EBGCKddlo3IrEeWxIZxWt0myGBcr2JeTBNMD+S/hBHfnhpE7HBbc5vEQj/pgGkdRndpzpCmv7wKK1j8X7fZTCmp5WGTUdhN3jsKMpFeSIIT4JCPFezOkIuK8v0/cFsrZz40FdYsnAJrvSLSTk2GVOuA41bPKR2rs89kkVMaHZ5tdDpu1ZTHK2pNHP+EOLwh+x/29MhE7m+IgyOGlzIM3Wp8FkJBH1WnLqB1rH+BUYWEi4Bp9rgHlH+Uxc/jpyv4wStPHVY4RYkABPBG05q/GSu9B5sL/QNSRkg+24oOJ8PKAH8Fq9LczYoKPHoybTmRjD+jNE+M3OEFQJSCDyp4dnngHKrvtYCo2Ah/+oAbakgMW3uIaKAcfv92Duo4IMYuyjqCiB4QN+IYZWhdGPm4ZXbOkvoHO465leYjuZgI61TWYSkL4YXORj46ci/mKRuvHHad6KB8kkdd9XLmcCF6DYlH82MDuRWgrf76kPnEoyc1UhlaS77p9yuOHmVBpWdAdc/SkOofywRuqfoM/EFEVGldv7C5hbGL2EUv9MACSyK5TWWHJLw16EEwa6c47e8sZokee8Wd+5E73D3aYE3UE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(376002)(39860400002)(366004)(83380400001)(6916009)(66446008)(186003)(38100700002)(122000001)(64756008)(107886003)(36756003)(31696002)(6506007)(6486002)(54906003)(53546011)(478600001)(5660300002)(6512007)(31686004)(2906002)(8676002)(86362001)(2616005)(66946007)(66556008)(66476007)(8936002)(76116006)(316002)(71200400001)(26005)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QzJ0Tk1mZVllQ3V5YjJ0Zm9rNEk0b21qTEFvU1U4SG1JbStTdlN6bkVyY0Js?=
- =?utf-8?B?SjJVTWs2Y21SdXBEamdXcnBGVHNvN0kra0hzYjRuemh5N0Y0VmtKRnlJems3?=
- =?utf-8?B?b3RacE1pVGVuZTZvN0RDYklrb1dFSzZsTnFka09WRnRCSlVWVmR0WWZGSTI5?=
- =?utf-8?B?MXRTbkJmL3UvaUZpMFBrWndyR3JlUitPNlkzRTNRUENRbjhZWFZCb216dXlE?=
- =?utf-8?B?c3FZVWRBR2pSZUZqdlNkSWNNLzBjb3A1NkQ4L1BpdlFYVDArWkpJcG5aVzJU?=
- =?utf-8?B?YTk5SmxhSlZBRitsQis4RXJZTXVuL09YZjNEQUtHTmFvRzkxajZ5Q2tYZVBE?=
- =?utf-8?B?cEx3SENwVE1UVXNwbVhDaUVpNStzRGlTTFg5TENxWWlaZ1E4OGRtTVdQb1F5?=
- =?utf-8?B?Q05CdEJFRDhDK3dYcGg1NnBtc2xkd3V4UmZSOUdSdzBYZW9XSmxWcWZoSGVw?=
- =?utf-8?B?dStiN0Rrc2hucnpLckdlbzRENW1aa0R2akdTY1V5WHl0aUszRUNHcDkzK2tI?=
- =?utf-8?B?SG5ySWlJY0hnVkhnNklFWTVBMzJGUzVIVHZGakF4dUZwdk5wNENKQmVsWndk?=
- =?utf-8?B?MXlhdjkxRjB6bEJ1TFl6bjFBOEVFK2JCSUZjaHYwYmZKQXZ5M0YwNnFkeDha?=
- =?utf-8?B?SEIxT0FORTgxejhSN1V0V3htVGZRZjdIbjlybG1rSEpsU0QvdlJBSWRWVWJW?=
- =?utf-8?B?TDExdzRWbERaVkFLcGlSbWxtSk5RdlVJQ3cxWkVsM0sxaGx2STcvY0ViQ1VE?=
- =?utf-8?B?KzZwTDJhR0JwNlV4b01CNFM4aGlZV0VPNzhKUjcrc2psS25uTkQzNHQ5V0Y5?=
- =?utf-8?B?eFVZcHA3SlFZSkJuV0N3OUNGdlRsRkFuTlB0WHJvVDFob2ViOC94aUlURElG?=
- =?utf-8?B?cFJNU1lCVjBmbTNNQ0xZbEUzdTVXdHJsaEhKZTZxcnBabkNsYmo4QTBHWHFz?=
- =?utf-8?B?dFppTGZkVDR4cEZSclBVbDB5akdCaTh2NndpaHdERmYzRXVCN3g5S3Q2UXA5?=
- =?utf-8?B?ck1qYVE1SmZWNGYwaE5MOUMwbW5wcXlSMEZwRlk3djBWaFlaSEtNaVcvTjNI?=
- =?utf-8?B?dklyS0Njd3FHMWh2c0NTTHJSZGx5SWhNY012cFV3Qzhva1ErS3Y2amFRK1ZL?=
- =?utf-8?B?RHR0bE9pTVVxalZDeWlqYW9YVjZOZ0ErQVE5VVFzY0ZUKzBIekVVeURheGlU?=
- =?utf-8?B?eVlsMjZIMWVjd21hNDZPeldHRFJEMm1XQnRNQWVic0I0RkJWMllwUzhWOHpJ?=
- =?utf-8?B?Mk9sMlBBR2dOWWZrcUZ1bW5NVmdGRmFtRGRQV2NwQkR4Y3FkdVp1SmhaVDFP?=
- =?utf-8?B?S0ZCLzZWNnhWM1NMN202Nlh1ZUFhakkzVk9IUVBWenpFSUVoSE5MRWV4QkZE?=
- =?utf-8?B?ZWVhV2l4TjU5ZzVQR2F2WXRaYTRYUHI0a2MyeXI3RlNqZ3lKVGpBZGk2UlZ0?=
- =?utf-8?B?MXkwa2doL3dhVUNJc1pGQnJKTnRrOUpLMW1NSVg1ZHZmNUtEVlR1N2swdlpa?=
- =?utf-8?B?aHR0UmpJSDJOZlR5cjhhQjFWV2ZJWFR2ZldhWU15bmZlYUxnb25wMGFSckFX?=
- =?utf-8?B?eXlMT25hTU5NcFZKKzJGMWxBUEtjTHdvSGRLWUMrNFBGRUJwYVdPSGN1RGpq?=
- =?utf-8?B?VldYRmQxSnpIZ1NscEJRTUlnS3g0NnliTmJNNUpnM0NCTGY1ME5Wa3pwdUZD?=
- =?utf-8?B?M0tqOFRLTEViL0JZSUNJYndaS2VkUU8xMXovWXZhTEtBeUdJM0pvd2RnQjhR?=
- =?utf-8?Q?OKVtjJu/POBmws+r3Q=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8C41BAD3EC2C6A40865D360EAC5F3154@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 10 Jun 2021 15:02:56 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lrPvG-007Nxt-Ve; Thu, 10 Jun 2021 13:00:59 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lrPvF-0033vg-Vq; Thu, 10 Jun 2021 13:00:58 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Olivier Langlois <olivier@trillion01.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Pavel Begunkov\>" <asml.silence@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
+        <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
+        <87h7i694ij.fsf_-_@disp2133>
+        <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+        <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
+        <87eeda7nqe.fsf@disp2133>
+        <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+        <87pmwt6biw.fsf@disp2133>
+Date:   Thu, 10 Jun 2021 13:58:50 -0500
+In-Reply-To: <87pmwt6biw.fsf@disp2133> (Eric W. Biederman's message of "Thu,
+        10 Jun 2021 09:26:47 -0500")
+Message-ID: <87czst5yxh.fsf_-_@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3479.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ebdb7f3-a986-4be6-f7d2-08d92c41802f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2021 18:56:48.2900
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SXbkvZGYNIPBXM54occSHGjOi+9ez328sbnWv69L0+ed/hDyQsm7RJ4PFVZq6RsrzCJROGnFdxV4ck5VPD0bOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3096
+Content-Type: text/plain
+X-XM-SPF: eid=1lrPvF-0033vg-Vq;;;mid=<87czst5yxh.fsf_-_@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/gjeIt4M0w61GWd6CrpFRIrAIOaWZ7fgc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Olivier Langlois <olivier@trillion01.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 420 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.6 (1.1%), b_tie_ro: 3.2 (0.8%), parse: 1.14
+        (0.3%), extract_message_metadata: 14 (3.3%), get_uri_detail_list: 2.5
+        (0.6%), tests_pri_-1000: 11 (2.7%), tests_pri_-950: 1.08 (0.3%),
+        tests_pri_-900: 0.80 (0.2%), tests_pri_-90: 72 (17.2%), check_bayes:
+        71 (17.0%), b_tokenize: 6 (1.4%), b_tok_get_all: 8 (1.8%),
+        b_comp_prob: 1.97 (0.5%), b_tok_touch_all: 53 (12.6%), b_finish: 0.63
+        (0.2%), tests_pri_0: 303 (72.2%), check_dkim_signature: 0.40 (0.1%),
+        check_dkim_adsp: 2.0 (0.5%), poll_dns_idle: 0.57 (0.1%), tests_pri_10:
+        1.73 (0.4%), tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: [CFT}[PATCH] coredump: Limit what can interrupt coredumps
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNi8xMC8yMSAxMDowMiBBTSwgS2VlcyBDb29rIHdyb3RlOg0KPiBPbiBXZWQsIEp1biAwOSwg
-MjAyMSBhdCAwMzoxMjoxMVBNIC0wNzAwLCBWaW5lZXQgR3VwdGEgd3JvdGU6DQo+PiBDdXJyZW50
-bHkgZW5hYmxpbmcgdGhpcyB0cmlnZ2VycyBhIHdhcm5pbmcNCj4+DQo+PiB8IHVzZXJjb3B5OiBL
-ZXJuZWwgbWVtb3J5IG92ZXJ3cml0ZSBhdHRlbXB0IGRldGVjdGVkIHRvIGtlcm5lbCB0ZXh0IChv
-ZmZzZXQgMTU1NjMzLCBzaXplIDExKSENCj4+IHwgdXNlcmNvcHk6IEJVRzogZmFpbHVyZSBhdCBt
-bS91c2VyY29weS5jOjk5L3VzZXJjb3B5X2Fib3J0KCkhDQo+PiB8DQo+PiB8Z2NjIGdlbmVyYXRl
-ZCBfX2J1aWx0aW5fdHJhcA0KPj4gfFBhdGg6IC9iaW4vYnVzeWJveA0KPj4gfENQVTogMCBQSUQ6
-IDg0IENvbW06IGluaXQgTm90IHRhaW50ZWQgNS40LjIyDQo+PiB8DQo+PiB8W0VDUiBdOiAweDAw
-MDkwMDA1ID0+IGdjYyBnZW5lcmF0ZWQgX19idWlsdGluX3RyYXANCj4+IHxbRUZBIF06IDB4OTAy
-NGZjYWENCj4+IHxbQkxJTksgXTogdXNlcmNvcHlfYWJvcnQrMHg4YS8weDhjDQo+PiB8W0VSRVQg
-XTogbWVtZmRfZmNudGwrMHgwLzB4NDcwDQo+PiB8W1NUQVQzMl06IDB4ODAwODA4MDIgOiBJRSBL
-DQo+PiB8QlRBOiAweDkwMWJhMzhjIFNQOiAweGJlMTYxZWNjIEZQOiAweGJmOWZlOTUwDQo+PiB8
-TFBTOiAweDkwNjc3NDA4IExQRTogMHg5MDY3NzQwYyBMUEM6IDB4MDAwMDAwMDANCj4+IHxyMDA6
-IDB4MDAwMDAwM2MgcjAxOiAweGJmMGVkMjgwIHIwMjogMHgwMDAwMDAwMA0KPj4gfHIwMzogMHhi
-ZTE1ZmEzMCByMDQ6IDB4MDBkMjgwM2UgcjA1OiAweDAwMDAwMDAwDQo+PiB8cjA2OiAweDY3NWQ3
-MDAwIHIwNzogMHgwMDAwMDAwMCByMDg6IDB4Njc1ZDljMDANCj4+IHxyMDk6IDB4MDAwMDAwMDAg
-cjEwOiAweDAwMDAwMzVjIHIxMTogMHg2MTIwNjU3Mg0KPj4gfHIxMjogMHg5MDI0ZmNhYSByMTM6
-IDB4MDAwMDAwMGIgcjE0OiAweDAwMDAwMDBiDQo+PiB8cjE1OiAweDAwMDAwMDAwIHIxNjogMHg5
-MDE2OWZmYyByMTc6IDB4OTAxNjgwMDANCj4+IHxyMTg6IDB4MDAwMDAwMDAgcjE5OiAweGJmMDky
-MDEwIHIyMDogMHgwMDAwMDAwMQ0KPj4gfHIyMTogMHgwMDAwMDAxMSByMjI6IDB4NWZmZmZmZjEg
-cjIzOiAweDkwMTY5ZmYxDQo+PiB8cjI0OiAweGJlMTk2YzAwIHIyNTogMHhiZjBlZDI4MA0KPj4g
-fA0KPj4gfFN0YWNrIFRyYWNlOg0KPj4gfCBtZW1mZF9mY250bCsweDAvMHg0NzANCj4+IHwgdXNl
-cmNvcHlfYWJvcnQrMHg4YS8weDhjDQo+PiB8IF9fY2hlY2tfb2JqZWN0X3NpemUrMHgxMGUvMHgx
-MzgNCj4+IHwgY29weV9zdHJpbmdzKzB4MWY0LzB4MzhjDQo+PiB8IF9fZG9fZXhlY3ZlX2ZpbGUr
-MHgzNTIvMHg4NDgNCj4+IHwgRVZfVHJhcCsweGNjLzB4ZDANCj4gV2hhdCB3YXMgdGhlIHJvb3Qg
-Y2F1c2UgaGVyZT8gV2FzIGl0IHRoYXQgdGhlIGluaXQgc2VjdGlvbiBnZXRzIGZyZWVkDQo+IGFu
-ZCByZXVzZWQgZm9yIGttYWxsb2M/DQoNClJpZ2h0LiBBUkMgX3N0ZXh0IHdhcyBlbmNvbXBhc3Np
-bmcgdGhlIGluaXQgc2VjdGlvbiAodG8gY292ZXIgdGhlIGluaXQgDQpjb2RlKSBzbyB3aGVuIGlu
-aXQgZ2V0cyBmcmVlZCBhbmQgdXNlZCBieSBrbWFsbG9jLCANCmNoZWNrX2tlcm5lbF90ZXh0X29i
-amVjdCgpIHRyaXBzIGFzIGl0IHRoaW5rcyB0aGUgYWxsb2NhdGVkIHBvaW50ZXIgaXMgDQppbiBr
-ZXJuZWwgLnRleHQuIEFjdHVhbGx5IEkgc2hvdWxkIGhhdmUgYWRkZWQgdGhpcyB0byBjaGFuZ2Vs
-b2cuDQoNClRoeCwNCi1WaW5lZXQNCg0K
+
+Olivier Langlois has been struggling with coredumps written incompletely
+in processes using io_uring.
+
+Olivier Langlois <olivier@trillion01.com> writes:
+> io_uring is a big user of task_work and any event that io_uring made a
+> task waiting for that occurs during the core dump generation will
+> generate a TIF_NOTIFY_SIGNAL.
+>
+> Here are the detailed steps of the problem:
+> 1. io_uring calls vfs_poll() to install a task to a file wait queue
+>    with io_async_wake() as the wakeup function cb from io_arm_poll_handler()
+> 2. wakeup function ends up calling task_work_add() with TWA_SIGNAL
+> 3. task_work_add() sets the TIF_NOTIFY_SIGNAL bit by calling
+>    set_notify_signal()
+
+The coredump code deliberately supports being interrupted by SIGKILL,
+and depends upon prepare_signal to filter out all other signals.   Now
+that signal_pending includes wake ups for TIF_NOTIFY_SIGNAL this hack
+in dump_emitted by the coredump code no longer works.
+
+Make the coredump code more robust by explicitly testing for all of
+the wakeup conditions the coredump code supports.  This prevents
+new wakeup conditions from breaking the coredump code, as well
+as fixing the current issue.
+
+The filesystem code that the coredump code uses already limits
+itself to only aborting on fatal_signal_pending.  So it should
+not develop surprising wake-up reasons either.
+
+With dump_interrupted properly testing for the reasons it supports
+being interrupted remove the special case from prepare_signal.
+
+Fixes: 12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
+Reported-by: Olivier Langlois <olivier@trillion01.com>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+
+Olivier can you test this, and confirm this works for you?
+
+ fs/coredump.c   | 2 +-
+ kernel/signal.c | 2 --
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/coredump.c b/fs/coredump.c
+index 2868e3e171ae..c3d8fc14b993 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -519,7 +519,7 @@ static bool dump_interrupted(void)
+ 	 * but then we need to teach dump_write() to restart and clear
+ 	 * TIF_SIGPENDING.
+ 	 */
+-	return signal_pending(current);
++	return fatal_signal_pending(current) || freezing(current);
+ }
+ 
+ static void wait_for_dump_helpers(struct file *file)
+diff --git a/kernel/signal.c b/kernel/signal.c
+index f7c6ffcbd044..83d534deeb76 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -943,8 +943,6 @@ static bool prepare_signal(int sig, struct task_struct *p, bool force)
+ 	sigset_t flush;
+ 
+ 	if (signal->flags & (SIGNAL_GROUP_EXIT | SIGNAL_GROUP_COREDUMP)) {
+-		if (!(signal->flags & SIGNAL_GROUP_EXIT))
+-			return sig == SIGKILL;
+ 		/*
+ 		 * The process is in the middle of dying, nothing to do.
+ 		 */
+-- 
+2.20.1
+
