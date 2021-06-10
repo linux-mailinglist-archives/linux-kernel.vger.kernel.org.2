@@ -2,96 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067BF3A335E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7107F3A3363
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhFJSlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:41:20 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:41690 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhFJSlT (ORCPT
+        id S231325AbhFJSl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 14:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhFJSlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:41:19 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 0C88A92009D; Thu, 10 Jun 2021 20:39:21 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 0678D92009B;
-        Thu, 10 Jun 2021 20:39:20 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 20:39:20 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] serial: 8250: Define RX trigger levels for OxSemi 950
- devices
-In-Reply-To: <alpine.DEB.2.21.2106071700090.1601@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2106101300280.2092@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2106071700090.1601@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 10 Jun 2021 14:41:55 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B1CC061574;
+        Thu, 10 Jun 2021 11:39:59 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4G1CSs23vWzQk3G;
+        Thu, 10 Jun 2021 20:39:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-language:content-type
+        :content-type:in-reply-to:mime-version:date:date:message-id:from
+        :from:references:subject:subject:received; s=mail20150812; t=
+        1623350392; bh=u9JoI09PtB0guYEvyFd4WuI90Hqe2oL0ZbIxw6V5xjc=; b=A
+        MfVUiR+JCD0i6+wNdXm/D7Qe1epkFNPIS37reFUKh60C15D+3msLJndQVD5VSl1v
+        onuQjiBmC8xD6MmtgSyJddRcez9ZgoV+VWj7ImfquYyy1z4689MFYpjWz3mHNsuo
+        qZClVVhaXf9tRLOLzMe9o+jJuci8jCV7MEgNjeRt0m651GQ3M2ebdzp2nCq6/NVh
+        JIzM9+50vHj5E/LP3NVbpY7AMUivNGnL6dBrQkc7KFKIJUJDDGDBJtMXmh2O6e63
+        HF2jmZf7fqP0kwEp6o0S1KcMwyLHiA4vd/ctE7pTgwBKlI2CNOxnZEgUN+50iJQh
+        /7ExKmvqd+F/571WK2vaA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1623350395;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ED7r0qztVT/NoVf7338Yzez73nCHxmA7+JBorIZ9hHE=;
+        b=QUXTaqxW173iR2ZT3XYqlgE0G+cVP/pSokFeNY9IxYUQA0qGINEXvGt+/H1iFPWvdASuWl
+        07ZNs93qt9zm0c7UnTCAJz9xVjN4mdu/5/gNCxnKnCo6rd7lJ9CnXi1mh8xFk//sG5uFws
+        qXVv9igRrauGfklTCrWCj/lJsMJyslyvaF1Bi3kUhKiRQlmFCESShzQrc1JRIEVQKbnVHc
+        2jFK2KmoVwzzkxcdv+n6mEIVeTClqyX3QHj6+dWs05TN9cvBL9XHvjNWYSfxI5SIBv2O6l
+        L4osTixzRKuEqC+Z/j1m9l8LCctc9IEwPmiJxGD4mc8HdJTjAozbVc1jRpy21w==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de [80.241.56.117]) (amavisd-new, port 10030)
+        with ESMTP id 4hP10dEOVgtl; Thu, 10 Jun 2021 20:39:52 +0200 (CEST)
+Subject: Re: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD <
+ 13.0.0
+To:     Nathan Chancellor <nathan@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "x86@kernel.org" <x86@kernel.org>
+References: <214134496.67043.1623317284090@office.mailbox.org>
+ <ea01f4cb-3e65-0b79-ae93-ba0957e076fc@kernel.org>
+From:   Tor Vic <torvic9@mailbox.org>
+Message-ID: <ba06e4f5-709a-08cc-0f62-e50c64fc301f@mailbox.org>
+Date:   Thu, 10 Jun 2021 18:39:45 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <ea01f4cb-3e65-0b79-ae93-ba0957e076fc@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -6.90 / 15.00 / 15.00
+X-Rspamd-Queue-Id: E17F71860
+X-Rspamd-UID: 7b8300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oxford Semiconductor 950 serial port devices have a 128-byte FIFO and in 
-the enhanced (650) mode, which we select in `autoconfig_has_efr' with 
-the ECB bit set in the EFR register, they support the receive interrupt 
-trigger level selectable with FCR bits 7:6 from the set of 16, 32, 112, 
-120.  This applies to the original OX16C950 discrete UART[1] as well as 
-950 cores embedded into more complex devices.
+Hi Nathan,
 
-For these devices we set the default to 112, which sets an excessively 
-high level of 112 or 7/8 of the FIFO capacity, unlike with other port 
-types where we choose at most 1/2 of their respective FIFO capacities.  
-Additionally we don't make the trigger level configurable.  Consequently 
-frequent input overruns happen with high bit rates where hardware flow 
-control cannot be used (e.g. terminal applications) even with otherwise 
-highly-performant systems.
+On 10.06.21 16:42, Nathan Chancellor wrote:
+> Hi Tor,
+> 
+> On 6/10/2021 2:28 AM, torvic9@mailbox.org wrote:
+>> Since LLVM commit 3787ee4, the '-stack-alignment' flag has been
+>> dropped [1],
+>> leading to the following error message when building a LTO kernel with
+>> Clang-13 and LLD-13:
+>>
+>>      ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
+>>      '-stack-alignment=8'.  Try 'ld.lld --help'
+>>      ld.lld: Did you mean '--stackrealign=8'?
+>>
+>> It also appears that the '-code-model' flag is not necessary anymore
+>> starting
+>> with LLVM-9 [2].
+>>
+>> Drop '-code-model' and make '-stack-alignment' conditional on LLD <
+>> 13.0.0.
+>>
+>> This is for linux-stable 5.12.
+>> Another patch will be submitted for 5.13 shortly (unless there are
+>> objections).
+> 
+> This patch needs to be accepted into mainline first before it can go to
+> stable so this line needs to be removed. The rest of the description
+> looks good to me, good job on being descriptive!
+> 
 
-Lower the default receive interrupt trigger level to 32 then, and make 
-it configurable.  Document the trigger levels along with other port 
-types, including the set of 16, 32, 64, 112 for the transmit interrupt 
-as well[2].
+Thank you for explaining this.
+I wasn't exactly sure how the procedure for stable was.
+Does this mean that the patch should be based on 5.13?
+I usually use Linus' tree mirrored at GitHub.
 
-References:
+>> Discussion: https://github.com/ClangBuiltLinux/linux/issues/1377
+>> [1]: https://reviews.llvm.org/D103048
+>> [2]: https://reviews.llvm.org/D52322
+> 
+> As Greg's auto-response points out, there needs to be an actual
+> 
+> Cc: stable@vger.kernel.org
+> 
+> here in the patch, rather than just cc'ing stable@vger.kernel.org
+> through email.
+> 
 
-[1] "OX16C950 rev B High Performance UART with 128 byte FIFOs", Oxford 
-    Semiconductor, Inc., DS-0031, Sep 05, Table 10: "Receiver Trigger 
-    Levels", p. 22
+Yes I misinterpreted this in the sense of "put stable mail in CC".
+So if I get this right, I should NOT put stable email in CC, but only
+add the "Cc: stable@vger.kernel.org" tag above the "Signed-off-by"?
 
-[2] same, Table 9: "Transmit Interrupt Trigger Levels", p. 22
+>> Signed-off-by: Tor Vic <torvic9@mailbox.org>
+> 
+> The actual patch itself looks good and I have verified that it fixes the
+> build error. On the resend with the above fixed, please feel free to add:
+> 
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> 
+>> ---
+>>   arch/x86/Makefile | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+>> index 1f2e5bf..2855a1a 100644
+>> --- a/arch/x86/Makefile
+>> +++ b/arch/x86/Makefile
+>> @@ -192,8 +192,9 @@ endif
+>>   KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
+>>     ifdef CONFIG_LTO_CLANG
+>> -KBUILD_LDFLAGS    += -plugin-opt=-code-model=kernel \
+>> -           -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
+>> +ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
+>> +KBUILD_LDFLAGS    += -plugin-opt=-stack-alignment=$(if
+>> $(CONFIG_X86_32),4,8)
+>> +endif
+>>   endif
+>>     ifdef CONFIG_X86_NEED_RELOCS
+>>
+> 
+> Cheers,
+> Nathan
 
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
- drivers/tty/serial/8250/8250_port.c |    3 ++-
- include/uapi/linux/serial_reg.h     |    1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Thanks for your help!
+Tor
 
-linux-serial-8250-oxsemi-fifo.diff
-Index: linux-malta-cbus-uart/drivers/tty/serial/8250/8250_port.c
-===================================================================
---- linux-malta-cbus-uart.orig/drivers/tty/serial/8250/8250_port.c
-+++ linux-malta-cbus-uart/drivers/tty/serial/8250/8250_port.c
-@@ -122,7 +122,8 @@ static const struct serial8250_config ua
- 		.name		= "16C950/954",
- 		.fifo_size	= 128,
- 		.tx_loadsz	= 128,
--		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10,
-+		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_01,
-+		.rxtrig_bytes	= {16, 32, 112, 120},
- 		/* UART_CAP_EFR breaks billionon CF bluetooth card. */
- 		.flags		= UART_CAP_FIFO | UART_CAP_SLEEP,
- 	},
-Index: linux-malta-cbus-uart/include/uapi/linux/serial_reg.h
-===================================================================
---- linux-malta-cbus-uart.orig/include/uapi/linux/serial_reg.h
-+++ linux-malta-cbus-uart/include/uapi/linux/serial_reg.h
-@@ -62,6 +62,7 @@
-  * ST16C654:	 8  16  56  60		 8  16  32  56	PORT_16654
-  * TI16C750:	 1  16  32  56		xx  xx  xx  xx	PORT_16750
-  * TI16C752:	 8  16  56  60		 8  16  32  56
-+ * OX16C950:	16  32 112 120		16  32  64 112	PORT_16C950
-  * Tegra:	 1   4   8  14		16   8   4   1	PORT_TEGRA
-  */
- #define UART_FCR_R_TRIG_00	0x00
