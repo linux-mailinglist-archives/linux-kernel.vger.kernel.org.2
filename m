@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CE83A225B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C833A2259
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 04:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhFJCsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 22:48:23 -0400
-Received: from m12-18.163.com ([220.181.12.18]:58568 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhFJCsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 22:48:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=qQF+Mfd/W4sXUIec0/
-        FlJ4NKUAQca2lB2YNmUFlOk5o=; b=CQK4R+oq/f+CLZV6c6Xay7Os2VYlaIT9lL
-        g5Eb77AIXKTx6qojodfLftWBFHR+yt2IaAcnzlp/0pCWrkjxO01VoKlmG5b38Juu
-        W+7bhL4SKvyDGfHbOzVJryR7l1EXdtWK/gRfqwJHbq6IkxqH094QIbz9iPrAOC0w
-        fFpYau4BY=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowACnr9fvfMFgYRxEog--.31055S2;
-        Thu, 10 Jun 2021 10:46:10 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
-        kuba@kernel.org, unixbhaskar@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] nfc: fdp: remove unnecessary labels
-Date:   Thu, 10 Jun 2021 10:46:16 +0800
-Message-Id: <20210610024616.1804-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EsCowACnr9fvfMFgYRxEog--.31055S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18Cw43CF47XFy3Ar18Xwb_yoW8Gr1UpF
-        45XFWqyr4rJ3WrX3Z8Ar4DZFyYga1xAryDGrWxt3s7AF45trn7JFZ5tFW8ZrWxurZ5Gw12
-        vF4qqwn3ua1jqw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jpWlkUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiqwSjsVUMZnxVgAABsq
+        id S229634AbhFJCsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 22:48:15 -0400
+Received: from smtprelay0235.hostedemail.com ([216.40.44.235]:53910 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229692AbhFJCsO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Jun 2021 22:48:14 -0400
+Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 707D552C0;
+        Thu, 10 Jun 2021 02:46:18 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id 7CD792351F5;
+        Thu, 10 Jun 2021 02:46:17 +0000 (UTC)
+Message-ID: <8e163bf6c239ed519bbf754acac56f68897a3db3.camel@perches.com>
+Subject: Re: [for-next][PATCH 11/11] treewide: Add missing semicolons to
+ __assign_str uses
+From:   Joe Perches <joe@perches.com>
+To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Date:   Wed, 09 Jun 2021 19:46:16 -0700
+In-Reply-To: <20210610010158.690158686@goodmis.org>
+References: <20210610010130.069460694@goodmis.org>
+         <20210610010158.690158686@goodmis.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 7CD792351F5
+X-Spam-Status: No, score=-2.90
+X-Stat-Signature: c4n9g831mrgc3citiquny67jmsg8gues
+X-Rspamd-Server: rspamout03
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+a/3s4biv8HcNs8D/V+E7llICJKv5cYH4=
+X-HE-Tag: 1623293177-605816
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On Wed, 2021-06-09 at 21:01 -0400, Steven Rostedt wrote:
+> From: Joe Perches <joe@perches.com>
+> 
+> The __assign_str macro has an unusual ending semicolon but the vast
+> majority of uses of the macro already have semicolon termination.
+> 
+> $ git grep -P '\b__assign_str\b' | wc -l
+> 551
+> $ git grep -P '\b__assign_str\b.*;' | wc -l
+> 480
+> 
+> Add semicolons to the __assign_str() uses without semicolon termination
+> and all the other uses without semicolon termination via additional defines
+> that are equivalent to __assign_str() with the eventual goal of removing
+> the semicolon from the __assign_str() macro definition.
+[]
+>  net/mac80211/trace.h                          |  2 +-
+[]
+> diff --git a/net/mac80211/trace.h b/net/mac80211/trace.h
+[]
+> @@ -33,7 +33,7 @@
+>  			__string(vif_name, sdata->name)
+>  #define VIF_ASSIGN	__entry->vif_type = sdata->vif.type; __entry->sdata = sdata;	\
+>  			__entry->p2p = sdata->vif.p2p;					\
+> -			__assign_str(vif_name, sdata->name)
+> +			__assign_str(vif_name, sdata->name);
 
-Some labels are meaningless, so we delete them and use the
-return statement instead of the goto statement.
-
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/fdp/fdp.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
-index 7863b25..5287458 100644
---- a/drivers/nfc/fdp/fdp.c
-+++ b/drivers/nfc/fdp/fdp.c
-@@ -266,7 +266,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
- 	r = request_firmware(&info->ram_patch, FDP_RAM_PATCH_NAME, dev);
- 	if (r < 0) {
- 		nfc_err(dev, "RAM patch request error\n");
--		goto error;
-+		return r;
- 	}
- 
- 	data = (u8 *) info->ram_patch->data;
-@@ -283,7 +283,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
- 	r = request_firmware(&info->otp_patch, FDP_OTP_PATCH_NAME, dev);
- 	if (r < 0) {
- 		nfc_err(dev, "OTP patch request error\n");
--		goto out;
-+		return 0;
- 	}
- 
- 	data = (u8 *) info->otp_patch->data;
-@@ -295,10 +295,7 @@ static int fdp_nci_request_firmware(struct nci_dev *ndev)
- 
- 	dev_dbg(dev, "OTP patch version: %d, size: %d\n",
- 		 info->otp_patch_version, (int) info->otp_patch->size);
--out:
- 	return 0;
--error:
--	return r;
- }
- 
- static void fdp_nci_release_firmware(struct nci_dev *ndev)
--- 
-1.9.1
+This one is unnecessary as every use of VIF_ASSIGN already has a semicolon
+termination.
 
 
