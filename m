@@ -2,102 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557643A22EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901203A22E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 05:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhFJDnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Jun 2021 23:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
+        id S229989AbhFJDm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Jun 2021 23:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhFJDnO (ORCPT
+        with ESMTP id S229770AbhFJDmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Jun 2021 23:43:14 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BC5C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 20:41:02 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ei4so2812254pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 20:41:02 -0700 (PDT)
+        Wed, 9 Jun 2021 23:42:55 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A34C061574;
+        Wed,  9 Jun 2021 20:40:59 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id v12so235711plo.10;
+        Wed, 09 Jun 2021 20:40:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=94pKNGw6aDmClK5qtz94uwCrVTPu2QawOX0eEueaQtw=;
-        b=hgdu2EGMeJKw7Zqbcjnq4JgrvciYatqrsvp/Hq38+r3dbFHb3YEZhBI4aQP80VcU84
-         XTI2zxdzIwKN0fntEi2P4wfCt1Sjc2W6QvJ2Ge6+EzN69HFwWHdVZa7c5odI7eC4fmbY
-         fXfkc4SQl0zDWr1xTXh6Mrc+hVLODwK88TSjU=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5Xlibc6hX8kwCcZz0XQ+FE2nBQRDGeD6dPLbec7873k=;
+        b=DVTYq6Mr1yqRlhqT7rDJJzuzmOmfvg9GpbBgcFCCMoS2myqdZzw4QprxJa3JuRM0bT
+         fszOnj6rUU7V7rYDu0HGjJcJy1yQAUdizhaEoGkPQzR15ji4aDgk+aXSrhcsi7gqhe+G
+         FbdtEAWpmeblMOYMUvr2S21hfhKKrlglWsQBqonLnxMmqrsmn/d6e7SiWMqOV3qNwCVt
+         MjkE0KZvqwHcPR1gFvf6SGbPoar3A3hQy1/dss8bOCmgU9bYYqUwRNPllieVX49CDrRs
+         OGKsrv8nYSQYOj9EWI/IpaiVHNGbMB2096LrKggIDabS0tZogPRN014RCOf5EOHysaLH
+         EbNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=94pKNGw6aDmClK5qtz94uwCrVTPu2QawOX0eEueaQtw=;
-        b=gSf4MIZlPS9PQo23iyfgSsYjEONbU3BZmffYsUDIFVCJ3sGSSTGNi91Acd1TmlcTTn
-         3HElcSGyGL4D0GqH7fTdM4ZzkSPcR8sKY/H3GREt6DJVdsOGjjTbo8JA706/dXf5rar3
-         D2ZANnAX0+T1DPDuoEBI/nvJeY1d8LzEnEIYGwM2sIPmKkfUJJ/b9FfdJ6qhos+L31sF
-         c/E1PNh0OZFKwdfWFLkLfL9cCI8EjtklswX9YrgFtEqEEQ5zSHCjjE8ZKm6Z9CkPepNq
-         yOicP+q13Bm0Gz/lTBlAUJVhQh2biE+pS+yWMOYYS/hAmv4MYFvaoP+9e5ODKLkvTOFL
-         9Jiw==
-X-Gm-Message-State: AOAM532B5ZXPlBO95dXn0b8wwTfkypcmU4CBRPCohlgOf/DiQRplfa+Z
-        DKnA8u1KyTSmvVgrC/rqrHXVCOxeCg/nRc4UDNi5Sw==
-X-Google-Smtp-Source: ABdhPJxfhXQZP1C7d97G/hx7Snn+K2LH9xusJE2FA5qGXcVH1gpUQP62dNOS5MgnxVxXRcpVPneWdOueRi+vrJScXkw=
-X-Received: by 2002:a17:902:fe83:b029:106:2e:97b6 with SMTP id
- x3-20020a170902fe83b0290106002e97b6mr2950199plm.49.1623296462349; Wed, 09 Jun
- 2021 20:41:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210507021127.54717-1-chunfeng.yun@mediatek.com> <20210507021127.54717-4-chunfeng.yun@mediatek.com>
-In-Reply-To: <20210507021127.54717-4-chunfeng.yun@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Thu, 10 Jun 2021 11:40:50 +0800
-Message-ID: <CAATdQgAmms=x=go7TBy9WRTGT05rtc82pBH4NxYdM5d-ohN5MA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] usb: xhci-mtk: use first-fit for LS/FS
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5Xlibc6hX8kwCcZz0XQ+FE2nBQRDGeD6dPLbec7873k=;
+        b=JikrwUeFQzNm4P/ORdLegpXDihJxiRbU7lFcL/JXZw0t9Uw1RFrQzZ4j5cDLZfgTZH
+         nuxqqnWv1cevyo2jX+rWaHcvNqlQu/Kou6gr+7bcbz7ed2NFt79r7eSEgqf5u3h7KI8s
+         t9rGBDzrHBis16KRKdBi86nyzkEf8fJHHV2xcCntj79VTLqovqC3xO5f/8+tuqLc/mQR
+         Kt1H2aENUlM8nzFF+nOHs97rKHg7pO8JQaWk8fqdDL2oAZpl5ymyWMLjkZvy76EhJ7Qy
+         mWJ7X1qetwjfV0otX/pQjPgK6yEi5HxibxNSXq+sFv4nR3Ejnq1H/syGe5pCnmRBEMM5
+         czOQ==
+X-Gm-Message-State: AOAM530kLORc+RJkQvMiaUzMadOHcK1A69lY1vKuAYyi2gtZyv6TwjLs
+        aD0b4WqYDRfn2gVxmPc6sYClOQlWuFLroQ==
+X-Google-Smtp-Source: ABdhPJxgl9h4/OPyjw92jNQqYTa2w/KubhZ0K6geEeXfvOoqlm7ziFyRkXCKamikxNJH3oslXBnMlQ==
+X-Received: by 2002:a17:90b:881:: with SMTP id bj1mr1103306pjb.119.1623296459278;
+        Wed, 09 Jun 2021 20:40:59 -0700 (PDT)
+Received: from devnote2 (122x208x150x49.ap122.ftth.ucom.ne.jp. [122.208.150.49])
+        by smtp.gmail.com with ESMTPSA id t14sm1059136pgm.9.2021.06.09.20.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 20:40:58 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 12:40:52 +0900
+From:   Masami Hiramatsu <masami.hiramatsu@gmail.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v7 00/13] kprobes: Fix stacktrace with kretprobes
+ on x86
+Message-Id: <20210610124052.486df6a3bcc5337919e21e83@gmail.com>
+In-Reply-To: <162209754288.436794.3904335049560916855.stgit@devnote2>
+References: <162209754288.436794.3904335049560916855.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 10:11 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
->
-> Use first-fit instead of best-fit for LS/FS devices under TT,
-> we found that best-fit will consume more bandwidth for some
-> cases.
->
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Hi Josh,
 
-Reviewed-and-Tested-by: Ikjoon Jang <ikjn@chromium.org>
+Would you have any comment on this series?
 
+Thank you,
+
+On Thu, 27 May 2021 15:39:03 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Hello,
+> 
+> Here is the 7th version of the series to fix the stacktrace with kretprobe on x86.
+> 
+> The previous version is;
+> 
+>  https://lore.kernel.org/bpf/162201612941.278331.5293566981784464165.stgit@devnote2/
+> 
+> This version is adding Tested-by from Andrii and do minor cleanups to solve some
+> warnings from kernel test bots.
+> 
+> Changes from v6:
+> For x86 and generic patch:
+>   - Add Andrii's Tested-by. (Andrii, I think you have tested only x86, is it OK?)
+> [11/13]:
+>   - Remove superfluous #include <linux/kprobes.h>.
+> [13/13]:
+>   - Add a prototype for arch_kretprobe_fixup_return().
+> 
+> 
+> With this series, unwinder can unwind stack correctly from ftrace as below;
+> 
+>   # cd /sys/kernel/debug/tracing
+>   # echo > trace
+>   # echo 1 > options/sym-offset
+>   # echo r vfs_read >> kprobe_events
+>   # echo r full_proxy_read >> kprobe_events
+>   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+>   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+>   # echo 1 > events/kprobes/enable
+>   # cat /sys/kernel/debug/kprobes/list
+> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+>   # echo 0 > events/kprobes/enable
+>   # cat trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+>            <...>-134     [007] ...1    16.185901: <stack trace>
+>  => kretprobe_trace_func+0x209/0x300
+>  => kretprobe_dispatcher+0x4a/0x70
+>  => __kretprobe_trampoline_handler+0xd4/0x170
+>  => trampoline_handler+0x43/0x60
+>  => kretprobe_trampoline+0x2a/0x50
+>  => vfs_read+0x98/0x180
+>  => ksys_read+0x5f/0xe0
+>  => do_syscall_64+0x37/0x90
+>  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+>            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+> 
+> This shows the double return probes (vfs_read and full_proxy_read) on the stack
+> correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
+> will return to vfs_read+0x98)
+> 
+> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+> the pt_regs passed to kretprobe user handler is correctly set the real return
+> address. So user handlers can get it via instruction_pointer() API.
+> 
+> You can also get this series from 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v7
+> 
+> 
+> Thank you,
+> 
 > ---
-> v3: no changes
-> ---
->  drivers/usb/host/xhci-mtk-sch.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-> index 9fb75085e40f..c07411d9b16f 100644
-> --- a/drivers/usb/host/xhci-mtk-sch.c
-> +++ b/drivers/usb/host/xhci-mtk-sch.c
-> @@ -634,6 +634,11 @@ static int check_sch_bw(struct mu3h_sch_bw_info *sch_bw,
->                         min_bw = worst_bw;
->                         min_index = offset;
->                 }
-> +
-> +               /* use first-fit for LS/FS */
-> +               if (sch_ep->sch_tt && min_index >= 0)
-> +                       break;
-> +
->                 if (min_bw == 0)
->                         break;
->         }
+> 
+> Josh Poimboeuf (1):
+>       x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
+> 
+> Masami Hiramatsu (12):
+>       ia64: kprobes: Fix to pass correct trampoline address to the handler
+>       kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+>       kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+>       kprobes: Add kretprobe_find_ret_addr() for searching return address
+>       ARC: Add instruction_pointer_set() API
+>       ia64: Add instruction_pointer_set() API
+>       arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
+>       kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+>       x86/kprobes: Push a fake return address at kretprobe_trampoline
+>       x86/unwind: Recover kretprobe trampoline entry
+>       tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+>       x86/kprobes: Fixup return address in generic trampoline handler
+> 
+> 
+>  arch/arc/include/asm/ptrace.h       |    5 ++
+>  arch/arc/kernel/kprobes.c           |    2 -
+>  arch/arm/probes/kprobes/core.c      |    5 +-
+>  arch/arm64/kernel/probes/kprobes.c  |    3 -
+>  arch/csky/kernel/probes/kprobes.c   |    2 -
+>  arch/ia64/include/asm/ptrace.h      |    5 ++
+>  arch/ia64/kernel/kprobes.c          |   15 ++---
+>  arch/mips/kernel/kprobes.c          |    3 -
+>  arch/parisc/kernel/kprobes.c        |    4 +
+>  arch/powerpc/kernel/kprobes.c       |   13 ----
+>  arch/riscv/kernel/probes/kprobes.c  |    2 -
+>  arch/s390/kernel/kprobes.c          |    2 -
+>  arch/sh/kernel/kprobes.c            |    2 -
+>  arch/sparc/kernel/kprobes.c         |    2 -
+>  arch/x86/include/asm/kprobes.h      |    1 
+>  arch/x86/include/asm/unwind.h       |   23 +++++++
+>  arch/x86/include/asm/unwind_hints.h |    5 ++
+>  arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
+>  arch/x86/kernel/unwind_frame.c      |    3 -
+>  arch/x86/kernel/unwind_guess.c      |    3 -
+>  arch/x86/kernel/unwind_orc.c        |   18 +++++-
+>  include/linux/kprobes.h             |   44 ++++++++++++--
+>  kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
+>  kernel/trace/trace_output.c         |   17 +-----
+>  lib/error-inject.c                  |    3 +
+>  25 files changed, 238 insertions(+), 105 deletions(-)
+> 
 > --
-> 2.18.0
->
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu
