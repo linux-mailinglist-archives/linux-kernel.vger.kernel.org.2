@@ -2,187 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5293D3A2C61
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D51F3A2C68
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhFJNFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:05:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39754 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230188AbhFJNFu (ORCPT
+        id S230469AbhFJNGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:06:17 -0400
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:42508 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230416AbhFJNGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:05:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623330234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w1yRG9vI4ont0xlQTDfWQBvjqAZg/7xjdkXXrg1Zl+M=;
-        b=WjzeOjJFr2D4llpTZaYez/OMil270b+h7wDPMX/8SVktCogmt/PvUJ3HsHWoCKwicjaoB/
-        0KoivJJFE4d1TzRx548V88z3w5jqsWpfIEBf9SUOjXY0UzxaTLQz0LkRSFO6SreFBRbmAL
-        AEXdUhz3kvYKghhqQtGxtXUn9Pey790=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-2Zzpl9QmNe-i8YEvI8cx5A-1; Thu, 10 Jun 2021 09:03:51 -0400
-X-MC-Unique: 2Zzpl9QmNe-i8YEvI8cx5A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95914100C624;
-        Thu, 10 Jun 2021 13:03:47 +0000 (UTC)
-Received: from work-vm (ovpn-114-240.ams2.redhat.com [10.36.114.240])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 552845C1D1;
-        Thu, 10 Jun 2021 13:03:30 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 14:03:27 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com, Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH Part2 RFC v3 06/37] x86/sev: Add helper functions for
- RMPUPDATE and PSMASH instruction
-Message-ID: <YMINnxkDVzRZ8gCQ@work-vm>
-References: <20210602141057.27107-1-brijesh.singh@amd.com>
- <20210602141057.27107-7-brijesh.singh@amd.com>
+        Thu, 10 Jun 2021 09:06:08 -0400
+Received: by mail-ua1-f50.google.com with SMTP id w5so1237521uaq.9;
+        Thu, 10 Jun 2021 06:04:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pUUwNqNN82W1ihF2ghw7jgMxa3/+NRGjbN4axcAWxJg=;
+        b=se1YOumDSKFqJbbaVwxgdM0CWbzfx9GiJDY/5awzaxRaxcEGYuAaM3IbgLw1++jOb/
+         bPId9EhBmjad/fn1Siyw6+x3/Aivd/QIgJ8938Fr/7VXCRQFRSwZ2uoP1uJenHOoTMmk
+         yBflyw6O9wF+2BMO3DVInEpUs2dDnI5PEzUhW0Ky3GdfHukL/rILTqGsqfyyvkmNepPI
+         YYQ5A5OawuTYzvN2NBP9FYRDF6hQCyTtHbMtayoriRFC8fIrZQEXHO7d/vWbrSs8De2d
+         1doJost8kmOgZVdEzUixG7H5S539g8VEv+gklHUAH4qkMQhSy8cEebPzm8OBH1tT+LGb
+         lCfQ==
+X-Gm-Message-State: AOAM531ENOMau2lKoT5/HB2m2NVpY7lWXgELNmuw6ecrN1+lhrajuVTX
+        V2TVl/PLJ2BtDp1GQrPg7AavDQa+wVf2kiiCVDLZNE2rOSA=
+X-Google-Smtp-Source: ABdhPJz4PaA6C9tFtb80kykQ4hMeQVD5xTTHJTOT1fvl6ZdQFfj3lut3BvF8OcP9Rr73eE9Ua/JW9NO8fOGR1VoESz0=
+X-Received: by 2002:ab0:b09:: with SMTP id b9mr4181097uak.58.1623330239898;
+ Thu, 10 Jun 2021 06:03:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602141057.27107-7-brijesh.singh@amd.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210609153230.6967-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210609153230.6967-9-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210609153230.6967-9-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Jun 2021 15:03:48 +0200
+Message-ID: <CAMuHMdXR0y7d2hRi35YsTT2rdOtRzFirGwbVnbUVO2d3yV=mwg@mail.gmail.com>
+Subject: Re: [PATCH v3 08/11] clk: renesas: Add CPG core wrapper for RZ/G2L SoC
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Brijesh Singh (brijesh.singh@amd.com) wrote:
-> The RMPUPDATE instruction writes a new RMP entry in the RMP Table. The
-> hypervisor will use the instruction to add pages to the RMP table. See
-> APM3 for details on the instruction operations.
-> 
-> The PSMASH instruction expands a 2MB RMP entry into a corresponding set of
-> contiguous 4KB-Page RMP entries. The hypervisor will use this instruction
-> to adjust the RMP entry without invalidating the previous RMP entry.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/kernel/sev.c | 42 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/sev.h   | 20 ++++++++++++++++++++
->  2 files changed, 62 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 51676ab1a321..9727df945fb1 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -2226,3 +2226,45 @@ struct rmpentry *snp_lookup_page_in_rmptable(struct page *page, int *level)
->  	return entry;
->  }
->  EXPORT_SYMBOL_GPL(snp_lookup_page_in_rmptable);
+Hi Prabhakar,
+
+On Wed, Jun 9, 2021 at 5:33 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add CPG core wrapper for RZ/G2L family.
+>
+> Based on a patch in the BSP by Binh Nguyen
+> <binh.nguyen.jz@renesas.com>.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+
+Thanks for your patch!
+
+> --- a/drivers/clk/renesas/Kconfig
+> +++ b/drivers/clk/renesas/Kconfig
+> @@ -182,6 +182,11 @@ config CLK_RCAR_USB2_CLOCK_SEL
+>         help
+>           This is a driver for R-Car USB2 clock selector
+>
+> +config CLK_RZG2L
+> +       bool "Renesas RZ/G2L SoC clock support" if COMPILE_TEST && !ARCH_RENESAS
+
+s/SoC/family/?
+
+I think "if COMPILE_TEST", as all other entries are using, is sufficient.
+
+> +       depends on ARCH_RENESAS || COMPILE_TEST
+
+I think this can be dropped.
+
+> +       select RESET_CONTROLLER
 > +
-> +int psmash(struct page *page)
+>  # Generic
+
+> --- /dev/null
+> +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
+
+> +static struct clk
+> +*rzg2l_cpg_clk_src_twocell_get(struct of_phandle_args *clkspec,
+> +                              void *data)
 > +{
-> +	unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
-> +	int ret;
+> +       unsigned int clkidx = clkspec->args[1];
+> +       struct rzg2l_cpg_priv *priv = data;
+> +       struct device *dev = priv->dev;
+> +       const char *type;
+> +       struct clk *clk;
 > +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return -ENXIO;
+> +       switch (clkspec->args[0]) {
+> +       case CPG_CORE:
+> +               type = "core";
+> +               if (clkidx > priv->last_dt_core_clk) {
+> +                       dev_err(dev, "Invalid %s clock index %u\n", type, clkidx);
+> +                       return ERR_PTR(-EINVAL);
+> +               }
+> +               clk = priv->clks[clkidx];
+> +               break;
 > +
-> +	/* Retry if another processor is modifying the RMP entry. */
-> +	do {
-> +		/* Binutils version 2.36 supports the PSMASH mnemonic. */
-> +		asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
-> +			      : "=a"(ret)
-> +			      : "a"(spa)
-> +			      : "memory", "cc");
-> +	} while (ret == FAIL_INUSE);
+> +       case CPG_MOD:
+> +               type = "module";
+> +               if (clkidx > priv->num_core_clks + priv->num_mod_clks) {
+
+The range of module clocks in DT specifiers starts at zero, so
+
+    if (clkidx > priv->num_mod_clks) {
+
+
+> +                       dev_err(dev, "Invalid %s clock index %u\n", type,
+> +                               clkidx);
+> +                       return ERR_PTR(-EINVAL);
+> +               }
+> +               clk = priv->clks[priv->num_core_clks + clkidx];
+> +               break;
 > +
-> +	return ret;
+> +       default:
+> +               dev_err(dev, "Invalid CPG clock type %u\n", clkspec->args[0]);
+> +               return ERR_PTR(-EINVAL);
+> +       }
+> +
+> +       if (IS_ERR(clk))
+> +               dev_err(dev, "Cannot get %s clock %u: %ld", type, clkidx,
+> +                       PTR_ERR(clk));
+> +       else
+> +               dev_dbg(dev, "clock (%u, %u) is %pC at %lu Hz\n",
+> +                       clkspec->args[0], clkspec->args[1], clk,
+> +                       clk_get_rate(clk));
+> +       return clk;
 > +}
-> +EXPORT_SYMBOL_GPL(psmash);
-> +
-> +int rmpupdate(struct page *page, struct rmpupdate *val)
-> +{
-> +	unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
-> +	int ret;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return -ENXIO;
-> +
-> +	/* Retry if another processor is modifying the RMP entry. */
-> +	do {
-> +		/* Binutils version 2.36 supports the RMPUPDATE mnemonic. */
-> +		asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFE"
-> +			     : "=a"(ret)
-> +			     : "a"(spa), "c"((unsigned long)val)
-> +			     : "memory", "cc");
-> +	} while (ret == FAIL_INUSE);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(rmpupdate);
-> diff --git a/include/linux/sev.h b/include/linux/sev.h
-> index 83c89e999999..bcd4d75d87c8 100644
-> --- a/include/linux/sev.h
-> +++ b/include/linux/sev.h
-> @@ -39,13 +39,33 @@ struct __packed rmpentry {
->  
->  #define RMP_TO_X86_PG_LEVEL(level)	(((level) == RMP_PG_SIZE_4K) ? PG_LEVEL_4K : PG_LEVEL_2M)
->  
-> +struct rmpupdate {
-> +	u64 gpa;
-> +	u8 assigned;
-> +	u8 pagesize;
-> +	u8 immutable;
-> +	u8 rsvd;
-> +	u32 asid;
-> +} __packed;
-> +
-> +
-> +/*
-> + * The psmash() and rmpupdate() returns FAIL_INUSE when another processor is
-> + * modifying the RMP entry.
-> + */
-> +#define FAIL_INUSE              3
 
-Perhaps SEV_FAIL_INUSE ?
+With the above fixed:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-(Given that there are a whole buunch of FAIL_* macros already in
-general)
+I can fix these while applying.
 
-Dave
+Gr{oetje,eeting}s,
 
->  #ifdef CONFIG_AMD_MEM_ENCRYPT
->  struct rmpentry *snp_lookup_page_in_rmptable(struct page *page, int *level);
-> +int psmash(struct page *page);
-> +int rmpupdate(struct page *page, struct rmpupdate *e);
->  #else
->  static inline struct rmpentry *snp_lookup_page_in_rmptable(struct page *page, int *level)
->  {
->  	return NULL;
->  }
-> +static inline int psmash(struct page *page) { return -ENXIO; }
-> +static inline int rmpupdate(struct page *page, struct rmpupdate *e) { return -ENXIO; }
->  
->  #endif /* CONFIG_AMD_MEM_ENCRYPT */
->  #endif /* __LINUX_SEV_H */
-> -- 
-> 2.17.1
-> 
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
