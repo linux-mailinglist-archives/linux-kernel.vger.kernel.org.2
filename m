@@ -2,171 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355F03A24A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5643A24A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 08:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhFJGpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 02:45:14 -0400
-Received: from mail-bn8nam11on2053.outbound.protection.outlook.com ([40.107.236.53]:53632
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229692AbhFJGpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 02:45:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JSwqZjJO671GRWtiCXKXTEQRRrwPRSB4T2ZqoioeSNxwVtT/5iBiuBiqpJXXDDBRw5XKPVtbhZvMFWgysdxgTSuVjyqn3GMJS7ApMUPk4vIjiH8rG6pdDQyYCrYLcHgJo7GuIA+Zard0wJ3ubWjpyEq7BvOyJTyWOVZ7ejeGvyefcHzwG6ZtMAZzMpENasO4jSnXzFKnPtRYv9es6ntv7rqC6dUVoc/ePYDNll03HG0Wc193cvUGbZ4yPssUoX8RPX40QdWSGRS7UxjmoLMOJH5EKvq8sz7uhmJmPNXxaOA06xNdMQSdBkFFPwjt8f/ilZsli44ov+AseHZiKb6xMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CxjUcp1MhWcCAwGBRUDFcdf7PJ33kp8up+c5JKOIZtg=;
- b=RSJz+v8CCQh3ld7e/Th/jcmWajd9oanxzQIJ7fgnUCqV3yy1eyIRCD/EQshCXhxO7mZqlZvPz+96GSjn1MM1phuR7NcaWoiONyMKgCjDHno71uhywX6y3QVYpNpaobf7YQb8aGCsFNJO3LqDZ0HZdBC6NAR3i76E4AaC+sh3DSgw/DRLQnrUj4zeL1FugViK+j2UHEXnVt9xFsTOCPEV8q3G3t/5zgHyb9m8qLTqvr49w7pZ6Xd4oQFqHXk0I4OCzxW56JLVmu1Npx5cf+/g883S7ZRwz4Ag8y12mn/wlqjjJJqbxEBcS3EW2vsR7GlBZuOqfFQ6XfELQ5Cc7nXTmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CxjUcp1MhWcCAwGBRUDFcdf7PJ33kp8up+c5JKOIZtg=;
- b=4iYsS4weC6LoX2EE2irYbrJsu2S7xFJRn5PpKhUyqTiFzd48xPaI7yzd+XW4UxIgnIm/fOSXc/WLgxpmbz5+e9bL+sUcYNda99hp5jBiLAhcBGzge13vFgqHaMUaFrSyI5XAJGUlj5MMMuHVK6fFjfw4eWFCyT76pafQjSDW21s=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4254.namprd12.prod.outlook.com (2603:10b6:208:1d0::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Thu, 10 Jun
- 2021 06:43:11 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4219.022; Thu, 10 Jun 2021
- 06:43:11 +0000
-Subject: Re: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer
- dereference in nouveau_bo_sync_for_device
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <202106052143.52488.linux@zary.sk>
- <202106090910.51188.linux@zary.sk>
- <762c1044-6e3a-48fc-95e4-1730b6ef2a2e@amd.com>
- <202106092200.08088.linux@zary.sk>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <081b7908-9a1c-fef1-2b82-4b794f612c9b@amd.com>
-Date:   Thu, 10 Jun 2021 08:43:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <202106092200.08088.linux@zary.sk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:c285:5f9a:99f5:633e]
-X-ClientProxiedBy: AM3PR07CA0121.eurprd07.prod.outlook.com
- (2603:10a6:207:7::31) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S230103AbhFJGp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 02:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhFJGp0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 02:45:26 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D52C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Jun 2021 23:43:31 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id k7so3046350pjf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 23:43:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aUPABG3O3CDDu1dQnUzHVQ+UKKBGPvf/5NlGon0kreI=;
+        b=MLzV/387AlSC2uS+7or1pUo9owMnkGdTKAI/nKO++4Q6BS+30HOwLJsJi2IxkeFfqi
+         w23uyYrwS5QCmvEm9MNjJCKNaDoNORT7Tz42fCTwRWr01yw3aqyJna2BidJpJcYiXv/0
+         Li8rHcdpM4h66iuMfHmpgo3PT8kTl8Oppqqu+SmLzWG2hZ7PzUiPbg5R1iFomZtTeOSm
+         1ClQNO03jsG9AWmXitVJnW0Ii9xZuXyGe5cfaBrp/qKfow+UvNwoV1F+gZRGvy9dzvwV
+         +g69QVJsjwu2Kq3zUdFWZFL/s6Ux8ltb5N25fczaSQD2HqmoKA4eW/M02zJm2K8sT3e6
+         +x0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aUPABG3O3CDDu1dQnUzHVQ+UKKBGPvf/5NlGon0kreI=;
+        b=Gjnd0uAcKxQvRVnyNytXbeiXGVhZfBkJzKuouwpU9pPQIa9vsdYxDIIK5BP+BxwsQs
+         6FnGYAGvOJuDdjeJZ9zxOhG+yn0SlH2Eqr2G95FRf+A6B3+Wubt/rKrbjDlLmEu6eP5P
+         EmmPW3f9qS+erteiHyDNBgr74+yz/P5Lhxr6rXy7CjZseXCsjFkbxOUjsg//7uSQys/V
+         DFzvxJTnvygacsrrE3L4LpMd0FJBVhj4u1ebnEqeB/+qxUNZpXRkM16rbRhro6NgWQil
+         FHtzd1j/W71FQ4YIHEQL7mdw4rD4rBAZHox58KXYFqxwlqR5TnFaE7HHWKW8a1yOg1Yf
+         LmAw==
+X-Gm-Message-State: AOAM532VEISm9HswXcDFEWroKJcYbtDQWuDZzEG6DSPozGV8M+7JNFmi
+        FAcQ+DxmgzlmYHNc4sPKDrrbQKsyz3migl6rK/5+qQ==
+X-Google-Smtp-Source: ABdhPJzE1OTsOe1Tmv1luM+6FViDqEQT6z+Eg005Ae+ht3Zm7BUL874r5HEauLN7n3KjkzIOOj+R6LKyPskfp+cjn60=
+X-Received: by 2002:a17:90a:fd15:: with SMTP id cv21mr1817207pjb.46.1623307410554;
+ Wed, 09 Jun 2021 23:43:30 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:c285:5f9a:99f5:633e] (2a02:908:1252:fb60:c285:5f9a:99f5:633e) by AM3PR07CA0121.eurprd07.prod.outlook.com (2603:10a6:207:7::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend Transport; Thu, 10 Jun 2021 06:43:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b6b1742e-00f0-41e4-1356-08d92bdb03bd
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4254:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4254224745E5C28AD97D567683359@MN2PR12MB4254.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qY2Mnp3dPQ+8VQAko7kqOBj2H81GEVqJchyaMIgmk7tAiOGGat4pTA111GYb9biJ6GYo4UGAfZFJ6WZwl4QApVySyONO+FLwG2Q7EomzG2feP17rOB1qmdkt0IeXSW1vysXJ1TkWg8IoVVJmBY6jgnXcbvZ1SeN4w9fucq9qPSddFbjfxgr66ETYjMbEguMFhjSyLAeWZx3vPss8KWHnnVTbZogLitEguRI+9gJK317zxurS5+DmTNXJnVqkk25tIotPqu9Hvu4tWzJXbtuL+4sJK0KSmL4JQ1seHBvcWzHt0lg8iYDFNtNkxH/uHv/MccpXr5fD4eRhPwEO+gY5sgZ/KTdAZuoy6hVPcHNRzsGSClen1+vy7o3hvRrjfWJz/R4JbYYSuLzV0JVcAg3rR7LcZtzzljuBScFodqV/WBbZujoJOI7jkC+gAAMuY14lSqwv/6uCYBpRsDQAn4PkdRxdwitSItbQnWZPEvH/E+XHXZr/ckKsPhIV21oFmMRVypU2hVra7xAG+YBHjoUNqVIAKC5dxdtvjzoF6q3chCOCacTXT1v61dFYbLVvAAATSMjqg5pIa4d/a+bLiYKgftCCpgNxTEmL/c8YLWkTGFuowRdGthmPTE/YZs7y1EP/djR9FQWrwjpbSSBgzzLjVXkLYzY6K1C/wQhs1cOp69FfEVH7Zf8L0L7dNT3bhfs4wyx0kZgthqzsJBRs9ZZcdofJQQj4MqbBWKk1uPlwaohMRY6sIGraguG+L9yOvMHow31KaUR2VuzTqcgziKf1pWOMqzoQwAHv1kLLy6wZk2V9wQWhMjj+iv3oM5LtxhN2
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(38100700002)(6916009)(31696002)(5660300002)(966005)(83380400001)(66574015)(86362001)(36756003)(6486002)(31686004)(66476007)(66556008)(66946007)(16526019)(186003)(2616005)(45080400002)(6666004)(478600001)(316002)(8936002)(8676002)(4326008)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MlUwMExoSjY3NUQxZ2JwdElmL1A0UlM5RUVwUU5XWXVpeld6OW9OQko2V0Vr?=
- =?utf-8?B?RFY2UnVqeDlSUjJRbXdtM2ZVWjJWZVBSTG9ydWdiT2x1RWpHNTNjWUpLaUds?=
- =?utf-8?B?TUdIanoyZGxHQXNlTnR0RE1PbjdCRnk5RWZqRy92UnpZSEUrcGhKZHNiNGQr?=
- =?utf-8?B?MElJaTUxT2xjSXlnK0FMOXNTYk9oTXNrL0ZPR3FQT2pRaDgza1U1RDQ5L0FM?=
- =?utf-8?B?bkdyWFJWY2tFenJQMEpoMUp5KzdkZnNXNmZZL2pxMTdBSEtseDR6MW9zemNh?=
- =?utf-8?B?ZkJvUmd6NXNWdUtKcFBXWFhJY1I2WFZrL2FBWXg4aWtsNW5ZaUhWdldCSitj?=
- =?utf-8?B?dHVMSTJWcUhKZ1I1ZTEvcEtuZ0NQc095enAyOXAvdHdEbS9lYjQ4UlhYKzRw?=
- =?utf-8?B?Vnp2Q3BHT210LzdCM3lhVEFXdm9QeTcxTkZQZ1Z4OWd3UmdUKzB2MHU3aUtX?=
- =?utf-8?B?NGJzdTMzbHJ0eE4yVmR4TFJyMjJEUk9oTlNRMGl6cnZ0eVE1ZkVBSDA4K2Nt?=
- =?utf-8?B?RnZVY0F3c0VtRlIxSzJkeHVMZHhMUHBGV0N3VTExazRPa2dDaHFtM3RDb1JP?=
- =?utf-8?B?VDFZQVZ3eEZ1ZENUaXB5RUFyREdSVWpROTJUZzZpcWJ3eWtZV3JtS0tLL2xL?=
- =?utf-8?B?bDJ1bDNtTkhzNUQ0ZW81MDNsVXNFdlZCaG9iRVRJSVZSTU81RlRSV0NvZWJS?=
- =?utf-8?B?ZFYxbWI1MGZCNDdPUVBSWmY4WWZCYXFWME9TNUk4a2doSkd6dmFsRm0zZ1dl?=
- =?utf-8?B?Z3NXZjQxSG1oc0lkZ0ZHR1FSeEkxOG8zeWFnYlZnZlpRYTV1U3ZIcFRjbDY1?=
- =?utf-8?B?ZVdOb3hqd3BrOENGMDkwN3NDbGdmbEUyNHlId0YrcDR2UTg1WTBmd0oxWG11?=
- =?utf-8?B?d1hydEpxZG9nZmpEZUdlRXdlK2prd2tpUmNacnA3VlhVSXplV0JoYUVXZkVY?=
- =?utf-8?B?YVUzNUJXNW4xZmdCQWF1MjI0bndzWWZEdUY0bVk5SXc5dUhJbm9qNjRGQ2g1?=
- =?utf-8?B?MUR2dlhUcTZ1dStiZVJOdDBiQWpwNFo3WWZWUDZmcHVncnYxTUYwUmd1US9L?=
- =?utf-8?B?VTNTS2dXcm1ZUitRY3RDYkJRYkNqTkFRVlBlcEFOeWF1VDhHSTNmTEhxMTJl?=
- =?utf-8?B?NVlRMTBZTHJoWG5TaTkxS0N1TmFwRFd4WGpQc2xhRlhyMlBickNla1pzSGt4?=
- =?utf-8?B?b3FPdXFMUmlwU2ZQTDBqZ3Rva2RYV1RWYzZLNUZqa0E5bzRwd0RkeVk2eXFa?=
- =?utf-8?B?bWVUaTBXY1A4MDJYZnpqWDU3Yyt3OXc1TVJvN2daZzV4TjVJRlVPTmEvZk9O?=
- =?utf-8?B?R1JJSUZNMS90TzU0MmR2aDVvQSs4bk1TQTM2TkNTaXNRVzBsVWZISS84cFhW?=
- =?utf-8?B?ZVg4Zmh3akpHNlRXTDhqWForRVA5RVk4Wk5mUHlIc09nbTNXZTJlYzM1VHYw?=
- =?utf-8?B?cEY1b1Z5Lys4VjBDamU0Snlnb3pob0pOZlNpeVk1ME5rT2VpUmxHNndxb3J4?=
- =?utf-8?B?bFVMQzc5MlhSeEV5SFdrK1k4cU5rOCsvRkRtQS90NHZvRWdieWNSaUdxU3Nx?=
- =?utf-8?B?OWNjYWI3RXAwS3hPMTZwWnlBck4xd2Evb2p4YU40QVptWG1IZVVrMXRUZ2NZ?=
- =?utf-8?B?czdiVmdNK3puWC9kclhyQmtSTXNOc1JDbjJMSUlOYkt1akNiR1hKeFlwUmd2?=
- =?utf-8?B?SHg0Qi80TDRxTGZZZm1lUTRCN2NTUmlJQUFpcXJLNnZ1UDRzUCszYjBPbkRx?=
- =?utf-8?B?Sjlyb3VsUCs5bm9qN3ZpTzJCMFVuSldaNnFkMnlvdXhObktWdjEwRVlOTGVG?=
- =?utf-8?B?UjZ1YUUraHB5NzJCYll3ZmtHcDB6b1czUHVyRGpqa1pMK2tEZGZjNmZjc1BO?=
- =?utf-8?Q?I6kzzwU6sk5zR?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6b1742e-00f0-41e4-1356-08d92bdb03bd
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 06:43:11.4128
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OIzbFCB+cUmaObHt8z7OYS2oZT0QgHyavmq5QiaAaeKoV9gi+Erx7hRLVLYXiGfn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4254
+References: <20210528161552.654907-1-leo.yan@linaro.org>
+In-Reply-To: <20210528161552.654907-1-leo.yan@linaro.org>
+From:   Denis Nikitin <denik@google.com>
+Date:   Wed, 9 Jun 2021 23:43:15 -0700
+Message-ID: <CAOYpmdEvkSZaei-_SWrUC4YJ7rOUOoOaxM7+qc6dw=P+b_ivgA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] coresight: Fix for snapshot mode
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Leo,
 
+On Fri, May 28, 2021 at 9:16 AM Leo Yan <leo.yan@linaro.org> wrote:
+>
+> This patch series is to correct the pointer usages for the snapshot
+> mode.
+>
+> Patch 01 allows the AUX trace in the free run mode and only syncs the
+> AUX ring buffer when taking snapshot.
+>
+> Patch 02 is to polish code, it removes the redundant header maintained
+> in tmc-etr driver and directly uses pointer perf_output_handle::head.
+>
+> Patch 03 removes the callback cs_etm_find_snapshot() which wrongly
+> calculates the buffer headers; we can simply use the perf's common
+> function __auxtrace_mmap__read() for headers calculation.
+>
+> This patch can be cleanly applied on the mainline kernel with:
+>
+>   commit 97e5bf604b7a ("Merge branch 'for-5.13-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu")
+>
+> And it has been tested on Arm64 Juno board.
 
-Am 09.06.21 um 22:00 schrieb Ondrej Zary:
-> On Wednesday 09 June 2021 11:21:05 Christian König wrote:
->> Am 09.06.21 um 09:10 schrieb Ondrej Zary:
->>> On Wednesday 09 June 2021, Christian König wrote:
->>>> Am 09.06.21 um 08:57 schrieb Ondrej Zary:
->>>>> [SNIP]
->>>>>> Thanks for the heads up. So the problem with my patch is already fixed,
->>>>>> isn't it?
->>>>> The NULL pointer dereference in nouveau_bo_wr16 introduced in
->>>>> 141b15e59175aa174ca1f7596188bd15a7ca17ba was fixed by
->>>>> aea656b0d05ec5b8ed5beb2f94c4dd42ea834e9d.
->>>>>
->>>>> That's the bug I hit when bisecting the original problem:
->>>>> NULL pointer dereference in nouveau_bo_sync_for_device
->>>>> It's caused by:
->>>>> # first bad commit: [e34b8feeaa4b65725b25f49c9b08a0f8707e8e86] drm/ttm: merge ttm_dma_tt back into ttm_tt
->>>> Good that I've asked :)
->>>>
->>>> Ok that's a bit strange. e34b8feeaa4b65725b25f49c9b08a0f8707e8e86 was
->>>> created mostly automated.
->>>>
->>>> Do you have the original backtrace of that NULL pointer deref once more?
->>> The original backtrace is here: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.org%2Flkml%2F2021%2F6%2F5%2F350&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C4309ff021d5e4cbe948b08d92b813106%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637588657045383056%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=t70c9ktzPJzDaEAcO4wpQMv3TUo5b53cUy66AkLeVwE%3D&amp;reserved=0
->> And the problem is that ttm_dma->dma_address is NULL, right? Mhm, I
->> don't see how that can happen since nouveau is using ttm_sg_tt_init().
->>
->> Apart from that what nouveau does here is rather questionable since you
->> need a coherent architecture for most things anyway, but that's not what
->> we are trying to fix here.
->>
->> Can you try to narrow down if ttm_sg_tt_init is called before calling
->> this function for the tt object in question?
-> ttm_sg_tt_init is not called:
-> [   12.150124] nouveau 0000:01:00.0: DRM: VRAM: 31 MiB
-> [   12.150133] nouveau 0000:01:00.0: DRM: GART: 128 MiB
-> [   12.150143] nouveau 0000:01:00.0: DRM: BMP version 5.6
-> [   12.150151] nouveau 0000:01:00.0: DRM: No DCB data found in VBIOS
-> [   12.151362] ttm_tt_init
-> [   12.151370] ttm_tt_init_fields
-> [   12.151374] ttm_tt_alloc_page_directory
-> [   12.151615] BUG: kernel NULL pointer dereference, address: 00000000
+I have verified the patches on Chrome OS Trogdor device.
+They fixed the problem discussed in
+https://lists.linaro.org/pipermail/coresight/2021-May/006411.html.
 
-Please add dump_stack(); to ttm_tt_init() and report back with the 
-backtrace.
+Tested-by: Denis Nikitin <denik@chromium.org>
 
-I can't see how this is called from the nouveau code, only possibility I 
-see is that it is maybe called through the AGP code somehow.
+Thanks,
+Denis
 
-Christian.
+>
+>
+> Leo Yan (3):
+>   coresight: etm-perf: Correct buffer syncing for snapshot
+>   coresight: tmc-etr: Use perf_output_handle::head for AUX ring buffer
+>   perf cs-etm: Remove callback cs_etm_find_snapshot()
+>
+>  .../hwtracing/coresight/coresight-etm-perf.c  |  30 +++-
+>  .../hwtracing/coresight/coresight-etm-perf.h  |   2 +
+>  .../hwtracing/coresight/coresight-tmc-etr.c   |  10 +-
+>  tools/perf/arch/arm/util/cs-etm.c             | 133 ------------------
+>  4 files changed, 32 insertions(+), 143 deletions(-)
+>
+> --
+> 2.25.1
+>
