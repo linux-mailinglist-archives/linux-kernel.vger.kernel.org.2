@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1298E3A3694
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A35F3A369A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhFJVsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:48:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26188 "EHLO
+        id S231530AbhFJVsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:48:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46334 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231495AbhFJVsC (ORCPT
+        by vger.kernel.org with ESMTP id S231528AbhFJVsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:48:02 -0400
+        Thu, 10 Jun 2021 17:48:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623361565;
+        s=mimecast20190719; t=1623361572;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EskfVdmEpVOex3IAfBnti5Wx89Q+wzN0Zpd/qsC+eCM=;
-        b=gVHGJHnsN/wkoVH0BNzslrOltTWz1FSaXr4Sy5uHFzRYE7TkSQ6TmP9PpSwOaS2i9oRXgd
-        t3lgLeHnSvr3d9mGulmMFWdIznywBOTJV3I8jPhuLpB30Uuetb8MzGuH3TRwzhRC6Is9zL
-        emWdusV4f4GBEf8DZNDWBRR2JFJ/aIU=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-180-PpRTzs4QOM-k_s_KuEFEog-1; Thu, 10 Jun 2021 17:46:04 -0400
-X-MC-Unique: PpRTzs4QOM-k_s_KuEFEog-1
-Received: by mail-oi1-f198.google.com with SMTP id r19-20020acaa8130000b02901f41b1b235bso1901056oie.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:46:04 -0700 (PDT)
+        bh=70NgQXU1//Wzo0iLFWpl3KegQtCCZiFqqErbm/ywz0w=;
+        b=Vrg4XV9hgyphlC4J6SavACOWbYunocoMgGzQMYEVEGpZJ2gaAlbF54D27zkeGJxN3raSad
+        OV6LieyfXL9jZWa39pAnDdrZzV99KDo0Jjf1c6GV4rBU+kS3ZBGQPSNXyVQgALHMiMIbrR
+        Avx6WvzKl2wJgH+Z4nKj8iKlFKO3m5w=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-nBEQxMQyOfSVdC8xzS9s9Q-1; Thu, 10 Jun 2021 17:46:11 -0400
+X-MC-Unique: nBEQxMQyOfSVdC8xzS9s9Q-1
+Received: by mail-oi1-f197.google.com with SMTP id j20-20020aca17140000b02901f3ef48ce7dso1895020oii.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:46:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EskfVdmEpVOex3IAfBnti5Wx89Q+wzN0Zpd/qsC+eCM=;
-        b=EhY10GHzzqbuu1u+pCc8y4YqlB4omvtb7k+T2Hhzx52CeBx7BkoWwoOLT4aO5w31Ac
-         sSrj6VDvAe8pE+/+4UdTXvJXHNiOWJOvATPJ/KZ/9VyT0yj4y+UJ+263Uk1+wRtdGC8I
-         VFT9qRUuSQREKw6JnDSFydlmcZb2TnJnsFkDHjTPR2EqIn0E1VaRNLoWZ1Dg5chn8s5j
-         xyVisUlK0d7ZVvgpR4tnI0f0Z387wYw1pq6Nw/UMxZ6zgT/0RQHiipQx14te8o5kqJBE
-         uF7jNFIe9ObZ047cZxGsTMDMbZ/+9WkuQ1wmaYrf48wr5lPiRf694YkDqLefeldwNDS7
-         spUA==
-X-Gm-Message-State: AOAM532sZJMrftTZhUQLJzc1stUwZDnef71cAzyqiCXNrTOWmVBzoksa
-        wRt0Z+x4ak6nnysK3gMtQbl+zV4CN89GCE2jB+MFeZiO+lZuFL1uX5P8iq4zeYr97ibQmMbmmip
-        Zt5ybjR0sY6TA6/eZ59rJDm9+
-X-Received: by 2002:a4a:b2ca:: with SMTP id l10mr508304ooo.30.1623361563882;
-        Thu, 10 Jun 2021 14:46:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx7SVUzlSK/f1fDrHG5iNpljzriPnaeQkhfspBLGN6ijrDdm2MtUq40WVdJ5HgW0VGYiWYtFg==
-X-Received: by 2002:a4a:b2ca:: with SMTP id l10mr508277ooo.30.1623361563723;
-        Thu, 10 Jun 2021 14:46:03 -0700 (PDT)
+        bh=70NgQXU1//Wzo0iLFWpl3KegQtCCZiFqqErbm/ywz0w=;
+        b=V0R6teKDcjesQ4EH1iEHxifQlPMlHsF5K+svCUYNj8+qRA3t/syt46UjSJMxHMa3bG
+         5dMZlF6NOYAFD6KUUVv3mIXtxOMuN8kwrVzSEg+vS2CoKUXNym1eR7k3MgIWZWvTcChS
+         6hNtBfCMVOKD7ffVyYWli3KkTyxgWEKT9QB7MCsdh/mxKFenj++GQslLXCASl4LjrGPI
+         YoLG3DIzltiPVe8MO/AZKdhoY9I1r6jO2MS9HV1FkVO+ukLgbdwyw2Tya7Guh6+YDZIL
+         YAPQpkE7eI/Ee2sVzwGaALufjEUW6g1lbp7/tavjAj7dtagxGBV38se6ZVsBHyqJZIZK
+         pqag==
+X-Gm-Message-State: AOAM531gCgE9BgV+wcvE2DAvs4vNERDz+HCa6U/ypvwHFOFtJkRYStie
+        O9I9uXRJZp8kLpZ/85UTikYZWkTggkU6N6dPAmAZgaYCYey6UCt9pmV015Z2OFNRLwXi/RsqeTt
+        BQV+jM6+2ivHP08gX66rGz/iA
+X-Received: by 2002:a9d:554f:: with SMTP id h15mr358483oti.237.1623361570541;
+        Thu, 10 Jun 2021 14:46:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5xdp4Jwej97Ul1cmx7ubsXWjXdzvP8bKBwCPJ0ttg8L6uH+IckI6kmbkyG1b9obIsJHKQNQ==
+X-Received: by 2002:a9d:554f:: with SMTP id h15mr358446oti.237.1623361570280;
+        Thu, 10 Jun 2021 14:46:10 -0700 (PDT)
 Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id i15sm881839ots.39.2021.06.10.14.45.59
+        by smtp.gmail.com with ESMTPSA id i15sm881839ots.39.2021.06.10.14.46.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 14:46:03 -0700 (PDT)
+        Thu, 10 Jun 2021 14:46:09 -0700 (PDT)
 From:   trix@redhat.com
 To:     robh+dt@kernel.org, tsbogend@alpha.franken.de, jic23@kernel.org,
         lars@metafoo.de, tomas.winkler@intel.com, arnd@arndb.de,
@@ -72,9 +72,9 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com, Tom Rix <trix@redhat.com>
-Subject: [PATCH 6/7] mt76: add a space between comment char and SPDX tag
-Date:   Thu, 10 Jun 2021 14:44:37 -0700
-Message-Id: <20210610214438.3161140-8-trix@redhat.com>
+Subject: [PATCH 7/7] mt76: use SPDX header file comment style
+Date:   Thu, 10 Jun 2021 14:44:38 -0700
+Message-Id: <20210610214438.3161140-9-trix@redhat.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210610214438.3161140-1-trix@redhat.com>
 References: <20210610214438.3161140-1-trix@redhat.com>
@@ -86,46 +86,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tom Rix <trix@redhat.com>
 
-checkpatch expects a space between '#' and 'SPDX...'
-Add a space.
+header files should use '/* SPDX ... */
+Change from c file comment syle to header style
 
 Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/net/wireless/mediatek/mt76/mt7615/Makefile | 2 +-
- drivers/net/wireless/mediatek/mt76/mt7915/Makefile | 2 +-
- drivers/net/wireless/mediatek/mt76/mt7921/Makefile | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7615/sdio.h     | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7915/testmode.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/Makefile b/drivers/net/wireless/mediatek/mt76/mt7615/Makefile
-index e8fc4a7ae9bc2..83f9861ff5226 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/Makefile
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/Makefile
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/sdio.h b/drivers/net/wireless/mediatek/mt76/mt7615/sdio.h
+index 05180971de841..03877d89e1520 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/sdio.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/sdio.h
 @@ -1,4 +1,4 @@
--#SPDX-License-Identifier: ISC
-+# SPDX-License-Identifier: ISC
- 
- obj-$(CONFIG_MT7615_COMMON) += mt7615-common.o
- obj-$(CONFIG_MT7615E) += mt7615e.o
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/Makefile b/drivers/net/wireless/mediatek/mt76/mt7915/Makefile
-index 40c8061787e94..80e49244348e2 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/Makefile
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/Makefile
+-// SPDX-License-Identifier: ISC
++/* SPDX-License-Identifier: ISC */
+ /* Copyright (C) 2020 MediaTek Inc.
+  *
+  * Author: Sean Wang <sean.wang@mediatek.com>
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/testmode.h b/drivers/net/wireless/mediatek/mt76/mt7915/testmode.h
+index 8f8533ef9859f..397a6b5532bcc 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/testmode.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/testmode.h
 @@ -1,4 +1,4 @@
--#SPDX-License-Identifier: ISC
-+# SPDX-License-Identifier: ISC
+-// SPDX-License-Identifier: ISC
++/* SPDX-License-Identifier: ISC */
+ /* Copyright (C) 2020 MediaTek Inc. */
  
- obj-$(CONFIG_MT7915E) += mt7915e.o
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/Makefile b/drivers/net/wireless/mediatek/mt76/mt7921/Makefile
-index e531666f9fb43..0ebb59966a083 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/Makefile
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/Makefile
-@@ -1,4 +1,4 @@
--#SPDX-License-Identifier: ISC
-+# SPDX-License-Identifier: ISC
- 
- obj-$(CONFIG_MT7921E) += mt7921e.o
- 
+ #ifndef __MT7915_TESTMODE_H
 -- 
 2.26.3
 
