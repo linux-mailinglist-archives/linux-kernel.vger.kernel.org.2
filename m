@@ -2,129 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776E13A230B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 06:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12E63A230D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 06:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhFJEF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 00:05:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46405 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhFJEF4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 00:05:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623297840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=19S4V0oFIhYTEmjCi3wnOG6CCDqJn4GFX2fH4afLaKA=;
-        b=P7OmA0kTxagkieW5Zt9yOQsoDKq2Z7bhg5HmpZgCxhtJrbAUVNhPnWQW7B191ray7uxKQe
-        beb6aY6du44gIJYFxQhHUZ5vfTCfUqLVD15758itaL+pC7RBkk6w3raxyo8QzX+njunR4c
-        1z1O/m3kt/hGBCIp37wpyKO1128d2ls=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-vSZknIcUOviRhEESFySbWg-1; Thu, 10 Jun 2021 00:03:58 -0400
-X-MC-Unique: vSZknIcUOviRhEESFySbWg-1
-Received: by mail-pg1-f198.google.com with SMTP id a26-20020a631a5a0000b02902205085fa58so4389514pgm.16
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Jun 2021 21:03:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=19S4V0oFIhYTEmjCi3wnOG6CCDqJn4GFX2fH4afLaKA=;
-        b=Pzf5nr771/KupNGDsZLgzzyVOxQNAfeDBPeoa+giKIVXesLEw3LmqqEcIpwnpnuZ/z
-         45PWdwLeuel4R1DYY+uXV/6K9InFNJ/56SnZazzjRxq3JND/s+IeXDUwAVjlYOcNhY3b
-         bP2qcxCkw0KMEcJwkawBz8AqH8ahxKGMCIljJR7XG/6lOMcReu22xhI3tdAldCGoh8L/
-         NZ216iozjznT+qWj2Lp/u2WOohM3UE8p6tUHIdp6PNUa035I/Wip+AInSIEtLO6F/jHq
-         gWccaOSfnL1W505P8zHTJzqI5Jlf0sSs99mW7dqHzFlJOstTnCdUeRobnQPDvhTPWjrT
-         skVQ==
-X-Gm-Message-State: AOAM5327lf0BINYmvM/7AueXANDbE/kFQpCxbRCSktndz7XpcGtjE6oN
-        9wliqQTAmzMzxfgfI5S/q+BB0XnF652CPdLtf/nWl2+o4HLOo9K/HJIy4CGPGGlc2pVcEEdQcVv
-        JJDrJRK32A9bVRCzg223QwItY
-X-Received: by 2002:a63:3fc6:: with SMTP id m189mr2985876pga.239.1623297837852;
-        Wed, 09 Jun 2021 21:03:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwVMH4GRlTNZgCb4SGiAzZbg0vm86YmdxLIXUVjkXzrgfxl13LW9u+XyYW03LglmHfkfEaonA==
-X-Received: by 2002:a63:3fc6:: with SMTP id m189mr2985870pga.239.1623297837705;
-        Wed, 09 Jun 2021 21:03:57 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id j16sm1136234pgh.69.2021.06.09.21.03.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 21:03:57 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-From:   Jason Wang <jasowang@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Liu Yi L <yi.l.liu@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
-        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
-References: <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
- <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
- <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
- <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
- <20210601173138.GM1002214@nvidia.com>
- <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
- <20210602172154.GC1002214@nvidia.com>
- <c84787ec-9d8f-3198-e800-fe0dc8eb53c7@redhat.com>
- <20210608132039.GG1002214@nvidia.com>
- <f4d70f28-4bd6-5315-d7c7-0a509e4f1d1d@redhat.com>
-Message-ID: <3af22408-f0f1-7e04-48ab-852619d28ef6@redhat.com>
-Date:   Thu, 10 Jun 2021 12:03:52 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S229802AbhFJEG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 00:06:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhFJEGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 00:06:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB2D2613FF;
+        Thu, 10 Jun 2021 04:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623297869;
+        bh=gp8DSf2esejDzMXehJatTxOWzp66b5XoGY3UTIHCbD8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=AZmcaE+0HKjr2RD9KRGy4kZ97dxs/cgNCvnqI1q9uOmfdb1Rj2q3RPh84QE/mct9J
+         wx4/AIzg8GsqluYOOlMEfzfDGFCYIgieeqsMET8dR4vq+6pVKLHzXBK4dV05+c896U
+         SxMr26o02Arm84iU8LcbESBixMhb+hezwxvM8OBfes3NoRWP6kObdcdx1vFuVVa5cl
+         vZgHwdXMprNIznRLN4xjppEvlU0phebLYC2UgXyMN+8ToASg3uI3Q3dqY80WyE9B+x
+         nWWHqnGEkH/BM0c1IMSxTYwXaSxGyAKO486tR26hmP/ibsgQLo4VwVPmclLr1jBvfD
+         yU9BrsH3g0XIA==
+Date:   Wed, 9 Jun 2021 23:04:27 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Punit Agrawal <punitagrawal@gmail.com>, robh+dt@kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
+        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
+        briannorris@chromium.org, shawn.lin@rock-chips.com
+Subject: Re: [PATCH v3 2/4] PCI: of: Relax the condition for warning about
+ non-prefetchable memory aperture size
+Message-ID: <20210610040427.GA2696540@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <f4d70f28-4bd6-5315-d7c7-0a509e4f1d1d@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac6bf3c8-fe8e-5897-b225-699a7c46a818@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 09, 2021 at 12:36:08AM +0530, Vidya Sagar wrote:
+> On 6/7/2021 4:58 PM, Punit Agrawal wrote:
+> > 
+> > Commit fede8526cc48 ("PCI: of: Warn if non-prefetchable memory
+> > aperture size is > 32-bit") introduced a warning for non-prefetchable
+> > resources that need more than 32bits to resolve. It turns out that the
+> > check is too restrictive and should be applicable to only resources
+> > that are limited to host bridge windows that don't have the ability to
+> > map 64-bit address space.
+>
+> I think the host bridge windows having the ability to map 64-bit address
+> space is different from restricting the non-prefetchable memory aperture
+> size to 32-bit.
 
-在 2021/6/10 上午10:00, Jason Wang 写道:
->
-> 在 2021/6/8 下午9:20, Jason Gunthorpe 写道:
->> On Tue, Jun 08, 2021 at 09:10:42AM +0800, Jason Wang wrote:
->>
->>> Well, this sounds like a re-invention of io_uring which has already 
->>> worked
->>> for multifds.
->> How so? io_uring is about sending work to the kernel, not getting
->> structued events back?
->
->
-> Actually it can. Userspace can poll multiple fds via preparing 
-> multiple sqes with IORING_OP_ADD flag.
+> Whether the host bridge uses internal translations or not to map the
+> non-prefetchable resources to 64-bit space, the size needs to be programmed
+> in the host bridge's 'Memory Limit Register (Offset 22h)' which can
+> represent sizes only fit into 32-bits.
 
+> Host bridges having the ability to map 64-bit address spaces gives
+> flexibility to utilize the vast 64-bit space for the (restrictive)
+> non-prefetchable memory (i.e. mapping non-prefetchable BARs of endpoints to
+> the 64-bit space in CPU's view) and get it translated internally and put a
+> 32-bit address on the PCIe bus finally.
 
-IORING_OP_POLL_ADD actually.
+The vastness of the 64-bit space in the CPU view only helps with
+non-prefetchable memory if you have multiple host bridges with
+different CPU-to-PCI translations.  Each root bus can only carve up
+4GB of PCI memory space for use by its non-prefetchable memory
+windows.
 
-Thanks
+Of course, if we're willing to give up the performance, there's
+nothing to prevent us from using non-prefetchable space for
+*prefetchable* resources, as in my example below.
 
+I think the fede8526cc48 commit log is incorrect, or at least
+incomplete:
 
->
->
->>
->> It is more like one of the perf rings
->
->
-> This means another ring and we need introduce ioctl() to add or remove 
-> ioasids from the poll. And it still need a kind of fallback like a 
-> list if the ring is full.
->
-> Thanks
->
->
->>
->> Jason
->>
+  As per PCIe spec r5.0, sec 7.5.1.3.8 only 32-bit BAR registers are defined
+  for non-prefetchable memory and hence a warning should be reported when
+  the size of them go beyond 32-bits.
 
+7.5.1.3.8 is talking about non-prefetchable PCI-to-PCI bridge windows,
+not BARs.  AFAIK, 64-bit BARs may be non-prefetchable.  The warning is
+in pci_parse_request_of_pci_ranges(), which isn't looking at
+PCI-to-PCI bridge windows; it's looking at PCI host bridge windows.
+It's legal for a host bridge to have only non-prefetchable windows,
+and prefetchable PCI BARs can be placed in them.
+
+For example, we could have the following:
+
+  pci_bus 0000:00: root bus resource [mem 0x80000000-0x1_ffffffff] (6GB)
+  pci 0000:00:00.0: PCI bridge to [bus 01-7f]
+  pci 0000:00:00.0:   bridge window [mem 0x80000000-0xbfffffff] (1GB)
+  pci 0000:00:00.0:   bridge window [mem 0x1_00000000-0x1_7fffffff 64bit pref] (2GB)
+  pci 0000:00:00.1: PCI bridge to [bus 80-ff]
+  pci 0000:00:00.1:   bridge window [mem 0xc0000000-0xffffffff] (1GB)
+  pci 0000:00:00.1:   bridge window [mem 0x1_80000000-0x1_ffffffff 64bit pref] (2GB)
+
+Here the host bridge window is 6GB and is not prefetchable.  The
+PCI-to-PCI bridge non-prefetchable windows are 1GB each and the bases
+and limits fit in 32 bits.  The prefetchable windows are 2GB each, and
+we're allowed but not required to put these in prefetchable host
+bridge windows.
+
+So I'm not convinced this warning is valid to begin with.  It may be
+that this host bridge configuration isn't optimal, and we might want
+an informational message, but I think it's *legal*.
+
+> > Relax the condition to only warn when the resource size requires >
+> > 32-bits and doesn't allow mapping to 64-bit addresses.
+> > 
+> > Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
+> > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> > Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > Cc: Vidya Sagar <vidyas@nvidia.com>
+> > ---
+> >   drivers/pci/of.c | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> > index 1e45186a5715..38fe2589beb0 100644
+> > --- a/drivers/pci/of.c
+> > +++ b/drivers/pci/of.c
+> > @@ -581,7 +581,8 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+> >                          res_valid |= !(res->flags & IORESOURCE_PREFETCH);
+> > 
+> >                          if (!(res->flags & IORESOURCE_PREFETCH))
+> > -                               if (upper_32_bits(resource_size(res)))
+> > +                               if (!(res->flags & IORESOURCE_MEM_64) &&
+> > +                                   upper_32_bits(resource_size(res)))
+> >                                          dev_warn(dev, "Memory resource size exceeds max for 32 bits\n");
+> > 
+> >                          break;
+> > --
+> > 2.30.2
+> > 
