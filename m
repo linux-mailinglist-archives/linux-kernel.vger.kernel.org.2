@@ -2,161 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB00A3A35F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ADC3A35F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhFJVc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230479AbhFJVc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:32:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230434AbhFJVc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Jun 2021 17:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhFJVc1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:32:27 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF72DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:30:20 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id a19so3693259ljq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 14:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mc0t7dqVDGu20ZDgp1J77BZzzR8pf6dBx6PMN3sIo8c=;
-        b=aOEIplv0pyoO+2D1enYzTH7rRMUM5qf5y/qVUZMMn97grwASNtzDCe6NqISGYiZMo/
-         ukksvEVMwqEiLXlOk7Xqes3HVR1NjBClrE1UmSQ+glzsnFi3+RbYzGF78dSlKpLFU0JZ
-         fdTr/eSTmYpuSXZulL5tGXRJG/I0jBiZbkhkcpdSROdkYtLEck/4uALoj6p0onaq315m
-         JtShyX4vbRX1kL2eW4pFO5ne3PKIMIIoI3VPqWTXEo3+d3M4W6uXg7lVNw/lt/VjhUrE
-         6A8O8GSKAnoiX+g/msiwrr/WSJCOVPblDBUfbeD3OI0es+O8CDxB3CEA+scJZ1LWc7dI
-         gSOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mc0t7dqVDGu20ZDgp1J77BZzzR8pf6dBx6PMN3sIo8c=;
-        b=ZcUtASK7jCigG9MIdVHLSXcIlWYn+b82QRnvFOa/SkAOfrt8n3Q3C0rInPYiFiAM1o
-         NmgcAChW4WylSEId/7j6UllhF+3hKfe57i9wO6oCtY+hXIsdHlavozAegnk4yxAW2iRt
-         hNPQ0JulCQrcsbxkEtJYFK/OydMJbBekXGTX7GSZL8C25x9kkCDd7fH64Mo8yoBPVymS
-         ylHVbbf3NIu8I2piIRUe1neeAMOLo/UGxwwZyCbrP1IARAUPpA1uIkzFlxY554/BgMId
-         vmE1/0SRig05C9UrGqereAkIybNZhQnGplbrMgbYDydKDj+rnBlw2B6cUNnPEdrJzRjX
-         BOEw==
-X-Gm-Message-State: AOAM531FlmamiFuXvoFLW9PPA1cfbkvLvks4I/S60MIH4SAvpOOxY/YO
-        h6sezRc2sxNCXxJ2ETX9iJMt6pbkeKo4gDDtRXm+Ew==
-X-Google-Smtp-Source: ABdhPJwLHL8jOR3WGl2QJnT+GPWUrRqLDv/5Ut16hTcM8MfJaU0MmKihHfxqkHVnSdiiDFsReGTpITxPhKmBolVuFZo=
-X-Received: by 2002:a2e:22c3:: with SMTP id i186mr433222lji.273.1623360618946;
- Thu, 10 Jun 2021 14:30:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1623326176.git.viresh.kumar@linaro.org> <911941d4bf19f18abdc9700abca9f26b3c04c343.1623326176.git.viresh.kumar@linaro.org>
-In-Reply-To: <911941d4bf19f18abdc9700abca9f26b3c04c343.1623326176.git.viresh.kumar@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Jun 2021 23:30:07 +0200
-Message-ID: <CACRpkdYHMtG_X3FgiArbQW49kTwJwOGn90peDvAV5Bs5oDiC7A@mail.gmail.com>
-Subject: Re: [PATCH V3 2/3] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE45761362;
+        Thu, 10 Jun 2021 21:30:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623360631;
+        bh=d3ZABJpePafWBbJIEJmNViKIIt91qTopm1f+g/4/zJA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gMKJVJIKF/jHN1xnRkrePpASZrh43cGiWGWbKn6bLwD1hqNFT1ClUJ+7VQpSYrMFV
+         vMTiEJWR7B/RR4Ztaxa/8D07w7ZaVyUOVmy/TqN/luWOagi0kYbOzdgLCOzS32eZY8
+         zPS9BHlh6pA33DWImtDYebqQrHbqp5eb/aEZpeZU=
+Date:   Thu, 10 Jun 2021 14:30:30 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Martin Liu <liumartin@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tejun Heo <tj@kernel.org>, minchan@google.com,
+        davidchao@google.com, jenhaochen@google.com,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] kthread: Prevent deadlock when
+ kthread_mod_delayed_work() races with kthread_cancel_delayed_work_sync()
+Message-Id: <20210610143030.f599946ec11e1eccde6af4f0@linux-foundation.org>
+In-Reply-To: <20210610133051.15337-3-pmladek@suse.com>
+References: <20210610133051.15337-1-pmladek@suse.com>
+        <20210610133051.15337-3-pmladek@suse.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh!
+On Thu, 10 Jun 2021 15:30:50 +0200 Petr Mladek <pmladek@suse.com> wrote:
 
-thanks for this interesting patch!
+> The system might hang with the following backtrace:
 
-On Thu, Jun 10, 2021 at 2:16 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+Well that's not good.
 
-> This patch adds IRQ support for the virtio GPIO driver. Note that this
-> uses the irq_bus_lock/unlock() callbacks since the operations over
-> virtio can sleep.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Fixes: 9a6b06c8d9a220860468a ("kthread: allow to modify delayed kthread work")
+> Reported-by: Martin Liu <liumartin@google.com>
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
 
->  drivers/gpio/gpio-virtio.c       | 256 ++++++++++++++++++++++++++++++-
->  include/uapi/linux/virtio_gpio.h |  15 ++
-
-You also need to
-select GPIOLIB_IRQCHIP
-in the Kconfig entry for the gpio-virtio driver, because you make
-use of it.
-
-> +static void virtio_gpio_irq_mask(struct irq_data *d)
-> +{
-> +       struct gpio_chip *gc = irq_data_to_gpio_chip(d);
-> +       struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
-> +       struct vgpio_line *line = &vgpio->lines[d->hwirq];
-> +
-> +       line->masked = true;
-> +       line->masked_pending = true;
-> +}
-> +
-> +static void virtio_gpio_irq_unmask(struct irq_data *d)
-> +{
-> +       struct gpio_chip *gc = irq_data_to_gpio_chip(d);
-> +       struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
-> +       struct vgpio_line *line = &vgpio->lines[d->hwirq];
-> +
-> +       line->masked = false;
-> +       line->masked_pending = true;
-> +}
-
-This looks dangerous in combination with this:
-
-> +static void virtio_gpio_interrupt(struct virtqueue *vq)
-> +{
-(...)
-> +       local_irq_disable();
-> +       ret = generic_handle_irq(irq);
-> +       local_irq_enable();
-
-Nominally slow IRQs like those being marshalled over
-virtio should be nested, handle_nested_irq(irq);
-but are they? Or are they just quite slow not super slow?
-
-If a threaded IRQF_ONESHOT was requested the
-IRQ core will kick the thread and *MASK* this IRQ,
-which means it will call back to your .irq_mask() function
-and expect it to be masked from this
-point.
-
-But the IRQ will not actually be masked until you issue
-your callbacks in the .irq_bus_sync_unlock() callback
-right?
-
-So from this point until .irq_bus_sync_unlock()
-get called and actually mask the IRQ, it could be
-fired again? I suppose the IRQ handler is reentrant?
-This would violate the API.
-
-I would say that from this point and until you sync
-you need a spinlock or other locking primitive to
-stop this IRQ from fireing again, and a spinlock will
-imply local_irq_disable() so this gets really complex.
-
-I would say only using nesting IRQs or guarantee this
-some other way, one way would be to specify that
-whatever is at the other side of virtio cannot send another
-GPIO IRQ message before the last one is handled,
-so you would need to send a specific (new)
-VIRTIO_GPIO_REQ_IRQ_ACK after all other messages
-have been sent in .irq_bus_sync_unlock()
-so that the next GPIO IRQ can be dispatched after that.
-
-(Is this how messaged signalled interrupts work? No idea.
-When in doubt ask the IRQ maintainers.)
-
-Thanks,
-Linus Walleij
+Was a -stable backport considered?
