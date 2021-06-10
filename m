@@ -2,156 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC453A2DC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D7D3A2DC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 16:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhFJONM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 10:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFJONL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:13:11 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34D0C061574;
-        Thu, 10 Jun 2021 07:11:15 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id e1so1075119pld.13;
-        Thu, 10 Jun 2021 07:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=AKAb5TeB5GVwZN1dfSsZMkCOE2IQAp/s3a/nTdKL9s8=;
-        b=RguhKcjDLAidIuWmMdjadAJrThv8iL+sGlVO6ohEOOamg+UnR1Rk3sGHHdB/aVnnnx
-         KHaDwtnZm0YaZ0bNfp6TG5uVuuTEWMK52WRIh7tRcHBeAZ2anbRj48GefXe8Az2mcgFe
-         wrYq/Cl6Qh3gsZjnb+krZxTL62YdKQU8gvKf+vVtgOY8zKksoTLUFBKJiOyOU5AucnpY
-         tzlb/T3McMQvIZ95cQgvXJT/87cIaVl2DzBjdsXrBvyjNJAC1eiMfDHz734+P7g5ZES3
-         2qrvAzTOYSvAYhOIcNvft/nlmBF0pm1bCoEEd0Atrbs6RVWUrBJHTqFhWZ7ScnEqXAZ2
-         M5Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=AKAb5TeB5GVwZN1dfSsZMkCOE2IQAp/s3a/nTdKL9s8=;
-        b=oYYSkc2qeNc22yqDrWgQztiz0JjYVFtnUmmor2hDMCJLsbabR6VUEs4RYIR6Fv1Jh9
-         LYqCH+8UsBXQL6aNnYXMI8kholyywGFBJ0kUL3EtddDdwRJl1D5Q36wz5KjiYfNVaGtW
-         rhHCzTwj3TqpJ8TmMzNdvspX6kbbzFfkzPI4aYW0mscPbDkiIFIdCtD84KZtwuwgTZhh
-         6Z/wLargnXnoI5e6lRvPF1+ssHLatt61vr1n+yvr1/ku72YPYDUqr8HDTpfjrX76KrBO
-         zajH/0n4hEiGjJG7LfvzxYMsEBPSmEylywDyvr54Aw1lEOAcxvRto9+Y4lbwlo6ZwYgJ
-         /4EQ==
-X-Gm-Message-State: AOAM532kOBoferINJiUrqTniH1NADbN+r3T8y9u2Mk6EAqYabjNyefck
-        3tIk1a2YAYUplPQZSZPETIM=
-X-Google-Smtp-Source: ABdhPJxSS23KMky7aWpo6xT/GMWrgwMd0tgex+K2wIOykt1ER6+OlUghonXSCmSC03AKRZ33FdfJbg==
-X-Received: by 2002:a17:90a:d205:: with SMTP id o5mr3633905pju.181.1623334274948;
-        Thu, 10 Jun 2021 07:11:14 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id q4sm2663079pfg.3.2021.06.10.07.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 07:11:12 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Vidya Sagar <vidyas@nvidia.com>, robh+dt@kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
-        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
-        briannorris@chromium.org, shawn.lin@rock-chips.com
-Subject: Re: [PATCH v3 2/4] PCI: of: Relax the condition for warning about
- non-prefetchable memory aperture size
-References: <20210610040427.GA2696540@bjorn-Precision-5520>
-Date:   Thu, 10 Jun 2021 23:11:10 +0900
-In-Reply-To: <20210610040427.GA2696540@bjorn-Precision-5520> (Bjorn Helgaas's
-        message of "Wed, 9 Jun 2021 23:04:27 -0500")
-Message-ID: <87y2bhkdxd.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S230427AbhFJON6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 10:13:58 -0400
+Received: from mga09.intel.com ([134.134.136.24]:10248 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229941AbhFJON5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:13:57 -0400
+IronPort-SDR: FVX2qOIATxV6C7F2YXmR41O8TVUDjvpcau2KTbyX3lShMCNhSU+GxY42PAUlP6qtm2uRvYKIwt
+ iKzInbpDnAyA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="205263939"
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="205263939"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 07:11:57 -0700
+IronPort-SDR: E3MrmeB2YTpMfYauGwnnsk1kR17kb26+D2Za+OzL22M1XKUUiCTkKvLLPSgO1Kq8FbkiI5qiXn
+ 9dIMxTZh2iag==
+X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
+   d="scan'208";a="450389916"
+Received: from rpshah-mobl1.amr.corp.intel.com (HELO [10.255.230.181]) ([10.255.230.181])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 07:11:56 -0700
+Subject: Re: [PATCH] x86/sgx: Add SGX_PAGE_REPEAT flag for
+ SGX_IOC_ENCLAVE_ADD_PAGES
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210610072117.76987-1-jarkko@kernel.org>
+ <20210610090134.xetwllckm4dugg5c@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a5d4b6e4-7caa-06b3-a73b-b3869a92dbb5@intel.com>
+Date:   Thu, 10 Jun 2021 07:11:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210610090134.xetwllckm4dugg5c@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
-
-Bjorn Helgaas <helgaas@kernel.org> writes:
-
-> On Wed, Jun 09, 2021 at 12:36:08AM +0530, Vidya Sagar wrote:
->> On 6/7/2021 4:58 PM, Punit Agrawal wrote:
->> > 
->> > Commit fede8526cc48 ("PCI: of: Warn if non-prefetchable memory
->> > aperture size is > 32-bit") introduced a warning for non-prefetchable
->> > resources that need more than 32bits to resolve. It turns out that the
->> > check is too restrictive and should be applicable to only resources
->> > that are limited to host bridge windows that don't have the ability to
->> > map 64-bit address space.
+On 6/10/21 2:01 AM, Jarkko Sakkinen wrote:
+> On Thu, Jun 10, 2021 at 10:21:17AM +0300, Jarkko Sakkinen wrote:
+>> For uninitialized data, there's a need to add the same page multiple times,
+>> e.g. a zero page, instead of traversing the source memory forward. With the
+>> current API, this requires to call SGX_IOC_ENCLAVE_ADD_PAGES multiple
+>> times, once per page, which is not very efficient.
 >>
->> I think the host bridge windows having the ability to map 64-bit address
->> space is different from restricting the non-prefetchable memory aperture
->> size to 32-bit.
->
->> Whether the host bridge uses internal translations or not to map the
->> non-prefetchable resources to 64-bit space, the size needs to be programmed
->> in the host bridge's 'Memory Limit Register (Offset 22h)' which can
->> represent sizes only fit into 32-bits.
->
->> Host bridges having the ability to map 64-bit address spaces gives
->> flexibility to utilize the vast 64-bit space for the (restrictive)
->> non-prefetchable memory (i.e. mapping non-prefetchable BARs of endpoints to
->> the 64-bit space in CPU's view) and get it translated internally and put a
->> 32-bit address on the PCIe bus finally.
->
-> The vastness of the 64-bit space in the CPU view only helps with
-> non-prefetchable memory if you have multiple host bridges with
-> different CPU-to-PCI translations.  Each root bus can only carve up
-> 4GB of PCI memory space for use by its non-prefetchable memory
-> windows.
->
-> Of course, if we're willing to give up the performance, there's
-> nothing to prevent us from using non-prefetchable space for
-> *prefetchable* resources, as in my example below.
->
-> I think the fede8526cc48 commit log is incorrect, or at least
-> incomplete:
->
->   As per PCIe spec r5.0, sec 7.5.1.3.8 only 32-bit BAR registers are defined
->   for non-prefetchable memory and hence a warning should be reported when
->   the size of them go beyond 32-bits.
->
-> 7.5.1.3.8 is talking about non-prefetchable PCI-to-PCI bridge windows,
-> not BARs.  AFAIK, 64-bit BARs may be non-prefetchable.  The warning is
-> in pci_parse_request_of_pci_ranges(), which isn't looking at
-> PCI-to-PCI bridge windows; it's looking at PCI host bridge windows.
-> It's legal for a host bridge to have only non-prefetchable windows,
-> and prefetchable PCI BARs can be placed in them.
->
-> For example, we could have the following:
->
->   pci_bus 0000:00: root bus resource [mem 0x80000000-0x1_ffffffff] (6GB)
->   pci 0000:00:00.0: PCI bridge to [bus 01-7f]
->   pci 0000:00:00.0:   bridge window [mem 0x80000000-0xbfffffff] (1GB)
->   pci 0000:00:00.0:   bridge window [mem 0x1_00000000-0x1_7fffffff 64bit pref] (2GB)
->   pci 0000:00:00.1: PCI bridge to [bus 80-ff]
->   pci 0000:00:00.1:   bridge window [mem 0xc0000000-0xffffffff] (1GB)
->   pci 0000:00:00.1:   bridge window [mem 0x1_80000000-0x1_ffffffff 64bit pref] (2GB)
->
-> Here the host bridge window is 6GB and is not prefetchable.  The
-> PCI-to-PCI bridge non-prefetchable windows are 1GB each and the bases
-> and limits fit in 32 bits.  The prefetchable windows are 2GB each, and
-> we're allowed but not required to put these in prefetchable host
-> bridge windows.
->
-> So I'm not convinced this warning is valid to begin with.  It may be
-> that this host bridge configuration isn't optimal, and we might want
-> an informational message, but I think it's *legal*.
+>> Add a new SGX_PAGE_REPEAT flag to resolve the issue. When this flag is set
+>> to the 'flags' field of struct sgx_enclave_pages, the ioctl will apply the
+>> page at 'src' multiple times, instead of moving forward in the address
+>> space.
+>>
+>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> After sending this, I started to think that maybe it would actually better
+> to just add SGX_PAGE_ZERO flag, i.e. add zero pages and ignore src. That's
+> the main use case right now, and saves the user space from extra trouble of
+> having to do such page by hand.
+> 
+> That neither does prevent adding SGX_PAGE_REPEAT later on. I just see no
+> point of that generic functionality right now. It only makes simple use
+> case more complex.
 
-By "optimal" - are you referring to the use of non-prefetchable space
-for prefetchable window?
+Is the main argument behind this new ABI that it increases efficiency?
 
-Also, if the warning doesn't apply to PCI host bridge windows, should I
-drop it in the next update? Or leave out this and the next patch to be
-dealt with separately.
+Let's say I want to add 1MB of 0'd pages to an enclave.  Won't this do it?
 
-Thanks,
-Punit
+	zeros = mmap(NULL, size, PROT_READ, MAP_ANONYMOUS|MAP_PRIVATE,
+		     -1, 0);
+	ioctl(SGX_IOC_ENCLAVE_ADD_PAGES, zeros, size);
 
-[...]
+Sure, you'll pay the cost of faulting in the zero page size/PAGE_SIZE
+times.  But, that's pretty minuscule.  This zeros buffer can also be
+reused without faulting again.  It can be as big or small as you want.
+Heck, it could even be 2MB in size and use the transparent huge page.
 
+I agree that there's definitely some optimization work to do.  But, I'm
+a bit hesitant to turn to new ABI to do it.
