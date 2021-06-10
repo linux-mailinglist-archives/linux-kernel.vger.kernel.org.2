@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5481F3A35A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E1A3A35AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 23:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhFJVMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 17:12:07 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60598 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhFJVLw (ORCPT
+        id S231318AbhFJVMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 17:12:36 -0400
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:46624 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhFJVMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:11:52 -0400
-Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CCE8720B7188;
-        Thu, 10 Jun 2021 14:09:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CCE8720B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623359395;
-        bh=3AkzjPDle5pDg2xwxx73EHJTuFLG/FBLbuCVbDMwXys=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JNUuI/mdWDJ1NMEp1b6ythmOtQDckHJlMtuCE0pv0xNPxGMsXQMvw1GNIbuAtUX5A
-         JcqEZ0tg2K19EKEkTc/Gaqg/zvam7nPhrytPoORlMbDLIkYoNpBYVtGiDzQQPwc+jm
-         X6cxan64tV76eWmX646Fz2dV4Q/ofREsv/jXYtKE=
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>
-Cc:     Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] firmware: tee_bnxt: Release TEE shm, session, and context during kexec
-Date:   Thu, 10 Jun 2021 16:09:13 -0500
-Message-Id: <20210610210913.536081-9-tyhicks@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
+        Thu, 10 Jun 2021 17:12:22 -0400
+Received: by mail-ed1-f41.google.com with SMTP id r11so34657814edt.13;
+        Thu, 10 Jun 2021 14:10:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=11NiKQLGgU910dPDPfb1c9WAfWTvG3ljb54t4LbTXHA=;
+        b=nkp7a+aToV2WeJyNBWjj0ME0HtIjodt+wr6CUVqBq0aV+uWLKLSbtATX8gnt2zk+F+
+         MiOC3oGrzUyV5FRIBrC3Kjd+FoJY5wCaRQn2m8Gh2X6zn3PkB0dTMgDwxDB7MeuAiwnA
+         m0jHFhL1Z33+0OppM4SIrlDueqeRGSyRJWH6RESLqG+HDq0J2Aoxq/oKETmdp1843rCx
+         s7kLVyHuY7lqbKeGrD9p7E0v74fTzaJO34Z6DSQseLBVwwnTYhnML9Ch7Gca+lGwkfQ1
+         E7CPV9vZu5eTY7N2PwmojwyPcII+u77Z1g2+6ZpZQP42XpK4r60sKSQv+hoKEzlpWQRv
+         amsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=11NiKQLGgU910dPDPfb1c9WAfWTvG3ljb54t4LbTXHA=;
+        b=Fj9dPPuO/aA4MkjEmQ7unCqIAOluVeTBzxXRXtWVEeJNZyXtCwAMJz4Fj8E5TlJ+qj
+         BJrqqv/O9RfVpIauS6CLCYoKPgo068/lvXzSp9yXwRgFcvFTdtAr/c1m1likrVXOjKpV
+         4EMD8T2xaYn1eo22wLIW6/jofQ3s5GS0WGrFefqiLe2WvLKbrveNV6AqjjeHsHb7LVj/
+         3SJrt/5x/Nk8NeCxmdhyRXNlNrKhd++WoL5C4IoIzo7+b+6N7N/qnovY9O4yW4DWPZ0/
+         nB7X52/Mbk2XuJoy+MBMaE62MMiCmhLTDtF+tqhXg1syLvCdm/w1K+NGlvLEDe048IdA
+         7kVg==
+X-Gm-Message-State: AOAM530R3zWgE+TcXinB5k8uJ3tiGsFCVLIMzFMYgPxASy4tb0waQYdq
+        z58+QpuWWx5eVQs/lXvKiQk=
+X-Google-Smtp-Source: ABdhPJzNSMrZw90gy+Z6YRKrkyIqZAYSF740fIKQXjHcSb8STQ6DBfbGutZX0kxb/R5uNn1daRPeGw==
+X-Received: by 2002:a05:6402:8d4:: with SMTP id d20mr392027edz.117.1623359364835;
+        Thu, 10 Jun 2021 14:09:24 -0700 (PDT)
+Received: from localhost.localdomain ([188.24.178.25])
+        by smtp.gmail.com with ESMTPSA id c18sm1836294edt.97.2021.06.10.14.09.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 14:09:24 -0700 (PDT)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Add Ethernet DTS for Actions Semi Owl S500 SoCs
+Date:   Fri, 11 Jun 2021 00:09:20 +0300
+Message-Id: <cover.1623358117.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Allen Pais <apais@linux.microsoft.com>
+This patchset adds the required DTS changes for providing the ethernet
+functionality on the Actions S500 SoCs family.
 
-Implement a .shutdown hook that will be called during a kexec operation
-so that the TEE shared memory, session, and context that were set up
-during .probe can be properly freed/closed.
+For the moment I have been able to test the Ethernet MAC on the RoseaplePi
+SBC only.
 
-Additionally, don't use dma-buf backed shared memory for the
-fw_shm_pool. dma-buf backed shared memory cannot be reliably freed and
-unregistered during a kexec operation even when tee_shm_free() is called
-on the shm from a .shutdown hook. The problem occurs because
-dma_buf_put() calls fput() which then uses task_work_add(), with the
-TWA_RESUME parameter, to queue tee_shm_release() to be called before the
-current task returns to user mode. However, the current task never
-returns to user mode before the kexec completes so the memory is never
-freed nor unregistered.
+Also, please note the patches depend on some clock changes that are
+currently under review:
+https://lore.kernel.org/lkml/cover.1623354574.git.cristian.ciocaltea@gmail.com/
 
-Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
-allocation so that tee_shm_free() can directly call tee_shm_release().
-This will ensure that the shm can be freed and unregistered during a
-kexec operation.
+Thanks,
+Cristi
 
-Fixes: 246880958ac9 ("firmware: broadcom: add OP-TEE based BNXT f/w manager")
-Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-Co-developed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
----
- drivers/firmware/broadcom/tee_bnxt_fw.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+Cristian Ciocaltea (2):
+  ARM: dts: owl-s500: Add ethernet support
+  ARM: dts: owl-s500-roseapplepi: Add ethernet support
 
-diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
-index ed10da5313e8..a5bf4c3f6dc7 100644
---- a/drivers/firmware/broadcom/tee_bnxt_fw.c
-+++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
-@@ -212,10 +212,9 @@ static int tee_bnxt_fw_probe(struct device *dev)
- 
- 	pvt_data.dev = dev;
- 
--	fw_shm_pool = tee_shm_alloc(pvt_data.ctx, MAX_SHM_MEM_SZ,
--				    TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+	fw_shm_pool = tee_shm_alloc_kernel_buf(pvt_data.ctx, MAX_SHM_MEM_SZ);
- 	if (IS_ERR(fw_shm_pool)) {
--		dev_err(pvt_data.dev, "tee_shm_alloc failed\n");
-+		dev_err(pvt_data.dev, "tee_shm_alloc_kernel_buf failed\n");
- 		err = PTR_ERR(fw_shm_pool);
- 		goto out_sess;
- 	}
-@@ -242,6 +241,14 @@ static int tee_bnxt_fw_remove(struct device *dev)
- 	return 0;
- }
- 
-+static void tee_bnxt_fw_shutdown(struct device *dev)
-+{
-+	tee_shm_free(pvt_data.fw_shm_pool);
-+	tee_client_close_session(pvt_data.ctx, pvt_data.session_id);
-+	tee_client_close_context(pvt_data.ctx);
-+	pvt_data.ctx = NULL;
-+}
-+
- static const struct tee_client_device_id tee_bnxt_fw_id_table[] = {
- 	{UUID_INIT(0x6272636D, 0x2019, 0x0716,
- 		    0x42, 0x43, 0x4D, 0x5F, 0x53, 0x43, 0x48, 0x49)},
-@@ -257,6 +264,7 @@ static struct tee_client_driver tee_bnxt_fw_driver = {
- 		.bus		= &tee_bus_type,
- 		.probe		= tee_bnxt_fw_probe,
- 		.remove		= tee_bnxt_fw_remove,
-+		.shutdown	= tee_bnxt_fw_shutdown,
- 	},
- };
- 
+ arch/arm/boot/dts/owl-s500-roseapplepi.dts | 56 ++++++++++++++++++++++
+ arch/arm/boot/dts/owl-s500.dtsi            | 10 ++++
+ 2 files changed, 66 insertions(+)
+
 -- 
-2.25.1
+2.32.0
 
