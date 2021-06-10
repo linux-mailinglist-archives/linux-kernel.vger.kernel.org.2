@@ -2,88 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C443A2A3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E8E3A2A9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhFJLey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:34:54 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5322 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhFJLew (ORCPT
+        id S230256AbhFJLtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:49:18 -0400
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:35555 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhFJLtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:34:52 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G11tT4ZHYz1BL01;
-        Thu, 10 Jun 2021 19:28:01 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 19:32:54 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 10 Jun
- 2021 19:32:53 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <feng.tang@intel.com>,
-        <luming.yu@intel.com>, <paulmck@kernel.org>,
-        <peterz@infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>
-Subject: [PATCH -next] x86/tsc: fix doc warnings in tsc.c
-Date:   Thu, 10 Jun 2021 19:42:01 +0800
-Message-ID: <20210610114201.3440584-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 10 Jun 2021 07:49:15 -0400
+Received: by mail-lf1-f53.google.com with SMTP id i10so2771916lfj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 04:47:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MN3eVGwG+hH7sCw5HF13ulT0gGa8uU+HkoCqMe7S2Ao=;
+        b=fX3FxI/4MOjcAxHIg9QbP0j/n8RrfuDUz8YnTisYoONbyXHwQOwbsV+YqkGbdUI1IF
+         V+7shM5z3XaE1i+s2JTRlRTDHsUiCMQlxxUziKQhcISyQ7iqX/iucWonz7gV3Kl5x5jA
+         YLC6hHf8ZspCcEXbe+QenOPht1kLkNsjl2qwyNQh+GFlzzEuaB9MNCa6v3urUQcBmiBS
+         Zy4CmBYrNN+4EiFoQtdj39F8avo2WuAjLRt60904LZqXa2UvmkgrffAA+IFicfDT3DQ6
+         PlHKXUrYYQsfQvG5BB5lFxRGBEVEi7+2KrsamTFApoZkz0xWtcJicwBeIvmuOuTyRpne
+         WCow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MN3eVGwG+hH7sCw5HF13ulT0gGa8uU+HkoCqMe7S2Ao=;
+        b=rbI/tYV3416L4OuslDtwHYBDD5nNck70xuzgEPoZxDORwaeThE6NrRbRaEs3TsLuFY
+         0ZMqGLqe4omcHSi1zgXC9sXTnSAbYFgfC+i8slPhwkyAenUrlUVMNQJORC/IMD30Zw1s
+         iIMhGmAnUJ2dkErvyZCBNL4qfFW/8THautK98or9vqh1r2+H1YUFN4oGXOFIkcwTreLI
+         PByT6SBc0mq/TBrFKbmDFIhGIWlyXEJznOCWiB622+CO7GkJpP7fojhOjb0PAl2pd+Eu
+         /g/JiL2oqJvG/BYmzNIcBTjKAjGJRQaJFndJFNI1z2F+UxK9C68ywSgIChgqcIuD1Gv0
+         tO/w==
+X-Gm-Message-State: AOAM530e7wAzwIH++9Xy2n/Pwqjkq/Y4TsKiMMsJzq/w3fwCDBVf3uFw
+        AiLTvIN8M6Fh7Q7vvb9Wv8vtCKjb6u1C1A==
+X-Google-Smtp-Source: ABdhPJy/bZ8AH0U03fXrAjx9cu0WxQPFgQcSWCWAYZ1MmJ4nqea59qPaHjQq+CsddifBf0WRNFTKdQ==
+X-Received: by 2002:a05:6512:304b:: with SMTP id b11mr1707676lfb.581.1623325561634;
+        Thu, 10 Jun 2021 04:46:01 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id f6sm273541lfh.299.2021.06.10.04.46.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 04:46:01 -0700 (PDT)
+Subject: Re: [PATCH] drm/msm/dpu: Avoid ABBA deadlock between IRQ modules
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210609231507.3031904-1-bjorn.andersson@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <faf0dbb2-a219-51fe-5cbd-752848a0286f@linaro.org>
+Date:   Thu, 10 Jun 2021 14:46:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210609231507.3031904-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On 10/06/2021 02:15, Bjorn Andersson wrote:
+> Handling of the interrupt callback lists is done in dpu_core_irq.c,
+> under the "cb_lock" spinlock. When these operations results in the need
+> for enableing or disabling the IRQ in the hardware the code jumps to
+> dpu_hw_interrupts.c, which protects its operations with "irq_lock"
+> spinlock.
+> 
+> When an interrupt fires, dpu_hw_intr_dispatch_irq() inspects the
+> hardware state while holding the "irq_lock" spinlock and jumps to
+> dpu_core_irq_callback_handler() to invoke the registered handlers, which
+> traverses the callback list under the "cb_lock" spinlock.
+> 
+> As such, in the event that these happens concurrently we'll end up with
+> a deadlock.
+> 
+> Prior to '1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")'
+> the enable/disable of the hardware interrupt was done outside the
+> "cb_lock" region, optimitically by using an atomic enable-counter for
+> each interrupt and an warning print if someone changed the list between
+> the atomic_read and the time the operation concluded.
+> 
+> Rather than re-introducing the large array of atomics, serialize the
+> register/unregister operations under a single mutex.
+> 
+> Fixes: 1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
- arch/x86/kernel/tsc.c:1275: warning: Excess function
-  parameter 'cycles' description in 'convert_art_ns_to_tsc'
- arch/x86/kernel/tsc.c:1275: warning: Excess function
-  parameter 'cs' description in 'convert_art_ns_to_tsc'
- arch/x86/kernel/tsc.c:1309: warning: Function parameter or
-  member 'work' not described in 'tsc_refine_calibration_work'
+I have been thinking about this for quite some time. I'm still not 
+confident about the proposed scheme.
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- arch/x86/kernel/tsc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+What more intrusive, but more obvious change:
+  - Drop dpu_kms->irq_obj.cb_lock alltogether. Use hw_intr's irq_lock 
+instead in the register/unregister path and no locks in the callback itself.
+  - Do not take locks in the dpu_hw_intr_enable_irq/disable_irq (as we 
+are already locked outside).
 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 2e076a459a0c..312591c8e3d6 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1265,8 +1265,8 @@ EXPORT_SYMBOL(convert_art_to_tsc);
-  * Return:
-  * struct system_counterval_t - system counter value with the pointer to the
-  *	corresponding clocksource
-- *	@cycles:	System counter value
-- *	@cs:		Clocksource corresponding to system counter value. Used
-+ *	cycles:		System counter value
-+ *	cs:		Clocksource corresponding to system counter value. Used
-  *			by timekeeping code to verify comparability of two cycle
-  *			values.
-  */
-@@ -1293,7 +1293,7 @@ static void tsc_refine_calibration_work(struct work_struct *work);
- static DECLARE_DELAYED_WORK(tsc_irqwork, tsc_refine_calibration_work);
- /**
-  * tsc_refine_calibration_work - Further refine tsc freq calibration
-- * @work - ignored.
-+ * @work: ignored.
-  *
-  * This functions uses delayed work over a period of a
-  * second to further refine the TSC freq value. Since this is
+The core_irq is the only user of the hw_intr framework. In fact I'd like 
+to squash them together at some point (if I get some time, I'll send 
+patches during this cycle).
+
+
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c | 10 +++++++---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h      |  2 ++
+>   2 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+> index 4f110c428b60..62bbe35eff7b 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+> @@ -82,11 +82,13 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
+>   
+>   	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
+>   
+> +	mutex_lock(&dpu_kms->irq_obj.hw_enable_lock);
+>   	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
+>   	trace_dpu_core_irq_register_callback(irq_idx, register_irq_cb);
+>   	list_del_init(&register_irq_cb->list);
+>   	list_add_tail(&register_irq_cb->list,
+>   			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx]);
+> +	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
+>   	if (list_is_first(&register_irq_cb->list,
+>   			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
+>   		int ret = dpu_kms->hw_intr->ops.enable_irq(
+> @@ -96,8 +98,7 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
+>   			DPU_ERROR("Fail to enable IRQ for irq_idx:%d\n",
+>   					irq_idx);
+>   	}
+> -
+> -	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
+> +	mutex_unlock(&dpu_kms->irq_obj.hw_enable_lock);
+>   
+>   	return 0;
+>   }
+> @@ -127,9 +128,11 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
+>   
+>   	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
+>   
+> +	mutex_lock(&dpu_kms->irq_obj.hw_enable_lock);
+>   	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
+>   	trace_dpu_core_irq_unregister_callback(irq_idx, register_irq_cb);
+>   	list_del_init(&register_irq_cb->list);
+> +	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
+>   	/* empty callback list but interrupt is still enabled */
+>   	if (list_empty(&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
+>   		int ret = dpu_kms->hw_intr->ops.disable_irq(
+> @@ -140,7 +143,7 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
+>   					irq_idx);
+>   		DPU_DEBUG("irq_idx=%d ret=%d\n", irq_idx, ret);
+>   	}
+> -	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
+> +	mutex_unlock(&dpu_kms->irq_obj.hw_enable_lock);
+>   
+>   	return 0;
+>   }
+> @@ -207,6 +210,7 @@ void dpu_core_irq_preinstall(struct dpu_kms *dpu_kms)
+>   	dpu_disable_all_irqs(dpu_kms);
+>   	pm_runtime_put_sync(&dpu_kms->pdev->dev);
+>   
+> +	mutex_init(&dpu_kms->irq_obj.hw_enable_lock);
+>   	spin_lock_init(&dpu_kms->irq_obj.cb_lock);
+>   
+>   	/* Create irq callbacks for all possible irq_idx */
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> index f6840b1af6e4..5a162caea29d 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> @@ -83,6 +83,7 @@ struct dpu_irq_callback {
+>    * @total_irq:    total number of irq_idx obtained from HW interrupts mapping
+>    * @irq_cb_tbl:   array of IRQ callbacks setting
+>    * @cb_lock:      callback lock
+> + * @hw_enable_lock: lock to synchronize callback register and unregister
+>    * @debugfs_file: debugfs file for irq statistics
+>    */
+>   struct dpu_irq {
+> @@ -90,6 +91,7 @@ struct dpu_irq {
+>   	struct list_head *irq_cb_tbl;
+>   	atomic_t *irq_counts;
+>   	spinlock_t cb_lock;
+> +	struct mutex hw_enable_lock;
+>   };
+>   
+>   struct dpu_kms {
+> 
+
+
 -- 
-2.31.1
-
+With best wishes
+Dmitry
