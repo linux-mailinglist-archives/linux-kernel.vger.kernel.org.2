@@ -2,80 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB973A2B91
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E934E3A2B8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 14:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhFJMaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 08:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230313AbhFJMan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 08:30:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E9A9613FF;
-        Thu, 10 Jun 2021 12:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623328127;
-        bh=oM8Xy2d4wRrsobuhLSoo6NIi3h4j+xja59Yg4YTixBw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C0JM370Zn9XSAXrX0rvJQqL0iMUHJUCv1yxzYh531URiNLAvW+TeJpduq1s0suThX
-         8zaVmM2dxW6+cdXLkoOC+MgT16XtWz0iVwJbxKY7Oq4jh9X18sUmhf9xh3I3cF3VZa
-         dOZ7hs5U+XoNp4mslgZC3U822pTOp2/XgPnZMyHvRLTz/5rIAu1yaxVH+I9+m4v7Oa
-         NGwUr78YvKUquAdtAbiuVjL2TSmajRGpOC7fkxXCnfrXCqHlKn2vUbifmaOZCN0frw
-         T6GakEGYg1Px0tp0s3/H/MReuQ/atseQ1PViLsxkFE/iLqmHRa707YFWlF28/g59pE
-         Y41ufH40UzjeA==
-Received: by mail-wm1-f50.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so5956827wmq.1;
-        Thu, 10 Jun 2021 05:28:47 -0700 (PDT)
-X-Gm-Message-State: AOAM531Bie7bvYcwjFjaVzDQMRKo7+bjYq3E5qd9Jo1v+ATCUend0ayI
-        X05/1UlfIGwdLqaCYkkeruzGod5kQz+IkfbZCro=
-X-Google-Smtp-Source: ABdhPJwBHRvZvUbFL9UBAe/5V1ayCpUBjyRB67fB7fC88KdQAAnpTCYoX7GDjBqcyIt1zA/+d1+HlHBvBQ5DCiAiACY=
-X-Received: by 2002:a1c:c90f:: with SMTP id f15mr14938844wmb.142.1623328125935;
- Thu, 10 Jun 2021 05:28:45 -0700 (PDT)
+        id S230500AbhFJMaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 08:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230435AbhFJMaK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 08:30:10 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8A8C0617A6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 05:28:13 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0cf600e70433578266b34c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:f600:e704:3357:8266:b34c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 29EBC1EC0493;
+        Thu, 10 Jun 2021 14:28:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623328092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=35bw5pjdZNqYAGs3sns2GRGGZjK2Qjk7iy2KlgpNkiU=;
+        b=RIKAllYWEb5J2g7gciGdH+sAb+lW3D0dih5fGEQl640Lhp80+aeJBfOwt8cVlWqFSCjJo0
+        0f9d0Ni0lBufLaySu4Tmi1tlGJZZGib8c6/WwHPX2MIdRH3pyshGfv7xGQCO+V2W20xFwv
+        cw4NTEp3iAbV5LY/hM88QIOdSPTh6t4=
+Date:   Thu, 10 Jun 2021 14:28:06 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v1 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YMIFVh9WpDiUuRsa@zn.tnic>
+References: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210602022136.2186759-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-References: <20210204152957.1288448-1-arnd@kernel.org> <20210609110531.GA1528247@roeck-us.net>
- <CAK8P3a2cVpJf+r2b-8YCbknOeOA4w=bY8njr-+vmzbmm8AAC3Q@mail.gmail.com>
- <20210609151608.GA3389541@roeck-us.net> <20210609191553.GA2535199@roeck-us.net>
- <CAK8P3a1kgc6+fSHr7ddMRHxh+znW6jL2ZSo=JLWa-Uuzw7UZ-w@mail.gmail.com> <20210610120531.GA711216@roeck-us.net>
-In-Reply-To: <20210610120531.GA711216@roeck-us.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 10 Jun 2021 14:26:50 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2LTXme3pa-es=7s7aHX2EvC+2Dxegs=reuJrjeS4sygg@mail.gmail.com>
-Message-ID: <CAK8P3a2LTXme3pa-es=7s7aHX2EvC+2Dxegs=reuJrjeS4sygg@mail.gmail.com>
-Subject: Re: [PATCH] kallsyms: fix nonconverging kallsyms table with lld
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        David Brazdil <dbrazdil@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mikhail Petrov <Mikhail.Petrov@mir.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marty Faltesek <mfaltesek@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210602022136.2186759-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 2:05 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> On Wed, Jun 09, 2021 at 10:30:23PM +0200, Arnd Bergmann wrote:
-> > > I thought I'd see the added symbols, but it looks like the only difference
-> > > between the two files is the addresses.
-> > >
-> > > What am I missing ?
-> >
-> > I probably misremembered the part about 'objdump --syms' and there was
-> > something more to it.
-> >
-> > Maybe this was the last version before converging? It looks like the '<' version
-> > has one extra symbol ompared to the '>' version. The diff has no context, but I
->
-> It is the difference between step 1 and 2. Why would diff on objdump not
-> show the additional symbol ? Is it possible that the symbol is not added
-> to the object file ?
+On Tue, Jun 01, 2021 at 07:21:28PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> Add CPU feature detection for Trusted Domain Extensions support.
+> TDX feature adds capabilities to keep guest register state and
+> memory isolated from hypervisor.
+> 
+> For TDX guest platforms, executing CPUID(0x21, 0) will return
 
-Note sure. The symbol must be in the object file, but perhaps the
-'objdump --syms' output skips a different set of symbols compared
-to the list that is used as input for kallsyms, which comes from '${NM}'.
+I'm assuming that 0 is ECX?
 
-Comparing the nm output might be another thing to try.
+> following values in EAX, EBX, ECX and EDX.
+> 
+> EAX:  Maximum sub-leaf number:  0
+> EBX/EDX/ECX:  Vendor string:
+> 
+> EBX =  "Inte"
+> EDX =  "lTDX"
+> ECX =  "    "
+> 
+> So when above condition is true, set X86_FEATURE_TDX_GUEST
+> feature cap bit
+		 ^
+		 Fullstop.
 
-      Arnd
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index ac37830ae941..dddc3a27cc8a 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -238,6 +238,7 @@
+>  #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
+>  #define X86_FEATURE_PVUNLOCK		( 8*32+20) /* "" PV unlock function */
+>  #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* "" PV vcpu_is_preempted function */
+> +#define X86_FEATURE_TDX_GUEST		( 8*32+22) /* Trusted Domain Extensions Guest */
+
+What's the name of the feature bit? "TDX guest"? Why not only
+X86_FEATURE_TDX and then you can have "tdx" in cpuinfo?
+
+>  
+>  /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
+>  #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
+> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+> new file mode 100644
+> index 000000000000..679500e807f3
+> --- /dev/null
+> +++ b/arch/x86/include/asm/tdx.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (C) 2020 Intel Corporation */
+> +#ifndef _ASM_X86_TDX_H
+> +#define _ASM_X86_TDX_H
+> +
+> +#define TDX_CPUID_LEAF_ID	0x21
+> +
+> +#ifdef CONFIG_INTEL_TDX_GUEST
+> +
+> +#include <asm/cpufeature.h>
+
+As before - put the include at the top.
+
+> +void __init tdx_early_init(void);
+> +
+> +#else // !CONFIG_INTEL_TDX_GUEST
+
+No need for that // - comment
+
+> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+> new file mode 100644
+> index 000000000000..5b14b72e41c5
+> --- /dev/null
+> +++ b/arch/x86/kernel/tdx.c
+> @@ -0,0 +1,30 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (C) 2020 Intel Corporation */
+> +
+> +#include <asm/tdx.h>
+> +
+> +static inline bool cpuid_has_tdx_guest(void)
+> +{
+> +	u32 eax, signature[3];
+
+Shorten that array name to "sig" so that you don't have to break the
+cpuid_count() line below.
+
+> +
+> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID)
+> +		return false;
+> +
+> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &signature[0],
+> +		    &signature[1], &signature[2]);
+> +
+> +	if (memcmp("IntelTDX    ", signature, 12))
+> +		return false;
+> +
+> +	return true;
+
+or simply:
+
+return !memcmp(...
+
+> +}
+> +
+> +void __init tdx_early_init(void)
+> +{
+> +	if (!cpuid_has_tdx_guest())
+> +		return;
+> +
+> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+> +
+> +	pr_info("TDX guest is initialized\n");
+
+Use pr_fmt in this file:
+
+#undef pr_fmt
+#define pr_fmt(fmt)     "x86/tdx: " fmt
+
+and then do
+
+	pr_info("Guest initialized\n");
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
