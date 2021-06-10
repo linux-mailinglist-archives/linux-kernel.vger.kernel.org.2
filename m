@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575BE3A2CD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369363A2CD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 15:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhFJN0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 09:26:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230238AbhFJN0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:26:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A44F613F1;
-        Thu, 10 Jun 2021 13:24:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623331447;
-        bh=Rrlo6UBorgA4yYdkeJZFkNtjOdFycP2V4Yrm2576Twk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=epP9NYZQXt89/rtsnTAtov7cnnKyjo1y/JumMdVnSnEqTTdt1fcafCGB8T6u13TNU
-         wGneCDFZD0hniYZEfbYBiYd1jQ3C8OAXUkNDYBh10PwH9bgNbd+wFGEeDhdsMBGx+x
-         7xzlmquhmtqxypCAV3zG+4WgK6D0Utmoov2C0sKhBilcR9nXWG0LFfd1u7He676Um+
-         lfeFnmeTOua8ogeu2dCVjp0YokC7Turj8V3AaoDxW7caMBAvmljcyaA897xLrpLJXk
-         aTO86TnHPdFRa/XP7/bTziJ+QUIUa1OHmp2tfkmmdGz2d4OPSMMBPq3Ia/Oqt1rPbF
-         2Oh5AStVNnlwQ==
-Received: by mail-wm1-f41.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso4764557wmc.1;
-        Thu, 10 Jun 2021 06:24:07 -0700 (PDT)
-X-Gm-Message-State: AOAM530Q0hntIJFaFBt+ZY6Q9SVdyV/tXmfs5B3DYEaOf3rZw5QLHN+T
-        bSTjR/0Dp5Lpa/TPy2KFhlrW3ywwOGikkxhW5nI=
-X-Google-Smtp-Source: ABdhPJyDrsbkOZyD6kLCD4DdVUtbci1V9QMmHUOI3yS2P/4OWrBF6VIxXEMbyhpfTZNovJKfZnVfkfNGszR1JOpr7O4=
-X-Received: by 2002:a1c:7d15:: with SMTP id y21mr14854395wmc.120.1623331445689;
- Thu, 10 Jun 2021 06:24:05 -0700 (PDT)
+        id S230381AbhFJNZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 09:25:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39229 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230322AbhFJNZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 09:25:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623331412;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=88ww2xQY0H+0+XkZE9y7YZG1xhuZT7Zms2aalO6pzRo=;
+        b=dN/SKWoOMtsPnwSsqg61lvd5Pjqpc2bKrciIu9DNRD7PxgmdSnea/NJht8BX7ikzN70d3L
+        V4gTBD6YnptLwiLitinPROxd+Bcwdc31IuNvrwhfZMx2aj3RKMdRJKocgidqs8FQJaVo95
+        oXZnxq+cFNV5vZj0Oq3baslnSUSg3Us=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-An8N__SWOheIqPQNPs594g-1; Thu, 10 Jun 2021 09:23:30 -0400
+X-MC-Unique: An8N__SWOheIqPQNPs594g-1
+Received: by mail-wm1-f69.google.com with SMTP id m31-20020a05600c3b1fb02901bd331ed39fso456070wms.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 06:23:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=88ww2xQY0H+0+XkZE9y7YZG1xhuZT7Zms2aalO6pzRo=;
+        b=ieD5ial7HBpeP7/Mi7TnHj2ToDM1mn//Jb9T9gMXRhxLCm63hNZxoT6F8zqK4n/rev
+         bdrdbvVWacOSNXP+5t7veM6Zg67wGz/RW4MiZo2Ja9jBo3xbFdlTuxQiEpD9lbMbi7tj
+         ZDqqSs51lvypVBfVLhIazOrB5DugghLX+xdIL+SF2cxSzp46RPIt29lJWoX3k0/oHhXc
+         crK99piS54p1Eq8G6N9MjqUHMfHuYkPgyx3Wii79+o3LFgFlzDdKfJKMBh0rG5pez5rC
+         CJ6ADE4WGBMI1O6Y5THF/hJ+BsFJtNPXriIZu0wvnMU4nP5X0kiE4GlZLR67ZL8mKi4q
+         +hsA==
+X-Gm-Message-State: AOAM53169PahKv0GDoCRpT8DpetMiGIdqMDKmLZVdmUTAF8kCetQ60O9
+        IU+dGLoPcj3m89gRLcnAEaHanQtsI+hE5GHORH09iXYppjenuBmV4xbHimLD1xI4rLrFjek45O2
+        PQ8iY85SKswOkX0ltJ8n/J44V
+X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr5114454wmq.164.1623331409582;
+        Thu, 10 Jun 2021 06:23:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw79lNKYMmKsJc+6kNvOS13CVwEmBkp0QyLoPEBLj7gbej3FcuzIUPP6197YkoOsIew2kREgw==
+X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr5114437wmq.164.1623331409407;
+        Thu, 10 Jun 2021 06:23:29 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id o3sm4347353wrc.0.2021.06.10.06.23.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 06:23:28 -0700 (PDT)
+Subject: Re: [PATCH 2/9] KVM: x86: Emulate triple fault shutdown if RSM
+ emulation fails
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fb0b6a7e8713aeb0319c@syzkaller.appspotmail.com
+References: <20210609185619.992058-1-seanjc@google.com>
+ <20210609185619.992058-3-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <520185e2-fe95-6ab6-163c-a46bfaa1f5d5@redhat.com>
+Date:   Thu, 10 Jun 2021 15:23:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
-In-Reply-To: <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 10 Jun 2021 15:22:10 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
-Message-ID: <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210609185619.992058-3-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 2:18 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> From: "Enrico Weigelt, metux IT consult" <info@metux.net>
->
-> This patch adds a new driver for Virtio based GPIO devices.
->
-> This allows a guest VM running Linux to access GPIO device provided by
-> the host. It supports all basic operations for now, except interrupts
-> for the GPIO lines.
->
-> Signed-off-by: "Enrico Weigelt, metux IT consult" <info@metux.net>
-> Co-developed-by: Viresh Kumar <viresh.kumar@linaro.org>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On 09/06/21 20:56, Sean Christopherson wrote:
+> For recent Intel CPUs, restoring NMI blocking is technically wrong, but
+> so is restoring NMI blocking in the first place, and Intel's RSM
+> "architecture" is such a mess that just about anything is allowed and can
+> be justified as micro-architectural behavior.
 
-Can you give an example of how this would be hooked up to other drivers
-using those gpios. Can you give an example of how using the "gpio-keys" or
-"gpio-leds" drivers in combination with virtio-gpio looks like in the DT?
+The Intel manual is an absolute mess with respect to NMI blocking, and 
+for once AMD followed suit.
 
-Would qemu simply add the required DT properties to the device node that
-corresponds to the virtio device in this case?
+Some versions of the AMD BIOS and Kernel Developer Manual provide the 
+offset of the "NMI masked" flag in the SMM state save area, but 
+unfortunately that was discovered too late.
 
-From what I can tell, both the mmio and pci variants of virtio can have their
-dev->of_node populated, but I don't see the logic in register_virtio_device()
-that looks up the of_node of the virtio_device that the of_gpio code then
-tries to refer to.
+Paolo
 
-        Arnd
