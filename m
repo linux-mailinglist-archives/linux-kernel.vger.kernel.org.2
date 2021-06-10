@@ -2,293 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF4C3A29F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C283A2A0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 13:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFJLRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 07:17:10 -0400
-Received: from mga04.intel.com ([192.55.52.120]:61539 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229961AbhFJLRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:17:08 -0400
-IronPort-SDR: sk8C9x06PQbAvDUKuypin6IIJNBXncYDcTDeTgmUcAHEEe1g6ECPT3ngLX1zrLyq2qwQI0w1bu
- 5V2TJhX+kXhQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="203430678"
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="203430678"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 04:15:06 -0700
-IronPort-SDR: XnqcV3Q9BMBVPvWBtSITBeTxQQ8i5OPYsrWDZt8lD7F/zaC8CqOb9T5Y/c25xWYydostiuL9DQ
- xxbhTJ4iDtKA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,263,1616482800"; 
-   d="scan'208";a="402825980"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga003.jf.intel.com with ESMTP; 10 Jun 2021 04:15:00 -0700
-Subject: Re: [PATCH v3 1/9] scsi: ufs: Differentiate status between hba pm ops
- and wl pm ops
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-2-git-send-email-cang@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <7d7a771f-6595-0106-8ee5-4e6407caee56@intel.com>
-Date:   Thu, 10 Jun 2021 14:15:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230230AbhFJLSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 07:18:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43048 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230166AbhFJLSu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:18:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623323814;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xoAW0/d7auIkK4TeNv1Q2PwE7EYv/zd3YhDKUjzuO2c=;
+        b=ddarslissU1wpKWV0UTvNbfWLD3VuVsP4f3vr2OJVur3eyERuaSj4GcSZcI/p7PA3hSyH4
+        SVSW0s75GybEMNwfbMi4zINLCrEtW0McSHjSkPnabSc3CPdI4ztbFVZb7psN9aoeO6F6W6
+        QPSLpj9M5mQR47hKtqBGlvNSAvxkZfQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-1d-utRrUPAaMGQtRXuF3-Q-1; Thu, 10 Jun 2021 07:16:53 -0400
+X-MC-Unique: 1d-utRrUPAaMGQtRXuF3-Q-1
+Received: by mail-wm1-f69.google.com with SMTP id g81-20020a1c9d540000b02901a3d4d3f7fcso3727467wme.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 04:16:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=xoAW0/d7auIkK4TeNv1Q2PwE7EYv/zd3YhDKUjzuO2c=;
+        b=C+aq6GdvBIXGi1hNJ0SmCRhLXeLg9w6jURk66tyQnmdj079f52mOXmzEAGiWy4KzK2
+         y9X8ikhBwyFDVJ8V3wzKxTiAFxvW8bxN08U2ZSJrUEOMOgJWD68gU2YMacOmMwVxYkR+
+         OjXjaEuRa0LxpCBI4lUG2kLe8tKNCWteIZcOL6gCLi58ePCdWNscvBuwJXbuz6Jrbsna
+         0JCIXYxwchRhNWKXZLWCoCzAbTWPGki4Fjks/Dho49DjOdCTExt01e9iPEdH2rpIMllq
+         42AjyL1pJTqONCKHiemTun3IASxnGj5KYZmGlNCAQCGdoBELxvMXFwsCQoZgqemJvjuf
+         yWbw==
+X-Gm-Message-State: AOAM533WSFrktbz53QiJ9vxa8V5BMISLiqUbOivtvq24eNBB4bPa7Oaa
+        QgtMR/WdLO4rv2Z4HicnUqWtEvNaMD6arLrzWULTF99dMWgFLHOMHij014ZXkI1+m4NeTRcPLT3
+        d5sKlLTqmXd/qai66iYEyTQ98
+X-Received: by 2002:a5d:484b:: with SMTP id n11mr4768583wrs.34.1623323811932;
+        Thu, 10 Jun 2021 04:16:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymbra5LoVMtZtVwJBHnFXCjEyslPJ1aZoOdC724TUml478yIqDMg9VCYQqCry+jKh2Ui01Qw==
+X-Received: by 2002:a5d:484b:: with SMTP id n11mr4768536wrs.34.1623323811650;
+        Thu, 10 Jun 2021 04:16:51 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id f14sm8108898wmq.10.2021.06.10.04.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 04:16:51 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v5 7/7] KVM: SVM: hyper-v: Direct Virtual Flush support
+In-Reply-To: <fc8d24d8eb7017266bb961e39a171b0caf298d7f.1622730232.git.viremana@linux.microsoft.com>
+References: <cover.1622730232.git.viremana@linux.microsoft.com>
+ <fc8d24d8eb7017266bb961e39a171b0caf298d7f.1622730232.git.viremana@linux.microsoft.com>
+Date:   Thu, 10 Jun 2021 13:16:49 +0200
+Message-ID: <871r9aynoe.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1623300218-9454-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/21 7:43 am, Can Guo wrote:
-> Put pm_op_in_progress and is_sys_suspend flags back to ufshcd hba pm ops,
-> add two new flags, namely wl_pm_op_in_progress and is_wl_sys_suspended, to
-> track the UFS device W-LU pm ops. This helps us differentiate the status of
-> hba and wl pm ops when we need to do troubleshooting.
+Vineeth Pillai <viremana@linux.microsoft.com> writes:
 
-Really you have 2 changes here:
-1. Renaming to pm_op_in_progress / is_sys_suspend to wl_pm_op_in_progress / is_wl_sys_suspended
-2. Introducing flags for the status of hba
-
-So it should really be 2 patches.
-
-That would show up things like:
-- did you intend not to change hba->is_sys_suspended in ufs_qcom_resume() ?
-
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
+> From Hyper-V TLFS:
+>  "The hypervisor exposes hypercalls (HvFlushVirtualAddressSpace,
+>   HvFlushVirtualAddressSpaceEx, HvFlushVirtualAddressList, and
+>   HvFlushVirtualAddressListEx) that allow operating systems to more
+>   efficiently manage the virtual TLB. The L1 hypervisor can choose to
+>   allow its guest to use those hypercalls and delegate the responsibility
+>   to handle them to the L0 hypervisor. This requires the use of a
+>   partition assist page."
+>
+> Add the Direct Virtual Flush support for SVM.
+>
+> Related VMX changes:
+> commit 6f6a657c9998 ("KVM/Hyper-V/VMX: Add direct tlb flush support")
+>
+> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 > ---
->  drivers/scsi/ufs/ufshcd.c | 42 ++++++++++++++++++++++++++++--------------
->  drivers/scsi/ufs/ufshcd.h |  4 +++-
->  2 files changed, 31 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 25fe18a..47b2a9a 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -549,7 +549,9 @@ static void ufshcd_print_host_state(struct ufs_hba *hba)
->  		hba->saved_err, hba->saved_uic_err);
->  	dev_err(hba->dev, "Device power mode=%d, UIC link state=%d\n",
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> -	dev_err(hba->dev, "PM in progress=%d, sys. suspended=%d\n",
-> +	dev_err(hba->dev, "wl_pm_op_in_progress=%d, is_wl_sys_suspended=%d\n",
-> +		hba->wl_pm_op_in_progress, hba->is_wl_sys_suspended);
-> +	dev_err(hba->dev, "pm_op_in_progress=%d, is_sys_suspended=%d\n",
->  		hba->pm_op_in_progress, hba->is_sys_suspended);
->  	dev_err(hba->dev, "Auto BKOPS=%d, Host self-block=%d\n",
->  		hba->auto_bkops_enabled, hba->host->host_self_blocked);
-> @@ -1999,7 +2001,7 @@ static void ufshcd_clk_scaling_start_busy(struct ufs_hba *hba)
->  	if (!hba->clk_scaling.active_reqs++)
->  		queue_resume_work = true;
+>  arch/x86/kvm/Makefile           |  4 ++++
+>  arch/x86/kvm/svm/svm.c          |  2 ++
+>  arch/x86/kvm/svm/svm_onhyperv.c | 41 +++++++++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm_onhyperv.h | 36 +++++++++++++++++++++++++++++
+>  4 files changed, 83 insertions(+)
+>  create mode 100644 arch/x86/kvm/svm/svm_onhyperv.c
+>
+> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+> index a06745c2fef1..83331376b779 100644
+> --- a/arch/x86/kvm/Makefile
+> +++ b/arch/x86/kvm/Makefile
+> @@ -32,6 +32,10 @@ kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
 >  
-> -	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress) {
-> +	if (!hba->clk_scaling.is_enabled || hba->wl_pm_op_in_progress) {
->  		spin_unlock_irqrestore(hba->host->host_lock, flags);
->  		return;
+>  kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o svm/sev.o
+>  
+> +ifdef CONFIG_HYPERV
+> +kvm-amd-y		+= svm/svm_onhyperv.o
+> +endif
+> +
+>  obj-$(CONFIG_KVM)	+= kvm.o
+>  obj-$(CONFIG_KVM_INTEL)	+= kvm-intel.o
+>  obj-$(CONFIG_KVM_AMD)	+= kvm-amd.o
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index d2a625411059..5139cb6baadc 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3779,6 +3779,8 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
 >  	}
-> @@ -2734,7 +2736,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  		 * err handler blocked for too long. So, just fail the scsi cmd
->  		 * sent from PM ops, err handler can recover PM error anyways.
->  		 */
-> -		if (hba->pm_op_in_progress) {
-> +		if (hba->wl_pm_op_in_progress) {
->  			hba->force_reset = true;
->  			set_host_byte(cmd, DID_BAD_TARGET);
->  			cmd->scsi_done(cmd);
-> @@ -2767,7 +2769,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  		(hba->clk_gating.state != CLKS_ON));
+>  	svm->vmcb->save.cr2 = vcpu->arch.cr2;
 >  
->  	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
-> -		if (hba->pm_op_in_progress)
-> +		if (hba->wl_pm_op_in_progress)
->  			set_host_byte(cmd, DID_BAD_TARGET);
->  		else
->  			err = SCSI_MLQUEUE_HOST_BUSY;
-> @@ -5116,7 +5118,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
->  			 * solution could be to abort the system suspend if
->  			 * UFS device needs urgent BKOPs.
->  			 */
-> -			if (!hba->pm_op_in_progress &&
-> +			if (!hba->wl_pm_op_in_progress &&
->  			    !ufshcd_eh_in_progress(hba) &&
->  			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr))
->  				/* Flushed in suspend */
-> @@ -5916,7 +5918,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+> +	svm_hv_update_vp_id(svm->vmcb, vcpu);
+> +
+>  	/*
+>  	 * Run with all-zero DR6 unless needed, so that we can get the exact cause
+>  	 * of a #DB.
+> diff --git a/arch/x86/kvm/svm/svm_onhyperv.c b/arch/x86/kvm/svm/svm_onhyperv.c
+> new file mode 100644
+> index 000000000000..3281856ebd94
+> --- /dev/null
+> +++ b/arch/x86/kvm/svm/svm_onhyperv.c
+> @@ -0,0 +1,41 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * KVM L1 hypervisor optimizations on Hyper-V for SVM.
+> + */
+> +
+> +#include <linux/kvm_host.h>
+> +#include "kvm_cache_regs.h"
+> +
+> +#include <asm/mshyperv.h>
+> +
+> +#include "svm.h"
+> +#include "svm_ops.h"
+> +
+> +#include "hyperv.h"
+> +#include "kvm_onhyperv.h"
+> +#include "svm_onhyperv.h"
+> +
+> +int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
+> +{
+
+I would've avoided re-using 'hv_enable_direct_tlbflush()' name which we
+already have in vmx. In fact, in the spirit of this patch, I'd suggest
+we create arch/x86/kvm/vmx/vmx_onhyperv.c and move the existing
+hv_enable_direct_tlbflush() there. We can then re-name it to e.g.
+
+vmx_enable_hv_direct_tlbflush()
+
+so the one introduced by this patch will be
+
+svm_enable_hv_direct_tlbflush()
+
+> +	struct hv_enlightenments *hve;
+> +	struct hv_partition_assist_pg **p_hv_pa_pg =
+> +			&to_kvm_hv(vcpu->kvm)->hv_pa_pg;
+> +
+> +	if (!*p_hv_pa_pg)
+> +		*p_hv_pa_pg = kzalloc(PAGE_SIZE, GFP_KERNEL);
+> +
+> +	if (!*p_hv_pa_pg)
+> +		return -ENOMEM;
+> +
+> +	hve = (struct hv_enlightenments *)to_svm(vcpu)->vmcb->control.reserved_sw;
+> +
+> +	hve->partition_assist_page = __pa(*p_hv_pa_pg);
+> +	hve->hv_vm_id = (unsigned long)vcpu->kvm;
+> +	if (!hve->hv_enlightenments_control.nested_flush_hypercall) {
+> +		hve->hv_enlightenments_control.nested_flush_hypercall = 1;
+> +		vmcb_mark_dirty(to_svm(vcpu)->vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> diff --git a/arch/x86/kvm/svm/svm_onhyperv.h b/arch/x86/kvm/svm/svm_onhyperv.h
+> index 0f262460b2e6..7487052fcef8 100644
+> --- a/arch/x86/kvm/svm/svm_onhyperv.h
+> +++ b/arch/x86/kvm/svm/svm_onhyperv.h
+> @@ -36,6 +36,8 @@ struct hv_enlightenments {
+>   */
+>  #define VMCB_HV_NESTED_ENLIGHTENMENTS VMCB_SW
+>  
+> +int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu);
+> +
+>  static inline void svm_hv_init_vmcb(struct vmcb *vmcb)
 >  {
->  	ufshcd_rpm_get_sync(hba);
->  	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
-> -	    hba->is_sys_suspended) {
-> +	    hba->is_wl_sys_suspended) {
->  		enum ufs_pm_op pm_op;
->  
->  		/*
-> @@ -5933,7 +5935,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->  		if (!ufshcd_is_clkgating_allowed(hba))
->  			ufshcd_setup_clocks(hba, true);
->  		ufshcd_release(hba);
-> -		pm_op = hba->is_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
-> +		pm_op = hba->is_wl_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
->  		ufshcd_vops_resume(hba, pm_op);
->  	} else {
->  		ufshcd_hold(hba, false);
-> @@ -5976,7 +5978,7 @@ static void ufshcd_recover_pm_error(struct ufs_hba *hba)
->  	struct request_queue *q;
->  	int ret;
->  
-> -	hba->is_sys_suspended = false;
-> +	hba->is_wl_sys_suspended = false;
->  	/*
->  	 * Set RPM status of wlun device to RPM_ACTIVE,
->  	 * this also clears its runtime error.
-> @@ -8784,7 +8786,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
->  	enum uic_link_state req_link_state;
->  
-> -	hba->pm_op_in_progress = true;
-> +	hba->wl_pm_op_in_progress = true;
->  	if (pm_op != UFS_SHUTDOWN_PM) {
->  		pm_lvl = pm_op == UFS_RUNTIME_PM ?
->  			 hba->rpm_lvl : hba->spm_lvl;
-> @@ -8919,7 +8921,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  		hba->clk_gating.is_suspended = false;
->  		ufshcd_release(hba);
+>  	struct hv_enlightenments *hve =
+> @@ -55,6 +57,23 @@ static inline void svm_hv_hardware_setup(void)
+>  		svm_x86_ops.tlb_remote_flush_with_range =
+>  				hv_remote_flush_tlb_with_range;
 >  	}
-> -	hba->pm_op_in_progress = false;
-> +	hba->wl_pm_op_in_progress = false;
->  	return ret;
->  }
->  
-> @@ -8928,7 +8930,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	int ret;
->  	enum uic_link_state old_link_state = hba->uic_link_state;
->  
-> -	hba->pm_op_in_progress = true;
-> +	hba->wl_pm_op_in_progress = true;
->  
->  	/*
->  	 * Call vendor specific resume callback. As these callbacks may access
-> @@ -9006,7 +9008,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  		ufshcd_update_evt_hist(hba, UFS_EVT_WL_RES_ERR, (u32)ret);
->  	hba->clk_gating.is_suspended = false;
->  	ufshcd_release(hba);
-> -	hba->pm_op_in_progress = false;
-> +	hba->wl_pm_op_in_progress = false;
->  	return ret;
->  }
->  
-> @@ -9072,7 +9074,7 @@ static int ufshcd_wl_suspend(struct device *dev)
->  
->  out:
->  	if (!ret)
-> -		hba->is_sys_suspended = true;
-> +		hba->is_wl_sys_suspended = true;
->  	trace_ufshcd_wl_suspend(dev_name(dev), ret,
->  		ktime_to_us(ktime_sub(ktime_get(), start)),
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> @@ -9100,7 +9102,7 @@ static int ufshcd_wl_resume(struct device *dev)
->  		ktime_to_us(ktime_sub(ktime_get(), start)),
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
->  	if (!ret)
-> -		hba->is_sys_suspended = false;
-> +		hba->is_wl_sys_suspended = false;
->  	up(&hba->host_sem);
->  	return ret;
->  }
-> @@ -9141,6 +9143,8 @@ static int ufshcd_suspend(struct ufs_hba *hba)
->  
->  	if (!hba->is_powered)
->  		return 0;
 > +
-> +	hba->pm_op_in_progress = true;
->  	/*
->  	 * Disable the host irq as host controller as there won't be any
->  	 * host controller transaction expected till resume.
-> @@ -9160,6 +9164,7 @@ static int ufshcd_suspend(struct ufs_hba *hba)
->  	ufshcd_vreg_set_lpm(hba);
->  	/* Put the host controller in low power mode if possible */
->  	ufshcd_hba_vreg_set_lpm(hba);
-> +	hba->pm_op_in_progress = false;
->  	return ret;
->  }
->  
-> @@ -9179,6 +9184,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
->  	if (!hba->is_powered)
->  		return 0;
->  
-> +	hba->pm_op_in_progress = true;
->  	ufshcd_hba_vreg_set_hpm(hba);
->  	ret = ufshcd_vreg_set_hpm(hba);
->  	if (ret)
-> @@ -9198,6 +9204,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
->  out:
->  	if (ret)
->  		ufshcd_update_evt_hist(hba, UFS_EVT_RESUME_ERR, (u32)ret);
-> +	hba->pm_op_in_progress = false;
->  	return ret;
->  }
->  
-> @@ -9222,6 +9229,10 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->  	trace_ufshcd_system_suspend(dev_name(hba->dev), ret,
->  		ktime_to_us(ktime_sub(ktime_get(), start)),
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+> +	if (ms_hyperv.nested_features & HV_X64_NESTED_DIRECT_FLUSH) {
+> +		int cpu;
 > +
-> +	if (!ret)
-> +		hba->is_sys_suspended = true;
+> +		pr_info("kvm: Hyper-V Direct TLB Flush enabled\n");
+> +		for_each_online_cpu(cpu) {
+> +			struct hv_vp_assist_page *vp_ap =
+> +				hv_get_vp_assist_page(cpu);
 > +
->  	return ret;
->  }
->  EXPORT_SYMBOL(ufshcd_system_suspend);
-> @@ -9248,6 +9259,9 @@ int ufshcd_system_resume(struct ufs_hba *hba)
->  		ktime_to_us(ktime_sub(ktime_get(), start)),
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
->  
-> +	if (!ret)
-> +		hba->is_sys_suspended = false;
+> +			if (!vp_ap)
+> +				continue;
 > +
->  	return ret;
+> +			vp_ap->nested_control.features.directhypercall = 1;
+> +		}
+> +		svm_x86_ops.enable_direct_tlbflush =
+> +				hv_enable_direct_tlbflush;
+> +	}
 >  }
->  EXPORT_SYMBOL(ufshcd_system_resume);
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index c98d540..eaebb4e 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -752,7 +752,8 @@ struct ufs_hba {
->  	enum ufs_pm_level spm_lvl;
->  	struct device_attribute rpm_lvl_attr;
->  	struct device_attribute spm_lvl_attr;
-> -	int pm_op_in_progress;
-> +	bool pm_op_in_progress;
-> +	bool wl_pm_op_in_progress;
 >  
->  	/* Auto-Hibernate Idle Timer register value */
->  	u32 ahit;
-> @@ -839,6 +840,7 @@ struct ufs_hba {
->  	struct devfreq *devfreq;
->  	struct ufs_clk_scaling clk_scaling;
->  	bool is_sys_suspended;
-> +	bool is_wl_sys_suspended;
+>  static inline void svm_hv_vmcb_dirty_nested_enlightenments(
+> @@ -74,6 +93,18 @@ static inline void svm_hv_vmcb_dirty_nested_enlightenments(
+>  	    hve->hv_enlightenments_control.msr_bitmap)
+>  		vmcb_mark_dirty(vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS);
+>  }
+> +
+> +static inline void svm_hv_update_vp_id(struct vmcb *vmcb,
+> +		struct kvm_vcpu *vcpu)
+> +{
+> +	struct hv_enlightenments *hve =
+> +		(struct hv_enlightenments *)vmcb->control.reserved_sw;
+> +
+> +	if (hve->hv_vp_id != to_hv_vcpu(vcpu)->vp_index) {
+> +		hve->hv_vp_id = to_hv_vcpu(vcpu)->vp_index;
+> +		vmcb_mark_dirty(vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS);
+> +	}
+> +}
+>  #else
 >  
->  	enum bkops_status urgent_bkops_lvl;
->  	bool is_urgent_bkops_lvl_checked;
-> 
+>  static inline void svm_hv_init_vmcb(struct vmcb *vmcb)
+> @@ -88,6 +119,11 @@ static inline void svm_hv_vmcb_dirty_nested_enlightenments(
+>  		struct kvm_vcpu *vcpu)
+>  {
+>  }
+> +
+> +static inline void svm_hv_update_vp_id(struct vmcb *vmcb,
+> +		struct kvm_vcpu *vcpu)
+> +{
+> +}
+>  #endif /* CONFIG_HYPERV */
+>  
+>  #endif /* __ARCH_X86_KVM_SVM_ONHYPERV_H__ */
+
+-- 
+Vitaly
 
