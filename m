@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECAB3A379B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E493A379E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 01:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhFJXGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230299AbhFJXGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 19:06:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231158AbhFJXGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Jun 2021 19:06:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60870 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230368AbhFJXGU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 19:06:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623366263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kn4921Fy2QxClPboKoVBlarBT42fXZONHXvZsMc4G14=;
-        b=APFp1kQLqm/VxcHMem0c8P4f5Z0Xe0pUOUCRGoIWHkFswrmqOFh++H5j53G/+tmc7rBJFY
-        Ayjr4Trg3/tMsFCMLg9ibGgGYkjLInb+RfGvuk7BEJNSiFxx5XULYPz8ljh9dntgnnx9jT
-        fQYwjI1WDBM4mXl+/2vbBZZTFB030b8=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-1yQC9o8YNNmjJimyUzPI_g-1; Thu, 10 Jun 2021 19:04:22 -0400
-X-MC-Unique: 1yQC9o8YNNmjJimyUzPI_g-1
-Received: by mail-qt1-f199.google.com with SMTP id z20-20020ac845540000b0290248cbf50215so828100qtn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 16:04:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Kn4921Fy2QxClPboKoVBlarBT42fXZONHXvZsMc4G14=;
-        b=tYGSHShJRV/wQAqbAaoJdqzeb3aQHiA4z3dOtDgis/5aLQdcTHCWc69atcYZsG0Hab
-         23/b5FiQfHqS4OuYpASV+5RkEY0sDbQ1CoiIPmneyIfChZn1GxneRnEfgq6rdpk4G1DM
-         rJdKoaJIEcbNBX9JEzVrW4fZCY56V7SstjTaZ4qMY/V48aXzMKjlxAi7oQ79Y7L3fP1i
-         As4RHCd6uveS9QLGAscqQzmYPmaNKKOfhGvq4adpmsQv2xD9pZEYEiQdNRAKE0JbT8GZ
-         /B8C41M0bZOKDmLLHtPa28mfqKZa/utr7Y1Qf38nEEtIMDrBf2imyfdo/pONWkdzg2FX
-         /ktQ==
-X-Gm-Message-State: AOAM530lxqif3GbV/uSEiPIO7ZOKDSkvy8U42yXW+vVYaxQBzNL4/UFv
-        kAzoh9BSTOyPj/MzwS+/FDaCkyeuhVjSwdXDTlqKGTba7hoYZzmd0TtsotTF3ZXb/I1KQ7Gg23P
-        ZEyRv6COwHJADgN+FQoz9TCE3
-X-Received: by 2002:a05:620a:1116:: with SMTP id o22mr1055474qkk.263.1623366261642;
-        Thu, 10 Jun 2021 16:04:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrG/yfGVS5sWgTKcNo1dgRgBZLWinZ0GsXIy0VHGuGgZrohA7iNbV+b0qys3C0GTOZDsvbFg==
-X-Received: by 2002:a05:620a:1116:: with SMTP id o22mr1055448qkk.263.1623366261403;
-        Thu, 10 Jun 2021 16:04:21 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-88-174-93-75-200.dsl.bell.ca. [174.93.75.200])
-        by smtp.gmail.com with ESMTPSA id j14sm3076434qtj.96.2021.06.10.16.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 16:04:20 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 19:04:19 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        rcampbell@nvidia.com, linux-doc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, hughd@google.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hch@infradead.org, bskeggs@redhat.com, jgg@nvidia.com,
-        shakeelb@google.com, jhubbard@nvidia.com, willy@infradead.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v10 07/10] mm: Device exclusive memory access
-Message-ID: <YMKacyNstEM9brUD@t490s>
-References: <20210607075855.5084-1-apopple@nvidia.com>
- <2773835.D95cIkl9rl@nvdebian>
- <YMJUM4sx1VclR7oz@t490s>
- <6429491.QiJgnDeYu7@nvdebian>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8597C613D9;
+        Thu, 10 Jun 2021 23:04:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623366265;
+        bh=YiMzLln/KGaA2CDeQfkZ0cx2ivCi8D7ujNBrsZB2MF0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=mfXtI71H1KIcfu1YbIj4XUI3FPHSx/j7tE3GuLawZD6OGK89jA4m0TUt/Xx69lzSW
+         fKniEBOYvZZdYGAu+HxcPMZ8MvJf/BsVpHRdULWAfMYtivx590g8j+OJVV0pYzVV0U
+         IPgMW8kuM+eJC+T4bZbCXaozlHhV+dAT7SXdmq91SEj8ECHY6QgKW9+/anOYLpMLhP
+         gZzM2vydAAyZUHOt5XEnRe1J3Jw9X9TkiO0br46L71tJT2gWLPv7YLoJ9SxgV+VqgI
+         Bk0UEEDJ4x0MXfhWmlfTO9t6VOe5C5Ck9aM1w/iG6iNRSwukJLeq7sH6UKMvv4P4mL
+         QatIdGOx2AU1Q==
+Date:   Thu, 10 Jun 2021 18:04:24 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>
+Subject: Re: [PATCH v1 0/6] P2PDMA Cleanup
+Message-ID: <20210610230424.GA2791113@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6429491.QiJgnDeYu7@nvdebian>
+In-Reply-To: <20210610160609.28447-1-logang@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 12:21:26AM +1000, Alistair Popple wrote:
-> > Hmm, the thing is.. to me FOLL_SPLIT_PMD should have similar effect to explicit
-> > call split_huge_pmd_address(), afaict.  Since both of them use __split_huge_pmd()
-> > internally which will generate that unwanted CLEAR notify.
+On Thu, Jun 10, 2021 at 10:06:03AM -0600, Logan Gunthorpe wrote:
+> Hi Bjorn,
 > 
-> Agree that gup calls __split_huge_pmd() via split_huge_pmd_address()
-> which will always CLEAR. However gup only calls split_huge_pmd_address() if it
-> finds a thp pmd. In follow_pmd_mask() we have:
+> This patch series consists of the P2PDMA cleanup and prep patches based
+> on feedback from  my P2PDMA mapping operations series (most recently
+> posted at [1]). I've reduced the recipient list of this series to those
+> that I thought would be interested or have provided the feedback that
+> inspired these patches.
 > 
-> 	if (likely(!pmd_trans_huge(pmdval)))
-> 		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
+> Please consider taking these patches in the near term ahead of my mapping
+> ops series. These patches are largely cleanup and other minor fixes. The only
+> functional change is Patch 4 which adds a new warning that was suggested by
+> Don.
 > 
-> So I don't think we have a problem here.
+> Patch 6 arguably isn't necessary yet as we don't care about sleeping
+> yet -- but it'd be a nice to have to reduce the number of prep patches for my
+> other series. However, if you don't want to take this patch now, I can
+> carry it in my other series.
+> 
+> I'm happy to make further fixes and update this series if anyone finds any
+> additional issues on review.
+> 
+> Thanks,
+> 
+> Logan
+> 
+> [1] https://lore.kernel.org/linux-block/20210513223203.5542-1-logang@deltatee.com/
+> 
+> --
+> 
+> Logan Gunthorpe (6):
+>   PCI/P2PDMA: Rename upstream_bridge_distance() and rework documentation
+>   PCI/P2PDMA: Use a buffer on the stack for collecting the acs list
+>   PCI/P2PDMA: Cleanup type for return value of calc_map_type_and_dist()
+>   PCI/P2PDMA: Print a warning if the host bridge is not in the whitelist
+>   PCI/P2PDMA: Refactor pci_p2pdma_map_type() to take pagemap and device
+>   PCI/P2PDMA: Avoid pci_get_slot() which sleeps
+> 
+>  drivers/pci/p2pdma.c | 157 +++++++++++++++++++++++++------------------
+>  1 file changed, 92 insertions(+), 65 deletions(-)
 
-Sorry I didn't follow here..  We do FOLL_SPLIT_PMD after this check, right?  I
-mean, if it's a thp for the current mm, afaict pmd_trans_huge() should return
-true above, so we'll skip follow_page_pte(); then we'll check FOLL_SPLIT_PMD
-and do the split, then the CLEAR notify.  Hmm.. Did I miss something?
+Applied all 6 to pci/p2pdma for v5.14, thanks!
 
--- 
-Peter Xu
-
+  6389d4374522 ("PCI/P2PDMA: Rename upstream_bridge_distance() and rework doc")
+  e4ece59abd70 ("PCI/P2PDMA: Collect acs list in stack buffer to avoid sleeping")
+  f9c125b9eb30 ("PCI/P2PDMA: Use correct calc_map_type_and_dist() return type")
+  cf201bfe8cdc ("PCI/P2PDMA: Warn if host bridge not in whitelist")
+  7e2faa1710c4 ("PCI/P2PDMA: Refactor pci_p2pdma_map_type()")
+  3ec0c3ec2d92 ("PCI/P2PDMA: Avoid pci_get_slot(), which may sleep")
