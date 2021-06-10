@@ -2,183 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F953A3390
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FAF3A3395
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 20:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhFJSzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 14:55:53 -0400
-Received: from mail-io1-f43.google.com ([209.85.166.43]:44011 "EHLO
-        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhFJSzw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:55:52 -0400
-Received: by mail-io1-f43.google.com with SMTP id k16so28122792ios.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 11:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mE0gTe15esTm8uzAeX186Q/3CLTOYL1HJBnOpbPIzr0=;
-        b=S9Iqdgeqh8t1C8Z50ejxvD8eHea45oIWYxgTvFYgoVSf7p3ntvIBtkrWQg4lKFRl04
-         00vDsljDyuqpSg6Y81UDZKHvZa/7eYBDmFZSQ1R4omYXtkgIdXGpWYOsKHpQthEArFgQ
-         6NCCb9cCNyzCxvVv3YwIgT48JIxuqHWApbO7g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mE0gTe15esTm8uzAeX186Q/3CLTOYL1HJBnOpbPIzr0=;
-        b=dBeUDI56yuQmc8rHvE6K4Ky9TBwi8jVTS1h8N5EPnS2BkjSV1e4D86vQWbqh83d3gZ
-         Gg8945UhDTRRpho8n2YFDJFbmYoKfOZRlTu0QGyCrFa3sJwBXGZzN7YHcHM7M2HBoveP
-         /vV9IoJrc0mcZvD8hlpGx5Fmjxq/EanQ45aSVjASdIWuMTrEQ1RH8oll34O1LO4iXbnH
-         jlLwu1PfTJma1HiYsT+U9CE/LJ3hdNFygpx4aA/HXE8Cvl/NjsiOdS7CLE0KyVJeHV+p
-         q1xoytjRVmXPG+RyXsnad9U7Z7YGn2CEzHGVhfBUV44tne+n+T64G4seqlgXgRp//IlA
-         XnKg==
-X-Gm-Message-State: AOAM531Uz/us939Mzpyyi5pVkfWMoN0IkL4cB/21IMfjuYiNyzX/+ev6
-        FrBw/oxVQIwnWvK+X8w1z4pkm0nUnejYCXg6ZDJcXw==
-X-Google-Smtp-Source: ABdhPJxJ1OkXze4nM4wDjYN9dpHZqAUgK1XXZIGgU5T4RaYqtDZUDHXYSVrnZeMydEMMK7YjCQSCMhJH6U7hJX2anRs=
-X-Received: by 2002:a5d:8254:: with SMTP id n20mr7832ioo.85.1623351162474;
- Thu, 10 Jun 2021 11:52:42 -0700 (PDT)
+        id S230401AbhFJS4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 14:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229935AbhFJS4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 14:56:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C399613B0;
+        Thu, 10 Jun 2021 18:54:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623351290;
+        bh=UgDy/YIt0wcpF3ZFwRGLuTVpW0LrD/15mzM1MbySke0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=UVcjrF6tcIWAwppxNnC9vo54gFl1xDCWWPPdU+nAG9e76MrBYDxIm8NtmJgvu2o8f
+         4aCh5Dd7Qbbrw6LnWSrcqXxlzga8tCfsVxodq4mX4rD3/lCRUwIm1NDKQZGfZf6aPo
+         +ySG5os3M0Pm88ldw+khux3FgUFGfEmlLjEqNOuO3V4sursnspIM9yDAkDDguLl70V
+         Y4LCnWliy4i0+mPqLglSbDhZxGIeORHh8sBJ8W1heMFyt2VX+WMVHO6Xmj6nWrzFqg
+         J/RTBZJP36ppI1QeGgWiDk5dK4NYqJ2j0LFoGvwyD1DRkzhHmuFWkwGJFr6Lrqwp0S
+         WYdvFpnL1933Q==
+Subject: Re: [PATCH 01/13] objtool: Rewrite hashtable sizing
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
+        rostedt@goodmis.org, ardb@kernel.org, linux-kernel@vger.kernel.org,
+        samitolvanen@google.com, ndesaulniers@google.com,
+        clang-built-linux@googlegroups.com
+References: <20210506193352.719596001@infradead.org>
+ <20210506194157.452881700@infradead.org>
+ <YMJWmzXgSipOqXAf@DESKTOP-1V8MEUQ.localdomain>
+ <YMJdYdCR0vD2t2WC@hirez.programming.kicks-ass.net>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <7165b24e-0628-c273-f1e2-67a75358991f@kernel.org>
+Date:   Thu, 10 Jun 2021 11:54:50 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAEXW_YTcO=hbmdq3nOx2RJfT2yPyoFnQx5niB38R2Lzpsp38bA@mail.gmail.com>
- <20210607191031.GA12489@e120325.cambridge.arm.com> <YL/AcZRAQ6Us4xd2@google.com>
- <20210610133005.GA30309@e120325.cambridge.arm.com>
-In-Reply-To: <20210610133005.GA30309@e120325.cambridge.arm.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 10 Jun 2021 14:52:31 -0400
-Message-ID: <CAEXW_YTkEJ_3UBD2SHszm=mgKWXrxJSFNxzE7YWqQ88CKbtF8Q@mail.gmail.com>
-Subject: Re: iowait boost is broken
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMJdYdCR0vD2t2WC@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 9:30 AM Beata Michalska <beata.michalska@arm.com> wrote:
->
-> On Tue, Jun 08, 2021 at 03:09:37PM -0400, Joel Fernandes wrote:
-> > Hi Beata,
-> >
-> > On Mon, Jun 07, 2021 at 08:10:32PM +0100, Beata Michalska wrote:
-> > > Hi Joel,
-> > >
-> > > Thanks for sending this out.
-> >
-> > Np, thanks for replying.
-> >
-> > > On Mon, Jun 07, 2021 at 12:19:01PM -0400, Joel Fernandes wrote:
-> > > > Hi all,
-> > > > Looks like iowait boost is completely broken upstream. Just
-> > > > documenting my findings of iowait boost issues:
-> > > >
-> > > I wouldn't go as far to state that it is completely broken. Rather that
-> > > the current sugov implementation for iowait boosting is not meeting
-> > > the expectations and I believe this should be clarified first. More on those
-> > > expectations below.
-> > > > 1. If a CPU requests iowait boost in a cluster, another CPU can go
-> > > > ahead and reset very quickly it since it thinks there's no new request
-> > > > for the iowait boosting CPU
-> > > So the 'boosting' value is being tracked per CPU, so each core in a cluster
-> > > will have it's own variant of that. When calculating the shared freq for
-> > > the cluster, sugov will use max utilization reported on each core, including
-> > > I/O boost. Now, if there is no pending request for boosting on a given core
-> > > at the time of calling sugov_iowait_apply, the current 'boost' will be
-> > > reduced, but only this one and that will not affect boost values on remaining
-> > > CPUs. It means that there was no task waking up on that particular CPU after
-> > > waiting on I/O request. So I would say it's fine. Unless I am misunderstanding
-> > > your case ?
-> >
-> > Yes, but consider the case where the I/O is slow on one CPU (call it X) so
-> > say IO wait takes 2 milliseconds. Now another CPU (call it Y) is
-> > continuiously making cpufreq requests much faster than that. Also consider
-> > that the slow CPU X is doing back to back I/O request and has consecutive
-> > I/O sleep time (no other sleep, just I/O sleep). What you'll see is the
-> > CPU X's boost always stays at _MIN boost when it wakes up because Y reset it
-> > to 0 in the meanwhile. So the boost never accumulates. Does that make sense?
-> > I would say that the I/O CPU should have a 'doubling' of boost. Probably the
-> > issue can be solved by making rate_limit_us longer than the iowait time. But
-> > that seems like a hack and would likely cause other issues.
-> >
-> OK, I think I see your point now.
-> So another issue to be added to the list.
-> Not sure though twiddling with rate_limit_us would do any good. This can be
-> already tweaked from sysfs but it touches on the freq transition delays so
-> I wouldn't mess around with that just to tune I/O boosting.
-> I'd still rather move the boosting outside of sugov - as much as possible at
-> least.
+On 6/10/2021 11:43 AM, Peter Zijlstra wrote:
+> On Thu, Jun 10, 2021 at 11:14:51AM -0700, Nathan Chancellor wrote:
+> 
+>> This patch as commit 25cf0d8aa2a3 ("objtool: Rewrite hashtable sizing")
+>> in -tip causes a massive compile time regression with allmodconfig +
+>> ThinLTO.
+> 
+> Moo... the allyesconfig builds I used it on were much faster, but that
+> was on regular GCC vmlinux.o after linking.
+> 
+>> Adding Sami because I am not sure why this patch would have much of an impact
+>> in relation to LTO. https://git.kernel.org/tip/25cf0d8aa2a3 is the patch in
+>> question.
+>>
+>> If I can provide any further information or help debug, please let me know.
+>>
+>> If you are interested in reproducing this locally, you will need a
+>> fairly recent LLVM stack (I used the stable release/12.x branch) and to
+>> cherry-pick commit 976aac5f8829 ("kcsan: Fix debugfs initcall return
+>> type") to fix an unrelated build failure. My script [2] can build a
+>> self-contained toolchain fairly quickly if you cannot get one from your
+>> package manager. A command like below will speed up the build a bit:
+> 
+> Would something like llvm-13 from Debian be good enough?
+> 
+> $ clang-13 --version
+> Debian clang version 13.0.0-++20210418105309+a0898f0cecc7-1~exp1
+> Target: x86_64-pc-linux-gnu
+> Thread model: posix
+> InstalledDir: /usr/bin
+> 
 
-How about something like so? At least a partial respite to that issue.
-A concurrent cpufreq request has to wait till at least TICK_NSEC
-before decaying a neighbor's boost, and the boost reset takes place
-only after at least 2 ticks. Since we already start at a low boost of
-min, I think being less aggressive there should be Ok. Completely
-untested and purely a vacation-patch:
+Yes, that would work. That is what we use in our CI.
 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 4f09afd..72aaff4 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -27,6 +27,7 @@ struct sugov_policy {
-  struct list_head tunables_hook;
+Looks like Sami gave a reply that explains it.
 
-  raw_spinlock_t update_lock;
-+ u64 last_update;
-  u64 last_freq_update_time;
-  s64 freq_update_delay_ns;
-  unsigned int next_freq;
-@@ -188,7 +189,7 @@ static bool sugov_iowait_reset(struct sugov_cpu
-*sg_cpu, u64 time,
-  s64 delta_ns = time - sg_cpu->last_update;
-
-  /* Reset boost only if a tick has elapsed since last request */
-- if (delta_ns <= TICK_NSEC)
-+ if (delta_ns <= 2 * TICK_NSEC)
-  return false;
-
-  sg_cpu->iowait_boost = set_iowait_boost ? IOWAIT_BOOST_MIN : 0;
-@@ -215,6 +216,7 @@ static void sugov_iowait_boost(struct sugov_cpu
-*sg_cpu, u64 time,
-         unsigned int flags)
- {
-  bool set_iowait_boost = flags & SCHED_CPUFREQ_IOWAIT;
-+ struct sugov_policy *sg_policy = sg_cpu->sg_policy;
-
-  /* Reset boost if the CPU appears to have been idle enough */
-  if (sg_cpu->iowait_boost &&
-@@ -260,6 +262,7 @@ static void sugov_iowait_boost(struct sugov_cpu
-*sg_cpu, u64 time,
-  */
- static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time)
- {
-+ struct sugov_policy *sg_policy = sg_cpu->sg_policy;
-  unsigned long boost;
-
-  /* No boost currently required */
-@@ -270,7 +273,8 @@ static void sugov_iowait_apply(struct sugov_cpu
-*sg_cpu, u64 time)
-  if (sugov_iowait_reset(sg_cpu, time, false))
-  return;
-
-- if (!sg_cpu->iowait_boost_pending) {
-+ if (!sg_cpu->iowait_boost_pending &&
-+      time - sg_policy->last_update > TICK_NSEC) {
-  /*
-  * No boost pending; reduce the boost value.
-  */
-@@ -440,6 +444,7 @@ sugov_update_shared(struct update_util_data *hook,
-u64 time, unsigned int flags)
-
-  sugov_iowait_boost(sg_cpu, time, flags);
-  sg_cpu->last_update = time;
-+ sg_policy->last_update = time;
-
-  ignore_dl_rate_limit(sg_cpu);
-
--- 
-2.27.0
+Cheers,
+Nathan
