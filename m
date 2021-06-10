@@ -2,158 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9551D3A33BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2453A33C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Jun 2021 21:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhFJTOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 15:14:18 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:60508 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230117AbhFJTOQ (ORCPT
+        id S230293AbhFJTSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 15:18:00 -0400
+Received: from mail-pf1-f178.google.com ([209.85.210.178]:36546 "EHLO
+        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhFJTR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 15:14:16 -0400
-Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 003FAC0AE5;
-        Thu, 10 Jun 2021 19:12:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1623352339; bh=7khdIaQtTK1MIOXk3FXEO2cEA11Zp9810SHnpbDPJZA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BUHwsYR6TvXrg+CISQaPZ9xrmolRCxM+Zou0Jd01wAIiYogg+XWB6Ato+QTFgkYqd
-         A9nUT4rZW8JdJOplZYGt6MDyWicNV5efvlermv5xuitdMrPUgK047SYD3+x+M4g2JV
-         ZnAoy88i4y7MYV+s6isuAMrLF9BKVJnCODsU5XGZSM0Gh5K0GG7zIkNvxkULBKI2rl
-         OKJ0mKG26mPik+bwlLgHBwnsaji3CKJtf0YMck+yBNfj496cjH7LD0c2rGoZiNJHZv
-         X4oRE32v8e1+HuClTzdhiht/PFqJwerxi6O0LoONoFo5DQN23w1hT7pJAdcCdqEShq
-         ahYJDmTJoiJag==
-Received: from vineetg-Latitude-7400.internal.synopsys.com (snps-fugpbdpduq.internal.synopsys.com [10.202.17.37])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 7CD70A0072;
-        Thu, 10 Jun 2021 19:12:18 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Vladimir Isaev <Vladimir.Isaev@synopsys.com>
-Subject: [PATCH v2] ARCv2: save ABI registers across signal handling
-Date:   Thu, 10 Jun 2021 12:12:16 -0700
-Message-Id: <20210610191216.2936035-1-vgupta@synopsys.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <202106101254.80jqhB9j-lkp@intel.com>
-References: <202106101254.80jqhB9j-lkp@intel.com>
+        Thu, 10 Jun 2021 15:17:59 -0400
+Received: by mail-pf1-f178.google.com with SMTP id c12so2437230pfl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 12:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FeIin1xUayqrHRUthoj+2bXTLrVBPUyLS4OgbBTjDtk=;
+        b=QKWjry/y1OFqoCcvJhkEfCJchYeKCDBWKyn7HlgOxu0LPJ9QxZhCJE8UdygKvTHdYS
+         P77NYs24p0gamA6CmMA/iM69ZGtp7JosjHqRp1SbiWk5CQM0rh07QM4RlHFtsbXniBdV
+         B9hquP5HFsDfoPPLzTnJIZyTcXMcynXkb1D8xmQW6Sj0ACbwiBY+xDw+5NriOTW7uKw0
+         7ShA5ds9uiyS89NwczqUFlrULvw8vMaGbRnUfzRS0I2iz0Exql8jd8SEYtepEnsNQ+7h
+         x/OPKbP4zfKM9STAEc+fbwVPYZZUbmm33h2vOReNO7ZAHR+03NZU6s4yaZxH/zZSPhrE
+         VwBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FeIin1xUayqrHRUthoj+2bXTLrVBPUyLS4OgbBTjDtk=;
+        b=bnxcfDhj00nTZRIj/OqyXJsWor08uWV9xmHnlk7Lt0Hzs5cKzGfk7OIYwNnrBtXuto
+         iHEURQo3ha57Kfsq573bIeTMjvOVNxn3ILzsiz4KF2W9h324p4m3mWMbp+gWDzqpslDY
+         aZPQaqb9Qqd/l7ecCrTyZYmOzzkwv3MhFr066KlfUARO8inwuHeLyJJuniJxRxD768G0
+         /LXyXdd6EJJiILjZec8dag0XPBq3lSUKVtWKK7ZJVN/rt0g0pxryIYcmSE/UHZ6YfPXc
+         rWC8sz2tFoh6RwSNfD3qgND6QwkSafGQE3NO8kWgOdoK5F2etM8wWRi+QSMSPpLLLJj5
+         H7Ug==
+X-Gm-Message-State: AOAM533swrWPcmH9oAqD6sr7yZsSiUrx9+A7in8K+uz3y0WKRsanauim
+        sP/+PgUpzY98uyQN84FUoos=
+X-Google-Smtp-Source: ABdhPJzJQgOu2UnpQGtaRZcsPZkpXDzKbf07NNfymypblk8YN73tKriVQZBwOp3p9V2WSZpkI9f8mg==
+X-Received: by 2002:a63:d908:: with SMTP id r8mr6321649pgg.414.1623352492981;
+        Thu, 10 Jun 2021 12:14:52 -0700 (PDT)
+Received: from localhost (g151.115-65-219.ppp.wakwak.ne.jp. [115.65.219.151])
+        by smtp.gmail.com with ESMTPSA id w21sm3281795pfq.143.2021.06.10.12.14.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 12:14:52 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 04:14:45 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
+        boqun.feng@gmail.com, bp@alien8.de, catalin.marinas@arm.com,
+        dvyukov@google.com, elver@google.com, ink@jurassic.park.msu.ru,
+        jonas@southpole.se, juri.lelli@redhat.com, linux@armlinux.org.uk,
+        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, paulmck@kernel.org,
+        paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
+        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
+        vincent.guittot@linaro.org, will@kernel.org
+Subject: Re: [RFC PATCH 08/10] openrisc: snapshot thread flags
+Message-ID: <YMJkpaHyxCd/Wqke@antec>
+References: <20210609122001.18277-1-mark.rutland@arm.com>
+ <20210609122001.18277-9-mark.rutland@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609122001.18277-9-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARCv2 has some configuration dependent registers (r30, r58, r59) which
-could be targetted by the compiler. To keep the ABI stable, these were
-unconditionally part of the glibc ABI
-(sysdeps/unix/sysv/linux/arc/sys/ucontext.h:mcontext_t) however we
-missed populating them (by saving/restoring them across signal
-handling).
+On Wed, Jun 09, 2021 at 01:19:59PM +0100, Mark Rutland wrote:
+> Some thread flags can be set remotely, and so even when IRQs are
+> disabled, the flags can change under our feet. Generally this is
+> unlikely to cause a problem in practice, but it is somewhat unsound, and
+> KCSAN will legitimately warn that there is a data race.
+> 
+> To avoid such issues, we should snapshot the flags prior to using them.
+> Let's use the new helpers to do so on openrisc.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: Stafford Horne <shorne@gmail.com>
+> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+> ---
+>  arch/openrisc/kernel/signal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/openrisc/kernel/signal.c b/arch/openrisc/kernel/signal.c
+> index 1ebcff271096..a730a914c2b4 100644
+> --- a/arch/openrisc/kernel/signal.c
+> +++ b/arch/openrisc/kernel/signal.c
+> @@ -315,7 +315,7 @@ do_work_pending(struct pt_regs *regs, unsigned int thread_flags, int syscall)
+>  			}
+>  		}
+>  		local_irq_disable();
+> -		thread_flags = current_thread_info()->flags;
+> +		thread_flags = read_thread_flags();
+>  	} while (thread_flags & _TIF_WORK_MASK);
+>  	return 0;
+>  }
 
-This patch fixes the issue by
- - adding arcv2 ABI regs to kernel struct sigcontext
- - populating them during signal handling
+This looks good to me.  As per patch 01/10 this adds a READ_ONCE around the
+original flags read.
 
-Change to struct sigcontext might seem like a glibc ABI change (although
-it primarily uses ucontext_t:mcontext_t) but the fact is
- - it has only been extended (existing fields are not touched)
- - the old sigcontext was ABI incomplete to begin with anyways
-
-Fixes: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/53
-Cc: <stable@vger.kernel.org>
-Tested-by: kernel test robot <lkp@intel.com>
-Reported-by: Vladimir Isaev <isaev@synopsys.com>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
- arch/arc/include/uapi/asm/sigcontext.h |  1 +
- arch/arc/kernel/signal.c               | 43 ++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+)
-
-diff --git a/arch/arc/include/uapi/asm/sigcontext.h b/arch/arc/include/uapi/asm/sigcontext.h
-index 95f8a4380e11..7a5449dfcb29 100644
---- a/arch/arc/include/uapi/asm/sigcontext.h
-+++ b/arch/arc/include/uapi/asm/sigcontext.h
-@@ -18,6 +18,7 @@
-  */
- struct sigcontext {
- 	struct user_regs_struct regs;
-+	struct user_regs_arcv2 v2abi;
- };
- 
- #endif /* _ASM_ARC_SIGCONTEXT_H */
-diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
-index b3ccb9e5ffe4..cb2f88502baf 100644
---- a/arch/arc/kernel/signal.c
-+++ b/arch/arc/kernel/signal.c
-@@ -61,6 +61,41 @@ struct rt_sigframe {
- 	unsigned int sigret_magic;
- };
- 
-+static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
-+{
-+	int err = 0;
-+#ifndef CONFIG_ISA_ARCOMPACT
-+	struct user_regs_arcv2 v2abi;
-+
-+	v2abi.r30 = regs->r30;
-+#ifdef CONFIG_ARC_HAS_ACCL_REGS
-+	v2abi.r58 = regs->r58;
-+	v2abi.r59 = regs->r59;
-+#else
-+	v2abi.r58 = v2abi.r59 = 0;
-+#endif
-+	err = __copy_to_user(&mctx->v2abi, &v2abi, sizeof(v2abi));
-+#endif
-+	return err;
-+}
-+
-+static int restore_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
-+{
-+	int err = 0;
-+#ifndef CONFIG_ISA_ARCOMPACT
-+	struct user_regs_arcv2 v2abi;
-+
-+	err = __copy_from_user(&v2abi, &mctx->v2abi, sizeof(v2abi));
-+
-+	regs->r30 = v2abi.r30;
-+#ifdef CONFIG_ARC_HAS_ACCL_REGS
-+	regs->r58 = v2abi.r58;
-+	regs->r59 = v2abi.r59;
-+#endif
-+#endif
-+	return err;
-+}
-+
- static int
- stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
- 	       sigset_t *set)
-@@ -94,6 +129,10 @@ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
- 
- 	err = __copy_to_user(&(sf->uc.uc_mcontext.regs.scratch), &uregs.scratch,
- 			     sizeof(sf->uc.uc_mcontext.regs.scratch));
-+
-+	if (is_isa_arcv2())
-+		err |= save_arcv2_regs(&(sf->uc.uc_mcontext), regs);
-+
- 	err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
- 
- 	return err ? -EFAULT : 0;
-@@ -109,6 +148,10 @@ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
- 	err |= __copy_from_user(&uregs.scratch,
- 				&(sf->uc.uc_mcontext.regs.scratch),
- 				sizeof(sf->uc.uc_mcontext.regs.scratch));
-+
-+	if (is_isa_arcv2())
-+		err |= restore_arcv2_regs(&(sf->uc.uc_mcontext), regs);
-+
- 	if (err)
- 		return -EFAULT;
- 
--- 
-2.25.1
-
+Acked-by: Stafford Horne <shorne@gmail.com>
