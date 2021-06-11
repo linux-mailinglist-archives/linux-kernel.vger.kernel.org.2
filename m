@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C083A3F98
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CD13A3F93
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhFKJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:56:00 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:46776 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbhFKJz7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:55:59 -0400
-Received: by mail-wr1-f47.google.com with SMTP id a11so5369266wrt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OgudDCr8nu3IxqwsuuPI9ZtWL1iN/96prFR7PGoOlDo=;
-        b=r8kljAbixtOeGD8+lzVhokh/lPE0vtoX2Ki+vtsneiJiClMO+icwj0glZdP2mhbfC9
-         1QfoCMNkAdfGCMEHIeFpqiQ7IahE2eriz9uigQuVzlFrlTnlWbY1ztJYZVVbty03x4d+
-         E3sLV27M6dJFnJPANwxia3iHnVTu2y8ORnJ9NcX4M0QJAfUJ8I9ENYtLkPXzmpofllQ+
-         Wq6mkOs9VIbkGrswrZpyBcvUmXRLeoKn70R5Tj+Jp0KFBKrUcdkdImDD76HDBYUp3AiA
-         Q9GLUNIyTzEsSULx4TBMzkElqUxcywME97QchVFCur7AQjzB7xk4l03SwRu+ZJp6Pm3e
-         ydCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OgudDCr8nu3IxqwsuuPI9ZtWL1iN/96prFR7PGoOlDo=;
-        b=iBUjTswM7qw4NAIS0VTvhdwCgxyws7Cz9QRioEwie6WJVnUf0QQ+hcN8lyjQJTuVed
-         Zg3u+JaaUFC9T1hPWNTXfvHVYQ01zFJ+rHY1uDppJ1+7CU78zkrl68peAliLabbS0/YK
-         qpCBVvr2Pv/ijYO13IOeQXcNor0INEeNN9xcE5EzVZl4CLsnCjnSpAsmO7psYGRbqBX+
-         HqEDFL4qjHzFBW8vHVXn/9wVLsVJlPbodyzde0NvKxpTfuKGb3KxsNZSBN6lf5cIgvEk
-         rybw4PmQFo+1gS2ry23uqLTHbPCZ1l2he2dlx1evyeEPJZVzh8LoPgeTzZ5ydD1/qcbT
-         6H7w==
-X-Gm-Message-State: AOAM531rrKmdukwyUv0aOuNBzevfy1I5hXUTm3fPPjXPDBcgTBOtJPBF
-        EdwV0l/GHxFkjXVqlxDpZou4duNUiE/G0o/+
-X-Google-Smtp-Source: ABdhPJwFRAkYN2qGj4CVzjSEAjAoQHrpTF/5MbS3YtF/3UTkUS0i1YvfMrwi+sCZeFrK97wckpg+Fw==
-X-Received: by 2002:adf:ee46:: with SMTP id w6mr3127381wro.345.1623405181390;
-        Fri, 11 Jun 2021 02:53:01 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e537:d458:d3c4:18e1? ([2a01:e34:ed2f:f020:e537:d458:d3c4:18e1])
-        by smtp.googlemail.com with ESMTPSA id i9sm8029544wrn.54.2021.06.11.02.53.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 02:53:00 -0700 (PDT)
-Subject: Re: [PATCH v1 03/10] ARM: tegra: acer-a500: Bump thermal trips by 10C
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210510202600.12156-1-digetx@gmail.com>
- <20210510202600.12156-4-digetx@gmail.com>
- <20210514211601.GA1969@qmqm.qmqm.pl>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <ecc89faf-97f5-65e9-0eb8-93c8414c69e5@linaro.org>
-Date:   Fri, 11 Jun 2021 11:52:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231623AbhFKJzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:55:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57530 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230504AbhFKJzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:55:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623405223; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=666YK8gINgc1UHCiC58S85Bukn28o750jo/NOXjdXL4=; b=bs+ShbUTUy6giB3wjCW/WP5wvLAsgREOystBh/6sp9fT7NbI9oH6TSaSJv6gA9mc3Z63m1wN
+ HA4zc3b3hg0r4NBtUGmwHLa2MnfuODJfSUIUz1DOTOtafjdBF3piTwhGN11Buyc+fAOAR4PD
+ b424TG8SavV7RhCU826SF415e4Y=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60c332a2ed59bf69ccbc3cf9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Jun 2021 09:53:38
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5A08AC4338A; Fri, 11 Jun 2021 09:53:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D407EC433F1;
+        Fri, 11 Jun 2021 09:53:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D407EC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>, dave@bewaar.me,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH 5.13] mwifiex: bring down link before deleting interface
+References: <20210515024227.2159311-1-briannorris@chromium.org>
+        <CA+ASDXMDtWpZ-xrymmq51j4TjPT-NXs61-7q=sn090BoJu9qDg@mail.gmail.com>
+Date:   Fri, 11 Jun 2021 12:53:30 +0300
+In-Reply-To: <CA+ASDXMDtWpZ-xrymmq51j4TjPT-NXs61-7q=sn090BoJu9qDg@mail.gmail.com>
+        (Brian Norris's message of "Thu, 10 Jun 2021 17:18:31 -0700")
+Message-ID: <87eed8zq05.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210514211601.GA1969@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/05/2021 23:16, Michał Mirosław wrote:
-> On Mon, May 10, 2021 at 11:25:53PM +0300, Dmitry Osipenko wrote:
->> It's possible to hit the temperature of the thermal zone in a very warm
->> environment under a constant load, like watching a video using software
->> decoding. It's even easier to hit the limit with a slightly overclocked
->> CPU. Bump the temperature limit by 10C in order to improve user
->> experience. Acer A500 has a large board and 10" display panel which are
->> used for the heat dissipation, the SoC is placed far away from battery,
->> hence we can safely bump the temperature limit.
-> 
-> 60^C looks like a touch-safety limit (to avoid burns for users). Did you
-> verify the touchable parts' temperature somehow after the change?
+Brian Norris <briannorris@chromium.org> writes:
 
-The skin temperature and the CPU/GPU etc ... temperatures are different
-things.
+> On Fri, May 14, 2021 at 7:45 PM Brian Norris <briannorris@chromium.org> wrote:
+>>
+>> We can deadlock when rmmod'ing the driver or going through firmware
+>> reset, because the cfg80211_unregister_wdev() has to bring down the link
+>> for us, ... which then grab the same wiphy lock.
+> ...
+>> Fixes: a05829a7222e ("cfg80211: avoid holding the RTNL when calling the driver")
+>> Cc: stable@vger.kernel.org
+>> Link:
+>> https://lore.kernel.org/linux-wireless/98392296-40ee-6300-369c-32e16cff3725@gmail.com/
+>> Link:
+>> https://lore.kernel.org/linux-wireless/ab4d00ce52f32bd8e45ad0448a44737e@bewaar.me/
+>> Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+>> Reported-by: dave@bewaar.me
+>> Cc: Johannes Berg <johannes@sipsolutions.net>
+>> Signed-off-by: Brian Norris <briannorris@chromium.org>
+>
+> Ping - is this going to get merged? It's a 5.12 regression, and we
+> have multiple people complaining about it (and they tested the fix
+> too!).
 
-For the embedded system there is the dissipation system and a
-temperature sensor on it which is the skin temp. This temperature is the
-result of the heat of all the thermal zones on the board and must be
-below 45°C. The temperature slowly changes.
-
-On the CPU, the temperature changes can be very fast and you have to
-take care of keeping it below the max temperature specified in the TRM
-by using different techniques (freq changes, idle injection, ...) but
-the temperature can be 75°C, 85°C or whatever the manual says.
-
-50°C and 60°C are low temperature for a CPU and that will inevitably
-impact the performances, so setting the temperature close the max
-temperature is what will allow max performances.
-
-What matters is the skin temperature.
-
-The skin temperature must be monitored by other techniques, eg. using
-the TDP of the system and throttle the different devices to keep them in
-this power budget. That is the role of an thermal daemon.
-
-
-
-
+Thanks for the ping, this got piled up under all the -next patches and I
+missed it. I'll look at it now.
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
