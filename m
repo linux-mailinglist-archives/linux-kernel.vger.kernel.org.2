@@ -2,434 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414073A3A72
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5679E3A3A78
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhFKDpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbhFKDo6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:44:58 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D982C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:42:48 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id s20-20020a4ae9940000b02902072d5df239so408124ood.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aYl+CCoyEpsMle4Am2b97IzHogprDzY8kaWu6Mbbf1k=;
-        b=AQ6vbyr9uNQZ+GHPLa2a1kit4Q4cIV37m1GMNQsiO76XCg+xTvGg37nilT7vPB7iko
-         Ie/EgAkoebhsWPZvLxupC2BO6dQIl4MpmmNYAXFsiC+6ozWqoGgjtyk1NWkWTVDJA6tI
-         2aY8uOFbjT2ceMUm/dvony/Votw9LUL4UflgZzPln1baaXyWdE1ORoJQqiZnVkOSygTy
-         /4A/UrsjA5cexHv6XED3GfC5tBjULlHrX+FxQNESTErAKZmZaxGWvWrx4wOIHfS/W7oI
-         gBYFfUseRNVK225E99XXl7Fo8m2cpB4DgmqG3yGa08AmSom9iF7CuEsTpDoEP28Ec7TM
-         cJOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aYl+CCoyEpsMle4Am2b97IzHogprDzY8kaWu6Mbbf1k=;
-        b=bvbM0k+dCGzqj3NGOsCGyKonvPFWYlsgLDC0/f/46CT7MplIpmYoc4pv3+dbaXasyi
-         Gu7TL7pRoQaYlJz1qGRqUJQQDe5X7k2Ttg5Jshau4NQvpmfRELoWqDcip5kff/oQohx+
-         m/DyJ+9Sk288KdR+IzNxapOom/0I2DvnLFKtpJDZkRmPDxdadiUc+V8BC9mLeUIGG4Ks
-         VyU6zfSIiF2t/0n+khCti4kekEH0bvfRHv5w0loYJRUok+lbMXKqSjE3bqy4Zl52ZOcA
-         OQlTiBWr81078CwJzI6QLKTa3Nqx/B8Npt44Du/ptcqodkGzF3dK/HsqBZATCxTG57on
-         b3lQ==
-X-Gm-Message-State: AOAM533utkdf+r0NWZF98cJRZ/sAilk2GyUp6hBwthtLUXn6Ro6UcpXz
-        sMdbZXZM9NXF1qx7VSR6BDplVQ==
-X-Google-Smtp-Source: ABdhPJz1hwVQUMR6EXA0q0L7XAng8OjeIfRMjbd/FqCEHE5PEdjDIvGXYthGX7YwYlTji8HGftLSYw==
-X-Received: by 2002:a4a:5182:: with SMTP id s124mr1334378ooa.34.1623382964450;
-        Thu, 10 Jun 2021 20:42:44 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r25sm926969oos.44.2021.06.10.20.42.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 20:42:43 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 22:42:41 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
-        okukatla@codeaurora.org, djakov@kernel.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        agross@kernel.org
-Subject: Re: [PATCH V3] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
- card
-Message-ID: <YMLbsZUojmYjM/j0@builder.lan>
-References: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
+        id S231520AbhFKDpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:45:31 -0400
+Received: from mail-bn8nam12on2065.outbound.protection.outlook.com ([40.107.237.65]:50784
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231233AbhFKDp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 23:45:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VYGKOAeZB1R8UQa6Uhde+OuMAR14U3nik1P5/kVj5KnGR0AF+2wve7D3dmbBKvkYCJBMgCBxpvqbWypcCX2S5jDdz8ZX9ggw/zRmVFvj7hYm6voWxo/192kRZpfMg8y6FfgTsCm091bgH74FnygOPxLtG3qu63Krj86HCYVWxzfUf46tVZviTsdnBq1ggFWg3LwiFGQo+WEBWIc+CxbuU6xeIQhEYc9sxci9dmDLVnHnxXoagEZ1Qd6kqnXjtP/sVep3nJ7I7lWeHHA0sQYaVyQifoglvtsaQPj2tVxVPLUl6mSOrv1kUHHp7dNPEHFgliUEfsZPA4Dx1+R6vn/fXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j+QHRtWCV4Ndv6ZHYXC/4LW3/mfaNmVTYrUuSySkFIg=;
+ b=JlTccu8vv1aOAXBKAmb16rY+4Lwz7NL6UtghR92f9UqJhpcofHfM6e4pTSoxluLacEGk/Hq+FcX4h6GHai1RPcq4PEB5fIp0pi0bdVpS/usxKOhTEVJzVsJZ9Vs+LFLOnqyJ5MWp+8+gMXyhDtx4PzbKt+1w531aeo8aEg8nuKdc6l/jN3YAZ84b0ogCqh/1ezPxGYHC9Fle504Q36IxOi2JKFd6NzXzmP8akZBfYPoDvtzoOmQY9gnNPFHzAIFzck/udS0iFzb2pg9k1meaDUZS4dULPh4Ec3WT1W6waPidp35TNS1A4ThUvLNyLlVmY/2VmAILg2ix2fZf9DSw1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j+QHRtWCV4Ndv6ZHYXC/4LW3/mfaNmVTYrUuSySkFIg=;
+ b=EHJdWof9l3C4vaPyqmFFY4H3WbUUOqjDlnxfOEKLYvkPmO8ixONQeSkdqH8fuTTFSamzmXIG2W1DaswrJmhxsLLXPLfFfizxm1byDKWzEnaXWCO5ohzCOTx2pnHBAKVxjguacZs9Po+s6/g8oj8H4BysowqGwpCdQWtR85MHTVOWmrHGSdkzPwNDvSCEGf4f1crkys05ux7Lj+eL/TMTNlyGHj4lPsKKi1OIIGKYG/XCSwnJy0CZSgEiYJQxmP/WVjn1UPxfED23TkMoVf+1T9N5E08lTE+5ZKFXyps0kE+SnsFALB6aWOtWqctNUWbxzCRvpwB/xda5AEcgPLi6Wg==
+Received: from BN9PR03CA0795.namprd03.prod.outlook.com (2603:10b6:408:13f::20)
+ by CO6PR12MB5475.namprd12.prod.outlook.com (2603:10b6:5:354::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20; Fri, 11 Jun
+ 2021 03:43:27 +0000
+Received: from BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:13f:cafe::4c) by BN9PR03CA0795.outlook.office365.com
+ (2603:10b6:408:13f::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend
+ Transport; Fri, 11 Jun 2021 03:43:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT048.mail.protection.outlook.com (10.13.177.117) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4219.21 via Frontend Transport; Fri, 11 Jun 2021 03:43:26 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 11 Jun
+ 2021 03:43:22 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     <linux-mm@kvack.org>, <akpm@linux-foundation.org>,
+        <rcampbell@nvidia.com>, <linux-doc@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>, <hughd@google.com>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <hch@infradead.org>, <bskeggs@redhat.com>, <jgg@nvidia.com>,
+        <shakeelb@google.com>, <jhubbard@nvidia.com>,
+        <willy@infradead.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v10 07/10] mm: Device exclusive memory access
+Date:   Fri, 11 Jun 2021 13:43:20 +1000
+Message-ID: <2683185.ETRjo6vMkr@nvdebian>
+In-Reply-To: <YMK1snSH9q4Wkyq+@t490s>
+References: <20210607075855.5084-1-apopple@nvidia.com> <4307769.9k6FjFFxS5@nvdebian> <YMK1snSH9q4Wkyq+@t490s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6a62af0f-13a9-487d-ac47-08d92c8b1233
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5475:
+X-Microsoft-Antispam-PRVS: <CO6PR12MB5475D893D29843ABDF6780AEDF349@CO6PR12MB5475.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H6Gxx5VJ/qLI9xkv7NJBjffFkKGsCwi8vZ+sBsL/GCKnnuimWIMdcpdtf6xu6JsT/eKk4tf7EGsBESKAleS9TMs1qmydUFLJ0BhlsXgY+dAAb93Amw4XArH63Lsup2grCmsFNX6lwloGgG3bDjE8AD00YgX9LFCaTbrDJ61H2pj1nqO9yJE7KFaD5R1iPPCnGHA0i8M9dh3uPVrejGLBC59DdKOgdDtGGG607KIWG4IWgKEYw0mOAUaF70P6MS0jIFKKhFMeysiC1azpho53nhnQE+MEsDWZzvL7LVo44nqpu1Y3o3CQ5lEYlUkbRhfL+I7zxd0Bgr7n8w6C/NdG82U8tHSoHyIkV3UJ8vSug1Nia3DmccBHdPTkGEETgtm52wYPVfGrMdd4NVlFGlH/bAdwdbVmLbqopGaq9UeoCEk5ORBrFEsABBVLR/CkS3PaMhd/O8ETF4nDPEjSNEdp2PGbBFVVV2pu1XfvdSNT2+ipocFLWR+yCZU9KnT6gPVBou0GgZim2N7NnjCeD+Qj7pFlXnCgjGeFnoFvROiEOoFZULUfTT5rc786BQR27G6LsLVy9E/dOd3FHTowDeTyVwXL8zhM+IBy2slkShUdClSW8+Al/3eM/oqUrz4Lp6QYhDbtJF3hhPz/8GG+Hdj36YpF9h5n+0ZPVGuiPFuOVsxKEe79tfFh/QUD3NfkSNVc
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(346002)(136003)(36840700001)(46966006)(9686003)(9576002)(36906005)(82740400003)(8676002)(26005)(36860700001)(6916009)(7416002)(5660300002)(186003)(2906002)(70206006)(16526019)(356005)(54906003)(478600001)(70586007)(7636003)(33716001)(8936002)(83380400001)(47076005)(336012)(86362001)(82310400003)(4326008)(426003)(316002)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 03:43:26.5339
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a62af0f-13a9-487d-ac47-08d92c8b1233
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5475
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 09 Jun 10:20 CDT 2021, Shaik Sajida Bhanu wrote:
-
-> Add nodes for eMMC and SD card on sc7280.
+On Friday, 11 June 2021 11:00:34 AM AEST Peter Xu wrote:
+> On Fri, Jun 11, 2021 at 09:17:14AM +1000, Alistair Popple wrote:
+> > On Friday, 11 June 2021 9:04:19 AM AEST Peter Xu wrote:
+> > > On Fri, Jun 11, 2021 at 12:21:26AM +1000, Alistair Popple wrote:
+> > > > > Hmm, the thing is.. to me FOLL_SPLIT_PMD should have similar effect to explicit
+> > > > > call split_huge_pmd_address(), afaict.  Since both of them use __split_huge_pmd()
+> > > > > internally which will generate that unwanted CLEAR notify.
+> > > >
+> > > > Agree that gup calls __split_huge_pmd() via split_huge_pmd_address()
+> > > > which will always CLEAR. However gup only calls split_huge_pmd_address() if it
+> > > > finds a thp pmd. In follow_pmd_mask() we have:
+> > > >
+> > > >       if (likely(!pmd_trans_huge(pmdval)))
+> > > >               return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
+> > > >
+> > > > So I don't think we have a problem here.
+> > >
+> > > Sorry I didn't follow here..  We do FOLL_SPLIT_PMD after this check, right?  I
+> > > mean, if it's a thp for the current mm, afaict pmd_trans_huge() should return
+> > > true above, so we'll skip follow_page_pte(); then we'll check FOLL_SPLIT_PMD
+> > > and do the split, then the CLEAR notify.  Hmm.. Did I miss something?
+> >
+> > That seems correct - if the thp is not mapped with a pmd we won't split and we
+> > won't CLEAR. If there is a thp pmd we will split and CLEAR, but in that case it
+> > is fine - we will retry, but the retry will won't CLEAR because the pmd has
+> > already been split.
 > 
-> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-> ---
+> Aha!
 > 
-> This change is depends on the below patch series:
-> https://lore.kernel.org/patchwork/cover/1418814/
+> >
+> > The issue arises with doing it unconditionally in make device exclusive is that
+> > you *always* CLEAR even if there is no thp pmd to split. Or at least that's my
+> > understanding, please let me know if it doesn't make sense.
 > 
-> Change since V2:
-> 	- Added leading zero's for register address and "qcom,sc7280-sdhci"
-> 	  string in compatible as suggested by Stephen Boyd and Doug.
-> 	- Removed max-frequency flag, no-mmc and no-sdio flags for Sd
-> 	  card as suggested by Doug and Stephen Boyd.
-> 	- Moved non-removable, no-sd, no-sdio and some pin config changes
-> 	  from soc to board dts file as suggested by Doug.
-> 	- Removed sleep state for CD line and drive-strength for input pins
-> 	  as suggested by Doug.
-> 	- Updated bus vote numbers for eMMC and SD card.
+> Exactly.  But if you see what I meant here, even if it can work like this, it
+> sounds still fragile, isn't it?  I just feel something is slightly off there..
 > 
-> Changes since V1:
-> 	- Moved SDHC nodes as suggested by Bjorn Andersson.
-> 	- Dropped "pinconf-" prefix as suggested by Bjorn
-> 	  Andersson.
-> 	- Removed extra newlines as suggested by Konrad
-> 	  Dybcio.
-> 	- Changed sd-cd pin to bias-pull-up in sdc2_off
->           as suggested by Veerabhadrarao Badiganti.
-> 	- Added bandwidth votes for eMMC and SD card.
-> ---
->  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  79 +++++++++++++++++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 146 ++++++++++++++++++++++++++++++++
->  2 files changed, 225 insertions(+)
+> IMHO split_huge_pmd() checked pmd before calling __split_huge_pmd() for
+> performance, afaict, because if it's not a thp even without locking, then it
+> won't be, so further __split_huge_pmd() is not necessary.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> index 3900cfc..8b159d1 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -11,6 +11,7 @@
->  #include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
->  #include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
->  #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
-> +#include <dt-bindings/gpio/gpio.h>
->  #include "sc7280.dtsi"
->  #include "pm7325.dtsi"
->  #include "pmr735a.dtsi"
-> @@ -272,6 +273,36 @@
->  	status = "okay";
->  };
->  
-> +&sdhc_1 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&sdc1_clk &sdc1_cmd &sdc1_data &sdc1_rclk>;
-> +	pinctrl-1 = <&sdc1_clk_sleep &sdc1_cmd_sleep &sdc1_data_sleep &sdc1_rclk_sleep>;
-> +
+> IOW, it's very legal if someday we'd like to let split_huge_pmd() call
+> __split_huge_pmd() directly, then AFAIU device exclusive API will be the 1st
+> one to be broken with that seems-to-be-irrelevant change I'm afraid..
 
-Extra newline.
+Well I would argue the performance of memory notifiers is becoming increasingly
+important, and a change that causes them to be called unnecessarily is
+therefore not very legal. Likely the correct fix here is to optimise
+__split_huge_pmd() to only call the notifier if it's actually going to split a
+pmd. As you said though that's a completely different story which I think would
+be best done as a separate series.
 
-> +
-> +	non-removable;
-> +	no-sd;
-> +	no-sdio;
-> +
-> +	vmmc-supply = <&vreg_l7b_2p9>;
-> +	vqmmc-supply = <&vreg_l19b_1p8>;
-> +
-
-Extra newline.
-
-> +};
-> +
-> +&sdhc_2 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&sdc2_clk &sdc2_cmd &sdc2_data &sd_cd>;
-> +	pinctrl-1 = <&sdc2_clk_sleep &sdc2_cmd_sleep &sdc2_data_sleep>;
-> +
-> +	vmmc-supply = <&vreg_l9c_2p9>;
-> +	vqmmc-supply = <&vreg_l6c_2p9>;
-> +
-> +	cd-gpios = <&tlmm 91 GPIO_ACTIVE_LOW>;
-> +};
-> +
->  &uart5 {
->  	status = "okay";
->  };
-> @@ -291,3 +322,51 @@
->  		bias-pull-up;
->  	};
->  };
-> +
-> +&tlmm {
-> +	sdc1_clk: sdc1-clk {
-> +		pins = "sdc1_clk";
-> +		bias-disable;
-> +		drive-strength = <16>;
-> +	};
-> +
-> +	sdc1_cmd: sdc1-cmd {
-> +		pins = "sdc1_cmd";
-> +		bias-pull-up;
-> +		drive-strength = <10>;
-> +	};
-> +
-> +	sdc1_data: sdc1-data {
-> +		pins = "sdc1_data";
-> +		bias-pull-up;
-> +		drive-strength = <10>;
-> +	};
-> +	sdc1_rclk: sdc1-rclk {
-> +		pins = "sdc1_rclk";
-> +		bias-pull-down;
-> +	};
-> +
-> +	sdc2_clk: sdc2-clk {
-> +		pins = "sdc2_clk";
-> +		bias-disable;
-> +		drive-strength = <16>;
-> +	};
-> +
-> +	sdc2_cmd: sdc2-cmd {
-> +		pins = "sdc2_cmd";
-> +		bias-pull-up;
-> +		drive-strength = <10>;
-> +	};
-> +
-> +	sdc2_data: sdc2-data {
-> +		pins = "sdc2_data";
-> +		bias-pull-up;
-> +		drive-strength = <10>;
-> +	};
-> +
-> +	sd_cd: sd-cd {
-> +		pins = "gpio91";
-> +		bias-pull-up;
-> +	};
-
-As Konrad pointed out, this is much cleaner described as:
-
-	sdc1_default_state: sdc1-default-state {
-		clk {
-		};
-
-		cmd {
-
-		};
-
-		data {
-
-		};
-
-		rclk {
-
-		};
-	};
-
-> +
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 0b6f119..eab6f7b 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -24,6 +24,11 @@
->  
->  	chosen { };
->  
-> +	aliases {
-> +		mmc1 = &sdhc_1;
-> +		mmc2 = &sdhc_2;
-> +	};
-> +
->  	clocks {
->  		xo_board: xo-board {
->  			compatible = "fixed-clock";
-> @@ -430,6 +435,60 @@
->  			#mbox-cells = <2>;
->  		};
->  
-> +		sdhc_1: sdhci@7c4000 {
-> +			compatible = "qcom,sc7280-sdhci", "qcom,sdhci-msm-v5";
-> +			status = "disabled";
-> +
-> +			reg = <0 0x007c4000 0 0x1000>,
-> +					<0 0x007c5000 0 0x1000>;
-
-Whenever you break lines, align your '<' on each line.
-
-> +			reg-names = "hc", "cqhci";
-> +
-> +			iommus = <&apps_smmu 0xc0 0x0>;
-> +			interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH>,
-> +					<GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "hc_irq", "pwr_irq";
-> +
-> +			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
-> +					<&gcc GCC_SDCC1_AHB_CLK>,
-> +					<&rpmhcc RPMH_CXO_CLK>;
-> +			clock-names = "core", "iface", "xo";
-> +			interconnects = <&aggre1_noc MASTER_SDCC_1 0 &mc_virt SLAVE_EBI1 0>,
-> +					<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_SDCC_1 0>;
-> +			interconnect-names = "sdhc-ddr","cpu-sdhc";
-> +			power-domains = <&rpmhpd SC7280_CX>;
-> +			operating-points-v2 = <&sdhc1_opp_table>;
-> +
-> +			bus-width = <8>;
-> +			supports-cqe;
-> +
-> +			qcom,dll-config = <0x0007642c>;
-> +			qcom,ddr-config = <0x80040868>;
-> +
-> +			mmc-ddr-1_8v;
-> +			mmc-hs200-1_8v;
-> +			mmc-hs400-1_8v;
-> +			mmc-hs400-enhanced-strobe;
-> +
-> +			sdhc1_opp_table: sdhc1-opp-table {
-
-No need for "sdhc1-" in the node name.
-
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-100000000 {
-> +					opp-hz = /bits/ 64 <100000000>;
-> +					required-opps = <&rpmhpd_opp_low_svs>;
-> +					opp-peak-kBps = <1800000 400000>;
-> +					opp-avg-kBps = <100000 0>;
-> +				};
-> +
-> +				opp-384000000 {
-> +					opp-hz = /bits/ 64 <384000000>;
-> +					required-opps = <&rpmhpd_opp_nom>;
-> +					opp-peak-kBps = <5400000 1600000>;
-> +					opp-avg-kBps = <390000 0>;
-> +				};
-> +			};
-> +
-> +		};
-> +
->  		qupv3_id_0: geniqup@9c0000 {
->  			compatible = "qcom,geni-se-qup";
->  			reg = <0 0x009c0000 0 0x2000>;
-> @@ -973,6 +1032,51 @@
->  			};
->  		};
->  
-> +		sdhc_2: sdhci@8804000 {
-> +			compatible = "qcom,sc7280-sdhci", "qcom,sdhci-msm-v5";
-> +			status = "disabled";
-> +
-> +			reg = <0 0x08804000 0 0x1000>;
-> +
-> +			iommus = <&apps_smmu 0x100 0x0>;
-> +			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
-> +					<GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "hc_irq", "pwr_irq";
-> +
-> +			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
-> +					<&gcc GCC_SDCC2_AHB_CLK>,
-> +					<&rpmhcc RPMH_CXO_CLK>;
-> +			clock-names = "core", "iface", "xo";
-> +			interconnects = <&aggre1_noc MASTER_SDCC_2 0 &mc_virt SLAVE_EBI1 0>,
-> +					<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_SDCC_2 0>;
-> +			interconnect-names = "sdhc-ddr","cpu-sdhc";
-> +			power-domains = <&rpmhpd SC7280_CX>;
-> +			operating-points-v2 = <&sdhc2_opp_table>;
-> +
-> +			bus-width = <4>;
-> +
-> +			qcom,dll-config = <0x0007642c>;
-> +
-> +			sdhc2_opp_table: sdhc2-opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-100000000 {
-> +					opp-hz = /bits/ 64 <100000000>;
-> +					required-opps = <&rpmhpd_opp_low_svs>;
-> +					opp-peak-kBps = <1800000 400000>;
-> +					opp-avg-kBps = <100000 0>;
-> +				};
-> +
-> +				opp-202000000 {
-> +					opp-hz = /bits/ 64 <202000000>;
-> +					required-opps = <&rpmhpd_opp_nom>;
-> +					opp-peak-kBps = <5400000 1600000>;
-> +					opp-avg-kBps = <200000 0>;
-> +				};
-> +			};
-> +
-> +		};
-> +
->  		system-cache-controller@9200000 {
->  			compatible = "qcom,sc7280-llcc";
->  			reg = <0 0x09200000 0 0xd0000>, <0 0x09600000 0 0x50000>;
-> @@ -1102,6 +1206,48 @@
->  				pins = "gpio46", "gpio47";
->  				function = "qup13";
->  			};
-> +
-> +			sdc1_clk_sleep: sdc1-clk-sleep {
-> +				pins = "sdc1_clk";
-> +				drive-strength = <2>;
-> +				bias-bus-hold;
-> +			};
-> +
-> +			sdc1_cmd_sleep: sdc1-cmd-sleep {
-> +				pins = "sdc1_cmd";
-> +				drive-strength = <2>;
-> +				bias-bus-hold;
-> +			};
-> +
-> +			sdc1_data_sleep: sdc1-data-sleep {
-> +				pins = "sdc1_data";
-> +				drive-strength = <2>;
-> +				bias-bus-hold;
-> +			};
-> +
-> +			sdc1_rclk_sleep: sdc1-rclk-sleep {
-> +				pins = "sdc1_rclk";
-> +				bias-bus-hold;
-> +			};
-> +
-> +			sdc2_clk_sleep: sdc2-clk-sleep {
-> +				pins = "sdc2_clk";
-> +				drive-strength = <2>;
-> +				bias-bus-hold;
-> +			};
-> +
-> +			sdc2_cmd_sleep: sdc2-cmd-sleep{
-> +				pins ="sdc2_cmd";
-> +				drive-strength = <2>;
-> +				bias-bus-hold;
-> +			};
-> +
-> +			sdc2_data_sleep: sdc2-data-sleep {
-> +				pins ="sdc2_data";
-> +				drive-strength = <2>;
-> +				bias-bus-hold;
-> +			};
-
-Please structure these as suggested above.
-
-> +
-
-And please drop this empty line.
-
-Thanks,
-Bjorn
-
->  		};
->  
->  		apps_smmu: iommu@15000000 {
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
+> This lets me goes back a step to think about why do we need this notifier at
+> all to cover this whole range of make_device_exclusive() procedure..
 > 
+> What I am thinking is, we're afraid some CPU accesses this page so the pte got
+> quickly restored when device atomic operation is carrying on.  Then with this
+> notifier we'll be able to cancel it.  Makes perfect sense.
+> 
+> However do we really need to register this notifier so early?  The thing is the
+> GPU driver still has all the page locks, so even if there's a race to restore
+> the ptes, they'll block at taking the page lock until the driver releases it.
+> 
+> IOW, I'm wondering whether the "non-fragile" way to do this is not do
+> mmu_interval_notifier_insert() that early: what if we register that notifier
+> after make_device_exclusive_range() returns but before page_unlock() somehow?
+> So before page_unlock(), race is protected fully by the lock itself; after
+> that, it's done by mmu notifier.  Then maybe we don't need to worry about all
+> these notifications during marking exclusive (while we shouldn't)?
+
+The notifier is needed to protect against races with pte changes. Once a page
+has been marked for exclusive access the driver will update it's page tables to
+allow atomic access to the page. However in the meantime the page could become
+unmapped entirely or write protected.
+
+As I understand things the page lock won't protect against these kind of pte
+changes, hence the need for mmu_interval_read_begin/retry which allows the
+driver to hold a mutex protecting against invalidations via blocking the
+notifier until the device page tables have been updated.
+
+> Sorry in advance if I overlooked anything as I know little on device side (even
+> less than mm itself).  Also sorry to know that this series got marked
+> to-be-update in -mm; hopefully it'll still land soon even if it still needs
+> some rebase to other more important bugfixes - I definitely jumped in too late
+> even if to mess this all up. :-)
+
+I was thinking that was probably coming anyway, but I'm still hoping it will be
+just a rebase on Hugh's work which wasn't too bad last time I tried it :-)
+
+> --
+> Peter Xu
+> 
+
+
+
+
