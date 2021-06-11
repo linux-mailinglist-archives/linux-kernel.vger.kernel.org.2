@@ -2,177 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEB63A3A18
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941063A3A23
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhFKDIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:08:37 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11379 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhFKDIg (ORCPT
+        id S231174AbhFKDNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:13:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFKDNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:08:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623380799; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=wexlSlPWte1V+0zEqCj9//EPjbPqVl3tfJdfC6N/SxU=;
- b=cunRNkX2E3hsJvMCytKoUf5sMdvGrEx2isT6Sr2CMh948tueZSEp3aPSDMJPRHCMhDe4qpuF
- NTpFDHr+c0L7S40T7mgsDHwrIe7lMotxb3vwXo8wdIMIEhUzkvjGh5DXXjx9+7IXr77aiHMc
- lSNBN9U70hJJHK4OEchYatJxu6s=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60c2d33a8491191eb355d589 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Jun 2021 03:06:34
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 22F91C4360C; Fri, 11 Jun 2021 03:06:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA525C433D3;
-        Fri, 11 Jun 2021 03:06:32 +0000 (UTC)
+        Thu, 10 Jun 2021 23:13:06 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BB4C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:11:01 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id k7so4869516pjf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=y4prOr8o9Yrbtks61jFL7WPXITvzhL37T1tTULKWr64=;
+        b=bDIft2UOAn67MfE/MQtn5OMB6NfhrtTY4RgKtZ0gOuujkq0k8b4L2p/BkWp5hg7Yvr
+         qzFeB3Vna1mNiKZ08+MeeIYirYkiaGglDnbivvgkjhh9r5dvCJ0ZlV2qC+DbC8WGmJTh
+         sZPAob+YrFYiZuxrzMODEpSgdHndj3F/k8b6UwomISh2s80Won5w1jjr6wTdaoex6JJ7
+         bC0TRRCeyOz5glCtNye84k1bSDFNCAPoPPys+B0DVQogDzaMoXGC4dZ9zhD9Fnn3TAEc
+         dZOVUXFU7xqW3SqOLPYnMduHsmIAIeqBf9yX/rT9ahHFk6xrmbl2UUM6VQtxQdV104X3
+         h0mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y4prOr8o9Yrbtks61jFL7WPXITvzhL37T1tTULKWr64=;
+        b=T/Srhi5h7HmZc1k6R+36jDBlC/uInV9Z9SmgCRbO/ftCJuQremSVGr7TrnT5eLTsLy
+         pnMZz53dHOSjuxJ++v09lKGPSx+QIaawbPL8FP/+dUJ0Sqs4rHbiulNDv2BWz1W1s55X
+         HyP/MB8KQDSzPFXKlL8nihX7j/WDJ3X0NISTluK0f6VBzEbMCZ9PgGYUv68Ax5CojEg/
+         jHVrgmiWgxzGuJKyMbGZn7m+xriDDVToJSFEyBEdsfsjF0J1h0Kbs5pItBXRH2GAt/2V
+         ts0/f2tftN1eeOE3w16/a9XRFx+lJJBYaLxXCBDczbSsaZKnUZwdlCfx/9xv0vvWPNm0
+         ZB0w==
+X-Gm-Message-State: AOAM530r+4gQS4DSqc8idqzKp43KlCwo8FmvATI1IGupWjygkFOF3/j+
+        h/jyxlG4AlW7GFlVlaO6sBw=
+X-Google-Smtp-Source: ABdhPJytmw3t0plsGu1s3pJHOmMhH+nO+rWH4XVq3grkpfzTHXrf0/lejne5dFN8LlPjFKguJgkypg==
+X-Received: by 2002:a17:90a:66c9:: with SMTP id z9mr2239212pjl.122.1623381060940;
+        Thu, 10 Jun 2021 20:11:00 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id v6sm4195582pgk.33.2021.06.10.20.10.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 20:11:00 -0700 (PDT)
+Subject: Re: [PATCH] drm: Lock pointer access in drm_master_release()
+To:     Emil Velikov <emil.l.velikov@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        skhan@linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <20210609092119.173590-1-desmondcheongzx@gmail.com>
+ <YMHlLQHRLWgWlXTs@phenom.ffwll.local>
+ <CACvgo53xvUD-YgU_rhG3GDg18jygwAP78aj8OJd457SEFpAf7g@mail.gmail.com>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <ddc6353a-4d75-6826-dda7-be9f9dd35d1c@gmail.com>
+Date:   Fri, 11 Jun 2021 11:10:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <CACvgo53xvUD-YgU_rhG3GDg18jygwAP78aj8OJd457SEFpAf7g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Jun 2021 11:06:32 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 7/9] scsi: ufs: Let host_sem cover the entire system
- suspend/resume
-In-Reply-To: <6d31becb-98f8-2302-8ffa-657e6cadd8ec@intel.com>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-8-git-send-email-cang@codeaurora.org>
- <6d31becb-98f8-2302-8ffa-657e6cadd8ec@intel.com>
-Message-ID: <eb268cc191916686f45c161f3f191049@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
-
-On 2021-06-10 21:32, Adrian Hunter wrote:
-> On 10/06/21 7:43 am, Can Guo wrote:
->> UFS error handling now is doing more than just re-probing, but also 
->> sending
->> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, 
->> which
->> may change runtime status of scsi devices. To protect system 
->> suspend/resume
->> from being disturbed by error handling, move the host_sem from wl pm 
->> ops
->> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
+On 11/6/21 1:49 am, Emil Velikov wrote:
+> On Thu, 10 Jun 2021 at 11:10, Daniel Vetter <daniel@ffwll.ch> wrote:
+>>
+>> On Wed, Jun 09, 2021 at 05:21:19PM +0800, Desmond Cheong Zhi Xi wrote:
+>>> This patch eliminates the following smatch warning:
+>>> drivers/gpu/drm/drm_auth.c:320 drm_master_release() warn: unlocked access 'master' (line 318) expected lock '&dev->master_mutex'
+>>>
+>>> The 'file_priv->master' field should be protected by the mutex lock to
+>>> '&dev->master_mutex'. This is because other processes can concurrently
+>>> modify this field and free the current 'file_priv->master'
+>>> pointer. This could result in a use-after-free error when 'master' is
+>>> dereferenced in subsequent function calls to
+>>> 'drm_legacy_lock_master_cleanup()' or to 'drm_lease_revoke()'.
+>>>
+>>> An example of a scenario that would produce this error can be seen
+>>> from a similar bug in 'drm_getunique()' that was reported by Syzbot:
+>>> https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+>>>
+>>> In the Syzbot report, another process concurrently acquired the
+>>> device's master mutex in 'drm_setmaster_ioctl()', then overwrote
+>>> 'fpriv->master' in 'drm_new_set_master()'. The old value of
+>>> 'fpriv->master' was subsequently freed before the mutex was unlocked.
+>>>
+>>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>>
+>> Thanks a lot. I've done an audit of this code, and I found another
+>> potential problem in drm_is_current_master. The callers from drm_auth.c
+>> hold the dev->master_mutex, but all the external ones dont. I think we
+>> need to split this into a _locked function for use within drm_auth.c, and
+>> the exported one needs to grab the dev->master_mutex while it's checking
+>> master status. Ofc there will still be races, those are ok, but right now
+>> we run the risk of use-after free problems in drm_lease_owner.
+>>
+> Note that some code does acquire the mutex via
+> drm_master_internal_acquire - so we should be careful.
+> As mentioned elsewhere - having a _locked version of
+> drm_is_current_master sounds good.
 > 
-> Have you checked whether error handling might actually be needed after
-> ufshcd_suspend_prepare()?
-
-I intend to make it this (simple) way - if error handling is invoked
-during system suspend/resume, it should just wait until system resume
-is finished. suspend/resume does not count on error handling, if 
-suspend/resume
-run into errors, they just fail and bail.
-
+> Might as well throw a lockdep_assert_held_once in there just in case :-P
 > 
-> Wouldn't this complexity go away if we just did recovery
-> directly in __ufshcd_wl_suspend() and  __ufshcd_wl_resume()?
+> Happy to help review the follow-up patches.
+> -Emil
 > 
 
-Please kindly check my reply in patch #5.
+Thanks for the advice, Emil!
 
-Thanks,
-Can Guo.
+I did a preliminary check on the code that calls 
+drm_master_internal_acquire in drm_client_modeset.c and drm_fb_helper.c, 
+and it doesn't seem like they eventually call drm_is_current_master. So 
+we should be good on that front.
 
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 8 +++-----
->>  drivers/scsi/ufs/ufshcd.h | 2 +-
->>  2 files changed, 4 insertions(+), 6 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index c418a19..861942b 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -9060,16 +9060,13 @@ static int ufshcd_wl_suspend(struct device 
->> *dev)
->>  	ktime_t start = ktime_get();
->> 
->>  	hba = shost_priv(sdev->host);
->> -	down(&hba->host_sem);
->> 
->>  	if (pm_runtime_suspended(dev))
->>  		goto out;
->> 
->>  	ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
->> -	if (ret) {
->> +	if (ret)
->>  		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
->> -		up(&hba->host_sem);
->> -	}
->> 
->>  out:
->>  	if (!ret)
->> @@ -9102,7 +9099,6 @@ static int ufshcd_wl_resume(struct device *dev)
->>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
->>  	if (!ret)
->>  		hba->is_wl_sys_suspended = false;
->> -	up(&hba->host_sem);
->>  	return ret;
->>  }
->>  #endif
->> @@ -9665,6 +9661,7 @@ void ufshcd_resume_complete(struct device *dev)
->>  		ufshcd_rpmb_rpm_put(hba);
->>  		hba->rpmb_complete_put = false;
->>  	}
->> +	up(&hba->host_sem);
->>  }
->>  EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
->> 
->> @@ -9691,6 +9688,7 @@ int ufshcd_suspend_prepare(struct device *dev)
->>  		ufshcd_rpmb_rpm_get_sync(hba);
->>  		hba->rpmb_complete_put = true;
->>  	}
->> +	down(&hba->host_sem);
->>  	return 0;
->>  }
->>  EXPORT_SYMBOL_GPL(ufshcd_suspend_prepare);
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index eaebb4e..47da47c 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -693,7 +693,7 @@ struct ufs_hba_monitor {
->>   * @ee_ctrl_mask: Exception event control mask
->>   * @is_powered: flag to check if HBA is powered
->>   * @shutting_down: flag to check if shutdown has been invoked
->> - * @host_sem: semaphore used to serialize concurrent contexts
->> + * @host_sem: semaphore used to avoid concurrency of contexts
->>   * @eh_wq: Workqueue that eh_work works on
->>   * @eh_work: Worker to handle UFS errors that require s/w attention
->>   * @eeh_work: Worker to handle exception events
->> 
+lockdep_assert_held_once sounds good :)
+
+Best wishes,
+Desmond
+
