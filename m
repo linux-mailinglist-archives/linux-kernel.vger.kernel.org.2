@@ -2,141 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C22F3A42FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B193A4300
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbhFKN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:27:32 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:54934 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhFKN13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:27:29 -0400
-Received: by mail-io1-f70.google.com with SMTP id s14-20020a5eaa0e0000b02904abce57cb24so16351114ioe.21
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:25:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=47SoH8M+YLMo/Ghpuy/ef9V3BQcZxcuzA8y+HvH2tJ4=;
-        b=fjRO3cbtlKdPRxfCUJsep+8ihDy1mDd6UeBAemkrpu3S1gmuxxf2PwxO7sIIV61FQV
-         bn0SHlshPrkLyfpoDJS3sHpm2mMuNXirZFgLJ3TKqMTvcm4pUjPfRj27jIBi5DzdzJ3J
-         Geb9ZBBZ0C2NdTnw3XNxbMPmiXC1BpzucSim0GOft2CshBaewtmfuEpe8l3gH4Y9amBR
-         pwkC6sMymrRUsTrlC5+/D5dDGXOjpbHIEXPg20kb2ivHA4O6nPH58wDYTc0jtJPsV+m/
-         0E2iLnOWrjvJ4Ip/dDoDaIX3SYBNOkOzZ6bRSSCM+/JDvnSzfhBUqENMa9mgOru4dOR+
-         Txfw==
-X-Gm-Message-State: AOAM533DY8gLkswsh9LfgEs/QgbvvzEjRrRgFGGECVXmaZivbTBbIYug
-        GKKb7AG9S7h6V1ka1CP/KQ+dS7DHWcB+43Aon0Is7wYoIguz
-X-Google-Smtp-Source: ABdhPJzBlfxYFkcXKgYUJHV4EDwncScSiFETqBOHfumS4Lez3JLkS31IpmmknD92AmlGPi0GTktCwpsUEFKWNpQEoDWScm17/zWs
+        id S229845AbhFKN26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:28:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:58322 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229484AbhFKN2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:28:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58BAED6E;
+        Fri, 11 Jun 2021 06:26:57 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD5743F73D;
+        Fri, 11 Jun 2021 06:26:55 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 14:26:53 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 3/3] sched: Make uclamp changes depend on CAP_SYS_NICE
+Message-ID: <20210611132653.o5iljqtmr2hcvtsl@e107158-lin.cambridge.arm.com>
+References: <20210610151306.1789549-1-qperret@google.com>
+ <20210610151306.1789549-4-qperret@google.com>
+ <20210611124820.ksydlg4ncw2xowd3@e107158-lin.cambridge.arm.com>
+ <YMNgPyfiIaIIsjqq@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:16d1:: with SMTP id g17mr3924202jat.125.1623417931377;
- Fri, 11 Jun 2021 06:25:31 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 06:25:31 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001f2e7705c47d713e@google.com>
-Subject: [syzbot] general protection fault in free_swap_cache (2)
-From:   syzbot <syzbot+f86560273c0c1c455aa7@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YMNgPyfiIaIIsjqq@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Quentin
 
-syzbot found the following issue on:
+On 06/11/21 13:08, Quentin Perret wrote:
+> Hi Qais,
+> 
+> On Friday 11 Jun 2021 at 13:48:20 (+0100), Qais Yousef wrote:
+> > On 06/10/21 15:13, Quentin Perret wrote:
+> > > There is currently nothing preventing tasks from changing their per-task
+> > > clamp values in anyway that they like. The rationale is probably that
+> > > system administrators are still able to limit those clamps thanks to the
+> > > cgroup interface. However, this causes pain in a system where both
+> > > per-task and per-cgroup clamp values are expected to be under the
+> > > control of core system components (as is the case for Android).
+> > > 
+> > > To fix this, let's require CAP_SYS_NICE to increase per-task clamp
+> > > values. This allows unprivileged tasks to lower their requests, but not
+> > > increase them, which is consistent with the existing behaviour for nice
+> > > values.
+> > 
+> > Hmmm. I'm not in favour of this.
+> > 
+> > So uclamp is a performance and power management mechanism, it has no impact on
+> > fairness AFAICT, so it being a privileged operation doesn't make sense.
+> > 
+> > We had a thought about this in the past and we didn't think there's any harm if
+> > a task (app) wants to self manage. Yes a task could ask to run at max
+> > performance and waste power, but anyone can generate a busy loop and waste
+> > power too.
+> > 
+> > Now that doesn't mean your use case is not valid. I agree if there's a system
+> > wide framework that wants to explicitly manage performance and power of tasks
+> > via uclamp, then we can end up with 2 layers of controls overriding each
+> > others.
+> 
+> Right, that's the main issue. Also, the reality is that most of time the
+> 'right' clamps are platform-dependent, so most userspace apps are simply
+> not equipped to decide what their own clamps should be.
 
-HEAD commit:    614124be Linux 5.13-rc5
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1451414fd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=30f476588412c065
-dashboard link: https://syzkaller.appspot.com/bug?extid=f86560273c0c1c455aa7
-userspace arch: i386
+I'd argue this is true for both a framework or an app point of view. It depends
+on the application and how it would be used.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I can foresee for example and HTTP server wanting to use uclamp to guarantee
+a QoS target ie: X number of requests per second or a maximum of Y tail
+latency. The application can try to tune (calibrate) itself without having to
+have the whole system tuned or pumped on steroid.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f86560273c0c1c455aa7@syzkaller.appspotmail.com
+Or a framework could manage this on behalf of the application. Both can use
+uclamp with a feedback loop to calibrate the perf requirement of the tasks to
+meet a given perf/power criteria.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 1 PID: 2367 Comm: syz-executor.3 Not tainted 5.13.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:compound_head include/linux/page-flags.h:184 [inline]
-RIP: 0010:PageSwapCache include/linux/page-flags.h:399 [inline]
-RIP: 0010:free_swap_cache+0x28/0x300 mm/swap_state.c:296
-Code: c3 90 41 57 41 56 41 55 41 54 49 89 fc 55 4d 8d 6c 24 08 53 e8 c9 a0 c2 ff 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 85 02 00 00 4d 8b 74 24 08 31 ff 4c 89 e5 4c 89
-RSP: 0018:ffffc9000cc7f6a8 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88800015b088 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff81b23bb7 RDI: 0000000000000000
-RBP: 000000000000000f R08: 00000000000001fe R09: 0000000000000000
-R10: ffffffff81b27162 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000008 R14: dffffc0000000000 R15: ffffc9000cc7fa58
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000009efef1c CR3: 000000002868a000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- free_pages_and_swap_cache+0x58/0x90 mm/swap_state.c:324
- tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
- tlb_flush_mmu+0xe9/0x6b0 mm/mmu_gather.c:249
- zap_pte_range mm/memory.c:1336 [inline]
- zap_pmd_range mm/memory.c:1374 [inline]
- zap_pud_range mm/memory.c:1403 [inline]
- zap_p4d_range mm/memory.c:1424 [inline]
- unmap_page_range+0x1a7f/0x2650 mm/memory.c:1445
- unmap_single_vma+0x198/0x300 mm/memory.c:1490
- unmap_vmas+0x16d/0x2f0 mm/memory.c:1522
- exit_mmap+0x2a8/0x590 mm/mmap.c:3208
- __mmput+0x122/0x470 kernel/fork.c:1096
- mmput+0x58/0x60 kernel/fork.c:1117
- exit_mm kernel/exit.c:502 [inline]
- do_exit+0xb0a/0x2a60 kernel/exit.c:813
- do_group_exit+0x125/0x310 kernel/exit.c:923
- get_signal+0x47f/0x2150 kernel/signal.c:2835
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x171/0x280 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- __do_fast_syscall_32+0x74/0xe0 arch/x86/entry/common.c:146
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:168
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f25549
-Code: Unable to access opcode bytes at RIP 0xf7f2551f.
-RSP: 002b:00000000f551f68c EFLAGS: 00000246 ORIG_RAX: 00000000000000f0
-RAX: 0000000000000001 RBX: 000000000819afcc RCX: 0000000000000081
-RDX: 00000000000f4240 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00000000080525a9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 1cbdfedd037865be ]---
-RIP: 0010:compound_head include/linux/page-flags.h:184 [inline]
-RIP: 0010:PageSwapCache include/linux/page-flags.h:399 [inline]
-RIP: 0010:free_swap_cache+0x28/0x300 mm/swap_state.c:296
-Code: c3 90 41 57 41 56 41 55 41 54 49 89 fc 55 4d 8d 6c 24 08 53 e8 c9 a0 c2 ff 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 85 02 00 00 4d 8b 74 24 08 31 ff 4c 89 e5 4c 89
-RSP: 0018:ffffc9000cc7f6a8 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88800015b088 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff81b23bb7 RDI: 0000000000000000
-RBP: 000000000000000f R08: 00000000000001fe R09: 0000000000000000
-R10: ffffffff81b27162 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000008 R14: dffffc0000000000 R15: ffffc9000cc7fa58
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000009efef1c CR3: 000000002868a000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+If you want to do a static management, system framework would make more sense
+in this case, true.
+
+> 
+> > Would it make more sense to have a procfs/sysfs flag that is disabled by
+> > default that allows sys-admin to enforce a privileged uclamp access?
+> > 
+> > Something like
+> > 
+> > 	/proc/sys/kernel/sched_uclamp_privileged
+> 
+> Hmm, dunno, I'm not aware of anything else having a behaviour like that,
+> so that feels a bit odd.
+
+I think /proc/sys/kernel/perf_event_paranoid falls into this category.
+
+> 
+> > I think both usage scenarios are valid and giving sys-admins the power to
+> > enforce a behavior makes more sense for me.
+> 
+> Yes, I wouldn't mind something like that in general. I originally wanted
+> to suggest introducing a dedicated capability for uclamp, but that felt
+> a bit overkill. Now if others think this should be the way to go I'm
+> happy to go implement it.
+
+Would be good to hear what others think for sure :)
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Cheers
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--
+Qais Yousef
