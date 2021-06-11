@@ -2,99 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9024D3A39C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB5D3A39CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhFKCb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 22:31:26 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:63458 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230212AbhFKCbZ (ORCPT
+        id S231415AbhFKCdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 22:33:47 -0400
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:50924 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhFKCdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:31:25 -0400
-X-UUID: 0b3cc9ed3c49425a9fce4c3b35d12a1c-20210611
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=dv+Qz7VgPb4x8JJap2AVvlVH5e24mB3GpvI0kMdk/as=;
-        b=ImfLLzSfXqSsI/W+nq19GD0P+/DtoHMryCGaZU/5JXwuGBUmLLDTpimb8Z0u5sQ4FZRNwa+VleCpiacAu1AOeSc2oMnNaJGlPYoPcCioAoBTvOxTztZFfW64MkMbn2oRtWPEI3MLx+LqkBAmsCvssDNMoqw9jrYUa2U/lh4dQzo=;
-X-UUID: 0b3cc9ed3c49425a9fce4c3b35d12a1c-20210611
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 511477463; Fri, 11 Jun 2021 10:29:24 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 11 Jun
- 2021 10:29:21 +0800
-Received: from [10.16.6.141] (10.16.6.141) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Jun 2021 10:29:20 +0800
-Message-ID: <1623378559.24490.12.camel@mszsdaap41>
-Subject: Re: [PATCH v4 2/3] pwm: mtk-disp: move the commit to clock enabled
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-pwm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <yingjoe.chen@mediatek.com>, <eddie.huang@mediatek.com>,
-        <cawa.cheng@mediatek.com>, <bibby.hsieh@mediatek.com>,
-        <ck.hu@mediatek.com>, <stonea168@163.com>,
-        <huijuan.xie@mediatek.com>
-Date:   Fri, 11 Jun 2021 10:29:19 +0800
-In-Reply-To: <20210606211457.ya5nbp6fqevuhzwa@pengutronix.de>
-References: <20210603100531.161901-1-jitao.shi@mediatek.com>
-         <20210603100531.161901-3-jitao.shi@mediatek.com>
-         <20210606211457.ya5nbp6fqevuhzwa@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 10 Jun 2021 22:33:46 -0400
+Received: by mail-pj1-f41.google.com with SMTP id g4so4850796pjk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:31:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=e5K1WutpQ4ryjeQEihlJkVsIbkqUeWrgN2WO92sXGZM=;
+        b=DpdK8nFit9zJKc3vGDOsEhXvWZneuG0L6UNjz9r3fmVqhTLU4dnCqJI6xxbnq8MKHI
+         tVyWV97fRO7s2J2S+U1Yc+6TRH4+8wRl+g0UqNmG5K2W04pojtCFKuKJMzSeelwCUJv3
+         KgE5zrTItICTaeUSUe/vbGSZ2EetRqp3QPaxF5hT1pmlYG7mfR3kLDnbr+CHf0NmhcX/
+         kqlqsTvbZwGDeqjUbKKLPQenUSLAkEm0MZsvVpZ0yiRT6JqcEAwrYPs6YDzsK45JdUQd
+         H9inz2DX3Hf72c0Chfz9tiALQQrqqtyxqtU0ZoOMgXGnK/7xSTn2YputnZ9bJEcSOTZ/
+         c6gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=e5K1WutpQ4ryjeQEihlJkVsIbkqUeWrgN2WO92sXGZM=;
+        b=sUbOSklQzwJ2rMdLCKnO3w9DztZIWDHfyFxQGwVJJl2jCGyYY72pxjFsyZilo9ZLSo
+         0mjISIqYaQzrI+k/LY9JwpRzlfpLv6SZ4zKBNRN7Wv8Encpe99bdX77Bzzmu74HHR9D+
+         hYjv/i9LkgADX24kdNVr8+rbkiaY7+/cqT1XyiitfwRUo2VdskQ7gUkrPHR4wwSpfeyu
+         xrr1SdZN/OY6t0B/eEL33Iyhaa01fAb16PUUeskS44ylOfYRyFhCQn+9LpVrEbaYzYOP
+         uIhx9DjBWVk+VBpPVOlwEFjzx4aIcn03Ke4E9Jvtr3nmMI+Vsf7AQHVBzzW0UIg73w6t
+         W87Q==
+X-Gm-Message-State: AOAM531Lk1ZXRXKc4c2ZHGVKdqxAa4z9xYzSuM4oh8szj8uCW4a3HYxt
+        yvVlRgnGZCBuamYymgmBC74I2EfpgC0=
+X-Google-Smtp-Source: ABdhPJxaL9tsPBJ3ab510EBcjK/c2Pq5L6EHhqrAf9vODjJkZ852MryO6R/xO90ntmz424S6Wxx8Cg==
+X-Received: by 2002:a17:90b:503:: with SMTP id r3mr1975950pjz.195.1623378636861;
+        Thu, 10 Jun 2021 19:30:36 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id k136sm3593681pfd.87.2021.06.10.19.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 19:30:36 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 12:30:31 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 2/4] powerpc/interrupt: Refactor
+ prep_irq_for_user_exit()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <809d316bf5f1a81acdd69e220c13e716dac24f53.1622818556.git.christophe.leroy@csgroup.eu>
+        <3fbef68e1cffc0ebbbad1893e4fb9426b0915039.1622818556.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <3fbef68e1cffc0ebbbad1893e4fb9426b0915039.1622818556.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2B4009F64EB28FF746E2C443C376190B28D238414B49AA5C781DE84D5A2B3E672000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Message-Id: <1623378421.ayihg84s3a.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIxLTA2LTA2IGF0IDIzOjE0ICswMjAwLCBVd2UgS2xlaW5lLUvDtm5pZyB3cm90
-ZToNCj4gT24gVGh1LCBKdW4gMDMsIDIwMjEgYXQgMDY6MDU6MzBQTSArMDgwMCwgSml0YW8gU2hp
-IHdyb3RlOg0KPiA+IER1ZSB0byB0aGUgY2xvY2sgc2VxdWVuY2UgY2hhbmdpbmcsIHNvIG1vdmUg
-dGhlIHJlZyBjb21taXQgdG8NCj4gDQo+IFdoaWNoIGNoYW5nZSBkbyB5b3UgcmVmZXIgdG8sIGhl
-cmU/IFRoZSBwcmV2aW91cyBwYXRjaD8gSWYgc28sIEkgYXNzdW1lDQo+IHRoaXMgbWVhbnMgdGhl
-IHNlcmllcyBpcyBub3QgYmlzZWN0YWJsZSBiZWNhdXNlIHRoZSBkcml2ZXIgaXMgYnJva2VuDQo+
-IHdoZW4gb25seSB0aGUgZmlyc3QgcGF0Y2ggaXMgYXBwbGllZD8NCj4gDQpZZXMsIHRoaXMgcGF0
-Y2ggaXMgZGVwZW5kIHRoZSBwcmV2aW91cyBwYXRjaC4NCkknbGwgc3F1YXNoIGl0IHRvIHRoZSBw
-cmV2aW91cyBwYXRjaCBpbiBuZXh0IHZlcnNpb24uDQoNCg0KPiA+IGNvbmZpZygpLg0KPiA+IA0K
-PiA+IFNpZ25lZC1vZmYtYnk6IEppdGFvIFNoaSA8aml0YW8uc2hpQG1lZGlhdGVrLmNvbT4NCj4g
-PiAtLS0NCj4gPiAgZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMgfCAyMCArKysrKysrLS0tLS0t
-LS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlv
-bnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMg
-Yi9kcml2ZXJzL3B3bS9wd20tbXRrLWRpc3AuYw0KPiA+IGluZGV4IGI1NzcxZTJjNTRiOC4uYjg3
-YjNjMDBhNjg1IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvcHdtL3B3bS1tdGstZGlzcC5jDQo+
-ID4gKysrIGIvZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMNCj4gPiBAQCAtMTM1LDYgKzEzNSwx
-MyBAQCBzdGF0aWMgaW50IG10a19kaXNwX3B3bV9jb25maWcoc3RydWN0IHB3bV9jaGlwICpjaGlw
-LCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLA0KPiA+ICAJCW10a19kaXNwX3B3bV91cGRhdGVfYml0
-cyhtZHAsIG1kcC0+ZGF0YS0+Y29tbWl0LA0KPiA+ICAJCQkJCSBtZHAtPmRhdGEtPmNvbW1pdF9t
-YXNrLA0KPiA+ICAJCQkJCSAweDApOw0KPiA+ICsJfSBlbHNlIHsNCj4gDQo+IFlvdSBkcm9wcGVk
-IHRoZSBjb2RlIGNvbW1lbnQ/IElzIGl0IHdyb25nPyBPciBpcyBpdCB0b28gb2J2aW91cyB0byBi
-ZQ0KPiBtZW50aW9uZWQ/DQo+IA0KDQpJJ2xsIGZpeCB0aGVtIG5leHQgdmVyaXNvbi4NCg0KPiA+
-ICsJCW10a19kaXNwX3B3bV91cGRhdGVfYml0cyhtZHAsIG1kcC0+ZGF0YS0+YmxzX2RlYnVnLA0K
-PiA+ICsJCQkJCSBtZHAtPmRhdGEtPmJsc19kZWJ1Z19tYXNrLA0KPiA+ICsJCQkJCSBtZHAtPmRh
-dGEtPmJsc19kZWJ1Z19tYXNrKTsNCj4gPiArCQltdGtfZGlzcF9wd21fdXBkYXRlX2JpdHMobWRw
-LCBtZHAtPmRhdGEtPmNvbjAsDQo+ID4gKwkJCQkJIG1kcC0+ZGF0YS0+Y29uMF9zZWwsDQo+ID4g
-KwkJCQkJIG1kcC0+ZGF0YS0+Y29uMF9zZWwpOw0KPiA+ICAJfQ0KPiA+ICANCj4gPiAgCXJldHVy
-biAwOw0KPiA+IEBAIC0yMDgsMTkgKzIxNSw2IEBAIHN0YXRpYyBpbnQgbXRrX2Rpc3BfcHdtX3By
-b2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gIA0KPiA+ICAJcGxhdGZvcm1f
-c2V0X2RydmRhdGEocGRldiwgbWRwKTsNCj4gPiAgDQo+ID4gLQkvKg0KPiA+IC0JICogRm9yIE1U
-MjcwMSwgZGlzYWJsZSBkb3VibGUgYnVmZmVyIGJlZm9yZSB3cml0aW5nIHJlZ2lzdGVyDQo+ID4g
-LQkgKiBhbmQgc2VsZWN0IG1hbnVhbCBtb2RlIGFuZCB1c2UgUFdNX1BFUklPRC9QV01fSElHSF9X
-SURUSC4NCj4gPiAtCSAqLw0KPiA+IC0JaWYgKCFtZHAtPmRhdGEtPmhhc19jb21taXQpIHsNCj4g
-PiAtCQltdGtfZGlzcF9wd21fdXBkYXRlX2JpdHMobWRwLCBtZHAtPmRhdGEtPmJsc19kZWJ1ZywN
-Cj4gPiAtCQkJCQkgbWRwLT5kYXRhLT5ibHNfZGVidWdfbWFzaywNCj4gPiAtCQkJCQkgbWRwLT5k
-YXRhLT5ibHNfZGVidWdfbWFzayk7DQo+ID4gLQkJbXRrX2Rpc3BfcHdtX3VwZGF0ZV9iaXRzKG1k
-cCwgbWRwLT5kYXRhLT5jb24wLA0KPiA+IC0JCQkJCSBtZHAtPmRhdGEtPmNvbjBfc2VsLA0KPiA+
-IC0JCQkJCSBtZHAtPmRhdGEtPmNvbjBfc2VsKTsNCj4gPiAtCX0NCj4gPiAtDQo+ID4gIAlyZXR1
-cm4gMDsNCj4gPiAgfQ0KPiANCj4gQmVzdCByZWdhcmRzDQo+IFV3ZQ0KPiANCg0KQmVzdCBSZWdh
-cmRzDQpKaXRhbw0KDQo=
+Excerpts from Christophe Leroy's message of June 5, 2021 12:56 am:
+> prep_irq_for_user_exit() is a superset of
+> prep_irq_for_kernel_enabled_exit().
+>=20
+> Refactor it.
 
+I like the refactoring, but now prep_irq_for_user_exit() is calling=20
+prep_irq_for_kernel_enabled_exit(), which seems like the wrong naming.
+
+You could re-name prep_irq_for_kernel_enabled_exit() to
+prep_irq_for_enabled_exit() maybe? Or it could be=20
+__prep_irq_for_enabled_exit() then prep_irq_for_kernel_enabled_exit()
+and prep_irq_for_user_exit() would both call it.
+
+Otherwise
+
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/kernel/interrupt.c | 25 +++++--------------------
+>  1 file changed, 5 insertions(+), 20 deletions(-)
+>=20
+> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interr=
+upt.c
+> index 539455c62c5b..b6aa80930733 100644
+> --- a/arch/powerpc/kernel/interrupt.c
+> +++ b/arch/powerpc/kernel/interrupt.c
+> @@ -78,29 +78,14 @@ static notrace __always_inline bool prep_irq_for_kern=
+el_enabled_exit(bool restar
+>   */
+>  static notrace __always_inline bool prep_irq_for_user_exit(void)
+>  {
+> -	user_enter_irqoff();
+> -	/* This must be done with RI=3D1 because tracing may touch vmaps */
+> -	trace_hardirqs_on();
+> -
+> -#ifdef CONFIG_PPC32
+> -	__hard_EE_RI_disable();
+> -#else
+> -	if (exit_must_hard_disable())
+> -		__hard_EE_RI_disable();
+> +	bool ret;
+> =20
+> -	/* This pattern matches prep_irq_for_idle */
+> -	if (unlikely(lazy_irq_pending_nocheck())) {
+> -		if (exit_must_hard_disable()) {
+> -			local_paca->irq_happened |=3D PACA_IRQ_HARD_DIS;
+> -			__hard_RI_enable();
+> -		}
+> -		trace_hardirqs_off();
+> +	user_enter_irqoff();
+> +	ret =3D prep_irq_for_kernel_enabled_exit(true);
+> +	if (!ret)
+>  		user_exit_irqoff();
+> =20
+> -		return false;
+> -	}
+> -#endif
+> -	return true;
+> +	return ret;
+>  }
+> =20
+>  /* Has to run notrace because it is entered not completely "reconciled" =
+*/
+> --=20
+> 2.25.0
+>=20
+>=20
