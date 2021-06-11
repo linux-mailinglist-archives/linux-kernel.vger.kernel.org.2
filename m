@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0703A4784
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33643A4785
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhFKRMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:12:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60092 "EHLO mail.kernel.org"
+        id S231294AbhFKRNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:13:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhFKRMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:12:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9825B613D0;
-        Fri, 11 Jun 2021 17:10:50 +0000 (UTC)
+        id S230303AbhFKRNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:13:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C72BE61184;
+        Fri, 11 Jun 2021 17:11:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623431450;
-        bh=FfrPBTLS3IBVIVyyeuJrgFZ+eOxNJLAjI5MfDp/aJgE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VU5wP/l85pMtYrSDweQgAaUPIHsusCfDjF07cdtFKfQtoIIaokVemKetVswvZYash
-         FkioIRy8dQFOiIQP+5w2TjVopahgobGeAH2i1Qj61jCDGFxqVCrxh+yB9IgQ83Isq3
-         xVmhXwKsxZW0kZa7sg/7QmO6gjeV08NXO/IgNZlTiZPzirDqz+Yp5b0YbmXWbkXZBR
-         v+g97Eq/G0EhB0EMF7Cf3OnCRSQX1+cqQUGahsTqeN8mlHl+p7INZ+1vcgVljQhmQo
-         F0vZ/rKfzxyKNvpYQpvJKP+tZMbZRDXejJYQkwhOesVQ5vkJLY9jmem/0yjWxj9Nyq
-         FWXezBTE043+Q==
-Received: by mail-ed1-f50.google.com with SMTP id s6so37915329edu.10;
-        Fri, 11 Jun 2021 10:10:50 -0700 (PDT)
-X-Gm-Message-State: AOAM530nhzcJskyOQIaxbXafy2/dqVqDVQMQIFeWqBzWZi3ce6ipTYX0
-        +VWzwfx66vn34CDUYEcBDO3m/ImIoMdDDN/dyA==
-X-Google-Smtp-Source: ABdhPJzXen0iXLyQ/Wre3Q5uONhrHhT7pVpH9LXRTjzCQKgCTvYCot0lFJEJNZAnubFnbkobUzQlhicDi0/c0za+Bp0=
-X-Received: by 2002:aa7:cac9:: with SMTP id l9mr4773587edt.373.1623431449052;
- Fri, 11 Jun 2021 10:10:49 -0700 (PDT)
+        s=k20201202; t=1623431498;
+        bh=/BcjzFgtIGfGd3+j0Jqz2SkO9Jfqps+SzPLc0uDWASQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=o/fVu5T8rsNjNMwHsa/Y02VbMfFHN0We8KxHrZnov2Oul5+/wB4VvFE1m6rTo0rN0
+         qP7fOeBed9NpayasYVBeJmMMnIE/ndgj9q1ATGfeY+aXmw/v98JTE2KAYGHOcGdyj5
+         +VDIVNFMlu/t0wUcVXGEMqk8Z90LWCMiOZPopZCBzoOw9cbZCxMYYoacOQzgVa2r8I
+         1w0O5+wqdZhoZ8XgaHGiO05Qtaokm4w2BThIkBYUleH7SY//eaEBFE975TFfOVHUcz
+         uROZyZSY+qVbL5lCPoKHlnPNUyH8LbOkfDVHErFhsILhtcTjsUKPVyWl2xEMKIcRbZ
+         ve22WDQfyYnnw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 93AE45C0990; Fri, 11 Jun 2021 10:11:38 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 10:11:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Question about a8ea6fc9b089 ("sched: Stop PF_NO_SETAFFINITY from
+ being inherited by various init system threads")
+Message-ID: <20210611171138.GF4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210610170435.GA2187550@paulmck-ThinkPad-P17-Gen-1>
+ <8735tpd15i.mognet@arm.com>
+ <20210610201713.GU4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210611124212.GB143945@lothringen>
 MIME-Version: 1.0
-References: <20210611131153.3731147-1-aisheng.dong@nxp.com> <20210611131153.3731147-2-aisheng.dong@nxp.com>
-In-Reply-To: <20210611131153.3731147-2-aisheng.dong@nxp.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 11 Jun 2021 11:10:36 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJMyY4iEcJi1z0o7pZdCASYHjnVjf6+fQDqa_ucb-M-MA@mail.gmail.com>
-Message-ID: <CAL_JsqJMyY4iEcJi1z0o7pZdCASYHjnVjf6+fQDqa_ucb-M-MA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] of: of_reserved_mem: mark nomap memory instead of removing
-To:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Quentin Perret <qperret@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        KarimAllah Ahmed <karahmed@amazon.de>
-Cc:     linux-mm <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dong Aisheng <dongas86@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611124212.GB143945@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 7:13 AM Dong Aisheng <aisheng.dong@nxp.com> wrote:
->
-> Since commit 86588296acbf ("fdt: Properly handle "no-map" field in the memory region"),
-> nomap memory is changed to call memblock_mark_nomap() instead of
-> memblock_remove(). But it only changed the reserved memory with fixed
-> addr and size case in early_init_dt_reserve_memory_arch(), not
-> including the dynamical allocation by size case in
-> early_init_dt_alloc_reserved_memory_arch().
->
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
+On Fri, Jun 11, 2021 at 02:42:12PM +0200, Frederic Weisbecker wrote:
+> On Thu, Jun 10, 2021 at 01:17:13PM -0700, Paul E. McKenney wrote:
+> > On Thu, Jun 10, 2021 at 07:28:57PM +0100, Valentin Schneider wrote:
+> > > On 10/06/21 10:04, Paul E. McKenney wrote:
+> > > 
+> > > Hi,
+> > > > Hello, Frederic,
+> > > >
+> > > > This commit works well, but has the unfortunate side-effect of making
+> > > > smp_processor_id() complain when used in a preemptible region even
+> > > > though the kthread has been pinned onto a single CPU by a call to
+> > > > set_cpus_allowed_ptr().  (Which did return success.)
+> > > >
+> > > 
+> > > On which tree are you encountering this?
+> > 
+> > I bisected to this commit in -next tag next-20210609, and this commit
+> > could of course be an innocent bystander caught in the crossfire.
+> > 
+> > > Looking at check_preemption_disabled() and CPU affinity, v5.13-rc5 has:
+> > > 
+> > >         /*
+> > >          * Kernel threads bound to a single CPU can safely use
+> > >          * smp_processor_id():
+> > >          */
+> > >         if (current->nr_cpus_allowed == 1)
+> > >                 goto out;
+> > > 
+> > > tip/sched/core additionally hinges that on PF_NO_SETAFFINITY:
+> > > 
+> > >   570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
+> > > 
+> > > The former shouldn't be affected by Frederic's patch, and the latter should
+> > > only cause warnings if the pinned task isn't a "proper" kthread (thus
+> > > doesn't have PF_NO_SETAFFINITY)... Exceptions that come to mind are things
+> > > like UMH which doesn't use kthread_create().
+> > 
+> > And reverting 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread()
+> > instead of nr_cpus_allowed") causes the kernel to once again be OK with
+> > smp_processor_id(), so thank you!  And apologies to Frederic for the
+> > false alarm.
+> > 
+> > Added Yejune on CC.  Thoughts?
+> 
+> There is also that:
+> 
+>       15faafc6b449777a85c0cf82dd8286c293fed4eb ("sched,init: Fix DEBUG_PREEMPT
+>       vs early boot")
+> 
+> Not sure if that will help but just in case.
 
-Good practice is to Cc the people involved in referenced commits.
-Adding them now. This code is a minefield so I'd like other eyes on
-it.
+Thank you for the pointer!  These tasks start later well after
+kthreadd_done, so I believe that I dodged this particular bullet.  ;-)
 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
->  drivers/of/of_reserved_mem.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-> index 367f298a83b2..ebba88395bf8 100644
-> --- a/drivers/of/of_reserved_mem.c
-> +++ b/drivers/of/of_reserved_mem.c
-> @@ -42,7 +42,7 @@ static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
->
->         *res_base = base;
->         if (nomap)
-> -               return memblock_remove(base, size);
-> +               return memblock_mark_nomap(base, size);
->
->         return memblock_reserve(base, size);
->  }
-> @@ -276,7 +276,7 @@ void __init fdt_init_reserved_mem(void)
->                                 pr_info("node %s compatible matching fail\n",
->                                         rmem->name);
->                                 if (nomap)
-> -                                       memblock_add(rmem->base, rmem->size);
-> +                                       memblock_clear_nomap(rmem->base, rmem->size);
->                                 else
->                                         memblock_free(rmem->base, rmem->size);
->                         }
-> --
-> 2.25.1
->
+						Thanx, Paul
