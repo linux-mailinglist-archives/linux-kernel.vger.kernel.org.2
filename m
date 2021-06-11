@@ -2,76 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0933A4359
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D6B3A435F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbhFKNws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:52:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231393AbhFKNwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:52:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7DE61357;
-        Fri, 11 Jun 2021 13:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623419444;
-        bh=4g9zOBMtlLANWjsSzpBI0yPUcR1JafM3BAkdl/2DRjM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=huqExwz9svuE+0K5X/MWkdW0X79ZbDiGNmay76Y88bNqFOJguDAdSitTn8KyMPZ19
-         nlXc4WBp/GZH2SK4kyEAaxdin+T4nTefqJ7xDJP5iY9rbf394O+nUKDadCOiiShU82
-         TbjmsPvLQDQkPB6WlPWc56XRcY135G1u8iMMTqFffViBMEjeSe8ii4SNM0vT4jXDGe
-         g2c6jvOsx30Tc0dqOELYK2FIafC09RqSF6h1wRJSLWnSbsFSJvBVhPFjrzeXj2d/7q
-         x10ouJtJsxfA7dAc9eL+AEpG2bbp5CfmATTbIXjvXvEnbxlpCTNcACLqn9aoB3xuZ+
-         JqS11eowipklQ==
-Date:   Fri, 11 Jun 2021 14:50:39 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jiajun Cao <caojiajun@vmware.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] iommu: Improve iommu_iotlb_gather helpers
-Message-ID: <20210611135039.GB15776@willie-the-truck>
-References: <20210607182541.119756-1-namit@vmware.com>
- <20210607182541.119756-4-namit@vmware.com>
+        id S231495AbhFKNxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhFKNx3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:53:29 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB0EC061574;
+        Fri, 11 Jun 2021 06:51:17 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id a19so6600644ljq.12;
+        Fri, 11 Jun 2021 06:51:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xVxSNmZANvk4+xXEPZhmdlgwWkhMnsRF27bwwNOdZG8=;
+        b=Sgrn7Y/dVZ5kOr4om0rQqu9jRGg39+nyLDYicWqeVx2nZ9X+zJNj+CJOwHlPT+1Wrj
+         nXFlmDUb0Xo9Lh7dlg2DeS0XmhIW0zRjMZ2C4lhE/sI32mfOWFnYNbX2g9VkEhAusHZs
+         Rswn/8EOfge1thH6I+tYzikO23WTeSv27sOXizs2CCOK17B5Oi3rJgxoEBL+S/EcOKBz
+         7IauTY1u7kujy5CygP5aqFH7nogHvcJY/XYGEwNYeGtGl0TAbltX66XzI9hg0jXZtMh/
+         2Y8a3WsMbluns0GKIaW9mSaBXGyeFpJwpRlMLrm9tyA+MWXOHKv+Ph6Qq0v7eEI8mgpo
+         uhNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xVxSNmZANvk4+xXEPZhmdlgwWkhMnsRF27bwwNOdZG8=;
+        b=WSC7n7KN7VpOP7oAItt4icc/tSN4r93OmIn1OhImJV2UxNa3MR7XtxIZnChiX8vy3d
+         yrlgeOQYnagsIZ7NFdUeUfI4zHBYrNAbrdg2FWmrflPsPfQtmAmba1D+1x0b0ONWCZHW
+         RINUzlt5/ebViR0QDI4N6W9TmDNRM4Hep15j+khlQXafRiNLWighUclsz3HLsaX9j9JI
+         Jh9EXHhZC5LAB7xFHqeFIXXT/fJmNqtqugKzAYHM4HgO8fz3hRcQRkGkCdO+EprzG+x2
+         u8IXVTbz47D0WMqtXK93pO0v7kk1WL+B1vflxtRZVBxCGPHPuLfZ5ZtlA8m2JF/d7p3G
+         lPQA==
+X-Gm-Message-State: AOAM533G1bWwgkX5ddnBR/cPZUiiQGxMNzwlE3J5RRCvnW8FThsOPbnp
+        ZwVkzMLRNoi6D0nXmtofW4j5Ze4CT9BqvayUpYA=
+X-Google-Smtp-Source: ABdhPJzBC5HTrPREljfBNuYDFNUOpKk5D/S72tuVLMDbbEnMCeVyrTuboq9vTycZoGPYOJtPpiu6HfWjFyo+5AaDbZM=
+X-Received: by 2002:a05:651c:1193:: with SMTP id w19mr3110192ljo.264.1623419475775;
+ Fri, 11 Jun 2021 06:51:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607182541.119756-4-namit@vmware.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
+In-Reply-To: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Fri, 11 Jun 2021 10:51:04 -0300
+Message-ID: <CAOMZO5CNjpek0vkDrMyTmfbnr2cLcquck6QQBqXLBiyTDKPXvA@mail.gmail.com>
+Subject: Re: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
+To:     Robin Gong <yibin.gong@nxp.com>
+Cc:     Vinod <vkoul@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        dmaengine@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:25:38AM -0700, Nadav Amit wrote:
-> From: Robin Murphy <robin.murphy@arm.com>
-> 
-> The Mediatek driver is not the only one which might want a basic
-> address-based gathering behaviour, so although it's arguably simple
-> enough to open-code, let's factor it out for the sake of cleanliness.
-> Let's also take this opportunity to document the intent of these
-> helpers for clarity.
-> 
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Jiajun Cao <caojiajun@vmware.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Lu Baolu <baolu.lu@linux.intel.com>
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> 
-> ---
-> 
-> Changes from Robin's version:
-> * Added iommu_iotlb_gather_add_range() stub !CONFIG_IOMMU_API
-> * Use iommu_iotlb_gather_add_range() in iommu_iotlb_gather_add_page()
-> ---
->  drivers/iommu/mtk_iommu.c |  5 +----
->  include/linux/iommu.h     | 43 ++++++++++++++++++++++++++++++++++-----
->  2 files changed, 39 insertions(+), 9 deletions(-)
+Hi Robin,
 
-Acked-by: Will Deacon <will@kernel.org>
+On Wed, Apr 7, 2021 at 4:15 AM Robin Gong <yibin.gong@nxp.com> wrote:
+>
+> There is ecspi ERR009165 on i.mx6/7 soc family, which cause FIFO
+> transfer to be send twice in DMA mode. Please get more information from:
+> https://www.nxp.com/docs/en/errata/IMX6DQCE.pdf. The workaround is adding
+> new sdma ram script which works in XCH  mode as PIO inside sdma instead
+> of SMC mode, meanwhile, 'TX_THRESHOLD' should be 0. The issue should be
+> exist on all legacy i.mx6/7 soc family before i.mx6ul.
+> NXP fix this design issue from i.mx6ul, so newer chips including i.mx6ul/
+> 6ull/6sll do not need this workaroud anymore. All other i.mx6/7/8 chips
+> still need this workaroud. This patch set add new 'fsl,imx6ul-ecspi'
+> for ecspi driver and 'ecspi_fixed' in sdma driver to choose if need errata
+> or not.
+> The first two reverted patches should be the same issue, though, it
+> seems 'fixed' by changing to other shp script. Hope Sean or Sascha could
+> have the chance to test this patch set if could fix their issues.
+> Besides, enable sdma support for i.mx8mm/8mq and fix ecspi1 not work
+> on i.mx8mm because the event id is zero.
+>
+> PS:
+>    Please get sdma firmware from below linux-firmware and copy it to your
+> local rootfs /lib/firmware/imx/sdma.
+> https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/imx/sdma
 
-Will
+Without this series, SPI DMA does not work on i.MX8MM:
+
+ [   41.315984] spi_master spi1: I/O Error in DMA RX
+
+I applied your series and SPI DMA works now:
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+
+Thanks
