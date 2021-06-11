@@ -2,139 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E4C3A4411
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1FA3A4419
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhFKObH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:31:07 -0400
-Received: from mail-dm6nam12on2072.outbound.protection.outlook.com ([40.107.243.72]:29664
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230346AbhFKObG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:31:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AugUPhsmH9itr9hphywU01Yz7FLHYyUbGlYEipX583Jshf3cncw3rEF8QbvEanGswI3x9WHap2WOk/Ie9/INiJK4gl51AgYvkKkTMalNPSh4pVY37IEum1b0R508xiSybeuT2rzQqoIKDpkfc7TOBpcUasyFaq1LzGlKpRzDx5Ndy4xgIKzIfDYxa7vWZhRrHeALRUH4B8tKtQXB2IebDRQaUTo4bsG7haGGQ4ze8o1jnR4wagYIz00cRtFwP/q1600UmMsc0TewBD7JteFH7lA23/6WCFQIZeywd07zvrm3RhrfVrfEZRUQ4Ax27oHczfg3elLfwaRr9esfqmyZKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ImYRURSA0MWns+++F1GteOzG2evYIUzjTgbdkzculhc=;
- b=Gu9WShkRvRC6RFU9txL6K8UnK4lqjVF21CENFva883OvHfBKJa9rwDfibWL2GeUwmFApetjsmNMfgkEUVc07s6JnL2wi+IGQI2dAP0Jx4/cZV3hpMkoMIur/j9hJ5lnJDOfEsRBaG10nKkkjMK0QoQYsis/ZDeZ/fS8XBqL8kOps7f7f/H2zkoYjag6Wou8zvxRQqEWy6aOgF/AH99/b9ocPgT9X+ft18k938/ssUyzaAUsOjSi4MvWzswdtSDIXsyX0fRl4S7Si6JP2n94EtJPFzkdY/P92IWvQkjMOfAl2DN6uVmGGXdt3sy2ee1g6nEhMuUzbuZa5WwYx9FYtvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ImYRURSA0MWns+++F1GteOzG2evYIUzjTgbdkzculhc=;
- b=gtFNOYImn2S1NVgKtKre+lBk3Re/A9AUSstImgbkJciFkx/8BMZrN/jhivVWGSxPosOiVtU7f+W6evs2i9H46gOt9p645Z/oS5VO09vfmAwXjM1v6z06VuKbqFae7PQgVv0MyuEfQFHyhnjzbe2L1aeAuI+wMqCxJO7BTWVyNp0=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SA0PR12MB4382.namprd12.prod.outlook.com (2603:10b6:806:9a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Fri, 11 Jun
- 2021 14:29:07 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::958d:2e44:518c:744c]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::958d:2e44:518c:744c%7]) with mapi id 15.20.4219.024; Fri, 11 Jun 2021
- 14:29:07 +0000
-From:   Ashish Kalra <Ashish.Kalra@amd.com>
-To:     pbonzini@redhat.com
-Cc:     seanjc@google.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org,
-        Thomas.Lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srutherford@google.com,
-        brijesh.singh@amd.com, linux-efi@vger.kernel.org
-Subject: [PATCH v4 4/5] EFI: Introduce the new AMD Memory Encryption GUID.
-Date:   Fri, 11 Jun 2021 14:28:57 +0000
-Message-Id: <eb86793b6964dc813cd6105dfd5b551d3d2eff46.1623421410.git.ashish.kalra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1623421410.git.ashish.kalra@amd.com>
-References: <cover.1623421410.git.ashish.kalra@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN6PR2101CA0018.namprd21.prod.outlook.com
- (2603:10b6:805:106::28) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        id S231669AbhFKOcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhFKOcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 10:32:23 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52916C061574;
+        Fri, 11 Jun 2021 07:30:12 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id h12so2924987plf.4;
+        Fri, 11 Jun 2021 07:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aZwUj1oQjzfy8pMKa2YiJLF+wN290SZ2awmanFa5QtE=;
+        b=BzmU0pMKUM/RdSek5uSsg6RDQocaOr9viY4FV2UGYd8hiQ8UB34vrV40M5NbkCusAA
+         uWbS0l4b+ET1JtvtmtdA31D3aqHGJZTVPVoLCYGVIkdWKaTLJEIy3p+OzB/+pXQweLDY
+         tt5oj5CA+9nShrS/X3Tj1BIxeJt6Wozchpe5Shh6MBWbh9G7e797u7mNRZ1YV8irNw1q
+         Tn8jt9Wgl+Kv18ydEsSzYnJjdZGlWSq0Yz64y+uxd9/pKttU9e3XPDbQ9qyr6ba5khQ/
+         k46YAunh1+MdtZunrF1njMd/XADaqfK3S7P7V3h0llG1WrM7uJZgCEz0b7B4kt9YKU/Z
+         LoRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aZwUj1oQjzfy8pMKa2YiJLF+wN290SZ2awmanFa5QtE=;
+        b=StoVDpc9ZrEsqplVEQLliM/FH8ucpUcPE9N0SH0QYwRb1Ri+p7C/Ok8H3AmX/cvcRd
+         jpyMSvaDPFTHqJJHbp8nFOquUH70UsRpW8aQ5osepa1E2y0uhlfE8R6V5SUfg96x4Btm
+         VkUb8/hTNNGdTuOts5trpoZaNySTNRhiAwGwvuLJvFqwfUzgesGUtvySE54b+N67ONCh
+         farI84E5iuTlsJkQrSRP47zg8FNrid4FF4w4aKOkpQ319Zmr9TMpKEzUi3zp0lOpKQ3A
+         FPtirLKHEDQUhnAx2pHFuDBqI1VeyFT8JtysOpt5uJNd8oTyk9NwVbAWyE/AZGZlB7gF
+         8Dbw==
+X-Gm-Message-State: AOAM533ka32CxtLBuz2ltM9Au2NZ2DWcuigtxrWILiabzIdkWMl2bh7C
+        NtmeSzsTfYhmaV1DefVfhY4=
+X-Google-Smtp-Source: ABdhPJxPYEHLuu3n0lBU1WHBYaKa9KGhqVhQ6Y5EPZH947r3xK6aNFGiPQMMK9JOh00+i7Cg+hc8Sg==
+X-Received: by 2002:a17:902:d4c8:b029:102:715b:e3a5 with SMTP id o8-20020a170902d4c8b0290102715be3a5mr4147534plg.83.1623421811748;
+        Fri, 11 Jun 2021 07:30:11 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id z14sm5442218pfn.11.2021.06.11.07.30.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 07:30:11 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jakub Kici nski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH v4] net: make get_net_ns return error if NET_NS is disabled
+Date:   Fri, 11 Jun 2021 22:29:59 +0800
+Message-Id: <20210611142959.92358-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SN6PR2101CA0018.namprd21.prod.outlook.com (2603:10b6:805:106::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.4 via Frontend Transport; Fri, 11 Jun 2021 14:29:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e7516689-618a-4f96-da0a-08d92ce54517
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4382:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4382261A3ED69588862530918E349@SA0PR12MB4382.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cmjOq+4k44Es0y2oeHCZQ2HJmi75YcqntgcleG3fBO0aSLE4XrNEX1WQ4s2hmGPyIosOGCi6FFC72TfYyAPpOC1ZPUsah71oGkeibWXb4QAu35YLLxi+yJDQ5h4zErcUWFbA9IEv6wtv4Gas1nn6wUBZK/7PzOltfc6ttVpGNyX2TVJES+t4Xtf/UUzJl/8jL8EDW44nCY8AVQ1IF4kvoyC2Szwa90IN5xNvjj3WccKlpVYy/0q184lC3Ve//qriEvc6P7/g4QGJVEPAnEiSGdmExQOQOv3HE7dDyZh0YiDeDUy6W02CIE+K9Cpq+1XWTBstamkmxyax38gd5l9viICfmBv2jlg4kPXnbjjrm4xt5g9JIo0NQ9+VYBqANEHLNMJ87xCvkLkEnk5Ctz9IS91pptuskDm52KcFeDHbcK57vkKIjDc3cICzXSHX6wWhYgFl4COlc7Z6j8bLuKqfmOptqSQDXGSIgI9WdnvbrKjwrC6ahDJMFvrfc8e4z1JYjsm9usV3X6t4Q/82NpR7MCOCMSMQo+IxWt95JZiezs0hq/3Bwq/9ziEXdJjZJbZKaah2y8pxc7EJQqCHbrQcQ/LXwzeI2C1aTSkw2xRPofqbIoLilVN9hXRF24rqQ6kGDgLDAGpFupu8oYUeoZqWVvM9jSyMuRQcRj1PX6JjEdA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(39860400002)(136003)(396003)(4326008)(38100700002)(38350700002)(2906002)(52116002)(66946007)(8936002)(66476007)(66556008)(7696005)(6666004)(186003)(16526019)(478600001)(83380400001)(6486002)(8676002)(86362001)(26005)(36756003)(5660300002)(2616005)(6916009)(956004)(7416002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TR5cMB65hKPJQuU5cZmYaRh283v9REdBJIwBodnHy36IwsvAlSKcjOK5l1Sc?=
- =?us-ascii?Q?IDf8yqdacvPPGh3as20r0vgCBSvuo9uu7TK8dwdiT+BIJUG1fGJtQM0u1Uqj?=
- =?us-ascii?Q?SKVNoImNOaEh59D0t3n1BujZ3+OZhzM/pAbkMxRw/mPvKwkD1sGrIFO5EuC/?=
- =?us-ascii?Q?yspvMBcI66uMXudGH/QwiPVoVhBUN4lAldv90+Q0nOgQQbP6G6S9RlerUGov?=
- =?us-ascii?Q?XIu4e71vedKtYoakxmhnetRQL3EP9HDZdFXAEiX3bedBovvrYufqafRxLsxP?=
- =?us-ascii?Q?TIVqMmhGdUWRJYNEP18UfqGvmN3vtdvnFUCt3yPM1o3S3ToT338T3bbLBl+F?=
- =?us-ascii?Q?Y7fqtNsf7IrFtwiDCcPrvO/cy8vhXJDzfM5QukdqT43g5wh6ei4446UV4NON?=
- =?us-ascii?Q?i7P40WMxYb8YuvRVAAqQt++ImW6646ji4zR7EDZ9PIs6Wsts0X+sdfipmXd9?=
- =?us-ascii?Q?uS6B1t3Virhe94diYW06J90nP1lm+r+tPa/2nfuQLec3he2R7Ppg9dGJON2C?=
- =?us-ascii?Q?NuJV/Oyg08/tiQTjesrZxGhQ/qg7UiaOIFkSNaDZ8kugqGL+F7csxQfO201p?=
- =?us-ascii?Q?7JBDJx1HgXLNqWp1bOMY3GgJEu0FUvxPHpYS6UisgQV7QKh198Q5/gX6Hoth?=
- =?us-ascii?Q?V9qH96oaZe7KS93MGXgbRUG3jat0jhO67F4WYVeRHqf5y3fBg+TjHkKzOIDY?=
- =?us-ascii?Q?O5aipjrAsRVgbacz11m7Tk7THZSz3xTFHm+ePamLkv94gj729lGjXZ+RcHZM?=
- =?us-ascii?Q?BjjhfIX7p/ml+vSmylC+0kAwma7VKxXC89Bw5GGokDURJbMrsbLdx14/yR89?=
- =?us-ascii?Q?2SCsVE+kmWGSEdokLBeeUuHiRdyAYLKkLdXVR24J2M+aTvd2QMCJIuuppQaq?=
- =?us-ascii?Q?FZDzPe8itTkPFcVkX9AJnmKTORe+quDH0aidzv/6+ywU0mBXdt3FDSc8hQvi?=
- =?us-ascii?Q?L5KXf/5eF8eth8D+tvYRs6y8UrYKR4pjJZIEleC2SXu1kQNl5gFmciT4VeLR?=
- =?us-ascii?Q?SfTn/Z1U7WoP6lZeRlDg3zZYzkVEW/omb5JlVldKzVOjvJfhJjSbFjDmxzVh?=
- =?us-ascii?Q?pN/l3p5VkqOGSPNeGYJXkew4RDEje5mHbF+0yPE7dyrID5Cp5yQK9HgTv2P/?=
- =?us-ascii?Q?MzoQWUUyBEhau6gEgPpj1nEk4rdD7XabPKohd5jHvLA7oN6cxNxO1CNdR5I4?=
- =?us-ascii?Q?dZnShoRqPs6eBleQB+IGDXzWPLI+CHakAyyrmf85+H57EurUsX1NR6ZdgRlz?=
- =?us-ascii?Q?ZligFwYf+NsuiFTHph1BVXSYbezBATLvAzZOb75rmJDMx0oFuun8pl7kNTpA?=
- =?us-ascii?Q?gAnNHDLnpkk52ISdRfmCOgJI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7516689-618a-4f96-da0a-08d92ce54517
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 14:29:06.9658
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lz4TEbV4VvXhzkOasYC4rRINxRuUioJC2Ji4kSShMCkq5SN+BFa4uJfCqiZ5LFuMQELTzIhu3+foenNH9m/CtA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4382
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashish Kalra <ashish.kalra@amd.com>
+There is a panic in socket ioctl cmd SIOCGSKNS when NET_NS is not enabled.
+The reason is that nsfs tries to access ns->ops but the proc_ns_operations
+is not implemented in this case.
 
-Introduce a new AMD Memory Encryption GUID which is currently
-used for defining a new UEFI environment variable which indicates
-UEFI/OVMF support for the SEV live migration feature. This variable
-is setup when UEFI/OVMF detects host/hypervisor support for SEV
-live migration and later this variable is read by the kernel using
-EFI runtime services to verify if OVMF supports the live migration
-feature.
+[7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+[7.670268] pgd = 32b54000
+[7.670544] [00000010] *pgd=00000000
+[7.671861] Internal error: Oops: 5 [#1] SMP ARM
+[7.672315] Modules linked in:
+[7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
+[7.673309] Hardware name: Generic DT based system
+[7.673642] PC is at nsfs_evict+0x24/0x30
+[7.674486] LR is at clear_inode+0x20/0x9c
 
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+The same to tun SIOCGSKNS command.
+
+To fix this problem, we make get_net_ns() return -EINVAL when NET_NS is
+disabled. Meanwhile move it to right place net/core/net_namespace.c.
+
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Fixes: c62cce2caee5 ("net: add an ioctl to get a socket network namespace")
+Cc: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: David Laight <David.Laight@ACULAB.COM>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+
 ---
- include/linux/efi.h | 1 +
- 1 file changed, 1 insertion(+)
+v4: rebase to net tree.
+---
+ include/linux/socket.h      |  2 --
+ include/net/net_namespace.h |  7 +++++++
+ net/core/net_namespace.c    | 12 ++++++++++++
+ net/socket.c                | 13 -------------
+ 4 files changed, 19 insertions(+), 15 deletions(-)
 
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 6b5d36babfcc..dbd39b20e034 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -362,6 +362,7 @@ void efi_native_runtime_setup(void);
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index b8fc5c53ba6f..0d8e3dcb7f88 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -438,6 +438,4 @@ extern int __sys_socketpair(int family, int type, int protocol,
+ 			    int __user *usockvec);
+ extern int __sys_shutdown_sock(struct socket *sock, int how);
+ extern int __sys_shutdown(int fd, int how);
+-
+-extern struct ns_common *get_net_ns(struct ns_common *ns);
+ #endif /* _LINUX_SOCKET_H */
+diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+index fa5887143f0d..6412d7833d97 100644
+--- a/include/net/net_namespace.h
++++ b/include/net/net_namespace.h
+@@ -184,6 +184,8 @@ struct net *copy_net_ns(unsigned long flags, struct user_namespace *user_ns,
+ void net_ns_get_ownership(const struct net *net, kuid_t *uid, kgid_t *gid);
  
- /* OEM GUIDs */
- #define DELLEMC_EFI_RCI2_TABLE_GUID		EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
-+#define AMD_SEV_MEM_ENCRYPT_GUID		EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
+ void net_ns_barrier(void);
++
++struct ns_common *get_net_ns(struct ns_common *ns);
+ #else /* CONFIG_NET_NS */
+ #include <linux/sched.h>
+ #include <linux/nsproxy.h>
+@@ -203,6 +205,11 @@ static inline void net_ns_get_ownership(const struct net *net,
+ }
  
- typedef struct {
- 	efi_guid_t guid;
+ static inline void net_ns_barrier(void) {}
++
++static inline struct ns_common *get_net_ns(struct ns_common *ns)
++{
++	return ERR_PTR(-EINVAL);
++}
+ #endif /* CONFIG_NET_NS */
+ 
+ 
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index 43b6ac4c4439..cc8dafb25d61 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -641,6 +641,18 @@ void __put_net(struct net *net)
+ }
+ EXPORT_SYMBOL_GPL(__put_net);
+ 
++/**
++ * get_net_ns - increment the refcount of the network namespace
++ * @ns: common namespace (net)
++ *
++ * Returns the net's common namespace.
++ */
++struct ns_common *get_net_ns(struct ns_common *ns)
++{
++	return &get_net(container_of(ns, struct net, ns))->ns;
++}
++EXPORT_SYMBOL_GPL(get_net_ns);
++
+ struct net *get_net_ns_by_fd(int fd)
+ {
+ 	struct file *file;
+diff --git a/net/socket.c b/net/socket.c
+index 27e3e7d53f8e..4f2c6d2795d0 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -1072,19 +1072,6 @@ static long sock_do_ioctl(struct net *net, struct socket *sock,
+  *	what to do with it - that's up to the protocol still.
+  */
+ 
+-/**
+- *	get_net_ns - increment the refcount of the network namespace
+- *	@ns: common namespace (net)
+- *
+- *	Returns the net's common namespace.
+- */
+-
+-struct ns_common *get_net_ns(struct ns_common *ns)
+-{
+-	return &get_net(container_of(ns, struct net, ns))->ns;
+-}
+-EXPORT_SYMBOL_GPL(get_net_ns);
+-
+ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+ {
+ 	struct socket *sock;
 -- 
-2.17.1
+2.30.2
 
