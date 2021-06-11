@@ -2,144 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013E13A4260
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501913A4262
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhFKMtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:49:50 -0400
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:42734 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231623AbhFKMts (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:49:48 -0400
-Received: by mail-pl1-f172.google.com with SMTP id v13so2780261ple.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 05:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AE3To/S2wXDjBGxOMUQqWoGcFGQ4LG3QMNrQoU63RTk=;
-        b=NZIahI+z75IWJiV27ZfoKIr+JftTfzPOdFitcNdNyV1IsC4F0EYCvWoy4zfao4+VXH
-         OxWoNN5w99jg6L7rbTUR1FF7/u5a3RVRhLPQS8azTyZZxLWC0hAx/lhAgx2pTpfemdVp
-         hFbRXKv1/WLZt60hlePQunO624bPq7uQV9iowDCaii7UZDR4/RE9GDHu/GGiKTc7H5r0
-         /wUotC3CHQxNDX7n4zjFpvk16wlM872XI3h6LuRRt3Mng5+dVc1HwO/VX9ZA0PdcDiwN
-         cXQLAg3+bQweSB83VxsKB9RFruo8jNLgced0EBf439jH52VN6edJpx99jVkOXiyET4Sy
-         va4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AE3To/S2wXDjBGxOMUQqWoGcFGQ4LG3QMNrQoU63RTk=;
-        b=VIvC3ZvC84s5+EMc2W238nTqKZdzkSvfhkVADXC9V22xkuB1b7qG+NkHnZ7kFbOAMN
-         kj8RhFgoKY/pkds979h1dJCbv7xKnsvBdxEZbRE1wnWZzCV1HKTO1C7nlMKz9EHKTGma
-         ZO6J6x8fqxTUM9B3uSm5MTQCj6c3TokRs1doaeigcj1/guV42TxqacVuxbBzSUVZqyfv
-         c1SlyEsgsqDECXqPT7DqukqoUrWM74SIwjOmE3VFf/YYZdg0eBci4wZzMKUi6EJBjcVb
-         8gBCfmXVOty2Qf5eA3R0yRO8Ev4Vs1XAAUEtxGgcQro5XSRhApsMKlUfxbLUUuu/x6iv
-         FP7w==
-X-Gm-Message-State: AOAM531n1ZJgZm1CI8PBeuwCOBkxUtvBJkVex5YGd1I8wSd6oEvc2V1d
-        8+VtYv5Ge3ujeSYBlBsxXCpD4PcJjXeamA==
-X-Google-Smtp-Source: ABdhPJx2URTNWRZ3cCYRxJYE3zGLlfRMolF+ggHJz87TLuTHudz20Mzg8r6hDUao+GnWZCxtMLcMMg==
-X-Received: by 2002:a17:90b:108f:: with SMTP id gj15mr4550563pjb.124.1623415610527;
-        Fri, 11 Jun 2021 05:46:50 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id f8sm4874186pfv.73.2021.06.11.05.46.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Jun 2021 05:46:50 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        peterz@infradead.org, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH] x86: fix get_wchan() not support the ORC unwinder
-Date:   Fri, 11 Jun 2021 20:46:42 +0800
-Message-Id: <20210611124642.72910-1-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        id S231509AbhFKMu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:50:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:57474 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231315AbhFKMuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 08:50:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A987D6E;
+        Fri, 11 Jun 2021 05:48:24 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A183D3F73D;
+        Fri, 11 Jun 2021 05:48:22 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 13:48:20 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 3/3] sched: Make uclamp changes depend on CAP_SYS_NICE
+Message-ID: <20210611124820.ksydlg4ncw2xowd3@e107158-lin.cambridge.arm.com>
+References: <20210610151306.1789549-1-qperret@google.com>
+ <20210610151306.1789549-4-qperret@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210610151306.1789549-4-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the kernel CONFIG_UNWINDER_ORC option is enabled by
-default on x86, but the implementation of get_wchan() is still
-based on the frame pointer unwinder, so the /proc/<pid>/wchan
-always return 0 regardless of whether the task <pid> is running.
+On 06/10/21 15:13, Quentin Perret wrote:
+> There is currently nothing preventing tasks from changing their per-task
+> clamp values in anyway that they like. The rationale is probably that
+> system administrators are still able to limit those clamps thanks to the
+> cgroup interface. However, this causes pain in a system where both
+> per-task and per-cgroup clamp values are expected to be under the
+> control of core system components (as is the case for Android).
+> 
+> To fix this, let's require CAP_SYS_NICE to increase per-task clamp
+> values. This allows unprivileged tasks to lower their requests, but not
+> increase them, which is consistent with the existing behaviour for nice
+> values.
 
-We reimplement the get_wchan() by calling stack_trace_save_tsk(),
-which is adapted to the ORC and frame pointer unwinders.
+Hmmm. I'm not in favour of this.
 
-Fixes: ee9f8fce9964(x86/unwind: Add the ORC unwinder)
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
----
- arch/x86/kernel/process.c | 51 +++--------------------------------------------
- 1 file changed, 3 insertions(+), 48 deletions(-)
+So uclamp is a performance and power management mechanism, it has no impact on
+fairness AFAICT, so it being a privileged operation doesn't make sense.
 
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 5e1f38179f49..976a36918ed7 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -928,58 +928,13 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
-  */
- unsigned long get_wchan(struct task_struct *p)
- {
--	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
--	int count = 0;
-+	unsigned long entry = 0;
- 
- 	if (p == current || p->state == TASK_RUNNING)
- 		return 0;
- 
--	if (!try_get_task_stack(p))
--		return 0;
--
--	start = (unsigned long)task_stack_page(p);
--	if (!start)
--		goto out;
--
--	/*
--	 * Layout of the stack page:
--	 *
--	 * ----------- topmax = start + THREAD_SIZE - sizeof(unsigned long)
--	 * PADDING
--	 * ----------- top = topmax - TOP_OF_KERNEL_STACK_PADDING
--	 * stack
--	 * ----------- bottom = start
--	 *
--	 * The tasks stack pointer points at the location where the
--	 * framepointer is stored. The data on the stack is:
--	 * ... IP FP ... IP FP
--	 *
--	 * We need to read FP and IP, so we need to adjust the upper
--	 * bound by another unsigned long.
--	 */
--	top = start + THREAD_SIZE - TOP_OF_KERNEL_STACK_PADDING;
--	top -= 2 * sizeof(unsigned long);
--	bottom = start;
--
--	sp = READ_ONCE(p->thread.sp);
--	if (sp < bottom || sp > top)
--		goto out;
--
--	fp = READ_ONCE_NOCHECK(((struct inactive_task_frame *)sp)->bp);
--	do {
--		if (fp < bottom || fp > top)
--			goto out;
--		ip = READ_ONCE_NOCHECK(*(unsigned long *)(fp + sizeof(unsigned long)));
--		if (!in_sched_functions(ip)) {
--			ret = ip;
--			goto out;
--		}
--		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
--	} while (count++ < 16 && p->state != TASK_RUNNING);
--
--out:
--	put_task_stack(p);
--	return ret;
-+	stack_trace_save_tsk(p, &entry, 1, 0);
-+	return entry;
- }
- 
- long do_arch_prctl_common(struct task_struct *task, int option,
--- 
-2.11.0
+We had a thought about this in the past and we didn't think there's any harm if
+a task (app) wants to self manage. Yes a task could ask to run at max
+performance and waste power, but anyone can generate a busy loop and waste
+power too.
 
+Now that doesn't mean your use case is not valid. I agree if there's a system
+wide framework that wants to explicitly manage performance and power of tasks
+via uclamp, then we can end up with 2 layers of controls overriding each
+others.
+
+Would it make more sense to have a procfs/sysfs flag that is disabled by
+default that allows sys-admin to enforce a privileged uclamp access?
+
+Something like
+
+	/proc/sys/kernel/sched_uclamp_privileged
+
+I think both usage scenarios are valid and giving sys-admins the power to
+enforce a behavior makes more sense for me.
+
+Unless there's a real concern in terms of security/fairness that we missed?
+
+
+Cheers
+
+--
+Qais Yousef
