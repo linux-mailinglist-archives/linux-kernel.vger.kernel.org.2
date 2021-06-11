@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA973A4424
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59323A442A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhFKOgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
+        id S231633AbhFKOiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhFKOgL (ORCPT
+        with ESMTP id S231577AbhFKOiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:36:11 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB22C061574;
-        Fri, 11 Jun 2021 07:34:13 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0aec00fa6ee867e791c992.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ec00:fa6e:e867:e791:c992])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B0AA21EC053C;
-        Fri, 11 Jun 2021 16:34:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623422051;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=JGxv2dGnM8cqh24lNorMXXQYkTm9QOB8k1UUbsYV/vA=;
-        b=PH73syyPX9IvgmsETxZdfxrCSsZMWTcA/pYMQegpkdofXR1cXEg1XEPuJS9MYErLFdFNqX
-        ITpfIWTUsaN5vpq8JBkZPeXh5LbRBqlJGvqLVqRf8JiTAeW7VP9luNAuq1h46swcUr7Uja
-        MtzdkWa9Pi00OJI9vUBJ/0Onm7xcNq0=
-Date:   Fri, 11 Jun 2021 16:34:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 2/6] x86/sev-es: Disable IRQs while GHCB is active
-Message-ID: <YMN0XT8Job08HfWH@zn.tnic>
-References: <20210610091141.30322-1-joro@8bytes.org>
- <20210610091141.30322-3-joro@8bytes.org>
- <YMNtmz6W1apXL5q+@zn.tnic>
- <YMNxNEb/T3iF4TG8@8bytes.org>
+        Fri, 11 Jun 2021 10:38:00 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FF0C061574;
+        Fri, 11 Jun 2021 07:35:46 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so3345906otl.3;
+        Fri, 11 Jun 2021 07:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5I09DPd8Kwy7LMo76EGR3YM2G9Xf21apnHARNeBFJ+k=;
+        b=bXofxSglPVxt7p7Om3fW43zbPw9IPtI1w0qmIpQ21u3NhjCsxcOO/bt340q43zLIrX
+         D8GMFZJ147WnbH+bqcbLL/EK7Y9wxXWy72BSMk//WwQouZzIJG9gdzvADAwtre6kG2FY
+         ETGroG63+oDDWxfRMXl3YF8bAKBRLUBpf483KfGyO2obWNdfqW/BsHdomPfI+6zdkcgg
+         UjMvzSkgYpd/px6Y+E52FBgGvNx4MKu1ni1Gm/hU5nOuQjmddK6xqbZGwMumDp2WWOIw
+         WRlwzuOUR2TqcxOSGHKTyaYAlwEaiWXi3fOwrCm8lWpePsF90lK3lDh3AiQHW+mw3Xbs
+         yPZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5I09DPd8Kwy7LMo76EGR3YM2G9Xf21apnHARNeBFJ+k=;
+        b=PMyasl5dxXzFN31LbrDcYUde4rXjpbYK0dFEO+nPbsadRiHgw9GFSC0s9NHCH6f6q3
+         5c2sDCGvbmv9noI6jNOam4gFI+L9lWdJ4NeShTlwNbxKQMt5ecoNSN2r5gu+2f5Vj6kM
+         95ONv8cT6vApA1iBUQnFZmRUd/W8qWQzas719w5YYFBa28azXVLYJGrSOpyLP+yTsc/1
+         HfrlLJxRjSPwLwpbZha2zeOhkYmMNIUMO7S1ar6jDJkkMK///lAsPQ45P2O7hHEOZJWK
+         Vl8XnyInhwwDwFrWhlpJOW/UtQcvnPGScLHB7Ijs//IYVWeOYMXQYUpyFXGr9758mxEa
+         wxhQ==
+X-Gm-Message-State: AOAM530KDztiPvKiFAUygJa//xV3KkdJU2xrpBvjcvePGmbJcr8qkgF9
+        9Rn6YiuzxfSH4qXJXYI+o5ECu5QwVeaUQp4wsjw=
+X-Google-Smtp-Source: ABdhPJyBX0YMR9nw4FCEWqEtfHxhwPSKQX3qlzHtQjCQ+5AoKjVXFo5BqKi2wCn7x9zZ/JfhKinZYGBwyPBAxIp/XX0=
+X-Received: by 2002:a9d:5382:: with SMTP id w2mr3349667otg.290.1623422145756;
+ Fri, 11 Jun 2021 07:35:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YMNxNEb/T3iF4TG8@8bytes.org>
+References: <20210605170441.33667-1-romain.perier@gmail.com>
+ <20210605170441.33667-3-romain.perier@gmail.com> <20210611103426.GA3827319@roeck-us.net>
+In-Reply-To: <20210611103426.GA3827319@roeck-us.net>
+From:   Romain Perier <romain.perier@gmail.com>
+Date:   Fri, 11 Jun 2021 16:35:33 +0200
+Message-ID: <CABgxDoJhCiBoyJW3WOF9Jac9QcAfDxE5wND6gg1tvqd74hd+NQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] watchdog: Add Mstar MSC313e WDT driver
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 04:20:36PM +0200, Joerg Roedel wrote:
-> I am not a fan of this, because its easily forgotten to add
-> local_irq_save()/local_irq_restore() calls around those. Yes, we can add
-> irqs_disabled() assertions to the functions, but we can as well just
-> disable/enable IRQs in them. Only the previous value of EFLAGS.IF needs
-> to be carried from one function to the other.
+Le ven. 11 juin 2021 =C3=A0 12:34, Guenter Roeck <linux@roeck-us.net> a =C3=
+=A9crit :
+>
+> On Sat, Jun 05, 2021 at 07:04:40PM +0200, Romain Perier wrote:
+> > From: Daniel Palmer <daniel@0x0f.com>
+> >
+> > It adds a driver for the IP block handling the watchdog timer found for
+> > Mstar MSC313e SoCs and newer.
+> >
+> > Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> > Co-developed-by: Romain Perier <romain.perier@gmail.com>
+> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> > ---
+> >  MAINTAINERS                    |   1 +
+>
+> I tried to apply this patch to my tree, but it doesn't apply because ...
+>
+> >  drivers/watchdog/Kconfig       |  12 +++
+> >  drivers/watchdog/Makefile      |   1 +
+> >  drivers/watchdog/msc313e_wdt.c | 166 +++++++++++++++++++++++++++++++++
+> >  4 files changed, 180 insertions(+)
+> >  create mode 100644 drivers/watchdog/msc313e_wdt.c
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index a0f37adb9e64..fcc10c57298c 100644
+>
+> a0f37adb9e64 is not an upstream SHA and there is a conflict. Please resen=
+d
+> the series based on some upstream tag.
+>
+> Guenter
 
-Wrappers:
+Arf, I will rebase and resend then, my bad. It is okay if I rebase the
+series onto https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-st=
+aging.git
+, branch watchdog-next ?
 
-	sev_es_get_ghcb():
-
-		local_irq_save()
-		__sev_es_get_ghcb()
-
-and the reverse.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Romain
