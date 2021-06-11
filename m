@@ -2,184 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B098E3A3A98
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3993A3A9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhFKD6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
+        id S231531AbhFKD7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbhFKD6c (ORCPT
+        with ESMTP id S230346AbhFKD7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:58:32 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1911C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:56:25 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id g24so4915536pji.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:56:25 -0700 (PDT)
+        Thu, 10 Jun 2021 23:59:39 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F5CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:57:31 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id t7-20020ad45bc70000b029023930e98a57so6590983qvt.18
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:57:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=y2qSt5MTPC4i/yZdbT2U8qNkMyz0fUe0S4KpmrMnVM0=;
-        b=Pp54dHVW2lnIM30U3BV+erjZRwPxWl9KORNqmsFACq8HbKd5iPcisfpwWc91sIL5Ij
-         9S771WrqAVUEKhWx7BqzNbsS5RF80FgTojcY/EGfrtgbqjeDp/LmqmWxO5D8EPPnfVxr
-         xPX3zlRloqrk+x4GWXKe4dHJpJFv3yOGGjjKW2mm3RJxhkXsVtZgMPCtQj+EooWZddvZ
-         hM5t8W2h9iE076WyTRmzN6YfCuF2c+7ZcUODvU46ko+T0SCOYbZtXwqvQ/hohb2B0d41
-         INHeHvqoarmtJaERP8nL++YxGKksgDcSxw+x1ezbmqK8LApbkQbcvC8yhOXIyIsP0sk2
-         lKbg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4GJ6IQLArclcwrRp6TrE2/aP5eBvoi7bbacXvoz3dt8=;
+        b=I8xBmcKhwP67CQoV9rW3B7jJIyWVaJ1NyNdUC9QsrlnXdBx+gKJEzXobNOD+Flxinr
+         7hUrzlZDRP45ccJtA/djL/cCjb9qs1vUPkhavpe6nY9frEDYw7ce/DBAKjaKItUW0GGj
+         4H6vKoQ2VJ7QyGzv2eWNxTjITKzJ2JxojstZWUBm8dsX65zEGCyt19vsy8Bv0Y9vBXuR
+         L8RCBHfbHmYHik4xLi44wczupoWToOIBAfXgIssDcrQp/G688LVwaHHYET607PzIxEt+
+         Vz/v7FCknOYOAvdwHoI4RYj+ZwpopGmTKUvcYyCfnbj9d+sBLK2iqxSE5OymrQvdgFl6
+         niaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=y2qSt5MTPC4i/yZdbT2U8qNkMyz0fUe0S4KpmrMnVM0=;
-        b=euNWRrMtEdLpKUK8HVzHBh/6ZZ5p65Z7LRDm9HnhCUzTUgcVVziyJb/B/mwf6YN1ok
-         dEsLmBHqjDlLhQiXxcKMlyLPtSoPTREtMhMi1MnrytRqNaVtPEHOYv+KKPP3i2iPzxHO
-         IMaWNIQTfdWOcZwgwD52tJYjYMcddLqIINmFDCJ34ydAvQxMtLfx3pTahtkTZfSVPueM
-         LBeEVxSnnYxlckz/JfX0YagisBCOik0Q/W7W61rnxoZyiuLoDKXRXKVVXsTFM+eus8j/
-         +2YN2CjU/4OeIHjE8pjRW0hTQpwDReRFzgnM5+3TrqLCJXrEAL/ZazotF3j9vdcnCLzI
-         Zf+Q==
-X-Gm-Message-State: AOAM533Vvsu6YLinQM/61hkAlReC3SkWK17nwd78pv8VIQnySu4ZiWWh
-        g6ntR7WZLjjsIrlBLZYlSKgmGw==
-X-Google-Smtp-Source: ABdhPJzxIiGetfFhS9ztQIZMMt8HMOkWddsWstwWGvKVrQ/FQp/VBvvqy+rgJCiiMFWYHJR4YkU9QA==
-X-Received: by 2002:a17:902:8695:b029:fd:6105:c936 with SMTP id g21-20020a1709028695b02900fd6105c936mr2013079plo.25.1623383785323;
-        Thu, 10 Jun 2021 20:56:25 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id g8sm3889378pgo.10.2021.06.10.20.56.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 20:56:24 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 09:26:23 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-Message-ID: <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4GJ6IQLArclcwrRp6TrE2/aP5eBvoi7bbacXvoz3dt8=;
+        b=M1gDUawVb04zDRXmO/e6fC9eae+W/cg0xP8xVdXxEnMae3LSRc4+NrNLcHBm095+bL
+         s1qG1WrfWujW5iMY6rTDvqjnetTSBt+5cNF2ihMThoSrgFXE3v5KZf06/cS5bMkHytjY
+         Z69Z1iUOegsbknZVIZAZclC576KWGwbXabBj0LA0CWz3oLUTKHPVVR9OLqNMGzMT+4w6
+         v4Vma5CipH7OIVerVB/RZqwPPIoiFNuR1aCU5x7FAo+oCxMhpD2/RBHIP0VNgBODH6VU
+         ynY0PvHE4GLB2F/am1si4p+iSe1R6DoxDjEi0qxKK+N5PSmPtdDARViWo190+llJ3NYM
+         5hPg==
+X-Gm-Message-State: AOAM530efSJj3C8EG2iqrfEK7fphPrIBn/I3u5x4j3DtimuVR+LNU94e
+        O51VCik1Yivv+xfgsQIOUMKHJuUNYigGMQ==
+X-Google-Smtp-Source: ABdhPJzdVH92RATcdT7fOiewtiBgUGSJ1fLrTKX68+rIrCDdqAsJLud11BTxpEdnpv78xw7ttXzORFT4sgwYDQ==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:b697:a576:a25f:5b1e])
+ (user=davidgow job=sendgmr) by 2002:a0c:f982:: with SMTP id
+ t2mr2921181qvn.28.1623383850258; Thu, 10 Jun 2021 20:57:30 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 20:57:25 -0700
+Message-Id: <20210611035725.1248874-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+Subject: [PATCH] kunit: Fix result propagation for parameterised tests
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+When one parameter of a parameterised test failed, its failure would be
+propagated to the overall test, but not to the suite result (unless it
+was the last parameter).
 
-On 10-06-21, 22:46, Linus Walleij wrote:
-> Hi Viresh!
-> 
-> thanks for working on this, it's a really interesting driver.
-> 
-> My first question is conceptual:
-> 
-> We previously have Geerts driver for virtualization:
-> drivers/gpio/gpio-aggregator.c
-> 
-> The idea with the aggregator is that a host script sets up a
-> unique gpiochip for the virtualized instance using some poking
-> in sysfs and pass that to the virtual machine.
-> So this is Linux acting as virtualization host by definition.
-> 
-> I think virtio is more abstract and intended for the usecase
-> where the hypervisor is not Linux, so this should be mentioned
-> in the commit, possibly also in Kconfig so users immediately
-> know what usecases the two different drivers are for.
+This is because test_case->success was being reset to the test->success
+result after each parameter was used, so a failing test's result would
+be overwritten by a non-failing result. The overall test result was
+handled in a third variable, test_result, but this was disacarded after
+the status line was printed.
 
-Well, not actually.
+Instead, just propagate the result after each parameter run.
 
-The host can actually be anything. It can be a Xen based dom0, which
-runs some proprietary firmware, or Qemu running over Linux.
+Signed-off-by: David Gow <davidgow@google.com>
+Fixes: fadb08e7c750 ("kunit: Support for Parameterized Testing")
+---
 
-It is left for the host to decide how it wants to club together the
-GPIO pins from host and access them, with Linux host userspace it
-would be playing with /dev/gpiochipN, while for a raw one it may
-be accessing registers directly.
+This is fixing quite a serious bug where some test suites would appear
+to succeed even if some of their component tests failed. It'd be nice to
+get this into kunit-fixes ASAP.
 
-And so the backend running at host, needs to pass the gpiochip
-configurations and only the host understand it.
+(This will require a rework of some of the skip tests work, for which
+I'll send out a new version soon.)
 
-The way I test it for now is by running this with Qemu over my x86
-box, so my host side is indeed playing with sysfs Linux.
+Cheers,
+-- David
 
-> Possibly both could be used: aggregator to pick out the GPIOs
-> you want into a synthetic GPIO chip, and the actual talk
-> between the hypervisor/host and the guest using virtio, even
-> with linux-on-linux.
+ lib/kunit/test.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Not sure if I understand the aggregator thing for now, but we see the
-backend running at host (which talks to this Linux driver at guest) as
-a userspace thing and not a kernel driver. Not sure if aggregator can
-be used like that, but anyway..
-
-> Yet another usecase would be to jit this with remoteproc/rpmsg
-> and let a specific signal processor or real-time executive on
-> another CPU with a few GPIOs around present these to
-> Linux using this mechanism. Well that would certainly interest
-> Bjorn and other rpmsg stakeholders, so they should have
-> a look so that this provides what they need they day they
-> need it. (CCed Bjorn and also Google who may want this for
-> their Android emulators.)
-
-I am not very clear on the rpmsg thing, I know couple of folks at
-project Stratos were talking about it :)
-
-@Alex, want to chime in here for me ? :)
-
-> On Thu, Jun 10, 2021 at 2:16 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> 
-> > +static const char **parse_gpio_names(struct virtio_device *vdev,
-> > +                              struct virtio_gpio_config *config)
-> 
-> I really like this end-to-end plug-and-play that even provides
-> the names over virtio.
-
-The credit goes to Enrico for this :)
-
-> I think my patch to the gpiolib to make it mandatory for names to
-> be unique per-chip made it in, but please make that part of the spec
-> so that we don't get the problem with non-unique names here.
-
-Oh, that's nice. I will surely do that.
-
-> I suppose the spec can be augmented later to also accept config
-> settings like open drain pull up/down etc but no need to specify
-> more than the basic for now.
-
-That's the plan.
-
-> But to be able to add more in the future, the client needs some
-> kind of query mechanism or version number so the driver can
-> adapt and not announce something the underlying virtio device
-> cannot do. Do we have this? A bitmask for features, a version
-> number that increase monotonically for new features to be
-> presented or similar?
-> 
-> Because otherwise we have to bump this:
-> +#define VIRTIO_ID_GPIO                 41 /* virtio GPIO */
-> 
-> every time we add something new (and we will).
-
-Yes, Virtio presents features for this. The patch 2/3 already uses one
-for IRQs. We won't need to bump up the IDs :)
-
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 2f6cc0123232..17973a4a44c2 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -376,7 +376,7 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+ 	context.test_case = test_case;
+ 	kunit_try_catch_run(try_catch, &context);
+ 
+-	test_case->success = test->success;
++	test_case->success &= test->success;
+ }
+ 
+ int kunit_run_tests(struct kunit_suite *suite)
+@@ -388,7 +388,7 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+ 		struct kunit test = { .param_value = NULL, .param_index = 0 };
+-		bool test_success = true;
++		test_case->success = true;
+ 
+ 		if (test_case->generate_params) {
+ 			/* Get initial param. */
+@@ -398,7 +398,6 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 
+ 		do {
+ 			kunit_run_case_catch_errors(suite, test_case, &test);
+-			test_success &= test_case->success;
+ 
+ 			if (test_case->generate_params) {
+ 				if (param_desc[0] == '\0') {
+@@ -420,7 +419,7 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 			}
+ 		} while (test.param_value);
+ 
+-		kunit_print_ok_not_ok(&test, true, test_success,
++		kunit_print_ok_not_ok(&test, true, test_case->success,
+ 				      kunit_test_case_num(suite, test_case),
+ 				      test_case->name);
+ 	}
 -- 
-viresh
+2.32.0.272.g935e593368-goog
+
