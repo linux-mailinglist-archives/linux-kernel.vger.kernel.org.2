@@ -2,146 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CF43A432A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9B43A433A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhFKNnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43642 "EHLO
+        id S231174AbhFKNsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhFKNm7 (ORCPT
+        with ESMTP id S230373AbhFKNsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:42:59 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A06BC061574;
-        Fri, 11 Jun 2021 06:40:45 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id j2so8608680lfg.9;
-        Fri, 11 Jun 2021 06:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nKr8pai+68Flr3AiBDNVUz9KA2i0xv72PtUutVgvQAI=;
-        b=LUe09kKmrmVPBfa25N4IvIE8izJUurfh8PfnbuMeVqFAILPxB3OWdiJscPvqfC8mbf
-         +wi9x9ati5hx3rO0Jl43p+3cw11XgA2TkPGSmiLjZh3c8jgo0EWnqb4vusH0DY4qnYec
-         ph56Zhvq0GuKjr0RGA+EW5JsqGktY4Ij33NkT9+3D+YjASpD9fnoebUHRvLwDrNVaQX3
-         HfwviDwSsqyR7oPCwKzYn9MJPtAlSajLiSZG5F60nasO56skIHUI9pVY5p53HLDnEP0d
-         2P7zc1Zpzk+Q9purwn+jBSO5PXfd2e07aOkQbZe4bDqcXMHA6MWRk3k2u1owz04gbivA
-         4ezA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nKr8pai+68Flr3AiBDNVUz9KA2i0xv72PtUutVgvQAI=;
-        b=Nyd9WGgqCXI4VDT2F7105TjKVjVlJoeqYg41cn3KjDF+Cb+kAZSqG5QXFAzKST8uDx
-         SuCJ+qFWLLl42YQ7qOfY/291a46PT2xMNHV/yn+BGWSDu5OOrKZVJmQ4sSQLFz4Wm2+1
-         LHXEIpBoJyVbOjy+AO78Lkmnf6JrI2fJnTe2sX3Dp3+aZCPHWMbzIhP416UhsHiMLYMR
-         /Kq8aThkcgz8+Ag8K3zoshJRjPN1aMJiOih7/EDjx7CoSYARvF01nj4+E24GwJqpPjDZ
-         7DR8hdttS+pOHah+iqZsQcXO3Tbe0dxVJicnwPCSEdd/7fSwD+KqY+K0LmQTjYmdizcE
-         NZOg==
-X-Gm-Message-State: AOAM533MfY8hirbqrvjaHSGTBixWp9RCwGIRQrXv19jlhUVrAF3XnUYP
-        WjA3/CADzwPYIzp4FkeJBQY=
-X-Google-Smtp-Source: ABdhPJw2C9Ph2Z63IIpjqzekR8PtXKlUeN4j8W9HLwz52sihCNSyJyj7Cry/3QbWB1uVXGPZDEnLxg==
-X-Received: by 2002:a05:6512:3baa:: with SMTP id g42mr2765717lfv.195.1623418843291;
-        Fri, 11 Jun 2021 06:40:43 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
-        by smtp.googlemail.com with ESMTPSA id d22sm725537ljc.55.2021.06.11.06.40.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 06:40:42 -0700 (PDT)
-Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>
-References: <20210609112806.3565057-1-thierry.reding@gmail.com>
- <20210609112806.3565057-2-thierry.reding@gmail.com>
- <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
- <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
- <a3110fbd-c4af-0317-5a6d-1f780f1dac91@gmail.com>
- <1400979c-c7a7-9618-1168-70185ed10546@canonical.com>
- <8d8d019a-34c1-50bd-5eba-ce361c263d35@gmail.com>
- <57f8e55d-d708-f304-cf35-3036ec2e64f5@gmail.com>
- <99f98088-fed4-45bf-b0a1-241bfc896487@canonical.com>
- <f5112945-1b07-8760-4180-4d7152b7dcba@gmail.com>
- <YMNCPhHx+s4W7BP3@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <99fb42e9-26f9-cc79-965d-989c65e7882d@gmail.com>
-Date:   Fri, 11 Jun 2021 16:40:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 11 Jun 2021 09:48:51 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Jun 2021 06:46:52 PDT
+Received: from mail-out-2.itc.rwth-aachen.de (mail-out-2.itc.rwth-aachen.de [IPv6:2a00:8a60:1:e501::5:47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FD5C061574;
+        Fri, 11 Jun 2021 06:46:51 -0700 (PDT)
+IronPort-SDR: w+r7Ecj97RnT52MOBEpzp4jh4NUfT2dr6jjKENWhqd1BM4TKm7c5y3I37YF7LyqMwDCBpWRvCP
+ aJno3mvLWsRA==
+X-IPAS-Result: =?us-ascii?q?A2BKBQBmaMNg/5wagoZaHgEBCxIMQIVRaguEPa1bgWgLA?=
+ =?us-ascii?q?QEBAQEBAQEBCAE/AgQBAYRQgmoCJTgTAgQBAQEBAwIDAQEBAQUBAQYBAQEBA?=
+ =?us-ascii?q?QEFBIEEhS9Ghm8PAUY1AiYCXwENBYJxgwgEqgeBMoEBiGOBJgkBgQYqhwmBc?=
+ =?us-ascii?q?XaEIYIpgRWCdIRzg1WCZASDIAcHNlG/DQeBeoElnV1ElHWQbgGVUqAfhBECB?=
+ =?us-ascii?q?AIEBQIWgWuBfXGDOFAXAg6cb0AxOAIGAQkBAQMJTwwhh1sBgRABAQ?=
+IronPort-HdrOrdr: A9a23:mSDSzKl63BF5yWh6XicPjA+PFlfpDfKz3DAbv31ZSRFFG/Fwwf
+ re58jztCWE+Qr5N0tPpTntAsi9qV21z+8Q3WA6B8bGYOCeghrTEGgA1/qd/9SDIVycygcH79
+ YYT0EWMrSZZmSS6/yb3ODSKbodKay8gdyVbJDlvgpQpG9RBp2J321CYDpzO3cGPDVuNN4SEo
+ aG/MYChzfIQwVxUu2LQlMCQ/PYq5ntnJbrCCR2YSLPkDP+7w+A2frfFR6U2xtbdShOz7ck+X
+ XElAK83K+5s+inoyWsqFM6Ofxt9+fc9g==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.83,265,1616454000"; 
+   d="scan'208";a="148317777"
+Received: from rwthex-w1-a.rwth-ad.de ([134.130.26.156])
+  by mail-in-2.itc.rwth-aachen.de with ESMTP; 11 Jun 2021 15:45:44 +0200
+Received: from pebbles.fritz.box (78.48.70.208) by rwthex-w1-a.rwth-ad.de
+ (2a00:8a60:1:e500::26:156) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.12; Fri, 11 Jun
+ 2021 15:45:25 +0200
+From:   =?UTF-8?q?Stefan=20Br=C3=BCns?= <stefan.bruens@rwth-aachen.de>
+To:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     =?UTF-8?q?Stefan=20Br=C3=BCns?= <stefan.bruens@rwth-aachen.de>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] Add support for SDX55 based Sierra Wireless 5G modules
+Date:   Fri, 11 Jun 2021 15:45:07 +0200
+Message-ID: <20210611134507.8780-1-stefan.bruens@rwth-aachen.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YMNCPhHx+s4W7BP3@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [78.48.70.208]
+X-ClientProxiedBy: rwthex-w1-a.rwth-ad.de (2a00:8a60:1:e500::26:156) To
+ rwthex-w1-a.rwth-ad.de (2a00:8a60:1:e500::26:156)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.06.2021 14:00, Thierry Reding пишет:
-> On Fri, Jun 11, 2021 at 10:21:41AM +0300, Dmitry Osipenko wrote:
->> 11.06.2021 09:50, Krzysztof Kozlowski пишет:
->>> On 10/06/2021 18:23, Dmitry Osipenko wrote:
->>>> 10.06.2021 18:50, Dmitry Osipenko пишет:
->>>>> 10.06.2021 09:43, Krzysztof Kozlowski пишет:
->>>>>> The stubs might be good idea anyway, but the driver explicitly needs for
->>>>>> runtime working reservedmem, so it should select it.
->>>>>
->>>>> The OF and reservedmem are both selected by the ARCH for the runtime
->>>>> use. They may not be selected in the case of compile-testing.
->>>>>
->>>>> Both OF core and reservedmem provide stubs needed for compile-testing,
->>>>> it's only the RESERVEDMEM_OF_DECLARE() that is missing the stub. Adding
->>>>> the missing stub should be a more appropriate solution than adding extra
->>>>> Kconfig dependencies, IMO.
->>>
->>> Ah, in such case everything looks good. Stubs is indeed proper choice.
->>
->> Although, I see that there are only two Kconfigs that have
->> OF_RESERVED_MEM, one defines the OF_RESERVED_MEM, the other is QCOM
->> Kconfig which depends on OF_RESERVED_MEM. The OF_RESERVED_MEM is enabled
->> by default in defconfig.
->>
->> You're right, we need the Kconfig change to be entirely correct, since
->> driver won't work properly without OF_RESERVED_MEM.
->>
->> config TEGRA210_EMC
->> 	tristate "NVIDIA Tegra210 External Memory Controller driver"
->> -	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
->> +	depends on (ARCH_TEGRA_210_SOC && OF_RESERVED_MEM) || COMPILE_TEST
->>
->> I will send that change later today.
-> 
-> That's completely unnecessary. OF_RESERVED_MEM is enabled by default if
-> OF_EARLY_FLATTREE is enabled, which it is for ARM64 and that is always
-> enabled for ARCH_TEGRA_210_SOC.
+The devices exposes two different interface compositions:
+- QDL mode, single interface
+- MBIM mode, MBIM class compliant plus AT/DM(/ADB)
 
-But it doesn't stop you from disabling OF_RESERVED_MEM. The Kconfig
-dependencies should reflect the build and runtime requirements of the
-driver, otherwise only driver author knows which config options are need.
+Current firmware versions (up to 01.07.19) do not expose an NMEA port.
 
-> What Krzysztof had originally proposed, as far as I understand, is to
-> add "depends on OF_RESERVED_MEM" so that the dependency is always there
-> (including the COMPILE_TEST case). However, that's a bit problematic, as
-> I said earlier, because OF_RESERVED_MEM is not user-visible and neither
-> is OF_EARLY_FLATTREE, so there's no way to enable OF_RESERVED_MEM unless
-> the architecture selected it, which it doesn't on x86, so it kind of
-> defeats the purpose of COMPILE_TEST.
+Signed-off-by: Stefan Brüns <stefan.bruens@rwth-aachen.de>
+---
+ drivers/usb/serial/qcserial.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-Indeed, the QCOM driver isn't compile-tested as much as it could be.
-That driver already shouldn't have any problems with compile-testing,
-maybe some stubs were missing when driver was originally added.
+diff --git a/drivers/usb/serial/qcserial.c b/drivers/usb/serial/qcserial.c
+index 83da8236e3c8..4ff325a14c98 100644
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -26,12 +26,15 @@ enum qcserial_layouts {
+ 	QCSERIAL_G1K = 1,	/* Gobi 1000 */
+ 	QCSERIAL_SWI = 2,	/* Sierra Wireless */
+ 	QCSERIAL_HWI = 3,	/* Huawei */
++	QCSERIAL_SWI2 = 4,	/* Sierra Wireless */
+ };
+ 
+ #define DEVICE_G1K(v, p) \
+ 	USB_DEVICE(v, p), .driver_info = QCSERIAL_G1K
+ #define DEVICE_SWI(v, p) \
+ 	USB_DEVICE(v, p), .driver_info = QCSERIAL_SWI
++#define DEVICE_SWI2(v, p) \
++	USB_DEVICE(v, p), .driver_info = QCSERIAL_SWI2
+ #define DEVICE_HWI(v, p) \
+ 	USB_DEVICE(v, p), .driver_info = QCSERIAL_HWI
+ 
+@@ -181,6 +184,10 @@ static const struct usb_device_id id_table[] = {
+ 	{DEVICE_SWI(0x413c, 0x81d1)},   /* Dell Wireless 5818 */
+ 	{DEVICE_SWI(0x413c, 0x81d2)},   /* Dell Wireless 5818 */
+ 
++	/* SDX55 based Sierra Wireless devices */
++	{DEVICE_SWI2(0x1199, 0x90d2)},	/* Sierra Wireless EM919x QDL */
++	{DEVICE_SWI2(0x1199, 0x90d3)},	/* Sierra Wireless EM919x */
++
+ 	/* Huawei devices */
+ 	{DEVICE_HWI(0x03f0, 0x581d)},	/* HP lt4112 LTE/HSPA+ Gobi 4G Modem (Huawei me906e) */
+ 
+@@ -359,6 +366,28 @@ static int qcprobe(struct usb_serial *serial, const struct usb_device_id *id)
+ 			break;
+ 		}
+ 		break;
++	case QCSERIAL_SWI2:
++		/*
++		 * Sierra Wireless SDX55 in MBIM mode:
++		 * 0/1: MBIM Control/Data
++		 * 3: AT-capable modem port
++		 * 4: DM/DIAG (use libqcdm from ModemManager for communication)
++		 * 5: ADB
++		 */
++		switch (ifnum) {
++		case 3:
++			dev_dbg(dev, "Modem port found\n");
++			sendsetup = true;
++			break;
++		case 4:
++			dev_dbg(dev, "DM/DIAG interface found\n");
++			break;
++		default:
++			/* don't claim any unsupported interface */
++			altsetting = -1;
++			break;
++		}
++		break;
+ 	case QCSERIAL_HWI:
+ 		/*
+ 		 * Huawei devices map functions by subclass + protocol
+-- 
+2.31.1
 
-> So I think if this really has to be compile-test enabled, the only way
-> to do that is to either make this select OF_EARLY_FLATTREE, or add the
-> stubs.
-> 
-> Another option would perhaps be to enable OF_UNITTEST along with
-> COMPILE_TEST, since that also pulls in OF_EARLY_FLATTREE and would allow
-> this driver to be built even on x86.
-
-For the universal compile-testing it should be enough to fix the stub.
-We may consider other options if it won't be enough, thank you for the
-suggestions.
