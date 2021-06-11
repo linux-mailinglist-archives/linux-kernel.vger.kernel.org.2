@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7A73A402B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23AC3A4031
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhFKK2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:28:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54374 "EHLO mail.kernel.org"
+        id S231180AbhFKKej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:34:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:54322 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230321AbhFKK2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:28:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90901613DE;
-        Fri, 11 Jun 2021 10:26:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623407211;
-        bh=uwYHPJSg++x6nayJxNLyMIhWvBZRZ31Cc/mjNWAEOW0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l6Ps2bJf8EUFGrwM/uLjxcqpZtDtHrV8QoI1ui3ts/NpKYm+8ny2k+aLdy46dnb/g
-         wCAJY3LyZMTz2oVbfNhBVQ6P7gz551Fa4dFwzB+7x9PEv0sQZXpBGSxyLGqe79EhrT
-         Lu2kjHyVwkyC9eV2Mqa4qVTL543VpUgDDqDQ0q980NeXEXearpNN2FmPkKuTmdEhEQ
-         YfRhP00b1vz/D2QpBjnhvMd6dzMSBroOWJtUz1FDaCjBMyCExdD0haXxmQUAIiBDPR
-         bfspzxTWQ0eiewqLYzLXQoRMK0FVI+O81KmPBGeaOqZF1rZyRRNNjPSz1ldxidS1VM
-         B6FphYs0NCgug==
-Date:   Fri, 11 Jun 2021 11:26:41 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] sched: Introduce task_is_running()
-Message-ID: <20210611102640.GA15274@willie-the-truck>
-References: <20210611082810.970791107@infradead.org>
- <20210611082838.222401495@infradead.org>
+        id S229480AbhFKKeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 06:34:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B56CF1396;
+        Fri, 11 Jun 2021 03:32:39 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23E2C3F694;
+        Fri, 11 Jun 2021 03:32:38 -0700 (PDT)
+Subject: Re: [PATCH -next] drm/panfrost: Fix missing clk_disable_unprepare()
+ on error in panfrost_clk_init()
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Hulk Robot <hulkci@huawei.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210608143856.4154766-1-weiyongjun1@huawei.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <cd7573bb-8323-0069-6caa-5bc6a6ea6297@arm.com>
+Date:   Fri, 11 Jun 2021 11:32:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611082838.222401495@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210608143856.4154766-1-weiyongjun1@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:28:12AM +0200, Peter Zijlstra wrote:
-> Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
-> task_is_running(p).
+On 08/06/2021 15:38, Wei Yongjun wrote:
+> Fix the missing clk_disable_unprepare() before return
+> from panfrost_clk_init() in the error handling case.
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Acked-by: Davidlohr Bueso <dave@stgolabs.net>
+> Fixes: b681af0bc1cc ("drm: panfrost: add optional bus_clock")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+
+Reviewed-by: Steven Price <steven.price@arm.com>
+
+I'll push this to drm-misc-next.
+
+Thanks,
+
+Steve
+
 > ---
->  arch/alpha/kernel/process.c    |    2 +-
->  arch/arc/kernel/stacktrace.c   |    2 +-
->  arch/arm/kernel/process.c      |    2 +-
->  arch/arm64/kernel/process.c    |    2 +-
->  arch/csky/kernel/stacktrace.c  |    2 +-
->  arch/h8300/kernel/process.c    |    2 +-
->  arch/hexagon/kernel/process.c  |    2 +-
->  arch/ia64/kernel/process.c     |    4 ++--
->  arch/m68k/kernel/process.c     |    2 +-
->  arch/mips/kernel/process.c     |    2 +-
->  arch/nds32/kernel/process.c    |    2 +-
->  arch/nios2/kernel/process.c    |    2 +-
->  arch/parisc/kernel/process.c   |    4 ++--
->  arch/powerpc/kernel/process.c  |    4 ++--
->  arch/riscv/kernel/stacktrace.c |    2 +-
->  arch/s390/kernel/process.c     |    2 +-
->  arch/s390/mm/fault.c           |    2 +-
->  arch/sh/kernel/process_32.c    |    2 +-
->  arch/sparc/kernel/process_32.c |    3 +--
->  arch/sparc/kernel/process_64.c |    3 +--
->  arch/um/kernel/process.c       |    2 +-
->  arch/x86/kernel/process.c      |    4 ++--
->  arch/xtensa/kernel/process.c   |    2 +-
+>  drivers/gpu/drm/panfrost/panfrost_device.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+> index 125ed973feaa..a2a09c51eed7 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+> @@ -54,7 +54,8 @@ static int panfrost_clk_init(struct panfrost_device *pfdev)
+>  	if (IS_ERR(pfdev->bus_clock)) {
+>  		dev_err(pfdev->dev, "get bus_clock failed %ld\n",
+>  			PTR_ERR(pfdev->bus_clock));
+> -		return PTR_ERR(pfdev->bus_clock);
+> +		err = PTR_ERR(pfdev->bus_clock);
+> +		goto disable_clock;
+>  	}
+>  
+>  	if (pfdev->bus_clock) {
+> 
 
-Cheers for adding the missing arch bits:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
