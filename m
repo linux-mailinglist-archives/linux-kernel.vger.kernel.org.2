@@ -2,188 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA2B3A4B57
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D363A4B67
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhFKXp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 19:45:27 -0400
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:33785 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhFKXpY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 19:45:24 -0400
-Received: by mail-lj1-f180.google.com with SMTP id r16so11825921ljc.0;
-        Fri, 11 Jun 2021 16:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aRw7BPNktlSQ8Bpwkfd9XqquSjVtSyBra5TkrCf39nw=;
-        b=SkSPQn1YLgf4eB2184cpjDPdofARNgCS+pxpukZiniDyhQ+CcJKIuPW4uzFOqaSXJv
-         J+BmnsELecpkMSn6+1zDTxFIVg41BNTtm7SWehd7ua/9PPp76/FBwIHeQSQJScr/1oga
-         JOvUPHKaygDlDhzaue76p5+osbFTwyRUV6eBewnkXL5pCR3Uuq1dVlxdHJ8FhfH6kcn2
-         JQ/mSXN9I7k/NT0Xsh7/DTLiusg0wj7SHIF0EFUrDQiq3q5LQS4dQ78G1EdzrAAz1S89
-         ychDj4dkNiXXzaXfEZbhabb1NcX94aZfvu2CXcx2jcfxupXtMxd1s7RaXQJ6519eNiHh
-         Y0qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aRw7BPNktlSQ8Bpwkfd9XqquSjVtSyBra5TkrCf39nw=;
-        b=ov9BtS/M0St9XrO7ipm0nwR/NqJLnYbnaLJJI3nDDdsRiqm04Cq+bTtMD7blOF9XI1
-         ZCdCJMgW8zpE2mcocGk8blyT6uv67VtLwarEkFoeD8g7FbONQD7f69q8FNGhBEUHGiTL
-         EHr5uTfesmnj7nbbl5AVpx8gToRgftbyVkHBBY1EpfgXRg0Mt2Po+39oopPro6AK3HnP
-         +XPljKxlYeqDqc2TNIT2X2M8cLMIA7YCMNiGCW62M5xjOOpv8JuQXYtL0SsU1hAIv5H8
-         Hkq/3PL6KM2aOdq6L97SWXYsAbUL8NMsMnph/c8+4EsRsTeVNhlGmxiiFTlJFGyMfPZR
-         YQog==
-X-Gm-Message-State: AOAM532GCyvjk4Iy8JiCRDCIhRuKDlx3tlrmhwFnD/DftWzIqaD5sut5
-        +v16ZNOA389OcFU/NaL2bfY=
-X-Google-Smtp-Source: ABdhPJzdZQgVxu8KHs5S94L9UZiEP/Hh55YTVP6uT5f2rUjXtodE9hgli7NLwIHJymqAJzMFLEgJjQ==
-X-Received: by 2002:a2e:a4c2:: with SMTP id p2mr4821128ljm.365.1623454928898;
-        Fri, 11 Jun 2021 16:42:08 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id b23sm972246ljk.18.2021.06.11.16.42.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 16:42:08 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 2/2] media: imx-jpeg: Constify static struct mxc_jpeg_fmt
-Date:   Sat, 12 Jun 2021 01:42:01 +0200
-Message-Id: <20210611234201.64832-3-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210611234201.64832-1-rikard.falkeborn@gmail.com>
-References: <20210611234201.64832-1-rikard.falkeborn@gmail.com>
+        id S230251AbhFKXud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 19:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229540AbhFKXu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 19:50:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F7FD61019;
+        Fri, 11 Jun 2021 23:48:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623455310;
+        bh=6pFfyqWxtThZEcLQVmbRwzFXz6eVsnf2S88SIDwK+FQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SHNNaBFgfILptE2RYsa6thf3bZ6nfKOeQony87rHaMqnI5OTkHrWUSdIvXPE8ke8x
+         dvuqpYing3iRCcd+L3XiOg2iS57Dsbnj4HuIfRWSagge1vNTRRZ2UvddPmmp4l2xMg
+         zf/0dTzMQf3uE7+UxsK0gC6JYF8jbXszaMpQyyTeB+X429eZcHVPvuE6A2lXMUJ61e
+         kUutzQ8+lO/Vjai6K2B+SU9WtrTrrh0jyejUVyfMgOKUJAcLiEd2jqG905d0Ow+7Tr
+         laV4MwhG2LTlw57YecJRlQ+00IbWHw9EmlG+s0s6SkuFXsmS3ndcb1ZINtCyr7PGX+
+         k4nbwteeD20MA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CBCA25C084C; Fri, 11 Jun 2021 16:48:29 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 16:48:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH] rcu/doc: Add a quick quiz to explain further why we need
+ smp_mb__after_unlock_lock()
+Message-ID: <20210611234829.GJ4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210610155029.130812-1-frederic@kernel.org>
+ <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210611103432.GA143096@lothringen>
+ <20210611172514.GG4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210611224517.GA150081@lothringen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611224517.GA150081@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is only read-from, so make it const. In order to be able to do this,
-constify all places where mxc_jpeg_fmt is used, in function arguments,
-return values and pointers. On top of that, make the name a pointer to
-const char.
+On Sat, Jun 12, 2021 at 12:45:17AM +0200, Frederic Weisbecker wrote:
+> On Fri, Jun 11, 2021 at 10:25:14AM -0700, Paul E. McKenney wrote:
+> > On Fri, Jun 11, 2021 at 12:34:32PM +0200, Frederic Weisbecker wrote:
+> > Glad to help, and I will reach out to you should someone make the mistake
+> > of insisting that I write something in French.  ;-)
+> 
+> If that can help, we still have frenglish for neutral territories such as airports.
+> Not easy to master though...
 
-On aarch64, this shrinks object code size with 550 bytes with gcc 11.1.0,
-and almost 2kB with clang 12.0.0.
+That does sound dangerous!  ;-)
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/media/platform/imx-jpeg/mxc-jpeg.c | 16 ++++++++--------
- drivers/media/platform/imx-jpeg/mxc-jpeg.h | 18 +++++++++---------
- 2 files changed, 17 insertions(+), 17 deletions(-)
+> > > > ++-----------------------------------------------------------------------+
+> > > > +
+> > > >  This approach must be extended to include idle CPUs, which need
+> > > >  RCU's grace-period memory ordering guarantee to extend to any
+> > > >  RCU read-side critical sections preceding and following the current
+> > 
+> > How about like this?
+> > 
+> > +-----------------------------------------------------------------------+
+> > | **Quick Quiz**:                                                       |
+> > +-----------------------------------------------------------------------+
+> > | But the chain of rcu_node-structure lock acquisitions guarantees      |
+> > | that new readers will see all of the updater's pre-grace-period       |
+> > | accesses and also guarantees that the updater's post-grace-period     |
+> > | accesses will see all of the old reader's accesses.  So why do we     |
+> > | need all of those calls to smp_mb__after_unlock_lock()?               |
+> > +-----------------------------------------------------------------------+
+> > | **Answer**:                                                           |
+> > +-----------------------------------------------------------------------+
+> > | Because we must provide ordering for RCU's polling grace-period       |
+> > | primitives, for example, get_state_synchronize_rcu() and              |
+> > | poll_state_synchronize_rcu().  Consider this code::                   |
+> > |                                                                       |
+> > |  CPU 0                                     CPU 1                      |
+> > |  ----                                      ----                       |
+> > |  WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)           |
+> > |  g = get_state_synchronize_rcu()           smp_mb()                   |
+> > |  while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)          |
+> > |          continue;                                                    |
+> > |  r0 = READ_ONCE(Y)                                                    |
+> > |                                                                       |
+> > | RCU guarantees that the outcome r0 == 0 && r1 == 0 will not           |
+> > | happen, even if CPU 1 is in an RCU extended quiescent state           |
+> > | (idle or offline) and thus won't interact directly with the RCU       |
+> > | core processing at all.                                               |
+> > +-----------------------------------------------------------------------+
+> 
+> Very good, thanks a lot :o)
 
-diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-index 3a49007e1264..755138063ee6 100644
---- a/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-+++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-@@ -62,7 +62,7 @@
- #include "mxc-jpeg-hw.h"
- #include "mxc-jpeg.h"
- 
--static struct mxc_jpeg_fmt mxc_formats[] = {
-+static const struct mxc_jpeg_fmt mxc_formats[] = {
- 	{
- 		.name		= "JPEG",
- 		.fourcc		= V4L2_PIX_FMT_JPEG,
-@@ -341,7 +341,7 @@ static inline struct mxc_jpeg_ctx *mxc_jpeg_fh_to_ctx(struct v4l2_fh *fh)
- 	return container_of(fh, struct mxc_jpeg_ctx, fh);
- }
- 
--static int enum_fmt(struct mxc_jpeg_fmt *mxc_formats, int n,
-+static int enum_fmt(const struct mxc_jpeg_fmt *mxc_formats, int n,
- 		    struct v4l2_fmtdesc *f, u32 type)
- {
- 	int i, num = 0;
-@@ -368,13 +368,13 @@ static int enum_fmt(struct mxc_jpeg_fmt *mxc_formats, int n,
- 	return 0;
- }
- 
--static struct mxc_jpeg_fmt *mxc_jpeg_find_format(struct mxc_jpeg_ctx *ctx,
--						 u32 pixelformat)
-+static const struct mxc_jpeg_fmt *mxc_jpeg_find_format(struct mxc_jpeg_ctx *ctx,
-+						       u32 pixelformat)
- {
- 	unsigned int k;
- 
- 	for (k = 0; k < MXC_JPEG_NUM_FORMATS; k++) {
--		struct mxc_jpeg_fmt *fmt = &mxc_formats[k];
-+		const struct mxc_jpeg_fmt *fmt = &mxc_formats[k];
- 
- 		if (fmt->fourcc == pixelformat)
- 			return fmt;
-@@ -1536,7 +1536,7 @@ static int mxc_jpeg_enum_fmt_vid_out(struct file *file, void *priv,
- 				MXC_JPEG_FMT_TYPE_RAW);
- }
- 
--static int mxc_jpeg_try_fmt(struct v4l2_format *f, struct mxc_jpeg_fmt *fmt,
-+static int mxc_jpeg_try_fmt(struct v4l2_format *f, const struct mxc_jpeg_fmt *fmt,
- 			    struct mxc_jpeg_ctx *ctx, int q_type)
- {
- 	struct v4l2_pix_format_mplane *pix_mp = &f->fmt.pix_mp;
-@@ -1612,7 +1612,7 @@ static int mxc_jpeg_try_fmt_vid_cap(struct file *file, void *priv,
- 	struct mxc_jpeg_ctx *ctx = mxc_jpeg_fh_to_ctx(priv);
- 	struct mxc_jpeg_dev *jpeg = ctx->mxc_jpeg;
- 	struct device *dev = jpeg->dev;
--	struct mxc_jpeg_fmt *fmt;
-+	const struct mxc_jpeg_fmt *fmt;
- 	u32 fourcc = f->fmt.pix_mp.pixelformat;
- 
- 	int q_type = (jpeg->mode == MXC_JPEG_DECODE) ?
-@@ -1643,7 +1643,7 @@ static int mxc_jpeg_try_fmt_vid_out(struct file *file, void *priv,
- 	struct mxc_jpeg_ctx *ctx = mxc_jpeg_fh_to_ctx(priv);
- 	struct mxc_jpeg_dev *jpeg = ctx->mxc_jpeg;
- 	struct device *dev = jpeg->dev;
--	struct mxc_jpeg_fmt *fmt;
-+	const struct mxc_jpeg_fmt *fmt;
- 	u32 fourcc = f->fmt.pix_mp.pixelformat;
- 
- 	int q_type = (jpeg->mode == MXC_JPEG_ENCODE) ?
-diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.h b/drivers/media/platform/imx-jpeg/mxc-jpeg.h
-index 7697de490d2e..4c210852e876 100644
---- a/drivers/media/platform/imx-jpeg/mxc-jpeg.h
-+++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.h
-@@ -51,7 +51,7 @@ enum mxc_jpeg_mode {
-  * @flags:	flags describing format applicability
-  */
- struct mxc_jpeg_fmt {
--	char					*name;
-+	const char				*name;
- 	u32					fourcc;
- 	enum v4l2_jpeg_chroma_subsampling	subsampling;
- 	int					nc;
-@@ -74,14 +74,14 @@ struct mxc_jpeg_desc {
- } __packed;
- 
- struct mxc_jpeg_q_data {
--	struct mxc_jpeg_fmt	*fmt;
--	u32			sizeimage[MXC_JPEG_MAX_PLANES];
--	u32			bytesperline[MXC_JPEG_MAX_PLANES];
--	int			w;
--	int			w_adjusted;
--	int			h;
--	int			h_adjusted;
--	unsigned int		sequence;
-+	const struct mxc_jpeg_fmt	*fmt;
-+	u32				sizeimage[MXC_JPEG_MAX_PLANES];
-+	u32				bytesperline[MXC_JPEG_MAX_PLANES];
-+	int				w;
-+	int				w_adjusted;
-+	int				h;
-+	int				h_adjusted;
-+	unsigned int			sequence;
- };
- 
- struct mxc_jpeg_ctx {
--- 
-2.32.0
+And thank you!
 
+							Thanx, Paul
