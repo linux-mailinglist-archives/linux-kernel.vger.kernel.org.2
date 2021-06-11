@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660DB3A4063
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD113A4065
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhFKKsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhFKKsW (ORCPT
+        id S231199AbhFKKud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:50:33 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:40004 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhFKKud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:48:22 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7377AC061574;
-        Fri, 11 Jun 2021 03:46:24 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 376EC2FB; Fri, 11 Jun 2021 12:46:21 +0200 (CEST)
-Date:   Fri, 11 Jun 2021 12:46:19 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Yong Wu <yong.wu@mediatek.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, srv_heupstream@mediatek.com,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, eizan@chromium.org,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Irui Wang <irui.wang@mediatek.com>, linux-media@vger.kernel.org
-Subject: Re: [PATCH v5 13/16] media: mtk-vcodec: Get rid of
- mtk_smi_larb_get/put
-Message-ID: <YMM++ySKo38OUMXQ@8bytes.org>
-References: <20210410091128.31823-1-yong.wu@mediatek.com>
- <20210410091128.31823-14-yong.wu@mediatek.com>
- <CAJMQK-iTrQRDDm_=LNqSpvXFd431LYRxXMasJHUpN+K8rJ=Qpg@mail.gmail.com>
- <1620822547.2983.8.camel@mhfsdcap03>
- <c1422242-8d8c-9592-c22d-288c503cd8b1@gmail.com>
- <1623326528.23717.20.camel@mhfsdcap03>
- <e7269c80-5437-6ab9-c1db-df0b94eb97d8@gmail.com>
+        Fri, 11 Jun 2021 06:50:33 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 9E4151F44523
+Subject: Re: [PATCH v3 0/1] lib: Convert UUID runtime test to KUnit
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
+        David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>, tales.aparecida@gmail.com
+References: <20210610163959.71634-1-andrealmeid@collabora.com>
+ <YMMzDUVOlJcw63lf@smile.fi.intel.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <7ad34395-2b62-58fb-8a63-7b4899460290@collabora.com>
+Date:   Fri, 11 Jun 2021 07:48:26 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7269c80-5437-6ab9-c1db-df0b94eb97d8@gmail.com>
+In-Reply-To: <YMMzDUVOlJcw63lf@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 12:07:24PM +0200, Matthias Brugger wrote:
-> That's a good question. I think the media tree would be a good
-> candidate, as it has the biggest bunch of patches. But that would mean
-> that Joerg is fine that.  The DTS part could still go through my tree.
+Hi Andy,
 
-IOMMU changes are only a minor part of this, so it should not go through
-the IOMMU tree. When Matthias has reviewed the IOMMU changes, feel free
-to add my
+Às 06:55 de 11/06/21, Andy Shevchenko escreveu:
+> On Thu, Jun 10, 2021 at 01:39:58PM -0300, André Almeida wrote:
+>> Hi,
+>>
+>> This patch converts existing UUID runtime test to use KUnit framework.
+>>
+>> Below, there's a comparison between the old output format and the new
+>> one. Keep in mind that even if KUnit seems very verbose, this is the
+>> corner case where _every_ test has failed.
+> 
+> Btw, do we have test coverage statistics?
+> 
+> I mean since we reduced 18 test cases to 12, do we still have the same / better
+> test coverage?
+> 
+I don't think we have automated statistics, but I can assure you that
+the coverage it's exactly the same. We are testing two correlated
+functions with the same input, in a single test case, instead of having
+a single case for each one, so that's why the number of cases is reduced.
 
-	Acked-by: Joerg Roedel <jroedel@suse.de>
+For example, instead of:
 
-to them.
+	total_tests++;
+	if (guid_parse(data->uuid, &le))
 
-Regards,
 
-	Joerg
+	total_tests++;
+	if (!guid_equal(&data->le, &le))
+
+We now have:
+
+	KUNIT_ASSERT_EQ(guid_parse(data->guid, &le), 0)
+	KUNIT_EXPECT_TRUE(guid_equal(&data->le, &le))
+
+That will count as a single test.
