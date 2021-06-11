@@ -2,209 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED753A3E84
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3277E3A3E86
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhFKJFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:05:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230460AbhFKJFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:05:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0F961181;
-        Fri, 11 Jun 2021 09:03:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623402182;
-        bh=TsVXPLwnrlWET7PO8tQP/ey0ws/jRNpWg0MSbcEBVbk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f5xGFCpEwkaMul78gNStpklEFUzweU2WqSRXUcJeplNbZPfnBVMTdfXeIpKaHCyJ8
-         x1Ez1odI7Fj5ULmET1YYFwb8ET3yEg25hjbE5CoQoSQmQlhQQfGqE7b8xuL4G9906X
-         bvSLO4ZQ658ngjAxelgGRle+MIqJUjti0cEywyQk=
-Date:   Fri, 11 Jun 2021 11:02:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCHv4 6/6] misc: gehc-achc: new driver
-Message-ID: <YMMmw11wOzMZejkS@kroah.com>
-References: <20210609151235.48964-1-sebastian.reichel@collabora.com>
- <20210609151235.48964-7-sebastian.reichel@collabora.com>
+        id S231433AbhFKJFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:05:39 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33168 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhFKJFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:05:39 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E2A1721965;
+        Fri, 11 Jun 2021 09:03:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623402220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=8YCoCRqbOmEh51NxHoLmHsLlkKYsuBLx8KTpCpYe64Q=;
+        b=U3+lXwYsQKcVXRhEYlrT/1PslapKoSZDxIG6UFkzvOGaBPqSPcsUA5rsUolUm7ApEtU3lC
+        vPDpUkuSaF4LHWAGoLoe60OGCmcfNb2HfSgsdWC8qWaUthQpJxAtmTcnQ3uhD48ahsflk2
+        xd980G9HVpeF3Tfyics6AL7nupc59DU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623402220;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=8YCoCRqbOmEh51NxHoLmHsLlkKYsuBLx8KTpCpYe64Q=;
+        b=JEZ3F72ca61RfxjewIcXDiRYEUocTp6PJ8smz1ouihGSJG5Fytoi9iQfnmw5G3NgiBPd86
+        jTFZi9mE9WC/WQCg==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id D1063A3BB3;
+        Fri, 11 Jun 2021 09:03:40 +0000 (UTC)
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mmc: sdhci: Clear unused bounce buffer at DMA mmap error path
+Date:   Fri, 11 Jun 2021 11:03:30 +0200
+Message-Id: <20210611090330.13039-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609151235.48964-7-sebastian.reichel@collabora.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 05:12:35PM +0200, Sebastian Reichel wrote:
-> General Electric Healthcare's PPD has a secondary processor from
-> NXP's Kinetis K20 series. That device has two SPI chip selects:
-> 
-> The main interface's behaviour depends on the loaded firmware
-> and is currently unused.
-> 
-> The secondary interface can be used to update the firmware using
-> EzPort protocol. This is implemented by this driver using the
-> kernel's firmware API. It's not done during probe time, since
-> the device has non-volatile memory and flashing lasts almost 3
-> minutes.
-> 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  .../ABI/testing/sysfs-driver-ge-achc          |   9 ++
->  drivers/misc/Kconfig                          |  12 ++
->  drivers/misc/Makefile                         |   1 +
->  drivers/misc/gehc-achc.c                      | 136 ++++++++++++++++++
->  drivers/spi/spidev.c                          |   1 -
->  5 files changed, 158 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-ge-achc
->  create mode 100644 drivers/misc/gehc-achc.c
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-ge-achc b/Documentation/ABI/testing/sysfs-driver-ge-achc
-> new file mode 100644
-> index 000000000000..3ca71a1b4836
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-driver-ge-achc
-> @@ -0,0 +1,9 @@
-> +What:		/sys/bus/spi/drivers/gehc-achc/<dev>/update_firmware
+When DMA-mapping of the bounce buffer fails, the driver tries to fall
+back, but it leaves the allocated host->bounce_buffer although its
+size is zero.  Later on, the driver checks the use of bounce buffer
+with host->bounce_buffer pointer, and it tries to use the buffer
+incorrectly, resulting in Oops.
 
-Shouldn't the path be through the bus and not through the driver portion
-of sysfs?
+This patch clears the release the unused buffer and clears the
+bounce_buffer pointer for addressing the problem.
 
-> +Date:		June 2021
-> +Contact:	linux-kernel@vger.kernel.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/mmc/host/sdhci.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-If you are not willing to put your name on this, I'm not willing to take
-this :(
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index bf238ade1602..5f467b98ca88 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -4072,9 +4072,13 @@ static void sdhci_allocate_bounce_buffer(struct sdhci_host *host)
+ 					   bounce_size,
+ 					   DMA_BIDIRECTIONAL);
+ 	ret = dma_mapping_error(mmc_dev(mmc), host->bounce_addr);
+-	if (ret)
++	if (ret) {
++		devm_kfree(mmc->parent, host->bounce_buffer);
++		host->bounce_buffer = NULL;
+ 		/* Again fall back to max_segs == 1 */
+ 		return;
++	}
++
+ 	host->bounce_buffer_size = bounce_size;
+ 
+ 	/* Lie about this since we're bouncing */
+-- 
+2.26.2
 
-> +Description:	Write 1 to this file to trigger a firmware update.
-
-What exactly does this mean?  What will be "triggered" and what will
-happen?
-
-And it is not what the kernel code does, it will take any write to this
-file, not just "1" so something is wrong here.
-
-> +
-> +What:		/sys/bus/spi/drivers/gehc-achc/<dev>/reset
-> +Date:		June 2021
-> +Contact:	linux-kernel@vger.kernel.org
-
-Again, real name for a contact for obvious reasons.
-
-> +Description:	Write 1 to this file to trigger a device reset.
-
-Also does not match the code :(
-
-
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index 392c091891a1..a286f0775f2e 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -211,6 +211,18 @@ config CS5535_CLOCK_EVENT_SRC
->  config NXP_EZPORT
->  	tristate
->  
-> +config GEHC_ACHC
-> +	tristate "GEHC ACHC support"
-> +	depends on SPI && SYSFS && SPI_SPIDEV
-> +	select FW_LOADER
-> +	select NXP_EZPORT
-> +	help
-> +	  Support for GE ACHC microcontroller, that is part of the GE
-> +	  PPD device.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called gehc-achc.
-> +
->  config HP_ILO
->  	tristate "Channel interface driver for the HP iLO processor"
->  	depends on PCI
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index a85e763b9b33..b7bad5a16c8f 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -25,6 +25,7 @@ obj-$(CONFIG_SGI_XP)		+= sgi-xp/
->  obj-$(CONFIG_SGI_GRU)		+= sgi-gru/
->  obj-$(CONFIG_CS5535_MFGPT)	+= cs5535-mfgpt.o
->  obj-$(CONFIG_NXP_EZPORT)	+= nxp-ezport.o
-> +obj-$(CONFIG_GEHC_ACHC)		+= gehc-achc.o
->  obj-$(CONFIG_HP_ILO)		+= hpilo.o
->  obj-$(CONFIG_APDS9802ALS)	+= apds9802als.o
->  obj-$(CONFIG_ISL29003)		+= isl29003.o
-> diff --git a/drivers/misc/gehc-achc.c b/drivers/misc/gehc-achc.c
-> new file mode 100644
-> index 000000000000..5868ac99a3f6
-> --- /dev/null
-> +++ b/drivers/misc/gehc-achc.c
-> @@ -0,0 +1,136 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * datasheet: https://www.nxp.com/docs/en/data-sheet/K20P144M120SF3.pdf
-> + *
-> + * Copyright (C) 2018-2021 Collabora
-> + * Copyright (C) 2018-2021 GE Healthcare
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_data/nxp-ezport.h>
-> +
-> +#define ACHC_MAX_FREQ 300000
-
-What is the units here?
-
-> +
-> +struct achc_data {
-> +	struct spi_device *main;
-> +	struct spi_device *ezport;
-> +	struct gpio_desc *reset;
-> +
-> +	struct mutex device_lock; /* avoid concurrent device access */
-> +};
-> +
-> +static ssize_t update_firmware_store(struct device *dev, struct device_attribute *attr,
-> +				     const char *buf, size_t count)
-> +{
-> +	struct achc_data *achc = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	if (!count)
-> +		return -EINVAL;
-
-So just a non-empty string works?  As said above, that's not what you
-documented :(
-
-> +
-> +	mutex_lock(&achc->device_lock);
-> +	ret = ezport_flash(achc->ezport, achc->reset, "achc.bin");
-> +	mutex_unlock(&achc->device_lock);
-> +
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return count;
-> +}
-> +static DEVICE_ATTR_WO(update_firmware);
-> +
-> +static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
-> +			   const char *buf, size_t count)
-> +{
-> +	struct achc_data *achc = dev_get_drvdata(dev);
-> +
-> +	if (!count)
-> +		return -EINVAL;
-
-Same here as above.
-
-
-thanks,
-
-greg k-h
