@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A376D3A3F7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943493A3F7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhFKJvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:51:32 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]:52856 "EHLO
-        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKJvb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:51:31 -0400
-Received: by mail-wm1-f50.google.com with SMTP id f17so7749913wmf.2;
-        Fri, 11 Jun 2021 02:49:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7ObfSjunS2lqcu+qmz5f/+ME5Q9V/oV3SAiNhGet7h0=;
-        b=ClRCy2c0ol1tBDtfW5RGO5sESybQqKJgcKnfy8A2Py/6VY67/NwXULxLLMBifRExwS
-         ntroCvu6XNQlu4XJn4tdwlZEQibGveP0GIcF1zwC0Hd/EF4B9yPBdIewIb6KiHM9hQNb
-         9OV6wZE44HMN1/Z+sZFFJwt57YeVDk/MvgBvDnPXqCX6kaM3lyBn1a2T4Zv/0GP9G2ze
-         lOe5iGnCZG6xFx9kafVbE/9FYJN29esHDg6lLVJEioVWGMBQppyV160ZH068BzPlgfvr
-         lg+83qjJq697jJS4ht7RTr2wZo1Z2KWbQqbSz516lS2ABz06tStNlb6BqoxENNL/T8cZ
-         NqRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7ObfSjunS2lqcu+qmz5f/+ME5Q9V/oV3SAiNhGet7h0=;
-        b=jncx/PCrKjbat2sQooEONfgJwEWvFdtQek+ESOX6rsInjxAEgUB//mVZBBGnXhigIm
-         9u17RmiPrvqNbNclY1fBgWPWhRHM9cJIAHUtapAPZ5Y+EmnMxLdtyhxx9J8/1BQMJuLN
-         KNs5wsfaJLbGWqURXyoxPi5XjK+qIkcvULZ8yXNPSsd0cHq+7H3gywhpXyuTvqTr+8p2
-         8JaJERGk/XF4TaBtIMko1ZI0ndAHtp/tveCz0c6MDYK/0z4apdddSTslsu49AdUBtSoe
-         IPLJs0IEuUMjxDbT0m81xYkrHh2HZLQiWyDSuIcXiwPyEJeZGYMBnsjYUZ1d5wuC6/XW
-         hWRw==
-X-Gm-Message-State: AOAM533mALsvzxRg1QsFiNw788fRc/hLrnk8wlmEmvRu6ixACdpYKzk5
-        /i5CrukvhrQqEKoXeZJDH2k=
-X-Google-Smtp-Source: ABdhPJzcgh43AweTQqlpG4DsIlO93zwseDZqvtC3I1XN2r+uEIw3ceMUybZE1nde+hE5GmM70BNbgw==
-X-Received: by 2002:a05:600c:22d9:: with SMTP id 25mr19855564wmg.152.1623404912991;
-        Fri, 11 Jun 2021 02:48:32 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id 89sm6799095wrq.14.2021.06.11.02.48.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 02:48:32 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] dt-bindings: mediatek: convert mtk jpeg
- decoder/encoder to yaml
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maoguang.meng@mediatek.com, yong.wu@mediatek.com
-References: <20210611092357.2930310-1-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <b8c3433d-8860-38bc-27f0-877f05e9e0a7@gmail.com>
-Date:   Fri, 11 Jun 2021 11:48:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231400AbhFKJum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:50:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhFKJuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:50:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C681F613D0;
+        Fri, 11 Jun 2021 09:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623404918;
+        bh=swJnTe4V9Mx/mZfpprQNdMIh0tMmmeszgr+WJIbehO4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eOZuaYvx/WFMuxjLr/QHY6F0MEPfMdOuBxXRPKbNBV24Dl4o6R7B8xSSjq5fTodGf
+         OZQIAqwIhT5Iou9opl6zIAaXoNNNT8zA8uIpiVmQqTRxd+jrSzZfHZujDTAEovNYZe
+         +he3556fqxhmU8jgPGbI4G8ehCen0l80gMFkONlA=
+Date:   Fri, 11 Jun 2021 11:48:35 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Subject: Re: [PATCH 4/9] nvmem: sprd: Fix an error message
+Message-ID: <YMMxc4UrmMN2AUef@kroah.com>
+References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
+ <20210611083348.20170-5-srinivas.kandagatla@linaro.org>
+ <YMMlRq250A53CDaM@kroah.com>
+ <a34f8a9d-c9e7-5c2d-521f-13677cfd7ccb@linaro.org>
+ <YMMqPlknDF+k466x@kroah.com>
+ <YMMwteJ5XvDST+zH@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210611092357.2930310-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMMwteJ5XvDST+zH@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 11, 2021 at 11:45:25AM +0200, Greg KH wrote:
+> On Fri, Jun 11, 2021 at 11:17:50AM +0200, Greg KH wrote:
+> > On Fri, Jun 11, 2021 at 10:05:40AM +0100, Srinivas Kandagatla wrote:
+> > > 
+> > > 
+> > > On 11/06/2021 09:56, Greg KH wrote:
+> > > > On Fri, Jun 11, 2021 at 09:33:43AM +0100, Srinivas Kandagatla wrote:
+> > > > > From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > > > 
+> > > > > 'ret' is known to be 0 here.
+> > > > > The expected error status is stored in 'status', so use it instead.
+> > > > > 
+> > > > > Also change %d in %u, because status is an u32, not a int.
+> > > > > 
+> > > > > Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
+> > > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > > > Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
+> > > > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > > > > ---
+> > > > >   drivers/nvmem/sprd-efuse.c | 2 +-
+> > > > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
+> > > > > index 5d394559edf2..e3e721d4c205 100644
+> > > > > --- a/drivers/nvmem/sprd-efuse.c
+> > > > > +++ b/drivers/nvmem/sprd-efuse.c
+> > > > > @@ -234,7 +234,7 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
+> > > > >   	status = readl(efuse->base + SPRD_EFUSE_ERR_FLAG);
+> > > > >   	if (status) {
+> > > > >   		dev_err(efuse->dev,
+> > > > > -			"write error status %d of block %d\n", ret, blk);
+> > > > > +			"write error status %u of block %d\n", status, blk);
+> > > > 
+> > > > Shouldn't this be %pe and not %u?
+> > > 
+> > > This is not error pointer its status value read back from a register.
+> > > 
+> > > I think %u should be good here.
+> > 
+> > Argh, you are right, my fault.  For some reason I thought this worked
+> > for integers as well.  Don't we have such a printk modifier somewhere to
+> > turn error values into strings?  Let me dig...
+> 
+> Ah, errname() will do it.
+> 
+> Looks like no one uses it, so nevermind, sorry for the noise.  I'll go
+> apply this one now.
 
-
-On 11/06/2021 11:23, Hsin-Yi Wang wrote:
-> Convert mediatek jpeg decoder and encoder bindings to yaml.>
-[...]
-> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-> new file mode 100644
-> index 0000000000000..e4e791d76cdaa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/mediatek-jpeg-encoder.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek JPEG Encoder Device Tree Bindings
-> +
-> +maintainers:
-> +  - Xia Jiang <xia.jiang@mediatek.com>
-> +
-> +description: |-
-> +  MediaTek JPEG Encoder is the JPEG encode hardware present in MediaTek SoCs
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - mediatek,mt2701-jpgenc
-> +          - mediatek,mt8183-jpgenc
-
-Commit message talks about conversion. Sorry for nit-picking, but I think the
-new compatible should get a new patch. If you add changes to a file while
-converting/moving it, it get's really hard to find that change later on.
-
-Regards,
-Matthias
+Does not apply to my tree :(
 
