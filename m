@@ -2,158 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8913A4397
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1393A4398
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbhFKN6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:58:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:59066 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232064AbhFKN5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:57:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D5DC1FB;
-        Fri, 11 Jun 2021 06:55:39 -0700 (PDT)
-Received: from [10.57.8.45] (unknown [10.57.8.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB9653F73D;
-        Fri, 11 Jun 2021 06:55:36 -0700 (PDT)
-Subject: Re: [PATCH v1 1/3] coresight: etm-perf: Correct buffer syncing for
- snapshot
-From:   James Clark <james.clark@arm.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
+        id S231582AbhFKN6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:58:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7880 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231944AbhFKN6R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:58:17 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15BDiXII108909;
+        Fri, 11 Jun 2021 09:55:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=HRN5N6RZlQJDjs7/ssNMqWtrWKTO7YKHGKdUURSiIJ4=;
+ b=f9o6CDMBk6l72UvJZHqsigw5LOsxhuaKAHblJoShjepl78ywtLCTCEdswkrTGimFFAd9
+ UTz5WZWfl1DcjmAGjm1fB6tQ+L0bLNRNPDJF6/hUiKGazR58zHkjcVKQ17B/qhxaVU2k
+ RC0gRj7DV06uKcCaTHQ9JVEYYV0rGM+NvBD0iKo7zaCu/XrbnMtuAqrd3GfDFJeDgfX/
+ 7IQ19f1GhaBr/eSnZp2J+qP57IfXlnLkQt305NmmamQenFzaW+wZx9y9By01fC4wYvdk
+ dtATXSd36driOtsT21LKiVKaZfMbJZ82cqHa8I6BFkjzUXlz+JFOE/VE5uGhrV27zAtT dQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3948yqra12-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Jun 2021 09:55:46 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15BDsAiL006344;
+        Fri, 11 Jun 2021 13:55:43 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3900w8bfr7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Jun 2021 13:55:43 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15BDtfto19530208
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Jun 2021 13:55:41 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A30311C074;
+        Fri, 11 Jun 2021 13:55:41 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C1DE411C058;
+        Fri, 11 Jun 2021 13:55:40 +0000 (GMT)
+Received: from localhost (unknown [9.85.120.213])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 11 Jun 2021 13:55:40 +0000 (GMT)
+Date:   Fri, 11 Jun 2021 19:25:38 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20210528161552.654907-1-leo.yan@linaro.org>
- <20210528161552.654907-2-leo.yan@linaro.org>
- <f29d2d68-2735-dddf-b872-6163d1dbc8f0@arm.com>
- <20210601103504.GC10026@leoy-ThinkPad-X240s>
- <71158b94-863d-97d3-323a-e2406b708db7@arm.com>
-Message-ID: <706158b9-5a4f-8bca-5dc2-000df8989f1c@arm.com>
-Date:   Fri, 11 Jun 2021 14:55:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Steven Rostedt <rostedt@goodmis.org>
+References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
+        <20210610191643.d24e7d56d102567070fe8386@kernel.org>
+In-Reply-To: <20210610191643.d24e7d56d102567070fe8386@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <71158b94-863d-97d3-323a-e2406b708db7@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1623419180.o4u5xf72jm.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Fihj06wMDXPi2FdFTFaRthoqWHgCElbJ
+X-Proofpoint-GUID: Fihj06wMDXPi2FdFTFaRthoqWHgCElbJ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-11_05:2021-06-11,2021-06-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ mlxscore=0 spamscore=0 impostorscore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=999 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106110086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Masami,
+Thanks for the review.
 
 
-On 10/06/2021 17:54, James Clark wrote:
-> 
-> 
-> On 01/06/2021 13:35, Leo Yan wrote:
->> Hi James,
->>
->> On Tue, Jun 01, 2021 at 12:53:16PM +0300, James Clark wrote:
->>
->> [...]
->>
->>> Hi Leo,
->>>
->>> I was testing out snapshot mode (without your patch) and I noticed that it
->>> only ever collects from the last CPU. For example on a 4 core system,
->>> the CPU ID of the AUX records and the AUXTRACE buffers is always 3.
->>>
->>> This is with systemwide tracing, and running "stress -m 2 -c 2".
->>> Is this something that your patch fixes, or am I doing something wrong, or
->>> is it just a coincidence?
->>
->> No, I think it's quite likely caused by blow code:
->>
->> static unsigned long
->> tmc_update_etr_buffer(struct coresight_device *csdev,
->>                       struct perf_output_handle *handle,
->>                       void *config)
->> {
->>     unsigned long flags, offset, size = 0;
->>
->>     ...
->>
->>     /* Don't do anything if another tracer is using this sink */
->>     if (atomic_read(csdev->refcnt) != 1) {
->>         spin_unlock_irqrestore(&drvdata->spinlock, flags);
->>         goto out;
->>     }
->>
->>     ...
->>
->>     return size;
->> }
->>
->> When using the system wide tracing, it updates the AUX ring buffer
->> until the last tracer is stopped.  Thus whis is why it only records
->> AUX ring buffer for the last CPU.
->>
->> But this makes sense for me, this is because the last CPU is used to
->> copy trace data to AUX ring buffer (so the perf event PERF_RECORD_AUX
->> occurs on CPU3), but when you decode the trace data, you should can
->> see the activities from other CPUs.
->>
->> Thanks,
->> Leo
->>
-> 
-> I have one more issue around snapshot mode which I'd like to check if it's
-> related to this patchset.
-> 
-> In "[PATCH v5 0/1] perf cs-etm: Split Coresight decode by aux records",
-> I added the warning for a missing AUXTRACE buffer as you suggested.
-> Now this warning gets triggered on the last AUX record when using
-> snapshot mode. I don't know if you are able to reproduce this.
-> 
+Masami Hiramatsu wrote:
+> Hi Naveen,
+>=20
+> On Thu, 10 Jun 2021 14:26:17 +0530
+> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>=20
+>> When probing at different locations in the kernel, it is not always
+>> evident if the location can be probed or not. As an example:
+>>=20
+>>     $ perf probe __radix__flush_tlb_range:35
+>>     Failed to write event: Invalid argument
+>>       Error: Failed to add events.
+>>=20
+>> The probed line above is:
+>>      35         if (!mmu_has_feature(MMU_FTR_GTSE) && type =3D=3D FLUSH_=
+TYPE_GLOBAL) {
+>>=20
+>> This ends up trying to probe on BUILD_BUG_ON(), which is rejected.
+>> However, the user receives no indication at all as to why the probe
+>> failed. Print an error in such cases so that it is clear that the probe
+>> was rejected.
+>=20
+> Hmm, Nack for this way, but I understand that is a problem.
+> If you got the error in perf probe, which uses ftrace dynamic-event inter=
+face.
+> In that case, the errors should not be output in the dmesg, but are repor=
+ted
+> via error_log in tracefs.
 
-Hi Leo,
+That would be a nice thing to add to perf, but I don't see why this=20
+should be a either/or. I still think it is good to have the core kprobe=20
+infrastructure print such errors in the kernel log. It is easier to look=20
+up such error strings in the kernel source to understand why a probe was=20
+rejected.
 
-So I tested this set with my aux split patch, and I still get the warning about the
-last AUX record not being found, so this is an independent issue. Whether
-it could be (or needs to be fixed) at the same time, I'm not sure.
+We also have perf_event_open() as an interface to add probes, and I=20
+don't think it would be helpful to require all tools to utilize the=20
+error log from tracefs for this purpose.
 
-One thing seems to have improved with your set is the number of aux records
-produced. For each SIGUSR2, I now get one aux record. Previously I got a random
-number that didn't seem to match up, which didn't seem right to me.
 
-But one thing that could be worse is the offsets and sizes. Now the size of the
-aux records is always 0x100000, no matter what the -m arguments are, and the size
-of the AUX record exceeds the size of the buffer. This makes the split patchset
-fall back to processing the whole buffer because it never finds a buffer that the
-AUX record fits in. For example:
+- Naveen
 
-	0 0 0xad0 [0x30]: PERF_RECORD_AUXTRACE size: 0x20000  offset: 0xe0000  ref: 0x406971eb0346c919  idx: 2  tid: 6794  cpu: 2
-	2 5644375601060 0xa88 [0x40]: PERF_RECORD_AUX offset: 0x100000 size: 0x100000 flags: 0x2 [O]
-
-The buffer is only 0x20000 long, but the aux record is 0x100000.
-
-Another issue is that now the offsets don't match up:
-	0 0 0xad0 [0x30]: PERF_RECORD_AUXTRACE size: 0x20000
-  offset: 0xe0000  ref: 0x406971eb0346c919  idx: 2  tid: 6794  cpu: 2
-	2 5644375601060 0xa88 [0x40]: PERF_RECORD_AUX offset: 0x100000 size: 0x100000 flags: 0x2 [O]
-	0 0 0x20bb0 [0x30]: PERF_RECORD_AUXTRACE size: 0x20000  offset: 0x1e0000  ref: 0x1a3abb5c2407536a  idx: 2  tid: 6794  cpu: 2
-	2 5644942278600 0x20b68 [0x40]: PERF_RECORD_AUX offset: 0x200000 size: 0x100000 flags: 0x2 [O]
-	0 0 0x40c90 [0x30]: PERF_RECORD_AUXTRACE size: 0x20000  offset: 0x2e0000  ref: 0x7477d3d43d0a2ac7  idx: 2  tid: 6794  cpu: 2
-	2 5645263266480 0x40c48 [0x40]: PERF_RECORD_AUX offset: 0x300000 size: 0x100000 flags: 0x2 [O]
-	0 0 0x60d70 [0x30]: PERF_RECORD_AUXTRACE size: 0x20000  offset: 0x3e0000  ref: 0x202b939740c4f041  idx: 2  tid: 6794  cpu: 2
-	2 5645569318020 0x60d28 [0x40]: PERF_RECORD_AUX offset: 0x400000 size: 0x100000 flags: 0x2 [O]
-
-The buffers are offset by 0xe0000, but the aux records are on round 0x100000 offsets.
-
-Maybe we need to re-think the aux split patchset, do we not need to split in snapshot mode? Or can we fix this
-set to produce aux records that match up?
-
-James
