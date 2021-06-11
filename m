@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6291B3A3B9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C01E3A3BA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhFKGFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:05:41 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:54610 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhFKGFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:05:40 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G1Vdp5s2fzBDn9;
-        Fri, 11 Jun 2021 08:03:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id O073bCl2e0pq; Fri, 11 Jun 2021 08:03:42 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G1Vdp4wD0z9xF5;
-        Fri, 11 Jun 2021 08:03:42 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 98D458B82C;
-        Fri, 11 Jun 2021 08:03:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ax2RHWfUqtTH; Fri, 11 Jun 2021 08:03:42 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 395E58B765;
-        Fri, 11 Jun 2021 08:03:42 +0200 (CEST)
-Subject: Re: [PATCH] powerpc/tau: Remove redundant parameter in
- alloc_workqueue() call
-To:     Finn Thain <fthain@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <4af6a7138fbd400e458352f6b384115f4adc4301.1623380367.git.fthain@linux-m68k.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <c3824489-2f36-7b4c-e306-0c91b52e9c26@csgroup.eu>
-Date:   Fri, 11 Jun 2021 08:03:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231199AbhFKGIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:08:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5501 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFKGIA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:08:00 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1Vd92BwlzZf3v;
+        Fri, 11 Jun 2021 14:03:09 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 14:06:00 +0800
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 14:05:59 +0800
+Subject: Re: [PATCH -next] btrfs: send: use list_move_tail instead of
+ list_del/list_add_tail
+To:     <dsterba@suse.cz>, Anand Jain <anand.jain@oracle.com>,
+        <linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, <weiyongjun1@huawei.com>,
+        <yuehaibing@huawei.com>, <yangjihong1@huawei.com>,
+        <yukuai3@huawei.com>, <linux-btrfs@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+References: <20210608031220.2822257-1-libaokun1@huawei.com>
+ <e860684e-959b-d126-bb1d-3214878ab995@oracle.com>
+ <20210608141233.GQ31483@twin.jikos.cz>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <f7bea721-cda5-0b20-13e3-28c4bd728063@huawei.com>
+Date:   Fri, 11 Jun 2021 14:05:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <4af6a7138fbd400e458352f6b384115f4adc4301.1623380367.git.fthain@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+In-Reply-To: <20210608141233.GQ31483@twin.jikos.cz>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Redundant with what ?
+Thank you for your advice.
 
-Do you mean superfluous ?
+I'm about to send a patch v2 with the changes suggested by you.
 
-Le 11/06/2021 Ã  04:59, Finn Thain a Ã©critÂ :
-> This avoids an (optional) compiler warning:
-> 
-> arch/powerpc/kernel/tau_6xx.c: In function 'TAU_init':
-> arch/powerpc/kernel/tau_6xx.c:204:30: error: too many arguments for format [-Werror=format-extra-args]
->    tau_workq = alloc_workqueue("tau", WQ_UNBOUND, 1, 0);
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Fixes: b1c6a0a10bfa ("powerpc/tau: Convert from timer to workqueue")
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> ---
->   arch/powerpc/kernel/tau_6xx.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
-> index 6c31af7f4fa8..b9a047d92ec0 100644
-> --- a/arch/powerpc/kernel/tau_6xx.c
-> +++ b/arch/powerpc/kernel/tau_6xx.c
-> @@ -201,7 +201,7 @@ static int __init TAU_init(void)
->   	tau_int_enable = IS_ENABLED(CONFIG_TAU_INT) &&
->   			 !strcmp(cur_cpu_spec->platform, "ppc750");
->   
-> -	tau_workq = alloc_workqueue("tau", WQ_UNBOUND, 1, 0);
-> +	tau_workq = alloc_workqueue("tau", WQ_UNBOUND, 1);
->   	if (!tau_workq)
->   		return -ENOMEM;
->   
-> 
+Best Regards
+
+
+ÔÚ 2021/6/8 22:12, David Sterba Ð´µÀ:
+> On Tue, Jun 08, 2021 at 01:16:21PM +0800, Anand Jain wrote:
+>> On 8/6/21 11:12 am, Baokun Li wrote:
+>>> Using list_move_tail() instead of list_del() + list_add_tail().
+>>>
+>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>>> ---
+>>>    fs/btrfs/send.c | 3 +--
+>>>    1 file changed, 1 insertion(+), 2 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+>>> index bd69db72acc5..a0e51b2416a1 100644
+>>> --- a/fs/btrfs/send.c
+>>> +++ b/fs/btrfs/send.c
+>>> @@ -2083,8 +2083,7 @@ static struct name_cache_entry *name_cache_search(struct send_ctx *sctx,
+>>>     */
+>>>    static void name_cache_used(struct send_ctx *sctx, struct name_cache_entry *nce)
+>>>    {
+>>> -	list_del(&nce->list);
+>>> -	list_add_tail(&nce->list, &sctx->name_cache_list);
+>>> +	list_move_tail(&nce->list, &sctx->name_cache_list);
+>>>    }
+>>
+>>    Looks good.
+>>    You can consider open-code name_cache_used() as there is only one user.
+> Yeah sounds like a good idea, with part of the function comment next to
+> the list_move_tail.
+> .
