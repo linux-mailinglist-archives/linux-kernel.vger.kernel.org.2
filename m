@@ -2,169 +2,458 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4294F3A3A30
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE893A3A34
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhFKDTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:19:11 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21396 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbhFKDTJ (ORCPT
+        id S231434AbhFKDVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:21:18 -0400
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:41627 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230307AbhFKDVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:19:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1623381426; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=HdTxatKiOuJtnz3mnNbLrJH0QSz53F7Bv1oH8ZGvGV5VsijOYSp2ejsWAkjERUr8QQ7w1abIOdVjncXFEem9sZfA/zij3UAbERxmbNkhGpNDIrziAWabeZqOvKmFvl0UqBNYJktCYFc8bebegZXD3PlqQ0HsZ/5tV06Fng393Es=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1623381426; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=6w24q4KjkkPDLysSVflU0zB+gETtZEUm88FEMMwn7GI=; 
-        b=LR9vGj6Z3O3sYwxygoDirXJFI7o9RQ3XMUy1B8WgRWMGWItICdX2i9dsbeLUoSlU6258vuWdNWMBX/058ic1VMju31GeIpq1xs5D7k+6wFGSkc5N6bRK12W6sWXZxN7w50z7tm/x4qGCPm8dyLSzKbNMfreutgYc4C1Byr+JPWI=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1623381426;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
-        bh=6w24q4KjkkPDLysSVflU0zB+gETtZEUm88FEMMwn7GI=;
-        b=S4C4tt0G79erc+nJUWrj5nFueHq96WxkfTLfxvzWvV4pWvgT/bawlJtaZMz9tJRJ
-        zbTqk68dYaCISPFtV4CPYZAjqSinFG/dbm7vGOI2nW54EVt9UL252/3atXzEd0LFgCS
-        epHw9lezYcFVCW5dgFSM36yUnp9cSbbH+aVn2aAQ=
-Received: from anirudhrb.com (106.51.107.73 [106.51.107.73]) by mx.zohomail.com
-        with SMTPS id 1623381424796479.5654824572481; Thu, 10 Jun 2021 20:17:04 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 08:46:58 +0530
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Junyong Sun <sunjy516@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        mail@anirudhrb.com
-Subject: Re: [PATCH v4] firmware_loader: fix use-after-free in
- firmware_fallback_sysfs
-Message-ID: <YMLVqvFtR8OS+Qst@anirudhrb.com>
-References: <20210518155921.4181-1-mail@anirudhrb.com>
- <20210519032014.GS4332@42.do-not-panic.com>
- <CAB=NE6Uq_t9Mbs8zN30QQrwH190p5Oz4M7OwDxmQgUeRRWS_6g@mail.gmail.com>
+        Thu, 10 Jun 2021 23:21:17 -0400
+Received: by mail-pg1-f178.google.com with SMTP id l184so1330645pgd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SQq5Dh1D7csPQCkLl89bY9rga8HgYY3LoG4lnjU2NhE=;
+        b=vGUtarCuwZUsqWeaaS3FUBgvwal6vuVsgkrJTqMj1JCnB/70pRocbySlrLrbWXkIzi
+         Mh7nCWPRK6v4eWrHGmajKj6xFwv4yqSmsC+BeWK1Hz+oDHYIEl6X65qsGwlFvRXN9Bme
+         3j+KzFcQ5KIr0plrdQ9LHVSgAjR0qz5Ipw+7KMJS7b9NAQLE74qtIFMLVM0DRJuVQeKR
+         3Sp8hiSFAjkyG5m3x+g9UHDipY4sz41fw7wXdIpBfjnxLceazOyJeNpqUh/hhM2X2gE/
+         G6kg2ilkJ9mnJOadcDys0ZTC/VKNVaY6pPh+FtHwhgTm7aMNKdkHhVlw31xPFyarksXN
+         M6zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SQq5Dh1D7csPQCkLl89bY9rga8HgYY3LoG4lnjU2NhE=;
+        b=fiel3UNcWlKRDgjC7F1ykbuqi/lMh/z5eLW1RjRqxpb3FviPivEmZFqrXeR3NanYL8
+         ZColJ1ZPHYVFetMBQVrqUj8EHN1I1St3WPwI2fxm/r3x9VUv9pznK6FKh8c9dqNJR9+W
+         k2PAsvxwxASq2fbeWMMzB198L7X/ntPKr03p6cfaBjuBjOChueAZUGhPPOYT84CWKqpr
+         Pzc1UF2q6RcUYVRaaRjjOVjZbookSwLH58BJNpmOb8u3zJy4qrP3IqCG/2MXxb+QWxG1
+         vrHwesS6N0H9WVuMDHunl7b4xyptvbjqhEYSwApdR8LiX493UmCK4o1zdjGjmJGtSB9u
+         YmYg==
+X-Gm-Message-State: AOAM5317Uy/BXe2wryqO5VpcnqQN9RooxQ4U0tdCweclrqpEMYWJ4AsQ
+        SiwZhs3ja8FScoyHGNDCDkIFWw==
+X-Google-Smtp-Source: ABdhPJx49AFpBoYmHBmHYmV+nscIsogMvpAA3i2Z1N7nmbu82emujYKL+5jWSll1O7rCWU82oRTpfA==
+X-Received: by 2002:a62:d447:0:b029:291:19f7:ddcd with SMTP id u7-20020a62d4470000b029029119f7ddcdmr6151677pfl.54.1623381486544;
+        Thu, 10 Jun 2021 20:18:06 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id p26sm3561237pfw.178.2021.06.10.20.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 20:18:05 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] Revert "cpufreq: CPPC: Add support for frequency invariance"
+Date:   Fri, 11 Jun 2021 08:48:02 +0530
+Message-Id: <a71c48fb0150f505680da68a82b4e4fca9a18439.1623381430.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAB=NE6Uq_t9Mbs8zN30QQrwH190p5Oz4M7OwDxmQgUeRRWS_6g@mail.gmail.com>
-X-ZohoMailClient: External
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 03:32:53PM -0700, Luis Chamberlain wrote:
-> On Tue, May 18, 2021 at 8:20 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > On Tue, May 18, 2021 at 09:29:20PM +0530, Anirudh Rayabharam wrote:
-> > > This use-after-free happens when a fw_priv object has been freed but
-> > > hasn't been removed from the pending list (pending_fw_head). The next
-> > > time fw_load_sysfs_fallback tries to insert into the list, it ends up
-> > > accessing the pending_list member of the previoiusly freed fw_priv.
-> > >
-> > > The root cause here is that all code paths that abort the fw load
-> > > don't delete it from the pending list. For example:
-> > >
-> > >       _request_firmware()
-> > >         -> fw_abort_batch_reqs()
-> > >             -> fw_state_aborted()
-> > >
-> > > To fix this, delete the fw_priv from the list in __fw_set_state() if
-> > > the new state is DONE or ABORTED. This way, all aborts will remove
-> > > the fw_priv from the list. Accordingly, remove calls to list_del_init
-> > > that were being made before calling fw_state_(aborted|done)().
-> > >
-> > > Also, in fw_load_sysfs_fallback, don't add the fw_priv to the list
-> > > if it is already aborted. Instead, just jump out and return early.
-> > >
-> > > Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
-> > > Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> > > Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> > > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> > > ---
-> > >
-> > > Changes in v4:
-> > > Documented the reasons behind the error codes returned from
-> > > fw_sysfs_wait_timeout() as suggested by Luis Chamberlain.
-> > >
-> > > Changes in v3:
-> > > Modified the patch to incorporate suggestions by Luis Chamberlain in
-> > > order to fix the root cause instead of applying a "band-aid" kind of
-> > > fix.
-> > > https://lore.kernel.org/lkml/20210403013143.GV4332@42.do-not-panic.com/
-> > >
-> > > Changes in v2:
-> > > 1. Fixed 1 error and 1 warning (in the commit message) reported by
-> > > checkpatch.pl. The error was regarding the format for referring to
-> > > another commit "commit <sha> ("oneline")". The warning was for line
-> > > longer than 75 chars.
-> > >
-> > > ---
-> > >  drivers/base/firmware_loader/fallback.c | 46 ++++++++++++++++++-------
-> > >  drivers/base/firmware_loader/firmware.h |  6 +++-
-> > >  drivers/base/firmware_loader/main.c     |  2 ++
-> > >  3 files changed, 40 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-> > > index 91899d185e31..f244c7b89ba5 100644
-> > > --- a/drivers/base/firmware_loader/fallback.c
-> > > +++ b/drivers/base/firmware_loader/fallback.c
-> > > @@ -70,7 +70,31 @@ static inline bool fw_sysfs_loading(struct fw_priv *fw_priv)
-> > >
-> > >  static inline int fw_sysfs_wait_timeout(struct fw_priv *fw_priv,  long timeout)
-> > >  {
-> > > -     return __fw_state_wait_common(fw_priv, timeout);
-> > > +     int ret = __fw_state_wait_common(fw_priv, timeout);
-> > > +
-> > > +     /*
-> > > +      * A signal could be sent to abort a wait. Consider Android's init
-> > > +      * gettting a SIGCHLD, which in turn was the same process issuing the
-> > > +      * sysfs store call for the fallback. In such cases we want to be able
-> > > +      * to tell apart in userspace when a signal caused a failure on the
-> > > +      * wait. In such cases we'd get -ERESTARTSYS.
-> > > +      *
-> > > +      * Likewise though another race can happen and abort the load earlier.
-> > > +      *
-> > > +      * In either case the situation is interrupted so we just inform
-> > > +      * userspace of that and we end things right away.
-> > > +      *
-> > > +      * When we really time out just tell userspace it should try again,
-> > > +      * perhaps later.
-> > > +      */
-> > > +     if (ret == -ERESTARTSYS || fw_state_is_aborted(fw_priv))
-> > > +             ret = -EINTR;
-> > > +     else if (ret == -ETIMEDOUT)
-> > > +             ret = -EAGAIN;
-> >
-> >
-> > Shuah has explained to me that the only motivation on her part with
-> > using -EAGAIN on commit 0542ad88fbdd81bb ("firmware loader: Fix
-> > _request_firmware_load() return val for fw load abort") was to
-> > distinguish the error from -ENOMEM, and so there was no real
-> > reason to stick to -EAGAIN. Given -EAGAIN is used typically to
-> > ask user to retry, but it makes no sense in this case since the
-> > sysfs interface is ephemeral, I think we should do away with it
-> > and document this rationale.
-> >
-> > I think we should stick to use -ETIMEDOUT. Its more telling of what
-> > happened. And so I think just removing the check should do it, but
-> > augmenting the comment should suffice.
-> >
-> > Since this change is already big, it would be good for this other
-> > change to go in as a separate change. If you can test to ensure the
-> > -ETIMEDOUT does indeed get propagated that'd be appreciated.
-> >
-> > Otherwise looks good. Thanks for your patience!
-> 
-> Anirudh, did you get a chance to test?
+This reverts commit 4c38f2df71c8e33c0b64865992d693f5022eeaad.
 
-Hi Luis, I had replied to your email here:
-https://lore.kernel.org/lkml/YKVcnQ7mm1b92mbR@anirudhrb.com/
+There are few races in the frequency invariance support for CPPC driver,
+namely the driver doesn't stop the kthread_work and irq_work on policy
+exit during suspend/resume or CPU hotplug.
 
-Thanks!
+A proper fix won't be possible for the 5.13-rc, as it requires a lot of
+changes. Lets revert the patch instead for now.
 
-	- Anirudh
+Fixes: 4c38f2df71c8 ("cpufreq: CPPC: Add support for frequency invariance")
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V2: Revert the original patch instead of marking it broken.
+
+ drivers/cpufreq/Kconfig.arm    |  10 --
+ drivers/cpufreq/cppc_cpufreq.c | 245 ++-------------------------------
+ include/linux/arch_topology.h  |   1 -
+ kernel/sched/core.c            |   1 -
+ 4 files changed, 12 insertions(+), 245 deletions(-)
+
+diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+index a5c5f70acfc9..e65e0a43be64 100644
+--- a/drivers/cpufreq/Kconfig.arm
++++ b/drivers/cpufreq/Kconfig.arm
+@@ -19,16 +19,6 @@ config ACPI_CPPC_CPUFREQ
+ 
+ 	  If in doubt, say N.
+ 
+-config ACPI_CPPC_CPUFREQ_FIE
+-	bool "Frequency Invariance support for CPPC cpufreq driver"
+-	depends on ACPI_CPPC_CPUFREQ && GENERIC_ARCH_TOPOLOGY
+-	default y
+-	help
+-	  This extends frequency invariance support in the CPPC cpufreq driver,
+-	  by using CPPC delivered and reference performance counters.
+-
+-	  If in doubt, say N.
+-
+ config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
+ 	tristate "Allwinner nvmem based SUN50I CPUFreq driver"
+ 	depends on ARCH_SUNXI
+diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+index 3848b4c222e1..2f769b1630c5 100644
+--- a/drivers/cpufreq/cppc_cpufreq.c
++++ b/drivers/cpufreq/cppc_cpufreq.c
+@@ -10,18 +10,14 @@
+ 
+ #define pr_fmt(fmt)	"CPPC Cpufreq:"	fmt
+ 
+-#include <linux/arch_topology.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/cpu.h>
+ #include <linux/cpufreq.h>
+ #include <linux/dmi.h>
+-#include <linux/irq_work.h>
+-#include <linux/kthread.h>
+ #include <linux/time.h>
+ #include <linux/vmalloc.h>
+-#include <uapi/linux/sched/types.h>
+ 
+ #include <asm/unaligned.h>
+ 
+@@ -61,204 +57,6 @@ static struct cppc_workaround_oem_info wa_info[] = {
+ 	}
+ };
+ 
+-#ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+-
+-/* Frequency invariance support */
+-struct cppc_freq_invariance {
+-	int cpu;
+-	struct irq_work irq_work;
+-	struct kthread_work work;
+-	struct cppc_perf_fb_ctrs prev_perf_fb_ctrs;
+-	struct cppc_cpudata *cpu_data;
+-};
+-
+-static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_freq_inv);
+-static struct kthread_worker *kworker_fie;
+-static bool fie_disabled;
+-
+-static struct cpufreq_driver cppc_cpufreq_driver;
+-static unsigned int hisi_cppc_cpufreq_get_rate(unsigned int cpu);
+-static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
+-				 struct cppc_perf_fb_ctrs fb_ctrs_t0,
+-				 struct cppc_perf_fb_ctrs fb_ctrs_t1);
+-
+-/**
+- * cppc_scale_freq_workfn - CPPC arch_freq_scale updater for frequency invariance
+- * @work: The work item.
+- *
+- * The CPPC driver register itself with the topology core to provide its own
+- * implementation (cppc_scale_freq_tick()) of topology_scale_freq_tick() which
+- * gets called by the scheduler on every tick.
+- *
+- * Note that the arch specific counters have higher priority than CPPC counters,
+- * if available, though the CPPC driver doesn't need to have any special
+- * handling for that.
+- *
+- * On an invocation of cppc_scale_freq_tick(), we schedule an irq work (since we
+- * reach here from hard-irq context), which then schedules a normal work item
+- * and cppc_scale_freq_workfn() updates the per_cpu arch_freq_scale variable
+- * based on the counter updates since the last tick.
+- */
+-static void cppc_scale_freq_workfn(struct kthread_work *work)
+-{
+-	struct cppc_freq_invariance *cppc_fi;
+-	struct cppc_perf_fb_ctrs fb_ctrs = {0};
+-	struct cppc_cpudata *cpu_data;
+-	unsigned long local_freq_scale;
+-	u64 perf;
+-
+-	cppc_fi = container_of(work, struct cppc_freq_invariance, work);
+-	cpu_data = cppc_fi->cpu_data;
+-
+-	if (cppc_get_perf_ctrs(cppc_fi->cpu, &fb_ctrs)) {
+-		pr_warn("%s: failed to read perf counters\n", __func__);
+-		return;
+-	}
+-
+-	cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
+-	perf = cppc_perf_from_fbctrs(cpu_data, cppc_fi->prev_perf_fb_ctrs,
+-				     fb_ctrs);
+-
+-	perf <<= SCHED_CAPACITY_SHIFT;
+-	local_freq_scale = div64_u64(perf, cpu_data->perf_caps.highest_perf);
+-	if (WARN_ON(local_freq_scale > 1024))
+-		local_freq_scale = 1024;
+-
+-	per_cpu(arch_freq_scale, cppc_fi->cpu) = local_freq_scale;
+-}
+-
+-static void cppc_irq_work(struct irq_work *irq_work)
+-{
+-	struct cppc_freq_invariance *cppc_fi;
+-
+-	cppc_fi = container_of(irq_work, struct cppc_freq_invariance, irq_work);
+-	kthread_queue_work(kworker_fie, &cppc_fi->work);
+-}
+-
+-static void cppc_scale_freq_tick(void)
+-{
+-	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, smp_processor_id());
+-
+-	/*
+-	 * cppc_get_perf_ctrs() can potentially sleep, call that from the right
+-	 * context.
+-	 */
+-	irq_work_queue(&cppc_fi->irq_work);
+-}
+-
+-static struct scale_freq_data cppc_sftd = {
+-	.source = SCALE_FREQ_SOURCE_CPPC,
+-	.set_freq_scale = cppc_scale_freq_tick,
+-};
+-
+-static void cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
+-					     struct cppc_cpudata *cpu_data)
+-{
+-	struct cppc_perf_fb_ctrs fb_ctrs = {0};
+-	struct cppc_freq_invariance *cppc_fi;
+-	int i, ret;
+-
+-	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+-		return;
+-
+-	if (fie_disabled)
+-		return;
+-
+-	for_each_cpu(i, policy->cpus) {
+-		cppc_fi = &per_cpu(cppc_freq_inv, i);
+-		cppc_fi->cpu = i;
+-		cppc_fi->cpu_data = cpu_data;
+-		kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
+-		init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
+-
+-		ret = cppc_get_perf_ctrs(i, &fb_ctrs);
+-		if (ret) {
+-			pr_warn("%s: failed to read perf counters: %d\n",
+-				__func__, ret);
+-			fie_disabled = true;
+-		} else {
+-			cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
+-		}
+-	}
+-}
+-
+-static void __init cppc_freq_invariance_init(void)
+-{
+-	struct sched_attr attr = {
+-		.size		= sizeof(struct sched_attr),
+-		.sched_policy	= SCHED_DEADLINE,
+-		.sched_nice	= 0,
+-		.sched_priority	= 0,
+-		/*
+-		 * Fake (unused) bandwidth; workaround to "fix"
+-		 * priority inheritance.
+-		 */
+-		.sched_runtime	= 1000000,
+-		.sched_deadline = 10000000,
+-		.sched_period	= 10000000,
+-	};
+-	int ret;
+-
+-	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+-		return;
+-
+-	if (fie_disabled)
+-		return;
+-
+-	kworker_fie = kthread_create_worker(0, "cppc_fie");
+-	if (IS_ERR(kworker_fie))
+-		return;
+-
+-	ret = sched_setattr_nocheck(kworker_fie->task, &attr);
+-	if (ret) {
+-		pr_warn("%s: failed to set SCHED_DEADLINE: %d\n", __func__,
+-			ret);
+-		kthread_destroy_worker(kworker_fie);
+-		return;
+-	}
+-
+-	/* Register for freq-invariance */
+-	topology_set_scale_freq_source(&cppc_sftd, cpu_present_mask);
+-}
+-
+-static void cppc_freq_invariance_exit(void)
+-{
+-	struct cppc_freq_invariance *cppc_fi;
+-	int i;
+-
+-	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+-		return;
+-
+-	if (fie_disabled)
+-		return;
+-
+-	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpu_present_mask);
+-
+-	for_each_possible_cpu(i) {
+-		cppc_fi = &per_cpu(cppc_freq_inv, i);
+-		irq_work_sync(&cppc_fi->irq_work);
+-	}
+-
+-	kthread_destroy_worker(kworker_fie);
+-	kworker_fie = NULL;
+-}
+-
+-#else
+-static inline void
+-cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
+-				 struct cppc_cpudata *cpu_data)
+-{
+-}
+-
+-static inline void cppc_freq_invariance_init(void)
+-{
+-}
+-
+-static inline void cppc_freq_invariance_exit(void)
+-{
+-}
+-#endif /* CONFIG_ACPI_CPPC_CPUFREQ_FIE */
+-
+ /* Callback function used to retrieve the max frequency from DMI */
+ static void cppc_find_dmi_mhz(const struct dmi_header *dm, void *private)
+ {
+@@ -547,12 +345,9 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ 	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
+ 
+ 	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+-	if (ret) {
++	if (ret)
+ 		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+ 			 caps->highest_perf, cpu, ret);
+-	} else {
+-		cppc_freq_invariance_policy_init(policy, cpu_data);
+-	}
+ 
+ 	return ret;
+ }
+@@ -565,12 +360,12 @@ static inline u64 get_delta(u64 t1, u64 t0)
+ 	return (u32)t1 - (u32)t0;
+ }
+ 
+-static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
+-				 struct cppc_perf_fb_ctrs fb_ctrs_t0,
+-				 struct cppc_perf_fb_ctrs fb_ctrs_t1)
++static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
++				     struct cppc_perf_fb_ctrs fb_ctrs_t0,
++				     struct cppc_perf_fb_ctrs fb_ctrs_t1)
+ {
+ 	u64 delta_reference, delta_delivered;
+-	u64 reference_perf;
++	u64 reference_perf, delivered_perf;
+ 
+ 	reference_perf = fb_ctrs_t0.reference_perf;
+ 
+@@ -579,21 +374,12 @@ static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
+ 	delta_delivered = get_delta(fb_ctrs_t1.delivered,
+ 				    fb_ctrs_t0.delivered);
+ 
+-	/* Check to avoid divide-by zero and invalid delivered_perf */
+-	if (!delta_reference || !delta_delivered)
+-		return cpu_data->perf_ctrls.desired_perf;
+-
+-	return (reference_perf * delta_delivered) / delta_reference;
+-}
+-
+-static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
+-				     struct cppc_perf_fb_ctrs fb_ctrs_t0,
+-				     struct cppc_perf_fb_ctrs fb_ctrs_t1)
+-{
+-	u64 delivered_perf;
+-
+-	delivered_perf = cppc_perf_from_fbctrs(cpu_data, fb_ctrs_t0,
+-					       fb_ctrs_t1);
++	/* Check to avoid divide-by zero */
++	if (delta_reference || delta_delivered)
++		delivered_perf = (reference_perf * delta_delivered) /
++					delta_reference;
++	else
++		delivered_perf = cpu_data->perf_ctrls.desired_perf;
+ 
+ 	return cppc_cpufreq_perf_to_khz(cpu_data, delivered_perf);
+ }
+@@ -718,8 +504,6 @@ static void cppc_check_hisi_workaround(void)
+ 
+ static int __init cppc_cpufreq_init(void)
+ {
+-	int ret;
+-
+ 	if ((acpi_disabled) || !acpi_cpc_valid())
+ 		return -ENODEV;
+ 
+@@ -727,11 +511,7 @@ static int __init cppc_cpufreq_init(void)
+ 
+ 	cppc_check_hisi_workaround();
+ 
+-	ret = cpufreq_register_driver(&cppc_cpufreq_driver);
+-	if (!ret)
+-		cppc_freq_invariance_init();
+-
+-	return ret;
++	return cpufreq_register_driver(&cppc_cpufreq_driver);
+ }
+ 
+ static inline void free_cpu_data(void)
+@@ -748,7 +528,6 @@ static inline void free_cpu_data(void)
+ 
+ static void __exit cppc_cpufreq_exit(void)
+ {
+-	cppc_freq_invariance_exit();
+ 	cpufreq_unregister_driver(&cppc_cpufreq_driver);
+ 
+ 	free_cpu_data();
+diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+index f180240dc95f..11e555cfaecb 100644
+--- a/include/linux/arch_topology.h
++++ b/include/linux/arch_topology.h
+@@ -37,7 +37,6 @@ bool topology_scale_freq_invariant(void);
+ enum scale_freq_source {
+ 	SCALE_FREQ_SOURCE_CPUFREQ = 0,
+ 	SCALE_FREQ_SOURCE_ARCH,
+-	SCALE_FREQ_SOURCE_CPPC,
+ };
+ 
+ struct scale_freq_data {
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5226cc26a095..4ca80df205ce 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6389,7 +6389,6 @@ int sched_setattr_nocheck(struct task_struct *p, const struct sched_attr *attr)
+ {
+ 	return __sched_setscheduler(p, attr, false, true);
+ }
+-EXPORT_SYMBOL_GPL(sched_setattr_nocheck);
+ 
+ /**
+  * sched_setscheduler_nocheck - change the scheduling policy and/or RT priority of a thread from kernelspace.
+-- 
+2.31.1.272.g89b43f80a514
+
