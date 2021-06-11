@@ -2,108 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46683A3C0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8383A3C34
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhFKGin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:38:43 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:35502 "EHLO inva020.nxp.com"
+        id S230517AbhFKGsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:48:51 -0400
+Received: from m12-12.163.com ([220.181.12.12]:52945 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhFKGil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:38:41 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 40D111A08FB;
-        Fri, 11 Jun 2021 08:36:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 40D111A08FB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
-        s=nselector3; t=1623393403;
-        bh=x9r3mjo9myPoai+Ewzu7TLgGVipVL1jSKJszV5CRyXE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dV2As57fc9O82/cEtKmI6HJk0DPljB4jatogj/86XEAebYqRX/4RKpBOA9BePqIU5
-         UIQgPE7SYQk9WQOueK2IzlTuiB7RxU0+8EEIRibVeDTKY3XU6MtbsBF04LVDA/otdn
-         ihRvBSGAYbNbFYVGEfBtc6aFX5xeCLY/E3l5KyEaWFlq5ZOPJc+p+umtrWthrJK7Dv
-         X4aKXtpPJNLGOrDWskniLL2Fp2Oxu4lpx1v69XtnAmLAihrFlHMNCgn+JIy3YOL3ik
-         IZpRcSpHoaZiqjweEX1wi/MBJh//GC5T2rzSPlyotSY53hY+tdmuOX2VsjJ6awor90
-         n/YZAd4UepYiQ==
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1DD841A0903;
-        Fri, 11 Jun 2021 08:36:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 1DD841A0903
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 48C2740130;
-        Fri, 11 Jun 2021 14:36:33 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_spdif: Fix error handler with pm_runtime_enable
-Date:   Fri, 11 Jun 2021 14:18:38 +0800
-Message-Id: <1623392318-26304-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S229480AbhFKGsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:48:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Xz2nQ
+        GtOgVGJ1knRX1RxxdUkVoXX4TTNr3oLLZztcoM=; b=lI2JSZO1sAcH8SdYdqt93
+        sdlBWXkLeJmYDqL4nRI6urxCbEJ8eczp6XWGk2lpjUgda9hd02R0bs1wPvQJodC4
+        yb0136/U5h+efHFwBQtBG7WHhXKy8leCOoreTrJDMi3NhjGDQpIQQQyWzeC9BX7E
+        84+nV+vfv/tQ20eiglIISE=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp8 (Coremail) with SMTP id DMCowACnvyu8AsNgJVQCJQ--.2919S2;
+        Fri, 11 Jun 2021 14:29:18 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        m.felsch@pengutronix.de, sakari.ailus@linux.intel.com,
+        jacopo+renesas@jmondi.org, krzk@kernel.org,
+        zhangxiaoxu5@huawei.com, gustavoars@kernel.org,
+        hslester96@gmail.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] media: i2c: tvp5150: deleted the repeated word
+Date:   Fri, 11 Jun 2021 14:28:15 +0800
+Message-Id: <20210611062815.93583-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowACnvyu8AsNgJVQCJQ--.2919S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtFWrCw1DWr1DKF4xCFWruFg_yoW3Xrb_Gw
+        nxZF4xWr1v9F43Aa1Utr4fZry0yFs8ZFs7ZFn8ta43Kr4ruF12qrZ0yw17Cw1rA3Z0vF98
+        Zayj934jyws7GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5ID7DUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbi3x6uUGB0GgRA1wAAsi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is error message when defer probe happens:
+From: lijian <lijian@yulong.com>
 
-fsl-spdif-dai 2dab0000.spdif: Unbalanced pm_runtime_enable!
+deleted the repeated word 'the' in the comments.
 
-Fix the error handler with pm_runtime_enable and add
-fsl_spdif_remove() for pm_runtime_disable.
-
-Fixes: 9cb2b3796e08 ("ASoC: fsl_spdif: Add pm runtime function")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: lijian <lijian@yulong.com>
 ---
- sound/soc/fsl/fsl_spdif.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ drivers/media/i2c/tvp5150.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 2a76714eb8e6..76a7c9581333 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1441,16 +1441,29 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 					      &spdif_priv->cpu_dai_drv, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
+diff --git a/drivers/media/i2c/tvp5150.c b/drivers/media/i2c/tvp5150.c
+index e26e3f544054..092ee959e6ae 100644
+--- a/drivers/media/i2c/tvp5150.c
++++ b/drivers/media/i2c/tvp5150.c
+@@ -964,7 +964,7 @@ static int tvp5150_enable(struct v4l2_subdev *sd)
  
- 	ret = imx_pcm_dma_init(pdev, IMX_SPDIF_DMABUF_SIZE);
--	if (ret && ret != -EPROBE_DEFER)
--		dev_err(&pdev->dev, "imx_pcm_dma_init failed: %d\n", ret);
-+	if (ret) {
-+		dev_err_probe(&pdev->dev, ret, "imx_pcm_dma_init failed\n");
-+		goto err_pm_disable;
-+	}
-+
-+	return ret;
- 
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
- 	return ret;
- }
- 
-+static int fsl_spdif_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_PM
- static int fsl_spdif_runtime_suspend(struct device *dev)
- {
-@@ -1554,6 +1567,7 @@ static struct platform_driver fsl_spdif_driver = {
- 		.pm = &fsl_spdif_pm,
- 	},
- 	.probe = fsl_spdif_probe,
-+	.remove = fsl_spdif_remove,
- };
- 
- module_platform_driver(fsl_spdif_driver);
+ 	/*
+ 	 * Enable the YCbCr and clock outputs. In discrete sync mode
+-	 * (non-BT.656) additionally enable the the sync outputs.
++	 * (non-BT.656) additionally enable the sync outputs.
+ 	 */
+ 	switch (decoder->mbus_type) {
+ 	case V4L2_MBUS_PARALLEL:
 -- 
-2.27.0
+2.25.1
+
 
