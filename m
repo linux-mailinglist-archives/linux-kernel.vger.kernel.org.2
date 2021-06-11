@@ -2,130 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BED3A45BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 17:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9163A45BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 17:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhFKPyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 11:54:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229572AbhFKPyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 11:54:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D4B861004;
-        Fri, 11 Jun 2021 15:52:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623426774;
-        bh=k4x9/UGdvNqg0hM2L22Ue7V0RaYQs7FFSXyap35HQeA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o6kPrX83fXhoXHv0lBBGKSAcXEAGb8JIOOlQBFJcBVPMH7vBGKDuY2jN4gkkXFbfh
-         7cCeesp1f4h+9gA0iBAyutKHdLCMsWLpNWpm3aZzdj+yJlL/cNBbd+kh68oyClxXS3
-         vYWVI1TEIPCPZGUFtbMKll6D3fK9NEdSKWJYTpPI25yQnF9GH2j0mgtSUel0774l8S
-         PiFcR25/lGMFlRZ5jvawuW/tU9lt0w0lv63L7EJ7d2MP54mWyXM/o+3Ehk+N0qWzx7
-         80xXcgN+qwkrE+9k1qTyXMxfuXpPSm86ejrINhzC+8b4Im+MY2VVsmFsJK0n9dHoix
-         IoumKozMyuwbw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C30FA40B1A; Fri, 11 Jun 2021 12:52:51 -0300 (-03)
-Date:   Fri, 11 Jun 2021 12:52:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] perf annotate: Add itrace options support
-Message-ID: <YMOG04alB0OoBEKz@kernel.org>
-References: <20210607025918.118603-1-yangjihong1@huawei.com>
+        id S230303AbhFKPzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 11:55:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31420 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230233AbhFKPy6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 11:54:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623426780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s2DcFVW5UG3Y7uZALNi7/0ctrY+3j3dgaMF4MGWjWKs=;
+        b=TmrdXoNBq6bXd5RMFgJiBiWpnkaFI5zp31RTv/eqoSzclMlQuabj0Fx4+eQu+3CSjygP5j
+        v+0gYJ2/apTQkUTwkCdYEZqIDovHOa7rWDM/xJcH/VlhUn0IAEGD1gbK0AnDxuGYMKYNki
+        OjspLX7chSjxL6Y+MUDf71dQ3caw9cU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-oOZNwWWmMZGCyuOpCEJVUw-1; Fri, 11 Jun 2021 11:52:58 -0400
+X-MC-Unique: oOZNwWWmMZGCyuOpCEJVUw-1
+Received: by mail-wr1-f72.google.com with SMTP id t14-20020adfe44e0000b029011851efa802so2810560wrm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 08:52:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s2DcFVW5UG3Y7uZALNi7/0ctrY+3j3dgaMF4MGWjWKs=;
+        b=m1R2O8eC3JDeObJM+3N411O4LMzm0YzHq9l8gPLu07kBK7kVLc0rGF0aGGQILT23Ba
+         Za6kmU1YQ+WzvSPEE6OetYezjLwoxSPfyXuh1qhsOMmnAUxegm1POcy5RqKob8VznIre
+         rag8rpJ7gRyNNZKcPAbujHujswe6D5iFN7JzrujbyyK7cggB4a83SfhROLr1sXPvTJWP
+         3xFSBSli7YTmIxHSvzukKvm2SWNMFEAlQ2BvRUqS6ZhWWVSnAjD5tCReaZkyPIS6z/lm
+         ba6bQweCCAqpJEV3VbjFWXIDGd0XFYEjh4BO4oWHGcBmNuyOV6DtM59sveIzRqvvIZaj
+         SXEw==
+X-Gm-Message-State: AOAM532fU5nrUeDM9WUckX+zT4XgyFGFpBL+PC6/TpkEKE6n9K6yDVCH
+        S/zL9JxRSFBphSApi3eNecBBwBZSSBqDU/wJ2FLkHrsBJp2E5pRKymmpaZiAE03NqFl6koe+f0A
+        aE9r2rFzjwtxXF+yN4o0t1KQV
+X-Received: by 2002:a05:600c:358b:: with SMTP id p11mr4589547wmq.112.1623426777467;
+        Fri, 11 Jun 2021 08:52:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxce8iY5le8kubRFtLoryRJz2h1QS3oPU9ADdAhaE7kEGsLAbc1qU78T03+2mRS/T9kPOzS1A==
+X-Received: by 2002:a05:600c:358b:: with SMTP id p11mr4589530wmq.112.1623426777213;
+        Fri, 11 Jun 2021 08:52:57 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id h15sm7413127wrq.88.2021.06.11.08.52.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 08:52:56 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Call SEV Guest Decommission if ASID binding
+ fails
+To:     Alper Gun <alpergun@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Peter Gonda <pgonda@google.com>
+References: <20210610174604.2554090-1-alpergun@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <28a0cb0a-b915-0117-2d1d-84d8a13672fb@redhat.com>
+Date:   Fri, 11 Jun 2021 17:52:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607025918.118603-1-yangjihong1@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210610174604.2554090-1-alpergun@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jun 07, 2021 at 10:59:18AM +0800, Yang Jihong escreveu:
-> The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
-> "annotate". As a result, perf annotate does not support parsing itrace data.
+On 10/06/21 19:46, Alper Gun wrote:
+> Send SEV_CMD_DECOMMISSION command to PSP firmware if ASID binding
+> fails. If a failure happens after  a successful LAUNCH_START command,
+> a decommission command should be executed. Otherwise, guest context
+> will be unfreed inside the AMD SP. After the firmware will not have
+> memory to allocate more SEV guest context, LAUNCH_START command will
+> begin to fail with SEV_RET_RESOURCE_LIMIT error.
 > 
-> A simple example is as follows:
+> The existing code calls decommission inside sev_unbind_asid, but it is
+> not called if a failure happens before guest activation succeeds. If
+> sev_bind_asid fails, decommission is never called. PSP firmware has a
+> limit for the number of guests. If sev_asid_binding fails many times,
+> PSP firmware will not have resources to create another guest context.
 > 
->   # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
->   [ perf record: Woken up 9 times to write data ]
->   [ perf record: Captured and wrote 20.874 MB perf.data ]
->   # perf annotate --stdio
->   Error:
->   The perf.data data has no samples!
-> 
-> Solution:
-> 1.Add itrace options in help,
-> 2.Set hook functions of "auxtrace_info" and "auxtrace" in perf_tool.
-
-So, while we wait for someone to ack/review this, please send a v2
-updating tools/perf/Documentation/perf-annotate.txt to have references
-to these new 'perf annotate' options.
-
-It all looks ok, so if nobody chimes in, I'll process v2 on my own.
-
-Thanks,
-
-- Arnaldo
- 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> Cc: stable@vger.kernel.org
+> Fixes: 59414c989220 ("KVM: SVM: Add support for KVM_SEV_LAUNCH_START command")
+> Reported-by: Peter Gonda <pgonda@google.com>
+> Signed-off-by: Alper Gun <alpergun@google.com>
 > ---
+>   arch/x86/kvm/svm/sev.c | 20 +++++++++++++++-----
+>   1 file changed, 15 insertions(+), 5 deletions(-)
 > 
-> Changes since v1:
->  - Adjust spaces to maintain alignment in "tool".
-> 
->  tools/perf/builtin-annotate.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-> index 49627a7bed7c..8f87658eff31 100644
-> --- a/tools/perf/builtin-annotate.c
-> +++ b/tools/perf/builtin-annotate.c
-> @@ -474,6 +474,8 @@ int cmd_annotate(int argc, const char **argv)
->  			.attr	= perf_event__process_attr,
->  			.build_id = perf_event__process_build_id,
->  			.tracing_data   = perf_event__process_tracing_data,
-> +			.auxtrace_info	= perf_event__process_auxtrace_info,
-> +			.auxtrace	= perf_event__process_auxtrace,
->  			.feature	= process_feature_event,
->  			.ordered_events = true,
->  			.ordering_requires_timestamps = true,
-> @@ -483,6 +485,9 @@ int cmd_annotate(int argc, const char **argv)
->  	struct perf_data data = {
->  		.mode  = PERF_DATA_MODE_READ,
->  	};
-> +	struct itrace_synth_opts itrace_synth_opts = {
-> +		.set = 0,
-> +	};
->  	struct option options[] = {
->  	OPT_STRING('i', "input", &input_name, "file",
->  		    "input file name"),
-> @@ -547,6 +552,9 @@ int cmd_annotate(int argc, const char **argv)
->  	OPT_CALLBACK(0, "percent-type", &annotate.opts, "local-period",
->  		     "Set percent type local/global-period/hits",
->  		     annotate_parse_percent_type),
-> +	OPT_CALLBACK_OPTARG(0, "itrace", &itrace_synth_opts, NULL, "opts",
-> +			    "Instruction Tracing options\n" ITRACE_HELP,
-> +			    itrace_parse_synth_opts),
->  
->  	OPT_END()
->  	};
-> @@ -591,6 +599,8 @@ int cmd_annotate(int argc, const char **argv)
->  	if (IS_ERR(annotate.session))
->  		return PTR_ERR(annotate.session);
->  
-> +	annotate.session->itrace_synth_opts = &itrace_synth_opts;
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index e0ce5da97fc2..8d36f0c73071 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -199,9 +199,19 @@ static void sev_asid_free(struct kvm_sev_info *sev)
+>   	sev->misc_cg = NULL;
+>   }
+>   
+> -static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+> +static void sev_decommission(unsigned int handle)
+>   {
+>   	struct sev_data_decommission decommission;
 > +
->  	annotate.has_br_stack = perf_header__has_feat(&annotate.session->header,
->  						      HEADER_BRANCH_STACK);
->  
-> -- 
-> 2.30.GIT
+> +	if (!handle)
+> +		return;
+> +
+> +	decommission.handle = handle;
+> +	sev_guest_decommission(&decommission, NULL);
+> +}
+> +
+> +static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+> +{
+>   	struct sev_data_deactivate deactivate;
+>   
+>   	if (!handle)
+> @@ -214,9 +224,7 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+>   	sev_guest_deactivate(&deactivate, NULL);
+>   	up_read(&sev_deactivate_lock);
+>   
+> -	/* decommission handle */
+> -	decommission.handle = handle;
+> -	sev_guest_decommission(&decommission, NULL);
+> +	sev_decommission(handle);
+>   }
+>   
+>   static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> @@ -341,8 +349,10 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   
+>   	/* Bind ASID to this guest */
+>   	ret = sev_bind_asid(kvm, start.handle, error);
+> -	if (ret)
+> +	if (ret) {
+> +		sev_decommission(start.handle);
+>   		goto e_free_session;
+> +	}
+>   
+>   	/* return handle to userspace */
+>   	params.handle = start.handle;
 > 
 
--- 
+Queued, thanks.
 
-- Arnaldo
+Paolo
+
