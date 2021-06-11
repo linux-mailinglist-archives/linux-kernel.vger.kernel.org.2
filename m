@@ -2,162 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052E03A39D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD373A39E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhFKCjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 22:39:55 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:10194 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230160AbhFKCjx (ORCPT
+        id S231270AbhFKCuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 22:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230059AbhFKCuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:39:53 -0400
-X-UUID: 6d243d04d9e641a4a4b65eb3da9a2826-20210611
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=PtG+2BcBc6cqYhmbj0K8E4w6jwkJyv4HxrzYsEsiu10=;
-        b=P7onfV5LMsntvyRcn5gMlYyNaZyrbFmFO+lrpmxv5Tvvl9g59g3y3qtz/7hoHkwk0dUWcUKAknyQrp0+pJCCUeyxL0d4ICaVOXTQdABwFpeCEbnOothDzPXQ9TkfMB6gBKVMtYwRSC2VIkgY1PZmMlmGyFPikrD/PbDCpF+SFB0=;
-X-UUID: 6d243d04d9e641a4a4b65eb3da9a2826-20210611
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 593447069; Fri, 11 Jun 2021 10:37:52 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 11 Jun
- 2021 10:37:45 +0800
-Received: from [10.16.6.141] (10.16.6.141) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Jun 2021 10:37:43 +0800
-Message-ID: <1623379063.24490.15.camel@mszsdaap41>
-Subject: Re: [PATCH v4 3/3] pwm: mtk-disp: Switch to atomic API
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-pwm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <yingjoe.chen@mediatek.com>, <eddie.huang@mediatek.com>,
-        <cawa.cheng@mediatek.com>, <bibby.hsieh@mediatek.com>,
-        <ck.hu@mediatek.com>, <stonea168@163.com>,
-        <huijuan.xie@mediatek.com>
-Date:   Fri, 11 Jun 2021 10:37:43 +0800
-In-Reply-To: <20210606212258.coki62b5vl7iaiyd@pengutronix.de>
-References: <20210603100531.161901-1-jitao.shi@mediatek.com>
-         <20210603100531.161901-4-jitao.shi@mediatek.com>
-         <20210606212258.coki62b5vl7iaiyd@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 10 Jun 2021 22:50:07 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA82C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:48:10 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id w127so4347995oig.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ET0Wo9pMUsI9hBiKex+wY6Ul5+CPxPf28986pbN/EI8=;
+        b=Iseiym3XfDQgP5PW7eJN1GwuNhwtjrkNSyfsk2d62Gjx6tZlaIQBmsm5i4cidk+odv
+         e16sKIQ7BwJOk2C4LEALXoIAxEjHgGi62G0yRCUotsSccwggOlHDSkweK+zPSVp6O+/9
+         gNnhRuw0jWJgwnE67tYQGX+sq2Ei2FoYKop4iMuR0ZURcFhtMK90C8H8fN1wVhdV7Vm7
+         aiFbBiZFSsTqU0vS9vST8xfcTR3QkeIqdU1yEJf1NqmZjiZXIB2ue1EXxFCVbZ+GQkq+
+         d9Ze2RSacRNjcGo6V9XjIlO82Bo4tPP9iluGBiZKJCYJfLYtUyrF74r18DHSyhxAeHPF
+         gqHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ET0Wo9pMUsI9hBiKex+wY6Ul5+CPxPf28986pbN/EI8=;
+        b=JVLeh1/ZlVXRWWEW0izePnLX4fAXVl12qFitgT5MpKWzU+HYn1XsNpIitoj6ZGd8Q/
+         /tcz4Ha2YDUjICwufI+XTl9gyJBI3vwk4VGszdtBKkkdtnJNu5Mk7eIRPBccX+akbs7K
+         AUdiRfaVDWSWFdjlrLaXR0xWkWW2Jc578swjwDdilFpFioOe7Bj2N1qRFbx39kd15EIL
+         aAdlebQxKKbGRzOZM/CR71QU9xCmg2Pu/KfmedzUz1hJWy8dypF8HrLICf6bu6zgCasv
+         +hBXcGD7jfpfdEyC9gnqcA3edgZRCXjCvGQIURD6nbI5bDP7je0IEG1uJKfaKBwoLx6P
+         eOvg==
+X-Gm-Message-State: AOAM533/wn30CyRKn4hIwuLRbeMnMqaNH1fMgHaJ6ibU4Sqric0yGKdA
+        Z95JzwCEIV8seLehdpO7R8HD6w==
+X-Google-Smtp-Source: ABdhPJz04W/K9tQFYJrLbGW31b3a6sL0JI96PcarTWMMiRhX4hwe2np+7ggxBmcFSUfQkfxWI4JNNA==
+X-Received: by 2002:a05:6808:999:: with SMTP id a25mr938976oic.123.1623379689633;
+        Thu, 10 Jun 2021 19:48:09 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a74sm929046oib.21.2021.06.10.19.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 19:48:09 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 21:48:07 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Subject: Re: [PATCH 1/8] dt-bindings: qcom: rpmh-regulator: Add compatible
+ for SA8155p-adp board pmics
+Message-ID: <YMLO56Rr7UGUy8vo@builder.lan>
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+ <20210607113840.15435-2-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 3DE5E41DA1F7A35C5668D02837AFCB75266F855BD937200ABB6C1825A732FAD02000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607113840.15435-2-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIxLTA2LTA2IGF0IDIzOjIyICswMjAwLCBVd2UgS2xlaW5lLUvDtm5pZyB3cm90
-ZToNCj4gSGVsbG8sDQo+IA0KPiBPbiBUaHUsIEp1biAwMywgMjAyMSBhdCAwNjowNTozMVBNICsw
-ODAwLCBKaXRhbyBTaGkgd3JvdGU6DQo+ID4gQ29udmVydCB0aGUgbGVnYWN5IGFwaSB0byBhdG9t
-aWMgQVBJLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEppdGFvIFNoaSA8aml0YW8uc2hpQG1l
-ZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMgfCA3
-OCArKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hh
-bmdlZCwgNTkgaW5zZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvcHdtL3B3bS1tdGstZGlzcC5jIGIvZHJpdmVycy9wd20vcHdtLW10ay1k
-aXNwLmMNCj4gPiBpbmRleCBiODdiM2MwMGE2ODUuLmQ3NzM0OGQwNTI3YyAxMDA2NDQNCj4gPiAt
-LS0gYS9kcml2ZXJzL3B3bS9wd20tbXRrLWRpc3AuYw0KPiA+ICsrKyBiL2RyaXZlcnMvcHdtL3B3
-bS1tdGstZGlzcC5jDQo+ID4gQEAgLTY3LDggKzY3LDggQEAgc3RhdGljIHZvaWQgbXRrX2Rpc3Bf
-cHdtX3VwZGF0ZV9iaXRzKHN0cnVjdCBtdGtfZGlzcF9wd20gKm1kcCwgdTMyIG9mZnNldCwNCj4g
-PiAgCXdyaXRlbCh2YWx1ZSwgYWRkcmVzcyk7DQo+ID4gIH0NCj4gPiAgDQo+ID4gLXN0YXRpYyBp
-bnQgbXRrX2Rpc3BfcHdtX2NvbmZpZyhzdHJ1Y3QgcHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBwd21f
-ZGV2aWNlICpwd20sDQo+ID4gLQkJCSAgICAgICBpbnQgZHV0eV9ucywgaW50IHBlcmlvZF9ucykN
-Cj4gPiArc3RhdGljIGludCBtdGtfZGlzcF9wd21fY29uZmlnKHN0cnVjdCBwd21fY2hpcCAqY2hp
-cCwNCj4gPiArCQkJICAgICAgIGNvbnN0IHN0cnVjdCBwd21fc3RhdGUgKnN0YXRlKQ0KPiA+ICB7
-DQo+ID4gIAlzdHJ1Y3QgbXRrX2Rpc3BfcHdtICptZHAgPSB0b19tdGtfZGlzcF9wd20oY2hpcCk7
-DQo+ID4gIAl1MzIgY2xrX2RpdiwgcGVyaW9kLCBoaWdoX3dpZHRoLCB2YWx1ZTsNCj4gPiBAQCAt
-MTAyLDcgKzEwMiw3IEBAIHN0YXRpYyBpbnQgbXRrX2Rpc3BfcHdtX2NvbmZpZyhzdHJ1Y3QgcHdt
-X2NoaXAgKmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpwd20sDQo+ID4gIAkgKiBoaWdoX3dpZHRo
-ID0gKFBXTV9DTEtfUkFURSAqIGR1dHlfbnMpIC8gKDEwXjkgKiAoY2xrX2RpdiArIDEpKQ0KPiA+
-ICAJICovDQo+ID4gIAlyYXRlID0gY2xrX2dldF9yYXRlKG1kcC0+Y2xrX21haW4pOw0KPiA+IC0J
-Y2xrX2RpdiA9IGRpdl91NjQocmF0ZSAqIHBlcmlvZF9ucywgTlNFQ19QRVJfU0VDKSA+Pg0KPiA+
-ICsJY2xrX2RpdiA9IGRpdl91NjQocmF0ZSAqIHN0YXRlLT5wZXJpb2QsIE5TRUNfUEVSX1NFQykg
-Pj4NCj4gPiAgCQkJICBQV01fUEVSSU9EX0JJVF9XSURUSDsNCj4gPiAgCWlmIChjbGtfZGl2ID4g
-UFdNX0NMS0RJVl9NQVgpIHsNCj4gPiAgCQlkZXZfZXJyKGNoaXAtPmRldiwgImNsb2NrIHJhdGUg
-aXMgdG9vIGhpZ2g6IHJhdGUgPSAlZCBIelxuIiwNCj4gPiBAQCAtMTE0LDExICsxMTQsMTEgQEAg
-c3RhdGljIGludCBtdGtfZGlzcF9wd21fY29uZmlnKHN0cnVjdCBwd21fY2hpcCAqY2hpcCwgc3Ry
-dWN0IHB3bV9kZXZpY2UgKnB3bSwNCj4gPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiAgCX0NCj4g
-PiAgCWRpdiA9IE5TRUNfUEVSX1NFQyAqIChjbGtfZGl2ICsgMSk7DQo+ID4gLQlwZXJpb2QgPSBk
-aXY2NF91NjQocmF0ZSAqIHBlcmlvZF9ucywgZGl2KTsNCj4gPiArCXBlcmlvZCA9IGRpdjY0X3U2
-NChyYXRlICogc3RhdGUtPnBlcmlvZCwgZGl2KTsNCj4gPiAgCWlmIChwZXJpb2QgPiAwKQ0KPiA+
-ICAJCXBlcmlvZC0tOw0KPiA+ICANCj4gPiAtCWhpZ2hfd2lkdGggPSBkaXY2NF91NjQocmF0ZSAq
-IGR1dHlfbnMsIGRpdik7DQo+ID4gKwloaWdoX3dpZHRoID0gZGl2NjRfdTY0KHJhdGUgKiBzdGF0
-ZS0+ZHV0eV9jeWNsZSwgZGl2KTsNCj4gPiAgCXZhbHVlID0gcGVyaW9kIHwgKGhpZ2hfd2lkdGgg
-PDwgUFdNX0hJR0hfV0lEVEhfU0hJRlQpOw0KPiA+ICANCj4gPiAgCW10a19kaXNwX3B3bV91cGRh
-dGVfYml0cyhtZHAsIG1kcC0+ZGF0YS0+Y29uMCwNCj4gPiBAQCAtMTQ0LDM5ICsxNDQsNzkgQEAg
-c3RhdGljIGludCBtdGtfZGlzcF9wd21fY29uZmlnKHN0cnVjdCBwd21fY2hpcCAqY2hpcCwgc3Ry
-dWN0IHB3bV9kZXZpY2UgKnB3bSwNCj4gPiAgCQkJCQkgbWRwLT5kYXRhLT5jb24wX3NlbCk7DQo+
-ID4gIAl9DQo+ID4gIA0KPiA+ICsJbXRrX2Rpc3BfcHdtX3VwZGF0ZV9iaXRzKG1kcCwgRElTUF9Q
-V01fRU4sIG1kcC0+ZGF0YS0+ZW5hYmxlX21hc2ssDQo+ID4gKwkJCQkgbWRwLT5kYXRhLT5lbmFi
-bGVfbWFzayk7DQo+ID4gKwltZHAtPmVuYWJsZWQgPSB0cnVlOw0KPiA+ICsNCj4gPiAgCXJldHVy
-biAwOw0KPiA+ICB9DQo+ID4gIA0KPiA+IC1zdGF0aWMgaW50IG10a19kaXNwX3B3bV9lbmFibGUo
-c3RydWN0IHB3bV9jaGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtKQ0KPiA+ICtzdGF0
-aWMgaW50IG10a19kaXNwX3B3bV9hcHBseShzdHJ1Y3QgcHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBw
-d21fZGV2aWNlICpwd20sDQo+ID4gKwkJCSAgICAgIGNvbnN0IHN0cnVjdCBwd21fc3RhdGUgKnN0
-YXRlKQ0KPiA+ICB7DQo+ID4gIAlzdHJ1Y3QgbXRrX2Rpc3BfcHdtICptZHAgPSB0b19tdGtfZGlz
-cF9wd20oY2hpcCk7DQo+ID4gLQlpbnQgZXJyOw0KPiA+ICANCj4gPiAtCW10a19kaXNwX3B3bV91
-cGRhdGVfYml0cyhtZHAsIERJU1BfUFdNX0VOLCBtZHAtPmRhdGEtPmVuYWJsZV9tYXNrLA0KPiA+
-IC0JCQkJIG1kcC0+ZGF0YS0+ZW5hYmxlX21hc2spOw0KPiA+IC0JbWRwLT5lbmFibGVkID0gdHJ1
-ZTsNCj4gPiArCWlmICghc3RhdGUtPmVuYWJsZWQpIHsNCj4gPiArCQltdGtfZGlzcF9wd21fdXBk
-YXRlX2JpdHMobWRwLCBESVNQX1BXTV9FTiwgbWRwLT5kYXRhLT5lbmFibGVfbWFzaywNCj4gPiAr
-CQkJCQkgMHgwKTsNCj4gPiAgDQo+ID4gLQlyZXR1cm4gMDsNCj4gPiArCQlpZiAobWRwLT5lbmFi
-bGVkKSB7DQo+ID4gKwkJCWNsa19kaXNhYmxlX3VucHJlcGFyZShtZHAtPmNsa19tbSk7DQo+ID4g
-KwkJCWNsa19kaXNhYmxlX3VucHJlcGFyZShtZHAtPmNsa19tYWluKTsNCj4gPiArCQl9DQo+ID4g
-KwkJbWRwLT5lbmFibGVkID0gZmFsc2U7DQo+ID4gKwkJcmV0dXJuIDA7DQo+ID4gKwl9DQo+ID4g
-Kw0KPiA+ICsJcmV0dXJuIG10a19kaXNwX3B3bV9jb25maWcoY2hpcCwgc3RhdGUpOw0KPiANCj4g
-UGxlYXNlIHVucm9sbCB0aGlzIGZ1bmN0aW9uIGNhbGwuIEhhdmluZyB0aGUgb2xkIG5hbWUgaXMg
-aXJyaXRhdGluZy4NCg0KSSdsbCBmaXggaXQgbmV4dCB2ZXJzaW9uLg0KDQpUaGFua3MgZm9yIHlv
-dXIgcmV2aWV3Lg0KPiANCj4gPiAgfQ0KPiA+ICANCj4gPiAtc3RhdGljIHZvaWQgbXRrX2Rpc3Bf
-cHdtX2Rpc2FibGUoc3RydWN0IHB3bV9jaGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdt
-KQ0KPiA+ICtzdGF0aWMgdm9pZCBtdGtfZGlzcF9wd21fZ2V0X3N0YXRlKHN0cnVjdCBwd21fY2hp
-cCAqY2hpcCwNCj4gPiArCQkJCSAgIHN0cnVjdCBwd21fZGV2aWNlICpwd20sDQo+ID4gKwkJCQkg
-ICBzdHJ1Y3QgcHdtX3N0YXRlICpzdGF0ZSkNCj4gDQo+IEFkZGluZyAuZ2V0X3N0YXRlKCkgaXMg
-Z3JlYXQgYW5kIHdhcnJhbnRzIGEgc2VwYXJhdGUgcGF0Y2guDQo+IA0KSSdsbCBzZXBhcmF0ZSAu
-Z2V0X3N0YXRlKCkgbmV4dCB2ZXJzaW9uLg0KDQpUaGFua3MgZm9yIHlvdXIgcmV2aWV3Lg0KDQo+
-ID4gIHsNCj4gPiAgCXN0cnVjdCBtdGtfZGlzcF9wd20gKm1kcCA9IHRvX210a19kaXNwX3B3bShj
-aGlwKTsNCj4gPiArCXUzMiBjbGtfZGl2LCBwZXJpb2QsIGhpZ2hfd2lkdGgsIGNvbjAsIGNvbjE7
-DQo+ID4gKwl1NjQgcmF0ZTsNCj4gPiArCWludCBlcnI7DQo+ID4gIA0KPiA+IC0JbXRrX2Rpc3Bf
-cHdtX3VwZGF0ZV9iaXRzKG1kcCwgRElTUF9QV01fRU4sIG1kcC0+ZGF0YS0+ZW5hYmxlX21hc2ss
-DQo+ID4gLQkJCQkgMHgwKTsNCj4gPiArCWlmICghbWRwLT5lbmFibGVkKSB7DQo+ID4gKwkJZXJy
-ID0gY2xrX3ByZXBhcmVfZW5hYmxlKG1kcC0+Y2xrX21haW4pOw0KPiA+ICsJCWlmIChlcnIgPCAw
-KSB7DQo+ID4gKwkJCWRldl9lcnIoY2hpcC0+ZGV2LCAiQ2FuJ3QgZW5hYmxlIG1kcC0+Y2xrX21h
-aW46ICVkXG4iLCBlcnIpOw0KPiA+ICsJCQlyZXR1cm47DQo+ID4gKwkJfQ0KPiA+ICsJCWVyciA9
-IGNsa19wcmVwYXJlX2VuYWJsZShtZHAtPmNsa19tbSk7DQo+ID4gKwkJaWYgKGVyciA8IDApIHsN
-Cj4gPiArCQkJZGV2X2VycihjaGlwLT5kZXYsICJDYW4ndCBlbmFibGUgbWRwLT5jbGtfbW06ICVk
-XG4iLCBlcnIpOw0KPiA+ICsJCQljbGtfZGlzYWJsZV91bnByZXBhcmUobWRwLT5jbGtfbWFpbik7
-DQo+ID4gKwkJCXJldHVybjsNCj4gPiArCQl9DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJcmF0ZSA9
-IGNsa19nZXRfcmF0ZShtZHAtPmNsa19tYWluKTsNCj4gPiAgDQo+ID4gLQlpZiAobWRwLT5lbmFi
-bGVkKSB7DQo+ID4gKwljb24wID0gcmVhZGwobWRwLT5iYXNlICsgbWRwLT5kYXRhLT5jb24wKTsN
-Cj4gPiArCWNvbjEgPSByZWFkbChtZHAtPmJhc2UgKyBtZHAtPmRhdGEtPmNvbjEpOw0KPiA+ICsN
-Cj4gPiArCXN0YXRlLT5lbmFibGVkID0gISEoY29uMCAmIEJJVCgwKSk7DQo+ID4gKw0KPiA+ICsJ
-Y2xrX2RpdiA9IChjb24wICYgUFdNX0NMS0RJVl9NQVNLKSA+PiBQV01fQ0xLRElWX1NISUZUOw0K
-PiANCj4gY2xrX2RpdiA9IEZJRUxEX0dFVChQV01fQ0xLRElWX01BU0ssIGNvbjApOw0KDQpJJ2xs
-IGZpeCBpdCBuZXh0IHZlcnNpb24uDQoNCg0KPiANCj4gPiArCXBlcmlvZCA9IGNvbjEgJiBQV01f
-UEVSSU9EX01BU0s7DQo+ID4gKwlzdGF0ZS0+cGVyaW9kID0gZGl2X3U2NChwZXJpb2QgKiAoY2xr
-X2RpdiArIDEpICogTlNFQ19QRVJfU0VDLCByYXRlKTsNCj4gDQo+IENhbiB0aGlzIG11bHRpcGxp
-Y2F0aW9uIG92ZXJmbG93PyBOb3RlIHRoaXMgaXMgYSAzMmJpdCBtdWx0aXBsaWNhdGlvbg0KPiBv
-bmx5LiBBcyAuYXBwbHkoKSB1c2VzIHJvdW5kLWRvd24gaW4gdGhlIGRpdmlzaW9ucyAod2hpY2gg
-aXMgZ29vZCkNCj4gcGxlYXNlIHJvdW5kIHVwIHRoZXJlIHRvIGdldCBpZGVtcG90ZW5jeSBiZXR3
-ZWVuIC5nZXRfc3RhdGUoKSBhbmQNCj4gLmFwcGx5KCkuDQo+IA0KDQpJJ2xsIGZpeCBpdCBuZXh0
-IHZlcnNpb24uDQoNCg0KPiA+ICsJaGlnaF93aWR0aCA9IChjb24xICYgUFdNX0hJR0hfV0lEVEhf
-TUFTSykgPj4gUFdNX0hJR0hfV0lEVEhfU0hJRlQ7DQo+ID4gKwlzdGF0ZS0+ZHV0eV9jeWNsZSA9
-IGRpdl91NjQoaGlnaF93aWR0aCAqIChjbGtfZGl2ICsgMSkgKiBOU0VDX1BFUl9TRUMsDQo+ID4g
-KwkJCQkgICAgcmF0ZSk7DQo+ID4gKw0KPiA+ICsJaWYgKCFtZHAtPmVuYWJsZWQpIHsNCj4gPiAg
-CQljbGtfZGlzYWJsZV91bnByZXBhcmUobWRwLT5jbGtfbW0pOw0KPiA+ICAJCWNsa19kaXNhYmxl
-X3VucHJlcGFyZShtZHAtPmNsa19tYWluKTsNCj4gPiAgCX0NCj4gPiAtCW1kcC0+ZW5hYmxlZCA9
-IGZhbHNlOw0KPiA+ICB9DQo+IA0KPiBJZiBteSByZXZpZXcgY29tbWVudHMgY29udGFpbiB0b28g
-bGl0dGxlIGRldGFpbHMgZm9yIHlvdSB0byB1bmRlcnN0YW5kLA0KPiBwbGVhc2UgZmVlbCBmcmVl
-IHRvIGFzay4gSSdtIHdpbGxpbmcgdG8gZXhwbGFpbiBpbiBtb3JlIGRldGFpbC4NCj4gDQo+IEJl
-c3QgcmVnYXJkcw0KPiBVd2UNCj4gDQoNClRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQoNCkJlc3Qg
-UmVnYXJkcw0KSml0YW8NCg0KDQo=
+On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
 
+> Add compatible strings for pmm8155au_1 and pmm8155au_2 pmics
+> found on SA8155p-adp board.
+> 
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: bhupesh.linux@gmail.com
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  .../devicetree/bindings/regulator/qcom,rpmh-regulator.yaml      | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> index e561a5b941e4..ea5cd71aa0c7 100644
+> --- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> @@ -55,6 +55,8 @@ properties:
+>        - qcom,pm8009-1-rpmh-regulators
+>        - qcom,pm8150-rpmh-regulators
+>        - qcom,pm8150l-rpmh-regulators
+> +      - qcom,pmm8155au-1-rpmh-regulators
+> +      - qcom,pmm8155au-2-rpmh-regulators
+
+Looking at the component documentation and the schematics I think the
+component is "PMM8155AU" and we have two of them.
+
+Unless I'm mistaken we should have the compatible describe the single
+component and we should have DT describe the fact that we have 2 of
+them.
+
+Regards,
+Bjorn
+
+>        - qcom,pm8350-rpmh-regulators
+>        - qcom,pm8350c-rpmh-regulators
+>        - qcom,pm8998-rpmh-regulators
+> -- 
+> 2.31.1
+> 
