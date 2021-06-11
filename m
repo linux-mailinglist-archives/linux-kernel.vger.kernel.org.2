@@ -2,58 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792AA3A3E64
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5003A3E67
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFKI7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:59:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231357AbhFKI7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:59:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD97E60BD3;
-        Fri, 11 Jun 2021 08:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623401836;
-        bh=qxwgRf4LdwHO/2Ovh83Zjv0Go9Pwc/wkHU5/VzPSFaw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ovk6bZEotf8awDD7cDKrKgwckHuynVFqj8pY5PVMe86tmGFItP4xOJc+E+BUIqTMI
-         ZdR2E4IcTKAW4FUSZy6b1VnCrhFaUhOmTGSg6PlWYzrg4VMdGPaKMzOWxTPKEV/g/c
-         lRpbANOomdbmjPICDN86kKPrZfsBYE4Vx1GsCRa4=
-Date:   Fri, 11 Jun 2021 10:57:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH 5/9] nvmem: core: add a missing of_node_put
-Message-ID: <YMMlalfdeIW4W1RC@kroah.com>
-References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
- <20210611083348.20170-6-srinivas.kandagatla@linaro.org>
+        id S231355AbhFKI7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhFKI7u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 04:59:50 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36889C061574;
+        Fri, 11 Jun 2021 01:57:36 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id k7so5329474pjf.5;
+        Fri, 11 Jun 2021 01:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ouekwhno07itCig8YCgajxgS9RkFe/Y+2BrTY237h+s=;
+        b=VgTtoPPKM3igTzT5SIAvAHNZZBTUBbosJcxArByn42tReSuhuRZNoEutO9z0lVMfQl
+         NoLDgaECGiYfocJIx0zZsaNFDWM4LVr32+oXw9JMsrplqTRxhorawwhdAdLelq5v37Bj
+         R2S+D0JODPC5fkTsa91Gi9BZCw+2PsaMAIY46ygvQhaWYUIqmDEV+sOG7TSymGaFtHg0
+         nbNEfd2l0zsw0Al7i0NX8xJ1kAC7uqwKwi8QCe7cj4K8UYXNdnBPIRJEucvFEkAy7IJc
+         86oe5fTFeTsHHNp/NSBP3ni2JddqIDDHTHtcQ9d3zTLsovkTbBx1GA5nhCBrCYn20xD5
+         8L+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ouekwhno07itCig8YCgajxgS9RkFe/Y+2BrTY237h+s=;
+        b=MImVY6GLB6B09i2bxRTgkPG5fxBCyIIT3kn+QDKu3L4JshrZK0CmdojV6ziGL9xy1s
+         6lramuQYNCvUCH1Y43+Gm33pVuleYWhyKV26xBom2eqtv9xGOWpuu4kkp7pVxp9gfEuW
+         hTh3Cae2/WvhIqj84+kF8bpXkzJOgV04uE29zqiUS9ndPpRjdemGTzlyqMBE4qX0jkm0
+         qpGnpC+YPviN8ZMoNu5uproCToN7lZw5OfqPRJyfIx7SuzA8oqmXG+Z3nY/LzhTu8QwY
+         QdjYLVgjLKswkOfAyjP3/PDg1ez/y7cZoXm8F1adOEIVEYtBYgUypGzWS2+Q5IJYmalE
+         lQLA==
+X-Gm-Message-State: AOAM531bKaDitK2FXTRtImFthboV7Po5Nt57A7Kl0ICuyNzfc9J/hiDT
+        +ae643I2ciCWtMfPgB/u6UA6iyhPN2y7IqWyz+8=
+X-Google-Smtp-Source: ABdhPJyXN4rhndd5UsCHJJUELDHbwDk5Xg+Nv9b19zHCwlCngN67bB+XYCPMx0lCSA3EVZp+1pmBNWC+uFSdeRin1hI=
+X-Received: by 2002:a17:902:c784:b029:104:9a21:262a with SMTP id
+ w4-20020a170902c784b02901049a21262amr3068721pla.21.1623401855633; Fri, 11 Jun
+ 2021 01:57:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611083348.20170-6-srinivas.kandagatla@linaro.org>
+References: <20210610163917.4138412-1-ciorneiioana@gmail.com> <20210610163917.4138412-13-ciorneiioana@gmail.com>
+In-Reply-To: <20210610163917.4138412-13-ciorneiioana@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 11 Jun 2021 11:57:19 +0300
+Message-ID: <CAHp75Vcch1aO97Dg86Eo9bdrdwSfPE+p5iFJLk8Y5jx13q8Cpg@mail.gmail.com>
+Subject: Re: [PATCH net-next v8 12/15] net/fsl: Use [acpi|of]_mdiobus_register
+To:     Ioana Ciornei <ciorneiioana@gmail.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Calvin Johnson <calvin.johnson@nxp.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:33:44AM +0100, Srinivas Kandagatla wrote:
-> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> 
-> 'for_each_child_of_node' performs an of_node_get on each iteration, so a
-> return from the middle of the loop requires an of_node_put.
-> 
-> Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  drivers/nvmem/core.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+On Thu, Jun 10, 2021 at 7:40 PM Ioana Ciornei <ciorneiioana@gmail.com> wrote:
+>
+> From: Calvin Johnson <calvin.johnson@oss.nxp.com>
+>
+> Depending on the device node type, call the specific OF or ACPI
+> mdiobus_register function.
+>
+> Note: For both ACPI and DT cases, endianness of MDIO controller
 
-Looks like this needs to go to the stable kernel trees, so when your
-resend this series, please add the proper "cc: stable" line to the
-signed-off-by area as is documented.
+controllers
 
-thanks,
+> need to be specified using "little-endian" property.
 
-greg k-h
+using the
+
+...
+
+> Changes in v8:
+> - Directly call the OF or ACPI variants of registering the MDIO bus.
+>   This is needed because the fwnode_mdio.c module should only implement
+>   features which can be achieved without going back to the OF/ACPI
+>   variants. Without this restrictions we directly end up in a dependency
+>   cycle: of_mdio -> fwnode_mdio -> of_mdio.
+
+Shouldn't be simple fwnode_mdio.h.
+The idea of fwnode APIs that they provide a common ground for all
+resource providers.
+
+> - Changed the commit title since the fwnode_mdiobus_register() is no
+>   longer available
+>
+> Changes in v7:
+> - Include fwnode_mdio.h
+
+> - Alphabetically sort header inclusions
+
+I suppose this should be a separate change.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
