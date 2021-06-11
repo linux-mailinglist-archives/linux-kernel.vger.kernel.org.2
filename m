@@ -2,547 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B635B3A4288
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C123A4290
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhFKM7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:59:21 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3218 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhFKM7T (ORCPT
+        id S231574AbhFKNBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:01:22 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:61314 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230349AbhFKNBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:59:19 -0400
-Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G1ggF6KBvz6K5w8;
-        Fri, 11 Jun 2021 20:50:33 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+        Fri, 11 Jun 2021 09:01:16 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 15BCtfSX020303;
+        Fri, 11 Jun 2021 05:59:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=1Odm7n1R5mKZBER6gJN89XcGzGFIJYcLUSrXgxBt45M=;
+ b=GXyLfXH8Wh9HB/xBL9DGakGBSrAJhNviu8V8zPDIXiotVjMfxtvMpvNFvOox7SFmdxvP
+ rGFb081cZ5Ahs8o5gL1bAGYXI45m2QT+aL/uo7IFCAP3XUwDseit/MFePSjuSCbeFIFS
+ yLm9fOZFHACmyCRcCZZmGrWBaCajx7dEtJU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 393scmvj4v-12
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 11 Jun 2021 05:59:03 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 14:57:20 +0200
-Received: from localhost (10.52.120.251) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 13:57:19 +0100
-Date:   Fri, 11 Jun 2021 13:57:15 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-        <ben.widawsky@intel.com>, <alison.schofield@intel.com>,
-        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] cxl/pmem: Register 'pmem' / cxl_nvdimm  devices
-Message-ID: <20210611135715.00005da1@Huawei.com>
-In-Reply-To: <162336398605.2462439.17422037666825492593.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <162336398605.2462439.17422037666825492593.stgit@dwillia2-desk3.amr.corp.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+ 15.1.2176.2; Fri, 11 Jun 2021 05:59:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CvC2mfAJvwSlTEpsvfrqxoNwpW8Sx7G9DQTk96dyrI1IoHOLJsAyT/u+xd0aPG4VsdEsIeAUoHH6ez1MNh7oUswOmIEXJERKL4mV+KHJE4bix1uuRb7PcUJfTjvPARcwsKYEJOtBIp1jsHxvBgqfDayIq/hOsgdiRoe2UKUlm6+tlK8eIkOsZ9WorvKusGyCUUloXSd7ogI/lBZKH5kGMdVMQ0Qqy7VAO2w+t5iPepQZnd/hP9W3Ih5OqtZjQX2esFAZPIol+IJzwzHitcCk0YbIqLtYCLLcInXvgiKQSuMmJaTLKzPm0bemiu+Uh/zxzdu6uIJ/RY8LS251ve1GYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Odm7n1R5mKZBER6gJN89XcGzGFIJYcLUSrXgxBt45M=;
+ b=b6E/qpNnuTATogeQ3MmB43QtA4UixL30QCBg3J/6ufPbMTIBAi01bJSuiFkFif0zaLEr2d/FTDgCKegZejF6X+q+iO1SzxGJQGYilcDzd9I8X1I7idBhoPzaCLuL0RZNiRLqWhlhCZ793CZrcet1bzRofvWsyQb4XsNETfjbMqwmbMsKEX97vD2Ob+3zTqRyUnd4dztzWZ832uHspghJbWAY8ZvkkT0QdevAQl+fla7FPKyCq4kCVRL0lfmbdlHLXSHAlK8IB7WVg1UgO8H1otJb65GvBuW8OpiGUzi4JOjoHE2prdeKp1bbHiTDLmsZfzQ1z54M0yn+/LCX0zeu6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from CO1PR15MB4924.namprd15.prod.outlook.com (2603:10b6:303:e3::16)
+ by MWHPR15MB1343.namprd15.prod.outlook.com (2603:10b6:320:25::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Fri, 11 Jun
+ 2021 12:58:58 +0000
+Received: from CO1PR15MB4924.namprd15.prod.outlook.com
+ ([fe80::2d50:36f7:4bce:9b01]) by CO1PR15MB4924.namprd15.prod.outlook.com
+ ([fe80::2d50:36f7:4bce:9b01%6]) with mapi id 15.20.4219.022; Fri, 11 Jun 2021
+ 12:58:58 +0000
+From:   Chris Mason <clm@fb.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
+Thread-Topic: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
+Thread-Index: AQHXXgAh7cM+p+g0g0iDshoLzzyYuqsNU9CAgAAZUgCAAVnygA==
+Date:   Fri, 11 Jun 2021 12:58:58 +0000
+Message-ID: <6769ED4C-15A8-4CFF-BF2B-26A5328257A0@fb.com>
+References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+ <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
+ <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
+ <20210610162046.GB28158@suse.cz>
+In-Reply-To: <20210610162046.GB28158@suse.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.100.0.2.22)
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c091:480::1:ee07]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4a7a5a11-7301-48b2-4019-08d92cd8ada6
+x-ms-traffictypediagnostic: MWHPR15MB1343:
+x-microsoft-antispam-prvs: <MWHPR15MB134319A6894349082C7441E2D3349@MWHPR15MB1343.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: O2Qavn6BpKgfIM1Bru/fdKAy9axqWw4zytOMWL5Mz12DPUbbJRPl/76O4OypDibF3CfOVaA5Rztvs8prHqKYlE1yP/sG/gu6LlUbxzVs2maeuGeC+Bk/awlQycJMoYlgt5DR+PIObhGL31BEsDvcl7wDaOKcMsRbIaeJRN1lG2k5mIR5wBWqNYnICAFq3JnfeuIskAprpNd6SINPOT58XQ8xPs82LwJAlqaEfSfPB1eQRVtppXFxDDOjtcM76IvXKxz4bDtFk4JoFjHyqQzfEUf3j5Ks3FZbUsPUxL7HEmzfUTGJKIl99q00TDNMsuweoCUZ2kt043n0ejjvlRZThx9XLHdO/0P6FUNT2p6wMEthlQGW0mit1dTpRD04YgQB5ZtDplWtZydgBNFJwQ8WKQX9TygT4DW34TltMsS/Wia5SXAW6sbI9mDNyfSv3umhfi3gZQ68E7sRnW5gZJLdVEqRlJ4viFwzKGpEBQB1WNniVXRXqYluhBsQHKJHvaFDkoTaGfF57V7+VuqOqLSB5+NVFbhNcgSDs7V82SbaOAABwJP72Bnz72HNU3WBvzu2mliF1LEnzOFVqafTxNZk/bO5BKhHQ0vWDZ5h5z5uFYPeW0VgMNenyTuc1nVYIr3Rq4UrEcEitxcQgQRRifWHDw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR15MB4924.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(376002)(39860400002)(136003)(76116006)(5660300002)(316002)(8936002)(91956017)(186003)(6506007)(53546011)(2616005)(86362001)(36756003)(54906003)(38100700002)(122000001)(83380400001)(66556008)(66446008)(66476007)(8676002)(64756008)(4326008)(6486002)(6916009)(66946007)(478600001)(71200400001)(2906002)(33656002)(6512007)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QVFSTHNDVVFvQzA2bDZ6VnozL1U1a0RmYVp1cTFRSFc0RlZDWjcvTFVqMTVi?=
+ =?utf-8?B?OGhOWkh1K3RNTVdQakZNbndCZnV0UFZMWVdFbkJ3LzZFbnMwOC9CTEk0WDFM?=
+ =?utf-8?B?YjkzejlBUVdTWCtQQlNyVENsRHFzUHNMZTNudnluZXNkZ1RxaUpSUjY0L05S?=
+ =?utf-8?B?STlhUTJCWHI5WUxWU01TNENzOGc2TnhmQWJjL2N1aXNzL2IvSWRxSHJaeFE1?=
+ =?utf-8?B?QW0vTDJhZS82UUxSTWFoMjNyK3F3RnJQVnRrMlR1N2JhSkdreTlFRXZjdnc1?=
+ =?utf-8?B?bGVkUGZGWTMvUFBJMDNGYWJOdzU2N3owNkltS0c2bXludERVZGF1SjlnQU1X?=
+ =?utf-8?B?SjJyK0VsTDZzaFJIVm40bDBad0tYMXFGWXV1MDBZb3dVRmY3VUdHSFNiUW1q?=
+ =?utf-8?B?bituY3lWdUwxTDd2cjNjS2Z5c2pFOGVxRnZ5a1dMOHBPYnFHeDEvYlJZaXgy?=
+ =?utf-8?B?ODlVODY4T3kxcnhhaGoyNkwyQ2ZEemxJL1BSVTlEMW5NQXAzaE9JSjJPaFlK?=
+ =?utf-8?B?dGg1MURzak5pbkVqTFVLZEMzM0ZMMElSVnVhckV6cVNheXlaL2JKazJTdGMy?=
+ =?utf-8?B?bk1PTWlzU29oZ1duWlUwNDdOY3FZV2NQZGJhb3lHZkY3NUhEbERmTkxORnRp?=
+ =?utf-8?B?ZllqaXpGWjFRdUpNa0pKWmZjVk5UUFVjT2Z2SWUyVEJMd2hmeVBoNWZnUWxn?=
+ =?utf-8?B?c1dFWHl2NmNQVmM4c1doQ21Qdk9idDlHWTZEUFJSc3hHZGNjaksxVTlXejlj?=
+ =?utf-8?B?MGYyK1RNcUc1QmdHS2w4cWl0Rm12SzFQTjB0eFk0ZXNqMWoyYmJaS1pGOEdh?=
+ =?utf-8?B?Y0RjeU5TOEpTNDNzQ1dmclRQZG1aZkV2SlFQOE5KQitJMjVRQ2N4cFAzTTBl?=
+ =?utf-8?B?dnNRbmloU0NqQ29FTFFuVGVRcEtKb3JONkxhMlpXVWpwWlJrQmExMGVFMk00?=
+ =?utf-8?B?Ym84dTB5NHJNYU4rSnhJdmdkSWhkZis4SS9kdWxMR1BzZklubWM2bUVnZnJ5?=
+ =?utf-8?B?YysyVjhmcCtqenlEMmpSbTdaSXY0STgxT2lxVjJIbEx4Tk9uVzVNaXhDaXJI?=
+ =?utf-8?B?OHA3WWVXaWppWnhXTmdiSXVUZ0h1T3dnZTk4VmxVc2NNR1FnaEpFdittclJn?=
+ =?utf-8?B?cFNxMjFsb2NBaXRIYTRNRFZ4elh5bTk1eDlLYWxmOW44d1c5OEFWd3JVZE4z?=
+ =?utf-8?B?ekRseE1pbmZIb2piN2NUWUhVOU5tektOMkY5d1hsc0VDSUcxZE1hZUwrM1BZ?=
+ =?utf-8?B?bVJ2K2hlYWZETFF6UDdOVHdQM3BQaklWdkVhOWZFSDBsWUFZY1pLd0VEYVN1?=
+ =?utf-8?B?c2ZDMi9RQUwyZ0x0ZVMzU2dsQllvVFVHTi9QNk1aTS9hb2E0R2VSbU0rN2RM?=
+ =?utf-8?B?ZWxYVTAyekpraXVhajRnZ0NUMEJIbDNMTDAzS2lncWo1anRuUEozaTFwSk9Q?=
+ =?utf-8?B?N2l2c1YrbnloVlFUaWp6T2Y3RUVEUjAvYVZNQ2dydTg5OG1kQk9BTWV3OWFL?=
+ =?utf-8?B?OVJYb2tkWTlxRUlvYUR0RGg5Mjg0Q2lQV1hlWkNCMkNtajVtOXZuTktiZTM1?=
+ =?utf-8?B?aUJyTlkrV1EzR2dCaGJqR0Z6NWNxTWZSNTZMZ1Q2S1pDZzk4b3dJdTlWU2FW?=
+ =?utf-8?B?QkFEcGlnelRvd0RjTmpIZEFuRW84QlV6VVJ6TUVNNW1rMG9qSjdHS1ZHY2hl?=
+ =?utf-8?B?OUJ1Tmp4QkVRSURRRXFzY1ZiSXcxU0NoSmFaU0pwa3dZS2ZQZElLOEpwSk5W?=
+ =?utf-8?B?M1B1QjdJOXJsaVB2N2g3VGU3azI4TFBXd3BxZGNMSzN2QWFDanhUbzZLWG1y?=
+ =?utf-8?Q?CKjdbxn/N9nsvhMq3E7Yzh1v7viqF6B+K9r8o=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3578489A2DE29A4CAA2B434D1802B8D6@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.251]
-X-ClientProxiedBy: lhreml742-chm.china.huawei.com (10.201.108.192) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR15MB4924.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a7a5a11-7301-48b2-4019-08d92cd8ada6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 12:58:58.5884
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7xDUKeVPUvV24rUG4cj7AH1Fo7nPMC7MA4ZoosPJMrKG3/zazBh6yadbcArk4Vgr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1343
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: zDzmvpRLH6_xvZkGLqvT7P_AtmBa3GLo
+X-Proofpoint-ORIG-GUID: zDzmvpRLH6_xvZkGLqvT7P_AtmBa3GLo
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-11_05:2021-06-11,2021-06-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0 phishscore=0
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106110083
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 15:26:26 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
-
-> While a memX device on /sys/bus/cxl represents a CXL memory expander
-> control interface, a pmemX device represents the persistent memory
-> sub-functionality. It bridges the CXL subystem to the libnvdimm nmemX
-> control interface.
-> 
-> With this skeleton ndctl can now see persistent memory devices on a
-> "CXL" bus. Later patches add support for translating libnvdimm native
-> commands to CXL commands.
-> 
-> # ndctl list -BDiu -b CXL
-> {
->   "provider":"CXL",
->   "dev":"ndbus1",
->   "dimms":[
->     {
->       "dev":"nmem1",
->       "state":"disabled"
->     },
->     {
->       "dev":"nmem0",
->       "state":"disabled"
->     }
->   ]
-> }
-> 
-> Given nvdimm_bus_unregister() removes all devices on an ndbus0 the
-> cxl_pmem infrastructure needs to arrange ->remove() to be triggered on
-> cxl_nvdimm devices to keep their enabled state synchronized with the
-> registration state of their corresponding device on the nvdimm_bus. In
-> other words, always arrange for cxl_nvdimm_driver.remove() to unregister
-> nvdimms from an nvdimm_bus ahead of the bus being unregistered.
-> 
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Being my usual fussy self, I've highlighed a few header changes that
-as far as I can see are unrelated to this specific patch.
-
-Otherwise, one request for a local variable name change and
-a bit of trivial editorial stuff.
-
-Thanks,
-
-Jonathan
-
-
-> ---
->  drivers/cxl/core.c |   86 ++++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/cxl.h  |   13 ++++++
->  drivers/cxl/mem.h  |    2 +
->  drivers/cxl/pci.c  |   23 ++++++++---
->  drivers/cxl/pmem.c |  111 +++++++++++++++++++++++++++++++++++++++++++++++-----
->  5 files changed, 217 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-> index f0305c9c91c8..6db660249cea 100644
-> --- a/drivers/cxl/core.c
-> +++ b/drivers/cxl/core.c
-> @@ -7,6 +7,7 @@
->  #include <linux/slab.h>
->  #include <linux/idr.h>
->  #include "cxl.h"
-> +#include "mem.h"
->  
->  /**
->   * DOC: cxl core
-> @@ -731,6 +732,89 @@ struct cxl_nvdimm_bridge *devm_cxl_add_nvdimm_bridge(struct device *host,
->  }
->  EXPORT_SYMBOL_GPL(devm_cxl_add_nvdimm_bridge);
->  
-> +static void cxl_nvdimm_release(struct device *dev)
-> +{
-> +	struct cxl_nvdimm *cxl_nvd = to_cxl_nvdimm(dev);
-> +
-> +	kfree(cxl_nvd);
-> +}
-> +
-> +static const struct attribute_group *cxl_nvdimm_attribute_groups[] = {
-> +	&cxl_base_attribute_group,
-> +	NULL,
-> +};
-> +
-> +static const struct device_type cxl_nvdimm_type = {
-> +	.name = "cxl_nvdimm",
-> +	.release = cxl_nvdimm_release,
-> +	.groups = cxl_nvdimm_attribute_groups,
-> +};
-> +
-> +bool is_cxl_nvdimm(struct device *dev)
-> +{
-> +	return dev->type == &cxl_nvdimm_type;
-> +}
-> +EXPORT_SYMBOL_GPL(is_cxl_nvdimm);
-> +
-> +struct cxl_nvdimm *to_cxl_nvdimm(struct device *dev)
-> +{
-> +	if (dev_WARN_ONCE(dev, !is_cxl_nvdimm(dev),
-> +			  "not a cxl_nvdimm device\n"))
-> +		return NULL;
-> +	return container_of(dev, struct cxl_nvdimm, dev);
-> +}
-> +EXPORT_SYMBOL_GPL(to_cxl_nvdimm);
-> +
-> +static struct cxl_nvdimm *cxl_nvdimm_alloc(struct cxl_memdev *cxlmd)
-> +{
-> +	struct cxl_nvdimm *cxl_nvd;
-> +	struct device *dev;
-> +
-> +	cxl_nvd = kzalloc(sizeof(*cxl_nvd), GFP_KERNEL);
-> +	if (!cxl_nvd)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	dev = &cxl_nvd->dev;
-> +	cxl_nvd->cxlmd = cxlmd;
-> +	device_initialize(dev);
-> +	device_set_pm_not_required(dev);
-> +	dev->parent = &cxlmd->dev;
-> +	dev->bus = &cxl_bus_type;
-> +	dev->type = &cxl_nvdimm_type;
-> +
-> +	return cxl_nvd;
-> +}
-> +
-> +int devm_cxl_add_nvdimm(struct device *host, struct cxl_memdev *cxlmd)
-> +{
-> +	struct cxl_nvdimm *cxl_nvd;
-> +	struct device *dev;
-> +	int rc;
-> +
-> +	cxl_nvd = cxl_nvdimm_alloc(cxlmd);
-> +	if (IS_ERR(cxl_nvd))
-> +		return PTR_ERR(cxl_nvd);
-> +
-> +	dev = &cxl_nvd->dev;
-> +	rc = dev_set_name(dev, "pmem%d", cxlmd->id);
-> +	if (rc)
-> +		goto err;
-> +
-> +	rc = device_add(dev);
-> +	if (rc)
-> +		goto err;
-> +
-> +	dev_dbg(host, "%s: register %s\n", dev_name(dev->parent),
-> +		dev_name(dev));
-> +
-> +	return devm_add_action_or_reset(host, unregister_dev, dev);
-> +
-> +err:
-> +	put_device(dev);
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_cxl_add_nvdimm);
-> +
->  /**
->   * cxl_probe_device_regs() - Detect CXL Device register blocks
->   * @dev: Host device of the @base mapping
-> @@ -930,6 +1014,8 @@ static int cxl_device_id(struct device *dev)
->  {
->  	if (dev->type == &cxl_nvdimm_bridge_type)
->  		return CXL_DEVICE_NVDIMM_BRIDGE;
-> +	if (dev->type == &cxl_nvdimm_type)
-> +		return CXL_DEVICE_NVDIMM;
->  	return 0;
->  }
->  
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index 47fcb7ad5978..3f9a6f7b05db 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -213,6 +213,13 @@ struct cxl_nvdimm_bridge {
->  	enum cxl_nvdimm_brige_state state;
->  };
->  
-> +struct cxl_mem;
-
-Above looks unrelated as you've not added any uses of cxl_mem
-
-> +struct cxl_nvdimm {
-> +	struct device dev;
-> +	struct cxl_memdev *cxlmd;
-> +	struct nvdimm *nvdimm;
-> +};
-> +
->  /**
->   * struct cxl_port - logical collection of upstream port devices and
->   *		     downstream port devices to construct a CXL memory
-> @@ -299,7 +306,8 @@ int __cxl_driver_register(struct cxl_driver *cxl_drv, struct module *owner,
->  #define cxl_driver_register(x) __cxl_driver_register(x, THIS_MODULE, KBUILD_MODNAME)
->  void cxl_driver_unregister(struct cxl_driver *cxl_drv);
->  
-> -#define CXL_DEVICE_NVDIMM_BRIDGE 1
-> +#define CXL_DEVICE_NVDIMM_BRIDGE	1
-> +#define CXL_DEVICE_NVDIMM		2
->  
->  #define MODULE_ALIAS_CXL(type) MODULE_ALIAS("cxl:t" __stringify(type) "*")
->  #define CXL_MODALIAS_FMT "cxl:t%d"
-> @@ -307,4 +315,7 @@ void cxl_driver_unregister(struct cxl_driver *cxl_drv);
->  struct cxl_nvdimm_bridge *to_cxl_nvdimm_bridge(struct device *dev);
->  struct cxl_nvdimm_bridge *devm_cxl_add_nvdimm_bridge(struct device *host,
->  						     struct cxl_port *port);
-> +struct cxl_nvdimm *to_cxl_nvdimm(struct device *dev);
-> +bool is_cxl_nvdimm(struct device *dev);
-> +int devm_cxl_add_nvdimm(struct device *host, struct cxl_memdev *cxlmd);
->  #endif /* __CXL_H__ */
-> diff --git a/drivers/cxl/mem.h b/drivers/cxl/mem.h
-> index 13868ff7cadf..8f02d02b26b4 100644
-> --- a/drivers/cxl/mem.h
-> +++ b/drivers/cxl/mem.h
-> @@ -2,6 +2,8 @@
->  /* Copyright(c) 2020-2021 Intel Corporation. */
->  #ifndef __CXL_MEM_H__
->  #define __CXL_MEM_H__
-> +#include <linux/cdev.h>
-
-Unrelated to rest of patch.  Good to add this, but not hidden in this
-patch.
-
-> +#include "cxl.h"
->  
->  /* CXL 2.0 8.2.8.5.1.1 Memory Device Status Register */
->  #define CXLMDEV_STATUS_OFFSET 0x0
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 5a1705b52278..83e81b44c8f5 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -1313,7 +1313,8 @@ static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm)
->  	return ERR_PTR(rc);
->  }
->  
-> -static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-> +static struct cxl_memdev *devm_cxl_add_memdev(struct device *host,
-> +					      struct cxl_mem *cxlm)
->  {
->  	struct cxl_memdev *cxlmd;
->  	struct device *dev;
-> @@ -1322,7 +1323,7 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
->  
->  	cxlmd = cxl_memdev_alloc(cxlm);
->  	if (IS_ERR(cxlmd))
-> -		return PTR_ERR(cxlmd);
-> +		return cxlmd;
->  
->  	dev = &cxlmd->dev;
->  	rc = dev_set_name(dev, "mem%d", cxlmd->id);
-> @@ -1340,8 +1341,10 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
->  	if (rc)
->  		goto err;
->  
-> -	return devm_add_action_or_reset(dev->parent, cxl_memdev_unregister,
-> -					cxlmd);
-> +	rc = devm_add_action_or_reset(host, cxl_memdev_unregister, cxlmd);
-> +	if (rc)
-> +		return ERR_PTR(rc);
-> +	return cxlmd;
->  
->  err:
->  	/*
-> @@ -1350,7 +1353,7 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
->  	 */
->  	cxl_memdev_shutdown(cxlmd);
->  	put_device(dev);
-> -	return rc;
-> +	return ERR_PTR(rc);
->  }
->  
->  static int cxl_xfer_log(struct cxl_mem *cxlm, uuid_t *uuid, u32 size, u8 *out)
-> @@ -1561,6 +1564,7 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
->  
->  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
-> +	struct cxl_memdev *cxlmd;
->  	struct cxl_mem *cxlm;
->  	int rc;
->  
-> @@ -1588,7 +1592,14 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	if (rc)
->  		return rc;
->  
-> -	return cxl_mem_add_memdev(cxlm);
-> +	cxlmd = devm_cxl_add_memdev(&pdev->dev, cxlm);
-> +	if (IS_ERR(cxlmd))
-> +		return PTR_ERR(cxlmd);
-> +
-> +	if (range_len(&cxlm->pmem_range) && IS_ENABLED(CONFIG_CXL_PMEM))
-> +		rc = devm_cxl_add_nvdimm(&pdev->dev, cxlmd);
-> +
-> +	return rc;
->  }
->  
->  static const struct pci_device_id cxl_mem_pci_tbl[] = {
-> diff --git a/drivers/cxl/pmem.c b/drivers/cxl/pmem.c
-> index 0067bd734559..1ed19e213157 100644
-> --- a/drivers/cxl/pmem.c
-> +++ b/drivers/cxl/pmem.c
-> @@ -3,7 +3,10 @@
->  #include <linux/libnvdimm.h>
->  #include <linux/device.h>
->  #include <linux/module.h>
-> +#include <linux/ndctl.h>
-> +#include <linux/async.h>
->  #include <linux/slab.h>
-> +#include "mem.h"
->  #include "cxl.h"
->  
->  /*
-> @@ -13,6 +16,64 @@
->   */
->  static struct workqueue_struct *cxl_pmem_wq;
->  
-> +static void unregister_nvdimm(void *nvdimm)
-> +{
-> +	nvdimm_delete(nvdimm);
-> +}
-> +
-> +static int match_nvdimm_bridge(struct device *dev, const void *data)
-> +{
-> +	return strcmp(dev_name(dev), "nvdimm-bridge") == 0;
-> +}
-> +
-> +static struct cxl_nvdimm_bridge *cxl_find_nvdimm_bridge(void)
-> +{
-> +	struct device *dev;
-> +
-> +	dev = bus_find_device(&cxl_bus_type, NULL, NULL, match_nvdimm_bridge);
-
-Hmm. It's a singleton, so you could just stash the pointer somewhere
-appropriate, but I guess this avoids adding extra infrastructure around
-that, so fair enough.
-
-> +	if (!dev)
-> +		return NULL;
-> +	return to_cxl_nvdimm_bridge(dev);
-> +}
-> +
-> +static int cxl_nvdimm_probe(struct device *dev)
-> +{
-> +	struct cxl_nvdimm *cxl_nvd = to_cxl_nvdimm(dev);
-> +	struct cxl_nvdimm_bridge *cxl_nvb;
-> +	unsigned long flags = 0;
-> +	struct nvdimm *nvdimm;
-> +	int rc = -ENXIO;
-> +
-> +	cxl_nvb = cxl_find_nvdimm_bridge();
-> +	if (!cxl_nvb)
-> +		return -ENXIO;
-> +
-> +	device_lock(&cxl_nvb->dev);
-> +	if (!cxl_nvb->nvdimm_bus)
-> +		goto out;
-> +
-> +	set_bit(NDD_LABELING, &flags);
-> +	nvdimm = nvdimm_create(cxl_nvb->nvdimm_bus, cxl_nvd, NULL, flags, 0, 0,
-> +			       NULL);
-> +	if (!nvdimm)
-> +		goto out;
-> +
-> +	dev_set_drvdata(dev, nvdimm);
-
-Why?  No harm done, but I wanted to check this was only used to get the
-nvdimm, but can't find where it's used at all.
-
-> +
-> +	rc = devm_add_action_or_reset(dev, unregister_nvdimm, nvdimm);
-> +out:
-> +	device_unlock(&cxl_nvb->dev);
-> +	put_device(&cxl_nvb->dev);
-> +
-> +	return rc;
-> +}
-> +
-> +static struct cxl_driver cxl_nvdimm_driver = {
-> +	.name = "cxl_nvdimm",
-> +	.probe = cxl_nvdimm_probe,
-> +	.id = CXL_DEVICE_NVDIMM,
-> +};
-> +
->  static int cxl_pmem_ctl(struct nvdimm_bus_descriptor *nd_desc,
->  			struct nvdimm *nvdimm, unsigned int cmd, void *buf,
->  			unsigned int buf_len, int *cmd_rc)
-> @@ -28,19 +89,31 @@ static void online_nvdimm_bus(struct cxl_nvdimm_bridge *cxl_nvb)
->  		nvdimm_bus_register(&cxl_nvb->dev, &cxl_nvb->nd_desc);
->  }
->  
-> -static void offline_nvdimm_bus(struct cxl_nvdimm_bridge *cxl_nvb)
-> +static int cxl_nvdimm_release_driver(struct device *dev, void *data)
->  {
-> -	if (!cxl_nvb->nvdimm_bus)
-> -		return;
-> -	nvdimm_bus_unregister(cxl_nvb->nvdimm_bus);
-> -	cxl_nvb->nvdimm_bus = NULL;
-> +	if (!is_cxl_nvdimm(dev))
-> +		return 0;
-> +	device_release_driver(dev);
-> +	return 0;
-> +}
-> +
-> +static void offline_nvdimm_bus(struct nvdimm_bus *nvdimm_bus)
-> +{
-> +	/*
-> +	 * Set the state of cxl_nvdimm devices to unbound / idle before
-> +	 * nvdimm_bus_unregister() rips the nvdimm objects out from
-> +	 * underneath them.
-> +	 */
-> +	bus_for_each_dev(&cxl_bus_type, NULL, NULL, cxl_nvdimm_release_driver);
-> +	nvdimm_bus_unregister(nvdimm_bus);
->  }
->  
->  static void cxl_nvb_update_state(struct work_struct *work)
->  {
->  	struct cxl_nvdimm_bridge *cxl_nvb =
->  		container_of(work, typeof(*cxl_nvb), state_work);
-> -	bool release = false;
-> +	struct nvdimm_bus *nvdimm_bus = NULL;
-> +	bool release = false, rescan = false;
->  
->  	device_lock(&cxl_nvb->dev);
->  	switch (cxl_nvb->state) {
-> @@ -50,11 +123,13 @@ static void cxl_nvb_update_state(struct work_struct *work)
->  			dev_err(&cxl_nvb->dev,
->  				"failed to establish nvdimm bus\n");
->  			release = true;
-> -		}
-> +		} else
-> +			rescan = true;
->  		break;
->  	case CXL_NVB_OFFLINE:
->  	case CXL_NVB_DEAD:
-> -		offline_nvdimm_bus(cxl_nvb);
-> +		nvdimm_bus = cxl_nvb->nvdimm_bus;
-
-Perhaps rename this to make it clear that it only exists as a means
-to offline it later?  I wondered briefly why you were offlining
-any bus that existed (e.g. in the online case)
-
-nvdimm_bus_to_offline = ...
-
-> +		cxl_nvb->nvdimm_bus = NULL;
->  		break;
->  	default:
->  		break;
-> @@ -63,6 +138,13 @@ static void cxl_nvb_update_state(struct work_struct *work)
->  
->  	if (release)
->  		device_release_driver(&cxl_nvb->dev);
-> +	if (rescan) {
-> +		int rc = bus_rescan_devices(&cxl_bus_type);
-> +
-> +		dev_dbg(&cxl_nvb->dev, "rescan: %d\n", rc);
-> +	}
-> +	if (nvdimm_bus)
-> +		offline_nvdimm_bus(nvdimm_bus);
->  
->  	put_device(&cxl_nvb->dev);
->  }
-> @@ -113,23 +195,29 @@ static __init int cxl_pmem_init(void)
->  	int rc;
->  
->  	cxl_pmem_wq = alloc_ordered_workqueue("cxl_pmem", 0);
-> -
-
-Shouldn't be here obviously. Move to earlier patch.
-
->  	if (!cxl_pmem_wq)
->  		return -ENXIO;
->  
->  	rc = cxl_driver_register(&cxl_nvdimm_bridge_driver);
->  	if (rc)
-> -		goto err;
-> +		goto err_bridge;
-> +
-> +	rc = cxl_driver_register(&cxl_nvdimm_driver);
-> +	if (rc)
-> +		goto err_nvdimm;
->  
->  	return 0;
->  
-> -err:
-> +err_nvdimm:
-> +	cxl_driver_unregister(&cxl_nvdimm_bridge_driver);
-> +err_bridge:
->  	destroy_workqueue(cxl_pmem_wq);
->  	return rc;
->  }
->  
->  static __exit void cxl_pmem_exit(void)
->  {
-> +	cxl_driver_unregister(&cxl_nvdimm_driver);
->  	cxl_driver_unregister(&cxl_nvdimm_bridge_driver);
->  	destroy_workqueue(cxl_pmem_wq);
->  }
-> @@ -139,3 +227,4 @@ module_init(cxl_pmem_init);
->  module_exit(cxl_pmem_exit);
->  MODULE_IMPORT_NS(CXL);
->  MODULE_ALIAS_CXL(CXL_DEVICE_NVDIMM_BRIDGE);
-> +MODULE_ALIAS_CXL(CXL_DEVICE_NVDIMM);
-> 
-
+DQo+IE9uIEp1biAxMCwgMjAyMSwgYXQgMTI6MjAgUE0sIERhdmlkIFN0ZXJiYSA8ZHN0ZXJiYUBz
+dXNlLmN6PiB3cm90ZToNCj4gDQo+IE9uIFRodSwgSnVuIDEwLCAyMDIxIGF0IDA0OjUwOjA5UE0g
+KzAyMDAsIENocmlzdG9waGUgTGVyb3kgd3JvdGU6DQo+PiANCj4+IA0KPj4gTGUgMTAvMDYvMjAy
+MSDDoCAxNTo1NCwgQ2hyaXMgTWFzb24gYSDDqWNyaXQgOg0KPj4+IA0KPj4+PiBPbiBKdW4gMTAs
+IDIwMjEsIGF0IDE6MjMgQU0sIENocmlzdG9waGUgTGVyb3kgPGNocmlzdG9waGUubGVyb3lAY3Nn
+cm91cC5ldT4gd3JvdGU6DQo+Pj4+IA0KPj4+PiBXaXRoIGEgY29uZmlnIGhhdmluZyBQQUdFX1NJ
+WkUgc2V0IHRvIDI1NkssIEJUUkZTIGJ1aWxkIGZhaWxzDQo+Pj4+IHdpdGggdGhlIGZvbGxvd2lu
+ZyBtZXNzYWdlDQo+Pj4+IA0KPj4+PiBpbmNsdWRlL2xpbnV4L2NvbXBpbGVyX3R5cGVzLmg6MzI2
+OjM4OiBlcnJvcjogY2FsbCB0byAnX19jb21waWxldGltZV9hc3NlcnRfNzkxJyBkZWNsYXJlZCB3
+aXRoIGF0dHJpYnV0ZSBlcnJvcjogQlVJTERfQlVHX09OIGZhaWxlZDogKEJUUkZTX01BWF9DT01Q
+UkVTU0VEICUgUEFHRV9TSVpFKSAhPSAwDQo+Pj4+IA0KPj4+PiBCVFJGU19NQVhfQ09NUFJFU1NF
+RCBiZWluZyAxMjhLLCBCVFJGUyBjYW5ub3Qgc3VwcG9ydCBwbGF0Zm9ybXMgd2l0aA0KPj4+PiAy
+NTZLIHBhZ2VzIGF0IHRoZSB0aW1lIGJlaW5nLg0KPj4+PiANCj4+Pj4gVGhlcmUgYXJlIHR3byBw
+bGF0Zm9ybXMgdGhhdCBjYW4gc2VsZWN0IDI1NksgcGFnZXM6DQo+Pj4+IC0gaGV4YWdvbg0KPj4+
+PiAtIHBvd2VycGMNCj4+Pj4gDQo+Pj4+IERpc2FibGUgQlRSRlMgd2hlbiAyNTZLIHBhZ2Ugc2l6
+ZSBpcyBzZWxlY3RlZC4NCj4+Pj4gDQo+Pj4gDQo+Pj4gV2XigJlsbCBoYXZlIG90aGVyIHN1YnBh
+Z2UgYmxvY2tzaXplIGNvbmNlcm5zIHdpdGggMjU2SyBwYWdlcywgYnV0IHRoaXMgQlRSRlNfTUFY
+X0NPTVBSRVNTRUQgI2RlZmluZSBpcyBhcmJpdHJhcnkuICBJdOKAmXMganVzdCB0cnlpbmcgdG8g
+aGF2ZSBhbiB1cHBlciBib3VuZCBvbiB0aGUgYW1vdW50IG9mIG1lbW9yeSB3ZeKAmWxsIG5lZWQg
+dG8gdW5jb21wcmVzcyBhIHNpbmdsZSBwYWdl4oCZcyB3b3J0aCBvZiByYW5kb20gcmVhZHMuDQo+
+Pj4gDQo+Pj4gV2UgY291bGQgY2hhbmdlIGl0IHRvIG1heChQQUdFX1NJWkUsIDEyOEspIG9yIGp1
+c3QgYnVtcCB0byAyNTZLLg0KPj4+IA0KPj4gDQo+PiBCdXQgaWYgMjU2SyBpcyBwcm9ibGVtYXRp
+YyBpbiBvdGhlciB3YXlzLCBpcyBpdCB3b3J0aCBidW1waW5nIEJUUkZTX01BWF9DT01QUkVTU0VE
+IHRvIDI1NksgPw0KPj4gDQo+PiBEYXZpZCwgaW4gYmVsb3cgbWFpbCwgc2FpZCB0aGF0IDI1Nksg
+c3VwcG9ydCB3b3VsZCByZXF1aXJlIGRlYXBlciBjaGFuZ2VzLiBTbyBkaXNhYmxpbmcgQlRSRlMg
+DQo+PiBzdXBwb3J0IHNlZW1zIHRoZSBlYXNpZXN0IHNvbHV0aW9uIGZvciB0aGUgdGltZSBiZWlu
+ZywgYXQgbGVhc3QgZm9yIFN0YWJsZSAoSSBmb3Jnb3QgdGhlIEZpeGVzOiB0YWcgDQo+PiBhbmQg
+dGhlIENDOiB0byBzdGFibGUpLg0KPj4gDQo+PiBPbiBwb3dlcnBjLCAyNTZrIHBhZ2VzIGlzIGEg
+Y29ybmVyIGNhc2UsIGl0IHJlcXVpcmVzIGN1c3RvbWlzZWQgYmludXRpbHMsIHNvIEkgZG9uJ3Qg
+dGhpbmsgZGlzYWJsaW5nIA0KPj4gQlRSRlMgaXMgYSBpc3N1ZSB0aGVyZS4gRm9yIGhleGFnb24g
+SSBkb24ndCBrbm93Lg0KPiANCj4gVGhhdCBpdCBibGV3IHVwIGR1ZSB0byB0aGUgbWF4IGNvbXBy
+ZXNzZWQgc2l6ZSBpcyBhIGNvaW5jaWRlbmNlLiBXZQ0KPiBjb3VsZCBoYXZlIGV4cGxpY2l0IEJV
+SUxEX0JVR19PTnMgZm9yIHBhZ2Ugc2l6ZSBvciBvdGhlciBjb25zdHJhaW50cw0KPiBkZXJpdmVk
+IGZyb20gdGhlIHBhZ2Ugc2l6ZSBsaWtlIElOTElORV9FWFRFTlRfQlVGRkVSX1BBR0VTLg0KPiAN
+Cg0KUmlnaHQsIHRoZSBjb25zdHJhaW50IGlzIGJpZ2dlciBhbmQgbW9yZSBjb21wbGV4IHRoYW4g
+QlRSRlNfTUFYX0NPTVBSRVNTRUQuDQoNCj4gQW5kIHRoZXJlJ3Mgbm8gc3VjaCB0aGluZyBsaWtl
+ICJqdXN0IGJ1bXAgQlRSRlNfTUFYX0NPTVBSRVNTRUQgdG8gMjU2SyIuDQo+IFRoZSBjb25zdGFu
+dCBpcyBwYXJ0IG9mIG9uLWRpc2sgZm9ybWF0IGZvciBsem8gYW5kIG90aGVyd2lzZSBjaGFuZ2lu
+ZyBpdA0KPiB3b3VsZCBpbXBhY3QgcGVyZm9ybWFuY2Ugc28gdGhpcyB3b3VsZCBuZWVkIHByb3Bl
+ciBldmFsdWF0aW9uLg0KDQpTb3JyeSwgaG93IGlzIGl0IGJha2VkIGludG8gTFpPPyAgSXQgZGVm
+aW5pdGVseSB3aWxsIGhhdmUgcGVyZm9ybWFuY2UgaW1wbGljYXRpb25zLCBJIGFncmVlIHRoZXJl
+Lg0KDQotY2hyaXMNCg0K
