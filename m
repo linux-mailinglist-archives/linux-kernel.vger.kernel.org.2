@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1215C3A3A53
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB99E3A3A6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhFKDkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhFKDkA (ORCPT
+        id S231680AbhFKDmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:42:40 -0400
+Received: from mail-pl1-f172.google.com ([209.85.214.172]:42624 "EHLO
+        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231320AbhFKDmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:40:00 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26FAC061574;
-        Thu, 10 Jun 2021 20:37:47 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so1839903oth.8;
-        Thu, 10 Jun 2021 20:37:47 -0700 (PDT)
+        Thu, 10 Jun 2021 23:42:38 -0400
+Received: by mail-pl1-f172.google.com with SMTP id v13so2133240ple.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:40:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=AT7HtHsR7rvrJu0g37QevlV7wDbuUynMriYES38+TFg=;
-        b=p4RcckhKlpErhhj9nh6wB7VmbrJBHkCuOMX4QFEORPwtqGetvllOkvUdiypud/vRdP
-         6bodSoVssuAx4a0GWp+a2YHiTRvrJ3PuaNtUxcrI4ji3BLfZEEupT0RyQ4ZH8x1ZoDhH
-         NLvjV+G6upvzHS9TVgaNWms2GLl23QsTjnQ4NvIxXvrCXsoCffoWsEpoyQujU4ApRaNu
-         5drgQzFG64jL/0wS5muQC5XMVQxWOlQSPq0+MMcsbEJzwkGtIWxWs/83REa3rGZVaWiy
-         UqkBY9rHfVgJH0cDK1a+Gk3dUOIMQlkFYeXWu/37lKrqw8QdVG0VdllPdQeeIQA78k6t
-         2vxA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SxxbAF3jaVNlurlddu+dUL7InQzwoLHvI2QS6L1ZxjQ=;
+        b=BpsBGYsc3slgoB7ffao6X7asqYsjp6NuzRTK9sRNfRDGAbKOJwOk07koFr9cSJgJ1C
+         zS8/elLhYZqjTn0hueib/5CkQFqxhqrPifwrvceCqxnNzhyBJEiHX3W7ygy81esbwu5s
+         376cXmfHLiodod8ml8ifkYZOjjUdjM40YhDqma+KYO8E+xQri7K0gPITGNhSAm3NzsNi
+         8fCJZQhCwz7zmobOpFIGlF74GGeYtPKcp58AG0VXzkLrXtTYAdbCtB/Xwldi2L+WI9Wg
+         50QyhP5Nenm9EFuqhKd+Ah5wMUf4Hzf2o/iiCGHwr3AgeHXvgqqNqbO+A9DDZfBiHpu2
+         uUmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AT7HtHsR7rvrJu0g37QevlV7wDbuUynMriYES38+TFg=;
-        b=d+I/D8+HfHCmiCVwui+uruAuK/v8j0lLAeFFfJdTQFkzGr+U12DHpOBIZl1LKt4ZNT
-         b8khu4cpH+kCACDllquFu4qY7aa1PmEz7CrhoSPCE59vq6S+ocH4ATd6GfVNi627dqEr
-         M5kT95tnI0Sas4TU+MSlja6XBkuo6V/oMqp54KjLA+B0so4oMpEEPEHFAHwPAnguh1W+
-         lBBXgWnYl4+9Bp5cUp9768EUOeLYo7okBKLdGC3d7Fcw5Rq9mY7k5lfdYc2SV290g8iV
-         9jRh8s2bozjQ+e9rgMzzZOItGnAwz6IdB7uTVwzTEO+5hYA7+q1jRjjr1VEUugSJjSd9
-         rGpg==
-X-Gm-Message-State: AOAM533SDtJeRjTkTMzAnXru5VdA2zS5ahxuQTb5Nlsr78Hom3BlQvsY
-        3q5hgzPKZoxb7omwKLnpsNC2PeJPTng=
-X-Google-Smtp-Source: ABdhPJzD5szo9CFT0YIFhD7qR2316nQyATkrdbkRtDhaXNX7lbRPW6xuX1uxs95GhDIXiLBD6payag==
-X-Received: by 2002:a9d:58c2:: with SMTP id s2mr1235956oth.80.1623382667020;
-        Thu, 10 Jun 2021 20:37:47 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.22])
-        by smtp.googlemail.com with ESMTPSA id t39sm935094ooi.42.2021.06.10.20.37.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 20:37:46 -0700 (PDT)
-Subject: Re: [PATCH v5] ping: Check return value of function
- 'ping_queue_rcv_skb'
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210610014136.3685188-1-zhengyongjun3@huawei.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <ceb72a32-e55b-febe-0331-79a7cf6e7d66@gmail.com>
-Date:   Thu, 10 Jun 2021 21:37:45 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SxxbAF3jaVNlurlddu+dUL7InQzwoLHvI2QS6L1ZxjQ=;
+        b=Ijf5Yx9OzrxxsvKvImDm3NRcMvlASA55Ohqlx9qOlYmnHd1zOXmt+hcDuz56+F7AwX
+         WYNqmIMsa4KeujjUBSyu9X+WSU+8M/GMoLLlQUyJjB0p5SSfa15XG7Aahm6ZjKhTBpu9
+         UaCA/ZPbPReBBvIftWN4Q9kRCsUPhD06ZLtTwLWl4xU8yWGIOvcBY8Ksf03lc2bAMW0z
+         fygcUt1iuw4j1jZ0qq5HRZeNQGQjKyyJa+5NbDPFHb7r8+2LO8Y94UCNyS94ilUkLmvQ
+         9zOHqIqwIZFGSNI3CEYLjTSaLWbl1bU4rH+GGzSjJqnyLa+dfjmlUnfBaUOU5Q2rEXiH
+         AXjg==
+X-Gm-Message-State: AOAM533KC0cC/JzpqUixvwMLtC+1q0ropysFHHqcLKXPbIEdxoLyeh6y
+        4rp7HSFFwYCMlmi4aChWpu+Zlw==
+X-Google-Smtp-Source: ABdhPJyAC6rOPaOUyj6eu7wayFUFCspO1bzWLoCbHm6Ga4Glw+eFx85c6mzvlktHCLQ6inn1YqD6Dw==
+X-Received: by 2002:a17:902:8e88:b029:ee:b947:d7df with SMTP id bg8-20020a1709028e88b02900eeb947d7dfmr1954566plb.48.1623382771923;
+        Thu, 10 Jun 2021 20:39:31 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id p11sm1342742pjj.43.2021.06.10.20.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 20:39:31 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 09:09:29 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-gpio@vger.kernel.org, Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, stratos-dev@op-lists.linaro.org
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <20210611033929.ifnafw2gznjklnq2@vireshk-i7>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <01000179f5da7763-2ea817c6-e176-423a-952e-de02443f71e2-000000@email.amazonses.com>
+ <YMJOk6RWuztRNBXO@myrica>
 MIME-Version: 1.0
-In-Reply-To: <20210610014136.3685188-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMJOk6RWuztRNBXO@myrica>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/21 7:41 PM, Zheng Yongjun wrote:
-> Function 'ping_queue_rcv_skb' not always return success, which will
-> also return fail. If not check the wrong return value of it, lead to function
-> `ping_rcv` return success.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
-> v2:
-> - use rc as return value to make code look cleaner
-> v3:
-> - delete unnecessary braces {}
-> v4:
-> - put variable 'rc' declaration at the beginning of function
-> v5:
-> - don/t print unneed debuginfo in the right path
->  net/ipv4/ping.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
+On 10-06-21, 19:40, Jean-Philippe Brucker wrote:
+> On Thu, Jun 10, 2021 at 12:16:46PM +0000, Viresh Kumar via Stratos-dev wrote:
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Fixed everything else you suggested.
+
+> > +struct virtio_gpio_config {
+> > +	char name[32];
+> > +	__u16 ngpio;
+> > +	__u16 padding;
+> > +	__u32 gpio_names_size;
+> > +	char gpio_names[0];
+> 
+> A variable-size array here will make it very difficult to append new
+> fields to virtio_gpio_config, when adding new features to the device. (New
+> fields cannot be inserted in between, since older drivers will expect
+> existing fields at a specific offset.)
+
+Yes, I thought about that earlier and though maybe we will be able to
+play with that using the virtio-features, I mean a different layout of
+config structure if we really need to add a field in config, based on
+the feature flag.
+
+> You could replace it with a reference to the string array, for example
+> "__u16 gpio_names_offset" declaring the offset between the beginning of
+> device-specific config and the string array.
+
+But, I like this idea more and it does make it very flexible. Will
+adapt to it.
+
+> The 'name' field could also be indirect to avoid setting a fixed
+> 32-char size, but that's not as important.
+
+Yeah, 32 bytes is really enough. One won't be able to make any sense
+out of a bigger name anyway :)
+
+> > +} __packed;
+> 
+> No need for __packed, because the fields are naturally aligned (as
+> required by the virtio spec)
+
+Yeah, I know, but I tend to add that for structures which aren't very
+simple (like the request/response ones), just to avoid human errors
+and hours of debugging someone need to go through. __packed won't harm
+at least :)
+
+-- 
+viresh
