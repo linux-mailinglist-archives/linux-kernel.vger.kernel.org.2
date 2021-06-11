@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3B03A38E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8723A38F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhFKAke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 20:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhFKAkd (ORCPT
+        id S230346AbhFKAm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 20:42:26 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:41231 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230230AbhFKAmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 20:40:33 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288B7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:38:36 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G1MQZ6SJ5z9sSs;
-        Fri, 11 Jun 2021 10:38:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623371913;
-        bh=TsJGwEzSgIBwr1Y7JTzFw65t4hMoxf4Ivz9P28M+VRc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hlYlvA9Di5+EcDY5bmD7E3Dw+Io8G872Siu3nayEOaKrq+9SfW4dEeGUOkJhNqj9v
-         3F2m0/vBuV7p94RCbNEL4Kqktv1fkAr+brND3CvATsBZhPwqr6Ged0cFK9gPJ6dmhP
-         CAj+Z3aPzvG23Owb7cuY0I3kU55qjvojt5miBZYxtRIhUGvWhd/syVvBqN5YKLcfnt
-         T0/AWf3xzJAYfMS3Nogxuc3iWaB5jj+SlTxNBIuWiFOVcBpLWis+2Ft9pYQiGGp5B9
-         2JdlFtsztsqDCiTE9kWLd1j5iaOf5E33q4PccdjvGS/Rb5RQ/jBOpdJbS1HsHY7kwN
-         Qb56XqhG7S6xg==
-Date:   Fri, 11 Jun 2021 10:38:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Zi Yan <ziy@nvidia.com>, Mel Gorman <mgorman@techsingularity.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH 2/2] mm/page_alloc: Allow high-order pages to be stored
- on the per-cpu lists
-Message-ID: <20210611103827.4b78b776@canb.auug.org.au>
-In-Reply-To: <20210610155940.7d0e1430fd15461d9dabb2d4@linux-foundation.org>
-References: <20210603142220.10851-1-mgorman@techsingularity.net>
-        <20210603142220.10851-3-mgorman@techsingularity.net>
-        <88FCC7AA-FAAA-4B87-B382-50BD54B2886B@nvidia.com>
-        <20210610111821.GY30378@techsingularity.net>
-        <3B44DF44-5669-40B6-A122-011F1A749FAA@nvidia.com>
-        <20210610155940.7d0e1430fd15461d9dabb2d4@linux-foundation.org>
+        Thu, 10 Jun 2021 20:42:25 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210611004026epoutp030c8bee8319521bd185485a94cc5664ed~HYEHfdomZ1516915169epoutp03O
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:40:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210611004026epoutp030c8bee8319521bd185485a94cc5664ed~HYEHfdomZ1516915169epoutp03O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623372026;
+        bh=E6/+jD0GWeLZqmC2W5BnJVBWqpRDEJQcu9OTjCqzJB8=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=Sjc7Yw42nHXyGplY6dDXYeInFXDuJxfskEH6e9TIi0K0QC6hkwDJmb5O102nVMujF
+         dOok76QNeJMxc7gHHocTitjasv1OxyObc0j/plee6MCanN4VhsuNONNH4MwLk1+/AA
+         /DYnO/ia2IMTPR2Ea+g2gJfm2ZV+H5XWi9uT2J8I=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210611004026epcas1p2250c35e6e071e9c2fa4d309cfa02f8e8~HYEG-_S-v0587505875epcas1p2H;
+        Fri, 11 Jun 2021 00:40:26 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4G1MSm61JRz4x9Q7; Fri, 11 Jun
+        2021 00:40:24 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        89.F8.09578.8F0B2C06; Fri, 11 Jun 2021 09:40:24 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210611004024epcas1p16e25142d1430c3cccad03af11ba5b602~HYEFSVkVB0587705877epcas1p1X;
+        Fri, 11 Jun 2021 00:40:24 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210611004024epsmtrp2788f815e1370374d764b60a64aba66c9~HYEFRfJiv1820418204epsmtrp2o;
+        Fri, 11 Jun 2021 00:40:24 +0000 (GMT)
+X-AuditID: b6c32a35-fcfff7000000256a-82-60c2b0f80130
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A4.92.08637.8F0B2C06; Fri, 11 Jun 2021 09:40:24 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.89.31.77]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210611004024epsmtip191844ad8d552bed1984b04de38dd333b~HYEFGnwBq2968429684epsmtip1S;
+        Fri, 11 Jun 2021 00:40:24 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Colin King'" <colin.king@canonical.com>
+Cc:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "'Sergey Senozhatsky'" <sergey.senozhatsky@gmail.com>,
+        "'Steve French'" <sfrench@samba.org>,
+        "'Hyunchul Lee'" <hyc.lee@gmail.com>, <linux-cifs@vger.kernel.org>,
+        <linux-cifsd-devel@lists.sourceforge.net>
+In-Reply-To: <20210610164603.554691-1-colin.king@canonical.com>
+Subject: RE: [PATCH][next] cifsd: fix kfree of uninitialized pointer oid
+Date:   Fri, 11 Jun 2021 09:40:24 +0900
+Message-ID: <000201d75e5a$5da793d0$18f6bb70$@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DMw09q.dbvYPDytg4u4Zhp+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGmysDK925IjpbwB8/bhQpBcVuCZgJadOaRq1xLYcA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBJsWRmVeSWpSXmKPExsWy7bCmvu6PDYcSDCad1bX4vbqXzeLa/ffs
+        FltvSVu8+L+L2eLn/++MFpd3zWGzWPv5MbtFx8ujzA4cHrMaetk8ds66y+6xe8FnJo+5u/oY
+        PT5vkgtgjcqxyUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXL
+        zAE6RUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQoFecmFtcmpeul5yfa2Vo
+        YGBkClSZkJNx5W0zW8FXlorb0xtYGhi7WboYOTkkBEwkfj1cyt7FyMUhJLCDUWLjpG3MEM4n
+        RonvM3YwQTjfGCUm3TgL19LQtgiqZS+jxOrPj6GqXjBKrPhzkBGkik1AV+Lfn/1sXYwcHCJA
+        9pQvkiA1zALTmST2z/nJBBLnFLCXuLAwGqRcWMBDonfKe1aQMIuAqsSCZb4gYV4BS4mX/yez
+        QdiCEidnPgG7gVlAXmL72znMEPcoSPx8uowVYpOVxJ3zBhAlIhKzO9ugSmZySExrNYWwXSTe
+        zFjIBGELS7w6voUdwpaS+PxuLxuEXS5x4uQvqJoaiQ3z9rGDjJcQMJboeVECYjILaEqs36UP
+        UaEosfP3XEaIrXwS7772sEJU80p0tAlBlKhK9F06DDVQWqKr/QP7BEalWUjemoXkrVlI7p+F
+        sGwBI8sqRrHUguLc9NRiwwJD5IjexAhOolqmOxgnvv2gd4iRiYPxEKMEB7OSCO/OlYcShHhT
+        EiurUovy44tKc1KLDzGaAsN5IrOUaHI+MI3nlcQbmhoZGxtbmJiZm5kaK4nz7mQDahJITyxJ
+        zU5NLUgtgulj4uCUamCyEX20595RuchTJd8emXjNSZ42Yz1X89fuRZ1Ltv/bLBMSu2v5gW9m
+        X98fi43UczOW3Bv+/0aP2xGZ71WWHCdEPR7FZZb1tnZXiodfj7F/dC5z1Sp9OwuvkMaLL0wu
+        nHdp6Fku2mvkFWa+Yv+TM6azSi4ELvlT+nna+jT1BVHsV2bbqG9bq7LM7vK5NvPXjiubs/Q/
+        MMWnl/os87gbvYXvqu/isMMmF39PDNrkzfKzo+xpQP4lf/6Xf12jdi+6k6xi8b696aCn38bm
+        aakTu9heus+42n8pfccnrYwFDb0xbDOeiKXF++2o2nc6cdleLeNyrxerz8w5s2nL7/KTG3f1
+        bVws9ig5ibkw+b3nz83rlViKMxINtZiLihMBjye+QysEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphkeLIzCtJLcpLzFFi42LZdlhJTvfHhkMJBlsXCVj8Xt3LZnHt/nt2
+        i623pC1e/N/FbPHz/3dGi8u75rBZrP38mN2i4+VRZgcOj1kNvWweO2fdZffYveAzk8fcXX2M
+        Hp83yQWwRnHZpKTmZJalFunbJXBlXHnbzFbwlaXi9vQGlgbGbpYuRk4OCQETiYa2RexdjFwc
+        QgK7GSVOt32CSkhLHDtxhrmLkQPIFpY4fLgYouYZo0Tj/t9sIDVsAroS//7sZwOpEQGyp3yR
+        BKlhFpjLJLF5+xMmiIYJjBI/1v1mASniFLCXuLAwGqRXWMBDonfKe1aQMIuAqsSCZb4gYV4B
+        S4mX/yezQdiCEidnPgE7h1lAW+LpzadQtrzE9rdzmCHOVJD4+XQZK8QJVhJ3zhtAlIhIzO5s
+        Y57AKDwLyaRZSCbNQjJpFpKWBYwsqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxgiNK
+        S3MH4/ZVH/QOMTJxMB5ilOBgVhLh3bnyUIIQb0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OF
+        BNITS1KzU1MLUotgskwcnFINTCp/Xix+8S+v5sf99M9bfzoxrPX1+jt/64uUe0VRV5R/HJVZ
+        XWAq/NQ3WPTfj+YX52x5DDdyxUXO/BOpsGGv8uN32obrf661SWI1usHpUpJ9Uevz5j+aHunc
+        PC9WOy17/+LgpPwVqzdGVWs6PBXjfPamnuekRKDcvulX7VSYDprbxn2aZvC9wEH9iq1rG9s3
+        xZZ33CfVij4dq31s5cufxXhcXuOqyurfGvYejRmSAiv6G7nql8l3mC9LkeGJ71j7/u/KpE0/
+        7GrOvgp9qVH43POG9uM71cmpLzdvcv7ilDglXKJJga/ILdz5zY/fDJx6S8+JLytkinnW4TMj
+        84XCnVjTC2lXAmyyV8qemftlihJLcUaioRZzUXEiALWaM1kXAwAA
+X-CMS-MailID: 20210611004024epcas1p16e25142d1430c3cccad03af11ba5b602
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210610164609epcas1p1c221f8a2c1762fc8a2e0cd5aa44c2b37
+References: <CGME20210610164609epcas1p1c221f8a2c1762fc8a2e0cd5aa44c2b37@epcas1p1.samsung.com>
+        <20210610164603.554691-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DMw09q.dbvYPDytg4u4Zhp+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently function ksmbd_neg_token_init_mech_type can kfree an uninitialized pointer oid when the call
+> to asn1_oid_decode fails when vlen is out of range. All the other failure cases in function
+> asn1_oid_decode set *oid to NULL on an error, so fix the issue by ensuring the vlen out of range error
+> also nullifies the pointer.
+> 
+> Fixes: 8bae4419ce63 ("cifsd: add goto fail in neg_token_init_mech_type()")
+> Addresses-Coverity: ("Uninitialized pointer read")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+I will apply, Thanks for your patch!
 
-Hi Andrew,
-
-On Thu, 10 Jun 2021 15:59:40 -0700 Andrew Morton <akpm@linux-foundation.org=
-> wrote:
->
-> On Thu, 10 Jun 2021 07:40:47 -0400 Zi Yan <ziy@nvidia.com> wrote:
->=20
-> > >> The attached config has THP disabled. The VM cannot boot with THP en=
-abled,
-> > >> either.
-> > >> =20
-> > >
-> > > There is not a lot of information to go on here. Can you confirm that=
- a
-> > > revert of that specific patch from mmotm-2021-06-07-18-33 also boots?=
- It
-> > > sounds like your console log is empty, does anything useful appear if
-> > > you add "earlyprintk=3Dserial,ttyS0,115200" to the kernel command lin=
-e? =20
-> >=20
-> > Sure. I can confirm that reverting the patch makes the VM boot.
-> > The important information I forgot to mention is that after I remove
-> > the NUMA setting in the QEMU, the VM can boot too. =20
->=20
-> Thanks, I'll drop
-> mm-page_alloc-allow-high-order-pages-to-be-stored-on-the-per-cpu-lists.pa=
-tch
-> for now.
->=20
-
-Dropped from linux-next today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DMw09q.dbvYPDytg4u4Zhp+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDCsIQACgkQAVBC80lX
-0Gz4bAf+NvVnu/CqtKU8EKU51vyRUznpBSyExPiaDpjzKHhp2++47yldSN/DNALg
-bQnlYFT60goZsg2UxCWSVFr3H5ClnCSsyhZT7RO5TQ+WHUcdeOWizvZM2p8DrE02
-obbJUK4dCQ3kx6HhahPofABS5FkWqSQWH6PWSODbRyGaeX6bdZdMm2Rzw2ECrQF3
-O2Z79D5j31ADPbYTBIkck6ffX9DOd1BsWR6NFO3kIpQex2fnDNaC1iVbaZ2LShAe
-DrvCLDph80soRHFFggrx+6Byw3nI6RCLoPTv9lzRYdCB0GhLdxQk2KAn+VAckeIu
-I4yaKLdLf29MfYd2p4TKx6Il53c2tw==
-=i4Qe
------END PGP SIGNATURE-----
-
---Sig_/DMw09q.dbvYPDytg4u4Zhp+--
