@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21E43A4AFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7C73A4B03
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhFKWr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 18:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhFKWrX (ORCPT
+        id S230425AbhFKWsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 18:48:54 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:51773 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229777AbhFKWsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 18:47:23 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CA9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 15:45:22 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id 5so32824897ioe.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 15:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xXgtc2a812WbOwUgteqiwpKHqvHn2zU6NCj+s0gCiUg=;
-        b=c0SIGJ88ohLjl2HfT/CDCCzhoHvhw3vQcijzfAgxaGj3ziLqY98ylpNEdwyi4ZYiIy
-         AN0qrHAWRuW/XwqBAmfWqM0qvIxmluzT2W36dx5Mc6WfXpe73C7CvoHRAhx2UDdMCTc1
-         OW5UVN805paBVZcr5p3G5s+etr34liykK6wbk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xXgtc2a812WbOwUgteqiwpKHqvHn2zU6NCj+s0gCiUg=;
-        b=ZKA4HP33OwuilOjjiDvkHKaCd6HG0KpdYV5EE1pP3PWGOnoS0yr1MnrfQMyVtPdqwR
-         TUAtC9TtrNagem1irLm2MhYMaV7HkTBie+CkarBWpzvgYnMlnRXmRW9bFE0pKh5Ttz38
-         oFlOnc8yRoDKTvoVVb83q/5WP7hHxNpbm7s5Sx93lMfhHM1GLZMXr1Hcxf5z4WMZK80H
-         1utOSqemBZa8pq4Oxkv+Ng//sYxZK83Vht7LO+/KjqxzTZZZedOLbrBLVxVi59vQFSff
-         y3TWSV4uRI77Y6Vq5q98ifvPIK+SpxaeYFvuPFNIEqzqbZr8y1wlrw31WvgABdVsGUC/
-         DP2Q==
-X-Gm-Message-State: AOAM532WQTiGTmPnwWIrdXeRjSppQKn7FBIDdSKfSBm4ufsk3z8KIuor
-        jz8Nbl9Ktrw2kkUNEqeUXEmMkw==
-X-Google-Smtp-Source: ABdhPJxJJIF6snEw4w1Ne6eoIiotz2QkFrb9tZBQiqNlnwUb9VM1XLwMIR49Ra7s9SAVqwiRp7eYyw==
-X-Received: by 2002:a05:6602:1234:: with SMTP id z20mr5007745iot.167.1623451521393;
-        Fri, 11 Jun 2021 15:45:21 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id q23sm4416936ior.46.2021.06.11.15.45.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 15:45:20 -0700 (PDT)
-Subject: Re: [PATCH v8 3/5] selftests/sgx: Dump enclave memory map
-To:     Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210610083021.392269-1-jarkko@kernel.org>
- <20210610083021.392269-3-jarkko@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <bb39b6af-5921-64e8-793b-5ef4b150153e@linuxfoundation.org>
-Date:   Fri, 11 Jun 2021 16:45:19 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 11 Jun 2021 18:48:53 -0400
+Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 284F6862B88;
+        Sat, 12 Jun 2021 08:46:38 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lrpvC-00Bgjv-D7; Sat, 12 Jun 2021 08:46:38 +1000
+Date:   Sat, 12 Jun 2021 08:46:38 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Dave Chinner <dchinner@redhat.com>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        Linux-Next <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        noreply@ellerman.id.au
+Subject: Re: [PATCH] xfs: Fix 64-bit division on 32-bit in
+ xlog_state_switch_iclogs()
+Message-ID: <20210611224638.GT664593@dread.disaster.area>
+References: <20210610110001.2805317-1-geert@linux-m68k.org>
+ <20210610220155.GQ664593@dread.disaster.area>
+ <CAMuHMdWp3E3QDnbGDcTZsCiQNP3pLV2nXVmtOD7OEQO8P-9egQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210610083021.392269-3-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWp3E3QDnbGDcTZsCiQNP3pLV2nXVmtOD7OEQO8P-9egQ@mail.gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
+        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=7-415B0cAAAA:8 a=tBb2bbeoAAAA:8
+        a=sw44Y3MIkDGLgX3rhVgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        a=Oj-tNtZlA1e06AYgeCfH:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/21 2:30 AM, Jarkko Sakkinen wrote:
-> Often, it's useful to check whether /proc/self/maps looks sane when
-> dealing with memory mapped objects, especially when they are JIT'ish
-> dynamically constructed objects. Therefore, dump "/dev/sgx_enclave"
-> matching lines from the memory map in FIXTURE_SETUP().
+On Fri, Jun 11, 2021 at 08:55:24AM +0200, Geert Uytterhoeven wrote:
+> Hi Dave,
 > 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
->   tools/testing/selftests/sgx/main.c | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
+> On Fri, Jun 11, 2021 at 12:02 AM Dave Chinner <david@fromorbit.com> wrote:
+> > On Thu, Jun 10, 2021 at 01:00:01PM +0200, Geert Uytterhoeven wrote:
+> > > On 32-bit (e.g. m68k):
+> > >
+> > >     ERROR: modpost: "__udivdi3" [fs/xfs/xfs.ko] undefined!
+> > >
+> > > Fix this by using a uint32_t intermediate, like before.
+> > >
+> > > Reported-by: noreply@ellerman.id.au
+> > > Fixes: 7660a5b48fbef958 ("xfs: log stripe roundoff is a property of the log")
+> > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > ---
+> > > Compile-tested only.
+> > > ---
+> > >  fs/xfs/xfs_log.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > <sigh>
+> >
+> > 64 bit division on 32 bit platforms is still a problem in this day
+> > and age?
 > 
-> diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-> index 6da19b6bf287..14030f8b85ff 100644
-> --- a/tools/testing/selftests/sgx/main.c
-> +++ b/tools/testing/selftests/sgx/main.c
-> @@ -117,6 +117,8 @@ FIXTURE_SETUP(enclave)
->   	Elf64_Sym *sgx_enter_enclave_sym = NULL;
->   	struct vdso_symtab symtab;
->   	struct encl_segment *seg;
-> +	char maps_line[256];
-> +	FILE *maps_file;
->   	unsigned int i;
->   	void *addr;
->   
-> @@ -167,6 +169,18 @@ FIXTURE_SETUP(enclave)
->   	memset(&self->run, 0, sizeof(self->run));
->   	self->run.tcs = self->encl.encl_base;
->   
-> +	maps_file = fopen("/proc/self/maps", "r");
+> They're not a problem.  But you should use the right operations from
+> <linux/math64.h>, iff you really need these expensive operations.
 
-I almost applied these. Does this require root access, if so,
-please add logic to skip the test if non-root user runs it.
+See, that's the whole problem. This *isn't* obviously a 64 bit
+division - BBTOB is shifting the variable down by 9 (bytes to blocks)
+and then using that as the divisor.
 
-Same comments for all other paths that might require root access.
+The problem is that BBTOB has an internal cast to a 64 bit size,
+and roundup() just blindly takes it and hence we get non-obvious
+compile errors only on 32 bit platforms.
 
-thanks,
--- Shuah
+We have type checking macros for all sorts of generic functionality
+- why haven't these generic macros that do division also have type
+checking to catch this? i.e. so that when people build kernels on
+64 bit machines find out that they've unwittingly broken 32 bit
+builds the moment they use roundup() and/or friends incorrectly?
+
+That would save a lot of extra work having fix crap like this up
+after the fact...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
