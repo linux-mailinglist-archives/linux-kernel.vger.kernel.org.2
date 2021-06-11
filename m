@@ -2,145 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1523A4AD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F563A4ADC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhFKWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 18:03:19 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35764 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229622AbhFKWDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 18:03:17 -0400
-Received: from zn.tnic (p200300ec2f0aec00c039d52956c712fd.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ec00:c039:d529:56c7:12fd])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 80F171EC01B7;
-        Sat, 12 Jun 2021 00:01:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623448877;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=EEwR5/b08FCIuHBcZmeu6ocrkwRpJQ7CMwf2+fRzK8o=;
-        b=GXNqJE8MkSjDShDvC9yDZluu+iiqX7qHocrZi39M8iu9Y3Hvvbna0BEKsTJxmnqjWjzXWy
-        7B+XsSxLOFsPiXh7DU24EW46RT8m74XjyZ7OOkaxJbQxOQrLEi8/Lq2n9Ef2uTJMyyYjr2
-        IbswmaC7ikaNbpCrgNyR6DmChWDT4FY=
-Date:   Sat, 12 Jun 2021 00:01:10 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tony Luck <tony.luck@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Victor Ding <victording@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Anand K Mistry <amistry@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 2/4] perf/x86/intel: Do not deploy workaround when TSX is
- deprecated
-Message-ID: <YMPdJkLJkQBJdIEL@zn.tnic>
-References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
- <4926973a8b0b2ed78217add01b5c459a92f0d511.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
- <YMMVvq9ZZCu9zZom@zn.tnic>
- <20210611213443.ira5gc65jlafz7pu@gupta-dev2.localdomain>
+        id S230360AbhFKWHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 18:07:13 -0400
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:39929 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhFKWHK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 18:07:10 -0400
+Received: by mail-ua1-f43.google.com with SMTP id c10so3113089uan.6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 15:04:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+k6yu0EKgTSGzDKIr5AqFTVoAHiwY6ckLd1jm14gRfU=;
+        b=a6APAT/2Lui1xvc/FAzJf1etpCICuxX9GaFM4kLmW4l4rMIMtzhQF93ph8iHujEHoO
+         RoJtE7ecxSIc4hKtHhhp/qhz4ekxcjH15Jvb8jcHhYD5i2hYbbSw3sexJueAZ6cwbuSn
+         pVDcmHlNcP37jXpuX/WL1cW89cNiBM76xRRZIQNgfnLCiYyIxkomnwnLZ8lQphuQ4fEB
+         IgxlmY7XgN1KJGQVzeX8V2KK1BXc1CC2qVjcFna2DbQ0Yg248ZhDOB8aamJaJlwwVN13
+         RQhZGCBggY9EG8c/+rJS2CxvZ0piXG1rCjby0frIhxZZGCfvIs+gJad3Ke17Y//4fhqA
+         JNAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+k6yu0EKgTSGzDKIr5AqFTVoAHiwY6ckLd1jm14gRfU=;
+        b=QksV3ZVNV4YuOqW6icTGRqk6WlLw8+7VIHVkglfeRBJsSrQdC/oOY3N/gr7MeR5AP9
+         gl6oDtldtWATamywsT97q7GkLTJWQaedU1pvDrSo/7dQARyLW2eqBMJrdjgXWi+C96Jj
+         m78nXHHCBJk8GKV1eC8gY0ileUS0Wre/Y+Y2UagY2XAfZwdCZuT1v/ILOcBusbGFf7cx
+         yFsQLDMksJyFYgICLOsWnY6BIrSkVxHYQzVOYJ+5MRc7029UtmS3GOo4A0j7Z52w2dNd
+         T6R1oO92bKyxp140FQHRnKlgWlOg5yOnP0DocFjb+Gx8PvxeclWIzC9wWxG7lLq6nDXb
+         u+CQ==
+X-Gm-Message-State: AOAM532eYaAx+xoZJfaPogRo39Kbykq4zdE1pL6ffRKprFtkKIEcZW4e
+        BPZ1nxho1ZvVLqfK23PsbQ8s1h6GDEv6k88EDUTm
+X-Google-Smtp-Source: ABdhPJyYU6Mfmpbuu9gSw33cEwVQOoDSD/vimKLKw+xotkG/7FAKaogl7c4gUtf+vDgdUv17DWyAjyRZOxW/aUUQFBI=
+X-Received: by 2002:ab0:710f:: with SMTP id x15mr5826827uan.74.1623449036923;
+ Fri, 11 Jun 2021 15:03:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210611213443.ira5gc65jlafz7pu@gupta-dev2.localdomain>
+References: <20210602001449.780075-1-iwamatsu@nigauri.org> <20210610175034.GA2294595@robh.at.kernel.org>
+In-Reply-To: <20210610175034.GA2294595@robh.at.kernel.org>
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Date:   Sat, 12 Jun 2021 07:03:31 +0900
+Message-ID: <CABMQnV+5Pk3TEgri-=Ebj15gVGBatOdYToJUOUZVu1jKN4mbFQ@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: clk: zynqmp: convert bindings to YAML
+To:     Rob Herring <robh@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 02:34:43PM -0700, Pawan Gupta wrote:
-> > > diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> > > index e28892270c58..b5953e1e59a2 100644
-> > > --- a/arch/x86/events/intel/core.c
-> > > +++ b/arch/x86/events/intel/core.c
-> > > @@ -6016,10 +6016,24 @@ __init int intel_pmu_init(void)
-> > >  		intel_pmu_pebs_data_source_skl(pmem);
-> > > 
-> > >  		if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
-> > > -			x86_pmu.flags |= PMU_FL_TFA;
-> > > -			x86_pmu.get_event_constraints = tfa_get_event_constraints;
-> > > -			x86_pmu.enable_all = intel_tfa_pmu_enable_all;
-> > > -			x86_pmu.commit_scheduling = intel_tfa_commit_scheduling;
-> > > +			u64 msr;
-> > > +
-> > > +			rdmsrl(MSR_TSX_FORCE_ABORT, msr);
-> > > +			/* Systems that enumerate CPUID.RTM_ALWAYS_ABORT or
-> > > +			 * support MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM] bit have
-> > > +			 * TSX deprecated by default. TSX force abort hooks are
-> > > +			 * not required on these systems.
-> > 
-> > So if they're not required, why aren't you simply disabling the force
-> > abort "workaround" by clearing the feature flag?
-> 
-> Feature flag also enumerates MSR_TSX_FORCE_ABORT, which is still present
-> after the microcode update. Patch 3/4 in this series clears the TSX
-> CPUID bits using MSR_TSX_FORCE_ABORT. So we do need the feature flag
-> X86_FEATURE_TSX_FORCE_ABORT.
+Hi,
 
-So it seems to me then, the if test above should be changed to:
+Thanks for your review.
 
-	if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT) && 
-	   !boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT)) {
-	   ...
+2021=E5=B9=B46=E6=9C=8811=E6=97=A5(=E9=87=91) 2:50 Rob Herring <robh@kernel=
+.org>:
+>
+> On Wed, Jun 02, 2021 at 09:14:49AM +0900, Nobuhiro Iwamatsu wrote:
+> > Convert common clock for Xilinx Zynq MPSoC SoC bindings documentation
+> > to YAML.
+> >
+> > Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> > ---
+> >
+> > v2: Fix warning with DT_CHECKER_FLAGS=3D-m.
+> >
+> >  .../bindings/clock/xlnx,zynqmp-clk.txt        |  63 ---------
+> >  .../bindings/clock/xlnx,zynqmp-clk.yaml       |  63 +++++++++
+> >  .../mailbox/xlnx,zynqmp-ipi-mailbox.txt       | 127 ------------------
+>
+> Why is this removed?
 
-and no need for the MSR read.
+My bad. I will fix this as v3
 
-Please don't tell me there are configurations
-where CPUID.RTM_ALWAYS_ABORT is clear but the
-MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM] is there?!
+>
+> Otherwise, looks fine.
 
-This
+Thank you.
 
-"A new CPUID bit CPUID.RTM_ALWAYS_ABORT (CPUID 7.EDX[11]) is added to
-indicate the status of always abort behavior."
+>
+> >  3 files changed, 63 insertions(+), 190 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/clock/xlnx,zynqmp=
+-clk.txt
+> >  create mode 100644 Documentation/devicetree/bindings/clock/xlnx,zynqmp=
+-clk.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/mailbox/xlnx,zynq=
+mp-ipi-mailbox.txt
 
-tells me that the CPUID bit is always set by the microcode so we should
-be ok.
+Best regards,
+  Nobuhiro
 
-If not, you should read that MSR early and do
-
-	setup_force_cpu_cap(X86_FEATURE_RTM_ALWAYS_ABORT)
-
-so that this "always abort" flag is always set when TSX transactions are
-always aborted.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Nobuhiro Iwamatsu
+   iwamatsu at {nigauri.org / debian.org}
+   GPG ID: 40AD1FA6
