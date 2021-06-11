@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CE33A4180
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254803A418A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhFKL4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbhFKL4x (ORCPT
+        id S231308AbhFKMAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:00:13 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55200 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230370AbhFKMAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:56:53 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50FDC0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:54:41 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id t6so10474081qvp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:54:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eUttRMHttOnDA7jK+Bhgw9VuVSK/sEPVdIVgBgNsUfs=;
-        b=zmy+/sV0dMH5LMwC+7d9/al0x8cE++ECq+h/bjqm4xcyzk9G6t/NCaCwdSUBUHasYM
-         eO9rQ8aEVtodfxoKOF4KByhJPY9kICmY8HE6JZ4uIO1u0rok7NIO1v3Z9kZhx4a9RJwZ
-         vuSddBMUJIOYQomd8/RXY08TXJIT6QAkqTsdckp16Y4T3hWigoO6BMss0goRfoX7aSLF
-         8ZNgu1F3hUs92PhyPmaP8P0igPjQo/RqCMM02gybNXsIttUsHorEctPS3kt8D5/rlHZs
-         iAHSjhG5L1ciXEARjS5UkjLeusSQIhU2EPt8js2uYU0Cae4lRdHMKy1MB+4f7GB5FSPh
-         ON7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eUttRMHttOnDA7jK+Bhgw9VuVSK/sEPVdIVgBgNsUfs=;
-        b=MvNl3DWOQeKReAqGPs6op2duzsSC/YC77D/q3gSSatSXk9C7OTGUYY+rjVuJuLhL0p
-         cIEljFHv/Z1eIhVb10NQa/M+vFowOHesbwmLQJh5ZxEU2GbQ2y4YjV5pCCTCN/RibLEl
-         62TSTz3nLIMB/jgREPwTiIwIzm4HrTSCGYn9oXX+SSA+jPhXO79ZHwq5/ZC6XCoUOrE6
-         Q8Ot+LnT+9HXQuNgFpeg3kgjcJo2/KQ0DlI05nyJsXiab28WqNx8ZwDHjLHg9M6SNZ0Y
-         aGBZnNQq63/CZ2UxeSLWeIr2kfID5VPyp2nR8ILEUw0NrUA/YURinsRDxvGWMVH0qhUe
-         jA3Q==
-X-Gm-Message-State: AOAM531mnj28E0HDxQ1qzLd+mvpHTRR8SqxQZLjyTSXn0wASqhBSPaD6
-        g83Cyt36c7Fcwkm2qn4INPlVjYDGOjGEvg==
-X-Google-Smtp-Source: ABdhPJxSJd0To5ubHPmvv8nls7Sz7oTekBM+Y1G8i0qDOWkUIQmLdwfCWQUFmZM7z25U08+qoWJ8Iw==
-X-Received: by 2002:ad4:4502:: with SMTP id k2mr4275389qvu.43.1623412480697;
-        Fri, 11 Jun 2021 04:54:40 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id 137sm4220780qko.29.2021.06.11.04.54.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 04:54:40 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: thermal: tsens: Add sc8180x compatible
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210608201638.2136344-1-bjorn.andersson@linaro.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <22fdd7f8-87c1-6a0e-1fc6-8d7536d634a8@linaro.org>
-Date:   Fri, 11 Jun 2021 07:54:38 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 11 Jun 2021 08:00:12 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BBw25b054437;
+        Fri, 11 Jun 2021 06:58:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623412682;
+        bh=lz3eUFLWjc5wmVQBahFCbI1CAfEZvq0RXjoWx/xNOTo=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=SnTyOxVGtWgam3hw9DxhnyXNuAiMbqT8AKhmfu9poFX/ktkFleo31vrp2wV8yaAjH
+         nkX3VDguyCpwIvpP2oMGMfRDYTMeb5CnMbEEqYQG34xIADpcXH4enKuywtqHX1bWRz
+         5tdQ8FRSe4IAkySs1S0l04Rh33BYX1aGnDcpLagE=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BBw2Tv121572
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Jun 2021 06:58:02 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
+ Jun 2021 06:58:01 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 11 Jun 2021 06:58:01 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BBvvLS039508;
+        Fri, 11 Jun 2021 06:57:58 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v6 0/4] mtd: spi-nor: otp: 4 byte mode fix and erase support
+Date:   Fri, 11 Jun 2021 17:27:51 +0530
+Message-ID: <162341252747.7630.10412857264567592221.b4-ty@ti.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210607112744.21587-1-michael@walle.cc>
+References: <20210607112744.21587-1-michael@walle.cc>
 MIME-Version: 1.0
-In-Reply-To: <20210608201638.2136344-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/8/21 4:16 PM, Bjorn Andersson wrote:
-> The Qualcomm sc8180x platform has the usual tsens blocks, add compatible
-> for this.
+On Mon, 7 Jun 2021 13:27:40 +0200, Michael Walle wrote:
+> This series is the follow up on the single patch
+> mtd: spi-nor: implement OTP erase for Winbond and similar flashes
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Acked-by: Thara Gopinath <thara.gopinath@linaro.org>
-
-
--- 
-Warm Regards
-Thara
-
-> ---
->   Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 1 +
->   1 file changed, 1 insertion(+)
+> Pratyush Yadav discovered a likely problem with bigger flashes, the address
+> to access the security registers is either 3 or 4 byte (at least for
+> winbond flashes).
 > 
-> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-> index 0242fd91b622..fdd7c361104f 100644
-> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-> @@ -46,6 +46,7 @@ properties:
->                 - qcom,msm8996-tsens
->                 - qcom,msm8998-tsens
->                 - qcom,sc7180-tsens
-> +              - qcom,sc8180x-tsens
->                 - qcom,sdm845-tsens
->                 - qcom,sm8150-tsens
->                 - qcom,sm8250-tsens
-> 
+> [...]
+
+Applied to spi-nor/next, thanks!
+[1/4] mtd: spi-nor: otp: fix access to security registers in 4 byte mode
+      https://git.kernel.org/mtd/c/b97b1a7698
+[2/4] mtd: spi-nor: otp: use more consistent wording
+      https://git.kernel.org/mtd/c/d5b813e484
+[3/4] mtd: spi-nor: otp: return -EROFS if region is read-only
+      https://git.kernel.org/mtd/c/388161ca45
+[4/4] mtd: spi-nor: otp: implement erase for Winbond and similar flashes
+      https://git.kernel.org/mtd/c/c6ec3e1e3a
+
+--
+Regards
+Vignesh
 
