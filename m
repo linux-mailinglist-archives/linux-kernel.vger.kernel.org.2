@@ -2,185 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C563A3A90
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FDE3A3A92
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhFKD4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:56:15 -0400
-Received: from regular1.263xmail.com ([211.150.70.200]:45668 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhFKD4N (ORCPT
+        id S231530AbhFKD5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:57:38 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:59610 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231309AbhFKD5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:56:13 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by regular1.263xmail.com (Postfix) with ESMTP id 9B7FA1DB8;
-        Fri, 11 Jun 2021 11:54:10 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from [172.16.12.73] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P15328T140654309000960S1623383648787942_;
-        Fri, 11 Jun 2021 11:54:10 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <70eca2d5e53924834f14eb9922eb0b7d>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-clk@vger.kernel.org
-X-RCPT-COUNT: 19
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v7 9/9] arm64: dts: rockchip: Enable SFC for Odroid Go
- Advance
-To:     Chris Morgan <macromorgan@hotmail.com>
-Cc:     Chris Morgan <macroalpha82@gmail.com>, linux-spi@vger.kernel.org,
-        broonie@kernel.org, robh+dt@kernel.org, heiko@sntech.de,
-        jbx6244@gmail.com, hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
-        sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
-        linux-mtd@lists.infradead.org, p.yadav@ti.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, linux-clk@vger.kernel.org
-References: <20210609140412.16058-1-jon.lin@rock-chips.com>
- <20210609141348.19178-1-jon.lin@rock-chips.com>
- <20210609141348.19178-5-jon.lin@rock-chips.com>
- <20210610173657.GA20228@wintermute.localdomain>
- <89283da6-b00e-4d0f-5c4a-0169bda101d3@rock-chips.com>
- <SN6PR06MB5342327048383CC3D416C93DA5349@SN6PR06MB5342.namprd06.prod.outlook.com>
-From:   Jon Lin <jon.lin@rock-chips.com>
-Message-ID: <19481190-2a28-8602-8f5f-6258a967833d@rock-chips.com>
-Date:   Fri, 11 Jun 2021 11:54:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Jun 2021 23:57:36 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:51986 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lrYGg-0002KQ-QB; Thu, 10 Jun 2021 23:55:38 -0400
+Message-ID: <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
+Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 10 Jun 2021 23:55:38 -0400
+In-Reply-To: <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
+References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
+         <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
+         <4b5644bff43e072a98a19d7a5ca36bb5e11497ec.camel@trillion01.com>
+         <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
+         <9938f22a0bb09f344fa5c9c5c1b91f0d12e7566f.camel@trillion01.com>
+         <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-In-Reply-To: <SN6PR06MB5342327048383CC3D416C93DA5349@SN6PR06MB5342.namprd06.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-06-10 at 20:32 +0100, Pavel Begunkov wrote:
+> On 6/10/21 6:56 PM, Olivier Langlois wrote:
+> > 
+> > 
+> > Can you think of other numbers that would be useful to know to
+> > evaluate
+> > the patch performance?
+> 
+> If throughput + latency (avg + several nines) are better (or any
+> other measurable improvement), it's a good enough argument to me,
+> but not sure what test case you're looking at. Single threaded?
+> Does it saturate your CPU?
+> 
+I don't know what are the ideal answers to your 2 last questions ;-)
 
-On 6/11/21 11:38 AM, Chris Morgan wrote:
-> On Fri, Jun 11, 2021 at 10:26:35AM +0800, Jon Lin wrote:
->> Hi Chris
->>
->> May you attach the XT25F128B device code to me, and I'll try to work it out.
-> Sure, here is the patch I am using:
->
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/SN6PR06MB5342C82F372F37FB8E21B327A57A9@SN6PR06MB5342.namprd06.prod.outlook.com/
+I have several possible configurations to my application.
 
-this patch works well in my rk3308 tx-2 rx-2 XT25F128BSSIGU case.
+The most complex one is a 2 threads setup each having their own
+io_uring instance where one of the threads is managing 50-85 TCP
+connections over which JSON stream encapsulated in the WebSocket
+protocol are received.
 
-# dd if=/tmp/rand.img of=/dev/mtdblock0 bs=4096 seek=1024
-1024+0 records in
-1024+0 records out
-#
-# dd if=/dev/mtd0 of=/tmp/rand1.img bs=4096 skip=1024 count=1024
+That more complex setup is also using IORING_SETUP_ATTACH_WQ to share
+the sqpoll thread between the 2 instances.
 
-1024+0 records in
-1024+0 records out
-#
-#
-# md5sum /tmp/*.img
-83e45a56766168b47e6db1d41b1b403d  /tmp/rand.img
-83e45a56766168b47e6db1d41b1b403d  /tmp/rand1.img
-#
-# dmesg | grep XT25F128BSSIGU
-[    0.200738] spi-nor spi3.0: XT25F128BSSIGU (16384 Kbytes)
-#
+In that more complex config, the sqpoll thread is running at 85-95% of
+its dedicated CPU.
 
->
->> On 6/11/21 1:36 AM, Chris Morgan wrote:
->>> On Wed, Jun 09, 2021 at 10:13:48PM +0800, Jon Lin wrote:
->>>> From: Chris Morgan <macromorgan@hotmail.com>
->>>>
->>>> This enables the Rockchip Serial Flash Controller for the Odroid Go
->>>> Advance. Note that while the attached SPI NOR flash and the controller
->>>> both support quad read mode, only 2 of the required 4 pins are present.
->>>> The rx and tx bus width is set to 2 for this reason.
->>>>
->>>> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
->>>> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
->>>> ---
->>>>
->>>> Changes in v7: None
->>>> Changes in v6: None
->>>> Changes in v5: None
->>>> Changes in v4: None
->>>> Changes in v3: None
->>>> Changes in v2: None
->>>> Changes in v1: None
->>>>
->>>>    .../boot/dts/rockchip/rk3326-odroid-go2.dts      | 16 ++++++++++++++++
->>>>    1 file changed, 16 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
->>>> index 49c97f76df77..f78e11dd8447 100644
->>>> --- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
->>>> +++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
->>>> @@ -484,6 +484,22 @@
->>>>    	status = "okay";
->>>>    };
->>>> +&sfc {
->>>> +	pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus2>;
->>>> +	pinctrl-names = "default";
->>>> +	#address-cells = <1>;
->>>> +	#size-cells = <0>;
->>>> +	status = "okay";
->>>> +
->>>> +	flash@0 {
->>>> +		compatible = "jedec,spi-nor";
->>>> +		reg = <0>;
->>>> +		spi-max-frequency = <108000000>;
->>>> +		spi-rx-bus-width = <2>;
->>>> +		spi-tx-bus-width = <2>;
->>> Note that I am still working with Jon Lin to research this, but it was
->>> found in testing that if I set the tx bus width to 1 the problems I
->>> encountered in earlier are resolved. At this time I do not know if it
->>> is an issue with the driver for the flash controller, or if the NOR, or
->>> board itself has some sort of errata which prevent dual tx from working
->>> correctly. Note that as of right now the flash chip I am using (an
->>> XTX XT25F128B) is not currently supported in mainline, so it's very
->>> possible this is some sort of errata with the chip. It's also possible
->>> that there is something with the board that is interferring with dual
->>> mode TX.  When Jon comes back that he has tested dual mode on the SFC
->>> with a different board/chip I will recommend that we change the tx
->>> bus width here to a 1, and then once the XT25F128B gets mainlined we
->>> can see if someone else has issues with dual tx mode so we can note
->>> that as a problem with the chip. Or maybe there is something weird
->>> with dual tx mode yet on the SFC driver/controller, I don't know yet.
->>> I'm all too happy to work with a Rockchip engineer so things like
->>> this can be determined before we hit mainline. :-)
->>>
->>> The XTX25F128B driver is currently awaiting a decision on how to handle
->>> continuation codes, as this chip ID should be using continuation codes,
->>> but doesn't appear to return them when you query for manufacturer ID.
->>> So I should also note in the commit here that the SFC will still be
->>> unusable on the Odroid Go Advance until the XTX25F128B is also
->>> mainlined.
->>>
->>> Thank you.
->>>
->>>> +	};
->>>> +};
->>>> +
->>>>    &tsadc {
->>>>    	status = "okay";
->>>>    };
->>>> -- 
->>>> 2.17.1
->>>>
->>>>
->>>>
->>>
->>
->
->
+For the patch performance testing I did use the simplest config:
+Single thread, 1 TCP connection, no sqpoll.
 
+To process an incoming 5Mbps stream, it takes about 5% of the CPU.
+
+Here is the testing methodology:
+add 2 fields in  struct io_rw:
+    u64             startTs;
+    u8              readType;
+
+startTs is set with ktime_get_raw_fast_ns() in io_read_prep()
+
+readType is set to:
+0: data ready
+1: use fast poll (we ignore those)
+2: reissue
+3: async
+
+readType is used to know what type of measurement it is at the
+recording point.
+
+end time is measured at 3 recording point:
+1. In __io_queue_sqe() when io_issue_sqe() returns 0
+2. In __io_queue_sqe() after io_queue_async_work() call
+3. In io_wq_submit_work() after the while loop.
+
+So I took 4 measurements.
+
+1. The time it takes to process a read request when data is already
+available
+2. The time it takes to process by calling twice io_issue_sqe() after
+vfs_poll() indicated that data was available
+3. The time it takes to execute io_queue_async_work()
+4. The time it takes to complete a read request asynchronously
+
+Before presenting the results, I want to mention that 2.25% of the
+total number of my read requests ends up in the situation where the
+read() syscall did return EAGAIN but data became available by the time
+vfs_poll gets called.
+
+My expectations were that reissuing a sqe could be on par or a bit more
+expensive than placing it on io-wq for async processing and that would
+put the patch in some gray zone with pros and cons in terms of
+performance.
+
+The reality is instead super nice (numbers in nSec):
+
+ready data (baseline)
+avg	3657.94182918628
+min	580
+max	20098
+stddev	1213.15975908162
+	
+reissue	completion
+average	7882.67567567568
+min	2316
+max	28811
+stddev	1982.79172973284
+	
+insert io-wq time	
+average	8983.82276995305
+min	3324
+max	87816
+stddev	2551.60056552038
+	
+async time completion
+average	24670.4758861127
+min	10758
+max	102612
+stddev	3483.92416873804
+
+Conclusion:
+On average reissuing the sqe with the patch code is 1.1uSec faster and
+in the worse case scenario 59uSec faster than placing the request on
+io-wq
+
+On average completion time by reissuing the sqe with the patch code is
+16.79uSec faster and in the worse case scenario 73.8uSec faster than
+async completion.
+
+One important detail to mention about the async completion time, in the
+testing the ONLY way that a request can end up being completed async is
+if vfs_poll() reports that the file is ready. Otherwise, the request
+ends up being processed with io_uring fast poll feature.
+
+So there does not seem to have any downside to the patch. TBH, at the
+initial patch submission, I only did use my intuition to evaluate the
+merit of my patch but, thx to your healthy skepticism, Pavel, this did
+force me to actually measure the patch and it appears to incontestably
+improve performance for both the reissued SQE and also all the other
+sqes found in a batch submission.
+
+Hopefully, the results will please you as much as they have for me!
+
+Greetings,
+Olivier
 
