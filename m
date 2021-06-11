@@ -2,147 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711FE3A4965
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9801D3A4968
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231350AbhFKTUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:20:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230360AbhFKTUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:20:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A357C613D0;
-        Fri, 11 Jun 2021 19:18:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623439123;
-        bh=FWRWB7qMYIMgll5fN+YqcHRkP32arVMnB3TPp5iiNMI=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=kI4zCInuDiql8WGndKv3dTTItWJU3YxvUpC5/GzSiOSSI3nyn7YSYoL7t5miq6y/B
-         LhhQ2VN5RVRgpdr9B+wIWwKy0oyWzMVVLLN//2NSd3TyHR5B/srfjbNYIBwYVkb1uH
-         t+1vWM5iAT4R5TKJ7znHYu6FiLFw4XSnimb/GG3f6gO1GDlUmgZmLVrFpPBEvYy8EQ
-         ynoMr84fX5kJpJasiGnOEzEVihao0bCQ4I0+AnOZcDmgaeDSiS3Xkt1YVJM66EB0mK
-         6rFPZraLhrFasQJCvb70c2RLpomOrWE65LdnDIsb+7sraf42TOVwkR6fpoWMkyzNWm
-         NYnEb81TxmloQ==
-Subject: Re: [patch 08/41] x86/fpu: Restrict fpstate sanitizing to legacy
- components
-From:   Andy Lutomirski <luto@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-References: <20210611161523.508908024@linutronix.de>
- <20210611163111.820639606@linutronix.de>
- <2be2ef6c-fcb8-46cf-976c-2b3a9537b660@kernel.org>
-Message-ID: <b81a0fe0-1aca-c0de-eb9e-895ac98c0c86@kernel.org>
-Date:   Fri, 11 Jun 2021 12:18:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231236AbhFKTXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:23:12 -0400
+Received: from mail-ed1-f42.google.com ([209.85.208.42]:35788 "EHLO
+        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhFKTXL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:23:11 -0400
+Received: by mail-ed1-f42.google.com with SMTP id ba2so36568298edb.2;
+        Fri, 11 Jun 2021 12:21:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=221FOVBCglcDVKzwrUJUqE/qmM310NL3h0+XzvQXUnI=;
+        b=KBY82r13x3ey7ilP+Oog00PZeOdpxF4lHJi8/xczpp4+Bc5HOjhUZ5VaJ/7wTCjKoc
+         6mB+z5oZI6IAjWDodng9XGF/a2VV6WkVxIwtoewb0FvdNTQQns46/oEEvEY6AiS5eYB4
+         mzCxNekOJQIIeGAcY8lLt8CFncoObWJBdgdljNQfWzV9jpTAFBns+g4EI4JHKtTJq/uY
+         LO4OBQLsZQzUTo1sGrInEK7V7hTd5CZe62I+LbM57mTV0H/M4B9CHoWUmZ4G9BVcwMnf
+         nmLymTOnkKWyJkzhdd4C0HiU94TxqdIvA2KSgwZEBG/YgkI1+DKHhuz1RywrQyFt8mC2
+         yDxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=221FOVBCglcDVKzwrUJUqE/qmM310NL3h0+XzvQXUnI=;
+        b=bAFL+mfyZsdHHR0EaRQwDobdCBKUtt6jco//fGAzcJKN1O6xberx1PqDWu03J4b5B1
+         LqRmElk/jAW7z1LeOZF6ueCdbT698Je4fFXbxrHthCk4q4bAbBF6wedIhNwvwMBbGf9A
+         ZxD4LE1RoINcsbtFa0+KjXDu7O/tb9fnhRXcDSp79km8zwsrkbfPraLNKYtSNsnlVvAE
+         OhdrcPMKfo5DKFHpXMO8Z+Q6hXoFcfcUsf8R8okUZS2hWH1XwWq9PDMWWrg5yCKdN8uI
+         CXuURsytLFReFLszZFD3JGbj2QCdwimaMG/lhxT7E59+9wCzW+xzqKuB8Kuddagr7LNJ
+         xnHw==
+X-Gm-Message-State: AOAM530n55rkpVS27llfrK3cpRvULxmK9IQFvOkpPO6BFerWldToDyvC
+        9ULXe/KBq/fP1waOIc8yxB4=
+X-Google-Smtp-Source: ABdhPJxQpyO+PGSsUxFqyIvTUes/rBOp4kFn9B/7HMyRDUl5DDLL2lca2gjPNY7iCHcd4NzJ5xHjCA==
+X-Received: by 2002:a05:6402:2378:: with SMTP id a24mr5200643eda.161.1623439211921;
+        Fri, 11 Jun 2021 12:20:11 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id wq10sm2355744ejb.79.2021.06.11.12.20.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 12:20:11 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 22:20:10 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [PATCH net-next v4 4/9] net: phy: micrel: apply resume errata
+ workaround for ksz8873 and ksz8863
+Message-ID: <20210611192010.ptmblzpj6ilt24ly@skbuf>
+References: <20210611071527.9333-1-o.rempel@pengutronix.de>
+ <20210611071527.9333-5-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <2be2ef6c-fcb8-46cf-976c-2b3a9537b660@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611071527.9333-5-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 12:03 PM, Andy Lutomirski wrote:
-> On 6/11/21 9:15 AM, Thomas Gleixner wrote:
->> xstateregs_get() does not longer use fpstate_sanitize_xstate() and the only
+On Fri, Jun 11, 2021 at 09:15:22AM +0200, Oleksij Rempel wrote:
+> The ksz8873 and ksz8863 switches are affected by following errata:
 > 
-> s/does not longer use/no longer uses/
+> | "Receiver error in 100BASE-TX mode following Soft Power Down"
+> |
+> | Some KSZ8873 devices may exhibit receiver errors after transitioning
+> | from Soft Power Down mode to Normal mode, as controlled by register 195
+> | (0xC3) bits [1:0]. When exiting Soft Power Down mode, the receiver
+> | blocks may not start up properly, causing the PHY to miss data and
+> | exhibit erratic behavior. The problem may appear on either port 1 or
+> | port 2, or both ports. The problem occurs only for 100BASE-TX, not
+> | 10BASE-T.
+> |
+> | END USER IMPLICATIONS
+> | When the failure occurs, the following symptoms are seen on the affected
+> | port(s):
+> | - The port is able to link
+> | - LED0 blinks, even when there is no traffic
+> | - The MIB counters indicate receive errors (Rx Fragments, Rx Symbol
+> |   Errors, Rx CRC Errors, Rx Alignment Errors)
+> | - Only a small fraction of packets is correctly received and forwarded
+> |   through the switch. Most packets are dropped due to receive errors.
+> |
+> | The failing condition cannot be corrected by the following:
+> | - Removing and reconnecting the cable
+> | - Hardware reset
+> | - Software Reset and PCS Reset bits in register 67 (0x43)
+> |
+> | Work around:
+> | The problem can be corrected by setting and then clearing the Port Power
+> | Down bits (registers 29 (0x1D) and 45 (0x2D), bit 3). This must be done
+> | separately for each affected port after returning from Soft Power Down
+> | Mode to Normal Mode. The following procedure will ensure no further
+> | issues due to this erratum. To enter Soft Power Down Mode, set register
+> | 195 (0xC3), bits [1:0] = 10.
+> |
+> | To exit Soft Power Down Mode, follow these steps:
+> | 1. Set register 195 (0xC3), bits [1:0] = 00 // Exit soft power down mode
+> | 2. Wait 1ms minimum
+> | 3. Set register 29 (0x1D), bit [3] = 1 // Enter PHY port 1 power down mode
+> | 4. Set register 29 (0x1D), bit [3] = 0 // Exit PHY port 1 power down mode
+> | 5. Set register 45 (0x2D), bit [3] = 1 // Enter PHY port 2 power down mode
+> | 6. Set register 45 (0x2D), bit [3] = 0 // Exit PHY port 2 power down mode
 > 
-> 		\
->> --- a/arch/x86/kernel/fpu/regset.c
->> +++ b/arch/x86/kernel/fpu/regset.c
->> @@ -11,6 +11,39 @@
->>  
->>  #include <linux/sched/task_stack.h>
->>  
->> +/*
->> + * When executing XSAVEOPT (or other optimized XSAVE instructions), if
+> This patch implements steps 2...6 of the suggested workaround. During
+> (initial) switch power up, step 1 is executed by the dsa/ksz8795
+> driver's probe function.
 > 
-> The kernel doesn't use XSAVEOPT any more.  How about:
-> 
-> When executing XSAVES (or other optimized XSAVE instructions)
-> 
->> + * a processor implementation detects that an FPU state component is still
->> + * (or is again) in its initialized state, it may clear the corresponding
->> + * bit in the header.xfeatures field, and can skip the writeout of registers
->> + * to the corresponding memory layout.
-> 
-> Additionally, copy_xxx_to_xstate() may result in an xsave buffer with a
-> bit clear in xfeatures but the corresponding state region not containing
-> the state's init value.
-> 
->> + *
->> + * This means that when the bit is zero, the state component might still
->> + * contain some previous - non-initialized register state.
-> 
-> Maybe say what the function does, e.g.:
-> 
-> This function fills in the init values for the X87 and SSE states if the
-> corresponding xfeatures bits are clear.
-> 
->> + *
->> + * This is required for the legacy regset functions.
->> + */
->> +static void fpstate_sanitize_legacy(struct fpu *fpu)
->> +{
->> +	struct fxregs_state *fx = &fpu->state.fxsave;
->> +	u64 xfeatures;
->> +
->> +	if (!use_xsaveopt())
->> +		return;
-> 
-> This is confusing, since we never use xsaveopt.  It's also wrong -- see
-> above.  How about just removing it?
-> 
->> +
->> +	xfeatures = fpu->state.xsave.header.xfeatures;
->> +
->> +	/* If FP is in init state, reinitialize it */
->> +	if (!(xfeatures & XFEATURE_MASK_FP)) {
->> +		memset(fx, 0, sizeof(*fx));
->> +		fx->cwd = 0x37f;
->> +	}
->> +
->> +	/* If SSE is in init state, clear the storage */
->> +	if (!(xfeatures & XFEATURE_MASK_SSE))
->> +		memset(fx->xmm_space, 0, sizeof(fx->xmm_space));
->> +}
->> +
->>  
-> 
-> Does this result in the mxcsr_mask and mxcsr fields being correct?
-> There is a silly number of special cases there.
-> 
+> Note: In this workaround we toggle the MII_BMCR register's BMCR_PDOWN
+> bit, this is translated to the actual register and bit (as mentioned in
+> the arratum) by the ksz8_r_phy()/ksz8_w_phy() functions.
 
-The SDM says, in a footnote in XRSTOR:
+s/arratum/erratum/
 
-There is an exception if RFBM[1] = 0 and RFBM[2] = 1. In this case, the
-standard form of XRSTOR will load MXCSR from memory, even though MXCSR
-is part of state component 1 — SSE. The compacted form of XRSTOR does
-not make this exception.
+Also, the commit message is still missing this piece of information you
+gave in the previous thread:
 
-which makes me think that this code has a bug.  Also, the code is
-manifest nonsense for a different reason:
+| this issue was seen  at some early point of development (back in 2019)
+| reproducible on system start. Where switch was in some default state or
+| on a state configured by the bootloader. I didn't tried to reproduce it
+| now.
 
-if (!FP)
-  memset(the whole damn thing, 0);
+Years from now, some poor souls might struggle to understand why this
+patch was done this way. If it is indeed the case that the issue is only
+seen during the handover between bootloader and kernel, there is really
+no reason to implement the ERR workaround in phy_resume instead of doing
+it once at probe time.
 
-if (!SSE)
-  memset(just part of it, 0);
-
-which means that, if the FP bit is clear but the SSE bit is set, this
-thing will clobber the SSE state.
-
-This code is garbage.  So is the architecture that gave rise to this code.
-
---Andy
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
