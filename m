@@ -2,157 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7703A4B1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37BE3A4B1F
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhFKXS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 19:18:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58758 "EHLO mail.kernel.org"
+        id S230458AbhFKXTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 19:19:12 -0400
+Received: from mga02.intel.com ([134.134.136.20]:8431 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229976AbhFKXSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 19:18:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 898A76124C;
-        Fri, 11 Jun 2021 23:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623453416;
-        bh=lMxz0DjlyuQqZF5qJPG3f9aj+1mihATa36IM+sjVrMI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=x2P3F19NBmj0X25SPv0T7/C1OWmNI0B4X1G1Smzk/tpOHcskH3da9D5FjsBNJeDGI
-         EgyobsuGaTlfVOxZ29asRHSQ6kwFdc50XducX/Fy+IUTf/cGIG3lRWvOY0X6/DIo8C
-         0fMoyUWvrfwTqbCFl8OmwEAXDYhnje56ZAB3HoZY=
-Date:   Fri, 11 Jun 2021 16:16:55 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Charles Haithcock <chaithco@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Adrian Reber <areber@redhat.com>,
+        id S229976AbhFKXTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 19:19:10 -0400
+IronPort-SDR: YPse3osgHfrphpgrbt7OQW/CaWKeW7dhE10dySQOCTVRmZZtC5t/wOvgM/NL4i2KKCYnNvcfAl
+ 3YcfN7HByCpg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="192738455"
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="192738455"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 16:17:11 -0700
+IronPort-SDR: dxuZh7dIRje1lEef5OpscOfpbaegiQpAP7Fgq9ui2qZXltgye2qh2Jy2/EAtToSuvbqblzU6eQ
+ /XitDKWDRSjQ==
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="403363262"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.232.130]) ([10.212.232.130])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 16:17:11 -0700
+Subject: Re: [PATCH] x86/resctrl: Fix kernel-doc in internal.h
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v9] exec: Fix dead-lock in de_thread with ptrace_attach
-Message-Id: <20210611161655.0a3076495e59add166bac58a@linux-foundation.org>
-In-Reply-To: <AM8PR10MB470896FBC519ABCC20486958E4349@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-References: <AM8PR10MB4708AFBD838138A84CE89EF8E4359@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-        <20210610143642.e4535dbdc0db0b1bd3ee5367@linux-foundation.org>
-        <AM8PR10MB470896FBC519ABCC20486958E4349@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210609005415.6993-1-fmdefrancesco@gmail.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <4d5608bf-668a-a500-bad9-ab49e3d1c505@intel.com>
+Date:   Fri, 11 Jun 2021 16:17:10 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210609005415.6993-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 17:55:09 +0200 Bernd Edlinger <bernd.edlinger@hotmail.de> wrote:
+Hi Fabio,
 
-> This introduces signal->unsafe_execve_in_progress,
-> which is used to fix the case when at least one of the
-> sibling threads is traced, and therefore the trace
-> process may dead-lock in ptrace_attach, but de_thread
-> will need to wait for the tracer to continue execution.
+Please also consider my comments regarding the goal of this patch 
+similar to what I mentioned in my response to your changes to the 
+pseudo_lock.c file. I updated a few descriptions to improve accuracy and 
+noted some formatting issues. Apart from these small issues it is 
+looking good, thank you.
+
+On 6/8/2021 5:54 PM, Fabio M. De Francesco wrote:
+> Added description of undocumented parameters. Fixed some minor
+> kernel-doc grammar issues. Issues largely detected by
+> scripts/kernel-doc.
 > 
-> The solution is to detect this situation and allow
-> ptrace_attach to continue, while de_thread() is still
-> waiting for traced zombies to be eventually released.
-> When the current thread changed the ptrace status from
-> non-traced to traced, we can simply abort the whole
-> execve and restart it by returning -ERESTARTSYS.
-> This needs to be done before changing the thread leader,
-> because the PTRACE_EVENT_EXEC needs to know the old
-> thread pid.
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>   arch/x86/kernel/cpu/resctrl/internal.h | 28 ++++++++++++++++----------
+>   1 file changed, 17 insertions(+), 11 deletions(-)
 > 
-> Although it is technically after the point of no return,
-> we just have to reset bprm->point_of_no_return here,
-> since at this time only the other threads have received
-> a fatal signal, not the current thread.
-> 
-> >From the user's point of view the whole execve was
-> simply delayed until after the ptrace_attach.
-> 
-> Other threads die quickly since the cred_guard_mutex
-> is released, but a deadly signal is already pending.
-> In case the mutex_lock_killable misses the signal,
-> ->unsafe_execve_in_progress makes sure they release
-> the mutex immediately and return with -ERESTARTNOINTR.
-> 
-> This means there is no API change, unlike the previous
-> version of this patch which was discussed here:
-> 
-> https://lore.kernel.org/lkml/b6537ae6-31b1-5c50-f32b-8b8332ace882@hotmail.de/
-> 
-> See tools/testing/selftests/ptrace/vmaccess.c
-> for a test case that gets fixed by this change.
-> 
-> Note that since the test case was originally designed to
-> test the ptrace_attach returning an error in this situation,
-> the test expectation needed to be adjusted, to allow the
-> API to succeed at the first attempt.
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index c4d320d02fd5..f360944a7ae1 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -68,8 +68,9 @@ DECLARE_STATIC_KEY_FALSE(rdt_mon_enable_key);
+>   
+>   /**
+>    * struct mon_evt - Entry in the event list of a resource
+> - * @evtid:		event id
+> - * @name:		name of the event
+> + * @evtid:		Event id
+> + * @name:		Name of the event
+> + * @list:		List head
+
+The only kernel-doc issue here is the missing @list. To just fix the 
+issue while remaining consistent with the existing formatting you could 
+continue by describing @list with lower case even if other areas do so 
+with upper case.
+
+For that description could you please use more descriptive language - 
+writing something like "List head" does not help the reader. Something like:
+
+"@list: list entry in &rdt_resource->evt_list"
+
+>    */
+>   struct mon_evt {
+>   	u32			evtid;
+> @@ -78,10 +79,12 @@ struct mon_evt {
+>   };
+>   
+>   /**
+> - * struct mon_data_bits - Monitoring details for each event file
+> - * @rid:               Resource id associated with the event file.
+> + * union mon_data_bits - Monitoring details for each event file
+> + * @priv:	       Private data for the union	
+> + * @rid:               Resource id associated with the event file
+>    * @evtid:             Event id associated with the event file
+>    * @domid:             The domain to which the event file belongs
+> + * @u:		       Name of the bit fields struct
+>    */
+
+Spacing got broken here with some unintended tabs added as well as 
+trailing space.
+
+This is a union where @priv and @u refers to the same storage. More 
+detail can be added to help the reader:
+"@priv: used to store monitoring event data in @u as kernfs private data"
+
+>   union mon_data_bits {
+>   	void *priv;
+> @@ -119,6 +122,7 @@ enum rdt_group_type {
+>    * @RDT_MODE_PSEUDO_LOCKSETUP: Resource group will be used for Pseudo-Locking
+>    * @RDT_MODE_PSEUDO_LOCKED: No sharing of this resource group's allocations
+>    *                          allowed AND the allocations are Cache Pseudo-Locked
+> + * @RDT_NUM_MODES: Total number of modes
+>    *
+>    * The mode of a resource group enables control over the allowed overlap
+>    * between allocations associated with different resource groups (classes
+> @@ -142,7 +146,7 @@ enum rdtgrp_mode {
+>   
+>   /**
+>    * struct mongroup - store mon group's data in resctrl fs.
+> - * @mon_data_kn		kernlfs node for the mon_data directory
+> + * @mon_data_kn:		kernlfs node for the mon_data directory
+>    * @parent:			parent rdtgrp
+>    * @crdtgrp_list:		child rdtgroup node list
+>    * @rmid:			rmid for this rdtgroup
+> @@ -282,11 +286,11 @@ struct rftype {
+>   /**
+>    * struct mbm_state - status for each MBM counter in each domain
+>    * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
+> - * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
+> + * @prev_msr:	Value of IA32_QM_CTR for this RMID last time we read it
+>    * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
+> - * @prev_bw	The most recent bandwidth in MBps
+> - * @delta_bw	Difference between the current and previous bandwidth
+> - * @delta_comp	Indicates whether to compute the delta_bw
+> + * @prev_bw:	The most recent bandwidth in MBps
+> + * @delta_bw:	Difference between the current and previous bandwidth
+> + * @delta_comp:	Indicates whether to compute the delta_bw
+>    */
+>   struct mbm_state {
+>   	u64	chunks;
+
+Above changes look good, thanks.
+
+> @@ -450,18 +454,20 @@ struct rdt_parse_data {
+>    * @name:		Name to use in "schemata" file
+>    * @num_closid:		Number of CLOSIDs available
+>    * @cache_level:	Which cache level defines scope of this resource
+> - * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
+> + * @default_ctrl:	Specifies default cache cbm or memory B/W percent
+>    * @msr_base:		Base MSR address for CBMs
+>    * @msr_update:		Function pointer to update QOS MSRs
+>    * @data_width:		Character width of data when displaying
+>    * @domains:		All domains for this resource
+>    * @cache:		Cache allocation related data
+> + * @membw:		Memory bandwidth allocation related data
+>    * @format_str:		Per resource format string to show domain value
+>    * @parse_ctrlval:	Per resource function pointer to parse control values
+>    * @evt_list:		List of monitoring events
+>    * @num_rmid:		Number of RMIDs available
+>    * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
+> - * @fflags:		flags to choose base and info files
+> + * @mbm_width:		Width of memory bandwidth monitoring counter
+> + * @fflags:		Flags to choose base and info files
+>    */
+>   struct rdt_resource {
+>   	int			rid;
 > 
 
-err, sorry.  I replied to the v8 patch, not to v9.
+I think one small addition would be helpful to the reader:
+"@mbm_width: Width of memory bandwidth monitoring hardware counter"
 
---- a/fs/exec.c~exec-fix-dead-lock-in-de_thread-with-ptrace_attach-v9
-+++ a/fs/exec.c
-@@ -1056,29 +1056,31 @@ static int de_thread(struct task_struct
- 		return -EAGAIN;
- 	}
- 
--	while_each_thread(tsk, t) {
--		if (unlikely(t->ptrace) && t != tsk->group_leader)
--			sig->unsafe_execve_in_progress = true;
--	}
--
- 	sig->group_exit_task = tsk;
- 	sig->notify_count = zap_other_threads(tsk);
- 	if (!thread_group_leader(tsk))
- 		sig->notify_count--;
--	spin_unlock_irq(lock);
- 
--	if (unlikely(sig->unsafe_execve_in_progress))
-+	while_each_thread(tsk, t) {
-+		if (unlikely(t->ptrace) && t != tsk->group_leader)
-+			sig->unsafe_execve_in_progress = true;
-+	}
-+
-+	if (unlikely(sig->unsafe_execve_in_progress)) {
-+		spin_unlock_irq(lock);
- 		mutex_unlock(&sig->cred_guard_mutex);
-+		spin_lock_irq(lock);
-+	}
- 
--	for (;;) {
--		set_current_state(TASK_KILLABLE);
--		if (!sig->notify_count)
--			break;
-+	while (sig->notify_count) {
-+		__set_current_state(TASK_KILLABLE);
-+		spin_unlock_irq(lock);
- 		schedule();
- 		if (__fatal_signal_pending(tsk))
- 			goto killed;
-+		spin_lock_irq(lock);
- 	}
--	__set_current_state(TASK_RUNNING);
-+	spin_unlock_irq(lock);
- 
- 	if (unlikely(sig->unsafe_execve_in_progress)) {
- 		if (mutex_lock_killable(&sig->cred_guard_mutex))
-_
+Thank you!
+
+Reinette
 
