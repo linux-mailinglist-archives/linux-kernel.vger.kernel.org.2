@@ -2,147 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF16A3A47E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0A43A47F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhFKRcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:32:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:36714 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhFKRcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:32:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23F4DD6E;
-        Fri, 11 Jun 2021 10:30:26 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E39C83F719;
-        Fri, 11 Jun 2021 10:30:24 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 18:30:19 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH v2 4/4] firmware: arm_scmi: add optee transport
-Message-ID: <20210611173019.GB35183@e120937-lin>
-References: <20210521134055.24271-1-etienne.carriere@linaro.org>
- <20210521134055.24271-4-etienne.carriere@linaro.org>
- <20210527151118.GV28060@e120937-lin>
- <CAN5uoS_0SMndmAvTwZnsCeQSUAfvBRz1diU_94CSYrsBxsZeew@mail.gmail.com>
+        id S230103AbhFKRhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKRho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:37:44 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF52C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:35:46 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id w14so5916671ilv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nfvuYmRSsrqKkyjyEJwVlbMYo9k7O1ojDR6LlSwhXjU=;
+        b=XfOj3FwiQP8K/u3OJsZnizHlOFJfxR7Bd2wdLmqLUvqlqgrZvJaPzxA4nbAOh/LRXA
+         +AAy3TtUD6/9mkfjBi8aXfYt1c1ZlTu5t0evVr5bNT900vs1SkvBBZ703Xd+DIH6qSe7
+         bBkogkR7NRSQtJdE8ad0j27TtzS1+/ksNmO1I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nfvuYmRSsrqKkyjyEJwVlbMYo9k7O1ojDR6LlSwhXjU=;
+        b=IHK0mkXMBL3Wj9DOcTt3LyEYYBgtVwvKm+mT2UdZfAh1Y5PLHFViVD+b0GH0em0/IZ
+         0V3DN8UcpUHkvcN8B2f0iUIc2hqSL0/WEZvpWHrOdo5O0bggMHMCEX0/kUBVgn8TbIrb
+         0VGcg2DJMhrGIusuyU2MkbSble36i4C65raxw743Rr0c2QVImKAwGRyX6x2hQOQZjn+1
+         uzNQZ2HnDlnPeaizJrAchcIJhrBlV0mJl5iSnsisgNDHI82FY8lfoDQtPS2scFwZtT3W
+         9vb+42/5J828ZHxCNjq/0GbYqvHDujrVi8jM77kvZ7+6zz5wzT6jo50F2Nv+HQ8+K57N
+         cc7g==
+X-Gm-Message-State: AOAM532pggIzRl+QpuYlXW1JRTE87xz8CmeS/8EB/1SkxOPWEvOqVZJ8
+        AvhryTW+OjBkYHYIYvqRpHL6mA==
+X-Google-Smtp-Source: ABdhPJz2zS1moGpo4B3D+0PtoX9xhcuTLbzySQZz0s0BhV0VneF0Gb0XIcx3oyV4Aos51v9UFu1y2g==
+X-Received: by 2002:a05:6e02:20c8:: with SMTP id 8mr3946175ilq.67.1623432945447;
+        Fri, 11 Jun 2021 10:35:45 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id p10sm3980850ile.35.2021.06.11.10.35.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 10:35:44 -0700 (PDT)
+Subject: Re: [PATCH v8 1/5] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210610083021.392269-1-jarkko@kernel.org>
+ <b5e06639-8bf4-c267-0aa7-b6c110767edc@intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <8d071d3f-604f-1876-05bb-91568dd3c563@linuxfoundation.org>
+Date:   Fri, 11 Jun 2021 11:35:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN5uoS_0SMndmAvTwZnsCeQSUAfvBRz1diU_94CSYrsBxsZeew@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b5e06639-8bf4-c267-0aa7-b6c110767edc@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Etienne,
-
-On Fri, May 28, 2021 at 11:43:24AM +0200, Etienne Carriere wrote:
-> Hello Christian,
+On 6/10/21 9:45 AM, Dave Hansen wrote:
+> On 6/10/21 1:30 AM, Jarkko Sakkinen wrote:
+>> Rename symbols for better clarity:
+>>
+>> * 'eenter' might be confused for directly calling ENCLU[EENTER].  It does
+>>    not.  It calls into the VDSO, which actually has the EENTER instruction.
+>> * 'sgx_call_vdso' is *only* used for entering the enclave.  It's not some
+>>    generic SGX call into the VDSO.
+>>
+>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 > 
-> On Thu, 27 May 2021 at 17:11, Cristian Marussi <cristian.marussi@arm.com> wrote:
-> >
-> > Hi Etienne,
-> >
-> > some remarks below.
-> >
-> > On Fri, May 21, 2021 at 03:40:54PM +0200, Etienne Carriere wrote:
-> > > Add a new transport channel to the SCMI firmware interface driver for
-> > > SCMI message exchange based on OP-TEE transport channel that leverage
-> > > OP-TEE secure threaded context for processing of SCMI messages.
-> > >
-> > > +static int __init optee_scmi_init(void)
-
-[snip]
-
-> > > +{
-> > > +     return driver_register(&optee_scmi_driver.driver);
-> > > +}
-> > > +
-> > > +static void __exit optee_scmi_exit(void)
-> > > +{
-> > > +     driver_unregister(&optee_scmi_driver.driver);
-> > > +}
-> > > +
-> > > +module_init(optee_scmi_init);
-> > > +module_exit(optee_scmi_exit);
-> > > +
-> >
-> > This cannot compile is the full SCMI statck ARM_SCMI_PROTOCOL is configured as =m
-> >
-> > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld:
-> > drivers/firmware/arm_scmi/optee_service.o: in function
-> > `optee_scmi_init':
-> > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee_service.c:515:
-> > multiple definition of `init_module';
-> > drivers/firmware/arm_scmi/driver.o:/home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/driver.c:1593:
-> > first defined here
-> > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld:
-> > drivers/firmware/arm_scmi/optee_service.o: in function
-> > `optee_scmi_exit':
-> > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee_service.c:520:
-> > multiple definition of `cleanup_module';
-> > drivers/firmware/arm_scmi/driver.o:/home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/driver.c:1611:
-> > first defined here
-> > /home/crimar01/ARM/dev/src/pdsw/linux/scripts/Makefile.build:449: recipe
-> > for target 'drivers/firmware/arm_scmi/scmi-module.o' failed
-> > make[4]: *** [drivers/firmware/arm_scmi/scmi-module.o] Error 1
-> >
-> >
-> > Indeed it was the same issue we faced in the virtio-scmi series, and it
-> > derives from the fact that SCMI transports 'driver' are really NOT
-> > standalone drivers but only extension of the main SCMI module, so you
-> > cannot have them initialize their stuff using usual kernel module_ machinery.
-> >
-> > In order to address this, and avoid a hell of ifdeffery probably,
-> > in the context of virtio-scmi, I added a couple of transport's
-> > optionalily provided init/deinit functions so that a transport can provide
-> > some specific init code and be assured they are called at SCMI stack init,
-> > so definitely even before the SCMI stack is probed and the selected
-> > transport used.
-> >
-> > This is the patch from the virtio-scmi series:
-> >
-> > https://lore.kernel.org/linux-arm-kernel/20210511002040.802226-3-peter.hilber@opensynergy.com/
-> >
-> > which in that context is used like:
-> >
-> > +static int __init virtio_scmi_init(void)
-> > +{
-> > +       return register_virtio_driver(&virtio_scmi_driver);
-> > +}
-> > +
-> > +static void __exit virtio_scmi_exit(void)
-> > +{
-> > +       unregister_virtio_driver(&virtio_scmi_driver);
-> > +}
-> > +
-> > +const struct scmi_desc scmi_virtio_desc = {
-> > +       .init = virtio_scmi_init,
-> > +       .exit = virtio_scmi_exit,
-> > +       .ops = &scmi_virtio_ops,
-> >
-> > I'll cleanup further that init/deinit patch and move it out into that bunch
-> > of SCMI core changes that I'm making (in a separate series) to aid in virtio-scmi
-> > devel.
-> > In the meantime for your testing the above lore patch should work fine.
+> These all look fine to me.  Feel free to add my ack on them.
 > 
-> Thanks for the details, i'll upgrade to the series.
+> Since these are pure x86 selftests and the initial code went through the
+> x86 maintainers, should these got through them as well?  Or, since this
+> is only selftest code, should Shuah pick them up?
 > 
 
-Just a heads up that I have minimally updated this patch about transport
-init/exit helpers in V4 VirtIO SCMI series, to address some bug at unloading
-time I spotted while testing (even though you're not probably interested in
-such load/unload scenario)
+I will queue these up for 5.14-rc1
 
-Updated patch:
-
-https://lore.kernel.org/linux-arm-kernel/20210611165937.701-4-cristian.marussi@arm.com/T/#u
-
-Thanks,
-Cristian
+thanks,
+-- Shuah
