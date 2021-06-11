@@ -2,214 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24F83A48E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D246B3A48E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhFKSxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 14:53:35 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:36418 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhFKSx3 (ORCPT
+        id S230383AbhFKS6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 14:58:50 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:54003 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhFKS6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 14:53:29 -0400
-Received: by mail-wm1-f52.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so8721355wmq.1;
-        Fri, 11 Jun 2021 11:51:21 -0700 (PDT)
+        Fri, 11 Jun 2021 14:58:48 -0400
+Received: by mail-pj1-f54.google.com with SMTP id ei4so6195401pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:56:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=blJyy+GtTYyuD/0ZaPoBiTfk3dsMy/ByVxg74gzG+ds=;
-        b=BLrnWDrgsi5CxXDJegG9hi2UcF8InW5KJdpB3yZ8p7LE3AnxxsyC95QVJzBBnQOJ1B
-         J+1lBOrwwhXJElGH4sjUbXVTwzB+uS7F8YjZ5xhrOOX93pliZokU7v9NxxB+kFqt+t8Y
-         ZJ+XEahzWY4gW2fUnWfqDZlrv6lMJYufT2f0bbRYMDJ6WpzeDQeAcn9JB0KqyRdGv/j6
-         uuS0tC0SWHbTyRZQ43W/HAU7WLgVGr+3/khk4R/8t3d6dOWe7bW3/Ib/Js9pEkCwEleh
-         /Y7S/Ts4xxQfU4PNxWNiW2p9iIz2q9exSKhiT3YOnIyXXxuSc8F/ZMv6f5z8ce76b1QG
-         1u0A==
+        bh=kI53Z+V1yTIGhMYD3HVCzqkT1+IVR3Un8CLLjrdyiOs=;
+        b=eBJNwcfa0JaWCYzFgaEniV+zLZWtVHQwsScf5x35yGxrkKnfNGToJT2tVmKva+NBmm
+         Is0JaMgDOJhJtzpp6Xj7ckHHBtt+NAUZLm0d2DoW4GylxKhTYQv/PF4+WKnIcO2O2RnX
+         CfmACMYSNcXnEh6+fDv/FJ4pgyeJscSiZw68zzPBKjAiELpWW6nlMbPjd8JT/16WYANN
+         wBkLMSLvBwMFQ2biTSAmZN5C+s4A3Z4Y1/sDWTXecPBIrlsEP+x/rspMHSIG0c2i0V6X
+         FwTKAY3leUWh5qYvK75kbRD+RUxsfoHsnqisN9wrW4c1fB7XVIOY43Y8TD1zDCqhJvHH
+         61DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=blJyy+GtTYyuD/0ZaPoBiTfk3dsMy/ByVxg74gzG+ds=;
-        b=PIZ+gxO3LyAbkSXNGXEMP+xDAXq9BrCVhb8o0RS+4XATteaZBKbsrZkPzYhk5kjKKX
-         cyfz8mQeXUUmK6k5EoAZlNxHjhElT1DhLP1lAHjcHDGzHJH/o4Fyvq8M4fT9synl32HQ
-         ocQPKk4SJ/WDB7ZOEzoelBa2zQ1oLxWJwiIIoQyN2TivMHtTJZj7Usesfu4tAq6zK6yv
-         Monssw1ouggIHzCuzpi/61JzYY1Paycl+4kLl1nzwJo2tYxBul8QyUULztiUkR5VDmWG
-         7XoQ49702xZOvZpxlWMrmrBb6hdKsc7SDCsAMsZeG926e4PyXZ4Px8URK5HThHpOPNf0
-         cfHg==
-X-Gm-Message-State: AOAM533ytgwWvPIyBmMmtY3ncoA541myLwtAxyBHOkqMgH+w3Ep7AdbC
-        FmKqer8Gf6kjTQROejyfUGiMcO0pEG2t2n/nR+YUnYYt+vA=
-X-Google-Smtp-Source: ABdhPJxRCn7VlJXU1vRcMg0lL7XvKEJrkJimqye0cQukJFVWVFGMDBf1SMg/+Lcr+kib8QHMKvSPSuZX3SuRCilDk4M=
-X-Received: by 2002:a05:600c:1ca6:: with SMTP id k38mr22418945wms.49.1623437420485;
- Fri, 11 Jun 2021 11:50:20 -0700 (PDT)
+        bh=kI53Z+V1yTIGhMYD3HVCzqkT1+IVR3Un8CLLjrdyiOs=;
+        b=UIP3LH5K87BtDgGF+LgYj8PaSQ4yZc31FOU7KTrO5PbCHNxO8IaLufXfYkTpdRhi4x
+         yDQdEbe5pwvxnLdInRozDdD+uepuAewax65Ro7Y5HFKXjvCGEIow3l43qI4RH1d9IQ3G
+         wvlUSh/w5sEdZndWXlkACNtVaCdObB96Trxv+UpsNhEswFYwxiG8zpOdbefiMnUjqe9F
+         LToAPRkivFkOfKsWJHLqQOFS8HCeAoEYQyQRS+062DJYo/YIjUca50BQ8mxhCoVwormS
+         V0uW91+n2h0dLZ7KkPfBClPOCMuDTIXmWkxNo3ulD4yOyiuNHVx/kwqCf/VLM0+E85fr
+         5BCg==
+X-Gm-Message-State: AOAM530exKB6nlKSh4ZNj6qNAO9tP7DxUdNzhmZptNX+zPPbEk3594Bf
+        6P1KlPAVI4eO5UBvxU8jZcqmjjLMJevB5a9kLqHIWQ==
+X-Google-Smtp-Source: ABdhPJzFxO0z6jGgoRvJi+g4R0wceRN+04EDU3p20moiFueBAzTkKFDWYGY37zrhWECTxftIdcjsrTN4lXVvI7iybmE=
+X-Received: by 2002:a17:90a:fc88:: with SMTP id ci8mr10605989pjb.13.1623437750427;
+ Fri, 11 Jun 2021 11:55:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210611113514.27173-1-konrad.dybcio@somainline.org>
-In-Reply-To: <20210611113514.27173-1-konrad.dybcio@somainline.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 11 Jun 2021 11:54:14 -0700
-Message-ID: <CAF6AEGv3UivqUKb8wkCgzpApORV=ucswOzUh7BQMWRiif5ZJdw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8250: Disable Adreno and Venus by default
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Martin Botka <martin.botka@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+References: <162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <162336396329.2462439.16556923116284874437.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210611174736.ttzpk5uniyoyd4vw@intel.com>
+In-Reply-To: <20210611174736.ttzpk5uniyoyd4vw@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 11 Jun 2021 11:55:39 -0700
+Message-ID: <CAPcyv4i7_RhfiYMX=QP2Ts4ye1Q2e0=_aBCP4rsuopo=0HWKVw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] cxl/core: Add cxl-bus driver infrastructure
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, Linux NVDIMM <nvdimm@lists.linux.dev>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 4:35 AM Konrad Dybcio
-<konrad.dybcio@somainline.org> wrote:
+On Fri, Jun 11, 2021 at 10:47 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
 >
-> Components that rely on proprietary (not to mention signed!) firmware should
-> not be enabled by default, as lack of the aforementioned firmware could cause
-> various issues, from random errors to straight-up failing to boot.
+> On 21-06-10 15:26:03, Dan Williams wrote:
+> > Enable devices on the 'cxl' bus to be attached to drivers. The initial
+> > user of this functionality is a driver for an 'nvdimm-bridge' device
+> > that anchors a libnvdimm hierarchy attached to CXL persistent memory
+> > resources. Other device types that will leverage this include:
+> >
+> > cxl_port: map and use component register functionality (HDM Decoders)
+>
+> Since I'm looking at this now, perhaps I can open the discussion here. Have you
+> thought about how this works yet? Right now I'm thinking there are two "drivers":
+> cxl_port: Switches (and ACPI0016)
+> cxl_mem: The memory device's HDM decoders
+>
+> For port, probe() will figure out that the thing is an upstream port, call
+> cxl_probe_component_regs and then call devm_cxl_add_port(). I think that's
+> straight forward.
 
-I admit I probably don't test much without fw, but I think maybe
-*that* is the issue to solve instead.
+I was expecting cxl_port_driver.probe() comes *after* port discovery.
+Think of it like PCI discovery. Some agent does the hardware topology
+scan to add devices, in this case devm_cxl_add_port(), and that
+triggers cxl_port_driver to load. So the initial enumeration done by
+the cxl_acpi driver will populate the first two levels of the port
+hierarchy with port objects and populate their component register
+physical base addresses. For any other port deeper in the hierarchy I
+was expecting that to be scanned after the discovery of a cxl_memdev
+that is not attached to the current hierarchy. So, for example imagine
+a config like:
 
-Taking a guess, I think the situation is that you have *some* of the
-fw (ie. the unsigned parts coming from linux-firmware) but not
-specifically the zap fw.  So adreno_zap_shader_load() returns -ENODEV,
-which is interpreted to mean "this is a platform that doesn't need zap
-to take GPU out of secure mode", and then things go boom when we try
-to write RBBM_SECVID_TRUST_CNTL ?
+Platform --> Host Bridge --> Switch --> Endpoint
 
-Which I think is down to missing the "firmware-name" property in the
-device specific dts
+...where in sysfs that's modeled as:
 
-BR,
--R
+root0 --> port1 --> port2 --> port3
 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
->  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 10 ++++++++++
->  arch/arm64/boot/dts/qcom/sm8250-hdk.dts  | 12 ++++++++++++
->  arch/arm64/boot/dts/qcom/sm8250-mtp.dts  | 10 ++++++++++
->  arch/arm64/boot/dts/qcom/sm8250.dtsi     |  6 ++++++
->  4 files changed, 38 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> index 5f41de20aa22..a5b742325261 100644
-> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> @@ -552,7 +552,13 @@ &dsi0_phy {
->         vdds-supply = <&vreg_l5a_0p88>;
->  };
->
-> +&gmu {
-> +       status = "okay";
-> +};
-> +
->  &gpu {
-> +       status = "okay";
-> +
->         zap-shader {
->                 memory-region = <&gpu_mem>;
->                 firmware-name = "qcom/sm8250/a650_zap.mbn";
-> @@ -1352,6 +1358,10 @@ &vamacro {
->         qcom,dmic-sample-rate = <600000>;
->  };
->
-> +&venus {
-> +       status = "okay";
-> +};
-> +
->  /* PINCTRL - additions to nodes defined in sm8250.dtsi */
->  &qup_spi0_cs_gpio {
->         drive-strength = <6>;
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250-hdk.dts b/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
-> index c3a2c5aa6fe9..397359ee2f85 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
-> @@ -365,6 +365,14 @@ vreg_l7f_1p8: ldo7 {
->         };
->  };
->
-> +&gmu {
-> +       status = "okay";
-> +};
-> +
-> +&gpu {
-> +       status = "okay";
-> +};
-> +
->  &qupv3_id_1 {
->         status = "okay";
->  };
-> @@ -452,3 +460,7 @@ &usb_1_dwc3 {
->  &usb_2_dwc3 {
->         dr_mode = "host";
->  };
-> +
-> +&venus {
-> +       status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-> index cfc4d1febe0f..062b944be91d 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-> @@ -465,7 +465,13 @@ &cdsp {
->         firmware-name = "qcom/sm8250/cdsp.mbn";
->  };
->
-> +&gmu {
-> +       status = "okay";
-> +};
-> +
->  &gpu {
-> +       status = "okay";
-> +
->         zap-shader {
->                 memory-region = <&gpu_mem>;
->                 firmware-name = "qcom/sm8250/a650_zap.mbn";
-> @@ -691,3 +697,7 @@ &usb_2_qmpphy {
->         vdda-phy-supply = <&vreg_l9a_1p2>;
->         vdda-pll-supply = <&vreg_l18a_0p9>;
->  };
-> +
-> +&venus {
-> +       status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 4c0de12aaba6..fc1049c2bb11 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -1746,6 +1746,8 @@ gpu: gpu@3d00000 {
->
->                         qcom,gmu = <&gmu>;
->
-> +                       status = "disabled";
-> +
->                         zap-shader {
->                                 memory-region = <&gpu_mem>;
->                         };
-> @@ -1819,6 +1821,8 @@ gmu: gmu@3d6a000 {
->
->                         operating-points-v2 = <&gmu_opp_table>;
->
-> +                       status = "disabled";
-> +
->                         gmu_opp_table: opp-table {
->                                 compatible = "operating-points-v2";
->
-> @@ -2323,6 +2327,8 @@ venus: video-codec@aa00000 {
->                                  <&videocc VIDEO_CC_MVS0C_CLK_ARES>;
->                         reset-names = "bus", "core";
->
-> +                       status = "disabled";
-> +
->                         video-decoder {
->                                 compatible = "venus-decoder";
->                         };
-> --
-> 2.32.0
->
+Where port3 is assuming that the CXL core models the device's
+connection to the topology as yet another cxl_port. At the beginning
+of time after cxl_acpi has loaded but before cxl_pci has discovered
+the endpoint the topology is:
+
+root0 --> port1
+
+Upon the detection of the endpoint the CXL core can assume that all
+intermediary switches between the root and this device have been
+registered as PCI devices. So, it follows that endpoint device arrival
+triggers "cxl_bus_rescan()" that goes and enumerates all the CXL
+resources in the topology to produce:
+
+root0 --> port1 --> port2 --> port3
+
+> For the memory device we've already probed the thing via class code so there is
+> no need to use this driver registration, however, I think it would be nice to do
+> so. Is there a clean way to do that?
+
+The PCI device associated with the endpoint is already probed, but the
+cxl_memdev itself can have a driver on the CXL bus. So I think the
+cxl_memdev driver should try to register a cxl_port after telling
+cxl_acpi to rescan. If a check like "is_cxl_dport(pdev->dev.parent)"
+for the endpoint returns false it means that the cxl_bus_rescan()
+failed to enumerate the CXL topology to this endpoint and this
+endpoint is limited to only CXL.io operation.
+
+> Also, I'd like to make sure we're on the same page about struct cxl_decoder.
+> Right now they are only created for active HDM decoders.
+
+No, I was expecting they are also created for inactive ones. I am
+thinking that all decoders ultimately belong to the cxl_acpi driver,
+or whatever driver is acting as the root on a non-ACPI system. All
+decoder programming is driven by region activation stimulus that asks
+the root driver to try to establish a decode chain through the
+hieararchy per a given region.
+
+> Going forward, we can
+> either maintain a count of unused decoders on the given CXL component, or we can
+> instantiate a struct cxl_decoder that isn't active, ie. no interleave ways
+> granularit, base, etc. What's your thinking there?
+
+All resources are enumerated, just like PCI. Decode setup belongs to
+the core, just like PCI MMIO resource setup. The difference is that
+port drivers are needed to map component registers and service
+requests from cxl_acpi to reconfigure, but other than that
+cxl_decoders themselves don't have drivers and just reflect the
+current state of what cxl_acpi / cxl_core have established.
