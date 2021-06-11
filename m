@@ -2,184 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1A53A4ADD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21263A4AE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhFKWKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 18:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhFKWJ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 18:09:59 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE7EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 15:07:55 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id b1so4596848vsh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 15:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uHu7ib6zrMGFlFkxj8zcg5J2SMfP4k+dwvTbqRmsLOM=;
-        b=Z2pE5csMALEIsCPPdOCmgY4A9S0wwyfX6N4llSNu/pYRrcENtXD1MOu/OpFuth+ymf
-         Lj/ZSWSzrBR95OwDXHh7mRN2eurzEn6YOfO5pvL/Bd2BwWoyrcaHyePkvTHEYBVrgZ6o
-         qNqEoMYSriFqNa74YuUm43eAR6U79uHBbeWGL8BCGLt0Jqo2tf3vrBiBdtGfchAw+s4Q
-         Zs0VjmxBLpYSl4U85vQpXAg3fCf9mBLabWXJGe35IJTNWbscQjmUatPw4fx7f4dQ0OGC
-         nXGgYgFNjri3WxUYN8dMsYILHYT55R/d2d1VP1HC0phkyf7nYJP55zYrqaTFy3r7Yjbq
-         X61g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uHu7ib6zrMGFlFkxj8zcg5J2SMfP4k+dwvTbqRmsLOM=;
-        b=UCvV018JcS6DzEYau340zZUNVOrY2dRPy1zAvmqJp+INvy615hChdNkY167pC93ktg
-         bbBfX+n0IQcPL13StQb3rt7YpwxKva2Vpp6rtQthdFZV7hug1h5oxH8aD4YLN73LkedI
-         P9TVKb9MnAOKf0m6KCHIjO06mhJaFi+bmigafKTdNUwBBzI1E1nBnNHLNJgK5UHyval+
-         TETkuEap+3gZo0dRUtX9w1/N5trTDQrXZAmroe5A19mZBFKhp9LBb9mgBF3ofLycEOuy
-         fZ68PznDQJ6dLWFUKgqApTjQqvq1ZkluItFPtvGxgOEopNjibbEkLb0YE3MVbfNfwcne
-         Gm9g==
-X-Gm-Message-State: AOAM532Stw4VdbPOY1GtQllC52sfiLb2TnJ2EpzX9kKQ8vPofbqoQjCt
-        9EBQaTECTPlWERqEAcvsvlxnEhNKcCD8JkGHdzYG
-X-Google-Smtp-Source: ABdhPJznQwn3oc/MSdfO9bAQySACOvt9mz8PK2+pFc/kOxPhhE67vQGj0c3D/bB3aMjT6jRX4fYg6nnPuMqaDMqSTF8=
-X-Received: by 2002:a67:e359:: with SMTP id s25mr11751026vsm.55.1623449273388;
- Fri, 11 Jun 2021 15:07:53 -0700 (PDT)
+        id S230383AbhFKWLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 18:11:49 -0400
+Received: from mga09.intel.com ([134.134.136.24]:1508 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229777AbhFKWLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 18:11:48 -0400
+IronPort-SDR: JddIbh68fJdhEpPny08htqubBmVmjI+By1vN4+EifzODBhMF0u3Q15NIEKu2OjRM6uU9U76jHY
+ +mBTS21Y8Kyg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="205581532"
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="205581532"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 15:09:49 -0700
+IronPort-SDR: 8KwIuLpi9igxNielJXKsWSS4Es76+UYEqicpXHmapJZS/sFBxFRnJBeodC8XLt4h+oesFOSkeO
+ 3w6ILEac+wHw==
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="403344182"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.232.130]) ([10.212.232.130])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 15:09:48 -0700
+Subject: Re: [PATCH v2] x86/resctrl: Fix kernel-doc in pseudo_lock.c
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210608234902.9316-1-fmdefrancesco@gmail.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <4de714ab-47f4-97e3-c35f-184b1218e681@intel.com>
+Date:   Fri, 11 Jun 2021 15:09:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210602000918.779983-1-iwamatsu@nigauri.org> <20210610172141.GA1972573@robh.at.kernel.org>
-In-Reply-To: <20210610172141.GA1972573@robh.at.kernel.org>
-From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Date:   Sat, 12 Jun 2021 07:07:27 +0900
-Message-ID: <CABMQnV+RDqZAwAZ2Zd=KSUXcwzSZbjigWYTLd96xtHLKAih3RA@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: rtc: zynqmp: convert bindings to YAML
-To:     Rob Herring <robh@kernel.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210608234902.9316-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Fabio,
 
-Thanks for your review.
+On 6/8/2021 4:49 PM, Fabio M. De Francesco wrote:
+> Added undocumented parameters, rewrote some phrases, and fixed some
+> formatting issues. Most of the warnings detected by scripts/kernel-doc.
 
-2021=E5=B9=B46=E6=9C=8811=E6=97=A5(=E9=87=91) 2:21 Rob Herring <robh@kernel=
-.org>:
->
-> On Wed, Jun 02, 2021 at 09:09:18AM +0900, Nobuhiro Iwamatsu wrote:
-> > Convert Real Time Clock for Xilinx Zynq MPSoC SoC bindings documentatio=
-n
-> > to YAML schemas.
-> > And this renamed the file to compatible string of DT.
-> >
-> > Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-> > ---
-> >
-> > v2: Fix warning with DT_CHECKER_FLAGS=3D-m
-> >
-> >  .../bindings/rtc/xlnx,zynqmp-rtc.yaml         | 61 +++++++++++++++++++
-> >  .../devicetree/bindings/rtc/xlnx-rtc.txt      | 25 --------
-> >  2 files changed, 61 insertions(+), 25 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/rtc/xlnx,zynqmp-r=
-tc.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/rtc/xlnx-rtc.txt
-> >
-> > diff --git a/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml=
- b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-> > new file mode 100644
-> > index 00000000000000..c205cb86ef00be
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-> > @@ -0,0 +1,61 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/rtc/xlnx,zynqmp-rtc.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Xilinx Zynq Ultrascale+ MPSoC Real Time Clock
-> > +
-> > +description: |
->
-> Don't need '|'
+Please write commit message in imperative tone ... eg, "Add undocumented 
+parameters ..."
 
-OK, I will drop.
+Also, please refrain from making changes that are not related to the 
+goal. The goal according to the subject of the patch is to fix 
+kernel-doc issues - the "rewrote some phrases" is not related to this goal.
 
->
-> > +  RTC controller for the Xilinx Zynq MPSoC Real Time Clock.
-> > +  This separates IRQ lines for seconds and alarm.
->
-> The RTC controller has separate IRQ...
+The "rewrote some phrases" really is not clear to me ... you do not 
+mention this in your commit message but you seem to also capitalize each 
+kernel-doc description? This is not a kernel-doc warning but something 
+you chose to do. Please be specific in your commit message about any 
+things that are not kernel-doc warnings that you do to warrant it to be 
+classified as "Fix kernel-doc". For example, if indeed one of your goals 
+are to capitalize all kernel-doc descriptions, add that as a goal to the 
+commit log to help reader understand the changes. I think this will also 
+help you to consider what is actually an issue and what is your preference.
 
-I will update description, thanks.
+When you say "Most of the warnings detected ... " - which warnings did 
+it miss? How were other issues detected?
 
->
-> > +
-> > +maintainers:
-> > +  - Michal Simek <michal.simek@xilinx.com>
-> > +
-> > +allOf:
-> > +  - $ref: rtc.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: xlnx,zynqmp-rtc
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    minItems: 2
-> > +
-> > +  interrupt-names:
-> > +    items:
-> > +      - const: alarm
-> > +      - const: sec
-> > +
-> > +  calibration:
-> > +    description: |
-> > +      calibration value for 1 sec period which will
-> > +      be programmed directly to calibration register.
->
-> Needs a type $ref.
+This patch is unclear regarding its goal - the subject and commit 
+message indicate that this is about fixing kernel-doc issue while the 
+patch does much more.
 
-OK, I will add $ref.
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+> 
+> v1 -> v2: According to a first review by Reinette Chatre
+> <reinette.chatre@intel.com>, modified the 'Subject' to conform to x86
+> subsystem, modified a wrong description, and run 'scripts/kernel-doc'
+> to find out more warnings that 'sparse' didn't notice.
+> 
+>   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 74 ++++++++++++-----------
+>   1 file changed, 39 insertions(+), 35 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> index 05a89e33fde2..7fb3998b1deb 100644
+> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> @@ -48,7 +48,8 @@ static unsigned long pseudo_lock_minor_avail = GENMASK(MINORBITS, 0);
+>   static struct class *pseudo_lock_class;
+>   
+>   /**
+> - * get_prefetch_disable_bits - prefetch disable bits of supported platforms
+> + * get_prefetch_disable_bits - Prefetch disable bits of supported platforms
 
->
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - interrupt-names
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    soc {
-> > +      #address-cells =3D <2>;
-> > +      #size-cells =3D <2>;
-> > +
-> > +      rtc: rtc@ffa60000 {
-> > +        compatible =3D "xlnx,zynqmp-rtc";
-> > +        reg =3D <0x0 0xffa60000 0x0 0x100>;
-> > +        interrupt-parent =3D <&gic>;
-> > +        interrupts =3D <0 26 4>, <0 27 4>;
-> > +        interrupt-names =3D "alarm", "sec";
-> > +        calibration =3D <0x198233>;
-> > +      };
-> > +    };
+Did kernel-doc really complain about prefetch not being capitalized?
 
-Best regards,
-  Nobuhiro
+> + * @void: It takes no parameters.
 
---=20
-Nobuhiro Iwamatsu
-   iwamatsu at {nigauri.org / debian.org}
-   GPG ID: 40AD1FA6
+ok, if this makes kernel-doc happy
+
+>    *
+>    * Capture the list of platforms that have been validated to support
+>    * pseudo-locking. This includes testing to ensure pseudo-locked regions
+> @@ -61,11 +62,10 @@ static struct class *pseudo_lock_class;
+>    * in the SDM.
+>    *
+>    * When adding a platform here also add support for its cache events to
+> - * measure_cycles_perf_fn()
+> + * measure_cycles_perf_fn().
+>    *
+
+What kernel-doc problem is being fixed?
+
+> - * Return:
+> - * If platform is supported, the bits to disable hardware prefetchers, 0
+> - * if platform is not supported.
+> + * Return: The bits to disable hardware prefetchers, if platform is
+> + * supported; 0, if it is not.
+
+Did kernel-doc complain about this?
+
+>    */
+>   static u64 get_prefetch_disable_bits(void)
+>   {
+> @@ -126,7 +126,7 @@ static int pseudo_lock_minor_get(unsigned int *minor)
+>   }
+>   
+>   /**
+> - * pseudo_lock_minor_release - Return minor number to available
+> + * pseudo_lock_minor_release - Set minor number to available
+
+no. You may now verbatim document what the code does but you removed 
+what it means when the code does that.
+
+>    * @minor: The minor number made available
+>    */
+>   static void pseudo_lock_minor_release(unsigned int minor)
+> @@ -135,7 +135,7 @@ static void pseudo_lock_minor_release(unsigned int minor)
+>   }
+>   
+>   /**
+> - * region_find_by_minor - Locate a pseudo-lock region by inode minor number
+> + * region_find_by_minor - Locate a pseudo-locked region by inode minor number
+
+kernel-doc issue?
+
+>    * @minor: The minor number of the device representing pseudo-locked region
+>    *
+>    * When the character device is accessed we need to determine which
+> @@ -146,7 +146,7 @@ static void pseudo_lock_minor_release(unsigned int minor)
+>    * with a cache instance.
+>    *
+>    * Return: On success return pointer to resource group owning the pseudo-locked
+> - *         region, NULL on failure.
+> + * region, NULL on failure.
+
+Please keep the spacing as it is.
+
+>    */
+>   static struct rdtgroup *region_find_by_minor(unsigned int minor)
+>   {
+> @@ -162,9 +162,9 @@ static struct rdtgroup *region_find_by_minor(unsigned int minor)
+>   }
+>   
+>   /**
+> - * pseudo_lock_pm_req - A power management QoS request list entry
+> - * @list:	Entry within the @pm_reqs list for a pseudo-locked region
+> - * @req:	PM QoS request
+> + * struct pseudo_lock_pm_req - A power management QoS request list entry
+> + * @list: Entry within the @pm_reqs list for a pseudo-locked region
+> + * @req: PM QoS request
+>    */
+
+Only the missing "struct" is a kernel-doc issue?
+
+>   struct pseudo_lock_pm_req {
+>   	struct list_head list;
+> @@ -184,6 +184,7 @@ static void pseudo_lock_cstates_relax(struct pseudo_lock_region *plr)
+>   
+>   /**
+>    * pseudo_lock_cstates_constrain - Restrict cores from entering C6
+> + * @plr: Pseudo-locked region
+>    *
+
+ok
+
+>    * To prevent the cache from being affected by power management entering
+>    * C6 has to be avoided. This is accomplished by requesting a latency
+> @@ -196,6 +197,9 @@ static void pseudo_lock_cstates_relax(struct pseudo_lock_region *plr)
+>    * the ACPI latencies need to be considered while keeping in mind that C2
+>    * may be set to map to deeper sleep states. In this case the latency
+>    * requirement needs to prevent entering C2 also.
+> + *
+> + * Return: 0 on success, -ENOMEM if there's not enough memory for data
+> + * structure, otherwise -ENODEV or -EINVAL
+
+This function passes some error codes through so being too specific may 
+not be accurate when those functions change. You can follow the pattern 
+in other functions like:
+
+"Return: 0 on success, <0 on failure"
+
+>    */
+>   static int pseudo_lock_cstates_constrain(struct pseudo_lock_region *plr)
+>   {
+> @@ -232,8 +236,8 @@ static int pseudo_lock_cstates_constrain(struct pseudo_lock_region *plr)
+>   }
+>   
+>   /**
+> - * pseudo_lock_region_clear - Reset pseudo-lock region data
+> - * @plr: pseudo-lock region
+> + * pseudo_lock_region_clear - Reset pseudo-locked region data
+> + * @plr: Pseudo-locked region
+>    *
+
+No kernel-doc issue here?
+
+>    * All content of the pseudo-locked region is reset - any memory allocated
+>    * freed.
+> @@ -255,19 +259,19 @@ static void pseudo_lock_region_clear(struct pseudo_lock_region *plr)
+>   }
+>   
+>   /**
+> - * pseudo_lock_region_init - Initialize pseudo-lock region information
+> - * @plr: pseudo-lock region
+> + * pseudo_lock_region_init - Initialize pseudo-locked region information
+> + * @plr: Pseudo-locked region
+>    *
+>    * Called after user provided a schemata to be pseudo-locked. From the
+>    * schemata the &struct pseudo_lock_region is on entry already initialized
+>    * with the resource, domain, and capacity bitmask. Here the information
+>    * required for pseudo-locking is deduced from this data and &struct
+>    * pseudo_lock_region initialized further. This information includes:
+> - * - size in bytes of the region to be pseudo-locked
+> + * - size in bytes of the region to be pseudo-locked;
+>    * - cache line size to know the stride with which data needs to be accessed
+> - *   to be pseudo-locked
+> + *   to be pseudo-locked;
+>    * - a cpu associated with the cache instance on which the pseudo-locking
+> - *   flow can be executed
+> + *   flow can be executed.
+>    *
+>    * Return: 0 on success, <0 on failure. Descriptive error will be written
+>    * to last_cmd_status buffer.
+
+What kernel-doc issue is fixed in this snippet?
+
+> @@ -307,8 +311,8 @@ static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
+>   }
+>   
+>   /**
+> - * pseudo_lock_init - Initialize a pseudo-lock region
+> - * @rdtgrp: resource group to which new pseudo-locked region will belong
+> + * pseudo_lock_init - Initialize a pseudo-locked region
+> + * @rdtgrp: Resource group to which a new pseudo-locked region will belong
+>    *
+>    * A pseudo-locked region is associated with a resource group. When this
+>    * association is created the pseudo-locked region is initialized. The
+
+same
+
+> @@ -333,12 +337,12 @@ static int pseudo_lock_init(struct rdtgroup *rdtgrp)
+>   
+>   /**
+>    * pseudo_lock_region_alloc - Allocate kernel memory that will be pseudo-locked
+> - * @plr: pseudo-lock region
+> + * @plr: Pseudo-locked region
+>    *
+>    * Initialize the details required to set up the pseudo-locked region and
+>    * allocate the contiguous memory that will be pseudo-locked to the cache.
+>    *
+> - * Return: 0 on success, <0 on failure.  Descriptive error will be written
+> + * Return: 0 on success, <0 on failure. Descriptive error will be written
+>    * to last_cmd_status buffer.
+>    */
+>   static int pseudo_lock_region_alloc(struct pseudo_lock_region *plr)
+
+same
+
+> @@ -376,13 +380,11 @@ static int pseudo_lock_region_alloc(struct pseudo_lock_region *plr)
+>   
+>   /**
+>    * pseudo_lock_free - Free a pseudo-locked region
+> - * @rdtgrp: resource group to which pseudo-locked region belonged
+> + * @rdtgrp: Resource group to which pseudo-locked region belonged
+>    *
+>    * The pseudo-locked region's resources have already been released, or not
+>    * yet created at this point. Now it can be freed and disassociated from the
+>    * resource group.
+> - *
+> - * Return: void
+>    */
+>   static void pseudo_lock_free(struct rdtgroup *rdtgrp)
+>   {
+
+same
+
+> @@ -393,7 +395,7 @@ static void pseudo_lock_free(struct rdtgroup *rdtgrp)
+>   
+>   /**
+>    * pseudo_lock_fn - Load kernel memory into cache
+> - * @_rdtgrp: resource group to which pseudo-lock region belongs
+> + * @_rdtgrp: Resource group to which pseudo-locked region belongs
+>    *
+>    * This is the core pseudo-locking flow.
+>    *
+> @@ -401,7 +403,7 @@ static void pseudo_lock_free(struct rdtgroup *rdtgrp)
+>    * Then, while taking care that there will be as little interference as
+>    * possible, the memory to be loaded is accessed while core is running
+>    * with class of service set to the bitmask of the pseudo-locked region.
+> - * After this is complete no future CAT allocations will be allowed to
+> + * After this is complete, no future CAT allocations will be allowed to
+>    * overlap with this bitmask.
+>    *
+>    * Local register variables are utilized to ensure that the memory region
+
+same
+
+> @@ -520,7 +522,7 @@ static int pseudo_lock_fn(void *_rdtgrp)
+>   
+>   /**
+>    * rdtgroup_monitor_in_progress - Test if monitoring in progress
+> - * @r: resource group being queried
+> + * @rdtgrp: Resource group being queried
+>    *
+>    * Return: 1 if monitor groups have been created for this resource
+>    * group, 0 otherwise.
+
+ok
+
+> @@ -532,7 +534,7 @@ static int rdtgroup_monitor_in_progress(struct rdtgroup *rdtgrp)
+>   
+>   /**
+>    * rdtgroup_locksetup_user_restrict - Restrict user access to group
+> - * @rdtgrp: resource group needing access restricted
+> + * @rdtgrp: Resource group needing access restricted
+>    *
+>    * A resource group used for cache pseudo-locking cannot have cpus or tasks
+>    * assigned to it. This is communicated to the user by restricting access
+same
+
+> @@ -582,7 +584,7 @@ static int rdtgroup_locksetup_user_restrict(struct rdtgroup *rdtgrp)
+>   
+>   /**
+>    * rdtgroup_locksetup_user_restore - Restore user access to group
+> - * @rdtgrp: resource group needing access restored
+> + * @rdtgrp: Resource group needing access restored
+>    *
+>    * Restore all file access previously removed using
+>    * rdtgroup_locksetup_user_restrict()
+> @@ -629,7 +631,7 @@ static int rdtgroup_locksetup_user_restore(struct rdtgroup *rdtgrp)
+>   
+>   /**
+>    * rdtgroup_locksetup_enter - Resource group enters locksetup mode
+> - * @rdtgrp: resource group requested to enter locksetup mode
+> + * @rdtgrp: Resource group requested to enter locksetup mode
+>    *
+>    * A resource group enters locksetup mode to reflect that it would be used
+>    * to represent a pseudo-locked region and is in the process of being set
+> @@ -744,8 +746,8 @@ int rdtgroup_locksetup_enter(struct rdtgroup *rdtgrp)
+>   }
+>   
+>   /**
+> - * rdtgroup_locksetup_exit - resource group exist locksetup mode
+> - * @rdtgrp: resource group
+> + * rdtgroup_locksetup_exit - Resource group exits locksetup mode
+> + * @rdtgrp: Resource group
+>    *
+>    * When a resource group exits locksetup mode the earlier restrictions are
+>    * lifted.
+
+same
+
+> @@ -1140,6 +1142,8 @@ static int measure_l3_residency(void *_plr)
+>   
+>   /**
+>    * pseudo_lock_measure_cycles - Trigger latency measure to pseudo-locked region
+> + * @rdtgrp: Resource group to which the pseudo-locked region belongs
+> + * @sel: Selector of which measurement to perform on a pseudo-locked region
+>    *
+>    * The measurement of latency to access a pseudo-locked region should be
+>    * done from a cpu that is associated with that pseudo-locked region.
+
+ok
+
+> @@ -1254,7 +1258,7 @@ static const struct file_operations pseudo_measure_fops = {
+>   
+>   /**
+>    * rdtgroup_pseudo_lock_create - Create a pseudo-locked region
+> - * @rdtgrp: resource group to which pseudo-lock region belongs
+> + * @rdtgrp: Resource group to which pseudo-locked region belongs
+>    *
+>    * Called when a resource group in the pseudo-locksetup mode receives a
+>    * valid schemata that should be pseudo-locked. Since the resource group is
+> @@ -1385,7 +1389,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp)
+>   
+>   /**
+>    * rdtgroup_pseudo_lock_remove - Remove a pseudo-locked region
+> - * @rdtgrp: resource group to which the pseudo-locked region belongs
+> + * @rdtgrp: Resource group to which the pseudo-locked region belongs
+>    *
+>    * The removal of a pseudo-locked region can be initiated when the resource
+>    * group is removed from user space via a "rmdir" from userspace or the
+> 
+
+same
+
+Reinette
