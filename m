@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4623A485C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FA03A484E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhFKSG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 14:06:27 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:44712 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhFKSGE (ORCPT
+        id S231342AbhFKSFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 14:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231222AbhFKSFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 14:06:04 -0400
-Received: by mail-wr1-f44.google.com with SMTP id f2so6951379wri.11
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:04:05 -0700 (PDT)
+        Fri, 11 Jun 2021 14:05:21 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CC3C061280
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:03:08 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id c5so6953987wrq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:03:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4gNZwlNcg/qEzBSyTL6Wv2jCWb0gGSXBR1sJQHmlHgk=;
-        b=gOSxto0fEAE0CNxgaVVyGo7TML0k8dxdI1VN7aQnbZiX7VOAgM/RV095J+LMEi5Djy
-         c2vgoeYoqoVlki92qUzpTv28DHbf1bvdLACytRrao+z5ES0YTkZ23VErjee+EI1MWQSL
-         fEGSi7pfhjlzVt5lyHBtJ9ZXIYFrwKuU9w03h1lEwSMcGnsZUTve2rT9DUAA/nQVj+Rj
-         cEzg1PU0i+rgtJZTv/acFBsibyum+ur0NZHkjQsXuzhcG3fCydGSHkyum6+5ZKEpTJIL
-         tMsGxmZ3mTVQCxPVw1tMKYK/S2CsfAhcR/HfKwhqZjL3pGQ0Iaqnl1tVj2j+0M4QFZLF
-         SGqQ==
+        bh=XlYSDT++/absff5COsQ6B7Y0tXIHpiPptSjx0mpHRxI=;
+        b=btVW4wIMjalC0fUj2njoR7a+JHacTI0BaLJpL5RfRCiJ1LAE/7YB+Kvfof/hNx0dYx
+         sBfDFEijp3TCFUINSRAOxr/aU6RAmYh9J0nxRrOBz7q155fAWH+lZiofymIVDNw1OoU7
+         q0mICv47D/YSXfOQ/m7f4hCthsRU6RHuRDBznPBo/bqW619zumRRtyvAdCIdbVaW0can
+         7KErFYU/vJBrBhCv7fJ+Q2o1Mh4LLbpUR+q8NUellGfRACUOg37g+G/AsBFsCBPcFb5A
+         RdCfPTVnqtPvMP+Yr0Ced2YPxQnOMcibkXAX6KGusLJWiuhn2UW3LJ9ivp2xK5SPMM60
+         fB2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4gNZwlNcg/qEzBSyTL6Wv2jCWb0gGSXBR1sJQHmlHgk=;
-        b=JCbT+G3v9qv19trt1vVeifp3l1f/jT6KrKrq5bRNyTK5ZdHiPfiuWCYa4tsiLh9bJ8
-         bMI3G8gQhPBXleWlbqe/L7wXuwMHDKPBSLK7a+gQ4x4cHkUiCSOiDdXjUVUFIVYJMqTk
-         82aQG+/h+dK3V6g6ol4f5ez+kPa6JWm5YRfUv1u6lSOeGb2EWDi6PfO55E/Ou0nLo65u
-         dVTgSEc2xMi8Paj3mDcxwKiaC5B9gJ9c9kfAXrelY5Ni1alJy7mmyqzNPKW2bUVVw1nc
-         /6jDa2pC+AYXHOH0gg7XpyFAytZVpGRoBsiUSAbL+QQg25Nw20NveHfvGrqolppGiiX7
-         J5rg==
-X-Gm-Message-State: AOAM5312z9UHB2ANGX+NcFHW9RAVlDFYW9SE2nL8WljCNDbKwkjNCtfY
-        TJ9TJ21bwdyXTHn/fpZRzCakYZXKIDOQTrA+
-X-Google-Smtp-Source: ABdhPJyoVe09k6xUsonmoOGGagpmXhBKXLNAHAsz9B/OkEJcxn68yrKVmi8uPCtyYfs7nNKoUfCArg==
-X-Received: by 2002:adf:ec02:: with SMTP id x2mr5509320wrn.156.1623434584983;
-        Fri, 11 Jun 2021 11:03:04 -0700 (PDT)
+        bh=XlYSDT++/absff5COsQ6B7Y0tXIHpiPptSjx0mpHRxI=;
+        b=VyiqWmZJNFsoj0W/HadXsXWR4uHngKpK0XV7E48J2Re+bfQqDrpNtutctNax41Xqog
+         E5Epq2WRhdy8JPAUazKzwcL6VrnS/XUcWBF3GTJoH6C3V6Jd5zQVHgaRW4Z5RWskeYuY
+         HtEh3IKxMvmRDg7AQi2KOKWYdP5tZjgo0LNfEimzyww7v878bGyEmHm+E9TttGZd9JYo
+         VOc0Vqw3I6qlxshs+CaCeR13g8eNJm44+twkDDP7ycso35gsAwbs8B2XvSNjmGwnrRV5
+         MONVxyQ7EmOHoqDRB/n589li1XniROuQhZc1vY/diZhEJ/iHK6WsQ8R6FGmIPbfWuwyS
+         hAIA==
+X-Gm-Message-State: AOAM531yxYXPvmwUoAfa8+Ad69KogPqDNiOFscr093cLLymQciR0zPBL
+        m4ZtBRO2Xlaf+irykeQ189QzrPFFKRXgVREZ
+X-Google-Smtp-Source: ABdhPJxdCizfUAbvJRy2W+CLRyh15TzcCFEXaxy3xl5zN8gl5YG1Gpn2q6+dFq/jN/SkTGEy6Nredg==
+X-Received: by 2002:adf:e5c1:: with SMTP id a1mr5470223wrn.16.1623434586769;
+        Fri, 11 Jun 2021 11:03:06 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id v15sm7425881wrw.24.2021.06.11.11.03.03
+        by smtp.gmail.com with ESMTPSA id v15sm7425881wrw.24.2021.06.11.11.03.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 11:03:04 -0700 (PDT)
+        Fri, 11 Jun 2021 11:03:06 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -62,10 +65,13 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: [PATCH v3 10/23] arm/vdso: Remove vdso pointer from mm->context
-Date:   Fri, 11 Jun 2021 19:02:29 +0100
-Message-Id: <20210611180242.711399-11-dima@arista.com>
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: [PATCH v3 11/23] s390/vdso: Remove vdso_base pointer from mm->context
+Date:   Fri, 11 Jun 2021 19:02:30 +0100
+Message-Id: <20210611180242.711399-12-dima@arista.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210611180242.711399-1-dima@arista.com>
 References: <20210611180242.711399-1-dima@arista.com>
@@ -80,56 +86,62 @@ arch_setup_additional_pages() to set AT_SYSINFO_EHDR tag.
 .vdso_mremap() was only to track proper position of context.vdso
 throughout any mremap() syscalls, remove it too.
 
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/arm/include/asm/mmu.h |  3 ---
- arch/arm/kernel/vdso.c     | 10 ----------
- 2 files changed, 13 deletions(-)
+ arch/s390/include/asm/mmu.h | 1 -
+ arch/s390/kernel/vdso.c     | 9 ---------
+ 2 files changed, 10 deletions(-)
 
-diff --git a/arch/arm/include/asm/mmu.h b/arch/arm/include/asm/mmu.h
-index 1592a4264488..2397b0a19f59 100644
---- a/arch/arm/include/asm/mmu.h
-+++ b/arch/arm/include/asm/mmu.h
-@@ -12,9 +12,6 @@ typedef struct {
- #endif
- 	unsigned int	vmalloc_seq;
- 	unsigned long	sigpage;
--#ifdef CONFIG_VDSO
--	unsigned long	vdso;
--#endif
- #ifdef CONFIG_BINFMT_ELF_FDPIC
- 	unsigned long	exec_fdpic_loadmap;
- 	unsigned long	interp_fdpic_loadmap;
-diff --git a/arch/arm/kernel/vdso.c b/arch/arm/kernel/vdso.c
-index de516f8ba85a..4b39c7d8f525 100644
---- a/arch/arm/kernel/vdso.c
-+++ b/arch/arm/kernel/vdso.c
-@@ -47,17 +47,8 @@ static const struct vm_special_mapping vdso_data_mapping = {
- 	.pages = &vdso_data_page,
- };
+diff --git a/arch/s390/include/asm/mmu.h b/arch/s390/include/asm/mmu.h
+index e12ff0f29d1a..095d0596f700 100644
+--- a/arch/s390/include/asm/mmu.h
++++ b/arch/s390/include/asm/mmu.h
+@@ -15,7 +15,6 @@ typedef struct {
+ 	unsigned long gmap_asce;
+ 	unsigned long asce;
+ 	unsigned long asce_limit;
+-	unsigned long vdso_base;
+ 	/* The mmu context belongs to a secure guest. */
+ 	atomic_t is_protected;
+ 	/*
+diff --git a/arch/s390/kernel/vdso.c b/arch/s390/kernel/vdso.c
+index 8a72fdedbae9..b8fb43d3b657 100644
+--- a/arch/s390/kernel/vdso.c
++++ b/arch/s390/kernel/vdso.c
+@@ -143,13 +143,6 @@ static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
+ 	return vmf_insert_pfn(vma, vmf->address, pfn);
+ }
  
 -static int vdso_mremap(const struct vm_special_mapping *sm,
--		struct vm_area_struct *new_vma)
+-		       struct vm_area_struct *vma)
 -{
--	current->mm->context.vdso = new_vma->vm_start;
--
+-	current->mm->context.vdso_base = vma->vm_start;
 -	return 0;
 -}
 -
- static struct vm_special_mapping vdso_text_mapping __ro_after_init = {
+ static struct vm_special_mapping vvar_mapping = {
+ 	.name = "[vvar]",
+ 	.fault = vvar_fault,
+@@ -157,7 +150,6 @@ static struct vm_special_mapping vvar_mapping = {
+ 
+ static struct vm_special_mapping vdso_mapping = {
  	.name = "[vdso]",
 -	.mremap = vdso_mremap,
  };
  
- struct elfinfo {
-@@ -256,7 +247,6 @@ void arm_install_vdso(struct mm_struct *mm, unsigned long addr,
- 	if (IS_ERR(vma))
- 		return;
- 
--	mm->context.vdso = addr;
- 	*sysinfo_ehdr = addr;
- }
- 
+ int vdso_getcpu_init(void)
+@@ -203,7 +195,6 @@ int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
+ 		do_munmap(mm, vvar_start, PAGE_SIZE, NULL);
+ 		rc = PTR_ERR(vma);
+ 	} else {
+-		current->mm->context.vdso_base = vdso_text_start;
+ 		*sysinfo_ehdr = vdso_text_start;
+ 		rc = 0;
+ 	}
 -- 
 2.31.1
 
