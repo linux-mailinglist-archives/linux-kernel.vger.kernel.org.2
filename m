@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E16A53A47D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2893A47D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhFKRXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:23:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51606 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhFKRXH (ORCPT
+        id S231228AbhFKRYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:24:13 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45210 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhFKRYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:23:07 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2704B1FD6D;
-        Fri, 11 Jun 2021 17:21:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623432069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D1wCFO2uyMl6F9g05s0s+7aNn9WOlwoLqA16xaoeAIo=;
-        b=mbvnCooLdb+UbG208FlKNFoSHegREybbIlxr95onWRcTZueqI/CD6zGHC9SC5lfxVhQmjf
-        UthFMxgw2fLc0KJiBoq7Ci3VxwUbAJ//KF5+jr909Fzva07BpzCDkcSwFiDrVVyqge4pRI
-        yQtkx6WFj7lRi056I824/OhJZIZwSPM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623432069;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D1wCFO2uyMl6F9g05s0s+7aNn9WOlwoLqA16xaoeAIo=;
-        b=ile+VbJSJd3jn0L5i0qp56DjOKWjxQdkvNJK+FV4OAdSMqzEgTNIWBLCtBd/SYQJXEOgJ1
-        4So+dcKvXKRjtgBA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 0D4D9118DD;
-        Fri, 11 Jun 2021 17:21:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623432069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D1wCFO2uyMl6F9g05s0s+7aNn9WOlwoLqA16xaoeAIo=;
-        b=mbvnCooLdb+UbG208FlKNFoSHegREybbIlxr95onWRcTZueqI/CD6zGHC9SC5lfxVhQmjf
-        UthFMxgw2fLc0KJiBoq7Ci3VxwUbAJ//KF5+jr909Fzva07BpzCDkcSwFiDrVVyqge4pRI
-        yQtkx6WFj7lRi056I824/OhJZIZwSPM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623432069;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D1wCFO2uyMl6F9g05s0s+7aNn9WOlwoLqA16xaoeAIo=;
-        b=ile+VbJSJd3jn0L5i0qp56DjOKWjxQdkvNJK+FV4OAdSMqzEgTNIWBLCtBd/SYQJXEOgJ1
-        4So+dcKvXKRjtgBA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id vJy5AoWbw2DGSAAALh3uQQ
-        (envelope-from <bp@suse.de>); Fri, 11 Jun 2021 17:21:09 +0000
-Date:   Fri, 11 Jun 2021 19:21:01 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch 02/41] x86/fpu: Mark various FPU states __ro_after_init
-Message-ID: <YMObffchf+5FFDNw@zn.tnic>
-References: <20210611161523.508908024@linutronix.de>
- <20210611163111.130178710@linutronix.de>
+        Fri, 11 Jun 2021 13:24:12 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 3C1411F448DB
+Received: by earth.universe (Postfix, from userid 1000)
+        id D9AF13C0C95; Fri, 11 Jun 2021 19:22:09 +0200 (CEST)
+Date:   Fri, 11 Jun 2021 19:22:09 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCHv4 1/6] spi: add ancillary device support
+Message-ID: <20210611172209.acbrpwxg75k4v4je@earth.universe>
+References: <20210609151235.48964-1-sebastian.reichel@collabora.com>
+ <20210609151235.48964-2-sebastian.reichel@collabora.com>
+ <YMMnrYbuwe4z/s3h@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fnv2zapnday6i2fd"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210611163111.130178710@linutronix.de>
+In-Reply-To: <YMMnrYbuwe4z/s3h@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 06:15:25PM +0200, Thomas Gleixner wrote:
-> Nothing modifies these after booting.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/kernel/fpu/init.c   |    4 ++--
->  arch/x86/kernel/fpu/xstate.c |   16 ++++++++++------
->  2 files changed, 12 insertions(+), 8 deletions(-)
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+--fnv2zapnday6i2fd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Regards/Gruss,
-    Boris.
+Hi Greg,
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+On Fri, Jun 11, 2021 at 11:06:53AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jun 09, 2021 at 05:12:30PM +0200, Sebastian Reichel wrote:
+> > Introduce support for ancillary devices, similar to existing
+> > implementation for I2C. This is useful for devices having
+> > multiple chip-selects, for example some microcontrollers
+> > provide a normal SPI interface and a flashing SPI interface.
+> >=20
+> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> > ---
+> > [...]
+> > +static int spi_add_device_locked(struct spi_device *spi)
+> > +{
+> > +	struct spi_controller *ctlr =3D spi->controller;
+> > +	struct device *dev =3D ctlr->dev.parent;
+> > +
+> > +	/* Chipselects are numbered 0..max; validate. */
+> > +	if (spi->chip_select >=3D ctlr->num_chipselect) {
+> > +		dev_err(dev, "cs%d >=3D max %d\n", spi->chip_select,
+> > +			ctlr->num_chipselect);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* Set the bus ID string */
+> > +	spi_dev_set_name(spi);
+> > +
+> > +	WARN_ON(!mutex_is_locked(&spi_add_lock));
+>=20
+> So you just rebooted a machine that has panic-on-warn set.  Not
+> nice.
+>=20
+> If this really can happen, test for it and recover, do not reboot
+> devices.
+>=20
+> If this really can never happen, why are you testing for it?
+
+This is reached when ancillary device is not registered in
+the main SPI device's probe routine, which would be a driver
+bug. The gehc-achc driver calls it in the right place, so
+this is not reached with this patchset, but the function to
+register ancillary devices is generic and is expected to be
+also used by others.
+
+-- Sebastian
+
+--fnv2zapnday6i2fd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmDDm7QACgkQ2O7X88g7
++ppAohAApS/cMcm/00V3Nzdui7yis1bX7vbxTlR5vE+ZV5EJ6Fbnvdi6F+efeR4P
+Q3T7jxOgx1Dn5F8NKH1yWgaVi6m9jb8ysBCx54OoEm4hnO2RBr6hb9nB2FEzFS72
+nGqoA/f4TaZe+m+z9PGNNLTDKSX9WDzl5UqBbpSLo2sSHXhBNAe9KqokVd/ss9NA
+biY4pWC/Mn3Lr05/UEPs6Vj8FPB6XWXUD3lLAIb9N/ejzb3CUPFHbjJkH4CcsBnl
+TW30NjK0EzXaimuDmHnLIA/D1caJyK4YzESHyV2x9cuLb2Yz4SYm/1IB2LFZJbW+
+DkmQhBHQpW75MozrzNOxuR81auzenORSDkbxffXdszTRW6kVewXjwlH6ZvtIN1Cd
+NdScWV5jLX1aqt3rSBpA7Mmd5ku3FeYtCS5AdpqPbfD4NVqziwxavwDrrhicC/k6
+o40b0VZ9xVWCZPGEMj/Jpxny3HcJaN76AEVV3joKUyUlbvAi9JZ3jIDOoI9kD12A
+DJNI7Uj/RmQlx+LXpPLFb9pVZpe1xlwl+LL3l/gkMIGb8UcsxVAJm6mWR4B4NZaV
+LrlLZNNmWPyh+m1cQ01niFYDrtC+XoXHRLF4awtjLS59fiPlaNGBQPzLQHdGh/iR
+E6UNo7sKSYr2jkRLqoRpooCA5yK/w99t8w+IA77mb/3M3Wjo0Nw=
+=ZPku
+-----END PGP SIGNATURE-----
+
+--fnv2zapnday6i2fd--
