@@ -2,136 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087233A4B31
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73543A4B33
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhFKX24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 19:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhFKX2z (ORCPT
+        id S230434AbhFKX3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 19:29:52 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:34570 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230130AbhFKX3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 19:28:55 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E019CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:26:40 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j2so10890581lfg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:26:40 -0700 (PDT)
+        Fri, 11 Jun 2021 19:29:50 -0400
+Received: by mail-pl1-f169.google.com with SMTP id h1so3598873plt.1;
+        Fri, 11 Jun 2021 16:27:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PjZY9q5pSOU4tsgru1uTR+wDm1WCLCTCsFGKWC33b5o=;
-        b=G5WJlyCtSQu+o5/QRI8qnFIELrvDb45CAhskrbVgrzcYLYuHHDQdhlPtDQnjDxRS+A
-         1cd1dxgNaKxrrJoRkaCJTbgm4hRbgjod1SkMHXo7Wds6qMbKupMu+TRzye2sUNov6zhz
-         jINjgUtpRgOy3dID6uQIw+6o31xe/IeTgZv3U=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xmvWhepk7+DTWIJD3sxkKjlDCnRliUseIcDMgkGbSgQ=;
+        b=HJZDKWsJ9+eYY2vRW8WzQe2ODlyiRphnZ4rrdHi0akPJaH6NhuJEvdgoCX29IAkNqu
+         fuXe1AAEIJpXDabP9OTJUngfY3d12oR3HzWrMSxCGme0fj25de2YOpguoKM7sBjxggP9
+         r/dkorJkGnZ7RBErpopXnEuFh07d2bwTA6iwJZFP0uXWGcwOciVU4G8mElov7LPLxEAt
+         ZXpejrl4jd6Lp+a4gM2GjE8/mcIaOnSSUwrGvgM9Rg7G6Q3khj6fC7KOEG1RsTHCIFHP
+         YV5nQmrz6hy+hLbfSzbga/bioQ98yUyX27iWuWtW2I736s/FIzXITiEOJcWqViTukx7Y
+         HwnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PjZY9q5pSOU4tsgru1uTR+wDm1WCLCTCsFGKWC33b5o=;
-        b=khBBatzqQo/I0/CDpT6CL631DC3SQYl7L0ZRXFqT/GJM9tC0Iq1TrfJtFvM0KZQ1mu
-         DX+eXajO7pbYt9/8J3sFU2UWgb1LUI62GsQs8d5ZgNQExQZA7HqkJBzHm/Eb5vY+Cw5l
-         wJzMsTQCYqGjBTp8+4YIoQg9dGpkISZQ8CZSJde3fW/yO5TjJlkzdilUPVEXwpKsm1bB
-         XJc+YkiVx3q3R3IKkOOBqq8ZpLm89c3pBXUcKToFYNZ1MKvEsp0dBieOZFGTGlVWu467
-         zXoNriDiGU8BP/JgV8Yd8U5bT8FiZN1EEf491dRgfMz27/hPobMCCOUOOCLwnGcnMWVo
-         tY5Q==
-X-Gm-Message-State: AOAM530KvrBDR9pa6XgzTyHbu4uf6CKoPwIutyhTxKlkCW4xyeiDi4li
-        LSYrH4Hlmty1SA/1i2ixpgTXQDze2HPbrWMi
-X-Google-Smtp-Source: ABdhPJwqNZIFxaFsL/oKMnhA0Xu+Jw0oHmrnz8ISKBzwso9vbSUg0yasQznoK+dmvFfTnZWMiebS/g==
-X-Received: by 2002:a19:645e:: with SMTP id b30mr4052756lfj.577.1623453998949;
-        Fri, 11 Jun 2021 16:26:38 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id h2sm723990lfv.288.2021.06.11.16.26.37
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xmvWhepk7+DTWIJD3sxkKjlDCnRliUseIcDMgkGbSgQ=;
+        b=uThJd7E+aQrJClaLoWnKqA11NWPpAsCcoXoaaHSPGx/Ys8so1pdMbW4TNERsjqZBcg
+         1QAqeq+hKFxsGWIxh+ZPZharR4e9JiiofAdCSfVe0f/3nL2x/yWX4+0kc+t8CIYzT9hn
+         xsQxWX1FPuXWmLZPps6nfdB6iQNfP8wvzXrKD6esvook7wB1bJdNAixcX5u6cVu2BCGv
+         i1IvlEdCnuPRjHQeJ7y65r8jKpp9HGG0k1uiMzGskZ8CZBtcCzw9Uz72TutogdRd8LR9
+         6ry6MRVuaGPLXfzLfnwHrZvsvkTepGj5M7NW4TsMSwNYIGecG8w4weLwhpQzFyNWqdVW
+         c5YQ==
+X-Gm-Message-State: AOAM531EmZECk1cSZrMsIgu2JdBVvHLkNyVp53hy3MZC7wIsVOOlV+C6
+        2znyZnt5WSrjo6PNJyRCwy0=
+X-Google-Smtp-Source: ABdhPJxKVJcXQx4+NSa6O4GnyDEzzhXVMpjUDTiEdzxznFgKLJ3hYQukWRkk4KZ+0ilHM0n+yZNGWg==
+X-Received: by 2002:a17:902:c403:b029:106:7793:3fcc with SMTP id k3-20020a170902c403b029010677933fccmr6048181plk.81.1623453995890;
+        Fri, 11 Jun 2021 16:26:35 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id g29sm5978314pgm.11.2021.06.11.16.26.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 16:26:38 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id j2so10890514lfg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:26:37 -0700 (PDT)
-X-Received: by 2002:a05:6512:3d13:: with SMTP id d19mr4085256lfv.41.1623453997580;
- Fri, 11 Jun 2021 16:26:37 -0700 (PDT)
+        Fri, 11 Jun 2021 16:26:35 -0700 (PDT)
+Subject: Re: [PATCH net-next v4 8/9] net: dsa: dsa_slave_phy_connect(): extend
+ phy's flags with port specific phy flags
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+References: <20210611071527.9333-1-o.rempel@pengutronix.de>
+ <20210611071527.9333-9-o.rempel@pengutronix.de>
+ <20210611192417.gvfxi2kbfjx4jv3d@skbuf>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <97ea2ff1-d3a3-b2d5-f829-3863409bfecc@gmail.com>
+Date:   Fri, 11 Jun 2021 16:26:33 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <87sg1p30a1.fsf@disp2133> <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
- <87pmwsytb3.fsf@disp2133>
-In-Reply-To: <87pmwsytb3.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 11 Jun 2021 16:26:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
-Message-ID: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>,
-        Daniel Jacobowitz <drow@nevyn.them.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210611192417.gvfxi2kbfjx4jv3d@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 2:40 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Looking at copy_thread it looks like at least on alpha we are dealing
-> with a structure that defines all of the registers in copy_thread.
 
-On the target side, yes.
 
-On the _source_ side, the code does
+On 6/11/2021 12:24 PM, Vladimir Oltean wrote:
+> On Fri, Jun 11, 2021 at 09:15:26AM +0200, Oleksij Rempel wrote:
+>> This patch extends the flags of the phy that's being connected with the
+>> port specific flags of the switch port.
+>>
+>> This is needed to handle a port specific erratum of the KSZ8873 switch,
+>> which is added in a later patch.
+>>
+>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+>> ---
+> 
+> What happens differently between having this patch and not having it?
 
-        struct pt_regs *regs = current_pt_regs();
+The current get_phy_flags() is only processed when we connect to a PHY
+via a designed phy-handle property via phylink_of_phy_connect((, but if
+we fallback on the internal MDIO bus created by a switch and take the
+dsa_slave_phy_connect() path then we would not be processing that flag
+and using it at PHY connection time. Oleksij, your proposed patch fails
+to check that dsa_switch_ops::get_phy_flags is actually non-NULL, how
+about this approach instead where we only fetch the flags once, and we
+deal with an option get_phy_flags callback too:
 
-and that's the part that means that fork() and related functions need
-to have done that DO_SWITCH_STACK(), so that they have the full
-register set to be copied.
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index d4756b920108..ba7866ec946f 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -1749,7 +1749,7 @@ static void dsa_slave_phylink_fixed_state(struct
+phylink_config *config,
+ }
 
-Otherwise it would copy random contents from the source stack.
+ /* slave device setup
+*******************************************************/
+-static int dsa_slave_phy_connect(struct net_device *slave_dev, int addr)
++static int dsa_slave_phy_connect(struct net_device *slave_dev, int
+addr, u32 flags)
+ {
+        struct dsa_port *dp = dsa_slave_to_port(slave_dev);
+        struct dsa_switch *ds = dp->ds;
+@@ -1760,6 +1760,8 @@ static int dsa_slave_phy_connect(struct net_device
+*slave_dev, int addr)
+                return -ENODEV;
+        }
 
-But that
++       slave_dev->phydev->dev_flags |= flags;
++
+        return phylink_connect_phy(dp->pl, slave_dev->phydev);
+ }
 
-        if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
-
-ends up protecting us, and the code never uses that set of source
-registers for the io worker threads.
-
-So io_uring looks fine on alpha. I didn't check m68k and friends, but
-I think they have the same thing going.
-
-> It looks like we just need something like this to cover the userspace
-> side of exit.
-
-Looks correct to me. Except I think you could just use "fork_like()"
-instead of creating a new (and identical) "exit_like()" macro.
-
-> > But I really wish we had some way to test and trigger this so that we
-> > wouldn't get caught on this before. Something in task_pt_regs() that
-> > catches "this doesn't actually work" and does a WARN_ON_ONCE() on the
-> > affected architectures?
->
-> I think that would require pushing an extra magic value in SWITCH_STACK
-> and not just popping it but deliberately changing that value in
-> UNDO_SWITCH_STACK.  Basically stack canaries.
->
-> I don't see how we could do it in an arch independent way though.
-
-No, I think you're right. There's no obvious generic solution to it,
-and once we look at arch-specific ones we're vback to "just alpha,
-m68k and nios needs this or cares" and tonce you're there you might as
-well just fix it.
-
-ia64 has soem "fast system call" model with limited registers too, but
-I think that's limited to just a few very special system calls (ie it
-does the reverse of what alpha does: alpha does the fast case by
-default, and then marks fork/vfork/clone as special).
-
-             Linus
+@@ -1804,7 +1806,7 @@ static int dsa_slave_phy_setup(struct net_device
+*slave_dev)
+                /* We could not connect to a designated PHY or SFP, so
+try to
+                 * use the switch internal MDIO bus instead
+                 */
+-               ret = dsa_slave_phy_connect(slave_dev, dp->index);
++               ret = dsa_slave_phy_connect(slave_dev, dp->index,
+phy_flags);
+                if (ret) {
+                        netdev_err(slave_dev,
+                                   "failed to connect to port %d: %d\n",
+-- 
+Florian
