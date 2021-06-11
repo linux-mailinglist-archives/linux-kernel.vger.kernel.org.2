@@ -2,59 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FA93A48D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9983A48D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFKStz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 14:49:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhFKStx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 14:49:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3153E61042;
-        Fri, 11 Jun 2021 18:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623437275;
-        bh=Vmypy4K+1A/edF0vShE8gEQdjBb6fd6InO7a7lpJm8Y=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UyKqkM3tDMNEJUjg3vjmgvDYVh5FZ76pI4EnxEA0FUukwB3Fll1DB453T1jWyGPtg
-         6muE5QjLKZnL7LuWtHOZP7+RGyKMi9dj7N0SGwmv+4We9lPnFiWrpBe8DNYhy3ZgDV
-         nn25Wf0Oq8bnh1OPMG9IUwMO4aGU3EaNVdiHpIWkN4nq4EBeEW+hjycc6gprLAG5NO
-         ngYJcJTx1oR3L2KtxDXsrYehbGn7OmlOpt30+gCSkutrJNSALYFag4SduSATklVbhN
-         Mz8sF+tzc+28UjVpsTfUScTgq9WK6d1dSWeQoijUMexHixVV/xPZXt2cWtn5Ne14CE
-         Xjng7gmKPR6kQ==
-Subject: Re: [patch 07/41] x86/fpu: Simplify PTRACE_GETREGS code
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-References: <20210611161523.508908024@linutronix.de>
- <20210611163111.724946882@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <b396ad22-8a1e-07a0-f744-9b443d63c593@kernel.org>
-Date:   Fri, 11 Jun 2021 11:47:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230356AbhFKSwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 14:52:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38356 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229540AbhFKSwH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 14:52:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623437408;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=roTUteXHqjpSedCzqHsMThZGFyhCsglA/t3yAGivQNQ=;
+        b=ihkk3729k1+OfnxIlsqqC0+LAkWL40qShdiFA39DJ5MfEQTsrqjKYzUGY1i6lojom0YoNf
+        s2LN/teCv2ss+NmvUR0c93OqMj3o+oRk/YvEEiJb1xIZKd1UpsL0dG3AzN8L6c9eS4EKSO
+        cIwdTqe2Q4Yeuc+642D3MoKchCc62og=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-473-UoBMM9UUMl2TnYOXBU-soQ-1; Fri, 11 Jun 2021 14:50:07 -0400
+X-MC-Unique: UoBMM9UUMl2TnYOXBU-soQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 740B3100C661;
+        Fri, 11 Jun 2021 18:50:05 +0000 (UTC)
+Received: from starship (unknown [10.40.194.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1B5E31001281;
+        Fri, 11 Jun 2021 18:50:02 +0000 (UTC)
+Message-ID: <f294faba4e5d25aba8773f36170d1309236edd3b.camel@redhat.com>
+Subject: Re: [PATCH v3 0/4] KVM: x86: hyper-v: Conditionally allow SynIC
+ with APICv/AVIC
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Date:   Fri, 11 Jun 2021 21:50:01 +0300
+In-Reply-To: <20210609150911.1471882-1-vkuznets@redhat.com>
+References: <20210609150911.1471882-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20210611163111.724946882@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 9:15 AM, Thomas Gleixner wrote:
-> From: Dave Hansen <dave.hansen@linux.intel.com>
+On Wed, 2021-06-09 at 17:09 +0200, Vitaly Kuznetsov wrote:
+> Changes since v2:
+> - First two patches got merged, rebase.
+> - Use 'enable_apicv = avic = ...' in PATCH1 [Paolo]
+> - Collect R-b tags for PATCH2 [Sean, Max]
+> - Use hv_apicv_update_work() to get out of SRCU lock [Max]
+> - "KVM: x86: Check for pending interrupts when APICv is getting disabled"
+>   added.
 > 
-> ptrace() has interfaces that let a ptracer inspect a ptracee's register state.
-> This includes XSAVE state.  The ptrace() ABI includes a hardware-format XSAVE
-> buffer for both the SETREGS and GETREGS interfaces.
+> Original description:
+> 
+> APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
+> SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
+> however, possible to track whether the feature was actually used by the
+> guest and only inhibit APICv/AVIC when needed.
+> 
+> The series can be tested with the followin hack:
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 9a48f138832d..65a9974f80d9 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -147,6 +147,13 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+>                                            vcpu->arch.ia32_misc_enable_msr &
+>                                            MSR_IA32_MISC_ENABLE_MWAIT);
+>         }
+> +
+> +       /* Dirty hack: force HV_DEPRECATING_AEOI_RECOMMENDED. Not to be merged! */
+> +       best = kvm_find_cpuid_entry(vcpu, HYPERV_CPUID_ENLIGHTMENT_INFO, 0);
+> +       if (best) {
+> +               best->eax &= ~HV_X64_APIC_ACCESS_RECOMMENDED;
+> +               best->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
+> +       }
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_update_cpuid_runtime);
+>  
+> Vitaly Kuznetsov (4):
+>   KVM: x86: Use common 'enable_apicv' variable for both APICv and AVIC
+>   KVM: x86: Drop vendor specific functions for APICv/AVIC enablement
+>   KVM: x86: Check for pending interrupts when APICv is getting disabled
+>   KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in
+>     use
+> 
+>  arch/x86/include/asm/kvm_host.h |  9 +++++-
+>  arch/x86/kvm/hyperv.c           | 51 +++++++++++++++++++++++++++++----
+>  arch/x86/kvm/svm/avic.c         | 14 ++++-----
+>  arch/x86/kvm/svm/svm.c          | 22 ++++++++------
+>  arch/x86/kvm/svm/svm.h          |  2 --
+>  arch/x86/kvm/vmx/capabilities.h |  1 -
+>  arch/x86/kvm/vmx/vmx.c          |  2 --
+>  arch/x86/kvm/x86.c              | 18 ++++++++++--
+>  8 files changed, 86 insertions(+), 33 deletions(-)
+> 
 
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
+Hi!
+
+I hate to say it, but at least one of my VMs doesn't boot amymore
+with avic=1, after the recent updates. I'll bisect this soon,
+but this is likely related to this series.
+
+I will also review this series very soon.
+
+When the VM fails, it hangs on the OVMF screen and I see this
+in qemu logs:
+
+KVM: injection failed, MSI lost (Operation not permitted)
+KVM: injection failed, MSI lost (Operation not permitted)
+KVM: injection failed, MSI lost (Operation not permitted)
+KVM: injection failed, MSI lost (Operation not permitted)
+KVM: injection failed, MSI lost (Operation not permitted)
+KVM: injection failed, MSI lost (Operation not permitted)
+
+Best regards,
+	Maxim Levitsky
+
