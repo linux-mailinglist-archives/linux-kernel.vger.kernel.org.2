@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24653A42AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C183A42B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhFKNFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:05:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39672 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhFKNFR (ORCPT
+        id S231318AbhFKNIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:08:10 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5509 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhFKNIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:05:17 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623416597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=uFUbL6Bqwrw8F+Pmfa3gHeI4c2aZHwPJArh/9c/kGto=;
-        b=KDmgbzbIx5perlrYB8x2MlK2Zkt0nxM50tGGIwY9AqUujNIyGzRmCA1J/gdQCnoteMt4z3
-        0LcdKh0o041b/bonFCnxkJdCqIUZ3g3Sirt/LIvwIoafM1emNfL6rc2g1Fx1Zs6V/KCZTs
-        TKTSdAzag00qaUpEUmZvpI4FIEo/BXzVhs9ohKIfed7mXecmrjLWq17sJhnG9rxab6iJaW
-        HKyoB+65n1/sio42ornahqx2qSTmisqK0iEa+Ssg2tihRh7M0Gnt+o6JrBe9N43IgH/w4X
-        gi4/yeRuHuZQJYGyHXgkr1Z+wZLJcJnSfJZEZmNwd8PJ8L07iPq/fQ2tJ5A7qA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623416597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=uFUbL6Bqwrw8F+Pmfa3gHeI4c2aZHwPJArh/9c/kGto=;
-        b=6QOEdRXGAdFExQWRFF/1ER8T6xipqKf0o4ZHuTDo5USa4X/ivDb+cODur80x8bFh6fC++6
-        LybFeIiuRSEcgrDg==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: [PATCH] perf/x86/intel/lbr: Zero the xstate buffer on allocation
-Date:   Fri, 11 Jun 2021 15:03:16 +0200
-Message-ID: <87wnr0wo2z.ffs@nanos.tec.linutronix.de>
+        Fri, 11 Jun 2021 09:08:06 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1gxt0HNSzZgG0;
+        Fri, 11 Jun 2021 21:03:14 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 21:06:05 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
+ Jun 2021 21:06:04 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] scsi: ufs: fix build warning without CONFIG_PM
+Date:   Fri, 11 Jun 2021 21:06:01 +0800
+Message-ID: <20210611130601.34336-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XRSTORS requires a valid xstate buffer to work correctly. XSAVES does not
-guarantee to write a fully valid buffer according to the SDM:
+drivers/scsi/ufs/ufshcd.c:9770:12: warning: ‘ufshcd_rpmb_resume’ defined but not used [-Wunused-function]
+ static int ufshcd_rpmb_resume(struct device *dev)
+            ^~~~~~~~~~~~~~~~~~
+drivers/scsi/ufs/ufshcd.c:9037:12: warning: ‘ufshcd_wl_runtime_resume’ defined but not used [-Wunused-function]
+ static int ufshcd_wl_runtime_resume(struct device *dev)
+            ^~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/ufs/ufshcd.c:9017:12: warning: ‘ufshcd_wl_runtime_suspend’ defined but not used [-Wunused-function]
+ static int ufshcd_wl_runtime_suspend(struct device *dev)
+            ^~~~~~~~~~~~~~~~~~~~~~~~~
 
-  "XSAVES does not write to any parts of the XSAVE header other than the
-   XSTATE_BV and XCOMP_BV fields."
+Move it into #ifdef block to fix this.
 
-XRSTORS triggers a #GP:
-
-  "If bytes 63:16 of the XSAVE header are not all zero."
-
-It's dubious at best how this can work at all when the buffer is not zeroed
-before use.
-
-Allocate the buffers with __GFP_ZERO to prevent XRSTORS failure.
-
-Fixes: ce711ea3cab9 ("perf/x86/intel/lbr: Support XSAVES/XRSTORS for LBR context switch")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: x86@kernel.org
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- arch/x86/events/intel/lbr.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -731,7 +731,8 @@ void reserve_lbr_buffers(void)
- 		if (!kmem_cache || cpuc->lbr_xsave)
- 			continue;
- 
--		cpuc->lbr_xsave = kmem_cache_alloc_node(kmem_cache, GFP_KERNEL,
-+		cpuc->lbr_xsave = kmem_cache_alloc_node(kmem_cache,
-+							GFP_KERNEL | __GFP_ZERO,
- 							cpu_to_node(cpu));
- 	}
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b87ff68aa9aa..0c54589e186a 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8926,6 +8926,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	return ret;
  }
+ 
++#ifdef CONFIG_PM_SLEEP
+ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ {
+ 	int ret;
+@@ -9053,7 +9054,6 @@ static int ufshcd_wl_runtime_resume(struct device *dev)
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+ static int ufshcd_wl_suspend(struct device *dev)
+ {
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+@@ -9766,6 +9766,7 @@ static inline int ufshcd_clear_rpmb_uac(struct ufs_hba *hba)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
+ static int ufshcd_rpmb_resume(struct device *dev)
+ {
+ 	struct ufs_hba *hba = wlun_dev_to_hba(dev);
+@@ -9774,6 +9775,7 @@ static int ufshcd_rpmb_resume(struct device *dev)
+ 		ufshcd_clear_rpmb_uac(hba);
+ 	return 0;
+ }
++#endif
+ 
+ static const struct dev_pm_ops ufs_rpmb_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(NULL, ufshcd_rpmb_resume, NULL)
+-- 
+2.17.1
+
