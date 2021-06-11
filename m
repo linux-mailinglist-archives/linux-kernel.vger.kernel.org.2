@@ -2,158 +2,585 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998793A3BAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F073A3BB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbhFKGJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:09:26 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:45026 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFKGJY (ORCPT
+        id S231150AbhFKGL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:11:58 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:47032 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230216AbhFKGL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:09:24 -0400
-Received: by mail-wr1-f50.google.com with SMTP id f2so4683654wri.11;
-        Thu, 10 Jun 2021 23:07:26 -0700 (PDT)
+        Fri, 11 Jun 2021 02:11:57 -0400
+Received: by mail-pl1-f169.google.com with SMTP id e1so2289597pld.13;
+        Thu, 10 Jun 2021 23:09:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tSskqVHRu7p8B3WxckIxXnctQ0vEQZAKUgRseDAc4Cg=;
+        b=elOZ8WgNBIlEXwVDAmV6r1UhSvk2/knAl4VJV2ihJWYiL+4iWy0tQfi+LNeB0/ewdu
+         DbNt0ae1lZYnKyDGHJiSFSZZXoiHbXZgiYvqkMQ/xarDG9PLGLMvYTXIe8jaBFQv0v1A
+         bipsFwYUnAZrAP4ma7ClMtw2oKqDe8scgIOAT/mIXZPblbHLnqaMiPbIm5G0Dwm3I/GN
+         TzyEKAwxIOV85HOBtO3NpydKQyNSrY3MSna3SRBTmZZDCMA3jckkUUms6Yx/zvf+w7yO
+         LGNT0JeTZHg0hPKdDgKvUQuMB12A+JW7JKTrNrFafV3x4eKlpk0LdmfW8rmGVytqaFV5
+         /9Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=AZMS2A4sumtCqfcNbQEYzMmO3IZvf2HY+g4HgiE7meY=;
-        b=P9M+3TfkPCtOk03F/IkNnBLpwBFxJ4/6PWwtGWZdMNhGE8rwXdXLlWICW+uEEZHduq
-         QajKEpOaCdLyLlW/n8t3N3AF71m5G026mEvBQAlUCs9qE1ITF5/fcdzK8dFKL6Hf0CeR
-         aR2OHSlFv56rLxkNHWhR59vr7H5KJ4Nt7PhAoQvQ0Q8VGZXQhxImp5FML5HVKIOq4aBm
-         eJ8xmbyfipRR2EWXtmEAJCg6f1dhKmXgCNI1O39HhZ3vYwSTyO3/lEmJwRvgcPI27x4U
-         oqGvE89fREpOc9bceFgrQeCmjGuC9epERevc+uaV1OQG+8uORRtPU5rGJNp3vMgHEAkG
-         3N4A==
-X-Gm-Message-State: AOAM533LQC09yj+dNFhiPVx5mCnJJHTqO8EQp1A17MyDHX6G4V1dNIsu
-        VQztUOVihO/OaoHODvCVwTT3/p5BDBk=
-X-Google-Smtp-Source: ABdhPJxjEIF41BMJdDoto8M4WZ5XYmslV5qnXD0oaW9mXsN6wP8UKQhJLVT9lH7G+hSlHgP+5koqag==
-X-Received: by 2002:adf:df02:: with SMTP id y2mr1995807wrl.120.1623391645775;
-        Thu, 10 Jun 2021 23:07:25 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id q19sm11019277wmc.44.2021.06.10.23.07.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 23:07:25 -0700 (PDT)
-Subject: Re: [PATCH 1/2] serial: 8250: Mask out floating 16/32-bit bus bits
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <alpine.DEB.2.21.2105161721220.3032@angie.orcam.me.uk>
- <alpine.DEB.2.21.2105181508460.3032@angie.orcam.me.uk>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <0cba710e-dc70-2b5c-ef48-a54cad0cae05@kernel.org>
-Date:   Fri, 11 Jun 2021 08:07:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        bh=tSskqVHRu7p8B3WxckIxXnctQ0vEQZAKUgRseDAc4Cg=;
+        b=fgHpZLjSu4cLd5d2df/W+PzpSisCgWaN+52LE0i/sOwR0hDVYx4LjZzPajhovY/zGb
+         SxDhqsKtmI7ivg7cWx69rXi+Vucen/bwPTaVya+q2c4jGMSiSCdx8+1jkGTJrGiPwcVE
+         K+q+4gOtl7uqfdyBujtcAlbmNFfkRLz5Kq4h3eJ6o1ooawespqj0kEAY9PUnvEaajUrj
+         ymmqidkOhavJn7WODJ4dwrdAZ6Q+9/BJKQ61UHTX12C//tfBGjnStWP7AN8tK/COxWaZ
+         wuhwBwzcrAmQfQaXT/gohXFQOWd+KTBdgLzVa+SfBlzRoLaqSjL8T7cZ9+JDfjCwKdNS
+         d0Ng==
+X-Gm-Message-State: AOAM533zNRaph/JIL0YMatxF62ggGXVAZXuBLc/zTny6NrHGjIA7nQ+6
+        Hx0anpbRdnGkmyVp4GmgONAQcf4gcb/NBQ==
+X-Google-Smtp-Source: ABdhPJxTLCYLeXXLAKuiNDrSqkPfGzdNWbsDG9i4XVDh0nKMaFd7MdBvir/GeGp5P+TceZq5C8xmoA==
+X-Received: by 2002:a17:90a:134f:: with SMTP id y15mr7190994pjf.95.1623391723585;
+        Thu, 10 Jun 2021 23:08:43 -0700 (PDT)
+Received: from localhost.localdomain ([49.37.1.189])
+        by smtp.gmail.com with ESMTPSA id s4sm4107066pjn.31.2021.06.10.23.08.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 23:08:42 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     corbet@lwn.net
+Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        joe@perches.com, linux-doc@vger.kernel.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: [PATCH v3] docs: checkpatch: Document and segregate more checkpatch message types
+Date:   Fri, 11 Jun 2021 11:38:33 +0530
+Message-Id: <20210611060833.1802-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2105181508460.3032@angie.orcam.me.uk>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10. 06. 21, 20:38, Maciej W. Rozycki wrote:
-> Make sure only actual 8 bits of the IIR register are used in determining
-> the port type in `autoconfig'.
-> 
-> The `serial_in' port accessor returns the `unsigned int' type, meaning
-> that with UPIO_AU, UPIO_MEM16, UPIO_MEM32, and UPIO_MEM32BE access types
-> more than 8 bits of data are returned, of which the high order bits will
-> often come from bus lines that are left floating in the data phase.  For
-> example with the MIPS Malta board's CBUS UART, where the registers are
-> aligned on 8-byte boundaries and which uses 32-bit accesses, data as
-> follows is returned:
-> 
-> YAMON> dump -32 0xbf000900 0x40
-> 
-> BF000900: 1F000942 1F000942 1F000900 1F000900  ...B...B........
-> BF000910: 1F000901 1F000901 1F000900 1F000900  ................
-> BF000920: 1F000900 1F000900 1F000960 1F000960  ...........`...`
-> BF000930: 1F000900 1F000900 1F0009FF 1F0009FF  ................
-> 
-> YAMON>
-> 
-> Evidently high-order 24 bits return values previously driven in the
-> address phase (the 3 highest order address bits used with the command
-> above are masked out in the simple virtual address mapping used here and
-> come out at zeros on the external bus), a common scenario with bus lines
-> left floating, due to bus capacitance.
-> 
-> Consequently when the value of IIR, mapped at 0x1f000910, is retrieved
-> in `autoconfig', it comes out at 0x1f0009c1 and when it is right-shifted
-> by 6 and then assigned to 8-bit `scratch' variable, the value calculated
-> is 0x27, not one of 0, 1, 2, 3 expected in port type determination.
-> 
-> Fix the issue then, by assigning the value returned from `serial_in' to
-> `scratch' first, which masks out 24 high-order bits retrieved, and only
-> then right-shift the resulting 8-bit data quantity, producing the value
-> of 3 in this case, as expected.  Fix the same issue in `serial_dl_read'.
-> 
-> The problem first appeared with Linux 2.6.9-rc3 which predates our repo
-> history, but the origin could be identified with the old MIPS/Linux repo
-> also at: <git://git.kernel.org/pub/scm/linux/kernel/git/ralf/linux.git>
-> as commit e0d2356c0777 ("Merge with Linux 2.6.9-rc3."), where code in
-> `serial_in' was updated with this case:
-> 
-> +	case UPIO_MEM32:
-> +		return readl(up->port.membase + offset);
-> +
-> 
-> which made it produce results outside the unsigned 8-bit range for the
-> first time, though obviously it is system dependent what actual values
-> appear in the high order bits retrieved and it may well have been zeros
-> in the relevant positions with the system the change originally was
-> intended for.  It is at that point that code in `autoconf' should have
-> been updated accordingly, but clearly it was overlooked.
-> 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> ---
->   drivers/tty/serial/8250/8250_port.c |    9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> linux-serial-8250-floating-bus-mask.diff
-> Index: linux-malta-cbus-uart/drivers/tty/serial/8250/8250_port.c
-> ===================================================================
-> --- linux-malta-cbus-uart.orig/drivers/tty/serial/8250/8250_port.c
-> +++ linux-malta-cbus-uart/drivers/tty/serial/8250/8250_port.c
-> @@ -311,7 +311,10 @@ static const struct serial8250_config ua
->   /* Uart divisor latch read */
->   static int default_serial_dl_read(struct uart_8250_port *up)
->   {
-> -	return serial_in(up, UART_DLL) | serial_in(up, UART_DLM) << 8;
-> +	unsigned char dll = serial_in(up, UART_DLL);
-> +	unsigned char dlm = serial_in(up, UART_DLM);
-> +
-> +	return dll | dlm << 8;
->   }
->   
->   /* Uart divisor latch write */
-> @@ -1297,9 +1300,9 @@ static void autoconfig(struct uart_8250_
->   	serial_out(up, UART_LCR, 0);
->   
->   	serial_out(up, UART_FCR, UART_FCR_ENABLE_FIFO);
-> -	scratch = serial_in(up, UART_IIR) >> 6;
-> +	scratch = serial_in(up, UART_IIR);
->   
-> -	switch (scratch) {
-> +	switch (scratch >> 6) {
+Add and document more checkpatch message types. About 50% of all
+message types are documented now.
 
-COrrect, but not obvious on the first look. People could revert this 
-change inadverently. So could you add a comment, or simply cast 
-serial_in() output to (u8)?
+In addition to this:
 
->   	case 0:
->   		autoconfig_8250(up);
->   		break;
-> 
+- Create a new subsection 'Indentation and Line Breaks'.
+- Rename subsection 'Comment style' to simply 'Comments'.
+- Refactor some of the existing types to appropriate subsections.
 
-thanks,
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+
+Changes in v3:
+- Update explanation for CONSTANT_CONVERSION
+- Add more reference links
+- Fix grammatical errors
+
+Changes in v2:
+- Correct DEVICE_ATTR message types as suggested by Joe Perches.
+  https://lore.kernel.org/lkml/eab0487d7b4e68badbbe0505b2a7903b9d8931c4.camel@perches.com/T/#t
+- Use passive voice in the documentation
+
+ Documentation/dev-tools/checkpatch.rst | 397 ++++++++++++++++++++-----
+ 1 file changed, 327 insertions(+), 70 deletions(-)
+
+diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+index 87b859f321de..ad84e709aa25 100644
+--- a/Documentation/dev-tools/checkpatch.rst
++++ b/Documentation/dev-tools/checkpatch.rst
+@@ -298,10 +298,148 @@ API usage
+ 
+     See: https://www.kernel.org/doc/html/latest/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull
+ 
++  **CONSTANT_CONVERSION**
++    Use of __constant_<foo> form is discouraged for the following functions::
++
++      __constant_cpu_to_be[x]
++      __constant_cpu_to_le[x]
++      __constant_be[x]_to_cpu
++      __constant_le[x]_to_cpu
++      __constant_htons
++      __constant_ntohs
++
++    Using any of these outside of include/uapi/ is not preferred as using the
++    function without __constant_ is identical when the argument is a
++    constant.
++
++    In big endian systems, the macros like __constant_cpu_to_be32(x) and
++    cpu_to_be32(x) expand to the same expression::
++
++      #define __constant_cpu_to_be32(x) ((__force __be32)(__u32)(x))
++      #define __cpu_to_be32(x)          ((__force __be32)(__u32)(x))
++
++    In little endian systems, the macros __constant_cpu_to_be32(x) and
++    cpu_to_be32(x) expand to __constant_swab32 and __swab32.  __swab32
++    has a __builtin_constant_p check::
++
++      #define __swab32(x)				\
++        (__builtin_constant_p((__u32)(x)) ?	\
++        ___constant_swab32(x) :			\
++        __fswab32(x))
++
++    So ultimately they have a special case for constants.
++    Similar is the case with all of the macros in the list.  Thus
++    using the __constant_... forms are unnecessarily verbose and
++    not preferred outside of include/uapi.
++
++    See: https://lore.kernel.org/lkml/1400106425.12666.6.camel@joe-AO725/
++
++  **DEPRECATED_API**
++    Usage of a deprecated RCU API is detected.  It is recommended to replace
++    old flavourful RCU APIs by their new vanilla-RCU counterparts.
++
++    The full list of available RCU APIs can be viewed from the kernel docs.
++
++    See: https://www.kernel.org/doc/html/latest/RCU/whatisRCU.html#full-list-of-rcu-apis
++
++  **DEPRECATED_VARIABLE**
++    EXTRA_{A,C,CPP,LD}FLAGS are deprecated and should be replaced by the new
++    flags added via commit f77bf01425b1 ("kbuild: introduce ccflags-y,
++    asflags-y and ldflags-y").
++
++    The following conversion scheme maybe used::
++
++      EXTRA_AFLAGS    ->  asflags-y
++      EXTRA_CFLAGS    ->  ccflags-y
++      EXTRA_CPPFLAGS  ->  cppflags-y
++      EXTRA_LDFLAGS   ->  ldflags-y
++
++    See:
++
++      1. https://lore.kernel.org/lkml/20070930191054.GA15876@uranus.ravnborg.org/
++      2. https://lore.kernel.org/lkml/1313384834-24433-12-git-send-email-lacombar@gmail.com/
++      3. https://www.kernel.org/doc/html/latest/kbuild/makefiles.html#compilation-flags
++
++  **DEVICE_ATTR_FUNCTIONS**
++    The function names used in DEVICE_ATTR is unusual.
++    Typically, the store and show functions are used with <attr>_store and
++    <attr>_show, where <attr> is a named attribute variable of the device.
++
++    Consider the following examples::
++
++      static DEVICE_ATTR(type, 0444, type_show, NULL);
++      static DEVICE_ATTR(power, 0644, power_show, power_store);
++
++    The function names should preferably follow the above pattern.
++
++    See: https://www.kernel.org/doc/html/latest/driver-api/driver-model/device.html#attributes
++
++  **DEVICE_ATTR_RO**
++    The DEVICE_ATTR_RO(name) helper macro can be used instead of
++    DEVICE_ATTR(name, 0444, name_show, NULL);
++
++    Note that the macro automatically appends _show to the named
++    attribute variable of the device for the show method.
++
++    See: https://www.kernel.org/doc/html/latest/driver-api/driver-model/device.html#attributes
++
++  **DEVICE_ATTR_RW**
++    The DEVICE_ATTR_RW(name) helper macro can be used instead of
++    DEVICE_ATTR(name, 0644, name_show, name_store);
++
++    Note that the macro automatically appends _show and _store to the
++    named attribute variable of the device for the show and store methods.
++
++    See: https://www.kernel.org/doc/html/latest/driver-api/driver-model/device.html#attributes
++
++  **DEVICE_ATTR_WO**
++    The DEVICE_AATR_WO(name) helper macro can be used instead of
++    DEVICE_ATTR(name, 0200, NULL, name_store);
++
++    Note that the macro automatically appends _store to the
++    named attribute variable of the device for the store method.
++
++    See: https://www.kernel.org/doc/html/latest/driver-api/driver-model/device.html#attributes
++
++  **DUPLICATED_SYSCTL_CONST**
++    Commit d91bff3011cf ("proc/sysctl: add shared variables for range
++    check") added some shared const variables to be used instead of a local
++    copy in each source file.
++
++    Consider replacing the sysctl range checking value with the shared
++    one in include/linux/sysctl.h.  The following conversion scheme may
++    be used::
++
++      &zero     ->  SYSCTL_ZERO
++      &one      ->  SYSCTL_ONE
++      &int_max  ->  SYSCTL_INT_MAX
++
++    See:
++
++      1. https://lore.kernel.org/lkml/20190430180111.10688-1-mcroce@redhat.com/
++      2. https://lore.kernel.org/lkml/20190531131422.14970-1-mcroce@redhat.com/
++
++  **ENOSYS**
++    ENOSYS means that a nonexistent system call was called.
++    Earlier, it was wrongly used for things like invalid operations on
++    otherwise valid syscalls.  This should be avoided in new code.
++
++    See: https://lore.kernel.org/lkml/5eb299021dec23c1a48fa7d9f2c8b794e967766d.1408730669.git.luto@amacapital.net/
++
++  **ENOTSUPP**
++    ENOTSUPP is not a standard error code and should be avoided in new patches.
++    EOPNOTSUPP should be used instead.
++
++    See: https://lore.kernel.org/netdev/20200510182252.GA411829@lunn.ch/
++
++  **EXPORT_SYMBOL**
++    EXPORT_SYMBOL should immediately follow the symbol to be exported.
++
+   **IN_ATOMIC**
+     in_atomic() is not for driver use so any such use is reported as an ERROR.
+-    Also in_atomic() is often used to determine if we may sleep, but it is not
+-    reliable in this use model therefore its use is strongly discouraged.
++    Also in_atomic() is often used to determine if sleeping is permitted,
++    but it is not reliable in this use model.  Therefore its use is
++    strongly discouraged.
+ 
+     However, in_atomic() is ok for core kernel use.
+ 
+@@ -335,8 +473,8 @@ API usage
+     See: https://www.kernel.org/doc/html/latest/timers/timers-howto.html#delays-information-on-the-various-kernel-delay-sleep-mechanisms
+ 
+ 
+-Comment style
+--------------
++Comments
++--------
+ 
+   **BLOCK_COMMENT_STYLE**
+     The comment style is incorrect.  The preferred style for multi-
+@@ -362,6 +500,21 @@ Comment style
+ 
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
+ 
++  **DATA_RACE**
++    Applications of data_race() should have a comment so as to document the
++    reasoning behind why it was deemed safe.
++
++    See: https://lore.kernel.org/lkml/20200401101714.44781-1-elver@google.com/
++
++  **FSF_MAILING_ADDRESS**
++    Kernel maintainers reject new instances of the GPL boilerplate paragraph
++    directing people to write to the FSF for a copy of the GPL, since the
++    FSF has moved in the past and may do so again.
++    So do not write paragraphs about writing to the Free Software Foundation's
++    mailing address.
++
++    See: https://lore.kernel.org/lkml/20131006222342.GT19510@leaf/
++
+ 
+ Commit message
+ --------------
+@@ -394,6 +547,13 @@ Commit message
+ 
+     See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
+ 
++  **EMAIL_SUBJECT**
++    Naming the tool that found the issue is not very useful in the
++    subject line.  A good subject line summarizes the change that
++    the patch brings.
++
++    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
++
+   **FROM_SIGN_OFF_MISMATCH**
+     The author's email does not match with that in the Signed-off-by:
+     line(s). This can be sometimes caused due to an improperly configured
+@@ -482,6 +642,87 @@ Comparison style
+     side of the test should be avoided.
+ 
+ 
++Indentation and Line Breaks
++---------------------------
++
++  **CODE_INDENT**
++    Code indent should use tabs instead of spaces.
++    Outside of comments, documentation and Kconfig,
++    spaces are never used for indentation.
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
++
++  **DEEP_INDENTATION**
++    Indentation with 6 or more tabs usually indicate overly indented
++    code.
++
++    It is suggested to refactor excessive indentation of
++    if/else/for/do/while/switch statements.
++
++    See: https://lore.kernel.org/lkml/1328311239.21255.24.camel@joe2Laptop/
++
++  **SWITCH_CASE_INDENT_LEVEL**
++    switch should be at the same indent as case.
++    Example::
++
++      switch (suffix) {
++      case 'G':
++      case 'g':
++              mem <<= 30;
++              break;
++      case 'M':
++      case 'm':
++              mem <<= 20;
++              break;
++      case 'K':
++      case 'k':
++              mem <<= 10;
++              fallthrough;
++      default:
++              break;
++      }
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
++
++  **LONG_LINE**
++    The line has exceeded the specified maximum length.
++    To use a different maximum line length, the --max-line-length=n option
++    may be added while invoking checkpatch.
++
++    Earlier, the default line length was 80 columns.  Commit bdc48fa11e46
++    ("checkpatch/coding-style: deprecate 80-column warning") increased the
++    limit to 100 columns.  This is not a hard limit either and it's
++    preferable to stay within 80 columns whenever possible.
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++
++  **LONG_LINE_STRING**
++    A string starts before but extends beyond the maximum line length.
++    To use a different maximum line length, the --max-line-length=n option
++    may be added while invoking checkpatch.
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++
++  **LONG_LINE_COMMENT**
++    A comment starts before but extends beyond the maximum line length.
++    To use a different maximum line length, the --max-line-length=n option
++    may be added while invoking checkpatch.
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++
++  **TRAILING_STATEMENTS**
++    Trailing statements (for example after any conditional) should be
++    on the next line.
++    Statements, such as::
++
++      if (x == y) break;
++
++    should be::
++
++      if (x == y)
++              break;
++
++
+ Macros, Attributes and Symbols
+ ------------------------------
+ 
+@@ -546,6 +787,9 @@ Macros, Attributes and Symbols
+ 
+     See: https://lore.kernel.org/lkml/CA+55aFycQ9XJvEOsiM3txHL5bjUc8CeKWJNR_H+MiicaddB42Q@mail.gmail.com/
+ 
++  **DO_WHILE_MACRO_WITH_TRAILING_SEMICOLON**
++    do {} while(0) macros should not have a trailing semicolon.
++
+   **INIT_ATTRIBUTE**
+     Const init definitions should use __initconst instead of
+     __initdata.
+@@ -614,6 +858,48 @@ Functions and Variables
+ 
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#naming
+ 
++  **CONST_CONST**
++    Using `const <type> const *` is generally meant to be
++    written `const <type> * const`.
++
++  **CONST_STRUCT**
++    Using const is generally a good idea.  Checkpatch reads
++    a list of frequently used structs that are always or
++    almost always constant.
++
++    The existing structs list can be viewed from
++    `scripts/const_structs.checkpatch`.
++
++    See: https://lore.kernel.org/lkml/alpine.DEB.2.10.1608281509480.3321@hadrien/
++
++  **EMBEDDED_FUNCTION_NAME**
++    Embedded function names are less appropriate to use as
++    refactoring can cause function renaming.  Prefer the use of
++    "%s", __func__ to embedded function names.
++
++    Note that this does not work with -f (--file) checkpatch option
++    as it depends on patch context providing the function name.
++
++  **FUNCTION_ARGUMENTS**
++    This warning is emitted due to any of the following reasons::
++
++      1. Arguments for the function declaration do not follow
++         the identifier name.  Example::
++
++           void foo
++           (int bar, int baz)
++
++         This should be corrected to::
++
++           void foo(int bar, int baz)
++
++      2. Some arguments for the function definition do not
++         have an identifier name.  Example::
++
++           void foo(int)
++
++         All arguments should have identifier names.
++
+   **FUNCTION_WITHOUT_ARGS**
+     Function declarations without arguments like::
+ 
+@@ -647,6 +933,13 @@ Functions and Variables
+ Permissions
+ -----------
+ 
++  **DEVICE_ATTR_PERMS**
++    The permissions used in DEVICE_ATTR are unusual.
++    Typically only three permissions are used - 0644 (RW), 0444 (RO)
++    and 0200 (WO).
++
++    See: https://www.kernel.org/doc/html/latest/filesystems/sysfs.html#attributes
++
+   **EXECUTE_PERMISSIONS**
+     There is no reason for source files to be executable.  The executable
+     bit can be removed safely.
+@@ -708,13 +1001,6 @@ Spacing and Brackets
+ 
+         = { [0...10] = 5 }
+ 
+-  **CODE_INDENT**
+-    Code indent should use tabs instead of spaces.
+-    Outside of comments, documentation and Kconfig,
+-    spaces are never used for indentation.
+-
+-    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
+-
+   **CONCATENATED_STRING**
+     Concatenated elements should have a space in between.
+     Example::
+@@ -760,29 +1046,6 @@ Spacing and Brackets
+ 
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
+ 
+-  **SWITCH_CASE_INDENT_LEVEL**
+-    switch should be at the same indent as case.
+-    Example::
+-
+-      switch (suffix) {
+-      case 'G':
+-      case 'g':
+-              mem <<= 30;
+-              break;
+-      case 'M':
+-      case 'm':
+-              mem <<= 20;
+-              break;
+-      case 'K':
+-      case 'k':
+-              mem <<= 10;
+-              /* fall through */
+-      default:
+-              break;
+-      }
+-
+-    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
+-
+   **TRAILING_WHITESPACE**
+     Trailing whitespace should always be removed.
+     Some editors highlight the trailing whitespace and cause visual
+@@ -842,40 +1105,46 @@ Others
+     The patch seems to be corrupted or lines are wrapped.
+     Please regenerate the patch file before sending it to the maintainer.
+ 
++  **CVS_KEYWORD**
++    Since linux moved to git, the CVS markers are no longer used.
++    So, CVS style keywords ($Id$, $Revision$, $Log$) should not be
++    added.
++
++  **DEFAULT_NO_BREAK**
++    switch default case is sometimes written as "default:;".  This can
++    cause new cases added below default to be defective.
++
++    A "break;" should be added after empty default statement to avoid
++    unwanted fallthrough.
++
+   **DOS_LINE_ENDINGS**
+     For DOS-formatted patches, there are extra ^M symbols at the end of
+     the line.  These should be removed.
+ 
+-  **FSF_MAILING_ADDRESS**
+-    Kernel maintainers reject new instances of the GPL boilerplate paragraph
+-    directing people to write to the FSF for a copy of the GPL, since the
+-    FSF has moved in the past and may do so again.
+-    So do not write paragraphs about writing to the Free Software Foundation's
+-    mailing address.
++  **DT_SCHEMA_BINDING_PATCH**
++    DT bindings moved to a json-schema based format instead of
++    freeform text.
+ 
+-    See: https://lore.kernel.org/lkml/20131006222342.GT19510@leaf/
++    See: https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-schema.html
+ 
+-  **LONG_LINE**
+-    The line has exceeded the specified maximum length. Consider refactoring
+-    it.
+-    To use a different maximum line length, the --max-line-length=n option
+-    may be added while invoking checkpatch.
++  **DT_SPLIT_BINDING_PATCH**
++    Devicetree bindings should be their own patch.  This is because
++    bindings are logically independent from a driver implementation,
++    they have a different maintainer (even though they often
++    are applied via the same tree), and it makes for a cleaner history in the
++    DT only tree created with git-filter-branch.
+ 
+-    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++    See: https://www.kernel.org/doc/html/latest/devicetree/bindings/submitting-patches.html#i-for-patch-submitters
+ 
+-  **LONG_LINE_STRING**
+-    A string starts before but extends beyond the maximum line length.
+-    To use a different maximum line length, the --max-line-length=n option
+-    may be added while invoking checkpatch.
++  **EMBEDDED_FILENAME**
++    Embedding the complete filename path inside the file isn't particularly
++    useful as often the path is moved around and becomes incorrect.
+ 
+-    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++  **FILE_PATH_CHANGES**
++    Whenever files are added, moved, or deleted, the MAINTAINERS file
++    patterns can be out of sync or outdated.
+ 
+-  **LONG_LINE_COMMENT**
+-    A comment starts before but extends beyond the maximum line length.
+-    To use a different maximum line length, the --max-line-length=n option
+-    may be added while invoking checkpatch.
+-
+-    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++    So MAINTAINERS might need updating in these cases.
+ 
+   **MEMSET**
+     The memset use appears to be incorrect.  This may be caused due to
+@@ -895,17 +1164,5 @@ Others
+ 
+     See: https://www.kernel.org/doc/html/latest/process/license-rules.html
+ 
+-  **TRAILING_STATEMENTS**
+-    Trailing statements (for example after any conditional) should be
+-    on the next line.
+-    Like::
+-
+-      if (x == y) break;
+-
+-    should be::
+-
+-      if (x == y)
+-              break;
+-
+   **TYPO_SPELLING**
+     Some words may have been misspelled.  Consider reviewing them.
 -- 
-js
-suse labs
+2.28.0
+
