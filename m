@@ -2,101 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6206A3A420A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2753A4247
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhFKMeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:34:01 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:39482 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbhFKMd7 (ORCPT
+        id S231626AbhFKMsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:48:31 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:49702 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231547AbhFKMs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:33:59 -0400
-Received: by mail-ot1-f42.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so2960109otu.6;
-        Fri, 11 Jun 2021 05:31:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pa41k2a2Rwm0Si9XJrZMd28ASYH/qozjAczbkbkfJ5k=;
-        b=IZrqC/0qj2dbQK12JuaB8jyKBmxh3jQkB0xk8y/y1FPcJ9JPVXX6nLVmr41CW0ePMY
-         YCAa/8zMoux9H78nRJy1qx7ytuyZ//0LL76ZvKGaHgBVvh1V+eQRYmtn9Im0cebRMwXu
-         ikqJPUEFASUKeYEcGUu9KGfIUK1mK/P1t6pBAvx7Cr0xmqtn86dj2Vo8TCpI8xDnAqJa
-         XnHKaMyz5tpE6NtAYfIbb5v3LqVOFVjJaEh+cmgwDbgjNV7svM7JnMyCDkGgic4cXNdG
-         7he3U68QU4uhVU3K4tVKQXMyZhy7jFkkAqGVpxZOubUVk+/xlGalwDQ8iew+6mew1eV7
-         44OQ==
-X-Gm-Message-State: AOAM530eWEhSTl5NRYik1bI2xGj9aKhTHyyVVBH4sSEl2J2CSd6eOW2d
-        +vyUCwf1FOKNP0wuNdWIRM6MFr+LFFVVUU+t4zOIl2o4
-X-Google-Smtp-Source: ABdhPJwCOyXsVkHlt17OBdjoNwNbDTluawZ39cTrzWv1WE+/fKEDDZQ8/tqHpMPnuZmn/OlHD33hAFHJoVpjwQi6Xus=
-X-Received: by 2002:a9d:3e53:: with SMTP id h19mr2947026otg.260.1623414709206;
- Fri, 11 Jun 2021 05:31:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210611105401.270673-1-ciorneiioana@gmail.com>
- <20210611105401.270673-4-ciorneiioana@gmail.com> <CAHp75VcfEbMecsGprNW33OtiddVw1MhmOVrtb9Gx4tKL5BjvYw@mail.gmail.com>
- <CAJZ5v0ipvAodoFhU4XK+cL2tf-0jExtMd2QUarMK0QPJQyeJxg@mail.gmail.com> <20210611120843.GK22278@shell.armlinux.org.uk>
-In-Reply-To: <20210611120843.GK22278@shell.armlinux.org.uk>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Jun 2021 14:31:38 +0200
-Message-ID: <CAJZ5v0ijr8jhuyJDDS8n=8L53R26rtnYHmO-g7S7gdLXH+P3Lw@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 03/15] net: phy: Introduce phy related fwnode functions
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ioana Ciornei <ciorneiioana@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Grant Likely <grant.likely@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
+        Fri, 11 Jun 2021 08:48:29 -0400
+X-UUID: 509a7522d56d4333bdcdd7bf70846178-20210611
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:CC:To:From:Subject:Message-ID; bh=NPSAquVn6OcH8zMMUCJI1xEdPAoRZoeMvYeki4aI62s=;
+        b=h/fO8S8EPp1isekHbOeHttgmkOPXMdSCzkIOqUO8K8v0ZwY9/778jdcI3+qU5Tf7a4nW1G8uxQCRtzupkTaAvZQYI4sHXSeFrhdrP35gWpDb8KXa1iHIlS9F8U2vI6B/h427rUnuL+rnUGlml73kFx9PiOsYhqg0ye8nDTUmgmU=;
+X-UUID: 509a7522d56d4333bdcdd7bf70846178-20210611
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 812319646; Fri, 11 Jun 2021 20:46:28 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 11 Jun 2021 20:46:27 +0800
+Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 11 Jun 2021 20:46:26 +0800
+Message-ID: <1623414736.22727.17.camel@mbjsdccf07>
+Subject: [PATCH v2 1/1] arm64: dts: mediatek: add MT6779 spi master dts node
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
+        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
+Date:   Fri, 11 Jun 2021 20:32:16 +0800
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 2:08 PM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Fri, Jun 11, 2021 at 01:40:59PM +0200, Rafael J. Wysocki wrote:
-> > I'm not sure why you want the above to be two if () statements instead of one?
-> >
-> > I would change the ordering anyway, that is
-> >
-> > if (!IS_ERR(phy_node) || is_acpi_node(fwnode))
-> >         return phy_node;
-> >
-> > And I think that the is_acpi_node() check is there to return the error
-> > code right away so as to avoid returning a "not found" error later.
-> >
-> > But I'm not sure if this is really necessary.  Namely, if nothing
-> > depends on the specific error code returned by this function, it would
-> > be somewhat cleaner to let the code below run if phy_node is an error
-> > pointer in the ACPI case, because in that case the code below will
-> > produce an error pointer anyway.
->
-> However, that opens the door to someone shipping "working" ACPI with
-> one of these names that we've taken the decision not to support on
-> ACPI firmware. Surely, it's much better that we don't accept the
-> legacy names so we don't allow such configurations to work.
+DQpUaGlzIHBhdGNoIGFkZCBhZGRyZXNzLWNlbGxzICYmIHNpemUtY2VsbHMgaW4gc3BpIG5vZGUg
+YmFzZWQgb24gcGF0Y2ggdjEuDQoNClNpZ25lZC1vZmYtYnk6IE1hc29uIFpoYW5nIDxNYXNvbi5a
+aGFuZ0BtZWRpYXRlay5jb20+DQotLS0NCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
+Njc3OS5kdHNpIHwgMTEyICsrKysrKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQs
+IDExMiBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21l
+ZGlhdGVrL210Njc3OS5kdHNpIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3Nzku
+ZHRzaQ0KaW5kZXggMzcwZjMwOWQzMmRlLi5jODFlNzY4NjVkMWIgMTAwNjQ0DQotLS0gYS9hcmNo
+L2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpDQorKysgYi9hcmNoL2FybTY0L2Jv
+b3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpDQpAQCAtMjE5LDYgKzIxOSwxMTggQEANCiAJCQlz
+dGF0dXMgPSAiZGlzYWJsZWQiOw0KIAkJfTsNCiANCisJCXNwaTA6IHNwaTBAMTEwMGEwMDAgew0K
+KwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlh
+dGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNl
+bGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAg
+MHgxMTAwYTAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0MyBJUlFf
+VFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5Q
+TExfRDVfRDI+LA0KKwkJCQk8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJPCZpbmZyYWNm
+Z19hbyBDTEtfSU5GUkFfU1BJMD47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJz
+ZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsNCisNCisJCXNwaTE6IHNwaTFAMTEwMTAwMDAgew0K
+KwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlh
+dGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNl
+bGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAg
+MHgxMTAxMDAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0NyBJUlFf
+VFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5Q
+TExfRDVfRDI+LA0KKwkJCQk8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJPCZpbmZyYWNm
+Z19hbyBDTEtfSU5GUkFfU1BJMT47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJz
+ZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsNCisNCisJCXNwaTI6IHNwaTJAMTEwMTIwMDAgew0K
+KwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlh
+dGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNl
+bGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAg
+MHgxMTAxMjAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MiBJUlFf
+VFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5Q
+TExfRDVfRDI+LA0KKwkJCQkgPCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQorCQkJCTwmaW5mcmFj
+ZmdfYW8gQ0xLX0lORlJBX1NQSTI+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAi
+c2VsLWNsayIsICJzcGktY2xrIjsNCisJCX07DQorDQorCQlzcGkzOiBzcGkzQDExMDEzMDAwIHsN
+CisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KKwkJCQkgICAgICJtZWRp
+YXRlayxtdDY3NjUtc3BpIjsNCisJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1j
+ZWxscyA9IDwwPjsNCisJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDww
+IDB4MTEwMTMwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNTMgSVJR
+X1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlO
+UExMX0Q1X0QyPiwNCisJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KKwkJCQkgPCZpbmZy
+YWNmZ19hbyBDTEtfSU5GUkFfU1BJMz47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIs
+ICJzZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsNCisNCisJCXNwaTQ6IHNwaTRAMTEwMTgwMDAg
+ew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1l
+ZGlhdGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXpl
+LWNlbGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0g
+PDAgMHgxMTAxODAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1NiBJ
+UlFfVFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01B
+SU5QTExfRDVfRDI+LA0KKwkJCQkgPCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQorCQkJCSA8Jmlu
+ZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk0PjsNCisJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xr
+IiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQorCQl9Ow0KKw0KKwkJc3BpNTogc3BpNUAxMTAxOTAw
+MCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCisJCQkJICAgICAi
+bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQorCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJI3Np
+emUtY2VsbHMgPSA8MD47DQorCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCisJCQlyZWcg
+PSA8MCAweDExMDE5MDAwIDAgMHgxMDAwPjsNCisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTU3
+IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCisJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1Bf
+TUFJTlBMTF9ENV9EMj4sDQorCQkJCTwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KKwkJCQk8Jmlu
+ZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk1PjsNCisJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xr
+IiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQorCQl9Ow0KKw0KKwkJc3BpNjogc3BpNkAxMTAxZDAw
+MCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCisJCQkJICAgICAi
+bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQorCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJI3Np
+emUtY2VsbHMgPSA8MD47DQorCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCisJCQlyZWcg
+PSA8MCAweDExMDFkMDAwIDAgMHgxMDAwPjsNCisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQ0
+IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCisJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1Bf
+TUFJTlBMTF9ENV9EMj4sDQorCQkJCSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJIDwm
+aW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTY+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1j
+bGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCisJCX07DQorDQorCQlzcGk3OiBzcGk3QDExMDFl
+MDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KKwkJCQkgICAg
+ICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkj
+c2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KKwkJCXJl
+ZyA9IDwwIDB4MTEwMWUwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAx
+NDUgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RP
+UF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KKwkJCQkg
+PCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJNz47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50
+LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsNCisNCiAJCWF1ZGlvOiBjbG9jay1j
+b250cm9sbGVyQDExMjEwMDAwIHsNCiAJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1h
+dWRpbyIsICJzeXNjb24iOw0KIAkJCXJlZyA9IDwwIDB4MTEyMTAwMDAgMCAweDEwMDA+Ow0KDQoN
+CkhpIE1hdHRoaWFzOg0KDQoJUGxlYXNlIGlnbm9yZSBsYXN0IG1haWwsIG15IGVhbWlsIGhhcyBh
+IGxpdHRsZSBidWd+DQogICAgICAgIEknbSBzb3JyeSB0byBkaXN0dXJiIHlvdX4NCgl0aGlzIHBh
+dGNoIGlzIHN0YXkgaGVyZSBmb3IgYSBsb25nIHRpbWUsIERvIHlvdSBoYXZlIGFueSBzdWdnZXN0
+aW9ucyBhYm91dCB0aGlzIHBhdGNoPyANCiAgICAgICAgV2UgaG9wZSB0aGlzIHBhdGNoIHdpbGwg
+YmUgbWVyZ2VkIGFzIHNvb24gYXMgcG9zc2libGUsIElmIHlvdSBoYXZlIGFueSBjb25jZXJuLCBJ
+IHdpbGwgZml4IGl0IGluIHRpbWUuDQoNCiAgICAgICAgTG9va2luZyBmb3J3YXJkIHRvIHlvdXIg
+cmVwbHl+ICANCg0KVGhhbmtzDQpNYXNvbg0KDQo=
 
-Fair enough.
