@@ -2,89 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582FE3A3A87
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575E73A3A80
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhFKDxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhFKDxe (ORCPT
+        id S231362AbhFKDvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:51:51 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3839 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhFKDvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:53:34 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6350EC0617AD
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:51:24 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id e20so1423514pgg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=wkd+psqbxttkDtNMuavQIcbFyZNe+XjsMd8VM7sojkI=;
-        b=JE3Ka7tzFc86cVsvB8jDnClacgUNXr8fr7M5bfL86aoyBQTPxUZSC4+jzCWP/GjsYG
-         Y/05AKjPYV/OGQxQCbP9TJLaKvQE5g3Di6k9LkUVA3nxmGnyCIOXzCKw7GEI/nqvxs0o
-         8VdeX7skBNzJcjawD84AhVUFW3Raoy2hhkXzi8+9mCCXb9VxHueEEyobN4ShgqjOaF7c
-         MwbFzvOCsTmjs7dv3ieBDdoBvJDVW/kB8R07aNgCzcOtxaa+9n9iHp8qI0MFIs4gnv5/
-         boJQmapv6vXP+XO+Lrc5h8UpfViRqnhexKwWM/0MqR0/OqBFvI0KraVHMcmgtrWeA3a3
-         0CDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=wkd+psqbxttkDtNMuavQIcbFyZNe+XjsMd8VM7sojkI=;
-        b=c48IvtghcaR3fgaSV4NFMOAZZAjf99s4v1coc0QyWwkjaAfeAP4cSieV7WfhpkrhLk
-         MNVYGsAVlNCj3KGQwINeGI15/Z9I42TpfTXyluzJLi/ynd6DdbrGB/T90oOus5Wygps4
-         7s7HX5oILhyd+NFwGIh8txGUbkFItKx2Laf+1qH8oUXXYyvYnIbQsva1cV9+NBqHJpal
-         uXJhr0ya2NWi2S7BogHFvLP5+aMEg3b9Hfw67Blc2EDW47drgQRRNiGgjjsnY4mftMNr
-         yg8h5vcLoyR8YWFbTw1yoDpX+6too9k7GIA1vSi3slzqKqGQeRFDs6CvIBXc91jk3qPv
-         Y0vg==
-X-Gm-Message-State: AOAM531bLvYr/J8GBqI1YqdtWU/JNevbRPlFqReNtVOL0k7XCtlg5Awc
-        pDrhNmCWAmHIF4kuH7QhRMIG+A==
-X-Google-Smtp-Source: ABdhPJxaRJdzooBXF+rIKkLISjncPrqsB+/j/AV6w+YPi8Nos9bRbP6hkuiTkZI1pGFg/vOxEfQ0uQ==
-X-Received: by 2002:a63:1453:: with SMTP id 19mr1589790pgu.270.1623383483960;
-        Thu, 10 Jun 2021 20:51:23 -0700 (PDT)
-Received: from tyrell.hq.igel.co.jp (napt.igel.co.jp. [219.106.231.132])
-        by smtp.gmail.com with ESMTPSA id n37sm3565593pfv.47.2021.06.10.20.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 20:51:23 -0700 (PDT)
-From:   Shunsuke Mie <mie@igel.co.jp>
-Cc:     mie@igel.co.jp, Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: endpoint: Fix use after free in pci_epf_remove_cfs()
-Date:   Fri, 11 Jun 2021 12:50:44 +0900
-Message-Id: <20210611035044.87639-1-mie@igel.co.jp>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        Thu, 10 Jun 2021 23:51:48 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1RYg3LmdzXdkq;
+        Fri, 11 Jun 2021 11:44:55 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 11:49:45 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
+ 2021 11:49:45 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <codrin.ciubotariu@microchip.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>
+Subject: [PATCH -next] ASoC: atmel-pdmic: Use devm_platform_get_and_ioremap_resource()
+Date:   Fri, 11 Jun 2021 11:53:51 +0800
+Message-ID: <20210611035351.3878091-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All of entries are freed in a loop, however, the freed entry is accessed
-by list_del() after the loop.
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
-Fixes: ef1433f ("PCI: endpoint: Create configfs entry for each pci_epf_device_id table entry")
-Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/pci/endpoint/pci-epf-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/atmel/atmel-pdmic.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
-index e9289d10f822..538e902b0ba6 100644
---- a/drivers/pci/endpoint/pci-epf-core.c
-+++ b/drivers/pci/endpoint/pci-epf-core.c
-@@ -202,8 +202,10 @@ static void pci_epf_remove_cfs(struct pci_epf_driver *driver)
- 		return;
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index 8e1d8230b180..42117de299e7 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -620,8 +620,7 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
- 	mutex_lock(&pci_epf_mutex);
--	list_for_each_entry_safe(group, tmp, &driver->epf_group, group_entry)
-+	list_for_each_entry_safe(group, tmp, &driver->epf_group, group_entry) {
-+		list_del(&group->group_entry);
- 		pci_ep_cfs_remove_epf_group(group);
-+	}
- 	list_del(&driver->epf_group);
- 	mutex_unlock(&pci_epf_mutex);
- }
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	io_base = devm_ioremap_resource(dev, res);
++	io_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(io_base))
+ 		return PTR_ERR(io_base);
+ 
 -- 
-2.17.1
+2.25.1
 
