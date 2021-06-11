@@ -2,191 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB6E3A3CEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D553A3CF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhFKHWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:22:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42636 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230450AbhFKHWP (ORCPT
+        id S231196AbhFKHYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 03:24:41 -0400
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:40478 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230179AbhFKHYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:22:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623396017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gYjg/yEV7PUq2GYWP2SW746eR9Kq3NCgJS7G1o1Lc6A=;
-        b=ev14qAtnULFtl91jy8TroTNm+kgS3wZjhQZhxo1Xs/UgfluVSDzW7C6NWXKO24Gcqa7PLL
-        C3Y35EnBGD1EEhDF4cmN4JnVM0Obc/OD42RtKZcfUnDCLIcasJHY53uKYVX9VTFCi/0nco
-        2GeG28VNXUW7rGvLY5k36DUkHOOb+AY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-Bkg0O-XKOui90ltMAJwgVA-1; Fri, 11 Jun 2021 03:20:15 -0400
-X-MC-Unique: Bkg0O-XKOui90ltMAJwgVA-1
-Received: by mail-wr1-f70.google.com with SMTP id z3-20020adfdf830000b02901198337bc39so2210010wrl.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:20:15 -0700 (PDT)
+        Fri, 11 Jun 2021 03:24:40 -0400
+Received: by mail-lj1-f182.google.com with SMTP id x14so8321837ljp.7;
+        Fri, 11 Jun 2021 00:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=11DN3KsSo4/80RPJTDsiyxtNdND4c0Ujrb4zwDX8jnY=;
+        b=D1To7pa+GKDxor4wJaJL3aAg6YvrNvkyLPjX8wmEXC9ovHFYc0VOzSfMeSpJww8PqQ
+         sXzi30BPekZdL23kLoeS+Oj0/FPXqxO6KRQi5LvILc08bh7kszn0Q9YJ+He3A2ozTLhR
+         OIqLMF3LDqW26w1P4AHZF3jgw3jFbd/UIkj/9nODa1S1O5dvKF/Iudt34iONYIzOGTfn
+         5DGia1rHtnp2pB755a33YW38XArSJIJ3vLH5zuoVhIQo6ZuCDlBT+dd5LiroUW+2Ha0k
+         ejNrrj5k95DWsHAavYrVXlY+6YCZFu+S75gRBZaqg9hXrSesQc5mZQ7ju/g1PKuHuTBb
+         IxcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=gYjg/yEV7PUq2GYWP2SW746eR9Kq3NCgJS7G1o1Lc6A=;
-        b=b3EkoHVQjJK4fVlEDlFIBDcKzTNJoU0HEXO0Q7nipu8m1wdRv4bl+Kd15IVOuxM5H+
-         khJwq55uYy3wrsm8C2qp7qVFkRUQMAg81wcDrBZxIMEgdA5hb43R3PwSAU8//Bm/MRup
-         U/blXH3APQDRv1F30ZREkYbjG6zAu248m+VNHE7sqMoGVqGWTBFbkDFttdJ6vyPIDwB0
-         FhBALW8k/UYF8hemYrDZlP81VgLNAmb3tb6zxpR6HnFUrf1pEg8XG+M+ipRkxgLiLvDf
-         m7ChJEGSIOoGt0ErYTO+VAtFgV8DpQQmilWcVjPOMD6MGE+Zhj5K/l1eOqpKW8XligtQ
-         UWUA==
-X-Gm-Message-State: AOAM530XUmic37hEHB2rogh/CSrt6cHH9c6XYvqoEH+7bpCihCeg4fue
-        8m/64kZ9JMyXM7VYxIM8RLUjMg8zBG22fybRxIZ1VMMPPpZjuZ82EalC6n4FiD9erc68uF+r2sL
-        bymfmgD+oKVCYrOMo/T69AFsl
-X-Received: by 2002:a05:600c:1d1b:: with SMTP id l27mr2490760wms.62.1623396014347;
-        Fri, 11 Jun 2021 00:20:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxHECOXihNxXks5FPLEuvHTTQDpLVvf1IgC3Th2TxpBzLVOMuJTQ6q1LPQpSSDkIJn2XS3GA==
-X-Received: by 2002:a05:600c:1d1b:: with SMTP id l27mr2490733wms.62.1623396014106;
-        Fri, 11 Jun 2021 00:20:14 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id m7sm6299020wrv.35.2021.06.11.00.20.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 00:20:13 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Subject: Re: [PATCH v5 3/7] KVM: x86: hyper-v: Move the remote TLB flush
- logic out of vmx
-In-Reply-To: <3b74b538-0b28-7a00-0b26-0f926cd8f37e@redhat.com>
-References: <cover.1622730232.git.viremana@linux.microsoft.com>
- <4f4e4ca19778437dae502f44363a38e99e3ef5d1.1622730232.git.viremana@linux.microsoft.com>
- <87y2bix8y1.fsf@vitty.brq.redhat.com>
- <3b74b538-0b28-7a00-0b26-0f926cd8f37e@redhat.com>
-Date:   Fri, 11 Jun 2021 09:20:12 +0200
-Message-ID: <87k0n0yij7.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=11DN3KsSo4/80RPJTDsiyxtNdND4c0Ujrb4zwDX8jnY=;
+        b=lk+4T8PVihBsFnWpsQjJb8KNT6p/vwo46QY8+7xYvJN1kvwBF11lpx+YOTGHRyjOpu
+         9vziRA5cnXqS1zPqDjQBbEqMewA+ZYZycLosB0xKCTXoRxXO5MAX7QN9WdFIIJZspab1
+         OWPeQ1g1ahpYSeoCkQCvACXSHKaRFK12QNqXKex5+0td18G2ZJenSkSe3FBwpvrLAQX1
+         KRUrBdSi6V7zr0PZu9t2uYS8W5Ss/5Qi4OBpgXBf7KE2TYRzDHj0AopOmDMzg0yBkXYA
+         n5thLpKcMNcFvKpu5iCl+l6RTrfx+SqJSHyTBYhWIF5UfOcCQxIKZjersNRRLcnpLXW5
+         0rLA==
+X-Gm-Message-State: AOAM533YVYykElA4rGZo2OUyn9QdzU6C7mxwGyr/0frOAJffkiwHaJak
+        9hxc/mgk71P8ATcw+JlA930=
+X-Google-Smtp-Source: ABdhPJwYzfZlCV/RoIxcurSHFnchRiDyBAbSa6uhmz7mqDAUgOx/s5ZEhBGtlXTmNWVNk/rK0sOHCQ==
+X-Received: by 2002:a2e:390b:: with SMTP id g11mr1850313lja.505.1623396102320;
+        Fri, 11 Jun 2021 00:21:42 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
+        by smtp.googlemail.com with ESMTPSA id u15sm509188lfs.129.2021.06.11.00.21.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 00:21:41 -0700 (PDT)
+Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>
+References: <20210609112806.3565057-1-thierry.reding@gmail.com>
+ <20210609112806.3565057-2-thierry.reding@gmail.com>
+ <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
+ <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
+ <a3110fbd-c4af-0317-5a6d-1f780f1dac91@gmail.com>
+ <1400979c-c7a7-9618-1168-70185ed10546@canonical.com>
+ <8d8d019a-34c1-50bd-5eba-ce361c263d35@gmail.com>
+ <57f8e55d-d708-f304-cf35-3036ec2e64f5@gmail.com>
+ <99f98088-fed4-45bf-b0a1-241bfc896487@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f5112945-1b07-8760-4180-4d7152b7dcba@gmail.com>
+Date:   Fri, 11 Jun 2021 10:21:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <99f98088-fed4-45bf-b0a1-241bfc896487@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+11.06.2021 09:50, Krzysztof Kozlowski пишет:
+> On 10/06/2021 18:23, Dmitry Osipenko wrote:
+>> 10.06.2021 18:50, Dmitry Osipenko пишет:
+>>> 10.06.2021 09:43, Krzysztof Kozlowski пишет:
+>>>> The stubs might be good idea anyway, but the driver explicitly needs for
+>>>> runtime working reservedmem, so it should select it.
+>>>
+>>> The OF and reservedmem are both selected by the ARCH for the runtime
+>>> use. They may not be selected in the case of compile-testing.
+>>>
+>>> Both OF core and reservedmem provide stubs needed for compile-testing,
+>>> it's only the RESERVEDMEM_OF_DECLARE() that is missing the stub. Adding
+>>> the missing stub should be a more appropriate solution than adding extra
+>>> Kconfig dependencies, IMO.
+> 
+> Ah, in such case everything looks good. Stubs is indeed proper choice.
 
-> On 10/06/21 13:20, Vitaly Kuznetsov wrote:
->
->>> +static inline void hv_track_root_tdp(struct kvm_vcpu *vcpu, hpa_t root=
-_tdp)
->>> +{
->>> +	struct kvm_arch *kvm_arch =3D &vcpu->kvm->arch;
->>> +
->>> +	if (kvm_x86_ops.tlb_remote_flush =3D=3D hv_remote_flush_tlb) {
->>> +		spin_lock(&kvm_arch->hv_root_tdp_lock);
->>> +		vcpu->arch.hv_root_tdp =3D root_tdp;
->>> +		if (root_tdp !=3D kvm_arch->hv_root_tdp)
->>> +			kvm_arch->hv_root_tdp =3D INVALID_PAGE;
->>> +		spin_unlock(&kvm_arch->hv_root_tdp_lock);
->>> +	}
->>> +}
->>> +#else
->>> +static inline void hv_track_root_tdp(struct kvm_vcpu *vcpu, hpa_t root=
-_tdp)
->>> +{
->>> +}
->>> +#endif
->>> +#endif
->>=20
->> Super-nitpick: I'd suggest adding /* __ARCH_X86_KVM_KVM_ONHYPERV_H__ */
->> to the second '#endif' and /* IS_ENABLED(CONFIG_HYPERV) */ to '#else'
->> and the first one: files/functions tend to grow and it becomes hard to
->> see where the particular '#endif/#else' belongs.
->
-> Done, thanks.  I've also changed the #if to just "#ifdef CONFIG_HYPERV",=
-=20
-> since IS_ENABLED is only needed in C statements.
+Although, I see that there are only two Kconfigs that have
+OF_RESERVED_MEM, one defines the OF_RESERVED_MEM, the other is QCOM
+Kconfig which depends on OF_RESERVED_MEM. The OF_RESERVED_MEM is enabled
+by default in defconfig.
 
-kvm/queue fails to compile and I blame this change:
+You're right, we need the Kconfig change to be entirely correct, since
+driver won't work properly without OF_RESERVED_MEM.
 
-In file included from arch/x86/kvm/svm/svm_onhyperv.c:16:
-arch/x86/kvm/svm/svm_onhyperv.h: In function =E2=80=98svm_hv_hardware_setup=
-=E2=80=99:
-arch/x86/kvm/svm/svm_onhyperv.h:56:34: error: =E2=80=98hv_remote_flush_tlb=
-=E2=80=99 undeclared (first use in this function); did you mean =E2=80=98sv=
-m_flush_tlb=E2=80=99?
-   56 |   svm_x86_ops.tlb_remote_flush =3D hv_remote_flush_tlb;
-      |                                  ^~~~~~~~~~~~~~~~~~~
-      |                                  svm_flush_tlb
-arch/x86/kvm/svm/svm_onhyperv.h:56:34: note: each undeclared identifier is =
-reported only once for each function it appears in
-arch/x86/kvm/svm/svm_onhyperv.h:58:5: error: =E2=80=98hv_remote_flush_tlb_w=
-ith_range=E2=80=99 undeclared (first use in this function)
-   58 |     hv_remote_flush_tlb_with_range;
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-make[2]: *** [scripts/Makefile.build:272: arch/x86/kvm/svm/svm_onhyperv.o] =
-Error 1
-make[2]: *** Waiting for unfinished jobs....
-In file included from arch/x86/kvm/svm/svm.c:47:
-arch/x86/kvm/svm/svm_onhyperv.h: In function =E2=80=98svm_hv_hardware_setup=
-=E2=80=99:
-arch/x86/kvm/svm/svm_onhyperv.h:56:34: error: =E2=80=98hv_remote_flush_tlb=
-=E2=80=99 undeclared (first use in this function); did you mean =E2=80=98sv=
-m_flush_tlb=E2=80=99?
-   56 |   svm_x86_ops.tlb_remote_flush =3D hv_remote_flush_tlb;
-      |                                  ^~~~~~~~~~~~~~~~~~~
-      |                                  svm_flush_tlb
-arch/x86/kvm/svm/svm_onhyperv.h:56:34: note: each undeclared identifier is =
-reported only once for each function it appears in
-arch/x86/kvm/svm/svm_onhyperv.h:58:5: error: =E2=80=98hv_remote_flush_tlb_w=
-ith_range=E2=80=99 undeclared (first use in this function)
-   58 |     hv_remote_flush_tlb_with_range;
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-make[2]: *** [scripts/Makefile.build:272: arch/x86/kvm/svm/svm.o] Error 1
-arch/x86/kvm/vmx/vmx.c: In function =E2=80=98hardware_setup=E2=80=99:
-arch/x86/kvm/vmx/vmx.c:7752:34: error: =E2=80=98hv_remote_flush_tlb=E2=80=
-=99 undeclared (first use in this function)
- 7752 |   vmx_x86_ops.tlb_remote_flush =3D hv_remote_flush_tlb;
-      |                                  ^~~~~~~~~~~~~~~~~~~
-arch/x86/kvm/vmx/vmx.c:7752:34: note: each undeclared identifier is reporte=
-d only once for each function it appears in
-arch/x86/kvm/vmx/vmx.c:7754:5: error: =E2=80=98hv_remote_flush_tlb_with_ran=
-ge=E2=80=99 undeclared (first use in this function)
- 7754 |     hv_remote_flush_tlb_with_range;
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+config TEGRA210_EMC
+	tristate "NVIDIA Tegra210 External Memory Controller driver"
+-	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
++	depends on (ARCH_TEGRA_210_SOC && OF_RESERVED_MEM) || COMPILE_TEST
 
-
-(Note: CONFIG_HYPERV can be 'm'.)
-
-The following:
-
-index 96da53edfe83..1c67abf2eba9 100644
---- a/arch/x86/kvm/kvm_onhyperv.h
-+++ b/arch/x86/kvm/kvm_onhyperv.h
-@@ -6,7 +6,7 @@
- #ifndef __ARCH_X86_KVM_KVM_ONHYPERV_H__
- #define __ARCH_X86_KVM_KVM_ONHYPERV_H__
-=20
--#ifdef CONFIG_HYPERV
-+#if IS_ENABLED(CONFIG_HYPERV)
- int hv_remote_flush_tlb_with_range(struct kvm *kvm,
-                struct kvm_tlb_range *range);
- int hv_remote_flush_tlb(struct kvm *kvm);
-
-saves the day for me.
-
---=20
-Vitaly
-
+I will send that change later today.
