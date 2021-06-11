@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA9E3A46F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAE43A46F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhFKQtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:49:01 -0400
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:42713 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbhFKQse (ORCPT
+        id S231215AbhFKQtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:49:47 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:35440 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231542AbhFKQtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:48:34 -0400
-Received: by mail-pl1-f172.google.com with SMTP id v13so3118716ple.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pSn/3rKhZD4VQR1duMebe9NMEZp7D9aGsF3EVZJ2bZ8=;
-        b=qiWmF7hOcv7uSMDmZPMC4gc/mCWZEC9RAZwYwhWYgDPoZKMmsF048KMJo8AnJxik6m
-         MPu1V5/7WLOsjZ6iFIXWQwCGPM64EZOoYKVZY1HdXFtDzHJa15sq7xxbxC4uJU4JI0Lx
-         GRzZE2+AyNS9DFyokMmD3oAHB99ClrsiaYDP3ZHBPhI6Wzq4wDyCkhxV8Yz9ecrjGEU/
-         0Bx59WHWPVAK+KeBohoZ2MoGo0TCkUtAmy77BL9aCjvCvnAIi1eop3S9JkGIcBr7WpLq
-         g0Z1dxaAL5GGLyJdD2MMdpWBykqbiCBAyyJkRiB3vDj1IOfFli/OjIzjAQn/zTBvY19n
-         3t3A==
+        Fri, 11 Jun 2021 12:49:13 -0400
+Received: by mail-ot1-f47.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so3766272otg.2;
+        Fri, 11 Jun 2021 09:47:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pSn/3rKhZD4VQR1duMebe9NMEZp7D9aGsF3EVZJ2bZ8=;
-        b=Be89ihozsxfwqhZP2y/pfu0wnvOHbo1MlcVSSzsQAlG8H/9s0RJqxUlmAaC4VahGaI
-         RJGpmsl3uDpKZuskKAEfuLhrSfZT/3Jjx5doA8An3IdnSWO+t4k0v5jAt0VwvFJWLogo
-         VzuEK311rzvd4d2FLrsnafvjN0VElG1/7FtbSsluyCubo4M5eChuN+uqU/6rDKrH3K9G
-         rMEecAsHPpOH9I7tnzHeJ0JSGM3ett9f9gLJgVX9TYnU28/Z9L1grD02FZ8DNhoY1CWW
-         yKnFX99TmMwBFA3LrRThKRt5XBHFgHCWF2mjpOvL3wYvQO2YYz7yn2RjcjeXPpsEmKUY
-         hYTg==
-X-Gm-Message-State: AOAM530QXGkWrzAV3BEnU2sPTzQ5x0mfX3MxIxPGodekz3ueG/k3Ufdz
-        K3wiZTZrisg+bYFB7k9cg2F+Iw==
-X-Google-Smtp-Source: ABdhPJxDT1f/EE5aeu5oZwt9SobQ0DVlRycA1YaWGjtp1v2fJ+NO44pxPCYQhdXfHJEeOtVKXsHfkw==
-X-Received: by 2002:a17:902:eaca:b029:109:7460:cc41 with SMTP id p10-20020a170902eacab02901097460cc41mr4719564pld.4.1623429936265;
-        Fri, 11 Jun 2021 09:45:36 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w59sm5450326pjj.13.2021.06.11.09.45.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 09:45:35 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 16:45:31 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86/mmu: Calculate and check "full" mmu_role for
- nested MMU
-Message-ID: <YMOTK7eYytpw58Vc@google.com>
-References: <20210610220026.1364486-1-seanjc@google.com>
- <b2084f55-3ce5-57c4-f580-d6a2de6ce612@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QyxLEXh/TeBpOGT4HbU2trqOosLmsNMbx1D8aYLqPns=;
+        b=qebnbQZJwyEtpLLbvogIeQ4tFK0X0HKb5O5bu7xVUmaOEDy4lcZnU1SUsMg8iX9jDI
+         YFOL06yN8wzANtPQOKYBM8W3EIaKmQDGDaPX3JCsG6RWRpmlIT3Xz+ukPOXyUChz3jYY
+         0C6AvOHP+tDrVHthnTAcbM0sLyV7QvD6qN1dn7eO0hDI5dovI0eSySpoHSgB+HyS5uLc
+         iy/dMDnCxynFnrVwLAv2CSEGv3gA1ezUos8uSM0avjQjiFS3M0F+qVNQ5J2aNCTEFvhx
+         8YBE5hTuQ9LwyN4Ue+eZgthI/hnVUaWtizDUWgV1ngHWlrSZZX6SoALn7ZjNzcpnL2i5
+         QaAw==
+X-Gm-Message-State: AOAM533o1MVgBIe1nBiU1IzNHnFD32pAS7EEfxGbKngyWCiyJbU1Yf4H
+        BbWzF1CpL3NTbW8ZiKAoiqAS3+IrR1PdXZh1x2I=
+X-Google-Smtp-Source: ABdhPJxd4tRRtlaTouCUTJKzu6H9z7DzttA24A1vsvGvlnrhqTlvWcV5YAOnG9/Zr3sIn+JB0eOkzw1Ro1P2pYM1IVc=
+X-Received: by 2002:a9d:6c4d:: with SMTP id g13mr3938217otq.321.1623430034726;
+ Fri, 11 Jun 2021 09:47:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2084f55-3ce5-57c4-f580-d6a2de6ce612@redhat.com>
+References: <20210608025427.2781445-1-libaokun1@huawei.com>
+In-Reply-To: <20210608025427.2781445-1-libaokun1@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 11 Jun 2021 18:47:03 +0200
+Message-ID: <CAJZ5v0iZwwkKznqxzbkrDK8+gF1todJvg6Yy4DzvZ8enN5khnQ@mail.gmail.com>
+Subject: Re: [PATCH -next] x86/power: fix doc warnings in cpu.c
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Yue Haibing <yuehaibing@huawei.com>, yangjihong1@huawei.com,
+        yu kuai <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021, Paolo Bonzini wrote:
-> On 11/06/21 00:00, Sean Christopherson wrote:
-> > things like the number of levels in the guest's page tables are
-> > surprisingly important when walking the guest page tables
-> 
-> Along which path though?  I would have naively expected those to be driven
-> only by the context->root_level.
+On Tue, Jun 8, 2021 at 4:45 AM Baokun Li <libaokun1@huawei.com> wrote:
+>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  arch/x86/power/cpu.c:76: warning: Function parameter or
+>   member 'ctxt' not described in '__save_processor_state'
+>  arch/x86/power/cpu.c:192: warning: Function parameter or
+>   member 'ctxt' not described in '__restore_processor_state'
+>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  arch/x86/power/cpu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/power/cpu.c b/arch/x86/power/cpu.c
+> index 3a070e7cdb8b..2640b9128479 100644
+> --- a/arch/x86/power/cpu.c
+> +++ b/arch/x86/power/cpu.c
+> @@ -60,7 +60,7 @@ static void msr_restore_context(struct saved_context *ctxt)
+>  /**
+>   *     __save_processor_state - save CPU registers before creating a
+>   *             hibernation image and before restoring the memory state from it
+> - *     @ctxt - structure to store the registers contents in
+> + *     @ctxt: structure to store the registers contents in
 
-The functional code is driven by context->root_level, but if KVM doesn't include
-the level in the mmu_role then it will fail to update context->root_level when
-L2 changes from 32-bit PAE to 64-bit.  If all the CR0/CR4/EFER bits remain the
-same, only the level will differ.  Without this patch, role.level is always '0'
-for the nested MMU.
+Any chance to fix the formatting of this kerneldoc comment too in this patch?
+
+>   *
+>   *     NOTE: If there is a CPU register the modification of which by the
+>   *     boot kernel (ie. the kernel used for loading the hibernation image)
+> @@ -183,7 +183,7 @@ static void fix_processor_context(void)
+>  /**
+>   * __restore_processor_state - restore the contents of CPU registers saved
+>   *                             by __save_processor_state()
+> - * @ctxt - structure to load the registers contents from
+> + * @ctxt: structure to load the registers contents from
+>   *
+>   * The asm code that gets us here will have restored a usable GDT, although
+>   * it will be pointing to the wrong alias.
+> --
+> 2.31.1
+>
