@@ -2,186 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70203A3DAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED773A3DB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhFKIDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhFKIDW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:03:22 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066ECC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:01:25 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id e22so1796852pgv.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:01:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dDD6ozQuHkfsjJXIeMviIaHXaasyFUacyXt/Ls+8R/4=;
-        b=H2vJeZvjIh9pgu2UG0sKGBhDj+x8aQhG/MfT1Cxtztd+CblLvs4QSwrLvNWyQ01BVy
-         i6rUSqwWT6YxqHNCSJ0o4eDEUa0E51TjjqikU8ZGPtTjHvKJxcqAci0jvgffQrMqqyPl
-         5GWj7dgoSke+cSE0YiCPmRTujqWqKuHKMMo10p8azW1mM7x/cuOtHMabsZUBU5OBD2+a
-         lUX+G37CNYrOL0Gt8PzG3CIysFGvU9gqaETpWcWCaPrG5IBtUfmv9N79D9bToGBjgCRR
-         i2ThzGT/BoEAOF2sV+5EkiQxPUywzJwdzzTtLePbsw7q6Z2f4vkYfFjgP4ws+Otgcu8Q
-         G/+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dDD6ozQuHkfsjJXIeMviIaHXaasyFUacyXt/Ls+8R/4=;
-        b=Fpa4UFPnhTNCw1gTG/ZKW59CUTpUN3JO5kNkMs87eZXdQPHvXjdvTHs2wzrAswwXbZ
-         1FcxNozEQqe70tguFJa62U5Di9Z0g+VYYPeln6RpLB5z+H/HDoVVF0hOm6Gpr9VZHloT
-         qcW34/gRKu37rWBUVXkD07bhzCre5CjUwYhe4Ijd17tD6ovF3JjyrvDs4fdlPvmj82IN
-         zBu2TwycIIzcPM9zugrw5B5hC+chNury/CzTLE8fcHD4GwMzAdaOVd9UgRQLxuGK/jG/
-         ALm0v07x+cltIEsF2Zk6RzKbe0/qA9P2RkuU1Y/TnCN87VDZcwegATitM+5Rku6Fzl6j
-         jC6A==
-X-Gm-Message-State: AOAM532DxXXDKB8iep0Y4qQjSXXhd0g8Aim4pQzikLXcJAO+RIrhjjYc
-        kLsR8OUR+62yia/b5EzqWtczYA==
-X-Google-Smtp-Source: ABdhPJzQqL9BA7ZqXfmHsqjU1YOZ0ByTX9+TANEafYUiavQpaP9W5HLlNZKSJtUVqq4l4MmWcghzvA==
-X-Received: by 2002:a62:2c92:0:b029:2ef:6118:a934 with SMTP id s140-20020a622c920000b02902ef6118a934mr7063663pfs.80.1623398484479;
-        Fri, 11 Jun 2021 01:01:24 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id j4sm4258445pfj.111.2021.06.11.01.01.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 01:01:23 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 13:31:22 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-Message-ID: <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
- <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
- <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S231601AbhFKIDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:03:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230188AbhFKIDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 04:03:41 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F0CD61027;
+        Fri, 11 Jun 2021 08:01:43 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lrc6n-006v6z-J1; Fri, 11 Jun 2021 09:01:41 +0100
+Date:   Fri, 11 Jun 2021 09:01:40 +0100
+Message-ID: <87fsxorfrv.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
+Cc:     <linux-kernel@vger.kernel.org>, Wudi Wang <wangwudi@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] irqchip/irq-gic-v3-its: Add the checking of ITS version for KVM
+In-Reply-To: <1623390746-54627-1-git-send-email-zhangshaokun@hisilicon.com>
+References: <1623390746-54627-1-git-send-email-zhangshaokun@hisilicon.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: zhangshaokun@hisilicon.com, linux-kernel@vger.kernel.org, wangwudi@hisilicon.com, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-06-21, 09:42, Geert Uytterhoeven wrote:
-> Hi Viresh, Linus,
+On Fri, 11 Jun 2021 06:52:26 +0100,
+Shaokun Zhang <zhangshaokun@hisilicon.com> wrote:
 > 
-> On Fri, Jun 11, 2021 at 5:56 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > On 10-06-21, 22:46, Linus Walleij wrote:
-> > > thanks for working on this, it's a really interesting driver.
-> > >
-> > > My first question is conceptual:
-> > >
-> > > We previously have Geerts driver for virtualization:
-> > > drivers/gpio/gpio-aggregator.c
-> > >
-> > > The idea with the aggregator is that a host script sets up a
-> > > unique gpiochip for the virtualized instance using some poking
-> > > in sysfs and pass that to the virtual machine.
-> > > So this is Linux acting as virtualization host by definition.
+> From: Wudi Wang <wangwudi@hisilicon.com>
 > 
-> The gpio-aggregator is running on the host...
+> The version of GIC used by KVM is provided by gic_v3_kvm_info.
+> The KVM that supports GICv4 or GICv4.1 only checks GIC
+> version. Actually, the GIC and ITS need to work together.
+> So we add the checking of ITS version for KVM: If and only if
+> both GIC & ITS support GICv4, gic_kvm_info.has_v4 is true.
+> If and only if both GIC & ITS support GICv4.1,
+> gic_kvm_info.has_v4_1 is true.
 > 
-> > > I think virtio is more abstract and intended for the usecase
-> > > where the hypervisor is not Linux, so this should be mentioned
-> > > in the commit, possibly also in Kconfig so users immediately
-> > > know what usecases the two different drivers are for.
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Wudi Wang <wangwudi@hisilicon.com>
+> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+> ---
+>  drivers/irqchip/irq-gic-common.h |  2 ++
+>  drivers/irqchip/irq-gic-v3-its.c |  3 +++
+>  drivers/irqchip/irq-gic-v3.c     | 10 +++++-----
+>  3 files changed, 10 insertions(+), 5 deletions(-)
 > 
-> ... while the virtio-gpio driver is meant for the guest kernel.
-> 
-> I my PoC "[PATCH QEMU v2 0/5] Add a GPIO backend"[1], I didn't have
-> a virtio transport, but just hooked into the PL061 GPIO emulation
-> in QEMU.  The PL061 QEMU driver talked to the GPIO backend, which
-> talked to /dev/gpiochipN on the host.
+> diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
+> index ccba8b0fe0f5..e5d44998445a 100644
+> --- a/drivers/irqchip/irq-gic-common.h
+> +++ b/drivers/irqchip/irq-gic-common.h
+> @@ -10,6 +10,8 @@
+>  #include <linux/irqdomain.h>
+>  #include <linux/irqchip/arm-gic-common.h>
+>  
+> +extern struct gic_kvm_info gic_v3_kvm_info;
+> +
+>  struct gic_quirk {
+>  	const char *desc;
+>  	const char *compatible;
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index 2e6923c2c8a8..45d6163c14d5 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -5419,6 +5419,9 @@ int __init its_init(struct fwnode_handle *handle, struct rdists *rdists,
+>  		has_v4_1 |= is_v4_1(its);
+>  	}
+>  
+> +	gic_v3_kvm_info.has_v4 = has_v4;
+> +	gic_v3_kvm_info.has_v4_1 = has_v4_1;
 
-Hmm, interesting.
+If you are going down that road: what if you have multiple ITSs,
+implementing a variety of v3, v4, v4.1? We currently support this to
+some extent, but this is breaking it.
 
-> > Well, not actually.
-> >
-> > The host can actually be anything. It can be a Xen based dom0, which
-> > runs some proprietary firmware, or Qemu running over Linux.
-> >
-> > It is left for the host to decide how it wants to club together the
-> > GPIO pins from host and access them, with Linux host userspace it
-> > would be playing with /dev/gpiochipN, while for a raw one it may
-> > be accessing registers directly.
-> >
-> > And so the backend running at host, needs to pass the gpiochip
-> > configurations and only the host understand it.
-> 
-> So QEMU has to translate the virtio-gpio communication to e.g.
-> /dev/gpiochipN on the host (or a different backend on non-Linux or
-> bare-metal HV).
+What case are you exactly trying to fix?
 
-No, QEMU passes the raw messages to the backend daemon running in host
-userspace (which shares a socket with qemu). The backend understands
-the virtio/vhost protocols and so won't be required to change at all
-if we move from Qemu to something else. And that's what we (Linaro)
-are looking to do here with Project Stratos.
+> +
+>  	/* Don't bother with inconsistent systems */
+>  	if (WARN_ON(!has_v4_1 && rdists->has_rvpeid))
+>  		rdists->has_rvpeid = false;
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 37a23aa6de37..7454f99bf580 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -103,7 +103,7 @@ EXPORT_SYMBOL(gic_nonsecure_priorities);
+>  /* ppi_nmi_refs[n] == number of cpus having ppi[n + 16] set as NMI */
+>  static refcount_t *ppi_nmi_refs;
+>  
+> -static struct gic_kvm_info gic_v3_kvm_info;
+> +struct gic_kvm_info gic_v3_kvm_info;
 
-Create virtio based hypervisor agnostic backends.
+This will conflict with the rework that is in -next, and maybe cause
+some lifetime issue (see how the structure is now tagged __initdata).
 
-> > The way I test it for now is by running this with Qemu over my x86
-> > box, so my host side is indeed playing with sysfs Linux.
-> 
-> Can you please share a link to the QEMU patches?
+>  static DEFINE_PER_CPU(bool, has_rss);
+>  
+>  #define MPIDR_RS(mpidr)			(((mpidr) & 0xF0UL) >> 4)
+> @@ -1850,8 +1850,8 @@ static void __init gic_of_setup_kvm_info(struct device_node *node)
+>  	if (!ret)
+>  		gic_v3_kvm_info.vcpu = r;
+>  
+> -	gic_v3_kvm_info.has_v4 = gic_data.rdists.has_vlpis;
+> -	gic_v3_kvm_info.has_v4_1 = gic_data.rdists.has_rvpeid;
+> +	gic_v3_kvm_info.has_v4 &= gic_data.rdists.has_vlpis;
+> +	gic_v3_kvm_info.has_v4_1 &= gic_data.rdists.has_rvpeid;
+>  	gic_set_kvm_info(&gic_v3_kvm_info);
+>  }
+>  
+> @@ -2166,8 +2166,8 @@ static void __init gic_acpi_setup_kvm_info(void)
+>  		vcpu->end = vcpu->start + ACPI_GICV2_VCPU_MEM_SIZE - 1;
+>  	}
+>  
+> -	gic_v3_kvm_info.has_v4 = gic_data.rdists.has_vlpis;
+> -	gic_v3_kvm_info.has_v4_1 = gic_data.rdists.has_rvpeid;
+> +	gic_v3_kvm_info.has_v4 &= gic_data.rdists.has_vlpis;
+> +	gic_v3_kvm_info.has_v4_1 &= gic_data.rdists.has_rvpeid;
+>  	gic_set_kvm_info(&gic_v3_kvm_info);
+>  }
 
-Unfortunately, they aren't in good shape right now and the backend is
-a bit hacky (Just checking the data paths, but not touching
-/dev/gpiochipN at all for now).
+Thanks,
 
-I didn't implement one as I am going to implement the backend in Rust
-and not Qemu. So it doesn't depend on Qemu at all.
-
-To give you an idea of the whole thing, here is what we have done for
-I2c for example, GPIO one will look very similar.
-
-The Qemu patches:
-
-https://yhbt.net/lore/all/cover.1617278395.git.viresh.kumar@linaro.org/T/
-
-The stuff from tools/vhost-user-i2c/ directory (or patch 4/6) isn't
-used anymore and the following Rust implementation replaces it:
-
-https://github.com/vireshk/vhost-device/tree/master/src/i2c
-
-I can share the GPIO code once I have the Rust implementation ready.
-
-> The GPIO aggregator came into play after talking to Alexander Graf and
-> Peter Maydell.  To reduce the attack surface, they didn't want QEMU
-> to be responsible for exporting to the guest a subset of all GPIOs of
-> a gpiochip, only a full gpiochip.  However, the full gpiochip may
-> contain critical GPIOs you do not want the guest to tamper with.
-> Hence the GPIO aggregator was born, to take care of aggregating all
-> GPIOs you want to export to a guest into a new virtual gpiochip.
-> 
-> You can find more information about the GPIO Aggregator's use cases in
-> "[PATCH v7 0/6] gpio: Add GPIO Aggregator"[2].
-
-So I was actually looking to do some kind of aggregation on the host
-side's backend daemon to share only a subset of GPIO pins, I will see
-if that is something I can reuse. Thanks for sharing details.
+	M.
 
 -- 
-viresh
+Without deviation from the norm, progress is not possible.
