@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501913A4262
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496943A4264
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhFKMu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:50:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:57474 "EHLO foss.arm.com"
+        id S231230AbhFKMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:51:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:57510 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231315AbhFKMuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:50:22 -0400
+        id S230233AbhFKMvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 08:51:17 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A987D6E;
-        Fri, 11 Jun 2021 05:48:24 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A183D3F73D;
-        Fri, 11 Jun 2021 05:48:22 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 13:48:20 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v2 3/3] sched: Make uclamp changes depend on CAP_SYS_NICE
-Message-ID: <20210611124820.ksydlg4ncw2xowd3@e107158-lin.cambridge.arm.com>
-References: <20210610151306.1789549-1-qperret@google.com>
- <20210610151306.1789549-4-qperret@google.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35FF5D6E;
+        Fri, 11 Jun 2021 05:49:19 -0700 (PDT)
+Received: from [10.57.6.115] (unknown [10.57.6.115])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5EEB23F73D;
+        Fri, 11 Jun 2021 05:49:18 -0700 (PDT)
+Subject: Re: [PATCH 1/2] iommu: Fix race condition during default domain
+ allocation
+To:     Will Deacon <will@kernel.org>, Ashish Mhetre <amhetre@nvidia.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <1623298614-31755-1-git-send-email-amhetre@nvidia.com>
+ <1623298614-31755-2-git-send-email-amhetre@nvidia.com>
+ <20210611104524.GD15274@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <faf4504c-43f2-f68e-9a00-5e450dd7f352@arm.com>
+Date:   Fri, 11 Jun 2021 13:49:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210610151306.1789549-4-qperret@google.com>
+In-Reply-To: <20210611104524.GD15274@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/21 15:13, Quentin Perret wrote:
-> There is currently nothing preventing tasks from changing their per-task
-> clamp values in anyway that they like. The rationale is probably that
-> system administrators are still able to limit those clamps thanks to the
-> cgroup interface. However, this causes pain in a system where both
-> per-task and per-cgroup clamp values are expected to be under the
-> control of core system components (as is the case for Android).
+On 2021-06-11 11:45, Will Deacon wrote:
+> On Thu, Jun 10, 2021 at 09:46:53AM +0530, Ashish Mhetre wrote:
+>> Domain is getting created more than once during asynchronous multiple
+>> display heads(devices) probe. All the display heads share same SID and
+>> are expected to be in same domain. As iommu_alloc_default_domain() call
+>> is not protected, the group->default_domain and group->domain are ending
+>> up with different domains and leading to subsequent IOMMU faults.
+>> Fix this by protecting iommu_alloc_default_domain() call with group->mutex.
 > 
-> To fix this, let's require CAP_SYS_NICE to increase per-task clamp
-> values. This allows unprivileged tasks to lower their requests, but not
-> increase them, which is consistent with the existing behaviour for nice
-> values.
+> Can you provide some more information about exactly what the h/w
+> configuration is, and the callstack which exhibits the race, please?
 
-Hmmm. I'm not in favour of this.
+It'll be basically the same as the issue reported long ago with PCI 
+groups in the absence of ACS not being constructed correctly. Triggering 
+the iommu_probe_device() replay in of_iommu_configure() off the back of 
+driver probe is way too late and allows calls to happen in the wrong 
+order, or indeed race in parallel as here. Fixing that is still on my 
+radar, but will not be simple, and will probably go hand-in-hand with 
+phasing out the bus ops (for the multiple-driver-coexistence problem).
 
-So uclamp is a performance and power management mechanism, it has no impact on
-fairness AFAICT, so it being a privileged operation doesn't make sense.
+>> Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
+>> ---
+>>   drivers/iommu/iommu.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 808ab70..2700500 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -273,7 +273,9 @@ int iommu_probe_device(struct device *dev)
+>>   	 * support default domains, so the return value is not yet
+>>   	 * checked.
+>>   	 */
+>> +	mutex_lock(&group->mutex);
+>>   	iommu_alloc_default_domain(group, dev);
+>> +	mutex_unlock(&group->mutex);
+> 
+> It feels wrong to serialise this for everybody just to cater for systems
+> with aliasing SIDs between devices.
 
-We had a thought about this in the past and we didn't think there's any harm if
-a task (app) wants to self manage. Yes a task could ask to run at max
-performance and waste power, but anyone can generate a busy loop and waste
-power too.
+If two or more devices are racing at this point then they're already 
+going to be serialised by at least iommu_group_add_device(), so I doubt 
+there would be much impact - only the first device through here will 
+hold the mutex for any appreciable length of time. Every other path 
+which modifies group->domain does so with the mutex held (note the 
+"expected" default domain allocation flow in bus_iommu_probe() in 
+particular), so not holding it here does seem like a straightforward 
+oversight.
 
-Now that doesn't mean your use case is not valid. I agree if there's a system
-wide framework that wants to explicitly manage performance and power of tasks
-via uclamp, then we can end up with 2 layers of controls overriding each
-others.
-
-Would it make more sense to have a procfs/sysfs flag that is disabled by
-default that allows sys-admin to enforce a privileged uclamp access?
-
-Something like
-
-	/proc/sys/kernel/sched_uclamp_privileged
-
-I think both usage scenarios are valid and giving sys-admins the power to
-enforce a behavior makes more sense for me.
-
-Unless there's a real concern in terms of security/fairness that we missed?
-
-
-Cheers
-
---
-Qais Yousef
+Robin.
