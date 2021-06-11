@@ -2,92 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080283A3AB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2614A3A3AB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhFKEFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 00:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        id S231551AbhFKEIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 00:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbhFKEFQ (ORCPT
+        with ESMTP id S229510AbhFKEIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 00:05:16 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3719C0617AE
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:03:03 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id j12so1403456pgh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:03:03 -0700 (PDT)
+        Fri, 11 Jun 2021 00:08:10 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35EDC061574;
+        Thu, 10 Jun 2021 21:06:12 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id r7so21142289edv.12;
+        Thu, 10 Jun 2021 21:06:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8NTjSTyDbstdRnS22JDnlh2GM3XC/zF1/Aj3ovyt0Ug=;
-        b=GknmA9cuNibjqKF8cukI4rUCo+B6fVFFXRyPcRKfLjX4ZXbTFbCl6gWfshWkURvf84
-         EvbRrBCv+iiKrKfsCmSPKE20I6McwpduzhDQ4gfI/sotqwG8MS70vsQrBcMu48EtoZte
-         QmI35afo4IbvUL//F1J6XMpC446kgR7PkfVXs=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ru5NTnEQDZPpXWhXfz8XIfDBceAFX5z5yz+wskB7s4=;
+        b=rnpRxAB7xEyWP4hzkTxgysmXz/FyKywiZroIuzOkJBL3KRh9oRzDqy9J1043TgAl78
+         4PCR/+AyRlPkWgUWEURWlk45lNUpoRD28S0fu1U9Y+8Kmd7lYYXRGgcT91qHdDp9D27K
+         9XulUPUBnqYbSuY2eoHCNcNy2fp3Q2CJJTiydH5qRFNawrsWkDRlMkn0lQzls28vENCy
+         sLhyt7yAddWTPYbEeHla0wUO8caJaToOVsgSgPnw6NUG9W0qUNlpCzdtmfUQvSmRa74r
+         +IryXDd/qyV/w5RSEICTxz9CtVxWKJVRGGIxfQiYTbsZyIYzT/re7ktckx+OvIgGXGux
+         GlXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8NTjSTyDbstdRnS22JDnlh2GM3XC/zF1/Aj3ovyt0Ug=;
-        b=PCzVRgOq37ZxsQztBHqcj+0hoFm92KMuTKrBhErRR0/uQaRaBmSPDXU0ZkU9tmHQoP
-         eY1YKqux3j9tUb/JTGlrSfF1N7Q+lWTSTTONXhFAqPG3fiF8fozc5wu+UhPMdRaSkMAg
-         QUpfFLvFgzZxywTjfCBx+pA5j+/HXqjpSMaBZiCVrnMGtiOPJQBFqWpJ56sRVkq4o+ht
-         TaAMFqWrixNoD3VW3wm0CzW4rNIb+OQCIvhffFmMhUDm+7fIJ2TPwNpMs5jvA7ZQx++E
-         Gf8HtJ8ESpsl6Ec7P57HO7T9ikQUhAN7Qv4AFg1zmtyLfSKFS3Mp7Sd71fOZ1xA3M++Q
-         nuIw==
-X-Gm-Message-State: AOAM530qY2wkzuki8LtGJ/2Ysycv61hlE4WWMJiQN5IAbZ3K9wMHm8SN
-        PItNnSMO4UiX64PmhE8n/uHssAhOO/q2n19z
-X-Google-Smtp-Source: ABdhPJygCJuW3iIEdkZVUkAyJQQoZ3+nFNvq3EnLuT+EJTj7D6lLuOFZJ9Gosw6bD409Elv0aczATQ==
-X-Received: by 2002:a65:528d:: with SMTP id y13mr1648004pgp.276.1623384183064;
-        Thu, 10 Jun 2021 21:03:03 -0700 (PDT)
-Received: from localhost ([2401:fa00:9:14:db52:e918:e5f9:9e14])
-        by smtp.gmail.com with UTF8SMTPSA id a25sm3599170pff.54.2021.06.10.21.02.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 21:03:02 -0700 (PDT)
-From:   Eizan Miyamoto <eizan@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     houlong.wei@mediatek.com, enric.balletbo@collabora.com,
-        yong.wu@mediatek.com, chunkuang.hu@kernel.org,
-        Eizan Miyamoto <eizan@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 8/8] dts: mtk-mdp: remove mediatek,vpu property from primary MDP device
-Date:   Fri, 11 Jun 2021 14:01:45 +1000
-Message-Id: <20210611140124.v2.8.Ib681f06d5189351b7fda0e3dcd6b15f3863a0071@changeid>
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-In-Reply-To: <20210611040145.2085329-1-eizan@chromium.org>
-References: <20210611040145.2085329-1-eizan@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ru5NTnEQDZPpXWhXfz8XIfDBceAFX5z5yz+wskB7s4=;
+        b=B3z2Y2Dr+uAhd3dw+p4bP5/hzncGQ37BXPNBVOGaONXN5RJP+bJIP/mrGJEjzOdUia
+         5Q7aTIVck+GQ8fH56x10+MSy2aXKD2HE9tWqpDbu5U8j73ZLxBYYL40YlzvMt7PQnKU0
+         UiwvH2BQt2CB68DzzdJtXUyHklGC3XGuaZ2zJNpCIDWIxoMsX2Q8xdyM+dC7yVWUQyhY
+         NiNczmIckNYXOGzayeMkFsKu96vGCFs6N+jKPVr1htW1XDWCVgqD4f8gzdGln93W1BXB
+         9Xo4LJszlXm5k/tqxnTYwE7nMj55E77RMekg3X87dyLmgn5hF8nglGlHCqRKeDtbeqkJ
+         k4Bg==
+X-Gm-Message-State: AOAM531IFeX6C0Gk3fckaEWTWaoA7QclKSegpS3FLWYGil12IyLUmMos
+        zgriaHlirg8eabgqPH+ij5MBhz1cZ58nlq4TZUYL1zrpsrU2hf0Xljrp19cW
+X-Google-Smtp-Source: ABdhPJz8ubjy2qKc6iuAXBIjZx2bDZsZQ8aahgIxvFMKlgr6sTd3csIARxbzFcY7SbbBISWU2240qfpEug+Kg5ErQ3c=
+X-Received: by 2002:a05:6402:34c6:: with SMTP id w6mr1598733edc.174.1623384371192;
+ Thu, 10 Jun 2021 21:06:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210610020108.1356361-1-liushixin2@huawei.com> <CAHC9VhQM4YP527Z9ijTBk2i++S=viZ1hKVo6GgCOUcNCVgB2vw@mail.gmail.com>
+In-Reply-To: <CAHC9VhQM4YP527Z9ijTBk2i++S=viZ1hKVo6GgCOUcNCVgB2vw@mail.gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Fri, 11 Jun 2021 12:05:44 +0800
+Message-ID: <CAD-N9QVNhOoj17tC4OTGbbhYmM0kxnk=Q_XKD0iQ8G4tORqPGQ@mail.gmail.com>
+Subject: Re: [PATCH -next] netlabel: Fix memory leak in netlbl_mgmt_add_common
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Liu Shixin <liushixin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is no longer used by the mediatek MDP driver.
+On Fri, Jun 11, 2021 at 7:43 AM Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Wed, Jun 9, 2021 at 9:29 PM Liu Shixin <liushixin2@huawei.com> wrote:
+> >
+> > Hulk Robot reported memory leak in netlbl_mgmt_add_common.
+> > The problem is non-freed map in case of netlbl_domhsh_add() failed.
+> >
+> > BUG: memory leak
+> > unreferenced object 0xffff888100ab7080 (size 96):
+> >   comm "syz-executor537", pid 360, jiffies 4294862456 (age 22.678s)
+> >   hex dump (first 32 bytes):
+> >     05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >     fe 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
+> >   backtrace:
+> >     [<0000000008b40026>] netlbl_mgmt_add_common.isra.0+0xb2a/0x1b40
+> >     [<000000003be10950>] netlbl_mgmt_add+0x271/0x3c0
+> >     [<00000000c70487ed>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320
+> >     [<000000001f2ff614>] genl_rcv_msg+0x2bf/0x4f0
+> >     [<0000000089045792>] netlink_rcv_skb+0x134/0x3d0
+> >     [<0000000020e96fdd>] genl_rcv+0x24/0x40
+> >     [<0000000042810c66>] netlink_unicast+0x4a0/0x6a0
+> >     [<000000002e1659f0>] netlink_sendmsg+0x789/0xc70
+> >     [<000000006e43415f>] sock_sendmsg+0x139/0x170
+> >     [<00000000680a73d7>] ____sys_sendmsg+0x658/0x7d0
+> >     [<0000000065cbb8af>] ___sys_sendmsg+0xf8/0x170
+> >     [<0000000019932b6c>] __sys_sendmsg+0xd3/0x190
+> >     [<00000000643ac172>] do_syscall_64+0x37/0x90
+> >     [<000000009b79d6dc>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> > Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> > ---
+> >  net/netlabel/netlabel_mgmt.c | 20 ++++++++++++++++----
+> >  1 file changed, 16 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
+> > index e664ab990941..e7f00c0f441e 100644
+> > --- a/net/netlabel/netlabel_mgmt.c
+> > +++ b/net/netlabel/netlabel_mgmt.c
+> > @@ -191,6 +191,12 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+> >                 entry->family = AF_INET;
+> >                 entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
+> >                 entry->def.addrsel = addrmap;
+> > +
+> > +               ret_val = netlbl_domhsh_add(entry, audit_info);
+> > +               if (ret_val != 0) {
+> > +                       kfree(map);
+> > +                       goto add_free_addrmap;
+> > +               }
+> >  #if IS_ENABLED(CONFIG_IPV6)
+> >         } else if (info->attrs[NLBL_MGMT_A_IPV6ADDR]) {
+> >                 struct in6_addr *addr;
+> > @@ -243,13 +249,19 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+> >                 entry->family = AF_INET6;
+> >                 entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
+> >                 entry->def.addrsel = addrmap;
+> > +
+> > +               ret_val = netlbl_domhsh_add(entry, audit_info);
+> > +               if (ret_val != 0) {
+> > +                       kfree(map);
+> > +                       goto add_free_addrmap;
+> > +               }
+> >  #endif /* IPv6 */
+> > +       } else {
+> > +               ret_val = netlbl_domhsh_add(entry, audit_info);
+> > +               if (ret_val != 0)
+> > +                       goto add_free_addrmap;
+> >         }
+> >
+> > -       ret_val = netlbl_domhsh_add(entry, audit_info);
+> > -       if (ret_val != 0)
+> > -               goto add_free_addrmap;
+> > -
+> >         return 0;
+>
+> Thanks for the report and a fix, although I think there may be a
+> simpler fix that results in less code duplication; some quick pseudo
+> code below:
+>
+>   int netlbl_mgmt_add_common(...)
+>   {
+>      void *map_p = NULL;
+>
+>      if (NLBL_MGMT_A_IPV4ADDR) {
+>        struct netlbl_domaddr4_map *map;
+>        map_p = map;
 
-Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
----
+It's better to use a separate map_p pointer, not like the draft patch
+I sent yesterday.
 
-(no changes since v1)
+>
+>      } else if (NLBL_MGMT_A_IPV6ADDR) {
+>        struct netlbl_domaddr4_map *map;
+>        map_p = map;
+>     }
+>
+>   add_free_addrmap:
+>     kfree(map_p);
+>     kfree(addrmap);
+>   }
 
- arch/arm64/boot/dts/mediatek/mt8173.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+Simple comment here: we should separate kfree(map_p) and
+kfree(addrmap) into different goto labels, just like the draft patch I
+sent yesterday.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-index 814f56d59e2f..4020748ae446 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-@@ -1055,7 +1055,6 @@ mdp_rdma0: rdma@14001000 {
- 				 <&mmsys CLK_MM_MUTEX_32K>;
- 			power-domains = <&spm MT8173_POWER_DOMAIN_MM>;
- 			iommus = <&iommu M4U_PORT_MDP_RDMA0>;
--			mediatek,vpu = <&vpu>;
- 		};
- 
- 		mdp_rdma1: rdma@14002000 {
--- 
-2.32.0.272.g935e593368-goog
-
+>
+> ... this approach would even simplify the error handling after the
+> netlbl_af{4,6}list_add() calls a bit too (you could jump straight to
+> add_free_addrmap).
+>
+> --
+> paul moore
+> www.paul-moore.com
