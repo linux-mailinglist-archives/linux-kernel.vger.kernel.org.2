@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E59B3A4A47
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C12B3A4A3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhFKUnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:43:00 -0400
-Received: from mail-io1-f41.google.com ([209.85.166.41]:42944 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbhFKUm6 (ORCPT
+        id S230446AbhFKUls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhFKUlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:42:58 -0400
-Received: by mail-io1-f41.google.com with SMTP id s26so3403554ioe.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 13:40:44 -0700 (PDT)
+        Fri, 11 Jun 2021 16:41:46 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B01C0617AF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 13:39:47 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id b14so6330042ilq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 13:39:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=P7uaYucC+62klUqk+ruT7sASOO838Q3Fy6yssPZtvh4=;
-        b=KMCAcHJAIMxrgGwUWsIpQ9GXDLNt5lT/NifJxtXW+piGpj/hshXULJfk6G3W/Ce/zI
-         nI+LlP2qDy73Q6Kl8mFbbuzvuIEdchOnRywPShlPUaYjK6KZXxyKEvRQAnwICSDieWVl
-         l1Hns8Xs5uyGYuuVH3+JXO5Z4V0o4luisclY9/O/pkh8WXNujyHC8vWLhRH2JPffbzKZ
-         Tf2+M6anOupoo1HM4OMsUkLyvarGujJIpqKr2YvHZ4rbuTSK7p6g2h6Pc7k8qpl15y8Z
-         xHsqLw9k8/OEVcPjuqC53U8vBbgORFVvjcrxaMuZr7pQtQC5Hwcrv0Gwb7f5QpqHgJPK
-         z4DQ==
+        bh=IyNK4kzyW6w6CpdFLaV1AjbEu9O4dvUnAZHNcKqiDrc=;
+        b=Pg6BXOoHn2/9V19Rwq7rqEsrnCWv/wINZ2Crxj6EZOVsyTbEte0oSWJUDUN4QPowsx
+         g/pztumsI5nh1Dlyw2lxMFUZ/l5FXEOB2lDNRBain5Zss2o9hx0B/MLJUxsuDjlsqZDk
+         ADnmLOReBBO+aUnfOmm/jKltU2Z/twUfDG7oWxTMY5y4msmfXk+9ZMyUA3OiuDWFd8h1
+         CCsvDMF8RCr6lmD6bRUffB1yy9XeSFK3ARQoEEX3fTQKHvBAYH3S6w0jnKS6n50BSD6v
+         zY8OAMEMIF4Qyj+h3b7fYob62Hd6NuT2n2u+fQPFKNLpjveOsHm8zSxxCz6xOfrMVTCn
+         mnnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P7uaYucC+62klUqk+ruT7sASOO838Q3Fy6yssPZtvh4=;
-        b=KUwI0Q0kZvoCKRMkNrXHw4cXIdCWKTSEG6DWBF9ZNplGUq684f5G1PhPnXa4CusPUS
-         3WViAoGRgEH8KYBFxf2Dh7knjP0O8ZZc3yjMg8IThHGhko5HYS+cuNVpUQ4I8aHCQf8b
-         O55Fg8AnJMNR5Gxf8qAPTtrrPGhJCil/s20ty+jrHQOb4UoK6sCb67f2Q4SgvJJLyTXn
-         ScDk/csQmiw/E91tBbXm7zySnv0oV+RDdfU0ihlU9mTPux9Pbr/dGGNRo+pjOXwOsMOI
-         D8o+ggfhd9uXyu4dY0zqlLB0WS35ixIepZXae3opbCV6Au7bbMlPoH0ptp/92q3lb/t3
-         luKw==
-X-Gm-Message-State: AOAM5329b/Wj2+aO6UpV0jMZrmjx0U8B3Bjz9Own7ovg9PWG7nvXmWAc
-        GYADAIjE5JXyXncdnQ4htmL+uA==
-X-Google-Smtp-Source: ABdhPJyCVhj8gUrNAlX22r/zn5RovPU3D26T7avfsbxrfpnuFc/GTdhxQlUWZLoeXP0WEkAMhEEXuQ==
-X-Received: by 2002:a02:354d:: with SMTP id y13mr5524096jae.83.1623443984720;
-        Fri, 11 Jun 2021 13:39:44 -0700 (PDT)
+        bh=IyNK4kzyW6w6CpdFLaV1AjbEu9O4dvUnAZHNcKqiDrc=;
+        b=WYHWT9EM3hCmqtGVkYXNJvPcpit98yAVaFIFu7JpUk61paPL0Tu0iQcKPKPDabm0FA
+         rI0oYUGk6XS26kECJplhyQGcroYYPzjc8td8SRExjDGviPntcHZDJj/654WPQ9U3+TOL
+         ozxu5jML6R33vAq7c+fY7uZLktMMTJYctLx9hr8JLNPYZmwnR2a34QLcdYaggRjH244T
+         0b8ZbLz9PIDud7VqPfFtUjdsXJAoB5kPcn71oxJGEgicQyhF7RQBCcdgA5ptQ8fBv4r+
+         XVXt9Du5OByzsjHEDJf/tkcPFprD9u0SWlalJbANTuZpI1CgNaikW1Y4jiNxNi/QjHWF
+         5NxA==
+X-Gm-Message-State: AOAM531+Ngqr7zIKiBsDnQnIvUFIQowHEMu3TwKo+TLX3HRyZJBROkZF
+        nnQ6n8++/NdGNMjnPw9535bxgw==
+X-Google-Smtp-Source: ABdhPJyk5BDQBq0j915kjddYCBbv2JdtomLXdF7v+yF8koRygJeWSGKbnyieNTm2Vy+xGzFVsdknug==
+X-Received: by 2002:a05:6e02:1248:: with SMTP id j8mr4603939ilq.217.1623443985751;
+        Fri, 11 Jun 2021 13:39:45 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id y9sm3761544ilp.58.2021.06.11.13.39.43
+        by smtp.gmail.com with ESMTPSA id y9sm3761544ilp.58.2021.06.11.13.39.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 13:39:44 -0700 (PDT)
+        Fri, 11 Jun 2021 13:39:45 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     leon@kernel.org, bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         aleksander@aleksander.es, ejcaruso@google.com,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/3] net: ipa: make endpoint data validation unconditional
-Date:   Fri, 11 Jun 2021 15:39:38 -0500
-Message-Id: <20210611203940.3171057-2-elder@linaro.org>
+Subject: [PATCH net-next 2/3] net: ipa: introduce ipa_version_valid()
+Date:   Fri, 11 Jun 2021 15:39:39 -0500
+Message-Id: <20210611203940.3171057-3-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210611203940.3171057-1-elder@linaro.org>
 References: <20210611203940.3171057-1-elder@linaro.org>
@@ -63,46 +66,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cost of validating the endpoint configuration data is not all
-that high, so just do it unconditionally, rather than doing so only
-when IPA_VALIDATAION is defined.
+Define and use a new function that just validates the version
+defined in configuration data.
 
-Suggested-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_endpoint.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ drivers/net/ipa/ipa_main.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 07a81b73306fe..3520852936ed1 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -75,8 +75,6 @@ struct ipa_status {
- #define IPA_STATUS_FLAGS1_RT_RULE_ID_FMASK	GENMASK(31, 22)
- #define IPA_STATUS_FLAGS2_TAG_FMASK		GENMASK_ULL(63, 16)
- 
--#ifdef IPA_VALIDATE
--
- static bool ipa_endpoint_data_valid_one(struct ipa *ipa, u32 count,
- 			    const struct ipa_gsi_endpoint_data *all_data,
- 			    const struct ipa_gsi_endpoint_data *data)
-@@ -225,16 +223,6 @@ static bool ipa_endpoint_data_valid(struct ipa *ipa, u32 count,
- 	return true;
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 9915603ed10ba..cbd39e4667a32 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -639,6 +639,27 @@ static void ipa_validate_build(void)
+ #endif /* IPA_VALIDATE */
  }
  
--#else /* !IPA_VALIDATE */
--
--static bool ipa_endpoint_data_valid(struct ipa *ipa, u32 count,
--				    const struct ipa_gsi_endpoint_data *data)
--{
--	return true;
--}
--
--#endif /* !IPA_VALIDATE */
--
- /* Allocate a transaction to use on a non-command endpoint */
- static struct gsi_trans *ipa_endpoint_trans_alloc(struct ipa_endpoint *endpoint,
- 						  u32 tre_count)
++static bool ipa_version_valid(enum ipa_version version)
++{
++	switch (version) {
++	case IPA_VERSION_3_0:
++	case IPA_VERSION_3_1:
++	case IPA_VERSION_3_5:
++	case IPA_VERSION_3_5_1:
++	case IPA_VERSION_4_0:
++	case IPA_VERSION_4_1:
++	case IPA_VERSION_4_2:
++	case IPA_VERSION_4_5:
++	case IPA_VERSION_4_7:
++	case IPA_VERSION_4_9:
++	case IPA_VERSION_4_11:
++		return true;
++
++	default:
++		return false;
++	}
++}
++
+ /**
+  * ipa_probe() - IPA platform driver probe function
+  * @pdev:	Platform device pointer
+@@ -676,11 +697,15 @@ static int ipa_probe(struct platform_device *pdev)
+ 	/* Get configuration data early; needed for clock initialization */
+ 	data = of_device_get_match_data(dev);
+ 	if (!data) {
+-		/* This is really IPA_VALIDATE (should never happen) */
+ 		dev_err(dev, "matched hardware not supported\n");
+ 		return -ENODEV;
+ 	}
+ 
++	if (!ipa_version_valid(data->version)) {
++		dev_err(dev, "invalid IPA version\n");
++		return -EINVAL;
++	}
++
+ 	/* If we need Trust Zone, make sure it's available */
+ 	modem_init = of_property_read_bool(dev->of_node, "modem-init");
+ 	if (!modem_init)
 -- 
 2.27.0
 
