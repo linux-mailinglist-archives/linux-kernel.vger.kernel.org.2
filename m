@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648C33A3FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C8F3A3FB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbhFKKA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:00:56 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:6269 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbhFKKAv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:00:51 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G1blP0dCwz1BLPK;
-        Fri, 11 Jun 2021 17:53:53 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 17:58:47 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 17:58:46 +0800
-Subject: Re: [PATCH 1/3] scripts: add spelling_sanitizer.sh script
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
-        Stefani Seibold <stefani@seibold.net>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jens Axboe <axboe@kernel.dk>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210611071241.16728-1-thunder.leizhen@huawei.com>
- <20210611071241.16728-2-thunder.leizhen@huawei.com>
- <CAHp75VfX95GVkd6iJ-aYNp7nO56nLSxgreE4fDXAm3h3p6VEjg@mail.gmail.com>
- <81415ec7-078c-fb3f-2373-3f46608fe39e@huawei.com>
- <CAHp75VeybOch9xUwy5vtufenBA2unb61sGAVoCdTpy2tRcCxLg@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <095186fe-b4a5-12dc-15f8-d9337187ffdb@huawei.com>
-Date:   Fri, 11 Jun 2021 17:58:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S231645AbhFKKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:01:58 -0400
+Received: from mga17.intel.com ([192.55.52.151]:65434 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230356AbhFKKB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 06:01:56 -0400
+IronPort-SDR: KbRBw84QMUkbJlsQOWUK4xLdEtHqN43el7zBfvTAiiwAwTsLOuwPEYMoaJLscMLKTciJL/gODL
+ JJWGyy4D4PGg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="185872338"
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="185872338"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 02:59:58 -0700
+IronPort-SDR: fkhDfSlQ9vKy2UjFBMV6u4V7kKolzSzvRQ9J+MTp+VU583mEzKSoxIs4kcnXIGdjuJeL0KWhkK
+ OhtlES0XpWyA==
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="552649386"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 02:59:55 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lrdxA-001TlT-E8; Fri, 11 Jun 2021 12:59:52 +0300
+Date:   Fri, 11 Jun 2021 12:59:52 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, kaixuxia@tencent.com,
+        gustavoars@kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        weiyongjun1@huawei.com, yuehaibing@huawei.com,
+        yangjihong1@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next v3] media: staging: atomisp: use list_splice_init
+ in atomisp_compat_css20.c
+Message-ID: <YMM0GO4Ny6j/FvQV@smile.fi.intel.com>
+References: <20210611081004.1348026-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeybOch9xUwy5vtufenBA2unb61sGAVoCdTpy2tRcCxLg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611081004.1348026-1-libaokun1@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 11, 2021 at 04:10:04PM +0800, Baokun Li wrote:
+> Using list_splice_init() instead of entire while-loops
+> in atomisp_compat_css20.c.
 
+Seems fine to me.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-On 2021/6/11 17:41, Andy Shevchenko wrote:
-> On Fri, Jun 11, 2021 at 12:30 PM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->> On 2021/6/11 15:58, Andy Shevchenko wrote:
->>> On Fri, Jun 11, 2021 at 10:19 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> V1->V2:
+> 	CC mailist
+> V2->V3:
+>         Using list_move_tail() -> Using list_splice_init()
 > 
-> ...
+>  .../media/atomisp/pci/atomisp_compat_css20.c  | 35 +++----------------
+>  1 file changed, 5 insertions(+), 30 deletions(-)
 > 
->>>> +# Convert the format of 'codespell' to the current
->>>> +sed -r -i 's/ ==> /||/' $src
->>>> +
->>>> +# Move the spelling "mistake||correction" pairs into file $tmp
->>>
->>>> +# There are currently 9 lines of comments in $src, so the text starts at line 10
->>>> +sed -n '10,$p' $src > $tmp
->>>> +sed -i '10,$d' $src
->>>
->>> This is fragile, use proper comment line detection.
->>
->> I've thought about that too. But I'm wondering if it needs to be that
->> complicated.
->>
->> Think about it. It's not something for personal temporary use, so it
->> should be perfect. I'll change to dynamic computing.
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> index f60198bb8a1a..3844180d32b5 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> @@ -2144,42 +2144,17 @@ void atomisp_css_stop(struct atomisp_sub_device *asd,
+>  	}
+>  
+>  	/* move stats buffers to free queue list */
+> -	while (!list_empty(&asd->s3a_stats_in_css)) {
+> -		s3a_buf = list_entry(asd->s3a_stats_in_css.next,
+> -				     struct atomisp_s3a_buf, list);
+> -		list_del(&s3a_buf->list);
+> -		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
+> -	}
+> -	while (!list_empty(&asd->s3a_stats_ready)) {
+> -		s3a_buf = list_entry(asd->s3a_stats_ready.next,
+> -				     struct atomisp_s3a_buf, list);
+> -		list_del(&s3a_buf->list);
+> -		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
+> -	}
+> +	list_splice_init(&asd->s3a_stats_in_css, &asd->s3a_stats);
+> +	list_splice_init(&asd->s3a_stats_ready, &asd->s3a_stats);
+>  
+>  	spin_lock_irqsave(&asd->dis_stats_lock, irqflags);
+> -	while (!list_empty(&asd->dis_stats_in_css)) {
+> -		dis_buf = list_entry(asd->dis_stats_in_css.next,
+> -				     struct atomisp_dis_buf, list);
+> -		list_del(&dis_buf->list);
+> -		list_add_tail(&dis_buf->list, &asd->dis_stats);
+> -	}
+> +	list_splice_init(&asd->dis_stats_in_css, &asd->dis_stats);
+>  	asd->params.dis_proj_data_valid = false;
+>  	spin_unlock_irqrestore(&asd->dis_stats_lock, irqflags);
+>  
+>  	for (i = 0; i < ATOMISP_METADATA_TYPE_NUM; i++) {
+> -		while (!list_empty(&asd->metadata_in_css[i])) {
+> -			md_buf = list_entry(asd->metadata_in_css[i].next,
+> -					    struct atomisp_metadata_buf, list);
+> -			list_del(&md_buf->list);
+> -			list_add_tail(&md_buf->list, &asd->metadata[i]);
+> -		}
+> -		while (!list_empty(&asd->metadata_ready[i])) {
+> -			md_buf = list_entry(asd->metadata_ready[i].next,
+> -					    struct atomisp_metadata_buf, list);
+> -			list_del(&md_buf->list);
+> -			list_add_tail(&md_buf->list, &asd->metadata[i]);
+> -		}
+> +		list_splice_init(&asd->metadata_in_css[i], &asd->asd->metadata[i]);
+> +		list_splice_init(&asd->metadata_ready[i], &asd->asd->metadata[i]);
+>  	}
+>  
+>  	atomisp_flush_params_queue(&asd->video_out_capture);
+> -- 
+> 2.31.1
 > 
-> sed has a possibility to choose between two anchors.
-> 
-> Google for `sed -e '/anchor 1/,/anchor 2/'` expressions. So, it will
-> be less complicated than current code.
 
-OK, thanks. I'm off work. I'll post the v2 next week.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> 
-> 
 
