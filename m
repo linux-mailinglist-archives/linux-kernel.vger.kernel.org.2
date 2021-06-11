@@ -2,106 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0A83A4143
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442063A4147
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhFKLct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
+        id S231360AbhFKLhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 07:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhFKLcr (ORCPT
+        with ESMTP id S230469AbhFKLhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:32:47 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2373AC061574;
-        Fri, 11 Jun 2021 04:30:36 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so5686027pjs.2;
-        Fri, 11 Jun 2021 04:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dn++4wjWdJC82IkTsNckyaTN9xTcN2xZoxyfKEnJ3TE=;
-        b=ousaMN/9RekV34CJcgSdOFUSl4Mj065OfpbosLlqqw80P1gjIvtXU9aK8f7zm1+HSg
-         tmOeKLhpN/e4kbcCmx+DbEywHyQy8o7DaNWnNxyq28eMJWe/QHVrMgBGQo+uDDwLxqW4
-         bdZybLwr7oP1lbqXCrg4q0tOBD/hteVcRGyYFTuUH891OLV3OBxNmqVWV5vgrkZFnTco
-         3jXUZ9npMAHdiRZ1cZZ+7N30xhIP0pS1Wf1UAgs2mza9R2eEwcJ4pmOBhfZA1E6isxWO
-         Urnn7WpMw/4jOX5fluIMSUoAzY6rB6iUhwn7gxib83ZAQxTsYrAPo6ZW9Hf9hld1f1RE
-         L8xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dn++4wjWdJC82IkTsNckyaTN9xTcN2xZoxyfKEnJ3TE=;
-        b=lI/8fkdwVnwOkBMoval0XbUAhfDXzjGJvPpvYqSB+TqqZfF9vX9vuuiEg0Dv0QaJFd
-         p7Q/gzqb9mnJgn3NjHvASX4eg17C8hr06la+3C2LFyO1yvHrzGTvvEyoRVOkHZNItEA5
-         vWVX/NLinbHrslJlrDl6bJtKr5pVXmCljgsLQhzEMHNQYTOSX/s8kq9KiDS4bQpY57Q7
-         3zf94wUiMltNKtl2/NcHxPeuB35/5n9XsWU+tfUCr4yOe9KQaq3k+LF2cY+LAW+kgMNg
-         4ycpO5TPspukhWVdH66hLcIXD7yi/XD/F/G5GMnHQctmEByqMfHYZkS/FvvfStxbeaYW
-         DRGw==
-X-Gm-Message-State: AOAM530kGwflqudEki1sxScqO1z70oDqx9QmzYGbqhE9ZAOLgIFOf0w4
-        1kfO2U+9Q0FPQtoDFzu/X28UssZRTjL/3fc/YvQ=
-X-Google-Smtp-Source: ABdhPJxnOSUwZ2YOaD+l9LdK1oYAgf9X8VjEyd59c44R0/Ux6r6yZ0bbiyg+R+auvZ424AtZlhCJY05GYqCmm8WJpLI=
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr8831750pja.181.1623411035640;
- Fri, 11 Jun 2021 04:30:35 -0700 (PDT)
+        Fri, 11 Jun 2021 07:37:19 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A760C0617AF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:35:21 -0700 (PDT)
+Received: from localhost.localdomain (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 5905C3F30C;
+        Fri, 11 Jun 2021 13:35:18 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: qcom: sm8250: Disable Adreno and Venus by default
+Date:   Fri, 11 Jun 2021 13:35:12 +0200
+Message-Id: <20210611113514.27173-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210611105401.270673-1-ciorneiioana@gmail.com>
- <20210611105401.270673-5-ciorneiioana@gmail.com> <CAHp75VdmqLnESxf5R8Yvn02QDv=_WmkWEcRZMjxUjLg+KDcyQg@mail.gmail.com>
-In-Reply-To: <CAHp75VdmqLnESxf5R8Yvn02QDv=_WmkWEcRZMjxUjLg+KDcyQg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 11 Jun 2021 14:30:19 +0300
-Message-ID: <CAHp75Ve6X5j31ZO4_Rzd5uTgVk2VOGjos4M4m=GxwnRHw2gbHQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 04/15] of: mdio: Refactor of_phy_find_device()
-To:     Ioana Ciornei <ciorneiioana@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 2:28 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Fri, Jun 11, 2021 at 1:54 PM Ioana Ciornei <ciorneiioana@gmail.com> wrote:
-> >
-> > From: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> >
-> > Refactor of_phy_find_device() to use fwnode_phy_find_device().
->
-> I see that there are many users of this, but I think eventually we
-> should kill of_phy_find_device() completely.
+Components that rely on proprietary (not to mention signed!) firmware should
+not be enabled by default, as lack of the aforementioned firmware could cause
+various issues, from random errors to straight-up failing to boot.
 
-Looking into other examples of such I think this series may not touch
-them right now, but clearly state that it's the plan in the future to
-kill this kind of OF APIs that call fwnode underneath.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 10 ++++++++++
+ arch/arm64/boot/dts/qcom/sm8250-hdk.dts  | 12 ++++++++++++
+ arch/arm64/boot/dts/qcom/sm8250-mtp.dts  | 10 ++++++++++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi     |  6 ++++++
+ 4 files changed, 38 insertions(+)
 
-
+diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+index 5f41de20aa22..a5b742325261 100644
+--- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
++++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+@@ -552,7 +552,13 @@ &dsi0_phy {
+ 	vdds-supply = <&vreg_l5a_0p88>;
+ };
+ 
++&gmu {
++	status = "okay";
++};
++
+ &gpu {
++	status = "okay";
++
+ 	zap-shader {
+ 		memory-region = <&gpu_mem>;
+ 		firmware-name = "qcom/sm8250/a650_zap.mbn";
+@@ -1352,6 +1358,10 @@ &vamacro {
+ 	qcom,dmic-sample-rate = <600000>;
+ };
+ 
++&venus {
++	status = "okay";
++};
++
+ /* PINCTRL - additions to nodes defined in sm8250.dtsi */
+ &qup_spi0_cs_gpio {
+ 	drive-strength = <6>;
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-hdk.dts b/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
+index c3a2c5aa6fe9..397359ee2f85 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
++++ b/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
+@@ -365,6 +365,14 @@ vreg_l7f_1p8: ldo7 {
+ 	};
+ };
+ 
++&gmu {
++	status = "okay";
++};
++
++&gpu {
++	status = "okay";
++};
++
+ &qupv3_id_1 {
+ 	status = "okay";
+ };
+@@ -452,3 +460,7 @@ &usb_1_dwc3 {
+ &usb_2_dwc3 {
+ 	dr_mode = "host";
+ };
++
++&venus {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+index cfc4d1febe0f..062b944be91d 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+@@ -465,7 +465,13 @@ &cdsp {
+ 	firmware-name = "qcom/sm8250/cdsp.mbn";
+ };
+ 
++&gmu {
++	status = "okay";
++};
++
+ &gpu {
++	status = "okay";
++
+ 	zap-shader {
+ 		memory-region = <&gpu_mem>;
+ 		firmware-name = "qcom/sm8250/a650_zap.mbn";
+@@ -691,3 +697,7 @@ &usb_2_qmpphy {
+ 	vdda-phy-supply = <&vreg_l9a_1p2>;
+ 	vdda-pll-supply = <&vreg_l18a_0p9>;
+ };
++
++&venus {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 4c0de12aaba6..fc1049c2bb11 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -1746,6 +1746,8 @@ gpu: gpu@3d00000 {
+ 
+ 			qcom,gmu = <&gmu>;
+ 
++			status = "disabled";
++
+ 			zap-shader {
+ 				memory-region = <&gpu_mem>;
+ 			};
+@@ -1819,6 +1821,8 @@ gmu: gmu@3d6a000 {
+ 
+ 			operating-points-v2 = <&gmu_opp_table>;
+ 
++			status = "disabled";
++
+ 			gmu_opp_table: opp-table {
+ 				compatible = "operating-points-v2";
+ 
+@@ -2323,6 +2327,8 @@ venus: video-codec@aa00000 {
+ 				 <&videocc VIDEO_CC_MVS0C_CLK_ARES>;
+ 			reset-names = "bus", "core";
+ 
++			status = "disabled";
++
+ 			video-decoder {
+ 				compatible = "venus-decoder";
+ 			};
 -- 
-With Best Regards,
-Andy Shevchenko
+2.32.0
+
