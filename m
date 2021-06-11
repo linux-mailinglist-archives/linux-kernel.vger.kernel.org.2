@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8693D3A3DBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7E93A3DAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFKIKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:10:02 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20836 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229633AbhFKIJ6 (ORCPT
+        id S231270AbhFKIDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:03:20 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:5387 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231261AbhFKIDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:09:58 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-206-L8ys3hEWPauhtMu7NFL4nA-1; Fri, 11 Jun 2021 09:07:55 +0100
-X-MC-Unique: L8ys3hEWPauhtMu7NFL4nA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.18; Fri, 11 Jun 2021 09:07:54 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Fri, 11 Jun 2021 09:07:54 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nick Desaulniers' <ndesaulniers@google.com>,
-        Tor Vic <torvic9@mailbox.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: RE: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD <
- 13.0.0
-Thread-Topic: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD <
- 13.0.0
-Thread-Index: AQHXXi3hDa/SX38CoUOUtr2ZTdzJmqsOdORg
-Date:   Fri, 11 Jun 2021 08:07:54 +0000
-Message-ID: <6c8315ef3ebb45b59dd531c634bcff48@AcuMS.aculab.com>
-References: <214134496.67043.1623317284090@office.mailbox.org>
- <CAKwvOdmU9TUiZ6AatJja=ksneRKP5saNCkx0qodLMOi_BshSSg@mail.gmail.com>
-In-Reply-To: <CAKwvOdmU9TUiZ6AatJja=ksneRKP5saNCkx0qodLMOi_BshSSg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 11 Jun 2021 04:03:01 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G1Y8d39rkz6wbZ;
+        Fri, 11 Jun 2021 15:57:05 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 16:00:59 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
+ 2021 16:00:58 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <mchehab@kernel.org>, <sakari.ailus@linux.intel.com>,
+        <gregkh@linuxfoundation.org>, <andriy.shevchenko@linux.intel.com>,
+        <kaixuxia@tencent.com>, <gustavoars@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>, "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH -next v3] media: staging: atomisp: use list_splice_init in atomisp_compat_css20.c
+Date:   Fri, 11 Jun 2021 16:10:04 +0800
+Message-ID: <20210611081004.1348026-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTmljayBEZXNhdWxuaWVycw0KPiBTZW50OiAxMCBKdW5lIDIwMjEgMjA6MjENCj4gDQo+
-IE9uIFRodSwgSnVuIDEwLCAyMDIxIGF0IDI6MjggQU0gPHRvcnZpYzlAbWFpbGJveC5vcmc+IHdy
-b3RlOg0KPiA+DQo+ID4gU2luY2UgTExWTSBjb21taXQgMzc4N2VlNCwgdGhlICctc3RhY2stYWxp
-Z25tZW50JyBmbGFnIGhhcyBiZWVuIGRyb3BwZWQgWzFdLA0KPiA+IGxlYWRpbmcgdG8gdGhlIGZv
-bGxvd2luZyBlcnJvciBtZXNzYWdlIHdoZW4gYnVpbGRpbmcgYSBMVE8ga2VybmVsIHdpdGgNCj4g
-PiBDbGFuZy0xMyBhbmQgTExELTEzOg0KPiA+DQo+ID4gICAgIGxkLmxsZDogZXJyb3I6IC1wbHVn
-aW4tb3B0PS06IGxkLmxsZDogVW5rbm93biBjb21tYW5kIGxpbmUgYXJndW1lbnQNCj4gPiAgICAg
-Jy1zdGFjay1hbGlnbm1lbnQ9OCcuICBUcnkgJ2xkLmxsZCAtLWhlbHAnDQo+ID4gICAgIGxkLmxs
-ZDogRGlkIHlvdSBtZWFuICctLXN0YWNrcmVhbGlnbj04Jz8NCj4gPg0KPiA+IEl0IGFsc28gYXBw
-ZWFycyB0aGF0IHRoZSAnLWNvZGUtbW9kZWwnIGZsYWcgaXMgbm90IG5lY2Vzc2FyeSBhbnltb3Jl
-IHN0YXJ0aW5nDQo+ID4gd2l0aCBMTFZNLTkgWzJdLg0KPiA+DQo+ID4gRHJvcCAnLWNvZGUtbW9k
-ZWwnIGFuZCBtYWtlICctc3RhY2stYWxpZ25tZW50JyBjb25kaXRpb25hbCBvbiBMTEQgPCAxMy4w
-LjAuDQo+IA0KPiBQbGVhc2UgaW5jbHVkZSB0aGlzIGFkZGl0aW9uYWwgY29udGV4dCBpbiB2MjoN
-Cj4gYGBgDQo+IFRoZXNlIGZsYWdzIHdlcmUgbmVjZXNzYXJ5IGJlY2F1c2UgdGhlc2UgZmxhZ3Mg
-d2VyZSBub3QgZW5jb2RlZCBpbiB0aGUNCj4gSVIgcHJvcGVybHksIHNvIHRoZSBsaW5rIHdvdWxk
-IHJlc3RhcnQgb3B0aW1pemF0aW9ucyB3aXRob3V0IHRoZW0uIE5vdw0KPiB0aGVyZSBhcmUgcHJv
-cGVybHkgZW5jb2RlZCBpbiB0aGUgSVIsIGFuZCB0aGVzZSBmbGFncyBleHBvc2luZw0KPiBpbXBs
-ZW1lbnRhdGlvbiBkZXRhaWxzIGFyZSBubyBsb25nZXIgbmVjZXNzYXJ5Lg0KPiBgYGANCj4gVGhh
-dCB3YXkgaXQgZG9lc24ndCBzb3VuZCBsaWtlIHdlJ3JlIG5vdCB1c2luZyBhbiA4QiBzdGFjayBh
-bGlnbm1lbnQNCj4gb24geDg2OyB3ZSB2ZXJ5IG11Y2ggYXJlIHNvOyBBTURHUFUgR1BGcyB3aXRo
-b3V0IGl0IQ0KDQpBY3R1YWxseSwgZ2l2ZSB0aGF0IExUTyBpcyBzdGlsbCAnZXhwZXJpbWVudGFs
-JyBpcyBpdCB3b3J0aCBqdXN0DQpyZW1vdmluZyB0aGUgZmxhZ3MgYW5kIHJlcXVpcmluZyBjbGFu
-Zy0xMyBmb3IgTFRPIGJ1aWxkcz8NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBM
-YWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBU
-LCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Using list_splice_init() instead of entire while-loops
+in atomisp_compat_css20.c.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+V1->V2:
+	CC mailist
+V2->V3:
+        Using list_move_tail() -> Using list_splice_init()
+
+ .../media/atomisp/pci/atomisp_compat_css20.c  | 35 +++----------------
+ 1 file changed, 5 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+index f60198bb8a1a..3844180d32b5 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+@@ -2144,42 +2144,17 @@ void atomisp_css_stop(struct atomisp_sub_device *asd,
+ 	}
+ 
+ 	/* move stats buffers to free queue list */
+-	while (!list_empty(&asd->s3a_stats_in_css)) {
+-		s3a_buf = list_entry(asd->s3a_stats_in_css.next,
+-				     struct atomisp_s3a_buf, list);
+-		list_del(&s3a_buf->list);
+-		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
+-	}
+-	while (!list_empty(&asd->s3a_stats_ready)) {
+-		s3a_buf = list_entry(asd->s3a_stats_ready.next,
+-				     struct atomisp_s3a_buf, list);
+-		list_del(&s3a_buf->list);
+-		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
+-	}
++	list_splice_init(&asd->s3a_stats_in_css, &asd->s3a_stats);
++	list_splice_init(&asd->s3a_stats_ready, &asd->s3a_stats);
+ 
+ 	spin_lock_irqsave(&asd->dis_stats_lock, irqflags);
+-	while (!list_empty(&asd->dis_stats_in_css)) {
+-		dis_buf = list_entry(asd->dis_stats_in_css.next,
+-				     struct atomisp_dis_buf, list);
+-		list_del(&dis_buf->list);
+-		list_add_tail(&dis_buf->list, &asd->dis_stats);
+-	}
++	list_splice_init(&asd->dis_stats_in_css, &asd->dis_stats);
+ 	asd->params.dis_proj_data_valid = false;
+ 	spin_unlock_irqrestore(&asd->dis_stats_lock, irqflags);
+ 
+ 	for (i = 0; i < ATOMISP_METADATA_TYPE_NUM; i++) {
+-		while (!list_empty(&asd->metadata_in_css[i])) {
+-			md_buf = list_entry(asd->metadata_in_css[i].next,
+-					    struct atomisp_metadata_buf, list);
+-			list_del(&md_buf->list);
+-			list_add_tail(&md_buf->list, &asd->metadata[i]);
+-		}
+-		while (!list_empty(&asd->metadata_ready[i])) {
+-			md_buf = list_entry(asd->metadata_ready[i].next,
+-					    struct atomisp_metadata_buf, list);
+-			list_del(&md_buf->list);
+-			list_add_tail(&md_buf->list, &asd->metadata[i]);
+-		}
++		list_splice_init(&asd->metadata_in_css[i], &asd->asd->metadata[i]);
++		list_splice_init(&asd->metadata_ready[i], &asd->asd->metadata[i]);
+ 	}
+ 
+ 	atomisp_flush_params_queue(&asd->video_out_capture);
+-- 
+2.31.1
 
