@@ -2,194 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CFD3A3C0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBD43A3C11
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhFKGfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:35:06 -0400
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:39622 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhFKGfG (ORCPT
+        id S231140AbhFKGkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:40:32 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:39541 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhFKGkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:35:06 -0400
-Received: by mail-lf1-f48.google.com with SMTP id p17so6970133lfc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 23:33:08 -0700 (PDT)
+        Fri, 11 Jun 2021 02:40:32 -0400
+Received: by mail-oi1-f172.google.com with SMTP id m137so4821298oig.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 23:38:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=irZeJw0Qryqj9lp4m65jOul34g7Z4w7q3N0aA4dwYYo=;
-        b=DMC11GGTAkfC7fNlJQm2srwNfqutADFKkx61z13EpL9iPRWA98KfQiRSuGh3er35FL
-         TcdicYs1gBQR1D+AeR2OGcyXMaeeblhx26FjNIqU0ZutfbmMeAnqsKQYPb2dyIa6KEHL
-         rOnZRAiEktcvzLxT9rKkARxVcDRqcqitNz6svjQ016C2YVhGFP71g+pZqJE+ED6KJPh6
-         GyTEfHF3vHIa4SCwe/qwI1zSC3LJnpdGdtiRXSvuD/V4Gh9hmeK+f120RZcJpQXl2m+f
-         MO7N3OmJfu1Ux3xOZgzbAPiCn+3E+RKpXkojVi5xXx4665Bvz2+6Djhp9yjW2Cg8Bfii
-         aWYA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=VKm3T1Odyz0ZAhRDKXF4FISye7BrXp7gG7KZ7V0xVOQ=;
+        b=t9zuitMWt/r6/xbNdcai1NFoBvDEUjr/rp+v+67BLojyRnz8wjugEERnH0LkjKrot2
+         c94qOCfPZvABgyhFkx6sBvbxW8NlLJpRkUgr5nwXJkaXchb6qXDUh/k/WwoSjZLlODoI
+         ZaEKy7H9b0e1ujSsDgn/hvwkTk9SjDqdM0eWXHNNNiLO4iQtrLFojjqEOBjmhXsvJXgP
+         KonLusRAze5/hAFnyareYDCszaiU586diXVjsVJ7vY0oCgLm5cElqXfs8utOE2Km2Kx0
+         RGA5ijZYmSEQq3Mx4zp+3jvvmcJhDb1LaIMbPdb/1V+pCmfHvd5Sf+BqSbsMwpx10jQj
+         XhSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=irZeJw0Qryqj9lp4m65jOul34g7Z4w7q3N0aA4dwYYo=;
-        b=QmKmeUrgdPLwSEm2MDkw3aZ6Zw9xq44SFSsu0PSDcu4p6wqP0vIzJuOdxDS1hijQ7x
-         +GUF9zPsSaBXLo7nL3VWx3b8GbwI9Ul0LF1EjOlkgUM1XtN/R5U5c40vVpXoGQThYgz+
-         nBatxYKyrBI3VxfITKvuDum7OhM34wI7p2XPdTfWYAic6mWTlp2wgnabNjvuAEftg2WZ
-         Hask6aqB7GRlzYDSIXgouT79HakgZXiVxeM9M+q+DrFf0gY5AXF/83XKtnt1/EEdKf9f
-         sNUfShFLJENgPvGsP4TeA4U3EhMpDn+ufI9DoND4CyLVKHbmeRh2AHfHszwQm0urltYw
-         3R+A==
-X-Gm-Message-State: AOAM5331bUWDkNbv5+6XJI/sJidBpu1/1ZIeLTWn03iF5O3aGcJ+utcv
-        Hr/VLBuJInMjvGZKmlOzxRW/85Xmvvdcbx/CD4IrrwqicFfN5w==
-X-Google-Smtp-Source: ABdhPJw6TuU9slX6/GntgNGbHPSEfWGklPdKCwzU4UdNv+SxlFJJM1iZ0tOlAmZxScCVl4121p339Z0HAvLFH2H6GJI=
-X-Received: by 2002:a05:6512:3749:: with SMTP id a9mr1731485lfs.110.1623393127581;
- Thu, 10 Jun 2021 23:32:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=VKm3T1Odyz0ZAhRDKXF4FISye7BrXp7gG7KZ7V0xVOQ=;
+        b=AFUFXvY+KTH6d8Tjuk1EpLUUF7H+hQLoGYbLP+PWF/YTTb/ibFjBmtEiaSs9cEE6IY
+         /P0F+GXJ/+L3irXLFwrL7SMrNvAH/BjEtaSDsCNNNdU3/dXk+HDDGyEEbB3r4YPwW2FL
+         2KWddrUtj8JDlEPsflI0xq5tMRjycuYuGpxn8DsJPN5b3Lo4ELtxkkItbWjejtUWKoQk
+         rpAkdkN67p+Cn9hKrTqhZhx3xh/ovlrc0521ZEAGDdlUXHEB5ybE7+Y7F/oVIAzmO4ik
+         Gdn4HP9D6kjqPJx/qb0YnncEIideTYZuaJjkGlaz81KFE1QU9+PhdYfqzWiVMbrERpFd
+         7mbQ==
+X-Gm-Message-State: AOAM532ZpFxTmWQbKlNZxva7tAvMlIGnz/Cd8ekypTxldIjIRFB/ohQC
+        gIQaOCo5b/veIbqxwR7pk0KgBA==
+X-Google-Smtp-Source: ABdhPJwLMof1GZcoftZlnQm6GtT9Q+NrzYtdcsPJJAuw7+zy/jvCCukGxX3heazMl6T8nOUSOxZXow==
+X-Received: by 2002:aca:ab4c:: with SMTP id u73mr1416506oie.26.1623393454374;
+        Thu, 10 Jun 2021 23:37:34 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id b8sm1133630ots.6.2021.06.10.23.37.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 23:37:33 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 23:37:14 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/11] mm: page_vma_mapped_walk(): use
+ pmd_read_atomic()
+In-Reply-To: <20210610121542.GQ1096940@ziepe.ca>
+Message-ID: <aebb6b96-153e-7d7-59da-f6bad4337aa7@google.com>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com> <594c1f0-d396-5346-1f36-606872cddb18@google.com> <20210610090617.e6qutzzj3jxcseyi@box.shutemov.name> <20210610121542.GQ1096940@ziepe.ca>
 MIME-Version: 1.0
-From:   David Hilvert <dhilvert@gmail.com>
-Date:   Fri, 11 Jun 2021 08:31:57 +0200
-Message-ID: <CAN2Qzdm-ObC2qXGOZJkLyvTdNY7=CMRPEVJ-Rq3iRm1x1q3GHw@mail.gmail.com>
-Subject: GENERAL AI
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This constrains the role of Linux.
+On Thu, 10 Jun 2021, Jason Gunthorpe wrote:
+> On Thu, Jun 10, 2021 at 12:06:17PM +0300, Kirill A. Shutemov wrote:
+> > On Wed, Jun 09, 2021 at 11:38:11PM -0700, Hugh Dickins wrote:
+> > > page_vma_mapped_walk() cleanup: use pmd_read_atomic() with barrier()
+> > > instead of READ_ONCE() for pmde: some architectures (e.g. i386 with PAE)
+> > > have a multi-word pmd entry, for which READ_ONCE() is not good enough.
+> > > 
+> > > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > > Cc: <stable@vger.kernel.org>
+> > >  mm/page_vma_mapped.c | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+> > > index 7c0504641fb8..973c3c4e72cc 100644
+> > > +++ b/mm/page_vma_mapped.c
+> > > @@ -182,13 +182,16 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+> > >  	pud = pud_offset(p4d, pvmw->address);
+> > >  	if (!pud_present(*pud))
+> > >  		return false;
+> > > +
+> > >  	pvmw->pmd = pmd_offset(pud, pvmw->address);
+> > >  	/*
+> > >  	 * Make sure the pmd value isn't cached in a register by the
+> > >  	 * compiler and used as a stale value after we've observed a
+> > >  	 * subsequent update.
+> > >  	 */
+> > > -	pmde = READ_ONCE(*pvmw->pmd);
+> > > +	pmde = pmd_read_atomic(pvmw->pmd);
+> > > +	barrier();
+> > > +
+> > 
+> > Hm. It makes me wounder if barrier() has to be part of pmd_read_atomic().
+> > mm/hmm.c uses the same pattern as you are and I tend to think that the
+> > rest of pmd_read_atomic() users may be broken.
+> > 
+> > Am I wrong?
+> 
+> I agree with you, something called _atomic should not require the
+> caller to provide barriers.
+> 
+> I think the issue is simply that the two implementations of
+> pmd_read_atomic() should use READ_ONCE() internally, no?
 
-As sent to Gregory Maxwell.
+I've had great difficulty coming up with answers for you.
 
-All of the e-mail addresses for Vitalik Buterin are now returning
-no-longer, in case you wanted to try.
+This patch was based on two notions I've had lodged in my mind
+for several years:
 
-NB The word was also complete, and was underlined, and was changed to exact.
+1) that pmd_read_atomic() is the creme-de-la-creme for reading a pmd_t
+atomically (even if the pmd_t spans multiple words); but reading again
+after all this time the comment above it, it seems to be more specialized
+than I'd thought (biggest selling point being for when you want to check
+pmd_none(), which we don't).  And has no READ_ONCE() or barrier() inside,
+so really needs that barrier() to be as safe as the previous READ_ONCE().
 
-If you could pass the following to Elizabeth and Andrew Gilleland.
+2) the barrier() in mm_find_pmd(), that replaced an earlier READ_ONCE(),
+because READ_ONCE() did not work (did not give the necessary guarantee? or
+did not build?) on architectures with multiple word pmd_ts e.g. i386 PAE.
 
-Subject: Fwd: GENERAL AI
+But I've now come across some changes that Will Deacon made last year:
+the include/asm-generic/rwonce.h READ_ONCE() now appears to allow for
+native word type *or* type sizeof(long long) (e.g. i386 PAE) - given
+"a strong prevailing wind" anyway :)  And 8e958839e4b9 ("sparc32: mm:
+Restructure sparc32 MMU page-table layout") put an end to sparc32's
+typedef struct { unsigned long pmdv[16]; } pmd_t.
 
-You will be glad for the below.
+It looks like my justification for this 03/11 patch is out-of-date,
+and the patch should be dropped from the series.
 
-Productions that aren't a statistically-free grammar aren't language,
-and are called calculating, as you'll recall from the vocabulary of
-decades ago.
+As to your questions about pmd_read_atomic() usage elsewhere:
+please don't force me to think so hard!  (And you've set me half-
+wondering, whether there are sneaky THP transitions, perhaps of the
+"unstable" kind, that page_vma_mapped_walk() should be paying more
+attention to: but for sanity's sake I won't go there, not now.)
 
-AI approaches not using the punk and goth curve will delete your hard
-disk, or convince your neighbor to poison your petunias with organic
-mercury.
-
-And so, the below is the exact characterization of general AI, as
-opposed to the double-underscored 100 that the mobile predictive just
-showed.
-
-In the meantime, I will be needing the grant, or at least the 200 dollars.
-
-dhilvert@gmail.com
-
-
-
----------- Forwarded message ---------
-From: David Hilvert <dhilvert@gmail.com>
-Date: Fri, May 21, 2021, 3:20 PM
-Subject: Fwd: GENERAL AI
-To: <ikeleib@mail.utexas.edu>, <ikeleib@gmail.com>,
-<michael@sherman.penguinpowered.com>
-Cc: <jleibowitz@tamu.edu>, <info@athre.com>, Raghu Athre
-<raghu@athre.com>, <rathre@yahoo.com>
-
-
-(Could you send this to Ike if he has a more recent, different e-mail address?)
-
-You will be pleased to know that I have the solution to general AI.
-You could try to let Leigh Cain know if you can find him.  You'll also
-be glad to know that we'll all be using OS/2.  I could have asked
-Vitalik Buterin for a million dollars, but I wanted to make sure that
-no AI would ever think that that was the reason that an AI wasn't
-working on imposing the entire set of controls on cryptocurrency as
-though it were a geological area.  I've been proven right with the 1/3
-loss in value, or whatever.  You could try to have Vitalik Buterin
-send me $100,000, as well.
-
-vitalik@ethereum.org
-
-You could also use PayPal to send 200-300 dollars to cover part of a
-continuing overdraft, and I could even pay you back, because I am
-waiting on a wire transfer from an exchange of camera equipment, and
-they haven't sent e-mail saying that they have shipped it back.  They
-say that they need IBAN for an account to send it to, and the options
-need an initial funding, and don't seem to take PayPal.  It would be
-much appreciated.  You can use the PayPal mobile application and
-choose the send option.
-
-dhilvert@gmail.com
-
-If you're curious about the formal proof results below, the language
-generation definitions are:
-
-In a first-generation language, there's no way to lose your file.
-
-In a second-generation language, there is a separate preprocessing language.
-
-In a third-generation language, there's no way to reset the this pointer.
-
-In a fourth-generation language, there's no way to lose your work.
-
-The mental illness characters are generated by these: the tape can be
-cut on one or both ends, and, since all males have perfect empathy,
-there is a third suit that works always with others.
-
-On the curve below (the punk and goth function), this is appearing on
-a Sierpinski carpet of dimensionality greater than one, which we then
-reduce to below one by removing the middle, in David Hilvert's
-Customer One software.
-
----------- Forwarded message ---------
-From: David Hilvert <dhilvert@gmail.com>
-Date: Fri, May 14, 2021, 8:21 PM
-Subject: Fwd: GENERAL AI
-To: <stephen.taylor@dartmouth.edu>
-
-
-If you have introductory students, they might find this interesting.
-You could talk with IBM PR, and tell them, or contact Lee Cain of HSEP
-Booker T. Washington in the Houston Independent School District, who
-worked there in sales.  He taught at the school quite a long time ago.
-
----------- Forwarded message ---------
-From: David Hilvert <dhilvert@gmail.com>
-Date: Tue, May 11, 2021, 10:00 AM
-Subject: Fwd: GENERAL AI
-To: john.kane@oswego.edu <john.kane@oswego.edu>
-
-
-Are you the Kane that taught at TIP?  If not, could you get this to
-him (and you could send it to Alex Butler)?
-
----------- Forwarded message ---------
-From: David Hilvert <dhilvert@gmail.com>
-Date: Tue, May 11, 2021, 9:47 AM
-Subject:
-To: <drh@hwaci.com>
-
-
-Could you tell Paul Vixen (or whatever the TA's name was) that I have
-the general AI solution?  There's a way of scoring questions with the
-logarithm, and, in the case of genetic programming, we can use an
-exponent, and, to show we're clever, we can use the fourth power.
-Bertrand Russell (back from the dead, you might think) has demanded
-the sixteenth, so that we can have a supernova.
-
-The formal proofs that result include the correct definition of the
-generations of languages, the character of mental illnesses, and the
-fact that we will be running OS/2 under itself as the only basis of
-user operating system (as opposed to display component, which could
-include X under Linux).
-
-This is the complete result, meaning that there are no results other
-than the individuals evolved that are not indicated above.  Emergent
-behavior has included establishment of copyright under the Free
-Software Foundatiarray, with the same terms.  Every effort would
-evolve BIOS and an ANSI terminal.
-
-I have also sent mail to Vitalik Buterin.  Could you (and Paul Vixen)
-tell him that it would be a good idea to send me $100,000, as I had
-suggested?  It would include a LinuxONE III system.
-
-Thanks,
-
-David Hilvert
+Hugh
