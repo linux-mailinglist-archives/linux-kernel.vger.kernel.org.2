@@ -2,136 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD3C3A487F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433623A4883
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhFKSVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 14:21:47 -0400
-Received: from goliath.siemens.de ([192.35.17.28]:36600 "EHLO
-        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFKSVo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 14:21:44 -0400
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 15BIJcgx023316
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Jun 2021 20:19:38 +0200
-Received: from md1za8fc.ad001.siemens.net ([139.22.32.109])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 15BIJchk026427;
-        Fri, 11 Jun 2021 20:19:38 +0200
-Date:   Fri, 11 Jun 2021 20:19:35 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>
-Subject: Re: [PATCH] pinctrl: intel: fix NULL pointer deref
-Message-ID: <20210611201935.4d83ed2a@md1za8fc.ad001.siemens.net>
-In-Reply-To: <YMIvn+iGt2ijfh7z@smile.fi.intel.com>
-References: <20210609062722.9132-1-henning.schild@siemens.com>
-        <YMCT+izizEg0gPLD@lahna.fi.intel.com>
-        <CAHp75Vcj9wmM7H908sqGmXs10BQN8ty1C4qfmk_nXpG_s=BjTQ@mail.gmail.com>
-        <20210609130816.3631f0aa@md1za8fc.ad001.siemens.net>
-        <YMIgwORlAzz/gJcK@smile.fi.intel.com>
-        <YMIijnvoudaodX+A@smile.fi.intel.com>
-        <20210610165632.0d9bb321@md1za8fc.ad001.siemens.net>
-        <CAHp75Vd+r3_OnRAYJcHVTU3Q2ekLYV_oHQQ6-wWmq=9hm_cP1g@mail.gmail.com>
-        <YMIvn+iGt2ijfh7z@smile.fi.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231252AbhFKSWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 14:22:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231191AbhFKSWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 14:22:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9A589613C6;
+        Fri, 11 Jun 2021 18:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623435604;
+        bh=+rI/yPlO8PfkgRay0Cw4WqM7y+82qGwqJpRc3JW5kas=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Fk0vJpH3+Q73JfBkfCtq0ZRD1y7TqS5Qzye1sJVbbzsVF8tvsQM6OrDbZ29fU/wNf
+         MYXVrRD0n/pUJW7Z4YrUKJ8m7D0NHtCShb7xK+4h+00Ut4iYLFJD+07t+lgg2DJcMU
+         Wzo7GE46R3Dg1Qmi03wCezwos8xuOAVjXzrC2HDHv7oDm+zL6vLILgY5dSWNzwjcwg
+         OTtFQkctNZvOzFa9nngGBQvHpJkJ8eygS5JoJbtUcKKWcXs5KGeVnHVnwbhvllcZch
+         zMytoCaiMADjJzZwn1Ah0b7VYG5bXumZor0W7fTy4QFGRzwZMz+E0juwlNfR96M2f6
+         iw8+NtGqANKqw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 872D960A49;
+        Fri, 11 Jun 2021 18:20:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] alx: Fix an error handling path in 'alx_probe()'
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162343560454.20873.16773485320756110269.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Jun 2021 18:20:04 +0000
+References: <2d0fa41ff6266f38b04b7e46651878c70d32d5ef.1623391908.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <2d0fa41ff6266f38b04b7e46651878c70d32d5ef.1623391908.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        johannes@sipsolutions.net, bruceshenzk@gmail.com,
+        dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Thu, 10 Jun 2021 18:28:31 +0300
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+Hello:
 
-> On Thu, Jun 10, 2021 at 06:00:29PM +0300, Andy Shevchenko wrote:
-> > On Thu, Jun 10, 2021 at 5:56 PM Henning Schild
-> > <henning.schild@siemens.com> wrote:  
-> > >
-> > > Am Thu, 10 Jun 2021 17:32:46 +0300
-> > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-> > >  
-> > > > On Thu, Jun 10, 2021 at 05:25:04PM +0300, Andy Shevchenko
-> > > > wrote:  
-> > > > > On Wed, Jun 09, 2021 at 01:08:16PM +0200, Henning Schild
-> > > > > wrote:  
-> > > > > > Am Wed, 9 Jun 2021 13:33:34 +0300
-> > > > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
-> > > > >
-> > > > > ...
-> > > > >  
-> > > > > > In order to use GPIO from the drivers i need to make sure
-> > > > > > "broxton-pinctrl" comes up even if p2sb is hidden.
-> > > > > >
-> > > > > > Long story short, i thought the patch was simple enough to
-> > > > > > merge even taken out of my special context.
-> > > > > >
-> > > > > > Currently intel_pinctl only works if "ps2b is not hidden by
-> > > > > > BIOS" or "ACPI tables are correct", lifting the ban on the
-> > > > > > hidden p2sb seems like a useful thing in general (i.e.
-> > > > > > sysfs gpio interface). And i was hoping Andy would take the
-> > > > > > lead on that. It is something my Siemens drivers would
-> > > > > > depend on, but really a generic thing as far as i
-> > > > > > understand it.  
-> > > > >
-> > > > > From p2sb series discussion it appears that this patch is not
-> > > > > needed. The case is when BIOS already provides an ACPI device.
-> > > > >
-> > > > > So, the initial bug is in that series that needs to check if
-> > > > > the ACPI device is exposed and forbid platform device
-> > > > > instantiation in that case.  
-> > > >
-> > > > Actually, I'm still thinking how this ever possible. We have all
-> > > > drivers to provide SoC data pointers. match data may be NULL if
-> > > > and only if the ACPI device provided is a new one that doesn't
-> > > > provide a SoC data.
-> > > >
-> > > > So, w/o seeing ACPI table, I'm really puzzled here.  
-> > >
-> > > Not sure what exactly you mean. Let us kill this thread and
-> > > ignore the patch. It was posted out of context and the NULL deref
-> > > code-path does not exist in the kernel, so the check is not
-> > > needed.
-> > >
-> > > I will revisit the machine where your patch-series did lead to a
-> > > double-init and EBUSY on claiming those memory ressources. And i
-> > > will add ACPI info there as well.  
-> > 
-> > I guess I got what's going on here. When we create a platform device
-> > we get an associated companion device (which is parent in this case
-> > of LPC) and that's why when we try enumerating it you have got the
-> > first branch chosen.  
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Fri, 11 Jun 2021 08:13:39 +0200 you wrote:
+> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+> call, as already done in the remove function.
 > 
-> I have just sent another patch based on this report. Can you please
-> test it?
+> Fixes: ab69bde6b2e9 ("alx: add a simple AR816x/AR817x device driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> 
+> [...]
 
-Thanks, that fixed the NULL deref introduced by " [rfc, PATCH v1 0/7]
-PCI: introduce p2sb helper", so it should be added to a v2 i guess.
+Here is the summary with links:
+  - alx: Fix an error handling path in 'alx_probe()'
+    https://git.kernel.org/netdev/net/c/33e381448cf7
 
-A remaining cosmetic issue is this ...
-[    4.131578] broxton-pinctrl apollolake-pinctrl.0: can't request region for resource [mem 0xd0c50000-0xd0c5076b 64bit]
-[    4.131669] broxton-pinctrl: probe of apollolake-pinctrl.0 failed with error -16
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-For all 4 parts. I guess it could detect being already loaded via ACPI
-end EBUSY out with INFO instead of ERR.
 
-And i guess if the probing was - for some reason - the other way
-around. /sys/class/gpio/gpiochip267/label would be either "INT3452:03"
-or "apollolake-pinctrl.3" and a driver building on top would need to
-deal with that chip having one of the two names.
-I imagine the probing order could change when ACPI gains table entries
-with a BIOS update, or looses table entries ...
-
-GPIO_LOOKUP_IDX("apollolake-pinctrl.0" vs. "INT34.."
-
-Same for a userland component using the sysfs GPIO interface and
-looking for the chip by "label".
-
-regards,
-Henning
