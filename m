@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86DA3A3CB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC263A3CB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhFKHR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41926 "EHLO
+        id S231425AbhFKHRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 03:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhFKHR1 (ORCPT
+        with ESMTP id S231255AbhFKHRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:17:27 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E56C0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:15:17 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id c9so4869211wrt.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FREoGcjYmwatSSvbTS2odeRUwmu2yN1APuIOZSR0RBY=;
-        b=mJUZr/QXwC6Eq9noIyQKNB3FT88clReeJxuO9wolZRA71JslpBE2MPVycE0O8C8mZR
-         TkHAU8EfnyOm3PYVhkFvTL10xPUTH3/Pz6JYmAJf81qKYRIDEzzmgRiXpvMy43rC+vK1
-         P4DEVHnP7urdERwxs4KNnt//I5fpG6M1u+88sR08g9ZXyidQwqmS7Ri2JfNklvGjhb2w
-         HqdlNzrDK9GZ2jcPg8WPkMko0+1yQxZdhtA2B5eEysyrOv/2ELAbYMzo6/eLFPlFPK8Y
-         QiIT5AphSyi13oYbU6zOkFe0U6e4NOmygyte1p7wt1F91T9XOAliVTcOHdFa3Lucdpd0
-         TonQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=FREoGcjYmwatSSvbTS2odeRUwmu2yN1APuIOZSR0RBY=;
-        b=nzAEwSpTlC2JM8QQX1X8hxxiSa6F6MLO7Vj9FmN/gr+638kPJ6uiqGmvsb8r8WNA2k
-         fdn73ymsr/2ychYg5TJfJonNHFMIn9j0JwiChxXS9xPqHb7+d9WLHc89te/HWtNGcxoO
-         zLYKc7Eks60aH2Vz/NCJlv+OsGYVncbvnAMb64ng1OqSv1zVm4hkK6s+zdniw6fdybc0
-         Zq9OMRsvQKwlFsmh+j+flyODsYM12R5DULQNzQNyTIMAtdFi1LP8rbv8Xith6ynOxv+K
-         EEoyGVZNow3rSRDt+bvdBNeHI6NxZuHNAb7bAq2SSQ4vr1Pnj69xSHD5hcs/no9icEL+
-         Ywbg==
-X-Gm-Message-State: AOAM53022pL1mmf2r1e8Een+k2Rot0QkBY1pAqO23cPIaAQchnZcpm8u
-        NcokjbQBQdTUwRquDeyh3N+U4w==
-X-Google-Smtp-Source: ABdhPJxzefSoeOyoePIG/Zey+jgTLMreoCw+p+cwYA6CvgytK8vvrimtOK18u7sAms7CvBVfDXJMrA==
-X-Received: by 2002:a5d:4fce:: with SMTP id h14mr2316655wrw.57.1623395716028;
-        Fri, 11 Jun 2021 00:15:16 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:bfd6:8f6:b84c:734f? ([2a01:e0a:90c:e290:bfd6:8f6:b84c:734f])
-        by smtp.gmail.com with ESMTPSA id f18sm5281829wmj.13.2021.06.11.00.15.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 00:15:15 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: meson: vim3: reduce cpu thermal fan trigger
- temperature
-To:     Nick Xie <xieqinick@gmail.com>
-Cc:     robh+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nick <nick@khadas.com>, artem@khadas.com
-References: <20210609012849.797576-1-xieqinick@gmail.com>
- <11da3ae4-91d4-1e51-c652-e4ad518f13bd@baylibre.com>
- <CAP4nuTVMZV7pz8NrM2MHcZzBdueRXjS+KYsU4=cQ1CB67gr_Hg@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <ee3341d9-350e-a84d-6836-3401be679b2a@baylibre.com>
-Date:   Fri, 11 Jun 2021 09:15:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 11 Jun 2021 03:17:38 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34FFC06124C
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:15:40 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lrbO7-0000vF-8J; Fri, 11 Jun 2021 09:15:31 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lrbO5-0002TP-Dr; Fri, 11 Jun 2021 09:15:29 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: [PATCH net-next v4 0/9] provide cable test support for the ksz886x switch
+Date:   Fri, 11 Jun 2021 09:15:18 +0200
+Message-Id: <20210611071527.9333-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAP4nuTVMZV7pz8NrM2MHcZzBdueRXjS+KYsU4=cQ1CB67gr_Hg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+changes v4:
+- use fallthrough;
+- use EOPNOTSUPP instead of ENOTSUPP
+- drop flags variable in dsa_slave_phy_connect patch
+- extend description for the "net: phy: micrel: apply resume errat"
+  patch
+- fix "use consistent alignments" patch
 
-On 11/06/2021 08:54, Nick Xie wrote:
-> Hello Neil,
-> 
-> The MCU FAN won't work until the temperature reach to 80 degree centigrade,
-> Do you think the temperature is too high?
+changes v3:
+- remove RFC tag
 
-I think 80 is tool high, but I fear 50 is way too low, but if you think 50 is OK after you ran some tests, just add it to the commit log and it's ok for me.
+changes v2:
+- use generic MII_* defines where possible
+- rework phylink validate
+- remove phylink get state function
+- reorder cabletest patches to make PHY flag patch in the right order
+- fix MDI-X detection
 
-Neil
+This patches provide support for cable testing on the ksz886x switches.
+Since it has one special port, we needed to add phylink with validation
+and extra quirk for the PHY to signal, that one port will not provide
+valid cable testing reports.
 
-> 
-> Thanks.
-> 
-> Neil Armstrong <narmstrong@baylibre.com <mailto:narmstrong@baylibre.com>> 于2021年6月11日周五 下午2:44写道：
-> 
->     Hi Nick,
-> 
->     On 09/06/2021 03:28, xieqinick@gmail.com <mailto:xieqinick@gmail.com> wrote:
->     > From: Nick Xie <nick@khadas.com <mailto:nick@khadas.com>>
->     >
->     > Reduce the MCU FAN trigger temperature from
->     > 80 degree centigrade to 50 degree centigrade.
-> 
->     Can you add some more rationale to this change ?
-> 
->     >
->     > Signed-off-by: Nick Xie <nick@khadas.com <mailto:nick@khadas.com>>
->     > ---
->     >  arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 2 +-
->     >  1 file changed, 1 insertion(+), 1 deletion(-)
->     >
->     > diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
->     > index 66d67524b031..a9c34fee91f4 100644
->     > --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
->     > +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
->     > @@ -256,7 +256,7 @@ &cecb_AO {
->     >  &cpu_thermal {
->     >       trips {
->     >               cpu_active: cpu-active {
->     > -                     temperature = <80000>; /* millicelsius */
->     > +                     temperature = <50000>; /* millicelsius */
->     >                       hysteresis = <2000>; /* millicelsius */
->     >                       type = "active";
->     >               };
->     >
-> 
->     With that:
->     Reviewed-by: Neil Armstrong <narmstrong@baylibre.com <mailto:narmstrong@baylibre.com>>
-> 
+Michael Grzeschik (2):
+  net: phy: micrel: move phy reg offsets to common header
+  net: dsa: microchip: ksz8795: add phylink support
+
+Oleksij Rempel (7):
+  net: phy: micrel: use consistent alignments
+  net: phy: micrel: apply resume errata workaround for ksz8873 and
+    ksz8863
+  net: phy/dsa micrel/ksz886x add MDI-X support
+  net: phy: micrel: ksz8081 add MDI-X support
+  net: dsa: microchip: ksz8795: add LINK_MD register support
+  net: dsa: dsa_slave_phy_connect(): extend phy's flags with port
+    specific phy flags
+  net: phy: micrel: ksz886x/ksz8081: add cabletest support
+
+ drivers/net/dsa/microchip/ksz8795.c     | 214 ++++++++----
+ drivers/net/dsa/microchip/ksz8795_reg.h |  67 +---
+ drivers/net/ethernet/micrel/ksz884x.c   | 105 +-----
+ drivers/net/phy/micrel.c                | 423 ++++++++++++++++++++++--
+ include/linux/micrel_phy.h              |  16 +
+ net/dsa/slave.c                         |   4 +
+ 6 files changed, 593 insertions(+), 236 deletions(-)
+
+-- 
+2.29.2
 
