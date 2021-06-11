@@ -2,161 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6C63A3FA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231E03A3FAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbhFKJ6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKJ6s (ORCPT
+        id S230504AbhFKKAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:00:19 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38544 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKKAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:58:48 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAEFC061574;
-        Fri, 11 Jun 2021 02:56:50 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso8293399wmh.4;
-        Fri, 11 Jun 2021 02:56:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2aS2aKAnK8HRnoLMpd4OzBFgPhNdvccv1jLgYOp9O1Q=;
-        b=Vyj4vp+WQf3MX0A/ykECp07yDpSb+a2MxyYqRr080tcVKfgDf8tI640rL1QeMrCyK/
-         KSxsuph4wUrjqR0LqLMf107xy6m80NsuUZ8qw6qGK49pLXNKXBzwlBA4xfcYuohcPlEd
-         DJtrZ9Myk0J4eOPUqnBaXEUy2QwJsPSoyG1OhkYwAOaDqsL0I3/Eix5GjJdvYu8EyKRO
-         YYmkuL/aB3Hyq9eGmrBD0f6jkV82JH2iQUnLbF7c77tbekcZIxtmu/FAiwa2nkgomV6w
-         uMbwDw5ag+Ficnl5rBF6lagRTWz89/ntlx8XIrYzFsOiybdWQWTxRv6g45A13YaAw609
-         OiJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2aS2aKAnK8HRnoLMpd4OzBFgPhNdvccv1jLgYOp9O1Q=;
-        b=R/H6mTcuG7voykUhEWZIIDKdtJeb1MH8vublQLb9J6l2+VRjGKtsGhI7u+nFDtdbUp
-         d30jxErKY4loGZgjG86TVBFDVTxGbcJrr79nEcVeYi7vYFt8E6eRrUw3wHAah1k6l1ST
-         h+5RHwfc5PxuGPa83KlLlUr/VhPxiuYMrzv40wulHf5fDIKPgcZ0nnukgFl+QXkrKndY
-         b2iBFVnWOoIOjIiN2GzhH1ZuTqpyrmd0jLPbWh2mzhZ6HUPqm4Ae+4VTpPORVwYqSYEo
-         KKXMm5L+nzh86GRutHYexlNzT7Uxnvtan3Ah9pzEQ1DP3zhnjHsCb+9+HYXgTjZ1HT5B
-         aNCQ==
-X-Gm-Message-State: AOAM533HHfDREXatrZEfQX5WdA/IPw8vbBcE8Rtpd2fFGQ22eUTt0C/1
-        gTaqsHZ3fJwXk4qaKBSSayr0XQFjidr6bg==
-X-Google-Smtp-Source: ABdhPJzRO51Kgr6iMGfZOZyQH08p7CKPYr70cepTRwtpjrGRVpTlK4qEzZS/X+xskoGy1H8iq7qkGw==
-X-Received: by 2002:a05:600c:2e43:: with SMTP id q3mr3096187wmf.11.1623405409129;
-        Fri, 11 Jun 2021 02:56:49 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id 73sm6955489wrk.17.2021.06.11.02.56.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 02:56:48 -0700 (PDT)
-Subject: Re: [PATCH v9 01/22] dt-bindings: ARM: Mediatek: Add new document
- bindings of imp i2c wrapper controller
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Weiyi Lu <weiyi.lu@mediatek.com>
-References: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
- <20210524122053.17155-2-chun-jie.chen@mediatek.com>
- <20210602171201.GA3566462@robh.at.kernel.org>
- <66e017401ab93aa02c5d2bbf11be9589b36649ac.camel@mediatek.com>
- <1f59ed31-4a0e-9719-bf84-1fe4cdd6c57d@gmail.com>
- <162334689784.9598.2709970788186333494@swboyd.mtv.corp.google.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <de082c64-ace3-30b5-7404-1f4b607a83e1@gmail.com>
-Date:   Fri, 11 Jun 2021 11:56:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 11 Jun 2021 06:00:19 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C2F4C21A1E;
+        Fri, 11 Jun 2021 09:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623405500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hlkyJ17AbPRO9ojFVMYWaSn/Z+W+TChi/ZFbdMb+ucc=;
+        b=Ovv6XG03bJd/ePV2Z0V4Hj3MNcLucSL8lDeMqjjVHMFPXztX3atBJ1+zYuzqHN0OV9FJ8z
+        ogyK5nraLYMhuZ+wumBxsAIKq5i/LZTTdCk0+IwonGKb4tLoCS+vUcDpBLIkmX4JiYlZFW
+        JAj05Vfx6AJ2FiODpqgA3A0txTNVe04=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623405500;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hlkyJ17AbPRO9ojFVMYWaSn/Z+W+TChi/ZFbdMb+ucc=;
+        b=TOAJE6MQnS4BS21wqHcPOrXD7waETWpMh++S3keTmuDPmBIfp/XtUyKKdLgaAv2HE65MK7
+        0qiD2/RkslVZAeBg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A24DA118DD;
+        Fri, 11 Jun 2021 09:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623405500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hlkyJ17AbPRO9ojFVMYWaSn/Z+W+TChi/ZFbdMb+ucc=;
+        b=Ovv6XG03bJd/ePV2Z0V4Hj3MNcLucSL8lDeMqjjVHMFPXztX3atBJ1+zYuzqHN0OV9FJ8z
+        ogyK5nraLYMhuZ+wumBxsAIKq5i/LZTTdCk0+IwonGKb4tLoCS+vUcDpBLIkmX4JiYlZFW
+        JAj05Vfx6AJ2FiODpqgA3A0txTNVe04=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623405500;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hlkyJ17AbPRO9ojFVMYWaSn/Z+W+TChi/ZFbdMb+ucc=;
+        b=TOAJE6MQnS4BS21wqHcPOrXD7waETWpMh++S3keTmuDPmBIfp/XtUyKKdLgaAv2HE65MK7
+        0qiD2/RkslVZAeBg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id QbgtJ7wzw2DtZgAALh3uQQ
+        (envelope-from <msuchanek@suse.de>); Fri, 11 Jun 2021 09:58:20 +0000
+Date:   Fri, 11 Jun 2021 11:58:19 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Jessica Yu <jeyu@kernel.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH v4 2/2] powerpc/64: Option to use ELF V2 ABI for
+ big-endian kernels
+Message-ID: <20210611095819.GA8544@kitsune.suse.cz>
+References: <20210611093959.821525-1-npiggin@gmail.com>
+ <20210611093959.821525-3-npiggin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <162334689784.9598.2709970788186333494@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210611093959.821525-3-npiggin@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 11, 2021 at 07:39:59PM +1000, Nicholas Piggin wrote:
+> Provide an option to build big-endian kernels using the ELFv2 ABI. This
+> works on GCC only so far, although it is rumored to work with clang
+> that's not been tested yet. A new module version check ensures the
+> module ELF ABI level matches the kernel build.
+> 
+> This can give big-endian kernels some useful advantages of the ELFv2 ABI
+> (e.g., less stack usage, -mprofile-kernel, better compatibility with eBPF
+> tools).
+> 
+> BE+ELFv2 is not officially supported by the GNU toolchain, but it works
+> fine in testing and has been used by some userspace for some time (e.g.,
+> Void Linux).
+> 
+> Tested-by: Michal Suchánek <msuchanek@suse.de>
+> Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>  arch/powerpc/Kconfig                | 22 ++++++++++++++++++++++
+>  arch/powerpc/Makefile               | 18 ++++++++++++------
+>  arch/powerpc/boot/Makefile          |  4 +++-
+>  arch/powerpc/include/asm/module.h   | 24 ++++++++++++++++++++++++
+>  arch/powerpc/kernel/vdso64/Makefile | 13 +++++++++++++
+>  drivers/crypto/vmx/Makefile         |  8 ++++++--
+>  drivers/crypto/vmx/ppc-xlate.pl     | 10 ++++++----
+>  7 files changed, 86 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 088dd2afcfe4..093f973a28b9 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -163,6 +163,7 @@ config PPC
+>  	select ARCH_WEAK_RELEASE_ACQUIRE
+>  	select BINFMT_ELF
+>  	select BUILDTIME_TABLE_SORT
+> +	select PPC64_BUILD_ELF_V2_ABI		if PPC64 && CPU_LITTLE_ENDIAN
+>  	select CLONE_BACKWARDS
+>  	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
+>  	select DMA_OPS_BYPASS			if PPC64
+> @@ -561,6 +562,27 @@ config KEXEC_FILE
+>  config ARCH_HAS_KEXEC_PURGATORY
+>  	def_bool KEXEC_FILE
+>  
+> +config PPC64_BUILD_ELF_V2_ABI
+> +	bool
+> +
+> +config PPC64_BUILD_BIG_ENDIAN_ELF_V2_ABI
+> +	bool "Build big-endian kernel using ELF ABI V2 (EXPERIMENTAL)"
+> +	depends on PPC64 && CPU_BIG_ENDIAN && EXPERT
+> +	depends on CC_IS_GCC && LD_VERSION >= 22400
+> +	default n
+> +	select PPC64_BUILD_ELF_V2_ABI
+> +	help
+> +	  This builds the kernel image using the "Power Architecture 64-Bit ELF
+> +	  V2 ABI Specification", which has a reduced stack overhead and faster
+> +	  function calls. This internal kernel ABI option does not affect
+> +          userspace compatibility.
+> +
+> +	  The V2 ABI is standard for 64-bit little-endian, but for big-endian
+> +	  it is less well tested by kernel and toolchain. However some distros
+> +	  build userspace this way, and it can produce a functioning kernel.
+> +
+> +	  This requires GCC and binutils 2.24 or newer.
+> +
+>  config RELOCATABLE
+>  	bool "Build a relocatable kernel"
+>  	depends on PPC64 || (FLATMEM && (44x || FSL_BOOKE))
+> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+> index 3212d076ac6a..b90b5cb799aa 100644
+> --- a/arch/powerpc/Makefile
+> +++ b/arch/powerpc/Makefile
+> @@ -91,10 +91,14 @@ endif
+>  
+>  ifdef CONFIG_PPC64
+>  ifndef CONFIG_CC_IS_CLANG
+> -cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mabi=elfv1)
+> -cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mcall-aixdesc)
+> -aflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mabi=elfv1)
+> -aflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= -mabi=elfv2
+> +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> +cflags-y				+= $(call cc-option,-mabi=elfv2)
+> +aflags-y				+= $(call cc-option,-mabi=elfv2)
+> +else
+> +cflags-y				+= $(call cc-option,-mabi=elfv1)
+> +cflags-y				+= $(call cc-option,-mcall-aixdesc)
+> +aflags-y				+= $(call cc-option,-mabi=elfv1)
+> +endif
+>  endif
+>  endif
+>  
+> @@ -142,15 +146,17 @@ endif
+>  
+>  CFLAGS-$(CONFIG_PPC64)	:= $(call cc-option,-mtraceback=no)
+>  ifndef CONFIG_CC_IS_CLANG
+> -ifdef CONFIG_CPU_LITTLE_ENDIAN
+> -CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2,$(call cc-option,-mcall-aixdesc))
+> +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> +CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2)
+>  AFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2)
+>  else
+> +# Keep these in synch with arch/powerpc/kernel/vdso64/Makefile
+>  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv1)
+>  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mcall-aixdesc)
+>  AFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv1)
+>  endif
+>  endif
+> +
+>  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mcmodel=medium,$(call cc-option,-mminimal-toc))
+>  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mno-pointers-to-nested-functions)
+>  
+> diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
+> index 2b8da923ceca..be84a72f8258 100644
+> --- a/arch/powerpc/boot/Makefile
+> +++ b/arch/powerpc/boot/Makefile
+> @@ -40,6 +40,9 @@ BOOTCFLAGS    := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+>  
+>  ifdef CONFIG_PPC64_BOOT_WRAPPER
+>  BOOTCFLAGS	+= -m64
+> +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> +BOOTCFLAGS	+= $(call cc-option,-mabi=elfv2)
+> +endif
+>  else
+>  BOOTCFLAGS	+= -m32
+>  endif
+> @@ -50,7 +53,6 @@ ifdef CONFIG_CPU_BIG_ENDIAN
+>  BOOTCFLAGS	+= -mbig-endian
+>  else
+>  BOOTCFLAGS	+= -mlittle-endian
+> -BOOTCFLAGS	+= $(call cc-option,-mabi=elfv2)
+>  endif
+>  
+>  BOOTAFLAGS	:= -D__ASSEMBLY__ $(BOOTCFLAGS) -nostdinc
+> diff --git a/arch/powerpc/include/asm/module.h b/arch/powerpc/include/asm/module.h
+> index 857d9ff24295..043e11068ff4 100644
+> --- a/arch/powerpc/include/asm/module.h
+> +++ b/arch/powerpc/include/asm/module.h
+> @@ -52,6 +52,30 @@ struct mod_arch_specific {
+>  	unsigned int num_bugs;
+>  };
+>  
+> +/*
+> + * Check kernel module ELF header architecture specific compatibility.
+> + */
+> +static inline bool elf_check_module_arch(Elf_Ehdr *hdr)
+> +{
+> +	if (!elf_check_arch(hdr))
+> +		return false;
+> +
+> +	if (IS_ENABLED(CONFIG_PPC64)) {
+> +		unsigned long abi_level = hdr->e_flags & 0x3;
+> +
+> +		if (IS_ENABLED(CONFIG_PPC64_BUILD_ELF_V2_ABI)) {
+> +			if (abi_level != 2)
+> +				return false;
+> +		} else {
+> +			if (abi_level >= 2)
+> +				return false;
+> +		}
+> +	}
+> +
+> +	return true;
+> +}
+> +#define elf_check_module_arch elf_check_module_arch
+> +
+>  /*
+>   * Select ELF headers.
+>   * Make empty section for module_frob_arch_sections to expand.
+Shouldn't this part go to the second patch?
 
+Thanks
 
-On 10/06/2021 19:41, Stephen Boyd wrote:
-> Quoting Matthias Brugger (2021-06-08 07:45:49)
->>
->>
->> On 07/06/2021 07:20, Chun-Jie Chen wrote:
->>> On Wed, 2021-06-02 at 12:12 -0500, Rob Herring wrote:
->>>>> +
->>>>> +description:
->>>>> +  The Mediatek imp i2c wrapper controller provides functional
->>>>> configurations and clocks to the system.
->>>>> +
->>>>> +properties:
->>>>> +  compatible:
->>>>> +    items:
->>>>> +      - enum:
->>>>> +          - mediatek,mt8192-imp_iic_wrap_c
->>>>> +          - mediatek,mt8192-imp_iic_wrap_e
->>>>> +          - mediatek,mt8192-imp_iic_wrap_s
->>>>> +          - mediatek,mt8192-imp_iic_wrap_ws
->>>>> +          - mediatek,mt8192-imp_iic_wrap_w
->>>>> +          - mediatek,mt8192-imp_iic_wrap_n
->>>>
->>>> Looks to me like these are all the same h/w, but just have differing 
->>>> sets of clocks. That's not really a reason to have different 
->>>> compatibles. 
->>>>
->>>> If you need to know what clocks are present, you can walk the DT for 
->>>> all 'clocks' properties matching this clock controller instance. Or
->>>> use 
->>>> 'clock-indices' to define which ones are present.
+Michal
+> diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
+> index 2813e3f98db6..d783c07e558f 100644
+> --- a/arch/powerpc/kernel/vdso64/Makefile
+> +++ b/arch/powerpc/kernel/vdso64/Makefile
+> @@ -25,6 +25,19 @@ KCOV_INSTRUMENT := n
+>  UBSAN_SANITIZE := n
+>  KASAN_SANITIZE := n
+>  
+> +# Always build vdso64 with ELFv1 ABI for BE kernels
+> +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> +ifdef CONFIG_CPU_BIG_ENDIAN
+> +KBUILD_CFLAGS := $(filter-out -mabi=elfv2,$(KBUILD_CFLAGS))
+> +KBUILD_AFLAGS := $(filter-out -mabi=elfv2,$(KBUILD_AFLAGS))
+> +
+> +# These are derived from arch/powerpc/Makefile
+> +KBUILD_CFLAGS += $(call cc-option,-mabi=elfv1)
+> +KBUILD_CFLAGS += $(call cc-option,-mcall-aixdesc)
+> +KBUILD_AFLAGS += $(call cc-option,-mabi=elfv1)
+> +endif
+> +endif
+> +
+>  ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
+>  	-Wl,-soname=linux-vdso64.so.1 -Wl,--hash-style=both
+>  asflags-y := -D__VDSO64__ -s
+> diff --git a/drivers/crypto/vmx/Makefile b/drivers/crypto/vmx/Makefile
+> index 709670d2b553..d9ccf9fc3483 100644
+> --- a/drivers/crypto/vmx/Makefile
+> +++ b/drivers/crypto/vmx/Makefile
+> @@ -5,18 +5,22 @@ vmx-crypto-objs := vmx.o aesp8-ppc.o ghashp8-ppc.o aes.o aes_cbc.o aes_ctr.o aes
+>  ifeq ($(CONFIG_CPU_LITTLE_ENDIAN),y)
+>  override flavour := linux-ppc64le
+>  else
+> +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> +override flavour := linux-ppc64-elfv2
+> +else
+>  override flavour := linux-ppc64
+>  endif
+> +endif
+>  
+>  quiet_cmd_perl = PERL $@
+>        cmd_perl = $(PERL) $(<) $(flavour) > $(@)
+>  
+>  targets += aesp8-ppc.S ghashp8-ppc.S
+>  
+> -$(obj)/aesp8-ppc.S: $(src)/aesp8-ppc.pl FORCE
+> +$(obj)/aesp8-ppc.S: $(src)/aesp8-ppc.pl $(src)/ppc-xlate.pl FORCE
+>  	$(call if_changed,perl)
+>    
+> -$(obj)/ghashp8-ppc.S: $(src)/ghashp8-ppc.pl FORCE
+> +$(obj)/ghashp8-ppc.S: $(src)/ghashp8-ppc.pl $(src)/ppc-xlate.pl FORCE
+>  	$(call if_changed,perl)
+>  
+>  clean-files := aesp8-ppc.S ghashp8-ppc.S
+> diff --git a/drivers/crypto/vmx/ppc-xlate.pl b/drivers/crypto/vmx/ppc-xlate.pl
+> index 36db2ef09e5b..b583898c11ae 100644
+> --- a/drivers/crypto/vmx/ppc-xlate.pl
+> +++ b/drivers/crypto/vmx/ppc-xlate.pl
+> @@ -9,6 +9,8 @@ open STDOUT,">$output" || die "can't open $output: $!";
+>  
+>  my %GLOBALS;
+>  my $dotinlocallabels=($flavour=~/linux/)?1:0;
+> +my $elfv2abi=(($flavour =~ /linux-ppc64le/) or ($flavour =~ /linux-ppc64-elfv2/))?1:0;
+> +my $dotfunctions=($elfv2abi=~1)?0:1;
+>  
+>  ################################################################
+>  # directives which need special treatment on different platforms
+> @@ -40,7 +42,7 @@ my $globl = sub {
+>  };
+>  my $text = sub {
+>      my $ret = ($flavour =~ /aix/) ? ".csect\t.text[PR],7" : ".text";
+> -    $ret = ".abiversion	2\n".$ret	if ($flavour =~ /linux.*64le/);
+> +    $ret = ".abiversion	2\n".$ret	if ($elfv2abi);
+>      $ret;
+>  };
+>  my $machine = sub {
+> @@ -56,8 +58,8 @@ my $size = sub {
+>      if ($flavour =~ /linux/)
+>      {	shift;
+>  	my $name = shift; $name =~ s|^[\.\_]||;
+> -	my $ret  = ".size	$name,.-".($flavour=~/64$/?".":"").$name;
+> -	$ret .= "\n.size	.$name,.-.$name" if ($flavour=~/64$/);
+> +	my $ret  = ".size	$name,.-".($dotfunctions?".":"").$name;
+> +	$ret .= "\n.size	.$name,.-.$name" if ($dotfunctions);
+>  	$ret;
+>      }
+>      else
+> @@ -142,7 +144,7 @@ my $vmr = sub {
+>  
+>  # Some ABIs specify vrsave, special-purpose register #256, as reserved
+>  # for system use.
+> -my $no_vrsave = ($flavour =~ /linux-ppc64le/);
+> +my $no_vrsave = ($elfv2abi);
+>  my $mtspr = sub {
+>      my ($f,$idx,$ra) = @_;
+>      if ($idx == 256 && $no_vrsave) {
+> -- 
+> 2.23.0
 > 
-> Is the idea to use clock-indices and then list all the clock ids in
-> there and match them up at driver probe time to register the clocks
-> provided by the IO region? Feels like we'll do a lot of parsing at each
-> boot to match up structures and register clks with the clk framework.
-> 
-> If it's like other SoCs then the clk id maps to a hard macro for a type
-> of clk, and those hard macros have been glued together with other clks
-> and then partitioned into different IO regions to make up a clock
-> controller. Or maybe in this case, those clk hard macros have been
-> scattered into each IP block like SPI, i2c, uart, etc. so that the clock
-> controller doesn't really exist and merely the gates and rate control
-> (mux/divider) for the clk that's clocking some particular IP block all
-> live inside the IP wrapper. If it's this case then I hope there are a
-> bunch of PLLs that are fixed rate so that the i2c clk doesn't have to go
-> outside the wrapper to change frequency (of which there should be two
-> "standard" frequencies anyway).
-> 
->>>>
->>>> Rob
->>>
->>> Some module is divided to sub-modules which are designed in different
->>> h/w blocks for different usage, and if we want to use the same
->>> compatible to present these h/w blocks, we need to move the clock data
->>> provided by these h/w blocks to dts, but we usually use different
->>> compatible to get the h/w blocks data in
->>> Mediatek's clock driver, so do you suggest to register clock provided
->>> by different h/w blocks using same compatible?
->>>
->>
->> The mapping of them is as following:
->> imp_iic_wrap_c:  11007000
->> imp_iic_wrap_e:  11cb1000
->> imp_iic_wrap_s:  11d03000
->> imp_iic_wrap_ws: 11d23000
->> imp_iic_wrap_w:  11e01000
->> imp_iic_wrap_n:  11f02000
->>
-> 
-> Sure. What is their purpose though? Are they simply a bunch of different
-> i2c clks?
-> 
-
-That would be need to be answered by MediaTek as I don't have access to any
-documentation.
-
-Regards,
-Matthias
