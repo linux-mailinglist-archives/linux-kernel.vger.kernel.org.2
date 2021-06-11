@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD223A468F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B735D3A46AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhFKQfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:35:09 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:40943 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFKQfI (ORCPT
+        id S230447AbhFKQnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:43:32 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:47279 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhFKQn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:35:08 -0400
-Received: by mail-wr1-f45.google.com with SMTP id y7so6714673wrh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=43YwbbFUjt8PFhuUjKzii9hmVIqVWxK+JjxZuZko7uI=;
-        b=YnHeUkeW8R3Cq7lpsbOLRkvy0ucJBZlS4fM+HqqU3pCg+8wge7hj0UlSiMIJozL/dF
-         ebrp1biaMzv+SxiX+utsJb+vns1NqxYMjv9Qs7gx4HwHedrRz3MquBlNj7CyXxs0zyLu
-         gBkhF1lwOCbhBUnRMZREWzXKb37UaavKMl6sWwJfzdB8T15f1LVTbyypUZ2k779YJkGp
-         wH7Zioqksqij0Q4zSCdKm0QLVbpx2nwOpJJBBDoEWhCDmcJ827mu3O3L3dmgpp3NgG64
-         x1j2OwsZ5pqOnyXshV97v12EQXwgwF7+jV/jGuB6ftkuwBJz28dYAe1fFm3kzHKZ19qt
-         l9kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=43YwbbFUjt8PFhuUjKzii9hmVIqVWxK+JjxZuZko7uI=;
-        b=YwByd/IpJE0nhkofGOQunnajeX0axJHNlCgjcKXxxBFftbgJWKFkUZ+xNEAftcDHqv
-         2aTkxnCbEx16KM+wW0+m6yzQk3zGO5SNoad4shjCF6p8HxH54aWIoJMbRiVNRZeCsJaX
-         ysZ/SDOqdXT0zxmKY1sHbkeTE9uTk4pfU5LQvYfhik6k0jyBKBQRF2iOO15jqJUVh21x
-         +J8+zVFUpTe/GPwTbokwISrABM+ZCVBesASqBm31WkgN+EqrgyIzh25TEE77jZ9Ue9UI
-         0Antylv7eyEHffxfcnPIaKXDJ8rlmbyy/wC0mlYS6huVs8OEYiS5WN8sKlvfLcd6mdvM
-         fo3A==
-X-Gm-Message-State: AOAM531aHdUvkMxT8WKA4y3azuMVs5G9R5z8fUooLyhOyXmpsxxHxOmD
-        f7HvamqyVIXVHU/GWcW36lo=
-X-Google-Smtp-Source: ABdhPJxS44qmqu2/9J1vEq4hXASoe0gdnhz5wncchQStVJ7A7rqtIlk07GXvE7PnGkDGfpf529XKQg==
-X-Received: by 2002:adf:ec10:: with SMTP id x16mr5124817wrn.83.1623429129794;
-        Fri, 11 Jun 2021 09:32:09 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id o5sm7766169wrw.65.2021.06.11.09.32.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 09:32:08 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] regulator: Changes for v5.14-rc1
-Date:   Fri, 11 Jun 2021 18:33:45 +0200
-Message-Id: <20210611163345.3566326-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.32.0
-Content-Type: text/plain; charset="utf-8"
+        Fri, 11 Jun 2021 12:43:26 -0400
+X-Greylist: delayed 9071 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Jun 2021 12:43:25 EDT
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4G1mnW3mnLz1s3pb;
+        Fri, 11 Jun 2021 18:41:19 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4G1mnV6lD7z1r0wv;
+        Fri, 11 Jun 2021 18:41:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id DNOF1t6SXpEc; Fri, 11 Jun 2021 18:41:17 +0200 (CEST)
+X-Auth-Info: UjAl/qSEJiAcUzh+KfzDTVzON+wrDx36PXw07BKvqDwzz+F6woY6oRGDBmF8tT9C
+Received: from igel.home (ppp-46-244-189-84.dynamic.mnet-online.de [46.244.189.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 11 Jun 2021 18:41:17 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id C31282C3655; Fri, 11 Jun 2021 18:41:16 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 7/9] riscv: bpf: Avoid breaking W^X
+References: <20210330022144.150edc6e@xhacker>
+        <20210330022521.2a904a8c@xhacker> <87o8ccqypw.fsf@igel.home>
+        <20210612002334.6af72545@xhacker>
+X-Yow:  I will SHAVE and buy JELL-O and bring my MARRIAGE MANUAL!!
+Date:   Fri, 11 Jun 2021 18:41:16 +0200
+In-Reply-To: <20210612002334.6af72545@xhacker> (Jisheng Zhang's message of
+        "Sat, 12 Jun 2021 00:23:34 +0800")
+Message-ID: <87bl8cqrpv.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark, Liam,
+On Jun 12 2021, Jisheng Zhang wrote:
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+> I reproduced an kernel panic with the defconfig on qemu, but I'm not sure whether
+> this is the issue you saw, I will check.
+>
+>     0.161959] futex hash table entries: 512 (order: 3, 32768 bytes, linear)
+> [    0.167028] pinctrl core: initialized pinctrl subsystem
+> [    0.190727] Unable to handle kernel paging request at virtual address ffffffff81651bd8
+> [    0.191361] Oops [#1]
+> [    0.191509] Modules linked in:
+> [    0.191814] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #3
+> [    0.192179] Hardware name: riscv-virtio,qemu (DT)
+> [    0.192492] epc : __memset+0xc4/0xfc
+> [    0.192712]  ra : skb_flow_dissector_init+0x22/0x86
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+Yes, that's the same.
 
-are available in the Git repository at:
+Andreas.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git tags/for-5.14-regulator
-
-for you to fetch changes up to 380d2b2d5a0491e47dfa250b40e3d849a922871d:
-
-  regulator: core: Add regulator_sync_voltage_rdev() (2021-06-01 12:13:30 +0200)
-
-This is a dependency for some code that's going to go in via the Tegra
-tree and has Mark's Acked-by on it. There should be no need to pull this
-into the regulator tree, but I'm sending it out for completeness so this
-is available in case you need it to resolve a conflict.
-
-Thanks,
-Thierry
-
-----------------------------------------------------------------
-regulator: Changes for v5.14-rc1
-
-This adds regulator_sync_voltage_rdev(), which is used as a dependency
-for new Tegra power domain code.
-
-----------------------------------------------------------------
-Dmitry Osipenko (1):
-      regulator: core: Add regulator_sync_voltage_rdev()
-
- drivers/regulator/core.c         | 23 +++++++++++++++++++++++
- include/linux/regulator/driver.h |  1 +
- 2 files changed, 24 insertions(+)
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
