@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478F23A4903
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00743A4905
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhFKTDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:03:24 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54980 "EHLO
+        id S231172AbhFKTDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:03:42 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55050 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhFKTDW (ORCPT
+        with ESMTP id S229824AbhFKTDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:03:22 -0400
+        Fri, 11 Jun 2021 15:03:42 -0400
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BJ1KpO050753;
-        Fri, 11 Jun 2021 14:01:20 -0500
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BJ1btP050871;
+        Fri, 11 Jun 2021 14:01:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623438081;
-        bh=6Q+15fy/NVxEQ2Ca5L+lurVioUlPqc17s1EEWMcllvQ=;
+        s=ti-com-17Q1; t=1623438097;
+        bh=oNYWXlYYC/1iioMcmA86F7d0ogALtgOe8ZV2+/LgoLE=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=E6u7jtIZEI/WGHhBxAvPjE4OdIq5UBVkBA1BRkqbPb+ICnondvPxsDSPSx9d9yLoC
-         xb7mbagVZ3/NduyxpML9+qx0F//rrbDgQd4wBsnVRjRBI9VasYGTA6glPYoKvmx6IG
-         8rXDOz02rI0fpXp6+YvCbCKuz3pkmA7DlTTCH8/A=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BJ1K9h098039
+        b=rMxCW/7hhlj1A6zH2GNIiVEdrPzITZA4ClqQcC730z3ZxB7GEbWAM73u1SdIzFEag
+         qxGRFlVjox5i/V2jWr2pt6vqowOC/fCOM4KgfW76m4x/dF60rIvrnvWQztLz5OqhB/
+         oOBhvCQX5OllVgTJvzXFx7TYuAK9AcUD7AbuHuBQ=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BJ1boN098220
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Jun 2021 14:01:20 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 11 Jun 2021 14:01:37 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 14:01:20 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2021 14:01:36 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 11 Jun 2021 14:01:20 -0500
+ Frontend Transport; Fri, 11 Jun 2021 14:01:36 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BJ1KKF014371;
-        Fri, 11 Jun 2021 14:01:20 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BJ1aJB066668;
+        Fri, 11 Jun 2021 14:01:36 -0500
 From:   Nishanth Menon <nm@ti.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-am642-main: fix ports mac properties
-Date:   Fri, 11 Jun 2021 14:01:19 -0500
-Message-ID: <162343806972.7960.17035986962918713377.b4-ty@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Tero Kristo <kristo@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>,
+        "Su, Bao Cheng (RC-CN DF FA R&D)" <baocheng.su@siemens.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: iot2050: Configure r5f cluster on basic variant in split mode
+Date:   Fri, 11 Jun 2021 14:01:36 -0500
+Message-ID: <162343808815.8145.13615727789755621298.b4-ty@ti.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608184940.25934-1-grygorii.strashko@ti.com>
-References: <20210608184940.25934-1-grygorii.strashko@ti.com>
+In-Reply-To: <3a241e50-80a3-992a-2445-345c629d7895@siemens.com>
+References: <3a241e50-80a3-992a-2445-345c629d7895@siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -58,24 +60,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 21:49:40 +0300, Grygorii Strashko wrote:
-> The current device tree CPSW3g node adds non-zero "mac-address" property to
-> the ports, which prevents random MAC address assignment to network devices
-> if bootloader failed to update DT. This may cause more then one host to
-> have the same MAC in the network.
-> 
->  mac-address = [00 00 de ad be ef];
->  mac-address = [00 01 de ad be ef];
-> 
-> [...]
+On Wed, 2 Jun 2021 08:56:15 +0200, Jan Kiszka wrote:
+> Lockstep mode is not supported here. So turn it off to avoid warnings
+> during startup.
 
-Hi Grygorii Strashko,
+Hi Jan Kiszka,
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: dts: ti: k3-am642-main: fix ports mac properties
-      commit: e04f89c15ea84967fae355d335c5df14349d038d
+[1/1] arm64: dts: ti: iot2050: Configure r5f cluster on basic variant in split mode
+      commit: f1f55c6b77b6e88f8b9a95b7cb491bb619a1e6bc
 
 
 All being well this means that it will be integrated into the linux-next
