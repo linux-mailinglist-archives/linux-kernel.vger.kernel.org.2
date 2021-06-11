@@ -2,188 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432383A4024
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A33A3A401F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhFKK1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:27:04 -0400
-Received: from mail-vs1-f42.google.com ([209.85.217.42]:42615 "EHLO
-        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKK1C (ORCPT
+        id S230405AbhFKKZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhFKKZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:27:02 -0400
-Received: by mail-vs1-f42.google.com with SMTP id l25so3466590vsb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:24:51 -0700 (PDT)
+        Fri, 11 Jun 2021 06:25:41 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1231FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:23:29 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id c9so5470701wrt.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:23:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BK5FSPAIVY7BHkqa7m1EZ7jj7bUTkuHalv8GCJ5Ni4s=;
-        b=JmCUI9LxHn1plyMQFyPsw0EPm98tNnjsR+0gzYK0zeVAitU0BQSDb2gb+Liv5AusmV
-         /i+75NEJbsybJrbJ6PnJwJ6s3qfk7huCB/m1TO17P43lekpDK0Eo7Ap8RwRMQHxnLfcL
-         a0e24WAD0YqlHvTrR9NuQ3oC9KO38MZI/OSfXgweAmumesRVtYn72vEUeAsC6JSebNz4
-         o3lUTv5C84pgLHPTdNtZPnZN8a8iDEnTdQyLJQnkAJXsxe2vRd7KVWeJhbphwa/SfWCE
-         47HcBsj7QCrgP+YT0wggIQEWCgiwd9GH+ou1Uwi0We/CMxlXJ7IJOIL+j2va1rtNfiUb
-         acFQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2f7/TFgLVrG5lfOiI4zi8HzRCiY/70uX27quxfvnzbY=;
+        b=jKGxIQHdD6gjIrzQmopPo2aSyn3PhYLolsFqRZP4AnTV1WTgXzPoqql6wnFSyjQgOW
+         popRktZsPNNUJEWKc45RrZ+3bgZKqK3Q42YExWMGLoLi4woqg2eRKMmwsTFlCjXpbdcf
+         CbaVOEzAh7z+36/OnnZ4JJHsZywSCelJz/VZXkaDVGXfByvg8p/OPJP1duYohYQTV4DL
+         bUzL4S9g6bgVSvDn26LNk38/v+RNfiWozQZSPHUmYyCvE9UJmbtF8S6KF1LrJrVkLH8f
+         XkrXeH+7/tVvbSOTx0teONFsJ+608OB4C/FnCnmbSDW+76Ko0nVhzam+SLwmp08sRSd+
+         xPBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BK5FSPAIVY7BHkqa7m1EZ7jj7bUTkuHalv8GCJ5Ni4s=;
-        b=dueXhxhiLXYCdrNOICrKqSVH9Jbzt1McdvcL6Q1CZz3wXmZVz/Q1IgU3ZXsQGsoDoJ
-         N7UFMyvMqi3+hMhc9skx4DrGokS51HY5NNJlXwD5gWf1CgNjZapNg0nGwYZQWBoCaKVz
-         hFGuODCPp96BwDmJvMnQRGG5JXc5eEB2MozhaXFLAPxwYVOJNsWoR7v9JQtq5Q9V+4sN
-         0rPmFXrWgTIrfUMjWTVcHK1Xu8quQr5Xa954bocj5zuxj5MdLq+ws8Xg/YgfBOqDYsuA
-         ofDbL6jswBE3EJyieviPDVf7YR4grSxd1K5wL2sl9+mJx7PqNkGei2pxHGyMc6qOSDHx
-         +J8w==
-X-Gm-Message-State: AOAM5332tYDi9C4RWagYwZ5/JKKihV/8lKgttAMC7UpfWmm+3V9Vtq/L
-        /HHCjR0hpC64eGzByha9JnaIznNCANe3QzYdDFfDsg==
-X-Google-Smtp-Source: ABdhPJwLrnOX7GlrPp7cabVhPYtL5pRpAhcuytHfYlGIWjLqHCs4i2sESdPXlSwGa6TJNPUP94kxCrsWlgzuF7VbWTw=
-X-Received: by 2002:a05:6102:386:: with SMTP id m6mr5780364vsq.48.1623407031441;
- Fri, 11 Jun 2021 03:23:51 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2f7/TFgLVrG5lfOiI4zi8HzRCiY/70uX27quxfvnzbY=;
+        b=XExlA/5J/MJ6SfC+m/wy62/39KhvX1RLLWJD6ycnXXEoTz9Ov204j2+BttsDhm1fDO
+         g7Tk0uUo3Q2NuDS1HZir/w3Ekx3JPqGU656pXHfeN82lWqSXUlw0WilC29ac36tOrElM
+         9Uxz9zfaukMJA0PdJtcSJmdHiFVpDVSAX1qZc11V0cwBhmRDMHnIIgbqfxSSoEnqXMLC
+         kNDia88jYsohr2wNcmprsDkaU1v35z4r1aV5dbsHU1j7+UQ/GVKFPT3VdO+mBBIGIQpe
+         TivZ3moT8HXvojCh6mi6+059H40gAee7psRkhUwuvpp7p/sXnW3bF9ldALrRnB0W3Fgx
+         X8vQ==
+X-Gm-Message-State: AOAM531Qxeh85mp9ia9vOMGsF4I4h0vBSVK3K1HVVvB+EWNAAsk3GcO2
+        GwwzWwU2/Ejd5xMRhLAjZiGqfA==
+X-Google-Smtp-Source: ABdhPJynpROcL4L2ur8xqTkdkxNVoIs11LsQxNZpnDaajSSKsg/uqUJt3bEoU8GFkUsuyp9Ai94CRw==
+X-Received: by 2002:a5d:47c3:: with SMTP id o3mr3305518wrc.122.1623407007638;
+        Fri, 11 Jun 2021 03:23:27 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id q20sm8317234wrf.45.2021.06.11.03.23.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 03:23:27 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [RESEND PATCH] nvmem: core: add a missing of_node_put
+Date:   Fri, 11 Jun 2021 11:23:21 +0100
+Message-Id: <20210611102321.11509-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20210602192758.38735-1-alcooperx@gmail.com> <20210602192758.38735-2-alcooperx@gmail.com>
- <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
- <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com> <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
- <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com> <CAPDyKFqk23xg5R2k9GwQrnamwWYbMkmrbWYsHPF9VBQTAbvQHw@mail.gmail.com>
- <a1199e99-eb29-125b-2bac-f0abb4803c9b@gmail.com>
-In-Reply-To: <a1199e99-eb29-125b-2bac-f0abb4803c9b@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 11 Jun 2021 12:23:14 +0200
-Message-ID: <CAPDyKFq-rofbCyAhcQGt2xZykip6Le+CUDXgDwAisVOj=Tt-uA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
- controller on the BCM7211
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 at 17:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
->
->
->
-> On 6/10/2021 1:49 AM, Ulf Hansson wrote:
-> > On Thu, 10 Jun 2021 at 01:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>
-> >>
-> >>
-> >> On 6/9/2021 2:22 AM, Ulf Hansson wrote:
-> >>> On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
-> >>>>> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
-> >>>>>>
-> >>>>>> Add support for the legacy Arasan sdhci controller on the BCM7211 and
-> >>>>>> related SoC's. This includes adding a .shutdown callback to increase
-> >>>>>> the power savings during S5.
-> >>>>>
-> >>>>> Please split this into two separate changes.
-> >>>>>
-> >>>>> May I also ask about the ->shutdown() callback and in relation to S5.
-> >>>>> What makes the ->shutdown callback only being invoked for S5?
-> >>>>
-> >>>> It is not only called for S5 (entered via poweroff on a prompt) but also
-> >>>> during kexec or reboot. The poweroff path is via:
-> >>>>
-> >>>> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
-> >>>> .shutdown()
-> >>>>
-> >>>> For kexec or reboot we do not really care about power savings since we
-> >>>> are about to load a new image anyway, however for S5/poweroff we do care
-> >>>> about quiescing the eMMC controller in a way that its clocks and the
-> >>>> eMMC device can be put into low power mode since we will stay in that
-> >>>> mode for seconds/hours/days until someone presses a button on their
-> >>>> remote (or other wake-up sources).
-> >>>
-> >>> Hmm, I am not sure I understand correctly. At shutdown we don't care
-> >>> about wake-up sources from the kernel point of view, instead we treat
-> >>> everything as if it will be powered off.
-> >>
-> >> The same .shutdown() path is used whether you kexec, reboot or poweroff,
-> >> but for poweroff we do care about allowing specific wake-up sources
-> >> configured as such to wake-up the system at a later time, like GPIOs,
-> >> RTC, etc.
-> >
-> > That's true, but using the ->shutdown() callbacks in this way would
-> > certainly be a new use case.
-> >
-> > Most subsystems/drivers don't care about power management in those
-> > callbacks, but rather just about managing a graceful shutdown.
-> >
-> > It sounds to me like you should have a look at the hibernation
-> > path/callbacks instead - or perhaps even the system suspend
-> > path/callback. Normally, that's where we care about power management.
->
-> The platforms we use do not support hibernation, keep in mind that these
-> are embedded SoCs that support the S2 (standby), S3 (mem) and poweroff
-> suspend states, hibernation is not something that we can support.
->
-> >
-> > I have looped in Rafael, to allow him to share his opinion on this.
-> >
-> >>
-> >>>
-> >>> We put devices into low power state at system suspend and potentially
-> >>> also during some of the hibernation phases.
-> >>>
-> >>> Graceful shutdown of the eMMC is also managed by the mmc core.
-> >>
-> >> AFAICT that calls mmc_blk_shutdown() but that is pretty much it, the
-> >> SDHCI platform_driver still needs to do something in order to conserve
-> >> power including disabling host->clk, otherwise we would not have done
-> >> that for sdhci-brcmstb.c.
-> >
-> > That's not entirely correct. When mmc_bus_shutdown() is called for the
-> > struct device* that belongs to an eMMC card, two actions are taken.
-> >
-> > *) We call mmc_blk_shutdown(), to suspend the block device queue from
-> > receiving new I/O requests.
-> > **) We call host->bus_ops->shutdown(), which is an eMMC specific
-> > callback set to mmc_shutdown(). In this step, we do a graceful
-> > shutdown/power-off of the eMMC card.
-> >
-> > When it comes to controller specific resources, like clocks and PM
-> > domains, for example, those may very well stay turned on. Do deal with
-> > these, then yes, you would need to implement the ->shutdown()
-> > callback. But as I said above, I am not sure it's the right thing to
-> > do.
->
-> As explained before, we can enter S5 for an indefinite amount of time
-> until a wake-up source wakes us up so we must conserve power, even if we
-> happen to wake up the next second, we don't know that ahead of time. The
-> point of calling sdhci_pltfm_suspend() here is to ensure that host->clk
-> is turned off which cuts the eMMC controller digital clock, I forgot how
-> much power we save by doing so, but every 10s of mW counts for us.
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-I fully understand that you want to avoid draining energy, every
-single uA certainly counts in cases like these.
+'for_each_child_of_node' performs an of_node_get on each iteration, so a
+return from the middle of the loop requires an of_node_put.
 
-What puzzles me, is that your platform seems to keep some resources
-powered on (like device clocks) when entering the system wide low
-power state, S5.
+Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+Hi Greg, 
 
-In principle, I am wondering if it would be possible to use S5 as the
-system-wide low power state for the system suspend path, rather than
-S3, for example? In this way, we would be able to re-use already
-implemented ->suspend|resume callbacks from most subsystems/drivers, I
-believe. Or is there a problem with that?
+Resending just this one with cc stable as rest of nvmem series are already applied.
 
-I think we need an opinion from Rafel to move forward.
+thanks,
+srini
 
-Kind regards
-Uffe
+ drivers/nvmem/core.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index b3c28a2d4c10..4868aa876e1b 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -686,15 +686,17 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+ 			continue;
+ 		if (len < 2 * sizeof(u32)) {
+ 			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
++			of_node_put(child);
+ 			return -EINVAL;
+ 		}
+ 
+ 		cell = kzalloc(sizeof(*cell), GFP_KERNEL);
+-		if (!cell)
++		if (!cell) {
++			of_node_put(child);
+ 			return -ENOMEM;
++		}
+ 
+ 		cell->nvmem = nvmem;
+-		cell->np = of_node_get(child);
+ 		cell->offset = be32_to_cpup(addr++);
+ 		cell->bytes = be32_to_cpup(addr);
+ 		cell->name = kasprintf(GFP_KERNEL, "%pOFn", child);
+@@ -715,11 +717,12 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+ 				cell->name, nvmem->stride);
+ 			/* Cells already added will be freed later. */
+ 			kfree_const(cell->name);
+-			of_node_put(cell->np);
+ 			kfree(cell);
++			of_node_put(child);
+ 			return -EINVAL;
+ 		}
+ 
++		cell->np = of_node_get(child);
+ 		nvmem_cell_add(cell);
+ 	}
+ 
+-- 
+2.21.0
+
