@@ -2,472 +2,472 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE693A4A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561FC3A4A54
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhFKUmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:42:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230083AbhFKUmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:42:11 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 206FA613C6;
-        Fri, 11 Jun 2021 20:40:09 +0000 (UTC)
-Date:   Fri, 11 Jun 2021 21:42:05 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Francis Laniel <laniel_francis@privacyrequired.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out kstrtox() and
- simple_strtox() to a separate header
-Message-ID: <20210611214205.10ede05a@jic23-huawei>
-In-Reply-To: <20210611185815.44103-1-andriy.shevchenko@linux.intel.com>
-References: <20210611185815.44103-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230417AbhFKUvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:51:04 -0400
+Received: from mail-ej1-f41.google.com ([209.85.218.41]:36741 "EHLO
+        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhFKUvD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:51:03 -0400
+Received: by mail-ej1-f41.google.com with SMTP id a11so6419249ejf.3;
+        Fri, 11 Jun 2021 13:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YyrXNBhPnlWtgRvL1fSeCwot1NLFqCcTWBSbo3w5iHY=;
+        b=vSyfBkhxydSAl19TTFxnwWXlPayZop/VtNYd6AO9paP8/Yk2SDHo9O9utiYie+LtRD
+         w0WsjqdTBURyFMCxVNzdgm3FE/pjjouJyLcgekyE2VFZaqom/PwZ8LOuSE5albfj/sfW
+         O3Dv9/YVvncd3tw4MdM9n6f+K7FvDnW9Q2DZgUtaeRzehXekuQ34JyLjev4ioLUvtPgt
+         UNomMQ1sOuKE+ZHGBpCbaLNzZOJa8JQngHgHYNT/lUcYGqq7CCowGmMy8btL6Ag11XBU
+         NO/bNQx73d8gus8M4YiGMuolkNYy/hobkGuSPnEovB9PFCwLqQuG+Cai617dPWYT4Sfb
+         Qy1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YyrXNBhPnlWtgRvL1fSeCwot1NLFqCcTWBSbo3w5iHY=;
+        b=iWrFC+GGjhmHNmB857DTBsrpse9zb5ICzdAz+qGu0zVZ1Fcblk9DMm4DaTpSqD5Agn
+         NpQ3WFbbJ5Jk/xR//Y4f/+5E6WRJDiNPuQAWRSdXImzq5m6XAffUlkh1Sbhvz2CcBFBM
+         2Fa14//GfsyG0+pskGIODJk103sHN+8xE/2iKKyZXtymYkjbFSfAvWwVCrfItgkHFZme
+         9CRMUe+D5qu5hQJDgHnfmuLa/8Zj37XzdRqT4UEJdG37y9qL0px2NuyroyY357Xhcrjq
+         HfSXxicLyvNAUjDMxkaGUITj6w84oUTFyOitAvW66lodQB89igE0FmMrlgM8NEu9LWUN
+         0GDg==
+X-Gm-Message-State: AOAM5321yEpU9ffkC63IiO64DQDzN5+Z3AumONwtH6NpZbwAfY/LwdVl
+        6eTDIyd20Tp+MHh08z1a0ow=
+X-Google-Smtp-Source: ABdhPJwNErYxpmiURzhP2SjdJb3SF77QCdAyffTEkjR5HEBg5NrlEQ1kVo2bIfFQnpqDEQxIPBnXDg==
+X-Received: by 2002:a17:907:20dc:: with SMTP id qq28mr5292296ejb.440.1623444484654;
+        Fri, 11 Jun 2021 13:48:04 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id gw7sm2437478ejb.5.2021.06.11.13.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 13:48:04 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 23:48:02 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 5/5] ARM: dts: NSP: Add DT files for Meraki MX65 series
+Message-ID: <20210611204802.bg2xoyttj5lbs6zq@skbuf>
+References: <20210610232727.1383117-1-mnhagan88@gmail.com>
+ <20210610232727.1383117-6-mnhagan88@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610232727.1383117-6-mnhagan88@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 21:58:15 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out kstrtox()
-> and simple_strtox() helpers.
+On Fri, Jun 11, 2021 at 12:27:17AM +0100, Matthew Hagan wrote:
+> MX65 Hardware info:
+>   - CPU: Broadcom BCM58625 Cortex A9 @ 1200Mhz
+>   - RAM: 2 GB (4 x 4Gb SK Hynix H5TC4G83CFR)
+>   - Storage: 1 GB (Micron MT29F8G08ABACA)
+>   - Networking: BCM58625 switch (2x 1GbE ports, used for WAN ports 1 & 2)
+>     2x Qualcomm QCA8337 switches (10x 1GbE ports, used for LAN ports 3-12)
+>   - PSE: Broadcom BCM59111KMLG connected to LAN ports 11 & 12
+>   - USB: 1x USB2.0
+>   - Serial: Internal header
 > 
-> At the same time convert users in header and lib folders to use new header.
-> Though for time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
+> As with the MX64, the MX65 has 2x Broadcom BCM43520KMLG on the PCI bus.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Hi Andy,
-
-I applied this and reran the iwyu checker against more or less the whole of
-IIO (everything that includes iio.h)
-
-It unsurprisingly turns up a lot and there are a few cases where it is needed
-but nothing else in kernel.h ;)  So progress even on this baby step.
-
-Makes sense to me.
-
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-Thanks,
-
-Jonathan
-
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 > ---
->  include/linux/kernel.h       | 143 +-------------------------------
->  include/linux/kstrtox.h      | 155 +++++++++++++++++++++++++++++++++++
->  include/linux/string.h       |   7 --
->  include/linux/sunrpc/cache.h |   1 +
->  lib/kstrtox.c                |   5 +-
->  lib/parser.c                 |   1 +
->  6 files changed, 161 insertions(+), 151 deletions(-)
->  create mode 100644 include/linux/kstrtox.h
+>  arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi | 298 ++++++++++++++++++
+>  arch/arm/boot/dts/bcm958625-meraki-mx65.dts   |  15 +
+>  arch/arm/boot/dts/bcm958625-meraki-mx65w.dts  |  23 ++
+>  3 files changed, 336 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
+>  create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx65.dts
+>  create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx65w.dts
 > 
-> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> index baea2eb763d0..7bb0a5cb7d57 100644
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -10,6 +10,7 @@
->  #include <linux/types.h>
->  #include <linux/compiler.h>
->  #include <linux/bitops.h>
-> +#include <linux/kstrtox.h>
->  #include <linux/log2.h>
->  #include <linux/math.h>
->  #include <linux/minmax.h>
-> @@ -180,148 +181,6 @@ static inline void might_fault(void) { }
->  void do_exit(long error_code) __noreturn;
->  void complete_and_exit(struct completion *, long) __noreturn;
->  
-> -/* Internal, do not use. */
-> -int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
-> -int __must_check _kstrtol(const char *s, unsigned int base, long *res);
-> -
-> -int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
-> -int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
-> -
-> -/**
-> - * kstrtoul - convert a string to an unsigned long
-> - * @s: The start of the string. The string must be null-terminated, and may also
-> - *  include a single newline before its terminating null. The first character
-> - *  may also be a plus sign, but not a minus sign.
-> - * @base: The number base to use. The maximum supported base is 16. If base is
-> - *  given as 0, then the base of the string is automatically detected with the
-> - *  conventional semantics - If it begins with 0x the number will be parsed as a
-> - *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-> - *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-> - * @res: Where to write the result of the conversion on success.
-> - *
-> - * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> - * Preferred over simple_strtoul(). Return code must be checked.
-> -*/
-> -static inline int __must_check kstrtoul(const char *s, unsigned int base, unsigned long *res)
-> -{
-> -	/*
-> -	 * We want to shortcut function call, but
-> -	 * __builtin_types_compatible_p(unsigned long, unsigned long long) = 0.
-> -	 */
-> -	if (sizeof(unsigned long) == sizeof(unsigned long long) &&
-> -	    __alignof__(unsigned long) == __alignof__(unsigned long long))
-> -		return kstrtoull(s, base, (unsigned long long *)res);
-> -	else
-> -		return _kstrtoul(s, base, res);
-> -}
-> -
-> -/**
-> - * kstrtol - convert a string to a long
-> - * @s: The start of the string. The string must be null-terminated, and may also
-> - *  include a single newline before its terminating null. The first character
-> - *  may also be a plus sign or a minus sign.
-> - * @base: The number base to use. The maximum supported base is 16. If base is
-> - *  given as 0, then the base of the string is automatically detected with the
-> - *  conventional semantics - If it begins with 0x the number will be parsed as a
-> - *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-> - *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-> - * @res: Where to write the result of the conversion on success.
-> - *
-> - * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> - * Preferred over simple_strtol(). Return code must be checked.
-> - */
-> -static inline int __must_check kstrtol(const char *s, unsigned int base, long *res)
-> -{
-> -	/*
-> -	 * We want to shortcut function call, but
-> -	 * __builtin_types_compatible_p(long, long long) = 0.
-> -	 */
-> -	if (sizeof(long) == sizeof(long long) &&
-> -	    __alignof__(long) == __alignof__(long long))
-> -		return kstrtoll(s, base, (long long *)res);
-> -	else
-> -		return _kstrtol(s, base, res);
-> -}
-> -
-> -int __must_check kstrtouint(const char *s, unsigned int base, unsigned int *res);
-> -int __must_check kstrtoint(const char *s, unsigned int base, int *res);
-> -
-> -static inline int __must_check kstrtou64(const char *s, unsigned int base, u64 *res)
-> -{
-> -	return kstrtoull(s, base, res);
-> -}
-> -
-> -static inline int __must_check kstrtos64(const char *s, unsigned int base, s64 *res)
-> -{
-> -	return kstrtoll(s, base, res);
-> -}
-> -
-> -static inline int __must_check kstrtou32(const char *s, unsigned int base, u32 *res)
-> -{
-> -	return kstrtouint(s, base, res);
-> -}
-> -
-> -static inline int __must_check kstrtos32(const char *s, unsigned int base, s32 *res)
-> -{
-> -	return kstrtoint(s, base, res);
-> -}
-> -
-> -int __must_check kstrtou16(const char *s, unsigned int base, u16 *res);
-> -int __must_check kstrtos16(const char *s, unsigned int base, s16 *res);
-> -int __must_check kstrtou8(const char *s, unsigned int base, u8 *res);
-> -int __must_check kstrtos8(const char *s, unsigned int base, s8 *res);
-> -int __must_check kstrtobool(const char *s, bool *res);
-> -
-> -int __must_check kstrtoull_from_user(const char __user *s, size_t count, unsigned int base, unsigned long long *res);
-> -int __must_check kstrtoll_from_user(const char __user *s, size_t count, unsigned int base, long long *res);
-> -int __must_check kstrtoul_from_user(const char __user *s, size_t count, unsigned int base, unsigned long *res);
-> -int __must_check kstrtol_from_user(const char __user *s, size_t count, unsigned int base, long *res);
-> -int __must_check kstrtouint_from_user(const char __user *s, size_t count, unsigned int base, unsigned int *res);
-> -int __must_check kstrtoint_from_user(const char __user *s, size_t count, unsigned int base, int *res);
-> -int __must_check kstrtou16_from_user(const char __user *s, size_t count, unsigned int base, u16 *res);
-> -int __must_check kstrtos16_from_user(const char __user *s, size_t count, unsigned int base, s16 *res);
-> -int __must_check kstrtou8_from_user(const char __user *s, size_t count, unsigned int base, u8 *res);
-> -int __must_check kstrtos8_from_user(const char __user *s, size_t count, unsigned int base, s8 *res);
-> -int __must_check kstrtobool_from_user(const char __user *s, size_t count, bool *res);
-> -
-> -static inline int __must_check kstrtou64_from_user(const char __user *s, size_t count, unsigned int base, u64 *res)
-> -{
-> -	return kstrtoull_from_user(s, count, base, res);
-> -}
-> -
-> -static inline int __must_check kstrtos64_from_user(const char __user *s, size_t count, unsigned int base, s64 *res)
-> -{
-> -	return kstrtoll_from_user(s, count, base, res);
-> -}
-> -
-> -static inline int __must_check kstrtou32_from_user(const char __user *s, size_t count, unsigned int base, u32 *res)
-> -{
-> -	return kstrtouint_from_user(s, count, base, res);
-> -}
-> -
-> -static inline int __must_check kstrtos32_from_user(const char __user *s, size_t count, unsigned int base, s32 *res)
-> -{
-> -	return kstrtoint_from_user(s, count, base, res);
-> -}
-> -
-> -/*
-> - * Use kstrto<foo> instead.
-> - *
-> - * NOTE: simple_strto<foo> does not check for the range overflow and,
-> - *	 depending on the input, may give interesting results.
-> - *
-> - * Use these functions if and only if you cannot use kstrto<foo>, because
-> - * the conversion ends on the first non-digit character, which may be far
-> - * beyond the supported range. It might be useful to parse the strings like
-> - * 10x50 or 12:21 without altering original string or temporary buffer in use.
-> - * Keep in mind above caveat.
-> - */
-> -
-> -extern unsigned long simple_strtoul(const char *,char **,unsigned int);
-> -extern long simple_strtol(const char *,char **,unsigned int);
-> -extern unsigned long long simple_strtoull(const char *,char **,unsigned int);
-> -extern long long simple_strtoll(const char *,char **,unsigned int);
-> -
->  extern int num_to_str(char *buf, int size,
->  		      unsigned long long num, unsigned int width);
->  
-> diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
+> diff --git a/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi b/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
 > new file mode 100644
-> index 000000000000..529974e22ea7
+> index 000000000000..0ff78fb89b6d
 > --- /dev/null
-> +++ b/include/linux/kstrtox.h
-> @@ -0,0 +1,155 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_KSTRTOX_H
-> +#define _LINUX_KSTRTOX_H
-> +
-> +#include <linux/compiler.h>
-> +#include <linux/types.h>
-> +
-> +/* Internal, do not use. */
-> +int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
-> +int __must_check _kstrtol(const char *s, unsigned int base, long *res);
-> +
-> +int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
-> +int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
-> +
-> +/**
-> + * kstrtoul - convert a string to an unsigned long
-> + * @s: The start of the string. The string must be null-terminated, and may also
-> + *  include a single newline before its terminating null. The first character
-> + *  may also be a plus sign, but not a minus sign.
-> + * @base: The number base to use. The maximum supported base is 16. If base is
-> + *  given as 0, then the base of the string is automatically detected with the
-> + *  conventional semantics - If it begins with 0x the number will be parsed as a
-> + *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-> + *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-> + * @res: Where to write the result of the conversion on success.
-> + *
-> + * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> + * Preferred over simple_strtoul(). Return code must be checked.
-> +*/
-> +static inline int __must_check kstrtoul(const char *s, unsigned int base, unsigned long *res)
-> +{
-> +	/*
-> +	 * We want to shortcut function call, but
-> +	 * __builtin_types_compatible_p(unsigned long, unsigned long long) = 0.
-> +	 */
-> +	if (sizeof(unsigned long) == sizeof(unsigned long long) &&
-> +	    __alignof__(unsigned long) == __alignof__(unsigned long long))
-> +		return kstrtoull(s, base, (unsigned long long *)res);
-> +	else
-> +		return _kstrtoul(s, base, res);
-> +}
-> +
-> +/**
-> + * kstrtol - convert a string to a long
-> + * @s: The start of the string. The string must be null-terminated, and may also
-> + *  include a single newline before its terminating null. The first character
-> + *  may also be a plus sign or a minus sign.
-> + * @base: The number base to use. The maximum supported base is 16. If base is
-> + *  given as 0, then the base of the string is automatically detected with the
-> + *  conventional semantics - If it begins with 0x the number will be parsed as a
-> + *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-> + *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-> + * @res: Where to write the result of the conversion on success.
-> + *
-> + * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-> + * Preferred over simple_strtol(). Return code must be checked.
-> + */
-> +static inline int __must_check kstrtol(const char *s, unsigned int base, long *res)
-> +{
-> +	/*
-> +	 * We want to shortcut function call, but
-> +	 * __builtin_types_compatible_p(long, long long) = 0.
-> +	 */
-> +	if (sizeof(long) == sizeof(long long) &&
-> +	    __alignof__(long) == __alignof__(long long))
-> +		return kstrtoll(s, base, (long long *)res);
-> +	else
-> +		return _kstrtol(s, base, res);
-> +}
-> +
-> +int __must_check kstrtouint(const char *s, unsigned int base, unsigned int *res);
-> +int __must_check kstrtoint(const char *s, unsigned int base, int *res);
-> +
-> +static inline int __must_check kstrtou64(const char *s, unsigned int base, u64 *res)
-> +{
-> +	return kstrtoull(s, base, res);
-> +}
-> +
-> +static inline int __must_check kstrtos64(const char *s, unsigned int base, s64 *res)
-> +{
-> +	return kstrtoll(s, base, res);
-> +}
-> +
-> +static inline int __must_check kstrtou32(const char *s, unsigned int base, u32 *res)
-> +{
-> +	return kstrtouint(s, base, res);
-> +}
-> +
-> +static inline int __must_check kstrtos32(const char *s, unsigned int base, s32 *res)
-> +{
-> +	return kstrtoint(s, base, res);
-> +}
-> +
-> +int __must_check kstrtou16(const char *s, unsigned int base, u16 *res);
-> +int __must_check kstrtos16(const char *s, unsigned int base, s16 *res);
-> +int __must_check kstrtou8(const char *s, unsigned int base, u8 *res);
-> +int __must_check kstrtos8(const char *s, unsigned int base, s8 *res);
-> +int __must_check kstrtobool(const char *s, bool *res);
-> +
-> +int __must_check kstrtoull_from_user(const char __user *s, size_t count, unsigned int base, unsigned long long *res);
-> +int __must_check kstrtoll_from_user(const char __user *s, size_t count, unsigned int base, long long *res);
-> +int __must_check kstrtoul_from_user(const char __user *s, size_t count, unsigned int base, unsigned long *res);
-> +int __must_check kstrtol_from_user(const char __user *s, size_t count, unsigned int base, long *res);
-> +int __must_check kstrtouint_from_user(const char __user *s, size_t count, unsigned int base, unsigned int *res);
-> +int __must_check kstrtoint_from_user(const char __user *s, size_t count, unsigned int base, int *res);
-> +int __must_check kstrtou16_from_user(const char __user *s, size_t count, unsigned int base, u16 *res);
-> +int __must_check kstrtos16_from_user(const char __user *s, size_t count, unsigned int base, s16 *res);
-> +int __must_check kstrtou8_from_user(const char __user *s, size_t count, unsigned int base, u8 *res);
-> +int __must_check kstrtos8_from_user(const char __user *s, size_t count, unsigned int base, s8 *res);
-> +int __must_check kstrtobool_from_user(const char __user *s, size_t count, bool *res);
-> +
-> +static inline int __must_check kstrtou64_from_user(const char __user *s, size_t count, unsigned int base, u64 *res)
-> +{
-> +	return kstrtoull_from_user(s, count, base, res);
-> +}
-> +
-> +static inline int __must_check kstrtos64_from_user(const char __user *s, size_t count, unsigned int base, s64 *res)
-> +{
-> +	return kstrtoll_from_user(s, count, base, res);
-> +}
-> +
-> +static inline int __must_check kstrtou32_from_user(const char __user *s, size_t count, unsigned int base, u32 *res)
-> +{
-> +	return kstrtouint_from_user(s, count, base, res);
-> +}
-> +
-> +static inline int __must_check kstrtos32_from_user(const char __user *s, size_t count, unsigned int base, s32 *res)
-> +{
-> +	return kstrtoint_from_user(s, count, base, res);
-> +}
-> +
+> +++ b/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
+> @@ -0,0 +1,298 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
 > +/*
-> + * Use kstrto<foo> instead.
+> + * Device Tree Bindings for Cisco Meraki MX65 series (Alamo).
 > + *
-> + * NOTE: simple_strto<foo> does not check for the range overflow and,
-> + *	 depending on the input, may give interesting results.
-> + *
-> + * Use these functions if and only if you cannot use kstrto<foo>, because
-> + * the conversion ends on the first non-digit character, which may be far
-> + * beyond the supported range. It might be useful to parse the strings like
-> + * 10x50 or 12:21 without altering original string or temporary buffer in use.
-> + * Keep in mind above caveat.
+> + * Copyright (C) 2021 Matthew Hagan <mnhagan88@gmail.com>
 > + */
 > +
-> +extern unsigned long simple_strtoul(const char *,char **,unsigned int);
-> +extern long simple_strtol(const char *,char **,unsigned int);
-> +extern unsigned long long simple_strtoull(const char *,char **,unsigned int);
-> +extern long long simple_strtoll(const char *,char **,unsigned int);
+> +#include "bcm958625-meraki-mx6x-common.dtsi"
 > +
-> +static inline int strtobool(const char *s, bool *res)
-> +{
-> +	return kstrtobool(s, res);
-> +}
+> +#include <dt-bindings/input/input.h>
 > +
-> +#endif	/* _LINUX_KSTRTOX_H */
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index 9521d8cab18e..b48d2d28e0b1 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -2,7 +2,6 @@
->  #ifndef _LINUX_STRING_H_
->  #define _LINUX_STRING_H_
->  
-> -
->  #include <linux/compiler.h>	/* for inline */
->  #include <linux/types.h>	/* for size_t */
->  #include <linux/stddef.h>	/* for NULL */
-> @@ -184,12 +183,6 @@ extern char **argv_split(gfp_t gfp, const char *str, int *argcp);
->  extern void argv_free(char **argv);
->  
->  extern bool sysfs_streq(const char *s1, const char *s2);
-> -extern int kstrtobool(const char *s, bool *res);
-> -static inline int strtobool(const char *s, bool *res)
-> -{
-> -	return kstrtobool(s, res);
-> -}
-> -
->  int match_string(const char * const *array, size_t n, const char *string);
->  int __sysfs_match_string(const char * const *array, size_t n, const char *s);
->  
-> diff --git a/include/linux/sunrpc/cache.h b/include/linux/sunrpc/cache.h
-> index d0965e2997b0..b134b2b3371c 100644
-> --- a/include/linux/sunrpc/cache.h
-> +++ b/include/linux/sunrpc/cache.h
-> @@ -14,6 +14,7 @@
->  #include <linux/kref.h>
->  #include <linux/slab.h>
->  #include <linux/atomic.h>
-> +#include <linux/kstrtox.h>
->  #include <linux/proc_fs.h>
->  
->  /*
-> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-> index 0b5fe8b41173..059b8b00dc53 100644
-> --- a/lib/kstrtox.c
-> +++ b/lib/kstrtox.c
-> @@ -14,11 +14,12 @@
->   */
->  #include <linux/ctype.h>
->  #include <linux/errno.h>
-> -#include <linux/kernel.h>
-> -#include <linux/math64.h>
->  #include <linux/export.h>
-> +#include <linux/kstrtox.h>
-> +#include <linux/math64.h>
->  #include <linux/types.h>
->  #include <linux/uaccess.h>
+> +/ {
+> +	aliases {
+> +		mdio-mux-mmio = &mdiomux0;
+> +	};
 > +
->  #include "kstrtox.h"
->  
->  const char *_parse_integer_fixup_radix(const char *s, unsigned int *base)
-> diff --git a/lib/parser.c b/lib/parser.c
-> index f1a6d90b8c34..bcb23484100e 100644
-> --- a/lib/parser.c
-> +++ b/lib/parser.c
-> @@ -6,6 +6,7 @@
->  #include <linux/ctype.h>
->  #include <linux/types.h>
->  #include <linux/export.h>
-> +#include <linux/kstrtox.h>
->  #include <linux/parser.h>
->  #include <linux/slab.h>
->  #include <linux/string.h>
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		orange_power {
+> +			label = "orange:power";
+> +			gpios = <&gpioa 3 GPIO_ACTIVE_HIGH>;
+> +			default-state = "on";
+> +		};
+> +
+> +		wan1_right {
+> +			label = "green:wan1-right";
+> +			gpios = <&gpioa 24 GPIO_ACTIVE_LOW>;
+> +		};
+> +
+> +		wan1_left {
+> +			label = "green:wan1-left";
+> +			gpios = <&gpioa 25 GPIO_ACTIVE_LOW>;
+> +		};
+> +
+> +		wan2_right {
+> +			label = "green:wan2-right";
+> +			gpios = <&gpioa 26 GPIO_ACTIVE_LOW>;
+> +		};
+> +
+> +		wan2_left {
+> +			label = "green:wan2-left";
+> +			gpios = <&gpioa 27 GPIO_ACTIVE_LOW>;
+> +		};
+> +
+> +		white_status {
+> +			label = "white:status";
+> +			gpios = <&gpioa 31 GPIO_ACTIVE_HIGH>;
+> +		};
+> +	};
+> +
+> +	keys {
+> +		compatible = "gpio-keys-polled";
+> +		autorepeat;
+> +		poll-interval = <20>;
+> +
+> +		reset {
+> +			label = "reset";
+> +			linux,code = <KEY_RESTART>;
+> +			gpios = <&gpioa 8 GPIO_ACTIVE_LOW>;
+> +		};
+> +	};
+> +
+> +	mdio: mdio@18032000 {
+> +		compatible = "brcm,iproc-mdio";
+> +		reg = <0x18032000 0x8>;
+> +		#size-cells = <0>;
+> +		#address-cells = <1>;
+> +	};
+
+Odd that mdio@18032000 is under the / node and not under /soc? I don't
+think you can combine nodes with a unit address with nodes without in
+the same level of the hierarchy.
+
+Also, it is odd that you define something SoC-specific like this in a
+board file. Isn't this actually stray and not used?
+
+> +
+> +	mdiomux0: mdio-mux {
+> +		compatible = "mdio-mux-mmioreg";
+> +		reg = <0x18032000 0x4>;
+> +		mux-mask = <0x200>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		mdio-parent-bus = <&mdio>;
+> +
+> +		mdio_ext: mdio@200 {
+> +			reg = <0x200>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +		};
+> +	};
+> +
+> +	mdio-mii-mux {
+> +		compatible = "mdio-mux-mmioreg";
+> +		reg = <0x1803f1c0 0x4>;
+> +		mux-mask = <0x2000>;
+> +		mdio-parent-bus = <&mdio_ext>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		mdio@0 {
+> +			reg = <0x0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			phy_port6: phy@0 {
+> +				reg = <0>;
+> +			};
+> +
+> +			phy_port7: phy@1 {
+> +				reg = <1>;
+> +			};
+> +
+> +			phy_port8: phy@2 {
+> +				reg = <2>;
+> +			};
+> +
+> +			phy_port9: phy@3 {
+> +				reg = <3>;
+> +			};
+> +
+> +			phy_port10: phy@4 {
+> +				reg = <4>;
+> +			};
+> +
+> +			switch@10 {
+> +				compatible = "qca,qca8337";
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+
+The "ports" node is adimensional, so address-cells and size-cells are
+not needed.
+
+> +				reg = <0x10>;
+> +				dsa,member = <1 0>;
+> +
+> +				ports {
+> +					#address-cells = <1>;
+> +					#size-cells = <0>;
+> +					port@0 {
+> +						reg = <0>;
+> +						label = "cpu";
+
+'label' property for the CPU port is not needed/used. We know it is a
+CPU port because it has the 'ethernet' property.
+
+> +						ethernet = <&sgmii1>;
+> +						phy-mode = "sgmii";
+> +						fixed-link {
+> +							speed = <1000>;
+> +							full-duplex;
+> +						};
+> +					};
+> +
+> +					port@1 {
+> +						reg = <1>;
+> +						label = "lan8";
+> +						phy-handle = <&phy_port6>;
+> +					};
+> +
+> +					port@2 {
+> +						reg = <2>;
+> +						label = "lan9";
+> +						phy-handle = <&phy_port7>;
+> +					};
+> +
+> +					port@3 {
+> +						reg = <3>;
+> +						label = "lan10";
+> +						phy-handle = <&phy_port8>;
+> +					};
+> +
+> +					port@4 {
+> +						reg = <4>;
+> +						label = "lan11";
+> +						phy-handle = <&phy_port9>;
+> +					};
+> +
+> +					port@5 {
+> +						reg = <5>;
+> +						label = "lan12";
+> +						phy-handle = <&phy_port10>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +
+> +		mdio-mii@2000 {
+> +			reg = <0x2000>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			phy_port1: phy@0 {
+> +				reg = <0>;
+> +			};
+> +
+> +			phy_port2: phy@1 {
+> +				reg = <1>;
+> +			};
+> +
+> +			phy_port3: phy@2 {
+> +				reg = <2>;
+> +			};
+> +
+> +			phy_port4: phy@3 {
+> +				reg = <3>;
+> +			};
+> +
+> +			phy_port5: phy@4 {
+> +				reg = <4>;
+> +			};
+> +
+> +			switch@10 {
+> +				compatible = "qca,qca8337";
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+
+Similar comment.
+
+> +				reg = <0x10>;
+> +				dsa,member = <2 0>;
+> +
+> +				ports {
+> +					#address-cells = <1>;
+> +					#size-cells = <0>;
+> +					port@0 {
+> +						reg = <0>;
+> +						label = "cpu";
+> +						ethernet = <&sgmii0>;
+> +						phy-mode = "sgmii";
+> +						fixed-link {
+> +							speed = <1000>;
+> +							full-duplex;
+> +						};
+> +					};
+> +
+> +					port@1 {
+> +						reg = <1>;
+> +						label = "lan3";
+> +						phy-handle = <&phy_port1>;
+> +					};
+> +
+> +					port@2 {
+> +						reg = <2>;
+> +						label = "lan4";
+> +						phy-handle = <&phy_port2>;
+> +					};
+> +
+> +					port@3 {
+> +						reg = <3>;
+> +						label = "lan5";
+> +						phy-handle = <&phy_port3>;
+> +					};
+> +
+> +					port@4 {
+> +						reg = <4>;
+> +						label = "lan6";
+> +						phy-handle = <&phy_port4>;
+> +					};
+> +
+> +					port@5 {
+> +						reg = <5>;
+> +						label = "lan7";
+> +						phy-handle = <&phy_port5>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&srab {
+> +	compatible = "brcm,bcm58625-srab", "brcm,nsp-srab";
+> +	status = "okay";
+> +	dsa,member = <0 0>;
+> +
+> +	ports {
+> +		port@0 {
+> +			label = "wan1";
+> +			reg = <0>;
+> +		};
+> +
+> +		port@1 {
+> +			label = "wan2";
+> +			reg = <1>;
+> +		};
+> +
+> +		sgmii0: port@4 {
+> +			label = "sw0";
+> +			reg = <4>;
+> +			fixed-link {
+> +				speed = <1000>;
+> +				full-duplex;
+> +			};
+> +		};
+> +
+> +		sgmii1: port@5 {
+> +			label = "sw1";
+> +			reg = <5>;
+> +			fixed-link {
+> +				speed = <1000>;
+> +				full-duplex;
+> +			};
+> +		};
+> +
+> +		port@8 {
+> +			ethernet = <&amac2>;
+> +			label = "cpu";
+> +			reg = <8>;
+> +			fixed-link {
+> +				speed = <1000>;
+> +				full-duplex;
+> +			};
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm/boot/dts/bcm958625-meraki-mx65.dts b/arch/arm/boot/dts/bcm958625-meraki-mx65.dts
+> new file mode 100644
+> index 000000000000..aec86c3a4d05
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/bcm958625-meraki-mx65.dts
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Device Tree Bindings for Cisco Meraki MX65.
+> + *
+> + * Copyright (C) 2021 Matthew Hagan <mnhagan88@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "bcm958625-meraki-alamo.dtsi"
+> +
+> +/ {
+> +	model = "Cisco Meraki MX65";
+> +	compatible = "meraki,mx65", "brcm,bcm58625", "brcm,nsp";
+> +};
+> diff --git a/arch/arm/boot/dts/bcm958625-meraki-mx65w.dts b/arch/arm/boot/dts/bcm958625-meraki-mx65w.dts
+> new file mode 100644
+> index 000000000000..0045a33055c1
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/bcm958625-meraki-mx65w.dts
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Device Tree Bindings for Cisco Meraki MX65W.
+> + *
+> + * Copyright (C) 2021 Matthew Hagan <mnhagan88@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "bcm958625-meraki-mx65x.dtsi"
+> +
+> +/ {
+> +	model = "Cisco Meraki MX65W";
+> +	compatible = "meraki,mx65w", "brcm,bcm58625", "brcm,nsp";
+> +};
+> +
+> +&pcie0 {
+> +	status = "okay";
+> +};
+> +
+> +&pcie1 {
+> +	status = "okay";
+> +};
+> -- 
+> 2.26.3
+> 
 
