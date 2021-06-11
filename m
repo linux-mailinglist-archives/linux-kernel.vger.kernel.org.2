@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508593A3EB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CEF33A3EB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhFKJL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:11:26 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:9328 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231145AbhFKJLZ (ORCPT
+        id S231338AbhFKJME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:12:04 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:42690 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhFKJMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:11:25 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15B94EaP013543;
-        Fri, 11 Jun 2021 09:08:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=g1knzCO2x5sfHUo9G+1N+uTizI/Qrl8Kh1W2H9UFjLs=;
- b=VQKvN7Xkz+uCYHsbL8Cz2nIN1E3QiLis266uP0Yas0/PIEtVF6yVTAsqfWfOH/vRcHxx
- LyOgSmmuDO763Iy/C5vNuQVMFT+A0oVwBJYtKVZjfrTWZl5oowbZrvECpnhfaZZJDCNa
- cm4XBALHW2Ga8z+9BgmlYnswmbNnUyUJvT6rGrxYGfKjR19tSvXTLE6z0gtv0QgV2uVk
- zOg+jIy+Zl6A/07HZFBF+jXg+gV8urMZXx94dTrtAJvn/0z0zvSTBIizIW5IsKLrgm66
- JStDXy1w4SBSWW3vrJPty9SmKEy1u6oIUu1A4YhnXrsc8dU2c7iU6Cjf9DfAav8JgVUg Wg== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 393y0x03bg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Jun 2021 09:08:40 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15B98dlU104340;
-        Fri, 11 Jun 2021 09:08:39 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38yxcxchca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Jun 2021 09:08:39 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15B98cbe104297;
-        Fri, 11 Jun 2021 09:08:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 38yxcxchbv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Jun 2021 09:08:38 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15B98U6c011918;
-        Fri, 11 Jun 2021 09:08:32 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 11 Jun 2021 02:08:29 -0700
-Date:   Fri, 11 Jun 2021 12:08:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        straube.linux@gmail.com, kaixuxia@tencent.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        liushixin2@huawei.com, unixbhaskar@gmail.com,
-        gustavoars@kernel.org, martin@kaiser.cx, bkkarthik@pesu.pes.edu
-Subject: Re: [PATCH 5/6] staging: rtl8188eu: remove
- DebugComponents/DebugLevel from odm_dm_struct
-Message-ID: <20210611090819.GD10983@kadam>
-References: <20210611002504.166405-1-phil@philpotter.co.uk>
- <20210611002504.166405-2-phil@philpotter.co.uk>
- <20210611002504.166405-3-phil@philpotter.co.uk>
- <20210611002504.166405-4-phil@philpotter.co.uk>
- <20210611002504.166405-5-phil@philpotter.co.uk>
- <20210611002504.166405-6-phil@philpotter.co.uk>
+        Fri, 11 Jun 2021 05:12:03 -0400
+Received: by mail-wm1-f52.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso8054259wms.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:09:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Egx3T+r+MdqwKDRFu2oj7ToUZ/M+AjkRGEvdLGmyR0=;
+        b=rZfaoDUnOmmtnXLuSumOibA5QNMCiMlQ80NgjHRY0Shk27yj3NfbvwJfg6HLwrNGsQ
+         MZmn0iJ7rTMWg6Zrazz6eZVpBFfKISTNYlJzDhje0d9DxqZMuvip9tgAuSdRIX7TCij2
+         5+NFIjRh/OASeCDEbuMnbPDQBVf+sQyGH8KFEjTdVnAEZjtt8l08imL6UU11G/iJECnY
+         WPbH7Vk4DSMomRmti8r2X5RsYK/g6H9o7ZrWDkSh050129aUcCZ3LSQ63V2UbWWQ4upG
+         Vkl5PcUwYvhDULREMhlevbgGM5pmAI0YHHXYaK6AENNYo7Un8Q99OH1B3q8sI0SVh4Tw
+         +Wdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Egx3T+r+MdqwKDRFu2oj7ToUZ/M+AjkRGEvdLGmyR0=;
+        b=n8I4gWQOOKdSa/SM2z4a23wg9AETBDE3LJPCGWnCoYUCqUN3ii82MsPej/2HX2M5NR
+         igq+mJbDDOqQKmJvo201PWh5HQLCIxRbFbxYyb2vSZh5VZi2g0AW19wifRpBoO+54rja
+         QQIzO9ifgQFwoG1bPfxBAB1sCfwgCTxevlhJ2nO092ytEpZ/JmaXIPg1MR/i1I6u4aGv
+         iFfIuCtPjYrHWRLmxmpUwFmfO2wb6OTM6YlEDhnDR9EQQFqIJ2MAZlUmetHv6thaZX67
+         r+vEukBFTGD1Z+YUdWkwh6cIfVsSmDABP5P/obAUQFLog1fuUQz7Sd50m2Jh0VaVoKKk
+         PVBA==
+X-Gm-Message-State: AOAM532vM27hGhy7Nq8eojHvk8Ac+YZp2q9cja0f3fpL7tg64a0ye9hB
+        XdlYF6VIdmmnEx057xu8pi2qPiAVQjwhAoYjz8u46w==
+X-Google-Smtp-Source: ABdhPJxm4IyPJvEMYQF+cuZdjXmewYzeznnDW42omLFdC7jhbt58zwV/AAUm8apWJ3kgHgKNnR7FZoCanj7gvHCZmnU=
+X-Received: by 2002:a1c:41c5:: with SMTP id o188mr19063241wma.60.1623402539314;
+ Fri, 11 Jun 2021 02:08:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611002504.166405-6-phil@philpotter.co.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: wkVToofiUe25XB05DVQ4jSloiInlsDgW
-X-Proofpoint-ORIG-GUID: wkVToofiUe25XB05DVQ4jSloiInlsDgW
+References: <20210610210913.536081-1-tyhicks@linux.microsoft.com> <20210610210913.536081-3-tyhicks@linux.microsoft.com>
+In-Reply-To: <20210610210913.536081-3-tyhicks@linux.microsoft.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Fri, 11 Jun 2021 11:08:48 +0200
+Message-ID: <CAHUa44Hh2Q06zu0TwvCejcc_0cqXeTVNA8fyt=1VH9uT7++1vg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/8] optee: Refuse to load the driver under the kdump kernel
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 01:25:03AM +0100, Phillip Potter wrote:
-> diff --git a/drivers/staging/rtl8188eu/hal/usb_halinit.c b/drivers/staging/rtl8188eu/hal/usb_halinit.c
-> index 80cdcf6f7879..3e7f184ed39a 100644
-> --- a/drivers/staging/rtl8188eu/hal/usb_halinit.c
-> +++ b/drivers/staging/rtl8188eu/hal/usb_halinit.c
-> @@ -1851,11 +1851,6 @@ u8 rtw_hal_get_def_var(struct adapter *Adapter, enum hal_def_variable eVariable,
->  		}
->  		break;
->  	case HW_DEF_ODM_DBG_FLAG:
-> -		{
-> -			struct odm_dm_struct *dm_ocm = &haldata->odmpriv;
-> -
-> -			pr_info("dm_ocm->DebugComponents = 0x%llx\n", dm_ocm->DebugComponents);
-> -		}
->  		break;
+On Thu, Jun 10, 2021 at 11:09 PM Tyler Hicks
+<tyhicks@linux.microsoft.com> wrote:
+>
+> Fix a hung task issue, seen when booting the kdump kernel, that is
+> caused by all of the secure world threads being in a permanent suspended
+> state:
+>
+>  INFO: task swapper/0:1 blocked for more than 120 seconds.
+>        Not tainted 5.4.83 #1
+>  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>  swapper/0       D    0     1      0 0x00000028
+>  Call trace:
+>   __switch_to+0xc8/0x118
+>   __schedule+0x2e0/0x700
+>   schedule+0x38/0xb8
+>   schedule_timeout+0x258/0x388
+>   wait_for_completion+0x16c/0x4b8
+>   optee_cq_wait_for_completion+0x28/0xa8
+>   optee_disable_shm_cache+0xb8/0xf8
+>   optee_probe+0x560/0x61c
+>   platform_drv_probe+0x58/0xa8
+>   really_probe+0xe0/0x338
+>   driver_probe_device+0x5c/0xf0
+>   device_driver_attach+0x74/0x80
+>   __driver_attach+0x64/0xe0
+>   bus_for_each_dev+0x84/0xd8
+>   driver_attach+0x30/0x40
+>   bus_add_driver+0x188/0x1e8
+>   driver_register+0x64/0x110
+>   __platform_driver_register+0x54/0x60
+>   optee_driver_init+0x20/0x28
+>   do_one_initcall+0x54/0x24c
+>   kernel_init_freeable+0x1e8/0x2c0
+>   kernel_init+0x18/0x118
+>   ret_from_fork+0x10/0x18
+>
+> The invoke_fn hook returned OPTEE_SMC_RETURN_ETHREAD_LIMIT, indicating
+> that the secure world threads were all in a suspended state at the time
+> of the kernel crash. This intermittently prevented the kdump kernel from
+> booting, resulting in a failure to collect the kernel dump.
+>
+> Make kernel dump collection more reliable on systems utilizing OP-TEE by
+> refusing to load the driver under the kdump kernel.
+>
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>  drivers/tee/optee/core.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 
-We will want to delete everything to do with ODM_DBG_FLAG but that can
-be done in later patches.
-
-regards,
-dan carpenter
-
+Looks good
+Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
