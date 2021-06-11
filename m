@@ -2,100 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727153A39BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016BE3A39B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhFKC3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 22:29:08 -0400
-Received: from mail-qv1-f53.google.com ([209.85.219.53]:43996 "EHLO
-        mail-qv1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbhFKC3H (ORCPT
+        id S231288AbhFKC2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 22:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230358AbhFKC2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:29:07 -0400
-Received: by mail-qv1-f53.google.com with SMTP id e18so15792578qvm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:26:57 -0700 (PDT)
+        Thu, 10 Jun 2021 22:28:08 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305A0C0617AE
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:25:57 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so1751037otg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:25:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7FsXY/TbSGUUDENZzS6CIpHdUvNAOKNKXgpKq5u4rXU=;
-        b=I2eukykiphXFQViXcXYmNXYcayHQieCzV49bgZWYLDdkww6G3d2j0qfqzxreHlnYSI
-         v/HEDSDf02kjpLsUckDsFqDTQoVG0g4s04oX/4cCJ+iN8hs/Ar1nRZ+2CaodIEbP/CQR
-         fBL9nAbihtMYVpgNmymE0y4FaiGGHXBr5JQipolDQ9y1duTTcuOn1biEoOsaWsk4ts0H
-         oBQkD6Wvsz/4nkbP9EEfgsDmbAwS0Voq6kY6jTBaCKZBdIGolFuD8IdP0ZJF3nvQq/sa
-         zglPT+b/jLnTA8hkzYcjo6OcDop+++rp4rdNR5Tk3ceiqO8ntyN9mf6+Ae87R3jMbJI4
-         +t+w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IjaHeZmvkpeFh6CIfGhXwuSQrGCOdALjcUAdiW8WWjU=;
+        b=E25Jh+rCQJyItREai2cRgb2J7R0Ev1dQp5dFjeAHzXlTacCQbjNGk0qfn7EPM0nlBk
+         hgfQqzTqhtG0XnL4gQjZah4JG8VQF8LAtppcLhE6cn2YNIahQbArzjF7wRJ3J2UsfXme
+         T9pSVFzQZoIbu0V+FOqYWwoKTsv13aBxM12vnm4+8pua8IEBAZQRM0i8n6flrHrik92H
+         2T0monIFdXDRe8t0z+KaBLLY2mmk1o268DMLjuLqUcAGeqS63pMVfA5Pujg+Nf/ehNpR
+         BydTl3tiSCrvruHINMwLtZRLoyhg0CqlOk+3/amD0xnEXPEpKRHGTAh/Ybm+nC6G3sZr
+         Stzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7FsXY/TbSGUUDENZzS6CIpHdUvNAOKNKXgpKq5u4rXU=;
-        b=K5u493EHcfy2PUoLVn+6/VSOijdluHYmSQd0uxkNbY6+gyvig9yghYS7XtnHjYaZHQ
-         NCdWt0JtAn3Qv12Od4PACFFdqGPsScUcC9tbb5vQdmZaZFlVT1rxTKyPjK2MIT3iKbDp
-         umIj4HVq11Hz8dYuavjN6QJvX6zHnIjEGbYFTF7WUW5ql23nT+76pmn/e4jK2cAnxPwK
-         4l6YV+WTqWTqWQ1MHKaDSxdfHwpOYlB99yfy+BlPJRGY4emnBDfK64Scbzl9kiu5ybLO
-         bd+vSa4abEypHDbWaRYNxRkWCbtWydmLXOYLsWhLl18Y1fUdVj2J4APJCHanRi26ft61
-         3wYA==
-X-Gm-Message-State: AOAM5318q+7WkXoGsnji8E2gXsUyH3ueGtzMIG99FWkwElVcHC3wrJs0
-        3i5S0EksoSlzAIizY6vCKnrzmHuwbQWlmkqL71w=
-X-Google-Smtp-Source: ABdhPJxT+CsEUPgmUbbvvdovqN50qvrZPZs4VXtBZa26L9aij/35ZW5rkX2cu6uMHZw3aT20weyVwPl2f64lDccacTM=
-X-Received: by 2002:ad4:576c:: with SMTP id r12mr2699884qvx.28.1623378357051;
- Thu, 10 Jun 2021 19:25:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210610040037.1064-1-hbut_tan@163.com>
-In-Reply-To: <20210610040037.1064-1-hbut_tan@163.com>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Fri, 11 Jun 2021 10:25:46 +0800
-Message-ID: <CAA+D8AOseYcjf6erSObjkpAhZGJW0VGio-T91kFZ7q0f3PhQPA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC:fsl_spdif:Remove superfluous error message around platform_get_irq()
-To:     Zhongjun Tan <hbut_tan@163.com>
-Cc:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IjaHeZmvkpeFh6CIfGhXwuSQrGCOdALjcUAdiW8WWjU=;
+        b=Y93SdHp97SlzyHyQ0l6R8WSXaeeOGz/Fl6B+f5UPZukonuyHDp+oFGyGFtYbQEFRXc
+         xaxqNhibWrEPYZAVNUJIpnz3wXbgiGNciBTN+1O0XdTBpw0TJx6f2R+jZP4UfGWGiz12
+         lNoN8aYCBPlA3R2HcMrGtx+3ZvdcDQrd2Jk3KyAb9VE7phdtD8uBQ0IiNd6/rkmgV/EB
+         B18aSTZha+jth+89mVffKph6VmwSxRxsDW3ktdV602zznG7qSbG3k5DjUg9OnUY3y6xF
+         Xl5MWvTuULiUACvmS1BzlZzyLrdnKwEAQCg1xQCz1dVUsl1hS7LX/QVH/zSoZZg2rez+
+         ThQg==
+X-Gm-Message-State: AOAM532vvyN81164Iz+YC9yJWVoapPN1dQ218AMPZWACI2zDqGlLxUOb
+        rnRf+OZdvcUEp06LByWK9i5D9A==
+X-Google-Smtp-Source: ABdhPJyH9UXs091VevqePZMC9ooFDYkYXbSPKywR4X4SSB7g9iwor+mOFv6s8k0fSAczLDFlO7F+fg==
+X-Received: by 2002:a9d:589:: with SMTP id 9mr1051074otd.65.1623378356510;
+        Thu, 10 Jun 2021 19:25:56 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id x2sm878974oog.10.2021.06.10.19.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 19:25:56 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 21:25:54 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tan Zhongjun <tanzhongjun@yulong.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Subject: Re: [PATCH 8/8] arm64: dts: qcom: sa8155p-adp: Add base dts file
+Message-ID: <YMLJsieGd+G+/kxK@builder.lan>
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+ <20210607113840.15435-9-bhupesh.sharma@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607113840.15435-9-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 12:02 PM Zhongjun Tan <hbut_tan@163.com> wrote:
->
-> From: Tan Zhongjun <tanzhongjun@yulong.com>
->
-> The platform_get_irq() prints error message telling that interrupt is
-> missing, hence there is no need to duplicated that message.
->
-> Signed-off-by: Tan Zhongjun <tanzhongjun@yulong.com>
+On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
 
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+> Add base DTS file for sa8155p-adp and enable boot to console,
 
+Please spell out "sa8155-adp", i.e. "Add base DTS for SA8155p Automotive
+Development Platform."
+
+> tlmm reserved range and also include pmic file(s).
+> 
+> SA8155p-adp board is based on sm8150 Qualcomm Snapdragon SoC.
+> 
+
+It's not based on sm8150, it's based on sa8155p, so let's express this
+as "The SA8155p platform is similar to the SM8150, so use this as base
+for now", to document why we decided to do this.
+
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: bhupesh.linux@gmail.com
+
+This would go into the git history as "I specifically asked for input
+from these people", so please keep this list shorter (but for a change
+like this it's probably better to omit it completely)
+
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 > ---
->  sound/soc/fsl/fsl_spdif.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-> index 2a76714eb8e6..29cefd459241 100644
-> --- a/sound/soc/fsl/fsl_spdif.c
-> +++ b/sound/soc/fsl/fsl_spdif.c
-> @@ -1368,10 +1368,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
->
->         for (i = 0; i < spdif_priv->soc->interrupts; i++) {
->                 irq = platform_get_irq(pdev, i);
-> -               if (irq < 0) {
-> -                       dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
-> +               if (irq < 0)
->                         return irq;
-> -               }
->
->                 ret = devm_request_irq(&pdev->dev, irq, spdif_isr, 0,
->                                        dev_name(&pdev->dev), spdif_priv);
-> --
-> 2.17.1
->
+>  arch/arm64/boot/dts/qcom/Makefile        |   1 +
+>  arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 363 +++++++++++++++++++++++
+>  2 files changed, 364 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 456502aeee49..38d3a4728871 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -71,6 +71,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= sa8155p-adp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-hdk.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-hdk.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> new file mode 100644
+> index 000000000000..470d740e060a
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> @@ -0,0 +1,363 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2021, Linaro Limited
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include "sm8150.dtsi"
+> +#include "pmm8155au_1.dtsi"
+> +#include "pmm8155au_2.dtsi"
+> +
+> +/ {
+> +	model = "Qualcomm Technologies, Inc. SA8155P ADP";
+> +	compatible = "qcom,sa8155p-adp";
+> +
+> +	aliases {
+> +		serial0 = &uart2;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	vreg_3p3: vreg_3p3_regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vreg_3p3";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +	};
+> +
+> +	/*
+> +	 * Apparently RPMh does not provide support for PM8150 S4 because it
+> +	 * is always-on; model it as a fixed regulator.
+> +	 */
+
+You can reduce this to
+
+	/* S4A is always on and not controllable through RPMh */
+
+> +	vreg_s4a_1p8: smps4 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vreg_s4a_1p8";
+> +
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +
+> +		vin-supply = <&vreg_3p3>;
+> +	};
+> +};
+> +
+> +&apps_rsc {
+> +	pmm8155au-1-rpmh-regulators {
+> +		compatible = "qcom,pmm8155au-1-rpmh-regulators";
+> +		qcom,pmic-id = "a";
+> +
+> +		vdd-s1-supply = <&vreg_3p3>;
+> +		vdd-s2-supply = <&vreg_3p3>;
+> +		vdd-s3-supply = <&vreg_3p3>;
+> +		vdd-s4-supply = <&vreg_3p3>;
+> +		vdd-s5-supply = <&vreg_3p3>;
+> +		vdd-s6-supply = <&vreg_3p3>;
+> +		vdd-s7-supply = <&vreg_3p3>;
+> +		vdd-s8-supply = <&vreg_3p3>;
+> +		vdd-s9-supply = <&vreg_3p3>;
+> +		vdd-s10-supply = <&vreg_3p3>;
+> +
+> +		vdd-l1-l8-l11-supply = <&vreg_s6a_0p92>;
+> +		vdd-l2-l10-supply = <&vreg_3p3>;
+> +		vdd-l3-l4-l5-l18-supply = <&vreg_s6a_0p92>;
+> +		vdd-l6-l9-supply = <&vreg_s6a_0p92>;
+> +		vdd-l7-l12-l14-l15-supply = <&vreg_s5a_2p04>;
+> +		vdd-l13-l16-l17-supply = <&vreg_3p3>;
+> +
+> +		vreg_s5a_2p04: smps5 {
+> +			regulator-min-microvolt = <1904000>;
+> +			regulator-max-microvolt = <2000000>;
+> +		};
+> +
+> +		vreg_s6a_0p92: smps6 {
+> +			regulator-min-microvolt = <920000>;
+> +			regulator-max-microvolt = <1128000>;
+> +		};
+> +
+> +		vdda_wcss_pll:
+
+This is the "label" of the pad which the regulator typically is
+connected to (rather than a denotion of which regulator it is). So even
+though we have these in some of the other boards, I would prefer if you
+skip them and only use the vreg_xyz_abc variant.
+
+> +		vreg_l1a_0p752: ldo1 {
+> +			regulator-min-microvolt = <752000>;
+> +			regulator-max-microvolt = <752000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+[..]
+> +&usb_1_dwc3 {
+> +	dr_mode = "peripheral";
+
+We have enough pieces to handle mode switching on this platform, but as
+discussed, lets leave it as "peripheral" until your local setup is back
+online.
+
+Thanks,
+Bjorn
+
+> +};
+> +
+> +&qupv3_id_1 {
+> +	status = "okay";
+> +};
+> -- 
+> 2.31.1
+> 
