@@ -2,233 +2,423 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A939A3A458C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 17:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7EA3A4593
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 17:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhFKPiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 11:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhFKPiP (ORCPT
+        id S231948AbhFKPjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 11:39:02 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43980 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231906AbhFKPjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 11:38:15 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA584C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 08:36:15 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id if15so5902919qvb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 08:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qYz+byHAg1NfkBBmWuvvkWkOfDn/CAEoGh0i1+r52sY=;
-        b=RxQeiRBmOklcMO2BUA5T8SEz1vqkrVcfDtBFUbfzE75RNRMdBFypif8bHqukYEjMfM
-         atllDOu9QPU+90QvDW367SAsk0Kld7MXlpcOKvVLxZoIK+1yIPYM8J0r0eif7BF55hD1
-         GJ7qJEO4QwaR/uVFv0/BEVNxGFmWA0mAXbWkTiYJqv8NxOFygOUSIQ5EQY8tYdWLHiF8
-         osK8Yak+L3HDjJ4AD4w6NoVjgRFNBLSfJL5NH5nU4kmgCzapEzRulY3wvLlZbdHSGdHi
-         ZfTPlXcgxHFG4xlB6yHWv7AgHJcIqRMgvDPENFCfZJg1apX8nLQQoZCWpZ5F1v6JUAgD
-         NiPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qYz+byHAg1NfkBBmWuvvkWkOfDn/CAEoGh0i1+r52sY=;
-        b=ArZxoPGulNQhN+ARz2krbOzwNDot/Gv9i7ZuA7d8QhQEJxVyuJWSfwVxPkUPWtvXar
-         Dhu9Nqbfff4g7ef8479evdLvfeEgsRYGpOBq/tx2QKh9gBlalLxMmUNG+rpKFEtA9puE
-         TfDe6Xq29hJhzkeevVlfiBI4nZgTyfD++2nP7JUykWO9UQZmMJgCsVod8Qt9yGsU5c79
-         OIlYfi99rM2AB4B5OfwVg8P5FRCSx1n2Hr2EOsLW3tqPO/BXeHYzI360MDVrXYLGao6s
-         d6oqO1Lg1lWjmFmwapOJBCTyRIokehDHu9mZ+L0kWLTor8AGvBdLFLF1P937Qjkru4fx
-         D0Eg==
-X-Gm-Message-State: AOAM531s8WbtSeuW0a3i0upiXdEjJB9kbD2/eJeRDAzuM5as4hhdXvbD
-        jx3h9Mc81EMge5iaHKctQSIlQA==
-X-Google-Smtp-Source: ABdhPJye4JbJa1YdHgmmyau+DxkNMr+dwnJJWd4sFy797NKlsOyH3lH1diBEwixHn4LWtep2TtDa8w==
-X-Received: by 2002:a05:6214:20c1:: with SMTP id 1mr5343085qve.53.1623425775000;
-        Fri, 11 Jun 2021 08:36:15 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id z136sm4718335qkb.34.2021.06.11.08.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 08:36:14 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lrjCf-005fgL-JG; Fri, 11 Jun 2021 12:36:13 -0300
-Date:   Fri, 11 Jun 2021 12:36:13 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/11] mm: page_vma_mapped_walk(): use pmd_read_atomic()
-Message-ID: <20210611153613.GR1096940@ziepe.ca>
-References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com>
- <594c1f0-d396-5346-1f36-606872cddb18@google.com>
- <20210610090617.e6qutzzj3jxcseyi@box.shutemov.name>
- <20210610121542.GQ1096940@ziepe.ca>
- <aebb6b96-153e-7d7-59da-f6bad4337aa7@google.com>
+        Fri, 11 Jun 2021 11:39:01 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 467A11F447D9
+Message-ID: <35c24063aec561ca9696ab696fda86d34c38016e.camel@collabora.com>
+Subject: Re: [PATCH v2 05/12] media: hantro: merge Rockchip platform drivers
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Alex Bee <knaerzche@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Fri, 11 Jun 2021 12:36:39 -0300
+In-Reply-To: <20210527154455.358869-6-knaerzche@gmail.com>
+References: <20210525152225.154302-1-knaerzche@gmail.com>
+         <20210527154455.358869-1-knaerzche@gmail.com>
+         <20210527154455.358869-6-knaerzche@gmail.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aebb6b96-153e-7d7-59da-f6bad4337aa7@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:37:14PM -0700, Hugh Dickins wrote:
-> On Thu, 10 Jun 2021, Jason Gunthorpe wrote:
-> > On Thu, Jun 10, 2021 at 12:06:17PM +0300, Kirill A. Shutemov wrote:
-> > > On Wed, Jun 09, 2021 at 11:38:11PM -0700, Hugh Dickins wrote:
-> > > > page_vma_mapped_walk() cleanup: use pmd_read_atomic() with barrier()
-> > > > instead of READ_ONCE() for pmde: some architectures (e.g. i386 with PAE)
-> > > > have a multi-word pmd entry, for which READ_ONCE() is not good enough.
-> > > > 
-> > > > Signed-off-by: Hugh Dickins <hughd@google.com>
-> > > > Cc: <stable@vger.kernel.org>
-> > > >  mm/page_vma_mapped.c | 5 ++++-
-> > > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> > > > index 7c0504641fb8..973c3c4e72cc 100644
-> > > > +++ b/mm/page_vma_mapped.c
-> > > > @@ -182,13 +182,16 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
-> > > >  	pud = pud_offset(p4d, pvmw->address);
-> > > >  	if (!pud_present(*pud))
-> > > >  		return false;
-> > > > +
-> > > >  	pvmw->pmd = pmd_offset(pud, pvmw->address);
-> > > >  	/*
-> > > >  	 * Make sure the pmd value isn't cached in a register by the
-> > > >  	 * compiler and used as a stale value after we've observed a
-> > > >  	 * subsequent update.
-> > > >  	 */
-> > > > -	pmde = READ_ONCE(*pvmw->pmd);
-> > > > +	pmde = pmd_read_atomic(pvmw->pmd);
-> > > > +	barrier();
-> > > > +
-> > > 
-> > > Hm. It makes me wounder if barrier() has to be part of pmd_read_atomic().
-> > > mm/hmm.c uses the same pattern as you are and I tend to think that the
-> > > rest of pmd_read_atomic() users may be broken.
-> > > 
-> > > Am I wrong?
-> > 
-> > I agree with you, something called _atomic should not require the
-> > caller to provide barriers.
-> > 
-> > I think the issue is simply that the two implementations of
-> > pmd_read_atomic() should use READ_ONCE() internally, no?
+Hi Alex,
+
+This cleanup looks nice, thanks!
+
+Just a comment about the clock rate and a minor typo.
+
+On Thu, 2021-05-27 at 17:44 +0200, Alex Bee wrote:
+> Merge the two Rockchip platform drivers into one as it was suggested at
+> [1] and [2].
+> This will hopefully make it easier to add new variants (which are surely
+> to come for Rockchip).
+> Also rename from "rk3288" to "v(d/e)pu1" and "rk3399" to "v(d/e)pu2"
+> where applicable, as this is the dicition the vendor uses and will
+> also refelect the variants that get added later in this series. Rename
+> from "rk3288" to "rockchip" if applicable to both hardware versions.
 > 
-> I've had great difficulty coming up with answers for you.
+> [1] https://patchwork.kernel.org/project/linux-rockchip/patch/20210107134101.195426-6-paul.kocialkowski@bootlin.com/
+> [2] https://patchwork.kernel.org/project/linux-rockchip/patch/20210525152225.154302-5-knaerzche@gmail.com/
 > 
-> This patch was based on two notions I've had lodged in my mind
-> for several years:
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> ---
 > 
-> 1) that pmd_read_atomic() is the creme-de-la-creme for reading a pmd_t
-> atomically (even if the pmd_t spans multiple words); but reading again
-> after all this time the comment above it, it seems to be more specialized
-> than I'd thought (biggest selling point being for when you want to check
-> pmd_none(), which we don't).  And has no READ_ONCE() or barrier() inside,
-> so really needs that barrier() to be as safe as the previous READ_ONCE().
+>  Changes in v2:
+>  - added patch
+> 
+>  drivers/staging/media/hantro/Makefile         |   9 +-
+>  drivers/staging/media/hantro/hantro_hw.h      |  22 +-
+>  drivers/staging/media/hantro/rk3288_vpu_hw.c  | 208 ----------
+>  drivers/staging/media/hantro/rk3399_vpu_hw.c  | 222 -----------
+>  ...jpeg_enc.c => rockchip_vpu2_hw_jpeg_enc.c} |  30 +-
+>  ...eg2_dec.c => rockchip_vpu2_hw_mpeg2_dec.c} |  25 +-
+>  ...w_vp8_dec.c => rockchip_vpu2_hw_vp8_dec.c} |   2 +-
+>  ...rk3399_vpu_regs.h => rockchip_vpu2_regs.h} |   6 +-
+>  .../staging/media/hantro/rockchip_vpu_hw.c    | 356 ++++++++++++++++++
+>  9 files changed, 402 insertions(+), 478 deletions(-)
+>  delete mode 100644 drivers/staging/media/hantro/rk3288_vpu_hw.c
+>  delete mode 100644 drivers/staging/media/hantro/rk3399_vpu_hw.c
+>  rename drivers/staging/media/hantro/{rk3399_vpu_hw_jpeg_enc.c => rockchip_vpu2_hw_jpeg_enc.c} (87%)
+>  rename drivers/staging/media/hantro/{rk3399_vpu_hw_mpeg2_dec.c => rockchip_vpu2_hw_mpeg2_dec.c} (93%)
+>  rename drivers/staging/media/hantro/{rk3399_vpu_hw_vp8_dec.c => rockchip_vpu2_hw_vp8_dec.c} (99%)
+>  rename drivers/staging/media/hantro/{rk3399_vpu_regs.h => rockchip_vpu2_regs.h} (99%)
+>  create mode 100644 drivers/staging/media/hantro/rockchip_vpu_hw.c
+> 
+[..]
+> diff --git a/drivers/staging/media/hantro/rockchip_vpu_hw.c b/drivers/staging/media/hantro/rockchip_vpu_hw.c
+> new file mode 100644
+> index 000000000000..175d0c5dfdbe
+> --- /dev/null
+> +++ b/drivers/staging/media/hantro/rockchip_vpu_hw.c
+> @@ -0,0 +1,356 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Hantro VPU codec driver
+> + *
+> + * Copyright (C) 2018 Rockchip Electronics Co., Ltd.
+> + *     Jeffy Chen <jeffy.chen@rock-chips.com>
+> + */
+> +
+> +#include <linux/clk.h>
+> +
+> +#include "hantro.h"
+> +#include "hantro_jpeg.h"
+> +#include "hantro_h1_regs.h"
+> +#include "rockchip_vpu2_regs.h"
+> +
+> +#define RK3288_ACLK_MAX_FREQ (400 * 1000 * 1000)
+> +
 
-IMHO it is a simple bug that the 64 bit version of this is not marked
-with READ_ONCE() internally. It is reading data without a lock, AFAIK
-our modern understanding of the memory model is that requires
-READ_ONCE().
+Something for later, could we bump this clock?
 
-diff --git a/arch/x86/include/asm/pgtable-3level.h b/arch/x86/include/asm/pgtable-3level.h
-index e896ebef8c24cb..0bf1fdec928e71 100644
---- a/arch/x86/include/asm/pgtable-3level.h
-+++ b/arch/x86/include/asm/pgtable-3level.h
-@@ -75,7 +75,7 @@ static inline void native_set_pte(pte_t *ptep, pte_t pte)
- static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
- {
- 	pmdval_t ret;
--	u32 *tmp = (u32 *)pmdp;
-+	u32 *tmp = READ_ONCE((u32 *)pmdp);
- 
- 	ret = (pmdval_t) (*tmp);
- 	if (ret) {
-@@ -84,7 +84,7 @@ static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
- 		 * or we can end up with a partial pmd.
- 		 */
- 		smp_rmb();
--		ret |= ((pmdval_t)*(tmp + 1)) << 32;
-+		ret |= READ_ONCE((pmdval_t)*(tmp + 1)) << 32;
- 	}
- 
- 	return (pmd_t) { ret };
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 46b13780c2c8c9..c8c7a3307d2773 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -1228,7 +1228,7 @@ static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
- 	 * only going to work, if the pmdval_t isn't larger than
- 	 * an unsigned long.
- 	 */
--	return *pmdp;
-+	return READ_ONCE(*pmdp);
- }
- #endif
- 
+Rockchip uses 300MHz and 600MHz even for RK3288,
+see arch/arm/boot/dts/rk3288.dtsi:
 
-> 2) the barrier() in mm_find_pmd(), that replaced an earlier READ_ONCE(),
-> because READ_ONCE() did not work (did not give the necessary guarantee? or
-> did not build?) on architectures with multiple word pmd_ts e.g. i386 PAE.
+        vdpu: vdpu@ff9a0400 {
+                compatible = "rockchip,vpu-decoder-rk3288", "rockchip,vpu-decoder-v1";
+                reg = <0x0 0xff9a0400 0x0 0x400>;
+                interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+                interrupt-names = "irq_dec";
+                clocks = <&cru ACLK_VCODEC>, <&cru HCLK_VCODEC>;
+                clock-names = "aclk_vcodec", "hclk_vcodec";
+                rockchip,normal-rates = <300000000>, <0>;
+                rockchip,advanced-rates = <600000000>, <0>;
 
-This is really interesting, the git history e37c69827063 ("mm: replace
-ACCESS_ONCE with READ_ONCE or barriers") says the READ_ONCE was
-dropped here "because it doesn't work on non-scalar types" due to a
-(now 8 year old) gcc bug.
+On vdpu1 for instance, it switches to the "advanced-rate"
+when width > 2560, which I think it's too naive for us.
 
-According to the gcc bug READ_ONCE() on anything that is a scalar
-sized struct triggers GCC to ignore the READ_ONCEyness. To work around
-this bug then READ_ONCE can never be used on any of the struct
-protected page table elements. While I am not 100% sure, it looks like
-this is a pre gcc 4.9 bug, and since gcc 4.9 is now the minimum
-required compiler this is all just cruft. Use READ_ONCE() here too...
+At least on RK3566 I tested bumping this rate, while still
+passing conformance tests.
 
-> But I've now come across some changes that Will Deacon made last year:
-> the include/asm-generic/rwonce.h READ_ONCE() now appears to allow for
-> native word type *or* type sizeof(long long) (e.g. i386 PAE) - given
-> "a strong prevailing wind" anyway :)  And 8e958839e4b9 ("sparc32: mm:
-> Restructure sparc32 MMU page-table layout") put an end to sparc32's
-> typedef struct { unsigned long pmdv[16]; } pmd_t.
+> +/*
+> + * Supported formats.
+> + */
+> +
+> +static const struct hantro_fmt rockchip_vpu_enc_fmts[] = {
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_YUV420M,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +               .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420P,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_NV12M,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +               .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420SP,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_YUYV,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +               .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUYV422,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_UYVY,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +               .enc_fmt = ROCKCHIP_VPU_ENC_FMT_UYVY422,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_JPEG,
+> +               .codec_mode = HANTRO_MODE_JPEG_ENC,
+> +               .max_depth = 2,
+> +               .header_size = JPEG_HEADER_SIZE,
+> +               .frmsize = {
+> +                       .min_width = 96,
+> +                       .max_width = 8192,
+> +                       .step_width = MB_DIM,
+> +                       .min_height = 32,
+> +                       .max_height = 8192,
+> +                       .step_height = MB_DIM,
+> +               },
+> +       },
+> +};
+> +
+> +static const struct hantro_fmt rockchip_vpu1_postproc_fmts[] = {
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_YUYV,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +       },
+> +};
+> +
+> +static const struct hantro_fmt rk3288_vpu_dec_fmts[] = {
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_NV12,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_H264_SLICE,
+> +               .codec_mode = HANTRO_MODE_H264_DEC,
+> +               .max_depth = 2,
+> +               .frmsize = {
+> +                       .min_width = 48,
+> +                       .max_width = 4096,
+> +                       .step_width = MB_DIM,
+> +                       .min_height = 48,
+> +                       .max_height = 2304,
+> +                       .step_height = MB_DIM,
+> +               },
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_MPEG2_SLICE,
+> +               .codec_mode = HANTRO_MODE_MPEG2_DEC,
+> +               .max_depth = 2,
+> +               .frmsize = {
+> +                       .min_width = 48,
+> +                       .max_width = 1920,
+> +                       .step_width = MB_DIM,
+> +                       .min_height = 48,
+> +                       .max_height = 1088,
+> +                       .step_height = MB_DIM,
+> +               },
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_VP8_FRAME,
+> +               .codec_mode = HANTRO_MODE_VP8_DEC,
+> +               .max_depth = 2,
+> +               .frmsize = {
+> +                       .min_width = 48,
+> +                       .max_width = 3840,
+> +                       .step_width = MB_DIM,
+> +                       .min_height = 48,
+> +                       .max_height = 2160,
+> +                       .step_height = MB_DIM,
+> +               },
+> +       },
+> +};
+> +
+> +static const struct hantro_fmt rk3399_vpu_dec_fmts[] = {
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_NV12,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_MPEG2_SLICE,
+> +               .codec_mode = HANTRO_MODE_MPEG2_DEC,
+> +               .max_depth = 2,
+> +               .frmsize = {
+> +                       .min_width = 48,
+> +                       .max_width = 1920,
+> +                       .step_width = MB_DIM,
+> +                       .min_height = 48,
+> +                       .max_height = 1088,
+> +                       .step_height = MB_DIM,
+> +               },
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_VP8_FRAME,
+> +               .codec_mode = HANTRO_MODE_VP8_DEC,
+> +               .max_depth = 2,
+> +               .frmsize = {
+> +                       .min_width = 48,
+> +                       .max_width = 3840,
+> +                       .step_width = MB_DIM,
+> +                       .min_height = 48,
+> +                       .max_height = 2160,
+> +                       .step_height = MB_DIM,
+> +               },
+> +       },
+> +};
+> +
+> +static irqreturn_t rockchip_vpu1_vepu_irq(int irq, void *dev_id)
+> +{
+> +       struct hantro_dev *vpu = dev_id;
+> +       enum vb2_buffer_state state;
+> +       u32 status;
+> +
+> +       status = vepu_read(vpu, H1_REG_INTERRUPT);
+> +       state = (status & H1_REG_INTERRUPT_FRAME_RDY) ?
+> +               VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
+> +
+> +       vepu_write(vpu, 0, H1_REG_INTERRUPT);
+> +       vepu_write(vpu, 0, H1_REG_AXI_CTRL);
+> +
+> +       hantro_irq_done(vpu, state);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static irqreturn_t rockchip_vpu2_vdpu_irq(int irq, void *dev_id)
+> +{
+> +       struct hantro_dev *vpu = dev_id;
+> +       enum vb2_buffer_state state;
+> +       u32 status;
+> +
+> +       status = vdpu_read(vpu, VDPU_REG_INTERRUPT);
+> +       state = (status & VDPU_REG_INTERRUPT_DEC_IRQ) ?
+> +               VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
+> +
+> +       vdpu_write(vpu, 0, VDPU_REG_INTERRUPT);
+> +       vdpu_write(vpu, 0, VDPU_REG_AXI_CTRL);
+> +
+> +       hantro_irq_done(vpu, state);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static irqreturn_t rockchip_vpu2_vepu_irq(int irq, void *dev_id)
+> +{
+> +       struct hantro_dev *vpu = dev_id;
+> +       enum vb2_buffer_state state;
+> +       u32 status;
+> +
+> +       status = vepu_read(vpu, VEPU_REG_INTERRUPT);
+> +       state = (status & VEPU_REG_INTERRUPT_FRAME_READY) ?
+> +               VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
+> +
+> +       vepu_write(vpu, 0, VEPU_REG_INTERRUPT);
+> +       vepu_write(vpu, 0, VEPU_REG_AXI_CTRL);
+> +
+> +       hantro_irq_done(vpu, state);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static int rockchip_vpu_hw_init(struct hantro_dev *vpu)
+> +{
+> +       /* Bump ACLK to max. possible freq. to improve performance. */
+> +       clk_set_rate(vpu->clocks[0].clk, RK3288_ACLK_MAX_FREQ);
+> +       return 0;
+> +}
+> +
+> +static void rockchip_vpu1_enc_reset(struct hantro_ctx *ctx)
+> +{
+> +       struct hantro_dev *vpu = ctx->dev;
+> +
+> +       vepu_write(vpu, H1_REG_INTERRUPT_DIS_BIT, H1_REG_INTERRUPT);
+> +       vepu_write(vpu, 0, H1_REG_ENC_CTRL);
+> +       vepu_write(vpu, 0, H1_REG_AXI_CTRL);
+> +}
+> +
+> +static void rockchip_vpu2_dec_reset(struct hantro_ctx *ctx)
+> +{
+> +       struct hantro_dev *vpu = ctx->dev;
+> +
+> +       vdpu_write(vpu, VDPU_REG_INTERRUPT_DEC_IRQ_DIS, VDPU_REG_INTERRUPT);
+> +       vdpu_write(vpu, 0, VDPU_REG_EN_FLAGS);
+> +       vdpu_write(vpu, 1, VDPU_REG_SOFT_RESET);
+> +}
+> +
+> +static void rockchip_vpu2_enc_reset(struct hantro_ctx *ctx)
+> +{
+> +       struct hantro_dev *vpu = ctx->dev;
+> +
+> +       vepu_write(vpu, VEPU_REG_INTERRUPT_DIS_BIT, VEPU_REG_INTERRUPT);
+> +       vepu_write(vpu, 0, VEPU_REG_ENCODE_START);
+> +       vepu_write(vpu, 0, VEPU_REG_AXI_CTRL);
+> +}
+> +
+> +/*
+> + * Supported codec ops.
+> + */
+> +
+> +static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
+> +       [HANTRO_MODE_JPEG_ENC] = {
+> +               .run = hantro_h1_jpeg_enc_run,
+> +               .reset = rockchip_vpu1_enc_reset,
+> +               .init = hantro_jpeg_enc_init,
+> +               .done = hantro_jpeg_enc_done,
+> +               .exit = hantro_jpeg_enc_exit,
+> +       },
+> +       [HANTRO_MODE_H264_DEC] = {
+> +               .run = hantro_g1_h264_dec_run,
+> +               .reset = hantro_g1_reset,
+> +               .init = hantro_h264_dec_init,
+> +               .exit = hantro_h264_dec_exit,
+> +       },
+> +       [HANTRO_MODE_MPEG2_DEC] = {
+> +               .run = hantro_g1_mpeg2_dec_run,
+> +               .reset = hantro_g1_reset,
+> +               .init = hantro_mpeg2_dec_init,
+> +               .exit = hantro_mpeg2_dec_exit,
+> +       },
+> +       [HANTRO_MODE_VP8_DEC] = {
+> +               .run = hantro_g1_vp8_dec_run,
+> +               .reset = hantro_g1_reset,
+> +               .init = hantro_vp8_dec_init,
+> +               .exit = hantro_vp8_dec_exit,
+> +       },
+> +};
+> +
+> +static const struct hantro_codec_ops rk3399_vpu_codec_ops[] = {
+> +       [HANTRO_MODE_JPEG_ENC] = {
+> +               .run = rockchip_vpu2_jpeg_enc_run,
+> +               .reset = rockchip_vpu2_enc_reset,
+> +               .init = hantro_jpeg_enc_init,
+> +               .exit = hantro_jpeg_enc_exit,
+> +       },
+> +       [HANTRO_MODE_MPEG2_DEC] = {
+> +               .run = rockchip_vpu2_mpeg2_dec_run,
+> +               .reset = rockchip_vpu2_dec_reset,
+> +               .init = hantro_mpeg2_dec_init,
+> +               .exit = hantro_mpeg2_dec_exit,
+> +       },
+> +       [HANTRO_MODE_VP8_DEC] = {
+> +               .run = rockchip_vpu2_vp8_dec_run,
+> +               .reset = rockchip_vpu2_dec_reset,
+> +               .init = hantro_vp8_dec_init,
+> +               .exit = hantro_vp8_dec_exit,
+> +       },
+> +};
+> +
+> +/*
+> + * VPU variant.
+> + */
+> +
+> +static const struct hantro_irq rockchip_vpu1_irqs[] = {
+> +       { "vepu", rockchip_vpu1_vepu_irq },
+> +       { "vdpu", hantro_g1_irq },
+> +};
+> +
+> +static const struct hantro_irq rockchip_vpdu2_irqs[] = {
 
-Indeed, that is good news
+Typo: vpdu -> vdpu?
 
-> As to your questions about pmd_read_atomic() usage elsewhere:
-> please don't force me to think so hard!  (And you've set me half-
-> wondering, whether there are sneaky THP transitions, perhaps of the
-> "unstable" kind, that page_vma_mapped_walk() should be paying more
-> attention to: but for sanity's sake I won't go there, not now.)
+> +       { "vdpu", rockchip_vpu2_vdpu_irq },
+> +};
+> +
 
-If I recall, (and I didn't recheck this right now) the only thing
-pmd_read_atomic() provides is the special property that if the pmd's
-flags are observed to point to a pte table then pmd_read_atomic() will
-reliably return the pte table pointer.
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
 
-Otherwise it returns the flags and a garbage pointer because under the
-THP protocol a PMD pointing at a page can be converted to a PTE table
-if you hold the mmap sem in read mode. Upgrading a PTE table to a PMD
-page requires mmap sem in write mode so once a PTE table is observed
-'locklessly' the value is stable.. Or at least so says the documentation
+Thanks,
+Ezequiel
 
-pmd_read_atomic() is badly named, tricky to use, and missing the
-READ_ONCE() because it is so old..
 
-As far as is page_vma_mapped_walk correct.. Everything except
-is_pmd_migration_entry() is fine to my eye, and I simply don't know
-the rules aroudn migration entries to know right/wrong.
-
-I suspect it probably is required to manipulate a migration entry
-while holding the mmap_sem in write mode??
-
-There is some list of changes to the page table that require holding
-the mmap sem in write mode that I've never seen documented for..
-
-Jason
