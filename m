@@ -2,97 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED2E3A3A15
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEB63A3A18
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhFKDHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:07:03 -0400
-Received: from m12-15.163.com ([220.181.12.15]:59915 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230205AbhFKDHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:07:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=0Ym6k
-        /3DmPhpmY+UFOFonjPWD4GzBEfsl7y9mwmxEh4=; b=Pho3XBuvvbSLEQR0iqLrn
-        yS9VrGM/Ogb+8vKHyvyES5m4YJaBFJrgidP8QIXPhoYmEXzyYeBX1AuCT/vyZ6fq
-        w/OWXu+IBgJJ7E3+Us+aD8+ilsCCWv9WVViyL6DbABAl65+OwYctZnNOcozaToSF
-        v0sl39o3Nabifl9BKGr6UI=
-Received: from localhost (unknown [218.17.89.92])
-        by smtp11 (Coremail) with SMTP id D8CowAAXa9C00sJgL3t8AA--.2S2;
-        Fri, 11 Jun 2021 11:04:28 +0800 (CST)
-Date:   Fri, 11 Jun 2021 11:04:19 +0800
-From:   Zhongjun Tan <hbut_tan@163.com>
-To:     Alex Elder <elder@ieee.org>
-Cc:     David Miller <davem@davemloft.net>, elder@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tanzhongjun@yulong.com
-Subject: Re: [PATCH] soc: qcom: ipa: Remove superfluous error message around
- platform_get_irq()
-Message-ID: <20210611110419.00003810.hbut_tan@163.com>
-In-Reply-To: <a3765a86-bb9e-b5f8-32a1-3c3fa939bb4e@ieee.org>
-References: <20210610140118.1437-1-hbut_tan@163.com>
-        <20210610.141142.1384244468678097702.davem@davemloft.net>
-        <a3765a86-bb9e-b5f8-32a1-3c3fa939bb4e@ieee.org>
-Organization: Yulong
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
+        id S231361AbhFKDIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:08:37 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11379 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230205AbhFKDIg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 23:08:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623380799; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=wexlSlPWte1V+0zEqCj9//EPjbPqVl3tfJdfC6N/SxU=;
+ b=cunRNkX2E3hsJvMCytKoUf5sMdvGrEx2isT6Sr2CMh948tueZSEp3aPSDMJPRHCMhDe4qpuF
+ NTpFDHr+c0L7S40T7mgsDHwrIe7lMotxb3vwXo8wdIMIEhUzkvjGh5DXXjx9+7IXr77aiHMc
+ lSNBN9U70hJJHK4OEchYatJxu6s=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60c2d33a8491191eb355d589 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Jun 2021 03:06:34
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 22F91C4360C; Fri, 11 Jun 2021 03:06:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA525C433D3;
+        Fri, 11 Jun 2021 03:06:32 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB18030
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowAAXa9C00sJgL3t8AA--.2S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ww4fGr1kAw1xCr4xGw1kuFg_yoW8Ar18pr
-        s0kayayr95ta1xG3W8Ja4ruFy5ur18tFW3Kw1Yg3WruFW5Xr90qr1rtFWF9rn5ur48C3W5
-        XF4j9ws5CFyFva7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jDPE-UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: xkex3sxwdqqiywtou0bp/1tbiKB2uxl7WF+SVIwAAsQ
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Jun 2021 11:06:32 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 7/9] scsi: ufs: Let host_sem cover the entire system
+ suspend/resume
+In-Reply-To: <6d31becb-98f8-2302-8ffa-657e6cadd8ec@intel.com>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-8-git-send-email-cang@codeaurora.org>
+ <6d31becb-98f8-2302-8ffa-657e6cadd8ec@intel.com>
+Message-ID: <eb268cc191916686f45c161f3f191049@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 16:38:43 -0500
-Alex Elder <elder@ieee.org> wrote:
+Hi Adrian,
 
-> On 6/10/21 4:11 PM, David Miller wrote:
-> > From:  Zhongjun Tan <hbut_tan@163.com>
-> > Date: Thu, 10 Jun 2021 22:01:18 +0800
-> >   
-> >> diff --git a/drivers/net/ipa/ipa_smp2p.c
-> >> b/drivers/net/ipa/ipa_smp2p.c index 34b68dc43886..93270e50b6b3
-> >> 100644 --- a/drivers/net/ipa/ipa_smp2p.c
-> >> +++ b/drivers/net/ipa/ipa_smp2p.c
-> >> @@ -177,11 +177,8 @@ static int ipa_smp2p_irq_init(struct
-> >> ipa_smp2p *smp2p, const char *name, int ret;
-> >>   
-> >>   	ret = platform_get_irq_byname(smp2p->ipa->pdev, name);
-> >> -	if (ret <= 0) {
-> >> -		dev_err(dev, "DT error %d getting \"%s\" IRQ
-> >> property\n",
-> >> -			ret, name);
-> >> +	if (ret <= 0)  
-> > Applied, but this code still rejects an irq of zero which is a
-> > valid irq number.  
+On 2021-06-10 21:32, Adrian Hunter wrote:
+> On 10/06/21 7:43 am, Can Guo wrote:
+>> UFS error handling now is doing more than just re-probing, but also 
+>> sending
+>> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, 
+>> which
+>> may change runtime status of scsi devices. To protect system 
+>> suspend/resume
+>> from being disturbed by error handling, move the host_sem from wl pm 
+>> ops
+>> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
 > 
-> It rejects IRQ 0 intentionally.  And if 0 is returned, there
-> will now be no message printed by the platform code.
-> 
-> As I recall, I looked for a *long* time to see whether IRQ 0
-> was a valid IRQ number in Linux.  One reason I even questioned
-> it is that NO_IRQ is defined with value 0 on some architectures
-> (though not for Arm).  I even asked Rob Herring about privately
-> it a few years back and he suggested I shouldn't allow 0.
-> 
-> Yes, it *looked* like IRQ 0 could be a valid return.  But I
-> decided it was safer to just reject it, on the assumption
-> that it's unlikely to be returned (I don't believe it is
-> or ever will be used as the IRQ for SMP2P).
-> 
-> If you are certain it's valid, and should be allowed, I
-> have no objection to changing that "<=" to be "<".
-> 
-> 					-Alex
-> 
-> PS  A quick search found this oldie:
->        https://yarchive.net/comp/linux/no_irq.html
+> Have you checked whether error handling might actually be needed after
+> ufshcd_suspend_prepare()?
 
-I think so , It is better to change "<=" to be "<".
+I intend to make it this (simple) way - if error handling is invoked
+during system suspend/resume, it should just wait until system resume
+is finished. suspend/resume does not count on error handling, if 
+suspend/resume
+run into errors, they just fail and bail.
 
+> 
+> Wouldn't this complexity go away if we just did recovery
+> directly in __ufshcd_wl_suspend() and  __ufshcd_wl_resume()?
+> 
+
+Please kindly check my reply in patch #5.
+
+Thanks,
+Can Guo.
+
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 8 +++-----
+>>  drivers/scsi/ufs/ufshcd.h | 2 +-
+>>  2 files changed, 4 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index c418a19..861942b 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -9060,16 +9060,13 @@ static int ufshcd_wl_suspend(struct device 
+>> *dev)
+>>  	ktime_t start = ktime_get();
+>> 
+>>  	hba = shost_priv(sdev->host);
+>> -	down(&hba->host_sem);
+>> 
+>>  	if (pm_runtime_suspended(dev))
+>>  		goto out;
+>> 
+>>  	ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
+>> -	if (ret) {
+>> +	if (ret)
+>>  		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
+>> -		up(&hba->host_sem);
+>> -	}
+>> 
+>>  out:
+>>  	if (!ret)
+>> @@ -9102,7 +9099,6 @@ static int ufshcd_wl_resume(struct device *dev)
+>>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>>  	if (!ret)
+>>  		hba->is_wl_sys_suspended = false;
+>> -	up(&hba->host_sem);
+>>  	return ret;
+>>  }
+>>  #endif
+>> @@ -9665,6 +9661,7 @@ void ufshcd_resume_complete(struct device *dev)
+>>  		ufshcd_rpmb_rpm_put(hba);
+>>  		hba->rpmb_complete_put = false;
+>>  	}
+>> +	up(&hba->host_sem);
+>>  }
+>>  EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
+>> 
+>> @@ -9691,6 +9688,7 @@ int ufshcd_suspend_prepare(struct device *dev)
+>>  		ufshcd_rpmb_rpm_get_sync(hba);
+>>  		hba->rpmb_complete_put = true;
+>>  	}
+>> +	down(&hba->host_sem);
+>>  	return 0;
+>>  }
+>>  EXPORT_SYMBOL_GPL(ufshcd_suspend_prepare);
+>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+>> index eaebb4e..47da47c 100644
+>> --- a/drivers/scsi/ufs/ufshcd.h
+>> +++ b/drivers/scsi/ufs/ufshcd.h
+>> @@ -693,7 +693,7 @@ struct ufs_hba_monitor {
+>>   * @ee_ctrl_mask: Exception event control mask
+>>   * @is_powered: flag to check if HBA is powered
+>>   * @shutting_down: flag to check if shutdown has been invoked
+>> - * @host_sem: semaphore used to serialize concurrent contexts
+>> + * @host_sem: semaphore used to avoid concurrency of contexts
+>>   * @eh_wq: Workqueue that eh_work works on
+>>   * @eh_work: Worker to handle UFS errors that require s/w attention
+>>   * @eeh_work: Worker to handle exception events
+>> 
