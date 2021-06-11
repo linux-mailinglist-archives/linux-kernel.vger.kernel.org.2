@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE383A4933
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E333A4934
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhFKTHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
+        id S231372AbhFKTHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbhFKTHg (ORCPT
+        with ESMTP id S231233AbhFKTHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Jun 2021 15:07:36 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222DFC0613A2
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5DAC0613A3
         for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 12:05:36 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id b5so6107723ilc.12
+Received: by mail-io1-xd32.google.com with SMTP id s26so3138344ioe.9
         for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 12:05:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vZEwEVBDEvCxZgVoTN4odpB95bOFDOiTrujBE+grmHw=;
-        b=GODL4EQkGQXW7NnrcMbNEp9Q7LZU1Uas5K0o2f6nyIiJdB/Vy0H9OKhwx9CUrxvv+D
-         bbReoR4eQEW81BQQL/T3CFaG5cYhqpshijVgZYecg8EyCu5Bqictl7u16lArAH+VC3jq
-         lo8mXnF7nSj+82us+iIUwuktPkS1dzZaMlxlYPSXNW+ml5n6HMLW1YYRInRmmJWX9y73
-         xRqfUla7wO8cOGtGQPgLbLp68swLewAPgMosWlZYJ3jKO15w2FtGiD2HVJuPtUZ8Jhu6
-         goBLUyOeiNM+kshrpEy7lB2EsBo9tphJLgnjkj61/EwCcb2gMSsaoVhAPIiVOthIdxH8
-         DLTA==
+        bh=xQ8UF2rlnCWAYB0xLk3oBUl3NTh+oujcDIz3DNhAnpo=;
+        b=UEMHF8P4VjbABDccJ6fPGtQSycydNVCzERiATqZHKB3FvCpPL6shlgBesVFL20Ki4i
+         F9Nt3Je/Nv4mQO+svBJ1lnp+QUyhsl09QJeyRJ1xk3UjfadTuRSl7kyTcgBqx0MIRNdy
+         vxCpt9BMo24/TY8unkCpNbOwY3g0NB5y/5/CqoaWyXDvvRC0e4iA6Tmt03dnAzcNIJLa
+         MEInNRmsYKefLFJ7Wlmk4NxstzMbBQDAbqS9inzz4+EJlBvgiwt6SwHKNGi9kX3nomMu
+         xibfEYUzWXnhjCfZk6fSfQOF2RWjyeJ6O024DAnPFyApSkj9Bn2JPr3FjjyE+IOq/l1V
+         wMwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vZEwEVBDEvCxZgVoTN4odpB95bOFDOiTrujBE+grmHw=;
-        b=jJtlGl8TjW59g/EIDy2fD0KGJ8VHgqB36JN4aW37F1pn50kQ6/7iboISoFLKLqq3l0
-         GPsY/oDhbhBxPgbcJkKBe5QVM99/4SCKBy1bm6JPE29b4LnYwXQqB8sLBwzEn/aNZoXA
-         7tp16s4LPdSIxlwwmoueKHGK6tgp9O1jkJJDaYQ0zKC4cQsUEmIZXCC/gej/jCgzfLfW
-         bKKQXEgY0DaStVLtLN/N5FEBgClbWhHkDZc2yxL8IcxXCO0Dr2/10Lt1ykTcslEr8CCk
-         ysTcjLVDCogBq9Oegm9jgdC1A47GCLjIVmiw8wnA76ttb4pWMp0uxc6ciKNtHbYqNKoO
-         XxAA==
-X-Gm-Message-State: AOAM531ljXPEAVKF2SRJ4FAWjOiR6I4LZXDLrekhFnSq+xdaRujF97x0
-        57GNziRGyRw9OFNaxyIEfsY8Lw==
-X-Google-Smtp-Source: ABdhPJwnF/bYxbZPYf7kXpBg/MRzjAcmy6m7V7CP21h6uortNQV10Cl96u+m4ikcKTn200wGkKqMtw==
-X-Received: by 2002:a05:6e02:1153:: with SMTP id o19mr4404755ill.136.1623438335567;
-        Fri, 11 Jun 2021 12:05:35 -0700 (PDT)
+        bh=xQ8UF2rlnCWAYB0xLk3oBUl3NTh+oujcDIz3DNhAnpo=;
+        b=l5q0BimKt3qihw3QJ5p6fdKk7D13Nv2qxhWRn90l5h9nPJ3vSXc3r/znegdrSaEBzT
+         +XHsIb1X4uW81dpb0qHqsL7mw1Ehabu8ZD3BpwStMtvC4zAoaOd/nfJ6e0ItqQRaOknk
+         bBI6jQAt6HpEcnkK7VZAfZftXq9e49GRCts/sj4ZK/PG6K+a2UkqYbGDvvHd1rhb0Wuo
+         w6Fv/ZsmDaeNiVxvVHRLUF41zB3IOO6nccLIjHGlfI5KuLAKLFzXoDvMMgpVI4jJWoh6
+         vJslM2vJW3q7Ws7HrKpVyRvme3qkUPak05OFz/RoaH3DVAFafgM0i9fHkV0RrIejkYue
+         bXNg==
+X-Gm-Message-State: AOAM533PNi7AM8pNEPBzlNHT+GZDW05iFjiHBv2tpRONotp3MenWKyRY
+        rZtCzmZKPpFZLpCN6NF1mff4F/IhGx3ZbtBO
+X-Google-Smtp-Source: ABdhPJyOFHRdLIjpbk1Yd8ilavoGTZ44/rLxxqkxDU0akZF5hUdowaN50j3y4dtTHTS47KEh3k/3TA==
+X-Received: by 2002:a05:6638:1602:: with SMTP id x2mr5241197jas.130.1623438336455;
+        Fri, 11 Jun 2021 12:05:36 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id p9sm3936566ilc.63.2021.06.11.12.05.34
+        by smtp.gmail.com with ESMTPSA id p9sm3936566ilc.63.2021.06.11.12.05.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 12:05:35 -0700 (PDT)
+        Fri, 11 Jun 2021 12:05:36 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     subashab@codeaurora.org, stranche@codeaurora.org,
         davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/8] net: qualcomm: rmnet: use ip_is_fragment()
-Date:   Fri, 11 Jun 2021 14:05:22 -0500
-Message-Id: <20210611190529.3085813-2-elder@linaro.org>
+Subject: [PATCH net-next 2/8] net: qualcomm: rmnet: eliminate some ifdefs
+Date:   Fri, 11 Jun 2021 14:05:23 -0500
+Message-Id: <20210611190529.3085813-3-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210611190529.3085813-1-elder@linaro.org>
 References: <20210611190529.3085813-1-elder@linaro.org>
@@ -65,30 +65,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In rmnet_map_ipv4_dl_csum_trailer() use ip_is_fragment() to
-determine whether a socket buffer contains a packet fragment.
+If IPV6 is not enabled in the kernel configuration, the RMNet
+checksum code indicates a buffer containing an IPv6 packet is not
+supported.  The same thing happens if a buffer contains something
+other than an IPv4 or IPv6 packet.
+
+We can rearrange things a bit in two functions so that some #ifdef
+calls can simply be eliminated.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 54 ++++++++-----------
+ 1 file changed, 23 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-index cecf72be51029..34bd1a98a1015 100644
+index 34bd1a98a1015..b8e504ac7fb1e 100644
 --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
 +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-@@ -50,8 +50,9 @@ rmnet_map_ipv4_dl_csum_trailer(struct sk_buff *skb,
- 	__be16 addend;
- 
- 	ip4h = (struct iphdr *)(skb->data);
--	if ((ntohs(ip4h->frag_off) & IP_MF) ||
--	    ((ntohs(ip4h->frag_off) & IP_OFFSET) > 0)) {
-+
-+	/* We don't support checksum offload on IPv4 fragments */
-+	if (ip_is_fragment(ip4h)) {
- 		priv->stats.csum_fragmented_pkt++;
- 		return -EOPNOTSUPP;
+@@ -431,21 +431,15 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
+ 		return -EINVAL;
  	}
+ 
+-	if (skb->protocol == htons(ETH_P_IP)) {
++	if (skb->protocol == htons(ETH_P_IP))
+ 		return rmnet_map_ipv4_dl_csum_trailer(skb, csum_trailer, priv);
+-	} else if (skb->protocol == htons(ETH_P_IPV6)) {
+-#if IS_ENABLED(CONFIG_IPV6)
++
++	if (IS_ENABLED(CONFIG_IPV6) && skb->protocol == htons(ETH_P_IPV6))
+ 		return rmnet_map_ipv6_dl_csum_trailer(skb, csum_trailer, priv);
+-#else
+-		priv->stats.csum_err_invalid_ip_version++;
+-		return -EPROTONOSUPPORT;
+-#endif
+-	} else {
+-		priv->stats.csum_err_invalid_ip_version++;
+-		return -EPROTONOSUPPORT;
+-	}
+ 
+-	return 0;
++	priv->stats.csum_err_invalid_ip_version++;
++
++	return -EPROTONOSUPPORT;
+ }
+ 
+ static void rmnet_map_v4_checksum_uplink_packet(struct sk_buff *skb,
+@@ -462,28 +456,26 @@ static void rmnet_map_v4_checksum_uplink_packet(struct sk_buff *skb,
+ 		     (NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM))))
+ 		goto sw_csum;
+ 
+-	if (skb->ip_summed == CHECKSUM_PARTIAL) {
+-		iphdr = (char *)ul_header +
+-			sizeof(struct rmnet_map_ul_csum_header);
++	if (skb->ip_summed != CHECKSUM_PARTIAL)
++		goto sw_csum;
+ 
+-		if (skb->protocol == htons(ETH_P_IP)) {
+-			rmnet_map_ipv4_ul_csum_header(iphdr, ul_header, skb);
+-			priv->stats.csum_hw++;
+-			return;
+-		} else if (skb->protocol == htons(ETH_P_IPV6)) {
+-#if IS_ENABLED(CONFIG_IPV6)
+-			rmnet_map_ipv6_ul_csum_header(iphdr, ul_header, skb);
+-			priv->stats.csum_hw++;
+-			return;
+-#else
+-			priv->stats.csum_err_invalid_ip_version++;
+-			goto sw_csum;
+-#endif
+-		} else {
+-			priv->stats.csum_err_invalid_ip_version++;
+-		}
++	iphdr = (char *)ul_header +
++		sizeof(struct rmnet_map_ul_csum_header);
++
++	if (skb->protocol == htons(ETH_P_IP)) {
++		rmnet_map_ipv4_ul_csum_header(iphdr, ul_header, skb);
++		priv->stats.csum_hw++;
++		return;
++	}
++
++	if (IS_ENABLED(CONFIG_IPV6) && skb->protocol == htons(ETH_P_IPV6)) {
++		rmnet_map_ipv6_ul_csum_header(iphdr, ul_header, skb);
++		priv->stats.csum_hw++;
++		return;
+ 	}
+ 
++	priv->stats.csum_err_invalid_ip_version++;
++
+ sw_csum:
+ 	memset(ul_header, 0, sizeof(*ul_header));
+ 
 -- 
 2.27.0
 
