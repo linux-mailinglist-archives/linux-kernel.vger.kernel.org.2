@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248DC3A46CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DC83A46CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhFKQqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhFKQqO (ORCPT
+        id S231577AbhFKQqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:46:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41004 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231415AbhFKQqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Jun 2021 12:46:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1675C0613A2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:44:15 -0700 (PDT)
-Message-Id: <20210611163112.444570090@linutronix.de>
+Message-Id: <20210611163112.540104811@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623429854;
+        s=2020; t=1623429855;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=EITv1NVQnoh3P1MfbSZU6eYCbvrwmUh0P2RmQ+e2+04=;
-        b=CuyO19cM6zQ75LOGxoyga07v0FT5bFSoTHoby8qDyrOyeHhybb0ZFH4cjs26ctOpxV+g6T
-        8PoHI3mGaD3xxu1qpf0Xkknp8EQj7NzAhw+uAdOdY/3Ad6EDFOk5yOccChGdiuFiZs6Wn/
-        IBHGFABl+WIMWbAx+DPl1PRd+zLAH5Z/ZSXfAaBHSNPMRrClq9jgS59Dv4JlW468zzoRyS
-        FwSk8dz1LWXWX2EGyrmUtXh0Ad3HJjoSq61j2/X1zyDGdFAk9U2clh0dNCehtONEH0CuN7
-        k8ZWn+pIwcUibZ2C6A8rj75wmuz49UQr09/SP/vagC7ei8ZfrTBTr/7B/ClkkQ==
+        bh=CJrPgdd5KLNu81B87dm9Lhfvwzy4H7m4Lxmf8c0bAjQ=;
+        b=D/zLQadARXf0kMmWEflG7hlLNwB3hCcniNvwmzfKc4hKVv4htbn0ZJnD6nVVR0kDzWyqC0
+        wKhkmXFIC/O4qmEMAG7qk8DXoIIPNccEv4lXqjTbCNNWnVe7udCOD+C7e4GV6HQO1Aa21B
+        nIOd0DFs6ATF5UH0ICIZYAr1wUMCSWNVDGf0Jhbn5AptuqDlXkkDZUWn2sDhXv6GjN502l
+        lezMWhANtgaQVb/+8+VD27qQobybjT5QY7BkuBZA3UhLfC4kX8UnTziQrExSc2N0xRjiVn
+        hOEey1Y5T8gti9db+xlaDXWLKeE/5UB6eMwJKnhZCZcZn6EVlLN33sAY3ttdSA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623429854;
+        s=2020e; t=1623429855;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=EITv1NVQnoh3P1MfbSZU6eYCbvrwmUh0P2RmQ+e2+04=;
-        b=TPNt8Qkk1D2SgWAAbOYd1zKD7lvLIfrqxMgABkierJEXVsw6cSf9AF2gS/W6LSOq1S96td
-        RIM/3JVdX8KrBuDg==
-Date:   Fri, 11 Jun 2021 18:15:37 +0200
+        bh=CJrPgdd5KLNu81B87dm9Lhfvwzy4H7m4Lxmf8c0bAjQ=;
+        b=rTVSz7j8gUkOX07w8zFQG3pKdgo/yFp22Ln/yiui6Wkwxm/n0uaN0gNaLXTLgHu+S41JNw
+        7oMINv+zxbSuTeCA==
+Date:   Fri, 11 Jun 2021 18:15:38 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch 14/41] x86/fpu: Rename fxregs related copy functions
+Subject: [patch 15/41] x86/fpu: Rename fregs related copy functions
 References: <20210611161523.508908024@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,14 +53,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function names for fxsave/fxrstor operations are horribly named and
+The function names for fnsave/fnrstor operations are horribly named and
 a permanent source of confusion.
 
 Rename:
-	copy_fxregs_to_kernel() to fxsave_to_kernel()
-	copy_kernel_to_fxregs() to fxrstor_from_kernel()
-	copy_fxregs_to_user() to fxsave_to_user_sigframe()
-	copy_user_to_fxregs() to fxrstor_from_user_sigframe()
+	copy_fregs_to_kernel() to fnsave_to_kernel()
+	copy_kernel_to_fregs() to fnrstor_from_kernel()
+	copy_fregs_to_user()   to fnsave_to_user_sigframe()
+	copy_user_to_fregs()   to fnrstor_from_user_sigframe()
 
 so it's entirely clear what this is about.
 
@@ -71,132 +68,90 @@ No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/fpu/internal.h |   12 ++++++------
- arch/x86/kernel/fpu/core.c          |    4 ++--
- arch/x86/kernel/fpu/signal.c        |   10 +++++-----
- 3 files changed, 13 insertions(+), 13 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |   10 +++++-----
+ arch/x86/kernel/fpu/core.c          |    2 +-
+ arch/x86/kernel/fpu/signal.c        |    6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -132,7 +132,7 @@ static inline int copy_fregs_to_user(str
+@@ -127,7 +127,7 @@ static inline void fpstate_init_soft(str
+ 		     _ASM_EXTABLE_HANDLE(1b, 2b, ex_handler_fprestore)	\
+ 		     : output : input)
+ 
+-static inline int copy_fregs_to_user(struct fregs_state __user *fx)
++static inline int fnsave_to_user_sigframe(struct fregs_state __user *fx)
+ {
  	return user_insn(fnsave %[fx]; fwait,  [fx] "=m" (*fx), "m" (*fx));
  }
- 
--static inline int copy_fxregs_to_user(struct fxregs_state __user *fx)
-+static inline int fxsave_to_user_sigframe(struct fxregs_state __user *fx)
- {
- 	if (IS_ENABLED(CONFIG_X86_32))
- 		return user_insn(fxsave %[fx], [fx] "=m" (*fx), "m" (*fx));
-@@ -141,7 +141,7 @@ static inline int copy_fxregs_to_user(st
- 
+@@ -165,17 +165,17 @@ static inline int fxrstor_from_user_sigf
+ 		return user_insn(fxrstorq %[fx], "=m" (*fx), [fx] "m" (*fx));
  }
  
--static inline void copy_kernel_to_fxregs(struct fxregs_state *fx)
-+static inline void fxrstor_from_kernel(struct fxregs_state *fx)
+-static inline void copy_kernel_to_fregs(struct fregs_state *fx)
++static inline void frstor_from_kernel(struct fregs_state *fx)
  {
- 	if (IS_ENABLED(CONFIG_X86_32))
- 		kernel_insn(fxrstor %[fx], "=m" (*fx), [fx] "m" (*fx));
-@@ -149,7 +149,7 @@ static inline void copy_kernel_to_fxregs
- 		kernel_insn(fxrstorq %[fx], "=m" (*fx), [fx] "m" (*fx));
+ 	kernel_insn(frstor %[fx], "=m" (*fx), [fx] "m" (*fx));
  }
  
--static inline int copy_kernel_to_fxregs_err(struct fxregs_state *fx)
-+static inline int fxrstor_from_kernel_err(struct fxregs_state *fx)
+-static inline int copy_kernel_to_fregs_err(struct fregs_state *fx)
++static inline int frstor_from_kernel_err(struct fregs_state *fx)
  {
- 	if (IS_ENABLED(CONFIG_X86_32))
- 		return kernel_insn_err(fxrstor %[fx], "=m" (*fx), [fx] "m" (*fx));
-@@ -157,7 +157,7 @@ static inline int copy_kernel_to_fxregs_
- 		return kernel_insn_err(fxrstorq %[fx], "=m" (*fx), [fx] "m" (*fx));
+ 	return kernel_insn_err(frstor %[fx], "=m" (*fx), [fx] "m" (*fx));
  }
  
--static inline int copy_user_to_fxregs(struct fxregs_state __user *fx)
-+static inline int fxrstor_from_user_sigframe(struct fxregs_state __user *fx)
+-static inline int copy_user_to_fregs(struct fregs_state __user *fx)
++static inline int frstor_from_user_sigframe(struct fregs_state __user *fx)
  {
- 	if (IS_ENABLED(CONFIG_X86_32))
- 		return user_insn(fxrstor %[fx], "=m" (*fx), [fx] "m" (*fx));
-@@ -180,7 +180,7 @@ static inline int copy_user_to_fregs(str
  	return user_insn(frstor %[fx], "=m" (*fx), [fx] "m" (*fx));
  }
- 
--static inline void copy_fxregs_to_kernel(struct fpu *fpu)
-+static inline void fxsave_to_kernel(struct fpu *fpu)
- {
- 	if (IS_ENABLED(CONFIG_X86_32))
- 		asm volatile( "fxsave %[fx]" : [fx] "=m" (fpu->state.fxsave));
-@@ -403,7 +403,7 @@ static inline void __copy_kernel_to_fpre
- 		xrstor_from_kernel(&fpstate->xsave, mask);
- 	} else {
+@@ -405,7 +405,7 @@ static inline void __copy_kernel_to_fpre
  		if (use_fxsr())
--			copy_kernel_to_fxregs(&fpstate->fxsave);
-+			fxrstor_from_kernel(&fpstate->fxsave);
+ 			fxrstor_from_kernel(&fpstate->fxsave);
  		else
- 			copy_kernel_to_fregs(&fpstate->fsave);
+-			copy_kernel_to_fregs(&fpstate->fsave);
++			frstor_from_kernel(&fpstate->fsave);
  	}
+ }
+ 
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -107,7 +107,7 @@ int copy_fpregs_to_fpstate(struct fpu *f
- 	}
- 
- 	if (likely(use_fxsr())) {
--		copy_fxregs_to_kernel(fpu);
-+		fxsave_to_kernel(fpu);
- 		return 1;
- 	}
- 
-@@ -360,7 +360,7 @@ static inline void copy_init_fpstate_to_
- 	if (use_xsave())
- 		xrstor_from_kernel(&init_fpstate.xsave, features_mask);
+@@ -362,7 +362,7 @@ static inline void copy_init_fpstate_to_
  	else if (static_cpu_has(X86_FEATURE_FXSR))
--		copy_kernel_to_fxregs(&init_fpstate.fxsave);
-+		fxrstor_from_kernel(&init_fpstate.fxsave);
+ 		fxrstor_from_kernel(&init_fpstate.fxsave);
  	else
- 		copy_kernel_to_fregs(&init_fpstate.fsave);
+-		copy_kernel_to_fregs(&init_fpstate.fsave);
++		frstor_from_kernel(&init_fpstate.fsave);
  
+ 	if (boot_cpu_has(X86_FEATURE_OSPKE))
+ 		copy_init_pkru_to_fpregs();
 --- a/arch/x86/kernel/fpu/signal.c
 +++ b/arch/x86/kernel/fpu/signal.c
-@@ -64,7 +64,7 @@ static inline int save_fsave_header(stru
+@@ -133,7 +133,7 @@ static inline int copy_fpregs_to_sigfram
+ 	else if (use_fxsr())
+ 		err = fxsave_to_user_sigframe((struct fxregs_state __user *) buf);
+ 	else
+-		err = copy_fregs_to_user((struct fregs_state __user *) buf);
++		err = fnsave_to_user_sigframe((struct fregs_state __user *) buf);
+ 
+ 	if (unlikely(err) && __clear_user(buf, fpu_user_xstate_size))
+ 		err = -EFAULT;
+@@ -284,7 +284,7 @@ static int copy_user_to_fpregs_zeroing(v
+ 	} else if (use_fxsr()) {
+ 		return fxrstor_from_user_sigframe(buf);
+ 	} else
+-		return copy_user_to_fregs(buf);
++		return frstor_from_user_sigframe(buf);
+ }
+ 
+ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+@@ -474,7 +474,7 @@ static int __fpu__restore_sig(void __use
+ 			goto out;
  
  		fpregs_lock();
- 		if (!test_thread_flag(TIF_NEED_FPU_LOAD))
--			copy_fxregs_to_kernel(&tsk->thread.fpu);
-+			fxsave_to_kernel(&tsk->thread.fpu);
- 		fpregs_unlock();
- 
- 		convert_from_fxsr(&env, tsk);
-@@ -131,7 +131,7 @@ static inline int copy_fpregs_to_sigfram
- 	if (use_xsave())
- 		err = xsave_to_user_sigframe(buf);
- 	else if (use_fxsr())
--		err = copy_fxregs_to_user((struct fxregs_state __user *) buf);
-+		err = fxsave_to_user_sigframe((struct fxregs_state __user *) buf);
- 	else
- 		err = copy_fregs_to_user((struct fregs_state __user *) buf);
- 
-@@ -269,7 +269,7 @@ static int copy_user_to_fpregs_zeroing(v
- 		if (fx_only) {
- 			init_bv = xfeatures_mask_user() & ~XFEATURE_MASK_FPSSE;
- 
--			r = copy_user_to_fxregs(buf);
-+			r = fxrstor_from_user_sigframe(buf);
- 			if (!r)
- 				xrstor_from_kernel(&init_fpstate.xsave, init_bv);
- 			return r;
-@@ -282,7 +282,7 @@ static int copy_user_to_fpregs_zeroing(v
- 			return r;
- 		}
- 	} else if (use_fxsr()) {
--		return copy_user_to_fxregs(buf);
-+		return fxrstor_from_user_sigframe(buf);
- 	} else
- 		return copy_user_to_fregs(buf);
- }
-@@ -467,7 +467,7 @@ static int __fpu__restore_sig(void __use
- 			xrstor_from_kernel(&init_fpstate.xsave, init_bv);
- 		}
- 
--		ret = copy_kernel_to_fxregs_err(&fpu->state.fxsave);
-+		ret = fxrstor_from_kernel_err(&fpu->state.fxsave);
- 	} else {
- 		ret = __copy_from_user(&fpu->state.fsave, buf_fx, state_size);
- 		if (ret)
+-		ret = copy_kernel_to_fregs_err(&fpu->state.fsave);
++		ret = frstor_from_kernel_err(&fpu->state.fsave);
+ 	}
+ 	if (!ret)
+ 		fpregs_mark_activate();
 
