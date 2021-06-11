@@ -2,146 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F62F3A42D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3983A42CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhFKNPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:15:00 -0400
-Received: from mail-eopbgr60042.outbound.protection.outlook.com ([40.107.6.42]:51473
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        id S231816AbhFKNOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:14:06 -0400
+Received: from mail-bn8nam12on2064.outbound.protection.outlook.com ([40.107.237.64]:40673
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231777AbhFKNO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:14:59 -0400
+        id S230382AbhFKNOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:14:05 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bv7XBeg/1Ynk6H8KoyuWAmiltFauCA2vGWBdql10kfhbcTrQQJrfYNSOPrj5ydjOslcLqd1+8//kF1eJotuWSJ/1sGshGuT6S49IrXfXe1qY64E6rHWsZ5AVcRGQg3B8WVpjMnczqLoDzyLbD1gTOqfwv/tG6HiLrzPyD6MKJQcI2h2B3ECWSbu+ElNMnMFBwcyQbQoGKj4BkKU9iyuoIDxZCLoGt/P6xuyhdGwokNqq9KMhKBJax2YefjCKIpumx7BI9l8OesX1ywFSxlomrBU1xiW5X582vlbHDGgHXKme6avIvithDwLwUxT5nFPKUfGfXYEJAeiz2KgLLVrnXQ==
+ b=HglcYlyrh8vSknquvaGcVX6rbLdSslKRRzCTzczeotw5JukMZWW4ZpNpJdkMyCJ3/ivaYEMqswfaP6qVhItK63IXx3LRzLT49D/f+ZLBYQao7EIVL6427V9aRp1sX0uqUXyrZVju3DR86+fb8jAFM+J8MZtN7ppU77NrXLTs9l/nVMGt1dlCbs2G1aj42HO3FQkiy9hhqwGlaNwvuTdomRr3x7jrkAIaPI7TbD6kIwj4BwPO6WMi1ZTzBMG1sv4XygM23ZX8U28UsjIpG7RUAtNYExL7yCKT9mygZsQFDgEDouJW9FYMsyVxgUlrIzgF9mtLeyLNaEKkOEvIBRQgEA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tMpfsIPY2/S7DikLvKZr/U2M6vzvgaE0blbiK6orvdk=;
- b=gTpPuhd2DE9707nqcKPFqP/x4BVgnVzrYlQmfO/a1aYqJA4BuhgBlSe2AEpKA8sRBJiKhrZWhR+NtyIEguWycdvj46m2GRea9nsBOOhBO+bJyyMLenVZVRnLBehyizTfmK3KrBrluaDVgTlKj4U0ndHjAMi9eCfVDVyzWZBUuS+/3d/JI0NpJQBoox3RpNpV0eCuQeLo8r3nC/zOAcp+Na1rZcOVG4bjkIvtYEvOOEOh0+JXuI7NfykycfI6XQsRahlhWmig23Izou6m49ZDIn/DqPpNX4GE7ZS9TP1ytyZty/go6pyrFFIDQB0IpiEAoIHuk6xw14ftsHSTCL1I7g==
+ bh=3H2o8pAKYJPGT3bqtAYWVWe574Xzl/92IokYnDxbGag=;
+ b=Q3+yxx5lChMXyXvIXYbf49r8V9gn2eX7ScHLNrN384PMu/cLRpwwxV+GiN+YfyLI4/ELfO7kHLyys/Px/qe2XIx3gGBlbLemzVyPfouZQVtx6011vj3HQrFhPu0Bq7upVTCL19nbbm5vUMYj8CgV1yDWtQAkh1CUXsywPC3I4K4vv0EOtALSGOGk1dISf+rhqPmGIDgdAigYWaEtdc4py3/4fSQzL5YCf5XutN33pGtQuTFYFsTnROvSHKrsjoKpaVMxCeMrLNxFrSf/lq5OZ0AjdM29lbpy76G8eVOYKze94hd5uc9Q/09BNrypeIaufshN21yPqxpRa2/Bph/4ag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tMpfsIPY2/S7DikLvKZr/U2M6vzvgaE0blbiK6orvdk=;
- b=PIQq3AU3led6g1Eh1uYqfsAOwSBhlP4DWHIv26EEm5JmfMW51tWwSe+/GisZl+LfFudvTVg42FRMxancaNQz6C0Knj1kLilt04kO54cqY2MZqhytFIpgHWHcBuL3gMSPrvR5FYk/6DdopLIUMvrtQzrvYtinor5m0+EUq9Xc7qw=
-Authentication-Results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB8477.eurprd04.prod.outlook.com (2603:10a6:10:2c3::11)
- by DU2PR04MB8710.eurprd04.prod.outlook.com (2603:10a6:10:2dd::16) with
+ bh=3H2o8pAKYJPGT3bqtAYWVWe574Xzl/92IokYnDxbGag=;
+ b=qggPTd+WL5vKDWWCr/RK4PFzIapwzU0I730owWqAaVTE2d38+WVTSFQxurTEUjlBdZ//zapdBGmLFMTOBzebKz8D6+PW7c80Qsw1x70AkZgAYx+St28clzMBAcqsjeeWLryV4+BapNdoEQ2Ck+GTIvVtT8W4WiKzZHG7757LGPI=
+Received: from BY5PR02MB6520.namprd02.prod.outlook.com (2603:10b6:a03:1d3::8)
+ by BY5PR02MB6518.namprd02.prod.outlook.com (2603:10b6:a03:1d6::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Fri, 11 Jun
- 2021 13:12:58 +0000
-Received: from DB9PR04MB8477.eurprd04.prod.outlook.com
- ([fe80::9daa:ab21:f749:36d2]) by DB9PR04MB8477.eurprd04.prod.outlook.com
- ([fe80::9daa:ab21:f749:36d2%7]) with mapi id 15.20.4219.023; Fri, 11 Jun 2021
- 13:12:58 +0000
-From:   Dong Aisheng <aisheng.dong@nxp.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, dongas86@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH 2/2] of: of_reserved_mem: mark nomap memory instead of removing
-Date:   Fri, 11 Jun 2021 21:11:53 +0800
-Message-Id: <20210611131153.3731147-2-aisheng.dong@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210611131153.3731147-1-aisheng.dong@nxp.com>
-References: <20210611131153.3731147-1-aisheng.dong@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR04CA0169.apcprd04.prod.outlook.com (2603:1096:4::31)
- To DB9PR04MB8477.eurprd04.prod.outlook.com (2603:10a6:10:2c3::11)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Fri, 11 Jun
+ 2021 13:12:03 +0000
+Received: from BY5PR02MB6520.namprd02.prod.outlook.com
+ ([fe80::d880:7694:92d6:7798]) by BY5PR02MB6520.namprd02.prod.outlook.com
+ ([fe80::d880:7694:92d6:7798%5]) with mapi id 15.20.4219.024; Fri, 11 Jun 2021
+ 13:12:03 +0000
+From:   Radhey Shyam Pandey <radheys@xilinx.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>
+Subject: RE: [RFC PATCH 2/3] dt-bindings: net: xilinx_axienet: Introduce
+ dmaengine binding support
+Thread-Topic: [RFC PATCH 2/3] dt-bindings: net: xilinx_axienet: Introduce
+ dmaengine binding support
+Thread-Index: AQHXLWwXOJwFrmMwT0GEUXL9WYgFO6qxOPoAgF3cs8A=
+Date:   Fri, 11 Jun 2021 13:12:03 +0000
+Message-ID: <BY5PR02MB65207E7A4C5BB958D33D4568C7349@BY5PR02MB6520.namprd02.prod.outlook.com>
+References: <1617992002-38028-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+ <1617992002-38028-3-git-send-email-radhey.shyam.pandey@xilinx.com>
+ <20210412183028.GA4156095@robh.at.kernel.org>
+In-Reply-To: <20210412183028.GA4156095@robh.at.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.130]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b4cc5d5e-f55d-440a-e714-08d92cda8130
+x-ms-traffictypediagnostic: BY5PR02MB6518:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR02MB651872A598056CED1EA71A1DC7349@BY5PR02MB6518.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: b/CaBoiX5icbp5NItZtO4WUtOCQ/G0PZ+BaPmrHXsAB2sj78P1qZhEVJLt1M5/o1FfotAr+bXYS00Av/yaR/EFbWm5HqeG3kaE2YYVig0HXHVUrr6hPKvv8kTCHfDGq9D4xIsJNTb40hIykn4YJAwePJUc2SPOnxIfm9mKZUhNXdjsTuGLTxP7nvBzEkFMRZh46e5J1BiUDjkDDhCAOYq9Og8cRfSi6x/V74VWh1Cc+v/JN7fdnxZhgdI2OXtSzETqzGgC2l3sN+C7sBBHL3Ai8AXaCK5QIF7BHluzw8kGVuClEYB3ggEHKy3/quvxryYd1mbCVI9fnekyKXmEGAjsSzn6DY56dovjHWM8yUyUyHztoQeAanH7/+3U5TjVJ2dp47N1iu4qqbFydT1uzpsUDX7EiGPN7isHZ4Zdxyn8g+IW/F92+EzcsDzNuCqWVYuOgnxmorHLVlBBWIzypm/CDDtCzMXINVAweB8nTBJ8xyljbxPnzR6XDuccY5GFjeRxxFPzhGhohfAm0qZ+Fw13sElh+k9TDbXkQHYEAr1pXa3JQJDjNBUuA5+HYoKT9UeNz2yHILbRn1YR0WGRAY5813y1Y+GmPqcrhrW9QMUbo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR02MB6520.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(366004)(39850400004)(33656002)(26005)(71200400001)(76116006)(9686003)(55016002)(316002)(478600001)(5660300002)(54906003)(2906002)(52536014)(107886003)(4326008)(53546011)(66946007)(7696005)(8936002)(66556008)(186003)(64756008)(66446008)(8676002)(66476007)(6506007)(6916009)(38100700002)(122000001)(86362001)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Sg7iogiYgtKrMy8+dmDr5PYl1zjKoWpjnWN2MYFCJXbWsm/OjP5XBfYCYoaU?=
+ =?us-ascii?Q?UsMnPXM5DadN3hHcCO1ejU0OPZkruOrAyF2U14WPnXhPXPpR/pd3/oyPT8JA?=
+ =?us-ascii?Q?iOv4WicFEXvcYUEkd3+YzSSUv85KOgU6DKs3f7uoizWwU/AQCZ0vkNEodbp3?=
+ =?us-ascii?Q?/pqJ4TL/0EQQjhIFCINyUU/dhB2tAzqDOwuMYURUDvhI73MoffrmsKzzTVVh?=
+ =?us-ascii?Q?iMzPplXRgLNl2MH4HL9YWLi9kQcqW2hFq3S02Xr2AUuWUr942MF5h2yE1Ywg?=
+ =?us-ascii?Q?Hyn814Shbpa0JHHJaySFa4VgeeXgyUCfTY7HRhfsQ7/sJUdo2ojwsC/A/bQC?=
+ =?us-ascii?Q?fICSqse1mQl8AuuFjKl0kmDzVt3TjZl9ymZ62Ae+H06SDKW+U6m5RAo0A9PP?=
+ =?us-ascii?Q?6/h5j2XiMTMSJLzigVAxbz6fEuH/63XomEm6GZ+Y3ru1RogFQnty5+G16nxA?=
+ =?us-ascii?Q?HcAoMIMYYbDhvEsJNXwD0EW+3ecA3p0AmVsjPV1+OysmfJk74d4blzD7DNHG?=
+ =?us-ascii?Q?tKMLlEzkZXRnQx4mdtia1OfH016zMl+QtMS8vbAItwXiwf7zDowRdRdi/38h?=
+ =?us-ascii?Q?NLhb8xkVDrtSvrcJtTckKHJdoXtEk/McPW9hGGUiDTj6e/9RI95Uj9WDVdDG?=
+ =?us-ascii?Q?JqHS2VTG/EfqbjwQPWywQFRjQKZFlQKmqLufRHfK2o3HuLNI0yqk0PmZJZ3T?=
+ =?us-ascii?Q?erX1Z13YWT6c4aTRES3gX/06ZhJjA1nPOpwPg3EpUvwHzQ5eRgV99okb3ew5?=
+ =?us-ascii?Q?kdCYHCoPkalgAFSBu7t2V18xr1FHI39Kqb2kxaXTBeHSibjrHeC3I1HceAHu?=
+ =?us-ascii?Q?4XqmUyI4gGbpdN/RZvHLtdpS6j3Gq4YdyunGZpzTkST6Wq86MS9OUfnN5buN?=
+ =?us-ascii?Q?mCGs+feuJ4XQ3VotTyMPrLNlca3ofscisOVFa+Pppq0NS3C5Ndcj+c6rkp6Z?=
+ =?us-ascii?Q?gTqwFH/oHFhGks4C7G5B5n56m8FgHi+n+4B4I8KTH7IyO4DWCeptLBBvqa/z?=
+ =?us-ascii?Q?4/G8sb/ZQ3Fvfatu55yOgQWjCw02VmF6K1fvOosH+ikC8dMQ83OA3R47EBe7?=
+ =?us-ascii?Q?LyyqItbKEiQNhOZN0BzULlTetKIugyu4/GiAwQMnsujXHZo3GNc3uhC3SBXt?=
+ =?us-ascii?Q?0tg66CASH2+88gPxtj+MWwzRriGmq6Us82tSTqzXooIZIEbPo/CENPsOIhS2?=
+ =?us-ascii?Q?g3aOkLkyvs7IkoAjgDRlHTL65th4HvidF/NnYwr6mW96R0Qaes/CeP1h4TOv?=
+ =?us-ascii?Q?dYd5OT10inDlEMxScCAVrwFGASKETPqYZNpTzqw6VYKtKD2UdngyI/FuxzH/?=
+ =?us-ascii?Q?9Wa4iuA/RdqrzrqlLtl3qLZW?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR04CA0169.apcprd04.prod.outlook.com (2603:1096:4::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Fri, 11 Jun 2021 13:12:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: febd4de1-6ed7-457b-776c-08d92cdaa20a
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8710:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DU2PR04MB8710A816F50C09CBE6A3F7B380349@DU2PR04MB8710.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:565;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tMALSzJPY7CFzcNs6e8GL1SGJt/r2amjvms9Lm8S+SiO9nEu0MSSNctrKQEft/2RT1DVebhdBEJKFhz/EPFFhPV5hfyXU1KUACxVi/nf95hrLo3T08qrxYV9u9iL15ZzUoKixoa6WV9HTDvkOSR1/oNZz8gAn6V3+4eIkGH9Q2qD0ii3f/eIMxmKapYG3enC+XNH1miwv6PK0zrXtbb2WOYXcD8jaSw9vSMHr6eb6rWDNDCt8FzkHd64PbhHleegyI5hH2EDNDTGxinfY0nCaLsyZ/xD9Kl6Tc6vVyx0GHTt6327od2b+AKUfA6kjt/YrTJcm2k4cBhphOCnDWWeKE2vAdhUHvdfzKxIqScSfv5XTCVBt2GDO5ZBMTEji0J9zOFCtAjIQtINe2NcvM1JRI3d/P7QObWI7Crp8tGbrkMxm4A5OCFN68URIclLgjNiyENxrAMtol2WW7/5RJV2Umih2N9+lFGxlCGOnuwKtCLpTWhI/Ak0pdLD38hFd+4yRY7QlINM3Aru9G+0IrdU/SgtpMMwFOdfU4INXFpH/PZWiE3kx1Uyf3uib0VDxsUYALQLTzq/43X1RGweJLN+cmweA6Jumfs55zAtqJ1YE9H4BR7dyJ9X725JKGtp+4eYdZxGhiVYIrwG99PC39RZ+zdJ2fdVKHgZrs3UBE70+qTqfG+K0VkvbCtoI7nCzQ5V
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB8477.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(39860400002)(376002)(396003)(6506007)(52116002)(478600001)(186003)(26005)(36756003)(66946007)(66476007)(16526019)(66556008)(6512007)(1076003)(5660300002)(4326008)(956004)(54906003)(2616005)(8936002)(6666004)(2906002)(83380400001)(6486002)(316002)(38100700002)(6916009)(86362001)(8676002)(38350700002)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iB9nQjq66CSGOoX44UPyjtjYIph086vasE8IE+YniOCHh9Bgu5gCeAfr5dGm?=
- =?us-ascii?Q?mxELYnnOyrPn5CMchTxWs79/DwjnPQYt/oQ7r9IYRYXr5KmYTUiZWx6YaYaS?=
- =?us-ascii?Q?5wFm3sR8xrIz1qVraPod/7ZFBYE+kr4Vv/dfKAY6J/Za5O6E+PfYMtPbT2xX?=
- =?us-ascii?Q?HOu/3kHxlkaQUaPL3bG2AcH7uCCq25ypT4FNYGs9ZSB++3VK6JNKsjpY9m42?=
- =?us-ascii?Q?A7u/C5j3DzsZeHsHLpHt89fJLzmUwEC69yjf3Ya1Yh9/PVdBIz3vu1Fx5trk?=
- =?us-ascii?Q?tbakR3R/GhIMMTTPZ/fvVykBgPZIZ30ql+bQjiyE5BN8dKK8p0aQEt9U4C5y?=
- =?us-ascii?Q?3FkUew5zDwU31H/QDXdkcRbj+E6889g4tKrTfCel1k9wljB7PuJdQ48y/4Zk?=
- =?us-ascii?Q?mer979Yd4RaJIojxJg3CYNotK+28JY4VoYeFP1jth6qZ61zPWZ+vC8ZX+Efc?=
- =?us-ascii?Q?XEzXns5k99WlFo+uDSXKnZ14dwRQGM6Bd9eUpJStrSvf/AoQ9coZJ2sEu8A8?=
- =?us-ascii?Q?n/DcCdRBt5G4/sgzk2Utma41+ymwjWfD5h1p7E1MoMmQjsaZn8OAWSo2g+jt?=
- =?us-ascii?Q?iWn9pvITw9o/PYMmDOaGuhNNlPWCXKMAOGYR17k0XHHS9mRqlnXdSV9BEVLq?=
- =?us-ascii?Q?fCgj3q5klfxsgcjesn9arc84XzvHZ3q95wLPhDL/PAhJbg9jkYp2h3UbjwRB?=
- =?us-ascii?Q?1U3GbIuwbr7jV6MesZeQvteSi8hcPviDx9qfxnJu5bpqx92LTN7xLK5shcoP?=
- =?us-ascii?Q?AXXr9yRSgrw5bwOBFX0qkYFEQGhytTebaE/gF4gEd7l//tipCEE8cpKZcXGI?=
- =?us-ascii?Q?XWTpv3LFsdr3ZLhlE6Q3/91CqPQp3Jh0/pqAz1P3q0pRwGn7Hz7Su/lQqExD?=
- =?us-ascii?Q?DsPwIAkE2q94dkFYwbWWkwOSSqzzdXkTPcqn+z3zUwjgazJWRz1wNNjtkAPu?=
- =?us-ascii?Q?5mgDVmeNTGi4O+NDUZSRhUF5LG2nVrYRJEn9lr5WE+dvkk00xdd3revvfAsC?=
- =?us-ascii?Q?+XAbZvPxbE3aP/DbY4j7ZtERKtob5VXdczKPuVvNkQOpExBtA0EsomDE8MeG?=
- =?us-ascii?Q?hMpcyAv8dQnzJLW1EzwwEwOZJp/VatbwZ47NkLXUF/XLzUqUZuSvQZsfkabh?=
- =?us-ascii?Q?52zOU613YPUfFt0yJm9v5umrcYUJAq3O9jkwkwg3Z3lqC7IquNlk/1ED/Xjl?=
- =?us-ascii?Q?GqXmdpKqh0/rjKQqzGEJIB6IIETsIo2WYPs2AHBuwp20FzpC/ek1plWeIaun?=
- =?us-ascii?Q?+lRF8UuAhjdrxkVZrsMWwK/TunqmL4sKwTE4dOgO3eItA5QfPd2AGDKBx4DR?=
- =?us-ascii?Q?8AIjNRr7iEOUCJUkRcsCdgdb?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: febd4de1-6ed7-457b-776c-08d92cdaa20a
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB8477.eurprd04.prod.outlook.com
+X-OriginatorOrg: xilinx.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 13:12:58.6138
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR02MB6520.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4cc5d5e-f55d-440a-e714-08d92cda8130
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 13:12:03.0270
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hZgWb7KmxWVGK+cAtxQwysuQm7xxWd5sTTQMDYyV2HUXQKXfXRVS6gDXWDAavrkAbwRbCNfN4qRAnNBLYB/+HA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8710
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JHjS8IwfV907VRsZn64tnu5axm4pa7JE4oMx6aRuD83TCebA4a7Tn79HFrP1qxoY24v8DvLQgWQRK1GeqFqo/A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6518
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 86588296acbf ("fdt: Properly handle "no-map" field in the memory region"),
-nomap memory is changed to call memblock_mark_nomap() instead of
-memblock_remove(). But it only changed the reserved memory with fixed
-addr and size case in early_init_dt_reserve_memory_arch(), not
-including the dynamical allocation by size case in
-early_init_dt_alloc_reserved_memory_arch().
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Tuesday, April 13, 2021 12:00 AM
+> To: Radhey Shyam Pandey <radheys@xilinx.com>
+> Cc: davem@davemloft.net; kuba@kernel.org; Michal Simek
+> <michals@xilinx.com>; vkoul@kernel.org; devicetree@vger.kernel.org;
+> netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> kernel@vger.kernel.org; git <git@xilinx.com>
+> Subject: Re: [RFC PATCH 2/3] dt-bindings: net: xilinx_axienet: Introduce
+> dmaengine binding support
+>=20
+> On Fri, Apr 09, 2021 at 11:43:21PM +0530, Radhey Shyam Pandey wrote:
+> > The axiethernet driver will now use dmaengine framework to
+> communicate
+> > with dma controller IP instead of built-in dma programming sequence.
+> >
+> > To request dma transmit and receive channels the axiethernet driver
+> > uses generic dmas, dma-names properties. It deprecates
+> > axistream-connected
+>=20
+> Huh, you just added the property and now deprecating?
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
----
- drivers/of/of_reserved_mem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+In the previous patch - we added the 'xlnx,axistream-connected' property
+to dmaengine node.  In this patch we are deprecating axiethernet=20
+axistream-connected property. So instead of custom properties the=20
+ethernet client will now use generic  dmas, dma-names properties
+to communicate with the dmaengine driver.
 
-diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-index 367f298a83b2..ebba88395bf8 100644
---- a/drivers/of/of_reserved_mem.c
-+++ b/drivers/of/of_reserved_mem.c
-@@ -42,7 +42,7 @@ static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
- 
- 	*res_base = base;
- 	if (nomap)
--		return memblock_remove(base, size);
-+		return memblock_mark_nomap(base, size);
- 
- 	return memblock_reserve(base, size);
- }
-@@ -276,7 +276,7 @@ void __init fdt_init_reserved_mem(void)
- 				pr_info("node %s compatible matching fail\n",
- 					rmem->name);
- 				if (nomap)
--					memblock_add(rmem->base, rmem->size);
-+					memblock_clear_nomap(rmem->base, rmem->size);
- 				else
- 					memblock_free(rmem->base, rmem->size);
- 			}
--- 
-2.25.1
+>=20
+> > property, remove axidma reg and interrupt properties from the ethernet
+> > node. Just to highlight that these DT changes are not backward
+> > compatible due to major driver restructuring/cleanup done in adopting
+> > the dmaengine framework.
+>=20
+> Aren't users going to care this isn't a backwards compatible change?
 
+Yes, as it was a major design change for framework adoption and
+there was no  option to support legacy usecases with this new approach.
+
+To advertise that changes aren't backward compatible -
+Should we introduce new compatibility string and raise a warning
+for earlier unsupported versions?=20
+
+>=20
+> >
+> > Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+> > ---
+> >  .../devicetree/bindings/net/xilinx_axienet.yaml    | 40 +++++++++++++-=
+-----
+> ---
+> >  1 file changed, 24 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/xilinx_axienet.yaml
+> > b/Documentation/devicetree/bindings/net/xilinx_axienet.yaml
+> > index 6a00e03e8804..0ea3972fefef 100644
+> > --- a/Documentation/devicetree/bindings/net/xilinx_axienet.yaml
+> > +++ b/Documentation/devicetree/bindings/net/xilinx_axienet.yaml
+> > @@ -14,10 +14,8 @@ description: |
+> >    offloading TX/RX checksum calculation off the processor.
+> >
+> >    Management configuration is done through the AXI interface, while
+> > payload is
+> > -  sent and received through means of an AXI DMA controller. This
+> > driver
+> > -  includes the DMA driver code, so this driver is incompatible with
+> > AXI DMA
+> > -  driver.
+> > -
+> > +  sent and received through means of an AXI DMA controller using
+> > + dmaengine  framework.
+> >
+> >  allOf:
+> >    - $ref: "ethernet-controller.yaml#"
+> > @@ -36,19 +34,13 @@ properties:
+> >
+> >    reg:
+> >      description:
+> > -      Address and length of the IO space, as well as the address
+> > -      and length of the AXI DMA controller IO space, unless
+> > -      axistream-connected is specified, in which case the reg
+> > -      attribute of the node referenced by it is used.
+> > -    maxItems: 2
+> > +      Address and length of the IO space.
+> > +    maxItems: 1
+> >
+> >    interrupts:
+> >      description:
+> > -      Can point to at most 3 interrupts. TX DMA, RX DMA, and optionall=
+y
+> Ethernet
+> > -      core. If axistream-connected is specified, the TX/RX DMA interru=
+pts
+> should
+> > -      be on that node instead, and only the Ethernet core interrupt is
+> optionally
+> > -      specified here.
+> > -    maxItems: 3
+> > +      Ethernet core interrupt.
+> > +    maxItems: 1
+> >
+> >    phy-handle: true
+> >
+> > @@ -109,15 +101,29 @@ properties:
+> >        for the AXI DMA controller used by this device. If this is speci=
+fied,
+> >        the DMA-related resources from that device (DMA registers and DM=
+A
+> >        TX/RX interrupts) rather than this one will be used.
+> > +    deprecated: true
+> >
+> >    mdio: true
+> >
+> > +  dmas:
+> > +    items:
+> > +      - description: TX DMA Channel phandle and DMA request line numbe=
+r
+> > +      - description: RX DMA Channel phandle and DMA request line
+> > + number
+> > +
+> > +  dma-names:
+> > +    items:
+> > +      - const: tx_chan0
+> > +      - const: rx_chan0
+> > +
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
+> >    - interrupts
+> >    - xlnx,rxmem
+> >    - phy-handle
+> > +  - dmas
+> > +  - dma-names
+> >
+> >  additionalProperties: false
+> >
+> > @@ -127,11 +133,13 @@ examples:
+> >        compatible =3D "xlnx,axi-ethernet-1.00.a";
+> >        device_type =3D "network";
+> >        interrupt-parent =3D <&microblaze_0_axi_intc>;
+> > -      interrupts =3D <2>, <0>, <1>;
+> > +      interrupts =3D <1>;
+> >        clock-names =3D "s_axi_lite_clk", "axis_clk", "ref_clk", "mgt_cl=
+k";
+> >        clocks =3D <&axi_clk>, <&axi_clk>, <&pl_enet_ref_clk>, <&mgt_clk=
+>;
+> >        phy-mode =3D "mii";
+> > -      reg =3D <0x40c00000 0x40000>,<0x50c00000 0x40000>;
+> > +      reg =3D <0x40c00000 0x40000>;
+> > +      dmas =3D <&xilinx_dma 0>, <&xilinx_dma 1>;
+> > +      dma-names =3D "tx_chan0", "rx_chan0";
+>=20
+> Is there a chan1? Typical dma-names are just 'tx' and 'rx'.
+>=20
+> >        xlnx,rxcsum =3D <0x2>;
+> >        xlnx,rxmem =3D <0x800>;
+> >        xlnx,txcsum =3D <0x2>;
+> > --
+> > 2.7.4
+> >
