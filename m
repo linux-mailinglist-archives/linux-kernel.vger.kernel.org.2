@@ -2,149 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AAA3A404C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB0A3A404E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhFKKjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:39:35 -0400
-Received: from m12-15.163.com ([220.181.12.15]:35466 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230179AbhFKKje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:39:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=+94bq
-        vDRtgaYfMyS91tqMXIwyIsPwzEVqO05JA2x8ZU=; b=XUVwYHbEeZBEQzOK2f5h3
-        rK489g7nRTbZk1fcw1u3//P3DiocYzMWHNupBJ8fVCBNFQXMSx5MMCh1n5lj51Xw
-        8uCd0HnSehyExLDpD5ZNsZMDxdd8rEtJtMyIhXgh8QBIcLaP+clEviEMEB4MZT2n
-        aie4QNy5dCT6K45vmFjvLY=
-Received: from localhost (unknown [218.17.89.111])
-        by smtp11 (Coremail) with SMTP id D8CowAC3zNG+PMNgp5KoAA--.1637S2;
-        Fri, 11 Jun 2021 18:36:55 +0800 (CST)
-Date:   Fri, 11 Jun 2021 18:36:46 +0800
-From:   Chunyou Tang <tangchunyou@163.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     tangchunyou <tangchunyou@163.icubecorp.cn>,
-        tomeu.vizoso@collabora.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alyssa.rosenzweig@collabora.com, tangchunyou@icubecorp.cn
-Subject: Re: [PATCH] modified: gpu/drm/panfrost/panfrost_gpu.c
-Message-ID: <20210611183646.0000770f@163.com>
-In-Reply-To: <d1304645-f2bf-8cea-2b60-24e0a3936ed7@arm.com>
-References: <20210609063850.2060-1-tangchunyou@163.com>
-        <78a2488a-71d5-548a-e221-7786f788509c@arm.com>
-        <20210610210659.00003155@163.com>
-        <d1304645-f2bf-8cea-2b60-24e0a3936ed7@arm.com>
-Organization: icube
-X-Mailer: Claws Mail 3.10.1 (GTK+ 2.16.6; i586-pc-mingw32msvc)
+        id S231274AbhFKKkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:40:07 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:54111 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230179AbhFKKkF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 06:40:05 -0400
+Received: from [192.168.1.155] ([95.115.52.72]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MmlbE-1lRuAG3Qt4-00jqYY; Fri, 11 Jun 2021 12:37:38 +0200
+Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Chris Down <chris@chrisdown.name>, legion@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Michal Hocko <mhocko@kernel.org>
+References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
+ <YLi+JoBwfLtqVGiP@chrisdown.name>
+ <b8c86081-503c-3671-2ea3-dd3a0950ce25@metux.net> <87k0n2am0n.fsf@disp2133>
+ <YMElKcrVIhJg4GTT@cmpxchg.org>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <f62b652c-3f6f-31ba-be0f-5f97b304599f@metux.net>
+Date:   Fri, 11 Jun 2021 12:37:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB18030
+In-Reply-To: <YMElKcrVIhJg4GTT@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowAC3zNG+PMNgp5KoAA--.1637S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAry7tw4fGF13AF4rJry5urg_yoW5uw47pr
-        yDAF1YyF1kXr1jqa1q9w1xKFyYvayrJFy8WF1DCrW5tFsIgFn8tFsFya409Fy8ur48X3Wj
-        vw4Iyry7Wa15Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j4XdUUUUUU=
-X-Originating-IP: [218.17.89.111]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbipQ6uUVUMer-nlQABs7
+X-Provags-ID: V03:K1:fIbW0PbUEQNX5vVOCtIQaCzclCQYuoarMiwrB6inQ1JRrO6MWuG
+ Z+T2GUoRqidcoMS7C1uP2/aYmALEinwUsK1Vk2rjRDdsfnnW9R3V7L8Bsti7Nk+RTqqtcXj
+ Qvf+VUmXxZJnjhH8/dXalVllwCcefeOFwWzuxdTo2bKhsjgxIscVzTNdSRqPOQ27av9/bLZ
+ LbjsWUbLRF73V0/JGMjIw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4jMWGYSnAno=:tZFReZI/p0tb/XcCWdK9zq
+ qfcVY0fVVH7NwxkgF38ii+uuitWAY2osFe/UBKC9awMqaWT09LhPfIp8kE0yFULPMlvO4sgx8
+ wVkVy3C04OgIEOX7j7VUYrsNL2BTZbmEHYAAI9ZxY/e7+iP+0PoFcAtHcjoQwjCO27rfE5/DQ
+ b+hlH5zWhZE59MN38VAhycWh5hWODzKOwmuCsc6fvyjLxHaila/wWVez12wxIpKOmNVBiv4HW
+ HlJMywHLqeueCo5Ci4iH8yJnLaH6E55aSzd7FGlzaEM5l9JMZtJVTFHoKKXeh44LR3AYD4kLB
+ XVpUm68Og6c8tp8JoL+1dMMsw7EXBHM1tUGbsUK9zAXZFIF4KNVIM8PkBHsEipY127UL06KXZ
+ rJ40XTeTImaO0FyrGAf30CRPGUc64O5oG8YRmLLhExjASRHMB56/6vOtd/6L9S/2JY5HttIAF
+ zViDpTZasANBk8ArS4mNqkyF9Fs6SExoG5BlypIQY2beq8QE5hKzmGwXQKioLf+8uPB51VjQ6
+ jHmlyJYh6MQlXycHgMbNEQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-”⁄ Fri, 11 Jun 2021 11:10:16 +0100
-Steven Price <steven.price@arm.com> –¥µ¿:
+On 09.06.21 22:31, Johannes Weiner wrote:
 
-> On 10/06/2021 14:06, Chunyou Tang wrote:
-> > Hi Steven,
-> 
-> Hi Chunyou,
-> 
-> For some reason I'm not directly receiving your emails (only via the
-> list) - can you double check your email configuration?
-> 
-> >>> The GPU exception fault status register(0x3C),the low 8 bit is the
-> >>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
-> > 
-> > 	You can see the spec
-> > 	<arm_heimdall_technical_reference_manual_100612_0001_00_en.pdf>.
-> 
-> Thanks - please include that in the commit message - there are many
-> TRMs (one for each GPU) so without the information about exactly which
-> specification the page number is pretty useless. Sadly this
-> documentation isn't public which would be even better but I don't
-> think there are any public specs for this information.
-> 
-> >> However this change is correct - panfrost_exception_name() should
-> >> be taking only the lower 8 bits. Even better though would be to to
-> >> report the full raw fault information as well as the high bits can
-> >> contain useful information:
-> >>
-> >> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
-> >> 0x%016llx\n", fault_status,
-> >> 		 panfrost_exception_name(pfdev, fault_status &
-> >> 0xFF), address);
-> > 
-> > So I change it according to what you said?
-> 
-> Yes, please send a v2.
-> 
-> Thanks,
-> 
-> Steve
-> 
-> > ”⁄ Thu, 10 Jun 2021 11:41:52 +0100
-> > Steven Price <steven.price@arm.com> –¥µ¿:
-> > 
-> >> The subject should have the prefix "drm/panfrost" and should
-> >> mention what the patch is changing (not just the filename).
-> >>
-> >> On 09/06/2021 07:38, ChunyouTang wrote:
-ok
-> >>> From: tangchunyou <tangchunyou@163.icubecorp.cn>
-> >>>
-> >>> The GPU exception fault status register(0x3C),the low 8 bit is the
-> >>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
-> >>
-> >> Nit: When referring to a spec it's always good to mention the name
-> >> - I'm not sure which specification you found this in.
-> >>
-> >>>
-> >>> Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
-> >>> ---
-> >>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> >>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
-> >>> 2aae636f1cf5..1fffb6a0b24f 100644 ---
-> >>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
-> >>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@ static
-> >>> irqreturn_t panfrost_gpu_irq_handler(int irq, void *data) address
-> >>> |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
-> >>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
-> >>> 0x%016llx\n",
-> >>> -			 fault_status & 0xFF,
-> >>> panfrost_exception_name(pfdev, fault_status),
-> >>> +			 fault_status & 0xFF,
-> >>> panfrost_exception_name(pfdev, fault_status & 0xFF),
-> >>
-> >> However this change is correct - panfrost_exception_name() should
-> >> be taking only the lower 8 bits. Even better though would be to to
-> >> report the full raw fault information as well as the high bits can
-> >> contain useful information:
-> >>
-> >> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
-> >> 0x%016llx\n", fault_status,
-> >> 		 panfrost_exception_name(pfdev, fault_status &
-> >> 0xFF), address);
-> >>
-> >> Thanks,
-> >>
-> >> Steve
-> >>
-> >>>  			 address);
-> >>>  
-> >>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
-> >>>
-> > 
-> > 
+>> Alex has found applications that are trying to do something with
+>> meminfo, and the fields that those applications care about.  I don't see
+>> anyone making the case that specifically what the applications are
+>> trying to do is buggy.
 
+Actually, I do. The assumptions made by those applications are most
+certainly wrong - have been wrong ever since.
+
+The problem is that just looking on these numbers is only helpful if
+that application is pretty much alone on the machine. You'll find those
+when the vendor explicitly tells you to run it on a standalone machine,
+disable swap, etc. Database systems are probably the most prominent
+sector here.
+
+Onder certain circumstances this actually migh, heuristically, work,
+but those kind of auto tuning (eg. automatically eat X% of ram for
+buffers, etc) might work. Under certain circumstance.
+
+Those assumptions already had been defeated by VMs (eg. overcommit).
+
+I don't feel it's a good idea to add extra kernel code, just in order
+to make some ill-designed applications work a little bit less bad
+(which still needs to be changed anyways)
+
+Don't get me wrong, I'm really in favour of having a clean interface
+for telling applications how much resources they can take (actually
+considered quite the same), but this needs to be very well thought (and
+we should also get orchestration folks into the loop for that). This
+basically falls into two categories:
+
+a) hard limits - how much can an application possibly consume
+    --> what makes about an application ? process ? process group ?
+        cgroup ? namespace ?
+b) reasonable defaults - how much can an application take at will, w/o
+    affecting others ?
+    --> what exactly is "reasonable" ? kernel cache vs. userland buffers?
+    --> how to deal w/ overcommit scenarios ?
+    --> who shall be in charge of controlling these values ?
+
+It's a very complex problem, not easy to solve. Much of that seems to be
+a matter of policies, and depending on actual workloads.
+
+Maybe, for now, it's better pursue that on orchestration level.
+
+> Not all the information at the system level translates well to the
+> container level. Things like available memory require a hierarchical
+> assessment rather than just a look at the local level, since there
+> could be limits higher up the tree.
+
+By the way: what exactly *is* a container anyways ?
+
+The mainline kernel (in contrast to openvz kernel) doesn't actually know
+about containers at all - instead is provides several concepts like
+namespaces, cgroups, etc, that together are used for providing some
+container environment - but that composition is done in userland, and
+there're several approaches w/ different semantics.
+
+Before we can do anything container specific in the kernel, we first
+have to come to an general aggreement what actually is a container from
+kernel perspective. No idea whether we can achieve that at all (in near
+future) w/o actually introducing the concept of container within the
+kernel.
+
+> We should also not speculate what users intended to do with the
+> meminfo data right now. There is a surprising amount of misconception
+> around what these values actually mean. I'd rather have users show up
+> on the mailing list directly and outline the broader usecase.
+
+ACK.
+
+The only practical use cases I'm aware of is:
+
+a) safety: know how much memory I can eat, until I get -ENOMEM, so
+    applications can proactively take counter measures, eg. pre
+    allocation (common practise in safety related applications)
+
+b) autotuning: how much shall the application take for caches or
+    buffers. this is problematic, since it can only work on heuristics,
+    which in turn can only be experimentally found within certain range
+    of assumptions (eg. certain databases like to do that). By that way
+    you can only find more or less reasonable parameters for the majority
+    of cases (assuming you have an idea what that majority actually is),
+    but still far from optimal. for *good* parameters you need to measure
+    your actual workloads and applying good knowledge of what this
+    application is actually doing. (one of the DBA's primary jobs)
+
+
+--mtx
+-- 
+---
+Hinweis: unverschl√ºsselte E-Mails k√∂nnen leicht abgeh√∂rt und manipuliert
+werden ! F√ºr eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schl√ºssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
