@@ -2,74 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96BD3A4A9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F3E3A4AA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhFKVcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41752 "EHLO mail.kernel.org"
+        id S230201AbhFKVdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 17:33:23 -0400
+Received: from mga14.intel.com ([192.55.52.115]:12921 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230355AbhFKVcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:32:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1BABC613CD;
-        Fri, 11 Jun 2021 21:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623447004;
-        bh=QdqrnRRpWW762NamgXssaENTmH/VVQSRBuXGuetvyxw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ma2qIj03qU2dwhJrpls87gurshXcqndx1TL3oIMDER2yVdbNHfrRyfZ1+Mq3Now6t
-         U58epHQl4o25erLkULNr2PUcgXJX6Ldhy0ebwEWHgwJKwoSUS4+XjrFQpnDHOof3Tw
-         C3E5wUfgPywqNwbWJ8H98ElxOjRKOu30FCSrINNxF9ecHc49D6oSSAdhVo6OM5AYF0
-         lWCrBaFeTg4VaMFI1wc2kdp5VKRvTJ4Vbcc1RC2NQPUzvuB8HUBf7RAtL+feH7CoaM
-         4mVMeEXkld6wJr4ldEnvDIXwCVWOeToxRBmAu3s3z1mAG/VBY45cOBx3AaIx03mDzG
-         J1yTOV89XRsAg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0D95460BFB;
-        Fri, 11 Jun 2021 21:30:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230028AbhFKVdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 17:33:21 -0400
+IronPort-SDR: XU/5NqtnvivbSXRPlqEgYCigli5GgRc/bhSSx0NpSuxIeeMze42dLaTtoi1uvf12R0mw42e66Q
+ bJFJlcwjB89w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="205433117"
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="205433117"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 14:31:21 -0700
+IronPort-SDR: qYaDt4miFhmPz+227d6FoxbgaUH3brrBV7XvB5DJaP/u4G7HgdDHiM3d47awuR09r/hzadm1aw
+ nZnwKNsY9+2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="553535554"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by fmsmga001.fm.intel.com with ESMTP; 11 Jun 2021 14:31:18 -0700
+Date:   Fri, 11 Jun 2021 14:31:29 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 1/4] x86/msr: Define new bits in TSX_FORCE_ABORT MSR
+Message-ID: <20210611213129.py2jyfzy37czegkm@gupta-dev2.localdomain>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <4a258368e1797d592d4b16f124bd88cf9c21ac35.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <YMMhTwR7lJvA/9nu@zn.tnic>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/3] net: ipa: introduce ipa_syfs.c
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162344700405.12221.14790386522123195495.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Jun 2021 21:30:04 +0000
-References: <20210611203940.3171057-1-elder@linaro.org>
-In-Reply-To: <20210611203940.3171057-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, leon@kernel.org,
-        bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        aleksander@aleksander.es, ejcaruso@google.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <YMMhTwR7lJvA/9nu@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 11.06.2021 10:39, Borislav Petkov wrote:
+>On Wed, Jun 09, 2021 at 01:58:02PM -0700, Pawan Gupta wrote:
+>> Intel client processors that support IA32_TSX_FORCE_ABORT MSR related to
+>> perf counter interaction [1] received a microcode update that deprecates
+>> Transactional Synchronization Extension (TSX) feature. MSR
+>> IA32_TSX_FORCE_ABORT bit FORCE_ABORT_RTM now defaults to 1, writes to
+>> this bit are ignored. A new bit TSX_CPUID_CLEAR clears the TSX related
+>> CPUID bits.
+>>
+>> Below is the summary of changes to IA32_TSX_FORCE_ABORT MSR:
+>>
+>>   Bit 0: FORCE_ABORT_RTM (legacy bit, new default=1) Status bit that
+>>   indicates if RTM transactions are always aborted. This bit is
+>>   essentially !SDV_ENABLE_RTM(Bit 2). Writes to this bit are ignored.
+>>
+>>   Bit 1: TSX_CPUID_CLEAR (new bit, default=0) When set, CPUID.HLE = 0
+>>   and CPUID.RTM = 0.
+>>
+>>   Bit 2: SDV_ENABLE_RTM (new bit, default=0) When clear, XBEGIN will
+>>   always abort with EAX code 0. When set, XBEGIN will not be forced to
+>>   abort (but will always abort in SGX enclaves). This bit is intended to
+>>   be SDV-only. If this bit is set transactional atomicity correctness is
+>
+>SDV?
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Sorry should have expanded this. It stands for Software Development
+Vehicle (SDV), i.e. developer systems.
 
-On Fri, 11 Jun 2021 15:39:37 -0500 you wrote:
-> This series (its last patch, actually) creates a new source file,
-> "ipa_syfs.c", to contain functions and data that expose to user
-> space information known by the IPA driver via device attributes.
-> 
-> The directory containing these files on supported systems is:
->     /sys/devices/platform/soc@0/1e40000.ipa
-> 
-> [...]
+>>   not certain.
+>>
+>> Performance monitoring counter 3 is usable in all cases, regardless of
+>> the value of above bits.
+>>
+>> A new CPUID bit CPUID.RTM_ALWAYS_ABORT (CPUID 7.EDX[11]) is added to
+>> indicate the status of always abort behavior.
+>>
+>> Define these new CPUID and MSR bits.
+>>
+>> [1] Performance Monitoring Impact of Intel® Transactional Synchronization Extension Memory
+>>     http://cdrdv2.intel.com/v1/dl/getContent/604224
+>
+>That link does not look stable enough to put in commit messages.
+>Besides, you've said it all in the commit message already.
 
-Here is the summary with links:
-  - [net-next,1/3] net: ipa: make endpoint data validation unconditional
-    https://git.kernel.org/netdev/net-next/c/9e8fb7bf9c80
-  - [net-next,2/3] net: ipa: introduce ipa_version_valid()
-    https://git.kernel.org/netdev/net-next/c/e22e8e2fae61
-  - [net-next,3/3] net: ipa: introduce sysfs code
-    https://git.kernel.org/netdev/net-next/c/2e3cf97f4741
+The important part is the Document ID 604224. I can remove the link
+completely, or add the document ID to it, whatever you suggest:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+	[1] Performance Monitoring Impact of Intel® Transactional Synchronization Extension Memory
+	    http://cdrdv2.intel.com/v1/dl/getContent/604224 (Document ID 604224).
+							     ^^^^^^^^^^^^^^^^^^
 
-
+Thanks,
+Pawan
