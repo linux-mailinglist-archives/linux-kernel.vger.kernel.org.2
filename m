@@ -2,238 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944D03A4714
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65ABD3A4726
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhFKQ6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:58:01 -0400
-Received: from mail-pg1-f170.google.com ([209.85.215.170]:34749 "EHLO
-        mail-pg1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFKQ57 (ORCPT
+        id S231235AbhFKQ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:58:51 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26230 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231171AbhFKQ6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:57:59 -0400
-Received: by mail-pg1-f170.google.com with SMTP id l1so2967004pgm.1;
-        Fri, 11 Jun 2021 09:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eOlkoTfGj5WVDhRnQCIRockeDZbW6gvXOn1hNr+Rd2g=;
-        b=j+W9JDxX+UOqQOy1Rik3ezLT5/EwreVn5+ywE686P15vhF/BffKXoXFbwZiDEmcDJi
-         sOY61C+BiW2e1xKMbHa4JcY2ItvGJ01q6u379JhYfarZuKrvCzZURJrG6Zkq9o30uy4i
-         waP2xGRgt7ClLlo1ejFAsX/DEC+rIV8FZ8OKAcAk3VO4yk9iWotdOQ0nYcR67rLB1hkX
-         zBZ5qY14X2G24UKU9gM8pksq7LqnaJPZIihJ/tltwqdNmXg2xEZB0V4fqP2EzW/2Wu4S
-         TGABmAuxyGxc9TNkDuoXvaH6izjk0IXq65+QWFX708h0FHpLouv4us6O7NL/wwkWiqZi
-         irsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eOlkoTfGj5WVDhRnQCIRockeDZbW6gvXOn1hNr+Rd2g=;
-        b=qSaMOErsWzEL1wXIO3AQMLRSN65q6JefYkcQ7I5AKfw/hN+kx39sljNc0tpAmaAhzK
-         2LjjKysw/o/KH2fwcgS33TwlTUK6HTKfVyHSDPJQhkdhoDz850b4qj8nGrydfNZYhlf9
-         sMWimS9wEf9VL6N1g83/hWR9M5XCYzLfnsc6UcJXXoqlbotoEU/wMBknwb81MOQplZir
-         Ea5tGF1i+Ojl0vqHiCFY8J1pHMrAENTC0D/Rfkp4BUUr6JPIA/gfq2sz+YcQkjEn+8xe
-         RNqnuxglZQrhLuRQevwZpka63hfU/Y1BmMgTuwIEYnEXJRqbH/sexT43z664ffz+yshQ
-         kb+g==
-X-Gm-Message-State: AOAM532m/c7o5wRMujltARUfV/8xEbIkBDwvBh8eOwotw536cF17JKTh
-        Dq9hu0vMWp6yJQPfwYBUJgg=
-X-Google-Smtp-Source: ABdhPJz9kNGw9WY8PUrVoC4RNkOSJInnurD+RcgOjd2YX86UFEggs6C6s2CjLfa6jif3g9podQ29eA==
-X-Received: by 2002:a63:5522:: with SMTP id j34mr4537401pgb.148.1623430489795;
-        Fri, 11 Jun 2021 09:54:49 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id h12sm5829720pfq.72.2021.06.11.09.54.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 09:54:49 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
- controller on the BCM7211
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>
-References: <20210602192758.38735-1-alcooperx@gmail.com>
- <20210602192758.38735-2-alcooperx@gmail.com>
- <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
- <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com>
- <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
- <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com>
- <CAPDyKFqk23xg5R2k9GwQrnamwWYbMkmrbWYsHPF9VBQTAbvQHw@mail.gmail.com>
- <a1199e99-eb29-125b-2bac-f0abb4803c9b@gmail.com>
- <CAPDyKFq-rofbCyAhcQGt2xZykip6Le+CUDXgDwAisVOj=Tt-uA@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b4c36944-8f41-1f30-10b4-b3efe0aade01@gmail.com>
-Date:   Fri, 11 Jun 2021 09:54:46 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <CAPDyKFq-rofbCyAhcQGt2xZykip6Le+CUDXgDwAisVOj=Tt-uA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        Fri, 11 Jun 2021 12:58:49 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 15BGliZA001743;
+        Fri, 11 Jun 2021 09:56:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=kkrHewb9AjX4WCwsG6viMUjh2jA3sq7bDTycJFkaocs=;
+ b=pfq6Zwlf3Sz2hHY14kk02ZPoyFbEjU9ZfVHKBni+Fv8NsW0BcqxyIOyJLzI6YGeyC3Fk
+ 1KVNqt9QospJaZOlYW/JjEbHvkWCdEd6jiTKRrjqjZ58XwuVXj5VrbJibD54A2qPViD0
+ 9cBvpOgXUN+cWNKzDLuqHhEAEswJxNr2dwY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 393skjp0nn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 11 Jun 2021 09:56:33 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 09:56:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KjGQ5y01ORhVUiShY6qoMIUP9uydsvmoikYiMWJkffdbzfj32WyZX5IvpxSCQkuRJly6vVL2kSSmNJdyJuekanZscWFEAgOqVUWqdvx+QOuFH6nzXVIeW7uW97Q7mWCY6zaQhVVqX12itAeqt9ZcXC4fDe0QbK5RjTrT88a9sOOD3xXsKp4KXwAwAR6vlayO4QsefyxA3lkvql7z6ORVMBVvuxS+nllqhPwLPd6ivR5LWDjonVj6T859Neq8rPmAMImTSlE5/Jfl0UbEbaoTSJxqnpEUElx+V6Q+T8tSwh0+we3+pwNN0BVSn8QLyM52EtdAFpZHQCfmIEaV/gVKyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kkrHewb9AjX4WCwsG6viMUjh2jA3sq7bDTycJFkaocs=;
+ b=iQ3KOFczjx8bsMObhAsSa+GnYGKtcRsBglG59zIDUNauXHVxjvIndSEub9RIPzf0S3U9CZHhyuffDU4sh7vgamkIznBnt2NrzxX0arzZuMaTaJ2F0sRUU67WaZ6VNH+G8IWQUCv7C63WX3qVWnvIM7apopBhsopAuZCPbWgEs+3+yWzrzJhwa2S4MJzvC8mj3gkM2mf0Mg+J2lgfNJYXnY02kPmW2fP8ubJZ4uB4p7fzwIx33ingNbiOOmQlZsFYdNZT4myRByPubjVXUMv7b7+ESgl0Q9nlirp4gn4o+MUGoPx02RUVcY5bs0zJlKiYxuC0FdyWeO58nSLG5eviOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from CO1PR15MB4924.namprd15.prod.outlook.com (2603:10b6:303:e3::16)
+ by MW3PR15MB3914.namprd15.prod.outlook.com (2603:10b6:303:41::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Fri, 11 Jun
+ 2021 16:56:31 +0000
+Received: from CO1PR15MB4924.namprd15.prod.outlook.com
+ ([fe80::2d50:36f7:4bce:9b01]) by CO1PR15MB4924.namprd15.prod.outlook.com
+ ([fe80::2d50:36f7:4bce:9b01%6]) with mapi id 15.20.4219.022; Fri, 11 Jun 2021
+ 16:56:31 +0000
+From:   Chris Mason <clm@fb.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
+Thread-Topic: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
+Thread-Index: AQHXXgAh7cM+p+g0g0iDshoLzzyYuqsNU9CAgAAZUgCAAVnygIAABkMAgAA8GwA=
+Date:   Fri, 11 Jun 2021 16:56:31 +0000
+Message-ID: <94F797B5-8936-44DF-ABA5-808C1F3F559F@fb.com>
+References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+ <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
+ <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
+ <20210610162046.GB28158@suse.cz>
+ <6769ED4C-15A8-4CFF-BF2B-26A5328257A0@fb.com>
+ <20210611132121.GF28158@twin.jikos.cz>
+In-Reply-To: <20210611132121.GF28158@twin.jikos.cz>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.100.0.2.22)
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c091:480::1:ee07]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1973c45e-499c-4a9d-573c-08d92cf9dd1c
+x-ms-traffictypediagnostic: MW3PR15MB3914:
+x-microsoft-antispam-prvs: <MW3PR15MB391413CFA226B4D6C5131CE9D3349@MW3PR15MB3914.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XPg7wJjw0ydrPpOeEP5mMnxPtqSiV04NnAJhOEBVDHshG3vv2AlwLnoE5BwUTZNxJJND03RUu+R/5i/4rTX8jLgNM1WAAxR/XDXLpxwMWA/PL9aXL4JbJid/Uf/WZ5/86sdiOatjlJLDMgEJ/gGWnbcTDKoBE1oXX0tBgW2MQQFaKiGONcYDnwuKV0wLB/T9CTwn6LJvBtbZXOqrMTyPZxF2gR6nPwDI9Jlp5e0lmAYvdnKPBRf8/5JuBSjBVK2JGVgen14gVKce49nF9kQEgoOFhdjfXfiXlWKLZ2jz7nOBnokkEAHIcM9gYZcrzLo+iPIAA/skzNYGQ2AWJZYpDQ8tXf2AJeMi6w2vIFghjT573AwcRhJD6BMFvROKSRI/sAC1MN6Rwhqp9K56A3qb5sWhYhRuh2ZrAs7gQlco+aG6WZyXOYydgbcC4qB0cebUuJA4Lm5D7y8c74z/WjB+F2GAR5eFqjnFY5EipwA5tkG0x4y6AnmivLHha6yD1N7h2gF9Y7RxSnW9Ad/33evOge1/hkdHk9axNOxDT2v29sgipnn+dJHCOwXnAiN7mJJY9qJR1+wqreLUMLm6yAn/LzgiMAyAiNPdwMQtu0xUzyFw97bR4VO+zODgCX/OUTV8t4gRgOI1P4rA4TQjREPu/hgQPVXFvmuf4WquFIrFUeM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR15MB4924.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(366004)(396003)(6506007)(66556008)(33656002)(64756008)(83380400001)(2906002)(2616005)(6486002)(186003)(54906003)(316002)(66946007)(478600001)(66446008)(91956017)(66476007)(76116006)(6916009)(4326008)(53546011)(71200400001)(66574015)(122000001)(6512007)(5660300002)(86362001)(8936002)(8676002)(38100700002)(36756003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SjlNaGF6ekpZaFNlSUI3ejREeThoWkZ4cG14ZE5yVHd6WTVyMlY1VHl0V0NF?=
+ =?utf-8?B?cVZqc0gxRktUT3IyQUJueXI2ODhGMzZjMUVNUEdhNzBMWGNIM21xVWI4c25L?=
+ =?utf-8?B?cURQV3JFVTVhKzY1YTJ1UGdwdDZvQnlHajV2enh4THR3WHI3aUoyWG90VVFi?=
+ =?utf-8?B?d3dnWXEwM3pZU2pEcHZTZUN2NURkVmN0TmtLQTdrenRnSStoMW95TmErYzAw?=
+ =?utf-8?B?N3pTTEVmWkJ3c3ZlRm1pUEg3Z251VUJKa2trcVRiTU1SL3NIKzM2N3ROS2ky?=
+ =?utf-8?B?b2RCRmlkWm5OREdCNEhwRmdvZldZT2dyRURESGJqV3lKRU5MNUhSZTJ6c3ph?=
+ =?utf-8?B?RS9XdUt5ckpJRnArY0lZN0dPcmdPNnpqamVMZzdqcXA5cmJYMkt3QjUwZnUy?=
+ =?utf-8?B?R285NVlnTVVvYWhMWHRpUWw4QitjZnJXcE02bEVBcktkOXJXV1k2NGtRYlBG?=
+ =?utf-8?B?ZHZWcktnZzFLRHNzaDRMcUFmSEhzTE5XaS9TSkJxeDloMU5KNmxyQTNmNXJv?=
+ =?utf-8?B?RFI2cmFFc1ZUUDJFYVJpUVZNWXhxeVI1eXNBc05qNTNzWTlDOGFYWXMrQjZ3?=
+ =?utf-8?B?R1g3U2JMUHVaeDBwUGMwTEJFUWZrUDVyUXJrc3pMZzFhU05pWkZBOG55Q0lJ?=
+ =?utf-8?B?SHVIb0huOEpFS3ZCUUR5S3NSaGdjZ2IzTUtZL3Q0cU5DRUhQRUpnQUVIbS9w?=
+ =?utf-8?B?eUk4VjdIcGc1TG9rbi9wQSsrNUlYUTRwVlBoY1BpdmxXMkY0Nkl1d0RYRjdp?=
+ =?utf-8?B?N1dxUFNKYzl2MzY0R3dWNnJhanE1OVhodnpMTjZENnEwRmljRHNmL00rNWxt?=
+ =?utf-8?B?dTUvQktDTXMxNDZ6MW9EUGlMT092ZGZjb0VJY3IxNjRzaG52UGo3RzUzSTB5?=
+ =?utf-8?B?eVA3bWhLdmlLajFMbFlXMmJpM25VaGh0cjYwN1NJV3EwaExzUjBFY1VTeUFj?=
+ =?utf-8?B?eThwYlV2SW52V3VFd3VSa0Yra0RySlQ4TzUyeERBcmIvUmhRcVZNUmZSZGR5?=
+ =?utf-8?B?a21YRGZZMkNaTUxNa29SNTM3V3FRZUdEVmtRTm5ENVUzNlNsQndCNk5BNkd5?=
+ =?utf-8?B?bVlOamVtWWtVYTFhR2JqK3h1T0ZTSWlUNE1mcm1LblpkRk85OHh5Y1UxVm94?=
+ =?utf-8?B?MDluVXJJcU56RDA0MEx0a292eVdOeDZmQlFKR0VlSWFZNDRaOTg4d09nZ0xZ?=
+ =?utf-8?B?THVwSmd5RWlYYTFLbjdDRm41QXB3M2hnMzNUbTVyUUJCcFJ0bllZV09MN3dW?=
+ =?utf-8?B?aG5PYzVoK1lqaHlVb251ODFsYVNJLzZPRGlneVdQeG1TbkhYNU9IYys2V3JP?=
+ =?utf-8?B?b0dMZ285cWRKam1uM2ZkeEtYc1N2TjJFeTI3MHRiUytqMi8zSURhVS9uYkFU?=
+ =?utf-8?B?cXhFRTJIVEUrWDBwakxiYWhrL0MwLzdzYkVubllOeFpZbU8ySXlmYWJpUUo3?=
+ =?utf-8?B?WnJsdmx0UmtxVjc0NjVmU3h6aWNIalN0T3BGbUEwdlNwTGFmMmdmemZoTnp2?=
+ =?utf-8?B?NFNXckU0S3doRnJqWUtJUzR4bTdlNzB1dytaYXB5ZGhkRE52Q3FTM0hyMzM1?=
+ =?utf-8?B?c3JDWUtKbzF3cDAzMWJ2UVVwWHh0dG54OFBVaE1aVFVMUmJHdTE2UXhPYjNy?=
+ =?utf-8?B?aFVKUDVKSTVrN20yUjltMFduSzhvWFBqV3NtSFRxUFFENDM0Nkgxd3FXK2pI?=
+ =?utf-8?B?dnJ3bUlJRVQyWVVncnZTNFBWU0NPTGZ2WEl4bUhHOG1qUytqVXIyRi8yZTV5?=
+ =?utf-8?B?OWFOTmtOY0RKMzdUbkUrcm9xQ3R2OUZhb0lFa0RjM2hUUW9qeWlybzhSK0tx?=
+ =?utf-8?Q?YC+1D0JoYf0FiB7gclDp1DYctBmxzkoHj30ew=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <649F282159EC374A915FA51DB49FDE31@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR15MB4924.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1973c45e-499c-4a9d-573c-08d92cf9dd1c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 16:56:31.6203
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WYfe1zFVT0LZpgre8lx3ScknVWmStvSnBp6cyaicSqR8U+slJNeJowmlYIm/GFz5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3914
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: qLKrvzctQr4MrnuImKEDF4_kokqXuIPx
+X-Proofpoint-ORIG-GUID: qLKrvzctQr4MrnuImKEDF4_kokqXuIPx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-11_05:2021-06-11,2021-06-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
+ adultscore=0 bulkscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106110106
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/11/2021 3:23 AM, Ulf Hansson wrote:
-> On Thu, 10 Jun 2021 at 17:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->>
->>
->> On 6/10/2021 1:49 AM, Ulf Hansson wrote:
->>> On Thu, 10 Jun 2021 at 01:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>
->>>>
->>>>
->>>> On 6/9/2021 2:22 AM, Ulf Hansson wrote:
->>>>> On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
->>>>>>> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
->>>>>>>>
->>>>>>>> Add support for the legacy Arasan sdhci controller on the BCM7211 and
->>>>>>>> related SoC's. This includes adding a .shutdown callback to increase
->>>>>>>> the power savings during S5.
->>>>>>>
->>>>>>> Please split this into two separate changes.
->>>>>>>
->>>>>>> May I also ask about the ->shutdown() callback and in relation to S5.
->>>>>>> What makes the ->shutdown callback only being invoked for S5?
->>>>>>
->>>>>> It is not only called for S5 (entered via poweroff on a prompt) but also
->>>>>> during kexec or reboot. The poweroff path is via:
->>>>>>
->>>>>> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
->>>>>> .shutdown()
->>>>>>
->>>>>> For kexec or reboot we do not really care about power savings since we
->>>>>> are about to load a new image anyway, however for S5/poweroff we do care
->>>>>> about quiescing the eMMC controller in a way that its clocks and the
->>>>>> eMMC device can be put into low power mode since we will stay in that
->>>>>> mode for seconds/hours/days until someone presses a button on their
->>>>>> remote (or other wake-up sources).
->>>>>
->>>>> Hmm, I am not sure I understand correctly. At shutdown we don't care
->>>>> about wake-up sources from the kernel point of view, instead we treat
->>>>> everything as if it will be powered off.
->>>>
->>>> The same .shutdown() path is used whether you kexec, reboot or poweroff,
->>>> but for poweroff we do care about allowing specific wake-up sources
->>>> configured as such to wake-up the system at a later time, like GPIOs,
->>>> RTC, etc.
->>>
->>> That's true, but using the ->shutdown() callbacks in this way would
->>> certainly be a new use case.
->>>
->>> Most subsystems/drivers don't care about power management in those
->>> callbacks, but rather just about managing a graceful shutdown.
->>>
->>> It sounds to me like you should have a look at the hibernation
->>> path/callbacks instead - or perhaps even the system suspend
->>> path/callback. Normally, that's where we care about power management.
->>
->> The platforms we use do not support hibernation, keep in mind that these
->> are embedded SoCs that support the S2 (standby), S3 (mem) and poweroff
->> suspend states, hibernation is not something that we can support.
->>
->>>
->>> I have looped in Rafael, to allow him to share his opinion on this.
->>>
->>>>
->>>>>
->>>>> We put devices into low power state at system suspend and potentially
->>>>> also during some of the hibernation phases.
->>>>>
->>>>> Graceful shutdown of the eMMC is also managed by the mmc core.
->>>>
->>>> AFAICT that calls mmc_blk_shutdown() but that is pretty much it, the
->>>> SDHCI platform_driver still needs to do something in order to conserve
->>>> power including disabling host->clk, otherwise we would not have done
->>>> that for sdhci-brcmstb.c.
->>>
->>> That's not entirely correct. When mmc_bus_shutdown() is called for the
->>> struct device* that belongs to an eMMC card, two actions are taken.
->>>
->>> *) We call mmc_blk_shutdown(), to suspend the block device queue from
->>> receiving new I/O requests.
->>> **) We call host->bus_ops->shutdown(), which is an eMMC specific
->>> callback set to mmc_shutdown(). In this step, we do a graceful
->>> shutdown/power-off of the eMMC card.
->>>
->>> When it comes to controller specific resources, like clocks and PM
->>> domains, for example, those may very well stay turned on. Do deal with
->>> these, then yes, you would need to implement the ->shutdown()
->>> callback. But as I said above, I am not sure it's the right thing to
->>> do.
->>
->> As explained before, we can enter S5 for an indefinite amount of time
->> until a wake-up source wakes us up so we must conserve power, even if we
->> happen to wake up the next second, we don't know that ahead of time. The
->> point of calling sdhci_pltfm_suspend() here is to ensure that host->clk
->> is turned off which cuts the eMMC controller digital clock, I forgot how
->> much power we save by doing so, but every 10s of mW counts for us.
-> 
-> I fully understand that you want to avoid draining energy, every
-> single uA certainly counts in cases like these.
-> 
-> What puzzles me, is that your platform seems to keep some resources
-> powered on (like device clocks) when entering the system wide low
-> power state, S5.
-
-More on that below.
-
-> 
-> In principle, I am wondering if it would be possible to use S5 as the
-> system-wide low power state for the system suspend path, rather than
-> S3, for example? In this way, we would be able to re-use already
-> implemented ->suspend|resume callbacks from most subsystems/drivers, I
-> believe. Or is there a problem with that?
-
-The specific platform this driver is used on (BCM7211) is only capable
-of supporting S2 and S5. There is no S3 because we have no provision on
-the board to maintain the DRAM supplies on and preserve the DRAM
-contents. This is a design choice that is different from the other
-Broadcom STB platforms where we offer S2, S3 and S5 and we have an
-On/off domain which is shutdown by hardware upon S3 or S5 entry and a
-small always on domain which remains on to service wake-up sources
-(infrared, timer, gpio, UART, etc.). S2 on this platform is implemented
-entirely in software/firmware and does make use of the regular
-suspend/resume calls.
-
-S5 is implemented in part in software/firmware and with the help of the
-hardware that will turn off external board components. We do need the
-help of the various software drivers (PCIe, Ethernet, GPIO, USB, UART,
-RTC, eMMC, SPI, etc.) to do their job and conserve power when we enter
-S5, hence the reason why all of our drivers implement ->shutdown() (in
-addition to needing that for kexec and ensure no DMA is left running).
-
-> 
-> I think we need an opinion from Rafel to move forward.
-
-There is already an identical change done for sdhci-brcmstb.c, and the
-exact same rationale applied there since both sdhci-iproc.c and
-sdhci-brcmstb.c are used on this BCM7211 platform.
-
-In all honesty, I am a bit surprised that the Linux device driver model
-does not try to default the absence of a ->shutdown() to a ->suspend()
-call since in most cases they are functionally equivalent, or should be,
-in that they need to save power and quiesce the hardware, or leave
-enough running to support a wake-up event.
-
-Cheers
--- 
-Florian
+DQo+IE9uIEp1biAxMSwgMjAyMSwgYXQgOToyMSBBTSwgRGF2aWQgU3RlcmJhIDxkc3RlcmJhQHN1
+c2UuY3o+IHdyb3RlOg0KPiANCj4gT24gRnJpLCBKdW4gMTEsIDIwMjEgYXQgMTI6NTg6NThQTSAr
+MDAwMCwgQ2hyaXMgTWFzb24gd3JvdGU6DQo+Pj4gT24gSnVuIDEwLCAyMDIxLCBhdCAxMjoyMCBQ
+TSwgRGF2aWQgU3RlcmJhIDxkc3RlcmJhQHN1c2UuY3o+IHdyb3RlOg0KPj4+IE9uIFRodSwgSnVu
+IDEwLCAyMDIxIGF0IDA0OjUwOjA5UE0gKzAyMDAsIENocmlzdG9waGUgTGVyb3kgd3JvdGU6DQo+
+Pj4+IExlIDEwLzA2LzIwMjEgw6AgMTU6NTQsIENocmlzIE1hc29uIGEgw6ljcml0IDoNCj4+Pj4+
+PiBPbiBKdW4gMTAsIDIwMjEsIGF0IDE6MjMgQU0sIENocmlzdG9waGUgTGVyb3kgPGNocmlzdG9w
+aGUubGVyb3lAY3Nncm91cC5ldT4gd3JvdGU6DQo+Pj4gQW5kIHRoZXJlJ3Mgbm8gc3VjaCB0aGlu
+ZyBsaWtlICJqdXN0IGJ1bXAgQlRSRlNfTUFYX0NPTVBSRVNTRUQgdG8gMjU2SyIuDQo+Pj4gVGhl
+IGNvbnN0YW50IGlzIHBhcnQgb2Ygb24tZGlzayBmb3JtYXQgZm9yIGx6byBhbmQgb3RoZXJ3aXNl
+IGNoYW5naW5nIGl0DQo+Pj4gd291bGQgaW1wYWN0IHBlcmZvcm1hbmNlIHNvIHRoaXMgd291bGQg
+bmVlZCBwcm9wZXIgZXZhbHVhdGlvbi4NCj4+IA0KPj4gU29ycnksIGhvdyBpcyBpdCBiYWtlZCBp
+bnRvIExaTz8gIEl0IGRlZmluaXRlbHkgd2lsbCBoYXZlIHBlcmZvcm1hbmNlIGltcGxpY2F0aW9u
+cywgSSBhZ3JlZSB0aGVyZS4NCj4gDQo+IGx6b19kZWNvbXByZXNzX2JpbzoNCj4gDQo+IDMwOSAg
+ICAgICAgIC8qDQo+IDMxMCAgICAgICAgICAqIENvbXByZXNzZWQgZGF0YSBoZWFkZXIgY2hlY2su
+DQo+IDMxMSAgICAgICAgICAqDQo+IDMxMiAgICAgICAgICAqIFRoZSByZWFsIGNvbXByZXNzZWQg
+c2l6ZSBjYW4ndCBleGNlZWQgdGhlIG1heGltdW0gZXh0ZW50IGxlbmd0aCwgYW5kDQo+IDMxMyAg
+ICAgICAgICAqIGFsbCBwYWdlcyBzaG91bGQgYmUgdXNlZCAod2hvbGUgdW51c2VkIHBhZ2Ugd2l0
+aCBqdXN0IHRoZSBzZWdtZW50DQo+IDMxNCAgICAgICAgICAqIGhlYWRlciBpcyBub3QgcG9zc2li
+bGUpLiAgSWYgdGhpcyBoYXBwZW5zIGl0IG1lYW5zIHRoZSBjb21wcmVzc2VkDQo+IDMxNSAgICAg
+ICAgICAqIGV4dGVudCBpcyBjb3JydXB0ZWQuDQo+IDMxNiAgICAgICAgICAqLw0KPiAzMTcgICAg
+ICAgICBpZiAodG90X2xlbiA+IG1pbl90KHNpemVfdCwgQlRSRlNfTUFYX0NPTVBSRVNTRUQsIHNy
+Y2xlbikgfHwNCj4gMzE4ICAgICAgICAgICAgIHRvdF9sZW4gPCBzcmNsZW4gLSBQQUdFX1NJWkUp
+IHsNCj4gMzE5ICAgICAgICAgICAgICAgICByZXQgPSAtRVVDTEVBTjsNCj4gMzIwICAgICAgICAg
+ICAgICAgICBnb3RvIGRvbmU7DQo+IDMyMSAgICAgICAgIH0NCg0KQWggSSBzZWUsIHNvIGdvaW5n
+IGJhY2sgdG8gYW4gb2xkIExaTyBrZXJuZWwgd2lsbCBnZXQgdXBzZXQuICBPaywgZmFpciBlbm91
+Z2guICBTbyBpZiB3ZSB3YW50IHRvIGJ1bXAgdGhpcyBmb3Igb3RoZXIgcmVhc29ucywgd2XigJls
+bCBuZWVkIHRvIG1ha2UgYW4gTFpPIG1heCBzaXplIHRvIG1haW50YWluIGNvbXBhdGliaWxpdHku
+DQoNCi1jaHJpcw==
