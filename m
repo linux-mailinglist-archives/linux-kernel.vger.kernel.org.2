@@ -2,89 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F043A443B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF55F3A4438
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhFKOls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:41:48 -0400
-Received: from mail-ej1-f44.google.com ([209.85.218.44]:33717 "EHLO
-        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhFKOln (ORCPT
+        id S231760AbhFKOlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231698AbhFKOlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:41:43 -0400
-Received: by mail-ej1-f44.google.com with SMTP id g20so4993724ejt.0;
-        Fri, 11 Jun 2021 07:39:34 -0700 (PDT)
+        Fri, 11 Jun 2021 10:41:09 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5600C061574;
+        Fri, 11 Jun 2021 07:38:54 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id h1so2951386plt.1;
+        Fri, 11 Jun 2021 07:38:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=XBRHI4+WYHmQJKlvWWX3TLpIW3BFtZ2+OX11eMACGnk=;
-        b=UFM1trJ8yeAcqxOgBw5feSfI9sIKPV3AYDxSLNipVu/78czQK1euUWGsSurNQbORni
-         IU/j/uoXlQmcL9BIQX0si8LDv87Nyk9vdp7HXJfGr2UTiBCfDyC0cmjeAnGy+GCd1d1h
-         mA0Z6Wm4WozamSRv3ATvjCdxp/ZeRiqhd0+9MKXg1wIaRJ6dIx7WaXj74872SMkfm5IO
-         cg2/lR4qMAuaE/f0W2pYMGXrnjXSnVQH1Fv3NyNPLXJCZshFQ5MFtgFztDj9Y8pBlask
-         Djdy8eUuGZp+PX6D8C+jgck0/Afjlz3I/54Knp6dbJ5/Ca8Bq7urWQ6mk4+Jbse/sieF
-         x61A==
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=8lYrWaWj8rXB/t2XiDxhDEhaWgsjpf7zHZODYkct5sY=;
+        b=oYN9j5Z/Cjd7h021FHyj8wxm8sPCqMSSKS+PshjShNgbATg0/a07QGcEO+TPGy/BcR
+         dnNfXLSH/p4J2eBZ+C+EYOutekG4GiJnzsTZlAC/JVREJkDwI3wosR299n4LQHLuMLDt
+         7OoIXY+s15J2V/G7504nJ5oNitQNa5eY+LE9cLIEpGhcByotkmlCjHibHFGGDoSQKyTT
+         rE6KhxFyg68jWlm+L8EcaAZvxic+wLcjXY3fbgYvWa4cC95z3jJL1pFM6tvm8Jm175wl
+         TW9GEu3grV0id3YJEBP4pqcDDcHDpTk/oxs6KLuFEvj8pxcnWT+xPktjhaEtHzixxSiz
+         F8mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=XBRHI4+WYHmQJKlvWWX3TLpIW3BFtZ2+OX11eMACGnk=;
-        b=mTm7cYT49AoxOqW6LICIguBdCBSTGuFRuO2NkG6nj+7HIswVONFkZvu90V+PLmwKo7
-         MUIc3XHbyLwz9Qx/jmR1GQnjbRJN8c6OsN/71ugp7ukRWHEsLjAamgXoqnXEMU9Y458z
-         IhIV1kN8elwOCsdwraMX+rNUtF8eTUJDqEqo346gkqih54yfTrGbtbLhg99cGP/IL9Yb
-         b6JwRukXouUJNBeKW4xvaSM4kD3EkdJNEWe6ligB1zlawX/XsdOIm7UPWESxOUUAQ+7u
-         +EBB0WPLIuk5b3S1YV6uNhILoyrPpbLWKpV376bTIdyxLWdzprC0npziSqgDv5JVsspM
-         /ybw==
-X-Gm-Message-State: AOAM532Q6haAuTYEZD3ZwQ1xcIaFkcPYBCpa8aqOZOGdmxvusb/i6yMb
-        G8s+cwczfF/tQtwDQ9z2u+Y=
-X-Google-Smtp-Source: ABdhPJyqScTR2284kAikALC1nJ97K51aH3EX1zPsYdCG6oLiLVDJzM3gcWpADKsOMJKgpwTKzwtomw==
-X-Received: by 2002:a17:906:3ed0:: with SMTP id d16mr3879999ejj.16.1623422314043;
-        Fri, 11 Jun 2021 07:38:34 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id p14sm2671008eds.19.2021.06.11.07.38.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Jun 2021 07:38:33 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 3/3] ARM: dts: rockchip: add io-domains nodes to rk3188.dtsi
-Date:   Fri, 11 Jun 2021 16:38:21 +0200
-Message-Id: <20210611143821.13057-3-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210611143821.13057-1-jbx6244@gmail.com>
-References: <20210611143821.13057-1-jbx6244@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version:content-transfer-encoding;
+        bh=8lYrWaWj8rXB/t2XiDxhDEhaWgsjpf7zHZODYkct5sY=;
+        b=melMc5ISQnPn0qk+YLUwQhpp5BHRFAgyRDXjB9CpJsvaqHOpuFL9l+9mKgiDBbRn/3
+         JcDLeTcByzcOWEAkbzrSbHAbmHSSMozbDeRiegQD+UQKIAqGKAsChevt7wFtLai0pVGf
+         mfXZKDlGpb/cwPWjXs+oIryzj6W/8Vt2KGPEOMmeNo4U+mOJpO7VUbQy1jqm+mndC8um
+         QgvU3r0yQvWEr+rXwXx8xF46Nqzl/fjFDY7p/Sz8p9wWuKlcTPsxEDr/jh5c+foc2Yru
+         ZEU6IS/KU7CPnfMpD4Jyh63KaJWAdDpc7KmsIEdzbht2PfCzpue8IHJE7WSYMcY4cy8g
+         P9Zg==
+X-Gm-Message-State: AOAM5328Pcz0Us3kuvD4LUIJvqUinbsWstSUu8ov/7MVILRpp4CoADmg
+        hrfnaj12ozGYm0vqd+29Zo0=
+X-Google-Smtp-Source: ABdhPJwaPJKGmSKoSUrGQKKB1LbnTDaqRXUIvShM3eoRuGHjdDT+qfmx817r+169+oLLB8OLjcRTHQ==
+X-Received: by 2002:a17:90a:6002:: with SMTP id y2mr9656377pji.197.1623422334188;
+        Fri, 11 Jun 2021 07:38:54 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id fy16sm10572998pjb.49.2021.06.11.07.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 07:38:53 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
+Cc:     helgaas@kernel.org, robh+dt@kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
+        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
+        briannorris@chromium.org, shawn.lin@rock-chips.com
+Subject: Re: [PATCH v3 4/4] arm64: dts: rockchip: Update PCI host bridge
+ window to 32-bit address memory
+References: <20210607112856.3499682-1-punitagrawal@gmail.com>
+        <20210607112856.3499682-5-punitagrawal@gmail.com>
+        <3105233.izSxrag8PF@diego>
+Date:   Fri, 11 Jun 2021 23:38:50 +0900
+In-Reply-To: <3105233.izSxrag8PF@diego> ("Heiko =?utf-8?Q?St=C3=BCbner=22'?=
+ =?utf-8?Q?s?= message of "Thu, 10
+        Jun 2021 23:50:40 +0200")
+Message-ID: <87r1h8ihz9.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The compatible strings below where added to
-rockchip-io-domain.txt, but never added to the device tree.
+Hi Heiko,
 
-"rockchip,rk3188-io-voltage-domain"
+Heiko St=C3=BCbner <heiko@sntech.de> writes:
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm/boot/dts/rk3188.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+> Hi,
+>
+> Am Montag, 7. Juni 2021, 13:28:56 CEST schrieb Punit Agrawal:
+>> The PCIe host bridge on RK3399 advertises a single 64-bit memory
+>> address range even though it lies entirely below 4GB.
+>>=20
+>> Previously the OF PCI range parser treated 64-bit ranges more
+>> leniently (i.e., as 32-bit), but since commit 9d57e61bf723 ("of/pci:
+>> Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
+>> the code takes a stricter view and treats the ranges as advertised in
+>> the device tree (i.e, as 64-bit).
+>>=20
+>> The change in behaviour causes failure when allocating bus addresses
+>> to devices connected behind a PCI-to-PCI bridge that require
+>> non-prefetchable memory ranges. The allocation failure was observed
+>> for certain Samsung NVMe drives connected to RockPro64 boards.
+>>=20
+>> Update the host bridge window attributes to treat it as 32-bit address
+>> memory. This fixes the allocation failure observed since commit
+>> 9d57e61bf723.
+>>=20
+>> Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm=
+.com
+>> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+>> Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> Cc: Heiko Stuebner <heiko@sntech.de>
+>> Cc: Rob Herring <robh+dt@kernel.org>
+>
+> just for clarity, should I just pick this patch separately for 5.13-rc to
+> make it easy for people using current kernel devicetrees, or should
+> this wait for the update mentioned in the cover-letter response
+> and should go all together through the PCI tree?
 
-diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
-index b36fcdd9a..2721b7285 100644
---- a/arch/arm/boot/dts/rk3188.dtsi
-+++ b/arch/arm/boot/dts/rk3188.dtsi
-@@ -641,6 +641,11 @@
- &grf{
- 	compatible = "rockchip,rk3188-grf", "syscon", "simple-mfd";
- 
-+	io_domains: io-domains {
-+		compatible = "rockchip,rk3188-io-voltage-domain";
-+		status = "disabled";
-+	};
-+
- 	usbphy: usbphy {
- 		compatible = "rockchip,rk3188-usb-phy",
- 			     "rockchip,rk3288-usb-phy";
--- 
-2.11.0
+The device tree change is independent of the other patches in the
+series. It would be great if you can pick this one - I am waiting on
+feedback from Rob before sending an update on the remaining patches.
 
+Thanks,
+Punit
+
+> If so, I can provide an
+> Acked-by: Heiko Stuebner <heiko@sntech.de>
+>
+>
+>
+>> ---
+>>  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/=
+dts/rockchip/rk3399.dtsi
+>> index 634a91af8e83..4b854eb21f72 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+>> @@ -227,7 +227,7 @@ pcie0: pcie@f8000000 {
+>>  		       <&pcie_phy 2>, <&pcie_phy 3>;
+>>  		phy-names =3D "pcie-phy-0", "pcie-phy-1",
+>>  			    "pcie-phy-2", "pcie-phy-3";
+>> -		ranges =3D <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000>,
+>> +		ranges =3D <0x82000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000>,
+>>  			 <0x81000000 0x0 0xfbe00000 0x0 0xfbe00000 0x0 0x100000>;
+>>  		resets =3D <&cru SRST_PCIE_CORE>, <&cru SRST_PCIE_MGMT>,
+>>  			 <&cru SRST_PCIE_MGMT_STICKY>, <&cru SRST_PCIE_PIPE>,
+>>=20
+>
+>
+>
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
