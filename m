@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DFD3A4998
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A481D3A499A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhFKTuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:50:03 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:33776 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhFKTuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:50:00 -0400
-Received: by mail-ej1-f47.google.com with SMTP id g20so6261406ejt.0;
-        Fri, 11 Jun 2021 12:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C6C9XAc/4o5g/nJl5oV+VV5fk+Yq/QDQ08tqYJKVlN8=;
-        b=Wr7Kz7qyfO/ySRu0Ur5oh4v8IOHFu8omwbVz1962faGV6z+ITUn5KuX1jAG8TS3aaK
-         38Y5LWZipl+cT7CCjzqAEBNuaFWBQYdqfW1H+5+6Lt5EG720ZyzFkIMcTcl+OjuFRlSa
-         1XlypvFbDDLNScs0lkW0/HZT66ck3oqM/FyMxwKAeo4o8OwF0+vbD2b/quzziHxXWW6d
-         pidse3IlAvV/27stXoJhYAvK3j0oalHBWdCtu9CVifIKhqi3wF+kuOid+KRDOkOZL/Qe
-         LZelQiJQ03l7fkbwK73jwDQ1mz1FLjgp+ReFtkMynml8Dd6zmR5KO1KUkt39XleFQ0HV
-         6lMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C6C9XAc/4o5g/nJl5oV+VV5fk+Yq/QDQ08tqYJKVlN8=;
-        b=IXl5b5sHWtuImAruwq2YWtFzKXqAIMC89PkH1rtOkD3OohvO8lHPch2B76OX80Z8Nu
-         +S+2Gz7ilRK5S15Wo3aC8ZmVNYtiASrByQMTG0szj4RuuMgDITRQJpivb3ZDNnOOX6Kp
-         LPhDkebgaJCekwvOefzdLarXQBJrFNYX3/aZpjLGD40lWnd7yKhiCv+ZEGXO3u9MSkej
-         vNpqgC57tn+vpGuLU0AvoHOhdAQpnmV/kdToK4T9kskzbDChKqQjJJ+uVn/1OtYzjxlb
-         kpY7ymFclCkJf7KEnO5Sw8RN02oBRfq1gVgViZG2kf+SLsJXMLe6yc/yG0fdSUKZuIwN
-         kpVQ==
-X-Gm-Message-State: AOAM530GGeYGlSllrz9N0PnMfzNca6O/D2Eo7tETiw5zfbpMNgvxjtOP
-        +K11XNDRZmumijnaTaxl1u0=
-X-Google-Smtp-Source: ABdhPJxfI9du5pPrBGY5Y+smBF61rv+3CBid1CuZMbtYk5u7WBPWybqvRdM2AW0rcmkmc37DxDvXjw==
-X-Received: by 2002:a17:907:948c:: with SMTP id dm12mr5060138ejc.484.1623440806641;
-        Fri, 11 Jun 2021 12:46:46 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id o64sm3011500eda.83.2021.06.11.12.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 12:46:46 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 22:46:44 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/5] dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
-Message-ID: <20210611194644.64lvhvp76wy6guqp@skbuf>
-References: <20210610232727.1383117-1-mnhagan88@gmail.com>
- <20210610232727.1383117-2-mnhagan88@gmail.com>
+        id S230511AbhFKTua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:50:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229530AbhFKTu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:50:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5747F61285;
+        Fri, 11 Jun 2021 19:48:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623440908;
+        bh=v7eYxzyytJiOKbDzrvPZp6KcvoP06S3tswJdQgsAKLc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PuE0pg8GBE45URnE7aXOvl/hpX+frcJDGCz+zpkPoU3ByOgjobvPRFArjL1CocuuB
+         kRXbl2ES+CoVo1typbVdWc6nxhb7ejMGm5iWFifsHahY7lx8X3CLKbxWNYFGHDZEIN
+         Bkt4pHoLJkxx2PbM+68q8I5qlDQ5t8z3eDJ2/2qO/VyzpMGeeN6+ojgZjUqyqzmQnL
+         a7Rdd9prq2Tf/EnwuuhXKWe99RIJM/rLKHLVrmKOcHQbFWMBbRSU4Vargk6d6iyRQV
+         nWjb7ACkmjTvr7zUJLzdSF92Zvpb9/1OuAyYOjvzA7GJchVmQB/eIW3Cy/wsrCfWoU
+         z6AzrKQ47hQVw==
+Date:   Fri, 11 Jun 2021 12:48:26 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: vmemmap alloc failure in hot_add_req()
+Message-ID: <YMO+CoYnCgObRtOI@DESKTOP-1V8MEUQ.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210610232727.1383117-2-mnhagan88@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 12:27:13AM +0100, Matthew Hagan wrote:
-> Add bindings for the Meraki MX64/MX65 series. Note this patch should be
-> applied on top of "dt-bindings: arm: bcm: add NSP devices to SoCs".
-> 
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> ---
->  Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-> index 78dfa315f3d0..7d184ba7d180 100644
-> --- a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-> +++ b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-> @@ -62,6 +62,12 @@ properties:
->            - enum:
->                - brcm,bcm958625hr
->                - brcm,bcm958625k
-> +              - meraki,mx64
-> +              - meraki,mx64-a0
-> +              - meraki,mx64w
-> +              - meraki,mx64w-a0
-> +              - meraki,mx65
-> +              - meraki,mx65w
->            - const: brcm,bcm58625
->            - const: brcm,nsp
->  
-> -- 
-> 2.26.3
-> 
+Hi all,
 
-I think these compatibles describe SoCs, whereas Meraki MX64/MX65 are
-boards, so this is a miscategorization. Can you not just describe the
-Northstar Plus SoC that you are using in your compatible string?
+I am occasionally seeing a kernel warning when running virtual machines
+in Hyper-V, which usually happens a minute or so after boot. It does not
+happen on every boot and it is reproducible on at least v5.10. I think
+it might have something to do with constant reboots, which I do when
+testing various kernels.
+
+The stack trace is as follows:
+
+[   49.215291] kworker/0:1: vmemmap alloc failure: order:9, mode:0x4cc0(GFP_KERNEL|__GFP_RETRY_MAYFAIL), nodemask=(null),cpuset=/,mems_allowed=0
+[   49.215299] CPU: 0 PID: 18 Comm: kworker/0:1 Not tainted 5.13.0-rc5 #1
+[   49.215301] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 11/01/2019
+[   49.215302] Workqueue: events hot_add_req [hv_balloon]
+[   49.215307] Call Trace:
+[   49.215310]  dump_stack+0x76/0x94
+[   49.215314]  warn_alloc.cold+0x78/0xdc
+[   49.215316]  ? __alloc_pages+0x200/0x230
+[   49.215319]  vmemmap_alloc_block+0x86/0xdc
+[   49.215323]  vmemmap_populate+0x10e/0x31c
+[   49.215324]  __populate_section_memmap+0x38/0x4e
+[   49.215326]  sparse_add_section+0x12c/0x1cf
+[   49.215329]  __add_pages+0xa9/0x130
+[   49.215330]  add_pages+0x12/0x60
+[   49.215333]  add_memory_resource+0x180/0x300
+[   49.215335]  __add_memory+0x3b/0x80
+[   49.215336]  add_memory+0x2e/0x50
+[   49.215337]  hot_add_req+0x3fc/0x5a0 [hv_balloon]
+[   49.215340]  process_one_work+0x214/0x3e0
+[   49.215342]  worker_thread+0x4d/0x3d0
+[   49.215344]  ? process_one_work+0x3e0/0x3e0
+[   49.215345]  kthread+0x133/0x150
+[   49.215347]  ? kthread_associate_blkcg+0xc0/0xc0
+[   49.215348]  ret_from_fork+0x22/0x30
+[   49.215351] Mem-Info:
+[   49.215352] active_anon:251 inactive_anon:140868 isolated_anon:0
+                active_file:47497 inactive_file:88505 isolated_file:0
+                unevictable:8 dirty:14 writeback:0
+                slab_reclaimable:12013 slab_unreclaimable:11403
+                mapped:131701 shmem:12671 pagetables:3140 bounce:0
+                free:41388 free_pcp:37 free_cma:0
+[   49.215355] Node 0 active_anon:1004kB inactive_anon:563472kB active_file:189988kB inactive_file:354020kB unevictable:32kB isolated(anon):0kB isolated(file):0kB mapped:526804kB dirty:56kB writeback:0kB shmem:50684kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB kernel_stack:5904kB pagetables:12560kB all_unreclaimable? no
+[   49.215358] Node 0 DMA free:6496kB min:480kB low:600kB high:720kB reserved_highatomic:0KB active_anon:0kB inactive_anon:3120kB active_file:2584kB inactive_file:2792kB unevictable:0kB writepending:0kB present:15996kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[   49.215361] lowmem_reserve[]: 0 1384 1384 1384 1384
+[   49.215364] Node 0 DMA32 free:159056kB min:44572kB low:55712kB high:66852kB reserved_highatomic:0KB active_anon:1004kB inactive_anon:560352kB active_file:187004kB inactive_file:350864kB unevictable:32kB writepending:56kB present:1555760kB managed:1432388kB mlocked:32kB bounce:0kB free_pcp:172kB local_pcp:0kB free_cma:0kB
+[   49.215367] lowmem_reserve[]: 0 0 0 0 0
+[   49.215369] Node 0 DMA: 17*4kB (UM) 13*8kB (M) 10*16kB (M) 3*32kB (ME) 3*64kB (UME) 4*128kB (UME) 1*256kB (E) 2*512kB (UE) 2*1024kB (ME) 1*2048kB (E) 0*4096kB = 6508kB
+[   49.215377] Node 0 DMA32: 8061*4kB (UME) 5892*8kB (UME) 2449*16kB (UME) 604*32kB (UME) 207*64kB (UME) 49*128kB (UM) 7*256kB (M) 1*512kB (M) 0*1024kB 0*2048kB 0*4096kB = 159716kB
+[   49.215388] 148696 total pagecache pages
+[   49.215388] 0 pages in swap cache
+[   49.215389] Swap cache stats: add 0, delete 0, find 0/0
+[   49.215390] Free swap  = 0kB
+[   49.215390] Total swap = 0kB
+[   49.215391] 392939 pages RAM
+[   49.215391] 0 pages HighMem/MovableOnly
+[   49.215391] 31002 pages reserved
+[   49.215392] 0 pages cma reserved
+[   49.215393] 0 pages hwpoisoned
+
+Is this a known issue and/or am I doing something wrong? I only noticed
+this because there are times when I am compiling something intensive in
+the VM such as LLVM and the VM runs out of memory even though I have
+plenty of free memory on the host but I am not sure if this warning is
+related to that issue.
+
+I do not have much experience with Hyper-V so it is possible I do not
+have something configured properly or there is some other issue going
+on. Let me know if there is any further information I can provide or
+help debug in any way.
+
+Cheers,
+Nathan
