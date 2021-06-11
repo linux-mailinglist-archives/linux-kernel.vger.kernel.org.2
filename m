@@ -2,89 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C01E3A3BA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998793A3BAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhFKGIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:08:02 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5501 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFKGIA (ORCPT
+        id S231179AbhFKGJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:09:26 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:45026 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFKGJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:08:00 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1Vd92BwlzZf3v;
-        Fri, 11 Jun 2021 14:03:09 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 14:06:00 +0800
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 14:05:59 +0800
-Subject: Re: [PATCH -next] btrfs: send: use list_move_tail instead of
- list_del/list_add_tail
-To:     <dsterba@suse.cz>, Anand Jain <anand.jain@oracle.com>,
-        <linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, <weiyongjun1@huawei.com>,
-        <yuehaibing@huawei.com>, <yangjihong1@huawei.com>,
-        <yukuai3@huawei.com>, <linux-btrfs@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-References: <20210608031220.2822257-1-libaokun1@huawei.com>
- <e860684e-959b-d126-bb1d-3214878ab995@oracle.com>
- <20210608141233.GQ31483@twin.jikos.cz>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <f7bea721-cda5-0b20-13e3-28c4bd728063@huawei.com>
-Date:   Fri, 11 Jun 2021 14:05:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Fri, 11 Jun 2021 02:09:24 -0400
+Received: by mail-wr1-f50.google.com with SMTP id f2so4683654wri.11;
+        Thu, 10 Jun 2021 23:07:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AZMS2A4sumtCqfcNbQEYzMmO3IZvf2HY+g4HgiE7meY=;
+        b=P9M+3TfkPCtOk03F/IkNnBLpwBFxJ4/6PWwtGWZdMNhGE8rwXdXLlWICW+uEEZHduq
+         QajKEpOaCdLyLlW/n8t3N3AF71m5G026mEvBQAlUCs9qE1ITF5/fcdzK8dFKL6Hf0CeR
+         aR2OHSlFv56rLxkNHWhR59vr7H5KJ4Nt7PhAoQvQ0Q8VGZXQhxImp5FML5HVKIOq4aBm
+         eJ8xmbyfipRR2EWXtmEAJCg6f1dhKmXgCNI1O39HhZ3vYwSTyO3/lEmJwRvgcPI27x4U
+         oqGvE89fREpOc9bceFgrQeCmjGuC9epERevc+uaV1OQG+8uORRtPU5rGJNp3vMgHEAkG
+         3N4A==
+X-Gm-Message-State: AOAM533LQC09yj+dNFhiPVx5mCnJJHTqO8EQp1A17MyDHX6G4V1dNIsu
+        VQztUOVihO/OaoHODvCVwTT3/p5BDBk=
+X-Google-Smtp-Source: ABdhPJxjEIF41BMJdDoto8M4WZ5XYmslV5qnXD0oaW9mXsN6wP8UKQhJLVT9lH7G+hSlHgP+5koqag==
+X-Received: by 2002:adf:df02:: with SMTP id y2mr1995807wrl.120.1623391645775;
+        Thu, 10 Jun 2021 23:07:25 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id q19sm11019277wmc.44.2021.06.10.23.07.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 23:07:25 -0700 (PDT)
+Subject: Re: [PATCH 1/2] serial: 8250: Mask out floating 16/32-bit bus bits
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.21.2105161721220.3032@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2105181508460.3032@angie.orcam.me.uk>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <0cba710e-dc70-2b5c-ef48-a54cad0cae05@kernel.org>
+Date:   Fri, 11 Jun 2021 08:07:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210608141233.GQ31483@twin.jikos.cz>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+In-Reply-To: <alpine.DEB.2.21.2105181508460.3032@angie.orcam.me.uk>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your advice.
+On 10. 06. 21, 20:38, Maciej W. Rozycki wrote:
+> Make sure only actual 8 bits of the IIR register are used in determining
+> the port type in `autoconfig'.
+> 
+> The `serial_in' port accessor returns the `unsigned int' type, meaning
+> that with UPIO_AU, UPIO_MEM16, UPIO_MEM32, and UPIO_MEM32BE access types
+> more than 8 bits of data are returned, of which the high order bits will
+> often come from bus lines that are left floating in the data phase.  For
+> example with the MIPS Malta board's CBUS UART, where the registers are
+> aligned on 8-byte boundaries and which uses 32-bit accesses, data as
+> follows is returned:
+> 
+> YAMON> dump -32 0xbf000900 0x40
+> 
+> BF000900: 1F000942 1F000942 1F000900 1F000900  ...B...B........
+> BF000910: 1F000901 1F000901 1F000900 1F000900  ................
+> BF000920: 1F000900 1F000900 1F000960 1F000960  ...........`...`
+> BF000930: 1F000900 1F000900 1F0009FF 1F0009FF  ................
+> 
+> YAMON>
+> 
+> Evidently high-order 24 bits return values previously driven in the
+> address phase (the 3 highest order address bits used with the command
+> above are masked out in the simple virtual address mapping used here and
+> come out at zeros on the external bus), a common scenario with bus lines
+> left floating, due to bus capacitance.
+> 
+> Consequently when the value of IIR, mapped at 0x1f000910, is retrieved
+> in `autoconfig', it comes out at 0x1f0009c1 and when it is right-shifted
+> by 6 and then assigned to 8-bit `scratch' variable, the value calculated
+> is 0x27, not one of 0, 1, 2, 3 expected in port type determination.
+> 
+> Fix the issue then, by assigning the value returned from `serial_in' to
+> `scratch' first, which masks out 24 high-order bits retrieved, and only
+> then right-shift the resulting 8-bit data quantity, producing the value
+> of 3 in this case, as expected.  Fix the same issue in `serial_dl_read'.
+> 
+> The problem first appeared with Linux 2.6.9-rc3 which predates our repo
+> history, but the origin could be identified with the old MIPS/Linux repo
+> also at: <git://git.kernel.org/pub/scm/linux/kernel/git/ralf/linux.git>
+> as commit e0d2356c0777 ("Merge with Linux 2.6.9-rc3."), where code in
+> `serial_in' was updated with this case:
+> 
+> +	case UPIO_MEM32:
+> +		return readl(up->port.membase + offset);
+> +
+> 
+> which made it produce results outside the unsigned 8-bit range for the
+> first time, though obviously it is system dependent what actual values
+> appear in the high order bits retrieved and it may well have been zeros
+> in the relevant positions with the system the change originally was
+> intended for.  It is at that point that code in `autoconf' should have
+> been updated accordingly, but clearly it was overlooked.
+> 
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> ---
+>   drivers/tty/serial/8250/8250_port.c |    9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> linux-serial-8250-floating-bus-mask.diff
+> Index: linux-malta-cbus-uart/drivers/tty/serial/8250/8250_port.c
+> ===================================================================
+> --- linux-malta-cbus-uart.orig/drivers/tty/serial/8250/8250_port.c
+> +++ linux-malta-cbus-uart/drivers/tty/serial/8250/8250_port.c
+> @@ -311,7 +311,10 @@ static const struct serial8250_config ua
+>   /* Uart divisor latch read */
+>   static int default_serial_dl_read(struct uart_8250_port *up)
+>   {
+> -	return serial_in(up, UART_DLL) | serial_in(up, UART_DLM) << 8;
+> +	unsigned char dll = serial_in(up, UART_DLL);
+> +	unsigned char dlm = serial_in(up, UART_DLM);
+> +
+> +	return dll | dlm << 8;
+>   }
+>   
+>   /* Uart divisor latch write */
+> @@ -1297,9 +1300,9 @@ static void autoconfig(struct uart_8250_
+>   	serial_out(up, UART_LCR, 0);
+>   
+>   	serial_out(up, UART_FCR, UART_FCR_ENABLE_FIFO);
+> -	scratch = serial_in(up, UART_IIR) >> 6;
+> +	scratch = serial_in(up, UART_IIR);
+>   
+> -	switch (scratch) {
+> +	switch (scratch >> 6) {
 
-I'm about to send a patch v2 with the changes suggested by you.
+COrrect, but not obvious on the first look. People could revert this 
+change inadverently. So could you add a comment, or simply cast 
+serial_in() output to (u8)?
 
-Best Regards
+>   	case 0:
+>   		autoconfig_8250(up);
+>   		break;
+> 
 
-
-ÔÚ 2021/6/8 22:12, David Sterba Ð´µÀ:
-> On Tue, Jun 08, 2021 at 01:16:21PM +0800, Anand Jain wrote:
->> On 8/6/21 11:12 am, Baokun Li wrote:
->>> Using list_move_tail() instead of list_del() + list_add_tail().
->>>
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->>> ---
->>>    fs/btrfs/send.c | 3 +--
->>>    1 file changed, 1 insertion(+), 2 deletions(-)
->>>
->>> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
->>> index bd69db72acc5..a0e51b2416a1 100644
->>> --- a/fs/btrfs/send.c
->>> +++ b/fs/btrfs/send.c
->>> @@ -2083,8 +2083,7 @@ static struct name_cache_entry *name_cache_search(struct send_ctx *sctx,
->>>     */
->>>    static void name_cache_used(struct send_ctx *sctx, struct name_cache_entry *nce)
->>>    {
->>> -	list_del(&nce->list);
->>> -	list_add_tail(&nce->list, &sctx->name_cache_list);
->>> +	list_move_tail(&nce->list, &sctx->name_cache_list);
->>>    }
->>
->>    Looks good.
->>    You can consider open-code name_cache_used() as there is only one user.
-> Yeah sounds like a good idea, with part of the function comment next to
-> the list_move_tail.
-> .
+thanks,
+-- 
+js
+suse labs
