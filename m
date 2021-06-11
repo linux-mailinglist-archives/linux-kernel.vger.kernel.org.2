@@ -2,157 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8333A3D85
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63823A3DB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbhFKHv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:51:59 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5386 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhFKHv5 (ORCPT
+        id S231648AbhFKIEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:04:02 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:35542 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhFKID6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:51:57 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G1Xvw0Kcqz6w6X;
-        Fri, 11 Jun 2021 15:46:04 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 15:49:57 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 15:49:57 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Paul Moore <paul@paul-moore.com>,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next v2] netlabel: Fix memory leak in netlbl_mgmt_add_common
-Date:   Fri, 11 Jun 2021 16:21:19 +0800
-Message-ID: <20210611082119.2117194-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        Fri, 11 Jun 2021 04:03:58 -0400
+Received: by mail-wr1-f42.google.com with SMTP id m18so5017022wrv.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:02:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bE/KUZ9QKkdW8cpXSSyU518CP3tPDoswPEAOU9fuFew=;
+        b=r1ucxI47ris1Yyujr58rPBjyNMwf0oO3T7TBdzTpWtzhzrkvdA+rkJdqLe6+CDPPzA
+         2E3mwuTrlr0mW2bfVEk51AOjX+QvUVU+5euXfZJqdWVqJLOKswJDc4TErtFr0DOzkft6
+         Of1o+nShLFfiUO3iUFIHe8XRT0QsJY2RYTg4H53d8uOjSH8UW1/S3GrpBF1WF7IXWMlH
+         ufNmZoNkQ/Qp3R3QfTDCNXPUvFs7lH3Z5jjFNfmpM5EzVkkbWluQz3d5AQ3GtznVeHbN
+         yAhSXXeEtdSXrKFNc5aZXG+1pJRV6DJOPbIwaMKFkJhckP38iuWjUYt2/MFd6msdfHBJ
+         OpXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bE/KUZ9QKkdW8cpXSSyU518CP3tPDoswPEAOU9fuFew=;
+        b=b9jOq/xehvDdY023x+AMwoa1oBx5Vnq44y48LZXZG0WCJF0s23P/AzY5nL45uc07XW
+         TP420r2MBHQyNmkZJDfAwk4zZWWJApU4LHZAt/Kjq5HD92kEumtWjL7Uipy8U3cUW4Rb
+         UYsuMWKMZV64q+Ej9mXL9AMPsGn0rhEXZgFo1p57FV7aGu1k123BrUVF8rY6buPPmCV9
+         yK3qOrzSotD8ZMcayExU7PKJ1+o1yPC0kLQTcr7KmuC30VlNuEFVeQP9qnVbPv/R2rxY
+         8ewFj+7zcZBJnzUsUs8BhymhIIFbebTBSTNO5lQA4TwyvWKazRiFQMGFQduTdbq8PPZi
+         yenw==
+X-Gm-Message-State: AOAM533Arn/Pk1Kq7XN4IisCzcmHs+P7Qo8unKhIVL6a3bX+AkdYrkti
+        T+HG/G0WoT7l3fKU9b7rVdZsxA==
+X-Google-Smtp-Source: ABdhPJwrDUmeg8YRTI7WihhIRANvJqSROo7Yhgyb7Hwx9jgOH3Lv/9V/uXxDzj6jwe46tOrjayFKzQ==
+X-Received: by 2002:a5d:6b0e:: with SMTP id v14mr2502091wrw.297.1623398460461;
+        Fri, 11 Jun 2021 01:01:00 -0700 (PDT)
+Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
+        by smtp.gmail.com with ESMTPSA id x18sm6079898wrw.19.2021.06.11.01.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 01:00:59 -0700 (PDT)
+From:   Jann Horn <jannh@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jann Horn <jannh@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org
+Subject: [PATCH] mm/gup: fix try_grab_compound_head() race with split_huge_page()
+Date:   Fri, 11 Jun 2021 10:00:27 +0200
+Message-Id: <20210611080027.984937-1-jannh@google.com>
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hulk Robot reported memory leak in netlbl_mgmt_add_common.
-The problem is non-freed map in case of netlbl_domhsh_add() failed.
+try_grab_compound_head() is used to grab a reference to a page from
+get_user_pages_fast(), which is only protected against concurrent
+freeing of page tables (via local_irq_save()), but not against
+concurrent TLB flushes, freeing of data pages, or splitting of compound
+pages.
 
-BUG: memory leak
-unreferenced object 0xffff888100ab7080 (size 96):
-  comm "syz-executor537", pid 360, jiffies 4294862456 (age 22.678s)
-  hex dump (first 32 bytes):
-    05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    fe 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
-  backtrace:
-    [<0000000008b40026>] netlbl_mgmt_add_common.isra.0+0xb2a/0x1b40
-    [<000000003be10950>] netlbl_mgmt_add+0x271/0x3c0
-    [<00000000c70487ed>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320
-    [<000000001f2ff614>] genl_rcv_msg+0x2bf/0x4f0
-    [<0000000089045792>] netlink_rcv_skb+0x134/0x3d0
-    [<0000000020e96fdd>] genl_rcv+0x24/0x40
-    [<0000000042810c66>] netlink_unicast+0x4a0/0x6a0
-    [<000000002e1659f0>] netlink_sendmsg+0x789/0xc70
-    [<000000006e43415f>] sock_sendmsg+0x139/0x170
-    [<00000000680a73d7>] ____sys_sendmsg+0x658/0x7d0
-    [<0000000065cbb8af>] ___sys_sendmsg+0xf8/0x170
-    [<0000000019932b6c>] __sys_sendmsg+0xd3/0x190
-    [<00000000643ac172>] do_syscall_64+0x37/0x90
-    [<000000009b79d6dc>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Because no reference is held to the page when try_grab_compound_head()
+is called, the page may have been freed and reallocated by the time its
+refcount has been elevated; therefore, once we're holding a stable
+reference to the page, the caller re-checks whether the PTE still points
+to the same page (with the same access rights).
 
-Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+The problem is that try_grab_compound_head() has to grab a reference on
+the head page; but between the time we look up what the head page is and
+the time we actually grab a reference on the head page, the compound
+page may have been split up (either explicitly through split_huge_page()
+or by freeing the compound page to the buddy allocator and then
+allocating its individual order-0 pages).
+If that happens, get_user_pages_fast() may end up returning the right
+page but lifting the refcount on a now-unrelated page, leading to
+use-after-free of pages.
+
+To fix it:
+Re-check whether the pages still belong together after lifting the
+refcount on the head page.
+Move anything else that checks compound_head(page) below the refcount
+increment.
+
+This can't actually happen on bare-metal x86 (because there, disabling
+IRQs locks out remote TLB flushes), but it can happen on virtualized x86
+(e.g. under KVM) and probably also on arm64. The race window is pretty
+narrow, and constantly allocating and shattering hugepages isn't exactly
+fast; for now I've only managed to reproduce this in an x86 KVM guest with
+an artificially widened timing window (by adding a loop that repeatedly
+calls `inl(0x3f8 + 5)` in `try_get_compound_head()` to force VM exits,
+so that PV TLB flushes are used instead of IPIs).
+
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: stable@vger.kernel.org
+Fixes: 7aef4172c795 ("mm: handle PTE-mapped tail pages in gerneric fast gup=
+ implementaiton")
+Signed-off-by: Jann Horn <jannh@google.com>
 ---
-v1->v2: According to Dongliang's and Paul's advices, simplify the code.
+ mm/gup.c | 54 +++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 39 insertions(+), 15 deletions(-)
 
- net/netlabel/netlabel_mgmt.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+diff --git a/mm/gup.c b/mm/gup.c
+index 3ded6a5f26b2..1f9c0ac15073 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -43,8 +43,21 @@ static void hpage_pincount_sub(struct page *page, int re=
+fs)
+=20
+ 	atomic_sub(refs, compound_pincount_ptr(page));
+ }
+=20
++/* Equivalent to calling put_page() @refs times. */
++static void put_page_refs(struct page *page, int refs)
++{
++	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
++	/*
++	 * Calling put_page() for each ref is unnecessarily slow. Only the last
++	 * ref needs a put_page().
++	 */
++	if (refs > 1)
++		page_ref_sub(page, refs - 1);
++	put_page(page);
++}
++
+ /*
+  * Return the compound head page with ref appropriately incremented,
+  * or NULL if that failed.
+  */
+@@ -55,8 +68,23 @@ static inline struct page *try_get_compound_head(struct =
+page *page, int refs)
+ 	if (WARN_ON_ONCE(page_ref_count(head) < 0))
+ 		return NULL;
+ 	if (unlikely(!page_cache_add_speculative(head, refs)))
+ 		return NULL;
++
++	/*
++	 * At this point we have a stable reference to the head page; but it
++	 * could be that between the compound_head() lookup and the refcount
++	 * increment, the compound page was split, in which case we'd end up
++	 * holding a reference on a page that has nothing to do with the page
++	 * we were given anymore.
++	 * So now that the head page is stable, recheck that the pages still
++	 * belong together.
++	 */
++	if (unlikely(compound_head(page) !=3D head)) {
++		put_page_refs(head, refs);
++		return NULL;
++	}
++
+ 	return head;
+ }
+=20
+ /*
+@@ -94,25 +122,28 @@ __maybe_unused struct page *try_grab_compound_head(str=
+uct page *page,
+ 		if (unlikely((flags & FOLL_LONGTERM) &&
+ 			     !is_pinnable_page(page)))
+ 			return NULL;
+=20
++		/*
++		 * CAUTION: Don't use compound_head() on the page before this
++		 * point, the result won't be stable.
++		 */
++		page =3D try_get_compound_head(page, refs);
++		if (!page)
++			return NULL;
++
+ 		/*
+ 		 * When pinning a compound page of order > 1 (which is what
+ 		 * hpage_pincount_available() checks for), use an exact count to
+ 		 * track it, via hpage_pincount_add/_sub().
+ 		 *
+ 		 * However, be sure to *also* increment the normal page refcount
+ 		 * field at least once, so that the page really is pinned.
+ 		 */
+-		if (!hpage_pincount_available(page))
+-			refs *=3D GUP_PIN_COUNTING_BIAS;
+-
+-		page =3D try_get_compound_head(page, refs);
+-		if (!page)
+-			return NULL;
+-
+ 		if (hpage_pincount_available(page))
+ 			hpage_pincount_add(page, refs);
++		else
++			page_ref_add(page, refs * (GUP_PIN_COUNTING_BIAS - 1));
+=20
+ 		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED,
+ 				    orig_refs);
+=20
+@@ -134,16 +165,9 @@ static void put_compound_head(struct page *page, int r=
+efs, unsigned int flags)
+ 		else
+ 			refs *=3D GUP_PIN_COUNTING_BIAS;
+ 	}
+=20
+-	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
+-	/*
+-	 * Calling put_page() for each ref is unnecessarily slow. Only the last
+-	 * ref needs a put_page().
+-	 */
+-	if (refs > 1)
+-		page_ref_sub(page, refs - 1);
+-	put_page(page);
++	put_page_refs(page, refs);
+ }
+=20
+ /**
+  * try_grab_page() - elevate a page's refcount by a flag-dependent amount
 
-diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
-index e664ab990941..fa9e68e5f826 100644
---- a/net/netlabel/netlabel_mgmt.c
-+++ b/net/netlabel/netlabel_mgmt.c
-@@ -76,6 +76,7 @@ static const struct nla_policy netlbl_mgmt_genl_policy[NLBL_MGMT_A_MAX + 1] = {
- static int netlbl_mgmt_add_common(struct genl_info *info,
- 				  struct netlbl_audit *audit_info)
- {
-+	void * pmap = NULL;
- 	int ret_val = -EINVAL;
- 	struct netlbl_domaddr_map *addrmap = NULL;
- 	struct cipso_v4_doi *cipsov4 = NULL;
-@@ -175,6 +176,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 			ret_val = -ENOMEM;
- 			goto add_free_addrmap;
- 		}
-+
-+		pmap = map;
- 		map->list.addr = addr->s_addr & mask->s_addr;
- 		map->list.mask = mask->s_addr;
- 		map->list.valid = 1;
-@@ -183,14 +186,13 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 			map->def.cipso = cipsov4;
- 
- 		ret_val = netlbl_af4list_add(&map->list, &addrmap->list4);
--		if (ret_val != 0) {
--			kfree(map);
--			goto add_free_addrmap;
--		}
-+		if (ret_val != 0)
-+			goto add_free_map;
- 
- 		entry->family = AF_INET;
- 		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
- 		entry->def.addrsel = addrmap;
-+
- #if IS_ENABLED(CONFIG_IPV6)
- 	} else if (info->attrs[NLBL_MGMT_A_IPV6ADDR]) {
- 		struct in6_addr *addr;
-@@ -223,6 +225,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 			ret_val = -ENOMEM;
- 			goto add_free_addrmap;
- 		}
-+
-+		pmap = map;
- 		map->list.addr = *addr;
- 		map->list.addr.s6_addr32[0] &= mask->s6_addr32[0];
- 		map->list.addr.s6_addr32[1] &= mask->s6_addr32[1];
-@@ -235,10 +239,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 			map->def.calipso = calipso;
- 
- 		ret_val = netlbl_af6list_add(&map->list, &addrmap->list6);
--		if (ret_val != 0) {
--			kfree(map);
--			goto add_free_addrmap;
--		}
-+		if (ret_val != 0)
-+			goto add_free_map;
- 
- 		entry->family = AF_INET6;
- 		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
-@@ -248,10 +250,12 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 
- 	ret_val = netlbl_domhsh_add(entry, audit_info);
- 	if (ret_val != 0)
--		goto add_free_addrmap;
-+		goto add_free_map;
- 
- 	return 0;
- 
-+add_free_map:
-+	kfree(pmap);
- add_free_addrmap:
- 	kfree(addrmap);
- add_doi_put_def:
--- 
-2.18.0.huawei.25
+base-commit: 614124bea77e452aa6df7a8714e8bc820b489922
+--=20
+2.32.0.272.g935e593368-goog
 
