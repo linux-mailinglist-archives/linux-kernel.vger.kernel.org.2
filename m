@@ -2,100 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26A13A46FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5E73A4700
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbhFKQvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:51:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42042 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230212AbhFKQv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:51:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623430169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kblKhK/Cn+MGOQREIYRuIm8BGjc7hukPIOl/Du66sQg=;
-        b=EUZXbQYSK4w5IprraI3/8wNAeSc7ptPpgQrLQw5IgAWl+zbwU4m4k+PC0GcdT0sz5VroTn
-        mmLd3zZD/HK4aPP8PnJp0CWdBAqTfz3wm87htGNyTsil2GSxKa9Mkk918Vw996gGt16Oj4
-        ggwfSA1nIP7PMRT5frA1PLkQyvKD3Ck=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-0SBH2E14NQ2ySr4wUUpiUg-1; Fri, 11 Jun 2021 12:49:28 -0400
-X-MC-Unique: 0SBH2E14NQ2ySr4wUUpiUg-1
-Received: by mail-wm1-f70.google.com with SMTP id h206-20020a1cb7d70000b0290198e478dfeaso2225333wmf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:49:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kblKhK/Cn+MGOQREIYRuIm8BGjc7hukPIOl/Du66sQg=;
-        b=FR7d11Qx7RsquP+UO/7H1viOuvrpi91kXBS8YQvg0YB7hOboxAyNzOx4JDuf5cGkGR
-         GQs89aIBNvYK0oCeLC2bvX7Jwa8eDRx5kC12JG/mPXGUlIZUccEMzg4UOWuoS29H/Roa
-         DYgMB3Ju9VFaEEe1SNmH7oNx+2Hox3nqKKbYLfqG3vqcCMsGEJk7+Qav9s/n7f02rDBw
-         PhiupVEvKoVoL93cnp3XYTyvqUFBI6UjcyysnBOXqZPZHMrv/07/wahnKuq/ezKHstSU
-         mNHVBSQeyBbeRL7T4mzn4MlHTnh46AGaMfyNmfvRHE042YcKdlgczybXh/93R8BYMaPQ
-         1e8Q==
-X-Gm-Message-State: AOAM530csEsvXK6vlPnzvw+dS7SpcDzLGo5IGmqOVe/F0OVIMFyfB21c
-        n2fL9G0k0nYfjmMHfwlxqeIfEs2JAplFBxRPPWK24t1ZcYMN9h1VsEvvCeLZXHkgSc1RW5FH62u
-        fX8suorSxt1ab6PxoYMacCH7MMkJWkZUqZtnbHKuYBi1AY1HWvOMWph3jJrdE14XoKKKLfoKJyj
-        jb
-X-Received: by 2002:adf:ba07:: with SMTP id o7mr5052797wrg.160.1623430166993;
-        Fri, 11 Jun 2021 09:49:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJybTDwM/CdA8ErNMBIJxXQI+bJBJuQTcrCW0oIHYBQm92cpmp6n40y/9FBVqz0TEU/RoYtXPA==
-X-Received: by 2002:adf:ba07:: with SMTP id o7mr5052775wrg.160.1623430166766;
-        Fri, 11 Jun 2021 09:49:26 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 2sm7476295wrz.87.2021.06.11.09.49.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 09:49:26 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86/mmu: Calculate and check "full" mmu_role for
- nested MMU
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210610220026.1364486-1-seanjc@google.com>
- <b2084f55-3ce5-57c4-f580-d6a2de6ce612@redhat.com>
- <YMOTK7eYytpw58Vc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <64d774e4-affa-b96e-5116-66756dc160dd@redhat.com>
-Date:   Fri, 11 Jun 2021 18:49:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <YMOTK7eYytpw58Vc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S231143AbhFKQwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:52:04 -0400
+Received: from mail-dm3nam07on2076.outbound.protection.outlook.com ([40.107.95.76]:10522
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230488AbhFKQv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 12:51:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a1RHJKOgJ7NjU1doeBtutMZUXVxEQwE0+HpaoYxjOG3tLaudlBEnKSkvlOF98yGpK88pT3yBkiVFgxreX2p6KMaBHHxgpITrUYr36AWczB46vz+ECC+rHByI5ScgzfHGpg4Mg67zEp7c20LctbcXmLQqjaEAoOqXhN9nMtbi0aCX9+YmH650rLyycOLgK++/fzqoTrV16Io5AChy1BdH3Qkmv1PCx6neQB+qPHwNgf6UdYXUYLn9nEPfgUxy2pHL+67EiQDF8WD8yTpHnysEivDgd/i9Al4AtJvO8oPQyGg5nGY5V50Y+Ed58a9r7j8bJlsBWTLhuze25nTnlgqsTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6PZDTI5qUxThdwXJWiI+pYByqQElapZETqWdP8UDFuU=;
+ b=Ow2zGV34CzltH5T4NGaeoEHpBnZOQjYprXgGcbM+u+Ua+kdpT4WiqWQ6o+xMxlPqYTegCxIxPFNK/etfFNQLojzxDKPDaL6hA4+5Ko4MudnoEA7urTMQ4LLUTt5Pyp1JKSERQ6LpeJ9aUMx/N69wgOF9l2Tui1VTsPXNA6dqLJEc+LDoMypxT8aaj05uuoCKz3nrmjcdOLn+SH984zJsEVtrbOQeV75tPw+VBto5awXxT8ceMdrSwdg69R/wSwtDVjjNJox24dh8cTjP4vhh3iWfv2YZ2cUMtQRKufu0Q1v0nDXP5pGDW6aEul7Sg45+GGKjMMsaf5+jIvjyxFkpkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6PZDTI5qUxThdwXJWiI+pYByqQElapZETqWdP8UDFuU=;
+ b=PrRb/qxHgtq/63qtHlqfW920KDblj09/sAn4M1fEQ2dm9KBuxm8TG8/YO3H94QRlB9J3sxJHDt0nZELFIPeV+v0i8vByDUM8JzamEHYN7HAKpD8rWiKGLaaEyWnUXSe5/n/iLAuMVC9evUqvvWr1bxWhmWMIVGK4Q90VHsVkcVDtWpSXC8Lsw5/2+VpHcRfpYS2xUwRCwHHKkaw9kywyxxqFib3J9qdlhpaIzok0QNzdVWMjTxQEFU8UU+ooTWnahWFgsJMCJHnaqMxN5CybyeEQL23mVIP+wAgNZACNu+TT1/oWdAXq/z1Sv6+dbamdN5OTJQJSl/2R6cUgAAmHgg==
+Received: from BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
+ by BYAPR12MB4744.namprd12.prod.outlook.com (2603:10b6:a03:9e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Fri, 11 Jun
+ 2021 16:49:55 +0000
+Received: from BY5PR12MB3764.namprd12.prod.outlook.com
+ ([fe80::d05:4bca:ea51:15af]) by BY5PR12MB3764.namprd12.prod.outlook.com
+ ([fe80::d05:4bca:ea51:15af%6]) with mapi id 15.20.4219.024; Fri, 11 Jun 2021
+ 16:49:55 +0000
+From:   Krishna Reddy <vdumpa@nvidia.com>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Thierry Reding <treding@nvidia.com>
+Subject: RE: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for
+ large scatter-gather list
+Thread-Topic: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for
+ large scatter-gather list
+Thread-Index: AQHXXT84btg0466hEE2rkvq94oyuZasMBHAAgACy+QCAAD6WAIAAB6mAgAAg2ACAAAWcgIAAPESAgACQdxCAAA05AIABAqfQ
+Date:   Fri, 11 Jun 2021 16:49:54 +0000
+Message-ID: <BY5PR12MB376480219C42E5FCE0FE0FFBB3349@BY5PR12MB3764.namprd12.prod.outlook.com>
+References: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
+ <dbcd394a-4d85-316c-5dd0-033546a66132@arm.com>
+ <c600e9b2534d54082a5272b508a7985f@codeaurora.org>
+ <35bfd245-45e2-8083-b620-330d6dbd7bd7@arm.com>
+ <12067ffb8243b220cf03e83aaac3e823@codeaurora.org>
+ <266f190e-99ae-9175-cf13-7a77730af389@arm.com>
+ <dfdabcdec99a4c6e3bf2b3c5eebe067f@codeaurora.org>
+ <61c69d23-324a-85d7-2458-dfff8df9280b@arm.com>
+ <BY5PR12MB37646698F37C00381EFF7C77B3349@BY5PR12MB3764.namprd12.prod.outlook.com>
+ <07001b4ed6c0a491eacce6e4dc13ab5e@codeaurora.org>
+In-Reply-To: <07001b4ed6c0a491eacce6e4dc13ab5e@codeaurora.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [216.228.112.22]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1e148353-9cbe-4fa9-1b21-08d92cf8f0da
+x-ms-traffictypediagnostic: BYAPR12MB4744:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR12MB474413EDF820C74DF038842EB3349@BYAPR12MB4744.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PB5uEPCKEuq6rElYrqmYRXqVlQim4+N62bOU6+mAhFh0w+RukYMYo68Fem0WQQfpUqn6J0ZbQT2vVogKzcoq8xU+YPDVHAECRZHXtbZ2kPiVPvY9UDQmWPPFcrQPGKkEdkBWlvI0fcTwW7gQriKkLaox/oK/EqLpq7AMgYJ+SQXJaNRnSZMFWEyRhod6FCvPtddoRtw4jasRXpN72BPjfb5UXoSSlzilDkfn+teFmW4sG7fgy/x2cmU3X1zUXXO4Ng91xgwgorCT+onsBUY3piU10V9FkCsJR/Xfa6YbtF/Omt6xrVPAyugC+ObcLz8Av/Y3KQJxc1gIQ6Xn7Rgk8Ou6Jp8qWp9GejqWsnWeJ2sVnbt1mr7qphk5pFVI16JTitV5rrCDKNYA4atRUhi4YiHgxTGoHTLUCimTQxbbKacpeeBUrHadmvSa4yfo8nTpO3IbgjWYnZXdFB/PU6l26j0gqXa6hXEWYzb7xDYc+MGUsNFzBQ+BHin8iB+w49kxZ2AU6b9B/hSzlF6Jh23SN3fEJwCD56ZkLeJssgoKE78jyk0MFe4A5xh+LwsFwEVKzXrkUtQoYbVH2G3/X+IiGDaeOlk6V112aHKkguA/8jc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3764.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(376002)(366004)(136003)(76116006)(54906003)(8676002)(8936002)(83380400001)(316002)(71200400001)(107886003)(86362001)(4326008)(9686003)(55016002)(66556008)(66946007)(2906002)(66476007)(66446008)(64756008)(26005)(33656002)(52536014)(6916009)(5660300002)(6506007)(186003)(122000001)(38100700002)(478600001)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?J8QMuYNSWp6zXWuQyMMTOPxL49BkmIkJX6TvzN1XUJJRLMOXbi6YWkfWRopu?=
+ =?us-ascii?Q?+YbvX7DDu4sG1BhsWXJJOH2tt/i29/fOvi9D+XmwDz7jF5IHqDe6/HItEivh?=
+ =?us-ascii?Q?VmRQq7G7tMRaIYChmiJSLJUHnOQxg5t3orlIAuqw0Vq3MEHBRnln2jmjA9sM?=
+ =?us-ascii?Q?jmyvrwKfy0S1dHXZbAeD7s6fYnGtLq8G9+kawxHnUPifA5rnrj565NtprFIW?=
+ =?us-ascii?Q?KXk7CM5gARmiPDdqQcjjKX7wgjMBYLzJXmQiE8blRczlDSAlME8iyKR+N0El?=
+ =?us-ascii?Q?dKpMgReBzAG+C978Bwv+7JdC3cLUFeWA97FdqBGVkCm5PSJCXn0tC4WPuzh+?=
+ =?us-ascii?Q?cX6ZdixpK1iXWPwKHw8Fais22LmXc42XK006R0N1ibRax+MJCJ9hUgLdHL4U?=
+ =?us-ascii?Q?/SpCDKbYogvtoEEbFeWxewZ/PpnA/Hw2bmon9F/or4mrD9KADs4RCIZEtPs7?=
+ =?us-ascii?Q?IBs3u2s75ZwWG2TGB0f2w2VOGx7juNqta5nTYn33tNDuZlFAKP44/LhUbBru?=
+ =?us-ascii?Q?wRE4VH9hV3kgPkucPElteDgxJ/srPwdAPWRkibXRy9OXU4y0xWGrCP2Fgf/G?=
+ =?us-ascii?Q?gEK1esBou7dYukJoN4G82zcew/7FmMaCWVJJYRJgs0CqIRNt1P72W9AlGj2f?=
+ =?us-ascii?Q?i9O1EsdPlSCFhWXOzhuzgIr9/fkHdiH8D4POQFVWeAyznWsBQEyc5AXCzZT4?=
+ =?us-ascii?Q?w/rxQk1e9q4QTzaQLTQcUr1yGWLwTDtVxqDyvfGNc0uYRWFoQ/9s+hadXBn/?=
+ =?us-ascii?Q?Vrg9bNyTNegNRAYSN/QZYDBHZ32iBbQTKuasHebGEAi0mA0eeAcwlKEgWXpx?=
+ =?us-ascii?Q?wW8YLcrhxDRRQnp/1ky4MKRUng6e+Jxjq0TqqfIwp87L6bubGbIvjZto6QCk?=
+ =?us-ascii?Q?KTW6+CikRVrqoS0sLjgLFYEwgaIGGqE6zGg9Jiu/j+6uK5N5tM7JH1vTBaAp?=
+ =?us-ascii?Q?QCEAQScZFxtKV2jqweA3Guop0HdyWgS7b/ofNHQidOuiAPofPs5e6Gmrhd25?=
+ =?us-ascii?Q?+aWxU/eU98+KJ2hV+gqu8r8uQ8iTHxfKrzUmHKe9nS3/pOX5+4RSN9MsMiAo?=
+ =?us-ascii?Q?BXZCAAYBChhVxsuXA+xSroXka/AypVwo3pB8jhH2RwyBnqhGt7IK6bE8TPaw?=
+ =?us-ascii?Q?uTP8i9o1it1XFPpeVkLAwh+OthMXt0B47WIlqRa/HbwfKF6uLhOp25lb0yVy?=
+ =?us-ascii?Q?79Lnp/OfxxnKkwFlpm1MMRxpdPQBmIBdRPaXJ3y5NId+gP5NYchDF1nzFmei?=
+ =?us-ascii?Q?F3c0xyeBX2nNCBEuqJWWL97TeG8z/jkMBmVKuAjo5YBiZKP+h/EJK/KLNoHR?=
+ =?us-ascii?Q?ZvIvt+aOi5E4XyeVl9A7mtdw?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3764.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e148353-9cbe-4fa9-1b21-08d92cf8f0da
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 16:49:55.2144
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OKRDVM9JdY620BWzdf2TshCKxIJT7Jy2rlcOfar5qJXfRWIqeYk6XiTTc3bfOCerWPx2yoBw9RVqmiMiJDxQtw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4744
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/06/21 18:45, Sean Christopherson wrote:
->> Along which path though?  I would have naively expected those to be driven
->> only by the context->root_level.
-> The functional code is driven by context->root_level, but if KVM doesn't include
-> the level in the mmu_role then it will fail to update context->root_level when
-> L2 changes from 32-bit PAE to 64-bit.  If all the CR0/CR4/EFER bits remain the
-> same, only the level will differ.  Without this patch, role.level is always '0'
-> for the nested MMU.
-> 
+Hi Sai,
+> >> > No, the unmap latency is not just in some test case written, the
+> >> > issue is very real and we have workloads where camera is reporting
+> >> > frame drops because of this unmap latency in the order of 100s of
+> milliseconds.
 
-Yes the problem is the
+> Not exactly, this issue is not specific to camera. If you look at the num=
+bers in the
+> commit text, even for the test device its the same observation. It depend=
+s on
+> the buffer size we are unmapping which affects the number of TLBIs issue.=
+ I am
+> not aware of any such HW side bw issues for camera specifically on QCOM
+> devices.
 
-         if (new_role.as_u64 == g_context->mmu_role.as_u64)
-                 return;
+It is clear that reducing number of TLBIs  reduces the umap API latency. Bu=
+t, It is
+at the expense of throwing away valid tlb entries.=20
+Quantifying the impact of arbitrary invalidation of valid tlb entries at co=
+ntext level is not straight forward and
+use case dependent. The side-effects might be rare or won't be known until =
+they are noticed.
+Can you provide more details on How the unmap latency is causing camera to =
+drop frames?
+Is unmap performed in the perf path?
+If unmap is queued and performed on a back ground thread, would it resolve =
+the frame drops?
 
-and the patch lets you preserve the optimization instead of dropping it. 
-  I was wondering if I was missing something else because of the "when 
-walking the guest page tables" remark.
-
-Paolo
+-KR
 
