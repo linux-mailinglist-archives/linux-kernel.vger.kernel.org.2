@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660FA3A4178
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA483A417C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhFKLvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbhFKLvM (ORCPT
+        id S231469AbhFKLxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 07:53:23 -0400
+Received: from mail-qv1-f51.google.com ([209.85.219.51]:36403 "EHLO
+        mail-qv1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230470AbhFKLxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:51:12 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF64C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:49:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yAtCEL32DjGgSIxfxPxU5dWT3AR6+igTd5JCoSyHt1o=; b=Y2htFAzVHmfHPDH8NsQEyrFrjG
-        o3CBZ6de3y7IrZzbmrX4m5wZUqbr6WBqiqD5kLoySPHAHZozBsUs79Bj1iWRQMelTyExWEGFkdH0i
-        Z1Egf0nYHd5g8cxPf3VbNYtBIQ0eamKKfCDDchWI/YP7KGVmi0z9tzv5SfM99Q/01c+Cx4ExuNgPB
-        E4si87PGOqal8uT88SHJhTPTrOemEcje6Hi0AKgRBiYELtojn13lBJ+dwNabQ5oe3LSMeQMaOCvwV
-        VaOIlbwtnrnfmFtxf59GElFQkMgvY4dFQw17PcpgCbri5pVlxLkj8PFrgyuZ6T3Ohtv1LX4JvHe8N
-        OSnX6yFQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lrfeo-005sKq-A8; Fri, 11 Jun 2021 11:49:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E9DA300091;
-        Fri, 11 Jun 2021 13:49:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1154321AB0AD9; Fri, 11 Jun 2021 13:49:08 +0200 (CEST)
-Date:   Fri, 11 Jun 2021 13:49:08 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 1/6] posix-cpu-timers: Fix rearm racing against process
- tick
-Message-ID: <YMNNtOTN9u3eC0n0@hirez.programming.kicks-ass.net>
-References: <20210604113159.26177-1-frederic@kernel.org>
- <20210604113159.26177-2-frederic@kernel.org>
- <20210609115400.GD104634@lothringen>
+        Fri, 11 Jun 2021 07:53:15 -0400
+Received: by mail-qv1-f51.google.com with SMTP id im10so15475938qvb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RM8SbiamRAqEYBQWvt1zz0QiLBzqVfHdHpmDx37QuwU=;
+        b=fePXtwI12Iq05ePtlIj8shlIJHX4DaDQ32hB9cG3cca21aINFphdPqRiPJhrRM+oUB
+         wN3V+w55rL0QhXLQ0bbels3X5vyE4iS5q0dMAxOUjUOuUrqqk2aTeq6okhBrzluXvaxe
+         Hz8bq3LYstAAwip+vGEMF4C/eRe/CJFsf6ZHpAzFNL+vkzw7r7z9THIp8k6R28exgeWM
+         4HHMuSQi9fzSLxBgsC7HQizQPxXmPjqswVhAznvhC2pt5givvYX8XR1wfDukHEdBS+kP
+         N0/b/dRySPVs/J+fAqEA56JSxrxzvXrx3rOL6d3p2f3DbuC6vHPXiZbrpB/dtvaL6JjH
+         jSKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RM8SbiamRAqEYBQWvt1zz0QiLBzqVfHdHpmDx37QuwU=;
+        b=AtFHag0CzhNzm/IIFTp42LnSoaK/sEZOdLlUmQhukYix/AODtxukc0owtF1fZXFZaL
+         2QxaSydAjyujo+8+5cHyu1WO8lsxz37olfCFWoBK5N6vxNHJFXvjhjkba2eyb+Mtnqx9
+         7dXJQIYdhDBK6Z//5/HwW5cWalx32nfGGRnCFX998TpnL1Jr14JDXepdIU2zlOzZFeZr
+         pFqI/Y0CMcYJM/Nu2wzP6lzDVdAwWUbMZPdAG3FJa00B0n2BfR8BWqtlUcRDyhQOrAtM
+         80NMqLOMXXKwsUa5/vNofq3c+6eS/JYPYnSTgHVFVE4m4ZwI5Wm6Ckt54AIGpwjInJU6
+         O3Eg==
+X-Gm-Message-State: AOAM531eOQ8iEAQcGZFIWJSeBOZXCmu4PY0DBeEP5EdM4SAs1aTLLkPA
+        cuGArZcpCmCVXyJD/8sYV4NMlMrG5Jw7mQ==
+X-Google-Smtp-Source: ABdhPJxzIcffT3qoG1eWyiesO8Mwm8yOIdHq4qcbltAq56GYtyGUnvyT4J2ipiPRhOVVLcc2VO3/DA==
+X-Received: by 2002:ad4:40cf:: with SMTP id x15mr4329423qvp.50.1623412203934;
+        Fri, 11 Jun 2021 04:50:03 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id f5sm4052391qkm.124.2021.06.11.04.50.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 04:50:03 -0700 (PDT)
+Subject: Re: [PATCH] thermal/drivers/tsens: fix usage of unititialized value
+To:     Yang Li <yang.lee@linux.alibaba.com>, amitk@kernel.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1623145299-109090-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <3db50e86-911a-8b49-8c87-a33178754deb@linaro.org>
+Date:   Fri, 11 Jun 2021 07:50:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609115400.GD104634@lothringen>
+In-Reply-To: <1623145299-109090-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 01:54:00PM +0200, Frederic Weisbecker wrote:
-> On Fri, Jun 04, 2021 at 01:31:54PM +0200, Frederic Weisbecker wrote:
-> > Since the process wide cputime counter is started locklessly from
-> > posix_cpu_timer_rearm(), it can be concurrently stopped by operations
-> > on other timers from the same thread group, such as in the following
-> > unlucky scenario:
-> > 
-> >          CPU 0                                CPU 1
-> >          -----                                -----
-> >                                            timer_settime(TIMER B)
-> >    posix_cpu_timer_rearm(TIMER A)
-> >        cpu_clock_sample_group()
-> >            (pct->timers_active already true)
-> > 
-> >                                            handle_posix_cpu_timers()
-> >                                                check_process_timers()
-> >                                                    stop_process_timers()
-> >                                                        pct->timers_active = false
-> >        arm_timer(TIMER A)
-> > 
-> >    tick -> run_posix_cpu_timers()
-> >        // sees !pct->timers_active, ignore
-> >        // our TIMER A
-> > 
-> > Fix this with simply locking process wide cputime counting start and
-> > timer arm in the same block.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Oleg Nesterov <oleg@redhat.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Eric W. Biederman <ebiederm@xmission.com>
+
+
+On 6/8/21 5:41 AM, Yang Li wrote:
+> When "tsens_version(priv) > VER_0_1" is false,
+> "regmap_field_read(priv->rf[VER_MINOR], &ver_minor)" can't execute.
+> So, ver_minor has no initialization and assignment before it is
+> used, and we initialize it to 0.
+
+Hi Yang,
+
+Thanks for the patch. I have a few questions though.
+
+1. Where do you see ver_minor being used uninitialized? AFAICT , 
+ver_minor is used like below and will never be referenced if version <= 
+VER_0_1
+	if (tsens_version(priv) > VER_1_X &&  ver_minor > 2) {
+
+2. Do you know whether minor versions can be read or not on tsens ips 
+with verions < 0_1?
+
+-- 
+Warm Regards
+Thara (She/Her/Hers)
+
 > 
-> Fixes: 60f2ceaa8111 ("posix-cpu-timers: Remove unnecessary locking around cpu_clock_sample_group")
-> Cc: stable@vger.kernel.org
+> Clean up smatch warning:
+> drivers/thermal/qcom/tsens.c:896 init_common() error: uninitialized
+> symbol 'ver_minor'.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>   drivers/thermal/qcom/tsens.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index 4c7ebd1..a36c43d 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -743,8 +743,8 @@ int __init init_common(struct tsens_priv *priv)
+>   {
+>   	void __iomem *tm_base, *srot_base;
+>   	struct device *dev = priv->dev;
+> -	u32 ver_minor;
+>   	struct resource *res;
+> +	u32 ver_minor = 0;
+>   	u32 enabled;
+>   	int ret, i, j;
+>   	struct platform_device *op = of_find_device_by_node(priv->dev->of_node);
+> 
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-
-Problem seems to be calling cpu_clock_sample_group(.start = true)
-without sighand locked. Do we want a lockdep assertion for that?
