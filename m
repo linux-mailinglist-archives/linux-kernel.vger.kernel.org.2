@@ -2,146 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AFD3A3BC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADF73A3BCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhFKGNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:13:19 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:59873 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231215AbhFKGNR (ORCPT
+        id S231314AbhFKGNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:13:43 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:40258 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhFKGNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:13:17 -0400
-X-UUID: 947ffe174cbf4ec18ee409fe6c1f579e-20210611
-X-UUID: 947ffe174cbf4ec18ee409fe6c1f579e-20210611
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <chuanjia.liu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 656181751; Fri, 11 Jun 2021 14:11:16 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 11 Jun 2021 14:11:14 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Jun 2021 14:11:13 +0800
-From:   Chuanjia Liu <chuanjia.liu@mediatek.com>
-To:     <lorenzo.pieralisi@arm.com>, <robh+dt@kernel.org>,
-        <bhelgaas@google.com>, <matthias.bgg@gmail.com>
-CC:     <ryder.lee@mediatek.com>, <jianjun.wang@mediatek.com>,
-        <yong.wu@mediatek.com>, <chuanjia.liu@mediatek.com>,
-        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v10 4/4] ARM: dts: mediatek: Update MT7629 PCIe node for new format
-Date:   Fri, 11 Jun 2021 14:09:02 +0800
-Message-ID: <20210611060902.12418-5-chuanjia.liu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210611060902.12418-1-chuanjia.liu@mediatek.com>
-References: <20210611060902.12418-1-chuanjia.liu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Fri, 11 Jun 2021 02:13:40 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id E586FCD8AF;
+        Fri, 11 Jun 2021 14:11:37 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P16485T139919133304576S1623391896460797_;
+        Fri, 11 Jun 2021 14:11:38 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <40bc6dc8c98316e58bc91f50ef9d625a>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 19
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH v8 0/9] Add Rockchip SFC(serial flash controller) support
+Date:   Fri, 11 Jun 2021 14:11:25 +0800
+Message-Id: <20210611061134.31369-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To match the new dts binding. Remove "subsys",unused
-interrupt and slot node.Add "interrupt-names",
-"linux,pci-domain" and pciecfg node.
 
-Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
-Acked-by: Ryder Lee <ryder.lee@mediatek.com>
----
- arch/arm/boot/dts/mt7629-rfb.dts |  3 ++-
- arch/arm/boot/dts/mt7629.dtsi    | 45 +++++++++++++++-----------------
- 2 files changed, 23 insertions(+), 25 deletions(-)
 
-diff --git a/arch/arm/boot/dts/mt7629-rfb.dts b/arch/arm/boot/dts/mt7629-rfb.dts
-index 9980c10c6e29..eb536cbebd9b 100644
---- a/arch/arm/boot/dts/mt7629-rfb.dts
-+++ b/arch/arm/boot/dts/mt7629-rfb.dts
-@@ -140,9 +140,10 @@
- 	};
- };
- 
--&pcie {
-+&pcie1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pcie_pins>;
-+	status = "okay";
- };
- 
- &pciephy1 {
-diff --git a/arch/arm/boot/dts/mt7629.dtsi b/arch/arm/boot/dts/mt7629.dtsi
-index 874043f0490d..46fc236e1b89 100644
---- a/arch/arm/boot/dts/mt7629.dtsi
-+++ b/arch/arm/boot/dts/mt7629.dtsi
-@@ -361,16 +361,21 @@
- 			#reset-cells = <1>;
- 		};
- 
--		pcie: pcie@1a140000 {
-+		pciecfg: pciecfg@1a140000 {
-+			compatible = "mediatek,generic-pciecfg", "syscon";
-+			reg = <0x1a140000 0x1000>;
-+		};
-+
-+		pcie1: pcie@1a145000 {
- 			compatible = "mediatek,mt7629-pcie";
- 			device_type = "pci";
--			reg = <0x1a140000 0x1000>,
--			      <0x1a145000 0x1000>;
--			reg-names = "subsys","port1";
-+			reg = <0x1a145000 0x1000>;
-+			reg-names = "port1";
-+			linux,pci-domain = <1>;
- 			#address-cells = <3>;
- 			#size-cells = <2>;
--			interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_LOW>,
--				     <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
-+			interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
-+			interrupt-names = "pcie_irq";
- 			clocks = <&pciesys CLK_PCIE_P1_MAC_EN>,
- 				 <&pciesys CLK_PCIE_P0_AHB_EN>,
- 				 <&pciesys CLK_PCIE_P1_AUX_EN>,
-@@ -391,26 +396,18 @@
- 			power-domains = <&scpsys MT7622_POWER_DOMAIN_HIF0>;
- 			bus-range = <0x00 0xff>;
- 			ranges = <0x82000000 0 0x20000000 0x20000000 0 0x10000000>;
-+			status = "disabled";
- 
--			pcie1: pcie@1,0 {
--				device_type = "pci";
--				reg = <0x0800 0 0 0 0>;
--				#address-cells = <3>;
--				#size-cells = <2>;
-+			#interrupt-cells = <1>;
-+			interrupt-map-mask = <0 0 0 7>;
-+			interrupt-map = <0 0 0 1 &pcie_intc1 0>,
-+					<0 0 0 2 &pcie_intc1 1>,
-+					<0 0 0 3 &pcie_intc1 2>,
-+					<0 0 0 4 &pcie_intc1 3>;
-+			pcie_intc1: interrupt-controller {
-+				interrupt-controller;
-+				#address-cells = <0>;
- 				#interrupt-cells = <1>;
--				ranges;
--				num-lanes = <1>;
--				interrupt-map-mask = <0 0 0 7>;
--				interrupt-map = <0 0 0 1 &pcie_intc1 0>,
--						<0 0 0 2 &pcie_intc1 1>,
--						<0 0 0 3 &pcie_intc1 2>,
--						<0 0 0 4 &pcie_intc1 3>;
--
--				pcie_intc1: interrupt-controller {
--					interrupt-controller;
--					#address-cells = <0>;
--					#interrupt-cells = <1>;
--				};
- 			};
- 		};
- 
+Changes in v8:
+- Fix indent 4 to 2 in yaml
+
+Changes in v7:
+- Fix up the sclk_sfc parent error in rk3036
+- Unify to "rockchip,sfc" compatible id because all the feature update
+  will have a new IP version, so the driver is used for the SFC IP in
+  all SoCs
+- Change to use node "sfc" to name the SFC pinctrl group
+- Add subnode reg property check
+- Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+- Limit max_iosize to 32KB
+
+Changes in v6:
+- Add support in device trees for rv1126(Declared in series 5 but not
+  submitted)
+- Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+  affect interpretation and has been widely used
+- Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+- Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+  in series 5 but not submitted)
+- Support SFC ver4 ver5(Declared in series 5 but not submitted)
+- Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+- Change to use devm_spi_alloc_master and spi_unregister_master
+
+Changes in v5:
+- Add support in device trees for rv1126
+- Support sfc tx_dual, tx_quad
+- Simplify the code, such as remove "rockchip_sfc_register_all"
+- Support SFC ver4 ver5
+
+Changes in v4:
+- Changing patch back to an "RFC". An engineer from Rockchip
+  reached out to me to let me know they are working on this patch for
+  upstream, I am submitting this v4 for the community to see however
+  I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+  soon and these are the ones we should pursue for mainlining. Jon's
+  patch series should include support for more hardware than this
+  series.
+- Clean up documentation more and ensure it is correct per
+  make dt_binding_check.
+- Add support in device trees for rk3036, rk3308, and rv1108.
+- Add ahb clock (hclk_sfc) support for rk3036.
+- Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+- Change IRQ code to only mark IRQ as handled if it handles the
+  specific IRQ (DMA transfer finish) it is supposed to handle.
+
+Changes in v3:
+- Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+- Changed the compatible string from rockchip,sfc to
+  rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+  driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+  RV1108 SoCs, and possibly more. However, I am currently only able
+  to test this on a PX30 (an RK3326). The technical reference manuals
+  appear to list the same registers for each device.
+- Corrected devicetree documentation for formatting and to note these
+  changes.
+- Replaced the maintainer with Heiko Stuebner and myself, as we will
+  take ownership of this going forward.
+- Noted that the device (per the reference manual) supports 4 CS, but
+  I am only able to test a single CS (CS 0).
+- Reordered patches to comply with upstream rules.
+
+Changes in v2:
+- Reimplemented driver using spi-mem subsystem.
+- Removed power management code as I couldn't get it working properly.
+- Added device tree bindings for Odroid Go Advance.
+
+Changes in v1:
+hanges made in this new series versus the v8 of the old series:
+- Added function to read spi-rx-bus-width from device tree, in the
+  event that the SPI chip supports 4x mode but only has 2 pins
+  wired (such as the Odroid Go Advance).
+- Changed device tree documentation from txt to yaml format.
+- Made "reset" message a dev_dbg from a dev_info.
+- Changed read and write fifo functions to remove redundant checks.
+- Changed the write and read from relaxed to non-relaxed when
+  starting the DMA transfer or reading the DMA IRQ.
+- Changed from dma_coerce_mask_and_coherent to just
+  dma_set_mask_and_coherent.
+- Changed name of get_if_type to rockchip_sfc_get_if_type.
+
+Chris Morgan (8):
+  dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
+    controller
+  spi: rockchip-sfc: add rockchip serial flash controller
+  arm64: dts: rockchip: Add SFC to PX30
+  clk: rockchip: Add support for hclk_sfc on rk3036
+  arm: dts: rockchip: Add SFC to RK3036
+  arm: dts: rockchip: Add SFC to RV1108
+  arm64: dts: rockchip: Add SFC to RK3308
+  arm64: dts: rockchip: Enable SFC for Odroid Go Advance
+
+Jon Lin (1):
+  clk: rockchip: rk3036: fix up the sclk_sfc parent error
+
+ .../devicetree/bindings/spi/rockchip-sfc.yaml |  88 +++
+ arch/arm/boot/dts/rk3036.dtsi                 |  42 ++
+ arch/arm/boot/dts/rv1108.dtsi                 |  37 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
+ .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
+ drivers/clk/rockchip/clk-rk3036.c             |   5 +-
+ drivers/spi/Kconfig                           |   9 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-rockchip-sfc.c                | 676 ++++++++++++++++++
+ include/dt-bindings/clock/rk3036-cru.h        |   1 +
+ 11 files changed, 948 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+ create mode 100644 drivers/spi/spi-rockchip-sfc.c
+
 -- 
-2.18.0
+2.17.1
+
+
 
