@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5C13A41A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4AE3A41B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhFKMF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:05:59 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56456 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231437AbhFKMF6 (ORCPT
+        id S231355AbhFKMIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:08:50 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9081 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhFKMIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:05:58 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BC3mhB056805;
-        Fri, 11 Jun 2021 07:03:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623413028;
-        bh=DBEGw1E0ljrhKOmGyJHk8mVIK0GZZzfn8jadLcCmSoE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=UDHRMMVw/IVN3ZhSDoJBOXXEanxMk3vtnkAhepxYZJLASXJGFyPxF/fGb4HjI/dWJ
-         CZ3tzRNI/he+H2wcUfg1DTWTc4FtOBiGzlon2jthZsjsSrDPC2zPsI+nkjWq7+Y0HJ
-         ReFOLpQMBdu6rQlaQE5SeoMftQg7j1s2WjjvXMRo=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BC3mro016805
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Jun 2021 07:03:48 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 11 Jun 2021 08:08:49 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1fdV2jTPzZcGQ;
+        Fri, 11 Jun 2021 20:03:58 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 20:06:49 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 07:03:48 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 11 Jun 2021 07:03:48 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BC3hjF092989;
-        Fri, 11 Jun 2021 07:03:44 -0500
-Subject: Re: [PATCH 2/2] mtd: spi-nor: macronix: Fix name for mx66l51235f
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>, <michael@walle.cc>,
-        <p.yadav@ti.com>, <masonccyang@mxic.com.tw>,
-        <zhengxunli@mxic.com.tw>, <ycllin@mxic.com.tw>,
-        <juliensu@mxic.com.tw>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20210402082031.19055-1-tudor.ambarus@microchip.com>
- <20210402082031.19055-3-tudor.ambarus@microchip.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <8607134e-dd03-0f44-d636-840c1f56d2a5@ti.com>
-Date:   Fri, 11 Jun 2021 17:33:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Jun 2021 20:06:49 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <treding@nvidia.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] firmware: tegra: Fix build error while ARCH_TEGRA_234_SOC enabled
+Date:   Fri, 11 Jun 2021 20:06:36 +0800
+Message-ID: <20210611120636.28252-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210402082031.19055-3-tudor.ambarus@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+drivers/firmware/tegra/bpmp.c:861:51:
+ error: ‘tegra186_soc’ undeclared here (not in a function); did you mean ‘tegra_ivc’?
+  { .compatible = "nvidia,tegra186-bpmp", .data = &tegra186_soc },
+                                                   ^~~~~~~~~~~~
+                                                   tegra_ivc
 
+Add missing ifdef block to fix this.
 
-On 4/2/21 1:50 PM, Tudor Ambarus wrote:
-> According to macronix website, there is no mx66l51235l part number.
-> The chip detected as such is actually mx66l51235f. Rename the flash.
-> Do not update the mx66l51235l name from the spi_nor_dev_ids[], since
-> there are dt that are using this compatible.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/macronix.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index 42c2cf31702e..c8167de55e55 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -72,7 +72,7 @@ static const struct flash_info macronix_parts[] = {
->  			      SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
->  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-> -	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024,
-> +	{ "mx66l51235f", INFO(0xc2201a, 0, 64 * 1024, 1024,
->  			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->  			      SPI_NOR_4B_OPCODES) },
->  	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024,
-> 
+Fixes: 0ebdf11699d0 ("firmware: tegra: Enable BPMP support on Tegra234")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/firmware/tegra/bpmp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Applied to spi-nor/next, thanks!
-[2/2] mtd: spi-nor: macronix: Fix name for mx66l51235f
-      https://git.kernel.org/mtd/c/d406f49b05
+diff --git a/drivers/firmware/tegra/bpmp.c b/drivers/firmware/tegra/bpmp.c
+index 0742a90cb844..5654c5e9862b 100644
+--- a/drivers/firmware/tegra/bpmp.c
++++ b/drivers/firmware/tegra/bpmp.c
+@@ -809,7 +809,8 @@ static const struct dev_pm_ops tegra_bpmp_pm_ops = {
+ };
+ 
+ #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
+-    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC)
++    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC) || \
++    IS_ENABLED(CONFIG_ARCH_TEGRA_234_SOC)
+ static const struct tegra_bpmp_soc tegra186_soc = {
+ 	.channels = {
+ 		.cpu_tx = {
+-- 
+2.17.1
 
---
-Regards
-Vignesh
