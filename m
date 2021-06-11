@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D363A4B67
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1EF3A4B89
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFKXud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 19:50:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhFKXu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 19:50:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F7FD61019;
-        Fri, 11 Jun 2021 23:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623455310;
-        bh=6pFfyqWxtThZEcLQVmbRwzFXz6eVsnf2S88SIDwK+FQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SHNNaBFgfILptE2RYsa6thf3bZ6nfKOeQony87rHaMqnI5OTkHrWUSdIvXPE8ke8x
-         dvuqpYing3iRCcd+L3XiOg2iS57Dsbnj4HuIfRWSagge1vNTRRZ2UvddPmmp4l2xMg
-         zf/0dTzMQf3uE7+UxsK0gC6JYF8jbXszaMpQyyTeB+X429eZcHVPvuE6A2lXMUJ61e
-         kUutzQ8+lO/Vjai6K2B+SU9WtrTrrh0jyejUVyfMgOKUJAcLiEd2jqG905d0Ow+7Tr
-         laV4MwhG2LTlw57YecJRlQ+00IbWHw9EmlG+s0s6SkuFXsmS3ndcb1ZINtCyr7PGX+
-         k4nbwteeD20MA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CBCA25C084C; Fri, 11 Jun 2021 16:48:29 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 16:48:29 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH] rcu/doc: Add a quick quiz to explain further why we need
- smp_mb__after_unlock_lock()
-Message-ID: <20210611234829.GJ4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210610155029.130812-1-frederic@kernel.org>
- <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
- <20210611103432.GA143096@lothringen>
- <20210611172514.GG4397@paulmck-ThinkPad-P17-Gen-1>
- <20210611224517.GA150081@lothringen>
+        id S230457AbhFLABb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 20:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230349AbhFLAB3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 20:01:29 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BE9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:59:17 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id a1so10929372lfr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Bnh77Qps8T12Yo/r2kYdixbFDzWVS8YUSFSt9pZejSw=;
+        b=AWtH1zVWX9LrMGgrpUo8HPUUIvzDUyoZl633ankwLTvO9+62f67jyPXuHc8n+a02MG
+         UHULZ1LG5CBtjgzuSZJXsdg0SjnrhKflsqkS4ZLewVv3lLY4FsQMK0W6BIl2aYe40nQx
+         sto7cZqnjIxxo8Fx5z/HQRsPfzKR8PxSZoLSK0TKpxR5wlIqGVU2tqynp0DpZnjqC63Q
+         NIHZ+boUkpYMzXf1yA9/gsKEGFZwD9ioyqzhk2iatGD+G8BahRSPtnQYGll1dcIhxP8n
+         13BC+c0/5/XVpGwbcIsY41Fnb126vfb7mkGaCmZgiK7O8r8A0vLXttw2y4Hxm4te39Rz
+         v+/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Bnh77Qps8T12Yo/r2kYdixbFDzWVS8YUSFSt9pZejSw=;
+        b=RQWkGgl6jIK/XUVReT759+RXfFzt9LSOXFxVntuyvGPHQciRZvM431N98urglLeV0t
+         FZUyjT+qIYNlvUzvou4io+SYqKAnXq86GPPX6HaoRfxYcb3T9qS/API4A4Fwug01yQPy
+         sAV71o8J7ysw6dZyKSvknqC6ukZQl4gbNbkhtBe3FFp03uinNyixs0Dy4cs9K1nc214R
+         rahk1mP4eE/kGigtINBLToZyOLMxaDjtQnZJgV9lECzyuFYIjE82A9Iz61zBfa2IjBiD
+         d8aQlF5CewLKR+Ubw7NucCwG6qXrM26iXrinWYjZeBASDCEUdq5GDTF2hHFROB32Ag+O
+         SXUw==
+X-Gm-Message-State: AOAM531Pbpo8uhK1oj6iPJDhSP4OSiraZn3foX9zFmM91RZ9EqgYEP0q
+        biZudRruqHakUgLc/lTtfuys19kFgKvM9xGMZ7FqZg==
+X-Google-Smtp-Source: ABdhPJwagqfRiKpcWXHus3RD/FpEgWbbMjU5geKQlpNnM1DDaB0xKy+40r48Ne1QzLI3tptGAMTR2TGiC1N0nmUmS3s=
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr4235452lfn.465.1623455956385;
+ Fri, 11 Jun 2021 16:59:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611224517.GA150081@lothringen>
+References: <20210610132438.3085841-1-akaessens@gmail.com>
+In-Reply-To: <20210610132438.3085841-1-akaessens@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Jun 2021 01:59:05 +0200
+Message-ID: <CACRpkdbkjpV4DY+WMVdYX0136XxB9Z9bga-KbZ+D0oB+pQu_ww@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: mcp23s08: Add optional reset GPIO
+To:     Andreas Kaessens <akaessens@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-kernel@i4.cs.fau.de, Darian Biastoch <d.biastoch@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 12:45:17AM +0200, Frederic Weisbecker wrote:
-> On Fri, Jun 11, 2021 at 10:25:14AM -0700, Paul E. McKenney wrote:
-> > On Fri, Jun 11, 2021 at 12:34:32PM +0200, Frederic Weisbecker wrote:
-> > Glad to help, and I will reach out to you should someone make the mistake
-> > of insisting that I write something in French.  ;-)
-> 
-> If that can help, we still have frenglish for neutral territories such as airports.
-> Not easy to master though...
+On Thu, Jun 10, 2021 at 3:24 PM Andreas Kaessens <akaessens@gmail.com> wrot=
+e:
 
-That does sound dangerous!  ;-)
+> The MCP23x port expander RESET# line can be connected to a host GPIO.
+> The optional reset-gpio must be set to LOW if the reset is asserted
+> at probing time.
+>
+> On page 5 in the datasheet [0] the "Device Active After Reset high"
+> time is specified at 0 =C2=B5s. Therefore no waiting is needed after the
+> reset transition.
+>
+> [0] https://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
+>
+> Signed-off-by: Andreas Kaessens <akaessens@gmail.com>
+> Signed-off-by: Darian Biastoch <d.biastoch@gmail.com>
 
-> > > > ++-----------------------------------------------------------------------+
-> > > > +
-> > > >  This approach must be extended to include idle CPUs, which need
-> > > >  RCU's grace-period memory ordering guarantee to extend to any
-> > > >  RCU read-side critical sections preceding and following the current
-> > 
-> > How about like this?
-> > 
-> > +-----------------------------------------------------------------------+
-> > | **Quick Quiz**:                                                       |
-> > +-----------------------------------------------------------------------+
-> > | But the chain of rcu_node-structure lock acquisitions guarantees      |
-> > | that new readers will see all of the updater's pre-grace-period       |
-> > | accesses and also guarantees that the updater's post-grace-period     |
-> > | accesses will see all of the old reader's accesses.  So why do we     |
-> > | need all of those calls to smp_mb__after_unlock_lock()?               |
-> > +-----------------------------------------------------------------------+
-> > | **Answer**:                                                           |
-> > +-----------------------------------------------------------------------+
-> > | Because we must provide ordering for RCU's polling grace-period       |
-> > | primitives, for example, get_state_synchronize_rcu() and              |
-> > | poll_state_synchronize_rcu().  Consider this code::                   |
-> > |                                                                       |
-> > |  CPU 0                                     CPU 1                      |
-> > |  ----                                      ----                       |
-> > |  WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)           |
-> > |  g = get_state_synchronize_rcu()           smp_mb()                   |
-> > |  while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)          |
-> > |          continue;                                                    |
-> > |  r0 = READ_ONCE(Y)                                                    |
-> > |                                                                       |
-> > | RCU guarantees that the outcome r0 == 0 && r1 == 0 will not           |
-> > | happen, even if CPU 1 is in an RCU extended quiescent state           |
-> > | (idle or offline) and thus won't interact directly with the RCU       |
-> > | core processing at all.                                               |
-> > +-----------------------------------------------------------------------+
-> 
-> Very good, thanks a lot :o)
+Both patches applied, thanks!
 
-And thank you!
-
-							Thanx, Paul
+Yours,
+Linus Walleij
