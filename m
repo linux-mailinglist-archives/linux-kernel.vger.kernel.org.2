@@ -2,64 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0353A41CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368A63A41FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhFKMPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhFKMPT (ORCPT
+        id S231312AbhFKMaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:30:05 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:55153 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230188AbhFKMaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:15:19 -0400
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0611C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 05:13:21 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 80E713F3FC;
-        Fri, 11 Jun 2021 14:13:19 +0200 (CEST)
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: Add support for SONY Xperia 1 II /
- 5 II (Edo platform)
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-References: <20210611113514.27173-1-konrad.dybcio@somainline.org>
- <20210611113514.27173-2-konrad.dybcio@somainline.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <e232812b-a17f-5ab4-3fbc-29d6ba6fdd01@somainline.org>
-Date:   Fri, 11 Jun 2021 14:13:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 11 Jun 2021 08:30:03 -0400
+X-UUID: c71177d5340f476d9d37672459edf88e-20210611
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:CC:To:From:Subject:Message-ID; bh=5WTI0sd3QrS6AzdAtUg1zyVx5qtJHQj3wy1A/5ifOvk=;
+        b=c3J8bZfFR7uB26v76G5+YiFVPE/BIYsvjJ66mKc8Q26DmTkgcFCCdOW2JxcxcReViIgxCDS9Mr3etmYy3yOa4yb9FOZLSab4frhlePsKHt8kSjXxWGP+w1XT0Ns2W0rPoKAz+alkeGDe8G2QRHjlQ145LNAqkjUw441lZLMh1is=;
+X-UUID: c71177d5340f476d9d37672459edf88e-20210611
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 442193545; Fri, 11 Jun 2021 20:28:03 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 11 Jun 2021 20:27:56 +0800
+Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 11 Jun 2021 20:27:55 +0800
+Message-ID: <1623413625.22727.10.camel@mbjsdccf07>
+Subject: [PATCH 2/2] dt-binding: mediatek: mt6779: update spi document
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        Mason Zhang <Mason.Zhang@mediatek.com>,
+        <wsd_upstream@mediatek.com>, <hanks.chen@mediatek.com>,
+        <linux-kernel@vger.kernel.org>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Fri, 11 Jun 2021 20:13:45 +0800
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20210611113514.27173-2-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+
-> +&tlmm {
-> +	gpio-reserved-ranges = <40 4>, <52 4>;
-> +
-> +	sdc2_default_state: sdc2-default {
-> +		clk {
->
-I unwittingly did exactly what I ranted about yesterday, placing these here instead of SoC dtsi.. but before resending I'd like to know the opinion on the matter.
-
-
-Konrad
+DQp0aGlzIHBhdGNoIHVwZGF0ZSBzcGkgZG9jdW1lbnQgZm9yIE1UNjc3OSBTT0MuDQoNClNpZ25l
+ZC1vZmYtYnk6IE1hc29uIFpoYW5nIDxNYXNvbi5aaGFuZ0BtZWRpYXRlay5jb20+DQotLS0NCiBE
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1tdDY1eHgudHh0IHwgMSAr
+DQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQoNCmRpZmYgLS1naXQgYS9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1tdDY1eHgudHh0IGIvRG9jdW1lbnRh
+dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktbXQ2NXh4LnR4dA0KaW5kZXggOWU0Mzcy
+MWZhN2Q2Li43YmFlN2VlZjI2YzcgMTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3Mvc3BpL3NwaS1tdDY1eHgudHh0DQorKysgYi9Eb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1tdDY1eHgudHh0DQpAQCAtMTMsNiArMTMsNyBAQCBSZXF1
+aXJlZCBwcm9wZXJ0aWVzOg0KICAgICAtIG1lZGlhdGVrLG10ODE4My1zcGk6IGZvciBtdDgxODMg
+cGxhdGZvcm1zDQogICAgIC0gIm1lZGlhdGVrLG10ODE5Mi1zcGkiLCAibWVkaWF0ZWssbXQ2NzY1
+LXNwaSI6IGZvciBtdDgxOTIgcGxhdGZvcm1zDQogICAgIC0gIm1lZGlhdGVrLG10ODUxNi1zcGki
+LCAibWVkaWF0ZWssbXQyNzEyLXNwaSI6IGZvciBtdDg1MTYgcGxhdGZvcm1zDQorICAgIC0gIm1l
+ZGlhdGVrLG10Njc3OS1zcGkiLCAibWVkaWF0ZWssbXQ2NzY1LXNwaSI6IGZvciBtdDY3NzkgcGxh
+dGZvcm1zDQogDQogLSAjYWRkcmVzcy1jZWxsczogc2hvdWxkIGJlIDEuDQogDQoNCkhpIE1hdHRo
+aWFzOg0KCQ0KCUknbSBzb3JyeSB0byBkaXN0dXJiIHlvdSwgdGhpcyBwYXRjaCBpcyBzdGF5IGhl
+cmUgZm9yIGEgbG9uZyB0aW1lLCBEbw0KeW91IGhhdmUgYW55IHN1Z2dlc3Rpb25zIGFib3V0IHRo
+aXMgcGF0Y2g/IA0KCVdlIGhvcGUgdGhpcyBwYXRjaCB3aWxsIGJlIG1lcmdlZCBhcyBzb29uIGFz
+IHBvc3NpYmxlLElmIHlvdSBoYXZlIGFueQ0KY29uY2VybiwgSSB3aWxsIGZpeCBpdCBpbiB0aW1l
+Lg0KDQoJTG9va2luZyBmb3J3YXJkIHRvIHlvdXIgcmVwbHl+ICANCg0KVGhhbmtzDQpNYXNvbg0K
 
