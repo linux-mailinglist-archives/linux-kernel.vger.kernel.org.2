@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9583A4549
+	by mail.lfdr.de (Postfix) with ESMTP id E72B03A454B
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 17:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhFKPbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 11:31:05 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:39730 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbhFKPbC (ORCPT
+        id S231971AbhFKPbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 11:31:15 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:33328 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231953AbhFKPbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 11:31:02 -0400
-Received: by mail-pf1-f173.google.com with SMTP id k15so4734127pfp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 08:28:48 -0700 (PDT)
+        Fri, 11 Jun 2021 11:31:09 -0400
+Received: by mail-pl1-f174.google.com with SMTP id u18so2384625plc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 08:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z3csfjTdnaGEbW5Yiu81rOYxUROdkDuu0pkC+1dIGAc=;
-        b=IkC7yFFhO8hIfNYdMdJ54k4hExWD/qoffPbEBXy7aMHVEBwdwVaaywxk2mt0G3QZuk
-         kHNUXds8Y0K0b8H58qwuxnw/8yQrewipm9rVIDVGn4pqLKNyquN2PKy3qJ+VVeLcukCR
-         pIHcSWbnGwWNwrAuGd/5jq088bjDa5bnVis6E=
+        bh=bPhM+WorBl/5IPWUopQpopRI8e+hD6cwsqTSUdlP4rc=;
+        b=iVxcYyQUW7cXzxhHWTGSRZQlNt4ASqmdafviXMeqVVZDUYoVKbp5gazYTD0liisFpL
+         kOReUJY/l+JjcnvT9eiW5Ttd2yOdW/2cOnL6edMsj2jAzKAFxbgUCQs/mv16tTokHkWR
+         td0y0Z62+y3sEgdlMapYBkw1WBxSvtMM1bhaM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z3csfjTdnaGEbW5Yiu81rOYxUROdkDuu0pkC+1dIGAc=;
-        b=PumTErf+kG0W2y34YdLYa9kIQwZrj87Io7ooRFjkoDw3ENMDPbZtX2OZ5YEkns/MAD
-         Xy5dyaPLAE32kt9JeixRmGh6Wo6BLUNScDZ/7KehF7QvR6Sx+ZMQzf/BJ3FZwpJK7XSr
-         vVyKIOYVWQyUjiOgbhmb8M81u5EKJj4O/grIBIdGY8pSlRu+vZFk3LKDxgRYTkmDZLIa
-         5QBvXidv6dd9Hr7jzdX4oG7JdLzqzsuHj84fJ0HdvXDGV3w7bniY3acGlAEwGPKXGtul
-         u6Qh8NVHXMhGS+6qXYrD5oXJfVMgG9rz9Wv6K2jl6BXPcCg87GLecKb2KSmVpSxivqKH
-         hIAw==
-X-Gm-Message-State: AOAM530KgCbcr5mgzGZ5RBVDuW5Nb5QCz7Ei2WDDfVskheooixH/iV0b
-        2dWLAM7o18CItpfxUVLSPmo1Cw==
-X-Google-Smtp-Source: ABdhPJyj9WektlHINHWsfATaExSaFcZYhgD+NDtqPb5EwrK4uHwBuEuhV53c0IRLlzaKiXoj5cmzYw==
-X-Received: by 2002:aa7:84c7:0:b029:2e9:2d18:54a5 with SMTP id x7-20020aa784c70000b02902e92d1854a5mr8750291pfn.44.1623425268566;
-        Fri, 11 Jun 2021 08:27:48 -0700 (PDT)
+        bh=bPhM+WorBl/5IPWUopQpopRI8e+hD6cwsqTSUdlP4rc=;
+        b=WNnNDr/FLYgHUbSfePPd+452IfteT93ZbT8N3LEBKFLBWrFGjyymXI9j41u77m3m5B
+         CLwEjVNBzcgVZxh9Yy+TiyyQkQZvKl/NNJpJ4Q0UNtpiMhMjMQEAjnq096qLRmwdx1Hf
+         o7Xk7n14ckveX1+fDGBtcY6BcaqEwvBb6T2xDRXihrqzSVP4OEYklCxXHlFpBCGDZuB8
+         78FvViuIqtOFFOFQgLBwFweclbw2H7Rc5WRBVydQdhomCPUmuHAp9ul9cmnGeBM9O0de
+         KWLhIPMOAfKV5DgCrrOxezYq7pYlaZzW3s1AfO/iPKgTKT2hqDnEcCHS0L66O0Ls/up+
+         nDsw==
+X-Gm-Message-State: AOAM533SjkkvfNPV2aIUNiGHZbqoJIWreLU5GK7c0YBuRGeiDlTpvA2Q
+        ND3t0MLYX936ecEH0St5FefuQg==
+X-Google-Smtp-Source: ABdhPJx+9IDb/ywuiMW4gqarDNqt7pH3N+XSFMl5YC3dntNSpPaUZEs1grfZvotZIiN3xZs6Xp8Hkg==
+X-Received: by 2002:a17:90a:1941:: with SMTP id 1mr9632407pjh.217.1623425277894;
+        Fri, 11 Jun 2021 08:27:57 -0700 (PDT)
 Received: from localhost ([2401:fa00:95:205:33c8:8e01:1161:6797])
-        by smtp.gmail.com with UTF8SMTPSA id m2sm5324723pjf.24.2021.06.11.08.27.41
+        by smtp.gmail.com with UTF8SMTPSA id p11sm5083386pfo.126.2021.06.11.08.27.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 08:27:48 -0700 (PDT)
+        Fri, 11 Jun 2021 08:27:57 -0700 (PDT)
 From:   Claire Chang <tientzu@chromium.org>
 To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
         Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
@@ -76,9 +76,9 @@ Cc:     benh@kernel.crashing.org, paulus@samba.org,
         joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
         maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
         rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: [PATCH v9 04/14] swiotlb: Add restricted DMA pool initialization
-Date:   Fri, 11 Jun 2021 23:26:49 +0800
-Message-Id: <20210611152659.2142983-5-tientzu@chromium.org>
+Subject: [PATCH v9 05/14] swiotlb: Update is_swiotlb_buffer to add a struct device argument
+Date:   Fri, 11 Jun 2021 23:26:50 +0800
+Message-Id: <20210611152659.2142983-6-tientzu@chromium.org>
 X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
 In-Reply-To: <20210611152659.2142983-1-tientzu@chromium.org>
 References: <20210611152659.2142983-1-tientzu@chromium.org>
@@ -88,145 +88,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the initialization function to create restricted DMA pools from
-matching reserved-memory nodes.
+Update is_swiotlb_buffer to add a struct device argument. This will be
+useful later to allow for restricted DMA pool.
 
 Signed-off-by: Claire Chang <tientzu@chromium.org>
 ---
- include/linux/swiotlb.h |  3 +-
- kernel/dma/Kconfig      | 14 ++++++++
- kernel/dma/swiotlb.c    | 75 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 91 insertions(+), 1 deletion(-)
+ drivers/iommu/dma-iommu.c | 12 ++++++------
+ drivers/xen/swiotlb-xen.c |  2 +-
+ include/linux/swiotlb.h   |  7 ++++---
+ kernel/dma/direct.c       |  6 +++---
+ kernel/dma/direct.h       |  6 +++---
+ 5 files changed, 17 insertions(+), 16 deletions(-)
 
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 5d96fcc45fec..1a6a08908245 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -506,7 +506,7 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
+ 
+ 	__iommu_dma_unmap(dev, dma_addr, size);
+ 
+-	if (unlikely(is_swiotlb_buffer(phys)))
++	if (unlikely(is_swiotlb_buffer(dev, phys)))
+ 		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
+ }
+ 
+@@ -577,7 +577,7 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+ 	}
+ 
+ 	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
+-	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
++	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(dev, phys))
+ 		swiotlb_tbl_unmap_single(dev, phys, org_size, dir, attrs);
+ 	return iova;
+ }
+@@ -783,7 +783,7 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
+ 	if (!dev_is_dma_coherent(dev))
+ 		arch_sync_dma_for_cpu(phys, size, dir);
+ 
+-	if (is_swiotlb_buffer(phys))
++	if (is_swiotlb_buffer(dev, phys))
+ 		swiotlb_sync_single_for_cpu(dev, phys, size, dir);
+ }
+ 
+@@ -796,7 +796,7 @@ static void iommu_dma_sync_single_for_device(struct device *dev,
+ 		return;
+ 
+ 	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
+-	if (is_swiotlb_buffer(phys))
++	if (is_swiotlb_buffer(dev, phys))
+ 		swiotlb_sync_single_for_device(dev, phys, size, dir);
+ 
+ 	if (!dev_is_dma_coherent(dev))
+@@ -817,7 +817,7 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
+ 		if (!dev_is_dma_coherent(dev))
+ 			arch_sync_dma_for_cpu(sg_phys(sg), sg->length, dir);
+ 
+-		if (is_swiotlb_buffer(sg_phys(sg)))
++		if (is_swiotlb_buffer(dev, sg_phys(sg)))
+ 			swiotlb_sync_single_for_cpu(dev, sg_phys(sg),
+ 						    sg->length, dir);
+ 	}
+@@ -834,7 +834,7 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
+ 		return;
+ 
+ 	for_each_sg(sgl, sg, nelems, i) {
+-		if (is_swiotlb_buffer(sg_phys(sg)))
++		if (is_swiotlb_buffer(dev, sg_phys(sg)))
+ 			swiotlb_sync_single_for_device(dev, sg_phys(sg),
+ 						       sg->length, dir);
+ 
+diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+index 24d11861ac7d..0c4fb34f11ab 100644
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -100,7 +100,7 @@ static int is_xen_swiotlb_buffer(struct device *dev, dma_addr_t dma_addr)
+ 	 * in our domain. Therefore _only_ check address within our domain.
+ 	 */
+ 	if (pfn_valid(PFN_DOWN(paddr)))
+-		return is_swiotlb_buffer(paddr);
++		return is_swiotlb_buffer(dev, paddr);
+ 	return 0;
+ }
+ 
 diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 008125ccd509..ec0c01796c8a 100644
+index ec0c01796c8a..921b469c6ad2 100644
 --- a/include/linux/swiotlb.h
 +++ b/include/linux/swiotlb.h
-@@ -72,7 +72,8 @@ extern enum swiotlb_force swiotlb_force;
-  *		range check to see if the memory was in fact allocated by this
-  *		API.
-  * @nslabs:	The number of IO TLB blocks (in groups of 64) between @start and
-- *		@end. This is command line adjustable via setup_io_tlb_npages.
-+ *		@end. For default swiotlb, this is command line adjustable via
-+ *		setup_io_tlb_npages.
-  * @used:	The number of used IO TLB block.
-  * @list:	The free list describing the number of free entries available
-  *		from each index.
-diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-index 77b405508743..3e961dc39634 100644
---- a/kernel/dma/Kconfig
-+++ b/kernel/dma/Kconfig
-@@ -80,6 +80,20 @@ config SWIOTLB
- 	bool
- 	select NEED_DMA_MAP_STATE
+@@ -2,6 +2,7 @@
+ #ifndef __LINUX_SWIOTLB_H
+ #define __LINUX_SWIOTLB_H
  
-+config DMA_RESTRICTED_POOL
-+	bool "DMA Restricted Pool"
-+	depends on OF && OF_RESERVED_MEM
-+	select SWIOTLB
-+	help
-+	  This enables support for restricted DMA pools which provide a level of
-+	  DMA memory protection on systems with limited hardware protection
-+	  capabilities, such as those lacking an IOMMU.
-+
-+	  For more information see
-+	  <Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt>
-+	  and <kernel/dma/swiotlb.c>.
-+	  If unsure, say "n".
-+
- #
- # Should be selected if we can mmap non-coherent mappings to userspace.
- # The only thing that is really required is a way to set an uncached bit
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 29b950ab1351..c4a071d6a63f 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -39,6 +39,13 @@
- #ifdef CONFIG_DEBUG_FS
- #include <linux/debugfs.h>
- #endif
-+#ifdef CONFIG_DMA_RESTRICTED_POOL
-+#include <linux/io.h>
-+#include <linux/of.h>
-+#include <linux/of_fdt.h>
-+#include <linux/of_reserved_mem.h>
-+#include <linux/slab.h>
-+#endif
++#include <linux/device.h>
+ #include <linux/dma-direction.h>
+ #include <linux/init.h>
+ #include <linux/types.h>
+@@ -102,9 +103,9 @@ struct io_tlb_mem {
+ };
+ extern struct io_tlb_mem *io_tlb_default_mem;
  
- #include <asm/io.h>
- #include <asm/dma.h>
-@@ -688,3 +695,71 @@ static int __init swiotlb_create_default_debugfs(void)
- late_initcall(swiotlb_create_default_debugfs);
+-static inline bool is_swiotlb_buffer(phys_addr_t paddr)
++static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+ {
+-	struct io_tlb_mem *mem = io_tlb_default_mem;
++	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
  
- #endif
-+
-+#ifdef CONFIG_DMA_RESTRICTED_POOL
-+static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
-+				    struct device *dev)
-+{
-+	struct io_tlb_mem *mem = rmem->priv;
-+	unsigned long nslabs = rmem->size >> IO_TLB_SHIFT;
-+
-+	/*
-+	 * Since multiple devices can share the same pool, the private data,
-+	 * io_tlb_mem struct, will be initialized by the first device attached
-+	 * to it.
-+	 */
-+	if (!mem) {
-+		mem = kzalloc(struct_size(mem, slots, nslabs), GFP_KERNEL);
-+		if (!mem)
-+			return -ENOMEM;
-+
-+		swiotlb_init_io_tlb_mem(mem, rmem->base, nslabs, false, true);
-+
-+		rmem->priv = mem;
-+
-+		if (IS_ENABLED(CONFIG_DEBUG_FS)) {
-+			mem->debugfs =
-+				debugfs_create_dir(rmem->name, debugfs_dir);
-+			swiotlb_create_debugfs_files(mem);
-+		}
-+	}
-+
-+	dev->dma_io_tlb_mem = mem;
-+
-+	return 0;
-+}
-+
-+static void rmem_swiotlb_device_release(struct reserved_mem *rmem,
-+					struct device *dev)
-+{
-+	dev->dma_io_tlb_mem = io_tlb_default_mem;
-+}
-+
-+static const struct reserved_mem_ops rmem_swiotlb_ops = {
-+	.device_init = rmem_swiotlb_device_init,
-+	.device_release = rmem_swiotlb_device_release,
-+};
-+
-+static int __init rmem_swiotlb_setup(struct reserved_mem *rmem)
-+{
-+	unsigned long node = rmem->fdt_node;
-+
-+	if (of_get_flat_dt_prop(node, "reusable", NULL) ||
-+	    of_get_flat_dt_prop(node, "linux,cma-default", NULL) ||
-+	    of_get_flat_dt_prop(node, "linux,dma-default", NULL) ||
-+	    of_get_flat_dt_prop(node, "no-map", NULL))
-+		return -EINVAL;
-+
-+	if (PageHighMem(pfn_to_page(PHYS_PFN(rmem->base)))) {
-+		pr_err("Restricted DMA pool must be accessible within the linear mapping.");
-+		return -EINVAL;
-+	}
-+
-+	rmem->ops = &rmem_swiotlb_ops;
-+	pr_info("Reserved memory: created restricted DMA pool at %pa, size %ld MiB\n",
-+		&rmem->base, (unsigned long)rmem->size / SZ_1M);
-+	return 0;
-+}
-+
-+RESERVEDMEM_OF_DECLARE(dma, "restricted-dma-pool", rmem_swiotlb_setup);
-+#endif /* CONFIG_DMA_RESTRICTED_POOL */
+ 	return mem && paddr >= mem->start && paddr < mem->end;
+ }
+@@ -121,7 +122,7 @@ bool is_swiotlb_active(void);
+ void __init swiotlb_adjust_size(unsigned long size);
+ #else
+ #define swiotlb_force SWIOTLB_NO_FORCE
+-static inline bool is_swiotlb_buffer(phys_addr_t paddr)
++static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+ {
+ 	return false;
+ }
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index f737e3347059..84c9feb5474a 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -343,7 +343,7 @@ void dma_direct_sync_sg_for_device(struct device *dev,
+ 	for_each_sg(sgl, sg, nents, i) {
+ 		phys_addr_t paddr = dma_to_phys(dev, sg_dma_address(sg));
+ 
+-		if (unlikely(is_swiotlb_buffer(paddr)))
++		if (unlikely(is_swiotlb_buffer(dev, paddr)))
+ 			swiotlb_sync_single_for_device(dev, paddr, sg->length,
+ 						       dir);
+ 
+@@ -369,7 +369,7 @@ void dma_direct_sync_sg_for_cpu(struct device *dev,
+ 		if (!dev_is_dma_coherent(dev))
+ 			arch_sync_dma_for_cpu(paddr, sg->length, dir);
+ 
+-		if (unlikely(is_swiotlb_buffer(paddr)))
++		if (unlikely(is_swiotlb_buffer(dev, paddr)))
+ 			swiotlb_sync_single_for_cpu(dev, paddr, sg->length,
+ 						    dir);
+ 
+@@ -504,7 +504,7 @@ size_t dma_direct_max_mapping_size(struct device *dev)
+ bool dma_direct_need_sync(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	return !dev_is_dma_coherent(dev) ||
+-		is_swiotlb_buffer(dma_to_phys(dev, dma_addr));
++	       is_swiotlb_buffer(dev, dma_to_phys(dev, dma_addr));
+ }
+ 
+ /**
+diff --git a/kernel/dma/direct.h b/kernel/dma/direct.h
+index 50afc05b6f1d..13e9e7158d94 100644
+--- a/kernel/dma/direct.h
++++ b/kernel/dma/direct.h
+@@ -56,7 +56,7 @@ static inline void dma_direct_sync_single_for_device(struct device *dev,
+ {
+ 	phys_addr_t paddr = dma_to_phys(dev, addr);
+ 
+-	if (unlikely(is_swiotlb_buffer(paddr)))
++	if (unlikely(is_swiotlb_buffer(dev, paddr)))
+ 		swiotlb_sync_single_for_device(dev, paddr, size, dir);
+ 
+ 	if (!dev_is_dma_coherent(dev))
+@@ -73,7 +73,7 @@ static inline void dma_direct_sync_single_for_cpu(struct device *dev,
+ 		arch_sync_dma_for_cpu_all();
+ 	}
+ 
+-	if (unlikely(is_swiotlb_buffer(paddr)))
++	if (unlikely(is_swiotlb_buffer(dev, paddr)))
+ 		swiotlb_sync_single_for_cpu(dev, paddr, size, dir);
+ 
+ 	if (dir == DMA_FROM_DEVICE)
+@@ -113,7 +113,7 @@ static inline void dma_direct_unmap_page(struct device *dev, dma_addr_t addr,
+ 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+ 		dma_direct_sync_single_for_cpu(dev, addr, size, dir);
+ 
+-	if (unlikely(is_swiotlb_buffer(phys)))
++	if (unlikely(is_swiotlb_buffer(dev, phys)))
+ 		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
+ }
+ #endif /* _KERNEL_DMA_DIRECT_H */
 -- 
 2.32.0.272.g935e593368-goog
 
