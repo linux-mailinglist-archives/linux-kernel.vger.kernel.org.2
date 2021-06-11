@@ -2,102 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F393A476D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCC23A4771
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhFKRHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:07:49 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40392 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhFKRHs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:07:48 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BH5gD6044939;
-        Fri, 11 Jun 2021 12:05:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623431142;
-        bh=l99g2k9vyL7sWPEL1tJV5egVhHg7xB19/k7tlJBHCis=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=nF/qVd3Mj/m9MRbNFgfFN9tKi0ajkH8wJwVu1jPxzTEyJggL/qZlEE9e8N7giuRJB
-         RWKd0Urwl3U9A2suvzRZCDzcOVykd3lkpvSq6x4RCr6dAwm+GI17lTnUfDy2KD8W3S
-         IJ6S0OLC/Gxipz1hGR2TMi4O0EVX7wGeL1j1ANfE=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BH5gg7018538
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Jun 2021 12:05:42 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 12:05:42 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 11 Jun 2021 12:05:42 -0500
-Received: from [10.247.25.23] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BH5fpX073943;
-        Fri, 11 Jun 2021 12:05:42 -0500
-Subject: Re: [PATCH v2] net: phy: dp83867: perform soft reset and retain
- established link
-To:     Johannes Pointner <h4nn35.work@gmail.com>,
-        Geet Modi <geet.modi@ti.com>, Andrew Lunn <andrew@lunn.ch>
-CC:     <netdev@vger.kernel.org>, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <3494dcf6-14ca-be2b-dbf8-dda2e208b70b@ti.com>
- <20210610004342.4493-1-praneeth@ti.com> <YMGP/aim6CD270Yo@lunn.ch>
- <CAHvQdo0YAmAo_1m7LgLS200a7fNz-vYJkwR74AxckQm-iu0tuA@mail.gmail.com>
-From:   "Bajjuri, Praneeth" <praneeth@ti.com>
-Message-ID: <e4f3a1c2-069e-b58a-eadf-b5505fb42e02@ti.com>
-Date:   Fri, 11 Jun 2021 12:05:41 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231420AbhFKRIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:08:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:36002 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231199AbhFKRIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:08:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 942FED6E;
+        Fri, 11 Jun 2021 10:06:08 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 264083F719;
+        Fri, 11 Jun 2021 10:06:06 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 18:06:00 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com
+Subject: Re: [PATCH v2 0/5] Review/Extend SCMI Transport Core layer
+Message-ID: <20210611170600.GA35183@e120937-lin>
+References: <20210601102421.26581-1-cristian.marussi@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHvQdo0YAmAo_1m7LgLS200a7fNz-vYJkwR74AxckQm-iu0tuA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601102421.26581-1-cristian.marussi@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hannes,
+Hi,
 
-On 6/10/2021 12:53 AM, Johannes Pointner wrote:
-> Hello,
+On Tue, Jun 01, 2021 at 11:24:16AM +0100, Cristian Marussi wrote:
+> Hi all,
 > 
-> On Thu, Jun 10, 2021 at 6:10 AM Andrew Lunn <andrew@lunn.ch> wrote:
->>
->> On Wed, Jun 09, 2021 at 07:43:42PM -0500, praneeth@ti.com wrote:
->>> From: Praneeth Bajjuri <praneeth@ti.com>
->>>
->>> Current logic is performing hard reset and causing the programmed
->>> registers to be wiped out.
->>>
->>> as per datasheet: https://www.ti.com/lit/ds/symlink/dp83867cr.pdf
->>> 8.6.26 Control Register (CTRL)
->>>
->>> do SW_RESTART to perform a reset not including the registers,
->>> If performed when link is already present,
->>> it will drop the link and trigger re-auto negotiation.
->>>
->>> Signed-off-by: Praneeth Bajjuri <praneeth@ti.com>
->>> Signed-off-by: Geet Modi <geet.modi@ti.com>
->>
->> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->>
->>      Andrew
+> this short series is meant to review and extend a couple of SCMI transport
+> core layer mechanisms in order to ease the interaction with more complex
+> SCMI transport driver like the upcoming virtio-scmi and optee-scmi.
 > 
-> I reported a few days ago an issue with the DP83822 which I think is
-> caused by a similar change.
-> https://lore.kernel.org/netdev/CAHvQdo2yzJC89K74c_CZFjPydDQ5i22w36XPR5tKVv_W8a2vcg@mail.gmail.com/
-> In my case I can't get an link after this change, reverting it fixes
-> the problem for me.
 
-Are you saying that instead of reset if sw_restart is done as per this 
-patch, there is no issue?
+I'm going to retire this series as standalone and post these changes
+only together with the SCMI VirtIO series that need them at:
 
-> 
-> Hannes
-> 
+https://lore.kernel.org/linux-arm-kernel/20210611165937.701-1-cristian.marussi@arm.com/T/#t
+
+Thanks,
+Cristian
+
