@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2873A3FC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8193A3FC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhFKKGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:06:40 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5506 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhFKKGh (ORCPT
+        id S231530AbhFKKIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:08:52 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56976 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231140AbhFKKI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:06:37 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1bwT6sRkzZfyh;
-        Fri, 11 Jun 2021 18:01:45 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 18:04:31 +0800
-Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
- (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 18:04:30 +0800
-Subject: Re: [PATCH v6 0/2] drivers/perf: hisi: Add support for PCIe PMU
-To:     Linuxarm <linuxarm@huawei.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>, <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <zhangshaokun@hisilicon.com>
-References: <1622467951-32114-1-git-send-email-liuqi115@huawei.com>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <9a65847f-7467-f9c4-158a-93aca21ee203@huawei.com>
-Date:   Fri, 11 Jun 2021 18:04:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <1622467951-32114-1-git-send-email-liuqi115@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.203]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+        Fri, 11 Jun 2021 06:08:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2CD7A1FD3F;
+        Fri, 11 Jun 2021 10:06:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623405989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pLj8OXME0mT2ROZvbeRx1HoinugDdpFHAO6g1llgaoA=;
+        b=iH77XjfGNlgMfoPDedBGhwwKevWKQ5/A0k5LDJ/NYrIynGojevq/03H1TncJXGA9tJbcZd
+        NeH5rPh4NituxzpFwB8rg8X7mhbbozoVvz3U237L/4c/8ArYg7zXFEqj+O/4ON9MnSCI2G
+        oaDOz2m+VBBcPF1Ey9ByKTHY7fPRfTI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623405989;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pLj8OXME0mT2ROZvbeRx1HoinugDdpFHAO6g1llgaoA=;
+        b=NNsCjE5z7SmDmDqjcK15BBlKLhji0BWI27diN6tDNer3Fq+2LjOkn/oHZiJ05PaqmErDUG
+        lnXImGv160VAY0Dg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 26E43A3B84;
+        Fri, 11 Jun 2021 10:06:29 +0000 (UTC)
+Date:   Fri, 11 Jun 2021 12:06:29 +0200
+Message-ID: <s5ho8cc7m1m.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: sdhci: Clear unused bounce buffer at DMA mmap error path
+In-Reply-To: <98f90fcb-1134-f90b-db42-29f9505de046@intel.com>
+References: <20210611090330.13039-1-tiwai@suse.de>
+        <98f90fcb-1134-f90b-db42-29f9505de046@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+On Fri, 11 Jun 2021 11:56:16 +0200,
+Adrian Hunter wrote:
+> 
+> On 11/06/21 12:03 pm, Takashi Iwai wrote:
+> > When DMA-mapping of the bounce buffer fails, the driver tries to fall
+> > back, but it leaves the allocated host->bounce_buffer although its
+> > size is zero.  Later on, the driver checks the use of bounce buffer
+> > with host->bounce_buffer pointer, and it tries to use the buffer
+> > incorrectly, resulting in Oops.
+> > 
+> > This patch clears the release the unused buffer and clears the
+> > bounce_buffer pointer for addressing the problem.
+> > 
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 
+> One minor comment below, otherwise:
+> 
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> 
+> > ---
+> >  drivers/mmc/host/sdhci.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> > index bf238ade1602..5f467b98ca88 100644
+> > --- a/drivers/mmc/host/sdhci.c
+> > +++ b/drivers/mmc/host/sdhci.c
+> > @@ -4072,9 +4072,13 @@ static void sdhci_allocate_bounce_buffer(struct sdhci_host *host)
+> >  					   bounce_size,
+> >  					   DMA_BIDIRECTIONAL);
+> >  	ret = dma_mapping_error(mmc_dev(mmc), host->bounce_addr);
+> > -	if (ret)
+> > +	if (ret) {
+> > +		devm_kfree(mmc->parent, host->bounce_buffer);
+> 
+> Everywhere else in this function mmc_dev(mmc) is used, so maybe
+> use it here too instead of mmc->parent.
 
-Gentle ping..
-any comments for this ?
+Doh, right, I wrote a patch based on the older kernel and refreshed
+afterwards, but I forgot correcting this place.  Will resubmit the
+fixed version.
 
-On 2021/5/31 21:32, Qi Liu wrote:
-> This patchset adds support for HiSilicon PCIe Performance Monitoring
-> Unit(PMU). It is a PCIe Root Complex integrated End Point(RCiEP) device
-> added on Hip09. Each PCIe Core has a PMU RCiEP to monitor multi root
-> ports and all Endpoints downstream these root ports.
-> 
-> HiSilicon PCIe PMU is supported to collect performance data of PCIe bus,
-> such as: bandwidth, latency etc.
-> 
-> This patchset is based on 5.13-rc3.
-> 
-> Changes since v5:
-> - Fix some errors when build under ARCH=xtensa.
-> - Link: https://lore.kernel.org/linux-arm-kernel/1621946795-14046-1-git-send-email-liuqi115@huawei.com/
-> 
-> Changes since v4:
-> - Replace irq_set_affinity_hint() with irq_set_affinity().
-> - Link: https://lore.kernel.org/linux-arm-kernel/1621417741-5229-1-git-send-email-liuqi115@huawei.com/
-> 
-> Changes since v3:
-> - Fix some warnings when build under 32bits architecture.
-> - Address the comments from John.
-> - Link: https://lore.kernel.org/linux-arm-kernel/1618490885-44612-1-git-send-email-liuqi115@huawei.com/
-> 
-> Changes since v2:
-> - Address the comments from John.
-> - Link: https://lore.kernel.org/linux-arm-kernel/1617959157-22956-1-git-send-email-liuqi115@huawei.com/
-> 
-> Changes since v1:
-> - Drop the internal Reviewed-by tag.
-> - Fix some build warnings when W=1.
-> - Link: https://lore.kernel.org/linux-arm-kernel/1617788943-52722-1-git-send-email-liuqi115@huawei.com/
-> 
-> Qi Liu (2):
->    docs: perf: Add description for HiSilicon PCIe PMU driver
->    drivers/perf: hisi: Add driver for HiSilicon PCIe PMU
-> 
->   Documentation/admin-guide/perf/hisi-pcie-pmu.rst |  104 +++
->   MAINTAINERS                                      |    6 +
->   drivers/perf/Kconfig                             |    2 +
->   drivers/perf/Makefile                            |    1 +
->   drivers/perf/pci/Kconfig                         |   16 +
->   drivers/perf/pci/Makefile                        |    2 +
->   drivers/perf/pci/hisilicon/Makefile              |    3 +
->   drivers/perf/pci/hisilicon/hisi_pcie_pmu.c       | 1019 ++++++++++++++++++++++
->   include/linux/cpuhotplug.h                       |    1 +
->   9 files changed, 1154 insertions(+)
->   create mode 100644 Documentation/admin-guide/perf/hisi-pcie-pmu.rst
->   create mode 100644 drivers/perf/pci/Kconfig
->   create mode 100644 drivers/perf/pci/Makefile
->   create mode 100644 drivers/perf/pci/hisilicon/Makefile
->   create mode 100644 drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
-> 
 
+thanks,
+
+Takashi
