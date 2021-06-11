@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CB43A4431
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F043A443B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhFKOkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhFKOks (ORCPT
+        id S231269AbhFKOls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:41:48 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:33717 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231153AbhFKOln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:40:48 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FFBC061574;
-        Fri, 11 Jun 2021 07:38:34 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id h24so4936867ejy.2;
-        Fri, 11 Jun 2021 07:38:34 -0700 (PDT)
+        Fri, 11 Jun 2021 10:41:43 -0400
+Received: by mail-ej1-f44.google.com with SMTP id g20so4993724ejt.0;
+        Fri, 11 Jun 2021 07:39:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=N4ihkj1Omvm17QpjwktGEKecRjJXJDw8GrzMNkb435A=;
-        b=l3lSfoYVptC7mVRVSdI+ePCvmnj3PEMgJDMkS/LqOUUMC4V7916wi9PFr8HNuwZipV
-         vO8kuOfQBjqfLOjlU2z2HgTgrDic8h89sU9JabJnMJQ3Qp9CVJJjFod8sYrwOuuXUDOY
-         g9Xys5VJzo6nC9kEUJ/kPnb0Bhjn+FAFDxduqr5HhJJGPTWG8H1Z8YTdRJcBMPNhGvTu
-         hDa948ulrWnAFaZKmOiy2DAypuMY2srBwgybTz9zliJorIlERup5YX4qeXpyDF49Bpku
-         PyDIXqHqcVOtgiLMMN/ldCAEOVypMGJ4Mzbk2fVU7m7n+bkYtlK3R+yq+pekW8yZR0N3
-         5sUA==
+        bh=XBRHI4+WYHmQJKlvWWX3TLpIW3BFtZ2+OX11eMACGnk=;
+        b=UFM1trJ8yeAcqxOgBw5feSfI9sIKPV3AYDxSLNipVu/78czQK1euUWGsSurNQbORni
+         IU/j/uoXlQmcL9BIQX0si8LDv87Nyk9vdp7HXJfGr2UTiBCfDyC0cmjeAnGy+GCd1d1h
+         mA0Z6Wm4WozamSRv3ATvjCdxp/ZeRiqhd0+9MKXg1wIaRJ6dIx7WaXj74872SMkfm5IO
+         cg2/lR4qMAuaE/f0W2pYMGXrnjXSnVQH1Fv3NyNPLXJCZshFQ5MFtgFztDj9Y8pBlask
+         Djdy8eUuGZp+PX6D8C+jgck0/Afjlz3I/54Knp6dbJ5/Ca8Bq7urWQ6mk4+Jbse/sieF
+         x61A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=N4ihkj1Omvm17QpjwktGEKecRjJXJDw8GrzMNkb435A=;
-        b=B1O7VadKb6Itw0Hos2Ohp5AAPYsnrrintw/kPuLI6X/fVh9in1Iq4ZAiWaK/UuO1eH
-         Vuc/EfxBfqPBVGADXo5l/27d41dHuHLka34uq/6B2TZhlC3nJP3Mr/BKrWKRLGz5A1iv
-         7Az8jEi/yvabYx9hJwi/t3/csaf3ZvGo6Ic1LH9TGyVwIBYqd4w+z47Vgguy/qbTtCOh
-         bs1VRbSNqnOctasVVTWaud3bcDW4ffWD1NecX3A3j3KLCOZOyk8tco34nR+ReTJnl2I+
-         9gGuDAdzEug7PXWEczzwcl77hiyP92xgtvsghcY7vCVhq7kegS+ChATnKaTkwM1ziHfY
-         J7sg==
-X-Gm-Message-State: AOAM530Gouyn8SmJCrmQmB6m2OU2QQTHRcF1Vq7WbKQ1r+8AMQ8pOx8B
-        zlVfhphfqLa+13ocK4gcOwo=
-X-Google-Smtp-Source: ABdhPJwIZFic3caAilARhIEd7H2HfaOUHTtAVzv+rSXbDXagmwMDKVs7WG/NEwZ9qwboIieRS8OFDA==
-X-Received: by 2002:a17:906:e01:: with SMTP id l1mr4073984eji.280.1623422313238;
-        Fri, 11 Jun 2021 07:38:33 -0700 (PDT)
+        bh=XBRHI4+WYHmQJKlvWWX3TLpIW3BFtZ2+OX11eMACGnk=;
+        b=mTm7cYT49AoxOqW6LICIguBdCBSTGuFRuO2NkG6nj+7HIswVONFkZvu90V+PLmwKo7
+         MUIc3XHbyLwz9Qx/jmR1GQnjbRJN8c6OsN/71ugp7ukRWHEsLjAamgXoqnXEMU9Y458z
+         IhIV1kN8elwOCsdwraMX+rNUtF8eTUJDqEqo346gkqih54yfTrGbtbLhg99cGP/IL9Yb
+         b6JwRukXouUJNBeKW4xvaSM4kD3EkdJNEWe6ligB1zlawX/XsdOIm7UPWESxOUUAQ+7u
+         +EBB0WPLIuk5b3S1YV6uNhILoyrPpbLWKpV376bTIdyxLWdzprC0npziSqgDv5JVsspM
+         /ybw==
+X-Gm-Message-State: AOAM532Q6haAuTYEZD3ZwQ1xcIaFkcPYBCpa8aqOZOGdmxvusb/i6yMb
+        G8s+cwczfF/tQtwDQ9z2u+Y=
+X-Google-Smtp-Source: ABdhPJyqScTR2284kAikALC1nJ97K51aH3EX1zPsYdCG6oLiLVDJzM3gcWpADKsOMJKgpwTKzwtomw==
+X-Received: by 2002:a17:906:3ed0:: with SMTP id d16mr3879999ejj.16.1623422314043;
+        Fri, 11 Jun 2021 07:38:34 -0700 (PDT)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id p14sm2671008eds.19.2021.06.11.07.38.32
+        by smtp.gmail.com with ESMTPSA id p14sm2671008eds.19.2021.06.11.07.38.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Jun 2021 07:38:32 -0700 (PDT)
+        Fri, 11 Jun 2021 07:38:33 -0700 (PDT)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 2/3] ARM: dts: rockchip: add io-domains nodes to rv1108.dtsi
-Date:   Fri, 11 Jun 2021 16:38:20 +0200
-Message-Id: <20210611143821.13057-2-jbx6244@gmail.com>
+Subject: [RFC PATCH v1 3/3] ARM: dts: rockchip: add io-domains nodes to rk3188.dtsi
+Date:   Fri, 11 Jun 2021 16:38:21 +0200
+Message-Id: <20210611143821.13057-3-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210611143821.13057-1-jbx6244@gmail.com>
 References: <20210611143821.13057-1-jbx6244@gmail.com>
@@ -65,51 +62,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 The compatible strings below where added to
 rockchip-io-domain.txt, but never added to the device tree.
 
-"rockchip,rv1108-io-voltage-domain"
-"rockchip,rv1108-pmu-io-voltage-domain"
-
-Add io-domains nodes to rv1108.dtsi
+"rockchip,rk3188-io-voltage-domain"
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
+ arch/arm/boot/dts/rk3188.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Due to the lack of a rv1108 TRM changes
-to grf.yaml or rv1108.dtsi not verified.
----
- arch/arm/boot/dts/rv1108.dtsi | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
-index 9bd0acf3b..1a61a6a68 100644
---- a/arch/arm/boot/dts/rv1108.dtsi
-+++ b/arch/arm/boot/dts/rv1108.dtsi
-@@ -265,6 +265,11 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
+diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
+index b36fcdd9a..2721b7285 100644
+--- a/arch/arm/boot/dts/rk3188.dtsi
++++ b/arch/arm/boot/dts/rk3188.dtsi
+@@ -641,6 +641,11 @@
+ &grf{
+ 	compatible = "rockchip,rk3188-grf", "syscon", "simple-mfd";
  
-+		io_domains: io-domains {
-+			compatible = "rockchip,rv1108-io-voltage-domain";
-+			status = "disabled";
-+		};
++	io_domains: io-domains {
++		compatible = "rockchip,rk3188-io-voltage-domain";
++		status = "disabled";
++	};
 +
- 		u2phy: usb2phy@100 {
- 			compatible = "rockchip,rv1108-usb2phy";
- 			reg = <0x100 0x0c>;
-@@ -434,8 +439,13 @@
- 	};
- 
- 	pmugrf: syscon@20060000 {
--		compatible = "rockchip,rv1108-pmugrf", "syscon";
-+		compatible = "rockchip,rv1108-pmugrf", "syscon", "simple-mfd";
- 		reg = <0x20060000 0x1000>;
-+
-+		pmu_io_domains: io-domains {
-+			compatible = "rockchip,rv1108-pmu-io-voltage-domain";
-+			status = "disabled";
-+		};
- 	};
- 
- 	usbgrf: syscon@202a0000 {
+ 	usbphy: usbphy {
+ 		compatible = "rockchip,rk3188-usb-phy",
+ 			     "rockchip,rk3288-usb-phy";
 -- 
 2.11.0
 
