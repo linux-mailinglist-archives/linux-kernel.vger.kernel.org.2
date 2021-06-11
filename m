@@ -2,63 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA483A417C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CE33A4180
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhFKLxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:53:23 -0400
-Received: from mail-qv1-f51.google.com ([209.85.219.51]:36403 "EHLO
-        mail-qv1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230470AbhFKLxP (ORCPT
+        id S231153AbhFKL4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 07:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230129AbhFKL4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:53:15 -0400
-Received: by mail-qv1-f51.google.com with SMTP id im10so15475938qvb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:51:05 -0700 (PDT)
+        Fri, 11 Jun 2021 07:56:53 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50FDC0617AF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:54:41 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id t6so10474081qvp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RM8SbiamRAqEYBQWvt1zz0QiLBzqVfHdHpmDx37QuwU=;
-        b=fePXtwI12Iq05ePtlIj8shlIJHX4DaDQ32hB9cG3cca21aINFphdPqRiPJhrRM+oUB
-         wN3V+w55rL0QhXLQ0bbels3X5vyE4iS5q0dMAxOUjUOuUrqqk2aTeq6okhBrzluXvaxe
-         Hz8bq3LYstAAwip+vGEMF4C/eRe/CJFsf6ZHpAzFNL+vkzw7r7z9THIp8k6R28exgeWM
-         4HHMuSQi9fzSLxBgsC7HQizQPxXmPjqswVhAznvhC2pt5givvYX8XR1wfDukHEdBS+kP
-         N0/b/dRySPVs/J+fAqEA56JSxrxzvXrx3rOL6d3p2f3DbuC6vHPXiZbrpB/dtvaL6JjH
-         jSKQ==
+        bh=eUttRMHttOnDA7jK+Bhgw9VuVSK/sEPVdIVgBgNsUfs=;
+        b=zmy+/sV0dMH5LMwC+7d9/al0x8cE++ECq+h/bjqm4xcyzk9G6t/NCaCwdSUBUHasYM
+         eO9rQ8aEVtodfxoKOF4KByhJPY9kICmY8HE6JZ4uIO1u0rok7NIO1v3Z9kZhx4a9RJwZ
+         vuSddBMUJIOYQomd8/RXY08TXJIT6QAkqTsdckp16Y4T3hWigoO6BMss0goRfoX7aSLF
+         8ZNgu1F3hUs92PhyPmaP8P0igPjQo/RqCMM02gybNXsIttUsHorEctPS3kt8D5/rlHZs
+         iAHSjhG5L1ciXEARjS5UkjLeusSQIhU2EPt8js2uYU0Cae4lRdHMKy1MB+4f7GB5FSPh
+         ON7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=RM8SbiamRAqEYBQWvt1zz0QiLBzqVfHdHpmDx37QuwU=;
-        b=AtFHag0CzhNzm/IIFTp42LnSoaK/sEZOdLlUmQhukYix/AODtxukc0owtF1fZXFZaL
-         2QxaSydAjyujo+8+5cHyu1WO8lsxz37olfCFWoBK5N6vxNHJFXvjhjkba2eyb+Mtnqx9
-         7dXJQIYdhDBK6Z//5/HwW5cWalx32nfGGRnCFX998TpnL1Jr14JDXepdIU2zlOzZFeZr
-         pFqI/Y0CMcYJM/Nu2wzP6lzDVdAwWUbMZPdAG3FJa00B0n2BfR8BWqtlUcRDyhQOrAtM
-         80NMqLOMXXKwsUa5/vNofq3c+6eS/JYPYnSTgHVFVE4m4ZwI5Wm6Ckt54AIGpwjInJU6
-         O3Eg==
-X-Gm-Message-State: AOAM531eOQ8iEAQcGZFIWJSeBOZXCmu4PY0DBeEP5EdM4SAs1aTLLkPA
-        cuGArZcpCmCVXyJD/8sYV4NMlMrG5Jw7mQ==
-X-Google-Smtp-Source: ABdhPJxzIcffT3qoG1eWyiesO8Mwm8yOIdHq4qcbltAq56GYtyGUnvyT4J2ipiPRhOVVLcc2VO3/DA==
-X-Received: by 2002:ad4:40cf:: with SMTP id x15mr4329423qvp.50.1623412203934;
-        Fri, 11 Jun 2021 04:50:03 -0700 (PDT)
+        bh=eUttRMHttOnDA7jK+Bhgw9VuVSK/sEPVdIVgBgNsUfs=;
+        b=MvNl3DWOQeKReAqGPs6op2duzsSC/YC77D/q3gSSatSXk9C7OTGUYY+rjVuJuLhL0p
+         cIEljFHv/Z1eIhVb10NQa/M+vFowOHesbwmLQJh5ZxEU2GbQ2y4YjV5pCCTCN/RibLEl
+         62TSTz3nLIMB/jgREPwTiIwIzm4HrTSCGYn9oXX+SSA+jPhXO79ZHwq5/ZC6XCoUOrE6
+         Q8Ot+LnT+9HXQuNgFpeg3kgjcJo2/KQ0DlI05nyJsXiab28WqNx8ZwDHjLHg9M6SNZ0Y
+         aGBZnNQq63/CZ2UxeSLWeIr2kfID5VPyp2nR8ILEUw0NrUA/YURinsRDxvGWMVH0qhUe
+         jA3Q==
+X-Gm-Message-State: AOAM531mnj28E0HDxQ1qzLd+mvpHTRR8SqxQZLjyTSXn0wASqhBSPaD6
+        g83Cyt36c7Fcwkm2qn4INPlVjYDGOjGEvg==
+X-Google-Smtp-Source: ABdhPJxSJd0To5ubHPmvv8nls7Sz7oTekBM+Y1G8i0qDOWkUIQmLdwfCWQUFmZM7z25U08+qoWJ8Iw==
+X-Received: by 2002:ad4:4502:: with SMTP id k2mr4275389qvu.43.1623412480697;
+        Fri, 11 Jun 2021 04:54:40 -0700 (PDT)
 Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id f5sm4052391qkm.124.2021.06.11.04.50.02
+        by smtp.gmail.com with ESMTPSA id 137sm4220780qko.29.2021.06.11.04.54.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 04:50:03 -0700 (PDT)
-Subject: Re: [PATCH] thermal/drivers/tsens: fix usage of unititialized value
-To:     Yang Li <yang.lee@linux.alibaba.com>, amitk@kernel.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1623145299-109090-1-git-send-email-yang.lee@linux.alibaba.com>
+        Fri, 11 Jun 2021 04:54:40 -0700 (PDT)
+Subject: Re: [PATCH] dt-bindings: thermal: tsens: Add sc8180x compatible
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210608201638.2136344-1-bjorn.andersson@linaro.org>
 From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <3db50e86-911a-8b49-8c87-a33178754deb@linaro.org>
-Date:   Fri, 11 Jun 2021 07:50:00 -0400
+Message-ID: <22fdd7f8-87c1-6a0e-1fc6-8d7536d634a8@linaro.org>
+Date:   Fri, 11 Jun 2021 07:54:38 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1623145299-109090-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <20210608201638.2136344-1-bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,52 +75,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/8/21 5:41 AM, Yang Li wrote:
-> When "tsens_version(priv) > VER_0_1" is false,
-> "regmap_field_read(priv->rf[VER_MINOR], &ver_minor)" can't execute.
-> So, ver_minor has no initialization and assignment before it is
-> used, and we initialize it to 0.
+On 6/8/21 4:16 PM, Bjorn Andersson wrote:
+> The Qualcomm sc8180x platform has the usual tsens blocks, add compatible
+> for this.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Hi Yang,
+Acked-by: Thara Gopinath <thara.gopinath@linaro.org>
 
-Thanks for the patch. I have a few questions though.
-
-1. Where do you see ver_minor being used uninitialized? AFAICT , 
-ver_minor is used like below and will never be referenced if version <= 
-VER_0_1
-	if (tsens_version(priv) > VER_1_X &&  ver_minor > 2) {
-
-2. Do you know whether minor versions can be read or not on tsens ips 
-with verions < 0_1?
 
 -- 
 Warm Regards
-Thara (She/Her/Hers)
+Thara
 
-> 
-> Clean up smatch warning:
-> drivers/thermal/qcom/tsens.c:896 init_common() error: uninitialized
-> symbol 'ver_minor'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->   drivers/thermal/qcom/tsens.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index 4c7ebd1..a36c43d 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -743,8 +743,8 @@ int __init init_common(struct tsens_priv *priv)
->   {
->   	void __iomem *tm_base, *srot_base;
->   	struct device *dev = priv->dev;
-> -	u32 ver_minor;
->   	struct resource *res;
-> +	u32 ver_minor = 0;
->   	u32 enabled;
->   	int ret, i, j;
->   	struct platform_device *op = of_find_device_by_node(priv->dev->of_node);
+> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> index 0242fd91b622..fdd7c361104f 100644
+> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> @@ -46,6 +46,7 @@ properties:
+>                 - qcom,msm8996-tsens
+>                 - qcom,msm8998-tsens
+>                 - qcom,sc7180-tsens
+> +              - qcom,sc8180x-tsens
+>                 - qcom,sdm845-tsens
+>                 - qcom,sm8150-tsens
+>                 - qcom,sm8250-tsens
 > 
 
