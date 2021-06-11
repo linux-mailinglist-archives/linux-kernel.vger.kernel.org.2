@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DB43A4821
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2023A482A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFKR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbhFKR4w (ORCPT
+        id S230427AbhFKR5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:57:37 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:37426 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhFKR5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:56:52 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A940C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:54:53 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w21so38009322edv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:54:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=essensium.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DuwjVu2ah8R74VEunsWVfDwhHMrlU5qQzdUQ6C052p4=;
-        b=aEIc9uZwe+u9+svEykjNBa6wj8i514+l/hkd6EuCzc8CM9yYfATHUKIjl51aNACgMC
-         ksCox/b9uWsZEoXL09PdpyRopHgsbzTmMj+lniYnOsJrkKJ51n4UXW70Gog3ZKkkh24f
-         akOu/j5U0fbnuxa4P2IInNkEA2vXY/Ub6BX9MlyUPCaUvzWwUy80Ks13JK/reShiN8KG
-         58CyX1xEy/SrVJLjo3YLZQKS5l1oBHYTpQ+DJh23nQgCijXsK4V1qMVCjV8eKEW/jHIM
-         wBF7ja1FLRZDRkcG48NkzSpyvsjTCzgkmhaFV0r7tNLacANFAcsfVzL1pQnnCAkyXkVY
-         78yw==
+        Fri, 11 Jun 2021 13:57:36 -0400
+Received: by mail-io1-f45.google.com with SMTP id q7so32097491iob.4;
+        Fri, 11 Jun 2021 10:55:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DuwjVu2ah8R74VEunsWVfDwhHMrlU5qQzdUQ6C052p4=;
-        b=PKCscVjBx5zvT7PrY89PN8yXnLsSOQF2c5g/JlUDYyPALmayEwrEZX+Xd6O8rObua4
-         PwugQf1/x8TLKeKXcxiFgrl9PnaeiXW2Bni77yFOKC+iHdVyclrhQD5CJRRV6128Mr2N
-         L8SZ7P2SbFjz32JYLleTPkLyp4RlvlETK1Ocr8OBm2nYvgzk+VvF/osw4Wi0Q1IW5Kbt
-         3h70VEZ2m1ogB7P2QEWJE36Ls0Lxp6tOoIEzUULL9U+FRHmxWdozQenkJUAjxhSKCx13
-         HFxRu9v3wLnnBqTRnvvn8FNmUYUo3srv+lxP55a3Tqf4UGAQgGPs6oHV3clnRukaPsTB
-         e7BA==
-X-Gm-Message-State: AOAM531OMazD7spVzeJFfEehwyOuRzDS7EdE/tnJVK05dTuijlrxgZXS
-        42YtLznjL2C+MOLIQoqmVEY7nNx8YO46d0gp
-X-Google-Smtp-Source: ABdhPJzX0K7xMLtbbSp/J2M82Ugtlqu5gL7Kezy/X6FaNm1QAbvBPQibDqxe4EXb3WZcU3YDvUH/0A==
-X-Received: by 2002:a50:9345:: with SMTP id n5mr5010249eda.289.1623434091734;
-        Fri, 11 Jun 2021 10:54:51 -0700 (PDT)
-Received: from cephalopod (168.7-181-91.adsl-dyn.isp.belgacom.be. [91.181.7.168])
-        by smtp.gmail.com with ESMTPSA id h8sm2351459ejj.22.2021.06.11.10.54.50
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=GhKdnmG1yoizS3pbpaYv+va/QoVsK+02BeSi6TEeUTM=;
+        b=RBZCpW1DzAS9c5zu3M41JpW6vrVEWUH7d5m+bPssKfc213HSugJe2fCpd1K3uIYRHa
+         WML8LZoTpauJfKMgQ+ZrsjQnuOkatrjU5gwyPu7RLeYrjMvvL1/XGhUyJ/jNhQzznSc4
+         NQ+jD7ivsXTn3FrLx+S7cJ0KlqRCduIeGZ+RsuKn2oGpuNoeHPEMXjZ+msvZb0wxN4Cf
+         JyTqZc4q8JnU+2B1km6j3Bv/D0qySuc/26sLdxbWpobA2Tq1QOnpBt7nY6efxUeFcytB
+         oKfphjURdKFSBnXBSpMzSnaTyPfWV7PrLYUy/RA2F3bWXHACwYlM3ayIcKuGQUqehKyY
+         uihQ==
+X-Gm-Message-State: AOAM532KtExKFVBB4Rklmd9lTIFIGzlT6MvcvsWT1zBrLani/JEhusHW
+        M0kITSLBfN56DgmYmNrxxw==
+X-Google-Smtp-Source: ABdhPJxEbCBQmiSq6AHrgssN4FV0oH72srYnZQkN+Cl5siXxMrk0oag94/p2zTbOs2Ggbqg9LxkD6A==
+X-Received: by 2002:a02:a318:: with SMTP id q24mr4962093jai.100.1623434138203;
+        Fri, 11 Jun 2021 10:55:38 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j12sm4251068ils.42.2021.06.11.10.55.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 10:54:51 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 19:54:49 +0200
-From:   Ben Hutchings <ben.hutchings@essensium.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH net] net: ethernet: ti: cpsw: fix min eth packet size for
- non-switch use-cases
-Message-ID: <20210611175448.GA25728@cephalopod>
-References: <20210611132732.10690-1-grygorii.strashko@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611132732.10690-1-grygorii.strashko@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 11 Jun 2021 10:55:37 -0700 (PDT)
+Received: (nullmailer pid 1208940 invoked by uid 1000);
+        Fri, 11 Jun 2021 17:55:33 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        maoguang.meng@mediatek.com, linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        yong.wu@mediatek.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20210611112009.2955944-1-hsinyi@chromium.org>
+References: <20210611112009.2955944-1-hsinyi@chromium.org>
+Subject: Re: [PATCH v4 1/3] dt-bindings: mediatek: convert mtk jpeg decoder/encoder to yaml
+Date:   Fri, 11 Jun 2021 11:55:33 -0600
+Message-Id: <1623434133.955843.1208939.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 04:27:32PM +0300, Grygorii Strashko wrote:
-[...]
-> --- a/drivers/net/ethernet/ti/cpsw_new.c
-> +++ b/drivers/net/ethernet/ti/cpsw_new.c
-> @@ -918,14 +918,17 @@ static netdev_tx_t cpsw_ndo_start_xmit(struct sk_buff *skb,
->  	struct cpts *cpts = cpsw->cpts;
->  	struct netdev_queue *txq;
->  	struct cpdma_chan *txch;
-> +	unsigned int len;
->  	int ret, q_idx;
->  
-> -	if (skb_padto(skb, CPSW_MIN_PACKET_SIZE)) {
-> +	if (skb_padto(skb, priv->tx_packet_min)) {
->  		cpsw_err(priv, tx_err, "packet pad failed\n");
->  		ndev->stats.tx_dropped++;
->  		return NET_XMIT_DROP;
->  	}
->  
-> +	len = skb->len < priv->tx_packet_min ? priv->tx_packet_min : skb->len;
-> +
->  	if (skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP &&
->  	    priv->tx_ts_enabled && cpts_can_timestamp(cpts, skb))
->  		skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
-> @@ -937,7 +940,7 @@ static netdev_tx_t cpsw_ndo_start_xmit(struct sk_buff *skb,
->  	txch = cpsw->txv[q_idx].ch;
->  	txq = netdev_get_tx_queue(ndev, q_idx);
->  	skb_tx_timestamp(skb);
-> -	ret = cpdma_chan_submit(txch, skb, skb->data, skb->len,
-> +	ret = cpdma_chan_submit(txch, skb, skb->data, len,
->  				priv->emac_port);
->  	if (unlikely(ret != 0)) {
->  		cpsw_err(priv, tx_err, "desc submit failed\n");
+On Fri, 11 Jun 2021 19:20:07 +0800, Hsin-Yi Wang wrote:
+> Convert mediatek jpeg decoder and encoder bindings to yaml.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> v3->v4: split adding mt8183 into another patch
+> ---
+>  .../bindings/media/mediatek-jpeg-decoder.txt  | 38 ---------
+>  .../bindings/media/mediatek-jpeg-decoder.yaml | 85 +++++++++++++++++++
+>  .../bindings/media/mediatek-jpeg-encoder.txt  | 35 --------
+>  .../bindings/media/mediatek-jpeg-encoder.yaml | 76 +++++++++++++++++
+>  4 files changed, 161 insertions(+), 73 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+> 
 
-This change is odd because cpdma_chan_submit() already pads the DMA
-length.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Would it not make more sense to update cpdma_params::min_packet_size
-instead of adding a second minimum?
+yamllint warnings/errors:
 
-[...]
-> @@ -1686,6 +1690,7 @@ static int cpsw_dl_switch_mode_set(struct devlink *dl, u32 id,
->  
->  			priv = netdev_priv(sl_ndev);
->  			slave->port_vlan = vlan;
-> +			priv->tx_packet_min = CPSW_MIN_PACKET_SIZE_VLAN;
->  			if (netif_running(sl_ndev))
->  				cpsw_port_add_switch_def_ale_entries(priv,
->  								     slave);
-> @@ -1714,6 +1719,7 @@ static int cpsw_dl_switch_mode_set(struct devlink *dl, u32 id,
->  
->  			priv = netdev_priv(slave->ndev);
->  			slave->port_vlan = slave->data->dual_emac_res_vlan;
-> +			priv->tx_packet_min = CPSW_MIN_PACKET_SIZE;
->  			cpsw_port_add_dual_emac_def_ale_entries(priv, slave);
->  		}
->
-[...]
+dtschema/dtc warnings/errors:
 
-What happens if this races with the TX path?  Should there be a
-netif_tx_lock() / netif_tx_unlock() around this change?
+\ndoc reference errors (make refcheckdocs):
+Warning: Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml references a file that doesn't exist: Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+Warning: Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml references a file that doesn't exist: Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
+Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml: Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml: Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+MAINTAINERS: Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
 
-Ben.
+See https://patchwork.ozlabs.org/patch/1490913
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
