@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2893A47D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866473A47D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhFKRYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:24:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:45210 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhFKRYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:24:12 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 3C1411F448DB
-Received: by earth.universe (Postfix, from userid 1000)
-        id D9AF13C0C95; Fri, 11 Jun 2021 19:22:09 +0200 (CEST)
-Date:   Fri, 11 Jun 2021 19:22:09 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCHv4 1/6] spi: add ancillary device support
-Message-ID: <20210611172209.acbrpwxg75k4v4je@earth.universe>
-References: <20210609151235.48964-1-sebastian.reichel@collabora.com>
- <20210609151235.48964-2-sebastian.reichel@collabora.com>
- <YMMnrYbuwe4z/s3h@kroah.com>
+        id S231460AbhFKRZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:25:16 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4063 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230197AbhFKRZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:25:08 -0400
+IronPort-SDR: hO+R290UXHoAaSJSuME/ndDQO5/wgyIgNS6AstbgjIth/eLM6gyE2TcoEFrDSjTkRWT/HI5xvx
+ ypGB9R+6juNA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="203736303"
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="203736303"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 10:23:02 -0700
+IronPort-SDR: 4i+fT2T1As8HkdjpSkkPnDzx3VtZbWksMoCKSu7s9TAtGFU6y5K4ELwo+Gx8S4tbuW+OBexGOg
+ jrbJDfsXs29w==
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="483339389"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 10:23:02 -0700
+Date:   Fri, 11 Jun 2021 10:23:01 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/3] fs/fuse: Remove unneeded kaddr parameter
+Message-ID: <20210611172301.GA1600546@iweiny-DESK2.sc.intel.com>
+References: <20210525172428.3634316-1-ira.weiny@intel.com>
+ <20210525172428.3634316-2-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fnv2zapnday6i2fd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMMnrYbuwe4z/s3h@kroah.com>
+In-Reply-To: <20210525172428.3634316-2-ira.weiny@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 10:24:26AM -0700, 'Ira Weiny' wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> fuse_dax_mem_range_init() does not need the address or the pfn of the
+> memory requested in dax_direct_access().  It is only calling direct
+> access to get the number of pages.
 
---fnv2zapnday6i2fd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In looking for feedback on this small series I realize that I failed to email
+Miklos for the fs/fuse patch.
 
-Hi Greg,
+I'm adding Miklos to the To line...
 
-On Fri, Jun 11, 2021 at 11:06:53AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Jun 09, 2021 at 05:12:30PM +0200, Sebastian Reichel wrote:
-> > Introduce support for ancillary devices, similar to existing
-> > implementation for I2C. This is useful for devices having
-> > multiple chip-selects, for example some microcontrollers
-> > provide a normal SPI interface and a flashing SPI interface.
-> >=20
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > ---
-> > [...]
-> > +static int spi_add_device_locked(struct spi_device *spi)
-> > +{
-> > +	struct spi_controller *ctlr =3D spi->controller;
-> > +	struct device *dev =3D ctlr->dev.parent;
-> > +
-> > +	/* Chipselects are numbered 0..max; validate. */
-> > +	if (spi->chip_select >=3D ctlr->num_chipselect) {
-> > +		dev_err(dev, "cs%d >=3D max %d\n", spi->chip_select,
-> > +			ctlr->num_chipselect);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	/* Set the bus ID string */
-> > +	spi_dev_set_name(spi);
-> > +
-> > +	WARN_ON(!mutex_is_locked(&spi_add_lock));
->=20
-> So you just rebooted a machine that has panic-on-warn set.  Not
-> nice.
->=20
-> If this really can happen, test for it and recover, do not reboot
-> devices.
->=20
-> If this really can never happen, why are you testing for it?
+For the rest of the series is there any feedback?
 
-This is reached when ancillary device is not registered in
-the main SPI device's probe routine, which would be a driver
-bug. The gehc-achc driver calls it in the right place, so
-this is not reached with this patchset, but the function to
-register ancillary devices is generic and is expected to be
-also used by others.
+Ira
 
--- Sebastian
-
---fnv2zapnday6i2fd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmDDm7QACgkQ2O7X88g7
-+ppAohAApS/cMcm/00V3Nzdui7yis1bX7vbxTlR5vE+ZV5EJ6Fbnvdi6F+efeR4P
-Q3T7jxOgx1Dn5F8NKH1yWgaVi6m9jb8ysBCx54OoEm4hnO2RBr6hb9nB2FEzFS72
-nGqoA/f4TaZe+m+z9PGNNLTDKSX9WDzl5UqBbpSLo2sSHXhBNAe9KqokVd/ss9NA
-biY4pWC/Mn3Lr05/UEPs6Vj8FPB6XWXUD3lLAIb9N/ejzb3CUPFHbjJkH4CcsBnl
-TW30NjK0EzXaimuDmHnLIA/D1caJyK4YzESHyV2x9cuLb2Yz4SYm/1IB2LFZJbW+
-DkmQhBHQpW75MozrzNOxuR81auzenORSDkbxffXdszTRW6kVewXjwlH6ZvtIN1Cd
-NdScWV5jLX1aqt3rSBpA7Mmd5ku3FeYtCS5AdpqPbfD4NVqziwxavwDrrhicC/k6
-o40b0VZ9xVWCZPGEMj/Jpxny3HcJaN76AEVV3joKUyUlbvAi9JZ3jIDOoI9kD12A
-DJNI7Uj/RmQlx+LXpPLFb9pVZpe1xlwl+LL3l/gkMIGb8UcsxVAJm6mWR4B4NZaV
-LrlLZNNmWPyh+m1cQ01niFYDrtC+XoXHRLF4awtjLS59fiPlaNGBQPzLQHdGh/iR
-E6UNo7sKSYr2jkRLqoRpooCA5yK/w99t8w+IA77mb/3M3Wjo0Nw=
-=ZPku
------END PGP SIGNATURE-----
-
---fnv2zapnday6i2fd--
+> 
+> Remove the unused variables and stop requesting the kaddr and pfn from
+> dax_direct_access().
+> 
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  fs/fuse/dax.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/fuse/dax.c b/fs/fuse/dax.c
+> index ff99ab2a3c43..34f8a5635c7f 100644
+> --- a/fs/fuse/dax.c
+> +++ b/fs/fuse/dax.c
+> @@ -1234,8 +1234,6 @@ void fuse_dax_conn_free(struct fuse_conn *fc)
+>  static int fuse_dax_mem_range_init(struct fuse_conn_dax *fcd)
+>  {
+>  	long nr_pages, nr_ranges;
+> -	void *kaddr;
+> -	pfn_t pfn;
+>  	struct fuse_dax_mapping *range;
+>  	int ret, id;
+>  	size_t dax_size = -1;
+> @@ -1247,8 +1245,8 @@ static int fuse_dax_mem_range_init(struct fuse_conn_dax *fcd)
+>  	INIT_DELAYED_WORK(&fcd->free_work, fuse_dax_free_mem_worker);
+>  
+>  	id = dax_read_lock();
+> -	nr_pages = dax_direct_access(fcd->dev, 0, PHYS_PFN(dax_size), &kaddr,
+> -				     &pfn);
+> +	nr_pages = dax_direct_access(fcd->dev, 0, PHYS_PFN(dax_size), NULL,
+> +				     NULL);
+>  	dax_read_unlock(id);
+>  	if (nr_pages < 0) {
+>  		pr_debug("dax_direct_access() returned %ld\n", nr_pages);
+> -- 
+> 2.28.0.rc0.12.gb6a658bd00c9
+> 
