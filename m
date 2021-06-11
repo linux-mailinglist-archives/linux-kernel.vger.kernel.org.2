@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956A83A444F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9043E3A444B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbhFKOrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:47:53 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:33677 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbhFKOru (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:47:50 -0400
-Received: by mail-vs1-f53.google.com with SMTP id 126so3931691vsi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 07:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7PvXVENs4UcLiDY3320dR9DN7zBQ45xeDN/rAyFn8JA=;
-        b=i5LVNB0DwhGf2ES3OdhAjX+n64FoNUud/WLuGEq8qE8Er+PbPUy9mhs1J9pD0lWRI7
-         pEC1Zhm5NVv66PV5FNWT3WSIHOFieg2/cIAzBiqqm/NQDhdXEU816QuGBapZyfrO8u+W
-         KC213z6/e2h7YA2fB/mlJbqtbkW4l3Ei3FMbk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7PvXVENs4UcLiDY3320dR9DN7zBQ45xeDN/rAyFn8JA=;
-        b=B2AUwez+amLgkuVgLO9JonPoFGzmY36+4RoByzZnJdtNHI+k4qECoTPq8avucXvfh4
-         jcNCmjJOBi9nwHsiQFz/se4+zQ5LPgqid/HMHe98ittEfuPhffH+HKXl/pgs31TLd1dO
-         7hM6hZJpzFEd9FGbSZJagM0Buaz9wgqD7fx85AhicsIc9PZ2RA6CGz7sjh3tiAjUE0os
-         aI/zMfPZyTVek3Qr87c8/9wKoFJT8SKWS43VaFHXYpWtBtdTkKJNRD4bauPH6KmygnR6
-         tvM42tCed+Ow3reLDQcaUimYCL4q3tIi9D/VsaXfqWbpUiqV0nqxn+1l/63N2tgCiFlx
-         FO+A==
-X-Gm-Message-State: AOAM533er6Zq1VQQqZcDI+vw2eT+4x2vlAV6XqUAsSkq13y7RfJYE8tu
-        iYM/dhvbGNhYq4PkwvL867jbRK7gUcU5/lGIBjGeUtSP1hY=
-X-Google-Smtp-Source: ABdhPJxpw1yGLViH5uP4+1r0GCK+sji66nQF20epPTph2zduLFfY6TO0ArXupmFGS9kkFvhdypNtZ62szadvE1aODo0=
-X-Received: by 2002:a05:6102:2144:: with SMTP id h4mr9505890vsg.21.1623422677896;
- Fri, 11 Jun 2021 07:44:37 -0700 (PDT)
+        id S231678AbhFKOr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:47:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230508AbhFKOr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 10:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F1E6613C6;
+        Fri, 11 Jun 2021 14:45:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623422712;
+        bh=1YyTHfqURU0Hz7WIxsJ20hJvLqR0Vz5VNGTi/AQb7Nk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RKIZnNO9l2IZCmo50C37hZsV5nEguP0igAxuqZs2gyyUkC+/8dZdXcMfZIv9leifx
+         ZIGVh8BJgSAvPqlUKDLCe01ExyIDv/+TsWw4tUkWC3+tyOYhXJcLMciiD0pGw0ZGJm
+         RgU5bFMh/FW05OHQMkIIbyJEaawJYGDxV/nCoVfY=
+Date:   Fri, 11 Jun 2021 16:45:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jiri Prchal <jiri.prchal@aksignal.cz>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] nvmem: eeprom: at25: fix type compiler warnings
+Message-ID: <YMN29rIlPDCL0w3A@kroah.com>
+References: <20210611142706.27336-1-jiri.prchal@aksignal.cz>
 MIME-Version: 1.0
-References: <20210604161156.408496-1-groug@kaod.org> <20210604161156.408496-7-groug@kaod.org>
- <0d3b4dfb-2474-2200-80d1-39dcbf8f626e@redhat.com> <20210609094547.222fc420@bahia.lan>
-In-Reply-To: <20210609094547.222fc420@bahia.lan>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 11 Jun 2021 16:44:27 +0200
-Message-ID: <CAJfpegsWL30hfduM1HLwgeruKUJ=rdUgG=wNdFHV9m4entPw=Q@mail.gmail.com>
-Subject: Re: [PATCH v2 6/7] fuse: Switch to fc_mount() for submounts
-To:     Greg Kurz <groug@kaod.org>
-Cc:     Max Reitz <mreitz@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611142706.27336-1-jiri.prchal@aksignal.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 09:45, Greg Kurz <groug@kaod.org> wrote:
->
-> On Tue, 8 Jun 2021 17:51:03 +0200
-> Max Reitz <mreitz@redhat.com> wrote:
->
-> > On 04.06.21 18:11, Greg Kurz wrote:
-> > > fc_mount() already handles the vfs_get_tree(), sb->s_umount
-> > > unlocking and vfs_create_mount() sequence. Using it greatly
-> > > simplifies fuse_dentry_automount().
-> > >
-> > > Signed-off-by: Greg Kurz <groug@kaod.org>
-> > > ---
-> > >   fs/fuse/dir.c | 26 +++++---------------------
-> > >   1 file changed, 5 insertions(+), 21 deletions(-)
-> > >
-> > > diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> > > index b88e5785a3dd..fc9eddf7f9b2 100644
-> > > --- a/fs/fuse/dir.c
-> > > +++ b/fs/fuse/dir.c
-> > > @@ -311,38 +311,22 @@ static struct vfsmount *fuse_dentry_automount(struct path *path)
-> > >     struct fs_context *fsc;
-> > >     struct vfsmount *mnt;
-> > >     struct fuse_inode *mp_fi = get_fuse_inode(d_inode(path->dentry));
-> > > -   int err;
-> > >
-> > >     fsc = fs_context_for_submount(path->mnt->mnt_sb->s_type, path->dentry);
-> > > -   if (IS_ERR(fsc)) {
-> > > -           err = PTR_ERR(fsc);
-> > > -           goto out;
-> > > -   }
-> > > +   if (IS_ERR(fsc))
-> > > +           return (struct vfsmount *) fsc;
-> >
-> > I think ERR_CAST(fsc) would be nicer.
-> >
->
-> Indeed. I'll fix that if I need to repost.
+On Fri, Jun 11, 2021 at 04:27:06PM +0200, Jiri Prchal wrote:
+> Fixes:
+> drivers/misc/eeprom/at25.c:181:28: warning: field width should have type 'int',
+> but argument has type 'unsigned long'
+> 
+> drivers/misc/eeprom/at25.c:386:13: warning: cast to smaller integer type 'int'
+> from 'const void *'
+> 
+> Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  drivers/misc/eeprom/at25.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
+> index 6e26de68a001..744f7abb22ee 100644
+> --- a/drivers/misc/eeprom/at25.c
+> +++ b/drivers/misc/eeprom/at25.c
+> @@ -178,7 +178,7 @@ static ssize_t sernum_show(struct device *dev, struct device_attribute *attr, ch
+>  	struct at25_data *at25;
+>  
+>  	at25 = dev_get_drvdata(dev);
+> -	return sysfs_emit(buf, "%*ph\n", sizeof(at25->sernum), at25->sernum);
+> +	return sysfs_emit(buf, "%*ph\n", (int)sizeof(at25->sernum), at25->sernum);
+>  }
+>  static DEVICE_ATTR_RO(sernum);
+>  
+> @@ -379,11 +379,11 @@ static int at25_probe(struct spi_device *spi)
+>  	u8 sernum[FM25_SN_LEN];
+>  	int i;
+>  	const struct of_device_id *match;
+> -	int is_fram = 0;
+> +	unsigned long is_fram = 0;
+>  
+>  	match = of_match_device(of_match_ptr(at25_of_match), &spi->dev);
+>  	if (match)
+> -		is_fram = (int)match->data;
+> +		is_fram = (unsigned long)match->data;
+>  
+>  	/* Chip description */
+>  	if (!spi->dev.platform_data) {
+> -- 
+> 2.25.1
+> 
 
-Fixed.
+Looks good, now queued up.
 
-Thanks,
-Miklos
+greg k-h
