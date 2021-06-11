@@ -2,176 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2502B3A43B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5933A3A43B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhFKOHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:07:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhFKOHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:07:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B011613FA;
-        Fri, 11 Jun 2021 14:05:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623420313;
-        bh=BT0EZgPDQoGSnbdayeXSZWpTlTPLeYX5sPy/3IHH0s4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P8uXWGuR2FORSMJtJeXhnWVAmBmUFWNJpUnDkmnewdInNIpS4wCVfh7bq115OW9mM
-         vxni8K6yJZM5jn1Wbh2M89JxnMOjjxuWMpXMkHUHmWP/gpjFpKaX2+DYTATJTb1F11
-         bH/2Ld56l9I5K7Nrk9UlbnPlxrw5aQSsfrS3UebM=
-Date:   Fri, 11 Jun 2021 16:05:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, Tejun Heo <tj@kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 2/7] kernfs: add a revision to identify directory node
- changes
-Message-ID: <YMNtl9sSwQ9bPENA@kroah.com>
-References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
- <162322859985.361452.14110524195807923374.stgit@web.messagingengine.com>
- <CAJfpeguzPEy+UAcyT4tcpvYxeTwB+64yxRw8Sh7UBROBuafYdw@mail.gmail.com>
- <03f6e366fb4ebb56b15541d53eda461a55d3d38e.camel@themaw.net>
- <YMNg8VD8XlUJGSK9@kroah.com>
- <21ec3ad11c4d0d74f9b51df3c3e43ab9f62c32b4.camel@themaw.net>
+        id S231552AbhFKOHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230028AbhFKOHW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 10:07:22 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3722C061574;
+        Fri, 11 Jun 2021 07:05:24 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0aec00c954d2edeb094cfc.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ec00:c954:d2ed:eb09:4cfc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 17BCC1EC053C;
+        Fri, 11 Jun 2021 16:05:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623420323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=jjSbtHxfmAfGqMirhGR6ZtzrOk/6dDWM66vpfU14tVE=;
+        b=H7E8yAP84yciTlUXqurgT+uzQ8Jh3nsdJ2rmPMVBRLA8UcEs3g67Rg3SeS7mW5IaAAYxuH
+        Dzedmq7mXio6AZo7zjHw3oneDcZRubs3Q0xDV7FdVLYDDwwVVSHiUALCmvPluchMv2uh0N
+        sqBFsV1ziNuq79mr3wsF1RgQRHNE3OA=
+Date:   Fri, 11 Jun 2021 16:05:15 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 2/6] x86/sev-es: Disable IRQs while GHCB is active
+Message-ID: <YMNtmz6W1apXL5q+@zn.tnic>
+References: <20210610091141.30322-1-joro@8bytes.org>
+ <20210610091141.30322-3-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <21ec3ad11c4d0d74f9b51df3c3e43ab9f62c32b4.camel@themaw.net>
+In-Reply-To: <20210610091141.30322-3-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:31:36PM +0800, Ian Kent wrote:
-> On Fri, 2021-06-11 at 15:11 +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Jun 11, 2021 at 08:56:18PM +0800, Ian Kent wrote:
-> > > On Fri, 2021-06-11 at 14:49 +0200, Miklos Szeredi wrote:
-> > > > On Wed, 9 Jun 2021 at 10:50, Ian Kent <raven@themaw.net> wrote:
-> > > > > 
-> > > > > Add a revision counter to kernfs directory nodes so it can be
-> > > > > used
-> > > > > to detect if a directory node has changed during negative
-> > > > > dentry
-> > > > > revalidation.
-> > > > > 
-> > > > > There's an assumption that sizeof(unsigned long) <=
-> > > > > sizeof(pointer)
-> > > > > on all architectures and as far as I know that assumption
-> > > > > holds.
-> > > > > 
-> > > > > So adding a revision counter to the struct kernfs_elem_dir
-> > > > > variant
-> > > > > of
-> > > > > the kernfs_node type union won't increase the size of the
-> > > > > kernfs_node
-> > > > > struct. This is because struct kernfs_elem_dir is at least
-> > > > > sizeof(pointer) smaller than the largest union variant. It's
-> > > > > tempting
-> > > > > to make the revision counter a u64 but that would increase the
-> > > > > size
-> > > > > of
-> > > > > kernfs_node on archs where sizeof(pointer) is smaller than the
-> > > > > revision
-> > > > > counter.
-> > > > > 
-> > > > > Signed-off-by: Ian Kent <raven@themaw.net>
-> > > > > ---
-> > > > >  fs/kernfs/dir.c             |    2 ++
-> > > > >  fs/kernfs/kernfs-internal.h |   23 +++++++++++++++++++++++
-> > > > >  include/linux/kernfs.h      |    5 +++++
-> > > > >  3 files changed, 30 insertions(+)
-> > > > > 
-> > > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> > > > > index 33166ec90a112..b3d1bc0f317d0 100644
-> > > > > --- a/fs/kernfs/dir.c
-> > > > > +++ b/fs/kernfs/dir.c
-> > > > > @@ -372,6 +372,7 @@ static int kernfs_link_sibling(struct
-> > > > > kernfs_node *kn)
-> > > > >         /* successfully added, account subdir number */
-> > > > >         if (kernfs_type(kn) == KERNFS_DIR)
-> > > > >                 kn->parent->dir.subdirs++;
-> > > > > +       kernfs_inc_rev(kn->parent);
-> > > > > 
-> > > > >         return 0;
-> > > > >  }
-> > > > > @@ -394,6 +395,7 @@ static bool kernfs_unlink_sibling(struct
-> > > > > kernfs_node *kn)
-> > > > > 
-> > > > >         if (kernfs_type(kn) == KERNFS_DIR)
-> > > > >                 kn->parent->dir.subdirs--;
-> > > > > +       kernfs_inc_rev(kn->parent);
-> > > > > 
-> > > > >         rb_erase(&kn->rb, &kn->parent->dir.children);
-> > > > >         RB_CLEAR_NODE(&kn->rb);
-> > > > > diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-
-> > > > > internal.h
-> > > > > index ccc3b44f6306f..b4e7579e04799 100644
-> > > > > --- a/fs/kernfs/kernfs-internal.h
-> > > > > +++ b/fs/kernfs/kernfs-internal.h
-> > > > > @@ -81,6 +81,29 @@ static inline struct kernfs_node
-> > > > > *kernfs_dentry_node(struct dentry *dentry)
-> > > > >         return d_inode(dentry)->i_private;
-> > > > >  }
-> > > > > 
-> > > > > +static inline void kernfs_set_rev(struct kernfs_node *kn,
-> > > > > +                                 struct dentry *dentry)
-> > > > > +{
-> > > > > +       if (kernfs_type(kn) == KERNFS_DIR)
-> > > > > +               dentry->d_time = kn->dir.rev;
-> > > > > +}
-> > > > > +
-> > > > > +static inline void kernfs_inc_rev(struct kernfs_node *kn)
-> > > > > +{
-> > > > > +       if (kernfs_type(kn) == KERNFS_DIR)
-> > > > > +               kn->dir.rev++;
-> > > > > +}
-> > > > > +
-> > > > > +static inline bool kernfs_dir_changed(struct kernfs_node *kn,
-> > > > > +                                     struct dentry *dentry)
-> > > > > +{
-> > > > > +       if (kernfs_type(kn) == KERNFS_DIR) {
-> > > > 
-> > > > Aren't these always be called on a KERNFS_DIR node?
-> > > 
-> > > Yes they are.
-> > > 
-> > > > 
-> > > > You could just reduce that to a WARN_ON, or remove the conditions
-> > > > altogether then.
-> > > 
-> > > I was tempted to not use the check, a WARN_ON sounds better than
-> > > removing the check, I'll do that in a v7.
-> > 
-> > No, WARN_ON is not ok, as systems will crash if panic-on-warn is set.
+On Thu, Jun 10, 2021 at 11:11:37AM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
-> Thanks Greg, understood.
+> The #VC handler only cares about IRQs being disabled while the GHCB is
+> active, as it must not be interrupted by something which could cause
+> another #VC while it holds the GHCB (NMI is the exception for which the
+> backup GHCB is there).
 > 
-> > 
-> > If these are impossible to hit, great, let's not check this and we
-> > can
-> > just drop the code.  If they can be hit, then the above code is
-> > correct
-> > and it should stay.
-> 
-> It's a programming mistake to call these on a non-directory node.
-> 
-> I can remove the check but do you think there's any value in passing
-> the node and updating it's parent to avoid possible misuse?
+> Make sure nothing interrupts the code path while the GHCB is active by
+> disabling IRQs in sev_es_get_ghcb() and restoring the previous irq state
+> in sev_es_put_ghcb().
 
-I do not understand the question here, sorry.  It's a static function,
-you control the callers, who can "misuse" it?
+Why this unnecessarily complicated passing of flags back and forth?
 
-thanks,
+Why not simply "sandwich" them:
 
-greg k-h
+	local_irq_save()
+	sev_es_get_ghcb()
+
+	...blablabla
+
+	sev_es_put_ghcb()
+	local_irq_restore();
+
+in every call site?
+
+What's the difference in passing *flags in and have the
+get_ghcb/put_ghcb save/restore flags instead of the callers?
+
+> -static __always_inline struct ghcb *sev_es_get_ghcb(struct ghcb_state *state)
+> +static __always_inline struct ghcb *sev_es_get_ghcb(struct ghcb_state *state,
+> +						    unsigned long *flags)
+>  {
+>  	struct sev_es_runtime_data *data;
+>  	struct ghcb *ghcb;
+>  
+> +	/*
+> +	 * Nothing shall interrupt this code path while holding the per-cpu
+> +	 * GHCB. The backup GHCB is only for NMIs interrupting this path.
+
+Hmm, so why aren't you accessing/setting data->ghcb_active and
+data->backup_ghcb_active safely using cmpxchg() if this path can be
+interrupted by an NMI?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
