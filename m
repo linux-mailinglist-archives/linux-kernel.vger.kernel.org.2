@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89E03A489A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67AC3A489D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhFKS1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 14:27:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46708 "EHLO mail.kernel.org"
+        id S231270AbhFKS1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 14:27:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhFKS1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 14:27:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B5B69613C6;
-        Fri, 11 Jun 2021 18:25:38 +0000 (UTC)
+        id S229753AbhFKS1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 14:27:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 86D81613AE;
+        Fri, 11 Jun 2021 18:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623435938;
-        bh=DrtR+q2XaxkTZbWLGHy9oTkkJR1OAmhxqmfWf4jGRxk=;
+        s=k20201202; t=1623435941;
+        bh=l+KmVHjF7noXivp2AeSQDaTJ53S1o1tUW3Te1Zr+1Ek=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=QUyHCkC5hlFyzPvZW8lRU+UHxaN0RipVf4CUIJz2+7ypTIM2UIunWXss6Asfp66gf
-         0lwaBD64qEEwrb8FP2mswiXOGVeONg5BhyYsNnEWHpjT0Xt9ww04w4faw5K0/hmo4d
-         9sPstR0cKB1a5zKCqvV2muparE+h1uFCxtE+jh4JRqrtsBTpkFTolGeF1ZcucDv8Bq
-         BnYB3Z0LOZAFZPuLxfkIzlVuWwPAx2vooe50It5o8Fv1G4tz8n/s2Bc97rZF3QD1pO
-         1unZjG4T5J2jsucFVQsiHfrp3z5eRZUXftIN/52xu+eOdcCr/aSWMzWj9pa/b4P1ou
-         G+Ot9cChEzjKQ==
+        b=VPAlsMXR2LAnlKMxnV3Y4msNdi8odHZOyZOadGoIB4F5wxQPGY572Li4YA5Y/BKJs
+         N29TzGCqZCOiwrl3Uj3NVZvzWC67g7BUFursyKIl+MjsrcTfKcpwPexGDVSEMOHx1E
+         kBIam3Wt5OtS/HQhviCBiyTEj4ee+b44DWt5LBGTu865TaA6CqpNBqIflbgoUsK0/q
+         HEIwB9AlVuKarYEaws/bolMrTtOdvNIXTQ1MWfY2AVaeZeR27GxiwzjLJR2+Y5GDQ2
+         q7arQ0CWr9yrBYy/X0XmjPE4XDXCkpv8dXRFoVqHCvvWxjcibMtPmmkAXfRL20RVEV
+         uqaPeFbSUpN8A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A2F1260A0C;
-        Fri, 11 Jun 2021 18:25:38 +0000 (UTC)
-Subject: Re: [GIT PULL] Devicetree fix for 5.13, take 3
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7FABD60A49;
+        Fri, 11 Jun 2021 18:25:41 +0000 (UTC)
+Subject: Re: [GIT PULL] ACPI fixes for v5.13-rc6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210611172320.GA1154861@robh.at.kernel.org>
-References: <20210611172320.GA1154861@robh.at.kernel.org>
-X-PR-Tracked-List-Id: <devicetree.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210611172320.GA1154861@robh.at.kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.13-3
-X-PR-Tracked-Commit-Id: 8929ef8d4dfd53a05913e22561784ece5f6419c7
+In-Reply-To: <CAJZ5v0h=mwaux6QuyjTF09HZ4Q6AjOhr+fBwHdQBoNXVvURiSQ@mail.gmail.com>
+References: <CAJZ5v0h=mwaux6QuyjTF09HZ4Q6AjOhr+fBwHdQBoNXVvURiSQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0h=mwaux6QuyjTF09HZ4Q6AjOhr+fBwHdQBoNXVvURiSQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.13-rc6
+X-PR-Tracked-Commit-Id: bc8865ab32bb8d71b607cf73a8367ceebda88767
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 929d931f2b40d7c24587818cf6c1f7a6473c363f
-Message-Id: <162343593860.23611.537828192437825863.pr-tracker-bot@kernel.org>
-Date:   Fri, 11 Jun 2021 18:25:38 +0000
-To:     Rob Herring <robh@kernel.org>
+X-PR-Merge-Commit-Id: d17bcc5ede561750c10e842f53f21f3acbde52d3
+Message-Id: <162343594151.23611.9340184065303825137.pr-tracker-bot@kernel.org>
+Date:   Fri, 11 Jun 2021 18:25:41 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 11 Jun 2021 11:23:20 -0600:
+The pull request you sent on Fri, 11 Jun 2021 18:23:39 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.13-3
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.13-rc6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/929d931f2b40d7c24587818cf6c1f7a6473c363f
+https://git.kernel.org/torvalds/c/d17bcc5ede561750c10e842f53f21f3acbde52d3
 
 Thank you!
 
