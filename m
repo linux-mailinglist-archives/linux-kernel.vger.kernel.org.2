@@ -2,102 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18603A4B04
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365B23A4B0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhFKWub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 18:50:31 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:43671 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhFKWu3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 18:50:29 -0400
-Received: by mail-io1-f44.google.com with SMTP id k16so32775985ios.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 15:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rQPaBTxH6zmCmow24Ez/25u3aT/BbkT5Z3FMYjKkQD4=;
-        b=foHbHgWLRUOeDdrUUtQo5W+xDkKSaogccxeI9Y3GB8DlJwljzOJ+Lg597umTqeTMTb
-         fY8gJ47PnGJQo/RVPEvNf5PdZaDGNecOGl19KtekqED2TDtZX43KUTLiorhzUp/6lBt2
-         oz5w8QecWW942LM1RxHrObEkHehi60fovjjJM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rQPaBTxH6zmCmow24Ez/25u3aT/BbkT5Z3FMYjKkQD4=;
-        b=Rf8SUZluB42986WbbitpV5LImMtVR1h/hV0jPOFvQrYGYy27fGUWXlUOOP1pviD+LY
-         hm3wsYEdNBTkKs3dsExXhocUsU6FDAYB0Hxf6cr+gMyFoBGTT2XHjYuFWypsUZsE+h+B
-         SKtnBjLDX6JzRB2q+dlrap4LiCQ0DAwO+y/Ds47KmvRaeJL5a1HTjIgEWSJa9mLYxOAA
-         Hmp/W0ZOhwZtrDE45+1xfrRboyE2xdDy+3jGn9vLHH2Zj7/IGqMeeHu8ZbimogRvc2pG
-         5fQ3EzwKGiPo2oRW/1fuBd6Wu4ylGhs8KdNr9lmA+Z2GRev9LVFCr40loYyTchHjFFSE
-         JFNw==
-X-Gm-Message-State: AOAM533bCxSykxLj9LMb+DzlFT1ntiuyjpSwOgd0R6MnQbViurOdj4gV
-        KYp+4SxyimSu7whU256JM2cT3g==
-X-Google-Smtp-Source: ABdhPJzYhIxyLeAPQfmBQvodXCR2Xj9xHbnPvzsaxcBbNu4D4KPVCTAAKGS5ajq24bteysnPjY0wXg==
-X-Received: by 2002:a5d:9c88:: with SMTP id p8mr5082265iop.31.1623451651344;
-        Fri, 11 Jun 2021 15:47:31 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y17sm4160145ilb.60.2021.06.11.15.47.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 15:47:31 -0700 (PDT)
-Subject: Re: [PATCH v8 1/5] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210610083021.392269-1-jarkko@kernel.org>
- <b5e06639-8bf4-c267-0aa7-b6c110767edc@intel.com>
- <8d071d3f-604f-1876-05bb-91568dd3c563@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6378d2a9-9f55-18f8-ce46-7ea954ac159c@linuxfoundation.org>
-Date:   Fri, 11 Jun 2021 16:47:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230267AbhFKXDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 19:03:47 -0400
+Received: from mail.klausen.dk ([157.90.24.29]:53294 "EHLO mail.klausen.dk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229572AbhFKXDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 19:03:46 -0400
+X-Greylist: delayed 439 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Jun 2021 19:03:45 EDT
+Subject: Re: [PATCH v5 11/11] loop: Add LOOP_CONFIGURE ioctl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=klausen.dk; s=dkim;
+        t=1623452065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WgLFKfLGzYu14ZiloJfDFndNFiDm2vYwSH1kUfP2Vw0=;
+        b=H5Aa62Up/Pyj7Lz6ofQQgYiFTcEqZdupILKfzB95O0G5iiy7TMYIY06ZPFC98UmvefqJ0F
+        yKoDmFxJi21HFUdqDJ0dZcrg4BlvfTJfEGp+WDpzMNQcU6h8bthuCHKYRsFJXHNPfpTHv0
+        D5ViA0hBw2JHuyMFNAX5dachYAq6nvQ=
+To:     Martijn Coenen <maco@android.com>, axboe@kernel.dk, hch@lst.de,
+        ming.lei@redhat.com
+Cc:     narayan@google.com, zezeozue@google.com, maco@google.com,
+        kernel-team@android.com, bvanassche@acm.org,
+        Chaitanya.Kulkarni@wdc.com, jaegeuk@kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>
+References: <20200513133845.244903-1-maco@android.com>
+ <20200513133845.244903-12-maco@android.com>
+From:   Kristian Klausen <kristian@klausen.dk>
+Message-ID: <c24d7aab-a2f8-f87b-c944-046b6d059e37@klausen.dk>
+Date:   Sat, 12 Jun 2021 00:54:24 +0200
 MIME-Version: 1.0
-In-Reply-To: <8d071d3f-604f-1876-05bb-91568dd3c563@linuxfoundation.org>
+In-Reply-To: <20200513133845.244903-12-maco@android.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 11:35 AM, Shuah Khan wrote:
-> On 6/10/21 9:45 AM, Dave Hansen wrote:
->> On 6/10/21 1:30 AM, Jarkko Sakkinen wrote:
->>> Rename symbols for better clarity:
->>>
->>> * 'eenter' might be confused for directly calling ENCLU[EENTER].  It 
->>> does
->>>    not.  It calls into the VDSO, which actually has the EENTER 
->>> instruction.
->>> * 'sgx_call_vdso' is *only* used for entering the enclave.  It's not 
->>> some
->>>    generic SGX call into the VDSO.
->>>
->>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
->>
->> These all look fine to me.  Feel free to add my ack on them.
->>
->> Since these are pure x86 selftests and the initial code went through the
->> x86 maintainers, should these got through them as well?  Or, since this
->> is only selftest code, should Shuah pick them up?
->>
-> 
-> I will queue these up for 5.14-rc1
-> 
+On 13.05.2020 15.38, Martijn Coenen wrote:
+> This allows userspace to completely setup a loop device with a single
+> ioctl, removing the in-between state where the device can be partially
+> configured - eg the loop device has a backing file associated with it,
+> but is reading from the wrong offset.
+>
+> Besides removing the intermediate state, another big benefit of this
+> ioctl is that LOOP_SET_STATUS can be slow; the main reason for this
+> slowness is that LOOP_SET_STATUS(64) calls blk_mq_freeze_queue() to
+> freeze the associated queue; this requires waiting for RCU
+> synchronization, which I've measured can take about 15-20ms on this
+> device on average.
+>
+> In addition to doing what LOOP_SET_STATUS can do, LOOP_CONFIGURE can
+> also be used to:
+> - Set the correct block size immediately by setting
+>    loop_config.block_size (avoids LOOP_SET_BLOCK_SIZE)
+> - Explicitly request direct I/O mode by setting LO_FLAGS_DIRECT_IO
+>    in loop_config.info.lo_flags (avoids LOOP_SET_DIRECT_IO)
+> - Explicitly request read-only mode by setting LO_FLAGS_READ_ONLY
+>    in loop_config.info.lo_flags
+>
+> Here's setting up ~70 regular loop devices with an offset on an x86
+> Android device, using LOOP_SET_FD and LOOP_SET_STATUS:
+>
+> vsoc_x86:/system/apex # time for i in `seq 30 100`;
+> do losetup -r -o 4096 /dev/block/loop$i com.android.adbd.apex; done
+>      0m03.40s real     0m00.02s user     0m00.03s system
+>
+> Here's configuring ~70 devices in the same way, but using a modified
+> losetup that uses the new LOOP_CONFIGURE ioctl:
+>
+> vsoc_x86:/system/apex # time for i in `seq 30 100`;
+> do losetup -r -o 4096 /dev/block/loop$i com.android.adbd.apex; done
+>      0m01.94s real     0m00.01s user     0m00.01s system
+>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Martijn Coenen <maco@android.com>
+> ---
+>   drivers/block/loop.c      | 104 ++++++++++++++++++++++++++++----------
+>   include/uapi/linux/loop.h |  21 ++++++++
+>   2 files changed, 97 insertions(+), 28 deletions(-)
+>
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index 13518ba191f5..a565c5aafa52 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -228,6 +228,19 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
+>   		blk_mq_unfreeze_queue(lo->lo_queue);
+>   }
+>   
+> +/**
+> + * loop_validate_block_size() - validates the passed in block size
+> + * @bsize: size to validate
+> + */
+> +static int
+> +loop_validate_block_size(unsigned short bsize)
+> +{
+> +	if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+>   /**
+>    * loop_set_size() - sets device size and notifies userspace
+>    * @lo: struct loop_device to set the size for
+> @@ -1050,23 +1063,24 @@ loop_set_status_from_info(struct loop_device *lo,
+>   	return 0;
+>   }
+>   
+> -static int loop_set_fd(struct loop_device *lo, fmode_t mode,
+> -		       struct block_device *bdev, unsigned int arg)
+> +static int loop_configure(struct loop_device *lo, fmode_t mode,
+> +			  struct block_device *bdev,
+> +			  const struct loop_config *config)
+>   {
+>   	struct file	*file;
+>   	struct inode	*inode;
+>   	struct address_space *mapping;
+>   	struct block_device *claimed_bdev = NULL;
+> -	int		lo_flags = 0;
+>   	int		error;
+>   	loff_t		size;
+>   	bool		partscan;
+> +	unsigned short  bsize;
+>   
+>   	/* This is safe, since we have a reference from open(). */
+>   	__module_get(THIS_MODULE);
+>   
+>   	error = -EBADF;
+> -	file = fget(arg);
+> +	file = fget(config->fd);
+>   	if (!file)
+>   		goto out;
+>   
+> @@ -1075,7 +1089,7 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
+>   	 * here to avoid changing device under exclusive owner.
+>   	 */
+>   	if (!(mode & FMODE_EXCL)) {
+> -		claimed_bdev = bd_start_claiming(bdev, loop_set_fd);
+> +		claimed_bdev = bd_start_claiming(bdev, loop_configure);
+>   		if (IS_ERR(claimed_bdev)) {
+>   			error = PTR_ERR(claimed_bdev);
+>   			goto out_putf;
+> @@ -1097,11 +1111,26 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
+>   	mapping = file->f_mapping;
+>   	inode = mapping->host;
+>   
+> +	size = get_loop_size(lo, file);
+> +
+> +	if ((config->info.lo_flags & ~LOOP_CONFIGURE_SETTABLE_FLAGS) != 0) {
+> +		error = -EINVAL;
+> +		goto out_unlock;
+> +	}
+> +
+> +	if (config->block_size) {
+> +		error = loop_validate_block_size(config->block_size);
+> +		if (error)
+> +			goto out_unlock;
+> +	}
+> +
+> +	error = loop_set_status_from_info(lo, &config->info);
 
-I almost applied these. Does this require root access, if so,
-please add logic to skip the test if non-root user runs it.
+loop_set_status_from_info() doesn't call loop_config_discard() nor does 
+loop_configure(), I assume it should be called?
 
-Please check for code paths that require root access and skip
-the tests.
+I'm asking because I upgraded to util-linux 2.37 which use the new 
+LOOP_CONFIGURE ioctl and fstrim is complaining that "the discard 
+operation is not supported" and the missing call of 
+loop_config_discard() stood out. Sadly I haven't been able to reproduce 
+the issue reliably outside CI (yet).
 
-thanks,
--- Shuah
+> +	if (error)
+> +		goto out_unlock;
+> +
+>   	if (!(file->f_mode & FMODE_WRITE) || !(mode & FMODE_WRITE) ||
+>   	    !file->f_op->write_iter)
+> -		lo_flags |= LO_FLAGS_READ_ONLY;
+> -
+> -	size = get_loop_size(lo, file);
+> +		lo->lo_flags |= LO_FLAGS_READ_ONLY;
+>   
+>   	error = loop_prepare_queue(lo);
+>   	if (error)
+>
