@@ -2,248 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016BE3A39B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4063A39BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhFKC2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 22:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhFKC2I (ORCPT
+        id S231509AbhFKC2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 22:28:46 -0400
+Received: from regular1.263xmail.com ([211.150.70.195]:56612 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231318AbhFKC2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:28:08 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305A0C0617AE
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:25:57 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so1751037otg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:25:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IjaHeZmvkpeFh6CIfGhXwuSQrGCOdALjcUAdiW8WWjU=;
-        b=E25Jh+rCQJyItREai2cRgb2J7R0Ev1dQp5dFjeAHzXlTacCQbjNGk0qfn7EPM0nlBk
-         hgfQqzTqhtG0XnL4gQjZah4JG8VQF8LAtppcLhE6cn2YNIahQbArzjF7wRJ3J2UsfXme
-         T9pSVFzQZoIbu0V+FOqYWwoKTsv13aBxM12vnm4+8pua8IEBAZQRM0i8n6flrHrik92H
-         2T0monIFdXDRe8t0z+KaBLLY2mmk1o268DMLjuLqUcAGeqS63pMVfA5Pujg+Nf/ehNpR
-         BydTl3tiSCrvruHINMwLtZRLoyhg0CqlOk+3/amD0xnEXPEpKRHGTAh/Ybm+nC6G3sZr
-         Stzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IjaHeZmvkpeFh6CIfGhXwuSQrGCOdALjcUAdiW8WWjU=;
-        b=Y93SdHp97SlzyHyQ0l6R8WSXaeeOGz/Fl6B+f5UPZukonuyHDp+oFGyGFtYbQEFRXc
-         xaxqNhibWrEPYZAVNUJIpnz3wXbgiGNciBTN+1O0XdTBpw0TJx6f2R+jZP4UfGWGiz12
-         lNoN8aYCBPlA3R2HcMrGtx+3ZvdcDQrd2Jk3KyAb9VE7phdtD8uBQ0IiNd6/rkmgV/EB
-         B18aSTZha+jth+89mVffKph6VmwSxRxsDW3ktdV602zznG7qSbG3k5DjUg9OnUY3y6xF
-         Xl5MWvTuULiUACvmS1BzlZzyLrdnKwEAQCg1xQCz1dVUsl1hS7LX/QVH/zSoZZg2rez+
-         ThQg==
-X-Gm-Message-State: AOAM532vvyN81164Iz+YC9yJWVoapPN1dQ218AMPZWACI2zDqGlLxUOb
-        rnRf+OZdvcUEp06LByWK9i5D9A==
-X-Google-Smtp-Source: ABdhPJyH9UXs091VevqePZMC9ooFDYkYXbSPKywR4X4SSB7g9iwor+mOFv6s8k0fSAczLDFlO7F+fg==
-X-Received: by 2002:a9d:589:: with SMTP id 9mr1051074otd.65.1623378356510;
-        Thu, 10 Jun 2021 19:25:56 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x2sm878974oog.10.2021.06.10.19.25.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 19:25:56 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 21:25:54 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH 8/8] arm64: dts: qcom: sa8155p-adp: Add base dts file
-Message-ID: <YMLJsieGd+G+/kxK@builder.lan>
-References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
- <20210607113840.15435-9-bhupesh.sharma@linaro.org>
+        Thu, 10 Jun 2021 22:28:45 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by regular1.263xmail.com (Postfix) with ESMTP id 75F991DAC;
+        Fri, 11 Jun 2021 10:26:37 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from [172.16.12.73] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P24500T139649095816960S1623378394803816_;
+        Fri, 11 Jun 2021 10:26:36 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <76434981b7eff221154a68cfe3f38365>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: macromorgan@hotmail.com
+X-RCPT-COUNT: 19
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v7 9/9] arm64: dts: rockchip: Enable SFC for Odroid Go
+ Advance
+To:     Chris Morgan <macroalpha82@gmail.com>
+Cc:     linux-spi@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+References: <20210609140412.16058-1-jon.lin@rock-chips.com>
+ <20210609141348.19178-1-jon.lin@rock-chips.com>
+ <20210609141348.19178-5-jon.lin@rock-chips.com>
+ <20210610173657.GA20228@wintermute.localdomain>
+From:   Jon Lin <jon.lin@rock-chips.com>
+Message-ID: <89283da6-b00e-4d0f-5c4a-0169bda101d3@rock-chips.com>
+Date:   Fri, 11 Jun 2021 10:26:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607113840.15435-9-bhupesh.sharma@linaro.org>
+In-Reply-To: <20210610173657.GA20228@wintermute.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
+Hi Chris
 
-> Add base DTS file for sa8155p-adp and enable boot to console,
+May you attach the XT25F128B device code to me, and I'll try to work it out.
 
-Please spell out "sa8155-adp", i.e. "Add base DTS for SA8155p Automotive
-Development Platform."
+On 6/11/21 1:36 AM, Chris Morgan wrote:
+> On Wed, Jun 09, 2021 at 10:13:48PM +0800, Jon Lin wrote:
+>> From: Chris Morgan <macromorgan@hotmail.com>
+>>
+>> This enables the Rockchip Serial Flash Controller for the Odroid Go
+>> Advance. Note that while the attached SPI NOR flash and the controller
+>> both support quad read mode, only 2 of the required 4 pins are present.
+>> The rx and tx bus width is set to 2 for this reason.
+>>
+>> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+>> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+>> ---
+>>
+>> Changes in v7: None
+>> Changes in v6: None
+>> Changes in v5: None
+>> Changes in v4: None
+>> Changes in v3: None
+>> Changes in v2: None
+>> Changes in v1: None
+>>
+>>   .../boot/dts/rockchip/rk3326-odroid-go2.dts      | 16 ++++++++++++++++
+>>   1 file changed, 16 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+>> index 49c97f76df77..f78e11dd8447 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+>> @@ -484,6 +484,22 @@
+>>   	status = "okay";
+>>   };
+>>   
+>> +&sfc {
+>> +	pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus2>;
+>> +	pinctrl-names = "default";
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>> +	status = "okay";
+>> +
+>> +	flash@0 {
+>> +		compatible = "jedec,spi-nor";
+>> +		reg = <0>;
+>> +		spi-max-frequency = <108000000>;
+>> +		spi-rx-bus-width = <2>;
+>> +		spi-tx-bus-width = <2>;
+> Note that I am still working with Jon Lin to research this, but it was
+> found in testing that if I set the tx bus width to 1 the problems I
+> encountered in earlier are resolved. At this time I do not know if it
+> is an issue with the driver for the flash controller, or if the NOR, or
+> board itself has some sort of errata which prevent dual tx from working
+> correctly. Note that as of right now the flash chip I am using (an
+> XTX XT25F128B) is not currently supported in mainline, so it's very
+> possible this is some sort of errata with the chip. It's also possible
+> that there is something with the board that is interferring with dual
+> mode TX.  When Jon comes back that he has tested dual mode on the SFC
+> with a different board/chip I will recommend that we change the tx
+> bus width here to a 1, and then once the XT25F128B gets mainlined we
+> can see if someone else has issues with dual tx mode so we can note
+> that as a problem with the chip. Or maybe there is something weird
+> with dual tx mode yet on the SFC driver/controller, I don't know yet.
+> I'm all too happy to work with a Rockchip engineer so things like
+> this can be determined before we hit mainline. :-)
+>
+> The XTX25F128B driver is currently awaiting a decision on how to handle
+> continuation codes, as this chip ID should be using continuation codes,
+> but doesn't appear to return them when you query for manufacturer ID.
+> So I should also note in the commit here that the SFC will still be
+> unusable on the Odroid Go Advance until the XTX25F128B is also
+> mainlined.
+>
+> Thank you.
+>
+>> +	};
+>> +};
+>> +
+>>   &tsadc {
+>>   	status = "okay";
+>>   };
+>> -- 
+>> 2.17.1
+>>
+>>
+>>
+>
+>
 
-> tlmm reserved range and also include pmic file(s).
-> 
-> SA8155p-adp board is based on sm8150 Qualcomm Snapdragon SoC.
-> 
 
-It's not based on sm8150, it's based on sa8155p, so let's express this
-as "The SA8155p platform is similar to the SM8150, so use this as base
-for now", to document why we decided to do this.
-
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
-
-This would go into the git history as "I specifically asked for input
-from these people", so please keep this list shorter (but for a change
-like this it's probably better to omit it completely)
-
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/Makefile        |   1 +
->  arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 363 +++++++++++++++++++++++
->  2 files changed, 364 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 456502aeee49..38d3a4728871 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -71,6 +71,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sa8155p-adp.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-hdk.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-mtp.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-hdk.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> new file mode 100644
-> index 000000000000..470d740e060a
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> @@ -0,0 +1,363 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2021, Linaro Limited
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include "sm8150.dtsi"
-> +#include "pmm8155au_1.dtsi"
-> +#include "pmm8155au_2.dtsi"
-> +
-> +/ {
-> +	model = "Qualcomm Technologies, Inc. SA8155P ADP";
-> +	compatible = "qcom,sa8155p-adp";
-> +
-> +	aliases {
-> +		serial0 = &uart2;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	vreg_3p3: vreg_3p3_regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vreg_3p3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	/*
-> +	 * Apparently RPMh does not provide support for PM8150 S4 because it
-> +	 * is always-on; model it as a fixed regulator.
-> +	 */
-
-You can reduce this to
-
-	/* S4A is always on and not controllable through RPMh */
-
-> +	vreg_s4a_1p8: smps4 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vreg_s4a_1p8";
-> +
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +
-> +		vin-supply = <&vreg_3p3>;
-> +	};
-> +};
-> +
-> +&apps_rsc {
-> +	pmm8155au-1-rpmh-regulators {
-> +		compatible = "qcom,pmm8155au-1-rpmh-regulators";
-> +		qcom,pmic-id = "a";
-> +
-> +		vdd-s1-supply = <&vreg_3p3>;
-> +		vdd-s2-supply = <&vreg_3p3>;
-> +		vdd-s3-supply = <&vreg_3p3>;
-> +		vdd-s4-supply = <&vreg_3p3>;
-> +		vdd-s5-supply = <&vreg_3p3>;
-> +		vdd-s6-supply = <&vreg_3p3>;
-> +		vdd-s7-supply = <&vreg_3p3>;
-> +		vdd-s8-supply = <&vreg_3p3>;
-> +		vdd-s9-supply = <&vreg_3p3>;
-> +		vdd-s10-supply = <&vreg_3p3>;
-> +
-> +		vdd-l1-l8-l11-supply = <&vreg_s6a_0p92>;
-> +		vdd-l2-l10-supply = <&vreg_3p3>;
-> +		vdd-l3-l4-l5-l18-supply = <&vreg_s6a_0p92>;
-> +		vdd-l6-l9-supply = <&vreg_s6a_0p92>;
-> +		vdd-l7-l12-l14-l15-supply = <&vreg_s5a_2p04>;
-> +		vdd-l13-l16-l17-supply = <&vreg_3p3>;
-> +
-> +		vreg_s5a_2p04: smps5 {
-> +			regulator-min-microvolt = <1904000>;
-> +			regulator-max-microvolt = <2000000>;
-> +		};
-> +
-> +		vreg_s6a_0p92: smps6 {
-> +			regulator-min-microvolt = <920000>;
-> +			regulator-max-microvolt = <1128000>;
-> +		};
-> +
-> +		vdda_wcss_pll:
-
-This is the "label" of the pad which the regulator typically is
-connected to (rather than a denotion of which regulator it is). So even
-though we have these in some of the other boards, I would prefer if you
-skip them and only use the vreg_xyz_abc variant.
-
-> +		vreg_l1a_0p752: ldo1 {
-> +			regulator-min-microvolt = <752000>;
-> +			regulator-max-microvolt = <752000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-[..]
-> +&usb_1_dwc3 {
-> +	dr_mode = "peripheral";
-
-We have enough pieces to handle mode switching on this platform, but as
-discussed, lets leave it as "peripheral" until your local setup is back
-online.
-
-Thanks,
-Bjorn
-
-> +};
-> +
-> +&qupv3_id_1 {
-> +	status = "okay";
-> +};
-> -- 
-> 2.31.1
-> 
