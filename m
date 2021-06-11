@@ -2,62 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F1A3A3B66
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 07:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0713A3B73
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 07:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhFKFfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 01:35:53 -0400
-Received: from muru.com ([72.249.23.125]:41638 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhFKFfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 01:35:52 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id E0391818C;
-        Fri, 11 Jun 2021 05:34:01 +0000 (UTC)
-Date:   Fri, 11 Jun 2021 08:33:50 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Gowtham Tammana <g-tammana@ti.com>, Suman Anna <s-anna@ti.com>,
-        bcousson@baylibre.com, robh+dt@kernel.org,
-        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Nisanth Menon <nm@ti.com>
-Subject: Re: [PATCH v4] ARM: dts: dra7: Fix duplicate USB4 target module node
-Message-ID: <YML1vuROPftMR+j6@atomide.com>
-References: <20210602220458.9728-1-g-tammana@ti.com>
- <c140f39c-9fe1-f7e1-3da5-fc5fff604714@ti.com>
+        id S231132AbhFKFqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 01:46:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20789 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230001AbhFKFqI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 01:46:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623390250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5nlidzY7vVox2ieeNTmLbeG44JwkLPe3MMhpIq19x6g=;
+        b=LOiTUDx60R9wOz9sP1ZGZtlwFXZen6zjRQvWMitayuXLMNIcTLGlDvaUF3WVODXI8I35q7
+        iC5GJros2ztPy4IZuHHeOWvIAZPoIshMuJIs4cISIPcMr8QCZIZeoMxJ19vNCCOGDXS0aU
+        rlpnURci5sjJN8MvfCzJQE+fbqDvKZ0=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-YXNFEZA0ON6mm0nD4C4AZQ-1; Fri, 11 Jun 2021 01:44:09 -0400
+X-MC-Unique: YXNFEZA0ON6mm0nD4C4AZQ-1
+Received: by mail-pg1-f200.google.com with SMTP id a10-20020a65418a0000b029021b78388f57so1085398pgq.15
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 22:44:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5nlidzY7vVox2ieeNTmLbeG44JwkLPe3MMhpIq19x6g=;
+        b=Au6v3TGgT9vIRiIPpbgH/ZNCs0pprsoh/5EedVYx6h2Ym0BPFAMRa3fql6y6t3Q6ND
+         6Z6KH8karyLG5wPP2+NN9HMtEN/HfYQDxcDMG6N81uGDFj9aRmKsO0K0q+pMkUN+peTy
+         kQCakiM//UUCx8fAFWajh6dGePEyKqYWb+FC9r0FzRdA2VI7OyoFRtt/9RzKShPkx7nK
+         lGsIMMAux8SGdSq+neAQvzzAZ21KQpXATDlF4Sffn/kBgKUCmO4QR0EOD/4fw/xJs8gI
+         vF3ZbrWxRZrwNk+z2/3Ccqaq/flnW1ZdB/ijOZ7OhPOQPA/JFP/JaWhuTfka0w8jNdBo
+         Yw/Q==
+X-Gm-Message-State: AOAM530lPIuYAge2O2cOX342T5NrpfKtKsdn13yAkEDGskggyRR/mnmt
+        vFkXu/1u6YDqt66AiNDhuhZLnNexH+AJAmOfqjyuN2xmLIIz7n6kifZVH78HL6pEQzuRdZAueqS
+        URTmFXcvZ9OVwj7rpKGS0HhcO
+X-Received: by 2002:a63:6547:: with SMTP id z68mr1935901pgb.341.1623390248323;
+        Thu, 10 Jun 2021 22:44:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyKB65M93ciDtRjp4dLL7boO1gINllpJ4guVwZKP5dhsZp4Ljb4TFphg7Htp0BodlrU9JnK0w==
+X-Received: by 2002:a63:6547:: with SMTP id z68mr1935883pgb.341.1623390248048;
+        Thu, 10 Jun 2021 22:44:08 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id d8sm4085729pfq.198.2021.06.10.22.44.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 22:44:07 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Liu Yi L <yi.l.liu@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
+        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
+References: <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
+ <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
+ <20210601173138.GM1002214@nvidia.com>
+ <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
+ <20210602172154.GC1002214@nvidia.com>
+ <c84787ec-9d8f-3198-e800-fe0dc8eb53c7@redhat.com>
+ <20210608132039.GG1002214@nvidia.com>
+ <f4d70f28-4bd6-5315-d7c7-0a509e4f1d1d@redhat.com>
+ <20210610114751.GK1002214@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <d2193dbd-0d55-7315-4e76-eea7f8cc8f5b@redhat.com>
+Date:   Fri, 11 Jun 2021 13:43:59 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c140f39c-9fe1-f7e1-3da5-fc5fff604714@ti.com>
+In-Reply-To: <20210610114751.GK1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Grygorii Strashko <grygorii.strashko@ti.com> [210608 10:40]:
-> On 03/06/2021 01:04, Gowtham Tammana wrote:
-> > With [1] USB4 target-module node got defined in dra74x.dtsi file.
-> > However, the earlier definition in [2] was not removed, and this
-> > duplication of the target module is causing boot failure on dra74
-> > variant boards - dra7-evm, dra76-evm.
-> > 
-> > USB4 is only present in DRA74x variants, so keeping the entry in
-> > dra74x.dtsi and removing it from the top level interconnect hierarchy
-> > dra7-l4.dtsi file. This change makes the USB4 target module no longer
-> > visible to AM5718, DRA71x and DRA72x so removing references to it in
-> > their respective dts files.
-> > 
-> > [1]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
-> > dra7 dwc3")
-> > [2]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
-> > hierarchy and ti-sysc data")
-> > 
-> > Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
-> > Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
-...
-> Thank you.
-> Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-Thanks applying into fixes.
+在 2021/6/10 下午7:47, Jason Gunthorpe 写道:
+> On Thu, Jun 10, 2021 at 10:00:01AM +0800, Jason Wang wrote:
+>> 在 2021/6/8 下午9:20, Jason Gunthorpe 写道:
+>>> On Tue, Jun 08, 2021 at 09:10:42AM +0800, Jason Wang wrote:
+>>>
+>>>> Well, this sounds like a re-invention of io_uring which has already worked
+>>>> for multifds.
+>>> How so? io_uring is about sending work to the kernel, not getting
+>>> structued events back?
+>>
+>> Actually it can. Userspace can poll multiple fds via preparing multiple sqes
+>> with IORING_OP_ADD flag.
+> Poll is only a part of what is needed here, the main issue is
+> transfering the PRI events to userspace quickly.
 
-Tony
+
+Do we really care e.g at most one more syscall in this case? I think the 
+time spent on demand paging is much more than transferring #PF to 
+userspace. What's more, a well designed vIOMMU capable IOMMU hardware 
+should have the ability to inject such event directly to guest if #PF 
+happens on L1.
+
+
+>
+>> This means another ring and we need introduce ioctl() to add or remove
+>> ioasids from the poll. And it still need a kind of fallback like a list if
+>> the ring is full.
+> The max size of the ring should be determinable based on the PRI
+> concurrance of each device and the number of devices sharing the ring
+
+
+This has at least one assumption, #PF event is the only event for the 
+ring, I'm not sure this is the case.
+
+Thanks
+
+
+>
+> In any event, I'm not entirely convinced eliding the PRI user/kernel
+> copy is the main issue here.. If we want this to be low latency I
+> think it ends up with some kernel driver component assisting the
+> vIOMMU emulation and avoiding the round trip to userspace
+>
+> Jason
+>
+
