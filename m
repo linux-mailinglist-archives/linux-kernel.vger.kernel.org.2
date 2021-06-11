@@ -2,286 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BC43A3865
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DB93A386B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhFKAQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 20:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        id S231361AbhFKASF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 20:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbhFKAQr (ORCPT
+        with ESMTP id S230247AbhFKASE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 20:16:47 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D33C061574;
-        Thu, 10 Jun 2021 17:14:36 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id d5-20020a17090ab305b02901675357c371so4777935pjr.1;
-        Thu, 10 Jun 2021 17:14:36 -0700 (PDT)
+        Thu, 10 Jun 2021 20:18:04 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C8AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:16:07 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id x196so4050261oif.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6kKK8GvRx3Km5hfKC6h4WhcE1sVd72a9N244SiCTaxc=;
-        b=aIsRV7Xz0deSGi9/tu+UnHO63jhyM3AzHQ75FH9hnx3ayttVvxYFd8NQkaIvSiZvWW
-         yJfjxuEiGs9Pe97LvF7qBnufi04QnTNr9U4hxPX3pxd83lbDQLd3RIRWhNozTA0quaP+
-         ELo9tt1arwk4w76kjQlSB8+2C3ZP0BZEqDkcjCALPAbo7z/Gr/AxExMsyyCXQiYxzjiu
-         Zf5FAawJDiK73eRXVr5HDpkVmVWuI1vbuFaYOHB9ThE4FhVjeDBemb/UNRl512l8dlLI
-         PecsxBPeleVqHkwZVpj4rXCS8pVRU9PzHbHVnH25OU7+kFwE4qGZruqaQnK4j2YzQvZG
-         B43w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=C6U1YLmSE4JLi5mlyZ8NZHiwVuj878z1/GmcLjmH1Z8=;
+        b=JkMx5lhLC+EwsNDITFq8VQa/ynipjwnU6CCUFtm54jST9h8FIHQMvf4RqTNCkl7Mjn
+         w2OGeD47iVlqADdMmiZfActWaNvLuKScXgjKv9y/9RrN2lDYiWl+AUExUy+JQbz+MdcK
+         UC5NXPxhlJU2uzCNNmLsuZZF2FNbK/8zWKYPxtxTuelPNF9xy34ncwvyFUjWUczMYDuS
+         eQU6fJsWpzQINClAIfiecu+YqxMF1JFrUJWYGwsh4W3Cea+Sn8PIyCnwI70sySYpCFw4
+         15tVp+HkJk8HM3xl/a+sxDcBmIel6IRIfz2UkLrsX0C+cf9Y71SxWJi3HAF1d/RKp9En
+         rJ4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6kKK8GvRx3Km5hfKC6h4WhcE1sVd72a9N244SiCTaxc=;
-        b=uiblMZFVO8Zm3z65Z0hwmCyzNFCxjAO2hghyRfYUK8Mp7NwnF61M64UYDhLlRSb0yQ
-         9uro08ZlHpv88S5mo3yD5wJ9PTBnBEiPBXVqowMez5uUvFb6orkPtvr1eWPBkAixJTC+
-         SlKh7LFYsMff6WYP35QLzssWrkCWqC/+gzCAkhW0m22Vq/EI0gs3LUuNcttsqZ5+etaO
-         JXN7LKSCtBabI837P4v6fEJxP7iQS9gJeskaFKsKxmC3tUPRQjr5NIZ3zdPc2wLsFU0n
-         7zrJU0rTJPnB6SfgrDGo9Vm1I3RPaknwQlosVhxVE6Z5s9xKRN1uXI9+I5N+BfI30Pr4
-         3P5A==
-X-Gm-Message-State: AOAM530896OaYl3AHHea3JcqLFDkqXA/CMT3M/n2plNuTl4Kn0VIsPAu
-        YV0aoTE7bxDiPNi7qCooc+HM79+NnU8RgbCV96GSegrBWioy1A==
-X-Google-Smtp-Source: ABdhPJxp9eI7LaA8Rv1tY9uLuQ84ORHgW0K9AJXJjNF6e1pPE9YO2vKgPepj9VvhZbf9ZlDaAekzbaWWvnJzPnY1Syw=
-X-Received: by 2002:a17:902:a60a:b029:f0:ad94:70bf with SMTP id
- u10-20020a170902a60ab02900f0ad9470bfmr1234281plq.31.1623370475667; Thu, 10
- Jun 2021 17:14:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=C6U1YLmSE4JLi5mlyZ8NZHiwVuj878z1/GmcLjmH1Z8=;
+        b=FcmxzX8fYYUPfGakY5DsNajm5S+c/A2J4kF8nQoc+6KCUETRm2BEARM0n0Gygn3koV
+         9XYzIuFXfVGtmcGq3iQCjwGtltxuihOpaKU/WvhNBfyOZk1Kyy7U+Bw5W7/yOoNi0L7d
+         Bs0zJH9TU34v7ysPYZrnMoX+llK+S+zNMDWvtxfz4KZYPK+8Gs/iVDTaB6akjT4nhpnS
+         X0h4jOa0jjPkK8We3G7OEhkrU0IOEaB7AGX5yLhbYSm3750Q4Hkm9d1vcZBW7ol+V82S
+         b8JXP21APrrSFWEvodTFDieoENMNVEzBWUxfsFix6Ve/7gV/NJU2NqwPuGkKOWJE4aq0
+         Svng==
+X-Gm-Message-State: AOAM533mgDOrIF7U2yOQiOLJRJIEkF53m8Qf3QKRR72EGOXDDyek24nZ
+        YCbfHQhMb8q6ed5/yS84t1G65g==
+X-Google-Smtp-Source: ABdhPJzlOEgwY3eyULH7NLJD3/SXvH7bEJtsmyJY/pfBOZOO1u51AdLhYOQVX3qWWaCArvtZM62gUg==
+X-Received: by 2002:aca:fd43:: with SMTP id b64mr681624oii.0.1623370566755;
+        Thu, 10 Jun 2021 17:16:06 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id z22sm851655ooj.6.2021.06.10.17.16.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 17:16:06 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 17:15:51 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Alistair Popple <apopple@nvidia.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
+        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] mm/thp: fix THP splitting unmap BUGs and
+ related
+In-Reply-To: <2014832.e7zRqyNrDn@nvdebian>
+Message-ID: <b27e866-a06c-d32-20aa-3b16f58549@google.com>
+References: <af88612-1473-2eaa-903-8d1a448b26@google.com> <20210610151505.d0124033e55bda07fa3d4408@linux-foundation.org> <2014832.e7zRqyNrDn@nvdebian>
 MIME-Version: 1.0
-References: <20210531153410.93150-1-changbin.du@gmail.com> <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com>
- <20210602091451.kbdul6nhobilwqvi@wittgenstein> <CAM_iQpUqgeoY_mA6cazUPCWwMK6yw9SaD6DRg-Ja4r6r_zOmLg@mail.gmail.com>
- <20210604095451.nkfgpsibm5nrqt3f@wittgenstein> <CAM_iQpUqp1PRKfS6WcsZ16yjF4jjOrkTHX7Zdhrqo0nrE2VH1Q@mail.gmail.com>
- <20210607090844.mje2xgdkcnqsezlu@wittgenstein>
-In-Reply-To: <20210607090844.mje2xgdkcnqsezlu@wittgenstein>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 10 Jun 2021 17:14:24 -0700
-Message-ID: <CAM_iQpWTrpSQPuVg4VLjKsOYb8i_evYux0pL_bwrTHK0uXTh0g@mail.gmail.com>
-Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Changbin Du <changbin.du@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 2:08 AM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Sun, Jun 06, 2021 at 05:37:40PM -0700, Cong Wang wrote:
-> > On Fri, Jun 4, 2021 at 2:54 AM Christian Brauner
-> > <christian.brauner@ubuntu.com> wrote:
-> > >
-> > > On Thu, Jun 03, 2021 at 03:52:29PM -0700, Cong Wang wrote:
-> > > > On Wed, Jun 2, 2021 at 2:14 AM Christian Brauner
-> > > > <christian.brauner@ubuntu.com> wrote:
-> > > > > But the point is that ns->ops should never be accessed when that
-> > > > > namespace type is disabled. Or in other words, the bug is that something
-> > > > > in netns makes use of namespace features when they are disabled. If we
-> > > > > handle ->ops being NULL we might be tapering over a real bug somewhere.
-> > > >
-> > > > It is merely a protocol between fs/nsfs.c and other namespace users,
-> > > > so there is certainly no right or wrong here, the only question is which
-> > > > one is better.
-> > > >
-> > > > >
-> > > > > Jakub's proposal in the other mail makes sense and falls in line with
-> > > > > how the rest of the netns getters are implemented. For example
-> > > > > get_net_ns_fd_fd():
-> > > >
-> > > > It does not make any sense to me. get_net_ns() merely increases
-> > > > the netns refcount, which is certainly fine for init_net too, no matter
-> > > > CONFIG_NET_NS is enabled or disabled. Returning EOPNOTSUPP
-> > > > there is literally saying we do not support increasing init_net refcount,
-> > > > which is of course false.
-> > > >
-> > > > > struct net *get_net_ns_by_fd(int fd)
-> > > > > {
-> > > > >         return ERR_PTR(-EINVAL);
-> > > > > }
-> > > >
-> > > > There is a huge difference between just increasing netns refcount
-> > > > and retrieving it by fd, right? I have no idea why you bring this up,
-> > > > calling them getters is missing their difference.
-> > >
-> > > This argument doesn't hold up. All netns helpers ultimately increase the
-> > > reference count of the net namespace they find. And if any of them
-> > > perform operations where they are called in environments wherey they
-> > > need CONFIG_NET_NS they handle this case at compile time.
-> >
-> > Let me explain it in this more straight way: what is the protocol here
-> > for indication of !CONFIG_XXX_NS? Clearly it must be ns->ops==NULL,
-> > because all namespaces use the following similar pattern:
-> >
-> > #ifdef CONFIG_NET_NS
-> >         net->ns.ops = &netns_operations;
-> > #endif
-> >
-> > Now you are arguing the protocol is not this, but it is the getter of
-> > open_related_ns() returns an error pointer.
->
-> I don't understand what this is supposed to tell me.
+On Fri, 11 Jun 2021, Alistair Popple wrote:
+> On Friday, 11 June 2021 8:15:05 AM AEST Andrew Morton wrote:
+> > On Tue, 8 Jun 2021 20:57:34 -0700 (PDT) Hugh Dickins <hughd@google.com> wrote:
+> > 
+> > > These are against 5.13-rc5: expect mmotm conflicts with a couple of
+> > > Alistair Popple's "Add support for SVM atomics in Nouveau" series:
+> > > mm-remove-special-swap-entry-functions.patch
+> > > mm-rmap-split-try_to_munlock-from-try_to_unmap.patch
+> > 
+> > I came unstuck at "mm/rmap: split migration into its own function".
 
-This tells you whatever you called a bug, it is just a protocol.
+Sorry about that, I hadn't yet gotten to trying my latest with mmotm.
+And I think my previous mmotm-adjust.tar must have been incomplete;
+and even if it were complete, would no longer apply properly anyway.
 
-You are trying to justify it as bug by interpreting is as a getter
-like get_net_ns_by_fd(). None of them makes sense, neither
-is this bug, nor it is any similar to get_net_ns_by_fd().
+> > 
+> > --- mm/huge_memory.c~mm-rmap-split-migration-into-its-own-function
+> > +++ mm/huge_memory.c
+> > @@ -2345,16 +2345,21 @@ void vma_adjust_trans_huge(struct vm_are
+> > 
+> >  static void unmap_page(struct page *page)
+> >  {
+> > -       enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK |
+> > -               TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+> > +       enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+> >         bool unmap_success;
+> > 
+> >         VM_BUG_ON_PAGE(!PageHead(page), page);
+> > 
+> >         if (PageAnon(page))
+> > -               ttu_flags |= TTU_SPLIT_FREEZE;
+> > -
+> > -       unmap_success = try_to_unmap(page, ttu_flags);
+> > +               unmap_success = try_to_migrate(page, ttu_flags);
+> > +       else
+> > +               /*
+> > +                * Don't install migration entries for file backed pages. This
+> > +                * helps handle cases when i_size is in the middle of the page
+> > +                * as there is no need to unmap pages beyond i_size manually.
+> > +                */
+> > +               unmap_success = try_to_unmap(page, ttu_flags |
+> > +                                               TTU_IGNORE_MLOCK);
+> >         VM_BUG_ON_PAGE(!unmap_success, page);
+> >  }
+> > 
+> > 
+> > Sigh.  I have a few todo's against Alastair's "Add support for SVM
+> > atomics in Nouveau v9".  Including
 
+Sigh shared!
 
->
-> >
-> > >
-> > > (Pluse they are defined in a central place in net/net_namespace.{c,h}.
-> > > That includes the low-level get_net() function and all the others.
-> > > get_net_ns() is the only one that's defined out of band. So get_net_ns()
-> > > currently is arguably also misplaced.)
-> >
-> > Of course they do, only struct ns_common is generic. What's your
-> > point? Each ns.ops is defined by each namespace too.
->
-> All netns helpers should arguably be located in a central place
-> including get_net_ns(). There's no need to spread such helpers
-> everywhere. This is completely orthogonaly to struct ns_common.
+> > 
+> > https://lkml.kernel.org/r/20210525183710.fa2m2sbfixnhz7g5@revolver
+> > https://lkml.kernel.org/r/20210604204934.sbspsmwdqdtmz73d@revolver
+> > https://lkml.kernel.org/r/YK6mbf967dV0ljHn@t490s
+> > https://lkml.kernel.org/r/2005328.bFqPmhE5MS@nvdebian
+> > https://lkml.kernel.org/r/202105262107.LkxpsZsV-lkp@intel.com
+> > https://lkml.kernel.org/r/YK6hYGEx+XzeZELV@t490s
+> > 
+> > So I think I'll drop that series and shall ask for it to be redone
+> > against this lot, please.
 
-I have no idea why you want to argue on something I don't disagree
-with. Actually, the proposal from me only changes fs/nsfs.c, so you
-do not even need to worry about file locations at all.
+Thank you, Andrew: that's certainly easiest for you and for me:
+and I think the right thing to do for now.
 
->
-> >
-> > >
-> > > The problem I have with fixing this in nsfs is that it gives the
-> > > impression that this is a bug in nsfs whereas it isn't and it
-> > > potentially helps tapering over other bugs.
-> >
-> > Like I keep saying, this is just a protocol, there is no right or
-> > wrong here. If the protocol is just ops==NULL, then there is nothing
-> > wrong use it.
-> >
-> > (BTW, we have a lot of places that use ops==NULL as a protocol,
-> > they work really well.)
-> >
-> > >
-> > > get_net_ns() is only called for codepaths that call into nsfs via
-> > > open_related_ns() and it's the only namespace that does this. But
-> >
-> > I am pretty sure userns does the same:
-> >
-> > 197         case NS_GET_USERNS:
-> > 198                 return open_related_ns(ns, ns_get_owner);
->
-> Maybe I wasn't clear enough, open_related_ns() is the only namespace
-> that calls into nsfs via open_related_ns() __outside__ of fs/nsfs.c I
-> thought that was pretty clear.
+> > 
+> 
+> I believe v10 of the series posted earlier this week should address those
+> todo's. I will double check though and resend based on top of mmotm. Thanks.
 
-Why it matter which calls open_related_ns() here? The point is
-ns_get_owner() and get_net_ns() are defined by each ns, IOW,
-outside of fs/nsfs.c.
+Sorry to give you the bother, Alistair: it's worked out as a bad moment
+to rewrite swapops.h and rmap.c, I'm afraid.
 
->
-> But also...
->
-> #ifdef CONFIG_USER_NS
-> struct ns_common *ns_get_owner(struct ns_common *ns);
-> #else
-> static inline struct ns_common *ns_get_owner(struct ns_common *ns)
-> {
->         return ERR_PTR(-EPERM);
-> }
-> #endif
->
-> So ns_get_owner() returns -EPERM when !CONFIG_USER_NS so the callback
-> handles the !CONFIG_USER_NS case. And that's what we were saying
-> get_net_ns() should do.
+And the only help I've had time to give you was pointing Peter at your
+series - many thanks to Peter, and to Shakeel.
 
-Sure, thanks for pointing this out. This is unnecessary too, like I said,
-if the protocol is simply ns.ops==NULL. No one says the current code
-is perfect, all code can be improved, so using existing code can't justify
-it.
+Several times I've been on the point of asking you to keep the familiar
+migration_entry_to_page(), along with your new pfn_swap_entry_to_page();
+but each time I've looked, seen that it's hard to retain it sensibly at
+the same time as overdue cleanup of the device_private_entry_to_page()s.
 
->
-> >
-> >
-> > > open_related_ns() is only well defined if CONFIG_<NAMESPACE_TYPE> is
-> > > set. For example, none of the procfs namespace f_ops will be set for
-> > > !CONFIG_NET_NS. So clearly the socket specific getter here is buggy as
-> > > it doesn't account for !CONFIG_NET_NS and it should be fixed.
-> >
-> > If the protocol is just ops==NULL, then the core part should just check
-> > ops==NULL. Pure and simple. I have no idea why you do not admit the
-> > fact that every namespace intentionally leaves ops as NULL when its
-> > config is disabled.
->
-> I'm just going to quote myself:
->
-> > > set. For example, none of the procfs namespace f_ops will be set for
-> > > !CONFIG_NET_NS.
->
-> If a given namespace type isn't selected then it will never appear in
-> /proc/<pid>/ns/* which is why the proc_ns_operations aren't defined in
-> fs/proc/namespaces.c.
->
-> In other words, you can't get a file descriptor for a given namespace
-> through proc or rather the nsfs part of proc when that namespace type
-> isn't selected.
+So I guess I'm resigned to losing it; but there are at least three
+bugs currently under discussion or fixes in flight, which border on
+migration_entry_to_page() - Jann Horn's smaps syzbot bug, Xu Yu's
+__migration_entry_wait() fix, my __split_huge_pmd_locked() fix
+(and page_vma_mapped_walk() cleanup).
 
-Who said open_related_ns() should return a fd in such a case?
-Clearly it must return an error here.
+And regarding huge_memory.c's unmap_page(): I did not recognize the
+"helps handle cases when i_size" comment you added there.  What I
+ended up with (and thought was in mmotm-adjust.tar but seems not):
 
->
-> The open_related_ns() function is a function that is just there to give
-> you a namespace fd and it assumes that when it is called that the
-> namespace type is selected for or that the callback you're passing it
-> handles that case.
+	/*
+	 * Anon pages need migration entries to preserve them, but file
+	 * pages can simply be left unmapped, then faulted back on demand.
+	 * If that is ever changed (perhaps for mlock), update remap_page().
+	 */
+	if (PageAnon(page))
+		try_to_migrate(page, ttu_flags);
+	else
+		try_to_unmap(page, ttu_flags | TTU_IGNORE_MLOCK);
 
-Once again, this is just a protocol. Let me compare your protocol
-with mine:
+with
+	/* If try_to_migrate() is used on file, remove this check */
+in remap_page() to replace the
+	/* If TTU_SPLIT_FREEZE is ever extended to file, remove this check */
+comment my series puts there (since you delete TTU_SPLIT_FREEZE altogether).
 
-1. You want to use the getter as a protocol for indicating a ns is
-disabled;
-
-2. I prefer to use ns.ops==NULL as a protocol here.
-
-And let me explain why 2) is better than 1):
-
-a) The final code is less with 2), because all those ugly #ifdef's
-are all gone. The getter would not even be called if ns.ops==NULL.
-
-b) The code is more readable. The point of the getter is to increase
-refcnt of a specific ns. There is nothing wrong to at least literally
-increase the refcnt of init_net. With your approach, it simply says
-getting init_net is not supported if !CONFIG_NET_NS, this is just
-false.
-
-c) It is slightly faster to error out. open_related_ns() would return
-an error even before get_unused_fd_flags(). With your approach,
-it defers to the getter, that is, after get_unused_fd_flags().
-
-
->
-> For example, see you're own example about ns_get_owner() above.
->
-> >
-> > >
-> > > Plus your fix leaks references to init netns without fixing get_net_ns()
-> > > too.
-> >
-> > I thought it is 100% clear that this patch is not from me?
-> >
-> > Plus, the PoC patch from me actually suggests to change
-> > open_related_ns(), not __ns_get_path(). I have no idea why you
-> > both miss it.
->
-> Turning this around, I'm not sure what your resistance to just doing it
-> like ns_get_owner() is doing it is.
-
-I have the same doubt. See above on why.
-
-Thanks.
+Hugh
