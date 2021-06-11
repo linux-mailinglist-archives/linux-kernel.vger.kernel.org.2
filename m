@@ -2,129 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20233A3B80
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 07:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27473A3B86
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 07:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhFKFys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 01:54:48 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3841 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFKFyr (ORCPT
+        id S230405AbhFKF5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 01:57:47 -0400
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:41692 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhFKF5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 01:54:47 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1VHY3SbPzWtbD;
-        Fri, 11 Jun 2021 13:47:53 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 13:52:47 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 13:52:47 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Wudi Wang <wangwudi@hisilicon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [PATCH] irqchip/irq-gic-v3-its: Add the checking of ITS version for KVM
-Date:   Fri, 11 Jun 2021 13:52:26 +0800
-Message-ID: <1623390746-54627-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 11 Jun 2021 01:57:46 -0400
+Received: by mail-lf1-f53.google.com with SMTP id j20so6830849lfe.8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 22:55:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kWJT1TKTJY/Zgs7uYHfj5AaoA70mjqy3p3kWRMzXAxk=;
+        b=u8gClsaTykBGjpue/UpE/vI1OH77Q+uPf76rg7zMpmxiHwyu51RAlukcuO4AxjLoI3
+         Cty0lTSdW9Y5xTgrdjej2t/H3E70Vo+XdeSaT/8UYxAGt32R05y1+kcb7BHfKCTFOh8v
+         hAsJcej63Y44lRkwFMiZujBdZhPU+MKb5G58qBAhafPWI5G7RqGrBHuqVl1v+EHamul8
+         QCLSSR+aZH7EGSg08GuBeCANTIZNepvmU56Rf2SMURWNXlmmSAqLtYKvtKza0NbPmCCZ
+         KmucvYemd9/hBxPy1GyOII+fSH/JVVU3y8AtzJMO/BcAOb5zv6nFUAK2H2a9yMd0C7AK
+         p06g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kWJT1TKTJY/Zgs7uYHfj5AaoA70mjqy3p3kWRMzXAxk=;
+        b=Z50Qy1OoxYsAbkN5w5Ni4ofIiBoAy5qOUVw6UT3y3Xqs0KIcE1rwRE9XdmEohfGbu2
+         244jMPo9LYof7sc8NYmedSZjZuvORn2mr5K+B591MfGdXStNuqfYXYVQhSeAVIoOHWh6
+         NG9wHmThIJc+uo2P8WcPqOZugatMxDdA0veEosK/XggrHvAT+oRtU+npEWmUIO7SOxtc
+         XlQgtDNkh39oiYnZJqkeJipMYh+3FnpHDztZXARgmHaJqkYTqHOskHJx5lriR3Yd7BK3
+         0BhHfj2yuvc8X7Mg6jb4PCDAi7vqQWHWJOGsBKD+FzQuIuL60xC/AvmOrhNUWx64fmSU
+         fTnA==
+X-Gm-Message-State: AOAM533IldsWKT9dhndHyqh/+dlr62icUuDbBlfwycuEVGmv+lHY207x
+        wJDT2tp4fK4WMaJzSW/A30D4yeSfXn32LC46/Vq7+w==
+X-Google-Smtp-Source: ABdhPJyBi1jACJJWEC4j8Ji9ooZxSM6vlfwj9FxblgHMo/d9hC0uH3vxw3EwoBcY4sEdvIXgQUk6ztqp4JG6D5+O1AY=
+X-Received: by 2002:a19:c181:: with SMTP id r123mr1573442lff.7.1623390887802;
+ Thu, 10 Jun 2021 22:54:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+References: <20210611050808.2554431-1-vkoul@kernel.org> <CALAqxLW4n8ijkD6hw_xqa2tzkttmXS_LFn_yJo6cP+iYYt-+=A@mail.gmail.com>
+ <YML4XfOOSVKiyofD@vkoul-mobl>
+In-Reply-To: <YML4XfOOSVKiyofD@vkoul-mobl>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 10 Jun 2021 22:54:35 -0700
+Message-ID: <CALAqxLU1gjTY95+phBt=WksyguZuKpNKa6aYaJTe0GeCAg6WrA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sm8350-mtp: Use mdt files for firmware
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wudi Wang <wangwudi@hisilicon.com>
+On Thu, Jun 10, 2021 at 10:45 PM Vinod Koul <vkoul@kernel.org> wrote:
+> On 10-06-21, 22:27, John Stultz wrote:
+> > On Thu, Jun 10, 2021 at 10:08 PM Vinod Koul <vkoul@kernel.org> wrote:
+> > >
+> > > As discussed in [1], it makes it easy for everyone to use mdt firmware file
+> > > name instead of mbn ones, so changes this for SM8350
+> > >
+> > > [1]: http://lore.kernel.org/r/CALAqxLXn6wFBAxRkThxWg5RvTuFEX80kHPt8BVja1CpAB-qzGA@mail.gmail.com
+> > >
+> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > ---
+> > >  arch/arm64/boot/dts/qcom/sm8350-mtp.dts | 8 ++++----
+> > >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+> > > index 93740444dd1e..d859305f1f75 100644
+> > > --- a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+> > > +++ b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+> > > @@ -40,7 +40,7 @@ vph_pwr: vph-pwr-regulator {
+> > >
+> > >  &adsp {
+> > >         status = "okay";
+> > > -       firmware-name = "qcom/sm8350/adsp.mbn";
+> > > +       irmware-name = "qcom/sm8350/adsp.mdt";
+> > >  };
+> >
+> > Uhh, isn't this the opposite of [1]?  My apologies for butting in, and
+> > I'd stay out of the discussion, except for my mail being linked as
+> > justification :)
+>
+> I would rather think of your email as background material or trigger :)
 
-The version of GIC used by KVM is provided by gic_v3_kvm_info.
-The KVM that supports GICv4 or GICv4.1 only checks GIC
-version. Actually, the GIC and ITS need to work together.
-So we add the checking of ITS version for KVM: If and only if
-both GIC & ITS support GICv4, gic_kvm_info.has_v4 is true.
-If and only if both GIC & ITS support GICv4.1,
-gic_kvm_info.has_v4_1 is true.
+My apologies for stirring up trouble. :)
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Wudi Wang <wangwudi@hisilicon.com>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
----
- drivers/irqchip/irq-gic-common.h |  2 ++
- drivers/irqchip/irq-gic-v3-its.c |  3 +++
- drivers/irqchip/irq-gic-v3.c     | 10 +++++-----
- 3 files changed, 10 insertions(+), 5 deletions(-)
+> > In [1] the case was db845c was switched from older mdt files to using
+> > the upstream linux-firmware mbn files. This was a bit of a pain, as it
+> > broke on our userland with mdt files, and since we use both old and
+> > new kernels we had to have both filenames on the disk (via symlink) to
+> > keep it working everywhere.
+> >
+> > My argument in [1] was for new boards, go with the new conventions,
+> > but we should avoid breaking those conventions casually on existing
+> > devices.  That said, I know it's more complex, and I graciously defer
+> > to Bjorn and RobC on the decision.
+> >
+> > But your patch above seems to be switching from mbn (what I understand
+> > to be the new convention) to mdt (what I thought was the old way). And
+> > from the git blame, it looks like it was introduced as mbn (new board,
+> > new convention - so all good, right?).
+> >
+> > So is this really the right change? Or maybe just more exposition in
+> > the commit message is needed (rather than pointing to my mail, which
+> > seems to be arguing the opposite) to explain it?
+>
+> We have had a discussion after the email thread and thought it is better
+> approach to stick to mdt format as used downstream and not have
+> confusion and issues resulting from upstream vs downstream
+>
+> Since SM8350 is a new platform, so switching here onwards made sense,
+> hence this patch
+>
+> I should have added more details for this in changelog as well...
 
-diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
-index ccba8b0fe0f5..e5d44998445a 100644
---- a/drivers/irqchip/irq-gic-common.h
-+++ b/drivers/irqchip/irq-gic-common.h
-@@ -10,6 +10,8 @@
- #include <linux/irqdomain.h>
- #include <linux/irqchip/arm-gic-common.h>
- 
-+extern struct gic_kvm_info gic_v3_kvm_info;
-+
- struct gic_quirk {
- 	const char *desc;
- 	const char *compatible;
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 2e6923c2c8a8..45d6163c14d5 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -5419,6 +5419,9 @@ int __init its_init(struct fwnode_handle *handle, struct rdists *rdists,
- 		has_v4_1 |= is_v4_1(its);
- 	}
- 
-+	gic_v3_kvm_info.has_v4 = has_v4;
-+	gic_v3_kvm_info.has_v4_1 = has_v4_1;
-+
- 	/* Don't bother with inconsistent systems */
- 	if (WARN_ON(!has_v4_1 && rdists->has_rvpeid))
- 		rdists->has_rvpeid = false;
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 37a23aa6de37..7454f99bf580 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -103,7 +103,7 @@ EXPORT_SYMBOL(gic_nonsecure_priorities);
- /* ppi_nmi_refs[n] == number of cpus having ppi[n + 16] set as NMI */
- static refcount_t *ppi_nmi_refs;
- 
--static struct gic_kvm_info gic_v3_kvm_info;
-+struct gic_kvm_info gic_v3_kvm_info;
- static DEFINE_PER_CPU(bool, has_rss);
- 
- #define MPIDR_RS(mpidr)			(((mpidr) & 0xF0UL) >> 4)
-@@ -1850,8 +1850,8 @@ static void __init gic_of_setup_kvm_info(struct device_node *node)
- 	if (!ret)
- 		gic_v3_kvm_info.vcpu = r;
- 
--	gic_v3_kvm_info.has_v4 = gic_data.rdists.has_vlpis;
--	gic_v3_kvm_info.has_v4_1 = gic_data.rdists.has_rvpeid;
-+	gic_v3_kvm_info.has_v4 &= gic_data.rdists.has_vlpis;
-+	gic_v3_kvm_info.has_v4_1 &= gic_data.rdists.has_rvpeid;
- 	gic_set_kvm_info(&gic_v3_kvm_info);
- }
- 
-@@ -2166,8 +2166,8 @@ static void __init gic_acpi_setup_kvm_info(void)
- 		vcpu->end = vcpu->start + ACPI_GICV2_VCPU_MEM_SIZE - 1;
- 	}
- 
--	gic_v3_kvm_info.has_v4 = gic_data.rdists.has_vlpis;
--	gic_v3_kvm_info.has_v4_1 = gic_data.rdists.has_rvpeid;
-+	gic_v3_kvm_info.has_v4 &= gic_data.rdists.has_vlpis;
-+	gic_v3_kvm_info.has_v4_1 &= gic_data.rdists.has_rvpeid;
- 	gic_set_kvm_info(&gic_v3_kvm_info);
- }
- 
--- 
-2.7.4
-
+Ok, thanks for the clarification!
+-john
