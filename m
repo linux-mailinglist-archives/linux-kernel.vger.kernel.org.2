@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69BF3A497C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0F23A497D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhFKTj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:39:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42240 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhFKTj1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:39:27 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623440248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EKF5VOuZBLs6gaM+NwcgZNlrCJW0NmbjvdZPXlY9v2I=;
-        b=VmiMJ0nH7n329R1XjlMJ+zZZS/XOs9RZyYKf3IBlVWdFIK/WyCtvVDSJQX8hiSBCM4Shmp
-        TuV2BP75dRnxzju19BRxUJDz7d9aYWtINECIQaw1hTasAS4fNcIqJ46LdjQQiySRQEaUrD
-        4u/sJWbtrmQHOuG/+F+eFfnrB3CodGCKIzmAqV1aC/9Rk7sXM/FkzItraaheKPs7WQ74JE
-        PfpJJyTTTPkVxfW/Y7ECxgJSz8/AZfsrvkwiboAXFtWFagIhIkFxnFYGM2M/Md+VBWQaz/
-        pYlNjIgcKZQGyUreEUSIgRxf3JMUWvl7o5ol5N7IhzjiAQ1pEs2jTWkIava9iw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623440248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EKF5VOuZBLs6gaM+NwcgZNlrCJW0NmbjvdZPXlY9v2I=;
-        b=ENHZPJZnl+pFlRtaCv0VfS2Eg0nQ585eQGk2wo9GtmFZEYs44lLWgwJ2Kv0lqjv30OcS9G
-        4aL+LV5EZepmvACA==
-To:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch 05/41] x86/fpu: Limit xstate copy size in xstateregs_set()
-In-Reply-To: <ff835ae2-bdd8-3a82-abd1-8ac7500acdcc@kernel.org>
-References: <20210611161523.508908024@linutronix.de> <20210611163111.515164108@linutronix.de> <ff835ae2-bdd8-3a82-abd1-8ac7500acdcc@kernel.org>
-Date:   Fri, 11 Jun 2021 21:37:28 +0200
-Message-ID: <87mtrww5tz.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S230493AbhFKTjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:39:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229548AbhFKTjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:39:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 11474613B8;
+        Fri, 11 Jun 2021 19:37:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623440268;
+        bh=mNw0UGqNwkbKkK4I4bl7/s0QB5RuimeMBTD/y05t6z8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=GNAoSk178jXaZqDwYZDynOuSglFxy6AmRtsC+pvv9W8lTUJus7RLRq3EE8ogf2nSe
+         7MNhzJBd/D11rEz8QiKUcXrzObs4aXnx+eTNk4hmCM3PHqKY92w1UYvI6ewy7G50ju
+         7aDEEsMEwhQQBnlwTwsInya3AfXBWNcyjf3PYHA+kFS7n2qI5v0aPDhqKwKyKlqUaS
+         F44cTCnO6KMEskk2Tv44t+uUF5IMys++Kn+jDozygkA9w0J7o3Z+RqIDT+e7hsDugV
+         LG8HvC4cHTh9A+siqUEjdr3l+DHi20nmotN3SFZODVxRAd3jFy9dEnKZdb+JL7rZnX
+         QgZ4pm0Fu0gwg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F353460A0C;
+        Fri, 11 Jun 2021 19:37:47 +0000 (UTC)
+Subject: Re: [git pull] drm fixes for 5.13-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAPM=9tyyyQ-0QkKquLX4q=7=pjGeRxhhP=z7rfLjEbX7mSrh5A@mail.gmail.com>
+References: <CAPM=9tyyyQ-0QkKquLX4q=7=pjGeRxhhP=z7rfLjEbX7mSrh5A@mail.gmail.com>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <CAPM=9tyyyQ-0QkKquLX4q=7=pjGeRxhhP=z7rfLjEbX7mSrh5A@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-06-11
+X-PR-Tracked-Commit-Id: 7de5c0d70c779454785dd2431707df5b841eaeaf
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f21b807c3cf8cd7c5ca9e406b27bf1cd2f1c1238
+Message-Id: <162344026793.23951.1047701304187344651.pr-tracker-bot@kernel.org>
+Date:   Fri, 11 Jun 2021 19:37:47 +0000
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11 2021 at 11:37, Andy Lutomirski wrote:
-> On 6/11/21 9:15 AM, Thomas Gleixner wrote:
->> If the count argument is larger than the xstate size, this will happily
->> copy beyond the end of xstate.
->
-> Reviewed-by: Andy Lutomirski <luto@kernel.org>
->
-> This interface is horrible.  Oh well.
+The pull request you sent on Fri, 11 Jun 2021 13:41:34 +1000:
 
-It's ptrace is must be horrible :)
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-06-11
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f21b807c3cf8cd7c5ca9e406b27bf1cd2f1c1238
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
