@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCF23A3D70
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7333A3D7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhFKHos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:44:48 -0400
-Received: from mail-ua1-f49.google.com ([209.85.222.49]:42624 "EHLO
-        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhFKHor (ORCPT
+        id S231613AbhFKHrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 03:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhFKHrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:44:47 -0400
-Received: by mail-ua1-f49.google.com with SMTP id w5so2250881uaq.9;
-        Fri, 11 Jun 2021 00:42:34 -0700 (PDT)
+        Fri, 11 Jun 2021 03:47:52 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4896C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:45:54 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id y7so4958065wrh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jyVLRP1QkA2IL6a5f5yksm2l9IPiad2Lfrho8JCrB80=;
+        b=tnUXwEtIxNsUkR3juOymwq8NsDACLFO4UY9stNt8nf4fnyEfeLnMLJRCJ4WQrBSTVo
+         YXthzzdbMkbartaX3GNqDiGY4Gz7qS9h7XO2LM1KW0jgywjEjW8YmTfPj6o9v5fL/yxE
+         b9mjgp5A6ZiodETFvTQAp9m5YaYuipu2JP+jI5qYapY0Qf+qqvtB3sunq5gEnCh9WtkM
+         R//r15ndCwJfRN6O4LT1G4c1oQ9pBNogvUVYa7pZeYik7xN9OVlPoL5dpPlCSGuCReOI
+         RjsU/AFnUKF2BOQnHb+fLoueJveCWv+LFh4UewSsRxnBpkIIyGQq7bq1QNw6Bg7hqn9i
+         gDDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=38AX8dJKliZcm5SjDtUlGVi/FFnBmE/O/3FCvxTZd8o=;
-        b=e/c8wmnOG85MLUh0MrDxoC5JNqYtaoac35MMXV2adhStyJhooDuykAap/BV25pJo2p
-         tAeAo/nMG0bQqBQEDEPP7ENen4I45xokCcdZE1ks9OinXK/pyEMJ3paxSBc5Qd5yxjaj
-         1Garf9AfeFJA4CJV26GK1jPQJQEZQITNYfo/Uo47QyKXvQAGqSqpIyVR3VZSQvy3Pqv+
-         U+0pxCykyOwWWrunifFd7jdbVogX5gcl6dxal6lF17Tqo6U8yF8sBU/Y94rf1EbkagZC
-         4/e3cIzFIDVJJxCeCRUZvyP58joLOxU2LLDIxROPiu1eDygLz/pvxswapI6rqWp9snzK
-         diNQ==
-X-Gm-Message-State: AOAM533OtCAcGVQMAb7+UuV60cB0t9yxoQuLUJOMwSiwHnLneGL1AJPt
-        6Slykho5zff1Y1Is16LodHNK/TSzMSoXJ6mUJPQ=
-X-Google-Smtp-Source: ABdhPJyC0lhpoHIsnRTYb/jBHTXjzOjCm5sNgTxgszrrtuP+35/7N0zzkKE5Xb0wL4kG5xU1+tZftlhPDtoDlti9U/0=
-X-Received: by 2002:ab0:63d9:: with SMTP id i25mr1758952uap.106.1623397353672;
- Fri, 11 Jun 2021 00:42:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jyVLRP1QkA2IL6a5f5yksm2l9IPiad2Lfrho8JCrB80=;
+        b=WFujiM/hIByD9uz7pWSHcPwSNz6WoGngu+q+UNtjK3mTi3MpV1TpKCsFg+fTbgQFFa
+         OxZiN3nw8Ndv3bhQT3eLcYXf7bTjLkm16KipeISaeP/TfuEz9YTulMvN2282cJ40vDEu
+         A5SXU+o4PrEG0Hkg32AXZ0RNFUxJqd3/p1Lkxl2MgCMpj2gQ5uGKolnMIRB95btfm4ST
+         BRnkKs7GZoxJojRQ0IlUeH5t1QVqcc8T3EtzLioNHR3y2iMzAAjDx4dNIkAz4B5jO8Ca
+         du/+XsXcoY9Vx2rkMq/7YZx1VZWAazwGn8O1iWXF90dXO51NuVd6RPYnWRW+/OPJIwIN
+         2NVw==
+X-Gm-Message-State: AOAM533HdfNULHFHv48CS0mImQTTwI+RrrxWlD5CnwMvcaSXH1YKs1xZ
+        r5T4Ml/E13MnHIPGhR4gZ/XJ5Q==
+X-Google-Smtp-Source: ABdhPJzdpXeCEBaZqW+gbgn/Y7fTCnLbcAraMgni6bIzcHxjI8moZxc8QRHIancTbR/BoSfZr7KBAw==
+X-Received: by 2002:adf:f1ca:: with SMTP id z10mr2557658wro.396.1623397553262;
+        Fri, 11 Jun 2021 00:45:53 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:e537:d458:d3c4:18e1? ([2a01:e34:ed2f:f020:e537:d458:d3c4:18e1])
+        by smtp.googlemail.com with ESMTPSA id v15sm5701683wrw.24.2021.06.11.00.45.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 00:45:52 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: meson: vim3: reduce cpu thermal fan trigger
+ temperature
+To:     Nick Xie <xieqinick@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     robh+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nick <nick@khadas.com>, artem@khadas.com
+References: <20210609012849.797576-1-xieqinick@gmail.com>
+ <11da3ae4-91d4-1e51-c652-e4ad518f13bd@baylibre.com>
+ <CAP4nuTVMZV7pz8NrM2MHcZzBdueRXjS+KYsU4=cQ1CB67gr_Hg@mail.gmail.com>
+ <ee3341d9-350e-a84d-6836-3401be679b2a@baylibre.com>
+ <CAP4nuTUt1vQjVP=3_NYaeu+m47f78ru6-MgGBiAqLeU9fJAsNg@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <09c65310-9441-9b97-d9ae-4695f0dd16af@linaro.org>
+Date:   Fri, 11 Jun 2021 09:45:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com> <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
-In-Reply-To: <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 11 Jun 2021 09:42:22 +0200
-Message-ID: <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAP4nuTUt1vQjVP=3_NYaeu+m47f78ru6-MgGBiAqLeU9fJAsNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh, Linus,
+On 11/06/2021 09:30, Nick Xie wrote:
+> Hello Neil,
+> 
+> 
+> Neil Armstrong <narmstrong@baylibre.com> 于2021年6月11日周五 下午3:15写道：
+>>
+>> Hi,
+>>
+>> On 11/06/2021 08:54, Nick Xie wrote:
+>>> Hello Neil,
+>>>
+>>> The MCU FAN won't work until the temperature reach to 80 degree centigrade,
+>>> Do you think the temperature is too high?
+>>
+>> I think 80 is tool high, but I fear 50 is way too low, but if you think 50 is OK after you ran some tests, just add it to the commit log and it's ok for me.
+> 
+> I think it is OK, we use it for a long time.
 
-On Fri, Jun 11, 2021 at 5:56 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> On 10-06-21, 22:46, Linus Walleij wrote:
-> > thanks for working on this, it's a really interesting driver.
-> >
-> > My first question is conceptual:
-> >
-> > We previously have Geerts driver for virtualization:
-> > drivers/gpio/gpio-aggregator.c
-> >
-> > The idea with the aggregator is that a host script sets up a
-> > unique gpiochip for the virtualized instance using some poking
-> > in sysfs and pass that to the virtual machine.
-> > So this is Linux acting as virtualization host by definition.
+50°C sounds like normal temperature with regular load. That means the
+fan will be switched on most of the time when the board is used.
 
-The gpio-aggregator is running on the host...
+And this change may be put in regard with the other trip points in the
+common DT. For instance, enable the fan when reaching 80°C but set the
+passive trip point to 75°C instead of 85°C.
 
-> > I think virtio is more abstract and intended for the usecase
-> > where the hypervisor is not Linux, so this should be mentioned
-> > in the commit, possibly also in Kconfig so users immediately
-> > know what usecases the two different drivers are for.
+All that depends on the hardware characteristics and TDP which are in
+the TRM normally.
 
-... while the virtio-gpio driver is meant for the guest kernel.
-
-I my PoC "[PATCH QEMU v2 0/5] Add a GPIO backend"[1], I didn't have
-a virtio transport, but just hooked into the PL061 GPIO emulation
-in QEMU.  The PL061 QEMU driver talked to the GPIO backend, which
-talked to /dev/gpiochipN on the host.
-
-> Well, not actually.
->
-> The host can actually be anything. It can be a Xen based dom0, which
-> runs some proprietary firmware, or Qemu running over Linux.
->
-> It is left for the host to decide how it wants to club together the
-> GPIO pins from host and access them, with Linux host userspace it
-> would be playing with /dev/gpiochipN, while for a raw one it may
-> be accessing registers directly.
->
-> And so the backend running at host, needs to pass the gpiochip
-> configurations and only the host understand it.
-
-So QEMU has to translate the virtio-gpio communication to e.g.
-/dev/gpiochipN on the host (or a different backend on non-Linux or
-bare-metal HV).
-
-> The way I test it for now is by running this with Qemu over my x86
-> box, so my host side is indeed playing with sysfs Linux.
-
-Can you please share a link to the QEMU patches?
-
-> > Possibly both could be used: aggregator to pick out the GPIOs
-> > you want into a synthetic GPIO chip, and the actual talk
-> > between the hypervisor/host and the guest using virtio, even
-> > with linux-on-linux.
->
-> Not sure if I understand the aggregator thing for now, but we see the
-> backend running at host (which talks to this Linux driver at guest) as
-> a userspace thing and not a kernel driver. Not sure if aggregator can
-> be used like that, but anyway..
-
-The GPIO aggregator came into play after talking to Alexander Graf and
-Peter Maydell.  To reduce the attack surface, they didn't want QEMU
-to be responsible for exporting to the guest a subset of all GPIOs of
-a gpiochip, only a full gpiochip.  However, the full gpiochip may
-contain critical GPIOs you do not want the guest to tamper with.
-Hence the GPIO aggregator was born, to take care of aggregating all
-GPIOs you want to export to a guest into a new virtual gpiochip.
-
-You can find more information about the GPIO Aggregator's use cases in
-"[PATCH v7 0/6] gpio: Add GPIO Aggregator"[2].
-
-[1] https://lore.kernel.org/linux-gpio/20200423090118.11199-1-geert+renesas@glider.be
-[2] https://lore.kernel.org/linux-doc/20200511145257.22970-1-geert+renesas@glider.be/
-
-Gr{oetje,eeting}s,
-
-                        Geert
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
