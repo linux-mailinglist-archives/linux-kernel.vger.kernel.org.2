@@ -2,188 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDEB3A38B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D37D3A38BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhFKAaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 20:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhFKAaY (ORCPT
+        id S231419AbhFKAam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 20:30:42 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:25302 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230380AbhFKAak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 20:30:24 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5FAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:28:14 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id u18so2980726pfk.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:subject:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lJ6pC3vRgajvw25G5uh7zoFY2OKcw8ZZYBkSXgUjChk=;
-        b=BVsq+nuvUcoL0M+jgJqZAg9gjyOHv2V1eReYVMPhvO+6vr2gNrEHItXE3je02WB60u
-         JjKLvXe+wf0+iI9qmn+Q3KG/ddrqGqbWU6m0AhkB9zvqNITFc11hHenneETyTIoJfACx
-         tuRp1JZJCGTZzFxsNyhaDYFELT4oPNuVSiB+Uv1YPfQEIhPfuerc7bGMmh6VZ0fczcB+
-         YvbxigG59jkhSLsIUnWcyoXmy2eVc0KpDYjIy/gZuXOvOJi9ciUqo68i5IQ7R83008Cq
-         ggrXOkTNchPuKM3j+JTIq/jRC9HBCSjrjJSgZSTfyTi/u2jCPKovB6KJ7yR56sVZf+eB
-         m9dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lJ6pC3vRgajvw25G5uh7zoFY2OKcw8ZZYBkSXgUjChk=;
-        b=U2NRn2bdiJmVJT+t5ul06XXVaz4hClDcqvSPm1EIpWpeY/Mta8d/inVa2RD18WSROX
-         sBvSPVrkG6bUX4h9aMNm68eylTPO/G0pni+mAlVodKZRD168YFxX0T6OkDCarbEzzU/r
-         6UIRviiAvD8PBQVxUsJrrOEgd1kA/mhhrWvdSmYexcpLsZ5IHAdHj56K23v7e9j2+sFj
-         OSfSbqlwIIVeGJzyJgK/xFNpYOv5+DXJVKdsxgbmEbwb2B666DrFpBr3LZUDNU5sAWFO
-         98805k5TG2doNlF4V2q8UwtQDQwNP4r11/yU3KfqHajfweOm3HtW/aERy4jWmlga6AFL
-         vJDw==
-X-Gm-Message-State: AOAM533X4pIrS4G2nVt8KyjF2YYfG4vOJWko313M9vzQvWUCQ1JE5rqd
-        K5O/vD7Ekh/YhtRA9jEmC64qZUlir4Q=
-X-Google-Smtp-Source: ABdhPJwIiIUIBRaW38LEtCHpIdlbiuWMs5Y18aX9aU27rOJ11aPusTe5woknfazy0ggnm18DiiLTog==
-X-Received: by 2002:aa7:9216:0:b029:2e5:6989:4f1a with SMTP id 22-20020aa792160000b02902e569894f1amr5430534pfo.50.1623371294218;
-        Thu, 10 Jun 2021 17:28:14 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id t13sm3431317pfh.97.2021.06.10.17.28.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 17:28:13 -0700 (PDT)
-To:     paulmck@kernel.org
-Cc:     boqun.feng@gmail.com, frederic@kernel.org, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org, neeraju@codeaurora.org,
-        urezki@gmail.com, Akira Yokosawa <akiyks@gmail.com>
-References: <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
-Subject: Re: [PATCH] rcu/doc: Add a quick quiz to explain further why we need
- smp_mb__after_unlock_lock()
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <41a783b3-db66-a30d-4ff1-d1fa77135db0@gmail.com>
-Date:   Fri, 11 Jun 2021 09:28:10 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Thu, 10 Jun 2021 20:30:40 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210611002841epoutp02704584e910c579258ff18c7a5447000c~HX53B2j-D2250622506epoutp02K
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:28:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210611002841epoutp02704584e910c579258ff18c7a5447000c~HX53B2j-D2250622506epoutp02K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623371321;
+        bh=Gi1v3ZiCT2bowcQbssxsuDnG8OxLKfsTlGg+RrVfSp0=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=P8oblYOKgllmOWjv1ONJpeBQ9YrtswroVjdkag0HZevDY+EnR1x28fgkdMhrSnFWM
+         LWKfueex+90UUxIP86kXSOp+92aTF75bylMY9DqdXuqPSxVuIaDjChlu5+rz6uOIwr
+         VVC6TRoxrn7KvRY7vzoHOa8a/K2Pe2c9pEmMgGEY=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20210611002840epcas2p324e845b61b5739ac8ab1db5e1cf471f4~HX52NBlvJ1992719927epcas2p39;
+        Fri, 11 Jun 2021 00:28:40 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.185]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4G1MCC1hstz4x9Px; Fri, 11 Jun
+        2021 00:28:39 +0000 (GMT)
+X-AuditID: b6c32a48-4e5ff700000025f5-d6-60c2ae367b66
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B7.53.09717.63EA2C06; Fri, 11 Jun 2021 09:28:38 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v36 1/4] scsi: ufs: Introduce HPB feature
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <5694e1e0-1c8c-12ef-3215-3d3413a86ea2@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210611002837epcms2p672829dbecc175ef8cb2428ebf36e8cae@epcms2p6>
+Date:   Fri, 11 Jun 2021 09:28:37 +0900
+X-CMS-MailID: 20210611002837epcms2p672829dbecc175ef8cb2428ebf36e8cae
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA11TfUxbVRT3vvd4fSBdHh9jV9TZPTYjU0rbUbwMmIwt+pJtiluyqYmDF3h8
+        xNI2fdTojBH5KgKFkTH5kA1CJygfw01bWlAHrTJwIWaDCatIWRwxzHQyCDokTNtS3OJ/v/s7
+        v3N+55x7L4WHzpORVJ66gNepORVDBhEWRzSKiT9vz5DNrYah2bMWEn1TNiJC8yvXSfTxwgqO
+        FnvbA9C8PRr1Dw2RqHP2GCo29ZKoeawQQ8YaM4m+HPoCR79OL4lQ25QFQzX3DQSyLIWgy6N3
+        ABrvbyZR5aSVRB2X72PoU/MNgD6q7yZSItjxiQPseLURY21Nv4jYk22DgL10plvEloxeIti7
+        c06Crf6qE7BLF7eyhsFKLC3oDVVSLs9l8ToJr87UZOWpc5KZA0fS96Ur42XyGHkCep6RqLl8
+        PpnZfzAt5sU8lWdMRvI2p9J7qDROEJjYPUk6jb6Al+RqhIJkhtdmqbRyuVYqcPmCXp0jzdTk
+        75bLZAqlR5mhyv25rZ/Qmsl3Fn9bJQuBi6gAgRSk46DR9KeoAgRRobQVwLqJSk+AosR0CFyz
+        hnk1YfReWHv9tE8fSjOw92qTaJ2XQufNbuDFJP0crB9x+eqE00UEtDnchPeA0z/i8OspA1h3
+        E8MGw5zf+XHY12H28YF0IvxryYCt88/Ae+1GfB1vhje63KIN/Mdwi79OOCydGfNrQuDsyoCf
+        fwwODyz463wAzdN/A28TkK4C0GFzBqwHYuFP5Rd8TYjpQ/D3smHSiwl6B5xoaPc3tx8O3Hb5
+        9Dj9FOxzN+PereB0NOztj/VCSEfB75zExliFF1ZF/8c4vQmWO9b+461nb/lbexqeX+nFToKo
+        pgerbnrIq+mBVyvAO0EErxXyc3hBoY17+HYvAt+b38lawSfuBakdYBSwA0jhTLjY9rk9I1Sc
+        xb17gtdp0nV6FS/YgdIzZS0euTlT4/k06oJ0uVIRHy9LUCJlvAIxW8SUyJNE53AF/Fs8r+V1
+        G3kYFRhZiNWdiYsKy9ve2HL4Sks5ntbTuLxIi1PCHfP15p7qb3+ona9PlDpH+1a7MN22ydJC
+        peTlmJJS87J6tGrH3S5pY3GqiXMPtUsST1c9m72vMnrrqyH6O0VPrhmPF3dgjjTXLXwwrsSm
+        fyEje7vtBNnQeUT8hCk0+TVXUV4/nh+yoPi+5r2GsWtbXp+KaheaJ6fqZIP/RLjGxkcGqpYD
+        ZsjPeirDTsFNSValYtG9y3nY+OjRuOVTKlVq1hUp+0jZ+x8uUjOvRFiO7pGnBL8UHWA6h2cX
+        td6rqErgTbd3TQeSyuVtrTebg4m6mmM1x/cuZKbal9y5bwavXTNcHcrcvWKZPjjNEEIuJ9+J
+        6wTuX3SYoMZ8BAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e
+References: <5694e1e0-1c8c-12ef-3215-3d3413a86ea2@acm.org>
+        <20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
+        <20210607041755epcms2p271195b24f4a10e777d240ff5d844168f@epcms2p2>
+        <CGME20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p6>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 09:57:10 -0700, Paul E. McKenney wrote:
-> On Thu, Jun 10, 2021 at 05:50:29PM +0200, Frederic Weisbecker wrote:
->> Add some missing critical pieces of explanation to understand the need
->> for full memory barriers throughout the whole grace period state machine,
->> thanks to Paul's explanations.
->> 
->> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
->> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
->> Cc: Joel Fernandes <joel@joelfernandes.org>
->> Cc: Uladzislau Rezki <urezki@gmail.com>
->> Cc: Boqun Feng <boqun.feng@gmail.com>
-> 
-> Nice!!!  And not bad wording either, though I still could not resist the
-> urge to wordsmith further.  Plus I combined your two examples, in order to
-> provide a trivial example use of the polling interfaces, if nothing else.
-> 
-> Please let me know if I messed anything up.
+Hi,
 
-Hi Paul,
+>On 6/6/21 9:17 PM, Daejun Park wrote:
+>> +What:                /sys/class/scsi_device/*/device/hpb_sysfs/hit_cnt
+>> +Date:                June 2021
+>> +Contact:        Daejun Park <daejun7.park@samsung.com>
+>> +Description:        This entry shows the number of reads that changed to HPB read.
+>> +
+>> +                The file is read only.
+> 
+>This patch introduces the hit_cnt attribute in the hpb_sysfs directory
+>and patch 4 moves that attribute to the hpb_stats directory. That is not
+>how sysfs attributes should be introduced. Please introduce the hit_cnt
+>attribute in the hpb_stats directory in this patch such that the sysfs
+>directory does not have to be modified in patch 4.
+Sure, Sure, I will prepare this in the next patch.
 
-See minor tweaks below to satisfy sphinx.
+Thanks,
+Daejun
 
 > 
-> 							Thanx, Paul
+>Thanks,
 > 
-> ------------------------------------------------------------------------
+>Bart.
 > 
-> commit f21b8fbdf9a59553da825265e92cedb639b4ba3c
-> Author: Frederic Weisbecker <frederic@kernel.org>
-> Date:   Thu Jun 10 17:50:29 2021 +0200
 > 
->     rcu/doc: Add a quick quiz to explain further why we need smp_mb__after_unlock_lock()
->     
->     Add some missing critical pieces of explanation to understand the need
->     for full memory barriers throughout the whole grace period state machine,
->     thanks to Paul's explanations.
->     
->     Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
->     Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
->     Cc: Joel Fernandes <joel@joelfernandes.org>
->     Cc: Uladzislau Rezki <urezki@gmail.com>
->     Cc: Boqun Feng <boqun.feng@gmail.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> index 11cdab037bff..3cd5cb4d86e5 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> @@ -112,6 +112,35 @@ on PowerPC.
->  The ``smp_mb__after_unlock_lock()`` invocations prevent this
->  ``WARN_ON()`` from triggering.
 >  
-> ++-----------------------------------------------------------------------+
-> +| **Quick Quiz**:                                                       |
-> ++-----------------------------------------------------------------------+
-> +| But the whole chain of rcu_node-structure locking guarantees that     |
-> +| readers see all pre-grace-period accesses from the updater and        |
-> +| also guarantees that the updater to see all post-grace-period         |
-> +| accesses from the readers.  So why do we need all of those calls      |
-> +| to smp_mb__after_unlock_lock()?                                       |
-> ++-----------------------------------------------------------------------+
-> +| **Answer**:                                                           |
-> ++-----------------------------------------------------------------------+
-> +| Because we must provide ordering for RCU's polling grace-period       |
-> +| primitives, for example, get_state_synchronize_rcu() and              |
-> +| poll_state_synchronize_rcu().  For example:                           |
-> +|                                                                       |
-> +| CPU 0                                     CPU 1                       |
-> +| ----                                      ----                        |
-> +| WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)            |
-> +| g = get_state_synchronize_rcu()           smp_mb()                    |
-> +| while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)           |
-> +|         continue;                                                     |
-
-This indent causes warnings from sphinx:
-
-Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst:135: WARNING: Unexpected indentation.
-Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst:137: WARNING: Block quote ends without a blank line; unexpected unindent
-
-> +| r0 = READ_ONCE(Y)                                                     |
-> +|                                                                       |
-> +| RCU guarantees that that the outcome r0 == 0 && r1 == 0 will not      |
-> +| happen, even if CPU 1 is in an RCU extended quiescent state (idle     |
-> +| or offline) and thus won't interact directly with the RCU core        |
-> +| processing at all.                                                    |
-> ++-----------------------------------------------------------------------+
-> +
->  This approach must be extended to include idle CPUs, which need
->  RCU's grace-period memory ordering guarantee to extend to any
->  RCU read-side critical sections preceding and following the current
-
-The code block in the answer can be fixed as follows:
-
-++-----------------------------------------------------------------------+
-+| **Answer**:                                                           |
-++-----------------------------------------------------------------------+
-+| Because we must provide ordering for RCU's polling grace-period       |
-+| primitives, for example, get_state_synchronize_rcu() and              |
-+| poll_state_synchronize_rcu().  For example::                          |
-+|                                                                       |
-+|  CPU 0                                     CPU 1                      |
-+|  ----                                      ----                       |
-+|  WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)           |
-+|  g = get_state_synchronize_rcu()           smp_mb()                   |
-+|  while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)          |
-+|          continue;                                                    |
-+|  r0 = READ_ONCE(Y)                                                    |
-+|                                                                       |
-+| RCU guarantees that that the outcome r0 == 0 && r1 == 0 will not      |
-+| happen, even if CPU 1 is in an RCU extended quiescent state (idle     |
-+| or offline) and thus won't interact directly with the RCU core        |
-+| processing at all.                                                    |
-++-----------------------------------------------------------------------+
-
-Hint: Use of "::" and indented code block.
- 
-       Thanks, Akira
