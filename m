@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2C83A412B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743193A4131
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhFKLWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhFKLW3 (ORCPT
+        id S231253AbhFKLYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 07:24:23 -0400
+Received: from mail-pg1-f172.google.com ([209.85.215.172]:36385 "EHLO
+        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhFKLYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:22:29 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC207C0613A2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:20:18 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso7105592pjx.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 04:20:18 -0700 (PDT)
+        Fri, 11 Jun 2021 07:24:20 -0400
+Received: by mail-pg1-f172.google.com with SMTP id 27so2204162pgy.3;
+        Fri, 11 Jun 2021 04:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4QwvH5bGqHeUyZVp5Ps3bAzGRgv84nKw9pL18XwdnBM=;
-        b=kk3HFX3t7+pm4U/kjbmmasXspVI2T+d5ttTTpONnlHt9FJYS47YoPl6FI4PGXes9Wc
-         6QS1tcKLLxH/Y0PD3TQ9KyiAySH3iNieFqIF9+2m7FSXNetsYOKvLEh6swUIljF9NFG0
-         2eC5PsZkx/XLvDuBZG5ZICFggERngLC8Vp8Ls=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FodfrTReLfYqXpPW4ser5dvPXRsRi7JBcumQmAiu440=;
+        b=JUe+i1ceTGgyIbJTuXjjpw517J6SO1aslFOvGpJJl3XZQ+nHYglKdRSrViSL1d5z0S
+         s9MKpOivSpcr5NqwURdIdhwZY9LkifU/tNSnYTc//IidKp4HW6HSDhe/22+H8IvR8cXn
+         uiV15s+CPWLar1tiKr3uju4SRFD22oHqanCbVelNoMjS5nPPygoB1RfvaeFUarP9j/gz
+         33weRduesVldYNoYQuwH7dFWjkgMcJa9jcZ/d2ZTFHcmjxZmV3T6uBSENRfhWELeJk6b
+         IUC1EhMTcV4ux8DQZvl6li95TvbSihG6ruO14G3AiH+F+QYD2IAj5/wdMRqTnMKvKimV
+         RkVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4QwvH5bGqHeUyZVp5Ps3bAzGRgv84nKw9pL18XwdnBM=;
-        b=HgTO3DlnW2dHnFNDCF+VHrCNq07ocul14FuXwr4MfTFWtx+337keWhB60ZdEea9Yw1
-         Q7+Z5tPpzNOenOlINHJyqHH1bCIBfb/7dUyGGbSRv6P3y91edkxobN4Hxegxr3EQDH3+
-         8B69q8b/Q7WuZTL644uKD6KJGuAS+WhsfD54tFJHGWtH8PRqp2tpnVA0HaW3yDhuJ4zS
-         MaGlUthEszUm20PMmIKB4OjxHAbdRXSmD32GEtyx0y8Ju3RlYhHBlJbk2b5XP3uoi2xl
-         HUvfy3n9A6y94u3kP22Cd2qT/G2t+nm/VIRDKnNLX2xjsVQTYl/4AK+HN5wdDI9wY+/q
-         qGMQ==
-X-Gm-Message-State: AOAM532XQtwsbJ0gBYdewtKfQ5jnsFd7KiFM8c7f8FFsF5RBFLLNjjfg
-        QipEuY8h9Dw0XRSxKzVMsP6mLQ==
-X-Google-Smtp-Source: ABdhPJzduBIz6I4dCv6hcEL/NSQSitCklTwTnFZIr9rbFuPwFRYv2RhdaiZve2JcmaimUOSyRSHFlA==
-X-Received: by 2002:a17:90b:3696:: with SMTP id mj22mr3994602pjb.42.1623410418179;
-        Fri, 11 Jun 2021 04:20:18 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:73d3:4412:54cc:752d])
-        by smtp.gmail.com with ESMTPSA id y5sm5177189pfo.25.2021.06.11.04.20.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 04:20:17 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maoguang.meng@mediatek.com, yong.wu@mediatek.com
-Subject: [PATCH v4 3/3] arm64: dts: mt8183: add jpeg enc node for mt8183
-Date:   Fri, 11 Jun 2021 19:20:09 +0800
-Message-Id: <20210611112009.2955944-3-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-In-Reply-To: <20210611112009.2955944-1-hsinyi@chromium.org>
-References: <20210611112009.2955944-1-hsinyi@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FodfrTReLfYqXpPW4ser5dvPXRsRi7JBcumQmAiu440=;
+        b=UEcDS0tfAjoeVgttQ0X55GArPBr4vRcJykqQLo+Ll7YjfNZR+NyMGG9xu1ltmJ62kN
+         JuNKtXQWmSSWdV/vImIY2rfaHs6X2Bmp/or8S+UAgiLVCjbPE+/OcduiLatIHrHGY2Tg
+         c39DCfH0pxJ8xSNct52/HePHXQc3Zz5J+Gt437B5DlbQuEWgRny30IjS5SQuH2WECWuR
+         BsAPnJUHLt7i7WAd6Gax/2e3vDtVyB4d71hJknVpdgMi6SuRskwGH3nrpFxfFjLApiWi
+         ClZrv71qVlskOXKVkuQyU2NQqTnRJc1XE1XrCZZxAic9JvvctxDhJDHy9TZ5xHyCDlbv
+         86zQ==
+X-Gm-Message-State: AOAM531cQEeuItxMCrLA8vVDU99MREgfyad3GKBhg+qLZjjGhfwl67FN
+        4XThZ/nfxVktgvlr39YjuPrDONtMUCdSxi9Aeto=
+X-Google-Smtp-Source: ABdhPJyFUIflNwxdK/RMN6foD2ei8C1GZpfb7m9sYaupbEySMmuH6cy++r2H96e5rX2rM3xDWUh4NX4ds9+UubmkTsI=
+X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id
+ p30-20020a056a000a1eb02902e289d85c87mr7917887pfh.73.1623410467613; Fri, 11
+ Jun 2021 04:21:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210611105401.270673-1-ciorneiioana@gmail.com> <20210611105401.270673-3-ciorneiioana@gmail.com>
+In-Reply-To: <20210611105401.270673-3-ciorneiioana@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 11 Jun 2021 14:20:51 +0300
+Message-ID: <CAHp75Ve1URDqjZUevbTxH1zDekvwDoSKw5B787ahR1BJ+0ij+Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 02/15] net: phy: Introduce fwnode_mdio_find_device()
+To:     Ioana Ciornei <ciorneiioana@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maoguang Meng <maoguang.meng@mediatek.com>
+On Fri, Jun 11, 2021 at 1:54 PM Ioana Ciornei <ciorneiioana@gmail.com> wrote:
+>
+> From: Calvin Johnson <calvin.johnson@oss.nxp.com>
+>
+> Define fwnode_mdio_find_device() to get a pointer to the
+> mdio_device from fwnode passed to the function.
 
-Add jpeg encoder device tree node.
+> Refactor of_mdio_find_device() to use fwnode_mdio_find_device().
 
-Signed-off-by: Maoguang Meng <maoguang.meng@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+That's what I meant. Is this series converting two users to use
+fwnode_mdio_find_device()? If not, it should do this and kill
+of_mdio_find_device() completely.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index c5e822b6b77a3..d54b4532fc3f3 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -1329,6 +1329,18 @@ larb4: larb@17010000 {
- 			power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
- 		};
- 
-+		venc_jpg: venc_jpg@17030000 {
-+			compatible = "mediatek,mt8183-jpgenc", "mediatek,mtk-jpgenc";
-+			reg = <0 0x17030000 0 0x1000>;
-+			interrupts = <GIC_SPI 249 IRQ_TYPE_LEVEL_LOW>;
-+			mediatek,larb = <&larb4>;
-+			iommus = <&iommu M4U_PORT_JPGENC_RDMA>,
-+				 <&iommu M4U_PORT_JPGENC_BSDMA>;
-+			power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
-+			clocks = <&vencsys CLK_VENC_JPGENC>;
-+			clock-names = "jpgenc";
-+		};
-+
- 		ipu_conn: syscon@19000000 {
- 			compatible = "mediatek,mt8183-ipu_conn", "syscon";
- 			reg = <0 0x19000000 0 0x1000>;
 -- 
-2.32.0.272.g935e593368-goog
-
+With Best Regards,
+Andy Shevchenko
