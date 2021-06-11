@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4983A4AD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1523A4AD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhFKV7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhFKV7o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:59:44 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B4FC061574;
-        Fri, 11 Jun 2021 14:57:35 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id l3so10292321qvl.0;
-        Fri, 11 Jun 2021 14:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/twGMyo5EO9GXJuIlNzACVg/yJN3yFBsRp8LJlEdtXM=;
-        b=FwxcQHeM7PISTuZI0+UBbTk2U/Ifne6xvCN7lgf/mDl56VYpw0qec/8ladJtzEDxM9
-         bpD2+kzR5F907VaTmef5z4kEacdOiqXp4QjZ44fx92tb9ix/Zhc+ADyXaB9AIK6ak+01
-         VxStL9uURyzUzd8z+eI7S5GsneuptEOIREF0i7Rz3OVS2G6yZTixfCrCCLPdC8ut/g9x
-         E3dhLuxxR3cgEU4JvsDCfc9D5gC9OeFOoYXs8s6ktMYGroj8EBmlotUkCyHghdrSIYh7
-         AhhhZ1AmFudanKRhE2nOvprbVgJhmY1ElE6BGwlB0JxxWW01gWN2t18fsYla7gcxnJVT
-         khLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/twGMyo5EO9GXJuIlNzACVg/yJN3yFBsRp8LJlEdtXM=;
-        b=TSwTRJyzgyqMv3PamUtfxsWX0fCrT62dnP6Oc9n69koB/6XwUU1UV4L2fhRjrfSEOO
-         QCjyRQpyyWZVtD+HUOC8fGLTLC2qNcqEK3Uf6axWmICFgqGvaafTQngyL8rK9LYr2eES
-         PWBe6MbcLarW4luLP4GQDRNaqlnSoS30WZZvNUrm2nw9dQRgSKhL0OvSmmjU6Inbrdiw
-         8lEAeVNHk9ziiYahNGcxQFvdROsWlYpDgl25LF9dG5I2510q4zexpU9Y6ePDWJy3KK14
-         EdJymZqaQ0+OOMGW2srLbxoLUXsl3HAE+taiKVkMUkrC4cDyuxCFE9/2XiK6YaQ5xkNr
-         yZSw==
-X-Gm-Message-State: AOAM530lDm8bc5p5qoK00SfsSQhXs9z2X77IdnMflWvUlUUzZtJtHGpw
-        2fxy5LK+Roz6koKVWwMrWmJOXfzJPG+H89N/shMOKOaTBWE79ohe
-X-Google-Smtp-Source: ABdhPJxagl6eJfmc3DNGhjfpe4EHJxWxMWDcN9SWrXsF55lIrUza4fxVv/Huvq6tUo9g+Fa86e25TOEEvxvfKAiuImM=
-X-Received: by 2002:ad4:4e2e:: with SMTP id dm14mr7005009qvb.33.1623448655003;
- Fri, 11 Jun 2021 14:57:35 -0700 (PDT)
+        id S230361AbhFKWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 18:03:19 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:35764 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229622AbhFKWDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 18:03:17 -0400
+Received: from zn.tnic (p200300ec2f0aec00c039d52956c712fd.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ec00:c039:d529:56c7:12fd])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 80F171EC01B7;
+        Sat, 12 Jun 2021 00:01:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623448877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=EEwR5/b08FCIuHBcZmeu6ocrkwRpJQ7CMwf2+fRzK8o=;
+        b=GXNqJE8MkSjDShDvC9yDZluu+iiqX7qHocrZi39M8iu9Y3Hvvbna0BEKsTJxmnqjWjzXWy
+        7B+XsSxLOFsPiXh7DU24EW46RT8m74XjyZ7OOkaxJbQxOQrLEi8/Lq2n9Ef2uTJMyyYjr2
+        IbswmaC7ikaNbpCrgNyR6DmChWDT4FY=
+Date:   Sat, 12 Jun 2021 00:01:10 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/4] perf/x86/intel: Do not deploy workaround when TSX is
+ deprecated
+Message-ID: <YMPdJkLJkQBJdIEL@zn.tnic>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <4926973a8b0b2ed78217add01b5c459a92f0d511.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <YMMVvq9ZZCu9zZom@zn.tnic>
+ <20210611213443.ira5gc65jlafz7pu@gupta-dev2.localdomain>
 MIME-Version: 1.0
-References: <20210611203301.101067-1-konrad.dybcio@somainline.org> <20210611203301.101067-2-konrad.dybcio@somainline.org>
-In-Reply-To: <20210611203301.101067-2-konrad.dybcio@somainline.org>
-From:   Marijn Suijten <marijns95@gmail.com>
-Date:   Fri, 11 Jun 2021 23:57:24 +0200
-Message-ID: <CANX-K3uHfV2dh8Ep1__atCgZ-VYxn4=9MkeR7zi40p0vLdF4Cg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: Add support for SONY Xperia 1 / 5
- (Kumano platform)
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210611213443.ira5gc65jlafz7pu@gupta-dev2.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 at 22:33, Konrad Dybcio
-<konrad.dybcio@somainline.org> wrote:
->
-> Add support for SONY Xperia 1 and 5 smartphones, both based on the
-> Qualcomm SM8150 chipset. There also exist 5G-capable versions of these
-> devices, but they weren't sold much (if at all) outside Japan.
->
-> The devices are affected by a scary UFS behaviour where sending a certain UFS
-> command (which is worked around on downstream) renders the device unbootable,
-> by effectively erasing the bootloader. Therefore UFS AND UFSPHY are strictly
-> disabled for now.
->
-> Downstream workaround:
-> https://github.com/kholk/kernel/commit/2e7a9ee1c91a016baa0b826a7752ec45663a0561
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+On Fri, Jun 11, 2021 at 02:34:43PM -0700, Pawan Gupta wrote:
+> > > diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> > > index e28892270c58..b5953e1e59a2 100644
+> > > --- a/arch/x86/events/intel/core.c
+> > > +++ b/arch/x86/events/intel/core.c
+> > > @@ -6016,10 +6016,24 @@ __init int intel_pmu_init(void)
+> > >  		intel_pmu_pebs_data_source_skl(pmem);
+> > > 
+> > >  		if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
+> > > -			x86_pmu.flags |= PMU_FL_TFA;
+> > > -			x86_pmu.get_event_constraints = tfa_get_event_constraints;
+> > > -			x86_pmu.enable_all = intel_tfa_pmu_enable_all;
+> > > -			x86_pmu.commit_scheduling = intel_tfa_commit_scheduling;
+> > > +			u64 msr;
+> > > +
+> > > +			rdmsrl(MSR_TSX_FORCE_ABORT, msr);
+> > > +			/* Systems that enumerate CPUID.RTM_ALWAYS_ABORT or
+> > > +			 * support MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM] bit have
+> > > +			 * TSX deprecated by default. TSX force abort hooks are
+> > > +			 * not required on these systems.
+> > 
+> > So if they're not required, why aren't you simply disabling the force
+> > abort "workaround" by clearing the feature flag?
+> 
+> Feature flag also enumerates MSR_TSX_FORCE_ABORT, which is still present
+> after the microcode update. Patch 3/4 in this series clears the TSX
+> CPUID bits using MSR_TSX_FORCE_ABORT. So we do need the feature flag
+> X86_FEATURE_TSX_FORCE_ABORT.
 
-Thanks for working on this!
+So it seems to me then, the if test above should be changed to:
 
-Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
-(On Bahamut)
+	if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT) && 
+	   !boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT)) {
+	   ...
 
-- Marijn
+and no need for the MSR read.
+
+Please don't tell me there are configurations
+where CPUID.RTM_ALWAYS_ABORT is clear but the
+MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM] is there?!
+
+This
+
+"A new CPUID bit CPUID.RTM_ALWAYS_ABORT (CPUID 7.EDX[11]) is added to
+indicate the status of always abort behavior."
+
+tells me that the CPUID bit is always set by the microcode so we should
+be ok.
+
+If not, you should read that MSR early and do
+
+	setup_force_cpu_cap(X86_FEATURE_RTM_ALWAYS_ABORT)
+
+so that this "always abort" flag is always set when TSX transactions are
+always aborted.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
