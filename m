@@ -2,111 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B891E3A4A72
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11543A4A77
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhFKVCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230040AbhFKVCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:02:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C1690613CD;
-        Fri, 11 Jun 2021 21:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623445213;
-        bh=BFn579BHo+V6RuRMsasFONBDcF/mkZeJBCnimQQAz84=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=o5goQld7cEvRqWyuOYLz7Dn2f0Ty4jMMh+mWSQ7w3Knnr62pmAnIxhTAyvWPlSNx5
-         0kDtK2nyKwYbZ3jZcYlhhrOE/MbKanhQtzObL7FX1A5XrsROYy68pJNM4tnWoqFeR/
-         z/tmTbvVqCUZiU0+y/hbAkV2KCLLhlfEKva1NAA7H9sic1gK+MEQbXSL/8pSOEggVi
-         RNImNX9lDRWuw5IGMXlizgdwUOAuvY8qzv4FC//rEGKYOxsWgwouChkO8h/eviNe4T
-         hqflJczogl9mkZFZIFY6GEotdEWQedEPifgqEuIcJazbSdOldCQNoQSS2H/tXq8X/j
-         mD480OKzj+u3w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B531760D07;
-        Fri, 11 Jun 2021 21:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229980AbhFKVC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 17:02:28 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:38516 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231250AbhFKVCW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 17:02:22 -0400
+Received: by mail-pl1-f174.google.com with SMTP id 69so3439623plc.5;
+        Fri, 11 Jun 2021 14:00:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UTbXsK93IZjyYVVcjQEim5P1dHkJ7MA+eHvxSWtW8+I=;
+        b=AEqEU7p5kZwqbpprSFMxeFIR0dIuL1IDMDHIlhiepXj7r0iYamYTspsJ884Jkxn0lw
+         Lh+frTbfOhlP/cqFKVPRTEenkBiPdhWOKk8w5SQuBcZnp8kgkBu5sCbJpWfQV7xLb3VW
+         Ho2P92YAoP1AawuSHaRURHbCj/mCWJ9QLjroviyEWdgrsrlQtoiL3xxF1UXC92UE61Ww
+         ockOJ++z9wJu8nACfwFbPXrCDjk2EHDVxJFTu/Njn2Z8F9sse9ao/EbMBUMeFUvjmcoe
+         pQ/HP2suvC+xasYLJVMcz1bKj1fDyuXESTUQZmdt+oExauW6t/SAKzfdq4bMbTbxxIij
+         Xx+g==
+X-Gm-Message-State: AOAM531jdQu3utIiyM1qJF5jhqriWDrd54Z/u3fHhgYQnb7ncUqWtlZ+
+        9b1eqgY6LcO8T5Wn2TghlG8BMFtCcQc=
+X-Google-Smtp-Source: ABdhPJy92fkJqc6Vz14EEY9zeZJouNqTbvvGydMCPTa0gZDSCSwcpT+G/B//kP+yC++m/46zKmDEjw==
+X-Received: by 2002:a17:90b:1d02:: with SMTP id on2mr4127419pjb.192.1623445223215;
+        Fri, 11 Jun 2021 14:00:23 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id c15sm6430143pgt.68.2021.06.11.14.00.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 14:00:22 -0700 (PDT)
+Subject: Re: [PATCH v3 7/9] scsi: ufs: Let host_sem cover the entire system
+ suspend/resume
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-8-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <b480d5a9-463d-9c51-8fd6-a2cff3396dc7@acm.org>
+Date:   Fri, 11 Jun 2021 14:00:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v11 00/18] virtio/vsock: introduce SOCK_SEQPACKET support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162344521373.30951.11000282953901961373.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Jun 2021 21:00:13 +0000
-References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
-In-Reply-To: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     stefanha@redhat.com, sgarzare@redhat.com, mst@redhat.com,
-        jasowang@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        andraprs@amazon.com, nslusarek@gmx.net, colin.king@canonical.com,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        oxffffaa@gmail.com
+In-Reply-To: <1623300218-9454-8-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 6/9/21 9:43 PM, Can Guo wrote:
+> UFS error handling now is doing more than just re-probing, but also sending
+> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, which
+> may change runtime status of scsi devices. To protect system suspend/resume
+> from being disturbed by error handling, move the host_sem from wl pm ops
+> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+If lock_system_sleep() and unlock_system_sleep() would be used in the
+error handler, would that allow to remove host_sem?
 
-On Fri, 11 Jun 2021 14:07:40 +0300 you wrote:
-> This patchset implements support of SOCK_SEQPACKET for virtio
-> transport.
-> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
-> do it, new bit for field 'flags' was added: SEQ_EOR. This bit is
-> set to 1 in last RW packet of message.
-> 	Now as  packets of one socket are not reordered neither on vsock
-> nor on vhost transport layers, such bit allows to restore original
-> message on receiver's side. If user's buffer is smaller than message
-> length, when all out of size data is dropped.
-> 	Maximum length of datagram is limited by 'peer_buf_alloc' value.
-> 	Implementation also supports 'MSG_TRUNC' flags.
-> 	Tests also implemented.
-> 
-> [...]
+Thanks,
 
-Here is the summary with links:
-  - [v11,01/18] af_vsock: update functions for connectible socket
-    https://git.kernel.org/netdev/net-next/c/a9e29e5511b9
-  - [v11,02/18] af_vsock: separate wait data loop
-    https://git.kernel.org/netdev/net-next/c/b3f7fd54881b
-  - [v11,03/18] af_vsock: separate receive data loop
-    https://git.kernel.org/netdev/net-next/c/19c1b90e1979
-  - [v11,04/18] af_vsock: implement SEQPACKET receive loop
-    https://git.kernel.org/netdev/net-next/c/9942c192b256
-  - [v11,05/18] af_vsock: implement send logic for SEQPACKET
-    https://git.kernel.org/netdev/net-next/c/fbe70c480796
-  - [v11,06/18] af_vsock: rest of SEQPACKET support
-    https://git.kernel.org/netdev/net-next/c/0798e78b102b
-  - [v11,07/18] af_vsock: update comments for stream sockets
-    https://git.kernel.org/netdev/net-next/c/8cb48554ad82
-  - [v11,08/18] virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
-    https://git.kernel.org/netdev/net-next/c/b93f8877c1f2
-  - [v11,09/18] virtio/vsock: simplify credit update function API
-    https://git.kernel.org/netdev/net-next/c/c10844c59799
-  - [v11,10/18] virtio/vsock: defines and constants for SEQPACKET
-    https://git.kernel.org/netdev/net-next/c/f07b2a5b04d4
-  - [v11,11/18] virtio/vsock: dequeue callback for SOCK_SEQPACKET
-    https://git.kernel.org/netdev/net-next/c/44931195a541
-  - [v11,12/18] virtio/vsock: add SEQPACKET receive logic
-    https://git.kernel.org/netdev/net-next/c/e4b1ef152f53
-  - [v11,13/18] virtio/vsock: rest of SOCK_SEQPACKET support
-    https://git.kernel.org/netdev/net-next/c/9ac841f5e9f2
-  - [v11,14/18] virtio/vsock: enable SEQPACKET for transport
-    https://git.kernel.org/netdev/net-next/c/53efbba12cc7
-  - [v11,15/18] vhost/vsock: support SEQPACKET for transport
-    https://git.kernel.org/netdev/net-next/c/ced7b713711f
-  - [v11,16/18] vsock/loopback: enable SEQPACKET for transport
-    https://git.kernel.org/netdev/net-next/c/6e90a57795aa
-  - [v11,17/18] vsock_test: add SOCK_SEQPACKET tests
-    https://git.kernel.org/netdev/net-next/c/41b792d7a86d
-  - [v11,18/18] virtio/vsock: update trace event for SEQPACKET
-    https://git.kernel.org/netdev/net-next/c/184039eefeae
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Bart.
