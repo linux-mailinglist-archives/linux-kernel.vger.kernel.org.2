@@ -2,84 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254803A418A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B11F3A418C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhFKMAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:00:13 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55200 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhFKMAM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:00:12 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BBw25b054437;
-        Fri, 11 Jun 2021 06:58:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623412682;
-        bh=lz3eUFLWjc5wmVQBahFCbI1CAfEZvq0RXjoWx/xNOTo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=SnTyOxVGtWgam3hw9DxhnyXNuAiMbqT8AKhmfu9poFX/ktkFleo31vrp2wV8yaAjH
-         nkX3VDguyCpwIvpP2oMGMfRDYTMeb5CnMbEEqYQG34xIADpcXH4enKuywtqHX1bWRz
-         5tdQ8FRSe4IAkySs1S0l04Rh33BYX1aGnDcpLagE=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BBw2Tv121572
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Jun 2021 06:58:02 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 06:58:01 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 11 Jun 2021 06:58:01 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BBvvLS039508;
-        Fri, 11 Jun 2021 06:57:58 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v6 0/4] mtd: spi-nor: otp: 4 byte mode fix and erase support
-Date:   Fri, 11 Jun 2021 17:27:51 +0530
-Message-ID: <162341252747.7630.10412857264567592221.b4-ty@ti.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210607112744.21587-1-michael@walle.cc>
-References: <20210607112744.21587-1-michael@walle.cc>
+        id S231461AbhFKMBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:01:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230370AbhFKMBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 08:01:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BFFC6100A;
+        Fri, 11 Jun 2021 11:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623412746;
+        bh=TG1JTlsrmuTESaFmWCoPTxQZH4wWLM9/wtKG5Xnnols=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EO2dBSiXkacRHnCAPolfBCRDEb9OPbg1ve/EwFuOqHh3kQ5mmexfZVeOTacvMi6xp
+         +mzmB1q9yORl91RgmESF8qGPlWgDdvEcBr4AgZnYc5eoJpg7ypimNG7J+vI1G2dQ+p
+         zZXaZCPZNaQPnE1YI/hrKxrdP249y8lmcAt4fDQPBy4I78XSovibOPeaPj98w5YhK5
+         vRDmOpOmDnhLm2oDCoDHDohoWglPpH077bUe+GYScp+JwYqD2CGLOQ/BLmVcHfktId
+         f0GLWNRJBu3VWgrU679ez8Yv7sPIygYzjxwhFNkOT0cOUMP55JEesCFwDihUJONQ1w
+         ty+J/ceLvCUtg==
+Date:   Fri, 11 Jun 2021 17:29:02 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        hui.wang@canonical.com, Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        sanyog.r.kale@intel.com,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH v4] soundwire: intel: move to auxiliary bus
+Message-ID: <YMNQBpFX9DXcoGAc@vkoul-mobl>
+References: <20210511052132.28150-1-yung-chuan.liao@linux.intel.com>
+ <21002781-0b78-3b36-952f-683482a925d7@linux.intel.com>
+ <YLS4N2KgzfsMBD1c@vkoul-mobl.Dlink>
+ <b316763b-d219-6ea3-401e-3eb9718aabf3@linux.intel.com>
+ <YMBHj6PBzeHexXJb@vkoul-mobl>
+ <07dbe0a2-0abb-810b-ef39-b83511d3f3e0@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <07dbe0a2-0abb-810b-ef39-b83511d3f3e0@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Jun 2021 13:27:40 +0200, Michael Walle wrote:
-> This series is the follow up on the single patch
-> mtd: spi-nor: implement OTP erase for Winbond and similar flashes
+On 09-06-21, 09:44, Pierre-Louis Bossart wrote:
 > 
-> Pratyush Yadav discovered a likely problem with bigger flashes, the address
-> to access the security registers is either 3 or 4 byte (at least for
-> winbond flashes).
 > 
-> [...]
+> On 6/8/21 11:46 PM, Vinod Koul wrote:
+> > Hi Pierre,
+> > 
+> > You might want to check your setting, this and some other mail (not all
+> > though) sent by you seem to have landed up in my spam folder, dont know
+> > why gmail is doing that...
+> 
+> I haven't changed any of my configurations, not sure what happens?
+> 
+> > On 01-06-21, 08:56, Pierre-Louis Bossart wrote:
+> > > 
+> > > > > b) Vinod commented:
+> > > > > 
+> > > > > "What I would like to see the end result is that sdw driver for Intel
+> > > > > controller here is a simple auxdev device and no additional custom setup
+> > > > > layer required... which implies that this handling should be moved into
+> > > > > auxdev or Intel code setting up auxdev..."
+> > > > > 
+> > > > > I was unable to figure out what this comment hinted at: the auxbus is
+> > > > > already handled in the intel_init.c and intel.c files and the auxbus is used
+> > > > > to model a set of links/managers below the PCI device, not the controller
+> > > > > itself. There is also no such thing as a simple auxdev device used in the
+> > > > > kernel today, the base layer is meant to be extended with domain-specific
+> > > > > structures. There is really no point in creating a simple auxbus device
+> > > > > without extensions.
+> > > > 
+> > > > <back from vacations>
+> > > 
+> > > same here :-)
+> > > 
+> > > > I would like to see that the init_init.c removed completely, that is my
+> > > > ask here
+> > > > 
+> > > > This layer was created by me to aid in creating the platform devices.
+> > > > Also the mistake was not to use platform resources and instead pass a
+> > > > custom structure for resources (device iomem address, irq etc)
+> > > 
+> > > We are 100% aligned on the ask to remove intel_init.c, this layer is
+> > > unnecessary and adds more work for developers/maintainers. We will move all
+> > > this in the SOF driver.
+> > > 
+> > > > I would like to see is the PCI/SOF parent driver create the sdw aux
+> > > > device and that should be all needed to be done. The aux device would be
+> > > > probed by sdw driver. No custom resource structs for resources please.
+> > > I was following the previous paragraph but got stuck on the last sentence
+> > > 'no custom structs for resources', see below.
+> > > 
+> > > > If that is not possible, I would like to understand technical details of
+> > > > why that would be that case. If required necessary changes should be
+> > > > made to aux bus to handle and not have sequencing issue which you had
+> > > > trouble with platform approach.
+> > > 
+> > > I don't know what you are referring to with the 'sequencing issue which you
+> > > had trouble with platform approach'. We never had any technical issues with
+> > > platform devices, the solution works and has been productized. We are only
+> > > doing this iso-functionality transition because GregKH asked us to do only
+> > > use platform devices IF there is a real platform device (controlled by
+> > > DT/ACPI).
+> > > 
+> > > I think we are also having language/specification issues here. I don't
+> > > understand what you describe as a 'resource' - there is no interaction with
+> > > firmware - nor how we can avoid being domain-specific for something that is
+> > > Intel-specific.
+> > > 
+> > > Let's go back to the code to help the discussion: the auxiliary driver which
+> > > manages a SoundWire link needs to be provided with a 'custom' structure that
+> > > describes basic information provided by the PCI parent (link masks, quirks,
+> > > IO register bases) and contains internal fields needed for the link
+> > > management (mutex, ops, list, etc). This is the structure we use:
+> > > 
+> > > struct sdw_intel_link_res {
+> > > 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
+> > > 	void __iomem *registers;
+> > > 	void __iomem *shim;
+> > > 	void __iomem *alh;
+> > 
+> > These are resources and any auxiliary_device should add this. That way
+> > while creating you can set up. Hint look at how platform_device sets up
+> > resources
+> 
+> If you look at the *existing* code, we don't handle any "resources" with the
+> platform devices, we use the platform_device_info.data to pass the link
+> information. It's a void pointer. We do not touch the resource field in the
+> platform_device_into at all.
 
-Applied to spi-nor/next, thanks!
-[1/4] mtd: spi-nor: otp: fix access to security registers in 4 byte mode
-      https://git.kernel.org/mtd/c/b97b1a7698
-[2/4] mtd: spi-nor: otp: use more consistent wording
-      https://git.kernel.org/mtd/c/d5b813e484
-[3/4] mtd: spi-nor: otp: return -EROFS if region is read-only
-      https://git.kernel.org/mtd/c/388161ca45
-[4/4] mtd: spi-nor: otp: implement erase for Winbond and similar flashes
-      https://git.kernel.org/mtd/c/c6ec3e1e3a
+Yes that is true I dont disagree on that part. My ask here is to make it
+better, it can be followed up after this but I would at least like to
+agree on the direction.
 
---
-Regards
-Vignesh
+> https://elixir.bootlin.com/linux/latest/source/drivers/soundwire/intel_init.c#L168
+>
+> > > 	int irq;
+> > 
+> > irq is a generic field and should be again moved into auxiliary_device
+> 
+> It's information passed by the parent so that all links use the same irq. We
+> added this maybe 1.5 years ago after spending months chasing race conditions
+> that we could not root cause. there's nothing generic about this field.
+> 
+> > > 	const struct sdw_intel_ops *ops;
+> > 
+> > This is for callbacks right? Why cant the sdw aux driver call APIs
+> > exported by SOF driver?
+> 
+> this is part of the context, this could be moved to a different structure.
 
+ok
+
+> > > 	struct device *dev;
+> > 
+> > Why do you need a dev pointer here? Is this parent or something else?
+> 
+> for convenience for runtime_pm, there are cases where the link can suspend
+> but the parent has to remain active due to power rail dependencies, so we
+> need to handle pm_runtime_get_noresume() and pm_runtime_put_noidle().
+> 
+> https://elixir.bootlin.com/linux/latest/source/drivers/soundwire/intel.h#L25
+> 
+> We already use this field *today*, this isn't new. I guess we could use
+> dev->parent but that'd be a different patch.
+
+Absolutely, that should be a different patch.
+
+> 
+> > > 	struct mutex *shim_lock; /* protect shared registers */
+> > 
+> > Okay so you serialize the access to shim across sdw and sof right?
+> > export an api from sof driver and get rid of lock here
+> 
+> this is again something we do today. This is not a new field.
+> 
+> see the description here:
+> 
+> https://elixir.bootlin.com/linux/latest/source/drivers/soundwire/intel.h#L25
+> 
+> This is not about serialization between SOF and SDW, only SDW drivers access
+> the shim. It's about serialization between the different SDW driver
+> instances accessing common hardware registers. Nothing new.
+
+Yes this is existing and can be improved upon. I guess can be moved to
+SOF driver?
+
+> 
+> > > 	u32 *shim_mask;
+> > > 	u32 clock_stop_quirks;
+> > > 	u32 link_mask;
+> > > 	struct sdw_cdns *cdns;
+> > > 	struct list_head list;
+> > 
+> > 
+> > these sound as internal data to sdw instance, move into intel
+> > driver instances
+> 
+> what intel driver?
+
+Should have been clear, sdw intel driver
+
+> 
+> We have a PCI Intel driver for the parent (SOF) and a driver instance for
+> each SoundWire link - probed when the parent creates the different SoundWire
+> devices.
+> 
+> we need to have an Intel link driver which is different from the SOF driver
+> used for the parent. This is information needed at the child level.
+> 
+> > > };
+> > > 
+> > > We could if it was desired for architectural clarity split this structure in
+> > > what is provided by the parent and what is used inside of the auxiliary
+> > > driver as an internal context that the parent doesn't touch, but these
+> > > definitions are again Intel-specific.
+> > 
+> > So rather than think Intel specfic, I would suggest you think in generic
+> > terms. You have a child auxiliary_device (think like PCI etc), add
+> > the generic resources like iomem regions, irq etc and call into SOF
+> > driver. That would make sdw driver look neat and help you get rid of
+> > this bits
+> 
+> Not able to get what this means, sorry. the child device should not 'call
+> into the SOF driver', mixing parent and child layers leads to disaster in
+> general.
+> 
+> The model is exactly the same as what we have today with the platform
+> devices. We did not add ANY new fields or information, what is passed in
+> that structure is exactly the same as what we do upstream today with the
+> platform devices.
+
+Yes that is the correct thing to do from conversion point of view. But
+as part of conversion, as a follow up patches I would like to see things
+improved. My ask here again is to remove the init layer. I would have
+liked the resources like irq and iomem ones moved into aux device, but
+looks like consensus is that aux device will not support that!
+
+> To make my point, here is the structure in intel.h as of v5.13-rc1
+> 
+> struct sdw_intel_link_res {
+> 	struct platform_device *pdev;
+> 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
+> 	void __iomem *registers;
+> 	void __iomem *shim;
+> 	void __iomem *alh;
+> 	int irq;
+> 	const struct sdw_intel_ops *ops;
+> 	struct device *dev;
+> 	struct mutex *shim_lock; /* protect shared registers */
+> 	u32 *shim_mask;
+> 	u32 clock_stop_quirks;
+> 	u32 link_mask;
+> 	struct sdw_cdns *cdns;
+> 	struct list_head list;
+> };
+> 
+> and here's what we suggested in this patch:
+> 
+> struct sdw_intel_link_res {
+> 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
+> 	void __iomem *registers;
+> 	void __iomem *shim;
+> 	void __iomem *alh;
+> 	int irq;
+> 	const struct sdw_intel_ops *ops;
+> 	struct device *dev;
+> 	struct mutex *shim_lock; /* protect shared registers */
+> 	u32 *shim_mask;
+> 	u32 clock_stop_quirks;
+> 	u32 link_mask;
+> 	struct sdw_cdns *cdns;
+> 	struct list_head list;
+> };
+> 
+> You will notice that we removed the platform_device *pdev, but embedded this
+> structure into a larger one to make use of container_of()
+> 
+> struct sdw_intel_link_dev {
+> 	struct auxiliary_device auxdev;
+> 	struct sdw_intel_link_res link_res;
+> };
+> 
+> That's it. We did not change anything else, all the other fields are
+> identical. We are only changing the TYPE of device and the interfaces for
+> probe/remove but using the same information and the same device hierarchy.
+
+The move in itself is okay but I dont think that should be the end goal.
+
+-- 
+~Vinod
