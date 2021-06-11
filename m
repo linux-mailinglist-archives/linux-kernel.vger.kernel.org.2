@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D9E3A3E1F
+	by mail.lfdr.de (Postfix) with ESMTP id A322F3A3E20
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhFKIhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:37:08 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:43538 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbhFKIg6 (ORCPT
+        id S231608AbhFKIhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:37:15 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:40751 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhFKIhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:36:58 -0400
-Received: by mail-wr1-f52.google.com with SMTP id r9so5098564wrz.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:35:01 -0700 (PDT)
+        Fri, 11 Jun 2021 04:37:12 -0400
+Received: by mail-wr1-f47.google.com with SMTP id y7so5106975wrh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:35:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gzvh2m9S9pj7XwIIPdU21NyMW1ruzueaF0VglYYhMsQ=;
-        b=lgh2+oH7FaJwwRBiJ8A4mfwmPp4WOizOJf8xqUJk3mqictsCeQZLIOn4xWybDx+evw
-         RvjTekLgzyXJkZTf+yHeaGctAoURuaXQcr+dHvJJwMCVAW2umjmejKG7a6NytItbJV+w
-         h5pn+UH3jwIiwma85aYWcAjgEn4GFklEs6Y5CD3U/io9Vfiyccy/CrSEaR/gbfbLilL6
-         YDt6E6sRxl3bbkXDs5Z05kfwhxvYbn08sljzHwfIDatMsAKWdFMLY04+oW9U95GeY4m5
-         TF7sEmNOdL+Coojsm/YN3acmyeiMKSCV/qTdwkpMKSiiTQAMtyApwI8avQOYVryx7xbf
-         ISmw==
+        bh=k3MEjdeVHn7sFWERR8smEux1izWnO8FFbeYR5RZ6n3E=;
+        b=VOD58DJ/AjE4BVJ0SAFaAzgxkgXL06VOagBnYO19EK66eySu0ck5Z5t7D5gnAs42y4
+         os+idR0aebvvUlYHaw30tPUhCMGZS/VSHXyWvJk9ppuiJmz/ty19bnC8TZLntPWEOQ6z
+         65VZrTbQ4L4t54isCBp4nC5pSCQM2rRNRT/bq53O51h3F3IFVbcMsyj1QaKYK95m6AOP
+         dYjs/e/aoD0e1WfeLSVEHER3Z1Sqai4RJcoLGG+Ha+2iPSIEyh//rtQ3BkYddQN1IVBJ
+         CTip6uWthfmiaJq36PkdhCvKlTGl8492yBuKPTeI8QyqJ1guzaJ8KE5phO+nybn6GyU0
+         IF4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gzvh2m9S9pj7XwIIPdU21NyMW1ruzueaF0VglYYhMsQ=;
-        b=am7CMQyZulbALdUsTN5Q5EpzV92W2LaqK5oa+7xcHFSVnfdV6LPQAGYR2tbQRNiJG5
-         k8ZybjQg483wjPuIvlYqlc2pmUdcvcslDKBpFjXF+JCu6x2cwCVAkK2WtGbXw0u0J5Sz
-         IpMIE60hr31szsGrNxc0r4i1BcG3FI2cFxoTrJvGaZAkXOlN0yKNKkgYqPzmZo5fSICY
-         hUOhzKvnO5fo4Q1AMaNsqCGC75cdTFDPsKjxoXWwWXlsTj/ie44R0CpX5RGbcpqi+Ppy
-         N8nuEvIUO2L3NdRAbN+JdVD4LLpXySxh3cR+NRQsebam4wOm2qjQdDTax7vVNgYFt5VW
-         /MmA==
-X-Gm-Message-State: AOAM533AqIQj2uLsUc3R7BAHCJEf64SUhkOtlTpQ9JbIoBKFIomYuZ5C
-        VS3r0EM+C2zW6lYt7Fdykod/mz7mjfBPUg==
-X-Google-Smtp-Source: ABdhPJwPupzAzedPWxAa7LGYpun4HWNqbRn/ZimCXRy24cLLVmHRdbb1X61qdwTtGkqyjrcuuqiaJw==
-X-Received: by 2002:a05:6000:1b8d:: with SMTP id r13mr2671373wru.207.1623400440678;
-        Fri, 11 Jun 2021 01:34:00 -0700 (PDT)
+        bh=k3MEjdeVHn7sFWERR8smEux1izWnO8FFbeYR5RZ6n3E=;
+        b=LUk9PyJg6NJnRzQTPlgoswUdgQfo3c3JB/7Kn4yLDDjp7h7bNDUL6tCs+tTez7nDWR
+         jsXW/+g2xl4P+hJnBEF7i1ECvo7zB3+9kv6BL1zXTLsT+hxXN9xtbY+vATDOn9WR1sY0
+         JstIpFbU+oe9BRvZqrIA46ta7rd2DA196fMpEo+Kfo0e3CSSoQnbFOddl7Dlknugm5UR
+         GfH+g5Ag2e9kQKVH/+mNaa1t7T+daUKEeEMOjKjzVbrE8cFr8UEbamAhDntGzSCSDbHa
+         p0IEwLAx2J9TCZbbHtEfdnkNCZRSJ+qMzjrYdlH9D0s2wKpoU7Z4U2IXI4vs75QKLKpi
+         Pimw==
+X-Gm-Message-State: AOAM533hU6RpAmb3t3OucSn3ojilpy2/sPmfBMDFvNnmHaUmaapOcQ5L
+        rugWP9HZw4yrs2IX7XtsJDrwdA==
+X-Google-Smtp-Source: ABdhPJwXIzjRW/ZJ2n/5Jknq26tz5weMTJUhd3zFngiVOo68kyjiTrPN5tDKDlRNhC/xkEJzK+Zybw==
+X-Received: by 2002:adf:ee85:: with SMTP id b5mr2671496wro.95.1623400441559;
+        Fri, 11 Jun 2021 01:34:01 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id n42sm11547428wms.29.2021.06.11.01.33.59
+        by smtp.gmail.com with ESMTPSA id n42sm11547428wms.29.2021.06.11.01.34.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 01:34:00 -0700 (PDT)
+        Fri, 11 Jun 2021 01:34:01 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
         Douglas Anderson <dianders@chromium.org>,
+        Joe Perches <joe@perches.com>,
         Stephen Boyd <swboyd@chromium.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 8/9] nvmem: core: constify nvmem_cell_read_variable_common() return value
-Date:   Fri, 11 Jun 2021 09:33:47 +0100
-Message-Id: <20210611083348.20170-9-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 9/9] nvmem: qfprom: Improve the comment about regulator setting
+Date:   Fri, 11 Jun 2021 09:33:48 +0100
+Message-Id: <20210611083348.20170-10-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
 References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
@@ -65,52 +66,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Douglas Anderson <dianders@chromium.org>
 
-The caller doesn't modify the memory pointed to by the pointer so it
-can be const.
+In review feedback Joe Perches found the existing comment
+confusing. Let's use something based on the wording proposed by Joe.
 
-Suggested-by: Stephen Boyd <swboyd@chromium.org>
+Suggested-by: Joe Perches <joe@perches.com>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/nvmem/qfprom.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index f9c9c9859919..4868aa876e1b 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1609,9 +1609,9 @@ int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val)
- }
- EXPORT_SYMBOL_GPL(nvmem_cell_read_u64);
+diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+index 1ba666bcb900..81fbad5e939d 100644
+--- a/drivers/nvmem/qfprom.c
++++ b/drivers/nvmem/qfprom.c
+@@ -196,9 +196,9 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
+ 	}
  
--static void *nvmem_cell_read_variable_common(struct device *dev,
--					     const char *cell_id,
--					     size_t max_len, size_t *len)
-+static const void *nvmem_cell_read_variable_common(struct device *dev,
-+						   const char *cell_id,
-+						   size_t max_len, size_t *len)
- {
- 	struct nvmem_cell *cell;
- 	int nbits;
-@@ -1655,7 +1655,7 @@ int nvmem_cell_read_variable_le_u32(struct device *dev, const char *cell_id,
- 				    u32 *val)
- {
- 	size_t len;
--	u8 *buf;
-+	const u8 *buf;
- 	int i;
- 
- 	buf = nvmem_cell_read_variable_common(dev, cell_id, sizeof(*val), &len);
-@@ -1686,7 +1686,7 @@ int nvmem_cell_read_variable_le_u64(struct device *dev, const char *cell_id,
- 				    u64 *val)
- {
- 	size_t len;
--	u8 *buf;
-+	const u8 *buf;
- 	int i;
- 
- 	buf = nvmem_cell_read_variable_common(dev, cell_id, sizeof(*val), &len);
+ 	/*
+-	 * Hardware requires a min voltage for fuse blowing; this may be
+-	 * a rail shared do don't specify a max--regulator constraints
+-	 * will handle.
++	 * Hardware requires a minimum voltage for fuse blowing.
++	 * This may be a shared rail so don't specify a maximum.
++	 * Regulator constraints will cap to the actual maximum.
+ 	 */
+ 	ret = regulator_set_voltage(priv->vcc, qfprom_blow_uV, INT_MAX);
+ 	if (ret) {
 -- 
 2.21.0
 
