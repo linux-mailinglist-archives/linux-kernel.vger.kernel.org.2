@@ -2,58 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465123A3C5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AACB33A3C62
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhFKG5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:57:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhFKG5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:57:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C88861364;
-        Fri, 11 Jun 2021 06:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623394541;
-        bh=nV7qhZxOMEfwQw+aPrIeJJ1lJqNt38ET7V3fCL6+jJE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L8QGtg7aKsKhYsb1x7turV895A0qPbBa4TKKWrkvA/G4SBhePyGaiBBHFDC03kK4S
-         26Bxhnpo7qVhvjYqob7RWnD0h1C50sOy9YgFgMAcEPIkRVv71JgXfInYyURypvwb2C
-         uWp1UPUbjZerHWEHuPYf3AIic+2A2Th6vVF9ldRA=
-Date:   Fri, 11 Jun 2021 08:55:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] serial: 8250: Mask out floating 16/32-bit bus bits
-Message-ID: <YMMI6TtSm91JeZNJ@kroah.com>
-References: <alpine.DEB.2.21.2105161721220.3032@angie.orcam.me.uk>
- <alpine.DEB.2.21.2105181508460.3032@angie.orcam.me.uk>
- <CAHp75VeGn_wCLevAvD3iyykA73y+mh8k7pjQ2TY-9mt5cqEFWg@mail.gmail.com>
+        id S230230AbhFKG5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:57:47 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34258 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhFKG5p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:57:45 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2E1631FD3F;
+        Fri, 11 Jun 2021 06:55:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1623394547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N2XJlMbDzn+ePfxRClY3gO0FkSnDmd58pgVQ6MHl3tc=;
+        b=PCAPx+BwqsoG/XE8TBDIzCqULGdJAN2G7SFwSw8L9QIyY4yJlSK+MQ7MjNVvOm3X5Fisy8
+        GEPQ6bBMT1RAY99VdFqGe5HvS2k9xcZ+5UzLuAspyJ9l6JTntkWJaoDcdCoLpugh4qQ5qk
+        mw6LSSH4Htk4HULGkTvBSvGIg8yj6hw=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4953AA3B87;
+        Fri, 11 Jun 2021 06:55:46 +0000 (UTC)
+Date:   Fri, 11 Jun 2021 08:55:45 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Aaron Tomlin <atomlin@redhat.com>, Waiman Long <llong@redhat.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
+ non-global case
+Message-ID: <YMMI8R3rlH0Foyq3@dhcp22.suse.cz>
+References: <YL51Tp/3jVHUrpuj@dhcp22.suse.cz>
+ <YL57rLFwAo7EpYeH@dhcp22.suse.cz>
+ <353d012f-e8d4-c54c-b33e-54737e1a0115@redhat.com>
+ <YL8MjSteKeO7w0il@dhcp22.suse.cz>
+ <20210609143534.v65qknfihqimiivd@ava.usersys.com>
+ <YMHivM+0DRYXzAD0@dhcp22.suse.cz>
+ <20210610122323.6geriip66jjmdstj@ava.usersys.com>
+ <YMII3OMPoZPuCe0r@dhcp22.suse.cz>
+ <20210610133644.zpoqfvlchaey24za@ava.usersys.com>
+ <c205367d-f47e-61f3-3aed-fd8142a0010f@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75VeGn_wCLevAvD3iyykA73y+mh8k7pjQ2TY-9mt5cqEFWg@mail.gmail.com>
+In-Reply-To: <c205367d-f47e-61f3-3aed-fd8142a0010f@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:40:31AM +0300, Andy Shevchenko wrote:
-> On Thursday, June 10, 2021, Maciej W. Rozycki <macro@orcam.me.uk> wrote:
-> > Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-
+On Thu 10-06-21 23:06:47, Tetsuo Handa wrote:
+> On 2021/06/10 22:36, Aaron Tomlin wrote:
+> > On Thu 2021-06-10 14:43 +0200, Michal Hocko wrote:
+> >> Well, I am not sure this is a good thing in general. We do not want to
+> >> hide tasks. We already do display oom_score_adj_min even though they are
+> >> not eligible and that can serve a good purpose from my experience. It
+> >> gives us some picture at least. Maybe a flag to mark all uneligible
+> >> tasks would be something useful but I wouldn't drop them from the list.
+> > 
+> > Fair enough.
 > 
+> Yes, marking ineligible (i.e. oom_badness() returning LONG_MIN) tasks would be useful.
 > 
-> Please, find the history group repository (Git.kernel.org) and use proper
-> hash of the real commit.
+> By the way, was the task namely "node" (i.e. PID 1703345) multithreaded program?
+> Your kernel might want commit 7775face207922ea ("memcg: killed threads should not invoke memcg OOM killer").
 
-There is no real need to do that, I'll just put a "cc: stable" in here
-and it will go back as far as we currently maintain.
+Yes, this would help for multithreaded race situation indeed. Thanks!
 
-thanks,
-
-greg k-h
+-- 
+Michal Hocko
+SUSE Labs
