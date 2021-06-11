@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AAF3A3973
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D653A3977
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhFKCAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 22:00:49 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:46742 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbhFKCAr (ORCPT
+        id S231310AbhFKCBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 22:01:32 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:55147 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230280AbhFKCBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:00:47 -0400
-Received: by mail-wr1-f54.google.com with SMTP id a11so4250538wrt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 18:58:35 -0700 (PDT)
+        Thu, 10 Jun 2021 22:01:31 -0400
+Received: by mail-pj1-f42.google.com with SMTP id g24so4774026pji.4;
+        Thu, 10 Jun 2021 18:59:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MO2q43uwbSUi+lDsKI3ygKaJ3j77x2GGNRe2JftDmJQ=;
-        b=j4xBPGv/5iSK3UOEzyfXHRxOna7zZhwRrbvFcRKq2sBrHObkwCDto37DXa3jNkGh6t
-         iLtyf3S2REEEMzzXa0IG0LLAyGPEdYUczzS9YkW+3IjpJQeo1evrYeDqwQ/L6kLGe/h/
-         S6QgyJSnX+dwtxs6W2yUPICKYaWUW5vxQqXlXuck5MannUej5posfR+xQW7bQ5Zx0W52
-         Bdc5SKEcH/16NpH0P4nrrB48T7DUMQ7NU4Yayyif3czUYQmRUQdLV/dnhrd2F7Oomqa9
-         nVUsIi7i9VtpUFTnH0KvvOjCmxv8elT0kmx9Az+18B56b4exfEhtEpjgwkzYYVjXDivI
-         3Cqw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Uam97m8fS2yjD+Mrnj2iP7fVHgATXtrgF4fGudBtGmk=;
+        b=Dyt4nk1Pu8xd5m9v8yRBgfT+MsrytptON9aiTwNohR8w7yKPqvQYhj0At1IFfSOmnM
+         Nt6FTlxnME06uzWTVhEr0JPs54oTDdqMF/Br14RD6Acmv9pFgJeVLD8UxaPV/YUkJxjm
+         brLGF7lk+Hfe+qrIuEJZdr8nbzkc7EZNvC5iAk5qWPFmV/Y9PCb7wgTSloOLYcgokTEj
+         4eQZtq1+sRaaHlvIS6OYWiikqtd2zbu9RMpu3Eg0DAoa5J32w3fSWWV8XAJaJapUBB/M
+         VdzBsrRrkapgP135Zuy+4jtZmp9DwHcDY/nnePw9bFkHtFFBFIikz7Pd+50HbU1nIUVY
+         K86Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MO2q43uwbSUi+lDsKI3ygKaJ3j77x2GGNRe2JftDmJQ=;
-        b=aB/j1F+kq4b3huLfQPmYv+qAPn+KQZ6l31eqFcBiZOoPnn/WmI88qROVhEx64BRUOK
-         zwygvw8vBWDE9CfFAXP5aCydhYz/3JldEjH81MhQQNhEeVtD6B5JuRvfvNsO8Yrzd6E6
-         YdsVumnCEhYn2ypu9KNdXFFUDLDRkSXwhIp3I2rMdGYkz91c8I8CD3GWD9whLSgZPFoH
-         KgH2nXN8W92waW/jksXl5t+xvXYvrhKz5FB6VPasJE79RkHGNZ5TuJTl5XJkdUCRt1Xk
-         3BFJ3T7k7DBOpWSYzm4QLZMb67XVlgvfM0MfoqXqwNCwzJSw0u/AzjunVPfMSuwEH1rp
-         NtBg==
-X-Gm-Message-State: AOAM531fR/5O1IN5MFesUfVEQLuSWnWqrOW64wznvH0ZVZmgzPgWqX99
-        0BF/aW+PIyfbf3WsoTJOxl9qMuW4FG/A8Nv7SexJcg==
-X-Google-Smtp-Source: ABdhPJzFKfsFTr8EXP8C9pIOuxmYbJd17F9kNgfM9YSAwxMpNmKom5+j3Es7thNFcdlF3ubAJOIx9ScYG9IetV1duj4=
-X-Received: by 2002:adf:cf02:: with SMTP id o2mr1141198wrj.365.1623376655221;
- Thu, 10 Jun 2021 18:57:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Uam97m8fS2yjD+Mrnj2iP7fVHgATXtrgF4fGudBtGmk=;
+        b=gf7ztcgUWcD55ZlfzKAIGd9t/GDxIODRr1vwn5r4ur7lteIrPWCGEnU7diljsVrAu6
+         07Ki0EpWVshsj3nlbVIWBWz3tqapN83vgjO1sRyWLsKAvvvWkPaWWkc4Z/ooGaKXexxF
+         khAQXbvUQAfFO1xXN5/tvYyXwWwrT4rNVjKjPgoGE0Gd5cxPLXG7h7LPcJROT7VC9Obq
+         UTMCgVjY4Tc9uD4tppFDY6n/mwt/czfpXeht+3s7lMHEYSqXOA8AbXZ8R6A0cYmTWFyg
+         JdgPxxvAB/8F1OekvpKWPMhRgk05qG2bwJ3ECYcDK+kNTnNS03cugpE4b+YD4gHOKTnt
+         p34A==
+X-Gm-Message-State: AOAM532lGydPqCh0JZUFJMAAAgJfuI2nAbS6/SLyS8drmF42FpDgFWH7
+        ssJeLVGRvKHvyfjFx71u/Ww=
+X-Google-Smtp-Source: ABdhPJx2Bs2oQ2y94cYwdskRqSzpReoujld6udSr5ON+lL6C+/tbdqes5CqOm3yNqMdFAXKWq2QSlw==
+X-Received: by 2002:a17:90a:6b46:: with SMTP id x6mr6366579pjl.163.1623376705046;
+        Thu, 10 Jun 2021 18:58:25 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.34])
+        by smtp.gmail.com with ESMTPSA id md24sm8856222pjb.43.2021.06.10.18.58.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 18:58:24 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     alex.aring@gmail.com, stefan@datenfreihafen.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Subject: [PATCH] ieee802154: hwsim: Fix possible memory leak in hwsim_subscribe_all_others
+Date:   Fri, 11 Jun 2021 09:58:12 +0800
+Message-Id: <20210611015812.1626999-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210610174604.2554090-1-alpergun@google.com>
-In-Reply-To: <20210610174604.2554090-1-alpergun@google.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Thu, 10 Jun 2021 18:57:24 -0700
-Message-ID: <CAA03e5Gho1J03gVLB1E-i2Trd3p=a-k6Gim1icD1hD+QHW9_CA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SVM: Call SEV Guest Decommission if ASID binding fails
-To:     Alper Gun <alpergun@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        kvm list <kvm@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:46 AM Alper Gun <alpergun@google.com> wrote:
->
-> Send SEV_CMD_DECOMMISSION command to PSP firmware if ASID binding
-> fails. If a failure happens after  a successful LAUNCH_START command,
-> a decommission command should be executed. Otherwise, guest context
-> will be unfreed inside the AMD SP. After the firmware will not have
-> memory to allocate more SEV guest context, LAUNCH_START command will
-> begin to fail with SEV_RET_RESOURCE_LIMIT error.
->
-> The existing code calls decommission inside sev_unbind_asid, but it is
-> not called if a failure happens before guest activation succeeds. If
-> sev_bind_asid fails, decommission is never called. PSP firmware has a
-> limit for the number of guests. If sev_asid_binding fails many times,
-> PSP firmware will not have resources to create another guest context.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 59414c989220 ("KVM: SVM: Add support for KVM_SEV_LAUNCH_START command")
-> Reported-by: Peter Gonda <pgonda@google.com>
-> Signed-off-by: Alper Gun <alpergun@google.com>
-> ---
->  arch/x86/kvm/svm/sev.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index e0ce5da97fc2..8d36f0c73071 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -199,9 +199,19 @@ static void sev_asid_free(struct kvm_sev_info *sev)
->         sev->misc_cg = NULL;
->  }
->
-> -static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
-> +static void sev_decommission(unsigned int handle)
->  {
->         struct sev_data_decommission decommission;
-> +
-> +       if (!handle)
-> +               return;
-> +
-> +       decommission.handle = handle;
-> +       sev_guest_decommission(&decommission, NULL);
-> +}
-> +
-> +static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
-> +{
->         struct sev_data_deactivate deactivate;
->
->         if (!handle)
-> @@ -214,9 +224,7 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
->         sev_guest_deactivate(&deactivate, NULL);
->         up_read(&sev_deactivate_lock);
->
-> -       /* decommission handle */
-> -       decommission.handle = handle;
-> -       sev_guest_decommission(&decommission, NULL);
-> +       sev_decommission(handle);
->  }
->
->  static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> @@ -341,8 +349,10 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
->
->         /* Bind ASID to this guest */
->         ret = sev_bind_asid(kvm, start.handle, error);
-> -       if (ret)
-> +       if (ret) {
-> +               sev_decommission(start.handle);
->                 goto e_free_session;
-> +       }
->
->         /* return handle to userspace */
->         params.handle = start.handle;
-> --
-> 2.32.0.272.g935e593368-goog
->
+In hwsim_subscribe_all_others, the error handling code performs
+incorrectly if the second hwsim_alloc_edge fails. When this issue occurs,
+it goes to sub_fail, without cleaning the edges allocated before.
 
-Reviewed-by: Marc Orr <marcorr@google.com>
+Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/net/ieee802154/mac802154_hwsim.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
+index da9135231c07..366eaae3550a 100644
+--- a/drivers/net/ieee802154/mac802154_hwsim.c
++++ b/drivers/net/ieee802154/mac802154_hwsim.c
+@@ -715,6 +715,8 @@ static int hwsim_subscribe_all_others(struct hwsim_phy *phy)
+ 
+ 	return 0;
+ 
++sub_fail:
++	hwsim_edge_unsubscribe_me(phy);
+ me_fail:
+ 	rcu_read_lock();
+ 	list_for_each_entry_rcu(e, &phy->edges, list) {
+@@ -722,8 +724,6 @@ static int hwsim_subscribe_all_others(struct hwsim_phy *phy)
+ 		hwsim_free_edge(e);
+ 	}
+ 	rcu_read_unlock();
+-sub_fail:
+-	hwsim_edge_unsubscribe_me(phy);
+ 	return -ENOMEM;
+ }
+ 
+-- 
+2.25.1
+
