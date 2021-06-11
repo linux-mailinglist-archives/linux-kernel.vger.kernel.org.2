@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5356C3A3CD4
+	by mail.lfdr.de (Postfix) with ESMTP id ABBFD3A3CD5
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhFKHTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:19:30 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3958 "EHLO
+        id S231590AbhFKHTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 03:19:31 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3959 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbhFKHT1 (ORCPT
+        with ESMTP id S230188AbhFKHT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Jun 2021 03:19:27 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1XCL5BDtz6ty6;
-        Fri, 11 Jun 2021 15:14:22 +0800 (CST)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1XCM2ycGz6wDV;
+        Fri, 11 Jun 2021 15:14:23 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Fri, 11 Jun 2021 15:17:28 +0800
 Received: from thunder-town.china.huawei.com (10.174.177.72) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 15:17:27 +0800
+ 15.1.2176.2; Fri, 11 Jun 2021 15:17:28 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Nicolas Dichtel <nicolas.dichtel@6wind.com>,
@@ -37,10 +37,12 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 0/3] scripts/spelling.txt: add some spelling pairs and reorder
-Date:   Fri, 11 Jun 2021 15:12:38 +0800
-Message-ID: <20210611071241.16728-1-thunder.leizhen@huawei.com>
+Subject: [PATCH 1/3] scripts: add spelling_sanitizer.sh script
+Date:   Fri, 11 Jun 2021 15:12:39 +0800
+Message-ID: <20210611071241.16728-2-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
+In-Reply-To: <20210611071241.16728-1-thunder.leizhen@huawei.com>
+References: <20210611071241.16728-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -52,19 +54,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spelling_sanitizer.sh and use it to reorder, then add some spelling
-"mistake||correction" pairs.
+The file scripts/spelling.txt recorded a large number of
+"mistake||correction" pairs. These entries are currently maintained in
+order, but the results are not strict. In addition, when someone wants to
+add some new pairs, he either sort them manually or write a script, which
+is clearly a waste of labor. So add this script. It removes the duplicates
+first, then sort by correctly spelled words. Sorting based on misspelled
+words is not chose because it is uncontrollable.
 
-Zhen Lei (3):
-  scripts: add spelling_sanitizer.sh script
-  scripts/spelling.txt: sort and remove duplicates
-  scripts/spelling.txt: add some spelling "mistake||correction" pairs
-
- scripts/spelling.txt          | 1216 +++++++++++++++++----------------
- scripts/spelling_sanitizer.sh |   26 +
- 2 files changed, 671 insertions(+), 571 deletions(-)
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ scripts/spelling_sanitizer.sh | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
  create mode 100755 scripts/spelling_sanitizer.sh
 
+diff --git a/scripts/spelling_sanitizer.sh b/scripts/spelling_sanitizer.sh
+new file mode 100755
+index 000000000000..4936c4191653
+--- /dev/null
++++ b/scripts/spelling_sanitizer.sh
+@@ -0,0 +1,26 @@
++#!/bin/sh
++
++src=spelling.txt
++tmp=spelling_mistake_correction_pairs.txt
++
++cd `dirname $0`
++
++# Convert the format of 'codespell' to the current
++sed -r -i 's/ ==> /||/' $src
++
++# Move the spelling "mistake||correction" pairs into file $tmp
++# There are currently 9 lines of comments in $src, so the text starts at line 10
++sed -n '10,$p' $src > $tmp
++sed -i '10,$d' $src
++
++# Remove duplicates first, then sort by correctly spelled words
++sort -u $tmp -o $tmp
++sort -t '|' -k 3 $tmp -o $tmp
++
++# Append sorted results to comments
++cat $tmp >> $src
++
++# Delete the temporary file
++rm -f $tmp
++
++cd - > /dev/null
 -- 
 2.25.1
 
