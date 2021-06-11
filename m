@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D54F3A4453
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DD03A4458
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhFKOtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:49:10 -0400
-Received: from router.aksignal.cz ([62.44.4.214]:41480 "EHLO
-        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbhFKOtJ (ORCPT
+        id S231776AbhFKOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:49:32 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33055 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231755AbhFKOta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:49:09 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by router.aksignal.cz (Postfix) with ESMTP id 161A6484DF;
-        Fri, 11 Jun 2021 16:47:09 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
-        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id Ne5tC4B7MD-f; Fri, 11 Jun 2021 16:47:08 +0200 (CEST)
-Received: from [172.25.161.48] (unknown [83.240.30.185])
-        (Authenticated sender: jiri.prchal@aksignal.cz)
-        by router.aksignal.cz (Postfix) with ESMTPSA id 4E52C484DE;
-        Fri, 11 Jun 2021 16:47:08 +0200 (CEST)
-Subject: Re: [PATCH] nvmem: eeprom: at25: fix type compiler warnings
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>
-References: <20210611142706.27336-1-jiri.prchal@aksignal.cz>
- <YMN29rIlPDCL0w3A@kroah.com>
-From:   =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
-Message-ID: <84769ab5-ff30-6c6a-8362-864bd069066d@aksignal.cz>
-Date:   Fri, 11 Jun 2021 16:47:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 11 Jun 2021 10:49:30 -0400
+Received: from mail-oi1-f197.google.com ([209.85.167.197])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <chris.chiu@canonical.com>)
+        id 1lriRW-0002cx-3f
+        for linux-kernel@vger.kernel.org; Fri, 11 Jun 2021 14:47:32 +0000
+Received: by mail-oi1-f197.google.com with SMTP id y137-20020aca4b8f0000b02901f1fb748c74so2908890oia.21
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 07:47:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HM/OpCdDbXxCKOPzELJHKGAfyo0GFyK7Y/hjzFUi874=;
+        b=rUhiSVN+4jryE7VD2076sBJTv6n9flh+WYDs9oo2w3XKrJj4pIlfhFLw+bInGq9twW
+         BviUwuAYSYQqXYAHqlLoWVS/6k08wwjrmFy4qOJb1uegy48/7hWaxBJdg7M5yOI62m9d
+         O/I6v4RhN1Q9mUPHFImu4gJaTKqZR0JJ3YM+mBAiQ6F30fCfFk49UiSABq1m/xv9EfNN
+         yLMLEGsDomD+VF4eARrTs2eu2N7upZC4BBOtD9v5ZViuFZeSMn14qiEQ2IgX5EbKwOYL
+         ZGb1nWT2t2JxNYi+Bb2NeNLsGPg9FOTih1wCCxg6oIYduXfuYCI2h3kq1skyzNAKMObP
+         3BYA==
+X-Gm-Message-State: AOAM532ykEpMgtt7qnjUjeWadLZr7Pz7+28E4/BPij1FkoMMqvN4BHkb
+        hcbCZbUvhpOgzWAhNAJu6q/iHkSY5J2Xqu+ybo6UwYk2RVyLRdPeBFHr4SxvuHjsClkjOzIkQEQ
+        JO0Xx3em1MbZgyFDQXZDbF/2OPRRUWYLQOfZmWChkOTpGkqHOL90T0G1zOQ==
+X-Received: by 2002:a9d:12eb:: with SMTP id g98mr3366600otg.303.1623422849087;
+        Fri, 11 Jun 2021 07:47:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNIqId8/saV2hUMjH0y78sNNvpCYY0s9FH5nbvC8+V2xmzfp1e0A6YmUWsCKSiUf4p5z17PA3fUc3Qcn3WFMA=
+X-Received: by 2002:a9d:12eb:: with SMTP id g98mr3366582otg.303.1623422848860;
+ Fri, 11 Jun 2021 07:47:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YMN29rIlPDCL0w3A@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210603120609.58932-1-chris.chiu@canonical.com>
+ <20210603120609.58932-2-chris.chiu@canonical.com> <5bb08a2db092c590119ff706ac3654de14c984fc.camel@sipsolutions.net>
+In-Reply-To: <5bb08a2db092c590119ff706ac3654de14c984fc.camel@sipsolutions.net>
+From:   Chris Chiu <chris.chiu@canonical.com>
+Date:   Fri, 11 Jun 2021 22:47:18 +0800
+Message-ID: <CABTNMG0Q6Oh8T_sqW-b3ymdbepYmMRQALGozo6pXiKg=r-ndxA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] rtl8xxxu: unset the hw capability HAS_RATE_CONTROL
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Jes.Sorensen@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        code@reto-schneider.ch
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 11, 2021 at 4:18 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> Hi Chris,
+>
+> > Since AMPDU_AGGREGATION is set so packets will be handed to the
+> > driver with a flag indicating A-MPDU aggregation and device should
+> > be responsible for setting up and starting the TX aggregation with
+> > the AMPDU_TX_START action. The TX aggregation is usually started by
+> > the rate control algorithm so the HAS_RATE_CONTROL has to be unset
+> > for the mac80211 to start BA session by ieee80211_start_tx_ba_session.
+> >
+> > The realtek chips tx rate will still be handled by the rate adaptive
+> > mechanism in the underlying firmware which is controlled by the
+> > rate mask H2C command in the driver. Unset HAS_RATE_CONTROL cause
+> > no change for the tx rate control and the TX BA session can be started
+> > by the mac80211 default rate control mechanism.
+>
+> This seems ... strange, to say the least? You want to run the full
+> minstrel algorithm just to have it start aggregation sessions at the
+> beginning?
+>
+> I really don't think this makes sense, and it's super confusing. It may
+> also result in things like reporting a TX rate to userspace/other
+> components that *minstrel* thinks is the best rate, rather than your
+> driver's implementation, etc.
+>
+> I suggest you instead just call ieee80211_start_tx_ba_session() at some
+> appropriate time, maybe copying parts of the logic of
+> minstrel_aggr_check().
+>
+> johannes
+>
+>
+Based on the description in
+https://github.com/torvalds/linux/blob/master/net/mac80211/agg-tx.c#L32
+to L36, if we set HAS_RATE_CONTROL, which means we don't want the
+software rate control (default minstrel), then we will have to deal
+with both the rate control and the TX aggregation in the driver, and
+the .ampdu_action is not really required. Since the rtl8xxxu driver
+doesn't handle the TX aggregation, and the minstrel is the default
+rate control (can't even be disabled), that's the reason why I want to
+unset the HAS_RATE_CONTROL to make use of the existing mac80211
+aggregation handling.
 
+And the minstrel doesn't really take effect for rate selection in HT
+mode because most drivers don't provide HT/VHT rates in .bitrates of
+the ieee80211_supported_band data structure which is required for
+hw->wiphy->bands. The mac80211 API ieee80211_get_tx_rate() will
+return 0 when the IEEE80211_TX_RC_MCS is set in rate flags. The tx
+rate which is filled in the tx descriptor makes no difference because
+the underlying rate selection will be actually controlled by the
+controller which we can set rate mask via H2C command. Unless we force
+the fixed rate in the TX descriptor, we don't really have to fill the
+tx rate. Reporting TX rate of each packet will not depend on the rate
+from the minstrel, drivers have to handle it by itself. I'll also try
+to address that in my next PATCH series.
 
-On 11. 06. 21 16:45, Greg Kroah-Hartman wrote:
-> On Fri, Jun 11, 2021 at 04:27:06PM +0200, Jiri Prchal wrote:
->> Fixes:
->> drivers/misc/eeprom/at25.c:181:28: warning: field width should have type 'int',
->> but argument has type 'unsigned long'
->>
->> drivers/misc/eeprom/at25.c:386:13: warning: cast to smaller integer type 'int'
->> from 'const void *'
->>
->> Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
->> Reported-by: kernel test robot <lkp@intel.com>
->> ---
->>   drivers/misc/eeprom/at25.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
->> index 6e26de68a001..744f7abb22ee 100644
->> --- a/drivers/misc/eeprom/at25.c
->> +++ b/drivers/misc/eeprom/at25.c
->> @@ -178,7 +178,7 @@ static ssize_t sernum_show(struct device *dev, struct device_attribute *attr, ch
->>   	struct at25_data *at25;
->>   
->>   	at25 = dev_get_drvdata(dev);
->> -	return sysfs_emit(buf, "%*ph\n", sizeof(at25->sernum), at25->sernum);
->> +	return sysfs_emit(buf, "%*ph\n", (int)sizeof(at25->sernum), at25->sernum);
->>   }
->>   static DEVICE_ATTR_RO(sernum);
->>   
->> @@ -379,11 +379,11 @@ static int at25_probe(struct spi_device *spi)
->>   	u8 sernum[FM25_SN_LEN];
->>   	int i;
->>   	const struct of_device_id *match;
->> -	int is_fram = 0;
->> +	unsigned long is_fram = 0;
->>   
->>   	match = of_match_device(of_match_ptr(at25_of_match), &spi->dev);
->>   	if (match)
->> -		is_fram = (int)match->data;
->> +		is_fram = (unsigned long)match->data;
->>   
->>   	/* Chip description */
->>   	if (!spi->dev.platform_data) {
->> -- 
->> 2.25.1
->>
-> 
-> Looks good, now queued up.
-
-Thanks Greg for patience and guiding me...
-Jiri
+Chris
