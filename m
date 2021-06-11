@@ -2,97 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E30E3A492A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E333A492B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhFKTFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:05:36 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55522 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbhFKTF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:05:27 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BJ3QYU051446;
-        Fri, 11 Jun 2021 14:03:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623438206;
-        bh=4z2yECl1pwOy5jeE82zgCqV0bkobTEttXJNnv5reNLc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=qGPj8JFtDUrMXWTBL2GBJVXGXi8VfMZyXYuDNv3C2YkRrcDWy2al8FPqFoSPgKqQt
-         O8Wy8YPAhVxixYN5dSTsmaTb8KU431oaOuGjxvcc+HhBRNi+0Sa9AVd1ALT7w8yXtX
-         8lolOMSRpecze3OtTFcA69GBSicUwGuQxUw1sN+k=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BJ3Pfm100081
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Jun 2021 14:03:26 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 14:03:25 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 11 Jun 2021 14:03:25 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BJ3Pol107518;
-        Fri, 11 Jun 2021 14:03:25 -0500
-Date:   Fri, 11 Jun 2021 14:03:25 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-am64-main: Add SYSFW reserved ranges
- in OCRAM
-Message-ID: <20210611190325.6mg4nzhreotsn3db@attribute>
-References: <20210609140604.9490-1-vigneshr@ti.com>
- <81e61d1a-efde-0bff-719c-607752bfdbc1@ti.com>
- <dd2261dd-8285-5a47-526f-5b9e7056aa84@ti.com>
+        id S231283AbhFKTFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:05:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231254AbhFKTFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:05:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5711A6128A;
+        Fri, 11 Jun 2021 19:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623438218;
+        bh=wgJochZ0ZZ7uaSiv4qkGKda7IpjJnDvg7GkwnWCOaZw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=aZ+epoIcYu17S0Bi/yUOlOpikFCNSaibNRN2nleXvAU2XkGI8L/bsQN3VhnhBcrUh
+         ylIxIg+QJk+HXcD6tHw8UwNFmKCdfZ5JIaMEg4YGYTyPOKWwtY5uf61nLmgAbtU41F
+         D0t6aVlNCLOst0VJuWE3Qt5DwIqcefbf2StsuLMW6khOO0WbKzCP/leTZOyPH4qFzY
+         NXz5VOsyHExkEjLPAW6HSbefPRLbyPAsx2bNLcPZy0aFZuw3rrokTYTO9PfSMW2FZG
+         czqYb3gVBLTrabhPF3QTB4mACqQRyPxJ4jCEV+IT5g0wEqN8Msz5GmUO+RzflMPkA3
+         LCUlUR/ldQmfg==
+Subject: Re: [patch 08/41] x86/fpu: Restrict fpstate sanitizing to legacy
+ components
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+References: <20210611161523.508908024@linutronix.de>
+ <20210611163111.820639606@linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <2be2ef6c-fcb8-46cf-976c-2b3a9537b660@kernel.org>
+Date:   Fri, 11 Jun 2021 12:03:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <dd2261dd-8285-5a47-526f-5b9e7056aa84@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210611163111.820639606@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23:59-20210611, Vignesh Raghavendra wrote:
-> 
-> 
-> On 6/9/21 8:56 PM, Lokesh Vutla wrote:
-> > 
-> > 
-> > On 09/06/21 7:36 pm, Vignesh Raghavendra wrote:
-> >> Last 256K of OCRAM (256K@0x701c0000) is reserved for SYSFW usage. Hence
-> >> add an entry in DT so that its not used for generic pool memory
-> >> allocation.
-> >>
-> >> Without this certain drivers using SRAM as generic shared memory pool
-> >> may end up being allocated memory from this range and will lead to boot
-> >> time crash when the reserved range is accessed (due to firewall
-> >> violation).
-> >>
-> >> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> > 
-> > You might want to re-base on top of Aswath's patch updating ATF address. Otherwise:
-> > 
-> > Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
-> > 
-> 
-> Actually, this patch should go in before Aswath's patch as moving ATF
-> location around exposed issue of drivers getting memory allocations
-> overlapping SYSFW reserved ranges
+On 6/11/21 9:15 AM, Thomas Gleixner wrote:
+> xstateregs_get() does not longer use fpstate_sanitize_xstate() and the only
 
+s/does not longer use/no longer uses/
 
-I have applied Aswath's patch, please rebase. understood this is a bug,
-but either way, it really was'nt a regression of stuff that was present.
+		\
+> --- a/arch/x86/kernel/fpu/regset.c
+> +++ b/arch/x86/kernel/fpu/regset.c
+> @@ -11,6 +11,39 @@
+>  
+>  #include <linux/sched/task_stack.h>
+>  
+> +/*
+> + * When executing XSAVEOPT (or other optimized XSAVE instructions), if
 
-please fix and send asap so that I can pick it up.
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+The kernel doesn't use XSAVEOPT any more.  How about:
+
+When executing XSAVES (or other optimized XSAVE instructions)
+
+> + * a processor implementation detects that an FPU state component is still
+> + * (or is again) in its initialized state, it may clear the corresponding
+> + * bit in the header.xfeatures field, and can skip the writeout of registers
+> + * to the corresponding memory layout.
+
+Additionally, copy_xxx_to_xstate() may result in an xsave buffer with a
+bit clear in xfeatures but the corresponding state region not containing
+the state's init value.
+
+> + *
+> + * This means that when the bit is zero, the state component might still
+> + * contain some previous - non-initialized register state.
+
+Maybe say what the function does, e.g.:
+
+This function fills in the init values for the X87 and SSE states if the
+corresponding xfeatures bits are clear.
+
+> + *
+> + * This is required for the legacy regset functions.
+> + */
+> +static void fpstate_sanitize_legacy(struct fpu *fpu)
+> +{
+> +	struct fxregs_state *fx = &fpu->state.fxsave;
+> +	u64 xfeatures;
+> +
+> +	if (!use_xsaveopt())
+> +		return;
+
+This is confusing, since we never use xsaveopt.  It's also wrong -- see
+above.  How about just removing it?
+
+> +
+> +	xfeatures = fpu->state.xsave.header.xfeatures;
+> +
+> +	/* If FP is in init state, reinitialize it */
+> +	if (!(xfeatures & XFEATURE_MASK_FP)) {
+> +		memset(fx, 0, sizeof(*fx));
+> +		fx->cwd = 0x37f;
+> +	}
+> +
+> +	/* If SSE is in init state, clear the storage */
+> +	if (!(xfeatures & XFEATURE_MASK_SSE))
+> +		memset(fx->xmm_space, 0, sizeof(fx->xmm_space));
+> +}
+> +
+>  
+
+Does this result in the mxcsr_mask and mxcsr fields being correct?
+There is a silly number of special cases there.
