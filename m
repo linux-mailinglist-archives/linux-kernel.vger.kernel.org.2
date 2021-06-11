@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B37D3A4995
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DFD3A4998
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhFKTrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhFKTrp (ORCPT
+        id S230361AbhFKTuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:50:03 -0400
+Received: from mail-ej1-f47.google.com ([209.85.218.47]:33776 "EHLO
+        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhFKTuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:47:45 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEB7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 12:45:36 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id o3so7192986wri.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 12:45:36 -0700 (PDT)
+        Fri, 11 Jun 2021 15:50:00 -0400
+Received: by mail-ej1-f47.google.com with SMTP id g20so6261406ejt.0;
+        Fri, 11 Jun 2021 12:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tDb8810oCpif6zfap6uDGjWQYilNRwSbod8qRYyAGqY=;
-        b=sm1qDDyZtvVhi7pxOR6SBwLAfGjtZVmohr8bg7GIfjQGrxxlhIvj6re5ywBsNtY35S
-         bEi2bfXOJJiPHD1WomKlzAb2t/YX6tOPykqpwSHpoaDg2DJHhpFB3tsU1Bf84jR4NCvJ
-         0HCiuCkzQVJEeXg6NcEIvpEFEmsv5LIhtHkxF0kvjovW/aPS4gjS3jCyd5pe7iWqHYyP
-         pSOh8QhaoITBiWwiVFcB4ufXN8bz7icnJFTW2IdIvx9RHBI7nTNZkK9+696IhOYq7gRw
-         lVZkw4+Q4B6Wt2cs8ceMKZMjpZsmXjiOZN5ShVFJJel78YrE0S14Cm0TbI8ZK8FIs+Et
-         cmHg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C6C9XAc/4o5g/nJl5oV+VV5fk+Yq/QDQ08tqYJKVlN8=;
+        b=Wr7Kz7qyfO/ySRu0Ur5oh4v8IOHFu8omwbVz1962faGV6z+ITUn5KuX1jAG8TS3aaK
+         38Y5LWZipl+cT7CCjzqAEBNuaFWBQYdqfW1H+5+6Lt5EG720ZyzFkIMcTcl+OjuFRlSa
+         1XlypvFbDDLNScs0lkW0/HZT66ck3oqM/FyMxwKAeo4o8OwF0+vbD2b/quzziHxXWW6d
+         pidse3IlAvV/27stXoJhYAvK3j0oalHBWdCtu9CVifIKhqi3wF+kuOid+KRDOkOZL/Qe
+         LZelQiJQ03l7fkbwK73jwDQ1mz1FLjgp+ReFtkMynml8Dd6zmR5KO1KUkt39XleFQ0HV
+         6lMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tDb8810oCpif6zfap6uDGjWQYilNRwSbod8qRYyAGqY=;
-        b=V9MOp9z7ii6ZWm7iPO3K9OJ8CigmsXav8MO6xKZ1NBTf/tYXvt7meSta2LnoTEFHvG
-         g6LwZ9wdFfJAiBvRx4UYsY0sw5Q6rO5xQlbqdbSZ+TiGw6C8o1raA8lVUDTNp/QSbqqa
-         59n0ODcLDpX3VP9ndbvldkK0+5AuXMHfaWS/45TxmAz9tfLrlLicQ/QfsWLIZ1f0EZb9
-         FshOtCRx81F/uHK0RWOWHnwGnUsACfG6xTriFNK+NE+qPiqMtbA4P+h99UNxySj5/WPH
-         LFsnOt6ALpCZ1Q/TZdEILWQCIHMdrPimBEXeUCCHJIkcoRzsRlP+yvEe1ZYhG7lT1ZTR
-         WwsA==
-X-Gm-Message-State: AOAM5316ryZ9h7ZxNGUGnKJmhRerkX80QEq5Gdn3EfMXEG1RMZh7wx8m
-        weMpwEmXOccpm5gW1SqEVX0fFw==
-X-Google-Smtp-Source: ABdhPJyS8qi/lr//hImDA5gRkv1QtJeYyC4mULN69ifLVC29Qbyr6KPVtV0ZFfDMkk9HJSobF8hqmg==
-X-Received: by 2002:adf:e84a:: with SMTP id d10mr5719112wrn.48.1623440734939;
-        Fri, 11 Jun 2021 12:45:34 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-149-6.w2-15.abo.wanadoo.fr. [2.15.231.6])
-        by smtp.gmail.com with ESMTPSA id u18sm6789431wmj.15.2021.06.11.12.45.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C6C9XAc/4o5g/nJl5oV+VV5fk+Yq/QDQ08tqYJKVlN8=;
+        b=IXl5b5sHWtuImAruwq2YWtFzKXqAIMC89PkH1rtOkD3OohvO8lHPch2B76OX80Z8Nu
+         +S+2Gz7ilRK5S15Wo3aC8ZmVNYtiASrByQMTG0szj4RuuMgDITRQJpivb3ZDNnOOX6Kp
+         LPhDkebgaJCekwvOefzdLarXQBJrFNYX3/aZpjLGD40lWnd7yKhiCv+ZEGXO3u9MSkej
+         vNpqgC57tn+vpGuLU0AvoHOhdAQpnmV/kdToK4T9kskzbDChKqQjJJ+uVn/1OtYzjxlb
+         kpY7ymFclCkJf7KEnO5Sw8RN02oBRfq1gVgViZG2kf+SLsJXMLe6yc/yG0fdSUKZuIwN
+         kpVQ==
+X-Gm-Message-State: AOAM530GGeYGlSllrz9N0PnMfzNca6O/D2Eo7tETiw5zfbpMNgvxjtOP
+        +K11XNDRZmumijnaTaxl1u0=
+X-Google-Smtp-Source: ABdhPJxfI9du5pPrBGY5Y+smBF61rv+3CBid1CuZMbtYk5u7WBPWybqvRdM2AW0rcmkmc37DxDvXjw==
+X-Received: by 2002:a17:907:948c:: with SMTP id dm12mr5060138ejc.484.1623440806641;
+        Fri, 11 Jun 2021 12:46:46 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id o64sm3011500eda.83.2021.06.11.12.46.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 12:45:34 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] gpio: fixes for v5.13-rc6
-Date:   Fri, 11 Jun 2021 21:45:30 +0200
-Message-Id: <20210611194530.15593-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        Fri, 11 Jun 2021 12:46:46 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 22:46:44 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/5] dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
+Message-ID: <20210611194644.64lvhvp76wy6guqp@skbuf>
+References: <20210610232727.1383117-1-mnhagan88@gmail.com>
+ <20210610232727.1383117-2-mnhagan88@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610232727.1383117-2-mnhagan88@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Fri, Jun 11, 2021 at 12:27:13AM +0100, Matthew Hagan wrote:
+> Add bindings for the Meraki MX64/MX65 series. Note this patch should be
+> applied on top of "dt-bindings: arm: bcm: add NSP devices to SoCs".
+> 
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
+> index 78dfa315f3d0..7d184ba7d180 100644
+> --- a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
+> +++ b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
+> @@ -62,6 +62,12 @@ properties:
+>            - enum:
+>                - brcm,bcm958625hr
+>                - brcm,bcm958625k
+> +              - meraki,mx64
+> +              - meraki,mx64-a0
+> +              - meraki,mx64w
+> +              - meraki,mx64w-a0
+> +              - meraki,mx65
+> +              - meraki,mx65w
+>            - const: brcm,bcm58625
+>            - const: brcm,nsp
+>  
+> -- 
+> 2.26.3
+> 
 
-Please pull the following fix for v5.13-rc6.
-
-Best Regards,
-Bartosz Golaszewski
-
-The following changes since commit bdbe871ef0caa660e16461a2a94579d9f9ef7ba4:
-
-  gpio: tegra186: Don't set parent IRQ affinity (2021-05-12 13:56:43 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.13-rc6
-
-for you to fetch changes up to dbec64b11c65d74f31427e2b9d5746fbf17bf840:
-
-  gpio: wcd934x: Fix shift-out-of-bounds error (2021-05-27 09:51:35 +0200)
-
-----------------------------------------------------------------
-gpio fixes for v5.13-rc6
-
-- fix a shift-out-of-bounds error in gpio-wcd934x
-
-----------------------------------------------------------------
-Srinivas Kandagatla (1):
-      gpio: wcd934x: Fix shift-out-of-bounds error
-
- drivers/gpio/gpio-wcd934x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think these compatibles describe SoCs, whereas Meraki MX64/MX65 are
+boards, so this is a miscategorization. Can you not just describe the
+Northstar Plus SoC that you are using in your compatible string?
