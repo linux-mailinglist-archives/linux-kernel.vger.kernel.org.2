@@ -2,462 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC6A3A48EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92BF3A48EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhFKTAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:00:21 -0400
-Received: from mga14.intel.com ([192.55.52.115]:2682 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhFKTAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:00:20 -0400
-IronPort-SDR: 5Oy9vgq2YUxSCZZJxqGzi4geMp5FPx0GPX4d7hU7Nl3CntbeL+hdSiLe5AINZCZIIDbzRe9tfC
- tPjXTbJXhZTw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="205406049"
-X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
-   d="scan'208";a="205406049"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 11:58:22 -0700
-IronPort-SDR: gN+ja3pIT4cBtaf0tiBQcX6OD8Gvmeaz2XJHtJrXwuIJOy4mO5Y3vTvjlt+g8UQrh2yom0hXcS
- noEH2TAvuU9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
-   d="scan'208";a="414544379"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Jun 2021 11:58:19 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 6CF78E7; Fri, 11 Jun 2021 21:58:43 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: [PATCH v1 1/1] kernel.h: Split out kstrtox() and simple_strtox() to a separate header
-Date:   Fri, 11 Jun 2021 21:58:15 +0300
-Message-Id: <20210611185815.44103-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S231145AbhFKTAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:00:46 -0400
+Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:57696
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229824AbhFKTAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:00:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d7bcRD8Eg7wAO8Q1lRthZC4WkR1IVwdRvnGFUQwWZGMJPVvXBOkrFhtcCEZnDLD4PVC2VT5pb7aniwLijofKOevdxPVtm1i+XQGPsqPSsz/i0cB+l58302c44baM6BHDL74Z3mfBxO4vpr8YepKJdXY/Mk8+MUHWhM1wbivevL0KIBDt060SBfY+x557mqVVkI3cD8+cHtnKP6FU8piuGqSAjhc9hcd11tWVST1f5CVZdISSttrqRxMl030X8orV4xQ59DYnmX1y5WZBZMJhA2qwcB9sDdqxwjgF4KHynftfSgRe8hA4341uNxZ3tcqMUfUFTNqHsZzpBC6vB4fuRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E276EkhTdSLtmfAoF+awu1jTBRbo3jXRkMHZ4mWPA8U=;
+ b=iXCK7DU70R2xBCQUjGZlSVCvcXwtPVKelpyMuv7mdWIeOLyft8/lBBJ89sQtfex8y0eEJBo1QF/HyM6jhcYsuBIgjTTzzGOF4+YMgLX031q6E9yI15xa79s8Qe2TRMyZPH4eHxTARHlR3KL5yLrzyC4lH/dhoUmOC8VF5cPB4da6es1nMsSLPEoWFN3DPYQL9wknP1FWT7408nK2aYngRzExjDPfNE3XvaH0WoNRkhxCAH4qxL7lqDMM2HRgKb1ZF/hh4UWMtDsxgbyt2RadeWwilJUsghkWKSl+QHAtXIc7qYayWEYuXAS4yy60mSd7c3fUMqJCRfbnNhzIvnWWdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E276EkhTdSLtmfAoF+awu1jTBRbo3jXRkMHZ4mWPA8U=;
+ b=o/n7AcqzxL7OhTLfiiZyFgsOuVkbbaRKauLaR96C57cBxBw9CLWnbJYHiQ7SL9fRyBJa4y4da3tbg5AN1HcZoteaZq2IWY3QTHmuCWtAsiBWwQtOrM+/TPZxw5OosezVzIypZz+WuBJGUwnnZxR9IM6rD7VnNhBbZSpyFeqUHeo=
+Received: from BY5PR02MB6520.namprd02.prod.outlook.com (2603:10b6:a03:1d3::8)
+ by BY5PR02MB6130.namprd02.prod.outlook.com (2603:10b6:a03:1fa::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Fri, 11 Jun
+ 2021 18:58:41 +0000
+Received: from BY5PR02MB6520.namprd02.prod.outlook.com
+ ([fe80::d880:7694:92d6:7798]) by BY5PR02MB6520.namprd02.prod.outlook.com
+ ([fe80::d880:7694:92d6:7798%5]) with mapi id 15.20.4219.024; Fri, 11 Jun 2021
+ 18:58:41 +0000
+From:   Radhey Shyam Pandey <radheys@xilinx.com>
+To:     Lars-Peter Clausen <lars@metafoo.de>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>
+CC:     "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>
+Subject: RE: [RFC v2 PATCH 5/7] dmaengine: xilinx_dma: Freeup active list
+ based on descriptor completion bit
+Thread-Topic: [RFC v2 PATCH 5/7] dmaengine: xilinx_dma: Freeup active list
+ based on descriptor completion bit
+Thread-Index: AQHXLWnQwGXrB49GLkeWOkZPWQaKgqq1NliAgFpWBTA=
+Date:   Fri, 11 Jun 2021 18:58:41 +0000
+Message-ID: <BY5PR02MB652069D06D93955A3D45DF49C7349@BY5PR02MB6520.namprd02.prod.outlook.com>
+References: <1617990965-35337-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+ <1617990965-35337-6-git-send-email-radhey.shyam.pandey@xilinx.com>
+ <94a2a053-46b6-77be-7c1f-3ece3a0f9af3@metafoo.de>
+In-Reply-To: <94a2a053-46b6-77be-7c1f-3ece3a0f9af3@metafoo.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: metafoo.de; dkim=none (message not signed)
+ header.d=none;metafoo.de; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.130]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 884e6c81-8592-476d-a55e-08d92d0aedf6
+x-ms-traffictypediagnostic: BY5PR02MB6130:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR02MB61307960A1E4A4553E014A30C7349@BY5PR02MB6130.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: x3IQCVivbd0WQX8pcn8Yij+IjmqKGrTPr6V+IfOm4yBmiXB6zl7E0sMdlH3MnFDPMTSVBqq+EpWxO8v/6AzTI4yivxKTNY7Nuuf2t954ZfpaCZQS0drb06UZoKa6dyLfMx80+Yvrka87iAyUA5m7GBw+De/91irayQjcesn05y/XS5L7jIXi0gCfOFGf7f5wuuEqYvp+10oRIkKl/qT6TNT+mpxiFhn220l0HUxujdtfo/0SwrcE5Ol7tRqANrI5aezTDO/6CNbeZ43LR7EkZT9AuKuIW+f1x1NxkHM6/+zRpp5YGjlc/4aZ6rYPUCGtbh9F2Vc6RjPPTP4gidUJU42NW34mk9a3Gfghs5NLQce/o6oolzKknq+Q8IqQslBdRnoZ6V5yPfESGUVI/WRNhr5wVL6MhGef+seYqgZcHb/nw1YGIUyzWqli01ytJPOc7MXxzDf7+171mS7vCujQ9poJUq01EV4bP0SxRMwwU11ByYqKAeMrXqVYuJjxrDzs58pN7mIJ3eryj0ySmzbk79ZFSnKT/zkC5BU/ya7hrV7Ka2+71/4YUCE/X59fG1V4yxl2AFl0ansMkLI0GlOCUKZjgDmNzqcgTaoH4jDYnKY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR02MB6520.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(396003)(346002)(376002)(7696005)(38100700002)(9686003)(8676002)(110136005)(316002)(55016002)(122000001)(478600001)(5660300002)(66556008)(33656002)(64756008)(66476007)(66946007)(86362001)(186003)(66446008)(76116006)(6636002)(54906003)(107886003)(26005)(6506007)(53546011)(52536014)(4326008)(71200400001)(83380400001)(2906002)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UmxzM1k3Tno4UHFwNyt2REM2L3ZEQndwZWJtbTVXNzlFWVpHOTFqNUVmdTRn?=
+ =?utf-8?B?V1JxRnM5M1RpWFd5UWFLTkpMZGh3cWhYM3VvdjM3SXVROTUxTXQ4ai9aRXV0?=
+ =?utf-8?B?SVVoU2Y4UHlwc2JTZWRFRDlqK05sbGkvMFVaYXcxR2xnQXpFa0IyU21XTjdh?=
+ =?utf-8?B?eVlERVBtckRJOTRRMVJDQXRLalhydTNuMHF0ZG91aCtnRUJqR2pZYmMwWXdW?=
+ =?utf-8?B?blBrN0V1WkJOMlgwTlhxNnhseGE2U2czYjU0VlljY3g4azg2dEJIc2h2VURk?=
+ =?utf-8?B?SFpMWXFDRFNZV3Yyc0FLRm12cXZJWkZrM0tXTkNVRml3S2NyelovOHFCUFpJ?=
+ =?utf-8?B?NVlUOXR6UFY4ckFqaXN1NDF6WlBBZlpkclgyWXd4UzdHcDJKUjBQaXJQUVhQ?=
+ =?utf-8?B?VERmb3gzM3JzZ3AycE5yMWFLOHNmelNQd2RaSWEwMUs2bEhwaGVEY3MyVEo2?=
+ =?utf-8?B?TEo2Y3VEamprRnNYVkFqY0k2Z3FwYU1ISEJ2OFRGWW56blJvZEVHYUs5eEt4?=
+ =?utf-8?B?TnJndFRoMTdqU3hQUTUyWGVJbjRkZnF4QXpESWtxcVVQaERkaVZZVkhjQlE2?=
+ =?utf-8?B?VGR0TWxIUE1OVHl5eC9jRkluZEIyN2RTQUgvVTd3R1U5MFE3SXFFL1dmQ3dY?=
+ =?utf-8?B?NFVrY3NXdmo0TnNDWEorVWpjOGNEVEl6R2xkaFpONXpzK2lVSEQrdVVzMXkx?=
+ =?utf-8?B?bTFMZWIrNzNLVVUxdEY2YUI1SE54cVVLUVByWTZJdzFFbmlVdFZmVWVDemwv?=
+ =?utf-8?B?ZE5ieHNtVlUxQnJIL1ZhMHViUHZ6VStxZlhLZHh6OXFJdjNMYWs0MzJtWU5V?=
+ =?utf-8?B?VUMyU2FqVTc0QUdNR0tmMWc2Zm5LNjgrRnJVZTBMSUU4ZkpMSlFtM1ZLWExy?=
+ =?utf-8?B?VlBqRzFRblEyUkY5V0pZUFZzMHJYdmdiREVlb29tMnJDQUVWSVlQUG5GSE5Y?=
+ =?utf-8?B?WnA2UVpqeEdQUmlSdkh3bmRPQjhjamJ4VTF4TGVhb2h4N2Q5MXM5SEhNN0V1?=
+ =?utf-8?B?SC9VSitPV3kwZXhaUnB2WGZrWEE0aE1qNzhMeWNPSnlMaVBsaEd1SGdLNko4?=
+ =?utf-8?B?VXRsZC9kYnh1TnVqOHYwSlNCMkVvWVlRUkdoQmV6QXc1UVV6NlovWFhWT3ZJ?=
+ =?utf-8?B?Y2xyN0o1dW10TU9JQm1yRGdpVUlxQ29yRjFvd2d6WVVPWDN1by9zdEpCTDla?=
+ =?utf-8?B?SzVWM0VLOUJkem40UnlqeFNqbUpkcHVOMVFxVHpXYjFnQ1BBVDBYV1IrdVEw?=
+ =?utf-8?B?dURTbDlDeVJGVlJjbDJPVjRVRjFJelJJMlkzQ3AvVUZjejVIazExbm5hRFls?=
+ =?utf-8?B?UUFEM0RWSWl0MmZDcDgzR0p2Zzc0b3Z4Qk92OGJQc29GdjUrTWlCRllIcHlm?=
+ =?utf-8?B?a3prNjVIWXVwR2t1ZGxkNk5SbTh5Qmwxc2h0Z0RSdzRQRVpkUTNXckpsNUVS?=
+ =?utf-8?B?QWdSakhPMGowaUFQalErU3gxUFNELzVhaDRkU0owVHp2TkVycEZPWHhRWWNS?=
+ =?utf-8?B?QzdJbGFZdDV1SmFPNlJVQTI2dDZFcTBTS0daQlpLQkVDbGxucmNodlpOM2NC?=
+ =?utf-8?B?NEwrSkJYdUo1VmFxVnhqTmc3dnprbGMxWnRPZG5lSlplaVhrNFhkVU5saUFv?=
+ =?utf-8?B?VDJxWGNkV0VJdXBwNFZkQ2JDd1BTTGFFdHJFcnJPMld6c0U2eTM4K0x3TjRO?=
+ =?utf-8?B?YjhTbGZPaDlwUk9MeFQ0NG02YWZ3cHdnN2xWQVdXNERuRi9ZK0tKbDVWbVBr?=
+ =?utf-8?Q?Ds4iex5RWBdK5L7I78m4fhxqPTOUDXsRkNcEp+T?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR02MB6520.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 884e6c81-8592-476d-a55e-08d92d0aedf6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 18:58:41.3947
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nvTgl4o8EBzh6vvtuGuWyEQAsySMtpw5TCg4LUO+qSP5C1DEb3a0jdLXIgDW63yXzL7tpH/KoNB7aDHjERlacw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel.h is being used as a dump for all kinds of stuff for a long time.
-Here is the attempt to start cleaning it up by splitting out kstrtox()
-and simple_strtox() helpers.
-
-At the same time convert users in header and lib folders to use new header.
-Though for time being include new header back to kernel.h to avoid twisted
-indirected includes for existing users.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/kernel.h       | 143 +-------------------------------
- include/linux/kstrtox.h      | 155 +++++++++++++++++++++++++++++++++++
- include/linux/string.h       |   7 --
- include/linux/sunrpc/cache.h |   1 +
- lib/kstrtox.c                |   5 +-
- lib/parser.c                 |   1 +
- 6 files changed, 161 insertions(+), 151 deletions(-)
- create mode 100644 include/linux/kstrtox.h
-
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index baea2eb763d0..7bb0a5cb7d57 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -10,6 +10,7 @@
- #include <linux/types.h>
- #include <linux/compiler.h>
- #include <linux/bitops.h>
-+#include <linux/kstrtox.h>
- #include <linux/log2.h>
- #include <linux/math.h>
- #include <linux/minmax.h>
-@@ -180,148 +181,6 @@ static inline void might_fault(void) { }
- void do_exit(long error_code) __noreturn;
- void complete_and_exit(struct completion *, long) __noreturn;
- 
--/* Internal, do not use. */
--int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
--int __must_check _kstrtol(const char *s, unsigned int base, long *res);
--
--int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
--int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
--
--/**
-- * kstrtoul - convert a string to an unsigned long
-- * @s: The start of the string. The string must be null-terminated, and may also
-- *  include a single newline before its terminating null. The first character
-- *  may also be a plus sign, but not a minus sign.
-- * @base: The number base to use. The maximum supported base is 16. If base is
-- *  given as 0, then the base of the string is automatically detected with the
-- *  conventional semantics - If it begins with 0x the number will be parsed as a
-- *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-- *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-- * @res: Where to write the result of the conversion on success.
-- *
-- * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-- * Preferred over simple_strtoul(). Return code must be checked.
--*/
--static inline int __must_check kstrtoul(const char *s, unsigned int base, unsigned long *res)
--{
--	/*
--	 * We want to shortcut function call, but
--	 * __builtin_types_compatible_p(unsigned long, unsigned long long) = 0.
--	 */
--	if (sizeof(unsigned long) == sizeof(unsigned long long) &&
--	    __alignof__(unsigned long) == __alignof__(unsigned long long))
--		return kstrtoull(s, base, (unsigned long long *)res);
--	else
--		return _kstrtoul(s, base, res);
--}
--
--/**
-- * kstrtol - convert a string to a long
-- * @s: The start of the string. The string must be null-terminated, and may also
-- *  include a single newline before its terminating null. The first character
-- *  may also be a plus sign or a minus sign.
-- * @base: The number base to use. The maximum supported base is 16. If base is
-- *  given as 0, then the base of the string is automatically detected with the
-- *  conventional semantics - If it begins with 0x the number will be parsed as a
-- *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-- *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-- * @res: Where to write the result of the conversion on success.
-- *
-- * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-- * Preferred over simple_strtol(). Return code must be checked.
-- */
--static inline int __must_check kstrtol(const char *s, unsigned int base, long *res)
--{
--	/*
--	 * We want to shortcut function call, but
--	 * __builtin_types_compatible_p(long, long long) = 0.
--	 */
--	if (sizeof(long) == sizeof(long long) &&
--	    __alignof__(long) == __alignof__(long long))
--		return kstrtoll(s, base, (long long *)res);
--	else
--		return _kstrtol(s, base, res);
--}
--
--int __must_check kstrtouint(const char *s, unsigned int base, unsigned int *res);
--int __must_check kstrtoint(const char *s, unsigned int base, int *res);
--
--static inline int __must_check kstrtou64(const char *s, unsigned int base, u64 *res)
--{
--	return kstrtoull(s, base, res);
--}
--
--static inline int __must_check kstrtos64(const char *s, unsigned int base, s64 *res)
--{
--	return kstrtoll(s, base, res);
--}
--
--static inline int __must_check kstrtou32(const char *s, unsigned int base, u32 *res)
--{
--	return kstrtouint(s, base, res);
--}
--
--static inline int __must_check kstrtos32(const char *s, unsigned int base, s32 *res)
--{
--	return kstrtoint(s, base, res);
--}
--
--int __must_check kstrtou16(const char *s, unsigned int base, u16 *res);
--int __must_check kstrtos16(const char *s, unsigned int base, s16 *res);
--int __must_check kstrtou8(const char *s, unsigned int base, u8 *res);
--int __must_check kstrtos8(const char *s, unsigned int base, s8 *res);
--int __must_check kstrtobool(const char *s, bool *res);
--
--int __must_check kstrtoull_from_user(const char __user *s, size_t count, unsigned int base, unsigned long long *res);
--int __must_check kstrtoll_from_user(const char __user *s, size_t count, unsigned int base, long long *res);
--int __must_check kstrtoul_from_user(const char __user *s, size_t count, unsigned int base, unsigned long *res);
--int __must_check kstrtol_from_user(const char __user *s, size_t count, unsigned int base, long *res);
--int __must_check kstrtouint_from_user(const char __user *s, size_t count, unsigned int base, unsigned int *res);
--int __must_check kstrtoint_from_user(const char __user *s, size_t count, unsigned int base, int *res);
--int __must_check kstrtou16_from_user(const char __user *s, size_t count, unsigned int base, u16 *res);
--int __must_check kstrtos16_from_user(const char __user *s, size_t count, unsigned int base, s16 *res);
--int __must_check kstrtou8_from_user(const char __user *s, size_t count, unsigned int base, u8 *res);
--int __must_check kstrtos8_from_user(const char __user *s, size_t count, unsigned int base, s8 *res);
--int __must_check kstrtobool_from_user(const char __user *s, size_t count, bool *res);
--
--static inline int __must_check kstrtou64_from_user(const char __user *s, size_t count, unsigned int base, u64 *res)
--{
--	return kstrtoull_from_user(s, count, base, res);
--}
--
--static inline int __must_check kstrtos64_from_user(const char __user *s, size_t count, unsigned int base, s64 *res)
--{
--	return kstrtoll_from_user(s, count, base, res);
--}
--
--static inline int __must_check kstrtou32_from_user(const char __user *s, size_t count, unsigned int base, u32 *res)
--{
--	return kstrtouint_from_user(s, count, base, res);
--}
--
--static inline int __must_check kstrtos32_from_user(const char __user *s, size_t count, unsigned int base, s32 *res)
--{
--	return kstrtoint_from_user(s, count, base, res);
--}
--
--/*
-- * Use kstrto<foo> instead.
-- *
-- * NOTE: simple_strto<foo> does not check for the range overflow and,
-- *	 depending on the input, may give interesting results.
-- *
-- * Use these functions if and only if you cannot use kstrto<foo>, because
-- * the conversion ends on the first non-digit character, which may be far
-- * beyond the supported range. It might be useful to parse the strings like
-- * 10x50 or 12:21 without altering original string or temporary buffer in use.
-- * Keep in mind above caveat.
-- */
--
--extern unsigned long simple_strtoul(const char *,char **,unsigned int);
--extern long simple_strtol(const char *,char **,unsigned int);
--extern unsigned long long simple_strtoull(const char *,char **,unsigned int);
--extern long long simple_strtoll(const char *,char **,unsigned int);
--
- extern int num_to_str(char *buf, int size,
- 		      unsigned long long num, unsigned int width);
- 
-diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
-new file mode 100644
-index 000000000000..529974e22ea7
---- /dev/null
-+++ b/include/linux/kstrtox.h
-@@ -0,0 +1,155 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_KSTRTOX_H
-+#define _LINUX_KSTRTOX_H
-+
-+#include <linux/compiler.h>
-+#include <linux/types.h>
-+
-+/* Internal, do not use. */
-+int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
-+int __must_check _kstrtol(const char *s, unsigned int base, long *res);
-+
-+int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
-+int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
-+
-+/**
-+ * kstrtoul - convert a string to an unsigned long
-+ * @s: The start of the string. The string must be null-terminated, and may also
-+ *  include a single newline before its terminating null. The first character
-+ *  may also be a plus sign, but not a minus sign.
-+ * @base: The number base to use. The maximum supported base is 16. If base is
-+ *  given as 0, then the base of the string is automatically detected with the
-+ *  conventional semantics - If it begins with 0x the number will be parsed as a
-+ *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-+ *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-+ * @res: Where to write the result of the conversion on success.
-+ *
-+ * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-+ * Preferred over simple_strtoul(). Return code must be checked.
-+*/
-+static inline int __must_check kstrtoul(const char *s, unsigned int base, unsigned long *res)
-+{
-+	/*
-+	 * We want to shortcut function call, but
-+	 * __builtin_types_compatible_p(unsigned long, unsigned long long) = 0.
-+	 */
-+	if (sizeof(unsigned long) == sizeof(unsigned long long) &&
-+	    __alignof__(unsigned long) == __alignof__(unsigned long long))
-+		return kstrtoull(s, base, (unsigned long long *)res);
-+	else
-+		return _kstrtoul(s, base, res);
-+}
-+
-+/**
-+ * kstrtol - convert a string to a long
-+ * @s: The start of the string. The string must be null-terminated, and may also
-+ *  include a single newline before its terminating null. The first character
-+ *  may also be a plus sign or a minus sign.
-+ * @base: The number base to use. The maximum supported base is 16. If base is
-+ *  given as 0, then the base of the string is automatically detected with the
-+ *  conventional semantics - If it begins with 0x the number will be parsed as a
-+ *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-+ *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-+ * @res: Where to write the result of the conversion on success.
-+ *
-+ * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-+ * Preferred over simple_strtol(). Return code must be checked.
-+ */
-+static inline int __must_check kstrtol(const char *s, unsigned int base, long *res)
-+{
-+	/*
-+	 * We want to shortcut function call, but
-+	 * __builtin_types_compatible_p(long, long long) = 0.
-+	 */
-+	if (sizeof(long) == sizeof(long long) &&
-+	    __alignof__(long) == __alignof__(long long))
-+		return kstrtoll(s, base, (long long *)res);
-+	else
-+		return _kstrtol(s, base, res);
-+}
-+
-+int __must_check kstrtouint(const char *s, unsigned int base, unsigned int *res);
-+int __must_check kstrtoint(const char *s, unsigned int base, int *res);
-+
-+static inline int __must_check kstrtou64(const char *s, unsigned int base, u64 *res)
-+{
-+	return kstrtoull(s, base, res);
-+}
-+
-+static inline int __must_check kstrtos64(const char *s, unsigned int base, s64 *res)
-+{
-+	return kstrtoll(s, base, res);
-+}
-+
-+static inline int __must_check kstrtou32(const char *s, unsigned int base, u32 *res)
-+{
-+	return kstrtouint(s, base, res);
-+}
-+
-+static inline int __must_check kstrtos32(const char *s, unsigned int base, s32 *res)
-+{
-+	return kstrtoint(s, base, res);
-+}
-+
-+int __must_check kstrtou16(const char *s, unsigned int base, u16 *res);
-+int __must_check kstrtos16(const char *s, unsigned int base, s16 *res);
-+int __must_check kstrtou8(const char *s, unsigned int base, u8 *res);
-+int __must_check kstrtos8(const char *s, unsigned int base, s8 *res);
-+int __must_check kstrtobool(const char *s, bool *res);
-+
-+int __must_check kstrtoull_from_user(const char __user *s, size_t count, unsigned int base, unsigned long long *res);
-+int __must_check kstrtoll_from_user(const char __user *s, size_t count, unsigned int base, long long *res);
-+int __must_check kstrtoul_from_user(const char __user *s, size_t count, unsigned int base, unsigned long *res);
-+int __must_check kstrtol_from_user(const char __user *s, size_t count, unsigned int base, long *res);
-+int __must_check kstrtouint_from_user(const char __user *s, size_t count, unsigned int base, unsigned int *res);
-+int __must_check kstrtoint_from_user(const char __user *s, size_t count, unsigned int base, int *res);
-+int __must_check kstrtou16_from_user(const char __user *s, size_t count, unsigned int base, u16 *res);
-+int __must_check kstrtos16_from_user(const char __user *s, size_t count, unsigned int base, s16 *res);
-+int __must_check kstrtou8_from_user(const char __user *s, size_t count, unsigned int base, u8 *res);
-+int __must_check kstrtos8_from_user(const char __user *s, size_t count, unsigned int base, s8 *res);
-+int __must_check kstrtobool_from_user(const char __user *s, size_t count, bool *res);
-+
-+static inline int __must_check kstrtou64_from_user(const char __user *s, size_t count, unsigned int base, u64 *res)
-+{
-+	return kstrtoull_from_user(s, count, base, res);
-+}
-+
-+static inline int __must_check kstrtos64_from_user(const char __user *s, size_t count, unsigned int base, s64 *res)
-+{
-+	return kstrtoll_from_user(s, count, base, res);
-+}
-+
-+static inline int __must_check kstrtou32_from_user(const char __user *s, size_t count, unsigned int base, u32 *res)
-+{
-+	return kstrtouint_from_user(s, count, base, res);
-+}
-+
-+static inline int __must_check kstrtos32_from_user(const char __user *s, size_t count, unsigned int base, s32 *res)
-+{
-+	return kstrtoint_from_user(s, count, base, res);
-+}
-+
-+/*
-+ * Use kstrto<foo> instead.
-+ *
-+ * NOTE: simple_strto<foo> does not check for the range overflow and,
-+ *	 depending on the input, may give interesting results.
-+ *
-+ * Use these functions if and only if you cannot use kstrto<foo>, because
-+ * the conversion ends on the first non-digit character, which may be far
-+ * beyond the supported range. It might be useful to parse the strings like
-+ * 10x50 or 12:21 without altering original string or temporary buffer in use.
-+ * Keep in mind above caveat.
-+ */
-+
-+extern unsigned long simple_strtoul(const char *,char **,unsigned int);
-+extern long simple_strtol(const char *,char **,unsigned int);
-+extern unsigned long long simple_strtoull(const char *,char **,unsigned int);
-+extern long long simple_strtoll(const char *,char **,unsigned int);
-+
-+static inline int strtobool(const char *s, bool *res)
-+{
-+	return kstrtobool(s, res);
-+}
-+
-+#endif	/* _LINUX_KSTRTOX_H */
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 9521d8cab18e..b48d2d28e0b1 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -2,7 +2,6 @@
- #ifndef _LINUX_STRING_H_
- #define _LINUX_STRING_H_
- 
--
- #include <linux/compiler.h>	/* for inline */
- #include <linux/types.h>	/* for size_t */
- #include <linux/stddef.h>	/* for NULL */
-@@ -184,12 +183,6 @@ extern char **argv_split(gfp_t gfp, const char *str, int *argcp);
- extern void argv_free(char **argv);
- 
- extern bool sysfs_streq(const char *s1, const char *s2);
--extern int kstrtobool(const char *s, bool *res);
--static inline int strtobool(const char *s, bool *res)
--{
--	return kstrtobool(s, res);
--}
--
- int match_string(const char * const *array, size_t n, const char *string);
- int __sysfs_match_string(const char * const *array, size_t n, const char *s);
- 
-diff --git a/include/linux/sunrpc/cache.h b/include/linux/sunrpc/cache.h
-index d0965e2997b0..b134b2b3371c 100644
---- a/include/linux/sunrpc/cache.h
-+++ b/include/linux/sunrpc/cache.h
-@@ -14,6 +14,7 @@
- #include <linux/kref.h>
- #include <linux/slab.h>
- #include <linux/atomic.h>
-+#include <linux/kstrtox.h>
- #include <linux/proc_fs.h>
- 
- /*
-diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-index 0b5fe8b41173..059b8b00dc53 100644
---- a/lib/kstrtox.c
-+++ b/lib/kstrtox.c
-@@ -14,11 +14,12 @@
-  */
- #include <linux/ctype.h>
- #include <linux/errno.h>
--#include <linux/kernel.h>
--#include <linux/math64.h>
- #include <linux/export.h>
-+#include <linux/kstrtox.h>
-+#include <linux/math64.h>
- #include <linux/types.h>
- #include <linux/uaccess.h>
-+
- #include "kstrtox.h"
- 
- const char *_parse_integer_fixup_radix(const char *s, unsigned int *base)
-diff --git a/lib/parser.c b/lib/parser.c
-index f1a6d90b8c34..bcb23484100e 100644
---- a/lib/parser.c
-+++ b/lib/parser.c
-@@ -6,6 +6,7 @@
- #include <linux/ctype.h>
- #include <linux/types.h>
- #include <linux/export.h>
-+#include <linux/kstrtox.h>
- #include <linux/parser.h>
- #include <linux/slab.h>
- #include <linux/string.h>
--- 
-2.30.2
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMYXJzLVBldGVyIENsYXVzZW4g
+PGxhcnNAbWV0YWZvby5kZT4NCj4gU2VudDogVGh1cnNkYXksIEFwcmlsIDE1LCAyMDIxIDEyOjU2
+IFBNDQo+IFRvOiBSYWRoZXkgU2h5YW0gUGFuZGV5IDxyYWRoZXlzQHhpbGlueC5jb20+OyB2a291
+bEBrZXJuZWwub3JnOw0KPiByb2JoK2R0QGtlcm5lbC5vcmc7IE1pY2hhbCBTaW1layA8bWljaGFs
+c0B4aWxpbnguY29tPg0KPiBDYzogZG1hZW5naW5lQHZnZXIua2VybmVsLm9yZzsgZGV2aWNldHJl
+ZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFybS0NCj4ga2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
+cmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGdpdA0KPiA8Z2l0QHhpbGlueC5jb20+
+DQo+IFN1YmplY3Q6IFJlOiBbUkZDIHYyIFBBVENIIDUvN10gZG1hZW5naW5lOiB4aWxpbnhfZG1h
+OiBGcmVldXAgYWN0aXZlIGxpc3QNCj4gYmFzZWQgb24gZGVzY3JpcHRvciBjb21wbGV0aW9uIGJp
+dA0KPiANCj4gT24gNC85LzIxIDc6NTYgUE0sIFJhZGhleSBTaHlhbSBQYW5kZXkgd3JvdGU6DQo+
+ID4gQVhJRE1BIElQIGluIFNHIG1vZGUgc2V0cyBjb21wbGV0aW9uIGJpdCB0byAxIHdoZW4gdGhl
+IHRyYW5zZmVyIGlzDQo+ID4gY29tcGxldGVkLiBSZWFkIHRoaXMgYml0IHRvIG1vdmUgZGVzY3Jp
+cHRvciBmcm9tIGFjdGl2ZSBsaXN0IHRvIHRoZQ0KPiA+IGRvbmUgbGlzdC4gVGhpcyBmZWF0dXJl
+IGlzIG5lZWRlZCB3aGVuIGludGVycnVwdCBkZWxheSB0aW1lb3V0IGFuZA0KPiA+IElSUVRocmVz
+aG9sZCBpcyBlbmFibGVkIGkuZSBEbHlfSXJxRW4gaXMgdHJpZ2dlcmVkIHcvbyBjb21wbGV0aW5n
+DQo+ID4gaW50ZXJydXB0IHRocmVzaG9sZC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFJhZGhl
+eSBTaHlhbSBQYW5kZXkgPHJhZGhleS5zaHlhbS5wYW5kZXlAeGlsaW54LmNvbT4NCj4gPiAtLS0N
+Cj4gPiAtIENoZWNrIEJEIGNvbXBsZXRpb24gYml0IG9ubHkgZm9yIFNHIG1vZGUuDQo+ID4gLSBN
+b2RpZnkgdGhlIGxvZ2ljIHRvIGhhdmUgZWFybHkgcmV0dXJuIHBhdGguDQo+ID4gLS0tDQo+ID4g
+ICBkcml2ZXJzL2RtYS94aWxpbngveGlsaW54X2RtYS5jIHwgNyArKysrKysrDQo+ID4gICAxIGZp
+bGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9kbWEveGlsaW54L3hpbGlueF9kbWEuYw0KPiA+IGIvZHJpdmVycy9kbWEveGlsaW54L3hpbGlu
+eF9kbWEuYyBpbmRleCA4OTBiZjQ2YjM2ZTUuLmYyMzA1YTczY2I5MQ0KPiA+IDEwMDY0NA0KPiA+
+IC0tLSBhL2RyaXZlcnMvZG1hL3hpbGlueC94aWxpbnhfZG1hLmMNCj4gPiArKysgYi9kcml2ZXJz
+L2RtYS94aWxpbngveGlsaW54X2RtYS5jDQo+ID4gQEAgLTE3Nyw2ICsxNzcsNyBAQA0KPiA+ICAg
+I2RlZmluZSBYSUxJTlhfRE1BX0NSX0NPQUxFU0NFX1NISUZUCTE2DQo+ID4gICAjZGVmaW5lIFhJ
+TElOWF9ETUFfQkRfU09QCQlCSVQoMjcpDQo+ID4gICAjZGVmaW5lIFhJTElOWF9ETUFfQkRfRU9Q
+CQlCSVQoMjYpDQo+ID4gKyNkZWZpbmUgWElMSU5YX0RNQV9CRF9DT01QX01BU0sJCUJJVCgzMSkN
+Cj4gPiAgICNkZWZpbmUgWElMSU5YX0RNQV9DT0FMRVNDRV9NQVgJCTI1NQ0KPiA+ICAgI2RlZmlu
+ZSBYSUxJTlhfRE1BX05VTV9ERVNDUwkJNTEyDQo+ID4gICAjZGVmaW5lIFhJTElOWF9ETUFfTlVN
+X0FQUF9XT1JEUwk1DQo+ID4gQEAgLTE2ODMsMTIgKzE2ODQsMTggQEAgc3RhdGljIHZvaWQgeGls
+aW54X2RtYV9pc3N1ZV9wZW5kaW5nKHN0cnVjdA0KPiBkbWFfY2hhbiAqZGNoYW4pDQo+ID4gICBz
+dGF0aWMgdm9pZCB4aWxpbnhfZG1hX2NvbXBsZXRlX2Rlc2NyaXB0b3Ioc3RydWN0IHhpbGlueF9k
+bWFfY2hhbg0KPiAqY2hhbikNCj4gPiAgIHsNCj4gPiAgIAlzdHJ1Y3QgeGlsaW54X2RtYV90eF9k
+ZXNjcmlwdG9yICpkZXNjLCAqbmV4dDsNCj4gPiArCXN0cnVjdCB4aWxpbnhfYXhpZG1hX3R4X3Nl
+Z21lbnQgKnNlZzsNCj4gPg0KPiA+ICAgCS8qIFRoaXMgZnVuY3Rpb24gd2FzIGludm9rZWQgd2l0
+aCBsb2NrIGhlbGQgKi8NCj4gPiAgIAlpZiAobGlzdF9lbXB0eSgmY2hhbi0+YWN0aXZlX2xpc3Qp
+KQ0KPiA+ICAgCQlyZXR1cm47DQo+ID4NCj4gPiAgIAlsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUo
+ZGVzYywgbmV4dCwgJmNoYW4tPmFjdGl2ZV9saXN0LCBub2RlKSB7DQo+ID4gKwkJLyogVE9ETzog
+cmVtb3ZlIGhhcmRjb2RpbmcgZm9yIGF4aWRtYV90eF9zZWdtZW50ICovDQo+ID4gKwkJc2VnID0g
+bGlzdF9sYXN0X2VudHJ5KCZkZXNjLT5zZWdtZW50cywNCj4gPiArCQkJCSAgICAgIHN0cnVjdCB4
+aWxpbnhfYXhpZG1hX3R4X3NlZ21lbnQsIG5vZGUpOw0KPiA+ICsJCWlmICghKHNlZy0+aHcuc3Rh
+dHVzICYgWElMSU5YX0RNQV9CRF9DT01QX01BU0spICYmDQo+IGNoYW4tPmhhc19zZykNCj4gPiAr
+CQkJYnJlYWs7DQo+ID4gICAJCWlmIChjaGFuLT5oYXNfc2cgJiYgY2hhbi0+eGRldi0+ZG1hX2Nv
+bmZpZy0+ZG1hdHlwZSAhPQ0KPiA+ICAgCQkgICAgWERNQV9UWVBFX1ZETUEpDQo+ID4gICAJCQlk
+ZXNjLT5yZXNpZHVlID0geGlsaW54X2RtYV9nZXRfcmVzaWR1ZShjaGFuLCBkZXNjKTsNCj4gDQo+
+IFNpbmNlIG5vdCBhbGwgZGVzY3JpcHRvcnMgd2lsbCBiZSBjb21wbGV0ZWQgaW4gdGhpcyBmdW5j
+dGlvbiB0aGUgYGNoYW4tPmlkbGUgPQ0KPiB0cnVlO2AgaW4geGlsaW54X2RtYV9pcnFfaGFuZGxl
+cigpIG5lZWRzIHRvIGJlIGdhdGVkIG9uIHRoZSBhY3RpdmVfbGlzdCBiZWluZw0KPiBlbXB0eS4N
+Cg0KVGhhbmtzIGZvciBwb2ludGluZyBpdCBvdXQuIEFncmVlIHRvIGl0LCB3aWxsIGZpeCBpdCBp
+biB0aGUgbmV4dCB2ZXJzaW9uLg0KPiANCj4geGlsaW54X2RtYV9jb21wbGV0ZV9kZXNjcmlwdG9y
+DQoNCg==
