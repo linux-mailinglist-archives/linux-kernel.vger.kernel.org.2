@@ -2,173 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164483A4B2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087233A4B31
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhFKX2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 19:28:18 -0400
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:45652 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbhFKX2P (ORCPT
+        id S230392AbhFKX24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 19:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhFKX2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 19:28:15 -0400
-Received: by mail-pj1-f50.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso6835675pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:26:17 -0700 (PDT)
+        Fri, 11 Jun 2021 19:28:55 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E019CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:26:40 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id j2so10890581lfg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:26:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NRPaXiyWw09i4FXsXzqTGbFV36hQVYFvFNIq5L13HVo=;
-        b=FecO0yDtUwufaEcPlqy4EvBDXv0RG+KrLKiBFSYxjyG7826p3FI0Txr93bsf36KUql
-         u0VSY9bYf99yfiKwO+k+AzZmcy/w9wrpq7BYt9y68w1sXDlJWBizWLI0o1821dq+ULgY
-         EbXCr/9vx+C7B15jLrA+pNMz2HQRnjA7bMMof5WdQ6gvr48bjQnME8zYbD6uOKEyd5B4
-         mH0lCxV0HaR59FNvBiJd/JLBWYD+6y/mQ7Eo8ZteR56oXA0xaQ33oVjXT3LIWigiqQC5
-         VgE/Ol9IydQU4zzsl44R5qssD7KLzrI53xjwE3XEiRA+QECuAlLxKKLJwFms6ClAsmy9
-         WM7w==
+        bh=PjZY9q5pSOU4tsgru1uTR+wDm1WCLCTCsFGKWC33b5o=;
+        b=G5WJlyCtSQu+o5/QRI8qnFIELrvDb45CAhskrbVgrzcYLYuHHDQdhlPtDQnjDxRS+A
+         1cd1dxgNaKxrrJoRkaCJTbgm4hRbgjod1SkMHXo7Wds6qMbKupMu+TRzye2sUNov6zhz
+         jINjgUtpRgOy3dID6uQIw+6o31xe/IeTgZv3U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NRPaXiyWw09i4FXsXzqTGbFV36hQVYFvFNIq5L13HVo=;
-        b=OC0o+YWtAvXtRojSFQfWC41F++m9pU7e9tzFCErihnUrfx4grD0ENGzHzMtg6ymFXf
-         gVlSUdR1YppuzAc3wlfljsQ+rcq14tBlHXRl/392n594DG6woDQmBD6uNa9Ih1Cr9dlT
-         LLr88MDRHqr888fdmzJalKUV/6PLX06ajMchxGY6DvUs5vMg6mBoQlNrZSghoKALH3aN
-         XXhVSXH7EcISD7jGQjGBZz8a86HN2NAWXG4bJBA87eFniXEPYGPTM364j9IwXNztLcXz
-         Xzfdi92z4XUK04AyGt8/bHnWk76FCfM7gWGW/y82p0OlxD+/ihfjARdeCQk1cNOk1/PD
-         ATJA==
-X-Gm-Message-State: AOAM530ELqiIAHBVKAGS8HUIFdNsOpQc1YuSek3C02AOMhhT2tcjEHuz
-        tSkiHpBxln4HoPbHtU4v+YeNmsfErnPAN3syyiztuA==
-X-Google-Smtp-Source: ABdhPJxCPzOzrMWRfLG9k8FkShRI4spGXhm00FuDBb34f3l5OwsnwcU13r6GTa2DeuH5FPnYh3tMmwiGKdHQz0DH4mM=
-X-Received: by 2002:a17:902:b497:b029:115:e287:7b55 with SMTP id
- y23-20020a170902b497b0290115e2877b55mr5941567plr.79.1623453916871; Fri, 11
- Jun 2021 16:25:16 -0700 (PDT)
+        bh=PjZY9q5pSOU4tsgru1uTR+wDm1WCLCTCsFGKWC33b5o=;
+        b=khBBatzqQo/I0/CDpT6CL631DC3SQYl7L0ZRXFqT/GJM9tC0Iq1TrfJtFvM0KZQ1mu
+         DX+eXajO7pbYt9/8J3sFU2UWgb1LUI62GsQs8d5ZgNQExQZA7HqkJBzHm/Eb5vY+Cw5l
+         wJzMsTQCYqGjBTp8+4YIoQg9dGpkISZQ8CZSJde3fW/yO5TjJlkzdilUPVEXwpKsm1bB
+         XJc+YkiVx3q3R3IKkOOBqq8ZpLm89c3pBXUcKToFYNZ1MKvEsp0dBieOZFGTGlVWu467
+         zXoNriDiGU8BP/JgV8Yd8U5bT8FiZN1EEf491dRgfMz27/hPobMCCOUOOCLwnGcnMWVo
+         tY5Q==
+X-Gm-Message-State: AOAM530KvrBDR9pa6XgzTyHbu4uf6CKoPwIutyhTxKlkCW4xyeiDi4li
+        LSYrH4Hlmty1SA/1i2ixpgTXQDze2HPbrWMi
+X-Google-Smtp-Source: ABdhPJwqNZIFxaFsL/oKMnhA0Xu+Jw0oHmrnz8ISKBzwso9vbSUg0yasQznoK+dmvFfTnZWMiebS/g==
+X-Received: by 2002:a19:645e:: with SMTP id b30mr4052756lfj.577.1623453998949;
+        Fri, 11 Jun 2021 16:26:38 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id h2sm723990lfv.288.2021.06.11.16.26.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 16:26:38 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id j2so10890514lfg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:26:37 -0700 (PDT)
+X-Received: by 2002:a05:6512:3d13:: with SMTP id d19mr4085256lfv.41.1623453997580;
+ Fri, 11 Jun 2021 16:26:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com>
- <162336396329.2462439.16556923116284874437.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210611174736.ttzpk5uniyoyd4vw@intel.com> <CAPcyv4i7_RhfiYMX=QP2Ts4ye1Q2e0=_aBCP4rsuopo=0HWKVw@mail.gmail.com>
- <20210611192829.bwdj322uwlsbdrjs@intel.com>
-In-Reply-To: <20210611192829.bwdj322uwlsbdrjs@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 11 Jun 2021 16:25:05 -0700
-Message-ID: <CAPcyv4gwUiQLfPGe9kKi7JJdbSk-aaSywo29x=kFKdeEROdMcQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] cxl/core: Add cxl-bus driver infrastructure
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, Linux NVDIMM <nvdimm@lists.linux.dev>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <87sg1p30a1.fsf@disp2133> <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+ <87pmwsytb3.fsf@disp2133>
+In-Reply-To: <87pmwsytb3.fsf@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 11 Jun 2021 16:26:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+Message-ID: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        Daniel Jacobowitz <drow@nevyn.them.org>,
+        Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 12:28 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+On Fri, Jun 11, 2021 at 2:40 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> On 21-06-11 11:55:39, Dan Williams wrote:
-> > On Fri, Jun 11, 2021 at 10:47 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > >
-> > > On 21-06-10 15:26:03, Dan Williams wrote:
-> > > > Enable devices on the 'cxl' bus to be attached to drivers. The initial
-> > > > user of this functionality is a driver for an 'nvdimm-bridge' device
-> > > > that anchors a libnvdimm hierarchy attached to CXL persistent memory
-> > > > resources. Other device types that will leverage this include:
-> > > >
-> > > > cxl_port: map and use component register functionality (HDM Decoders)
-> > >
-> > > Since I'm looking at this now, perhaps I can open the discussion here. Have you
-> > > thought about how this works yet? Right now I'm thinking there are two "drivers":
-> > > cxl_port: Switches (and ACPI0016)
-> > > cxl_mem: The memory device's HDM decoders
-> > >
-> > > For port, probe() will figure out that the thing is an upstream port, call
-> > > cxl_probe_component_regs and then call devm_cxl_add_port(). I think that's
-> > > straight forward.
-> >
-> > I was expecting cxl_port_driver.probe() comes *after* port discovery.
-> > Think of it like PCI discovery. Some agent does the hardware topology
-> > scan to add devices, in this case devm_cxl_add_port(), and that
-> > triggers cxl_port_driver to load. So the initial enumeration done by
-> > the cxl_acpi driver will populate the first two levels of the port
-> > hierarchy with port objects and populate their component register
-> > physical base addresses. For any other port deeper in the hierarchy I
-> > was expecting that to be scanned after the discovery of a cxl_memdev
-> > that is not attached to the current hierarchy. So, for example imagine
-> > a config like:
-> >
-> > Platform --> Host Bridge --> Switch --> Endpoint
-> >
-> > ...where in sysfs that's modeled as:
-> >
-> > root0 --> port1 --> port2 --> port3
-> >
-> > Where port3 is assuming that the CXL core models the device's
-> > connection to the topology as yet another cxl_port. At the beginning
-> > of time after cxl_acpi has loaded but before cxl_pci has discovered
-> > the endpoint the topology is:
-> >
-> > root0 --> port1
-> >
-> > Upon the detection of the endpoint the CXL core can assume that all
-> > intermediary switches between the root and this device have been
-> > registered as PCI devices. So, it follows that endpoint device arrival
-> > triggers "cxl_bus_rescan()" that goes and enumerates all the CXL
-> > resources in the topology to produce:
-> >
-> > root0 --> port1 --> port2 --> port3
-> >
+> Looking at copy_thread it looks like at least on alpha we are dealing
+> with a structure that defines all of the registers in copy_thread.
+
+On the target side, yes.
+
+On the _source_ side, the code does
+
+        struct pt_regs *regs = current_pt_regs();
+
+and that's the part that means that fork() and related functions need
+to have done that DO_SWITCH_STACK(), so that they have the full
+register set to be copied.
+
+Otherwise it would copy random contents from the source stack.
+
+But that
+
+        if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+
+ends up protecting us, and the code never uses that set of source
+registers for the io worker threads.
+
+So io_uring looks fine on alpha. I didn't check m68k and friends, but
+I think they have the same thing going.
+
+> It looks like we just need something like this to cover the userspace
+> side of exit.
+
+Looks correct to me. Except I think you could just use "fork_like()"
+instead of creating a new (and identical) "exit_like()" macro.
+
+> > But I really wish we had some way to test and trigger this so that we
+> > wouldn't get caught on this before. Something in task_pt_regs() that
+> > catches "this doesn't actually work" and does a WARN_ON_ONCE() on the
+> > affected architectures?
 >
-> Ah, I had written about scan/rescan in an earlier version of my email but
-> dropped it. I was actually going to suggest it being a sysfs attr, but I'm fine
-> with it being implicit so long as...
+> I think that would require pushing an extra magic value in SWITCH_STACK
+> and not just popping it but deliberately changing that value in
+> UNDO_SWITCH_STACK.  Basically stack canaries.
 >
-> How do we assert that cxl_pci doesn't run before cxl_acpi has done anything?
+> I don't see how we could do it in an arch independent way though.
 
-I don't think we need to, or it's broken if the driver load order
-matters. The nvdimm enabling code is an example of how to handle this.
-The cxl_nvdimm object can be registered before the cxl_nvdimm_bridge,
-or after, does not matter. If the cxl_nvdimm comes first it will
-trigger the cxl_nvdimm_driver to load. The cxl_nvdimm_driver.probe()
-routine finds no bridge present and probe() returns with a failure.
-When the bridge arrives it does a rescan  of the cxl_bus_type device
-list and if it finds a cxl_nvdimm it re-triggers
-cxl_nvdimm_driver.probe(). This time through cxl_nvdimm_driver.probe()
-finds the bridge and registers the real nvdimm on the nvdimm_bus.
+No, I think you're right. There's no obvious generic solution to it,
+and once we look at arch-specific ones we're vback to "just alpha,
+m68k and nios needs this or cares" and tonce you're there you might as
+well just fix it.
 
-> I
-> like the idea that the endpoint device can simply ask cxl_acpi to rescan, I just
-> don't see how it works. I suppose we can queue up the requests to rescan in
-> cxl_acpi if the ordering can't be guaranteed.
+ia64 has soem "fast system call" model with limited registers too, but
+I think that's limited to just a few very special system calls (ie it
+does the reverse of what alpha does: alpha does the fast case by
+default, and then marks fork/vfork/clone as special).
 
-I think this means that the devm_cxl_add_port() would be triggered by
-cxl_memdev_driver.probe() if and only if the parent pci_device of the
-CXL endpoint is listed as a dport. If the cxl_memdev is registered
-first the search it will search for the CXL root port on the
-cxl_bus_type device list. If that fails then cxl_memdev_driver.probe()
-fails. If that succeeds it asks the root to scan to the CXL endpoint
-parent pci_device and return the confirmation that it is registered as
-a dport. If that fails then the device is plugged into a pure PCIe
-slot.
-
-When cxl_acpi loads it retriggers all cxl_memdev_driver.probe() to
-reconsider all cxl_memdev instances that failed to probe previously.
-
->
-> > > For the memory device we've already probed the thing via class code so there is
-> > > no need to use this driver registration, however, I think it would be nice to do
-> > > so. Is there a clean way to do that?
-> >
-> > The PCI device associated with the endpoint is already probed, but the
-> > cxl_memdev itself can have a driver on the CXL bus. So I think the
-> > cxl_memdev driver should try to register a cxl_port after telling
-> > cxl_acpi to rescan. If a check like "is_cxl_dport(pdev->dev.parent)"
-> > for the endpoint returns false it means that the cxl_bus_rescan()
-> > failed to enumerate the CXL topology to this endpoint and this
-> > endpoint is limited to only CXL.io operation.
->
-> What is going to invoke the memdev driver's probe? That is where we're talking
-> about putting that is_cxl_dport(...) right? That is the part that tripped me up
-> and inspired the original email FWIW.
-
-I *think* I worked that out above, but yes please do poke at it to see
-if it holds up.
+             Linus
