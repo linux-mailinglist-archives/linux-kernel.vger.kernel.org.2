@@ -2,100 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F91A3A4963
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711FE3A4965
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhFKTTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhFKTTg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:19:36 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA0DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 12:17:38 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id c5so7129124wrq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 12:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=ZtDjxi16fCK+vtg0oWwTQHBYR+QgijKvH/kCVk+EgJg=;
-        b=C3+wvn1ZvKh/y0tljlQAWqIhsCZzbsNwnKk3z0zofPUSrWFJZ975bfG0RvX+xs0lOA
-         Oa5287YpTsJC+m/4Ys4dWlu+iEZL0bJ8zXI2fRHys15+5XHEvY2MO4hmXRFuJqlEncn5
-         9fCMohpLgwSwa7+2c0cjlngC3VbFIu2n1qmXVtTzfBh+Nr/RYLO9KxxSBJI2FYVfztTk
-         VeK/ybFApjrW0RZVE6DQ2C+zMMViMAY7qazwoMdc1Wm9zsIJrZpOUe0/gvvMWnj4oaCC
-         TyVbSL2eJ5wihC2uaKwr6mwY3R75qW75hWxGvb+Y780BzWkpZ/VRGzPOVqepCiUjcQMm
-         eNvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ZtDjxi16fCK+vtg0oWwTQHBYR+QgijKvH/kCVk+EgJg=;
-        b=QyDqfghf/oP/czCaTduxZ3JzLZ1Z2RJBLQgcxSPGNGXth7WbihVujOHb01dcaj4w5z
-         SDj+Ymas9Bne3YQ5JGXd7Og0eBEgTxCD4YRGGlJ3W/oISuQRjsjXz23S1lL4Uu6eunC+
-         NQ+6KckgSLajoj8dArHfdMUD9bVyhGIDI8h4uXi0Mj1j/UtlXOpf57BGB0OHl+TJa2aV
-         oMbsb3moBasH7XdkIVWylTYlgkqlPYo7aH1VUR+1qCMqcHRPvc0GEe2TeKW+XAnuDFHZ
-         s8Vtj3mWC0wwKfxy4rqN6TST+4WhPKXNxSoIF0WGk0LMXPj2NF26jZTR/OUdNQq7eS2D
-         6/Gw==
-X-Gm-Message-State: AOAM5309ZP0g/9KElxGKdujCWxE/hwgcVPP6BktpeopqDP0npWYir8pW
-        H3vlNAJ3VbBcy/510clARw==
-X-Google-Smtp-Source: ABdhPJz5XIOh6M/1Xty7N5eRIB4RvtX/sCtwGZVYixYqYCNdZLuIkaeQn09PUW+QgdhY+UXiqJm/sA==
-X-Received: by 2002:a05:6000:1b8f:: with SMTP id r15mr5589927wru.119.1623439056889;
-        Fri, 11 Jun 2021 12:17:36 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.253.180])
-        by smtp.gmail.com with ESMTPSA id u7sm9505232wrt.18.2021.06.11.12.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 12:17:36 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 22:17:34 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] lib: uninline simple_strtoull()
-Message-ID: <YMO2zoOQk2eF34tn@localhost.localdomain>
+        id S231350AbhFKTUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:20:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230360AbhFKTUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:20:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A357C613D0;
+        Fri, 11 Jun 2021 19:18:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623439123;
+        bh=FWRWB7qMYIMgll5fN+YqcHRkP32arVMnB3TPp5iiNMI=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=kI4zCInuDiql8WGndKv3dTTItWJU3YxvUpC5/GzSiOSSI3nyn7YSYoL7t5miq6y/B
+         LhhQ2VN5RVRgpdr9B+wIWwKy0oyWzMVVLLN//2NSd3TyHR5B/srfjbNYIBwYVkb1uH
+         t+1vWM5iAT4R5TKJ7znHYu6FiLFw4XSnimb/GG3f6gO1GDlUmgZmLVrFpPBEvYy8EQ
+         ynoMr84fX5kJpJasiGnOEzEVihao0bCQ4I0+AnOZcDmgaeDSiS3Xkt1YVJM66EB0mK
+         6rFPZraLhrFasQJCvb70c2RLpomOrWE65LdnDIsb+7sraf42TOVwkR6fpoWMkyzNWm
+         NYnEb81TxmloQ==
+Subject: Re: [patch 08/41] x86/fpu: Restrict fpstate sanitizing to legacy
+ components
+From:   Andy Lutomirski <luto@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+References: <20210611161523.508908024@linutronix.de>
+ <20210611163111.820639606@linutronix.de>
+ <2be2ef6c-fcb8-46cf-976c-2b3a9537b660@kernel.org>
+Message-ID: <b81a0fe0-1aca-c0de-eb9e-895ac98c0c86@kernel.org>
+Date:   Fri, 11 Jun 2021 12:18:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <2be2ef6c-fcb8-46cf-976c-2b3a9537b660@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gcc inlines simple_strtoull() too agressively.
+On 6/11/21 12:03 PM, Andy Lutomirski wrote:
+> On 6/11/21 9:15 AM, Thomas Gleixner wrote:
+>> xstateregs_get() does not longer use fpstate_sanitize_xstate() and the only
+> 
+> s/does not longer use/no longer uses/
+> 
+> 		\
+>> --- a/arch/x86/kernel/fpu/regset.c
+>> +++ b/arch/x86/kernel/fpu/regset.c
+>> @@ -11,6 +11,39 @@
+>>  
+>>  #include <linux/sched/task_stack.h>
+>>  
+>> +/*
+>> + * When executing XSAVEOPT (or other optimized XSAVE instructions), if
+> 
+> The kernel doesn't use XSAVEOPT any more.  How about:
+> 
+> When executing XSAVES (or other optimized XSAVE instructions)
+> 
+>> + * a processor implementation detects that an FPU state component is still
+>> + * (or is again) in its initialized state, it may clear the corresponding
+>> + * bit in the header.xfeatures field, and can skip the writeout of registers
+>> + * to the corresponding memory layout.
+> 
+> Additionally, copy_xxx_to_xstate() may result in an xsave buffer with a
+> bit clear in xfeatures but the corresponding state region not containing
+> the state's init value.
+> 
+>> + *
+>> + * This means that when the bit is zero, the state component might still
+>> + * contain some previous - non-initialized register state.
+> 
+> Maybe say what the function does, e.g.:
+> 
+> This function fills in the init values for the X87 and SSE states if the
+> corresponding xfeatures bits are clear.
+> 
+>> + *
+>> + * This is required for the legacy regset functions.
+>> + */
+>> +static void fpstate_sanitize_legacy(struct fpu *fpu)
+>> +{
+>> +	struct fxregs_state *fx = &fpu->state.fxsave;
+>> +	u64 xfeatures;
+>> +
+>> +	if (!use_xsaveopt())
+>> +		return;
+> 
+> This is confusing, since we never use xsaveopt.  It's also wrong -- see
+> above.  How about just removing it?
+> 
+>> +
+>> +	xfeatures = fpu->state.xsave.header.xfeatures;
+>> +
+>> +	/* If FP is in init state, reinitialize it */
+>> +	if (!(xfeatures & XFEATURE_MASK_FP)) {
+>> +		memset(fx, 0, sizeof(*fx));
+>> +		fx->cwd = 0x37f;
+>> +	}
+>> +
+>> +	/* If SSE is in init state, clear the storage */
+>> +	if (!(xfeatures & XFEATURE_MASK_SSE))
+>> +		memset(fx->xmm_space, 0, sizeof(fx->xmm_space));
+>> +}
+>> +
+>>  
+> 
+> Does this result in the mxcsr_mask and mxcsr fields being correct?
+> There is a silly number of special cases there.
+> 
 
-Given that all 4 signatures match, everything very efficiently calls or
-tailcalls into simple_strtoull():
+The SDM says, in a footnote in XRSTOR:
 
-	ffffffff81da0240 <simple_strtoll>:
-	ffffffff81da0240:       80 3f 2d                cmp    BYTE PTR [rdi],0x2d
-	ffffffff81da0243:       74 05                   je     ffffffff81da024a <simple_strtoll+0xa>
-	ffffffff81da0245:       e9 76 ff ff ff          jmp    simple_strtoull
-	ffffffff81da024a:       48 83 c7 01             add    rdi,0x1
-	ffffffff81da024e:       e8 6d ff ff ff          call   simple_strtoull
-	ffffffff81da0253:       48 f7 d8                neg    rax
-	ffffffff81da0256:       c3                      ret
+There is an exception if RFBM[1] = 0 and RFBM[2] = 1. In this case, the
+standard form of XRSTOR will load MXCSR from memory, even though MXCSR
+is part of state component 1 — SSE. The compacted form of XRSTOR does
+not make this exception.
 
-Space savings (on F34-ish .config)
+which makes me think that this code has a bug.  Also, the code is
+manifest nonsense for a different reason:
 
-	add/remove: 0/0 grow/shrink: 1/3 up/down: 52/-313 (-261)
-	Function                                     old     new   delta
-	vsscanf                                     2167    2219     +52
-	simple_strtoul                                72       2     -70
-	simple_strtoll                               143      23    -120
-	simple_strtol                                143      20    -123
+if (!FP)
+  memset(the whole damn thing, 0);
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+if (!SSE)
+  memset(just part of it, 0);
 
- lib/vsprintf.c |    1 +
- 1 file changed, 1 insertion(+)
+which means that, if the FP bit is clear but the SSE bit is set, this
+thing will clobber the SSE state.
 
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -61,6 +61,7 @@
-  *
-  * This function has caveats. Please use kstrtoull instead.
-  */
-+noinline
- unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int base)
- {
- 	unsigned long long result;
+This code is garbage.  So is the architecture that gave rise to this code.
+
+--Andy
