@@ -2,134 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7533A3EDA
+	by mail.lfdr.de (Postfix) with ESMTP id D20713A3EDB
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhFKJPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:15:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231609AbhFKJPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231693AbhFKJPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:15:22 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33798 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231514AbhFKJPM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Jun 2021 05:15:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E431D60FDA;
-        Fri, 11 Jun 2021 09:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623402794;
-        bh=0Tv6dk09LYXtiWu3+YyS09NcTBZcnmopruN7Ttw2A3c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qCE0A2hE5eLvV8SAX8VsVaLsmx7G+YhwHIGuIbtiETIq98w68vFvtv3s1bhzDjAJ1
-         zAwEklDt1RkuJy4xO1mhyVGn5CoqoCJlfqGcOzbWGGdCb/cl21ED/qg6om4QDr6Qgw
-         hAsXyCGbL1jtQZUE1mmW8Fz57Pe8pBJAijmfw+8qSkasiv7gs8Bn4yv5Nf3uQnoBiX
-         zxb7Zjkljrgndxxd99Pyb9NRcFNuEpikSsPzNHA+8Ye4WGjHy7LoVAmriVbgeAzAuX
-         sIG1CoqZMtlY/m4KJAESInsxp1yQtkOqy6u3nFjtUmy8jmmfx5n/O/lOLN4k8Jv3p4
-         6ODFKkgxpj1ug==
-Date:   Fri, 11 Jun 2021 11:13:07 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <20210611111248.250e6da8@coco.lan>
-In-Reply-To: <20210611025942.GE25638@1wt.eu>
-References: <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
-        <YK+esqGjKaPb+b/Q@kroah.com>
-        <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
-        <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
-        <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
-        <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
-        <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
-        <20210610152633.7e4a7304@oasis.local.home>
-        <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
-        <87tum5uyrq.fsf@toke.dk>
-        <20210611025942.GE25638@1wt.eu>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3235721998;
+        Fri, 11 Jun 2021 09:13:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623402794; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+G3rNiOHk3zk/0EyrxwKT4BIDO7RSBdoaLonmAI4lAM=;
+        b=bCQ9MwUoiEl86eXlAlLGrRWW71bm2TKp5m/Rb8oPDVagVCd802ePiJkgsQCeOxC89W0xrU
+        nbwCiNpoQTAPuR4QOJZK8JQ1ACAYHcAVmFJVRFmcRzqfr6Tq+iOWMVnsYyvUuLYuLxkCi4
+        1r91V5dTB9dJKH7FddUNwf10NbqgPX4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623402794;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+G3rNiOHk3zk/0EyrxwKT4BIDO7RSBdoaLonmAI4lAM=;
+        b=zqLYEfI+MYlUx42I9T+KYjRCIyJo/PSta0tII1+MpAU5mwBQ5uoSjcrBBr9ro8DBKOEw5G
+        RFA8TLrbWrJNhfDg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 05711118DD;
+        Fri, 11 Jun 2021 09:13:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623402794; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+G3rNiOHk3zk/0EyrxwKT4BIDO7RSBdoaLonmAI4lAM=;
+        b=bCQ9MwUoiEl86eXlAlLGrRWW71bm2TKp5m/Rb8oPDVagVCd802ePiJkgsQCeOxC89W0xrU
+        nbwCiNpoQTAPuR4QOJZK8JQ1ACAYHcAVmFJVRFmcRzqfr6Tq+iOWMVnsYyvUuLYuLxkCi4
+        1r91V5dTB9dJKH7FddUNwf10NbqgPX4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623402794;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+G3rNiOHk3zk/0EyrxwKT4BIDO7RSBdoaLonmAI4lAM=;
+        b=zqLYEfI+MYlUx42I9T+KYjRCIyJo/PSta0tII1+MpAU5mwBQ5uoSjcrBBr9ro8DBKOEw5G
+        RFA8TLrbWrJNhfDg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id ymvUACopw2BkTQAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Fri, 11 Jun 2021 09:13:14 +0000
+Subject: Re: [PATCH v4 2/3] mm/slub: Fix redzoning for small allocations
+To:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     stable@vger.kernel.org, Marco Elver <elver@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        "Lin, Zhenpeng" <zplin@psu.edu>, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org
+References: <20210608183955.280836-1-keescook@chromium.org>
+ <20210608183955.280836-3-keescook@chromium.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e2857753-210c-da73-6e43-0bbd7e0efe80@suse.cz>
+Date:   Fri, 11 Jun 2021 11:13:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210608183955.280836-3-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 11 Jun 2021 04:59:42 +0200
-Willy Tarreau <w@1wt.eu> escreveu:
+On 6/8/21 8:39 PM, Kees Cook wrote:
+> The redzone area for SLUB exists between s->object_size and s->inuse
+> (which is at least the word-aligned object_size). If a cache were created
+> with an object_size smaller than sizeof(void *), the in-object stored
+> freelist pointer would overwrite the redzone (e.g. with boot param
+> "slub_debug=ZF"):
+> 
+> BUG test (Tainted: G    B            ): Right Redzone overwritten
+> -----------------------------------------------------------------------------
+> 
+> INFO: 0xffff957ead1c05de-0xffff957ead1c05df @offset=1502. First byte 0x1a instead of 0xbb
+> INFO: Slab 0xffffef3950b47000 objects=170 used=170 fp=0x0000000000000000 flags=0x8000000000000200
+> INFO: Object 0xffff957ead1c05d8 @offset=1496 fp=0xffff957ead1c0620
+> 
+> Redzone  (____ptrval____): bb bb bb bb bb bb bb bb    ........
+> Object   (____ptrval____): f6 f4 a5 40 1d e8          ...@..
+> Redzone  (____ptrval____): 1a aa                      ..
+> Padding  (____ptrval____): 00 00 00 00 00 00 00 00    ........
+> 
+> Store the freelist pointer out of line when object_size is smaller than
+> sizeof(void *) and redzoning is enabled.
+> 
+> Additionally remove the "smaller than sizeof(void *)" check under
+> CONFIG_DEBUG_VM in kmem_cache_sanity_check() as it is now redundant:
+> SLAB and SLOB both handle small sizes.
+> 
+> (Note that no caches within this size range are known to exist in the
+> kernel currently.)
+> 
+> Fixes: 81819f0fc828 ("SLUB core")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-> On Fri, Jun 11, 2021 at 12:43:05AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> > Shuah Khan <skhan@linuxfoundation.org> writes: =20
-> > > I have a
-> > > couple of ideas on how we might be able to improve remote experience
-> > > without restricting in-person experience.
-> > >
-> > > - Have one or two moderators per session to watch chat and Q&A to ena=
-ble
-> > >    remote participants to chime in and participate.
-> > > - Moderators can make sure remote participation doesn't go unnoticed =
-and
-> > >    enable taking turns for remote vs. people participating in person.
-> > >
-> > > It will be change in the way we interact in all in-person sessions for
-> > > sure, however it might enhance the experience for remote attendees. =
-=20
-> >=20
-> > This is basically how IETF meetings function: At the beginning of every
-> > session, a volunteer "jabber scribe" is selected to watch the chat and
-> > relay any questions to a microphone in the room. And the video streaming
-> > platform has a "virtual queue" that remove participants can enter and
-> > the session chairs are then responsible for giving people a chance to
-> > speak. Works reasonably well, I'd say :) =20
->=20
-> I was about to say the same. In addition, local participants line up
-> at a microphone and do not interrupt the speaker, but the organiser
-> gives them the signal to ask a question. This allows to maintain a
-> good balance between local and remote participants. Also it's common
-> to see some locals go back to their seat because someone else just
-> asked the same question. And when remote questions are asked using
-> pure text, it's easy for the organiser to skip them if already
-> responded as well.
->=20
-> This method is rather efficient because it doesn't require to keep the
-> questions for the end of the session, yet questions do not interrupt
-> the speaker. It also solves the problem of people not speaking in the
-> microphone. The only thing is that it can be quite intimidating for
-> local participants who are too shy of standing up in front of a
-> microphone and everyone else.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-If someone is shy, he/she could simply type the question as a
-remote participant would do.
+> ---
+>  mm/slab_common.c | 3 +--
+>  mm/slub.c        | 8 +++++---
+>  2 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index a4a571428c51..7cab77655f11 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -97,8 +97,7 @@ EXPORT_SYMBOL(kmem_cache_size);
+>  #ifdef CONFIG_DEBUG_VM
+>  static int kmem_cache_sanity_check(const char *name, unsigned int size)
+>  {
+> -	if (!name || in_interrupt() || size < sizeof(void *) ||
+> -		size > KMALLOC_MAX_SIZE) {
+> +	if (!name || in_interrupt() || size > KMALLOC_MAX_SIZE) {
+>  		pr_err("kmem_cache_create(%s) integrity check failed\n", name);
+>  		return -EINVAL;
+>  	}
+> diff --git a/mm/slub.c b/mm/slub.c
+> index f91d9fe7d0d8..f58cfd456548 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3734,15 +3734,17 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+>  	 */
+>  	s->inuse = size;
+>  
+> -	if (((flags & (SLAB_TYPESAFE_BY_RCU | SLAB_POISON)) ||
+> -		s->ctor)) {
+> +	if ((flags & (SLAB_TYPESAFE_BY_RCU | SLAB_POISON)) ||
+> +	    ((flags & SLAB_RED_ZONE) && s->object_size < sizeof(void *)) ||
+> +	    s->ctor) {
+>  		/*
+>  		 * Relocate free pointer after the object if it is not
+>  		 * permitted to overwrite the first word of the object on
+>  		 * kmem_cache_free.
+>  		 *
+>  		 * This is the case if we do RCU, have a constructor or
+> -		 * destructor or are poisoning the objects.
+> +		 * destructor, are poisoning the objects, or are
+> +		 * redzoning an object smaller than sizeof(void *).
+>  		 *
+>  		 * The assumption that s->offset >= s->inuse means free
+>  		 * pointer is outside of the object is used in the
+> 
 
-This should work fine for a normal speech, but for BoFs and the
-usual "round table" discussions we have at Kernel Maintainers,
-this may not work well for local participants.
-
-I guess that, for such kind of discussions, I can see two
-possible alternatives:
-
-1. everyone would use their laptop cameras/mics;
-2. every round table would have their on camera/mic set.
-
-(1) is probably simpler to implement, but may provide a worse
-experience for local participants. (2) is probably harder to
-implement, as the usual conference logistics company may not
-have cameras.
-
-In either case, a moderator (or some moderating software) is needed
-in order queue requests for speech. So, basically, when someone
-(either in a table or remote) wants to speak, it adds its name to
-a queue, which will then be parsed at the queue's order. This is not
-as natural as a physical meeting, but I guess it won't bring too
-much burden to local people.
-
-Thanks,
-Mauro
