@@ -2,161 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600333A47DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912D73A47E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbhFKR1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:27:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35436 "EHLO mail.kernel.org"
+        id S231171AbhFKRaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:30:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229935AbhFKR1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:27:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B256D6124C;
-        Fri, 11 Jun 2021 17:25:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623432314;
-        bh=czXkMxMAPEzKbCHh4TsBax2n3VRR8od40WCAFWumcPo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bc06JkJZYRFufu8UqmCfqPvRsr5FxQx1Gjnm1ZMUyVOgIK0i8Mp2phrLi/6Cu0Tiz
-         vGXBl0oNjZnsNcPDmx4MZJSArxx/IUcHcqepwDcMDU+NqWoWBXS0CLGFch1jzNC31/
-         SIIDxLnia2pMlyj3evzlIk2Kr6kQmEHls2+GSkfsZiqdBWdrJRyyuEy3J5leuTkPh5
-         k+hsTGRyMhP+UY+SfcPf9MJPf5BAm1w7MrFxG0az+zNR0YzLT1BTQz8zyqvaHvRTli
-         Bd1w2rXfbDOONrkeypia8y7+IIQRKiFjwybhCvyUg3M4ls1TPaCEFqpKhSktBrSkFV
-         M+8hRP/WlUEoQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 865C75C0990; Fri, 11 Jun 2021 10:25:14 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 10:25:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH] rcu/doc: Add a quick quiz to explain further why we need
- smp_mb__after_unlock_lock()
-Message-ID: <20210611172514.GG4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210610155029.130812-1-frederic@kernel.org>
- <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
- <20210611103432.GA143096@lothringen>
+        id S229874AbhFKRaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:30:10 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27407613CF;
+        Fri, 11 Jun 2021 17:28:10 +0000 (UTC)
+Date:   Fri, 11 Jun 2021 18:30:05 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH -next] iio: frequency: adf4350: disable reg and clk on
+ error in adf4350_probe()
+Message-ID: <20210611183005.1d657e36@jic23-huawei>
+In-Reply-To: <1ebd111a-a34a-5d3b-a807-db8176bd19c8@huawei.com>
+References: <20210601142605.3613605-1-yangyingliang@huawei.com>
+        <20210603171822.14376c28@jic23-huawei>
+        <1ebd111a-a34a-5d3b-a807-db8176bd19c8@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611103432.GA143096@lothringen>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 12:34:32PM +0200, Frederic Weisbecker wrote:
-> On Thu, Jun 10, 2021 at 09:57:10AM -0700, Paul E. McKenney wrote:
-> > diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> > index 11cdab037bff..3cd5cb4d86e5 100644
-> > --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> > +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> > @@ -112,6 +112,35 @@ on PowerPC.
-> >  The ``smp_mb__after_unlock_lock()`` invocations prevent this
-> >  ``WARN_ON()`` from triggering.
+On Fri, 4 Jun 2021 09:35:49 +0800
+Yang Yingliang <yangyingliang@huawei.com> wrote:
+
+> On 2021/6/4 0:18, Jonathan Cameron wrote:
+> > On Tue, 1 Jun 2021 22:26:05 +0800
+> > Yang Yingliang <yangyingliang@huawei.com> wrote:
 > >  
-> > ++-----------------------------------------------------------------------+
-> > +| **Quick Quiz**:                                                       |
-> > ++-----------------------------------------------------------------------+
-> > +| But the whole chain of rcu_node-structure locking guarantees that     |
-> > +| readers see all pre-grace-period accesses from the updater and        |
-> > +| also guarantees that the updater to see all post-grace-period         |
+> >> Disable reg and clk when devm_gpiod_get_optional() fails in adf4350_probe().  
+> > Hi.
+> >
+> > One small thing. It would be useful if you could check if the bug exists other
+> > than in next (this one has been their for some time!)  If it does, please
+> > don't add the -next in the patch title (as basically it makes me not worry
+> > about reading it for a few days :)
+> >
+> > Also, make sure to cc the author of the patch in the fixes tag
+> > +CC Linus  
+> OK
 > 
-> Should it be either "that the updater see" or "the updater to see"?
+> Thanks,
+> Yang
+Hi Yang,
 
-Good catch, I have reworked this paragraph.
+Change of plan on this one as we are late in the cycle and I don't have
+any urgent fixes queued up.  I'm moving over to the togreg branch of iio.git
+and lining it up for the current merge window.
 
-> > +| accesses from the readers.
-> 
-> Is it really post-grace-period that you meant here? The updater can't see
-> the future. It's rather all reader accesses before the end of the grace period?
+Thanks,
 
-I have reworked this to talk about old and new readers on the one hand
-and the updater's pre- and post-grace-period accesses on the other.
+Jonathan
 
-> >  So why do we need all of those calls      |
-> > +| to smp_mb__after_unlock_lock()?                                       |
-> > ++-----------------------------------------------------------------------+
-> > +| **Answer**:                                                           |
-> > ++-----------------------------------------------------------------------+
-> > +| Because we must provide ordering for RCU's polling grace-period       |
-> > +| primitives, for example, get_state_synchronize_rcu() and              |
-> > +| poll_state_synchronize_rcu().  For example:                           |
-> 
-> Two times "for example" (sorry I'm nitpicking...)
+> >
+> > Obvious enough fix (I hope) that I've applied it to the fixes-togreg branch of
+> > iio.git and marked for stable.
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >  
+> >> Fixes:4a89d2f47ccd ("iio: adf4350: Convert to use GPIO descriptor")
+> >> Reported-by: Hulk Robot <hulkci@huawei.com>
+> >> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> >> ---
+> >>   drivers/iio/frequency/adf4350.c | 6 ++++--
+> >>   1 file changed, 4 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/iio/frequency/adf4350.c b/drivers/iio/frequency/adf4350.c
+> >> index 1462a6a5bc6d..3d9eba716b69 100644
+> >> --- a/drivers/iio/frequency/adf4350.c
+> >> +++ b/drivers/iio/frequency/adf4350.c
+> >> @@ -563,8 +563,10 @@ static int adf4350_probe(struct spi_device *spi)
+> >>   
+> >>   	st->lock_detect_gpiod = devm_gpiod_get_optional(&spi->dev, NULL,
+> >>   							GPIOD_IN);
+> >> -	if (IS_ERR(st->lock_detect_gpiod))
+> >> -		return PTR_ERR(st->lock_detect_gpiod);
+> >> +	if (IS_ERR(st->lock_detect_gpiod)) {
+> >> +		ret = PTR_ERR(st->lock_detect_gpiod);
+> >> +		goto error_disable_reg;
+> >> +	}
+> >>   
+> >>   	if (pdata->power_up_frequency) {
+> >>   		ret = adf4350_set_freq(st, pdata->power_up_frequency);  
+> > .  
 
-But the example has two threads!
-
-Kidding aside, I substituted "Consider this code" for the second
-"For example".
-
-> > +|                                                                       |
-> > +| CPU 0                                     CPU 1                       |
-> > +| ----                                      ----                        |
-> > +| WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)            |
-> > +| g = get_state_synchronize_rcu()           smp_mb()                    |
-> > +| while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)           |
-> > +|         continue;                                                     |
-> > +| r0 = READ_ONCE(Y)                                                     |
-> 
-> Good point, it's a nice merge of the initial examples!
-
-Glad you like it!
-
-> > +|                                                                       |
-> > +| RCU guarantees that that the outcome r0 == 0 && r1 == 0 will not      |
-> 
-> One "that" has to die here.
-
-Can we instead show clemency and banish it to some other paragraph?
-
-> > +| happen, even if CPU 1 is in an RCU extended quiescent state (idle     |
-> > +| or offline) and thus won't interact directly with the RCU core        |
-> > +| processing at all.                                                    |
-> 
-> Thanks a lot!
-
-Glad to help, and I will reach out to you should someone make the mistake
-of insisting that I write something in French.  ;-)
-
-> > ++-----------------------------------------------------------------------+
-> > +
-> >  This approach must be extended to include idle CPUs, which need
-> >  RCU's grace-period memory ordering guarantee to extend to any
-> >  RCU read-side critical sections preceding and following the current
-
-How about like this?
-
-+-----------------------------------------------------------------------+
-| **Quick Quiz**:                                                       |
-+-----------------------------------------------------------------------+
-| But the chain of rcu_node-structure lock acquisitions guarantees      |
-| that new readers will see all of the updater's pre-grace-period       |
-| accesses and also guarantees that the updater's post-grace-period     |
-| accesses will see all of the old reader's accesses.  So why do we     |
-| need all of those calls to smp_mb__after_unlock_lock()?               |
-+-----------------------------------------------------------------------+
-| **Answer**:                                                           |
-+-----------------------------------------------------------------------+
-| Because we must provide ordering for RCU's polling grace-period       |
-| primitives, for example, get_state_synchronize_rcu() and              |
-| poll_state_synchronize_rcu().  Consider this code::                   |
-|                                                                       |
-|  CPU 0                                     CPU 1                      |
-|  ----                                      ----                       |
-|  WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)           |
-|  g = get_state_synchronize_rcu()           smp_mb()                   |
-|  while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)          |
-|          continue;                                                    |
-|  r0 = READ_ONCE(Y)                                                    |
-|                                                                       |
-| RCU guarantees that the outcome r0 == 0 && r1 == 0 will not           |
-| happen, even if CPU 1 is in an RCU extended quiescent state           |
-| (idle or offline) and thus won't interact directly with the RCU       |
-| core processing at all.                                               |
-+-----------------------------------------------------------------------+
-
-							Thanx, Paul
