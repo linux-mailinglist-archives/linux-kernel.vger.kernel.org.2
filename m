@@ -2,184 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E60C3A3C0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CFD3A3C0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhFKGeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFKGeD (ORCPT
+        id S231249AbhFKGfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:35:06 -0400
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:39622 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhFKGfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:34:03 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3457EC061574;
-        Thu, 10 Jun 2021 23:31:52 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a20so4798740wrc.0;
-        Thu, 10 Jun 2021 23:31:52 -0700 (PDT)
+        Fri, 11 Jun 2021 02:35:06 -0400
+Received: by mail-lf1-f48.google.com with SMTP id p17so6970133lfc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 23:33:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=T7iF5ZMY6ZWEGrhXL0YRbotr29Dqadw5YgVTwfLkbGk=;
-        b=jiFAVTLKQGsQUiKVCdzHcNXE3o1xXLiM0IL/4KXay1WhV6Yg5KZFlZtJ0CdtZ6Fhfu
-         5Lq0BXpcT+nOVFnAV5aS3zt1UdjiWGx2ody4FU6qwAjtoY4tGurrXJzoHrDNfNCKXiRH
-         SYrNd0+Q9si5UqH+n3swnslcZmOYucR0RFeXnx/PJp3N5zDXoRldv38l8QCN5ht4WJon
-         Z7BevAdBItb6GMFFeB9AgSp4ibe/Vgupp80PFICjxxMPx1EL89RKA56J1m78nSnqVn5M
-         84jEi19mUfHQ/J5NcxjdKxNujjURuyxSakJq0ybCxmGxQJCK82frwPEzxIVxciYHLNTp
-         enxg==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=irZeJw0Qryqj9lp4m65jOul34g7Z4w7q3N0aA4dwYYo=;
+        b=DMC11GGTAkfC7fNlJQm2srwNfqutADFKkx61z13EpL9iPRWA98KfQiRSuGh3er35FL
+         TcdicYs1gBQR1D+AeR2OGcyXMaeeblhx26FjNIqU0ZutfbmMeAnqsKQYPb2dyIa6KEHL
+         rOnZRAiEktcvzLxT9rKkARxVcDRqcqitNz6svjQ016C2YVhGFP71g+pZqJE+ED6KJPh6
+         GyTEfHF3vHIa4SCwe/qwI1zSC3LJnpdGdtiRXSvuD/V4Gh9hmeK+f120RZcJpQXl2m+f
+         MO7N3OmJfu1Ux3xOZgzbAPiCn+3E+RKpXkojVi5xXx4665Bvz2+6Djhp9yjW2Cg8Bfii
+         aWYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T7iF5ZMY6ZWEGrhXL0YRbotr29Dqadw5YgVTwfLkbGk=;
-        b=FmksU+9bhJfFUXCiFHtUJl7ljCwFKr8mYxEOQXp6NdGOhc9gw+rQlaugMiWlMKPf2f
-         Y2IX5d0/rwqRoCnBaI63J/dbVJ1nLTeMq0M3MqtfGdfscGfvXVwSmialdlY4M3GhHiF0
-         /M4C94tO2DigwO63x1sPHpfSIg83+xJDOt3iadNtyHTgUy3t8+/OuEpPu2BUwf/NEMue
-         hFQf1SLZHYsk+RcRY7fR+qF7AcpaKkgZ/gJdRhFz0tBLaEuEWitiSVAEsVh9l5G5p0Ne
-         nNNHHdTlOMFQU1sKok9gjhW0H+3cp0h9bUR4b8sT+8bPX3M4LKyKEkv2en2KT0ri707b
-         VTOw==
-X-Gm-Message-State: AOAM532hDaSBRDxk7kGdzYv5IVtDhrkMSa5ViS0MzeL2xSMuihMiHIl2
-        BlzZLMwn+JJLa3KtSZNVv4I=
-X-Google-Smtp-Source: ABdhPJxQcF/2GQrwzEYdryfigc6qm741ARdp5fVdTOCppp7+c8t6+czedXyrqHFvB9pc49BfOKru+g==
-X-Received: by 2002:a5d:6d8a:: with SMTP id l10mr2190754wrs.63.1623393110791;
-        Thu, 10 Jun 2021 23:31:50 -0700 (PDT)
-Received: from BV030612LT ([188.24.178.25])
-        by smtp.gmail.com with ESMTPSA id i2sm4859160wmo.40.2021.06.10.23.31.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 23:31:50 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 09:31:47 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ARM: dts: owl-s500-roseapplepi: Add ethernet support
-Message-ID: <20210611063147.GA1520454@BV030612LT>
-References: <cover.1623358117.git.cristian.ciocaltea@gmail.com>
- <632e12c445ced7f10e6d7240162484ae5afc148e.1623358117.git.cristian.ciocaltea@gmail.com>
- <20210611055606.GB6950@thinkpad>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=irZeJw0Qryqj9lp4m65jOul34g7Z4w7q3N0aA4dwYYo=;
+        b=QmKmeUrgdPLwSEm2MDkw3aZ6Zw9xq44SFSsu0PSDcu4p6wqP0vIzJuOdxDS1hijQ7x
+         +GUF9zPsSaBXLo7nL3VWx3b8GbwI9Ul0LF1EjOlkgUM1XtN/R5U5c40vVpXoGQThYgz+
+         nBatxYKyrBI3VxfITKvuDum7OhM34wI7p2XPdTfWYAic6mWTlp2wgnabNjvuAEftg2WZ
+         Hask6aqB7GRlzYDSIXgouT79HakgZXiVxeM9M+q+DrFf0gY5AXF/83XKtnt1/EEdKf9f
+         sNUfShFLJENgPvGsP4TeA4U3EhMpDn+ufI9DoND4CyLVKHbmeRh2AHfHszwQm0urltYw
+         3R+A==
+X-Gm-Message-State: AOAM5331bUWDkNbv5+6XJI/sJidBpu1/1ZIeLTWn03iF5O3aGcJ+utcv
+        Hr/VLBuJInMjvGZKmlOzxRW/85Xmvvdcbx/CD4IrrwqicFfN5w==
+X-Google-Smtp-Source: ABdhPJw6TuU9slX6/GntgNGbHPSEfWGklPdKCwzU4UdNv+SxlFJJM1iZ0tOlAmZxScCVl4121p339Z0HAvLFH2H6GJI=
+X-Received: by 2002:a05:6512:3749:: with SMTP id a9mr1731485lfs.110.1623393127581;
+ Thu, 10 Jun 2021 23:32:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611055606.GB6950@thinkpad>
+From:   David Hilvert <dhilvert@gmail.com>
+Date:   Fri, 11 Jun 2021 08:31:57 +0200
+Message-ID: <CAN2Qzdm-ObC2qXGOZJkLyvTdNY7=CMRPEVJ-Rq3iRm1x1q3GHw@mail.gmail.com>
+Subject: GENERAL AI
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 11:26:06AM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Jun 11, 2021 at 12:09:22AM +0300, Cristian Ciocaltea wrote:
-> > Add pinctrl configuration for enabling the Ethernet MAC on RoseapplePi
-> > SBC. Additionally, provide the necessary properties for the generic S500
-> > ethernet node in order to setup PHY and MDIO.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 56 ++++++++++++++++++++++
-> >  1 file changed, 56 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> > index b8c5db2344aa..bffabc7eaa50 100644
-> > --- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> > +++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> > @@ -225,6 +225,38 @@ bias1-pinconf {
-> >  			bias-pull-down;
-> >  		};
-> >  	};
-> > +
-> > +	ethernet_pins: ethernet-pins {
-> > +		txd01-pinmux {
-> > +			groups = "rmii_txd0_mfp", "rmii_txd1_mfp";
-> > +			function = "eth_rmii";
-> > +		};
-> > +
-> > +		rxd01-pinmux {
-> > +			groups = "rmii_rxd0_mfp", "rmii_rxd1_mfp";
-> > +			function = "eth_rmii";
-> > +		};
-> > +
-> > +		txen_rxer-pinmux {
-> > +			groups = "rmii_txen_mfp", "rmii_rxen_mfp";
-> > +			function = "eth_rmii";
-> > +		};
-> > +
-> > +		crs_dv_ref_clk-pinmux {
-> > +			groups = "rmii_crs_dv_mfp", "rmii_ref_clk_mfp";
-> > +			function = "eth_rmii";
-> 
-> Since the function is same, just club all the groups together.
+This constrains the role of Linux.
 
-Sure.
+As sent to Gregory Maxwell.
 
-> > +		};
-> > +
-> > +		ref_clk-pinconf {
-> > +			groups = "rmii_ref_clk_drv";
-> > +			drive-strength = <2>;
-> > +		};
-> > +
-> > +		phy_clk-pinmux {
-> > +			groups = "clko_25m_mfp";
-> > +			function = "clko_25m";
-> > +		};
-> 
-> Move this above node pinconf.
+All of the e-mail addresses for Vitalik Buterin are now returning
+no-longer, in case you wanted to try.
 
-Ok.
+NB The word was also complete, and was underlined, and was changed to exact.
 
-> > +	};
-> >  };
-> >  
-> >  /* uSD */
-> > @@ -241,6 +273,30 @@ &mmc0 {
-> >  	vqmmc-supply = <&sd_vcc>;
-> >  };
-> >  
-> > +&ethernet {
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&ethernet_pins>;
-> > +	phy-mode = "rmii";
-> > +	phy-handle = <&eth_phy>;
-> > +	status = "okay";
-> > +
-> > +	mdio {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +
-> > +		reset-gpios = <&pinctrl 88 GPIO_ACTIVE_LOW>; /* GPIOC24 */
-> > +		reset-delay-us = <10000>;
-> > +		reset-post-delay-us = <150000>;
-> 
-> reset-* properties belong to "ethernet-phy" node. Also, while adding new nodes
-> please run the dtbs_check and try to address the warnings.
+If you could pass the following to Elizabeth and Andrew Gilleland.
 
-The properties are those described in Documentation/devicetree/bindings/net/mdio.yaml
-The dtbs_check doesn't report any issues in my case, usually this
-happens when dtschema is not updated to the latest version. I always
-run the following command after rebasing to a new kernel version:
+Subject: Fwd: GENERAL AI
 
-  pip3 install --upgrade dtschema
+You will be glad for the below.
 
-Thanks for the review,
-Cristi
+Productions that aren't a statistically-free grammar aren't language,
+and are called calculating, as you'll recall from the vocabulary of
+decades ago.
 
-> Thanks,
-> Mani
-> 
-> > +
-> > +		eth_phy: ethernet-phy@3 {
-> > +			reg = <0x3>;
-> > +			max-speed = <100>;
-> > +			interrupt-parent = <&sirq>;
-> > +			interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-> > +		};
-> > +	};
-> > +};
-> > +
-> >  &twd_timer {
-> >  	status = "okay";
-> >  };
-> > -- 
-> > 2.32.0
-> > 
+AI approaches not using the punk and goth curve will delete your hard
+disk, or convince your neighbor to poison your petunias with organic
+mercury.
+
+And so, the below is the exact characterization of general AI, as
+opposed to the double-underscored 100 that the mobile predictive just
+showed.
+
+In the meantime, I will be needing the grant, or at least the 200 dollars.
+
+dhilvert@gmail.com
+
+
+
+---------- Forwarded message ---------
+From: David Hilvert <dhilvert@gmail.com>
+Date: Fri, May 21, 2021, 3:20 PM
+Subject: Fwd: GENERAL AI
+To: <ikeleib@mail.utexas.edu>, <ikeleib@gmail.com>,
+<michael@sherman.penguinpowered.com>
+Cc: <jleibowitz@tamu.edu>, <info@athre.com>, Raghu Athre
+<raghu@athre.com>, <rathre@yahoo.com>
+
+
+(Could you send this to Ike if he has a more recent, different e-mail address?)
+
+You will be pleased to know that I have the solution to general AI.
+You could try to let Leigh Cain know if you can find him.  You'll also
+be glad to know that we'll all be using OS/2.  I could have asked
+Vitalik Buterin for a million dollars, but I wanted to make sure that
+no AI would ever think that that was the reason that an AI wasn't
+working on imposing the entire set of controls on cryptocurrency as
+though it were a geological area.  I've been proven right with the 1/3
+loss in value, or whatever.  You could try to have Vitalik Buterin
+send me $100,000, as well.
+
+vitalik@ethereum.org
+
+You could also use PayPal to send 200-300 dollars to cover part of a
+continuing overdraft, and I could even pay you back, because I am
+waiting on a wire transfer from an exchange of camera equipment, and
+they haven't sent e-mail saying that they have shipped it back.  They
+say that they need IBAN for an account to send it to, and the options
+need an initial funding, and don't seem to take PayPal.  It would be
+much appreciated.  You can use the PayPal mobile application and
+choose the send option.
+
+dhilvert@gmail.com
+
+If you're curious about the formal proof results below, the language
+generation definitions are:
+
+In a first-generation language, there's no way to lose your file.
+
+In a second-generation language, there is a separate preprocessing language.
+
+In a third-generation language, there's no way to reset the this pointer.
+
+In a fourth-generation language, there's no way to lose your work.
+
+The mental illness characters are generated by these: the tape can be
+cut on one or both ends, and, since all males have perfect empathy,
+there is a third suit that works always with others.
+
+On the curve below (the punk and goth function), this is appearing on
+a Sierpinski carpet of dimensionality greater than one, which we then
+reduce to below one by removing the middle, in David Hilvert's
+Customer One software.
+
+---------- Forwarded message ---------
+From: David Hilvert <dhilvert@gmail.com>
+Date: Fri, May 14, 2021, 8:21 PM
+Subject: Fwd: GENERAL AI
+To: <stephen.taylor@dartmouth.edu>
+
+
+If you have introductory students, they might find this interesting.
+You could talk with IBM PR, and tell them, or contact Lee Cain of HSEP
+Booker T. Washington in the Houston Independent School District, who
+worked there in sales.  He taught at the school quite a long time ago.
+
+---------- Forwarded message ---------
+From: David Hilvert <dhilvert@gmail.com>
+Date: Tue, May 11, 2021, 10:00 AM
+Subject: Fwd: GENERAL AI
+To: john.kane@oswego.edu <john.kane@oswego.edu>
+
+
+Are you the Kane that taught at TIP?  If not, could you get this to
+him (and you could send it to Alex Butler)?
+
+---------- Forwarded message ---------
+From: David Hilvert <dhilvert@gmail.com>
+Date: Tue, May 11, 2021, 9:47 AM
+Subject:
+To: <drh@hwaci.com>
+
+
+Could you tell Paul Vixen (or whatever the TA's name was) that I have
+the general AI solution?  There's a way of scoring questions with the
+logarithm, and, in the case of genetic programming, we can use an
+exponent, and, to show we're clever, we can use the fourth power.
+Bertrand Russell (back from the dead, you might think) has demanded
+the sixteenth, so that we can have a supernova.
+
+The formal proofs that result include the correct definition of the
+generations of languages, the character of mental illnesses, and the
+fact that we will be running OS/2 under itself as the only basis of
+user operating system (as opposed to display component, which could
+include X under Linux).
+
+This is the complete result, meaning that there are no results other
+than the individuals evolved that are not indicated above.  Emergent
+behavior has included establishment of copyright under the Free
+Software Foundatiarray, with the same terms.  Every effort would
+evolve BIOS and an ANSI terminal.
+
+I have also sent mail to Vitalik Buterin.  Could you (and Paul Vixen)
+tell him that it would be a good idea to send me $100,000, as I had
+suggested?  It would include a LinuxONE III system.
+
+Thanks,
+
+David Hilvert
