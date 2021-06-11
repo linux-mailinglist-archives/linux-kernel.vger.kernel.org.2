@@ -2,226 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63823A3DB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C493A3DB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbhFKIEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:04:02 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:35542 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFKID6 (ORCPT
+        id S231625AbhFKIDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhFKIDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:03:58 -0400
-Received: by mail-wr1-f42.google.com with SMTP id m18so5017022wrv.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bE/KUZ9QKkdW8cpXSSyU518CP3tPDoswPEAOU9fuFew=;
-        b=r1ucxI47ris1Yyujr58rPBjyNMwf0oO3T7TBdzTpWtzhzrkvdA+rkJdqLe6+CDPPzA
-         2E3mwuTrlr0mW2bfVEk51AOjX+QvUVU+5euXfZJqdWVqJLOKswJDc4TErtFr0DOzkft6
-         Of1o+nShLFfiUO3iUFIHe8XRT0QsJY2RYTg4H53d8uOjSH8UW1/S3GrpBF1WF7IXWMlH
-         ufNmZoNkQ/Qp3R3QfTDCNXPUvFs7lH3Z5jjFNfmpM5EzVkkbWluQz3d5AQ3GtznVeHbN
-         yAhSXXeEtdSXrKFNc5aZXG+1pJRV6DJOPbIwaMKFkJhckP38iuWjUYt2/MFd6msdfHBJ
-         OpXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bE/KUZ9QKkdW8cpXSSyU518CP3tPDoswPEAOU9fuFew=;
-        b=b9jOq/xehvDdY023x+AMwoa1oBx5Vnq44y48LZXZG0WCJF0s23P/AzY5nL45uc07XW
-         TP420r2MBHQyNmkZJDfAwk4zZWWJApU4LHZAt/Kjq5HD92kEumtWjL7Uipy8U3cUW4Rb
-         UYsuMWKMZV64q+Ej9mXL9AMPsGn0rhEXZgFo1p57FV7aGu1k123BrUVF8rY6buPPmCV9
-         yK3qOrzSotD8ZMcayExU7PKJ1+o1yPC0kLQTcr7KmuC30VlNuEFVeQP9qnVbPv/R2rxY
-         8ewFj+7zcZBJnzUsUs8BhymhIIFbebTBSTNO5lQA4TwyvWKazRiFQMGFQduTdbq8PPZi
-         yenw==
-X-Gm-Message-State: AOAM533Arn/Pk1Kq7XN4IisCzcmHs+P7Qo8unKhIVL6a3bX+AkdYrkti
-        T+HG/G0WoT7l3fKU9b7rVdZsxA==
-X-Google-Smtp-Source: ABdhPJwrDUmeg8YRTI7WihhIRANvJqSROo7Yhgyb7Hwx9jgOH3Lv/9V/uXxDzj6jwe46tOrjayFKzQ==
-X-Received: by 2002:a5d:6b0e:: with SMTP id v14mr2502091wrw.297.1623398460461;
-        Fri, 11 Jun 2021 01:01:00 -0700 (PDT)
-Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id x18sm6079898wrw.19.2021.06.11.01.00.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 01:00:59 -0700 (PDT)
-From:   Jann Horn <jannh@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jann Horn <jannh@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        stable@vger.kernel.org
-Subject: [PATCH] mm/gup: fix try_grab_compound_head() race with split_huge_page()
-Date:   Fri, 11 Jun 2021 10:00:27 +0200
-Message-Id: <20210611080027.984937-1-jannh@google.com>
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+        Fri, 11 Jun 2021 04:03:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C436C0617AF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iV6PuYBcGabhwMrk5vnVTC9sgARARQ/ZX23mi9Any1A=; b=hu6lDzSN1VXJtmAqBxQYQgTqKx
+        ISyXh0L8nqlJ54pRxUntgG2l9ctPgyiFQn9uQlGj5e+bKaPjczJIz4WlgeHF6rVFgczL7vS65H35X
+        DlSJmUtdiG2VC9HdRPFUrWR1XAg+3MDEU8MsP7wi8VYAZ8U/8vBZu5iC5zUaSpULj0+53CF4sYtqK
+        LxBsp/nMS8309HCOu98APJxRzADSWsKbsA9DH9phA+kiGbEXESTxqcSA+W8Jdyy4OIeZP5OSboq1+
+        OYw2LVaRMzYvpmae1nmcMw0FaXsrcv57ULYYZFeUxx5vqAbzLkZlzB1I5ddKNCoDACur8gj/eJGTx
+        tBKuo6TA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lrc6T-002X4L-G3; Fri, 11 Jun 2021 08:01:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF0B3300091;
+        Fri, 11 Jun 2021 10:01:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 83C5420709422; Fri, 11 Jun 2021 10:01:20 +0200 (CEST)
+Date:   Fri, 11 Jun 2021 10:01:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/fpu: Rename "dynamic" XSTATEs to "independent"
+Message-ID: <YMMYUGW9f7CUJ+oz@hirez.programming.kicks-ass.net>
+References: <cover.1623388344.git.luto@kernel.org>
+ <1eecb0e4f3e07828ebe5d737ec77dc3b708fad2d.1623388344.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1eecb0e4f3e07828ebe5d737ec77dc3b708fad2d.1623388344.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-try_grab_compound_head() is used to grab a reference to a page from
-get_user_pages_fast(), which is only protected against concurrent
-freeing of page tables (via local_irq_save()), but not against
-concurrent TLB flushes, freeing of data pages, or splitting of compound
-pages.
+On Thu, Jun 10, 2021 at 10:13:36PM -0700, Andy Lutomirski wrote:
+> The salient feature of "dynamic" XSTATEs is that they are not part of the
+> main task XSTATE buffer.  The fact that they are dynamically allocated is
+> irrelevant and will become quite confusing when user math XSTATEs start
+> being dynamically allocated.  Rename them to "independent" because they
+> are independent of the main XSTATE code.
+> 
+> This is just a search-and-replace with some whitespace updates to keep
+> things aligned.
+> 
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> ---
+>  arch/x86/events/intel/lbr.c       |  6 +--
+>  arch/x86/include/asm/fpu/xstate.h | 14 +++----
+>  arch/x86/kernel/fpu/xstate.c      | 62 +++++++++++++++----------------
+>  3 files changed, 41 insertions(+), 41 deletions(-)
+> 
+> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+> index 76dbab6ac9fb..0189807fc3c1 100644
+> --- a/arch/x86/events/intel/lbr.c
+> +++ b/arch/x86/events/intel/lbr.c
+> @@ -491,7 +491,7 @@ static void intel_pmu_arch_lbr_xrstors(void *ctx)
+>  {
+>  	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
+>  
+> -	copy_kernel_to_dynamic_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
+> +	copy_kernel_to_independent_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
+>  }
+>  
+>  static __always_inline bool lbr_is_reset_in_cstate(void *ctx)
+> @@ -576,7 +576,7 @@ static void intel_pmu_arch_lbr_xsaves(void *ctx)
+>  {
+>  	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
+>  
+> -	copy_dynamic_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
+> +	copy_independent_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
+>  }
+>  
+>  static void __intel_pmu_lbr_save(void *ctx)
+> @@ -978,7 +978,7 @@ static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc)
+>  		intel_pmu_store_lbr(cpuc, NULL);
+>  		return;
+>  	}
+> -	copy_dynamic_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
+> +	copy_independent_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
+>  
+>  	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
+>  }
 
-Because no reference is held to the page when try_grab_compound_head()
-is called, the page may have been freed and reallocated by the time its
-refcount has been elevated; therefore, once we're holding a stable
-reference to the page, the caller re-checks whether the PTE still points
-to the same page (with the same access rights).
+Yesterday tglx proposed the *save*_to_{user,kernel}() and
+*rstor*_from_{user,kernel}() namespace for pretty much every other such
+function.
 
-The problem is that try_grab_compound_head() has to grab a reference on
-the head page; but between the time we look up what the head page is and
-the time we actually grab a reference on the head page, the compound
-page may have been split up (either explicitly through split_huge_page()
-or by freeing the compound page to the buddy allocator and then
-allocating its individual order-0 pages).
-If that happens, get_user_pages_fast() may end up returning the right
-page but lifting the refcount on a now-unrelated page, leading to
-use-after-free of pages.
+And while I agree that independent_supervisor beats dynamic_supervisor
+for a name, they're both stupid long :-(
 
-To fix it:
-Re-check whether the pages still belong together after lifting the
-refcount on the head page.
-Move anything else that checks compound_head(page) below the refcount
-increment.
+I don't suppose we can simply use xsaves_to_kernel()
+xstrors_from_kernel() and add some magic to their respective mask
+handling to ensure that a mask belongs to only 1 (of 3) types.
 
-This can't actually happen on bare-metal x86 (because there, disabling
-IRQs locks out remote TLB flushes), but it can happen on virtualized x86
-(e.g. under KVM) and probably also on arm64. The race window is pretty
-narrow, and constantly allocating and shattering hugepages isn't exactly
-fast; for now I've only managed to reproduce this in an x86 KVM guest with
-an artificially widened timing window (by adding a loop that repeatedly
-calls `inl(0x3f8 + 5)` in `try_get_compound_head()` to force VM exits,
-so that PV TLB flushes are used instead of IPIs).
+	int types = 0;
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: stable@vger.kernel.org
-Fixes: 7aef4172c795 ("mm: handle PTE-mapped tail pages in gerneric fast gup=
- implementaiton")
-Signed-off-by: Jann Horn <jannh@google.com>
----
- mm/gup.c | 54 +++++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 39 insertions(+), 15 deletions(-)
+	if (mask & xfeatures_mask_user())
+		type++;
+	if (mask & xfeatures_mask_supervisor())
+		types++;
+	if (mask & xfeatures_mask_independent())
+		types++;
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 3ded6a5f26b2..1f9c0ac15073 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -43,8 +43,21 @@ static void hpage_pincount_sub(struct page *page, int re=
-fs)
-=20
- 	atomic_sub(refs, compound_pincount_ptr(page));
- }
-=20
-+/* Equivalent to calling put_page() @refs times. */
-+static void put_page_refs(struct page *page, int refs)
-+{
-+	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
-+	/*
-+	 * Calling put_page() for each ref is unnecessarily slow. Only the last
-+	 * ref needs a put_page().
-+	 */
-+	if (refs > 1)
-+		page_ref_sub(page, refs - 1);
-+	put_page(page);
-+}
-+
- /*
-  * Return the compound head page with ref appropriately incremented,
-  * or NULL if that failed.
-  */
-@@ -55,8 +68,23 @@ static inline struct page *try_get_compound_head(struct =
-page *page, int refs)
- 	if (WARN_ON_ONCE(page_ref_count(head) < 0))
- 		return NULL;
- 	if (unlikely(!page_cache_add_speculative(head, refs)))
- 		return NULL;
-+
-+	/*
-+	 * At this point we have a stable reference to the head page; but it
-+	 * could be that between the compound_head() lookup and the refcount
-+	 * increment, the compound page was split, in which case we'd end up
-+	 * holding a reference on a page that has nothing to do with the page
-+	 * we were given anymore.
-+	 * So now that the head page is stable, recheck that the pages still
-+	 * belong together.
-+	 */
-+	if (unlikely(compound_head(page) !=3D head)) {
-+		put_page_refs(head, refs);
-+		return NULL;
-+	}
-+
- 	return head;
- }
-=20
- /*
-@@ -94,25 +122,28 @@ __maybe_unused struct page *try_grab_compound_head(str=
-uct page *page,
- 		if (unlikely((flags & FOLL_LONGTERM) &&
- 			     !is_pinnable_page(page)))
- 			return NULL;
-=20
-+		/*
-+		 * CAUTION: Don't use compound_head() on the page before this
-+		 * point, the result won't be stable.
-+		 */
-+		page =3D try_get_compound_head(page, refs);
-+		if (!page)
-+			return NULL;
-+
- 		/*
- 		 * When pinning a compound page of order > 1 (which is what
- 		 * hpage_pincount_available() checks for), use an exact count to
- 		 * track it, via hpage_pincount_add/_sub().
- 		 *
- 		 * However, be sure to *also* increment the normal page refcount
- 		 * field at least once, so that the page really is pinned.
- 		 */
--		if (!hpage_pincount_available(page))
--			refs *=3D GUP_PIN_COUNTING_BIAS;
--
--		page =3D try_get_compound_head(page, refs);
--		if (!page)
--			return NULL;
--
- 		if (hpage_pincount_available(page))
- 			hpage_pincount_add(page, refs);
-+		else
-+			page_ref_add(page, refs * (GUP_PIN_COUNTING_BIAS - 1));
-=20
- 		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED,
- 				    orig_refs);
-=20
-@@ -134,16 +165,9 @@ static void put_compound_head(struct page *page, int r=
-efs, unsigned int flags)
- 		else
- 			refs *=3D GUP_PIN_COUNTING_BIAS;
- 	}
-=20
--	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
--	/*
--	 * Calling put_page() for each ref is unnecessarily slow. Only the last
--	 * ref needs a put_page().
--	 */
--	if (refs > 1)
--		page_ref_sub(page, refs - 1);
--	put_page(page);
-+	put_page_refs(page, refs);
- }
-=20
- /**
-  * try_grab_page() - elevate a page's refcount by a flag-dependent amount
+	if (WARN_ON_ONCE(type != 1))
+		return;
 
-base-commit: 614124bea77e452aa6df7a8714e8bc820b489922
---=20
-2.32.0.272.g935e593368-goog
+?
 
