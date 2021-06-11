@@ -2,552 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B103A435B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C7B3A4360
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhFKNxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:53:07 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:39581 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhFKNxF (ORCPT
+        id S231575AbhFKNxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:53:41 -0400
+Received: from mail-ua1-f48.google.com ([209.85.222.48]:41480 "EHLO
+        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhFKNxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:53:05 -0400
-Received: by mail-il1-f178.google.com with SMTP id j14so2384423ila.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:50:51 -0700 (PDT)
+        Fri, 11 Jun 2021 09:53:33 -0400
+Received: by mail-ua1-f48.google.com with SMTP id g34so2591258uah.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:51:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cosmicpenguin-net.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZhoRpq2tGh0PIsHKlm5VaqY0SAKlvS+nVTXnYSKGEDs=;
-        b=GugNJqVjoLF3Izp2SGWds/vzEkmFuPlBxiXYM/o3fjrrrNiolxMU4Mvpe7BtdO0iOJ
-         n4+fu+vaerB5MRMdFFjy5QVcEriiAJ/PsiRv8S5M9AZ6YhJ6GJbLwRBIf4T7NKY65jxi
-         a1QqOCnKjMpl2E9OK1Un6fOF5ZJPZ2HlmEQcQv41t2rGNYTNS5rdozWfwXgck5y/hnQQ
-         8CAt6eDto66V9wIIMz3zDqqZuurGl3cUQxKwrNJGOlAaPNriP3YTBhlZIVYOD2TlrxO9
-         WB9MhYVptiGmQdnJhLALXouVaY7Rh/1mM63GrWTHGpHAbd5P75755qLYQCHMpd8uHTEk
-         ZNuQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aKjBVhpB4/dvXhaxGwO+leBr+CN2AlgbMKRNiKQe92A=;
+        b=ZvHVpAjlwTeY6BAIYSdI4EZPfs1KB5lLfjOyPycAOihsZFd5Na2P/OiyhUirVzxqjD
+         9WUjPRZWhQPZwWhTCF7bGcBkEZVbh26LcEFsFVvZWvgP4ujmnrJnAb9XpBUKqdzYtloI
+         8+rwdr5t0ciW9b3D20edQDtzxZVX4bNt5JpGC5m0mjyWmeDqtc8HE/Mi7+oadXNLuu/R
+         1XkiOPR45G+BHfnF1HK4+PqNRUX77opy+dK4o6LcVHXonMeppwcj7DcIBqXiGgNLHh4b
+         8eUq417zvlahPthR8AgGC8UHAWKN2M8pzZ2jlgPixszsKIiZvWJw7FvKHqP/3R55j9bx
+         5cbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=ZhoRpq2tGh0PIsHKlm5VaqY0SAKlvS+nVTXnYSKGEDs=;
-        b=F7MI2q8kMOTldopH+ONqsQ8N5dNhFDzDs/eF8A1q1DZCTrPUVnARc6LKfrQ4baKciV
-         T4gyZosilcZnHrgv+FGE49JucZtAJ4T/N+SdNCzVNdOhagaTW0CAA/1Qh0NTUktQowDA
-         iJFATiok2zUV2HbMZxL+Eo/yBFbFzTuYwGaKiuY/R1XJphswBne31GPeFefZQStDBPpC
-         NUz1nDNuMgn5JLd40VGL0/38B4eBYnSbC2kzcr8h7C/TMECivyqPsOlEAIHeW4bOnm9i
-         5bD4itllLZo8LjGuMhfi7knq8H5Zf5FmHK+Q051fhLoTHfb8pvykzmH1Apk+O98OMAq3
-         FpKA==
-X-Gm-Message-State: AOAM533SlO2gaiOvjSRz/oBdmQnM9bUotjKRo2MBLBc5DucEisAQavVo
-        xeLxKD8XRPtR5+GQD4qdYme2jQ==
-X-Google-Smtp-Source: ABdhPJyIFins4zk9hNxuyXkWl3ji/2833BLJC84OgcgS2MeoFmn655hdtONnwTFaBK3R0XWBImQKGA==
-X-Received: by 2002:a92:c808:: with SMTP id v8mr3342187iln.280.1623419390748;
-        Fri, 11 Jun 2021 06:49:50 -0700 (PDT)
-Received: from cosmicpenguin.net (c-71-237-100-236.hsd1.co.comcast.net. [71.237.100.236])
-        by smtp.gmail.com with ESMTPSA id w11sm3258114ilc.8.2021.06.11.06.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 06:49:50 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 07:49:48 -0600
-From:   Jordan Crouse <jordan@cosmicpenguin.net>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Dave Airlie <airlied@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 5/5] drm/msm: devcoredump iommu fault support
-Message-ID: <20210611134948.oin6wy2omkaitlq2@cosmicpenguin.net>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Dave Airlie <airlied@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210610214431.539029-1-robdclark@gmail.com>
- <20210610214431.539029-6-robdclark@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aKjBVhpB4/dvXhaxGwO+leBr+CN2AlgbMKRNiKQe92A=;
+        b=V0aipltQOXiW5onZUXDkWBuC+57yvANw0kq8fSLGE4OGpadoIMthy7ynrNOmRZXzZD
+         LZVRVS55lbw6Xj+trQmQkYJ4lnQLjLYklrveo9AHD0+lG56Juzhq3q1k5x0vvgNeq75E
+         a38FPeZiuZNxtgOYytSW4ydbaO2QTTrC3SEBuxQuK2oaffWulUTwAVENX/C94i4UJKhI
+         oSYekAkv1NVZP4fQcgEo1iLuU594slZY1LywmdyuPfH3mJhVPr+asr/2VxqQI5J0d4yi
+         G1FUpHZFIhR3WY7Tm3medmtqqmkp50c72qr4VrN9x+gcuxmbDw37lqo/JOds4c+Nm20r
+         acfQ==
+X-Gm-Message-State: AOAM532XENx7qFyPclq3TkweK2bdydqByhKh2a/BgfXJeUpIYnm7NNF9
+        qXSrxLWtTbpOzyMJ724prHEBljOx2WZZ9EMQ+o6rhA==
+X-Google-Smtp-Source: ABdhPJyhXwhmfVNoVve2qLrfmA9C3mAYCK8wd4OFKhq+KZDcHfgFJ9Sw6RBwh1bBkUX1Rnri1MtQ7zpo5rAKlxMuC/8=
+X-Received: by 2002:ab0:484b:: with SMTP id c11mr3224680uad.100.1623419434741;
+ Fri, 11 Jun 2021 06:50:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610214431.539029-6-robdclark@gmail.com>
+References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org> <20210611101540.3379937-3-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210611101540.3379937-3-dmitry.baryshkov@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 11 Jun 2021 15:49:58 +0200
+Message-ID: <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 02:44:13PM -0700, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Wire up support to stall the SMMU on iova fault, and collect a devcore-
-> dump snapshot for easier debugging of faults.
-> 
-> Currently this is a6xx-only, but mostly only because so far it is the
-> only one using adreno-smmu-priv.
+On Fri, 11 Jun 2021 at 12:15, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> In case of nested genpds it is easy to get the following warning from
+> lockdep, because all genpd's mutexes share same locking class. Use the
+> per-genpd locking class to stop lockdep from warning about possible
+> deadlocks. It is not possible to directly use genpd nested locking, as
+> it is not the genpd code calling genpd. There are interim calls to
+> regulator core.
+>
+> [    3.030219] ============================================
+> [    3.030220] WARNING: possible recursive locking detected
+> [    3.030221] 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480 Not tainted
+> [    3.030222] --------------------------------------------
+> [    3.030223] kworker/u16:0/7 is trying to acquire lock:
+> [    3.030224] ffffde0eabd29aa0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> [    3.030236]
+> [    3.030236] but task is already holding lock:
+> [    3.030236] ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> [    3.030240]
+> [    3.030240] other info that might help us debug this:
+> [    3.030240]  Possible unsafe locking scenario:
+> [    3.030240]
+> [    3.030241]        CPU0
+> [    3.030241]        ----
+> [    3.030242]   lock(&genpd->mlock);
+> [    3.030243]   lock(&genpd->mlock);
+> [    3.030244]
+> [    3.030244]  *** DEADLOCK ***
+> [    3.030244]
+> [    3.030244]  May be due to missing lock nesting notation
+> [    3.030244]
+> [    3.030245] 6 locks held by kworker/u16:0/7:
+> [    3.030246]  #0: ffff6cca00010938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
+> [    3.030252]  #1: ffff8000100c3db0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
+> [    3.030255]  #2: ffff6cca00ce3188 (&dev->mutex){....}-{3:3}, at: __device_attach+0x3c/0x184
+> [    3.030260]  #3: ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> [    3.030264]  #4: ffff8000100c3968 (regulator_ww_class_acquire){+.+.}-{0:0}, at: regulator_lock_dependent+0x6c/0x1b0
+> [    3.030270]  #5: ffff6cca00a59158 (regulator_ww_class_mutex){+.+.}-{3:3}, at: regulator_lock_recursive+0x94/0x1d0
+> [    3.030273]
+> [    3.030273] stack backtrace:
+> [    3.030275] CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480
+> [    3.030276] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+> [    3.030278] Workqueue: events_unbound deferred_probe_work_func
+> [    3.030280] Call trace:
+> [    3.030281]  dump_backtrace+0x0/0x1a0
+> [    3.030284]  show_stack+0x18/0x24
+> [    3.030286]  dump_stack+0x108/0x188
+> [    3.030289]  __lock_acquire+0xa20/0x1e0c
+> [    3.030292]  lock_acquire.part.0+0xc8/0x320
+> [    3.030294]  lock_acquire+0x68/0x84
+> [    3.030296]  __mutex_lock+0xa0/0x4f0
+> [    3.030299]  mutex_lock_nested+0x40/0x50
+> [    3.030301]  genpd_lock_mtx+0x18/0x2c
+> [    3.030303]  dev_pm_genpd_set_performance_state+0x94/0x1a0
+> [    3.030305]  reg_domain_enable+0x28/0x4c
+> [    3.030308]  _regulator_do_enable+0x420/0x6b0
+> [    3.030310]  _regulator_enable+0x178/0x1f0
+> [    3.030312]  regulator_enable+0x3c/0x80
 
-Acked-by: Jordan Crouse <jordan@cosmicpenguin.net>
- 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+At a closer look, I am pretty sure that it's the wrong code design
+that triggers this problem, rather than that we have a real problem in
+genpd. To put it simply, the code in genpd isn't designed to work like
+this. We will end up in circular looking paths, leading to deadlocks,
+sooner or later if we allow the above code path.
+
+To fix it, the regulator here needs to be converted to a proper PM
+domain. This PM domain should be assigned as the parent to the one
+that is requested to be powered on.
+
+> [    3.030314]  gdsc_toggle_logic+0x30/0x124
+> [    3.030317]  gdsc_enable+0x60/0x290
+> [    3.030318]  _genpd_power_on+0xc0/0x134
+> [    3.030320]  genpd_power_on.part.0+0xa4/0x1f0
+> [    3.030322]  __genpd_dev_pm_attach+0xf4/0x1b0
+> [    3.030324]  genpd_dev_pm_attach+0x60/0x70
+> [    3.030326]  dev_pm_domain_attach+0x54/0x5c
+> [    3.030329]  platform_probe+0x50/0xe0
+> [    3.030330]  really_probe+0xe4/0x510
+> [    3.030332]  driver_probe_device+0x64/0xcc
+> [    3.030333]  __device_attach_driver+0xb8/0x114
+> [    3.030334]  bus_for_each_drv+0x78/0xd0
+> [    3.030337]  __device_attach+0xdc/0x184
+> [    3.030338]  device_initial_probe+0x14/0x20
+> [    3.030339]  bus_probe_device+0x9c/0xa4
+> [    3.030340]  deferred_probe_work_func+0x88/0xc4
+> [    3.030342]  process_one_work+0x298/0x730
+> [    3.030343]  worker_thread+0x74/0x470
+> [    3.030344]  kthread+0x168/0x170
+> [    3.030346]  ret_from_fork+0x10/0x34
+>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+Kind regards
+Uffe
+
 > ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c       | 19 +++++++-
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c       | 38 +++++++++++++++-
->  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c | 42 ++++++++++++++----
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c     | 15 +++++++
->  drivers/gpu/drm/msm/msm_gem.h               |  1 +
->  drivers/gpu/drm/msm/msm_gem_submit.c        |  1 +
->  drivers/gpu/drm/msm/msm_gpu.c               | 48 +++++++++++++++++++++
->  drivers/gpu/drm/msm/msm_gpu.h               | 17 ++++++++
->  drivers/gpu/drm/msm/msm_gpummu.c            |  5 +++
->  drivers/gpu/drm/msm/msm_iommu.c             | 11 +++++
->  drivers/gpu/drm/msm/msm_mmu.h               |  1 +
->  11 files changed, 186 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index eb030b00bff4..7a271de9a212 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -1200,6 +1200,15 @@ static void a5xx_fault_detect_irq(struct msm_gpu *gpu)
->  	struct drm_device *dev = gpu->dev;
->  	struct msm_ringbuffer *ring = gpu->funcs->active_ring(gpu);
->  
-> +	/*
-> +	 * If stalled on SMMU fault, we could trip the GPU's hang detection,
-> +	 * but the fault handler will trigger the devcore dump, and we want
-> +	 * to otherwise resume normally rather than killing the submit, so
-> +	 * just bail.
-> +	 */
-> +	if (gpu_read(gpu, REG_A5XX_RBBM_STATUS3) & BIT(24))
-> +		return;
-> +
->  	DRM_DEV_ERROR(dev->dev, "gpu fault ring %d fence %x status %8.8X rb %4.4x/%4.4x ib1 %16.16llX/%4.4x ib2 %16.16llX/%4.4x\n",
->  		ring ? ring->id : -1, ring ? ring->seqno : 0,
->  		gpu_read(gpu, REG_A5XX_RBBM_STATUS),
-> @@ -1523,6 +1532,7 @@ static struct msm_gpu_state *a5xx_gpu_state_get(struct msm_gpu *gpu)
->  {
->  	struct a5xx_gpu_state *a5xx_state = kzalloc(sizeof(*a5xx_state),
->  			GFP_KERNEL);
-> +	bool stalled = !!(gpu_read(gpu, REG_A5XX_RBBM_STATUS3) & BIT(24));
->  
->  	if (!a5xx_state)
->  		return ERR_PTR(-ENOMEM);
-> @@ -1535,8 +1545,13 @@ static struct msm_gpu_state *a5xx_gpu_state_get(struct msm_gpu *gpu)
->  
->  	a5xx_state->base.rbbm_status = gpu_read(gpu, REG_A5XX_RBBM_STATUS);
->  
-> -	/* Get the HLSQ regs with the help of the crashdumper */
-> -	a5xx_gpu_state_get_hlsq_regs(gpu, a5xx_state);
-> +	/*
-> +	 * Get the HLSQ regs with the help of the crashdumper, but only if
-> +	 * we are not stalled in an iommu fault (in which case the crashdumper
-> +	 * would not have access to memory)
-> +	 */
-> +	if (!stalled)
-> +		a5xx_gpu_state_get_hlsq_regs(gpu, a5xx_state);
->  
->  	a5xx_set_hwcg(gpu, true);
->  
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index fc19db10bff1..c3699408bd1f 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -1081,6 +1081,16 @@ static int a6xx_fault_handler(void *arg, unsigned long iova, int flags, void *da
->  	struct msm_gpu *gpu = arg;
->  	struct adreno_smmu_fault_info *info = data;
->  	const char *type = "UNKNOWN";
-> +	const char *block;
-> +	bool do_devcoredump = info && !READ_ONCE(gpu->crashstate);
-> +
-> +	/*
-> +	 * If we aren't going to be resuming later from fault_worker, then do
-> +	 * it now.
-> +	 */
-> +	if (!do_devcoredump) {
-> +		gpu->aspace->mmu->funcs->resume_translation(gpu->aspace->mmu);
-> +	}
->  
->  	/*
->  	 * Print a default message if we couldn't get the data from the
-> @@ -1104,15 +1114,30 @@ static int a6xx_fault_handler(void *arg, unsigned long iova, int flags, void *da
->  	else if (info->fsr & ARM_SMMU_FSR_EF)
->  		type = "EXTERNAL";
->  
-> +	block = a6xx_fault_block(gpu, info->fsynr1 & 0xff);
-> +
->  	pr_warn_ratelimited("*** gpu fault: ttbr0=%.16llx iova=%.16lx dir=%s type=%s source=%s (%u,%u,%u,%u)\n",
->  			info->ttbr0, iova,
-> -			flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ", type,
-> -			a6xx_fault_block(gpu, info->fsynr1 & 0xff),
-> +			flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ",
-> +			type, block,
->  			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(4)),
->  			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(5)),
->  			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(6)),
->  			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(7)));
->  
-> +	if (do_devcoredump) {
-> +		/* Turn off the hangcheck timer to keep it from bothering us */
-> +		del_timer(&gpu->hangcheck_timer);
-> +
-> +		gpu->fault_info.ttbr0 = info->ttbr0;
-> +		gpu->fault_info.iova  = iova;
-> +		gpu->fault_info.flags = flags;
-> +		gpu->fault_info.type  = type;
-> +		gpu->fault_info.block = block;
-> +
-> +		kthread_queue_work(gpu->worker, &gpu->fault_work);
-> +	}
-> +
->  	return 0;
+>  drivers/base/power/domain.c | 25 ++++++++++++++++++++-----
+>  1 file changed, 20 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index 74219d032910..bdf439b48763 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -1899,20 +1899,33 @@ static int genpd_set_default_power_state(struct generic_pm_domain *genpd)
+>         return 0;
 >  }
->  
-> @@ -1164,6 +1189,15 @@ static void a6xx_fault_detect_irq(struct msm_gpu *gpu)
->  	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
->  	struct msm_ringbuffer *ring = gpu->funcs->active_ring(gpu);
->  
-> +	/*
-> +	 * If stalled on SMMU fault, we could trip the GPU's hang detection,
-> +	 * but the fault handler will trigger the devcore dump, and we want
-> +	 * to otherwise resume normally rather than killing the submit, so
-> +	 * just bail.
-> +	 */
-> +	if (gpu_read(gpu, REG_A6XX_RBBM_STATUS3) & A6XX_RBBM_STATUS3_SMMU_STALLED_ON_FAULT)
-> +		return;
-> +
->  	/*
->  	 * Force the GPU to stay on until after we finish
->  	 * collecting information
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> index 21c49c5b4519..ad4ea0ed5d99 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> @@ -832,6 +832,20 @@ static void a6xx_get_registers(struct msm_gpu *gpu,
->  		a6xx_get_ahb_gpu_registers(gpu,
->  				a6xx_state, &a6xx_vbif_reglist,
->  				&a6xx_state->registers[index++]);
-> +	if (!dumper) {
-> +		/*
-> +		 * We can't use the crashdumper when the SMMU is stalled,
-> +		 * because the GPU has no memory access until we resume
-> +		 * translation (but we don't want to do that until after
-> +		 * we have captured as much useful GPU state as possible).
-> +		 * So instead collect registers via the CPU:
-> +		 */
-> +		for (i = 0; i < ARRAY_SIZE(a6xx_reglist); i++)
-> +			a6xx_get_ahb_gpu_registers(gpu,
-> +				a6xx_state, &a6xx_reglist[i],
-> +				&a6xx_state->registers[index++]);
-> +		return;
-> +	}
->  
->  	for (i = 0; i < ARRAY_SIZE(a6xx_reglist); i++)
->  		a6xx_get_crashdumper_registers(gpu,
-> @@ -905,11 +919,13 @@ static void a6xx_get_indexed_registers(struct msm_gpu *gpu,
->  
->  struct msm_gpu_state *a6xx_gpu_state_get(struct msm_gpu *gpu)
+>
+> -static void genpd_lock_init(struct generic_pm_domain *genpd)
+> +static int genpd_lock_init(struct generic_pm_domain *genpd)
 >  {
-> -	struct a6xx_crashdumper dumper = { 0 };
-> +	struct a6xx_crashdumper _dumper = { 0 }, *dumper = NULL;
->  	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->  	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
->  	struct a6xx_gpu_state *a6xx_state = kzalloc(sizeof(*a6xx_state),
->  		GFP_KERNEL);
-> +	bool stalled = !!(gpu_read(gpu, REG_A6XX_RBBM_STATUS3) &
-> +			A6XX_RBBM_STATUS3_SMMU_STALLED_ON_FAULT);
->  
->  	if (!a6xx_state)
->  		return ERR_PTR(-ENOMEM);
-> @@ -928,14 +944,24 @@ struct msm_gpu_state *a6xx_gpu_state_get(struct msm_gpu *gpu)
->  	/* Get the banks of indexed registers */
->  	a6xx_get_indexed_registers(gpu, a6xx_state);
->  
-> -	/* Try to initialize the crashdumper */
-> -	if (!a6xx_crashdumper_init(gpu, &dumper)) {
-> -		a6xx_get_registers(gpu, a6xx_state, &dumper);
-> -		a6xx_get_shaders(gpu, a6xx_state, &dumper);
-> -		a6xx_get_clusters(gpu, a6xx_state, &dumper);
-> -		a6xx_get_dbgahb_clusters(gpu, a6xx_state, &dumper);
-> +	/*
-> +	 * Try to initialize the crashdumper, if we are not dumping state
-> +	 * with the SMMU stalled.  The crashdumper needs memory access to
-> +	 * write out GPU state, so we need to skip this when the SMMU is
-> +	 * stalled in response to an iova fault
-> +	 */
-> +	if (!stalled && !a6xx_crashdumper_init(gpu, &_dumper)) {
-> +		dumper = &_dumper;
-> +	}
+>         if (genpd->flags & GENPD_FLAG_IRQ_SAFE) {
+>                 spin_lock_init(&genpd->slock);
+>                 genpd->lock_ops = &genpd_spin_ops;
+>         } else {
+> -               mutex_init(&genpd->mlock);
+> +               /* Some genpds are static, some are dynamically allocated. To
+> +                * make lockdep happy always allocate the key dynamically and
+> +                * register it. */
+> +               genpd->mlock_key = kzalloc(sizeof(genpd->mlock_key), GFP_KERNEL);
+> +               if (!genpd->mlock_key)
+> +                       return -ENOMEM;
 > +
-> +	a6xx_get_registers(gpu, a6xx_state, dumper);
+> +               lockdep_register_key(genpd->mlock_key);
 > +
-> +	if (dumper) {
-> +		a6xx_get_shaders(gpu, a6xx_state, dumper);
-> +		a6xx_get_clusters(gpu, a6xx_state, dumper);
-> +		a6xx_get_dbgahb_clusters(gpu, a6xx_state, dumper);
->  
-> -		msm_gem_kernel_put(dumper.bo, gpu->aspace, true);
-> +		msm_gem_kernel_put(dumper->bo, gpu->aspace, true);
->  	}
->  
->  	if (snapshot_debugbus)
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index c1b02f790804..2bfe014995c7 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -684,6 +684,21 @@ void adreno_show(struct msm_gpu *gpu, struct msm_gpu_state *state,
->  			adreno_gpu->info->revn, adreno_gpu->rev.core,
->  			adreno_gpu->rev.major, adreno_gpu->rev.minor,
->  			adreno_gpu->rev.patchid);
-> +	/*
-> +	 * If this is state collected due to iova fault, so fault related info
-> +	 *
-> +	 * TTBR0 would not be zero, so this is a good way to distinguish
-> +	 */
-> +	if (state->fault_info.ttbr0) {
-> +		const struct msm_gpu_fault_info *info = &state->fault_info;
+> +               __mutex_init(&genpd->mlock, genpd->name, genpd->mlock_key);
+>                 genpd->lock_ops = &genpd_mtx_ops;
+>         }
 > +
-> +		drm_puts(p, "fault-info:\n");
-> +		drm_printf(p, "  - ttbr0=%.16llx\n", info->ttbr0);
-> +		drm_printf(p, "  - iova=%.16lx\n", info->iova);
-> +		drm_printf(p, "  - dir=%s\n", info->flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ");
-> +		drm_printf(p, "  - type=%s\n", info->type);
-> +		drm_printf(p, "  - source=%s\n", info->block);
-> +	}
->  
->  	drm_printf(p, "rbbm-status: 0x%08x\n", state->rbbm_status);
->  
-> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
-> index 03e2cc2a2ce1..405f8411e395 100644
-> --- a/drivers/gpu/drm/msm/msm_gem.h
-> +++ b/drivers/gpu/drm/msm/msm_gem.h
-> @@ -328,6 +328,7 @@ struct msm_gem_submit {
->  	struct dma_fence *fence;
->  	struct msm_gpu_submitqueue *queue;
->  	struct pid *pid;    /* submitting process */
-> +	bool fault_dumped;  /* Limit devcoredump dumping to one per submit */
->  	bool valid;         /* true if no cmdstream patching needed */
->  	bool in_rb;         /* "sudo" mode, copy cmds into RB */
->  	struct msm_ringbuffer *ring;
-> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> index 5480852bdeda..44f84bfd0c0e 100644
-> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> @@ -50,6 +50,7 @@ static struct msm_gem_submit *submit_create(struct drm_device *dev,
->  	submit->cmd = (void *)&submit->bos[nr_bos];
->  	submit->queue = queue;
->  	submit->ring = gpu->rb[queue->prio];
-> +	submit->fault_dumped = false;
->  
->  	/* initially, until copy_from_user() and bo lookup succeeds: */
->  	submit->nr_bos = 0;
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> index fa7691cb4614..414ba2dd34e5 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> @@ -400,6 +400,7 @@ static void msm_gpu_crashstate_capture(struct msm_gpu *gpu,
->  	/* Fill in the additional crash state information */
->  	state->comm = kstrdup(comm, GFP_KERNEL);
->  	state->cmd = kstrdup(cmd, GFP_KERNEL);
-> +	state->fault_info = gpu->fault_info;
->  
->  	if (submit) {
->  		int i, nr = 0;
-> @@ -572,6 +573,52 @@ static void recover_worker(struct kthread_work *work)
->  	msm_gpu_retire(gpu);
+> +       return 0;
 >  }
->  
-> +static void fault_worker(struct kthread_work *work)
-> +{
-> +	struct msm_gpu *gpu = container_of(work, struct msm_gpu, fault_work);
-> +	struct drm_device *dev = gpu->dev;
-> +	struct msm_gem_submit *submit;
-> +	struct msm_ringbuffer *cur_ring = gpu->funcs->active_ring(gpu);
-> +	char *comm = NULL, *cmd = NULL;
-> +
-> +	mutex_lock(&dev->struct_mutex);
-> +
-> +	submit = find_submit(cur_ring, cur_ring->memptrs->fence + 1);
-> +	if (submit && submit->fault_dumped)
-> +		goto resume_smmu;
-> +
-> +	if (submit) {
-> +		struct task_struct *task;
-> +
-> +		task = get_pid_task(submit->pid, PIDTYPE_PID);
-> +		if (task) {
-> +			comm = kstrdup(task->comm, GFP_KERNEL);
-> +			cmd = kstrdup_quotable_cmdline(task, GFP_KERNEL);
-> +			put_task_struct(task);
-> +		}
-> +
-> +		/*
-> +		 * When we get GPU iova faults, we can get 1000s of them,
-> +		 * but we really only want to log the first one.
-> +		 */
-> +		submit->fault_dumped = true;
-> +	}
-> +
-> +	/* Record the crash state */
-> +	pm_runtime_get_sync(&gpu->pdev->dev);
-> +	msm_gpu_crashstate_capture(gpu, submit, comm, cmd);
-> +	pm_runtime_put_sync(&gpu->pdev->dev);
-> +
-> +	kfree(cmd);
-> +	kfree(comm);
-> +
-> +resume_smmu:
-> +	memset(&gpu->fault_info, 0, sizeof(gpu->fault_info));
-> +	gpu->aspace->mmu->funcs->resume_translation(gpu->aspace->mmu);
-> +
-> +	mutex_unlock(&dev->struct_mutex);
-> +}
-> +
->  static void hangcheck_timer_reset(struct msm_gpu *gpu)
->  {
->  	mod_timer(&gpu->hangcheck_timer,
-> @@ -948,6 +995,7 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->  	INIT_LIST_HEAD(&gpu->active_list);
->  	kthread_init_work(&gpu->retire_work, retire_worker);
->  	kthread_init_work(&gpu->recover_work, recover_worker);
-> +	kthread_init_work(&gpu->fault_work, fault_worker);
->  
->  	timer_setup(&gpu->hangcheck_timer, hangcheck_handler, 0);
->  
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> index 7a082a12d98f..8eefb3aeca10 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> @@ -71,6 +71,15 @@ struct msm_gpu_funcs {
->  	uint32_t (*get_rptr)(struct msm_gpu *gpu, struct msm_ringbuffer *ring);
->  };
->  
-> +/* Additional state for iommu faults: */
-> +struct msm_gpu_fault_info {
-> +	u64 ttbr0;
-> +	unsigned long iova;
-> +	int flags;
-> +	const char *type;
-> +	const char *block;
-> +};
-> +
->  struct msm_gpu {
->  	const char *name;
->  	struct drm_device *dev;
-> @@ -135,6 +144,12 @@ struct msm_gpu {
->  #define DRM_MSM_HANGCHECK_JIFFIES msecs_to_jiffies(DRM_MSM_HANGCHECK_PERIOD)
->  	struct timer_list hangcheck_timer;
->  
-> +	/* Fault info for most recent iova fault: */
-> +	struct msm_gpu_fault_info fault_info;
-> +
-> +	/* work for handling GPU ioval faults: */
-> +	struct kthread_work fault_work;
-> +
->  	/* work for handling GPU recovery: */
->  	struct kthread_work recover_work;
->  
-> @@ -243,6 +258,8 @@ struct msm_gpu_state {
->  	char *comm;
->  	char *cmd;
->  
-> +	struct msm_gpu_fault_info fault_info;
-> +
->  	int nr_bos;
->  	struct msm_gpu_state_bo *bos;
->  };
-> diff --git a/drivers/gpu/drm/msm/msm_gpummu.c b/drivers/gpu/drm/msm/msm_gpummu.c
-> index 379496186c7f..f7d1945e0c9f 100644
-> --- a/drivers/gpu/drm/msm/msm_gpummu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpummu.c
-> @@ -68,6 +68,10 @@ static int msm_gpummu_unmap(struct msm_mmu *mmu, uint64_t iova, size_t len)
->  	return 0;
+>
+>  static void genpd_lock_destroy(struct generic_pm_domain *genpd) {
+> -       if (!(genpd->flags & GENPD_FLAG_IRQ_SAFE))
+> +       if (!(genpd->flags & GENPD_FLAG_IRQ_SAFE)) {
+>                 mutex_destroy(&genpd->mlock);
+> +               kfree(genpd->mlock_key);
+> +       }
 >  }
->  
-> +static void msm_gpummu_resume_translation(struct msm_mmu *mmu)
-> +{
-> +}
+>
+>  /**
+> @@ -1935,7 +1948,10 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+>         INIT_LIST_HEAD(&genpd->child_links);
+>         INIT_LIST_HEAD(&genpd->dev_list);
+>         RAW_INIT_NOTIFIER_HEAD(&genpd->power_notifiers);
+> -       genpd_lock_init(genpd);
+> +       ret = genpd_lock_init(genpd);
+> +       if (ret)
+> +               return ret;
 > +
->  static void msm_gpummu_destroy(struct msm_mmu *mmu)
->  {
->  	struct msm_gpummu *gpummu = to_msm_gpummu(mmu);
-> @@ -83,6 +87,7 @@ static const struct msm_mmu_funcs funcs = {
->  		.map = msm_gpummu_map,
->  		.unmap = msm_gpummu_unmap,
->  		.destroy = msm_gpummu_destroy,
-> +		.resume_translation = msm_gpummu_resume_translation,
->  };
->  
->  struct msm_mmu *msm_gpummu_new(struct device *dev, struct msm_gpu *gpu)
-> diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
-> index 6975b95c3c29..eed2a762e9dd 100644
-> --- a/drivers/gpu/drm/msm/msm_iommu.c
-> +++ b/drivers/gpu/drm/msm/msm_iommu.c
-> @@ -184,6 +184,9 @@ struct msm_mmu *msm_iommu_pagetable_create(struct msm_mmu *parent)
->  	 * the arm-smmu driver as a trigger to set up TTBR0
->  	 */
->  	if (atomic_inc_return(&iommu->pagetables) == 1) {
-> +		/* Enable stall on iommu fault: */
-> +		adreno_smmu->set_stall(adreno_smmu->cookie, true);
-> +
->  		ret = adreno_smmu->set_ttbr0_cfg(adreno_smmu->cookie, &ttbr0_cfg);
->  		if (ret) {
->  			free_io_pgtable_ops(pagetable->pgtbl_ops);
-> @@ -226,6 +229,13 @@ static int msm_fault_handler(struct iommu_domain *domain, struct device *dev,
->  	return 0;
->  }
->  
-> +static void msm_iommu_resume_translation(struct msm_mmu *mmu)
-> +{
-> +	struct adreno_smmu_priv *adreno_smmu = dev_get_drvdata(mmu->dev);
-> +
-> +	adreno_smmu->resume_translation(adreno_smmu->cookie, true);
-> +}
-> +
->  static void msm_iommu_detach(struct msm_mmu *mmu)
->  {
->  	struct msm_iommu *iommu = to_msm_iommu(mmu);
-> @@ -273,6 +283,7 @@ static const struct msm_mmu_funcs funcs = {
->  		.map = msm_iommu_map,
->  		.unmap = msm_iommu_unmap,
->  		.destroy = msm_iommu_destroy,
-> +		.resume_translation = msm_iommu_resume_translation,
->  };
->  
->  struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain)
-> diff --git a/drivers/gpu/drm/msm/msm_mmu.h b/drivers/gpu/drm/msm/msm_mmu.h
-> index a88f44c3268d..de158e1bf765 100644
-> --- a/drivers/gpu/drm/msm/msm_mmu.h
-> +++ b/drivers/gpu/drm/msm/msm_mmu.h
-> @@ -15,6 +15,7 @@ struct msm_mmu_funcs {
->  			size_t len, int prot);
->  	int (*unmap)(struct msm_mmu *mmu, uint64_t iova, size_t len);
->  	void (*destroy)(struct msm_mmu *mmu);
-> +	void (*resume_translation)(struct msm_mmu *mmu);
->  };
->  
->  enum msm_mmu_type {
-> -- 
-> 2.31.1
-> 
+>         genpd->gov = gov;
+>         INIT_WORK(&genpd->power_off_work, genpd_power_off_work_fn);
+>         atomic_set(&genpd->sd_count, 0);
+> @@ -2040,7 +2056,6 @@ static int genpd_remove(struct generic_pm_domain *genpd)
+>                 free_cpumask_var(genpd->cpus);
+>         if (genpd->free_states)
+>                 genpd->free_states(genpd->states, genpd->state_count);
+> -       genpd_lock_destroy(genpd);
+>
+>         pr_debug("%s: removed %s\n", __func__, genpd->name);
+>
+> --
+> 2.30.2
+>
