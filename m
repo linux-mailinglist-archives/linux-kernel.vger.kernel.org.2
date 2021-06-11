@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C423A46D7
+	by mail.lfdr.de (Postfix) with ESMTP id 6096F3A46D9
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhFKQrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:47:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40924 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbhFKQqY (ORCPT
+        id S231515AbhFKQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231467AbhFKQq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:46:24 -0400
-Message-Id: <20210611163113.400500509@linutronix.de>
+        Fri, 11 Jun 2021 12:46:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BA9C0617AF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:44:28 -0700 (PDT)
+Message-Id: <20210611163113.510912441@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623429865;
+        s=2020; t=1623429866;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=/5wAb+BiyigBmQ1TWz+axjN2gD7tCvyBMM1gbFkRBLM=;
-        b=nK43lRosS74DGOEX02dY2j9u93Az2voFjA5ZCN+eTS51GNsW/ATO4WmJ+ZrTfFmHbkRQOa
-        iekXQ1RNWSBGQSIoCviQqT04DyLWbYJRa55ghBNZjkweuAo40w2IKxk87dd9Gi1iDgBWgk
-        zxBtxqiq3dRrvAuc4jWisYVVnPZ7ewUEp+2B81x56ZLzVLsp7iOQ1HlZ+csuGe5QRaI9Z4
-        BAGvE8POO8koA1ICWp6Pj3NLFqU/2LMF9y3NEqjqB1p78lx92u2Mi464MxOdCEQUJpaiui
-        v05KFylekip10Bpjo40gQrjnhWp9HysQneGhNndv/Zc2ZvYed2bU69VjOp4R8Q==
+        bh=LDU4UBfBApeLySDk/G4HAnUJnM0OOEHDMvpUmUzHZMg=;
+        b=0iEftpLFnR27UxNjDb528KHd+lqrjfFlPXVhTQ0Z0qfwxIvUdvRVkdUE/JPUjJXgljtZTj
+        J0E8UB3aPnELH6mKqZirkuJUSMswXdDhKOfQt7aizffuvZn9HQeMK1lXaFmPvYDLPdwB/G
+        U+5q6iQYySE0Md3Or9nSK40apsO8A1B5+4nmLcq+ZYjF9eg86BtY8FGbML4sgDheZws1xQ
+        O7fh7Jmq1UPrVIKRCGR80DTxq3iV7rCVulwlnaULir2O1szIOHdCDeeEW7bbu/NzSkeDRQ
+        3y+N91sTlXyGZyS2Ytwazn0mDbclRwr05lZauwg8cpItrZHc0bqQxbpJymjk1w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623429865;
+        s=2020e; t=1623429866;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=/5wAb+BiyigBmQ1TWz+axjN2gD7tCvyBMM1gbFkRBLM=;
-        b=gwpNvgxfUSf8e6vqn5Y2P6lIAl5HHs1rRk+I+Kny7LWmVCRHq+a/NSdq+H5y3rMi8Ds1IR
-        zVMmvIfbE/l7ITCQ==
-Date:   Fri, 11 Jun 2021 18:15:46 +0200
+        bh=LDU4UBfBApeLySDk/G4HAnUJnM0OOEHDMvpUmUzHZMg=;
+        b=hPrs2dwm1q8jL2UVO0bIW0r5F+/Y0s8zJhfSHVFpbudZI/M9rLOLpBSayNkllqW2GFN6uB
+        WvV461vnAq9ow/CA==
+Date:   Fri, 11 Jun 2021 18:15:47 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +47,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch 23/41] x86/pkeys: Move read_pkru() and write_pkru()
+Subject: [patch 24/41] x86/fpu: Differentiate "copy" versus "move" of fpregs
 References: <20210611161523.508908024@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,224 +58,227 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Hansen <dave.hansen@linux.intel.com>
 
-write_pkru() was originally used just to write to the PKRU register.  It
-was mercifully short and sweet and was not out of place in pgtable.h with
-some other pkey-related code.
+There are three ways in the ISA to bulk save FPU state:
+ 1. XSAVE, every CPU newer than 2008 does this
+ 2. FXSAVE, from ~2000->2007
+ 3. FNSAVE, pre-2000
 
-But, later work included a requirement to also modify the task XSAVE
-buffer when updating the register.  This really is more related to the
-XSAVE architecture than to paging.
+XSAVE and FXSAVE are nice.  They just copy FPU state to memory.  FNSAVE is
+nasty; it destroys the FPU state when it writes it to memory.  It is more
+of a "move".
 
-Move the read/write_pkru() to asm/pkru.h.  pgtable.h won't miss them.
+Currently, copy_fpregs_to_fpstate() returns a number to its caller to say
+whether it used the nice, non-destructive XSAVE/FXSAVE or used the mean,
+clobbering FNSAVE.  Some sites need special handling for the FNSAVE case to
+restore any FNSAVE-clobbered state.  Others don't care, like when they are
+about to load new state anyway.
+
+The nasty part about the copy_fpregs_to_fpstate() interface is that it's
+hard to tell if callers expect the "move" or the "copy" behavior.
+
+Create a new, explicit "move" interface for callers that can handle
+clobbering register state.  Make "copy" only do copies and never clobber
+register state.
+
+== switch_fpu_prepare() optimization ==
+
+switch_fpu_prepare() had a nice optimization for the FNSAVE case.  It can
+handle either clobbering or preserving register state.  For the
+XSAVE/FXSAVE case, it records that the fpregs state is still loaded, just
+in case a later "restore" operation can be elided.  For the FNSAVE case, it
+marks the fpregs as not loaded on the CPU, since they were clobbered.
+
+Instead of having switch_fpu_prepare() modify its behavior based on whether
+registers were clobbered or not, simply switch its behavior based on
+whether FNSAVE is in use.  This makes it much more clear what is going on
+and what the common path is.
+
+It would be simpler to just remove this FNSAVE optimization: Always save
+and restore in the FNSAVE case.  This may incur the cost of the restore
+even in cases where the restored state is never used.  But, it would only
+hurt painfully ancient (>20 years old) processors.
 
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: Adapted it to the latest FPU changes, move them to a seperate file
-    along with the constants to avoid header hell later on.
+V4: Picked it up from Dave's series and adopted it to the other changes.
 ---
 
- arch/x86/include/asm/fpu/xstate.h |    1 
- arch/x86/include/asm/pgtable.h    |   57 -----------------------------------
- arch/x86/include/asm/pkru.h       |   61 ++++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/process_64.c      |    1 
- arch/x86/kvm/svm/sev.c            |    1 
- arch/x86/kvm/x86.c                |    1 
- arch/x86/mm/pkeys.c               |    1 
- 7 files changed, 67 insertions(+), 56 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |   14 ++++--
+ arch/x86/kernel/fpu/core.c          |   84 +++++++++++++++++++++---------------
+ 2 files changed, 59 insertions(+), 39 deletions(-)
 
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -6,6 +6,7 @@
- #include <linux/types.h>
- 
- #include <asm/processor.h>
-+#include <asm/fpu/api.h>
- #include <asm/user.h>
- 
- /* Bit 63 of XCR0 is reserved for future expansion */
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -23,7 +23,7 @@
- 
- #ifndef __ASSEMBLY__
- #include <asm/x86_init.h>
--#include <asm/fpu/xstate.h>
-+#include <asm/pkru.h>
- #include <asm/fpu/api.h>
- #include <asm-generic/pgtable_uffd.h>
- 
-@@ -126,35 +126,6 @@ static inline int pte_dirty(pte_t pte)
- 	return pte_flags(pte) & _PAGE_DIRTY;
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -395,7 +395,8 @@ static inline int xrstor_from_kernel_err
+ 	return err;
  }
  
--
--static inline u32 read_pkru(void)
--{
--	if (boot_cpu_has(X86_FEATURE_OSPKE))
--		return rdpkru();
+-extern int save_fpregs_to_fpstate(struct fpu *fpu);
++extern void save_fpregs_to_fpstate(struct fpu *fpu);
++extern void copy_fpregs_to_fpstate(struct fpu *fpu);
+ 
+ static inline void __restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask)
+ {
+@@ -527,10 +528,15 @@ static inline void __fpregs_load_activat
+ static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
+ {
+ 	if (static_cpu_has(X86_FEATURE_FPU) && !(current->flags & PF_KTHREAD)) {
+-		if (!save_fpregs_to_fpstate(old_fpu))
+-			old_fpu->last_cpu = -1;
+-		else
++		/*
++		 * Avoid the expense of restoring fpregs with FNSAVE when it
++		 * might be unnecssary. XSAVE and FXSAVE preserve the FPU state.
++		 */
++		save_fpregs_to_fpstate(old_fpu);
++		if (likely(use_xsave() || use_fxsr()))
+ 			old_fpu->last_cpu = cpu;
++		else
++			old_fpu->last_cpu = -1;
+ 
+ 		/* But leave fpu_fpregs_owner_ctx! */
+ 		trace_x86_fpu_regs_deactivated(old_fpu);
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -83,16 +83,17 @@ bool irq_fpu_usable(void)
+ EXPORT_SYMBOL(irq_fpu_usable);
+ 
+ /*
+- * These must be called with preempt disabled. Returns
+- * 'true' if the FPU state is still intact and we can
+- * keep registers active.
+- *
+- * The legacy FNSAVE instruction cleared all FPU state
+- * unconditionally, so registers are essentially destroyed.
+- * Modern FPU state can be kept in registers, if there are
+- * no pending FP exceptions.
++ * Must be called with fpregs locked.
++ *
++ * Returns 'true' if the FPU state has been clobbered and the register
++ * contents are lost.
++ *
++ * The legacy FNSAVE instruction clobebrs all FPU state unconditionally, so
++ * registers are essentially destroyed.
++ *
++ * XSAVE and FXSAVE preserve register contents.
+  */
+-int save_fpregs_to_fpstate(struct fpu *fpu)
++static bool __clobber_save_fpregs_to_fpstate(struct fpu *fpu)
+ {
+ 	if (likely(use_xsave())) {
+ 		xsave_to_kernel(&fpu->state.xsave);
+@@ -103,23 +104,46 @@ int save_fpregs_to_fpstate(struct fpu *f
+ 		 */
+ 		if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
+ 			fpu->avx512_timestamp = jiffies;
+-		return 1;
++		return false;
+ 	}
+ 
+ 	if (likely(use_fxsr())) {
+ 		fxsave_to_kernel(fpu);
+-		return 1;
++		return false;
+ 	}
+ 
+-	/*
+-	 * Legacy FPU register saving, FNSAVE always clears FPU registers,
+-	 * so we have to mark them inactive:
+-	 */
++	/* Legacy FPU register saving, FNSAVE always clears FPU registers */
+ 	asm volatile("fnsave %[fp]; fwait" : [fp] "=m" (fpu->state.fsave));
+ 
 -	return 0;
--}
--
--static inline void write_pkru(u32 pkru)
--{
--	struct pkru_state *pk;
--
--	if (!boot_cpu_has(X86_FEATURE_OSPKE))
--		return;
--
--	pk = get_xsave_addr(&current->thread.fpu.state.xsave, XFEATURE_PKRU);
--
--	/*
--	 * The PKRU value in xstate needs to be in sync with the value that is
--	 * written to the CPU. The FPU restore on return to userland would
--	 * otherwise load the previous value again.
--	 */
--	fpregs_lock();
--	if (pk)
--		pk->pkru = pkru;
--	__write_pkru(pkru);
--	fpregs_unlock();
--}
--
- static inline int pte_young(pte_t pte)
- {
- 	return pte_flags(pte) & _PAGE_ACCESSED;
-@@ -1360,32 +1331,6 @@ static inline pmd_t pmd_swp_clear_uffd_w
++	return true;
++}
++
++/**
++ * save_fpregs_to_fpstate - Save fpregs in fpstate
++ * @fpu:	Pointer to FPU context
++ *
++ * Hardware register state might be clobbered when the
++ * function returns.
++ */
++void save_fpregs_to_fpstate(struct fpu *fpu)
++{
++	__clobber_save_fpregs_to_fpstate(fpu);
++}
++EXPORT_SYMBOL_GPL(save_fpregs_to_fpstate);
++
++/**
++ * copy_fpregs_to_fpstate - Copy fpregs to fpstate
++ * @fpu:	Pointer to FPU context
++ *
++ * Guarantees that the hardware register state is preserved.
++ */
++void copy_fpregs_to_fpstate(struct fpu *fpu)
++{
++	bool clobbered = __clobber_save_fpregs_to_fpstate(fpu);
++
++	if (clobbered)
++		restore_fpregs_from_fpstate(&fpu->state);
  }
- #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_WP */
+-EXPORT_SYMBOL(save_fpregs_to_fpstate);
  
--#define PKRU_AD_BIT 0x1
--#define PKRU_WD_BIT 0x2
--#define PKRU_BITS_PER_PKEY 2
--
--#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
--extern u32 init_pkru_value;
--#else
--#define init_pkru_value	0
--#endif
--
--static inline bool __pkru_allows_read(u32 pkru, u16 pkey)
--{
--	int pkru_pkey_bits = pkey * PKRU_BITS_PER_PKEY;
--	return !(pkru & (PKRU_AD_BIT << pkru_pkey_bits));
--}
--
--static inline bool __pkru_allows_write(u32 pkru, u16 pkey)
--{
--	int pkru_pkey_bits = pkey * PKRU_BITS_PER_PKEY;
--	/*
--	 * Access-disable disables writes too so we need to check
--	 * both bits here.
--	 */
--	return !(pkru & ((PKRU_AD_BIT|PKRU_WD_BIT) << pkru_pkey_bits));
--}
--
- static inline u16 pte_flags_pkey(unsigned long pte_flags)
+ void kernel_fpu_begin_mask(unsigned int kfpu_mask)
  {
- #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
---- /dev/null
-+++ b/arch/x86/include/asm/pkru.h
-@@ -0,0 +1,61 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_PKRU_H
-+#define _ASM_X86_PKRU_H
-+
-+#include <asm/fpu/xstate.h>
-+
-+#define PKRU_AD_BIT 0x1
-+#define PKRU_WD_BIT 0x2
-+#define PKRU_BITS_PER_PKEY 2
-+
-+#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
-+extern u32 init_pkru_value;
-+#else
-+#define init_pkru_value	0
-+#endif
-+
-+static inline bool __pkru_allows_read(u32 pkru, u16 pkey)
-+{
-+	int pkru_pkey_bits = pkey * PKRU_BITS_PER_PKEY;
-+	return !(pkru & (PKRU_AD_BIT << pkru_pkey_bits));
-+}
-+
-+static inline bool __pkru_allows_write(u32 pkru, u16 pkey)
-+{
-+	int pkru_pkey_bits = pkey * PKRU_BITS_PER_PKEY;
-+	/*
-+	 * Access-disable disables writes too so we need to check
-+	 * both bits here.
-+	 */
-+	return !(pkru & ((PKRU_AD_BIT|PKRU_WD_BIT) << pkru_pkey_bits));
-+}
-+
-+static inline u32 read_pkru(void)
-+{
-+	if (boot_cpu_has(X86_FEATURE_OSPKE))
-+		return rdpkru();
-+	return 0;
-+}
-+
-+static inline void write_pkru(u32 pkru)
-+{
-+	struct pkru_state *pk;
-+
-+	if (!boot_cpu_has(X86_FEATURE_OSPKE))
-+		return;
-+
-+	pk = get_xsave_addr(&current->thread.fpu.state.xsave, XFEATURE_PKRU);
-+
-+	/*
-+	 * The PKRU value in xstate needs to be in sync with the value that is
-+	 * written to the CPU. The FPU restore on return to userland would
-+	 * otherwise load the previous value again.
-+	 */
-+	fpregs_lock();
-+	if (pk)
-+		pk->pkru = pkru;
-+	__write_pkru(pkru);
-+	fpregs_unlock();
-+}
-+
-+#endif
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -41,6 +41,7 @@
- #include <linux/syscalls.h>
+@@ -133,10 +157,6 @@ void kernel_fpu_begin_mask(unsigned int
+ 	if (!(current->flags & PF_KTHREAD) &&
+ 	    !test_thread_flag(TIF_NEED_FPU_LOAD)) {
+ 		set_thread_flag(TIF_NEED_FPU_LOAD);
+-		/*
+-		 * Ignore return value -- we don't care if reg state
+-		 * is clobbered.
+-		 */
+ 		save_fpregs_to_fpstate(&current->thread.fpu);
+ 	}
+ 	__cpu_invalidate_fpregs_state();
+@@ -160,7 +180,8 @@ void kernel_fpu_end(void)
+ EXPORT_SYMBOL_GPL(kernel_fpu_end);
  
- #include <asm/processor.h>
-+#include <asm/pkru.h>
- #include <asm/fpu/internal.h>
- #include <asm/mmu_context.h>
- #include <asm/prctl.h>
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -19,6 +19,7 @@
- #include <linux/trace_events.h>
- #include <asm/fpu/internal.h>
+ /*
+- * Save the FPU state (mark it for reload if necessary):
++ * Save the FPU register state. If the registers are active then they are
++ * preserved.
+  *
+  * This only ever gets called for the current task.
+  */
+@@ -171,11 +192,8 @@ void fpu__save(struct fpu *fpu)
+ 	fpregs_lock();
+ 	trace_x86_fpu_before_save(fpu);
  
-+#include <asm/pkru.h>
- #include <asm/trapnr.h>
+-	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
+-		if (!save_fpregs_to_fpstate(fpu)) {
+-			restore_fpregs_from_fpstate(&fpu->state);
+-		}
+-	}
++	if (!test_thread_flag(TIF_NEED_FPU_LOAD))
++		copy_fpregs_to_fpstate(fpu);
  
- #include "x86.h"
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -65,6 +65,7 @@
- #include <asm/msr.h>
- #include <asm/desc.h>
- #include <asm/mce.h>
-+#include <asm/pkru.h>
- #include <linux/kernel_stat.h>
- #include <asm/fpu/internal.h> /* Ugh! */
- #include <asm/pvclock.h>
---- a/arch/x86/mm/pkeys.c
-+++ b/arch/x86/mm/pkeys.c
-@@ -10,6 +10,7 @@
+ 	trace_x86_fpu_after_save(fpu);
+ 	fpregs_unlock();
+@@ -245,18 +263,14 @@ int fpu__copy(struct task_struct *dst, s
  
- #include <asm/cpufeature.h>             /* boot_cpu_has, ...            */
- #include <asm/mmu_context.h>            /* vma_pkey()                   */
-+#include <asm/pkru.h>			/* read/write_pkru()		*/
+ 	/*
+ 	 * If the FPU registers are not current just memcpy() the state.
+-	 * Otherwise save current FPU registers directly into the child's FPU
+-	 * context, without any memory-to-memory copying.
+-	 *
+-	 * ( The function 'fails' in the FNSAVE case, which destroys
+-	 *   register contents so we have to load them back. )
++	 * Otherwise copy current FPU registers directly into the child's
++	 * FPU context.
+ 	 */
+ 	fpregs_lock();
+ 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+ 		memcpy(&dst_fpu->state, &src_fpu->state, fpu_kernel_xstate_size);
+-
+-	else if (!save_fpregs_to_fpstate(dst_fpu))
+-		restore_fpregs_from_fpstate(&dst_fpu->state);
++	else
++		copy_fpregs_to_fpstate(dst_fpu);
  
- int __execute_only_pkey(struct mm_struct *mm)
- {
+ 	fpregs_unlock();
+ 
 
