@@ -2,121 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30673A4488
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957293A448F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 17:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhFKPB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 11:01:28 -0400
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:36366 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbhFKPBZ (ORCPT
+        id S231791AbhFKPCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 11:02:46 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:27308 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231179AbhFKPCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 11:01:25 -0400
-Received: by mail-lj1-f180.google.com with SMTP id 131so10105025ljj.3;
-        Fri, 11 Jun 2021 07:59:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=w+w3f5U3pFKKo+MRudY4zkE/DD31vq/T708Ozk8AEO8=;
-        b=k/UsRWbH7KtsSomlx4S1xzQjieljZPFppy1YfMfuJEfCMf6uTSdYc6IPFGzwnF/p83
-         5nxnKXmLT6qlpSGYBBosxKRLFXR5XmJl9J+IyFOK8nuqVq03MP9EMsVU9KKgq6hlCUhk
-         al5Llac1ghQo5T12pjlzc8Rfid2TVJqCyCWJSS8DENSCC2mZxStuZfgrA1KKSIRiyZEU
-         eb/2txeVpnGTYhdMppYEGrXA/ha0BXY9hV78wai016ZjEBdUtmiEdPXJT3QWxDwDF38h
-         NMQOIdAMf3XXPIkPADqsRiI/YjbrjWjE2xlu+GaSPnDgs2yG+WjPqBNI3rxB1CjNhmbs
-         zPUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=w+w3f5U3pFKKo+MRudY4zkE/DD31vq/T708Ozk8AEO8=;
-        b=OgH13X7KDvL+SejkvtkLJzlNo+q8d1kDUTeGLd2at7o8PcpZiXaCevC0QUmVHV4+AQ
-         kyhwaX8h+7aJ4yk5k/QmEUxLp4n7v1rWBfrHzAyzCuitjhm6Wl0sk7QsO3tboVRCij/q
-         QIbNIWhqvMSWaOl6VH2k4QAecZyyP68yJiVSOuG5A/2FlN2qefk3C8KJlJ2tu/tFp7pW
-         effuwvD88B35qw9LNwiBqZ4hfaL3/Wkz4/LNXuoNWbUDzuQqIkc0XRnN/6xDPpKuJUJi
-         MKjmUQwLq9jfA7S5dLkxAPTDsE8qQynovZeSBG/+CwNd13XjsCou/LcGkxay0mg93wLs
-         +pEg==
-X-Gm-Message-State: AOAM533fiddLgy0J2GnkqyBpczI9ulVSUOPZASUpSDGv0y1iyPP71SBE
-        /Acu8o63x/S5ENJCdAFpbKyNwTxD0c7HsvWEjqM=
-X-Google-Smtp-Source: ABdhPJytclHzrB/R0k5jSua3KyutaoJZxty30z6FNamSFgDTpEgsQqFDW8uoFbTmLRobyzLJnZIZKhtK+ahxzyzatAg=
-X-Received: by 2002:a2e:a4a4:: with SMTP id g4mr3382766ljm.376.1623423490556;
- Fri, 11 Jun 2021 07:58:10 -0700 (PDT)
+        Fri, 11 Jun 2021 11:02:44 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 0BBD2520CE3;
+        Fri, 11 Jun 2021 18:00:44 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1623423644;
+        bh=yMZMCLDSKRLSd6YOdIWpE0TF4L4SV13EO8NbpS+k6Co=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=ZqV8sSliCb9JYfhhc8MnbazVz89Rmhf05rZ/3kFz0Y1MQ6LaPgNoNcbFKS0Ol2mdU
+         J+AGuYl/dbBkX89C+dfmwsFvZ20q4ysNUn4Ud9jrL4JDic8gu2OkewQDqEw6Jdo/0o
+         ifNWi0DBlCCYpS231rZQr30wg+3mNYhNRAdKVq4M57LQBUYe/NhvPITB9XaxpMHBVE
+         l3Vy/DmS9wEEgVzPCrM9QIPsjJQle9v7opmJAkdj7fg1ZcF2nM/3f/Bzd+IJsGIAgb
+         /v5oaXIMNoj0Qhm1vC4nCnlgVlLBbmLN36WiQ0fdZWiN6cmXV8ooGBJ9rGmatkrO8E
+         Pvw/UiYxiDaaQ==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 6C070520CEA;
+        Fri, 11 Jun 2021 18:00:43 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Fri, 11
+ Jun 2021 18:00:42 +0300
+Subject: Re: [PATCH v11 00/18] virtio/vsock: introduce SOCK_SEQPACKET support
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
+ <59b720a8-154f-ad29-e7a9-b86b69408078@kaspersky.com>
+ <20210611122533.cy4jce4vxhhou5ms@steredhat>
+ <10a64ff5-86df-85f3-5cf2-2fa7e8ddc294@kaspersky.com>
+ <20210611145756.lfi7dwvxqwjhkctr@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <4a443078-5f71-c43a-38ad-adc23bb059f4@kaspersky.com>
+Date:   Fri, 11 Jun 2021 18:00:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210611014755.124483-1-breno.lima@nxp.com> <VI1PR04MB59358BDBE0A6FA8A8966C66789349@VI1PR04MB5935.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR04MB59358BDBE0A6FA8A8966C66789349@VI1PR04MB5935.eurprd04.prod.outlook.com>
-From:   Breno Matheus Lima <brenomatheus@gmail.com>
-Date:   Fri, 11 Jun 2021 10:57:59 -0400
-Message-ID: <CAC4tdFUBGUiX4ydq4VeJcEXqmx6f2fvu4cq1ETw5mtueADz6yw@mail.gmail.com>
-Subject: Re: [PATCH] mx8mm: usb: chipidea: Fix Battery Charger 1.2 CDP detection
-To:     Jun Li <jun.li@nxp.com>
-Cc:     Breno Matheus Lima <breno.lima@nxp.com>,
-        "peter.chen@kernel.org" <peter.chen@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210611145756.lfi7dwvxqwjhkctr@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/11/2021 14:38:32
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164287 [Jun 11 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/11/2021 14:40:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11.06.2021 12:41:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/06/11 12:53:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/11 13:21:00 #16710450
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jun,
 
-Em sex., 11 de jun. de 2021 =C3=A0s 02:24, Jun Li <jun.li@nxp.com> escreveu=
-:
+On 11.06.2021 17:57, Stefano Garzarella wrote:
+> On Fri, Jun 11, 2021 at 05:39:01PM +0300, Arseny Krasnov wrote:
+>> On 11.06.2021 15:25, Stefano Garzarella wrote:
+>>> Hi Arseny,
+>>>
+>>> On Fri, Jun 11, 2021 at 02:17:00PM +0300, Arseny Krasnov wrote:
+>>>> On 11.06.2021 14:07, Arseny Krasnov wrote:
+>>>>> 	This patchset implements support of SOCK_SEQPACKET for virtio
+>>>>> transport.
+>>>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>>>> do it, new bit for field 'flags' was added: SEQ_EOR. This bit is
+>>>>> set to 1 in last RW packet of message.
+>>>>> 	Now as  packets of one socket are not reordered neither on vsock
+>>>>> nor on vhost transport layers, such bit allows to restore original
+>>>>> message on receiver's side. If user's buffer is smaller than message
+>>>>> length, when all out of size data is dropped.
+>>>>> 	Maximum length of datagram is limited by 'peer_buf_alloc' value.
+>>>>> 	Implementation also supports 'MSG_TRUNC' flags.
+>>>>> 	Tests also implemented.
+>>>>>
+>>>>> 	Thanks to stsp2@yandex.ru for encouragements and initial design
+>>>>> recommendations.
+>>>>>
+>>>>>  Arseny Krasnov (18):
+>>>>>   af_vsock: update functions for connectible socket
+>>>>>   af_vsock: separate wait data loop
+>>>>>   af_vsock: separate receive data loop
+>>>>>   af_vsock: implement SEQPACKET receive loop
+>>>>>   af_vsock: implement send logic for SEQPACKET
+>>>>>   af_vsock: rest of SEQPACKET support
+>>>>>   af_vsock: update comments for stream sockets
+>>>>>   virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
+>>>>>   virtio/vsock: simplify credit update function API
+>>>>>   virtio/vsock: defines and constants for SEQPACKET
+>>>>>   virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>>>>>   virtio/vsock: add SEQPACKET receive logic
+>>>>>   virtio/vsock: rest of SOCK_SEQPACKET support
+>>>>>   virtio/vsock: enable SEQPACKET for transport
+>>>>>   vhost/vsock: enable SEQPACKET for transport
+>>>>>   vsock/loopback: enable SEQPACKET for transport
+>>>>>   vsock_test: add SOCK_SEQPACKET tests
+>>>>>   virtio/vsock: update trace event for SEQPACKET
+>>>>>
+>>>>>  drivers/vhost/vsock.c                              |  56 ++-
+>>>>>  include/linux/virtio_vsock.h                       |  10 +
+>>>>>  include/net/af_vsock.h                             |   8 +
+>>>>>  .../trace/events/vsock_virtio_transport_common.h   |   5 +-
+>>>>>  include/uapi/linux/virtio_vsock.h                  |   9 +
+>>>>>  net/vmw_vsock/af_vsock.c                           | 464 ++++++++++++------
+>>>>>  net/vmw_vsock/virtio_transport.c                   |  26 ++
+>>>>>  net/vmw_vsock/virtio_transport_common.c            | 179 +++++++-
+>>>>>  net/vmw_vsock/vsock_loopback.c                     |  12 +
+>>>>>  tools/testing/vsock/util.c                         |  32 +-
+>>>>>  tools/testing/vsock/util.h                         |   3 +
+>>>>>  tools/testing/vsock/vsock_test.c                   | 116 ++++++
+>>>>>  12 files changed, 730 insertions(+), 190 deletions(-)
+>>>>>
+>>>>>  v10 -> v11:
+>>>>>  General changelog:
+>>>>>   - now data is copied to user's buffer only when
+>>>>>     whole message is received.
+>>>>>   - reader is woken up when EOR packet is received.
+>>>>>   - if read syscall was interrupted by signal or
+>>>>>     timeout, error is returned(not 0).
+>>>>>
+>>>>>  Per patch changelog:
+>>>>>   see every patch after '---' line.
+>>>> So here is new version for review with updates discussed earlier :)
+>>> Thanks, I'll review next week, but I suggest you again to split in two
+>>> series, since patchwork (and netdev maintainers) are not happy with a
+>>> series of 18 patches.
+>>>
+>>> If you still prefer to keep them together during development, then
+>>> please use the RFC tag.
+>>>
+>>> Also did you take a look at the FAQ for netdev that I linked last 
+>>> time?
+>>> I don't see the net-next tag...
+>> I didn't use next tag because two patches from first seven(which was
+>>
+>> considered to be sent to netdev) - 0004 and 0006
+>>
+>> were changed in this patchset(because of last ideas about queueing
+>>
+>> whole message). So i removed R-b line and now there is no sense to
+>>
+>> use net-next tag for first patches. When it will be R-b - i'll send it 
+> Okay, in that case better to use RFC tag.
+Ack, for big patchset for LKML i'll RFC tag
 >
->
-> > -----Original Message-----
-> > From: Breno Matheus Lima <breno.lima@nxp.com>
-> > Sent: Friday, June 11, 2021 9:48 AM
-> > To: peter.chen@kernel.org
-> > Cc: gregkh@linuxfoundation.org; shawnguo@kernel.org;
-> > s.hauer@pengutronix.de; kernel@pengutronix.de; festevam@gmail.com;
-> > dl-linux-imx <linux-imx@nxp.com>; linux-usb@vger.kernel.org;
-> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> > brenomatheus@gmail.com; Jun Li <jun.li@nxp.com>; Breno Matheus Lima
-> > <breno.lima@nxp.com>
-> > Subject: [PATCH] mx8mm: usb: chipidea: Fix Battery Charger 1.2 CDP dete=
-ction
-> >
-> > i.MX8MM cannot detect certain CDP USB HUBs. usbmisc_imx.c driver is not
-> > following CDP timing requirements defined by USB BC 1.2 specification a=
-nd
-> > section 3.2.4 Detection Timing CDP.
-> >
-> > During Primary Detection the i.MX device should turn on VDP_SRC and IDM=
-_SINK
-> > for a minimum of 40ms (TVDPSRC_ON). After a time of TVDPSRC_ON, the PD =
-is
-> > allowed to check the status of the D- line. Current implementation is w=
-aiting
-> > between 1ms and 2ms, and certain BC 1.2 complaint USB HUBs cannot be de=
-tected.
-> > Increase delay to 40ms allowing enough time for primary detection.
-> >
-> > During secondary detection the PD is required to disable VDP_SRC and ID=
-M_SNK,
-> > and enable VDM_SRC and IDP_SINK for at least 40ms (TVDMSRC_ON).
-> >
-> > Current implementation is not disabling VDP_SRC and IDM_SNK, introduce
-> > disable sequence in imx7d_charger_secondary_detection() function.
-> >
-> > VDM_SRC and IDP_SINK should be enabled for at least 40ms (TVDMSRC_ON).
-> > Increase delay allowing enough time for detection.
-> >
->
-> Fixes: 746f316b753a ("usb: chipidea: introduce imx7d USB charger detectio=
-n")
->
+>> to
+>>
+>> netdev with such tag and we can continue discussing second part
+>>
+>> of patches(virtio specific).
+> Don't worry for now. You can do it for the next round, but I think all 
+> the patches will go through netdev and would be better to split in 2 
+> series, both of them with net-next tag.
 
-Thanks for pointing this out, I have just sent another version.
+Of course, for netdev this patchset will be splitted for two series
 
-Best regards,
-Breno Lima
+
+Thank You
+
+>
+> Thanks,
+> Stefano
+>
+>
