@@ -2,135 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2410E3A3FD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9083A3FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhFKKMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:12:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:53808 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhFKKMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:12:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C5F91396;
-        Fri, 11 Jun 2021 03:10:19 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F23CC3F694;
-        Fri, 11 Jun 2021 03:10:17 -0700 (PDT)
-Subject: Re: [PATCH] modified: gpu/drm/panfrost/panfrost_gpu.c
-To:     Chunyou Tang <tangchunyou@163.com>
-Cc:     tangchunyou <tangchunyou@163.icubecorp.cn>,
-        tomeu.vizoso@collabora.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alyssa.rosenzweig@collabora.com, tangchunyou@icubecorp.cn
-References: <20210609063850.2060-1-tangchunyou@163.com>
- <78a2488a-71d5-548a-e221-7786f788509c@arm.com>
- <20210610210659.00003155@163.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <d1304645-f2bf-8cea-2b60-24e0a3936ed7@arm.com>
-Date:   Fri, 11 Jun 2021 11:10:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231572AbhFKKM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:12:59 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:39272 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhFKKM6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 06:12:58 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d06 with ME
+        id FmAy2500721Fzsu03mAyrf; Fri, 11 Jun 2021 12:10:59 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 11 Jun 2021 12:10:59 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH 4/9] nvmem: sprd: Fix an error message
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, Chunyan Zhang <zhang.lyra@gmail.com>
+References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
+ <20210611083348.20170-5-srinivas.kandagatla@linaro.org>
+ <YMMlRq250A53CDaM@kroah.com>
+ <a34f8a9d-c9e7-5c2d-521f-13677cfd7ccb@linaro.org>
+ <YMMqPlknDF+k466x@kroah.com> <YMMwteJ5XvDST+zH@kroah.com>
+From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <7bd13064-8a50-2723-4ebe-d4ff7563c199@wanadoo.fr>
+Date:   Fri, 11 Jun 2021 12:10:58 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210610210659.00003155@163.com>
-Content-Type: text/plain; charset=gb18030
-Content-Language: en-GB
+In-Reply-To: <YMMwteJ5XvDST+zH@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/2021 14:06, Chunyou Tang wrote:
-> Hi Steven,
 
-Hi Chunyou,
-
-For some reason I'm not directly receiving your emails (only via the
-list) - can you double check your email configuration?
-
->>> The GPU exception fault status register(0x3C),the low 8 bit is the
->>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
-> 
-> 	You can see the spec
-> 	<arm_heimdall_technical_reference_manual_100612_0001_00_en.pdf>.
-
-Thanks - please include that in the commit message - there are many TRMs
-(one for each GPU) so without the information about exactly which
-specification the page number is pretty useless. Sadly this
-documentation isn't public which would be even better but I don't think
-there are any public specs for this information.
-
->> However this change is correct - panfrost_exception_name() should be
->> taking only the lower 8 bits. Even better though would be to to report
->> the full raw fault information as well as the high bits can contain
->> useful information:
->>
->> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
->> 		 fault_status,
->> 		 panfrost_exception_name(pfdev, fault_status & 0xFF),
->> 		 address);
-> 
-> So I change it according to what you said?
-
-Yes, please send a v2.
-
-Thanks,
-
-Steve
-
-> ÓÚ Thu, 10 Jun 2021 11:41:52 +0100
-> Steven Price <steven.price@arm.com> Ð´µÀ:
-> 
->> The subject should have the prefix "drm/panfrost" and should mention
->> what the patch is changing (not just the filename).
->>
->> On 09/06/2021 07:38, ChunyouTang wrote:
->>> From: tangchunyou <tangchunyou@163.icubecorp.cn>
+Le 11/06/2021 Ã  11:45, Greg KH a Ã©critÂ :
+> On Fri, Jun 11, 2021 at 11:17:50AM +0200, Greg KH wrote:
+>> On Fri, Jun 11, 2021 at 10:05:40AM +0100, Srinivas Kandagatla wrote:
 >>>
->>> The GPU exception fault status register(0x3C),the low 8 bit is the
->>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
->>
->> Nit: When referring to a spec it's always good to mention the name -
->> I'm not sure which specification you found this in.
->>
+>>> On 11/06/2021 09:56, Greg KH wrote:
+>>>> On Fri, Jun 11, 2021 at 09:33:43AM +0100, Srinivas Kandagatla wrote:
+>>>>> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>>>>
+>>>>> 'ret' is known to be 0 here.
+>>>>> The expected error status is stored in 'status', so use it instead.
+>>>>>
+>>>>> Also change %d in %u, because status is an u32, not a int.
+>>>>>
+>>>>> Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
+>>>>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>>>> Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
+>>>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>>> ---
+>>>>>    drivers/nvmem/sprd-efuse.c | 2 +-
+>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
+>>>>> index 5d394559edf2..e3e721d4c205 100644
+>>>>> --- a/drivers/nvmem/sprd-efuse.c
+>>>>> +++ b/drivers/nvmem/sprd-efuse.c
+>>>>> @@ -234,7 +234,7 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
+>>>>>    	status = readl(efuse->base + SPRD_EFUSE_ERR_FLAG);
+>>>>>    	if (status) {
+>>>>>    		dev_err(efuse->dev,
+>>>>> -			"write error status %d of block %d\n", ret, blk);
+>>>>> +			"write error status %u of block %d\n", status, blk);
+>>>> Shouldn't this be %pe and not %u?
+>>> This is not error pointer its status value read back from a register.
 >>>
->>> Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
->>> ---
->>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
->>> 2aae636f1cf5..1fffb6a0b24f 100644 ---
->>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
->>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@ static
->>> irqreturn_t panfrost_gpu_irq_handler(int irq, void *data) address
->>> |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
->>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
->>> 0x%016llx\n",
->>> -			 fault_status & 0xFF,
->>> panfrost_exception_name(pfdev, fault_status),
->>> +			 fault_status & 0xFF,
->>> panfrost_exception_name(pfdev, fault_status & 0xFF),
->>
->> However this change is correct - panfrost_exception_name() should be
->> taking only the lower 8 bits. Even better though would be to to report
->> the full raw fault information as well as the high bits can contain
->> useful information:
->>
->> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
->> 		 fault_status,
->> 		 panfrost_exception_name(pfdev, fault_status & 0xFF),
->> 		 address);
->>
->> Thanks,
->>
->> Steve
->>
->>>  			 address);
->>>  
->>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
->>>
-> 
-> 
+>>> I think %u should be good here.
+>> Argh, you are right, my fault.  For some reason I thought this worked
+>> for integers as well.  Don't we have such a printk modifier somewhere to
+>> turn error values into strings?  Let me dig...
+> Ah, errname() will do it.
+>
+> Looks like no one uses it, so nevermind, sorry for the noise.  I'll go
+> apply this one now.
+>
+> thanks,
+>
+> greg k-h
+
+Hi,
+
+errname() depends on CONFIG_SYMBOLIC_ERRNAME.
+Is this widely used?
+If not, using errname() directly would loose the error code.
+(note that %pe already deals with it)
+
+Dan Capenter already spoke about a potential %e extension, but I don't 
+think anyone did anything yet.
+
+CJ
 
