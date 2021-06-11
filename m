@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327433A3F53
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0D23A3F4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhFKJqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:46:54 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:47410 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKJqx (ORCPT
+        id S230514AbhFKJqF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Jun 2021 05:46:05 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3206 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230356AbhFKJqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:46:53 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 90DDDBAA71;
-        Fri, 11 Jun 2021 17:44:51 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.240.82.166])
-        by smtp.263.net (postfix) whith ESMTP id P15326T140654319490816S1623404677729545_;
-        Fri, 11 Jun 2021 17:44:51 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <7cb6ee5a5d2345daf20d82e5eb4eab98>
-X-RL-SENDER: limanyi@uniontech.com
-X-SENDER: limanyi@uniontech.com
-X-LOGIN-NAME: limanyi@uniontech.com
-X-FST-TO: axboe@kernel.dk
-X-RCPT-COUNT: 6
-X-SENDER-IP: 58.240.82.166
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   ManYi Li <limanyi@uniontech.com>
-To:     axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        ManYi Li <limanyi@uniontech.com>
-Subject: [PATCH] sr: Fix get the error media event code
-Date:   Fri, 11 Jun 2021 17:44:02 +0800
-Message-Id: <20210611094402.23884-1-limanyi@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 11 Jun 2021 05:46:03 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G1bKC0QxMz6L777;
+        Fri, 11 Jun 2021 17:34:39 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 11:44:03 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Fri, 11 Jun 2021 11:44:03 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "Stephen Smalley" <stephen.smalley.work@gmail.com>,
+        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: Size mismatch between vfs_getxattr_alloc() and vfs_getxattr()
+Thread-Topic: Size mismatch between vfs_getxattr_alloc() and vfs_getxattr()
+Thread-Index: AddepfVXRzZV65zDQYWfY30E1Ui8ng==
+Date:   Fri, 11 Jun 2021 09:44:03 +0000
+Message-ID: <ee75bde9a17f418984186caa70abd33b@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eject the specified slot or media through a mechanical switch on the Drive,
-med->media_event_code is 3 not 1 in the sr_get_events().
+Hello
 
-If disk_flush_events() and sr_block_open() are called,
-clearing is 1 or 3 in the sr_check_events(),then it report
-DISK_EVENT_MEDIA_CHANGE not DISK_EVENT_EJECT_REQUEST.
+the ima-evm-utils tool discovered an issue doing signature
+verification of xattrs.
 
-If disk_flush_events() and sr_block_open() aren't called,
-clearing is 0 in the sr_check_events(),then it doesn't
-report any event.
+On kernel side, EVM reads the xattr value with
+vfs_getxattr_alloc(), which gets the value directly from the
+xattr handler.
 
-Signed-off-by: ManYi Li <limanyi@uniontech.com>
----
- drivers/scsi/sr.c | 2 ++
- 1 file changed, 2 insertions(+)
+On user side, ima-evm-utils reads the value with the
+lgetxattr() system call, which gets the value from LSMs.
 
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 482a07b662a9..94c254e9012e 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -220,6 +220,8 @@ static unsigned int sr_get_events(struct scsi_device *sdev)
- 		return DISK_EVENT_EJECT_REQUEST;
- 	else if (med->media_event_code == 2)
- 		return DISK_EVENT_MEDIA_CHANGE;
-+	else if (med->media_event_code == 3)
-+		return DISK_EVENT_EJECT_REQUEST;
- 	return 0;
- }
- 
--- 
-2.20.1
+There is a corner case, where security.selinux is set directly
+with setfattr without adding \0 at the end.
 
+In this case, the kernel and the user see different values
+due to the fact that the former gets the raw value from the
+xattr handler, and the latter gets the value normalized by
+SELinux (which adds \0).
 
+I found that originally also lgetxattr() was getting the value
+from the xattr handler. This changed with:
+
+commit 4bea58053f206be9a89ca35850f9ad295dac2042
+Author: David P. Quigley <dpquigl@tycho.nsa.gov>
+Date:   Mon Feb 4 22:29:40 2008 -0800
+
+    VFS: Reorder vfs_getxattr to avoid unnecessary calls to the LSM
+
+which directly calls LSMs for security.* xattrs.
+
+Given that this patch is there for a long time, I would ask
+if it makes sense to fix this issue. The way I would do it
+is to check if the size returned by the xattr handler is the
+same of the size returned by LSMs. If not, I would get
+the value from the xattr handler.
+
+Although this change does not check the xattr content,
+it is sufficient to fix the issue.
+
+Any opinion?
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
 
