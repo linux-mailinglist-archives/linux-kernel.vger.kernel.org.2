@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4B33A3EF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0003A3EFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhFKJUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:20:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231469AbhFKJUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:20:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A2CC60FEB;
-        Fri, 11 Jun 2021 09:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623403073;
-        bh=oNC8oHEUvQ84UweNdWe2mJj3wRgbaAGoOrEp9Df3fLg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HmjTZJ+AnJViEXFReXDyb3GpwRhYU6MA97ml8gpKZ4q9cwdHjymujGRAS6XNHbJ6t
-         fFZuQ9NK/agO2Hl2PSxXM1Z3XAR/WIUGBEuxsUJypl/Gqvrd69t7xcrgxhNH2anVq2
-         22wshCZg7/xTtiMzjKrnU0fEbPTEIoqz+8a3RNks=
-Date:   Fri, 11 Jun 2021 11:17:50 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: Re: [PATCH 4/9] nvmem: sprd: Fix an error message
-Message-ID: <YMMqPlknDF+k466x@kroah.com>
-References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
- <20210611083348.20170-5-srinivas.kandagatla@linaro.org>
- <YMMlRq250A53CDaM@kroah.com>
- <a34f8a9d-c9e7-5c2d-521f-13677cfd7ccb@linaro.org>
+        id S231576AbhFKJXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:23:35 -0400
+Received: from mail-ed1-f51.google.com ([209.85.208.51]:38591 "EHLO
+        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231494AbhFKJXd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:23:33 -0400
+Received: by mail-ed1-f51.google.com with SMTP id d13so22790327edt.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CGc5CA/rls3HItW+7D7ycY5sKp100bjxVPK+/n8mTzM=;
+        b=T5q5576OjaMXGrmhE/6QFLbaTulb3j1O7K0MCX/zDH4fMgR59Ig379SNOP6WIfhg+S
+         sIVRKn5H/uUru4GsrWwaJehmckioKuEr8LinY6E8lXlykTrSQ7H8SKIUFwpT8dVn5In+
+         ojIl35Cd+01fC3FnmfDr7GgMh5V3ZdlCEIRXY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CGc5CA/rls3HItW+7D7ycY5sKp100bjxVPK+/n8mTzM=;
+        b=ctwgpDhkUBMbXkak+O/df+YeAtMtbe59BCnD6DwYui7vd24ORWm+a0Ln/+xQmFwr5s
+         odZ31GhLN+Gsuczr9n+P0WN3mdDBmrFbFzQiTTY4ryVuG/+Il+ljO/+q+YqwbT17Gyuq
+         1KAjPTuQDjXQrzuGH4owUSBfmDDPx+A75NsCnDHz9sgJ53TjAGXnuQHg0Oikz8Po6Fkc
+         hm7LmTkSfMDTCDBFfDE03WF2juCnEF9PLPwR8Z40t2Jz8Mrh+Qkfz301PODa7duuM3dl
+         x5uy8Vd8jkzZV+1MGBHcDYQjr3GCC+iM/9HPOfqbt5ApSBwTx/U6CZ+U3Mn1euoGrw+f
+         V6vw==
+X-Gm-Message-State: AOAM533X0QYVCOQufMaCiTICeUObggrYohyzxM0SklrkZKxAv3P3q7BL
+        8G/8GxFqJQU0M1VwObXxTLpt1Q==
+X-Google-Smtp-Source: ABdhPJxLHD8WhYBB9EGCCP9ce802mfGbHPukNPB5XdussTThKAu1mnzpq1KvSGvqHXwGI+QRrQ51kw==
+X-Received: by 2002:aa7:c1da:: with SMTP id d26mr2689892edp.92.1623403219760;
+        Fri, 11 Jun 2021 02:20:19 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.64.110])
+        by smtp.gmail.com with ESMTPSA id gz25sm1906684ejb.0.2021.06.11.02.20.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 02:20:19 -0700 (PDT)
+Subject: Re: [init/initramfs.c] e7cb072eb9: invoked_oom-killer:gfp_mask=0x
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+References: <20210607144419.GA23706@xsang-OptiPlex-9020>
+ <d28354fd-0f72-559d-771f-fb2a80b51b05@rasmusvillemoes.dk>
+ <20210611084817.GB26476@xsang-OptiPlex-9020>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <db82c1c9-edfe-6ee2-c403-d6740e8c46c6@rasmusvillemoes.dk>
+Date:   Fri, 11 Jun 2021 11:20:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a34f8a9d-c9e7-5c2d-521f-13677cfd7ccb@linaro.org>
+In-Reply-To: <20210611084817.GB26476@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:05:40AM +0100, Srinivas Kandagatla wrote:
+On 11/06/2021 10.48, Oliver Sang wrote:
+> hi Rasmus,
 > 
-> 
-> On 11/06/2021 09:56, Greg KH wrote:
-> > On Fri, Jun 11, 2021 at 09:33:43AM +0100, Srinivas Kandagatla wrote:
-> > > From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > 
-> > > 'ret' is known to be 0 here.
-> > > The expected error status is stored in 'status', so use it instead.
-> > > 
-> > > Also change %d in %u, because status is an u32, not a int.
-> > > 
-> > > Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > ---
-> > >   drivers/nvmem/sprd-efuse.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
-> > > index 5d394559edf2..e3e721d4c205 100644
-> > > --- a/drivers/nvmem/sprd-efuse.c
-> > > +++ b/drivers/nvmem/sprd-efuse.c
-> > > @@ -234,7 +234,7 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
-> > >   	status = readl(efuse->base + SPRD_EFUSE_ERR_FLAG);
-> > >   	if (status) {
-> > >   		dev_err(efuse->dev,
-> > > -			"write error status %d of block %d\n", ret, blk);
-> > > +			"write error status %u of block %d\n", status, blk);
-> > 
-> > Shouldn't this be %pe and not %u?
-> 
-> This is not error pointer its status value read back from a register.
-> 
-> I think %u should be good here.
-
-Argh, you are right, my fault.  For some reason I thought this worked
-for integers as well.  Don't we have such a printk modifier somewhere to
-turn error values into strings?  Let me dig...
+> On Tue, Jun 08, 2021 at 09:42:58AM +0200, Rasmus Villemoes wrote:
+>> On 07/06/2021 16.44, kernel test robot wrote:
+>>>
 
 
-thanks
+>> Also, I don't have 16G to give to a virtual machine. I tried running the
+>> bzImage with that modules.cgz under qemu with some naive parameters just
+>> to get some output [1], but other than failing because there's no rootfs
+>> to mount (as expected), I only managed to make it fail when providing
+>> too little memory (the .cgz is around 70M, decompressed about 200M -
+>> giving '-m 1G' to qemu works fine). You mention the vmalloc= argument,
+>> but I can't make the decompression fail when passing either vmalloc=128M
+>> or vmalloc=512M or no vmalloc= at all.
+> 
+> sorry about this. we also tried to follow exactly above steps to test on
+> some local machine (8G memory), but cannot reproduce. we are analyzing
+> what's the diference in our automaion run in test cluster, which reproduced
+> the issue consistently. will update you when we have findings.
 
-greg k-h
+OK. It's really odd that providing the VM with _more_ memory makes it
+fail (other then the obvious failure in the other direction when there's
+simply not enough memory for the unpacked initramfs itself). But
+unfortunately that also sounds like I won't be able to reproduce with
+the HW I have.
+
+>> As an extra data point, what happens if you add initramfs_async=0 to the
+>> command line?
+> 
+> yes, we tested this before sending out the report. the issue gone
+> if initramfs_async=0 is added.
+
+Hm. Sounds like some initcall after rootfs_initcall time must
+allocate/hog a lot of memory, perhaps with some heuristic depending on
+how much is available.
+
+Can you try with initcall_debug=1? I think that should produce a lot of
+output, hopefully that would make it possible to see which initcalls
+have been done just prior to (or while) the initramfs unpacking hits ENOMEM.
+
+Thanks,
+Rasmus
