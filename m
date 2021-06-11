@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DD03A4458
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CF43A4460
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhFKOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:49:32 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33055 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhFKOta (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:49:30 -0400
-Received: from mail-oi1-f197.google.com ([209.85.167.197])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lriRW-0002cx-3f
-        for linux-kernel@vger.kernel.org; Fri, 11 Jun 2021 14:47:32 +0000
-Received: by mail-oi1-f197.google.com with SMTP id y137-20020aca4b8f0000b02901f1fb748c74so2908890oia.21
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 07:47:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HM/OpCdDbXxCKOPzELJHKGAfyo0GFyK7Y/hjzFUi874=;
-        b=rUhiSVN+4jryE7VD2076sBJTv6n9flh+WYDs9oo2w3XKrJj4pIlfhFLw+bInGq9twW
-         BviUwuAYSYQqXYAHqlLoWVS/6k08wwjrmFy4qOJb1uegy48/7hWaxBJdg7M5yOI62m9d
-         O/I6v4RhN1Q9mUPHFImu4gJaTKqZR0JJ3YM+mBAiQ6F30fCfFk49UiSABq1m/xv9EfNN
-         yLMLEGsDomD+VF4eARrTs2eu2N7upZC4BBOtD9v5ZViuFZeSMn14qiEQ2IgX5EbKwOYL
-         ZGb1nWT2t2JxNYi+Bb2NeNLsGPg9FOTih1wCCxg6oIYduXfuYCI2h3kq1skyzNAKMObP
-         3BYA==
-X-Gm-Message-State: AOAM532ykEpMgtt7qnjUjeWadLZr7Pz7+28E4/BPij1FkoMMqvN4BHkb
-        hcbCZbUvhpOgzWAhNAJu6q/iHkSY5J2Xqu+ybo6UwYk2RVyLRdPeBFHr4SxvuHjsClkjOzIkQEQ
-        JO0Xx3em1MbZgyFDQXZDbF/2OPRRUWYLQOfZmWChkOTpGkqHOL90T0G1zOQ==
-X-Received: by 2002:a9d:12eb:: with SMTP id g98mr3366600otg.303.1623422849087;
-        Fri, 11 Jun 2021 07:47:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNIqId8/saV2hUMjH0y78sNNvpCYY0s9FH5nbvC8+V2xmzfp1e0A6YmUWsCKSiUf4p5z17PA3fUc3Qcn3WFMA=
-X-Received: by 2002:a9d:12eb:: with SMTP id g98mr3366582otg.303.1623422848860;
- Fri, 11 Jun 2021 07:47:28 -0700 (PDT)
+        id S231423AbhFKOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:53:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:61524 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230508AbhFKOxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 10:53:51 -0400
+IronPort-SDR: yZjsHOyZIsO1P9UkcUKCCX1GQgEAdSi1qMn183fJVcnCtgXO3MU8jq0Dp/PBdCHRzTorLltZcb
+ Cmg7HTz6YvTA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="291169969"
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="291169969"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 07:51:52 -0700
+IronPort-SDR: 5005IWZtchPfbvO3h+s9Ho6UAiMbo/xRefMxG2img6XhJgrpYvM6o/pYW+yIQIGMJIX9fAetOo
+ xAkYoRi6H9+A==
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="638709464"
+Received: from dcpalomx-mobl4.amr.corp.intel.com (HELO [10.209.153.29]) ([10.209.153.29])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 07:51:50 -0700
+Subject: Re: [PATCH v4] soundwire: intel: move to auxiliary bus
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        hui.wang@canonical.com, Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        sanyog.r.kale@intel.com,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20210511052132.28150-1-yung-chuan.liao@linux.intel.com>
+ <21002781-0b78-3b36-952f-683482a925d7@linux.intel.com>
+ <YLS4N2KgzfsMBD1c@vkoul-mobl.Dlink>
+ <b316763b-d219-6ea3-401e-3eb9718aabf3@linux.intel.com>
+ <YMBHj6PBzeHexXJb@vkoul-mobl>
+ <07dbe0a2-0abb-810b-ef39-b83511d3f3e0@linux.intel.com>
+ <YMNQBpFX9DXcoGAc@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <be440569-e18b-b079-2795-0af1e6812935@linux.intel.com>
+Date:   Fri, 11 Jun 2021 09:51:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210603120609.58932-1-chris.chiu@canonical.com>
- <20210603120609.58932-2-chris.chiu@canonical.com> <5bb08a2db092c590119ff706ac3654de14c984fc.camel@sipsolutions.net>
-In-Reply-To: <5bb08a2db092c590119ff706ac3654de14c984fc.camel@sipsolutions.net>
-From:   Chris Chiu <chris.chiu@canonical.com>
-Date:   Fri, 11 Jun 2021 22:47:18 +0800
-Message-ID: <CABTNMG0Q6Oh8T_sqW-b3ymdbepYmMRQALGozo6pXiKg=r-ndxA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] rtl8xxxu: unset the hw capability HAS_RATE_CONTROL
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Jes.Sorensen@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        code@reto-schneider.ch
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMNQBpFX9DXcoGAc@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 4:18 AM Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> Hi Chris,
->
-> > Since AMPDU_AGGREGATION is set so packets will be handed to the
-> > driver with a flag indicating A-MPDU aggregation and device should
-> > be responsible for setting up and starting the TX aggregation with
-> > the AMPDU_TX_START action. The TX aggregation is usually started by
-> > the rate control algorithm so the HAS_RATE_CONTROL has to be unset
-> > for the mac80211 to start BA session by ieee80211_start_tx_ba_session.
-> >
-> > The realtek chips tx rate will still be handled by the rate adaptive
-> > mechanism in the underlying firmware which is controlled by the
-> > rate mask H2C command in the driver. Unset HAS_RATE_CONTROL cause
-> > no change for the tx rate control and the TX BA session can be started
-> > by the mac80211 default rate control mechanism.
->
-> This seems ... strange, to say the least? You want to run the full
-> minstrel algorithm just to have it start aggregation sessions at the
-> beginning?
->
-> I really don't think this makes sense, and it's super confusing. It may
-> also result in things like reporting a TX rate to userspace/other
-> components that *minstrel* thinks is the best rate, rather than your
-> driver's implementation, etc.
->
-> I suggest you instead just call ieee80211_start_tx_ba_session() at some
-> appropriate time, maybe copying parts of the logic of
-> minstrel_aggr_check().
->
-> johannes
->
->
-Based on the description in
-https://github.com/torvalds/linux/blob/master/net/mac80211/agg-tx.c#L32
-to L36, if we set HAS_RATE_CONTROL, which means we don't want the
-software rate control (default minstrel), then we will have to deal
-with both the rate control and the TX aggregation in the driver, and
-the .ampdu_action is not really required. Since the rtl8xxxu driver
-doesn't handle the TX aggregation, and the minstrel is the default
-rate control (can't even be disabled), that's the reason why I want to
-unset the HAS_RATE_CONTROL to make use of the existing mac80211
-aggregation handling.
+Thanks Vinod for your feedback,
 
-And the minstrel doesn't really take effect for rate selection in HT
-mode because most drivers don't provide HT/VHT rates in .bitrates of
-the ieee80211_supported_band data structure which is required for
-hw->wiphy->bands. The mac80211 API ieee80211_get_tx_rate() will
-return 0 when the IEEE80211_TX_RC_MCS is set in rate flags. The tx
-rate which is filled in the tx descriptor makes no difference because
-the underlying rate selection will be actually controlled by the
-controller which we can set rate mask via H2C command. Unless we force
-the fixed rate in the TX descriptor, we don't really have to fill the
-tx rate. Reporting TX rate of each packet will not depend on the rate
-from the minstrel, drivers have to handle it by itself. I'll also try
-to address that in my next PATCH series.
+>> If you look at the *existing* code, we don't handle any "resources" with the
+>> platform devices, we use the platform_device_info.data to pass the link
+>> information. It's a void pointer. We do not touch the resource field in the
+>> platform_device_into at all.
+> 
+> Yes that is true I dont disagree on that part. My ask here is to make it
+> better, it can be followed up after this but I would at least like to
+> agree on the direction.
 
-Chris
+[...]
+
+>> That's it. We did not change anything else, all the other fields are
+>> identical. We are only changing the TYPE of device and the interfaces for
+>> probe/remove but using the same information and the same device hierarchy.
+> 
+> The move in itself is okay but I dont think that should be the end goal.
+
+What we suggested in this patch is only an iso-functionality change. I 
+believe from Greg's and your feedback that there is no objection on that 
+small step.
+
+This is not the end-goal indeed. The second step would be to remove the 
+intel_init.c file. I fully agree with you Vinod that this can be moved 
+into the SOF driver, and we could do this in a follow-up step. We can 
+also improve the partition between 'context' used by the child driver 
+and information passed by the parent on SHIM registers and bases.
+
+I think we'd need to agree on the details of the second step, Bard and I 
+can work on a proposal, but I don't see a disconnect on the direction to 
+simplify the interface. That's the right thing to do.
+
+
+
+
