@@ -2,99 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655973A3E42
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B658E3A3E0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhFKIsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhFKIsx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:48:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88BAC061574;
-        Fri, 11 Jun 2021 01:46:55 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 08:46:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623401212;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uHoTjvbKgdq91BgeexXp23EMh87O3DOd4hvm7/wcI5g=;
-        b=mHZM8ATTbmptNUEb/tf/eBFNhIE+JJMQ09yw1OeMl3RWM5H7GSImrifu2KHgxybg3SUo9C
-        1CTLULva/RkjfTzoVRywYtb1Rd0S5qi/8+paUL5DkMVtgAXmiExuW5oZBucDd07G7xWTRR
-        PeZ1r/9ktS9Wbrnve27znYdkr71ZsEVHT4dJzZTkX60Lc+5Z5VIE/bCwUBFb8QBJi0P1yW
-        DWAXSf2AgaP4M1isaatYq+uxgoI5Mjsdwt4E12xbR8xpxhkFWNvTfWVzwrmA8qSEJYmxbz
-        K8y2Q8EiW/KHggtqVLG098zjrtaDyqVZwkmyAvpaVsj/UN23rnjdb9ZZumlwwg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623401212;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uHoTjvbKgdq91BgeexXp23EMh87O3DOd4hvm7/wcI5g=;
-        b=dxMQKhxGYzs8n8O5MnzxwC5zPGSCj9mYddI5LH1oRVVpHgmCzzwDeVmYr+eofv8NlWd6l6
-        LuCLzLH44zLGGMAA==
-From:   "tip-bot2 for ChenXiaoSong" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/sgx: Correct kernel-doc's arg name in
- sgx_encl_release()
-Cc:     ChenXiaoSong <chenxiaosong2@huawei.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210609035510.2083694-1-chenxiaosong2@huawei.com>
-References: <20210609035510.2083694-1-chenxiaosong2@huawei.com>
+        id S231437AbhFKId5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:33:57 -0400
+Received: from mga06.intel.com ([134.134.136.31]:51884 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230361AbhFKIdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 04:33:55 -0400
+IronPort-SDR: tG0+R3rq6qru/Rn2oxKCJ6Bu4JBKe+9USf0+Tr9xrUGmhKfY2T25BpkKdm504t9JPJzunjHRiC
+ KBaThTO8cawg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="266638180"
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="266638180"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 01:31:56 -0700
+IronPort-SDR: 1pUlL1XQoWapVdpMkrlnsUrvT/HyRzx2rEarZuGaZF3PI4BJO8dRHDnaSkZo1y20XjrFD+V/qi
+ QecRcCkUMgtQ==
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="449039619"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 01:31:53 -0700
+Date:   Fri, 11 Jun 2021 16:48:17 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+Subject: Re: [init/initramfs.c] e7cb072eb9: invoked_oom-killer:gfp_mask=0x
+Message-ID: <20210611084817.GB26476@xsang-OptiPlex-9020>
+References: <20210607144419.GA23706@xsang-OptiPlex-9020>
+ <d28354fd-0f72-559d-771f-fb2a80b51b05@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Message-ID: <162340121120.19906.7609882843709493893.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d28354fd-0f72-559d-771f-fb2a80b51b05@rasmusvillemoes.dk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+hi Rasmus,
 
-Commit-ID:     1d3156396cf6ea0873145092f4e040374ff1d862
-Gitweb:        https://git.kernel.org/tip/1d3156396cf6ea0873145092f4e040374ff1d862
-Author:        ChenXiaoSong <chenxiaosong2@huawei.com>
-AuthorDate:    Wed, 09 Jun 2021 11:55:10 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 11 Jun 2021 10:42:38 +02:00
+On Tue, Jun 08, 2021 at 09:42:58AM +0200, Rasmus Villemoes wrote:
+> On 07/06/2021 16.44, kernel test robot wrote:
+> > 
+> > 
+> > Greeting,
+> > 
+> > FYI, we noticed the following commit (built with gcc-9):
+> > 
+> > commit: e7cb072eb988e46295512617c39d004f9e1c26f8 ("init/initramfs.c: do unpacking asynchronously")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > 
+> > 
+> > in testcase: locktorture
+> > version: 
+> > with following parameters:
+> > 
+> > 	runtime: 300s
+> > 	test: cpuhotplug
+> > 
+> > test-description: This torture test consists of creating a number of kernel threads which acquire the lock and hold it for specific amount of time, thus simulating different critical region behaviors.
+> > test-url: https://www.kernel.org/doc/Documentation/locking/locktorture.txt
+> > 
+> > 
+> > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> > 
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > 
+> > 
+> > please be noted that we use 'vmalloc=512M' for both parent and this commit.
+> > since it's ok on parent but oom on this commit, we want to send this report
+> > to show the potential problem of the commit on some cases.
+> > 
+> > we also tested by changing to use 'vmalloc=128M', it will succeed.
+> > 
+> > 
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > 
+> > 
+> > [    4.443950] e1000: Copyright (c) 1999-2006 Intel Corporation.
+> > [    4.716374] ACPI: _SB_.LNKC: Enabled at IRQ 11
+> > [    5.081518] e1000 0000:00:03.0 eth0: (PCI:33MHz:32-bit) 52:54:00:12:34:56
+> > [    5.082999] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
+> > [    5.085275] VFIO - User Level meta-driver version: 0.3
+> > [    8.029204] kworker/u4:0 invoked oom-killer: gfp_mask=0x100cc0(GFP_USER), order=0, oom_score_adj=0
+> > [    8.031021] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.12.0-11533-ge7cb072eb988 #1
+> > [    8.031988] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> > [    8.031988] Workqueue: events_unbound async_run_entry_fn
+> > [    8.031988] Call Trace:
+> > [    8.031988] dump_stack (kbuild/src/consumer/lib/dump_stack.c:122) 
+> > [    8.031988] dump_header (kbuild/src/consumer/mm/oom_kill.c:463) 
+> > [    8.031988] ? lock_release (kbuild/src/consumer/kernel/locking/lockdep.c:5190 kbuild/src/consumer/kernel/locking/lockdep.c:5532) 
+> > [    8.031988] ? out_of_memory (kbuild/src/consumer/include/linux/rcupdate.h:710 kbuild/src/consumer/mm/oom_kill.c:379 kbuild/src/consumer/mm/oom_kill.c:1102 kbuild/src/consumer/mm/oom_kill.c:1048) 
+> > [    8.031988] out_of_memory.cold (kbuild/src/consumer/mm/oom_kill.c:1106 kbuild/src/consumer/mm/oom_kill.c:1048) 
+> > 
+> > 
+> > To reproduce:
+> > 
+> >         # build kernel
+> > 	cd linux
+> > 	cp config-5.12.0-11533-ge7cb072eb988 .config
+> > 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare modules_prepare bzImage modules
+> > 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 INSTALL_MOD_PATH=<mod-install-dir> modules_install
+> > 	cd <mod-install-dir>
+> > 	find lib/ | cpio -o -H newc --quiet | gzip > modules.cgz
+> 
+> So I got this far...
+> 
+> >         git clone https://github.com/intel/lkp-tests.git
+> >         cd lkp-tests
+> >         bin/lkp qemu -k <bzImage> -m modules.cgz job-script # job-script is attached in this email
+> 
+> Is there some way to reproduce which doesn't require adding an lkp user?
 
-x86/sgx: Correct kernel-doc's arg name in sgx_encl_release()
+no need to run the test by 'lkp' account. lkp-tests will create a .lkp folder
+under home path. do you mean this? normally we run 'qemu' by 'root'.
 
-Fix the following kernel-doc warning:
+> Also, I don't have 16G to give to a virtual machine. I tried running the
+> bzImage with that modules.cgz under qemu with some naive parameters just
+> to get some output [1], but other than failing because there's no rootfs
+> to mount (as expected), I only managed to make it fail when providing
+> too little memory (the .cgz is around 70M, decompressed about 200M -
+> giving '-m 1G' to qemu works fine). You mention the vmalloc= argument,
+> but I can't make the decompression fail when passing either vmalloc=128M
+> or vmalloc=512M or no vmalloc= at all.
 
-  arch/x86/kernel/cpu/sgx/encl.c:392: warning: Function parameter \
-    or member 'ref' not described in 'sgx_encl_release'
+sorry about this. we also tried to follow exactly above steps to test on
+some local machine (8G memory), but cannot reproduce. we are analyzing
+what's the diference in our automaion run in test cluster, which reproduced
+the issue consistently. will update you when we have findings.
 
- [ bp: Massage commit message. ]
+> 
+> As an extra data point, what happens if you add initramfs_async=0 to the
+> command line?
 
-Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210609035510.2083694-1-chenxiaosong2@huawei.com
----
- arch/x86/kernel/cpu/sgx/encl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+yes, we tested this before sending out the report. the issue gone
+if initramfs_async=0 is added.
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 3be2032..001808e 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -383,7 +383,7 @@ const struct vm_operations_struct sgx_vm_ops = {
- 
- /**
-  * sgx_encl_release - Destroy an enclave instance
-- * @kref:	address of a kref inside &sgx_encl
-+ * @ref:	address of a kref inside &sgx_encl
-  *
-  * Used together with kref_put(). Frees all the resources associated with the
-  * enclave and the instance itself.
+> 
+> [1] qemu-system-x86_64 -kernel arch/i386/boot/bzImage -initrd
+> ../../tmp/header-install/modules.cgz -append "console=ttyAMA0
+> console=ttyS0 vmalloc=512M" -serial stdio -smp 2 -m 1G
+> 
+> Rasmus
