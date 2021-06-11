@@ -2,93 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FB33A3DE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701433A3DE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhFKISl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFKISk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:18:40 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF07C061574;
-        Fri, 11 Jun 2021 01:16:42 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id u126so3822996pfu.13;
-        Fri, 11 Jun 2021 01:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PFR8AuQHQsbnzrn33G4nv3dLkIOq0sllA+ykdCrQd+s=;
-        b=I/Q0N8BBx9S2F37ivxZNt43LtMjsiTOmrrUEuZfUZUkEkFS8fNCMXiOmus2F4EJPAf
-         NNe/6aexX3gAp+kqBbUQxLNlSPqH0QVEvqZJmWSVKm9Z1H3CcD4lErFHNv4qq9krGKRw
-         2nB1Mzgccsby3TUqLXQGfUzIekCfFZc9TDaYyP/3GehufNfnucSuJg7VM18n6PCNUvqM
-         93ZtMYSnRQTxQ/xxiU9pS/+WZHRQqyRmnyYpoHDhl5lFx4gV1zXbFoo679otzV8e7B2W
-         gH44HdJYSCE0jybvsgDFS5BWq1t6/q9mbiyRPhgiYqSM4I9qYn+pk83nYBvElLW2Zmxq
-         7OAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PFR8AuQHQsbnzrn33G4nv3dLkIOq0sllA+ykdCrQd+s=;
-        b=UBI+qvMxWLGl32z7AmAUTzUglVJmcCKrbMv2Vm2sTj/4X1dOQTNZu5O2++B4oCtHzw
-         j/F5sYNGnQsI0oiko9fmcnxWtcfcvNTmpt8lwrPFMcrjQN+DDJk0VtV9NEXIBRfk7CWg
-         C588vtETcypeuMHF5DUDdazqeAuNoNm4aSsT86zeSCTIR/vmvCPFHMEkopwWGpB88RTi
-         NohjXAv68SCF6e3+ydnccDlV6w95PBve2/GgWhCTkPR0D2kKKZhpjVJrMskR1wRYWj/O
-         ah44MU8Um5xkY98eQDuApUz/P2WzWM4ZjXnQhe4cZ6e6ypG+4HJ5kr+/F7xrRZ5LkTUN
-         u59Q==
-X-Gm-Message-State: AOAM530OlcjV+AQh5K3YLSPSy8ql4RkxjX1CDkkVJJ1I+gmwrL0WxjTQ
-        b0NjSJwONp37r9u+P240YbMLrGCGnLWC1TO+S8U=
-X-Google-Smtp-Source: ABdhPJyJVGdx/B7Ctu36XK1fijXzp08Dzxqx8qxyA5XG7NBmL6V/cqnzsdWdwxXYWkJPdpKIy+FxL4/cKwBOuGvuceU=
-X-Received: by 2002:a63:4145:: with SMTP id o66mr2480681pga.4.1623399400315;
- Fri, 11 Jun 2021 01:16:40 -0700 (PDT)
+        id S231216AbhFKITK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:19:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229584AbhFKITI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 04:19:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16EF2611CC;
+        Fri, 11 Jun 2021 08:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623399414;
+        bh=cWwKCFMCJZXC7X39YT4XaDgF/u/unVgrt2qdsyuvX/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xt0tQ0EZ3L1Uc6ZLt+TnhpilBoj7+aGt+YvG8XLZp3M4n1yUdXA1AFWFQhF4QoNZv
+         4YINnx/ZQv4JDg7TEKF0oXMkshtdFhmzcsrUlbFgCfGINFkwjTFHki7y/g3AVbZl+8
+         di1FKeb9+ImtgtOuyC910MYyCcn24L4arHrF/P4s=
+Date:   Fri, 11 Jun 2021 10:16:52 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
+ the ib_port_attribute intead of kobj's
+Message-ID: <YMMb9NZ0nHRTullc@kroah.com>
+References: <cover.1623053078.git.leonro@nvidia.com>
+ <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
+ <YL3z/xpm5EYHFuZs@kroah.com>
+ <20210607121411.GC1002214@nvidia.com>
+ <YL4TkfVlTellmnc+@kroah.com>
+ <20210607125012.GE1002214@nvidia.com>
+ <8685A354-4D41-4805-BDC5-365216CEAF40@oracle.com>
 MIME-Version: 1.0
-References: <20210610152823.1653-1-andriy.shevchenko@linux.intel.com> <YMMWU1ZMqGoCKOoj@lahna>
-In-Reply-To: <YMMWU1ZMqGoCKOoj@lahna>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 11 Jun 2021 11:16:23 +0300
-Message-ID: <CAHp75Vf6J8kD9-_ComWeyGks9t507ETPtfQYYLPZikciAir-0w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] pinctrl: intel: Check against matching data
- instead of ACPI companion
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Henning Schild <henning.schild@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8685A354-4D41-4805-BDC5-365216CEAF40@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:53 AM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> On Thu, Jun 10, 2021 at 06:28:23PM +0300, Andy Shevchenko wrote:
-> > In some cases we may get a platform device that has ACPI companion
-> > which is different to the pin control described in the ACPI tables.
-> > This is primarily happens when device is instantiated by board file.
->
-> Can you point which board file in the mainline kernel has this issue? If
-> not then I don't think it makes sense to add code like this.
+On Fri, Jun 11, 2021 at 07:25:46AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 7 Jun 2021, at 14:50, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > 
+> > On Mon, Jun 07, 2021 at 02:39:45PM +0200, Greg KH wrote:
+> >> On Mon, Jun 07, 2021 at 09:14:11AM -0300, Jason Gunthorpe wrote:
+> >>> On Mon, Jun 07, 2021 at 12:25:03PM +0200, Greg KH wrote:
+> >>>> On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
+> >>>>> From: Jason Gunthorpe <jgg@nvidia.com>
+> >>>>> 
+> >>>>> This code is trying to attach a list of counters grouped into 4 groups to
+> >>>>> the ib_port sysfs. Instead of creating a bunch of kobjects simply express
+> >>>>> everything naturally as an ib_port_attribute and add a single
+> >>>>> attribute_groups list.
+> >>>>> 
+> >>>>> Remove all the naked kobject manipulations.
+> >>>> 
+> >>>> Much nicer.
+> >>>> 
+> >>>> But why do you need your counters to be atomic in the first place?  What
+> >>>> are they counting that requires this?  
+> >>> 
+> >>> The write side of the counter is being updated from concurrent kernel
+> >>> threads without locking, so this is an atomic because the write side
+> >>> needs atomic_add().
+> >> 
+> >> So the atomic write forces a lock :(
+> > 
+> > Of course, but a single atomic is cheaper than the double atomic in a
+> > full spinlock.
+> > 
+> >>> Making them a naked u64 will cause significant corruption on the write
+> >>> side, and packet counters that are not accurate after quiescence are
+> >>> not very useful things.
+> >> 
+> >> How "accurate" do these have to be?
+> > 
+> > They have to be accurate. They are networking packet counters. What is
+> > the point of burning CPU cycles keeping track of inaccurate data?
+> 
+> Consider a CPU with a 32-bit wide datapath to memory, which reads and writes the most significant 4-byte word first:
 
-To my knowledge we don't have such enumeration in the upstream (but it
-may be done by third parties against any of our controllers enumerated
-by UID, like Broxton or Gemini Lake).
+What CPU is that?
 
-That said, I still think that this is the right thing to do
-independently, because logic currently is broken (we have tons of the
-examples in the kernel where matching data is in use along with
-platform supplied variants and there we check for matching data
-first). Anyway, the proper use of this patch can be in the part of the
-series which actually enables that kind of enumeration in the
-upstream.
+>     Memory                   CPU1                   CPU2
+> MSW         LSW        MSW         LSW        MSW         LSW
+> 0x0  0xffffffff
+> 0x0  0xffffffff        0x0
+> 0x0  0xffffffff        0x0  0xffffffff
+> 0x0  0xffffffff        0x1         0x0                         cpu1 has incremented its register
+> 0x1  0xffffffff        0x1         0x0                         cpu1 has written msw
+> 0x1  0xffffffff        0x1         0x0        0x1              cpu2 has read msw
+> 0x1  0xffffffff        0x1         0x0        0x1  0xffffffff
+> 0x1         0x0        0x1         0x0        0x2         0x0
+> 0x2         0x0        0x1         0x0        0x2         0x0
+> 0x2         0x0        0x1         0x0        0x2         0x0
+> 
+> 
+> I would say that 0x200000000 vs. 0x100000001 is more than inaccurate!
 
-In any case I suppose Henning can test this for his purposes.
+True, then maybe these should just be 32bit counters :)
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks,
+
+greg k-h
