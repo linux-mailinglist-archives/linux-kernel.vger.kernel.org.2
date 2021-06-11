@@ -2,76 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81153A41C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0353A41CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhFKMMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:12:40 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4038 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhFKMMd (ORCPT
+        id S231295AbhFKMPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhFKMPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:12:33 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1fgR0gFdzWtX7;
-        Fri, 11 Jun 2021 20:05:39 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 20:10:33 +0800
-Received: from [10.174.179.215] (10.174.179.215) by
- dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 11 Jun 2021 20:10:33 +0800
-Subject: Re: [PATCH -next] xfs: Fix -Wunused-variable warning
-To:     <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
-        <dchinner@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20210611115950.32588-1-yuehaibing@huawei.com>
-From:   YueHaibing <yuehaibing@huawei.com>
-Message-ID: <c36787f3-862e-62af-065b-a13d3a1db054@huawei.com>
-Date:   Fri, 11 Jun 2021 20:10:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 11 Jun 2021 08:15:19 -0400
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0611C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 05:13:21 -0700 (PDT)
+Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 80E713F3FC;
+        Fri, 11 Jun 2021 14:13:19 +0200 (CEST)
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: Add support for SONY Xperia 1 II /
+ 5 II (Edo platform)
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+References: <20210611113514.27173-1-konrad.dybcio@somainline.org>
+ <20210611113514.27173-2-konrad.dybcio@somainline.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <e232812b-a17f-5ab4-3fbc-29d6ba6fdd01@somainline.org>
+Date:   Fri, 11 Jun 2021 14:13:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210611115950.32588-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210611113514.27173-2-konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PLS ignore this.
++
+> +&tlmm {
+> +	gpio-reserved-ranges = <40 4>, <52 4>;
+> +
+> +	sdc2_default_state: sdc2-default {
+> +		clk {
+>
+I unwittingly did exactly what I ranted about yesterday, placing these here instead of SoC dtsi.. but before resending I'd like to know the opinion on the matter.
 
-On 2021/6/11 19:59, YueHaibing wrote:
-> If DEBUG is n, gcc warns:
-> 
-> fs/xfs/libxfs/xfs_ialloc.c:2032:20: warning: unused variable ‘agi’ [-Wunused-variable]
-> 
-> Move it info #ifdef block to fix this.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  fs/xfs/libxfs/xfs_ialloc.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/xfs/libxfs/xfs_ialloc.c b/fs/xfs/libxfs/xfs_ialloc.c
-> index 2ed6de6faf8a..a9973edd3c0a 100644
-> --- a/fs/xfs/libxfs/xfs_ialloc.c
-> +++ b/fs/xfs/libxfs/xfs_ialloc.c
-> @@ -2029,7 +2029,9 @@ xfs_difree_finobt(
->  	xfs_agino_t			agino,
->  	struct xfs_inobt_rec_incore	*ibtrec) /* inobt record */
->  {
-> +#ifdef DEBUG
->  	struct xfs_agi			*agi = agbp->b_addr;
-> +#endif
->  	struct xfs_btree_cur		*cur;
->  	struct xfs_inobt_rec_incore	rec;
->  	int				offset = agino - ibtrec->ir_startino;
-> 
+
+Konrad
+
