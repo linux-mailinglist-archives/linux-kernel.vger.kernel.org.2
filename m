@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3263A43F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBF73A43FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhFKOWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhFKOWh (ORCPT
+        id S231342AbhFKOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:25:13 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:46777 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhFKOZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:22:37 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CC3C0617AF;
-        Fri, 11 Jun 2021 07:20:39 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 4D7A52FA; Fri, 11 Jun 2021 16:20:37 +0200 (CEST)
-Date:   Fri, 11 Jun 2021 16:20:36 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 2/6] x86/sev-es: Disable IRQs while GHCB is active
-Message-ID: <YMNxNEb/T3iF4TG8@8bytes.org>
-References: <20210610091141.30322-1-joro@8bytes.org>
- <20210610091141.30322-3-joro@8bytes.org>
- <YMNtmz6W1apXL5q+@zn.tnic>
+        Fri, 11 Jun 2021 10:25:11 -0400
+Received: by mail-pl1-f174.google.com with SMTP id e1so2902250pld.13
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 07:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V9LKi/CMslAloLgYPHzBrk4CvXkpDoxlbZy7HuBfzEg=;
+        b=pkuhK9c5qSAPBGSLwWk+Hr741IHbVI+7ULYa8ELKHZ9nn1cTQ6T14xvPtMYI/uzrHL
+         dEEsxctFTc3CytAFHWrgjn6SOm0MdhQX7VttOigsxfg7qOFY8MpCfb1+tmGoSLp3QLCt
+         srmysUEWlnM9mps9qIznOnBE64amJQCW4wclfuDOO8g9t3eZiKZtHuD/Gx+Of9YOT/aV
+         JReidt4565mUOCKXsYv4PrwvNQo2y3dP5ZcacRrohyrBQxzFyNef0SxPDkbh71ul1iqy
+         wcEDRq2UsehWCXA8G8j7opMEgckgvuKcCcGrub9FoyPzTbChe+DWPMm3XYVG0UrmuDHg
+         1s/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V9LKi/CMslAloLgYPHzBrk4CvXkpDoxlbZy7HuBfzEg=;
+        b=iwsFD2iVu/q7hDMPUV26fcjtsoGV+eys8+ypi7L0yDHau6/0ghRXu3WqrDFkSF0ZlI
+         tr/B9wPY8Si6O2V6JYpD+QI6XjBDPkPVomiSN8ktFnyisUd4XJZD4gcmDj/R8flJiwsF
+         o1YeL7L5A5WRcYJVBIIaTTDDYUp6ECOU0n87pX0JYNeq6rhVYeGhc/MMItB3nc4f6+f9
+         tOXG2IMlOmv3/WYA1BgBdn7+bo+OCmOERLLaFVMEmb2VC66L/wI98BwVvQ/qVxOYMtub
+         XZ6Kkei7knQ456ETE1gCw7ee3xBc8IvAp3Ik62zBzcr0STqtqK1oiETrFf6zKe4C966T
+         Vf3g==
+X-Gm-Message-State: AOAM532hcsBFoekk8NdT0jf5UgqieLggno1sTe9Ea7pRjRc5OxLcq4ng
+        FyfaIRw3ASVs5UHihVRmmHu36Q==
+X-Google-Smtp-Source: ABdhPJwHHxZK3iZe6LilvAzAWn3mvPXw4rKGFSgD6Uq9obg5LrUMj5tKJ1/m5mkA2ZQuEk0lLjoV5w==
+X-Received: by 2002:a17:90b:38ca:: with SMTP id nn10mr4926433pjb.127.1623421333642;
+        Fri, 11 Jun 2021 07:22:13 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j12sm5659788pgs.83.2021.06.11.07.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 07:22:12 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 14:22:09 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86/mmu: Calculate and check "full" mmu_role for
+ nested MMU
+Message-ID: <YMNxkRq5IIv+RWLN@google.com>
+References: <20210610220026.1364486-1-seanjc@google.com>
+ <87bl8cye1k.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMNtmz6W1apXL5q+@zn.tnic>
+In-Reply-To: <87bl8cye1k.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 04:05:15PM +0200, Borislav Petkov wrote:
-> On Thu, Jun 10, 2021 at 11:11:37AM +0200, Joerg Roedel wrote:
-> Why not simply "sandwich" them:
-> 
-> 	local_irq_save()
-> 	sev_es_get_ghcb()
-> 
-> 	...blablabla
-> 
-> 	sev_es_put_ghcb()
-> 	local_irq_restore();
-> 
-> in every call site?
+On Fri, Jun 11, 2021, Vitaly Kuznetsov wrote:
+> What I don't quite like (besides the fact that this 'nested_mmu' exists
+> but I don't see an elegant way to get rid of it) is the fact that we now
+> have the same logic to compute 'level' both in
+> kvm_calc_nested_mmu_role() and init_kvm_nested_mmu(). We could've
+> avoided that by re-aranging code in init_kvm_nested_mmu() I
+> guess. Something like (untested):
 
-I am not a fan of this, because its easily forgotten to add
-local_irq_save()/local_irq_restore() calls around those. Yes, we can add
-irqs_disabled() assertions to the functions, but we can as well just
-disable/enable IRQs in them. Only the previous value of EFLAGS.IF needs
-to be carried from one function to the other.
+Yep, cleaning all that up is on my todo list, but there are some hurdles to
+clear first.
 
-> Hmm, so why aren't you accessing/setting data->ghcb_active and
-> data->backup_ghcb_active safely using cmpxchg() if this path can be
-> interrupted by an NMI?
-
-Using cmpxchg is not necessary here. It is all per-cpu data, so local to
-the current cpu. If an NMI happens anywhere in sev_es_get_ghcb() it can
-still use the GHCB, because the interrupted #VC handler will not start
-writing to it before sev_es_get_ghcb() returned.
-
-Problems only come up when one path starts writing to the GHCB, but that
-happens long after it is marked active.
-
-Regards,
-
-	Joerg
+My thought is to either (a) initialize the context from the role, or (b) drop the
+duplicate context information altogether.  For (a), the NX bit is calculated
+incorrectly in the role stuff, e.g. if paging is disabled then NX is effectively 0,
+and I need that fix for the vCPU RESET/INIT series.  It's benign for the role,
+but not for the context.  And (b) will require auditing for all flavors of MMUs;
+I wouldn't be the least bit surprised to discover there's a corner case (or just
+a regular case) that I'm overlooking.
