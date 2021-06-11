@@ -2,121 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441163A42B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED623A42B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhFKNLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:11:19 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:33583 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhFKNLS (ORCPT
+        id S231613AbhFKNMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:12:01 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40904 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230382AbhFKNL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:11:18 -0400
-Received: by mail-wm1-f52.google.com with SMTP id s70-20020a1ca9490000b02901a589651424so6360387wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qpcVHfrrJXTIjek0yFmE1DcJmD0OGjQlIdx+1iBJ6ZE=;
-        b=S/c9rk59JiJ4O1yjGr/ylxCD+C/UkgUiGLihgVnDLw0a/zdK7vyqNvnHhMZqibqtSb
-         0BRx148RBeqCbmeIEdaeLMXqQV29R+BWWFeU2mGXQqjvMGUfUgTOm3GSncR7hbfKRvIP
-         UUF3Pqn7sLKtU1HPn+E67cVeyWM6TsC+DcyKTi7/PxlnmuwNLdXRMgS0L6S/wneMFWqC
-         GWHQJ3/f14sQ3NWp+g1PKjEZXQpYq3jqZHIVS2hWj7CR/m0t/GyAwxeIFb0nfCCqo7Tm
-         hpapMqgoA50MH5VGSepZe9gFf04TXycW9Faqh0l5bFvHFh+oyG0YdOiSSNGmmD+bJMd7
-         n5Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qpcVHfrrJXTIjek0yFmE1DcJmD0OGjQlIdx+1iBJ6ZE=;
-        b=RM7I8dBwAQzeyPqUXqFgThcyqoLQeVDrkpIdSju/OBer212smI36fQnB6JsJN57SB/
-         d8WvN31V4n3z2EfbbXxeqzN0XvdLoA4OtgHK0PHTSKy05PwzDQZMqPBYbHI4aQNpXWTh
-         vZZn11SS8k+Wwn6SWgMQeCHzk6nwHCzIejNiQU0/rdRO0HU8fOzAgucrvF29AG+EjJII
-         Wmtwab4MXNDsKd4hp4vAEUQiNEsqclCtP5r+qRQPcENWufN57hxDtjJF/V17mLDwR3hV
-         DvWo4fdnasJ3OxuCMo2kg8JVmANq4AXHe/zyamL1Yrw+u9Sb1sIPlvrGpYXwUJdlSIvd
-         eCmw==
-X-Gm-Message-State: AOAM533Zc3tNTvsdV3t2j1c6nTS8xJ7Fh5WW4hpiOShP1unQREuEL1Mo
-        to2NEYQ6mo/xu100PKBfGsAZBQ==
-X-Google-Smtp-Source: ABdhPJyCUKbcRGkXsDFvNTEuYN5ncuXTZaURb/3ITmjk1psqidwzACdxYViWyZfPbOt1itsNC/Xv9A==
-X-Received: by 2002:a1c:6209:: with SMTP id w9mr3883976wmb.27.1623416899434;
-        Fri, 11 Jun 2021 06:08:19 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id a10sm5241039wrr.48.2021.06.11.06.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 06:08:18 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 13:08:15 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v2 3/3] sched: Make uclamp changes depend on CAP_SYS_NICE
-Message-ID: <YMNgPyfiIaIIsjqq@google.com>
-References: <20210610151306.1789549-1-qperret@google.com>
- <20210610151306.1789549-4-qperret@google.com>
- <20210611124820.ksydlg4ncw2xowd3@e107158-lin.cambridge.arm.com>
+        Fri, 11 Jun 2021 09:11:59 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5925820B7178;
+        Fri, 11 Jun 2021 06:10:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5925820B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623417001;
+        bh=cFX671U3VAOO1rKKCXg5GJiP1xXGmaWRUIBcacFH4Os=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MDBWxn+v1/ZN5jni0ww4GOIaqeO3d5q624qRAzW3D1nVwSY1HV57zrn7bNDIyH3pd
+         lZbVg+25jFHx+WYu1VwF2Q40Afcw66VB+5ehLCnHQYfQQPfGX9vlJxRGP9VeoYcRXI
+         wS+quQFJCZ1EqfH7fJnuDp90AfaeUTcYpDly50/g=
+Date:   Fri, 11 Jun 2021 08:09:58 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 6/8] tee: Support kernel shm registration without
+ dma-buf backing
+Message-ID: <20210611130958.GR4910@sequoia>
+References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
+ <20210610210913.536081-7-tyhicks@linux.microsoft.com>
+ <CAFA6WYMcGGkAAWxK2vmM8CNsgTKJpegkZZjJZy4pvXhKe9WGvA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210611124820.ksydlg4ncw2xowd3@e107158-lin.cambridge.arm.com>
+In-Reply-To: <CAFA6WYMcGGkAAWxK2vmM8CNsgTKJpegkZZjJZy4pvXhKe9WGvA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
-
-On Friday 11 Jun 2021 at 13:48:20 (+0100), Qais Yousef wrote:
-> On 06/10/21 15:13, Quentin Perret wrote:
-> > There is currently nothing preventing tasks from changing their per-task
-> > clamp values in anyway that they like. The rationale is probably that
-> > system administrators are still able to limit those clamps thanks to the
-> > cgroup interface. However, this causes pain in a system where both
-> > per-task and per-cgroup clamp values are expected to be under the
-> > control of core system components (as is the case for Android).
-> > 
-> > To fix this, let's require CAP_SYS_NICE to increase per-task clamp
-> > values. This allows unprivileged tasks to lower their requests, but not
-> > increase them, which is consistent with the existing behaviour for nice
-> > values.
+On 2021-06-11 10:46:20, Sumit Garg wrote:
+> On Fri, 11 Jun 2021 at 02:39, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+> >
+> > Uncouple the registration of kernel shared memory buffers from the
+> > TEE_SHM_DMA_BUF flag. Drivers may wish to allocate multi-page contiguous
+> > shared memory regions but do not need them to be backed by a dma-buf
+> > when the memory region is only used by the driver.
+> >
+> > If the TEE implementation does not require shared memory to be
+> > registered, clear the flag prior to calling the corresponding pool alloc
+> > function. Update the OP-TEE driver to respect TEE_SHM_REGISTER, rather
+> > than TEE_SHM_DMA_BUF, when deciding whether to (un)register on
+> > alloc/free operations.
 > 
-> Hmmm. I'm not in favour of this.
+> > The AMD-TEE driver continues to ignore the
+> > TEE_SHM_REGISTER flag.
+> >
 > 
-> So uclamp is a performance and power management mechanism, it has no impact on
-> fairness AFAICT, so it being a privileged operation doesn't make sense.
+> That's the main point that no other TEE implementation would honour
+> TEE_SHM_REGISTER and I think it's just the incorrect usage of
+> TEE_SHM_REGISTER flag to suffice OP-TEE underlying implementation.
 > 
-> We had a thought about this in the past and we didn't think there's any harm if
-> a task (app) wants to self manage. Yes a task could ask to run at max
-> performance and waste power, but anyone can generate a busy loop and waste
-> power too.
+> > Allow callers of tee_shm_alloc_kernel_buf() to allocate and register a
+> > shared memory region without the backing of dma-buf.
+> >
+> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > ---
+> >  drivers/tee/optee/shm_pool.c |  5 ++---
+> >  drivers/tee/tee_shm.c        | 13 +++++++++++--
+> >  2 files changed, 13 insertions(+), 5 deletions(-)
+> >
 > 
-> Now that doesn't mean your use case is not valid. I agree if there's a system
-> wide framework that wants to explicitly manage performance and power of tasks
-> via uclamp, then we can end up with 2 layers of controls overriding each
-> others.
-
-Right, that's the main issue. Also, the reality is that most of time the
-'right' clamps are platform-dependent, so most userspace apps are simply
-not equipped to decide what their own clamps should be.
-
-> Would it make more sense to have a procfs/sysfs flag that is disabled by
-> default that allows sys-admin to enforce a privileged uclamp access?
+> This patch is just mixing two separate approaches to TEE shared
+> memory. Have a look at alternative suggestions below.
 > 
-> Something like
+> > diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
+> > index da06ce9b9313..6054343a29fb 100644
+> > --- a/drivers/tee/optee/shm_pool.c
+> > +++ b/drivers/tee/optee/shm_pool.c
+> > @@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> >         shm->paddr = page_to_phys(page);
+> >         shm->size = PAGE_SIZE << order;
+> >
+> > -       if (shm->flags & TEE_SHM_DMA_BUF) {
+> > +       if (shm->flags & TEE_SHM_REGISTER) {
 > 
-> 	/proc/sys/kernel/sched_uclamp_privileged
+> Here you can just do following check instead:
+> 
+>        if (!(shm->flags & TEE_SHM_PRIV)) {
 
-Hmm, dunno, I'm not aware of anything else having a behaviour like that,
-so that feels a bit odd.
+This is a bug fix series that's intended to fix the current and older
+kernels. tee_shm_alloc_anon_kernel_buf()/TEE_SHM_PRIV is not present in
+older kernels and isn't required to fix these kexec/kdump bugs. Your
+suggestion feels like something that should be done in the allocator
+rewrite that Jens is working on to clean all of this up going forward.
 
-> I think both usage scenarios are valid and giving sys-admins the power to
-> enforce a behavior makes more sense for me.
+Tyler
 
-Yes, I wouldn't mind something like that in general. I originally wanted
-to suggest introducing a dedicated capability for uclamp, but that felt
-a bit overkill. Now if others think this should be the way to go I'm
-happy to go implement it.
-
-Thanks,
-Quentin
+> 
+> And this flag needs to be passed from the call sites here [1] [2].
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tee/optee/core.c#n280
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tee/optee/call.c#n186
+> 
+> >                 unsigned int nr_pages = 1 << order, i;
+> >                 struct page **pages;
+> >
+> > @@ -42,7 +42,6 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> >                         page++;
+> >                 }
+> >
+> > -               shm->flags |= TEE_SHM_REGISTER;
+> 
+> This should remain as it is.
+> 
+> >                 rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
+> >                                         (unsigned long)shm->kaddr);
+> >                 kfree(pages);
+> > @@ -60,7 +59,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> >  static void pool_op_free(struct tee_shm_pool_mgr *poolm,
+> >                          struct tee_shm *shm)
+> >  {
+> > -       if (shm->flags & TEE_SHM_DMA_BUF)
+> > +       if (shm->flags & TEE_SHM_REGISTER)
+> 
+> Same as above.
+> 
+> >                 optee_shm_unregister(shm->ctx, shm);
+> >
+> >         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+> > diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> > index c65e44707cd6..26a76f817c57 100644
+> > --- a/drivers/tee/tee_shm.c
+> > +++ b/drivers/tee/tee_shm.c
+> > @@ -117,7 +117,7 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+> >                 return ERR_PTR(-EINVAL);
+> >         }
+> >
+> > -       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF))) {
+> > +       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF | TEE_SHM_REGISTER))) {
+> 
+> No need for this change.
+> 
+> >                 dev_err(teedev->dev.parent, "invalid shm flags 0x%x", flags);
+> >                 return ERR_PTR(-EINVAL);
+> >         }
+> > @@ -137,6 +137,15 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+> >                 goto err_dev_put;
+> >         }
+> >
+> > +       if (!teedev->desc->ops->shm_register ||
+> > +           !teedev->desc->ops->shm_unregister) {
+> > +               /* registration is not required by the TEE implementation */
+> > +               flags &= ~TEE_SHM_REGISTER;
+> > +       } else if (flags & TEE_SHM_DMA_BUF) {
+> > +               /* all dma-buf backed shm allocations are registered */
+> > +               flags |= TEE_SHM_REGISTER;
+> > +       }
+> > +
+> 
+> This change isn't required as well as underlying TEE implementation:
+> OP-TEE in this case knows how to implement shared memory allocation
+> whether to use reserved shared memory pool or dynamic shared memory
+> pool. For more details see shared memory pool creation in
+> optee_probe().
+> 
+> >         shm->flags = flags | TEE_SHM_POOL;
+> >         shm->ctx = ctx;
+> >         if (flags & TEE_SHM_DMA_BUF)
+> > @@ -207,7 +216,7 @@ EXPORT_SYMBOL_GPL(tee_shm_alloc);
+> >   */
+> >  struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
+> >  {
+> > -       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
+> > +       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_REGISTER);
+> 
+> Here it could just be:
+> 
+>        return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED);
+> 
+> -Sumit
+> 
+> >  }
+> >  EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
+> >
+> > --
+> > 2.25.1
+> >
+> 
