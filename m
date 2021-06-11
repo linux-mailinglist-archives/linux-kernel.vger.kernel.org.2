@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021B23A422D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251793A4232
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbhFKMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:44:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231314AbhFKMoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:44:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93D9F613EA;
-        Fri, 11 Jun 2021 12:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623415335;
-        bh=GTGqCNvv+zgEh7y/tQSHhbtsrEkz7+mSU0+uhfVNAcc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WAi7+dvfGCaFhklZ7xvXMZscHDQSnVXu58LgwTsv/WSe3LXDvmhoD8HguGptZl5CP
-         Y+37XdC5Z+ByKDMKl/nKPdgkE2Gqna/eJkcv5x/Y33P9ESsx1o55RSdsTc2o3cMO0Z
-         LkHeI48EbaOkiiuapB9Wzw/VqbSuaHyYzIK/ukHbJv3B1xkSVNnC6xFanQ10t3Xg4W
-         DAonK8Q1e7rhvlhK/M+7G3bucULySsNiMtBRG9uFftI2lnyGffZfgANjSuFM1ZxoTL
-         hcIl9YltYG3gU//d3Ftyl7NsAQlibMBFeV0zOCjOLydkoPCE36xrZ22UjizOahdmV1
-         VaX/P2HaeuViQ==
-Date:   Fri, 11 Jun 2021 14:42:12 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Question about a8ea6fc9b089 ("sched: Stop PF_NO_SETAFFINITY from
- being inherited by various init system threads")
-Message-ID: <20210611124212.GB143945@lothringen>
-References: <20210610170435.GA2187550@paulmck-ThinkPad-P17-Gen-1>
- <8735tpd15i.mognet@arm.com>
- <20210610201713.GU4397@paulmck-ThinkPad-P17-Gen-1>
+        id S231604AbhFKMox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:44:53 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36712 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231266AbhFKMow (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 08:44:52 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BCgboc071359;
+        Fri, 11 Jun 2021 07:42:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623415357;
+        bh=v82uh5HzLd/YwEcTzLFbnUXGw9AInR09/KHwciMxi1A=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=evKQ5ekeeKsESB+3hyv0d+WAueNj2j+5OVgEvX1JpPppzGbi2Ds/Awm+BZq7/i/Rd
+         yRBBF7GRcXZAh81ITmxnARXPXP3b3057WZIOAGow8RyZuKhKr6nQcSAt5iYvf6gNhQ
+         qxGr1MPI58brpbVgG66eliJQsdpWnHvUIRZ2PlhE=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BCgb6D009782
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Jun 2021 07:42:37 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
+ Jun 2021 07:42:37 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 11 Jun 2021 07:42:37 -0500
+Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BCgT8c034379;
+        Fri, 11 Jun 2021 07:42:31 -0500
+Subject: Re: [PATCH v6 1/3] phy: core: Reword the comment specifying the units
+ of max_link_rate to be Mbps
+From:   Aswath Govindraju <a-govindraju@ti.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <linux-can@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210510051006.11393-1-a-govindraju@ti.com>
+ <20210510051006.11393-2-a-govindraju@ti.com>
+ <YLSNvUDJZ/v6NTuN@vkoul-mobl.Dlink>
+ <615d3a2a-0dc2-0e87-fdac-e170542d33da@ti.com>
+Message-ID: <0150622f-8543-ac4a-fe18-f22d7862d163@ti.com>
+Date:   Fri, 11 Jun 2021 18:12:27 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610201713.GU4397@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <615d3a2a-0dc2-0e87-fdac-e170542d33da@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 01:17:13PM -0700, Paul E. McKenney wrote:
-> On Thu, Jun 10, 2021 at 07:28:57PM +0100, Valentin Schneider wrote:
-> > On 10/06/21 10:04, Paul E. McKenney wrote:
-> > 
-> > Hi,
-> > > Hello, Frederic,
-> > >
-> > > This commit works well, but has the unfortunate side-effect of making
-> > > smp_processor_id() complain when used in a preemptible region even
-> > > though the kthread has been pinned onto a single CPU by a call to
-> > > set_cpus_allowed_ptr().  (Which did return success.)
-> > >
-> > 
-> > On which tree are you encountering this?
-> 
-> I bisected to this commit in -next tag next-20210609, and this commit
-> could of course be an innocent bystander caught in the crossfire.
-> 
-> > Looking at check_preemption_disabled() and CPU affinity, v5.13-rc5 has:
-> > 
-> >         /*
-> >          * Kernel threads bound to a single CPU can safely use
-> >          * smp_processor_id():
-> >          */
-> >         if (current->nr_cpus_allowed == 1)
-> >                 goto out;
-> > 
-> > tip/sched/core additionally hinges that on PF_NO_SETAFFINITY:
-> > 
-> >   570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
-> > 
-> > The former shouldn't be affected by Frederic's patch, and the latter should
-> > only cause warnings if the pinned task isn't a "proper" kthread (thus
-> > doesn't have PF_NO_SETAFFINITY)... Exceptions that come to mind are things
-> > like UMH which doesn't use kthread_create().
-> 
-> And reverting 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread()
-> instead of nr_cpus_allowed") causes the kernel to once again be OK with
-> smp_processor_id(), so thank you!  And apologies to Frederic for the
-> false alarm.
-> 
-> Added Yejune on CC.  Thoughts?
+Hi Vinod,
 
-There is also that:
+On 31/05/21 2:04 pm, Aswath Govindraju wrote:
+> Hi Vinod,
+> 
+> On 31/05/21 12:48 pm, Vinod Koul wrote:
+>> On 10-05-21, 10:40, Aswath Govindraju wrote:
+>>> In some subsystems (eg. CAN, SPI), the max link rate supported can be less
+>>> than 1 Mbps and if the unit for max_link_rate is Mbps then it can't be
+>>> used. Therefore, leave the decision of units to be used, to the producer
+>>> and consumer.
+>>>
+>>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>>> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>>> ---
+>>>  include/linux/phy/phy.h | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+>>> index 0ed434d02196..f3286f4cd306 100644
+>>> --- a/include/linux/phy/phy.h
+>>> +++ b/include/linux/phy/phy.h
+>>> @@ -125,7 +125,7 @@ struct phy_ops {
+>>>  /**
+>>>   * struct phy_attrs - represents phy attributes
+>>>   * @bus_width: Data path width implemented by PHY
+>>> - * @max_link_rate: Maximum link rate supported by PHY (in Mbps)
+>>> + * @max_link_rate: Maximum link rate supported by PHY (units to be decided by producer and consumer)
+>>
+>> So there are a few users of max_link_rate. It would be better that we
+>> document all previous users of max_link_rate that unit is in Mbps and
+>> then modify it here
+>>
+> 
+> I was able to see that the max_link_rate attribute was used at,
+> 
+> drivers/phy/cadence/phy-cadence-torrent.c:2514:
+> gphy->attrs.max_link_rate = cdns_phy->max_bit_rate;
+> 
+> and in the bindings there is indication that the units to be used is Mbps.
+> 
+> Can you please point me if there is any other place that I might have
+> missed to look at or that might need documentation update?
+> 
 
-      15faafc6b449777a85c0cf82dd8286c293fed4eb ("sched,init: Fix DEBUG_PREEMPT
-      vs early boot")
+May I know if this patch series is good to be merged ?
 
-Not sure if that will help but just in case.
+Thanks,
+Aswath
+
+> Thanks,
+> Aswath
+> 
+> 
+
