@@ -2,280 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11EB3A4765
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5273A4764
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhFKREK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:04:10 -0400
-Received: from mga06.intel.com ([134.134.136.31]:56300 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231486AbhFKRDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:03:49 -0400
-IronPort-SDR: oxi6bvk54GrNA6wq/+P2j1wYWOmV4MjMkFnaA+AZ5QNFAc/kOOZCYOqJZiFfKqOLEiWEHal+Xd
- oayAa1qDu5AQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="266715355"
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="266715355"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 10:01:38 -0700
-IronPort-SDR: Ywr2jnrcqIBjm4iteW2aAPRJ5MXx97lyemAqD6vabtChcUz1AFO1WyQ5t22N7DcllKHVsKZexO
- luAaDMLMhVWg==
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="483329878"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 10:01:37 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     tony.luck@intel.com
-Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Vrukesh V Panse <vrukesh.v.panse@intel.com>,
-        Aristeu Rozanski <aris@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] EDAC/igen6: Add Intel Alder Lake SoC support
-Date:   Fri, 11 Jun 2021 10:01:23 -0700
-Message-Id: <20210611170123.1057025-7-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210611170123.1057025-1-tony.luck@intel.com>
-References: <20210611170123.1057025-1-tony.luck@intel.com>
+        id S231705AbhFKREk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:04:40 -0400
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:37874 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231518AbhFKREe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:04:34 -0400
+Received: by mail-ej1-f48.google.com with SMTP id ce15so5562136ejb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rF3RW+vRTBdayrkEmU143aymaoHBMTIDi13FY84zy6k=;
+        b=fNCIy4gcV+jUjxgmOzD8+ule7JxCtIt9PlXXjCK/F5siLoXPXuKRveEXNmmAyyi2kp
+         Aa/Y1cOXgLGrmKSCs5TjzoQgx9OoRxhmez/7qIZ0M2gu8IoIV2SH/mEMObTWa20aiNTG
+         UTjBUuQt/pW9UXnxcZFlDnWeQFf9oBAnC+KCqrGgI03xpR+BWXJzkobcLWyXfWmkirip
+         PZlS9weU5Ou9WPDMeXhh9ljNAHqSVyQ3SMp/tbNmSSczT4B9oXFrIuGdmQY572uOsqiy
+         UAG6+Yi2MG9BQCUS/Kh+CLe9vMwwObrYg2/CKtE5oFhZQhivA3gC25RWfWrTaeD9XLDZ
+         GMVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rF3RW+vRTBdayrkEmU143aymaoHBMTIDi13FY84zy6k=;
+        b=rcckFwA+k+NkC7RRtGVvBbJl4XVOO+zRR3Y1EOph9DX5SGYXn/SPF9N8G9UQG36oLL
+         t10iVHKXsdJMenlqORd6kbBMZmFTtQU2SM4MAUWs30K5UuUwb23mCfrMJ+XiuFcFpkLn
+         a/1wSVLUCa5RdvRbsRlMbceq6FT8nSjbYbWzyiXPrFTDA2fI7UZJF1CgxNCyzZzufVlX
+         G1V8wBM1c//DlX5ij5py3OMep3OJtc1PgeAilE5AHdOQRU6A9QEV8NG6zkN4uT3sn9P4
+         vzVEn5WrYuhQkOE6yuDy16mZGQa27Mgr/EEwcFUVE1gj003PKh5o4cilkuPS4zZvqwnu
+         DDqQ==
+X-Gm-Message-State: AOAM531qwUv/vDCjh54dNFjJu998Vj6fqMmn/U/jKqiXDRVGmeRHeEeB
+        32h2N1/4GCSJ25f1Ezx0r7QiQUUR6+P5Rjc35DUz
+X-Google-Smtp-Source: ABdhPJwmTNWPO4JGLsdadACYta6CeOAq/UXMknSjqgw0d3bEuEX+uGxP6oYimSVp5XzRcQC4L7uXqr5Q+aU9AobwCl4=
+X-Received: by 2002:a17:907:3d8e:: with SMTP id he14mr4663408ejc.178.1623430895727;
+ Fri, 11 Jun 2021 10:01:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1623406567-51427-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1623406567-51427-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 11 Jun 2021 13:01:24 -0400
+Message-ID: <CAHC9VhT2mmgL8Vnrb35BEJkq+Wo2fT3Fc-HD51PwMyNGmsAWJQ@mail.gmail.com>
+Subject: Re: [PATCH -next v2] selinux: Fix kernel-doc
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, nathan@kernel.org,
+        ndesaulniers@google.com, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Fri, Jun 11, 2021 at 6:16 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>
+> Fix function name and add comment for parameter state in ss/services.c
+> kernel-doc to remove some warnings found by running make W=1 LLVM=1.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>
+> Change in v2
+> --Add comment for parameter state
+>
+>  security/selinux/ss/services.c | 23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
 
-Alder Lake SoC shares the same memory controller and In-Band ECC
-(IBECC) IP with Tiger Lake SoC. Like Tiger Lake, it also has two
-memory controllers each associated one IBECC instance. The minor
-differences include the MMIO offset of each memory controller and
-the type of memory error address logged in the IBECC.
+Merged into selinux/next - thanks!
 
-So add Alder Lake compute die IDs, adjust the MMIO offset for each
-memory controller and handle the type of memory error address logged
-in the IBECC for Alder Lake EDAC support.
-
-Tested-by: Vrukesh V Panse <vrukesh.v.panse@intel.com>
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- drivers/edac/igen6_edac.c | 84 ++++++++++++++++++++++++++++++++++-----
- 1 file changed, 73 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/edac/igen6_edac.c b/drivers/edac/igen6_edac.c
-index 9f653ace50e7..a07bbfd075d0 100644
---- a/drivers/edac/igen6_edac.c
-+++ b/drivers/edac/igen6_edac.c
-@@ -27,7 +27,7 @@
- #include "edac_mc.h"
- #include "edac_module.h"
- 
--#define IGEN6_REVISION	"v2.4"
-+#define IGEN6_REVISION	"v2.5"
- 
- #define EDAC_MOD_STR	"igen6_edac"
- #define IGEN6_NMI_NAME	"igen6_ibecc"
-@@ -75,7 +75,7 @@
- #define IBECC_ACTIVATE_EN		BIT(0)
- 
- /* IBECC error log */
--#define ECC_ERROR_LOG_OFFSET		(IBECC_BASE + 0x170)
-+#define ECC_ERROR_LOG_OFFSET		(IBECC_BASE + res_cfg->ibecc_error_log_offset)
- #define ECC_ERROR_LOG_CE		BIT_ULL(62)
- #define ECC_ERROR_LOG_UE		BIT_ULL(63)
- #define ECC_ERROR_LOG_ADDR_SHIFT	5
-@@ -89,27 +89,32 @@
- #define MCHBAR_SIZE			0x10000
- 
- /* Parameters for the channel decode stage */
--#define MAD_INTER_CHANNEL_OFFSET	0x5000
-+#define IMC_BASE			(res_cfg->imc_base)
-+#define MAD_INTER_CHANNEL_OFFSET	IMC_BASE
- #define MAD_INTER_CHANNEL_DDR_TYPE(v)	GET_BITFIELD(v, 0, 2)
- #define MAD_INTER_CHANNEL_ECHM(v)	GET_BITFIELD(v, 3, 3)
- #define MAD_INTER_CHANNEL_CH_L_MAP(v)	GET_BITFIELD(v, 4, 4)
- #define MAD_INTER_CHANNEL_CH_S_SIZE(v)	((u64)GET_BITFIELD(v, 12, 19) << 29)
- 
- /* Parameters for DRAM decode stage */
--#define MAD_INTRA_CH0_OFFSET		0x5004
-+#define MAD_INTRA_CH0_OFFSET		(IMC_BASE + 4)
- #define MAD_INTRA_CH_DIMM_L_MAP(v)	GET_BITFIELD(v, 0, 0)
- 
- /* DIMM characteristics */
--#define MAD_DIMM_CH0_OFFSET		0x500c
-+#define MAD_DIMM_CH0_OFFSET		(IMC_BASE + 0xc)
- #define MAD_DIMM_CH_DIMM_L_SIZE(v)	((u64)GET_BITFIELD(v, 0, 6) << 29)
- #define MAD_DIMM_CH_DLW(v)		GET_BITFIELD(v, 7, 8)
- #define MAD_DIMM_CH_DIMM_S_SIZE(v)	((u64)GET_BITFIELD(v, 16, 22) << 29)
- #define MAD_DIMM_CH_DSW(v)		GET_BITFIELD(v, 24, 25)
- 
-+/* Hash for memory controller selection */
-+#define MAD_MC_HASH_OFFSET		(IMC_BASE + 0x1b8)
-+#define MAC_MC_HASH_LSB(v)		GET_BITFIELD(v, 1, 3)
-+
- /* Hash for channel selection */
--#define CHANNEL_HASH_OFFSET		0X5024
-+#define CHANNEL_HASH_OFFSET		(IMC_BASE + 0x24)
- /* Hash for enhanced channel selection */
--#define CHANNEL_EHASH_OFFSET		0X5028
-+#define CHANNEL_EHASH_OFFSET		(IMC_BASE + 0x28)
- #define CHANNEL_HASH_MASK(v)		(GET_BITFIELD(v, 6, 19) << 6)
- #define CHANNEL_HASH_LSB_MASK_BIT(v)	GET_BITFIELD(v, 24, 26)
- #define CHANNEL_HASH_MODE(v)		GET_BITFIELD(v, 28, 28)
-@@ -121,15 +126,17 @@
- static struct res_config {
- 	bool machine_check;
- 	int num_imc;
-+	u32 imc_base;
- 	u32 cmf_base;
- 	u32 cmf_size;
- 	u32 ms_hash_offset;
- 	u32 ibecc_base;
-+	u32 ibecc_error_log_offset;
- 	bool (*ibecc_available)(struct pci_dev *pdev);
- 	/* Convert error address logged in IBECC to system physical address */
- 	u64 (*err_addr_to_sys_addr)(u64 eaddr, int mc);
- 	/* Convert error address logged in IBECC to integrated memory controller address */
--	u64 (*err_addr_to_imc_addr)(u64 eaddr);
-+	u64 (*err_addr_to_imc_addr)(u64 eaddr, int mc);
- } *res_cfg;
- 
- struct igen6_imc {
-@@ -209,6 +216,12 @@ static struct work_struct ecclog_work;
- /* Compute die IDs for Tiger Lake with IBECC */
- #define DID_TGL_SKU	0x9a14
- 
-+/* Compute die IDs for Alder Lake with IBECC */
-+#define DID_ADL_SKU1	0x4601
-+#define DID_ADL_SKU2	0x4602
-+#define DID_ADL_SKU3	0x4621
-+#define DID_ADL_SKU4	0x4641
-+
- static bool ehl_ibecc_available(struct pci_dev *pdev)
- {
- 	u32 v;
-@@ -224,7 +237,7 @@ static u64 ehl_err_addr_to_sys_addr(u64 eaddr, int mc)
- 	return eaddr;
- }
- 
--static u64 ehl_err_addr_to_imc_addr(u64 eaddr)
-+static u64 ehl_err_addr_to_imc_addr(u64 eaddr, int mc)
- {
- 	if (eaddr < igen6_tolud)
- 		return eaddr;
-@@ -315,22 +328,51 @@ static u64 tgl_err_addr_to_sys_addr(u64 eaddr, int mc)
- 	return mem_addr_to_sys_addr(maddr);
- }
- 
--static u64 tgl_err_addr_to_imc_addr(u64 eaddr)
-+static u64 tgl_err_addr_to_imc_addr(u64 eaddr, int mc)
- {
- 	return eaddr;
- }
- 
-+static u64 adl_err_addr_to_sys_addr(u64 eaddr, int mc)
-+{
-+	return mem_addr_to_sys_addr(eaddr);
-+}
-+
-+static u64 adl_err_addr_to_imc_addr(u64 eaddr, int mc)
-+{
-+	u64 imc_addr, ms_s_size = igen6_pvt->ms_s_size;
-+	struct igen6_imc *imc = &igen6_pvt->imc[mc];
-+	int intlv_bit;
-+	u32 mc_hash;
-+
-+	if (eaddr >= 2 * ms_s_size)
-+		return eaddr - ms_s_size;
-+
-+	mc_hash = readl(imc->window + MAD_MC_HASH_OFFSET);
-+
-+	intlv_bit = MAC_MC_HASH_LSB(mc_hash) + 6;
-+
-+	imc_addr = GET_BITFIELD(eaddr, intlv_bit + 1, 63) << intlv_bit |
-+		   GET_BITFIELD(eaddr, 0, intlv_bit - 1);
-+
-+	return imc_addr;
-+}
-+
- static struct res_config ehl_cfg = {
- 	.num_imc		= 1,
-+	.imc_base		= 0x5000,
- 	.ibecc_base		= 0xdc00,
- 	.ibecc_available	= ehl_ibecc_available,
-+	.ibecc_error_log_offset	= 0x170,
- 	.err_addr_to_sys_addr	= ehl_err_addr_to_sys_addr,
- 	.err_addr_to_imc_addr	= ehl_err_addr_to_imc_addr,
- };
- 
- static struct res_config icl_cfg = {
- 	.num_imc		= 1,
-+	.imc_base		= 0x5000,
- 	.ibecc_base		= 0xd800,
-+	.ibecc_error_log_offset	= 0x170,
- 	.ibecc_available	= icl_ibecc_available,
- 	.err_addr_to_sys_addr	= ehl_err_addr_to_sys_addr,
- 	.err_addr_to_imc_addr	= ehl_err_addr_to_imc_addr,
-@@ -339,15 +381,28 @@ static struct res_config icl_cfg = {
- static struct res_config tgl_cfg = {
- 	.machine_check		= true,
- 	.num_imc		= 2,
-+	.imc_base		= 0x5000,
- 	.cmf_base		= 0x11000,
- 	.cmf_size		= 0x800,
- 	.ms_hash_offset		= 0xac,
- 	.ibecc_base		= 0xd400,
-+	.ibecc_error_log_offset	= 0x170,
- 	.ibecc_available	= tgl_ibecc_available,
- 	.err_addr_to_sys_addr	= tgl_err_addr_to_sys_addr,
- 	.err_addr_to_imc_addr	= tgl_err_addr_to_imc_addr,
- };
- 
-+static struct res_config adl_cfg = {
-+	.machine_check		= true,
-+	.num_imc		= 2,
-+	.imc_base		= 0xd800,
-+	.ibecc_base		= 0xd400,
-+	.ibecc_error_log_offset	= 0x68,
-+	.ibecc_available	= tgl_ibecc_available,
-+	.err_addr_to_sys_addr	= adl_err_addr_to_sys_addr,
-+	.err_addr_to_imc_addr	= adl_err_addr_to_imc_addr,
-+};
-+
- static const struct pci_device_id igen6_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, DID_EHL_SKU5), (kernel_ulong_t)&ehl_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_EHL_SKU6), (kernel_ulong_t)&ehl_cfg },
-@@ -365,6 +420,10 @@ static const struct pci_device_id igen6_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, DID_ICL_SKU11), (kernel_ulong_t)&icl_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_ICL_SKU12), (kernel_ulong_t)&icl_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_TGL_SKU), (kernel_ulong_t)&tgl_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_ADL_SKU1), (kernel_ulong_t)&adl_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_ADL_SKU2), (kernel_ulong_t)&adl_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_ADL_SKU3), (kernel_ulong_t)&adl_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_ADL_SKU4), (kernel_ulong_t)&adl_cfg },
- 	{ },
- };
- MODULE_DEVICE_TABLE(pci, igen6_pci_tbl);
-@@ -624,7 +683,7 @@ static void ecclog_work_cb(struct work_struct *work)
- 			ECC_ERROR_LOG_ADDR_SHIFT;
- 		res.mc	     = node->mc;
- 		res.sys_addr = res_cfg->err_addr_to_sys_addr(eaddr, res.mc);
--		res.imc_addr = res_cfg->err_addr_to_imc_addr(eaddr);
-+		res.imc_addr = res_cfg->err_addr_to_imc_addr(eaddr, res.mc);
- 
- 		mci = igen6_pvt->imc[res.mc].mci;
- 
-@@ -1071,6 +1130,9 @@ static int igen6_mem_slice_setup(u64 mchbar)
- 	edac_dbg(0, "ms_s_size: %llu MiB, ms_l_map %d\n",
- 		 ms_s_size >> 20, ms_l_map);
- 
-+	if (!size)
-+		return 0;
-+
- 	cmf = ioremap(base, size);
- 	if (!cmf) {
- 		igen6_printk(KERN_ERR, "Failed to ioremap cmf 0x%llx\n", base);
 -- 
-2.29.2
-
+paul moore
+www.paul-moore.com
