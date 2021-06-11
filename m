@@ -2,157 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A7F3A401A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EBF3A401B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhFKKWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhFKKWS (ORCPT
+        id S231718AbhFKKW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:22:27 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59338 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231655AbhFKKWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:22:18 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE1EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:20:19 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id l2so5478489wrw.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:20:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XfgBfzFvsPdgrcJj8hm266ct8iEuijNJFoCqNb4usnY=;
-        b=gCbp8nRl+F81Q8+Gw5TMV8g8i5VVIQZ9utDBRHgUwkcjHBTk/X+NRYc70kXI4G5krO
-         i/iM6+Wqeb2luua2cG5mynHq6uOVl2yTe5gyLhPV0EYnaRiUpUqoHXNH9j1j6mF62Oib
-         WEJU5YtrTv1j+COQPOPXxPs6naKEZwfcNFgrLg2y5gRTSGoNGwAW2RUGvgNTU/2Qz/R1
-         1MkOgM+DpSZtcvH1oU1OexPZJ69UJvisRGEhh4a9g7233drhQXVD5eiaRzZqyaVJKcP0
-         hNbwn7PRLbuv/jo7QnBCiErpoSlWHXPaShCovBII//8rsn88sksZBfpqjxjKE/9g7VRD
-         cwHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XfgBfzFvsPdgrcJj8hm266ct8iEuijNJFoCqNb4usnY=;
-        b=D9pU+vXXU1/sepE8tZkJBFPyeyDI8VGwvv5NPsjo/hB8d0gwyJksWSDxHIs+3ADwj+
-         DkaLs4ujSFMMYecjzXS1M6WkilBlGJV4CKA1ZDB72A80uj8IQevMcFM9cEJoKX6yLD2J
-         0IbGW1cXOnZz3TklN51m0uTW/TivuBZsCUZLWSAW9Rb44sRLwGyjgZALNUjY0JyFTb5b
-         cXmcscPLPyt0ofuPU40q5zH5KeQsv1bES6+0PO5itTxIKbZOJ/ZwrzqV8CQc7ne02fdp
-         YMxZ7CfxDfOl1tlSD+laGIALxkGnOlo9jZYPCNbuomBxFfNbkmyIbkPApVEYLlYuX5J+
-         QmdA==
-X-Gm-Message-State: AOAM530hy82xjsp0avwp/ibs12Lmx6EhebG/T1qJKciXnXMel9MkNmu7
-        3k3f59hB3cyaFXpsf0Br6J2VcA==
-X-Google-Smtp-Source: ABdhPJxaS5lsSbOM25zwxrZvsnsRIMq1rflF6qJyp9P1CceK8i3D7IK0RJ4JCAkyjuoYgKW55Uariw==
-X-Received: by 2002:a5d:6485:: with SMTP id o5mr3168607wri.91.1623406817882;
-        Fri, 11 Jun 2021 03:20:17 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id n42sm11797472wms.29.2021.06.11.03.20.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Jun 2021 03:20:17 -0700 (PDT)
-Subject: Re: [PATCH 4/9] nvmem: sprd: Fix an error message
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, Chunyan Zhang <zhang.lyra@gmail.com>
-References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
- <20210611083348.20170-5-srinivas.kandagatla@linaro.org>
- <YMMlRq250A53CDaM@kroah.com>
- <a34f8a9d-c9e7-5c2d-521f-13677cfd7ccb@linaro.org>
- <YMMqPlknDF+k466x@kroah.com> <YMMwteJ5XvDST+zH@kroah.com>
- <7bd13064-8a50-2723-4ebe-d4ff7563c199@wanadoo.fr>
- <YMM4O2HEN9D8mJv9@kroah.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <85b5c0a9-945b-9d5e-9e56-0704d541438c@linaro.org>
-Date:   Fri, 11 Jun 2021 11:20:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 11 Jun 2021 06:22:23 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 478D91FD6C;
+        Fri, 11 Jun 2021 10:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623406825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PxVK0K35pQZanZet6mzxQAOwPID5G7wB9PTtQWMWHKI=;
+        b=cT1NR7aCEX3fBw33SzxKpP3CyxNUCV0oNJgoXp1gKAy4nP8ZtXYx01cSAYZ4fa7atfc1Z1
+        HgFH3f91tTcHd4iGYOyG9vBeMCC0icU5VswCAcE/zASrDfgrtLHTkkQHdiQbbR5+Sr2lEm
+        oJcxmosZduOD3QZ7dn/lJt8L3v8OMp4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623406825;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PxVK0K35pQZanZet6mzxQAOwPID5G7wB9PTtQWMWHKI=;
+        b=a/soMZBUQOwdKcdjA0tTGCK+9u0PwngUVJFaXLAD/tar4tLefv9Oy10juz55l9mbbdik48
+        VqIitXUR+0hwZxDA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 2A3EE118DD;
+        Fri, 11 Jun 2021 10:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623406825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PxVK0K35pQZanZet6mzxQAOwPID5G7wB9PTtQWMWHKI=;
+        b=cT1NR7aCEX3fBw33SzxKpP3CyxNUCV0oNJgoXp1gKAy4nP8ZtXYx01cSAYZ4fa7atfc1Z1
+        HgFH3f91tTcHd4iGYOyG9vBeMCC0icU5VswCAcE/zASrDfgrtLHTkkQHdiQbbR5+Sr2lEm
+        oJcxmosZduOD3QZ7dn/lJt8L3v8OMp4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623406825;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PxVK0K35pQZanZet6mzxQAOwPID5G7wB9PTtQWMWHKI=;
+        b=a/soMZBUQOwdKcdjA0tTGCK+9u0PwngUVJFaXLAD/tar4tLefv9Oy10juz55l9mbbdik48
+        VqIitXUR+0hwZxDA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id Pt5JCek4w2DxcgAALh3uQQ
+        (envelope-from <msuchanek@suse.de>); Fri, 11 Jun 2021 10:20:25 +0000
+Date:   Fri, 11 Jun 2021 12:20:23 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH v4 2/2] powerpc/64: Option to use ELF V2 ABI for
+ big-endian kernels
+Message-ID: <20210611102023.GB8544@kitsune.suse.cz>
+References: <20210611093959.821525-1-npiggin@gmail.com>
+ <20210611093959.821525-3-npiggin@gmail.com>
+ <20210611095819.GA8544@kitsune.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <YMM4O2HEN9D8mJv9@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210611095819.GA8544@kitsune.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/06/2021 11:17, Greg KH wrote:
-> On Fri, Jun 11, 2021 at 12:10:58PM +0200, Marion & Christophe JAILLET wrote:
->>
->> Le 11/06/2021 Ã  11:45, Greg KH a Ã©critÂ :
->>> On Fri, Jun 11, 2021 at 11:17:50AM +0200, Greg KH wrote:
->>>> On Fri, Jun 11, 2021 at 10:05:40AM +0100, Srinivas Kandagatla wrote:
->>>>>
->>>>> On 11/06/2021 09:56, Greg KH wrote:
->>>>>> On Fri, Jun 11, 2021 at 09:33:43AM +0100, Srinivas Kandagatla wrote:
->>>>>>> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->>>>>>>
->>>>>>> 'ret' is known to be 0 here.
->>>>>>> The expected error status is stored in 'status', so use it instead.
->>>>>>>
->>>>>>> Also change %d in %u, because status is an u32, not a int.
->>>>>>>
->>>>>>> Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
->>>>>>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->>>>>>> Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
->>>>>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>>>>> ---
->>>>>>>     drivers/nvmem/sprd-efuse.c | 2 +-
->>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
->>>>>>> index 5d394559edf2..e3e721d4c205 100644
->>>>>>> --- a/drivers/nvmem/sprd-efuse.c
->>>>>>> +++ b/drivers/nvmem/sprd-efuse.c
->>>>>>> @@ -234,7 +234,7 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
->>>>>>>     	status = readl(efuse->base + SPRD_EFUSE_ERR_FLAG);
->>>>>>>     	if (status) {
->>>>>>>     		dev_err(efuse->dev,
->>>>>>> -			"write error status %d of block %d\n", ret, blk);
->>>>>>> +			"write error status %u of block %d\n", status, blk);
->>>>>> Shouldn't this be %pe and not %u?
->>>>> This is not error pointer its status value read back from a register.
->>>>>
->>>>> I think %u should be good here.
->>>> Argh, you are right, my fault.  For some reason I thought this worked
->>>> for integers as well.  Don't we have such a printk modifier somewhere to
->>>> turn error values into strings?  Let me dig...
->>> Ah, errname() will do it.
->>>
->>> Looks like no one uses it, so nevermind, sorry for the noise.  I'll go
->>> apply this one now.
->>>
->>> thanks,
->>>
->>> greg k-h
->>
->> Hi,
->>
->> errname() depends on CONFIG_SYMBOLIC_ERRNAME.
->> Is this widely used?
+On Fri, Jun 11, 2021 at 11:58:19AM +0200, Michal Suchánek wrote:
+> On Fri, Jun 11, 2021 at 07:39:59PM +1000, Nicholas Piggin wrote:
+> > Provide an option to build big-endian kernels using the ELFv2 ABI. This
+> > works on GCC only so far, although it is rumored to work with clang
+> > that's not been tested yet. A new module version check ensures the
+> > module ELF ABI level matches the kernel build.
+> > 
+> > This can give big-endian kernels some useful advantages of the ELFv2 ABI
+> > (e.g., less stack usage, -mprofile-kernel, better compatibility with eBPF
+> > tools).
+> > 
+> > BE+ELFv2 is not officially supported by the GNU toolchain, but it works
+> > fine in testing and has been used by some userspace for some time (e.g.,
+> > Void Linux).
+> > 
+> > Tested-by: Michal Suchánek <msuchanek@suse.de>
+> > Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
+> > Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> > ---
+> >  arch/powerpc/Kconfig                | 22 ++++++++++++++++++++++
+> >  arch/powerpc/Makefile               | 18 ++++++++++++------
+> >  arch/powerpc/boot/Makefile          |  4 +++-
+> >  arch/powerpc/include/asm/module.h   | 24 ++++++++++++++++++++++++
+> >  arch/powerpc/kernel/vdso64/Makefile | 13 +++++++++++++
+> >  drivers/crypto/vmx/Makefile         |  8 ++++++--
+> >  drivers/crypto/vmx/ppc-xlate.pl     | 10 ++++++----
+> >  7 files changed, 86 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> > index 088dd2afcfe4..093f973a28b9 100644
+> > --- a/arch/powerpc/Kconfig
+> > +++ b/arch/powerpc/Kconfig
+> > @@ -163,6 +163,7 @@ config PPC
+> >  	select ARCH_WEAK_RELEASE_ACQUIRE
+> >  	select BINFMT_ELF
+> >  	select BUILDTIME_TABLE_SORT
+> > +	select PPC64_BUILD_ELF_V2_ABI		if PPC64 && CPU_LITTLE_ENDIAN
+> >  	select CLONE_BACKWARDS
+> >  	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
+> >  	select DMA_OPS_BYPASS			if PPC64
+> > @@ -561,6 +562,27 @@ config KEXEC_FILE
+> >  config ARCH_HAS_KEXEC_PURGATORY
+> >  	def_bool KEXEC_FILE
+> >  
+> > +config PPC64_BUILD_ELF_V2_ABI
+> > +	bool
+> > +
+> > +config PPC64_BUILD_BIG_ENDIAN_ELF_V2_ABI
+> > +	bool "Build big-endian kernel using ELF ABI V2 (EXPERIMENTAL)"
+> > +	depends on PPC64 && CPU_BIG_ENDIAN && EXPERT
+> > +	depends on CC_IS_GCC && LD_VERSION >= 22400
+> > +	default n
+> > +	select PPC64_BUILD_ELF_V2_ABI
+> > +	help
+> > +	  This builds the kernel image using the "Power Architecture 64-Bit ELF
+> > +	  V2 ABI Specification", which has a reduced stack overhead and faster
+> > +	  function calls. This internal kernel ABI option does not affect
+> > +          userspace compatibility.
+> > +
+> > +	  The V2 ABI is standard for 64-bit little-endian, but for big-endian
+> > +	  it is less well tested by kernel and toolchain. However some distros
+> > +	  build userspace this way, and it can produce a functioning kernel.
+> > +
+> > +	  This requires GCC and binutils 2.24 or newer.
+> > +
+> >  config RELOCATABLE
+> >  	bool "Build a relocatable kernel"
+> >  	depends on PPC64 || (FLATMEM && (44x || FSL_BOOKE))
+> > diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+> > index 3212d076ac6a..b90b5cb799aa 100644
+> > --- a/arch/powerpc/Makefile
+> > +++ b/arch/powerpc/Makefile
+> > @@ -91,10 +91,14 @@ endif
+> >  
+> >  ifdef CONFIG_PPC64
+> >  ifndef CONFIG_CC_IS_CLANG
+> > -cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mabi=elfv1)
+> > -cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mcall-aixdesc)
+> > -aflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mabi=elfv1)
+> > -aflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= -mabi=elfv2
+> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> > +cflags-y				+= $(call cc-option,-mabi=elfv2)
+> > +aflags-y				+= $(call cc-option,-mabi=elfv2)
+> > +else
+> > +cflags-y				+= $(call cc-option,-mabi=elfv1)
+> > +cflags-y				+= $(call cc-option,-mcall-aixdesc)
+> > +aflags-y				+= $(call cc-option,-mabi=elfv1)
+> > +endif
+> >  endif
+> >  endif
+> >  
+> > @@ -142,15 +146,17 @@ endif
+> >  
+> >  CFLAGS-$(CONFIG_PPC64)	:= $(call cc-option,-mtraceback=no)
+> >  ifndef CONFIG_CC_IS_CLANG
+> > -ifdef CONFIG_CPU_LITTLE_ENDIAN
+> > -CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2,$(call cc-option,-mcall-aixdesc))
+> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> > +CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2)
+> >  AFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2)
+> >  else
+> > +# Keep these in synch with arch/powerpc/kernel/vdso64/Makefile
+> >  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv1)
+> >  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mcall-aixdesc)
+> >  AFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv1)
+> >  endif
+> >  endif
+> > +
+> >  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mcmodel=medium,$(call cc-option,-mminimal-toc))
+> >  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mno-pointers-to-nested-functions)
+> >  
+> > diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
+> > index 2b8da923ceca..be84a72f8258 100644
+> > --- a/arch/powerpc/boot/Makefile
+> > +++ b/arch/powerpc/boot/Makefile
+> > @@ -40,6 +40,9 @@ BOOTCFLAGS    := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+> >  
+> >  ifdef CONFIG_PPC64_BOOT_WRAPPER
+> >  BOOTCFLAGS	+= -m64
+> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> > +BOOTCFLAGS	+= $(call cc-option,-mabi=elfv2)
+> > +endif
+> >  else
+> >  BOOTCFLAGS	+= -m32
+> >  endif
+> > @@ -50,7 +53,6 @@ ifdef CONFIG_CPU_BIG_ENDIAN
+> >  BOOTCFLAGS	+= -mbig-endian
+> >  else
+> >  BOOTCFLAGS	+= -mlittle-endian
+> > -BOOTCFLAGS	+= $(call cc-option,-mabi=elfv2)
+> >  endif
+> >  
+> >  BOOTAFLAGS	:= -D__ASSEMBLY__ $(BOOTCFLAGS) -nostdinc
+> > diff --git a/arch/powerpc/include/asm/module.h b/arch/powerpc/include/asm/module.h
+> > index 857d9ff24295..043e11068ff4 100644
+> > --- a/arch/powerpc/include/asm/module.h
+> > +++ b/arch/powerpc/include/asm/module.h
+> > @@ -52,6 +52,30 @@ struct mod_arch_specific {
+> >  	unsigned int num_bugs;
+> >  };
+> >  
+> > +/*
+> > + * Check kernel module ELF header architecture specific compatibility.
+> > + */
+> > +static inline bool elf_check_module_arch(Elf_Ehdr *hdr)
+> > +{
+> > +	if (!elf_check_arch(hdr))
+> > +		return false;
+> > +
+> > +	if (IS_ENABLED(CONFIG_PPC64)) {
+> > +		unsigned long abi_level = hdr->e_flags & 0x3;
+> > +
+> > +		if (IS_ENABLED(CONFIG_PPC64_BUILD_ELF_V2_ABI)) {
+> > +			if (abi_level != 2)
+> > +				return false;
+> > +		} else {
+> > +			if (abi_level >= 2)
+> > +				return false;
+> > +		}
+> > +	}
+> > +
+> > +	return true;
+> > +}
+> > +#define elf_check_module_arch elf_check_module_arch
+> > +
+> >  /*
+> >   * Select ELF headers.
+> >   * Make empty section for module_frob_arch_sections to expand.
+> Shouldn't this part go to the second patch?
+Nevermind, this is the second patch now.
 > 
-> It is set by default if you enable CONFIG_PRINTK
+> Thanks
 > 
->> If not, using errname() directly would loose the error code.
->> (note that %pe already deals with it)
->>
->> Dan Capenter already spoke about a potential %e extension, but I don't think
->> anyone did anything yet.
-> 
-> That would be a fun and simple beginner task for someone to do.  Maybe
-> I'll mention it to this new round of interns that have just started...
-
-There seems to be some work on this side in the past.
-
-http://lkml.iu.edu/hypermail/linux/kernel/1309.2/01027.html
-
-This should be a good starting point.
-
-
---srini
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> Michal
+> > diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
+> > index 2813e3f98db6..d783c07e558f 100644
+> > --- a/arch/powerpc/kernel/vdso64/Makefile
+> > +++ b/arch/powerpc/kernel/vdso64/Makefile
+> > @@ -25,6 +25,19 @@ KCOV_INSTRUMENT := n
+> >  UBSAN_SANITIZE := n
+> >  KASAN_SANITIZE := n
+> >  
+> > +# Always build vdso64 with ELFv1 ABI for BE kernels
+> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> > +ifdef CONFIG_CPU_BIG_ENDIAN
+> > +KBUILD_CFLAGS := $(filter-out -mabi=elfv2,$(KBUILD_CFLAGS))
+> > +KBUILD_AFLAGS := $(filter-out -mabi=elfv2,$(KBUILD_AFLAGS))
+> > +
+> > +# These are derived from arch/powerpc/Makefile
+> > +KBUILD_CFLAGS += $(call cc-option,-mabi=elfv1)
+> > +KBUILD_CFLAGS += $(call cc-option,-mcall-aixdesc)
+> > +KBUILD_AFLAGS += $(call cc-option,-mabi=elfv1)
+> > +endif
+> > +endif
+> > +
+> >  ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
+> >  	-Wl,-soname=linux-vdso64.so.1 -Wl,--hash-style=both
+> >  asflags-y := -D__VDSO64__ -s
+> > diff --git a/drivers/crypto/vmx/Makefile b/drivers/crypto/vmx/Makefile
+> > index 709670d2b553..d9ccf9fc3483 100644
+> > --- a/drivers/crypto/vmx/Makefile
+> > +++ b/drivers/crypto/vmx/Makefile
+> > @@ -5,18 +5,22 @@ vmx-crypto-objs := vmx.o aesp8-ppc.o ghashp8-ppc.o aes.o aes_cbc.o aes_ctr.o aes
+> >  ifeq ($(CONFIG_CPU_LITTLE_ENDIAN),y)
+> >  override flavour := linux-ppc64le
+> >  else
+> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
+> > +override flavour := linux-ppc64-elfv2
+> > +else
+> >  override flavour := linux-ppc64
+> >  endif
+> > +endif
+> >  
+> >  quiet_cmd_perl = PERL $@
+> >        cmd_perl = $(PERL) $(<) $(flavour) > $(@)
+> >  
+> >  targets += aesp8-ppc.S ghashp8-ppc.S
+> >  
+> > -$(obj)/aesp8-ppc.S: $(src)/aesp8-ppc.pl FORCE
+> > +$(obj)/aesp8-ppc.S: $(src)/aesp8-ppc.pl $(src)/ppc-xlate.pl FORCE
+> >  	$(call if_changed,perl)
+> >    
+> > -$(obj)/ghashp8-ppc.S: $(src)/ghashp8-ppc.pl FORCE
+> > +$(obj)/ghashp8-ppc.S: $(src)/ghashp8-ppc.pl $(src)/ppc-xlate.pl FORCE
+> >  	$(call if_changed,perl)
+> >  
+> >  clean-files := aesp8-ppc.S ghashp8-ppc.S
+> > diff --git a/drivers/crypto/vmx/ppc-xlate.pl b/drivers/crypto/vmx/ppc-xlate.pl
+> > index 36db2ef09e5b..b583898c11ae 100644
+> > --- a/drivers/crypto/vmx/ppc-xlate.pl
+> > +++ b/drivers/crypto/vmx/ppc-xlate.pl
+> > @@ -9,6 +9,8 @@ open STDOUT,">$output" || die "can't open $output: $!";
+> >  
+> >  my %GLOBALS;
+> >  my $dotinlocallabels=($flavour=~/linux/)?1:0;
+> > +my $elfv2abi=(($flavour =~ /linux-ppc64le/) or ($flavour =~ /linux-ppc64-elfv2/))?1:0;
+> > +my $dotfunctions=($elfv2abi=~1)?0:1;
+> >  
+> >  ################################################################
+> >  # directives which need special treatment on different platforms
+> > @@ -40,7 +42,7 @@ my $globl = sub {
+> >  };
+> >  my $text = sub {
+> >      my $ret = ($flavour =~ /aix/) ? ".csect\t.text[PR],7" : ".text";
+> > -    $ret = ".abiversion	2\n".$ret	if ($flavour =~ /linux.*64le/);
+> > +    $ret = ".abiversion	2\n".$ret	if ($elfv2abi);
+> >      $ret;
+> >  };
+> >  my $machine = sub {
+> > @@ -56,8 +58,8 @@ my $size = sub {
+> >      if ($flavour =~ /linux/)
+> >      {	shift;
+> >  	my $name = shift; $name =~ s|^[\.\_]||;
+> > -	my $ret  = ".size	$name,.-".($flavour=~/64$/?".":"").$name;
+> > -	$ret .= "\n.size	.$name,.-.$name" if ($flavour=~/64$/);
+> > +	my $ret  = ".size	$name,.-".($dotfunctions?".":"").$name;
+> > +	$ret .= "\n.size	.$name,.-.$name" if ($dotfunctions);
+> >  	$ret;
+> >      }
+> >      else
+> > @@ -142,7 +144,7 @@ my $vmr = sub {
+> >  
+> >  # Some ABIs specify vrsave, special-purpose register #256, as reserved
+> >  # for system use.
+> > -my $no_vrsave = ($flavour =~ /linux-ppc64le/);
+> > +my $no_vrsave = ($elfv2abi);
+> >  my $mtspr = sub {
+> >      my ($f,$idx,$ra) = @_;
+> >      if ($idx == 256 && $no_vrsave) {
+> > -- 
+> > 2.23.0
+> > 
