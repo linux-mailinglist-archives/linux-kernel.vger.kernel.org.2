@@ -2,178 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AE03A403D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8543A4042
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhFKKga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S231362AbhFKKgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhFKKgV (ORCPT
+        with ESMTP id S231359AbhFKKgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:36:21 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE27C061574;
-        Fri, 11 Jun 2021 03:34:07 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id u24so36518597edy.11;
-        Fri, 11 Jun 2021 03:34:07 -0700 (PDT)
+        Fri, 11 Jun 2021 06:36:43 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5098C061574;
+        Fri, 11 Jun 2021 03:34:29 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so2689507otk.5;
+        Fri, 11 Jun 2021 03:34:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=NqdU3sOPvnR+y/ypTNiGIzWaUB5NcaIKafz3tiUSmpM=;
-        b=sdjgMGJFIKdoradeiL2ZfLPCgHjC6zByFn+nnk86c22p5+Q0fAa8qPkuZ7xdFWwEAH
-         Zg1dZSA2WqmPMxrr7aJp1FO8PfguyGU6XmB+P/XJdkwNiCc41PDRR1mEBITssA265dqr
-         RTeb/ABgnulZjqxT0Hj85V3mql23NlsQ2E9PdZ4xu69vzWdWA5CqYKTlrPQcA5V8Vh5j
-         zlV7LDQCY94r5dD550t9GGkn4Zvn8mNQqVIKqpXCe0b0q9HisCw5z5gg6Qk1/DQolcGq
-         XhzgFzxaBEYyLBZkpme+QgkMzTWbOPlLtDIRc7ItgA8rIGWbQQznUeVV8XevTBpsBsdC
-         962w==
+        bh=4Pu5Bpf2F/UJvF9uKJ3m2aKujMucNH5SJI5mlJyuB9Q=;
+        b=QPp+Grb1CyKMSGCHFxei6cYRmVlOBshR9pCDzK4iT0gjoEpnvQUc+Z/HhfvmCm9/V4
+         SmbYieHf0KRT/dZi8Q0X84sUBzSm/Q3aURO2i+7BeZt+Z8rXeNGoj04Jg6bqbxna6bPK
+         oeEPJX1onVWJUErXfB5qS1wlaNvRGRHZEoAXxx4+axvdr4sfY5Dgm+T/CUH98xDES0E6
+         IgQS/rG80lnixFSB5aRy86yAL+NrbjcauEXrSFBrEsRfmjngsS2im6dNxynhV0iUdzzK
+         OS8ysVKKOnSJX0d1QbQS1lFAYdb/6U4KYrqlXg2YfFppTO6mRYEn5dPuxDfK3zPqHRl9
+         RFPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NqdU3sOPvnR+y/ypTNiGIzWaUB5NcaIKafz3tiUSmpM=;
-        b=XjLHfvPMNL4qZPWvWBn7hTf20k2E/Ih8ummoj6k81oLI0038rFevqLJvplPXoJlp0j
-         R9rftqPAuCfWdnxhFgZ8o2sQZm88gW3SJRyLAv3/MMg57nP0mMRQxe8n5wZH7lvC5XWA
-         3aJHUxsXHxf/QmKn3jBkM3Fde6wVLgmShr1fJKnpQIRu8pgLtXk9ltoaAsLr6Wc+ypvN
-         PHiHEhW9Uz0FIxU3BZj+KeWTBCbuFC3FXH9WFKom9J74pIEtpOandsQn8ejhnAJN9MJD
-         P8umILZh/3g885vkhNYbdPxOEQBALJf7pOFRSMsozR4ObfHVmLdkJ78sT16KJna6LRE+
-         SKqg==
-X-Gm-Message-State: AOAM533Jw9RmuDFuSwwSRoR6z+4Tkq0y42/ZEXmF2FhRj9UsIC/e+etS
-        wq/5BoIefSXUF7Qs5tblHGU=
-X-Google-Smtp-Source: ABdhPJxaCKfyBszmk3v9dxTZpj0N5BnWB8a922PpkjmnznnabLW2hMTyHEPdcQqa//6jSix6xc5YsA==
-X-Received: by 2002:a05:6402:b11:: with SMTP id bm17mr2928498edb.109.1623407646447;
-        Fri, 11 Jun 2021 03:34:06 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id di16sm2409153edb.62.2021.06.11.03.34.05
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=4Pu5Bpf2F/UJvF9uKJ3m2aKujMucNH5SJI5mlJyuB9Q=;
+        b=l0+xNwjo8v9UFK3Ocy4cT0B1PsqNTJsOPNWsR+JEQDs6cfF2XcwgUOZtfXDiCN7FxV
+         QHmiy2jM+wdIPPDS+st75vx+nKWsJNbUjF2JoSdf5kzmaqLqCZ66EEu7X+sg9ZUjSj3h
+         +UW2TuN+be8F8ntxXi8I/JQm2gzc/nIN0qQ+nfVtq4wgsWRRIIQ5E84vA03ZKbsf0Yzc
+         xf8vA/HGgvCn9wCVUdsTeQtVL2hGehEpjk+vy9TuBMp+999qbbJOmhYl11Z3R9d6a0QK
+         RGvN4o6ThtEJrdpLkWUz2Mc20x8EVDn7+JBcyiYPJ3Epm1JQ2vEC+gepfZRKMUlhXWK2
+         YvcA==
+X-Gm-Message-State: AOAM533WLsnv8AXuhqT33h8IsWE2o1b53tHHVG0/vnOb/uwnQxB0jJHD
+        RZJUgLxUOfcXYm0foAw4znQ=
+X-Google-Smtp-Source: ABdhPJyUTPvHfixh+M2K3fcKVYT51Etc/NymGJInBDt63AZPIJWZStmaGwI5hxLiXEtXy9d1r6vdaw==
+X-Received: by 2002:a9d:8a7:: with SMTP id 36mr2473395otf.287.1623407669202;
+        Fri, 11 Jun 2021 03:34:29 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c13sm1237472otr.23.2021.06.11.03.34.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 03:34:05 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 13:34:04 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: dsa: b53: Create default VLAN entry
- explicitly
-Message-ID: <20210611103404.jqyw4q5ux7ao27tc@skbuf>
-References: <20210611035733.400713-1-f.fainelli@gmail.com>
+        Fri, 11 Jun 2021 03:34:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 11 Jun 2021 03:34:26 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] watchdog: Add Mstar MSC313e WDT driver
+Message-ID: <20210611103426.GA3827319@roeck-us.net>
+References: <20210605170441.33667-1-romain.perier@gmail.com>
+ <20210605170441.33667-3-romain.perier@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210611035733.400713-1-f.fainelli@gmail.com>
+In-Reply-To: <20210605170441.33667-3-romain.perier@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 08:57:32PM -0700, Florian Fainelli wrote:
-> In case CONFIG_VLAN_8021Q is not set, there will be no call down to the
-> b53 driver to ensure that the default PVID VLAN entry will be configured
-> with the appropriate untagged attribute towards the CPU port. We were
-> implicitly relying on dsa_slave_vlan_rx_add_vid() to do that for us,
-> instead make it explicit.
+On Sat, Jun 05, 2021 at 07:04:40PM +0200, Romain Perier wrote:
+> From: Daniel Palmer <daniel@0x0f.com>
 > 
-> Reported-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> It adds a driver for the IP block handling the watchdog timer found for
+> Mstar MSC313e SoCs and newer.
+> 
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> Co-developed-by: Romain Perier <romain.perier@gmail.com>
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 > ---
->  drivers/net/dsa/b53/b53_common.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
+>  MAINTAINERS                    |   1 +
+
+I tried to apply this patch to my tree, but it doesn't apply because ...
+
+>  drivers/watchdog/Kconfig       |  12 +++
+>  drivers/watchdog/Makefile      |   1 +
+>  drivers/watchdog/msc313e_wdt.c | 166 +++++++++++++++++++++++++++++++++
+>  4 files changed, 180 insertions(+)
+>  create mode 100644 drivers/watchdog/msc313e_wdt.c
 > 
-> diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-> index 6e199454e41d..5fd9ed327c1b 100644
-> --- a/drivers/net/dsa/b53/b53_common.c
-> +++ b/drivers/net/dsa/b53/b53_common.c
-> @@ -748,9 +748,20 @@ int b53_configure_vlan(struct dsa_switch *ds)
->  
->  	b53_enable_vlan(dev, -1, dev->vlan_enabled, ds->vlan_filtering);
->  
-> -	b53_for_each_port(dev, i)
-> +	/* Create an untagged VLAN entry for the default PVID in case
-> +	 * CONFIG_VLAN_8021Q is disabled and there are no calls to
-> +	 * dsa_slave_vlan_rx_add_vid() to create the default VLAN
-> +	 * entry. Do this only when the tagging protocol is not
-> +	 * DSA_TAG_PROTO_NONE
-> +	 */
-> +	b53_for_each_port(dev, i) {
-> +		v = &dev->vlans[def_vid];
-> +		v->members |= BIT(i);
-> +		if (dev->tag_protocol != DSA_TAG_PROTO_NONE)
-> +			v->untag = v->members;
->  		b53_write16(dev, B53_VLAN_PAGE,
->  			    B53_VLAN_PORT_DEF_TAG(i), def_vid);
-> +	}
->  
->  	/* Upon initial call we have not set-up any VLANs, but upon
->  	 * system resume, we need to restore all VLAN entries.
-> -- 
-> 2.25.1
-> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a0f37adb9e64..fcc10c57298c 100644
 
-So VLAN 0 is by default egress-tagged?
-This means that for tag_proto == DSA_TAG_PROTO_NONE, you are
-reintroducing the problem fixed by commit d965a5432d4c ("net: dsa: b53:
-Ensure the default VID is untagged"), aka untagged packets sent from the
-DSA master will land as VID-0-tagged on the wire?
+a0f37adb9e64 is not an upstream SHA and there is a conflict. Please resend
+the series based on some upstream tag.
 
-I would expect something like this would yield consistent results
-between the b53_configure_vlan and the b53_vlan_add code path, is that
-true?
-
------------------------------[ cut here ]-----------------------------
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 6e199454e41d..03456e019406 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -728,6 +728,13 @@ static u16 b53_default_pvid(struct b53_device *dev)
- 		return 0;
- }
- 
-+static bool b53_vlan_port_needs_forced_tagged(struct dsa_switch *ds, int port)
-+{
-+	struct b53_device *dev = ds->priv;
-+
-+	return dev->tag_protocol == DSA_TAG_PROTO_NONE && dsa_is_cpu_port(ds, port);
-+}
-+
- int b53_configure_vlan(struct dsa_switch *ds)
- {
- 	struct b53_device *dev = ds->priv;
-@@ -748,6 +755,21 @@ int b53_configure_vlan(struct dsa_switch *ds)
- 
- 	b53_enable_vlan(dev, -1, dev->vlan_enabled, ds->vlan_filtering);
- 
-+	/* Create an untagged VLAN entry for the default PVID in case
-+	 * CONFIG_VLAN_8021Q is disabled and there are no calls to
-+	 * dsa_slave_vlan_rx_add_vid() to create the default VLAN
-+	 * entry. Do this only when the tagging protocol is not
-+	 * DSA_TAG_PROTO_NONE
-+	 */
-+	v = &dev->vlans[def_vid];
-+
-+	b53_for_each_port(dev, i) {
-+		v->members |= BIT(i);
-+
-+		if (!b53_vlan_port_needs_forced_tagged(ds, port))
-+			v->untag |= BIT(i);
-+	}
-+
- 	b53_for_each_port(dev, i)
- 		b53_write16(dev, B53_VLAN_PAGE,
- 			    B53_VLAN_PORT_DEF_TAG(i), def_vid);
-@@ -1460,13 +1482,6 @@ static int b53_vlan_prepare(struct dsa_switch *ds, int port,
- 	return 0;
- }
- 
--static bool b53_vlan_port_needs_forced_tagged(struct dsa_switch *ds, int port)
--{
--	struct b53_device *dev = ds->priv;
--
--	return dev->tag_protocol == DSA_TAG_PROTO_NONE && dsa_is_cpu_port(ds, port);
--}
--
- int b53_vlan_add(struct dsa_switch *ds, int port,
- 		 const struct switchdev_obj_port_vlan *vlan,
- 		 struct netlink_ext_ack *extack)
------------------------------[ cut here ]-----------------------------
+Guenter
