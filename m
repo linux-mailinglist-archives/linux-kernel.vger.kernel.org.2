@@ -2,131 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949BB3A3A49
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126C63A3A4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhFKDcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:32:52 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:39839 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhFKDct (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:32:49 -0400
-Received: by mail-ot1-f50.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so1837189otu.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:30:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1hLzClEPWcc9T3rZaPsiaM+hZWd7ywljr1mqjlpKVTE=;
-        b=sWO79oaAXt8x6S+Sc43eMIvB/4r1u38J21m1vDtkqS8PAN/jWs9esddfmS26EBaSuj
-         SPwuc/0cSz06OGSa0hULBp8+rpvguNIIhDa+JnCAT/kib/THSyOFW4gFbcSbFsx2m4QU
-         yafjlhu5r73lDLTC6Fza+8jWXi9n+JkarPOOdnWiWxNabM6Ila/i4sjGd9gm/GYuV5rI
-         sNPJDeTcvqUClsq23EX940vHEeMVWfmfRBvtNxyAHcbNtU60BKeLspSw25uADkgiWWwJ
-         halhdGv8ZTdpq0MgBbBDk6BRsaTDm0/F+ij9LPB3Wh8UMn8JoG9/8mZ9aMjc4KTp7ODL
-         pWVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1hLzClEPWcc9T3rZaPsiaM+hZWd7ywljr1mqjlpKVTE=;
-        b=CEJeOOGfdGHVJRVUsOHMCUZFfCRjBdkAV0gFwkTS25wcMSpnny2nvNarNNVj+V0whR
-         0jlu29e80JsAfl2gLFtabpdpE3gPYiBIhghsJ2vSAlOZyXNJmmTkzjOEpuvTyZnlXlhQ
-         1ZappZkJU+BuZZJhQ/tOJEm7wSD/VqVoA8A90bRZgQOivxzacrwaIWicQQxkPzYmSusV
-         Z6Fg3ytxcmdk9gMwtygm71IO8tzp1n+ZsUK5nHQrg8TjJzzx+LhvBUMrOwLtlqUj/OoR
-         WFBcBJxsGOGGuLAWDqahyKLa5xfl0UCrKi/KfW+IRJ7xVe6HJxUo5/KCfKWABR2Mdoah
-         eD8A==
-X-Gm-Message-State: AOAM531nXE3OKAt5AhMVymfFZ6ZC5uOvRZ3YTUGP6CA2E42QBJYEzCWH
-        TImvmvsdfyBEv9fqX7zHfESing==
-X-Google-Smtp-Source: ABdhPJw5J7t7bSClrb6lWwgJ8az5i6kqEZymqSBfImxUoo0Pqavlib0JbL7bl+Rawc2sq/Dx380OMg==
-X-Received: by 2002:a9d:344b:: with SMTP id v69mr1219764otb.41.1623382180014;
-        Thu, 10 Jun 2021 20:29:40 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l24sm940271oii.45.2021.06.10.20.29.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 20:29:39 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 22:29:37 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
-        okukatla@codeaurora.org, djakov@kernel.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        agross@kernel.org
-Subject: Re: [PATCH V1] arm64: dts: qcom: sc7180: Added xo clock for eMMC and
- Sd card
-Message-ID: <YMLYob1Qup4wHZqg@builder.lan>
-References: <1623309107-27833-1-git-send-email-sbhanu@codeaurora.org>
- <dd685abc-c332-cd0c-af6a-d2f1116cef05@somainline.org>
+        id S231467AbhFKDhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:37:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:58080 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230479AbhFKDhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 23:37:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=jrzkXDGoUHtqmy4odHiE/JuI9qwK6iCvH8gOoN3YBxM=; b=rdBay5upgW2U5MUQkDPt/P/0m4
+        e0+qnNrHQjb2a4L1mdjD/jl5w8Pjjdsod6QAgbV6ZKohmvrOWsQvAUUrw+jbLOKT8Z2mVH+2aloFX
+        uxCsCfHkdYHE93UT+jlbJLAxYIbJ1Q43gCtbmXJOxMHrSb2GA757/is7qgp+vnoGqi60=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lrXx4-008mbn-7z; Fri, 11 Jun 2021 05:35:22 +0200
+Date:   Fri, 11 Jun 2021 05:35:22 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org
+Subject: Re: [PATCH net-next] net: mdio: mscc-miim: Use
+ devm_platform_get_and_ioremap_resource()
+Message-ID: <YMLZ+k0rjlZY9+7b@lunn.ch>
+References: <20210610091154.4141911-1-yangyingliang@huawei.com>
+ <YMI3VsR/jnVVhmsh@lunn.ch>
+ <fd9cbc9c-478e-85c8-62ec-58a8baf4333c@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dd685abc-c332-cd0c-af6a-d2f1116cef05@somainline.org>
+In-Reply-To: <fd9cbc9c-478e-85c8-62ec-58a8baf4333c@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10 Jun 02:54 CDT 2021, Konrad Dybcio wrote:
-
+On Fri, Jun 11, 2021 at 09:35:04AM +0800, Yang Yingliang wrote:
 > Hi,
 > 
-> 
-> > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > @@ -701,8 +701,9 @@
-> >  			interrupt-names = "hc_irq", "pwr_irq";
-> >  
-> >  			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
-> > -					<&gcc GCC_SDCC1_AHB_CLK>;
-> > -			clock-names = "core", "iface";
-> > +					<&gcc GCC_SDCC1_AHB_CLK>,
-> > +					<&rpmhcc RPMH_CXO_CLK>;
-> 
-> Don't these clocks fit in 100 chars?
-> 
+> On 2021/6/11 0:01, Andrew Lunn wrote:
+> > > -	dev->regs = devm_ioremap_resource(&pdev->dev, res);
+> > > +	dev->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+> > >   	if (IS_ERR(dev->regs)) {
+> > Here, only dev->regs is considered.
+> > 
+> > >   		dev_err(&pdev->dev, "Unable to map MIIM registers\n");
+> > >   		return PTR_ERR(dev->regs);
+> > >   	}
+> > 
+> > 
+> > > +	dev->phy_regs = devm_platform_get_and_ioremap_resource(pdev, 1, &res);
+> > > +	if (res && IS_ERR(dev->phy_regs)) {
+> > Here you look at both res and dev->phy_regs.
+> > 
+> > This seems inconsistent. Can devm_platform_get_and_ioremap_resource()
+> > return success despite res being NULL?
+> No, if res is NULL, devm_platform_get_and_ioremap_resource() returns failed.
+> But, before this patch, if the internal phy res is NULL, it doesn't return
+> error
+> code, so I checked the res to make sure it doesn't change the origin code
+> logic.
 
-We typically list them on one line each, so I'm fine with that.
+O.K, so IORESOURCE_MEM, 1 is optional. By making this change, i think
+you have made this less clear. So i would say it is O.K. to change the
+first platform_get_resource(pdev, IORESOURCE_MEM, 0) and
+devm_ioremap_resource(&pdev->dev, res) to one call, but i would leave
+the second pair alone.
 
-But all three clocks should be aligned.
-
-> 
-> 
-> > +			clock-names = "core", "iface","xo";
-> 
-> A space is missing before "xo".
-> 
-
-Thanks for pointing this out.
-
-I fixed up the indentation and applied the patch.
-
-Regards,
-Bjorn
-
-> 
-> 
-> >  			interconnects = <&aggre1_noc MASTER_EMMC 0 &mc_virt SLAVE_EBI1 0>,
-> >  					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_EMMC_CFG 0>;
-> >  			interconnect-names = "sdhc-ddr","cpu-sdhc";
-> > @@ -2666,8 +2667,9 @@
-> >  			interrupt-names = "hc_irq", "pwr_irq";
-> >  
-> >  			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
-> > -					<&gcc GCC_SDCC2_AHB_CLK>;
-> > -			clock-names = "core", "iface";
-> > +					<&gcc GCC_SDCC2_AHB_CLK>,
-> > +					<&rpmhcc RPMH_CXO_CLK>;
-> 
-> Ditto
-> 
-> 
-> 
-> Konrad
-> 
+    Andrew
