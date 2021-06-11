@@ -2,175 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21703A38C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E083A38CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhFKAbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 20:31:45 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:44254 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230211AbhFKAbn (ORCPT
+        id S231191AbhFKAdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 20:33:24 -0400
+Received: from sonic312-31.consmr.mail.ne1.yahoo.com ([66.163.191.212]:42185
+        "EHLO sonic312-31.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230493AbhFKAdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 20:31:43 -0400
-Received: from mailhost.synopsys.com (badc-mailhost3.synopsys.com [10.192.0.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 23ED7C00B9;
-        Fri, 11 Jun 2021 00:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1623371386; bh=eg1ORYtoTQ/ukVv70L7z+xhUR9d46T2+tO4egiEo8VE=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=G25rmFyPzF9AKkuZfrEi2IXGyfWbUvBMxva3duA67XxUb2sKyvLFi+e948Dl7V2lX
-         UK1d6QvSdL0oJFn9A8KqlhR+Isym65enZW8k+YSdBX7rXcSWTEwlDjx3lFfR0bdGK8
-         cez/VwLMnAEgY8snN5VLoGy+3zpsSCDiHhxXOIfo+Yz711gKhfAJ8r1u9NIzFqUNKN
-         VdBRldgTwcUP+pkYfAZ1IIyCADgGZMQu/fAKx5TbGE6hKjMd75Sf7eQIVwzQk65Q2e
-         scjLrptmr7fl6qRYIaGnBN6aMiNN7t5GbUw7e5jIa9dw0RTpvSijKPAmHRuuYLAarR
-         yT2bQdvtT6uag==
-Received: from o365relay-in.synopsys.com (us03-o365relay3.synopsys.com [10.4.161.139])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 0B6A3A005C;
-        Fri, 11 Jun 2021 00:29:42 +0000 (UTC)
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id D6DCC80095;
-        Fri, 11 Jun 2021 00:29:40 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="LO0GNJSW";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rt5TnR48YdW6ra8FCd4H/VoiPAzmKhlkLOydgpc9GcYQVZVfV/2WozYchtRNZnfLU4DnyJ0Wx67c+HmvpD8Gphrvtcw775+eGI6fUDAV1QWG3dJm5PQ63SY9tuCpd37fRWD6Bm70blkh6odmughN9PNxZpvQCg+eP8ys+IwRf9iepe3vGdyxP4d7lSaooHWl5X2UrzkvIeNljt8d3PyDL0r9XaWDKFeGfj184mfBt1WQVKihIbghL0ufrT7tnkoNuxabSpgSV2POygqy4fCFcvHdTYbU/13nEC/xbPlCxyuxkQZmT/jcQYSXTTkbPgRZyJglwI/vaf8fSmrDaTafHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eg1ORYtoTQ/ukVv70L7z+xhUR9d46T2+tO4egiEo8VE=;
- b=RlrahvBg4nxHmQTRVmNGiwBSlqGWiHkE5I8zC5ZwryqnBG0pPZCWW/f47u5eGDwsUiDI+gzupvp8wHf3N1TW7nsN3GFGGxt6KaIiZ1k8oy/u1a71d33+hx3+qWcZjXDnxkJLhWSicstW+NSJmTn6fD17QenLQTX1FZwANn2W13Syy1fAFm4B4sG/Pj6jOpySwi0sAQUD9jC+WHjsrtrALhS8NDni2fJPAcEI9i3/Kq9IzIHeuLT00n5YS0K5iP1iRB57pGQR3+1FZYMLoshc54tD23/bBuEHf5tweDM5tXKO0WXl6tgwJijVgbVBfuRte2dnVEX/qU9fK/uPm3H7ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eg1ORYtoTQ/ukVv70L7z+xhUR9d46T2+tO4egiEo8VE=;
- b=LO0GNJSWyKB6OXAqZ3wJWk0iEYDvBAak8UMmcFl8gJNNHqk28qJHUD1Tl42nzzqjtoNO0YimiRvFsjqhOqXEjNJZYne9KF0QFQkebces+G/Lvo7vDWFkgXMzeDIpLAm8QlRuVjmP0Lyit/P7h6R51SYOSx/2Gya4/vap1BZTSAg=
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com (2603:10b6:a03:dc::26)
- by BY5PR12MB4257.namprd12.prod.outlook.com (2603:10b6:a03:20f::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Fri, 11 Jun
- 2021 00:29:38 +0000
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d]) by BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d%7]) with mapi id 15.20.4195.030; Fri, 11 Jun 2021
- 00:29:38 +0000
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     Kees Cook <keescook@chromium.org>
-CC:     "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Evgeniy Didin <Evgeniy.Didin@synopsys.com>
-Subject: Re: [PATCH] ARC: fix CONFIG_HARDENED_USERCOPY
-Thread-Topic: [PATCH] ARC: fix CONFIG_HARDENED_USERCOPY
-Thread-Index: AQHXXXyCf5WMbw9WXk6TXeQTkLP8BasNeb0AgAAgA4CAAFPIgIAACTaA
-Date:   Fri, 11 Jun 2021 00:29:38 +0000
-Message-ID: <8519812d-b2b5-ec2a-17d5-856c62538810@synopsys.com>
-References: <20210609221211.2457203-1-vgupta@synopsys.com>
- <202106101001.C736237@keescook>
- <53daee07-9c5b-9cf9-f08a-524afaee762a@synopsys.com>
- <202106101656.C79AEC493@keescook>
-In-Reply-To: <202106101656.C79AEC493@keescook>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-authentication-results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=synopsys.com;
-x-originating-ip: [24.4.73.83]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 109c8548-924b-4cbc-c6e9-08d92c6fff54
-x-ms-traffictypediagnostic: BY5PR12MB4257:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR12MB4257C8F60A0147CD61D06CD3B6349@BY5PR12MB4257.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4i24D9+ERSDQBJqXPf8WbRI4dCkja+L6PzwWHbTxZMCH+7KOaVNMGAYkfZaa9ACqJtxFc/zZFDdGE1dHo2rM466d2C9+JqtsYfrA7C1A0IECGj63Ml5GDHRLG8efar31g9Uj8X+Fu0IM93Y1KlrgS49lIi3H4Hq7Oqg/eZnZBT98YGIhQ+d9XaiiZZb92/kytQuKN0IopPHouRB7BQamHKwMsQHZz06imnBE5D+Ekmu6YP0jMa7AyvB1H0PgAoyp7sEi4GF31N8ouCD7iwmA7hqx2kxAua1TPTe9II1to1I6HSogbXC3EtbU4xzXkuHA7aL1veNb4ygsRrBre2kbPN5y0hwyFQox6m/2RGuZi3O+w4z9lTgtdWpqSZApLg7v6Hy8GmD1RsBuGsIlSswUkUD/nPEyXKVFdTX5a+nSy/6ppdQirERwDAcy6k87sdTTEpbuQEJsfQMHWp1spz3OnWHXff9XUTYKEglY69pb/Eo5tczIN3xaxtzKbwQJyPEjXbDaZSA0wfmExIXvJgdAs/Uwe9Y1YC09T16zh/TT+BQesxoOPuOOBl7tdvYD6gjZaEaNGTpwuAQoX8NQRowBbnM2c+CRIYItTSaCfv7nYd+T7kyg3Zduh2fQZhaNfpyAREEtdwPdKqt1XfSvjfZePovnp/8N8UPFPNHRSKpKVS12i/pJRc+Fyi8nF+VPJQ6Q
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(39860400002)(396003)(136003)(6916009)(38100700002)(8936002)(8676002)(66446008)(478600001)(122000001)(54906003)(71200400001)(6486002)(5660300002)(36756003)(31686004)(53546011)(6506007)(76116006)(86362001)(66476007)(66556008)(6512007)(66946007)(31696002)(2906002)(4326008)(2616005)(64756008)(316002)(186003)(107886003)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VDdadnN2NlhKNTV5N2dlN2NwaVNRMjhucnJTVnRKSnY1eWYvQnA0K1o4bWZq?=
- =?utf-8?B?MXJhYlVNSG9kcXNSK1RlMGpaVEpLMVJ2UTJSQk1Ja2NkNjYxdWt2czRPYllV?=
- =?utf-8?B?RThndlcrRmpDWGRLU2RLekQrcWtySmgrcWFYZU5IWHVTSWZBZHlXbXhPRUw4?=
- =?utf-8?B?YXRSR1BiUTR6QkEvaVk4UTYwcTREcVRWaFZidVlRbnRHSlBLRVRUaFBYN3FR?=
- =?utf-8?B?R2hoT2piSzY1eEpNcC9sNUVHWDdLRDhuSHFTZDdmTFpIaXJ6U0xqT0h4Q3pX?=
- =?utf-8?B?YmlRbHhlRmZCKy9pSy81dFl1UzVrendnaEg0YUZ3SnVWV0YxWmt4cmo5V1J2?=
- =?utf-8?B?UXNYNGovTmpKSUNTaGQ5TXJzSklHcE8vb0EvOWJiVUhadEV2RVU0bkhMSlJy?=
- =?utf-8?B?WFJ2c3F3RzlOWHdOMzdLaE4rZUY1MVB5bHlvcUFOUDA2dlhoVmkrNkhBbmJz?=
- =?utf-8?B?OFUwNFBDakpvVENzZ1RPcGRTTWhLRUlNS2p0bzQrMGtMK095b1IvUmlNaEJP?=
- =?utf-8?B?Z2xjaFk0QXA1SGZ0ZEhlVnBWUjFESHZndHJwNjZiVkN2N0MrQzA0Yk5YN0xo?=
- =?utf-8?B?MjBtNUxRNW5mTkV1amhPSzdWZ3ArZE0vbDRKdUcrczBsNC9NQXQ3a1JoUE1B?=
- =?utf-8?B?QXErQTE2UnJIRE13clJBaXRWU1o0bndGSDJpOUNRQm5KRlliS0lWNlV6R1Rr?=
- =?utf-8?B?K0I2ZjVVeE03WTQ4VE9haEdITzBQU3pDMlhlVXIwWGRBN2NHaWtORlJzby90?=
- =?utf-8?B?MFd2alpXNHNWNitSZnZKaXpkTGJaM0taZjZiK2ZOVmQ1b1RZZk1ic05wR3p4?=
- =?utf-8?B?YWMwaHJnQjREWmdmN2ZBbHNJT1l4TGV4OTdzUlpsRlIrbmdmWlhxNlMraGpv?=
- =?utf-8?B?SENxa0ovUTA0MGhhUXVkT3lwNnBPVzBFclpMRzZKME13TGpOZTdqOGFsM1F1?=
- =?utf-8?B?a2FYSWZmS1VKeDhtL25tTHRldXNvUHJpZ2VkdXhSU1UwQ2U0SXNkdXIyODFZ?=
- =?utf-8?B?byt3YmVtcEhpd3hjNVo3RWxnTVFBQ25oanZkZjdDWkZ3cmcxVmd1dDR4dnFx?=
- =?utf-8?B?WUUwMDAzalh5S0FvRFljN1NpTGNPdjJPaG5VVXJxVXp0SjRKcFl3NEtNa2Ur?=
- =?utf-8?B?cFRhVmtQcWI1YTVNOFdMbHlBTmZkcStKMUhGeVd4aHdxOXl5SjhGUTFEMGQ4?=
- =?utf-8?B?aURNVEhzazkrcVJuSXUyYm14ZDlZRmNIUkF3YkdZVDRQUU04SnFhazlzNlRm?=
- =?utf-8?B?NFRhUi9BUk1BMGIrMmxVVnphcUFORHVVMGpFNEFGb0dObjRnOGZuUXc0ZGtR?=
- =?utf-8?B?VDYrQVE0bHhhKzliK203R0RYd0hVaTdEaVBEZDVpVGsxUVJMdmNWdmZVOU5v?=
- =?utf-8?B?dVB1QTE1WFNEY29VZVR4TUNzem92U3NPK2xyUmhsQXFjTzlTNWd6emxVVGVD?=
- =?utf-8?B?RG10ZW5Mb3NKSXlWbHV4cGVkV1Y0ekxCYTdOanhIY0xiQmxLTVVFWVdWV0Fz?=
- =?utf-8?B?OW1KS3NmWFFaWnhtTHFxZHNXOTZrNENUSlhsY2F0LzlVUkh0Q25qSTdsbnUx?=
- =?utf-8?B?SWZuMFpRbURPNzZkbDgyY3EzUE9yKzNPNXN4ZG8xSmtaMEZySWg2ZEFkZVk5?=
- =?utf-8?B?LzNDV05mdW5sdTI5U0JuVUorM2x1SlNseFg1QzVjUk9rR0w5d251bjF5YzJP?=
- =?utf-8?B?RnlwQkFDcVVHZWlJUUVLY2taak5HRTd2ZzJYaGZjdUdsYzZpZFUwOCsyVTFH?=
- =?utf-8?Q?YhSEwGa5kXGHmI3bUY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A3C47F6DA0958B4390ED7EE2792CEDF1@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 10 Jun 2021 20:33:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1623371485; bh=PYOxDvZGvzLc0GWEGWLW6Y18A54vIQSomE5t+mL3eD4=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=TZyQb68La8iT7O1/axZec9QoF2VVJI+4MdVYbSKoM5PnHdRJk/RsPbhI7kH3y4MZCB5s1F85TiJPZnGSrI3Dt28xOmgrSGy3eZRjwnvalZ8v6njQD3Xl5xB9n+Nvgkh8FJj8BZ6Lmqymj6ptx7azrhLQS1tS6nJCN/YFjdRPS24nXW32+5ccCdHPzptDKAPiuCYkVpUFlAojI4B7a5guB+nF1KdHeVtMpzlJHuNlDS6mUJTaiyvbFxLoO6/sJty0d+hd/I7XFbPiLDS2yrGKFxADYb0JufMt69xob5XF4dTq2wibg7w9z38OmDYtVkSDPvVfsCvWw+LZRLZhUsW3GQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1623371485; bh=HqFEuIrit4ts+ebfOiOPOt/iEbG8+IRrQVMNTRLF97q=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=qJ5lcI2t1IM41VWaW7x6JRUoSAZNAgD3UqdpepuJ9zwYbU4VsmSqQE9gOrValagR7LZgJJbHg7qTDa2aR7ZqJIygSu2r+WmT/1Cu/yjcLKrxZafeD0lVw1lh5zPFp0EArJxBkLXZr0Q/WE4ig/4wmEqcBXX5f3nFmH31UgFk54KlFmq/6CGf7tqYdIKwwCGzDog8tdb0qGbg8pvxc8fcEbOTnWe5OXjKwyU7s6N6kLLaIznNZZ0q+mZxpBDCmLABWh3jmeEOvRexKrOE6ZL32+DsiLH0Scn7Uv1gUd8ZE05I7Gjo+YWR+tYco/aLJHoF4w7Dq0J1/EXRYFSxpubIAw==
+X-YMail-OSG: sDlG9xQVM1kx_dBvpHrDYmEGbyXdSm_5fGskrH4nj_dZRRPKM96fIpLQZ4UbAif
+ Ja6fYJUTzVqYo6uXDlX0Oct1Fd74XuoX8jlLepD9qRXgePfWQSbZeIr4jFNeaXXcjVz6TdtrT6ZY
+ vQmT2V9wJcGvZ2k.MOR3vk2Dg.Sd1P_DTZloQvcLvJ2gZfiw2aWNy0bzfDHAAtnX5eRWJiSXRLWk
+ ddZ2PNbzqzf3irQ5eo37vjmYB18AV2XZ9N9jibH46ksTE4YQALuOtkoCq4eouu8O2Vr4yNpPXF2N
+ ZtbufjuDibgEW6xLjFaaxYTaNjlugUXMuouugJhuY9gmgdDXVYl6e9BEtqfUqxzbMr7TnGqZ8aO.
+ Om3HbxIbwZglyLgbWjDOOtFWHzXN8ED2hsIwLgi9Llytmk_thlDrOyGRlrCgulNkQGTRaiGqF.MH
+ AQj4oW0GGJZ.OVO2A6KWTHy31YBNsIycOiIfcTVfRurTQeDPKo7khS_AMmCo9hfPPErdmIwcjkP2
+ mMCV4iyvMDiLN75TpmYeRgJHfI0REOb9ylFa3uQL16tSFlfilnWojYaGCN0vbel1EbVbi81dVJa6
+ 8.0jyMvbUhsKLT6E7joemVE1rkr77PTBWAhJGBaVb0uGBU91F56fRlXevWk8apoeWVUq4q_BGoec
+ LLA7BvM66TojL85.7bGUQNwGq7bTNmUu5PpUWh0OfU7T5GfpZfeOH2xYxx0PXN.7fMdJIHosjJW7
+ rmJyLIlJbDPIFs.lHekPO6j75_DigFNz85hAYr9E7V_EY_ncFqi3bzXCVOrjpln6kAYCwzqdxcwx
+ Fz.5H6YPwRDzbFBqrMBC0k6arx0.tSAY33Fe5yrm2FjUCJXLMBUv013XvMm9AyHJxcsrJu0gnw3y
+ iEH64_U22m3rwJrKvXw2lS2tJrnJiyIlWl2b7LKv6NCWh980sQfuxU2ggVxciqGWvCR4ZbnzE74T
+ jvM12Nohzrkl4kJ7VNNy8DqnGsvgnP9l0bB.F4oS22kHxNB_sD.sED_SbdntjjkUKSxdK8AtizO0
+ VW3RJhB6RgCUTdr6o.shC_DC_PlaeHoQKWx0HceNE92fBkgaz.K7cn2vl8TqX1vug7q0Gghe5qlR
+ IfwqdNnfPMrjBkVgG6KWfWIkWKSRGeyPqaMA6fIiPa0c8PE4KNCVif3Lz0zFE4SNCNixWnIasKHS
+ DsMGd2hnXiIvlgTHf2qLrt.ysYrj25JMrMEZ_dKg9fFGCN7kZdICTPuI6MYn2fgWrXnwpaOfIN64
+ oNoBrsQO9I4Dbchf5IdyILf4cSic2dQMJd1nRKiuv54NhCEts5HMudi3woCaBg_G3svXUt7f_Xhb
+ 3o47_jzl18EmdAdsUmWolScmViMVbIDgN47nxHqDQBs61xrUq6ktOEh3oLV82GGx1att.E6asNSC
+ 2ysUWxBlx3pbGATXlp1bxL42vITZ_tciewznBxsa0DuONxr4c1OZznagnw7KeHvSD5NFu5AK.HbI
+ B86PaqJF8QsVgARfdJD0pBONGTrBTvM4TNRYDb44D.6B0eQBx6no9dOk7JdD8pAQwZBPRW6oOMQL
+ eujchl6_IYkRyzt87Yehm9hVk9a4iqRq0AmX1JOtMLYIRIw20vej37U8Dnb7harSMOB5Ht7kiiq6
+ 4tEu6jvnuPB14TD7Zzzq95xdbn6gnjEjBQudEvFGWen7rJ3C6AS6gFypBoIZUz.jhHnI3xFjgDwP
+ BWWOP8tliU5TNVd6n59QkyHQ9jv2n_92iWcsXy3f_qwrI_a.rxZBNxRsveeM.OO8Gng9ylLaHUog
+ 891A4FxqdR768Kpn.cPIiGIusKERzG031wPteQjI82GUGDbYibKJ.Dk7bizUKUFguEX65aYC8jMC
+ tUkxCNw0eEPr_RI5BO16LbTjvYX60bblbbH3KeUTWJMx7455bRpQg1Xy3VkjIRmUllWAbBXVck7B
+ ljQQZeWZPptCZ5kMDV1RUkEdHUivWnrZwayITb3Ac2KJSeSJ6fICeXKpE1XIKDgfhlShh21FoGoj
+ 0yPl.h3iTEZrtIOD8neQoU1h7EtXaR2iyR7OiFvSN0QxF7Cnq_35oshtnr.MqJ8D_mWMW3IdJv3s
+ irov0ZdoYESW8u7PVjCHAdMeo.QFCqrMaUOwcePDPX4Bq_.Cal.AbsJWRSk8CZRkqo_tnepI.UP7
+ 2Cl5IZJTw4qpk5kPMYKFMI23RBdwZb7TIVrK8qai4ccjO8plwIjbQIyMaaEzktu7tBAWTW7rh44C
+ pzXK7SOSeiUqSs68XpHKi4nEt918lOAzMeBps4tCXpk7TEaOaxlC8qON34GyZcotqqLp25ovbQKh
+ PLC_sVcLTcX_o.2Q0GWiRGavACUnNggLfW0mYIkBuAGyg2rzQlZH3cdVZ8msY1ei3RA2.N1nFgAX
+ 1HQYvA_jGkq4TfE3UZE28BPKg0.OHauASNy3qskMIWUsbHOfUBR215e3TzBbU8XYSc9lN0P6zWGQ
+ ltEiMTTzL6EUzBeeLsP8jhZJEiYdrVC5Yv7cPYFxdoqH9aXZetwVja2TwlmhXMkJyGroJxQQf.aZ
+ FPUbEOw5.YuvSuSDwxTh9f02RYWPXu8WjDYHIFerhCUR_YU3XkQKp3iyfE6SagKQ9tSYBvwtykD7
+ tmMOjKpXi2u5z98IuVFtgBG5cY.xBgKBYYtM2dZpNivj5tzE77P3HODH65DfWpqMXKswhhPzRIZr
+ K9x2fGrzuNnNyqAP.eCnV.E.6gz1l1MlEks8Cd2V.oY9h0i8paDelG.jXUgNmKa1BDtLPAB5wpvn
+ DQAUk8lIiDrb4FSA1mZvhk_lqf3Cjx7E_pqJrZjPiqVhYepdk8WskQwFAoRzMI3KgTyW3.SFtMGK
+ P_iQGMhxBSgu5Vh1NR.ozkf1Wt_gJsGoQ9IJY3p_qdqI2HPmT63MllZOADJ3rT1l0c_SXtgz8VVb
+ vzbdKgcghUjerz.c0Aj5yBp0eR3fgHWJq7NvhHLs4h8l7JcPe4ZWOJNab7O8CfrF2dwoQmVNG35L
+ V4PjAZ2tpjtV_AE.gSzscpOrMc7s5qiImziBbGOpcyNTo3He.opkf4ti0uV9GbmkulMYrcTFeIf2
+ LhZfxOqH.YR2GVbY2nrPjxBdxejCQOacC66OWWuG.rbAu.l6aitjiHjZZfFVdmlB2.hnLV8s8AHp
+ U_sOfhzgVxt_uGzw_tlvRz0nzTDLiB8Vie6_Y3Hoyowxd7cWpVz90AvEQP9KJrRD_FQQyNN6pd7G
+ Cr0lfmJeZWtT3l3Ib79119NlpX3wYGPJUlnbRaREzFBMKJltRSCFX7FW3HzbFAKAP.Dpw2mWBqCb
+ oZWYDlpLMsktSkDzcWMPjDLGv60Q-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Fri, 11 Jun 2021 00:31:25 +0000
+Received: by kubenode549.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 9f0be996b7250d367351c85ca65abf5a;
+          Fri, 11 Jun 2021 00:31:20 +0000 (UTC)
+From:   Casey Schaufler <casey@schaufler-ca.com>
+To:     casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
+        keescook@chromium.org, john.johansen@canonical.com,
+        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
+        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v27 24/25] LSM: Add /proc attr entry for full LSM context
+Date:   Thu, 10 Jun 2021 17:04:34 -0700
+Message-Id: <20210611000435.36398-25-casey@schaufler-ca.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210611000435.36398-1-casey@schaufler-ca.com>
+References: <20210611000435.36398-1-casey@schaufler-ca.com>
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3479.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 109c8548-924b-4cbc-c6e9-08d92c6fff54
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 00:29:38.5034
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: p4XmdPx5mvxy672yaNZEFAtfjwtEbw8jID5uUTLJUP7JxkOe7QQRxW9WhRcrGPVvRsDDGdDaKESvCK+mvnufxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4257
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNi8xMC8yMSA0OjU2IFBNLCBLZWVzIENvb2sgd3JvdGU6DQo+Pj4+IHxTdGFjayBUcmFjZToN
-Cj4+Pj4gfCBtZW1mZF9mY250bCsweDAvMHg0NzANCj4+Pj4gfCB1c2VyY29weV9hYm9ydCsweDhh
-LzB4OGMNCj4+Pj4gfCBfX2NoZWNrX29iamVjdF9zaXplKzB4MTBlLzB4MTM4DQo+Pj4+IHwgY29w
-eV9zdHJpbmdzKzB4MWY0LzB4MzhjDQo+Pj4+IHwgX19kb19leGVjdmVfZmlsZSsweDM1Mi8weDg0
-OA0KPj4+PiB8IEVWX1RyYXArMHhjYy8weGQwDQo+Pj4gV2hhdCB3YXMgdGhlIHJvb3QgY2F1c2Ug
-aGVyZT8gV2FzIGl0IHRoYXQgdGhlIGluaXQgc2VjdGlvbiBnZXRzIGZyZWVkDQo+Pj4gYW5kIHJl
-dXNlZCBmb3Iga21hbGxvYz8NCj4+IFJpZ2h0LiBBUkMgX3N0ZXh0IHdhcyBlbmNvbXBhc3Npbmcg
-dGhlIGluaXQgc2VjdGlvbiAodG8gY292ZXIgdGhlIGluaXQNCj4+IGNvZGUpIHNvIHdoZW4gaW5p
-dCBnZXRzIGZyZWVkIGFuZCB1c2VkIGJ5IGttYWxsb2MsDQo+PiBjaGVja19rZXJuZWxfdGV4dF9v
-YmplY3QoKSB0cmlwcyBhcyBpdCB0aGlua3MgdGhlIGFsbG9jYXRlZCBwb2ludGVyIGlzDQo+PiBp
-biBrZXJuZWwgLnRleHQuIEFjdHVhbGx5IEkgc2hvdWxkIGhhdmUgYWRkZWQgdGhpcyB0byBjaGFu
-Z2Vsb2cuDQo+IEdyZWF0ISBZZWFoLCBpZiB5b3UgcmVzcGluIGl0IHdpdGggdGhhdCBhZGRlZCwg
-cGxlYXNlIGNvbnNpZGVyIGl0Og0KPg0KPiBSZXZpZXdlZC1ieTogS2VlcyBDb29rIDxrZWVzY29v
-a0BjaHJvbWl1bS5vcmc+DQoNClRoeC4gSSBhZGRlZCB0aGlzIGFuZCBwdXNoZWQgdG8gQVJDIGZv
-ci1jdXJyDQoNCi0tLT4NCiDCoMKgwqAgVGhlIGlzc3VlIGlzIHRyaWdnZXJlZCBieSBhbiBhbGxv
-Y2F0aW9uIGluICJpbml0IHJlY2xhaW1lZCIgcmVnaW9uLg0KIMKgwqDCoCBBUkMgX3N0ZXh0IGVt
-Y29tcGFzc2VzIHRoZSBpbml0IHJlZ2lvbiAoZm9yIGhpc3RvcmljYWwgcmVhc29ucyB3ZSANCndh
-bnRlZA0KIMKgwqDCoCB0aGUgaW5pdC50ZXh0IHRvIGJlIHVuZGVyIC50ZXh0IGFzIHdlbGwpLiBU
-aGlzIGhvd2V2ZXIgdHJpcHMgdXANCiDCoMKgwqAgX19jaGVja19vYmplY3Rfc2l6ZSgpLT5jaGVj
-a19rZXJuZWxfdGV4dF9vYmplY3QoKSB3aGljaCB0cmVhdHMgdGhpcyBhcw0KIMKgwqDCoCBvYmpl
-Y3QgYmxlZWRpZ24gaW50byBrZXJuZWwgdGV4dC4NCg0KIMKgwqDCoCBGaXggdGhhdCBieSByZXpv
-bmluZyBfc3RleHQgdG8gc3RhcnQgZnJvbSByZWd1bGFyIGtlcm5lbCAudGV4dCBhbmQgDQpsZWF2
-ZQ0KIMKgwqDCoCBvdXQgLmluaXQgYWx0b2dldGhlci4NCg0K
+Add an entry /proc/.../attr/context which displays the full
+process security "context" in compound format:
+        lsm1\0value\0lsm2\0value\0...
+This entry is not writable.
+
+A security module may decide that its policy does not allow
+this information to be displayed. In this case none of the
+information will be displayed.
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Cc: linux-api@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+---
+ Documentation/ABI/testing/procfs-attr-context | 14 ++++
+ Documentation/security/lsm.rst                | 14 ++++
+ fs/proc/base.c                                |  1 +
+ include/linux/lsm_hooks.h                     |  6 ++
+ security/apparmor/include/procattr.h          |  2 +-
+ security/apparmor/lsm.c                       |  8 +-
+ security/apparmor/procattr.c                  | 22 +++---
+ security/security.c                           | 79 +++++++++++++++++++
+ security/selinux/hooks.c                      |  2 +-
+ security/smack/smack_lsm.c                    |  2 +-
+ 10 files changed, 135 insertions(+), 15 deletions(-)
+ create mode 100644 Documentation/ABI/testing/procfs-attr-context
+
+diff --git a/Documentation/ABI/testing/procfs-attr-context b/Documentation/ABI/testing/procfs-attr-context
+new file mode 100644
+index 000000000000..40da1c397c30
+--- /dev/null
++++ b/Documentation/ABI/testing/procfs-attr-context
+@@ -0,0 +1,14 @@
++What:		/proc/*/attr/context
++Contact:	linux-security-module@vger.kernel.org,
++Description:	The current security information used by all Linux
++		security module (LSMs) that are active on the system.
++		The details of permissions required to read from
++		this interface and hence obtain the security state
++		of the task identified is dependent on the LSMs that
++		are active on the system.
++		A process cannot write to this interface.
++		The data provided by this interface will have the form:
++			lsm_name\0lsm_data\0[lsm_name\0lsm_data\0]...
++		where lsm_name is the name of the LSM and the following
++		lsm_data is the process data for that LSM.
++Users:		LSM user-space
+diff --git a/Documentation/security/lsm.rst b/Documentation/security/lsm.rst
+index b77b4a540391..070225ae6ceb 100644
+--- a/Documentation/security/lsm.rst
++++ b/Documentation/security/lsm.rst
+@@ -143,3 +143,17 @@ separated list of the active security modules.
+ The file ``/proc/pid/attr/interface_lsm`` contains the name of the security
+ module for which the ``/proc/pid/attr/current`` interface will
+ apply. This interface can be written to.
++
++The infrastructure does provide an interface for the special
++case where multiple security modules provide a process context.
++This is provided in compound context format.
++
++-  `lsm\0value\0lsm\0value\0`
++
++The `lsm` and `value` fields are NUL-terminated bytestrings.
++Each field may contain whitespace or non-printable characters.
++The NUL bytes are included in the size of a compound context.
++The context ``Bell\0Secret\0Biba\0Loose\0`` has a size of 23.
++
++The file ``/proc/pid/attr/context`` provides the security
++context of the identified process.
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 10de522f3112..23ebfc35435c 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2808,6 +2808,7 @@ static const struct pid_entry attr_dir_stuff[] = {
+ 	ATTR(NULL, "keycreate",		0666),
+ 	ATTR(NULL, "sockcreate",	0666),
+ 	ATTR(NULL, "interface_lsm",	0666),
++	ATTR(NULL, "context",		0444),
+ #ifdef CONFIG_SECURITY_SMACK
+ 	DIR("smack",			0555,
+ 	    proc_smack_attr_dir_inode_ops, proc_smack_attr_dir_ops),
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index d2c4bc94d47f..f6ffe8b069e2 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -1397,6 +1397,12 @@
+  *	@pages contains the number of pages.
+  *	Return 0 if permission is granted.
+  *
++ * @getprocattr:
++ *	Provide the named process attribute for display in special files in
++ *	the /proc/.../attr directory.  Attribute naming and the data displayed
++ *	is at the discretion of the security modules.  The exception is the
++ *	"context" attribute, which will contain the security context of the
++ *	task as a nul terminated text string without trailing whitespace.
+  * @ismaclabel:
+  *	Check if the extended attribute specified by @name
+  *	represents a MAC label. Returns 1 if name is a MAC
+diff --git a/security/apparmor/include/procattr.h b/security/apparmor/include/procattr.h
+index 31689437e0e1..03dbfdb2f2c0 100644
+--- a/security/apparmor/include/procattr.h
++++ b/security/apparmor/include/procattr.h
+@@ -11,7 +11,7 @@
+ #ifndef __AA_PROCATTR_H
+ #define __AA_PROCATTR_H
+ 
+-int aa_getprocattr(struct aa_label *label, char **string);
++int aa_getprocattr(struct aa_label *label, char **string, bool newline);
+ int aa_setprocattr_changehat(char *args, size_t size, int flags);
+ 
+ #endif /* __AA_PROCATTR_H */
+diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+index 4237536106aa..65a004597e53 100644
+--- a/security/apparmor/lsm.c
++++ b/security/apparmor/lsm.c
+@@ -602,6 +602,7 @@ static int apparmor_getprocattr(struct task_struct *task, char *name,
+ 	const struct cred *cred = get_task_cred(task);
+ 	struct aa_task_ctx *ctx = task_ctx(current);
+ 	struct aa_label *label = NULL;
++	bool newline = true;
+ 
+ 	if (strcmp(name, "current") == 0)
+ 		label = aa_get_newest_label(cred_label(cred));
+@@ -609,11 +610,14 @@ static int apparmor_getprocattr(struct task_struct *task, char *name,
+ 		label = aa_get_newest_label(ctx->previous);
+ 	else if (strcmp(name, "exec") == 0 && ctx->onexec)
+ 		label = aa_get_newest_label(ctx->onexec);
+-	else
++	else if (strcmp(name, "context") == 0) {
++		label = aa_get_newest_label(cred_label(cred));
++		newline = false;
++	} else
+ 		error = -EINVAL;
+ 
+ 	if (label)
+-		error = aa_getprocattr(label, value);
++		error = aa_getprocattr(label, value, newline);
+ 
+ 	aa_put_label(label);
+ 	put_cred(cred);
+diff --git a/security/apparmor/procattr.c b/security/apparmor/procattr.c
+index c929bf4a3df1..be3b083d9b74 100644
+--- a/security/apparmor/procattr.c
++++ b/security/apparmor/procattr.c
+@@ -20,6 +20,7 @@
+  * aa_getprocattr - Return the profile information for @profile
+  * @profile: the profile to print profile info about  (NOT NULL)
+  * @string: Returns - string containing the profile info (NOT NULL)
++ * @newline: Should a newline be added to @string.
+  *
+  * Returns: length of @string on success else error on failure
+  *
+@@ -30,20 +31,21 @@
+  *
+  * Returns: size of string placed in @string else error code on failure
+  */
+-int aa_getprocattr(struct aa_label *label, char **string)
++int aa_getprocattr(struct aa_label *label, char **string, bool newline)
+ {
+ 	struct aa_ns *ns = labels_ns(label);
+ 	struct aa_ns *current_ns = aa_get_current_ns();
++	int flags = FLAG_VIEW_SUBNS | FLAG_HIDDEN_UNCONFINED;
+ 	int len;
+ 
+ 	if (!aa_ns_visible(current_ns, ns, true)) {
+ 		aa_put_ns(current_ns);
+ 		return -EACCES;
+ 	}
++	if (newline)
++		flags |= FLAG_SHOW_MODE;
+ 
+-	len = aa_label_snxprint(NULL, 0, current_ns, label,
+-				FLAG_SHOW_MODE | FLAG_VIEW_SUBNS |
+-				FLAG_HIDDEN_UNCONFINED);
++	len = aa_label_snxprint(NULL, 0, current_ns, label, flags);
+ 	AA_BUG(len < 0);
+ 
+ 	*string = kmalloc(len + 2, GFP_KERNEL);
+@@ -52,19 +54,19 @@ int aa_getprocattr(struct aa_label *label, char **string)
+ 		return -ENOMEM;
+ 	}
+ 
+-	len = aa_label_snxprint(*string, len + 2, current_ns, label,
+-				FLAG_SHOW_MODE | FLAG_VIEW_SUBNS |
+-				FLAG_HIDDEN_UNCONFINED);
++	len = aa_label_snxprint(*string, len + 2, current_ns, label, flags);
+ 	if (len < 0) {
+ 		aa_put_ns(current_ns);
+ 		return len;
+ 	}
+ 
+-	(*string)[len] = '\n';
+-	(*string)[len + 1] = 0;
++	if (newline) {
++		(*string)[len] = '\n';
++		(*string)[++len] = 0;
++	}
+ 
+ 	aa_put_ns(current_ns);
+-	return len + 1;
++	return len;
+ }
+ 
+ /**
+diff --git a/security/security.c b/security/security.c
+index 81baa94092f4..89ac9cdf8005 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -801,6 +801,57 @@ static int lsm_superblock_alloc(struct super_block *sb)
+ 	return 0;
+ }
+ 
++/**
++ * append_ctx - append a lsm/context pair to a compound context
++ * @ctx: the existing compound context
++ * @ctxlen: size of the old context, including terminating nul byte
++ * @lsm: new lsm name, nul terminated
++ * @new: new context, possibly nul terminated
++ * @newlen: maximum size of @new
++ *
++ * replace @ctx with a new compound context, appending @newlsm and @new
++ * to @ctx. On exit the new data replaces the old, which is freed.
++ * @ctxlen is set to the new size, which includes a trailing nul byte.
++ *
++ * Returns 0 on success, -ENOMEM if no memory is available.
++ */
++static int append_ctx(char **ctx, int *ctxlen, const char *lsm, char *new,
++		      int newlen)
++{
++	char *final;
++	size_t llen;
++	size_t nlen;
++	size_t flen;
++
++	llen = strlen(lsm) + 1;
++	/*
++	 * A security module may or may not provide a trailing nul on
++	 * when returning a security context. There is no definition
++	 * of which it should be, and there are modules that do it
++	 * each way.
++	 */
++	nlen = strnlen(new, newlen);
++
++	flen = *ctxlen + llen + nlen + 1;
++	final = kzalloc(flen, GFP_KERNEL);
++
++	if (final == NULL)
++		return -ENOMEM;
++
++	if (*ctxlen)
++		memcpy(final, *ctx, *ctxlen);
++
++	memcpy(final + *ctxlen, lsm, llen);
++	memcpy(final + *ctxlen + llen, new, nlen);
++
++	kfree(*ctx);
++
++	*ctx = final;
++	*ctxlen = flen;
++
++	return 0;
++}
++
+ /*
+  * The default value of the LSM hook is defined in linux/lsm_hook_defs.h and
+  * can be accessed with:
+@@ -2234,6 +2285,10 @@ int security_getprocattr(struct task_struct *p, const char *lsm, char *name,
+ 				char **value)
+ {
+ 	struct security_hook_list *hp;
++	char *final = NULL;
++	char *cp;
++	int rc = 0;
++	int finallen = 0;
+ 	int ilsm = lsm_task_ilsm(current);
+ 	int slot = 0;
+ 
+@@ -2261,6 +2316,30 @@ int security_getprocattr(struct task_struct *p, const char *lsm, char *name,
+ 		return -ENOMEM;
+ 	}
+ 
++	if (!strcmp(name, "context")) {
++		hlist_for_each_entry(hp, &security_hook_heads.getprocattr,
++				     list) {
++			rc = hp->hook.getprocattr(p, "context", &cp);
++			if (rc == -EINVAL)
++				continue;
++			if (rc < 0) {
++				kfree(final);
++				return rc;
++			}
++			rc = append_ctx(&final, &finallen, hp->lsmid->lsm,
++					cp, rc);
++			kfree(cp);
++			if (rc < 0) {
++				kfree(final);
++				return rc;
++			}
++		}
++		if (final == NULL)
++			return -EINVAL;
++		*value = final;
++		return finallen;
++	}
++
+ 	hlist_for_each_entry(hp, &security_hook_heads.getprocattr, list) {
+ 		if (lsm != NULL && strcmp(lsm, hp->lsmid->lsm))
+ 			continue;
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index b7800fa55a34..0a9af748f77c 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -6468,7 +6468,7 @@ static int selinux_getprocattr(struct task_struct *p,
+ 			goto bad;
+ 	}
+ 
+-	if (!strcmp(name, "current"))
++	if (!strcmp(name, "current") || !strcmp(name, "context"))
+ 		sid = __tsec->sid;
+ 	else if (!strcmp(name, "prev"))
+ 		sid = __tsec->osid;
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index e65497a5c095..1618d7d6154b 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -3477,7 +3477,7 @@ static int smack_getprocattr(struct task_struct *p, char *name, char **value)
+ 	char *cp;
+ 	int slen;
+ 
+-	if (strcmp(name, "current") != 0)
++	if (strcmp(name, "current") != 0 && strcmp(name, "context") != 0)
+ 		return -EINVAL;
+ 
+ 	cp = kstrdup(skp->smk_known, GFP_KERNEL);
+-- 
+2.29.2
+
