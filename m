@@ -2,130 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C703A39EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780443A39F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFKCx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 22:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhFKCx5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:53:57 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1328EC0617AE
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:51:45 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id u11so4389346oiv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 19:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/wD+DhD2AsBgrlw92wrbe1Sc350ImLQPRBTFALVfZ3g=;
-        b=SgX18G0EUgTBy38Hvh6rOI0T9lwsRNa/tNLeyRQapOXcIBf2jiXWwcokxEaxUSrmiL
-         sYmw47S3hIrhk716YU7SWbzp8jXwS5pUAgUL6rysI0wO6FHlEzWhM6ma/0AXwHYgklJx
-         NyQm+0NbBO0QPEHE+hoMJ0mItlWcveEnozpthdZ02mIixpbGDJvOGBAphqJVapb+1+7l
-         cyUu8Ldb4uUGcBoyG5x52wLPLLNWl48Hr4N/gxr3KWsIkiyZSPcVQAVsB60tblypSWeY
-         WV/GCe4cZvhiQc/BRrkSSNFLcX9qbJ8Pihl/GQ2FpFzLkW76lE+S+sB8jjy69wVEJstF
-         pLDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/wD+DhD2AsBgrlw92wrbe1Sc350ImLQPRBTFALVfZ3g=;
-        b=pmjM6EtVoAB5IyhuEboaNeSY1Iiu3C55+SGhCh5cIqxYrVJQZTmf8uBQEd6IkVVrqQ
-         segsStwG9jqlRVMBdtmf/1WX2CLeNobcJ4Ync/hM8u60GyJTdYzZVdcK+eP/D7C63Z8G
-         CgWD+Fxusbvgyjb8isiw610rEN8aqlWHUTXELaIkFUNAuykv9rgL/GxghDzN1eUzmQaZ
-         X5poRTH9lP/bjUZ4oNjff0kl5vTRJoPpSAn/53+5CeTpgALH7HMi5jMFEcG9u1wLO7Tu
-         JNp4Tyc7YWV70gKZLMX1auLJd9ryZzWq7DyQY1vcT2b/rL/5torWcLVPRsAs7TJIWj5f
-         lBCw==
-X-Gm-Message-State: AOAM530QCbe5NUpSJtSBNSMrywQyTPpFKscp5jErB4j3GcS71Ahapn7/
-        nwHVzhKLLebo7SFfEiWp9HT9Hbx2YgyjeQ==
-X-Google-Smtp-Source: ABdhPJxD3oS+iTE7u2HL+xZQR3ZeqyLgSdwSa9Kkl2xSSu+O0WxUCOsYT1kRj0xKj66E+l6B5HEbxA==
-X-Received: by 2002:aca:b509:: with SMTP id e9mr12129192oif.66.1623379904224;
-        Thu, 10 Jun 2021 19:51:44 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x2sm890433oog.10.2021.06.10.19.51.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 19:51:43 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 21:51:42 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH 2/8] dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible
- for SA8155p-adp
-Message-ID: <YMLPvrVVdx0MZJlO@builder.lan>
-References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
- <20210607113840.15435-3-bhupesh.sharma@linaro.org>
+        id S230463AbhFKC4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 22:56:46 -0400
+Received: from mga02.intel.com ([134.134.136.20]:34878 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230035AbhFKC4o (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 22:56:44 -0400
+IronPort-SDR: rwD/alEc6eW7iQaOQ5TriehezBu2UAm040mXbWYkIw8fRQmN0szrEshoiG8ZHoRVWjPAW8FSTN
+ y2l+zGGORH2A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="192560478"
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="192560478"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 19:54:43 -0700
+IronPort-SDR: v5GE+bgtrmK7ZmlK/3vsFSZJqTuEwhRCrny7NeLTzGCVmR2rCvJBRp82fE6njwhQ3FrJdIM3Fd
+ azzJkwJzlAVw==
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="448959865"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.82]) ([10.238.4.82])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 19:54:40 -0700
+Subject: Re: [PATCH v1] perf tools: Fix pattern matching for same substring
+ used in different pmu type
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210609045738.1051-1-yao.jin@linux.intel.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <982714a5-8a5d-8f8a-4e30-bd9a497ffa40@linux.intel.com>
+Date:   Fri, 11 Jun 2021 10:54:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607113840.15435-3-bhupesh.sharma@linaro.org>
+In-Reply-To: <20210609045738.1051-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
+And, though this patch is to fix the uncore_imc/uncore_imc_free_running mismatching issue. We are 
+also surprised to see it can solve another hybrid PMU issue on Alderlake.
 
-> Add pmic-gpio compatible strings for pmm8155au_1 and pmm8155au_2 pmics
-> found on SA8155p-adp board.
+On Alderlake,
+
+# ./perf stat -e cpu/event=0xc2,umask=0x2/ true
+
+Performance counter stats for 'true':
+
+            702,246      cpu_core/event=0xc2,umask=0x2/
+      <not counted>      cpu_atom/event=0xc2,umask=0x2/
+
+It should error out with the wrong PMU rather than using 'cpu_core' and'cpu_atom' instead.
+
+This is still the pattern matching issue. The pattern is "cpu*". Both "cpu_core" and "cpu_atom" can 
+match the pattern "cpu*", so the parser wrongly thinks they are the same PMU type.
+
+Now with this patch,
+
+# ./perf stat -e cpu/cpu-cycles/ true
+event syntax error: 'cpu/cpu-cycles/'
+                      \___ Cannot find PMU `cpu'. Missing kernel support?
+Run 'perf list' for a list of valid events
+
+Thanks
+Jin Yao
+
+On 6/9/2021 12:57 PM, Jin Yao wrote:
+> Some different pmu types may have same substring. For example,
+> on Icelake server, we have pmu types "uncore_imc" and
+> "uncore_imc_free_running". Both pmu types have substring "uncore_imc".
+> But the parser would wrongly think they are the same pmu type.
 > 
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> We enable an imc event,
+> perf stat -e uncore_imc/event=0xe3/ -a -- sleep 1
+> 
+> Perf actually expands the event to:
+> uncore_imc_0/event=0xe3/
+> uncore_imc_1/event=0xe3/
+> uncore_imc_2/event=0xe3/
+> uncore_imc_3/event=0xe3/
+> uncore_imc_4/event=0xe3/
+> uncore_imc_5/event=0xe3/
+> uncore_imc_6/event=0xe3/
+> uncore_imc_7/event=0xe3/
+> uncore_imc_free_running_0/event=0xe3/
+> uncore_imc_free_running_1/event=0xe3/
+> uncore_imc_free_running_3/event=0xe3/
+> uncore_imc_free_running_4/event=0xe3/
+> 
+> That's because the "uncore_imc_free_running" matches the
+> pattern "uncore_imc*".
+> 
+> Now we check that the last characters of pmu name is
+> '_<digit>'.
+> 
+> Fixes: b2b9d3a3f021 ("perf pmu: Support wildcards on pmu name in dynamic pmu events")
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 > ---
->  Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 5 +++++
->  1 file changed, 5 insertions(+)
+>   tools/perf/util/parse-events.y |  2 ++
+>   tools/perf/util/pmu.c          | 25 ++++++++++++++++++++++++-
+>   tools/perf/util/pmu.h          |  1 +
+>   3 files changed, 27 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> index f6a9760558a6..ee4721f1c477 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> @@ -27,6 +27,8 @@ PMIC's from Qualcomm.
->  		    "qcom,pm660l-gpio"
->  		    "qcom,pm8150-gpio"
->  		    "qcom,pm8150b-gpio"
-> +		    "qcom,pmm8155au-1-gpio"
-> +		    "qcom,pmm8155au-2-gpio"
-
-As with the regulator this seems to be a single component.
-
->  		    "qcom,pm8350-gpio"
->  		    "qcom,pm8350b-gpio"
->  		    "qcom,pm8350c-gpio"
-> @@ -116,6 +118,9 @@ to specify in a pin configuration subnode:
->  					     and gpio8)
->  		    gpio1-gpio12 for pm8150b (holes on gpio3, gpio4, gpio7)
->  		    gpio1-gpio12 for pm8150l (hole on gpio7)
-> +		    gpio1-gpio10 for pmm8155au-1 (holes on gpio2, gpio5, gpio7
-> +					          and gpio8)
-> +		    gpio1-gpio10 for pmm8155au-2 (holes on gpio2, gpio5, gpio7)
-
-In the schematics all 10 pins are wired on both of these PMICs, so I
-don't think there are holes. Please omit the comment.
-
-Thanks,
-Bjorn
-
->  		    gpio1-gpio10 for pm8350
->  		    gpio1-gpio8 for pm8350b
->  		    gpio1-gpio9 for pm8350c
-> -- 
-> 2.31.1
+> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> index aba12a4d488e..7a694c7f7f1a 100644
+> --- a/tools/perf/util/parse-events.y
+> +++ b/tools/perf/util/parse-events.y
+> @@ -317,6 +317,8 @@ event_pmu_name opt_pmu_config
+>   			    strncmp($1, "uncore_", 7))
+>   				name += 7;
+>   			if (!fnmatch(pattern, name, 0)) {
+> +				if (!perf_pmu__valid_suffix($1, name))
+> +					continue;
+>   				if (parse_events_copy_term_list(orig_terms, &terms))
+>   					CLEANUP_YYABORT;
+>   				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 88c8ecdc60b0..78af01959830 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -3,6 +3,7 @@
+>   #include <linux/compiler.h>
+>   #include <linux/string.h>
+>   #include <linux/zalloc.h>
+> +#include <linux/ctype.h>
+>   #include <subcmd/pager.h>
+>   #include <sys/types.h>
+>   #include <errno.h>
+> @@ -768,7 +769,7 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+>   	 */
+>   	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
+>   		name = strstr(name, tok);
+> -		if (!name) {
+> +		if (!name || !perf_pmu__valid_suffix(tok, (char *)name)) {
+>   			res = false;
+>   			goto out;
+>   		}
+> @@ -1872,3 +1873,25 @@ bool perf_pmu__has_hybrid(void)
+>   
+>   	return !list_empty(&perf_pmu__hybrid_pmus);
+>   }
+> +
+> +bool perf_pmu__valid_suffix(char *tok, char *pmu_name)
+> +{
+> +	char *p;
+> +
+> +	/*
+> +	 * The pmu_name has substring tok. If the format of
+> +	 * pmu_name is <tok> or <tok>_<digit>, return true.
+> +	 */
+> +	p = pmu_name + strlen(tok);
+> +	if (*p == 0)
+> +		return true;
+> +
+> +	if (*p != '_')
+> +		return false;
+> +
+> +	++p;
+> +	if (*p == 0 || !isdigit(*p))
+> +		return false;
+> +
+> +	return true;
+> +}
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index a790ef758171..ebfd2b71532b 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -133,5 +133,6 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+>   				   char *name);
+>   
+>   bool perf_pmu__has_hybrid(void);
+> +bool perf_pmu__valid_suffix(char *tok, char *pmu_name);
+>   
+>   #endif /* __PMU_H */
 > 
