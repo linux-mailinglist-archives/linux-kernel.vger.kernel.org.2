@@ -2,88 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6713A3964
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7037B3A396C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhFKBwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 21:52:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47562 "EHLO mail.kernel.org"
+        id S231177AbhFKB4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 21:56:44 -0400
+Received: from mga04.intel.com ([192.55.52.120]:50523 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhFKBwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 21:52:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0E2E61376;
-        Fri, 11 Jun 2021 01:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623376213;
-        bh=+zOOnC05XmYLvKaxVBU9rSumtsD4kOVLyyP3s2SFJFU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gpU019KFcZ7f1KtnhTZ5j1tufNajv9wx9LXfHejrr+14lP2jt1R6u0IIVnJGvL+zr
-         oN8dkp3XH5PybLWcYw9He7aUk1wSx8A7aGAh9H78Et2TQfYs9CdtGqs0sgMa0oWZ3l
-         38BKjlsLo/0JkR2YGmluWMamLY2gHPy+AY4hwRwDC48HR/UDMnkjQY1HOIPSmYK9w2
-         9LJ4XfP+lc6rmI9X7XDfmFH5x5ifWT5AZ8gnAd5vqvry5KRSkAjSiNXaNOaNrt/C29
-         peOjoxp7NAv2EW/hnaWRvY1GckCH27a1qtXdE+rAcymjabNCK44hijgBdxcxkug75t
-         DZEXerWkqXr/A==
-Date:   Fri, 11 Jun 2021 10:50:11 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
-Message-Id: <20210611105011.092650f2b921ce36325eff79@kernel.org>
-In-Reply-To: <20210610133346.4a55c60a@oasis.local.home>
-References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
-        <20210610191643.d24e7d56d102567070fe8386@kernel.org>
-        <20210610133346.4a55c60a@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230280AbhFKB4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 21:56:43 -0400
+IronPort-SDR: gT2hzes16oQeNbZzZJLjrRRvDXSGskYdgdY90a3vWyeD7mJtmSfUx44KKIyyTyou/IF5kTUfMW
+ ytR+n5dZ74Jg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="203608384"
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="203608384"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 18:54:46 -0700
+IronPort-SDR: Z1nMXoA+TKKljdj8QimTkHu5VKn2K5z+rehNWO3TmoKM3+QpS6X+3HuWHWONCLuJ68zGB5V5s3
+ o9CJl67Qp6HA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="483087175"
+Received: from shbuild999.sh.intel.com ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 10 Jun 2021 18:54:43 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        Feng Tang <feng.tang@intel.com>, Peter Xu <peterx@redhat.com>
+Subject: [PATCH] mm: relocate 'write_protect_seq' in struct mm_struct
+Date:   Fri, 11 Jun 2021 09:54:42 +0800
+Message-Id: <1623376482-92265-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 13:33:46 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+0day robot reported a 9.2% regression for will-it-scale mmap1 test
+case[1], caused by commit 57efa1fe5957 ("mm/gup: prevent gup_fast
+from racing with COW during fork").
 
-> On Thu, 10 Jun 2021 19:16:43 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Hmm, Nack for this way, but I understand that is a problem.
-> > If you got the error in perf probe, which uses ftrace dynamic-event interface.
-> > In that case, the errors should not be output in the dmesg, but are reported
-> > via error_log in tracefs.
-> > And kprobes itself should return different error code to the caller, instead
-> > of printing error in dmesg. See below.
-> 
-> We should update perf to use libtracefs that also has an interface to
-> read the error_log file.
+Further debug shows the regression is due to that commit changes
+the offset of hot fields 'mmap_lock' inside structure 'mm_struct',
+thus some cache alignment changes.
 
-Hmm, it seems that libtracefs has no parser for the error_log file.
+From the perf data, the contention for 'mmap_lock' is very severe
+and takes around 95% cpu cycles, and it is a rw_semaphore
 
-What we need is to parse error_log and find appropriate entry of
-the error log. Thus, the interface will be;
+        struct rw_semaphore {
+                atomic_long_t count;	/* 8 bytes */
+                atomic_long_t owner;	/* 8 bytes */
+                struct optimistic_spin_queue osq; /* spinner MCS lock */
+                ...
 
-int tracefs_add_dynamic_event(const char *command, char **error_log);
+Before commit 57efa1fe5957 adds the 'write_protect_seq', it
+happens to have a very optimal cache alignment layout, as
+Linus explained:
 
-And the usage will be;
+ "and before the addition of the 'write_protect_seq' field, the
+  mmap_sem was at offset 120 in 'struct mm_struct'.
 
-ret = tracefs_add_dynamic_event(command, &error_buf);
-if (ret < 0) {
-	pr_error("Failed to add dynamic event: %d\n", ret);
-	pr_error("Error log:\n%s\n", error_buf);
-	free(error_buf);
-	return ret;
-}
-...
-This is because error_log file keeps some previous error logs and
-you need to find appropriate one from the actual command.
+  Which meant that count and owner were in two different cachelines,
+  and then when you have contention and spend time in
+  rwsem_down_write_slowpath(), this is probably *exactly* the kind
+  of layout you want.
 
-Maybe a part of perf probe (util/probe-file.c) should be shared with
-libtracefs and finally it should moved on the libtracefs.
+  Because first the rwsem_write_trylock() will do a cmpxchg on the
+  first cacheline (for the optimistic fast-path), and then in the
+  case of contention, rwsem_down_write_slowpath() will just access
+  the second cacheline.
 
-Thank you,
+  Which is probably just optimal for a load that spends a lot of
+  time contended - new waiters touch that first cacheline, and then
+  they queue themselves up on the second cacheline."
 
+After the commit, the rw_semaphore is at offset 128, which means
+the 'count' and 'owner' fields are now in the same cacheline,
+and causes more cache bouncing.
+
+Currently there are 3 "#ifdef CONFIG_XXX" before 'mmap_lock' which
+will affect its offset:
+
+  CONFIG_MMU
+  CONFIG_MEMBARRIER
+  CONFIG_HAVE_ARCH_COMPAT_MMAP_BASES
+
+The layout above is on 64 bits system with 0day's default kernel
+config (similar to RHEL-8.3's config), in which all these 3 options
+are 'y'. And the layout can vary with different kernel configs.
+
+Relayouting a structure is usually a double-edged sword, as sometimes
+it can helps one case, but hurt other cases. For this case, one
+solution is, as the newly added 'write_protect_seq' is a 4 bytes long
+seqcount_t (when CONFIG_DEBUG_LOCK_ALLOC=n), placing it into an
+existing 4 bytes hole in 'mm_struct' will not change other fields'
+alignment, while restoring the regression. 
+
+[1]. https://lore.kernel.org/lkml/20210525031636.GB7744@xsang-OptiPlex-9020/
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Xu <peterx@redhat.com>
+---
+ include/linux/mm_types.h | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 5aacc1c..cba6022 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -445,13 +445,6 @@ struct mm_struct {
+ 		 */
+ 		atomic_t has_pinned;
+ 
+-		/**
+-		 * @write_protect_seq: Locked when any thread is write
+-		 * protecting pages mapped by this mm to enforce a later COW,
+-		 * for instance during page table copying for fork().
+-		 */
+-		seqcount_t write_protect_seq;
+-
+ #ifdef CONFIG_MMU
+ 		atomic_long_t pgtables_bytes;	/* PTE page table pages */
+ #endif
+@@ -460,6 +453,18 @@ struct mm_struct {
+ 		spinlock_t page_table_lock; /* Protects page tables and some
+ 					     * counters
+ 					     */
++		/*
++		 * With some kernel config, the current mmap_lock's offset
++		 * inside 'mm_struct' is at 0x120, which is very optimal, as
++		 * its two hot fields 'count' and 'owner' sit in 2 different
++		 * cachelines,  and when mmap_lock is highly contended, both
++		 * of the 2 fields will be accessed frequently, current layout
++		 * will help to reduce cache bouncing.
++		 *
++		 * So please be careful with adding new fields before
++		 * mmap_lock, which can easily push the 2 fields into one
++		 * cacheline.
++		 */
+ 		struct rw_semaphore mmap_lock;
+ 
+ 		struct list_head mmlist; /* List of maybe swapped mm's.	These
+@@ -480,7 +485,15 @@ struct mm_struct {
+ 		unsigned long stack_vm;	   /* VM_STACK */
+ 		unsigned long def_flags;
+ 
++		/**
++		 * @write_protect_seq: Locked when any thread is write
++		 * protecting pages mapped by this mm to enforce a later COW,
++		 * for instance during page table copying for fork().
++		 */
++		seqcount_t write_protect_seq;
++
+ 		spinlock_t arg_lock; /* protect the below fields */
++
+ 		unsigned long start_code, end_code, start_data, end_data;
+ 		unsigned long start_brk, brk, start_stack;
+ 		unsigned long arg_start, arg_end, env_start, env_end;
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.7.4
+
