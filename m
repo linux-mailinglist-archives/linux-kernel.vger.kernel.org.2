@@ -2,110 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13A43A474F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDF83A4762
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhFKRDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:03:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:35850 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231534AbhFKRDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:03:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0CE4143D;
-        Fri, 11 Jun 2021 10:01:24 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DE6D3F719;
-        Fri, 11 Jun 2021 10:01:19 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, cristian.marussi@arm.com,
-        igor.skalkin@opensynergy.com, peter.hilber@opensynergy.com,
-        alex.bennee@linaro.org, jean-philippe@linaro.org,
-        mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
-        Vasyl.Vavrychuk@opensynergy.com,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: [PATCH v4 16/16] firmware: arm_scmi: Add polling mode to virtio transport
-Date:   Fri, 11 Jun 2021 17:59:37 +0100
-Message-Id: <20210611165937.701-17-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210611165937.701-1-cristian.marussi@arm.com>
-References: <20210611165937.701-1-cristian.marussi@arm.com>
+        id S231675AbhFKREP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:04:15 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:33434 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231608AbhFKRDx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:03:53 -0400
+Received: by mail-oi1-f172.google.com with SMTP id t140so6508307oih.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:01:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wlmv1eeDkO2pPX/G2UzjbnzL6XKsZ2uz2UEOVRUZHw0=;
+        b=JOlmeybaAiKTguAC8h04H5GPTQztM5r5EkgKz2WeOU5nB5vyrzb88ea6a+QadTGMDA
+         gSksNtjVN/Kkg6t2TQpABVSjkt/10I4zDhDEjYOQDSaeylScvzyHCH0Bg7nS17OhfD3V
+         UsA3J54tChNLCWHHvQuNGnmg3rlj6TlyVwWxgQDINum1oIX1b1bMNUZ4FSvswRak3XSk
+         veWUaOjxlqe99aJxHYbaaMtjpQ0MDtirwDTVOlPgqfTZ2TfXLDrpFRdL8CufkFbTcdEx
+         4aHoe5xXfcjtN8ZFXh4jsdTzK5M1E71z3WvnXB+b3FN32OXhX9nPazwSjvnUXnNjKlRW
+         7Zdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wlmv1eeDkO2pPX/G2UzjbnzL6XKsZ2uz2UEOVRUZHw0=;
+        b=ZJGnqUTQncKDuNpq2OUWbFLsti/4AY8qzoPOm2Yss88DyzL6u7qsntrrXgSD14yT0i
+         o6q/VYThX/KEPmFVqMMARVkTyi91zORtADlxe99qSV5CTfkT/IltqR0bHgu37bpKBOcS
+         5kzwb01mMb/vi9e4xQyJopRqhn+hAn2BN8wNBWc3JbCuAkEZL9+VrOn0I+OJ62YqTLxW
+         R4T5ec1Kkyjoipj2PJ4GLVFdHQ6HV5Tdmi9yC4NSEUB1OD+LDN2ewmdZy2+3aEMU/QVb
+         w1uLHLUyk5LrJYvy1K3xYoyx5/ynFNYG2HZrcBewmp8GjUpw/e8S/OLKGifld0R77Qyu
+         SKvw==
+X-Gm-Message-State: AOAM532gVlnQyoAbnAGOQMM5Fy7aJwXBLcJ9MDIbsQU5q2iO0uUybgJz
+        cIP2VieAnbXNNrrfOUr0FNF0Rg==
+X-Google-Smtp-Source: ABdhPJxqxSQk3fRZ3w8ipJ2ez+mvQj/XlBEwseR+p2o9jOwwAK2/atzy23h4QQEcnR7cizU9Lo8BqQ==
+X-Received: by 2002:aca:3e89:: with SMTP id l131mr2998686oia.34.1623430854245;
+        Fri, 11 Jun 2021 10:00:54 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p5sm1256302oip.35.2021.06.11.10.00.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 10:00:53 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/msm/dpu: Avoid ABBA deadlock between IRQ modules
+Date:   Fri, 11 Jun 2021 10:00:03 -0700
+Message-Id: <20210611170003.3539059-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable polling mode support to virtio transport.
+Handling of the interrupt callback lists is done in dpu_core_irq.c,
+under the "cb_lock" spinlock. When these operations results in the need
+for enableing or disabling the IRQ in the hardware the code jumps to
+dpu_hw_interrupts.c, which protects its operations with "irq_lock"
+spinlock.
 
-Upon reception of a synchronous command response for a transfer that has
-the hdr.poll_completion flag set, virtio transport now simply completes the
-same completion which .poll_done() is spinning on.
+When an interrupt fires, dpu_hw_intr_dispatch_irq() inspects the
+hardware state while holding the "irq_lock" spinlock and jumps to
+dpu_core_irq_callback_handler() to invoke the registered handlers, which
+traverses the callback list under the "cb_lock" spinlock.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+As such, in the event that these happens concurrently we'll end up with
+a deadlock.
+
+Prior to '1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")'
+the enable/disable of the hardware interrupt was done outside the
+"cb_lock" region, optimitically by using an atomic enable-counter for
+each interrupt and an warning print if someone changed the list between
+the atomic_read and the time the operation concluded.
+
+Rather than re-introducing the large array of atomics, this change
+embraces the fact that dpu_core_irq and dpu_hw_interrupts are deeply
+entangled and make them share the single "irq_lock".
+
+Following this step it's suggested that we squash the two parts into a
+single irq handling thing.
+
+Fixes: 1c1e7763a6d4 ("drm/msm/dpu: simplify IRQ enabling/disabling")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
-Note that as of now in order to test this you have to forcibly
-enable hdr.poll_completion in the core and increase SCMI_MAX_POLL_TO_NS.
 
-These workarounds won't be needed anymore once addressed by a distinct
-series currently under review.
----
- drivers/firmware/arm_scmi/virtio.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+Changes since v1:
+- Make dpu_core_irq use dpu_hw_interrupts' irq_lock instead of adding another
+  mutex.
 
-diff --git a/drivers/firmware/arm_scmi/virtio.c b/drivers/firmware/arm_scmi/virtio.c
-index 4412bc590ca7..f77c7f288d4c 100644
---- a/drivers/firmware/arm_scmi/virtio.c
-+++ b/drivers/firmware/arm_scmi/virtio.c
-@@ -158,12 +158,12 @@ static void scmi_process_vqueue_input(struct scmi_vio_channel *vioch,
- 	/* Drop processed virtio message anyway */
- 	scmi_finalize_message(vioch, msg);
+ drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c  | 27 ++++-----
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 60 +++++++++++--------
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h | 20 ++++++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h       |  2 -
+ 4 files changed, 63 insertions(+), 46 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+index 4f110c428b60..18557b9713b6 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+@@ -22,7 +22,6 @@ static void dpu_core_irq_callback_handler(void *arg, int irq_idx)
+ 	struct dpu_kms *dpu_kms = arg;
+ 	struct dpu_irq *irq_obj = &dpu_kms->irq_obj;
+ 	struct dpu_irq_callback *cb;
+-	unsigned long irq_flags;
  
-+	/* Deliver DRESP, NOTIF and non-polled RESP */
- 	if (vioch->is_rx || !xfer->hdr.poll_completion)
- 		scmi_rx_callback(vioch->cinfo, msg_hdr);
- 	else
--		dev_warn(vioch->cinfo->dev,
--			 "Polling mode NOT supported. Dropped hdr:0X%X\n",
--			 msg_hdr);
-+		/* poll_done() is busy-waiting on this */
-+		complete(&xfer->done);
+ 	pr_debug("irq_idx=%d\n", irq_idx);
  
- 	scmi_transfer_release(vioch->cinfo, xfer);
+@@ -34,11 +33,9 @@ static void dpu_core_irq_callback_handler(void *arg, int irq_idx)
+ 	/*
+ 	 * Perform registered function callback
+ 	 */
+-	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
+ 	list_for_each_entry(cb, &irq_obj->irq_cb_tbl[irq_idx], list)
+ 		if (cb->func)
+ 			cb->func(cb->arg, irq_idx);
+-	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
  }
-@@ -414,10 +414,16 @@ static void dummy_clear_channel(struct scmi_chan_info *cinfo)
+ 
+ u32 dpu_core_irq_read(struct dpu_kms *dpu_kms, int irq_idx, bool clear)
+@@ -82,22 +79,21 @@ int dpu_core_irq_register_callback(struct dpu_kms *dpu_kms, int irq_idx,
+ 
+ 	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
+ 
+-	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
++	irq_flags = dpu_kms->hw_intr->ops.lock(dpu_kms->hw_intr);
+ 	trace_dpu_core_irq_register_callback(irq_idx, register_irq_cb);
+ 	list_del_init(&register_irq_cb->list);
+ 	list_add_tail(&register_irq_cb->list,
+ 			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx]);
+ 	if (list_is_first(&register_irq_cb->list,
+ 			&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
+-		int ret = dpu_kms->hw_intr->ops.enable_irq(
++		int ret = dpu_kms->hw_intr->ops.enable_irq_locked(
+ 				dpu_kms->hw_intr,
+ 				irq_idx);
+ 		if (ret)
+ 			DPU_ERROR("Fail to enable IRQ for irq_idx:%d\n",
+ 					irq_idx);
+ 	}
+-
+-	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
++	dpu_kms->hw_intr->ops.unlock(dpu_kms->hw_intr, irq_flags);
+ 
+ 	return 0;
+ }
+@@ -127,12 +123,12 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
+ 
+ 	DPU_DEBUG("[%pS] irq_idx=%d\n", __builtin_return_address(0), irq_idx);
+ 
+-	spin_lock_irqsave(&dpu_kms->irq_obj.cb_lock, irq_flags);
++	irq_flags = dpu_kms->hw_intr->ops.lock(dpu_kms->hw_intr);
+ 	trace_dpu_core_irq_unregister_callback(irq_idx, register_irq_cb);
+ 	list_del_init(&register_irq_cb->list);
+ 	/* empty callback list but interrupt is still enabled */
+ 	if (list_empty(&dpu_kms->irq_obj.irq_cb_tbl[irq_idx])) {
+-		int ret = dpu_kms->hw_intr->ops.disable_irq(
++		int ret = dpu_kms->hw_intr->ops.disable_irq_locked(
+ 				dpu_kms->hw_intr,
+ 				irq_idx);
+ 		if (ret)
+@@ -140,7 +136,7 @@ int dpu_core_irq_unregister_callback(struct dpu_kms *dpu_kms, int irq_idx,
+ 					irq_idx);
+ 		DPU_DEBUG("irq_idx=%d ret=%d\n", irq_idx, ret);
+ 	}
+-	spin_unlock_irqrestore(&dpu_kms->irq_obj.cb_lock, irq_flags);
++	dpu_kms->hw_intr->ops.unlock(dpu_kms->hw_intr, irq_flags);
+ 
+ 	return 0;
+ }
+@@ -164,7 +160,8 @@ static void dpu_disable_all_irqs(struct dpu_kms *dpu_kms)
+ #ifdef CONFIG_DEBUG_FS
+ static int dpu_debugfs_core_irq_show(struct seq_file *s, void *v)
  {
+-	struct dpu_irq *irq_obj = s->private;
++	struct dpu_kms *dpu_kms = s->private;
++	struct dpu_irq *irq_obj = &dpu_kms->irq_obj;
+ 	struct dpu_irq_callback *cb;
+ 	unsigned long irq_flags;
+ 	int i, irq_count, cb_count;
+@@ -173,12 +170,12 @@ static int dpu_debugfs_core_irq_show(struct seq_file *s, void *v)
+ 		return 0;
+ 
+ 	for (i = 0; i < irq_obj->total_irqs; i++) {
+-		spin_lock_irqsave(&irq_obj->cb_lock, irq_flags);
++		irq_flags = dpu_kms->hw_intr->ops.lock(dpu_kms->hw_intr);
+ 		cb_count = 0;
+ 		irq_count = atomic_read(&irq_obj->irq_counts[i]);
+ 		list_for_each_entry(cb, &irq_obj->irq_cb_tbl[i], list)
+ 			cb_count++;
+-		spin_unlock_irqrestore(&irq_obj->cb_lock, irq_flags);
++		dpu_kms->hw_intr->ops.unlock(dpu_kms->hw_intr, irq_flags);
+ 
+ 		if (irq_count || cb_count)
+ 			seq_printf(s, "idx:%d irq:%d cb:%d\n",
+@@ -193,7 +190,7 @@ DEFINE_SHOW_ATTRIBUTE(dpu_debugfs_core_irq);
+ void dpu_debugfs_core_irq_init(struct dpu_kms *dpu_kms,
+ 		struct dentry *parent)
+ {
+-	debugfs_create_file("core_irq", 0600, parent, &dpu_kms->irq_obj,
++	debugfs_create_file("core_irq", 0600, parent, dpu_kms,
+ 		&dpu_debugfs_core_irq_fops);
+ }
+ #endif
+@@ -207,8 +204,6 @@ void dpu_core_irq_preinstall(struct dpu_kms *dpu_kms)
+ 	dpu_disable_all_irqs(dpu_kms);
+ 	pm_runtime_put_sync(&dpu_kms->pdev->dev);
+ 
+-	spin_lock_init(&dpu_kms->irq_obj.cb_lock);
+-
+ 	/* Create irq callbacks for all possible irq_idx */
+ 	dpu_kms->irq_obj.total_irqs = dpu_kms->hw_intr->total_irqs;
+ 	dpu_kms->irq_obj.irq_cb_tbl = kcalloc(dpu_kms->irq_obj.total_irqs,
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
+index bf9a147ac245..996011e356f7 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
+@@ -211,10 +211,9 @@ static void dpu_hw_intr_dispatch_irq(struct dpu_hw_intr *intr,
+ 	spin_unlock_irqrestore(&intr->irq_lock, irq_flags);
  }
  
--static bool dummy_poll_done(struct scmi_chan_info *cinfo,
--			    struct scmi_xfer *xfer)
-+static bool virtio_poll_done(struct scmi_chan_info *cinfo,
-+			     struct scmi_xfer *xfer)
+-static int dpu_hw_intr_enable_irq(struct dpu_hw_intr *intr, int irq_idx)
++static int dpu_hw_intr_enable_irq_locked(struct dpu_hw_intr *intr, int irq_idx)
  {
--	return false;
+ 	int reg_idx;
+-	unsigned long irq_flags;
+ 	const struct dpu_intr_reg *reg;
+ 	const char *dbgstr = NULL;
+ 	uint32_t cache_irq_mask;
+@@ -227,10 +226,16 @@ static int dpu_hw_intr_enable_irq(struct dpu_hw_intr *intr, int irq_idx)
+ 		return -EINVAL;
+ 	}
+ 
 +	/*
-+	 * In polling mode SCMI core does not use xfer->done completion,
-+	 * so we can busy-wait on this same completion without adding
-+	 * a new flag: this is completed properly upon msg reception in
-+	 * scmi_process_vqueue_input().
++	 * The cache_irq_mask and hardware RMW operations needs to be done
++	 * under irq_lock and it's the caller's responsibility to ensure that's
++	 * held.
 +	 */
-+	return try_wait_for_completion(&xfer->done);
++	assert_spin_locked(&intr->irq_lock);
++
+ 	reg_idx = DPU_IRQ_REG(irq_idx);
+ 	reg = &dpu_intr_set[reg_idx];
+ 
+-	spin_lock_irqsave(&intr->irq_lock, irq_flags);
+ 	cache_irq_mask = intr->cache_irq_mask[reg_idx];
+ 	if (cache_irq_mask & DPU_IRQ_MASK(irq_idx)) {
+ 		dbgstr = "DPU IRQ already set:";
+@@ -248,7 +253,6 @@ static int dpu_hw_intr_enable_irq(struct dpu_hw_intr *intr, int irq_idx)
+ 
+ 		intr->cache_irq_mask[reg_idx] = cache_irq_mask;
+ 	}
+-	spin_unlock_irqrestore(&intr->irq_lock, irq_flags);
+ 
+ 	pr_debug("%s MASK:0x%.8lx, CACHE-MASK:0x%.8x\n", dbgstr,
+ 			DPU_IRQ_MASK(irq_idx), cache_irq_mask);
+@@ -256,7 +260,7 @@ static int dpu_hw_intr_enable_irq(struct dpu_hw_intr *intr, int irq_idx)
+ 	return 0;
  }
  
- static const struct scmi_transport_ops scmi_virtio_ops = {
-@@ -430,7 +436,7 @@ static const struct scmi_transport_ops scmi_virtio_ops = {
- 	.fetch_response = virtio_fetch_response,
- 	.fetch_notification = virtio_fetch_notification,
- 	.clear_channel = dummy_clear_channel,
--	.poll_done = dummy_poll_done,
-+	.poll_done = virtio_poll_done,
+-static int dpu_hw_intr_disable_irq_nolock(struct dpu_hw_intr *intr, int irq_idx)
++static int dpu_hw_intr_disable_irq_locked(struct dpu_hw_intr *intr, int irq_idx)
+ {
+ 	int reg_idx;
+ 	const struct dpu_intr_reg *reg;
+@@ -271,6 +275,13 @@ static int dpu_hw_intr_disable_irq_nolock(struct dpu_hw_intr *intr, int irq_idx)
+ 		return -EINVAL;
+ 	}
+ 
++	/*
++	 * The cache_irq_mask and hardware RMW operations needs to be done
++	 * under irq_lock and it's the caller's responsibility to ensure that's
++	 * held.
++	 */
++	assert_spin_locked(&intr->irq_lock);
++
+ 	reg_idx = DPU_IRQ_REG(irq_idx);
+ 	reg = &dpu_intr_set[reg_idx];
+ 
+@@ -298,25 +309,6 @@ static int dpu_hw_intr_disable_irq_nolock(struct dpu_hw_intr *intr, int irq_idx)
+ 	return 0;
+ }
+ 
+-static int dpu_hw_intr_disable_irq(struct dpu_hw_intr *intr, int irq_idx)
+-{
+-	unsigned long irq_flags;
+-
+-	if (!intr)
+-		return -EINVAL;
+-
+-	if (irq_idx < 0 || irq_idx >= intr->total_irqs) {
+-		pr_err("invalid IRQ index: [%d]\n", irq_idx);
+-		return -EINVAL;
+-	}
+-
+-	spin_lock_irqsave(&intr->irq_lock, irq_flags);
+-	dpu_hw_intr_disable_irq_nolock(intr, irq_idx);
+-	spin_unlock_irqrestore(&intr->irq_lock, irq_flags);
+-
+-	return 0;
+-}
+-
+ static int dpu_hw_intr_clear_irqs(struct dpu_hw_intr *intr)
+ {
+ 	int i;
+@@ -388,14 +380,30 @@ static u32 dpu_hw_intr_get_interrupt_status(struct dpu_hw_intr *intr,
+ 	return intr_status;
+ }
+ 
++static unsigned long dpu_hw_intr_lock(struct dpu_hw_intr *intr)
++{
++	unsigned long irq_flags;
++
++	spin_lock_irqsave(&intr->irq_lock, irq_flags);
++
++	return irq_flags;
++}
++
++static void dpu_hw_intr_unlock(struct dpu_hw_intr *intr, unsigned long irq_flags)
++{
++	spin_unlock_irqrestore(&intr->irq_lock, irq_flags);
++}
++
+ static void __setup_intr_ops(struct dpu_hw_intr_ops *ops)
+ {
+-	ops->enable_irq = dpu_hw_intr_enable_irq;
+-	ops->disable_irq = dpu_hw_intr_disable_irq;
++	ops->enable_irq_locked = dpu_hw_intr_enable_irq_locked;
++	ops->disable_irq_locked = dpu_hw_intr_disable_irq_locked;
+ 	ops->dispatch_irqs = dpu_hw_intr_dispatch_irq;
+ 	ops->clear_all_irqs = dpu_hw_intr_clear_irqs;
+ 	ops->disable_all_irqs = dpu_hw_intr_disable_irqs;
+ 	ops->get_interrupt_status = dpu_hw_intr_get_interrupt_status;
++	ops->lock = dpu_hw_intr_lock;
++	ops->unlock = dpu_hw_intr_unlock;
+ }
+ 
+ static void __intr_offset(struct dpu_mdss_cfg *m,
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
+index 0073d32effc5..d90dac77c26f 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
+@@ -46,7 +46,7 @@ struct dpu_hw_intr_ops {
+ 	 * @irq_idx:	Lookup irq index return from irq_idx_lookup
+ 	 * @return:	0 for success, otherwise failure
+ 	 */
+-	int (*enable_irq)(
++	int (*enable_irq_locked)(
+ 			struct dpu_hw_intr *intr,
+ 			int irq_idx);
+ 
+@@ -56,7 +56,7 @@ struct dpu_hw_intr_ops {
+ 	 * @irq_idx:	Lookup irq index return from irq_idx_lookup
+ 	 * @return:	0 for success, otherwise failure
+ 	 */
+-	int (*disable_irq)(
++	int (*disable_irq_locked)(
+ 			struct dpu_hw_intr *intr,
+ 			int irq_idx);
+ 
+@@ -101,6 +101,22 @@ struct dpu_hw_intr_ops {
+ 			struct dpu_hw_intr *intr,
+ 			int irq_idx,
+ 			bool clear);
++
++	/**
++	 * lock - take the IRQ lock
++	 * @intr:	HW interrupt handle
++	 * @return:	irq_flags for the taken spinlock
++	 */
++	unsigned long (*lock)(
++			struct dpu_hw_intr *intr);
++
++	/**
++	 * unlock - take the IRQ lock
++	 * @intr:	HW interrupt handle
++	 * @irq_flags:  the irq_flags returned from lock
++	 */
++	void (*unlock)(
++			struct dpu_hw_intr *intr, unsigned long irq_flags);
  };
  
- static int scmi_vio_probe(struct virtio_device *vdev)
+ /**
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+index f6840b1af6e4..3034da1d2977 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+@@ -82,14 +82,12 @@ struct dpu_irq_callback {
+  * struct dpu_irq: IRQ structure contains callback registration info
+  * @total_irq:    total number of irq_idx obtained from HW interrupts mapping
+  * @irq_cb_tbl:   array of IRQ callbacks setting
+- * @cb_lock:      callback lock
+  * @debugfs_file: debugfs file for irq statistics
+  */
+ struct dpu_irq {
+ 	u32 total_irqs;
+ 	struct list_head *irq_cb_tbl;
+ 	atomic_t *irq_counts;
+-	spinlock_t cb_lock;
+ };
+ 
+ struct dpu_kms {
 -- 
-2.17.1
+2.29.2
 
