@@ -2,167 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D6F3A40BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDF63A40B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbhFKLB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:01:59 -0400
-Received: from mail-eopbgr140051.outbound.protection.outlook.com ([40.107.14.51]:54089
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231381AbhFKLBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:01:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MnVXnQWXkQi3kNiP5B1YRGNZWDdgrZVzAdFGMIphynia3r0FutcwFMtmdhb+hWC1cjQxhDNOgPdl4QwQZfAT5ERaBsa4vET7Bw2RkD4HdoTFtwNgwxuJ0JiDh1dkE/0nF+oj5GRLddCZvZ7lYm92JexSyqUwumTzydjOsvrQhXal69dwJapH8HrGHZXNqXhFE+hfL5ronYYeca3RIZvr1l9jiuxblOsR9W7XSUA/eQz192+jtDjTnpPD5cD3V7U/PaSVpTieu46bBC5s++jA1MCuWATOLBk/FTFNazJAkcqdhvZdLAT4URK4QYND61hwjHAemH1Imi1pF2Gaac1bTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b3E8Nmy2UfieGHnfdu8p9LdyQGZUbeElmzN6iIfdiB8=;
- b=T5DgQYv4HOF8eyBMQ+0sgfqYRlNrwNnyv+AZgj3HDonJdrjKGHRn1rxhwkHVVsXfMphoLwnUgGP5Wk3jOcnIy0WFvCksu5RZHhlmv9Lbxsppe3tOxihGJE+FNfuYdwUo13DE/t5WfvkBPiOhpUIhtsJ055sFIxuArF0/p3i5eQUF08dWyum2JV5O3g6D5bWwweQYtYhV3yF6a+30nB7Fah/otTdHtUInBsSF3tW9xI2g3v//BbTUajmCOAUz0UYblSW3rTgGI2+UJq6P6py8xGy/lRGUWO5QYgNiAFywdo97mQ1M0a5J9l1hymaCGHh/NTVFJjduiUoJW1s7Ux3jUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b3E8Nmy2UfieGHnfdu8p9LdyQGZUbeElmzN6iIfdiB8=;
- b=s0z1VWAr0ZDtNayKlyBxBt/Me4dcga9jEkQXc9m5lDKK0jGWgus9u5KFG4IG+4TmPdu8B7nhXwa5o3dIUJyziqDAky64jQLByRekukhBsuqyOemQvwy/IbTnWuFk2YXoUgYP7R0PRfL+bSlbMUtryzt+kMclA/NqD6dkf8UyHYg=
-Authentication-Results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VE1PR04MB7344.eurprd04.prod.outlook.com (2603:10a6:800:1a1::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Fri, 11 Jun
- 2021 10:59:40 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::e8df:8117:d230:f321]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::e8df:8117:d230:f321%5]) with mapi id 15.20.4219.022; Fri, 11 Jun 2021
- 10:59:40 +0000
-Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
- stable/for-linus-5.12)
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        jianxiong Gao <jxgao@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lukas Hartmann <lukas@mntmn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Bumyong Lee <bumyong.lee@samsung.com>,
-        Chanho Park <chanho61.park@samsung.com>
-References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local>
- <YL7XXNOnbaDgmTB9@atmark-techno.com>
- <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
- <20210611062153.GA30906@lst.de> <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <407997cd-dfa0-7b36-fa12-2baebdfcfff7@nxp.com>
-Date:   Fri, 11 Jun 2021 13:59:36 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [78.97.206.147]
-X-ClientProxiedBy: AM0PR04CA0128.eurprd04.prod.outlook.com
- (2603:10a6:208:55::33) To VI1PR04MB4046.eurprd04.prod.outlook.com
- (2603:10a6:803:4d::29)
+        id S229633AbhFKLBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 07:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231388AbhFKLA5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 07:00:57 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D20BC0617AF;
+        Fri, 11 Jun 2021 03:58:41 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id l2so5602154wrw.6;
+        Fri, 11 Jun 2021 03:58:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sHlXs/4AyKqoaFt3FlQwbKcplTb0p0q5KbnQ6QD748Y=;
+        b=UNePa+LGPO/qu2rxwuG+FplDO8SjhAQKaGQFp8ptREA05j2gfjDS1w3rgHbwx1lN/m
+         7oZQTNmvksu5uM4gMzrmtYxH5d6pAjRCgswlYMwPYaShdHu56JAK7DD1fzAtoZGS8P7K
+         m1OxNx/V7dJQpzRla9qeeXqQqimF33QFT7ZLK1vwx9QDeBzoIiCqo1YP+2BSqQc4ZTQs
+         Bt1SvHT/fyFQT7m8kZ0/lXNZePC9dbSfQ5cpbsnlDN13QojUKA6tj5Th1VpDh7CbKNC6
+         ta3HUblaOLDxdEF4v+HX9sfsdZ4GDwQhXiw2I5VtAJtofuwW2cWYDsmGWNUT2LRSxs4B
+         LY8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sHlXs/4AyKqoaFt3FlQwbKcplTb0p0q5KbnQ6QD748Y=;
+        b=m4QgVWZtEQuIuRd0W7egn3DFRPm5b8cYZgyDTOAzwvei4CxkOwBUIjSeqzCgoR01cD
+         kxB6L0lBN9aJ1h7uGJogdVa+vbg1lDrYln/sgNGM9rpWcBd1GFuoo0OywVFd/jPuUxPy
+         T8YiHyMKdiJISvEm9AGGY3z0xCQo8T+m79iEiiYrVhf6LMSWCBOzcUU6rjfOenWqJMHj
+         I0u9Lh8BvE3t5VP9JXMl/lJ4QQkrYaWgnsvXoErrr+JQ7Vd6dGmwPTl0fJdLInGYmpgv
+         3xSijdB/GdJv1mOJuEvgecD0mUw9xuoeXMS4p/CPf98W5r8uCNrbqLkc6NE7HXM+If6/
+         i1Kw==
+X-Gm-Message-State: AOAM531ViqWZ00buIbjq0LxQPrvsYnFIQEZXvNX+YOIjRlfZIBZR/mc0
+        1sYrUtrcpcmPouigoC+nD/c=
+X-Google-Smtp-Source: ABdhPJyWcljzY01pf/Yv0vuW+Np+ixRm30T4eKTiemPFR4ffbw1kdU3OAI1vgB1O8VjiQ4JqM/yl4g==
+X-Received: by 2002:a5d:618f:: with SMTP id j15mr3451243wru.348.1623409119959;
+        Fri, 11 Jun 2021 03:58:39 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id f5sm7446206wrf.22.2021.06.11.03.58.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 03:58:39 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 13:00:14 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
+Message-ID: <YMNCPhHx+s4W7BP3@orome.fritz.box>
+References: <20210609112806.3565057-1-thierry.reding@gmail.com>
+ <20210609112806.3565057-2-thierry.reding@gmail.com>
+ <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
+ <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
+ <a3110fbd-c4af-0317-5a6d-1f780f1dac91@gmail.com>
+ <1400979c-c7a7-9618-1168-70185ed10546@canonical.com>
+ <8d8d019a-34c1-50bd-5eba-ce361c263d35@gmail.com>
+ <57f8e55d-d708-f304-cf35-3036ec2e64f5@gmail.com>
+ <99f98088-fed4-45bf-b0a1-241bfc896487@canonical.com>
+ <f5112945-1b07-8760-4180-4d7152b7dcba@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.213] (78.97.206.147) by AM0PR04CA0128.eurprd04.prod.outlook.com (2603:10a6:208:55::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Fri, 11 Jun 2021 10:59:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 44768021-b992-4394-c136-08d92cc802ba
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7344:
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB7344AABD54ECC607733D2BF998349@VE1PR04MB7344.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7B9PLo8Zbg5cUtCWU491+r92y6lOlfdJECZjFXTQgQPzDoGEy9mjqwD+At3ZeTmI1TcebuycPt1YDgoVlFJ5N7AFEjnELHhQARqHPXvOLSnZdh4kLlTCBwywYMSuVy4BH+a7rJmYmM61z6myNbu2cm8pYLA7C8Y5gK1xkeORM7qDV/xbCXMxV+ulOB4j1v+R/z1b2zVP2AVI0CJu4Sv33jwjQjQ0GKuAXt1tjmXyEOf3OUJ/PyAlDaICNhPMPUBGsJPKOe0PbRyV0Bc8TrpQBZ5DiE5Ag5gKOwzUR9z/qv12tQ7xNVV5deCPrESI8e6uVlg/jhA2wm2BFe+ND9K6HBOLtcfT6MV1m0GV9IxhQuzPveQUYOIWMX6twKEsA7vcmtrIuYz0x5WW8TiY/ND/qcEjMGNESTDNnntCIRCWMmIvhEfL1JjERpvw/bqY8lzOZr+SPJvDkdqvbwPNJScITUPLF0bzjhAnf7huRt8T/QLe63cK0h+4oDYVGlZd7mPpkD66b/G+nSPymV0QnGhAPzXuV722XA4pYUORyC2uyCTKFgFuCWHsoXJbhI3Gl37Pb8jgDRdK+o3EmKtjvbOoaGlIL7MHqaJvla1T4fTcQd3wgRcYkcerwny3jdWgkyYrEwh9wl3/MjJ4xQwZ1ldxhJD1PwrqeG2JSDapZ56qd6BYoATqMObyKI3GP11D1m+AHmzLpsYPNRnBpll5kEybYJTHD2iUvFMwAW72Kk91c9bCKgslCeZxJ0ww0jOYvtVh8rcy6nN/nlWbMZsoYds3Y7nraWCRmJAZZEYp/0OzpjazplwPWCjQNnF9ThY8cXaMq4FV/IPFt7xGp7aylrcE3g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(376002)(346002)(136003)(36756003)(31686004)(110136005)(31696002)(66556008)(16576012)(316002)(54906003)(38100700002)(7416002)(66946007)(6486002)(52116002)(86362001)(66476007)(5660300002)(186003)(8676002)(966005)(4326008)(478600001)(2906002)(16526019)(83380400001)(8936002)(26005)(956004)(53546011)(38350700002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y0s3WFVrUnJLTlEwcWo3emIyZVVTa1A3dFNtTUQ4WEFNNnQrVkZJUUVPektB?=
- =?utf-8?B?WTN4ZXZnRWR0cmRJYmdxd0F3WXQrSi9ya1dUR2g5bzF5OW5YUVEybXMrdkVz?=
- =?utf-8?B?RWZhQVlpd3BucFp4TjlMWnhGV3RtekJzbWtnN2FJSGRGaER5SmZPalpKOE02?=
- =?utf-8?B?dFJFWnVwOFZXSWZWeXhoU0tZaXFNOGFZbEdXdEhWYS9iSmxUV0NyaU9zRlJP?=
- =?utf-8?B?NzdyK0R0dUs0bm45TFR1R2FOOVZXdGJ6aFJyR1FOSjVsbU5zYnRiSE4yMzYv?=
- =?utf-8?B?b1puR253VG1FZFpWV1hEdzZZcU1ldHJtTnRKQ1kzNms5aDdJblBtbHRUSzlq?=
- =?utf-8?B?alFJV1VaZG5xRWlzMXJvUUNvT29Sc0dtMnFydjdEdEZKT2hFVFZZOHRxd0hM?=
- =?utf-8?B?NW5BMWd5alZncVhCUlhSbHJ3Q3NLM1YwK2xocE9GZ05RUGxTTUpvV3d5bUlw?=
- =?utf-8?B?OWV5QS8wWnJ2cTBpSjNqN2V6QU5LVEhRMUJ6OEMrRkpzbnJiWEFxUWdhZlJw?=
- =?utf-8?B?WVNsM3FHNTVlc1JEdFc4Qml5ZFFpVDF0VVZkZHNXQ2I0NWpvMmdnRnk4OTN2?=
- =?utf-8?B?UFhJSmRmV2JNSE9EQSt2Sko0R0QxekpMb3dOSjFSYU81WE84Z3pNRjM3UXpk?=
- =?utf-8?B?TDMvUzJOdjI4dDA2QUl2MEVhUjFVMFlSaXVrTm9sU1kzWXM4UFNmVTVmaGx3?=
- =?utf-8?B?cFBmSVZjY1NIUWhqSkJJMXBjSmo4V1ZxUjNNMmxqVDdOQSt1V2dzVldCSnAz?=
- =?utf-8?B?d0pHNDFVMUJZQzdrTUV6L0F2bXVaRHFuQy9UUWFzc0xaeHl4Nm9mMGhyVmwx?=
- =?utf-8?B?VmV6cXlibHYvc1JJNnJLMzdkWllSOGxjQWR1anZ1OUNFSmd3dFRRRG5EL1o0?=
- =?utf-8?B?cHUyV05JeGUzWGlVS3hFcW1GVUVHOU5TWkVGVmh4SjBoRzRBQm9PV3UzUVk4?=
- =?utf-8?B?T2h0WXFwSWhIOTZHWHFlcDc3Z0tQdTZpVlR4RUFvdTRvWjdFc09TbU1VWkla?=
- =?utf-8?B?V2V1czhVcC83UithV2JiM1RzbXdJWGxTeVU1enRGMUlZdll5WHNnQ0VMdEZK?=
- =?utf-8?B?WVg0Y1dpRTdhZlRNVkNQMXRzNUQ2RVQ0NFpVZ0FneTFNM3hLSlR2L0U3WEc5?=
- =?utf-8?B?RjBaeTZKdWVXMFVMVGxUS29DcHRjeWhnTnRiTmpZUm9GVjdYbldsQnB0WkQ5?=
- =?utf-8?B?U1diU3dtbjhVb3NLRkpIY3lxSUplNHV3TktoOCtFaW5BMTdhOXZSWlpEQ1hF?=
- =?utf-8?B?ZGRTckpNZWlmZGs3STVYRTRkUGpIeDIzOHdaVExuOWQvTE9pU1lkY1QvdkJC?=
- =?utf-8?B?TnpGQXNrOXBob3dyNElhajlMdVBsUTJIS3ZhUTR6dzZRRU8zYTBSRFhKaEhD?=
- =?utf-8?B?ZllPT3dybmQyenBXTTJKK3ZJSTBnYmFVMHZkWTAyaXlIZG5DR1dpdEhpYUpy?=
- =?utf-8?B?VWVYaEY2REpkS08wOTNXcTdiZFcvUDlrdlcxVExNb0NQUVdBQXB2UlpCOFZM?=
- =?utf-8?B?ZWhIcWxuSVhSU2VCRENrWjhIc1BaTTh1UTBvRk9IY0hsT3ROeGFnazE1UXZU?=
- =?utf-8?B?Y0w3UGRsMWszT3FoSUU5SklXVmhpZnR1U3FiY0c3b0xuVm9sUHI4OXhSQlNu?=
- =?utf-8?B?T3RRcDhlZGZzTFpsSTg0a1FXZ1B1VXFJM0o3SmJjNEl6aVB6S2luSXFpN3JK?=
- =?utf-8?B?dW1XbzRxRE9ETlBSRTRGT0NwR0hpRFdlK3NSSDZpYnF5bkcwZk1wSC9meGNW?=
- =?utf-8?Q?qzAumuuRqSpRix4lQlxZv2uVoh85YggJRPIfcFh?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44768021-b992-4394-c136-08d92cc802ba
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 10:59:40.2129
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: L7cjaD1uX6ZMYyRqtDxzg3MfhtZNcbi/BeIHn7IJTrqPpdcvXdyaYqedGxr+kChLrtiOFG7KRuF7bZ+2pU5dMA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7344
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vZYIGLNQbIe9Yg1e"
+Content-Disposition: inline
+In-Reply-To: <f5112945-1b07-8760-4180-4d7152b7dcba@gmail.com>
+User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/2021 1:35 PM, Konrad Rzeszutek Wilk wrote:
-> On Fri, Jun 11, 2021 at 08:21:53AM +0200, Christoph Hellwig wrote:
->> On Thu, Jun 10, 2021 at 05:52:07PM +0300, Horia Geantă wrote:
->>> I've noticed the failure also in v5.10 and v5.11 stable kernels,
->>> since the patch set has been backported.
->>
->> FYI, there has been a patch on the list that should have fixed this
->> for about a month:
->>
->> https://lore.kernel.org/linux-iommu/20210510091816.GA2084@lst.de/T/#m0d0df6490350a08dcc24c9086c8edc165b402d6f
->>
->> but it seems like it never got picked up.
-> 
-> Yikes!
-> 
-> Dominique,
-> 
-> Would you be up to testing the attached (and inline) patch please?
-> 
-> Linus,
-> 
-> Would you be terribly offended if I took your code (s/unsigned
-> long/unsigned int), and used Chanho's description of the problem (see below)?
-> 
-Both patches work for my case.
 
-However, there's yet another, possibly significant, difference b/w the two:
-	offset = (tlb_addr - mem->start) & (IO_TLB_SIZE - 1);
-vs.
-	offset = (tlb_addr & (IO_TLB_SIZE - 1)) -
-		 swiotlb_align_offset(dev, orig_addr);
+--vZYIGLNQbIe9Yg1e
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think accounting for the alignment offset (swiotlb_align_offset())
-has to be kept.
+On Fri, Jun 11, 2021 at 10:21:41AM +0300, Dmitry Osipenko wrote:
+> 11.06.2021 09:50, Krzysztof Kozlowski =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On 10/06/2021 18:23, Dmitry Osipenko wrote:
+> >> 10.06.2021 18:50, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> 10.06.2021 09:43, Krzysztof Kozlowski =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>>> The stubs might be good idea anyway, but the driver explicitly needs=
+ for
+> >>>> runtime working reservedmem, so it should select it.
+> >>>
+> >>> The OF and reservedmem are both selected by the ARCH for the runtime
+> >>> use. They may not be selected in the case of compile-testing.
+> >>>
+> >>> Both OF core and reservedmem provide stubs needed for compile-testing,
+> >>> it's only the RESERVEDMEM_OF_DECLARE() that is missing the stub. Addi=
+ng
+> >>> the missing stub should be a more appropriate solution than adding ex=
+tra
+> >>> Kconfig dependencies, IMO.
+> >=20
+> > Ah, in such case everything looks good. Stubs is indeed proper choice.
+>=20
+> Although, I see that there are only two Kconfigs that have
+> OF_RESERVED_MEM, one defines the OF_RESERVED_MEM, the other is QCOM
+> Kconfig which depends on OF_RESERVED_MEM. The OF_RESERVED_MEM is enabled
+> by default in defconfig.
+>=20
+> You're right, we need the Kconfig change to be entirely correct, since
+> driver won't work properly without OF_RESERVED_MEM.
+>=20
+> config TEGRA210_EMC
+> 	tristate "NVIDIA Tegra210 External Memory Controller driver"
+> -	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
+> +	depends on (ARCH_TEGRA_210_SOC && OF_RESERVED_MEM) || COMPILE_TEST
+>=20
+> I will send that change later today.
 
-Horia
+That's completely unnecessary. OF_RESERVED_MEM is enabled by default if
+OF_EARLY_FLATTREE is enabled, which it is for ARM64 and that is always
+enabled for ARCH_TEGRA_210_SOC.
+
+What Krzysztof had originally proposed, as far as I understand, is to
+add "depends on OF_RESERVED_MEM" so that the dependency is always there
+(including the COMPILE_TEST case). However, that's a bit problematic, as
+I said earlier, because OF_RESERVED_MEM is not user-visible and neither
+is OF_EARLY_FLATTREE, so there's no way to enable OF_RESERVED_MEM unless
+the architecture selected it, which it doesn't on x86, so it kind of
+defeats the purpose of COMPILE_TEST.
+
+So I think if this really has to be compile-test enabled, the only way
+to do that is to either make this select OF_EARLY_FLATTREE, or add the
+stubs.
+
+Another option would perhaps be to enable OF_UNITTEST along with
+COMPILE_TEST, since that also pulls in OF_EARLY_FLATTREE and would allow
+this driver to be built even on x86.
+
+Thierry
+
+--vZYIGLNQbIe9Yg1e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDDQjwACgkQ3SOs138+
+s6E+LA//fQQwkqN9XDGLiugVFwOV58OdpLrGPxg1iXmjBJmbp55XJz4nnqMxSvi2
+4/yGkqNDpMPGsZRx9gJU3SyNhPrf38BWiHfEXw01NmjqtrDtCNiFxgstNZ2YzLY3
+Sewb5WuM8A1WocFhpS6eRQcsEaO4xRfWuzjltMD+mChWlghY2kKYnDGKACkRldJc
+dG41AhawvXoGKuo2aKX9GZfTknMrOIJCVsahWjigYEyU2z6OWtV1d6hhUWVO6mb7
+mRK9HDf4cl4w3KWezn2xxcJP3ReatMGOjTRihrWVih8R9DmwqEVulwoE/zd6BtrK
+CzMfsdAFBQwakRPdcXaXZthfHyA1q+CBHSAQd558u5aQfyX4726D6+DcDo5yo4IM
+E8TS03UihWeC6FUcAwEF7BIARf7T/PcCs5A0Xq4iZduNh0YRTUMDWXFV5KFT3aaL
+cMkFvzox4nBUUxQM4W2Wh6m+6CDVkJMj18YBY0nJf2RdhjCzXp0xVWMt8SjpBQVp
+y7/U2nGrOwcXH0Ih0zXGSBZqaCe+Qm/4+8BMs/afGuK8y1IA8KKdM1OoinOpWVyJ
+t9pczoD3aK7a7g5Wd6i4wzsZJZp0SWkcVa4LqOz6cACz/FN3uMziS08WUZmiZdVR
+ussnNFyYBo9lITocWgYvOqx5jWgTmHZlc0e8t6G3v+DEvm6nUpE=
+=CPro
+-----END PGP SIGNATURE-----
+
+--vZYIGLNQbIe9Yg1e--
