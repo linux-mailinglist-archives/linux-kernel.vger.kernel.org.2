@@ -2,92 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18253A4A1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70D53A4A20
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhFKU2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhFKU2S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:28:18 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A86EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 13:26:20 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id h12so5372688pfe.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 13:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oLhmhHYRPO5l9zgQx7lROFz0cEU6ynaEXV/+WtT2CNs=;
-        b=frEwhe7gHg5gVcBJCPK3ZddVU2cjwZvDRKE8MH1ZPO+262DJ5fGPZr5Ipij97rOQXB
-         L9a/ZGeE7hdnmlidcVhcjvu/admFWK21zBL7q5o62E4X4rDfX+eiUGh9bBe6tQ5JyH1z
-         F5MptC/894qiHceVceNGBteqWY4cfGUvMBSVrPSvM3xtjR9sZWj9HaeacyL4125UGxh2
-         hS731w+CvNupEqs64CopfRwZAjy85eY5v9S83hFLEBZ4R/Ayhzeq4LU8I4LHdw9ml2iT
-         FgLVt4k+CFxMxSpDv/66+DaXiz4Wf2Op8lTwSP2LWNCPNoKHRsWxvfyUYEH/hDPg9o5a
-         fUVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oLhmhHYRPO5l9zgQx7lROFz0cEU6ynaEXV/+WtT2CNs=;
-        b=qgZAol1PZQMs1iCTTMf8A0qLpnHLJmlq4v6GEGRT8bxRJhdbjzyB0U422TyjNYTISU
-         JpsRLaBUVB/l3afmltqB4eKoCNbK22QDsOuDdJ6U45osVuvvAzKpicn/em9t5hu66JKk
-         DsTraL0poBdby6yLXW5JEVLhm4im6r/4UG42A4YNkxu7JEqXsuxOV0oQVNj9p4qC3J2B
-         r43Jr53D8t+5lSGYipGpQsP4Wnjgr6cy67bfcpoi0bpG92lBvLPZtBH+uSwW9gGVTd37
-         98RyHWccULjRSKzo9UhY4XbUzuKM/ByXAu2konwd/hDTquLjwl61pY5KONom9pAspUek
-         P6+g==
-X-Gm-Message-State: AOAM531g0FjMrNyztBRTw5CckzQcs03mtOh8sy2fAzpvVFRIkKocOcTB
-        kT5qcNU1MYWVguIC3CPtnF160GtEZP7jAScFsJfb8A==
-X-Google-Smtp-Source: ABdhPJykJ5K00yYq8LzrZ9TkTjsxAkvB/PffxwTvqeGtsGu/Jo7zgcg9gtZ0Ocfn2WpyJvZxWb96lv7bN1UsXOdojXc=
-X-Received: by 2002:a63:485a:: with SMTP id x26mr5351534pgk.159.1623443179362;
- Fri, 11 Jun 2021 13:26:19 -0700 (PDT)
+        id S230527AbhFKU3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:29:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:61946 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229572AbhFKU3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:29:39 -0400
+IronPort-SDR: fGWv/28po4scJKqq95sD2B2d7KGdQKe2CEAs5oL6+xcBob3uSNPamys9JHh9ZXgEA/2SywkukQ
+ Loj3BD42HXfQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="192715324"
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="192715324"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 13:27:38 -0700
+IronPort-SDR: vVObm5HnaY+QR9/C8VYk+aj+2TR7N0QGFHdSRALgZK/LORdw75UrBm6+nMeCokW1IxoSux27Wz
+ 7xWFOizV2n7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="450879359"
+Received: from lkp-server02.sh.intel.com (HELO 3cb98b298c7e) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 11 Jun 2021 13:27:37 -0700
+Received: from kbuild by 3cb98b298c7e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lrnkf-0000hV-HT; Fri, 11 Jun 2021 20:27:37 +0000
+Date:   Sat, 12 Jun 2021 04:27:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:tip] BUILD SUCCESS 3a1176a9af5a1b7d7a0a40b0975412008eb221c3
+Message-ID: <60c3c723.X+QEHxMuTiZ6Pqj9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210611035725.1248874-1-davidgow@google.com>
-In-Reply-To: <20210611035725.1248874-1-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 11 Jun 2021 13:26:08 -0700
-Message-ID: <CAFd5g44hC9XM2EcphwTNF5Vcz6v3kZg-ZFJwyj610ty6688OSQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Fix result propagation for parameterised tests
-To:     David Gow <davidgow@google.com>
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 8:57 PM David Gow <davidgow@google.com> wrote:
->
-> When one parameter of a parameterised test failed, its failure would be
-> propagated to the overall test, but not to the suite result (unless it
-> was the last parameter).
->
-> This is because test_case->success was being reset to the test->success
-> result after each parameter was used, so a failing test's result would
-> be overwritten by a non-failing result. The overall test result was
-> handled in a third variable, test_result, but this was disacarded after
-> the status line was printed.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tip
+branch HEAD: 3a1176a9af5a1b7d7a0a40b0975412008eb221c3  auto-x86-next: Rename x86/seves to x86/sev
 
-nit: s/disacarded/discarded/g
+elapsed time: 720m
 
-> Instead, just propagate the result after each parameter run.
->
-> Signed-off-by: David Gow <davidgow@google.com>
-> Fixes: fadb08e7c750 ("kunit: Support for Parameterized Testing")
+configs tested: 161
+configs skipped: 3
 
-I tried to reproduce the problem described and was unable to. Anyway,
-from the code it definitely looks like there is a bug like you
-describe. And it definitely looks like your change should fix it.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Anyway, I tried testing your fix, but given I was unable to reproduce
-the failure, I am not super confident in my testing. Still,
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                         cm_x300_defconfig
+arm                         s3c6400_defconfig
+mips                           jazz_defconfig
+arm                     davinci_all_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                     cu1000-neo_defconfig
+s390                                defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                      walnut_defconfig
+powerpc                     sequoia_defconfig
+m68k                        m5272c3_defconfig
+xtensa                              defconfig
+arm                          moxart_defconfig
+powerpc                      bamboo_defconfig
+powerpc                      ppc6xx_defconfig
+mips                          ath25_defconfig
+powerpc                     kmeter1_defconfig
+arm                             pxa_defconfig
+openrisc                         alldefconfig
+sh                          kfr2r09_defconfig
+arm                        realview_defconfig
+mips                           ip32_defconfig
+m68k                        m5307c3_defconfig
+powerpc                      acadia_defconfig
+sh                     sh7710voipgw_defconfig
+arm                          pxa3xx_defconfig
+arm64                            alldefconfig
+powerpc                      cm5200_defconfig
+m68k                            mac_defconfig
+arc                     nsimosci_hs_defconfig
+arm                      jornada720_defconfig
+sh                         ap325rxa_defconfig
+powerpc                      ep88xc_defconfig
+m68k                       m5475evb_defconfig
+powerpc                       ppc64_defconfig
+sh                         ecovec24_defconfig
+mips                      maltasmvp_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc64                           defconfig
+arm                            hisi_defconfig
+ia64                      gensparse_defconfig
+sh                           se7721_defconfig
+m68k                        m5407c3_defconfig
+arm                             mxs_defconfig
+arm                            pleb_defconfig
+arm                         palmz72_defconfig
+sh                          polaris_defconfig
+arm                            qcom_defconfig
+m68k                       m5249evb_defconfig
+sparc                            alldefconfig
+arm                           spitz_defconfig
+powerpc                     stx_gp3_defconfig
+arm                      tct_hammer_defconfig
+m68k                          sun3x_defconfig
+mips                            gpr_defconfig
+powerpc                 mpc836x_mds_defconfig
+xtensa                generic_kc705_defconfig
+arm                        shmobile_defconfig
+arm                       imx_v6_v7_defconfig
+ia64                          tiger_defconfig
+mips                         tb0226_defconfig
+arm                           sunxi_defconfig
+arm                      footbridge_defconfig
+arm                        multi_v7_defconfig
+sh                           se7780_defconfig
+sh                                  defconfig
+sh                          rsk7203_defconfig
+mips                      fuloong2e_defconfig
+sh                        edosk7760_defconfig
+sh                   rts7751r2dplus_defconfig
+xtensa                  nommu_kc705_defconfig
+mips                        workpad_defconfig
+h8300                     edosk2674_defconfig
+openrisc                  or1klitex_defconfig
+sh                          rsk7269_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                     eseries_pxa_defconfig
+mips                        bcm47xx_defconfig
+mips                  decstation_64_defconfig
+arm                      integrator_defconfig
+arm                        spear6xx_defconfig
+arm                        trizeps4_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210611
+x86_64               randconfig-a001-20210611
+x86_64               randconfig-a004-20210611
+x86_64               randconfig-a003-20210611
+x86_64               randconfig-a006-20210611
+x86_64               randconfig-a005-20210611
+i386                 randconfig-a002-20210611
+i386                 randconfig-a006-20210611
+i386                 randconfig-a004-20210611
+i386                 randconfig-a001-20210611
+i386                 randconfig-a005-20210611
+i386                 randconfig-a003-20210611
+i386                 randconfig-a015-20210611
+i386                 randconfig-a013-20210611
+i386                 randconfig-a016-20210611
+i386                 randconfig-a014-20210611
+i386                 randconfig-a012-20210611
+i386                 randconfig-a011-20210611
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                      rhel-8.3-kbuiltin
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+clang tested configs:
+x86_64               randconfig-a015-20210611
+x86_64               randconfig-a011-20210611
+x86_64               randconfig-a012-20210611
+x86_64               randconfig-a014-20210611
+x86_64               randconfig-a016-20210611
+x86_64               randconfig-a013-20210611
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
