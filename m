@@ -2,93 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B723B3A3C65
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465123A3C5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhFKG5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:57:49 -0400
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:45036 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKG5s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:57:48 -0400
-Received: by mail-ua1-f48.google.com with SMTP id 68so2212408uao.11;
-        Thu, 10 Jun 2021 23:55:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uDY2dim4aXXjh83+9TfmRnq4rAnvdm1kS4I6xxJDBSY=;
-        b=V8wkSTGaotw6yDaMI8aW6zeuqP/9qpv6sNZL7MFNPEDxPfllq+EdlOM9Njgg2l7YN4
-         RlcYRVDGe3tq4GGFcM/PXS0vZjEOI6FcWPeEBBfGnTLGKvXKwpCv8+IvTnNrSJjnuya5
-         s4QBw+/4fOzC2ihXRJhoE5MbpAOB960hQ215vegLP+cdgFmfUNjNy9YIA/7XH4ZmNJKs
-         6V2GqdQcrhUEGZP8viIgExf8sr4WRHXrdO77IMJ4HIYYveFdEgr9tfcv0k6aFYA/8sBu
-         IWdSg2MDoOnLVEnV2tQBVQFeM9t3kwkyH/FaPi/yvC5aG6/KxoHGZvXpvnkNFDE6Kc54
-         qsfg==
-X-Gm-Message-State: AOAM533Yb+mOuqMOevMSRMZYEEiQ/AJ+VOMXl8CcQ2re1+/gMq+cZq/+
-        uNFP5S5VNfNh9bGg6PK+kq/mwIdxAQ1s1Mpq1RLDbpjB2Byyeg==
-X-Google-Smtp-Source: ABdhPJzhZ+LeTQ29TGU1dlV4GczrEvE6sFGwLOsBiAcVefRdC1tiB9fStBtgAe4vXGARVmr3VV85cQxTnQjYHt/4Rsk=
-X-Received: by 2002:ab0:71d9:: with SMTP id n25mr1728908uao.2.1623394535969;
- Thu, 10 Jun 2021 23:55:35 -0700 (PDT)
+        id S229824AbhFKG5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229480AbhFKG5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:57:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C88861364;
+        Fri, 11 Jun 2021 06:55:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623394541;
+        bh=nV7qhZxOMEfwQw+aPrIeJJ1lJqNt38ET7V3fCL6+jJE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L8QGtg7aKsKhYsb1x7turV895A0qPbBa4TKKWrkvA/G4SBhePyGaiBBHFDC03kK4S
+         26Bxhnpo7qVhvjYqob7RWnD0h1C50sOy9YgFgMAcEPIkRVv71JgXfInYyURypvwb2C
+         uWp1UPUbjZerHWEHuPYf3AIic+2A2Th6vVF9ldRA=
+Date:   Fri, 11 Jun 2021 08:55:37 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] serial: 8250: Mask out floating 16/32-bit bus bits
+Message-ID: <YMMI6TtSm91JeZNJ@kroah.com>
+References: <alpine.DEB.2.21.2105161721220.3032@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2105181508460.3032@angie.orcam.me.uk>
+ <CAHp75VeGn_wCLevAvD3iyykA73y+mh8k7pjQ2TY-9mt5cqEFWg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210610110001.2805317-1-geert@linux-m68k.org> <20210610220155.GQ664593@dread.disaster.area>
-In-Reply-To: <20210610220155.GQ664593@dread.disaster.area>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 11 Jun 2021 08:55:24 +0200
-Message-ID: <CAMuHMdWp3E3QDnbGDcTZsCiQNP3pLV2nXVmtOD7OEQO8P-9egQ@mail.gmail.com>
-Subject: Re: [PATCH] xfs: Fix 64-bit division on 32-bit in xlog_state_switch_iclogs()
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Dave Chinner <dchinner@redhat.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        Linux-Next <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        noreply@ellerman.id.au
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeGn_wCLevAvD3iyykA73y+mh8k7pjQ2TY-9mt5cqEFWg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+On Fri, Jun 11, 2021 at 09:40:31AM +0300, Andy Shevchenko wrote:
+> On Thursday, June 10, 2021, Maciej W. Rozycki <macro@orcam.me.uk> wrote:
+> > Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-
+> 
+> 
+> Please, find the history group repository (Git.kernel.org) and use proper
+> hash of the real commit.
 
-On Fri, Jun 11, 2021 at 12:02 AM Dave Chinner <david@fromorbit.com> wrote:
-> On Thu, Jun 10, 2021 at 01:00:01PM +0200, Geert Uytterhoeven wrote:
-> > On 32-bit (e.g. m68k):
-> >
-> >     ERROR: modpost: "__udivdi3" [fs/xfs/xfs.ko] undefined!
-> >
-> > Fix this by using a uint32_t intermediate, like before.
-> >
-> > Reported-by: noreply@ellerman.id.au
-> > Fixes: 7660a5b48fbef958 ("xfs: log stripe roundoff is a property of the log")
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> > Compile-tested only.
-> > ---
-> >  fs/xfs/xfs_log.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> <sigh>
->
-> 64 bit division on 32 bit platforms is still a problem in this day
-> and age?
+There is no real need to do that, I'll just put a "cc: stable" in here
+and it will go back as far as we currently maintain.
 
-They're not a problem.  But you should use the right operations from
-<linux/math64.h>, iff you really need these expensive operations.
+thanks,
 
-> Reviewed-by: Dave Chinner <dchinner@redhat.com>
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
