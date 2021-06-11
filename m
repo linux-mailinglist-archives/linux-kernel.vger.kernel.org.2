@@ -2,147 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD543A416A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA29E3A4171
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhFKLtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:49:08 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3211 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhFKLtH (ORCPT
+        id S231467AbhFKLui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 07:50:38 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36184 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230370AbhFKLuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:49:07 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G1f3B5Sp3z6L7Hp;
-        Fri, 11 Jun 2021 19:37:42 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 11 Jun 2021 13:47:07 +0200
-Received: from localhost (10.52.120.251) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 12:47:07 +0100
-Date:   Fri, 11 Jun 2021 12:47:03 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-        <ben.widawsky@intel.com>, <alison.schofield@intel.com>,
-        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/5] libnvdimm: Drop unused device power management
- support
-Message-ID: <20210611124703.000033af@Huawei.com>
-In-Reply-To: <162336397948.2462439.5230237265829121099.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <162336397948.2462439.5230237265829121099.stgit@dwillia2-desk3.amr.corp.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 11 Jun 2021 07:50:37 -0400
+X-UUID: bbe6db63d9d7498bac7329aa3b6d2161-20210611
+X-UUID: bbe6db63d9d7498bac7329aa3b6d2161-20210611
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1283311070; Fri, 11 Jun 2021 19:48:37 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 11 Jun 2021 19:48:35 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 11 Jun 2021 19:48:34 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <youlin.pei@mediatek.com>, <chuanjia.liu@mediatek.com>,
+        <qizhong.cheng@mediatek.com>, <sin_jieyang@mediatek.com>,
+        <drinkcat@chromium.org>, <Rex-BC.Chen@mediatek.com>,
+        Krzysztof Wilczyski <kw@linux.com>, <Ryan-JH.Yu@mediatek.com>
+Subject: [PATCH v2 0/2] PCI: mediatek-gen3: Add support for disable dvfsrc
+Date:   Fri, 11 Jun 2021 19:48:22 +0800
+Message-ID: <20210611114824.14537-1-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.251]
-X-ClientProxiedBy: lhreml742-chm.china.huawei.com (10.201.108.192) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 15:26:19 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
+These series patches add support for disable dvfsrc voltage request.
 
-> LIBNVDIMM device objects register sysfs power attributes despite nothing
-> requiring that support. Clean up sysfs remove the power/ attribute
-> group. This requires a device_create() and a device_register() usage to
-> be converted to the device_initialize() + device_add() pattern.
-> 
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Trivial comment below. Looks good.
+Changes in v2:
+Fix typo.
 
-> ---
->  drivers/nvdimm/bus.c |   45 +++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 37 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/nvdimm/bus.c b/drivers/nvdimm/bus.c
-> index a11821df83b5..e6aa87043a95 100644
-> --- a/drivers/nvdimm/bus.c
-> +++ b/drivers/nvdimm/bus.c
-> @@ -363,8 +363,13 @@ struct nvdimm_bus *nvdimm_bus_register(struct device *parent,
->  	nvdimm_bus->dev.groups = nd_desc->attr_groups;
->  	nvdimm_bus->dev.bus = &nvdimm_bus_type;
->  	nvdimm_bus->dev.of_node = nd_desc->of_node;
-> -	dev_set_name(&nvdimm_bus->dev, "ndbus%d", nvdimm_bus->id);
-> -	rc = device_register(&nvdimm_bus->dev);
-> +	device_initialize(&nvdimm_bus->dev);
-> +	device_set_pm_not_required(&nvdimm_bus->dev);
-> +	rc = dev_set_name(&nvdimm_bus->dev, "ndbus%d", nvdimm_bus->id);
-> +	if (rc)
-> +		goto err;
+Jianjun Wang (2):
+  dt-bindings: PCI: mediatek-gen3: Add property to disable dvfsrc
+    voltage request
+  PCI: mediatek-gen3: Add support for disable dvfsrc voltage request
 
-Maybe mention in patch description that you also now handle errors in
-dev_set_name()?
+ .../bindings/pci/mediatek-pcie-gen3.yaml      |  8 +++++
+ drivers/pci/controller/pcie-mediatek-gen3.c   | 31 +++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-> +
-> +	rc = device_add(&nvdimm_bus->dev);
->  	if (rc) {
->  		dev_dbg(&nvdimm_bus->dev, "registration failed: %d\n", rc);
->  		goto err;
-> @@ -525,6 +530,7 @@ void __nd_device_register(struct device *dev)
->  		set_dev_node(dev, to_nd_region(dev)->numa_node);
->  
->  	dev->bus = &nvdimm_bus_type;
-> +	device_set_pm_not_required(dev);
->  	if (dev->parent) {
->  		get_device(dev->parent);
->  		if (dev_to_node(dev) == NUMA_NO_NODE)
-> @@ -717,18 +723,41 @@ const struct attribute_group nd_numa_attribute_group = {
->  	.is_visible = nd_numa_attr_visible,
->  };
->  
-> +static void ndctl_release(struct device *dev)
-> +{
-> +	kfree(dev);
-> +}
-> +
->  int nvdimm_bus_create_ndctl(struct nvdimm_bus *nvdimm_bus)
->  {
->  	dev_t devt = MKDEV(nvdimm_bus_major, nvdimm_bus->id);
->  	struct device *dev;
-> +	int rc;
->  
-> -	dev = device_create(nd_class, &nvdimm_bus->dev, devt, nvdimm_bus,
-> -			"ndctl%d", nvdimm_bus->id);
-> +	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-> +	if (!dev)
-> +		return -ENOMEM;
-> +	device_initialize(dev);
-> +	device_set_pm_not_required(dev);
-> +	dev->class = nd_class;
-> +	dev->parent = &nvdimm_bus->dev;
-> +	dev->devt = devt;
-> +	dev->release = ndctl_release;
-> +	rc = dev_set_name(dev, "ndctl%d", nvdimm_bus->id);
-> +	if (rc)
-> +		goto err;
->  
-> -	if (IS_ERR(dev))
-> -		dev_dbg(&nvdimm_bus->dev, "failed to register ndctl%d: %ld\n",
-> -				nvdimm_bus->id, PTR_ERR(dev));
-> -	return PTR_ERR_OR_ZERO(dev);
-> +	rc = device_add(dev);
-> +	if (rc) {
-> +		dev_dbg(&nvdimm_bus->dev, "failed to register ndctl%d: %d\n",
-> +				nvdimm_bus->id, rc);
-> +		goto err;
-> +	}
-> +	return 0;
-> +
-> +err:
-> +	put_device(dev);
-> +	return rc;
->  }
->  
->  void nvdimm_bus_destroy_ndctl(struct nvdimm_bus *nvdimm_bus)
-> 
+-- 
+2.25.1
 
