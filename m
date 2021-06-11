@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDA83A3F15
+	by mail.lfdr.de (Postfix) with ESMTP id 969CA3A3F16
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhFKJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:34:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9080 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhFKJea (ORCPT
+        id S231527AbhFKJev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:34:51 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5503 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231309AbhFKJea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Jun 2021 05:34:30 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1bCS0rGJzYr5X;
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1bCS2b4NzZdBK;
         Fri, 11 Jun 2021 17:29:40 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Fri, 11 Jun 2021 17:32:31 +0800
 Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
@@ -27,9 +27,9 @@ From:   Yang Yingliang <yangyingliang@huawei.com>
 To:     <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
         <alsa-devel@alsa-project.org>
 CC:     <timur@kernel.org>, <broonie@kernel.org>
-Subject: [PATCH -next 4/9] ASoC: fsl_esai: Use devm_platform_get_and_ioremap_resource()
-Date:   Fri, 11 Jun 2021 17:36:21 +0800
-Message-ID: <20210611093626.579176-5-yangyingliang@huawei.com>
+Subject: [PATCH -next 5/9] ASoC: fsl_micfil: Use devm_platform_get_and_ioremap_resource()
+Date:   Fri, 11 Jun 2021 17:36:22 +0800
+Message-ID: <20210611093626.579176-6-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210611093626.579176-1-yangyingliang@huawei.com>
 References: <20210611093626.579176-1-yangyingliang@huawei.com>
@@ -49,17 +49,17 @@ code.
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/fsl/fsl_esai.c | 3 +--
+ sound/soc/fsl/fsl_micfil.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index f356ae5925af..a961f837cd09 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -969,8 +969,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 	esai_priv->soc = of_device_get_match_data(&pdev->dev);
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index 3cf789ed6cbe..8c0c75ce9490 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -669,8 +669,7 @@ static int fsl_micfil_probe(struct platform_device *pdev)
+ 	}
  
- 	/* Get the addresses and IRQ */
+ 	/* init regmap */
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 -	regs = devm_ioremap_resource(&pdev->dev, res);
 +	regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
