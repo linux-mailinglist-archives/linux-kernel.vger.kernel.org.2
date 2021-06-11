@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E023A426F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0C13A4274
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhFKMz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:55:28 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38666 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhFKMz1 (ORCPT
+        id S230233AbhFKM5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:57:04 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:36544 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230382AbhFKM5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:55:27 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1E38A20B7178;
-        Fri, 11 Jun 2021 05:53:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1E38A20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623416009;
-        bh=/cTsy8OGaEU/zCQc9L/8YrQzHcLViQBgidbXiYXlsFI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g5OiGVB4m3mJcPxTG/Y/h4H/AIbequvqN042kTAxfzpbO/RnN+S9jdNuq7YXQf3SS
-         cGp+pUj2THgiOumGn+Mf2YQ+kUp7ONyzL8mvLHKelSMNmh68wcE4E1CXBSupnVDbVZ
-         SpvH/9rwBxHKKlNq5zxb+ZTeGAEod6vShaKQYbdU=
-Date:   Fri, 11 Jun 2021 07:53:26 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/8] optee: fix tee out of memory failure seen during
- kexec reboot
-Message-ID: <20210611125326.GQ4910@sequoia>
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
- <20210610210913.536081-4-tyhicks@linux.microsoft.com>
- <CAHUa44H=vJrkYYTb2T8WPfy6TznQyO8a8wnLCbJUuSE8QO4iuw@mail.gmail.com>
+        Fri, 11 Jun 2021 08:57:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1623416105; x=1654952105;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EZCKknjivukT40dCuENLWqZf5ravlUcNSXMt5MuT85c=;
+  b=dcb2j/1gxJF/YFJaRZWhIRblsf82N6YvTDCjIuXzc7cGLU1gDboCeCdp
+   kS4EqNLITlxLcVE8eoCFsUVploOXbmLNa2BMUb4QVJMIJiQCLjf6vLOfy
+   pbtyuFfq2TqJKjKY0TZEMGeY9ReSNUAkyDwM8IH3/HX7n5Wj0ejaYK1kF
+   wZbwa6cNEF4J25F9PV67gszV31LKe+HKc+wkHEMyiYsEAc/Io0aikgx1Y
+   D7CauZ3wka16SaSCvFq7sJ5gGuNnZCcjvm8r01UwcZPQ9C1wpsdO+hrgA
+   ybF8E/iteu4KNMmmhU75lUD82YXylkK2JvKYmR1dZg0OVSxjAv4+7Wndn
+   Q==;
+IronPort-SDR: X32b0Wrm3bw6hVrEuwnHgxrB7cxJrFksqTbfz0crccTFrjGvjOUfkf58aCxhk/cq6sUFYvs3mF
+ P31Fcm41Q/iMk8UNgkJV2m8kbxu95GsQn2WxmqdG7h4ra913sgPUPxK3g1b7Jmw6m3vRBQhweu
+ QIxemBG2b82K7VVOyNc9srK/Nwfw3jILWpu8vUNNstzYltoZK3BZJIADj9v/iwhflAOkrzKNzI
+ d0cYaE98NTHEtU4xywPD+L6Uv2FQCdPeCy+GZxVOm8/ge+HO8wlHSv2oeJ0uaGzl0H6Mpc9qya
+ l/c=
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="131631314"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Jun 2021 05:55:04 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 05:55:03 -0700
+Received: from den-dk-m31857.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 11 Jun 2021 05:55:02 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        "Heiner Kallweit" <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>
+Subject: [PATCH net-next 0/4] Add 25G BASE-R support
+Date:   Fri, 11 Jun 2021 14:54:49 +0200
+Message-ID: <20210611125453.313308-1-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHUa44H=vJrkYYTb2T8WPfy6TznQyO8a8wnLCbJUuSE8QO4iuw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-11 11:11:33, Jens Wiklander wrote:
-> On Thu, Jun 10, 2021 at 11:09 PM Tyler Hicks
-> <tyhicks@linux.microsoft.com> wrote:
-> >
-> > From: Allen Pais <apais@linux.microsoft.com>
-> >
-> > The following out of memory errors are seen on kexec reboot
-> > from the optee core.
-> >
-> > [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
-> > [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
-> >
-> > tee_shm_release() is not invoked on dma shm buffer.
-> >
-> > Implement .shutdown() method to handle the release of the buffers
-> > correctly.
-> >
-> > More info:
-> > https://github.com/OP-TEE/optee_os/issues/3637
-> >
-> > Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-> > Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> 
-> Do we really need this considering the patch "optee: Refuse to load
-> the driver under the kdump kernel"?
+This series add the 25G BASE-R mode to the set modes supported.
+This mode is used by the Sparx5 Switch for its 25G SerDes.
 
-Yes. That patch fixes boot hangs when all of the OP-TEE threads were in
-the suspended state at the time of a kernel panic. The kexec into the
-kdump kernel after a panic is an "emergency" kexec that doesn't even
-call .shutdown hooks. There's no way for the OP-TEE driver to clean up
-after itself.
+Steen Hegelund (4):
+  dt-bindings: net: Add 25G BASE-R phy interface
+  net: phy: Add 25G BASE-R interface mode
+  net: sfp: add support for 25G BASE-R SFPs
+  net: phylink: Add 25G BASE-R support
 
-This patch disables the shm cache (and unregisters the shm buffers)
-during a normal kexec from one perfectly working kernel into a new
-kernel. This is required because the new kernel will not be able to
-handle the virtual addresses that were cached under the old kernel. The
-new kernel has an entirely different memory layout and the old addresses
-point to unmapped memory or memory that's mapped but probably not a TEE
-shm.
+ .../devicetree/bindings/net/ethernet-controller.yaml        | 1 +
+ Documentation/networking/phy.rst                            | 6 ++++++
+ drivers/net/phy/phylink.c                                   | 5 +++++
+ drivers/net/phy/sfp-bus.c                                   | 5 +++++
+ include/linux/phy.h                                         | 4 ++++
+ 5 files changed, 21 insertions(+)
 
-Tyler
+-- 
+2.32.0
 
-> 
-> Jens
-> 
