@@ -2,368 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E563A429C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721AA3A42A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbhFKNCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:02:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231161AbhFKNCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:02:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD0B561364;
-        Fri, 11 Jun 2021 13:00:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623416448;
-        bh=R0JdbQQZfQMlFm5fJ1ei5RPbFPkiGjZnDaLRfsBnKuQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=GD8N6xBnxvX3wZ2dJltsWGDaHD38CwHzFaP60SDdvr5m80elumDfPIceJoptBaJmh
-         r1SWxJKkVljcVUuxSlHg6HK+e9YN6AZesMztylM6vc/Nuzve+EmYWPmEo8+RH2Wj3L
-         UGPcuKkcwh/UbW7ChOn1D19sCEn5e5Gva3SktAKuCS6K7k6bcEGBJMigCt0imciD73
-         F2KrxdmY/fD0Ys8uwWpG+vUe65mPQHUn2G48MbOJyR9sb28ev3ARgOOmqw2PhvQLRI
-         YW8XZMoVQ1qnoW4Lf02khBc+A0FKJePTIJeN4vNtPyFPOD9D2OGXm4G0iMdTfh56Sy
-         UHocvOwhFGPsg==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com,
-        John Youn <John.Youn@synopsys.com>
-Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
-In-Reply-To: <f1d57fca-3ac1-d8c8-bd23-cf525b366573@codeaurora.org>
-References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
- <YLoUiO8tpRpmvcyU@kroah.com> <87k0n9btnb.fsf@kernel.org>
- <YLo6W5sKaXvy51eW@kroah.com>
- <c2daab34-1b25-7ee3-e203-a414c1e486d5@codeaurora.org>
- <874ke62i0v.fsf@kernel.org>
- <e5f231ca-6807-bcea-29c2-ab3926057310@codeaurora.org>
- <8735to29tt.fsf@kernel.org>
- <f1d57fca-3ac1-d8c8-bd23-cf525b366573@codeaurora.org>
-Date:   Fri, 11 Jun 2021 16:00:38 +0300
-Message-ID: <87tum4zhc9.fsf@kernel.org>
+        id S231760AbhFKNEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:04:22 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:32838 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231776AbhFKNER (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:04:17 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BD1xxm043638;
+        Fri, 11 Jun 2021 08:01:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623416519;
+        bh=bMMWvzfrFHl4j9c+dznuq5O3XnvQE4Ox9cPFZYk/Sj4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=jOzQ0IAB7U4Oxb4Ul/KKGQJuHkNxJDi8ysJpzq35QmUHfcdr2C/n9iSf4B52G3oMU
+         lgSznlT7SZKzdeJmOgTkMV12AR1KnDYPlVuM1Smlor1lFr1IT5xxkPK4312qBseFoF
+         OeG/i+ULj6x942viY0FRPcWyf5qYDebzuoolgVLo=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BD1xsY094056
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Jun 2021 08:01:59 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
+ Jun 2021 08:01:59 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 11 Jun 2021 08:01:59 -0500
+Received: from [10.250.212.96] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BD1sNC022485;
+        Fri, 11 Jun 2021 08:01:55 -0500
+Subject: Re: [PATCH v6 1/3] phy: core: Reword the comment specifying the units
+ of max_link_rate to be Mbps
+To:     Aswath Govindraju <a-govindraju@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <linux-can@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210510051006.11393-1-a-govindraju@ti.com>
+ <20210510051006.11393-2-a-govindraju@ti.com>
+ <YLSNvUDJZ/v6NTuN@vkoul-mobl.Dlink>
+ <615d3a2a-0dc2-0e87-fdac-e170542d33da@ti.com>
+ <0150622f-8543-ac4a-fe18-f22d7862d163@ti.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <7913b08e-a71c-d29d-d921-c25a87c0616a@ti.com>
+Date:   Fri, 11 Jun 2021 18:31:54 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <0150622f-8543-ac4a-fe18-f22d7862d163@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
 Hi,
 
-Wesley Cheng <wcheng@codeaurora.org> writes:
->>>>>>> to be honest, I don't think these should go in (apart from the build
->>>>>>> failure) because it's likely to break instantiations of the core wi=
-th
->>>>>>> differing FIFO sizes. Some instantiations even have some endpoints =
-with
->>>>>>> dedicated functionality that requires the default FIFO size configu=
-red
->>>>>>> during coreConsultant instantiation. I know of at OMAP5 and some In=
-tel
->>>>>>> implementations which have dedicated endpoints for processor tracin=
-g.
->>>>>>>
->>>>>>> With OMAP5, these endpoints are configured at the top of the availa=
-ble
->>>>>>> endpoints, which means that if a gadget driver gets loaded and takes
->>>>>>> over most of the FIFO space because of this resizing, processor tra=
-cing
->>>>>>> will have a hard time running. That being said, processor tracing i=
-sn't
->>>>>>> supported in upstream at this moment.
->>>>>>>
->>>>>
->>>>> I agree that the application of this logic may differ between vendors,
->>>>> hence why I wanted to keep this controllable by the DT property, so t=
-hat
->>>>> for those which do not support this use case can leave it disabled.  =
-The
->>>>> logic is there to ensure that for a given USB configuration, for each=
- EP
->>>>> it would have at least 1 TX FIFO.  For USB configurations which don't
->>>>> utilize all available IN EPs, it would allow re-allocation of internal
->>>>> memory to EPs which will actually be in use.
+On 11/06/21 6:12 pm, Aswath Govindraju wrote:
+> Hi Vinod,
+> 
+> On 31/05/21 2:04 pm, Aswath Govindraju wrote:
+>> Hi Vinod,
+>>
+>> On 31/05/21 12:48 pm, Vinod Koul wrote:
+>>> On 10-05-21, 10:40, Aswath Govindraju wrote:
+>>>> In some subsystems (eg. CAN, SPI), the max link rate supported can be less
+>>>> than 1 Mbps and if the unit for max_link_rate is Mbps then it can't be
+>>>> used. Therefore, leave the decision of units to be used, to the producer
+>>>> and consumer.
 >>>>
->>>> The feature ends up being all-or-nothing, then :-) It sounds like we c=
-an
->>>> be a little nicer in this regard.
+>>>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>>>> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>>>> ---
+>>>>  include/linux/phy/phy.h | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
 >>>>
+>>>> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+>>>> index 0ed434d02196..f3286f4cd306 100644
+>>>> --- a/include/linux/phy/phy.h
+>>>> +++ b/include/linux/phy/phy.h
+>>>> @@ -125,7 +125,7 @@ struct phy_ops {
+>>>>  /**
+>>>>   * struct phy_attrs - represents phy attributes
+>>>>   * @bus_width: Data path width implemented by PHY
+>>>> - * @max_link_rate: Maximum link rate supported by PHY (in Mbps)
+>>>> + * @max_link_rate: Maximum link rate supported by PHY (units to be decided by producer and consumer)
 >>>
->>> Don't get me wrong, I think once those features become available
->>> upstream, we can improve the logic.  From what I remember when looking
->>=20
->> sure, I support that. But I want to make sure the first cut isn't likely
->> to break things left and right :)
->>=20
->> Hence, let's at least get more testing.
->>=20
->
-> Sure, I'd hope that the other users of DWC3 will also see some pretty
-> big improvements on the TX path with this.
-
-fingers crossed
-
->>> at Andy Shevchenko's Github, the Intel tracer downstream changes were
->>> just to remove physical EP1 and 2 from the DWC3 endpoint list.  If that
->>=20
->> right, that's the reason why we introduced the endpoint feature
->> flags. The end goal was that the UDC would be able to have custom
->> feature flags paired with ->validate_endpoint() or whatever before
->> allowing it to be enabled. Then the UDC driver could tell UDC core to
->> skip that endpoint on that particular platform without interefering with
->> everything else.
->>=20
->> Of course, we still need to figure out a way to abstract the different
->> dwc3 instantiations.
->>=20
->>> was the change which ended up upstream for the Intel tracer then we
->>> could improve the logic to avoid re-sizing those particular EPs.
->>=20
->> The problem then, just as I mentioned in the previous paragraph, will be
->> coming up with a solution that's elegant and works for all different
->> instantiations of dwc3 (or musb, cdns3, etc).
->>=20
->
-> Well, at least for the TX FIFO resizing logic, we'd only be needing to
-> focus on the DWC3 implementation.
->
-> You bring up another good topic that I'll eventually needing to be
-> taking a look at, which is a nice way we can handle vendor specific
-> endpoints and how they can co-exist with other "normal" endpoints.  We
-> have a few special HW eps as well, which we try to maintain separately
-> in our DWC3 vendor driver, but it isn't the most convenient, or most
-> pretty method :).
-
-Awesome, as mentioned, the endpoint feature flags were added exactly to
-allow for these vendor-specific features :-)
-
-I'm more than happy to help testing now that I finally got our SM8150
-Surface Duo device tree accepted by Bjorn ;-)
-
->>> However, I'm not sure how the changes would look like in the end, so I
->>> would like to wait later down the line to include that :).
->>=20
->> Fair enough, I agree. Can we get some more testing of $subject, though?
->> Did you test $subject with upstream too? Which gadget drivers did you
->> use? How did you test
->>=20
->
-> The results that I included in the cover page was tested with the pure
-> upstream kernel on our device.  Below was using the ConfigFS gadget w/ a
-> mass storage only composition.
->
-> Test Parameters:
->  - Platform: Qualcomm SM8150
->  - bMaxBurst =3D 6
->  - USB req size =3D 256kB
->  - Num of USB reqs =3D 16
-
-do you mind testing with the regular request size (16KiB) and 250
-requests? I think we can even do 15 bursts in that case.
-
->  - USB Speed =3D Super-Speed
->  - Function Driver: Mass Storage (w/ ramdisk)
->  - Test Application: CrystalDiskMark
->
-> Results:
->
-> TXFIFO Depth =3D 3 max packets
->
-> Test Case | Data Size | AVG tput (in MB/s)
-> -------------------------------------------
-> Sequential|1 GB x     |
-> Read      |9 loops    | 193.60
->           |           | 195.86
->           |           | 184.77
->           |           | 193.60
-> -------------------------------------------
->
-> TXFIFO Depth =3D 6 max packets
->
-> Test Case | Data Size | AVG tput (in MB/s)
-> -------------------------------------------
-> Sequential|1 GB x     |
-> Read      |9 loops    | 287.35
-> 	    |           | 304.94
->           |           | 289.64
->           |           | 293.61
-
-I remember getting close to 400MiB/sec with Intel platforms without
-resizing FIFOs and I'm sure the FIFO size was set to 2x1024, though my
-memory could be failing.
-
-Then again, I never ran with CrystalDiskMark, I was using my own tool
-(it's somewhere in github. If you care, I can look up the URL).
-
-> We also have internal numbers which have shown similar improvements as
-> well.  Those are over networking/tethering interfaces, so testing IPERF
-> loopback over TCP/UDP.
-
-loopback iperf? That would skip the wire, no?
-
->>> size of 2 and TX threshold of 1, this would really be not beneficial to
->>> us, because we can only change the TX threshold to 2 at max, and at
->>> least in my observations, once we have to go out to system memory to
->>> fetch the next data packet, that latency takes enough time for the
->>> controller to end the current burst.
->>=20
->> What I noticed with g_mass_storage is that we can amortize the cost of
->> fetching data from memory, with a deeper request queue. Whenever I
->> test(ed) g_mass_storage, I was doing so with 250 requests. And that was
->> enough to give me very good performance. Never had to poke at TX FIFO
->> resizing. Did you try something like this too?
->>=20
->> I feel that allocating more requests is a far simpler and more generic
->> method that changing FIFO sizes :)
->>=20
->
-> I wish I had a USB bus trace handy to show you, which would make it very
-> clear how the USB bus is currently utilized with TXFIFO size 2 vs 6.  So
-> by increasing the number of USB requests, that will help if there was a
-> bottleneck at the SW level where the application/function driver
-> utilizing the DWC3 was submitting data much faster than the HW was
-> processing them.
->
-> So yes, this method of increasing the # of USB reqs will definitely help
-> with situations such as HSUSB or in SSUSB when EP bursting isn't used.
-> The TXFIFO resize comes into play for SSUSB, which utilizes endpoint
-> bursting.
-
-Hmm, that's not what I remember. Perhaps the TRB cache size plays a role
-here too. I have clear memories of testing this very scenario of
-bursting (using g_mass_storage at the time) because I was curious about
-it. Back then, my tests showed no difference in behavior.
-
-It could be nice if Heikki could test Intel parts with and without your
-changes on g_mass_storage with 250 requests.
-
-> Now with endpoint bursting, if the function notifies the host that
-> bursting is supported, when the host sends the ACK for the Data Packet,
-> it should have a NumP value equal to the bMaxBurst reported in the EP
-
-Yes and no. Looking back at the history, we used to configure NUMP based
-on bMaxBurst, but it was changed later in commit
-4e99472bc10bda9906526d725ff6d5f27b4ddca1 by yours truly because of a
-problem reported by John Youn.
-
-And now we've come full circle. Because even if I believe more requests
-are enough for bursting, NUMP is limited by the RxFIFO size. This ends
-up supporting your claim that we need RxFIFO resizing if we want to
-squeeze more throughput out of the controller.
-
-However, note that this is about RxFIFO size, not TxFIFO size. In fact,
-looking at Table 8-13 of USB 3.1 r1.0, we read the following about NumP
-(emphasis is mine):
-
-	"Number of Packets (NumP). This field is used to indicate the
-	number of Data Packet buffers that the **receiver** can
-	accept. The value in this field shall be less than or equal to
-	the maximum burst size supported by the endpoint as determined
-	by the value in the bMaxBurst field in the Endpoint Companion
-	Descriptor (refer to Section 9.6.7)."
-
-So, NumP is for the receiver, not the transmitter. Could you clarify
-what you mean here?
-
-/me keeps reading
-
-Hmm, table 8-15 tries to clarify:
-
-	"Number of Packets (NumP).
-
-	For an OUT endpoint, refer to Table 8-13 for the description of
-	this field.
-
-	For an IN endpoint this field is set by the endpoint to the
-	number of packets it can transmit when the host resumes
-	transactions to it. This field shall not have a value greater
-	than the maximum burst size supported by the endpoint as
-	indicated by the value in the bMaxBurst field in the Endpoint
-	Companion Descriptor. Note that the value reported in this field
-	may be treated by the host as informative only."
-
-However, if I remember correctly (please verify dwc3 databook), NUMP in
-DCFG was only for receive buffers. Thin, John, how does dwc3 compute
-NumP for TX/IN endpoints? Is that computed as a function of DCFG.NUMP or
-TxFIFO size?
-
-> desc.  If we have a TXFIFO size of 2, then normally what I have seen is
-> that after 2 data packets, the device issues a NRDY.  So then we'd need
-> to send an ERDY once data is available within the FIFO, and the same
-> sequence happens until the USB request is complete.  With this constant
-> NRDY/ERDY handshake going on, you actually see that the bus is under
-> utilized.  When we increase an EP's FIFO size, then you'll see constant
-> bursts for a request, until the request is done, or if the host runs out
-> of RXFIFO. (ie no interruption [on the USB protocol level] during USB
-> request data transfer)
-
-Unfortunately I don't have access to a USB sniffer anymore :-(
-
->>>>>> Good points.
->>>>>>
->>>>>> Wesley, what kind of testing have you done on this on different devi=
-ces?
->>>>>>
->>>>>
->>>>> As mentioned above, these changes are currently present on end user
->>>>> devices for the past few years, so its been through a lot of testing =
-:).
->>>>
->>>> all with the same gadget driver. Also, who uses USB on android devices
->>>> these days? Most of the data transfer goes via WiFi or Bluetooth, anyw=
-ay
->>>> :-)
->>>>
->>>> I guess only developers are using USB during development to flash dev
->>>> images heh.
->>>>
+>>> So there are a few users of max_link_rate. It would be better that we
+>>> document all previous users of max_link_rate that unit is in Mbps and
+>>> then modify it here
 >>>
->>> I used to be a customer facing engineer, so honestly I did see some
->>> really interesting and crazy designs.  Again, we do have non-Android
->>> products that use the same code, and it has been working in there for a
->>> few years as well.  The TXFIFO sizing really has helped with multimedia
->>> use cases, which use isoc endpoints, since esp. in those lower end CPU
->>> chips where latencies across the system are much larger, and a missed
->>> ISOC interval leads to a pop in your ear.
->>=20
->> This is good background information. Thanks for bringing this
->> up. Admitedly, we still have ISOC issues with dwc3. I'm interested in
->> knowing if a deeper request queue would also help here.
->>=20
->> Remember dwc3 can accomodate 255 requests + link for each endpoint. If
->> our gadget driver uses a low number of requests, we're never really
->> using the TRB ring in our benefit.
->>=20
->
-> We're actually using both a deeper USB request queue + TX fifo resizing. =
-:).
+>>
+>> I was able to see that the max_link_rate attribute was used at,
+>>
+>> drivers/phy/cadence/phy-cadence-torrent.c:2514:
+>> gphy->attrs.max_link_rate = cdns_phy->max_bit_rate;
+>>
+>> and in the bindings there is indication that the units to be used is Mbps.
+>>
+>> Can you please point me if there is any other place that I might have
+>> missed to look at or that might need documentation update?
+>>
 
-okay, great. Let's see what John and/or Thinh respond WRT dwc3 TX Burst
-behavior.
+The only user seems to be Torrent and max_bit_rate is documented well in
+Torrent.
 
-=2D-=20
-balbi
+Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmDDXnYRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUhzvQf9EP6CGjPmB1+qZ9cOZNJ4KUdCSYaMB1OV
-foVf8sItaG5iGqNmPjspK4lU2tRGb9KoM1TCxq+eTjXItNANpiIJjq1rpufw9rIR
-o3+HFbPTmp5qJpjKWsdYL/tO69xTnOpHBRgdkvp2GTEa+WDF5JUs+R70cWUUImMw
-sCf3qof0IGvhXeP+tBuN+bftU16asF2F+EEcU0Cq6kpUbPtiP7Ls6lqniqyYXLae
-/fwLkkWIqsPL2qOtzRxLXLPYy6nAJFJsuPop0IaDueAKTaaAqDjW2FYv4Dlbl1eU
-62bbMPXzK8WCUbbgmTUYkV1cLGppyFlsq1AN8+7Fi4XF2Ut0UPoMgA==
-=Ut40
------END PGP SIGNATURE-----
---=-=-=--
+Thanks
+Kishon
