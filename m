@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B831A3A46BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B38C3A46BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhFKQp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
+        id S231191AbhFKQqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFKQp5 (ORCPT
+        with ESMTP id S229935AbhFKQp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Jun 2021 12:45:57 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D66EC061574
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D284DC0617AF
         for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:43:59 -0700 (PDT)
-Message-Id: <20210611161523.508908024@linutronix.de>
+Message-Id: <20210611163110.987044144@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623429837;
+        s=2020; t=1623429838;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XTWLTMrY9lnGbhCpse2rIwY1lhdcMo/k7awkXdSB5Hs=;
-        b=jKzKit61JdvhpFoeCya70pHxQ6O5n6Rx78lHpZ5TNEvH2vQxWS1XtDWPBceDdsz30oxSSf
-        EIEQypnqnNvdeZTObx9ZbEBhdBPRSP3T67fK0XZOoLu8oisa9wZvyYVpWFMAumho/E8qAS
-        FUrLw7rkxOe7VCsSkGEu+MTI9A5stds/vRLhI6BJrp80pwa46TDy9rQlTz0LYiFPiYNqIR
-        yZ0dtHqpl7Q4jq1waywtnehoR6U7JcwgER+BUaV3TIhcTd2w+Zm7WTYdFfQPfR9f8rE3fW
-        EwSRUYHde0MTffENvytR8k+s9X/TK1+wwvhl1/JPJoyEinP0PdwTH5DItDhi7Q==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=n8ULFqKVJVwxGPdaLk6GuiVnc7zJ2BkL1GJ5YatZBPg=;
+        b=4OoEkfPkZ2ye2y+gC8YNtjlBxEnr/OOQ/cMB1cm+sRjS4VxKotSEmthsecvg7E8Hee0qfr
+        QbZNfj+zqKonO+56PDKEZkJozDJdEjq7e1aZnW5NqtLRYlT1t/3I+Yy09lvY8RIDxp0g3W
+        ctrmXm9clLPS3raFyyi7535fEmpfdbg+X8aDYT2nUXPY04zFb9ABtOoR35PXJAhLRrH2/H
+        P0d8GR9eXFaNEjsf+vnr3V7DlChHLYeOGwJwRIABQXUUkxW47PHljm8IqdqgpiWxlWXPc8
+        J8bvQdfrBcg9AwODmKoNx36A9kgiAx8N9KvA/OVRGToRBPVKsSRen6B1WNZMWA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623429837;
+        s=2020e; t=1623429838;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XTWLTMrY9lnGbhCpse2rIwY1lhdcMo/k7awkXdSB5Hs=;
-        b=sWqWWiJq4Myg5BSeawcEbXGDFTARDr6dKIukRteBajqAlsg/gVwIrY6lW0EH0F89vfL5+K
-        YwqBEg1oOphQveDg==
-Date:   Fri, 11 Jun 2021 18:15:23 +0200
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=n8ULFqKVJVwxGPdaLk6GuiVnc7zJ2BkL1GJ5YatZBPg=;
+        b=dYTu+bdXIhZzt+ljYW6KG5t2ynaAm1Jr8NT2cVQfi2SGddMD48+oPdlrgQuG1Us/4qoO0V
+        8oZBJnhd0Y/HAvCQ==
+Date:   Fri, 11 Jun 2021 18:15:24 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,64 +47,76 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch 00/41] x86/fpu: Spring cleaning and PKRU sanitizing
+Subject: [patch 01/41] Revert a5eff7259790 ("x86/pkeys: Add PKRU value to
+ init_fpstate")
+References: <20210611161523.508908024@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBpcyBhIGZvbGxvdyB1cCB0byB0aGVzZSBwYXRjaCBzZXJpZXM6CgogLSBbcGF0Y2ggVjIg
-MDAvMTRdIHg4Ni9mcHU6IE1vcCB1cCBYU0FWRVMgYW5kIHJlbGF0ZWQgZGFtYWdlCiAgIGh0dHBz
-Oi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTA2MDUyMzQ3NDIuNzEyNDY0OTc0QGxpbnV0cm9uaXgu
-ZGUKCiAtIFtQQVRDSCAwMC8xOF0geDg2L3BrZXlzOiBzdG9wIG1hbmFnaW5nIFBLUlUgd2l0aCBY
-U0FWRQogICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwNjAzMjMwODAzLjMxNjYwQUZF
-QHZpZ2dvLmpmLmludGVsLmNvbQoKIC0gW1BBVENIIDAvMl0geDg2L2ZwdTogQ2xlYW4gdXAgImR5
-bmFtaWMiIEFQSXMKICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci9jb3Zlci4xNjIzMzg4MzQ0
-LmdpdC5sdXRvQGtlcm5lbC5vcmcKClRoZSBhbmFseXNpcyBvZiB0aGUgc3VidGxlIGJ1Z3MgaW4g
-dGhlIEZQVSBjb2RlIHRyaWdnZXJlZCBhIGxhcmdlcgpkaXNjdXNzaW9uIGFib3V0IHRoZSBnZW5l
-cmFsIHN0YXRlIG9mIHRoaXMgY29kZS4gVGhlIGFib3ZlIHBhdGNoIHNlcmllcyBhcmUKYWxsIHJl
-bGF0ZWQgdG8gdGhpcyBhbmQgdGhlIGZvbGxvd2luZyBzZXJpZXMgY29tYmluZXMgdGhlbSBpbnRv
-IG9uZSBiZWNhdXNlCnRoZSBhbHJlYWR5IHN0YXJ0ZWQgY29uc29saWRhdGlvbiB3b3JrIGFuZCB0
-aGUgUEtSVSByZXdvcmsgY29sbGlkZWQgYWxsCm92ZXIgdGhlIHBsYWNlLgoKVGhlIG1haW4gcGFy
-dHMgb2YgdGhpcyBzZXJpZXMgYXJlOgoKICAtIFNpbXBsaWZpY2F0aW9uIGFuZCByZW1vdmFsL3Jl
-cGxhY2VtZW50IG9mIHJlZHVuZGFudCBhbmQvb3IKICAgIG92ZXJlbmdpbmVlcmVkIGNvZGUuCgog
-IC0gTmFtZSBzcGFjZSBjbGVhbnVwIGFzIHRoZSBleGlzdGluZyBuYW1lcyB3ZXJlIGp1c3QgYSBw
-ZXJtYW5lbnQgc291cmNlCiAgICBvZiBjb25mdXNpb24uCgogIC0gQ2xlYXIgc2VwZXJhdGlvbiBv
-ZiB1c2VyIEFCSSBhbmQga2VybmVsIGludGVybmFsIHN0YXRlIGhhbmRsaW5nLgoKICAtIFJlbW92
-YWwgb2YgUEtSVSBmcm9tIGJlaW5nIFhTVEFURSBtYW5hZ2VkIGluIHRoZSBrZXJuZWwgYmVjYXVz
-ZSBQS1JVCiAgICBoYXMgdG8gYmUgZWFnZXJseSByZXN0b3JlZCBvbiBjb250ZXh0IHN3aXRjaCBh
-bmQga2VlcGluZyBpdCBpbiBzeW5jCiAgICBpbiB0aGUgeHN0YXRlIGJ1ZmZlciBpcyBqdXN0IHBv
-aW50bGVzcyBvdmVyaGVhZCBhbmQgZnJhZ2lsZS4KCiAgICBUaGUga2VybmVsIHN0aWxsIFhTQVZF
-cyBQS1JVIG9uIGNvbnRleHQgc3dpdGNoIGJ1dCB0aGUgdmFsdWUgaW4gdGhlCiAgICBidWZmZXIg
-aXMgbm90IGxvbmdlciB1c2VkIGFuZCBuZXZlciByZXN0b3JlZCBmcm9tIHRoZSBidWZmZXIuCgog
-ICAgVGhpcyBzdGlsbCBuZWVkcyB0byBiZSBjbGVhbmVkIHVwLCBidXQgdGhlIHNlcmllcyBpcyBh
-bHJlYWR5IDQwKwogICAgcGF0Y2hlcyBsYXJnZSBhbmQgdGhlIGNsZWFudXAgb2YgdGhpcyBpcyBu
-b3QgYSBmdW5jdGlvbmFsIHByb2JsZW0uCgogICAgVGhlIGZ1bmN0aW9uYWwgaXNzdWVzIG9mIFBL
-UlUgbWFuYWdlbWVudCBhcmUgZnVsbHkgYWRkcmVzc2VkIHdpdGggdGhlCiAgICBzZXJpZXMgYXMg
-aXMuCgpJdCBhcHBsaWVzIG9uIHRvcCBvZgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2Nt
-L2xpbnV4L2tlcm5lbC9naXQvdGlwL3RpcC5naXQgbWFzdGVyCgphbmQgaXMgYWxzbyBhdmFpbGFi
-bGUgdmlhIGdpdDoKCiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
-Z2l0L3RnbHgvZGV2ZWwuZ2l0IHg4Ni9mcHUKClRoYW5rcywKCgl0Z2x4Ci0tLQogYXJjaC94ODYv
-ZXZlbnRzL2ludGVsL2xici5jICAgICAgICAgIHwgICAgNiAKIGFyY2gveDg2L2luY2x1ZGUvYXNt
-L2ZwdS9pbnRlcm5hbC5oICB8ICAxNTUgKysrKy0tLS0tLS0KIGFyY2gveDg2L2luY2x1ZGUvYXNt
-L2ZwdS94c3RhdGUuaCAgICB8ICAgNjEgKysrLQogYXJjaC94ODYvaW5jbHVkZS9hc20vcGd0YWJs
-ZS5oICAgICAgIHwgICA1NyAtLS0tCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wa2V5cy5oICAgICAg
-ICAgfCAgICA5IAogYXJjaC94ODYvaW5jbHVkZS9hc20vcHJvY2Vzc29yLmggICAgIHwgICAgOSAK
-IGFyY2gveDg2L2luY2x1ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaCB8ICAgMTQgLQogYXJjaC94ODYv
-a2VybmVsL2NwdS9jb21tb24uYyAgICAgICAgIHwgICAyOSAtLQogYXJjaC94ODYva2VybmVsL2Zw
-dS9jb3JlLmMgICAgICAgICAgIHwgIDI0MyArKysrKysrKysrKystLS0tLS0KIGFyY2gveDg2L2tl
-cm5lbC9mcHUvaW5pdC5jICAgICAgICAgICB8ICAgIDQgCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3Jl
-Z3NldC5jICAgICAgICAgfCAgMTE2ICsrKystLS0tCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3NpZ25h
-bC5jICAgICAgICAgfCAgIDU5ICsrLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUveHN0YXRlLmMgICAg
-ICAgICB8ICA0NTYgKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGFyY2gveDg2
-L2tlcm5lbC9wcm9jZXNzLmMgICAgICAgICAgICB8ICAgMTkgKwogYXJjaC94ODYva2VybmVsL3By
-b2Nlc3NfNjQuYyAgICAgICAgIHwgICAyOCArKwogYXJjaC94ODYva3ZtL3N2bS9zZXYuYyAgICAg
-ICAgICAgICAgIHwgICAgMSAKIGFyY2gveDg2L2t2bS94ODYuYyAgICAgICAgICAgICAgICAgICB8
-ICAgNTIgKystCiBhcmNoL3g4Ni9tbS9leHRhYmxlLmMgICAgICAgICAgICAgICAgfCAgICAyIAog
-YXJjaC94ODYvbW0vZmF1bHQuYyAgICAgICAgICAgICAgICAgIHwgICAgMiAKIGFyY2gveDg2L21t
-L3BrZXlzLmMgICAgICAgICAgICAgICAgICB8ICAgMjIgLQogYi9hcmNoL3g4Ni9pbmNsdWRlL2Fz
-bS9wa3J1LmggICAgICAgIHwgICA2MiArKysrCiBpbmNsdWRlL2xpbnV4L3BrZXlzLmggICAgICAg
-ICAgICAgICAgfCAgICA0IAogMjIgZmlsZXMgY2hhbmdlZCwgNjcxIGluc2VydGlvbnMoKyksIDcz
-OSBkZWxldGlvbnMoLSkKCgoK
+This cannot work and it's unclear how that ever made a difference.
+
+init_fpstate.xsave.header.xfeatures is always 0 so get_xsave_addr() will
+always return a NULL pointer, which will prevent storing the default PKRU
+value in initfp_state.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/x86/kernel/cpu/common.c |    5 -----
+ arch/x86/mm/pkeys.c          |    6 ------
+ 2 files changed, 11 deletions(-)
+
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -466,8 +466,6 @@ static bool pku_disabled;
+ 
+ static __always_inline void setup_pku(struct cpuinfo_x86 *c)
+ {
+-	struct pkru_state *pk;
+-
+ 	/* check the boot processor, plus compile options for PKU: */
+ 	if (!cpu_feature_enabled(X86_FEATURE_PKU))
+ 		return;
+@@ -478,9 +476,6 @@ static __always_inline void setup_pku(st
+ 		return;
+ 
+ 	cr4_set_bits(X86_CR4_PKE);
+-	pk = get_xsave_addr(&init_fpstate.xsave, XFEATURE_PKRU);
+-	if (pk)
+-		pk->pkru = init_pkru_value;
+ 	/*
+ 	 * Setting X86_CR4_PKE will cause the X86_FEATURE_OSPKE
+ 	 * cpuid bit to be set.  We need to ensure that we
+--- a/arch/x86/mm/pkeys.c
++++ b/arch/x86/mm/pkeys.c
+@@ -10,7 +10,6 @@
+ 
+ #include <asm/cpufeature.h>             /* boot_cpu_has, ...            */
+ #include <asm/mmu_context.h>            /* vma_pkey()                   */
+-#include <asm/fpu/internal.h>		/* init_fpstate			*/
+ 
+ int __execute_only_pkey(struct mm_struct *mm)
+ {
+@@ -154,7 +153,6 @@ static ssize_t init_pkru_read_file(struc
+ static ssize_t init_pkru_write_file(struct file *file,
+ 		 const char __user *user_buf, size_t count, loff_t *ppos)
+ {
+-	struct pkru_state *pk;
+ 	char buf[32];
+ 	ssize_t len;
+ 	u32 new_init_pkru;
+@@ -177,10 +175,6 @@ static ssize_t init_pkru_write_file(stru
+ 		return -EINVAL;
+ 
+ 	WRITE_ONCE(init_pkru_value, new_init_pkru);
+-	pk = get_xsave_addr(&init_fpstate.xsave, XFEATURE_PKRU);
+-	if (!pk)
+-		return -EINVAL;
+-	pk->pkru = new_init_pkru;
+ 	return count;
+ }
+ 
+
