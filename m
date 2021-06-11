@@ -2,251 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16543A3AD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EE33A3B0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhFKE0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 00:26:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:37558 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230346AbhFKE0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 00:26:49 -0400
-IronPort-SDR: aySf6mrqmR1QHvyTTDFVkCb2dwfmpJZ4qvkKRNY5v0kiXv7tx7j2UnehgoPunUEecRFZUnhlHt
- OYDVlFdc5l3w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="185149149"
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="185149149"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2021 21:24:51 -0700
-IronPort-SDR: ssMwLj+ddIkd6+aldNtZvbbRjA7lFIMUJ5WzFaH8YefafuLCzI7n3m1Z0N05tH9ZuCvYCgIpKd
- wLl9bucIUvEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="448979240"
-Received: from lkp-server02.sh.intel.com (HELO 3cb98b298c7e) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 10 Jun 2021 21:24:48 -0700
-Received: from kbuild by 3cb98b298c7e with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lrYit-0000Re-W9; Fri, 11 Jun 2021 04:24:47 +0000
-Date:   Fri, 11 Jun 2021 12:24:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 0e5a89dbb49920cea22193044bbbfd76a9b0f458
-Message-ID: <60c2e581.sapYpaWU87xSfj9L%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230103AbhFKEb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 00:31:59 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:45617 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKEb5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 00:31:57 -0400
+Received: by mail-ot1-f48.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso1916836oto.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kXOnYtSbHsP5X52mqhdl8R+kJt1644GbTqVsWCBSr+8=;
+        b=gT2z31cM9KvYyLM1VaJUYef+UGZQBTFA92jC/G9pD8dujw7uhHDUncjWyBavgJ4LCj
+         ci1Buo3O7Q6WUU+FMLFR/K65uns48zfUaH35BqxbXyVr8TqzyhsAPLFVbfQiTGXRJLK3
+         SVZyeB8Cn6eEwo8+tKmNKvxnpNrETzUBv1sO5mVApdrSgv2hQuyr6Ex5Dz6yGo1IVT+2
+         S3vVQ6rdZ5SjAijr7w0TMrRexGarUgJTjpSIEtpLkith3zzM0PZjOZk/ZQw/Mtqtj/z5
+         5WZdzZsVaKFn/SvOx9n7PcbBnn8r2aAYZxXcJSMs6hEqYkWi/IJ/Lt53Kzh9w1T9ynzu
+         72uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kXOnYtSbHsP5X52mqhdl8R+kJt1644GbTqVsWCBSr+8=;
+        b=ZvLZJr3KOWv8Sgmtk1HPlHt7HD9Xeb4sANik/7E4jP7emt72GHsRyD9E2bfjq4V/zK
+         F2gXVP8sXdrK5wxP7CyGQXQfzTkCEhNF7bzFW/HNB3vCgL8anWB7UFb8oaF50kSbYLCn
+         kW19SafUXSk9KYVmQynOYmVgUzsFkPmakZdpEcKTasWYIOxcdQIXlPlJeBTID/HUWztj
+         lrusRSwrB1gA8gWNkRQE2fSRqlxPHaIsXF3abEblI3fTUIZ3GsMX0/sOnJ6TpligIr+c
+         EOaid3vn7v+UgKvJm/rXj8/cnrrbMI/lyYOVxC8WZkDA3Ukscd4Q7gGJIG+K63VtEo7a
+         UZQw==
+X-Gm-Message-State: AOAM533MTkBmsTPpp5CK56T2wHBgZFWLAcrXumK7lySjZKj1Bfa9yA4v
+        1d9oTqSgA5EVnN1NHTe+9HDMbA==
+X-Google-Smtp-Source: ABdhPJxjl7kJ0ta7lOiS9PdPWC9LD3KY43aOF9j4vvoPej0A02/M5+YQvExPRPViZI7+Spg/BywjSA==
+X-Received: by 2002:a05:6830:30a8:: with SMTP id g8mr1444380ots.122.1623385732053;
+        Thu, 10 Jun 2021 21:28:52 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u10sm934709otj.75.2021.06.10.21.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 21:28:51 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 23:28:49 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Siddartha Mohanadoss <smohanad@codeaurora.org>
+Subject: Re: [PATCH v2 2/3] PCI: dwc: Add Qualcomm PCIe Endpoint controller
+ driver
+Message-ID: <YMLmgQ2hWAxj+vuy@builder.lan>
+References: <20210603103814.95177-1-manivannan.sadhasivam@linaro.org>
+ <20210603103814.95177-3-manivannan.sadhasivam@linaro.org>
+ <YLw744UeM6fj/xoS@builder.lan>
+ <20210609085152.GB15118@thinkpad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210609085152.GB15118@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 0e5a89dbb49920cea22193044bbbfd76a9b0f458  doc: Remove references to IBM Calgary
+On Wed 09 Jun 03:51 CDT 2021, Manivannan Sadhasivam wrote:
+> On Sat, Jun 05, 2021 at 10:07:15PM -0500, Bjorn Andersson wrote:
+> > On Thu 03 Jun 05:38 CDT 2021, Manivannan Sadhasivam wrote:
+> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+[..]
+> > > +static irqreturn_t qcom_pcie_ep_perst_threaded_irq(int irq, void *data)
+> > > +{
+> > > +	struct qcom_pcie_ep *pcie_ep = data;
+> > > +	struct dw_pcie *pci = &pcie_ep->pci;
+> > > +	struct device *dev = pci->dev;
+> > > +	u32 perst;
+> > > +
+> > > +	perst = gpiod_get_value(pcie_ep->reset);
+> > > +
+> > > +	if (perst) {
+> > > +		/* Start link training */
+> > > +		dev_info(dev, "PERST de-asserted by host. Starting link training!\n");
+> > > +		qcom_pcie_establish_link(pci);
+> > > +	} else {
+> > > +		/* Shutdown the link if the link is already on */
+> > > +		dev_info(dev, "PERST asserted by host. Shutting down the PCIe link!\n");
+> > > +		qcom_pcie_disable_link(pci);
+> > > +	}
+> > > +
+> > > +	/* Set trigger type based on the next expected value of perst gpio */
+> > > +	irq_set_irq_type(gpiod_to_irq(pcie_ep->reset),
+> > > +			 (perst ? IRQF_TRIGGER_LOW : IRQF_TRIGGER_HIGH));
+> > 
+> > Looks like you're manually implementing edge triggering, is there any
+> > reason for that? EDGE_BOTH seems to do the same thing...
+> > 
+> 
+> PERST is a level based signal, so I don't think we can use EDGE_BOTH here.
+> 
 
-elapsed time: 721m
+Afaict it's just a gpio and you define if the hardware should fire of
+interrupts given its level or if it should detect transitions.
 
-configs tested: 189
-configs skipped: 2
+That said, if the gpio is already high when registering the irq handler
+there's no transition.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> > > +
+> > > +	return IRQ_HANDLED;
+> > > +}
+[..]
+> > > +static struct platform_driver qcom_pcie_ep_driver = {
+> > > +	.probe	= qcom_pcie_ep_probe,
+> > > +	.driver	= {
+> > > +		.name		= "qcom-pcie-ep",
+> > 
+> > Skip the indentation of the '='.
+> > 
+> > > +		.suppress_bind_attrs = true,
+> > 
+> > Why do we suppress_bind_attrs?
+> > 
+> 
+> This driver doesn't support remove() callback and I don't think it is necessary
+> for this platform driver. So this flag is here to prevent unbind from sysfs.
+> 
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         shannon_defconfig
-sh                          rsk7269_defconfig
-arm                       imx_v6_v7_defconfig
-arm                        mini2440_defconfig
-arm                        keystone_defconfig
-sh                          sdk7780_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                         vf610m4_defconfig
-powerpc                          allmodconfig
-m68k                           sun3_defconfig
-mips                        nlm_xlp_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         bcm2835_defconfig
-arm                      tct_hammer_defconfig
-csky                             alldefconfig
-sparc                       sparc32_defconfig
-sh                              ul2_defconfig
-nds32                            alldefconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                       aspeed_g5_defconfig
-arm                         s5pv210_defconfig
-mips                         tb0226_defconfig
-sh                          rsk7264_defconfig
-ia64                        generic_defconfig
-arm                           viper_defconfig
-powerpc                 mpc836x_mds_defconfig
-arm                        clps711x_defconfig
-sparc                            alldefconfig
-sh                   sh7770_generic_defconfig
-arm                          pxa910_defconfig
-sh                          lboxre2_defconfig
-arm                       mainstone_defconfig
-arm                           sama5_defconfig
-powerpc                 mpc832x_mds_defconfig
-mips                          rb532_defconfig
-xtensa                          iss_defconfig
-arm                        shmobile_defconfig
-arc                         haps_hs_defconfig
-powerpc                         wii_defconfig
-mips                        vocore2_defconfig
-arm                         hackkit_defconfig
-sh                          kfr2r09_defconfig
-mips                        jmr3927_defconfig
-arm                     am200epdkit_defconfig
-mips                           ip22_defconfig
-ia64                             allmodconfig
-sh                          polaris_defconfig
-arc                                 defconfig
-m68k                          sun3x_defconfig
-arm                      footbridge_defconfig
-arm                   milbeaut_m10v_defconfig
-xtensa                    xip_kc705_defconfig
-sparc                       sparc64_defconfig
-mips                         mpc30x_defconfig
-h8300                            alldefconfig
-sh                           se7721_defconfig
-h8300                     edosk2674_defconfig
-arm                         at91_dt_defconfig
-sh                               alldefconfig
-powerpc                 mpc8272_ads_defconfig
-h8300                               defconfig
-sh                           se7619_defconfig
-sh                         ap325rxa_defconfig
-powerpc                     asp8347_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                          urquell_defconfig
-arm                          gemini_defconfig
-parisc                           alldefconfig
-mips                            gpr_defconfig
-nios2                               defconfig
-arm                        spear6xx_defconfig
-sparc64                             defconfig
-sh                            shmin_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                        cell_defconfig
-microblaze                          defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                        workpad_defconfig
-openrisc                  or1klitex_defconfig
-mips                         db1xxx_defconfig
-sh                               j2_defconfig
-powerpc                      pmac32_defconfig
-mips                         rt305x_defconfig
-powerpc                      tqm8xx_defconfig
-nios2                         3c120_defconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                          r7780mp_defconfig
-powerpc                      walnut_defconfig
-arc                        nsimosci_defconfig
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210611
-x86_64               randconfig-a001-20210611
-x86_64               randconfig-a004-20210611
-x86_64               randconfig-a003-20210611
-x86_64               randconfig-a006-20210611
-x86_64               randconfig-a005-20210611
-i386                 randconfig-a002-20210610
-i386                 randconfig-a006-20210610
-i386                 randconfig-a004-20210610
-i386                 randconfig-a001-20210610
-i386                 randconfig-a005-20210610
-i386                 randconfig-a003-20210610
-i386                 randconfig-a002-20210611
-i386                 randconfig-a006-20210611
-i386                 randconfig-a004-20210611
-i386                 randconfig-a001-20210611
-i386                 randconfig-a005-20210611
-i386                 randconfig-a003-20210611
-x86_64               randconfig-a015-20210610
-x86_64               randconfig-a011-20210610
-x86_64               randconfig-a012-20210610
-x86_64               randconfig-a014-20210610
-x86_64               randconfig-a016-20210610
-x86_64               randconfig-a013-20210610
-i386                 randconfig-a015-20210608
-i386                 randconfig-a013-20210608
-i386                 randconfig-a016-20210608
-i386                 randconfig-a011-20210608
-i386                 randconfig-a012-20210608
-i386                 randconfig-a014-20210608
-i386                 randconfig-a015-20210610
-i386                 randconfig-a013-20210610
-i386                 randconfig-a016-20210610
-i386                 randconfig-a014-20210610
-i386                 randconfig-a012-20210610
-i386                 randconfig-a011-20210610
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Right, that part makes sense. But do you know why this is, why it's not
+possible to have the PCI controller built as a module? (GKI should
+want this).
 
-clang tested configs:
-x86_64               randconfig-a002-20210610
-x86_64               randconfig-a001-20210610
-x86_64               randconfig-a004-20210610
-x86_64               randconfig-a003-20210610
-x86_64               randconfig-a006-20210610
-x86_64               randconfig-a005-20210610
-x86_64               randconfig-a002-20210607
-x86_64               randconfig-a004-20210607
-x86_64               randconfig-a003-20210607
-x86_64               randconfig-a006-20210607
-x86_64               randconfig-a005-20210607
-x86_64               randconfig-a001-20210607
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+Bjorn
