@@ -2,74 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832A33A49FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEA33A49FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhFKUMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:12:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58542 "EHLO mail.kernel.org"
+        id S230299AbhFKUPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:15:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230305AbhFKUMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:12:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4335B613DE;
-        Fri, 11 Jun 2021 20:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623442204;
-        bh=gu7bxTsifzGZ4LA+en1PGdaj0Xd8ax3gohr8WXQGvXU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jRZWQMn4nq2BQNV/WxIrpDc5pRCPZaiWtxURhdtxregrLHtPDr5KXUoaaAle4RmZs
-         1OF+7uR+90ylsmhK7K7oHjdAvyFICi7lkhzteQrsD4AB/CiRp8XTsB/xbw/ooAbxuT
-         pKzTbZtk69JbOqNYZ/6y8SFomCYTg51DVs/4IpaMPhVQG4b2ICpeBPKNfen6ckhBg+
-         Nf/n/baHxUS2vGVnxsa7asj244kiilW57WSFi19zGdUOFY5qwdI14B2xR+SjnVxxWf
-         1Ulw1Td7xiMGXE7d5wsVBu22QhQ+uWQnLYVRu8OWtgLo9t2kmp0cGtLkfhENc626L0
-         DPxX0EbViV3cw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3189260CE4;
-        Fri, 11 Jun 2021 20:10:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229572AbhFKUPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:15:39 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC3D3601FA;
+        Fri, 11 Jun 2021 20:13:40 +0000 (UTC)
+Date:   Fri, 11 Jun 2021 16:13:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] tracing: Fixes for 5.13
+Message-ID: <20210611161339.25d815f7@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net: usb: asix: ax88772: manage PHY PM from MAC
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162344220419.8005.4275764665021801891.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Jun 2021 20:10:04 +0000
-References: <20210611035559.13252-1-o.rempel@pengutronix.de>
-In-Reply-To: <20210611035559.13252-1-o.rempel@pengutronix.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk,
-        m.szyprowski@samsung.com, jonathanh@nvidia.com,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Liangyan <liangyan.peng@linux.alibaba.com>, Masami Hiramatsu
+<mhiramat@kernel.org>, Steven Rostedt (VMware) <rostedt@goodmis.org>, Zhen
+Lei <thunder.leizhen@huawei.com>
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Linus,
 
-On Fri, 11 Jun 2021 05:55:59 +0200 you wrote:
-> Take over PHY power management, otherwise PHY framework will try to
-> access ASIX MDIO bus before MAC resume was completed.
-> 
-> Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Reported-by: Jon Hunter <jonathanh@nvidia.com>
-> Suggested-by: Heiner Kallweit <hkallweit1@gmail.com>
-> Tested-by: Jon Hunter <jonathanh@nvidia.com>
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> [...]
+Tracing fixes for 5.13:
 
-Here is the summary with links:
-  - [net-next,v2] net: usb: asix: ax88772: manage PHY PM from MAC
-    https://git.kernel.org/netdev/net-next/c/4a2c7217cd5a
+ - Fix the length check in the temp buffer filter
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ - Fix build failure in bootconfig tools for "fallthrough" macro
+
+ - Fix error return of bootconfig apply_xbc() routine
+
+[ Removed Peter's recordmcount fix from this one ]
+
+Please pull the latest trace-v5.13-rc5-2 tree, which can be found at:
 
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.13-rc5-2
+
+Tag SHA1: 03bc3d44c6ea2395ee6f0d05ac27e7fb492747d9
+Head SHA1: 3e08a9f9760f4a70d633c328a76408e62d6f80a3
+
+
+Liangyan (1):
+      tracing: Correct the length check which causes memory corruption
+
+Masami Hiramatsu (1):
+      tools/bootconfig: Fix a build error accroding to undefined fallthrough
+
+Steven Rostedt (VMware) (1):
+      ftrace: Do not blindly read the ip address in ftrace_bug()
+
+Zhen Lei (1):
+      tools/bootconfig: Fix error return code in apply_xbc()
+
+----
+ kernel/trace/ftrace.c                       | 8 +++++++-
+ kernel/trace/trace.c                        | 2 +-
+ tools/bootconfig/include/linux/bootconfig.h | 4 ++++
+ tools/bootconfig/main.c                     | 1 +
+ 4 files changed, 13 insertions(+), 2 deletions(-)
+---------------------------
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 2e8a3fde7104..72ef4dccbcc4 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -1967,12 +1967,18 @@ static int ftrace_hash_ipmodify_update(struct ftrace_ops *ops,
+ 
+ static void print_ip_ins(const char *fmt, const unsigned char *p)
+ {
++	char ins[MCOUNT_INSN_SIZE];
+ 	int i;
+ 
++	if (copy_from_kernel_nofault(ins, p, MCOUNT_INSN_SIZE)) {
++		printk(KERN_CONT "%s[FAULT] %px\n", fmt, p);
++		return;
++	}
++
+ 	printk(KERN_CONT "%s", fmt);
+ 
+ 	for (i = 0; i < MCOUNT_INSN_SIZE; i++)
+-		printk(KERN_CONT "%s%02x", i ? ":" : "", p[i]);
++		printk(KERN_CONT "%s%02x", i ? ":" : "", ins[i]);
+ }
+ 
+ enum ftrace_bug_type ftrace_bug_type;
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index a21ef9cd2aae..9299057feb56 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2736,7 +2736,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
+ 	    (entry = this_cpu_read(trace_buffered_event))) {
+ 		/* Try to use the per cpu buffer first */
+ 		val = this_cpu_inc_return(trace_buffered_event_cnt);
+-		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
++		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
+ 			trace_event_setup(entry, type, trace_ctx);
+ 			entry->array[0] = len;
+ 			return entry;
+diff --git a/tools/bootconfig/include/linux/bootconfig.h b/tools/bootconfig/include/linux/bootconfig.h
+index 078cbd2ba651..de7f30f99af3 100644
+--- a/tools/bootconfig/include/linux/bootconfig.h
++++ b/tools/bootconfig/include/linux/bootconfig.h
+@@ -4,4 +4,8 @@
+ 
+ #include "../../../../include/linux/bootconfig.h"
+ 
++#ifndef fallthrough
++# define fallthrough
++#endif
++
+ #endif
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index 7362bef1a368..6cd6080cac04 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -399,6 +399,7 @@ static int apply_xbc(const char *path, const char *xbc_path)
+ 	}
+ 	/* TODO: Ensure the @path is initramfs/initrd image */
+ 	if (fstat(fd, &stat) < 0) {
++		ret = -errno;
+ 		pr_err("Failed to get the size of %s\n", path);
+ 		goto out;
+ 	}
