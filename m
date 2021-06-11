@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566A03A404A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AAA3A404C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhFKKhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhFKKhl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:37:41 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A361C061574;
-        Fri, 11 Jun 2021 03:35:44 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id c13so5332681oib.13;
-        Fri, 11 Jun 2021 03:35:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CL8/Svq9gNJKgOiNLGqVNr492jbcHqwurkx/kYrwgrM=;
-        b=m9WzSvoadQfxuR+6MG7OpdOT47ONxLqLMDrhBc4GsXRlAvZGabqxIsCNiWsYHVyM9f
-         C9GdCnwLPV+BE7ojhXwJ1ZiuFzlucqEU9qSjNelxpyocYlt07vpgzO/Ruvjf/RkLYqra
-         wsZaG3xWDQpNqDWxUgCbZ+ELw5p6AzA1XdcbDiSNc7BTGlyzFka6pONEomm+q+qX9oZI
-         q7UUryAdsbRBUvQIiQIYHyxpN5sagAQ9nqGVrcfQtzTU9zD+4UQdPfS7T1bjeoHOSAQn
-         XJ/gruVzlm7of0KVXM44d5uq36bhf9ySoMvL7nF2p0H1Sbr9/9VSpOoSnt3ka+1r/lUL
-         WMUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=CL8/Svq9gNJKgOiNLGqVNr492jbcHqwurkx/kYrwgrM=;
-        b=Y9K3yUBzqoWQNXEyZRGdv6Nm/qgw9+Ip2lttzA0eR9053s/ksaOUAgdgnGpUVKHy3U
-         lzx0qN1+gBsx4u7k8YAZ+hkn3gB7NVcDP+D6im+IuGFPnY2oqPGRZtrh8RbTAqhuEwOX
-         VhGD/QrcYxVFyV1Ofhpv9g6biHYjQxRjEf8hCXGU1YZeqTQDMWq3DzVWCbjEnymDsUUx
-         ptz4efZ+Eg6tzOaEngRSgAmQMHqXMhkQ5x5/lhOGVFABooJ++cuzFq1J+gEpffS7pHNz
-         yRNdK6/yS6HYwLUWoWyzSCxYRxKxFvTKxsPyegb3B+faGOfpTd1hNU7tiP9DjrsE0S/R
-         7qSA==
-X-Gm-Message-State: AOAM532aW/DeUrCVvM4nPO9Qv7VsrKXI4qQFQQnK1omrGVIifYKEgnsR
-        y5om+rw88LoecXXglDCB4n4=
-X-Google-Smtp-Source: ABdhPJyKVcuwihx4x9Nz8kVrTc1ypAEJ5hMaAptcZN39FJBDRjJh+TvUq+4hvWaHegONL2luI+ENOg==
-X-Received: by 2002:aca:f452:: with SMTP id s79mr2006735oih.84.1623407743779;
-        Fri, 11 Jun 2021 03:35:43 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l18sm1150188otr.50.2021.06.11.03.35.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 03:35:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 11 Jun 2021 03:35:41 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] watchdog: sama5d4_wdt: add support for sama7g5-wdt
-Message-ID: <20210611103541.GA3189041@roeck-us.net>
-References: <20210527100120.266796-1-eugen.hristev@microchip.com>
- <20210527100120.266796-2-eugen.hristev@microchip.com>
- <20210527165506.GA1294623@roeck-us.net>
- <94d409ba-2073-a84e-5c8e-580f6e12191c@microchip.com>
+        id S231196AbhFKKjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:39:35 -0400
+Received: from m12-15.163.com ([220.181.12.15]:35466 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230179AbhFKKje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 06:39:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=+94bq
+        vDRtgaYfMyS91tqMXIwyIsPwzEVqO05JA2x8ZU=; b=XUVwYHbEeZBEQzOK2f5h3
+        rK489g7nRTbZk1fcw1u3//P3DiocYzMWHNupBJ8fVCBNFQXMSx5MMCh1n5lj51Xw
+        8uCd0HnSehyExLDpD5ZNsZMDxdd8rEtJtMyIhXgh8QBIcLaP+clEviEMEB4MZT2n
+        aie4QNy5dCT6K45vmFjvLY=
+Received: from localhost (unknown [218.17.89.111])
+        by smtp11 (Coremail) with SMTP id D8CowAC3zNG+PMNgp5KoAA--.1637S2;
+        Fri, 11 Jun 2021 18:36:55 +0800 (CST)
+Date:   Fri, 11 Jun 2021 18:36:46 +0800
+From:   Chunyou Tang <tangchunyou@163.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     tangchunyou <tangchunyou@163.icubecorp.cn>,
+        tomeu.vizoso@collabora.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alyssa.rosenzweig@collabora.com, tangchunyou@icubecorp.cn
+Subject: Re: [PATCH] modified: gpu/drm/panfrost/panfrost_gpu.c
+Message-ID: <20210611183646.0000770f@163.com>
+In-Reply-To: <d1304645-f2bf-8cea-2b60-24e0a3936ed7@arm.com>
+References: <20210609063850.2060-1-tangchunyou@163.com>
+        <78a2488a-71d5-548a-e221-7786f788509c@arm.com>
+        <20210610210659.00003155@163.com>
+        <d1304645-f2bf-8cea-2b60-24e0a3936ed7@arm.com>
+Organization: icube
+X-Mailer: Claws Mail 3.10.1 (GTK+ 2.16.6; i586-pc-mingw32msvc)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94d409ba-2073-a84e-5c8e-580f6e12191c@microchip.com>
+Content-Type: text/plain; charset=GB18030
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowAC3zNG+PMNgp5KoAA--.1637S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAry7tw4fGF13AF4rJry5urg_yoW5uw47pr
+        yDAF1YyF1kXr1jqa1q9w1xKFyYvayrJFy8WF1DCrW5tFsIgFn8tFsFya409Fy8ur48X3Wj
+        vw4Iyry7Wa15Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j4XdUUUUUU=
+X-Originating-IP: [218.17.89.111]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbipQ6uUVUMer-nlQABs7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:19:56AM +0200, Nicolas Ferre wrote:
-> On 27/05/2021 at 18:55, Guenter Roeck wrote:
-> > On Thu, May 27, 2021 at 01:01:19PM +0300, Eugen Hristev wrote:
-> > > Add support for compatible sama7g5-wdt.
-> > > The sama7g5 wdt is the same hardware block as on sam9x60.
-> > > Adapt the driver to use the sam9x60/sama7g5 variant if either
-> > > of the two compatibles are selected (sam9x60-wdt/sama7g5-wdt).
-> > > 
-> > > Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+于 Fri, 11 Jun 2021 11:10:16 +0100
+Steven Price <steven.price@arm.com> 写道:
+
+> On 10/06/2021 14:06, Chunyou Tang wrote:
+> > Hi Steven,
+> 
+> Hi Chunyou,
+> 
+> For some reason I'm not directly receiving your emails (only via the
+> list) - can you double check your email configuration?
+> 
+> >>> The GPU exception fault status register(0x3C),the low 8 bit is the
+> >>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
 > > 
-> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> > 	You can see the spec
+> > 	<arm_heimdall_technical_reference_manual_100612_0001_00_en.pdf>.
 > 
-> Guenter, Wim,
+> Thanks - please include that in the commit message - there are many
+> TRMs (one for each GPU) so without the information about exactly which
+> specification the page number is pretty useless. Sadly this
+> documentation isn't public which would be even better but I don't
+> think there are any public specs for this information.
 > 
-> How do we proceed? Do I take this "driver" patch through my tree which goes
-> to arm-soc or do you take it with the watchdog tree?
+> >> However this change is correct - panfrost_exception_name() should
+> >> be taking only the lower 8 bits. Even better though would be to to
+> >> report the full raw fault information as well as the high bits can
+> >> contain useful information:
+> >>
+> >> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
+> >> 0x%016llx\n", fault_status,
+> >> 		 panfrost_exception_name(pfdev, fault_status &
+> >> 0xFF), address);
+> > 
+> > So I change it according to what you said?
+> 
+> Yes, please send a v2.
+> 
+> Thanks,
+> 
+> Steve
+> 
+> > 于 Thu, 10 Jun 2021 11:41:52 +0100
+> > Steven Price <steven.price@arm.com> 写道:
+> > 
+> >> The subject should have the prefix "drm/panfrost" and should
+> >> mention what the patch is changing (not just the filename).
+> >>
+> >> On 09/06/2021 07:38, ChunyouTang wrote:
+ok
+> >>> From: tangchunyou <tangchunyou@163.icubecorp.cn>
+> >>>
+> >>> The GPU exception fault status register(0x3C),the low 8 bit is the
+> >>> EXCEPTION_TYPE.We can see the description at P3-78 in spec.
+> >>
+> >> Nit: When referring to a spec it's always good to mention the name
+> >> - I'm not sure which specification you found this in.
+> >>
+> >>>
+> >>> Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
+> >>> ---
+> >>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> >>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
+> >>> 2aae636f1cf5..1fffb6a0b24f 100644 ---
+> >>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
+> >>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@ static
+> >>> irqreturn_t panfrost_gpu_irq_handler(int irq, void *data) address
+> >>> |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
+> >>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
+> >>> 0x%016llx\n",
+> >>> -			 fault_status & 0xFF,
+> >>> panfrost_exception_name(pfdev, fault_status),
+> >>> +			 fault_status & 0xFF,
+> >>> panfrost_exception_name(pfdev, fault_status & 0xFF),
+> >>
+> >> However this change is correct - panfrost_exception_name() should
+> >> be taking only the lower 8 bits. Even better though would be to to
+> >> report the full raw fault information as well as the high bits can
+> >> contain useful information:
+> >>
+> >> 	dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
+> >> 0x%016llx\n", fault_status,
+> >> 		 panfrost_exception_name(pfdev, fault_status &
+> >> 0xFF), address);
+> >>
+> >> Thanks,
+> >>
+> >> Steve
+> >>
+> >>>  			 address);
+> >>>  
+> >>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
+> >>>
+> > 
+> > 
 
-I applied the series to my watchdog-next branch. That is all I can do
-from my side.
-
-Guenter
-
-> 
-> I'm planning to send my pull-requests before the end of this week.
-> 
-> Best regards,
->   Nicolas
-> 
-> > > ---
-> > >   drivers/watchdog/sama5d4_wdt.c | 10 ++++++++--
-> > >   1 file changed, 8 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/watchdog/sama5d4_wdt.c b/drivers/watchdog/sama5d4_wdt.c
-> > > index e5d11d6a2600..ec20ad4e534f 100644
-> > > --- a/drivers/watchdog/sama5d4_wdt.c
-> > > +++ b/drivers/watchdog/sama5d4_wdt.c
-> > > @@ -268,8 +268,10 @@ static int sama5d4_wdt_probe(struct platform_device *pdev)
-> > >        wdd->min_timeout = MIN_WDT_TIMEOUT;
-> > >        wdd->max_timeout = MAX_WDT_TIMEOUT;
-> > >        wdt->last_ping = jiffies;
-> > > -     wdt->sam9x60_support = of_device_is_compatible(dev->of_node,
-> > > -                                                    "microchip,sam9x60-wdt");
-> > > +
-> > > +     if (of_device_is_compatible(dev->of_node, "microchip,sam9x60-wdt") ||
-> > > +         of_device_is_compatible(dev->of_node, "microchip,sama7g5-wdt"))
-> > > +             wdt->sam9x60_support = true;
-> > > 
-> > >        watchdog_set_drvdata(wdd, wdt);
-> > > 
-> > > @@ -329,6 +331,10 @@ static const struct of_device_id sama5d4_wdt_of_match[] = {
-> > >        {
-> > >                .compatible = "microchip,sam9x60-wdt",
-> > >        },
-> > > +     {
-> > > +             .compatible = "microchip,sama7g5-wdt",
-> > > +     },
-> > > +
-> > >        { }
-> > >   };
-> > >   MODULE_DEVICE_TABLE(of, sama5d4_wdt_of_match);
-> > > --
-> > > 2.25.1
-> > > 
-> 
-> 
-> -- 
-> Nicolas Ferre
