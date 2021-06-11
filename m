@@ -2,206 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7043A4310
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EE63A4319
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhFKNdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:33:52 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:45497 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229517AbhFKNdr (ORCPT
+        id S229951AbhFKNg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhFKNg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:33:47 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id BD81E1816;
-        Fri, 11 Jun 2021 09:31:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 11 Jun 2021 09:31:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        GjwKU+XZBhFKHVYjmgKYWRtYYLdEXkmDES0gwDYX30Q=; b=fhcjG8GypyqILujd
-        EPOcZy7DYVUEpQWom/9zlOtQbeLfCs1dJSG2Dfj+L8yit84TYWIw50Qf3zXkZtpr
-        6eUljJ7Lvxq8p7OmM3h5crpLVSzYF/kZKwaxio4u1ycJ5/Xw5O3GtBQtAgmQcTh9
-        eFDCRd3bGZEOCdhibijxJYq1afIQCadK0P5F1t8nzR9gz/f3q+nJWiXwsyZiQDNP
-        TLAg6YBlww9UlSnH09vnVTLzipmoP9foA1Am+q9aFEzX2yTBskGS3prs3GVoE2Be
-        2yEf6O59cXQ+XyYYrDtEwEIfYw8vr8gAaDk2R6aSn0N1pnBavqrqgDAS8BhI6Yo3
-        N0n5ag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=GjwKU+XZBhFKHVYjmgKYWRtYYLdEXkmDES0gwDYX3
-        0Q=; b=n7ECLgSU9qMLk3N9lE01xFnzZ+Ry1bSMJkXbltIuU+GD7Rf+GO4mzNPg3
-        oIh6hDPOfxfl13r+gw1XTYt2M/MqJt9DsNAiy5KcdcoSL45kDqDHUFFugnNKKi0F
-        l8uBYG48RxtpxrJ/wva2dJphJ7c/N956d4Kf9ig3M9G8mKJNulVe8brYvfnmEKN2
-        BqNaZyibWxvivCyZwHefHwmkBHale1GoOkKCjIXXshJGPDbvzTtLR1WFrtApkSth
-        Sw2jcUG7OdGugIyADw/79aNEQ0djdjbugWocdKtGz0/8Mog9XDaIg7hcLGyNMTd3
-        8nj4oO+zH0vDu6T6Z/309fmb811Ng==
-X-ME-Sender: <xms:wmXDYKrxd6H-a1eXnPVt2M_xnUPcH_LF1B77oKZEZapbSDqtCAamYQ>
-    <xme:wmXDYIq93v9KV55Kfkg_whDmrzbMEY9OjVu80oD2ijjerjW8l8Tl7Q4EAyGK1W0LN
-    7s-X_qJjSmi>
-X-ME-Received: <xmr:wmXDYPMHuW5U8vp2ahL3VCfv_aBtuszxl5JkcyxkLl2UQ9YP5ONJlFZKue7rVM9RIvt5SspqkFged4N0LRg0scqT1f2Nnw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedujedgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:wmXDYJ4g1LTVCs0AREsXM8vgaCjMr0N-PpqExu_SNuKuM-D0bTSRZw>
-    <xmx:wmXDYJ6bi-UYYcvEOXl1m_PjCdYOCMcVr2MBH_xm3Q5JLm0SDFHwKg>
-    <xmx:wmXDYJjSzyTUidsazldgbdXJyHhR_RzptijyYYIoAycWlY5HtAOqxQ>
-    <xmx:xGXDYFi736NK3ENy5tVHRo6oCxYHx5F7gVskpFq3yKUdjwsvAGqVzUoRKYg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Jun 2021 09:31:40 -0400 (EDT)
-Message-ID: <21ec3ad11c4d0d74f9b51df3c3e43ab9f62c32b4.camel@themaw.net>
-Subject: Re: [PATCH v6 2/7] kernfs: add a revision to identify directory
- node changes
-From:   Ian Kent <raven@themaw.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, Tejun Heo <tj@kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 11 Jun 2021 21:31:36 +0800
-In-Reply-To: <YMNg8VD8XlUJGSK9@kroah.com>
-References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
-         <162322859985.361452.14110524195807923374.stgit@web.messagingengine.com>
-         <CAJfpeguzPEy+UAcyT4tcpvYxeTwB+64yxRw8Sh7UBROBuafYdw@mail.gmail.com>
-         <03f6e366fb4ebb56b15541d53eda461a55d3d38e.camel@themaw.net>
-         <YMNg8VD8XlUJGSK9@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Fri, 11 Jun 2021 09:36:56 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A41DC061574;
+        Fri, 11 Jun 2021 06:34:46 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id w127so5800428oig.12;
+        Fri, 11 Jun 2021 06:34:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kOEeO6Yx/UUevsmguZogDl2rKUzOM84efBMRN1u0UBM=;
+        b=KlljV5bfm99mzh/C6UvOvdMZb0DlxPHqcox+GsVlf8v7X9xGCjAmPgBkcmfzZJo6xJ
+         NvQ3EwZiU8d/Usmk7hPaMVm943m7lnxQrgYkHpNtDsVVNVnmDd0KfxGEw7TbqSt5KMbE
+         stm/S/UacgNolBQWl7eHLEwY9cxVLNns13Byw0FXuClvipdSnC5bJEQpEdunMzR8jbFy
+         kbelFMCJh77IPoWaLVpbpv1yg73y91gc5FsqAr4Xqi1D9wM7QOGPbIogfP119AabYkkr
+         vXV47Xcvl/ZFnE+TBlvcI0SOTXNk/usqwusN5xPnmhy/b3khcaip4Adi7qdJoXxBNhLK
+         CdOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kOEeO6Yx/UUevsmguZogDl2rKUzOM84efBMRN1u0UBM=;
+        b=NoadiIh7cXbPzXUomplPWdFXEOvsafoYHUjAaRhjG9OiLs+JDU3X4Ni3FycYm9O2MC
+         ESWSoyUyx/0xB652LlDcgWA4DkdjYfOIyEXLxxAjJjJKltvZWLADEgZ0ggC4hFgeGWRa
+         4+HwtrlxYxQZECWTL5fkYM6paCmUfrp5TFffjBtgcfBjkqx+prIe5E0gthW5eIDeJuMR
+         wsLHGAsuK/XUrZSnUXq+K7Ba2WNb4ovSxpRc6M1xqVE/ZrNExV91BpOhE++kQsXJLPSh
+         ZhNauaFDxp9lHKT3fB+oOYosmOGxyANh4gmfIidmzyPJObgtKjJ/88x65leubsg/wb4f
+         yxZQ==
+X-Gm-Message-State: AOAM531hE9lPBmfV4x1HGwhDxLVFW1dvzW+OoJG/mzHZz/NcFQrOT8PM
+        TSUniWTfR9cKYwDrR1H2JBYS07R5Ku2NMPD+/t0=
+X-Google-Smtp-Source: ABdhPJzU1wpb2b19gscLn0AdCh0Hy4c1dn5bZ+kN0rwn8lJf9l3B+sNpxzGvEgfZdBEuU3uBHYqjFB+2Y5lB57oe+Dk=
+X-Received: by 2002:aca:3385:: with SMTP id z127mr2426897oiz.142.1623418485563;
+ Fri, 11 Jun 2021 06:34:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210522211055.15988-1-mirela.rabulea@oss.nxp.com>
+ <20210522211055.15988-3-mirela.rabulea@oss.nxp.com> <DB9PR04MB8477D8F7DC86E67F74D5D9F780269@DB9PR04MB8477.eurprd04.prod.outlook.com>
+ <e4c174afd7c55c56c68afbe69276b41c3f574964.camel@nxp.com>
+In-Reply-To: <e4c174afd7c55c56c68afbe69276b41c3f574964.camel@nxp.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Fri, 11 Jun 2021 21:33:29 +0800
+Message-ID: <CAA+hA=TEi3iZ+nOfff=aN1FrLGb6+OHfx23aWaa1J7YfZRRgtA@mail.gmail.com>
+Subject: Re: [PATCH v13 2/2] arm64: dts: imx: Add jpeg encoder/decoder nodes
+To:     Mirela Rabulea <mirela.rabulea@nxp.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "ezequiel@collabora.com" <ezequiel@collabora.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        "G.n. Zhou" <guoniu.zhou@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "paul.kocialkowski@bootlin.com" <paul.kocialkowski@bootlin.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Peng Fan <peng.fan@nxp.com>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-11 at 15:11 +0200, Greg Kroah-Hartman wrote:
-> On Fri, Jun 11, 2021 at 08:56:18PM +0800, Ian Kent wrote:
-> > On Fri, 2021-06-11 at 14:49 +0200, Miklos Szeredi wrote:
-> > > On Wed, 9 Jun 2021 at 10:50, Ian Kent <raven@themaw.net> wrote:
-> > > > 
-> > > > Add a revision counter to kernfs directory nodes so it can be
-> > > > used
-> > > > to detect if a directory node has changed during negative
-> > > > dentry
-> > > > revalidation.
-> > > > 
-> > > > There's an assumption that sizeof(unsigned long) <=
-> > > > sizeof(pointer)
-> > > > on all architectures and as far as I know that assumption
-> > > > holds.
-> > > > 
-> > > > So adding a revision counter to the struct kernfs_elem_dir
-> > > > variant
-> > > > of
-> > > > the kernfs_node type union won't increase the size of the
-> > > > kernfs_node
-> > > > struct. This is because struct kernfs_elem_dir is at least
-> > > > sizeof(pointer) smaller than the largest union variant. It's
-> > > > tempting
-> > > > to make the revision counter a u64 but that would increase the
-> > > > size
-> > > > of
-> > > > kernfs_node on archs where sizeof(pointer) is smaller than the
-> > > > revision
-> > > > counter.
-> > > > 
-> > > > Signed-off-by: Ian Kent <raven@themaw.net>
-> > > > ---
-> > > >  fs/kernfs/dir.c             |    2 ++
-> > > >  fs/kernfs/kernfs-internal.h |   23 +++++++++++++++++++++++
-> > > >  include/linux/kernfs.h      |    5 +++++
-> > > >  3 files changed, 30 insertions(+)
-> > > > 
-> > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> > > > index 33166ec90a112..b3d1bc0f317d0 100644
-> > > > --- a/fs/kernfs/dir.c
-> > > > +++ b/fs/kernfs/dir.c
-> > > > @@ -372,6 +372,7 @@ static int kernfs_link_sibling(struct
-> > > > kernfs_node *kn)
-> > > >         /* successfully added, account subdir number */
-> > > >         if (kernfs_type(kn) == KERNFS_DIR)
-> > > >                 kn->parent->dir.subdirs++;
-> > > > +       kernfs_inc_rev(kn->parent);
-> > > > 
-> > > >         return 0;
-> > > >  }
-> > > > @@ -394,6 +395,7 @@ static bool kernfs_unlink_sibling(struct
-> > > > kernfs_node *kn)
-> > > > 
-> > > >         if (kernfs_type(kn) == KERNFS_DIR)
-> > > >                 kn->parent->dir.subdirs--;
-> > > > +       kernfs_inc_rev(kn->parent);
-> > > > 
-> > > >         rb_erase(&kn->rb, &kn->parent->dir.children);
-> > > >         RB_CLEAR_NODE(&kn->rb);
-> > > > diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-
-> > > > internal.h
-> > > > index ccc3b44f6306f..b4e7579e04799 100644
-> > > > --- a/fs/kernfs/kernfs-internal.h
-> > > > +++ b/fs/kernfs/kernfs-internal.h
-> > > > @@ -81,6 +81,29 @@ static inline struct kernfs_node
-> > > > *kernfs_dentry_node(struct dentry *dentry)
-> > > >         return d_inode(dentry)->i_private;
-> > > >  }
-> > > > 
-> > > > +static inline void kernfs_set_rev(struct kernfs_node *kn,
-> > > > +                                 struct dentry *dentry)
-> > > > +{
-> > > > +       if (kernfs_type(kn) == KERNFS_DIR)
-> > > > +               dentry->d_time = kn->dir.rev;
-> > > > +}
-> > > > +
-> > > > +static inline void kernfs_inc_rev(struct kernfs_node *kn)
-> > > > +{
-> > > > +       if (kernfs_type(kn) == KERNFS_DIR)
-> > > > +               kn->dir.rev++;
-> > > > +}
-> > > > +
-> > > > +static inline bool kernfs_dir_changed(struct kernfs_node *kn,
-> > > > +                                     struct dentry *dentry)
-> > > > +{
-> > > > +       if (kernfs_type(kn) == KERNFS_DIR) {
-> > > 
-> > > Aren't these always be called on a KERNFS_DIR node?
-> > 
-> > Yes they are.
-> > 
-> > > 
-> > > You could just reduce that to a WARN_ON, or remove the conditions
-> > > altogether then.
-> > 
-> > I was tempted to not use the check, a WARN_ON sounds better than
-> > removing the check, I'll do that in a v7.
-> 
-> No, WARN_ON is not ok, as systems will crash if panic-on-warn is set.
+[...]
 
-Thanks Greg, understood.
+> > > +img_subsys: bus@58000000 {
+> > > +   compatible = "simple-bus";
+> > > +   #address-cells = <1>;
+> > > +   #size-cells = <1>;
+> > > +   ranges = <0x58000000 0x0 0x58000000 0x1000000>;
+> > > +
+> > > +   img_ipg_clk: clock-img-ipg {
+> > > +           compatible = "fixed-clock";
+> > > +           #clock-cells = <0>;
+> > > +           clock-frequency = <200000000>;
+> > > +           clock-output-names = "img_ipg_clk";
+> > > +   };
+> > > +
+> > > +   jpegdec: jpegdec@58400000 {
+> >
+> > Node should be disabled by default.
+> > And enable it in board dts including LPCG.
+>
+> At version v5 of this patch, the node was disabled by default, and I
+> received this feedback from Ezequiel Garcia:
+>
+> "Pure memory-to-memory are typically not enabled per-board, but just
+> per-platform.
+> So you can drop the disabled status here."
+>
+> So, in v6 I made it enabled by default.
+>
+> Any strong reasons for enabled/disabled per platform?
 
-> 
-> If these are impossible to hit, great, let's not check this and we
-> can
-> just drop the code.  If they can be hit, then the above code is
-> correct
-> and it should stay.
+AFAIK we usually only enable system basic features and let other
+user selectable features disabled by default in dts.
+Even for device LPCG clocks, if it's enabled by default and later
+enter runtime suspend if no users, it still consumes power.
 
-It's a programming mistake to call these on a non-directory node.
+Regards
+Aisheng
 
-I can remove the check but do you think there's any value in passing
-the node and updating it's parent to avoid possible misuse?
-
-Ian
-
+>
+> Thanks,
+> Mirela
+>
+> >
+> > > +           reg = <0x58400000 0x00050000 >;
+> > > +           interrupts = <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                        <GIC_SPI 310 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                        <GIC_SPI 311 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                        <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>;
+> > > +           clocks = <&img_jpeg_dec_lpcg IMX_LPCG_CLK_0>,
+> > > +                    <&img_jpeg_dec_lpcg IMX_LPCG_CLK_4>;
+> > > +           clock-names = "per", "ipg";
+> > > +           assigned-clocks = <&img_jpeg_dec_lpcg IMX_LPCG_CLK_0>,
+> > > +                             <&img_jpeg_dec_lpcg IMX_LPCG_CLK_4>;
+> > > +           assigned-clock-rates = <200000000>, <200000000>;
+> > > +           power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>,
+> > > +                           <&pd IMX_SC_R_MJPEG_DEC_S0>,
+> > > +                           <&pd IMX_SC_R_MJPEG_DEC_S1>,
+> > > +                           <&pd IMX_SC_R_MJPEG_DEC_S2>,
+> > > +                           <&pd IMX_SC_R_MJPEG_DEC_S3>;
+> > > +   };
+> > > +
+> > > +   jpegenc: jpegenc@58450000 {
+> >
+> > Ditto
+> >
+> > > +           reg = <0x58450000 0x00050000 >;
+> > > +           interrupts = <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                        <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                        <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                        <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>;
+> > > +           clocks = <&img_jpeg_enc_lpcg IMX_LPCG_CLK_0>,
+> > > +                    <&img_jpeg_enc_lpcg IMX_LPCG_CLK_4>;
+> > > +           clock-names = "per", "ipg";
+> > > +           assigned-clocks = <&img_jpeg_enc_lpcg IMX_LPCG_CLK_0>,
+> > > +                             <&img_jpeg_enc_lpcg IMX_LPCG_CLK_4>;
+> > > +           assigned-clock-rates = <200000000>, <200000000>;
+> > > +           power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>,
+> > > +                           <&pd IMX_SC_R_MJPEG_ENC_S0>,
+> > > +                           <&pd IMX_SC_R_MJPEG_ENC_S1>,
+> > > +                           <&pd IMX_SC_R_MJPEG_ENC_S2>,
+> > > +                           <&pd IMX_SC_R_MJPEG_ENC_S3>;
+> > > +   };
+> > > +
+> > > +   img_jpeg_dec_lpcg: clock-controller@585d0000 {
+> >
+> > Ditto
+> >
+> > > +           compatible = "fsl,imx8qxp-lpcg";
+> > > +           reg = <0x585d0000 0x10000>;
+> > > +           #clock-cells = <1>;
+> > > +           clocks = <&img_ipg_clk>, <&img_ipg_clk>;
+> > > +           clock-indices = <IMX_LPCG_CLK_0>,
+> > > +                           <IMX_LPCG_CLK_4>;
+> > > +           clock-output-names = "img_jpeg_dec_lpcg_clk",
+> > > +                                "img_jpeg_dec_lpcg_ipg_clk";
+> > > +           power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>;
+> > > +   };
+> > > +
+> > > +   img_jpeg_enc_lpcg: clock-controller@585f0000 {
+> > > +           compatible = "fsl,imx8qxp-lpcg";
+> >
+> > Ditto
+> >
+> > Otherwise, I'm fine with this patch.
+> >
+> > > +           reg = <0x585f0000 0x10000>;
+> > > +           #clock-cells = <1>;
+> > > +           clocks = <&img_ipg_clk>, <&img_ipg_clk>;
+> > > +           clock-indices = <IMX_LPCG_CLK_0>,
+> > > +                           <IMX_LPCG_CLK_4>;
+> > > +           clock-output-names = "img_jpeg_enc_lpcg_clk",
+> > > +                                "img_jpeg_enc_lpcg_ipg_clk";
+> > > +           power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>;
+> > > +   };
+> > > +};
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
+> > > b/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
+> > > new file mode 100644
+> > > index 000000000000..7764b4146e0a
+> > > --- /dev/null
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
+> > > @@ -0,0 +1,12 @@
+> > > +// SPDX-License-Identifier: GPL-2.0+
+> > > +/*
+> > > + * Copyright 2021 NXP
+> > > + */
+> > > +
+> > > +&jpegdec {
+> > > +   compatible = "nxp,imx8qm-jpgdec", "nxp,imx8qxp-jpgdec"; };
+> > > +
+> > > +&jpegenc {
+> > > +   compatible = "nxp,imx8qm-jpgdec", "nxp,imx8qxp-jpgenc"; };
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qm.dtsi
+> > > b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
+> > > index 12cd059b339b..aebbe2b84aa1 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8qm.dtsi
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
+> > > @@ -166,11 +166,13 @@
+> > >     };
+> > >
+> > >     /* sorted in register address */
+> > > +   #include "imx8-ss-img.dtsi"
+> > >     #include "imx8-ss-dma.dtsi"
+> > >     #include "imx8-ss-conn.dtsi"
+> > >     #include "imx8-ss-lsio.dtsi"
+> > >  };
+> > >
+> > > +#include "imx8qm-ss-img.dtsi"
+> > >  #include "imx8qm-ss-dma.dtsi"
+> > >  #include "imx8qm-ss-conn.dtsi"
+> > >  #include "imx8qm-ss-lsio.dtsi"
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
+> > > b/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
+> > > new file mode 100644
+> > > index 000000000000..3a087317591d
+> > > --- /dev/null
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
+> > > @@ -0,0 +1,13 @@
+> > > +// SPDX-License-Identifier: GPL-2.0+
+> > > +/*
+> > > + * Copyright 2021 NXP
+> > > + * Dong Aisheng <aisheng.dong@nxp.com>
+> > > + */
+> > > +
+> > > +&jpegdec {
+> > > +   compatible = "nxp,imx8qxp-jpgdec";
+> > > +};
+> > > +
+> > > +&jpegenc {
+> > > +   compatible = "nxp,imx8qxp-jpgenc";
+> > > +};
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > > b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > > index 1e6b4995091e..a625fb6bdc62 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > > @@ -258,12 +258,14 @@
+> > >     };
+> > >
+> > >     /* sorted in register address */
+> > > +   #include "imx8-ss-img.dtsi"
+> > >     #include "imx8-ss-adma.dtsi"
+> > >     #include "imx8-ss-conn.dtsi"
+> > >     #include "imx8-ss-ddr.dtsi"
+> > >     #include "imx8-ss-lsio.dtsi"
+> > >  };
+> > >
+> > > +#include "imx8qxp-ss-img.dtsi"
+> > >  #include "imx8qxp-ss-adma.dtsi"
+> > >  #include "imx8qxp-ss-conn.dtsi"
+> > >  #include "imx8qxp-ss-lsio.dtsi"
+> > > --
+> > > 2.17.1
+> >
+> >
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
