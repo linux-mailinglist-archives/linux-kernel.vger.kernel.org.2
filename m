@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D493A4395
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337473A436B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhFKN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:58:05 -0400
-Received: from mail-pj1-f43.google.com ([209.85.216.43]:40913 "EHLO
-        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhFKN46 (ORCPT
+        id S231605AbhFKN4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231268AbhFKN4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:56:58 -0400
-Received: by mail-pj1-f43.google.com with SMTP id mp5-20020a17090b1905b029016dd057935fso5872037pjb.5;
-        Fri, 11 Jun 2021 06:55:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3zURn0UPPN9V50/Gx7hW/OjynHzyy+hIqEJ1Y6Xj4DQ=;
-        b=VPQOq5OjYH29Xl5bqY/833Y5XFKbg9z75HMXxIg8KGavJTIEtjtD3u3s0BaLvLChGM
-         Qt2TBf37DPkTWA6xscwui3Tp8UpwOXqn7eVv6bw8ptJhJ54puHAPSZttRcEcLIJrdsmr
-         8CHYfb267FTpS7plEIz7RwGclMdlllbJtDc4APd9aeR0/mKfeYsaoEVh2KQ9eKLODBr8
-         8HntPF/tG6EbQVIPRq6sAn1frMZTIZFXUeD/GGeMl9cjHKAvYQMtKgeuW4jAj112S1r5
-         xRkVuh9YuCxpC3FfipXymb9Sx8XKNSgrY6Eg4Q0nzMy2+JLxjRyF6eYtjMyR+4HOAsE8
-         6FbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3zURn0UPPN9V50/Gx7hW/OjynHzyy+hIqEJ1Y6Xj4DQ=;
-        b=EeC9e9c7j0FACyTsXQd7ebmeVVJdy9C+dSBr9JwhF866TEbskre+6G4PYbMGZs5Puh
-         puPcs3wDJRDX7zMSynbkTG2A89RW1vDcZF4u8MsXky4uB/fL/kpdKkOno+wAi93nWR2s
-         exnd/XgVbzFNvFKrVSBGrXv7UyIJPI3+eGC0r6qKAUzTYCR/yHzinv/jpU1Lj/+WzSRx
-         LsMjxK4pC8FoQa7fEh5gP+JGlYUYxFj31UM0d/r+cksajQX778dFX6lu8sEuIwqtw1vl
-         0es+pKfCAEy3vVrF6dCjHhYiuay4ikhesatgRsHHwiTXgmIMM0fYytEi4ZMvxQwSxXMj
-         7VjQ==
-X-Gm-Message-State: AOAM5316O/7OcwWTonFv1Ei7Og3To5Y4nic/o7c+OGhLCjFvRF2okKiw
-        j77i0QIp/BxdfjzyzlaDhbI=
-X-Google-Smtp-Source: ABdhPJxKFUrUoRT9n4B6GhAYNbHuTUlQJE7HqIghV3Z73QIWMVkVSlMS1wu7EtP1Qu3zF3WXXunRUQ==
-X-Received: by 2002:a17:90b:d95:: with SMTP id bg21mr4549059pjb.115.1623419640566;
-        Fri, 11 Jun 2021 06:54:00 -0700 (PDT)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id e2sm6721682pjc.37.2021.06.11.06.53.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 06:54:00 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 21:53:50 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v3] net: make get_net_ns return error if NET_NS is
- disabled
-Message-ID: <20210611135350.ba2rsbggb3zmunqg@mail.google.com>
-References: <20210610153941.118945-1-changbin.du@gmail.com>
- <20210610105112.787a0d5f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Fri, 11 Jun 2021 09:56:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219EEC0613A2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:54:33 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 13:54:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623419670;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=covPa+goHeNDsp+Y4nwtH7ED/6XkYIfxwCim2SBnvog=;
+        b=T/qHrISdZMz3ffaqIAYs0FzXO8LwgfjU3/i/ON8PAnTsMwSgmoJT7/En7uFJMpAQlicZK2
+        lm92OwqzXPqpocJtJrvALTFtnR17EAIW86+rs8IBg3gURsFgJh11nzskWtM4umP3NEImLQ
+        +leU5V9aYwpL1g09XhlacCjPhkGufZoppcqnIgEM4YlkbloVbyKqijkGRif3K/ECQekfA5
+        HwhgeLpUNcA9AE1Bi8pqUZQjqhFMpVZEqezIO77cQX6odwvxMpH2cW2uwKDZdZtchdRaKT
+        nHmOp4iehUlrFIUKOYfRBprV17E+Wk7CuwrMzcniHrbFBxDwJwiRuAGJjgMPhw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623419670;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=covPa+goHeNDsp+Y4nwtH7ED/6XkYIfxwCim2SBnvog=;
+        b=rrh+cdA1OWHonMpLYGau4YD9Uenqlt7NTmQht+N+Xq9pVHY6GVM7BKyMgwcfIFgPPwPXPI
+        KheUpyAxli/aLNBA==
+From:   "irqchip-bot for Lad Prabhakar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] dt-bindings: interrupt-controller:
+ arm,gic-v3: Describe GICv3 optional properties
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: <20210609155108.16590-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210609155108.16590-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610105112.787a0d5f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Message-ID: <162341966935.19906.17116959490451790585.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:51:12AM -0700, Jakub Kicinski wrote:
-> On Thu, 10 Jun 2021 23:39:41 +0800 Changbin Du wrote:
-> > There is a panic in socket ioctl cmd SIOCGSKNS when NET_NS is not enabled.
-> > The reason is that nsfs tries to access ns->ops but the proc_ns_operations
-> > is not implemented in this case.
-> > 
-> > [7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
-> > [7.670268] pgd = 32b54000
-> > [7.670544] [00000010] *pgd=00000000
-> > [7.671861] Internal error: Oops: 5 [#1] SMP ARM
-> > [7.672315] Modules linked in:
-> > [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
-> > [7.673309] Hardware name: Generic DT based system
-> > [7.673642] PC is at nsfs_evict+0x24/0x30
-> > [7.674486] LR is at clear_inode+0x20/0x9c
-> > 
-> > The same to tun SIOCGSKNS command.
-> > 
-> > To fix this problem, we make get_net_ns() return -EINVAL when NET_NS is
-> > disabled. Meanwhile move it to right place net/core/net_namespace.c.
-> 
-> I'm assuming you went from EOPNOTSUPP to EINVAL to follow what the
-> existing helpers in the header do?
->
-yes, make them behaviour in the same manner.
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> 
-> Thanks!
+Commit-ID:     4e08a559a18c1b6424e56859c74adb4b29c17318
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/4e08a559a18c1b6424e56859c74adb4b29c17318
+Author:        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+AuthorDate:    Wed, 09 Jun 2021 16:51:08 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Fri, 11 Jun 2021 14:26:31 +01:00
 
--- 
-Cheers,
-Changbin Du
+dt-bindings: interrupt-controller: arm,gic-v3: Describe GICv3 optional properties
+
+Describe the optional GICv3 properties:
+- clocks
+- clock-names
+- power-domains
+- resets
+
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210609155108.16590-1-prabhakar.mahadev-lad.rj@bp.renesas.com
+---
+ Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml b/Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml
+index 1ecd183..c84f9fe 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml
+@@ -145,6 +145,19 @@ properties:
+         required:
+           - affinity
+ 
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: aclk
++
++  power-domains:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
+ dependencies:
+   mbi-ranges: [ msi-controller ]
+   msi-controller: [ mbi-ranges ]
