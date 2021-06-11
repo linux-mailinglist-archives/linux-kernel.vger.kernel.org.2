@@ -2,179 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0803A43B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2502B3A43B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhFKOHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:07:51 -0400
-Received: from mail-qk1-f180.google.com ([209.85.222.180]:41939 "EHLO
-        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhFKOHu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:07:50 -0400
-Received: by mail-qk1-f180.google.com with SMTP id c124so31024308qkd.8;
-        Fri, 11 Jun 2021 07:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=r/c6iN3kChwZor0LAKmN98reQDKw83m+JgMq3vlOYzk=;
-        b=ApDhLfg6/OlZ3RoOxGam3o/qxZ2520nuCsT2ZvtlKeCf13BySsJVqmyq3y51GUlPE3
-         /Y9pNKNsv5BaP0KapqgZv7ymPxHgG+FVf6hHUvKh163Cd4MbBJKrMoZZBsbWKk76xIWu
-         E7qathQcaDUGd1ViWpsjQEmMzpxjdewizGhbBZyWlbE37jOlLLJXkhMiqb0PS8e2eLfn
-         Gq7nIg3MK7SIk51GnYMH8jEVltPSj3G4siJCHmQmpYcUXAug7XfU9Ewu4TcTjmhvHD8A
-         SRwuOfdH6mOjggwx9wbWQr6OoNFbCtNlnKv9u833qffzAb90VygB2HQQlZl9i5J8XrW8
-         tI6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=r/c6iN3kChwZor0LAKmN98reQDKw83m+JgMq3vlOYzk=;
-        b=eHjyxjOetBD3iiLze0mDuMfn2LP4oZDrXsafBkMw0OWc3iD7tOFBoQrl9P9j+xGVZw
-         PB5gk37aQXWmjCiLSzLK27TftbKHTkwGMIljRFk/jOCGwT+fTs8FHasfL9rAGJ5y+Rb5
-         rPyeVzU+FNzBWmJB+eTVbcxZErdYF0dOCGE6lERY3xKAz10I+9X7OzFAyHxss9cAfpmV
-         TF6qVEh+gjHUUXsuIQwr4VvYbWCNgAmaBUHJwdxxBS2f0P32Z2wnZQHlxTFm/XVVxwee
-         XNdP2NZumo5E1K0SS0LyjC+bxb2ySnlcyJjX4UVZVNv8P3SVqCNmNI4jMeVDcN5E1qEq
-         x/Lg==
-X-Gm-Message-State: AOAM531Fv5+uyVVCBF1PrI+qPMQgZ5SPRsTW/gDiEXGrEX8SWwiZ/N+H
-        9rKc5MIuK7Ih6b/HiwveYCU=
-X-Google-Smtp-Source: ABdhPJxgRZdWfm7ahjsIsz3WmPJBB/+VALtMbNk/7sYup+DVGb/A3CDSjRETs3ADDHvlMwU2NTQgeA==
-X-Received: by 2002:a05:620a:29d4:: with SMTP id s20mr3939788qkp.287.1623420275669;
-        Fri, 11 Jun 2021 07:04:35 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id x8sm4316376qkl.110.2021.06.11.07.04.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 07:04:35 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-Cc:     SeongJae Park <sj38.park@gmail.com>, akpm@linux-foundation.org,
-        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
-        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
-        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
-        guoju.fgj@alibaba-inc.com, mgorman@suse.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
-        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
-        snu@amazon.de, vbabka@suse.cz, vdavydov.dev@gmail.com,
-        zgf574564920@gmail.com, linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v29 12/13] mm/damon: Add user space selftests
-Date:   Fri, 11 Jun 2021 14:04:27 +0000
-Message-Id: <20210611140427.6375-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210611135737.104838-1-mheyne@amazon.de>
-To:     unlisted-recipients:; (no To-header on input)
+        id S231497AbhFKOHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:07:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229529AbhFKOHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 10:07:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B011613FA;
+        Fri, 11 Jun 2021 14:05:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623420313;
+        bh=BT0EZgPDQoGSnbdayeXSZWpTlTPLeYX5sPy/3IHH0s4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P8uXWGuR2FORSMJtJeXhnWVAmBmUFWNJpUnDkmnewdInNIpS4wCVfh7bq115OW9mM
+         vxni8K6yJZM5jn1Wbh2M89JxnMOjjxuWMpXMkHUHmWP/gpjFpKaX2+DYTATJTb1F11
+         bH/2Ld56l9I5K7Nrk9UlbnPlxrw5aQSsfrS3UebM=
+Date:   Fri, 11 Jun 2021 16:05:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, Tejun Heo <tj@kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 2/7] kernfs: add a revision to identify directory node
+ changes
+Message-ID: <YMNtl9sSwQ9bPENA@kroah.com>
+References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
+ <162322859985.361452.14110524195807923374.stgit@web.messagingengine.com>
+ <CAJfpeguzPEy+UAcyT4tcpvYxeTwB+64yxRw8Sh7UBROBuafYdw@mail.gmail.com>
+ <03f6e366fb4ebb56b15541d53eda461a55d3d38e.camel@themaw.net>
+ <YMNg8VD8XlUJGSK9@kroah.com>
+ <21ec3ad11c4d0d74f9b51df3c3e43ab9f62c32b4.camel@themaw.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <21ec3ad11c4d0d74f9b51df3c3e43ab9f62c32b4.camel@themaw.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
-
-Hello Max,
-
-> On Thu, 20 May 2021 07:56:28 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-> 
-> > From: SeongJae Park <sjpark@amazon.de>
+On Fri, Jun 11, 2021 at 09:31:36PM +0800, Ian Kent wrote:
+> On Fri, 2021-06-11 at 15:11 +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Jun 11, 2021 at 08:56:18PM +0800, Ian Kent wrote:
+> > > On Fri, 2021-06-11 at 14:49 +0200, Miklos Szeredi wrote:
+> > > > On Wed, 9 Jun 2021 at 10:50, Ian Kent <raven@themaw.net> wrote:
+> > > > > 
+> > > > > Add a revision counter to kernfs directory nodes so it can be
+> > > > > used
+> > > > > to detect if a directory node has changed during negative
+> > > > > dentry
+> > > > > revalidation.
+> > > > > 
+> > > > > There's an assumption that sizeof(unsigned long) <=
+> > > > > sizeof(pointer)
+> > > > > on all architectures and as far as I know that assumption
+> > > > > holds.
+> > > > > 
+> > > > > So adding a revision counter to the struct kernfs_elem_dir
+> > > > > variant
+> > > > > of
+> > > > > the kernfs_node type union won't increase the size of the
+> > > > > kernfs_node
+> > > > > struct. This is because struct kernfs_elem_dir is at least
+> > > > > sizeof(pointer) smaller than the largest union variant. It's
+> > > > > tempting
+> > > > > to make the revision counter a u64 but that would increase the
+> > > > > size
+> > > > > of
+> > > > > kernfs_node on archs where sizeof(pointer) is smaller than the
+> > > > > revision
+> > > > > counter.
+> > > > > 
+> > > > > Signed-off-by: Ian Kent <raven@themaw.net>
+> > > > > ---
+> > > > >  fs/kernfs/dir.c             |    2 ++
+> > > > >  fs/kernfs/kernfs-internal.h |   23 +++++++++++++++++++++++
+> > > > >  include/linux/kernfs.h      |    5 +++++
+> > > > >  3 files changed, 30 insertions(+)
+> > > > > 
+> > > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> > > > > index 33166ec90a112..b3d1bc0f317d0 100644
+> > > > > --- a/fs/kernfs/dir.c
+> > > > > +++ b/fs/kernfs/dir.c
+> > > > > @@ -372,6 +372,7 @@ static int kernfs_link_sibling(struct
+> > > > > kernfs_node *kn)
+> > > > >         /* successfully added, account subdir number */
+> > > > >         if (kernfs_type(kn) == KERNFS_DIR)
+> > > > >                 kn->parent->dir.subdirs++;
+> > > > > +       kernfs_inc_rev(kn->parent);
+> > > > > 
+> > > > >         return 0;
+> > > > >  }
+> > > > > @@ -394,6 +395,7 @@ static bool kernfs_unlink_sibling(struct
+> > > > > kernfs_node *kn)
+> > > > > 
+> > > > >         if (kernfs_type(kn) == KERNFS_DIR)
+> > > > >                 kn->parent->dir.subdirs--;
+> > > > > +       kernfs_inc_rev(kn->parent);
+> > > > > 
+> > > > >         rb_erase(&kn->rb, &kn->parent->dir.children);
+> > > > >         RB_CLEAR_NODE(&kn->rb);
+> > > > > diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-
+> > > > > internal.h
+> > > > > index ccc3b44f6306f..b4e7579e04799 100644
+> > > > > --- a/fs/kernfs/kernfs-internal.h
+> > > > > +++ b/fs/kernfs/kernfs-internal.h
+> > > > > @@ -81,6 +81,29 @@ static inline struct kernfs_node
+> > > > > *kernfs_dentry_node(struct dentry *dentry)
+> > > > >         return d_inode(dentry)->i_private;
+> > > > >  }
+> > > > > 
+> > > > > +static inline void kernfs_set_rev(struct kernfs_node *kn,
+> > > > > +                                 struct dentry *dentry)
+> > > > > +{
+> > > > > +       if (kernfs_type(kn) == KERNFS_DIR)
+> > > > > +               dentry->d_time = kn->dir.rev;
+> > > > > +}
+> > > > > +
+> > > > > +static inline void kernfs_inc_rev(struct kernfs_node *kn)
+> > > > > +{
+> > > > > +       if (kernfs_type(kn) == KERNFS_DIR)
+> > > > > +               kn->dir.rev++;
+> > > > > +}
+> > > > > +
+> > > > > +static inline bool kernfs_dir_changed(struct kernfs_node *kn,
+> > > > > +                                     struct dentry *dentry)
+> > > > > +{
+> > > > > +       if (kernfs_type(kn) == KERNFS_DIR) {
+> > > > 
+> > > > Aren't these always be called on a KERNFS_DIR node?
+> > > 
+> > > Yes they are.
+> > > 
+> > > > 
+> > > > You could just reduce that to a WARN_ON, or remove the conditions
+> > > > altogether then.
+> > > 
+> > > I was tempted to not use the check, a WARN_ON sounds better than
+> > > removing the check, I'll do that in a v7.
 > > 
-> > This commit adds a simple user space tests for DAMON.  The tests are
-> > using kselftest framework.
+> > No, WARN_ON is not ok, as systems will crash if panic-on-warn is set.
+> 
+> Thanks Greg, understood.
+> 
 > > 
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> >  tools/testing/selftests/damon/Makefile        |  7 ++
-> >  .../selftests/damon/_chk_dependency.sh        | 28 ++++++
-> >  .../testing/selftests/damon/debugfs_attrs.sh  | 98 +++++++++++++++++++
-> >  3 files changed, 133 insertions(+)
-> >  create mode 100644 tools/testing/selftests/damon/Makefile
-> >  create mode 100644 tools/testing/selftests/damon/_chk_dependency.sh
-> >  create mode 100755 tools/testing/selftests/damon/debugfs_attrs.sh
-> > 
-[...]
-> > diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
-> > new file mode 100755
-> > index 000000000000..4a8ab4910ee4
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/damon/debugfs_attrs.sh
-> > @@ -0,0 +1,98 @@
-> > +#!/bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +
-> > +source ./_chk_dependency.sh
-> > +
-> > +# Test attrs file
-> > +file="$DBGFS/attrs"
-> > +
-> > +ORIG_CONTENT=$(cat $file)
+> > If these are impossible to hit, great, let's not check this and we
+> > can
+> > just drop the code.  If they can be hit, then the above code is
+> > correct
+> > and it should stay.
 > 
-> Missing quotes around $file. Can you run shellcheck on this code and fix all
-> reportings, please?
-
-Thanks for the nice suggestion.  I will do so in the next spin.
-
+> It's a programming mistake to call these on a non-directory node.
 > 
-> > +
-> > +echo 1 2 3 4 5 > $file
-> > +if [ $? -ne 0 ]
-> > +then
-> > +	echo "$file write failed"
-> > +	echo $ORIG_CONTENT > $file
-> > +	exit 1
-> > +fi
-> > +
-> > +echo 1 2 3 4 > $file
-> > +if [ $? -eq 0 ]
-> > +then
-> > +	echo "$file write success (should failed)"
-> > +	echo $ORIG_CONTENT > $file
-> > +	exit 1
-> > +fi
-> > +
-> > +CONTENT=$(cat $file)
-> > +if [ "$CONTENT" != "1 2 3 4 5" ]
-> > +then
-> > +	echo "$file not written"
-> > +	echo $ORIG_CONTENT > $file
-> > +	exit 1
-> > +fi
-> 
-> I'd add test cases for the contents written to the attrs, like checking that
-> input min_nr_regions is actually smaller than the input max_nr_regions values.
+> I can remove the check but do you think there's any value in passing
+> the node and updating it's parent to avoid possible misuse?
 
-Good point.  Will add the test case in the next spin.
+I do not understand the question here, sorry.  It's a static function,
+you control the callers, who can "misuse" it?
 
-> 
-> > +
-> > +echo $ORIG_CONTENT > $file
-> > +
-> > +# Test target_ids file
-> > +file="$DBGFS/target_ids"
-> > +
-> > +ORIG_CONTENT=$(cat $file)
-> > +
-> > +echo "1 2 3 4" > $file
-> > +if [ $? -ne 0 ]
-> > +then
-> > +	echo "$file write fail"
-> > +	echo $ORIG_CONTENT > $file
-> > +	exit 1
-> > +fi
-> > +
-> > +echo "1 2 abc 4" > $file
-> > +if [ $? -ne 0 ]
-> > +then
-> > +	echo "$file write fail"
-> > +	echo $ORIG_CONTENT > $file
-> > +	exit 1
-> > +fi
-> 
-> I've seen this construct more than once. Any chance to refactor this code? Or is
-> this selftest not expected to grow in the future?
+thanks,
 
-Good point.  Will modularize code for reducing duplicates.
-
-
-Thanks,
-SeongJae Park
-
-[...]
+greg k-h
