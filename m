@@ -2,553 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CD33A439C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFAA3A43A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhFKN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:59:56 -0400
-Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:46181 "EHLO
-        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231222AbhFKN7y (ORCPT
+        id S231222AbhFKOAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhFKOAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:59:54 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id 7F9BD1C362E
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:57:55 +0100 (IST)
-Received: (qmail 18049 invoked from network); 11 Jun 2021 13:57:55 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Jun 2021 13:57:55 -0000
-Date:   Fri, 11 Jun 2021 14:57:53 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Zi Yan <ziy@nvidia.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH v2] mm/page_alloc: Allow high-order pages to be stored on the
- per-cpu lists
-Message-ID: <20210611135753.GC30378@techsingularity.net>
+        Fri, 11 Jun 2021 10:00:34 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C3AC061574;
+        Fri, 11 Jun 2021 06:58:36 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id o3so6184174wri.8;
+        Fri, 11 Jun 2021 06:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=65HXSbNbmh2eB86Bo4Ktjk4oUhG8UnCDwk0uApNVoXo=;
+        b=vQ2nhn4M1kRI+inZ01ZL0rg1eKcQohm+IhGgChNvONiLqe9p/tKgEzGc1yxiTXQYPD
+         RI3zK+MkYajI8+V/tXf0j9MEJsgxQtTOVpPfiKEHD4SJTpaTwZ5EfK0X4YCl4Xf8Bdwu
+         Kvt8GR9lQOk7Z2f1Lq+yoOM5LoGQi0ab41KdOSA0jBDf5WsGqh7D1lZXPSa5rY4+lI9r
+         amQhgZvD9HOJCJ+XjZrGvtI8mjdVkVEsZ6MNmXumH2VhEK9irMXZ/PscnRp59DCADNQ+
+         ugsrorfuA2Aysctc3iw2q/j/0+ZJrcwfwbEpMW90UcT/BpGy/SjWZp3bDiuD3+qUhPEl
+         PpNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=65HXSbNbmh2eB86Bo4Ktjk4oUhG8UnCDwk0uApNVoXo=;
+        b=mg4bNm6KEV6JVhBv+CH1doT228lkujd/AVy1EH5Hi0a5Ksb0pGr5N428uTFSYG4ZfP
+         sR0/WQtK0+NrcocCqTZzh6ACpAnTcZcrC0oNSHOBH714Wj7zeSs6aHVG6x5Dfrcxd6cL
+         RjQqNgI/EFsHPlSu4ZaCXk+OAHTXsjTzVv5vxm7C1F/pbGC86DNCp7C3J1COJEICOUSR
+         a4iScXnbu2WbjCIkiZY91DxRDPjL+zbfLfZDKtCXsYmaderx2qOB74dWPvqnpBLqImik
+         00rx8Z1etWwlIRWegejxERksm9887ZPOniMtxAcysdt0xu9Tl6iozO25klYeL0a9Rz2e
+         Bqtw==
+X-Gm-Message-State: AOAM532rusD7Bj1zB7Ihzok+T/Wym2rSFyXCJe5bb9C8+OMHd5QoKx0N
+        a8n/SZx07ERSh+68ZAvSHQo=
+X-Google-Smtp-Source: ABdhPJxZlr1sJExAQqIe+Ht9eFJb7CaHNbSMfSYh1iNUYux526F16gInmumcvtcfKoolHwU8y6GSoA==
+X-Received: by 2002:adf:df09:: with SMTP id y9mr4379275wrl.108.1623419915200;
+        Fri, 11 Jun 2021 06:58:35 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id o11sm5779133wmq.1.2021.06.11.06.58.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 06:58:34 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] arm64: dts: mediatek: add MT6779 spi master dts
+ node
+To:     Mason Zhang <Mason.Zhang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        hanks.chen@mediatek.com, wsd_upstream@mediatek.com
+References: <20210409015651.11474-1-Mason.Zhang@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <faafa83d-4831-2b70-78ec-0e9f3636b5c9@gmail.com>
+Date:   Fri, 11 Jun 2021 15:58:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210409015651.11474-1-Mason.Zhang@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog since v1
-o Fix boot problem on KVM with hotplug memory nodes (ziy)
-o Correct PCP list lookup in bulk page allocator
 
-The per-cpu page allocator (PCP) only stores order-0 pages. This means
-that all THP and "cheap" high-order allocations including SLUB contends
-on the zone->lock. This patch extends the PCP allocator to store THP and
-"cheap" high-order pages. Note that struct per_cpu_pages increases in
-size to 256 bytes (4 cache lines) on x86-64.
 
-Note that this is not necessarily a universal performance win because of
-how it is implemented. High-order pages can cause pcp->high to be exceeded
-prematurely for lower-orders so for example, a large number of THP pages
-being freed could release order-0 pages from the PCP lists. Hence, much
-depends on the allocation/free pattern as observed by a single CPU to
-determine if caching helps or hurts a particular workload.
+On 09/04/2021 03:56, Mason Zhang wrote:
+> This patch add address-cells && size-cells in spi node based on patch v1.
+> 
 
-That said, basic performance testing passed. The following is a netperf
-UDP_STREAM test which hits the relevant patches as some of the network
-allocations are high-order.
+Can you please come up with a better commit message, otherwise patch looks good.
 
-netperf-udp
-                                 5.13.0-rc2             5.13.0-rc2
-                           mm-pcpburst-v3r4   mm-pcphighorder-v1r7
-Hmean     send-64         261.46 (   0.00%)      266.30 *   1.85%*
-Hmean     send-128        516.35 (   0.00%)      536.78 *   3.96%*
-Hmean     send-256       1014.13 (   0.00%)     1034.63 *   2.02%*
-Hmean     send-1024      3907.65 (   0.00%)     4046.11 *   3.54%*
-Hmean     send-2048      7492.93 (   0.00%)     7754.85 *   3.50%*
-Hmean     send-3312     11410.04 (   0.00%)    11772.32 *   3.18%*
-Hmean     send-4096     13521.95 (   0.00%)    13912.34 *   2.89%*
-Hmean     send-8192     21660.50 (   0.00%)    22730.72 *   4.94%*
-Hmean     send-16384    31902.32 (   0.00%)    32637.50 *   2.30%*
+Regards,
+Matthias
 
-From a functional point of view, a patch like this is necessary to
-make bulk allocation of high-order pages work with similar performance
-to order-0 bulk allocations. The bulk allocator is not updated in this
-series as it would have to be determined by bulk allocation users how
-they want to track the order of pages allocated with the bulk allocator.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
----
- include/linux/mmzone.h |  20 +++++-
- mm/internal.h          |   2 +-
- mm/page_alloc.c        | 169 +++++++++++++++++++++++++++++++++++--------------
- mm/swap.c              |   2 +-
- 4 files changed, 144 insertions(+), 49 deletions(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index e20d98c62beb..f1bed5b847ec 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -333,6 +333,24 @@ enum zone_watermarks {
- 	NR_WMARK
- };
- 
-+/*
-+ * One per migratetype for each PAGE_ALLOC_COSTLY_ORDER plus one additional
-+ * for pageblock size for THP if configured.
-+ */
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+#define NR_PCP_THP 1
-+#else
-+#define NR_PCP_THP 0
-+#endif
-+#define NR_PCP_LISTS (MIGRATE_PCPTYPES * (PAGE_ALLOC_COSTLY_ORDER + 1 + NR_PCP_THP))
-+
-+/*
-+ * Shift to encode migratetype and order in the same integer, with order
-+ * in the least significant bits.
-+ */
-+#define NR_PCP_ORDER_WIDTH 8
-+#define NR_PCP_ORDER_MASK ((1<<NR_PCP_ORDER_WIDTH) - 1)
-+
- #define min_wmark_pages(z) (z->_watermark[WMARK_MIN] + z->watermark_boost)
- #define low_wmark_pages(z) (z->_watermark[WMARK_LOW] + z->watermark_boost)
- #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
-@@ -349,7 +367,7 @@ struct per_cpu_pages {
- #endif
- 
- 	/* Lists of pages, one per migrate type stored on the pcp-lists */
--	struct list_head lists[MIGRATE_PCPTYPES];
-+	struct list_head lists[NR_PCP_LISTS];
- };
- 
- struct per_cpu_zonestat {
-diff --git a/mm/internal.h b/mm/internal.h
-index b2bad3a4c426..935f6baaa847 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -198,7 +198,7 @@ extern void post_alloc_hook(struct page *page, unsigned int order,
- 					gfp_t gfp_flags);
- extern int user_min_free_kbytes;
- 
--extern void free_unref_page(struct page *page);
-+extern void free_unref_page(struct page *page, unsigned int order);
- extern void free_unref_page_list(struct list_head *list);
- 
- extern void zone_pcp_update(struct zone *zone, int cpu_online);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index f24f509c3ee3..8472bae567f0 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -676,10 +676,53 @@ static void bad_page(struct page *page, const char *reason)
- 	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
- }
- 
-+static inline unsigned int order_to_pindex(int migratetype, int order)
-+{
-+	int base = order;
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (order > PAGE_ALLOC_COSTLY_ORDER) {
-+		VM_BUG_ON(order != pageblock_order);
-+		base = PAGE_ALLOC_COSTLY_ORDER + 1;
-+	}
-+#else
-+	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
-+#endif
-+
-+	return (MIGRATE_PCPTYPES * base) + migratetype;
-+}
-+
-+static inline int pindex_to_order(unsigned int pindex)
-+{
-+	int order = pindex / MIGRATE_PCPTYPES;
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (order > PAGE_ALLOC_COSTLY_ORDER) {
-+		order = pageblock_order;
-+		VM_BUG_ON(order != pageblock_order);
-+	}
-+#else
-+	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
-+#endif
-+
-+	return order;
-+}
-+
-+static inline bool pcp_allowed_order(unsigned int order)
-+{
-+	if (order <= PAGE_ALLOC_COSTLY_ORDER)
-+		return true;
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (order == pageblock_order)
-+		return true;
-+#endif
-+	return false;
-+}
-+
- static inline void free_the_page(struct page *page, unsigned int order)
- {
--	if (order == 0)		/* Via pcp? */
--		free_unref_page(page);
-+	if (pcp_allowed_order(order))		/* Via pcp? */
-+		free_unref_page(page, order);
- 	else
- 		__free_pages_ok(page, order, FPI_NONE);
- }
-@@ -702,7 +745,7 @@ static inline void free_the_page(struct page *page, unsigned int order)
- void free_compound_page(struct page *page)
- {
- 	mem_cgroup_uncharge(page);
--	__free_pages_ok(page, compound_order(page), FPI_NONE);
-+	free_the_page(page, compound_order(page));
- }
- 
- void prep_compound_page(struct page *page, unsigned int order)
-@@ -1352,9 +1395,9 @@ static __always_inline bool free_pages_prepare(struct page *page,
-  * to pcp lists. With debug_pagealloc also enabled, they are also rechecked when
-  * moved from pcp lists to free lists.
-  */
--static bool free_pcp_prepare(struct page *page)
-+static bool free_pcp_prepare(struct page *page, unsigned int order)
- {
--	return free_pages_prepare(page, 0, true, FPI_NONE);
-+	return free_pages_prepare(page, order, true, FPI_NONE);
- }
- 
- static bool bulkfree_pcp_prepare(struct page *page)
-@@ -1371,12 +1414,12 @@ static bool bulkfree_pcp_prepare(struct page *page)
-  * debug_pagealloc enabled, they are checked also immediately when being freed
-  * to the pcp lists.
-  */
--static bool free_pcp_prepare(struct page *page)
-+static bool free_pcp_prepare(struct page *page, unsigned int order)
- {
- 	if (debug_pagealloc_enabled_static())
--		return free_pages_prepare(page, 0, true, FPI_NONE);
-+		return free_pages_prepare(page, order, true, FPI_NONE);
- 	else
--		return free_pages_prepare(page, 0, false, FPI_NONE);
-+		return free_pages_prepare(page, order, false, FPI_NONE);
- }
- 
- static bool bulkfree_pcp_prepare(struct page *page)
-@@ -1408,8 +1451,10 @@ static inline void prefetch_buddy(struct page *page)
- static void free_pcppages_bulk(struct zone *zone, int count,
- 					struct per_cpu_pages *pcp)
- {
--	int migratetype = 0;
-+	int pindex = 0;
- 	int batch_free = 0;
-+	int nr_freed = 0;
-+	unsigned int order;
- 	int prefetch_nr = READ_ONCE(pcp->batch);
- 	bool isolated_pageblocks;
- 	struct page *page, *tmp;
-@@ -1420,7 +1465,7 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 	 * below while (list_empty(list)) loop.
- 	 */
- 	count = min(pcp->count, count);
--	while (count) {
-+	while (count > 0) {
- 		struct list_head *list;
- 
- 		/*
-@@ -1432,24 +1477,31 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 		 */
- 		do {
- 			batch_free++;
--			if (++migratetype == MIGRATE_PCPTYPES)
--				migratetype = 0;
--			list = &pcp->lists[migratetype];
-+			if (++pindex == NR_PCP_LISTS)
-+				pindex = 0;
-+			list = &pcp->lists[pindex];
- 		} while (list_empty(list));
- 
- 		/* This is the only non-empty list. Free them all. */
--		if (batch_free == MIGRATE_PCPTYPES)
-+		if (batch_free == NR_PCP_LISTS)
- 			batch_free = count;
- 
-+		order = pindex_to_order(pindex);
-+		BUILD_BUG_ON(MAX_ORDER >= (1<<NR_PCP_ORDER_WIDTH));
- 		do {
- 			page = list_last_entry(list, struct page, lru);
- 			/* must delete to avoid corrupting pcp list */
- 			list_del(&page->lru);
--			pcp->count--;
-+			nr_freed += 1 << order;
-+			count -= 1 << order;
- 
- 			if (bulkfree_pcp_prepare(page))
- 				continue;
- 
-+			/* Encode order with the migratetype */
-+			page->index <<= NR_PCP_ORDER_WIDTH;
-+			page->index |= order;
-+
- 			list_add_tail(&page->lru, &head);
- 
- 			/*
-@@ -1465,8 +1517,9 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 				prefetch_buddy(page);
- 				prefetch_nr--;
- 			}
--		} while (--count && --batch_free && !list_empty(list));
-+		} while (count > 0 && --batch_free && !list_empty(list));
- 	}
-+	pcp->count -= nr_freed;
- 
- 	/*
- 	 * local_lock_irq held so equivalent to spin_lock_irqsave for
-@@ -1481,14 +1534,19 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 	 */
- 	list_for_each_entry_safe(page, tmp, &head, lru) {
- 		int mt = get_pcppage_migratetype(page);
-+
-+		/* mt has been encoded with the order (see above) */
-+		order = mt & NR_PCP_ORDER_MASK;
-+		mt >>= NR_PCP_ORDER_WIDTH;
-+
- 		/* MIGRATE_ISOLATE page should not go to pcplists */
- 		VM_BUG_ON_PAGE(is_migrate_isolate(mt), page);
- 		/* Pageblock could have been isolated meanwhile */
- 		if (unlikely(isolated_pageblocks))
- 			mt = get_pageblock_migratetype(page);
- 
--		__free_one_page(page, page_to_pfn(page), zone, 0, mt, FPI_NONE);
--		trace_mm_page_pcpu_drain(page, 0, mt);
-+		__free_one_page(page, page_to_pfn(page), zone, order, mt, FPI_NONE);
-+		trace_mm_page_pcpu_drain(page, order, mt);
- 	}
- 	spin_unlock(&zone->lock);
- }
-@@ -3265,11 +3323,12 @@ void mark_free_pages(struct zone *zone)
- }
- #endif /* CONFIG_PM */
- 
--static bool free_unref_page_prepare(struct page *page, unsigned long pfn)
-+static bool free_unref_page_prepare(struct page *page, unsigned long pfn,
-+							unsigned int order)
- {
- 	int migratetype;
- 
--	if (!free_pcp_prepare(page))
-+	if (!free_pcp_prepare(page, order))
- 		return false;
- 
- 	migratetype = get_pfnblock_migratetype(page, pfn);
-@@ -3319,16 +3378,18 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone)
- }
- 
- static void free_unref_page_commit(struct page *page, unsigned long pfn,
--				   int migratetype)
-+				   int migratetype, unsigned int order)
- {
- 	struct zone *zone = page_zone(page);
- 	struct per_cpu_pages *pcp;
- 	int high;
-+	int pindex;
- 
- 	__count_vm_event(PGFREE);
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
--	list_add(&page->lru, &pcp->lists[migratetype]);
--	pcp->count++;
-+	pindex = order_to_pindex(migratetype, order);
-+	list_add(&page->lru, &pcp->lists[pindex]);
-+	pcp->count += 1 << order;
- 	high = nr_pcp_high(pcp, zone);
- 	if (pcp->count >= high) {
- 		int batch = READ_ONCE(pcp->batch);
-@@ -3338,15 +3399,15 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn,
- }
- 
- /*
-- * Free a 0-order page
-+ * Free a pcp page
-  */
--void free_unref_page(struct page *page)
-+void free_unref_page(struct page *page, unsigned int order)
- {
- 	unsigned long flags;
- 	unsigned long pfn = page_to_pfn(page);
- 	int migratetype;
- 
--	if (!free_unref_page_prepare(page, pfn))
-+	if (!free_unref_page_prepare(page, pfn, order))
- 		return;
- 
- 	/*
-@@ -3359,14 +3420,14 @@ void free_unref_page(struct page *page)
- 	migratetype = get_pcppage_migratetype(page);
- 	if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
- 		if (unlikely(is_migrate_isolate(migratetype))) {
--			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
-+			free_one_page(page_zone(page), page, pfn, order, migratetype, FPI_NONE);
- 			return;
- 		}
- 		migratetype = MIGRATE_MOVABLE;
- 	}
- 
- 	local_lock_irqsave(&pagesets.lock, flags);
--	free_unref_page_commit(page, pfn, migratetype);
-+	free_unref_page_commit(page, pfn, migratetype, order);
- 	local_unlock_irqrestore(&pagesets.lock, flags);
- }
- 
-@@ -3383,7 +3444,7 @@ void free_unref_page_list(struct list_head *list)
- 	/* Prepare pages for freeing */
- 	list_for_each_entry_safe(page, next, list, lru) {
- 		pfn = page_to_pfn(page);
--		if (!free_unref_page_prepare(page, pfn))
-+		if (!free_unref_page_prepare(page, pfn, 0))
- 			list_del(&page->lru);
- 
- 		/*
-@@ -3415,7 +3476,7 @@ void free_unref_page_list(struct list_head *list)
- 		set_page_private(page, 0);
- 		migratetype = get_pcppage_migratetype(page);
- 		trace_mm_page_free_batched(page);
--		free_unref_page_commit(page, pfn, migratetype);
-+		free_unref_page_commit(page, pfn, migratetype, 0);
- 
- 		/*
- 		 * Guard against excessive IRQ disabled times when we get
-@@ -3551,7 +3612,8 @@ static inline void zone_statistics(struct zone *preferred_zone, struct zone *z,
- 
- /* Remove page from the per-cpu list, caller must protect the list */
- static inline
--struct page *__rmqueue_pcplist(struct zone *zone, int migratetype,
-+struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
-+			int migratetype,
- 			unsigned int alloc_flags,
- 			struct per_cpu_pages *pcp,
- 			struct list_head *list)
-@@ -3560,16 +3622,30 @@ struct page *__rmqueue_pcplist(struct zone *zone, int migratetype,
- 
- 	do {
- 		if (list_empty(list)) {
--			pcp->count += rmqueue_bulk(zone, 0,
--					READ_ONCE(pcp->batch), list,
-+			int batch = READ_ONCE(pcp->batch);
-+			int alloced;
-+
-+			/*
-+			 * Scale batch relative to order if batch implies
-+			 * free pages can be stored on the PCP. Batch can
-+			 * be 1 for small zones or for boot pagesets which
-+			 * should never store free pages as the pages may
-+			 * belong to arbitrary zones.
-+			 */
-+			if (batch > 1)
-+				batch = max(batch >> order, 2);
-+			alloced = rmqueue_bulk(zone, order,
-+					batch, list,
- 					migratetype, alloc_flags);
-+
-+			pcp->count += alloced << order;
- 			if (unlikely(list_empty(list)))
- 				return NULL;
- 		}
- 
- 		page = list_first_entry(list, struct page, lru);
- 		list_del(&page->lru);
--		pcp->count--;
-+		pcp->count -= 1 << order;
- 	} while (check_new_pcp(page));
- 
- 	return page;
-@@ -3577,8 +3653,9 @@ struct page *__rmqueue_pcplist(struct zone *zone, int migratetype,
- 
- /* Lock and remove page from the per-cpu list */
- static struct page *rmqueue_pcplist(struct zone *preferred_zone,
--			struct zone *zone, gfp_t gfp_flags,
--			int migratetype, unsigned int alloc_flags)
-+			struct zone *zone, unsigned int order,
-+			gfp_t gfp_flags, int migratetype,
-+			unsigned int alloc_flags)
- {
- 	struct per_cpu_pages *pcp;
- 	struct list_head *list;
-@@ -3594,8 +3671,8 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
- 	 */
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
- 	pcp->free_factor >>= 1;
--	list = &pcp->lists[migratetype];
--	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
-+	list = &pcp->lists[order_to_pindex(migratetype, order)];
-+	page = __rmqueue_pcplist(zone, order, migratetype, alloc_flags, pcp, list);
- 	local_unlock_irqrestore(&pagesets.lock, flags);
- 	if (page) {
- 		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
-@@ -3616,15 +3693,15 @@ struct page *rmqueue(struct zone *preferred_zone,
- 	unsigned long flags;
- 	struct page *page;
- 
--	if (likely(order == 0)) {
-+	if (likely(pcp_allowed_order(order))) {
- 		/*
- 		 * MIGRATE_MOVABLE pcplist could have the pages on CMA area and
- 		 * we need to skip it when CMA area isn't allowed.
- 		 */
- 		if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
- 				migratetype != MIGRATE_MOVABLE) {
--			page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
--					migratetype, alloc_flags);
-+			page = rmqueue_pcplist(preferred_zone, zone, order,
-+					gfp_flags, migratetype, alloc_flags);
- 			goto out;
- 		}
- 	}
-@@ -5196,7 +5273,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	/* Attempt the batch allocation */
- 	local_lock_irqsave(&pagesets.lock, flags);
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
--	pcp_list = &pcp->lists[ac.migratetype];
-+	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
- 
- 	while (nr_populated < nr_pages) {
- 
-@@ -5206,7 +5283,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 			continue;
- 		}
- 
--		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
-+		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
- 								pcp, pcp_list);
- 		if (unlikely(!page)) {
- 			/* Try and get at least one page */
-@@ -6756,13 +6833,13 @@ static void pageset_update(struct per_cpu_pages *pcp, unsigned long high,
- 
- static void per_cpu_pages_init(struct per_cpu_pages *pcp, struct per_cpu_zonestat *pzstats)
- {
--	int migratetype;
-+	int pindex;
- 
- 	memset(pcp, 0, sizeof(*pcp));
- 	memset(pzstats, 0, sizeof(*pzstats));
- 
--	for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++)
--		INIT_LIST_HEAD(&pcp->lists[migratetype]);
-+	for (pindex = 0; pindex < NR_PCP_LISTS; pindex++)
-+		INIT_LIST_HEAD(&pcp->lists[pindex]);
- 
- 	/*
- 	 * Set batch and high values safe for a boot pageset. A true percpu
-diff --git a/mm/swap.c b/mm/swap.c
-index dfb48cf9c2c9..b953039e087b 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -95,7 +95,7 @@ static void __put_single_page(struct page *page)
- {
- 	__page_cache_release(page);
- 	mem_cgroup_uncharge(page);
--	free_unref_page(page);
-+	free_unref_page(page, 0);
- }
- 
- static void __put_compound_page(struct page *page)
+> Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
+> ---
+>  arch/arm64/boot/dts/mediatek/mt6779.dtsi | 112 +++++++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+> index 370f309d32de..c81e76865d1b 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+> @@ -219,6 +219,118 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		spi0: spi0@1100a000 {
+> +			compatible = "mediatek,mt6779-spi",
+> +				     "mediatek,mt6765-spi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			mediatek,pad-select = <0>;
+> +			reg = <0 0x1100a000 0 0x1000>;
+> +			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW 0>;
+> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
+> +				<&topckgen CLK_TOP_SPI>,
+> +				<&infracfg_ao CLK_INFRA_SPI0>;
+> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+> +		};
+> +
+> +		spi1: spi1@11010000 {
+> +			compatible = "mediatek,mt6779-spi",
+> +				     "mediatek,mt6765-spi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			mediatek,pad-select = <0>;
+> +			reg = <0 0x11010000 0 0x1000>;
+> +			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW 0>;
+> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
+> +				<&topckgen CLK_TOP_SPI>,
+> +				<&infracfg_ao CLK_INFRA_SPI1>;
+> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+> +		};
+> +
+> +		spi2: spi2@11012000 {
+> +			compatible = "mediatek,mt6779-spi",
+> +				     "mediatek,mt6765-spi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			mediatek,pad-select = <0>;
+> +			reg = <0 0x11012000 0 0x1000>;
+> +			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW 0>;
+> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
+> +				 <&topckgen CLK_TOP_SPI>,
+> +				<&infracfg_ao CLK_INFRA_SPI2>;
+> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+> +		};
+> +
+> +		spi3: spi3@11013000 {
+> +			compatible = "mediatek,mt6779-spi",
+> +				     "mediatek,mt6765-spi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			mediatek,pad-select = <0>;
+> +			reg = <0 0x11013000 0 0x1000>;
+> +			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW 0>;
+> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
+> +				 <&topckgen CLK_TOP_SPI>,
+> +				 <&infracfg_ao CLK_INFRA_SPI3>;
+> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+> +		};
+> +
+> +		spi4: spi4@11018000 {
+> +			compatible = "mediatek,mt6779-spi",
+> +				     "mediatek,mt6765-spi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			mediatek,pad-select = <0>;
+> +			reg = <0 0x11018000 0 0x1000>;
+> +			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW 0>;
+> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
+> +				 <&topckgen CLK_TOP_SPI>,
+> +				 <&infracfg_ao CLK_INFRA_SPI4>;
+> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+> +		};
+> +
+> +		spi5: spi5@11019000 {
+> +			compatible = "mediatek,mt6779-spi",
+> +				     "mediatek,mt6765-spi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			mediatek,pad-select = <0>;
+> +			reg = <0 0x11019000 0 0x1000>;
+> +			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW 0>;
+> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
+> +				<&topckgen CLK_TOP_SPI>,
+> +				<&infracfg_ao CLK_INFRA_SPI5>;
+> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+> +		};
+> +
+> +		spi6: spi6@1101d000 {
+> +			compatible = "mediatek,mt6779-spi",
+> +				     "mediatek,mt6765-spi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			mediatek,pad-select = <0>;
+> +			reg = <0 0x1101d000 0 0x1000>;
+> +			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW 0>;
+> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
+> +				 <&topckgen CLK_TOP_SPI>,
+> +				 <&infracfg_ao CLK_INFRA_SPI6>;
+> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+> +		};
+> +
+> +		spi7: spi7@1101e000 {
+> +			compatible = "mediatek,mt6779-spi",
+> +				     "mediatek,mt6765-spi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			mediatek,pad-select = <0>;
+> +			reg = <0 0x1101e000 0 0x1000>;
+> +			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW 0>;
+> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
+> +				 <&topckgen CLK_TOP_SPI>,
+> +				 <&infracfg_ao CLK_INFRA_SPI7>;
+> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+> +		};
+> +
+>  		audio: clock-controller@11210000 {
+>  			compatible = "mediatek,mt6779-audio", "syscon";
+>  			reg = <0 0x11210000 0 0x1000>;
+> 
