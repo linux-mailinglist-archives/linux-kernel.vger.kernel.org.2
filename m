@@ -2,235 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA2E3A4668
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA6F3A466A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhFKQYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:24:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57048 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230470AbhFKQYI (ORCPT
+        id S231164AbhFKQYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFKQYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:24:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623428528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vFUFUhpRVdm5KPF6eO/SQzdrejXCHGdBfwZ+/vO4kMA=;
-        b=Ah8iu2lHAn4ym8MfZpV82UOf3uR/XHbRMmm4wA3x8TwN6iWeCe57Tzk/liUIDrN4dcs1MB
-        gPGGbxwY58BxNLLg9aLqs/zcpIdmzsRDwyy0O/Q69GngvuMW0KarZ4N2VqbgZd76awBKAH
-        MXRzOgkZgU2SqJGNTwoBvdEbjVLtIeQ=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-Cae3AHnSOf6xH0VXISQS5g-1; Fri, 11 Jun 2021 12:22:07 -0400
-X-MC-Unique: Cae3AHnSOf6xH0VXISQS5g-1
-Received: by mail-oo1-f71.google.com with SMTP id f5-20020a4ab0050000b029023e3bd79e80so1812557oon.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:22:07 -0700 (PDT)
+        Fri, 11 Jun 2021 12:24:44 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBEAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:22:31 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id e2so10449764ljk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O7VLGpzo0pic/uCZ5FLPezepVfzXChJpgysJmVZaFsc=;
+        b=J/Dt9jQa1QKH8awC7zPDGpIDCC1B4T52bk/xbJkYWmrsyiPBf1xyBpuuJ6YktX8o19
+         OGXWD4ofRJ+1Y/e3NXpAm87lNARcyx+eUZLb2kGvTbni8Z4d4UmVsZbpfpQ1wYz+9Ynn
+         Tu2YFuveWjy2F/JCy1EWycl4zSkeUBSU/byuI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vFUFUhpRVdm5KPF6eO/SQzdrejXCHGdBfwZ+/vO4kMA=;
-        b=bmVjYx6fBYdUnox2jcELOtOiCN65PBIgr5RY252m0c/z8jY8hCUySWSp9tvSE4E6ph
-         yI0vGp6wXIzQQVAQ0eT60bCFdzY730QejifOxzS1CrcZdS4GXBsEN8NyjdVSQ/qZFCDg
-         PgEkf7hHwbESRQNpJqwHMYqr2XyYp+K0JQyz9H/jzlDMOrkHkr1zp7lESjdqG2b2NhxP
-         4vqDUvdBAizbkr6lj16YWoih4mDUoY8KOdvF33MtoajlayOxGHQ4xIpn9bhvScv1rLAQ
-         lrBBXQBHNUmRI3dILhU16yUiHvcbWSi4QQumoA1Azd3311HfKyM0bF+9YPs56L1GbWLG
-         Q87g==
-X-Gm-Message-State: AOAM5330dvsVmal5jpgsvD3HceVQCFOjAeVvkhiVpjtdr4frg0rORvdi
-        6JUAPhsICEhpnbhR2jL4BzCChvWeVpJQ7fcbwCUyecgMrxiUHYlk2Vil9P+tIDXoJjmpR85iOuo
-        xDH7vlgJEsK0vwP7/rV9FGAJP
-X-Received: by 2002:a9d:d55:: with SMTP id 79mr3845136oti.349.1623428525823;
-        Fri, 11 Jun 2021 09:22:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzXsqtwYvk6fOmqKdeHzPAmeHKW9yzHsy2fQHvVMb82tad8du7mMksaPZUfpYKRW0KJKlLdxg==
-X-Received: by 2002:a9d:d55:: with SMTP id 79mr3845122oti.349.1623428525637;
-        Fri, 11 Jun 2021 09:22:05 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id m18sm1346345otr.61.2021.06.11.09.22.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 09:22:05 -0700 (PDT)
-From:   trix@redhat.com
-To:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com,
-        gregkh@linuxfoundation.org, krzysztof.kozlowski@canonical.com,
-        dinguyen@kernel.org, nava.manne@xilinx.com, yilun.xu@intel.com,
-        davidgow@google.com, fpacheco@redhat.com, richard.gong@intel.com,
-        luca@lucaceresoli.net
-Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v3 4/4] fpga: lattice: reorganize to subdir layout
-Date:   Fri, 11 Jun 2021 09:21:29 -0700
-Message-Id: <20210611162129.3203483-6-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210611162129.3203483-1-trix@redhat.com>
-References: <20210611162129.3203483-1-trix@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O7VLGpzo0pic/uCZ5FLPezepVfzXChJpgysJmVZaFsc=;
+        b=HIylj2jyrLGdNiYcsb1AyZjB4UHIWLbIUp5ZEkKGhKsbyu6c7tMEAbj2fku27xlrIJ
+         xgoiJB1VVNiagigylsBO2J8dfB1tD/9j2IGf0WtyHqA2FYM0c7oVbYXiEfjAub5fZTb6
+         VUn/CnQqv7CeoSk3GhW4f5dtw+Svd5Aggl0Wtc3MoOhxcMkBFkmSDeleG+0fnVYWcEs+
+         ZaRijr1jDaRp1mvwUNQgaGsgat6HT6aQPDVUCn9NTfv5NlAgfpby1URAVXVmWXC7Nk+A
+         SacHFt2XFmJMcqu9Aewkll8qcJFoiyAFHADIes6AXvb5rOhafAOfkKpsz7DrfqvtB5Lg
+         6qEw==
+X-Gm-Message-State: AOAM530ioL03HZ0FFXnZQ5Q7H+IGn6Ht6nPmjFADC6iPFw3ImPP4o6Hx
+        bfFrOeAiqf38U3YSBFJEf2VPH7J6gkI7hfgRj1E=
+X-Google-Smtp-Source: ABdhPJwpgOVRAYcfM4VFy9KvJ/+vnE44vCSfluIJsLO+MVsN9j4yckc8B4cVU0EhRvX03PMkQrBS5w==
+X-Received: by 2002:a2e:a58a:: with SMTP id m10mr3758131ljp.55.1623428549370;
+        Fri, 11 Jun 2021 09:22:29 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id s28sm479221ljc.34.2021.06.11.09.22.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 09:22:04 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id s22so10442761ljg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:22:00 -0700 (PDT)
+X-Received: by 2002:a2e:c52:: with SMTP id o18mr3611750ljd.411.1623428518600;
+ Fri, 11 Jun 2021 09:21:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local> <YL7XXNOnbaDgmTB9@atmark-techno.com>
+ <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com> <20210611062153.GA30906@lst.de>
+ <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+In-Reply-To: <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 11 Jun 2021 09:21:42 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgxgTB=G7P6KRneAd0s310WYK2NDisXM5P-wsNibgLrQA@mail.gmail.com>
+Message-ID: <CAHk-=wgxgTB=G7P6KRneAd0s310WYK2NDisXM5P-wsNibgLrQA@mail.gmail.com>
+Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb) stable/for-linus-5.12)
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
+        jianxiong Gao <jxgao@google.com>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lukas Hartmann <lukas@mntmn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Fri, Jun 11, 2021 at 3:35 AM Konrad Rzeszutek Wilk
+<konrad.wilk@oracle.com> wrote:
+>
+> Linus,
+>
+> Would you be terribly offended if I took your code (s/unsigned
+> long/unsigned int), and used Chanho's description of the problem (see below)?
 
-Follow drivers/net/ethernet/ which has control configs
-NET_VENDOR_BLA that map to drivers/net/ethernet/bla
-Since fpgas do not have many vendors, drop the 'VENDOR' and use
-FPGA_BLA.
+No offense to that at all - that looks like the right solution. See my
+answer to Christoph: I do think my patch does the right one, but I
+can't test it and my knowledge of the swiotlb code is not complete
+enough to really do anything else than "this looks right".
 
-There are several new subdirs
-altera/
-dfl/
-lattice/
-xilinx/
+And adding my sign-off to the patch is fine, but I don't necessarily
+need the authorship credit - mine was a throw-away patch just looking
+at what the bisection report said. All the real effort was by the
+reporters (and for the commit message, Bumyong Lee & co).
 
-Each subdir has a Kconfig that has a new/reused
+Finally - looking at the two places that do have that
+swiotlb_align_offset(), my reaction is "I don't understand what that
+code is doing".
 
-if FPGA_BLA
-  ... existing configs ...
-endif FPGA_BLA
+The index does that
 
-Which is sourced into the main fpga/Kconfig
+        index = find_slots(dev, orig_addr, alloc_size + offset);
 
-Each subdir has a Makefile whose transversal is controlled in the
-fpga/Makefile by
+so that offset does seem to depend on how the find_slots code works.
+Which in turn does use the same dma_get_min_align_mask() thing that
+swiotlb_align_offset() uses.  So the offsets do seem to match, but
+find_slots(dev() does a lot of stuff that I don't know. so...
 
-obj-$(CONFIG_FPGA_BLA) += bla/
+IOW, it does reinforce my "I don't know this code AT ALL". Which just
+makes me more convinced that I shouldn't get authorship of the patch
+because if something goes wrong with it, I can't help.
 
-This is the lattice/ subdir part.
+So at most maybe a "Suggested-by:".
 
-Create a lattice/ subdir
-Move ice40* and machxo2* files to it.
-Add a Kconfig and Makefile
+My patch really was based on very little context and "this is the
+calculation that makes sense given the other calculations in the
+function".
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/fpga/Kconfig                     | 14 +-----------
- drivers/fpga/Makefile                    | 13 ++++-------
- drivers/fpga/lattice/Kconfig             | 29 ++++++++++++++++++++++++
- drivers/fpga/lattice/Makefile            |  4 ++++
- drivers/fpga/{ => lattice}/ice40-spi.c   |  0
- drivers/fpga/{ => lattice}/machxo2-spi.c |  0
- 6 files changed, 39 insertions(+), 21 deletions(-)
- create mode 100644 drivers/fpga/lattice/Kconfig
- create mode 100644 drivers/fpga/lattice/Makefile
- rename drivers/fpga/{ => lattice}/ice40-spi.c (100%)
- rename drivers/fpga/{ => lattice}/machxo2-spi.c (100%)
-
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index 885701b1356ad..a7dab0275f278 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -12,19 +12,6 @@ menuconfig FPGA
- 
- if FPGA
- 
--config FPGA_MGR_ICE40_SPI
--	tristate "Lattice iCE40 SPI"
--	depends on OF && SPI
--	help
--	  FPGA manager driver support for Lattice iCE40 FPGAs over SPI.
--
--config FPGA_MGR_MACHXO2_SPI
--	tristate "Lattice MachXO2 SPI"
--	depends on SPI
--	help
--	  FPGA manager driver support for Lattice MachXO2 configuration
--	  over slave SPI interface.
--
- config FPGA_BRIDGE
- 	tristate "FPGA Bridge Framework"
- 	help
-@@ -48,6 +35,7 @@ config OF_FPGA_REGION
- 
- source "drivers/fpga/altera/Kconfig"
- source "drivers/fpga/dfl/Kconfig"
-+source "drivers/fpga/lattice/Kconfig"
- source "drivers/fpga/xilinx/Kconfig"
- 
- endif # FPGA
-diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-index db83aeb997f24..9197698201e3a 100644
---- a/drivers/fpga/Makefile
-+++ b/drivers/fpga/Makefile
-@@ -4,19 +4,16 @@
- #
- 
- # Core FPGA Manager Framework
--obj-$(CONFIG_FPGA)			+= fpga-mgr.o
--
--# FPGA Manager Drivers
--obj-$(CONFIG_FPGA_MGR_ICE40_SPI)	+= ice40-spi.o
--obj-$(CONFIG_FPGA_MGR_MACHXO2_SPI)	+= machxo2-spi.o
-+obj-$(CONFIG_FPGA) += fpga-mgr.o
- 
- # FPGA Bridge Drivers
--obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
-+obj-$(CONFIG_FPGA_BRIDGE) += fpga-bridge.o
- 
- # High Level Interfaces
--obj-$(CONFIG_FPGA_REGION)		+= fpga-region.o
--obj-$(CONFIG_OF_FPGA_REGION)		+= of-fpga-region.o
-+obj-$(CONFIG_FPGA_REGION) += fpga-region.o
-+obj-$(CONFIG_OF_FPGA_REGION) += of-fpga-region.o
- 
- obj-$(CONFIG_FPGA_ALTERA) += altera/
- obj-$(CONFIG_FPGA_DFL) += dfl/
-+obj-$(CONFIG_FPGA_LATTICE) += lattice/
- obj-$(CONFIG_FPGA_XILINX) += xilinx/
-diff --git a/drivers/fpga/lattice/Kconfig b/drivers/fpga/lattice/Kconfig
-new file mode 100644
-index 0000000000000..6c2f1ae17e4f6
---- /dev/null
-+++ b/drivers/fpga/lattice/Kconfig
-@@ -0,0 +1,29 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+config FPGA_LATTICE
-+	bool "Lattice FPGAs"
-+	default y
-+	help
-+	  If you have a lattice fpga, say Y.
-+
-+	  Note that the answer to this question doesn't directly affect the
-+	  kernel: saying N will just cause the configurator to skip all
-+	  the questions about lattice fpgas. If you say Y, you will be asked
-+	  for your specific device in the following questions.
-+
-+if FPGA_LATTICE
-+
-+config FPGA_MGR_ICE40_SPI
-+	tristate "Lattice iCE40 SPI"
-+	depends on OF && SPI
-+	help
-+	  FPGA manager driver support for Lattice iCE40 FPGAs over SPI.
-+
-+config FPGA_MGR_MACHXO2_SPI
-+	tristate "Lattice MachXO2 SPI"
-+	depends on SPI
-+	help
-+	  FPGA manager driver support for Lattice MachXO2 configuration
-+	  over slave SPI interface.
-+
-+endif #FPGA_LATTICE
-diff --git a/drivers/fpga/lattice/Makefile b/drivers/fpga/lattice/Makefile
-new file mode 100644
-index 0000000000000..f542c96a73d40
---- /dev/null
-+++ b/drivers/fpga/lattice/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+obj-$(CONFIG_FPGA_MGR_ICE40_SPI) += ice40-spi.o
-+obj-$(CONFIG_FPGA_MGR_MACHXO2_SPI) += machxo2-spi.o
-diff --git a/drivers/fpga/ice40-spi.c b/drivers/fpga/lattice/ice40-spi.c
-similarity index 100%
-rename from drivers/fpga/ice40-spi.c
-rename to drivers/fpga/lattice/ice40-spi.c
-diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/lattice/machxo2-spi.c
-similarity index 100%
-rename from drivers/fpga/machxo2-spi.c
-rename to drivers/fpga/lattice/machxo2-spi.c
--- 
-2.26.3
-
+              Linus
