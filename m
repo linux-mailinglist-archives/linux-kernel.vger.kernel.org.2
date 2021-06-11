@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC8B3A48F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA40E3A48EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbhFKTBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:01:34 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:19347 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbhFKTBb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:01:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1623437974; x=1654973974;
-  h=to:cc:references:subject:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=IlXqNN4DCVLdzq7m01pXqxaNCLTpWZMZHvoFH3QaHXc=;
-  b=Xoh54ZEVWECrIZt5wuLvFdbn7DlbHMzQAhEHDcopepS5SuKmF03UDf85
-   XevOfCf7p45A8AOI1/AFREGVLBuT3CH/Ezjsj2DQLrrvsD21mo95xqfTP
-   JoFw8Z06dom35I2Ac0tUClqexb41EwRbQEb0wnV5tlEPhqWrvlRUTslZ/
-   c=;
-X-IronPort-AV: E=Sophos;i="5.83,267,1616457600"; 
-   d="scan'208";a="118269492"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 11 Jun 2021 18:59:24 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id 56AE0A18A7;
-        Fri, 11 Jun 2021 18:59:21 +0000 (UTC)
-Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 11 Jun 2021 18:59:19 +0000
-Received: from u898248c994d452.ant.amazon.com (10.85.45.245) by
- mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP Server (TLS) id
- 15.0.1497.18 via Frontend Transport; Fri, 11 Jun 2021 18:59:06 +0000
-To:     <sj38.park@gmail.com>
-CC:     <Jonathan.Cameron@Huawei.com>, <acme@kernel.org>,
-        <akpm@linux-foundation.org>, <alexander.shishkin@linux.intel.com>,
-        <amit@kernel.org>, <benh@kernel.crashing.org>,
-        <brendanhiggins@google.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <greg@kroah.com>, <gthelen@google.com>,
-        <guoju.fgj@alibaba-inc.com>, <linux-damon@amazon.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <mgorman@suse.de>, <minchan@kernel.org>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <rppt@kernel.org>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sjpark@amazon.de>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <zgf574564920@gmail.com>
-References: <20210520075629.4332-8-sj38.park@gmail.com>
-Subject: Re: [PATCH v29 07/13] mm/damon: Implement a debugfs-based user space
- interface
-From:   <sieberf@amazon.com>
-Message-ID: <e8687948-649f-348f-e4d6-2175b1c47551@amazon.com>
-Date:   Fri, 11 Jun 2021 20:59:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231156AbhFKTBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:01:01 -0400
+Received: from mga05.intel.com ([192.55.52.43]:16805 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhFKTBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:01:00 -0400
+IronPort-SDR: 6X1TK3KC8JQ2nt7FfUnNBQeni39GB01/a5dOdN3ae9/G6cipYS25+PkZxIDUqCZOgJ6zVFVeAl
+ ZIGNbL000m0A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="291219749"
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="291219749"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 11:59:02 -0700
+IronPort-SDR: qQyGgt69KQ3qHDIa2X5z78SMNDTjeltjUCTdkERe+tF0bI3iNEi8IUciWBdDRxk3wvp5hmcYnH
+ EReNimOumyuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="486683469"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 11 Jun 2021 11:59:00 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id EC23CE7; Fri, 11 Jun 2021 21:59:24 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v2 1/1] drm: Include only needed headers in ascii85.h
+Date:   Fri, 11 Jun 2021 21:59:15 +0300
+Message-Id: <20210611185915.44181-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210520075629.4332-8-sj38.park@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Returns non-empty string on success, negarive error code otherwise.
+The ascii85.h is user of exactly two headers, i.e. math.h and types.h.
+There is no need to carry on entire kernel.h.
 
-Nit: typo, 'negarive'
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+---
+ include/linux/ascii85.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-
-+    if (ctx->kdamond) {
-+        if (targetid_is_pid(ctx))
-+            dbgfs_put_pids(targets, nr_targets);
-+        ret = -EBUSY;
-+        goto unlock_out;
-
-I don't understand this block, what does EBUSY mean in this context?
-
-+    if (sscanf(kbuf, "%s", kbuf) != 1) {
-+        kfree(kbuf);
-+        return -EINVAL;
-+    }
-
-Nit, this diverts from other patterns use elsewhere where error 
-conditions that need to free memory use a goto label.
+diff --git a/include/linux/ascii85.h b/include/linux/ascii85.h
+index 4cc40201273e..83ad775ad0aa 100644
+--- a/include/linux/ascii85.h
++++ b/include/linux/ascii85.h
+@@ -8,7 +8,8 @@
+ #ifndef _ASCII85_H_
+ #define _ASCII85_H_
+ 
+-#include <linux/kernel.h>
++#include <linux/math.h>
++#include <linux/types.h>
+ 
+ #define ASCII85_BUFSZ 6
+ 
+-- 
+2.30.2
 
