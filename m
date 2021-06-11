@@ -2,569 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BC13A3CD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353D33A3CAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhFKHTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:19:36 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3843 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbhFKHT3 (ORCPT
+        id S230272AbhFKHQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 03:16:21 -0400
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:43808 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhFKHQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:19:29 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1X9H5SF3zWs3v;
-        Fri, 11 Jun 2021 15:12:35 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 15:17:30 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 15:17:29 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
-        Stefani Seibold <stefani@seibold.net>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jens Axboe <axboe@kernel.dk>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 3/3] scripts/spelling.txt: add some spelling "mistake||correction" pairs
-Date:   Fri, 11 Jun 2021 15:12:41 +0800
-Message-ID: <20210611071241.16728-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210611071241.16728-1-thunder.leizhen@huawei.com>
-References: <20210611071241.16728-1-thunder.leizhen@huawei.com>
+        Fri, 11 Jun 2021 03:16:19 -0400
+Received: by mail-ed1-f45.google.com with SMTP id s6so35920993edu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:14:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mnVuJPXKTdEwY7O6bd33gsWO3BDV2gsole1M9DM/dMY=;
+        b=OTC0Ybpca01gVjblMmlalhiAIMZYtpJxs3MR1hzta+gsyJgy2zxOngqH+j9yjkbkJx
+         c4jJHvuv/03vWqn97t117vhqkfv+hE0FxFu/Yh0SOftt7PGtqcn07r5VZzcIzBTKw1rM
+         hANgYmnu5RQ9XsIlIvNpmW0/9qzisCymN4NgA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mnVuJPXKTdEwY7O6bd33gsWO3BDV2gsole1M9DM/dMY=;
+        b=iWOTWVU7hjcd22L9/CYpzOKqrd2yUYbjCchmM8wHSVaceEkLHWDoqEWTE3R5gpT/1/
+         330SeXIatK0xubCnWHkxgk5HE7rZquPxq1rqchkU9uareNyQDaEg56FyUUUe43UJVkB9
+         S/bicBGtmPdAqJGKb/cLdKpDAwKQQPjxg2Hl5DptQqSiYET5BmZCmJI+K5lSbQKrCI1I
+         yrviIatqRh7k1lAddo8of+r8QoF2noy+0TBeDVN7LS36Fr7+ZVrxlsENwo1iASGvyyxp
+         h2llDa1qGBRbfXw3S6qZcS3ADHhzOUbkPwBelGzgoGzLu/CRNJkAQQXjWvBOgr0TB/cq
+         s1jQ==
+X-Gm-Message-State: AOAM533szGJBoGTw4X4zKKSuE5nXdVhd2Wq0mjuSZDubPPRQ3zltMg2D
+        9owx2vjW8EZO1gPdRPKJA3hW1Q==
+X-Google-Smtp-Source: ABdhPJxJ9FPEyKtZ0BCfsSvgPQ5ro3hP0rEg+kY/ozF7bGCKbB6xMTB/4xQ/9ea9IfAldT9FVR39rg==
+X-Received: by 2002:a05:6402:1d0f:: with SMTP id dg15mr2186797edb.137.1623395601406;
+        Fri, 11 Jun 2021 00:13:21 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.64.110])
+        by smtp.gmail.com with ESMTPSA id i15sm1836897ejk.30.2021.06.11.00.13.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 00:13:20 -0700 (PDT)
+Subject: Re: Panic on ppc64le using kernel 5.13.0-rc3
+To:     Bruno Goncalves <bgoncalv@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, CKI Project <cki-project@redhat.com>
+References: <CA+QYu4qxf2CYe2gC6EYnOHXPKS-+cEXL=MnUvqRFaN7W1i6ahQ@mail.gmail.com>
+ <d13db73d-0806-00cd-ff84-5f5b03ffbef6@rasmusvillemoes.dk>
+ <CA+QYu4oFGkP1G+9TqGtqffgOEBycSMKtFbV-1X+kL4NeTyEegg@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <45ea5042-9136-6f0c-144c-f09d05cd69ed@rasmusvillemoes.dk>
+Date:   Fri, 11 Jun 2021 09:13:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CA+QYu4oFGkP1G+9TqGtqffgOEBycSMKtFbV-1X+kL4NeTyEegg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is all the spelling mistakes I've fixed so far.
+On 10/06/2021 17.14, Bruno Goncalves wrote:
+> On Thu, Jun 10, 2021 at 3:02 PM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>>
+>> On 10/06/2021 13.47, Bruno Goncalves wrote:
+>>> Hello,
+>>>
+>>> We've observed in some cases kernel panic when trying to boot on
+>>> ppc64le using a kernel based on 5.13.0-rc3. We are not sure if it
+>>> could be related to patch
+>>> https://lore.kernel.org/lkml/20210313212528.2956377-2-linux@rasmusvillemoes.dk/
+>>>
+>>
+>> Thanks for the report. It's possible, but I'll need some help from you
+>> to get more info.
+>>
+>> First, can you send me the .config?
+> 
+> The .config is on
+> https://s3.us-east-1.amazonaws.com/arr-cki-prod-datawarehouse-public/datawarehouse-public/2021/06/09/317881801/build_ppc64le_redhat:1332368174/kernel-block-ppc64le-d3f02e52f5548006f04358d407bbb7fe51255c41.config
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- scripts/spelling.txt | 75 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
+Thanks.
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index 18fca77914e3..f1c832c99b65 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -40,6 +40,7 @@ accordign||according
- accoring||according
- acording||according
- accout||account
-+accouting||accounting
- accumalate||accumulate
- acumulating||accumulating
- acumulative||accumulative
-@@ -85,6 +86,7 @@ againt||against
- agaist||against
- aggreataon||aggregation
- aggreation||aggregation
-+aggresive||aggressive
- albumns||albums
- algorith||algorithm
- algorithmn||algorithm
-@@ -107,10 +109,14 @@ allocte||allocate
- alocate||allocate
- alloated||allocated
- allocatrd||allocated
-+alloced||allocated
- allocted||allocated
-+alocated||allocated
- alow||allow
- alows||allows
- alot||a lot
-+alpha-numeric||alphanumeric
-+alread||already
- alreay||already
- alredy||already
- altough||although
-@@ -118,6 +124,7 @@ abigious||ambiguous
- ambigious||ambiguous
- ambigous||ambiguous
- amoung||among
-+ammount||amount
- amout||amount
- amplifer||amplifier
- amplifyer||amplifier
-@@ -128,6 +135,7 @@ anniversery||anniversary
- annoucement||announcement
- anomolies||anomalies
- anomoly||anomaly
-+aother||another
- anway||anyway
- an one||a one
- appearence||appearance
-@@ -164,14 +172,17 @@ asign||assign
- assgined||assigned
- assiged||assigned
- assigment||assignment
-+assignement||assignment
- assigments||assignments
- assistent||assistant
- assocaited||associated
- associcated||associated
- assotiated||associated
-+asssociated||associated
- assocating||associating
- assocation||association
- assum||assume
-+asumed||assumed
- asuming||assuming
- assumtpion||assumption
- asymetric||asymmetric
-@@ -204,7 +215,9 @@ automatizes||automates
- atomatically||automatically
- automaticaly||automatically
- automaticly||automatically
-+automtically||automatically
- autonymous||autonomous
-+auxilary||auxiliary
- auxillary||auxiliary
- auxilliary||auxiliary
- availablity||availability
-@@ -304,6 +317,7 @@ childern||children
- childs||children
- chouse||chose
- choosen||chosen
-+cipherntext||ciphertext
- circumvernt||circumvent
- claread||cleared
- clared||cleared
-@@ -346,6 +360,7 @@ complient||compliant
- compoment||component
- componnents||components
- compres||compress
-+compresed||compressed
- compresion||compression
- comression||compression
- conditon||condition
-@@ -369,6 +384,7 @@ connectinos||connections
- connnections||connections
- conector||connector
- connetor||connector
-+conervative||conservative
- conider||consider
- consistancy||consistency
- consistant||consistent
-@@ -378,6 +394,7 @@ contruction||construction
- comsume||consume
- comsumer||consumer
- comsuming||consuming
-+consumtion||consumption
- contant||contact
- containes||contains
- containts||contains
-@@ -396,12 +413,15 @@ contoller||controller
- controler||controller
- convienient||convenient
- convinient||convenient
-+convetion||convention
- convertion||conversion
- convertor||converter
- corected||corrected
- correponding||corresponding
- correspoding||corresponding
-+correspondig||corresponding
- correponds||corresponds
-+corresonds||corresponds
- cound||could
- couter||counter
- coutner||counter
-@@ -409,9 +429,11 @@ cunter||counter
- contry||country
- conuntry||country
- cryptocraphic||cryptographic
-+curremt||current
- curently||currently
- cylic||cyclic
- deamon||daemon
-+datas||data
- detabase||database
- deactive||deactivate
- desactivate||deactivate
-@@ -422,6 +444,7 @@ delares||declares
- delaring||declaring
- dicline||decline
- decompres||decompress
-+deompression||decompression
- dafault||default
- deafult||default
- defailt||default
-@@ -444,12 +467,15 @@ delievered||delivered
- demodualtor||demodulator
- dependancies||dependencies
- dependancy||dependency
-+dependeny||dependency
- dependant||dependent
- dependend||dependent
- depreacte||deprecate
- depreacted||deprecated
-+dervied||derived
- decendant||descendant
- decendants||descendants
-+desribe||describe
- decsribed||described
- decription||description
- descripton||description
-@@ -472,6 +498,7 @@ destorys||destroys
- detectt||detect
- dectected||detected
- deteced||detected
-+determin||determine
- develope||develop
- developped||developed
- developper||developer
-@@ -496,6 +523,7 @@ dimesions||dimensions
- directon||direction
- direcly||directly
- direectly||directly
-+dirtyness||dirtiness
- diable||disable
- disbale||disable
- disble||disable
-@@ -526,9 +554,11 @@ divsiors||divisors
- documment||document
- docuentation||documentation
- documantation||documentation
-+documenation||documentation
- documentaion||documentation
- dosen||doesn
- doesnt||doesn't
-+dont't||don't
- donwload||download
- downlad||download
- donwloading||downloading
-@@ -536,6 +566,7 @@ downlads||downloads
- dorp||drop
- droput||dropout
- droped||dropped
-+droppped||dropped
- druing||during
- dyanmic||dynamic
- dynmaic||dynamic
-@@ -546,6 +577,7 @@ efective||effective
- effectivness||effectiveness
- efficently||efficiently
- eigth||eight
-+ether||either
- eletronic||electronic
- elementry||elementary
- embeded||embedded
-@@ -559,6 +591,7 @@ encrupted||encrypted
- encrypiton||encryption
- encryptio||encryption
- endianess||endianness
-+endoint||endpoint
- enpoint||endpoint
- enchanced||enhanced
- enhaced||enhanced
-@@ -599,8 +632,10 @@ execeeds||exceeds
- exeeds||exceeds
- excellant||excellent
- exlcude||exclude
-+exlude||exclude
- exlcusive||exclusive
- excecutable||executable
-+excute||execute
- exeuction||execution
- exixt||exist
- existance||existence
-@@ -640,6 +675,7 @@ feauture||feature
- fetaure||feature
- feautures||features
- fetaures||features
-+feeded||fed
- fileystem||filesystem
- finanize||finalize
- finilizes||finalizes
-@@ -651,6 +687,7 @@ firmare||firmware
- firmaware||firmware
- firware||firmware
- firwmare||firmware
-+flaged||flagged
- flusing||flushing
- folloing||following
- followign||following
-@@ -673,6 +710,7 @@ fucntion||function
- fuction||function
- funcation||function
- funcion||function
-+funciton||function
- funtion||function
- functionallity||functionality
- functionnality||functionality
-@@ -719,6 +757,8 @@ heirarchically||hierarchically
- heirarchy||hierarchy
- hierachy||hierarchy
- hierarchie||hierarchy
-+hierarhcy||hierarchy
-+higer||higher
- homogenous||homogeneous
- howver||however
- hypter||hyper
-@@ -769,9 +809,11 @@ independed||independent
- independantly||independently
- indiate||indicate
- indicat||indicate
-+indicies||indices
- invididual||individual
- inexpect||inexpected
- infinit||infinite
-+inifinite||infinite
- infomation||information
- informatiom||information
- informations||information
-@@ -800,6 +842,8 @@ initilized||initialized
- intiailized||initialized
- intialized||initialized
- initialzing||initializing
-+intializing||initializing
-+initate||initiate
- initation||initiation
- initators||initiators
- instal||install
-@@ -828,6 +872,8 @@ intermittant||intermittent
- interanl||internal
- internel||internal
- interoprability||interoperability
-+intepreted||interpreted
-+interpeter||interpreter
- interrrupt||interrupt
- interrup||interrupt
- interupt||interrupt
-@@ -835,6 +881,7 @@ interuupt||interrupt
- intrerrupt||interrupt
- intrrupt||interrupt
- intterrupt||interrupt
-+interruped||interrupted
- interruptted||interrupted
- interupted||interrupted
- interrups||interrupts
-@@ -874,6 +921,7 @@ langauage||language
- langauge||language
- langugage||language
- lauch||launch
-+leaset||least
- legnth||length
- lengh||length
- lenght||length
-@@ -912,6 +960,7 @@ manufaucturing||manufacturing
- mnay||many
- maping||mapping
- mappping||mapping
-+markes||marks
- matchs||matches
- mathimatic||mathematic
- mathimatical||mathematical
-@@ -987,6 +1036,7 @@ neded||needed
- negaive||negative
- negoitation||negotiation
- negotation||negotiation
-+netiher||neither
- nerver||never
- noticable||noticeable
- notication||notification
-@@ -999,6 +1049,7 @@ nubmer||number
- numebr||number
- numner||number
- obtaion||obtain
-+obious||obvious
- occassionally||occasionally
- occationally||occasionally
- occurd||occurred
-@@ -1054,6 +1105,7 @@ pakage||package
- paket||packet
- packtes||packets
- pallette||palette
-+panicing||panicking
- paramater||parameter
- paramter||parameter
- pramater||parameter
-@@ -1083,6 +1135,7 @@ perfomring||performing
- peroid||period
- periperal||peripheral
- peripherial||peripheral
-+permanentely||permanently
- permissons||permissions
- persistance||persistence
- persistant||persistent
-@@ -1099,10 +1152,13 @@ plugable||pluggable
- poinnter||pointer
- pointeur||pointer
- poiter||pointer
-+posion||poison
- protable||portable
- positon||position
-+possitive||positive
- possibilites||possibilities
- posible||possible
-+potentialy||potentially
- pwoer||power
- powerfull||powerful
- preamle||preamble
-@@ -1111,6 +1167,7 @@ preceed||precede
- preceeded||preceded
- precendence||precedence
- preceeding||preceding
-+precisly||precisely
- precission||precision
- preemptable||preemptible
- premption||preemption
-@@ -1123,6 +1180,7 @@ prepate||prepare
- preprare||prepare
- prepaired||prepared
- peprocessor||preprocessor
-+presense||presence
- pressre||pressure
- presuambly||presumably
- previosuly||previously
-@@ -1227,6 +1285,7 @@ reguator||regulator
- releated||related
- relevent||relevant
- reloade||reload
-+remaning||remaining
- remoote||remote
- remore||remote
- removeable||removable
-@@ -1268,6 +1327,7 @@ ressources||resources
- repectively||respectively
- reponse||response
- responce||response
-+resposible||responsible
- resumbmitting||resubmitting
- restesting||retesting
- retransmited||retransmitted
-@@ -1306,6 +1366,7 @@ segement||segment
- seleted||selected
- semaphone||semaphore
- sentivite||sensitive
-+sentinal||sentinel
- seperate||separate
- sepperate||separate
- seperated||separated
-@@ -1317,6 +1378,7 @@ secquence||sequence
- seqeunce||sequence
- sequece||sequence
- sequemce||sequence
-+squence||sequence
- seqeuencer||sequencer
- seqeuncer||sequencer
- sequencial||sequential
-@@ -1325,6 +1387,7 @@ servive||service
- setts||sets
- settting||setting
- serveral||several
-+sharable||shareable
- hsould||should
- shoud||should
- shoule||should
-@@ -1343,6 +1406,7 @@ simliar||similar
- similary||similarly
- simpified||simplified
- sleeped||slept
-+slighly||slightly
- sliped||slipped
- shapshot||snapshot
- softwade||software
-@@ -1376,13 +1440,16 @@ stardard||standard
- standartization||standardization
- standardss||standards
- standy||standby
-+statments||statements
- staically||statically
- staticly||statically
- staion||station
- statuss||status
-+stil||still
- stoped||stopped
- stoppped||stopped
- stoping||stopping
-+storeing||storing
- straming||streaming
- struc||struct
- stuct||struct
-@@ -1397,6 +1464,7 @@ submited||submitted
- susbsystem||subsystem
- suble||subtle
- substract||subtract
-+succed||succeed
- suceed||succeed
- succeded||succeeded
- successed||succeeded
-@@ -1437,6 +1505,7 @@ switchs||switches
- swithcing||switching
- swithing||switching
- symetric||symmetric
-+syncronise||synchronise
- syncronize||synchronize
- synchonized||synchronized
- syncronized||synchronized
-@@ -1448,6 +1517,7 @@ sythesis||synthesis
- syfs||sysfs
- syste||system
- sytem||system
-+taget||target
- traget||target
- targetted||targeted
- targetting||targeting
-@@ -1456,6 +1526,7 @@ temperture||temperature
- temproarily||temporarily
- temorary||temporary
- taht||that
-+thats||that's
- teh||the
- thier||their
- therfore||therefore
-@@ -1468,6 +1539,7 @@ threshhold||threshold
- thresold||threshold
- treshold||threshold
- throught||through
-+thru||through
- troughput||throughput
- timout||timeout
- timeing||timing
-@@ -1496,6 +1568,7 @@ trys||tries
- tiggered||triggered
- trigerred||triggered
- triggerd||triggered
-+triggerred||triggered
- trigerring||triggering
- tiggers||triggers
- ture||true
-@@ -1550,12 +1623,14 @@ untill||until
- ununsed||unused
- udpate||update
- upate||update
-+udpated||updated
- usege||usage
- uesd||used
- usefule||useful
- usefull||useful
- unuseful||useless
- usera||users
-+userpsace||userspace
- usualy||usually
- utilites||utilities
- utillities||utilities
--- 
-2.25.1
+>>
+>>>
+>>> [    1.516075] wait_for_initramfs() called before rootfs_initcalls
+>>
+>> This is likely because you have CONFIG_UEVENT_HELPER_PATH set to some
+>> non-empty path (/sbin/hotplug perhaps). This did get reported once before:
+>>
+> 
+> CONFIG_UEVENT_HELPER_PATH is not set. In the .config we have "#
+> CONFIG_UEVENT_HELPER is not set"
 
+OK. Then I assume some quite early initcall does a request_module() or
+request_firmware() (or similar). I don't think this matters - that call
+would be done before the initramfs was unpacked with or without my
+patch, so it won't find anything in the empty rootfs. It's just my patch
+added a note. But just to figure out where that triggers, can you do
 
+-               pr_warn_once("wait_for_initramfs() called before
+rootfs_initcalls\n");
++               WARN_ONCE(1, "wait_for_initramfs() called before
+rootfs_initcalls\n");
+
+in init/initramfs.c.
+
+>>> [    1.764430] Initramfs unpacking failed: no cpio magic
+>>
+>> Whoa, that's not good. Did something scramble over the initramfs memory
+>> while it was being unpacked? It's been .2 seconds since the start of the
+>> unpacking, so it's unlikely the very beginning of the initramfs is corrupt.
+>>
+>> Can you try booting with initramfs_async=0 on the command line and see
+>> if the kernel still crashes?
+> 
+> We are not able to reproduce it 100% of the time, but sure I can try
+> with this option and see what happens.
+> 
+> We've also seen:
+> Initramfs unpacking failed: junk within compressed archive
+> 
+> This can be seen on the other 2 console logs that I provided the link to.
+
+Yes, I saw that. This, and the fact that it's not 100% reproducible, is
+consistent with the problem being some race that happens to write over
+the compressed initramfs image - sometimes, the decompressor can still
+make sense of the bits, but the output is no longer a valid cpio
+archive, and sometimes already the decompressor notices the corruption.
+
+I wonder if there is some way to mark the pages occupied by the
+compressed initramfs as read-only - what would hopefully trigger a nice
+crash with a backtrace to whoever writes to that memory.
+
+Rasmus
