@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECB03A46D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C423A46D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhFKQrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:47:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40932 "EHLO
+        id S231771AbhFKQrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:47:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40924 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhFKQqW (ORCPT
+        with ESMTP id S231350AbhFKQqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:46:22 -0400
-Message-Id: <20210611163113.307062186@linutronix.de>
+        Fri, 11 Jun 2021 12:46:24 -0400
+Message-Id: <20210611163113.400500509@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623429864;
+        s=2020; t=1623429865;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=23PzgQC/LnXv29LxnK7BMGGdzTtaPuy8HC7iXaqOLLU=;
-        b=AnfdfdWKFWlYc/OiWZCtRB4uJOZFwtHKouxvEocyMLF2EG++P7UH7t6sYsBoUkqG8bkmT4
-        DYUAdbrkheO0DWeSNdpU9M9MV2fA9pLX/9CJIRMON3fYV2joLvouix6KH6D4pcPIMgsk8y
-        8/jVePbKuR22m5b9E3imrZq+pLcf6gzd3mc0t67fnRUTnQEztfdzbdRCE7tiGwwQ9Eh8Do
-        GkCCnxcId1rGUvLv9Zoj10nK2tabXHbFtYGWGQvCgJtYsbF+GAwtjocxaIU2CthK9pi2/+
-        hmQD8QBfbhviMnf5T/NkL0lt0KQGH3YzFyPWSpm2CyBYKSLkr1y+CGqm0DSmGw==
+        bh=/5wAb+BiyigBmQ1TWz+axjN2gD7tCvyBMM1gbFkRBLM=;
+        b=nK43lRosS74DGOEX02dY2j9u93Az2voFjA5ZCN+eTS51GNsW/ATO4WmJ+ZrTfFmHbkRQOa
+        iekXQ1RNWSBGQSIoCviQqT04DyLWbYJRa55ghBNZjkweuAo40w2IKxk87dd9Gi1iDgBWgk
+        zxBtxqiq3dRrvAuc4jWisYVVnPZ7ewUEp+2B81x56ZLzVLsp7iOQ1HlZ+csuGe5QRaI9Z4
+        BAGvE8POO8koA1ICWp6Pj3NLFqU/2LMF9y3NEqjqB1p78lx92u2Mi464MxOdCEQUJpaiui
+        v05KFylekip10Bpjo40gQrjnhWp9HysQneGhNndv/Zc2ZvYed2bU69VjOp4R8Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623429864;
+        s=2020e; t=1623429865;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=23PzgQC/LnXv29LxnK7BMGGdzTtaPuy8HC7iXaqOLLU=;
-        b=YRIViELxG4xXlp+GwidadHoWm5XSZpvJtFrdJ9nuWs7/dxbfK7Dv+k4u3jS4wxXsw1wLye
-        hDbezcbZ4sFFDiDA==
-Date:   Fri, 11 Jun 2021 18:15:45 +0200
+        bh=/5wAb+BiyigBmQ1TWz+axjN2gD7tCvyBMM1gbFkRBLM=;
+        b=gwpNvgxfUSf8e6vqn5Y2P6lIAl5HHs1rRk+I+Kny7LWmVCRHq+a/NSdq+H5y3rMi8Ds1IR
+        zVMmvIfbE/l7ITCQ==
+Date:   Fri, 11 Jun 2021 18:15:46 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch 22/41] x86/fpu/xstate: Sanitize handling of independent features
+Subject: [patch 23/41] x86/pkeys: Move read_pkru() and write_pkru()
 References: <20210611161523.508908024@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,192 +53,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The copy functions for the independent features are horribly named and the
-supervisor and independent part is just overengineered.
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-The point is that the supplied mask has either to be a subset of the
-independent feature or a subset of the task->fpu.xstate managed features.
+write_pkru() was originally used just to write to the PKRU register.  It
+was mercifully short and sweet and was not out of place in pgtable.h with
+some other pkey-related code.
 
-Rewrite it so it checks check for invalid overlaps of these areas in the
-caller supplied feature mask. Rename it so it follows the new naming
-convention for these operations. Mop up the function documentation.
+But, later work included a requirement to also modify the task XSAVE
+buffer when updating the register.  This really is more related to the
+XSAVE architecture than to paging.
 
-This allows to use that function for other purposes as well.
+Move the read/write_pkru() to asm/pkru.h.  pgtable.h won't miss them.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/lbr.c       |    6 +-
- arch/x86/include/asm/fpu/xstate.h |    5 +-
- arch/x86/kernel/fpu/xstate.c      |   93 +++++++++++++++++++-------------------
- 3 files changed, 53 insertions(+), 51 deletions(-)
+V2: Adapted it to the latest FPU changes, move them to a seperate file
+    along with the constants to avoid header hell later on.
+---
 
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -491,7 +491,7 @@ static void intel_pmu_arch_lbr_xrstors(v
- {
- 	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
- 
--	copy_kernel_to_independent_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
-+	xrstors_from_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
- }
- 
- static __always_inline bool lbr_is_reset_in_cstate(void *ctx)
-@@ -576,7 +576,7 @@ static void intel_pmu_arch_lbr_xsaves(vo
- {
- 	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
- 
--	copy_independent_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
-+	xsaves_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
- }
- 
- static void __intel_pmu_lbr_save(void *ctx)
-@@ -992,7 +992,7 @@ static void intel_pmu_arch_lbr_read_xsav
- 		intel_pmu_store_lbr(cpuc, NULL);
- 		return;
- 	}
--	copy_independent_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
-+	xsaves_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
- 
- 	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
- }
+ arch/x86/include/asm/fpu/xstate.h |    1 
+ arch/x86/include/asm/pgtable.h    |   57 -----------------------------------
+ arch/x86/include/asm/pkru.h       |   61 ++++++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/process_64.c      |    1 
+ arch/x86/kvm/svm/sev.c            |    1 
+ arch/x86/kvm/x86.c                |    1 
+ arch/x86/mm/pkeys.c               |    1 
+ 7 files changed, 67 insertions(+), 56 deletions(-)
+
 --- a/arch/x86/include/asm/fpu/xstate.h
 +++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -107,7 +107,8 @@ struct membuf;
- void copy_uabi_xstate_to_membuf(struct membuf to, struct xregs_state *xsave);
- int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
- int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
--void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
--void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask);
+@@ -6,6 +6,7 @@
+ #include <linux/types.h>
+ 
+ #include <asm/processor.h>
++#include <asm/fpu/api.h>
+ #include <asm/user.h>
+ 
+ /* Bit 63 of XCR0 is reserved for future expansion */
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -23,7 +23,7 @@
+ 
+ #ifndef __ASSEMBLY__
+ #include <asm/x86_init.h>
+-#include <asm/fpu/xstate.h>
++#include <asm/pkru.h>
+ #include <asm/fpu/api.h>
+ #include <asm-generic/pgtable_uffd.h>
+ 
+@@ -126,35 +126,6 @@ static inline int pte_dirty(pte_t pte)
+ 	return pte_flags(pte) & _PAGE_DIRTY;
+ }
+ 
+-
+-static inline u32 read_pkru(void)
+-{
+-	if (boot_cpu_has(X86_FEATURE_OSPKE))
+-		return rdpkru();
+-	return 0;
+-}
+-
+-static inline void write_pkru(u32 pkru)
+-{
+-	struct pkru_state *pk;
+-
+-	if (!boot_cpu_has(X86_FEATURE_OSPKE))
+-		return;
+-
+-	pk = get_xsave_addr(&current->thread.fpu.state.xsave, XFEATURE_PKRU);
+-
+-	/*
+-	 * The PKRU value in xstate needs to be in sync with the value that is
+-	 * written to the CPU. The FPU restore on return to userland would
+-	 * otherwise load the previous value again.
+-	 */
+-	fpregs_lock();
+-	if (pk)
+-		pk->pkru = pkru;
+-	__write_pkru(pkru);
+-	fpregs_unlock();
+-}
+-
+ static inline int pte_young(pte_t pte)
+ {
+ 	return pte_flags(pte) & _PAGE_ACCESSED;
+@@ -1360,32 +1331,6 @@ static inline pmd_t pmd_swp_clear_uffd_w
+ }
+ #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_WP */
+ 
+-#define PKRU_AD_BIT 0x1
+-#define PKRU_WD_BIT 0x2
+-#define PKRU_BITS_PER_PKEY 2
+-
+-#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+-extern u32 init_pkru_value;
+-#else
+-#define init_pkru_value	0
+-#endif
+-
+-static inline bool __pkru_allows_read(u32 pkru, u16 pkey)
+-{
+-	int pkru_pkey_bits = pkey * PKRU_BITS_PER_PKEY;
+-	return !(pkru & (PKRU_AD_BIT << pkru_pkey_bits));
+-}
+-
+-static inline bool __pkru_allows_write(u32 pkru, u16 pkey)
+-{
+-	int pkru_pkey_bits = pkey * PKRU_BITS_PER_PKEY;
+-	/*
+-	 * Access-disable disables writes too so we need to check
+-	 * both bits here.
+-	 */
+-	return !(pkru & ((PKRU_AD_BIT|PKRU_WD_BIT) << pkru_pkey_bits));
+-}
+-
+ static inline u16 pte_flags_pkey(unsigned long pte_flags)
+ {
+ #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+--- /dev/null
++++ b/arch/x86/include/asm/pkru.h
+@@ -0,0 +1,61 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_X86_PKRU_H
++#define _ASM_X86_PKRU_H
 +
-+void xsaves_to_kernel(struct xregs_state *xsave, u64 mask);
-+void xrstors_from_kernel(struct xregs_state *xsave, u64 mask);
- 
- #endif
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1107,75 +1107,76 @@ int copy_sigframe_from_user_to_xstate(st
- }
- 
- /**
-- * copy_independent_supervisor_to_kernel() - Save independent supervisor states to
-- *                                           an xsave area
-- * @xstate: A pointer to an xsave area
-- * @mask: Represent the independent supervisor features saved into the xsave area
-+ * xsaves_to_kernel - Save selected components to a kernel xstate buffer
-+ * @xstate:	Pointer to the buffer
-+ * @mask:	Feature mask to select the components to save
-  *
-- * Only the independent supervisor states sets in the mask are saved into the xsave
-- * area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of independent
-- * supervisor feature). Besides the independent supervisor states, the legacy
-- * region and XSAVE header are also saved into the xsave area. The supervisor
-- * features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-- * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not saved.
-+ * The @xstate buffer must be 64 byte aligned and correctly initialized as
-+ * XSAVES does not write the full xstate header. Before first use the
-+ * buffer should be zeroed otherwise a consecutive XRSTORS from that buffer
-+ * can #GP.
-  *
-- * The xsave area must be 64-bytes aligned.
-+ * The feature mask must either be a subset of the independent features or
-+ * a subset of the task->fpstate related features
-  */
--void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask)
-+void xsaves_to_kernel(struct xregs_state *xstate, u64 mask)
- {
--	u64 independent_mask = xfeatures_mask_independent() & mask;
--	u32 lmask, hmask;
-+	u64 xchk;
- 	int err;
- 
--	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
-+	if (WARN_ON_FPU(!cpu_feature_enabled(X86_FEATURE_XSAVES)))
- 		return;
++#include <asm/fpu/xstate.h>
++
++#define PKRU_AD_BIT 0x1
++#define PKRU_WD_BIT 0x2
++#define PKRU_BITS_PER_PKEY 2
++
++#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
++extern u32 init_pkru_value;
++#else
++#define init_pkru_value	0
++#endif
++
++static inline bool __pkru_allows_read(u32 pkru, u16 pkey)
++{
++	int pkru_pkey_bits = pkey * PKRU_BITS_PER_PKEY;
++	return !(pkru & (PKRU_AD_BIT << pkru_pkey_bits));
++}
++
++static inline bool __pkru_allows_write(u32 pkru, u16 pkey)
++{
++	int pkru_pkey_bits = pkey * PKRU_BITS_PER_PKEY;
 +	/*
-+	 * Validate that this is either a task->fpstate related component
-+	 * subset or an independent one.
++	 * Access-disable disables writes too so we need to check
++	 * both bits here.
 +	 */
-+	if (mask & xfeatures_mask_independent())
-+		xchk = ~xfeatures_mask_independent();
-+	else
-+		xchk = ~xfeatures_mask_all;
- 
--	if (WARN_ON_FPU(!independent_mask))
-+	if (WARN_ON_ONCE(!mask || mask & xchk))
- 		return;
- 
--	lmask = independent_mask;
--	hmask = independent_mask >> 32;
--
--	XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
--
--	/* Should never fault when copying to a kernel buffer */
--	WARN_ON_FPU(err);
-+	XSTATE_OP(XSAVES, xstate, (u32)mask, (u32)(mask >> 32), err);
-+	WARN_ON_ONCE(err);
- }
- 
- /**
-- * copy_kernel_to_independent_supervisor() - Restore independent supervisor states from
-- *                                           an xsave area
-- * @xstate: A pointer to an xsave area
-- * @mask: Represent the independent supervisor features restored from the xsave area
-+ * xrstors_from_kernel - Restore selected components from a kernel xstate buffer
-+ * @xstate:	Pointer to the buffer
-+ * @mask:	Feature mask to select the components to restore
-+ *
-+ * The @xstate buffer must be 64 byte aligned and correctly initialized
-+ * otherwise XRSTORS from that buffer can #GP.
-  *
-- * Only the independent supervisor states sets in the mask are restored from the
-- * xsave area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of
-- * independent supervisor feature). Besides the independent supervisor states, the
-- * legacy region and XSAVE header are also restored from the xsave area. The
-- * supervisor features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-- * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not restored.
-+ * Proper usage is to restore the state which was saved with
-+ * xsaves_to_kernel() into @xstate.
-  *
-- * The xsave area must be 64-bytes aligned.
-+ * The feature mask must either be a subset of the independent features or
-+ * a subset of the task->fpstate related features
-  */
--void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask)
-+void xrstors_from_kernel(struct xregs_state *xstate, u64 mask)
- {
--	u64 independent_mask = xfeatures_mask_independent() & mask;
--	u32 lmask, hmask;
-+	u64 xchk;
- 	int err;
- 
--	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
-+	if (WARN_ON_FPU(!cpu_feature_enabled(X86_FEATURE_XSAVES)))
- 		return;
++	return !(pkru & ((PKRU_AD_BIT|PKRU_WD_BIT) << pkru_pkey_bits));
++}
++
++static inline u32 read_pkru(void)
++{
++	if (boot_cpu_has(X86_FEATURE_OSPKE))
++		return rdpkru();
++	return 0;
++}
++
++static inline void write_pkru(u32 pkru)
++{
++	struct pkru_state *pk;
++
++	if (!boot_cpu_has(X86_FEATURE_OSPKE))
++		return;
++
++	pk = get_xsave_addr(&current->thread.fpu.state.xsave, XFEATURE_PKRU);
++
 +	/*
-+	 * Validate that this is either a task->fpstate related component
-+	 * subset or an independent one.
++	 * The PKRU value in xstate needs to be in sync with the value that is
++	 * written to the CPU. The FPU restore on return to userland would
++	 * otherwise load the previous value again.
 +	 */
-+	if (mask & xfeatures_mask_independent())
-+		xchk = ~xfeatures_mask_independent();
-+	else
-+		xchk = ~xfeatures_mask_all;
++	fpregs_lock();
++	if (pk)
++		pk->pkru = pkru;
++	__write_pkru(pkru);
++	fpregs_unlock();
++}
++
++#endif
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -41,6 +41,7 @@
+ #include <linux/syscalls.h>
  
--	if (WARN_ON_FPU(!independent_mask))
-+	if (WARN_ON_ONCE(!mask || mask & xchk))
- 		return;
+ #include <asm/processor.h>
++#include <asm/pkru.h>
+ #include <asm/fpu/internal.h>
+ #include <asm/mmu_context.h>
+ #include <asm/prctl.h>
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -19,6 +19,7 @@
+ #include <linux/trace_events.h>
+ #include <asm/fpu/internal.h>
  
--	lmask = independent_mask;
--	hmask = independent_mask >> 32;
--
--	XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
--
--	/* Should never fault when copying from a kernel buffer */
--	WARN_ON_FPU(err);
-+	XSTATE_OP(XRSTORS, xstate, (u32)mask, (u32)(mask >> 32), err);
-+	WARN_ON_ONCE(err);
- }
++#include <asm/pkru.h>
+ #include <asm/trapnr.h>
  
- #ifdef CONFIG_PROC_PID_ARCH_STATUS
+ #include "x86.h"
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -65,6 +65,7 @@
+ #include <asm/msr.h>
+ #include <asm/desc.h>
+ #include <asm/mce.h>
++#include <asm/pkru.h>
+ #include <linux/kernel_stat.h>
+ #include <asm/fpu/internal.h> /* Ugh! */
+ #include <asm/pvclock.h>
+--- a/arch/x86/mm/pkeys.c
++++ b/arch/x86/mm/pkeys.c
+@@ -10,6 +10,7 @@
+ 
+ #include <asm/cpufeature.h>             /* boot_cpu_has, ...            */
+ #include <asm/mmu_context.h>            /* vma_pkey()                   */
++#include <asm/pkru.h>			/* read/write_pkru()		*/
+ 
+ int __execute_only_pkey(struct mm_struct *mm)
+ {
 
