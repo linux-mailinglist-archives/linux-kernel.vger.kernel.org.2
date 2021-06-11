@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E3A3A4950
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8363A4954
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhFKTNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:13:05 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:55864 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231195AbhFKTNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:13:00 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G1r6C5cbXzBBDy;
-        Fri, 11 Jun 2021 21:10:59 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HBHONLCMYOwG; Fri, 11 Jun 2021 21:10:59 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G1r6B64bHzBB8B;
-        Fri, 11 Jun 2021 21:10:58 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C7E3C8B84C;
-        Fri, 11 Jun 2021 21:10:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id pNT4urDfuzpd; Fri, 11 Jun 2021 21:10:58 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9414B8B848;
-        Fri, 11 Jun 2021 21:10:58 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 53A7B66132; Fri, 11 Jun 2021 19:10:58 +0000 (UTC)
-Message-Id: <5e8d2d50f301a346040362028c2ecba40685de9e.1623438544.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <1fff2054e5dfc00329804dbd3f2a91667c9a8aff.1623438544.git.christophe.leroy@csgroup.eu>
-References: <1fff2054e5dfc00329804dbd3f2a91667c9a8aff.1623438544.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 2/2] powerpc/watchdog: include linux/processor.h for
- spin_until_cond
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Sudeep Holla <sudeep.holla@arm.com>
-Date:   Fri, 11 Jun 2021 19:10:58 +0000 (UTC)
+        id S231357AbhFKTO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:14:57 -0400
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:36683 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230360AbhFKTOz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:14:55 -0400
+Received: by mail-ed1-f41.google.com with SMTP id w21so38235156edv.3;
+        Fri, 11 Jun 2021 12:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xbysLR2vUz9qO4asGfEaHtsWqTNJbiOOCY9MlaCXyEE=;
+        b=hcH7N73KbKsPZBBQuaXo3M0iigENRTu+KC2ZnNrWi7MJJv775iJBbIgjGJ553LFJvu
+         KNi5VK98tKMCnbdnEF9a7NRPqkI6LpoBC4ECIPIOVhJoGQ0gSqUUxEYu7UPHXA4q4sm1
+         tdq4lnyIr2xFkWUemwPDEPSWkcnVGO4hESDSNMbHPkuUFiF5GbluaVweSyOVOcwQ9Yqr
+         ARrjAUHKsCxHi+rdNQIRoLdJ0WvVwEelZPsdgFat7N2FlHzwEB7FQd4WfiTHwFJwY5H0
+         eB2c8krYqARc8KbY+6ZTr41c2KTVz0KQUB7T4R0Ik6Lqcew8Aj4z6CJQb61dAX8Tm1Nm
+         o/+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xbysLR2vUz9qO4asGfEaHtsWqTNJbiOOCY9MlaCXyEE=;
+        b=uc4zbplDSzKeQ1/VFkCVGgQZr9y+mfX6sslwmmcjas+Ppur/pt7+5yBFet7NsZd3gA
+         ZyIM/30pyPxT7IurX6/M6K+Jq105QTLmKTujPbjbTojF5owyR4H29PWlJVsy6MZgvxIE
+         1P7LhRaUKqWU/88OHmsBuwKCFIAY3FWWbCQwvWf1bZUlQ4OxEvb/lwV9v8PAHcE7lN6X
+         6Nf7EmsiVvjaN1BSNs3SBM6XRrH3wFB/Y/QlPasqsL6BSzSrT9Ue2WzHKtnYDLapLqm6
+         PtVkXaRA4MC/gta2SFNHIn72f2oGfbRp6ix9Knp38i2eb6ZRX+d1PtFZTjs6iaSbVYBb
+         RLFQ==
+X-Gm-Message-State: AOAM530myKaLQEE5u1Dm113lyrO+pLOK+O8jquNhqmsRFUEnKyuz8U7l
+        ayVMJx6F16GgCn9xtxy/dIU=
+X-Google-Smtp-Source: ABdhPJy3TJTl76z/cOndPza7eJno1DZsBm750RQt7qBrZnkeRsTiMKEmwh7WObJA6cxk2yJSgTKBWQ==
+X-Received: by 2002:aa7:c0cb:: with SMTP id j11mr5233327edp.177.1623438715444;
+        Fri, 11 Jun 2021 12:11:55 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id oz11sm2385049ejb.16.2021.06.11.12.11.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 12:11:54 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 22:11:53 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH net-next v4 2/9] net: dsa: microchip: ksz8795: add
+ phylink support
+Message-ID: <20210611191153.aoiuueuntuflxbrt@skbuf>
+References: <20210611071527.9333-1-o.rempel@pengutronix.de>
+ <20210611071527.9333-3-o.rempel@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611071527.9333-3-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+On Fri, Jun 11, 2021 at 09:15:20AM +0200, Oleksij Rempel wrote:
+> From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> 
+> This patch adds the phylink support to the ksz8795 driver to provide
+> configuration exceptions on quirky KSZ8863 and KSZ8873 ports.
+> 
+> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
 
-This implementation uses spin_until_cond in wd_smp_lock including
-neither linux/processor.h nor asm/processor.h
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-This patch includes linux/processor.h here for spin_until_cond usage.
-
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/watchdog.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
-index c9a8f4781a10..a165635fd214 100644
---- a/arch/powerpc/kernel/watchdog.c
-+++ b/arch/powerpc/kernel/watchdog.c
-@@ -24,6 +24,7 @@
- #include <linux/kdebug.h>
- #include <linux/sched/debug.h>
- #include <linux/delay.h>
-+#include <linux/processor.h>
- #include <linux/smp.h>
- 
- #include <asm/interrupt.h>
--- 
-2.25.0
-
+but it would be a good idea for Russell to take a look too.
