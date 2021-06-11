@@ -2,93 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0A43A47F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D62D3A47FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFKRhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKRho (ORCPT
+        id S229622AbhFKRjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:39:39 -0400
+Received: from mail-ed1-f53.google.com ([209.85.208.53]:42536 "EHLO
+        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhFKRjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:37:44 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF52C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:35:46 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id w14so5916671ilv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:35:46 -0700 (PDT)
+        Fri, 11 Jun 2021 13:39:37 -0400
+Received: by mail-ed1-f53.google.com with SMTP id i13so38026432edb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:37:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nfvuYmRSsrqKkyjyEJwVlbMYo9k7O1ojDR6LlSwhXjU=;
-        b=XfOj3FwiQP8K/u3OJsZnizHlOFJfxR7Bd2wdLmqLUvqlqgrZvJaPzxA4nbAOh/LRXA
-         +AAy3TtUD6/9mkfjBi8aXfYt1c1ZlTu5t0evVr5bNT900vs1SkvBBZ703Xd+DIH6qSe7
-         bBkogkR7NRSQtJdE8ad0j27TtzS1+/ksNmO1I=
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kicSdfyPUPG0oZw0Yyms2mDBTb2EqDMsn04Ocyed7OA=;
+        b=xB5cCJAthgJGLgDcW5FU+YuJlwc9WkRntsmvFSTnAC8U6tvjQ5SDTlmFxMTNrH1pSp
+         X+L07kyYXu8Tz+dl1ZA6u6m0+mb9UDaM4ofl5hLaFgJlZoiA3ue6VvFqv96WlefCBOse
+         HqKqcBp+bsDnAtZbcDTAaOIGvRUZ4dxXVQEc0G6D1wXMqiUZwLI2P3qiwDFMrH214BeJ
+         DHtTrO/kvGwCqketn8SYpwictc/Hf/z+NyBnso7vry4ONhbf4uTTK4/R4wRCA5cg9NWs
+         9xGNVVcP6ZP0T1l0ldjLugscRSXyvQ59DibfLXUvflBIyDwSn1MXCy+anjNcIxMjNzUz
+         X7iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nfvuYmRSsrqKkyjyEJwVlbMYo9k7O1ojDR6LlSwhXjU=;
-        b=IHK0mkXMBL3Wj9DOcTt3LyEYYBgtVwvKm+mT2UdZfAh1Y5PLHFViVD+b0GH0em0/IZ
-         0V3DN8UcpUHkvcN8B2f0iUIc2hqSL0/WEZvpWHrOdo5O0bggMHMCEX0/kUBVgn8TbIrb
-         0VGcg2DJMhrGIusuyU2MkbSble36i4C65raxw743Rr0c2QVImKAwGRyX6x2hQOQZjn+1
-         uzNQZ2HnDlnPeaizJrAchcIJhrBlV0mJl5iSnsisgNDHI82FY8lfoDQtPS2scFwZtT3W
-         9vb+42/5J828ZHxCNjq/0GbYqvHDujrVi8jM77kvZ7+6zz5wzT6jo50F2Nv+HQ8+K57N
-         cc7g==
-X-Gm-Message-State: AOAM532pggIzRl+QpuYlXW1JRTE87xz8CmeS/8EB/1SkxOPWEvOqVZJ8
-        AvhryTW+OjBkYHYIYvqRpHL6mA==
-X-Google-Smtp-Source: ABdhPJz2zS1moGpo4B3D+0PtoX9xhcuTLbzySQZz0s0BhV0VneF0Gb0XIcx3oyV4Aos51v9UFu1y2g==
-X-Received: by 2002:a05:6e02:20c8:: with SMTP id 8mr3946175ilq.67.1623432945447;
-        Fri, 11 Jun 2021 10:35:45 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id p10sm3980850ile.35.2021.06.11.10.35.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 10:35:44 -0700 (PDT)
-Subject: Re: [PATCH v8 1/5] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210610083021.392269-1-jarkko@kernel.org>
- <b5e06639-8bf4-c267-0aa7-b6c110767edc@intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <8d071d3f-604f-1876-05bb-91568dd3c563@linuxfoundation.org>
-Date:   Fri, 11 Jun 2021 11:35:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kicSdfyPUPG0oZw0Yyms2mDBTb2EqDMsn04Ocyed7OA=;
+        b=mo18U7F2a82D/Bsj9u71i85PBbCBOjriCSrNcS+nqOk7MTKtGsu+1bV0HiP2/Fiewj
+         gMA28onEmED2Hbm/8z8pOV9bZS18657nXAOK4rw05wlztEZP9lpfHg/mLTeRVfIhtpAo
+         CbQfCg2F0ke0PZZA8bkujpcCs6dd2fdzX6C+grwQU5BdOoqwpK0XIX3HR5024ArHFH17
+         q/2BWBRjprvaWlOOxpml0r21Px0WoSGwaPjp5DSDPtg2HR1wg2h2qqMld9xp7PSReRZr
+         CHaIjJ4JBG+3tRmYcB9R//juqj8MF8zPPnpzi0v/Ek0uqXdQHxXXgnF4LQE4Ywe7k7Nk
+         r3Vg==
+X-Gm-Message-State: AOAM532DIB8vSOL5Z7P/s6n5mS6Ibf4EJoKO03mihNTK/c9LJKxcpfCz
+        w/g+YyNKNo3kPnHKQuGdy1niMCcserG6SnZ5fLJA
+X-Google-Smtp-Source: ABdhPJwxcUeB13OSebDiZwZ8pswKPJkD8oPnqPRTubV8D4BitINoO9F6PgQpRJGMuHWIf1jckj+ZuaRPqDN+Jb03uc4=
+X-Received: by 2002:aa7:c0d3:: with SMTP id j19mr5029543edp.196.1623432998161;
+ Fri, 11 Jun 2021 10:36:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b5e06639-8bf4-c267-0aa7-b6c110767edc@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210611082119.2117194-1-liushixin2@huawei.com>
+In-Reply-To: <20210611082119.2117194-1-liushixin2@huawei.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 11 Jun 2021 13:36:27 -0400
+Message-ID: <CAHC9VhTEYjQjFH9D4ozFbYcg=6ebMeVgN2dmYvb0ifdvadc2fA@mail.gmail.com>
+Subject: Re: [PATCH -next v2] netlabel: Fix memory leak in netlbl_mgmt_add_common
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/21 9:45 AM, Dave Hansen wrote:
-> On 6/10/21 1:30 AM, Jarkko Sakkinen wrote:
->> Rename symbols for better clarity:
->>
->> * 'eenter' might be confused for directly calling ENCLU[EENTER].  It does
->>    not.  It calls into the VDSO, which actually has the EENTER instruction.
->> * 'sgx_call_vdso' is *only* used for entering the enclave.  It's not some
->>    generic SGX call into the VDSO.
->>
->> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> These all look fine to me.  Feel free to add my ack on them.
-> 
-> Since these are pure x86 selftests and the initial code went through the
-> x86 maintainers, should these got through them as well?  Or, since this
-> is only selftest code, should Shuah pick them up?
-> 
+On Fri, Jun 11, 2021 at 3:50 AM Liu Shixin <liushixin2@huawei.com> wrote:
+>
+> Hulk Robot reported memory leak in netlbl_mgmt_add_common.
+> The problem is non-freed map in case of netlbl_domhsh_add() failed.
+>
+> BUG: memory leak
+> unreferenced object 0xffff888100ab7080 (size 96):
+>   comm "syz-executor537", pid 360, jiffies 4294862456 (age 22.678s)
+>   hex dump (first 32 bytes):
+>     05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     fe 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
+>   backtrace:
+>     [<0000000008b40026>] netlbl_mgmt_add_common.isra.0+0xb2a/0x1b40
+>     [<000000003be10950>] netlbl_mgmt_add+0x271/0x3c0
+>     [<00000000c70487ed>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320
+>     [<000000001f2ff614>] genl_rcv_msg+0x2bf/0x4f0
+>     [<0000000089045792>] netlink_rcv_skb+0x134/0x3d0
+>     [<0000000020e96fdd>] genl_rcv+0x24/0x40
+>     [<0000000042810c66>] netlink_unicast+0x4a0/0x6a0
+>     [<000000002e1659f0>] netlink_sendmsg+0x789/0xc70
+>     [<000000006e43415f>] sock_sendmsg+0x139/0x170
+>     [<00000000680a73d7>] ____sys_sendmsg+0x658/0x7d0
+>     [<0000000065cbb8af>] ___sys_sendmsg+0xf8/0x170
+>     [<0000000019932b6c>] __sys_sendmsg+0xd3/0x190
+>     [<00000000643ac172>] do_syscall_64+0x37/0x90
+>     [<000000009b79d6dc>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
+> v1->v2: According to Dongliang's and Paul's advices, simplify the code.
+>
+>  net/netlabel/netlabel_mgmt.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
+>
+> diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
+> index e664ab990941..fa9e68e5f826 100644
+> --- a/net/netlabel/netlabel_mgmt.c
+> +++ b/net/netlabel/netlabel_mgmt.c
+> @@ -76,6 +76,7 @@ static const struct nla_policy netlbl_mgmt_genl_policy[NLBL_MGMT_A_MAX + 1] = {
+>  static int netlbl_mgmt_add_common(struct genl_info *info,
+>                                   struct netlbl_audit *audit_info)
+>  {
+> +       void * pmap = NULL;
 
-I will queue these up for 5.14-rc1
+You should use the 'void *pmap = NULL;' style that is used in the rest
+of this function, and most everywhere in the kernel.
 
-thanks,
--- Shuah
+>         int ret_val = -EINVAL;
+>         struct netlbl_domaddr_map *addrmap = NULL;
+>         struct cipso_v4_doi *cipsov4 = NULL;
+> @@ -175,6 +176,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+>                         ret_val = -ENOMEM;
+>                         goto add_free_addrmap;
+>                 }
+> +
+> +               pmap = map;
+
+There is no need for the extra vertical whitespace here.
+
+>                 map->list.addr = addr->s_addr & mask->s_addr;
+>                 map->list.mask = mask->s_addr;
+>                 map->list.valid = 1;
+> @@ -183,14 +186,13 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+>                         map->def.cipso = cipsov4;
+>
+>                 ret_val = netlbl_af4list_add(&map->list, &addrmap->list4);
+> -               if (ret_val != 0) {
+> -                       kfree(map);
+> -                       goto add_free_addrmap;
+> -               }
+> +               if (ret_val != 0)
+> +                       goto add_free_map;
+>
+>                 entry->family = AF_INET;
+>                 entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
+>                 entry->def.addrsel = addrmap;
+> +
+
+Please don't add extra vertical whitespace here.
+
+>  #if IS_ENABLED(CONFIG_IPV6)
+>         } else if (info->attrs[NLBL_MGMT_A_IPV6ADDR]) {
+>                 struct in6_addr *addr;
+> @@ -223,6 +225,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
+>                         ret_val = -ENOMEM;
+>                         goto add_free_addrmap;
+>                 }
+> +
+> +               pmap = map;
+
+Same thing, no extra vertical whitespace please.
+
+-- 
+paul moore
+www.paul-moore.com
