@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8225E3A4AF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8BE3A4AF9
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFKW0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 18:26:35 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:53053 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbhFKW0e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 18:26:34 -0400
-Received: by mail-il1-f200.google.com with SMTP id d7-20020a056e020c07b02901d77a47ab82so4326390ile.19
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 15:24:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=siRIDFznDdx/okEQKHOjv9N0zzIqu96Ladkz4MvhydA=;
-        b=sMmMV2ehluORSthhwjHdyZRTXvAzJoa5fr4SiOpB4NdIrzHL5fesBTIjcBOXpIvCIw
-         csEXI0gosCJqvHQXqrRn6UkJjUuPRveEgsiy0N1f4pymNfol5ujzDKHWYm6ZpybuM8Rz
-         HdyREDN2vp3yzmGhzWec+Aj9I39dmK1tbaZH4OcTTLXDP+dBvEgrXVrgKb71NbrtADFb
-         AYXTGsatbvofvyMb4YWFKRdvfG3+PA77l1A/7Fq4GLSgVKuLZZH7UeLtiy2oOTmEGN1F
-         NPVvpB4dS1JvK5u9JD8xHuk4IHSRfYwzwNnCQSELPl1Ll+JLDd3cOoN/tF1XARfLjoXD
-         O4Mw==
-X-Gm-Message-State: AOAM5320ZBljUl/OS0d/kscSU3+mafGyW3XoGFnQnH/mN1HzkBM1ukMR
-        kBWEEYX60BobeJlGmHNjQ/7qhp4j7jSAhqrdqhb2Wi42Dw/W
-X-Google-Smtp-Source: ABdhPJzJjE/KJiazVGLXuASulssro/Yd63xuV12voLQyemCfW5uEVV73yLfMrhmbsoX0SrBN+vYdQ1sMU1aAO4oLJAeEepjM17nm
-MIME-Version: 1.0
-X-Received: by 2002:a92:d245:: with SMTP id v5mr4827805ilg.245.1623450266946;
- Fri, 11 Jun 2021 15:24:26 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 15:24:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000078d3f405c484f89f@google.com>
-Subject: [syzbot] WARNING in ethnl_default_doit
-From:   syzbot <syzbot+59aa77b92d06cd5a54f2@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mkubecek@suse.cz, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S230252AbhFKWim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 18:38:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229572AbhFKWik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 18:38:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97E4C613DE;
+        Fri, 11 Jun 2021 22:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623450984;
+        bh=HtVrjP1NzBtomUQjA4d5/nvjnishSzc5bPaQjZfmId4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZQjgx8w0tK9x3x1IXhtV3DANxaEfxnBiu6iGsyUMj86+A2djnyx6DFkH7/GZjrtph
+         M2X7nECiT6fijvOobbjC9KqdBUUVRU+EUoaelTpkXvh1pWLBXUb5PPud7ZIhndDrjn
+         d1v9mQ86n34Eb+wNhvhhBVMk6+O3qWKSCHUOhCxg=
+Date:   Fri, 11 Jun 2021 15:36:24 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH resend] mm/gup: fix try_grab_compound_head() race with
+ split_huge_page()
+Message-Id: <20210611153624.65badf761078f86f76365ab9@linux-foundation.org>
+In-Reply-To: <20210611161545.998858-1-jannh@google.com>
+References: <20210611161545.998858-1-jannh@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 11 Jun 2021 18:15:45 +0200 Jann Horn <jannh@google.com> wrote:
 
-syzbot found the following issue on:
+> try_grab_compound_head() is used to grab a reference to a page from
+> get_user_pages_fast(), which is only protected against concurrent
+> freeing of page tables (via local_irq_save()), but not against
+> concurrent TLB flushes, freeing of data pages, or splitting of compound
+> pages.
+> 
+> Because no reference is held to the page when try_grab_compound_head()
+> is called, the page may have been freed and reallocated by the time its
+> refcount has been elevated; therefore, once we're holding a stable
+> reference to the page, the caller re-checks whether the PTE still points
+> to the same page (with the same access rights).
+> 
+> The problem is that try_grab_compound_head() has to grab a reference on
+> the head page; but between the time we look up what the head page is and
+> the time we actually grab a reference on the head page, the compound
+> page may have been split up (either explicitly through split_huge_page()
+> or by freeing the compound page to the buddy allocator and then
+> allocating its individual order-0 pages).
+> If that happens, get_user_pages_fast() may end up returning the right
+> page but lifting the refcount on a now-unrelated page, leading to
+> use-after-free of pages.
+> 
+> To fix it:
+> Re-check whether the pages still belong together after lifting the
+> refcount on the head page.
+> Move anything else that checks compound_head(page) below the refcount
+> increment.
+> 
+> This can't actually happen on bare-metal x86 (because there, disabling
+> IRQs locks out remote TLB flushes), but it can happen on virtualized x86
+> (e.g. under KVM) and probably also on arm64. The race window is pretty
+> narrow, and constantly allocating and shattering hugepages isn't exactly
+> fast; for now I've only managed to reproduce this in an x86 KVM guest with
+> an artificially widened timing window (by adding a loop that repeatedly
+> calls `inl(0x3f8 + 5)` in `try_get_compound_head()` to force VM exits,
+> so that PV TLB flushes are used instead of IPIs).
+> 
+> ...
+>
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -43,8 +43,21 @@ static void hpage_pincount_sub(struct page *page, int refs)
+>  
+>  	atomic_sub(refs, compound_pincount_ptr(page));
+>  }
+>  
+> +/* Equivalent to calling put_page() @refs times. */
+> +static void put_page_refs(struct page *page, int refs)
+> +{
+> +	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
 
-HEAD commit:    1a42624a net: dsa: xrs700x: allow HSR/PRP supervision dupe..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15043cebd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cbe37cfd20d4573c
-dashboard link: https://syzkaller.appspot.com/bug?extid=59aa77b92d06cd5a54f2
+I don't think there's a need to nuke the whole kernel in this case. 
+Can we warn then simply leak the page?  That way we have a much better
+chance of getting a good bug report.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> +	/*
+> +	 * Calling put_page() for each ref is unnecessarily slow. Only the last
+> +	 * ref needs a put_page().
+> +	 */
+> +	if (refs > 1)
+> +		page_ref_sub(page, refs - 1);
+> +	put_page(page);
+> +}
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+59aa77b92d06cd5a54f2@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-calculated message payload length (684) not sufficient
-WARNING: CPU: 0 PID: 30967 at net/ethtool/netlink.c:369 ethnl_default_doit+0x87a/0xa20 net/ethtool/netlink.c:369
-Modules linked in:
-CPU: 1 PID: 30967 Comm: syz-executor.0 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ethnl_default_doit+0x87a/0xa20 net/ethtool/netlink.c:369
-Code: e8 6b b3 2b fa 40 84 ed 0f 85 f9 fd ff ff e8 ad ac 2b fa 8b 74 24 10 48 c7 c7 e0 76 6e 8a c6 05 0b ee 6b 06 01 e8 d9 df 8c 01 <0f> 0b e9 d6 fd ff ff e8 0a c0 70 fa e9 52 f8 ff ff 48 89 de 48 c7
-RSP: 0018:ffffc9001731f578 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffffffff8a6e8e60 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815ce355 RDI: fffff52002e63ea1
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815c81be R11: 0000000000000000 R12: 00000000ffffffa6
-R13: ffff88801d587380 R14: ffff88802d919800 R15: 1ffff92002e63eb4
-FS:  00007fb7d20ef700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2cb23000 CR3: 00000000548f7000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb7d20ef188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-RDX: 0000000020000000 RSI: 0000000020000400 RDI: 0000000000000004
-RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffd1ef3866f R14: 00007fb7d20ef300 R15: 0000000000022000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
