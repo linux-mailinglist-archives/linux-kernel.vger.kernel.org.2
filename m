@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8543A4042
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3053A3A403F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhFKKgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhFKKgn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:36:43 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5098C061574;
-        Fri, 11 Jun 2021 03:34:29 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so2689507otk.5;
-        Fri, 11 Jun 2021 03:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4Pu5Bpf2F/UJvF9uKJ3m2aKujMucNH5SJI5mlJyuB9Q=;
-        b=QPp+Grb1CyKMSGCHFxei6cYRmVlOBshR9pCDzK4iT0gjoEpnvQUc+Z/HhfvmCm9/V4
-         SmbYieHf0KRT/dZi8Q0X84sUBzSm/Q3aURO2i+7BeZt+Z8rXeNGoj04Jg6bqbxna6bPK
-         oeEPJX1onVWJUErXfB5qS1wlaNvRGRHZEoAXxx4+axvdr4sfY5Dgm+T/CUH98xDES0E6
-         IgQS/rG80lnixFSB5aRy86yAL+NrbjcauEXrSFBrEsRfmjngsS2im6dNxynhV0iUdzzK
-         OS8ysVKKOnSJX0d1QbQS1lFAYdb/6U4KYrqlXg2YfFppTO6mRYEn5dPuxDfK3zPqHRl9
-         RFPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=4Pu5Bpf2F/UJvF9uKJ3m2aKujMucNH5SJI5mlJyuB9Q=;
-        b=l0+xNwjo8v9UFK3Ocy4cT0B1PsqNTJsOPNWsR+JEQDs6cfF2XcwgUOZtfXDiCN7FxV
-         QHmiy2jM+wdIPPDS+st75vx+nKWsJNbUjF2JoSdf5kzmaqLqCZ66EEu7X+sg9ZUjSj3h
-         +UW2TuN+be8F8ntxXi8I/JQm2gzc/nIN0qQ+nfVtq4wgsWRRIIQ5E84vA03ZKbsf0Yzc
-         xf8vA/HGgvCn9wCVUdsTeQtVL2hGehEpjk+vy9TuBMp+999qbbJOmhYl11Z3R9d6a0QK
-         RGvN4o6ThtEJrdpLkWUz2Mc20x8EVDn7+JBcyiYPJ3Epm1JQ2vEC+gepfZRKMUlhXWK2
-         YvcA==
-X-Gm-Message-State: AOAM533WLsnv8AXuhqT33h8IsWE2o1b53tHHVG0/vnOb/uwnQxB0jJHD
-        RZJUgLxUOfcXYm0foAw4znQ=
-X-Google-Smtp-Source: ABdhPJyUTPvHfixh+M2K3fcKVYT51Etc/NymGJInBDt63AZPIJWZStmaGwI5hxLiXEtXy9d1r6vdaw==
-X-Received: by 2002:a9d:8a7:: with SMTP id 36mr2473395otf.287.1623407669202;
-        Fri, 11 Jun 2021 03:34:29 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c13sm1237472otr.23.2021.06.11.03.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 03:34:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 11 Jun 2021 03:34:26 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Mohammed Billoo <mohammed.billoo@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] watchdog: Add Mstar MSC313e WDT driver
-Message-ID: <20210611103426.GA3827319@roeck-us.net>
-References: <20210605170441.33667-1-romain.perier@gmail.com>
- <20210605170441.33667-3-romain.perier@gmail.com>
+        id S231316AbhFKKgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:36:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230251AbhFKKgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 06:36:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEDF3613DE;
+        Fri, 11 Jun 2021 10:34:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623407675;
+        bh=Sv3Iu1ZCUTH4DacQZchxrXVJQeGtFx7vcCh45cHyi68=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tptOtbVH0JVxOchi+QGUFUp229gpIOikem0QXey8QjdHySZu4flQerdcNNX0TnIrd
+         d4R7MaXvVnFs2TlZ+/SHjVP2EyR7fj7shXZnL1H9rl9NynAsLy9U5OY1hKMRNd61Yd
+         /S0cWeL1tF64s3Pc5RUQYNojwhFQfCA16C/tY3qfzQaBx2AABRNLXzil31cYBrsn/V
+         r1PgEqN3hpUtNeMQBPinqNxXU982QxxTr9HNwbZZx2np9wnEUWn2bv31INlpXDj1ox
+         C0CSzEk7EhBxGWkqU3KWqT8Uga7hB5oPKHAKI84kt5nZfsQYLYuq8s3ebathQRXPaT
+         75MLNj2hKGPag==
+Date:   Fri, 11 Jun 2021 12:34:32 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH] rcu/doc: Add a quick quiz to explain further why we need
+ smp_mb__after_unlock_lock()
+Message-ID: <20210611103432.GA143096@lothringen>
+References: <20210610155029.130812-1-frederic@kernel.org>
+ <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210605170441.33667-3-romain.perier@gmail.com>
+In-Reply-To: <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 07:04:40PM +0200, Romain Perier wrote:
-> From: Daniel Palmer <daniel@0x0f.com>
-> 
-> It adds a driver for the IP block handling the watchdog timer found for
-> Mstar MSC313e SoCs and newer.
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> Co-developed-by: Romain Perier <romain.perier@gmail.com>
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  MAINTAINERS                    |   1 +
+On Thu, Jun 10, 2021 at 09:57:10AM -0700, Paul E. McKenney wrote:
+> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> index 11cdab037bff..3cd5cb4d86e5 100644
+> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> @@ -112,6 +112,35 @@ on PowerPC.
+>  The ``smp_mb__after_unlock_lock()`` invocations prevent this
+>  ``WARN_ON()`` from triggering.
+>  
+> ++-----------------------------------------------------------------------+
+> +| **Quick Quiz**:                                                       |
+> ++-----------------------------------------------------------------------+
+> +| But the whole chain of rcu_node-structure locking guarantees that     |
+> +| readers see all pre-grace-period accesses from the updater and        |
+> +| also guarantees that the updater to see all post-grace-period         |
 
-I tried to apply this patch to my tree, but it doesn't apply because ...
+Should it be either "that the updater see" or "the updater to see"?
 
->  drivers/watchdog/Kconfig       |  12 +++
->  drivers/watchdog/Makefile      |   1 +
->  drivers/watchdog/msc313e_wdt.c | 166 +++++++++++++++++++++++++++++++++
->  4 files changed, 180 insertions(+)
->  create mode 100644 drivers/watchdog/msc313e_wdt.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a0f37adb9e64..fcc10c57298c 100644
+> +| accesses from the readers.
 
-a0f37adb9e64 is not an upstream SHA and there is a conflict. Please resend
-the series based on some upstream tag.
+Is it really post-grace-period that you meant here? The updater can't see
+the future. It's rather all reader accesses before the end of the grace period?
 
-Guenter
+>  So why do we need all of those calls      |
+> +| to smp_mb__after_unlock_lock()?                                       |
+> ++-----------------------------------------------------------------------+
+> +| **Answer**:                                                           |
+> ++-----------------------------------------------------------------------+
+> +| Because we must provide ordering for RCU's polling grace-period       |
+> +| primitives, for example, get_state_synchronize_rcu() and              |
+> +| poll_state_synchronize_rcu().  For example:                           |
+
+Two times "for example" (sorry I'm nitpicking...)
+
+> +|                                                                       |
+> +| CPU 0                                     CPU 1                       |
+> +| ----                                      ----                        |
+> +| WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)            |
+> +| g = get_state_synchronize_rcu()           smp_mb()                    |
+> +| while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)           |
+> +|         continue;                                                     |
+> +| r0 = READ_ONCE(Y)                                                     |
+
+Good point, it's a nice merge of the initial examples!
+
+> +|                                                                       |
+> +| RCU guarantees that that the outcome r0 == 0 && r1 == 0 will not      |
+
+One "that" has to die here.
+
+> +| happen, even if CPU 1 is in an RCU extended quiescent state (idle     |
+> +| or offline) and thus won't interact directly with the RCU core        |
+> +| processing at all.                                                    |
+
+Thanks a lot!
+
+> ++-----------------------------------------------------------------------+
+> +
+>  This approach must be extended to include idle CPUs, which need
+>  RCU's grace-period memory ordering guarantee to extend to any
+>  RCU read-side critical sections preceding and following the current
