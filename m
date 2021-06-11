@@ -2,83 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752223A40CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376363A40D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhFKLKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:10:36 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5507 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhFKLKc (ORCPT
+        id S231503AbhFKLL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 07:11:59 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:13870 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230179AbhFKLL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:10:32 -0400
-Received: from nkgeml707-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1dLC3dmlzZg9n;
-        Fri, 11 Jun 2021 19:05:39 +0800 (CST)
-Received: from nkgeml706-chm.china.huawei.com (10.98.57.153) by
- nkgeml707-chm.china.huawei.com (10.98.57.157) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 19:08:30 +0800
-Received: from nkgeml706-chm.china.huawei.com ([10.98.57.153]) by
- nkgeml706-chm.china.huawei.com ([10.98.57.153]) with mapi id 15.01.2176.012;
- Fri, 11 Jun 2021 19:08:30 +0800
-From:   "Zhangjiantao (Kirin, nanjing)" <water.zhangjiantao@huawei.com>
-To:     "mathias.nyman@intel.com" <mathias.nyman@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "Xuetao (kirin)" <xuetao09@huawei.com>,
-        "chenyu (U)" <chenyu56@huawei.com>,
-        Caiyadong <caiyadong@huawei.com>,
-        xuhaiyang <xuhaiyang5@hisilicon.com>,
-        "Zhangjiantao (Kirin, nanjing)" <water.zhangjiantao@huawei.com>
-Subject: [PATCH v2] xhci: solve a double free problem while doing s4
-Thread-Topic: [PATCH v2] xhci: solve a double free problem while doing s4
-Thread-Index: AQHXXqK7hImcHidT6ESyBJu1wIWDJKsOppkQ
-Date:   Fri, 11 Jun 2021 11:08:30 +0000
-Message-ID: <3f5f7a1a46a847ca8bb793050cf30b98@huawei.com>
-References: <1623403104-121391-1-git-send-email-xuetao09@huawei.com>
-In-Reply-To: <1623403104-121391-1-git-send-email-xuetao09@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.38.30]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 11 Jun 2021 07:11:57 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id C422D520CC8;
+        Fri, 11 Jun 2021 14:09:57 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1623409797;
+        bh=+yF+PgwosyK0zMxU2vY31b6OYmpfcE8nWFbRodmPXf4=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=ouckuN31EnRv4DYYlr7TEMLEY2VC2Xy1qRVKkcypcugxDf94Q89EIOuFlJcjZRxH1
+         TvnuyAeZd3uXvbpQUzrfZJ6Qund5MjqHmSzqZ60hQnOD3c+TmZ0jrzWG7NJBM5yrYD
+         qIQ0Wz1iIYgxorzZhx16q+2XTd/4dEOL8pkELfB8qd488BLNGiCFL/WZRbBhYlFibV
+         nMMw+U+7Sqv7TGEGDwNUWaOGedrVMGf9LZfy00z/+CAOR0VpqAIVdRVvkSol4fvmqm
+         NEwaKUpfYEj1PrT6xRdNbMqhaI18Gcf0Tt8gOPLa3KOVTXV0NzCYjD1PXdHhRluQ30
+         s74NuowGGR2nw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 42CAB520CC7;
+        Fri, 11 Jun 2021 14:09:57 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Fri, 11
+ Jun 2021 14:09:56 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [PATCH v11 01/18] af_vsock: update functions for connectible socket
+Date:   Fri, 11 Jun 2021 14:09:47 +0300
+Message-ID: <20210611110950.3651039-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
+References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/11/2021 10:44:49
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164266 [Jun 11 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/11/2021 10:48:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11.06.2021 5:31:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/06/11 09:09:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/10 21:54:00 #16707142
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-d2hlbiBzeXN0ZW0gaXMgZG9pbmcgczQsIHRoZSBwcm9jZXNzIG9mIHhoY2lfcmVzdW1lIG1heSBi
-ZSBhcyBiZWxvdzoNCjHjgIF4aGNpX21lbV9jbGVhbnVwDQoy44CBeGhjaV9pbml0LT54aGNpX21l
-bV9pbml0LT54aGNpX21lbV9jbGVhbnVwKHdoZW4gbWVtb3J5IGlzIG5vdCBlbm91Z2gpLg0KeGhj
-aV9tZW1fY2xlYW51cCB3aWxsIGJlIGV4ZWN1dGVkIHR3aWNlIHdoZW4gc3lzdGVtIGlzIG91dCBv
-ZiBtZW1vcnkuDQp4aGNpLT5wb3J0X2NhcHMgaXMgZnJlZWQgaW4geGhjaV9tZW1fY2xlYW51cCxi
-dXQgaXQgaXNuJ3Qgc2V0IHRvIE5VTEwuDQpJdCB3aWxsIGJlIGZyZWVkIHR3aWNlIHdoZW4geGhj
-aV9tZW1fY2xlYW51cCBpcyBjYWxsZWQgdGhlIHNlY29uZCB0aW1lLg0KDQpXZSBnb3QgZm9sbG93
-aW5nIGJ1ZyB3aGVuIHN5c3RlbSByZXN1bWVzIGZyb20gczQ6DQoNCmtlcm5lbCBCVUcgYXQgbW0v
-c2x1Yi5jOjMwOSENCkludGVybmFsIGVycm9yOiBPb3BzIC0gQlVHOiAwIFsjMV0gUFJFRU1QVCBT
-TVANCkNQVTogMCBQSUQ6IDU5MjkgVGFpbnRlZDogRyBTICAgVyAgIDUuNC45Ni1hcm02NC1kZXNr
-dG9wICMxDQpwYyA6IF9fc2xhYl9mcmVlKzB4NWMvMHg0MjQNCmxyIDoga2ZyZWUrMHgzMGMvMHgz
-MmMNCg0KQ2FsbCB0cmFjZToNCiBfX3NsYWJfZnJlZSsweDVjLzB4NDI0DQoga2ZyZWUrMHgzMGMv
-MHgzMmMNCiB4aGNpX21lbV9jbGVhbnVwKzB4Mzk0LzB4M2NjDQogeGhjaV9tZW1faW5pdCsweDlh
-Yy8weDEwNzANCiB4aGNpX2luaXQrMHg4Yy8weDFkMA0KIHhoY2lfcmVzdW1lKzB4MWNjLzB4NWZj
-DQogeGhjaV9wbGF0X3Jlc3VtZSsweDY0LzB4NzANCiBwbGF0Zm9ybV9wbV90aGF3KzB4MjgvMHg2
-MA0KIGRwbV9ydW5fY2FsbGJhY2srMHg1NC8weDI0Yw0KIGRldmljZV9yZXN1bWUrMHhkMC8weDIw
-MA0KIGFzeW5jX3Jlc3VtZSsweDI0LzB4NjANCiBhc3luY19ydW5fZW50cnlfZm4rMHg0NC8weDEx
-MA0KIHByb2Nlc3Nfb25lX3dvcmsrMHgxZjAvMHg0OTANCiB3b3JrZXJfdGhyZWFkKzB4NWMvMHg0
-NTANCiBrdGhyZWFkKzB4MTU4LzB4MTYwDQogcmV0X2Zyb21fZm9yaysweDEwLzB4MjQNCg0KU2ln
-bmVkLW9mZi1ieTogSmlhbnRhbyBaaGFuZyA8d2F0ZXIuemhhbmdqaWFudGFvQGh1YXdlaS5jb20+
-DQpTaWduZWQtb2ZmLWJ5OiBUYW8gWHVlIDx4dWV0YW8wOUBodWF3ZWkuY29tPg0KLS0tDQogZHJp
-dmVycy91c2IvaG9zdC94aGNpLW1lbS5jIHwgMSArDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
-aW9uKCspDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbWVtLmMgYi9kcml2
-ZXJzL3VzYi9ob3N0L3hoY2ktbWVtLmMgaW5kZXggZjY2ODE1Zi4uZTRiMGMwNCAxMDA2NDQNCi0t
-LSBhL2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tZW0uYw0KKysrIGIvZHJpdmVycy91c2IvaG9zdC94
-aGNpLW1lbS5jDQpAQCAtMTkyNCw2ICsxOTI0LDcgQEAgdm9pZCB4aGNpX21lbV9jbGVhbnVwKHN0
-cnVjdCB4aGNpX2hjZCAqeGhjaSkNCiAJeGhjaS0+aHdfcG9ydHMgPSBOVUxMOw0KIAl4aGNpLT5y
-aF9idyA9IE5VTEw7DQogCXhoY2ktPmV4dF9jYXBzID0gTlVMTDsNCisJeGhjaS0+cG9ydF9jYXBz
-ID0gTlVMTDsNCiANCiAJeGhjaS0+cGFnZV9zaXplID0gMDsNCiAJeGhjaS0+cGFnZV9zaGlmdCA9
-IDA7DQotLQ0KMi43LjQNCg0K
+Prepare af_vsock.c for SEQPACKET support: rename some functions such
+as setsockopt(), getsockopt(), connect(), recvmsg(), sendmsg() in general
+manner, because they are shared with stream sockets.
+
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ net/vmw_vsock/af_vsock.c | 64 +++++++++++++++++++++-------------------
+ 1 file changed, 34 insertions(+), 30 deletions(-)
+
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 92a72f0e0d94..7dd8e70d78cd 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -604,8 +604,8 @@ static void vsock_pending_work(struct work_struct *work)
+ 
+ /**** SOCKET OPERATIONS ****/
+ 
+-static int __vsock_bind_stream(struct vsock_sock *vsk,
+-			       struct sockaddr_vm *addr)
++static int __vsock_bind_connectible(struct vsock_sock *vsk,
++				    struct sockaddr_vm *addr)
+ {
+ 	static u32 port;
+ 	struct sockaddr_vm new_addr;
+@@ -685,7 +685,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
+ 	switch (sk->sk_socket->type) {
+ 	case SOCK_STREAM:
+ 		spin_lock_bh(&vsock_table_lock);
+-		retval = __vsock_bind_stream(vsk, addr);
++		retval = __vsock_bind_connectible(vsk, addr);
+ 		spin_unlock_bh(&vsock_table_lock);
+ 		break;
+ 
+@@ -768,6 +768,11 @@ static struct sock *__vsock_create(struct net *net,
+ 	return sk;
+ }
+ 
++static bool sock_type_connectible(u16 type)
++{
++	return type == SOCK_STREAM;
++}
++
+ static void __vsock_release(struct sock *sk, int level)
+ {
+ 	if (sk) {
+@@ -786,7 +791,7 @@ static void __vsock_release(struct sock *sk, int level)
+ 
+ 		if (vsk->transport)
+ 			vsk->transport->release(vsk);
+-		else if (sk->sk_type == SOCK_STREAM)
++		else if (sock_type_connectible(sk->sk_type))
+ 			vsock_remove_sock(vsk);
+ 
+ 		sock_orphan(sk);
+@@ -948,7 +953,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
+ 	lock_sock(sk);
+ 	if (sock->state == SS_UNCONNECTED) {
+ 		err = -ENOTCONN;
+-		if (sk->sk_type == SOCK_STREAM)
++		if (sock_type_connectible(sk->sk_type))
+ 			goto out;
+ 	} else {
+ 		sock->state = SS_DISCONNECTING;
+@@ -961,7 +966,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
+ 		sk->sk_shutdown |= mode;
+ 		sk->sk_state_change(sk);
+ 
+-		if (sk->sk_type == SOCK_STREAM) {
++		if (sock_type_connectible(sk->sk_type)) {
+ 			sock_reset_flag(sk, SOCK_DONE);
+ 			vsock_send_shutdown(sk, mode);
+ 		}
+@@ -1016,7 +1021,7 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
+ 		if (!(sk->sk_shutdown & SEND_SHUTDOWN))
+ 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
+ 
+-	} else if (sock->type == SOCK_STREAM) {
++	} else if (sock_type_connectible(sk->sk_type)) {
+ 		const struct vsock_transport *transport;
+ 
+ 		lock_sock(sk);
+@@ -1263,8 +1268,8 @@ static void vsock_connect_timeout(struct work_struct *work)
+ 	sock_put(sk);
+ }
+ 
+-static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+-				int addr_len, int flags)
++static int vsock_connect(struct socket *sock, struct sockaddr *addr,
++			 int addr_len, int flags)
+ {
+ 	int err;
+ 	struct sock *sk;
+@@ -1414,7 +1419,7 @@ static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
+ 
+ 	lock_sock(listener);
+ 
+-	if (sock->type != SOCK_STREAM) {
++	if (!sock_type_connectible(sock->type)) {
+ 		err = -EOPNOTSUPP;
+ 		goto out;
+ 	}
+@@ -1491,7 +1496,7 @@ static int vsock_listen(struct socket *sock, int backlog)
+ 
+ 	lock_sock(sk);
+ 
+-	if (sock->type != SOCK_STREAM) {
++	if (!sock_type_connectible(sk->sk_type)) {
+ 		err = -EOPNOTSUPP;
+ 		goto out;
+ 	}
+@@ -1535,11 +1540,11 @@ static void vsock_update_buffer_size(struct vsock_sock *vsk,
+ 	vsk->buffer_size = val;
+ }
+ 
+-static int vsock_stream_setsockopt(struct socket *sock,
+-				   int level,
+-				   int optname,
+-				   sockptr_t optval,
+-				   unsigned int optlen)
++static int vsock_connectible_setsockopt(struct socket *sock,
++					int level,
++					int optname,
++					sockptr_t optval,
++					unsigned int optlen)
+ {
+ 	int err;
+ 	struct sock *sk;
+@@ -1617,10 +1622,10 @@ static int vsock_stream_setsockopt(struct socket *sock,
+ 	return err;
+ }
+ 
+-static int vsock_stream_getsockopt(struct socket *sock,
+-				   int level, int optname,
+-				   char __user *optval,
+-				   int __user *optlen)
++static int vsock_connectible_getsockopt(struct socket *sock,
++					int level, int optname,
++					char __user *optval,
++					int __user *optlen)
+ {
+ 	int err;
+ 	int len;
+@@ -1688,8 +1693,8 @@ static int vsock_stream_getsockopt(struct socket *sock,
+ 	return 0;
+ }
+ 
+-static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+-				size_t len)
++static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
++				     size_t len)
+ {
+ 	struct sock *sk;
+ 	struct vsock_sock *vsk;
+@@ -1828,10 +1833,9 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	return err;
+ }
+ 
+-
+ static int
+-vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+-		     int flags)
++vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
++			  int flags)
+ {
+ 	struct sock *sk;
+ 	struct vsock_sock *vsk;
+@@ -2007,7 +2011,7 @@ static const struct proto_ops vsock_stream_ops = {
+ 	.owner = THIS_MODULE,
+ 	.release = vsock_release,
+ 	.bind = vsock_bind,
+-	.connect = vsock_stream_connect,
++	.connect = vsock_connect,
+ 	.socketpair = sock_no_socketpair,
+ 	.accept = vsock_accept,
+ 	.getname = vsock_getname,
+@@ -2015,10 +2019,10 @@ static const struct proto_ops vsock_stream_ops = {
+ 	.ioctl = sock_no_ioctl,
+ 	.listen = vsock_listen,
+ 	.shutdown = vsock_shutdown,
+-	.setsockopt = vsock_stream_setsockopt,
+-	.getsockopt = vsock_stream_getsockopt,
+-	.sendmsg = vsock_stream_sendmsg,
+-	.recvmsg = vsock_stream_recvmsg,
++	.setsockopt = vsock_connectible_setsockopt,
++	.getsockopt = vsock_connectible_getsockopt,
++	.sendmsg = vsock_connectible_sendmsg,
++	.recvmsg = vsock_connectible_recvmsg,
+ 	.mmap = sock_no_mmap,
+ 	.sendpage = sock_no_sendpage,
+ };
+-- 
+2.25.1
+
