@@ -2,102 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33643A4785
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05013A4788
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhFKRNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:13:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhFKRNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:13:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C72BE61184;
-        Fri, 11 Jun 2021 17:11:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623431498;
-        bh=/BcjzFgtIGfGd3+j0Jqz2SkO9Jfqps+SzPLc0uDWASQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=o/fVu5T8rsNjNMwHsa/Y02VbMfFHN0We8KxHrZnov2Oul5+/wB4VvFE1m6rTo0rN0
-         qP7fOeBed9NpayasYVBeJmMMnIE/ndgj9q1ATGfeY+aXmw/v98JTE2KAYGHOcGdyj5
-         +VDIVNFMlu/t0wUcVXGEMqk8Z90LWCMiOZPopZCBzoOw9cbZCxMYYoacOQzgVa2r8I
-         1w0O5+wqdZhoZ8XgaHGiO05Qtaokm4w2BThIkBYUleH7SY//eaEBFE975TFfOVHUcz
-         uROZyZSY+qVbL5lCPoKHlnPNUyH8LbOkfDVHErFhsILhtcTjsUKPVyWl2xEMKIcRbZ
-         ve22WDQfyYnnw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 93AE45C0990; Fri, 11 Jun 2021 10:11:38 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 10:11:38 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Question about a8ea6fc9b089 ("sched: Stop PF_NO_SETAFFINITY from
- being inherited by various init system threads")
-Message-ID: <20210611171138.GF4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210610170435.GA2187550@paulmck-ThinkPad-P17-Gen-1>
- <8735tpd15i.mognet@arm.com>
- <20210610201713.GU4397@paulmck-ThinkPad-P17-Gen-1>
- <20210611124212.GB143945@lothringen>
+        id S230303AbhFKRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:13:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58910 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230186AbhFKRNw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:13:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623431513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fN/mVV/PbyF2783Hpa69RufdmQkjHk7SYejj/LdWl0k=;
+        b=hxB+dx8LaNHwVV3xpE5I1uxlL9MWKTjZAD3vhd5XLPxJEwhpKELcFbnIlx03qF+CR3wzl1
+        sO5w4PYqx4tM/tfHlYxvEpzEpCQpzP5i40bv64mjfWou5ubvsFG/ypxnJI/ys2mtp4xJah
+        OdqqnYmWaO74PWaDUpV5IgeS1c90qV4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-WFjAlR4wPHOZBCgIIL4cAw-1; Fri, 11 Jun 2021 13:11:52 -0400
+X-MC-Unique: WFjAlR4wPHOZBCgIIL4cAw-1
+Received: by mail-wr1-f70.google.com with SMTP id d5-20020a0560001865b0290119bba6e1c7so2907289wri.20
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:11:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=fN/mVV/PbyF2783Hpa69RufdmQkjHk7SYejj/LdWl0k=;
+        b=bJ30b1CXz4VNfvZpYEaHqVyFrDe2f+6vctrT1JMZPCsdKvCFwPb08RWlk3bx0DVHXu
+         Jza9Dpxaa3ZKiVIugsDmNR9CeOZFBhMLjZeRqeQzcDQQPIEvZ10dttAMD0PAR5h9RyVR
+         sw+s3WfdRHl4LuLQzrD3siulSR+A5qwghftIGKeiXWsq+OEv+fobngGn8attVRXtBnrg
+         uASweP4i1Ujod7hVJu998hbtjt9PtfsA+AMrktKE2RwB/5tvOU4ysFvYgh1wKFedfexm
+         pWeH45s8KjNTmpC3OVXGAQyxD4NoSdKOE0pUTkKU3jHRAs/bX9QkKWlD7NFN6KEdy2iJ
+         ZpYg==
+X-Gm-Message-State: AOAM533v2TE39UzYeJIFGyJ4x2qNJObz5Zi+MTj0urWuG4wvCZUY/R2A
+        qoqeZR87znsSwnVfFUaTdW5EkCy9oiYB+58MWA44DA8pxaoYzg3ZvR7g4it6+EeBg2e6TAxLVzA
+        5kBZK7wslBIaRxSw77V0or0bZ
+X-Received: by 2002:a5d:64c3:: with SMTP id f3mr5215036wri.263.1623431511623;
+        Fri, 11 Jun 2021 10:11:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqAEtDrL+JGgbe7s64y6Qwu724j6kGakolpO9O9iu4bscLtvjosb65kz5vimWchOT3ZRhvXA==
+X-Received: by 2002:a5d:64c3:: with SMTP id f3mr5215010wri.263.1623431511354;
+        Fri, 11 Jun 2021 10:11:51 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64b6.dip0.t-ipconnect.de. [91.12.100.182])
+        by smtp.gmail.com with ESMTPSA id v18sm8416778wrb.10.2021.06.11.10.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 10:11:51 -0700 (PDT)
+Subject: Re: [PATCH 2/3] s390/vfio-ap: introduce two new r/w locks to replace
+ wait_queue_head_t
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com, hca@linux.ibm.com
+References: <20210609224634.575156-1-akrowiak@linux.ibm.com>
+ <20210609224634.575156-3-akrowiak@linux.ibm.com>
+ <20210611170526.GU1002214@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <7ed059b0-5d58-eeec-167c-280917b47c00@redhat.com>
+Date:   Fri, 11 Jun 2021 19:11:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611124212.GB143945@lothringen>
+In-Reply-To: <20210611170526.GU1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 02:42:12PM +0200, Frederic Weisbecker wrote:
-> On Thu, Jun 10, 2021 at 01:17:13PM -0700, Paul E. McKenney wrote:
-> > On Thu, Jun 10, 2021 at 07:28:57PM +0100, Valentin Schneider wrote:
-> > > On 10/06/21 10:04, Paul E. McKenney wrote:
-> > > 
-> > > Hi,
-> > > > Hello, Frederic,
-> > > >
-> > > > This commit works well, but has the unfortunate side-effect of making
-> > > > smp_processor_id() complain when used in a preemptible region even
-> > > > though the kthread has been pinned onto a single CPU by a call to
-> > > > set_cpus_allowed_ptr().  (Which did return success.)
-> > > >
-> > > 
-> > > On which tree are you encountering this?
-> > 
-> > I bisected to this commit in -next tag next-20210609, and this commit
-> > could of course be an innocent bystander caught in the crossfire.
-> > 
-> > > Looking at check_preemption_disabled() and CPU affinity, v5.13-rc5 has:
-> > > 
-> > >         /*
-> > >          * Kernel threads bound to a single CPU can safely use
-> > >          * smp_processor_id():
-> > >          */
-> > >         if (current->nr_cpus_allowed == 1)
-> > >                 goto out;
-> > > 
-> > > tip/sched/core additionally hinges that on PF_NO_SETAFFINITY:
-> > > 
-> > >   570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
-> > > 
-> > > The former shouldn't be affected by Frederic's patch, and the latter should
-> > > only cause warnings if the pinned task isn't a "proper" kthread (thus
-> > > doesn't have PF_NO_SETAFFINITY)... Exceptions that come to mind are things
-> > > like UMH which doesn't use kthread_create().
-> > 
-> > And reverting 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread()
-> > instead of nr_cpus_allowed") causes the kernel to once again be OK with
-> > smp_processor_id(), so thank you!  And apologies to Frederic for the
-> > false alarm.
-> > 
-> > Added Yejune on CC.  Thoughts?
+On 11.06.21 19:05, Jason Gunthorpe wrote:
+> On Wed, Jun 09, 2021 at 06:46:33PM -0400, Tony Krowiak wrote:
+>> This patch introduces two new r/w locks to replace the wait_queue_head_t
+>> that was introduced to fix a lockdep splat reported when testing
+>> pass-through of AP queues to a Secure Execution guest. This was the
+>> abbreviated dependency chain reported by lockdep that was fixed using
+>> a wait queue:
+>>
+>> kvm_arch_crypto_set_masks+0x4a/0x2b8 [kvm]        kvm->lock
+>> vfio_ap_mdev_group_notifier+0x154/0x170 [vfio_ap] matrix_dev->lock
+>>
+>> handle_pqap+0x56/0x1d0 [vfio_ap]    matrix_dev->lock
+>> kvm_vcpu_ioctl+0x2cc/0x898 [kvm]    vcpu->mutex
+>>
+>> kvm_s390_cpus_to_pv+0x4e/0xf8 [kvm]   vcpu->mutex
+>> kvm_arch_vm_ioctl+0x3ec/0x550 [kvm]   kvm->lock
 > 
-> There is also that:
+> Is the problem larger than kvm_arch_crypto_set_masks()? If not it
+> looks easy enough to fix, just pull the kvm->lock out of
+> kvm_arch_crypto_set_masks() and obtain it in vfio_ap_mdev_set_kvm()
+> before the rwsem. Now your locks are in the right order and all should
+> be well?
 > 
->       15faafc6b449777a85c0cf82dd8286c293fed4eb ("sched,init: Fix DEBUG_PREEMPT
->       vs early boot")
+>> +static int vfio_ap_mdev_matrix_store_lock(struct ap_matrix_mdev *matrix_mdev)
+>> +{
+>> +	if (!down_write_trylock(&matrix_mdev->rwsem))
+>> +		return -EBUSY;
+>> +
+>> +	if (matrix_mdev->kvm) {
+>> +		up_write(&matrix_mdev->rwsem);
+>> +		return -EBUSY;
+>> +	}
+>> +
+>> +	if (!down_write_trylock(&matrix_mdev->matrix.rwsem)) {
+>> +		up_write(&matrix_mdev->rwsem);
+>> +		return -EBUSY;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
 > 
-> Not sure if that will help but just in case.
+> This double locking is quite strange, at least it deserves a detailed
+> comment? The comments suggest these locks protect distinct data so..
+> 
+>> +
+>> +	ret = vfio_ap_mdev_matrix_store_lock(matrix_mdev);
+>> +	if (ret)
+>> +		return ret;
+>>   
+>>   	clear_bit_inv((unsigned long)apqi, matrix_mdev->matrix.aqm);
+> 
+> here it obtained both locks but only touched matrix.aqm which is only
+> protected by the inner lock - what was the point of obtaining the
+> outer lock?
+> 
+> Also, not convinced down_write_trylock() is appropriate from a sysfs
+> callback, it should block and wait, surely? Otherwise userspace gets
+> random racy failures depending on what the kernel is doing??
 
-Thank you for the pointer!  These tasks start later well after
-kthreadd_done, so I believe that I dodged this particular bullet.  ;-)
+It might we worth exploring lock_device_hotplug_sysfs() which does a
 
-						Thanx, Paul
+"return restart_syscall()" with some delay.
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
