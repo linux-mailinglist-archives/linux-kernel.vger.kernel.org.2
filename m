@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D433A39C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9024D3A39C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 04:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhFKCbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 22:31:48 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:45718 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhFKCbq (ORCPT
+        id S231220AbhFKCb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 22:31:26 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:63458 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230212AbhFKCbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:31:46 -0400
-Received: by mail-pf1-f173.google.com with SMTP id d16so3190642pfn.12;
-        Thu, 10 Jun 2021 19:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=AKU124jU/u06/XqITKyhGdyjgwHpz1y19GKnJe70/50=;
-        b=Fzd+9ay/my62ld1LfHLOT9s0mdEJYwyL+xSYOozDWoaFF7N6NIzgDH6+61AlORTrn4
-         cchKq8nuZnE9/bCSK7zUZoic4PBVaRbx6y7aD+tULv8JiYfqOb942D1ZCHQ6a4TnH3wX
-         3KfMkkEQ2Pp+whm7/Q5ImzqXw2Hk75/BYZj4r08Xm7AvlofuEB+oVuOaR/pl1PBoHA6m
-         ZcVRlwR1Swmn+pC2zTxPHE6oy+vaobauFcbnxSHzwlYaULUPv9M78sKvvzVvs1itCxNG
-         1MqTyhOFQoJ6+hdJDAxCPJM+Jg4uqbksTx3W/TUcc7VmRvAgJVEN0na2WJm/nKjVz6F4
-         j9SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=AKU124jU/u06/XqITKyhGdyjgwHpz1y19GKnJe70/50=;
-        b=oykq0BmBkt8cwQDjB283bIfuKWlCsCFcqikn9H9KWpz+c94XBoZ+4AJIGAEBy246NG
-         bvx5HGZNkiPLkG9knEsca+p74v0iqK6p2iZjSdEG06hmC9Fdeb/mf9TETVftUjS8Ls+c
-         BaFziTZzRC/Xk0Rx5FsGiiTh/rXHTQnRWD0O0/jXD6PipcEu6D/v2KSpqrEtZ6sGKtKQ
-         nSJjpL47yFMG6OFbr79cdiqFh24mNyK+zPD6wWx9BnEBcHFY2NwYpld4c9YPNeRrwgbN
-         JXprv1ie3HA5zG2HxY545I9KvdXnowBVNFhw4LcoAaxz6FFKpRsmzxoWWqb0JLqv8K0i
-         U94Q==
-X-Gm-Message-State: AOAM530fqbM1obMnHAO5Mr5JjH9ZwhEmkpthxLKbjIuwhH/nyjw8/UJj
-        UsOfVMsP0ZRst433SEgYklrhWk3i4/vUTDU5
-X-Google-Smtp-Source: ABdhPJwiGSeqwF9faWHvjK33uS9mdi3TKiOgnJyIWzJ40zYtTtoGSDqc6JjpUcs2B9JpG6fMr1TdNQ==
-X-Received: by 2002:a62:860a:0:b029:2ec:81e1:23e4 with SMTP id x10-20020a62860a0000b02902ec81e123e4mr5894381pfd.11.1623378519956;
-        Thu, 10 Jun 2021 19:28:39 -0700 (PDT)
-Received: from raspberrypi ([125.141.84.155])
-        by smtp.gmail.com with ESMTPSA id 65sm3586605pfu.159.2021.06.10.19.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 19:28:39 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 03:28:35 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, austin.kim@lge.com,
-        austindh.kim@gmail.com
-Subject: [PATCH] audit: remove unnecessary 'ret' initialization
-Message-ID: <20210611022835.GA1031@raspberrypi>
+        Thu, 10 Jun 2021 22:31:25 -0400
+X-UUID: 0b3cc9ed3c49425a9fce4c3b35d12a1c-20210611
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=dv+Qz7VgPb4x8JJap2AVvlVH5e24mB3GpvI0kMdk/as=;
+        b=ImfLLzSfXqSsI/W+nq19GD0P+/DtoHMryCGaZU/5JXwuGBUmLLDTpimb8Z0u5sQ4FZRNwa+VleCpiacAu1AOeSc2oMnNaJGlPYoPcCioAoBTvOxTztZFfW64MkMbn2oRtWPEI3MLx+LqkBAmsCvssDNMoqw9jrYUa2U/lh4dQzo=;
+X-UUID: 0b3cc9ed3c49425a9fce4c3b35d12a1c-20210611
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 511477463; Fri, 11 Jun 2021 10:29:24 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
+ (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 11 Jun
+ 2021 10:29:21 +0800
+Received: from [10.16.6.141] (10.16.6.141) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 11 Jun 2021 10:29:20 +0800
+Message-ID: <1623378559.24490.12.camel@mszsdaap41>
+Subject: Re: [PATCH v4 2/3] pwm: mtk-disp: move the commit to clock enabled
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pwm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <yingjoe.chen@mediatek.com>, <eddie.huang@mediatek.com>,
+        <cawa.cheng@mediatek.com>, <bibby.hsieh@mediatek.com>,
+        <ck.hu@mediatek.com>, <stonea168@163.com>,
+        <huijuan.xie@mediatek.com>
+Date:   Fri, 11 Jun 2021 10:29:19 +0800
+In-Reply-To: <20210606211457.ya5nbp6fqevuhzwa@pengutronix.de>
+References: <20210603100531.161901-1-jitao.shi@mediatek.com>
+         <20210603100531.161901-3-jitao.shi@mediatek.com>
+         <20210606211457.ya5nbp6fqevuhzwa@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-SNTS-SMTP: 2B4009F64EB28FF746E2C443C376190B28D238414B49AA5C781DE84D5A2B3E672000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim <austin.kim@lge.com>
-
-The variable 'ret' is set to 0 when declared.
-The 'ret' is unused until it is set to 0 again.
-
-So it had better remove unnecessary initialization.
-
-Signed-off-by: Austin Kim <austin.kim@lge.com>
----
- security/lsm_audit.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/security/lsm_audit.c b/security/lsm_audit.c
-index 82ce14933513..5a5016ef43b0 100644
---- a/security/lsm_audit.c
-+++ b/security/lsm_audit.c
-@@ -119,7 +119,6 @@ int ipv6_skb_to_auditdata(struct sk_buff *skb,
- 		return -EINVAL;
- 	ad->u.net->v6info.saddr = ip6->saddr;
- 	ad->u.net->v6info.daddr = ip6->daddr;
--	ret = 0;
- 	/* IPv6 can have several extension header before the Transport header
- 	 * skip them */
- 	offset = skb_network_offset(skb);
--- 
-2.20.1
+T24gU3VuLCAyMDIxLTA2LTA2IGF0IDIzOjE0ICswMjAwLCBVd2UgS2xlaW5lLUvDtm5pZyB3cm90
+ZToNCj4gT24gVGh1LCBKdW4gMDMsIDIwMjEgYXQgMDY6MDU6MzBQTSArMDgwMCwgSml0YW8gU2hp
+IHdyb3RlOg0KPiA+IER1ZSB0byB0aGUgY2xvY2sgc2VxdWVuY2UgY2hhbmdpbmcsIHNvIG1vdmUg
+dGhlIHJlZyBjb21taXQgdG8NCj4gDQo+IFdoaWNoIGNoYW5nZSBkbyB5b3UgcmVmZXIgdG8sIGhl
+cmU/IFRoZSBwcmV2aW91cyBwYXRjaD8gSWYgc28sIEkgYXNzdW1lDQo+IHRoaXMgbWVhbnMgdGhl
+IHNlcmllcyBpcyBub3QgYmlzZWN0YWJsZSBiZWNhdXNlIHRoZSBkcml2ZXIgaXMgYnJva2VuDQo+
+IHdoZW4gb25seSB0aGUgZmlyc3QgcGF0Y2ggaXMgYXBwbGllZD8NCj4gDQpZZXMsIHRoaXMgcGF0
+Y2ggaXMgZGVwZW5kIHRoZSBwcmV2aW91cyBwYXRjaC4NCkknbGwgc3F1YXNoIGl0IHRvIHRoZSBw
+cmV2aW91cyBwYXRjaCBpbiBuZXh0IHZlcnNpb24uDQoNCg0KPiA+IGNvbmZpZygpLg0KPiA+IA0K
+PiA+IFNpZ25lZC1vZmYtYnk6IEppdGFvIFNoaSA8aml0YW8uc2hpQG1lZGlhdGVrLmNvbT4NCj4g
+PiAtLS0NCj4gPiAgZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMgfCAyMCArKysrKysrLS0tLS0t
+LS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlv
+bnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMg
+Yi9kcml2ZXJzL3B3bS9wd20tbXRrLWRpc3AuYw0KPiA+IGluZGV4IGI1NzcxZTJjNTRiOC4uYjg3
+YjNjMDBhNjg1IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvcHdtL3B3bS1tdGstZGlzcC5jDQo+
+ID4gKysrIGIvZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMNCj4gPiBAQCAtMTM1LDYgKzEzNSwx
+MyBAQCBzdGF0aWMgaW50IG10a19kaXNwX3B3bV9jb25maWcoc3RydWN0IHB3bV9jaGlwICpjaGlw
+LCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLA0KPiA+ICAJCW10a19kaXNwX3B3bV91cGRhdGVfYml0
+cyhtZHAsIG1kcC0+ZGF0YS0+Y29tbWl0LA0KPiA+ICAJCQkJCSBtZHAtPmRhdGEtPmNvbW1pdF9t
+YXNrLA0KPiA+ICAJCQkJCSAweDApOw0KPiA+ICsJfSBlbHNlIHsNCj4gDQo+IFlvdSBkcm9wcGVk
+IHRoZSBjb2RlIGNvbW1lbnQ/IElzIGl0IHdyb25nPyBPciBpcyBpdCB0b28gb2J2aW91cyB0byBi
+ZQ0KPiBtZW50aW9uZWQ/DQo+IA0KDQpJJ2xsIGZpeCB0aGVtIG5leHQgdmVyaXNvbi4NCg0KPiA+
+ICsJCW10a19kaXNwX3B3bV91cGRhdGVfYml0cyhtZHAsIG1kcC0+ZGF0YS0+YmxzX2RlYnVnLA0K
+PiA+ICsJCQkJCSBtZHAtPmRhdGEtPmJsc19kZWJ1Z19tYXNrLA0KPiA+ICsJCQkJCSBtZHAtPmRh
+dGEtPmJsc19kZWJ1Z19tYXNrKTsNCj4gPiArCQltdGtfZGlzcF9wd21fdXBkYXRlX2JpdHMobWRw
+LCBtZHAtPmRhdGEtPmNvbjAsDQo+ID4gKwkJCQkJIG1kcC0+ZGF0YS0+Y29uMF9zZWwsDQo+ID4g
+KwkJCQkJIG1kcC0+ZGF0YS0+Y29uMF9zZWwpOw0KPiA+ICAJfQ0KPiA+ICANCj4gPiAgCXJldHVy
+biAwOw0KPiA+IEBAIC0yMDgsMTkgKzIxNSw2IEBAIHN0YXRpYyBpbnQgbXRrX2Rpc3BfcHdtX3By
+b2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gIA0KPiA+ICAJcGxhdGZvcm1f
+c2V0X2RydmRhdGEocGRldiwgbWRwKTsNCj4gPiAgDQo+ID4gLQkvKg0KPiA+IC0JICogRm9yIE1U
+MjcwMSwgZGlzYWJsZSBkb3VibGUgYnVmZmVyIGJlZm9yZSB3cml0aW5nIHJlZ2lzdGVyDQo+ID4g
+LQkgKiBhbmQgc2VsZWN0IG1hbnVhbCBtb2RlIGFuZCB1c2UgUFdNX1BFUklPRC9QV01fSElHSF9X
+SURUSC4NCj4gPiAtCSAqLw0KPiA+IC0JaWYgKCFtZHAtPmRhdGEtPmhhc19jb21taXQpIHsNCj4g
+PiAtCQltdGtfZGlzcF9wd21fdXBkYXRlX2JpdHMobWRwLCBtZHAtPmRhdGEtPmJsc19kZWJ1ZywN
+Cj4gPiAtCQkJCQkgbWRwLT5kYXRhLT5ibHNfZGVidWdfbWFzaywNCj4gPiAtCQkJCQkgbWRwLT5k
+YXRhLT5ibHNfZGVidWdfbWFzayk7DQo+ID4gLQkJbXRrX2Rpc3BfcHdtX3VwZGF0ZV9iaXRzKG1k
+cCwgbWRwLT5kYXRhLT5jb24wLA0KPiA+IC0JCQkJCSBtZHAtPmRhdGEtPmNvbjBfc2VsLA0KPiA+
+IC0JCQkJCSBtZHAtPmRhdGEtPmNvbjBfc2VsKTsNCj4gPiAtCX0NCj4gPiAtDQo+ID4gIAlyZXR1
+cm4gMDsNCj4gPiAgfQ0KPiANCj4gQmVzdCByZWdhcmRzDQo+IFV3ZQ0KPiANCg0KQmVzdCBSZWdh
+cmRzDQpKaXRhbw0KDQo=
 
