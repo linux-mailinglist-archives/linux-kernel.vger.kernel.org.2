@@ -2,98 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EF33A3EC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE703A3ECE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhFKJN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbhFKJN4 (ORCPT
+        id S231649AbhFKJOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:14:45 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:53867 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231514AbhFKJOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:13:56 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A97C0613A2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:11:45 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id i94so5255570wri.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:11:45 -0700 (PDT)
+        Fri, 11 Jun 2021 05:14:44 -0400
+Received: by mail-wm1-f43.google.com with SMTP id b205so2984498wmb.3;
+        Fri, 11 Jun 2021 02:12:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YElcP8wY/ItH22s2CX3Yk/qIGr089Bxcg+NXSKlpwwM=;
-        b=woZ9K25EeoLQgFPoZVy3NGyq6fwzaVKAJZhft3QVaaHAwjel+T2FHYXKeJVF0dq4IV
-         KT4si0PHrixQw5HW0jmWLmRYpEtsp3/eZfK1U1nrDfC+VhljAejz/6LwRdKB8Bvb2tMa
-         H8J9YWPe2MRbFZbJXcHP9jn7fySM4WPSRK7A5F8GgRiy8AGIsgp23zFDTlJdWTDgJ7cW
-         xXmc3PcmEMqJbvIehCJmyyOqmCmZDswRrH03zxLaBPaRmV2V5yqUL83Ikt6z3g2y/aXt
-         ybc6xsaj2MgpPjXFU9ob9H9own759QmqW4hygFJqr/9Sgi2hbAlnjJGYMW/I5iO5C/CZ
-         ycXQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=g7JY//B99DNoLLjgXO7WYK3oUumq/NbdPAMSrBSy1rE=;
+        b=ji9nBoVzSNkdEoW0nLtDN28arisxrU+3RJTiQg3XvfEfifd5NUxVwS4PrW7rHkvsFA
+         1E4CJDktYpKD2ol03kGhM+48Cn4JIL5HIf12H5FcWW6AP/7bcpel43PrAJF7Kx0j2gD6
+         QWUR7Za/0M2ZhEYFfc9la++dbH+peIDbXUkBYqcMyxJGp1z7FP8eMvKr3WAnBhYw75Gk
+         kKGdwDMeEQm9eDCZOOEjqYCTCKbU4Lj59LUZBT0/bUAE7QURbR9O8rkyZs1bX/2t+cic
+         iEq1ucnZbZn19Nvfn+pPKkxsEyBH05A4lK97E53GkdLFExsCAnDWVtiSX5Mq3kNOAqpY
+         b5wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YElcP8wY/ItH22s2CX3Yk/qIGr089Bxcg+NXSKlpwwM=;
-        b=hZn90iOl1ZPNqMu1mZnWcqhZuIaYm4WIxNEh+Z/miWwMuKcv3+N4HjfKIn+3aBnW+F
-         r7Kf/3OAi8/LQ42WQQAFzyTP3T/5zsX/703tH/tumfDWUbFCoF7y++v4jWhBdtCcFMdR
-         5yGYqfQ/WeKOmHiL9MPdAJT3kWSsbt0CgupqEqW+e32EPNC4lzMne89eTpXmdpTLQsDY
-         EvfI/JXk/P+7NxPZEBOK4sskJzcq+PFHigOL0L53UHrw+UIMRQFTIVvETcn34++wNmpU
-         TOhFays5fEbwySeaWArfjF4G0TQCc2VZ1M4kn/+w8r9JLgmV+W44V49vhxFTjDj/4T/n
-         d2CQ==
-X-Gm-Message-State: AOAM533cU1CHJ+M5cihIOfHcjNZObW0d4lsJtYSIhynJ6hC2kboGBy6i
-        U5zhP24GodgdeuX0wZHQJHSK+oshYjVjSP83+BzmUw==
-X-Google-Smtp-Source: ABdhPJygoquYofYpaeSWf98r/mIW7k2U9CQBWHXDLqMaKoPkUUyF4l08eSJo3Yli8sYbBlkW2zzw2hVNtPKpLBXGTGc=
-X-Received: by 2002:a05:6000:229:: with SMTP id l9mr2803707wrz.43.1623402704237;
- Fri, 11 Jun 2021 02:11:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=g7JY//B99DNoLLjgXO7WYK3oUumq/NbdPAMSrBSy1rE=;
+        b=U7eL/Xv1KygjDiLkasHYxmNiUYZDUD9rqekwMY017BmlINnAxbF72gPIr290IUJhJJ
+         RTq5q4B7rkHrzk/pVFlPAFu20D89gqbTwePyUir76Y/Iwl59XsW1etX5WqYx8rs+zV1o
+         vqABc7gJbFIUC5OA9XSopgTH8Q+ky/8R/P9d4obEuT8+qfvvc2sjdqL3XlmRhCaj+l5C
+         HRAAMU9tfYILz9opU9liRGZFdBaeUomGXZTFdV7f+4kpfiUJndFrp+1wwr9wXJqmCQmH
+         1jXF1tKUR/dUC0QLAkPN8G9OfQ0RITQQp2EVeo6f6ZnVf2X+sN5YbBau9WFXuTWXcWVx
+         qGlw==
+X-Gm-Message-State: AOAM532SGurGzN1o9rhfStzS4+dveQfpOCRWDa81KyMXE0b/3HYrbb02
+        SwRx8bltUrGor/c/kjD29PfF3xHSPik=
+X-Google-Smtp-Source: ABdhPJxHioZvrmg1B9mynbBoAhk0G9PhXpCfeyQxpkJMlf5qwq5PH+VkvK5OeqXb7ELJfqUS09vgVw==
+X-Received: by 2002:a1c:b087:: with SMTP id z129mr18833615wme.67.1623402697651;
+        Fri, 11 Jun 2021 02:11:37 -0700 (PDT)
+Received: from localhost.localdomain ([188.24.178.25])
+        by smtp.gmail.com with ESMTPSA id l13sm6667737wrz.34.2021.06.11.02.11.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 02:11:37 -0700 (PDT)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/2] ARM: dts: owl-s500-roseapplepi: Add ethernet support
+Date:   Fri, 11 Jun 2021 12:11:33 +0300
+Message-Id: <d0e1fbf81984127f0352eb740c7129424b5e40f9.1623401998.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
+References: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com> <20210610210913.536081-4-tyhicks@linux.microsoft.com>
-In-Reply-To: <20210610210913.536081-4-tyhicks@linux.microsoft.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 11 Jun 2021 11:11:33 +0200
-Message-ID: <CAHUa44H=vJrkYYTb2T8WPfy6TznQyO8a8wnLCbJUuSE8QO4iuw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/8] optee: fix tee out of memory failure seen during
- kexec reboot
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:09 PM Tyler Hicks
-<tyhicks@linux.microsoft.com> wrote:
->
-> From: Allen Pais <apais@linux.microsoft.com>
->
-> The following out of memory errors are seen on kexec reboot
-> from the optee core.
->
-> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
-> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
->
-> tee_shm_release() is not invoked on dma shm buffer.
->
-> Implement .shutdown() method to handle the release of the buffers
-> correctly.
->
-> More info:
-> https://github.com/OP-TEE/optee_os/issues/3637
->
-> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Add pinctrl configuration for enabling the Ethernet MAC on RoseapplePi
+SBC. Additionally, provide the necessary properties for the generic S500
+ethernet node in order to setup PHY and MDIO.
 
-Do we really need this considering the patch "optee: Refuse to load
-the driver under the kdump kernel"?
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+---
+ arch/arm/boot/dts/owl-s500-roseapplepi.dts | 45 ++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-Jens
+diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+index b8c5db2344aa..eb555f385283 100644
+--- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
++++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+@@ -225,6 +225,27 @@ bias1-pinconf {
+ 			bias-pull-down;
+ 		};
+ 	};
++
++	ethernet_pins: ethernet-pins {
++		eth_rmii-pinmux {
++			groups = "rmii_txd0_mfp", "rmii_txd1_mfp",
++				 "rmii_rxd0_mfp", "rmii_rxd1_mfp",
++				 "rmii_txen_mfp", "rmii_rxen_mfp",
++				 "rmii_crs_dv_mfp", "rmii_ref_clk_mfp";
++			function = "eth_rmii";
++		};
++
++		phy_clk-pinmux {
++			groups = "clko_25m_mfp";
++			function = "clko_25m";
++		};
++
++		ref_clk-pinconf {
++			groups = "rmii_ref_clk_drv";
++			drive-strength = <2>;
++		};
++
++	};
+ };
+ 
+ /* uSD */
+@@ -241,6 +262,30 @@ &mmc0 {
+ 	vqmmc-supply = <&sd_vcc>;
+ };
+ 
++&ethernet {
++	pinctrl-names = "default";
++	pinctrl-0 = <&ethernet_pins>;
++	phy-mode = "rmii";
++	phy-handle = <&eth_phy>;
++	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		reset-gpios = <&pinctrl 88 GPIO_ACTIVE_LOW>; /* GPIOC24 */
++		reset-delay-us = <10000>;
++		reset-post-delay-us = <150000>;
++
++		eth_phy: ethernet-phy@3 {
++			reg = <0x3>;
++			max-speed = <100>;
++			interrupt-parent = <&sirq>;
++			interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
++		};
++	};
++};
++
+ &twd_timer {
+ 	status = "okay";
+ };
+-- 
+2.32.0
+
