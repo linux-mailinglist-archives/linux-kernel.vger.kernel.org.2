@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13F13A3917
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7E93A391C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhFKBDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 21:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhFKBDU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 21:03:20 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C618C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 18:01:09 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id g20so1993947ejt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 18:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yq2QYhJB6hm03YYKhLG5zisJwTxSTIgBD+SOci+75gw=;
-        b=XcaUm4oXdmCyJQ0NCKOjk+gpaK7K8hMKw1YsbfspadmxLJOxuvm8auwGOrtnxY5Gw4
-         StRX+EdgdjqP5fGUkvIYIA1JluE8wywjs5zexf7/gT8oyUYR85NAkBpx9/PUncGh/uPn
-         POQbzgZMEBSx1xh2wJ9OAMFb0nZ8j2dB6CxaXSksiByKxYhcIU65iR20JHzsl1wSgY45
-         ujElFYk9FgN3EflZRCwCqdfsqchwD75p81M6LT/WjSTAYvzxQZq3VBhTQvzkEzbiW+kK
-         xDtJpejPwPcs3FZwJekIKfVYkuiVkGfYUnIZAr7S2fQB94EElni33RndQcGQaxvAhkxL
-         7Pww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yq2QYhJB6hm03YYKhLG5zisJwTxSTIgBD+SOci+75gw=;
-        b=tdP4x11YoaJPKF9+wp+sxgyRrkROaOsPUPAjkTrHiIBaw8FEGZT9yiBz52B3q7P/Z+
-         wFCIpjXBEwTGB6p1Z8JrJB0n1npsZwZH3e2sCaCd9NlSFp8oVSZz8NcPVU64x59cmMcz
-         ZVcMRGJyNqGlr+/eCl9SCgJkU0ZNGKGGBbjVCnzRzkHWn7Qo4vI5clRjH/9wvWiSdlRe
-         jQYjTNQQDegjj3xThyH4MoUB83npK1EqTuyeP/uccLjZFHcK5XiYI5aSNFpnRIBfJ+Bl
-         XLBXeLdcAhkf1E0SSHgtSVhH41Qwf+uS+6DXWPXGXVhlAPD1dkcmQ8Pa45+cR1nZlz4k
-         KTMA==
-X-Gm-Message-State: AOAM530ecK797eNzNStAJ0kSWjygPd1PEdWK8JZxIkJIiRNCIJgh6It3
-        S1OtYakTVFEy8FkeWXK6MtJz6MKlJ3NhVrjAMX87
-X-Google-Smtp-Source: ABdhPJwua3KX651p54f7ICbzNSUiTJF180YdKbL/H2ldeYiSZ590yYnziu0L1wLG6QFLeKprc9tpuUmeuIc3FLAE+6o=
-X-Received: by 2002:a17:907:3d8e:: with SMTP id he14mr1094680ejc.178.1623373267854;
- Thu, 10 Jun 2021 18:01:07 -0700 (PDT)
+        id S230523AbhFKBGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 21:06:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230265AbhFKBG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 21:06:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF5F7611AE;
+        Fri, 11 Jun 2021 01:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623373472;
+        bh=gvXZrOaoBVCb3A6htviFepycoH2/6DLnx96h66dUUhQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=DvjXuP2mzi4GEV751dGARU1SUGuQ32pCU6gmYl5lZQj0N7yahe6flqYpZoXChqg3x
+         W+rtfgRvVIgpsdQTbSAQXumCCbL+PXMcpAKVgURbbpPZhz0uLtWPkhREkuWW5SHKGY
+         9wssS5Hhan5MU62rudxZ/EmWd4BLz82QQitCNOaGgnK5YtsFdfm3oou91kd/zOugL7
+         q7G+0XPovMy/mzTUmraYJwb5LwEgg/6vIFBKZSyBvu0MIiP0nqlRdFJTEJKRjQLDSO
+         er+eElVcoU562fojQbLEOQAxcmqkXkLf2RHL8JnLiU44+9FXSU+yHOuDXKeNYRQRU2
+         WCQiP/EUtarZQ==
+Subject: Re: [patch V3 3/6] x86/process: Check PF_KTHREAD and not current->mm
+ for kernel threads
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     the arch/x86 maintainers <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Rik van Riel <riel@surriel.com>, Borislav Petkov <bp@suse.de>
+References: <20210608143617.565868844@linutronix.de>
+ <20210608144345.912645927@linutronix.de>
+ <ca2d7f44-bbef-448a-bbd4-ff27cc6f0c9e@www.fastmail.com>
+ <87fsxpxwxr.ffs@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <40f51c91-23a0-2393-285f-c84a3a2e09ae@kernel.org>
+Date:   Thu, 10 Jun 2021 18:04:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210609022701.13768-1-thunder.leizhen@huawei.com> <20210609022701.13768-2-thunder.leizhen@huawei.com>
-In-Reply-To: <20210609022701.13768-2-thunder.leizhen@huawei.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 10 Jun 2021 21:00:57 -0400
-Message-ID: <CAHC9VhSsJnSanER8XCXkatcyn5_KLkrFDvTRtctL=yvCiMcWCw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] audit: remove trailing spaces and tabs
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Richard Guy Briggs <rgb@redhat.com>,
-        Eric Paris <eparis@redhat.com>,
-        linux-audit <linux-audit@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87fsxpxwxr.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 10:27 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->
-> Run the following command to find and remove the trailing spaces and tabs:
->
-> sed -r -i 's/[ \t]+$//' <audit_files>
->
-> The files to be checked are as follows:
-> kernel/audit*
-> include/linux/audit.h
-> include/uapi/linux/audit.h
->
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  include/uapi/linux/audit.h | 4 ++--
->  kernel/audit.h             | 2 +-
->  kernel/auditsc.c           | 8 ++++----
->  3 files changed, 7 insertions(+), 7 deletions(-)
+On 6/10/21 1:54 PM, Thomas Gleixner wrote:
+> On Thu, Jun 10 2021 at 10:10, Andy Lutomirski wrote:
+> 
+>> On Tue, Jun 8, 2021, at 7:36 AM, Thomas Gleixner wrote:
+>>> switch_fpu_finish() checks current->mm as indicator for kernel threads.
+>>> That's wrong because kernel threads can temporarily use a mm of a user
+>>> process via kthread_use_mm().
+>>>
+>>> Check the task flags for PF_KTHREAD instead.
+>>>
+>>> Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
+>>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>>> Cc: Rik van Riel <riel@surriel.com>
+>>> Cc: stable@vger.kernel.org
+>>> ---
+>>>  arch/x86/include/asm/fpu/internal.h |    2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> --- a/arch/x86/include/asm/fpu/internal.h
+>>> +++ b/arch/x86/include/asm/fpu/internal.h
+>>> @@ -578,7 +578,7 @@ static inline void switch_fpu_finish(str
+>>>  	 * PKRU state is switched eagerly because it needs to be valid before we
+>>>  	 * return to userland e.g. for a copy_to_user() operation.
+>>>  	 */
+>>> -	if (current->mm) {
+>>> +	if (!(current->flags & PF_KTHREAD)) {
+>>>  		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
+>>>  		if (pk)
+>>>  			pkru_val = pk->pkru;
+>>>
+>>>
+>> Why are we checking this at all?  I actually tend to agree with the
+>> ->mm check more than PF_anything. If we have a user address space,
+>> then PKRU matters. If we don’t, then it doesn’t.
+> 
+> Which PKRU matters? A kernel thread has always the default PKRU no
+> matter whether it uses a mm or not. It _cannot_ borrow the PKRU from the
+> mm owning process. There is no way, so let's not pretend there would be.
+> 
 
-Merged into audit/next.
+Hmm.  I guess PK_KTHREAD is consistent with switch_fpu_prepare() --
+kernel threads have no FPU state.
 
--- 
-paul moore
-www.paul-moore.com
+It might be worth a loud comment here that kernel threads' PKRU is not
+context switched and that, if anyone wants kthread_use_mm() users to use
+anything other than the default PKRU, that they will need to change this.
+
+So I guess your patch is okay.
+
+--Andy
