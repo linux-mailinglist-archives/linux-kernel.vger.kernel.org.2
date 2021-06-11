@@ -2,214 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6C53A3FFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986FB3A3FFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhFKKSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFKKR7 (ORCPT
+        id S231740AbhFKKSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:18:20 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48860 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230291AbhFKKSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:17:59 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E81C0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:15:48 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id bn21so8951700ljb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qJRKaZVKstBGi14rsD3xnJoHVkNTBUgaIvsdhGjTUkQ=;
-        b=R7eqk7XoKWPcFHwfnzjl+0y+FPcN/hfItbs3sUWdLmGxH+xU6NsveStYYnW1GAU4A9
-         nIAYIEuAWVgODuCrqurH1eiG1pZxautE/8Bi3xK0PgXikM2tIk17i3lssZA456lymIqR
-         DqHIFBnzwUCgTSxKOTTzpzPttClq8p1/b5ZANCX8Uy0VdxaNrAc1X7cGku/XTQHF97mX
-         V5Oo+wVS8Yytyq7ltd2PizVcxvdK8FrMPoI7dRD5SZc0PUof5ea/J+lWsN9bwDLHprFl
-         PQq86zFOs1m5u66I2oJjPaW1qcvgaUAWn7lp7qhASnkFlwj/7e2RGlU0eW34HuMGkwH4
-         xIXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qJRKaZVKstBGi14rsD3xnJoHVkNTBUgaIvsdhGjTUkQ=;
-        b=M2IvO2GVy97d1rQTqrrtzLwUqT5wmtJz/E/QEXjuY8TLcnnMvxGs/0WRgwi6q7VI+p
-         nIONXsly1nhIyOypLNIbK6OnquAaDT8ncAyB0UTxZj33apiWddlkpEH7+rRigCSZLuQF
-         Jc9sY2uKZM1WYswizJz82CUOC8ehKJWxuk3VR0qiJHewHASVFMBhRvClKdbpbIwZ0g68
-         j3WRLxwUG8vzQmDA8AV44hD2BqMaWx5niWiNws95UZb8Bi3QoseXac3gRNQX7rO1Dz8Y
-         czJfR8x7nV2ArTuRkgbTTrHoKZOYdNgbtMi3XGtFf1w9VeUmWymG0NLi7vzJ7yDdGqH3
-         /SPQ==
-X-Gm-Message-State: AOAM533qDg52pb3ryJ/jm2//CftCTxE8kb+wnnufGNWhAXUX3bLvFpSS
-        HoIMfyHirgisix7nJ/bGVOCYhg==
-X-Google-Smtp-Source: ABdhPJyPI6eHIGWM/a6FUVek7uOgfRRP5gnrGSgPuc2LYtSyfo+dEAyhCh4um9+3KGyoe3pWGQjMoQ==
-X-Received: by 2002:a2e:8689:: with SMTP id l9mr2544261lji.184.1623406546080;
-        Fri, 11 Jun 2021 03:15:46 -0700 (PDT)
-Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id b28sm552097lfp.197.2021.06.11.03.15.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 03:15:45 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-Date:   Fri, 11 Jun 2021 13:15:40 +0300
-Message-Id: <20210611101540.3379937-3-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 11 Jun 2021 06:18:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uc2UO4S_1623406576;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Uc2UO4S_1623406576)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 11 Jun 2021 18:16:18 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     paul@paul-moore.com
+Cc:     stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next v2] selinux: Fix kernel-doc
+Date:   Fri, 11 Jun 2021 18:16:07 +0800
+Message-Id: <1623406567-51427-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of nested genpds it is easy to get the following warning from
-lockdep, because all genpd's mutexes share same locking class. Use the
-per-genpd locking class to stop lockdep from warning about possible
-deadlocks. It is not possible to directly use genpd nested locking, as
-it is not the genpd code calling genpd. There are interim calls to
-regulator core.
+Fix function name and add comment for parameter state in ss/services.c 
+kernel-doc to remove some warnings found by running make W=1 LLVM=1.
 
-[    3.030219] ============================================
-[    3.030220] WARNING: possible recursive locking detected
-[    3.030221] 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480 Not tainted
-[    3.030222] --------------------------------------------
-[    3.030223] kworker/u16:0/7 is trying to acquire lock:
-[    3.030224] ffffde0eabd29aa0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-[    3.030236]
-[    3.030236] but task is already holding lock:
-[    3.030236] ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-[    3.030240]
-[    3.030240] other info that might help us debug this:
-[    3.030240]  Possible unsafe locking scenario:
-[    3.030240]
-[    3.030241]        CPU0
-[    3.030241]        ----
-[    3.030242]   lock(&genpd->mlock);
-[    3.030243]   lock(&genpd->mlock);
-[    3.030244]
-[    3.030244]  *** DEADLOCK ***
-[    3.030244]
-[    3.030244]  May be due to missing lock nesting notation
-[    3.030244]
-[    3.030245] 6 locks held by kworker/u16:0/7:
-[    3.030246]  #0: ffff6cca00010938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
-[    3.030252]  #1: ffff8000100c3db0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
-[    3.030255]  #2: ffff6cca00ce3188 (&dev->mutex){....}-{3:3}, at: __device_attach+0x3c/0x184
-[    3.030260]  #3: ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-[    3.030264]  #4: ffff8000100c3968 (regulator_ww_class_acquire){+.+.}-{0:0}, at: regulator_lock_dependent+0x6c/0x1b0
-[    3.030270]  #5: ffff6cca00a59158 (regulator_ww_class_mutex){+.+.}-{3:3}, at: regulator_lock_recursive+0x94/0x1d0
-[    3.030273]
-[    3.030273] stack backtrace:
-[    3.030275] CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480
-[    3.030276] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
-[    3.030278] Workqueue: events_unbound deferred_probe_work_func
-[    3.030280] Call trace:
-[    3.030281]  dump_backtrace+0x0/0x1a0
-[    3.030284]  show_stack+0x18/0x24
-[    3.030286]  dump_stack+0x108/0x188
-[    3.030289]  __lock_acquire+0xa20/0x1e0c
-[    3.030292]  lock_acquire.part.0+0xc8/0x320
-[    3.030294]  lock_acquire+0x68/0x84
-[    3.030296]  __mutex_lock+0xa0/0x4f0
-[    3.030299]  mutex_lock_nested+0x40/0x50
-[    3.030301]  genpd_lock_mtx+0x18/0x2c
-[    3.030303]  dev_pm_genpd_set_performance_state+0x94/0x1a0
-[    3.030305]  reg_domain_enable+0x28/0x4c
-[    3.030308]  _regulator_do_enable+0x420/0x6b0
-[    3.030310]  _regulator_enable+0x178/0x1f0
-[    3.030312]  regulator_enable+0x3c/0x80
-[    3.030314]  gdsc_toggle_logic+0x30/0x124
-[    3.030317]  gdsc_enable+0x60/0x290
-[    3.030318]  _genpd_power_on+0xc0/0x134
-[    3.030320]  genpd_power_on.part.0+0xa4/0x1f0
-[    3.030322]  __genpd_dev_pm_attach+0xf4/0x1b0
-[    3.030324]  genpd_dev_pm_attach+0x60/0x70
-[    3.030326]  dev_pm_domain_attach+0x54/0x5c
-[    3.030329]  platform_probe+0x50/0xe0
-[    3.030330]  really_probe+0xe4/0x510
-[    3.030332]  driver_probe_device+0x64/0xcc
-[    3.030333]  __device_attach_driver+0xb8/0x114
-[    3.030334]  bus_for_each_drv+0x78/0xd0
-[    3.030337]  __device_attach+0xdc/0x184
-[    3.030338]  device_initial_probe+0x14/0x20
-[    3.030339]  bus_probe_device+0x9c/0xa4
-[    3.030340]  deferred_probe_work_func+0x88/0xc4
-[    3.030342]  process_one_work+0x298/0x730
-[    3.030343]  worker_thread+0x74/0x470
-[    3.030344]  kthread+0x168/0x170
-[    3.030346]  ret_from_fork+0x10/0x34
-
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- drivers/base/power/domain.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 74219d032910..bdf439b48763 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -1899,20 +1899,33 @@ static int genpd_set_default_power_state(struct generic_pm_domain *genpd)
- 	return 0;
- }
+Change in v2
+--Add comment for parameter state
+
+ security/selinux/ss/services.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+index 3658488..d84c77f 100644
+--- a/security/selinux/ss/services.c
++++ b/security/selinux/ss/services.c
+@@ -859,6 +859,7 @@ int security_validate_transition(struct selinux_state *state,
+  * It returns 0, if @newsid is bounded by @oldsid.
+  * Otherwise, it returns error code.
+  *
++ * @state: SELinux state
+  * @oldsid : current security identifier
+  * @newsid : destinated security identifier
+  */
+@@ -1098,6 +1099,7 @@ void security_compute_xperms_decision(struct selinux_state *state,
  
--static void genpd_lock_init(struct generic_pm_domain *genpd)
-+static int genpd_lock_init(struct generic_pm_domain *genpd)
- {
- 	if (genpd->flags & GENPD_FLAG_IRQ_SAFE) {
- 		spin_lock_init(&genpd->slock);
- 		genpd->lock_ops = &genpd_spin_ops;
- 	} else {
--		mutex_init(&genpd->mlock);
-+		/* Some genpds are static, some are dynamically allocated. To
-+		 * make lockdep happy always allocate the key dynamically and
-+		 * register it. */
-+		genpd->mlock_key = kzalloc(sizeof(genpd->mlock_key), GFP_KERNEL);
-+		if (!genpd->mlock_key)
-+			return -ENOMEM;
-+
-+		lockdep_register_key(genpd->mlock_key);
-+
-+		__mutex_init(&genpd->mlock, genpd->name, genpd->mlock_key);
- 		genpd->lock_ops = &genpd_mtx_ops;
- 	}
-+
-+	return 0;
- }
+ /**
+  * security_compute_av - Compute access vector decisions.
++ * @state: SELinux state
+  * @ssid: source security identifier
+  * @tsid: target security identifier
+  * @tclass: target security class
+@@ -1386,6 +1388,7 @@ static int security_sid_to_context_core(struct selinux_state *state,
  
- static void genpd_lock_destroy(struct generic_pm_domain *genpd) {
--	if (!(genpd->flags & GENPD_FLAG_IRQ_SAFE))
-+	if (!(genpd->flags & GENPD_FLAG_IRQ_SAFE)) {
- 		mutex_destroy(&genpd->mlock);
-+		kfree(genpd->mlock_key);
-+	}
+ /**
+  * security_sid_to_context - Obtain a context for a given SID.
++ * @state: SELinux state
+  * @sid: security identifier, SID
+  * @scontext: security context
+  * @scontext_len: length in bytes
+@@ -1411,6 +1414,7 @@ int security_sid_to_context_force(struct selinux_state *state, u32 sid,
+ /**
+  * security_sid_to_context_inval - Obtain a context for a given SID if it
+  *                                 is invalid.
++ * @state: SELinux state
+  * @sid: security identifier, SID
+  * @scontext: security context
+  * @scontext_len: length in bytes
+@@ -1587,6 +1591,7 @@ static int security_context_to_sid_core(struct selinux_state *state,
+ 
+ /**
+  * security_context_to_sid - Obtain a SID for a given security context.
++ * @state: SELinux state
+  * @scontext: security context
+  * @scontext_len: length in bytes
+  * @sid: security identifier, SID
+@@ -1616,6 +1621,7 @@ int security_context_str_to_sid(struct selinux_state *state,
+  * security_context_to_sid_default - Obtain a SID for a given security context,
+  * falling back to specified default if needed.
+  *
++ * @state: SELinux state
+  * @scontext: security context
+  * @scontext_len: length in bytes
+  * @sid: security identifier, SID
+@@ -1907,6 +1913,7 @@ static int security_compute_sid(struct selinux_state *state,
+ 
+ /**
+  * security_transition_sid - Compute the SID for a new subject/object.
++ * @state: SELinux state
+  * @ssid: source security identifier
+  * @tsid: target security identifier
+  * @tclass: target security class
+@@ -1962,6 +1969,7 @@ int security_member_sid(struct selinux_state *state,
+ 
+ /**
+  * security_change_sid - Compute the SID for object relabeling.
++ * @state: SELinux state
+  * @ssid: source security identifier
+  * @tsid: target security identifier
+  * @tclass: target security class
+@@ -2260,6 +2268,7 @@ void selinux_policy_commit(struct selinux_state *state,
+ 
+ /**
+  * security_load_policy - Load a security policy configuration.
++ * @state: SELinux state
+  * @data: binary policy data
+  * @len: length of data in bytes
+  *
+@@ -2367,6 +2376,7 @@ int security_load_policy(struct selinux_state *state, void *data, size_t len,
+ 
+ /**
+  * security_port_sid - Obtain the SID for a port.
++ * @state: SELinux state
+  * @protocol: protocol number
+  * @port: port number
+  * @out_sid: security identifier
+@@ -2423,7 +2433,8 @@ int security_port_sid(struct selinux_state *state,
  }
  
  /**
-@@ -1935,7 +1948,10 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
- 	INIT_LIST_HEAD(&genpd->child_links);
- 	INIT_LIST_HEAD(&genpd->dev_list);
- 	RAW_INIT_NOTIFIER_HEAD(&genpd->power_notifiers);
--	genpd_lock_init(genpd);
-+	ret = genpd_lock_init(genpd);
-+	if (ret)
-+		return ret;
-+
- 	genpd->gov = gov;
- 	INIT_WORK(&genpd->power_off_work, genpd_power_off_work_fn);
- 	atomic_set(&genpd->sd_count, 0);
-@@ -2040,7 +2056,6 @@ static int genpd_remove(struct generic_pm_domain *genpd)
- 		free_cpumask_var(genpd->cpus);
- 	if (genpd->free_states)
- 		genpd->free_states(genpd->states, genpd->state_count);
--	genpd_lock_destroy(genpd);
+- * security_pkey_sid - Obtain the SID for a pkey.
++ * security_ib_pkey_sid - Obtain the SID for a pkey.
++ * @state: SELinux state
+  * @subnet_prefix: Subnet Prefix
+  * @pkey_num: pkey number
+  * @out_sid: security identifier
+@@ -2482,6 +2493,7 @@ int security_ib_pkey_sid(struct selinux_state *state,
  
- 	pr_debug("%s: removed %s\n", __func__, genpd->name);
+ /**
+  * security_ib_endport_sid - Obtain the SID for a subnet management interface.
++ * @state: SELinux state
+  * @dev_name: device name
+  * @port: port number
+  * @out_sid: security identifier
+@@ -2540,6 +2552,7 @@ int security_ib_endport_sid(struct selinux_state *state,
  
+ /**
+  * security_netif_sid - Obtain the SID for a network interface.
++ * @state: SELinux state
+  * @name: interface name
+  * @if_sid: interface SID
+  */
+@@ -2614,6 +2627,7 @@ static int match_ipv6_addrmask(u32 *input, u32 *addr, u32 *mask)
+ 
+ /**
+  * security_node_sid - Obtain the SID for a node (host).
++ * @state: SELinux state
+  * @domain: communication domain aka address family
+  * @addrp: address
+  * @addrlen: address length in bytes
+@@ -2707,6 +2721,7 @@ int security_node_sid(struct selinux_state *state,
+ 
+ /**
+  * security_get_user_sids - Obtain reachable SIDs for a user.
++ * @state: SELinux state
+  * @fromsid: starting SID
+  * @username: username
+  * @sids: array of reachable SIDs for user
+@@ -2899,6 +2914,7 @@ static inline int __security_genfs_sid(struct selinux_policy *policy,
+ 
+ /**
+  * security_genfs_sid - Obtain a SID for a file in a filesystem
++ * @state: SELinux state
+  * @fstype: filesystem type
+  * @path: path from root of mount
+  * @sclass: file security class
+@@ -2943,6 +2959,7 @@ int selinux_policy_genfs_sid(struct selinux_policy *policy,
+ 
+ /**
+  * security_fs_use - Determine how to handle labeling for a filesystem.
++ * @state: SELinux state
+  * @sb: superblock in question
+  */
+ int security_fs_use(struct selinux_state *state, struct super_block *sb)
+@@ -3282,6 +3299,7 @@ int security_sid_mls_copy(struct selinux_state *state,
+ 
+ /**
+  * security_net_peersid_resolve - Compare and resolve two network peer SIDs
++ * @state: SELinux state
+  * @nlbl_sid: NetLabel SID
+  * @nlbl_type: NetLabel labeling protocol type
+  * @xfrm_sid: XFRM SID
+@@ -3506,6 +3524,7 @@ int security_get_allow_unknown(struct selinux_state *state)
+ 
+ /**
+  * security_policycap_supported - Check for a specific policy capability
++ * @state: SELinux state
+  * @req_cap: capability
+  *
+  * Description:
+@@ -3840,6 +3859,7 @@ static void security_netlbl_cache_add(struct netlbl_lsm_secattr *secattr,
+ 
+ /**
+  * security_netlbl_secattr_to_sid - Convert a NetLabel secattr to a SELinux SID
++ * @state: SELinux state
+  * @secattr: the NetLabel packet security attributes
+  * @sid: the SELinux SID
+  *
+@@ -3922,6 +3942,7 @@ int security_netlbl_secattr_to_sid(struct selinux_state *state,
+ 
+ /**
+  * security_netlbl_sid_to_secattr - Convert a SELinux SID to a NetLabel secattr
++ * @state: SELinux state
+  * @sid: the SELinux SID
+  * @secattr: the NetLabel packet security attributes
+  *
 -- 
-2.30.2
+1.8.3.1
 
