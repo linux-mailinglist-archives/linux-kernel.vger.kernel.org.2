@@ -2,117 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7E93A3DAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EC93A3DC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhFKIDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:03:20 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5387 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhFKIDB (ORCPT
+        id S230212AbhFKINq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:13:46 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:42617 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKINp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:03:01 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G1Y8d39rkz6wbZ;
-        Fri, 11 Jun 2021 15:57:05 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 16:00:59 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 16:00:58 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <mchehab@kernel.org>, <sakari.ailus@linux.intel.com>,
-        <gregkh@linuxfoundation.org>, <andriy.shevchenko@linux.intel.com>,
-        <kaixuxia@tencent.com>, <gustavoars@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-staging@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, "Hulk Robot" <hulkci@huawei.com>
-Subject: [PATCH -next v3] media: staging: atomisp: use list_splice_init in atomisp_compat_css20.c
-Date:   Fri, 11 Jun 2021 16:10:04 +0800
-Message-ID: <20210611081004.1348026-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 11 Jun 2021 04:13:45 -0400
+Received: by mail-pg1-f173.google.com with SMTP id i34so1817339pgl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:11:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oB6+mhaZq1/S8zvcB9kBZ21qORgpvon6mGB7EKZH3nI=;
+        b=c1gimOBP+ScWyp4SxGsA/TqWIYR9V4xIOyTge6SNhG6OFiClnQO6XgQvsKoQGD+87A
+         Kq+5rMTlG3iyvwbvVUXEJBpJdGKNwc4GJnHFkm28uSbNte5j+2UzraUYLDRxIV8bUcwn
+         uSrwJKAzf/m256pn4d04Q1/WAPT+IuQCG7nLhiWvUIzBpzefeNrYqvVMpfqk4nHUqKuL
+         RdDjxLnfhtYiwY5JwJ7NA1haEO5LYhsASGUAQRiiIHnN1NaJ7oZaxScLuhAzGYGxUNuE
+         MDVM1VDxxZeN3KdYtHDZcpbK7LRUl/KDuYQgVBxvz4BCsRBxXkORjNVP0cwMDrqLHdyn
+         6QQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oB6+mhaZq1/S8zvcB9kBZ21qORgpvon6mGB7EKZH3nI=;
+        b=hkLHiLavghPmUptvwNZUlJtlJvRiAryF0iTdIUrmMj5R8WGQ/UlSjBlqSR2On4Vyg1
+         7gTS/h0ahxaVEefmEAhE5GkLPHJ4zu/dWo+5xsA16px+tgMTq4t5LpXfqBTERoqbCXiv
+         y1D+aNanyfYY1wnvXyYq6GESJn2l+MAH9rXh0171kKzr1GgiJgd19BuuO1AA5efVtfDA
+         sXctBh39Kwb+GU50HQa98E0Zjk7fZMJZYzSBSAupndYfCH9HmUXRT16mgMX/hDP4Kx0+
+         B9hVQftnmnDcEcqaQu3wmkL41PFJB14XZmNxba5aZI/4UN5QqbEQymxQtnWLWUMhueFi
+         lnKA==
+X-Gm-Message-State: AOAM531KLJlm2Fxjcre938YNaii2Ojat8eWc341YE/kIA+KAGyA/OUOv
+        RbK5hsbetLWvgAmD5Ao+EIvKuC4StGk50IdBwdI=
+X-Google-Smtp-Source: ABdhPJxHPElraPZkxHHX9IaCR+0D2pBnlkdkVWY5S1pg1ayQcF+Lq4QXp0Ihg5gMOYbY7xd4+klO6qIXRcRzLHpmi1A=
+X-Received: by 2002:a62:e404:0:b029:2ee:f086:726f with SMTP id
+ r4-20020a62e4040000b02902eef086726fmr7074250pfh.7.1623399047338; Fri, 11 Jun
+ 2021 01:10:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+References: <20210611071241.16728-1-thunder.leizhen@huawei.com> <CAHp75Vdpgpa=TDt5RgG2Eq_+iLZrRSj9XqB97y01SxhdKUYYgg@mail.gmail.com>
+In-Reply-To: <CAHp75Vdpgpa=TDt5RgG2Eq_+iLZrRSj9XqB97y01SxhdKUYYgg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 11 Jun 2021 11:10:31 +0300
+Message-ID: <CAHp75VdJJdPTnUMVqjwMv+73nQf_-0nosS5su-GiDFRAVCbMyw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] scripts/spelling.txt: add some spelling pairs and reorder
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
+        Stefani Seibold <stefani@seibold.net>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jens Axboe <axboe@kernel.dk>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_splice_init() instead of entire while-loops
-in atomisp_compat_css20.c.
+On Fri, Jun 11, 2021 at 11:02 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Fri, Jun 11, 2021 at 10:19 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> >
+> > Add spelling_sanitizer.sh and use it to reorder, then add some spelling
+> > "mistake||correction" pairs.
+>
+> The sorting idea is good, but the order is not.
+> What you really need is to use language corpus [1] instead. So in such
+> case you will eliminate false positives (to some extent).
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	CC mailist
-V2->V3:
-        Using list_move_tail() -> Using list_splice_init()
+Perhaps I need to elaborate what I meant. The (important) feature of
+the corpus is sorting by frequency of the word usage. That's what
+would be the best. Unfortunately I don't know if codespell uses linear
+search or hash based (i.o.w. does it convert the input file to the
+Python list() or set() object?).
 
- .../media/atomisp/pci/atomisp_compat_css20.c  | 35 +++----------------
- 1 file changed, 5 insertions(+), 30 deletions(-)
+> [1]: https://en.wikipedia.org/wiki/Corpus_of_Contemporary_American_English
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-index f60198bb8a1a..3844180d32b5 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-@@ -2144,42 +2144,17 @@ void atomisp_css_stop(struct atomisp_sub_device *asd,
- 	}
- 
- 	/* move stats buffers to free queue list */
--	while (!list_empty(&asd->s3a_stats_in_css)) {
--		s3a_buf = list_entry(asd->s3a_stats_in_css.next,
--				     struct atomisp_s3a_buf, list);
--		list_del(&s3a_buf->list);
--		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
--	}
--	while (!list_empty(&asd->s3a_stats_ready)) {
--		s3a_buf = list_entry(asd->s3a_stats_ready.next,
--				     struct atomisp_s3a_buf, list);
--		list_del(&s3a_buf->list);
--		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
--	}
-+	list_splice_init(&asd->s3a_stats_in_css, &asd->s3a_stats);
-+	list_splice_init(&asd->s3a_stats_ready, &asd->s3a_stats);
- 
- 	spin_lock_irqsave(&asd->dis_stats_lock, irqflags);
--	while (!list_empty(&asd->dis_stats_in_css)) {
--		dis_buf = list_entry(asd->dis_stats_in_css.next,
--				     struct atomisp_dis_buf, list);
--		list_del(&dis_buf->list);
--		list_add_tail(&dis_buf->list, &asd->dis_stats);
--	}
-+	list_splice_init(&asd->dis_stats_in_css, &asd->dis_stats);
- 	asd->params.dis_proj_data_valid = false;
- 	spin_unlock_irqrestore(&asd->dis_stats_lock, irqflags);
- 
- 	for (i = 0; i < ATOMISP_METADATA_TYPE_NUM; i++) {
--		while (!list_empty(&asd->metadata_in_css[i])) {
--			md_buf = list_entry(asd->metadata_in_css[i].next,
--					    struct atomisp_metadata_buf, list);
--			list_del(&md_buf->list);
--			list_add_tail(&md_buf->list, &asd->metadata[i]);
--		}
--		while (!list_empty(&asd->metadata_ready[i])) {
--			md_buf = list_entry(asd->metadata_ready[i].next,
--					    struct atomisp_metadata_buf, list);
--			list_del(&md_buf->list);
--			list_add_tail(&md_buf->list, &asd->metadata[i]);
--		}
-+		list_splice_init(&asd->metadata_in_css[i], &asd->asd->metadata[i]);
-+		list_splice_init(&asd->metadata_ready[i], &asd->asd->metadata[i]);
- 	}
- 
- 	atomisp_flush_params_queue(&asd->video_out_capture);
+
 -- 
-2.31.1
-
+With Best Regards,
+Andy Shevchenko
