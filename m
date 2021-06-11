@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637BD3A3F57
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9863A3F5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhFKJr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:47:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43336 "EHLO mail.kernel.org"
+        id S231599AbhFKJrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:47:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230212AbhFKJrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45A46613D3;
-        Fri, 11 Jun 2021 09:45:27 +0000 (UTC)
+        id S230212AbhFKJrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:47:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48F63613CF;
+        Fri, 11 Jun 2021 09:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623404727;
-        bh=+58FlxSrjNojUJXBKRVBDazHQJJ8tkA6vWSAkIwcd+s=;
+        s=korg; t=1623404756;
+        bh=bV0c25psnxZ45TnMzhSLmCCDxKUGPIDab/Wtf/aPOA8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hLyYOTOheO5lf8OtiFV90jO3wpeQEvpDE3vuvR0va6d/LKx0chFa1dGfXqPLfq2Js
-         Lh6vck+iN21vMAmPNL0fvNtrwzTHj+mMt1BQTQ2kO34Yus2t1jFtDhkqfyTFlhrFEj
-         eHYzTpP+bq64eulPursb3H500xmujvoDZ+o12Dz8=
-Date:   Fri, 11 Jun 2021 11:45:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: Re: [PATCH 4/9] nvmem: sprd: Fix an error message
-Message-ID: <YMMwteJ5XvDST+zH@kroah.com>
-References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
- <20210611083348.20170-5-srinivas.kandagatla@linaro.org>
- <YMMlRq250A53CDaM@kroah.com>
- <a34f8a9d-c9e7-5c2d-521f-13677cfd7ccb@linaro.org>
- <YMMqPlknDF+k466x@kroah.com>
+        b=T35Yiby6dC7HtrS5nqPDscgVBRcBQPI6e3nQdSeCzBYNh9jAqsim5d5b7+3hfrX52
+         tV3sB878jEk3lILhvl4JHW8zzPQ4Ex1GjWcYlqs4jnnHE+zo+rFuTTzMaieUMzRd/w
+         C4ydotcwcSIXqg1XJ/5NCe5yR85xNTEyBxMgRUys=
+Date:   Fri, 11 Jun 2021 11:45:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCHv4 5/6] misc: nxp-ezport: introduce EzPort support
+Message-ID: <YMMw0Xh+c/IRZ98R@kroah.com>
+References: <20210609151235.48964-1-sebastian.reichel@collabora.com>
+ <20210609151235.48964-6-sebastian.reichel@collabora.com>
+ <YMMnd3bBgT8QcuQu@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMMqPlknDF+k466x@kroah.com>
+In-Reply-To: <YMMnd3bBgT8QcuQu@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 11:17:50AM +0200, Greg KH wrote:
-> On Fri, Jun 11, 2021 at 10:05:40AM +0100, Srinivas Kandagatla wrote:
+On Fri, Jun 11, 2021 at 11:05:59AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jun 09, 2021 at 05:12:34PM +0200, Sebastian Reichel wrote:
+> > Add new EzPort support code, which can be used to do
+> > firmware updates of Kinetis coprocessors. The driver
+> > is not usable on its own and thus not user selectable.
 > > 
-> > 
-> > On 11/06/2021 09:56, Greg KH wrote:
-> > > On Fri, Jun 11, 2021 at 09:33:43AM +0100, Srinivas Kandagatla wrote:
-> > > > From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > > 
-> > > > 'ret' is known to be 0 here.
-> > > > The expected error status is stored in 'status', so use it instead.
-> > > > 
-> > > > Also change %d in %u, because status is an u32, not a int.
-> > > > 
-> > > > Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
-> > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > > Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > > ---
-> > > >   drivers/nvmem/sprd-efuse.c | 2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
-> > > > index 5d394559edf2..e3e721d4c205 100644
-> > > > --- a/drivers/nvmem/sprd-efuse.c
-> > > > +++ b/drivers/nvmem/sprd-efuse.c
-> > > > @@ -234,7 +234,7 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
-> > > >   	status = readl(efuse->base + SPRD_EFUSE_ERR_FLAG);
-> > > >   	if (status) {
-> > > >   		dev_err(efuse->dev,
-> > > > -			"write error status %d of block %d\n", ret, blk);
-> > > > +			"write error status %u of block %d\n", status, blk);
-> > > 
-> > > Shouldn't this be %pe and not %u?
-> > 
-> > This is not error pointer its status value read back from a register.
-> > 
-> > I think %u should be good here.
+> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 > 
-> Argh, you are right, my fault.  For some reason I thought this worked
-> for integers as well.  Don't we have such a printk modifier somewhere to
-> turn error values into strings?  Let me dig...
+> 
+> Why is this a separate module if only 1 driver needs this?  Why not keep
+> it together until you have a second user?
+> 
+> And this module is not able to be unloaded ever?  Why not?
+> 
+> > +int ezport_flash(struct spi_device *spi, struct gpio_desc *reset, const char *fwname)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = ezport_start_programming(spi, reset);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = ezport_firmware_load(spi, fwname);
+> > +
+> > +	ezport_stop_programming(spi, reset);
+> > +
+> > +	if (ret)
+> > +		dev_err(&spi->dev, "Failed to flash firmware: %d\n", ret);
+> 
+> %pe perhaps instead of %d?
 
-Ah, errname() will do it.
-
-Looks like no one uses it, so nevermind, sorry for the noise.  I'll go
-apply this one now.
-
-thanks,
+Oops, nope, my fault, that's not a pointer.
 
 greg k-h
