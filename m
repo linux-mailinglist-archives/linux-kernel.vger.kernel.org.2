@@ -2,106 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA263A3C55
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384323A3C56
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhFKGzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhFKGzi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:55:38 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F17C061574;
-        Thu, 10 Jun 2021 23:53:41 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id g4so5183220pjk.0;
-        Thu, 10 Jun 2021 23:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=sklyKCkqcoBClcesbRPk+D2OM57H8Au21vymPqCxTpU=;
-        b=AH2/OLdVQvlbPqkJ3iD9lFMZN+QxGv4u7G7KOW18l494tp/TTBclaWaHJYXPz/JXyO
-         JdmvFCqRQon7SWFTh02oUrFIPPn6XXDWtZb7skgDgsXOA5APBkxZrIshGZKCS+YfJaJb
-         nJtOXEelb4ehtZYW635V8bQ1N1HB5zvM9S5u/UWBseYXltq7BTdFjIEVn6eT/WcwUJHE
-         Nm4EBWTsJqcowQrApCQhKLAt+zOVjQ0HCPLrBOApxo2XJ3x5P2GR9+S5OZl/kVTNz445
-         tqdF0aDnDd0pgQ45QTJAjIfelzgZhH+UZ8ZpWstHrQrBu4Oe+zaOGAYiqHSg1Or1kPtO
-         ojKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=sklyKCkqcoBClcesbRPk+D2OM57H8Au21vymPqCxTpU=;
-        b=NynXLrhpGIOzPscXxNVR+nhkz/nJDCmJep3zkNDJxcokBLCws0Y6UWsuZby7mDJ5zN
-         66OeU9NI/WDv2+0IU9P2Fsp7q7uAJU2iy3fiDePU7g+LZmhSVSHoszJWcTreQxOj9KYY
-         Lt4WguMbes5hieedZGawgiX4LWfoBM33YPkKlgiK0bpYnq/nUzZ1+tNYrRmg/p62Pg/3
-         3UB2AtqU+flWtlIlMyIPln/W0DzzBXUNxsf0njC+AdLwNxFo+Ils/P92yXi1/Y4OrjI+
-         aCdxsaTSxf0jQpyKhMtdCR5ZE9baQVyyVg6BpTTbJ5VgUFG67+7oJQG71j6Q+EKZ6rq3
-         RuoQ==
-X-Gm-Message-State: AOAM5300Y0nsRwBEuw0MY/B/xir2+X2JzHgZFRsUQwi8AE1L06sYCfid
-        2fKsOXnxyBFjxBaVKe7UZao=
-X-Google-Smtp-Source: ABdhPJz3O0QWQXkwaviwj76i6+j6t2lC+fPSgVjypMvB90Rdh9vqgL7jvGu/YhI0hAGbB2QU9CiXJw==
-X-Received: by 2002:a17:90a:1b6b:: with SMTP id q98mr7960516pjq.53.1623394421237;
-        Thu, 10 Jun 2021 23:53:41 -0700 (PDT)
-Received: from raspberrypi ([125.141.84.155])
-        by smtp.gmail.com with ESMTPSA id a13sm4332599pgm.3.2021.06.10.23.53.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 23:53:40 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 07:53:36 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     green.wan@sifive.com, vkoul@kernel.org
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        austindh.kim@gmail.com, austin.kim@lge.com
-Subject: [PATCH] dmaengine: sf-pdma: apply proper spinlock flags in
- sf_pdma_prep_dma_memcpy()
-Message-ID: <20210611065336.GA1121@raspberrypi>
+        id S231315AbhFKGzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:55:42 -0400
+Received: from verein.lst.de ([213.95.11.211]:35264 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229777AbhFKGzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:55:39 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0D2A168AFE; Fri, 11 Jun 2021 08:53:39 +0200 (CEST)
+Date:   Fri, 11 Jun 2021 08:53:38 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH 09/16] ps3disk: use memcpy_{from,to}_bvec
+Message-ID: <20210611065338.GA31210@lst.de>
+References: <20210608160603.1535935-1-hch@lst.de> <20210608160603.1535935-10-hch@lst.de> <20210609014822.GT3697498@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210609014822.GT3697498@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim <austin.kim@lge.com>
+On Tue, Jun 08, 2021 at 06:48:22PM -0700, Ira Weiny wrote:
+> I'm still not 100% sure that these flushes are needed but the are not no-ops on
+> every arch.  Would it be best to preserve them after the memcpy_to/from_bvec()?
+> 
+> Same thing in patch 11 and 14.
 
-The second parameter of spinlock_irq[save/restore] function is flags,
-which is the last input parameter of sf_pdma_prep_dma_memcpy().
+To me it seems kunmap_local should basically always call the equivalent
+of flush_kernel_dcache_page.  parisc does this through
+kunmap_flush_on_unmap, but none of the other architectures with VIVT
+caches or other coherency issues does.
 
-So declare local variable 'iflags' to be used as the second parameter of
-spinlock_irq[save/restore] function.
-
-Signed-off-by: Austin Kim <austin.kim@lge.com>
----
- drivers/dma/sf-pdma/sf-pdma.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
-index c4c4e8575764..f12606aeff87 100644
---- a/drivers/dma/sf-pdma/sf-pdma.c
-+++ b/drivers/dma/sf-pdma/sf-pdma.c
-@@ -94,6 +94,7 @@ sf_pdma_prep_dma_memcpy(struct dma_chan *dchan,	dma_addr_t dest, dma_addr_t src,
- {
- 	struct sf_pdma_chan *chan = to_sf_pdma_chan(dchan);
- 	struct sf_pdma_desc *desc;
-+	unsigned long iflags;
- 
- 	if (chan && (!len || !dest || !src)) {
- 		dev_err(chan->pdma->dma_dev.dev,
-@@ -109,10 +110,10 @@ sf_pdma_prep_dma_memcpy(struct dma_chan *dchan,	dma_addr_t dest, dma_addr_t src,
- 	desc->dirn = DMA_MEM_TO_MEM;
- 	desc->async_tx = vchan_tx_prep(&chan->vchan, &desc->vdesc, flags);
- 
--	spin_lock_irqsave(&chan->vchan.lock, flags);
-+	spin_lock_irqsave(&chan->vchan.lock, iflags);
- 	chan->desc = desc;
- 	sf_pdma_fill_desc(desc, dest, src, len);
--	spin_unlock_irqrestore(&chan->vchan.lock, flags);
-+	spin_unlock_irqrestore(&chan->vchan.lock, iflags);
- 
- 	return desc->async_tx;
- }
--- 
-2.20.1
-
+Does anyone have a history or other insights here?
