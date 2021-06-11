@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88A33A3D5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6301E3A3D61
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhFKHnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:43:09 -0400
-Received: from mail-pj1-f51.google.com ([209.85.216.51]:56087 "EHLO
-        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFKHnI (ORCPT
+        id S231574AbhFKHnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 03:43:46 -0400
+Received: from mail-vk1-f174.google.com ([209.85.221.174]:38460 "EHLO
+        mail-vk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhFKHno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:43:08 -0400
-Received: by mail-pj1-f51.google.com with SMTP id k7so5221313pjf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:41:11 -0700 (PDT)
+        Fri, 11 Jun 2021 03:43:44 -0400
+Received: by mail-vk1-f174.google.com with SMTP id 27so2339935vkl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:41:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ALGu6qp/vYdKI4RdFgdTsZIAua5DO5/Dcw3j60S5Kk4=;
-        b=weGxOLIxqUpNwnJXF9C4mxeuwdFZ84OTo4hkGlph9sIsK3lkNEOFvBXbNAVl/RTkIs
-         fbQIdycDt4CQXxKGCrtdZlm0v7PcQJH9d6lyA67WaYFqQItqsm/I+sbNOq9L76TO0mzN
-         x0yRjooPkpJRw6+vHonuaf/T/MDbmOk59Q1oNsQQ/PXGrNs323BsLvw1KT3JXtHINSUU
-         hErAgVeWGD/jt7rxalaW97fDsy1ssoWkhrIG96w9ayqV9CZub8Qtp6+5VXYwMXn20VBi
-         fiAS3CgvqRwkDbt5PgFyh9N8bUu8Y9e3R4+5BVTmly2JPw6F2jjcUOAGEj17Fqz79A0o
-         FYDQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BBdAwSczaNf+rHArQaHJIC7Mgb+GZNj+B0A18W96i2I=;
+        b=DDuRUkgGQ2gwm4MrE0GMH0YF2qaeIgqXCeXFS+9TFihSQOe6GGs8L2y7GNz4se7hbS
+         ZzVkLsktgUG+PQ58w0GtxC71EPdJvGoY/UL3Zbmy9YJjpJgmYFg3mxnA/QztGkSqDCYR
+         YHIIXFPWP06gtKoCz9kdKQkRh1mA551lwU+IZFz7gWdypUxsdwIrTqSJqnyeM+WFcAcV
+         KZVVyf6CU4f6Y3O7iFYCbXe8ASiSeE6k0Fie2qc18UVZ07ybB3G2R0J/48F8iUwySD/7
+         fqS+s5NrH2gLXdjfryaS8pCFdZSWOEg8+rk2z/bbewPt/p1x/J9JjVYuOkYWlXcWhXLp
+         wcBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ALGu6qp/vYdKI4RdFgdTsZIAua5DO5/Dcw3j60S5Kk4=;
-        b=c+a1rVsnecLHjKWtnF/yP24HoXEEJijZdlwSPTkAQVU+TpRio9yNrRl4vCbC1eqD7W
-         n0VSeINpcJZTJrBbbJ0DQtq3yNQRwYguzjd+cHZuhsQVlQ0/jMwownZCdYGf4wGgwgsm
-         ndJA7NQ0cmeDxUWWgeyJHBdvj3HZGGoEuTaMlmz2u8J692k+fvlAmUYPIhH0IBfLBcp9
-         zE1MI3cUC/CYKf3/EhT40NnkKO2DbcamfWWmmksDlS+Tqc0sTKNN+b+lSatE1jd5AKAl
-         sltVlArUudAammsUHWGXoYTipljQaJTlbL+4OuwHieVgVAxLj/5vV+RGCHrYmg97z61E
-         K8MA==
-X-Gm-Message-State: AOAM531qF7HD2OUHsZKo9p5RORGzC2NTqjnbKatBO+PPP9MnPkFeBkeQ
-        HYK7UmduM2ZdSBqfEr1NKNVdyA==
-X-Google-Smtp-Source: ABdhPJzi4uRCgH01KvkL1AEA7ev2vuESs4W0mv2gXjLog4wlOwhOS8XdQG0qTjqKN/JVL6XSNfAr5A==
-X-Received: by 2002:a17:90b:941:: with SMTP id dw1mr7586553pjb.115.1623397210888;
-        Fri, 11 Jun 2021 00:40:10 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id n23sm4566293pgv.76.2021.06.11.00.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 00:40:10 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 13:10:08 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] Revert "cpufreq: CPPC: Add support for frequency
- invariance"
-Message-ID: <20210611074008.57u27wtyqv4ossde@vireshk-i7>
-References: <a71c48fb0150f505680da68a82b4e4fca9a18439.1623381430.git.viresh.kumar@linaro.org>
- <YMMSt65aj0KKHy1A@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BBdAwSczaNf+rHArQaHJIC7Mgb+GZNj+B0A18W96i2I=;
+        b=MHvXlPm9pZdzjO15wWlWcuwbmNnFxCyzq+BTe7LBSl4tZ/PpcKPmrZVosp2gsvvPL/
+         /KvF2cHh9UTi0UlbtJ9lFFfpyzs6p2ITEJ4labHG6JgrngWDNS3EfI6+BEiOQb2EoTqX
+         G6j9MN+ExvO/vCpMuFIV3tmZ7qtPuRpmFJ7ucbW5f9gJvpMqukwtYqSmAuGAiYBxubQn
+         rfyAriJ1kptvcLwyhjbkLlGh3Xoi9D0kvEJ0pULBBVmyksZ7aE9YMAf1LvvUFsqZt+Xg
+         melZBveAbyCPbbdFNMSEDdwkqi3h+n2V28mbpi9HLHiBwfubctsgXGMd+XmXH7l4CKZV
+         NzUg==
+X-Gm-Message-State: AOAM532R+eY3N3DjctwFoWbH3CJF1Yaq/+5FGzhRf/CiX91fwYEz5aNI
+        gnk7nBhxxvFRivGmkFEronLxnPXeS5Nxkg21tm4wZA==
+X-Google-Smtp-Source: ABdhPJxmj6fYMIapIuKq25TWJPMsAbZwQIFmsiOZFWnQReFEn4Z81dnBenUXepsXJ8aQSZIqkG2yB3XvcuNtapnOMmY=
+X-Received: by 2002:a1f:9542:: with SMTP id x63mr7317524vkd.15.1623397247116;
+ Fri, 11 Jun 2021 00:40:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMMSt65aj0KKHy1A@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <1623329930-14387-1-git-send-email-zhouyanjie@wanyeetech.com>
+In-Reply-To: <1623329930-14387-1-git-send-email-zhouyanjie@wanyeetech.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 11 Jun 2021 09:40:10 +0200
+Message-ID: <CAPDyKFqyB=rL-aLX3YLAoE7qEsR4sDP7zqmS2io2-aoCVsQyzQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Add support for JZ4775
+To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com,
+        Paul Cercueil <paul@crapouillou.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-06-21, 09:37, Peter Zijlstra wrote:
-> Alternatively: "depends on BROKEN" ?
+On Thu, 10 Jun 2021 at 14:59, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
+<zhouyanjie@wanyeetech.com> wrote:
+>
+> v1->v2:
+> 1.Add support for probing mmc driver on the JZ4775 SoC from Ingenic.
+> 2.The drive clock selection and sample clock selection have been
+>   supported since JZ4775, not X1000. So support for these two
+>   functions has been added for JZ4775 and JZ4780.
+>
+> =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) (2):
+>   dt-bindings: mmc: JZ4740: Add bindings for JZ4775.
+>   mmc: JZ4740: Add support for JZ4775.
+>
+>  Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml | 1 +
+>  drivers/mmc/host/jz4740_mmc.c                          | 5 +++--
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+>
 
-This is what I wanted to do, but Rafael didn't like it :)
+Applied for next, thanks!
 
-https://lore.kernel.org/linux-pm/28308fc0d38f252baf90e6ffb31fd2f8660be273.1623311808.git.viresh.kumar@linaro.org/
-
--- 
-viresh
+Kind regards
+Uffe
