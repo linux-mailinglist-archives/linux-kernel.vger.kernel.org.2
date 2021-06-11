@@ -2,166 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19A93A3B43
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 07:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E643A3B47
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 07:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhFKFPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 01:15:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhFKFPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 01:15:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9252613B8;
-        Fri, 11 Jun 2021 05:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623388419;
-        bh=ikXTuxUtKCmcVn7KzA0q7Ur2mS5OTZCN1NPG7jjaKMw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iFFBUB6UA9HgqQr+XKqOoWtZ4Y0egWedEcd6j1ygUlyNdUiDQyhCyBDIFJrmJ6qtw
-         Y7Q0vK4NzO7yzclFnROFaDIQefftJc3dkcHqc3qk+ahulZhY9hfA/AWHZ4CLlqaqTL
-         V6T9yaDPcpiUpC32nyjnSxUcSQHuiC/oQkoboVNl054IUce0wyZmLteh2JvbGyvBY8
-         jR7YUMM1jC5RUc9lxP07SChHg3AtavBTVG5SEbsJGdgZt0pm83QNjJLXEcoHawf1jq
-         fGgmPck7e8eedUINmXHNWQ/9vqytEmJS3D6LLW7ag1qPEjPUO84gq5jTN3+vbsv420
-         R3fxvs4ZHHmEw==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH 2/2] x86/fpu: Improve FPU APIs for independent features
-Date:   Thu, 10 Jun 2021 22:13:37 -0700
-Message-Id: <657f57d4a50f0bdab7c74bf8ca47b413583b6db4.1623388344.git.luto@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623388344.git.luto@kernel.org>
-References: <cover.1623388344.git.luto@kernel.org>
+        id S230382AbhFKFTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 01:19:31 -0400
+Received: from mail-lj1-f171.google.com ([209.85.208.171]:46057 "EHLO
+        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhFKFTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 01:19:30 -0400
+Received: by mail-lj1-f171.google.com with SMTP id a19so4800605ljq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 22:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fyj5SdPfNyQtiASRP36GPtu32bXzI+wL6n1PWw7J0sI=;
+        b=gJATbDLIE1ZTmNmyxCMb3WaAShm5EV56gII2UEwB1nmyrs3ytAryxfqMgZJnHcFiSh
+         RfXvt/8+UX3axvsE93C5aqsNaaLmpbJHzkdlQxk0gKF0SqMz9G7t4aydro9wwPCI40I7
+         L1v1otgLI7VgKa6g09nRvkaq52+GyppWeBsLB5uShR5vLa5thyAA5K1hbVuf+NnTGe67
+         cFufoLWlvEjSWvlEthm7aIDZaT5yxp6YCJ/MK08neSy96rqA6rZ26sMU8vtDnrtepthG
+         ANKXSUdZxdl+oGKeqZbXhgtKmrw34ibPI2fZ/laduNThZXmtC143rb3+ZGAuF9RHsFi+
+         1Ytg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fyj5SdPfNyQtiASRP36GPtu32bXzI+wL6n1PWw7J0sI=;
+        b=WmhlszTyM3AUaIMIkypwxNYuxC+iWH+jEHwGxKHS5IZ1geay1+wOMTNPjFDZKBbzEH
+         yQXUlfWXep4j492FrmLi1juEsHYsgpCxJP/k+3N3P6eQUm4qw1lrB2lf+u6C694k60TI
+         SffN00Q9b9DYJvcr5B4+kFEBh06hUaF/aY9FXcvYR97szG2ga9AtktLmeP09XN69NXIt
+         DbDY5kLjThlvipzjnDgChg0wi8O5Hke5YAkBw6Eg/tsbMQPHYP93V/o2kDTxf8uSJTtb
+         xaoPecHFtWjqSmBEv9FMngt8ljTXPyMSG4CkqDM+6brOu6bKlxoVmZK8byCT30fRtRiX
+         0Bhg==
+X-Gm-Message-State: AOAM532O743ZUxgTgflytsS97PSaPLYDEqi2YKIkz34xVMFPbCtf71LB
+        mUkJhl48EL+jWwS3G71c+X8xoBlVjlkBeg2CCTZPTg==
+X-Google-Smtp-Source: ABdhPJz5i3I6GjTKhbtNhG2oTgwzlpu84D8lr6tgvjr9hfM31HGkzcRmKSVL+L31wq4Sx82KRerKOPia9J/1sxEKqzA=
+X-Received: by 2002:a2e:2f09:: with SMTP id v9mr1525954ljv.152.1623388592055;
+ Thu, 10 Jun 2021 22:16:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210610210913.536081-1-tyhicks@linux.microsoft.com> <20210610210913.536081-7-tyhicks@linux.microsoft.com>
+In-Reply-To: <20210610210913.536081-7-tyhicks@linux.microsoft.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 11 Jun 2021 10:46:20 +0530
+Message-ID: <CAFA6WYMcGGkAAWxK2vmM8CNsgTKJpegkZZjJZy4pvXhKe9WGvA@mail.gmail.com>
+Subject: Re: [PATCH v4 6/8] tee: Support kernel shm registration without
+ dma-buf backing
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having the functions that save and restore independent features accept,
-but ignore, non-independent features is confusing, so instead require
-that only independent features be independently saved and restored.
+On Fri, 11 Jun 2021 at 02:39, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+>
+> Uncouple the registration of kernel shared memory buffers from the
+> TEE_SHM_DMA_BUF flag. Drivers may wish to allocate multi-page contiguous
+> shared memory regions but do not need them to be backed by a dma-buf
+> when the memory region is only used by the driver.
+>
+> If the TEE implementation does not require shared memory to be
+> registered, clear the flag prior to calling the corresponding pool alloc
+> function. Update the OP-TEE driver to respect TEE_SHM_REGISTER, rather
+> than TEE_SHM_DMA_BUF, when deciding whether to (un)register on
+> alloc/free operations.
 
-Remove a bunch of nonsense comments from the save and restore functions:
-saving and restoring the XSAVE header makes no sense.
+> The AMD-TEE driver continues to ignore the
+> TEE_SHM_REGISTER flag.
+>
 
-Document that fpu__clear_all() does not clear independent features.
+That's the main point that no other TEE implementation would honour
+TEE_SHM_REGISTER and I think it's just the incorrect usage of
+TEE_SHM_REGISTER flag to suffice OP-TEE underlying implementation.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- arch/x86/include/asm/fpu/xstate.h |  5 ++++-
- arch/x86/kernel/fpu/core.c        |  3 +++
- arch/x86/kernel/fpu/xstate.c      | 33 +++++++++++--------------------
- 3 files changed, 19 insertions(+), 22 deletions(-)
+> Allow callers of tee_shm_alloc_kernel_buf() to allocate and register a
+> shared memory region without the backing of dma-buf.
+>
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>  drivers/tee/optee/shm_pool.c |  5 ++---
+>  drivers/tee/tee_shm.c        | 13 +++++++++++--
+>  2 files changed, 13 insertions(+), 5 deletions(-)
+>
 
-diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index 5802b1715c7f..3bc5e6c9e47a 100644
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -34,7 +34,10 @@
- 				      XFEATURE_MASK_BNDREGS | \
- 				      XFEATURE_MASK_BNDCSR)
- 
--/* All currently supported supervisor features */
-+/*
-+ * All currently supported supervisor features that are saved and
-+ * restored as part of the main task XSAVE buffers.
-+ */
- #define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID)
- 
- /*
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 571220ac8bea..9af361464c66 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -390,6 +390,9 @@ void fpu__clear_user_states(struct fpu *fpu)
- 	fpu__clear(fpu, true);
- }
- 
-+/*
-+ * This does not affect independent features -- see XFEATURE_MASK_INDEPENDENT.
-+ */
- void fpu__clear_all(struct fpu *fpu)
- {
- 	fpu__clear(fpu, false);
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index d582275164ad..15bb87f4f510 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1292,29 +1292,26 @@ void copy_supervisor_to_kernel(struct xregs_state *xstate)
-  * @xstate: A pointer to an xsave area
-  * @mask: Represent the independent supervisor features saved into the xsave area
-  *
-- * Only the independent supervisor states sets in the mask are saved into the xsave
-- * area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of independent
-- * supervisor feature). Besides the independent supervisor states, the legacy
-- * region and XSAVE header are also saved into the xsave area. The supervisor
-- * features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-- * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not saved.
-+ * The XSAVE header in the target buffer must already be initialized, as the
-+ * XSAVES instruction may not fully initialize the XSAVE header.
-  *
-  * The xsave area must be 64-bytes aligned.
-  */
- void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask)
- {
--	u64 independent_mask = xfeatures_mask_independent() & mask;
- 	u32 lmask, hmask;
- 	int err;
- 
-+	WARN_ON_FPU(mask & ~xfeatures_mask_independent());
-+
- 	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
- 		return;
- 
--	if (WARN_ON_FPU(!independent_mask))
-+	if (WARN_ON_FPU(!mask))
- 		return;
- 
--	lmask = independent_mask;
--	hmask = independent_mask >> 32;
-+	lmask = mask;
-+	hmask = mask >> 32;
- 
- 	XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
- 
-@@ -1328,29 +1325,23 @@ void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask)
-  * @xstate: A pointer to an xsave area
-  * @mask: Represent the independent supervisor features restored from the xsave area
-  *
-- * Only the independent supervisor states sets in the mask are restored from the
-- * xsave area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of
-- * independent supervisor feature). Besides the independent supervisor states, the
-- * legacy region and XSAVE header are also restored from the xsave area. The
-- * supervisor features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-- * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not restored.
-- *
-  * The xsave area must be 64-bytes aligned.
-  */
- void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask)
- {
--	u64 independent_mask = xfeatures_mask_independent() & mask;
- 	u32 lmask, hmask;
- 	int err;
- 
-+	WARN_ON_FPU(mask & ~xfeatures_mask_independent());
-+
- 	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
- 		return;
- 
--	if (WARN_ON_FPU(!independent_mask))
-+	if (WARN_ON_FPU(!mask))
- 		return;
- 
--	lmask = independent_mask;
--	hmask = independent_mask >> 32;
-+	lmask = mask;
-+	hmask = mask >> 32;
- 
- 	XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
- 
--- 
-2.31.1
+This patch is just mixing two separate approaches to TEE shared
+memory. Have a look at alternative suggestions below.
 
+> diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
+> index da06ce9b9313..6054343a29fb 100644
+> --- a/drivers/tee/optee/shm_pool.c
+> +++ b/drivers/tee/optee/shm_pool.c
+> @@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+>         shm->paddr = page_to_phys(page);
+>         shm->size = PAGE_SIZE << order;
+>
+> -       if (shm->flags & TEE_SHM_DMA_BUF) {
+> +       if (shm->flags & TEE_SHM_REGISTER) {
+
+Here you can just do following check instead:
+
+       if (!(shm->flags & TEE_SHM_PRIV)) {
+
+And this flag needs to be passed from the call sites here [1] [2].
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tee/optee/core.c#n280
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tee/optee/call.c#n186
+
+>                 unsigned int nr_pages = 1 << order, i;
+>                 struct page **pages;
+>
+> @@ -42,7 +42,6 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+>                         page++;
+>                 }
+>
+> -               shm->flags |= TEE_SHM_REGISTER;
+
+This should remain as it is.
+
+>                 rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
+>                                         (unsigned long)shm->kaddr);
+>                 kfree(pages);
+> @@ -60,7 +59,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+>  static void pool_op_free(struct tee_shm_pool_mgr *poolm,
+>                          struct tee_shm *shm)
+>  {
+> -       if (shm->flags & TEE_SHM_DMA_BUF)
+> +       if (shm->flags & TEE_SHM_REGISTER)
+
+Same as above.
+
+>                 optee_shm_unregister(shm->ctx, shm);
+>
+>         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> index c65e44707cd6..26a76f817c57 100644
+> --- a/drivers/tee/tee_shm.c
+> +++ b/drivers/tee/tee_shm.c
+> @@ -117,7 +117,7 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+>                 return ERR_PTR(-EINVAL);
+>         }
+>
+> -       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF))) {
+> +       if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF | TEE_SHM_REGISTER))) {
+
+No need for this change.
+
+>                 dev_err(teedev->dev.parent, "invalid shm flags 0x%x", flags);
+>                 return ERR_PTR(-EINVAL);
+>         }
+> @@ -137,6 +137,15 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+>                 goto err_dev_put;
+>         }
+>
+> +       if (!teedev->desc->ops->shm_register ||
+> +           !teedev->desc->ops->shm_unregister) {
+> +               /* registration is not required by the TEE implementation */
+> +               flags &= ~TEE_SHM_REGISTER;
+> +       } else if (flags & TEE_SHM_DMA_BUF) {
+> +               /* all dma-buf backed shm allocations are registered */
+> +               flags |= TEE_SHM_REGISTER;
+> +       }
+> +
+
+This change isn't required as well as underlying TEE implementation:
+OP-TEE in this case knows how to implement shared memory allocation
+whether to use reserved shared memory pool or dynamic shared memory
+pool. For more details see shared memory pool creation in
+optee_probe().
+
+>         shm->flags = flags | TEE_SHM_POOL;
+>         shm->ctx = ctx;
+>         if (flags & TEE_SHM_DMA_BUF)
+> @@ -207,7 +216,7 @@ EXPORT_SYMBOL_GPL(tee_shm_alloc);
+>   */
+>  struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
+>  {
+> -       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
+> +       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_REGISTER);
+
+Here it could just be:
+
+       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED);
+
+-Sumit
+
+>  }
+>  EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
+>
+> --
+> 2.25.1
+>
