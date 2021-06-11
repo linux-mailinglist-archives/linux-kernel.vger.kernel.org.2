@@ -2,281 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EE63A4319
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CF43A432A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhFKNg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
+        id S230188AbhFKNnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhFKNg4 (ORCPT
+        with ESMTP id S229722AbhFKNm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:36:56 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A41DC061574;
-        Fri, 11 Jun 2021 06:34:46 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id w127so5800428oig.12;
-        Fri, 11 Jun 2021 06:34:46 -0700 (PDT)
+        Fri, 11 Jun 2021 09:42:59 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A06BC061574;
+        Fri, 11 Jun 2021 06:40:45 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id j2so8608680lfg.9;
+        Fri, 11 Jun 2021 06:40:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kOEeO6Yx/UUevsmguZogDl2rKUzOM84efBMRN1u0UBM=;
-        b=KlljV5bfm99mzh/C6UvOvdMZb0DlxPHqcox+GsVlf8v7X9xGCjAmPgBkcmfzZJo6xJ
-         NvQ3EwZiU8d/Usmk7hPaMVm943m7lnxQrgYkHpNtDsVVNVnmDd0KfxGEw7TbqSt5KMbE
-         stm/S/UacgNolBQWl7eHLEwY9cxVLNns13Byw0FXuClvipdSnC5bJEQpEdunMzR8jbFy
-         kbelFMCJh77IPoWaLVpbpv1yg73y91gc5FsqAr4Xqi1D9wM7QOGPbIogfP119AabYkkr
-         vXV47Xcvl/ZFnE+TBlvcI0SOTXNk/usqwusN5xPnmhy/b3khcaip4Adi7qdJoXxBNhLK
-         CdOw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nKr8pai+68Flr3AiBDNVUz9KA2i0xv72PtUutVgvQAI=;
+        b=LUe09kKmrmVPBfa25N4IvIE8izJUurfh8PfnbuMeVqFAILPxB3OWdiJscPvqfC8mbf
+         +wi9x9ati5hx3rO0Jl43p+3cw11XgA2TkPGSmiLjZh3c8jgo0EWnqb4vusH0DY4qnYec
+         ph56Zhvq0GuKjr0RGA+EW5JsqGktY4Ij33NkT9+3D+YjASpD9fnoebUHRvLwDrNVaQX3
+         HfwviDwSsqyR7oPCwKzYn9MJPtAlSajLiSZG5F60nasO56skIHUI9pVY5p53HLDnEP0d
+         2P7zc1Zpzk+Q9purwn+jBSO5PXfd2e07aOkQbZe4bDqcXMHA6MWRk3k2u1owz04gbivA
+         4ezA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kOEeO6Yx/UUevsmguZogDl2rKUzOM84efBMRN1u0UBM=;
-        b=NoadiIh7cXbPzXUomplPWdFXEOvsafoYHUjAaRhjG9OiLs+JDU3X4Ni3FycYm9O2MC
-         ESWSoyUyx/0xB652LlDcgWA4DkdjYfOIyEXLxxAjJjJKltvZWLADEgZ0ggC4hFgeGWRa
-         4+HwtrlxYxQZECWTL5fkYM6paCmUfrp5TFffjBtgcfBjkqx+prIe5E0gthW5eIDeJuMR
-         wsLHGAsuK/XUrZSnUXq+K7Ba2WNb4ovSxpRc6M1xqVE/ZrNExV91BpOhE++kQsXJLPSh
-         ZhNauaFDxp9lHKT3fB+oOYosmOGxyANh4gmfIidmzyPJObgtKjJ/88x65leubsg/wb4f
-         yxZQ==
-X-Gm-Message-State: AOAM531hE9lPBmfV4x1HGwhDxLVFW1dvzW+OoJG/mzHZz/NcFQrOT8PM
-        TSUniWTfR9cKYwDrR1H2JBYS07R5Ku2NMPD+/t0=
-X-Google-Smtp-Source: ABdhPJzU1wpb2b19gscLn0AdCh0Hy4c1dn5bZ+kN0rwn8lJf9l3B+sNpxzGvEgfZdBEuU3uBHYqjFB+2Y5lB57oe+Dk=
-X-Received: by 2002:aca:3385:: with SMTP id z127mr2426897oiz.142.1623418485563;
- Fri, 11 Jun 2021 06:34:45 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nKr8pai+68Flr3AiBDNVUz9KA2i0xv72PtUutVgvQAI=;
+        b=Nyd9WGgqCXI4VDT2F7105TjKVjVlJoeqYg41cn3KjDF+Cb+kAZSqG5QXFAzKST8uDx
+         SuCJ+qFWLLl42YQ7qOfY/291a46PT2xMNHV/yn+BGWSDu5OOrKZVJmQ4sSQLFz4Wm2+1
+         LHXEIpBoJyVbOjy+AO78Lkmnf6JrI2fJnTe2sX3Dp3+aZCPHWMbzIhP416UhsHiMLYMR
+         /Kq8aThkcgz8+Ag8K3zoshJRjPN1aMJiOih7/EDjx7CoSYARvF01nj4+E24GwJqpPjDZ
+         7DR8hdttS+pOHah+iqZsQcXO3Tbe0dxVJicnwPCSEdd/7fSwD+KqY+K0LmQTjYmdizcE
+         NZOg==
+X-Gm-Message-State: AOAM533MfY8hirbqrvjaHSGTBixWp9RCwGIRQrXv19jlhUVrAF3XnUYP
+        WjA3/CADzwPYIzp4FkeJBQY=
+X-Google-Smtp-Source: ABdhPJw2C9Ph2Z63IIpjqzekR8PtXKlUeN4j8W9HLwz52sihCNSyJyj7Cry/3QbWB1uVXGPZDEnLxg==
+X-Received: by 2002:a05:6512:3baa:: with SMTP id g42mr2765717lfv.195.1623418843291;
+        Fri, 11 Jun 2021 06:40:43 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
+        by smtp.googlemail.com with ESMTPSA id d22sm725537ljc.55.2021.06.11.06.40.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 06:40:42 -0700 (PDT)
+Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>
+References: <20210609112806.3565057-1-thierry.reding@gmail.com>
+ <20210609112806.3565057-2-thierry.reding@gmail.com>
+ <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
+ <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
+ <a3110fbd-c4af-0317-5a6d-1f780f1dac91@gmail.com>
+ <1400979c-c7a7-9618-1168-70185ed10546@canonical.com>
+ <8d8d019a-34c1-50bd-5eba-ce361c263d35@gmail.com>
+ <57f8e55d-d708-f304-cf35-3036ec2e64f5@gmail.com>
+ <99f98088-fed4-45bf-b0a1-241bfc896487@canonical.com>
+ <f5112945-1b07-8760-4180-4d7152b7dcba@gmail.com>
+ <YMNCPhHx+s4W7BP3@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <99fb42e9-26f9-cc79-965d-989c65e7882d@gmail.com>
+Date:   Fri, 11 Jun 2021 16:40:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210522211055.15988-1-mirela.rabulea@oss.nxp.com>
- <20210522211055.15988-3-mirela.rabulea@oss.nxp.com> <DB9PR04MB8477D8F7DC86E67F74D5D9F780269@DB9PR04MB8477.eurprd04.prod.outlook.com>
- <e4c174afd7c55c56c68afbe69276b41c3f574964.camel@nxp.com>
-In-Reply-To: <e4c174afd7c55c56c68afbe69276b41c3f574964.camel@nxp.com>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Fri, 11 Jun 2021 21:33:29 +0800
-Message-ID: <CAA+hA=TEi3iZ+nOfff=aN1FrLGb6+OHfx23aWaa1J7YfZRRgtA@mail.gmail.com>
-Subject: Re: [PATCH v13 2/2] arm64: dts: imx: Add jpeg encoder/decoder nodes
-To:     Mirela Rabulea <mirela.rabulea@nxp.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "ezequiel@collabora.com" <ezequiel@collabora.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "G.n. Zhou" <guoniu.zhou@nxp.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "paul.kocialkowski@bootlin.com" <paul.kocialkowski@bootlin.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        Peng Fan <peng.fan@nxp.com>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMNCPhHx+s4W7BP3@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+11.06.2021 14:00, Thierry Reding пишет:
+> On Fri, Jun 11, 2021 at 10:21:41AM +0300, Dmitry Osipenko wrote:
+>> 11.06.2021 09:50, Krzysztof Kozlowski пишет:
+>>> On 10/06/2021 18:23, Dmitry Osipenko wrote:
+>>>> 10.06.2021 18:50, Dmitry Osipenko пишет:
+>>>>> 10.06.2021 09:43, Krzysztof Kozlowski пишет:
+>>>>>> The stubs might be good idea anyway, but the driver explicitly needs for
+>>>>>> runtime working reservedmem, so it should select it.
+>>>>>
+>>>>> The OF and reservedmem are both selected by the ARCH for the runtime
+>>>>> use. They may not be selected in the case of compile-testing.
+>>>>>
+>>>>> Both OF core and reservedmem provide stubs needed for compile-testing,
+>>>>> it's only the RESERVEDMEM_OF_DECLARE() that is missing the stub. Adding
+>>>>> the missing stub should be a more appropriate solution than adding extra
+>>>>> Kconfig dependencies, IMO.
+>>>
+>>> Ah, in such case everything looks good. Stubs is indeed proper choice.
+>>
+>> Although, I see that there are only two Kconfigs that have
+>> OF_RESERVED_MEM, one defines the OF_RESERVED_MEM, the other is QCOM
+>> Kconfig which depends on OF_RESERVED_MEM. The OF_RESERVED_MEM is enabled
+>> by default in defconfig.
+>>
+>> You're right, we need the Kconfig change to be entirely correct, since
+>> driver won't work properly without OF_RESERVED_MEM.
+>>
+>> config TEGRA210_EMC
+>> 	tristate "NVIDIA Tegra210 External Memory Controller driver"
+>> -	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
+>> +	depends on (ARCH_TEGRA_210_SOC && OF_RESERVED_MEM) || COMPILE_TEST
+>>
+>> I will send that change later today.
+> 
+> That's completely unnecessary. OF_RESERVED_MEM is enabled by default if
+> OF_EARLY_FLATTREE is enabled, which it is for ARM64 and that is always
+> enabled for ARCH_TEGRA_210_SOC.
 
-> > > +img_subsys: bus@58000000 {
-> > > +   compatible = "simple-bus";
-> > > +   #address-cells = <1>;
-> > > +   #size-cells = <1>;
-> > > +   ranges = <0x58000000 0x0 0x58000000 0x1000000>;
-> > > +
-> > > +   img_ipg_clk: clock-img-ipg {
-> > > +           compatible = "fixed-clock";
-> > > +           #clock-cells = <0>;
-> > > +           clock-frequency = <200000000>;
-> > > +           clock-output-names = "img_ipg_clk";
-> > > +   };
-> > > +
-> > > +   jpegdec: jpegdec@58400000 {
-> >
-> > Node should be disabled by default.
-> > And enable it in board dts including LPCG.
->
-> At version v5 of this patch, the node was disabled by default, and I
-> received this feedback from Ezequiel Garcia:
->
-> "Pure memory-to-memory are typically not enabled per-board, but just
-> per-platform.
-> So you can drop the disabled status here."
->
-> So, in v6 I made it enabled by default.
->
-> Any strong reasons for enabled/disabled per platform?
+But it doesn't stop you from disabling OF_RESERVED_MEM. The Kconfig
+dependencies should reflect the build and runtime requirements of the
+driver, otherwise only driver author knows which config options are need.
 
-AFAIK we usually only enable system basic features and let other
-user selectable features disabled by default in dts.
-Even for device LPCG clocks, if it's enabled by default and later
-enter runtime suspend if no users, it still consumes power.
+> What Krzysztof had originally proposed, as far as I understand, is to
+> add "depends on OF_RESERVED_MEM" so that the dependency is always there
+> (including the COMPILE_TEST case). However, that's a bit problematic, as
+> I said earlier, because OF_RESERVED_MEM is not user-visible and neither
+> is OF_EARLY_FLATTREE, so there's no way to enable OF_RESERVED_MEM unless
+> the architecture selected it, which it doesn't on x86, so it kind of
+> defeats the purpose of COMPILE_TEST.
 
-Regards
-Aisheng
+Indeed, the QCOM driver isn't compile-tested as much as it could be.
+That driver already shouldn't have any problems with compile-testing,
+maybe some stubs were missing when driver was originally added.
 
->
-> Thanks,
-> Mirela
->
-> >
-> > > +           reg = <0x58400000 0x00050000 >;
-> > > +           interrupts = <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <GIC_SPI 310 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <GIC_SPI 311 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>;
-> > > +           clocks = <&img_jpeg_dec_lpcg IMX_LPCG_CLK_0>,
-> > > +                    <&img_jpeg_dec_lpcg IMX_LPCG_CLK_4>;
-> > > +           clock-names = "per", "ipg";
-> > > +           assigned-clocks = <&img_jpeg_dec_lpcg IMX_LPCG_CLK_0>,
-> > > +                             <&img_jpeg_dec_lpcg IMX_LPCG_CLK_4>;
-> > > +           assigned-clock-rates = <200000000>, <200000000>;
-> > > +           power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>,
-> > > +                           <&pd IMX_SC_R_MJPEG_DEC_S0>,
-> > > +                           <&pd IMX_SC_R_MJPEG_DEC_S1>,
-> > > +                           <&pd IMX_SC_R_MJPEG_DEC_S2>,
-> > > +                           <&pd IMX_SC_R_MJPEG_DEC_S3>;
-> > > +   };
-> > > +
-> > > +   jpegenc: jpegenc@58450000 {
-> >
-> > Ditto
-> >
-> > > +           reg = <0x58450000 0x00050000 >;
-> > > +           interrupts = <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>;
-> > > +           clocks = <&img_jpeg_enc_lpcg IMX_LPCG_CLK_0>,
-> > > +                    <&img_jpeg_enc_lpcg IMX_LPCG_CLK_4>;
-> > > +           clock-names = "per", "ipg";
-> > > +           assigned-clocks = <&img_jpeg_enc_lpcg IMX_LPCG_CLK_0>,
-> > > +                             <&img_jpeg_enc_lpcg IMX_LPCG_CLK_4>;
-> > > +           assigned-clock-rates = <200000000>, <200000000>;
-> > > +           power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>,
-> > > +                           <&pd IMX_SC_R_MJPEG_ENC_S0>,
-> > > +                           <&pd IMX_SC_R_MJPEG_ENC_S1>,
-> > > +                           <&pd IMX_SC_R_MJPEG_ENC_S2>,
-> > > +                           <&pd IMX_SC_R_MJPEG_ENC_S3>;
-> > > +   };
-> > > +
-> > > +   img_jpeg_dec_lpcg: clock-controller@585d0000 {
-> >
-> > Ditto
-> >
-> > > +           compatible = "fsl,imx8qxp-lpcg";
-> > > +           reg = <0x585d0000 0x10000>;
-> > > +           #clock-cells = <1>;
-> > > +           clocks = <&img_ipg_clk>, <&img_ipg_clk>;
-> > > +           clock-indices = <IMX_LPCG_CLK_0>,
-> > > +                           <IMX_LPCG_CLK_4>;
-> > > +           clock-output-names = "img_jpeg_dec_lpcg_clk",
-> > > +                                "img_jpeg_dec_lpcg_ipg_clk";
-> > > +           power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>;
-> > > +   };
-> > > +
-> > > +   img_jpeg_enc_lpcg: clock-controller@585f0000 {
-> > > +           compatible = "fsl,imx8qxp-lpcg";
-> >
-> > Ditto
-> >
-> > Otherwise, I'm fine with this patch.
-> >
-> > > +           reg = <0x585f0000 0x10000>;
-> > > +           #clock-cells = <1>;
-> > > +           clocks = <&img_ipg_clk>, <&img_ipg_clk>;
-> > > +           clock-indices = <IMX_LPCG_CLK_0>,
-> > > +                           <IMX_LPCG_CLK_4>;
-> > > +           clock-output-names = "img_jpeg_enc_lpcg_clk",
-> > > +                                "img_jpeg_enc_lpcg_ipg_clk";
-> > > +           power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>;
-> > > +   };
-> > > +};
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
-> > > b/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
-> > > new file mode 100644
-> > > index 000000000000..7764b4146e0a
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
-> > > @@ -0,0 +1,12 @@
-> > > +// SPDX-License-Identifier: GPL-2.0+
-> > > +/*
-> > > + * Copyright 2021 NXP
-> > > + */
-> > > +
-> > > +&jpegdec {
-> > > +   compatible = "nxp,imx8qm-jpgdec", "nxp,imx8qxp-jpgdec"; };
-> > > +
-> > > +&jpegenc {
-> > > +   compatible = "nxp,imx8qm-jpgdec", "nxp,imx8qxp-jpgenc"; };
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> > > b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> > > index 12cd059b339b..aebbe2b84aa1 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> > > @@ -166,11 +166,13 @@
-> > >     };
-> > >
-> > >     /* sorted in register address */
-> > > +   #include "imx8-ss-img.dtsi"
-> > >     #include "imx8-ss-dma.dtsi"
-> > >     #include "imx8-ss-conn.dtsi"
-> > >     #include "imx8-ss-lsio.dtsi"
-> > >  };
-> > >
-> > > +#include "imx8qm-ss-img.dtsi"
-> > >  #include "imx8qm-ss-dma.dtsi"
-> > >  #include "imx8qm-ss-conn.dtsi"
-> > >  #include "imx8qm-ss-lsio.dtsi"
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
-> > > b/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
-> > > new file mode 100644
-> > > index 000000000000..3a087317591d
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
-> > > @@ -0,0 +1,13 @@
-> > > +// SPDX-License-Identifier: GPL-2.0+
-> > > +/*
-> > > + * Copyright 2021 NXP
-> > > + * Dong Aisheng <aisheng.dong@nxp.com>
-> > > + */
-> > > +
-> > > +&jpegdec {
-> > > +   compatible = "nxp,imx8qxp-jpgdec";
-> > > +};
-> > > +
-> > > +&jpegenc {
-> > > +   compatible = "nxp,imx8qxp-jpgenc";
-> > > +};
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > > b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > > index 1e6b4995091e..a625fb6bdc62 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > > @@ -258,12 +258,14 @@
-> > >     };
-> > >
-> > >     /* sorted in register address */
-> > > +   #include "imx8-ss-img.dtsi"
-> > >     #include "imx8-ss-adma.dtsi"
-> > >     #include "imx8-ss-conn.dtsi"
-> > >     #include "imx8-ss-ddr.dtsi"
-> > >     #include "imx8-ss-lsio.dtsi"
-> > >  };
-> > >
-> > > +#include "imx8qxp-ss-img.dtsi"
-> > >  #include "imx8qxp-ss-adma.dtsi"
-> > >  #include "imx8qxp-ss-conn.dtsi"
-> > >  #include "imx8qxp-ss-lsio.dtsi"
-> > > --
-> > > 2.17.1
-> >
-> >
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> So I think if this really has to be compile-test enabled, the only way
+> to do that is to either make this select OF_EARLY_FLATTREE, or add the
+> stubs.
+> 
+> Another option would perhaps be to enable OF_UNITTEST along with
+> COMPILE_TEST, since that also pulls in OF_EARLY_FLATTREE and would allow
+> this driver to be built even on x86.
+
+For the universal compile-testing it should be enough to fix the stub.
+We may consider other options if it won't be enough, thank you for the
+suggestions.
