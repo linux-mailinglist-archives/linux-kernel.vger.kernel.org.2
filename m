@@ -2,214 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71303A3C00
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5413A3C07
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhFKG0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:26:24 -0400
-Received: from mail-eopbgr140041.outbound.protection.outlook.com ([40.107.14.41]:64940
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229633AbhFKG0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:26:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RuvGOi7BSLwmAzDJ35y3fQ9jogig84JBOeG90zcIxZ0rRteM2qy2RlA4uPt9b7Usw3rcpU4mHFTs3y/LCrdldCC/QZHn8Auwz5KCzO2z48tBNfVNIhQ7lrtNvp8dh+H1AnEnT+9xI9a8ydRSqu/kl3Vt2pNXk0xX4k4x29oBHUZerIrRESUc8+sVPKqiu3MK05xAZjLguAZHKqmDK94+c4njk1siEEjl9Q5DMlBR9MQEhwFV2Hj3baCUI2bzotPw971+PzWiuFn7vIa9wACByfZJ510gkE5W6VwynyP216olrZ3q7cD1irpR/SStlwbpr3DaM/eR17bu3R6jRl8COA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GXw23S8iG8CK+w6OomNHmt6A7o+4JkI4FA8jWttcl5A=;
- b=bGpkfN29WAR4Zc7BStvY4/qjTIU9Mwb0vhgSSqtYkgYnTitCpGZ/jCz/Zqlq5DpZYAHIW03yldkxJiv4rk0dsQUAY8VgiCLDTrJ7xUHrT/l+LBDvrYyAhMlt8YsObmuvtq2dy8rSzC8JogFl4ai2Rv7V+BrQOBlMYtRuNv62kjp3GQZmhI+3cTJgUvx+KyTZZZGO9rIeUb/G+KOgXIRkVBq4GiLhaQHo4rOKFQzVJW7GS3CnvwU5jhrmcYXddlV0lWl8f7y4+izeejdQMA/LaF+9zfA8vkwvSzoaNulSJiluVL12v9Jr8tUMcBRiSxqqwoI9Pa8Q9rc3pT7j6vtS/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GXw23S8iG8CK+w6OomNHmt6A7o+4JkI4FA8jWttcl5A=;
- b=D6ex4ODyI2S28TC7rDiHLqKQxMcBZzqLpRy8Pj/Go5qnFw7S5bvrUTfJzq+fC9CKjScmKK+opQPsdnXIRKw81DtJvHMJSXakqr5SPiOZsUje1+Lnc29FjIyo7XoJgTteNB4ZcdnMns24si980p8zBBnZ7bZu5cgu+Yd+4YjKbG8=
-Received: from VI1PR04MB5935.eurprd04.prod.outlook.com (2603:10a6:803:e9::17)
- by VI1PR04MB7072.eurprd04.prod.outlook.com (2603:10a6:800:12c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Fri, 11 Jun
- 2021 06:24:22 +0000
-Received: from VI1PR04MB5935.eurprd04.prod.outlook.com
- ([fe80::79b2:6f7:b5ef:ed81]) by VI1PR04MB5935.eurprd04.prod.outlook.com
- ([fe80::79b2:6f7:b5ef:ed81%5]) with mapi id 15.20.4219.023; Fri, 11 Jun 2021
- 06:24:22 +0000
-From:   Jun Li <jun.li@nxp.com>
-To:     Breno Matheus Lima <breno.lima@nxp.com>,
-        "peter.chen@kernel.org" <peter.chen@kernel.org>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "brenomatheus@gmail.com" <brenomatheus@gmail.com>
-Subject: RE: [PATCH] mx8mm: usb: chipidea: Fix Battery Charger 1.2 CDP
- detection
-Thread-Topic: [PATCH] mx8mm: usb: chipidea: Fix Battery Charger 1.2 CDP
- detection
-Thread-Index: AQHXXmPdJttyoNJAYEGwtM/iicSVYKsOV5Fw
-Date:   Fri, 11 Jun 2021 06:24:22 +0000
-Message-ID: <VI1PR04MB59358BDBE0A6FA8A8966C66789349@VI1PR04MB5935.eurprd04.prod.outlook.com>
-References: <20210611014755.124483-1-breno.lima@nxp.com>
-In-Reply-To: <20210611014755.124483-1-breno.lima@nxp.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8a8a89a1-8e53-41c9-5dc2-08d92ca18dc6
-x-ms-traffictypediagnostic: VI1PR04MB7072:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB70726388F71BD13B5AE2F5FE89349@VI1PR04MB7072.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FIx22HtwCkyB9927AP0lRNjt4mM8+784Ih52AaipmqnLoWzQPtxM+PRrN//sy5xGvjpMuR9OV1WfrmzDwLguNQ48lJIp+olU5IUTU88eVO69KLvXGYV0ZSD5mgUsPioGqIPS24Zc8v2n0MYQT2EMMTiDNr3/MkcP9WbCua9b93ZxAnHvfbrSFkHzvxkHfcYPdvnnrOckRWSWpaRFodF04JqX2cPIh4RQ1+OF4TzYyIHgzNzFj2AzTmfg4r2mmv8IjnF074ZsUawR8AlEQiNmqLjmKmlAJ4A2KC+Ss8M3GHrnTZC5QRQPFdPlBfE7verJkbe0ad9YS0zYQZCpaVVWgSE9qJxDEhMAiMTx3aI+eXtR6GeKruLhPPtSeOi44Y2l5ZGMNCVzErqChwaiaJICxighqds5860D6qYWQjS30d184SfDz780wUqGigdFhm/rnfF23Jsxvx88j96Oq+Ktw0sqZam591WVIbYdMhpqVbm5MnZ+gXSqrFNKLrcBPabsXBt73OYEqNf0A6gtuGg/+uzxTLyKCWpqCrobbkoPuFZsu5tONKuy3SKu0xW49wwMDBLkgmU16odALD0YiA8X0Xv+6cD0juxKDSWx/LCj9fbL0SiANTfGKPlugPZxGRfksO1nZfm0hG+XS6IUi/x6ZA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5935.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(396003)(366004)(346002)(316002)(478600001)(53546011)(6506007)(54906003)(86362001)(110136005)(9686003)(2906002)(186003)(66476007)(66446008)(76116006)(26005)(71200400001)(55016002)(66946007)(33656002)(83380400001)(44832011)(66556008)(64756008)(7416002)(8676002)(38100700002)(4326008)(52536014)(8936002)(7696005)(122000001)(5660300002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?W9OZsLhE00uhST6WSvg9uIInF7gTxUliEY0SNfVCXsBIoMqSfQWCaElzPxgI?=
- =?us-ascii?Q?nuVZkJyuBBdpppj+pv41FAxDJ5JcIJzPbpvaFvJn3sSggomzH6a1QAamd/kr?=
- =?us-ascii?Q?2s8FESabdwWYXW4a8w+S3np3NFM7TzHnokhbfvRLUnuGDAF/ueGgv4S4GxZv?=
- =?us-ascii?Q?5voojCY6FF6jFEbmWr96uA6yf10z4SqJz4z2cu8kHHtZ/P3uH+C6AdsgQZst?=
- =?us-ascii?Q?mCEmmqu6Fw25AGCaoAwbI8BILBrX4aouN3MJMWHBkrJoCI5KkHsQO4LEQITo?=
- =?us-ascii?Q?CNtGCYfFpi3/mM4UXI2hiYS7f3VW1/8aJ0mF7/ZV0HjxfXM7z/rRD45xpZMv?=
- =?us-ascii?Q?/VMIGpXGJfb89fKV+cJiaF2FnrF+ONBM+wXwt73Z9sdXdZwv/SU38Mtn6RRa?=
- =?us-ascii?Q?pYxHwpr2510nVeJYFqXIADU+Dn/gsXKNP0A++L/m8uBHBF9+UV5OCvffIXFy?=
- =?us-ascii?Q?7dE5uemCf44GtKDeiekqDnC7UEkNaWSRTT0AwYP0SJ6GGB0nNSamUsz81TxN?=
- =?us-ascii?Q?f4Tw9pzbJGNtNX4tzjNA7370cZzjVqTlAnAvyrAb1SUySJaCj5OwSWnNFq/K?=
- =?us-ascii?Q?D+WxrbjV7Zice5nwI4aA8osKrjCeyDmD5apaaid8MFXWp7ABWl4KUpJnOL+K?=
- =?us-ascii?Q?Pc2uKzOF28XYGl3POjrNtm5qm+7QX9bmk8SZ2aMh2gBqPMsEzCACszfsr++e?=
- =?us-ascii?Q?uoev61BFWM3bkxsbdAMSHxDlATsWtTC+pxx6rxDqjLzt2qssGAPsIfGYNiRv?=
- =?us-ascii?Q?pUUpRESEhHnbldRvJx0U+YtaElkuCcnLFY+0uyhwsKHChr8wJASs7osZQJyc?=
- =?us-ascii?Q?xk4o1rnLPjJNrVZ8cg9i8/ZBdV2GWk2rUbU5QttR7G3zCYUTDM0J6efmaLH+?=
- =?us-ascii?Q?3oTVuTzENh2mkBnS4AsRyztf+gJv9T7CYwWxFKmWfC260nYvo0K+UEBxFJ4Y?=
- =?us-ascii?Q?GrO/eHORTsZ/L4imGbzUhA9IReh42/xgsVVf7er22liSGOHvWXV7wSmscrru?=
- =?us-ascii?Q?DCatlAKUhjZ05ldwYnknOqVC/hNvgYQ1zhEXNS7uu2FYib539mamg5FY9rj4?=
- =?us-ascii?Q?0zNAnBv4rAzPg3HLSUCszQvA35/YwGqG/goZEXnyDAi3eBJnOEriiRcL4gVN?=
- =?us-ascii?Q?+F7125Cjn0tw4CI+kSrg6GoQ6c71r2GClmbZENVgaIbH785QSrUcYvYf8J6N?=
- =?us-ascii?Q?r0Kf2tZ+yhUyufeHNZJApr+Xo9NptC3S/4jhDpCzr/kbYeXRJEN/fnESne04?=
- =?us-ascii?Q?6WDgap4FoZiRSQ+wHN7SFdAp5sgo3c4xTRef6awpXSCS8iaRi8OoWCLodqbe?=
- =?us-ascii?Q?5LQQrC4iYRTryC0oaiiZsZxM?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231197AbhFKGbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:31:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229584AbhFKGbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:31:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3189606A5;
+        Fri, 11 Jun 2021 06:29:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623392989;
+        bh=cDgjgDCYhInJc42goOaTVPWGytEFGlr7kncIL8hl31o=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=KyVXl38DNyH3b0fvA7FiRqZHvBVJTB5Vxn+s+ZMzaU6aafkOetxKk5HA07dzVeTNF
+         xSkCGHH7CHrIjE3hkvyN7OGnIfUsSjKXHlny//E0APHlrOp7jcWcaD19wiaxHlNK69
+         HQM4MBrnV2jI1Pvqm1TKw1gQBOCrrtfPmDvlR3SJWwHR0sqPWSJ+LuaCBN1dnVa60P
+         hhppBAUUX/nBrQDj8cUXuK2ZfpYdSUnkpCTI1JahO1925UOZBWKJlLk2/cH0iK0fin
+         1MdeJxLOdfpKAab+MaRvpmTc0Yq4kjnMNSd+Jcjcx2b5S4I2nnPd0xPeSinMLtOYXp
+         gnILSsHXjQzQQ==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com
+Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
+In-Reply-To: <e5f231ca-6807-bcea-29c2-ab3926057310@codeaurora.org>
+References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
+ <YLoUiO8tpRpmvcyU@kroah.com> <87k0n9btnb.fsf@kernel.org>
+ <YLo6W5sKaXvy51eW@kroah.com>
+ <c2daab34-1b25-7ee3-e203-a414c1e486d5@codeaurora.org>
+ <874ke62i0v.fsf@kernel.org>
+ <e5f231ca-6807-bcea-29c2-ab3926057310@codeaurora.org>
+Date:   Fri, 11 Jun 2021 09:29:18 +0300
+Message-ID: <8735to29tt.fsf@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5935.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a8a89a1-8e53-41c9-5dc2-08d92ca18dc6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 06:24:22.7811
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tqhnQGl814gJ9DCGALrNxvepNCQLYUg6JKrKJ9IxffYc/ytw/TUWqgOXmYus99jN
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7072
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-> -----Original Message-----
-> From: Breno Matheus Lima <breno.lima@nxp.com>
-> Sent: Friday, June 11, 2021 9:48 AM
-> To: peter.chen@kernel.org
-> Cc: gregkh@linuxfoundation.org; shawnguo@kernel.org;
-> s.hauer@pengutronix.de; kernel@pengutronix.de; festevam@gmail.com;
-> dl-linux-imx <linux-imx@nxp.com>; linux-usb@vger.kernel.org;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> brenomatheus@gmail.com; Jun Li <jun.li@nxp.com>; Breno Matheus Lima
-> <breno.lima@nxp.com>
-> Subject: [PATCH] mx8mm: usb: chipidea: Fix Battery Charger 1.2 CDP detect=
-ion
->=20
-> i.MX8MM cannot detect certain CDP USB HUBs. usbmisc_imx.c driver is not
-> following CDP timing requirements defined by USB BC 1.2 specification and
-> section 3.2.4 Detection Timing CDP.
->=20
-> During Primary Detection the i.MX device should turn on VDP_SRC and IDM_S=
-INK
-> for a minimum of 40ms (TVDPSRC_ON). After a time of TVDPSRC_ON, the PD is
-> allowed to check the status of the D- line. Current implementation is wai=
-ting
-> between 1ms and 2ms, and certain BC 1.2 complaint USB HUBs cannot be dete=
-cted.
-> Increase delay to 40ms allowing enough time for primary detection.
->=20
-> During secondary detection the PD is required to disable VDP_SRC and IDM_=
-SNK,
-> and enable VDM_SRC and IDP_SINK for at least 40ms (TVDMSRC_ON).
->=20
-> Current implementation is not disabling VDP_SRC and IDM_SNK, introduce
-> disable sequence in imx7d_charger_secondary_detection() function.
->=20
-> VDM_SRC and IDP_SINK should be enabled for at least 40ms (TVDMSRC_ON).
-> Increase delay allowing enough time for detection.
->=20
 
-Fixes: 746f316b753a ("usb: chipidea: introduce imx7d USB charger detection"=
-)
+Hi,
 
-> Signed-off-by: Breno Lima <breno.lima@nxp.com>
-> Signed-off-by: Jun Li <jun.li@nxp.com>
-> ---
->  drivers/usb/chipidea/usbmisc_imx.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/usb/chipidea/usbmisc_imx.c
-> b/drivers/usb/chipidea/usbmisc_imx.c
-> index 4545b23bda3f..bac0f5458cab 100644
-> --- a/drivers/usb/chipidea/usbmisc_imx.c
-> +++ b/drivers/usb/chipidea/usbmisc_imx.c
-> @@ -686,6 +686,16 @@ static int imx7d_charger_secondary_detection(struct
-> imx_usbmisc_data *data)
->  	int val;
->  	unsigned long flags;
->=20
-> +	/* Clear VDATSRCENB0 to disable VDP_SRC and IDM_SNK required by BC 1.2
-> spec */
-> +	spin_lock_irqsave(&usbmisc->lock, flags);
-> +	val =3D readl(usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
-> +	val &=3D ~MX7D_USB_OTG_PHY_CFG2_CHRG_VDATSRCENB0;
-> +	writel(val, usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
-> +	spin_unlock_irqrestore(&usbmisc->lock, flags);
-> +
-> +	/* TVDMSRC_DIS */
-> +	msleep(20);
-> +
->  	/* VDM_SRC is connected to D- and IDP_SINK is connected to D+ */
->  	spin_lock_irqsave(&usbmisc->lock, flags);
->  	val =3D readl(usbmisc->base + MX7D_USB_OTG_PHY_CFG2); @@ -695,7 +705,8
-> @@ static int imx7d_charger_secondary_detection(struct imx_usbmisc_data
-> *data)
->  				usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
->  	spin_unlock_irqrestore(&usbmisc->lock, flags);
->=20
-> -	usleep_range(1000, 2000);
-> +	/* TVDMSRC_ON */
-> +	msleep(40);
->=20
->  	/*
->  	 * Per BC 1.2, check voltage of D+:
-> @@ -798,7 +809,8 @@ static int imx7d_charger_primary_detection(struct
-> imx_usbmisc_data *data)
->  				usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
->  	spin_unlock_irqrestore(&usbmisc->lock, flags);
->=20
-> -	usleep_range(1000, 2000);
-> +	/* TVDPSRC_ON */
-> +	msleep(40);
->=20
->  	/* Check if D- is less than VDAT_REF to determine an SDP per BC 1.2 */
->  	val =3D readl(usbmisc->base + MX7D_USB_OTG_PHY_STATUS);
-> --
-> 2.25.1
+Wesley Cheng <wcheng@codeaurora.org> writes:
+>>>>> Greg KH <gregkh@linuxfoundation.org> writes:
+>>>>>> On Wed, May 19, 2021 at 12:49:16AM -0700, Wesley Cheng wrote:
+>>>>>>> Changes in V9:
+>>>>>>>  - Fixed incorrect patch in series.  Removed changes in DTSI, as dw=
+c3-qcom will
+>>>>>>>    add the property by default from the kernel.
+>>>>>>
+>>>>>> This patch series has one build failure and one warning added:
+>>>>>>
+>>>>>> drivers/usb/dwc3/gadget.c: In function =E2=80=98dwc3_gadget_calc_tx_=
+fifo_size=E2=80=99:
+>>>>>> drivers/usb/dwc3/gadget.c:653:45: warning: passing argument 1 of =E2=
+=80=98dwc3_mdwidth=E2=80=99 makes pointer from integer without a cast [-Win=
+t-conversion]
+>>>>>>   653 |         mdwidth =3D dwc3_mdwidth(dwc->hwparams.hwparams0);
+>>>>>>       |                                ~~~~~~~~~~~~~^~~~~~~~~~
+>>>>>>       |                                             |
+>>>>>>       |                                             u32 {aka unsigne=
+d int}
+>>>>>> In file included from drivers/usb/dwc3/debug.h:14,
+>>>>>>                  from drivers/usb/dwc3/gadget.c:25:
+>>>>>> drivers/usb/dwc3/core.h:1493:45: note: expected =E2=80=98struct dwc3=
+ *=E2=80=99 but argument is of type =E2=80=98u32=E2=80=99 {aka =E2=80=98uns=
+igned int=E2=80=99}
+>>>>>>  1493 | static inline u32 dwc3_mdwidth(struct dwc3 *dwc)
+>>>>>>       |                                ~~~~~~~~~~~~~^~~
+>>>>>>
+>>>>>>
+>>>>>> drivers/usb/dwc3/dwc3-qcom.c: In function =E2=80=98dwc3_qcom_of_regi=
+ster_core=E2=80=99:
+>>>>>> drivers/usb/dwc3/dwc3-qcom.c:660:23: error: implicit declaration of =
+function =E2=80=98of_add_property=E2=80=99; did you mean =E2=80=98of_get_pr=
+operty=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+>>>>>>   660 |                 ret =3D of_add_property(dwc3_np, prop);
+>>>>>>       |                       ^~~~~~~~~~~~~~~
+>>>>>>       |                       of_get_property
+>>>>>>
+>>>>>>
+>>>>>> How did you test these?
+>>>
+>>> I ran these changes on our internal branches, which were probably
+>>> missing some of the recent changes done to the DWC3 drivers.  Will fix
+>>> the above compile errors and re-submit.
+>>>
+>>> In regards to how much these changes have been tested, we've been
+>>> maintaining the TX FIFO resize logic downstream for a few years already,
+>>> so its being used in end products.  We also verify this with our
+>>> internal testing, which has certain benchmarks we need to meet.
+>>=20
+>> the problem with that is that you *know* which gadget is running
+>> there. You know everyone of those is going to run the android
+>> gadget. In a sense, all those multiple products are testing the same
+>> exact use case :-)
+>>=20
+>
+> Mmmm, the USB gadget has changed from since we've implemented it, such
+> as going from Android gadget to Configfs.  Don't forget, we do have
+> other business segments that use this feature in other configurations as
+> well :).
 
+:)
+
+>>>>> to be honest, I don't think these should go in (apart from the build
+>>>>> failure) because it's likely to break instantiations of the core with
+>>>>> differing FIFO sizes. Some instantiations even have some endpoints wi=
+th
+>>>>> dedicated functionality that requires the default FIFO size configured
+>>>>> during coreConsultant instantiation. I know of at OMAP5 and some Intel
+>>>>> implementations which have dedicated endpoints for processor tracing.
+>>>>>
+>>>>> With OMAP5, these endpoints are configured at the top of the available
+>>>>> endpoints, which means that if a gadget driver gets loaded and takes
+>>>>> over most of the FIFO space because of this resizing, processor traci=
+ng
+>>>>> will have a hard time running. That being said, processor tracing isn=
+'t
+>>>>> supported in upstream at this moment.
+>>>>>
+>>>
+>>> I agree that the application of this logic may differ between vendors,
+>>> hence why I wanted to keep this controllable by the DT property, so that
+>>> for those which do not support this use case can leave it disabled.  The
+>>> logic is there to ensure that for a given USB configuration, for each EP
+>>> it would have at least 1 TX FIFO.  For USB configurations which don't
+>>> utilize all available IN EPs, it would allow re-allocation of internal
+>>> memory to EPs which will actually be in use.
+>>=20
+>> The feature ends up being all-or-nothing, then :-) It sounds like we can
+>> be a little nicer in this regard.
+>>=20
+>
+> Don't get me wrong, I think once those features become available
+> upstream, we can improve the logic.  From what I remember when looking
+
+sure, I support that. But I want to make sure the first cut isn't likely
+to break things left and right :)
+
+Hence, let's at least get more testing.
+
+> at Andy Shevchenko's Github, the Intel tracer downstream changes were
+> just to remove physical EP1 and 2 from the DWC3 endpoint list.  If that
+
+right, that's the reason why we introduced the endpoint feature
+flags. The end goal was that the UDC would be able to have custom
+feature flags paired with ->validate_endpoint() or whatever before
+allowing it to be enabled. Then the UDC driver could tell UDC core to
+skip that endpoint on that particular platform without interefering with
+everything else.
+
+Of course, we still need to figure out a way to abstract the different
+dwc3 instantiations.
+
+> was the change which ended up upstream for the Intel tracer then we
+> could improve the logic to avoid re-sizing those particular EPs.
+
+The problem then, just as I mentioned in the previous paragraph, will be
+coming up with a solution that's elegant and works for all different
+instantiations of dwc3 (or musb, cdns3, etc).
+
+> However, I'm not sure how the changes would look like in the end, so I
+> would like to wait later down the line to include that :).
+
+Fair enough, I agree. Can we get some more testing of $subject, though?
+Did you test $subject with upstream too? Which gadget drivers did you
+use? How did you test
+
+>>>>> I still think this may cause other places to break down. The promise =
+the
+>>>>> databook makes is that increasing the FIFO size over 2x wMaxPacketSize
+>>>>> should bring little to no benefit, if we're not maintaining that, I
+>>>>> wonder if the problem is with some of the BUSCFG registers instead,
+>>>>> where we configure interconnect bursting and the like.
+>>>>
+>>>
+>>> I've been referring mainly to the DWC3 programming guide for
+>>> recommendations on how to improve USB performance in:
+>>> Section 3.3.5 System Bus Features to Improve USB Performance
+>>=20
+>> dwc3 or dwc3.1? Either way, since I left Intel I don't have access to
+>> the databook anymore. I have to trust what you guys are telling me and,
+>> based on the description so far, I don't think we're doing the right
+>> thing (yet).
+>>=20
+>
+> Ah, I see.  DWC3.1 and DWC3 both have that USB performance section.  I
+> can explain some of the points I made with a bit more detail.  I thought
+> you still had access to it.
+
+I wish :)
+
+If Synopsys wants to give me access for the databook, I would not mind :-)
+
+>> It would be nice if other users would test this patchset with different
+>> gadget drivers and different platforms to have some confidence that
+>> we're limiting possible regressions.
+>>=20
+>> I would like for Thinh to comment from Synopsys side here.
+>>=20
+>>> At least when I ran the initial profiling, adjusting the RX/TX
+>>> thresholds brought little to no benefits.  Even in some of the examples,
+>>=20
+>> right, the FIFO sizes shouldn't help much. At least that's what Paul
+>> told me several years ago. Thinh, has the recommendation changed?
+>>=20
+>
+> So when I mention the RX/TX thresholds, this is different than the FIFO
+> resize.  The RX/TX threshold is used by the controller to determine when
+> to send or receive data based on the number of available FIFOs.  So for
+
+oh right, I remember now :-
+
+> the TX case, if we set the TX threshold, the controller will not start
+> transmitting data over the link after X amount of packets are copied to
+> the TXFIFO.  So for example, a TXFIFO size of 6 w/ a TX threshold of 3,
+> means that the controller will wait for 3 FIFO slots to be filled before
+> it sends the data.  So as you can see, with our configuration of TX FIFO
+
+yeah, makes sense.
+
+> size of 2 and TX threshold of 1, this would really be not beneficial to
+> us, because we can only change the TX threshold to 2 at max, and at
+> least in my observations, once we have to go out to system memory to
+> fetch the next data packet, that latency takes enough time for the
+> controller to end the current burst.
+
+What I noticed with g_mass_storage is that we can amortize the cost of
+fetching data from memory, with a deeper request queue. Whenever I
+test(ed) g_mass_storage, I was doing so with 250 requests. And that was
+enough to give me very good performance. Never had to poke at TX FIFO
+resizing. Did you try something like this too?
+
+I feel that allocating more requests is a far simpler and more generic
+method that changing FIFO sizes :)
+
+>>> they have diagrams showing a TXFIFO size of 6 max packets (Figure 3-5).
+>>>  I think its difficult to say that the TX fifo resizing won't help in
+>>> systems with limited, or shared resources where the bus latencies would
+>>> be somewhat larger.  By adjusting the TX FIFO size, the controller would
+>>> be able to fetch more data from system memory into the memory within the
+>>> controller, leading to less frequent end of bursts, etc... as data is
+>>> readily available.
+>>>
+>>> In terms of adjusting the AXI/AHB bursting, I would think the bandwidth
+>>> increase would eventually be constrained based on your system's design.
+>>>  We don't touch the GSBUSCFG registers, and leave them as is based off
+>>> the recommendations from the HW designers.
+>>=20
+>> Right, I want to touch those as little as possible too :-) However, to
+>> illustrate, the only reason I implemented FIFO resizing was because
+>> OMAP5 ES1 had TX FIFOs that were smaller than a full USB3 packet. HW
+>> Designer's recommendation can be bogus too ;-)
+>>=20
+>
+> Haha...true, we question their designs only when there's something
+> clearly wrong, but the AXI/AHB settings look good.  :)
+
+:)
+
+>>>> Good points.
+>>>>
+>>>> Wesley, what kind of testing have you done on this on different device=
+s?
+>>>>
+>>>
+>>> As mentioned above, these changes are currently present on end user
+>>> devices for the past few years, so its been through a lot of testing :).
+>>=20
+>> all with the same gadget driver. Also, who uses USB on android devices
+>> these days? Most of the data transfer goes via WiFi or Bluetooth, anyway
+>> :-)
+>>=20
+>> I guess only developers are using USB during development to flash dev
+>> images heh.
+>>=20
+>
+> I used to be a customer facing engineer, so honestly I did see some
+> really interesting and crazy designs.  Again, we do have non-Android
+> products that use the same code, and it has been working in there for a
+> few years as well.  The TXFIFO sizing really has helped with multimedia
+> use cases, which use isoc endpoints, since esp. in those lower end CPU
+> chips where latencies across the system are much larger, and a missed
+> ISOC interval leads to a pop in your ear.
+
+This is good background information. Thanks for bringing this
+up. Admitedly, we still have ISOC issues with dwc3. I'm interested in
+knowing if a deeper request queue would also help here.
+
+Remember dwc3 can accomodate 255 requests + link for each endpoint. If
+our gadget driver uses a low number of requests, we're never really
+using the TRB ring in our benefit.
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmDDAr4RHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUgwygf/dt5i0/DNa7cE5c3b9wWXjhTr4wRZ59vp
+xYHRmPWfG1lNtXcVVi6KqtKsCoIcAXig7wvJ6XZboNqUw4PlRb59vXOIebofKmW9
+I99TQXcT91IcZTrMsGYIrvKM1kYhrhH4W+qFOhhNwi99gclaucdoTUK0a9u+mqd9
+mlRCBbfAXlZbEdtmU46r8GhWud/1lDtupaWi6LLryvs3tdSNlNhb5uFAJTMtmmqP
+iZn76pXNQjLfC2pFH10HOpz2y6qHsHpRdTh2VAFt2srhmoGpHyCaW9fMzKNxe/AJ
+CmLf/4+EXTC70iqoBA2PGxJ+/FDHWRy6Qv57f3RnUbN1n9W1M6WovA==
+=1AxO
+-----END PGP SIGNATURE-----
+--=-=-=--
