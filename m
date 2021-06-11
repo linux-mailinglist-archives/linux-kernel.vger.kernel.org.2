@@ -2,177 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2614A3A3AB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F5F3A3ABC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhFKEIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 00:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        id S229733AbhFKELB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 00:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhFKEIK (ORCPT
+        with ESMTP id S229510AbhFKEK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 00:08:10 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35EDC061574;
-        Thu, 10 Jun 2021 21:06:12 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id r7so21142289edv.12;
-        Thu, 10 Jun 2021 21:06:12 -0700 (PDT)
+        Fri, 11 Jun 2021 00:10:59 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE68C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:08:50 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id x196so4526048oif.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:08:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2ru5NTnEQDZPpXWhXfz8XIfDBceAFX5z5yz+wskB7s4=;
-        b=rnpRxAB7xEyWP4hzkTxgysmXz/FyKywiZroIuzOkJBL3KRh9oRzDqy9J1043TgAl78
-         4PCR/+AyRlPkWgUWEURWlk45lNUpoRD28S0fu1U9Y+8Kmd7lYYXRGgcT91qHdDp9D27K
-         9XulUPUBnqYbSuY2eoHCNcNy2fp3Q2CJJTiydH5qRFNawrsWkDRlMkn0lQzls28vENCy
-         sLhyt7yAddWTPYbEeHla0wUO8caJaToOVsgSgPnw6NUG9W0qUNlpCzdtmfUQvSmRa74r
-         +IryXDd/qyV/w5RSEICTxz9CtVxWKJVRGGIxfQiYTbsZyIYzT/re7ktckx+OvIgGXGux
-         GlXQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Np3k6CK9NjalVZtaexn2XbHqvBfeGTYroieMiT0qCqE=;
+        b=o2V9o9YdQb6tLPXwkx7DQI31/snWFD/wNJg6E3+jdN5/4R/Y7AKaZvo3QZ+XjHRrng
+         h1aVwNLMlPvuLjT2n/21DhCigvWK+p+hB0y+EpSxOLxhtESv12pb6GwwWrkEBU2UXUh/
+         ATpC1W+iPebELDOkgZaWBsJkOI9ct5jAvWOsYUijf8zn3Pq5z2UGDrjZ9OqsLtc6p1zT
+         pdAHUZbecdzk+/fwQZvR4jTN74hCDZmJcEk6vRsUfRqbIY1vxIn3Dia61HCbvieTbSAv
+         QxGnWDP3gtMgDD+BwDdSR5DEHV57z1W0ytC9lLruVcJSiSl6399jvjo8+Q9gNQN+cKgU
+         oVSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2ru5NTnEQDZPpXWhXfz8XIfDBceAFX5z5yz+wskB7s4=;
-        b=B3z2Y2Dr+uAhd3dw+p4bP5/hzncGQ37BXPNBVOGaONXN5RJP+bJIP/mrGJEjzOdUia
-         5Q7aTIVck+GQ8fH56x10+MSy2aXKD2HE9tWqpDbu5U8j73ZLxBYYL40YlzvMt7PQnKU0
-         UiwvH2BQt2CB68DzzdJtXUyHklGC3XGuaZ2zJNpCIDWIxoMsX2Q8xdyM+dC7yVWUQyhY
-         NiNczmIckNYXOGzayeMkFsKu96vGCFs6N+jKPVr1htW1XDWCVgqD4f8gzdGln93W1BXB
-         9Xo4LJszlXm5k/tqxnTYwE7nMj55E77RMekg3X87dyLmgn5hF8nglGlHCqRKeDtbeqkJ
-         k4Bg==
-X-Gm-Message-State: AOAM531IFeX6C0Gk3fckaEWTWaoA7QclKSegpS3FLWYGil12IyLUmMos
-        zgriaHlirg8eabgqPH+ij5MBhz1cZ58nlq4TZUYL1zrpsrU2hf0Xljrp19cW
-X-Google-Smtp-Source: ABdhPJz8ubjy2qKc6iuAXBIjZx2bDZsZQ8aahgIxvFMKlgr6sTd3csIARxbzFcY7SbbBISWU2240qfpEug+Kg5ErQ3c=
-X-Received: by 2002:a05:6402:34c6:: with SMTP id w6mr1598733edc.174.1623384371192;
- Thu, 10 Jun 2021 21:06:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Np3k6CK9NjalVZtaexn2XbHqvBfeGTYroieMiT0qCqE=;
+        b=Eq6Ldwe4pZLLKFTRvrB35RC44dJb2In33DGQnnHxfxZUbFEGJQUrhQ6ko3LBjRWi4U
+         /o26Vp5cq0GYVscG+LSoaul4pahGBAzsxa/AEmTXu5h77E8BUl1wykfAbablIjxlIzD4
+         sWPTz3ATNL+9VaacJgaaRDWjluMQpukqXXyNbP8heh1qpQCgvpeI6S6McOyh5et1wdCi
+         KlYKphR7IiPrYsEcJJeS1Agw7H6iMAGzAbu6MHO3LAd1o/f4H0I2VUGSPfuxeDMw/o9+
+         0LNWET0i29JYjq3lTin2ySRFkYR8SZxpbuxc97gcEn02ruXb5xAsYRKI2bamMpe/zHdz
+         ShBA==
+X-Gm-Message-State: AOAM533govLdHVceYGarouoko2tvxlTxlAVXqvvQFjQ46/JkuMY1fr1f
+        dIrKRi9E28mqCWDpBLjgHDVXIQ==
+X-Google-Smtp-Source: ABdhPJzWEjcBbx8kFeB+uFJXKM84tlfmpPgMIWKdCWOMQeFiq69vKBN7Dq/fjfBm+lievXEBVtLqow==
+X-Received: by 2002:aca:ab15:: with SMTP id u21mr12474126oie.155.1623384529975;
+        Thu, 10 Jun 2021 21:08:49 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id d12sm1040897otf.65.2021.06.10.21.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 21:08:49 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 23:08:47 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, kgunda@codeaurora.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V4] dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom
+ pmic gpio bindings to YAML
+Message-ID: <YMLhzxMpbSRQac+P@builder.lan>
+References: <1621578615-4613-1-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-References: <20210610020108.1356361-1-liushixin2@huawei.com> <CAHC9VhQM4YP527Z9ijTBk2i++S=viZ1hKVo6GgCOUcNCVgB2vw@mail.gmail.com>
-In-Reply-To: <CAHC9VhQM4YP527Z9ijTBk2i++S=viZ1hKVo6GgCOUcNCVgB2vw@mail.gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Fri, 11 Jun 2021 12:05:44 +0800
-Message-ID: <CAD-N9QVNhOoj17tC4OTGbbhYmM0kxnk=Q_XKD0iQ8G4tORqPGQ@mail.gmail.com>
-Subject: Re: [PATCH -next] netlabel: Fix memory leak in netlbl_mgmt_add_common
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Liu Shixin <liushixin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621578615-4613-1-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 7:43 AM Paul Moore <paul@paul-moore.com> wrote:
->
-> On Wed, Jun 9, 2021 at 9:29 PM Liu Shixin <liushixin2@huawei.com> wrote:
-> >
-> > Hulk Robot reported memory leak in netlbl_mgmt_add_common.
-> > The problem is non-freed map in case of netlbl_domhsh_add() failed.
-> >
-> > BUG: memory leak
-> > unreferenced object 0xffff888100ab7080 (size 96):
-> >   comm "syz-executor537", pid 360, jiffies 4294862456 (age 22.678s)
-> >   hex dump (first 32 bytes):
-> >     05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-> >     fe 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
-> >   backtrace:
-> >     [<0000000008b40026>] netlbl_mgmt_add_common.isra.0+0xb2a/0x1b40
-> >     [<000000003be10950>] netlbl_mgmt_add+0x271/0x3c0
-> >     [<00000000c70487ed>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320
-> >     [<000000001f2ff614>] genl_rcv_msg+0x2bf/0x4f0
-> >     [<0000000089045792>] netlink_rcv_skb+0x134/0x3d0
-> >     [<0000000020e96fdd>] genl_rcv+0x24/0x40
-> >     [<0000000042810c66>] netlink_unicast+0x4a0/0x6a0
-> >     [<000000002e1659f0>] netlink_sendmsg+0x789/0xc70
-> >     [<000000006e43415f>] sock_sendmsg+0x139/0x170
-> >     [<00000000680a73d7>] ____sys_sendmsg+0x658/0x7d0
-> >     [<0000000065cbb8af>] ___sys_sendmsg+0xf8/0x170
-> >     [<0000000019932b6c>] __sys_sendmsg+0xd3/0x190
-> >     [<00000000643ac172>] do_syscall_64+0x37/0x90
-> >     [<000000009b79d6dc>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> > ---
-> >  net/netlabel/netlabel_mgmt.c | 20 ++++++++++++++++----
-> >  1 file changed, 16 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
-> > index e664ab990941..e7f00c0f441e 100644
-> > --- a/net/netlabel/netlabel_mgmt.c
-> > +++ b/net/netlabel/netlabel_mgmt.c
-> > @@ -191,6 +191,12 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
-> >                 entry->family = AF_INET;
-> >                 entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
-> >                 entry->def.addrsel = addrmap;
-> > +
-> > +               ret_val = netlbl_domhsh_add(entry, audit_info);
-> > +               if (ret_val != 0) {
-> > +                       kfree(map);
-> > +                       goto add_free_addrmap;
-> > +               }
-> >  #if IS_ENABLED(CONFIG_IPV6)
-> >         } else if (info->attrs[NLBL_MGMT_A_IPV6ADDR]) {
-> >                 struct in6_addr *addr;
-> > @@ -243,13 +249,19 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
-> >                 entry->family = AF_INET6;
-> >                 entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
-> >                 entry->def.addrsel = addrmap;
-> > +
-> > +               ret_val = netlbl_domhsh_add(entry, audit_info);
-> > +               if (ret_val != 0) {
-> > +                       kfree(map);
-> > +                       goto add_free_addrmap;
-> > +               }
-> >  #endif /* IPv6 */
-> > +       } else {
-> > +               ret_val = netlbl_domhsh_add(entry, audit_info);
-> > +               if (ret_val != 0)
-> > +                       goto add_free_addrmap;
-> >         }
-> >
-> > -       ret_val = netlbl_domhsh_add(entry, audit_info);
-> > -       if (ret_val != 0)
-> > -               goto add_free_addrmap;
-> > -
-> >         return 0;
->
-> Thanks for the report and a fix, although I think there may be a
-> simpler fix that results in less code duplication; some quick pseudo
-> code below:
->
->   int netlbl_mgmt_add_common(...)
->   {
->      void *map_p = NULL;
->
->      if (NLBL_MGMT_A_IPV4ADDR) {
->        struct netlbl_domaddr4_map *map;
->        map_p = map;
+On Fri 21 May 01:30 CDT 2021, satya priya wrote:
 
-It's better to use a separate map_p pointer, not like the draft patch
-I sent yesterday.
+> Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
+> 
 
->
->      } else if (NLBL_MGMT_A_IPV6ADDR) {
->        struct netlbl_domaddr4_map *map;
->        map_p = map;
->     }
->
->   add_free_addrmap:
->     kfree(map_p);
->     kfree(addrmap);
->   }
+While the structure of the binding is a proper binding, the definition
+of the pinctrl states doesn't properly represent what we need to be able
+to describe with this binding; see below.
 
-Simple comment here: we should separate kfree(map_p) and
-kfree(addrmap) into different goto labels, just like the draft patch I
-sent yesterday.
+[..]
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> new file mode 100644
+> index 0000000..d9024eb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> @@ -0,0 +1,256 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm PMIC GPIO block
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@sonymobile.com>
 
->
-> ... this approach would even simplify the error handling after the
-> netlbl_af{4,6}list_add() calls a bit too (you could jump straight to
-> add_free_addrmap).
->
-> --
-> paul moore
-> www.paul-moore.com
+Please make that bjorn.andersson@linaro.org
+
+> +
+> +description: |
+
+I don't think you need this defined in literal style, so omit the '|'
+
+> +  This binding describes the GPIO block(s) found in the 8xxx series of
+> +  PMIC's from Qualcomm.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - qcom,pm8005-gpio
+> +          - qcom,pm8018-gpio
+> +          - qcom,pm8038-gpio
+> +          - qcom,pm8058-gpio
+> +          - qcom,pm8916-gpio
+> +          - qcom,pm8917-gpio
+> +          - qcom,pm8921-gpio
+> +          - qcom,pm8941-gpio
+> +          - qcom,pm8950-gpio
+> +          - qcom,pm8994-gpio
+> +          - qcom,pm8998-gpio
+> +          - qcom,pma8084-gpio
+> +          - qcom,pmi8950-gpio
+> +          - qcom,pmi8994-gpio
+> +          - qcom,pmi8998-gpio
+> +          - qcom,pms405-gpio
+> +          - qcom,pm660-gpio
+
+Please keep these sorted alphabetically.
+
+> +          - qcom,pm660l-gpio
+> +          - qcom,pm8150-gpio
+> +          - qcom,pm8150b-gpio
+> +          - qcom,pm8350-gpio
+> +          - qcom,pm8350b-gpio
+> +          - qcom,pm8350c-gpio
+> +          - qcom,pmk8350-gpio
+> +          - qcom,pm6150-gpio
+> +          - qcom,pm6150l-gpio
+> +          - qcom,pm7325-gpio
+> +          - qcom,pmr735a-gpio
+> +          - qcom,pmr735b-gpio
+> +          - qcom,pm8008-gpio
+> +          - qcom,pmx55-gpio
+> +
+> +      - enum:
+> +          - qcom,spmi-gpio
+> +          - qcom,ssbi-gpio
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 44
+> +    description: |
+> +        Must contain an array of encoded interrupt specifiers for
+> +        each available GPIO
+
+We no longer specify "interrupts" but it seems we forgot to update the
+binding. So perhaps it's the right thing to keep it as part of the
+conversion and add a second patch that removes this.
+
+> +
+> +  '#interrupt-cells':
+> +    const: 2
+> +
+> +  interrupt-controller: true
+> +
+> +  gpio-controller: true
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +    description: |
+> +        The first cell will be used to define gpio number and the
+> +        second denotes the flags for this gpio
+> +
+> +  gpio-keys:
+
+This is the name of the pinctrl state defined in the example, as defined
+here we will only ever be able to describe the volume keys.
+
+You need to describe all valid states - and you need to support the two
+different nesting of the properties.
+
+See qcom,tlmm-common.yaml and how we use that in the various bindings.
+
+> +    type: object
+> +    properties:
+> +      volume-keys:
+> +        type: object
+> +        anyOf:
+> +          - $ref: "pinmux-node.yaml"
+> +          - $ref: "pincfg-node.yaml"
+> +        properties:
+> +          pins:
+> +            description: |
+> +                List of gpio pins affected by the properties specified in
+> +                this subnode.  Valid pins are
+> +                     - gpio1-gpio4 for pm8005
+> +                     - gpio1-gpio6 for pm8018
+> +                     - gpio1-gpio12 for pm8038
+> +                     - gpio1-gpio40 for pm8058
+> +                     - gpio1-gpio4 for pm8916
+> +                     - gpio1-gpio38 for pm8917
+> +                     - gpio1-gpio44 for pm8921
+> +                     - gpio1-gpio36 for pm8941
+> +                     - gpio1-gpio8 for pm8950 (hole on gpio3)
+> +                     - gpio1-gpio22 for pm8994
+> +                     - gpio1-gpio26 for pm8998
+> +                     - gpio1-gpio22 for pma8084
+> +                     - gpio1-gpio2 for pmi8950
+> +                     - gpio1-gpio10 for pmi8994
+> +                     - gpio1-gpio12 for pms405 (holes on gpio1, gpio9
+> +                                                and gpio10)
+> +                     - gpio1-gpio10 for pm8150 (holes on gpio2, gpio5,
+> +                                                gpio7 and gpio8)
+> +                     - gpio1-gpio12 for pm8150b (holes on gpio3, gpio4
+> +                                                 and gpio7)
+> +                     - gpio1-gpio12 for pm8150l (hole on gpio7)
+> +                     - gpio1-gpio10 for pm8350
+> +                     - gpio1-gpio8 for pm8350b
+> +                     - gpio1-gpio9 for pm8350c
+> +                     - gpio1-gpio4 for pmk8350
+> +                     - gpio1-gpio10 for pm6150
+> +                     - gpio1-gpio12 for pm6150l
+> +                     - gpio1-gpio10 for pm7325
+> +                     - gpio1-gpio4 for pmr735a
+> +                     - gpio1-gpio4 for pmr735b
+> +                     - gpio1-gpio2 for pm8008
+> +                     - gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, gpio10
+> +                                                and gpio11)
+> +
+> +            items:
+> +              pattern: "^gpio([0-9]+)$"
+> +
+> +          function:
+> +            items:
+> +              - enum:
+> +                  - normal
+> +                  - paired
+> +                  - func1
+> +                  - func2
+> +                  - dtest1
+> +                  - dtest2
+> +                  - dtest3
+> +                  - dtest4
+> +                  - func3  # supported by LV/MV GPIO subtypes
+> +                  - func4  # supported by LV/MV GPIO subtypes
+> +
+> +          bias-disable: true
+> +
+> +          bias-pull-down: true
+> +
+> +          bias-pull-up: true
+> +
+> +          qcom,pull-up-strength:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Specifies the strength to use for pull up, if selected.
+> +                Valid values are defined in
+> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +                If this property is omitted 30uA strength will be used
+> +                if pull up is selected
+> +
+> +          bias-high-impedance: true
+> +
+> +          input-enable: true
+> +
+> +          output-high: true
+> +
+> +          output-low: true
+> +
+> +          power-source: true
+> +
+> +          qcom,drive-strength:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects the drive strength for the specified pins
+> +                Valid drive strength values are defined in
+> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +            enum: [0, 1, 2, 3]
+> +
+> +          drive-push-pull: true
+> +
+> +          drive-open-drain: true
+> +
+> +          drive-open-source: true
+> +
+> +          qcom,analog-pass:
+> +            $ref: /schemas/types.yaml#/definitions/flag
+> +            description: |
+> +                The specified pins are configured in
+> +                analog-pass-through mode.
+> +
+> +          qcom,atest:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects ATEST rail to route to GPIO when it's
+> +                configured in analog-pass-through mode.
+> +            enum: [1, 2, 3, 4]
+> +
+> +          qcom,dtest-buffer:
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+> +            description: |
+> +                Selects DTEST rail to route to GPIO when it's
+> +                configured as digital input.
+> +            enum: [1, 2, 3, 4]
+> +
+> +        required:
+> +          - pins
+> +          - function
+> +
+> +        additionalProperties: false
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+
+I think it makes sense to require gpio-controller, '#gpio-cells',
+gpio-ranges and interrupt-controller as well.
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +
+> +    pm8921_gpio: gpio@150 {
+> +      compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
+> +      reg = <0x150 0x160>;
+> +      interrupts = <192 1>, <193 1>, <194 1>,
+> +                   <195 1>, <196 1>, <197 1>,
+> +                   <198 1>, <199 1>, <200 1>,
+> +                   <201 1>, <202 1>, <203 1>,
+> +                   <204 1>, <205 1>, <206 1>,
+> +                   <207 1>, <208 1>, <209 1>,
+> +                   <210 1>, <211 1>, <212 1>,
+> +                   <213 1>, <214 1>, <215 1>,
+> +                   <216 1>, <217 1>, <218 1>,
+> +                   <219 1>, <220 1>, <221 1>,
+> +                   <222 1>, <223 1>, <224 1>,
+> +                   <225 1>, <226 1>, <227 1>,
+> +                   <228 1>, <229 1>, <230 1>,
+> +                   <231 1>, <232 1>, <233 1>,
+> +                   <234 1>, <235 1>;
+
+As noted above, this list of interrupts should be omitted from the
+example - but better done separate from the conversion patch.
+
+Thanks,
+Bjorn
+
+> +
+> +      gpio-controller;
+> +      #gpio-cells = <2>;
+> +
+> +      pm8921_gpio_keys: gpio-keys {
+> +        volume-keys {
+> +          pins = "gpio20", "gpio21";
+> +          function = "normal";
+> +
+> +          input-enable;
+> +          bias-pull-up;
+> +          drive-push-pull;
+> +          qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+> +          power-source = <PM8921_GPIO_S4>;
+> +        };
+> +      };
+> +    };
+> +...
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
