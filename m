@@ -2,152 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809EB3A46EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C953A4691
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhFKQsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhFKQqv (ORCPT
+        id S230305AbhFKQgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:36:03 -0400
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:43841 "EHLO
+        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhFKQgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:46:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9978C0611C2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:44:48 -0700 (PDT)
-Message-Id: <20210611163115.479500577@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623429887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=atL+lRHv5gsOeN/4fhbOJHJ5zMlVREtqto30D2DhDOQ=;
-        b=m7AHsb9TXWZAQrfrv8xRBqY2fORV7LAFEgt1Ig5p4yaxuzpqGDaoo2a/6fA0N92lCdiVbF
-        JwcLAQFt2uLFsZngLrH7P4Dh4fADbuFUKbJDblv8mw1bNKP2NtvlMrEG2QpEdIPDjeMEgu
-        P8qx67lGnjR46Isiwa8Ey5jK0Zwk6Q4So5I8bhjjOk87ahsRgXCp8rLyPDS4p5wO+d4SOe
-        5Ub0zUFETbqLaNZTsNCTtxcR/oOc7iPTwpdEgxz/oVmlLi7aY1VqA1BKKsQQzH+5v/kU++
-        rQvJPFfl2Jru1RcV08KHll3MkZnLywXoj+7bI3dM3jG54UFkM19NCUYH0fg0Qg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623429887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=atL+lRHv5gsOeN/4fhbOJHJ5zMlVREtqto30D2DhDOQ=;
-        b=jIGcx37fuTYYY9Ut/VsFOYPLi/n9XNSNSD8EOEevE3dsFCVYFkhqqYt5FsdbPbm6ZOW2BI
-        21L7mppxk1JKjwBw==
-Date:   Fri, 11 Jun 2021 18:16:04 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch 41/41] x86/pkru: Remove xstate fiddling from write_pkru()
-References: <20210611161523.508908024@linutronix.de>
+        Fri, 11 Jun 2021 12:36:02 -0400
+Received: by mail-ed1-f43.google.com with SMTP id s6so37796827edu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WgSbcHoAYOInbkclLd+KPDy6aZgT3YURgKmL3Czt4iE=;
+        b=fVnqtDPnHyDeEDwW7lCfLTc6YqgBoQINeauUCk+FzpQk1NQM8ZKrzokTuRsjKcQD0a
+         7uc5EUmJLdvqhKwS9HPRkPSp6kOwxPiZMmdzeEkp9RQunoQXJnxMjul2NImsgdIPe9FH
+         H5bkyFkjRXTcKrbkpcnYuEg/P7rgWCklLX09bdAy0NSXUvXMFtzPCR86g/c3NEgLmf9P
+         xZUMnqKZx6cGgiOepfrBdCuYoE8ESNN39bl8zYn2H+kx/hJSuQ9kHXSWo+fofieg6ap/
+         98gd/jWrtGd7QZOXQsU/ZbLq6r3vJ4+hsXWc9FwzGL95S2JoxKhidNJJPzoZEHWH2dBl
+         NzBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WgSbcHoAYOInbkclLd+KPDy6aZgT3YURgKmL3Czt4iE=;
+        b=hQ/JsAJSGr5kfsw7BykeCRkNd2DbMd2TfA5tDOXzSLzlQcZTbEa43qaRYzrbY+yYZJ
+         /ehancftRIe3VU+udG/pKTvKKfQKw5Xo2op5gU+Udvrj3HQ7om4M/b/JW3xIYLAvFDCp
+         g2qsH6oA11kMKqJEuzcdPOe0+JLYljntwTn1Zk1YJoCyHl/WTBskwMcixCqY7Fjcwcx2
+         F2hd23BUxC60wTkNW4QbYC6M0YR/XlzN2vj9QlFEAeFT7J8xgyCAGYp8XIICstO/hhvK
+         9k6jGtoPBvRJEUoye3XoEuB4rD5VlqNcs4RpT8ZocqKPAXqCU2NrTZ00FpgvRlKQkGMW
+         Z8Rg==
+X-Gm-Message-State: AOAM531Cq94XZUt4iFJOdsULltqAVFRUcAG3kT4jiHG1ANP97lQSoUan
+        0ZJELQnPvj18WoTxFM+Lhdf2E2a5jeVYWZK/cMLWUA==
+X-Google-Smtp-Source: ABdhPJyweZRqGe5U6/h4mKOvFHeHjvkHKmlB8Rwc9BFbDX+0O/I9sBlV7d6O3E0bdyYQXv53ZNs1dnhbXp4mwe1y1Bg=
+X-Received: by 2002:aa7:db16:: with SMTP id t22mr4619739eds.49.1623429183914;
+ Fri, 11 Jun 2021 09:33:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+References: <20210609140412.16058-1-jon.lin@rock-chips.com>
+ <20210609140412.16058-2-jon.lin@rock-chips.com> <20210610024350.GA697147@robh.at.kernel.org>
+ <e8e7c8c1-4f71-538c-a8e1-b61a894bd4a8@rock-chips.com>
+In-Reply-To: <e8e7c8c1-4f71-538c-a8e1-b61a894bd4a8@rock-chips.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Fri, 11 Jun 2021 13:32:52 -0300
+Message-ID: <CAAEAJfCyXWvcqswXfmgXBX-et0mq3vxoUacUmHGso9t+XoNqOg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip
+ serial flash controller
+To:     Kever Yang <kever.yang@rock-chips.com>
+Cc:     Rob Herring <robh@kernel.org>, Jon Lin <jon.lin@rock-chips.com>,
+        linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Johan Jonker <jbx6244@gmail.com>, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>, p.yadav@ti.com,
+        macroalpha82@gmail.com, devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Chris Morgan <macromorgan@hotmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PKRU value of a task is stored in task->thread.pkru when the task is
-scheduled out. PKRU is restored on schedule in from there. So keeping the
-XSAVE buffer up to date is a pointless exercise.
+Hi all,
 
-Remove the xstate fiddling and cleanup all related functions.
+On Thu, 10 Jun 2021 at 00:04, Kever Yang <kever.yang@rock-chips.com> wrote:
+>
+> Hi Rob,
+>
+> On 2021/6/10 =E4=B8=8A=E5=8D=8810:43, Rob Herring wrote:
+> > On Wed, Jun 09, 2021 at 10:04:04PM +0800, Jon Lin wrote:
+> >> From: Chris Morgan <macromorgan@hotmail.com>
+> >>
+> >> Add bindings for the Rockchip serial flash controller. New device
+> >> specific parameter of rockchip,sfc-no-dma included in documentation.
+> >>
+> >> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> >> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+> >> ---
+> >>
+> >> Changes in v7:
+> >> - Fix up the sclk_sfc parent error in rk3036
+> >> - Unify to "rockchip,sfc" compatible id because all the feature update
+> >>    will have a new IP version, so the driver is used for the SFC IP in
+> >>    all SoCs
+> >> - Change to use node "sfc" to name the SFC pinctrl group
+> >> - Add subnode reg property check
+> >> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+> >> - Limit max_iosize to 32KB
+> >>
+> >> Changes in v6:
+> >> - Add support in device trees for rv1126(Declared in series 5 but not
+> >>    submitted)
+> >> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+> >>    affect interpretation and has been widely used
+> >> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+> >> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declar=
+ed
+> >>    in series 5 but not submitted)
+> >> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
+> >> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+> >> - Change to use devm_spi_alloc_master and spi_unregister_master
+> >>
+> >> Changes in v5:
+> >> - Add support in device trees for rv1126
+> >> - Support sfc tx_dual, tx_quad
+> >> - Simplify the code, such as remove "rockchip_sfc_register_all"
+> >> - Support SFC ver4 ver5
+> >>
+> >> Changes in v4:
+> >> - Changing patch back to an "RFC". An engineer from Rockchip
+> >>    reached out to me to let me know they are working on this patch for
+> >>    upstream, I am submitting this v4 for the community to see however
+> >>    I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+> >>    soon and these are the ones we should pursue for mainlining. Jon's
+> >>    patch series should include support for more hardware than this
+> >>    series.
+> >> - Clean up documentation more and ensure it is correct per
+> >>    make dt_binding_check.
+> >> - Add support in device trees for rk3036, rk3308, and rv1108.
+> >> - Add ahb clock (hclk_sfc) support for rk3036.
+> >> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+> >> - Change IRQ code to only mark IRQ as handled if it handles the
+> >>    specific IRQ (DMA transfer finish) it is supposed to handle.
+> >>
+> >> Changes in v3:
+> >> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+> >> - Changed the compatible string from rockchip,sfc to
+> >>    rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+> >>    driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+> >>    RV1108 SoCs, and possibly more. However, I am currently only able
+> >>    to test this on a PX30 (an RK3326). The technical reference manuals
+> >>    appear to list the same registers for each device.
+> >> - Corrected devicetree documentation for formatting and to note these
+> >>    changes.
+> >> - Replaced the maintainer with Heiko Stuebner and myself, as we will
+> >>    take ownership of this going forward.
+> >> - Noted that the device (per the reference manual) supports 4 CS, but
+> >>    I am only able to test a single CS (CS 0).
+> >> - Reordered patches to comply with upstream rules.
+> >>
+> >> Changes in v2:
+> >> - Reimplemented driver using spi-mem subsystem.
+> >> - Removed power management code as I couldn't get it working properly.
+> >> - Added device tree bindings for Odroid Go Advance.
+> >>
+> >> Changes in v1:
+> >> hanges made in this new series versus the v8 of the old series:
+> >> - Added function to read spi-rx-bus-width from device tree, in the
+> >>    event that the SPI chip supports 4x mode but only has 2 pins
+> >>    wired (such as the Odroid Go Advance).
+> >> - Changed device tree documentation from txt to yaml format.
+> >> - Made "reset" message a dev_dbg from a dev_info.
+> >> - Changed read and write fifo functions to remove redundant checks.
+> >> - Changed the write and read from relaxed to non-relaxed when
+> >>    starting the DMA transfer or reading the DMA IRQ.
+> >> - Changed from dma_coerce_mask_and_coherent to just
+> >>    dma_set_mask_and_coherent.
+> >> - Changed name of get_if_type to rockchip_sfc_get_if_type.
+> >>
+> >>   .../devicetree/bindings/spi/rockchip-sfc.yaml | 88 +++++++++++++++++=
+++
+> >>   1 file changed, 88 insertions(+)
+> >>   create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sf=
+c.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b=
+/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> >> new file mode 100644
+> >> index 000000000000..42e4198e92af
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> >> @@ -0,0 +1,88 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Rockchip Serial Flash Controller (SFC)
+> >> +
+> >> +maintainers:
+> >> +  - Heiko Stuebner <heiko@sntech.de>
+> >> +  - Chris Morgan <macromorgan@hotmail.com>
+> >> +
+> >> +allOf:
+> >> +  - $ref: spi-controller.yaml#
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    oneOf:
+> >> +      - const: rockchip,sfc
+> > Use 'enum' instead of oneOf+const.
+> >
+> > You need an SoC specific compatible.
+>
+>
+> The rockchip sfc controller is a standalone IP with version register,
+> and the driver can
+>
+> handle all the feature difference inside the IP, so we would like to use
+> a more generic
+>
+> compatible name instead of bind to any of SoC name. So can we use
+> "rockchip,sfc"
+>
+> like "snps,designware-spi", which is a generic one, instead of an SoC
+> specific compatible?
+>
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V4: New patch
----
- arch/x86/include/asm/pkru.h          |   17 ++++-------------
- arch/x86/include/asm/special_insns.h |   14 +-------------
- arch/x86/kvm/x86.c                   |    4 ++--
- 3 files changed, 7 insertions(+), 28 deletions(-)
+IIUC, the way this works is along these lines:
 
---- a/arch/x86/include/asm/pkru.h
-+++ b/arch/x86/include/asm/pkru.h
-@@ -41,23 +41,14 @@ static inline u32 read_pkru(void)
- 
- static inline void write_pkru(u32 pkru)
- {
--	struct pkru_state *pk;
--
- 	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
- 		return;
--
--	pk = get_xsave_addr(&current->thread.fpu.state.xsave, XFEATURE_PKRU);
--
- 	/*
--	 * The PKRU value in xstate needs to be in sync with the value that is
--	 * written to the CPU. The FPU restore on return to userland would
--	 * otherwise load the previous value again.
-+	 * WRPKRU is relatively expensive compared to RDPKRU.
-+	 * Avoid WRPKRU when it would not change the value.
- 	 */
--	fpregs_lock();
--	if (pk)
--		pk->pkru = pkru;
--	__write_pkru(pkru);
--	fpregs_unlock();
-+	if (pkru != rdpkru())
-+		wrpkru(pkru);
- }
- 
- static inline void pkru_write_default(void)
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -104,25 +104,13 @@ static inline void wrpkru(u32 pkru)
- 		     : : "a" (pkru), "c"(ecx), "d"(edx));
- }
- 
--static inline void __write_pkru(u32 pkru)
--{
--	/*
--	 * WRPKRU is relatively expensive compared to RDPKRU.
--	 * Avoid WRPKRU when it would not change the value.
--	 */
--	if (pkru == rdpkru())
--		return;
--
--	wrpkru(pkru);
--}
--
- #else
- static inline u32 rdpkru(void)
- {
- 	return 0;
- }
- 
--static inline void __write_pkru(u32 pkru)
-+static inline void wrpkru(u32 pkru)
- {
- }
- #endif
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -943,7 +943,7 @@ void kvm_load_guest_xsave_state(struct k
- 	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
- 	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU)) &&
- 	    vcpu->arch.pkru != vcpu->arch.host_pkru)
--		__write_pkru(vcpu->arch.pkru);
-+		write_pkru(vcpu->arch.pkru);
- }
- EXPORT_SYMBOL_GPL(kvm_load_guest_xsave_state);
- 
-@@ -957,7 +957,7 @@ void kvm_load_host_xsave_state(struct kv
- 	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU))) {
- 		vcpu->arch.pkru = rdpkru();
- 		if (vcpu->arch.pkru != vcpu->arch.host_pkru)
--			__write_pkru(vcpu->arch.host_pkru);
-+			write_pkru(vcpu->arch.host_pkru);
- 	}
- 
- 	if (kvm_read_cr4_bits(vcpu, X86_CR4_OSXSAVE)) {
+* The SFC driver can only care for the rockchip,sfc compatible string
+and, if suitable, use the IP version register mentioned by Kever [1].
 
+* The bindings doc specifies both the SoC-specific and the generic one
+with:
+
+      - items:
+          - enum:
+              - rockchip,px30-sfc
+          - const: rockchip,sfc
+
+* The device tree lists both as well:
+
+compatible =3D "rockchip,px30-sfc", "rockchip,sfc";
+
+This can apply to all IP cores really; and will allow some
+compatibility between the downstream/vendor device tree
+and upstream.
+
+This scheme is indeed more convoluted than just
+picking any SoC name for the compatible string, and
+use that compatible string for all the SoCs (given they
+are all compatible, again as per [1]).
+
+IOW, you only have "rockchip,px30-sfc" in the bindings,
+in the devicetree files and in the driver.
+
+[1] https://lkml.org/lkml/2021/6/8/2030
+
+Thanks!
+Ezequiel
