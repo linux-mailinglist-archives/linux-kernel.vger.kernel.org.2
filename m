@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A6E3A391F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7FC3A3930
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhFKBIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 21:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbhFKBIm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 21:08:42 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42761C0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 18:06:30 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id og14so1928985ejc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 18:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H2IbE0UDqkplcoBwYyFLTzh0YSSXPcpK0pIRNcznpsk=;
-        b=1eGkRAu1mECX3+QYmR6Ax3ULxHRk79Pq25bI74ffIR34iYh3LeO+i/dGwJD8BFDQdX
-         cnJSZEB6fJGYpggDS9Nq5hoau6y+je5XFcaw4/lwxQyLCiLpXnPWI7n8X0xHLRtZl+zT
-         os32e2S+mSlAH3xZ6Ux1CEJ9JtabY3hK3zQMbdjwyZ9cZAsXjzYO2HA7fEQh7WDVYyZX
-         nlinu6YBYfBi2jr+9yzGDUlIE3TWNoB/eDvZJMEjxYrHmwChFAWiVX3c/8wzakJpJiTJ
-         kICFm4qG4cruDcECs9sSbJjn9KFzK9xvCEelMWRLucoGJ0d/4e6X/BKktJqMhl/EyiFi
-         XMIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H2IbE0UDqkplcoBwYyFLTzh0YSSXPcpK0pIRNcznpsk=;
-        b=P+nCHDXy8XC22xu/KFT5eHwguFZgdwdBwKl/liMYocpbJrp+/D+dRUsTkKVbY+jYTp
-         NuDmxARTtA6+y6HNO2tNq3IAxqQ+XTl/+dPx9Y5E2sMj5YLn7U9D2f5ZRVUiAp3xVE4G
-         h7dGA3hS1y6kl9VCUP4+hdCWMleZDbJAYQTtmddsEJYNiK6KildXfh88gc5D13wOFEvK
-         M/dGHbHhdLgUdo+a/ATfTRlHXsdjx6V++dmOMpEVzEF4GwPGwrWTkLtk5IUh40xGHZTq
-         kE+SktWDKOWANxL4w3CQLch7fPNdNKMtzEAIzpnMG8GBlDOn/T44dMcHIyr85J/yA4nj
-         i5oQ==
-X-Gm-Message-State: AOAM531v6yzwF2MK7rXuK9xGxfDgZivEAYClnic0SUNc18N2/83KTmdm
-        MUs8D47h3CvDucn/9riQtqjF19vJ0el6MY3bH9wr
-X-Google-Smtp-Source: ABdhPJx0TKHfTUKKbwofo48lOHqY6bpNs5Fp96fPiNYMnxeGs/QUBiv+pKoyaYieeFTyVC9y9U95lqqCoiocDB1iEQA=
-X-Received: by 2002:a17:906:4111:: with SMTP id j17mr1050234ejk.488.1623373586316;
- Thu, 10 Jun 2021 18:06:26 -0700 (PDT)
+        id S231215AbhFKBOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 21:14:35 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:49593 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230299AbhFKBOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Jun 2021 21:14:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G1N9q5Y97z9sRN;
+        Fri, 11 Jun 2021 11:12:31 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623373955;
+        bh=QFBPZX3fM/+3TGOBfe8KTEkysAJDVoYZKgKVIPksBME=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cZ7P0jwRRn0JzPrdVkQ2XwbbNsAXeNlPjDDrGo9ocrqGweZA1qE7xQdseqs3QCVOZ
+         A8XIYAby9QNqW+bMhWpWWgOBWcgdfE8uK2Tc+zaqYvRGVMwFkVkR5oPwfSUw6v64wH
+         Qlj4RltKTfdZj6xmfA6Qdw8YksOYCKRnIrh1fZAcb8sem6yATwyvTNc+/BJ1AqnYMD
+         y1rK//H9jmjTSbE5F/JT4+1S+vQv62iZldSVNMkzwwRaLzmW+mXDOPnI4BToWNrDfP
+         G28zKvjbfX55U2Hgc50U6T/hfnkkMmdcSJ6/b4nIuD8U91jzMB3T18K0B5mz1DLDIG
+         K7rvvu5M1xTGA==
+Date:   Fri, 11 Jun 2021 11:12:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the gfs2 tree with the vfs tree
+Message-ID: <20210611111231.7750bb60@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1623317883-54209-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1623317883-54209-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 10 Jun 2021 21:06:15 -0400
-Message-ID: <CAHC9VhQ_XkZ=ADhe5=PqV-zNuEGOHDZfsBnSErW3j+zz5b4Qrg@mail.gmail.com>
-Subject: Re: [PATCH -next] selinux: Fix kernel-doc
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, nathan@kernel.org,
-        ndesaulniers@google.com, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/=hKTzhIkkiai=MbU=pqZJ6h";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 5:38 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Fix function name in ss/services.c kernel-doc comment
-> to remove a warning found by running make W=1 LLVM=1.
->
-> security/selinux/ss/services.c:2437: warning: expecting prototype for
-> security_pkey_sid(). Prototype was for security_ib_pkey_sid() instead.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  security/selinux/ss/services.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-> index 3658488..bb043bf 100644
-> --- a/security/selinux/ss/services.c
-> +++ b/security/selinux/ss/services.c
-> @@ -2423,7 +2423,7 @@ int security_port_sid(struct selinux_state *state,
->  }
->
->  /**
-> - * security_pkey_sid - Obtain the SID for a pkey.
-> + * security_ib_pkey_sid - Obtain the SID for a pkey.
->   * @subnet_prefix: Subnet Prefix
->   * @pkey_num: pkey number
->   * @out_sid: security identifier
+--Sig_/=hKTzhIkkiai=MbU=pqZJ6h
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This kdoc function header block is also missing the selinux_state
-description.  Would you mind adding something like the following and
-resubmitting your patch?
+Hi all,
 
-  * @state: SELinux state
+Today's linux-next merge of the gfs2 tree got conflicts in:
 
-... I suspect there are a number of function header comments with
-similar problems in the SELinux code.
+  Documentation/filesystems/porting.rst
+  include/linux/uio.h
+  lib/iov_iter.c
 
--- 
-paul moore
-www.paul-moore.com
+between various commits from the vfs tree and the same, older version,
+of the commits from the gfs2 tree.
+
+I fixed it up (I used the vfs tree versions) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=hKTzhIkkiai=MbU=pqZJ6h
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDCuH8ACgkQAVBC80lX
+0GyBEQf/Qq5ndg50rw2POn6IslnIVV6WzEk/p3EyGYAflfJbQ5Qq5wzhgSbb3FO3
+vWTQJWGTc4Bt69u03U6L83caxIHS7ETpMFltdTqnbf6zOffzMc/+ybUwmLcSOiGv
+agSrxKbWBNvM26oP5/f00ppO5+pus2px3COQn0oHNm/CYqMGYHk1IvOaUb39Efxq
+MQShpdIcTTgynELqvU7EzAmlzxsPjlTQsWTG8KlC3B6qiRBM7zlIjWmXIC1GX/Ol
+vqdJPLkdGuhCkci72YFjNQrg3RI4xNwcgyXwmEKQBBdLRmYBtYhgtlVf4lUwP7si
+WJfbUo2hjqrHNGzZIGc45ElHazGH3g==
+=NCzR
+-----END PGP SIGNATURE-----
+
+--Sig_/=hKTzhIkkiai=MbU=pqZJ6h--
