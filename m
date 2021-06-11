@@ -2,109 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A033A4AC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F303A4AC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhFKVvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhFKVvb (ORCPT
+        id S230331AbhFKVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 17:52:07 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:35474 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhFKVwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:51:31 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4EAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:49:32 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id l9so8797966wms.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:49:32 -0700 (PDT)
+        Fri, 11 Jun 2021 17:52:06 -0400
+Received: by mail-ed1-f49.google.com with SMTP id ba2so36952189edb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:50:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FhdlQOs8218L6C1WKAPZ8NIT7azafYcWg3ypPA+F0qk=;
-        b=blFJgmXvns61TkW3h1lP7L5PCLy0nmd1IjK+a7jueM8N+Ii082jg9EkiI1p3v2ztOO
-         rmbCvnGOnemuoByjc6mo+BWzQWqobs9IIULvNLDq0059ABYoh2O+8kHj1iJ7btlHNFks
-         mgb1VAwHdLOSoehbdLad0x5OCRjORBeSEfXjq8STvn8sHW/Kk1u9vWVCM09DjNikVq06
-         uJgOAS6m6NCiKa5LzwZAF56nTr54WG7eHfjTrCQT598fxvn6xAqJz45+rape9dSdSBhQ
-         m0hAVMWUV86JJ9GDyGXHnCz+NQuZXQc2mgtqiAOiT6gT4B/UPhbtAD1Muy+vESzosbRR
-         /qyw==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gZ6KiYF+ULBEYypxNLYi61JZwgfjLGj9Wdtste4sHN8=;
+        b=X3xnIeUCQLRBRUD5AX+jOCyBEFfTU3MpSIJD8z4CUhD2YzNCqa+noEdI9yGLsNwnoA
+         wlbk9U7vkXW1hrqF//pPmcCeuQMnVrixnlvT0j/YrT4xOiu3USYZCm+NzdW7kGDS8m+J
+         QflZU/3psC4uZxkPY+mdYeQLDWVfMDfnS42dc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=FhdlQOs8218L6C1WKAPZ8NIT7azafYcWg3ypPA+F0qk=;
-        b=cHtRqPMBimREBsjFr0GkBO4TMvoADH2MeQCiGGqB1oi+8+ZPqAxaUI/prPiz7C4/78
-         1NBjtDPks8SQzT3sHu/Fzx1lK1aMNetK9nBgrQJyBYKLhQzZJZ6c4D2h+e2TAmkldmqD
-         LngAqO1UZejl69QHagPGBFK4tfZNEA9j1I1VcIVcebM5iQ9TnQrbM5D/D8AQIUFmCFrV
-         Br2KjyAg+ySH7YZodDNpmBy4lMum48ECfIdti4cT8uVhjHkAmJe7Wrg7YlTI+JEDGPju
-         dwzK2YJ86c0wxiOwbCysB9MwYp8vZqXA+06raiV/gUDlcjDTEbZsEhMQQhDuhSYtWctt
-         Vqzw==
-X-Gm-Message-State: AOAM532bEylkoILQVustcxumevUss5HFfSb6gKM1BDMXTKPO+N9hbgRO
-        R45zeEFpGE2MvfBMI9sZzOg=
-X-Google-Smtp-Source: ABdhPJwaF2nqG3494Aa1pe/CMXELzEstWNyCEYwUeXHYt9hs9E4pjJMD8GhTlxkMHwkzjG0tzWl+Bw==
-X-Received: by 2002:a1c:b783:: with SMTP id h125mr22400117wmf.182.1623448171193;
-        Fri, 11 Jun 2021 14:49:31 -0700 (PDT)
-Received: from pevik (gw.ms-free.net. [95.85.240.250])
-        by smtp.gmail.com with ESMTPSA id 89sm8564612wrq.14.2021.06.11.14.49.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 14:49:30 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 23:48:56 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        linux-mediatek@lists.infradead.org, drinkcat@chromium.org,
-        hsinyi@chromium.org, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Guido =?iso-8859-2?Q?G=FCnther?= <agx@sigxcpu.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        Michael Walle <michael@walle.cc>, Nishanth Menon <nm@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Luo Longjun <luolongjun@huawei.com>
-Subject: Re: [PATCH] arm64: defconfig: Do not override the MTK_PMIC_WRAP
- symbol
-Message-ID: <YMPaSD45DOFMsNFW@pevik>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20210423075201.2616023-1-enric.balletbo@collabora.com>
- <cb9c85d5-3467-c235-93cd-be23fb6e0a03@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gZ6KiYF+ULBEYypxNLYi61JZwgfjLGj9Wdtste4sHN8=;
+        b=H8DzYAe6h3W+Lp6j3+Fl00NXImZm+QjCttkLRf89Zr/c6JP2DDDveAOI1iiAyxbFzO
+         HlRS+1Kigg9T66lElSl/KnEuCxqwSAAExE8/kC/qt8J7ACbddK7sZKpJUz0g6jZy7qWH
+         GC7vjHHwrKITvjYlDswlcRpJSQFXb3sqE7nMFcSa6E4WAkauWCPClMmFVOjKHsbn24tK
+         /6AKx7PQ/px2tBzqCniKDktxvwJsrnii+Hjns7zPHMPKS5LvLJB/MhZ8Jkd1b8c9T0Sl
+         PbjmP3HFTgKxUvNHHP6nghsX7fYuNv8WENJTdH4ZnT3y+x3yeazMbgeWBpQrO0w89lNz
+         4K5g==
+X-Gm-Message-State: AOAM530bcIFVFTZqF8/AGaPa9WG4HBgt1JcBp8GKR521WQVffRZIgdhx
+        iXGYyNLeiBO9Y3233aDzyP5otw==
+X-Google-Smtp-Source: ABdhPJw7y4jm+G8eJ69mJJlfoVe93e1UWNWkYjhcKIzhDOSAz6gQrEv56n7I8AWH+5u/CSQaX3PXNQ==
+X-Received: by 2002:a50:fe86:: with SMTP id d6mr5778295edt.141.1623448147624;
+        Fri, 11 Jun 2021 14:49:07 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.64.110])
+        by smtp.gmail.com with ESMTPSA id g23sm2458567ejh.116.2021.06.11.14.49.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 14:49:07 -0700 (PDT)
+Subject: Re: Panic on ppc64le using kernel 5.13.0-rc3
+To:     Bruno Goncalves <bgoncalv@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, CKI Project <cki-project@redhat.com>
+References: <CA+QYu4qxf2CYe2gC6EYnOHXPKS-+cEXL=MnUvqRFaN7W1i6ahQ@mail.gmail.com>
+ <d13db73d-0806-00cd-ff84-5f5b03ffbef6@rasmusvillemoes.dk>
+ <CA+QYu4oFGkP1G+9TqGtqffgOEBycSMKtFbV-1X+kL4NeTyEegg@mail.gmail.com>
+ <45ea5042-9136-6f0c-144c-f09d05cd69ed@rasmusvillemoes.dk>
+ <CA+QYu4rF6Bx5OwLzBSam_VXJ6gWqSjTocxTNxanfHuV5nZuzrA@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <4434f245-db3b-c02a-36c4-0111a0dfb78d@rasmusvillemoes.dk>
+Date:   Fri, 11 Jun 2021 23:49:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cb9c85d5-3467-c235-93cd-be23fb6e0a03@gmail.com>
+In-Reply-To: <CA+QYu4rF6Bx5OwLzBSam_VXJ6gWqSjTocxTNxanfHuV5nZuzrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On 11/06/2021 17.06, Bruno Goncalves wrote:
+> On Fri, Jun 11, 2021 at 9:13 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>>
+>> On 10/06/2021 17.14, Bruno Goncalves wrote:
+>>> On Thu, Jun 10, 2021 at 3:02 PM Rasmus Villemoes
+>>> <linux@rasmusvillemoes.dk> wrote:
+>>>>
+>>>> On 10/06/2021 13.47, Bruno Goncalves wrote:
+>>>>> Hello,
+>>>>>
+>>>>> We've observed in some cases kernel panic when trying to boot on
+>>>>> ppc64le using a kernel based on 5.13.0-rc3. We are not sure if it
+>>>>> could be related to patch
+>>>>> https://lore.kernel.org/lkml/20210313212528.2956377-2-linux@rasmusvillemoes.dk/
+>>>>>
+>>>>
+>>>> Thanks for the report. It's possible, but I'll need some help from you
+>>>> to get more info.
+>>>>
+>>>> First, can you send me the .config?
+>>>
+>>> The .config is on
+>>> https://s3.us-east-1.amazonaws.com/arr-cki-prod-datawarehouse-public/datawarehouse-public/2021/06/09/317881801/build_ppc64le_redhat:1332368174/kernel-block-ppc64le-d3f02e52f5548006f04358d407bbb7fe51255c41.config
+>>
+>> Thanks.
+>>
+>>>>
+>>>>>
+>>>>> [    1.516075] wait_for_initramfs() called before rootfs_initcalls
+>>>>
+>>>> This is likely because you have CONFIG_UEVENT_HELPER_PATH set to some
+>>>> non-empty path (/sbin/hotplug perhaps). This did get reported once before:
+>>>>
+>>>
+>>> CONFIG_UEVENT_HELPER_PATH is not set. In the .config we have "#
+>>> CONFIG_UEVENT_HELPER is not set"
+>>
+>> OK. Then I assume some quite early initcall does a request_module() or
+>> request_firmware() (or similar). I don't think this matters - that call
+>> would be done before the initramfs was unpacked with or without my
+>> patch, so it won't find anything in the empty rootfs. It's just my patch
+>> added a note. But just to figure out where that triggers, can you do
+>>
+>> -               pr_warn_once("wait_for_initramfs() called before
+>> rootfs_initcalls\n");
+>> +               WARN_ONCE(1, "wait_for_initramfs() called before
+>> rootfs_initcalls\n");
+>>
+>> in init/initramfs.c.
+>>
+> 
+> I've managed to reproduce the panic with the patch.
+> 
+> [    1.498654] NIP [c0000000000137d4] wait_for_initramfs+0x94/0xa4
+> [    1.498661] LR [c0000000000137d0] wait_for_initramfs+0x90/0xa4
+> [    1.498668] Call Trace:
+> [    1.498671] [c000000027debd60] [c0000000000137d0]
+> wait_for_initramfs+0x90/0xa4 (unreliable)
+> [    1.498680] [c000000027debdc0] [c000000000172fc8]
+> call_usermodehelper_exec_async+0x178/0x2c0
+> [    1.498691] [c000000027debe10] [c00000000000d6ec]
+> ret_from_kernel_thread+0x5c/0x70
 
-> On 23/04/2021 09:52, Enric Balletbo i Serra wrote:
-> > Commit 'fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot
-> > from usb")' added the MTK_PMIC_WRAP config built-in. It needs to be
-> > built-in in order to be able to boot from USB or the MMC without needing
-> > a ramdisk, but that symbol was already defined as a module so now we are
-> > getting the following warning:
+Thanks, but unfortunately (and I should have known better) that doesn't
+tell us who actually initated that call_usermodehelper - it's most
+likely some request_module() call. But again, I don't think this is
+related to the later crash.
 
-> >   arch/arm64/configs/defconfig:996:warning: override: reassigning to symbol MTK_PMIC_WRAP
+>>>>> [    1.764430] Initramfs unpacking failed: no cpio magic
+>>>>
+>>>> Whoa, that's not good. Did something scramble over the initramfs memory
+>>>> while it was being unpacked? It's been .2 seconds since the start of the
+>>>> unpacking, so it's unlikely the very beginning of the initramfs is corrupt.
+>>>>
+>>>> Can you try booting with initramfs_async=0 on the command line and see
+>>>> if the kernel still crashes?
+> 
+> Using initramfs_async=0 I was also able to reproduce the panic.
 
-> > Remove the MTK_PMIC_WRAP=m from the defconfig to remove the error.
+Hm, that's very interesting. Can you share the log for that as well?
 
-> > Fixes: fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot from usb")
-> > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+And, perhaps asking a silly question, does the crash go away if you
+revert e7cb072eb988e46295512617c39d004f9e1c26f8 ?
 
-> Applied to v5.13-next/defconfig
-I'm sorry, please ignore my useless Reviewed-by: tag.
-
-I was searching in arm64 git [1] and overlooked the date.
-I see it was merged into Matthias' git tree [2] month ago.
-
-Kind regards,
-Petr
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/commit/?h=v5.13-next-defconfig&id=f0e70d4946332c681ceaba940652f30c7c33473d
+Thanks,
+Rasmus
