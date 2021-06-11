@@ -2,142 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B1B3A4B2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164483A4B2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhFKXZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 19:25:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhFKXZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 19:25:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B560A611B0;
-        Fri, 11 Jun 2021 23:23:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623453812;
-        bh=XOEMUfV+WcQDf35lku9MLHKhHAejd6xTD1D2y888KPc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lFLO/9Gsx859HAXaCCzSLD8Gw3QzamYRBaEPq/TiuZhWk9BD5Dzso8RXEz6k4LZoM
-         QihxTbK4XrEAxlqeQc9I+uC62BiuMNYcEX8/POQ9svXYqKYqJQVxuB7O5W9aGGFepR
-         6R9igfkDOjyisiN9kHsF0+h+4Lc9AsUsj4MspD/I=
-Date:   Fri, 11 Jun 2021 16:23:31 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Zi Yan <ziy@nvidia.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v2] mm/page_alloc: Allow high-order pages to be stored
- on the per-cpu lists
-Message-Id: <20210611162331.272f67eabffa491fc83798b4@linux-foundation.org>
-In-Reply-To: <20210611135753.GC30378@techsingularity.net>
-References: <20210611135753.GC30378@techsingularity.net>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230303AbhFKX2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 19:28:18 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:45652 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230017AbhFKX2P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 19:28:15 -0400
+Received: by mail-pj1-f50.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso6835675pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:26:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NRPaXiyWw09i4FXsXzqTGbFV36hQVYFvFNIq5L13HVo=;
+        b=FecO0yDtUwufaEcPlqy4EvBDXv0RG+KrLKiBFSYxjyG7826p3FI0Txr93bsf36KUql
+         u0VSY9bYf99yfiKwO+k+AzZmcy/w9wrpq7BYt9y68w1sXDlJWBizWLI0o1821dq+ULgY
+         EbXCr/9vx+C7B15jLrA+pNMz2HQRnjA7bMMof5WdQ6gvr48bjQnME8zYbD6uOKEyd5B4
+         mH0lCxV0HaR59FNvBiJd/JLBWYD+6y/mQ7Eo8ZteR56oXA0xaQ33oVjXT3LIWigiqQC5
+         VgE/Ol9IydQU4zzsl44R5qssD7KLzrI53xjwE3XEiRA+QECuAlLxKKLJwFms6ClAsmy9
+         WM7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NRPaXiyWw09i4FXsXzqTGbFV36hQVYFvFNIq5L13HVo=;
+        b=OC0o+YWtAvXtRojSFQfWC41F++m9pU7e9tzFCErihnUrfx4grD0ENGzHzMtg6ymFXf
+         gVlSUdR1YppuzAc3wlfljsQ+rcq14tBlHXRl/392n594DG6woDQmBD6uNa9Ih1Cr9dlT
+         LLr88MDRHqr888fdmzJalKUV/6PLX06ajMchxGY6DvUs5vMg6mBoQlNrZSghoKALH3aN
+         XXhVSXH7EcISD7jGQjGBZz8a86HN2NAWXG4bJBA87eFniXEPYGPTM364j9IwXNztLcXz
+         Xzfdi92z4XUK04AyGt8/bHnWk76FCfM7gWGW/y82p0OlxD+/ihfjARdeCQk1cNOk1/PD
+         ATJA==
+X-Gm-Message-State: AOAM530ELqiIAHBVKAGS8HUIFdNsOpQc1YuSek3C02AOMhhT2tcjEHuz
+        tSkiHpBxln4HoPbHtU4v+YeNmsfErnPAN3syyiztuA==
+X-Google-Smtp-Source: ABdhPJxCPzOzrMWRfLG9k8FkShRI4spGXhm00FuDBb34f3l5OwsnwcU13r6GTa2DeuH5FPnYh3tMmwiGKdHQz0DH4mM=
+X-Received: by 2002:a17:902:b497:b029:115:e287:7b55 with SMTP id
+ y23-20020a170902b497b0290115e2877b55mr5941567plr.79.1623453916871; Fri, 11
+ Jun 2021 16:25:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <162336396329.2462439.16556923116284874437.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210611174736.ttzpk5uniyoyd4vw@intel.com> <CAPcyv4i7_RhfiYMX=QP2Ts4ye1Q2e0=_aBCP4rsuopo=0HWKVw@mail.gmail.com>
+ <20210611192829.bwdj322uwlsbdrjs@intel.com>
+In-Reply-To: <20210611192829.bwdj322uwlsbdrjs@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 11 Jun 2021 16:25:05 -0700
+Message-ID: <CAPcyv4gwUiQLfPGe9kKi7JJdbSk-aaSywo29x=kFKdeEROdMcQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] cxl/core: Add cxl-bus driver infrastructure
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, Linux NVDIMM <nvdimm@lists.linux.dev>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 14:57:53 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
+On Fri, Jun 11, 2021 at 12:28 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 21-06-11 11:55:39, Dan Williams wrote:
+> > On Fri, Jun 11, 2021 at 10:47 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > >
+> > > On 21-06-10 15:26:03, Dan Williams wrote:
+> > > > Enable devices on the 'cxl' bus to be attached to drivers. The initial
+> > > > user of this functionality is a driver for an 'nvdimm-bridge' device
+> > > > that anchors a libnvdimm hierarchy attached to CXL persistent memory
+> > > > resources. Other device types that will leverage this include:
+> > > >
+> > > > cxl_port: map and use component register functionality (HDM Decoders)
+> > >
+> > > Since I'm looking at this now, perhaps I can open the discussion here. Have you
+> > > thought about how this works yet? Right now I'm thinking there are two "drivers":
+> > > cxl_port: Switches (and ACPI0016)
+> > > cxl_mem: The memory device's HDM decoders
+> > >
+> > > For port, probe() will figure out that the thing is an upstream port, call
+> > > cxl_probe_component_regs and then call devm_cxl_add_port(). I think that's
+> > > straight forward.
+> >
+> > I was expecting cxl_port_driver.probe() comes *after* port discovery.
+> > Think of it like PCI discovery. Some agent does the hardware topology
+> > scan to add devices, in this case devm_cxl_add_port(), and that
+> > triggers cxl_port_driver to load. So the initial enumeration done by
+> > the cxl_acpi driver will populate the first two levels of the port
+> > hierarchy with port objects and populate their component register
+> > physical base addresses. For any other port deeper in the hierarchy I
+> > was expecting that to be scanned after the discovery of a cxl_memdev
+> > that is not attached to the current hierarchy. So, for example imagine
+> > a config like:
+> >
+> > Platform --> Host Bridge --> Switch --> Endpoint
+> >
+> > ...where in sysfs that's modeled as:
+> >
+> > root0 --> port1 --> port2 --> port3
+> >
+> > Where port3 is assuming that the CXL core models the device's
+> > connection to the topology as yet another cxl_port. At the beginning
+> > of time after cxl_acpi has loaded but before cxl_pci has discovered
+> > the endpoint the topology is:
+> >
+> > root0 --> port1
+> >
+> > Upon the detection of the endpoint the CXL core can assume that all
+> > intermediary switches between the root and this device have been
+> > registered as PCI devices. So, it follows that endpoint device arrival
+> > triggers "cxl_bus_rescan()" that goes and enumerates all the CXL
+> > resources in the topology to produce:
+> >
+> > root0 --> port1 --> port2 --> port3
+> >
+>
+> Ah, I had written about scan/rescan in an earlier version of my email but
+> dropped it. I was actually going to suggest it being a sysfs attr, but I'm fine
+> with it being implicit so long as...
+>
+> How do we assert that cxl_pci doesn't run before cxl_acpi has done anything?
 
-> Changelog since v1
-> o Fix boot problem on KVM with hotplug memory nodes (ziy)
-> o Correct PCP list lookup in bulk page allocator
-> 
-> The per-cpu page allocator (PCP) only stores order-0 pages. This means
-> that all THP and "cheap" high-order allocations including SLUB contends
-> on the zone->lock. This patch extends the PCP allocator to store THP and
-> "cheap" high-order pages. Note that struct per_cpu_pages increases in
-> size to 256 bytes (4 cache lines) on x86-64.
-> 
-> Note that this is not necessarily a universal performance win because of
-> how it is implemented. High-order pages can cause pcp->high to be exceeded
-> prematurely for lower-orders so for example, a large number of THP pages
-> being freed could release order-0 pages from the PCP lists. Hence, much
-> depends on the allocation/free pattern as observed by a single CPU to
-> determine if caching helps or hurts a particular workload.
-> 
-> That said, basic performance testing passed. The following is a netperf
-> UDP_STREAM test which hits the relevant patches as some of the network
-> allocations are high-order.
-> 
-> netperf-udp
->                                  5.13.0-rc2             5.13.0-rc2
->                            mm-pcpburst-v3r4   mm-pcphighorder-v1r7
-> Hmean     send-64         261.46 (   0.00%)      266.30 *   1.85%*
-> Hmean     send-128        516.35 (   0.00%)      536.78 *   3.96%*
-> Hmean     send-256       1014.13 (   0.00%)     1034.63 *   2.02%*
-> Hmean     send-1024      3907.65 (   0.00%)     4046.11 *   3.54%*
-> Hmean     send-2048      7492.93 (   0.00%)     7754.85 *   3.50%*
-> Hmean     send-3312     11410.04 (   0.00%)    11772.32 *   3.18%*
-> Hmean     send-4096     13521.95 (   0.00%)    13912.34 *   2.89%*
-> Hmean     send-8192     21660.50 (   0.00%)    22730.72 *   4.94%*
-> Hmean     send-16384    31902.32 (   0.00%)    32637.50 *   2.30%*
-> 
-> >From a functional point of view, a patch like this is necessary to
-> make bulk allocation of high-order pages work with similar performance
-> to order-0 bulk allocations. The bulk allocator is not updated in this
-> series as it would have to be determined by bulk allocation users how
-> they want to track the order of pages allocated with the bulk allocator.
-> 
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -198,7 +198,7 @@ extern void post_alloc_hook(struct page *page, unsigned int order,
->  					gfp_t gfp_flags);
->  extern int user_min_free_kbytes;
->  
-> -extern void free_unref_page(struct page *page);
-> +extern void free_unref_page(struct page *page, unsigned int order);
->  extern void free_unref_page_list(struct list_head *list);
->  
->  extern void zone_pcp_update(struct zone *zone, int cpu_online);
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index f24f509c3ee3..8472bae567f0 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -676,10 +676,53 @@ static void bad_page(struct page *page, const char *reason)
->  	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
->  }
->  
-> +static inline unsigned int order_to_pindex(int migratetype, int order)
-> +{
-> +	int base = order;
-> +
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +	if (order > PAGE_ALLOC_COSTLY_ORDER) {
-> +		VM_BUG_ON(order != pageblock_order);
-> +		base = PAGE_ALLOC_COSTLY_ORDER + 1;
-> +	}
-> +#else
-> +	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
-> +#endif
-> +
-> +	return (MIGRATE_PCPTYPES * base) + migratetype;
-> +}
-> +
-> +static inline int pindex_to_order(unsigned int pindex)
-> +{
-> +	int order = pindex / MIGRATE_PCPTYPES;
-> +
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +	if (order > PAGE_ALLOC_COSTLY_ORDER) {
-> +		order = pageblock_order;
-> +		VM_BUG_ON(order != pageblock_order);
+I don't think we need to, or it's broken if the driver load order
+matters. The nvdimm enabling code is an example of how to handle this.
+The cxl_nvdimm object can be registered before the cxl_nvdimm_bridge,
+or after, does not matter. If the cxl_nvdimm comes first it will
+trigger the cxl_nvdimm_driver to load. The cxl_nvdimm_driver.probe()
+routine finds no bridge present and probe() returns with a failure.
+When the bridge arrives it does a rescan  of the cxl_bus_type device
+list and if it finds a cxl_nvdimm it re-triggers
+cxl_nvdimm_driver.probe(). This time through cxl_nvdimm_driver.probe()
+finds the bridge and registers the real nvdimm on the nvdimm_bus.
 
-Somebody has trust issues?
+> I
+> like the idea that the endpoint device can simply ask cxl_acpi to rescan, I just
+> don't see how it works. I suppose we can queue up the requests to rescan in
+> cxl_acpi if the ordering can't be guaranteed.
 
-> +	}
-> +#else
-> +	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
-> +#endif
-> +
-> +	return order;
-> +}
+I think this means that the devm_cxl_add_port() would be triggered by
+cxl_memdev_driver.probe() if and only if the parent pci_device of the
+CXL endpoint is listed as a dport. If the cxl_memdev is registered
+first the search it will search for the CXL root port on the
+cxl_bus_type device list. If that fails then cxl_memdev_driver.probe()
+fails. If that succeeds it asks the root to scan to the CXL endpoint
+parent pci_device and return the confirmation that it is registered as
+a dport. If that fails then the device is plugged into a pure PCIe
+slot.
 
-Do we really need all these assertions, long-term?
+When cxl_acpi loads it retriggers all cxl_memdev_driver.probe() to
+reconsider all cxl_memdev instances that failed to probe previously.
 
+>
+> > > For the memory device we've already probed the thing via class code so there is
+> > > no need to use this driver registration, however, I think it would be nice to do
+> > > so. Is there a clean way to do that?
+> >
+> > The PCI device associated with the endpoint is already probed, but the
+> > cxl_memdev itself can have a driver on the CXL bus. So I think the
+> > cxl_memdev driver should try to register a cxl_port after telling
+> > cxl_acpi to rescan. If a check like "is_cxl_dport(pdev->dev.parent)"
+> > for the endpoint returns false it means that the cxl_bus_rescan()
+> > failed to enumerate the CXL topology to this endpoint and this
+> > endpoint is limited to only CXL.io operation.
+>
+> What is going to invoke the memdev driver's probe? That is where we're talking
+> about putting that is_cxl_dport(...) right? That is the part that tripped me up
+> and inspired the original email FWIW.
 
+I *think* I worked that out above, but yes please do poke at it to see
+if it holds up.
