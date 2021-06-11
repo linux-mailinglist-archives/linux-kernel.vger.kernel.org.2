@@ -2,293 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3622E3A4B41
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093263A4B43
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhFKXf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 19:35:57 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:35393 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhFKXf5 (ORCPT
+        id S230393AbhFKXh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 19:37:56 -0400
+Received: from mail-qk1-f176.google.com ([209.85.222.176]:46906 "EHLO
+        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230155AbhFKXht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 19:35:57 -0400
-Received: by mail-wm1-f43.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so9564701wms.0;
-        Fri, 11 Jun 2021 16:33:58 -0700 (PDT)
+        Fri, 11 Jun 2021 19:37:49 -0400
+Received: by mail-qk1-f176.google.com with SMTP id f70so17531133qke.13
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 16:35:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I4qZf12D8W9yRdYaj3C8cSY/uNFZwCJrTHaVjY/XCRw=;
+        b=ipexf1WfSqTSigpJIAqWcZ5Ye8IVPeBLkVKvrmCxmMyzi+efAgucuvp/5srXci7Sb0
+         BQGkXAo5Ea25cYm/98RmfUM8jw3DFu1D+yB6clmD4OdoEnjcgJv7dt2Ld9yfCPC7dqs5
+         DiToSNCr4dGCsobEOu23KhBdiEEvAyvTT7lqZ33E8Z+JCj7AEzLfWmDMGd+jWC5hlPnw
+         RL844vPi1AMDMg7V8espJidZGxbiJTVK6mwK8ijFWqb4fOhtV96O1SgcZ/20cRnKC0F9
+         ZW4ckMcgwWv6MN2ONrXfOXAsCo9ENlBG1R/uj8f21SV0Yk1ZqXCOd3byMTvOA4sFGjwJ
+         WT9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Z2zlmHj+1HcVsICU+2gdJrF/4o7OgOCN/FyHrCzGZ6g=;
-        b=pLLVtIyg5sIEWCzB8C4qKBzG/fFWwcDsAZJm35I8bEEwZqYRN+qXhQSn7Z33mQPf+i
-         q5ARARdwMGdjduzz37ujN3IJE/PGdPsOC+7+OSjVr3Zs8Rrrdhvel1ayWBGH3cpFAgiS
-         jCh+jZtMYlaEgWxBgnJBe9tWWwMs6qEWMmHvGOxspQUznf+eOabjA1dR0c9KHukE9dCU
-         6LThNkzWDb+hRUB6hspBhNSigWIHtFe1WxO5SOxX8eyrd9FVcyNo4Lgj9yGIji2O0xX2
-         hi4+ctGtO6izD1dtcOGxVE+OgsQs/VwUCXxidfstL1vnXkGhBrUXYqZFiSwkHuwLhG+u
-         ymGg==
-X-Gm-Message-State: AOAM531chuivuQIFg2cA9I2HcpX+pAI+GmWzNQTlIavnX2NgD/+86SN8
-        A6AVn39YIfMP3DN0UjoF4xo=
-X-Google-Smtp-Source: ABdhPJzZbySWhRyOkrWp6EOaPa7zyUyPkaWhFMgfEwdFMTM6Jbyt9M95x8X/q/432QsPVybj8D6RFw==
-X-Received: by 2002:a7b:c192:: with SMTP id y18mr22530884wmi.65.1623454437589;
-        Fri, 11 Jun 2021 16:33:57 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id x7sm8838753wre.8.2021.06.11.16.33.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 16:33:56 -0700 (PDT)
-Date:   Sat, 12 Jun 2021 01:33:55 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     will@kernel.org, mark.rutland@arm.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        zhangshaokun@hisilicon.com
-Subject: Re: [PATCH v6 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
- PMU
-Message-ID: <20210611233355.GA183580@rocinante>
-References: <1622467951-32114-1-git-send-email-liuqi115@huawei.com>
- <1622467951-32114-3-git-send-email-liuqi115@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I4qZf12D8W9yRdYaj3C8cSY/uNFZwCJrTHaVjY/XCRw=;
+        b=au6FhGsvTGt1alaTUSWuhS8iSorl8gPyvonAFmt36Occgo24Cz2U5Zg5GPB+oXbD91
+         iNind8uSOm/rKszT4tuIVgtleq3D9bpAqZOu264rfLgioHw6Niyo5i8TQtn2e+t8CtYA
+         p8XnsTeT3gqsS2x8TsQ1p+mvJsKcKXU4/tnyUtmTss28D4St0QAYpd/3sqqqQ5Vsgcz9
+         e873bnaBleF9oAltyQO8ochyBaHB2RRPqqu7Xq+vvAZEeVa6eTeb3vURG7fu7dZpjkSG
+         RkJHNAsih3MtWUbdLl5Y82ikDY2TCVLQJsdK+zXZ/0hP9NcyfJSfGcrUtT7kEd5XDqKS
+         2v1A==
+X-Gm-Message-State: AOAM532vEYeUoZamN3jmBct9z7GumVh1MS0y0nF/stmQuLVrlxaSJ7AI
+        EPufZC5/T0GrO1XciDrsExC1NdBSemInqmWP2UzC1Q==
+X-Google-Smtp-Source: ABdhPJyBCg4hbLYR7Ob02mn9olvwahPRTIPrX3NizTVs4qE4MwGGjb7WUBzPPZwoFbAEivu/2ku21uKs56Ctm8N1cAo=
+X-Received: by 2002:a37:59c7:: with SMTP id n190mr6470074qkb.146.1623454478447;
+ Fri, 11 Jun 2021 16:34:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1622467951-32114-3-git-send-email-liuqi115@huawei.com>
+References: <20210608231132.32012-1-joshdon@google.com> <e3fc3338-c469-0c0c-ada2-a0bbc9f969fe@arm.com>
+ <CABk29Nu=mxz3tugjhDV9xCF7DRsMi9U747H+BqubviEva36RUw@mail.gmail.com> <7222c20a-5cbb-d443-a2fd-19067652a38e@arm.com>
+In-Reply-To: <7222c20a-5cbb-d443-a2fd-19067652a38e@arm.com>
+From:   Josh Don <joshdon@google.com>
+Date:   Fri, 11 Jun 2021 16:34:27 -0700
+Message-ID: <CABk29NtVRG8cotfbK=R0kKXuKCnkEG514H=6ncri=CM8Qr9uiQ@mail.gmail.com>
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qi,
+On Fri, Jun 11, 2021 at 9:43 AM Dietmar Eggemann
+<dietmar.eggemann@arm.com> wrote:
+>
+> On 10/06/2021 21:14, Josh Don wrote:
+> > Hey Dietmar,
+> >
+> > On Thu, Jun 10, 2021 at 5:53 AM Dietmar Eggemann
+> > <dietmar.eggemann@arm.com> wrote:
+> >>
+> >> Any reason why this should only work on cgroup-v2?
+> >
+> > My (perhaps incorrect) assumption that new development should not
+> > extend v1. I'd actually prefer making this work on v1 as well; I'll
+> > add that support.
+> >
+> >> struct cftype cpu_legacy_files[] vs. cpu_files[]
+> >>
+> >> [...]
+> >>
+> >>> @@ -11340,10 +11408,14 @@ void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
+> >>>
+> >>>  static DEFINE_MUTEX(shares_mutex);
+> >>>
+> >>> -int sched_group_set_shares(struct task_group *tg, unsigned long shares)
+> >>> +#define IDLE_WEIGHT sched_prio_to_weight[ARRAY_SIZE(sched_prio_to_weight) - 1]
+> >>
+> >> Why not 3 ? Like for tasks (WEIGHT_IDLEPRIO)?
+> >>
+> >> [...]
+> >
+> > Went back and forth on this; on second look, I do think it makes sense
+> > to use the IDLEPRIO weight of 3 here. This gets converted to a 0,
+> > rather than a 1 for display of cpu.weight, which is also actually a
+> > nice property.
+>
+> I'm struggling to see the benefit here.
+>
+> For a taskgroup A: Why setting A/cpu.idle=1 to force a minimum A->shares
+> when you can set it directly via A/cpu.weight (to 1 (minimum))?
+>
+> WEIGHT     cpu.weight   tg->shares
+>
+> 3          0            3072
+>
+> 15         1            15360
+>
+>            1            10240
+>
+> `A/cpu.weight` follows cgroup-v2's `weights` `resource distribution
+> model`* but I can only see `A/cpu.idle` as a layer on top of it forcing
+> `A/cpu.weight` to get its minimum value?
+>
+> *Documentation/admin-guide/cgroup-v2.rst
 
-Thank you for sending the patch over!
+Setting cpu.idle carries additional properties in addition to just the
+weight. Currently, it primarily includes (a) special wakeup preemption
+handling, and (b) contribution to idle_h_nr_running for the purpose of
+marking a cpu as a sched_idle_cpu(). Essentially, the current
+SCHED_IDLE mechanics. I've also discussed with Peter a potential
+extension to SCHED_IDLE to manipulate vruntime.
 
-[...]
-> +/*
-> + * This driver adds support for PCIe PMU RCiEP device. Related
-> + * perf events are bandwidth, bandwidth utilization, latency
-> + * etc.
-> + *
-> + * Copyright (C) 2021 HiSilicon Limited
-> + * Author: Qi Liu<liuqi115@huawei.com>
-> + */
-
-A small nitpick: missing space between your name and the e-mail address.
-
-[...]
-> +static ssize_t hisi_pcie_event_sysfs_show(struct device *dev,
-> +				   struct device_attribute *attr, char *buf)
-> +{
-> +	struct dev_ext_attribute *eattr;
-> +
-> +	eattr = container_of(attr, struct dev_ext_attribute, attr);
-> +
-> +	return sysfs_emit(buf, "config=0x%lx\n", (unsigned long)eattr->var);
-> +}
-
-I am not that familiar with the perf drivers, thus I might be completely
-wrong here, but usually for sysfs objects a single value is preferred,
-so that this "config=" technically would not be needed, unless this is
-somewhat essential to the consumers of this attribute to know what the
-value is?  What do you think?
-
-[...]
-> +static ssize_t hisi_pcie_identifier_show(struct device *dev,
-> +					 struct device_attribute *attr,
-> +					 char *buf)
-> +{
-> +	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
-> +
-> +	return sysfs_emit(buf, "0x%x\n", pcie_pmu->identifier);
-> +}
-
-What about using the "%#x" formatting flag?  It would automatically
-added the "0x" prefix, etc.
-
-> +static ssize_t hisi_pcie_bus_show(struct device *dev,
-> +				  struct device_attribute *attr, char *buf)
-> +{
-> +	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
-> +
-> +	return sysfs_emit(buf, "0x%02x\n", PCI_BUS_NUM(pcie_pmu->bdf_min));
-> +}
-
-Same as above, what about "%#02x"?
-
-[...]
-> +static bool hisi_pcie_pmu_valid_filter(struct perf_event *event,
-> +				       struct hisi_pcie_pmu *pcie_pmu)
-> +{
-> +	u32 subev_idx = hisi_pcie_get_subevent(event);
-> +	u32 event_idx = hisi_pcie_get_event(event);
-> +	u32 requester_id = hisi_pcie_get_bdf(event);
-> +
-> +	if (subev_idx > HISI_PCIE_SUBEVENT_MAX ||
-> +	    event_idx > HISI_PCIE_EVENT_MAX) {
-> +		pci_err(pcie_pmu->pdev,
-> +			"Max event index and max subevent index is: %d, %d.\n",
-> +			HISI_PCIE_EVENT_MAX, HISI_PCIE_SUBEVENT_MAX);
-> +		return false;
-> +	}
-
-Was this error message above intended to be a debug message?  It's a bit
-opaque in terms what the error actually is here.  We might need to clear
-it up a little.
-
-[...]
-> +static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
-> +{
-> +	struct perf_event *sibling, *leader = event->group_leader;
-> +	int counters = 1;
-
-How big this counter could become?
-
-Would it ever be greater than HISI_PCIE_MAX_COUNTERS?  I am asking, as
-if it would be ever greater, then perhaps unsigned int would be better
-to use, and if not, then perhaps something smaller than int?  What do
-you think, does this even make sense to change?
-
-[...]
-> +static int hisi_pcie_pmu_event_init(struct perf_event *event)
-> +{
-> +	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-> +
-> +	event->cpu = pcie_pmu->on_cpu;
-> +
-> +	if (event->attr.type != event->pmu->type)
-> +		return -ENOENT;
-> +
-> +	/* Sampling is not supported. */
-> +	if (is_sampling_event(event) || event->attach_state & PERF_ATTACH_TASK)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (!hisi_pcie_pmu_valid_filter(event, pcie_pmu)) {
-> +		pci_err(pcie_pmu->pdev, "Invalid filter!\n");
-> +		return -EINVAL;
-> +	}
-
-[...]
-> +/*
-> + * The bandwidth, latency, bus utilization and buffer occupancy features are
-> + * calculated from data in HISI_PCIE_CNT and extended data in HISI_PCIE_EXT_CNT.
-> + * Other features are obtained only by HISI_PCIE_CNT.
-> + * So data and data_ext are processed in this function to get performanace
-> + * value like, bandwidth, latency, etc.
-> + */
-
-A small typo in the world "performance" above.
-
-[...]
-> +static u64 hisi_pcie_pmu_get_performance(struct perf_event *event, u64 data,
-> +					 u64 data_ext)
-> +{
-> +#define CONVERT_DW_TO_BYTE(x)	(sizeof(u32) * (x))
-
-I would move this macro at the top alongside other constants and macros,
-as here it makes the code harder to read.  What do you think?
-
-[...]
-> +static int hisi_pcie_pmu_irq_register(struct pci_dev *pdev,
-> +				      struct hisi_pcie_pmu *pcie_pmu)
-> +{
-> +	int irq, ret;
-> +
-> +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI);
-> +	if (ret < 0) {
-> +		pci_err(pdev, "Failed to enable MSI vectors, ret = %d!\n", ret);
-> +		return ret;
-> +	}
-
-This is a nitpick, so feel free to ignore it, but what do you think of
-changing this (and also other messages alike) message to be, for
-example:
-
-  pci_err(pdev, "Failed to enable MSI vectors: %d\n", ret);
-
-Why?  I personally don't find displaying a return code/value followed by
-a punctuation easy to read, especially when looking through a lot of
-lines and other messages in the kernel ring buffer.
-
-[...]
-> +
-> +	irq = pci_irq_vector(pdev, 0);
-> +	ret = request_irq(irq, hisi_pcie_pmu_irq,
-> +			  IRQF_NOBALANCING | IRQF_NO_THREAD, "hisi_pcie_pmu",
-> +			  pcie_pmu);
-> +	if (ret) {
-> +		pci_err(pdev, "Failed to register irq, ret = %d!\n", ret);
-> +		pci_free_irq_vectors(pdev);
-> +		return ret;
-> +	}
-
-It would be "IRQ" in the error message above.
-
-[...]
-> +static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
-> +{
-> +	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node,
-> +					 struct hisi_pcie_pmu, node);
-> +	unsigned int target;
-> +
-> +	/* Nothing to do if this CPU doesn't own the PMU */
-> +	if (pcie_pmu->on_cpu != cpu)
-> +		return 0;
-> +
-> +	/* Choose a new CPU from all online cpus. */
-> +	target = cpumask_first(cpu_online_mask);
-> +	if (target >= nr_cpu_ids) {
-> +		pci_err(pcie_pmu->pdev, "There is no cpu to set!\n");
-> +		return 0;
-> +	}
-
-To be consistent, it would be "CPUs" and "CPU" in the above.
-
-[...]
-> +static struct device_attribute hisi_pcie_pmu_bus_attr =
-> +	__ATTR(bus, 0444, hisi_pcie_bus_show, NULL);
-[...]
-> +static struct device_attribute hisi_pcie_pmu_cpumask_attr =
-> +	__ATTR(cpumask, 0444, hisi_pcie_cpumask_show, NULL);
-[...]
-> +static struct device_attribute hisi_pcie_pmu_identifier_attr =
-> +	__ATTR(identifier, 0444, hisi_pcie_identifier_show, NULL);
-
-Would it be at possible for any of the above __ATTR() macros to be
-replaced with the DEVICE_ATTR_RO() macro?  Or perhaps with __ATTR_RO()
-if the other one would be a good fit?
-
-[...]
-> +static int hisi_pcie_init_dev(struct pci_dev *pdev)
-> +{
-> +	int ret;
-> +
-> +	ret = pci_enable_device(pdev);
-> +	if (ret) {
-> +		pci_err(pdev, "Failed to enable pci device, ret = %d.\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = pci_request_mem_regions(pdev, "hisi_pcie_pmu");
-> +	if (ret < 0) {
-> +		pci_err(pdev, "Failed to request pci mem regions, ret = %d.\n",
-> +			ret);
-> +		pci_disable_device(pdev);
-> +		return ret;
-> +	}
-
-It would be "PCI" in both error messages above.
-
-[...]
-> +static int __init hisi_pcie_module_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE,
-> +				      "AP_PERF_ARM_HISI_PCIE_PMU_ONLINE",
-> +				      hisi_pcie_pmu_online_cpu,
-> +				      hisi_pcie_pmu_offline_cpu);
-> +	if (ret) {
-> +		pr_err("Failed to setup PCIE PMU hotplug, ret = %d.\n", ret);
-> +		return ret;
-> +	}
-
-It would be "PCIe" in the error message above.
-
-	Krzysztof
+We set the cgroup weight here, since by definition SCHED_IDLE entities
+have the least scheduling weight. From the perspective of your
+question, the analogous statement for tasks would be that we set task
+weight to the min when doing setsched(SCHED_IDLE), even though we
+already have a renice mechanism.
