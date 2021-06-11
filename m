@@ -2,153 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485D73A3ED0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7533A3EDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhFKJOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:14:55 -0400
-Received: from mail-dm6nam12on2121.outbound.protection.outlook.com ([40.107.243.121]:23777
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231514AbhFKJOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:14:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n5e6X9Zz8ztVLVzmB6xnspn5Ht1peHEb5t+7UfnHuReJ2zF1QF4BAjACRb9kBMGnL54XLx2pKGdKE8iiySKd1QBjLKFNb9J49ZNlI7bVTrXfaGjjY1l/kxdTBfi8gKLeHv16E+x4zQCDpmO7eUqC709mdBCV8ZjOv5hUWqhEm2+kB2wFVhaf39vfA0fgO+wQp8dQ8wqHVH0NPmJFz5wCsnNzkedgr5V1Wim+EAqN9oLyq4cgLThSJX0ZszXi4Y8Hwz62PWZJW0ndmPObO3XyaRGhFpZVZ3kzGNEQODYcnZ/KAeot2DXGhCfhygc4EKmMqVz0kvOJO/O56AHpYURvlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ng+LBj0ddO9omGc64akNdzLD4clbX9FARvyE/dX2Z30=;
- b=hOcaAySV53VaSQrnCDzTdDDTHCSCyK9NoQFo+W1P1FRVn2Ai5BLTQx83Swtsy24UqzPZuYhTuYOYxSmfn9Y26hJlnVVVA16Qf0Vhhj3WIHxPzAJr/dHFTP7NAK1RArE9L1K5ywbOTJsyWyhq0wz0oRW3qhmKT+q3arJeD11PK4YNz+PBkLiecy97X886+AC3sepUC5X+omAomWtWhO2dZT3LUWFgDwVQaApHlX62mq6UrB7vP1gk9eBwybUQILwoUhOqRdEHCl6nm+3q/cCqRzduykHEyuQnsVKTuNpohZfaWDfLpMARKIUCSHB1SZ8LR02sGSicpWn6/nDdhfo3mQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ng+LBj0ddO9omGc64akNdzLD4clbX9FARvyE/dX2Z30=;
- b=nYmtZ3QEjSU/4HxPW2YyhKv536Ed/nKB/+kMEhXW/G1lwiac79nmPyZX6saqqWP3UA9qhbdoDamw1xaFKxmkR3dW6iV8N/2sx1qFwJ8+V/gexoQ/xFtFRu6vu12Mx2oUCf9XlEbMIFgDPZhbtxT+tKkq7GDVrdHb9wq0D3bgz7Y=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BY5PR04MB6615.namprd04.prod.outlook.com (2603:10b6:a03:1db::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Fri, 11 Jun
- 2021 09:12:55 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::8d56:f2c5:7beb:2bf3]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::8d56:f2c5:7beb:2bf3%9]) with mapi id 15.20.4195.030; Fri, 11 Jun 2021
- 09:12:55 +0000
-Date:   Fri, 11 Jun 2021 17:12:49 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Robert Foss <robert.foss@linaro.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        Zhen Li <zhenli@analogixsemi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH v7 2/4] drm/bridge: anx7625: fix not correct return value
-Message-ID: <9c71344ad8036869231993585475c86b110ca3eb.1623402115.git.xji@analogixsemi.com>
-References: <cover.1623402115.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1623402115.git.xji@analogixsemi.com>
-X-Originating-IP: [60.251.58.79]
-X-ClientProxiedBy: HK2PR06CA0013.apcprd06.prod.outlook.com
- (2603:1096:202:2e::25) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        id S231660AbhFKJPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:15:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231609AbhFKJPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:15:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E431D60FDA;
+        Fri, 11 Jun 2021 09:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623402794;
+        bh=0Tv6dk09LYXtiWu3+YyS09NcTBZcnmopruN7Ttw2A3c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qCE0A2hE5eLvV8SAX8VsVaLsmx7G+YhwHIGuIbtiETIq98w68vFvtv3s1bhzDjAJ1
+         zAwEklDt1RkuJy4xO1mhyVGn5CoqoCJlfqGcOzbWGGdCb/cl21ED/qg6om4QDr6Qgw
+         hAsXyCGbL1jtQZUE1mmW8Fz57Pe8pBJAijmfw+8qSkasiv7gs8Bn4yv5Nf3uQnoBiX
+         zxb7Zjkljrgndxxd99Pyb9NRcFNuEpikSsPzNHA+8Ye4WGjHy7LoVAmriVbgeAzAuX
+         sIG1CoqZMtlY/m4KJAESInsxp1yQtkOqy6u3nFjtUmy8jmmfx5n/O/lOLN4k8Jv3p4
+         6ODFKkgxpj1ug==
+Date:   Fri, 11 Jun 2021 11:13:07 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        David Hildenbrand <david@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+Message-ID: <20210611111248.250e6da8@coco.lan>
+In-Reply-To: <20210611025942.GE25638@1wt.eu>
+References: <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+        <YK+esqGjKaPb+b/Q@kroah.com>
+        <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+        <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
+        <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
+        <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
+        <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
+        <20210610152633.7e4a7304@oasis.local.home>
+        <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
+        <87tum5uyrq.fsf@toke.dk>
+        <20210611025942.GE25638@1wt.eu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR06CA0013.apcprd06.prod.outlook.com (2603:1096:202:2e::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Fri, 11 Jun 2021 09:12:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 955a5746-1cc6-4af5-5ea6-08d92cb918ec
-X-MS-TrafficTypeDiagnostic: BY5PR04MB6615:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR04MB6615DC5E318BACA39FCF9249C7349@BY5PR04MB6615.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:813;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uELQeHKCOy+hc5DfBa819GxY05z9mehgOssuCPzkTkvFW2pdxi1pPKhvQ46m/gQN0jY+ljVocL4Ej/s2OXfMBtdPpb8OjjgsiFJwSmtMf13+7QPpImZcoRTXGA5mKbZusr9dNSv/psTkkCbA+jJnYS5TvJ21SpuCMddYQbS9vi8HGh8Qn1rILV9nvEulqnJR5E7qZACmzRcE+YWl/yCOfGUZobjaG0+RoM+JqOVwC0hrP6E+cCdy3qJ61cDnN5Fx4SHr+qFKiDWlrz1IM7blQalQIk2YPc3Fuz0Gf9khgf4Njn/ye5TPd/66SQ9ZcRTz+B5h6YDsGOfxcDbp1PnZYmqoPXwrjwBFBzAtYV40Wk8ERluUyxdlmqX4pgZXa+YUmAcjeaHrOcqEZHGALqa67VX9zfk8XoUwyhNQPpczDejbL6h2vaYTqO2Rq4J9EDN4M+SuYjYb2BaatxjOubbSeWunerX/STr5t+A4h1KDi4BSKJSCL+vz92GC3y6RT81UHL3YCwwvO5ppJA/BkmA1+RUBeG8l74Ci5tt0ZnWyb4/yCc4zi14DiXbaVJblBBWZviIIpRNw3864V0jyp1sYSndb7IEZDFWCDfYkpiHMSyJNMm9vanANosZRxyasOUTCzCR3iq4BRSBgIKTrQFq25RvKPDRTF+nVo05OLNAW7gM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(376002)(366004)(136003)(346002)(396003)(55236004)(26005)(5660300002)(52116002)(86362001)(6496006)(6666004)(66476007)(6486002)(66556008)(66946007)(16526019)(186003)(316002)(7416002)(36756003)(83380400001)(956004)(8676002)(2616005)(4326008)(110136005)(4744005)(8936002)(478600001)(38350700002)(38100700002)(54906003)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4RhPNM5s/T+bfafg7aEBBLFwajhzlf4WePqO4C9woUf8JZdNgE+3QRP8zBJL?=
- =?us-ascii?Q?vcC1bXbUtR+2p33VX1JtktctvbqzUPUA3HCaFq7r55ZckLIY6bMPEeNIExms?=
- =?us-ascii?Q?Sillo2zExJDAJHPBxHMPz2FJq3QyarDbVMHeqjHD+QzEkCcz4zJUiylDFJae?=
- =?us-ascii?Q?DimiJsxM86y/nHrFl96XeGWw1lS5b2Yqx4Z3UpNkeqCce5hMaqnFCqww3SUe?=
- =?us-ascii?Q?zhRNgYvBFUfK/Z1vWUcGJ0i6X46OcfnztahtHMx00Lrz6vRPFLLa1VDAdWWF?=
- =?us-ascii?Q?pZdB5IIlHQZAuQByb+BeOKMj/13kLIxtzvLchw8BaCwixEaNhnrQZ4SGUZsM?=
- =?us-ascii?Q?hz/fS2gxMf+KiuhFPdljrpYyJRm6YbOP4bfx1WfC/w4SwGu8dq2ezLf4Ktji?=
- =?us-ascii?Q?QvIYC51SJdNp8VNsOJ58WOeiZWh0u82RwdjqAcThzZMsosWQdsX16Jg4pZXl?=
- =?us-ascii?Q?GU/ws9ymr9HrHYtezJ0o6S1EA3e6oXkbqsi5SisJuZ6xFMjruLGeCVHgutn+?=
- =?us-ascii?Q?Ty57SfT+FVSRiChXSuLj+YIaDa+zQP1W4Sqmg1K4L3PN4svpxjMlkuHbKvxq?=
- =?us-ascii?Q?9KSTwC9kMblTjl18JK71RqVm09SDgcMLjZs7ljL+jdmo99tibZCXGK8ypNnr?=
- =?us-ascii?Q?AeRKCmxofKnaxyaTcKyalsDuXzoYdgyi+dKCXeGh1zR5BZMuE/KgSAK+YVzH?=
- =?us-ascii?Q?W6i+vfUbRFiCbeKAJX2hvHtCgYu+DgY5oQ3kRLBSsUTuRhdrGuy48SCImX8/?=
- =?us-ascii?Q?1LdJnZsZI6O0SmNDHN3H6vBAIuFLUHmdaQ+V+swK97GDckUrW7M9oKk81TrK?=
- =?us-ascii?Q?U30bE0eHy/KqOMwPWyelnRJYM3RU/z67pNXvClHxty19Li5Jnfeaf8yYeDpA?=
- =?us-ascii?Q?fG6YCx3tSUhUxJKowzB1dHMPcDu89u3prvA1B3WUh+bb2ogUA491IGa3HrHV?=
- =?us-ascii?Q?Px+a2EP0J/rq9zlZaHNRkrRtKQ6NesT/t2fgYISyn9zffKKg29HypcNmXzfg?=
- =?us-ascii?Q?4la4O/N189LW04E4qGh8wSGjrAzzbMRHCXK/JlQptT4T0epqopcgQvF/W752?=
- =?us-ascii?Q?RuyNkgWnYbPO+JkIYFcfzygKNTbhJJqXDBU2tpinYB5QSd1FJqHFb4CuE9Zi?=
- =?us-ascii?Q?IMV9fGMe5X/k5RuNiosRd0d04mhzjMjXRsxkUapbxjG4rVfTP6qbwlaeEscn?=
- =?us-ascii?Q?etAH+XVuw6KRaP+TjiaRLl3gMDnVpHW0oda+xzzD2tjO8jrXp+abL6CBx4wK?=
- =?us-ascii?Q?MGuvX/of0yZtePnC0ZYRHDcnc0f0su5pa9DfrQOJsKNR9OAAlobgLbhdqxCG?=
- =?us-ascii?Q?bVXpjLl3msPeK8G4x5QS7Atd?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 955a5746-1cc6-4af5-5ea6-08d92cb918ec
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 09:12:55.2742
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZXwFC9+fy+gglxLgPIo2zo962EuOht/QVeoBMMGePVrser2ETJpSQ5L8iepwL9E2HX5U+8Trrp/WI+GDfh28cw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6615
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At some time, the original code may return non zero value, force return 0
-if operation finished.
+Em Fri, 11 Jun 2021 04:59:42 +0200
+Willy Tarreau <w@1wt.eu> escreveu:
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Fri, Jun 11, 2021 at 12:43:05AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+> > Shuah Khan <skhan@linuxfoundation.org> writes: =20
+> > > I have a
+> > > couple of ideas on how we might be able to improve remote experience
+> > > without restricting in-person experience.
+> > >
+> > > - Have one or two moderators per session to watch chat and Q&A to ena=
+ble
+> > >    remote participants to chime in and participate.
+> > > - Moderators can make sure remote participation doesn't go unnoticed =
+and
+> > >    enable taking turns for remote vs. people participating in person.
+> > >
+> > > It will be change in the way we interact in all in-person sessions for
+> > > sure, however it might enhance the experience for remote attendees. =
+=20
+> >=20
+> > This is basically how IETF meetings function: At the beginning of every
+> > session, a volunteer "jabber scribe" is selected to watch the chat and
+> > relay any questions to a microphone in the room. And the video streaming
+> > platform has a "virtual queue" that remove participants can enter and
+> > the session chairs are then responsible for giving people a chance to
+> > speak. Works reasonably well, I'd say :) =20
+>=20
+> I was about to say the same. In addition, local participants line up
+> at a microphone and do not interrupt the speaker, but the organiser
+> gives them the signal to ask a question. This allows to maintain a
+> good balance between local and remote participants. Also it's common
+> to see some locals go back to their seat because someone else just
+> asked the same question. And when remote questions are asked using
+> pure text, it's easy for the organiser to skip them if already
+> responded as well.
+>=20
+> This method is rather efficient because it doesn't require to keep the
+> questions for the end of the session, yet questions do not interrupt
+> the speaker. It also solves the problem of people not speaking in the
+> microphone. The only thing is that it can be quite intimidating for
+> local participants who are too shy of standing up in front of a
+> microphone and everyone else.
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 7519b7a0f29d..048080e75016 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -191,10 +191,10 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
- 			       AP_AUX_CTRL_STATUS);
- 	if (val < 0 || (val & 0x0F)) {
- 		DRM_DEV_ERROR(dev, "aux status %02x\n", val);
--		val = -EIO;
-+		return -EIO;
- 	}
- 
--	return val;
-+	return 0;
- }
- 
- static int anx7625_video_mute_control(struct anx7625_data *ctx,
--- 
-2.25.1
+If someone is shy, he/she could simply type the question as a
+remote participant would do.
 
+This should work fine for a normal speech, but for BoFs and the
+usual "round table" discussions we have at Kernel Maintainers,
+this may not work well for local participants.
+
+I guess that, for such kind of discussions, I can see two
+possible alternatives:
+
+1. everyone would use their laptop cameras/mics;
+2. every round table would have their on camera/mic set.
+
+(1) is probably simpler to implement, but may provide a worse
+experience for local participants. (2) is probably harder to
+implement, as the usual conference logistics company may not
+have cameras.
+
+In either case, a moderator (or some moderating software) is needed
+in order queue requests for speech. So, basically, when someone
+(either in a table or remote) wants to speak, it adds its name to
+a queue, which will then be parsed at the queue's order. This is not
+as natural as a physical meeting, but I guess it won't bring too
+much burden to local people.
+
+Thanks,
+Mauro
