@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706F43A484F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E153A4851
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhFKSFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 14:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        id S231411AbhFKSFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 14:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhFKSFX (ORCPT
+        with ESMTP id S230502AbhFKSFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 14:05:23 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA05C0613A3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:03:25 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so9178223wms.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:03:25 -0700 (PDT)
+        Fri, 11 Jun 2021 14:05:25 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CEEC0613A2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:03:27 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id o3so6956917wri.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:03:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NX8m1YUTA5OD8o59LIehw6knsVcTtkdCGgu8De/cJys=;
-        b=UTT78y3vim01I8+bSVWTJH0l0ENXv3e6J3wdGywkRKbpnmgV2Td3BVUyIQiAYoDKte
-         ENRqvcNxZuAsC8SKnDhTwbtoLomn6UJ2z/Vt9XQKfLNQF167YAldz9y4ym5qCKFGU9o2
-         diS6TGEUFezJ7sXLiHCkc/m9bq92AaFGA4QYaSI+/zJ48h/e/fLjleBexQ1We7mlcEKg
-         Z8ZTPJbYt9tVkyH00ayznNFq+EqSo2YeXXEmttC10FmZHs3svgtcTiDIEUcScIiFE7Zo
-         T/QUTwTRwV+75+xGHj63um5icXKy+i8igHvumqCi0aNPizhcLyh4VF8Q6DcuKY1BhmCp
-         yhHg==
+        bh=YYLwmjCTHF33i5yqWx/O3OoggeAPaHw6VpIz02xWpz8=;
+        b=dg1yfvweDH7Ohc4ZcPw8rZm3cKoDt7Y0BajL/HUM0chkLplf1YLpGNz/gtc9PL9YV7
+         VoJ6oR0mRvb8lbIfrg9ANTtPpmHZuy7Js8KjxjIKr5LZ6Ldj3OTpexgoZT6iTTVu3Oqj
+         6dSIDuOgrwwqse6kuRmg4cKNO1ZBSu2lkQS9DT4aDkqAG/Ho0fa5IjkUjwcPW3Aom/lM
+         SJ1sSBHgRhVuqhwHxw6YKH2PfpVhXXlc8QkqBDdL6VVSxVzqmFbTwXjsVLIqgTTwnKwH
+         rq3M5q1op9bAuNS2j4mYmVsQ/0tzh6VzAQmVFfBLzeDE5P7zxV8apKKUeESq8vYsgIP/
+         3NQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NX8m1YUTA5OD8o59LIehw6knsVcTtkdCGgu8De/cJys=;
-        b=ZbjGblrXwpfxQiYx9+7XWzf5XtYPZBlFO9UuUO+7b/QAObNAHHFBrPCuh7tXaYw6Po
-         dgkPmacgZHaqGIGFH05dLsemxA0SlqZBDlyBFpSwLNwWY3/4pV5vhQ+lREAvwjE11wyc
-         +EOup5d2m2kpYpO/TYPyLNIOvZR0lmSLRxN+WqVNAgFwbIwp94vrrHrYZGgqQH+Jrtyx
-         8su44/8zPdE8CVTya5GK6OTXj/Aj3HWyx9b0msmEFjdUaRnaXi5yBJR0/wmgKVweFAPa
-         X57w1YkA1eGDC28gCjTQo3bYgXpo4W7JdLn7t3UWHM1hToXsVzlh1lMyBpBx6L+W1RfF
-         Yd5Q==
-X-Gm-Message-State: AOAM532C/gICHVvgyndik+U3mpEa4TaxEz//V2rTugBac/tGdPOlh2WQ
-        6gKWsI8ckzvKRwRWgC1x9uqWBk3aIBHESMbx
-X-Google-Smtp-Source: ABdhPJzdMs5R2cAVSYOVRHLk8DrU6cDDx50A/hJWz6rAFXrl2PGBcTlOrhMzfrZlG6f82N60RTxbsA==
-X-Received: by 2002:a7b:c396:: with SMTP id s22mr5027928wmj.131.1623434603848;
-        Fri, 11 Jun 2021 11:03:23 -0700 (PDT)
+        bh=YYLwmjCTHF33i5yqWx/O3OoggeAPaHw6VpIz02xWpz8=;
+        b=NB8jQW8kk0ktt9mIJa1dHc+fO+O7u9GTVZ1lhB9CNXVUaK8KKdMEPZeLfviZqmgDb/
+         inOu5aYSYiUzBP1sktkOYVJMnxenH6ixjyQwfTOlA6WtG8d2Y20XXBwCIBjKhzyt4KGo
+         RbB/TTlQGkDqq6/OnZxh6/LgU7aI+Dl9A0SGVWhh8zjBye/2XZaEEkksYcOR1F/NTb0I
+         jCrKeo8l6DlOZqykFa2n/P/NetEgTt0EBsA89i6CaRd81BGqq7ihFqNE3Ce3scYQlch/
+         3VvGv7V0LTRltgAObCok2TtcUdMEqsrrMgQLisxORLjEnVetBgymH/9oBP6w3wA+5Fz9
+         f1wQ==
+X-Gm-Message-State: AOAM5311kMoJJvdSZlr0RiED8Pxu023zzChhL+WtR9Ks4W7a+gIck/xf
+        ZjU04q4aBl9XgCihp6jrvYyKXGkVod66U/GT
+X-Google-Smtp-Source: ABdhPJwt06ylqNBpLhnHuGE6z5ZQrDp2iDaHJRLrWmxVtzacGvWqbXyTHGXSV4pnhwe4Hak0vwVC1w==
+X-Received: by 2002:a5d:59a3:: with SMTP id p3mr5524829wrr.284.1623434605354;
+        Fri, 11 Jun 2021 11:03:25 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id v15sm7425881wrw.24.2021.06.11.11.03.21
+        by smtp.gmail.com with ESMTPSA id v15sm7425881wrw.24.2021.06.11.11.03.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 11:03:23 -0700 (PDT)
+        Fri, 11 Jun 2021 11:03:25 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -65,10 +65,11 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: [PATCH v3 20/23] arm64/vdso: Migrate native signals to generic vdso_base
-Date:   Fri, 11 Jun 2021 19:02:39 +0100
-Message-Id: <20210611180242.711399-21-dima@arista.com>
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v3 21/23] mips/vdso: Migrate to generic vdso_base
+Date:   Fri, 11 Jun 2021 19:02:40 +0100
+Message-Id: <20210611180242.711399-22-dima@arista.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210611180242.711399-1-dima@arista.com>
 References: <20210611180242.711399-1-dima@arista.com>
@@ -78,117 +79,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generic way to track the land vma area.
-As a bonus, after unmapping vdso, kernel won't try to land on its
+Generic way to track the landing vma area.
+As a bonus, after unmapping sigpage, kernel won't try to land on its
 previous position (due to UNMAPPED_VDSO_BASE check instead of
 context.vdso ?= 0 check).
 
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/arm64/include/asm/mmu.h |  1 -
- arch/arm64/kernel/signal.c   | 10 +++++++---
- arch/arm64/kernel/vdso.c     | 15 ++++++---------
- 3 files changed, 13 insertions(+), 13 deletions(-)
+ arch/mips/Kconfig           |  1 +
+ arch/mips/include/asm/mmu.h |  2 --
+ arch/mips/kernel/signal.c   | 11 +++++++----
+ arch/mips/kernel/vdso.c     |  2 +-
+ arch/mips/vdso/genvdso.c    |  8 --------
+ 5 files changed, 9 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
-index 434acd49dbc3..4432a2809e0d 100644
---- a/arch/arm64/include/asm/mmu.h
-+++ b/arch/arm64/include/asm/mmu.h
-@@ -19,7 +19,6 @@
- typedef struct {
- 	atomic64_t	id;
- 	refcount_t	pinned;
--	void		*vdso;
- 	unsigned long	flags;
- } mm_context_t;
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 81096dd2c1ef..2bab0844f64b 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -12,6 +12,7 @@ config MIPS
+ 	select ARCH_HAS_SETUP_ADDITIONAL_PAGES
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
++	select ARCH_HAS_VDSO_BASE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_SUPPORTS_UPROBES
+diff --git a/arch/mips/include/asm/mmu.h b/arch/mips/include/asm/mmu.h
+index 5df0238f639b..928346a44eaf 100644
+--- a/arch/mips/include/asm/mmu.h
++++ b/arch/mips/include/asm/mmu.h
+@@ -12,8 +12,6 @@ typedef struct {
+ 		atomic64_t mmid;
+ 	};
  
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index 6237486ff6bb..5f6a8c0abc4c 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -723,9 +723,10 @@ static int get_sigframe(struct rt_sigframe_user_layout *user,
- 	return 0;
- }
- 
--static void setup_return(struct pt_regs *regs, struct k_sigaction *ka,
-+static int setup_return(struct pt_regs *regs, struct k_sigaction *ka,
- 			 struct rt_sigframe_user_layout *user, int usig)
- {
-+	unsigned long land = (unsigned long)current->mm->vdso_base;
- 	__sigrestore_t sigtramp;
- 
- 	regs->regs[0] = usig;
-@@ -754,10 +755,13 @@ static void setup_return(struct pt_regs *regs, struct k_sigaction *ka,
- 
- 	if (ka->sa.sa_flags & SA_RESTORER)
- 		sigtramp = ka->sa.sa_restorer;
-+	else if (land != UNMAPPED_VDSO_BASE)
-+		sigtramp = VDSO_SYMBOL(land, sigtramp);
- 	else
--		sigtramp = VDSO_SYMBOL(current->mm->context.vdso, sigtramp);
-+		return 1;
- 
- 	regs->regs[30] = (unsigned long)sigtramp;
-+	return 0;
- }
- 
- static int setup_rt_frame(int usig, struct ksignal *ksig, sigset_t *set,
-@@ -780,7 +784,7 @@ static int setup_rt_frame(int usig, struct ksignal *ksig, sigset_t *set,
- 	err |= __save_altstack(&frame->uc.uc_stack, regs->sp);
- 	err |= setup_sigframe(&user, regs, set);
- 	if (err == 0) {
--		setup_return(regs, &ksig->ka, &user, usig);
-+		err = setup_return(regs, &ksig->ka, &user, usig);
- 		if (ksig->ka.sa.sa_flags & SA_SIGINFO) {
- 			err |= copy_siginfo_to_user(&frame->info, &ksig->info);
- 			regs->regs[1] = (unsigned long)&frame->info;
-diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-index 3e9dd41abee0..4af29f89be37 100644
---- a/arch/arm64/kernel/vdso.c
-+++ b/arch/arm64/kernel/vdso.c
-@@ -78,12 +78,6 @@ static union {
- } vdso_data_store __page_aligned_data;
- struct vdso_data *vdso_data = vdso_data_store.data;
- 
--static void vdso_mremap(const struct vm_special_mapping *sm,
--		struct vm_area_struct *new_vma)
--{
--	current->mm->context.vdso = (void *)new_vma->vm_start;
--}
+-	void *vdso;
 -
- static int __init __vdso_init(enum vdso_abi abi)
+ 	/* lock to be held whilst modifying fp_bd_emupage_allocmap */
+ 	spinlock_t bd_emupage_lock;
+ 	/* bitmap tracking allocation of fp_bd_emupage */
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index f1e985109da0..e0beaf2cdc0f 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -806,11 +806,13 @@ struct mips_abi mips_abi = {
+ 
+ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
  {
- 	int i;
-@@ -244,7 +238,12 @@ static int __setup_additional_pages(enum vdso_abi abi,
- 	if (IS_ERR(ret))
- 		return PTR_ERR(ret);
++	void *land = (void *)current->mm->vdso_base;
+ 	sigset_t *oldset = sigmask_to_save();
+-	int ret;
++	int ret = 1;
+ 	struct mips_abi *abi = current->thread.abi;
+-	void *vdso = current->mm->context.vdso;
  
--	mm->context.vdso = (void *)vdso_base;
-+	/*
-+	 * 32-bit ABI is to land on sigpage (see aarch32_sigreturn_setup()),
-+	 * 64-bit on vDSO.
-+	 */
-+	if (abi == VDSO_ABI_AA64)
-+		mm->vdso_base = (void __user *)vdso_base;
- 	*sysinfo_ehdr = vdso_base;
++	if (land == (void *)UNMAPPED_VDSO_BASE)
++		goto err;
+ 	/*
+ 	 * If we were emulating a delay slot instruction, exit that frame such
+ 	 * that addresses in the sigframe are as expected for userland and we
+@@ -843,12 +845,13 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+ 	rseq_signal_deliver(ksig, regs);
  
- 	return 0;
-@@ -279,7 +278,6 @@ static struct vm_special_mapping aarch32_vdso_maps[] = {
- 	},
- 	[AA32_MAP_VDSO] = {
- 		.name = "[vdso]",
--		.mremap = vdso_mremap,
- 	},
- };
+ 	if (sig_uses_siginfo(&ksig->ka, abi))
+-		ret = abi->setup_rt_frame(vdso + abi->vdso->off_rt_sigreturn,
++		ret = abi->setup_rt_frame(land + abi->vdso->off_rt_sigreturn,
+ 					  ksig, regs, oldset);
+ 	else
+-		ret = abi->setup_frame(vdso + abi->vdso->off_sigreturn,
++		ret = abi->setup_frame(land + abi->vdso->off_sigreturn,
+ 				       ksig, regs, oldset);
  
-@@ -426,7 +424,6 @@ static struct vm_special_mapping aarch64_vdso_maps[] __ro_after_init = {
- 	},
- 	[AA64_MAP_VDSO] = {
- 		.name	= "[vdso]",
--		.mremap = vdso_mremap,
- 	},
- };
++err:
+ 	signal_setup_done(ret, ksig, 0);
+ }
  
+diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
+index 9b2e1d2250b4..3f76417e5aed 100644
+--- a/arch/mips/kernel/vdso.c
++++ b/arch/mips/kernel/vdso.c
+@@ -184,7 +184,7 @@ int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
+ 		goto out;
+ 	}
+ 
+-	mm->context.vdso = (void *)vdso_addr;
++	mm->vdso_base = (void __user *)vdso_addr;
+ 	*sysinfo_ehdr = vdso_addr;
+ 	ret = 0;
+ 
+diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
+index 0303d30cde03..8f581a2c8578 100644
+--- a/arch/mips/vdso/genvdso.c
++++ b/arch/mips/vdso/genvdso.c
+@@ -259,13 +259,6 @@ int main(int argc, char **argv)
+ 	fprintf(out_file, "#include <linux/linkage.h>\n");
+ 	fprintf(out_file, "#include <linux/mm.h>\n");
+ 	fprintf(out_file, "#include <asm/vdso.h>\n");
+-	fprintf(out_file, "static void vdso_mremap(\n");
+-	fprintf(out_file, "	const struct vm_special_mapping *sm,\n");
+-	fprintf(out_file, "	struct vm_area_struct *new_vma)\n");
+-	fprintf(out_file, "{\n");
+-	fprintf(out_file, "	current->mm->context.vdso =\n");
+-	fprintf(out_file, "	(void *)(new_vma->vm_start);\n");
+-	fprintf(out_file, "}\n");
+ 
+ 	/* Write out the stripped VDSO data. */
+ 	fprintf(out_file,
+@@ -290,7 +283,6 @@ int main(int argc, char **argv)
+ 	fprintf(out_file, "\t.mapping = {\n");
+ 	fprintf(out_file, "\t\t.name = \"[vdso]\",\n");
+ 	fprintf(out_file, "\t\t.pages = vdso_pages,\n");
+-	fprintf(out_file, "\t\t.mremap = vdso_mremap,\n");
+ 	fprintf(out_file, "\t},\n");
+ 
+ 	/* Calculate and write symbol offsets to <output file> */
 -- 
 2.31.1
 
