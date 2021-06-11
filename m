@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441103A3B32
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F843A3B38
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 07:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhFKFAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 01:00:30 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5500 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhFKFAa (ORCPT
+        id S230377AbhFKFDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 01:03:38 -0400
+Received: from mail-pg1-f175.google.com ([209.85.215.175]:36490 "EHLO
+        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhFKFDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 01:00:30 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1T7H3k81zZfPn;
-        Fri, 11 Jun 2021 12:55:39 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 12:58:30 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 12:58:30 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>
-Subject: [PATCH -next] ASoC: bcm: cygnus_ssp: Use devm_platform_ioremap_resource_byname()
-Date:   Fri, 11 Jun 2021 13:02:35 +0800
-Message-ID: <20210611050235.4182746-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        Fri, 11 Jun 2021 01:03:37 -0400
+Received: by mail-pg1-f175.google.com with SMTP id 27so1507848pgy.3;
+        Thu, 10 Jun 2021 22:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=7YpOakzhHdRE44ZlZax8n9BZSeUcpRWNnc5DgZyi2aQ=;
+        b=J01O4ZHKpOQkfEHRWcjAK6KInyZN8PAxMLqqHDyZunQCvi/NSJtNCjIicFVOIuQlAb
+         yylrt3EefWnNHdnNg+hQB5MnT/eSofSaA/GKFtttlvZA28ee8ONE1iF0sCyo1rAxhkFb
+         bzAISUZN0D8uQGCEencnqvr70ZcdEtkjPlfeo2XPstQpNfwZE5CIPZOtUs5aiYwqJQiu
+         R6p6hlk6Wkf6+hMtFRg6DkrcNmUEgowDtRlnCAS5Wr4/dYUkaI8b7XlwbvmQjh6STZDA
+         0M4xa6u9F6yLEet6fYlZAiepzMZHuuUfOfh0DN3jEr8rxa+4dOusir3SUiojIVCA0V32
+         ilsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7YpOakzhHdRE44ZlZax8n9BZSeUcpRWNnc5DgZyi2aQ=;
+        b=SaldA/9NxlwouphArBZZ4w791Bz2Dh7OV88iOdzl7lXc45GmCYJvhZ9BHKqjFkIQ/m
+         0tEKvt4EZv8PLeHSSqme48Al4OTCGuLD8afbtjrMr6BRWIbFr5d3mbpI7A705pW64Fpa
+         rW1sOqmv8x6NZ9RWy67rElezBrTh39teVsDhlPdqgzcWsKiklS6yQ1pVWVNkMDyuL8rj
+         PEA9EYXejMb0ARuPWUW/v8lboSQqRJVgYy66PJ+g9PEnQM57DYLh+NaS2nb+hKUBG9Qv
+         YTd36PqK2JASXZiSlt8s0N5YvEeXAk4ckIDReB8i86KmRrio7xq2+dmFQbMUAFR4Ut6g
+         4k4g==
+X-Gm-Message-State: AOAM530SxC9MsKldM8NTZia7Iys8MvjF16lp5YyC/oMjYs0h8drD95+q
+        /fkjKjYrcfwZHuE7Rpz35UZPAAMseIQ=
+X-Google-Smtp-Source: ABdhPJwqMBSXKGr0vVVHXULaBAxNCD4YKTjfRAPJYckXUrqZuIqE6Y/4FhNpnplJ3weQZEZZabVjQA==
+X-Received: by 2002:a63:62c2:: with SMTP id w185mr1856319pgb.76.1623387624747;
+        Thu, 10 Jun 2021 22:00:24 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.40])
+        by smtp.googlemail.com with ESMTPSA id w27sm4075825pfq.117.2021.06.10.22.00.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Jun 2021 22:00:23 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, stable@vger.kernel.org
+Subject: [PATCH] KVM: X86: Fix x86_emulator slab cache leak
+Date:   Thu, 10 Jun 2021 21:59:33 -0700
+Message-Id: <1623387573-5969-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource_byname() helper instead of
-calling platform_get_resource_byname() and devm_ioremap_resource()
-separately.
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Commit c9b8b07cded58 (KVM: x86: Dynamically allocate per-vCPU emulation context) 
+tries to allocate per-vCPU emulation context dynamically, however, the
+x86_emulator slab cache is still exiting after the kvm module is unload
+as below after destroying the VM and unloading the kvm module.
+
+grep x86_emulator /proc/slabinfo
+x86_emulator          36     36   2672   12    8 : tunables    0    0    0 : slabdata      3      3      0
+
+This patch fixes this slab cache leak by destroying the x86_emulator slab cache 
+when the kvm module is unloaded.
+
+Fixes: c9b8b07cded58 (KVM: x86: Dynamically allocate per-vCPU emulation context)
+Cc: stable@vger.kernel.org
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 ---
- sound/soc/bcm/cygnus-ssp.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ arch/x86/kvm/x86.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
-index ba03bb62ba96..fca5a3f2eec5 100644
---- a/sound/soc/bcm/cygnus-ssp.c
-+++ b/sound/soc/bcm/cygnus-ssp.c
-@@ -1308,7 +1308,6 @@ static int cygnus_ssp_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct device_node *child_node;
--	struct resource *res;
- 	struct cygnus_audio *cygaud;
- 	int err;
- 	int node_count;
-@@ -1320,13 +1319,11 @@ static int cygnus_ssp_probe(struct platform_device *pdev)
- 
- 	dev_set_drvdata(dev, cygaud);
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "aud");
--	cygaud->audio = devm_ioremap_resource(dev, res);
-+	cygaud->audio = devm_platform_ioremap_resource_byname(pdev, "aud");
- 	if (IS_ERR(cygaud->audio))
- 		return PTR_ERR(cygaud->audio);
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "i2s_in");
--	cygaud->i2s_in = devm_ioremap_resource(dev, res);
-+	cygaud->i2s_in = devm_platform_ioremap_resource_byname(pdev, "i2s_in");
- 	if (IS_ERR(cygaud->i2s_in))
- 		return PTR_ERR(cygaud->i2s_in);
- 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 6d3955a6a763..fe26f33e8782 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8258,6 +8258,7 @@ void kvm_arch_exit(void)
+ 	kvm_x86_ops.hardware_enable = NULL;
+ 	kvm_mmu_module_exit();
+ 	free_percpu(user_return_msrs);
++	kmem_cache_destroy(x86_emulator_cache);
+ 	kmem_cache_destroy(x86_fpu_cache);
+ #ifdef CONFIG_KVM_XEN
+ 	static_key_deferred_flush(&kvm_xen_enabled);
 -- 
 2.25.1
 
