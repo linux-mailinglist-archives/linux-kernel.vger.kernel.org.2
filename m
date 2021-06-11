@@ -2,106 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6498E3A393D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0FB3A3940
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhFKB0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 21:26:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25198 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230169AbhFKB0Q (ORCPT
+        id S230343AbhFKBaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 21:30:52 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5495 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhFKBav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 21:26:16 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15B137WB122516;
-        Thu, 10 Jun 2021 21:24:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=3UZaid9LaN7IOF3CYC1eCX4lLUxOwA2hKs9yAiR/CrQ=;
- b=p7XYyhONqsq/1w8WZCP5k6euYoyG036jAr/OTAHbEIUQLAex2y+jYNRf/0suYjsT+F4M
- iYejGfSPkqzpIkIm1ZHDis2t8Ctj83ZOauFBl/h5GL9oilx8Enz24mBfpe4PDQ//tsOC
- t9+t0++Icd+CQ81TjUU1TTaPjpfcNo/X4LPYIPajcqWQf3IJUtDYXE9RCvQAVA+iCPpg
- ZwEkLYHGeGtZZnTaRfr7GRLC+1gpRTrN+3NvLBHV82KnJ0M/ErUs28fBa/WMkAY0iDz0
- TrQBoKNHiTDn+T8HVLyKyTZDdOKmkc7wQ6SHsA34ilkXWRHguivJi9pkx8lkEXPMdKsK jw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 393wq2gjms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Jun 2021 21:24:14 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15B1CK1m010743;
-        Fri, 11 Jun 2021 01:24:12 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3900w8b4t1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Jun 2021 01:24:12 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15B1OARc11469252
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Jun 2021 01:24:10 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6260952054;
-        Fri, 11 Jun 2021 01:24:10 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.28.13])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 7DDC65204E;
-        Fri, 11 Jun 2021 01:24:08 +0000 (GMT)
-Message-ID: <f6251386feb733d4278e97c3501c09f8dc1a4105.camel@linux.ibm.com>
-Subject: Re: [PATCH 2/2] ima: Fix warning: no previous prototype for
- function 'ima_post_key_create_or_update'
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        robh@kernel.org
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tusharsu@linux.microsoft.com
-Date:   Thu, 10 Jun 2021 21:24:07 -0400
-In-Reply-To: <20210610171553.3806-2-nramas@linux.microsoft.com>
-References: <20210610171553.3806-1-nramas@linux.microsoft.com>
-         <20210610171553.3806-2-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yea9vnz1XdiVSQ4XiFFNhIcN1tMKdy32
-X-Proofpoint-GUID: yea9vnz1XdiVSQ4XiFFNhIcN1tMKdy32
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-10_13:2021-06-10,2021-06-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- bulkscore=0 suspectscore=0 mlxscore=0 spamscore=0 adultscore=0
- clxscore=1011 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- mlxlogscore=889 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106110005
+        Thu, 10 Jun 2021 21:30:51 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1NTP10SQzZdxc;
+        Fri, 11 Jun 2021 09:26:01 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 09:28:52 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
+ 2021 09:28:51 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next v2] crypto: remove CRYPTOA_U32 and related functions
+Date:   Fri, 11 Jun 2021 10:01:00 +0800
+Message-ID: <20210611020100.2008894-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lakshmi,
+According to the advice of Eric and Herbert, type CRYPTOA_U32
+has been unused for over a decade, so remove the code related to
+CRYPTOA_U32.
 
-On Thu, 2021-06-10 at 10:15 -0700, Lakshmi Ramasubramanian wrote:
-> The function prototype for ima_post_key_create_or_update() is present
-> in 'linux/ima.h'.  But this header file is not included in
-> ima_asymmetric_keys.c where the function is implemented.  This results
-> in the following compiler warning when "-Wmissing-prototypes" flag
-> is turned on:
-> 
->   security/integrity/ima/ima_asymmetric_keys.c:29:6: warning: no previous
->   prototype for 'ima_post_key_create_or_update' [-Wmissing-prototypes]
-> 
-> Include the header file 'linux/ima.h' in ima_asymmetric_keys.c to
-> fix the compiler warning.
-> 
-> Fixes: 88e70da170e8 (IMA: Define an IMA hook to measure keys)
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+After removing CRYPTOA_U32, the type of the variable attrs can be
+changed from union to struct.
 
-Roberto posted an equivalent patch "[PATCH 4/5] ima: Include header
-defining ima_post_key_create_or_update()" earlier this week.
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+---
+v1->v2: Fix format issue.
 
-Compiler warnings don't meet the requirements for stable -
-Documentation/process/stable-kernel-rules.rst.
+ crypto/algapi.c         | 18 ------------------
+ crypto/algboss.c        | 31 ++++++-------------------------
+ include/crypto/algapi.h |  1 -
+ include/linux/crypto.h  |  5 -----
+ 4 files changed, 6 insertions(+), 49 deletions(-)
 
-thanks,
-
-Mimi
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index fdabf2675b63..43f999dba4dc 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -868,24 +868,6 @@ const char *crypto_attr_alg_name(struct rtattr *rta)
+ }
+ EXPORT_SYMBOL_GPL(crypto_attr_alg_name);
+ 
+-int crypto_attr_u32(struct rtattr *rta, u32 *num)
+-{
+-	struct crypto_attr_u32 *nu32;
+-
+-	if (!rta)
+-		return -ENOENT;
+-	if (RTA_PAYLOAD(rta) < sizeof(*nu32))
+-		return -EINVAL;
+-	if (rta->rta_type != CRYPTOA_U32)
+-		return -EINVAL;
+-
+-	nu32 = RTA_DATA(rta);
+-	*num = nu32->num;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(crypto_attr_u32);
+-
+ int crypto_inst_setname(struct crypto_instance *inst, const char *name,
+ 			struct crypto_alg *alg)
+ {
+diff --git a/crypto/algboss.c b/crypto/algboss.c
+index 5ebccbd6b74e..1814d2c5188a 100644
+--- a/crypto/algboss.c
++++ b/crypto/algboss.c
+@@ -28,16 +28,9 @@ struct cryptomgr_param {
+ 		struct crypto_attr_type data;
+ 	} type;
+ 
+-	union {
++	struct {
+ 		struct rtattr attr;
+-		struct {
+-			struct rtattr attr;
+-			struct crypto_attr_alg data;
+-		} alg;
+-		struct {
+-			struct rtattr attr;
+-			struct crypto_attr_u32 data;
+-		} nu32;
++		struct crypto_attr_alg data;
+ 	} attrs[CRYPTO_MAX_ATTRS];
+ 
+ 	char template[CRYPTO_MAX_ALG_NAME];
+@@ -104,12 +97,10 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
+ 
+ 	i = 0;
+ 	for (;;) {
+-		int notnum = 0;
+-
+ 		name = ++p;
+ 
+ 		for (; isalnum(*p) || *p == '-' || *p == '_'; p++)
+-			notnum |= !isdigit(*p);
++			;
+ 
+ 		if (*p == '(') {
+ 			int recursion = 0;
+@@ -123,7 +114,6 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
+ 					break;
+ 			}
+ 
+-			notnum = 1;
+ 			p++;
+ 		}
+ 
+@@ -131,18 +121,9 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
+ 		if (!len)
+ 			goto err_free_param;
+ 
+-		if (notnum) {
+-			param->attrs[i].alg.attr.rta_len =
+-				sizeof(param->attrs[i].alg);
+-			param->attrs[i].alg.attr.rta_type = CRYPTOA_ALG;
+-			memcpy(param->attrs[i].alg.data.name, name, len);
+-		} else {
+-			param->attrs[i].nu32.attr.rta_len =
+-				sizeof(param->attrs[i].nu32);
+-			param->attrs[i].nu32.attr.rta_type = CRYPTOA_U32;
+-			param->attrs[i].nu32.data.num =
+-				simple_strtol(name, NULL, 0);
+-		}
++		param->attrs[i].attr.rta_len = sizeof(param->attrs[i]);
++		param->attrs[i].attr.rta_type = CRYPTOA_ALG;
++		memcpy(param->attrs[i].data.name, name, len);
+ 
+ 		param->tb[i + 1] = &param->attrs[i].attr;
+ 		i++;
+diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
+index 86f0748009af..41d42e649da4 100644
+--- a/include/crypto/algapi.h
++++ b/include/crypto/algapi.h
+@@ -118,7 +118,6 @@ void *crypto_spawn_tfm2(struct crypto_spawn *spawn);
+ struct crypto_attr_type *crypto_get_attr_type(struct rtattr **tb);
+ int crypto_check_attr_type(struct rtattr **tb, u32 type, u32 *mask_ret);
+ const char *crypto_attr_alg_name(struct rtattr *rta);
+-int crypto_attr_u32(struct rtattr *rta, u32 *num);
+ int crypto_inst_setname(struct crypto_instance *inst, const char *name,
+ 			struct crypto_alg *alg);
+ 
+diff --git a/include/linux/crypto.h b/include/linux/crypto.h
+index da5e0d74bb2f..3b9263d6122f 100644
+--- a/include/linux/crypto.h
++++ b/include/linux/crypto.h
+@@ -647,7 +647,6 @@ enum {
+ 	CRYPTOA_UNSPEC,
+ 	CRYPTOA_ALG,
+ 	CRYPTOA_TYPE,
+-	CRYPTOA_U32,
+ 	__CRYPTOA_MAX,
+ };
+ 
+@@ -665,10 +664,6 @@ struct crypto_attr_type {
+ 	u32 mask;
+ };
+ 
+-struct crypto_attr_u32 {
+-	u32 num;
+-};
+-
+ /* 
+  * Transform user interface.
+  */
+-- 
+2.18.0.huawei.25
 
