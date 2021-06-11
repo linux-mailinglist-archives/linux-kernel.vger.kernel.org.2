@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0613A3E3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443DD3A3E47
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhFKIrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:47:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhFKIrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:47:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D986613B3;
-        Fri, 11 Jun 2021 08:45:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623401113;
-        bh=lFOCAvTa5kzm9zjAjf2Cb6+Xc+gz2Rbc6efLS2UFKkI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BE54IPKK/mj7XtJint2tB9C5Rd87WaGfFjnd3Qz6D+K5jHuhoULdezgurcXosn2Yv
-         itC/ZCAjXBR3aR4Bm/9wR2sCPrOXHiEL5kGUL71exlcF+Ix1zjrM9+aMGS1oS+Utob
-         5tBmxzN92lAF5wWOszdETku6UgPAI7pnqbgdBvgu0w6HjimxEFLZl6VKbOKs3QjRbd
-         HiXZM6r5X9ujiKTnC8hHjzEvYQWYvWUg+m3vtK7QtvwaHrOL3gnDPeXaQVTrEAYU44
-         I+zOqz2rfXQlMiVyNEUFxfMBlT+jyCP0mjZPmZQNkBT7JiT/exq0be5n9+xuyNep8B
-         ZWEMtyK/AEOBw==
-Date:   Fri, 11 Jun 2021 10:45:07 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 26/34] docs: PCI: endpoint: pci-endpoint-cfs.rst: avoid
- using ReSt :doc:`foo` markup
-Message-ID: <20210611104507.01bbd489@coco.lan>
-In-Reply-To: <20210610234622.GA2795707@bjorn-Precision-5520>
-References: <5268f6eb75bc0fe000f4884bca0a17f01eddbc40.1622898327.git.mchehab+huawei@kernel.org>
-        <20210610234622.GA2795707@bjorn-Precision-5520>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231293AbhFKIuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:50:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhFKIuO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 04:50:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1F1C061574;
+        Fri, 11 Jun 2021 01:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BHB0MsTGbUVUhvNVmFXvgWSz+NQYW3zX/BAZ/e3SbK0=; b=BpzgG4YmXEem2/NVRIsXxMcgIE
+        kEZ1P+GXuuLDvbqbxX46cc146/b24RARQyxsrVoVyK2NW5KvivPHUNawVXas2oW6LxdsR/8pDwe/j
+        9l0KwvXfGZPnp49tMBJdBzsTJvGQWSkl5PdGHHVPJ+ErHKNuARIJNwlq/VBRY6Ga+mJrbFfChY97s
+        m5l3RCScHIJa2coSN/NnGNDpig/WTn1WzObj22mb+PGuuNrB9ESAeF7OagKMYtyWGoATYmRI2Geef
+        OnV58/v31laTdClzK4gO22ewZ+aEsdDBOF7SnjHON07dRtlTa4NDKt6OGncOhpCdQ/TUpj3Lk83PK
+        DbGs1J5g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lrcnv-002aGa-3U; Fri, 11 Jun 2021 08:46:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BDE5B3001E3;
+        Fri, 11 Jun 2021 10:46:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AEFD92BC12DA3; Fri, 11 Jun 2021 10:46:14 +0200 (CEST)
+Date:   Fri, 11 Jun 2021 10:46:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>,
+        mingo@kernel.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
+        Will Deacon <will@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
+Message-ID: <YMMi1pG+FwyhZ9b7@hirez.programming.kicks-ass.net>
+References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 10 Jun 2021 18:46:22 -0500
-Bjorn Helgaas <helgaas@kernel.org> escreveu:
+On Fri, Jun 11, 2021 at 10:45:00AM +0200, Peter Zijlstra wrote:
+> @@ -52,41 +52,67 @@ bool freezing_slow_path(struct task_stru
+>  }
+>  EXPORT_SYMBOL(freezing_slow_path);
+>  
+> +/* Recursion relies on tail-call optimization to not blow away the stack */
+> +static bool __frozen(struct task_struct *p)
+> +{
+> +	if (p->state == TASK_FROZEN)
+> +		return true;
+> +
+> +	/*
+> +	 * If stuck in TRACED, and the ptracer is FROZEN, we're frozen too.
+> +	 */
+> +	if (task_is_traced(p))
+> +		return frozen(rcu_dereference(p->parent));
+> +
+> +	/*
+> +	 * If stuck in STOPPED and the parent is FROZEN, we're frozen too.
+> +	 */
+> +	if (task_is_stopped(p))
+> +		return frozen(rcu_dereference(p->real_parent));
+> +
+> +	return false;
+> +}
+> +
+> +bool frozen(struct task_struct *p)
+> +{
+> +	bool ret;
+> +
+> +	rcu_read_lock();
+> +	ret = __frozen(p);
+> +	rcu_read_unlock();
+> +
+> +	return ret;
+> +}
 
-> On Sat, Jun 05, 2021 at 03:18:25PM +0200, Mauro Carvalho Chehab wrote:
-> > The :doc:`foo` tag is auto-generated via automarkup.py.
-> > So, use the filename at the sources, instead of :doc:`foo`.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> 
-> It'd be nice to know why we're doing this and what the benefit is.
-
-That came from an upstream discussion, mentioned on patch 00/34:
-
-		https://lore.kernel.org/linux-doc/871r9k6rmy.fsf@meer.lwn.net/
-
-Basically, using Documentation/.../foo.rst allows some text editors
-to navigate directly to the file. Also, there's a preference from
-some maintainers to keep the ReST files as close as possible to plain
-text.
-
-> Maybe if you know more about ReSt, it's obvious that using :doc:`foo`
-> is wrong and produces the wrong output or something.  But I don't
-> know.
-
-It is more a matter of preference. That's said, there is indeed
-an issue with the current builder: when using SPHINXDIRS="book",
-doc:`foo` references may not work well. For instance, if one is
-building just the driver-api book, a reference like :doc:`../admin-guide/foo`
-can't be solved and will produce a warning, plus a bad output.
-
-By using Documentation/admin-guide/foo.rst, it will simply be
-displayed as a text without producing any harm.
-
-We discussed in the past about that, but we didn't reach to any
-conclusion about the proper way to fix it.
-
-> I do think the pathname in the new text is easier for plain-text
-> readers to follow.
-
-Yes.
-
-> 
-> (What's the correct spelling of "ReSt", BTW?  The cover letter has
-> "ReST", this patch has "ReSt", wikipedia says "RST, ReST, or reST".)
-
-ReSt was a typo.. sorry for that. I guess the proper way is ReST,
-but several places use RST instead. For instance, the conversion
-tool pandoc uses "rst" to refer to this format.
-
-> 
-> But anyway,
-> 
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Oleg, this bit in particular we'd like some feedback on, if possible.
 
 Thanks!
-Mauro
-
-> 
-> > ---
-> >  Documentation/PCI/endpoint/pci-endpoint-cfs.rst | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/PCI/endpoint/pci-endpoint-cfs.rst b/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-> > index 696f8eeb4738..db609b97ad58 100644
-> > --- a/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-> > +++ b/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-> > @@ -125,4 +125,4 @@ all the EPF devices are created and linked with the EPC device.
-> >  						| interrupt_pin
-> >  						| function
-> >  
-> > -[1] :doc:`pci-endpoint`
-> > +[1] Documentation/PCI/endpoint/pci-endpoint.rst
-> > -- 
-> > 2.31.1
-> >   
-
-
-
-Thanks,
-Mauro
