@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CF73A3EC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EF33A3EC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhFKJNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39990 "EHLO
+        id S231597AbhFKJN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhFKJNq (ORCPT
+        with ESMTP id S231191AbhFKJN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:13:46 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7A5C061574;
-        Fri, 11 Jun 2021 02:11:37 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id y7so5233799wrh.7;
-        Fri, 11 Jun 2021 02:11:37 -0700 (PDT)
+        Fri, 11 Jun 2021 05:13:56 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A97C0613A2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:11:45 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id i94so5255570wri.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:11:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gDB2i0wBVPcnS2u+xI1ot510mox1TR01qapW1qdqsus=;
-        b=Y/wtqMxO6uLJ8+X1nLzSXuRctHIazuvsQV7LapvxjsQTQOIbuFXeZxKHMAlCoIidM2
-         2XyygutwS1R6NDxQEQvw12wGMHQtX1t6ET8arrrIvKNt5QGbHDebnxp9C3Kqe1o2z19K
-         h60HckMCAsF1vRzhLhWXWxj6Si9WkekzEOuwzPAkjgwkWMSdDQ42EATBd/LF2t6Cfh6F
-         X4dvjYuAmn8H3cqvw+/qQnYwI1Hb49yW9lcMR4SNe0S43g5OHvONsyR9RGWrEDT9Mf2j
-         9DmjNi34XAyCQ6e3lBZiMN4aoNz6fIrwWOTxFF3ufhLC0z14iFXPtXYR664QuaB2k2i0
-         grXg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YElcP8wY/ItH22s2CX3Yk/qIGr089Bxcg+NXSKlpwwM=;
+        b=woZ9K25EeoLQgFPoZVy3NGyq6fwzaVKAJZhft3QVaaHAwjel+T2FHYXKeJVF0dq4IV
+         KT4si0PHrixQw5HW0jmWLmRYpEtsp3/eZfK1U1nrDfC+VhljAejz/6LwRdKB8Bvb2tMa
+         H8J9YWPe2MRbFZbJXcHP9jn7fySM4WPSRK7A5F8GgRiy8AGIsgp23zFDTlJdWTDgJ7cW
+         xXmc3PcmEMqJbvIehCJmyyOqmCmZDswRrH03zxLaBPaRmV2V5yqUL83Ikt6z3g2y/aXt
+         ybc6xsaj2MgpPjXFU9ob9H9own759QmqW4hygFJqr/9Sgi2hbAlnjJGYMW/I5iO5C/CZ
+         ycXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gDB2i0wBVPcnS2u+xI1ot510mox1TR01qapW1qdqsus=;
-        b=moJ+6+QtgH0o85sXSC9hRaq5RoPVc6erdaR8vVlAFOGOqWOxJUaHdaKqiIiFceBzOD
-         6qvzUDWPYE/VZQc7IClp5u5tJiT2nWhctzmMvVX2/MaGMkYCYlXJOvQCyLIHNa5ZiQMR
-         XQbrjsf2WSwkgqlEEKAy1wuAv0qYZSr5ZbQ2SerYpRHlQMNvliW8jGQiBK7zGSQl6ElZ
-         GS/rW7kfj9iSSl5df/1PErSPfPiBjo2wVNQfzZhZObQKY1E94eF1XRNVtBHDfFFmQAB5
-         6EHu7wM5rU41YOjAXa7wvtTN5j+ev1/J/x5s8OEwq701z9aCnaOQe5qqBH4S5jIfvyGX
-         +wlQ==
-X-Gm-Message-State: AOAM533e9rs9kItOuRZkHf0TtrycNRz6XNxG6HY9xABVrFv42HbWWdEm
-        Zj2KCbtdugj9Jza6DhybHqU=
-X-Google-Smtp-Source: ABdhPJxEn2YmsWM1t1hNM1Y/ksni5jQP0dcxtjx6goiQaEfTMDJljhKXzhtw28E90xJkPK+YNpVt1Q==
-X-Received: by 2002:a5d:4e4d:: with SMTP id r13mr2948003wrt.218.1623402696642;
-        Fri, 11 Jun 2021 02:11:36 -0700 (PDT)
-Received: from localhost.localdomain ([188.24.178.25])
-        by smtp.gmail.com with ESMTPSA id l13sm6667737wrz.34.2021.06.11.02.11.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 02:11:36 -0700 (PDT)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 1/2] ARM: dts: owl-s500: Add ethernet support
-Date:   Fri, 11 Jun 2021 12:11:32 +0300
-Message-Id: <222ee0c2cb431619f558dce9726585ac92f65e00.1623401998.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
-References: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YElcP8wY/ItH22s2CX3Yk/qIGr089Bxcg+NXSKlpwwM=;
+        b=hZn90iOl1ZPNqMu1mZnWcqhZuIaYm4WIxNEh+Z/miWwMuKcv3+N4HjfKIn+3aBnW+F
+         r7Kf/3OAi8/LQ42WQQAFzyTP3T/5zsX/703tH/tumfDWUbFCoF7y++v4jWhBdtCcFMdR
+         5yGYqfQ/WeKOmHiL9MPdAJT3kWSsbt0CgupqEqW+e32EPNC4lzMne89eTpXmdpTLQsDY
+         EvfI/JXk/P+7NxPZEBOK4sskJzcq+PFHigOL0L53UHrw+UIMRQFTIVvETcn34++wNmpU
+         TOhFays5fEbwySeaWArfjF4G0TQCc2VZ1M4kn/+w8r9JLgmV+W44V49vhxFTjDj/4T/n
+         d2CQ==
+X-Gm-Message-State: AOAM533cU1CHJ+M5cihIOfHcjNZObW0d4lsJtYSIhynJ6hC2kboGBy6i
+        U5zhP24GodgdeuX0wZHQJHSK+oshYjVjSP83+BzmUw==
+X-Google-Smtp-Source: ABdhPJygoquYofYpaeSWf98r/mIW7k2U9CQBWHXDLqMaKoPkUUyF4l08eSJo3Yli8sYbBlkW2zzw2hVNtPKpLBXGTGc=
+X-Received: by 2002:a05:6000:229:: with SMTP id l9mr2803707wrz.43.1623402704237;
+ Fri, 11 Jun 2021 02:11:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210610210913.536081-1-tyhicks@linux.microsoft.com> <20210610210913.536081-4-tyhicks@linux.microsoft.com>
+In-Reply-To: <20210610210913.536081-4-tyhicks@linux.microsoft.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Fri, 11 Jun 2021 11:11:33 +0200
+Message-ID: <CAHUa44H=vJrkYYTb2T8WPfy6TznQyO8a8wnLCbJUuSE8QO4iuw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/8] optee: fix tee out of memory failure seen during
+ kexec reboot
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Ethernet MAC device tree node for Actions Semi S500 SoC.
+On Thu, Jun 10, 2021 at 11:09 PM Tyler Hicks
+<tyhicks@linux.microsoft.com> wrote:
+>
+> From: Allen Pais <apais@linux.microsoft.com>
+>
+> The following out of memory errors are seen on kexec reboot
+> from the optee core.
+>
+> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
+>
+> tee_shm_release() is not invoked on dma shm buffer.
+>
+> Implement .shutdown() method to handle the release of the buffers
+> correctly.
+>
+> More info:
+> https://github.com/OP-TEE/optee_os/issues/3637
+>
+> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm/boot/dts/owl-s500.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Do we really need this considering the patch "optee: Refuse to load
+the driver under the kdump kernel"?
 
-diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index cd635f222d26..739b4b9cec8c 100644
---- a/arch/arm/boot/dts/owl-s500.dtsi
-+++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -324,5 +324,15 @@ mmc2: mmc@b0238000 {
- 			dma-names = "mmc";
- 			status = "disabled";
- 		};
-+
-+		ethernet: ethernet@b0310000 {
-+			compatible = "actions,s500-emac", "actions,owl-emac";
-+			reg = <0xb0310000 0x10000>;
-+			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_ETHERNET>, <&cmu CLK_RMII_REF>;
-+			clock-names = "eth", "rmii";
-+			resets = <&cmu RESET_ETHERNET>;
-+			status = "disabled";
-+		};
- 	};
- };
--- 
-2.32.0
-
+Jens
