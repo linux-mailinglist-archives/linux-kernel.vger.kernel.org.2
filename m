@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12C83A3DBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8693D3A3DBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhFKIGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:06:52 -0400
-Received: from m12-14.163.com ([220.181.12.14]:51158 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230034AbhFKIGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:06:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=vGBxM
-        T1PNez76gx44N0IB18IfZDeVXPhMCJ7xA7RwuE=; b=WHROsHUqpy9+9VaGkygWh
-        0rZ8BLHPfSdDvJxVTYvdfG53LlxunCCyf7hzxnsu+MqpXrPGw8Wu1KyeoxepIGo2
-        rkLKyzk9CftKwdjvPlXphUl11GKieE46AZdZx75n3NhY0umHI/zVW42RT+E1lKo6
-        pe7ZwxqAIobIiLChNmkUlY=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp10 (Coremail) with SMTP id DsCowABXWlL1GMNgulm1OA--.30888S2;
-        Fri, 11 Jun 2021 16:04:06 +0800 (CST)
-From:   dingsenjie@163.com
-To:     jk@ozlabs.org, joel@jms.id.au, alistair@popple.id.au,
-        eajames@linux.ibm.com
-Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] fsi: fsi-sbefifo: Use module_fsi_driver to simplify the code
-Date:   Fri, 11 Jun 2021 16:03:24 +0800
-Message-Id: <20210611080324.60008-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S230291AbhFKIKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:10:02 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20836 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229633AbhFKIJ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 04:09:58 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-206-L8ys3hEWPauhtMu7NFL4nA-1; Fri, 11 Jun 2021 09:07:55 +0100
+X-MC-Unique: L8ys3hEWPauhtMu7NFL4nA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Fri, 11 Jun 2021 09:07:54 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Fri, 11 Jun 2021 09:07:54 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nick Desaulniers' <ndesaulniers@google.com>,
+        Tor Vic <torvic9@mailbox.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD <
+ 13.0.0
+Thread-Topic: [PATCH] x86/Makefile: make -stack-alignment conditional on LLD <
+ 13.0.0
+Thread-Index: AQHXXi3hDa/SX38CoUOUtr2ZTdzJmqsOdORg
+Date:   Fri, 11 Jun 2021 08:07:54 +0000
+Message-ID: <6c8315ef3ebb45b59dd531c634bcff48@AcuMS.aculab.com>
+References: <214134496.67043.1623317284090@office.mailbox.org>
+ <CAKwvOdmU9TUiZ6AatJja=ksneRKP5saNCkx0qodLMOi_BshSSg@mail.gmail.com>
+In-Reply-To: <CAKwvOdmU9TUiZ6AatJja=ksneRKP5saNCkx0qodLMOi_BshSSg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowABXWlL1GMNgulm1OA--.30888S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZw47Ar1xKw13CF13WF1fCrg_yoWDJrgEka
-        sYv3Z7GrW7WFy7G39Iqw4fZr92qFy8uFs3XF1Sqa98Kw17Zw4rAa4jgrW3tw4UWr4rAa9r
-        ArsxCF1Fyr1xZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0hmRUUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/xtbBRRauyFPAMYa0BQAAsg
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
-
-Simplify the code by using module_fsi_driver macro.
-
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- drivers/fsi/fsi-sbefifo.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
-
-diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
-index bfd5e5d..4ada65aa 100644
---- a/drivers/fsi/fsi-sbefifo.c
-+++ b/drivers/fsi/fsi-sbefifo.c
-@@ -1046,18 +1046,7 @@ static int sbefifo_remove(struct device *dev)
- 	}
- };
- 
--static int sbefifo_init(void)
--{
--	return fsi_driver_register(&sbefifo_drv);
--}
--
--static void sbefifo_exit(void)
--{
--	fsi_driver_unregister(&sbefifo_drv);
--}
--
--module_init(sbefifo_init);
--module_exit(sbefifo_exit);
-+module_fsi_driver(sbefifo_drv);
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Brad Bishop <bradleyb@fuzziesquirrel.com>");
- MODULE_AUTHOR("Eddie James <eajames@linux.vnet.ibm.com>");
--- 
-1.9.1
+RnJvbTogTmljayBEZXNhdWxuaWVycw0KPiBTZW50OiAxMCBKdW5lIDIwMjEgMjA6MjENCj4gDQo+
+IE9uIFRodSwgSnVuIDEwLCAyMDIxIGF0IDI6MjggQU0gPHRvcnZpYzlAbWFpbGJveC5vcmc+IHdy
+b3RlOg0KPiA+DQo+ID4gU2luY2UgTExWTSBjb21taXQgMzc4N2VlNCwgdGhlICctc3RhY2stYWxp
+Z25tZW50JyBmbGFnIGhhcyBiZWVuIGRyb3BwZWQgWzFdLA0KPiA+IGxlYWRpbmcgdG8gdGhlIGZv
+bGxvd2luZyBlcnJvciBtZXNzYWdlIHdoZW4gYnVpbGRpbmcgYSBMVE8ga2VybmVsIHdpdGgNCj4g
+PiBDbGFuZy0xMyBhbmQgTExELTEzOg0KPiA+DQo+ID4gICAgIGxkLmxsZDogZXJyb3I6IC1wbHVn
+aW4tb3B0PS06IGxkLmxsZDogVW5rbm93biBjb21tYW5kIGxpbmUgYXJndW1lbnQNCj4gPiAgICAg
+Jy1zdGFjay1hbGlnbm1lbnQ9OCcuICBUcnkgJ2xkLmxsZCAtLWhlbHAnDQo+ID4gICAgIGxkLmxs
+ZDogRGlkIHlvdSBtZWFuICctLXN0YWNrcmVhbGlnbj04Jz8NCj4gPg0KPiA+IEl0IGFsc28gYXBw
+ZWFycyB0aGF0IHRoZSAnLWNvZGUtbW9kZWwnIGZsYWcgaXMgbm90IG5lY2Vzc2FyeSBhbnltb3Jl
+IHN0YXJ0aW5nDQo+ID4gd2l0aCBMTFZNLTkgWzJdLg0KPiA+DQo+ID4gRHJvcCAnLWNvZGUtbW9k
+ZWwnIGFuZCBtYWtlICctc3RhY2stYWxpZ25tZW50JyBjb25kaXRpb25hbCBvbiBMTEQgPCAxMy4w
+LjAuDQo+IA0KPiBQbGVhc2UgaW5jbHVkZSB0aGlzIGFkZGl0aW9uYWwgY29udGV4dCBpbiB2MjoN
+Cj4gYGBgDQo+IFRoZXNlIGZsYWdzIHdlcmUgbmVjZXNzYXJ5IGJlY2F1c2UgdGhlc2UgZmxhZ3Mg
+d2VyZSBub3QgZW5jb2RlZCBpbiB0aGUNCj4gSVIgcHJvcGVybHksIHNvIHRoZSBsaW5rIHdvdWxk
+IHJlc3RhcnQgb3B0aW1pemF0aW9ucyB3aXRob3V0IHRoZW0uIE5vdw0KPiB0aGVyZSBhcmUgcHJv
+cGVybHkgZW5jb2RlZCBpbiB0aGUgSVIsIGFuZCB0aGVzZSBmbGFncyBleHBvc2luZw0KPiBpbXBs
+ZW1lbnRhdGlvbiBkZXRhaWxzIGFyZSBubyBsb25nZXIgbmVjZXNzYXJ5Lg0KPiBgYGANCj4gVGhh
+dCB3YXkgaXQgZG9lc24ndCBzb3VuZCBsaWtlIHdlJ3JlIG5vdCB1c2luZyBhbiA4QiBzdGFjayBh
+bGlnbm1lbnQNCj4gb24geDg2OyB3ZSB2ZXJ5IG11Y2ggYXJlIHNvOyBBTURHUFUgR1BGcyB3aXRo
+b3V0IGl0IQ0KDQpBY3R1YWxseSwgZ2l2ZSB0aGF0IExUTyBpcyBzdGlsbCAnZXhwZXJpbWVudGFs
+JyBpcyBpdCB3b3J0aCBqdXN0DQpyZW1vdmluZyB0aGUgZmxhZ3MgYW5kIHJlcXVpcmluZyBjbGFu
+Zy0xMyBmb3IgTFRPIGJ1aWxkcz8NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBM
+YWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBU
+LCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
