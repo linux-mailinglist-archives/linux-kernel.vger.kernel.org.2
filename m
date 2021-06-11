@@ -2,251 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B3B3A467A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B831A3A46BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhFKQbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
+        id S230443AbhFKQp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFKQb3 (ORCPT
+        with ESMTP id S229753AbhFKQp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:31:29 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69023C0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:29:21 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id g6so4873655pfq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:29:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3/eX1BStPq88A20kAipbkOk3FyPBK6b1OqKfu9OBG6c=;
-        b=bTooVZOlg62B2ZAud90QJFaBxQJg/uZ84EYm3uA41eVAhrt6rYG7MZwyl1knxXgE3R
-         oeoBy32MujQJbLnnA/u6tcqnfz2MLAdi0IaeWUegcgZk6Q8kzUD+BSoGdYXADeoq6/Zf
-         XVS9gcUvC6pTfnr3KYOMaIApGjXaCEzUuKLwk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3/eX1BStPq88A20kAipbkOk3FyPBK6b1OqKfu9OBG6c=;
-        b=ITE9ws4IuhEiIxJEX0irxAzCv9i58/JLp9qJCvf0WlxXErbHFFI6IFyTLaU5YStrjX
-         lUsbn9RULVqdUp4Ojfa3oGoenEWuB6frFhkjwTkCksxym2sbjyiuJBuzhSpc32LB4KxP
-         llHvnP5McjgxPs+A32Hy4s43cWKkItv7u6OmrnCAgZFk+5FV4EV6dG9OHWb9UouD8Yqg
-         82cmObiREdDzPAHfOI0sJKxNwu7QIptuMdRsewHwP0JCayiX89jdf7ILrHzCaCNc9riy
-         lyjcqfdBNUkbS38CWPftTxqYRmAQHltk6PLMmqxDxGuuz7YyauzmOWIwMwgaqJRJQdeC
-         +UyA==
-X-Gm-Message-State: AOAM533zhdcOamjnMAqoPTXqlllEmXMvvYQuq9OA9Pd6JUCgnNY3c90z
-        qiJSDLJUehidELvvjTahF3F/r9dUJus92g==
-X-Google-Smtp-Source: ABdhPJyb+ZUJ3oRp5zDcqDz4AAar8QPY8s6eKp6yvD+hsI3aoJftwlBSXJWCMSG4bDOXKYlUI5kfmg==
-X-Received: by 2002:a62:3444:0:b029:2ec:9658:a755 with SMTP id b65-20020a6234440000b02902ec9658a755mr9023721pfa.71.1623428958419;
-        Fri, 11 Jun 2021 09:29:18 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:4128:5428:5cd0:cfa5])
-        by smtp.gmail.com with ESMTPSA id m129sm5804006pfb.7.2021.06.11.09.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 09:29:17 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: i2c-hid: goodix: Tie the reset line to true state of the regulator
-Date:   Fri, 11 Jun 2021 09:28:56 -0700
-Message-Id: <20210611092847.1.I358cae5e33f742765fd38485d6ddf1a4a978644d@changeid>
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+        Fri, 11 Jun 2021 12:45:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D66EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:43:59 -0700 (PDT)
+Message-Id: <20210611161523.508908024@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623429837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XTWLTMrY9lnGbhCpse2rIwY1lhdcMo/k7awkXdSB5Hs=;
+        b=jKzKit61JdvhpFoeCya70pHxQ6O5n6Rx78lHpZ5TNEvH2vQxWS1XtDWPBceDdsz30oxSSf
+        EIEQypnqnNvdeZTObx9ZbEBhdBPRSP3T67fK0XZOoLu8oisa9wZvyYVpWFMAumho/E8qAS
+        FUrLw7rkxOe7VCsSkGEu+MTI9A5stds/vRLhI6BJrp80pwa46TDy9rQlTz0LYiFPiYNqIR
+        yZ0dtHqpl7Q4jq1waywtnehoR6U7JcwgER+BUaV3TIhcTd2w+Zm7WTYdFfQPfR9f8rE3fW
+        EwSRUYHde0MTffENvytR8k+s9X/TK1+wwvhl1/JPJoyEinP0PdwTH5DItDhi7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623429837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XTWLTMrY9lnGbhCpse2rIwY1lhdcMo/k7awkXdSB5Hs=;
+        b=sWqWWiJq4Myg5BSeawcEbXGDFTARDr6dKIukRteBajqAlsg/gVwIrY6lW0EH0F89vfL5+K
+        YwqBEg1oOphQveDg==
+Date:   Fri, 11 Jun 2021 18:15:23 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [patch 00/41] x86/fpu: Spring cleaning and PKRU sanitizing
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The regulator for the touchscreen could be:
-* A dedicated regulator just for the touchscreen.
-* A regulator shared with something else in the system.
-* An always-on regulator.
-
-How we want the "reset" line to behave depends a bit on which of those
-three cases we're in. Currently the code is written with the
-assumption that it has a dedicated regulator, but that's not really
-guaranteed to be the case.
-
-The problem we run into is that if we leave the touchscreen powered on
-(because someone else is requesting the regulator or it's an always-on
-regulator) and we assert reset then we apparently burn an extra 67 mW
-of power. That's not great.
-
-Let's instead tie the control of the reset line to the true state of
-the regulator as reported by regulator notifiers. If we have an
-always-on regulator our notifier will never be called. If we have a
-shared regulator then our notifier will be called when the touchscreen
-is truly turned on or truly turned off.
-
-Using notifiers like this nicely handles all the cases without
-resorting to hacks like pretending that there is no "reset" GPIO if we
-have an always-on regulator.
-
-NOTE: if the regulator is on a shared line it's still possible that
-things could be a little off. Specifically, this case is not handled
-even after this patch:
-1. Suspend goodix (send "sleep", goodix stops requesting regulator on)
-2. Other regulator user turns off (regulator fully turns off).
-3. Goodix driver gets notified and asserts reset.
-4. Other regulator user turns on.
-5. Goodix driver gets notified and deasserts reset.
-6. Nobody resumes goodix.
-
-With that set of steps we'll have reset deasserted but we will have
-lost the results of the I2C_HID_PWR_SLEEP from the suspend path. That
-means we might be in higher power than we could be even if the goodix
-driver thinks things are suspended. Presumably, however, we're still
-in better shape than if we were asserting "reset" the whole time. If
-somehow the above situation is actually affecting someone and we want
-to do better we can deal with it when we have a real use case.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/hid/i2c-hid/i2c-hid-of-goodix.c | 90 +++++++++++++++++++++----
- 1 file changed, 77 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-index ee0225982a82..c13ea29c7911 100644
---- a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-@@ -26,28 +26,29 @@ struct i2c_hid_of_goodix {
- 	struct i2chid_ops ops;
- 
- 	struct regulator *vdd;
-+	struct notifier_block nb;
-+	struct mutex regulator_mutex;
- 	struct gpio_desc *reset_gpio;
- 	const struct goodix_i2c_hid_timing_data *timings;
- };
- 
--static int goodix_i2c_hid_power_up(struct i2chid_ops *ops)
-+static void goodix_i2c_hid_deassert_reset(struct i2c_hid_of_goodix *ihid_goodix,
-+					  bool regulator_just_turned_on)
- {
--	struct i2c_hid_of_goodix *ihid_goodix =
--		container_of(ops, struct i2c_hid_of_goodix, ops);
--	int ret;
--
--	ret = regulator_enable(ihid_goodix->vdd);
--	if (ret)
--		return ret;
--
--	if (ihid_goodix->timings->post_power_delay_ms)
-+	if (regulator_just_turned_on && ihid_goodix->timings->post_power_delay_ms)
- 		msleep(ihid_goodix->timings->post_power_delay_ms);
- 
- 	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 0);
- 	if (ihid_goodix->timings->post_gpio_reset_delay_ms)
- 		msleep(ihid_goodix->timings->post_gpio_reset_delay_ms);
-+}
- 
--	return 0;
-+static int goodix_i2c_hid_power_up(struct i2chid_ops *ops)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(ops, struct i2c_hid_of_goodix, ops);
-+
-+	return regulator_enable(ihid_goodix->vdd);
- }
- 
- static void goodix_i2c_hid_power_down(struct i2chid_ops *ops)
-@@ -55,20 +56,54 @@ static void goodix_i2c_hid_power_down(struct i2chid_ops *ops)
- 	struct i2c_hid_of_goodix *ihid_goodix =
- 		container_of(ops, struct i2c_hid_of_goodix, ops);
- 
--	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 1);
- 	regulator_disable(ihid_goodix->vdd);
- }
- 
-+static int ihid_goodix_vdd_notify(struct notifier_block *nb,
-+				    unsigned long event,
-+				    void *ignored)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(nb, struct i2c_hid_of_goodix, nb);
-+	int ret = NOTIFY_OK;
-+
-+	mutex_lock(&ihid_goodix->regulator_mutex);
-+
-+	switch (event) {
-+	case REGULATOR_EVENT_PRE_DISABLE:
-+		gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 1);
-+		break;
-+
-+	case REGULATOR_EVENT_ENABLE:
-+		goodix_i2c_hid_deassert_reset(ihid_goodix, true);
-+		break;
-+
-+	case REGULATOR_EVENT_ABORT_DISABLE:
-+		goodix_i2c_hid_deassert_reset(ihid_goodix, false);
-+		break;
-+
-+	default:
-+		ret = NOTIFY_DONE;
-+		break;
-+	}
-+
-+	mutex_unlock(&ihid_goodix->regulator_mutex);
-+
-+	return ret;
-+}
-+
- static int i2c_hid_of_goodix_probe(struct i2c_client *client,
- 				   const struct i2c_device_id *id)
- {
- 	struct i2c_hid_of_goodix *ihid_goodix;
--
-+	int ret;
- 	ihid_goodix = devm_kzalloc(&client->dev, sizeof(*ihid_goodix),
- 				   GFP_KERNEL);
- 	if (!ihid_goodix)
- 		return -ENOMEM;
- 
-+	mutex_init(&ihid_goodix->regulator_mutex);
-+
- 	ihid_goodix->ops.power_up = goodix_i2c_hid_power_up;
- 	ihid_goodix->ops.power_down = goodix_i2c_hid_power_down;
- 
-@@ -84,6 +119,35 @@ static int i2c_hid_of_goodix_probe(struct i2c_client *client,
- 
- 	ihid_goodix->timings = device_get_match_data(&client->dev);
- 
-+	/*
-+	 * We need to control the "reset" line in lockstep with the regulator
-+	 * actually turning on an off instead of just when we make the request.
-+	 * This matters if the regulator is shared with another consumer.
-+	 * - If the regulator is off then we must assert reset. The reset
-+	 *   line is active low and on some boards it could cause a current
-+	 *   leak if left high.
-+	 * - If the regulator is on then we don't want reset asserted for very
-+	 *   long. Holding the controller in reset apparently draws extra
-+	 *   power.
-+	 */
-+	mutex_lock(&ihid_goodix->regulator_mutex);
-+	ihid_goodix->nb.notifier_call = ihid_goodix_vdd_notify;
-+	ret = regulator_register_notifier(ihid_goodix->vdd, &ihid_goodix->nb);
-+	if (ret)
-+		return dev_err_probe(&client->dev, ret,
-+			"regulator notifier request failed\n");
-+
-+	/*
-+	 * If someone else is holding the regulator on (or the regulator is
-+	 * an always-on one) we might never be told to deassert reset. Do it
-+	 * now. Here we'll assume that someone else might have _just
-+	 * barely_ turned the regulator on so we'll do the full
-+	 * "post_power_delay" just in case.
-+	 */
-+	if (ihid_goodix->reset_gpio && regulator_is_enabled(ihid_goodix->vdd))
-+		goodix_i2c_hid_deassert_reset(ihid_goodix, true);
-+	mutex_unlock(&ihid_goodix->regulator_mutex);
-+
- 	return i2c_hid_core_probe(client, &ihid_goodix->ops, 0x0001);
- }
- 
--- 
-2.32.0.272.g935e593368-goog
-
+VGhpcyBpcyBhIGZvbGxvdyB1cCB0byB0aGVzZSBwYXRjaCBzZXJpZXM6CgogLSBbcGF0Y2ggVjIg
+MDAvMTRdIHg4Ni9mcHU6IE1vcCB1cCBYU0FWRVMgYW5kIHJlbGF0ZWQgZGFtYWdlCiAgIGh0dHBz
+Oi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTA2MDUyMzQ3NDIuNzEyNDY0OTc0QGxpbnV0cm9uaXgu
+ZGUKCiAtIFtQQVRDSCAwMC8xOF0geDg2L3BrZXlzOiBzdG9wIG1hbmFnaW5nIFBLUlUgd2l0aCBY
+U0FWRQogICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwNjAzMjMwODAzLjMxNjYwQUZF
+QHZpZ2dvLmpmLmludGVsLmNvbQoKIC0gW1BBVENIIDAvMl0geDg2L2ZwdTogQ2xlYW4gdXAgImR5
+bmFtaWMiIEFQSXMKICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci9jb3Zlci4xNjIzMzg4MzQ0
+LmdpdC5sdXRvQGtlcm5lbC5vcmcKClRoZSBhbmFseXNpcyBvZiB0aGUgc3VidGxlIGJ1Z3MgaW4g
+dGhlIEZQVSBjb2RlIHRyaWdnZXJlZCBhIGxhcmdlcgpkaXNjdXNzaW9uIGFib3V0IHRoZSBnZW5l
+cmFsIHN0YXRlIG9mIHRoaXMgY29kZS4gVGhlIGFib3ZlIHBhdGNoIHNlcmllcyBhcmUKYWxsIHJl
+bGF0ZWQgdG8gdGhpcyBhbmQgdGhlIGZvbGxvd2luZyBzZXJpZXMgY29tYmluZXMgdGhlbSBpbnRv
+IG9uZSBiZWNhdXNlCnRoZSBhbHJlYWR5IHN0YXJ0ZWQgY29uc29saWRhdGlvbiB3b3JrIGFuZCB0
+aGUgUEtSVSByZXdvcmsgY29sbGlkZWQgYWxsCm92ZXIgdGhlIHBsYWNlLgoKVGhlIG1haW4gcGFy
+dHMgb2YgdGhpcyBzZXJpZXMgYXJlOgoKICAtIFNpbXBsaWZpY2F0aW9uIGFuZCByZW1vdmFsL3Jl
+cGxhY2VtZW50IG9mIHJlZHVuZGFudCBhbmQvb3IKICAgIG92ZXJlbmdpbmVlcmVkIGNvZGUuCgog
+IC0gTmFtZSBzcGFjZSBjbGVhbnVwIGFzIHRoZSBleGlzdGluZyBuYW1lcyB3ZXJlIGp1c3QgYSBw
+ZXJtYW5lbnQgc291cmNlCiAgICBvZiBjb25mdXNpb24uCgogIC0gQ2xlYXIgc2VwZXJhdGlvbiBv
+ZiB1c2VyIEFCSSBhbmQga2VybmVsIGludGVybmFsIHN0YXRlIGhhbmRsaW5nLgoKICAtIFJlbW92
+YWwgb2YgUEtSVSBmcm9tIGJlaW5nIFhTVEFURSBtYW5hZ2VkIGluIHRoZSBrZXJuZWwgYmVjYXVz
+ZSBQS1JVCiAgICBoYXMgdG8gYmUgZWFnZXJseSByZXN0b3JlZCBvbiBjb250ZXh0IHN3aXRjaCBh
+bmQga2VlcGluZyBpdCBpbiBzeW5jCiAgICBpbiB0aGUgeHN0YXRlIGJ1ZmZlciBpcyBqdXN0IHBv
+aW50bGVzcyBvdmVyaGVhZCBhbmQgZnJhZ2lsZS4KCiAgICBUaGUga2VybmVsIHN0aWxsIFhTQVZF
+cyBQS1JVIG9uIGNvbnRleHQgc3dpdGNoIGJ1dCB0aGUgdmFsdWUgaW4gdGhlCiAgICBidWZmZXIg
+aXMgbm90IGxvbmdlciB1c2VkIGFuZCBuZXZlciByZXN0b3JlZCBmcm9tIHRoZSBidWZmZXIuCgog
+ICAgVGhpcyBzdGlsbCBuZWVkcyB0byBiZSBjbGVhbmVkIHVwLCBidXQgdGhlIHNlcmllcyBpcyBh
+bHJlYWR5IDQwKwogICAgcGF0Y2hlcyBsYXJnZSBhbmQgdGhlIGNsZWFudXAgb2YgdGhpcyBpcyBu
+b3QgYSBmdW5jdGlvbmFsIHByb2JsZW0uCgogICAgVGhlIGZ1bmN0aW9uYWwgaXNzdWVzIG9mIFBL
+UlUgbWFuYWdlbWVudCBhcmUgZnVsbHkgYWRkcmVzc2VkIHdpdGggdGhlCiAgICBzZXJpZXMgYXMg
+aXMuCgpJdCBhcHBsaWVzIG9uIHRvcCBvZgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2Nt
+L2xpbnV4L2tlcm5lbC9naXQvdGlwL3RpcC5naXQgbWFzdGVyCgphbmQgaXMgYWxzbyBhdmFpbGFi
+bGUgdmlhIGdpdDoKCiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L3RnbHgvZGV2ZWwuZ2l0IHg4Ni9mcHUKClRoYW5rcywKCgl0Z2x4Ci0tLQogYXJjaC94ODYv
+ZXZlbnRzL2ludGVsL2xici5jICAgICAgICAgIHwgICAgNiAKIGFyY2gveDg2L2luY2x1ZGUvYXNt
+L2ZwdS9pbnRlcm5hbC5oICB8ICAxNTUgKysrKy0tLS0tLS0KIGFyY2gveDg2L2luY2x1ZGUvYXNt
+L2ZwdS94c3RhdGUuaCAgICB8ICAgNjEgKysrLQogYXJjaC94ODYvaW5jbHVkZS9hc20vcGd0YWJs
+ZS5oICAgICAgIHwgICA1NyAtLS0tCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wa2V5cy5oICAgICAg
+ICAgfCAgICA5IAogYXJjaC94ODYvaW5jbHVkZS9hc20vcHJvY2Vzc29yLmggICAgIHwgICAgOSAK
+IGFyY2gveDg2L2luY2x1ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaCB8ICAgMTQgLQogYXJjaC94ODYv
+a2VybmVsL2NwdS9jb21tb24uYyAgICAgICAgIHwgICAyOSAtLQogYXJjaC94ODYva2VybmVsL2Zw
+dS9jb3JlLmMgICAgICAgICAgIHwgIDI0MyArKysrKysrKysrKystLS0tLS0KIGFyY2gveDg2L2tl
+cm5lbC9mcHUvaW5pdC5jICAgICAgICAgICB8ICAgIDQgCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3Jl
+Z3NldC5jICAgICAgICAgfCAgMTE2ICsrKystLS0tCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3NpZ25h
+bC5jICAgICAgICAgfCAgIDU5ICsrLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUveHN0YXRlLmMgICAg
+ICAgICB8ICA0NTYgKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGFyY2gveDg2
+L2tlcm5lbC9wcm9jZXNzLmMgICAgICAgICAgICB8ICAgMTkgKwogYXJjaC94ODYva2VybmVsL3By
+b2Nlc3NfNjQuYyAgICAgICAgIHwgICAyOCArKwogYXJjaC94ODYva3ZtL3N2bS9zZXYuYyAgICAg
+ICAgICAgICAgIHwgICAgMSAKIGFyY2gveDg2L2t2bS94ODYuYyAgICAgICAgICAgICAgICAgICB8
+ICAgNTIgKystCiBhcmNoL3g4Ni9tbS9leHRhYmxlLmMgICAgICAgICAgICAgICAgfCAgICAyIAog
+YXJjaC94ODYvbW0vZmF1bHQuYyAgICAgICAgICAgICAgICAgIHwgICAgMiAKIGFyY2gveDg2L21t
+L3BrZXlzLmMgICAgICAgICAgICAgICAgICB8ICAgMjIgLQogYi9hcmNoL3g4Ni9pbmNsdWRlL2Fz
+bS9wa3J1LmggICAgICAgIHwgICA2MiArKysrCiBpbmNsdWRlL2xpbnV4L3BrZXlzLmggICAgICAg
+ICAgICAgICAgfCAgICA0IAogMjIgZmlsZXMgY2hhbmdlZCwgNjcxIGluc2VydGlvbnMoKyksIDcz
+OSBkZWxldGlvbnMoLSkKCgoK
