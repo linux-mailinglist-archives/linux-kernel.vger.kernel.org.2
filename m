@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3762D3A3B90
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04973A3B92
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhFKGC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45952 "EHLO mail.kernel.org"
+        id S230520AbhFKGE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:04:27 -0400
+Received: from muru.com ([72.249.23.125]:41672 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhFKGCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:02:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37A13610A5;
-        Fri, 11 Jun 2021 06:00:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623391255;
-        bh=G5fNaWMC3tJrhYe4hSWFBJEP1GPo85Wn6N+8X6LULmY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PvOKXoqLPWg2DL5x0sLR3jKcaLGDgemhNXYpdA4vtfzQv5BZ+aG1UVF6NEB3ZEE/y
-         VKSvMaOBeEpJabWdr98IEW6B2Mbs1smhiZTGGm81Iy1QMsITnz5QWcHc2pnBHnPA12
-         TiI7ZL+jfLMeuLe7Gc0p14QRnfd5OpcDBLeViF4XXac6nhYVQ9IbRqRaKy1X7T7wTa
-         9zgC0eyoy4qX4/ZYQ5iMz22jmp1ROaH3qFse8G1ZnrZ0ss69dmSR3W4qTDIz01t9zQ
-         /AYCJFbr4/JJD1LiaaZnPNSOIOHFrOCAVjaumhiBixqN0vTtZbLLSOjqkdmXKSDiSu
-         nO4uq3H9HqJdQ==
-Date:   Fri, 11 Jun 2021 11:30:47 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ARM: dts: owl-s500: Add ethernet support
-Message-ID: <20210611060047.GC6950@thinkpad>
-References: <cover.1623358117.git.cristian.ciocaltea@gmail.com>
- <926456e8a3700b257605534cf711a0bfb667fc36.1623358117.git.cristian.ciocaltea@gmail.com>
+        id S230216AbhFKGE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:04:26 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 8B9F080E1;
+        Fri, 11 Jun 2021 06:02:35 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: [PATCH] bus: ti-sysc: Fix gpt12 system timer issue with reserved status
+Date:   Fri, 11 Jun 2021 09:02:24 +0300
+Message-Id: <20210611060224.36769-1-tony@atomide.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <926456e8a3700b257605534cf711a0bfb667fc36.1623358117.git.cristian.ciocaltea@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 12:09:21AM +0300, Cristian Ciocaltea wrote:
-> Add Ethernet MAC device tree node for Actions Semi S500 SoC.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Jarkko Nikula <jarkko.nikula@bitmer.com> reported that Beagleboard
+revision c2 stopped booting. Jarkko bisected the issue down to
+commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend
+and resume for am3 and am4").
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Let's fix the issue by tagging system timers as reserved rather than
+ignoring them. And let's not probe any interconnect target module child
+devices for reserved modules.
 
-Thanks,
-Mani
+This allows PM runtime to keep track of clocks and clockdomains for
+the interconnect target module, and prevent the system timer from idling
+as we already have SYSC_QUIRK_NO_IDLE and SYSC_QUIRK_NO_IDLE_ON_INIT
+flags set for system timers.
 
-> ---
->  arch/arm/boot/dts/owl-s500.dtsi | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-> index cd635f222d26..739b4b9cec8c 100644
-> --- a/arch/arm/boot/dts/owl-s500.dtsi
-> +++ b/arch/arm/boot/dts/owl-s500.dtsi
-> @@ -324,5 +324,15 @@ mmc2: mmc@b0238000 {
->  			dma-names = "mmc";
->  			status = "disabled";
->  		};
-> +
-> +		ethernet: ethernet@b0310000 {
-> +			compatible = "actions,s500-emac", "actions,owl-emac";
-> +			reg = <0xb0310000 0x10000>;
-> +			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&cmu CLK_ETHERNET>, <&cmu CLK_RMII_REF>;
-> +			clock-names = "eth", "rmii";
-> +			resets = <&cmu RESET_ETHERNET>;
-> +			status = "disabled";
-> +		};
->  	};
->  };
-> -- 
-> 2.32.0
-> 
+Fixes: 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3 and am4")
+Reported-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/bus/ti-sysc.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -100,6 +100,7 @@ static const char * const clock_names[SYSC_MAX_CLOCKS] = {
+  * @cookie: data used by legacy platform callbacks
+  * @name: name if available
+  * @revision: interconnect target module revision
++ * @reserved: target module is reserved and already in use
+  * @enabled: sysc runtime enabled status
+  * @needs_resume: runtime resume needed on resume from suspend
+  * @child_needs_resume: runtime resume needed for child on resume from suspend
+@@ -130,6 +131,7 @@ struct sysc {
+ 	struct ti_sysc_cookie cookie;
+ 	const char *name;
+ 	u32 revision;
++	unsigned int reserved:1;
+ 	unsigned int enabled:1;
+ 	unsigned int needs_resume:1;
+ 	unsigned int child_needs_resume:1;
+@@ -3093,8 +3095,8 @@ static int sysc_probe(struct platform_device *pdev)
+ 		return error;
+ 
+ 	error = sysc_check_active_timer(ddata);
+-	if (error)
+-		return error;
++	if (error == -EBUSY)
++		ddata->reserved = true;
+ 
+ 	error = sysc_get_clocks(ddata);
+ 	if (error)
+@@ -3130,11 +3132,15 @@ static int sysc_probe(struct platform_device *pdev)
+ 	sysc_show_registers(ddata);
+ 
+ 	ddata->dev->type = &sysc_device_type;
+-	error = of_platform_populate(ddata->dev->of_node, sysc_match_table,
+-				     pdata ? pdata->auxdata : NULL,
+-				     ddata->dev);
+-	if (error)
+-		goto err;
++
++	if (!ddata->reserved) {
++		error = of_platform_populate(ddata->dev->of_node,
++					     sysc_match_table,
++					     pdata ? pdata->auxdata : NULL,
++					     ddata->dev);
++		if (error)
++			goto err;
++	}
+ 
+ 	INIT_DELAYED_WORK(&ddata->idle_work, ti_sysc_idle);
+ 
+-- 
+2.31.1
