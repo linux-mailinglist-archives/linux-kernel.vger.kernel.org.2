@@ -2,71 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F40F3A3ABB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FA53A3AA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhFKEJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 00:09:53 -0400
-Received: from mail-m971.mail.163.com ([123.126.97.1]:39262 "EHLO
-        mail-m971.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbhFKEJv (ORCPT
+        id S230470AbhFKEEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 00:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKEER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 00:09:51 -0400
-X-Greylist: delayed 912 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Jun 2021 00:09:50 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=JK59B
-        nQzsQzGiQN6t1hIY6FUxl4BZr02ov496yuGuzc=; b=YZDohcZ5ZF2gbBBSpXnIN
-        vzlcRodkeCEHujBKT3b6/yh5+Qx8I273a1yOdKGCVhc5Tvt8oLEdc978AjXzyv4l
-        heqVeYLeLzdj3GSOi7OcTMaQiy+WdBS40sVKUqachT0GxS1J6aqHmXSsIoDPMenJ
-        j0hq0827ZQ8quM/HqNgKjA=
-Received: from ubuntu.localdomain (unknown [103.220.76.197])
-        by smtp1 (Coremail) with SMTP id GdxpCgBH_XLp3cJgAIcVEQ--.151S2;
-        Fri, 11 Jun 2021 11:52:14 +0800 (CST)
-From:   13145886936@163.com
-To:     robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de,
-        socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] can: j1939: socket: correct a grammatical error
-Date:   Fri, 11 Jun 2021 11:52:02 +0800
-Message-Id: <20210611035202.16833-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 11 Jun 2021 00:04:17 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915D4C0617AD
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:02:04 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id g6so3376615pfq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dHnvb/5q4pu/qIeAJnS0gxEaPn/2BF/h/mnBeFWe2kU=;
+        b=PBAd9qhBUf6V1LfObAM2a5Ujj6S2jZogVGzCMmDl2YCnqpM1JqJ/Kib/ArqLJd6+Z8
+         4JDc9yxn0C4wfZS9Pw4XzSzfWKpy9yCUh/8AiGqWMEXChrFL9vxYEaNzU+LF8NnBnnNO
+         u/CHBjGciUSPtTFYkJQDdHnGWJL4MjzYCnDuc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dHnvb/5q4pu/qIeAJnS0gxEaPn/2BF/h/mnBeFWe2kU=;
+        b=bZdynUfxPDCYs236vKrKHqa/ThAj1iqQGnap7JTfImbeCLXsxix+D6XYSBWjUM2i2t
+         trat05DVH8tSNd4AhH8h97NnP4uD2L+ANlqeGKdgVZ0rMlUJErdR6e7ZFRzZdZqGjPfh
+         6eYppQujy1IIWTrOUADUrxV7QQHgV3VN1qpMUSv9BZDgDPbDch6AtiLYnV3WLVV8kNV+
+         d3iBe9070fOLOm3SfCuIK/6vT6VnM74H2tO/DmFRt+OjglAH905v9SZMid+bJhaK1e6z
+         //4G/J3gllekQ1HxumXSeeQlCVp4WQRthxClLthpHNNF0GcCISQkIBreI1he7x0OTAOr
+         TM8A==
+X-Gm-Message-State: AOAM530o8+eu6y+b2UarLNeVk3OO1mu5ZaOH4g6iMqvM2NMwuXWNK1mo
+        4s1JsYebyaneyF8lkVPxgNVkXtYWNbDLEHrk
+X-Google-Smtp-Source: ABdhPJzGwVIh6XECxvR1OvFsqr6SKN92gztMweR8qLNeCrhI/7Kq+py+jyKomDkaXiMr8686emmtLg==
+X-Received: by 2002:aa7:8892:0:b029:2f5:33fc:1073 with SMTP id z18-20020aa788920000b02902f533fc1073mr6219778pfe.79.1623384123780;
+        Thu, 10 Jun 2021 21:02:03 -0700 (PDT)
+Received: from localhost ([2401:fa00:9:14:db52:e918:e5f9:9e14])
+        by smtp.gmail.com with UTF8SMTPSA id z185sm3927781pgb.4.2021.06.10.21.01.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 21:02:03 -0700 (PDT)
+From:   Eizan Miyamoto <eizan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     houlong.wei@mediatek.com, enric.balletbo@collabora.com,
+        yong.wu@mediatek.com, chunkuang.hu@kernel.org,
+        Eizan Miyamoto <eizan@chromium.org>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 0/8] Refactor MTK MDP driver into core/components
+Date:   Fri, 11 Jun 2021 14:01:37 +1000
+Message-Id: <20210611040145.2085329-1-eizan@chromium.org>
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GdxpCgBH_XLp3cJgAIcVEQ--.151S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xr4Dtr4DAF1fXw1UZFyDGFg_yoW3GFg_Zr
-        n3Ar18X3yUXr1S9a15uwsrXryxt3WUWr18Zwn8tFy5K34xArW8Kwn8ua13Gry5KrWSvrya
-        vwnYy3s8trWIqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8rMa5UUUUU==
-X-Originating-IP: [103.220.76.197]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBRweug1PADBqMPQAAsZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
 
-Correct a grammatical error.
+This is an update to
+https://patchwork.kernel.org/project/linux-mediatek/list/?series=283075
+To address some comments and fixes.
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- net/can/j1939/socket.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This series has been verified to work on 5.12.
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 56aa66147d5a..31ec493a0fca 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -352,7 +352,7 @@ static void j1939_sk_sock_destruct(struct sock *sk)
- {
- 	struct j1939_sock *jsk = j1939_sk(sk);
- 
--	/* This function will be call by the generic networking code, when then
-+	/* This function will be called by the generic networking code, when
- 	 * the socket is ultimately closed (sk->sk_destruct).
- 	 *
- 	 * The race between
+It has been rebased on top of the series
+https://patchwork.kernel.org/project/linux-mediatek/list/?series=464873
+
+
+Changes in v2:
+- rebased onto Linux 5.12
+- 100 char line length allowance was utilized in a few places
+- Removal of a redundant dev_err() print at the end of
+  mtk_mdp_comp_init()
+- Instead of printing errors and ignoring them, I've added a patch to
+  correctly propagate them.
+- Use of C style comments.
+- Three additional patches were added to eliminate dependency on the
+  mediatek,vpu property inside the mdp_rdma0 device node.
+
+Eizan Miyamoto (8):
+  mtk-mdp: add driver to probe mdp components
+  mtk-mdp: use pm_runtime in MDP component driver
+  media: mtk-mdp: don't pm_run_time_get/put for master comp in clock_on
+  mtk-mdp: soc: mediatek: register mdp from mmsys
+  media: mtk-mdp: search for vpu node instead of linking it to a
+    property
+  media: mtk-mdp: propagate errors better in pm_suspend/resume
+  media: mtk-mdp: treat rdma@14001000 specially when probing
+  dts: mtk-mdp: remove mediatek,vpu property from primary MDP device
+
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      |   1 -
+ drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 226 ++++++++++++--
+ drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  35 +--
+ drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 281 ++++++++++++------
+ drivers/media/platform/mtk-mdp/mtk_mdp_core.h |   3 +
+ drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c  |   4 +-
+ drivers/soc/mediatek/mtk-mmsys.c              |  20 +-
+ 7 files changed, 434 insertions(+), 136 deletions(-)
+
 -- 
-2.25.1
+2.32.0.272.g935e593368-goog
 
