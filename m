@@ -2,85 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA703A3D5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE6B3A3D57
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhFKHlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47474 "EHLO
+        id S231324AbhFKHkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 03:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhFKHlY (ORCPT
+        with ESMTP id S230188AbhFKHka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:41:24 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC85C061574;
-        Fri, 11 Jun 2021 00:39:27 -0700 (PDT)
-Received: from zn.tnic (p2e584d18.dip0.t-ipconnect.de [46.88.77.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8B0F81EC0528;
-        Fri, 11 Jun 2021 09:39:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623397165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=bM7mdRbMEwkDpmgRTLq6Xee0t4hAfl6e7oZsXY8E5uU=;
-        b=BWC0hvouGlPlGW//MlEtUhm5fJCs+K10N34ujCxtDnWkdW/AOZN0rmnvKIeyxQe9CAoM53
-        P9jwl7ne0RMwHae7MjL2kq/0nZkzR/bsXDGSpr/y7ZlT79O6fqYFbtidrdoCTXRxnqbEjm
-        R5yL4Q6d1WAo2uUYBwljoPa6WTP7j8w=
-Date:   Fri, 11 Jun 2021 09:37:13 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli Channabasappa <skoralah@amd.com>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Muralidhara M K <muralimk@amd.com>,
-        Akshay Gupta <Akshay.Gupta@amd.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Fri, 11 Jun 2021 03:40:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9AEC061574;
+        Fri, 11 Jun 2021 00:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=d+ZiczX7/nBR1jMhSfL1TaMj90+rVYq9+YaMIRDOsZE=; b=DpbRdQxX7AHqEpiFo8nq82GbOM
+        PGuW69uCPEf2CcxctkEUO4jHZbgI8RbIj18OvWnpt3qJllBw/BMnliIALO+iIPy2Rp9w8f6mriOm2
+        rY5nGTB3D2j8cd6PniRszOoXdM1kW6ZsFpXAeEojncXy+KDHRmkxJnK1grdoM8DKk8IT3V88EDsle
+        Xoc9mjCC6IxNA7P0UVPO8Ko0+rGn8XbaIvi/sfWbfCgXFXursU1RFH5+oSRKLeHVS7vO9cLGhLJfu
+        t84+dGJB2ZcrIfIfKNlStbY+ds+wGccjqiKGp4w9BZXA8wUyleuSK0HrbkkMulUV/5HjIRlz/KkB/
+        y+mOEOiA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lrbjN-002Vyn-67; Fri, 11 Jun 2021 07:37:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9B8CC30008D;
+        Fri, 11 Jun 2021 09:37:27 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 546502BCF392F; Fri, 11 Jun 2021 09:37:27 +0200 (CEST)
+Date:   Fri, 11 Jun 2021 09:37:27 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 2/2] x86/mce: Add support for Extended Physical Address
- MCA changes
-Message-ID: <YMMSqS0Knb0Pk8GF@zn.tnic>
-References: <20210608221012.223696-1-Smita.KoralahalliChannabasappa@amd.com>
- <20210608221012.223696-3-Smita.KoralahalliChannabasappa@amd.com>
- <YMH9wqUnjudiAVlr@zn.tnic>
- <1c21d3c5-8a5a-31cf-6d84-0905a0c508da@amd.com>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] Revert "cpufreq: CPPC: Add support for frequency
+ invariance"
+Message-ID: <YMMSt65aj0KKHy1A@hirez.programming.kicks-ass.net>
+References: <a71c48fb0150f505680da68a82b4e4fca9a18439.1623381430.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c21d3c5-8a5a-31cf-6d84-0905a0c508da@amd.com>
+In-Reply-To: <a71c48fb0150f505680da68a82b4e4fca9a18439.1623381430.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:36:44PM -0500, Smita Koralahalli Channabasappa wrote:
-> The idea of defining a new struct was to keep SMCA specific stuff separate.
-> Thought, it would be costly to include in existing struct mce_bank[] as it will be
-> unnecessarily defined for each cpu and each bank across all vendors even if they
-> aren't using it and would be a problem if they are constraint on resource and space.
+On Fri, Jun 11, 2021 at 08:48:02AM +0530, Viresh Kumar wrote:
+> This reverts commit 4c38f2df71c8e33c0b64865992d693f5022eeaad.
+> 
+> There are few races in the frequency invariance support for CPPC driver,
+> namely the driver doesn't stop the kthread_work and irq_work on policy
+> exit during suspend/resume or CPU hotplug.
+> 
+> A proper fix won't be possible for the 5.13-rc, as it requires a lot of
+> changes. Lets revert the patch instead for now.
+> 
+> Fixes: 4c38f2df71c8 ("cpufreq: CPPC: Add support for frequency invariance")
+> Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> V2: Revert the original patch instead of marking it broken.
+> 
+>  drivers/cpufreq/Kconfig.arm    |  10 --
+>  drivers/cpufreq/cppc_cpufreq.c | 245 ++-------------------------------
+>  include/linux/arch_topology.h  |   1 -
+>  kernel/sched/core.c            |   1 -
+>  4 files changed, 12 insertions(+), 245 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+> index a5c5f70acfc9..e65e0a43be64 100644
+> --- a/drivers/cpufreq/Kconfig.arm
+> +++ b/drivers/cpufreq/Kconfig.arm
+> @@ -19,16 +19,6 @@ config ACPI_CPPC_CPUFREQ
+>  
+>  	  If in doubt, say N.
+>  
+> -config ACPI_CPPC_CPUFREQ_FIE
+> -	bool "Frequency Invariance support for CPPC cpufreq driver"
+> -	depends on ACPI_CPPC_CPUFREQ && GENERIC_ARCH_TOPOLOGY
+> -	default y
+> -	help
+> -	  This extends frequency invariance support in the CPPC cpufreq driver,
+> -	  by using CPPC delivered and reference performance counters.
+> -
+> -	  If in doubt, say N.
+> -
 
-That's very considerate of you to think about the other vendors - I wish
-everyone would do that...
-
-However, our mce_banks_array is defined unconditionally on all vendors
-already. So it is there even now. So I wouldn't lose a single second of
-sleep about adding an u64 bitfield there.
-
-> Also, in the future we can use this newly defined struct smca_config[] to cache
-> other MCA_CONFIG feature bits for different use cases if they are per bank and per
-> cpu.
-
-You can use other bits in that bitfield. I hope 64 are enough. :)
-
-HTH.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Alternatively: "depends on BROKEN" ?
