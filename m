@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBD93A3936
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6498E3A393D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 03:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhFKBTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 21:19:05 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:48825 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230232AbhFKBTD (ORCPT
+        id S230361AbhFKB0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 21:26:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25198 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230169AbhFKB0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 21:19:03 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id DDE8D1DF6;
-        Thu, 10 Jun 2021 21:17:05 -0400 (EDT)
-Received: from imap4 ([10.202.2.54])
-  by compute4.internal (MEProxy); Thu, 10 Jun 2021 21:17:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm3; bh=4sxdG4q+15yHQGW5lRuvgFSziTf+
-        hurlcQZJNxGSOEQ=; b=Jq9FWY4M1upTIJVLDh/s1xWjGgFyjmLU4seS8WY7qxiz
-        FfAgm02+WnN/rGcHACnas4Tdb3e4rBVwZiECoFd1+fNNGgo1uuNLU4AAfVcHwPSa
-        Y+l6Rz+zBSuXfWJ3KEcDmq8haQUpYdu7Yci4Jr4Ljg7BeBByMNCSF+xK6zMhg7uk
-        tZKvwtansddJ5yoxpDC33wkPm9oP4qCSyeY1kPn8kX1UcC7ADy1GEI+++fwwpR/C
-        xNpFVZPoNPDZKMCAOhBgPuyxPPQJYJ/ro5AQGE+u0F7J0BUoXpMrdruSjaOXJBZ9
-        nsPi5pb4I3yf4RsFTrp0OkhA2QpDxd2WXqH4Q5GXRA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4sxdG4
-        q+15yHQGW5lRuvgFSziTf+hurlcQZJNxGSOEQ=; b=jltkaWtXugPkCc4ZCtw/I3
-        PygpJ4nHPCt07sKPUc8nOXZqPbCoqqlL9ld/Tldk+qbVjrXwoT+Aqa20VpyeVEfm
-        ioTTRlDvbS0KMu0U8XmURcnCl0m7VXsMwP8TMpCy9rqKOJPhIYLFhy2dlEvTuW9Y
-        h80pYvsyGdE6TNhLCS+MC9vitkITdCNZHHjtnpZMB6/kLxixdLdWo6K6mE3NUOQS
-        GXF/1XekotziUHo4I7UhtgtEJWoi8lAVFGnHPvv+uSIvmhSEdZEeDdalnHOJs7vf
-        jNi9YI3PD5Whi/dAcDrilWYLfwvQQgmEixoTvcJeqyCvbXKcJ168F2a8ixSEaekQ
-        ==
-X-ME-Sender: <xms:j7nCYGld4ZhBGsnjBMMPs2oMiw0WhM9DDJyA-VfKlB440VgHLCB3cA>
-    <xme:j7nCYN03owRzIJroWUsLilaS1Wfwfeff9W1HaOpV5S2raqT0P0wayzY2_IB8wpWgS
-    BIyz7wiTuoMIgd0EA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeduiedggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdflohhh
-    nhcuvfhhohhmshhonhdfuceoghhithesjhhohhhnthhhohhmshhonhdrfhgrshhtmhgrih
-    hlrdgtohhmrdgruheqnecuggftrfgrthhtvghrnhepffduudeffeegfffghfdvleevudei
-    leelfeegffefgeeileekieeftddvueehffdtnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepghhithesjhhohhhnthhhohhmshhonhdrfhgrshht
-    mhgrihhlrdgtohhmrdgruh
-X-ME-Proxy: <xmx:j7nCYEqvy7pxgnAHuPLeaQkRsRWurvAUlt1ImN-0NvEpF7iwMViOEQ>
-    <xmx:j7nCYKmKUZHzv1XcJlXcxuTmyAZUm8RUkP5ozGd8QON8b1Mk2jfQgA>
-    <xmx:j7nCYE2kW8DLjL5WwkkNwKA2sjQdBhG1iojmwk7k5c54ZNVCnT-k7w>
-    <xmx:kbnCYFlzbpZ9FKjCFM3ZHpspgzBNDPyyYJcZ6Ol7wF6rGT8xm_KRVA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id BBEA816013E; Thu, 10 Jun 2021 21:17:03 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+        Thu, 10 Jun 2021 21:26:16 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15B137WB122516;
+        Thu, 10 Jun 2021 21:24:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=3UZaid9LaN7IOF3CYC1eCX4lLUxOwA2hKs9yAiR/CrQ=;
+ b=p7XYyhONqsq/1w8WZCP5k6euYoyG036jAr/OTAHbEIUQLAex2y+jYNRf/0suYjsT+F4M
+ iYejGfSPkqzpIkIm1ZHDis2t8Ctj83ZOauFBl/h5GL9oilx8Enz24mBfpe4PDQ//tsOC
+ t9+t0++Icd+CQ81TjUU1TTaPjpfcNo/X4LPYIPajcqWQf3IJUtDYXE9RCvQAVA+iCPpg
+ ZwEkLYHGeGtZZnTaRfr7GRLC+1gpRTrN+3NvLBHV82KnJ0M/ErUs28fBa/WMkAY0iDz0
+ TrQBoKNHiTDn+T8HVLyKyTZDdOKmkc7wQ6SHsA34ilkXWRHguivJi9pkx8lkEXPMdKsK jw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 393wq2gjms-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Jun 2021 21:24:14 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15B1CK1m010743;
+        Fri, 11 Jun 2021 01:24:12 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 3900w8b4t1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Jun 2021 01:24:12 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15B1OARc11469252
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Jun 2021 01:24:10 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6260952054;
+        Fri, 11 Jun 2021 01:24:10 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.28.13])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 7DDC65204E;
+        Fri, 11 Jun 2021 01:24:08 +0000 (GMT)
+Message-ID: <f6251386feb733d4278e97c3501c09f8dc1a4105.camel@linux.ibm.com>
+Subject: Re: [PATCH 2/2] ima: Fix warning: no previous prototype for
+ function 'ima_post_key_create_or_update'
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        robh@kernel.org
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tusharsu@linux.microsoft.com
+Date:   Thu, 10 Jun 2021 21:24:07 -0400
+In-Reply-To: <20210610171553.3806-2-nramas@linux.microsoft.com>
+References: <20210610171553.3806-1-nramas@linux.microsoft.com>
+         <20210610171553.3806-2-nramas@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
 Mime-Version: 1.0
-Message-Id: <55d28fea-c20e-4e60-8b5b-b5a03ccea0cf@www.fastmail.com>
-In-Reply-To: <20210610100759.v57c5wa46ky33waj@ti.com>
-References: <20210608040719.14431-1-git@johnthomson.fastmail.com.au>
- <20210610100759.v57c5wa46ky33waj@ti.com>
-Date:   Fri, 11 Jun 2021 01:15:24 +0000
-From:   "John Thomson" <git@johnthomson.fastmail.com.au>
-To:     "Pratyush Yadav" <p.yadav@ti.com>
-Cc:     "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>,
-        "Michael Walle" <michael@walle.cc>, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, "kernel test robot" <lkp@intel.com>,
-        "Dan Carpenter" <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] mtd: spi-nor: write support for minor aligned partitions
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: yea9vnz1XdiVSQ4XiFFNhIcN1tMKdy32
+X-Proofpoint-GUID: yea9vnz1XdiVSQ4XiFFNhIcN1tMKdy32
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-10_13:2021-06-10,2021-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ bulkscore=0 suspectscore=0 mlxscore=0 spamscore=0 adultscore=0
+ clxscore=1011 priorityscore=1501 impostorscore=0 lowpriorityscore=0
+ mlxlogscore=889 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106110005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021, at 10:08, Pratyush Yadav wrote:
-> On 08/06/21 02:07PM, John Thomson wrote:
-> > Do not prevent writing to mtd partitions where a partition boundary sits
-> > on a minor erasesize boundary.
-> > This addresses a FIXME that has been present since the start of the
-> > linux git history:
-> > /* Doesn't start on a boundary of major erase size */
-> > /* FIXME: Let it be writable if it is on a boundary of
-> >  * _minor_ erase size though */
-> > 
-> > Allow a uniform erase region spi-nor device to be configured
-> > to use the non-uniform erase regions code path for an erase with:
-> > CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y
-> > 
-> > On supporting hardware (SECT_4K: majority of current SPI-NOR device)
-> > provide the facility for an erase to use the least number
-> > of SPI-NOR operations, as well as access to 4K erase without
-> > requiring CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
-> > 
-> > Introduce erasesize_minor to the mtd struct,
-> > the smallest erasesize supported by the device
+Hi Lakshmi,
+
+On Thu, 2021-06-10 at 10:15 -0700, Lakshmi Ramasubramanian wrote:
+> The function prototype for ima_post_key_create_or_update() is present
+> in 'linux/ima.h'.  But this header file is not included in
+> ima_asymmetric_keys.c where the function is implemented.  This results
+> in the following compiler warning when "-Wmissing-prototypes" flag
+> is turned on:
 > 
-> Instead of having just a major and minor erase size, wouldn't it make 
-> more sense to have a list of all supported erases on a sector? That is, 
-> instead of hard coding two erase size instead of one, how about 
-> generalizing the erase machinery to allow any number of erase sizes on a 
-> sector and then choosing the most efficient one on run time?
+>   security/integrity/ima/ima_asymmetric_keys.c:29:6: warning: no previous
+>   prototype for 'ima_post_key_create_or_update' [-Wmissing-prototypes]
 > 
-> For example, imagine a device can support 4K, 64K, and 256K erases on 
-> each sector. Then you should be able to use 2 x 4K erases if you want to 
-> erase 8K, 2 x 64K + 1 x 4K erases for 132K and so on.
+> Include the header file 'linux/ima.h' in ima_asymmetric_keys.c to
+> fix the compiler warning.
+> 
+> Fixes: 88e70da170e8 (IMA: Define an IMA hook to measure keys)
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-Thank for you the feedback Pratyush,
+Roberto posted an equivalent patch "[PATCH 4/5] ima: Include header
+defining ima_post_key_create_or_update()" earlier this week.
 
-Yes, this is what I am attempting to do.
-mtdpart only sets if the partition can be writeable, it does not do the erasing.
-Due to this, I thought that only the smallest erasesize should matter to mtdpart.
-The erase is carried out by the mtd device, so for an SPI-NOR device,
-spi_nor_erase_multi_sectors can be used to select and action the best combination of erases.
-This is done by this patch when CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y
+Compiler warnings don't meet the requirements for stable -
+Documentation/process/stable-kernel-rules.rst.
 
-Cheers,
--- 
-  John Thomson
+thanks,
+
+Mimi
+
