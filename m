@@ -2,222 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986FB3A3FFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F97B3A4004
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhFKKSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:18:20 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48860 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230291AbhFKKSR (ORCPT
+        id S231598AbhFKKT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKKT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:18:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uc2UO4S_1623406576;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Uc2UO4S_1623406576)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 11 Jun 2021 18:16:18 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     paul@paul-moore.com
-Cc:     stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        nathan@kernel.org, ndesaulniers@google.com,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next v2] selinux: Fix kernel-doc
-Date:   Fri, 11 Jun 2021 18:16:07 +0800
-Message-Id: <1623406567-51427-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 11 Jun 2021 06:19:28 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60506C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:17:22 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id c5so5450198wrq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=I5tKlQRifKHe2gTRaDd3qimWqkGR/5Q+9YE8hRfMOFE=;
+        b=x71CK+AWs8dBYH4/oH8dY8Z3xpmlOkUVNy4TXzSv4euJ3AmJmGAB26bbUtngVNHqnn
+         GQyWclnY0NyEWUTxAr6GKE7rpelXeFsT3niaTzNuGXC/DShBT5iZ/vo6p1qJ6toflHxr
+         uUKPyPcGx873ePEQCH0slgFPoxPy1Qgh2QJzhv2QSZ6RYsqbzpzLlA7BazHWSTI1xJva
+         KPuekCWeLWWI+eYpQ015qQ1OW8OBzl9mlaveRta+Fm9V2Lhmt3mjQW6wQMq0V9H+g3LB
+         zAqgbiO/J52YKHakEtqF/No8pGELTQB6W3BO4j6trM+a5HtwoU1FOTZMe3798//WJDx/
+         yboA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I5tKlQRifKHe2gTRaDd3qimWqkGR/5Q+9YE8hRfMOFE=;
+        b=Qgiwb4euNGwN6bfWE9DG+VuncgwmBhUAZjW31RTUOFKf6eXKDjxTi0cb4HoI3motL8
+         ZsAvowEe7O8flU+opjGipDsjlRgvAzIGwJQgIFpg7Q0Pnl3bNX2uM6eQvHYX25w8UHIB
+         3z5Y+8KBIF9vTm7elcDQeSB0tiQUbNOm50zFQlU5ukhvPOW5bDgnu+vNe4dkaqu0dOy+
+         5uwnXwY02+W9Uhsts265v/KAFj9LBn+ffVFzJnuNYdT6llFtHXvrtkYqs5Rg/wqxVTQf
+         X3R4pppexlMMFz0NpZj0g1qyo9aBYq1JQ8NCuE3CIKIelAhZ3+BDSKZmokJUUNxuMrKc
+         yQxA==
+X-Gm-Message-State: AOAM531eKOv/bqEzDzC/Rt0uoQ6XFkAFK6RpooCCg/2sgMK4C2afSnt+
+        B1AWIf9zhYVxHKQid1I2JFVUgA==
+X-Google-Smtp-Source: ABdhPJypcf6Z6Gvwg4C0r7rXpd7oDghk0GBffhYcniRydvzWIEB0tPvn6x7AEagg9pfTpLjdEjl+YQ==
+X-Received: by 2002:adf:f207:: with SMTP id p7mr3085756wro.275.1623406641036;
+        Fri, 11 Jun 2021 03:17:21 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id k5sm6838745wrv.85.2021.06.11.03.17.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Jun 2021 03:17:20 -0700 (PDT)
+Subject: Re: [PATCH 4/9] nvmem: sprd: Fix an error message
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
+ <20210611083348.20170-5-srinivas.kandagatla@linaro.org>
+ <YMMlRq250A53CDaM@kroah.com>
+ <a34f8a9d-c9e7-5c2d-521f-13677cfd7ccb@linaro.org>
+ <YMMqPlknDF+k466x@kroah.com> <YMMwteJ5XvDST+zH@kroah.com>
+ <YMMxc4UrmMN2AUef@kroah.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <2e81821d-5b4d-925d-9d15-7a7ebd6d649d@linaro.org>
+Date:   Fri, 11 Jun 2021 11:17:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <YMMxc4UrmMN2AUef@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix function name and add comment for parameter state in ss/services.c 
-kernel-doc to remove some warnings found by running make W=1 LLVM=1.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
 
-Change in v2
---Add comment for parameter state
+On 11/06/2021 10:48, Greg KH wrote:
+> On Fri, Jun 11, 2021 at 11:45:25AM +0200, Greg KH wrote:
+>> On Fri, Jun 11, 2021 at 11:17:50AM +0200, Greg KH wrote:
+>>> On Fri, Jun 11, 2021 at 10:05:40AM +0100, Srinivas Kandagatla wrote:
+>>>>
+>>>>
+>>>> On 11/06/2021 09:56, Greg KH wrote:
+>>>>> On Fri, Jun 11, 2021 at 09:33:43AM +0100, Srinivas Kandagatla wrote:
+>>>>>> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>>>>>
+>>>>>> 'ret' is known to be 0 here.
+>>>>>> The expected error status is stored in 'status', so use it instead.
+>>>>>>
+>>>>>> Also change %d in %u, because status is an u32, not a int.
+>>>>>>
+>>>>>> Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
+>>>>>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>>>>> Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
+>>>>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>>>> ---
+>>>>>>    drivers/nvmem/sprd-efuse.c | 2 +-
+>>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
+>>>>>> index 5d394559edf2..e3e721d4c205 100644
+>>>>>> --- a/drivers/nvmem/sprd-efuse.c
+>>>>>> +++ b/drivers/nvmem/sprd-efuse.c
+>>>>>> @@ -234,7 +234,7 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
+>>>>>>    	status = readl(efuse->base + SPRD_EFUSE_ERR_FLAG);
+>>>>>>    	if (status) {
+>>>>>>    		dev_err(efuse->dev,
+>>>>>> -			"write error status %d of block %d\n", ret, blk);
+>>>>>> +			"write error status %u of block %d\n", status, blk);
+>>>>>
+>>>>> Shouldn't this be %pe and not %u?
+>>>>
+>>>> This is not error pointer its status value read back from a register.
+>>>>
+>>>> I think %u should be good here.
+>>>
+>>> Argh, you are right, my fault.  For some reason I thought this worked
+>>> for integers as well.  Don't we have such a printk modifier somewhere to
+>>> turn error values into strings?  Let me dig...
+>>
+>> Ah, errname() will do it.
+>>
+>> Looks like no one uses it, so nevermind, sorry for the noise.  I'll go
+>> apply this one now.
+> 
+> Does not apply to my tree :(
 
- security/selinux/ss/services.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+Looks like its already in your tree since May 7th.
 
-diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-index 3658488..d84c77f 100644
---- a/security/selinux/ss/services.c
-+++ b/security/selinux/ss/services.c
-@@ -859,6 +859,7 @@ int security_validate_transition(struct selinux_state *state,
-  * It returns 0, if @newsid is bounded by @oldsid.
-  * Otherwise, it returns error code.
-  *
-+ * @state: SELinux state
-  * @oldsid : current security identifier
-  * @newsid : destinated security identifier
-  */
-@@ -1098,6 +1099,7 @@ void security_compute_xperms_decision(struct selinux_state *state,
- 
- /**
-  * security_compute_av - Compute access vector decisions.
-+ * @state: SELinux state
-  * @ssid: source security identifier
-  * @tsid: target security identifier
-  * @tclass: target security class
-@@ -1386,6 +1388,7 @@ static int security_sid_to_context_core(struct selinux_state *state,
- 
- /**
-  * security_sid_to_context - Obtain a context for a given SID.
-+ * @state: SELinux state
-  * @sid: security identifier, SID
-  * @scontext: security context
-  * @scontext_len: length in bytes
-@@ -1411,6 +1414,7 @@ int security_sid_to_context_force(struct selinux_state *state, u32 sid,
- /**
-  * security_sid_to_context_inval - Obtain a context for a given SID if it
-  *                                 is invalid.
-+ * @state: SELinux state
-  * @sid: security identifier, SID
-  * @scontext: security context
-  * @scontext_len: length in bytes
-@@ -1587,6 +1591,7 @@ static int security_context_to_sid_core(struct selinux_state *state,
- 
- /**
-  * security_context_to_sid - Obtain a SID for a given security context.
-+ * @state: SELinux state
-  * @scontext: security context
-  * @scontext_len: length in bytes
-  * @sid: security identifier, SID
-@@ -1616,6 +1621,7 @@ int security_context_str_to_sid(struct selinux_state *state,
-  * security_context_to_sid_default - Obtain a SID for a given security context,
-  * falling back to specified default if needed.
-  *
-+ * @state: SELinux state
-  * @scontext: security context
-  * @scontext_len: length in bytes
-  * @sid: security identifier, SID
-@@ -1907,6 +1913,7 @@ static int security_compute_sid(struct selinux_state *state,
- 
- /**
-  * security_transition_sid - Compute the SID for a new subject/object.
-+ * @state: SELinux state
-  * @ssid: source security identifier
-  * @tsid: target security identifier
-  * @tclass: target security class
-@@ -1962,6 +1969,7 @@ int security_member_sid(struct selinux_state *state,
- 
- /**
-  * security_change_sid - Compute the SID for object relabeling.
-+ * @state: SELinux state
-  * @ssid: source security identifier
-  * @tsid: target security identifier
-  * @tclass: target security class
-@@ -2260,6 +2268,7 @@ void selinux_policy_commit(struct selinux_state *state,
- 
- /**
-  * security_load_policy - Load a security policy configuration.
-+ * @state: SELinux state
-  * @data: binary policy data
-  * @len: length of data in bytes
-  *
-@@ -2367,6 +2376,7 @@ int security_load_policy(struct selinux_state *state, void *data, size_t len,
- 
- /**
-  * security_port_sid - Obtain the SID for a port.
-+ * @state: SELinux state
-  * @protocol: protocol number
-  * @port: port number
-  * @out_sid: security identifier
-@@ -2423,7 +2433,8 @@ int security_port_sid(struct selinux_state *state,
- }
- 
- /**
-- * security_pkey_sid - Obtain the SID for a pkey.
-+ * security_ib_pkey_sid - Obtain the SID for a pkey.
-+ * @state: SELinux state
-  * @subnet_prefix: Subnet Prefix
-  * @pkey_num: pkey number
-  * @out_sid: security identifier
-@@ -2482,6 +2493,7 @@ int security_ib_pkey_sid(struct selinux_state *state,
- 
- /**
-  * security_ib_endport_sid - Obtain the SID for a subnet management interface.
-+ * @state: SELinux state
-  * @dev_name: device name
-  * @port: port number
-  * @out_sid: security identifier
-@@ -2540,6 +2552,7 @@ int security_ib_endport_sid(struct selinux_state *state,
- 
- /**
-  * security_netif_sid - Obtain the SID for a network interface.
-+ * @state: SELinux state
-  * @name: interface name
-  * @if_sid: interface SID
-  */
-@@ -2614,6 +2627,7 @@ static int match_ipv6_addrmask(u32 *input, u32 *addr, u32 *mask)
- 
- /**
-  * security_node_sid - Obtain the SID for a node (host).
-+ * @state: SELinux state
-  * @domain: communication domain aka address family
-  * @addrp: address
-  * @addrlen: address length in bytes
-@@ -2707,6 +2721,7 @@ int security_node_sid(struct selinux_state *state,
- 
- /**
-  * security_get_user_sids - Obtain reachable SIDs for a user.
-+ * @state: SELinux state
-  * @fromsid: starting SID
-  * @username: username
-  * @sids: array of reachable SIDs for user
-@@ -2899,6 +2914,7 @@ static inline int __security_genfs_sid(struct selinux_policy *policy,
- 
- /**
-  * security_genfs_sid - Obtain a SID for a file in a filesystem
-+ * @state: SELinux state
-  * @fstype: filesystem type
-  * @path: path from root of mount
-  * @sclass: file security class
-@@ -2943,6 +2959,7 @@ int selinux_policy_genfs_sid(struct selinux_policy *policy,
- 
- /**
-  * security_fs_use - Determine how to handle labeling for a filesystem.
-+ * @state: SELinux state
-  * @sb: superblock in question
-  */
- int security_fs_use(struct selinux_state *state, struct super_block *sb)
-@@ -3282,6 +3299,7 @@ int security_sid_mls_copy(struct selinux_state *state,
- 
- /**
-  * security_net_peersid_resolve - Compare and resolve two network peer SIDs
-+ * @state: SELinux state
-  * @nlbl_sid: NetLabel SID
-  * @nlbl_type: NetLabel labeling protocol type
-  * @xfrm_sid: XFRM SID
-@@ -3506,6 +3524,7 @@ int security_get_allow_unknown(struct selinux_state *state)
- 
- /**
-  * security_policycap_supported - Check for a specific policy capability
-+ * @state: SELinux state
-  * @req_cap: capability
-  *
-  * Description:
-@@ -3840,6 +3859,7 @@ static void security_netlbl_cache_add(struct netlbl_lsm_secattr *secattr,
- 
- /**
-  * security_netlbl_secattr_to_sid - Convert a NetLabel secattr to a SELinux SID
-+ * @state: SELinux state
-  * @secattr: the NetLabel packet security attributes
-  * @sid: the SELinux SID
-  *
-@@ -3922,6 +3942,7 @@ int security_netlbl_secattr_to_sid(struct selinux_state *state,
- 
- /**
-  * security_netlbl_sid_to_secattr - Convert a SELinux SID to a NetLabel secattr
-+ * @state: SELinux state
-  * @sid: the SELinux SID
-  * @secattr: the NetLabel packet security attributes
-  *
--- 
-1.8.3.1
-
+--srini
+> 
