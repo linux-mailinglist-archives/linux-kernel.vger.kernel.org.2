@@ -2,187 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9783A38AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDEB3A38B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhFKA1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 20:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        id S231360AbhFKAaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 20:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbhFKA1c (ORCPT
+        with ESMTP id S230380AbhFKAaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 20:27:32 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5DAC0613A2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:25:16 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id r9so4115348wrz.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:25:15 -0700 (PDT)
+        Thu, 10 Jun 2021 20:30:24 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5FAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:28:14 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id u18so2980726pfk.11
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Uj6zxxcZkeKHjtwD505V5xcj+v/aiATR1kOB3b2LnBg=;
-        b=VIu2LfcUjC8C1LxXZi86Eu5CKW9N7IckFWoLszBNNbSMgCtLsJOdWKwhi0JauOh9gu
-         nj/xNqrWu5tzmCzYlkEEW6I5kWngBEl1Juei9zRNDgm4GyzCAVCJNuiBKWZLZNUfKMcD
-         1f+xJl4P+5ZPrRbbF0CTO2xtRrPutj/zAhNZ5YaIL8G53UQOtXCX70zgGm7GKtVa0RiX
-         WTk8EWXPYm272a3yrgIEgt4PxB45pfceN4DOqnqLI7ujj3CmFPWmUCsWfqD77dNaWRtP
-         ZaDtSm55Wbz2Auv3FFerpYRJ9NlFbUm9w3D3gHV5HnknZC0si0rP3rw6tmJpnSpICE3E
-         S1Yw==
+        d=gmail.com; s=20161025;
+        h=to:cc:references:subject:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lJ6pC3vRgajvw25G5uh7zoFY2OKcw8ZZYBkSXgUjChk=;
+        b=BVsq+nuvUcoL0M+jgJqZAg9gjyOHv2V1eReYVMPhvO+6vr2gNrEHItXE3je02WB60u
+         JjKLvXe+wf0+iI9qmn+Q3KG/ddrqGqbWU6m0AhkB9zvqNITFc11hHenneETyTIoJfACx
+         tuRp1JZJCGTZzFxsNyhaDYFELT4oPNuVSiB+Uv1YPfQEIhPfuerc7bGMmh6VZ0fczcB+
+         YvbxigG59jkhSLsIUnWcyoXmy2eVc0KpDYjIy/gZuXOvOJi9ciUqo68i5IQ7R83008Cq
+         ggrXOkTNchPuKM3j+JTIq/jRC9HBCSjrjJSgZSTfyTi/u2jCPKovB6KJ7yR56sVZf+eB
+         m9dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Uj6zxxcZkeKHjtwD505V5xcj+v/aiATR1kOB3b2LnBg=;
-        b=fd4zWGcDtjbaBTn4/7+S5w/4dRYgHQmsEPHPBnh4dJBYY+RUY+UfQ/NuwxCVye8RDB
-         QBA1TRia90cw9nwbf547dhRU5zSZWULqgk51ZUkEE/NhZo7SSIQ0BXFQel+XcUB0zIKW
-         qhUq00g231FGY5jCk76fl5wSxhif1Idqm0hWm/8NajMdeAIRZyVl/AW3KHb334B/+M0A
-         Fweja+a5O7oLFp3EE1PjvB5VKu0phZLkFgjTe+Hf2B8t+2d7rUucjPFS5kC4b3yaFHXt
-         iurU/sOXOPqmbKeg0mDeZB/OQIx0HDm0a13A50dPiF07HLV2PZ2HjMk+Zv2ETR018AHZ
-         OguQ==
-X-Gm-Message-State: AOAM530EtHtj1ZfNj+1MUdlqTSSDfVNUOtTmR4QcFLzEvTz2S1A1/raE
-        HH9c2iGi/brQ1vlfGLK35rkVbg==
-X-Google-Smtp-Source: ABdhPJwNbmivXMjTHNVauHu69n+AjQ1nnDItlkNu55v/tCRdpdypOwIWgQo/Vs/E3pfnmwVKbZoxXA==
-X-Received: by 2002:adf:ed8d:: with SMTP id c13mr985563wro.164.1623371114479;
-        Thu, 10 Jun 2021 17:25:14 -0700 (PDT)
-Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id c2sm11386189wmf.24.2021.06.10.17.25.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 17:25:14 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        kaixuxia@tencent.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, liushixin2@huawei.com,
-        unixbhaskar@gmail.com, gustavoars@kernel.org, martin@kaiser.cx,
-        bkkarthik@pesu.pes.edu, dan.carpenter@oracle.com
-Subject: [PATCH 6/6] staging: rtl8188eu: remove include/odm_debug.h
-Date:   Fri, 11 Jun 2021 01:25:04 +0100
-Message-Id: <20210611002504.166405-7-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210611002504.166405-6-phil@philpotter.co.uk>
-References: <20210611002504.166405-1-phil@philpotter.co.uk>
- <20210611002504.166405-2-phil@philpotter.co.uk>
- <20210611002504.166405-3-phil@philpotter.co.uk>
- <20210611002504.166405-4-phil@philpotter.co.uk>
- <20210611002504.166405-5-phil@philpotter.co.uk>
- <20210611002504.166405-6-phil@philpotter.co.uk>
+        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lJ6pC3vRgajvw25G5uh7zoFY2OKcw8ZZYBkSXgUjChk=;
+        b=U2NRn2bdiJmVJT+t5ul06XXVaz4hClDcqvSPm1EIpWpeY/Mta8d/inVa2RD18WSROX
+         sBvSPVrkG6bUX4h9aMNm68eylTPO/G0pni+mAlVodKZRD168YFxX0T6OkDCarbEzzU/r
+         6UIRviiAvD8PBQVxUsJrrOEgd1kA/mhhrWvdSmYexcpLsZ5IHAdHj56K23v7e9j2+sFj
+         OSfSbqlwIIVeGJzyJgK/xFNpYOv5+DXJVKdsxgbmEbwb2B666DrFpBr3LZUDNU5sAWFO
+         98805k5TG2doNlF4V2q8UwtQDQwNP4r11/yU3KfqHajfweOm3HtW/aERy4jWmlga6AFL
+         vJDw==
+X-Gm-Message-State: AOAM533X4pIrS4G2nVt8KyjF2YYfG4vOJWko313M9vzQvWUCQ1JE5rqd
+        K5O/vD7Ekh/YhtRA9jEmC64qZUlir4Q=
+X-Google-Smtp-Source: ABdhPJwIiIUIBRaW38LEtCHpIdlbiuWMs5Y18aX9aU27rOJ11aPusTe5woknfazy0ggnm18DiiLTog==
+X-Received: by 2002:aa7:9216:0:b029:2e5:6989:4f1a with SMTP id 22-20020aa792160000b02902e569894f1amr5430534pfo.50.1623371294218;
+        Thu, 10 Jun 2021 17:28:14 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id t13sm3431317pfh.97.2021.06.10.17.28.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 17:28:13 -0700 (PDT)
+To:     paulmck@kernel.org
+Cc:     boqun.feng@gmail.com, frederic@kernel.org, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, neeraju@codeaurora.org,
+        urezki@gmail.com, Akira Yokosawa <akiyks@gmail.com>
+References: <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH] rcu/doc: Add a quick quiz to explain further why we need
+ smp_mb__after_unlock_lock()
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <41a783b3-db66-a30d-4ff1-d1fa77135db0@gmail.com>
+Date:   Fri, 11 Jun 2021 09:28:10 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210610165710.GT4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove include/odm_debug.h header, and its inclusion within
-include/odm_precomp.h, as there are now no users of it.
+On Thu, 10 Jun 2021 09:57:10 -0700, Paul E. McKenney wrote:
+> On Thu, Jun 10, 2021 at 05:50:29PM +0200, Frederic Weisbecker wrote:
+>> Add some missing critical pieces of explanation to understand the need
+>> for full memory barriers throughout the whole grace period state machine,
+>> thanks to Paul's explanations.
+>> 
+>> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+>> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+>> Cc: Joel Fernandes <joel@joelfernandes.org>
+>> Cc: Uladzislau Rezki <urezki@gmail.com>
+>> Cc: Boqun Feng <boqun.feng@gmail.com>
+> 
+> Nice!!!  And not bad wording either, though I still could not resist the
+> urge to wordsmith further.  Plus I combined your two examples, in order to
+> provide a trivial example use of the polling interfaces, if nothing else.
+> 
+> Please let me know if I messed anything up.
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/rtl8188eu/include/odm_debug.h | 83 -------------------
- .../staging/rtl8188eu/include/odm_precomp.h   |  1 -
- 2 files changed, 84 deletions(-)
- delete mode 100644 drivers/staging/rtl8188eu/include/odm_debug.h
+Hi Paul,
 
-diff --git a/drivers/staging/rtl8188eu/include/odm_debug.h b/drivers/staging/rtl8188eu/include/odm_debug.h
-deleted file mode 100644
-index 3c576a029c94..000000000000
---- a/drivers/staging/rtl8188eu/include/odm_debug.h
-+++ /dev/null
-@@ -1,83 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- ******************************************************************************/
--
--#ifndef	__ODM_DBG_H__
--#define __ODM_DBG_H__
--
--/*  */
--/*	Define the debug levels */
--/*  */
--/*	1. DBG_TRACE and DBG_LOUD are used for normal cases. */
--/*	They can help SW engineer to develop or trace states changed */
--/*	and also help HW enginner to trace every operation to and from HW, */
--/*	e.g IO, Tx, Rx. */
--/*  */
--/*	2. DBG_WARNNING and DBG_SERIOUS are used for unusual or error cases, */
--/*	which help us to debug SW or HW. */
--
--/*	Never used in a call to ODM_RT_TRACE()! */
--#define ODM_DBG_OFF				1
--
--/*	Fatal bug. */
--/*	For example, Tx/Rx/IO locked up, OS hangs, memory access violation, */
--/*	resource allocation failed, unexpected HW behavior, HW BUG and so on. */
--#define ODM_DBG_SERIOUS				2
--
--/*	Abnormal, rare, or unexpected cases. */
--/*	For example, IRP/Packet/OID canceled, device suprisely unremoved and so on. */
--#define ODM_DBG_WARNING				3
--
--/*	Normal case with useful information about current SW or HW state. */
--/*	For example, Tx/Rx descriptor to fill, Tx/Rx descr. completed status, */
--/*	SW protocol state change, dynamic mechanism state change and so on. */
--/*  */
--#define ODM_DBG_LOUD					4
--
--/*	Normal case with detail execution flow or information. */
--#define ODM_DBG_TRACE					5
--
--/*  Define the tracing components */
--/* BB Functions */
--#define ODM_COMP_DIG					BIT(0)
--#define ODM_COMP_RA_MASK				BIT(1)
--#define ODM_COMP_DYNAMIC_TXPWR				BIT(2)
--#define ODM_COMP_FA_CNT					BIT(3)
--#define ODM_COMP_RSSI_MONITOR				BIT(4)
--#define ODM_COMP_CCK_PD					BIT(5)
--#define ODM_COMP_ANT_DIV				BIT(6)
--#define ODM_COMP_PWR_SAVE				BIT(7)
--#define ODM_COMP_PWR_TRA				BIT(8)
--#define ODM_COMP_RATE_ADAPTIVE				BIT(9)
--#define ODM_COMP_PATH_DIV				BIT(10)
--#define ODM_COMP_PSD					BIT(11)
--#define ODM_COMP_DYNAMIC_PRICCA				BIT(12)
--#define ODM_COMP_RXHP					BIT(13)
--/* MAC Functions */
--#define ODM_COMP_EDCA_TURBO				BIT(16)
--#define ODM_COMP_EARLY_MODE				BIT(17)
--/* RF Functions */
--#define ODM_COMP_TX_PWR_TRACK				BIT(24)
--#define ODM_COMP_RX_GAIN_TRACK				BIT(25)
--#define ODM_COMP_CALIBRATION				BIT(26)
--/* Common Functions */
--#define ODM_COMP_COMMON					BIT(30)
--#define ODM_COMP_INIT					BIT(31)
--
--/*------------------------Export Marco Definition---------------------------*/
--#define RT_PRINTK(fmt, args...)				\
--	pr_info("%s(): " fmt, __func__, ## args);
--
--#define ODM_RT_TRACE(pDM_Odm, comp, level, fmt)				\
--	if (((comp) & pDM_Odm->DebugComponents) &&			\
--	    (level <= pDM_Odm->DebugLevel)) {				\
--		pr_info("[ODM-8188E] ");				\
--		RT_PRINTK fmt;						\
--	}
--
--void ODM_InitDebugSetting(struct odm_dm_struct *pDM_Odm);
--
--#endif	/*  __ODM_DBG_H__ */
-diff --git a/drivers/staging/rtl8188eu/include/odm_precomp.h b/drivers/staging/rtl8188eu/include/odm_precomp.h
-index ef1afc83f9ac..eb2b8b613aad 100644
---- a/drivers/staging/rtl8188eu/include/odm_precomp.h
-+++ b/drivers/staging/rtl8188eu/include/odm_precomp.h
-@@ -23,7 +23,6 @@
+See minor tweaks below to satisfy sphinx.
+
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit f21b8fbdf9a59553da825265e92cedb639b4ba3c
+> Author: Frederic Weisbecker <frederic@kernel.org>
+> Date:   Thu Jun 10 17:50:29 2021 +0200
+> 
+>     rcu/doc: Add a quick quiz to explain further why we need smp_mb__after_unlock_lock()
+>     
+>     Add some missing critical pieces of explanation to understand the need
+>     for full memory barriers throughout the whole grace period state machine,
+>     thanks to Paul's explanations.
+>     
+>     Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+>     Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+>     Cc: Joel Fernandes <joel@joelfernandes.org>
+>     Cc: Uladzislau Rezki <urezki@gmail.com>
+>     Cc: Boqun Feng <boqun.feng@gmail.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> index 11cdab037bff..3cd5cb4d86e5 100644
+> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> @@ -112,6 +112,35 @@ on PowerPC.
+>  The ``smp_mb__after_unlock_lock()`` invocations prevent this
+>  ``WARN_ON()`` from triggering.
+>  
+> ++-----------------------------------------------------------------------+
+> +| **Quick Quiz**:                                                       |
+> ++-----------------------------------------------------------------------+
+> +| But the whole chain of rcu_node-structure locking guarantees that     |
+> +| readers see all pre-grace-period accesses from the updater and        |
+> +| also guarantees that the updater to see all post-grace-period         |
+> +| accesses from the readers.  So why do we need all of those calls      |
+> +| to smp_mb__after_unlock_lock()?                                       |
+> ++-----------------------------------------------------------------------+
+> +| **Answer**:                                                           |
+> ++-----------------------------------------------------------------------+
+> +| Because we must provide ordering for RCU's polling grace-period       |
+> +| primitives, for example, get_state_synchronize_rcu() and              |
+> +| poll_state_synchronize_rcu().  For example:                           |
+> +|                                                                       |
+> +| CPU 0                                     CPU 1                       |
+> +| ----                                      ----                        |
+> +| WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)            |
+> +| g = get_state_synchronize_rcu()           smp_mb()                    |
+> +| while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)           |
+> +|         continue;                                                     |
+
+This indent causes warnings from sphinx:
+
+Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst:135: WARNING: Unexpected indentation.
+Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst:137: WARNING: Block quote ends without a blank line; unexpected unindent
+
+> +| r0 = READ_ONCE(Y)                                                     |
+> +|                                                                       |
+> +| RCU guarantees that that the outcome r0 == 0 && r1 == 0 will not      |
+> +| happen, even if CPU 1 is in an RCU extended quiescent state (idle     |
+> +| or offline) and thus won't interact directly with the RCU core        |
+> +| processing at all.                                                    |
+> ++-----------------------------------------------------------------------+
+> +
+>  This approach must be extended to include idle CPUs, which need
+>  RCU's grace-period memory ordering guarantee to extend to any
+>  RCU read-side critical sections preceding and following the current
+
+The code block in the answer can be fixed as follows:
+
+++-----------------------------------------------------------------------+
++| **Answer**:                                                           |
+++-----------------------------------------------------------------------+
++| Because we must provide ordering for RCU's polling grace-period       |
++| primitives, for example, get_state_synchronize_rcu() and              |
++| poll_state_synchronize_rcu().  For example::                          |
++|                                                                       |
++|  CPU 0                                     CPU 1                      |
++|  ----                                      ----                       |
++|  WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)           |
++|  g = get_state_synchronize_rcu()           smp_mb()                   |
++|  while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)          |
++|          continue;                                                    |
++|  r0 = READ_ONCE(Y)                                                    |
++|                                                                       |
++| RCU guarantees that that the outcome r0 == 0 && r1 == 0 will not      |
++| happen, even if CPU 1 is in an RCU extended quiescent state (idle     |
++| or offline) and thus won't interact directly with the RCU core        |
++| processing at all.                                                    |
+++-----------------------------------------------------------------------+
+
+Hint: Use of "::" and indented code block.
  
- #include "odm.h"
- #include "odm_hwconfig.h"
--#include "odm_debug.h"
- #include "phydm_regdefine11n.h"
- 
- #include "hal8188e_rate_adaptive.h" /* for RA,Power training */
--- 
-2.30.2
-
+       Thanks, Akira
