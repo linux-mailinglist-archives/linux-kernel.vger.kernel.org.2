@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCEF3A4213
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF88D3A4214
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhFKMjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:39:36 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5394 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhFKMjf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:39:35 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G1gHm5q9zz6wfS;
-        Fri, 11 Jun 2021 20:33:40 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 20:37:34 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 20:37:33 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <treding@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH v2 -next] firmware: tegra: Fix build error while ARCH_TEGRA_234_SOC enabled
-Date:   Fri, 11 Jun 2021 20:37:08 +0800
-Message-ID: <20210611123708.6652-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S231301AbhFKMjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:39:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231270AbhFKMjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 08:39:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49A3D613DD;
+        Fri, 11 Jun 2021 12:37:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623415062;
+        bh=4/xWLj/LFkupupWnBhy5p1HAWNHssEzAMsG9I6fJOfE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ueylYbEOtQCwRupx7J5SIztteqKvORqpO3efm/0bJUaulGT+QQ0MRHepoo4T9UKwg
+         DLmqUvGVpAVhBZ3VKEbaTc/1KErSroH05dG+OpPjo799VY8SjXnTqpUvFFneNpl/Yi
+         jnjojqXg6e8FL9sutLcwpUE5ss95BUKOMqepH09Xa7mMqqDLI1Q5s6fCfR7dJNWos5
+         az6Gx7dp7lWqHRHe5hQ2MjKF8kr3youpMZ3rU6eiLIjfgvfsbjUk9/h00tE5yzC9/+
+         ObpehnuiNmOR1FtaoIyMZRFPeI9ruMVu7Kj56fixpUvKwhO4PDZC5HKw/bgqRDgaD1
+         uGjegWjUnmc/A==
+Date:   Fri, 11 Jun 2021 14:37:40 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 1/6] posix-cpu-timers: Fix rearm racing against process
+ tick
+Message-ID: <20210611123740.GA143945@lothringen>
+References: <20210604113159.26177-1-frederic@kernel.org>
+ <20210604113159.26177-2-frederic@kernel.org>
+ <20210609115400.GD104634@lothringen>
+ <YMNNtOTN9u3eC0n0@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMNNtOTN9u3eC0n0@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/firmware/tegra/bpmp.c:861:51:
- error: ‘tegra186_soc’ undeclared here (not in a function); did you mean ‘tegra_ivc’?
-  { .compatible = "nvidia,tegra186-bpmp", .data = &tegra186_soc },
-                                                   ^~~~~~~~~~~~
-                                                   tegra_ivc
+On Fri, Jun 11, 2021 at 01:49:08PM +0200, Peter Zijlstra wrote:
+> On Wed, Jun 09, 2021 at 01:54:00PM +0200, Frederic Weisbecker wrote:
+> > On Fri, Jun 04, 2021 at 01:31:54PM +0200, Frederic Weisbecker wrote:
+> > > Since the process wide cputime counter is started locklessly from
+> > > posix_cpu_timer_rearm(), it can be concurrently stopped by operations
+> > > on other timers from the same thread group, such as in the following
+> > > unlucky scenario:
+> > > 
+> > >          CPU 0                                CPU 1
+> > >          -----                                -----
+> > >                                            timer_settime(TIMER B)
+> > >    posix_cpu_timer_rearm(TIMER A)
+> > >        cpu_clock_sample_group()
+> > >            (pct->timers_active already true)
+> > > 
+> > >                                            handle_posix_cpu_timers()
+> > >                                                check_process_timers()
+> > >                                                    stop_process_timers()
+> > >                                                        pct->timers_active = false
+> > >        arm_timer(TIMER A)
+> > > 
+> > >    tick -> run_posix_cpu_timers()
+> > >        // sees !pct->timers_active, ignore
+> > >        // our TIMER A
+> > > 
+> > > Fix this with simply locking process wide cputime counting start and
+> > > timer arm in the same block.
+> > > 
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Cc: Oleg Nesterov <oleg@redhat.com>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > Cc: Ingo Molnar <mingo@kernel.org>
+> > > Cc: Eric W. Biederman <ebiederm@xmission.com>
+> > 
+> > Fixes: 60f2ceaa8111 ("posix-cpu-timers: Remove unnecessary locking around cpu_clock_sample_group")
+> > Cc: stable@vger.kernel.org
+> 
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 
+> 
+> Problem seems to be calling cpu_clock_sample_group(.start = true)
+> without sighand locked. Do we want a lockdep assertion for that?
 
-Fixes: 0ebdf11699d0 ("firmware: tegra: Enable BPMP support on Tegra234")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
-v2: Fix build error
----
- drivers/firmware/tegra/Makefile       | 1 +
- drivers/firmware/tegra/bpmp-private.h | 3 ++-
- drivers/firmware/tegra/bpmp.c         | 3 ++-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+It's part of the problem. The other part is that it must be locked in the
+same sequence than arm_timer(). So yes, a lockdep assertion would already be
+a good indicator that something goes wrong.
 
-diff --git a/drivers/firmware/tegra/Makefile b/drivers/firmware/tegra/Makefile
-index 49c87e00fafb..620cf3fdd607 100644
---- a/drivers/firmware/tegra/Makefile
-+++ b/drivers/firmware/tegra/Makefile
-@@ -3,6 +3,7 @@ tegra-bpmp-y			= bpmp.o
- tegra-bpmp-$(CONFIG_ARCH_TEGRA_210_SOC)	+= bpmp-tegra210.o
- tegra-bpmp-$(CONFIG_ARCH_TEGRA_186_SOC)	+= bpmp-tegra186.o
- tegra-bpmp-$(CONFIG_ARCH_TEGRA_194_SOC)	+= bpmp-tegra186.o
-+tegra-bpmp-$(CONFIG_ARCH_TEGRA_234_SOC)	+= bpmp-tegra186.o
- tegra-bpmp-$(CONFIG_DEBUG_FS)	+= bpmp-debugfs.o
- obj-$(CONFIG_TEGRA_BPMP)	+= tegra-bpmp.o
- obj-$(CONFIG_TEGRA_IVC)		+= ivc.o
-diff --git a/drivers/firmware/tegra/bpmp-private.h b/drivers/firmware/tegra/bpmp-private.h
-index 54d560c48398..182bfe396516 100644
---- a/drivers/firmware/tegra/bpmp-private.h
-+++ b/drivers/firmware/tegra/bpmp-private.h
-@@ -24,7 +24,8 @@ struct tegra_bpmp_ops {
- };
- 
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
--    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC)
-+    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC) || \
-+    IS_ENABLED(CONFIG_ARCH_TEGRA_234_SOC)
- extern const struct tegra_bpmp_ops tegra186_bpmp_ops;
- #endif
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_210_SOC)
-diff --git a/drivers/firmware/tegra/bpmp.c b/drivers/firmware/tegra/bpmp.c
-index 0742a90cb844..5654c5e9862b 100644
---- a/drivers/firmware/tegra/bpmp.c
-+++ b/drivers/firmware/tegra/bpmp.c
-@@ -809,7 +809,8 @@ static const struct dev_pm_ops tegra_bpmp_pm_ops = {
- };
- 
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
--    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC)
-+    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC) || \
-+    IS_ENABLED(CONFIG_ARCH_TEGRA_234_SOC)
- static const struct tegra_bpmp_soc tegra186_soc = {
- 	.channels = {
- 		.cpu_tx = {
--- 
-2.17.1
-
+Thanks.
