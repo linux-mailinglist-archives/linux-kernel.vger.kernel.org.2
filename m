@@ -2,106 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E18F3A3A33
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256E03A3A0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhFKDUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:20:09 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:31863 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbhFKDUB (ORCPT
+        id S231246AbhFKDDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:03:02 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:47012 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231180AbhFKDDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:20:01 -0400
-Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210611031802epoutp01abaca8a494bfc3c9a7b9b0a1a3c25c26~HaNuKatSj2132021320epoutp01D
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:18:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210611031802epoutp01abaca8a494bfc3c9a7b9b0a1a3c25c26~HaNuKatSj2132021320epoutp01D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1623381482;
-        bh=6RHPHfUm/f0dCH+/5kjfQhMB3OYUas1Lszo9TuKUNYY=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=OdQD9vELo7xEx85RM2+XQpOGFNvIgbxj8k19Ok7Us0060j2nHF02+qy+Nu8gI0Jy8
-         Cz9vRUaPGlQbEqUyemFFIuuLpVaCbcsO4opdZp0gs1lzJw2Ov0x2Nv/ZbjIFnWMwgo
-         An5WLPKBhd+ZKAItGCMCeIwCz75MOryv85yGwujA=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
-        20210611031801epcas3p36b196371cbaa7fcfe6e43a44ec645827~HaNtGQQql0460804608epcas3p3_;
-        Fri, 11 Jun 2021 03:18:01 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp1.localdomain
-        (Postfix) with ESMTP id 4G1Qyd4Xntz4x9Q7; Fri, 11 Jun 2021 03:18:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v36 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     =?UTF-8?B?7KCV7JqU7ZWcKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
-        <yohan.joung@sk.com>, Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <e540ec7b6d3e4adc97780fcdf87f46aa@sk.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01623381481630.JavaMail.epsvc@epcpadp4>
-Date:   Fri, 11 Jun 2021 10:54:04 +0900
-X-CMS-MailID: 20210611015404epcms2p263732e0109443a4319e5a77ef5092f97
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e
-References: <e540ec7b6d3e4adc97780fcdf87f46aa@sk.com>
-        <20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
-        <20210607041927epcms2p707781de1678af1e1d0f4d88782125f7b@epcms2p7>
-        <CGME20210607041650epcms2p29002c9d072738bbf21fb4acf31847e8e@epcms2p2>
+        Thu, 10 Jun 2021 23:03:01 -0400
+Received: by mail-ot1-f54.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso1751097otl.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:00:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9elBhRYRohBJLYXGAbC8/QtueNh7yhzWwdc2SlWJcOU=;
+        b=vegh8wsiAC+x1bVv8y3kjhUeGWh9t2LfpIXlFUh1fR7KFxkonHV4/EpbnYFyNJG7A/
+         2S3+EdWpeDLbwZLpyPxeVdyla/rZijDPnQIK69FHteGtdP3mQv43s391Q7DJX1aiOLac
+         S1YTiMwgrKzdu5xgDfcYnkdKSwKxPq5UmWtUV2LnVwBnYbhKlOaJReXdtkFp/f3UVGGd
+         LJHHoiWY08rqK+q1ymjI0WbynAP/P0fCynmb+h/S5hdQ0WiRCf5nvZwkZnsgzcRzTtXq
+         TnS9tECmSNSatPkOpPoNWoWUyIXw0ft+6kJIHOE3Pyfr3QHrMJKkI6IBeFULSnJ7MxKY
+         baIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9elBhRYRohBJLYXGAbC8/QtueNh7yhzWwdc2SlWJcOU=;
+        b=Y4It+mP03xfZqXXMgp5jv78uk9fqxFemQGyxyfCEuCKgRQ3jaSGAM3nJp51Ndgbg5W
+         WQDBfsFcyDKT9Pb4kCaxEUgYS68413RrpJi3nUPe5nLJssBZuCi6lodCEsftmQPC8V/r
+         eIGfkj8+PMErLmVjwn7bnT+iF/0TXxFtocDBuTSqafkAO1DawYXlLKLPYkov1jFeBIc+
+         W+1rIGlpdyQI1klebpbfQWKzZZmpQ5oKog0ODUYVGwYB48NkqDQ59xuEAwJYaKPzWP8J
+         Wm7AXClTenzeFkMPBvVL3P/OVGht4eMqcrhc1WNhyso3KzTMSZXh7CHAbugREqDiiAT1
+         Y5iQ==
+X-Gm-Message-State: AOAM530S2tGu6kIxybqoqd/Yo2uF4B/8p22gF1bN2p78peIeIuKISc9f
+        7tM1JZl2v2q5ulHmilrg/YxI1w==
+X-Google-Smtp-Source: ABdhPJzuDFfl+YeXo+oLDAV43WO+1r+i1ImfP2DWcxPkaviwdYfSnI2fhWMMdjGvSkOQ5LWpEaFxOw==
+X-Received: by 2002:a9d:526:: with SMTP id 35mr1159467otw.176.1623380391091;
+        Thu, 10 Jun 2021 19:59:51 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 7sm991454oti.30.2021.06.10.19.59.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 19:59:50 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 21:59:48 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Subject: Re: [PATCH 3/8] dt-bindings: arm: qcom: Add compatible for
+ SA8155p-adp board
+Message-ID: <YMLRpLoc7LiegLp/@builder.lan>
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+ <20210607113840.15435-4-bhupesh.sharma@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607113840.15435-4-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
 
->diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h index 6e6a0252dc15..b1128b0ce486 100644
->--- a/drivers/scsi/ufs/ufshpb.h
->+++ b/drivers/scsi/ufs/ufshpb.h
->@@ -30,19 +30,29 @@
-> #define PINNED_NOT_SET                                U32_MAX
+> SA8155p-adp board is based on Qualcomm Snapdragon sm8150
+> SoC.
 > 
-> /* hpb support chunk size */
->-#define HPB_MULTI_CHUNK_HIGH                        1
->+#define HPB_LEGACY_CHUNK_HIGH                        1
->+#define HPB_MULTI_CHUNK_LOW                        7
->+#define HPB_MULTI_CHUNK_HIGH                        128
-> 
->According to the JEDEC spec, bMAX_ DATA_SIZE_FOR_HPB_SINGLE_CMD can be set from 4kb to 1024kb. 
->The transfer length should be provided up to 1020kb or 1024kb.
->Why did you set HPB_MULTI_CHUNK_HIGH to 128? 
->It can sends the hpb command up to 512kb. 
->This doesn't seem to match the specs.
+> Add support for the same.
 
-I'll fix it in the next patch.
+The SA8155p is similar to SM8150 and we can reuse most things, but I
+think we can afford to add qcom,sa8155p in the DT bindings.
+
+> 
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: bhupesh.linux@gmail.com
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index 9b27e991bddc..b5897f1f9695 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -42,11 +42,13 @@ description: |
+>          sdm660
+>          sdm845
+>          sdx55
+> +        sm8150
+
+Naturally sm8150 should be part of this list, but please also add
+sa8155p as well.
+
+>          sm8250
+>          sm8350
+>  
+>    The 'board' element must be one of the following strings:
+>  
+> +        adp
+>          cdp
+>          cp01-c1
+>          dragonboard
+> @@ -198,6 +200,12 @@ properties:
+>                - qcom,ipq6018-cp01-c1
+>            - const: qcom,ipq6018
+>  
+> +      - items:
+> +          - enum:
+> +              - qcom,sa8155p-adp
+> +              - qcom,sm8150-mtp
+> +          - const: qcom,sm8150
+
+And please split this in two (one qcom,sm8150-mtp and qcom,sm8150, and
+one qcom,sa8155p-adp and qcom,sa8155p).
+
+And note that this is saying that your compatible needs to be one of the
+enum entries, followed by the const, but in your dts you only specified
+qcom,sa8155p-adp. It needs to be:
+
+	compatible = "qcom,sa8155p-adp", "qcom,sa8155p";
 
 Thanks,
-Daejun
+Bjorn
 
->Thanks
->Yohan.
+> +
+>        - items:
+>            - enum:
+>                - qcom,qrb5165-rb5
+> -- 
+> 2.31.1
 > 
-> 
->  
