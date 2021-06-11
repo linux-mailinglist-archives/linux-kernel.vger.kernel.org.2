@@ -2,245 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0903A4427
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA973A4424
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 16:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhFKOh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:37:26 -0400
-Received: from mail-qt1-f175.google.com ([209.85.160.175]:33570 "EHLO
-        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhFKOhY (ORCPT
+        id S231380AbhFKOgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhFKOgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:37:24 -0400
-Received: by mail-qt1-f175.google.com with SMTP id e3so2755020qte.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 07:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N7xLtR6wwfwdyklvarz4WBE3RQ2vMZmVsTn+Ut4XgCk=;
-        b=yrKPqiOr+wEuE8yFmhupTukkreGFuO1DwnZ7PaSwKIzCrl7h/yEjlyDx75IUBifHTz
-         s3f2XzGsamw3keK9lNSD5C/+XE1p+GLu/acUmEIxCkXNON9iIeLCgqj9s1P+EMfqMf/S
-         l7WKAuZvnxrITxYgyPc2nBOgEPqoHaWsM2xPOI9CFF8RNYBnshaf5E2Hqx8Q/dgdDTJL
-         LPuLfx6XIM+wUqtvZdgvkK0BSt0tpNzQ/Lm1WJgwyR1Pb8lkDmzC7w/Rkr5imi+RyGZI
-         J8aiD51rgh9Zzpq6XTXztQaF/x5AqTSAWYQkF1UNiLjcmIJpJIfLjiHRy1JWmu3IW7j4
-         9ZHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N7xLtR6wwfwdyklvarz4WBE3RQ2vMZmVsTn+Ut4XgCk=;
-        b=P0kq4l2UvbUQAK9m2t3MAvylsWT1taYo9ohHX0EyjVKPGxnzHUE4wjNNLDJSCktvdW
-         KqzVf3GME3Tyjym+np/ENyAwdovR4A+DP2Pq8QzcSK+FAofyMa0/gy8H7bIjCsgktQHt
-         yE79KobfMTDt/Eo41gpdpBRjlDUSOmZwwITGmJFWtDqpri2ohToKiMcO07HgTUmDLZWv
-         CakqVBYJkc2Z4NwD62ef67hwWvAFbgktMSHsAzWU5b25YBZXUpdHwcCEw2xAb1rfElHQ
-         dcePO3PuU9PZpncLI0R4R3Eh+9dyEkJtQOEmpK3RFzBxOHASIF8CxmDT7x54NX2XmO/k
-         vzfw==
-X-Gm-Message-State: AOAM53103lFQHxlfPZoXdqCgBAgXCeNaUAXU3Ay2L+tYVxi14Q8n3nxK
-        /6G6l01l7YpM2/dy8bn1JA90FOBCB6QjPlUZPY8iVA==
-X-Google-Smtp-Source: ABdhPJzTF7w5iaBY/15//jWHa3aBgg8bCJQRjPv7SajFfNO3yw3P6Xkyd+HHiFmZD7zf1/EOkpYSGyCWFQiNQmfWB5M=
-X-Received: by 2002:ac8:46d1:: with SMTP id h17mr4074536qto.135.1623422051741;
- Fri, 11 Jun 2021 07:34:11 -0700 (PDT)
+        Fri, 11 Jun 2021 10:36:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB22C061574;
+        Fri, 11 Jun 2021 07:34:13 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0aec00fa6ee867e791c992.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ec00:fa6e:e867:e791:c992])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B0AA21EC053C;
+        Fri, 11 Jun 2021 16:34:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623422051;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=JGxv2dGnM8cqh24lNorMXXQYkTm9QOB8k1UUbsYV/vA=;
+        b=PH73syyPX9IvgmsETxZdfxrCSsZMWTcA/pYMQegpkdofXR1cXEg1XEPuJS9MYErLFdFNqX
+        ITpfIWTUsaN5vpq8JBkZPeXh5LbRBqlJGvqLVqRf8JiTAeW7VP9luNAuq1h46swcUr7Uja
+        MtzdkWa9Pi00OJI9vUBJ/0Onm7xcNq0=
+Date:   Fri, 11 Jun 2021 16:34:05 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 2/6] x86/sev-es: Disable IRQs while GHCB is active
+Message-ID: <YMN0XT8Job08HfWH@zn.tnic>
+References: <20210610091141.30322-1-joro@8bytes.org>
+ <20210610091141.30322-3-joro@8bytes.org>
+ <YMNtmz6W1apXL5q+@zn.tnic>
+ <YMNxNEb/T3iF4TG8@8bytes.org>
 MIME-Version: 1.0
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
-In-Reply-To: <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 11 Jun 2021 17:34:00 +0300
-Message-ID: <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YMNxNEb/T3iF4TG8@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added Stephen to Cc list
+On Fri, Jun 11, 2021 at 04:20:36PM +0200, Joerg Roedel wrote:
+> I am not a fan of this, because its easily forgotten to add
+> local_irq_save()/local_irq_restore() calls around those. Yes, we can add
+> irqs_disabled() assertions to the functions, but we can as well just
+> disable/enable IRQs in them. Only the previous value of EFLAGS.IF needs
+> to be carried from one function to the other.
 
-On Fri, 11 Jun 2021 at 16:50, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Fri, 11 Jun 2021 at 12:15, Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > In case of nested genpds it is easy to get the following warning from
-> > lockdep, because all genpd's mutexes share same locking class. Use the
-> > per-genpd locking class to stop lockdep from warning about possible
-> > deadlocks. It is not possible to directly use genpd nested locking, as
-> > it is not the genpd code calling genpd. There are interim calls to
-> > regulator core.
-> >
-> > [    3.030219] ============================================
-> > [    3.030220] WARNING: possible recursive locking detected
-> > [    3.030221] 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480 Not tainted
-> > [    3.030222] --------------------------------------------
-> > [    3.030223] kworker/u16:0/7 is trying to acquire lock:
-> > [    3.030224] ffffde0eabd29aa0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > [    3.030236]
-> > [    3.030236] but task is already holding lock:
-> > [    3.030236] ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > [    3.030240]
-> > [    3.030240] other info that might help us debug this:
-> > [    3.030240]  Possible unsafe locking scenario:
-> > [    3.030240]
-> > [    3.030241]        CPU0
-> > [    3.030241]        ----
-> > [    3.030242]   lock(&genpd->mlock);
-> > [    3.030243]   lock(&genpd->mlock);
-> > [    3.030244]
-> > [    3.030244]  *** DEADLOCK ***
-> > [    3.030244]
-> > [    3.030244]  May be due to missing lock nesting notation
-> > [    3.030244]
-> > [    3.030245] 6 locks held by kworker/u16:0/7:
-> > [    3.030246]  #0: ffff6cca00010938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
-> > [    3.030252]  #1: ffff8000100c3db0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
-> > [    3.030255]  #2: ffff6cca00ce3188 (&dev->mutex){....}-{3:3}, at: __device_attach+0x3c/0x184
-> > [    3.030260]  #3: ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
-> > [    3.030264]  #4: ffff8000100c3968 (regulator_ww_class_acquire){+.+.}-{0:0}, at: regulator_lock_dependent+0x6c/0x1b0
-> > [    3.030270]  #5: ffff6cca00a59158 (regulator_ww_class_mutex){+.+.}-{3:3}, at: regulator_lock_recursive+0x94/0x1d0
-> > [    3.030273]
-> > [    3.030273] stack backtrace:
-> > [    3.030275] CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480
-> > [    3.030276] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
-> > [    3.030278] Workqueue: events_unbound deferred_probe_work_func
-> > [    3.030280] Call trace:
-> > [    3.030281]  dump_backtrace+0x0/0x1a0
-> > [    3.030284]  show_stack+0x18/0x24
-> > [    3.030286]  dump_stack+0x108/0x188
-> > [    3.030289]  __lock_acquire+0xa20/0x1e0c
-> > [    3.030292]  lock_acquire.part.0+0xc8/0x320
-> > [    3.030294]  lock_acquire+0x68/0x84
-> > [    3.030296]  __mutex_lock+0xa0/0x4f0
-> > [    3.030299]  mutex_lock_nested+0x40/0x50
-> > [    3.030301]  genpd_lock_mtx+0x18/0x2c
-> > [    3.030303]  dev_pm_genpd_set_performance_state+0x94/0x1a0
-> > [    3.030305]  reg_domain_enable+0x28/0x4c
-> > [    3.030308]  _regulator_do_enable+0x420/0x6b0
-> > [    3.030310]  _regulator_enable+0x178/0x1f0
-> > [    3.030312]  regulator_enable+0x3c/0x80
->
-> At a closer look, I am pretty sure that it's the wrong code design
-> that triggers this problem, rather than that we have a real problem in
-> genpd. To put it simply, the code in genpd isn't designed to work like
-> this. We will end up in circular looking paths, leading to deadlocks,
-> sooner or later if we allow the above code path.
->
-> To fix it, the regulator here needs to be converted to a proper PM
-> domain. This PM domain should be assigned as the parent to the one
-> that is requested to be powered on.
+Wrappers:
 
-This more or less resembles original design, replaced per review
-request to use separate regulator
-(https://lore.kernel.org/linux-arm-msm/160269659638.884498.4031967462806977493@swboyd.mtv.corp.google.com/,
-https://lore.kernel.org/linux-arm-msm/20201023131925.334864-1-dmitry.baryshkov@linaro.org/).
+	sev_es_get_ghcb():
 
-Stephen, would it be fine to you to convert the mmcx regulator into
-the PM domain?
+		local_irq_save()
+		__sev_es_get_ghcb()
 
-> > [    3.030314]  gdsc_toggle_logic+0x30/0x124
-> > [    3.030317]  gdsc_enable+0x60/0x290
-> > [    3.030318]  _genpd_power_on+0xc0/0x134
-> > [    3.030320]  genpd_power_on.part.0+0xa4/0x1f0
-> > [    3.030322]  __genpd_dev_pm_attach+0xf4/0x1b0
-> > [    3.030324]  genpd_dev_pm_attach+0x60/0x70
-> > [    3.030326]  dev_pm_domain_attach+0x54/0x5c
-> > [    3.030329]  platform_probe+0x50/0xe0
-> > [    3.030330]  really_probe+0xe4/0x510
-> > [    3.030332]  driver_probe_device+0x64/0xcc
-> > [    3.030333]  __device_attach_driver+0xb8/0x114
-> > [    3.030334]  bus_for_each_drv+0x78/0xd0
-> > [    3.030337]  __device_attach+0xdc/0x184
-> > [    3.030338]  device_initial_probe+0x14/0x20
-> > [    3.030339]  bus_probe_device+0x9c/0xa4
-> > [    3.030340]  deferred_probe_work_func+0x88/0xc4
-> > [    3.030342]  process_one_work+0x298/0x730
-> > [    3.030343]  worker_thread+0x74/0x470
-> > [    3.030344]  kthread+0x168/0x170
-> > [    3.030346]  ret_from_fork+0x10/0x34
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->
-> Kind regards
-> Uffe
->
-> > ---
-> >  drivers/base/power/domain.c | 25 ++++++++++++++++++++-----
-> >  1 file changed, 20 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > index 74219d032910..bdf439b48763 100644
-> > --- a/drivers/base/power/domain.c
-> > +++ b/drivers/base/power/domain.c
-> > @@ -1899,20 +1899,33 @@ static int genpd_set_default_power_state(struct generic_pm_domain *genpd)
-> >         return 0;
-> >  }
-> >
-> > -static void genpd_lock_init(struct generic_pm_domain *genpd)
-> > +static int genpd_lock_init(struct generic_pm_domain *genpd)
-> >  {
-> >         if (genpd->flags & GENPD_FLAG_IRQ_SAFE) {
-> >                 spin_lock_init(&genpd->slock);
-> >                 genpd->lock_ops = &genpd_spin_ops;
-> >         } else {
-> > -               mutex_init(&genpd->mlock);
-> > +               /* Some genpds are static, some are dynamically allocated. To
-> > +                * make lockdep happy always allocate the key dynamically and
-> > +                * register it. */
-> > +               genpd->mlock_key = kzalloc(sizeof(genpd->mlock_key), GFP_KERNEL);
-> > +               if (!genpd->mlock_key)
-> > +                       return -ENOMEM;
-> > +
-> > +               lockdep_register_key(genpd->mlock_key);
-> > +
-> > +               __mutex_init(&genpd->mlock, genpd->name, genpd->mlock_key);
-> >                 genpd->lock_ops = &genpd_mtx_ops;
-> >         }
-> > +
-> > +       return 0;
-> >  }
-> >
-> >  static void genpd_lock_destroy(struct generic_pm_domain *genpd) {
-> > -       if (!(genpd->flags & GENPD_FLAG_IRQ_SAFE))
-> > +       if (!(genpd->flags & GENPD_FLAG_IRQ_SAFE)) {
-> >                 mutex_destroy(&genpd->mlock);
-> > +               kfree(genpd->mlock_key);
-> > +       }
-> >  }
-> >
-> >  /**
-> > @@ -1935,7 +1948,10 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
-> >         INIT_LIST_HEAD(&genpd->child_links);
-> >         INIT_LIST_HEAD(&genpd->dev_list);
-> >         RAW_INIT_NOTIFIER_HEAD(&genpd->power_notifiers);
-> > -       genpd_lock_init(genpd);
-> > +       ret = genpd_lock_init(genpd);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> >         genpd->gov = gov;
-> >         INIT_WORK(&genpd->power_off_work, genpd_power_off_work_fn);
-> >         atomic_set(&genpd->sd_count, 0);
-> > @@ -2040,7 +2056,6 @@ static int genpd_remove(struct generic_pm_domain *genpd)
-> >                 free_cpumask_var(genpd->cpus);
-> >         if (genpd->free_states)
-> >                 genpd->free_states(genpd->states, genpd->state_count);
-> > -       genpd_lock_destroy(genpd);
-> >
-> >         pr_debug("%s: removed %s\n", __func__, genpd->name);
-> >
-> > --
-> > 2.30.2
-> >
-
-
+and the reverse.
 
 -- 
-With best wishes
-Dmitry
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
