@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3826A3A3E8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9AB3A3E98
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhFKJHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbhFKJH2 (ORCPT
+        id S231438AbhFKJIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:08:40 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:37839 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhFKJIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:07:28 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC61CC0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:05:30 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id t4-20020a1c77040000b029019d22d84ebdso8196768wmi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:05:30 -0700 (PDT)
+        Fri, 11 Jun 2021 05:08:39 -0400
+Received: by mail-wr1-f51.google.com with SMTP id i94so5234574wri.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:06:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ry2suuzXUcu07KBYOEsb0YWMddgl4sZoFMfa7hKOgms=;
-        b=zP33EHoQsf7qLPQMdpBdFo7t8iJNFw2h3mCHTGhZs6q/PNkWYYg6Lj7b/4oKCHxfnc
-         PgeM5chi+Q2hdpb0PWjfcfrWfXduRDbn6SHDbUR5I5kDp5EZpJx5mC58hsnSEYi307LR
-         RCj3W0r3b6rJDe6LZH0lOoufyqEM+UKiPVAEmHiBY1lHpwqRGcdrPktVAI+y8ZvDMQ+2
-         JQLootHAB320n0+/e0lXFYpv+2wOJWGGG6pbel+FSRTZSG9Cwuh2998/wEA1CPCO1PP7
-         nZrN/tES0u0uBGJ2bYXyhm4Rh1DSYTXg4imyqZcDbZ50jciSX6AK+TJoeffZbadQZpA7
-         q1Gw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=USdvPqPdKMHnM9voVkVpQvN+g27UzfJI7tmweKL8dvQ=;
+        b=eumoaK0UzpCH5tI2m9/C0BZx06PAZyL8HwTJYBW3TruFD4nl9+Cg5TV4Kz9XxYcth0
+         z4lylODb2OMIUd+kvXj4WPwC9hJ+kLsEGamYLSzEBN2y2d+/fOSlll5Ij4LEAVp2tY3V
+         DbMwQvxUFno/0z3vWeW8XwSz7U7twAb4NSkpG7zUgd68TBwYBHsMzw15Ten5/lOaWYkE
+         iaahEa6C9//u8v7sB64D3yLixjwhTcqz3fnNeUci5e9G96Ryd6paJMHf4Gnp8nx6bB+u
+         5lyHkAYgrRpBrXlnB95rxPFm2eBzG85NlauIwrpwM7vUTzHx04wIn7dbrNhpq26JjFnS
+         bJ3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ry2suuzXUcu07KBYOEsb0YWMddgl4sZoFMfa7hKOgms=;
-        b=m92A5VGWXOUShrfxvFKz3ztt9ixGSj62z7CAAWphIRXYjrezVsskvhR1CDMwx8ndoe
-         KpfyNQfQtrka5LD3VG3NkPIYFUfpf2S7gPvsKk8lCI3Eyk9XJCZ0SMfgtwSqMw6HPyAP
-         nlPbhkrdukCs32bxx0wkw323vGDezQuDh5gBIgNi2qRypt8525fuecgaJkXqAaTDp3L5
-         sF01h6Fw9LAb2HxvDQoQTzT5TavYpNlqlVzrNI9huDMKLH1mPHgnK/WFslERLhwJdf7o
-         jPfmwuWFVcrfB2qMgPSAr2kqF8n9dyGHYhLyMG/0ch0ClPHvDDEvNN88aPL60jvHDoDR
-         KTJQ==
-X-Gm-Message-State: AOAM532mCp7bk8kbFuA5GfKGdY/t9hAFtBkeGlZRv/QqZkIjljaTQHaA
-        mB11MKgs2TJeIv5WMg4PXKM+s1TygYM6QgJHgbPutw==
-X-Google-Smtp-Source: ABdhPJyMlGh/XMRZoKA9ZoOaNrMuesnznrGSeVm7Eiib/+SYCe73p200udVyt5+QPKdB81ZQgtzC6XY+WhMXpi1YZsM=
-X-Received: by 2002:a1c:41c5:: with SMTP id o188mr19048807wma.60.1623402329133;
- Fri, 11 Jun 2021 02:05:29 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=USdvPqPdKMHnM9voVkVpQvN+g27UzfJI7tmweKL8dvQ=;
+        b=coiJOXsRcT7vKwo3ChV3LnIRQU64JvpOY/xSX+MGB7osh8Jz8SiyJwaYdqEUqj8YZw
+         Th5aer5CQ9tcJE4Pc+VpUGS9H/kIetM6LhKXbyxpVqT9NogK6qvvjKBqNupyMNar2PlN
+         aBLTK4N1/RiI6wXxewN1bvAZ/c0YhxB3m4UUmevLxEa7hiKYQRtt98OIE82l2o5OLIPi
+         xcOxTRw8onQmr5RbHFL7fsmLXAG8Olv5y5QDvY2WnHLDKZaoB7jZbDsEGd0LGs/ND3Ll
+         FAitQeFCsSkVV5UVJtGJq+K4P4PGgZI2wmteXxwvOVk3O8kAn0kRZYhVP4h00HjLdHFZ
+         h28g==
+X-Gm-Message-State: AOAM531hxG66q2IfYfYszsvwGHCgCL2TZdWUFKzFHLvM9RsMGQP+ibjJ
+        r+PbeTtHSmjGKV5dUa87xIM/BA==
+X-Google-Smtp-Source: ABdhPJzBAuEbq5uThLVdVuH4rfbvc61dMQEMXlSef+wYrZgtdIwK6Exu3/1IzJuiz7UjNHrbDYlS3w==
+X-Received: by 2002:a5d:664c:: with SMTP id f12mr2804630wrw.206.1623402341614;
+        Fri, 11 Jun 2021 02:05:41 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id l10sm6024862wrs.11.2021.06.11.02.05.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Jun 2021 02:05:41 -0700 (PDT)
+Subject: Re: [PATCH 4/9] nvmem: sprd: Fix an error message
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
+ <20210611083348.20170-5-srinivas.kandagatla@linaro.org>
+ <YMMlRq250A53CDaM@kroah.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <a34f8a9d-c9e7-5c2d-521f-13677cfd7ccb@linaro.org>
+Date:   Fri, 11 Jun 2021 10:05:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com> <20210610210913.536081-2-tyhicks@linux.microsoft.com>
-In-Reply-To: <20210610210913.536081-2-tyhicks@linux.microsoft.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 11 Jun 2021 11:05:18 +0200
-Message-ID: <CAHUa44HU+KnqRKnvhK=Xm3WJeYN5HPJ83e0=v+CZ0hztBWh6Fw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/8] optee: Fix memory leak when failing to register
- shm pages
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMMlRq250A53CDaM@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:09 PM Tyler Hicks
-<tyhicks@linux.microsoft.com> wrote:
->
-> Free the previously allocated pages when we encounter an error condition
-> while attempting to register the pages with the secure world.
->
-> Fixes: a249dd200d03 ("tee: optee: Fix dynamic shm pool allocations")
-> Fixes: 5a769f6ff439 ("optee: Fix multi page dynamic shm pool alloc")
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> ---
->  drivers/tee/optee/shm_pool.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
 
-Looks good.
 
-Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+On 11/06/2021 09:56, Greg KH wrote:
+> On Fri, Jun 11, 2021 at 09:33:43AM +0100, Srinivas Kandagatla wrote:
+>> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>
+>> 'ret' is known to be 0 here.
+>> The expected error status is stored in 'status', so use it instead.
+>>
+>> Also change %d in %u, because status is an u32, not a int.
+>>
+>> Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   drivers/nvmem/sprd-efuse.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
+>> index 5d394559edf2..e3e721d4c205 100644
+>> --- a/drivers/nvmem/sprd-efuse.c
+>> +++ b/drivers/nvmem/sprd-efuse.c
+>> @@ -234,7 +234,7 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
+>>   	status = readl(efuse->base + SPRD_EFUSE_ERR_FLAG);
+>>   	if (status) {
+>>   		dev_err(efuse->dev,
+>> -			"write error status %d of block %d\n", ret, blk);
+>> +			"write error status %u of block %d\n", status, blk);
+> 
+> Shouldn't this be %pe and not %u?
+
+This is not error pointer its status value read back from a register.
+
+I think %u should be good here.
+
+--srini
+> 
+> thanks,
+> 
+> greg k-h
+> 
