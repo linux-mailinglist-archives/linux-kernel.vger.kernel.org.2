@@ -2,150 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58973A43A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4443A43A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhFKOAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:00:44 -0400
-Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:34011 "EHLO
-        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229529AbhFKOAn (ORCPT
+        id S231672AbhFKOBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:01:17 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:34604 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231786AbhFKOBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:00:43 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id A04971896
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:58:44 +0100 (IST)
-Received: (qmail 19336 invoked from network); 11 Jun 2021 13:58:44 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Jun 2021 13:58:44 -0000
-Date:   Fri, 11 Jun 2021 14:58:43 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH 2/2] mm/page_alloc: Allow high-order pages to be stored
- on the per-cpu lists
-Message-ID: <20210611135843.GD30378@techsingularity.net>
-References: <20210603142220.10851-1-mgorman@techsingularity.net>
- <20210603142220.10851-3-mgorman@techsingularity.net>
- <88FCC7AA-FAAA-4B87-B382-50BD54B2886B@nvidia.com>
- <20210610111821.GY30378@techsingularity.net>
- <3B44DF44-5669-40B6-A122-011F1A749FAA@nvidia.com>
- <20210611083433.GA30378@techsingularity.net>
- <7E7AFAD1-A08E-4DE1-B307-C604A01BDC8C@nvidia.com>
+        Fri, 11 Jun 2021 10:01:13 -0400
+Received: by mail-oi1-f173.google.com with SMTP id u11so5909396oiv.1;
+        Fri, 11 Jun 2021 06:59:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gxIYbkNeXHhsCu3s0y8J6yU1w73EDpzYD0r98vcvZIc=;
+        b=WNOK8Q3ky7LZ1lgQN49pyTqqVlbAA0uLnlblo7rB7hafegf0rlkgwy5Ha7V17ofSh7
+         UwPfK5DTm1tlmKrqckYOnIXIgzOLsQAKtNos9fQNEUMwmkQwGIPHBMm9fh6Zn8OACVeD
+         UlVUUSfjKk061YPSP82jfXn2+JFP+azUbnDu27wW2OnNp5FzAanzRlYOmtiyfKz6LCm0
+         OGqITbyRP/FIsKNlEvr6gffp3lYJkyN2Ohuy8sjQQJPkmvPDURRKsHS1Tg/pErFYGOqT
+         JJ1UMIo69dtkNFnjHE4Wo6AhyIHIQMascsy7oIFTtI0aPZhe7kOa15RH/xf2qf8+2KZH
+         gudA==
+X-Gm-Message-State: AOAM530ClnPjueNWMlLFD9PmowahEfgEy5cyOVhdQUsJatnli1jbNE8V
+        44Kjw8LcsndQ3ZNIX53hK7MhzCmsmBn/ELCPS38=
+X-Google-Smtp-Source: ABdhPJyFpW4VKFSJ44Q7QK31yBlMopQKYF6Is3qp7pU5JR1h9BIowIZa8+WC2Tube+J5xF/hhEmRCUiLA61fbc+9v1k=
+X-Received: by 2002:aca:49c7:: with SMTP id w190mr434598oia.157.1623419941407;
+ Fri, 11 Jun 2021 06:59:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <7E7AFAD1-A08E-4DE1-B307-C604A01BDC8C@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
+In-Reply-To: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 11 Jun 2021 15:58:50 +0200
+Message-ID: <CAJZ5v0iVVzcb5faaKUkoqX7UNpzc-aPEB1ywdWERrgvxtcHadQ@mail.gmail.com>
+Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>, Will Deacon <will@kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 08:17:02AM -0400, Zi Yan wrote:
-> On 11 Jun 2021, at 4:34, Mel Gorman wrote:
-> 
-> > On Thu, Jun 10, 2021 at 07:40:47AM -0400, Zi Yan wrote:
-> >>>> qemu-system-x86_64 -kernel ~/repos/linux-1gb-thp/arch/x86/boot/bzImage \
-> >>>>     -drive file=~/qemu-image/vm.qcow2,if=virtio \
-> >>>>     -append "nokaslr root=/dev/vda1 rw console=ttyS0 " \
-> >>>>     -pidfile vm.pid \
-> >>>>     -netdev user,id=mynet0,hostfwd=tcp::11022-:22 \
-> >>>>     -device virtio-net-pci,netdev=mynet0 \
-> >>>>     -m 16g -smp 6 -cpu host -enable-kvm -nographic \
-> >>>>     -machine hmat=on -object memory-backend-ram,size=8g,id=m0 \
-> >>>>     -object memory-backend-ram,size=8g,id=m1 \
-> >>>>     -numa node,memdev=m0,nodeid=0 -numa node,memdev=m1,nodeid=1
-> >>>>
-> >>>> The attached config has THP disabled. The VM cannot boot with THP enabled,
-> >>>> either.
-> >>>>
-> >>>
-> >>> There is not a lot of information to go on here. Can you confirm that a
-> >>> revert of that specific patch from mmotm-2021-06-07-18-33 also boots? It
-> >>> sounds like your console log is empty, does anything useful appear if
-> >>> you add "earlyprintk=serial,ttyS0,115200" to the kernel command line?
-> >>
-> >> Sure. I can confirm that reverting the patch makes the VM boot.
-> >> The important information I forgot to mention is that after I remove
-> >> the NUMA setting in the QEMU, the VM can boot too.
-> >>
-> >> earlyprintk gave the error message (page out of zone boundary) when the VM could not boot:
-> >>
-> >
-> > Can you test with the following patch please?
-> >
-> > --8<---
-> > mm/page_alloc: Allow high-order pages to be stored on the per-cpu lists -fix
-> >
-> > Zi Ya reported the following problem
-> s/Zi Ya/Zi Yan/
+On Fri, Jun 11, 2021 at 10:47 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+>
+> Rewrite the core freezer to behave better wrt thawing. By replacing
+> PF_FROZEN with TASK_FROZEN, a special block state, it is ensured frozen
+> tasks stay frozen until explicitly thawed and don't randomly wake up
+> early, as is currently possible.
+>
+> As such, it does away with PF_FROZEN and PF_FREEZER_SKIP, freeing up
+> two PF_flags (yay).
+>
+> The freezing was tested, and found good, using:
+>
+>   echo freezer > /sys/power/pm_test
+>   echo mem > /sys/power/state
+>
+> Even while having a GDB session active.
+>
+> Another notable bit is in init/do_mounts_initrd.c; afaict that has been
+> 'broken' for quite a while and is simply removed.
+>
+> Requested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Sorry about that typo.
+Overall, I like this and I've learned a couple of things from it.
 
-> >
-> >   I am not able to boot my QEMU VM with v5.13-rc5-mmotm-2021-06-07-18-33.
-> >   git bisect points to this patch. The VM got stuck at "Booting from ROM"
-> >
-> > "This patch" is "mm/page_alloc: Allow high-order pages to be stored on
-> > the per-cpu lists" and earlyprintk showed the following
-> >
-> >   [    0.161237] Memory: 16396772K/16776684K available (18452K kernel code, 3336K rwdata, 8000K rodata, 1852K init, 1444K bss, 379656K reserved, 0K cma-reserve)
-> >   [    0.162451] page 0x100041 outside node 1 zone Normal [ 0x240000 - 0x440000 ]
-> >   [    0.163057] page:(____ptrval____) refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x100041
-> >
-> > The patch is allowing pages from different zones to exist on the PCP
-> > lists which is not allowed. Review found two problems -- first, the
-> > bulk allocator is not using the correct PCP lists. It happens to work
-> > because it's order-0 only but it's wrong. The real problem is that the
-> > boot pagesets can store free pages which is not allowed.
-> >
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> > ---
-> >  mm/page_alloc.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index d6d90f046c94..8472bae567f0 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -3625,7 +3625,15 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
-> >  			int batch = READ_ONCE(pcp->batch);
-> >  			int alloced;
-> >
-> > -			batch = max(batch >> order, 2);
-> > +			/*
-> > +			 * Scale batch relative to order if batch implies
-> > +			 * free pages can be stored on the PCP. Batch can
-> > +			 * be 1 for small zones or for boot pagesets which
-> > +			 * should never store free pages as the pages may
-> > +			 * belong to arbitrary zones.
-> > +			 */
-> > +			if (batch > 1)
-> > +				batch = max(batch >> order, 2);
-> >  			alloced = rmqueue_bulk(zone, order,
-> >  					batch, list,
-> >  					migratetype, alloc_flags);
-> > @@ -5265,7 +5273,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-> >  	/* Attempt the batch allocation */
-> >  	local_lock_irqsave(&pagesets.lock, flags);
-> >  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
-> > -	pcp_list = &pcp->lists[ac.migratetype];
-> > +	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
-> >
-> >  	while (nr_populated < nr_pages) {
-> 
-> Yes. This patch solves the issue. Thanks.
-> 
+Two comments below.
 
-Thanks. As Andrew dropped the patch from mmotm, I've send a v2 with the
-fix included. Thanks for reporting and testing!
+[cut]
 
--- 
-Mel Gorman
-SUSE Labs
+> @@ -116,20 +174,8 @@ bool freeze_task(struct task_struct *p)
+>  {
+>         unsigned long flags;
+>
+> -       /*
+> -        * This check can race with freezer_do_not_count, but worst case that
+> -        * will result in an extra wakeup being sent to the task.  It does not
+> -        * race with freezer_count(), the barriers in freezer_count() and
+> -        * freezer_should_skip() ensure that either freezer_count() sees
+> -        * freezing == true in try_to_freeze() and freezes, or
+> -        * freezer_should_skip() sees !PF_FREEZE_SKIP and freezes the task
+> -        * normally.
+> -        */
+> -       if (freezer_should_skip(p))
+> -               return false;
+> -
+>         spin_lock_irqsave(&freezer_lock, flags);
+> -       if (!freezing(p) || frozen(p)) {
+> +       if (!freezing(p) || frozen(p) || __freeze_task(p)) {
+>                 spin_unlock_irqrestore(&freezer_lock, flags);
+>                 return false;
+>         }
+> @@ -137,7 +183,7 @@ bool freeze_task(struct task_struct *p)
+>         if (!(p->flags & PF_KTHREAD))
+>                 fake_signal_wake_up(p);
+>         else
+> -               wake_up_state(p, TASK_INTERRUPTIBLE);
+> +               wake_up_state(p, TASK_INTERRUPTIBLE); // TASK_NORMAL ?!?
+
+Yes, I think that using TASK_NORMAL here would make sense and I don't
+see any drawbacks that may result from doing so.
+
+>
+>         spin_unlock_irqrestore(&freezer_lock, flags);
+>         return true;
+> @@ -148,8 +194,8 @@ void __thaw_task(struct task_struct *p)
+>         unsigned long flags;
+>
+>         spin_lock_irqsave(&freezer_lock, flags);
+> -       if (frozen(p))
+> -               wake_up_process(p);
+> +       WARN_ON_ONCE(freezing(p));
+> +       wake_up_state(p, TASK_FROZEN);
+>         spin_unlock_irqrestore(&freezer_lock, flags);
+>  }
+>
+> --- a/kernel/futex.c
+> +++ b/kernel/futex.c
+> @@ -2582,7 +2582,7 @@ static void futex_wait_queue_me(struct f
+>          * queue_me() calls spin_unlock() upon completion, both serializing
+>          * access to the hash list and forcing another memory barrier.
+>          */
+> -       set_current_state(TASK_INTERRUPTIBLE);
+> +       set_current_state(TASK_INTERRUPTIBLE|TASK_FREEZABLE);
+>         queue_me(q, hb);
+>
+>         /* Arm the timer */
+> @@ -2600,7 +2600,7 @@ static void futex_wait_queue_me(struct f
+>                  * is no timeout, or if it has yet to expire.
+>                  */
+>                 if (!timeout || timeout->task)
+> -                       freezable_schedule();
+> +                       schedule();
+>         }
+>         __set_current_state(TASK_RUNNING);
+>  }
+> --- a/kernel/hung_task.c
+> +++ b/kernel/hung_task.c
+> @@ -92,8 +92,8 @@ static void check_hung_task(struct task_
+>          * Ensure the task is not frozen.
+>          * Also, skip vfork and any other user process that freezer should skip.
+>          */
+> -       if (unlikely(t->flags & (PF_FROZEN | PF_FREEZER_SKIP)))
+> -           return;
+> +       if (unlikely(t->state & (TASK_FREEZABLE | TASK_FROZEN)))
+> +               return;
+>
+>         /*
+>          * When a freshly created task is scheduled once, changes its state to
+> --- a/kernel/power/main.c
+> +++ b/kernel/power/main.c
+> @@ -23,7 +23,8 @@
+>
+>  void lock_system_sleep(void)
+>  {
+> -       current->flags |= PF_FREEZER_SKIP;
+> +       WARN_ON_ONCE(current->flags & PF_NOFREEZE);
+> +       current->flags |= PF_NOFREEZE;
+
+Because khreadd() sets PF_NOFREEZE for all kernel threads by default
+and set_freezable() is called by a limited number of them, the
+WARN_ON_ONCE() here is likely to trigger if any kernel thread that is
+not freezable (which is the default) attempts to call this function.
+
+This was the original reason why PF_FREEZER_SKIP was added as a
+separate flag IIRC.
+
+>         mutex_lock(&system_transition_mutex);
+>  }
+>  EXPORT_SYMBOL_GPL(lock_system_sleep);
+> @@ -46,7 +47,7 @@ void unlock_system_sleep(void)
+>          * Which means, if we use try_to_freeze() here, it would make them
+>          * enter the refrigerator, thus causing hibernation to lockup.
+>          */
+> -       current->flags &= ~PF_FREEZER_SKIP;
+> +       current->flags &= ~PF_NOFREEZE;
+>         mutex_unlock(&system_transition_mutex);
+>  }
+>  EXPORT_SYMBOL_GPL(unlock_system_sleep);
