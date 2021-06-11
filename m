@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EC93A3DC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4E73A3DC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFKINq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:13:46 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:42617 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKINp (ORCPT
+        id S230377AbhFKIMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:12:54 -0400
+Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:43559 "EHLO
+        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229480AbhFKIMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:13:45 -0400
-Received: by mail-pg1-f173.google.com with SMTP id i34so1817339pgl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oB6+mhaZq1/S8zvcB9kBZ21qORgpvon6mGB7EKZH3nI=;
-        b=c1gimOBP+ScWyp4SxGsA/TqWIYR9V4xIOyTge6SNhG6OFiClnQO6XgQvsKoQGD+87A
-         Kq+5rMTlG3iyvwbvVUXEJBpJdGKNwc4GJnHFkm28uSbNte5j+2UzraUYLDRxIV8bUcwn
-         uSrwJKAzf/m256pn4d04Q1/WAPT+IuQCG7nLhiWvUIzBpzefeNrYqvVMpfqk4nHUqKuL
-         RdDjxLnfhtYiwY5JwJ7NA1haEO5LYhsASGUAQRiiIHnN1NaJ7oZaxScLuhAzGYGxUNuE
-         MDVM1VDxxZeN3KdYtHDZcpbK7LRUl/KDuYQgVBxvz4BCsRBxXkORjNVP0cwMDrqLHdyn
-         6QQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oB6+mhaZq1/S8zvcB9kBZ21qORgpvon6mGB7EKZH3nI=;
-        b=hkLHiLavghPmUptvwNZUlJtlJvRiAryF0iTdIUrmMj5R8WGQ/UlSjBlqSR2On4Vyg1
-         7gTS/h0ahxaVEefmEAhE5GkLPHJ4zu/dWo+5xsA16px+tgMTq4t5LpXfqBTERoqbCXiv
-         y1D+aNanyfYY1wnvXyYq6GESJn2l+MAH9rXh0171kKzr1GgiJgd19BuuO1AA5efVtfDA
-         sXctBh39Kwb+GU50HQa98E0Zjk7fZMJZYzSBSAupndYfCH9HmUXRT16mgMX/hDP4Kx0+
-         B9hVQftnmnDcEcqaQu3wmkL41PFJB14XZmNxba5aZI/4UN5QqbEQymxQtnWLWUMhueFi
-         lnKA==
-X-Gm-Message-State: AOAM531KLJlm2Fxjcre938YNaii2Ojat8eWc341YE/kIA+KAGyA/OUOv
-        RbK5hsbetLWvgAmD5Ao+EIvKuC4StGk50IdBwdI=
-X-Google-Smtp-Source: ABdhPJxHPElraPZkxHHX9IaCR+0D2pBnlkdkVWY5S1pg1ayQcF+Lq4QXp0Ihg5gMOYbY7xd4+klO6qIXRcRzLHpmi1A=
-X-Received: by 2002:a62:e404:0:b029:2ee:f086:726f with SMTP id
- r4-20020a62e4040000b02902eef086726fmr7074250pfh.7.1623399047338; Fri, 11 Jun
- 2021 01:10:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210611071241.16728-1-thunder.leizhen@huawei.com> <CAHp75Vdpgpa=TDt5RgG2Eq_+iLZrRSj9XqB97y01SxhdKUYYgg@mail.gmail.com>
-In-Reply-To: <CAHp75Vdpgpa=TDt5RgG2Eq_+iLZrRSj9XqB97y01SxhdKUYYgg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 11 Jun 2021 11:10:31 +0300
-Message-ID: <CAHp75VdJJdPTnUMVqjwMv+73nQf_-0nosS5su-GiDFRAVCbMyw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] scripts/spelling.txt: add some spelling pairs and reorder
-To:     Zhen Lei <thunder.leizhen@huawei.com>
+        Fri, 11 Jun 2021 04:12:52 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id E11B618E016
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:10:53 +0100 (IST)
+Received: (qmail 5519 invoked from network); 11 Jun 2021 08:10:53 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Jun 2021 08:10:53 -0000
+Date:   Fri, 11 Jun 2021 09:10:52 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Zi Yan <ziy@nvidia.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
-        Stefani Seibold <stefani@seibold.net>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jens Axboe <axboe@kernel.dk>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 2/2] mm/page_alloc: Allow high-order pages to be stored
+ on the per-cpu lists
+Message-ID: <20210611081052.GZ30378@techsingularity.net>
+References: <20210603142220.10851-1-mgorman@techsingularity.net>
+ <20210603142220.10851-3-mgorman@techsingularity.net>
+ <88FCC7AA-FAAA-4B87-B382-50BD54B2886B@nvidia.com>
+ <20210610111821.GY30378@techsingularity.net>
+ <3B44DF44-5669-40B6-A122-011F1A749FAA@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <3B44DF44-5669-40B6-A122-011F1A749FAA@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 11:02 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Fri, Jun 11, 2021 at 10:19 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+On Thu, Jun 10, 2021 at 07:40:47AM -0400, Zi Yan wrote:
+> >> My kernel config is attached and my qemu command is:
+> >>
+> >> qemu-system-x86_64 -kernel ~/repos/linux-1gb-thp/arch/x86/boot/bzImage \
+> >>     -drive file=~/qemu-image/vm.qcow2,if=virtio \
+> >>     -append "nokaslr root=/dev/vda1 rw console=ttyS0 " \
+> >>     -pidfile vm.pid \
+> >>     -netdev user,id=mynet0,hostfwd=tcp::11022-:22 \
+> >>     -device virtio-net-pci,netdev=mynet0 \
+> >>     -m 16g -smp 6 -cpu host -enable-kvm -nographic \
+> >>     -machine hmat=on -object memory-backend-ram,size=8g,id=m0 \
+> >>     -object memory-backend-ram,size=8g,id=m1 \
+> >>     -numa node,memdev=m0,nodeid=0 -numa node,memdev=m1,nodeid=1
+> >>
+> >> The attached config has THP disabled. The VM cannot boot with THP enabled,
+> >> either.
+> >>
 > >
-> > Add spelling_sanitizer.sh and use it to reorder, then add some spelling
-> > "mistake||correction" pairs.
->
-> The sorting idea is good, but the order is not.
-> What you really need is to use language corpus [1] instead. So in such
-> case you will eliminate false positives (to some extent).
+> > There is not a lot of information to go on here. Can you confirm that a
+> > revert of that specific patch from mmotm-2021-06-07-18-33 also boots? It
+> > sounds like your console log is empty, does anything useful appear if
+> > you add "earlyprintk=serial,ttyS0,115200" to the kernel command line?
+> 
+> Sure. I can confirm that reverting the patch makes the VM boot.
+> The important information I forgot to mention is that after I remove
+> the NUMA setting in the QEMU, the VM can boot too.
+> 
+> earlyprintk gave the error message (page out of zone boundary) when the VM could not boot:
+> 
 
-Perhaps I need to elaborate what I meant. The (important) feature of
-the corpus is sorting by frequency of the word usage. That's what
-would be the best. Unfortunately I don't know if codespell uses linear
-search or hash based (i.o.w. does it convert the input file to the
-Python list() or set() object?).
-
-> [1]: https://en.wikipedia.org/wiki/Corpus_of_Contemporary_American_English
-
+Ok, thanks, that helps. For a page to be out of boundary, I either have
+completely screwed the zone handling for PCP or, more likely, pages are
+leaking onto the boot pagesets because of the batch count handling. It's
+weird I did not see this on NUMA machines but nevertheless, I'll go
+find it. It should not take long.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Mel Gorman
+SUSE Labs
