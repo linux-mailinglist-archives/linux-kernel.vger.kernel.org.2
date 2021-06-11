@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7C73A4B03
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18603A4B04
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 00:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFKWsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 18:48:54 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:51773 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229777AbhFKWsx (ORCPT
+        id S230265AbhFKWub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 18:50:31 -0400
+Received: from mail-io1-f44.google.com ([209.85.166.44]:43671 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhFKWu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 18:48:53 -0400
-Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 284F6862B88;
-        Sat, 12 Jun 2021 08:46:38 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lrpvC-00Bgjv-D7; Sat, 12 Jun 2021 08:46:38 +1000
-Date:   Sat, 12 Jun 2021 08:46:38 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Dave Chinner <dchinner@redhat.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        Linux-Next <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        noreply@ellerman.id.au
-Subject: Re: [PATCH] xfs: Fix 64-bit division on 32-bit in
- xlog_state_switch_iclogs()
-Message-ID: <20210611224638.GT664593@dread.disaster.area>
-References: <20210610110001.2805317-1-geert@linux-m68k.org>
- <20210610220155.GQ664593@dread.disaster.area>
- <CAMuHMdWp3E3QDnbGDcTZsCiQNP3pLV2nXVmtOD7OEQO8P-9egQ@mail.gmail.com>
+        Fri, 11 Jun 2021 18:50:29 -0400
+Received: by mail-io1-f44.google.com with SMTP id k16so32775985ios.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 15:48:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rQPaBTxH6zmCmow24Ez/25u3aT/BbkT5Z3FMYjKkQD4=;
+        b=foHbHgWLRUOeDdrUUtQo5W+xDkKSaogccxeI9Y3GB8DlJwljzOJ+Lg597umTqeTMTb
+         fY8gJ47PnGJQo/RVPEvNf5PdZaDGNecOGl19KtekqED2TDtZX43KUTLiorhzUp/6lBt2
+         oz5w8QecWW942LM1RxHrObEkHehi60fovjjJM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rQPaBTxH6zmCmow24Ez/25u3aT/BbkT5Z3FMYjKkQD4=;
+        b=Rf8SUZluB42986WbbitpV5LImMtVR1h/hV0jPOFvQrYGYy27fGUWXlUOOP1pviD+LY
+         hm3wsYEdNBTkKs3dsExXhocUsU6FDAYB0Hxf6cr+gMyFoBGTT2XHjYuFWypsUZsE+h+B
+         SKtnBjLDX6JzRB2q+dlrap4LiCQ0DAwO+y/Ds47KmvRaeJL5a1HTjIgEWSJa9mLYxOAA
+         Hmp/W0ZOhwZtrDE45+1xfrRboyE2xdDy+3jGn9vLHH2Zj7/IGqMeeHu8ZbimogRvc2pG
+         5fQ3EzwKGiPo2oRW/1fuBd6Wu4ylGhs8KdNr9lmA+Z2GRev9LVFCr40loYyTchHjFFSE
+         JFNw==
+X-Gm-Message-State: AOAM533bCxSykxLj9LMb+DzlFT1ntiuyjpSwOgd0R6MnQbViurOdj4gV
+        KYp+4SxyimSu7whU256JM2cT3g==
+X-Google-Smtp-Source: ABdhPJzYhIxyLeAPQfmBQvodXCR2Xj9xHbnPvzsaxcBbNu4D4KPVCTAAKGS5ajq24bteysnPjY0wXg==
+X-Received: by 2002:a5d:9c88:: with SMTP id p8mr5082265iop.31.1623451651344;
+        Fri, 11 Jun 2021 15:47:31 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y17sm4160145ilb.60.2021.06.11.15.47.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 15:47:31 -0700 (PDT)
+Subject: Re: [PATCH v8 1/5] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210610083021.392269-1-jarkko@kernel.org>
+ <b5e06639-8bf4-c267-0aa7-b6c110767edc@intel.com>
+ <8d071d3f-604f-1876-05bb-91568dd3c563@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <6378d2a9-9f55-18f8-ce46-7ea954ac159c@linuxfoundation.org>
+Date:   Fri, 11 Jun 2021 16:47:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWp3E3QDnbGDcTZsCiQNP3pLV2nXVmtOD7OEQO8P-9egQ@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
-        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
-        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=7-415B0cAAAA:8 a=tBb2bbeoAAAA:8
-        a=sw44Y3MIkDGLgX3rhVgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
-        a=Oj-tNtZlA1e06AYgeCfH:22
+In-Reply-To: <8d071d3f-604f-1876-05bb-91568dd3c563@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 08:55:24AM +0200, Geert Uytterhoeven wrote:
-> Hi Dave,
+On 6/11/21 11:35 AM, Shuah Khan wrote:
+> On 6/10/21 9:45 AM, Dave Hansen wrote:
+>> On 6/10/21 1:30 AM, Jarkko Sakkinen wrote:
+>>> Rename symbols for better clarity:
+>>>
+>>> * 'eenter' might be confused for directly calling ENCLU[EENTER].  It 
+>>> does
+>>>    not.  It calls into the VDSO, which actually has the EENTER 
+>>> instruction.
+>>> * 'sgx_call_vdso' is *only* used for entering the enclave.  It's not 
+>>> some
+>>>    generic SGX call into the VDSO.
+>>>
+>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+>>
+>> These all look fine to me.  Feel free to add my ack on them.
+>>
+>> Since these are pure x86 selftests and the initial code went through the
+>> x86 maintainers, should these got through them as well?  Or, since this
+>> is only selftest code, should Shuah pick them up?
+>>
 > 
-> On Fri, Jun 11, 2021 at 12:02 AM Dave Chinner <david@fromorbit.com> wrote:
-> > On Thu, Jun 10, 2021 at 01:00:01PM +0200, Geert Uytterhoeven wrote:
-> > > On 32-bit (e.g. m68k):
-> > >
-> > >     ERROR: modpost: "__udivdi3" [fs/xfs/xfs.ko] undefined!
-> > >
-> > > Fix this by using a uint32_t intermediate, like before.
-> > >
-> > > Reported-by: noreply@ellerman.id.au
-> > > Fixes: 7660a5b48fbef958 ("xfs: log stripe roundoff is a property of the log")
-> > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > ---
-> > > Compile-tested only.
-> > > ---
-> > >  fs/xfs/xfs_log.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > <sigh>
-> >
-> > 64 bit division on 32 bit platforms is still a problem in this day
-> > and age?
+> I will queue these up for 5.14-rc1
 > 
-> They're not a problem.  But you should use the right operations from
-> <linux/math64.h>, iff you really need these expensive operations.
 
-See, that's the whole problem. This *isn't* obviously a 64 bit
-division - BBTOB is shifting the variable down by 9 (bytes to blocks)
-and then using that as the divisor.
+I almost applied these. Does this require root access, if so,
+please add logic to skip the test if non-root user runs it.
 
-The problem is that BBTOB has an internal cast to a 64 bit size,
-and roundup() just blindly takes it and hence we get non-obvious
-compile errors only on 32 bit platforms.
+Please check for code paths that require root access and skip
+the tests.
 
-We have type checking macros for all sorts of generic functionality
-- why haven't these generic macros that do division also have type
-checking to catch this? i.e. so that when people build kernels on
-64 bit machines find out that they've unwittingly broken 32 bit
-builds the moment they use roundup() and/or friends incorrectly?
-
-That would save a lot of extra work having fix crap like this up
-after the fact...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+thanks,
+-- Shuah
