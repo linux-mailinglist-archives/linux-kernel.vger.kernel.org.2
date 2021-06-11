@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE38F3A3A3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565023A3A44
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhFKD0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47618 "EHLO
+        id S231417AbhFKDcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhFKD0c (ORCPT
+        with ESMTP id S230205AbhFKDcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:26:32 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D0CC061574;
-        Thu, 10 Jun 2021 20:24:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G1R672BSXz9sVb;
-        Fri, 11 Jun 2021 13:24:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623381871;
-        bh=Rhn5+R2MWACwQyfO1X4gGUHE7SYNLWc4cq+JGmoGgn4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mQW0gwOnni19qFEn9YLgFPsQxH7m1XLgdDoMxkWtVLpqzx8JBDGxeTUsJTKYq4KOb
-         iQ/KRkFbtHwS0yIF0CR+PMvZwsSKMFpXfOHcDzprlApkr3dr3hs4aOsdoljVUxN9pl
-         MKwUOJSQrPXyLzL9eEWRlJDS2dTsmvUsldI4eO5V0CvZxNeKKjzuEmq38MFd66BcLi
-         ZUxTPXR8VvkoUkFH491z/jvSEZ/5WSbdPBaVSldmduUKLH4yemg/eOKfyCDt9yX0ME
-         61v14Rb15ED4BFjbsyBxYARkGFEye1DYU2m+3ygkOskllRQbsWX4A96BityqKYOFMx
-         2KnPl+hroRPlQ==
-Date:   Fri, 11 Jun 2021 13:24:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Cristobal Forno <cforno12@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the net-next tree
-Message-ID: <20210611132428.74f6c1f9@canb.auug.org.au>
+        Thu, 10 Jun 2021 23:32:04 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48F4C061574;
+        Thu, 10 Jun 2021 20:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Message-ID:From:CC:To:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
+        Date:Sender:Reply-To:Content-ID:Content-Description;
+        bh=J6yJVC8shbMIBqLlAVsvKyu6KL64sSYBjvb9KFGvJec=; b=FCYMElWUCposNo6q+a7wmUrZIP
+        u+1pzdEUjOxUs9rPgWEQN7/wANnwfEIVK0CfDRVFAwu78J/pQovtpn7lHxkCJmb8Frpe6/qzs+K3S
+        Wv7LUS6Jxgrg/RbEdUmWo2wQRlRBiVlUgq9JLblTZnIh77Plzcw2+vUUVN0Ub/XBkf/P3ZCxdh532
+        om50RFZd6YABKDuMvkL+CG6ZvftqeiAGHYIT40Rjhx03BbdU263u71C+k4zm5g/jjzqW4kRmA+csQ
+        SjXr4jh2AHHq5bIW3NQ2wH5WABMPm+XptyLjAPDLWrpM2bKc169Op9o7/uh+bL76fKX6dQY+1jWGe
+        PrdB2EFg==;
+Received: from [2603:3004:62:d400:6c3a:d576:fed:b48]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lrXrX-005lDI-EP; Fri, 11 Jun 2021 03:29:46 +0000
+Date:   Thu, 10 Jun 2021 20:29:37 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210611014051.13081-1-13145886936@163.com>
+References: <20210611014051.13081-1-13145886936@163.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zZ0lldrmVKcOFzK4.x/go5U";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] can: j1939: socket: correct a grammatical error
+To:     13145886936@163.com, robin@protonic.nl, linux@rempel-privat.de,
+        kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de,
+        davem@davemloft.net, kuba@kernel.org
+CC:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4251D856-85E6-489A-ACAF-8D62AB539CB0@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zZ0lldrmVKcOFzK4.x/go5U
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On June 10, 2021 6:40:51 PM PDT, 13145886936@163=2Ecom wrote:
+>From: gushengxian <gushengxian@yulong=2Ecom>
+>
+>Correct a grammatical error=2E
+>
+>Signed-off-by: gushengxian <gushengxian@yulong=2Ecom>
+>---
+> net/can/j1939/socket=2Ec | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/net/can/j1939/socket=2Ec b/net/can/j1939/socket=2Ec
+>index 56aa66147d5a=2E=2E31ec493a0fca 100644
+>--- a/net/can/j1939/socket=2Ec
+>+++ b/net/can/j1939/socket=2Ec
+>@@ -352,7 +352,7 @@ static void j1939_sk_sock_destruct(struct sock *sk)
+> {
+> 	struct j1939_sock *jsk =3D j1939_sk(sk);
+>=20
+>-	/* This function will be call by the generic networking code, when
+>then
+>+	/* This function will be called by the generic networking code, when
+>then
 
-Hi all,
+Please drop "then"=2E
 
-After merging the net-next tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
+> 	 * the socket is ultimately closed (sk->sk_destruct)=2E
+> 	 *
+> 	 * The race between
 
-drivers/net/ethernet/ibm/ibmvnic.c: In function 'adapter_state_to_string':
-drivers/net/ethernet/ibm/ibmvnic.c:855:2: warning: enumeration value 'VNIC_=
-DOWN' not handled in switch [-Wswitch]
-  855 |  switch (state) {
-      |  ^~~~~~
-drivers/net/ethernet/ibm/ibmvnic.c: In function 'reset_reason_to_string':
-drivers/net/ethernet/ibm/ibmvnic.c:1958:2: warning: enumeration value 'VNIC=
-_RESET_PASSIVE_INIT' not handled in switch [-Wswitch]
- 1958 |  switch (reason) {
-      |  ^~~~~~
+Thanks=2E=20
 
-Introduced by commit
-
-  53f8b1b25419 ("ibmvnic: Allow device probe if the device is not ready at =
-boot")
 
 --=20
-Cheers,
-Stephen Rothwell
-
---Sig_/zZ0lldrmVKcOFzK4.x/go5U
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDC12wACgkQAVBC80lX
-0GytjAgAjnmH5QhAcdHm1zWjXG1lYpqm4C8IyFEjBNx3D010yeGBngBQVwrV0I0n
-14NVqRiwAk4yQdlloEHlY4WBs2ImhzaXUxIS1HLxI00Aqk8XwTyoOA5Rgc7pV0mp
-JsCbI8o9QoLrq8pylyxiwvV+4tlm4F81YoryRTCupKPlgOJlw9LmHJas3XyLn0n3
-VaNaUZQj1zjSsdxQdNEOZbVcm/5L30J5Vo6u0U8sbV8dELJ51YAD30STfjQkKc4p
-H9inSd8HoAXpMui/rvKdGzD4jQLul8GnVPvthVMi1T9de70/z0n/tDOHa9V5g4pF
-xvItw3bewqJTMASMFGrRjDyGpTpSMQ==
-=Wm3b
------END PGP SIGNATURE-----
-
---Sig_/zZ0lldrmVKcOFzK4.x/go5U--
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
