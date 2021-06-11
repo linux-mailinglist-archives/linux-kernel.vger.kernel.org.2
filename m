@@ -2,183 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37BE3A4B1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7823A4B25
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 01:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhFKXTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 19:19:12 -0400
-Received: from mga02.intel.com ([134.134.136.20]:8431 "EHLO mga02.intel.com"
+        id S230312AbhFKXXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 19:23:05 -0400
+Received: from mga09.intel.com ([134.134.136.24]:5796 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229976AbhFKXTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 19:19:10 -0400
-IronPort-SDR: YPse3osgHfrphpgrbt7OQW/CaWKeW7dhE10dySQOCTVRmZZtC5t/wOvgM/NL4i2KKCYnNvcfAl
- 3YcfN7HByCpg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="192738455"
+        id S229942AbhFKXXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 19:23:04 -0400
+IronPort-SDR: RIaAOYTLlaH703+eMTO/j+m+JIRy3DV8ZJfpj5oZyppsHHjpUqb+1sBC8guVUOaRQj8Jaz6057
+ lcUjrPMlpZMA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="205588712"
 X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
-   d="scan'208";a="192738455"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 16:17:11 -0700
-IronPort-SDR: dxuZh7dIRje1lEef5OpscOfpbaegiQpAP7Fgq9ui2qZXltgye2qh2Jy2/EAtToSuvbqblzU6eQ
- /XitDKWDRSjQ==
+   d="scan'208";a="205588712"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 16:21:04 -0700
+IronPort-SDR: H7VNDr3DD5lRcuC7dJ5j85CbKfebbPTI+qb7FD3EwErvtUnOdJjF/DA5OxJsTJF5H4cYF0pupB
+ R98h9WCMznyA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
-   d="scan'208";a="403363262"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.232.130]) ([10.212.232.130])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 16:17:11 -0700
-Subject: Re: [PATCH] x86/resctrl: Fix kernel-doc in internal.h
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+   d="scan'208";a="477843656"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 Jun 2021 16:21:03 -0700
+Date:   Fri, 11 Jun 2021 16:21:14 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210609005415.6993-1-fmdefrancesco@gmail.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <4d5608bf-668a-a500-bad9-ab49e3d1c505@intel.com>
-Date:   Fri, 11 Jun 2021 16:17:10 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/4] perf/x86/intel: Do not deploy workaround when TSX is
+ deprecated
+Message-ID: <20210611232114.3dmmkpkkcqg5orhw@gupta-dev2.localdomain>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <4926973a8b0b2ed78217add01b5c459a92f0d511.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <YMMVvq9ZZCu9zZom@zn.tnic>
+ <20210611213443.ira5gc65jlafz7pu@gupta-dev2.localdomain>
+ <YMPdJkLJkQBJdIEL@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20210609005415.6993-1-fmdefrancesco@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YMPdJkLJkQBJdIEL@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
+On 12.06.2021 00:01, Borislav Petkov wrote:
+>On Fri, Jun 11, 2021 at 02:34:43PM -0700, Pawan Gupta wrote:
+>> > > diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+>> > > index e28892270c58..b5953e1e59a2 100644
+>> > > --- a/arch/x86/events/intel/core.c
+>> > > +++ b/arch/x86/events/intel/core.c
+>> > > @@ -6016,10 +6016,24 @@ __init int intel_pmu_init(void)
+>> > >  		intel_pmu_pebs_data_source_skl(pmem);
+>> > >
+>> > >  		if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
+>> > > -			x86_pmu.flags |= PMU_FL_TFA;
+>> > > -			x86_pmu.get_event_constraints = tfa_get_event_constraints;
+>> > > -			x86_pmu.enable_all = intel_tfa_pmu_enable_all;
+>> > > -			x86_pmu.commit_scheduling = intel_tfa_commit_scheduling;
+>> > > +			u64 msr;
+>> > > +
+>> > > +			rdmsrl(MSR_TSX_FORCE_ABORT, msr);
+>> > > +			/* Systems that enumerate CPUID.RTM_ALWAYS_ABORT or
+>> > > +			 * support MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM] bit have
+>> > > +			 * TSX deprecated by default. TSX force abort hooks are
+>> > > +			 * not required on these systems.
+>> >
+>> > So if they're not required, why aren't you simply disabling the force
+>> > abort "workaround" by clearing the feature flag?
+>>
+>> Feature flag also enumerates MSR_TSX_FORCE_ABORT, which is still present
+>> after the microcode update. Patch 3/4 in this series clears the TSX
+>> CPUID bits using MSR_TSX_FORCE_ABORT. So we do need the feature flag
+>> X86_FEATURE_TSX_FORCE_ABORT.
+>
+>So it seems to me then, the if test above should be changed to:
+>
+>	if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT) &&
+>	   !boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT)) {
+>	   ...
+>
+>and no need for the MSR read.
+>
+>Please don't tell me there are configurations
+>where CPUID.RTM_ALWAYS_ABORT is clear but the
+>MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM] is there?!
 
-Please also consider my comments regarding the goal of this patch 
-similar to what I mentioned in my response to your changes to the 
-pseudo_lock.c file. I updated a few descriptions to improve accuracy and 
-noted some formatting issues. Apart from these small issues it is 
-looking good, thank you.
+MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM]=1 actually clears
+CPUID.RTM_ALWAYS_ABORT, because in this case RTM is enabled and doesn't
+always aborts. As the code above is only executed at bootup and BIOS is
+not expected to set it. So at bootup SDV_ENABLE_RTM will be clear (if we
+ignore kexec) then yes, MSR read can avoided.
 
-On 6/8/2021 5:54 PM, Fabio M. De Francesco wrote:
-> Added description of undocumented parameters. Fixed some minor
-> kernel-doc grammar issues. Issues largely detected by
-> scripts/kernel-doc.
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
->   arch/x86/kernel/cpu/resctrl/internal.h | 28 ++++++++++++++++----------
->   1 file changed, 17 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index c4d320d02fd5..f360944a7ae1 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -68,8 +68,9 @@ DECLARE_STATIC_KEY_FALSE(rdt_mon_enable_key);
->   
->   /**
->    * struct mon_evt - Entry in the event list of a resource
-> - * @evtid:		event id
-> - * @name:		name of the event
-> + * @evtid:		Event id
-> + * @name:		Name of the event
-> + * @list:		List head
+>
+>This
+>
+>"A new CPUID bit CPUID.RTM_ALWAYS_ABORT (CPUID 7.EDX[11]) is added to
+>indicate the status of always abort behavior."
+>
+>tells me that the CPUID bit is always set by the microcode so we should
+>be ok.
 
-The only kernel-doc issue here is the missing @list. To just fix the 
-issue while remaining consistent with the existing formatting you could 
-continue by describing @list with lower case even if other areas do so 
-with upper case.
+Yes, but MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM]=1 clears it. As
+SDV_ENABLE_RTM is expected to be set only by developers (e.g. using
+msr-tools), it should be fine in most other user cases. So we can avoid
+reading the MSR.
 
-For that description could you please use more descriptive language - 
-writing something like "List head" does not help the reader. Something like:
+>
+>If not, you should read that MSR early and do
 
-"@list: list entry in &rdt_resource->evt_list"
+Isn't the MSR read early enough already:
 
->    */
->   struct mon_evt {
->   	u32			evtid;
-> @@ -78,10 +79,12 @@ struct mon_evt {
->   };
->   
->   /**
-> - * struct mon_data_bits - Monitoring details for each event file
-> - * @rid:               Resource id associated with the event file.
-> + * union mon_data_bits - Monitoring details for each event file
-> + * @priv:	       Private data for the union	
-> + * @rid:               Resource id associated with the event file
->    * @evtid:             Event id associated with the event file
->    * @domid:             The domain to which the event file belongs
-> + * @u:		       Name of the bit fields struct
->    */
+	early_initcall()
+		init_hw_perf_events()
+			intel_pmu_init()
+				MSR read
 
-Spacing got broken here with some unintended tabs added as well as 
-trailing space.
+Anyways, we can avoid reading the MSR completely and rely on
+CPUID.RTM_ALWAYS_ABORT. I will change it in the next version.
 
-This is a union where @priv and @u refers to the same storage. More 
-detail can be added to help the reader:
-"@priv: used to store monitoring event data in @u as kernfs private data"
+Thanks,
+Pawan
 
->   union mon_data_bits {
->   	void *priv;
-> @@ -119,6 +122,7 @@ enum rdt_group_type {
->    * @RDT_MODE_PSEUDO_LOCKSETUP: Resource group will be used for Pseudo-Locking
->    * @RDT_MODE_PSEUDO_LOCKED: No sharing of this resource group's allocations
->    *                          allowed AND the allocations are Cache Pseudo-Locked
-> + * @RDT_NUM_MODES: Total number of modes
->    *
->    * The mode of a resource group enables control over the allowed overlap
->    * between allocations associated with different resource groups (classes
-> @@ -142,7 +146,7 @@ enum rdtgrp_mode {
->   
->   /**
->    * struct mongroup - store mon group's data in resctrl fs.
-> - * @mon_data_kn		kernlfs node for the mon_data directory
-> + * @mon_data_kn:		kernlfs node for the mon_data directory
->    * @parent:			parent rdtgrp
->    * @crdtgrp_list:		child rdtgroup node list
->    * @rmid:			rmid for this rdtgroup
-> @@ -282,11 +286,11 @@ struct rftype {
->   /**
->    * struct mbm_state - status for each MBM counter in each domain
->    * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
-> - * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
-> + * @prev_msr:	Value of IA32_QM_CTR for this RMID last time we read it
->    * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
-> - * @prev_bw	The most recent bandwidth in MBps
-> - * @delta_bw	Difference between the current and previous bandwidth
-> - * @delta_comp	Indicates whether to compute the delta_bw
-> + * @prev_bw:	The most recent bandwidth in MBps
-> + * @delta_bw:	Difference between the current and previous bandwidth
-> + * @delta_comp:	Indicates whether to compute the delta_bw
->    */
->   struct mbm_state {
->   	u64	chunks;
-
-Above changes look good, thanks.
-
-> @@ -450,18 +454,20 @@ struct rdt_parse_data {
->    * @name:		Name to use in "schemata" file
->    * @num_closid:		Number of CLOSIDs available
->    * @cache_level:	Which cache level defines scope of this resource
-> - * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
-> + * @default_ctrl:	Specifies default cache cbm or memory B/W percent
->    * @msr_base:		Base MSR address for CBMs
->    * @msr_update:		Function pointer to update QOS MSRs
->    * @data_width:		Character width of data when displaying
->    * @domains:		All domains for this resource
->    * @cache:		Cache allocation related data
-> + * @membw:		Memory bandwidth allocation related data
->    * @format_str:		Per resource format string to show domain value
->    * @parse_ctrlval:	Per resource function pointer to parse control values
->    * @evt_list:		List of monitoring events
->    * @num_rmid:		Number of RMIDs available
->    * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
-> - * @fflags:		flags to choose base and info files
-> + * @mbm_width:		Width of memory bandwidth monitoring counter
-> + * @fflags:		Flags to choose base and info files
->    */
->   struct rdt_resource {
->   	int			rid;
-> 
-
-I think one small addition would be helpful to the reader:
-"@mbm_width: Width of memory bandwidth monitoring hardware counter"
-
-Thank you!
-
-Reinette
-
+>
+>	setup_force_cpu_cap(X86_FEATURE_RTM_ALWAYS_ABORT)
+>
+>so that this "always abort" flag is always set when TSX transactions are
+>always aborted.
