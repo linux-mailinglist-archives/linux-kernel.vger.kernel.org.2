@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729E13A3AB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080283A3AB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 06:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbhFKEGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 00:06:09 -0400
-Received: from mail-pl1-f181.google.com ([209.85.214.181]:39803 "EHLO
-        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhFKEGJ (ORCPT
+        id S231613AbhFKEFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 00:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231600AbhFKEFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 00:06:09 -0400
-Received: by mail-pl1-f181.google.com with SMTP id v11so2160144ply.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:03:56 -0700 (PDT)
+        Fri, 11 Jun 2021 00:05:16 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3719C0617AE
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:03:03 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id j12so1403456pgh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 21:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8XFKmXX+Z8zBE+LvKxlcbsoweak/MaB5nJN3HXAfDUI=;
-        b=TjO2rbze6Hl1C/ma0Cxmypa4hqczGAiGrDGeahbZ8pF58o9czM7knR42g1jTT3WYfW
-         5T3rnHte+PlaVAmU9+BSjRwleCx7bY6Ti5WZv/JWrQnPuFSsjOSBtGZ+ZlC4HDYL9w8W
-         4B1ZPHiXZRyxGxo9l5zn7GsnlhoPgFKQgxEEQ=
+        bh=8NTjSTyDbstdRnS22JDnlh2GM3XC/zF1/Aj3ovyt0Ug=;
+        b=GknmA9cuNibjqKF8cukI4rUCo+B6fVFFXRyPcRKfLjX4ZXbTFbCl6gWfshWkURvf84
+         EvbRrBCv+iiKrKfsCmSPKE20I6McwpduzhDQ4gfI/sotqwG8MS70vsQrBcMu48EtoZte
+         QmI35afo4IbvUL//F1J6XMpC446kgR7PkfVXs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8XFKmXX+Z8zBE+LvKxlcbsoweak/MaB5nJN3HXAfDUI=;
-        b=DB8+9DLDAiIo1E5/tZWdnOQe3s+p0BKQAqiGRCntMY6gNEuE3vLMp76jIUuR3DCWSY
-         kANx8mJDl+GHd/oLzV8gPM1HQWXMccQrU6q6zQEgkJAC8sf0AZIczHq5IysbBCzK9dPS
-         I6tr8ej/dBB9XfDSu+sRp4LpI3LCjfYL4kAttJhQKjoKK9+wio57lHmsiFW7oyyx/8dT
-         UnjkrC7Fh1LgIhhWXdWsUZGaMufR8w8OwiwaJQhLCkLK41QxpMoFRGkoCyU8CotvaERI
-         YiGVQyfTtCdTeb7k1/HqxCZ6oMA9Cdm/2AoXzknHRJ4ONvMukhnb4eIMez6XnlXDW9KS
-         GspQ==
-X-Gm-Message-State: AOAM532us8iQuyOaI0Hx1H6JMICr9iq+cjV6qSRJbcg6vzTGrhcSqoeJ
-        rWyyRda1VFF/T/txg7jD9622nr0KKGOqE77i
-X-Google-Smtp-Source: ABdhPJw6JBRfw+XnBfj0SsNQjSFAjC9f3KJYRasmUse4UZLoDYVydM7J7wSRvsMMDZcHIslDqOI+hg==
-X-Received: by 2002:a17:90b:d81:: with SMTP id bg1mr1055411pjb.112.1623384176460;
-        Thu, 10 Jun 2021 21:02:56 -0700 (PDT)
+        bh=8NTjSTyDbstdRnS22JDnlh2GM3XC/zF1/Aj3ovyt0Ug=;
+        b=PCzVRgOq37ZxsQztBHqcj+0hoFm92KMuTKrBhErRR0/uQaRaBmSPDXU0ZkU9tmHQoP
+         eY1YKqux3j9tUb/JTGlrSfF1N7Q+lWTSTTONXhFAqPG3fiF8fozc5wu+UhPMdRaSkMAg
+         QUpfFLvFgzZxywTjfCBx+pA5j+/HXqjpSMaBZiCVrnMGtiOPJQBFqWpJ56sRVkq4o+ht
+         TaAMFqWrixNoD3VW3wm0CzW4rNIb+OQCIvhffFmMhUDm+7fIJ2TPwNpMs5jvA7ZQx++E
+         Gf8HtJ8ESpsl6Ec7P57HO7T9ikQUhAN7Qv4AFg1zmtyLfSKFS3Mp7Sd71fOZ1xA3M++Q
+         nuIw==
+X-Gm-Message-State: AOAM530qY2wkzuki8LtGJ/2Ysycv61hlE4WWMJiQN5IAbZ3K9wMHm8SN
+        PItNnSMO4UiX64PmhE8n/uHssAhOO/q2n19z
+X-Google-Smtp-Source: ABdhPJygCJuW3iIEdkZVUkAyJQQoZ3+nFNvq3EnLuT+EJTj7D6lLuOFZJ9Gosw6bD409Elv0aczATQ==
+X-Received: by 2002:a65:528d:: with SMTP id y13mr1648004pgp.276.1623384183064;
+        Thu, 10 Jun 2021 21:03:03 -0700 (PDT)
 Received: from localhost ([2401:fa00:9:14:db52:e918:e5f9:9e14])
-        by smtp.gmail.com with UTF8SMTPSA id o9sm3945251pfh.217.2021.06.10.21.02.52
+        by smtp.gmail.com with UTF8SMTPSA id a25sm3599170pff.54.2021.06.10.21.02.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 21:02:56 -0700 (PDT)
+        Thu, 10 Jun 2021 21:03:02 -0700 (PDT)
 From:   Eizan Miyamoto <eizan@chromium.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     houlong.wei@mediatek.com, enric.balletbo@collabora.com,
         yong.wu@mediatek.com, chunkuang.hu@kernel.org,
         Eizan Miyamoto <eizan@chromium.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 7/8] media: mtk-mdp: treat rdma@14001000 specially when probing
-Date:   Fri, 11 Jun 2021 14:01:44 +1000
-Message-Id: <20210611140124.v2.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
+Subject: [PATCH v2 8/8] dts: mtk-mdp: remove mediatek,vpu property from primary MDP device
+Date:   Fri, 11 Jun 2021 14:01:45 +1000
+Message-Id: <20210611140124.v2.8.Ib681f06d5189351b7fda0e3dcd6b15f3863a0071@changeid>
 X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
 In-Reply-To: <20210611040145.2085329-1-eizan@chromium.org>
 References: <20210611040145.2085329-1-eizan@chromium.org>
@@ -65,88 +66,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-... Instead of depending on the presence of a mediatek,vpu property in
-the device node.
-
-This property was originally added to link to the vpu node so that the
-mtk_mdp_core driver could pass the right device to
-vpu_wdt_reg_handler(). However in a previous patch in this series,
-the driver has been modified to search the device tree for that node
-instead.
-
-This property was also used to indicate the primary MDP device, so that
-it can be passed to the V4L2 subsystem as well as register it to be
-used when setting up queues in the open() callback for the filesystem
-device node that is created. In this case, assuming that the primary
-MDP device is the one with a specific name at a specific address seems
-useable because the alternative is to add a property to the device tree
-which doesn't actually represent any facet of hardware (i.e., this
-being the primary MDP device is a software decision). In other words,
-this solution is equally as arbitrary, but doesn't add a property to
-a device node which is unrelated to the hardware present.
+It is no longer used by the mediatek MDP driver.
 
 Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
 ---
 
 (no changes since v1)
 
- drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 15 ++++-----------
- drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  6 ++++++
- 2 files changed, 10 insertions(+), 11 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-index 59911ee063c1..77ddc18c90e2 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-@@ -146,17 +146,11 @@ static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
- {
- 	struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
- 	struct mtk_mdp_dev *mdp = data;
--	struct device_node *vpu_node;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+index 814f56d59e2f..4020748ae446 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -1055,7 +1055,6 @@ mdp_rdma0: rdma@14001000 {
+ 				 <&mmsys CLK_MM_MUTEX_32K>;
+ 			power-domains = <&spm MT8173_POWER_DOMAIN_MM>;
+ 			iommus = <&iommu M4U_PORT_MDP_RDMA0>;
+-			mediatek,vpu = <&vpu>;
+ 		};
  
- 	mtk_mdp_register_component(mdp, comp);
- 
--	/*
--	 * If this component has a "mediatek-vpu" property, it is responsible for
--	 * notifying the mdp master driver about it so it can be further initialized
--	 * later.
--	 */
--	vpu_node = of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
--	if (vpu_node) {
-+	if (strcmp(dev->of_node->full_name, "rdma@14001000") == 0) {
-+		/* This is the primary MDP device node. */
- 		int ret;
- 
- 		ret = v4l2_device_register(dev, &mdp->v4l2_dev);
-@@ -172,9 +166,8 @@ static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
- 		}
- 
- 		/*
--		 * presence of the "mediatek,vpu" property in a device node
--		 * indicates that it is the primary MDP rdma device and MDP DMA
--		 * ops should be handled by its DMA callbacks.
-+		 * MDP DMA ops will be handled by the DMA callbacks associated with this
-+		 * device;
- 		 */
- 		mdp->rdma_dev = dev;
- 	}
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-index 523e3c2798e1..be7d35b3e3ff 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-@@ -157,6 +157,12 @@ static int mtk_mdp_master_bind(struct device *dev)
- 		goto err_component_bind_all;
- 	}
- 
-+	if (mdp->rdma_dev == NULL) {
-+		dev_err(dev, "Primary MDP device not found");
-+		status = -ENODEV;
-+		goto err_component_bind_all;
-+	}
-+
- 	vpu_node = of_find_node_by_name(NULL, "vpu");
- 	if (!vpu_node) {
- 		dev_err(dev, "unable to find vpu node");
+ 		mdp_rdma1: rdma@14002000 {
 -- 
 2.32.0.272.g935e593368-goog
 
