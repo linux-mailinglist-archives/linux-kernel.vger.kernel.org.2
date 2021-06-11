@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA063A3C14
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5F03A3C26
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhFKGlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:41:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhFKGlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:41:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3444E61285;
-        Fri, 11 Jun 2021 06:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623393587;
-        bh=7XTJ+zxV7skHRXnn2pnhP4tpSNvduxlBN3JkyMlwBgc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NAO1IuG6hK8hwDDHT0Ud00c5ysdRvABJHZ99YlSCUvVOUlwPbjqgkiuaP4W9qKLwT
-         aRFs9YqvRG0uh+ehpZ9FgTKhcjj1XmBdL+A1pRYIeksWrnfqk/N4svJ4+YHFdHmHdI
-         FCrBn3CYB6yDKtexafaz5KrE1FkbWmPDWt29Y1xi/fb6ciYLsJWGI8lf0tajQYWimW
-         P9giwdVCbJxFknufVrsmKMWKaOv7gARyiApeQhr4PN5LYdcfNlRq8vdjKInbEmghFz
-         8SjAUG+m3nVqMywkP8Ofii/4dQ/JQyWQ5E9KQ0iD1ZpnQjiV+7F/PxCJcMd+B1dlXe
-         BKszMR4ZlRexA==
-Date:   Fri, 11 Jun 2021 12:09:40 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ARM: dts: owl-s500-roseapplepi: Add ethernet support
-Message-ID: <20210611063940.GD6950@thinkpad>
-References: <cover.1623358117.git.cristian.ciocaltea@gmail.com>
- <632e12c445ced7f10e6d7240162484ae5afc148e.1623358117.git.cristian.ciocaltea@gmail.com>
- <20210611055606.GB6950@thinkpad>
- <20210611063147.GA1520454@BV030612LT>
+        id S231217AbhFKGp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:45:29 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48608 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKGp2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:45:28 -0400
+Received: from mail-wm1-f71.google.com ([209.85.128.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lrat7-0000db-GM
+        for linux-kernel@vger.kernel.org; Fri, 11 Jun 2021 06:43:29 +0000
+Received: by mail-wm1-f71.google.com with SMTP id u17-20020a05600c19d1b02901af4c4deac5so4043460wmq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 23:43:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C6gfNxumQvAauUH0UC3BQ6OzW6ImVhOU0dXOw2iPMH4=;
+        b=IQTgYYGFoc/eUryBTnrEK+J8meaMrBkFCl3Gke9SUUGxgtQNm1zAyuRWdrnGUK9kQ+
+         d8TGmcU0Pi4tnB3mewSEXJV9DQR4TRJ4am4DM3K1R5PTc7oxR3h7g7mYFjL2vxHTHM0A
+         35iXMoBY4LwvC2wOioxtCWiiceZjZdq0tTZOEO+APCTAIYslVCss51iM/wMdz+n957BF
+         HN7Ni+2bHHaGd3EC5mhAhW/VvyYGc+1uMIaxaZW/BRyCHk55n5dQL+aPSnS6AxTtbU04
+         ttWr/AzG/XFvvjuKXC1TWoUdCQnTIYNb5Dek5s/IBaZYCcKyA7iklEva5CPHAdjo2Dnr
+         H7ng==
+X-Gm-Message-State: AOAM530IHafzMErOEBm5o7PIAIujgNvFQVcMjS1L9QxVo94UsFKMGVXn
+        /2fRshw2R45eqq2BZhCMTPba4SZWSro6A7zMuqpM7ULG6jx5WZ2vWzuFFmxpAryR0NeE5BsLvsg
+        DkJocHMAx2jQxb+UPKQYtQwpl2Ov0rzTARcJifmPETg==
+X-Received: by 2002:a5d:4903:: with SMTP id x3mr2088765wrq.376.1623393809261;
+        Thu, 10 Jun 2021 23:43:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxHIHXoAf7h4WnhTsz2rFmYQsfMYz4c84IeQVys+BC1mK1A1qd9wPsV+eWGDJaHAx4PsGcQwA==
+X-Received: by 2002:a5d:4903:: with SMTP id x3mr2088742wrq.376.1623393809106;
+        Thu, 10 Jun 2021 23:43:29 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id z5sm6018735wrv.67.2021.06.10.23.43.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 23:43:28 -0700 (PDT)
+Subject: Re: [GIT PULL] memory: Tegra memory controller for v5.14
+To:     Will Deacon <will@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        Dmitry Osipenko <digetx@gmail.com>
+References: <20210607084910.21024-1-krzysztof.kozlowski@canonical.com>
+ <20210608120128.GB10174@willie-the-truck> <YL+A+MPjjaa3nSwq@orome.fritz.box>
+ <20210608164851.GB10994@willie-the-truck> <YMHZCaRiQNQCSsVr@orome.fritz.box>
+ <8c18edeb-2e3e-9072-6bb4-11637d0ca3e5@canonical.com>
+ <YMIqNynz29Z9fYi3@orome.fritz.box> <20210610172958.GA14188@willie-the-truck>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <583c33e7-562f-0b1c-72b7-71f008a721f4@canonical.com>
+Date:   Fri, 11 Jun 2021 08:43:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611063147.GA1520454@BV030612LT>
+In-Reply-To: <20210610172958.GA14188@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:31:47AM +0300, Cristian Ciocaltea wrote:
-> On Fri, Jun 11, 2021 at 11:26:06AM +0530, Manivannan Sadhasivam wrote:
-> > On Fri, Jun 11, 2021 at 12:09:22AM +0300, Cristian Ciocaltea wrote:
-> > > Add pinctrl configuration for enabling the Ethernet MAC on RoseapplePi
-> > > SBC. Additionally, provide the necessary properties for the generic S500
-> > > ethernet node in order to setup PHY and MDIO.
-> > > 
-> > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > > ---
-> > >  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 56 ++++++++++++++++++++++
-> > >  1 file changed, 56 insertions(+)
-> > > 
-> > > diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> > > index b8c5db2344aa..bffabc7eaa50 100644
-> > > --- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> > > +++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-
-[...]
-
-> > > +	mdio {
-> > > +		#address-cells = <1>;
-> > > +		#size-cells = <0>;
-> > > +
-> > > +		reset-gpios = <&pinctrl 88 GPIO_ACTIVE_LOW>; /* GPIOC24 */
-> > > +		reset-delay-us = <10000>;
-> > > +		reset-post-delay-us = <150000>;
-> > 
-> > reset-* properties belong to "ethernet-phy" node. Also, while adding new nodes
-> > please run the dtbs_check and try to address the warnings.
+On 10/06/2021 19:29, Will Deacon wrote:
+> On Thu, Jun 10, 2021 at 05:05:27PM +0200, Thierry Reding wrote:
+>> On Thu, Jun 10, 2021 at 04:23:56PM +0200, Krzysztof Kozlowski wrote:
+>>> On 10/06/2021 11:19, Thierry Reding wrote:
+>>>> On Tue, Jun 08, 2021 at 05:48:51PM +0100, Will Deacon wrote:
+>>>>> I can queue as much or as little of 2-6 as you like, but I would like to
+>>>>> avoid pulling in the memory controller queue into the arm smmu tree. But
+>>>>> yes, whichever of those I take, I can put them on a separate branch so
+>>>>> that you're not blocked for the later patches.
+>>>>>
+>>>>> You have a better handle on the dependencies, so please tell me what works
+>>>>> for you. I just want to make sure that at least patch 3 lands in my tree,
+>>>>> so we don't get late conflicts with other driver changes.
+>>>>
+>>>> Yes, if you could pick up patch 3 and send out a link with the stable
+>>>> branch, I think Krzysztof or I could pull in that branch and pick up the
+>>>> remaining patches. It'd be good if you could also ack the remaining SMMU
+>>>> patches so that ARM SoC knows that they've been sanctioned.
+>>>>
+>>>> Krzysztof: would you be okay with picking up patches 2 and 4-6 on top of
+>>>> your memory branch for v5.14?
+>>>
+>>> You mean the iommu patches? Yes, I can take them and later explain to
+>>> Arnd/Olof why they come through me.
+>>
+>> Okay, great.
+>>
+>> Will, can you provide that stable branch? Or would you prefer if I
+>> prepared it and sent you a pull request? We're kind of running out of
+>> time, since for ARM SoC the cut-off point for new material is usually
+>> -rc6 and that's coming up pretty fast.
 > 
-> The properties are those described in Documentation/devicetree/bindings/net/mdio.yaml
+> https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=for-thierry/arm-smmu
 
-Do you mean the reset properties are applicable for all PHYs in this SoC?
+Merged, thanks.
 
-> The dtbs_check doesn't report any issues in my case, usually this
-> happens when dtschema is not updated to the latest version. I always
-> run the following command after rebasing to a new kernel version:
-> 
->   pip3 install --upgrade dtschema
-> 
+I'll take ARM/SMMU patches from Thierry's patchset: 2, 4-6.
 
-That's good!
 
-Thanks,
-Mani
-
-> Thanks for the review,
-> Cristi
-> 
-> > Thanks,
-> > Mani
-> > 
-> > > +
-> > > +		eth_phy: ethernet-phy@3 {
-> > > +			reg = <0x3>;
-> > > +			max-speed = <100>;
-> > > +			interrupt-parent = <&sirq>;
-> > > +			interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-> > > +		};
-> > > +	};
-> > > +};
-> > > +
-> > >  &twd_timer {
-> > >  	status = "okay";
-> > >  };
-> > > -- 
-> > > 2.32.0
-> > > 
+Best regards,
+Krzysztof
