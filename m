@@ -2,109 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7FB3A40B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D6F3A40BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 13:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhFKLBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 07:01:51 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:51773 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhFKLBS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 07:01:18 -0400
-Received: from [192.168.1.155] ([95.115.52.72]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MPosX-1ldaEj40EF-00Mtt2; Fri, 11 Jun 2021 12:58:51 +0200
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-References: <YH2hs6EsPTpDAqXc@mit.edu>
- <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
- <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
- <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
- <e993d6c84c79d083ecfe5a8c8edabef9e9caa3ce.camel@HansenPartnership.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <6d8299e4-2707-7edf-ebe4-f5ca7b7ee8ca@metux.net>
-Date:   Fri, 11 Jun 2021 12:58:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <e993d6c84c79d083ecfe5a8c8edabef9e9caa3ce.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
+        id S231644AbhFKLB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 07:01:59 -0400
+Received: from mail-eopbgr140051.outbound.protection.outlook.com ([40.107.14.51]:54089
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231381AbhFKLBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 07:01:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MnVXnQWXkQi3kNiP5B1YRGNZWDdgrZVzAdFGMIphynia3r0FutcwFMtmdhb+hWC1cjQxhDNOgPdl4QwQZfAT5ERaBsa4vET7Bw2RkD4HdoTFtwNgwxuJ0JiDh1dkE/0nF+oj5GRLddCZvZ7lYm92JexSyqUwumTzydjOsvrQhXal69dwJapH8HrGHZXNqXhFE+hfL5ronYYeca3RIZvr1l9jiuxblOsR9W7XSUA/eQz192+jtDjTnpPD5cD3V7U/PaSVpTieu46bBC5s++jA1MCuWATOLBk/FTFNazJAkcqdhvZdLAT4URK4QYND61hwjHAemH1Imi1pF2Gaac1bTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b3E8Nmy2UfieGHnfdu8p9LdyQGZUbeElmzN6iIfdiB8=;
+ b=T5DgQYv4HOF8eyBMQ+0sgfqYRlNrwNnyv+AZgj3HDonJdrjKGHRn1rxhwkHVVsXfMphoLwnUgGP5Wk3jOcnIy0WFvCksu5RZHhlmv9Lbxsppe3tOxihGJE+FNfuYdwUo13DE/t5WfvkBPiOhpUIhtsJ055sFIxuArF0/p3i5eQUF08dWyum2JV5O3g6D5bWwweQYtYhV3yF6a+30nB7Fah/otTdHtUInBsSF3tW9xI2g3v//BbTUajmCOAUz0UYblSW3rTgGI2+UJq6P6py8xGy/lRGUWO5QYgNiAFywdo97mQ1M0a5J9l1hymaCGHh/NTVFJjduiUoJW1s7Ux3jUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b3E8Nmy2UfieGHnfdu8p9LdyQGZUbeElmzN6iIfdiB8=;
+ b=s0z1VWAr0ZDtNayKlyBxBt/Me4dcga9jEkQXc9m5lDKK0jGWgus9u5KFG4IG+4TmPdu8B7nhXwa5o3dIUJyziqDAky64jQLByRekukhBsuqyOemQvwy/IbTnWuFk2YXoUgYP7R0PRfL+bSlbMUtryzt+kMclA/NqD6dkf8UyHYg=
+Authentication-Results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VE1PR04MB7344.eurprd04.prod.outlook.com (2603:10a6:800:1a1::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.23; Fri, 11 Jun
+ 2021 10:59:40 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::e8df:8117:d230:f321]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::e8df:8117:d230:f321%5]) with mapi id 15.20.4219.022; Fri, 11 Jun 2021
+ 10:59:40 +0000
+Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
+ stable/for-linus-5.12)
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        jianxiong Gao <jxgao@google.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lukas Hartmann <lukas@mntmn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Bumyong Lee <bumyong.lee@samsung.com>,
+        Chanho Park <chanho61.park@samsung.com>
+References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local>
+ <YL7XXNOnbaDgmTB9@atmark-techno.com>
+ <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
+ <20210611062153.GA30906@lst.de> <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <407997cd-dfa0-7b36-fa12-2baebdfcfff7@nxp.com>
+Date:   Fri, 11 Jun 2021 13:59:36 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:W1CuRBv9b9vfO/cntxLvE7zRNUCd1/dUgLqWvl6KCwi7Sw23ByG
- lxCAe9Q91/0vR2PyBETRIzab+l26EBWvYSHZ0LUnS9cubvCX5xzUC+CV5JjFwPCWXQxaQOo
- 5taiouS8C+FKLJ+dmpW4iHuaNuDY6rfJXKdICti+cmqPwkBEzGu+ypcMKrurkTnsQ34K6rI
- 06GNiokz08qz4bFDbl2SA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Hq+AqsHvTCw=:QA0c4LdeomjvdgpT+WeCnm
- fvybeHcu/cjr4qkbFb37AHeWQkFDtgzJzer94ls3YhCWt+DHTcRYat2Xw0bDzC571L64go0Zn
- S47+PKyO7iqLbN5ux7Q1bobJkmQyzd4AVn+mJY+DPRWcavypMr61kqgdFjuX6IrVfAowwYiyw
- ly4+mDH127ZO25ThonvdPqnoC09zxMXWofSvrJHTIPF4vPxkQXahO8ZHchkVwwHh8tFFS9JUo
- vw0Lc1EfnmgDoFqHS8P6BW62s3Uh3KwIa5lpH9LO079r/sMc5j3UnvF0meS+/OFKTSylXL8pQ
- fF4Yn/2vfs6qyTFzVGrX0PFL6LNgcYXVDEO0NdXW2C5RLxtOyj3d1JvZqKDgzj4z6+zsBCtiK
- +vjMQtcEEILeH+OmBOdGnY90xLmBJgEiytsBww27KXXtF3L8mJhAPmUpYrzB6flKlq1MN5TEr
- gKbkU+qWBdVtrKAW68yo2YXTIZpiR3DPgifLAb24jDy5gkRZPhn17QKUazkuebWViJSbKQTtF
- v7QlP+4xZ/23ZVOX5McNNQ=
+X-Originating-IP: [78.97.206.147]
+X-ClientProxiedBy: AM0PR04CA0128.eurprd04.prod.outlook.com
+ (2603:10a6:208:55::33) To VI1PR04MB4046.eurprd04.prod.outlook.com
+ (2603:10a6:803:4d::29)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.213] (78.97.206.147) by AM0PR04CA0128.eurprd04.prod.outlook.com (2603:10a6:208:55::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Fri, 11 Jun 2021 10:59:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 44768021-b992-4394-c136-08d92cc802ba
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7344:
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB7344AABD54ECC607733D2BF998349@VE1PR04MB7344.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7B9PLo8Zbg5cUtCWU491+r92y6lOlfdJECZjFXTQgQPzDoGEy9mjqwD+At3ZeTmI1TcebuycPt1YDgoVlFJ5N7AFEjnELHhQARqHPXvOLSnZdh4kLlTCBwywYMSuVy4BH+a7rJmYmM61z6myNbu2cm8pYLA7C8Y5gK1xkeORM7qDV/xbCXMxV+ulOB4j1v+R/z1b2zVP2AVI0CJu4Sv33jwjQjQ0GKuAXt1tjmXyEOf3OUJ/PyAlDaICNhPMPUBGsJPKOe0PbRyV0Bc8TrpQBZ5DiE5Ag5gKOwzUR9z/qv12tQ7xNVV5deCPrESI8e6uVlg/jhA2wm2BFe+ND9K6HBOLtcfT6MV1m0GV9IxhQuzPveQUYOIWMX6twKEsA7vcmtrIuYz0x5WW8TiY/ND/qcEjMGNESTDNnntCIRCWMmIvhEfL1JjERpvw/bqY8lzOZr+SPJvDkdqvbwPNJScITUPLF0bzjhAnf7huRt8T/QLe63cK0h+4oDYVGlZd7mPpkD66b/G+nSPymV0QnGhAPzXuV722XA4pYUORyC2uyCTKFgFuCWHsoXJbhI3Gl37Pb8jgDRdK+o3EmKtjvbOoaGlIL7MHqaJvla1T4fTcQd3wgRcYkcerwny3jdWgkyYrEwh9wl3/MjJ4xQwZ1ldxhJD1PwrqeG2JSDapZ56qd6BYoATqMObyKI3GP11D1m+AHmzLpsYPNRnBpll5kEybYJTHD2iUvFMwAW72Kk91c9bCKgslCeZxJ0ww0jOYvtVh8rcy6nN/nlWbMZsoYds3Y7nraWCRmJAZZEYp/0OzpjazplwPWCjQNnF9ThY8cXaMq4FV/IPFt7xGp7aylrcE3g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(376002)(346002)(136003)(36756003)(31686004)(110136005)(31696002)(66556008)(16576012)(316002)(54906003)(38100700002)(7416002)(66946007)(6486002)(52116002)(86362001)(66476007)(5660300002)(186003)(8676002)(966005)(4326008)(478600001)(2906002)(16526019)(83380400001)(8936002)(26005)(956004)(53546011)(38350700002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y0s3WFVrUnJLTlEwcWo3emIyZVVTa1A3dFNtTUQ4WEFNNnQrVkZJUUVPektB?=
+ =?utf-8?B?WTN4ZXZnRWR0cmRJYmdxd0F3WXQrSi9ya1dUR2g5bzF5OW5YUVEybXMrdkVz?=
+ =?utf-8?B?RWZhQVlpd3BucFp4TjlMWnhGV3RtekJzbWtnN2FJSGRGaER5SmZPalpKOE02?=
+ =?utf-8?B?dFJFWnVwOFZXSWZWeXhoU0tZaXFNOGFZbEdXdEhWYS9iSmxUV0NyaU9zRlJP?=
+ =?utf-8?B?NzdyK0R0dUs0bm45TFR1R2FOOVZXdGJ6aFJyR1FOSjVsbU5zYnRiSE4yMzYv?=
+ =?utf-8?B?b1puR253VG1FZFpWV1hEdzZZcU1ldHJtTnRKQ1kzNms5aDdJblBtbHRUSzlq?=
+ =?utf-8?B?alFJV1VaZG5xRWlzMXJvUUNvT29Sc0dtMnFydjdEdEZKT2hFVFZZOHRxd0hM?=
+ =?utf-8?B?NW5BMWd5alZncVhCUlhSbHJ3Q3NLM1YwK2xocE9GZ05RUGxTTUpvV3d5bUlw?=
+ =?utf-8?B?OWV5QS8wWnJ2cTBpSjNqN2V6QU5LVEhRMUJ6OEMrRkpzbnJiWEFxUWdhZlJw?=
+ =?utf-8?B?WVNsM3FHNTVlc1JEdFc4Qml5ZFFpVDF0VVZkZHNXQ2I0NWpvMmdnRnk4OTN2?=
+ =?utf-8?B?UFhJSmRmV2JNSE9EQSt2Sko0R0QxekpMb3dOSjFSYU81WE84Z3pNRjM3UXpk?=
+ =?utf-8?B?TDMvUzJOdjI4dDA2QUl2MEVhUjFVMFlSaXVrTm9sU1kzWXM4UFNmVTVmaGx3?=
+ =?utf-8?B?cFBmSVZjY1NIUWhqSkJJMXBjSmo4V1ZxUjNNMmxqVDdOQSt1V2dzVldCSnAz?=
+ =?utf-8?B?d0pHNDFVMUJZQzdrTUV6L0F2bXVaRHFuQy9UUWFzc0xaeHl4Nm9mMGhyVmwx?=
+ =?utf-8?B?VmV6cXlibHYvc1JJNnJLMzdkWllSOGxjQWR1anZ1OUNFSmd3dFRRRG5EL1o0?=
+ =?utf-8?B?cHUyV05JeGUzWGlVS3hFcW1GVUVHOU5TWkVGVmh4SjBoRzRBQm9PV3UzUVk4?=
+ =?utf-8?B?T2h0WXFwSWhIOTZHWHFlcDc3Z0tQdTZpVlR4RUFvdTRvWjdFc09TbU1VWkla?=
+ =?utf-8?B?V2V1czhVcC83UithV2JiM1RzbXdJWGxTeVU1enRGMUlZdll5WHNnQ0VMdEZK?=
+ =?utf-8?B?WVg0Y1dpRTdhZlRNVkNQMXRzNUQ2RVQ0NFpVZ0FneTFNM3hLSlR2L0U3WEc5?=
+ =?utf-8?B?RjBaeTZKdWVXMFVMVGxUS29DcHRjeWhnTnRiTmpZUm9GVjdYbldsQnB0WkQ5?=
+ =?utf-8?B?U1diU3dtbjhVb3NLRkpIY3lxSUplNHV3TktoOCtFaW5BMTdhOXZSWlpEQ1hF?=
+ =?utf-8?B?ZGRTckpNZWlmZGs3STVYRTRkUGpIeDIzOHdaVExuOWQvTE9pU1lkY1QvdkJC?=
+ =?utf-8?B?TnpGQXNrOXBob3dyNElhajlMdVBsUTJIS3ZhUTR6dzZRRU8zYTBSRFhKaEhD?=
+ =?utf-8?B?ZllPT3dybmQyenBXTTJKK3ZJSTBnYmFVMHZkWTAyaXlIZG5DR1dpdEhpYUpy?=
+ =?utf-8?B?VWVYaEY2REpkS08wOTNXcTdiZFcvUDlrdlcxVExNb0NQUVdBQXB2UlpCOFZM?=
+ =?utf-8?B?ZWhIcWxuSVhSU2VCRENrWjhIc1BaTTh1UTBvRk9IY0hsT3ROeGFnazE1UXZU?=
+ =?utf-8?B?Y0w3UGRsMWszT3FoSUU5SklXVmhpZnR1U3FiY0c3b0xuVm9sUHI4OXhSQlNu?=
+ =?utf-8?B?T3RRcDhlZGZzTFpsSTg0a1FXZ1B1VXFJM0o3SmJjNEl6aVB6S2luSXFpN3JK?=
+ =?utf-8?B?dW1XbzRxRE9ETlBSRTRGT0NwR0hpRFdlK3NSSDZpYnF5bkcwZk1wSC9meGNW?=
+ =?utf-8?Q?qzAumuuRqSpRix4lQlxZv2uVoh85YggJRPIfcFh?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44768021-b992-4394-c136-08d92cc802ba
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 10:59:40.2129
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L7cjaD1uX6ZMYyRqtDxzg3MfhtZNcbi/BeIHn7IJTrqPpdcvXdyaYqedGxr+kChLrtiOFG7KRuF7bZ+2pU5dMA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7344
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.06.21 21:23, James Bottomley wrote:
+On 6/11/2021 1:35 PM, Konrad Rzeszutek Wilk wrote:
+> On Fri, Jun 11, 2021 at 08:21:53AM +0200, Christoph Hellwig wrote:
+>> On Thu, Jun 10, 2021 at 05:52:07PM +0300, Horia Geantă wrote:
+>>> I've noticed the failure also in v5.10 and v5.11 stable kernels,
+>>> since the patch set has been backported.
+>>
+>> FYI, there has been a patch on the list that should have fixed this
+>> for about a month:
+>>
+>> https://lore.kernel.org/linux-iommu/20210510091816.GA2084@lst.de/T/#m0d0df6490350a08dcc24c9086c8edc165b402d6f
+>>
+>> but it seems like it never got picked up.
+> 
+> Yikes!
+> 
+> Dominique,
+> 
+> Would you be up to testing the attached (and inline) patch please?
+> 
+> Linus,
+> 
+> Would you be terribly offended if I took your code (s/unsigned
+> long/unsigned int), and used Chanho's description of the problem (see below)?
+> 
+Both patches work for my case.
 
-> but the US is definitely moving
-> to a regime that says once you're vaccinated it's pretty much over for
+However, there's yet another, possibly significant, difference b/w the two:
+	offset = (tlb_addr - mem->start) & (IO_TLB_SIZE - 1);
+vs.
+	offset = (tlb_addr & (IO_TLB_SIZE - 1)) -
+		 swiotlb_align_offset(dev, orig_addr);
 
-As far as I see (watching from the other side of the globe), for most
-states it already is over, no matter whether somebody got a shot or not.
-(actually, getting reports of people *with* the shot get increasing
-trouble, eg. kept out of stores, schools, planes, ...).
+I think accounting for the alignment offset (swiotlb_align_offset())
+has to be kept.
 
-FL and TX seem to be the most relaxed states in this regard.
-Maybe ask DeStantis and Abbot whether they'd support such a conference
-in their states, maybe they'd even open their cheque books ;-)
-
-> you and I don't see a problem with taking advantage of that for hybrid
-> style events.  However, even with the best will in the world, I can't
-> see much of a way around the problem that remote people at hybrid
-> events will always be at a disadvantage ... suggestions for improving
-> this are always welcome.
-
-Looking from a totally different angle, I believe the hybrid approach
-could even be a benefit. For example, longer talks - IMHO - are easier
-to do (and for the audience) when just recorded, so people can listen to
-them any time (and as often one wants to). Spontanous questions right
-after, I guess, are only helpful for a small minority that's already 
-deep in that particular topic - in those cases I'd prefer a more 
-personal conversation. Another scenario are expert working groups, where
-people already involved into certain topic talk closely - IMHO something
-where direct (group) calls are a good medium, and probably working
-better outside the strict time frames of such an event.
-
-Maybe it's good idea to jump back to square one and ask the question,
-what people actually expect from and try to achieve from such an event,
-before going into some actual planning. (I could only express my very
-personal view, but that's probably far from being representative)
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Horia
