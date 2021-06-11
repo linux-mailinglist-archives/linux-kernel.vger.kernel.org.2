@@ -2,127 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5183A42D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C03C3A42D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbhFKNPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:15:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231766AbhFKNPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:15:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87BAE613E3;
-        Fri, 11 Jun 2021 13:13:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623417192;
-        bh=GlR3ucjcwaQR6yiH4I8Q2YRRt5O0WomVF9cBXnMH6FU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GpXZseUFxwK/YzhdgZWO92HqluV2xAj0W+ODnbk9ZpY6ckEysYk8OD9gHm+0oIXCH
-         Xd78Lkwml2tqxB3qjQ6P34oiw7qM4c1fRdZDDgVeLyR6cIPeR/Ql5rHnjFp5pV+hfY
-         6IxSD688fKnc/1lV4ETaXsMJJeuRGOAiKTFbcaRY=
-Date:   Fri, 11 Jun 2021 15:13:09 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Zhangjiantao (Kirin, nanjing)" <water.zhangjiantao@huawei.com>
-Cc:     "mathias.nyman@intel.com" <mathias.nyman@intel.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Xuetao (kirin)" <xuetao09@huawei.com>,
-        "chenyu (U)" <chenyu56@huawei.com>,
-        Caiyadong <caiyadong@huawei.com>,
-        xuhaiyang <xuhaiyang5@hisilicon.com>
-Subject: Re: [PATCH v2] xhci: solve a double free problem while doing s4
-Message-ID: <YMNhZdRN/qsySpSp@kroah.com>
-References: <1623403104-121391-1-git-send-email-xuetao09@huawei.com>
- <3f5f7a1a46a847ca8bb793050cf30b98@huawei.com>
+        id S231812AbhFKNPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231479AbhFKNPq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:15:46 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95077C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:13:48 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id d18so2543509ual.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EaDxm7CAMccH6BxkH3jMQSzq1sz+JsTOHJ81BcDQxlc=;
+        b=Ex2De4dHAN5GsZSCNxo84B8s/T/KbAuuiZl/QmTRrOZ5HiOuqZh7rYh4QgJVvpYv8B
+         fxNg5SPcXBuIk3m7aqDwhkoHklDHFoT7qrk2VlpMKDu05oeWd3ppy767v/LYMxqFwqjE
+         aLOK5ZY2PyQCHetjeEqvNAnQU60n064ubIDjI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EaDxm7CAMccH6BxkH3jMQSzq1sz+JsTOHJ81BcDQxlc=;
+        b=p3a3HsV8BAKEzn+aYNRkHPliwQVchwn/kt8dLUVQDCVMw2VgcpUf2t35JMaIwjQkaz
+         VQWqda36nfIlqiIFJu1dSNdb9c0od5dYEsj2ItxvS9LmNOwXAcFI6jqkZwbmlFbGniqi
+         i8EPOJ21rx5n0LGJUewXdM2YaPg4VhrDwT4LlJEX5n2yH3587LM514HkDEKjQ2UZLww4
+         7H2yfqsXpkhLvxArlFfo1FYc/5MwSem5YFZ2xisIvEIvPHdWtjiwFP8JeUVPTPBwKDT4
+         IhXGZ2J6PkYwyY01EPNn6cCyrZTuJPblHS3rdXukzRmQ1F0pviIubWBlSB1TOlpACCIz
+         tPdw==
+X-Gm-Message-State: AOAM530/CyrWWHy1cQFXgxUrZALkbenQumNePIUKwMLN2s/YBtAVI025
+        i+6e6z/lRVURPE5d+kmso7PFKrk4Jm3sv7QnO1YHCQ==
+X-Google-Smtp-Source: ABdhPJx44Ziz7vPRZ46bsBmuGBMqTKcmVOpww5OiQk+u1PD4sFDnONguBzgZ3BY8hkisnZD5KFTvHUQILKdDYVrB5YM=
+X-Received: by 2002:ab0:2690:: with SMTP id t16mr2923322uao.9.1623417227768;
+ Fri, 11 Jun 2021 06:13:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3f5f7a1a46a847ca8bb793050cf30b98@huawei.com>
+References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
+ <162322872534.361452.17619177755627322271.stgit@web.messagingengine.com>
+In-Reply-To: <162322872534.361452.17619177755627322271.stgit@web.messagingengine.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 11 Jun 2021 15:13:37 +0200
+Message-ID: <CAJfpegtQd-eYqdSee7CwOFz=uViDV4=P+BmKR_Ciryz1wEe0FQ@mail.gmail.com>
+Subject: Re: [PATCH v6 6/7] kernfs: add kernfs_need_inode_refresh()
+To:     Ian Kent <raven@themaw.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 11:08:30AM +0000, Zhangjiantao (Kirin, nanjing) wrote:
-> when system is doing s4, the process of xhci_resume may be as below:
-> 1、xhci_mem_cleanup
-> 2、xhci_init->xhci_mem_init->xhci_mem_cleanup(when memory is not enough).
-> xhci_mem_cleanup will be executed twice when system is out of memory.
-> xhci->port_caps is freed in xhci_mem_cleanup,but it isn't set to NULL.
-> It will be freed twice when xhci_mem_cleanup is called the second time.
-> 
-> We got following bug when system resumes from s4:
-> 
-> kernel BUG at mm/slub.c:309!
-> Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-> CPU: 0 PID: 5929 Tainted: G S   W   5.4.96-arm64-desktop #1
-> pc : __slab_free+0x5c/0x424
-> lr : kfree+0x30c/0x32c
-> 
-> Call trace:
->  __slab_free+0x5c/0x424
->  kfree+0x30c/0x32c
->  xhci_mem_cleanup+0x394/0x3cc
->  xhci_mem_init+0x9ac/0x1070
->  xhci_init+0x8c/0x1d0
->  xhci_resume+0x1cc/0x5fc
->  xhci_plat_resume+0x64/0x70
->  platform_pm_thaw+0x28/0x60
->  dpm_run_callback+0x54/0x24c
->  device_resume+0xd0/0x200
->  async_resume+0x24/0x60
->  async_run_entry_fn+0x44/0x110
->  process_one_work+0x1f0/0x490
->  worker_thread+0x5c/0x450
->  kthread+0x158/0x160
->  ret_from_fork+0x10/0x24
-> 
-> Signed-off-by: Jiantao Zhang <water.zhangjiantao@huawei.com>
-> Signed-off-by: Tao Xue <xuetao09@huawei.com>
-> ---
->  drivers/usb/host/xhci-mem.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c index f66815f..e4b0c04 100644
-> --- a/drivers/usb/host/xhci-mem.c
-> +++ b/drivers/usb/host/xhci-mem.c
-> @@ -1924,6 +1924,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
->  	xhci->hw_ports = NULL;
->  	xhci->rh_bw = NULL;
->  	xhci->ext_caps = NULL;
-> +	xhci->port_caps = NULL;
->  
->  	xhci->page_size = 0;
->  	xhci->page_shift = 0;
-> --
-> 2.7.4
-> 
+On Wed, 9 Jun 2021 at 10:52, Ian Kent <raven@themaw.net> wrote:
+>
+> Now the kernfs_rwsem read lock is held for kernfs_refresh_inode() and
+> the i_lock taken to protect inode updates there can be some contention
+> introduced when .permission() is called with concurrent path walks in
+> progress.
+>
+> Since .permission() is called frequently during path walks it's worth
+> checking if the update is actually needed before taking the lock and
+> performing the update.
+>
+> Signed-off-by: Ian Kent <raven@themaw.net>
 
-
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+Reviewed-by: Miklos Szeredi <mszeredi@redhat.com>
