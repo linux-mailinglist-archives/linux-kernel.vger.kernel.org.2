@@ -2,115 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D753A4A0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059453A4A14
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhFKUWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:22:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229572AbhFKUWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:22:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 68CD2613C6;
-        Fri, 11 Jun 2021 20:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623442808;
-        bh=OPhKKZ9EI5WdYTjxBQvbuzDpEsBbg6gsdAFBfCDEUqY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JoPGm/+30kbGRL3Utjq21jZK35G7R5wsRV7F8rrBccJnf3Sgm5Gv+RZ6KiZTtuYvP
-         A1PnrSx1VW/I/7fKQvKgfwIJrSMcNSu/KVQ1gyQPe6TIIxf2vNss0xys9JzSoQglbV
-         Y/S0Z/Epmx/ik5U8xEYIDIPnvpnEFalVgTj5cLseh5JTEPm3La+z2+GfeEQnE2+R6v
-         wJykivIwKp7WC6IVFl3TQg2a/yGogprsW1CRj3m8Phul/k4bJOyB+ka3BiuXfNd4ji
-         nlLjkCyoY2+jTflULzHQ3sMtRQ/OqjXhoP6jGh9CitVkyNqujnNRXPI18LXnw8JFKN
-         /ecZAnrvFuiVw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 57DB760BE1;
-        Fri, 11 Jun 2021 20:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230479AbhFKUYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhFKUYR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:24:17 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDBBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 13:22:19 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id bp38so10384018lfb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 13:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=FvqK8oV4w6JWOpETYVl5XjDW+0W7DLJvWrX9JFh/6Ic=;
+        b=aSfTT5IIPzOIQx+1/h0lCxFBe/trQCMUQWetLP2lpM31TdOa8lph6tkD8GLqAo4Cmf
+         wdOiUpFqFAn6Zn63Anbnlr/bm3oyh6v5m/CxO1cPFfB0oPSN7XU5Wohh2bol4ikrqnh1
+         LqBQQUKXVSsajoPWV+d+3NnsJ5J4bCizc9UrZJrUD8i2HV9Ehe6ZTJ2cPDC28F8j7tAf
+         e21XLY/fyah9RV+e5j15itltGKqrtuzQANmviYmfSqdJ4R4tvolbuE7vToVG7SnHo3CS
+         +q5JSm70jCUDrYmcf/P4jHi7RGj2ettDSEo4HCIXrPj+S+1IlyBtyKk+9Juk+Z96P4gx
+         Usrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=FvqK8oV4w6JWOpETYVl5XjDW+0W7DLJvWrX9JFh/6Ic=;
+        b=N5lEcl654TfQMqpczG/r5w7YHNPQ7zH3aHE3c/AzIVwifBVJZrgwuK/deRLmQPV6Hs
+         Vogu1YTTD/bDhldxLnb+LlgNSlaQ2NTcEgwbk/EHEhbjxKRvzjiJws0ff4dYY42beSMB
+         8Jkjt4J0ZGdfgT0IL1LsWOxKJryz2w9KrdoiG1DKr1JxcLPp3rZkcv/9KfhrNVH4dejG
+         M8hSfvKGP3ryOWECoA0pZ0KcTeqS4V4B+QhmC0kRg5SgWrfLvB+VXLuSpx5Vcz2W7rqn
+         tvfJrBdYZ+jpsaJVRSiSndcNH/W6mkhhX4RABxJPpjl+t8jUy7B6zq8PZtfrUM9EKNLW
+         cyqw==
+X-Gm-Message-State: AOAM531ia4mwTSjCJUyctS9nTk3JVtHccLgLrfZ4pNd/R3wah8QyS3Sz
+        Wpv7cLpq+zp6+s9uf2ibB5FMB25gZMIGK+1HMlM=
+X-Google-Smtp-Source: ABdhPJxgo1DaSmnK+Qf4lKfrkf494ywSDB1RKdh4RIqXfGEiw44RGK7qeN47ud+sTuK9rRbMBxORagSuL0Q3C/TAViw=
+X-Received: by 2002:a05:6512:1591:: with SMTP id bp17mr3694494lfb.20.1623442937737;
+ Fri, 11 Jun 2021 13:22:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v9 00/15] ACPI support for dpaa2 driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162344280835.13501.16334655818490594799.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Jun 2021 20:20:08 +0000
-References: <20210611105401.270673-1-ciorneiioana@gmail.com>
-In-Reply-To: <20210611105401.270673-1-ciorneiioana@gmail.com>
-To:     Ioana Ciornei <ciorneiioana@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, hkallweit1@gmail.com,
-        netdev@vger.kernel.org, grant.likely@arm.com, rafael@kernel.org,
-        jeremy.linton@arm.com, andrew@lunn.ch, andy.shevchenko@gmail.com,
-        f.fainelli@gmail.com, linux@armlinux.org.uk,
-        heikki.krogerus@linux.intel.com, mw@semihalf.com,
-        pieter.jansenvv@bamboosystems.io, jon@solid-run.com,
-        saravanak@google.com, rdunlap@infradead.org,
-        calvin.johnson@oss.nxp.com, cristian.sovaiala@nxp.com,
-        florinlaurentiu.chiculita@nxp.com, madalin.bucur@nxp.com,
-        linux-arm-kernel@lists.infradead.org, diana.craciun@nxp.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux.cj@gmail.com, laurentiu.tudor@nxp.com, lenb@kernel.org,
-        rjw@rjwysocki.net, ioana.ciornei@nxp.com
+Received: by 2002:a05:6520:25d2:b029:fa:3790:8a0d with HTTP; Fri, 11 Jun 2021
+ 13:22:16 -0700 (PDT)
+Reply-To: sgtmanthey10@gmail.com
+From:   Kayla manthey <shayelynnehaver77@gmail.com>
+Date:   Fri, 11 Jun 2021 20:22:16 +0000
+Message-ID: <CAGQwj4GymtcnzQUoYvOMDZSPC1BqBvbg5mYgP13+faiF17+TAA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Fri, 11 Jun 2021 13:53:46 +0300 you wrote:
-> From: Ioana Ciornei <ioana.ciornei@nxp.com>
-> 
-> This patch set provides ACPI support to DPAA2 network drivers.
-> 
-> It also introduces new fwnode based APIs to support phylink and phy
-> layers
->     Following functions are defined:
->       phylink_fwnode_phy_connect()
->       fwnode_mdiobus_register_phy()
->       fwnode_get_phy_id()
->       fwnode_phy_find_device()
->       device_phy_find_device()
->       fwnode_get_phy_node()
->       fwnode_mdio_find_device()
->       acpi_get_local_address()
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v9,01/15] Documentation: ACPI: DSD: Document MDIO PHY
-    https://git.kernel.org/netdev/net-next/c/e71305acd81c
-  - [net-next,v9,02/15] net: phy: Introduce fwnode_mdio_find_device()
-    https://git.kernel.org/netdev/net-next/c/0fb169767651
-  - [net-next,v9,03/15] net: phy: Introduce phy related fwnode functions
-    https://git.kernel.org/netdev/net-next/c/425775ed31a6
-  - [net-next,v9,04/15] of: mdio: Refactor of_phy_find_device()
-    https://git.kernel.org/netdev/net-next/c/2d7b8bf1fa7a
-  - [net-next,v9,05/15] net: phy: Introduce fwnode_get_phy_id()
-    https://git.kernel.org/netdev/net-next/c/114dea60043b
-  - [net-next,v9,06/15] of: mdio: Refactor of_get_phy_id()
-    https://git.kernel.org/netdev/net-next/c/cf99686072a1
-  - [net-next,v9,07/15] net: mii_timestamper: check NULL in unregister_mii_timestamper()
-    https://git.kernel.org/netdev/net-next/c/b9926da003ca
-  - [net-next,v9,08/15] net: mdiobus: Introduce fwnode_mdiobus_register_phy()
-    https://git.kernel.org/netdev/net-next/c/bc1bee3b87ee
-  - [net-next,v9,09/15] of: mdio: Refactor of_mdiobus_register_phy()
-    https://git.kernel.org/netdev/net-next/c/8d2cb3ad3118
-  - [net-next,v9,10/15] ACPI: utils: Introduce acpi_get_local_address()
-    https://git.kernel.org/netdev/net-next/c/7ec16433cf1e
-  - [net-next,v9,11/15] net: mdio: Add ACPI support code for mdio
-    https://git.kernel.org/netdev/net-next/c/803ca24d2f92
-  - [net-next,v9,12/15] net/fsl: Use [acpi|of]_mdiobus_register
-    https://git.kernel.org/netdev/net-next/c/15e7064e8793
-  - [net-next,v9,13/15] net: phylink: introduce phylink_fwnode_phy_connect()
-    https://git.kernel.org/netdev/net-next/c/25396f680dd6
-  - [net-next,v9,14/15] net: phylink: Refactor phylink_of_phy_connect()
-    https://git.kernel.org/netdev/net-next/c/423e6e8946f5
-  - [net-next,v9,15/15] net: dpaa2-mac: Add ACPI support for DPAA2 MAC driver
-    https://git.kernel.org/netdev/net-next/c/3264f599c1a8
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Por favor, quiero saber si recibi=C3=B3 mis mensajes anteriores.
