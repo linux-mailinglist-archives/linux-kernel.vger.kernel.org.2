@@ -2,136 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6306F3A43A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58973A43A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbhFKOAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 10:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbhFKOAt (ORCPT
+        id S231683AbhFKOAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 10:00:44 -0400
+Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:34011 "EHLO
+        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229529AbhFKOAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:00:49 -0400
-Received: from mail-out-4.itc.rwth-aachen.de (mail-out-4.itc.rwth-aachen.de [IPv6:2a00:8a60:1:e501::5:49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B16EC061574;
-        Fri, 11 Jun 2021 06:58:51 -0700 (PDT)
-IronPort-SDR: hpNYjh1k7rNyVmO25A5vdq00kq2BZY97tKDroh30MxeyJVpKfQPN/Pw0PJlzJ9xbyzg1JzixAx
- erRE600CTIUWNQt3qUbG2fniCGhJMkdgLVCfiWruvnRPTTry6fSgwcf+R+weY9F/yULqHa8rq4
- x0U/FFMLlbP9RhqJ1vjWE19LkCcCFapA1MurfaZIgAL+HYvs0VIzNIIfpgieXOnbgAjThzPKb6
- zVa718khk4p8OLAQeIpD2OotolIExlt20CkBsETZQtAWhmUBYJK11lut8nd6eW6c2R0XSej59j
- c3c=
-X-IPAS-Result: =?us-ascii?q?A2BRBQDEa8Ng/5wagoZaHgEBCxIMQIVRaguEPa1bgWgLA?=
- =?us-ascii?q?QEBAQEBAQEBCAE/AgQBAYRQAoJoAiU4EwIEAQEBAQMCAwEBAQEFAQEGAQEBA?=
- =?us-ascii?q?QEBBQSBBIUvRoZGBiMPAUYQJQImAgJXBgENBYJxgwgEqhSBMoEBiGOBJgkBg?=
- =?us-ascii?q?QYqhwmBcXaDeieCKYEVgnRthAaDVYJkBIMgBwc2Ub8NB4F6gSWdXUSUdZBvl?=
- =?us-ascii?q?VKgH4QRAgQCBAUCFoFrgX1xgzhQFwIOjlaOGUAxOAIGAQkBAQMJTwwhh1sBg?=
- =?us-ascii?q?RABAQ?=
-IronPort-HdrOrdr: A9a23:Q39j6KCoanEjS0/lHekz55DYdb4zR+YMi2TDgXoBMiC9E/bo5v
- xG88506faZslcssF9Jo6HlBECrewK4yXcN2/hqAV7AZniZhILLFvAA0WK4+UyYJ8SWzIc0vp
- uIFZIfNDSaNzRHZLPBkXWF+qEbsaS6Gc6T6Ns3/x1WJz2CQpsQlztRO0KwFFFsXgUDJZdRLu
- v62uN34xCnZW8MYoCdDn0INtKzweEj7KiWAyIuNloC7g+CiD/tzqX7HRie1gofVD0K+7048X
- HZ+jaJmZlKZZmApSPh6w==
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.83,265,1616454000"; 
-   d="scan'208";a="111550781"
-Received: from rwthex-w1-a.rwth-ad.de ([134.130.26.156])
-  by mail-in-4.itc.rwth-aachen.de with ESMTP; 11 Jun 2021 15:58:50 +0200
-Received: from pebbles.fritz.box (78.48.70.208) by rwthex-w1-a.rwth-ad.de
- (2a00:8a60:1:e500::26:156) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.12; Fri, 11 Jun
- 2021 15:58:49 +0200
-From:   =?UTF-8?q?Stefan=20Br=C3=BCns?= <stefan.bruens@rwth-aachen.de>
-To:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     =?UTF-8?q?Stefan=20Br=C3=BCns?= <stefan.bruens@rwth-aachen.de>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] USB: serial: qcserial: Support for SDX55 based Sierra Wireless 5G modules
-Date:   Fri, 11 Jun 2021 15:58:41 +0200
-Message-ID: <20210611135842.14415-1-stefan.bruens@rwth-aachen.de>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210611134507.8780-1-stefan.bruens@rwth-aachen.de>
-References: <20210611134507.8780-1-stefan.bruens@rwth-aachen.de>
+        Fri, 11 Jun 2021 10:00:43 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id A04971896
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:58:44 +0100 (IST)
+Received: (qmail 19336 invoked from network); 11 Jun 2021 13:58:44 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Jun 2021 13:58:44 -0000
+Date:   Fri, 11 Jun 2021 14:58:43 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 2/2] mm/page_alloc: Allow high-order pages to be stored
+ on the per-cpu lists
+Message-ID: <20210611135843.GD30378@techsingularity.net>
+References: <20210603142220.10851-1-mgorman@techsingularity.net>
+ <20210603142220.10851-3-mgorman@techsingularity.net>
+ <88FCC7AA-FAAA-4B87-B382-50BD54B2886B@nvidia.com>
+ <20210610111821.GY30378@techsingularity.net>
+ <3B44DF44-5669-40B6-A122-011F1A749FAA@nvidia.com>
+ <20210611083433.GA30378@techsingularity.net>
+ <7E7AFAD1-A08E-4DE1-B307-C604A01BDC8C@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [78.48.70.208]
-X-ClientProxiedBy: rwthex-s1-b.rwth-ad.de (2a00:8a60:1:e500::26:153) To
- rwthex-w1-a.rwth-ad.de (2a00:8a60:1:e500::26:156)
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <7E7AFAD1-A08E-4DE1-B307-C604A01BDC8C@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devices exposes two different interface compositions:
-- QDL mode, single interface
-- MBIM mode, MBIM class compliant plus AT/DM(/ADB)
+On Fri, Jun 11, 2021 at 08:17:02AM -0400, Zi Yan wrote:
+> On 11 Jun 2021, at 4:34, Mel Gorman wrote:
+> 
+> > On Thu, Jun 10, 2021 at 07:40:47AM -0400, Zi Yan wrote:
+> >>>> qemu-system-x86_64 -kernel ~/repos/linux-1gb-thp/arch/x86/boot/bzImage \
+> >>>>     -drive file=~/qemu-image/vm.qcow2,if=virtio \
+> >>>>     -append "nokaslr root=/dev/vda1 rw console=ttyS0 " \
+> >>>>     -pidfile vm.pid \
+> >>>>     -netdev user,id=mynet0,hostfwd=tcp::11022-:22 \
+> >>>>     -device virtio-net-pci,netdev=mynet0 \
+> >>>>     -m 16g -smp 6 -cpu host -enable-kvm -nographic \
+> >>>>     -machine hmat=on -object memory-backend-ram,size=8g,id=m0 \
+> >>>>     -object memory-backend-ram,size=8g,id=m1 \
+> >>>>     -numa node,memdev=m0,nodeid=0 -numa node,memdev=m1,nodeid=1
+> >>>>
+> >>>> The attached config has THP disabled. The VM cannot boot with THP enabled,
+> >>>> either.
+> >>>>
+> >>>
+> >>> There is not a lot of information to go on here. Can you confirm that a
+> >>> revert of that specific patch from mmotm-2021-06-07-18-33 also boots? It
+> >>> sounds like your console log is empty, does anything useful appear if
+> >>> you add "earlyprintk=serial,ttyS0,115200" to the kernel command line?
+> >>
+> >> Sure. I can confirm that reverting the patch makes the VM boot.
+> >> The important information I forgot to mention is that after I remove
+> >> the NUMA setting in the QEMU, the VM can boot too.
+> >>
+> >> earlyprintk gave the error message (page out of zone boundary) when the VM could not boot:
+> >>
+> >
+> > Can you test with the following patch please?
+> >
+> > --8<---
+> > mm/page_alloc: Allow high-order pages to be stored on the per-cpu lists -fix
+> >
+> > Zi Ya reported the following problem
+> s/Zi Ya/Zi Yan/
 
-Current firmware versions (up to 01.07.19) do not expose an NMEA port.
+Sorry about that typo.
 
-Signed-off-by: Stefan Brüns <stefan.bruens@rwth-aachen.de>
----
- drivers/usb/serial/qcserial.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+> >
+> >   I am not able to boot my QEMU VM with v5.13-rc5-mmotm-2021-06-07-18-33.
+> >   git bisect points to this patch. The VM got stuck at "Booting from ROM"
+> >
+> > "This patch" is "mm/page_alloc: Allow high-order pages to be stored on
+> > the per-cpu lists" and earlyprintk showed the following
+> >
+> >   [    0.161237] Memory: 16396772K/16776684K available (18452K kernel code, 3336K rwdata, 8000K rodata, 1852K init, 1444K bss, 379656K reserved, 0K cma-reserve)
+> >   [    0.162451] page 0x100041 outside node 1 zone Normal [ 0x240000 - 0x440000 ]
+> >   [    0.163057] page:(____ptrval____) refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x100041
+> >
+> > The patch is allowing pages from different zones to exist on the PCP
+> > lists which is not allowed. Review found two problems -- first, the
+> > bulk allocator is not using the correct PCP lists. It happens to work
+> > because it's order-0 only but it's wrong. The real problem is that the
+> > boot pagesets can store free pages which is not allowed.
+> >
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > ---
+> >  mm/page_alloc.c | 12 ++++++++++--
+> >  1 file changed, 10 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index d6d90f046c94..8472bae567f0 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -3625,7 +3625,15 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+> >  			int batch = READ_ONCE(pcp->batch);
+> >  			int alloced;
+> >
+> > -			batch = max(batch >> order, 2);
+> > +			/*
+> > +			 * Scale batch relative to order if batch implies
+> > +			 * free pages can be stored on the PCP. Batch can
+> > +			 * be 1 for small zones or for boot pagesets which
+> > +			 * should never store free pages as the pages may
+> > +			 * belong to arbitrary zones.
+> > +			 */
+> > +			if (batch > 1)
+> > +				batch = max(batch >> order, 2);
+> >  			alloced = rmqueue_bulk(zone, order,
+> >  					batch, list,
+> >  					migratetype, alloc_flags);
+> > @@ -5265,7 +5273,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+> >  	/* Attempt the batch allocation */
+> >  	local_lock_irqsave(&pagesets.lock, flags);
+> >  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+> > -	pcp_list = &pcp->lists[ac.migratetype];
+> > +	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
+> >
+> >  	while (nr_populated < nr_pages) {
+> 
+> Yes. This patch solves the issue. Thanks.
+> 
 
-diff --git a/drivers/usb/serial/qcserial.c b/drivers/usb/serial/qcserial.c
-index 83da8236e3c8..4ff325a14c98 100644
---- a/drivers/usb/serial/qcserial.c
-+++ b/drivers/usb/serial/qcserial.c
-@@ -26,12 +26,15 @@ enum qcserial_layouts {
- 	QCSERIAL_G1K = 1,	/* Gobi 1000 */
- 	QCSERIAL_SWI = 2,	/* Sierra Wireless */
- 	QCSERIAL_HWI = 3,	/* Huawei */
-+	QCSERIAL_SWI2 = 4,	/* Sierra Wireless */
- };
- 
- #define DEVICE_G1K(v, p) \
- 	USB_DEVICE(v, p), .driver_info = QCSERIAL_G1K
- #define DEVICE_SWI(v, p) \
- 	USB_DEVICE(v, p), .driver_info = QCSERIAL_SWI
-+#define DEVICE_SWI2(v, p) \
-+	USB_DEVICE(v, p), .driver_info = QCSERIAL_SWI2
- #define DEVICE_HWI(v, p) \
- 	USB_DEVICE(v, p), .driver_info = QCSERIAL_HWI
- 
-@@ -181,6 +184,10 @@ static const struct usb_device_id id_table[] = {
- 	{DEVICE_SWI(0x413c, 0x81d1)},   /* Dell Wireless 5818 */
- 	{DEVICE_SWI(0x413c, 0x81d2)},   /* Dell Wireless 5818 */
- 
-+	/* SDX55 based Sierra Wireless devices */
-+	{DEVICE_SWI2(0x1199, 0x90d2)},	/* Sierra Wireless EM919x QDL */
-+	{DEVICE_SWI2(0x1199, 0x90d3)},	/* Sierra Wireless EM919x */
-+
- 	/* Huawei devices */
- 	{DEVICE_HWI(0x03f0, 0x581d)},	/* HP lt4112 LTE/HSPA+ Gobi 4G Modem (Huawei me906e) */
- 
-@@ -359,6 +366,28 @@ static int qcprobe(struct usb_serial *serial, const struct usb_device_id *id)
- 			break;
- 		}
- 		break;
-+	case QCSERIAL_SWI2:
-+		/*
-+		 * Sierra Wireless SDX55 in MBIM mode:
-+		 * 0/1: MBIM Control/Data
-+		 * 3: AT-capable modem port
-+		 * 4: DM/DIAG (use libqcdm from ModemManager for communication)
-+		 * 5: ADB
-+		 */
-+		switch (ifnum) {
-+		case 3:
-+			dev_dbg(dev, "Modem port found\n");
-+			sendsetup = true;
-+			break;
-+		case 4:
-+			dev_dbg(dev, "DM/DIAG interface found\n");
-+			break;
-+		default:
-+			/* don't claim any unsupported interface */
-+			altsetting = -1;
-+			break;
-+		}
-+		break;
- 	case QCSERIAL_HWI:
- 		/*
- 		 * Huawei devices map functions by subclass + protocol
+Thanks. As Andrew dropped the patch from mmotm, I've send a v2 with the
+fix included. Thanks for reporting and testing!
+
 -- 
-2.31.1
-
+Mel Gorman
+SUSE Labs
