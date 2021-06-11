@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333A13A46C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72353A46C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhFKQqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:46:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40932 "EHLO
+        id S231286AbhFKQqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:46:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40924 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbhFKQqD (ORCPT
+        with ESMTP id S230332AbhFKQqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:46:03 -0400
-Message-Id: <20210611163111.614604526@linutronix.de>
+        Fri, 11 Jun 2021 12:46:04 -0400
+Message-Id: <20210611163111.724946882@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623429844;
+        s=2020; t=1623429845;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=9HZBhN56p2bWOcbqITFuHCHeo07yOhBD1YzCbJ7VT3Y=;
-        b=4enOCFRSn0vLixtMm5/ENZlSLmK7fRdedPLmU4VmSgbTKGyXQ96/5LqZpkI3o85G42w1Ao
-        gZrcQPkDW4HuYgGrtwIzCdcN0jANSfWkoa0lDmgLf3zJ0cHAQ4MHWfCZelzdcnDhE43997
-        ROtyKaO91LaUJvO/USXM8Mey4eF8EH5SGePdHW5QhdYIDU1Ok+JTbwryLB9PyrdyWEy4Bh
-        KTKq7HP6kq9L2PMP8YFe77fKATDY+RO78yMhYIFQ0n+FPxt7URCCQoRdkKVq8WpXiO+Eyq
-        kgDxlSBaTcjDqyaQVc3tRKc15ai1jykVBE8nBaXCvQXSJKKVv6OLTN3PPDk1vw==
+        bh=peHRklyXqgJzIIRz/iqj5In0NzcGqRNUsJgx7mdJQvs=;
+        b=zQAcoZxSiLKhwTHZZjPL00dOatKdbg92Zjig+8wFJA5gAQ7ZU9+NNc13WxHp4Qy6HcOXc9
+        8ygmkcMN8IqVjIV3V3KqnbPBl1ucJdg4AUPvPaN1D50/ngHAGtP+0YC0ojmlyLbdWaPB9f
+        saz7FUOQHQKtSUA2lfkU9wkcd7RZn3cFmxInoGxuxj/Jz34jNI8ycqnemg9TaKnf8SHXG1
+        169r8IH+WPy026ix+664QWfFmlEOvWduW2vvy2TGuy6QbMs/0amTsE9m2sXtI9Gzt2AZ0+
+        xtF1SgPHA5CctE4pM5v9l1j1UY+k9iF+XnF1yIzzPTA1SDZPzK3ViYC8d0sI/Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623429844;
+        s=2020e; t=1623429845;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=9HZBhN56p2bWOcbqITFuHCHeo07yOhBD1YzCbJ7VT3Y=;
-        b=+3nockGVbVM5FYxFsXvbChL6t+fd4YQ3yi/g2vLtDz8Gf6dhxIkChcvVmMlCxPoZ0GRGBs
-        8ijjJ76amOqAigCw==
-Date:   Fri, 11 Jun 2021 18:15:29 +0200
+        bh=peHRklyXqgJzIIRz/iqj5In0NzcGqRNUsJgx7mdJQvs=;
+        b=+5nED/GXi7znn3J1oVa6gqz8cvrs3nUos23gerpKAHMjc9O56kAFNb/tXf5HvmECfcW4Ea
+        XBkLfzNZXooJ6WBw==
+Date:   Fri, 11 Jun 2021 18:15:30 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch 06/41] x86/fpu: Sanitize xstateregs_set()
+Subject: [patch 07/41] x86/fpu: Simplify PTRACE_GETREGS code
 References: <20210611161523.508908024@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,158 +53,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xstateregs_set() operates on a stopped task and tries to copy the provided
-buffer into the tasks fpu.state.xsave buffer.
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-Any error while copying or invalid state detected after copying results in
-wiping the target tasks FPU state completely including supervisor states.
+ptrace() has interfaces that let a ptracer inspect a ptracee's register state.
+This includes XSAVE state.  The ptrace() ABI includes a hardware-format XSAVE
+buffer for both the SETREGS and GETREGS interfaces.
 
-That's just wrong. The caller supplied invalid data or has a problem with
-unmapped memory, so there is absolutely no justification to corrupt the
-target state.
+In the old days, the kernel buffer and the ptrace() ABI buffer were the
+same boring non-compacted format.  But, since the advent of supervisor
+states and the compacted format, the kernel buffer has diverged from the
+format presented in the ABI.
 
-Fix this with the following modifications:
+This leads to two paths in the kernel:
+1. Effectively a verbatim copy_to_user() which just copies the kernel buffer
+   out to userspace.  This is used when the kernel buffer is kept in the
+   non-compacted form which means that it shares a format with the ptrace
+   ABI.
+2. A one-state-at-a-time path: copy_xstate_to_kernel().  This is theoretically
+   slower since it does a bunch of piecemeal copies.
 
- 1) If data has to be copied from userspace, allocate a buffer and copy from
-    user first.
+Remove the verbatim copy case.  Speed probably does not matter in this path,
+and the vast majority of new hardware will use the one-state-at-a-time path
+anyway.  This ensures greater testing for the "slow" path.
 
- 2) Use copy_kernel_to_xstate() unconditionally so that header checking
-    works correctly.
+This also makes enabling PKRU in this interface easier since a single path
+can be patched instead of two.
 
- 3) Return on error without corrupting the target state.
-
-This prevents corrupting states and lets the caller deal with the problem
-it caused in the first place.
-
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: Use copy_from_user() - Dave, Yu
-    Rename xbuf to tmpbuf - Borislav
+V4: Picked up from Dave's PKRU series
 ---
- arch/x86/include/asm/fpu/xstate.h |    4 ---
- arch/x86/kernel/fpu/regset.c      |   41 +++++++++++++++-----------------------
- arch/x86/kernel/fpu/xstate.c      |   14 +++++++-----
- 3 files changed, 25 insertions(+), 34 deletions(-)
+ arch/x86/kernel/fpu/regset.c |   22 ++--------------------
+ arch/x86/kernel/fpu/xstate.c |    6 +++---
+ 2 files changed, 5 insertions(+), 23 deletions(-)
 
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -111,8 +111,4 @@ void copy_supervisor_to_kernel(struct xr
- void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
- void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask);
- 
--
--/* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
--int validate_user_xstate_header(const struct xstate_header *hdr);
--
- #endif
 --- a/arch/x86/kernel/fpu/regset.c
 +++ b/arch/x86/kernel/fpu/regset.c
-@@ -6,8 +6,12 @@
- #include <asm/fpu/signal.h>
- #include <asm/fpu/regset.h>
- #include <asm/fpu/xstate.h>
-+
-+#include <linux/vmalloc.h>
-+
- #include <linux/sched/task_stack.h>
- 
-+
- /*
-  * The xstateregs_active() routine is the same as the regset_fpregs_active() routine,
-  * as the "regset->n" for the xstate regset will be updated based on the feature
-@@ -108,7 +112,7 @@ int xstateregs_set(struct task_struct *t
- 		  const void *kbuf, const void __user *ubuf)
+@@ -79,32 +79,14 @@ int xstateregs_get(struct task_struct *t
+ 		struct membuf to)
  {
  	struct fpu *fpu = &target->thread.fpu;
 -	struct xregs_state *xsave;
-+	struct xregs_state *tmpbuf = NULL;
- 	int ret;
  
  	if (!boot_cpu_has(X86_FEATURE_XSAVE))
-@@ -120,32 +124,21 @@ int xstateregs_set(struct task_struct *t
- 	if (pos != 0 || count != fpu_user_xstate_size)
- 		return -EFAULT;
+ 		return -ENODEV;
  
 -	xsave = &fpu->state.xsave;
 -
--	fpu__prepare_write(fpu);
--
+ 	fpu__prepare_read(fpu);
+ 
 -	if (using_compacted_format()) {
--		if (kbuf)
--			ret = copy_kernel_to_xstate(xsave, kbuf);
--		else
--			ret = copy_user_to_xstate(xsave, ubuf);
+-		copy_xstate_to_kernel(to, xsave);
+-		return 0;
 -	} else {
--		ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, xsave, 0, -1);
--		if (!ret)
--			ret = validate_user_xstate_header(&xsave->header);
-+	if (!kbuf) {
-+		tmpbuf = vmalloc(count);
-+		if (!tmpbuf)
-+			return -ENOMEM;
-+		if (copy_from_user(tmpbuf, ubuf, count)) {
-+			ret = -EFAULT;
-+			goto out;
-+		}
- 	}
- 
--	/*
--	 * mxcsr reserved bits must be masked to zero for security reasons.
--	 */
--	xsave->i387.mxcsr &= mxcsr_feature_mask;
+-		fpstate_sanitize_xstate(fpu);
+-		/*
+-		 * Copy the 48 bytes defined by the software into the xsave
+-		 * area in the thread struct, so that we can copy the whole
+-		 * area to user using one user_regset_copyout().
+-		 */
+-		memcpy(&xsave->i387.sw_reserved, xstate_fx_sw_bytes, sizeof(xstate_fx_sw_bytes));
 -
--	/*
--	 * In case of failure, mark all states as init:
--	 */
--	if (ret)
--		fpstate_init(&fpu->state);
-+	fpu__prepare_write(fpu);
-+	ret = copy_kernel_to_xstate(&fpu->state.xsave, kbuf ?: tmpbuf);
- 
-+out:
-+	vfree(tmpbuf);
- 	return ret;
+-		/*
+-		 * Copy the xstate memory layout.
+-		 */
+-		return membuf_write(&to, xsave, fpu_user_xstate_size);
+-	}
++	copy_xstate_to_kernel(to, &fpu->state.xsave);
++	return 0;
  }
  
+ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -519,7 +519,7 @@ int using_compacted_format(void)
- }
- 
- /* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
--int validate_user_xstate_header(const struct xstate_header *hdr)
-+static int validate_user_xstate_header(const struct xstate_header *hdr)
- {
- 	/* No unknown or supervisor features may be set */
- 	if (hdr->xfeatures & ~xfeatures_mask_user())
-@@ -1099,7 +1099,7 @@ void copy_xstate_to_kernel(struct membuf
+@@ -1040,11 +1040,11 @@ static void copy_part(struct membuf *to,
  }
  
  /*
-- * Convert from a ptrace standard-format kernel buffer to kernel XSAVES format
-+ * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S] format
-  * and copy to the target thread. This is called from xstateregs_set().
+- * Convert from kernel XSAVES compacted format to standard format and copy
+- * to a kernel-space ptrace buffer.
++ * Convert from kernel XSAVE or XSAVES compacted format to UABI
++ * non-compacted format and copy to a kernel-space ptrace buffer.
+  *
+  * It supports partial copy but pos always starts from zero. This is called
+- * from xstateregs_get() and there we check the CPU has XSAVES.
++ * from xstateregs_get() and there we check the CPU has XSAVE.
   */
- int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
-@@ -1146,14 +1146,16 @@ int copy_kernel_to_xstate(struct xregs_s
- 	 */
- 	xsave->header.xfeatures |= hdr.xfeatures;
- 
-+	/* mxcsr reserved bits must be masked to zero for security reasons. */
-+	xsave->i387.mxcsr &= mxcsr_feature_mask;
-+
- 	return 0;
- }
- 
- /*
-- * Convert from a ptrace or sigreturn standard-format user-space buffer to
-- * kernel XSAVES format and copy to the target thread. This is called from
-- * xstateregs_set(), as well as potentially from the sigreturn() and
-- * rt_sigreturn() system calls.
-+ * Convert from a sigreturn standard-format user-space buffer to kernel
-+ * XSAVE[S] format and copy to the target thread. This is called from the
-+ * sigreturn() and rt_sigreturn() system calls.
-  */
- int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf)
+ void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave)
  {
 
