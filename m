@@ -2,106 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376DE3A4709
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0538E3A470C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhFKQww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:52:52 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:45650 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbhFKQwr (ORCPT
+        id S230478AbhFKQy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:54:28 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36552 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229777AbhFKQy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:52:47 -0400
-Received: by mail-oi1-f182.google.com with SMTP id w127so6418755oig.12;
-        Fri, 11 Jun 2021 09:50:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5THCSNHIjfIwjf26YaVqXJWt1I0niq1tGC8N0R1X79Y=;
-        b=FgE7+ZNLMSkHY6MILu+w+HZx+Lrc8bW5piwmfLruYcieI1p4tslQ2hgUihXMp0YxCq
-         RRtB1UrW9ERXb8St/Sg3G83VMfvB4l8py3/5gzLjIJYH7lYU54PpxHqO5wnC3JGuM969
-         YycedgUmgP2PYRz9YxLCWsDdcyKk9HTvULxbGXCWQb1Oqu8LAAmIDbHqWxtLnMyaeN8C
-         dH/aGbPwiFZOdwLRZ96jqkm/XlJvp45MM317z7rJx+MGthC9zfTQWzpHCV4LZXAT4Fuu
-         EINt/9BdAAteWqWN7/q0o7v9Z65z1oiZoQEcMvD9thkY/c70WXTBpOsHBrgaR0uiGifo
-         GlYg==
-X-Gm-Message-State: AOAM531JYOXdpwPwL2JOWJZvO1wfroQRGLMAZOrcqnu+rp5QcByumnJx
-        nhM25wMrYjgS4zU+7AFY0kzDN49/ja8lEvnxnTA=
-X-Google-Smtp-Source: ABdhPJx1Lbcfjspr46W9J/vtG4/t2QWL15GBVroQfquLY+1xlxHYikEyJKVUZedqE7ZbkLNHsgx6PQIJ4Wv1IzlUIEE=
-X-Received: by 2002:aca:49c7:: with SMTP id w190mr961617oia.157.1623430249492;
- Fri, 11 Jun 2021 09:50:49 -0700 (PDT)
+        Fri, 11 Jun 2021 12:54:28 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lrkOP-0004zC-1F; Fri, 11 Jun 2021 16:52:25 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ALSA: i2c: tea6330t: Remove redundant initialization of variable err
+Date:   Fri, 11 Jun 2021 17:52:23 +0100
+Message-Id: <20210611165223.38983-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210608074437.12905-1-thunder.leizhen@huawei.com>
-In-Reply-To: <20210608074437.12905-1-thunder.leizhen@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Jun 2021 18:50:38 +0200
-Message-ID: <CAJZ5v0gRc9XdH++VDh5tQKqhHhkhaEm+982=Y9OMUpQHwCXCBg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] PM: remove trailing spaces and tabs
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-pm <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 9:44 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->
-> Run the following command to find and remove the trailing spaces and tabs:
->
-> find kernel/power/ -type f | xargs sed -r -i 's/[ \t]+$//'
->
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  kernel/power/Kconfig   | 12 ++++++------
->  kernel/power/process.c |  2 +-
->  2 files changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-> index 6bfe3ead10ad..a12779650f15 100644
-> --- a/kernel/power/Kconfig
-> +++ b/kernel/power/Kconfig
-> @@ -98,20 +98,20 @@ config PM_STD_PARTITION
->         default ""
->         help
->           The default resume partition is the partition that the suspend-
-> -         to-disk implementation will look for a suspended disk image.
-> +         to-disk implementation will look for a suspended disk image.
->
-> -         The partition specified here will be different for almost every user.
-> +         The partition specified here will be different for almost every user.
->           It should be a valid swap partition (at least for now) that is turned
-> -         on before suspending.
-> +         on before suspending.
->
->           The partition specified can be overridden by specifying:
->
-> -               resume=/dev/<other device>
-> +               resume=/dev/<other device>
->
-> -         which will set the resume partition to the device specified.
-> +         which will set the resume partition to the device specified.
->
->           Note there is currently not a way to specify which device to save the
-> -         suspended image to. It will simply pick the first available swap
-> +         suspended image to. It will simply pick the first available swap
->           device.
->
->  config PM_SLEEP
-> diff --git a/kernel/power/process.c b/kernel/power/process.c
-> index 50cc63534486..37401c99b7d7 100644
-> --- a/kernel/power/process.c
-> +++ b/kernel/power/process.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * drivers/power/process.c - Functions for starting/stopping processes on
-> + * drivers/power/process.c - Functions for starting/stopping processes on
->   *                           suspend transitions.
->   *
->   * Originally from swsusp.
-> --
+From: Colin Ian King <colin.king@canonical.com>
 
-Applied as 5.14 material, thanks!
+The variable err is being initialized with a value that is never read,
+it is being updated later on. The assignment is redundant and can be
+removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/i2c/tea6330t.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/i2c/tea6330t.c b/sound/i2c/tea6330t.c
+index 742d0f724375..037d6293f728 100644
+--- a/sound/i2c/tea6330t.c
++++ b/sound/i2c/tea6330t.c
+@@ -284,7 +284,7 @@ int snd_tea6330t_update_mixer(struct snd_card *card,
+ 	struct tea6330t *tea;
+ 	const struct snd_kcontrol_new *knew;
+ 	unsigned int idx;
+-	int err = -ENOMEM;
++	int err;
+ 	u8 default_treble, default_bass;
+ 	unsigned char bytes[7];
+ 
+-- 
+2.31.1
+
