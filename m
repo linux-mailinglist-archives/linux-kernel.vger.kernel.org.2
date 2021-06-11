@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423BB3A4AB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3083A4AB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhFKVmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhFKVmU (ORCPT
+        id S230136AbhFKVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 17:43:23 -0400
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:56114 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhFKVnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:42:20 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1D6C0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:40:12 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id i13so38693019edb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:40:12 -0700 (PDT)
+        Fri, 11 Jun 2021 17:43:21 -0400
+Received: by mail-pj1-f47.google.com with SMTP id k7so6401582pjf.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:41:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3ABviuhyW/gBVQTexifrPt1fY0Rs+xnYdvsKtcFy++I=;
-        b=TAqLpamx14JBvqGtI/2jQ2Eo0IVLz9IdRXTnndEV8i5Ld+uo3xauU65J+vvgL6nS72
-         KRk3qHuC6bvGvNZZFObgvUk97Bk7WwpnFou11vRM3gzntd2H7PcQMCPdGeeeFClVc2xM
-         4D+A1rIJGmpckYp1/xbzfnW4S3yv+FnFJ705Y=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aTtVmQE1L0tigro9e4OhQHUvzXLTzBpGS5nmzldfqwc=;
+        b=jJx0bhHT/QYKG7u09mfetN83sWnyZl4PppyYjtMbKsPHfgg2j9ZKiCmUh6A6ywKXYM
+         PoMXSabPZ2Xe5Qod9BdxbY2OR2loaiT5hgB5SGZsWejMtOR9eQvY+kjmozqDCS4x5q4y
+         nmkXMoNVDFNjXIdXDVaviSUjYLD48liOSqII147GBFEFD70fyx2lHtFcyOOSJRaSLwlp
+         f7HpaUMCB6Srlbys2kMB2iZowXinKsQDQ/8My0RmLXtcH5wdZTIBzBgK7/70c1jGDQsr
+         hbnTOgZtGJmj8y/6vAbNRl3oZmfBWArve8Sv6c5Wbfj7Mvhi2Xr+GNj6fpVmfDArxoYb
+         5J9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3ABviuhyW/gBVQTexifrPt1fY0Rs+xnYdvsKtcFy++I=;
-        b=ZS+CliszKxWW5mZXRPZehEqSc72hrLY7LFtJVY7dDebYYZXLdSrTQyOxDsBLP3/dva
-         0Jg/fWaXZnZubyxV8QZH9Rrt8G4NiJXLh9dIOALVWMCiprZBOKPrP4aK9s4xbj+EWc1y
-         r5xwTKZ5vOl/77Zw/o7ETqVsjCkyYEF4GNIdzZLzIPuQ49XIWFo9M0dUHF16TV4LI/RK
-         d/QL7rf3Ea0YtaKpSQ1YLgxJMYbSQ4GXA8RaKT4AO6MbnjZPPFh1OpUyMkC7AlcNxj3W
-         MHOUb8PRMQMf6SIrYRXmvYsHylJAJAdL+1XWO3t4Dy8QTOWXOWEOhmVUpJ9FJHWfWf5v
-         zHPA==
-X-Gm-Message-State: AOAM530Q/11akcbLh3uRPUGHZQ5ujljUw+vB8idPaIqciOsaLCGAH4fN
-        XJBq+T6wVh6A6G8oHTnM3bJ5wg==
-X-Google-Smtp-Source: ABdhPJx9Fdu4hX9I8BiaTVaJb1XmF290y13+Vg8YwDR6IXWC/yvFarK1Kxyr972OcXza8etSzJ4lAQ==
-X-Received: by 2002:aa7:cf08:: with SMTP id a8mr5735359edy.6.1623447610702;
-        Fri, 11 Jun 2021 14:40:10 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.64.110])
-        by smtp.gmail.com with ESMTPSA id h24sm2467665ejy.35.2021.06.11.14.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 14:40:10 -0700 (PDT)
-Subject: Re: [PATCH RFCv3 3/3] lib/test_printf: add test cases for '%pD'
-To:     Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20210611155953.3010-1-justin.he@arm.com>
- <20210611155953.3010-4-justin.he@arm.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <4fe3621f-f4a0-2a74-e831-dad9e046f392@rasmusvillemoes.dk>
-Date:   Fri, 11 Jun 2021 23:40:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aTtVmQE1L0tigro9e4OhQHUvzXLTzBpGS5nmzldfqwc=;
+        b=A9jH5rcOpVzlTEBrF3H7tfvCw8HENRem5cXQQeMl6kEHO79HpNT03OImjtR+DsoBQO
+         /gzeKyQ2whWVBcq2yhW7E/pgfV/8p9X1I8Sam3Xbf1LvzpmWWmrEZlc1YqhqvJrCBaj+
+         8OXGy8BE3BemBx1lf7q2+HA1JP7gsACTitUlLL5tlEXZ/RfSlyw1lgteTm1YQ5lIvB/Y
+         FyqhO9NrstVjyPZJf6nh0UolqM/RyURLuXVxSh5Wjy4hO5Sm/yRhvYZojooyCcwSQm/A
+         hZX04XcgsIYOzXT2w6Is9TXHpKT1X1NhIbIbqgJaPab+t6CUGkkZmji5RUlMTMPF9+nn
+         w1iQ==
+X-Gm-Message-State: AOAM533DL5HixU/D3W27DC+WcJaft52VHBMbNzrWLe4MA3fNdRuzjeNo
+        Hx27Pk6zTnZgeS5Hoiwk7ykekfOzixRvWDA6m4vNqg==
+X-Google-Smtp-Source: ABdhPJxYQ6rOcj/Pc8nl677xEo50DjwzTY7i/8/w0rKNj2bfYjXeh5/9H1wA16r+c5rLPBLU/bkVky4FgBu2rALP5Ac=
+X-Received: by 2002:a17:90a:1941:: with SMTP id 1mr11053249pjh.217.1623447622921;
+ Fri, 11 Jun 2021 14:40:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210611155953.3010-4-justin.he@arm.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210421020427.2384721-1-dlatypov@google.com>
+In-Reply-To: <20210421020427.2384721-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 11 Jun 2021 14:40:11 -0700
+Message-ID: <CAFd5g44TNA7G1mos-f3N87p5BoVnc8ffoyDWN2ikeGc2WKJOMA@mail.gmail.com>
+Subject: Re: [PATCH v3] kunit: add unit test for filtering suites by names
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/06/2021 17.59, Jia He wrote:
-> After the behaviour of specifier '%pD' is changed to print full path
-> of struct file, the related test cases are also updated.
-> 
-> Given the string is prepended from the end of the buffer, the check
-> of "wrote beyond the nul-terminator" should be skipped.
+On Tue, Apr 20, 2021 at 7:04 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> This adds unit tests for kunit_filter_subsuite() and
+> kunit_filter_suites().
+>
+> Note: what the executor means by "subsuite" is the array of suites
+> corresponding to each test file.
+>
+> This patch lightly refactors executor.c to avoid the use of global
+> variables to make it testable.
+> It also includes a clever `kfree_at_end()` helper that makes this test
+> easier to write than it otherwise would have been.
+>
+> Tested by running just the new tests using itself
+> $ ./tools/testing/kunit/kunit.py run '*exec*'
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Reviewed-by: David Gow <davidgow@google.com>
 
-Sorry, that is far from enough justification.
-
-I should probably have split the "wrote beyond nul-terminator" check in two:
-
-One that checks whether any memory beyond the buffer given to
-vsnprintf() was touched (including all the padding, but possibly more
-for the cases where we pass a known-too-short buffer), symmetric to the
-"wrote before buffer" check.
-
-And then another that checks the area between the '\0' and the end of
-the given buffer - I suppose that it's fair game for vsnprintf to use
-all of that as scratch space, and for that it could be ok to add that
-boolean knob.
-
-Rasmus
+Acked-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
