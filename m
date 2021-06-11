@@ -2,128 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C493A3DB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70203A3DAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhFKIDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52572 "EHLO
+        id S231579AbhFKIDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFKIDw (ORCPT
+        with ESMTP id S231322AbhFKIDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:03:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C436C0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iV6PuYBcGabhwMrk5vnVTC9sgARARQ/ZX23mi9Any1A=; b=hu6lDzSN1VXJtmAqBxQYQgTqKx
-        ISyXh0L8nqlJ54pRxUntgG2l9ctPgyiFQn9uQlGj5e+bKaPjczJIz4WlgeHF6rVFgczL7vS65H35X
-        DlSJmUtdiG2VC9HdRPFUrWR1XAg+3MDEU8MsP7wi8VYAZ8U/8vBZu5iC5zUaSpULj0+53CF4sYtqK
-        LxBsp/nMS8309HCOu98APJxRzADSWsKbsA9DH9phA+kiGbEXESTxqcSA+W8Jdyy4OIeZP5OSboq1+
-        OYw2LVaRMzYvpmae1nmcMw0FaXsrcv57ULYYZFeUxx5vqAbzLkZlzB1I5ddKNCoDACur8gj/eJGTx
-        tBKuo6TA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lrc6T-002X4L-G3; Fri, 11 Jun 2021 08:01:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF0B3300091;
-        Fri, 11 Jun 2021 10:01:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 83C5420709422; Fri, 11 Jun 2021 10:01:20 +0200 (CEST)
-Date:   Fri, 11 Jun 2021 10:01:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/fpu: Rename "dynamic" XSTATEs to "independent"
-Message-ID: <YMMYUGW9f7CUJ+oz@hirez.programming.kicks-ass.net>
-References: <cover.1623388344.git.luto@kernel.org>
- <1eecb0e4f3e07828ebe5d737ec77dc3b708fad2d.1623388344.git.luto@kernel.org>
+        Fri, 11 Jun 2021 04:03:22 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066ECC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:01:25 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id e22so1796852pgv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 01:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dDD6ozQuHkfsjJXIeMviIaHXaasyFUacyXt/Ls+8R/4=;
+        b=H2vJeZvjIh9pgu2UG0sKGBhDj+x8aQhG/MfT1Cxtztd+CblLvs4QSwrLvNWyQ01BVy
+         i6rUSqwWT6YxqHNCSJ0o4eDEUa0E51TjjqikU8ZGPtTjHvKJxcqAci0jvgffQrMqqyPl
+         5GWj7dgoSke+cSE0YiCPmRTujqWqKuHKMMo10p8azW1mM7x/cuOtHMabsZUBU5OBD2+a
+         lUX+G37CNYrOL0Gt8PzG3CIysFGvU9gqaETpWcWCaPrG5IBtUfmv9N79D9bToGBjgCRR
+         i2ThzGT/BoEAOF2sV+5EkiQxPUywzJwdzzTtLePbsw7q6Z2f4vkYfFjgP4ws+Otgcu8Q
+         G/+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dDD6ozQuHkfsjJXIeMviIaHXaasyFUacyXt/Ls+8R/4=;
+        b=Fpa4UFPnhTNCw1gTG/ZKW59CUTpUN3JO5kNkMs87eZXdQPHvXjdvTHs2wzrAswwXbZ
+         1FcxNozEQqe70tguFJa62U5Di9Z0g+VYYPeln6RpLB5z+H/HDoVVF0hOm6Gpr9VZHloT
+         qcW34/gRKu37rWBUVXkD07bhzCre5CjUwYhe4Ijd17tD6ovF3JjyrvDs4fdlPvmj82IN
+         zBu2TwycIIzcPM9zugrw5B5hC+chNury/CzTLE8fcHD4GwMzAdaOVd9UgRQLxuGK/jG/
+         ALm0v07x+cltIEsF2Zk6RzKbe0/qA9P2RkuU1Y/TnCN87VDZcwegATitM+5Rku6Fzl6j
+         jC6A==
+X-Gm-Message-State: AOAM532DxXXDKB8iep0Y4qQjSXXhd0g8Aim4pQzikLXcJAO+RIrhjjYc
+        kLsR8OUR+62yia/b5EzqWtczYA==
+X-Google-Smtp-Source: ABdhPJzQqL9BA7ZqXfmHsqjU1YOZ0ByTX9+TANEafYUiavQpaP9W5HLlNZKSJtUVqq4l4MmWcghzvA==
+X-Received: by 2002:a62:2c92:0:b029:2ef:6118:a934 with SMTP id s140-20020a622c920000b02902ef6118a934mr7063663pfs.80.1623398484479;
+        Fri, 11 Jun 2021 01:01:24 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id j4sm4258445pfj.111.2021.06.11.01.01.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 01:01:23 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 13:31:22 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
+ <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1eecb0e4f3e07828ebe5d737ec77dc3b708fad2d.1623388344.git.luto@kernel.org>
+In-Reply-To: <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:13:36PM -0700, Andy Lutomirski wrote:
-> The salient feature of "dynamic" XSTATEs is that they are not part of the
-> main task XSTATE buffer.  The fact that they are dynamically allocated is
-> irrelevant and will become quite confusing when user math XSTATEs start
-> being dynamically allocated.  Rename them to "independent" because they
-> are independent of the main XSTATE code.
+On 11-06-21, 09:42, Geert Uytterhoeven wrote:
+> Hi Viresh, Linus,
 > 
-> This is just a search-and-replace with some whitespace updates to keep
-> things aligned.
+> On Fri, Jun 11, 2021 at 5:56 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > On 10-06-21, 22:46, Linus Walleij wrote:
+> > > thanks for working on this, it's a really interesting driver.
+> > >
+> > > My first question is conceptual:
+> > >
+> > > We previously have Geerts driver for virtualization:
+> > > drivers/gpio/gpio-aggregator.c
+> > >
+> > > The idea with the aggregator is that a host script sets up a
+> > > unique gpiochip for the virtualized instance using some poking
+> > > in sysfs and pass that to the virtual machine.
+> > > So this is Linux acting as virtualization host by definition.
 > 
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
->  arch/x86/events/intel/lbr.c       |  6 +--
->  arch/x86/include/asm/fpu/xstate.h | 14 +++----
->  arch/x86/kernel/fpu/xstate.c      | 62 +++++++++++++++----------------
->  3 files changed, 41 insertions(+), 41 deletions(-)
+> The gpio-aggregator is running on the host...
 > 
-> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-> index 76dbab6ac9fb..0189807fc3c1 100644
-> --- a/arch/x86/events/intel/lbr.c
-> +++ b/arch/x86/events/intel/lbr.c
-> @@ -491,7 +491,7 @@ static void intel_pmu_arch_lbr_xrstors(void *ctx)
->  {
->  	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
->  
-> -	copy_kernel_to_dynamic_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
-> +	copy_kernel_to_independent_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
->  }
->  
->  static __always_inline bool lbr_is_reset_in_cstate(void *ctx)
-> @@ -576,7 +576,7 @@ static void intel_pmu_arch_lbr_xsaves(void *ctx)
->  {
->  	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
->  
-> -	copy_dynamic_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
-> +	copy_independent_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
->  }
->  
->  static void __intel_pmu_lbr_save(void *ctx)
-> @@ -978,7 +978,7 @@ static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc)
->  		intel_pmu_store_lbr(cpuc, NULL);
->  		return;
->  	}
-> -	copy_dynamic_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
-> +	copy_independent_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
->  
->  	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
->  }
+> > > I think virtio is more abstract and intended for the usecase
+> > > where the hypervisor is not Linux, so this should be mentioned
+> > > in the commit, possibly also in Kconfig so users immediately
+> > > know what usecases the two different drivers are for.
+> 
+> ... while the virtio-gpio driver is meant for the guest kernel.
+> 
+> I my PoC "[PATCH QEMU v2 0/5] Add a GPIO backend"[1], I didn't have
+> a virtio transport, but just hooked into the PL061 GPIO emulation
+> in QEMU.  The PL061 QEMU driver talked to the GPIO backend, which
+> talked to /dev/gpiochipN on the host.
 
-Yesterday tglx proposed the *save*_to_{user,kernel}() and
-*rstor*_from_{user,kernel}() namespace for pretty much every other such
-function.
+Hmm, interesting.
 
-And while I agree that independent_supervisor beats dynamic_supervisor
-for a name, they're both stupid long :-(
+> > Well, not actually.
+> >
+> > The host can actually be anything. It can be a Xen based dom0, which
+> > runs some proprietary firmware, or Qemu running over Linux.
+> >
+> > It is left for the host to decide how it wants to club together the
+> > GPIO pins from host and access them, with Linux host userspace it
+> > would be playing with /dev/gpiochipN, while for a raw one it may
+> > be accessing registers directly.
+> >
+> > And so the backend running at host, needs to pass the gpiochip
+> > configurations and only the host understand it.
+> 
+> So QEMU has to translate the virtio-gpio communication to e.g.
+> /dev/gpiochipN on the host (or a different backend on non-Linux or
+> bare-metal HV).
 
-I don't suppose we can simply use xsaves_to_kernel()
-xstrors_from_kernel() and add some magic to their respective mask
-handling to ensure that a mask belongs to only 1 (of 3) types.
+No, QEMU passes the raw messages to the backend daemon running in host
+userspace (which shares a socket with qemu). The backend understands
+the virtio/vhost protocols and so won't be required to change at all
+if we move from Qemu to something else. And that's what we (Linaro)
+are looking to do here with Project Stratos.
 
-	int types = 0;
+Create virtio based hypervisor agnostic backends.
 
-	if (mask & xfeatures_mask_user())
-		type++;
-	if (mask & xfeatures_mask_supervisor())
-		types++;
-	if (mask & xfeatures_mask_independent())
-		types++;
+> > The way I test it for now is by running this with Qemu over my x86
+> > box, so my host side is indeed playing with sysfs Linux.
+> 
+> Can you please share a link to the QEMU patches?
 
-	if (WARN_ON_ONCE(type != 1))
-		return;
+Unfortunately, they aren't in good shape right now and the backend is
+a bit hacky (Just checking the data paths, but not touching
+/dev/gpiochipN at all for now).
 
-?
+I didn't implement one as I am going to implement the backend in Rust
+and not Qemu. So it doesn't depend on Qemu at all.
 
+To give you an idea of the whole thing, here is what we have done for
+I2c for example, GPIO one will look very similar.
+
+The Qemu patches:
+
+https://yhbt.net/lore/all/cover.1617278395.git.viresh.kumar@linaro.org/T/
+
+The stuff from tools/vhost-user-i2c/ directory (or patch 4/6) isn't
+used anymore and the following Rust implementation replaces it:
+
+https://github.com/vireshk/vhost-device/tree/master/src/i2c
+
+I can share the GPIO code once I have the Rust implementation ready.
+
+> The GPIO aggregator came into play after talking to Alexander Graf and
+> Peter Maydell.  To reduce the attack surface, they didn't want QEMU
+> to be responsible for exporting to the guest a subset of all GPIOs of
+> a gpiochip, only a full gpiochip.  However, the full gpiochip may
+> contain critical GPIOs you do not want the guest to tamper with.
+> Hence the GPIO aggregator was born, to take care of aggregating all
+> GPIOs you want to export to a guest into a new virtual gpiochip.
+> 
+> You can find more information about the GPIO Aggregator's use cases in
+> "[PATCH v7 0/6] gpio: Add GPIO Aggregator"[2].
+
+So I was actually looking to do some kind of aggregation on the host
+side's backend daemon to share only a subset of GPIO pins, I will see
+if that is something I can reuse. Thanks for sharing details.
+
+-- 
+viresh
