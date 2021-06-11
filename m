@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C8F3A3FB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E989D3A3FC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbhFKKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:01:58 -0400
-Received: from mga17.intel.com ([192.55.52.151]:65434 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230356AbhFKKB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:01:56 -0400
-IronPort-SDR: KbRBw84QMUkbJlsQOWUK4xLdEtHqN43el7zBfvTAiiwAwTsLOuwPEYMoaJLscMLKTciJL/gODL
- JJWGyy4D4PGg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="185872338"
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="185872338"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 02:59:58 -0700
-IronPort-SDR: fkhDfSlQ9vKy2UjFBMV6u4V7kKolzSzvRQ9J+MTp+VU583mEzKSoxIs4kcnXIGdjuJeL0KWhkK
- OhtlES0XpWyA==
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="552649386"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 02:59:55 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lrdxA-001TlT-E8; Fri, 11 Jun 2021 12:59:52 +0300
-Date:   Fri, 11 Jun 2021 12:59:52 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org, kaixuxia@tencent.com,
-        gustavoars@kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com,
-        yangjihong1@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next v3] media: staging: atomisp: use list_splice_init
- in atomisp_compat_css20.c
-Message-ID: <YMM0GO4Ny6j/FvQV@smile.fi.intel.com>
-References: <20210611081004.1348026-1-libaokun1@huawei.com>
+        id S231145AbhFKKIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKKH5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 06:07:57 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAF3C061574;
+        Fri, 11 Jun 2021 03:05:59 -0700 (PDT)
+Received: from zn.tnic (p2e584d18.dip0.t-ipconnect.de [46.88.77.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 94D5D1EC03D2;
+        Fri, 11 Jun 2021 12:05:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623405957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=F/G61vuOPAm8qEIwPwffMg7wC8m21HUrHgj+I72io2c=;
+        b=L5CyWlfaAQYt6BTFsy5ePtaPuYJWiEz5x4+CgT5BygvRfA/OWmfIPJiYTcY/tq07Jgol/f
+        iKUkdMvLFz2hpohDS2nuEGyMJmps/D4ZMXZOZQY6vUF6LtBmNlLvpYVMnjDUtdpEqa/sL+
+        BYxaHz38csij7zXeGmUQBEIjzb1SnJw=
+Date:   Fri, 11 Jun 2021 12:03:41 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 3/4] x86/tsx: Clear CPUID bits when TSX always force
+ aborts
+Message-ID: <YMM0/SARv62uo41r@zn.tnic>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <aaf129dab23878913bf6f370894c336fc45388a2.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210611081004.1348026-1-libaokun1@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <aaf129dab23878913bf6f370894c336fc45388a2.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 04:10:04PM +0800, Baokun Li wrote:
-> Using list_splice_init() instead of entire while-loops
-> in atomisp_compat_css20.c.
-
-Seems fine to me.
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
-> V1->V2:
-> 	CC mailist
-> V2->V3:
->         Using list_move_tail() -> Using list_splice_init()
-> 
->  .../media/atomisp/pci/atomisp_compat_css20.c  | 35 +++----------------
->  1 file changed, 5 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-> index f60198bb8a1a..3844180d32b5 100644
-> --- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-> +++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-> @@ -2144,42 +2144,17 @@ void atomisp_css_stop(struct atomisp_sub_device *asd,
+On Wed, Jun 09, 2021 at 02:13:38PM -0700, Pawan Gupta wrote:
+> @@ -114,6 +127,26 @@ void __init tsx_init(void)
+>  			tsx_ctrl_state = TSX_CTRL_ENABLE;
 >  	}
 >  
->  	/* move stats buffers to free queue list */
-> -	while (!list_empty(&asd->s3a_stats_in_css)) {
-> -		s3a_buf = list_entry(asd->s3a_stats_in_css.next,
-> -				     struct atomisp_s3a_buf, list);
-> -		list_del(&s3a_buf->list);
-> -		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
-> -	}
-> -	while (!list_empty(&asd->s3a_stats_ready)) {
-> -		s3a_buf = list_entry(asd->s3a_stats_ready.next,
-> -				     struct atomisp_s3a_buf, list);
-> -		list_del(&s3a_buf->list);
-> -		list_add_tail(&s3a_buf->list, &asd->s3a_stats);
-> -	}
-> +	list_splice_init(&asd->s3a_stats_in_css, &asd->s3a_stats);
-> +	list_splice_init(&asd->s3a_stats_ready, &asd->s3a_stats);
->  
->  	spin_lock_irqsave(&asd->dis_stats_lock, irqflags);
-> -	while (!list_empty(&asd->dis_stats_in_css)) {
-> -		dis_buf = list_entry(asd->dis_stats_in_css.next,
-> -				     struct atomisp_dis_buf, list);
-> -		list_del(&dis_buf->list);
-> -		list_add_tail(&dis_buf->list, &asd->dis_stats);
-> -	}
-> +	list_splice_init(&asd->dis_stats_in_css, &asd->dis_stats);
->  	asd->params.dis_proj_data_valid = false;
->  	spin_unlock_irqrestore(&asd->dis_stats_lock, irqflags);
->  
->  	for (i = 0; i < ATOMISP_METADATA_TYPE_NUM; i++) {
-> -		while (!list_empty(&asd->metadata_in_css[i])) {
-> -			md_buf = list_entry(asd->metadata_in_css[i].next,
-> -					    struct atomisp_metadata_buf, list);
-> -			list_del(&md_buf->list);
-> -			list_add_tail(&md_buf->list, &asd->metadata[i]);
-> -		}
-> -		while (!list_empty(&asd->metadata_ready[i])) {
-> -			md_buf = list_entry(asd->metadata_ready[i].next,
-> -					    struct atomisp_metadata_buf, list);
-> -			list_del(&md_buf->list);
-> -			list_add_tail(&md_buf->list, &asd->metadata[i]);
-> -		}
-> +		list_splice_init(&asd->metadata_in_css[i], &asd->asd->metadata[i]);
-> +		list_splice_init(&asd->metadata_ready[i], &asd->asd->metadata[i]);
->  	}
->  
->  	atomisp_flush_params_queue(&asd->video_out_capture);
-> -- 
-> 2.31.1
-> 
+> +	/*
+> +	 * Hardware will always abort a TSX transaction if both CPUID bits
+> +	 * RTM_ALWAYS_ABORT and TSX_FORCE_ABORT are enumerated.  In this case it
+> +	 * is better not to enumerate CPUID.RTM and CPUID.HLE bits. Clear them
+> +	 * here.
+> +	 */
+> +	if (boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT) &&
+> +	    boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
+> +		tsx_ctrl_state = TSX_CTRL_RTM_ALWAYS_ABORT;
+> +		tsx_clear_cpuid();
+> +		setup_clear_cpu_cap(X86_FEATURE_RTM);
+> +		setup_clear_cpu_cap(X86_FEATURE_HLE);
+> +		return;
+> +	}
+
+Why isn't this happening as the first thing on entry in that tsx_init()
+function? IOW, there's no point to noodle through cmdline options etc if
+the hardware will always abort transactions.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
