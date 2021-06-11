@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B86C3A49EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD0D3A49F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhFKUKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbhFKUKQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:10:16 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53130C061574;
-        Fri, 11 Jun 2021 13:08:18 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id z8so7251665wrp.12;
-        Fri, 11 Jun 2021 13:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tzxiu7KFGSluOPtUekhY+72u7lbVVCqQQlsEwyNj1Qg=;
-        b=vROX4jNiaWGHijnOjfKBo6d3pqx42H+5qGdwurRLD7O4fPmDhIObwlDUtzfLG0SLPX
-         IP3T74La8bnvi5+gAlLEjRAqSXP6pwRoLT18wH2ix+Uv8xNtvhZshrq7iTepo78ZXJgB
-         d+PYhb9GC2VESBbumysCwNWeDs9yOOSiYKcc1O0lpDpGwz6I/iWEl42IYnML8PRSLGjK
-         iVDNJcWsoyBknsHj5yeEi4/mRhVE7up5FUHOY9fYATHd6RYSNURnyheHWe8+Iqmlzgwt
-         tfrRefoW/3Vevrj2/glIm6DDo/KIZiRruGZmC2yqZh44/vcR6uhFsgBGTKer5t9/uCNr
-         mgZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tzxiu7KFGSluOPtUekhY+72u7lbVVCqQQlsEwyNj1Qg=;
-        b=cIlG9jFEiPe27zCkZvxyG2oeG3Ib+tmPU+COkSNus+i9H7rh7OP0QFIA9lGutkQ53V
-         qaIXCM0/a9PFAjG3wUj4b6kbQvs0roItwQDTUK5GWlfwEdqgmwJBY7PpdXKsJY8sKstQ
-         QfTe8R6McF1RcQ9tD8/J79jf3KlacZ2Vq0aYCXOHZBtQX4R1M139Yc92PiNEIT5m+qut
-         Ig+fLkO4E+xovSst5ok6cbLO6DCUzLGkcJ0go+Dp9wydIGHpBMo7rMCjeunSCzOanCrH
-         FDI2uxShTkwznebY6qqX5J4+b6MubaDOc1/ZzncHnLtjeOyo7tEqeId3MKuyyoC6MCNg
-         8RJw==
-X-Gm-Message-State: AOAM530vo0Zuw1fTCTKUjyZOoYadJrcydnCGYPTzefz+qmvGRxuAXQCU
-        SqPAlZ0BrVLdOyX/51DbwmYZoVMynCE=
-X-Google-Smtp-Source: ABdhPJygC3PA0tq7FMN68+kal30TbfxTd8WdXPm5eg88bWh3p2DjciczPD3JHFYt0GkINaM3gpDTMg==
-X-Received: by 2002:a5d:4fc6:: with SMTP id h6mr5973499wrw.1.1623442093463;
-        Fri, 11 Jun 2021 13:08:13 -0700 (PDT)
-Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id u20sm6741319wmq.24.2021.06.11.13.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 13:08:13 -0700 (PDT)
-From:   Romain Perier <romain.perier@gmail.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Mohammed Billoo <mohammed.billoo@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] ARM: dts: mstar: Add watchdog device_node definition
-Date:   Fri, 11 Jun 2021 22:08:01 +0200
-Message-Id: <20210611200801.52139-4-romain.perier@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210611200801.52139-1-romain.perier@gmail.com>
-References: <20210611200801.52139-1-romain.perier@gmail.com>
+        id S231308AbhFKUME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:12:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230299AbhFKUMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:12:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3229B613DD;
+        Fri, 11 Jun 2021 20:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623442204;
+        bh=WuTiQjeodNRfELT25Dm1Y4fiX/3qt6eu8otI/lMVgCg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=b55JqRmt7oGR5agfroZso3l9BvILmGZyV90LbgPQqApDQtI5/JnPpLEKzB3bxRTHn
+         syv3RIPBt8W5s+GzrKjfT5c+EMY4zRaKUzulvcyi2WVyO8SawDuD+uyvzVttvjkY6e
+         2cGYH2jjuw1fz75s70yJHRuz/8pAi0xkbbPHfPPy90uvNBuwNal/FcTneXpaZgGfpv
+         WJcrBQoWG/FKe9U8Pr5jSovNCeidchgaSjzGkf5giI/Woe5CRivtpC1he/8xeQn080
+         F5hD+xFaQDLeP3/vQmHNbwRJ+WnZM1aBsBlwwDOirImQzOD1D4uR1kIiq9DWKLBT6w
+         r8NLpZ7G5pHHg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 23B3560972;
+        Fri, 11 Jun 2021 20:10:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v1 1/1] net: stmmac: Fix unused values warnings
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162344220414.8005.8449324972783579265.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Jun 2021 20:10:04 +0000
+References: <20210611071143.987866-1-vee.khee.wong@linux.intel.com>
+In-Reply-To: <20210611071143.987866-1-vee.khee.wong@linux.intel.com>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, qiangqing.zhang@nxp.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boon.leong.ong@intel.com, weifeng.voon@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the definition of both an oscillator at 12Mhz required by the
-the watchdog and the watchdog device_node.
+Hello:
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
----
- arch/arm/boot/dts/mstar-v7.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/arch/arm/boot/dts/mstar-v7.dtsi b/arch/arm/boot/dts/mstar-v7.dtsi
-index 075d583d6f40..2273295e140f 100644
---- a/arch/arm/boot/dts/mstar-v7.dtsi
-+++ b/arch/arm/boot/dts/mstar-v7.dtsi
-@@ -60,6 +60,14 @@ rtc_xtal: rtc_xtal {
- 			clock-frequency = <32768>;
- 			status = "disabled";
- 		};
-+
-+		xtal_div2: xtal_div2 {
-+			#clock-cells = <0>;
-+			compatible = "fixed-factor-clock";
-+			clocks = <&xtal>;
-+			clock-div = <2>;
-+			clock-mult = <1>;
-+		};
- 	};
- 
- 	soc: soc {
-@@ -101,6 +109,12 @@ reboot {
- 				mask = <0x79>;
- 			};
- 
-+			watchdog@6000 {
-+				compatible = "mstar,msc313e-wdt";
-+				reg = <0x6000 0x1f>;
-+				clocks = <&xtal_div2>;
-+			};
-+
- 			intc_fiq: interrupt-controller@201310 {
- 				compatible = "mstar,mst-intc";
- 				reg = <0x201310 0x40>;
--- 
-2.30.2
+On Fri, 11 Jun 2021 15:11:43 +0800 you wrote:
+> The commit 8532f613bc78 ("net: stmmac: introduce MSI Interrupt routines
+> for mac, safety, RX & TX") introduced the converity warnings:-
+> 
+>   1. Unused value (UNUSED_VALUE)
+>      assigned_value: Assigning value REQ_IRQ_ERR_MAC to irq_err here,
+>      but that stored value is not used.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v1,1/1] net: stmmac: Fix unused values warnings
+    https://git.kernel.org/netdev/net-next/c/3e6dc7b65025
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
