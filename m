@@ -2,119 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEE73A4A92
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E123A4A99
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhFKVU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:20:59 -0400
-Received: from mail-pf1-f182.google.com ([209.85.210.182]:33755 "EHLO
-        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhFKVU6 (ORCPT
+        id S230330AbhFKVaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 17:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhFKVaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:20:58 -0400
-Received: by mail-pf1-f182.google.com with SMTP id p13so5487644pfw.0;
-        Fri, 11 Jun 2021 14:18:43 -0700 (PDT)
+        Fri, 11 Jun 2021 17:30:17 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6F2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:28:18 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id u24so38637352edy.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Yj/vp7a0ivkIMlD+voHVQNNmuERYkNcOuFUlb3V5+QU=;
+        b=ajiSwjMERGP2Z/iuuXasSqjkJ8BYoaGXsEDLrPGqmodRD89SMCOkxYz/x8/F/ZhuL/
+         dnUA5/b7MkoPeEu+KPcGzPOJ9WZp0F5iunGA8iq1RiGXSXBSPDh5gqdGF6JncWWT/ODj
+         +470G9xNl22BhqGdGKor1/Y5eU0Epq5MuFRuo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=1f+rAIFWuXQC60Z4MJLpUOHXAysawucJQzzXOQQ+vvk=;
-        b=KOi5fICf/Y/0aD+R/wdYOEkQZ/nvajQkAlUIDKuDwKbg8YvEzOe1k/b7WtWdDLid6y
-         KMrV8qZXS6yqZpGvVzFK8Xj5SBxaCOQ0hqFq7y5DsmZ+TO2dcIaNxIzyoLLEc8NUeXXb
-         BUsfzPz0Y8Do7GsMdpeaWlh+HvMw1ZixlGb2crD94dDTLxKyrukDYEH9j6JqPsLPsSjF
-         RNldR4HEZu71cjN7a7PnJTWsYDMFczX4dJohFPyKjVvJgboFiIYf6eWwG79PJDDqxtmU
-         eXgXCxZU3dlmN52dagC8zpXLodtyGTC7UAm302Q4swGJl+DVcdtclNAmTZMk0y35Bh/a
-         1Lfg==
-X-Gm-Message-State: AOAM533nO/7IyA4yzvAWO7tHjuafxlsivfWV4YeK3vHOieUUjCILbDA4
-        uMHMpKyoVwkE289d/TrpGBsYCBWhQgOveA==
-X-Google-Smtp-Source: ABdhPJzP79R71FfpIhy3T67G4pnx1TqEVnQZJw0M0TvAIZy+0gb+2OrKFCMxp35EOZUTrRF0F7Bv2w==
-X-Received: by 2002:a05:6a00:189e:b029:2f0:94d6:78c5 with SMTP id x30-20020a056a00189eb02902f094d678c5mr10193537pfh.46.1623446323016;
-        Fri, 11 Jun 2021 14:18:43 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id w23sm5817998pfi.220.2021.06.11.14.18.40
+        bh=Yj/vp7a0ivkIMlD+voHVQNNmuERYkNcOuFUlb3V5+QU=;
+        b=K9O9LPKCg532rHzqhh534BAppGzKeoQm8V9eQMgl6InpE+ShIEvMjRjUITTJ44YCYN
+         vA/FaNGMrbTS1hzNRBr6W5Fr0/6t4+GURfw+3daDJoFQQOAaYUA/zx0NhynkWZb1e+Lx
+         uGCdz4krTHF/9DcHcNJmWP8s1LmaZK96j837sRuNjIr4V16r5L/VBYa1Mi+EDrJtSI3+
+         /fFToQk7twBPrtMkZZ3Xofsy36GTjnKbURZy6CLoTsw/rmuO1WrU7as3FtEvW161GfIO
+         mTCbKZ3TqQek+FFmfzz5mdFe3u/XtQe8ul1uVQmt73XwwpM9mciUKj0FcZz6JUYLB78R
+         dblQ==
+X-Gm-Message-State: AOAM532OluUojpe+kMopHi+uuXmYXmttw+E+FKq/9/ZRdLY2C6j3oicX
+        /0eCFfYRUSk1lJhtHZXhp1s/Gw==
+X-Google-Smtp-Source: ABdhPJwq53CQ9eBtPD8hVpIx6faEUJL9Vm6nZO2saTd2fFDa8JKoNUeDVbkS5vRIsoOdUY77vA6TTw==
+X-Received: by 2002:a05:6402:61a:: with SMTP id n26mr5734045edv.220.1623446897185;
+        Fri, 11 Jun 2021 14:28:17 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.64.110])
+        by smtp.gmail.com with ESMTPSA id f8sm2437137ejw.75.2021.06.11.14.28.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 14:18:42 -0700 (PDT)
-Subject: Re: [PATCH v37 0/4] scsi: ufs: Add Host Performance Booster Support
-To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-References: <CGME20210611022142epcms2p374ea5b82cfe122de69a7fefe27edf856@epcms2p3>
- <20210611022142epcms2p374ea5b82cfe122de69a7fefe27edf856@epcms2p3>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <a5b89372-fdb6-efe0-919f-59041d643071@acm.org>
-Date:   Fri, 11 Jun 2021 14:18:39 -0700
+        Fri, 11 Jun 2021 14:28:16 -0700 (PDT)
+Subject: Re: [PATCH RFCv3 2/3] lib/vsprintf.c: make %pD print full path for
+ file
+To:     Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210611155953.3010-1-justin.he@arm.com>
+ <20210611155953.3010-3-justin.he@arm.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <35c35b55-3c58-59e8-532a-6cad34aff729@rasmusvillemoes.dk>
+Date:   Fri, 11 Jun 2021 23:28:15 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210611022142epcms2p374ea5b82cfe122de69a7fefe27edf856@epcms2p3>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210611155953.3010-3-justin.he@arm.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/21 7:21 PM, Daejun Park wrote:
-> Changelog:
+On 11/06/2021 17.59, Jia He wrote:
+> We have '%pD' for printing a filename. It may not be perfect (by
+> default it only prints one component.)
+> 
+> As suggested by Linus at [1]:
+> A dentry has a parent, but at the same time, a dentry really does
+> inherently have "one name" (and given just the dentry pointers, you
+> can't show mount-related parenthood, so in many ways the "show just
+> one name" makes sense for "%pd" in ways it doesn't necessarily for
+> "%pD"). But while a dentry arguably has that "one primary component",
+> a _file_ is certainly not exclusively about that last component.
+> 
+> Hence change the behavior of '%pD' to print full path of that file.
+> 
+> Things become more complicated when spec.precision and spec.field_width
+> is added in. string_truncate() is to handle the small space case for
+> '%pD' precision and field_width.
+> 
+> [1] https://lore.kernel.org/lkml/CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com/
+> 
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>  Documentation/core-api/printk-formats.rst |  5 ++-
+>  lib/vsprintf.c                            | 47 +++++++++++++++++++++--
+>  2 files changed, 46 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+> index f063a384c7c8..95ba14dc529b 100644
+> --- a/Documentation/core-api/printk-formats.rst
+> +++ b/Documentation/core-api/printk-formats.rst
+> @@ -408,12 +408,13 @@ dentry names
+>  ::
+>  
+>  	%pd{,2,3,4}
+> -	%pD{,2,3,4}
+> +	%pD
+>  
+>  For printing dentry name; if we race with :c:func:`d_move`, the name might
+>  be a mix of old and new ones, but it won't oops.  %pd dentry is a safer
+>  equivalent of %s dentry->d_name.name we used to use, %pd<n> prints ``n``
+> -last components.  %pD does the same thing for struct file.
+> +last components.  %pD prints full file path together with mount-related
+> +parenthood.
+>  
+>  Passed by reference.
+>  
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index f0c35d9b65bf..317b65280252 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/string.h>
+>  #include <linux/ctype.h>
+>  #include <linux/kernel.h>
+> +#include <linux/dcache.h>
+>  #include <linux/kallsyms.h>
+>  #include <linux/math64.h>
+>  #include <linux/uaccess.h>
+> @@ -601,6 +602,20 @@ char *widen_string(char *buf, int n, char *end, struct printf_spec spec)
+>  }
+>  
+>  /* Handle string from a well known address. */
+> +static char *string_truncate(char *buf, char *end, const char *s,
+> +			     u32 full_len, struct printf_spec spec)
+> +{
+> +	int lim = 0;
+> +
+> +	if (buf < end) {
 
-Does this patch series perhaps need to be rebased? This is what git am
-reports against Martin's 5.14/scsi-staging branch:
+See below, I think the sole caller guarantees this,
 
-$ git am ~/20210610-\[PATCH\ v37\ *
-Applying: scsi: ufs: Introduce HPB feature
-error: patch failed: drivers/scsi/ufs/ufshcd.c:24
-error: drivers/scsi/ufs/ufshcd.c: patch does not apply
-Patch failed at 0001 scsi: ufs: Introduce HPB feature
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+> +		if (spec.precision >= 0)
+> +			lim = strlen(s) - min_t(int, spec.precision, strlen(s));
+> +
+> +		return widen_string(buf + full_len, full_len, end - lim, spec);
+> +	}
+> +
+> +	return buf;
 
-$ patch -p1 < ~/20210610-\[PATCH\ v37\ 1_4\]\ scsi_\ ufs_\ Introduce\
-HPB\ feature-10889.eml
-patching file Documentation/ABI/testing/sysfs-driver-ufs
-patching file drivers/scsi/ufs/Kconfig
-patching file drivers/scsi/ufs/Makefile
-patching file drivers/scsi/ufs/ufs-sysfs.c
-patching file drivers/scsi/ufs/ufs.h
-patching file drivers/scsi/ufs/ufshcd.c
-Hunk #1 succeeded at 24 with fuzz 2.
-Hunk #2 succeeded at 4985 (offset 20 lines).
-Hunk #3 succeeded at 5013 (offset 20 lines).
-Hunk #4 succeeded at 5041 (offset 20 lines).
-Hunk #5 succeeded at 7123 with fuzz 2 (offset 15 lines).
-Hunk #6 succeeded at 7523 (offset 12 lines).
-Hunk #7 succeeded at 7551 (offset 12 lines).
-Hunk #8 succeeded at 7792 (offset 12 lines).
-Hunk #9 succeeded at 7938 (offset 12 lines).
-Hunk #10 succeeded at 8087 (offset 12 lines).
-Hunk #11 succeeded at 8135 (offset 12 lines).
-Hunk #12 succeeded at 8839 (offset 12 lines).
-Hunk #13 succeeded at 8964 (offset 12 lines).
-Hunk #14 succeeded at 9042 (offset 12 lines).
-patching file drivers/scsi/ufs/ufshcd.h
-Hunk #1 succeeded at 641 (offset -2 lines).
-Hunk #2 succeeded at 870 (offset -2 lines).
-patching file drivers/scsi/ufs/ufshpb.c
-patching file drivers/scsi/ufs/ufshpb.h
+which is good because this would almost certainly be wrong (violating
+the "always forward buf appropriately regardless of whether you wrote
+something" rule).
 
-Thanks,
+> +}
+>  static char *string_nocheck(char *buf, char *end, const char *s,
+>  			    struct printf_spec spec)
+>  {
+> @@ -920,13 +935,37 @@ char *dentry_name(char *buf, char *end, const struct dentry *d, struct printf_sp
+>  }
+>  
+>  static noinline_for_stack
+> -char *file_dentry_name(char *buf, char *end, const struct file *f,
+> +char *file_d_path_name(char *buf, char *end, const struct file *f,
+>  			struct printf_spec spec, const char *fmt)
+>  {
+> +	const struct path *path;
+> +	char *p;
+> +	int prepend_len, reserved_size, dpath_len;
+> +
+>  	if (check_pointer(&buf, end, f, spec))
+>  		return buf;
+>  
+> -	return dentry_name(buf, end, f->f_path.dentry, spec, fmt);
+> +	path = &f->f_path;
+> +	if (check_pointer(&buf, end, path, spec))
+> +		return buf;
+> +
+> +	p = d_path_unsafe(path, buf, end - buf, &prepend_len);
 
-Bart.
+If I'm reading this right, you're using buf as scratch space to write
+however much of the path fits. Then [*]
+
+> +	/* Minus 1 byte for '\0' */
+> +	dpath_len = end - buf - prepend_len - 1;
+> +
+> +	reserved_size = max_t(int, dpath_len, spec.field_width);
+> +
+> +	/* no filling space at all */
+> +	if (buf >= end || !buf)
+> +		return buf + reserved_size;
+
+Why the !buf check? The only way we can have that is the snprintf(NULL,
+0, ...) case of asking how much space we'd need to malloc, right? In
+which case end would be NULL+0 == NULL, so buf >= end automatically,
+regardless of how much have been "printed" before %pD.
+
+> +
+> +	/* small space for long name */
+> +	if (buf < end && prepend_len < 0)
+
+So if we did an early return for buf >= end, we now know buf < end and
+hence the first part here is redundant.
+
+Anyway, as for [*]:
+
+> +		return string_truncate(buf, end, p, dpath_len, spec);
+> +
+> +	/* space is enough */
+> +	return string_nocheck(buf, end, p, spec);
+
+Now you're passing p to string_truncate or string_nocheck, while p
+points somewhere into buf itself. I can't convince myself that would be
+safe. At the very least, it deserves a couple of comments.
+
+Rasmus
