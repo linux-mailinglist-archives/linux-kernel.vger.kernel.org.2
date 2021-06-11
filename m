@@ -2,132 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2753A4247
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10F03A4210
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhFKMsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:48:31 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:49702 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231547AbhFKMs3 (ORCPT
+        id S231235AbhFKMit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:38:49 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34492 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhFKMir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:48:29 -0400
-X-UUID: 509a7522d56d4333bdcdd7bf70846178-20210611
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:CC:To:From:Subject:Message-ID; bh=NPSAquVn6OcH8zMMUCJI1xEdPAoRZoeMvYeki4aI62s=;
-        b=h/fO8S8EPp1isekHbOeHttgmkOPXMdSCzkIOqUO8K8v0ZwY9/778jdcI3+qU5Tf7a4nW1G8uxQCRtzupkTaAvZQYI4sHXSeFrhdrP35gWpDb8KXa1iHIlS9F8U2vI6B/h427rUnuL+rnUGlml73kFx9PiOsYhqg0ye8nDTUmgmU=;
-X-UUID: 509a7522d56d4333bdcdd7bf70846178-20210611
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 812319646; Fri, 11 Jun 2021 20:46:28 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 11 Jun 2021 20:46:27 +0800
-Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Jun 2021 20:46:26 +0800
-Message-ID: <1623414736.22727.17.camel@mbjsdccf07>
-Subject: [PATCH v2 1/1] arm64: dts: mediatek: add MT6779 spi master dts node
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
-        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
-Date:   Fri, 11 Jun 2021 20:32:16 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 11 Jun 2021 08:38:47 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 035D321A48;
+        Fri, 11 Jun 2021 12:36:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623415008;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WbubFKHB1YFq8+cLZPFZsL/iGgDagPXwRBHcKJ3qDmE=;
+        b=2peLsmD6OKg84vX05jlKeSSzhc+WJwWLotAAvUINC/onEs9TZQ3AbPHeWdfS+bddiLLzh6
+        0c23UqVPl326Qf2GLCycEtdoY9uZtjge95WU9F1EOEMHDadCrMP+/1vg8CqJ73tLjxiDvw
+        Lz8qAG0S58lqlW3qCvtVoDZc1BMWInk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623415008;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WbubFKHB1YFq8+cLZPFZsL/iGgDagPXwRBHcKJ3qDmE=;
+        b=3v38kvCKiCtteusW+zZk3tG/vFy89Y7uWUqGSygE7PibOC0N0H5mMQie3rH4X648s2bwn9
+        4RHgSq2/8HIoKtBQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id ED944A3BB1;
+        Fri, 11 Jun 2021 12:36:47 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D0B2EDA7A2; Fri, 11 Jun 2021 14:34:02 +0200 (CEST)
+Date:   Fri, 11 Jun 2021 14:34:02 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-hexagon@vger.kernel.org
+Subject: Re: [PATCH] fs: btrfs: Disable BTRFS on platforms having 256K pages
+Message-ID: <20210611123402.GD28158@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-hexagon@vger.kernel.org
+References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpUaGlzIHBhdGNoIGFkZCBhZGRyZXNzLWNlbGxzICYmIHNpemUtY2VsbHMgaW4gc3BpIG5vZGUg
-YmFzZWQgb24gcGF0Y2ggdjEuDQoNClNpZ25lZC1vZmYtYnk6IE1hc29uIFpoYW5nIDxNYXNvbi5a
-aGFuZ0BtZWRpYXRlay5jb20+DQotLS0NCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
-Njc3OS5kdHNpIHwgMTEyICsrKysrKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQs
-IDExMiBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21l
-ZGlhdGVrL210Njc3OS5kdHNpIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3Nzku
-ZHRzaQ0KaW5kZXggMzcwZjMwOWQzMmRlLi5jODFlNzY4NjVkMWIgMTAwNjQ0DQotLS0gYS9hcmNo
-L2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpDQorKysgYi9hcmNoL2FybTY0L2Jv
-b3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpDQpAQCAtMjE5LDYgKzIxOSwxMTggQEANCiAJCQlz
-dGF0dXMgPSAiZGlzYWJsZWQiOw0KIAkJfTsNCiANCisJCXNwaTA6IHNwaTBAMTEwMGEwMDAgew0K
-KwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlh
-dGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNl
-bGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAg
-MHgxMTAwYTAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0MyBJUlFf
-VFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5Q
-TExfRDVfRDI+LA0KKwkJCQk8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJPCZpbmZyYWNm
-Z19hbyBDTEtfSU5GUkFfU1BJMD47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJz
-ZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsNCisNCisJCXNwaTE6IHNwaTFAMTEwMTAwMDAgew0K
-KwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlh
-dGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNl
-bGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAg
-MHgxMTAxMDAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0NyBJUlFf
-VFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5Q
-TExfRDVfRDI+LA0KKwkJCQk8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJPCZpbmZyYWNm
-Z19hbyBDTEtfSU5GUkFfU1BJMT47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJz
-ZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsNCisNCisJCXNwaTI6IHNwaTJAMTEwMTIwMDAgew0K
-KwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlh
-dGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNl
-bGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAg
-MHgxMTAxMjAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MiBJUlFf
-VFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5Q
-TExfRDVfRDI+LA0KKwkJCQkgPCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQorCQkJCTwmaW5mcmFj
-ZmdfYW8gQ0xLX0lORlJBX1NQSTI+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAi
-c2VsLWNsayIsICJzcGktY2xrIjsNCisJCX07DQorDQorCQlzcGkzOiBzcGkzQDExMDEzMDAwIHsN
-CisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KKwkJCQkgICAgICJtZWRp
-YXRlayxtdDY3NjUtc3BpIjsNCisJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1j
-ZWxscyA9IDwwPjsNCisJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDww
-IDB4MTEwMTMwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNTMgSVJR
-X1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlO
-UExMX0Q1X0QyPiwNCisJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KKwkJCQkgPCZpbmZy
-YWNmZ19hbyBDTEtfSU5GUkFfU1BJMz47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIs
-ICJzZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsNCisNCisJCXNwaTQ6IHNwaTRAMTEwMTgwMDAg
-ew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1l
-ZGlhdGVrLG10Njc2NS1zcGkiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXpl
-LWNlbGxzID0gPDA+Ow0KKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0g
-PDAgMHgxMTAxODAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1NiBJ
-UlFfVFlQRV9MRVZFTF9MT1cgMD47DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01B
-SU5QTExfRDVfRDI+LA0KKwkJCQkgPCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQorCQkJCSA8Jmlu
-ZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk0PjsNCisJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xr
-IiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQorCQl9Ow0KKw0KKwkJc3BpNTogc3BpNUAxMTAxOTAw
-MCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCisJCQkJICAgICAi
-bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQorCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJI3Np
-emUtY2VsbHMgPSA8MD47DQorCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCisJCQlyZWcg
-PSA8MCAweDExMDE5MDAwIDAgMHgxMDAwPjsNCisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTU3
-IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCisJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1Bf
-TUFJTlBMTF9ENV9EMj4sDQorCQkJCTwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KKwkJCQk8Jmlu
-ZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk1PjsNCisJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xr
-IiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQorCQl9Ow0KKw0KKwkJc3BpNjogc3BpNkAxMTAxZDAw
-MCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCisJCQkJICAgICAi
-bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQorCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJI3Np
-emUtY2VsbHMgPSA8MD47DQorCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCisJCQlyZWcg
-PSA8MCAweDExMDFkMDAwIDAgMHgxMDAwPjsNCisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQ0
-IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCisJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1Bf
-TUFJTlBMTF9ENV9EMj4sDQorCQkJCSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJIDwm
-aW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTY+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1j
-bGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCisJCX07DQorDQorCQlzcGk3OiBzcGk3QDExMDFl
-MDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KKwkJCQkgICAg
-ICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkj
-c2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KKwkJCXJl
-ZyA9IDwwIDB4MTEwMWUwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAx
-NDUgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RP
-UF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KKwkJCQkg
-PCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJNz47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50
-LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsiOw0KKwkJfTsNCisNCiAJCWF1ZGlvOiBjbG9jay1j
-b250cm9sbGVyQDExMjEwMDAwIHsNCiAJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1h
-dWRpbyIsICJzeXNjb24iOw0KIAkJCXJlZyA9IDwwIDB4MTEyMTAwMDAgMCAweDEwMDA+Ow0KDQoN
-CkhpIE1hdHRoaWFzOg0KDQoJUGxlYXNlIGlnbm9yZSBsYXN0IG1haWwsIG15IGVhbWlsIGhhcyBh
-IGxpdHRsZSBidWd+DQogICAgICAgIEknbSBzb3JyeSB0byBkaXN0dXJiIHlvdX4NCgl0aGlzIHBh
-dGNoIGlzIHN0YXkgaGVyZSBmb3IgYSBsb25nIHRpbWUsIERvIHlvdSBoYXZlIGFueSBzdWdnZXN0
-aW9ucyBhYm91dCB0aGlzIHBhdGNoPyANCiAgICAgICAgV2UgaG9wZSB0aGlzIHBhdGNoIHdpbGwg
-YmUgbWVyZ2VkIGFzIHNvb24gYXMgcG9zc2libGUsIElmIHlvdSBoYXZlIGFueSBjb25jZXJuLCBJ
-IHdpbGwgZml4IGl0IGluIHRpbWUuDQoNCiAgICAgICAgTG9va2luZyBmb3J3YXJkIHRvIHlvdXIg
-cmVwbHl+ICANCg0KVGhhbmtzDQpNYXNvbg0KDQo=
+On Thu, Jun 10, 2021 at 05:23:02AM +0000, Christophe Leroy wrote:
+> With a config having PAGE_SIZE set to 256K, BTRFS build fails
+> with the following message
+> 
+>  include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+> 
+> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
+> 256K pages at the time being.
+> 
+> There are two platforms that can select 256K pages:
+>  - hexagon
+>  - powerpc
+> 
+> Disable BTRFS when 256K page size is selected.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
+With updated changelog added to misc-next, thanks.
