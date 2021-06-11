@@ -2,136 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941063A3A23
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CFA3A3A29
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhFKDNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFKDNG (ORCPT
+        id S231286AbhFKDPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:15:39 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:40679 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230216AbhFKDPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:13:06 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BB4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:11:01 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id k7so4869516pjf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:11:01 -0700 (PDT)
+        Thu, 10 Jun 2021 23:15:38 -0400
+Received: by mail-oi1-f176.google.com with SMTP id d19so369915oic.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:13:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=y4prOr8o9Yrbtks61jFL7WPXITvzhL37T1tTULKWr64=;
-        b=bDIft2UOAn67MfE/MQtn5OMB6NfhrtTY4RgKtZ0gOuujkq0k8b4L2p/BkWp5hg7Yvr
-         qzFeB3Vna1mNiKZ08+MeeIYirYkiaGglDnbivvgkjhh9r5dvCJ0ZlV2qC+DbC8WGmJTh
-         sZPAob+YrFYiZuxrzMODEpSgdHndj3F/k8b6UwomISh2s80Won5w1jjr6wTdaoex6JJ7
-         bC0TRRCeyOz5glCtNye84k1bSDFNCAPoPPys+B0DVQogDzaMoXGC4dZ9zhD9Fnn3TAEc
-         dZOVUXFU7xqW3SqOLPYnMduHsmIAIeqBf9yX/rT9ahHFk6xrmbl2UUM6VQtxQdV104X3
-         h0mw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IuIwozhJDFBL8hYQWz1odJcBCa+RpeJTeZARLZAL5rw=;
+        b=feDGUBYSF8mhXnNrCO3pu5UqEeXg8+ZgGu9MbsgnN3NPgZ7OtlxTNPrBVlERSmW3F8
+         uFRTpi7VO0JpXC7+0DHy4vp/FuU5N7F3Q/jY58D8GwwYJFTZRbU+6q9zbeH1pxpqerAi
+         kjt46Gij+K77yPhwqcX2kA2sYJn5v/+MCYOvzniCBhVMYh5dVnOOFZKwYd94MrgaH9sq
+         MwoSIJTe67Ja0snlVjezEzHDK72LDWjJtCWoK0llh99eUN3X4AL4RnO3C1JycQE+KbO2
+         a93RhcW16jVqwSeRvGs5zjQz6XrnnhwsHw7MtkwIErALdua+kyaedMVi51a2ACxNnW6Y
+         waQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y4prOr8o9Yrbtks61jFL7WPXITvzhL37T1tTULKWr64=;
-        b=T/Srhi5h7HmZc1k6R+36jDBlC/uInV9Z9SmgCRbO/ftCJuQremSVGr7TrnT5eLTsLy
-         pnMZz53dHOSjuxJ++v09lKGPSx+QIaawbPL8FP/+dUJ0Sqs4rHbiulNDv2BWz1W1s55X
-         HyP/MB8KQDSzPFXKlL8nihX7j/WDJ3X0NISTluK0f6VBzEbMCZ9PgGYUv68Ax5CojEg/
-         jHVrgmiWgxzGuJKyMbGZn7m+xriDDVToJSFEyBEdsfsjF0J1h0Kbs5pItBXRH2GAt/2V
-         ts0/f2tftN1eeOE3w16/a9XRFx+lJJBYaLxXCBDczbSsaZKnUZwdlCfx/9xv0vvWPNm0
-         ZB0w==
-X-Gm-Message-State: AOAM530r+4gQS4DSqc8idqzKp43KlCwo8FmvATI1IGupWjygkFOF3/j+
-        h/jyxlG4AlW7GFlVlaO6sBw=
-X-Google-Smtp-Source: ABdhPJytmw3t0plsGu1s3pJHOmMhH+nO+rWH4XVq3grkpfzTHXrf0/lejne5dFN8LlPjFKguJgkypg==
-X-Received: by 2002:a17:90a:66c9:: with SMTP id z9mr2239212pjl.122.1623381060940;
-        Thu, 10 Jun 2021 20:11:00 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id v6sm4195582pgk.33.2021.06.10.20.10.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 20:11:00 -0700 (PDT)
-Subject: Re: [PATCH] drm: Lock pointer access in drm_master_release()
-To:     Emil Velikov <emil.l.velikov@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@linux.ie>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        skhan@linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20210609092119.173590-1-desmondcheongzx@gmail.com>
- <YMHlLQHRLWgWlXTs@phenom.ffwll.local>
- <CACvgo53xvUD-YgU_rhG3GDg18jygwAP78aj8OJd457SEFpAf7g@mail.gmail.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <ddc6353a-4d75-6826-dda7-be9f9dd35d1c@gmail.com>
-Date:   Fri, 11 Jun 2021 11:10:55 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IuIwozhJDFBL8hYQWz1odJcBCa+RpeJTeZARLZAL5rw=;
+        b=LA1QBicI+HxfY6xV21cccxxoqJVnbhCHIAnoPE7IR2fYTq7aVO0oE8HjcOvPgX/a+I
+         WisErIo4OzUeMveNjv5FJcseS/ltQGOC75uA/A0aFc+EVQ0C6hAxNSZaYmDK98O/+dFm
+         MnZ5n1Ckw9w5Cm9CHbOZYwDfgB6eZRyWxzjSKC7+YgGBEPr2NPiSyGaNoj4nP57GQFwK
+         pRYTxOYdQ1Y3veRJotHWNe3EMfeOXHaZy1/ihbwFLcHNUaFhSHhpSFdbbiGqHreS+xkj
+         QjVSlTEztI77zBhX2XZTInCOm78HWpiEfFOvOplJKSStuwySqGsSsruUc/5cPjEo9x8p
+         hgDg==
+X-Gm-Message-State: AOAM532Cz5UKAWxQ5fIUWs2KZqZCWkjLvnWgD/GhQc/4KsZRkbAJhmOO
+        +gtf9Gr0Pe48zYN66Pc+XLyfRbDHMCR2fg==
+X-Google-Smtp-Source: ABdhPJwTPSimV69QldbgX5gVk7APTkm/h5irTaOpZBtys9egPnVnKvp24IdNGM4nk16+6GmSQpnwXQ==
+X-Received: by 2002:aca:4343:: with SMTP id q64mr995636oia.33.1623381146277;
+        Thu, 10 Jun 2021 20:12:26 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o2sm910030oom.26.2021.06.10.20.12.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 20:12:25 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 22:12:23 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Subject: Re: [PATCH 6/8] arm64: dts: qcom: pmm8155au_1: Add base dts file
+Message-ID: <YMLUl6G7TXOFi3A6@builder.lan>
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+ <20210607113840.15435-7-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CACvgo53xvUD-YgU_rhG3GDg18jygwAP78aj8OJd457SEFpAf7g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607113840.15435-7-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/21 1:49 am, Emil Velikov wrote:
-> On Thu, 10 Jun 2021 at 11:10, Daniel Vetter <daniel@ffwll.ch> wrote:
->>
->> On Wed, Jun 09, 2021 at 05:21:19PM +0800, Desmond Cheong Zhi Xi wrote:
->>> This patch eliminates the following smatch warning:
->>> drivers/gpu/drm/drm_auth.c:320 drm_master_release() warn: unlocked access 'master' (line 318) expected lock '&dev->master_mutex'
->>>
->>> The 'file_priv->master' field should be protected by the mutex lock to
->>> '&dev->master_mutex'. This is because other processes can concurrently
->>> modify this field and free the current 'file_priv->master'
->>> pointer. This could result in a use-after-free error when 'master' is
->>> dereferenced in subsequent function calls to
->>> 'drm_legacy_lock_master_cleanup()' or to 'drm_lease_revoke()'.
->>>
->>> An example of a scenario that would produce this error can be seen
->>> from a similar bug in 'drm_getunique()' that was reported by Syzbot:
->>> https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
->>>
->>> In the Syzbot report, another process concurrently acquired the
->>> device's master mutex in 'drm_setmaster_ioctl()', then overwrote
->>> 'fpriv->master' in 'drm_new_set_master()'. The old value of
->>> 'fpriv->master' was subsequently freed before the mutex was unlocked.
->>>
->>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->>
->> Thanks a lot. I've done an audit of this code, and I found another
->> potential problem in drm_is_current_master. The callers from drm_auth.c
->> hold the dev->master_mutex, but all the external ones dont. I think we
->> need to split this into a _locked function for use within drm_auth.c, and
->> the exported one needs to grab the dev->master_mutex while it's checking
->> master status. Ofc there will still be races, those are ok, but right now
->> we run the risk of use-after free problems in drm_lease_owner.
->>
-> Note that some code does acquire the mutex via
-> drm_master_internal_acquire - so we should be careful.
-> As mentioned elsewhere - having a _locked version of
-> drm_is_current_master sounds good.
+On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
+
+> Add base DTS file for pmm8155au_1 along with GPIOs, power-on, rtc and vadc
+> nodes.
 > 
-> Might as well throw a lockdep_assert_held_once in there just in case :-P
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: bhupesh.linux@gmail.com
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi | 134 ++++++++++++++++++++++
+>  1 file changed, 134 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
 > 
-> Happy to help review the follow-up patches.
-> -Emil
+> diff --git a/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+
+As we describe our PMICs by including their definition to the top level
+of the .dts I don't see any alternative to duplicating this as _1 and
+_2. So let's go with this structure.
+
+[..]
+> +
+> +&spmi_bus {
+> +	pmm8155au_1_0: pmic@0 {
+
+I don't think you need to give this a label.
+
+> +		compatible = "qcom,pmm8155au-1", "qcom,spmi-pmic";
+
+This is a "qcom,pmm8155au", "qcom,spmi-pmic", the labels are used to
+differentiate the two instances.
+
+> +		reg = <0x0 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+[..]
+> +
+> +		pmm8155au_1_gpios: gpio@c000 {
+> +			compatible = "qcom,pmm8155au-1-gpio";
+
+"qcom,pmm8155au-gpio"
+
+> +			reg = <0xc000>;
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +	};
+> +
+> +	pmic@1 {
+> +		compatible = "qcom,pmm8155au-1", "qcom,spmi-pmic";
+
+"qcom,pmm8155au"
+
+Thanks,
+Bjorn
+
+> +		reg = <0x1 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +	};
+> +};
+> -- 
+> 2.31.1
 > 
-
-Thanks for the advice, Emil!
-
-I did a preliminary check on the code that calls 
-drm_master_internal_acquire in drm_client_modeset.c and drm_fb_helper.c, 
-and it doesn't seem like they eventually call drm_is_current_master. So 
-we should be good on that front.
-
-lockdep_assert_held_once sounds good :)
-
-Best wishes,
-Desmond
-
