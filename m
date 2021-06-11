@@ -2,89 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B25C3A49B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679033A49BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhFKUCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231202AbhFKUCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:02:23 -0400
+Received: from mail-il1-f177.google.com ([209.85.166.177]:38407 "EHLO
+        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230205AbhFKUCQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Jun 2021 16:02:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230211AbhFKUCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:02:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1F4F1613E9;
-        Fri, 11 Jun 2021 20:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623441607;
-        bh=P5LQ0pydQf97BVngKIIA4qLhsk/2rEtI5tP4HhI/o/A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Id3NT9WTpdk9O9+ZfCODWBu7JeGEdzdVkZXN3wxTWYfpLYca+2BX0igFrflZqSE8n
-         p/zRRVGDs5wBXSatHdMVYEkxtw49DgbBHGAfTX8e+Gaivh7affKqvWqKhVnNsx7qzx
-         zby/5M4XCHDYWtyXn55Sj4irVnyTyVyX15nwZIeQe7hMdG0/CkJGJt89T72/OgQZTJ
-         w9yQ0orzRTWZzjgS11K0rEeHSJ6sR0JHKkWv8AIFy34QI2/yBv0Q8KCfBDxLoShT8Q
-         CSDVqkdX0WiSntW5xaIWtyXs7Ghm2fA3vd80vw5SOdZfMZ4JtzZJ6P59GyyvI8ntzq
-         rm4LVoYPj0wFw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 13344609E4;
-        Fri, 11 Jun 2021 20:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: by mail-il1-f177.google.com with SMTP id d1so6235731ils.5;
+        Fri, 11 Jun 2021 13:00:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DzmVIjfzBD5jhfScoy5heM8EH5uUqlFxXkGnXNxuSAY=;
+        b=EAlQXWtcMrJ2bz1esZAId98s8VchBRA5uC3bv/EOY9irYlfrsYB3VLvr275jM9FLis
+         Vc5WJTcLDMODiVYT10W8VzUlfHo+JvCEzJOmCJG1+UrS/ZHvIlMLvOSCQSEJbltjYzn3
+         n9qmrYLZ7aMUSInWa4bR2k78lX/h9945Dx9vK/ZE0pQbcI1h1T1iuL7OvKumGC+0R2Un
+         LrPvED7sMo1UvSjdRg2GQbanpEaKXHLyZ3Habjn7wJfuA+ZyAlmRqy1ajAoIgrgj6pBl
+         3n30b07lANwNIcVvt9CX/EYnaJFH6vYSYy5/pG+MTzoFAY/xMcMS3w5rHhAPQfF62O9t
+         p6eA==
+X-Gm-Message-State: AOAM533+DuEOG2g98bwrrVS8Sgjv7j1zVZNKNxnioH7V/Ey70cNuFXnk
+        VJEOKwl8Xg1ExEs/UYZVQQ==
+X-Google-Smtp-Source: ABdhPJzVeNzzrXgrr9Ha2gZ9pD2XPuSKMASquAuSOHl4eL8kE92/WuTc4NVmGrPRmMyxKaJYaaVogw==
+X-Received: by 2002:a92:7d07:: with SMTP id y7mr4480835ilc.68.1623441617690;
+        Fri, 11 Jun 2021 13:00:17 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id 14sm3830076ilx.61.2021.06.11.13.00.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 13:00:16 -0700 (PDT)
+Received: (nullmailer pid 1583052 invoked by uid 1000);
+        Fri, 11 Jun 2021 20:00:15 -0000
+Date:   Fri, 11 Jun 2021 14:00:15 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        broonie@kernel.org, lgirdwood@gmail.com
+Subject: Re: [PATCH] ASoC: dt-bindings: fsl,spdif: Add compatible string for
+ imx8ulp
+Message-ID: <20210611200015.GA1582999@robh.at.kernel.org>
+References: <1622613849-10271-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/8] net: pc300too: clean up some code style issues
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162344160707.3583.12464133502726199194.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Jun 2021 20:00:07 +0000
-References: <1623382582-37854-1-git-send-email-huangguangbin2@huawei.com>
-In-Reply-To: <1623382582-37854-1-git-send-email-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, xie.he.0141@gmail.com,
-        ms@dev.tdt.de, willemb@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lipeng321@huawei.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622613849-10271-1-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Fri, 11 Jun 2021 11:36:14 +0800 you wrote:
-> From: Peng Li <lipeng321@huawei.com>
+On Wed, 02 Jun 2021 14:04:09 +0800, Shengjiu Wang wrote:
+> Add compatible string for imx8ulp, which supports spdif module
 > 
-> This patchset clean up some code style issues.
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Peng Li (8):
->   net: pc300too: remove redundant blank lines
->   net: pc300too: add blank line after declarations
->   net: pc300too: fix the code style issue about "foo * bar"
->   net: pc300too: move out assignment in if condition
->   net: pc300too: remove redundant initialization for statics
->   net: pc300too: replace comparison to NULL with "!card->plxbase"
->   net: pc300too: add some required spaces
->   net: pc300too: fix the comments style issue
-> 
-> [...]
 
-Here is the summary with links:
-  - [net-next,1/8] net: pc300too: remove redundant blank lines
-    https://git.kernel.org/netdev/net-next/c/93f764371c45
-  - [net-next,2/8] net: pc300too: add blank line after declarations
-    https://git.kernel.org/netdev/net-next/c/a657c8b4d50d
-  - [net-next,3/8] net: pc300too: fix the code style issue about "foo * bar"
-    https://git.kernel.org/netdev/net-next/c/f8864e26d311
-  - [net-next,4/8] net: pc300too: move out assignment in if condition
-    https://git.kernel.org/netdev/net-next/c/d72f78db55d6
-  - [net-next,5/8] net: pc300too: remove redundant initialization for statics
-    https://git.kernel.org/netdev/net-next/c/ae6440483b54
-  - [net-next,6/8] net: pc300too: replace comparison to NULL with "!card->plxbase"
-    https://git.kernel.org/netdev/net-next/c/0cd2135cf83d
-  - [net-next,7/8] net: pc300too: add some required spaces
-    https://git.kernel.org/netdev/net-next/c/eed00311659f
-  - [net-next,8/8] net: pc300too: fix the comments style issue
-    https://git.kernel.org/netdev/net-next/c/ef1806a8b961
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Acked-by: Rob Herring <robh@kernel.org>
