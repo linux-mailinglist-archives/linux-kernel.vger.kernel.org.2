@@ -2,228 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540FB3A3903
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407D13A3907
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 02:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhFKAzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 20:55:00 -0400
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:40731 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhFKAy6 (ORCPT
+        id S230230AbhFKA4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 20:56:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:50484 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231157AbhFKA4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 20:54:58 -0400
-Received: by mail-pj1-f46.google.com with SMTP id mp5-20020a17090b1905b029016dd057935fso4804000pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 17:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZDkIZNjluZXiETcMnq2gg2/TmvMfQPp+mqtGVfyPrOM=;
-        b=L9uoFaG1qvbNEEOaqp/KqC5jm99dqH9578fdjSbqOdG2KhFG8n0vxTzgYw7ToaMwS3
-         bo5tobrwgFrUHUTeIcAdDL/OP3koVHSw5jrj5tYZ6kZSuVVDD51ZTBWHo5Z0LOzl2B9E
-         WABrnMH2kcNmEkhsOhjaMTD2xpVLWH/MxOU9Y9S5O07WRr6TWlmvfmbmKbOvfO8fUV7F
-         Lyf4d0UVpwcOovgRjrzr4TW82FSE3kA7otO+TZEPC7c9fzN/7wJ38CbUWe+z7oTT8SuP
-         KzCEOeAKKHSw5eA9Qi/x66daG0zMX7NVbOU7YlabtHuSRKump8EOotQDYNzMQLlsblEr
-         3yog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ZDkIZNjluZXiETcMnq2gg2/TmvMfQPp+mqtGVfyPrOM=;
-        b=P3N5nRQz+m8PRlie75wzboJVIO/q0U0n5nYE18S+7idpNZ3fvc02f1nmLdCd4cWVSM
-         cxGtl7BNa7i1CNvdc9kKssZ33r2xojsJ3bfcNow84tEptftejY4oby+2gwisa/tRnkfC
-         j2vFxE+5Vd4Wrh+AFJJO7pLk4OpZpTu3kP2xqd6hpF6deuoVnvVF9FCH0uS/meUV0f1K
-         OOi55wzk3LnCZ63oeTnEXZAys5ErAq/yPVMRRPhUIQf9KHczPkGa0jPw+9Za5pK33Ji+
-         ypO9L/eFaFMVRkASfjYdMgjR4M13iYwI1wQUPezh4+4JbI0Wla5Pm9Y72U4yve2iD0ro
-         6tWQ==
-X-Gm-Message-State: AOAM533V3uzbwDw4tVNEjHsRm0IQGdzCsg+zfUkWSPcVxaLbb0aoUKaw
-        oIeOvWbikU5VEvOaPBQ0dbcdXg==
-X-Google-Smtp-Source: ABdhPJzYHWhr/S8s0cH4phU0uE/IuXBBozr25uP/9w37b+Ecq1n7MEoKU0zL2jTgbRGU2H955ecPhw==
-X-Received: by 2002:a17:90a:708a:: with SMTP id g10mr6268757pjk.108.1623372708056;
-        Thu, 10 Jun 2021 17:51:48 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id b1sm3453026pgb.91.2021.06.10.17.51.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 17:51:47 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 17:51:47 -0700 (PDT)
-X-Google-Original-Date: Thu, 10 Jun 2021 17:51:44 PDT (-0700)
-Subject:     Re: [PATCH] riscv: code patching only works on !XIP_KERNEL
-In-Reply-To: <20210608161457.192b3ca3@xhacker.debian>
-CC:     vitaly.wool@konsulko.com, jszhang3@mail.ustc.edu.cn,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Jisheng.Zhang@synaptics.com
-Message-ID: <mhng-4b3a688d-4531-46b8-9644-9e67c2d9bb03@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 10 Jun 2021 20:56:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623372853; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=3O9++L/rQbH8e38VoJDy4lfBxXxL4VmTGgM/3gDTRuo=;
+ b=LqLzRc/CMmAm5a/OEskAtvVl4VzjXbv9NUctdxIpv/mVDJGHxGWKHNepNFgXuerRq2HIWAQC
+ BvvsWmFSs/iaulfNF0t8Ysxu9QqSdqOBfrRu08yDJOdWYmsyJkvRt8xYI0i+XxZWvgrlP3KZ
+ awX28lfsprbCLIRLSm19qapXGe4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60c2b41de27c0cc77f178e94 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Jun 2021 00:53:49
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 533F0C43146; Fri, 11 Jun 2021 00:53:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F751C433D3;
+        Fri, 11 Jun 2021 00:53:46 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Jun 2021 08:53:46 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/9] scsi: ufs: Differentiate status between hba pm ops
+ and wl pm ops
+In-Reply-To: <7d7a771f-6595-0106-8ee5-4e6407caee56@intel.com>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-2-git-send-email-cang@codeaurora.org>
+ <7d7a771f-6595-0106-8ee5-4e6407caee56@intel.com>
+Message-ID: <d53df7c79e6511a1257affefc69f4cf3@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Jun 2021 01:14:57 PDT (-0700), Jisheng.Zhang@synaptics.com wrote:
-> On Tue, 8 Jun 2021 09:50:00 +0200
-> Vitaly Wool <vitaly.wool@konsulko.com> wrote:
->
->
->>
->>
->> Hi Jisheng,
->>
->> On Tue, Jun 8, 2021 at 9:24 AM Jisheng Zhang
->> <Jisheng.Zhang@synaptics.com> wrote:
->> >
->> > On Mon, 24 May 2021 21:32:38 +0200
->> > Vitaly Wool <vitaly.wool@konsulko.com> wrote:
->> >
->> >
->> > >
->> > >
->> > > On Sat, May 22, 2021 at 7:15 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->> > > >
->> > > > On Mon, 10 May 2021 11:19:30 PDT (-0700), vitaly.wool@konsulko.com wrote:
->> > > > > On Mon, May 10, 2021 at 6:35 PM Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
->> > > > >>
->> > > > >> From: Jisheng Zhang <jszhang@kernel.org>
->> > > > >>
->> > > > >> Some features which need code patching such as KPROBES, DYNAMIC_FTRACE
->> > > > >> KGDB can only work on !XIP_KERNEL. Add dependencies for these features
->> > > > >> that rely on code patching.
->> > > > >
->> > > > > Since we can define extra RW sections to place some tiny code bits in
->> > > > > RAM, I would suggest that you hold back this patch for a while.
->> > > > > I am not going to support the idea of e. g. compiling KGDB support
->> > > > > into a XIP kernel, but disabling the whole HAVE_ARCH_JUMP_LABEL is
->> > > > > hardly the way to go.
->> > > >
->> > > > Do you have any updates on this?  The SOC_SIFIVE disable thread floated
->> > > > back to the top of my inbox and I didn't see anything there.  I'd prefer
->> > > > to avoid chasing around Kconfig disables for a bunch of stuff that we're
->> > > > just going to fix soon, but if this is going to be a big change then
->> > > > it's likely for next cycle anyway so in that case I'll start picking up
->> > > > these compile disable patches.
->> > >
->> > > Sorry, was caught up in fixing other stuff but now I'm on it so expect
->> > > some updates soon.
->> >
->> > Hi Vitaly,
->> >
->> > Based on your "[PATCH] riscv: xip: support runtime trap patching", IMHO, it
->> > solves ERRATA patching issue(And it makes use of the fact that the ERRATA
->> > only touches traps at the moment), but can't make code patching tech such as
->> > KPROBES, DYNAMIC_FTRACE etc. work properly, so my patch is still needed.
->>
->> At this point it is needed, yes.
->>
->> The thing is, I thought I'd go with one problem at a time, so I posted
->> the patch which solves build issues for SOC_SIFIVE and XIP, and
->> runtime patching for ERRATA (and I hope it gets accepted and makes its
->> way into -stable, too).
->> I gathered that addressing your issue had lower priority and so it's
->
-> It's at lower priority, in fact I didn't have XIP riscv platform ;)
->
->> still underway. All in all, I don't mind going on with your patch,
->> when the initial issue is addressed, we may want to revert some part
->> of it but I guess that would be ok with you, wouldn't it?
->
-> We could revert some part of it later although I suspect the incompatibility
-> between code patching tech and XIP could be addressed, take the KPROBES
-> for example, it needs an ability to patch almost *every* can_be_kprobed insn
-> this isn't achievable/necessary in XIP case.
+Hi Adrian,
 
-I'm going to take the original patch in this thread.  Unless I'm missing 
-something it's only turning off functionality that doesn't work (even 
-with the errata fix), so it'll be necessary.  As things get fixed we can 
-re-enable them, but this will at least stop enabling the broken stuff.
+On 2021-06-10 19:15, Adrian Hunter wrote:
+> On 10/06/21 7:43 am, Can Guo wrote:
+>> Put pm_op_in_progress and is_sys_suspend flags back to ufshcd hba pm 
+>> ops,
+>> add two new flags, namely wl_pm_op_in_progress and 
+>> is_wl_sys_suspended, to
+>> track the UFS device W-LU pm ops. This helps us differentiate the 
+>> status of
+>> hba and wl pm ops when we need to do troubleshooting.
+> 
+> Really you have 2 changes here:
+> 1. Renaming to pm_op_in_progress / is_sys_suspend to
+> wl_pm_op_in_progress / is_wl_sys_suspended
+> 2. Introducing flags for the status of hba
+> 
+> So it should really be 2 patches.
 
->
-> Thanks
->
->>
->> Best regards,
->>    Vitaly
->>
->> > What do you think?
->> >
->> > Regards
->> >
->> > >
->> > > Best regards,
->> > >    Vitaly
->> > >
->> > > > Not trying to rush any thing here, just don't want to have a bunch of
->> > > > broken configs.
->> > > >
->> > > > >
->> > > > > Best regards,
->> > > > >    Vitaly
->> > > > >
->> > > > >> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->> > > > >> ---
->> > > > >> Hi,
->> > > > >>
->> > > > >> Currently, the RISCV_ERRATA_ALTERNATIVE also only works on !XIP_KERNEL
->> > > > >> but from the maillist it seem there's effort to make the co-exist, so
->> > > > >> I drop RISCV_ERRATA_ALTERNATIVE dependency on !XIP_KERNEL.
->> > > > >>
->> > > > >> Thanks
->> > > > >>
->> > > > >>  arch/riscv/Kconfig | 18 +++++++++---------
->> > > > >>  1 file changed, 9 insertions(+), 9 deletions(-)
->> > > > >>
->> > > > >> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> > > > >> index a8ad8eb76120..61320b94ef97 100644
->> > > > >> --- a/arch/riscv/Kconfig
->> > > > >> +++ b/arch/riscv/Kconfig
->> > > > >> @@ -60,11 +60,11 @@ config RISCV
->> > > > >>         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
->> > > > >>         select HANDLE_DOMAIN_IRQ
->> > > > >>         select HAVE_ARCH_AUDITSYSCALL
->> > > > >> -       select HAVE_ARCH_JUMP_LABEL
->> > > > >> -       select HAVE_ARCH_JUMP_LABEL_RELATIVE
->> > > > >> +       select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
->> > > > >> +       select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
->> > > > >>         select HAVE_ARCH_KASAN if MMU && 64BIT
->> > > > >>         select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
->> > > > >> -       select HAVE_ARCH_KGDB
->> > > > >> +       select HAVE_ARCH_KGDB if !XIP_KERNEL
->> > > > >>         select HAVE_ARCH_KGDB_QXFER_PKT
->> > > > >>         select HAVE_ARCH_MMAP_RND_BITS if MMU
->> > > > >>         select HAVE_ARCH_SECCOMP_FILTER
->> > > > >> @@ -79,9 +79,9 @@ config RISCV
->> > > > >>         select HAVE_GCC_PLUGINS
->> > > > >>         select HAVE_GENERIC_VDSO if MMU && 64BIT
->> > > > >>         select HAVE_IRQ_TIME_ACCOUNTING
->> > > > >> -       select HAVE_KPROBES
->> > > > >> -       select HAVE_KPROBES_ON_FTRACE
->> > > > >> -       select HAVE_KRETPROBES
->> > > > >> +       select HAVE_KPROBES if !XIP_KERNEL
->> > > > >> +       select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
->> > > > >> +       select HAVE_KRETPROBES if !XIP_KERNEL
->> > > > >>         select HAVE_PCI
->> > > > >>         select HAVE_PERF_EVENTS
->> > > > >>         select HAVE_PERF_REGS
->> > > > >> @@ -230,11 +230,11 @@ config ARCH_RV64I
->> > > > >>         bool "RV64I"
->> > > > >>         select 64BIT
->> > > > >>         select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
->> > > > >> -       select HAVE_DYNAMIC_FTRACE if MMU && $(cc-option,-fpatchable-function-entry=8)
->> > > > >> +       select HAVE_DYNAMIC_FTRACE if !XIP_KERNEL && MMU && $(cc-option,-fpatchable-function-entry=8)
->> > > > >>         select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
->> > > > >> -       select HAVE_FTRACE_MCOUNT_RECORD
->> > > > >> +       select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
->> > > > >>         select HAVE_FUNCTION_GRAPH_TRACER
->> > > > >> -       select HAVE_FUNCTION_TRACER
->> > > > >> +       select HAVE_FUNCTION_TRACER if !XIP_KERNEL
->> > > > >>         select SWIOTLB if MMU
->> > > > >>
->> > > > >>  endchoice
->> > > > >> --
->> > > > >> 2.31.0
->> > > > >>
->> > > > >>
->> > > > >>
->> > > > >> _______________________________________________
+Sure I will make it 2 in next version.
+
+> 
+> That would show up things like:
+> - did you intend not to change hba->is_sys_suspended in 
+> ufs_qcom_resume() ?
+
+I missed it - shall change it in next version.
+
+Thanks,
+Can Guo.
+
+> 
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 42 
+>> ++++++++++++++++++++++++++++--------------
+>>  drivers/scsi/ufs/ufshcd.h |  4 +++-
+>>  2 files changed, 31 insertions(+), 15 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 25fe18a..47b2a9a 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -549,7 +549,9 @@ static void ufshcd_print_host_state(struct ufs_hba 
+>> *hba)
+>>  		hba->saved_err, hba->saved_uic_err);
+>>  	dev_err(hba->dev, "Device power mode=%d, UIC link state=%d\n",
+>>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>> -	dev_err(hba->dev, "PM in progress=%d, sys. suspended=%d\n",
+>> +	dev_err(hba->dev, "wl_pm_op_in_progress=%d, 
+>> is_wl_sys_suspended=%d\n",
+>> +		hba->wl_pm_op_in_progress, hba->is_wl_sys_suspended);
+>> +	dev_err(hba->dev, "pm_op_in_progress=%d, is_sys_suspended=%d\n",
+>>  		hba->pm_op_in_progress, hba->is_sys_suspended);
+>>  	dev_err(hba->dev, "Auto BKOPS=%d, Host self-block=%d\n",
+>>  		hba->auto_bkops_enabled, hba->host->host_self_blocked);
+>> @@ -1999,7 +2001,7 @@ static void ufshcd_clk_scaling_start_busy(struct 
+>> ufs_hba *hba)
+>>  	if (!hba->clk_scaling.active_reqs++)
+>>  		queue_resume_work = true;
+>> 
+>> -	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress) {
+>> +	if (!hba->clk_scaling.is_enabled || hba->wl_pm_op_in_progress) {
+>>  		spin_unlock_irqrestore(hba->host->host_lock, flags);
+>>  		return;
+>>  	}
+>> @@ -2734,7 +2736,7 @@ static int ufshcd_queuecommand(struct Scsi_Host 
+>> *host, struct scsi_cmnd *cmd)
+>>  		 * err handler blocked for too long. So, just fail the scsi cmd
+>>  		 * sent from PM ops, err handler can recover PM error anyways.
+>>  		 */
+>> -		if (hba->pm_op_in_progress) {
+>> +		if (hba->wl_pm_op_in_progress) {
+>>  			hba->force_reset = true;
+>>  			set_host_byte(cmd, DID_BAD_TARGET);
+>>  			cmd->scsi_done(cmd);
+>> @@ -2767,7 +2769,7 @@ static int ufshcd_queuecommand(struct Scsi_Host 
+>> *host, struct scsi_cmnd *cmd)
+>>  		(hba->clk_gating.state != CLKS_ON));
+>> 
+>>  	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
+>> -		if (hba->pm_op_in_progress)
+>> +		if (hba->wl_pm_op_in_progress)
+>>  			set_host_byte(cmd, DID_BAD_TARGET);
+>>  		else
+>>  			err = SCSI_MLQUEUE_HOST_BUSY;
+>> @@ -5116,7 +5118,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, 
+>> struct ufshcd_lrb *lrbp)
+>>  			 * solution could be to abort the system suspend if
+>>  			 * UFS device needs urgent BKOPs.
+>>  			 */
+>> -			if (!hba->pm_op_in_progress &&
+>> +			if (!hba->wl_pm_op_in_progress &&
+>>  			    !ufshcd_eh_in_progress(hba) &&
+>>  			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr))
+>>  				/* Flushed in suspend */
+>> @@ -5916,7 +5918,7 @@ static void ufshcd_err_handling_prepare(struct 
+>> ufs_hba *hba)
+>>  {
+>>  	ufshcd_rpm_get_sync(hba);
+>>  	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) 
+>> ||
+>> -	    hba->is_sys_suspended) {
+>> +	    hba->is_wl_sys_suspended) {
+>>  		enum ufs_pm_op pm_op;
+>> 
+>>  		/*
+>> @@ -5933,7 +5935,7 @@ static void ufshcd_err_handling_prepare(struct 
+>> ufs_hba *hba)
+>>  		if (!ufshcd_is_clkgating_allowed(hba))
+>>  			ufshcd_setup_clocks(hba, true);
+>>  		ufshcd_release(hba);
+>> -		pm_op = hba->is_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+>> +		pm_op = hba->is_wl_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+>>  		ufshcd_vops_resume(hba, pm_op);
+>>  	} else {
+>>  		ufshcd_hold(hba, false);
+>> @@ -5976,7 +5978,7 @@ static void ufshcd_recover_pm_error(struct 
+>> ufs_hba *hba)
+>>  	struct request_queue *q;
+>>  	int ret;
+>> 
+>> -	hba->is_sys_suspended = false;
+>> +	hba->is_wl_sys_suspended = false;
+>>  	/*
+>>  	 * Set RPM status of wlun device to RPM_ACTIVE,
+>>  	 * this also clears its runtime error.
+>> @@ -8784,7 +8786,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba 
+>> *hba, enum ufs_pm_op pm_op)
+>>  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
+>>  	enum uic_link_state req_link_state;
+>> 
+>> -	hba->pm_op_in_progress = true;
+>> +	hba->wl_pm_op_in_progress = true;
+>>  	if (pm_op != UFS_SHUTDOWN_PM) {
+>>  		pm_lvl = pm_op == UFS_RUNTIME_PM ?
+>>  			 hba->rpm_lvl : hba->spm_lvl;
+>> @@ -8919,7 +8921,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba 
+>> *hba, enum ufs_pm_op pm_op)
+>>  		hba->clk_gating.is_suspended = false;
+>>  		ufshcd_release(hba);
+>>  	}
+>> -	hba->pm_op_in_progress = false;
+>> +	hba->wl_pm_op_in_progress = false;
+>>  	return ret;
+>>  }
+>> 
+>> @@ -8928,7 +8930,7 @@ static int __ufshcd_wl_resume(struct ufs_hba 
+>> *hba, enum ufs_pm_op pm_op)
+>>  	int ret;
+>>  	enum uic_link_state old_link_state = hba->uic_link_state;
+>> 
+>> -	hba->pm_op_in_progress = true;
+>> +	hba->wl_pm_op_in_progress = true;
+>> 
+>>  	/*
+>>  	 * Call vendor specific resume callback. As these callbacks may 
+>> access
+>> @@ -9006,7 +9008,7 @@ static int __ufshcd_wl_resume(struct ufs_hba 
+>> *hba, enum ufs_pm_op pm_op)
+>>  		ufshcd_update_evt_hist(hba, UFS_EVT_WL_RES_ERR, (u32)ret);
+>>  	hba->clk_gating.is_suspended = false;
+>>  	ufshcd_release(hba);
+>> -	hba->pm_op_in_progress = false;
+>> +	hba->wl_pm_op_in_progress = false;
+>>  	return ret;
+>>  }
+>> 
+>> @@ -9072,7 +9074,7 @@ static int ufshcd_wl_suspend(struct device *dev)
+>> 
+>>  out:
+>>  	if (!ret)
+>> -		hba->is_sys_suspended = true;
+>> +		hba->is_wl_sys_suspended = true;
+>>  	trace_ufshcd_wl_suspend(dev_name(dev), ret,
+>>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>> @@ -9100,7 +9102,7 @@ static int ufshcd_wl_resume(struct device *dev)
+>>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>>  	if (!ret)
+>> -		hba->is_sys_suspended = false;
+>> +		hba->is_wl_sys_suspended = false;
+>>  	up(&hba->host_sem);
+>>  	return ret;
+>>  }
+>> @@ -9141,6 +9143,8 @@ static int ufshcd_suspend(struct ufs_hba *hba)
+>> 
+>>  	if (!hba->is_powered)
+>>  		return 0;
+>> +
+>> +	hba->pm_op_in_progress = true;
+>>  	/*
+>>  	 * Disable the host irq as host controller as there won't be any
+>>  	 * host controller transaction expected till resume.
+>> @@ -9160,6 +9164,7 @@ static int ufshcd_suspend(struct ufs_hba *hba)
+>>  	ufshcd_vreg_set_lpm(hba);
+>>  	/* Put the host controller in low power mode if possible */
+>>  	ufshcd_hba_vreg_set_lpm(hba);
+>> +	hba->pm_op_in_progress = false;
+>>  	return ret;
+>>  }
+>> 
+>> @@ -9179,6 +9184,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
+>>  	if (!hba->is_powered)
+>>  		return 0;
+>> 
+>> +	hba->pm_op_in_progress = true;
+>>  	ufshcd_hba_vreg_set_hpm(hba);
+>>  	ret = ufshcd_vreg_set_hpm(hba);
+>>  	if (ret)
+>> @@ -9198,6 +9204,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
+>>  out:
+>>  	if (ret)
+>>  		ufshcd_update_evt_hist(hba, UFS_EVT_RESUME_ERR, (u32)ret);
+>> +	hba->pm_op_in_progress = false;
+>>  	return ret;
+>>  }
+>> 
+>> @@ -9222,6 +9229,10 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+>>  	trace_ufshcd_system_suspend(dev_name(hba->dev), ret,
+>>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>> +
+>> +	if (!ret)
+>> +		hba->is_sys_suspended = true;
+>> +
+>>  	return ret;
+>>  }
+>>  EXPORT_SYMBOL(ufshcd_system_suspend);
+>> @@ -9248,6 +9259,9 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+>>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>> 
+>> +	if (!ret)
+>> +		hba->is_sys_suspended = false;
+>> +
+>>  	return ret;
+>>  }
+>>  EXPORT_SYMBOL(ufshcd_system_resume);
+>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+>> index c98d540..eaebb4e 100644
+>> --- a/drivers/scsi/ufs/ufshcd.h
+>> +++ b/drivers/scsi/ufs/ufshcd.h
+>> @@ -752,7 +752,8 @@ struct ufs_hba {
+>>  	enum ufs_pm_level spm_lvl;
+>>  	struct device_attribute rpm_lvl_attr;
+>>  	struct device_attribute spm_lvl_attr;
+>> -	int pm_op_in_progress;
+>> +	bool pm_op_in_progress;
+>> +	bool wl_pm_op_in_progress;
+>> 
+>>  	/* Auto-Hibernate Idle Timer register value */
+>>  	u32 ahit;
+>> @@ -839,6 +840,7 @@ struct ufs_hba {
+>>  	struct devfreq *devfreq;
+>>  	struct ufs_clk_scaling clk_scaling;
+>>  	bool is_sys_suspended;
+>> +	bool is_wl_sys_suspended;
+>> 
+>>  	enum bkops_status urgent_bkops_lvl;
+>>  	bool is_urgent_bkops_lvl_checked;
+>> 
