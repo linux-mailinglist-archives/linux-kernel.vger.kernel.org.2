@@ -2,52 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABE63A4923
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6A63A4927
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhFKTFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:05:06 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:55125 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbhFKTFB (ORCPT
+        id S231153AbhFKTFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:05:12 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:57133 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231591AbhFKTFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:05:01 -0400
+        Fri, 11 Jun 2021 15:05:08 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 33B39C0002;
-        Fri, 11 Jun 2021 19:02:59 +0000 (UTC)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 157E6240006;
+        Fri, 11 Jun 2021 19:03:06 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     patrice.chotard@foss.st.com, Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-mtd@lists.infradead.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pratyush Yadav <p.yadav@ti.com>
-Cc:     christophe.kerello@foss.st.com
-Subject: Re: [PATCH v5 1/3] mtd: spinand: add spinand_read_cfg() helper
-Date:   Fri, 11 Jun 2021 21:02:59 +0200
-Message-Id: <20210611190259.226571-1-miquel.raynal@bootlin.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>, daniel@zonque.org
+Subject: Re: [PATCH -next] mtd: rawnand: marvell: add missing clk_disable_unprepare() on error in marvell_nfc_resume()
+Date:   Fri, 11 Jun 2021 21:03:05 +0200
+Message-Id: <20210611190305.226637-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210602094913.26472-2-patrice.chotard@foss.st.com>
+In-Reply-To: <20210601125814.3260364-1-yangyingliang@huawei.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'0c3d87eae33adca609edac1b16c34f2ea52c8e8a'
+X-linux-mtd-patch-commit: b'b6cc0d1e3ee3545c86024f57519c0d165424595c'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-02 at 09:49:11 UTC,  wrote:
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
+On Tue, 2021-06-01 at 12:58:14 UTC, Yang Yingliang wrote:
+> Add clk_disable_unprepare() on error path in marvell_nfc_resume().
 > 
-> Put REG_CFG reading code in spinand_read_cfg().
-> This function will be needed by the future SPI-NAND resume ops.
-> 
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> Fixes: bd9c3f9b3c00 ("mtd: rawnand: marvell: add suspend and resume hooks")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
