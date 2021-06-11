@@ -2,216 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CDF3A4A58
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B98A3A4A5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhFKUxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhFKUxk (ORCPT
+        id S231187AbhFKUyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:54:21 -0400
+Received: from mail-pl1-f182.google.com ([209.85.214.182]:36860 "EHLO
+        mail-pl1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFKUyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:53:40 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3497CC0613A2;
-        Fri, 11 Jun 2021 13:51:34 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id p17so10420908lfc.6;
-        Fri, 11 Jun 2021 13:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Qp6lxg9EERP3PQXD0xjPQqg+lbx3ZNQq2ocPFT5ueOw=;
-        b=bsu3sCwjR29vmzo9EWlM6MYBXc21bVBae9hjP+Y25Yw45pNXNFfuOCzl7JI0zGTuuq
-         VUnQ24kota3X7XXvP5/Rv6wxwAkhyD7+KuDkMOekQyf8IAG+rGbIrJcn0XnZIPjJ3PuI
-         mth1V5LjiYRDsAKgbMOEO6yzoLG29edIxjQrDyLw0VWtkFDk2pQMmCcSxlLwh4kgW4nn
-         W6o5WhePT9DliMjt6msEEcPRzbL8juUepTFFxxsemVdf2w5vOD2WqUmShL2aFtLxPMNx
-         PFeHmN0T/jKNyjD5XVJ90iNM6RGql2lxTkR+Q5VyN/WGb/TxYvwsP9YuyOT+dO2+fNoR
-         TenQ==
+        Fri, 11 Jun 2021 16:54:20 -0400
+Received: by mail-pl1-f182.google.com with SMTP id x10so3432380plg.3;
+        Fri, 11 Jun 2021 13:52:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Qp6lxg9EERP3PQXD0xjPQqg+lbx3ZNQq2ocPFT5ueOw=;
-        b=E8PjYKSTgf2soPN0NQO9eEogmUfPIfADgNZo03VrhWL07M0g3Fkg7/NBTiW7F+4IPn
-         yt+elMbNL9haTwrmic+5PKGn64NPbLcCV9I+sWUmJDsdyT9nhrx0povb3RdYBLaLagrE
-         6V6i3JA762z8yAmEkzQ1BWTpgucew3TRZ+tYtw1pN4aSrPvKHeYZXkkzoG7w+FFfnWHX
-         yfTidvf5UP+3yJ7gFVnFfnjGqkqZjCb6I0URfV2Y5JjZM1aU07GGoOeidve+B+8AL5SA
-         uK1c1LPk1tDL5KiNiz5/Exnn64DI88IXggJcDitCRSqp26wNsZ3S4GfnwNnf6opAyNUv
-         iJpA==
-X-Gm-Message-State: AOAM531y5hoRQ5u2ePvuuX5T+MMa7Hby3kYch6g8p9a5+YUGdgHpeJQd
-        Hh35Nng06EgBABuWYOT9vM4=
-X-Google-Smtp-Source: ABdhPJwjJI4EoOvDqnBWZHRAZv3TSYnJNRD2xYLOjT/VkER2BqdyzCztRN5PmdWU5Muanp2hJSssog==
-X-Received: by 2002:ac2:5479:: with SMTP id e25mr3773385lfn.632.1623444692563;
-        Fri, 11 Jun 2021 13:51:32 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id r7sm687118lfr.242.2021.06.11.13.51.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 13:51:32 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH V2 4/4] perf/x86/intel/uncore: Constify unmodified static extra_reg structs
-Date:   Fri, 11 Jun 2021 22:51:12 +0200
-Message-Id: <20210611205112.27225-5-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210611205112.27225-1-rikard.falkeborn@gmail.com>
-References: <20210611205112.27225-1-rikard.falkeborn@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TJMxLoKB5A1+wwU2Ud8xDFQ5JXpkKM21vfaV9VrMyCE=;
+        b=VvycVjrItD7xW7loJqhky7aMh6q/k7A4GBsr8lMnnG2JiAWl/DbzwmX1ZHVZNqvIEf
+         gVQw/vg833XUcU8R8/oLz2z7emk48rpBBordrXQKOn4zKd4XtE3VjGNx4/xgHBmo0+qC
+         Q0PTEVc7q1+PsHpDqjExthl2l8R24AxwhYyBvVTQkxvpw5qbf6r5wnllkqRzB9nXV3gN
+         +V+EuyrqK7mZzlXI/UbaYHTQKhu3NIwCdVL8Ugl5vv0izjMVv8499hbhPd2dWrWdA5Ip
+         5YeuxKNyR4A72pjgiln0XgCiARbwf+gqkFfBI/aAaAE7riBbH4TARPN0IRRuXGvoiFIw
+         44Pw==
+X-Gm-Message-State: AOAM5339kSdBSok89GJaX/ZyUVXv76LMFDBHKv4yuysxO/oCL1FxZdBr
+        vRteZbier95IR5W3Wki+tHyw4IZXNNE=
+X-Google-Smtp-Source: ABdhPJyJTS6z/OsZewzLBZ3SF2ivr5UUMYEgGEpD3eD4BgSSb2Sso+Ug51g8U5yI5YM1C1lX1GYIGg==
+X-Received: by 2002:a17:903:4106:b029:fd:9cea:7008 with SMTP id r6-20020a1709034106b02900fd9cea7008mr5564802pld.47.1623444741289;
+        Fri, 11 Jun 2021 13:52:21 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id l201sm5919224pfd.183.2021.06.11.13.52.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 13:52:20 -0700 (PDT)
+Subject: Re: [PATCH v3 4/9] scsi: ufs: Complete the cmd before returning in
+ queuecommand
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-5-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <d017548a-16fb-8ad0-2363-09dad00c9642@acm.org>
+Date:   Fri, 11 Jun 2021 13:52:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1623300218-9454-5-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are never modified, so make them const to allow the compiler to
-put them in read-only memory.
+On 6/9/21 9:43 PM, Can Guo wrote:
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 0c9d2ee..7dc0fda 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -2758,6 +2758,16 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+>  		goto out;
+>  	}
+>  
+> +	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
+> +		if (hba->wl_pm_op_in_progress) {
+> +			set_host_byte(cmd, DID_BAD_TARGET);
+> +			cmd->scsi_done(cmd);
+> +		} else {
+> +			err = SCSI_MLQUEUE_HOST_BUSY;
+> +		}
+> +		goto out;
+> +	}
+> +
+>  	hba->req_abort_count = 0;
+>  
+>  	err = ufshcd_hold(hba, true);
+> @@ -2768,15 +2778,6 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+>  	WARN_ON(ufshcd_is_clkgating_allowed(hba) &&
+>  		(hba->clk_gating.state != CLKS_ON));
+>  
+> -	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
+> -		if (hba->wl_pm_op_in_progress)
+> -			set_host_byte(cmd, DID_BAD_TARGET);
+> -		else
+> -			err = SCSI_MLQUEUE_HOST_BUSY;
+> -		ufshcd_release(hba);
+> -		goto out;
+> -	}
+> -
+>  	lrbp = &hba->lrb[tag];
+>  	WARN_ON(lrbp->cmd);
+>  	lrbp->cmd = cmd;
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
-Changes since v1:
-- None
+Can the code under "if (unlikely(test_bit(tag,
+&hba->outstanding_reqs)))" be deleted instead of moving it? I don't
+think that it is useful to verify whether the block layer tag allocator
+works correctly. Additionally, I'm not aware of any similar code in any
+other SCSI LLD.
 
- arch/x86/events/intel/uncore_nhmex.c |  6 +++---
- arch/x86/events/intel/uncore_snbep.c | 20 ++++++++++----------
- 2 files changed, 13 insertions(+), 13 deletions(-)
+Thanks,
 
-diff --git a/arch/x86/events/intel/uncore_nhmex.c b/arch/x86/events/intel/uncore_nhmex.c
-index 5f7c27d7f428..b4567489580d 100644
---- a/arch/x86/events/intel/uncore_nhmex.c
-+++ b/arch/x86/events/intel/uncore_nhmex.c
-@@ -525,7 +525,7 @@ enum {
- 	EXTRA_REG_NHMEX_M_ZDP_CTL_FVC,
- };
- 
--static struct extra_reg nhmex_uncore_mbox_extra_regs[] = {
-+static const struct extra_reg nhmex_uncore_mbox_extra_regs[] = {
- 	MBOX_INC_SEL_EXTAR_REG(0x0, DSP),
- 	MBOX_INC_SEL_EXTAR_REG(0x4, MSC_THR),
- 	MBOX_INC_SEL_EXTAR_REG(0x5, MSC_THR),
-@@ -755,7 +755,7 @@ static void nhmex_mbox_put_constraint(struct intel_uncore_box *box, struct perf_
- 	}
- }
- 
--static int nhmex_mbox_extra_reg_idx(struct extra_reg *er)
-+static int nhmex_mbox_extra_reg_idx(const struct extra_reg *er)
- {
- 	if (er->idx < EXTRA_REG_NHMEX_M_ZDP_CTL_FVC)
- 		return er->idx;
-@@ -767,7 +767,7 @@ static int nhmex_mbox_hw_config(struct intel_uncore_box *box, struct perf_event
- 	struct intel_uncore_type *type = box->pmu->type;
- 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
- 	struct hw_perf_event_extra *reg2 = &event->hw.branch_reg;
--	struct extra_reg *er;
-+	const struct extra_reg *er;
- 	unsigned msr;
- 	int reg_idx = 0;
- 	/*
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 507bb83e1463..77b342637688 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -882,7 +882,7 @@ static struct intel_uncore_type snbep_uncore_ubox = {
- 	.format_group	= &snbep_uncore_ubox_format_group,
- };
- 
--static struct extra_reg snbep_uncore_cbox_extra_regs[] = {
-+static const struct extra_reg snbep_uncore_cbox_extra_regs[] = {
- 	SNBEP_CBO_EVENT_EXTRA_REG(SNBEP_CBO_PMON_CTL_TID_EN,
- 				  SNBEP_CBO_PMON_CTL_TID_EN, 0x1),
- 	SNBEP_CBO_EVENT_EXTRA_REG(0x0334, 0xffff, 0x4),
-@@ -999,7 +999,7 @@ snbep_cbox_get_constraint(struct intel_uncore_box *box, struct perf_event *event
- static int snbep_cbox_hw_config(struct intel_uncore_box *box, struct perf_event *event)
- {
- 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
--	struct extra_reg *er;
-+	const struct extra_reg *er;
- 	int idx = 0;
- 
- 	for (er = snbep_uncore_cbox_extra_regs; er->msr; er++) {
-@@ -1653,7 +1653,7 @@ static struct intel_uncore_type ivbep_uncore_ubox = {
- 	.format_group	= &ivbep_uncore_ubox_format_group,
- };
- 
--static struct extra_reg ivbep_uncore_cbox_extra_regs[] = {
-+static const struct extra_reg ivbep_uncore_cbox_extra_regs[] = {
- 	SNBEP_CBO_EVENT_EXTRA_REG(SNBEP_CBO_PMON_CTL_TID_EN,
- 				  SNBEP_CBO_PMON_CTL_TID_EN, 0x1),
- 	SNBEP_CBO_EVENT_EXTRA_REG(0x1031, 0x10ff, 0x2),
-@@ -1725,7 +1725,7 @@ ivbep_cbox_get_constraint(struct intel_uncore_box *box, struct perf_event *event
- static int ivbep_cbox_hw_config(struct intel_uncore_box *box, struct perf_event *event)
- {
- 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
--	struct extra_reg *er;
-+	const struct extra_reg *er;
- 	int idx = 0;
- 
- 	for (er = ivbep_uncore_cbox_extra_regs; er->msr; er++) {
-@@ -2121,7 +2121,7 @@ static struct event_constraint knl_uncore_cha_constraints[] = {
- 	EVENT_CONSTRAINT_END
- };
- 
--static struct extra_reg knl_uncore_cha_extra_regs[] = {
-+static const struct extra_reg knl_uncore_cha_extra_regs[] = {
- 	SNBEP_CBO_EVENT_EXTRA_REG(SNBEP_CBO_PMON_CTL_TID_EN,
- 				  SNBEP_CBO_PMON_CTL_TID_EN, 0x1),
- 	SNBEP_CBO_EVENT_EXTRA_REG(0x3d, 0xff, 0x2),
-@@ -2153,7 +2153,7 @@ static int knl_cha_hw_config(struct intel_uncore_box *box,
- 			     struct perf_event *event)
- {
- 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
--	struct extra_reg *er;
-+	const struct extra_reg *er;
- 	int idx = 0;
- 
- 	for (er = knl_uncore_cha_extra_regs; er->msr; er++) {
-@@ -2637,7 +2637,7 @@ static struct event_constraint hswep_uncore_cbox_constraints[] = {
- 	EVENT_CONSTRAINT_END
- };
- 
--static struct extra_reg hswep_uncore_cbox_extra_regs[] = {
-+static const struct extra_reg hswep_uncore_cbox_extra_regs[] = {
- 	SNBEP_CBO_EVENT_EXTRA_REG(SNBEP_CBO_PMON_CTL_TID_EN,
- 				  SNBEP_CBO_PMON_CTL_TID_EN, 0x1),
- 	SNBEP_CBO_EVENT_EXTRA_REG(0x0334, 0xffff, 0x4),
-@@ -2708,7 +2708,7 @@ hswep_cbox_get_constraint(struct intel_uncore_box *box, struct perf_event *event
- static int hswep_cbox_hw_config(struct intel_uncore_box *box, struct perf_event *event)
- {
- 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
--	struct extra_reg *er;
-+	const struct extra_reg *er;
- 	int idx = 0;
- 
- 	for (er = hswep_uncore_cbox_extra_regs; er->msr; er++) {
-@@ -3547,7 +3547,7 @@ static struct event_constraint skx_uncore_chabox_constraints[] = {
- 	EVENT_CONSTRAINT_END
- };
- 
--static struct extra_reg skx_uncore_cha_extra_regs[] = {
-+static const struct extra_reg skx_uncore_cha_extra_regs[] = {
- 	SNBEP_CBO_EVENT_EXTRA_REG(0x0334, 0xffff, 0x4),
- 	SNBEP_CBO_EVENT_EXTRA_REG(0x0534, 0xffff, 0x4),
- 	SNBEP_CBO_EVENT_EXTRA_REG(0x0934, 0xffff, 0x4),
-@@ -3593,7 +3593,7 @@ skx_cha_get_constraint(struct intel_uncore_box *box, struct perf_event *event)
- static int skx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *event)
- {
- 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
--	struct extra_reg *er;
-+	const struct extra_reg *er;
- 	int idx = 0;
- 
- 	for (er = skx_uncore_cha_extra_regs; er->msr; er++) {
--- 
-2.32.0
+Bart.
+
 
