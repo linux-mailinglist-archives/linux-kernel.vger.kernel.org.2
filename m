@@ -2,153 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C273A4AB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAE63A4AB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhFKVl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFKVl5 (ORCPT
+        id S230507AbhFKVmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 17:42:03 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:41284 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhFKVmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:41:57 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5835FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:39:58 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id o3so7429324wri.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0QDb2/kUHVW8lv82h4iuCL3pJ9emh15XA/S11XTDQlU=;
-        b=aeE/8vx6hRhekLT8QJRfxZsP54LVoH27wVXdVczEOp18demzyLWosFwxkXSrNB0Ckx
-         Kg6SGhhbM0vloRCkHxlLUlXBg56/oETyUvFMwgdKI2qpr+oVVvBpI/1ZZ5bbuU3ijiGT
-         IbmnXttBiQAyCGPFGvHtnDW246AvcS36WzXQvTbZmFhzpYTiYjrFnlA/nCRKBrIiuDhr
-         +6r0kku4GCfJjO1BnGtVdOZTGslENKPYiaGhyPnR/QlcmJlPAOIYVdkaI9BN6erYOynk
-         I7kCvA+OPOtXMjKzp88/KFEuP97nbbc9i5vDb18EQ7FDmARh9Nc6m9SRbrIJwogru54x
-         Il5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=0QDb2/kUHVW8lv82h4iuCL3pJ9emh15XA/S11XTDQlU=;
-        b=bSqIXao5AAviCG2vY8+pb81248fQyr1o5ZcjNkmy3zRzGx/9QZ9vL1cRvXokPIVqBF
-         ZBBd07wkvqeVsOFwlTBoBLBospl1Si2/wDj3Oe6DEo3vthsCId0YUNxCjd//l33nWGQV
-         q30HyeuvNNPQ6+As15zsAGxDYUnow7fuSMWqiM9FUiH3p6dzNoflV7RN1vkpUdQh1MDV
-         hTtDplPf+jdhvRIgVMm9XtcQWhCuq4GYhNH2Nim3OAS5b5Tmp+wYSPNPvGOyjNOSyb3M
-         z+m9oUQu7EtSxAKgjY2D/jKUIR7/Flgaj3x4pyeeA4jpUh2/GU7IQZE6Kf9Le93706wE
-         fvEg==
-X-Gm-Message-State: AOAM533/luaScAaIfs0+YpBQYtQLg2sfZ43NmcJ7znrGRiJ7GOABh80i
-        g/baNoO6CIcErnNM0Ru1U/mGtV2CKcxSdA==
-X-Google-Smtp-Source: ABdhPJyca1xqNDS4eR9mwmhPXtMUXQqUGW+nIBEEgdkTQOMljFYGGjj1IJ+VsiXyuF/Ke+MQ/g+fIw==
-X-Received: by 2002:adf:b64a:: with SMTP id i10mr6097620wre.169.1623447596907;
-        Fri, 11 Jun 2021 14:39:56 -0700 (PDT)
-Received: from pevik (gw.ms-free.net. [95.85.240.250])
-        by smtp.gmail.com with ESMTPSA id x3sm13522666wmj.30.2021.06.11.14.39.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 14:39:56 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 23:39:23 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Luo Longjun <luolongjun@huawei.com>, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sangyan@huawei.com, ningyu9@huawei.com, luchunhua@huawei.com
-Subject: Re: [PATCH] arm64: configs: remove redundant CONFIG_MTK_PMIC_WRAP
-Message-ID: <YMPYC5OAEh5vJQwv@pevik>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20210507182410.10515-1-luolongjun@huawei.com>
- <20210511172020.GB21033@arm.com>
- <6ef5c7a0-3596-a67c-c99d-c8e0def8a96a@collabora.com>
- <aa3d0bf1-8330-42e0-d11b-c554194c3b81@gmail.com>
+        Fri, 11 Jun 2021 17:42:01 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lrosf-008XOJ-U8; Fri, 11 Jun 2021 15:39:58 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lrose-004obf-NP; Fri, 11 Jun 2021 15:39:57 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        Daniel Jacobowitz <drow@nevyn.them.org>,
+        Kees Cook <keescook@chromium.org>
+In-Reply-To: <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 10 Jun 2021 15:04:33 -0700")
+References: <87sg1p30a1.fsf@disp2133>
+        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Fri, 11 Jun 2021 16:39:44 -0500
+Message-ID: <87pmwsytb3.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa3d0bf1-8330-42e0-d11b-c554194c3b81@gmail.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1lrose-004obf-NP;;;mid=<87pmwsytb3.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+IuZawwTz1YFyhvc3cnGga/n99E1fmVx0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_08,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 537 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.7 (0.7%), b_tie_ro: 2.5 (0.5%), parse: 0.77
+        (0.1%), extract_message_metadata: 11 (2.1%), get_uri_detail_list: 1.79
+        (0.3%), tests_pri_-1000: 19 (3.5%), tests_pri_-950: 1.01 (0.2%),
+        tests_pri_-900: 0.83 (0.2%), tests_pri_-90: 88 (16.4%), check_bayes:
+        87 (16.1%), b_tokenize: 8 (1.5%), b_tok_get_all: 9 (1.7%),
+        b_comp_prob: 2.0 (0.4%), b_tok_touch_all: 64 (11.9%), b_finish: 0.79
+        (0.1%), tests_pri_0: 400 (74.4%), check_dkim_signature: 0.44 (0.1%),
+        check_dkim_adsp: 2.6 (0.5%), poll_dns_idle: 1.24 (0.2%), tests_pri_10:
+        2.9 (0.5%), tests_pri_500: 8 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-> Hi all,
+> On Thu, Jun 10, 2021 at 1:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> The problem is sometimes we read all of the registers from
+>> a context where they are not all saved.
+>
+> Ouch. Yes. And this is really painful because none of the *normal*
+> architectures do this, so it gets absolutely no coverage.
+>
+>> I think at this point we need to say that the architectures that have a
+>> do this need to be fixed to at least call do_exit and the kernel
+>> function in create_io_thread with the deeper stack.
+>
+> Yeah. We traditionally have that requirement for fork() and friends
+> too (vfork/clone), so adding exit and io_uring to do so seems like the
+> most straightforward thing.
 
-> On 11/05/2021 22:04, Enric Balletbo i Serra wrote:
-> > Hi Catalin,
+Interesting.  I am starting with Al's analysis and reading the code
+to see if I can understand what is going on.  So I am still glossing
+over a few details as I dig into this.  Kernel threads not having
+all of their registers saved is one of those details.
 
-> > Thanks for cc'ing me.
+Looking at copy_thread it looks like at least on alpha we are dealing
+with a structure that defines all of the registers in copy_thread.  So
+perhaps all of the registers are there in kernel_threads already.  I
+don't read alpha assembly very well and fork is a bit subtle.  I don't
+know which piece of code is calling
+ret_from_fork/ret_from_kernel_thread.
 
-> > On 11/5/21 19:20, Catalin Marinas wrote:
-> >> On Sat, May 08, 2021 at 02:24:10AM +0800, Luo Longjun wrote:
-> >>> When I compile kernel in ARM64, it produces the following output:
+I really suspect that all of those registers are popped so at least for
+IO_THREADS we need to push them again, in a way that signal_pt_regs()
+can find them.
 
-> >>> *** Default configuration is based on 'defconfig'
-> >>> arch/arm64/configs/defconfig:1018:warning: override: reassigning to
-> >>> symbol MTK_PMIC_WRAP
+It looks like we just need something like this to cover the userspace
+side of exit.
 
-> >>> After checking defcofnig, I found two CONFIG_MTK_PMIC_WRAP options.
-
-> >>> Signed-off-by: Luo Longjun <luolongjun@huawei.com>
-> >>> ---
-> >>>  arch/arm64/configs/defconfig | 1 -
-> >>>  1 file changed, 1 deletion(-)
-
-> >>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> >>> index 08c6f769df9a..9907a431db0d 100644
-> >>> --- a/arch/arm64/configs/defconfig
-> >>> +++ b/arch/arm64/configs/defconfig
-> >>> @@ -491,7 +491,6 @@ CONFIG_SPI_S3C64XX=y
-> >>>  CONFIG_SPI_SH_MSIOF=m
-> >>>  CONFIG_SPI_SUN6I=y
-> >>>  CONFIG_SPI_SPIDEV=m
-> >>> -CONFIG_MTK_PMIC_WRAP=m
-> >>>  CONFIG_SPMI=y
-> >>>  CONFIG_PINCTRL_SINGLE=y
-> >>>  CONFIG_PINCTRL_MAX77620=y
-
-> >> Adding Matthias and Enric. This change looks fine to me but I think it
-> >> should go in via the arm-soc tree. Commit 9fd5449e061e introduced the =m
-> >> option while commit fbbe38309d56 introduced the =y variant.
-
-> >> You could add:
-
-> >> Fixes: fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot from usb")
-
-Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
-
-I was going to send fix myself, I'd prefer also y, but weren't 100% sure sure.
-
-For a record:
-
-* CONFIG_MTK_PMIC_WRAP=m committed by author in 2021-01-04, merged 2021-01-31 15:31:01
-9fd5449e061e ("arm64: configs: Support pwrap on Mediatek MT6779 platform")
-sent: 4 Jan 2021
-https://lore.kernel.org/r/1609747703-27207-3-git-send-email-argus.lin@mediatek.com
-Applied to v5.11-next/defconfig 31 Jan 2021 15:32:26 by Matthias Brugger <matthias.bgg@gmail.com>
-https://lore.kernel.org/linux-devicetree/5d5a67a5-ac2d-9ef9-b20c-66cbd55ebb8f@gmail.com/
-
-* CONFIG_MTK_PMIC_WRAP=y was committed by author in 2021-03-31 11:06:57, merged 2021-03-31 12:12:59
-fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot from usb")
-sent: 31 Mar 2021 11:06:57
-https://lore.kernel.org/r/20210331090659.4169966-1-enric.balletbo@collabora.com
-But originally sent: 9 Feb 2021 10:11:11
-https://lore.kernel.org/lkml/20210209091112.2075478-1-enric.balletbo@collabora.com/
-
-Kind regards,
-Petr
-
-> > I sent the same patch some time ago [1].
-
-> > I agree, either land this patch or mine. In any case,
-
-> > Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-> > Matthias is this something that should go through your tree?
+diff --git a/arch/alpha/kernel/entry.S b/arch/alpha/kernel/entry.S
+index e227f3a29a43..ab0dcb545bd1 100644
+--- a/arch/alpha/kernel/entry.S
++++ b/arch/alpha/kernel/entry.S
+@@ -812,6 +812,22 @@ fork_like fork
+ fork_like vfork
+ fork_like clone
+ 
++.macro exit_like name
++	.align	4
++	.globl	alpha_\name
++	.ent	alpha_\name
++alpha_\name:
++	.prologue 0
++	DO_SWITCH_STACK
++	jsr	$26, sys_\name
++	UNDO_SWITCH_STACK
++	ret
++.end	alpha_\name
++.endm
++
++exit_like exit
++exit_like exit_group
++
+ .macro	sigreturn_like name
+ 	.align	4
+ 	.globl	sys_\name
+diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
+index 3000a2e8ee21..b9d6449d6caa 100644
+--- a/arch/alpha/kernel/syscalls/syscall.tbl
++++ b/arch/alpha/kernel/syscalls/syscall.tbl
+@@ -8,7 +8,7 @@
+ # The <abi> is always "common" for this file
+ #
+ 0	common	osf_syscall			alpha_syscall_zero
+-1	common	exit				sys_exit
++1	common	exit				alpha_exit
+ 2	common	fork				alpha_fork
+ 3	common	read				sys_read
+ 4	common	write				sys_write
+@@ -333,7 +333,7 @@
+ 400	common	io_getevents			sys_io_getevents
+ 401	common	io_submit			sys_io_submit
+ 402	common	io_cancel			sys_io_cancel
+-405	common	exit_group			sys_exit_group
++405	common	exit_group			alpha_exit_group
+ 406	common	lookup_dcookie			sys_lookup_dcookie
+ 407	common	epoll_create			sys_epoll_create
+ 408	common	epoll_ctl			sys_epoll_ctl
 
 
-> Yes, this should go through my tree. I'll take care of it.
+> But I really wish we had some way to test and trigger this so that we
+> wouldn't get caught on this before. Something in task_pt_regs() that
+> catches "this doesn't actually work" and does a WARN_ON_ONCE() on the
+> affected architectures?
 
-> Regards,
-> Matthias
+I think that would require pushing an extra magic value in SWITCH_STACK
+and not just popping it but deliberately changing that value in
+UNDO_SWITCH_STACK.  Basically stack canaries.
+
+I don't see how we could do it in an arch independent way though.
+Which means it will require auditing all of the architectures to get
+there. Volunteers?
+
+This is looking straight forward enough that I can probably pull
+something together, just don't count on me to have it done in anything
+resembling a timely manner.
+
+Eric
