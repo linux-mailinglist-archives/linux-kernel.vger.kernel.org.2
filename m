@@ -2,44 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206143A4390
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB683A4393
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhFKN5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:57:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40028 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231802AbhFKN4n (ORCPT
+        id S232151AbhFKN6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231828AbhFKN4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:56:43 -0400
+        Fri, 11 Jun 2021 09:56:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F38C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:54:46 -0700 (PDT)
 Date:   Fri, 11 Jun 2021 13:54:44 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1623419685;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=P/rlUUEJ1L+vl/9c5vAOx4ZkXQzQQNJwsAdcXxquvI8=;
-        b=sMPbU7PumsyQieRmxKQJvpEA+zr4koNxaVGihiSTinszR7PlqaIawsflo4muaFk6pWmXaE
-        LLaka68l0yOGRsUBkelcDPfE8NgyO30xLIAo3ZeiReQH3Od/PmNBySw2ObpkZdh9ecEjlU
-        paoV2GUZJjk9ACBJGYADvJM5TuLX1l8DDFX6bZTXVWBNJB9RLGzkM0aIaZqjAs9MncMfXG
-        wwJYu3yA6Cd4OaK127YYMviLFXXYhgL0prYyZQC77r8sb/BaNV9Qwlji1AK+fJdMAQM9PF
-        drEx7Dfrv4rhLO56w9xBUEG2KmUKa8KFS/Nveqam+ZCpuPUKDQ8Qx4fN7rIPZA==
+        bh=DScQOZbMbCh4YbP2kKeVtck0AfE3VDf9F6Gi1HNR5iw=;
+        b=UvQyKHOD9QD5uu8gMAkmHQ50uYzJobOLWlzir2cUBP0kijlyb137iECvrf/o7wbFzP8n64
+        SdVvYl1otmnTBqlBrdwMfKqLanZKALra7vQaU1mhAEWKHETKbIziWwUanac+zl9v4Xo21p
+        vh8ybQ9L7Zs4OUfkk54Dq0cY0USdHhgefcBuga/WVBleHDn65mSDRezdVPe8JjjJySaamK
+        vuPvv1Lr0XvvkzjpWPXHP7Ya2vlkrhpXBx4+qTWvSB6tmkXemeHrObV5TozCDU07r0Sx/S
+        lOcy70fpNLV1EoGkqlIoWZVKm/a+MjCU65Cn33GeaI9C9VqSsLgZGUmY4Z652A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1623419685;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=P/rlUUEJ1L+vl/9c5vAOx4ZkXQzQQNJwsAdcXxquvI8=;
-        b=Xz5go8vT1uah7J5mY+rDMmlUU6wvfSZP6cvnSvjg5w1i0HVg1pb9+K7sLR2CvL4eQEg8JZ
-        TvQBqIA8YUhrLbCg==
+        bh=DScQOZbMbCh4YbP2kKeVtck0AfE3VDf9F6Gi1HNR5iw=;
+        b=Tuolk8BoSgFT/BhDH8yKJCLsfIlffH/TmUCl/v7J+dQ5KxPeJKX9WGTRynZt/YVCtEybqT
+        AaY9t5CpZ7QN/bAQ==
 From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] mfd: ioc3: Directly include linux/irqdomain.h
+Subject: [irqchip: irq/irqchip-next] watchdog/octeon-wdt: Directly include
+ linux/irqdomain.h
 Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
 MIME-Version: 1.0
-Message-ID: <162341968477.19906.17631173742904819360.tip-bot2@tip-bot2>
+Message-ID: <162341968434.19906.5824979606669168375.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -50,34 +54,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     c7d49545997eab111aec14be152842f56a0cabc4
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/c7d49545997eab111aec14be152842f56a0cabc4
+Commit-ID:     bc9a454a9440e2872ecf71256fb962e4bb35e937
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/bc9a454a9440e2872ecf71256fb962e4bb35e937
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Sun, 16 May 2021 17:57:15 +01:00
+AuthorDate:    Thu, 13 Sep 2018 09:30:34 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Thu, 10 Jun 2021 13:09:15 +01:00
 
-mfd: ioc3: Directly include linux/irqdomain.h
+watchdog/octeon-wdt: Directly include linux/irqdomain.h
 
-This driver include linux/irqdomain.h via a bizarre set of
-indirection, which we are about to break.
+This drivers currently obtains linux/irqdomain.h by luck and
+a chain of bizarre inclusions, which we're about to fix.
 
-Directly include the required file.
+Let's include the required file directly.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/mfd/ioc3.c | 1 +
+ drivers/watchdog/octeon-wdt-main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mfd/ioc3.c b/drivers/mfd/ioc3.c
-index c73ec78..99b9c11 100644
---- a/drivers/mfd/ioc3.c
-+++ b/drivers/mfd/ioc3.c
-@@ -14,6 +14,7 @@
+diff --git a/drivers/watchdog/octeon-wdt-main.c b/drivers/watchdog/octeon-wdt-main.c
+index fde9e73..391c774 100644
+--- a/drivers/watchdog/octeon-wdt-main.c
++++ b/drivers/watchdog/octeon-wdt-main.c
+@@ -54,6 +54,7 @@
  #include <linux/delay.h>
- #include <linux/errno.h>
- #include <linux/interrupt.h>
+ #include <linux/cpu.h>
+ #include <linux/irq.h>
 +#include <linux/irqdomain.h>
- #include <linux/mfd/core.h>
- #include <linux/module.h>
- #include <linux/pci.h>
+ 
+ #include <asm/mipsregs.h>
+ #include <asm/uasm.h>
