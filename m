@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5190D3A4863
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2763A484B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhFKSGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 14:06:45 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:36601 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbhFKSG3 (ORCPT
+        id S231273AbhFKSFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 14:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230502AbhFKSFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 14:06:29 -0400
-Received: by mail-wm1-f46.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so8656017wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:04:14 -0700 (PDT)
+        Fri, 11 Jun 2021 14:05:16 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7193C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:03:17 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id q5so6970274wrm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:03:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/p/9eGT1B+K4ZIlz1Qxt98Bfdy/SrJfZDe5wrN1TjpI=;
-        b=BgLA58MBug9EvhljlQ7xjuycO9wUkYLL6i6Uu6L5i0nSXOiot4Cmt1v3mrPfwtlmzV
-         bkptIwI+8AXIp+vPomKEiHbhFTYbJC/Xevz9sS7mUQdc+7NTopsUi4wQkRqrLD1jVO6G
-         /48yPZUQ2Ne06X2Pm/8fjh+PfiiFgHrdfTORF5SOSvA/SOjliY/t5FgJT2sfYrMmKkEz
-         lOizvmYuQ/Ch9eH2iyFjm6ORMRa414FXblIdfxG1L5waWbg5qGkA5V+g/AhHI7zeA9D/
-         oENqnSGSuzKwtS6WNCw/zPSjQwCyIpla7LReF7swGJM453624Ld7hfiNId40NZmOXzr9
-         nBjA==
+        bh=vVGuSNXWbfjaldG1IhliMoxhhtotqO3ePDulHlgQze8=;
+        b=Fe3cjQKb0+SXQJENkP/5P0Pxs/R7x6MoMPdePxTQXG82lzx2CMB4niwuvBFYgp3CBC
+         QQl7pCQVeDhw91xbfrM5AzvP6v650wvXsFhGCMXC4XZwadQ8F/OGwZ42QWdCm/NZB1po
+         zViLKr2KeYUUaYTLV//X1qWfcinpHv2OgEYQAH88qWgbpTfc5h1U5yLy6OmhEhMihEbW
+         2ZZnoMwo8EgFLfFps7HmXfm1MHZxEOiy6uRs69ftx+vbONSfy28se9TI9oklNdGZDTSD
+         xIp2QPMXMGJjbAdmPMoGnKPmE1CXLqe4C5MpKjsXvfLn+1w+El/MnFQYzoL+iN1WYDBH
+         r3dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/p/9eGT1B+K4ZIlz1Qxt98Bfdy/SrJfZDe5wrN1TjpI=;
-        b=V1MFVfgkVhc91lGRhGv8wmdQdGzRQ39RgOidnaP+PI/7TjXoDBexgG5OSR1SXlzy+T
-         i+GR+s2ffXbC+ejMStMoe0oZn1mUTCMYzPTwQvBQcPbqbX9L5vtleMaAlvCpWIiYO4uK
-         orL00x7g5GoSEjEsNtJkzfkgXDMH97Leo8ujJ4Y3uksAwqgOG+c8T3afZ3+78WB91fQf
-         1eQ3XXWYbxH4FM16EzvTYrWkx1bUjWRh33Pk7qCr1nk1hAZGgJnky++cTuU3knJLk/mz
-         lf/GIzSsQYxoBrrIGVxNUpbAwDVG44/pyaXYtZzI8q5Ha37xb5FfcuqKK7cRhjSm7us0
-         59/A==
-X-Gm-Message-State: AOAM532sSJNAY4DRr3yFo79WeNXJfVRkQEbMlWrW+2HflzJMZCx+J4pu
-        lIKCklRlQT4hdKl6dqXDfkg+DFiGH1gvZ4PJ
-X-Google-Smtp-Source: ABdhPJxAMZnid/OtiS3TcJMnZiWqc09xhHLsL/UFmz/zvzzo+wKbzy+SFNVTywHN+E9brL0fbF7EoA==
-X-Received: by 2002:a05:600c:22c9:: with SMTP id 9mr5142417wmg.44.1623434593723;
-        Fri, 11 Jun 2021 11:03:13 -0700 (PDT)
+        bh=vVGuSNXWbfjaldG1IhliMoxhhtotqO3ePDulHlgQze8=;
+        b=BzZ6SUTeTI4xOYEtZqtqKG5CJgaNw55IcJFTKV2Do2pDIhukzxFbajyTcBR59G4nFK
+         9sNJD+5MC1KRnyDO8ZECxkyxLKn0iLp8kMaRI7vKgH7F+Uvt8JtJojoVN88xtnny3qDm
+         LKjbYHWRLuESRN8cGGYnYegjWnjfoO7D9jr9f+tLlno5fxesNkVpRs8kHKTLpI2OXLi6
+         B+4hGcMWbmvRGn1A0lqpJlSjhxauZwttm0ebiIleQIS74Eg1sEq41U8FgvIiQwxzP9Ne
+         AsBEq/TnZlgxdFBkFXDn+RAjPKxipFh3FWtbg2YzE5vmMrrTZVjGEmDiEDHsu7Xj4M7v
+         6J0Q==
+X-Gm-Message-State: AOAM531TVNABvK7wqSTXdC7w1WWbpami4sJnyEjKiRDwmtpMsAmSlFTj
+        BOPNcsqa0LKLlXrSt3NVVArvtnc1xVonil0f
+X-Google-Smtp-Source: ABdhPJxz9rnzky/Oj1iwMOFsP582nAiPhNa+4cHnLc5DdqZvOMrHxazhJ2t+zdAmD5GHyJAm2S0Mpg==
+X-Received: by 2002:a5d:47c3:: with SMTP id o3mr5527143wrc.122.1623434596301;
+        Fri, 11 Jun 2021 11:03:16 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id v15sm7425881wrw.24.2021.06.11.11.03.12
+        by smtp.gmail.com with ESMTPSA id v15sm7425881wrw.24.2021.06.11.11.03.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 11:03:13 -0700 (PDT)
+        Fri, 11 Jun 2021 11:03:15 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -62,10 +65,11 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: [PATCH v3 15/23] x86/signal: Check if vdso_image_32 is mapped before trying to land on it
-Date:   Fri, 11 Jun 2021 19:02:34 +0100
-Message-Id: <20210611180242.711399-16-dima@arista.com>
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v3 16/23] mm: Add vdso_base in mm_struct
+Date:   Fri, 11 Jun 2021 19:02:35 +0100
+Message-Id: <20210611180242.711399-17-dima@arista.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210611180242.711399-1-dima@arista.com>
 References: <20210611180242.711399-1-dima@arista.com>
@@ -75,103 +79,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide current_has_vdso(image) helper and check it apriory landing
-attempt on vdso vma.
-The helper is a macro, not a static inline funciton to avoid
-linux/sched/task_stack.h inclusion in asm/vdso.h.
+Instead of having every architecture to define vdso_base/vdso_addr etc,
+provide a generic mechanism to track vdso_base for landing in userspace.
+It'll minimize per-architecture difference, the number of callbacks to
+provide.
 
+Originally, it started from thread [1] where the need for .close()
+callback on vm_special_mapping was pointed, this generic code besides
+removing duplicated .mremap() callbacks provides a cheaper way to
+support munmap() on vdso mappings without introducing .close() callbacks
+for every architecture (which would bring even more code duplication).
+
+[1]: https://lore.kernel.org/linux-arch/CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com/
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/x86/entry/common.c     | 10 +++++++++-
- arch/x86/ia32/ia32_signal.c |  4 ++--
- arch/x86/include/asm/vdso.h |  4 ++++
- arch/x86/kernel/signal.c    |  4 ++--
- 4 files changed, 17 insertions(+), 5 deletions(-)
+ arch/Kconfig                              |  3 +++
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  3 ++-
+ fs/aio.c                                  |  3 ++-
+ include/linux/mm.h                        |  3 ++-
+ include/linux/mm_types.h                  | 17 +++++++++++++++++
+ kernel/fork.c                             |  1 +
+ mm/mmap.c                                 | 19 ++++++++++++++++++-
+ mm/mremap.c                               |  2 +-
+ 8 files changed, 46 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 7b2542b13ebd..385a1c4bf4c0 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -150,11 +150,19 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
- /* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
- __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
+diff --git a/arch/Kconfig b/arch/Kconfig
+index c45b770d3579..0e648a1ae412 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1235,6 +1235,9 @@ config HAVE_SPARSE_SYSCALL_NR
+ config ARCH_HAS_VDSO_DATA
+ 	bool
+ 
++config ARCH_HAS_VDSO_BASE
++	bool
++
+ config HAVE_STATIC_CALL
+ 	bool
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+index 05a89e33fde2..5ab191855816 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -1458,7 +1458,8 @@ static int pseudo_lock_dev_release(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
+-static int pseudo_lock_dev_mremap(struct vm_area_struct *area)
++static int pseudo_lock_dev_mremap(struct vm_area_struct *old_vma,
++				  struct vm_area_struct *new_vma)
  {
-+	unsigned long landing_pad;
-+
-+	if (!current_has_vdso(&vdso_image_32)) {
-+		regs->ip = 0;
-+		force_sigsegv(SIGSEGV);
-+		syscall_exit_to_user_mode(regs);
-+	}
-+
+ 	/* Not supported */
+ 	return -EINVAL;
+diff --git a/fs/aio.c b/fs/aio.c
+index 76ce0cc3ee4e..0b27e9300d0f 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -323,7 +323,8 @@ static void aio_free_ring(struct kioctx *ctx)
+ 	}
+ }
+ 
+-static int aio_ring_mremap(struct vm_area_struct *vma)
++static int aio_ring_mremap(struct vm_area_struct *old_vma,
++			   struct vm_area_struct *vma)
+ {
+ 	struct file *file = vma->vm_file;
+ 	struct mm_struct *mm = vma->vm_mm;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index c274f75efcf9..6ef91b337f9d 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -589,7 +589,8 @@ struct vm_operations_struct {
+ 	void (*close)(struct vm_area_struct * area);
+ 	/* Called any time before splitting to check if it's allowed */
+ 	int (*may_split)(struct vm_area_struct *area, unsigned long addr);
+-	int (*mremap)(struct vm_area_struct *area);
++	int (*mremap)(struct vm_area_struct *old_vma,
++		      struct vm_area_struct *new_vma);
  	/*
- 	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
- 	 * convention.  Adjust regs so it looks like we entered using int80.
- 	 */
--	unsigned long landing_pad = (unsigned long)current->mm->context.vdso +
-+	landing_pad = (unsigned long)current->mm->context.vdso +
- 					vdso_image_32.sym_int80_landing_pad;
+ 	 * Called by mprotect() to make driver-specific permission
+ 	 * checks before mprotect() is finalised.   The VMA must not
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index e9c5f2051f08..49ad34410132 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -497,6 +497,16 @@ struct mm_struct {
  
- 	/*
-diff --git a/arch/x86/ia32/ia32_signal.c b/arch/x86/ia32/ia32_signal.c
-index adb6994c40f6..2af40ae53a0e 100644
---- a/arch/x86/ia32/ia32_signal.c
-+++ b/arch/x86/ia32/ia32_signal.c
-@@ -255,7 +255,7 @@ int ia32_setup_frame(int sig, struct ksignal *ksig,
- 		restorer = ksig->ka.sa.sa_restorer;
- 	} else {
- 		/* Return stub is in 32bit vsyscall page */
--		if (current->mm->context.vdso)
-+		if (current_has_vdso(&vdso_image_32))
- 			restorer = current->mm->context.vdso +
- 				vdso_image_32.sym___kernel_sigreturn;
- 		else
-@@ -336,7 +336,7 @@ int ia32_setup_rt_frame(int sig, struct ksignal *ksig,
+ 		/* Architecture-specific MM context */
+ 		mm_context_t context;
++#ifdef CONFIG_ARCH_HAS_VDSO_BASE
++		/*
++		 * Address of special mapping VMA to land after processing
++		 * a signal. Reads are unprotected: if a thread unmaps or
++		 * mremaps the mapping while another thread is processing
++		 * a signal, it can segfault while landing.
++		 */
++		void __user *vdso_base;
++#endif
++#define UNMAPPED_VDSO_BASE TASK_SIZE_MAX
  
- 	if (ksig->ka.sa.sa_flags & SA_RESTORER)
- 		restorer = ksig->ka.sa.sa_restorer;
--	else if (current->mm->context.vdso)
-+	else if (current_has_vdso(&vdso_image_32))
- 		restorer = current->mm->context.vdso +
- 			vdso_image_32.sym___kernel_rt_sigreturn;
- 	else
-diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
-index 98aa103eb4ab..1ea7cb3f9b14 100644
---- a/arch/x86/include/asm/vdso.h
-+++ b/arch/x86/include/asm/vdso.h
-@@ -45,6 +45,10 @@ extern const struct vdso_image vdso_image_x32;
- extern const struct vdso_image vdso_image_32;
- #endif
+ 		unsigned long flags; /* Must use atomic bitops to access */
  
-+#define current_has_vdso(image)						\
-+	(current->mm->context.vdso != 0 &&				\
-+	current->mm->context.vdso_image == image)
+@@ -598,6 +608,13 @@ static inline void init_tlb_flush_pending(struct mm_struct *mm)
+ 	atomic_set(&mm->tlb_flush_pending, 0);
+ }
+ 
++static inline void init_vdso_base(struct mm_struct *mm)
++{
++#ifdef CONFIG_ARCH_HAS_VDSO_BASE
++	mm->vdso_base = (void __user *)UNMAPPED_VDSO_BASE;
++#endif
++}
 +
- extern void __init init_vdso_image(const struct vdso_image *image);
+ static inline void inc_tlb_flush_pending(struct mm_struct *mm)
+ {
+ 	atomic_inc(&mm->tlb_flush_pending);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index dc06afd725cb..eb4ad74d042e 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1082,6 +1082,7 @@ struct mm_struct *mm_alloc(void)
+ 		return NULL;
  
- extern int map_vdso_once(const struct vdso_image *image, unsigned long addr);
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 988cbc634949..77496ccb812d 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -319,7 +319,7 @@ __setup_frame(int sig, struct ksignal *ksig, sigset_t *set,
- 	unsafe_put_user(set->sig[1], &frame->extramask[0], Efault);
- 	if (ksig->ka.sa.sa_flags & SA_RESTORER)
- 		restorer = ksig->ka.sa.sa_restorer;
--	else if (current->mm->context.vdso)
-+	else if (current_has_vdso(&vdso_image_32))
- 		restorer = current->mm->context.vdso +
- 			vdso_image_32.sym___kernel_sigreturn;
- 	else
-@@ -381,7 +381,7 @@ static int __setup_rt_frame(int sig, struct ksignal *ksig,
- 	/* Set up to return from userspace.  */
- 	if (ksig->ka.sa.sa_flags & SA_RESTORER)
- 		restorer = ksig->ka.sa.sa_restorer;
--	else if (current->mm->context.vdso)
-+	else if (current_has_vdso(&vdso_image_32))
- 		restorer = current->mm->context.vdso +
- 			vdso_image_32.sym___kernel_rt_sigreturn;
- 	else
+ 	memset(mm, 0, sizeof(*mm));
++	init_vdso_base(mm);
+ 	return mm_init(mm, current, current_user_ns());
+ }
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 4f0d62409b1c..5d1ffce51119 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3381,11 +3381,25 @@ void vm_stat_account(struct mm_struct *mm, vm_flags_t flags, long npages)
+ 
+ static vm_fault_t special_mapping_fault(struct vm_fault *vmf);
+ 
++static void update_vdso_base(struct vm_area_struct *old_vma,
++				unsigned long new_addr)
++{
++#ifdef CONFIG_ARCH_HAS_VDSO_BASE
++	struct mm_struct *mm = old_vma->vm_mm;
++
++	if (WARN_ON_ONCE(!mm))
++		return;
++	if (old_vma->vm_start == (unsigned long)mm->vdso_base)
++		mm->vdso_base = (void __user *)new_addr;
++#endif
++}
++
+ /*
+  * Having a close hook prevents vma merging regardless of flags.
+  */
+ static void special_mapping_close(struct vm_area_struct *vma)
+ {
++	update_vdso_base(vma, UNMAPPED_VDSO_BASE);
+ }
+ 
+ static const char *special_mapping_name(struct vm_area_struct *vma)
+@@ -3393,7 +3407,8 @@ static const char *special_mapping_name(struct vm_area_struct *vma)
+ 	return ((struct vm_special_mapping *)vma->vm_private_data)->name;
+ }
+ 
+-static int special_mapping_mremap(struct vm_area_struct *new_vma)
++static int special_mapping_mremap(struct vm_area_struct *old_vma,
++				  struct vm_area_struct *new_vma)
+ {
+ 	struct vm_special_mapping *sm = new_vma->vm_private_data;
+ 
+@@ -3403,6 +3418,8 @@ static int special_mapping_mremap(struct vm_area_struct *new_vma)
+ 	if (sm->mremap)
+ 		sm->mremap(sm, new_vma);
+ 
++	update_vdso_base(old_vma, new_vma->vm_start);
++
+ 	return 0;
+ }
+ 
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 47c255b60150..d28ba49d607c 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -545,7 +545,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+ 	if (moved_len < old_len) {
+ 		err = -ENOMEM;
+ 	} else if (vma->vm_ops && vma->vm_ops->mremap) {
+-		err = vma->vm_ops->mremap(new_vma);
++		err = vma->vm_ops->mremap(vma, new_vma);
+ 	}
+ 
+ 	if (unlikely(err)) {
 -- 
 2.31.1
 
