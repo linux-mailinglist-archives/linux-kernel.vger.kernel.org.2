@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5F03A3C26
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E1C3A3C2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 08:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhFKGp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 02:45:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48608 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKGp2 (ORCPT
+        id S231270AbhFKGqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 02:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKGqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:45:28 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lrat7-0000db-GM
-        for linux-kernel@vger.kernel.org; Fri, 11 Jun 2021 06:43:29 +0000
-Received: by mail-wm1-f71.google.com with SMTP id u17-20020a05600c19d1b02901af4c4deac5so4043460wmq.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 23:43:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        Fri, 11 Jun 2021 02:46:37 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9312C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 23:44:29 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id c9so4785669wrt.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 23:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=C6gfNxumQvAauUH0UC3BQ6OzW6ImVhOU0dXOw2iPMH4=;
-        b=IQTgYYGFoc/eUryBTnrEK+J8meaMrBkFCl3Gke9SUUGxgtQNm1zAyuRWdrnGUK9kQ+
-         d8TGmcU0Pi4tnB3mewSEXJV9DQR4TRJ4am4DM3K1R5PTc7oxR3h7g7mYFjL2vxHTHM0A
-         35iXMoBY4LwvC2wOioxtCWiiceZjZdq0tTZOEO+APCTAIYslVCss51iM/wMdz+n957BF
-         HN7Ni+2bHHaGd3EC5mhAhW/VvyYGc+1uMIaxaZW/BRyCHk55n5dQL+aPSnS6AxTtbU04
-         ttWr/AzG/XFvvjuKXC1TWoUdCQnTIYNb5Dek5s/IBaZYCcKyA7iklEva5CPHAdjo2Dnr
-         H7ng==
-X-Gm-Message-State: AOAM530IHafzMErOEBm5o7PIAIujgNvFQVcMjS1L9QxVo94UsFKMGVXn
-        /2fRshw2R45eqq2BZhCMTPba4SZWSro6A7zMuqpM7ULG6jx5WZ2vWzuFFmxpAryR0NeE5BsLvsg
-        DkJocHMAx2jQxb+UPKQYtQwpl2Ov0rzTARcJifmPETg==
-X-Received: by 2002:a5d:4903:: with SMTP id x3mr2088765wrq.376.1623393809261;
-        Thu, 10 Jun 2021 23:43:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHIHXoAf7h4WnhTsz2rFmYQsfMYz4c84IeQVys+BC1mK1A1qd9wPsV+eWGDJaHAx4PsGcQwA==
-X-Received: by 2002:a5d:4903:: with SMTP id x3mr2088742wrq.376.1623393809106;
-        Thu, 10 Jun 2021 23:43:29 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id z5sm6018735wrv.67.2021.06.10.23.43.28
+        bh=V8J2kKIIJJlnoKpbtxKXrz0z3Hf0aPtOx1h/2JVQKfc=;
+        b=wIWadz0YAXxE4jt1Cq9N94gLHlr+IJo9KxploLqVh6GY+ZP26gDtPZLiJMyqz1aYeu
+         wl514c/iCoj7/APxBwKqZEIMEkV/3hxogrleIZJ+ijA/eiTjDk+vG4gLBz4MbPmkrv2+
+         IYiTxVQIpKZn0//ZXkX40wOIVLaNWF+PBBSgkHOh1iz07RuFf6KULqamJL80b7ngtS1G
+         9XTDDzjWaTpU+wrBLbRmry/n3LhEjJNJrzmIMJh4LhNmneniPOyw9Rt5TpMnGjAl3j3q
+         jwygHWV2EV49zidr/KUFYM+ciYBACURp2FgMXzy9Xx74wmLT5B2CtK2cnhKL3jA3qe9V
+         DM2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=V8J2kKIIJJlnoKpbtxKXrz0z3Hf0aPtOx1h/2JVQKfc=;
+        b=mVn0zIpookAi+a8ov916oRCL8pfSsAbMT/V45HDSmkX32/CIbGxiNxpVJ8+hDxmVtP
+         ZNTefcPjSXf7KHFhKgFX56EL/PSfdtkUNxx3tpl2b+6ShgAuLKbLO3WplFmp2rTmxuLp
+         S7YJlK0LhrZGLawTJdhnB/vkDMgFfSzFXp8mhYaLpKe0zd/Qxi0RLaGYWJYYQHuRccp5
+         2ycKZ3vj5tWh9FX7HMJQuvBBL4aYbUl8QIBbftUuurO8IpsDUx2Yki4yATu1bqqxlXkh
+         UuBs5Kv6ZwBh6bpd5hQFK2WEnRmfKIO1Oaq7mhJ9Qm+N8UQye039UotXY6aDuQOTI2OU
+         r9zQ==
+X-Gm-Message-State: AOAM532YzluPA+a23W2K6Sk8N7qltuwia6NIiEqy5asiIr8dO01ewpQW
+        8aKkCOS/VByDgsC5W0HLdZ8WmA==
+X-Google-Smtp-Source: ABdhPJz1fQOM85JtTzpNkp/XZ79x6XkfY/t/ntDUPMR9DCwvEkAq9sNhdGEi57Jj+/zPb+vzYlgNyA==
+X-Received: by 2002:a5d:6382:: with SMTP id p2mr2283590wru.338.1623393868296;
+        Thu, 10 Jun 2021 23:44:28 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:bfd6:8f6:b84c:734f? ([2a01:e0a:90c:e290:bfd6:8f6:b84c:734f])
+        by smtp.gmail.com with ESMTPSA id j131sm12193829wma.40.2021.06.10.23.44.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 23:43:28 -0700 (PDT)
-Subject: Re: [GIT PULL] memory: Tegra memory controller for v5.14
-To:     Will Deacon <will@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        Dmitry Osipenko <digetx@gmail.com>
-References: <20210607084910.21024-1-krzysztof.kozlowski@canonical.com>
- <20210608120128.GB10174@willie-the-truck> <YL+A+MPjjaa3nSwq@orome.fritz.box>
- <20210608164851.GB10994@willie-the-truck> <YMHZCaRiQNQCSsVr@orome.fritz.box>
- <8c18edeb-2e3e-9072-6bb4-11637d0ca3e5@canonical.com>
- <YMIqNynz29Z9fYi3@orome.fritz.box> <20210610172958.GA14188@willie-the-truck>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <583c33e7-562f-0b1c-72b7-71f008a721f4@canonical.com>
-Date:   Fri, 11 Jun 2021 08:43:27 +0200
+        Thu, 10 Jun 2021 23:44:27 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: meson: vim3: reduce cpu thermal fan trigger
+ temperature
+To:     xieqinick@gmail.com, robh+dt@kernel.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     nick@khadas.com, artem@khadas.com
+References: <20210609012849.797576-1-xieqinick@gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <11da3ae4-91d4-1e51-c652-e4ad518f13bd@baylibre.com>
+Date:   Fri, 11 Jun 2021 08:44:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210610172958.GA14188@willie-the-truck>
+In-Reply-To: <20210609012849.797576-1-xieqinick@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -76,44 +73,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06/2021 19:29, Will Deacon wrote:
-> On Thu, Jun 10, 2021 at 05:05:27PM +0200, Thierry Reding wrote:
->> On Thu, Jun 10, 2021 at 04:23:56PM +0200, Krzysztof Kozlowski wrote:
->>> On 10/06/2021 11:19, Thierry Reding wrote:
->>>> On Tue, Jun 08, 2021 at 05:48:51PM +0100, Will Deacon wrote:
->>>>> I can queue as much or as little of 2-6 as you like, but I would like to
->>>>> avoid pulling in the memory controller queue into the arm smmu tree. But
->>>>> yes, whichever of those I take, I can put them on a separate branch so
->>>>> that you're not blocked for the later patches.
->>>>>
->>>>> You have a better handle on the dependencies, so please tell me what works
->>>>> for you. I just want to make sure that at least patch 3 lands in my tree,
->>>>> so we don't get late conflicts with other driver changes.
->>>>
->>>> Yes, if you could pick up patch 3 and send out a link with the stable
->>>> branch, I think Krzysztof or I could pull in that branch and pick up the
->>>> remaining patches. It'd be good if you could also ack the remaining SMMU
->>>> patches so that ARM SoC knows that they've been sanctioned.
->>>>
->>>> Krzysztof: would you be okay with picking up patches 2 and 4-6 on top of
->>>> your memory branch for v5.14?
->>>
->>> You mean the iommu patches? Yes, I can take them and later explain to
->>> Arnd/Olof why they come through me.
->>
->> Okay, great.
->>
->> Will, can you provide that stable branch? Or would you prefer if I
->> prepared it and sent you a pull request? We're kind of running out of
->> time, since for ARM SoC the cut-off point for new material is usually
->> -rc6 and that's coming up pretty fast.
+Hi Nick,
+
+On 09/06/2021 03:28, xieqinick@gmail.com wrote:
+> From: Nick Xie <nick@khadas.com>
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=for-thierry/arm-smmu
+> Reduce the MCU FAN trigger temperature from
+> 80 degree centigrade to 50 degree centigrade.
 
-Merged, thanks.
+Can you add some more rationale to this change ?
 
-I'll take ARM/SMMU patches from Thierry's patchset: 2, 4-6.
+> 
+> Signed-off-by: Nick Xie <nick@khadas.com>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> index 66d67524b031..a9c34fee91f4 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> @@ -256,7 +256,7 @@ &cecb_AO {
+>  &cpu_thermal {
+>  	trips {
+>  		cpu_active: cpu-active {
+> -			temperature = <80000>; /* millicelsius */
+> +			temperature = <50000>; /* millicelsius */
+>  			hysteresis = <2000>; /* millicelsius */
+>  			type = "active";
+>  		};
+> 
 
-
-Best regards,
-Krzysztof
+With that:
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
