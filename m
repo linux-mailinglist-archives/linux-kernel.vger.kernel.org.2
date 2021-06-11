@@ -2,176 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FDE3A3A92
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B9D3A3A93
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 05:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhFKD5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Jun 2021 23:57:38 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:59610 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhFKD5g (ORCPT
+        id S231536AbhFKD6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Jun 2021 23:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231309AbhFKD6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Jun 2021 23:57:36 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:51986 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lrYGg-0002KQ-QB; Thu, 10 Jun 2021 23:55:38 -0400
-Message-ID: <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
-Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 10 Jun 2021 23:55:38 -0400
-In-Reply-To: <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
-References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
-         <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
-         <4b5644bff43e072a98a19d7a5ca36bb5e11497ec.camel@trillion01.com>
-         <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
-         <9938f22a0bb09f344fa5c9c5c1b91f0d12e7566f.camel@trillion01.com>
-         <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        Thu, 10 Jun 2021 23:58:14 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71FDC0617AD
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Jun 2021 20:56:17 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lrYH6-0005B6-1C; Fri, 11 Jun 2021 05:56:04 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lrYH3-0003Sc-4D; Fri, 11 Jun 2021 05:56:01 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Jon Hunter <jonathanh@nvidia.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH net-next v2] net: usb: asix: ax88772: manage PHY PM from MAC
+Date:   Fri, 11 Jun 2021 05:55:59 +0200
+Message-Id: <20210611035559.13252-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-10 at 20:32 +0100, Pavel Begunkov wrote:
-> On 6/10/21 6:56 PM, Olivier Langlois wrote:
-> > 
-> > 
-> > Can you think of other numbers that would be useful to know to
-> > evaluate
-> > the patch performance?
-> 
-> If throughput + latency (avg + several nines) are better (or any
-> other measurable improvement), it's a good enough argument to me,
-> but not sure what test case you're looking at. Single threaded?
-> Does it saturate your CPU?
-> 
-I don't know what are the ideal answers to your 2 last questions ;-)
+Take over PHY power management, otherwise PHY framework will try to
+access ASIX MDIO bus before MAC resume was completed.
 
-I have several possible configurations to my application.
+Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Suggested-by: Heiner Kallweit <hkallweit1@gmail.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/net/usb/asix_devices.c | 43 ++++++++++------------------------
+ 1 file changed, 12 insertions(+), 31 deletions(-)
 
-The most complex one is a 2 threads setup each having their own
-io_uring instance where one of the threads is managing 50-85 TCP
-connections over which JSON stream encapsulated in the WebSocket
-protocol are received.
-
-That more complex setup is also using IORING_SETUP_ATTACH_WQ to share
-the sqpoll thread between the 2 instances.
-
-In that more complex config, the sqpoll thread is running at 85-95% of
-its dedicated CPU.
-
-For the patch performance testing I did use the simplest config:
-Single thread, 1 TCP connection, no sqpoll.
-
-To process an incoming 5Mbps stream, it takes about 5% of the CPU.
-
-Here is the testing methodology:
-add 2 fields in  struct io_rw:
-    u64             startTs;
-    u8              readType;
-
-startTs is set with ktime_get_raw_fast_ns() in io_read_prep()
-
-readType is set to:
-0: data ready
-1: use fast poll (we ignore those)
-2: reissue
-3: async
-
-readType is used to know what type of measurement it is at the
-recording point.
-
-end time is measured at 3 recording point:
-1. In __io_queue_sqe() when io_issue_sqe() returns 0
-2. In __io_queue_sqe() after io_queue_async_work() call
-3. In io_wq_submit_work() after the while loop.
-
-So I took 4 measurements.
-
-1. The time it takes to process a read request when data is already
-available
-2. The time it takes to process by calling twice io_issue_sqe() after
-vfs_poll() indicated that data was available
-3. The time it takes to execute io_queue_async_work()
-4. The time it takes to complete a read request asynchronously
-
-Before presenting the results, I want to mention that 2.25% of the
-total number of my read requests ends up in the situation where the
-read() syscall did return EAGAIN but data became available by the time
-vfs_poll gets called.
-
-My expectations were that reissuing a sqe could be on par or a bit more
-expensive than placing it on io-wq for async processing and that would
-put the patch in some gray zone with pros and cons in terms of
-performance.
-
-The reality is instead super nice (numbers in nSec):
-
-ready data (baseline)
-avg	3657.94182918628
-min	580
-max	20098
-stddev	1213.15975908162
-	
-reissue	completion
-average	7882.67567567568
-min	2316
-max	28811
-stddev	1982.79172973284
-	
-insert io-wq time	
-average	8983.82276995305
-min	3324
-max	87816
-stddev	2551.60056552038
-	
-async time completion
-average	24670.4758861127
-min	10758
-max	102612
-stddev	3483.92416873804
-
-Conclusion:
-On average reissuing the sqe with the patch code is 1.1uSec faster and
-in the worse case scenario 59uSec faster than placing the request on
-io-wq
-
-On average completion time by reissuing the sqe with the patch code is
-16.79uSec faster and in the worse case scenario 73.8uSec faster than
-async completion.
-
-One important detail to mention about the async completion time, in the
-testing the ONLY way that a request can end up being completed async is
-if vfs_poll() reports that the file is ready. Otherwise, the request
-ends up being processed with io_uring fast poll feature.
-
-So there does not seem to have any downside to the patch. TBH, at the
-initial patch submission, I only did use my intuition to evaluate the
-merit of my patch but, thx to your healthy skepticism, Pavel, this did
-force me to actually measure the patch and it appears to incontestably
-improve performance for both the reissued SQE and also all the other
-sqes found in a batch submission.
-
-Hopefully, the results will please you as much as they have for me!
-
-Greetings,
-Olivier
+diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
+index 8a477171e8f5..aec97b021a73 100644
+--- a/drivers/net/usb/asix_devices.c
++++ b/drivers/net/usb/asix_devices.c
+@@ -598,6 +598,9 @@ static void ax88772_suspend(struct usbnet *dev)
+ 	struct asix_common_private *priv = dev->driver_priv;
+ 	u16 medium;
+ 
++	if (netif_running(dev->net))
++		phy_stop(priv->phydev);
++
+ 	/* Stop MAC operation */
+ 	medium = asix_read_medium_status(dev, 1);
+ 	medium &= ~AX_MEDIUM_RE;
+@@ -605,14 +608,6 @@ static void ax88772_suspend(struct usbnet *dev)
+ 
+ 	netdev_dbg(dev->net, "ax88772_suspend: medium=0x%04x\n",
+ 		   asix_read_medium_status(dev, 1));
+-
+-	/* Preserve BMCR for restoring */
+-	priv->presvd_phy_bmcr =
+-		asix_mdio_read_nopm(dev->net, dev->mii.phy_id, MII_BMCR);
+-
+-	/* Preserve ANAR for restoring */
+-	priv->presvd_phy_advertise =
+-		asix_mdio_read_nopm(dev->net, dev->mii.phy_id, MII_ADVERTISE);
+ }
+ 
+ static int asix_suspend(struct usb_interface *intf, pm_message_t message)
+@@ -626,39 +621,22 @@ static int asix_suspend(struct usb_interface *intf, pm_message_t message)
+ 	return usbnet_suspend(intf, message);
+ }
+ 
+-static void ax88772_restore_phy(struct usbnet *dev)
+-{
+-	struct asix_common_private *priv = dev->driver_priv;
+-
+-	if (priv->presvd_phy_advertise) {
+-		/* Restore Advertisement control reg */
+-		asix_mdio_write_nopm(dev->net, dev->mii.phy_id, MII_ADVERTISE,
+-				     priv->presvd_phy_advertise);
+-
+-		/* Restore BMCR */
+-		if (priv->presvd_phy_bmcr & BMCR_ANENABLE)
+-			priv->presvd_phy_bmcr |= BMCR_ANRESTART;
+-
+-		asix_mdio_write_nopm(dev->net, dev->mii.phy_id, MII_BMCR,
+-				     priv->presvd_phy_bmcr);
+-
+-		priv->presvd_phy_advertise = 0;
+-		priv->presvd_phy_bmcr = 0;
+-	}
+-}
+-
+ static void ax88772_resume(struct usbnet *dev)
+ {
++	struct asix_common_private *priv = dev->driver_priv;
+ 	int i;
+ 
+ 	for (i = 0; i < 3; i++)
+ 		if (!ax88772_hw_reset(dev, 1))
+ 			break;
+-	ax88772_restore_phy(dev);
++
++	if (netif_running(dev->net))
++		phy_start(priv->phydev);
+ }
+ 
+ static void ax88772a_resume(struct usbnet *dev)
+ {
++	struct asix_common_private *priv = dev->driver_priv;
+ 	int i;
+ 
+ 	for (i = 0; i < 3; i++) {
+@@ -666,7 +644,8 @@ static void ax88772a_resume(struct usbnet *dev)
+ 			break;
+ 	}
+ 
+-	ax88772_restore_phy(dev);
++	if (netif_running(dev->net))
++		phy_start(priv->phydev);
+ }
+ 
+ static int asix_resume(struct usb_interface *intf)
+@@ -722,6 +701,8 @@ static int ax88772_init_phy(struct usbnet *dev)
+ 		return ret;
+ 	}
+ 
++	priv->phydev->mac_managed_pm = 1;
++
+ 	phy_attached_info(priv->phydev);
+ 
+ 	return 0;
+-- 
+2.29.2
 
