@@ -2,63 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90A53A3E72
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A633A3E73
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhFKJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:01:09 -0400
-Received: from router.aksignal.cz ([62.44.4.214]:55906 "EHLO
-        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhFKJBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:01:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by router.aksignal.cz (Postfix) with ESMTP id BC08E47317;
-        Fri, 11 Jun 2021 10:59:08 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
-        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id JoxcQDnsDsKA; Fri, 11 Jun 2021 10:59:08 +0200 (CEST)
-Received: from [172.25.161.48] (unknown [83.240.30.185])
-        (Authenticated sender: jiri.prchal@aksignal.cz)
-        by router.aksignal.cz (Postfix) with ESMTPSA id 1BD0B47316;
-        Fri, 11 Jun 2021 10:59:07 +0200 (CEST)
-Subject: Re: [PATCH v9 1/5] nvmem: prepare basics for FRAM support
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20210611052652.7894-1-jiri.prchal@aksignal.cz>
- <20210611052652.7894-2-jiri.prchal@aksignal.cz> <YMMjbCFzsfiT8dMA@kroah.com>
-From:   =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
-Message-ID: <3c2beca6-8ef5-834d-a37a-5aea53bc1305@aksignal.cz>
-Date:   Fri, 11 Jun 2021 10:59:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231463AbhFKJBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:01:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231458AbhFKJBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:01:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B4A660BD3;
+        Fri, 11 Jun 2021 08:59:15 +0000 (UTC)
+Date:   Fri, 11 Jun 2021 09:59:13 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Yanfei Xu <yanfei.xu@windriver.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/kmemleak: use READ_ONCE() for accessing
+ jiffies_scan_wait
+Message-ID: <20210611085913.GA8132@arm.com>
+References: <20210609155657.26972-1-yanfei.xu@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <YMMjbCFzsfiT8dMA@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609155657.26972-1-yanfei.xu@windriver.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11. 06. 21 10:48, Greg Kroah-Hartman wrote:
-> On Fri, Jun 11, 2021 at 07:26:48AM +0200, Jiri Prchal wrote:
->> Added enum and string for FRAM to expose it as "fram".
+On Wed, Jun 09, 2021 at 11:56:57PM +0800, Yanfei Xu wrote:
+> The stop_scan_thread() and start_scan_thread() cannot really solve
+> the problem of concurrent accessing the global jiffies_scan_wait.
 > 
-> I have no idea what "FRAM" is, nor what "fram" is.
+> kmemleak_write              kmemleak_scan_thread
+>                               while (!kthread_should_stop())
+>   stop_scan_thread
+>   jiffies_scan_wait = xxx       timeout = jiffies_scan_wait
+>   start_scan_thread
 > 
-> And why do you not add the documentation update here in this same
-> commit?  This is where you are adding it, trying to dig later in the
-> series to notice that you really did provide this is a pain, and is
-> harder to track.
-> 
-> Please provide more information here in the changelog and move the
-> Documentation addition here into this patch.
+> We could replace these with a READ_ONCE() when reading
+> jiffies_scan_wait. It also can prevent compiler from reordering the
+> jiffies_scan_wait which is in while loop.
 
-Should I also join #1 and 2 together?
+I'm ok with READ_ONCE but your patch introduces functional changes.
+
+> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+> index 92a2d4885808..5ccf3969b7fe 100644
+> --- a/mm/kmemleak.c
+> +++ b/mm/kmemleak.c
+> @@ -1567,7 +1567,7 @@ static int kmemleak_scan_thread(void *arg)
+>  	}
+>  
+>  	while (!kthread_should_stop()) {
+> -		signed long timeout = jiffies_scan_wait;
+> +		signed long timeout = READ_ONCE(jiffies_scan_wait);
+>  
+>  		mutex_lock(&scan_mutex);
+>  		kmemleak_scan();
+> @@ -1812,11 +1812,8 @@ static ssize_t kmemleak_write(struct file *file, const char __user *user_buf,
+>  		ret = kstrtoul(buf + 5, 0, &secs);
+>  		if (ret < 0)
+>  			goto out;
+> -		stop_scan_thread();
+> -		if (secs) {
+> +		if (secs)
+>  			jiffies_scan_wait = msecs_to_jiffies(secs * 1000);
+
+For symmetry, I'd add a WRITE_ONCE here as well.
+
+> -			start_scan_thread();
+> -		}
+
+The reason for stop/start_scan_thread() wasn't to protect against
+jiffies_scan_wait access but rather to force a new delay. Let's say you
+start by default with a 10min delay between scans (default) but you want
+to lower it to 1min. With the above removal of stop/start, you'd still
+have to wait for 10min until the scanning thread will notice the change.
+Also, with secs=0, the expectations is that the thread won't be
+restarted but this is removed by your patch.
+
+-- 
+Catalin
