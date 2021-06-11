@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D6B3A435F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E683A4361
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhFKNxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhFKNx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:53:29 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB0EC061574;
-        Fri, 11 Jun 2021 06:51:17 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id a19so6600644ljq.12;
-        Fri, 11 Jun 2021 06:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xVxSNmZANvk4+xXEPZhmdlgwWkhMnsRF27bwwNOdZG8=;
-        b=Sgrn7Y/dVZ5kOr4om0rQqu9jRGg39+nyLDYicWqeVx2nZ9X+zJNj+CJOwHlPT+1Wrj
-         nXFlmDUb0Xo9Lh7dlg2DeS0XmhIW0zRjMZ2C4lhE/sI32mfOWFnYNbX2g9VkEhAusHZs
-         Rswn/8EOfge1thH6I+tYzikO23WTeSv27sOXizs2CCOK17B5Oi3rJgxoEBL+S/EcOKBz
-         7IauTY1u7kujy5CygP5aqFH7nogHvcJY/XYGEwNYeGtGl0TAbltX66XzI9hg0jXZtMh/
-         2Y8a3WsMbluns0GKIaW9mSaBXGyeFpJwpRlMLrm9tyA+MWXOHKv+Ph6Qq0v7eEI8mgpo
-         uhNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xVxSNmZANvk4+xXEPZhmdlgwWkhMnsRF27bwwNOdZG8=;
-        b=WSC7n7KN7VpOP7oAItt4icc/tSN4r93OmIn1OhImJV2UxNa3MR7XtxIZnChiX8vy3d
-         yrlgeOQYnagsIZ7NFdUeUfI4zHBYrNAbrdg2FWmrflPsPfQtmAmba1D+1x0b0ONWCZHW
-         RINUzlt5/ebViR0QDI4N6W9TmDNRM4Hep15j+khlQXafRiNLWighUclsz3HLsaX9j9JI
-         Jh9EXHhZC5LAB7xFHqeFIXXT/fJmNqtqugKzAYHM4HgO8fz3hRcQRkGkCdO+EprzG+x2
-         u8IXVTbz47D0WMqtXK93pO0v7kk1WL+B1vflxtRZVBxCGPHPuLfZ5ZtlA8m2JF/d7p3G
-         lPQA==
-X-Gm-Message-State: AOAM533G1bWwgkX5ddnBR/cPZUiiQGxMNzwlE3J5RRCvnW8FThsOPbnp
-        ZwVkzMLRNoi6D0nXmtofW4j5Ze4CT9BqvayUpYA=
-X-Google-Smtp-Source: ABdhPJzBC5HTrPREljfBNuYDFNUOpKk5D/S72tuVLMDbbEnMCeVyrTuboq9vTycZoGPYOJtPpiu6HfWjFyo+5AaDbZM=
-X-Received: by 2002:a05:651c:1193:: with SMTP id w19mr3110192ljo.264.1623419475775;
- Fri, 11 Jun 2021 06:51:15 -0700 (PDT)
+        id S231532AbhFKNyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230129AbhFKNyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:54:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B642613F4;
+        Fri, 11 Jun 2021 13:52:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623419527;
+        bh=VPDnYEcXBaAP73z7e3H1wrxz0g6huN2/P3YXTvT+CZw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ldleo5BlVFqa+4KPD7zKCRBwm+wwzKxMMxU5XdC06AAMJ9J8ViBX1PnH//GDn8Kxn
+         +JwvgQcTWFTfETJdZl7PznQ2p7b/KK/zfwdBeVggjzuIEE5WseVdnaV2jMa4wefKct
+         dmv4kc21O4jWq/WZjEjJ0MZf1D5Fs0MuQVfIrq/5AN0yik0DLr0xAhSg6DtsSN6eNH
+         IuUZLSEw8ypRSGQtvI8e87neLlfM0fXtAwtAgN0VBg0bnzL6pb3ka9QSVDEC3lkjvZ
+         fqs7q/8ancJNNPGNcrA6wCWOlBhLKMDG4s2zyv32t7bTCOGLsSS+gXWUcd/9W3UEQx
+         npl9MI+Q5TodA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 079E55C0990; Fri, 11 Jun 2021 06:52:07 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 06:52:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     frederic@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Question about a8ea6fc9b089 ("sched: Stop PF_NO_SETAFFINITY from
+ being inherited by various init system threads")
+Message-ID: <20210611135207.GB4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210610170435.GA2187550@paulmck-ThinkPad-P17-Gen-1>
+ <8735tpd15i.mognet@arm.com>
+ <20210610201713.GU4397@paulmck-ThinkPad-P17-Gen-1>
+ <87zgvwbtgy.mognet@arm.com>
 MIME-Version: 1.0
-References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
-In-Reply-To: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Fri, 11 Jun 2021 10:51:04 -0300
-Message-ID: <CAOMZO5CNjpek0vkDrMyTmfbnr2cLcquck6QQBqXLBiyTDKPXvA@mail.gmail.com>
-Subject: Re: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     Vinod <vkoul@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        dmaengine@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zgvwbtgy.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+On Fri, Jun 11, 2021 at 11:12:29AM +0100, Valentin Schneider wrote:
+> On 10/06/21 13:17, Paul E. McKenney wrote:
+> > On Thu, Jun 10, 2021 at 07:28:57PM +0100, Valentin Schneider wrote:
+> >> On 10/06/21 10:04, Paul E. McKenney wrote:
+> >>
+> >> Hi,
+> >> > Hello, Frederic,
+> >> >
+> >> > This commit works well, but has the unfortunate side-effect of making
+> >> > smp_processor_id() complain when used in a preemptible region even
+> >> > though the kthread has been pinned onto a single CPU by a call to
+> >> > set_cpus_allowed_ptr().  (Which did return success.)
+> >> >
+> >>
+> >> On which tree are you encountering this?
+> >
+> > I bisected to this commit in -next tag next-20210609, and this commit
+> > could of course be an innocent bystander caught in the crossfire.
+> >
+> >> Looking at check_preemption_disabled() and CPU affinity, v5.13-rc5 has:
+> >>
+> >>         /*
+> >>          * Kernel threads bound to a single CPU can safely use
+> >>          * smp_processor_id():
+> >>          */
+> >>         if (current->nr_cpus_allowed == 1)
+> >>                 goto out;
+> >>
+> >> tip/sched/core additionally hinges that on PF_NO_SETAFFINITY:
+> >>
+> >>   570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
+> >>
+> >> The former shouldn't be affected by Frederic's patch, and the latter should
+> >> only cause warnings if the pinned task isn't a "proper" kthread (thus
+> >> doesn't have PF_NO_SETAFFINITY)... Exceptions that come to mind are things
+> >> like UMH which doesn't use kthread_create().
+> >
+> > And reverting 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread()
+> > instead of nr_cpus_allowed") causes the kernel to once again be OK with
+> > smp_processor_id(), so thank you!  And apologies to Frederic for the
+> > false alarm.
+> >
+> > Added Yejune on CC.  Thoughts?
+> >
+> 
+> The way I see 570a752b7a9b is that, if a task is pinned to a single CPU but
+> doesn't have PF_NO_SETAFFINITY, then userspace can unpin it. This means it
+> ought to have entered check_preemption_disabled() with preemption disabled
+> - right now it may be pinned, but that can change at any minute, and
+> whatever code it is running needs to cope with that.
 
-On Wed, Apr 7, 2021 at 4:15 AM Robin Gong <yibin.gong@nxp.com> wrote:
->
-> There is ecspi ERR009165 on i.mx6/7 soc family, which cause FIFO
-> transfer to be send twice in DMA mode. Please get more information from:
-> https://www.nxp.com/docs/en/errata/IMX6DQCE.pdf. The workaround is adding
-> new sdma ram script which works in XCH  mode as PIO inside sdma instead
-> of SMC mode, meanwhile, 'TX_THRESHOLD' should be 0. The issue should be
-> exist on all legacy i.mx6/7 soc family before i.mx6ul.
-> NXP fix this design issue from i.mx6ul, so newer chips including i.mx6ul/
-> 6ull/6sll do not need this workaroud anymore. All other i.mx6/7/8 chips
-> still need this workaroud. This patch set add new 'fsl,imx6ul-ecspi'
-> for ecspi driver and 'ecspi_fixed' in sdma driver to choose if need errata
-> or not.
-> The first two reverted patches should be the same issue, though, it
-> seems 'fixed' by changing to other shp script. Hope Sean or Sascha could
-> have the chance to test this patch set if could fix their issues.
-> Besides, enable sdma support for i.mx8mm/8mq and fix ecspi1 not work
-> on i.mx8mm because the event id is zero.
->
-> PS:
->    Please get sdma firmware from below linux-firmware and copy it to your
-> local rootfs /lib/firmware/imx/sdma.
-> https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/imx/sdma
+Thank you for catching me up on this topic!
 
-Without this series, SPI DMA does not work on i.MX8MM:
+> Could you share some details on which tasks you are hitting this with?
 
- [   41.315984] spi_master spi1: I/O Error in DMA RX
+Let's start with ref_scale_reader() in kernel/rcu/refscale.c.  This
+is for fine-grained in-kernel benchmarking, so it really wants kthreads
+running this function to be pinned.
 
-I applied your series and SPI DMA works now:
+I took a look at kthread_bind(), but it is not intended to be called by
+the kthread itself.  Looking elsewhere in the kernel, it looks like I
+just do this right after invoking set_cpus_allowed_ptr():
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+	current->flags != PF_NO_SETAFFINITY;
 
-Thanks
+Or am I missing a better way to handle this?
+
+							Thanx, Paul
