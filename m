@@ -2,120 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA6F3A466A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F9E3A4681
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 18:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhFKQYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 12:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
+        id S230393AbhFKQcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 12:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhFKQYo (ORCPT
+        with ESMTP id S229540AbhFKQcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:24:44 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBEAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:22:31 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id e2so10449764ljk.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:22:31 -0700 (PDT)
+        Fri, 11 Jun 2021 12:32:22 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5392DC061574;
+        Fri, 11 Jun 2021 09:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O7VLGpzo0pic/uCZ5FLPezepVfzXChJpgysJmVZaFsc=;
-        b=J/Dt9jQa1QKH8awC7zPDGpIDCC1B4T52bk/xbJkYWmrsyiPBf1xyBpuuJ6YktX8o19
-         OGXWD4ofRJ+1Y/e3NXpAm87lNARcyx+eUZLb2kGvTbni8Z4d4UmVsZbpfpQ1wYz+9Ynn
-         Tu2YFuveWjy2F/JCy1EWycl4zSkeUBSU/byuI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O7VLGpzo0pic/uCZ5FLPezepVfzXChJpgysJmVZaFsc=;
-        b=HIylj2jyrLGdNiYcsb1AyZjB4UHIWLbIUp5ZEkKGhKsbyu6c7tMEAbj2fku27xlrIJ
-         xgoiJB1VVNiagigylsBO2J8dfB1tD/9j2IGf0WtyHqA2FYM0c7oVbYXiEfjAub5fZTb6
-         VUn/CnQqv7CeoSk3GhW4f5dtw+Svd5Aggl0Wtc3MoOhxcMkBFkmSDeleG+0fnVYWcEs+
-         ZaRijr1jDaRp1mvwUNQgaGsgat6HT6aQPDVUCn9NTfv5NlAgfpby1URAVXVmWXC7Nk+A
-         SacHFt2XFmJMcqu9Aewkll8qcJFoiyAFHADIes6AXvb5rOhafAOfkKpsz7DrfqvtB5Lg
-         6qEw==
-X-Gm-Message-State: AOAM530ioL03HZ0FFXnZQ5Q7H+IGn6Ht6nPmjFADC6iPFw3ImPP4o6Hx
-        bfFrOeAiqf38U3YSBFJEf2VPH7J6gkI7hfgRj1E=
-X-Google-Smtp-Source: ABdhPJwpgOVRAYcfM4VFy9KvJ/+vnE44vCSfluIJsLO+MVsN9j4yckc8B4cVU0EhRvX03PMkQrBS5w==
-X-Received: by 2002:a2e:a58a:: with SMTP id m10mr3758131ljp.55.1623428549370;
-        Fri, 11 Jun 2021 09:22:29 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id s28sm479221ljc.34.2021.06.11.09.22.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 09:22:04 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id s22so10442761ljg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 09:22:00 -0700 (PDT)
-X-Received: by 2002:a2e:c52:: with SMTP id o18mr3611750ljd.411.1623428518600;
- Fri, 11 Jun 2021 09:21:58 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=loSuEwYH2/ErgrOv9smUX/ZtX7NHKWXh5V
+        A17UsKWAU=; b=NhVTjKTko9VU+2hpWcEKNxkXl/V9ag7IK34UxjNgAagISWU0Mx
+        jJAXOvmiCoLLVYWeTIbEDCIDe1X3fRvA2KApx0kpHJDJUadnCMmfDyAWo2b8KxfG
+        /MgAXtiX1Px1GrwUa2mdpTqlFEUytrLqXxlnBCXMd3QBm1LZztIPXbaEo=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj1tUj8NgA0LIAA--.30112S2;
+        Sat, 12 Jun 2021 00:29:09 +0800 (CST)
+Date:   Sat, 12 Jun 2021 00:23:34 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 7/9] riscv: bpf: Avoid breaking W^X
+Message-ID: <20210612002334.6af72545@xhacker>
+In-Reply-To: <87o8ccqypw.fsf@igel.home>
+References: <20210330022144.150edc6e@xhacker>
+        <20210330022521.2a904a8c@xhacker>
+        <87o8ccqypw.fsf@igel.home>
 MIME-Version: 1.0
-References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local> <YL7XXNOnbaDgmTB9@atmark-techno.com>
- <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com> <20210611062153.GA30906@lst.de>
- <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
-In-Reply-To: <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 11 Jun 2021 09:21:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgxgTB=G7P6KRneAd0s310WYK2NDisXM5P-wsNibgLrQA@mail.gmail.com>
-Message-ID: <CAHk-=wgxgTB=G7P6KRneAd0s310WYK2NDisXM5P-wsNibgLrQA@mail.gmail.com>
-Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb) stable/for-linus-5.12)
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
-        jianxiong Gao <jxgao@google.com>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lukas Hartmann <lukas@mntmn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-CM-TRANSID: LkAmygCHj1tUj8NgA0LIAA--.30112S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFy3KryxZr4UJr1rCw13CFg_yoW7Wr47pr
+        4UAr1UGr48tr1UJr18Cr15AF1UAr1UAa13JFnrJrZ5J3WUWw1DJr18JrW7CF1DGr1rJF17
+        tr1DXr48tr1DGaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkCb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUg0D7DU
+        UUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 3:35 AM Konrad Rzeszutek Wilk
-<konrad.wilk@oracle.com> wrote:
->
-> Linus,
->
-> Would you be terribly offended if I took your code (s/unsigned
-> long/unsigned int), and used Chanho's description of the problem (see below)?
+Hi Andreas,
 
-No offense to that at all - that looks like the right solution. See my
-answer to Christoph: I do think my patch does the right one, but I
-can't test it and my knowledge of the swiotlb code is not complete
-enough to really do anything else than "this looks right".
+On Fri, 11 Jun 2021 16:10:03 +0200
+Andreas Schwab <schwab@linux-m68k.org> wrote:
 
-And adding my sign-off to the patch is fine, but I don't necessarily
-need the authorship credit - mine was a throw-away patch just looking
-at what the bisection report said. All the real effort was by the
-reporters (and for the commit message, Bumyong Lee & co).
+> On M=C3=A4r 30 2021, Jisheng Zhang wrote:
+>=20
+> > From: Jisheng Zhang <jszhang@kernel.org>
+> >
+> > We allocate Non-executable pages, then call bpf_jit_binary_lock_ro()
+> > to enable executable permission after mapping them read-only. This is
+> > to prepare for STRICT_MODULE_RWX in following patch. =20
+>=20
+> That breaks booting with
+> <https://github.com/openSUSE/kernel-source/blob/master/config/riscv64/def=
+ault>.
+>=20
 
-Finally - looking at the two places that do have that
-swiotlb_align_offset(), my reaction is "I don't understand what that
-code is doing".
+Thanks for the bug report.
+I reproduced an kernel panic with the defconfig on qemu, but I'm not sure w=
+hether
+this is the issue you saw, I will check.
 
-The index does that
+    0.161959] futex hash table entries: 512 (order: 3, 32768 bytes, linear)
+[    0.167028] pinctrl core: initialized pinctrl subsystem
+[    0.190727] Unable to handle kernel paging request at virtual address ff=
+ffffff81651bd8
+[    0.191361] Oops [#1]
+[    0.191509] Modules linked in:
+[    0.191814] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default=
++ #3
+[    0.192179] Hardware name: riscv-virtio,qemu (DT)
+[    0.192492] epc : __memset+0xc4/0xfc
+[    0.192712]  ra : skb_flow_dissector_init+0x22/0x86
+[    0.192915] epc : ffffffff803e2700 ra : ffffffff8058f90c sp : ffffffe001=
+a4fda0
+[    0.193221]  gp : ffffffff8156d120 tp : ffffffe001a5b700 t0 : ffffffff81=
+651b10
+[    0.193631]  t1 : 0000000000000100 t2 : 00000000000003a8 s0 : ffffffe001=
+a4fdd0
+[    0.194034]  s1 : ffffffff80c9e250 a0 : ffffffff81651bd8 a1 : 0000000000=
+000000
+[    0.194502]  a2 : 000000000000003c a3 : ffffffff81651c10 a4 : 0000000000=
+000064
+[    0.195053]  a5 : ffffffff803e2700 a6 : 0000000000000040 a7 : 0000000000=
+000002
+[    0.195436]  s2 : ffffffff81651bd8 s3 : 0000000000000009 s4 : ffffffff81=
+56e0c8
+[    0.195723]  s5 : ffffffff8156e050 s6 : ffffffff80a105e0 s7 : ffffffff80=
+a00738
+[    0.195992]  s8 : ffffffff80f07be0 s9 : 0000000000000008 s10: ffffffff80=
+8000ac
+[    0.196257]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 0000000000=
+000000
+[    0.196511]  t5 : 00000000000003a9 t6 : 00000000000003ff
+[    0.196714] status: 0000000000000120 badaddr: ffffffff81651bd8 cause: 00=
+0000000000000f
+[    0.197103] [<ffffffff803e2700>] __memset+0xc4/0xfc
+[    0.197408] [<ffffffff80831f58>] init_default_flow_dissectors+0x22/0x60
+[    0.197693] [<ffffffff800020fc>] do_one_initcall+0x3e/0x168
+[    0.197907] [<ffffffff80801438>] kernel_init_freeable+0x25a/0x2c6
+[    0.198157] [<ffffffff8070a8a8>] kernel_init+0x12/0x110
+[    0.198351] [<ffffffff8000333a>] ret_from_exception+0x0/0xc
+[    0.198973] Unable to handle kernel paging request at virtual address ff=
+ffffff8164d860
+[    0.199242] Oops [#2]
+[    0.199336] Modules linked in:
+[    0.199514] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G      D           5.=
+13.0-rc5-default+ #3
+[    0.199785] Hardware name: riscv-virtio,qemu (DT)
+[    0.199940] epc : _raw_spin_lock_irqsave+0x14/0x4e
+[    0.200113]  ra : _extract_crng+0x58/0xac
+[    0.200264] epc : ffffffff807117ae ra : ffffffff80490774 sp : ffffffe001=
+a4fa70
+[    0.200489]  gp : ffffffff8156d120 tp : ffffffe001a5b700 t0 : ffffffff81=
+57c0d7
+[    0.200715]  t1 : ffffffff8157c0c8 t2 : 0000000000000000 s0 : ffffffe001=
+a4fa80
+[    0.200938]  s1 : ffffffff8164d818 a0 : 0000000000000022 a1 : ffffffe001=
+a4fac8
+[    0.201166]  a2 : 0000000000000010 a3 : 0000000000000001 a4 : ffffffff81=
+64d860
+[    0.201389]  a5 : 0000000000000000 a6 : c0000000ffffdfff a7 : ffffffffff=
+ffffff
+[    0.201612]  s2 : ffffffff8156e1c0 s3 : ffffffe001a4fac8 s4 : ffffffff81=
+64d860
+[    0.201836]  s5 : ffffffff8156e0c8 s6 : ffffffff80a105e0 s7 : ffffffff80=
+a00738
+[    0.202060]  s8 : ffffffff80f07be0 s9 : 0000000000000008 s10: ffffffff80=
+8000ac
+[    0.202295]  s11: 0000000000000000 t3 : 000000000000005b t4 : ffffffffff=
+ffffff
+[    0.202519]  t5 : 00000000000003a9 t6 : ffffffe001a4f9b8
+[    0.202691] status: 0000000000000100 badaddr: ffffffff8164d860 cause: 00=
+0000000000000f
+[    0.202940] [<ffffffff807117ae>] _raw_spin_lock_irqsave+0x14/0x4e
+[    0.203326] Unable to handle kernel paging request at virtual address ff=
+ffffff8164d860
+[    0.203574] Oops [#3]
+[    0.203664] Modules linked in:
+[    0.203784] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G      D           5.=
+13.0-rc5-default+ #3
+[    0.204046] Hardware name: riscv-virtio,qemu (DT)
+[    0.204201] epc : _raw_spin_lock_irqsave+0x14/0x4e
+[    0.204371]  ra : _extract_crng+0x58/0xac
+[    0.204519] epc : ffffffff807117ae ra : ffffffff80490774 sp : ffffffe001=
+a4f740
+[    0.204819]  gp : ffffffff8156d120 tp : ffffffe001a5b700 t0 : ffffffff81=
+57c0d7
+[    0.205089]  t1 : ffffffff8157c0c8 t2 : 0000000000000000 s0 : ffffffe001=
+a4f750
+[    0.205330]  s1 : ffffffff8164d818 a0 : 0000000000000102 a1 : ffffffe001=
+a4f798
+[    0.205553]  a2 : 0000000000000010 a3 : 0000000000000001 a4 : ffffffff81=
+64d860
+[    0.205768]  a5 : 0000000000000000 a6 : c0000000ffffdfff a7 : ffffffff81=
+408a40
+[    0.205981]  s2 : ffffffff8156e1c0 s3 : ffffffe001a4f798 s4 : ffffffff81=
+64d860
+[    0.206197]  s5 : ffffffff8156e0c8 s6 : ffffffff80a105e0 s7 : ffffffff80=
+a00738
+[    0.206411]  s8 : ffffffff80f07be0 s9 : 0000000000000008 s10: ffffffff80=
+8000ac
+[    0.206633]  s11: 0000000000000000 t3 : 000000000000005b t4 : ffffffffff=
+ffffff
+[    0.206849]  t5 : 00000000000003a9 t6 : ffffffe001a4f688
 
-        index = find_slots(dev, orig_addr, alloc_size + offset);
 
-so that offset does seem to depend on how the find_slots code works.
-Which in turn does use the same dma_get_min_align_mask() thing that
-swiotlb_align_offset() uses.  So the offsets do seem to match, but
-find_slots(dev() does a lot of stuff that I don't know. so...
 
-IOW, it does reinforce my "I don't know this code AT ALL". Which just
-makes me more convinced that I shouldn't get authorship of the patch
-because if something goes wrong with it, I can't help.
-
-So at most maybe a "Suggested-by:".
-
-My patch really was based on very little context and "this is the
-calculation that makes sense given the other calculations in the
-function".
-
-              Linus
