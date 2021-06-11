@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5973A4A7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524C23A4A80
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhFKVFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:05:52 -0400
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:55864 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhFKVFv (ORCPT
+        id S231224AbhFKVF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 17:05:56 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:59153 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231200AbhFKVFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:05:51 -0400
-Received: by mail-pj1-f46.google.com with SMTP id k7so6359247pjf.5;
-        Fri, 11 Jun 2021 14:03:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z6du9WszW7mZy9BU41+sV0nx4cAh5uv8eWtj4chy0tk=;
-        b=IWiNkdn/1gNnYZQMgJ17zSAVwpVI8KAG/Hk11slrio5KAzO6QzvHFmUSOwo2VJrjJT
-         MJJRP8dv35CyjBBNgf0IeX0Qhk8xDM2+DpNoJB2wHbHyxd3P0b9w8cRCYsxoVtYqo0N6
-         2b2wG3S/CVgjo7Cm1X4jz6lGwqQ2rVcdE32SFr96Y8bsdmN1Z3JQZbmGMM5hmD9uDXUa
-         nZebjaiAZs8OBZiWQxbMitugOlWO7ddSvwrJdKCrrXwqryW2Cb5OVAme0kI2kxFe+9Qq
-         Olfe+kuzq3LOnSB255pWzURJATLlONcB8w1kNwjUcvSp699ECcL11MqhobPan/L5jbcT
-         3zog==
-X-Gm-Message-State: AOAM533ZjydBSmUSa5wi5Kc5zOzT+G5olhEtEet8f8ToFu0zFBsiGAy5
-        uh+FRHl4TOA6bGCr+myQxhLuGQIIiJg=
-X-Google-Smtp-Source: ABdhPJx51NBa9lpt58dxuwxqEyfMqyJacz3UNBI3qnr5bUvyluWUFEBq395WWNhmAcHkIkbClyJy8w==
-X-Received: by 2002:a17:902:da84:b029:10e:fafc:b29b with SMTP id j4-20020a170902da84b029010efafcb29bmr5594979plx.35.1623445416135;
-        Fri, 11 Jun 2021 14:03:36 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id x3sm6579375pgx.8.2021.06.11.14.03.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 14:03:35 -0700 (PDT)
-Subject: Re: [PATCH v3 9/9] scsi: ufs: Apply more limitations to user access
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-10-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <b1e555c2-a59a-2a63-79e0-7c22d5b7b698@acm.org>
-Date:   Fri, 11 Jun 2021 14:03:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 11 Jun 2021 17:05:55 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d75 with ME
+        id Fx3s2500921Fzsu03x3tKb; Fri, 11 Jun 2021 23:03:53 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 11 Jun 2021 23:03:53 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mani@kernel.org, hemantk@codeaurora.org, loic.poulain@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] bus: mhi: pci-generic: Add missing 'pci_disable_pcie_error_reporting()' calls
+Date:   Fri, 11 Jun 2021 23:03:50 +0200
+Message-Id: <f70c14701f4922d67e717633c91b6c481b59f298.1623445348.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1623300218-9454-10-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/21 9:43 PM, Can Guo wrote:
-> Do not let user access HW if hba resume fails or hba is not in good state,
-> otherwise it may lead to various stability issues.
+If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+call
 
-Just like for the previous patch, I'm wondering whether or not such a
-failure perhaps indicates a hardware bug?
+Add the missing call in the error handling path of the probe and in the
+remove function.
 
-Thanks,
+Fixes: b012ee6bfe2a ("mhi: pci_generic: Add PCI error handlers")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/bus/mhi/pci_generic.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Bart.
+diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+index 7c810f02a2ef..d84b74396c6a 100644
+--- a/drivers/bus/mhi/pci_generic.c
++++ b/drivers/bus/mhi/pci_generic.c
+@@ -665,7 +665,7 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	err = mhi_register_controller(mhi_cntrl, mhi_cntrl_config);
+ 	if (err)
+-		return err;
++		goto err_disable_reporting;
+ 
+ 	/* MHI bus does not power up the controller by default */
+ 	err = mhi_prepare_for_power_up(mhi_cntrl);
+@@ -699,6 +699,8 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	mhi_unprepare_after_power_down(mhi_cntrl);
+ err_unregister:
+ 	mhi_unregister_controller(mhi_cntrl);
++err_disable_reporting:
++	pci_disable_pcie_error_reporting(pdev);
+ 
+ 	return err;
+ }
+@@ -721,6 +723,7 @@ static void mhi_pci_remove(struct pci_dev *pdev)
+ 		pm_runtime_get_noresume(&pdev->dev);
+ 
+ 	mhi_unregister_controller(mhi_cntrl);
++	pci_disable_pcie_error_reporting(pdev);
+ }
+ 
+ static void mhi_pci_shutdown(struct pci_dev *pdev)
+-- 
+2.30.2
+
