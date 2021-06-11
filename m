@@ -2,229 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A18E3A41E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F69E3A41EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbhFKMZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:25:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:62505 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229777AbhFKMZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:25:15 -0400
-IronPort-SDR: 8AA9EcqBoX6889u+41EH/xMY4OjtQxIvFK2I1/peQrSzUEjBPjBvYsuwKl2HyHEBaMZeLv7iza
- XQMTQwqZOh9w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="269362654"
+        id S231518AbhFKM0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:26:21 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:57378 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhFKM0T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 08:26:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1623414261; x=1654950261;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=MRM4l51Ino6yP6mGjYKe+DtOK499+ebU0rnznE4746E=;
+  b=2CfNiHNqn2i+huP0qua6ESrV1l9Cih8V0ZLA3V0NcWBajublBxoldvlq
+   MiI7sHUbCNhG0Z19OcZwfVGlrxEOfCLwmwqM3bKOboLqhp4HxuaH/K6mB
+   2/kdWXgym/vmJlyX6Xoy3ZxAWj2g2ru+giK3Sy4t1015R/aY0QD3goYfy
+   GLShXZfUGuSwCxQV1PHEIkMXwTCAh607rCrCnlzeom1EoCc5bEaHnI+iU
+   p6Ltmi6MPFQ55ejc+Q/fqEcR0cNQn4dhHMxiXZmdCnfiVxlGybu/aqTUF
+   sIUuugY4qeewncJO2BwSGJn90FiMYGlK7zBns7xLbKGR6U4a4WTT17sxt
+   A==;
+IronPort-SDR: 0YJsOBMkt0x4l/+bvRXgLcLi6g6vK6yX/5ani4b23gsOEQjegd/SQt7qUqzbTMsB5X2+0NWK9/
+ 4B8d+V4PH8+chp1Mk91cEC+21WC9roduUmDF0DK0F9cXZusqhK5E6I+9PJ/+/mn5pP/t0fA7Zm
+ 4bIoPOlt1zQKGnDe4ICYXnAnHquc3OE2vNRITgNAAcleutNBuDkfXeEH1xnWoAoCppjsmxfhHL
+ CKxSmxglc33MTmMz/Q5Y3BfsDs1AQs74dEfJBjKkY89arJhrwZF1hFcXhnU10TGwnKfUVVNLEx
+ LKw=
 X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="269362654"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 05:23:15 -0700
-IronPort-SDR: VHLR3GKvVueNFS7ASlT2bVthLdJl1tBQG3MAMRQUjwZH8odNL3E15YLaBsa0eqMWFCHw8hafeZ
- TZdpr+FFBmuw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="450747359"
-Received: from lkp-server02.sh.intel.com (HELO 3cb98b298c7e) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Jun 2021 05:23:14 -0700
-Received: from kbuild by 3cb98b298c7e with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lrgBu-0000a9-HI; Fri, 11 Jun 2021 12:23:14 +0000
-Date:   Fri, 11 Jun 2021 20:22:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.06.09a] BUILD SUCCESS
- f21b8fbdf9a59553da825265e92cedb639b4ba3c
-Message-ID: <60c35596.eaJQNBGKWjS6t+/k%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="131628648"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Jun 2021 05:24:21 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 05:24:21 -0700
+Received: from [10.12.73.132] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Fri, 11 Jun 2021 05:24:19 -0700
+Subject: Re: [PATCH 2/3] watchdog: sama5d4_wdt: add support for sama7g5-wdt
+To:     Guenter Roeck <linux@roeck-us.net>,
+        <linux-watchdog@vger.kernel.org>, <wim@linux-watchdog.org>
+CC:     Eugen Hristev <eugen.hristev@microchip.com>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210527100120.266796-1-eugen.hristev@microchip.com>
+ <20210527100120.266796-2-eugen.hristev@microchip.com>
+ <20210527165506.GA1294623@roeck-us.net>
+ <94d409ba-2073-a84e-5c8e-580f6e12191c@microchip.com>
+ <20210611103541.GA3189041@roeck-us.net>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <07e576a9-e068-e1ec-124a-e993d7cf9a30@microchip.com>
+Date:   Fri, 11 Jun 2021 14:24:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20210611103541.GA3189041@roeck-us.net>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.06.09a
-branch HEAD: f21b8fbdf9a59553da825265e92cedb639b4ba3c  rcu/doc: Add a quick quiz to explain further why we need smp_mb__after_unlock_lock()
+On 11/06/2021 at 12:35, Guenter Roeck wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Fri, Jun 11, 2021 at 09:19:56AM +0200, Nicolas Ferre wrote:
+>> On 27/05/2021 at 18:55, Guenter Roeck wrote:
+>>> On Thu, May 27, 2021 at 01:01:19PM +0300, Eugen Hristev wrote:
+>>>> Add support for compatible sama7g5-wdt.
+>>>> The sama7g5 wdt is the same hardware block as on sam9x60.
+>>>> Adapt the driver to use the sam9x60/sama7g5 variant if either
+>>>> of the two compatibles are selected (sam9x60-wdt/sama7g5-wdt).
+>>>>
+>>>> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+>>>
+>>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>>
+>> Guenter, Wim,
+>>
+>> How do we proceed? Do I take this "driver" patch through my tree which goes
+>> to arm-soc or do you take it with the watchdog tree?
 
-elapsed time: 724m
+Forget what I said above...
 
-configs tested: 169
-configs skipped: 3
+> I applied the series to my watchdog-next branch. That is all I can do
+> from my side.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Guenter,
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arc                        vdk_hs38_defconfig
-powerpc                 mpc832x_mds_defconfig
-mips                        vocore2_defconfig
-arc                        nsimosci_defconfig
-arm                              alldefconfig
-nds32                            alldefconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                       aspeed_g5_defconfig
-arm                         s5pv210_defconfig
-mips                         tb0226_defconfig
-ia64                                defconfig
-riscv             nommu_k210_sdcard_defconfig
-arm                        multi_v5_defconfig
-powerpc                     kilauea_defconfig
-mips                   sb1250_swarm_defconfig
-arm                        spear6xx_defconfig
-arm                           stm32_defconfig
-sh                   sh7770_generic_defconfig
-sh                          rsk7201_defconfig
-arm                        shmobile_defconfig
-m68k                          sun3x_defconfig
-x86_64                              defconfig
-alpha                            allyesconfig
-arm                          pxa910_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                         hackkit_defconfig
-sh                          kfr2r09_defconfig
-mips                        jmr3927_defconfig
-arm                     am200epdkit_defconfig
-mips                           ip22_defconfig
-m68k                        m5407c3_defconfig
-arm                             mxs_defconfig
-arm                            pleb_defconfig
-arm                         palmz72_defconfig
-sh                          polaris_defconfig
-arm                            qcom_defconfig
-m68k                       m5249evb_defconfig
-sparc                            alldefconfig
-arm                           spitz_defconfig
-powerpc                     stx_gp3_defconfig
-arm                     eseries_pxa_defconfig
-sh                          r7780mp_defconfig
-arm                        mini2440_defconfig
-riscv                    nommu_k210_defconfig
-arm                       mainstone_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                       ppc64_defconfig
-powerpc                     tqm8540_defconfig
-h8300                     edosk2674_defconfig
-arm                         at91_dt_defconfig
-sh                               alldefconfig
-powerpc                 mpc8272_ads_defconfig
-h8300                               defconfig
-sh                           se7619_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                          urquell_defconfig
-arm                          gemini_defconfig
-parisc                           alldefconfig
-mips                            gpr_defconfig
-nios2                               defconfig
-sh                          sdk7780_defconfig
-sparc64                             defconfig
-sh                            shmin_defconfig
-h8300                            alldefconfig
-mips                        workpad_defconfig
-openrisc                  or1klitex_defconfig
-sh                           se7721_defconfig
-mips                         rt305x_defconfig
-powerpc                      tqm8xx_defconfig
-nios2                         3c120_defconfig
-microblaze                      mmu_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                          sdk7786_defconfig
-i386                                defconfig
-sh                              ul2_defconfig
-microblaze                          defconfig
-m68k                        stmark2_defconfig
-powerpc                     rainier_defconfig
-powerpc                      ppc6xx_defconfig
-um                               alldefconfig
-powerpc                 mpc836x_mds_defconfig
-arc                          axs103_defconfig
-mips                        omega2p_defconfig
-sh                           se7712_defconfig
-powerpc                     kmeter1_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210611
-x86_64               randconfig-a001-20210611
-x86_64               randconfig-a004-20210611
-x86_64               randconfig-a003-20210611
-x86_64               randconfig-a006-20210611
-x86_64               randconfig-a005-20210611
-i386                 randconfig-a002-20210611
-i386                 randconfig-a006-20210611
-i386                 randconfig-a004-20210611
-i386                 randconfig-a001-20210611
-i386                 randconfig-a005-20210611
-i386                 randconfig-a003-20210611
-i386                 randconfig-a002-20210610
-i386                 randconfig-a006-20210610
-i386                 randconfig-a004-20210610
-i386                 randconfig-a001-20210610
-i386                 randconfig-a005-20210610
-i386                 randconfig-a003-20210610
-x86_64               randconfig-a015-20210610
-x86_64               randconfig-a011-20210610
-x86_64               randconfig-a012-20210610
-x86_64               randconfig-a014-20210610
-x86_64               randconfig-a016-20210610
-x86_64               randconfig-a013-20210610
-i386                 randconfig-a015-20210611
-i386                 randconfig-a013-20210611
-i386                 randconfig-a016-20210611
-i386                 randconfig-a014-20210611
-i386                 randconfig-a012-20210611
-i386                 randconfig-a011-20210611
-i386                 randconfig-a015-20210610
-i386                 randconfig-a013-20210610
-i386                 randconfig-a016-20210610
-i386                 randconfig-a014-20210610
-i386                 randconfig-a012-20210610
-i386                 randconfig-a011-20210610
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Sorry but I was confused and Eugen helped me realize that there was only 
+watchdog related contents and associated DT binding documentation in the 
+series. So all should go through Wim and your tree.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>> I'm planning to send my pull-requests before the end of this week.
+
+Without "watchdog" material in it... so basically you don't care ;-)
+
+Best regards,
+   Nicolas
+
+>>>> ---
+>>>>    drivers/watchdog/sama5d4_wdt.c | 10 ++++++++--
+>>>>    1 file changed, 8 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/watchdog/sama5d4_wdt.c b/drivers/watchdog/sama5d4_wdt.c
+>>>> index e5d11d6a2600..ec20ad4e534f 100644
+>>>> --- a/drivers/watchdog/sama5d4_wdt.c
+>>>> +++ b/drivers/watchdog/sama5d4_wdt.c
+>>>> @@ -268,8 +268,10 @@ static int sama5d4_wdt_probe(struct platform_device *pdev)
+>>>>         wdd->min_timeout = MIN_WDT_TIMEOUT;
+>>>>         wdd->max_timeout = MAX_WDT_TIMEOUT;
+>>>>         wdt->last_ping = jiffies;
+>>>> -     wdt->sam9x60_support = of_device_is_compatible(dev->of_node,
+>>>> -                                                    "microchip,sam9x60-wdt");
+>>>> +
+>>>> +     if (of_device_is_compatible(dev->of_node, "microchip,sam9x60-wdt") ||
+>>>> +         of_device_is_compatible(dev->of_node, "microchip,sama7g5-wdt"))
+>>>> +             wdt->sam9x60_support = true;
+>>>>
+>>>>         watchdog_set_drvdata(wdd, wdt);
+>>>>
+>>>> @@ -329,6 +331,10 @@ static const struct of_device_id sama5d4_wdt_of_match[] = {
+>>>>         {
+>>>>                 .compatible = "microchip,sam9x60-wdt",
+>>>>         },
+>>>> +     {
+>>>> +             .compatible = "microchip,sama7g5-wdt",
+>>>> +     },
+>>>> +
+>>>>         { }
+>>>>    };
+>>>>    MODULE_DEVICE_TABLE(of, sama5d4_wdt_of_match);
+>>>> --
+>>>> 2.25.1
+>>>>
+>>
+>>
+>> --
+>> Nicolas Ferre
+
+
+-- 
+Nicolas Ferre
