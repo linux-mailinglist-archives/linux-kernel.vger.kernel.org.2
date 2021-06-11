@@ -2,44 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789583A4386
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AB43A4389
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbhFKN5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:57:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40020 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhFKN4i (ORCPT
+        id S232050AbhFKN5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231756AbhFKN4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:56:38 -0400
-Date:   Fri, 11 Jun 2021 13:54:39 -0000
+        Fri, 11 Jun 2021 09:56:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77D9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:54:42 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 13:54:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623419680;
+        s=2020; t=1623419681;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=O3X7fzqI04by8kxv08zvCtvn6iOmODmqT532Tkze600=;
-        b=ZHZg5qUMfI4yulf0nGH7+THMVgVyq4iRimGPI+bHlsIrVlyKtR5HluyuWFgo/EukHV54jW
-        9yt2q5l0Ni66ZoRbPcOOLmhANeyse3HEfTtBbE3094Hwqney2hWleV8VcKG5XFyHNoNSNl
-        kmOpIG5IjhT5lGg9hQOvgiGxhZxqIH0OxE6jpKT0rk+NI2NV76Rea5Wb0PY//3UFBW1DwA
-        TY6BU+xN8uyOSgjCHTCk6fCR3QSe93QrHihMJRp9+Qzs0DWGsnIUZYhXOX//HjQ61V/nIn
-        XrBiGpduhPwX319puUmwAC0HNH+Fi07f+k2xp6Djo3x9rsVERg6dPMBbvtkzhQ==
+        bh=fanpwl3YAdJNXikQhsqNlIjF0sjON0JNyroUeZhgHS4=;
+        b=jUse8loclVYdO6rFVT/1ogCYvgQj7szhfqN7NMAuEu4vDUWG4n9wg4AbKeqnIIF0nH5oKZ
+        zWx2Sxg39DUQ5FK7ND6s1ulK8nMCnidRynyDw/lw7+cv3YuLy9ItfQ2M2zXkVrDv1MWwdP
+        TJdoHDYIqqZB5WTo64SEZ8J8gcTsyebg4DtH5ECWi/3nVRqleBBzm8Q+hR+ZV/d6As3ueX
+        WQ9Mt2vrX+o3CKSTwKqp5wTAmrlc3dPvxHL6PWY1T3j9fcIqq/FiRLXtM3cI+dOcZBDSm7
+        mWNngdYl7TBzWICkVT7pPWNiCcH3l81Ya+IofEpk8XGaPAtp0XMddLREoVlvow==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623419680;
+        s=2020e; t=1623419681;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=O3X7fzqI04by8kxv08zvCtvn6iOmODmqT532Tkze600=;
-        b=/3QnxV5BE77A+lrwsFsKSphh14B+xwV6XJEegPrchSjIclx5oUxdR1Cgx/OzxOD2UWr/Z2
-        eZgM1oD49PuOmbCA==
+        bh=fanpwl3YAdJNXikQhsqNlIjF0sjON0JNyroUeZhgHS4=;
+        b=ZohG7rIjhkbH4ifr/wv3xW2xcdC5r0Y9Cr7ml4yIOvLfufWpkntRDLchEBFdIBDlfW//41
+        4GLBXeax7e9M4JAw==
 From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqdomain: Kill irq_domain_add_legacy_isa
+Subject: [irqchip: irq/irqchip-next] powerpc: Convert
+ irq_domain_add_legacy_isa use to irq_domain_add_legacy
 Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
 MIME-Version: 1.0
-Message-ID: <162341967995.19906.1311508573469554889.tip-bot2@tip-bot2>
+Message-ID: <162341968086.19906.14976410092936613343.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -50,61 +54,125 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     405e94e9aed2a38bdcd22efe53c36c6cd53185a6
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/405e94e9aed2a38bdcd22efe53c36c6cd53185a6
+Commit-ID:     7c576f4d3ce43fa0fc1ac258dc4768d0f3b3b992
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/7c576f4d3ce43fa0fc1ac258dc4768d0f3b3b992
 Author:        Marc Zyngier <maz@kernel.org>
 AuthorDate:    Thu, 13 Sep 2018 10:42:25 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 10 Jun 2021 13:09:17 +01:00
+CommitterDate: Thu, 10 Jun 2021 13:09:16 +01:00
 
-irqdomain: Kill irq_domain_add_legacy_isa
+powerpc: Convert irq_domain_add_legacy_isa use to irq_domain_add_legacy
 
-This helper doesn't have a user anymore, let's remove it.
+irq_domain_add_legacy_isa is a pain. It only exists for the benefit of
+two PPC-specific drivers, and creates an ugly dependency between asm/irq.h
+and linux/irqdomain.h
+
+Instead, let's convert these two drivers to irq_domain_add_legacy(),
+stop using NUM_ISA_INTERRUPTS by directly setting NR_IRQS_LEGACY.
+
+The dependency cannot be broken yet as there is a lot of PPC-related
+code that depends on it, but that's the first step towards it.
+
+A followup patch will remove irq_domain_add_legacy_isa.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- Documentation/core-api/irq/irq-domain.rst |  1 -
- include/linux/irqdomain.h                 | 11 -----------
- 2 files changed, 12 deletions(-)
+ arch/powerpc/include/asm/irq.h         | 4 ++--
+ arch/powerpc/platforms/ps3/interrupt.c | 4 ++--
+ arch/powerpc/sysdev/i8259.c            | 3 ++-
+ arch/powerpc/sysdev/mpic.c             | 2 +-
+ arch/powerpc/sysdev/tsi108_pci.c       | 3 ++-
+ arch/powerpc/sysdev/xics/xics-common.c | 2 +-
+ 6 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/core-api/irq/irq-domain.rst b/Documentation/core-api/irq/irq-domain.rst
-index 8214e21..53283b3 100644
---- a/Documentation/core-api/irq/irq-domain.rst
-+++ b/Documentation/core-api/irq/irq-domain.rst
-@@ -146,7 +146,6 @@ Legacy
+diff --git a/arch/powerpc/include/asm/irq.h b/arch/powerpc/include/asm/irq.h
+index b2bd588..c1eda91 100644
+--- a/arch/powerpc/include/asm/irq.h
++++ b/arch/powerpc/include/asm/irq.h
+@@ -23,8 +23,8 @@ extern atomic_t ppc_n_lost_interrupts;
+ /* Total number of virq in the platform */
+ #define NR_IRQS		CONFIG_NR_IRQS
  
- 	irq_domain_add_simple()
- 	irq_domain_add_legacy()
--	irq_domain_add_legacy_isa()
- 	irq_domain_create_simple()
- 	irq_domain_create_legacy()
+-/* Same thing, used by the generic IRQ code */
+-#define NR_IRQS_LEGACY		NUM_ISA_INTERRUPTS
++/* Number of irqs reserved for a legacy isa controller */
++#define NR_IRQS_LEGACY		16
  
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 62a8e3d..9f884c9 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -45,9 +45,6 @@ struct cpumask;
- struct seq_file;
- struct irq_affinity_desc;
+ extern irq_hw_number_t virq_to_hw(unsigned int virq);
  
--/* Number of irqs reserved for a legacy isa controller */
--#define NUM_ISA_INTERRUPTS	16
--
- #define IRQ_DOMAIN_IRQ_SPEC_PARAMS 16
+diff --git a/arch/powerpc/platforms/ps3/interrupt.c b/arch/powerpc/platforms/ps3/interrupt.c
+index e68f4fb..4987142 100644
+--- a/arch/powerpc/platforms/ps3/interrupt.c
++++ b/arch/powerpc/platforms/ps3/interrupt.c
+@@ -46,7 +46,7 @@
+  * implementation equates HV plug value to Linux virq value, constrains each
+  * interrupt to have a system wide unique plug number, and limits the range
+  * of the plug values to map into the first dword of the bitmaps.  This
+- * gives a usable range of plug values of  {NUM_ISA_INTERRUPTS..63}.  Note
++ * gives a usable range of plug values of  {NR_IRQS_LEGACY..63}.  Note
+  * that there is no constraint on how many in this set an individual thread
+  * can acquire.
+  *
+@@ -722,7 +722,7 @@ static unsigned int ps3_get_irq(void)
+ 	}
  
- /**
-@@ -355,14 +352,6 @@ static inline struct irq_domain *irq_domain_add_nomap(struct device_node *of_nod
+ #if defined(DEBUG)
+-	if (unlikely(plug < NUM_ISA_INTERRUPTS || plug > PS3_PLUG_MAX)) {
++	if (unlikely(plug < NR_IRQS_LEGACY || plug > PS3_PLUG_MAX)) {
+ 		dump_bmp(&per_cpu(ps3_private, 0));
+ 		dump_bmp(&per_cpu(ps3_private, 1));
+ 		BUG();
+diff --git a/arch/powerpc/sysdev/i8259.c b/arch/powerpc/sysdev/i8259.c
+index c1d76c3..dc1a151 100644
+--- a/arch/powerpc/sysdev/i8259.c
++++ b/arch/powerpc/sysdev/i8259.c
+@@ -260,7 +260,8 @@ void i8259_init(struct device_node *node, unsigned long intack_addr)
+ 	raw_spin_unlock_irqrestore(&i8259_lock, flags);
+ 
+ 	/* create a legacy host */
+-	i8259_host = irq_domain_add_legacy_isa(node, &i8259_host_ops, NULL);
++	i8259_host = irq_domain_add_legacy(node, NR_IRQS_LEGACY, 0, 0,
++					   &i8259_host_ops, NULL);
+ 	if (i8259_host == NULL) {
+ 		printk(KERN_ERR "i8259: failed to allocate irq host !\n");
+ 		return;
+diff --git a/arch/powerpc/sysdev/mpic.c b/arch/powerpc/sysdev/mpic.c
+index b0426f2..995fb2a 100644
+--- a/arch/powerpc/sysdev/mpic.c
++++ b/arch/powerpc/sysdev/mpic.c
+@@ -602,7 +602,7 @@ static void __init mpic_scan_ht_pics(struct mpic *mpic)
+ /* Find an mpic associated with a given linux interrupt */
+ static struct mpic *mpic_find(unsigned int irq)
  {
- 	return __irq_domain_add(of_node_to_fwnode(of_node), 0, max_irq, max_irq, ops, host_data);
- }
--static inline struct irq_domain *irq_domain_add_legacy_isa(
--				struct device_node *of_node,
--				const struct irq_domain_ops *ops,
--				void *host_data)
--{
--	return irq_domain_add_legacy(of_node, NUM_ISA_INTERRUPTS, 0, 0, ops,
--				     host_data);
--}
- static inline struct irq_domain *irq_domain_add_tree(struct device_node *of_node,
- 					 const struct irq_domain_ops *ops,
- 					 void *host_data)
+-	if (irq < NUM_ISA_INTERRUPTS)
++	if (irq < NR_IRQS_LEGACY)
+ 		return NULL;
+ 
+ 	return irq_get_chip_data(irq);
+diff --git a/arch/powerpc/sysdev/tsi108_pci.c b/arch/powerpc/sysdev/tsi108_pci.c
+index 49f9541..042bb38 100644
+--- a/arch/powerpc/sysdev/tsi108_pci.c
++++ b/arch/powerpc/sysdev/tsi108_pci.c
+@@ -404,7 +404,8 @@ void __init tsi108_pci_int_init(struct device_node *node)
+ {
+ 	DBG("Tsi108_pci_int_init: initializing PCI interrupts\n");
+ 
+-	pci_irq_host = irq_domain_add_legacy_isa(node, &pci_irq_domain_ops, NULL);
++	pci_irq_host = irq_domain_add_legacy(node, NR_IRQS_LEGACY, 0, 0,
++					     &pci_irq_domain_ops, NULL);
+ 	if (pci_irq_host == NULL) {
+ 		printk(KERN_ERR "pci_irq_host: failed to allocate irq domain!\n");
+ 		return;
+diff --git a/arch/powerpc/sysdev/xics/xics-common.c b/arch/powerpc/sysdev/xics/xics-common.c
+index 7e4305c..fdf8db4 100644
+--- a/arch/powerpc/sysdev/xics/xics-common.c
++++ b/arch/powerpc/sysdev/xics/xics-common.c
+@@ -201,7 +201,7 @@ void xics_migrate_irqs_away(void)
+ 		struct ics *ics;
+ 
+ 		/* We can't set affinity on ISA interrupts */
+-		if (virq < NUM_ISA_INTERRUPTS)
++		if (virq < NR_IRQS_LEGACY)
+ 			continue;
+ 		/* We only need to migrate enabled IRQS */
+ 		if (!desc->action)
