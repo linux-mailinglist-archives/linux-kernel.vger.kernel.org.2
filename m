@@ -2,85 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381E23A496D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317443A4970
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 21:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhFKT0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 15:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhFKT0c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:26:32 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A60EC061574;
-        Fri, 11 Jun 2021 12:24:20 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id k7so6077709ejv.12;
-        Fri, 11 Jun 2021 12:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QVn2XpNydMMfSU7bRQCNWOFOmVIdLgML4UEm0EkT7pQ=;
-        b=TXuWpJuPWpt3qqHX5SFrlDo4EPqrxK8R5S4Jw5oPL5VNKvPgjsBnWabOjL9ew29gW0
-         jsCdhhjq42JIFokffm2W5W/mLfk1L0B8jq1EWjz5/EuZ9pTpGPpbCHo4Di0gWaaYz9k8
-         R7PbGeQKW36hxl6us6bshYAzeLw3GdCAXYVRHgE4IYUyd4N7a6fkcR8k86G1Y5xRCTRX
-         4EvKl+Dw9aeFDUf9c7F7I4xANM0d9Va7nA/yL7YuAVvyPDDwdoEpFJzFSuXxvPsWTjbA
-         JmBeAn2I+3orMj0x3xSkNzk1GtvnIPA9NE6eo+3MREA2rL0lr2JMyeuit+tlZs/4ZiSN
-         luiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QVn2XpNydMMfSU7bRQCNWOFOmVIdLgML4UEm0EkT7pQ=;
-        b=bO39r+KBQ225TUjxhFNg/DImOyFCOt6A6A9dqL2RzRFyHUjRWWE3yNq6K/R/9ILC1M
-         wnXIrUUTinEDlKx8p+W5j0DATM+Bj9QzDtEOmILuNrkeTLPl3FgTCTb3ej+qpXIhMtKY
-         T/Ej+3ygHfIPA/Wcjbtl4CeVsVfhohbueyXne2LHCwUBmkUf84xGASIYj+KuZH3gLoWp
-         r0l1cbA5+TvhhXac9myA4dH80vUFMbXtnEt5vnF3oleHi5KqrH9163R+LSwD71eJUMtj
-         ty+mg0yRaz7161s9nfn0aIPkzFQUSOhISEMTzsYN1dp2aWUqIuYg4UiTeIAuatVGKTjE
-         SbOg==
-X-Gm-Message-State: AOAM531iNoG/Wh8VwAuy5gqj/9QONLYBAGAGQIfBEWkuuYVXLjL2MHhG
-        ZNhSfZJoa54YSq7mtgYxw43elH8Rtmk=
-X-Google-Smtp-Source: ABdhPJz46iCdebyRYDndYc2A5VY55T92JgyLWmkTWxaliADt8/+l924Qc5JLRa3CFWLcc+MZ/FIgzw==
-X-Received: by 2002:a17:906:1806:: with SMTP id v6mr4994778eje.454.1623439458835;
-        Fri, 11 Jun 2021 12:24:18 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id f12sm2887977edf.72.2021.06.11.12.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 12:24:18 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 22:24:17 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [PATCH net-next v4 8/9] net: dsa: dsa_slave_phy_connect():
- extend phy's flags with port specific phy flags
-Message-ID: <20210611192417.gvfxi2kbfjx4jv3d@skbuf>
-References: <20210611071527.9333-1-o.rempel@pengutronix.de>
- <20210611071527.9333-9-o.rempel@pengutronix.de>
+        id S231184AbhFKTac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 15:30:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:42609 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229633AbhFKTaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 15:30:30 -0400
+IronPort-SDR: rSb+6Ma4R9q1CrPBQH0X3b8+wgESAig5J9rss4MuvXjOLRLAYT7LHFxEaXFniB/KN2J3zAOrbE
+ /cVcIyTtNaRg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="185969241"
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="185969241"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 12:28:31 -0700
+IronPort-SDR: XUCaJtT5tJX6zzsOnpujw9apdxCvWYuDKwylKPWMaowYV3+tRG0cr3Um58QKUZKzqgUQ0Hd/Bi
+ JKDl0p0emNTA==
+X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
+   d="scan'208";a="483371383"
+Received: from chtanaka-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.138.239])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 12:28:30 -0700
+Date:   Fri, 11 Jun 2021 12:28:29 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-cxl@vger.kernel.org, Linux NVDIMM <nvdimm@lists.linux.dev>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/5] cxl/core: Add cxl-bus driver infrastructure
+Message-ID: <20210611192829.bwdj322uwlsbdrjs@intel.com>
+References: <162336395765.2462439.11368504490069925374.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <162336396329.2462439.16556923116284874437.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210611174736.ttzpk5uniyoyd4vw@intel.com>
+ <CAPcyv4i7_RhfiYMX=QP2Ts4ye1Q2e0=_aBCP4rsuopo=0HWKVw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210611071527.9333-9-o.rempel@pengutronix.de>
+In-Reply-To: <CAPcyv4i7_RhfiYMX=QP2Ts4ye1Q2e0=_aBCP4rsuopo=0HWKVw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:15:26AM +0200, Oleksij Rempel wrote:
-> This patch extends the flags of the phy that's being connected with the
-> port specific flags of the switch port.
+On 21-06-11 11:55:39, Dan Williams wrote:
+> On Fri, Jun 11, 2021 at 10:47 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >
+> > On 21-06-10 15:26:03, Dan Williams wrote:
+> > > Enable devices on the 'cxl' bus to be attached to drivers. The initial
+> > > user of this functionality is a driver for an 'nvdimm-bridge' device
+> > > that anchors a libnvdimm hierarchy attached to CXL persistent memory
+> > > resources. Other device types that will leverage this include:
+> > >
+> > > cxl_port: map and use component register functionality (HDM Decoders)
+> >
+> > Since I'm looking at this now, perhaps I can open the discussion here. Have you
+> > thought about how this works yet? Right now I'm thinking there are two "drivers":
+> > cxl_port: Switches (and ACPI0016)
+> > cxl_mem: The memory device's HDM decoders
+> >
+> > For port, probe() will figure out that the thing is an upstream port, call
+> > cxl_probe_component_regs and then call devm_cxl_add_port(). I think that's
+> > straight forward.
 > 
-> This is needed to handle a port specific erratum of the KSZ8873 switch,
-> which is added in a later patch.
+> I was expecting cxl_port_driver.probe() comes *after* port discovery.
+> Think of it like PCI discovery. Some agent does the hardware topology
+> scan to add devices, in this case devm_cxl_add_port(), and that
+> triggers cxl_port_driver to load. So the initial enumeration done by
+> the cxl_acpi driver will populate the first two levels of the port
+> hierarchy with port objects and populate their component register
+> physical base addresses. For any other port deeper in the hierarchy I
+> was expecting that to be scanned after the discovery of a cxl_memdev
+> that is not attached to the current hierarchy. So, for example imagine
+> a config like:
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
+> Platform --> Host Bridge --> Switch --> Endpoint
+> 
+> ...where in sysfs that's modeled as:
+> 
+> root0 --> port1 --> port2 --> port3
+> 
+> Where port3 is assuming that the CXL core models the device's
+> connection to the topology as yet another cxl_port. At the beginning
+> of time after cxl_acpi has loaded but before cxl_pci has discovered
+> the endpoint the topology is:
+> 
+> root0 --> port1
+> 
+> Upon the detection of the endpoint the CXL core can assume that all
+> intermediary switches between the root and this device have been
+> registered as PCI devices. So, it follows that endpoint device arrival
+> triggers "cxl_bus_rescan()" that goes and enumerates all the CXL
+> resources in the topology to produce:
+> 
+> root0 --> port1 --> port2 --> port3
+> 
 
-What happens differently between having this patch and not having it?
+Ah, I had written about scan/rescan in an earlier version of my email but
+dropped it. I was actually going to suggest it being a sysfs attr, but I'm fine
+with it being implicit so long as...
+
+How do we assert that cxl_pci doesn't run before cxl_acpi has done anything? I
+like the idea that the endpoint device can simply ask cxl_acpi to rescan, I just
+don't see how it works. I suppose we can queue up the requests to rescan in
+cxl_acpi if the ordering can't be guaranteed.
+
+> > For the memory device we've already probed the thing via class code so there is
+> > no need to use this driver registration, however, I think it would be nice to do
+> > so. Is there a clean way to do that?
+> 
+> The PCI device associated with the endpoint is already probed, but the
+> cxl_memdev itself can have a driver on the CXL bus. So I think the
+> cxl_memdev driver should try to register a cxl_port after telling
+> cxl_acpi to rescan. If a check like "is_cxl_dport(pdev->dev.parent)"
+> for the endpoint returns false it means that the cxl_bus_rescan()
+> failed to enumerate the CXL topology to this endpoint and this
+> endpoint is limited to only CXL.io operation.
+
+What is going to invoke the memdev driver's probe? That is where we're talking
+about putting that is_cxl_dport(...) right? That is the part that tripped me up
+and inspired the original email FWIW.
+
+> 
+> > Also, I'd like to make sure we're on the same page about struct cxl_decoder.
+> > Right now they are only created for active HDM decoders.
+> 
+> No, I was expecting they are also created for inactive ones. I am
+> thinking that all decoders ultimately belong to the cxl_acpi driver,
+> or whatever driver is acting as the root on a non-ACPI system. All
+> decoder programming is driven by region activation stimulus that asks
+> the root driver to try to establish a decode chain through the
+> hieararchy per a given region.
+> 
+> > Going forward, we can
+> > either maintain a count of unused decoders on the given CXL component, or we can
+> > instantiate a struct cxl_decoder that isn't active, ie. no interleave ways
+> > granularit, base, etc. What's your thinking there?
+> 
+> All resources are enumerated, just like PCI. Decode setup belongs to
+> the core, just like PCI MMIO resource setup. The difference is that
+> port drivers are needed to map component registers and service
+> requests from cxl_acpi to reconfigure, but other than that
+> cxl_decoders themselves don't have drivers and just reflect the
+> current state of what cxl_acpi / cxl_core have established.
+
+Okay.
