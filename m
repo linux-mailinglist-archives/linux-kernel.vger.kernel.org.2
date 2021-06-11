@@ -2,65 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17283A3FE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A030E3A3FED
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhFKKOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:14:49 -0400
-Received: from mga09.intel.com ([134.134.136.24]:18582 "EHLO mga09.intel.com"
+        id S231652AbhFKKRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:17:02 -0400
+Received: from comms.puri.sm ([159.203.221.185]:51710 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230188AbhFKKOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:14:48 -0400
-IronPort-SDR: tisnBD48CxYUzp+U4daDlfdZVGC5RkSx3Eo9KWqzA3LXIZFr0C9zGrifCrgbLQy9kc20OqRNXN
- xs0lM9WEmenw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="205457842"
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="205457842"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 03:12:50 -0700
-IronPort-SDR: iCTLD0cGg8bKeb8CjdPnLSKU/CSoTwwbzI1Xx8whS+4kShCjMhxN5bARcy642M9aJsHWUjOdiH
- Xm4vKpEimLBQ==
-X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
-   d="scan'208";a="486541505"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 03:12:48 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lre9d-001TxF-Uc; Fri, 11 Jun 2021 13:12:45 +0300
-Date:   Fri, 11 Jun 2021 13:12:45 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v4 1/4] devres: Make locking straight forward in
- release_nodes()
-Message-ID: <YMM3HYt2q5i35OUv@smile.fi.intel.com>
-References: <20210517122946.53161-1-andriy.shevchenko@linux.intel.com>
- <YK421dBVoXLElvKB@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK421dBVoXLElvKB@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S230407AbhFKKRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 06:17:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id DDF97E0190;
+        Fri, 11 Jun 2021 03:14:33 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id YWQN31593CEz; Fri, 11 Jun 2021 03:14:32 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm, krzysztof.kozlowski@canonical.com,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        paul.kocialkowski@bootlin.com, pavel@ucw.cz
+Cc:     devicetree@vger.kernel.org, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org, shawnx.tu@intel.com
+Subject: [PATCH v5 0/5] Add support for the Hynix Hi-846 camera
+Date:   Fri, 11 Jun 2021 12:13:59 +0200
+Message-Id: <20210611101404.2553818-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 02:53:57PM +0300, Andy Shevchenko wrote:
-> On Mon, May 17, 2021 at 03:29:43PM +0300, Andy Shevchenko wrote:
-> > It seems for the sake of saving stack memory of couple of pointers,
-> > the locking in release_nodes() callers becomes interesting.
-> > 
-> > Replace this logic with a straight forward locking and unlocking scheme.
-> 
-> Any comments on the series?
+hi,
 
-Greg, Rafael, anything I should do here?
+This patchset adds support for the SK Hynix Hi-846 CMOS images sensor.
+It includes dt-bindings and the driver.
+
+Patches 4 and 5 are basically optional: if i2c-cardlist is deprecated,
+ignore it and act on it appropriately, and the arm64 defconfig is just
+convenience for now.
+
+best wishes,
+
+                              martin
+
+revision history
+----------------
+v5: (thank you Laurent and Rob)
+* minor dt-bindings fixes
+* driver: disable lens shading correcting (no seed values yet used from "otp" for that)
+* add reviewed-tags
+
+v4: (thank you Laurent, Sakari and Rob) many driver changes, see v3 review for
+details. they include:
+* add get_selection(), remove open() callback
+* use gpiod API
+* use regulator_bulk API
+* fix power supply timing sequence and bindings
+* https://lore.kernel.org/linux-media/20210607105213.1211722-1-martin.kepplinger@puri.sm/
+
+v3: (thank you, Laurent)
+* use do_div() for divisions
+* reset-gpios DT property name instead of rst-gpios
+* improve the dt-bindings
+* add the phone-devel list
+* https://lore.kernel.org/linux-media/20210531120737.168496-1-martin.kepplinger@puri.sm/
+
+v2:
+sent a bit early due to stupid mistakes
+* fix build issues
+* fix dtschema issues
+* add enable for arm64 defconfig
+* https://lore.kernel.org/linux-media/20210530212337.GA15366@duo.ucw.cz/T/#t
+
+v1:
+* https://lore.kernel.org/linux-media/20210527091221.3335998-1-martin.kepplinger@puri.sm/
+
+
+Martin Kepplinger (5):
+  dt-bindings: vendor-prefixes: Add SK Hynix Inc.
+  dt-bindings: media: document SK Hynix Hi-846 MIPI CSI-2 8M pixel
+    sensor
+  media: i2c: add driver for the SK Hynix Hi-846 8M pixel camera
+  arm64: defconfig: enable VIDEO_HI846
+  Documentation: i2c-cardlist: add the Hynix hi846 sensor
+
+ .../admin-guide/media/i2c-cardlist.rst        |    1 +
+ .../bindings/media/i2c/hynix,hi846.yaml       |  108 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ arch/arm64/configs/defconfig                  |    1 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/hi846.c                     | 2117 +++++++++++++++++
+ 8 files changed, 2249 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+ create mode 100644 drivers/media/i2c/hi846.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.2
 
