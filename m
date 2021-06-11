@@ -2,117 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0003A3EFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C67D3A3EFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 11:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbhFKJXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:23:35 -0400
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:38591 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhFKJXd (ORCPT
+        id S231509AbhFKJWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhFKJWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:23:33 -0400
-Received: by mail-ed1-f51.google.com with SMTP id d13so22790327edt.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CGc5CA/rls3HItW+7D7ycY5sKp100bjxVPK+/n8mTzM=;
-        b=T5q5576OjaMXGrmhE/6QFLbaTulb3j1O7K0MCX/zDH4fMgR59Ig379SNOP6WIfhg+S
-         sIVRKn5H/uUru4GsrWwaJehmckioKuEr8LinY6E8lXlykTrSQ7H8SKIUFwpT8dVn5In+
-         ojIl35Cd+01fC3FnmfDr7GgMh5V3ZdlCEIRXY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CGc5CA/rls3HItW+7D7ycY5sKp100bjxVPK+/n8mTzM=;
-        b=ctwgpDhkUBMbXkak+O/df+YeAtMtbe59BCnD6DwYui7vd24ORWm+a0Ln/+xQmFwr5s
-         odZ31GhLN+Gsuczr9n+P0WN3mdDBmrFbFzQiTTY4ryVuG/+Il+ljO/+q+YqwbT17Gyuq
-         1KAjPTuQDjXQrzuGH4owUSBfmDDPx+A75NsCnDHz9sgJ53TjAGXnuQHg0Oikz8Po6Fkc
-         hm7LmTkSfMDTCDBFfDE03WF2juCnEF9PLPwR8Z40t2Jz8Mrh+Qkfz301PODa7duuM3dl
-         x5uy8Vd8jkzZV+1MGBHcDYQjr3GCC+iM/9HPOfqbt5ApSBwTx/U6CZ+U3Mn1euoGrw+f
-         V6vw==
-X-Gm-Message-State: AOAM533X0QYVCOQufMaCiTICeUObggrYohyzxM0SklrkZKxAv3P3q7BL
-        8G/8GxFqJQU0M1VwObXxTLpt1Q==
-X-Google-Smtp-Source: ABdhPJxLHD8WhYBB9EGCCP9ce802mfGbHPukNPB5XdussTThKAu1mnzpq1KvSGvqHXwGI+QRrQ51kw==
-X-Received: by 2002:aa7:c1da:: with SMTP id d26mr2689892edp.92.1623403219760;
-        Fri, 11 Jun 2021 02:20:19 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.64.110])
-        by smtp.gmail.com with ESMTPSA id gz25sm1906684ejb.0.2021.06.11.02.20.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 02:20:19 -0700 (PDT)
-Subject: Re: [init/initramfs.c] e7cb072eb9: invoked_oom-killer:gfp_mask=0x
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-References: <20210607144419.GA23706@xsang-OptiPlex-9020>
- <d28354fd-0f72-559d-771f-fb2a80b51b05@rasmusvillemoes.dk>
- <20210611084817.GB26476@xsang-OptiPlex-9020>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <db82c1c9-edfe-6ee2-c403-d6740e8c46c6@rasmusvillemoes.dk>
-Date:   Fri, 11 Jun 2021 11:20:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 11 Jun 2021 05:22:49 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60C8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 02:20:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EswCt/Z76atEagNm6Jm4YHwcVOamUfUCApeR1/tGBR8=; b=hhu/UUOXb5j/CbCXszQLcFUk6/
+        qqF+dD6bXT9oZ7NvMyZyRn1OIM+vX4eZCVQeDDcIAUFEg6IN2I//fQY/x9YFKiZVyDSNBWYuNHxoc
+        FbnXMmots3TuqMYJ7TNzDN9cnOIrOB/xX88p3hsZGAA4pGoo2DQD1JnSHQKh4edUTFyW6Jl2+6fZg
+        GkH34vRNN4HGHyA+QwtP43eFPWgiqRLwTkjl2pkrDANu4znV3sD/qo5p143daIRx1kPfjucNkBvZH
+        NyYIAeHap6/qmvzL0V3X9RYDKBAXeU0aSIBJlHTIGFvdLUoku2V65mMywmtrKG8v4A9BwWz+y5gll
+        h+qdQdqQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lrdLA-005ptM-BT; Fri, 11 Jun 2021 09:20:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AFF2030008D;
+        Fri, 11 Jun 2021 11:20:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 90C5821AB0AC0; Fri, 11 Jun 2021 11:20:42 +0200 (CEST)
+Date:   Fri, 11 Jun 2021 11:20:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com, rickyiu@google.com,
+        wvw@google.com, patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 2/3] sched: Skip priority checks with
+ SCHED_FLAG_KEEP_PARAMS
+Message-ID: <YMMq6jtiwZUuKR3F@hirez.programming.kicks-ass.net>
+References: <20210610151306.1789549-1-qperret@google.com>
+ <20210610151306.1789549-3-qperret@google.com>
+ <YMJk4TWEAGL3EKUO@hirez.programming.kicks-ass.net>
+ <YMMl7YGb2LNzcdtN@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210611084817.GB26476@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMMl7YGb2LNzcdtN@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/06/2021 10.48, Oliver Sang wrote:
-> hi Rasmus,
+On Fri, Jun 11, 2021 at 08:59:25AM +0000, Quentin Perret wrote:
+> On Thursday 10 Jun 2021 at 21:15:45 (+0200), Peter Zijlstra wrote:
+> > On Thu, Jun 10, 2021 at 03:13:05PM +0000, Quentin Perret wrote:
+> > > SCHED_FLAG_KEEP_PARAMS can be passed to sched_setattr to specify that
+> > > the call must not touch scheduling parameters (nice or priority). This
+> > > is particularly handy for uclamp when used in conjunction with
+> > > SCHED_FLAG_KEEP_POLICY as that allows to issue a syscall that only
+> > > impacts uclamp values.
+> > > 
+> > > However, sched_setattr always checks whether the priorities and nice
+> > > values passed in sched_attr are valid first, even if those never get
+> > > used down the line. This is useless at best since userspace can
+> > > trivially bypass this check to set the uclamp values by specifying low
+> > > priorities. However, it is cumbersome to do so as there is no single
+> > > expression of this that skips both RT and CFS checks at once. As such,
+> > > userspace needs to query the task policy first with e.g. sched_getattr
+> > > and then set sched_attr.sched_priority accordingly. This is racy and
+> > > slower than a single call.
+> > > 
+> > > As the priority and nice checks are useless when SCHED_FLAG_KEEP_PARAMS
+> > > is specified, simply inherit them in this case to match the policy
+> > > inheritance of SCHED_FLAG_KEEP_POLICY.
+> > > 
+> > > Reported-by: Wei Wang <wvw@google.com>
+> > > Signed-off-by: Quentin Perret <qperret@google.com>
+> > > ---
+> > >  kernel/sched/core.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > > 
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index 3b213402798e..1d4aedbbcf96 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -6585,6 +6585,10 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+> > >  	rcu_read_unlock();
+> > >  
+> > >  	if (likely(p)) {
+> > > +		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS) {
+> > > +			attr.sched_priority = p->rt_priority;
+> > > +			attr.sched_nice = task_nice(p);
+> > > +		}
+> > >  		retval = sched_setattr(p, &attr);
+> > >  		put_task_struct(p);
+> > >  	}
+> > 
+> > I don't like this much... afaict the KEEP_PARAMS clause in
+> > __setscheduler() also covers the DL params, and you 'forgot' to copy
+> > those.
+> >
+> > Can't we short circuit the validation logic?
 > 
-> On Tue, Jun 08, 2021 at 09:42:58AM +0200, Rasmus Villemoes wrote:
->> On 07/06/2021 16.44, kernel test robot wrote:
->>>
-
-
->> Also, I don't have 16G to give to a virtual machine. I tried running the
->> bzImage with that modules.cgz under qemu with some naive parameters just
->> to get some output [1], but other than failing because there's no rootfs
->> to mount (as expected), I only managed to make it fail when providing
->> too little memory (the .cgz is around 70M, decompressed about 200M -
->> giving '-m 1G' to qemu works fine). You mention the vmalloc= argument,
->> but I can't make the decompression fail when passing either vmalloc=128M
->> or vmalloc=512M or no vmalloc= at all.
+> I think we can but I didn't like the look of it, because we end up
+> sprinkling checks all over the place. KEEP_PARAMS doesn't imply
+> KEEP_POLICY IIUC, and the policy and params checks are all mixed up.
 > 
-> sorry about this. we also tried to follow exactly above steps to test on
-> some local machine (8G memory), but cannot reproduce. we are analyzing
-> what's the diference in our automaion run in test cluster, which reproduced
-> the issue consistently. will update you when we have findings.
+> But maybe that wants fixing too? 
 
-OK. It's really odd that providing the VM with _more_ memory makes it
-fail (other then the obvious failure in the other direction when there's
-simply not enough memory for the unpacked initramfs itself). But
-unfortunately that also sounds like I won't be able to reproduce with
-the HW I have.
+If you can make that code nicer, I'm all for it, it's a bit of a mess.
 
->> As an extra data point, what happens if you add initramfs_async=0 to the
->> command line?
-> 
-> yes, we tested this before sending out the report. the issue gone
-> if initramfs_async=0 is added.
+But failing that, I suppose the alternative is extracting something like
+get_params from sched_getattr() and sharing that bit of code to do what
+you do above.
 
-Hm. Sounds like some initcall after rootfs_initcall time must
-allocate/hog a lot of memory, perhaps with some heuristic depending on
-how much is available.
+> I guess it could make sense to switch
+> policies without touching the params in some cases (e.g switching
+> between FIFO and RR, or BATCH and NORMAL), but I'm not sure what that
+> would mean for cross-sched_class transitions.
 
-Can you try with initcall_debug=1? I think that should produce a lot of
-output, hopefully that would make it possible to see which initcalls
-have been done just prior to (or while) the initramfs unpacking hits ENOMEM.
-
-Thanks,
-Rasmus
+You're right, cross-class needs both.
