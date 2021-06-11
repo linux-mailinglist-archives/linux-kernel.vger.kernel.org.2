@@ -2,160 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A453A41ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D130B3A41FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 14:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhFKM1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 08:27:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41751 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230468AbhFKM1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:27:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623414338;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+saQX1pFifHAMfA75K26b9IDNQxzW3sh1B/T8sEy8xE=;
-        b=P7fQO0LHTp9kcgF1zZ03nFMXrCEGkvVSqBQ2+eQeadktk4YT+AXvOV3Jn0iWv6h0Aq+Fey
-        +czm6UqcoV0B0xZ6fiiq9bW/sq/EUfXyyQKvHS/4djoiJs5vc2PHd0UZ+9reC+weuNF4wm
-        Xaq8QI2ow7pO6ACiZDmJSHCAcCrcaAQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-PXS8XQbYOJuJnvX_0sf2SA-1; Fri, 11 Jun 2021 08:25:37 -0400
-X-MC-Unique: PXS8XQbYOJuJnvX_0sf2SA-1
-Received: by mail-ej1-f70.google.com with SMTP id n19-20020a1709067253b029043b446e4a03so1066903ejk.23
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 05:25:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+saQX1pFifHAMfA75K26b9IDNQxzW3sh1B/T8sEy8xE=;
-        b=Rn4DmRpV3b85hOJ93LU4NB4ccX+y+l9Z2C+JfHZIG4R1GPFnQ9cbsNQFE3w5cnoUh7
-         7sp1+cpQsYk8Iek2tu7ajLBRmHaAb13Pnefw5UaTiY5eX1Zqn57Vx0IaSQ8Fbc5mu6zJ
-         GL/eoB++JvGZNospJVzyugj21utus0DgiJL2L3Hq7gz5OJwklHh4p4ZGFpvtlZ3kLQ47
-         P9PZ3rSzcFUR4npa+FQp/dE6Hgt2/BPSrXEfznyeuty5Z0uV+aczSlJjJTv+uMD8GB32
-         4oKArfC31R6BDTDde7eWRtvIe6ol2Bdimc4fPCQmHc/zoknGRigOXrbCMs+2mlVlJ50P
-         +wbg==
-X-Gm-Message-State: AOAM532MGGfO98z4JjeHiNoR9NCfWQWhMuPhz3CusK49g/sSZqs000sH
-        HJ5vFJv27yg6/g98DkKJUwIOAdi7Le6taoe9suduFFz6oYWl3Q4Y3ugDT96k0FNdnWlXr9czJs0
-        h68xWxNK7O63sNwoT/cNj7nrz
-X-Received: by 2002:a17:906:2b04:: with SMTP id a4mr3391589ejg.6.1623414336108;
-        Fri, 11 Jun 2021 05:25:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPbmShTD8/mzWY6bPdx7L57uktKQ4wfEOyzzKRXT1hmYodewrqYPlF9qdrHraWuNSTa7EpDQ==
-X-Received: by 2002:a17:906:2b04:: with SMTP id a4mr3391574ejg.6.1623414335924;
-        Fri, 11 Jun 2021 05:25:35 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id x15sm2111520edd.6.2021.06.11.05.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 05:25:35 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 14:25:33 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [PATCH v11 00/18] virtio/vsock: introduce SOCK_SEQPACKET support
-Message-ID: <20210611122533.cy4jce4vxhhou5ms@steredhat>
-References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
- <59b720a8-154f-ad29-e7a9-b86b69408078@kaspersky.com>
+        id S231584AbhFKMaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 08:30:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230188AbhFKMaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 08:30:09 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2A856109E;
+        Fri, 11 Jun 2021 12:28:11 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lrgGf-006yMy-FF; Fri, 11 Jun 2021 13:28:09 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     suzuki.poulose@arm.com, james.morse@arm.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        Quentin Perret <qperret@google.com>, alexandru.elisei@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] KVM: arm64: Reduce hyp_vmemmap overhead
+Date:   Fri, 11 Jun 2021 13:27:57 +0100
+Message-Id: <162341446985.1357134.6545944671032237373.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210608114518.748712-1-qperret@google.com>
+References: <20210608114518.748712-1-qperret@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <59b720a8-154f-ad29-e7a9-b86b69408078@kaspersky.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: suzuki.poulose@arm.com, james.morse@arm.com, catalin.marinas@arm.com, will@kernel.org, qperret@google.com, alexandru.elisei@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kernel-team@android.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arseny,
+On Tue, 8 Jun 2021 11:45:11 +0000, Quentin Perret wrote:
+> This is a v3 of the patch series previously posted here:
+> 
+>   https://lore.kernel.org/r/20210602094347.3730846-1-qperret@google.com
+> 
+> Please refer to the cover letter of v1 for the context and motivation
+> behind the series.
+> 
+> [...]
 
-On Fri, Jun 11, 2021 at 02:17:00PM +0300, Arseny Krasnov wrote:
->
->On 11.06.2021 14:07, Arseny Krasnov wrote:
->> 	This patchset implements support of SOCK_SEQPACKET for virtio
->> transport.
->> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->> do it, new bit for field 'flags' was added: SEQ_EOR. This bit is
->> set to 1 in last RW packet of message.
->> 	Now as  packets of one socket are not reordered neither on vsock
->> nor on vhost transport layers, such bit allows to restore original
->> message on receiver's side. If user's buffer is smaller than message
->> length, when all out of size data is dropped.
->> 	Maximum length of datagram is limited by 'peer_buf_alloc' value.
->> 	Implementation also supports 'MSG_TRUNC' flags.
->> 	Tests also implemented.
->>
->> 	Thanks to stsp2@yandex.ru for encouragements and initial design
->> recommendations.
->>
->>  Arseny Krasnov (18):
->>   af_vsock: update functions for connectible socket
->>   af_vsock: separate wait data loop
->>   af_vsock: separate receive data loop
->>   af_vsock: implement SEQPACKET receive loop
->>   af_vsock: implement send logic for SEQPACKET
->>   af_vsock: rest of SEQPACKET support
->>   af_vsock: update comments for stream sockets
->>   virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
->>   virtio/vsock: simplify credit update function API
->>   virtio/vsock: defines and constants for SEQPACKET
->>   virtio/vsock: dequeue callback for SOCK_SEQPACKET
->>   virtio/vsock: add SEQPACKET receive logic
->>   virtio/vsock: rest of SOCK_SEQPACKET support
->>   virtio/vsock: enable SEQPACKET for transport
->>   vhost/vsock: enable SEQPACKET for transport
->>   vsock/loopback: enable SEQPACKET for transport
->>   vsock_test: add SOCK_SEQPACKET tests
->>   virtio/vsock: update trace event for SEQPACKET
->>
->>  drivers/vhost/vsock.c                              |  56 ++-
->>  include/linux/virtio_vsock.h                       |  10 +
->>  include/net/af_vsock.h                             |   8 +
->>  .../trace/events/vsock_virtio_transport_common.h   |   5 +-
->>  include/uapi/linux/virtio_vsock.h                  |   9 +
->>  net/vmw_vsock/af_vsock.c                           | 464 ++++++++++++------
->>  net/vmw_vsock/virtio_transport.c                   |  26 ++
->>  net/vmw_vsock/virtio_transport_common.c            | 179 +++++++-
->>  net/vmw_vsock/vsock_loopback.c                     |  12 +
->>  tools/testing/vsock/util.c                         |  32 +-
->>  tools/testing/vsock/util.h                         |   3 +
->>  tools/testing/vsock/vsock_test.c                   | 116 ++++++
->>  12 files changed, 730 insertions(+), 190 deletions(-)
->>
->>  v10 -> v11:
->>  General changelog:
->>   - now data is copied to user's buffer only when
->>     whole message is received.
->>   - reader is woken up when EOR packet is received.
->>   - if read syscall was interrupted by signal or
->>     timeout, error is returned(not 0).
->>
->>  Per patch changelog:
->>   see every patch after '---' line.
->So here is new version for review with updates discussed earlier :)
+Applied to next, thanks!
 
-Thanks, I'll review next week, but I suggest you again to split in two 
-series, since patchwork (and netdev maintainers) are not happy with a 
-series of 18 patches.
+[1/7] KVM: arm64: Move hyp_pool locking out of refcount helpers
+      commit: 6cbf874e51b68e5b2eb0cc50be3676f5d5601dab
+[2/7] KVM: arm64: Use refcount at hyp to check page availability
+      commit: 581982decc635c93934aaeb88d62c21238c63f11
+[3/7] KVM: arm64: Remove list_head from hyp_page
+      commit: 914cde58a03cc5eef858db34687433e17d0e44be
+[4/7] KVM: arm64: Unify MMIO and mem host stage-2 pools
+      commit: 7c350ea39e53ade33ca7be00b0947f2b9f53dda0
+[5/7] KVM: arm64: Remove hyp_pool pointer from struct hyp_page
+      commit: d978b9cfe6fe8008467f8c5d51677f52e7815b39
+[6/7] KVM: arm64: Use less bits for hyp_page order
+      commit: 87ec0606733e1aa9568f54ddb41f03aa6b5687f2
+[7/7] KVM: arm64: Use less bits for hyp_page refcount
+      commit: 6929586d8eddad184f43526efe7bf0a8be4f18b2
 
-If you still prefer to keep them together during development, then 
-please use the RFC tag.
+Cheers,
 
-Also did you take a look at the FAQ for netdev that I linked last time?
-I don't see the net-next tag...
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
-Thanks,
-Stefano
 
