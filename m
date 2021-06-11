@@ -2,354 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EBF3A401B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432383A4024
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 12:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhFKKW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 06:22:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59338 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231655AbhFKKWX (ORCPT
+        id S231151AbhFKK1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 06:27:04 -0400
+Received: from mail-vs1-f42.google.com ([209.85.217.42]:42615 "EHLO
+        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhFKK1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 06:22:23 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 478D91FD6C;
-        Fri, 11 Jun 2021 10:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623406825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PxVK0K35pQZanZet6mzxQAOwPID5G7wB9PTtQWMWHKI=;
-        b=cT1NR7aCEX3fBw33SzxKpP3CyxNUCV0oNJgoXp1gKAy4nP8ZtXYx01cSAYZ4fa7atfc1Z1
-        HgFH3f91tTcHd4iGYOyG9vBeMCC0icU5VswCAcE/zASrDfgrtLHTkkQHdiQbbR5+Sr2lEm
-        oJcxmosZduOD3QZ7dn/lJt8L3v8OMp4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623406825;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PxVK0K35pQZanZet6mzxQAOwPID5G7wB9PTtQWMWHKI=;
-        b=a/soMZBUQOwdKcdjA0tTGCK+9u0PwngUVJFaXLAD/tar4tLefv9Oy10juz55l9mbbdik48
-        VqIitXUR+0hwZxDA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 2A3EE118DD;
-        Fri, 11 Jun 2021 10:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623406825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PxVK0K35pQZanZet6mzxQAOwPID5G7wB9PTtQWMWHKI=;
-        b=cT1NR7aCEX3fBw33SzxKpP3CyxNUCV0oNJgoXp1gKAy4nP8ZtXYx01cSAYZ4fa7atfc1Z1
-        HgFH3f91tTcHd4iGYOyG9vBeMCC0icU5VswCAcE/zASrDfgrtLHTkkQHdiQbbR5+Sr2lEm
-        oJcxmosZduOD3QZ7dn/lJt8L3v8OMp4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623406825;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PxVK0K35pQZanZet6mzxQAOwPID5G7wB9PTtQWMWHKI=;
-        b=a/soMZBUQOwdKcdjA0tTGCK+9u0PwngUVJFaXLAD/tar4tLefv9Oy10juz55l9mbbdik48
-        VqIitXUR+0hwZxDA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id Pt5JCek4w2DxcgAALh3uQQ
-        (envelope-from <msuchanek@suse.de>); Fri, 11 Jun 2021 10:20:25 +0000
-Date:   Fri, 11 Jun 2021 12:20:23 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH v4 2/2] powerpc/64: Option to use ELF V2 ABI for
- big-endian kernels
-Message-ID: <20210611102023.GB8544@kitsune.suse.cz>
-References: <20210611093959.821525-1-npiggin@gmail.com>
- <20210611093959.821525-3-npiggin@gmail.com>
- <20210611095819.GA8544@kitsune.suse.cz>
+        Fri, 11 Jun 2021 06:27:02 -0400
+Received: by mail-vs1-f42.google.com with SMTP id l25so3466590vsb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 03:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BK5FSPAIVY7BHkqa7m1EZ7jj7bUTkuHalv8GCJ5Ni4s=;
+        b=JmCUI9LxHn1plyMQFyPsw0EPm98tNnjsR+0gzYK0zeVAitU0BQSDb2gb+Liv5AusmV
+         /i+75NEJbsybJrbJ6PnJwJ6s3qfk7huCB/m1TO17P43lekpDK0Eo7Ap8RwRMQHxnLfcL
+         a0e24WAD0YqlHvTrR9NuQ3oC9KO38MZI/OSfXgweAmumesRVtYn72vEUeAsC6JSebNz4
+         o3lUTv5C84pgLHPTdNtZPnZN8a8iDEnTdQyLJQnkAJXsxe2vRd7KVWeJhbphwa/SfWCE
+         47HcBsj7QCrgP+YT0wggIQEWCgiwd9GH+ou1Uwi0We/CMxlXJ7IJOIL+j2va1rtNfiUb
+         acFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BK5FSPAIVY7BHkqa7m1EZ7jj7bUTkuHalv8GCJ5Ni4s=;
+        b=dueXhxhiLXYCdrNOICrKqSVH9Jbzt1McdvcL6Q1CZz3wXmZVz/Q1IgU3ZXsQGsoDoJ
+         N7UFMyvMqi3+hMhc9skx4DrGokS51HY5NNJlXwD5gWf1CgNjZapNg0nGwYZQWBoCaKVz
+         hFGuODCPp96BwDmJvMnQRGG5JXc5eEB2MozhaXFLAPxwYVOJNsWoR7v9JQtq5Q9V+4sN
+         0rPmFXrWgTIrfUMjWTVcHK1Xu8quQr5Xa954bocj5zuxj5MdLq+ws8Xg/YgfBOqDYsuA
+         ofDbL6jswBE3EJyieviPDVf7YR4grSxd1K5wL2sl9+mJx7PqNkGei2pxHGyMc6qOSDHx
+         +J8w==
+X-Gm-Message-State: AOAM5332tYDi9C4RWagYwZ5/JKKihV/8lKgttAMC7UpfWmm+3V9Vtq/L
+        /HHCjR0hpC64eGzByha9JnaIznNCANe3QzYdDFfDsg==
+X-Google-Smtp-Source: ABdhPJwLrnOX7GlrPp7cabVhPYtL5pRpAhcuytHfYlGIWjLqHCs4i2sESdPXlSwGa6TJNPUP94kxCrsWlgzuF7VbWTw=
+X-Received: by 2002:a05:6102:386:: with SMTP id m6mr5780364vsq.48.1623407031441;
+ Fri, 11 Jun 2021 03:23:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210611095819.GA8544@kitsune.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210602192758.38735-1-alcooperx@gmail.com> <20210602192758.38735-2-alcooperx@gmail.com>
+ <CAPDyKFrynST66yA_T3iroiJsfmNuBOEiiBnb=vNoyP6QpvZ7aQ@mail.gmail.com>
+ <fe956941-bb39-413e-f051-d9f353f64eda@gmail.com> <CAPDyKFpEtvjS1mWC68gRBWD64dq2M1LO84UWE5uDLTzbGz1g8Q@mail.gmail.com>
+ <6acd480a-8928-89bb-0f40-d278294973a1@gmail.com> <CAPDyKFqk23xg5R2k9GwQrnamwWYbMkmrbWYsHPF9VBQTAbvQHw@mail.gmail.com>
+ <a1199e99-eb29-125b-2bac-f0abb4803c9b@gmail.com>
+In-Reply-To: <a1199e99-eb29-125b-2bac-f0abb4803c9b@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 11 Jun 2021 12:23:14 +0200
+Message-ID: <CAPDyKFq-rofbCyAhcQGt2xZykip6Le+CUDXgDwAisVOj=Tt-uA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: sdhci-iproc: Add support for the legacy sdhci
+ controller on the BCM7211
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Ray Jui <rjui@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
+        Scott Branden <sbranden@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 11:58:19AM +0200, Michal Suchánek wrote:
-> On Fri, Jun 11, 2021 at 07:39:59PM +1000, Nicholas Piggin wrote:
-> > Provide an option to build big-endian kernels using the ELFv2 ABI. This
-> > works on GCC only so far, although it is rumored to work with clang
-> > that's not been tested yet. A new module version check ensures the
-> > module ELF ABI level matches the kernel build.
-> > 
-> > This can give big-endian kernels some useful advantages of the ELFv2 ABI
-> > (e.g., less stack usage, -mprofile-kernel, better compatibility with eBPF
-> > tools).
-> > 
-> > BE+ELFv2 is not officially supported by the GNU toolchain, but it works
-> > fine in testing and has been used by some userspace for some time (e.g.,
-> > Void Linux).
-> > 
-> > Tested-by: Michal Suchánek <msuchanek@suse.de>
-> > Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
-> > Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> > ---
-> >  arch/powerpc/Kconfig                | 22 ++++++++++++++++++++++
-> >  arch/powerpc/Makefile               | 18 ++++++++++++------
-> >  arch/powerpc/boot/Makefile          |  4 +++-
-> >  arch/powerpc/include/asm/module.h   | 24 ++++++++++++++++++++++++
-> >  arch/powerpc/kernel/vdso64/Makefile | 13 +++++++++++++
-> >  drivers/crypto/vmx/Makefile         |  8 ++++++--
-> >  drivers/crypto/vmx/ppc-xlate.pl     | 10 ++++++----
-> >  7 files changed, 86 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> > index 088dd2afcfe4..093f973a28b9 100644
-> > --- a/arch/powerpc/Kconfig
-> > +++ b/arch/powerpc/Kconfig
-> > @@ -163,6 +163,7 @@ config PPC
-> >  	select ARCH_WEAK_RELEASE_ACQUIRE
-> >  	select BINFMT_ELF
-> >  	select BUILDTIME_TABLE_SORT
-> > +	select PPC64_BUILD_ELF_V2_ABI		if PPC64 && CPU_LITTLE_ENDIAN
-> >  	select CLONE_BACKWARDS
-> >  	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
-> >  	select DMA_OPS_BYPASS			if PPC64
-> > @@ -561,6 +562,27 @@ config KEXEC_FILE
-> >  config ARCH_HAS_KEXEC_PURGATORY
-> >  	def_bool KEXEC_FILE
-> >  
-> > +config PPC64_BUILD_ELF_V2_ABI
-> > +	bool
-> > +
-> > +config PPC64_BUILD_BIG_ENDIAN_ELF_V2_ABI
-> > +	bool "Build big-endian kernel using ELF ABI V2 (EXPERIMENTAL)"
-> > +	depends on PPC64 && CPU_BIG_ENDIAN && EXPERT
-> > +	depends on CC_IS_GCC && LD_VERSION >= 22400
-> > +	default n
-> > +	select PPC64_BUILD_ELF_V2_ABI
-> > +	help
-> > +	  This builds the kernel image using the "Power Architecture 64-Bit ELF
-> > +	  V2 ABI Specification", which has a reduced stack overhead and faster
-> > +	  function calls. This internal kernel ABI option does not affect
-> > +          userspace compatibility.
-> > +
-> > +	  The V2 ABI is standard for 64-bit little-endian, but for big-endian
-> > +	  it is less well tested by kernel and toolchain. However some distros
-> > +	  build userspace this way, and it can produce a functioning kernel.
-> > +
-> > +	  This requires GCC and binutils 2.24 or newer.
-> > +
-> >  config RELOCATABLE
-> >  	bool "Build a relocatable kernel"
-> >  	depends on PPC64 || (FLATMEM && (44x || FSL_BOOKE))
-> > diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-> > index 3212d076ac6a..b90b5cb799aa 100644
-> > --- a/arch/powerpc/Makefile
-> > +++ b/arch/powerpc/Makefile
-> > @@ -91,10 +91,14 @@ endif
-> >  
-> >  ifdef CONFIG_PPC64
-> >  ifndef CONFIG_CC_IS_CLANG
-> > -cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mabi=elfv1)
-> > -cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mcall-aixdesc)
-> > -aflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mabi=elfv1)
-> > -aflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= -mabi=elfv2
-> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
-> > +cflags-y				+= $(call cc-option,-mabi=elfv2)
-> > +aflags-y				+= $(call cc-option,-mabi=elfv2)
-> > +else
-> > +cflags-y				+= $(call cc-option,-mabi=elfv1)
-> > +cflags-y				+= $(call cc-option,-mcall-aixdesc)
-> > +aflags-y				+= $(call cc-option,-mabi=elfv1)
-> > +endif
-> >  endif
-> >  endif
-> >  
-> > @@ -142,15 +146,17 @@ endif
-> >  
-> >  CFLAGS-$(CONFIG_PPC64)	:= $(call cc-option,-mtraceback=no)
-> >  ifndef CONFIG_CC_IS_CLANG
-> > -ifdef CONFIG_CPU_LITTLE_ENDIAN
-> > -CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2,$(call cc-option,-mcall-aixdesc))
-> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
-> > +CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2)
-> >  AFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv2)
-> >  else
-> > +# Keep these in synch with arch/powerpc/kernel/vdso64/Makefile
-> >  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv1)
-> >  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mcall-aixdesc)
-> >  AFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mabi=elfv1)
-> >  endif
-> >  endif
-> > +
-> >  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mcmodel=medium,$(call cc-option,-mminimal-toc))
-> >  CFLAGS-$(CONFIG_PPC64)	+= $(call cc-option,-mno-pointers-to-nested-functions)
-> >  
-> > diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
-> > index 2b8da923ceca..be84a72f8258 100644
-> > --- a/arch/powerpc/boot/Makefile
-> > +++ b/arch/powerpc/boot/Makefile
-> > @@ -40,6 +40,9 @@ BOOTCFLAGS    := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-> >  
-> >  ifdef CONFIG_PPC64_BOOT_WRAPPER
-> >  BOOTCFLAGS	+= -m64
-> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
-> > +BOOTCFLAGS	+= $(call cc-option,-mabi=elfv2)
-> > +endif
-> >  else
-> >  BOOTCFLAGS	+= -m32
-> >  endif
-> > @@ -50,7 +53,6 @@ ifdef CONFIG_CPU_BIG_ENDIAN
-> >  BOOTCFLAGS	+= -mbig-endian
-> >  else
-> >  BOOTCFLAGS	+= -mlittle-endian
-> > -BOOTCFLAGS	+= $(call cc-option,-mabi=elfv2)
-> >  endif
-> >  
-> >  BOOTAFLAGS	:= -D__ASSEMBLY__ $(BOOTCFLAGS) -nostdinc
-> > diff --git a/arch/powerpc/include/asm/module.h b/arch/powerpc/include/asm/module.h
-> > index 857d9ff24295..043e11068ff4 100644
-> > --- a/arch/powerpc/include/asm/module.h
-> > +++ b/arch/powerpc/include/asm/module.h
-> > @@ -52,6 +52,30 @@ struct mod_arch_specific {
-> >  	unsigned int num_bugs;
-> >  };
-> >  
-> > +/*
-> > + * Check kernel module ELF header architecture specific compatibility.
-> > + */
-> > +static inline bool elf_check_module_arch(Elf_Ehdr *hdr)
-> > +{
-> > +	if (!elf_check_arch(hdr))
-> > +		return false;
-> > +
-> > +	if (IS_ENABLED(CONFIG_PPC64)) {
-> > +		unsigned long abi_level = hdr->e_flags & 0x3;
-> > +
-> > +		if (IS_ENABLED(CONFIG_PPC64_BUILD_ELF_V2_ABI)) {
-> > +			if (abi_level != 2)
-> > +				return false;
-> > +		} else {
-> > +			if (abi_level >= 2)
-> > +				return false;
-> > +		}
-> > +	}
-> > +
-> > +	return true;
-> > +}
-> > +#define elf_check_module_arch elf_check_module_arch
-> > +
-> >  /*
-> >   * Select ELF headers.
-> >   * Make empty section for module_frob_arch_sections to expand.
-> Shouldn't this part go to the second patch?
-Nevermind, this is the second patch now.
-> 
-> Thanks
-> 
-> Michal
-> > diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
-> > index 2813e3f98db6..d783c07e558f 100644
-> > --- a/arch/powerpc/kernel/vdso64/Makefile
-> > +++ b/arch/powerpc/kernel/vdso64/Makefile
-> > @@ -25,6 +25,19 @@ KCOV_INSTRUMENT := n
-> >  UBSAN_SANITIZE := n
-> >  KASAN_SANITIZE := n
-> >  
-> > +# Always build vdso64 with ELFv1 ABI for BE kernels
-> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
-> > +ifdef CONFIG_CPU_BIG_ENDIAN
-> > +KBUILD_CFLAGS := $(filter-out -mabi=elfv2,$(KBUILD_CFLAGS))
-> > +KBUILD_AFLAGS := $(filter-out -mabi=elfv2,$(KBUILD_AFLAGS))
-> > +
-> > +# These are derived from arch/powerpc/Makefile
-> > +KBUILD_CFLAGS += $(call cc-option,-mabi=elfv1)
-> > +KBUILD_CFLAGS += $(call cc-option,-mcall-aixdesc)
-> > +KBUILD_AFLAGS += $(call cc-option,-mabi=elfv1)
-> > +endif
-> > +endif
-> > +
-> >  ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
-> >  	-Wl,-soname=linux-vdso64.so.1 -Wl,--hash-style=both
-> >  asflags-y := -D__VDSO64__ -s
-> > diff --git a/drivers/crypto/vmx/Makefile b/drivers/crypto/vmx/Makefile
-> > index 709670d2b553..d9ccf9fc3483 100644
-> > --- a/drivers/crypto/vmx/Makefile
-> > +++ b/drivers/crypto/vmx/Makefile
-> > @@ -5,18 +5,22 @@ vmx-crypto-objs := vmx.o aesp8-ppc.o ghashp8-ppc.o aes.o aes_cbc.o aes_ctr.o aes
-> >  ifeq ($(CONFIG_CPU_LITTLE_ENDIAN),y)
-> >  override flavour := linux-ppc64le
-> >  else
-> > +ifdef CONFIG_PPC64_BUILD_ELF_V2_ABI
-> > +override flavour := linux-ppc64-elfv2
-> > +else
-> >  override flavour := linux-ppc64
-> >  endif
-> > +endif
-> >  
-> >  quiet_cmd_perl = PERL $@
-> >        cmd_perl = $(PERL) $(<) $(flavour) > $(@)
-> >  
-> >  targets += aesp8-ppc.S ghashp8-ppc.S
-> >  
-> > -$(obj)/aesp8-ppc.S: $(src)/aesp8-ppc.pl FORCE
-> > +$(obj)/aesp8-ppc.S: $(src)/aesp8-ppc.pl $(src)/ppc-xlate.pl FORCE
-> >  	$(call if_changed,perl)
-> >    
-> > -$(obj)/ghashp8-ppc.S: $(src)/ghashp8-ppc.pl FORCE
-> > +$(obj)/ghashp8-ppc.S: $(src)/ghashp8-ppc.pl $(src)/ppc-xlate.pl FORCE
-> >  	$(call if_changed,perl)
-> >  
-> >  clean-files := aesp8-ppc.S ghashp8-ppc.S
-> > diff --git a/drivers/crypto/vmx/ppc-xlate.pl b/drivers/crypto/vmx/ppc-xlate.pl
-> > index 36db2ef09e5b..b583898c11ae 100644
-> > --- a/drivers/crypto/vmx/ppc-xlate.pl
-> > +++ b/drivers/crypto/vmx/ppc-xlate.pl
-> > @@ -9,6 +9,8 @@ open STDOUT,">$output" || die "can't open $output: $!";
-> >  
-> >  my %GLOBALS;
-> >  my $dotinlocallabels=($flavour=~/linux/)?1:0;
-> > +my $elfv2abi=(($flavour =~ /linux-ppc64le/) or ($flavour =~ /linux-ppc64-elfv2/))?1:0;
-> > +my $dotfunctions=($elfv2abi=~1)?0:1;
-> >  
-> >  ################################################################
-> >  # directives which need special treatment on different platforms
-> > @@ -40,7 +42,7 @@ my $globl = sub {
-> >  };
-> >  my $text = sub {
-> >      my $ret = ($flavour =~ /aix/) ? ".csect\t.text[PR],7" : ".text";
-> > -    $ret = ".abiversion	2\n".$ret	if ($flavour =~ /linux.*64le/);
-> > +    $ret = ".abiversion	2\n".$ret	if ($elfv2abi);
-> >      $ret;
-> >  };
-> >  my $machine = sub {
-> > @@ -56,8 +58,8 @@ my $size = sub {
-> >      if ($flavour =~ /linux/)
-> >      {	shift;
-> >  	my $name = shift; $name =~ s|^[\.\_]||;
-> > -	my $ret  = ".size	$name,.-".($flavour=~/64$/?".":"").$name;
-> > -	$ret .= "\n.size	.$name,.-.$name" if ($flavour=~/64$/);
-> > +	my $ret  = ".size	$name,.-".($dotfunctions?".":"").$name;
-> > +	$ret .= "\n.size	.$name,.-.$name" if ($dotfunctions);
-> >  	$ret;
-> >      }
-> >      else
-> > @@ -142,7 +144,7 @@ my $vmr = sub {
-> >  
-> >  # Some ABIs specify vrsave, special-purpose register #256, as reserved
-> >  # for system use.
-> > -my $no_vrsave = ($flavour =~ /linux-ppc64le/);
-> > +my $no_vrsave = ($elfv2abi);
-> >  my $mtspr = sub {
-> >      my ($f,$idx,$ra) = @_;
-> >      if ($idx == 256 && $no_vrsave) {
-> > -- 
-> > 2.23.0
-> > 
+On Thu, 10 Jun 2021 at 17:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 6/10/2021 1:49 AM, Ulf Hansson wrote:
+> > On Thu, 10 Jun 2021 at 01:59, Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >>
+> >>
+> >>
+> >> On 6/9/2021 2:22 AM, Ulf Hansson wrote:
+> >>> On Wed, 9 Jun 2021 at 05:07, Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 6/8/2021 5:40 AM, Ulf Hansson wrote:
+> >>>>> On Wed, 2 Jun 2021 at 21:28, Al Cooper <alcooperx@gmail.com> wrote:
+> >>>>>>
+> >>>>>> Add support for the legacy Arasan sdhci controller on the BCM7211 and
+> >>>>>> related SoC's. This includes adding a .shutdown callback to increase
+> >>>>>> the power savings during S5.
+> >>>>>
+> >>>>> Please split this into two separate changes.
+> >>>>>
+> >>>>> May I also ask about the ->shutdown() callback and in relation to S5.
+> >>>>> What makes the ->shutdown callback only being invoked for S5?
+> >>>>
+> >>>> It is not only called for S5 (entered via poweroff on a prompt) but also
+> >>>> during kexec or reboot. The poweroff path is via:
+> >>>>
+> >>>> kernel_power_off() -> kernel_shutdown_prepare() -> device_shutdown() ->
+> >>>> .shutdown()
+> >>>>
+> >>>> For kexec or reboot we do not really care about power savings since we
+> >>>> are about to load a new image anyway, however for S5/poweroff we do care
+> >>>> about quiescing the eMMC controller in a way that its clocks and the
+> >>>> eMMC device can be put into low power mode since we will stay in that
+> >>>> mode for seconds/hours/days until someone presses a button on their
+> >>>> remote (or other wake-up sources).
+> >>>
+> >>> Hmm, I am not sure I understand correctly. At shutdown we don't care
+> >>> about wake-up sources from the kernel point of view, instead we treat
+> >>> everything as if it will be powered off.
+> >>
+> >> The same .shutdown() path is used whether you kexec, reboot or poweroff,
+> >> but for poweroff we do care about allowing specific wake-up sources
+> >> configured as such to wake-up the system at a later time, like GPIOs,
+> >> RTC, etc.
+> >
+> > That's true, but using the ->shutdown() callbacks in this way would
+> > certainly be a new use case.
+> >
+> > Most subsystems/drivers don't care about power management in those
+> > callbacks, but rather just about managing a graceful shutdown.
+> >
+> > It sounds to me like you should have a look at the hibernation
+> > path/callbacks instead - or perhaps even the system suspend
+> > path/callback. Normally, that's where we care about power management.
+>
+> The platforms we use do not support hibernation, keep in mind that these
+> are embedded SoCs that support the S2 (standby), S3 (mem) and poweroff
+> suspend states, hibernation is not something that we can support.
+>
+> >
+> > I have looped in Rafael, to allow him to share his opinion on this.
+> >
+> >>
+> >>>
+> >>> We put devices into low power state at system suspend and potentially
+> >>> also during some of the hibernation phases.
+> >>>
+> >>> Graceful shutdown of the eMMC is also managed by the mmc core.
+> >>
+> >> AFAICT that calls mmc_blk_shutdown() but that is pretty much it, the
+> >> SDHCI platform_driver still needs to do something in order to conserve
+> >> power including disabling host->clk, otherwise we would not have done
+> >> that for sdhci-brcmstb.c.
+> >
+> > That's not entirely correct. When mmc_bus_shutdown() is called for the
+> > struct device* that belongs to an eMMC card, two actions are taken.
+> >
+> > *) We call mmc_blk_shutdown(), to suspend the block device queue from
+> > receiving new I/O requests.
+> > **) We call host->bus_ops->shutdown(), which is an eMMC specific
+> > callback set to mmc_shutdown(). In this step, we do a graceful
+> > shutdown/power-off of the eMMC card.
+> >
+> > When it comes to controller specific resources, like clocks and PM
+> > domains, for example, those may very well stay turned on. Do deal with
+> > these, then yes, you would need to implement the ->shutdown()
+> > callback. But as I said above, I am not sure it's the right thing to
+> > do.
+>
+> As explained before, we can enter S5 for an indefinite amount of time
+> until a wake-up source wakes us up so we must conserve power, even if we
+> happen to wake up the next second, we don't know that ahead of time. The
+> point of calling sdhci_pltfm_suspend() here is to ensure that host->clk
+> is turned off which cuts the eMMC controller digital clock, I forgot how
+> much power we save by doing so, but every 10s of mW counts for us.
+
+I fully understand that you want to avoid draining energy, every
+single uA certainly counts in cases like these.
+
+What puzzles me, is that your platform seems to keep some resources
+powered on (like device clocks) when entering the system wide low
+power state, S5.
+
+In principle, I am wondering if it would be possible to use S5 as the
+system-wide low power state for the system suspend path, rather than
+S3, for example? In this way, we would be able to re-use already
+implemented ->suspend|resume callbacks from most subsystems/drivers, I
+believe. Or is there a problem with that?
+
+I think we need an opinion from Rafel to move forward.
+
+Kind regards
+Uffe
