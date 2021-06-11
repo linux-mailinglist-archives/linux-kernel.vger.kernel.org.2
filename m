@@ -2,140 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEA33A49FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6503A4A05
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFKUPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:15:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229572AbhFKUPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:15:39 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC3D3601FA;
-        Fri, 11 Jun 2021 20:13:40 +0000 (UTC)
-Date:   Fri, 11 Jun 2021 16:13:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] tracing: Fixes for 5.13
-Message-ID: <20210611161339.25d815f7@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230181AbhFKUTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:19:01 -0400
+Received: from mail-io1-f47.google.com ([209.85.166.47]:47099 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhFKUS7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:18:59 -0400
+Received: by mail-io1-f47.google.com with SMTP id b14so17438319iow.13;
+        Fri, 11 Jun 2021 13:16:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q0+x2SqoxWiaPifmKrDxHGfFMZV2vnASbAUPISmleOI=;
+        b=BbnnJgvhZNQGoqumgKHeJROhZEvWywVJAnOUFH8J4eHclstVdE2uNxN8/fgk5ICsRE
+         Cu3NpSwsjhvbET+H4JC9x08bNo6TQ7Vz5I93jZ3Px6x/2sJrloEOrVFJ4mGdUE5XeneF
+         seKlqaY8Jkopd9kcdNJbw6/ehix7Vb3XrkCty5+n7E5dxueZyxME4PnEhlRtRpgqfHOQ
+         5PrTDPJjI04a7khlN29Nn5Exntjja6fRb+UPDgPT+R9bgv8vYBAvz2yhpQ0fikKFLNrK
+         V7bsSKT1I7IxlJSxGks9WxSt0QoiPMA1R1diqsrJs5dXcH5fUw9OpHXGZjUcOQ06lyuy
+         HNeA==
+X-Gm-Message-State: AOAM530mn94Cnl+NLYGQfxJOE3eIqOQhnO6lIzJJoq4hiEf8YpTj8Y+J
+        gUDqcqM8cu7aOs0/OPfIgLsjjgNjoA==
+X-Google-Smtp-Source: ABdhPJzQIm/BqMSQwWzSA9z9gs+k22W0KTiGbehcPSKI8jfx8c3oJlpVku2pmx/4kzLFd1YTq5DgtA==
+X-Received: by 2002:a05:6602:29d0:: with SMTP id z16mr4427962ioq.207.1623442606182;
+        Fri, 11 Jun 2021 13:16:46 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id i13sm3833718ilr.16.2021.06.11.13.16.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 13:16:45 -0700 (PDT)
+Received: (nullmailer pid 1608484 invoked by uid 1000);
+        Fri, 11 Jun 2021 20:16:43 -0000
+Date:   Fri, 11 Jun 2021 14:16:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, matthias.bgg@gmail.com,
+        gene_chen@richtek.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        cy_huang@richtek.com, gene.chen.richtek@gmail.com
+Subject: Re: [PATCH 1/2] regulator: mt6360: Add optional
+ mediatek.power-off-sequence in bindings document
+Message-ID: <20210611201643.GA1583875@robh.at.kernel.org>
+References: <1622616875-22740-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622616875-22740-1-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Liangyan <liangyan.peng@linux.alibaba.com>, Masami Hiramatsu
-<mhiramat@kernel.org>, Steven Rostedt (VMware) <rostedt@goodmis.org>, Zhen
-Lei <thunder.leizhen@huawei.com>
+On Wed, Jun 02, 2021 at 02:54:34PM +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
+> 
+> Add optional mediatek.power-off-sequence in bindings document.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> ---
+> Hi,
+> 
+> Originally, we think it must write in platform dependent code like as bootloader.
+> But after the evaluation, it must write only when system normal HALT or POWER_OFF.
+> For the other cases, just follow HW immediate off by default.
 
-Linus,
+Wouldn't this be handled by PSCI implementation?
 
-Tracing fixes for 5.13:
+> ---
+>  .../devicetree/bindings/regulator/mt6360-regulator.yaml       | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml b/Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml
+> index a462d99..eaf36e2 100644
+> --- a/Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml
+> @@ -24,6 +24,16 @@ properties:
+>    LDO_VIN3-supply:
+>      description: Input supply phandle(s) for LDO6/7
+>  
+> +  mediatek,power-off-sequence:
+> +    description: |
+> +      Power off sequence time selection for BUCK1/BUCK2/LDO7/LDO6, respetively.
+> +      Cause these regulators are all default-on power. Each value from 0 to 63,
+> +      and step is 1. Each step means 2 millisecond delay.
+> +      Therefore, the power off sequence delay time range is from 0ms to 126ms.
+> +    $ref: "/schemas/types.yaml#/definitions/uint8-array"
+> +    minItems: 4
+> +    maxItems: 4
 
- - Fix the length check in the temp buffer filter
+So this is the delay between BUCK1 and BUCK2, then BUCK2 to LDO7, etcc? 
+If we wanted to express this in DT, we'd made this generic which would 
+need to be more flexible. A poweroff delay in each regulator (similar to 
+the existing power on delay) would be sufficient for what you need I 
+think.
 
- - Fix build failure in bootconfig tools for "fallthrough" macro
-
- - Fix error return of bootconfig apply_xbc() routine
-
-[ Removed Peter's recordmcount fix from this one ]
-
-Please pull the latest trace-v5.13-rc5-2 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.13-rc5-2
-
-Tag SHA1: 03bc3d44c6ea2395ee6f0d05ac27e7fb492747d9
-Head SHA1: 3e08a9f9760f4a70d633c328a76408e62d6f80a3
-
-
-Liangyan (1):
-      tracing: Correct the length check which causes memory corruption
-
-Masami Hiramatsu (1):
-      tools/bootconfig: Fix a build error accroding to undefined fallthrough
-
-Steven Rostedt (VMware) (1):
-      ftrace: Do not blindly read the ip address in ftrace_bug()
-
-Zhen Lei (1):
-      tools/bootconfig: Fix error return code in apply_xbc()
-
-----
- kernel/trace/ftrace.c                       | 8 +++++++-
- kernel/trace/trace.c                        | 2 +-
- tools/bootconfig/include/linux/bootconfig.h | 4 ++++
- tools/bootconfig/main.c                     | 1 +
- 4 files changed, 13 insertions(+), 2 deletions(-)
----------------------------
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 2e8a3fde7104..72ef4dccbcc4 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -1967,12 +1967,18 @@ static int ftrace_hash_ipmodify_update(struct ftrace_ops *ops,
- 
- static void print_ip_ins(const char *fmt, const unsigned char *p)
- {
-+	char ins[MCOUNT_INSN_SIZE];
- 	int i;
- 
-+	if (copy_from_kernel_nofault(ins, p, MCOUNT_INSN_SIZE)) {
-+		printk(KERN_CONT "%s[FAULT] %px\n", fmt, p);
-+		return;
-+	}
-+
- 	printk(KERN_CONT "%s", fmt);
- 
- 	for (i = 0; i < MCOUNT_INSN_SIZE; i++)
--		printk(KERN_CONT "%s%02x", i ? ":" : "", p[i]);
-+		printk(KERN_CONT "%s%02x", i ? ":" : "", ins[i]);
- }
- 
- enum ftrace_bug_type ftrace_bug_type;
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index a21ef9cd2aae..9299057feb56 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2736,7 +2736,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
- 	    (entry = this_cpu_read(trace_buffered_event))) {
- 		/* Try to use the per cpu buffer first */
- 		val = this_cpu_inc_return(trace_buffered_event_cnt);
--		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
-+		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
- 			trace_event_setup(entry, type, trace_ctx);
- 			entry->array[0] = len;
- 			return entry;
-diff --git a/tools/bootconfig/include/linux/bootconfig.h b/tools/bootconfig/include/linux/bootconfig.h
-index 078cbd2ba651..de7f30f99af3 100644
---- a/tools/bootconfig/include/linux/bootconfig.h
-+++ b/tools/bootconfig/include/linux/bootconfig.h
-@@ -4,4 +4,8 @@
- 
- #include "../../../../include/linux/bootconfig.h"
- 
-+#ifndef fallthrough
-+# define fallthrough
-+#endif
-+
- #endif
-diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index 7362bef1a368..6cd6080cac04 100644
---- a/tools/bootconfig/main.c
-+++ b/tools/bootconfig/main.c
-@@ -399,6 +399,7 @@ static int apply_xbc(const char *path, const char *xbc_path)
- 	}
- 	/* TODO: Ensure the @path is initramfs/initrd image */
- 	if (fstat(fd, &stat) < 0) {
-+		ret = -errno;
- 		pr_err("Failed to get the size of %s\n", path);
- 		goto out;
- 	}
+Rob
