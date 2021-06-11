@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5488C3A48A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C79C3A48B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 20:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhFKSbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 14:31:22 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47916 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFKSbR (ORCPT
+        id S231158AbhFKSce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 14:32:34 -0400
+Received: from mail-qt1-f173.google.com ([209.85.160.173]:34395 "EHLO
+        mail-qt1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230457AbhFKScd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 14:31:17 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15BITCv2038947;
-        Fri, 11 Jun 2021 13:29:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623436152;
-        bh=vtJi8HBsHLPlK+HgyQZECoQroPA7sQr/5MsATuQ6VT8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=tvXsxuiypwI1mKUZgFlSV2ibW0k+ur2OjjmcXfRZRp8GA8Yq9zwZu/AfXRkgPE6TN
-         30eacINmO9pgNEYy1evo6z7iRBqyRxqv+LmS4DhQbzF3cU+DATYEWqWne75WThj/7C
-         ulnfChs15UbJoYd8WF70vk/0Nr3MO4BgI6SM9IRY=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15BITCNs085869
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Jun 2021 13:29:12 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 13:29:11 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 11 Jun 2021 13:29:12 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15BIT9UB014916;
-        Fri, 11 Jun 2021 13:29:09 -0500
-Subject: Re: [PATCH] arm64: dts: ti: k3-am64-main: Add SYSFW reserved ranges
- in OCRAM
-To:     Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
-References: <20210609140604.9490-1-vigneshr@ti.com>
- <81e61d1a-efde-0bff-719c-607752bfdbc1@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <dd2261dd-8285-5a47-526f-5b9e7056aa84@ti.com>
-Date:   Fri, 11 Jun 2021 23:59:08 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 11 Jun 2021 14:32:33 -0400
+Received: by mail-qt1-f173.google.com with SMTP id u20so3321859qtx.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 11:30:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=R3/bZmc/2oRYUixC5sfqXgndBfX+63qIUoOn/uEOHzQ=;
+        b=I2j3LT7aKYn+ANT5pbafCkF2sayfC0VCJvWXdkKlLVSXC6Dhf1d13YQEdH/ZbF1ScN
+         YNPpP/ZGdnPzwLPxqEFah/IYqV3wDlEoqP+NA57tK3TeUZdaIAnrNyl0Nj800VrsU6Po
+         2wrtE3PWKznkohRLLAmT6Y/HHbs6BRRf9xCSA+eRUCYmACHDIyINJ6EvDoegU9i6ldA3
+         4KJW57r7WdzYAXydGEtPHZEAVm8bkYNKyvlIQmCYUvtthOGgWWnTL86irMDF8m/b8cNK
+         29vVEfbB5uauOr51nfNdVeEBvLAVAYOh6yYDr0RsspqtZXtZazEgv2IDnp8GQX1rSpq4
+         ksdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=R3/bZmc/2oRYUixC5sfqXgndBfX+63qIUoOn/uEOHzQ=;
+        b=C5skSgUFnQsYjF9E2XBcuz5H5hg3EClFlxGpWbF6hGv0uKxAOhJPg4Nh1blfSBcZsa
+         YEk5RM+nNiVd0JvbdbuVb/at8rRlyVo63szyLTsWGfiM21GaNHyT+GyK8kRNQyOkRS9O
+         VO0H2WNAwPxS6ze45Fl6s64Jx09Ra+SoxqB61fSP4Cb8obHvLGszyDk695a+xRxb3fUB
+         vLhPYb9bMc9I2JOMQkXbMp836vdlyt3qEuXOb1ULXg3O0oqh5rJR1DKVmXWx5By4wmEv
+         GDMU8679Bqq5enaDtG9vM77GFEHepJbxW9yCh11JIZNd3oLv2lFkjdaV/vJuzsQ2dGDI
+         rCDA==
+X-Gm-Message-State: AOAM532HGlqACuR/TIfCGu8TSQKzH7ZsKKUYTeOOCHVPyzVqg7/hparN
+        0AxiDX2OOMZ96WXapTvL80/MiQ==
+X-Google-Smtp-Source: ABdhPJyP23lf64RTAXieIb9F/w8DuLfx38le4LM3kneK8MfZ/n4W5pWHCVIv8hyLF/5DbmIb9ZDaMw==
+X-Received: by 2002:ac8:1113:: with SMTP id c19mr5051056qtj.348.1623436174563;
+        Fri, 11 Jun 2021 11:29:34 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g24sm4554521qts.60.2021.06.11.11.29.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 11:29:34 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 11:29:31 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Peter Xu <peterx@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/11] mm/thp: another PVMW_SYNC fix in
+ page_vma_mapped_walk()
+In-Reply-To: <20210610094312.kzhhqyz4abe2yizg@box.shutemov.name>
+Message-ID: <3f16d6ce-44ec-6d9e-d64-d7f750dc632@google.com>
+References: <589b358c-febc-c88e-d4c2-7834b37fa7bf@google.com> <1bdf384c-8137-a149-2a1e-475a4791c3c@google.com> <20210610094312.kzhhqyz4abe2yizg@box.shutemov.name>
 MIME-Version: 1.0
-In-Reply-To: <81e61d1a-efde-0bff-719c-607752bfdbc1@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 10 Jun 2021, Kirill A. Shutemov wrote:
+> On Wed, Jun 09, 2021 at 11:54:46PM -0700, Hugh Dickins wrote:
+> > Aha!  Shouldn't that quick scan over pte_none()s make sure that it holds
+> > ptlock in the PVMW_SYNC case?  That too might have been responsible for
+> > BUGs or WARNs in split_huge_page_to_list() or its unmap_page(), though
+> > I've never seen any.
+> > 
+> > Fixes: ace71a19cec5 ("mm: introduce page_vma_mapped_walk()")
+> > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > Cc: <stable@vger.kernel.org>
+> 
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
+Thanks Kirill.
 
-On 6/9/21 8:56 PM, Lokesh Vutla wrote:
-> 
-> 
-> On 09/06/21 7:36 pm, Vignesh Raghavendra wrote:
->> Last 256K of OCRAM (256K@0x701c0000) is reserved for SYSFW usage. Hence
->> add an entry in DT so that its not used for generic pool memory
->> allocation.
->>
->> Without this certain drivers using SRAM as generic shared memory pool
->> may end up being allocated memory from this range and will lead to boot
->> time crash when the reserved range is accessed (due to firewall
->> violation).
->>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> 
-> You might want to re-base on top of Aswath's patch updating ATF address. Otherwise:
-> 
-> Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
-> 
+And Wang Yugui has now reported the good news, that this afterthought
+patch finally fixes the unmap_page() BUGs they were hitting on 5.10.
 
-Actually, this patch should go in before Aswath's patch as moving ATF
-location around exposed issue of drivers getting memory allocations
-overlapping SYSFW reserved ranges
+Andrew, please add a link to
+https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
+and
+Tested-by: Wang Yugui <wangyugui@e16-tech.com>
 
-Regards
-Vignesh
+Thanks,
+Hugh
