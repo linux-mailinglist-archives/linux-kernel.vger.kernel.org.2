@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F16E3A42DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2043A42BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 15:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhFKNR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 09:17:28 -0400
-Received: from mail-vk1-f181.google.com ([209.85.221.181]:39932 "EHLO
-        mail-vk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbhFKNR0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:17:26 -0400
-Received: by mail-vk1-f181.google.com with SMTP id k189so2502641vkb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 06:15:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W4p7Da6Bo96meqCCmYg1il+szOZMpXmVP32ev1MWjqw=;
-        b=Ot4WYiEYRIGG3AWEh0UfJ0VBCs67SEfKPGht+bHJknT5g7pwYlgHwxQOciIHRzx08m
-         hIt7/+kXeW2MYUANeixNF4W5KD5kfebehNQo/rfBst3oCwi3WSyG6RpK1tOaGaf/tEsw
-         ZAWXWpBc4AkEFVwaWWEK6gFWoOOSKw571BVes=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W4p7Da6Bo96meqCCmYg1il+szOZMpXmVP32ev1MWjqw=;
-        b=C/lwwvlgbstj8Ti/YEBD0jmLu25ApBn4sQ3OjGz8nK8/nxCZRK3Ycdtg06VPilbZPn
-         /uzKROt9TvrpevtHu4VyE56IMVolAiiYYp/RT7koIbdchq/u1EQ8FGdNn/39KPJnaugL
-         cOYvv7LgSkqcOEOiH0tSFUkGmzzcnI2pRCvd3AxpY2Xax90N5Fjvw4FVngoWvrEJme89
-         wqeNC9wk30K6W/qsIv3GxYJ2O4Addyc3SPC4MqS5D4KUFm0k4TCViEMAEhh9td6svZHu
-         bam2X52PHPXThseARHK+SwiQzqCbNWHcxlWVdtnCINHh2BeRcMmqgnYaJVrTZurN84Er
-         7HXg==
-X-Gm-Message-State: AOAM53263RngDtzSVueWtLqI1NJd27pV5PqTTPHXbqM28F24bOZoSn7r
-        HYj3aQjyN3PdoFYifQstSt5b+mynF0NJ7IUMhcQ+3g==
-X-Google-Smtp-Source: ABdhPJykpGz+EVt6yKODI9QwMAUVsXqDJL2V4qGkSQk27RFpMDRg7Bxel51dVr3TK8CqlFwAjV275wHFlPReYTBQ0Cg=
-X-Received: by 2002:ac5:c9b5:: with SMTP id f21mr8183303vkm.23.1623417268493;
- Fri, 11 Jun 2021 06:14:28 -0700 (PDT)
+        id S231716AbhFKNN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 09:13:26 -0400
+Received: from mga11.intel.com ([192.55.52.93]:51274 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230382AbhFKNNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:13:25 -0400
+IronPort-SDR: pJ3STiFUCnPHLORpzf1uVMrH3EC4mzkdxS7qkcxfxSVjODZ0uZmr24rYh6Lu0rw0GQFhp0JHXO
+ ORoPeyegL1uA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="202494340"
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="202494340"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 06:11:27 -0700
+IronPort-SDR: ury56IbSMFcCKlCvcXyUq/Y2WXyIrUKlnCyKXhtQ3JmjjFjCPfDVN9lh/Z/7qjYiBqeuwPramp
+ 5wgAiY0ZwNHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="470635506"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Jun 2021 06:11:27 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id 916595807AA;
+        Fri, 11 Jun 2021 06:11:24 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/2] stmmac: intel: minor clean-up
+Date:   Fri, 11 Jun 2021 21:16:07 +0800
+Message-Id: <20210611131609.1685105-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
- <162322874509.361452.3143376113190093370.stgit@web.messagingengine.com>
-In-Reply-To: <162322874509.361452.3143376113190093370.stgit@web.messagingengine.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 11 Jun 2021 15:14:17 +0200
-Message-ID: <CAJfpegtCfgpZ7UpOf+-1qCijWTEvPtCEEPLwd1n4LWeqEraTAg@mail.gmail.com>
-Subject: Re: [PATCH v6 7/7] kernfs: dont call d_splice_alias() under kernfs
- node lock
-To:     Ian Kent <raven@themaw.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 at 10:52, Ian Kent <raven@themaw.net> wrote:
->
-> The call to d_splice_alias() in kernfs_iop_lookup() doesn't depend on
-> any kernfs node so there's no reason to hold the kernfs node lock when
-> calling it.
->
-> Signed-off-by: Ian Kent <raven@themaw.net>
+This patch series include two minor-cleanup patches:
 
-Reviewed-by: Miklos Szeredi <mszeredi@redhat.com>
+  1. Move all the hardcoded DEFINEs to dwmac-intel header file.
+  2. Fix the wrong kernel-doc on the intel_eth_pci_remove() function.
+
+Since the changes are minor, only basic sanity tests are done on a
+Intel TigerLake with Marvell88E2110 PHY:-
+
+  - Link is up and able to perform ping.
+  - phc2sys and ptp4l are running without errors.
+ 
+Wong Vee Khee (2):
+  stmmac: intel: move definitions to dwmac-intel header file
+  stmmac: intel: fix wrong kernel-doc
+
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c  | 18 +-----------------
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.h  | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+), 17 deletions(-)
+
+-- 
+2.25.1
+
