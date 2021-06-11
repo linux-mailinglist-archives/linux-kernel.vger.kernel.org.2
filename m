@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF4E3A3DDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FB33A3DE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhFKIOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 04:14:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3844 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhFKIOs (ORCPT
+        id S230346AbhFKISl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 04:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhFKISk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:14:48 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1YP65wl4zWnx4;
-        Fri, 11 Jun 2021 16:07:54 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 16:12:49 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 16:12:48 +0800
-Subject: Re: [PATCH 0/3] scripts/spelling.txt: add some spelling pairs and
- reorder
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
-        Stefani Seibold <stefani@seibold.net>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jens Axboe <axboe@kernel.dk>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210611071241.16728-1-thunder.leizhen@huawei.com>
- <CAHp75Vdpgpa=TDt5RgG2Eq_+iLZrRSj9XqB97y01SxhdKUYYgg@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <681f824c-aad6-fe13-7547-5b5f9702909c@huawei.com>
-Date:   Fri, 11 Jun 2021 16:12:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 11 Jun 2021 04:18:40 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF07C061574;
+        Fri, 11 Jun 2021 01:16:42 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id u126so3822996pfu.13;
+        Fri, 11 Jun 2021 01:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PFR8AuQHQsbnzrn33G4nv3dLkIOq0sllA+ykdCrQd+s=;
+        b=I/Q0N8BBx9S2F37ivxZNt43LtMjsiTOmrrUEuZfUZUkEkFS8fNCMXiOmus2F4EJPAf
+         NNe/6aexX3gAp+kqBbUQxLNlSPqH0QVEvqZJmWSVKm9Z1H3CcD4lErFHNv4qq9krGKRw
+         2nB1Mzgccsby3TUqLXQGfUzIekCfFZc9TDaYyP/3GehufNfnucSuJg7VM18n6PCNUvqM
+         93ZtMYSnRQTxQ/xxiU9pS/+WZHRQqyRmnyYpoHDhl5lFx4gV1zXbFoo679otzV8e7B2W
+         gH44HdJYSCE0jybvsgDFS5BWq1t6/q9mbiyRPhgiYqSM4I9qYn+pk83nYBvElLW2Zmxq
+         7OAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PFR8AuQHQsbnzrn33G4nv3dLkIOq0sllA+ykdCrQd+s=;
+        b=UBI+qvMxWLGl32z7AmAUTzUglVJmcCKrbMv2Vm2sTj/4X1dOQTNZu5O2++B4oCtHzw
+         j/F5sYNGnQsI0oiko9fmcnxWtcfcvNTmpt8lwrPFMcrjQN+DDJk0VtV9NEXIBRfk7CWg
+         C588vtETcypeuMHF5DUDdazqeAuNoNm4aSsT86zeSCTIR/vmvCPFHMEkopwWGpB88RTi
+         NohjXAv68SCF6e3+ydnccDlV6w95PBve2/GgWhCTkPR0D2kKKZhpjVJrMskR1wRYWj/O
+         ah44MU8Um5xkY98eQDuApUz/P2WzWM4ZjXnQhe4cZ6e6ypG+4HJ5kr+/F7xrRZ5LkTUN
+         u59Q==
+X-Gm-Message-State: AOAM530OlcjV+AQh5K3YLSPSy8ql4RkxjX1CDkkVJJ1I+gmwrL0WxjTQ
+        b0NjSJwONp37r9u+P240YbMLrGCGnLWC1TO+S8U=
+X-Google-Smtp-Source: ABdhPJyJVGdx/B7Ctu36XK1fijXzp08Dzxqx8qxyA5XG7NBmL6V/cqnzsdWdwxXYWkJPdpKIy+FxL4/cKwBOuGvuceU=
+X-Received: by 2002:a63:4145:: with SMTP id o66mr2480681pga.4.1623399400315;
+ Fri, 11 Jun 2021 01:16:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vdpgpa=TDt5RgG2Eq_+iLZrRSj9XqB97y01SxhdKUYYgg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+References: <20210610152823.1653-1-andriy.shevchenko@linux.intel.com> <YMMWU1ZMqGoCKOoj@lahna>
+In-Reply-To: <YMMWU1ZMqGoCKOoj@lahna>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 11 Jun 2021 11:16:23 +0300
+Message-ID: <CAHp75Vf6J8kD9-_ComWeyGks9t507ETPtfQYYLPZikciAir-0w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] pinctrl: intel: Check against matching data
+ instead of ACPI companion
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Henning Schild <henning.schild@siemens.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 11, 2021 at 10:53 AM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> On Thu, Jun 10, 2021 at 06:28:23PM +0300, Andy Shevchenko wrote:
+> > In some cases we may get a platform device that has ACPI companion
+> > which is different to the pin control described in the ACPI tables.
+> > This is primarily happens when device is instantiated by board file.
+>
+> Can you point which board file in the mainline kernel has this issue? If
+> not then I don't think it makes sense to add code like this.
 
+To my knowledge we don't have such enumeration in the upstream (but it
+may be done by third parties against any of our controllers enumerated
+by UID, like Broxton or Gemini Lake).
 
-On 2021/6/11 16:02, Andy Shevchenko wrote:
-> On Fri, Jun 11, 2021 at 10:19 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>
->> Add spelling_sanitizer.sh and use it to reorder, then add some spelling
->> "mistake||correction" pairs.
-> 
-> The sorting idea is good, but the order is not.
-> What you really need is to use language corpus [1] instead. So in such
-> case you will eliminate false positives (to some extent).
+That said, I still think that this is the right thing to do
+independently, because logic currently is broken (we have tons of the
+examples in the kernel where matching data is in use along with
+platform supplied variants and there we check for matching data
+first). Anyway, the proper use of this patch can be in the part of the
+series which actually enables that kind of enumeration in the
+upstream.
 
-Yes, the default sorting result of the sort command is different from that of
-strcmp(). "export LC_ALL=C" needs to be added. It's mentioned in "man sort":
+In any case I suppose Henning can test this for his purposes.
 
-*** WARNING *** The locale specified by the environment affects sort order.
-Set LC_ALL=C to get the traditional sort order that uses native byte values.
-
-Let me add it.
-
-> 
-> [1]: https://en.wikipedia.org/wiki/Corpus_of_Contemporary_American_English
-> 
-
+-- 
+With Best Regards,
+Andy Shevchenko
