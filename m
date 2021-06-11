@@ -2,153 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F303A4AC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4983A4AD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 23:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFKVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 17:52:07 -0400
-Received: from mail-ed1-f49.google.com ([209.85.208.49]:35474 "EHLO
-        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhFKVwG (ORCPT
+        id S230385AbhFKV7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 17:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229777AbhFKV7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 17:52:06 -0400
-Received: by mail-ed1-f49.google.com with SMTP id ba2so36952189edb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 14:50:08 -0700 (PDT)
+        Fri, 11 Jun 2021 17:59:44 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B4FC061574;
+        Fri, 11 Jun 2021 14:57:35 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id l3so10292321qvl.0;
+        Fri, 11 Jun 2021 14:57:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gZ6KiYF+ULBEYypxNLYi61JZwgfjLGj9Wdtste4sHN8=;
-        b=X3xnIeUCQLRBRUD5AX+jOCyBEFfTU3MpSIJD8z4CUhD2YzNCqa+noEdI9yGLsNwnoA
-         wlbk9U7vkXW1hrqF//pPmcCeuQMnVrixnlvT0j/YrT4xOiu3USYZCm+NzdW7kGDS8m+J
-         QflZU/3psC4uZxkPY+mdYeQLDWVfMDfnS42dc=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/twGMyo5EO9GXJuIlNzACVg/yJN3yFBsRp8LJlEdtXM=;
+        b=FwxcQHeM7PISTuZI0+UBbTk2U/Ifne6xvCN7lgf/mDl56VYpw0qec/8ladJtzEDxM9
+         bpD2+kzR5F907VaTmef5z4kEacdOiqXp4QjZ44fx92tb9ix/Zhc+ADyXaB9AIK6ak+01
+         VxStL9uURyzUzd8z+eI7S5GsneuptEOIREF0i7Rz3OVS2G6yZTixfCrCCLPdC8ut/g9x
+         E3dhLuxxR3cgEU4JvsDCfc9D5gC9OeFOoYXs8s6ktMYGroj8EBmlotUkCyHghdrSIYh7
+         AhhhZ1AmFudanKRhE2nOvprbVgJhmY1ElE6BGwlB0JxxWW01gWN2t18fsYla7gcxnJVT
+         khLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gZ6KiYF+ULBEYypxNLYi61JZwgfjLGj9Wdtste4sHN8=;
-        b=H8DzYAe6h3W+Lp6j3+Fl00NXImZm+QjCttkLRf89Zr/c6JP2DDDveAOI1iiAyxbFzO
-         HlRS+1Kigg9T66lElSl/KnEuCxqwSAAExE8/kC/qt8J7ACbddK7sZKpJUz0g6jZy7qWH
-         GC7vjHHwrKITvjYlDswlcRpJSQFXb3sqE7nMFcSa6E4WAkauWCPClMmFVOjKHsbn24tK
-         /6AKx7PQ/px2tBzqCniKDktxvwJsrnii+Hjns7zPHMPKS5LvLJB/MhZ8Jkd1b8c9T0Sl
-         PbjmP3HFTgKxUvNHHP6nghsX7fYuNv8WENJTdH4ZnT3y+x3yeazMbgeWBpQrO0w89lNz
-         4K5g==
-X-Gm-Message-State: AOAM530bcIFVFTZqF8/AGaPa9WG4HBgt1JcBp8GKR521WQVffRZIgdhx
-        iXGYyNLeiBO9Y3233aDzyP5otw==
-X-Google-Smtp-Source: ABdhPJw7y4jm+G8eJ69mJJlfoVe93e1UWNWkYjhcKIzhDOSAz6gQrEv56n7I8AWH+5u/CSQaX3PXNQ==
-X-Received: by 2002:a50:fe86:: with SMTP id d6mr5778295edt.141.1623448147624;
-        Fri, 11 Jun 2021 14:49:07 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.64.110])
-        by smtp.gmail.com with ESMTPSA id g23sm2458567ejh.116.2021.06.11.14.49.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 14:49:07 -0700 (PDT)
-Subject: Re: Panic on ppc64le using kernel 5.13.0-rc3
-To:     Bruno Goncalves <bgoncalv@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, CKI Project <cki-project@redhat.com>
-References: <CA+QYu4qxf2CYe2gC6EYnOHXPKS-+cEXL=MnUvqRFaN7W1i6ahQ@mail.gmail.com>
- <d13db73d-0806-00cd-ff84-5f5b03ffbef6@rasmusvillemoes.dk>
- <CA+QYu4oFGkP1G+9TqGtqffgOEBycSMKtFbV-1X+kL4NeTyEegg@mail.gmail.com>
- <45ea5042-9136-6f0c-144c-f09d05cd69ed@rasmusvillemoes.dk>
- <CA+QYu4rF6Bx5OwLzBSam_VXJ6gWqSjTocxTNxanfHuV5nZuzrA@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <4434f245-db3b-c02a-36c4-0111a0dfb78d@rasmusvillemoes.dk>
-Date:   Fri, 11 Jun 2021 23:49:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/twGMyo5EO9GXJuIlNzACVg/yJN3yFBsRp8LJlEdtXM=;
+        b=TSwTRJyzgyqMv3PamUtfxsWX0fCrT62dnP6Oc9n69koB/6XwUU1UV4L2fhRjrfSEOO
+         QCjyRQpyyWZVtD+HUOC8fGLTLC2qNcqEK3Uf6axWmICFgqGvaafTQngyL8rK9LYr2eES
+         PWBe6MbcLarW4luLP4GQDRNaqlnSoS30WZZvNUrm2nw9dQRgSKhL0OvSmmjU6Inbrdiw
+         8lEAeVNHk9ziiYahNGcxQFvdROsWlYpDgl25LF9dG5I2510q4zexpU9Y6ePDWJy3KK14
+         EdJymZqaQ0+OOMGW2srLbxoLUXsl3HAE+taiKVkMUkrC4cDyuxCFE9/2XiK6YaQ5xkNr
+         yZSw==
+X-Gm-Message-State: AOAM530lDm8bc5p5qoK00SfsSQhXs9z2X77IdnMflWvUlUUzZtJtHGpw
+        2fxy5LK+Roz6koKVWwMrWmJOXfzJPG+H89N/shMOKOaTBWE79ohe
+X-Google-Smtp-Source: ABdhPJxagl6eJfmc3DNGhjfpe4EHJxWxMWDcN9SWrXsF55lIrUza4fxVv/Huvq6tUo9g+Fa86e25TOEEvxvfKAiuImM=
+X-Received: by 2002:ad4:4e2e:: with SMTP id dm14mr7005009qvb.33.1623448655003;
+ Fri, 11 Jun 2021 14:57:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+QYu4rF6Bx5OwLzBSam_VXJ6gWqSjTocxTNxanfHuV5nZuzrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210611203301.101067-1-konrad.dybcio@somainline.org> <20210611203301.101067-2-konrad.dybcio@somainline.org>
+In-Reply-To: <20210611203301.101067-2-konrad.dybcio@somainline.org>
+From:   Marijn Suijten <marijns95@gmail.com>
+Date:   Fri, 11 Jun 2021 23:57:24 +0200
+Message-ID: <CANX-K3uHfV2dh8Ep1__atCgZ-VYxn4=9MkeR7zi40p0vLdF4Cg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: Add support for SONY Xperia 1 / 5
+ (Kumano platform)
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/06/2021 17.06, Bruno Goncalves wrote:
-> On Fri, Jun 11, 2021 at 9:13 AM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
->>
->> On 10/06/2021 17.14, Bruno Goncalves wrote:
->>> On Thu, Jun 10, 2021 at 3:02 PM Rasmus Villemoes
->>> <linux@rasmusvillemoes.dk> wrote:
->>>>
->>>> On 10/06/2021 13.47, Bruno Goncalves wrote:
->>>>> Hello,
->>>>>
->>>>> We've observed in some cases kernel panic when trying to boot on
->>>>> ppc64le using a kernel based on 5.13.0-rc3. We are not sure if it
->>>>> could be related to patch
->>>>> https://lore.kernel.org/lkml/20210313212528.2956377-2-linux@rasmusvillemoes.dk/
->>>>>
->>>>
->>>> Thanks for the report. It's possible, but I'll need some help from you
->>>> to get more info.
->>>>
->>>> First, can you send me the .config?
->>>
->>> The .config is on
->>> https://s3.us-east-1.amazonaws.com/arr-cki-prod-datawarehouse-public/datawarehouse-public/2021/06/09/317881801/build_ppc64le_redhat:1332368174/kernel-block-ppc64le-d3f02e52f5548006f04358d407bbb7fe51255c41.config
->>
->> Thanks.
->>
->>>>
->>>>>
->>>>> [    1.516075] wait_for_initramfs() called before rootfs_initcalls
->>>>
->>>> This is likely because you have CONFIG_UEVENT_HELPER_PATH set to some
->>>> non-empty path (/sbin/hotplug perhaps). This did get reported once before:
->>>>
->>>
->>> CONFIG_UEVENT_HELPER_PATH is not set. In the .config we have "#
->>> CONFIG_UEVENT_HELPER is not set"
->>
->> OK. Then I assume some quite early initcall does a request_module() or
->> request_firmware() (or similar). I don't think this matters - that call
->> would be done before the initramfs was unpacked with or without my
->> patch, so it won't find anything in the empty rootfs. It's just my patch
->> added a note. But just to figure out where that triggers, can you do
->>
->> -               pr_warn_once("wait_for_initramfs() called before
->> rootfs_initcalls\n");
->> +               WARN_ONCE(1, "wait_for_initramfs() called before
->> rootfs_initcalls\n");
->>
->> in init/initramfs.c.
->>
-> 
-> I've managed to reproduce the panic with the patch.
-> 
-> [    1.498654] NIP [c0000000000137d4] wait_for_initramfs+0x94/0xa4
-> [    1.498661] LR [c0000000000137d0] wait_for_initramfs+0x90/0xa4
-> [    1.498668] Call Trace:
-> [    1.498671] [c000000027debd60] [c0000000000137d0]
-> wait_for_initramfs+0x90/0xa4 (unreliable)
-> [    1.498680] [c000000027debdc0] [c000000000172fc8]
-> call_usermodehelper_exec_async+0x178/0x2c0
-> [    1.498691] [c000000027debe10] [c00000000000d6ec]
-> ret_from_kernel_thread+0x5c/0x70
+On Fri, 11 Jun 2021 at 22:33, Konrad Dybcio
+<konrad.dybcio@somainline.org> wrote:
+>
+> Add support for SONY Xperia 1 and 5 smartphones, both based on the
+> Qualcomm SM8150 chipset. There also exist 5G-capable versions of these
+> devices, but they weren't sold much (if at all) outside Japan.
+>
+> The devices are affected by a scary UFS behaviour where sending a certain UFS
+> command (which is worked around on downstream) renders the device unbootable,
+> by effectively erasing the bootloader. Therefore UFS AND UFSPHY are strictly
+> disabled for now.
+>
+> Downstream workaround:
+> https://github.com/kholk/kernel/commit/2e7a9ee1c91a016baa0b826a7752ec45663a0561
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-Thanks, but unfortunately (and I should have known better) that doesn't
-tell us who actually initated that call_usermodehelper - it's most
-likely some request_module() call. But again, I don't think this is
-related to the later crash.
+Thanks for working on this!
 
->>>>> [    1.764430] Initramfs unpacking failed: no cpio magic
->>>>
->>>> Whoa, that's not good. Did something scramble over the initramfs memory
->>>> while it was being unpacked? It's been .2 seconds since the start of the
->>>> unpacking, so it's unlikely the very beginning of the initramfs is corrupt.
->>>>
->>>> Can you try booting with initramfs_async=0 on the command line and see
->>>> if the kernel still crashes?
-> 
-> Using initramfs_async=0 I was also able to reproduce the panic.
+Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
+(On Bahamut)
 
-Hm, that's very interesting. Can you share the log for that as well?
-
-And, perhaps asking a silly question, does the crash go away if you
-revert e7cb072eb988e46295512617c39d004f9e1c26f8 ?
-
-Thanks,
-Rasmus
+- Marijn
