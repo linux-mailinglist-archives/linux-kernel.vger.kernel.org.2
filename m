@@ -2,51 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A8A3A3E70
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90A53A3E72
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 10:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhFKJAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 05:00:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhFKJAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 05:00:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8399E60BD3;
-        Fri, 11 Jun 2021 08:58:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623401921;
-        bh=vvNyA3+tCNK10QXDM+AEGDlrV6IhxcKFPiACJT/DfG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2lsnBH6UoNL0qkn78B/3nBgKWTQRrynyWtcW6FylVwYEdJJiACfANEMVSnCdFItV/
-         U+WY5SuMKzUASe1otlW9xfjX9xF+BexqOcGrwPLCUrizwgwD5lxHoZcSgMZJkmHJ6U
-         v8ul9ZC1X1TTx+tDNiNIIKghZZVRNfbYpdU6vAzQ=
-Date:   Fri, 11 Jun 2021 10:58:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/9] nvmem: patches (set 1) for 5.14
-Message-ID: <YMMlvpGdORKSS5Mb@kroah.com>
-References: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
+        id S231439AbhFKJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 05:01:09 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:55906 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhFKJBI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 05:01:08 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id BC08E47317;
+        Fri, 11 Jun 2021 10:59:08 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id JoxcQDnsDsKA; Fri, 11 Jun 2021 10:59:08 +0200 (CEST)
+Received: from [172.25.161.48] (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id 1BD0B47316;
+        Fri, 11 Jun 2021 10:59:07 +0200 (CEST)
+Subject: Re: [PATCH v9 1/5] nvmem: prepare basics for FRAM support
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210611052652.7894-1-jiri.prchal@aksignal.cz>
+ <20210611052652.7894-2-jiri.prchal@aksignal.cz> <YMMjbCFzsfiT8dMA@kroah.com>
+From:   =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
+Message-ID: <3c2beca6-8ef5-834d-a37a-5aea53bc1305@aksignal.cz>
+Date:   Fri, 11 Jun 2021 10:59:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611083348.20170-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <YMMjbCFzsfiT8dMA@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:33:39AM +0100, Srinivas Kandagatla wrote:
-> Hi Greg,
+
+
+On 11. 06. 21 10:48, Greg Kroah-Hartman wrote:
+> On Fri, Jun 11, 2021 at 07:26:48AM +0200, Jiri Prchal wrote:
+>> Added enum and string for FRAM to expose it as "fram".
 > 
-> Here are some nvmem patches for 5.14 which includes
-> - these are mostly minor fixes in provider drivers like missing
->   MODULE_DEVICE_TABLE and improve comments
-> - fix in core for missing of_node_put.
-> - setting correct provider type in sunxi sid provider
+> I have no idea what "FRAM" is, nor what "fram" is.
+> 
+> And why do you not add the documentation update here in this same
+> commit?  This is where you are adding it, trying to dig later in the
+> series to notice that you really did provide this is a pain, and is
+> harder to track.
+> 
+> Please provide more information here in the changelog and move the
+> Documentation addition here into this patch.
 
-I took the last 4 patches of this series.  See the review comments on
-the first 5 for what should be done with them.
-
-thanks,
-
-greg k-h
+Should I also join #1 and 2 together?
