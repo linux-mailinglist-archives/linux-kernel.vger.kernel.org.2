@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7333A3D7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F0C3A3D8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 09:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhFKHrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 03:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        id S231598AbhFKHyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 03:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhFKHrw (ORCPT
+        with ESMTP id S231132AbhFKHyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:47:52 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4896C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:45:54 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id y7so4958065wrh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 00:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jyVLRP1QkA2IL6a5f5yksm2l9IPiad2Lfrho8JCrB80=;
-        b=tnUXwEtIxNsUkR3juOymwq8NsDACLFO4UY9stNt8nf4fnyEfeLnMLJRCJ4WQrBSTVo
-         YXthzzdbMkbartaX3GNqDiGY4Gz7qS9h7XO2LM1KW0jgywjEjW8YmTfPj6o9v5fL/yxE
-         b9mjgp5A6ZiodETFvTQAp9m5YaYuipu2JP+jI5qYapY0Qf+qqvtB3sunq5gEnCh9WtkM
-         R//r15ndCwJfRN6O4LT1G4c1oQ9pBNogvUVYa7pZeYik7xN9OVlPoL5dpPlCSGuCReOI
-         RjsU/AFnUKF2BOQnHb+fLoueJveCWv+LFh4UewSsRxnBpkIIyGQq7bq1QNw6Bg7hqn9i
-         gDDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jyVLRP1QkA2IL6a5f5yksm2l9IPiad2Lfrho8JCrB80=;
-        b=WFujiM/hIByD9uz7pWSHcPwSNz6WoGngu+q+UNtjK3mTi3MpV1TpKCsFg+fTbgQFFa
-         OxZiN3nw8Ndv3bhQT3eLcYXf7bTjLkm16KipeISaeP/TfuEz9YTulMvN2282cJ40vDEu
-         A5SXU+o4PrEG0Hkg32AXZ0RNFUxJqd3/p1Lkxl2MgCMpj2gQ5uGKolnMIRB95btfm4ST
-         BRnkKs7GZoxJojRQ0IlUeH5t1QVqcc8T3EtzLioNHR3y2iMzAAjDx4dNIkAz4B5jO8Ca
-         du/+XsXcoY9Vx2rkMq/7YZx1VZWAazwGn8O1iWXF90dXO51NuVd6RPYnWRW+/OPJIwIN
-         2NVw==
-X-Gm-Message-State: AOAM533HdfNULHFHv48CS0mImQTTwI+RrrxWlD5CnwMvcaSXH1YKs1xZ
-        r5T4Ml/E13MnHIPGhR4gZ/XJ5Q==
-X-Google-Smtp-Source: ABdhPJzdpXeCEBaZqW+gbgn/Y7fTCnLbcAraMgni6bIzcHxjI8moZxc8QRHIancTbR/BoSfZr7KBAw==
-X-Received: by 2002:adf:f1ca:: with SMTP id z10mr2557658wro.396.1623397553262;
-        Fri, 11 Jun 2021 00:45:53 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e537:d458:d3c4:18e1? ([2a01:e34:ed2f:f020:e537:d458:d3c4:18e1])
-        by smtp.googlemail.com with ESMTPSA id v15sm5701683wrw.24.2021.06.11.00.45.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 00:45:52 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: meson: vim3: reduce cpu thermal fan trigger
- temperature
-To:     Nick Xie <xieqinick@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Cc:     robh+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nick <nick@khadas.com>, artem@khadas.com
-References: <20210609012849.797576-1-xieqinick@gmail.com>
- <11da3ae4-91d4-1e51-c652-e4ad518f13bd@baylibre.com>
- <CAP4nuTVMZV7pz8NrM2MHcZzBdueRXjS+KYsU4=cQ1CB67gr_Hg@mail.gmail.com>
- <ee3341d9-350e-a84d-6836-3401be679b2a@baylibre.com>
- <CAP4nuTUt1vQjVP=3_NYaeu+m47f78ru6-MgGBiAqLeU9fJAsNg@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <09c65310-9441-9b97-d9ae-4695f0dd16af@linaro.org>
-Date:   Fri, 11 Jun 2021 09:45:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 11 Jun 2021 03:54:37 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DB8C061574;
+        Fri, 11 Jun 2021 00:52:39 -0700 (PDT)
+Received: from zn.tnic (p2e584d18.dip0.t-ipconnect.de [46.88.77.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1E5BC1EC0528;
+        Fri, 11 Jun 2021 09:52:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623397958;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vSnV81dscIMGE/gY3bycp5V2Li1nZZO4DLoJmbCgDdU=;
+        b=AbK4ea+m7e4UCR6DzGiNOdLe+w4q57MTzkANx0f9Tbw4U1WFKniqOpYkJchGZonW7PDJMQ
+        bbaRyVApCBSkMFS3+gvB9xpCaumT+PPTHLtHtXuAmGLeyaxryuZaFEk/7cBgfVpdzJ/SwB
+        wimHMZ3x1yAB9cBJZthq9BEjVz4CHSA=
+Date:   Fri, 11 Jun 2021 09:50:22 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/4] perf/x86/intel: Do not deploy workaround when TSX is
+ deprecated
+Message-ID: <YMMVvq9ZZCu9zZom@zn.tnic>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <4926973a8b0b2ed78217add01b5c459a92f0d511.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAP4nuTUt1vQjVP=3_NYaeu+m47f78ru6-MgGBiAqLeU9fJAsNg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4926973a8b0b2ed78217add01b5c459a92f0d511.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/06/2021 09:30, Nick Xie wrote:
-> Hello Neil,
+On Wed, Jun 09, 2021 at 02:12:38PM -0700, Pawan Gupta wrote:
+> Earlier workaround added by commit 400816f60c54 ("perf/x86/intel:
+> Implement support for TSX Force Abort") for perf counter interactions
+> [1] are not required on some client systems which received a microcode
+> update that deprecates TSX.
 > 
+> Bypass the perf workaround when such microcode is enumerated.
 > 
-> Neil Armstrong <narmstrong@baylibre.com> 于2021年6月11日周五 下午3:15写道：
->>
->> Hi,
->>
->> On 11/06/2021 08:54, Nick Xie wrote:
->>> Hello Neil,
->>>
->>> The MCU FAN won't work until the temperature reach to 80 degree centigrade,
->>> Do you think the temperature is too high?
->>
->> I think 80 is tool high, but I fear 50 is way too low, but if you think 50 is OK after you ran some tests, just add it to the commit log and it's ok for me.
+> [1] Performance Monitoring Impact of Intel® Transactional Synchronization Extension Memory
+>     http://cdrdv2.intel.com/v1/dl/getContent/604224
 > 
-> I think it is OK, we use it for a long time.
+> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Tested-by: Neelima Krishnan <neelima.krishnan@intel.com>
+> ---
+>  arch/x86/events/intel/core.c | 22 ++++++++++++++++++----
+>  1 file changed, 18 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index e28892270c58..b5953e1e59a2 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -6016,10 +6016,24 @@ __init int intel_pmu_init(void)
+>  		intel_pmu_pebs_data_source_skl(pmem);
+>  
+>  		if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
+> -			x86_pmu.flags |= PMU_FL_TFA;
+> -			x86_pmu.get_event_constraints = tfa_get_event_constraints;
+> -			x86_pmu.enable_all = intel_tfa_pmu_enable_all;
+> -			x86_pmu.commit_scheduling = intel_tfa_commit_scheduling;
+> +			u64 msr;
+> +
+> +			rdmsrl(MSR_TSX_FORCE_ABORT, msr);
+> +			/* Systems that enumerate CPUID.RTM_ALWAYS_ABORT or
+> +			 * support MSR_TSX_FORCE_ABORT[SDV_ENABLE_RTM] bit have
+> +			 * TSX deprecated by default. TSX force abort hooks are
+> +			 * not required on these systems.
 
-50°C sounds like normal temperature with regular load. That means the
-fan will be switched on most of the time when the board is used.
+So if they're not required, why aren't you simply disabling the force
+abort "workaround" by clearing the feature flag?
 
-And this change may be put in regard with the other trip points in the
-common DT. For instance, enable the fan when reaching 80°C but set the
-passive trip point to 75°C instead of 85°C.
+	if (boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
+		if (boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT))
+			setup_clear_cpu_cap(X86_FEATURE_TSX_FORCE_ABORT);
+	}
 
-All that depends on the hardware characteristics and TDP which are in
-the TRM normally.
-
+so that it doesn't get enabled in the first place?
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Regards/Gruss,
+    Boris.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+https://people.kernel.org/tglx/notes-about-netiquette
