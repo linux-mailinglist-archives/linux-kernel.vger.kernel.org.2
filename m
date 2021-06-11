@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDC23A477B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806023A477E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 19:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhFKRJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 13:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhFKRJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:09:45 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F12C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:07:38 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id p7so9574186lfg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:07:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lOwkxf9QRi7C3lCfgqOaMKKdXM7YRsMkMG4gYcCEg7I=;
-        b=hUJtNPjnc847EoQjZg/d561dlIomi/ORN/IB6rkSZqwqeECoGwZQRFJQb+QdwUYn9T
-         gwvhv/DRfsqEqPJ1L/+W7BW/NLwxmhESeKzps5vuIMRmU1zEDrnRRjrssR42rdQ4pK6I
-         xDo5ImsIUPlvP94FmFZNoRW0/65SEWbj3gJrY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lOwkxf9QRi7C3lCfgqOaMKKdXM7YRsMkMG4gYcCEg7I=;
-        b=HjwCu/lMIzPBIKo7xNBM/oYYikNSIeuIdJDm8NVsrf4yXBsT7aqMDdYqHb03SMlv4M
-         5uxrYCEWJKwgGKhl20kldfRQn9NxwD9ryiLm6HHEHupGi4RHenDgpUwmajs+xqpNlYng
-         Nas+I+BWTFkq9Uu8L6JxS2ZLkXt/9efqayCAut2Wm/DepGVh0I3P9rR8eGY9RHpK0pEx
-         Xe28bMKPCtD2vQBykrRkEOc+rIbi8DmfTFVMewQ0DdDq+pZ0ODX3LSwCtF9cLi/AViGg
-         pOB6fGGrYXVLaUnyPjZaXhY7k82EsMYcIWwnUJgVgZ8IVQJJPYjKIYdBZkx9umQRxwIr
-         xB0g==
-X-Gm-Message-State: AOAM531RTnhr1Lac8PuWQPup7AXi/prBKG6xGWSUgEPU8ZN3wxj62gtY
-        wKb3P9AxMjxrvrK4M0ehxPzBhbvG0oPdtvnYhjU=
-X-Google-Smtp-Source: ABdhPJzC9w2BKrBv2gxm5DP+K8tmmfGcEl5sl+xGG6rq2SBdqAH9R68ssX6hu35DXZYviWu15BXXtg==
-X-Received: by 2002:a19:4312:: with SMTP id q18mr3173739lfa.609.1623431256426;
-        Fri, 11 Jun 2021 10:07:36 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id z8sm639400lfh.119.2021.06.11.10.07.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 10:07:36 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id m21so9521427lfg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 10:07:35 -0700 (PDT)
-X-Received: by 2002:ac2:43b9:: with SMTP id t25mr3314299lfl.253.1623431255687;
- Fri, 11 Jun 2021 10:07:35 -0700 (PDT)
+        id S231441AbhFKRKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 13:10:11 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:59688 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229510AbhFKRKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 13:10:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=6T7kZ03xwL1KC1iS1k0e4hpoEerlMg9oGroEXRU3uws=; b=SBj2jLq9tpzGW2hPfTQC71h8jE
+        BOfHdzo63YZbgLOrNV1z5XGwNW8ENW+dNGbW2JS10MJx5VUH10VR2MGHRKXqAmOh3gYMQ0FbddMHv
+        WzhvXt9WZy3eAjFtoi8MJSRtzJDXtEmyzWocp5lq5pMuFnObOJBvKJdZzHmG2slOGjYU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lrkdU-008t06-LY; Fri, 11 Jun 2021 19:08:00 +0200
+Date:   Fri, 11 Jun 2021 19:08:00 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+Cc:     "jiri@nvidia.com" <jiri@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+Subject: Re: [PATCH net-next 10/11] net: marvell: prestera: add storm control
+ (rate limiter) implementation
+Message-ID: <YMOYcHleEOjmnqjt@lunn.ch>
+References: <20210609151602.29004-1-oleksandr.mazur@plvision.eu>
+ <20210609151602.29004-11-oleksandr.mazur@plvision.eu>
+ <YMIIcgKjIH5V+Exf@lunn.ch>
+ <AM0P190MB0738E3909FB0EA0031A24F07E4349@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-References: <CAPM=9tyyyQ-0QkKquLX4q=7=pjGeRxhhP=z7rfLjEbX7mSrh5A@mail.gmail.com>
-In-Reply-To: <CAPM=9tyyyQ-0QkKquLX4q=7=pjGeRxhhP=z7rfLjEbX7mSrh5A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 11 Jun 2021 10:07:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgT1ZXOGRjBHbvw+GqY=qUv4oHv8BZ6FpSay6z_0FxkPg@mail.gmail.com>
-Message-ID: <CAHk-=wgT1ZXOGRjBHbvw+GqY=qUv4oHv8BZ6FpSay6z_0FxkPg@mail.gmail.com>
-Subject: Re: [git pull] drm fixes for 5.13-rc6
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM0P190MB0738E3909FB0EA0031A24F07E4349@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 8:41 PM Dave Airlie <airlied@gmail.com> wrote:
->
->   git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-06-11
+On Fri, Jun 11, 2021 at 01:19:13PM +0000, Oleksandr Mazur wrote:
+> >>  On Wed, Jun 09, 2021 at 06:16:00PM +0300, Oleksandr Mazur wrote:
+> > Storm control (BUM) provides a mechanism to limit rate of ingress
+> > > port traffic (matched by type). Devlink port parameter API is used:
+> > > driver registers a set of per-port parameters that can be accessed to both
+> > > get/set per-port per-type rate limit.
+> > > Add new FW command - RATE_LIMIT_MODE_SET.
+> 
+> > Hi Oleksandr
+> 
+> > Just expanding on the two comments you already received about this.
+> 
+> > We often see people miss that switchdev is about. It is not about
+> > writing switch drivers. It is about writing network stack
+> > accelerators. You take a feature of the Linux network stack and you
+> > accelerate it by offloading it to the hardware. So look around the
+> > network stack and see how you configure it to perform rate limiting of
+> > broadcast traffic ingress. Once you have found a suitable mechanism,
+> > accelerate it via offloading.
+> 
+> > If you find Linux has no way to perform a feature the hardware could
+> > accelerate, you first need to add a pure software version of that
+> > feature to the network stack, and then add acceleration support for
+> > it.
+> 
+> 
+> Hello Andrew, Ido, Nikolay,
+> I appreciate your time and comments provided over this patchset, though i have a few questions to ask, if you don't mind:
+> 
 
-I think anongit.freedesktop.org is sick. Can you ask somebody to give
-it some tender loving? It's just disconnecting immediately..
+> 1. Does it mean that in order to support storm control in switchdev
+> driver i need to implement software storm control in bridge driver,
+> and then using the switchdev attributes (notifiers) mechanism
+> offload the configuration itself to the HW?
 
-             Linus
+Hi Oleksandr
+
+Not necessarily. Is storm control anything more than ingress packet
+matching and rate limiting?
+
+I'm not TC expert, but look for example at
+https://man7.org/linux/man-pages/man8/tc-police.8.html
+
+and the example:
+
+# tc qdisc add dev eth0 handle ffff: ingress
+# tc filter add dev eth0 parent ffff: u32 \
+                   match u32 0 0 \
+                   police rate 1mbit burst 100k
+
+Replace the "match u32 0 0" with something which matches on broadcast
+frames.  Maybe "flower dst_mac ff:ff:ff:ff:ff:ff"
+
+So there is a software solution. Now accelerate it.
+
+> 2. Is there any chance of keeping devlink solution untill the
+> discussed (storm control implemented in the bridge driver) mechanism
+> will be ready/implemented?
+
+No. Please do it correctly from the beginning. No hacks.
+
+    Andrew
