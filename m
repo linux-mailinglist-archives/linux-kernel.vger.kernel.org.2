@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC3A3A4A41
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F3B3A4A49
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Jun 2021 22:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhFKUme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 16:42:34 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:52000 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhFKUmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:42:31 -0400
-Received: by mail-pj1-f54.google.com with SMTP id k5so6340578pjj.1;
-        Fri, 11 Jun 2021 13:40:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VBC7+WT0Vk4vkpbLajR4Eb1p+InWGXtxLVxgmGQcfQY=;
-        b=dKwj5qp218qjxz6YDHOdFjPBVDQSUh83kyre8PfX9J2G9e5oUs5kI/Wey01jl1AAen
-         IJF9OyW8H8rzaVimXq3nAPABzzerE/6yxZWQCa1EEKp1RH4KJrCapKFE3SnpiwxbjGYm
-         V/dce9GCT0QCLnX1dH+DlVt++6bKeFzn8rUVYP4rGkYAGryyn5RloDBDwtbueX1f1Tcz
-         eKVqCmJoKxsMh87zpT0l7LGTrMJMtl2giNcAW1cAwUg7Gfwnyh4iMZUC1lEPzLveCzaw
-         YYfRbcJXEISeJO3jtPd7jh2EOVphxzDiK/fYHGmmNl0TUFsO/G8ntrd+U+11eSYUM6uq
-         dLjg==
-X-Gm-Message-State: AOAM5331Cz7RPQrspGIICjSmAqCD/LZ7aJIEpRA5LafMxWQ98mFznyWn
-        xObpU7r0RDI02PWoUrgA2xgnaGaAYWQ=
-X-Google-Smtp-Source: ABdhPJzMIaF7TmDhI7kc8Lyf+X6Tg3BFkml8lj/07PPSqp1xUmOLzlYNzACBPoLCSejFAj8+qB694w==
-X-Received: by 2002:a17:90b:234d:: with SMTP id ms13mr6121414pjb.135.1623444021938;
-        Fri, 11 Jun 2021 13:40:21 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id v11sm11477420pju.27.2021.06.11.13.40.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 13:40:21 -0700 (PDT)
-Subject: Re: [PATCH v3 1/9] scsi: ufs: Differentiate status between hba pm ops
- and wl pm ops
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-2-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <1b581673-a5f7-f2a8-787c-f055082dc9d2@acm.org>
-Date:   Fri, 11 Jun 2021 13:40:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <1623300218-9454-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S230444AbhFKUn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 16:43:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230201AbhFKUnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:43:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 241BC613C3;
+        Fri, 11 Jun 2021 20:41:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623444086;
+        bh=R8Zl1qBmczdl3vpHLy5t8k4S3Tbg49B4SLX/KCUE5Kg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KHKN85mnHbwlYByLvW3nNL2W/GAoC5/omJwkZLCQykr7ToYI97X9sBFbgdBjfzv9s
+         9j6yUjoIY1uwr/sYgy4lh4mGVpexZ5P79ShEQiIwpaQy580RK+0zlGuki5ZrFWiSBG
+         W66Aja9tNCuKaNK50ONckbidg38L653pCzoceiuQ=
+Date:   Fri, 11 Jun 2021 13:41:25 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Martin Liu <liumartin@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tejun Heo <tj@kernel.org>, minchan@google.com,
+        davidchao@google.com, jenhaochen@google.com,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] kthread: Prevent deadlock when
+ kthread_mod_delayed_work() races with kthread_cancel_delayed_work_sync()
+Message-Id: <20210611134125.bdb08ba0d2b6b87dc60d446d@linux-foundation.org>
+In-Reply-To: <YMMN5IoXyXqoRsBX@alley>
+References: <20210610133051.15337-1-pmladek@suse.com>
+        <20210610133051.15337-3-pmladek@suse.com>
+        <20210610143030.f599946ec11e1eccde6af4f0@linux-foundation.org>
+        <YMMN5IoXyXqoRsBX@alley>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/9/21 9:43 PM, Can Guo wrote:
-> Put pm_op_in_progress and is_sys_suspend flags back to ufshcd hba pm ops,
-> add two new flags, namely wl_pm_op_in_progress and is_wl_sys_suspended, to
-> track the UFS device W-LU pm ops. This helps us differentiate the status of
-> hba and wl pm ops when we need to do troubleshooting.
+On Fri, 11 Jun 2021 09:16:52 +0200 Petr Mladek <pmladek@suse.com> wrote:
 
-Since "WL" is an uncommon abbreviation, please add a comment above the
-definition of struct ufs_hba that explains the meaning of the new member
-variables.
+> On Thu 2021-06-10 14:30:30, Andrew Morton wrote:
+> > On Thu, 10 Jun 2021 15:30:50 +0200 Petr Mladek <pmladek@suse.com> wrote:
+> > 
+> > > The system might hang with the following backtrace:
+> > 
+> > Well that's not good.
+> 
+> Fortunately, the API users normally synchronize these operations
+> another way. The race should never happen when the API is used
+> a reasonable way,
+> see https://lore.kernel.org/lkml/YKZLnTNOlUQ85F2s@alley/
+> 
+> > > Fixes: 9a6b06c8d9a220860468a ("kthread: allow to modify delayed kthread work")
+> > > Reported-by: Martin Liu <liumartin@google.com>
+> > > Signed-off-by: Petr Mladek <pmladek@suse.com>
+> > 
+> > Was a -stable backport considered?
+> 
+> Good point! It would make sense to backport it. System hang is never
+> good.
+> 
+> Could you please add Cc: stable@vger.kernel.org or should I resend the
+> patchset?
 
-Thanks,
-
-Bart.
+I made that change to patches 1&2.  I don't think patch 3 need be
+backported?
