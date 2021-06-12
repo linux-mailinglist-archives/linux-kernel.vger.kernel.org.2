@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093A73A4CE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 06:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B76F3A4CED
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 06:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhFLEow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 00:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFLEos (ORCPT
+        id S230301AbhFLEzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 00:55:49 -0400
+Received: from mail-pf1-f178.google.com ([209.85.210.178]:45773 "EHLO
+        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhFLEzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 00:44:48 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24674C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 21:42:37 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id o3so8063117wri.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 21:42:37 -0700 (PDT)
+        Sat, 12 Jun 2021 00:55:48 -0400
+Received: by mail-pf1-f178.google.com with SMTP id d16so6080894pfn.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 21:53:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DkaEs5OoDbQVi5eWL76O0urBiumXEDrqwDT+nb75JPs=;
-        b=lesx5X2EuoJQiu/wKMrxbfJEJQAUQ8l3Ut3kqbYeRNdAuzgf884npk+8H6F0NRrNYD
-         itOveEVo6B+eROFErPspJrWleFoJDTFeu5z2YMnlIGzatz4IN5Uj/xkKrbtLHDWLgQ+A
-         raG6jeLdt+g4eNZUGxGE48SGlSQlr6uwhkfXqM4vbQP1SCoWFyTtnfEAEJ7pXvoaaVYY
-         MBAbjl9i0tw659eSxDXl0OfHT7otqxnK1fX5fbqPs1BI7BeB+mTaLZ7Vorz1uL09ikBr
-         bAhJN/kCeI/oHxLBQscmWSkwojbgREtmOHhZFw+bhm8BStoRAxFfwrbVVUQhjM0crxUb
-         PBhA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CSf/plSIB/2hiYtwZfEusso9z7qFI1Lu/J4EiHpSzN4=;
+        b=tqNr2p4XQ5wB5Z4ZjSL9bOu5p1wM8owR6C64aw9Yz7Q3kn7kk/E+fUNDqPFPJW9cBf
+         mBSFVuRwA8aIP5vSMENzs6Ip8b+XgetGZrMMF74lPjzVLRSoH1s9XAsvjDSnG6fFELKn
+         JmVKdvEIVCeotAKvpPTWKB2+/NTB6a74GWRiZbkUFTdKWfDwhJc+/79U8y2VkFELjMWa
+         q1qtAm4YIKR6+rsDLMfyizsWtcRtRhfT1V8czOGj2cJKVBxobpw/CPI2VgV8uD5SwGLZ
+         hI8iFFyLnMcWzmUuxDQufaHbQLQlFhKpxIPyPKq9joOf6ZG5lu/hjMwD2zBPSmKsGtCT
+         UJnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DkaEs5OoDbQVi5eWL76O0urBiumXEDrqwDT+nb75JPs=;
-        b=uRXAAUyNPPZMh/bbNNaLUs2WHSsb3KkkpoMSVHE9GPb7vUhbxHddBUG94yQBDRslt3
-         WO6eBx5x5NORUyskRkEqy0kvgo7J6caLjBovMBau8t/gRZPuuJumn/6SWf6T0jGt+QFn
-         ED9QVS38e7ND2ERJ0t4NM8ZoWnxzORMWNkx69BOKYwTYnbEt4EWnNqrDB4MVDSC0mXnL
-         TMaoxdp2DkoyPJ5iwPqWPJxHL30IUn3cfJ6Qfhrl8c95kp+Kj+Nb1fpB0QMymJ+2JWF/
-         ZMqKBQTWFLzraKTvh2NJjpUpS9l92r+8AJSMBt5Gluvl9YFdUiXbYjmpvN1nF5j0yWF4
-         CklQ==
-X-Gm-Message-State: AOAM532QE3MTv1CXxnipqzClWO1K9MTsZQxhSqcdsiQmaHqqarerQ3V7
-        jsWqqAnzlSNGLL5/eP973W+QWVjQNTj7rKyYrOMpbg==
-X-Google-Smtp-Source: ABdhPJz6MgYW8qegCjYiMAcvP1BdzEERmLrzyeX2egYw73NO+adeef4vNNmPs8kyOBbt8qvNYC4CR2cqQzs5nGMsvu4=
-X-Received: by 2002:adf:efc3:: with SMTP id i3mr7189395wrp.356.1623472955642;
- Fri, 11 Jun 2021 21:42:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CSf/plSIB/2hiYtwZfEusso9z7qFI1Lu/J4EiHpSzN4=;
+        b=KEUOc3gM6S1GPSABaDX7Ne4Kllms5Anqvd/BNy57p1GVu7sVbnsN82gojt2KaGOypp
+         27Qkn3rmyXEzIp9WrIX0ZKOIgoMsxqfeaSB36k/u+f68YTT5CMdVdizANLMKDyoFHfDi
+         ip2cn7e2M+Qd10GnJ+BWYqgqCfGRnE45M0riR/0yBmYRyKtwiB8ukXLZSonFzyA/3vPa
+         uMaWS0aPk2qvK2J8fP3Zi1yfL6R0ddIlY2Pw2hikOjzxD8+7w+1TNFV3axROAA2IiEvh
+         SXPRhqttpjhhfKPlgOlQxUNTePaJPqR8pbdjhEywxKCxTyG1RGVwe7mxl8Ppp95xsePI
+         Km8g==
+X-Gm-Message-State: AOAM5315FADBFiWPr047UwOv2J2Pte6kCxFJrx+7s0jb0C/t5323/DMf
+        3jARR9lHhCv3j5fzENsjX/g=
+X-Google-Smtp-Source: ABdhPJxM1VF1pnq9bbCHEuQNtN5CuUaS7/ptizl2HW1db0WbqmWKJmXMyoAw5uohIC6g9SxJTyBo3Q==
+X-Received: by 2002:aa7:96e3:0:b029:2ec:e8a1:3d66 with SMTP id i3-20020aa796e30000b02902ece8a13d66mr11484855pfq.79.1623473556125;
+        Fri, 11 Jun 2021 21:52:36 -0700 (PDT)
+Received: from lee-virtual-machine.localdomain (61-230-42-225.dynamic-ip.hinet.net. [61.230.42.225])
+        by smtp.gmail.com with ESMTPSA id m1sm6076572pgd.78.2021.06.11.21.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 21:52:35 -0700 (PDT)
+From:   Kuan-Ying Lee <kylee0686026@gmail.com>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Kuan-Ying Lee <kylee0686026@gmail.com>
+Subject: [PATCH v2 0/3] kasan: add memory corruption identification for hw tag-based kasan
+Date:   Sat, 12 Jun 2021 12:51:53 +0800
+Message-Id: <20210612045156.44763-1-kylee0686026@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210612034042.3043112-1-palmer@dabbelt.com>
-In-Reply-To: <20210612034042.3043112-1-palmer@dabbelt.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Sat, 12 Jun 2021 10:12:24 +0530
-Message-ID: <CAAhSdy2oYbSa_c4cqaHcXKiMagOK9NB4F8stBM=cwi6hfAAHBA@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Use asm-generic for {in,out}{bwlq}
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 9:25 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> From: Palmer Dabbelt <palmerdabbelt@google.com>
->
-> The asm-generic implementation is functionally identical to the RISC-V
-> version.
->
-> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Add memory corruption identification for hardware tag-based KASAN mode.
 
-Indeed, these are same as asm-generic.
+Changes since v2:
+ - Thanks for Marco's Suggestion
+ - Rename the CONFIG_KASAN_SW_TAGS_IDENTIFY
+ - Integrate tag-based kasan common part
+ - Rebase to latest linux-next
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+Kuan-Ying Lee (3):
+  kasan: rename CONFIG_KASAN_SW_TAGS_IDENTIFY to
+    CONFIG_KASAN_TAGS_IDENTIFY
+  kasan: integrate the common part of two KASAN tag-based modes
+  kasan: add memory corruption identification support for hardware
+    tag-based mode
 
-Regards,
-Anup
+ lib/Kconfig.kasan         |  4 +--
+ mm/kasan/Makefile         |  4 +--
+ mm/kasan/hw_tags.c        | 22 ---------------
+ mm/kasan/kasan.h          |  4 +--
+ mm/kasan/report_hw_tags.c |  6 +---
+ mm/kasan/report_sw_tags.c | 46 +------------------------------
+ mm/kasan/report_tags.h    | 56 +++++++++++++++++++++++++++++++++++++
+ mm/kasan/sw_tags.c        | 41 ---------------------------
+ mm/kasan/tags.c           | 58 +++++++++++++++++++++++++++++++++++++++
+ 9 files changed, 122 insertions(+), 119 deletions(-)
+ create mode 100644 mm/kasan/report_tags.h
+ create mode 100644 mm/kasan/tags.c
 
-> ---
->  arch/riscv/include/asm/io.h | 13 -------------
->  1 file changed, 13 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/io.h b/arch/riscv/include/asm/io.h
-> index c025a746a148..69605a474270 100644
-> --- a/arch/riscv/include/asm/io.h
-> +++ b/arch/riscv/include/asm/io.h
-> @@ -52,19 +52,6 @@
->  #define __io_pbw()     __asm__ __volatile__ ("fence iow,o" : : : "memory");
->  #define __io_paw()     __asm__ __volatile__ ("fence o,io"  : : : "memory");
->
-> -#define inb(c)         ({ u8  __v; __io_pbr(); __v = readb_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
-> -#define inw(c)         ({ u16 __v; __io_pbr(); __v = readw_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
-> -#define inl(c)         ({ u32 __v; __io_pbr(); __v = readl_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
-> -
-> -#define outb(v,c)      ({ __io_pbw(); writeb_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
-> -#define outw(v,c)      ({ __io_pbw(); writew_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
-> -#define outl(v,c)      ({ __io_pbw(); writel_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
-> -
-> -#ifdef CONFIG_64BIT
-> -#define inq(c)         ({ u64 __v; __io_pbr(); __v = readq_cpu((void*)(c)); __io_par(__v); __v; })
-> -#define outq(v,c)      ({ __io_pbw(); writeq_cpu((v),(void*)(c)); __io_paw(); })
-> -#endif
-> -
->  /*
->   * Accesses from a single hart to a single I/O address must be ordered.  This
->   * allows us to use the raw read macros, but we still need to fence before and
-> --
-> 2.32.0.272.g935e593368-goog
->
+-- 
+2.25.1
+
