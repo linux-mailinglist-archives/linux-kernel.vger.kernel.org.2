@@ -2,65 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63343A4F33
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0F63A4F38
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhFLOMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 10:12:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230191AbhFLOMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 10:12:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4FF361376;
-        Sat, 12 Jun 2021 14:10:07 +0000 (UTC)
-Date:   Sat, 12 Jun 2021 16:10:05 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jakub Kici nski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>
-Subject: Re: [PATCH v4] net: make get_net_ns return error if NET_NS is
- disabled
-Message-ID: <20210612141005.igoy2di6xhbkg7cq@wittgenstein>
-References: <20210611142959.92358-1-changbin.du@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210611142959.92358-1-changbin.du@gmail.com>
+        id S231281AbhFLOU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 10:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLOU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 10:20:58 -0400
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F4BC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:18:47 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id f12-20020a056402150cb029038fdcfb6ea2so17313283edw.14
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=xb2QAx7zepAh/lQE/CJVc+d/CGuwmfQ6M6AYYspdx1I=;
+        b=Pn1g/j4Q/Ps8hO/Wv4OvCFaicBjrttTarkv+9pOFkNnWNh42V8bddGeTBrO7Vlw5cg
+         4Re/hLQOA9OFtL8OPulFNerctA3fi6rLZzfhwueqHLWuSSMio0KiWvt527JC1LgSqsb2
+         0BGa8BtMC9LNQROvUh4K4i3i8r4C1wLe3tGLLQZbGZvaVLEyjSIUSe0t+qtRBffeeF7d
+         kfctmL+xofvpBMsrn7fJkFCk7I4CIOn2L3ofNk9TRXWSYNS8is69W9dcKsEkIRQAK7FU
+         5Nr9P35dYmK7LOYSRj8fb1RokC30zVaHTZQ5vy0hjLOghItjI4u9ECqBDv2AxmgW5+3h
+         +T0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=xb2QAx7zepAh/lQE/CJVc+d/CGuwmfQ6M6AYYspdx1I=;
+        b=QYOUSOK9C9JR4cf3pMknENEqFgGdE0Vy+8OMm9zr2RIsLS+pylrJ9rDj39KypF7wau
+         cXekpiA1VLtWGUjq/Wpf2SOKRK4+l9uIsYhCEVgjzcpnNdDFWN+EqoZKr1f9Wsp9dEMe
+         DfVf+iGw+ZtRghv2MUp8HunE2SF42DaAHvBppx3H9GhrJ8Tg1FYB9obUTpfyG9rJxfe4
+         VVR7sOcLcd1m1SoVCqaL6QV7Qq1oZX0SckpT7efHHoWnZlIGjdRhMofsGdp0G7FDZzr0
+         gsfumtFjyzbWMQ0Yly+bHiglkYi6N/Lx2Yr4urj5i2nhRvovh8niBZEC4fSiQvfjabL7
+         zlrQ==
+X-Gm-Message-State: AOAM531pPwLscBv2WOFpeioiPTiCUsbJtidnpgjzBnZCdAmYq2sIrQun
+        GunjNprhhBOpZVtuF6a4GKieg3BANWw4NV8Nfd6htWW0xsX6d7YCGffv3wBQMt+bjQSwW142CC2
+        L+wJgVdDt27QuF1BzvAIbHwF0FZVXXzWeVhd3re4ZJfscd01WWVQR+UHE6mVBMW4ntZkknQd/76
+        s=
+X-Google-Smtp-Source: ABdhPJxV4Tljny9btCWJBH1v2SI+ztKhUT2tTQK+HNQFAwxoBsiqTJfeNy9EcbO/TEDFQfbxpoi5va0A06egsA==
+X-Received: from lux.lon.corp.google.com ([2a00:79e0:d:210:f276:1917:882e:b90d])
+ (user=maennich job=sendgmr) by 2002:a05:6402:1458:: with SMTP id
+ d24mr8742698edx.85.1623507525727; Sat, 12 Jun 2021 07:18:45 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 15:18:38 +0100
+Message-Id: <20210612141838.1073085-1-maennich@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+Subject: [PATCH] kbuild: mkcompile_h: consider timestamp if
+ KBUILD_BUILD_TIMESTAMP is set
+From:   Matthias Maennich <maennich@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, maennich@google.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:29:59PM +0800, Changbin Du wrote:
-> There is a panic in socket ioctl cmd SIOCGSKNS when NET_NS is not enabled.
-> The reason is that nsfs tries to access ns->ops but the proc_ns_operations
-> is not implemented in this case.
-> 
-> [7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
-> [7.670268] pgd = 32b54000
-> [7.670544] [00000010] *pgd=00000000
-> [7.671861] Internal error: Oops: 5 [#1] SMP ARM
-> [7.672315] Modules linked in:
-> [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
-> [7.673309] Hardware name: Generic DT based system
-> [7.673642] PC is at nsfs_evict+0x24/0x30
-> [7.674486] LR is at clear_inode+0x20/0x9c
-> 
-> The same to tun SIOCGSKNS command.
-> 
-> To fix this problem, we make get_net_ns() return -EINVAL when NET_NS is
-> disabled. Meanwhile move it to right place net/core/net_namespace.c.
-> 
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> Fixes: c62cce2caee5 ("net: add an ioctl to get a socket network namespace")
-> Cc: Cong Wang <xiyou.wangcong@gmail.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: David Laight <David.Laight@ACULAB.COM>
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+To avoid unnecessary recompilations, mkcompile_h does not regenerate
+compile.h if just the timestamp changed.
+Though, if KBUILD_BUILD_TIMESTAMP is set, an explicit timestamp for the
+build was requested, in which case we should not ignore it.
 
-Looks good,
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+If a user follows the documentation for reproducible builds [1] and
+defines KBUILD_BUILD_TIMESTAMP as the git commit timestamp, a clean
+build will have the correct timestamp. A subsequent cherry-pick (or
+amend) changes the commit timestamp and if an incremental build is done
+with a different KBUILD_BUILD_TIMESTAMP now, that new value is not taken
+into consideration. But it should for reproducibility.
+
+Hence, whenever KBUILD_BUILD_TIMESTAMP is explicitly set, do not ignore
+UTS_VERSION when making a decision about whether the regenerated version
+of compile.h should be moved into place.
+
+[1] https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
+
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org
+Signed-off-by: Matthias Maennich <maennich@google.com>
+---
+ scripts/mkcompile_h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
+index 4ae735039daf..a72b154de7b0 100755
+--- a/scripts/mkcompile_h
++++ b/scripts/mkcompile_h
+@@ -70,15 +70,23 @@ UTS_VERSION="$(echo $UTS_VERSION $CONFIG_FLAGS $TIMESTAMP | cut -b -$UTS_LEN)"
+ # Only replace the real compile.h if the new one is different,
+ # in order to preserve the timestamp and avoid unnecessary
+ # recompilations.
+-# We don't consider the file changed if only the date/time changed.
++# We don't consider the file changed if only the date/time changed,
++# unless KBUILD_BUILD_TIMESTAMP was explicitly set (e.g. for
++# reproducible builds with that value referring to a commit timestamp).
+ # A kernel config change will increase the generation number, thus
+ # causing compile.h to be updated (including date/time) due to the
+ # changed comment in the
+ # first line.
+ 
++if [ -z "$KBUILD_BUILD_TIMESTAMP" ]; then
++   IGNORE_PATTERN="UTS_VERSION"
++else
++   IGNORE_PATTERN="NOT_A_PATTERN_TO_BE_MATCHED"
++fi
++
+ if [ -r $TARGET ] && \
+-      grep -v 'UTS_VERSION' $TARGET > .tmpver.1 && \
+-      grep -v 'UTS_VERSION' .tmpcompile > .tmpver.2 && \
++      grep -v $IGNORE_PATTERN $TARGET > .tmpver.1 && \
++      grep -v $IGNORE_PATTERN .tmpcompile > .tmpver.2 && \
+       cmp -s .tmpver.1 .tmpver.2; then
+    rm -f .tmpcompile
+ else
+-- 
+2.32.0.272.g935e593368-goog
+
