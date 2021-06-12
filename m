@@ -2,115 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB453A5110
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DDD3A5115
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 00:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhFLV5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 17:57:24 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:48805 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFLV5X (ORCPT
+        id S231484AbhFLWFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 18:05:23 -0400
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:42948 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFLWFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 17:57:23 -0400
-Received: by mail-io1-f69.google.com with SMTP id u19-20020a6be3130000b02904a77f550cbcso20876527ioc.15
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 14:55:23 -0700 (PDT)
+        Sat, 12 Jun 2021 18:05:18 -0400
+Received: by mail-ed1-f46.google.com with SMTP id i13so41391355edb.9;
+        Sat, 12 Jun 2021 15:03:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rEDs96ONr8FmGsjH+zhg8paw9S/VwLylFUAj5qFQW1M=;
+        b=kbtIThhn6Eq2Qje5WRWnpASrFaPEFA67EEv9cJxwlGv91wx+pUx0y8AHAeUIMO6l4K
+         oMw3YzHzQ4kusadFsvCIuipG5Q0QgqHY+uSCOXxV+5UDjHXE03JmYxGttBTFLQyZeS4D
+         BJqkedJlohPXsuZedFQJAHohyT5KO+UoKs4mf+CpoI+ov7OEG9afV3P1CF8SoYqHnrrX
+         0oSBfEWjuM7u2qKWVDK+AvPI2/GZyFDK7rTjwzM2oJ1v2w/veskIa+HvpTEOrdle1ELy
+         qRaOx818HzONzHcJ9P1uj1F+KNFKfMg6H1kf0uBK/5LX0pIxLKdfk437EdY+y2Zl6bTo
+         Mgwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=JvW3AZLZ5AU0AeVEQLVMqJQnd1D3HCg+m7PNitgUroM=;
-        b=CR/3r0FdMEpa2owkH6ANg9Aif1vnQ4QToylsWGY5XN/g3WPDaBY27OGrAXmLQc5RFD
-         GLzb6oQv/vXYQs1ZZ5OYYWZZZ1+gCKu3tpM7zmfBU4SyMHusDlgEG1hCpBNVV5ZQ9+9+
-         e/+Kvz153tlWetyiZW5Age1k01MlzVWh2DyqoHMGZ6BwVNVgqR5cLrZjAxlTuAvB1pl+
-         umFrMrFQ+hVwIgMbpeIvM0j8b5JEFZKLkk+stONLYIjWK4PSS879QuMPk+Y7MMJ/d3Cf
-         PAKDYd/ktGvbw3Zq2vcsvlj3WYHWdAtKzIbxAHdZ3ALE1U8oriPq0slVPbsG2m7AHu0F
-         vOUw==
-X-Gm-Message-State: AOAM532BFFmqCE9f3a2X9nkIM8JTbYOSv6Wu4gZL8D/rwse2FS0aB0jc
-        mUG9zsE+0GyG06V7aSX17ZLG+em0j2twCf0/ZkMEsuFvR4kY
-X-Google-Smtp-Source: ABdhPJxNWr/Wn2tHOO2mB6LLlN2OjW+gCFbH9DQt3FSPTw+LzePWeA3imaEKyodEkCq1yzO/L4Lvs6h4jl9qh6qM+lNBmGGAqgP5
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rEDs96ONr8FmGsjH+zhg8paw9S/VwLylFUAj5qFQW1M=;
+        b=bLBKUD5Bp4oS7sJGFnUj5VolrzBWoZ+28i+YNuGMq0Ncit+DmwZ2pADSLGDHb6FabI
+         rQWyRdxehlhymKsJQUOCfUmq+dXe333Ke4AUp8LQBoN8aMJ8YIV2lfwycrKka6CSq/eh
+         aDQYoOOMp8CNPKrjrMV07wOHvCIbhvDmibOhK3NXpCwM6lJE1zvatq5i56jaBqquD1VS
+         1CmLcLXSKq4Wo5rrdqNAaJhX5KYasHKxEugSWP2XrAkKob7mkU7YxCGGr82+Qs01O7g1
+         On9uRKDpW8Vl9RGGqizXmNIqyHIiB7S04E1F3WA19f5+XEb7NKdXjOVtmJyN9lUvI4Pw
+         XJKw==
+X-Gm-Message-State: AOAM531c4dIb43xKEE4Ly6hBHEFIlf/GhWHww3v9aoQCVTTAu6wTEZ2O
+        wf4Ij1k3IeLvZcvlU82UE3fhoNTcEXaTL2TyUKA=
+X-Google-Smtp-Source: ABdhPJwocf+UkwLvI13sMGMlwzWKxuqsxhrp6exew0/a0z/JV3U5Vu/lylFpX54PhzLJx6f/DRjA7ja7BWxLykoGJrc=
+X-Received: by 2002:a05:6402:3082:: with SMTP id de2mr9827627edb.214.1623535337350;
+ Sat, 12 Jun 2021 15:02:17 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3393:: with SMTP id h19mr10392817jav.0.1623534922684;
- Sat, 12 Jun 2021 14:55:22 -0700 (PDT)
-Date:   Sat, 12 Jun 2021 14:55:22 -0700
-In-Reply-To: <0000000000003853da05c39afd00@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000058deb505c498ae70@google.com>
-Subject: Re: [syzbot] kernel BUG in mpage_prepare_extent_to_map
-From:   syzbot <syzbot+99043e2052d9c50c81fc@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
+References: <20210608080409.1729276-1-javierm@redhat.com>
+In-Reply-To: <20210608080409.1729276-1-javierm@redhat.com>
+From:   Peter Robinson <pbrobinson@gmail.com>
+Date:   Sat, 12 Jun 2021 23:02:06 +0100
+Message-ID: <CALeDE9PAEArn6zTNkWe+eNomx4f1A2sK=jB+7GzE8MRJo=epAw@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Tue, Jun 8, 2021 at 9:04 AM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+>
+> IRQ handlers that are registered for shared interrupts can be called at
+> any time after have been registered using the request_irq() function.
+>
+> It's up to drivers to ensure that's always safe for these to be called.
+>
+> Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
+> their handlers are registered very early in the probe function, an error
+> later can lead to these handlers being executed before all the required
+> resources have been properly setup.
+>
+> For example, the rockchip_pcie_read() function used by these IRQ handlers
+> expects that some PCIe clocks will already be enabled, otherwise trying
+> to access the PCIe registers causes the read to hang and never return.
+>
+> The CONFIG_DEBUG_SHIRQ option tests if drivers are able to cope with their
+> shared interrupt handlers being called, by generating a spurious interrupt
+> just before a shared interrupt handler is unregistered.
+>
+> But this means that if the option is enabled, any error in the probe path
+> of this driver could lead to one of the IRQ handlers to be executed.
+>
+> In a rockpro64 board, the following sequence of events happens:
+>
+>   1) "pcie-sys" IRQ is requested and its handler registered.
+>   2) "pcie-client" IRQ is requested and its handler registered.
+>   3) probe later fails due readl_poll_timeout() returning a timeout.
+>   4) the "pcie-sys" IRQ is unregistered.
+>   5) CONFIG_DEBUG_SHIRQ triggers a spurious interrupt.
+>   6) "pcie-client" IRQ handler is called for this spurious interrupt.
+>   7) IRQ handler tries to read PCIE_CLIENT_INT_STATUS with clocks gated.
+>   8) the machine hangs because rockchip_pcie_read() call never returns.
+>
+> To avoid cases like this, the handlers don't have to be registered until
+> very late in the probe function, once all the resources have been setup.
+>
+> So let's just move all the IRQ init before the pci_host_probe() call, that
+> will prevent issues like this and seems to be the correct thing to do too.
+>
+> Reported-by: Peter Robinson <pbrobinson@gmail.com>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> Acked-by: Shawn Lin <shawn.lin@rock-chips.com>
+Tested-by: Peter Robinson <pbrobinson@gmail.com>
 
-HEAD commit:    ad347abe Merge tag 'trace-v5.13-rc5-2' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16223e3fd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=30f476588412c065
-dashboard link: https://syzkaller.appspot.com/bug?extid=99043e2052d9c50c81fc
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1204231fd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1324e4d0300000
+Tested on a Rock960, Firefly3399 and a Pinebook Pro
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+99043e2052d9c50c81fc@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 512
-EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue. Quota mode: none.
-------------[ cut here ]------------
-kernel BUG at fs/ext4/inode.c:2704!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8394 Comm: syz-executor475 Not tainted 5.13.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ext4_writepages+0x244d/0x3b70 fs/ext4/inode.c:2704
-Code: e1 be 00 10 00 00 4c 89 ef 48 d3 ee ba 01 00 00 00 e8 57 23 fe ff 83 c0 01 89 84 24 bc 00 00 00 e9 2d e2 ff ff e8 73 d5 66 ff <0f> 0b e8 6c d5 66 ff 44 0f b6 a4 24 db 00 00 00 89 5c 24 08 e9 a7
-RSP: 0018:ffffc900019ff580 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff88801cad54c0 RSI: ffffffff820e071d RDI: 0000000000000003
-RBP: ffff888035bc5a08 R08: 0000000000000000 R09: ffff888035bc5a0f
-R10: ffffffff820dfbf3 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888035bc5cf0 R14: ffffc900019ffa08 R15: ffff88801d9ea000
-FS:  0000000000865300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff50003d188 CR3: 000000002e66c000 CR4: 0000000000350ee0
-Call Trace:
- do_writepages+0xec/0x290 mm/page-writeback.c:2352
- __filemap_fdatawrite_range+0x2a5/0x390 mm/filemap.c:413
- file_write_and_wait_range+0xb2/0x120 mm/filemap.c:792
- ext4_sync_file+0x21f/0xfd0 fs/ext4/fsync.c:151
- vfs_fsync_range+0x13a/0x220 fs/sync.c:200
- generic_write_sync include/linux/fs.h:2982 [inline]
- ext4_buffered_write_iter+0x36a/0x4d0 fs/ext4/file.c:277
- ext4_file_write_iter+0x423/0x14e0 fs/ext4/file.c:680
- call_write_iter include/linux/fs.h:2114 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x796/0xa30 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x443dc9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffef54952a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 0000000000443dc9
-RDX: 0000000000000082 RSI: 0000000020000180 RDI: 0000000000000004
-RBP: 0000000000403660 R08: 00000000004004a0 R09: 00000000004004a0
-R10: 00000000004004a0 R11: 0000000000000246 R12: 00000000004036f0
-R13: 0000000000000000 R14: 00000000004b2018 R15: 00000000004004a0
-Modules linked in:
----[ end trace e0abbb4b21cfac7f ]---
-RIP: 0010:ext4_writepages+0x244d/0x3b70 fs/ext4/inode.c:2704
-Code: e1 be 00 10 00 00 4c 89 ef 48 d3 ee ba 01 00 00 00 e8 57 23 fe ff 83 c0 01 89 84 24 bc 00 00 00 e9 2d e2 ff ff e8 73 d5 66 ff <0f> 0b e8 6c d5 66 ff 44 0f b6 a4 24 db 00 00 00 89 5c 24 08 e9 a7
-RSP: 0018:ffffc900019ff580 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff88801cad54c0 RSI: ffffffff820e071d RDI: 0000000000000003
-RBP: ffff888035bc5a08 R08: 0000000000000000 R09: ffff888035bc5a0f
-R10: ffffffff820dfbf3 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888035bc5cf0 R14: ffffc900019ffa08 R15: ffff88801d9ea000
-FS:  0000000000865300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f205933e000 CR3: 000000002e66c000 CR4: 0000000000350ef0
-
+> ---
+>
+> Changes in v2:
+> - Add missing word in the commit message.
+> - Include Shawn Lin's Acked-by tag.
+>
+>  drivers/pci/controller/pcie-rockchip-host.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+> index f1d08a1b159..78d04ac29cd 100644
+> --- a/drivers/pci/controller/pcie-rockchip-host.c
+> +++ b/drivers/pci/controller/pcie-rockchip-host.c
+> @@ -592,10 +592,6 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
+>         if (err)
+>                 return err;
+>
+> -       err = rockchip_pcie_setup_irq(rockchip);
+> -       if (err)
+> -               return err;
+> -
+>         rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
+>         if (IS_ERR(rockchip->vpcie12v)) {
+>                 if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
+> @@ -973,8 +969,6 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+>         if (err)
+>                 goto err_vpcie;
+>
+> -       rockchip_pcie_enable_interrupts(rockchip);
+> -
+>         err = rockchip_pcie_init_irq_domain(rockchip);
+>         if (err < 0)
+>                 goto err_deinit_port;
+> @@ -992,6 +986,12 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+>         bridge->sysdata = rockchip;
+>         bridge->ops = &rockchip_pcie_ops;
+>
+> +       err = rockchip_pcie_setup_irq(rockchip);
+> +       if (err)
+> +               goto err_remove_irq_domain;
+> +
+> +       rockchip_pcie_enable_interrupts(rockchip);
+> +
+>         err = pci_host_probe(bridge);
+>         if (err < 0)
+>                 goto err_remove_irq_domain;
+> --
+> 2.31.1
+>
