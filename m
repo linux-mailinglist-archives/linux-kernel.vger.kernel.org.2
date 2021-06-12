@@ -2,126 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AE43A50B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 22:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69933A50BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhFLU7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 16:59:54 -0400
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:45798 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhFLU7x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 16:59:53 -0400
-Received: by mail-ed1-f45.google.com with SMTP id r7so26865651edv.12
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 13:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OSnBn94ZP8p/1/buUtxgjO9fzVQ2s0+6fGFuy2vE7IA=;
-        b=L8JRkLCoAJMOPS9X4wb9Vx9xV6mJeXX9OnrLLtLRj8v0O6TK1m6d3Q8IAUBuTVihqm
-         Zr1Qnd26IEuwn8YxasVLvOa4MerfYNGg2/oBYidoU5xZitx7iFIEZCn/DreAIv9sGfzN
-         QcmFY+jvINuN9oNXV0pfFvmnxTTgK70KhrTmn+U3JxmLtMkbrGjAKLG5QZdAyKz6fU4U
-         xL6bxG9d1GFxenrPA8v32BZTHIyjHCh2JXfWr1pjHaoZ9gisaTtecsq9zHcDl38sxoJq
-         iyTlaRLnjgAWXh05YQwRMC3/gwwS24HZ5ebqnqWuCuqdHeB41F++mXaSkBKOCF9u+fJD
-         KgVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OSnBn94ZP8p/1/buUtxgjO9fzVQ2s0+6fGFuy2vE7IA=;
-        b=rFrldp2O2BDhcGMdZDyVEUoC6KmhCKSiuXxxvd1tnNqldFbPGBeW6Erh0hy/GbU4oL
-         /cZLA3xIaTdYygZbHGOtTc05jeqPiwYOwaQZ9UieMvfwjndvFzf+FLkSLNi9K2/qa3/b
-         vzxaKlZ8yfsC+c2xq3NDf2xV0G3eJ5Se0bkEftFPDrZxiP98eQ8lb+NRLv43Xuf3Pcy1
-         jwC01AwZYicneC86W62szxDKpzOHo4WN1dhhlmcHYRUPKsRQwghzKygB1v5VSRv2PplU
-         fKy9ZT6cjRblZ7G0wrFxUx8PfHzs6RjhjQUxq00Pgss3xMA702NSsHb5zAnW/Nxs2rfZ
-         craQ==
-X-Gm-Message-State: AOAM533zllZLqSG8BIx09U/0/Uc/4DVVuYFQPYR9F+IssaPtMYZyJbwA
-        ZmtnI8DnEY2GQinpvxyPSJU2BXTCpOjYUXvNAxkv
-X-Google-Smtp-Source: ABdhPJyYJE2ISa6cLinTCpUVNh0FFrEBCrHI/CzUhsFOm13Z/Pu1dGmJFBRBy3PzDSdVV0nIAMmEfnLQ3ipF5C9FdxA=
-X-Received: by 2002:a05:6402:946:: with SMTP id h6mr9974082edz.261.1623531412092;
- Sat, 12 Jun 2021 13:56:52 -0700 (PDT)
+        id S230239AbhFLVFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 17:05:02 -0400
+Received: from mga11.intel.com ([192.55.52.93]:55380 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhFLVFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 17:05:00 -0400
+IronPort-SDR: 90RT3ENDbV6vnZwhloPoIazSZqj2+jaG9IuzF/4IQhuyUTQpHNALo8H1QXnzJUUVqPyaq/tMen
+ uwp0h1UXo2Eg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10013"; a="202655435"
+X-IronPort-AV: E=Sophos;i="5.83,268,1616482800"; 
+   d="scan'208";a="202655435"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2021 14:02:53 -0700
+IronPort-SDR: pFcskhteLuXgwcaDcVq7Nd6XOsItE3J+HvqX/h629rMEp4nYJL7zhXSCqQOh81yzEH4slS8h0g
+ z7IWDFd0GBvg==
+X-IronPort-AV: E=Sophos;i="5.83,268,1616482800"; 
+   d="scan'208";a="451147156"
+Received: from rong2-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.36.179])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2021 14:02:53 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 03/12] x86/cpufeatures: Add TDX Guest CPU feature
+Date:   Sat, 12 Jun 2021 14:02:19 -0700
+Message-Id: <20210612210219.2164766-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YMI2MtZ/poULESej@zn.tnic>
+References: <YMI2MtZ/poULESej@zn.tnic>
 MIME-Version: 1.0
-References: <20210111081821.3041587-1-morbo@google.com> <20210407211704.367039-1-morbo@google.com>
- <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net> <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
- <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net> <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
- <20210612202505.GG68208@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210612202505.GG68208@worktop.programming.kicks-ass.net>
-From:   Bill Wendling <morbo@google.com>
-Date:   Sat, 12 Jun 2021 13:56:41 -0700
-Message-ID: <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 1:25 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> On Sat, Jun 12, 2021 at 12:10:03PM -0700, Bill Wendling wrote:
-> Yes it is, but is that sufficient in this case? It very much isn't for
-> KASAN, UBSAN, and a whole host of other instrumentation crud. They all
-> needed their own 'bugger-off' attributes.
->
-> > > We've got KCOV and GCOV support already. Coverage is also not an
-> > > argument mentioned anywhere else. Coverage can go pound sand, we really
-> > > don't need a third means of getting that.
-> > >
-> > Those aren't useful for clang-based implementations. And I like to
-> > look forward to potential improvements.
->
-> I look forward to less things doing the same over and over. The obvious
-> solution if of course to make clang use what we have, not the other way
-> around.
->
-That is not the obvious "solution".
+Add CPU feature detection for Trusted Domain Extensions support. TDX
+feature adds capabilities to keep guest register state and memory
+isolated from hypervisor.
 
-> > > Do you have actual numbers that back up the sampling vs instrumented
-> > > argument? Having the instrumentation will affect performance which can
-> > > scew the profile just the same.
-> > >
-> > Instrumentation counts the number of times a branch is taken. Sampling
-> > is at a gross level, where if the sampling time is fine enough, you
-> > can get an idea of where the hot spots are, but it won't give you the
-> > fine-grained information that clang finds useful. Essentially, while
-> > sampling can "capture the hot spots very well", relying solely on
-> > sampling is basically leaving optimization on the floor.
-> >
-> > Our optimizations experts here have determined, through data of
-> > course, that instrumentation is the best option for PGO.
->
-> It would be very good to post some of that data and explicit examples.
-> Hear-say don't carry much weight.
+For TDX guest platforms, executing CPUID(eax=0x21, ecx=0) will return
+following values in EAX, EBX, ECX and EDX.
 
-Should I add measurements from waving a dead chicken over my keyboard?
-I heard somewhere that that works as well. Or how about a feature that
-hasn't been integrated yet, like using the perf tool apparently? I'm
-sure that will be worth my time. You can't just come up with a
-potential, unimplemented alternative (gcov is still a thing and not
-using "perf") and expect people to dance to your tune.
+EAX:  Maximum sub-leaf number:  0
+EBX/EDX/ECX:  Vendor string:
 
-I could give you numbers, but they would mean nothing to you, and I
-suspect that you would reject them out of hand because it may not
-benefit *everything*. The nature of FDO/PGO is that it's targeted to
-specific tasks.
+EBX =  "Inte"
+EDX =  "lTDX"
+ECX =  "    "
 
-For example, Fangrui gave you numbers, and you rejected them out of
-hand. I've explained to you why instrumentation is better than
-sampling (at least for clang). Fangrui gave you numbers. Let's move on
-to something else.
+So when above condition is true, set X86_FEATURE_TDX_GUEST feature cap
+bit.
 
-Now, for the "nointr" issue. I'll see if we need an additional change for that.
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
 
--bw
+Changes since v1:
+ * Fixed commit log issues reported by Borislav.
+ * Moved header file include to the start of tdx.h.
+ * Added pr_fmt for TDX.
+ * Simplified cpuid_has_tdx_guest() implementation as per
+   Borislav comments.
+
+ arch/x86/include/asm/cpufeatures.h |  1 +
+ arch/x86/include/asm/tdx.h         | 20 ++++++++++++++++++++
+ arch/x86/kernel/Makefile           |  1 +
+ arch/x86/kernel/head64.c           |  3 +++
+ arch/x86/kernel/tdx.c              | 29 +++++++++++++++++++++++++++++
+ 5 files changed, 54 insertions(+)
+ create mode 100644 arch/x86/include/asm/tdx.h
+ create mode 100644 arch/x86/kernel/tdx.c
+
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index ac37830ae941..dddc3a27cc8a 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -238,6 +238,7 @@
+ #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
+ #define X86_FEATURE_PVUNLOCK		( 8*32+20) /* "" PV unlock function */
+ #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* "" PV vcpu_is_preempted function */
++#define X86_FEATURE_TDX_GUEST		( 8*32+22) /* Trusted Domain Extensions Guest */
+ 
+ /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
+ #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+new file mode 100644
+index 000000000000..c738bde944d1
+--- /dev/null
++++ b/arch/x86/include/asm/tdx.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (C) 2020 Intel Corporation */
++#ifndef _ASM_X86_TDX_H
++#define _ASM_X86_TDX_H
++
++#include <linux/cpufeature.h>
++
++#define TDX_CPUID_LEAF_ID	0x21
++
++#ifdef CONFIG_INTEL_TDX_GUEST
++
++void __init tdx_early_init(void);
++
++#else
++
++static inline void tdx_early_init(void) { };
++
++#endif /* CONFIG_INTEL_TDX_GUEST */
++
++#endif /* _ASM_X86_TDX_H */
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 0f66682ac02a..af09ce93a641 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -126,6 +126,7 @@ obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
+ obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
+ 
+ obj-$(CONFIG_JAILHOUSE_GUEST)	+= jailhouse.o
++obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx.o
+ 
+ obj-$(CONFIG_EISA)		+= eisa.o
+ obj-$(CONFIG_PCSPKR_PLATFORM)	+= pcspeaker.o
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index de01903c3735..d1a4942ae160 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -40,6 +40,7 @@
+ #include <asm/extable.h>
+ #include <asm/trapnr.h>
+ #include <asm/sev.h>
++#include <asm/tdx.h>
+ 
+ /*
+  * Manage page tables very early on.
+@@ -491,6 +492,8 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
+ 
+ 	kasan_early_init();
+ 
++	tdx_early_init();
++
+ 	idt_setup_early_handler();
+ 
+ 	copy_bootdata(__va(real_mode_data));
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+new file mode 100644
+index 000000000000..70494b465392
+--- /dev/null
++++ b/arch/x86/kernel/tdx.c
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2020 Intel Corporation */
++
++#undef pr_fmt
++#define pr_fmt(fmt)     "x86/tdx: " fmt
++
++#include <asm/tdx.h>
++
++static inline bool cpuid_has_tdx_guest(void)
++{
++	u32 eax, sig[3];
++
++	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID)
++		return false;
++
++	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[1], &sig[2]);
++
++	return !memcmp("IntelTDX    ", sig, 12);
++}
++
++void __init tdx_early_init(void)
++{
++	if (!cpuid_has_tdx_guest())
++		return;
++
++	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
++
++	pr_info("Guest is initialized\n");
++}
+-- 
+2.25.1
+
