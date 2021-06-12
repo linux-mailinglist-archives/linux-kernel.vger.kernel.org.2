@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FB73A4FA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 18:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24743A4FA7
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 18:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhFLQHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 12:07:17 -0400
+        id S231461AbhFLQHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 12:07:23 -0400
 Received: from esa1.hgst.iphmx.com ([68.232.141.245]:35991 "EHLO
         esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhFLQHP (ORCPT
+        with ESMTP id S231158AbhFLQHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 12:07:15 -0400
+        Sat, 12 Jun 2021 12:07:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623513915; x=1655049915;
+  t=1623513921; x=1655049921;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:content-transfer-encoding:mime-version;
-  bh=7MWX5rkO73M7w4VkaGc9yiSAMhOrAqcVTpPh5/CYyyA=;
-  b=E+l4oCy3imrXbl6hzrMhjMgtb5qQv4BI1n8WwqSZsNiWYTaV7MM7WRra
-   afzqJS9UPesbYXB9nhtS4FIW7hxyHbMdHwXMAjqbEflUKJ0T/QmcP5l87
-   Y8Kwq4EjKAHCLiZIeeT2WM9RzLPK68t0GW6XT5UP7k9kqUQ3AD9vF1xC1
-   1jKaroEkHXawzAHyXmVPwyqkqhSwRRKzd78DNtsQIJpHPvvMsraGOYmIZ
-   U7ECy10ji+Rd0GBxC8iTS1SYlpUKxV+o7QuiiMwndnnQPUvKTBlWpB9Sp
-   DW+UOf6MN5ZovBVdjGLl+jP+Czi4bGXOSJ4T5wwYjhVxKAm7Fl5UDjiMH
-   Q==;
-IronPort-SDR: 9i0ThQt77I7MCr6GHm0Pf6u2MBn1jtOPjrS3eI+cVTnjdSR9VbbNW+2xuneR1HVaL3KR+8d0l+
- /qqp4P/x8nxfdcMkWbTCUIv6MlRVUxKUGefqDyja5Z01lU7xQt9BhHqVrbwBe0ZXYHcbpkOtUR
- DHLYFDSM7tb8+vMmBGW6uDnxnHsDlQ0G1APARZ92IaMlIF2N4V3zx8kQQVoK9We52qmDHVLlks
- gPW2podpWTUD0vwE/R5ZEktqdF6agO5yaoxllQ1A1PG4kZauiyUgAL9W4zrTVx38zT5EN7bFyf
- YAE=
+  bh=jkbKSZvRwwjsXmYu1Ws9MweMMyO4gkhzwEKijSyT1hU=;
+  b=If7MyT4s3OZknPT/fM28MdGhqWX3fHWKaLvoq4U/1rIND2mk4IhkSdTm
+   0r5j93oVxbb7Pqy3Y6fFOywfwoLD/mSmRXp8lcG9Wr3GOOABzEV/qQeIv
+   dklurvfjJTpAUWIaiHPNe27Y2IkHrLRvP/MDbCLu+YWsUm6/d2QvQGwgd
+   HlP+O6L5pZ4e5OhAoQrOIiv9tyQVrSIHj144yw32rGHK4dQEuD+x4qEpS
+   MY/U2prPcO2wxEVHD+mMyZb2GwALPiMaxIFIO3Yp+bewbC6BGsHH57Wgy
+   xq4Qxz8jEgCjPh2JSw1A6loeqsS8x1coxGrqFWGXCDpEJWtCilQu3IN6K
+   g==;
+IronPort-SDR: zuJNsFmdbwRRSy14JrvQgUubScOKoh/GLTxO6LHpKcj4yEPrBasmLHeLjXvD7kztTEA2t2GJYr
+ PWYsT8c0AUTvq/5jD1N1+/sNP2N6KcllDw5Kz/+Kr2JwHcOSAA9q49dq3jFbXXeXrf5Vzn4AGq
+ bX1Dq3KofsZQZ7iTV1DWPdoU2Q1gnfSK/Gmf1GvWNOMzyNhD8rLssZxvaUTr4IS5GP5y/3yoRd
+ uRRIANh9dahavYtkWTBktpKFmC6+CStZIt7CrKW9WWI2KIy8yeoTkGWaJDxN6bDOK3aBCwXbt5
+ J68=
 X-IronPort-AV: E=Sophos;i="5.83,268,1616428800"; 
-   d="scan'208";a="283160885"
-Received: from mail-bn8nam08lp2043.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.43])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jun 2021 00:05:13 +0800
+   d="scan'208";a="283160914"
+Received: from mail-bn8nam08lp2048.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.48])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Jun 2021 00:05:19 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K7N0wVwNgiU0g763wm4OcRq2Nn/3N5fngjLnbJcMCdBdfEMAbl2iDQaomqELsuThvKY4kD/zZNo3JazcXoehWW0DoYmME+OY6UEiHvFe0r2hipAK1rmAMbhA/MtCMwDhVaNmoZFHrL980/H1JMgODqOWEyDqLk5r9mz5N4kx8MKOVIA3jRvIXwulOoa87IOTe/BXEZ7JAIHsmnOJGIEOZA1NiHoY8uSnbGgl+3nkp3Cseaf0DCQ0DrtDSr2QpSVjeLNZh2Pa2safsrcI73RT/3wd6Rnlku36eb6ryKfRbSSYsXwpYuyBp6yJv+sSYhAMr3aam0dJc33HkSqIGqj5Gw==
+ b=U768wQP2lUvyJd4t0bjk0NjmjGU3agOZe8mtaTErSNasdGS/cFVlVn4aaVqZm4IrREDsqp5mb17zwSq943QdEG8miP3w8pM4I6/1DyAWNGEZpxY4f1KZlRM4wx9mRUpxCQNWYGATcRtEoZYwWdhk3ZByJp4sC6UIAJAUvA1SrAJTW1khlYxnoi12x0RlJM7xcJum4r63RRikUrEN2ev7n+EW0hduuzM0UtSZ5xmUL4wMRHReRpzEomIJgo7PDxj60vQDZNo39ojnvQBVhwUe8LZMvrjLoUd1Yr2DqRUY76LPzqeXY3/aD9Id7AxRAErFgRyPCufi+KNltfl9A1wrMw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1UimvPwu8qriuH4bRJW9BNpqo978uUwuYWqdNtjjGrI=;
- b=IV/xg9Lle/NVuN5k+UXSXp26KQ6BH3qJXjkSbXrRMSeIFX86Wipc7tUYKYPT+GKwRcb4pX+AdDdYu/y1cuwq92PM+wo+UMZNT/D2oQKm2icXGREoRv4eVNxjqU9EPEWvLoCWBJN5VHyvb/7H3Ewyx6o1k1dih3L3/CaSTKePE6Xi4/TMJajNcNwvPNJwa9OJ1X7GIIVaDDpP+oTZXYEhb8Ed0bRZ0m1K7h8xam+hv9+v4FP927pkmJL1mCPcHn35F6Xh4ttGx2wpiq0LeMiAE5+W/qdo4dnrNTZ3wy4mfb8tQlTuxn5nNwQrBjiLPL35O2dAVO137+N2yfHx98sO5Q==
+ bh=0Jtqet2fuPqM7Ms6NUR+wXwwQts7PJjG2T9FblTTEjs=;
+ b=cEtM8ep3iGi4gb0AWbbqNpTXOUjJzHrqJlyZ/tdJcDGLzzOrp5YUg4JWV+Nldm4IwXrKYmp8pms/97jynFFYj5Zv9viVCbVbCSQ7V/80ebSAFTx9uf1a2i5tks7XMwaTibtX8hkze7kudm5QQLeLLRGh2V4/dzPcgqgELAe5JIcAj+GzNLQuEkMwkvK/aYEAik3zZwR2AnZK9pWUiHhOaPDwZLQ5ft26WphlGn8FZC4CpnBDfmonUS67PTWAmqrHB4jAgUZ1bUZUPFwLlfe86k5l7BW4Q2rywHnB5DLqw3rr5ArDvofDtbOCUQzEe1Xn1a/I7UrF0ZoWrNkdTSmtIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1UimvPwu8qriuH4bRJW9BNpqo978uUwuYWqdNtjjGrI=;
- b=OD9c7Lg3VKcls959TgBgO9iUlIp0XbBudy68LcazUxH6ltHq/9tobPf25x4nL6cDhGmyZ5JaTJNssD1Gmwx0v3/d9XQyxdebWNgTyLByyPwdLzK3i/TtnUKC2sBtZ6V/DYi896s4k7xJyqdNr40GAxt46CvHrl3JKDmA/0Rqf5Y=
+ bh=0Jtqet2fuPqM7Ms6NUR+wXwwQts7PJjG2T9FblTTEjs=;
+ b=I4hOcxcYaRCxwuVSNyBDqR7gzhPRf+6gqOpM7615pl3u/ywubo5cqg1SCrtEpjA4G0y3weIDD4LfC33sWY3XWMbKFfObpbGrbn5jqd4o9D2Q574cZdqGhtuPa6FSXtprf40YuRj8I7a4k2GhI8ntcLkaNtS1BjW2fbJVxUKzh68=
 Authentication-Results: dabbelt.com; dkim=none (message not signed)
  header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
 Received: from CO6PR04MB7812.namprd04.prod.outlook.com (10.242.165.134) by
  CO6PR04MB7795.namprd04.prod.outlook.com (10.242.164.231) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4219.23; Sat, 12 Jun 2021 16:05:12 +0000
+ 15.20.4219.23; Sat, 12 Jun 2021 16:05:18 +0000
 Received: from CO6PR04MB7812.namprd04.prod.outlook.com
  ([fe80::a153:b7f8:c87f:89f8]) by CO6PR04MB7812.namprd04.prod.outlook.com
  ([fe80::a153:b7f8:c87f:89f8%9]) with mapi id 15.20.4219.025; Sat, 12 Jun 2021
- 16:05:12 +0000
+ 16:05:18 +0000
 From:   Anup Patel <anup.patel@wdc.com>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
@@ -72,9 +72,9 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Anup Patel <anup@brainfault.org>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Anup Patel <anup.patel@wdc.com>
-Subject: [RFC PATCH v1 03/10] RISC-V: Allow more details in IPI operations
-Date:   Sat, 12 Jun 2021 21:34:15 +0530
-Message-Id: <20210612160422.330705-4-anup.patel@wdc.com>
+Subject: [RFC PATCH v1 04/10] RISC-V: Use IPIs for remote TLB flush when possible
+Date:   Sat, 12 Jun 2021 21:34:16 +0530
+Message-Id: <20210612160422.330705-5-anup.patel@wdc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210612160422.330705-1-anup.patel@wdc.com>
 References: <20210612160422.330705-1-anup.patel@wdc.com>
@@ -86,193 +86,183 @@ X-ClientProxiedBy: MA1PR0101CA0052.INDPRD01.PROD.OUTLOOK.COM
  (2603:10b6:303:138::6)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (122.171.171.205) by MA1PR0101CA0052.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Sat, 12 Jun 2021 16:05:07 +0000
+Received: from wdc.com (122.171.171.205) by MA1PR0101CA0052.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Sat, 12 Jun 2021 16:05:13 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7b306fb6-a8f8-47b9-89a8-08d92dbbdc15
+X-MS-Office365-Filtering-Correlation-Id: 1f8bcbea-867b-4a7e-cbfe-08d92dbbdf70
 X-MS-TrafficTypeDiagnostic: CO6PR04MB7795:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR04MB7795571A703063D350A2EB2E8D339@CO6PR04MB7795.namprd04.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <CO6PR04MB7795E9F5C01F91D0210081238D339@CO6PR04MB7795.namprd04.prod.outlook.com>
 WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V+IOVjZJcy9B21XZpyTZT9oztD1hudAf7Ad10rFqYBRS7zJjFli6KWy6EUZvDAIr30XBFR8nYy6nH9sys1eh1FfoJcIfkoVrojgmqUTUCiDO9DkjVnDLzTBVsRsFJ16t5XeeVveq9zaAwTtThHOEILEDujv84cL76qHKzeKetiouslgtkamhRcur5bpJhRd/+494ffLmm8QtuzQNThF8dv8MdiSkXKTtF4FyGHlq0IEsC3AZH/qCdZzqtBlQaWbBZJmqV6HHBCvDdjeMjfztMaP3GUk3A+6lS+YRvvW+m8LkxT7628ywRQQ9XSvCjWwaxHlUsK4874RXI+LDYca245to2trA3sLxNiqZzcUgFc6juQ1+6a3d1SfEKEdLogWnNe6wJilhQexnXmtOO+gfmsCnmGQAV1om4wtA7iiSgk+eQ+Dqn+FPuyX71m15xUtF9Q6ftSLfjfkPq2HcfhSB63bPzy/FyZTDkbrTGrjs9PxqTVVyjAFr8mlZ9j6l0XafBKUtRVcHrFZJw4mCYdNJ93qWGp34m+N0qtQM/oTr+ox0SKkDz1E3lmOKXUXre6aXrmTT/O1MksUYb2eb+FWWDifRERj9AN13CXiRaliW1amoKU/SmhOITuQTHeGurhjfblPWe776DuWbI2NVcpiMbQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR04MB7812.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(346002)(39860400002)(36756003)(66946007)(316002)(4326008)(38350700002)(86362001)(8936002)(55016002)(1076003)(66476007)(54906003)(66556008)(38100700002)(5660300002)(2906002)(7416002)(8676002)(8886007)(6666004)(44832011)(26005)(956004)(16526019)(83380400001)(478600001)(186003)(2616005)(110136005)(52116002)(7696005);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: UD1zDpR1OhGhVRcqxlC26x2C8xY/RDE+r3PT6D9loBqco3NagseKpnb6zAEQsP1wuJJSMdbL/rhOZl1MQ9BmZLLrqFw+H2bsZxCHIZ9thR/2P9ol0RRW8OAN4850s6X3X9By9dHWPDYQDATdVGcvgo6eteiHxD5rg6nRguJSEcCOQGgBwI5XD9uW46fa6/KubT0jfZXQi1090Nw8taRfU4v0xPGeHZvf2gGgAAn6zTVIixOn73BPwvMRiN3LZQDUgjEDkf8pm9LOkWJYPqYZD5+0ZoPAp3gHm905WywFvhX7GQ1BCstxtvf9bpcOdPv17uYwnZzLadu9quqnbetwnQ3TJizfGQTvaDQYTijekUnePjOaW1sNserSt9UiOlYo+gg5r6M/q4qxp3oI9NB2Z+q7rTXxDfaueE9+ocRMdpNHuaHxNW6vj5M8TWqEn1YL3nXX29rEDnINgHcnspLDmmPZsPDy356wl6UQ2nTW14VmE4lAXwJH7AhPEC9pTCk1kklH96NU7Rs0avPox1iAe8arrkzXpp0HkYVIoLg/SjFuRz2g/owU5x7G69mXbiebzEgHZB22cgI7nYqFv8K25TvZXSYgT5vdptlCbIqB8EmaZvkPc/Yh3CMzttf3iI3urPGVfaGd2mjJon7VIosKcQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR04MB7812.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(346002)(39860400002)(36756003)(66946007)(316002)(4326008)(38350700002)(86362001)(8936002)(55016002)(1076003)(66476007)(54906003)(66556008)(38100700002)(5660300002)(2906002)(7416002)(8676002)(8886007)(44832011)(26005)(956004)(16526019)(83380400001)(478600001)(186003)(2616005)(110136005)(52116002)(7696005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bxWYlu5AX3j0BZoVuai7gqmuWVON6BQY/0svwW9BiSrAD28rTVYsUiubsJOW?=
- =?us-ascii?Q?81pG6ryLhd3Z//eis4ZIuB5b1iR83Jpa+CL14OCtQJOyOUH4CuVEoPjtTSCg?=
- =?us-ascii?Q?xq5BIr2jhPX2b7eLId8AAmzYL+vp5zyhIZYrtkcLLdCbnk5/Lf+10MUu9G0y?=
- =?us-ascii?Q?gamflu0uyCn3+3SUtGsxReGKwH5DiAAp2KSUS3+lbvA0MB0M+Zs+ylAQP6lB?=
- =?us-ascii?Q?YEFly920O7OzlY5jg4emSj77p/rcbADnwrOoqsx1gWBbJEIOuolVXVTTGFOb?=
- =?us-ascii?Q?fP/RHh1skWKMUeIS4C+DslC2RJaVQ2nSdf9FUmVSmCe7J6rt1o0UpOeOUFLk?=
- =?us-ascii?Q?Ht4em5eFDsJ82wlX3dxK5BAAuYBiZQoi01gJf77HRvDuQNwn4u9Z5ezfPhxg?=
- =?us-ascii?Q?X+UL9czbBl427ik9lPAQs3uExcT1UmO3jQH17DzzPf2xblVTupVFmtodw0lo?=
- =?us-ascii?Q?a9gKclFeTeVGhLEi3jFTQI4tZcbXETCJlq8p/kJwv8Hp6LQGF7ka0xs2JYWm?=
- =?us-ascii?Q?JoqZQa8V0RYqgRKReyjrfOLXFgkIWkWrj/XassV2uG0Yztvs1BQ999GV8VMI?=
- =?us-ascii?Q?+ljJ3+Cc5qHdONwdjo3Tp4ZxieyR4jgD5Xp2NSaUVY9heRyXKflGUbpO1HGW?=
- =?us-ascii?Q?nv8SN4gUMW7D7cSHrYJPNybwu4xam0UUh2Py8adZ0TaYf60fxsRSG8n1ALb1?=
- =?us-ascii?Q?58H10lMiy6e8j5SO2rOLMyB/PH1Uquwg41DdqJynJE2mCpuryFWeEGHF8tys?=
- =?us-ascii?Q?A4e7et81k8FuJACd/LT2ClugNMwj+O29eI3w+I9426nMI1qBQS+kA3QaVMSY?=
- =?us-ascii?Q?j+dLXs/otpgKUANJWjVP7Ha9ZOefcZQpPU4eJ6djIRfusGVQvPzaZQ/tTr17?=
- =?us-ascii?Q?UeQ1YeShrIW/F6YPNug1AkQNb9QexJlegaXVo6c3kYWqgCfXkELphx2OE3D/?=
- =?us-ascii?Q?6LoM51727jGn5ehhJONDpiSfb6j2/mKYTdl0P0Jjn7uHGbmzm/FC7TH0yrji?=
- =?us-ascii?Q?V87Zk24zE4Rzjj+jIMM+uBtv64ja6T7jPh8XDpqlMcbyMybnN1MqG5M2hE+o?=
- =?us-ascii?Q?tSBfmQ/AT0dlvZGOWB2Hbt4pDTJWst283sxN0EUgr1Huhuy09qpcqrfrUdig?=
- =?us-ascii?Q?PF6vqprzsEidO+BpF5MvYwnnqv/1aK3I6TdQH7h6/9qABt3/BlGKV6+JK6m/?=
- =?us-ascii?Q?1LelaIV91q415+g4QPD+spasfU8qN4ZU9vzU5glhuV/+i5LPILfW6CwDV/Sq?=
- =?us-ascii?Q?MUw3f2zdHlbSHovEeuiYWHR8mW+x1wW7dwXlBbjbR/l5jL6Nyki4Ff+bXRUa?=
- =?us-ascii?Q?XthNyagXtXuft53zkMyJafyY?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AfwnnumttaxpeTuK4z9W4iP7IGvZiI4JTz88PFlSmbqPmv6n5AchFZp/ULKw?=
+ =?us-ascii?Q?YayztGC523JS6SFROn+bs0bTO7QKk0YvgSElBUt9HkEWFER7Yeuf1e8I63kf?=
+ =?us-ascii?Q?K7OkoNtlmn/CoFB2lKwttJuDSd+Vz58koQe1CXKzd52IC11bsBaXSyxPL1F1?=
+ =?us-ascii?Q?+EbiLShP2H468/ouBMmLiAqYtlw8rwyLS1dHkPqBb0sU92WiN7rd1eXJDrw4?=
+ =?us-ascii?Q?+utwRNvNc4IgIux19Wg961aJIpEO3GTfVeuL6/UQi4YbdQPlXWZmsoIe3GkK?=
+ =?us-ascii?Q?0gYfpuoxn+T7bSzLUGTnhnVo+vO8wOuirhjaCiT51/jx8Jb7LK3/8icrcSrW?=
+ =?us-ascii?Q?yW3op+HqJfGHprs0TGn8zCsJWyiuGIZMudMxTbl6lWdgA/wP4YMr2hhyOX/a?=
+ =?us-ascii?Q?/sLjRrDZ5+rF4mU69InldnUWrl4kRzavdk7McZS9l3ntovSJNWyDBMSUE76N?=
+ =?us-ascii?Q?FrTNRjhRzjbnXQ/6Lw7p9qsu3HxQfilEMO2/S7pm6ulm9Ce2kYFSSirgGap0?=
+ =?us-ascii?Q?gz/rzw5aKE64cJVpV+y7/SpUkY3wEXGPkyRuTGa4ipiwiYaPGffe36KUOXXD?=
+ =?us-ascii?Q?GJ2IF5tA7EBbVizMDJ4TKn9J1VNdSL3bD3zqGgyjAdDrP4jgUW1fZzZn/GtR?=
+ =?us-ascii?Q?wbOzp68voRCu/AU5ta2GoEmPgXoa9jPDhdFAZXLjRp5aGphnqTiGuTZzTeGx?=
+ =?us-ascii?Q?X9HzQ+N7nXQHkmAsd8OKaig18HmKPfGWwq498GRlgH43ZYdP+gn4zrq/XHph?=
+ =?us-ascii?Q?ONwtpvjOo/gtVteAXpEtVL8UN7cxuSGCiPH4sFGLn6bW/AU5KrDMa4mqCJmW?=
+ =?us-ascii?Q?wLX9maByhqZQw8bXFw9LskFEXevyqfZxHS6D8N79CLUPZkRGCeLolCPKqcsP?=
+ =?us-ascii?Q?SvSK+eHOoO8c87I+pkzcbXG34RRC4LrCHytQSB/1AgbGpyu3pJKe8Jt6InGo?=
+ =?us-ascii?Q?hQz3lRxSwrMQsFe9walJfPVgaf30lNMPQpQ12PpRryIzZnwUxfcdKZBbvPMu?=
+ =?us-ascii?Q?9+v9Yyqa5lVyEEuYRa5fAoxMpq8sVz84EXraVkNwKG/2F5Eu2LItqoYpIGo3?=
+ =?us-ascii?Q?dZbd0NKUr9jPBMRfsnS6bGr5gns1v/eV8F9KrqVZqccE+KAz5khHzqKrcwlE?=
+ =?us-ascii?Q?zqKbpqJx7Zbm4DLC6PVmTO4ZYiehJfxKaxkIrlis7Gy0HQHDlrqV2Rp8PjlY?=
+ =?us-ascii?Q?6u8q3XxIYvgtQ+iBLWKfaRka5wp/aTEFpY0hv5A061wmYUWJjh62d/hU7wpH?=
+ =?us-ascii?Q?LFcL6HHwc1JQNa/e6EpsrlLpIEbIPQnk8owp4yqVHGj1A/sDnAlQjHN4C3AA?=
+ =?us-ascii?Q?5+ZuFS6Kyorw+D0PgnKIKoSU?=
 X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b306fb6-a8f8-47b9-89a8-08d92dbbdc15
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f8bcbea-867b-4a7e-cbfe-08d92dbbdf70
 X-MS-Exchange-CrossTenant-AuthSource: CO6PR04MB7812.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2021 16:05:12.7554
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2021 16:05:18.4085
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ipUoSM5fAnwYQM7+l3iv76gxixjmEwg2RPz44J/nErPZuwFBUX+R1OJRlxvAUQYwYYUpPzmQsUuce0qcv+7S9Q==
+X-MS-Exchange-CrossTenant-UserPrincipalName: NEf4g+jy9ZpY0xKMBvkkYrt/MzXl8jIz57PbZr0/JCqD+gxGNzqiappFgYSsPuTExDrxzI7Mdx7D3ZFTKHQZVg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR04MB7795
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We extend struct riscv_ipi_ops so that the IPI providers (such as
-SBI, CLINT driver, ACLINT SWI driver etc) can specify:
-1) Name of the IPI operations
-2) Whether IPIs are suitable for doing remote FENCEs
+If IPI calls are injected using SBI IPI calls then remote TLB flush
+using SBI RFENCE calls is much faster because using IPIs for remote
+TLB flush would still endup as SBI IPI calls with extra processing
+on kernel side.
+
+It is now possible to have specialized hardware (such as RISC-V AIA)
+which allows S-mode software to directly inject IPIs without any
+assistance from M-mode runtime firmware.
+
+This patch extends remote TLB flush functions to use IPIs whenever
+underlying IPI operations are suitable for remote FENCEs.
 
 Signed-off-by: Anup Patel <anup.patel@wdc.com>
 ---
- arch/riscv/include/asm/smp.h      | 15 +++++++++++++++
- arch/riscv/kernel/sbi.c           |  2 ++
- arch/riscv/kernel/smp.c           | 25 ++++++++++++++++++++++++-
- arch/riscv/mm/cacheflush.c        |  2 +-
- drivers/clocksource/timer-clint.c |  2 ++
- 5 files changed, 44 insertions(+), 2 deletions(-)
+ arch/riscv/mm/tlbflush.c | 62 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 48 insertions(+), 14 deletions(-)
 
-diff --git a/arch/riscv/include/asm/smp.h b/arch/riscv/include/asm/smp.h
-index a7d2811f3536..4c4f0dde1164 100644
---- a/arch/riscv/include/asm/smp.h
-+++ b/arch/riscv/include/asm/smp.h
-@@ -16,11 +16,16 @@ struct seq_file;
- extern unsigned long boot_cpu_hartid;
+diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+index 720b443c4528..009c56fa102d 100644
+--- a/arch/riscv/mm/tlbflush.c
++++ b/arch/riscv/mm/tlbflush.c
+@@ -1,39 +1,73 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * TLB flush implementation.
++ *
++ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
++ */
  
- struct riscv_ipi_ops {
-+	const char *name;
-+	bool use_for_rfence;
- 	void (*ipi_inject)(const struct cpumask *target);
- 	void (*ipi_clear)(void);
- };
+ #include <linux/mm.h>
+ #include <linux/smp.h>
+ #include <linux/sched.h>
+ #include <asm/sbi.h>
  
- #ifdef CONFIG_SMP
-+
-+#include <linux/jump_label.h>
-+
- /*
-  * Mapping between linux logical cpu index and hartid.
-  */
-@@ -45,6 +50,11 @@ void arch_send_call_function_single_ipi(int cpu);
- int riscv_hartid_to_cpuid(int hartid);
- void riscv_cpuid_to_hartid_mask(const struct cpumask *in, struct cpumask *out);
- 
-+/* Check if we can use IPIs for remote FENCE */
-+extern struct static_key_false riscv_ipi_for_rfence;
-+#define riscv_use_ipi_for_rfence() \
-+	static_branch_unlikely(&riscv_ipi_for_rfence)
-+
- /* Set custom IPI operations */
- void riscv_set_ipi_ops(const struct riscv_ipi_ops *ops);
- 
-@@ -92,6 +102,11 @@ static inline void riscv_cpuid_to_hartid_mask(const struct cpumask *in,
- 	cpumask_set_cpu(boot_cpu_hartid, out);
- }
- 
-+static inline bool riscv_use_ipi_for_rfence(void)
++static void ipi_flush_tlb_all(void *info)
 +{
-+	return false;
++	local_flush_tlb_all();
 +}
 +
- static inline void riscv_set_ipi_ops(const struct riscv_ipi_ops *ops)
+ void flush_tlb_all(void)
  {
- }
-diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index 8aeca26198f2..be2b7a89ce49 100644
---- a/arch/riscv/kernel/sbi.c
-+++ b/arch/riscv/kernel/sbi.c
-@@ -604,6 +604,8 @@ static void sbi_ipi_clear(void)
- }
- 
- static const struct riscv_ipi_ops sbi_ipi_ops = {
-+	.name = "SBI",
-+	.use_for_rfence = false,
- 	.ipi_inject = sbi_send_cpumask_ipi,
- 	.ipi_clear = sbi_ipi_clear
- };
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index eea0c9d11d9f..cffe3247b132 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -90,9 +90,32 @@ static void ipi_stop(void)
- 
- static const struct riscv_ipi_ops *ipi_ops __ro_after_init;
- 
-+DEFINE_STATIC_KEY_FALSE(riscv_ipi_for_rfence);
-+EXPORT_SYMBOL_GPL(riscv_ipi_for_rfence);
-+
- void riscv_set_ipi_ops(const struct riscv_ipi_ops *ops)
- {
--	ipi_ops = ops;
-+	bool updated = true;
-+
-+	if (!ops)
-+		return;
-+
-+	if (!ipi_ops) {
-+		ipi_ops = ops;
-+	} else {
-+		if (!ipi_ops->use_for_rfence && ops->use_for_rfence)
-+			ipi_ops = ops;
-+		else
-+			updated = false;
-+	}
-+
-+	if (updated) {
-+		if (ipi_ops->use_for_rfence)
-+			static_branch_enable(&riscv_ipi_for_rfence);
-+		else
-+			static_branch_disable(&riscv_ipi_for_rfence);
-+		pr_info("switched IPI operations to %s\n", ipi_ops->name);
-+	}
- }
- EXPORT_SYMBOL_GPL(riscv_set_ipi_ops);
- 
-diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-index 094118663285..0ffe7d560dc8 100644
---- a/arch/riscv/mm/cacheflush.c
-+++ b/arch/riscv/mm/cacheflush.c
-@@ -16,7 +16,7 @@ static void ipi_remote_fence_i(void *info)
- 
- void flush_icache_all(void)
- {
--	if (IS_ENABLED(CONFIG_RISCV_SBI))
+-	sbi_remote_sfence_vma(NULL, 0, -1);
 +	if (!riscv_use_ipi_for_rfence())
- 		sbi_remote_fence_i(NULL);
- 	else
- 		on_each_cpu(ipi_remote_fence_i, NULL, 1);
-diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-index 6cfe2ab73eb0..dfdcd94c1fd5 100644
---- a/drivers/clocksource/timer-clint.c
-+++ b/drivers/clocksource/timer-clint.c
-@@ -55,6 +55,8 @@ static void clint_clear_ipi(void)
++		sbi_remote_sfence_vma(NULL, 0, -1);
++	else
++		on_each_cpu(ipi_flush_tlb_all, NULL, 1);
++}
++
++struct flush_range_data {
++	unsigned long start;
++	unsigned long size;
++};
++
++static void ipi_flush_range(void *info)
++{
++	struct flush_range_data *data = info;
++
++	/* local cpu is the only cpu present in cpumask */
++	if (data->size <= PAGE_SIZE)
++		local_flush_tlb_page(data->start);
++	else
++		local_flush_tlb_all();
  }
  
- static struct riscv_ipi_ops clint_ipi_ops = {
-+	.name = "CLINT",
-+	.use_for_rfence = true,
- 	.ipi_inject = clint_send_ipi,
- 	.ipi_clear = clint_clear_ipi,
- };
+ /*
+- * This function must not be called with cmask being null.
++ * This function must not be called with NULL cpumask.
+  * Kernel may panic if cmask is NULL.
+  */
+-static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
+-				  unsigned long size)
++static void flush_range(struct cpumask *cmask, unsigned long start,
++			unsigned long size)
+ {
++	struct flush_range_data info;
+ 	struct cpumask hmask;
+ 	unsigned int cpuid;
+ 
+ 	if (cpumask_empty(cmask))
+ 		return;
+ 
++	info.start = start;
++	info.size = size;
++
+ 	cpuid = get_cpu();
+ 
+ 	if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
+-		/* local cpu is the only cpu present in cpumask */
+-		if (size <= PAGE_SIZE)
+-			local_flush_tlb_page(start);
+-		else
+-			local_flush_tlb_all();
++		ipi_flush_range(&info);
+ 	} else {
+-		riscv_cpuid_to_hartid_mask(cmask, &hmask);
+-		sbi_remote_sfence_vma(cpumask_bits(&hmask), start, size);
++		if (!riscv_use_ipi_for_rfence()) {
++			riscv_cpuid_to_hartid_mask(cmask, &hmask);
++			sbi_remote_sfence_vma(cpumask_bits(&hmask),
++					      start, size);
++		} else {
++			on_each_cpu_mask(cmask, ipi_flush_range, &info, 1);
++		}
+ 	}
+ 
+ 	put_cpu();
+@@ -41,16 +75,16 @@ static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
+ 
+ void flush_tlb_mm(struct mm_struct *mm)
+ {
+-	__sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
++	flush_range(mm_cpumask(mm), 0, -1);
+ }
+ 
+ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+ {
+-	__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
++	flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
+ }
+ 
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 		     unsigned long end)
+ {
+-	__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
++	flush_range(mm_cpumask(vma->vm_mm), start, end - start);
+ }
 -- 
 2.25.1
 
