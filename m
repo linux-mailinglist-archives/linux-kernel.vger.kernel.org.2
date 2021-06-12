@@ -2,103 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0DD3A4F62
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E053A4F65
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhFLOye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 10:54:34 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:46741 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhFLOyd (ORCPT
+        id S231339AbhFLO5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 10:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLO5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 10:54:33 -0400
-Received: by mail-lj1-f181.google.com with SMTP id e11so13559942ljn.13;
-        Sat, 12 Jun 2021 07:52:33 -0700 (PDT)
+        Sat, 12 Jun 2021 10:57:16 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45AA9C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:55:17 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id c9so9173497wrt.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:55:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IfSODAyyxeJC2Hg3fkcy946+rmEpB2MnnxIzir05N7c=;
-        b=POfhabJR9QRaNfEorSQoVmu4P1PNeqtUgkGKOpgVCXENQ+U2q25ZmuiWTDlnr+jD6+
-         DzTNMpm3srVfSYnF1ikKMLi97cj+iluC2Ah15XP6Iza14QA3n/pptxZcAwQrlYks3RMv
-         RK96CVd3ny/heuzeVJmbIpGEdCynP/kNopSN5LrRb8taz7Ih3NNhCv545ojOS4Htfxnz
-         taMdSIzfeALGF3vnFVC5WOHN42TXaNW+Zct4vcPZPtHZnHsaJvUQ5GLgyfO/wXh5302k
-         3VfMj3Wry4zubvcidH19OBakNWEG2PYJuQkIkNC0BTmqskmPmjOU3rYX+xYbF7LJ+S7V
-         lsjg==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=sF12HuTwuQWIQcOi4fBmOGdwoaNfTF5WnwopOSc9w0I=;
+        b=RV0K91xD1FzdMUFhFWHb7FSx/MtWdT9zsTq+kt/fQbji9sf/9TbauoWVP7ym1lG62C
+         9lvi807gWBbNRI2wFPj/y3U3A+BJR632G8ojFw9wwSjIkzuTbFILy5BdSTxtrxSIF+2f
+         s6yBVxhX6uteuuU3ukOClPRO990IhhsnLgaYjDtQ1fFBAdP0SIsRTQH0g/vYbiPhHdCP
+         tgpxx5wVCKA0kB9oeLSbqTMio/AC+cYpz0p8kTGSOwuNKLvVSzgp/iqx6O4tSWgCLQrs
+         yHJ0WMBbO0fQ/gqjsHZXe5a6uYdk/n0YNIbCJvhfkpAaAbJCCeP8gmLwOZPk2GEaVO74
+         dAlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IfSODAyyxeJC2Hg3fkcy946+rmEpB2MnnxIzir05N7c=;
-        b=r/HNezKqjWIugi/McU51+uc7znBSMg6OsaCSmBcUVqFFJ95uyPgLb2BJUdC5s4sWie
-         KDqm0EBX3I2gCyFYBFjvilA1IDmCYGJM7hQT6srY6NXsgsqZBVFUHNgZ2Z3P8oWf2MaA
-         XuRYbTXEe3CzahAY97PXxhEBKfltnvXwZqWHn4yx8ltSB3EhgjHzBW1lGLvzmoV97a9k
-         7491vyaQ118FHx3RGdIlHpHMPubThTQ5NBJqImLQVh5JOZi5x4w6HZxdt1mMi/gOrtbZ
-         KOZaFY6x/AjWAF5qb8XJMdR/UcV+i1WOZp2j/fsrA5iL6cv/+ocGjw3WivxuubMaZxC6
-         vGVA==
-X-Gm-Message-State: AOAM531ZFNQPXbFTFT/H40BNW1qs5pzC2CXieC2EUkztJ81Z68ytYWoD
-        Hn18/SCKraAqBa2JghCPoT8=
-X-Google-Smtp-Source: ABdhPJwB2T70k2VgztQlcmTak9ni2Tyk6NcXl+akzNGLNjBAmiWDk5Tlqbs9I/os5nTO9F/BV8JRGA==
-X-Received: by 2002:a2e:3c06:: with SMTP id j6mr6884614lja.495.1623509492712;
-        Sat, 12 Jun 2021 07:51:32 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.70])
-        by smtp.gmail.com with ESMTPSA id g28sm911286lfv.142.2021.06.12.07.51.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Jun 2021 07:51:32 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+f303e045423e617d2cad@syzkaller.appspotmail.com
-Subject: [PATCH] net: caif: fix memory leak in ldisc_open
-Date:   Sat, 12 Jun 2021 17:51:22 +0300
-Message-Id: <20210612145122.9354-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=sF12HuTwuQWIQcOi4fBmOGdwoaNfTF5WnwopOSc9w0I=;
+        b=LlEl4cHDqZKeCpYYH/keFMfFIjp9aRxBx+71b8DymiXhvYLMah5b7snL2dcUiG0POF
+         Aw2Jp52AWHGJIQO5qaS8POry7csBLYZH4s1wcHjDRH3WI7c1WEeU70EoKEYjxGxDsWk1
+         vEPMsg2EIky4LUXKQ0sOlNaKwyuNQTkLGZNNa8LaoKWlI0mYa/bwEAlEqv/ACrJF/Vw4
+         Jm1bCnaMCugfI3mDNwP0FwIxwInLuqLV2pP0vjIDDoh7LBRliAHN7fMO7GsIZ7LUAyPh
+         0guqxwnXAxZEAj64Qo/mB4r1f1aSBNXboGRJNMV/JyzxV0ecCFeulfM+KxeXEGtfovZt
+         N+Gw==
+X-Gm-Message-State: AOAM5331tic37X8ST7mn7nYN/bPYWSHphmWoPidgVuX4DVqtV8TLQ6Qc
+        a2b+rgq6iPp0zUTuIWoVpMzuMn0ZwQ4oCTeYllg=
+X-Google-Smtp-Source: ABdhPJy3nNYlIZFZJ/yxEUaAM0W7LIy0IHFLg/Y5mgRzCwIgIElDwE6nTyXjGFCJW7/zwKXEkxxFntGt3+Y+tOsEXNU=
+X-Received: by 2002:a5d:67cf:: with SMTP id n15mr9745774wrw.228.1623509714859;
+ Sat, 12 Jun 2021 07:55:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:600c:1d0a:0:0:0:0 with HTTP; Sat, 12 Jun 2021 07:55:14
+ -0700 (PDT)
+Reply-To: mrkasimmohamed15@gmail.com
+From:   Mr Kasim Mohamed <zarkzalem@gmail.com>
+Date:   Sat, 12 Jun 2021 07:55:14 -0700
+Message-ID: <CAFwgKNdy_J3H0bW2=UKokcD4z35x_ySd1+27A3uCWLUj2Ly1mQ@mail.gmail.com>
+Subject: Good Day,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported memory leak in tty_init_dev().
-The problem was in unputted tty in ldisc_open()
+I am Mr Kasim Mohamed
 
-static int ldisc_open(struct tty_struct *tty)
-{
-...
-	ser->tty = tty_kref_get(tty);
-...
-	result = register_netdevice(dev);
-	if (result) {
-		rtnl_unlock();
-		free_netdev(dev);
-		return -ENODEV;
-	}
-...
-}
-
-Ser pointer is netdev private_data, so after free_netdev()
-this pointer goes away with unputted tty reference. So, fix
-it by adding tty_kref_put() before freeing netdev.
-
-Reported-and-tested-by: syzbot+f303e045423e617d2cad@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/caif/caif_serial.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
-index d17482395a4d..4ffbfd534f18 100644
---- a/drivers/net/caif/caif_serial.c
-+++ b/drivers/net/caif/caif_serial.c
-@@ -350,6 +350,7 @@ static int ldisc_open(struct tty_struct *tty)
- 	rtnl_lock();
- 	result = register_netdevice(dev);
- 	if (result) {
-+		tty_kref_put(tty);
- 		rtnl_unlock();
- 		free_netdev(dev);
- 		return -ENODEV;
--- 
-2.32.0
-
+Hi Friend I am a bank director of the UBA Bank Plc bf .I want to
+transfer an abandoned sum of 27.5 millions USD  to you through ATM
+VISA CARD .50% will be for you. No risk involved. Contact me for more
+details. Kindly reply me back to my alternative email
+address(mrkasimmohamed15@gmail.com) Mr kasim mohamed
