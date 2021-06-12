@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B4A3A501C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 20:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866273A5024
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 20:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhFLSZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 14:25:59 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:32842 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhFLSZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 14:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=wPWBaV8IYJCZ83hJS663zBYMFbq7zkgEdloZ6L+4ZGc=; b=LTbA36Hqp87F1Tio/7Seq0kgBO
-        DIHVmeBJlhJeFl5XASy7rzmBmaiw89KGbwNzQlZUMGGTgCMQdXe6z3KLr7QIPwO0gQHmk/sSd9qWk
-        udz1yFCcg2FWPsBRQj2SSRbsR5QZWUZl0Md24CtiUaSRSz3833hTtLq2SN/bidVuzz4M=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1ls8IT-0091Qp-F0; Sat, 12 Jun 2021 20:23:53 +0200
-Date:   Sat, 12 Jun 2021 20:23:53 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [PATCH net-next v4 9/9] net: phy: micrel: ksz886x/ksz8081: add
- cabletest support
-Message-ID: <YMT7uSNXBA8/2r8C@lunn.ch>
-References: <20210611071527.9333-1-o.rempel@pengutronix.de>
- <20210611071527.9333-10-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611071527.9333-10-o.rempel@pengutronix.de>
+        id S231388AbhFLSuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 14:50:55 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:34811 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFLSuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 14:50:54 -0400
+Received: by mail-ed1-f52.google.com with SMTP id cb9so41081914edb.1;
+        Sat, 12 Jun 2021 11:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=AkaLNrdh2vimxp/He0IGozYNrPKG32CCBg/tput8n7s=;
+        b=kY5mGH5jRDZHQ2g+wLpSi3Bjon3oyvrsWySSetNIWyyrpPxFJp8apUqyi/ZyJB9pLB
+         WEnU/1QJ/1okEUnQ5i6Tr5h6GGBV/FWH4ux33OiJqY/4mAve14RFaVWe30oJpy0m1LyQ
+         Sd7X9iBG5ODkIi9T9qOcE7GFtwuc2HP5ZbzyKB4ocT2rt1+GzQtWuqJbBV5WQDrDJcXr
+         bPKhxWt+kfQANCno0rAT4n1blR6vccR/RP4heuWqtPCGSrXZeM6TOzt0tzykJPP+Kl+V
+         bj5VZjF0DV4ltOgb2+A8MIKOYP3NLakiUVW8Zag44fKRtigQVVqCqtKFD8cmfIkdRTGe
+         xJWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AkaLNrdh2vimxp/He0IGozYNrPKG32CCBg/tput8n7s=;
+        b=ZjQ+iANcj5B6vjFjR6VupgUp6qD9KR5GuKO2hH0LhSjMB1HH4uZHIfCf/oPLN8oAlv
+         kh2idhtHDzDJEwTz/0nVqQ9+MJVlP0xMHVtRFyTtvaOoUhfU7FgbLdcnY+LrjQdN5CTB
+         AqoihXq9hQg3leGV0pUS0yB9MMOzYYG8Xg5S3SYUSlak3jLoqKG6cMDcaBhwXIR9QXAX
+         UauJuRyx+FmPhdYdATj2wtBrVsdPqCUMe/Il9lTK5SFjZbMABFMPAn3a/SqqXlYl09i9
+         Upn+1D/C4F22mDYGdVTRHg/DqWIfDh9oo3WwsY6qwLYZMGe/VMBiHcP5foyTCXm53Ub5
+         Dz8g==
+X-Gm-Message-State: AOAM530/JT650l6FtveMqQF8BZu8oWt4Gh2PfvrBJMuXWYhOWyKIzEDy
+        mjNq+d7RSi6MjP0Ir1TBoh0=
+X-Google-Smtp-Source: ABdhPJw+XKHPcmiUY6C+yc3nz8FUZrfa/fchlm09RALpPMSJdRMusz+2Qe0jzAb25p9Ra/u111b1mw==
+X-Received: by 2002:aa7:ce82:: with SMTP id y2mr9623571edv.264.1623523661655;
+        Sat, 12 Jun 2021 11:47:41 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id f21sm4309933edr.45.2021.06.12.11.47.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 12 Jun 2021 11:47:41 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, paweljarosz3691@gmail.com
+Subject: [PATCH] ARM: dts: rockchip: add labels to the timer nodes on rk3066a
+Date:   Sat, 12 Jun 2021 20:47:33 +0200
+Message-Id: <20210612184733.2331-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int ksz886x_cable_test_get_status(struct phy_device *phydev,
-> +					 bool *finished)
-> +{
-> +	unsigned long pair_mask = 0x3;
-> +	int retries = 20;
-> +	int pair, ret;
-> +
-> +	*finished = false;
-> +
-> +	/* Try harder if link partner is active */
-> +	while (pair_mask && retries--) {
-> +		for_each_set_bit(pair, &pair_mask, 4) {
-> +			ret = ksz886x_cable_test_one_pair(phydev, pair);
-> +			if (ret == -EAGAIN)
-> +				continue;
-> +			if (ret < 0)
-> +				return ret;
-> +			clear_bit(pair, &pair_mask);
-> +		}
-> +		/* If link partner is in autonegotiation mode it will send 2ms
-> +		 * of FLPs with at least 6ms of silence.
-> +		 * Add 2ms sleep to have better chances to hit this silence.
-> +		 */
-> +		if (pair_mask)
-> +			msleep(2);
-> +	}
-> +
-> +	*finished = true;
-> +
-> +	return 0;
+While the kernel doesn't care so much right now, boot loaders like
+u-boot need to refine the node on their side, so to make life easier
+for everyone add the labels to the timer nodes on rk3066a.
 
-If ksz886x_cable_test_one_pair() returns -EAGAIN 20x and it gives up,
-you end up returning 0. Maybe it would be better to return ret?
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm/boot/dts/rk3066a.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-    Andrew
+diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
+index 511311d25..b15cbbe23 100644
+--- a/arch/arm/boot/dts/rk3066a.dtsi
++++ b/arch/arm/boot/dts/rk3066a.dtsi
+@@ -217,7 +217,7 @@
+ 				       <150000000>, <75000000>;
+ 	};
+ 
+-	timer@2000e000 {
++	timer2: timer@2000e000 {
+ 		compatible = "snps,dw-apb-timer-osc";
+ 		reg = <0x2000e000 0x100>;
+ 		interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+@@ -238,7 +238,7 @@
+ 		};
+ 	};
+ 
+-	timer@20038000 {
++	timer0: timer@20038000 {
+ 		compatible = "snps,dw-apb-timer-osc";
+ 		reg = <0x20038000 0x100>;
+ 		interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+@@ -246,7 +246,7 @@
+ 		clock-names = "timer", "pclk";
+ 	};
+ 
+-	timer@2003a000 {
++	timer1: timer@2003a000 {
+ 		compatible = "snps,dw-apb-timer-osc";
+ 		reg = <0x2003a000 0x100>;
+ 		interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+-- 
+2.11.0
+
