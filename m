@@ -2,157 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8FF3A4E29
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 12:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852043A4E2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 12:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhFLKTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 06:19:12 -0400
-Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:5857
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230095AbhFLKTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 06:19:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bVqQIhjmymX6/nqIEt7giWiq++WJcpQwruFBJ8dpX3Bboli62i0hX6LPVXY3gglf+/77Mwc9Iv+vTIp4LKTUcz0+GblNLfYVn/S2CJ4EUKYbZNK9d9Gxiz6DkoVKiSY+bAix68SnpcssQzSr/Hz/PCpBfp+53788Z3SmmgngYYHDlLJ6YdgMssQmUY1h9366q+tFUBb9+WB0zy2GBjqYFL5CL3pIyl1291x0JH1sg+sUoG6Jm1Pzn82G+D/WXkD3Tri8LvIfG3dTvfLAQh7I1q7KGSz88XtdFqQkYAd/S+tZ+lKUAJvUkFc/BcymXKYCGHY1R73mTXsIjEgPfoPujw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jqPEEBq7V/+EcQiJZ3iKARMgCLsPgz69U1+xg7SH9nw=;
- b=dfI8DMJ8OERe1Wk0FzSWiW4iQf1N6yJwG3yqtfH7MEmYCRcLTggblgVPl00zV5EutRK1y8d6ledk67Uq85g5p+xtCNIKI7uqBK4hZPSIBoBRLOOyM5SzYFsM0yCUGdi2Ex5QrqB8YclfeAi+WfKJRjIXFVNykotk6Rb44MT2LqvWzzHZU2Sw38eAhprvvx9wk9iM9mMpXKdo04a/ZPU+R02L6XwOJQ98GGEN9SarH5igO7APJY33K7LtR32ywJYuz+FawSKsaD+zeoP1zFa4awZFkNADpvYTuXCd7+CqZTEbYSvvRfP1RonbzA7x6Hxlr7XEE60EDTJq72MfHPe3Kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kvack.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jqPEEBq7V/+EcQiJZ3iKARMgCLsPgz69U1+xg7SH9nw=;
- b=sGagCNB9sAI4S1OKovmb9aHjksIMSMuDbkjBKy8qNBSV1hCLa3GseM5s41hO6D8yEIT2STWINatEmsNJqwcvXAzIJXFfcQP1YR/Lp/9YOZBcuyvgYdMVmIc4OqifrIjkGbGp22FAptzbuBNEZbnjNq08Ff3Mf4+yNeF7/teewsdvak03VSQjuLWyEkrfUyAkEXThEsnRENtn3pwZbxFsj/q9J4VnPMmubp2cT2M7t05Fbi5BtNpyjgsIq+BreVpnSwr4i/NCfUMRx3NPrwZjh0gjlOWHf3mM9inf6kSa1GKDPpSAXM4iLd1N+00Dz0WRquiCoeQTDlTWppnLjkPS6g==
-Received: from CO2PR04CA0007.namprd04.prod.outlook.com (2603:10b6:102:1::17)
- by BYAPR12MB2997.namprd12.prod.outlook.com (2603:10b6:a03:db::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.25; Sat, 12 Jun
- 2021 10:17:08 +0000
-Received: from CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
- (2603:10b6:102:1:cafe::8c) by CO2PR04CA0007.outlook.office365.com
- (2603:10b6:102:1::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend
- Transport; Sat, 12 Jun 2021 10:17:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT059.mail.protection.outlook.com (10.13.174.160) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4219.21 via Frontend Transport; Sat, 12 Jun 2021 10:17:08 +0000
-Received: from dhcp-10-2-48-181.owa-only.scl-ca.nvidia.com (172.20.187.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 12 Jun 2021 10:17:06 +0000
-Subject: Re: [PATCH resend] mm/gup: fix try_grab_compound_head() race with
- split_huge_page()
-To:     Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
-References: <20210611161545.998858-1-jannh@google.com>
- <20210611153624.65badf761078f86f76365ab9@linux-foundation.org>
- <CAG48ez3mjsf41Z2vCjmkuBaHe9XgoXbWDGvM4OJdUjqiCQbN4A@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <9041f85d-515d-576d-21a9-6f10b6e1279e@nvidia.com>
-Date:   Sat, 12 Jun 2021 00:17:05 -1000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S231153AbhFLK06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 06:26:58 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:54083 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229584AbhFLK0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 06:26:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623493496; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=Gmik4Qo26TbcgoIzzqX1GLkTo+gMg0Lq8a/6WzSipVQ=;
+ b=s1LN6IYv4qBiXCzkkzBcJRTQH2ZelliHOYW5Aa7BrVXfKnZ9W7wXSfIPKKRhmUgQDKL0qtrt
+ 7+rPBruSXUDkHPub80vpUCcMrTxCHOVc+4xANqr5K/6frJMiI1RuQNU0RtnrcUJhlsLQZ+4p
+ hnw2l1cBNqmbi+7QY0VkBXvfIew=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60c48b63b6ccaab75377636d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 10:24:35
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7B3B1C4338A; Sat, 12 Jun 2021 10:24:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2BBD6C433D3;
+        Sat, 12 Jun 2021 10:24:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2BBD6C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAG48ez3mjsf41Z2vCjmkuBaHe9XgoXbWDGvM4OJdUjqiCQbN4A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3603c15-1a72-4468-0d06-08d92d8b3c3b
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2997:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB2997EBCE5AD1CE9A01F6A951A8339@BYAPR12MB2997.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WwxcSrkp156heWdGsWkbrLUPobkeKPi9c+nzf5UZOhMwZwqcHT1cTS3UI7FGIFafiMj9n4RqWiNc2OeUsDT3ZQEZnbZhiX1/t91ZNAUwZ2Pztm852Yepl7fGM6FlgjqfFRJHzQ+Y0XD1kDyyXYaGYZoGUvgkiPjbg3q2hr5G2y8Mzk/FloBcRujr+ThrHJ/iUhZSI7NVoKuaYIRJJgW7ukDJTzMHFNa7A4+xBNwbfieCq/NOSuHQajxvU8FAp3h22SP5k+Cj1dS26D5W3yxmUsdZOM6PjeeT5wRXq297JQwK2vM8uAkfotrCvX+68hOHZhD04AdNRjNtsgLBUYcHvMSVTTAIbqQi2HhcsPjcPqQgCLGaVp9zaeDg0rx6ANhHmjEuct8F50ZqvitM2iNhK0Fb/BhY/RYAhFW39AOyn6MmL7QusSt2Qx8kJPQnnp4UQOZqwKOl0C82fTYe9IC8d0qSLBNWCjo67Oo9CLdHmBPjon81RELQAX1WrR2AvO8DYKxUotQpBZzdPsadFH5OzCXyLmOuFq7hW6hNQp5D5tvTWXS6d8FywdnQWz1iuVJfEdxDGYcyYY9VtoWJQ2DZFImDTZvNC24sJU6ACYtn6AcC4vNn+sOV58Z0txUFDX1EGMzjiNbbt/fHQPqQvPoUVEXVO9TkdnL+7rxaSxLi1YgopCqwoCI7Rl7PCyk8HEnhQBWxhf3i+2vY1UmbzRWZAA==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(46966006)(36840700001)(186003)(336012)(82310400003)(7636003)(31686004)(82740400003)(356005)(36860700001)(2906002)(110136005)(36756003)(53546011)(8676002)(54906003)(4326008)(31696002)(86362001)(7696005)(83380400001)(316002)(36906005)(47076005)(70586007)(16526019)(26005)(70206006)(8936002)(2616005)(426003)(5660300002)(478600001)(14583001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2021 10:17:08.2823
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3603c15-1a72-4468-0d06-08d92d8b3c3b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2997
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ath9k: Fix kernel NULL pointer dereference during
+ ath_reset_internal()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210402122653.24014-1-pali@kernel.org>
+References: <20210402122653.24014-1-pali@kernel.org>
+To:     =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath9k-devel@qca.qualcomm.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210612102434.7B3B1C4338A@smtp.codeaurora.org>
+Date:   Sat, 12 Jun 2021 10:24:34 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 3:49 PM, Jann Horn wrote:
-> On Sat, Jun 12, 2021 at 12:36 AM Andrew Morton
-> <akpm@linux-foundation.org> wrote:
->> On Fri, 11 Jun 2021 18:15:45 +0200 Jann Horn <jannh@google.com> wrote:
->>> +/* Equivalent to calling put_page() @refs times. */
->>> +static void put_page_refs(struct page *page, int refs)
->>> +{
->>> +     VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
->>
->> I don't think there's a need to nuke the whole kernel in this case.
->> Can we warn then simply leak the page?  That way we have a much better
->> chance of getting a good bug report.
-> 
-> Ah, yeah, I guess that makes sense. I had just copied this over from
-> put_compound_head(), and figured it was fine to keep it as-is, but I
-> guess changing it would be reasonable. I'm not quite sure what the
-> best way to do that would be though.
-> 
-> I guess the check should go away in !DEBUG_VM builds?
-> 
-> Should I just explicitly put the check in an ifdef block? Like so:
-> 
-> #ifdef CONFIG_DEBUG_VM
-> if (VM_WARN_ON_ONCE_PAGE(...))
->    return;
-> #endif
-> 
-> Or, since inline ifdeffery looks ugly, get rid of the explicit ifdef,
+Pali Rohár <pali@kernel.org> wrote:
 
-Agreed: VM_WARN_ON_ONCE_PAGE(), at least at the API level, seems like
-the best thing to use here. However, as you point out below, it needs a
-little something first.
-
-> and change the !DEBUG_VM definition of VM_WARN_ON_ONCE_PAGE() as
-> follows so that the branch is compiled away?
+> I got this crash more times during debugging of PCIe controller and crash
+> happens somehow at the time when PCIe kernel code started link retraining (as
+> part of ASPM code) when at the same time PCIe link went down and ath9k probably
+> executed hw reset procedure.
 > 
-> #define VM_WARN_ON_ONCE_PAGE(cond, page)  (BUILD_BUG_ON_INVALID(cond), false)
+> Currently I'm not able to reproduce this issue as it looks like to be
+> some race condition between link training, ASPM, link down and reset
+> path. And as always, race conditions which depends on more input
+> parameters are hard to reproduce as it depends on precise timings.
 > 
-> That would look kinda neat, but it would be different from the
-> behavior of WARN_ON(), which still returns the original condition even
-> in !BUG builds, so that could be confusing...
+> But it is clear that pointers are zero in this case and should be
+> properly filled as same code pattern is used in ath9k_stop() function.
+> Anyway I was able to reproduce this crash by manually triggering ath
+> reset worker prior putting card up. I created simple patch to export
+> reset functionality via debugfs and use it to "simulate" of triggering
+> reset.    s proved that NULL-pointer dereference issue is there.
 > 
+> Function ath9k_hw_reset() is dereferencing chan structure pointer, so it
+> needs to be non-NULL pointer.
+> 
+> Function ath9k_stop() already contains code which sets ah->curchan to valid
+> non-NULL pointer prior calling ath9k_hw_reset() function.
+> 
+> Add same code pattern also into ath_reset_internal() function to prevent
+> kernel NULL pointer dereference in ath9k_hw_reset() function.
+> 
+> This change fixes kernel NULL pointer dereference in ath9k_hw_reset() which
+> is caused by calling ath9k_hw_reset() from ath_reset_internal() with NULL
+> chan structure.
+> 
+>     [   45.334305] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+>     [   45.344417] Mem abort info:
+>     [   45.347301]   ESR = 0x96000005
+>     [   45.350448]   EC = 0x25: DABT (current EL), IL = 32 bits
+>     [   45.356166]   SET = 0, FnV = 0
+>     [   45.359350]   EA = 0, S1PTW = 0
+>     [   45.362596] Data abort info:
+>     [   45.365756]   ISV = 0, ISS = 0x00000005
+>     [   45.369735]   CM = 0, WnR = 0
+>     [   45.372814] user pgtable: 4k pages, 39-bit VAs, pgdp=000000000685d000
+>     [   45.379663] [0000000000000008] pgd=0000000000000000, p4d=0000000000000000, pud=0000000000000000
+>     [   45.388856] Internal error: Oops: 96000005 [#1] SMP
+>     [   45.393897] Modules linked in: ath9k ath9k_common ath9k_hw
+>     [   45.399574] CPU: 1 PID: 309 Comm: kworker/u4:2 Not tainted 5.12.0-rc2-dirty #785
+>     [   45.414746] Workqueue: phy0 ath_reset_work [ath9k]
+>     [   45.419713] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+>     [   45.425910] pc : ath9k_hw_reset+0xc4/0x1c48 [ath9k_hw]
+>     [   45.431234] lr : ath9k_hw_reset+0xc0/0x1c48 [ath9k_hw]
+>     [   45.436548] sp : ffffffc0118dbca0
+>     [   45.439961] x29: ffffffc0118dbca0 x28: 0000000000000000
+>     [   45.445442] x27: ffffff800dee4080 x26: 0000000000000000
+>     [   45.450923] x25: ffffff800df9b9d8 x24: 0000000000000000
+>     [   45.456404] x23: ffffffc0115f6000 x22: ffffffc008d0d408
+>     [   45.461885] x21: ffffff800dee5080 x20: ffffff800df9b9d8
+>     [   45.467366] x19: 0000000000000000 x18: 0000000000000000
+>     [   45.472846] x17: 0000000000000000 x16: 0000000000000000
+>     [   45.478326] x15: 0000000000000010 x14: ffffffffffffffff
+>     [   45.483807] x13: ffffffc0918db94f x12: ffffffc011498720
+>     [   45.489289] x11: 0000000000000003 x10: ffffffc0114806e0
+>     [   45.494770] x9 : ffffffc01014b2ec x8 : 0000000000017fe8
+>     [   45.500251] x7 : c0000000ffffefff x6 : 0000000000000001
+>     [   45.505733] x5 : 0000000000000000 x4 : 0000000000000000
+>     [   45.511213] x3 : 0000000000000000 x2 : ffffff801fece870
+>     [   45.516693] x1 : ffffffc00eded000 x0 : 000000000000003f
+>     [   45.522174] Call trace:
+>     [   45.524695]  ath9k_hw_reset+0xc4/0x1c48 [ath9k_hw]
+>     [   45.529653]  ath_reset_internal+0x1a8/0x2b8 [ath9k]
+>     [   45.534696]  ath_reset_work+0x2c/0x40 [ath9k]
+>     [   45.539198]  process_one_work+0x210/0x480
+>     [   45.543339]  worker_thread+0x5c/0x510
+>     [   45.547115]  kthread+0x12c/0x130
+>     [   45.550445]  ret_from_fork+0x10/0x1c
+>     [   45.554138] Code: 910922c2 9117e021 95ff0398 b4000294 (b9400a61)
+>     [   45.560430] ---[ end trace 566410ba90b50e8b ]---
+>     [   45.565193] Kernel panic - not syncing: Oops: Fatal exception in interrupt
+>     [   45.572282] SMP: stopping secondary CPUs
+>     [   45.576331] Kernel Offset: disabled
+>     [   45.579924] CPU features: 0x00040002,0000200c
+>     [   45.584416] Memory Limit: none
+>     [   45.587564] Rebooting in 3 seconds..
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-The VM_WARN_ON_ONCE_PAGE() is not implemented exactly right
-in the !CONFIG_DEBUG_VM case. IMHO it should follow the WARN*()
-behavior, and return the original condition and keep going
-in that case.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Then you could use it directly here.
-
-
-thanks,
+fb312ac5ccb0 ath9k: Fix kernel NULL pointer dereference during ath_reset_internal()
 
 -- 
-John Hubbard
-NVIDIA
+https://patchwork.kernel.org/project/linux-wireless/patch/20210402122653.24014-1-pali@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
