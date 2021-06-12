@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031E23A50BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC9A3A50C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhFLVGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 17:06:52 -0400
-Received: from mga11.intel.com ([192.55.52.93]:10438 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhFLVGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 17:06:51 -0400
-IronPort-SDR: efL0Qq+T4wFzDaR7OYJkyJC+FvzLE0gFFaF81omAd+viriDrNOL40cZzcS6lOfOyM0c1P42aMt
- F0bB1a25WyMw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10013"; a="202655507"
-X-IronPort-AV: E=Sophos;i="5.83,268,1616482800"; 
-   d="scan'208";a="202655507"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2021 14:04:52 -0700
-IronPort-SDR: F47yiKVKWrqhY3Ze7On1jO8O1Y5r2HPFQ85Uj0IcnoKbgUQZU05MxaTTNMUs9VoqpljaaBpyKm
- S5ifYln37YTg==
-X-IronPort-AV: E=Sophos;i="5.83,268,1616482800"; 
-   d="scan'208";a="449467873"
-Received: from rong2-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.36.179])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2021 14:04:47 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 04/12] x86/x86: Add early_is_tdx_guest() interface
-Date:   Sat, 12 Jun 2021 14:04:45 -0700
-Message-Id: <20210612210445.2164948-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YMJ/IrBZiCsNMtvO@zn.tnic>
-References: <YMJ/IrBZiCsNMtvO@zn.tnic>
+        id S231520AbhFLVHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 17:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFLVHt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 17:07:49 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F9BC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 14:05:49 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lsAp2-007R1x-4p; Sat, 12 Jun 2021 21:05:40 +0000
+Date:   Sat, 12 Jun 2021 21:05:40 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC 4/9] gfs2: Fix mmap + page fault deadlocks (part 1)
+Message-ID: <YMUhpI/ZIuxvKCt8@zeniv-ca.linux.org.uk>
+References: <20210531170123.243771-1-agruenba@redhat.com>
+ <20210531170123.243771-5-agruenba@redhat.com>
+ <CAHk-=wiB9gvUsebmiOaRXzYVUxJDUt1SozGtRyxR_MDR=Nv7YQ@mail.gmail.com>
+ <CAHc6FU4n_F9sPjP7getGRKLpB-KsZt_qhHctqwY5pJrxGxLr2w@mail.gmail.com>
+ <YMOOZsBzg/6SKSzT@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMOOZsBzg/6SKSzT@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add helper function to detect TDX feature support. It will be used
-to protect TDX specific code in decompression code.
+On Fri, Jun 11, 2021 at 04:25:10PM +0000, Al Viro wrote:
+> On Wed, Jun 02, 2021 at 01:16:32PM +0200, Andreas Gruenbacher wrote:
+> 
+> > Well, iomap_file_buffered_write() does that by using
+> > iov_iter_fault_in_readable() and iov_iter_copy_from_user_atomic() as
+> > in iomap_write_actor(), but the read and direct I/O side doesn't seem
+> > to have equivalents. I suspect we can't just wrap
+> > generic_file_read_iter() and iomap_dio_rw() calls in
+> > pagefault_disable().
+> 
+> And it will have zero effect on O_DIRECT case, so you get the same
+> deadlocks right back.  Because there you hit
+> 	iomap_dio_bio_actor()
+> 		bio_iov_iter_get_pages()
+> 			....
+> 				get_user_pages_fast()
+> 					....
+> 						faultin_page()
+> 							handle_mm_fault()
+> and at no point had CPU hit an exception, so disable_pagefault() will
+> have no effect whatsoever.  You can bloody well hit gfs2 readpage/mkwrite
+> if the destination is in mmapped area of some GFS2 file.  Do that
+> while holding GFS2 locks and you are fucked.
+> 
+> No amount of prefaulting will protect you, BTW - it might make the
+> deadlock harder to reproduce, but that's it.
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
+AFAICS, what we have is
+	* handle_mm_fault() can hit gfs2_fault(), which grabs per-inode lock
+shared
+	* handle_mm_fault() for write can hit gfs2_page_mkwrite(), which grabs
+per-inode lock exclusive
+	* pagefault_disable() prevents that for real page faults, but not for
+get_user_pages_fast()
+	* normal write:
+        with inode_lock(inode)
+		in a loop
+			with per-inode lock exclusive
+				__gfs2_iomap_get
+				possibly gfs2_iomap_begin_write
+				in a loop
+					fault-in [read faults]
+					iomap_write_begin
+					copy_page_from_iter_atomic() [pf disabled]
+					iomap_write_end
+				gfs2_iomap_end
+	* O_DIRECT write:
+	with inode_lock(inode) and per-inode lock deferred (?)
+		in a loop
+			__gfs2_iomap_get
+			possibly gfs2_iomap_begin_write
+			bio_iov_iter_get_pages(), map and submit [gup]
+			gfs2_iomap_end
+	* normal read:
+		in a loop
+			filemap_get_pages (grab pages and readpage them if needed)
+			copy_page_to_iter() for each [write faults]
+	* O_DIRECT read:
+        with per-inode lock deferred
+		in a loop
+			__gfs2_iomap_get
+			either iov_iter_zero() (on hole) [write faults]
+			or bio_iov_iter_get_pages(), map and submit [gup]
+			gfs2_iomap_end
 
-Changes since v1:
- * Removed is_tdx_guest() interface. We will rely on
-   prot_guest_has(PR_GUEST_TDX) for TDX related checks.
- * Renamed is_tdx_guest() to early_is_tdx_guest() as per
-   review suggestion.
- * Fixed commit title and log to reflect above changes.
- * Simplified native_cpuid_has_tdx_guest() as per review suggestion.
+... with some amount of waiting on buffered IO in case of O_DIRECT writes
 
- arch/x86/boot/compressed/Makefile |  1 +
- arch/x86/boot/compressed/tdx.c    | 28 ++++++++++++++++++++++++++++
- 2 files changed, 29 insertions(+)
- create mode 100644 arch/x86/boot/compressed/tdx.c
-
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 431bf7f846c3..22a2a6cc2ab4 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -98,6 +98,7 @@ ifdef CONFIG_X86_64
- endif
- 
- vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
-+vmlinux-objs-$(CONFIG_INTEL_TDX_GUEST) += $(obj)/tdx.o
- 
- vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
- efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
-diff --git a/arch/x86/boot/compressed/tdx.c b/arch/x86/boot/compressed/tdx.c
-new file mode 100644
-index 000000000000..ddfa4a6d1939
---- /dev/null
-+++ b/arch/x86/boot/compressed/tdx.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * tdx.c - Early boot code for TDX
-+ */
-+
-+#include <asm/tdx.h>
-+
-+static int __ro_after_init tdx_guest = -1;
-+
-+static inline bool native_cpuid_has_tdx_guest(void)
-+{
-+	u32 eax = TDX_CPUID_LEAF_ID, sig[3] = {0};
-+
-+	if (native_cpuid_eax(0) < TDX_CPUID_LEAF_ID)
-+		return false;
-+
-+	native_cpuid(&eax, &sig[0], &sig[1], &sig[2]);
-+
-+	return !memcmp("IntelTDX    ", sig, 12);
-+}
-+
-+bool early_is_tdx_guest(void)
-+{
-+	if (tdx_guest < 0)
-+		tdx_guest = native_cpuid_has_tdx_guest();
-+
-+	return !!tdx_guest;
-+}
--- 
-2.25.1
-
+Is the above an accurate description of the mainline situation there?
+In particular, normal read doesn't seem to bother with locks at all.
+What exactly are those cluster locks for in O_DIRECT read?
