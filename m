@@ -2,113 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBB33A4E99
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 14:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4F53A4E9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 14:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhFLMTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 08:19:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20220 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230470AbhFLMT2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 08:19:28 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-13-dZBTIf2VMkmyrAJF_oOoUw-1; Sat, 12 Jun 2021 13:17:23 +0100
-X-MC-Unique: dZBTIf2VMkmyrAJF_oOoUw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sat, 12 Jun
- 2021 13:17:22 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Sat, 12 Jun 2021 13:17:22 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Palmer Dabbelt' <palmer@dabbelt.com>,
-        "akira.tsukamoto@gmail.com" <akira.tsukamoto@gmail.com>
-CC:     "akira.tsukamoto@gmail.com" <akira.tsukamoto@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "gary@garyguo.net" <gary@garyguo.net>,
-        "nickhu@andestech.com" <nickhu@andestech.com>,
-        "nylon7@andestech.com" <nylon7@andestech.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] riscv: prevent pipeline stall in
- __asm_to/copy_from_user
-Thread-Topic: [PATCH 1/1] riscv: prevent pipeline stall in
- __asm_to/copy_from_user
-Thread-Index: AQHXWSgp7oRD1A6yb0KBcJjcvPCgrasJ/LbggAXAiYCAAJBmMA==
-Date:   Sat, 12 Jun 2021 12:17:22 +0000
-Message-ID: <de82d455e12e44898a6f14a3885d9f0c@AcuMS.aculab.com>
-References: <67dab8dc517f4add8b0c29074a6b3f06@AcuMS.aculab.com>
- <mhng-e4f1484c-052f-4981-83f9-3884ee4d5ea0@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-e4f1484c-052f-4981-83f9-3884ee4d5ea0@palmerdabbelt-glaptop>
-Accept-Language: en-GB, en-US
+        id S231238AbhFLMWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 08:22:20 -0400
+Received: from mail-eopbgr70048.outbound.protection.outlook.com ([40.107.7.48]:14336
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230191AbhFLMWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 08:22:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NRCmx/o5UJEPWxv6J0ZOLoTKoZcR5YYsRsofD2G7B0kYvyrQidNBWrgFnOmwO0HGOz6rsdNb492qQczZ4m0IN8F8EsClMiDzP6AbpNpcDU+IQ6q87rQfxfcOm4FMrAIVcoArY22SUwd7J5uFEXY2u2VeB6WHNDnznDvokBCibjOG3zqv9CPDWd/ybIo1QelhknJMnhJWkmwIBAuZ6gv0J1KcpnTRwDlBLZzwbZheddwB1snxourr9C9UQPZbknYmPlRZP7EhRc/kFY/oY4vQhbF0pc6H4XuCacT9Jrs50FdXBerlQVbJy8iWSdwLhaMbo8Tu1/hjRt/kZWT9+ZiZcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PLF7kxiUfI8HuKwAFlR5yAXgRoSOOagIpYh/1FHSTpc=;
+ b=Jl1+HsHtcPy9DCtDFDioDBMFFhEJKxm7vWZ+werM+dDiXRMYsq5gpEqPZVM406bWoxoTzCkwn7C5uOfcx8bkVPPrzUHURzWK9CpfPvr7yfgRpvyCCcS4+dQFIZw7LT6lo5Tj11VXgxjoKBAKJ7HUQNGd6qs1omqKaK6N+PIAqDeSM+eYUpUN332hyPDNtnj1PE7o3UtVbdl3i8YhnDjOo48Gan+HYffNKXb2DLCny/SWY2W/oqfgA9IbPlziOVHtOFf3oO+XPhoo3gj6FJbT7D50RORM60P94FE47Rys+eVYpMtAcSSk/LnrFDpmZuXSkflIzCJM4ozd6s3YxBIpRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PLF7kxiUfI8HuKwAFlR5yAXgRoSOOagIpYh/1FHSTpc=;
+ b=NpsrkuuYFeQ1x/7P4VWQIbN61g2aNUqvU0sYHqrvPuUGDckOKYi3q1sKZqP7isfdKuJlyCJXw1hEZzH/gFG4EjT5m6kaIencTwkcS+2dICqJWZZNyYpwyd/q67QnCUF3hWi79Yypg4ZwpJZfvzPq0nswRpBTnzvNwNorwoUuyTA=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB3PR0402MB3913.eurprd04.prod.outlook.com (2603:10a6:8:3::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Sat, 12 Jun
+ 2021 12:20:13 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4219.022; Sat, 12 Jun 2021
+ 12:20:13 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "agx@sigxcpu.org" <agx@sigxcpu.org>,
+        "marex@denx.de" <marex@denx.de>,
+        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jacky Bai <ping.bai@nxp.com>,
+        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+        "aford173@gmail.com" <aford173@gmail.com>,
+        Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>
+Subject: RE: [PATCH V6 2/4] Documentation: bindings: clk: Add bindings for
+ i.MX BLK_CTL
+Thread-Topic: [PATCH V6 2/4] Documentation: bindings: clk: Add bindings for
+ i.MX BLK_CTL
+Thread-Index: AQHXTwvTHCgmK+UCy0qWVIaZbeH5CqsPqnwAgADB4HA=
+Date:   Sat, 12 Jun 2021 12:20:13 +0000
+Message-ID: <DB6PR0402MB27600201A17238D3D022A80F88339@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20210522134249.15322-1-peng.fan@oss.nxp.com>
+ <20210522134249.15322-3-peng.fan@oss.nxp.com> <20210612004550.GC29138@dragon>
+In-Reply-To: <20210612004550.GC29138@dragon>
+Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [121.228.180.181]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ff923568-e2c3-4b6f-bf8e-08d92d9c6e00
+x-ms-traffictypediagnostic: DB3PR0402MB3913:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB3PR0402MB391396A3938885EE08B60AFAC9339@DB3PR0402MB3913.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mctHu4ctXjuBXB0qf4CwmvFO88M8qachZe//a41h76CuTDM56tALYzD9FWixDvs7lNhXm4FAHZ309BPy9xaWsu+64devScNGuPRpIfeKNGqNzUuvhHcBrJUDYJ6Xzx/Ps+kYjofmZZOPgMQjLEsJP0xbhSnHDH3GJXLsXfMgJYts06T+8xwWiabyfZH3ekSNL45p6oNloWP/aHjSOo4zeJl0ZN/GKE4t9fyzPz0e8/rIkTW70ycoPEff8AjR8kksbwNHKXr0um42qAK8QB0cwbK1H9/vlZFJdPpFibZghrFMsiY+73Hu9K2JPGpADHlpnyA2rM3t5NOb0H0JS2puR9kkGlmSpd3LRgVZHLly5uvchOOB3QCeoDfj3z8u516/abMEP2iWluSo13kpCcTOAotpM2CujrwXsndSUqvaDyIxZ/bPQ0VZFK49TiKnrWCGS6lmRvPM4MXeSQjnFpOm3jBFXtsTpLG0o1phZrrutIy6AzWCHZ6XaDQ4T0GIv33wQXUiDqxDZLbz5K+y2urmgvTuuHtyp4VOMEOwlOicItRgcgcxXMwspHH9L6ncsTgNg+AQtJ4FGYaR+AeE77E5X4MwUjHa433F2AIJbQuQV1Jx0wCLqssowcAIcmczrhsBvrX27tsJ1VPKQlDfzKYiRLHpxY2IK7XyJ8ObDZa7M0EgSw2aVNH61vwKJCApjS7f0HvZcEMBzD2oySGc8rFTaQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7696005)(38100700002)(4326008)(33656002)(9686003)(66476007)(8936002)(86362001)(71200400001)(8676002)(76116006)(83380400001)(6506007)(186003)(26005)(45080400002)(498600001)(122000001)(55016002)(66446008)(7416002)(2906002)(66946007)(54906003)(52536014)(64756008)(5660300002)(110136005)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0APTLEWFMj10yuDe9OfrhTiTJK057trG6jhQvlBcMAGzeWkK0aNUlSrHG3Uf?=
+ =?us-ascii?Q?yNw9Qsvbi/RmYTIYFM49Q3ipCugWNMK/mLeJ9oy0B6klVvFs/T4OWrCcBUjh?=
+ =?us-ascii?Q?Cjkg4ZYTYC4kb3jMXfUWUOWg5GaqtZE20jHksGyA+IAsAo4xJryGrca9927O?=
+ =?us-ascii?Q?SJHuZUV2zPAiRSx6bcMRwNAimSEvin8vcHUN5WQQDke7obQFACEBarClFPmV?=
+ =?us-ascii?Q?B04rQDk42zONDX1Yt3T+NNou0f90Ct2ZgPURkIQj1YRjGhtYTYzsgxlpcdxO?=
+ =?us-ascii?Q?WZFlHNgMplPiXUBUsdsApfsE8lTWhRPwFIQ6JYNF52n8NN7z29DjljGinfhm?=
+ =?us-ascii?Q?8FsQN1CqyZt0a7scI719bPQhZaScD64Ipm0V5YdKPIhzj/Tx1J8A4PjXYI9U?=
+ =?us-ascii?Q?1Elcp3PU4HJEXXtka17yWqKp/u/kWasRFE1j/xssCfYDK2c6+ygU4/NnrJ88?=
+ =?us-ascii?Q?Hm9HM92hAJT3fpwNCR8yxW50L15N9QlrHXF+GfFtdcwAq/o1yBXxbp2knHAr?=
+ =?us-ascii?Q?8lMWg25pPQbqXUIqocUWIf6ft4Vs8n1MFZB3q0I98mVa1sPa5aUPokctZ4PL?=
+ =?us-ascii?Q?NtDnVRYvHRMNNsE8FD2PEamTGe1LhYbYKHUfrV3sujNEks0CBZ5+m5kx8T4Z?=
+ =?us-ascii?Q?iACKpBNXglycx/FukoRotGvukjuSlVgORUOskhFiND3F9bv6l9K3oMJMwhnr?=
+ =?us-ascii?Q?uJxLi/ZfqU9qJYh57PMDO9Kig68Nf1N27mD80Web0+u6mjny0a6hOVkk+wnP?=
+ =?us-ascii?Q?p39xpzBppGmUBBuMWrrHfnDYl5tqedwgvu8+buGKKRVO+PCw++F4otPpsirV?=
+ =?us-ascii?Q?htb9Td9XAKmBZOQvjmA6ZIKsdKsLgght6d8WQmaZTRaPT06pUZ7LAAUa4HNn?=
+ =?us-ascii?Q?9OM5/ZkeLD99nbBIwRHA7dSdElNkYAGjWYPkSUxTT4YfyZhCHlvk72Bi3rzV?=
+ =?us-ascii?Q?BWF1lkcQNk3hiWX+J0lYqalApColrfpcAZ1xrgWdwDFc326I7AiMgp1n4Kfp?=
+ =?us-ascii?Q?5gltqSg/Fi/SD2YHMxZJZL5HDuoM+LgMoPV24DRLPjFK7EoeRQdQTAbeI0jZ?=
+ =?us-ascii?Q?Udq1ZIMmvA+gFq7cLWqBIJXgQGrqpNSo4TxZlRBy9s+eRAz2JWG/luKQcZp9?=
+ =?us-ascii?Q?BQa/VC53yBFaku45q66nUPPTzPnFHGVxzsVBLQbsVHmsNteM/HhVqZkkylz2?=
+ =?us-ascii?Q?hbPo5mz9hmcSNRqEguhv4hH85/LQh8DDnbpvvvDR6TpZaIaMaFyxUH+e2iSs?=
+ =?us-ascii?Q?mTUZ/2SiKYiCW3Ka+9kGVAj+4jKpThICzvu9141PdqXfIXK8h5ScLUXjQlG3?=
+ =?us-ascii?Q?smjLwIuCmMZpMxaWuIQBOpiP?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff923568-e2c3-4b6f-bf8e-08d92d9c6e00
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2021 12:20:13.1637
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0oeVL/GMMg0DVWi/g1OhRqy4H7F0IYuw2KTnPx3e0Kp/uQIs4AeS1g1ziCiP9/eeEq8x7Q4NKa8WAduODuOYdw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3913
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGFsbWVyIERhYmJlbHQNCj4gU2VudDogMTIgSnVuZSAyMDIxIDA1OjA1DQouLi4NCj4g
-PiBJIGRvbid0IGtub3cgdGhlIGFyY2hpdGVjdHVyZSwgYnV0IHVubGVzcyB0aGVyZSBpcyBhIHN0
-dW5uaW5nDQo+ID4gcGlwZWxpbmUgZGVsYXkgZm9yIG1lbW9yeSByZWFkcyBhIHNpbXBsZSBpbnRl
-cmxlYXZlZCBjb3B5DQo+ID4gbWF5IGJlIGZhc3QgZW5vdWdoLg0KPiA+IFNvIHNvbWV0aGluZyBs
-aWtlOg0KPiA+IAlhID0gc3JjWzBdOw0KPiA+IAlkbyB7DQo+ID4gCQliID0gc3JjWzFdOw0KPiA+
-IAkJc3JjICs9IDI7DQo+ID4gCQlkc3RbMF0gPSBhOw0KPiA+IAkJZHN0ICs9IDI7DQo+ID4gCQlh
-ID0gc3JjWzBdOw0KPiA+IAkJZHN0Wy0xXSA9IGI7DQo+ID4gCX0gd2hpbGUgKHNyYyAhPSBzcmNf
-ZW5kKTsNCj4gPiAJZHN0WzBdID0gYTsNCj4gPg0KPiA+IEl0IGlzIHByb2JhYmx5IHdvcnRoIGRv
-aW5nIGJlbmNobWFya3Mgb2YgdGhlIGNvcHkgbG9vcA0KPiA+IGluIHVzZXJzcGFjZS4NCj4gDQo+
-IEkgYWxzbyBkb24ndCBrbm93IHRoaXMgbWljcm9hcmNoaXRlY3R1cmUsIGJ1dCB0aGlzIHNlZW1z
-IGxpa2UgYSBwcmV0dHkNCj4gd2Fja3kgbG9hZC11c2UgZGVsYXkuDQoNCkl0IGlzIHF1aXRlIHNh
-bmUgcmVhbGx5Lg0KDQpXaGlsZSBtYW55IGNwdSBjYW4gdXNlIHRoZSByZXN1bHQgb2YgdGhlIEFM
-VSBpbiB0aGUgbmV4dCBjbG9jaw0KKHRoZXJlIGlzIHR5cGljYWxseSBzcGVjaWFsIGxvZ2ljIHRv
-IGJ5cGFzcyB0aGUgd3JpdGUgdG8gdGhlDQpyZWdpc3RlciBmaWxlKSB0aGlzIGlzbid0IGFsd2F5
-cyB0cnVlIGZvciBtZW1vcnkgKGNhY2hlKSByZWFkcy4NCkl0IG1heSBldmVuIGJlIHRoYXQgdGhl
-IHJlYWQgaXRzZWxmIHRha2VzIG1vcmUgdGhhbiBvbmUgY3ljbGUNCihwcm9iYWJseSBwaXBlbGlu
-ZWQgc28gdGhleSBjYW4gaGFwcGVuIGV2ZXJ5IGN5Y2xlKS4NCg0KU28gYSBzaW1wbGUgJypkZXN0
-ID0gKnNyYycgY29weSBsb29wIHN1ZmZlcnMgdGhlICdtZW1vcnkgcmVhZCcNCnBlbmFsdHkgZXZl
-ciBpdGVyYXRpb24uDQpBdCBvdXQtb2Ytb3JkZXIgZXhlY3V0aW9uIHVuaXQgdGhhdCB1c2VzIHJl
-Z2lzdGVyIHJlbmFtZXMNCihsaWtlIG1vc3QgeDg2KSB3aWxsIGp1c3QgZGVmZXIgdGhlIHdyaXRl
-cyB1bnRpbCB0aGUgZGF0YQ0KaXMgYXZhaWxhYmxlIC0gc28gaXNuJ3QgaW1wYWN0ZWQuDQoNCklu
-dGVybGVhdmluZyB0aGUgcmVhZHMgYW5kIHdyaXRlcyBtZWFucyB5b3UgaXNzdWUgYSByZWFkDQp3
-aGlsZSB3YWl0aW5nIGZvciB0aGUgdmFsdWUgZnJvbSB0aGUgcHJldmlvdXMgcmVhZCB0bw0KZ2V0
-IHRvIHRoZSByZWdpc3RlciBmaWxlIC0gYW5kIGJlIGF2YWlsYWJsZSBmb3IgdGhlDQp3cml0ZSBp
-bnN0cnVjdGlvbi4NCg0KTW92aW5nIHRoZSAnc3JjL2RzdCArPSAyJyBpbnRvIHRoZSBsb29wIGdp
-dmVzIGEgcmVhc29uYWJsZQ0KY2hhbmNlIHRoYXQgdGhleSBhcmUgZXhlY3V0ZWQgaW4gcGFyYWxs
-ZWwgd2l0aCBhIG1lbW9yeQ0KYWNjZXNzIChvbiBpbi1vcmRlciBzdXBlcnNjYWxlciBjcHUpIHJh
-dGhlciB0aGFuIGJ1bmNoaW5nDQp0aGVtIHVwIGF0IHRoZSBlbmQgd2hlcmUgdGhlIHN0YXJ0IGFk
-ZGluZyBjbG9ja3MuDQoNCklmIHlvdXIgY3B1IGNhbiBvbmx5IGRvIG9uZSBtZW1vcnkgcmVhZCBv
-ciBvbmUgbWVtb3J5IHdyaXRlDQpwZXIgY2xvY2sgdGhlbiB5b3Ugb25seSBuZWVkIGl0IHRvIGV4
-ZWN1dGUgdHdvIGluc3RydWN0aW9ucw0KcGVyIGNsb2NrIGZvciB0aGUgbG9vcCBhYm92ZSB0byBy
-dW4gYXQgbWF4aW11bSBzcGVlZC4NCkV2ZW4gd2l0aCBhICdyZWFkIGxhdGVuY3knIG9mIHR3byBj
-bG9ja3MuDQooRXNwZWNpYWxseSBzaW5jZSByaXNjdiBoYXMgJ21pcHMgbGlrZScgJ2NvbXBhcmUg
-YW5kIGJyYW5jaCcNCmluc3RydWN0aW9ucyB0aGF0IHByb2JhYmx5IGV4ZWN1dGUgaW4gMSBjbG9j
-ayB3aGVuIHByZWRpY3RlZA0KdGFrZW4uKQ0KDQpJZiB0aGUgY3B1IGNhbiBkbyBhIHJlYWQgYW5k
-IGEgd3JpdGUgaW4gb25lIGNsb2NrIHRoZW4gdGhlDQpsb29wIG1heSBzdGlsbCBydW4gYXQgdGhl
-IG1heGltdW0gc3BlZWQuDQpGb3IgdGhpcyB0byBoYXBwZW4geW91IGRvIG5lZWQgaGUgcmVhZCBk
-YXRhIHRvIGJlIGF2YWlsYWJsZQ0KbmV4dCBjbG9jayBhbmQgdG8gcnVuIGxvYWQsIHN0b3JlLCBh
-ZGQgYW5kIGNvbXBhcmUgaW5zdHJ1Y3Rpb25zDQppbiBhIHNpbmdsZSBjbG9jay4NCldpdGhvdXQg
-dGhhdCBtdWNoIHBhcmFsbGVsaXNtIGl0IG1pZ2h0IGJlIG5lY2Vzc2FyeSB0byBhZGQNCmFuIGV4
-dHJhIHJlYWQvd3JpdGUgaW50ZXJsZWF2ZSAoYW4gbWF5YmUgYSA0dGggdG8gYXZvaWQgYQ0KZGl2
-aWRlIGJ5IHRocmVlKS4NCg0KVGhlICdlbGVwaGFudCBpbiB0aGUgcm9vbScgaXMgYSBwb3RlbnRp
-YWwgYWRkaXRpb25hbCBzdGFsbA0Kb24gcmVhZHMgaWYgdGhlIHByZXZpb3VzIGN5Y2xlIGlzIGEg
-d3JpdGUgdG8gdGhlIHNhbWUgY2FjaGUgYXJlYS4NCkZvciBpbnN0YW5jZSB0aGUgbmlvczIgKGEg
-c29mdCBjcHUgZm9yIGFsdGVyYSBmcGdhKSBjYW4gZG8NCmJhY2sgdG8gYmFjayByZWFkcyBvciBi
-YWNrIHRvIGJhY2sgd3JpdGVzLCBidXQgc2luY2UgdGhlIHJlYWRzDQphcmUgZG9uZSBzcGVjdWxh
-dGl2ZWx5IChyZWdhcmRsZXNzIG9mIHRoZSBvcGNvZGUhKSB0aGV5IGhhdmUgdG8NCmJlIGRlZmVy
-cmVkIHdoZW4gYSB3cml0ZSBpcyB1c2luZyB0aGUgbWVtb3J5IGJsb2NrLg0KDQoJRGF2aWQNCg0K
-LQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0s
-IE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdh
-bGVzKQ0K
+> Subject: Re: [PATCH V6 2/4] Documentation: bindings: clk: Add bindings fo=
+r
+> i.MX BLK_CTL
+>=20
+> On Sat, May 22, 2021 at 09:42:47PM +0800, Peng Fan (OSS) wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > Document the i.MX BLK_CTL with its devicetree properties.
+> >
+> > Each BLK CTL have different power domain inputs and they have
+> > different names, so we are not able to list all the power domain names
+> > for each BLK CTL here.
+> >
+> > For example:
+> > i.MX8MM dispmix BLK CTL, it has
+> > 	power-domains =3D <&pgc_dispmix>, <&pgc_mipi>;
+> > 	power-domain-names =3D "dispmix", "mipi";
+> >
+> > vpumix BLK CTL, it has
+> > 	power-domains =3D <&vpumix_pd>, <&vpu_g1_pd>, <&vpu_g2_pd>,
+> > 			<&vpu_h1_pd>;
+> > 	power-domain-names =3D "vpumix", "g1", "g2", "h1";
+> >
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+>=20
+> Can we be consistent in using 'dt-bindings: ...' as prefix?
 
+Yes. Fix in v7.
+
+Thanks,
+Peng.
+
+>=20
+> Shawn
+>=20
+> > ---
+> >  .../bindings/soc/imx/fsl,imx-blk-ctl.yaml     | 66
+> +++++++++++++++++++
+> >  1 file changed, 66 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
+> > b/Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
+> > new file mode 100644
+> > index 000000000000..a66f11acc6b4
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
+> > @@ -0,0 +1,66 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > +---
+> > +$id:
+> > +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdev=
+i
+> >
+> +cetree.org%2Fschemas%2Fsoc%2Fimx%2Ffsl%2Cimx-blk-ctl.yaml%23&amp;
+> data
+> >
+> +=3D04%7C01%7Cpeng.fan%40nxp.com%7C8ef49946599c41046e5308d92d3b7
+> 2df%7C68
+> >
+> +6ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637590555623663011%
+> 7CUnknown
+> >
+> +%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1ha
+> WwiLC
+> >
+> +JXVCI6Mn0%3D%7C1000&amp;sdata=3D%2FvyX8r5Dc0nWjRaLASXKvs7JGKuP
+> 4iwMQPMNa
+> > +u93SH4%3D&amp;reserved=3D0
+> > +$schema:
+> > +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdev=
+i
+> >
+> +cetree.org%2Fmeta-schemas%2Fcore.yaml%23&amp;data=3D04%7C01%7Cpe
+> ng.fan%
+> >
+> +40nxp.com%7C8ef49946599c41046e5308d92d3b72df%7C686ea1d3bc2b4c
+> 6fa92cd9
+> >
+> +9c5c301635%7C0%7C0%7C637590555623663011%7CUnknown%7CTWFpb
+> GZsb3d8eyJWI
+> >
+> +joiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7
+> C1000&
+> >
+> +amp;sdata=3Dj25%2F6NIDdiN3weLr0xMDM5z91P9KXDLEzIRlf7A4OPs%3D&a
+> mp;reserv
+> > +ed=3D0
+> > +
+> > +title: NXP i.MX BLK_CTL
+> > +
+> > +maintainers:
+> > +  - Peng Fan <peng.fan@nxp.com>
+> > +
+> > +description:
+> > +  i.MX BLK_CTL is a conglomerate of different GPRs that are
+> > +  dedicated to a specific subsystem. It usually contains
+> > +  clocks and resets amongst other things. Here we take the clocks
+> > +  and resets as virtual PDs, the reason we could not take it as
+> > +  clock provider is there is A/B lock issue between power domain
+> > +  and clock.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - enum:
+> > +          - fsl,imx8mm-dispmix-blk-ctl
+> > +          - fsl,imx8mm-vpumix-blk-ctl
+> > +      - const: syscon
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  "#power-domain-cells":
+> > +    const: 1
+> > +
+> > +  power-domains:
+> > +    minItems: 1
+> > +    maxItems: 32
+> > +
+> > +  power-domain-names:
+> > +    minItems: 1
+> > +    maxItems: 32
+> > +
+> > +  clocks:
+> > +    minItems: 1
+> > +    maxItems: 32
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - power-domains
+> > +  - power-domain-names
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/imx8mm-clock.h>
+> > +
+> > +    dispmix_blk_ctl: blk-ctl@32e28000 {
+> > +      compatible =3D "fsl,imx8mm-dispmix-blk-ctl", "syscon";
+> > +      reg =3D <0x32e28000 0x100>;
+> > +      #power-domain-cells =3D <1>;
+> > +      power-domains =3D <&pgc_dispmix>, <&pgc_mipi>;
+> > +      power-domain-names =3D "dispmix", "mipi";
+> > +      clocks =3D <&clk IMX8MM_CLK_DISP_ROOT>, <&clk
+> IMX8MM_CLK_DISP_AXI_ROOT>,
+> > +               <&clk IMX8MM_CLK_DISP_APB_ROOT>;
+> > +    };
+> > --
+> > 2.30.0
+> >
