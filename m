@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4293A5100
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67F83A5101
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhFLVdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 17:33:09 -0400
-Received: from mail-pj1-f42.google.com ([209.85.216.42]:50885 "EHLO
-        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFLVdG (ORCPT
+        id S231311AbhFLVgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 17:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFLVgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 17:33:06 -0400
-Received: by mail-pj1-f42.google.com with SMTP id g4so7616619pjk.0;
-        Sat, 12 Jun 2021 14:31:06 -0700 (PDT)
+        Sat, 12 Jun 2021 17:36:02 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C60C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 14:33:52 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id d2so14429253ljj.11
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 14:33:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UT0PdgheKss+feL5W1tJk656NZS8mRVgpOEkeRZAARw=;
-        b=FyoOLLSv8iEB+7G5J7YUN5Tk6sr2uWv/LSaJvccAiZ50QzuJWlRgLlEDPzxX8LmNBH
-         W19YUJaV9frRvtrcaeKatL4vCS2ZkQcgCjVnLxZs2BIpTCES4mQ0iTyRw+BxS/lEH0F1
-         TnluSkRLzj0ZSqSAyEK2ixLWi15w96/+EWDsGV3fsRLp8FOGOI5aw0O5UrYmOrF8ekJ8
-         76VYmFElEPO833nWnCBwIH43UiFqxXISDPDxgngZxZaCraHhjG33T5kBSasdT8JJ/mMt
-         xBs44Us/tIInz6Ujwtm1qjr8tKyLcgiLwzG1/+Vhfhn593n6uCdTM9dbo2ImfA/xYG7N
-         xzRg==
+        bh=cttjN6hHK8ZfFZCCvG0xFSEaYGvtzoV+qTXYo7qsc7k=;
+        b=JYQfkbvfKl/sPzEiSMj0gpLCOnO9JgnJ/vuXvIfL60Bi/8rJK41ki8J2OlrUoFw5jM
+         3iQeF8y0m9PcG96gg7waRWPDDLFEgfHiT/KF360yZZCnWH7kVrla8Jvfg+2mc/S3CGq7
+         4MMnJ4VaRZUc80knmVKyV7v0TzALS1vNeePxw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UT0PdgheKss+feL5W1tJk656NZS8mRVgpOEkeRZAARw=;
-        b=k5mduIgaz47IK++M4bmy9ebxzcC3TM2LfxOipVs1TvlDqBQ2EQMBvBRlZWzP8e8sGi
-         AUOyPwHCKhbN4W51UAu+Cwip5Oljm9bFQOaQwYIkVWKjBdH7SjUu551sFXE9MlB0ztY+
-         2xjbgU0RTHdzXHUcZBr2uzzGPeRYCLQsgUz9GbQAOp6RwJbckQoEjOXfXpuHi1XmUsD5
-         gNHJbRT8m8xc3WYH09KAY/E95AGCq78YwG8iKDibS51hZVDY7PKIUgJZib/F3/Ab9RlH
-         LTb7SygvxDXUjtCS6NcjA5VOJWJlorl/mPZxc+ki8aCxIIFo14tiZi6JJqqAtG2oDLIK
-         wlWA==
-X-Gm-Message-State: AOAM533Z+cJ/H9+0/+wVgwGpwW7gMFn1PSWxeT3Dw5Guo9Ti7dciaM1Y
-        TzqC+h6yQYuPKclBbG63iSfbc/kX3GozT9Y2zDA=
-X-Google-Smtp-Source: ABdhPJwcx7zR0MqeWhCvGkg37I1rpObfhF4zJU97thMpHq8Kl34o79PE1ItzkjWrPKLNd1ob8IzhC4vs7nZ7VeNoqvs=
-X-Received: by 2002:a17:90b:818:: with SMTP id bk24mr11172538pjb.228.1623533406106;
- Sat, 12 Jun 2021 14:30:06 -0700 (PDT)
+        bh=cttjN6hHK8ZfFZCCvG0xFSEaYGvtzoV+qTXYo7qsc7k=;
+        b=STCUdotTFdyhX19ZKu3U7M3Cs2g1MfHXek3AcoRePDB3eivpStekXiYnVJaEUei0vB
+         luJSZaKcCSUriArlWQxAZRd6NKZ40qSJtQYMjU/80bzLtkC3IjJO8Vau5iYQgO7AOuh5
+         Gu1oHRjqTpGoOgb4AKCtAf/J2Vw09YP+Rwy9xKLLgeW1QD/yJnp8hdnnX7r4nWc2d1UU
+         RGckGPyn9rlKS0UXYjOoz91UkJUsM5gc0iNrfn0wzkZXHz6z1Gt2hTqQH1lrxxra2IdT
+         plB8j21YSSKhvWZxa/N2SAznfitwRVm5YKMgnbUtqTRzohe8A7pMpopeMUf01cGA1Z4E
+         S5Dg==
+X-Gm-Message-State: AOAM532PY07VMgKdHb5ty+Pq2BI/M07ylGeOv0mMUflGM4Wm1tdP1OCB
+        eO9KWrIrJVpUEHwKhUKXCRSGcIr38ZeqpDh+QVY=
+X-Google-Smtp-Source: ABdhPJwQUu/vhwvtZuBDquD3N9LAZ+Dfu95/h7MdKov8ZSyeXOU6qPfej8VMJAgufOwPNBTj/02taQ==
+X-Received: by 2002:a05:651c:1057:: with SMTP id x23mr7718062ljm.467.1623533628899;
+        Sat, 12 Jun 2021 14:33:48 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id r3sm1226483ljc.20.2021.06.12.14.33.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Jun 2021 14:33:47 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id p17so14202292lfc.6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 14:33:47 -0700 (PDT)
+X-Received: by 2002:ac2:43b9:: with SMTP id t25mr6993774lfl.253.1623533627053;
+ Sat, 12 Jun 2021 14:33:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1623532208.git.sander@svanheule.net> <5d8e5e8a29ecf39da48beb94c42003a5c686ec4e.1623532208.git.sander@svanheule.net>
-In-Reply-To: <5d8e5e8a29ecf39da48beb94c42003a5c686ec4e.1623532208.git.sander@svanheule.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 13 Jun 2021 00:29:49 +0300
-Message-ID: <CAHp75VeOMb2xUJ+g2UQJnBybmehmYr0dGPEzDZObUGr=Q95+wA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/8] gpio: regmap: Add quirk for aliased data registers
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210531170123.243771-1-agruenba@redhat.com> <20210531170123.243771-6-agruenba@redhat.com>
+ <YLUY/7pcFMibDnRn@zeniv-ca.linux.org.uk> <YMUjQYtBCIxHvsYV@zeniv-ca.linux.org.uk>
+In-Reply-To: <YMUjQYtBCIxHvsYV@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 12 Jun 2021 14:33:31 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whcnziOWqVESWKJ6Y1_sG2S2AOa1vv5yKzUGs5gM7qYpQ@mail.gmail.com>
+Message-ID: <CAHk-=whcnziOWqVESWKJ6Y1_sG2S2AOa1vv5yKzUGs5gM7qYpQ@mail.gmail.com>
+Subject: Re: [RFC 5/9] iov_iter: Add iov_iter_fault_in_writeable()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 12:13 AM Sander Vanheule <sander@svanheule.net> wrote:
+On Sat, Jun 12, 2021 at 2:12 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
 >
-> Some chips have the read-only input and write-only output data registers
-> aliased to the same offset. As a result it is not possible to perform
-> read-modify-writes on the output values, when a line is still configured
-> as input.
->
-> Add a quirk for aliased data registers, and document how the regmap
-> should be set up for correct operation.
+> Actually, is there any good way to make sure that write fault is triggered
+> _without_ modification of the data?  On x86 lock xadd (of 0, that is) would
+> probably do it and some of the other architectures could probably get away
+> with using cmpxchg and its relatives, but how reliable it is wrt always
+> triggering a write fault if the page is currently read-only?
 
-I still believe that there is no issue with gpio-regmap and we don't
-need any quirk there.
+I wouldn't worry about the CPU optimizing a zero 'add' away (extra
+work for no gain in any normal situation).
 
-The issue is in the regmap APIs (implementation) itself. Hardware with
-the concept of reading X / writing Y at the same offset is okay per
-se. regmaps doesn't support it properly and should be fixed (amended)
-in a way that you provide this kind of register description thru
-regmap configuration or so.
+But any architecture using 'ldl/stc' to do atomics would do it in
+software for at least cmpxchg (ie just abort after the "doesn't
+match").
 
-I expressed the idea of trying to implement regmap-8250 as an example
-of the support for such hardware. And OTOH that this kind of hardware
-is not unusual.
+Even on x86, it's certainly _possible_ that a non-matching cmpxchg
+might not have done the writability check, although I would find that
+unlikely (ie I would expect it to do just one TLB lookup, and just one
+permission check, whether it then writes or not).
 
--- 
-With Best Regards,
-Andy Shevchenko
+And if the architecture does atomic operations using that ldl/stc
+model, I could (again) see the software loop breaking out early
+(before the stc) on the grounds of "value didn't change".
+
+Although it's a lot less likely outside of cmpxchg. I suspect an "add
+zero" would work just fine even on a ldl/stc model.
+
+That said, reads are obviously much easier, and I'd probably prefer
+the model for writes to be to not necessarily pre-fault anything at
+all, but just write to user space with page faults disabled.
+
+And then only if that fails do you do anything special. And at that
+point, even walking the page tables by hand might be perfectly
+acceptable - since we know it's going to fault anyway, and it might
+actually be cheaper to just do it by hand with GUP or whatever.
+
+          Linus
