@@ -2,135 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639C33A4DCC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 10:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB46C3A4DDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 11:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhFLI4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 04:56:51 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:41774 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFLI4t (ORCPT
+        id S230527AbhFLJQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 05:16:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49638 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhFLJQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 04:56:49 -0400
-Received: by mail-vs1-f43.google.com with SMTP id c1so5119990vsh.8;
-        Sat, 12 Jun 2021 01:54:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GD2Olda9AmSNWAvIUnqMGuloWkjPAxn/zDHn8rCyeik=;
-        b=WMZIqcJpKrCtTBxTrQuhxSryloSzbak5D0o0I862v8EGdRs791HlhJKBqo6dsJhDl8
-         O66sEJS3CG9kxXYHskZlKX8K4sSu9+P4CeHtUu1OF0qRoAeIBA5km9bHwNX8ji52SjTp
-         OMlaVZFmft7jz3XIROSwM0j53Lp08GL0eUfCurIeGlFK5rx3qmwG2jSQ8GrQwcpteTV9
-         AEYfLpc3Jka4eHdIT6qVvNYmKSLc6Sv3/lCGyoHY8bg3qFMRPiyBZ5qG46pPXgayBi6J
-         Cjr/lvhKa57mJTOWqhxIx18StzTPN4iEkq1REZ4GJY+K8OPL3RQUSEZpsiaLse/wgqx/
-         EJZA==
-X-Gm-Message-State: AOAM532TRuMEaTDZ12b7pz2oHz6lnmZ4q35iOHQe3k056qHNqhFpqY5a
-        31eT2wqwB+D8a8cQBH+z4hiJqbb1hsMrYxBVVAU=
-X-Google-Smtp-Source: ABdhPJwQqVoaYjc0es2Y8dX/xEIoI5ZH3RdFJKE9qfsQHMDXtt6noFdUluHDMrZeJgyKIb7/kZOxucdlD8ELeejk3nU=
-X-Received: by 2002:a67:efd6:: with SMTP id s22mr13429864vsp.3.1623488074285;
- Sat, 12 Jun 2021 01:54:34 -0700 (PDT)
+        Sat, 12 Jun 2021 05:16:10 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 432541FD7B;
+        Sat, 12 Jun 2021 09:14:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623489250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p2sSlImVRcXaM9VYnbNA49+Up3x5pVh6O5L7b3RGQVU=;
+        b=j/ADvuN+DoA2M1FHPVpN4s/fL8ph16TW6g0orccD9s9N2zwbnjkKbCeaKuALucg9CMVVPV
+        1CnCHrahDA4q1Tm863BHCp94xD1qT7/PVJySeV49CiOgd0jjX+objvqpbBD5N+eXAFbJmv
+        Y3trSlay72zyZ0Lk9rXyiBcFbjJ5wy0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623489250;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p2sSlImVRcXaM9VYnbNA49+Up3x5pVh6O5L7b3RGQVU=;
+        b=bckWDiGQYYYy65ueC80D77+yKZoroh9qyvvWACh7sWkcaNCR+3CU8dtvvzql8K7v05FdPi
+        OycH9G7BYGWIf0Cg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 2A9BB118DD;
+        Sat, 12 Jun 2021 09:14:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623489250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p2sSlImVRcXaM9VYnbNA49+Up3x5pVh6O5L7b3RGQVU=;
+        b=j/ADvuN+DoA2M1FHPVpN4s/fL8ph16TW6g0orccD9s9N2zwbnjkKbCeaKuALucg9CMVVPV
+        1CnCHrahDA4q1Tm863BHCp94xD1qT7/PVJySeV49CiOgd0jjX+objvqpbBD5N+eXAFbJmv
+        Y3trSlay72zyZ0Lk9rXyiBcFbjJ5wy0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623489250;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p2sSlImVRcXaM9VYnbNA49+Up3x5pVh6O5L7b3RGQVU=;
+        b=bckWDiGQYYYy65ueC80D77+yKZoroh9qyvvWACh7sWkcaNCR+3CU8dtvvzql8K7v05FdPi
+        OycH9G7BYGWIf0Cg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id KK7LCeJ6xGDcBQAALh3uQQ
+        (envelope-from <bp@suse.de>); Sat, 12 Jun 2021 09:14:10 +0000
+Date:   Sat, 12 Jun 2021 11:13:51 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch 07/41] x86/fpu: Simplify PTRACE_GETREGS code
+Message-ID: <YMR6z3hlyR0t9Kip@zn.tnic>
+References: <20210611161523.508908024@linutronix.de>
+ <20210611163111.724946882@linutronix.de>
 MIME-Version: 1.0
-References: <20210610110001.2805317-1-geert@linux-m68k.org>
- <20210610220155.GQ664593@dread.disaster.area> <CAMuHMdWp3E3QDnbGDcTZsCiQNP3pLV2nXVmtOD7OEQO8P-9egQ@mail.gmail.com>
- <20210611224638.GT664593@dread.disaster.area>
-In-Reply-To: <20210611224638.GT664593@dread.disaster.area>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sat, 12 Jun 2021 10:54:23 +0200
-Message-ID: <CAMuHMdU1f5QD9J9Hz5m97arhF6gKQTFqz5EqrskD+cnWpYbX1Q@mail.gmail.com>
-Subject: Re: [PATCH] xfs: Fix 64-bit division on 32-bit in xlog_state_switch_iclogs()
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Dave Chinner <dchinner@redhat.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        Linux-Next <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        noreply@ellerman.id.au
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210611163111.724946882@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+On Fri, Jun 11, 2021 at 06:15:30PM +0200, Thomas Gleixner wrote:
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+> 
+> ptrace() has interfaces that let a ptracer inspect a ptracee's register state.
+> This includes XSAVE state.  The ptrace() ABI includes a hardware-format XSAVE
+> buffer for both the SETREGS and GETREGS interfaces.
+> 
+> In the old days, the kernel buffer and the ptrace() ABI buffer were the
+> same boring non-compacted format.  But, since the advent of supervisor
+> states and the compacted format, the kernel buffer has diverged from the
+> format presented in the ABI.
+> 
+> This leads to two paths in the kernel:
+> 1. Effectively a verbatim copy_to_user() which just copies the kernel buffer
+>    out to userspace.  This is used when the kernel buffer is kept in the
+>    non-compacted form which means that it shares a format with the ptrace
+>    ABI.
+> 2. A one-state-at-a-time path: copy_xstate_to_kernel().  This is theoretically
+>    slower since it does a bunch of piecemeal copies.
+> 
+> Remove the verbatim copy case.  Speed probably does not matter in this path,
+> and the vast majority of new hardware will use the one-state-at-a-time path
+> anyway.  This ensures greater testing for the "slow" path.
+> 
+> This also makes enabling PKRU in this interface easier since a single path
+> can be patched instead of two.
+> 
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> V4: Picked up from Dave's PKRU series
+> ---
+>  arch/x86/kernel/fpu/regset.c |   22 ++--------------------
+>  arch/x86/kernel/fpu/xstate.c |    6 +++---
+>  2 files changed, 5 insertions(+), 23 deletions(-)
 
-On Sat, Jun 12, 2021 at 12:46 AM Dave Chinner <david@fromorbit.com> wrote:
-> On Fri, Jun 11, 2021 at 08:55:24AM +0200, Geert Uytterhoeven wrote:
-> > On Fri, Jun 11, 2021 at 12:02 AM Dave Chinner <david@fromorbit.com> wrote:
-> > > On Thu, Jun 10, 2021 at 01:00:01PM +0200, Geert Uytterhoeven wrote:
-> > > > On 32-bit (e.g. m68k):
-> > > >
-> > > >     ERROR: modpost: "__udivdi3" [fs/xfs/xfs.ko] undefined!
-> > > >
-> > > > Fix this by using a uint32_t intermediate, like before.
-> > > >
-> > > > Reported-by: noreply@ellerman.id.au
-> > > > Fixes: 7660a5b48fbef958 ("xfs: log stripe roundoff is a property of the log")
-> > > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > > ---
-> > > > Compile-tested only.
-> > > > ---
-> > > >  fs/xfs/xfs_log.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > <sigh>
-> > >
-> > > 64 bit division on 32 bit platforms is still a problem in this day
-> > > and age?
-> >
-> > They're not a problem.  But you should use the right operations from
-> > <linux/math64.h>, iff you really need these expensive operations.
->
-> See, that's the whole problem. This *isn't* obviously a 64 bit
-> division - BBTOB is shifting the variable down by 9 (bytes to blocks)
-> and then using that as the divisor.
-
-BTOBB, not BBTOB ;-)
-
-> The problem is that BBTOB has an internal cast to a 64 bit size,
-> and roundup() just blindly takes it and hence we get non-obvious
-> compile errors only on 32 bit platforms.
-
-Indeed. Perhaps the macros should be fixed?
-
-    #define BBSHIFT         9
-    #define BBSIZE          (1<<BBSHIFT)
-    #define BBMASK          (BBSIZE-1)
-    #define BTOBB(bytes)    (((__u64)(bytes) + BBSIZE - 1) >> BBSHIFT)
-    #define BTOBBT(bytes)   ((__u64)(bytes) >> BBSHIFT)
-
-Why are these two casting bytes to u64? The result will be smaller
-due to the shift.
-if the type holding bytes was too small, you're screwed anyway.
-
-    #define BBTOB(bbs)      ((bbs) << BBSHIFT)
-
-Why does this one lack the cast? If the passed bbs is ever 32-bit,
-it may overflow due to the shift.
-
-> We have type checking macros for all sorts of generic functionality
-> - why haven't these generic macros that do division also have type
-> checking to catch this? i.e. so that when people build kernels on
-> 64 bit machines find out that they've unwittingly broken 32 bit
-> builds the moment they use roundup() and/or friends incorrectly?
->
-> That would save a lot of extra work having fix crap like this up
-> after the fact...
-
-While adding checks would work for e.g. roundup(), it wouldn't work
-for plain divisions not involving rounding, as we don't have a way to
-catch this for "a / b", except for the link error on 32-bit platforms.
-
-Perhaps the build bots are not monitoring linux-xfs?
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Regards/Gruss,
+    Boris.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
