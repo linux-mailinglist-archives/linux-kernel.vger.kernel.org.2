@@ -2,201 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84973A4CD7
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 06:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCF13A4CE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 06:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhFLEed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 00:34:33 -0400
-Received: from mail-qt1-f170.google.com ([209.85.160.170]:34640 "EHLO
-        mail-qt1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFLEe2 (ORCPT
+        id S230181AbhFLEnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 00:43:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229985AbhFLEnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 00:34:28 -0400
-Received: by mail-qt1-f170.google.com with SMTP id u20so4280915qtx.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 21:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version;
-        bh=9rUn5z6J1oCf/hH7go9J9pBuFJfFwvGBOLnsQiWyXHM=;
-        b=brXn7LLXuCAf1V+/rlD8RQj33kCogvu/48KwLJsYVPKgbkEU6Jl5yuHyQdKWLGwsT5
-         64loB1QJetvvFVt6BAkM84sgL0XM2poqfd6vS96/UD0H+MUO3xeT36Vg1X9R3kIN1RJh
-         sYKe9lCFgw9cYV+eaRJa9pbyTBXQjyWn2wrP/HS4teG6IcOGIBxGm3cBRLKyUY2IvUDb
-         ajhlC/L91JWeGsjYmj0VrQml1DJQRgY7dk61BK+JFhPKjSh12ftYp0ihhsKJxVTrXLgz
-         G2mHWwfMgyejnys03ESHJ/vFs+UCfwLJYOsHXdYVpeD1sdioIrij8ddcoVSMqbcH5rbv
-         T9xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
-        bh=9rUn5z6J1oCf/hH7go9J9pBuFJfFwvGBOLnsQiWyXHM=;
-        b=e92B/N5BBwKU22vMIwCt1YxOD+no8zdSN+hbgM31F5J/So75Go7PGdIg28MDI3wYP2
-         V6FSsQE6rGzOQ+9O3AFETTakCcosr8Hnq2Py902gEtinVbHXTe+P7gm1h0QWsS+/va94
-         F/HOHuYBmeeNxAUkQRGwgw2HRMnN4AS/BL7XDBB6GnmJBYZPba1NTaZs7sbgjxufIuMy
-         sKDct9KE8yDkadobaxZeq8n2Rn1AalvQdyA/PBfkUArd3FO6A6grU8b1YH+cn1UHeW0+
-         Ptje9QbsBAsZqXdjo8MW0AVVc+VVTcY3CM1RjVamuvaIHNjqOR2jdrUI2BeKItc9nzRR
-         qXlA==
-X-Gm-Message-State: AOAM532bGhFrUhY0s47JqVITmAYukjhWRPfAmCcfzmoDvH0qtOaaoTGl
-        WZhWHYmiWsRgSiWFyCyHUlgFbw==
-X-Google-Smtp-Source: ABdhPJzEcHIJiqN09yuESLHWZGpbiaiD+oHi5hCzMhr2sIJSSwCv9LdUFiRO8T032wOfRpBcdrWjGQ==
-X-Received: by 2002:ac8:709a:: with SMTP id y26mr6922294qto.315.1623472288778;
-        Fri, 11 Jun 2021 21:31:28 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id j14sm3781764qtq.56.2021.06.11.21.31.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 21:31:28 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 21:31:16 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhang Yi <wetpzy@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Neel Natu <neelnatu@google.com>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm, futex: Fix shared futex pgoff on shmem huge page
-Message-ID: <45e8fd67-51fd-7828-fe43-d261d6c33727@google.com>
+        Sat, 12 Jun 2021 00:43:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623472869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BhtisDRssXQT2it4jQW/bgYjuS/QsE3H+8BKWcr+zPM=;
+        b=jFCvl+zQdcrdUFhgXXr2kySd7hwh6ROMQOHhboc0h+VTPyKsK/THxHKsXVYXda8k9PnDUi
+        IsQdil+5Bso+0yxSkdUhzYQjjsSF1sABc3FU46hWNHHSBZ7n43sQ9ZRupOdV+gqe57YTTi
+        AQKIIxeBwiLECfobQL4SVNrl1J2btvQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-537-2k_2Xow2PWGwwTFLf8unag-1; Sat, 12 Jun 2021 00:41:07 -0400
+X-MC-Unique: 2k_2Xow2PWGwwTFLf8unag-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04C7C1850600;
+        Sat, 12 Jun 2021 04:41:05 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-26.pek2.redhat.com [10.72.12.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C6F7C60E3A;
+        Sat, 12 Jun 2021 04:41:00 +0000 (UTC)
+Date:   Sat, 12 Jun 2021 12:40:57 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Javier =?iso-8859-1?B?VGnh?= <javier.tia@gmail.com>,
+        kexec@lists.infradead.org, Eric Biederman <ebiederm@xmission.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed
+ kernel
+Message-ID: <YMQ62d1EFFjRcv6w@dhcp-128-65.nay.redhat.com>
+References: <20161202195416.58953-1-andriy.shevchenko@linux.intel.com>
+ <YLdEZoSWI41fcTB1@smile.fi.intel.com>
+ <YLdG91qspr19heDS@smile.fi.intel.com>
+ <YLss6ZNPMIXleLLF@dhcp-128-65.nay.redhat.com>
+ <YL5HvUqtsDXx5CzM@smile.fi.intel.com>
+ <YL5U/zSb50SnbLgW@smile.fi.intel.com>
+ <YL9hxPdPj0dYMyaD@dhcp-128-65.nay.redhat.com>
+ <CAHp75VcPuf6BLGf7Y3RO2M-gHMFZMTeb4ftnj_tbGS4TxvThxA@mail.gmail.com>
+ <YMCsSqzmG4jb1Ojo@dhcp-128-65.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMCsSqzmG4jb1Ojo@dhcp-128-65.nay.redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If more than one futex is placed on a shmem huge page, it can happen that
-waking the second wakes the first instead, and leaves the second waiting:
-the key's shared.pgoff is wrong.
+> Probably it is doable to have kexec on 32bit efi working
+> without runtime service support, that means no need the trick of fixed
+> mapping.
+> 
+> If I can restore my vm to boot 32bit efi on this weekend then I may provide some draft
+> patches for test.
 
-When 3.11 commit 13d60f4b6ab5 ("futex: Take hugepages into account when
-generating futex_key"), the only shared huge pages came from hugetlbfs,
-and the code added to deal with its exceptional page->index was put into
-hugetlb source.  Then that was missed when 4.8 added shmem huge pages.
+Unfortunately I failed to setup a 32bit efi guest,  here are some
+untested draft patches, please have a try.
 
-page_to_pgoff() is what others use for this nowadays: except that, as
-currently written, it gives the right answer on hugetlbfs head, but
-nonsense on hugetlbfs tails.  Fix that by calling hugetlbfs-specific
-hugetlb_basepage_index() on PageHuge tails as well as on head.
+========= kernel draft patch ==============
 
-Yes, it's unconventional to declare hugetlb_basepage_index() there in
-pagemap.h, rather than in hugetlb.h; but I do not expect anything but
-page_to_pgoff() ever to need it.
-
-Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-Reported-by: Neel Natu <neelnatu@google.com>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: <stable@vger.kernel.org>
 ---
+ arch/x86/boot/header.S         |    2 +-
+ arch/x86/platform/efi/efi.c    |    6 +++---
+ arch/x86/platform/efi/quirks.c |    3 ---
+ 3 files changed, 4 insertions(+), 7 deletions(-)
 
- include/linux/hugetlb.h |   16 ----------------
- include/linux/pagemap.h |   13 ++++++-------
- kernel/futex.c          |    3 +--
- mm/hugetlb.c            |    5 +----
- 4 files changed, 8 insertions(+), 29 deletions(-)
+--- linux-x86.orig/arch/x86/boot/header.S
++++ linux-x86/arch/x86/boot/header.S
+@@ -416,7 +416,7 @@ xloadflags:
+ # define XLF23 0
+ #endif
+ 
+-#if defined(CONFIG_X86_64) && defined(CONFIG_EFI) && defined(CONFIG_KEXEC_CORE)
++#if defined(CONFIG_EFI) && defined(CONFIG_KEXEC_CORE)
+ # define XLF4 XLF_EFI_KEXEC
+ #else
+ # define XLF4 0
+--- linux-x86.orig/arch/x86/platform/efi/efi.c
++++ linux-x86/arch/x86/platform/efi/efi.c
+@@ -710,10 +710,10 @@ static void __init kexec_enter_virtual_m
+ 	unsigned int num_pages;
+ 
+ 	/*
+-	 * We don't do virtual mode, since we don't do runtime services, on
+-	 * non-native EFI.
++	 * We don't do virtual mode, since we don't do runtime services
++	 * on non-native or IA32 EFI.
+ 	 */
+-	if (efi_is_mixed()) {
++	if (!efi_enabled(EFI_64BIT)) {
+ 		efi_memmap_unmap();
+ 		clear_bit(EFI_RUNTIME_SERVICES, &efi.flags);
+ 		return;
+--- linux-x86.orig/arch/x86/platform/efi/quirks.c
++++ linux-x86/arch/x86/platform/efi/quirks.c
+@@ -524,9 +524,6 @@ int __init efi_reuse_config(u64 tables,
+ 	if (!efi_setup)
+ 		return 0;
+ 
+-	if (!efi_enabled(EFI_64BIT))
+-		return 0;
+-
+ 	data = early_memremap(efi_setup, sizeof(*data));
+ 	if (!data) {
+ 		ret = -ENOMEM;
 
---- 5.13-rc5/include/linux/hugetlb.h	2021-05-09 17:25:09.278703159 -0700
-+++ linux/include/linux/hugetlb.h	2021-06-11 17:30:28.726720252 -0700
-@@ -733,17 +733,6 @@ static inline int hstate_index(struct hs
- 	return h - hstates;
- }
- 
--pgoff_t __basepage_index(struct page *page);
--
--/* Return page->index in PAGE_SIZE units */
--static inline pgoff_t basepage_index(struct page *page)
--{
--	if (!PageCompound(page))
--		return page->index;
--
--	return __basepage_index(page);
--}
--
- extern int dissolve_free_huge_page(struct page *page);
- extern int dissolve_free_huge_pages(unsigned long start_pfn,
- 				    unsigned long end_pfn);
-@@ -980,11 +969,6 @@ static inline int hstate_index(struct hs
- 	return 0;
- }
- 
--static inline pgoff_t basepage_index(struct page *page)
--{
--	return page->index;
--}
--
- static inline int dissolve_free_huge_page(struct page *page)
- {
- 	return 0;
---- 5.13-rc5/include/linux/pagemap.h	2021-05-16 22:49:30.036176843 -0700
-+++ linux/include/linux/pagemap.h	2021-06-11 17:30:28.726720252 -0700
-@@ -516,8 +516,7 @@ static inline struct page *read_mapping_
- }
- 
- /*
-- * Get index of the page with in radix-tree
-- * (TODO: remove once hugetlb pages will have ->index in PAGE_SIZE)
-+ * Get index of the page within radix-tree (but not for hugetlb pages).
-  */
- static inline pgoff_t page_to_index(struct page *page)
- {
-@@ -536,14 +535,14 @@ static inline pgoff_t page_to_index(stru
- }
- 
- /*
-- * Get the offset in PAGE_SIZE.
-- * (TODO: hugepage should have ->index in PAGE_SIZE)
-+ * Get the offset in PAGE_SIZE (even for hugetlb pages).
-  */
- static inline pgoff_t page_to_pgoff(struct page *page)
- {
--	if (unlikely(PageHeadHuge(page)))
--		return page->index << compound_order(page);
--
-+	if (unlikely(PageHuge(page))) {
-+		extern pgoff_t hugetlb_basepage_index(struct page *page);
-+		return hugetlb_basepage_index(page);
-+	}
- 	return page_to_index(page);
- }
- 
---- 5.13-rc5/kernel/futex.c	2021-05-09 17:25:09.670705811 -0700
-+++ linux/kernel/futex.c	2021-06-11 17:30:28.726720252 -0700
-@@ -35,7 +35,6 @@
- #include <linux/jhash.h>
- #include <linux/pagemap.h>
- #include <linux/syscalls.h>
--#include <linux/hugetlb.h>
- #include <linux/freezer.h>
- #include <linux/memblock.h>
- #include <linux/fault-inject.h>
-@@ -650,7 +649,7 @@ again:
- 
- 		key->both.offset |= FUT_OFF_INODE; /* inode-based key */
- 		key->shared.i_seq = get_inode_sequence_number(inode);
--		key->shared.pgoff = basepage_index(tail);
-+		key->shared.pgoff = page_to_pgoff(tail);
- 		rcu_read_unlock();
+
+========= kexec-tools draft patch =========
+
+---
+ kexec/arch/i386/kexec-bzImage.c |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- kexec-tools.orig/kexec/arch/i386/kexec-bzImage.c
++++ kexec-tools/kexec/arch/i386/kexec-bzImage.c
+@@ -83,6 +83,11 @@ int bzImage_probe(const char *buf, off_t
+ 	if (probe_debug) {
+ 		fprintf(stderr, "It's a bzImage\n");
  	}
- 
---- 5.13-rc5/mm/hugetlb.c	2021-06-06 16:57:26.263006733 -0700
-+++ linux/mm/hugetlb.c	2021-06-11 17:30:28.730720276 -0700
-@@ -1588,15 +1588,12 @@ struct address_space *hugetlb_page_mappi
- 	return NULL;
++
++#define XLF_EFI_KEXEC   (1 << 4)
++	if ((header->xloadflags & XLF_EFI_KEXEC) == XLF_EFI_KEXEC)
++		bzImage_support_efi_boot = 1;
++
+ 	return 0;
  }
  
--pgoff_t __basepage_index(struct page *page)
-+pgoff_t hugetlb_basepage_index(struct page *page)
- {
- 	struct page *page_head = compound_head(page);
- 	pgoff_t index = page_index(page_head);
- 	unsigned long compound_idx;
- 
--	if (!PageHuge(page_head))
--		return page_index(page);
--
- 	if (compound_order(page_head) >= MAX_ORDER)
- 		compound_idx = page_to_pfn(page) - page_to_pfn(page_head);
- 	else
+
