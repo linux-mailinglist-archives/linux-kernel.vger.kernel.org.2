@@ -2,90 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500D23A4CCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 06:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84973A4CD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 06:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFLE30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 00:29:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhFLE3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 00:29:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2418E611CB;
-        Sat, 12 Jun 2021 04:27:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623472046;
-        bh=G0+2nGRRVIUoCr/WIFqTqLXmFCWX4fIZWw/3LoSObFw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vRPoAp3eO4ZeIHfw1rE+n4qJ3ACanh5dw7YUA1QKHE3KHAxQffyDzgMELbyLaosQ2
-         iE8GFDGNqEUp5sc96Ev8PsJegnWMs0DJKKZWPP18yexpvuUNH/K0BbTM7wbNwicrpU
-         WUrx0xazK9P7FXjp901zcihzNv02Lu1wITO241Ena7TW77b1GbaKUKh/DfpSMQ3zf0
-         djiEn1xhJIiswASZMRmEbY7eUmx3joIXdrngiKXKcsrk02P4dyE9i738zdnXIK9qqo
-         OixQ27dCENubTnLNUrVIHTKMnpNRPEdEnUA7kGuxeQWXYZZNpnZfySaIhrWX0H0a9r
-         2ZLKpogOQIL4g==
-Date:   Sat, 12 Jun 2021 07:27:23 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
+        id S229931AbhFLEed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 00:34:33 -0400
+Received: from mail-qt1-f170.google.com ([209.85.160.170]:34640 "EHLO
+        mail-qt1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhFLEe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 00:34:28 -0400
+Received: by mail-qt1-f170.google.com with SMTP id u20so4280915qtx.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 21:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version;
+        bh=9rUn5z6J1oCf/hH7go9J9pBuFJfFwvGBOLnsQiWyXHM=;
+        b=brXn7LLXuCAf1V+/rlD8RQj33kCogvu/48KwLJsYVPKgbkEU6Jl5yuHyQdKWLGwsT5
+         64loB1QJetvvFVt6BAkM84sgL0XM2poqfd6vS96/UD0H+MUO3xeT36Vg1X9R3kIN1RJh
+         sYKe9lCFgw9cYV+eaRJa9pbyTBXQjyWn2wrP/HS4teG6IcOGIBxGm3cBRLKyUY2IvUDb
+         ajhlC/L91JWeGsjYmj0VrQml1DJQRgY7dk61BK+JFhPKjSh12ftYp0ihhsKJxVTrXLgz
+         G2mHWwfMgyejnys03ESHJ/vFs+UCfwLJYOsHXdYVpeD1sdioIrij8ddcoVSMqbcH5rbv
+         T9xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
+        bh=9rUn5z6J1oCf/hH7go9J9pBuFJfFwvGBOLnsQiWyXHM=;
+        b=e92B/N5BBwKU22vMIwCt1YxOD+no8zdSN+hbgM31F5J/So75Go7PGdIg28MDI3wYP2
+         V6FSsQE6rGzOQ+9O3AFETTakCcosr8Hnq2Py902gEtinVbHXTe+P7gm1h0QWsS+/va94
+         F/HOHuYBmeeNxAUkQRGwgw2HRMnN4AS/BL7XDBB6GnmJBYZPba1NTaZs7sbgjxufIuMy
+         sKDct9KE8yDkadobaxZeq8n2Rn1AalvQdyA/PBfkUArd3FO6A6grU8b1YH+cn1UHeW0+
+         Ptje9QbsBAsZqXdjo8MW0AVVc+VVTcY3CM1RjVamuvaIHNjqOR2jdrUI2BeKItc9nzRR
+         qXlA==
+X-Gm-Message-State: AOAM532bGhFrUhY0s47JqVITmAYukjhWRPfAmCcfzmoDvH0qtOaaoTGl
+        WZhWHYmiWsRgSiWFyCyHUlgFbw==
+X-Google-Smtp-Source: ABdhPJzEcHIJiqN09yuESLHWZGpbiaiD+oHi5hCzMhr2sIJSSwCv9LdUFiRO8T032wOfRpBcdrWjGQ==
+X-Received: by 2002:ac8:709a:: with SMTP id y26mr6922294qto.315.1623472288778;
+        Fri, 11 Jun 2021 21:31:28 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id j14sm3781764qtq.56.2021.06.11.21.31.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 21:31:28 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 21:31:16 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zhang Yi <wetpzy@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Neel Natu <neelnatu@google.com>,
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 3/5] selftests/sgx: Dump enclave memory map
-Message-ID: <20210612042723.vp26eafhyzrv7t66@kernel.org>
-References: <20210610083021.392269-1-jarkko@kernel.org>
- <20210610083021.392269-3-jarkko@kernel.org>
- <bb39b6af-5921-64e8-793b-5ef4b150153e@linuxfoundation.org>
+Subject: [PATCH] mm, futex: Fix shared futex pgoff on shmem huge page
+Message-ID: <45e8fd67-51fd-7828-fe43-d261d6c33727@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb39b6af-5921-64e8-793b-5ef4b150153e@linuxfoundation.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 04:45:19PM -0600, Shuah Khan wrote:
-> On 6/10/21 2:30 AM, Jarkko Sakkinen wrote:
-> > Often, it's useful to check whether /proc/self/maps looks sane when
-> > dealing with memory mapped objects, especially when they are JIT'ish
-> > dynamically constructed objects. Therefore, dump "/dev/sgx_enclave"
-> > matching lines from the memory map in FIXTURE_SETUP().
-> > 
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> >   tools/testing/selftests/sgx/main.c | 14 ++++++++++++++
-> >   1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-> > index 6da19b6bf287..14030f8b85ff 100644
-> > --- a/tools/testing/selftests/sgx/main.c
-> > +++ b/tools/testing/selftests/sgx/main.c
-> > @@ -117,6 +117,8 @@ FIXTURE_SETUP(enclave)
-> >   	Elf64_Sym *sgx_enter_enclave_sym = NULL;
-> >   	struct vdso_symtab symtab;
-> >   	struct encl_segment *seg;
-> > +	char maps_line[256];
-> > +	FILE *maps_file;
-> >   	unsigned int i;
-> >   	void *addr;
-> > @@ -167,6 +169,18 @@ FIXTURE_SETUP(enclave)
-> >   	memset(&self->run, 0, sizeof(self->run));
-> >   	self->run.tcs = self->encl.encl_base;
-> > +	maps_file = fopen("/proc/self/maps", "r");
-> 
-> I almost applied these. Does this require root access, if so,
-> please add logic to skip the test if non-root user runs it.
-> 
-> Same comments for all other paths that might require root access.
+If more than one futex is placed on a shmem huge page, it can happen that
+waking the second wakes the first instead, and leaves the second waiting:
+the key's shared.pgoff is wrong.
 
-As Dave stated, it does not. A process can inspect its own state
-through /proc/self path. E.g. Chrome web browser uses /proc/self/exe
-to initialize multiple instances of itself for browser tabs...
+When 3.11 commit 13d60f4b6ab5 ("futex: Take hugepages into account when
+generating futex_key"), the only shared huge pages came from hugetlbfs,
+and the code added to deal with its exceptional page->index was put into
+hugetlb source.  Then that was missed when 4.8 added shmem huge pages.
 
-As far as other things go, this patch set does not bind to any other
-new OS resources.
+page_to_pgoff() is what others use for this nowadays: except that, as
+currently written, it gives the right answer on hugetlbfs head, but
+nonsense on hugetlbfs tails.  Fix that by calling hugetlbfs-specific
+hugetlb_basepage_index() on PageHuge tails as well as on head.
 
-> thanks,
-> -- Shuah
+Yes, it's unconventional to declare hugetlb_basepage_index() there in
+pagemap.h, rather than in hugetlb.h; but I do not expect anything but
+page_to_pgoff() ever to need it.
 
-/Jarkko
+Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
+Reported-by: Neel Natu <neelnatu@google.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: <stable@vger.kernel.org>
+---
+
+ include/linux/hugetlb.h |   16 ----------------
+ include/linux/pagemap.h |   13 ++++++-------
+ kernel/futex.c          |    3 +--
+ mm/hugetlb.c            |    5 +----
+ 4 files changed, 8 insertions(+), 29 deletions(-)
+
+--- 5.13-rc5/include/linux/hugetlb.h	2021-05-09 17:25:09.278703159 -0700
++++ linux/include/linux/hugetlb.h	2021-06-11 17:30:28.726720252 -0700
+@@ -733,17 +733,6 @@ static inline int hstate_index(struct hs
+ 	return h - hstates;
+ }
+ 
+-pgoff_t __basepage_index(struct page *page);
+-
+-/* Return page->index in PAGE_SIZE units */
+-static inline pgoff_t basepage_index(struct page *page)
+-{
+-	if (!PageCompound(page))
+-		return page->index;
+-
+-	return __basepage_index(page);
+-}
+-
+ extern int dissolve_free_huge_page(struct page *page);
+ extern int dissolve_free_huge_pages(unsigned long start_pfn,
+ 				    unsigned long end_pfn);
+@@ -980,11 +969,6 @@ static inline int hstate_index(struct hs
+ 	return 0;
+ }
+ 
+-static inline pgoff_t basepage_index(struct page *page)
+-{
+-	return page->index;
+-}
+-
+ static inline int dissolve_free_huge_page(struct page *page)
+ {
+ 	return 0;
+--- 5.13-rc5/include/linux/pagemap.h	2021-05-16 22:49:30.036176843 -0700
++++ linux/include/linux/pagemap.h	2021-06-11 17:30:28.726720252 -0700
+@@ -516,8 +516,7 @@ static inline struct page *read_mapping_
+ }
+ 
+ /*
+- * Get index of the page with in radix-tree
+- * (TODO: remove once hugetlb pages will have ->index in PAGE_SIZE)
++ * Get index of the page within radix-tree (but not for hugetlb pages).
+  */
+ static inline pgoff_t page_to_index(struct page *page)
+ {
+@@ -536,14 +535,14 @@ static inline pgoff_t page_to_index(stru
+ }
+ 
+ /*
+- * Get the offset in PAGE_SIZE.
+- * (TODO: hugepage should have ->index in PAGE_SIZE)
++ * Get the offset in PAGE_SIZE (even for hugetlb pages).
+  */
+ static inline pgoff_t page_to_pgoff(struct page *page)
+ {
+-	if (unlikely(PageHeadHuge(page)))
+-		return page->index << compound_order(page);
+-
++	if (unlikely(PageHuge(page))) {
++		extern pgoff_t hugetlb_basepage_index(struct page *page);
++		return hugetlb_basepage_index(page);
++	}
+ 	return page_to_index(page);
+ }
+ 
+--- 5.13-rc5/kernel/futex.c	2021-05-09 17:25:09.670705811 -0700
++++ linux/kernel/futex.c	2021-06-11 17:30:28.726720252 -0700
+@@ -35,7 +35,6 @@
+ #include <linux/jhash.h>
+ #include <linux/pagemap.h>
+ #include <linux/syscalls.h>
+-#include <linux/hugetlb.h>
+ #include <linux/freezer.h>
+ #include <linux/memblock.h>
+ #include <linux/fault-inject.h>
+@@ -650,7 +649,7 @@ again:
+ 
+ 		key->both.offset |= FUT_OFF_INODE; /* inode-based key */
+ 		key->shared.i_seq = get_inode_sequence_number(inode);
+-		key->shared.pgoff = basepage_index(tail);
++		key->shared.pgoff = page_to_pgoff(tail);
+ 		rcu_read_unlock();
+ 	}
+ 
+--- 5.13-rc5/mm/hugetlb.c	2021-06-06 16:57:26.263006733 -0700
++++ linux/mm/hugetlb.c	2021-06-11 17:30:28.730720276 -0700
+@@ -1588,15 +1588,12 @@ struct address_space *hugetlb_page_mappi
+ 	return NULL;
+ }
+ 
+-pgoff_t __basepage_index(struct page *page)
++pgoff_t hugetlb_basepage_index(struct page *page)
+ {
+ 	struct page *page_head = compound_head(page);
+ 	pgoff_t index = page_index(page_head);
+ 	unsigned long compound_idx;
+ 
+-	if (!PageHuge(page_head))
+-		return page_index(page);
+-
+ 	if (compound_order(page_head) >= MAX_ORDER)
+ 		compound_idx = page_to_pfn(page) - page_to_pfn(page_head);
+ 	else
