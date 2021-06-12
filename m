@@ -2,151 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9663A4C48
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 04:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87D73A4C5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 05:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhFLCsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 22:48:45 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:33461 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFLCso (ORCPT
+        id S230035AbhFLDLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 23:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhFLDLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 22:48:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623466005; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=j7qyuZEIWve0Yp35tsM69fI9OIKOGtzrOcSGMsRKDag=;
- b=GJWtBmyoz15aoGapRcWx/qdY/+QQ7X9npCbONS5Kc4Q0tH5kXgmLur5khh2NJD3jdnSvWEAk
- qdm8hZGiRflGBDDvBB/f9w2oYXG/wnOhWnIaS4FcVqS33xlBbbaQtB1q88nT9QzS338NzXmo
- 3zJm/PJa+29b5ycXin8mwqw69aQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60c42008e27c0cc77f36b889 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 02:46:32
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A5F7BC4323A; Sat, 12 Jun 2021 02:46:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9627C433F1;
-        Sat, 12 Jun 2021 02:46:30 +0000 (UTC)
+        Fri, 11 Jun 2021 23:11:08 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A13C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 20:08:55 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ei4so6701487pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 20:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=kpUTcvo6O2tGi/GNfmLN2Nx7EN/UMr+yD7v9046xIR8=;
+        b=HgCHlQT+NjLsi/EXuC0ScHCl6kNZOg7lKSGqbaj2NLCzRycChsUNtX5N4T77o0McJA
+         dOtPJMvkeSq7+ASt+umIGIk6N9RgXlCp1J2xNeFXasdJaRgKxKlb9xkJfrtbXuVx9sYY
+         9WjB2xhXbNsZO+PsO83ggtD7whQwFPqlVhFNEZ0uKcSAryu3AA04minqQfq3LG13aWpz
+         HJKhyIbnlcD8iS/iF3okFFS10JHihn1EuuqrH8C0JpWDEUazXP+tri2cFScNec79Fdye
+         i5o+wDwTrq8J9EaBRyV5OK9jX/VulavimQqVl1ZZxbaOiKHlTU3qfLlsFppd1BeumF+L
+         ArpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=kpUTcvo6O2tGi/GNfmLN2Nx7EN/UMr+yD7v9046xIR8=;
+        b=FdG4pOp8tMMQHQ1kaQfii5MHUGMbVa1ajRl48sbqZ7AjVXfKRiggGSbn6ic1dlTh9L
+         2oN2gVkmrWQK6Vklau/fbUFCeYbDKNcgwDO8F2ELqzQx7/EyoEx8ZerXCBC1lIn4bbzV
+         +Dt46s90ulEemf+/+BT0ArBIJ8j7dDlIsMk3HL7FWpb5v7zX8Ft2yGXitGY7pq56cOqw
+         1fFL6mqTX999kQMicT5dk+9bZ1zuzXEVi8MXYDo+v/lZC4iLcmReIOnpevoqJG4cY9mU
+         rrQ0B43W2kED2nOBgMFoOzMuzenW7CYLVYU25sFpPqqC/MmjHd9mfSpQegqP3G2kKBNU
+         FkZQ==
+X-Gm-Message-State: AOAM531weiv9hZ6LifVTGLoUWsw89+Lsj851vUnUfECjeJPvBNntlfWn
+        hMES7xtE/RDAIbIdXfJDdzpySqxifOk=
+X-Google-Smtp-Source: ABdhPJwpBaGqcNIEYfky5Z6XAT9lCdE4ALMgr0PP+R/uUoNFCyASBGvueMnO6HF1zqyC30JPlNVCrg==
+X-Received: by 2002:a17:902:b585:b029:f6:5cd5:f128 with SMTP id a5-20020a170902b585b02900f65cd5f128mr6634920pls.43.1623467334232;
+        Fri, 11 Jun 2021 20:08:54 -0700 (PDT)
+Received: from owniadeMacBook-Pro.local ([129.227.156.200])
+        by smtp.gmail.com with ESMTPSA id z185sm6618080pgb.4.2021.06.11.20.08.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jun 2021 20:08:53 -0700 (PDT)
+Subject: Re: [RFC PATCH] mm/oom_kill: show oom eligibility when displaying the
+ current memory state of all tasks
+To:     Aaron Tomlin <atomlin@redhat.com>, linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        penguin-kernel@i-love.sakura.ne.jp, llong@redhat.com,
+        linux-kernel@vger.kernel.org
+References: <20210611171940.960887-1-atomlin@redhat.com>
+From:   ownia <ownia.linux@gmail.com>
+Message-ID: <18a14e1a-df91-23b2-16d6-610e3c3c200e@gmail.com>
+Date:   Sat, 12 Jun 2021 11:08:50 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210611171940.960887-1-atomlin@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Date:   Sat, 12 Jun 2021 08:16:30 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Krishna Reddy <vdumpa@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Thierry Reding <treding@nvidia.com>
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for
- large scatter-gather list
-In-Reply-To: <BY5PR12MB376480219C42E5FCE0FE0FFBB3349@BY5PR12MB3764.namprd12.prod.outlook.com>
-References: <20210609145315.25750-1-saiprakash.ranjan@codeaurora.org>
- <dbcd394a-4d85-316c-5dd0-033546a66132@arm.com>
- <c600e9b2534d54082a5272b508a7985f@codeaurora.org>
- <35bfd245-45e2-8083-b620-330d6dbd7bd7@arm.com>
- <12067ffb8243b220cf03e83aaac3e823@codeaurora.org>
- <266f190e-99ae-9175-cf13-7a77730af389@arm.com>
- <dfdabcdec99a4c6e3bf2b3c5eebe067f@codeaurora.org>
- <61c69d23-324a-85d7-2458-dfff8df9280b@arm.com>
- <BY5PR12MB37646698F37C00381EFF7C77B3349@BY5PR12MB3764.namprd12.prod.outlook.com>
- <07001b4ed6c0a491eacce6e4dc13ab5e@codeaurora.org>
- <BY5PR12MB376480219C42E5FCE0FE0FFBB3349@BY5PR12MB3764.namprd12.prod.outlook.com>
-Message-ID: <f749ba0957b516ab5f0ea57033d308c7@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
 
-On 2021-06-11 22:19, Krishna Reddy wrote:
-> Hi Sai,
->> >> > No, the unmap latency is not just in some test case written, the
->> >> > issue is very real and we have workloads where camera is reporting
->> >> > frame drops because of this unmap latency in the order of 100s of
->> milliseconds.
-> 
->> Not exactly, this issue is not specific to camera. If you look at the 
->> numbers in the
->> commit text, even for the test device its the same observation. It 
->> depends on
->> the buffer size we are unmapping which affects the number of TLBIs 
->> issue. I am
->> not aware of any such HW side bw issues for camera specifically on 
->> QCOM
->> devices.
-> 
-> It is clear that reducing number of TLBIs  reduces the umap API
-> latency. But, It is
-> at the expense of throwing away valid tlb entries.
-> Quantifying the impact of arbitrary invalidation of valid tlb entries
-> at context level is not straight forward and
-> use case dependent. The side-effects might be rare or won't be known
-> until they are noticed.
-
-Right but we won't know until we profile the specific usecases or try 
-them
-in generic workload to see if they affect the performance. Sure, over
-invalidation is a concern where multiple buffers can be mapped to same 
-context
-and the cache is not usable at the time for lookup and such but we don't 
-do it
-for small buffers and only for large buffers which means thousands of 
-TLB entry
-mappings in which case TLBIASID is preferred (note: I mentioned the HW 
-team
-recommendation to use it for anything greater than 128 TLB entries) in 
-my earlier
-reply. And also note that we do this only for partial walk flush, we are 
-not
-arbitrarily changing all the TLBIs to ASID based.
-
-> Can you provide more details on How the unmap latency is causing
-> camera to drop frames?
-> Is unmap performed in the perf path?
-
-I am no camera expert but from what the camera team mentioned is that
-there is a thread which frees memory(large unused memory buffers)
-periodically which ends up taking around 100+ms and causing some camera 
-test
-failures with frame drops. Parallel efforts are already being made to 
-optimize
-this usage of thread but as I mentioned previously, this is *not a 
-camera
-specific*, lets say someone else invokes such large unmaps, it's going 
-to face
-the same issue.
-
-> If unmap is queued and performed on a back ground thread, would it
-> resolve the frame drops?
-
-Not sure I understand what you mean by queuing on background thread but 
-with
-that or not, we still do the same number of TLBIs and hop through
-iommu->io-pgtable->arm-smmu to perform the the unmap, so how will that 
-help?
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+On 2021/6/12 01:19, Aaron Tomlin wrote:
+> At the present time, when showing potential OOM victims, we do not
+> exclude tasks which already have MMF_OOM_SKIP set; it is possible that
+> the last OOM killable victim was already OOM killed, yet the OOM
+> reaper failed to reclaim memory and set MMF_OOM_SKIP.
+> This can be confusing/or perhaps even misleading, to the reader of the
+> OOM report. Now, we already unconditionally display a task's
+> oom_score_adj_min value that can be set to OOM_SCORE_ADJ_MIN which is
+> indicative of an "unkillable" task i.e. is not eligible.
+>
+> This patch provides a clear indication with regard to the OOM
+> eligibility of each displayed task.
+>
+> Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+> ---
+>  mm/oom_kill.c | 31 +++++++++++++++++++++++++++----
+>  1 file changed, 27 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index eefd3f5fde46..70781d681a6e 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -160,6 +160,27 @@ static inline bool is_sysrq_oom(struct oom_control *oc)
+>  	return oc->order == -1;
+>  }
+>  
+> +/**
+> + * is_task_eligible_oom - determine if and why a task cannot be OOM killed
+> + * @tsk: task to check
+> + *
+> + * Needs to be called with task_lock().
+> + */
+> +static const char * is_task_oom_eligible(struct task_struct *p)
+> +{
+> +	long adj;
+> +
+> +	adj = (long)p->signal->oom_score_adj;
+accoring to the origin type, adj this place maybe use *short* instead.
+> +	if (adj == OOM_SCORE_ADJ_MIN)
+> +		return "no: oom score";
+> +	else if (test_bit(MMF_OOM_SKIP, &p->mm->flags)
+> +		return "no: oom reaped";
+> +	else if (in_vfork(p))
+> +		return "no: in vfork";
+> +	else
+> +		return "yes";
+> +}
+> +
+>  /* return true if the task is not adequate as candidate victim task. */
+>  static bool oom_unkillable_task(struct task_struct *p)
+>  {
+> @@ -401,12 +422,13 @@ static int dump_task(struct task_struct *p, void *arg)
+>  		return 0;
+>  	}
+>  
+> -	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n",
+> +	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %-15s %s\n",
+>  		task->pid, from_kuid(&init_user_ns, task_uid(task)),
+>  		task->tgid, task->mm->total_vm, get_mm_rss(task->mm),
+>  		mm_pgtables_bytes(task->mm),
+>  		get_mm_counter(task->mm, MM_SWAPENTS),
+> -		task->signal->oom_score_adj, task->comm);
+> +		task->signal->oom_score_adj, is_task_oom_eligible(task),
+> +		task->comm);
+>  	task_unlock(task);
+>  
+>  	return 0;
+> @@ -420,12 +442,13 @@ static int dump_task(struct task_struct *p, void *arg)
+>   * memcg, not in the same cpuset, or bound to a disjoint set of mempolicy nodes
+>   * are not shown.
+>   * State information includes task's pid, uid, tgid, vm size, rss,
+> - * pgtables_bytes, swapents, oom_score_adj value, and name.
+> + * pgtables_bytes, swapents, oom_score_adj value, oom eligible status
+> + * and name.
+>   */
+>  static void dump_tasks(struct oom_control *oc)
+>  {
+>  	pr_info("Tasks state (memory values in pages):\n");
+> -	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name\n");
+> +	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom eligible? name\n");
+>  
+>  	if (is_memcg_oom(oc))
+>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
