@@ -2,192 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7154A3A4BD5
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 03:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB19B3A4BD9
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 03:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhFLBDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 21:03:19 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48782 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbhFLBDS (ORCPT
+        id S230233AbhFLBKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 21:10:14 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:55959 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229622AbhFLBKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 21:03:18 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15C11IoQ053113;
-        Fri, 11 Jun 2021 20:01:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623459678;
-        bh=O+z6rxDk43Xhjtwb3FQLdhrotsk/08Dn822tfzEbcTo=;
-        h=From:To:CC:Subject:Date;
-        b=Fh2Xh5JkIbhVjAxwE0ozQM3AVkLC0X4gqUOVqs/Ql82BjtN5FUraaKs8IOnaFbRDH
-         FTE3HvdLrPwfLRJn7KOQr7VDmw/cZgspwKxc2/qhmss6UxL1ciWPSThduqkbNi0uA4
-         Wf4LEx825Jil9fi/Pa++BD7t3bfleAt1Dr2E4Qm0=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15C11IRL071950
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Jun 2021 20:01:18 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 20:01:18 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 11 Jun 2021 20:01:18 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15C11GI9080530;
-        Fri, 11 Jun 2021 20:01:17 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Tony Lindgren <tony@atomide.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-omap@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH next] ARM: dts: am335x-bone: switch to new cpsw switch drv
-Date:   Sat, 12 Jun 2021 04:01:06 +0300
-Message-ID: <20210612010106.9970-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 11 Jun 2021 21:10:13 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 730B7580B30;
+        Fri, 11 Jun 2021 21:08:14 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 11 Jun 2021 21:08:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        w6subIA/IDQ7YOvElThWfYFkjzN9b3K5fV3mF6TevK0=; b=kpaAMS/00/yF1y2+
+        Xp6ItdL77EInVKcl2FoC3aqscnaEoz+EsxSmTSufJCAhDDJ9ugx5F0IpMWXNQ1fb
+        5/r/MRs7JSo3RraT4gVaQZFJezyjyzHPMr/dgzbGJZMcquSR9SVre1huBYYbsWMY
+        e3PE098lWjiacBkM6cvsf/s0ccMw3cXNJjl0bCOYEp0utiRTE+GVIq4GXYG/vZOY
+        44r9Pwj+IJbR3bPfEpXNi6zGjGg7W0GItVrrsChMxPaAjHiJd43kftQQlfTYLVGn
+        hngmpCIjCY1gbLV9r6fd2iEYADFGTdbYey4Sz9Spf/yTGZ04x6bsefIdFKF0uA9S
+        bLBE2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=w6subIA/IDQ7YOvElThWfYFkjzN9b3K5fV3mF6Tev
+        K0=; b=QFYeSef1BZHL724vOEIhtoXp7JYIs0D2QX7g1P2OM+u5DonAeRSXJs9NE
+        OtPD1RZGN8dKivbHrRcRqnMHACuxroD78IzWCkyOeJ5716acY5PJjUzIGGU3q9wJ
+        Y9ddPv/7qlt4XsFchO0BTlu1hcnvPdIOdMPLOriPPvsVS0eBMyLg5MeKu0m7YlzO
+        fEMgOoAzQWMlq1mtU6+wcZ0VutBwVQ6li3ABjD14ib26lWIhqHunrR311GFgK0N0
+        qfkRqguHz4IzYr6DBmo/PK2Kt4LuO73JvUJ1ZRZ/G0iq7wlcRITdXcZgEy7/tULQ
+        44kLLSc80R6TFggDaZfaJrAFHLukQ==
+X-ME-Sender: <xms:_QjEYPbiGqHWSYfWrMkKtnBBqiVs6gXGozh_3QbSiOewNfX_cLoMlA>
+    <xme:_QjEYObCGZeKSCLV6tH6pVlgT8BHBM7ul_tFfXlc6CFpdYwE59Bvz5YGLiBgElbCI
+    vXS_WRskOH_>
+X-ME-Received: <xmr:_QjEYB_4epIWui_Rn1vsHvuhLy04tMLJPo8UWUR35DbWmZzxYINT8Ua9brB8EWqs8wxzv_oVIIlpdQdDUd2X4QxyP50TTw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeduledgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:_QjEYFrrvrx5rnIZl6utt_G4mwTf4fIWMZBcr9QgfT1Tko8LUv0eCQ>
+    <xmx:_QjEYKrV-CMiklOoJWbWy0jAibzBaNIVNPrDmAXIDq4qu6Z7cBGorw>
+    <xmx:_QjEYLRRiMZmi7uRLqJS66_sMAZZRb7jLWR6WOqTS1DVIUzY7I2C-w>
+    <xmx:_gjEYHQ5Zj2_eyg2I1sZ4RIEZpCB2v9LINgTN2tDxjMni2xaEYDdKQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 11 Jun 2021 21:08:08 -0400 (EDT)
+Message-ID: <ab91ce6f0c1b2e9549fc6e966db7514a988d0bf1.camel@themaw.net>
+Subject: Re: [PATCH v6 3/7] kernfs: use VFS negative dentry caching
+From:   Ian Kent <raven@themaw.net>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sat, 12 Jun 2021 09:08:05 +0800
+In-Reply-To: <2ee74cbed729d66a38a5c7de9c4608d02fb89f26.camel@themaw.net>
+References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
+         <162322862726.361452.10114120072438540655.stgit@web.messagingengine.com>
+         <YMP6topegaTXGNgC@zeniv-ca.linux.org.uk>
+         <2ee74cbed729d66a38a5c7de9c4608d02fb89f26.camel@themaw.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dual_mac mode has been preserved the same way between legacy and new
-driver, and one port devices works the same as 1 dual_mac port - it's safe
-to switch drivers.
+On Sat, 2021-06-12 at 08:43 +0800, Ian Kent wrote:
+> On Sat, 2021-06-12 at 00:07 +0000, Al Viro wrote:
+> > On Wed, Jun 09, 2021 at 04:50:27PM +0800, Ian Kent wrote:
+> > 
+> > > +       if (d_really_is_negative(dentry)) {
+> > > +               struct dentry *d_parent = dget_parent(dentry);
+> > > +               struct kernfs_node *parent;
+> > 
+> > What the hell is dget_parent() for?  You don't do anything blocking
+> > here, so why not simply grab dentry->d_lock - that'll stabilize
+> > the value of ->d_parent just fine.  Just don't forget to drop the
+> > lock before returning and that's it...
+> 
+> Thanks Al, I'll change it.
 
-So, Switch BeagleBone boards to use new cpsw switch driver. Those boards
-have or 2 Ext. port wired and configured in dual_mac mode by default, or
-only 1 Ext. port.
+But if I change to take the read lock to ensure there's no operation
+in progress for the revision check I would need the dget_parent(), yes?
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- arch/arm/boot/dts/am335x-bone-common.dtsi     | 13 +++++---
- .../boot/dts/am335x-boneblack-wireless.dts    |  2 +-
- .../boot/dts/am335x-bonegreen-wireless.dts    |  2 +-
- arch/arm/boot/dts/am335x-sancloud-bbe.dts     | 33 ++-----------------
- 4 files changed, 12 insertions(+), 38 deletions(-)
+> 
+> > 
+> > > +               /* If the kernfs parent node has changed discard
+> > > and
+> > > +                * proceed to ->lookup.
+> > > +                */
+> > > +               parent = kernfs_dentry_node(d_parent);
+> > > +               if (parent) {
+> > > +                       if (kernfs_dir_changed(parent, dentry)) {
+> > > +                               dput(d_parent);
+> > > +                               return 0;
+> > > +                       }
+> > > +               }
+> > > +               dput(d_parent);
+> > > +
+> > > +               /* The kernfs node doesn't exist, leave the
+> > > dentry
+> > > +                * negative and return success.
+> > > +                */
+> > > +               return 1;
+> > > +       }
+> 
 
-diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index 2d51d4bba6d4..37e1539f0211 100644
---- a/arch/arm/boot/dts/am335x-bone-common.dtsi
-+++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
-@@ -353,24 +353,27 @@
- 	};
- };
- 
--&cpsw_emac0 {
-+&cpsw_port1 {
- 	phy-handle = <&ethphy0>;
- 	phy-mode = "mii";
-+	ti,dual-emac-pvid = <1>;
- };
- 
--&mac {
--	slaves = <1>;
-+&cpsw_port2 {
-+	status = "disabled";
-+};
-+
-+&mac_sw {
- 	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&cpsw_default>;
- 	pinctrl-1 = <&cpsw_sleep>;
- 	status = "okay";
- };
- 
--&davinci_mdio {
-+&davinci_mdio_sw {
- 	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&davinci_mdio_default>;
- 	pinctrl-1 = <&davinci_mdio_sleep>;
--	status = "okay";
- 
- 	ethphy0: ethernet-phy@0 {
- 		reg = <0>;
-diff --git a/arch/arm/boot/dts/am335x-boneblack-wireless.dts b/arch/arm/boot/dts/am335x-boneblack-wireless.dts
-index 80116646a3fe..5a4d5d4ab7b8 100644
---- a/arch/arm/boot/dts/am335x-boneblack-wireless.dts
-+++ b/arch/arm/boot/dts/am335x-boneblack-wireless.dts
-@@ -62,7 +62,7 @@
- 	};
- };
- 
--&mac {
-+&mac_sw {
- 	status = "disabled";
- };
- 
-diff --git a/arch/arm/boot/dts/am335x-bonegreen-wireless.dts b/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
-index 74db0fc39397..215f279e476b 100644
---- a/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
-+++ b/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
-@@ -62,7 +62,7 @@
- 	};
- };
- 
--&mac {
-+&mac_sw {
- 	status = "disabled";
- };
- 
-diff --git a/arch/arm/boot/dts/am335x-sancloud-bbe.dts b/arch/arm/boot/dts/am335x-sancloud-bbe.dts
-index 275ba339adf4..86dcd1144db4 100644
---- a/arch/arm/boot/dts/am335x-sancloud-bbe.dts
-+++ b/arch/arm/boot/dts/am335x-sancloud-bbe.dts
-@@ -53,22 +53,6 @@
- 		>;
- 	};
- 
--	davinci_mdio_default: davinci_mdio_default {
--		pinctrl-single,pins = <
--			/* MDIO */
--			AM33XX_PADCONF(AM335X_PIN_MDIO, PIN_INPUT_PULLUP | SLEWCTRL_FAST, MUX_MODE0)
--			AM33XX_PADCONF(AM335X_PIN_MDC, PIN_OUTPUT_PULLUP, MUX_MODE0)
--		>;
--	};
--
--	davinci_mdio_sleep: davinci_mdio_sleep {
--		pinctrl-single,pins = <
--			/* MDIO reset value */
--			AM33XX_PADCONF(AM335X_PIN_MDIO, PIN_INPUT_PULLDOWN, MUX_MODE7)
--			AM33XX_PADCONF(AM335X_PIN_MDC, PIN_INPUT_PULLDOWN, MUX_MODE7)
--		>;
--	};
--
- 	usb_hub_ctrl: usb_hub_ctrl {
- 		pinctrl-single,pins = <
- 			AM33XX_PADCONF(AM335X_PIN_RMII1_REF_CLK, PIN_OUTPUT_PULLUP, MUX_MODE7)     /* rmii1_refclk.gpio0_29 */
-@@ -88,25 +72,12 @@
- 	};
- };
- 
--&mac {
--	pinctrl-names = "default", "sleep";
-+&mac_sw {
- 	pinctrl-0 = <&cpsw_default>;
- 	pinctrl-1 = <&cpsw_sleep>;
--	status = "okay";
--};
--
--&davinci_mdio {
--	pinctrl-names = "default", "sleep";
--	pinctrl-0 = <&davinci_mdio_default>;
--	pinctrl-1 = <&davinci_mdio_sleep>;
--	status = "okay";
--
--	ethphy0: ethernet-phy@0 {
--		reg = <0>;
--	};
- };
- 
--&cpsw_emac0 {
-+&cpsw_port1 {
- 	phy-handle = <&ethphy0>;
- 	phy-mode = "rgmii-id";
- };
--- 
-2.17.1
 
