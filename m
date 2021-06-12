@@ -2,141 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1D63A5116
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 00:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3793A5121
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 00:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhFLWHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 18:07:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47168 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFLWHt (ORCPT
+        id S231535AbhFLWo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 18:44:29 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:43793 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFLWo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 18:07:49 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623535548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TKdCZh9SvxgzQB6iVtRXjUp3kVW7DM7n7Xey3zoCZhw=;
-        b=bAR1jOpDYNxQ1NEUEiDc9qspXhgPlUTy4V5wkvUECEQwd8Bev5b3Fy+Grx4hOqwgmw+13S
-        DczgU3VXJlz6vdCb5uKn9r7Ikj7D6VPaQhgtS680wtwkVD+yH2nbOsP050kzYT6eud34b4
-        s3wBysPH41hF/89Rqz0Ln895VIsFI+blH3xFmgq1qjRS+52MsMA3K+D/O12aFoG+j9rvG9
-        tD0Bb0v6zZGtNl6m6/RMw+r0EwUpX/2uGb49SrV/yl9sGnJyhw3x6yp6F365pxaTIGUYGB
-        Y1dtKPl+Md5Rp2/F5/HX5gvdsr4okVHg58XaePK52GxWtt58ENutVO2AP1wl0A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623535548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TKdCZh9SvxgzQB6iVtRXjUp3kVW7DM7n7Xey3zoCZhw=;
-        b=EuxqYYVpVMc9sw9PZ27FwQgI8axkT7zeOCRuG4YRn6yvzPCoQWoH2HWkq0UN6hQMK5YAZF
-        R5jZFUHptfd+rrBQ==
-To:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch 08/41] x86/fpu: Restrict fpstate sanitizing to legacy components
-In-Reply-To: <874ke4vynu.ffs@nanos.tec.linutronix.de>
-References: <20210611161523.508908024@linutronix.de> <20210611163111.820639606@linutronix.de> <2be2ef6c-fcb8-46cf-976c-2b3a9537b660@kernel.org> <874ke4vynu.ffs@nanos.tec.linutronix.de>
-Date:   Sun, 13 Jun 2021 00:05:47 +0200
-Message-ID: <87mtruviv8.ffs@nanos.tec.linutronix.de>
+        Sat, 12 Jun 2021 18:44:28 -0400
+Received: by mail-qv1-f66.google.com with SMTP id e18so18520348qvm.10
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 15:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=qdS6iXYeiAHcTjRk3lQrkc0FnWaNOXjgLRveNk9WiLE=;
+        b=uFeZXf/YjSe4dFUAN8A2N2sU3OvMxvPi2Ejq2mYgYE5rXPC1LXY9gyLuleusy3qQ8F
+         5wrmEqnmqGIztXd80wbqtvBFn8hSavJNr/GN4aPrt0IQaSjq7ZJdvKIpaRWRdheDF14i
+         fxVQPbk6UyrwiEgsRIgt8IDZChcxlijeEKRWPiN2ofCjOQdOChmnkQC8YPZTSU6CFY0D
+         UM2SfXbbINWYmPXphCqp8KUH4lJ96eokPlc0ONHIPwGxokFN+Qf7Aw4t/yzPZgvUkIp1
+         ayMn2EeVWLJIDgV2KaONZuyck2t0LuEeTgsK4VrOdkS1/O1RYV+VEEvdbA1GnzGh+hjl
+         X82Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=qdS6iXYeiAHcTjRk3lQrkc0FnWaNOXjgLRveNk9WiLE=;
+        b=hH6awehDHyWzXdre5mXx2D64uV5p5pD3CU2hZC6uhDbG8i6l6Jk4zmte5Mkyfk0xNm
+         IwK2oKABSMotDgJMgpQzOHqnB3SICB5/9EfCrcKxFzIdIrMnjKu9SSSSmXm1WxT7nctq
+         yDWAqsY8nihVwlm/iLmeKPuPEIiO8wDjE7O6u/CNqYF4WVwrYrFSNFTf+8asxrEtliNW
+         4wHSpslFxMHQeGMxswMLa6gBivy8FOroQsB/YXMDkDyD0jbmjlPGQoSxiofZEvF33DXA
+         /spz9eiiZ7gHIPz+CJmbM7V+JsL8kuScjhCyp4T81GzsupP2FCx04dqHXKlTiLOe5Rnw
+         jHww==
+X-Gm-Message-State: AOAM532HZfh8dLpgXLuk/oLLyht0pC1eHsvRHxIWxsdFBRq7IC/Ra85H
+        DJbFLJ48Q1YM89C302PqWvW/iTgMLeONa2eanNQ=
+X-Google-Smtp-Source: ABdhPJz6jvGnRyJkTTsruHtK0xS4fs0vhAw5sHI8TlolTntRv2/ktd9jMrnpsUPvSz8O6nX5wTPH3ZtSRQrgR52yZf0=
+X-Received: by 2002:a0c:ea4d:: with SMTP id u13mr11495444qvp.22.1623537688105;
+ Sat, 12 Jun 2021 15:41:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Reply-To: riabaki112@gmail.com
+Sender: forsoon123@gmail.com
+Received: by 2002:ac8:6c38:0:0:0:0:0 with HTTP; Sat, 12 Jun 2021 15:41:27
+ -0700 (PDT)
+From:   Riaba <riabaki12@gmail.com>
+Date:   Sat, 12 Jun 2021 23:41:27 +0100
+X-Google-Sender-Auth: LbQYtvHjg1_TUcB9tmbbVCNTriE
+Message-ID: <CAEgzzmgXn2Ve-Bkpqja7f=nVUe3j7xa6q-gnryzW3uy0M3VZ5A@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12 2021 at 00:12, Thomas Gleixner wrote:
-> On Fri, Jun 11 2021 at 12:03, Andy Lutomirski wrote:
->> On 6/11/21 9:15 AM, Thomas Gleixner wrote:
->>> + *
->>> + * This is required for the legacy regset functions.
->>> + */
->>> +static void fpstate_sanitize_legacy(struct fpu *fpu)
->>> +{
->>> +	struct fxregs_state *fx = &fpu->state.fxsave;
->>> +	u64 xfeatures;
->>> +
->>> +	if (!use_xsaveopt())
->>> +		return;
->>
->> This is confusing, since we never use xsaveopt.  It's also wrong -- see
->> above.  How about just removing it?
->
-> We do and this code is buggy because xsaves does not clear the component
-> storage either. Neither does xsavec which we in fact do not use in the
-> kernel.
->
-> So here is how the different opcodes behave on a buffer filled with 0xff
-> when looking the first four 64bit words of the buffer after doing a
-> xrstor with all feature bits cleared
->
-> Intel SKLX
->  
-> XSAVE    000000000000037f 0000000000000000 0000000000000000 0000ffff00001f80
-> XSAVEOPT ffffffffffffffff ffffffffffffffff ffffffffffffffff 0000ffff00001f80
-> XSAVEC   ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
-> XSAVES   ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
->
-> AMD ZEN2
->
-> XSAVE    000000000000037f 0000000000000000 0000000000000000 0002ffff00001f80
-> XSAVEOPT ffffffffffffffff ffffffffffffffff ffffffffffffffff 0002ffff00001f80
-> XSAVEC   ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
-> XSAVES   ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
->
-> I verified that all saved buffers have xstate.header.xstate_bv == 0
->
-> So nothing about any of this is consistent and correct. But it magically
-> works for unknown reasons.
+Good evening,
 
-What's even worse is the following. setup_init_fpu_buf() does:
+Wondering if you did receive the business proposal that I sent to you
+earlier. Please try and get back to me as soon as possible.
 
-	copy_kernel_to_xregs_booting(&init_fpstate.xsave);
-	/*
-	 * Dump the init state again. This is to identify the init state
-	 * of any feature which is not represented by all zero's.
-	 */
-	copy_xregs_to_kernel_booting(&init_fpstate.xsave);
-
-That comment is blatantly wrong with XSAVES/XRSTORS. init_fpstate is
-initially all zeros and it stays that way with XRSTORS. Oh well.
-
-And as the intialization values at least for mxcsr_mask differ on AMD
-and INTEL making them hardcoded is just wrong. Sigh...
-
-So we could save the state with XSAVE into a different buffer and copy
-the components to the correct place in the compacted init_fpstate, but
-the only interesting part of all this with any variant of XSAVE is the
-legacy part. Everything else is just zeros (except for HDC and HWP
-states which we do not use and they can be accessed via MSRs if the need
-ever arises). We could just save the legacy part with fxsave and be done
-with it.
-
-Aside of that this whole _booting() stuff is complete nonsense. It's
-completely sufficient to XRSTOR from an all zeroes buffer which brings
-every components into init state and then do all the other muck _after_
-alternatives have been patched. Absolutely nothing uses FPU muck before
-that point.
-
-While staring at all this I figured out why that sanitizing does not and
-_cannot_ touch MXCSR and MXCSR_MASK.
-
-MXCSR and MXCSR_MASK are located in the FP component storage and used by
-SSE. But MXCSR is also XSAVEd when AVX is in use.
-
-So the sanitizing cannot touch it without checking whether AVX is in
-use. This is really all well thought out in hardware _AND_ software.
-
-Let me try to beat some more sense into this trainwreck.
-
-Thanks,
-
-        tglx
+Yours
+Riaba
