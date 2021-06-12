@@ -2,266 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8915C3A4D83
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 10:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5FB3A4D82
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 10:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhFLIWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 04:22:50 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:33513 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhFLIWt (ORCPT
+        id S230411AbhFLIWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 04:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhFLIWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 04:22:49 -0400
-Received: by mail-lf1-f54.google.com with SMTP id bp38so12271959lfb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 01:20:50 -0700 (PDT)
+        Sat, 12 Jun 2021 04:22:30 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8DEC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 01:20:30 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id t6so11957166qvp.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 01:20:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y2SpUEzOky83sMYBnEdAjJxCHRE/WrgH62z28bh+deo=;
-        b=i6F7HLFg8E8xfiEjsnOSwSKOgq843AFv4vi8Lh8ZUieNfZqXbpIAuGmbfNRmdkzHWc
-         wge+qCVyz0UVtAm8jQWQaLSyE5K/O1tzqVSDSQUzlkdLaUBBox+FlPZpUBGZJmWiNP8/
-         yfu63vXT8qHxVdAiKmJSsF0LAzIJ648thUndEQylNurKMqBnkescj0CioCbQW/v3XD0Y
-         1tlWRTYMw0ggYpvCcIH7YsAJ55gSfg1NcTtPyH9idknN3btNylxJmYUk2NHPswxR9I/Z
-         bep/jf/ClilCaOAdh/WR35rIE9RfSpy6eXG42ZoIawDtEIdTAYX1BJI7940OjK+JDYbB
-         xicA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=8Ty9jamoqByHuZWkQK+ZAkMj0mCrAvr4/YXGaEPbHdY=;
+        b=VAX83o2uXpqSrAe/XPT+KXdM+CEpb/6+4lyVBICHZdn6URf2MvQ890CUj6yRrCz2o4
+         2BThAJAtpl5nRIrlGqiLB+0FwkoowFsYJZVroQ6MnLAmUPFKSSS5hjgSl1iQ8qODzZPW
+         xdl2I+xtR80WvlbvBEnZ4HB2+KvFHahSI2NpOt5O2wGXQAdsrt5gAkRC0VbIpxUQtH4+
+         qQ2koUQLord7TdV3gUCwAq/Yf7MEniy8TG5LTIYPHy5l32uTiurYZWqig8Fe5gUWnr8+
+         hwYsqLsemlYQWvJOnhVq6QrUnzqoVz4tezMDVPP/T4mtjCJZwECzjZ/wFy1hiK9HDH3i
+         1XXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y2SpUEzOky83sMYBnEdAjJxCHRE/WrgH62z28bh+deo=;
-        b=fQFMstMVhy3W3jnTdCZb24Z6WUTJ57WybiGAlQkpZp7UJ5Xke2RiPFKQp+pGmrB/2z
-         VSty1ugU9LLkI+vWMt0bEo3BqKsn/yBKRkyOkkK84zUKB2Cj/K5uQH6AFr7+0YULtrBh
-         G3b3fyphTR34m8Uz7XYhr0oxtfFQJpGTVQGfQEe0gBt/Czq4st8DszmieWiE6GCmFcPW
-         noYRiEHMA+emxXHx7Cey53fIMOsdxZodTcBrdh0g0rkjM7du9kCeoSNmyOiHOQpdsEAM
-         hl1kKmzB+8sTDzrwanuIRifTmR/eI9Zoa9f6gCbMuIwuotr579TRNCZaxxgUxEjlQbrK
-         2g2g==
-X-Gm-Message-State: AOAM531FP0FabhK5q8p3dOfUNI5wzVYzQMlKRv88RDgp/vSeB0GvwVUB
-        U1KKUxzJNDAE4wj+lr6oudbOt2YZlUFUUTgh1uuv4Q==
-X-Google-Smtp-Source: ABdhPJwTfzav8fvWHPLtVsosT1mgeoONXmjLwQj80P6pZxt1YmozJhSvoRpLR9QNdvYulStXupFXTgwi8VJxlUDPbyc=
-X-Received: by 2002:a19:8641:: with SMTP id i62mr5230170lfd.546.1623485989617;
- Sat, 12 Jun 2021 01:19:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=8Ty9jamoqByHuZWkQK+ZAkMj0mCrAvr4/YXGaEPbHdY=;
+        b=fO0E7Id/KLULFi+jYZ8RuS6c8ce5biW77/52EYqHLGVQhprO+0xSJ8jbc5FXOR9PF+
+         pZAstsD7YoQTRL4zbGp70PWwoCF4n06lTf/OVfazL/hNEC86DyLKb9LMFmJz9fu0SzS1
+         GD2u/q2ToAT84fP92+rN0hRb68ql/PUM1nczI4BH4q/qKclPF7brTn6LH5AXiSVaHCF2
+         garw6RD1cIdmEvhGx5GNuD+zeqs+UzgTZn5GJX7q24YUWccn8/Q8aqXRM+iXhp1/G+0F
+         aVCBJEd93t4M8Ooqt6YGMwPoRsOW9IbXxFUvvtN+DRprc0dctE21lUYLg5vl4yhgBKLv
+         tvJA==
+X-Gm-Message-State: AOAM53360qyZC11MtJQXXrFOHaMewZgEYFnAqWkNO0QhUdjLDvbJlYyY
+        7GpHGYIqdveoqrvTMm8vaBeCyA==
+X-Google-Smtp-Source: ABdhPJyx7HmXzZGSNCp+6dPE7DmcqQ6LohKYAfEK1ahFCzIEj8HSnzIXWW9zNT/rDZR2ECPx+AbRuA==
+X-Received: by 2002:ad4:424b:: with SMTP id l11mr8746847qvq.58.1623486029784;
+        Sat, 12 Jun 2021 01:20:29 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 16sm5617049qtt.19.2021.06.12.01.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Jun 2021 01:20:29 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 01:20:13 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Alistair Popple <apopple@nvidia.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
+        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] mm/thp: fix THP splitting unmap BUGs and
+ related
+In-Reply-To: <14130393.9bCoogeq7g@nvdebian>
+Message-ID: <d645fe4c-2f9e-19fc-c6b0-c6d785854423@google.com>
+References: <af88612-1473-2eaa-903-8d1a448b26@google.com> <1697169.ADtCEf3Xva@nvdebian> <494c929d-5253-58b0-6329-dec8395199cc@google.com> <14130393.9bCoogeq7g@nvdebian>
 MIME-Version: 1.0
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
- <20210610210913.536081-7-tyhicks@linux.microsoft.com> <CAFA6WYMcGGkAAWxK2vmM8CNsgTKJpegkZZjJZy4pvXhKe9WGvA@mail.gmail.com>
- <20210611130958.GR4910@sequoia> <20210611131619.GS4910@sequoia>
-In-Reply-To: <20210611131619.GS4910@sequoia>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Sat, 12 Jun 2021 13:49:38 +0530
-Message-ID: <CAFA6WYPJXmeepe=4EiiA0_MUz=KsAGnbwY98FfEm1Z2EaGxz-w@mail.gmail.com>
-Subject: Re: [PATCH v4 6/8] tee: Support kernel shm registration without
- dma-buf backing
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 at 18:46, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
->
-> On 2021-06-11 08:10:01, Tyler Hicks wrote:
-> > On 2021-06-11 10:46:20, Sumit Garg wrote:
-> > > On Fri, 11 Jun 2021 at 02:39, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> > > >
-> > > > Uncouple the registration of kernel shared memory buffers from the
-> > > > TEE_SHM_DMA_BUF flag. Drivers may wish to allocate multi-page contiguous
-> > > > shared memory regions but do not need them to be backed by a dma-buf
-> > > > when the memory region is only used by the driver.
-> > > >
-> > > > If the TEE implementation does not require shared memory to be
-> > > > registered, clear the flag prior to calling the corresponding pool alloc
-> > > > function. Update the OP-TEE driver to respect TEE_SHM_REGISTER, rather
-> > > > than TEE_SHM_DMA_BUF, when deciding whether to (un)register on
-> > > > alloc/free operations.
+On Sat, 12 Jun 2021, Alistair Popple wrote:
+> On Saturday, 12 June 2021 6:56:36 AM AEST Hugh Dickins wrote:
+
+I wonder how I arrived in Queensland - ^^^^ must I quarantine?
+
 > > >
-> > > > The AMD-TEE driver continues to ignore the
-> > > > TEE_SHM_REGISTER flag.
-> > > >
-> > >
-> > > That's the main point that no other TEE implementation would honour
-> > > TEE_SHM_REGISTER and I think it's just the incorrect usage of
-> > > TEE_SHM_REGISTER flag to suffice OP-TEE underlying implementation.
-> > >
-> > > > Allow callers of tee_shm_alloc_kernel_buf() to allocate and register a
-> > > > shared memory region without the backing of dma-buf.
-> > > >
-> > > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > > ---
-> > > >  drivers/tee/optee/shm_pool.c |  5 ++---
-> > > >  drivers/tee/tee_shm.c        | 13 +++++++++++--
-> > > >  2 files changed, 13 insertions(+), 5 deletions(-)
-> > > >
-> > >
-> > > This patch is just mixing two separate approaches to TEE shared
-> > > memory. Have a look at alternative suggestions below.
-> > >
-> > > > diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
-> > > > index da06ce9b9313..6054343a29fb 100644
-> > > > --- a/drivers/tee/optee/shm_pool.c
-> > > > +++ b/drivers/tee/optee/shm_pool.c
-> > > > @@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
-> > > >         shm->paddr = page_to_phys(page);
-> > > >         shm->size = PAGE_SIZE << order;
-> > > >
-> > > > -       if (shm->flags & TEE_SHM_DMA_BUF) {
-> > > > +       if (shm->flags & TEE_SHM_REGISTER) {
-> > >
-> > > Here you can just do following check instead:
-> > >
-> > >        if (!(shm->flags & TEE_SHM_PRIV)) {
-> >
-> > This is a bug fix series that's intended to fix the current and older
-> > kernels. tee_shm_alloc_anon_kernel_buf()/TEE_SHM_PRIV is not present in
-> > older kernels and isn't required to fix these kexec/kdump bugs. Your
-> > suggestion feels like something that should be done in the allocator
-> > rewrite that Jens is working on to clean all of this up going forward.
->
-> I want to add that I do fully agree with you that TEE_SHM_REGISTER is an
-> OP-TEE thing and not a TEE thing. Ideally, it wouldn't be defined in
-> tee_drv.h and would be completely private to the OP-TEE driver.
-> Likewise, I don't think that tee_shm_register() should exist (certainly
-> not at the TEE level) because it only works with OP-TEE.
+> > > As to sending my rebased series I suppose it would be best to wait until
+> > > linux-mm has been updated with whatever other fixes are needed before resending
+> > > it based on top of that. So far rebasing on this series didn't require too many
+> > > drastic changes to my v10 series. The most significant was to incorporate your
+> > > changes to unmap_page(). The remaining were just adding the TTU_SYNC case to
+> > > try_to_migrate{_one} and a single s/migration_entry_to_page/pfn_swap_entry_to_page/
+> > > in huge_memory.c
+> > 
+> > Yes, I think that's it.  But check your try_to_migrate_one(), it may
+> > want the same range.end vma_address_end() mod I made in try_to_unmap_one().
+> > 
+> > And does try_to_migrate_one() still have a comment referring to
+> > try_to_unmap() when it should say try_to_migrate() there?
+> 
+> Thanks for the pointers, I had caught both those as well.
+> 
+> > I've now located the diffs I missed from sending akpm before,
+> > and diffed the diffs, and those are the points I see there;
+> > but sending them now will just be a waste of everyones time.
+> > No substitute for me checking your end result when it comes,
+> > though I fear to do so since there's much more in your series
+> > than I can wrap my head around without a lot more education.
+> 
+> The first few patches in the series (and the ones with conflicts) are
+> clean-ups, so shouldn't change any behaviour. I'm reasonably confident I caught
+> everything  but would certainly appreciate you checking the end result in the
+> early patches when I post just to make sure I didn't miss anything. Thanks.
+> 
+> Also I have been getting bounce responses trying to deliver mail to linux-mm
+> in case anyone is wondering why these might not be showing up on the mailing
+> list. Looks to be some kind of mail loop, but not sure if it's at my end or
+> somewhere else.
 
-I think there is some confusion going on. tee_shm_register() is a
-standard interface that is listed in TEE client API specification as
-an alternative approach to tee_shm_alloc(). As I earlier mentioned,
-please read through "3.2.4. Shared Memory" in TEE Client API
-Specification.
+linux-mm@kvack.org has been having trouble recently.
 
-In the initial times, OP-TEE only supported tee_shm_alloc() approach
-but with the addition of dynamic shared memory feature it became
-possible to support tee_shm_register() as well but we had to add new
-capability as TEE_GEN_CAP_REG_MEM in order to maintain OP-TEE
-backwards compatibility. It can very well be the same case for AMD-TEE
-which currently only supports tee_shm_alloc() approach.
+See https://lore.kernel.org/linux-mm/YMJrk81oZa5ArWPw@cmpxchg.org/
 
-The reason for confusion here seems to be that OP-TEE driver is
-providing a way to leverage dynamic shared memory approach in order to
-implement tee_shm_alloc() but that doesn't mean at TEE level we should
-intermix both approaches via using TEE_SHM_REGISTER to implement
-tee_shm_alloc().
+There are more messages in that thread, but only one has got out.
 
->
-> That said, I think the first step is to fix the kexec/kdump bugs and the
-> second step is to clean up the code to remove the layering violation of
-> exposing shm registration from the TEE interfaces.
->
-
-Doesn't the following patch sound suitable to be backported to a
-stable kernel? It has even less changes compared to your patch as well
-:).
-
--Sumit
-
--------------------------------------------
-Subject: [PATCH] tee: Correct inappropriate usage of TEE_SHM_DMA_BUF flag
-
-Currently TEE_SHM_DMA_BUF flag has been inappropriately used to not
-register shared memory allocated for private usage by underlying TEE
-driver: OP-TEE in this case. So rather add a new flag as TEE_SHM_PRIV
-that can be utilized by underlying TEE drivers for private allocation
-and usage of shared memory.
-
-With this corrected, allow tee_shm_alloc_kernel_buf() to allocate a
-shared memory region without the backing of dma-buf.
-
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- drivers/tee/optee/call.c     | 2 +-
- drivers/tee/optee/core.c     | 3 ++-
- drivers/tee/optee/shm_pool.c | 8 ++++++--
- drivers/tee/tee_shm.c        | 2 +-
- include/linux/tee_drv.h      | 1 +
- 5 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index 6132cc8d014c..faaa13c9172b 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -184,7 +184,7 @@ static struct tee_shm *get_msg_arg(struct
-tee_context *ctx, size_t num_params,
-        struct optee_msg_arg *ma;
-
-        shm = tee_shm_alloc(ctx, OPTEE_MSG_GET_ARG_SIZE(num_params),
--                           TEE_SHM_MAPPED);
-+                           TEE_SHM_MAPPED | TEE_SHM_PRIV);
-        if (IS_ERR(shm))
-                return shm;
-
-diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-index ddb8f9ecf307..eac0e91ec559 100644
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -277,7 +277,8 @@ static void optee_release(struct tee_context *ctx)
-        if (!ctxdata)
-                return;
-
--       shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg), TEE_SHM_MAPPED);
-+       shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg),
-+                           TEE_SHM_MAPPED | TEE_SHM_PRIV);
-        if (!IS_ERR(shm)) {
-                arg = tee_shm_get_va(shm, 0);
-                /*
-diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
-index d767eebf30bd..3b4a3853a10f 100644
---- a/drivers/tee/optee/shm_pool.c
-+++ b/drivers/tee/optee/shm_pool.c
-@@ -27,7 +27,11 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
-        shm->paddr = page_to_phys(page);
-        shm->size = PAGE_SIZE << order;
-
--       if (shm->flags & TEE_SHM_DMA_BUF) {
-+       /*
-+        * Shared memory private to the OP-TEE driver doesn't need
-+        * to be registered with OP-TEE.
-+        */
-+       if (!(shm->flags & TEE_SHM_PRIV)) {
-                unsigned int nr_pages = 1 << order, i;
-                struct page **pages;
-
-@@ -52,7 +56,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
- static void pool_op_free(struct tee_shm_pool_mgr *poolm,
-                         struct tee_shm *shm)
- {
--       if (shm->flags & TEE_SHM_DMA_BUF)
-+       if (!(shm->flags & TEE_SHM_PRIV))
-                optee_shm_unregister(shm->ctx, shm);
-
-        free_pages((unsigned long)shm->kaddr, get_order(shm->size));
-diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-index c425ad80d6a6..f8b73e734094 100644
---- a/drivers/tee/tee_shm.c
-+++ b/drivers/tee/tee_shm.c
-@@ -207,7 +207,7 @@ EXPORT_SYMBOL_GPL(tee_shm_alloc);
-  */
- struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
- {
--       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED);
- }
- EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
-diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-index 8990f7628387..3ebfea0781f1 100644
---- a/include/linux/tee_drv.h
-+++ b/include/linux/tee_drv.h
-@@ -27,6 +27,7 @@
- #define TEE_SHM_USER_MAPPED    BIT(4)  /* Memory mapped in user space */
- #define TEE_SHM_POOL           BIT(5)  /* Memory allocated from pool */
- #define TEE_SHM_KERNEL_MAPPED  BIT(6)  /* Memory mapped in kernel space */
-+#define TEE_SHM_PRIV           BIT(7)  /* Memory private to TEE driver */
-
- struct device;
- struct tee_device;
+Hugh
