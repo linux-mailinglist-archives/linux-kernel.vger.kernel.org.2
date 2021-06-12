@@ -2,133 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1AD3A4F2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 15:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2972C3A4F2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 15:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhFLN6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 09:58:21 -0400
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:37883 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhFLN6Q (ORCPT
+        id S231334AbhFLOAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 10:00:50 -0400
+Received: from mail-io1-f53.google.com ([209.85.166.53]:46940 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLOAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 09:58:16 -0400
-Received: by mail-lf1-f48.google.com with SMTP id p7so13079828lfg.4;
-        Sat, 12 Jun 2021 06:56:16 -0700 (PDT)
+        Sat, 12 Jun 2021 10:00:49 -0400
+Received: by mail-io1-f53.google.com with SMTP id b14so19579654iow.13
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 06:58:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AEFhASB6FA/sHSDoXSCJ570NmZcT07RYolnmbpHiMTE=;
-        b=Skxwgi9RubBgGnhzJqe+B/AVGoxz0CTV1XIW5b/+vwG4RVNeiNTn/DoRIPpSn7FVNA
-         E45P0erFzlHW/kWbzF9qeB9aBwHkkVmoFyCKf4CHANJAXE6j+8LtU7a7UgMxUhL8WAwd
-         mv3GAFD814FHCqQiMdW7WlBYHcUppewtCXdUI34OTuTubZNkdzyIrS1mCpZj/BeEkfDY
-         q4gcpe8FEA9pKhMD0d1OfnehO6VKBy3qN4QhcgLbI2T485pwtHjODPloJUTaoPG1ruJ9
-         hr8fpZnbYF+3F1YVy+pHGTsVlg9t/D29zWD1JiLDZTHnNQQPjI3xNYJGzVExv97jYi2q
-         Uc6A==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=himBjQKtq4rWlc/v9yNLPdlT7s2MvK1OSVhcMGgSEBU=;
+        b=ZxVsBil9YsJlisWXXU9+tXyw9zjxbqVO58KRicpvNsRFXG40lqnvNHOFOxqrMBcfzH
+         iNmTEeVMSg/FJvewUt5Txdpd+fok5jKQo21sYt+wEN8Kr2wiN1dM3DYPggk5JBrlhjOr
+         0yyxNtVKeOWpAQuvhQVFrKiyXavuy6OXBVzNAYsKqFfWgzn3OD2XC9dJgI/xSovfI+g2
+         ADzydnqU+UvyR0BMCPG0fCEmkp0dHv70HnmFq9C1HzyKgbdyWd+zR2/1uhVQ8R0vhfy+
+         q0mjDgbErJgkkZo8oZjC5eXqFgvEDfkAuzYd+J6x3kCrwW/8fSGpOnmIo1vV6aZRatT7
+         uLMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=AEFhASB6FA/sHSDoXSCJ570NmZcT07RYolnmbpHiMTE=;
-        b=gj6f1PJ7siTIFyUecYMKfrsTDDSye1YTzOivAivpJdgZtWH+OccJKo+GUgHpil2QMS
-         O9ncwyUo0lHdnNa+SziogRDHn2Jv9w2xwpkJKpxAkcmLOwX4mplgTurvXBE1LAerqGob
-         gyzEZj9wBw8/M+nyGpjrbHlay2xOD9KHViE5x0EeXkLgSqQfRiTxa8XcvnM1JKNWB1u1
-         alq4aE1Q0sPjXWJrZULo3uKn5D/sRvTC/RIVf6+F77gxEYypRmoaw50mcOzE4ECpNhW8
-         ZpjLNdB/SGRtaPCjOSpGMi1iqQqkhijeErSn7deq4Y9lBfOY+7yC3INfqg96T61ZqFCy
-         uuGQ==
-X-Gm-Message-State: AOAM5335oIRjpPPR8ocx1iyXvcKlry2q6eJIMsAbueDID18a7sUIIwWG
-        2h1y3fwQybBsm5BN3H1AbU0ZZh1UDZo=
-X-Google-Smtp-Source: ABdhPJwrYXbQ0qxTrcqAQSmIDmbRI3MfCeLIKbfrW3CrTrhxNUAuyQBB4QFwxUUk82IZxli2COVtZQ==
-X-Received: by 2002:a05:6512:c23:: with SMTP id z35mr1210901lfu.549.1623506116048;
-        Sat, 12 Jun 2021 06:55:16 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
-        by smtp.googlemail.com with ESMTPSA id d4sm900138lfk.295.2021.06.12.06.55.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Jun 2021 06:55:15 -0700 (PDT)
-Subject: Re: [PATCH v1] usb: chipidea: tegra: Delay PHY suspending
-To:     Peter Chen <peter.chen@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        bh=himBjQKtq4rWlc/v9yNLPdlT7s2MvK1OSVhcMGgSEBU=;
+        b=BVk38hzOyiWpEOPzYLjo1gcQlQ+6ku47m5o6mAVBsCJHAvFDyJ1OECpkbLi/1Lwgya
+         4kUqdCNt+W/+j4hm189QotN32YaJXCyfgQAPtKc+aB2rz4vHNITgeoYo7teXb47rMR1E
+         r5CpxvX2OH1vD4T7BWxQeMCtlu/YK7OFJ5XCKuZN51ESvKTmQwxkeUqUqhwuUjh6BE/G
+         ZFH1TIBRBFS+kZ4Pmwu/6keRGcFMsywjHALc1f+SYwGN5DGEq9d8fk8cq40ySZkliXzI
+         j+OcE4O5QFxwr1p476SmClWLtoCY2iJFGylWVh4KXgV7meQ4TaNSdvQkbxIHsppSp6Sa
+         2POQ==
+X-Gm-Message-State: AOAM531GMWi2QFqFfpCJJqjLBDSVwQCgaooko6bdOJMohXt8J3J6uANB
+        KSStltgwLD+X/OKu4h8/Hsoyn78rOQgFJA96
+X-Google-Smtp-Source: ABdhPJzE0mf0zYYusr1qAKAcVGd97Ng2OSvQTtraMUG7rE+MYv0LAt6XAlBsWfH767pEF80H8rIs+Q==
+X-Received: by 2002:a5e:8e03:: with SMTP id a3mr7205454ion.116.1623506259839;
+        Sat, 12 Jun 2021 06:57:39 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id r11sm5021172ilm.23.2021.06.12.06.57.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Jun 2021 06:57:39 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     subashab@codeaurora.org, stranche@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     lkp@intel.com, bjorn.andersson@linaro.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210609120404.3991-1-digetx@gmail.com>
- <20210612073450.GB4580@Peter>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <968bdb71-0c36-b8c7-3d8a-42d494c8a7cd@gmail.com>
-Date:   Sat, 12 Jun 2021 16:55:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: [PATCH net-next 1/1] net: qualcomm: rmnet: always expose a few functions
+Date:   Sat, 12 Jun 2021 08:57:36 -0500
+Message-Id: <20210612135736.3414477-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210612073450.GB4580@Peter>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.06.2021 10:34, Peter Chen пишет:
-> On 21-06-09 15:04:04, Dmitry Osipenko wrote:
->> The ChipIdea driver enters into suspend immediately after seeing a
->> VBUS disconnection. Some devices need an extra delay after losing
->> VBUS, otherwise VBUS may be floating, preventing the PHY's suspending
->> by the VBUS detection sensors. This problem was found on Tegra30 Asus
->> Transformer TF700T tablet device, where the USB PHY wakes up immediately
->> from suspend because VBUS sensor continues to detect VBUS as active after
->> disconnection. A minimum delay of 20ms is needed in order to fix this
->> issue, hence add 25ms delay before suspending the PHY.
->>
->> Reported-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
->> Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/usb/chipidea/ci_hdrc_tegra.c | 8 ++++++++
->>  1 file changed, 8 insertions(+)
->>
->> diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/ci_hdrc_tegra.c
->> index 60361141ac04..d1359b76a0e8 100644
->> --- a/drivers/usb/chipidea/ci_hdrc_tegra.c
->> +++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
->> @@ -4,6 +4,7 @@
->>   */
->>  
->>  #include <linux/clk.h>
->> +#include <linux/delay.h>
->>  #include <linux/io.h>
->>  #include <linux/module.h>
->>  #include <linux/of_device.h>
->> @@ -255,6 +256,13 @@ static int tegra_ehci_hub_control(struct ci_hdrc *ci, u16 typeReq, u16 wValue,
->>  
->>  static void tegra_usb_enter_lpm(struct ci_hdrc *ci, bool enable)
->>  {
->> +	/*
->> +	 * Give hardware time to settle down after VBUS disconnection,
->> +	 * otherwise PHY may wake up from suspend immediately.
->> +	 */
->> +	if (enable)
->> +		msleep(25);
->> +
-> 
-> How could you know 25ms is enough for other Tegra designs?
+A recent change tidied up some conditional code, avoiding the use of
+some #ifdefs.  Unfortunately, if CONFIG_IPV6 was not enabled, it
+meant that two functions were referenced but never defined.
 
-I don't know what is the maximum timeout could be, but it shouldn't be a
-problem to bump the timeout if somebody will report the need to do so.
+The easiest fix is to just define stubs for these functions if
+CONFIG_IPV6 is not defined.  This will soon be simplified further
+by some other development in the works...
 
-> Could you poll VBUS wakeup threshold register to ensure the
-> wakeup will not occur?
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 75db5b07f8c39 ("net: qualcomm: rmnet: eliminate some ifdefs")
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c  | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-We indeed can poll the wakeup threshold status in the PHY driver, it
-works too. I'll make the patch for the PHY driver, thank you for the
-suggestion.
+diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+index d4d23ab446ef5..8922324159164 100644
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+@@ -188,6 +188,14 @@ rmnet_map_ipv6_dl_csum_trailer(struct sk_buff *skb,
+ 		return -EINVAL;
+ 	}
+ }
++#else
++static int
++rmnet_map_ipv6_dl_csum_trailer(struct sk_buff *skb,
++			       struct rmnet_map_dl_csum_trailer *csum_trailer,
++			       struct rmnet_priv *priv)
++{
++	return 0;
++}
+ #endif
+ 
+ static void rmnet_map_complement_ipv4_txporthdr_csum_field(void *iphdr)
+@@ -258,6 +266,13 @@ rmnet_map_ipv6_ul_csum_header(struct ipv6hdr *ipv6hdr,
+ 
+ 	rmnet_map_complement_ipv6_txporthdr_csum_field(ipv6hdr);
+ }
++#else
++static void
++rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
++			      struct rmnet_map_ul_csum_header *ul_header,
++			      struct sk_buff *skb)
++{
++}
+ #endif
+ 
+ static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff *skb,
+-- 
+2.27.0
 
-> The similar design exists at function:
-> hw_wait_vbus_lower_bsv.
-
-The hw_wait_vbus_lower_bsv uses 5sec timeout, which should be too much.
-I'll set the polling timeout to 100ms.
