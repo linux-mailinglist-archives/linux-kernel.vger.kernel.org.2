@@ -2,810 +2,697 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24533A4ECF
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 14:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D393A4ECC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 14:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbhFLMhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 08:37:32 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:43585 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231495AbhFLMha (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 08:37:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1623501331; x=1655037331;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=A7Al7J9yQoozwAsyo0bEmQvAxMvPfNDvy6TXOrXduRc=;
-  b=a7I9tLWv4llUcatqDd1URHj9b2wdziHpXmegISoLS9f44IKJk0DthFjm
-   4bw1uR/VlR8hV8Nm+thBE8zW5+FSab57EqedfsQzQ1XvA/iPju+SKsGfb
-   igzFvtKQxY11IMtTPKiUkpDuPq5UyKKeGwz70VUk+mtUoHz8AOoldmc0Z
-   4=;
-X-IronPort-AV: E=Sophos;i="5.83,268,1616457600"; 
-   d="scan'208";a="139820357"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 12 Jun 2021 12:35:31 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id 071BEAD86A;
-        Sat, 12 Jun 2021 12:35:26 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Sat, 12 Jun 2021 12:35:25 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.55) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Sat, 12 Jun 2021 12:35:19 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-CC:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 bpf-next 11/11] bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
-Date:   Sat, 12 Jun 2021 21:32:24 +0900
-Message-ID: <20210612123224.12525-12-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210612123224.12525-1-kuniyu@amazon.co.jp>
-References: <20210612123224.12525-1-kuniyu@amazon.co.jp>
+        id S231416AbhFLMhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 08:37:24 -0400
+Received: from mail-eopbgr30046.outbound.protection.outlook.com ([40.107.3.46]:13878
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231400AbhFLMhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 08:37:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=muGSUSMK78gtSBEXs9G8yQ4o/NzKFQK9WhO93vAvA9jctq0JVev+7VxB9tSv0U3e9R2A/NiGNeN8dxxJjG9O44dh/tYvVniGj8WuSG7y9b5+Sf+3Br9aYritHTLtcIuzuaiIQsjWIOrx2NVZeffQY2V8per78qMELPy/tR+f1EhXlIi0pfQMG7KE/WcSsTL/rXF4yB7O5oXpHFhczPWlEAEwRGHJO/zqVnAuttAIhPjLPJYWmPt3zbYFrnxZ16uVXoKyvdc5vaCL00aRc3QXNEvMYsy4eLiVw/JQaVGYuA/Y3Y5/770gsGlaESZQVUJQZPcqNTDuM0P01QxaEmPMTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O1pKeEtqK3wgbdDsdyFTmzvpWgHJ8pIFkIaVYHHK3R8=;
+ b=eNuqRkGiljgA79xNET4wyAYlxSCYc48BF3nWUVDrPjIyccd3z2BaVD/PeL4VKZE+T3vdlK1/NmOSbjIn2O2mvNo7zIlwjmwu400qH6FDXK8zJ+vLTErkXQhYlx4hqWT3tRRzoauQvrGrlI/Z5jiz4JI6z8bWvGcsq9ZGXNawyLlPxChw4ln/8F6GhlmTmJdU+cUpCpA0s/1eJWQfJY+zoFreTn3QsbddDxcKGmMMghoVJtyNij+wI3j12GyAKAN1uijYXHFwyUGl53Hlg/RcyTh9HPvI7BaifGxd0qCfcugxOKsIS0zp6Q1iyaiJgNhXYSgY0ZO/05u8Mat6wF1B2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O1pKeEtqK3wgbdDsdyFTmzvpWgHJ8pIFkIaVYHHK3R8=;
+ b=CEC9AHcogxc5M/RXGLE5bE8o57AYO4MNha4eyMksSAcJ0HKpOzSWzrNcWQwFLvAypHurpA2V2xefhsVH6wJV41ehXaBkAAZUECmM1U64NeHqBr0nEmvqMoD0Q17M9pQtT//15e7nbtFEkn2qr4YlodkUlbVb4JDFvWzwPJrtkvc=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4939.eurprd04.prod.outlook.com (2603:10a6:10:20::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.29; Sat, 12 Jun
+ 2021 12:35:20 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4219.022; Sat, 12 Jun 2021
+ 12:35:20 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "agx@sigxcpu.org" <agx@sigxcpu.org>,
+        "marex@denx.de" <marex@denx.de>,
+        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jacky Bai <ping.bai@nxp.com>,
+        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+        "aford173@gmail.com" <aford173@gmail.com>,
+        Abel Vesa <abel.vesa@nxp.com>
+Subject: RE: [PATCH V6 3/4] soc: imx: Add generic blk-ctl driver
+Thread-Topic: [PATCH V6 3/4] soc: imx: Add generic blk-ctl driver
+Thread-Index: AQHXTwvXz3ml5KS/WU2bIQjwsz4ceKsPshmAgAC6ZxA=
+Date:   Sat, 12 Jun 2021 12:35:19 +0000
+Message-ID: <DB6PR0402MB276077D04FAC90D4EBE760B188339@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20210522134249.15322-1-peng.fan@oss.nxp.com>
+ <20210522134249.15322-4-peng.fan@oss.nxp.com> <20210612011304.GD29138@dragon>
+In-Reply-To: <20210612011304.GD29138@dragon>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 72ec9fc7-c5bd-4d18-54b9-08d92d9e8a75
+x-ms-traffictypediagnostic: DB7PR04MB4939:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB49394BA36F7EE5ABD90CC950C9339@DB7PR04MB4939.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2887;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i3myQHDRQ/2WA13EQbjafqppCWSCVlEKaru16Zk65AAjKO1d/ot3WT+0kVzDTEacLJ+f0lsAxarBjT4wN4dqydGB6YcdcuqLvhwRRQeS7GUnZDaAfTL/SLdPU2dtHoCJQiWXACeJwCTvzABUiIh2HJoUi2qV5VwXY/jRJyrKQGpTJUouOfSwg2KiWCQ+cJG2n2bDaURvcL3o6ThYW8PT0cfakKQfDn1jbZ//iv2keaW0SaacyX2g/UFnPrPzOnCVLjza3UgOr8nBS7kChvdkaB5lVfbA3TKzifnhsOSp9s+sim5NnJPB2OJ7erzUhCF3CKJW3+v2Tj0ktOKXXz6IhnCQtn2FJ9gHgppOq+F51Y1slDL4DWdaBZvPcld9g6ecP2wZEFUtAS9F360yQy5dg1zF4Q6kDisimdUBD4aH5Tg0EWtFLMXmFEsdu/o5sWeiO0CCeAZymET33lfOFmb4rTfsNIvSXdxqSjxKyq/aMAX7cWw2t9+kdxwQ37bnNqc9jBjcUdXMoZz3heNsuL4gi1m++j1WvZlI53RcJBPfMZKK/tYYDef892mNNCJRZo6cZcZ+uURz+g1VnPqJ622EHj9sha7XCGhi33pRzFvV9bfHHXtj9EkyuN/ThRYxW/3BkqNskXWiQW3yD7mSx0zssA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39830400003)(366004)(346002)(83380400001)(186003)(55016002)(122000001)(478600001)(6506007)(9686003)(38100700002)(26005)(66556008)(66946007)(86362001)(2906002)(33656002)(7696005)(54906003)(71200400001)(52536014)(5660300002)(30864003)(4326008)(64756008)(7416002)(66446008)(110136005)(66476007)(316002)(8676002)(8936002)(76116006)(41533002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EgeSpumdYDd2wawe56dglCF7lVQDKHXMyhv7JQrjccb/3finNAcgFQK0BOt9?=
+ =?us-ascii?Q?UuHb137LX/mKGiJ4iFby6CCAHtfMiAQnEDXK+4mNaoErBvVEOZKS1mz8pawC?=
+ =?us-ascii?Q?JPiq59vUEhFyT3xzH4SbHnptgx+8sY84Qu7T9rJdBqPy+gPz2jKOMSjiMjzC?=
+ =?us-ascii?Q?9mU4YXguwLhgzElh6I1RjCHWE220xraJ8UL/MOQ1T7z7W7nbaw/e16f7R6Fa?=
+ =?us-ascii?Q?QIbcsSB2r7XI745CCn0k0dGV+px3ojVZnDcX6v3N0d+Rp36u4xz3Ges7qjQL?=
+ =?us-ascii?Q?gklcGCN31N88s4Jxxb6dK+ZyKL62llj+vg6miv1k8lttUrzHjeSfxoSeTvN0?=
+ =?us-ascii?Q?myYrMBjPBqsjl6fdJhEFoytmphYePK1K+twgfYf3fA3ckOVk54CDIrIKiWDq?=
+ =?us-ascii?Q?PhY+inZe8dKXbwxq54X8CxnutXbyR0o09j3SmuQORVwEShf/HDq9pkkd6tKf?=
+ =?us-ascii?Q?T/pmt20hN47c9ojQ8oDurcd5iwOaf9L+BzaS8kZ30Hc7rS4Q80OBgTbyLHho?=
+ =?us-ascii?Q?riULAZlMw4gR6PlltpCVEeqrBFEJu6khVP/+wTL9rHGaVFoDWeCVv5zXl9ZR?=
+ =?us-ascii?Q?FAHkYn9lRmWTFnu3uJcDfz7287xNToHlQry9NwiZKSGeWge1LALodLWIHYi9?=
+ =?us-ascii?Q?A1TfaU5ZFOj4Hgf7EpNQDCx+PaWOEFwfd2enLbv8/BGeFcLtC2raYn6Aifr0?=
+ =?us-ascii?Q?hzF07KgHXlXuFgrM9nOUwR6icuMoUIJrcSc4YQK2PlVOTTUymmlphyBYy9WZ?=
+ =?us-ascii?Q?eqrQTdFGTL0P0ZVpzZ9r1Jjbs/Qtw/xo/FgecSyaNM+nDR8Tx+xh/diDCspt?=
+ =?us-ascii?Q?WVKPIlnh+ZgMZPsChZRcuNuZHy1BwiNCZG8vA20XcskZz4pVFuXhSRrq1US/?=
+ =?us-ascii?Q?wp/mH5eacJc1zbaIrJohbGjnQFFmFEyzSzJ+vWtMl52LuHp57B4UTi/hD0SS?=
+ =?us-ascii?Q?nYSkVx1/wgLrsCAFAKa4JKRqyi2HhMB7824hyNHcy6LQp0uh5+8l+kfY2lxp?=
+ =?us-ascii?Q?HgrMmUp8PhjypbfMsXM61nWwBe9A2iP/btvsAAHAIxd6MDjnzHYXabnsa++d?=
+ =?us-ascii?Q?39+NhlqtN5dcDyX3ZxPwl5jXCx3LHZCJX98JErkphPhWz6JuN+HNiXZlRE5f?=
+ =?us-ascii?Q?UDuTU0TSQa2wkmLWkMDUqjT+n/zVcqP5ODEB2qg/C5TCAFkUs17eK2QBodLK?=
+ =?us-ascii?Q?HuLeksVqP7tGQV0wEv14pbM0hrb+35q9bOObot92aohYlx9J9GnY6C8TS4wy?=
+ =?us-ascii?Q?Y1eE/dqwNcJkPktRBHlMr5GzCFXt5W94Ayj4fbUmaQX/YHamjlC/Rhvpxqlq?=
+ =?us-ascii?Q?Rp88ECJdhkFaQ+j1nUgGsUgG?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.55]
-X-ClientProxiedBy: EX13D04UWB002.ant.amazon.com (10.43.161.133) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72ec9fc7-c5bd-4d18-54b9-08d92d9e8a75
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2021 12:35:19.9054
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Pr6dMecyPHlpIUhj9IPuh+aB0SqjdUEyi0L46Za6wiW/6ICgteSkODYhfR4w0F17TXhCIwJFAVIEM5RnO5xJUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4939
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a test for BPF_SK_REUSEPORT_SELECT_OR_MIGRATE and
-removes 'static' from settimeo() in network_helpers.c.
+> Subject: Re: [PATCH V6 3/4] soc: imx: Add generic blk-ctl driver
+>=20
+> On Sat, May 22, 2021 at 09:42:48PM +0800, Peng Fan (OSS) wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > The i.MX8MM introduces an IP named BLK_CTL and usually is comprised of
+> > some GPRs.
+> >
+> > The GPRs has some clock bits and reset bits, but here we take it as
+> > virtual PDs, because of the clock and power domain A/B lock issue when
+> > taking it as a clock controller.
+> >
+> > For some bits, it might be good to also make it as a reset controller,
+> > but to i.MX8MM, we not add that support for now.
+> >
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+>=20
+> I would like to see some Reviewed-by tags.
 
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
----
- tools/testing/selftests/bpf/network_helpers.c |   2 +-
- tools/testing/selftests/bpf/network_helpers.h |   1 +
- .../bpf/prog_tests/migrate_reuseport.c        | 555 ++++++++++++++++++
- .../bpf/progs/test_migrate_reuseport.c        | 135 +++++
- 4 files changed, 692 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+ok
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 12ee40284da0..2060bc122c53 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -40,7 +40,7 @@ struct ipv6_packet pkt_v6 = {
- 	.tcp.doff = 5,
- };
- 
--static int settimeo(int fd, int timeout_ms)
-+int settimeo(int fd, int timeout_ms)
- {
- 	struct timeval timeout = { .tv_sec = 3 };
- 
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 7205f8afdba1..5e0d51c07b63 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -33,6 +33,7 @@ struct ipv6_packet {
- } __packed;
- extern struct ipv6_packet pkt_v6;
- 
-+int settimeo(int fd, int timeout_ms);
- int start_server(int family, int type, const char *addr, __u16 port,
- 		 int timeout_ms);
- int connect_to_fd(int server_fd, int timeout_ms);
-diff --git a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-new file mode 100644
-index 000000000000..0fa3f750567d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-@@ -0,0 +1,555 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Check if we can migrate child sockets.
-+ *
-+ *   1. call listen() for 4 server sockets.
-+ *   2. call connect() for 25 client sockets.
-+ *   3. call listen() for 1 server socket. (migration target)
-+ *   4. update a map to migrate all child sockets
-+ *        to the last server socket (migrate_map[cookie] = 4)
-+ *   5. call shutdown() for first 4 server sockets
-+ *        and migrate the requests in the accept queue
-+ *        to the last server socket.
-+ *   6. call listen() for the second server socket.
-+ *   7. call shutdown() for the last server
-+ *        and migrate the requests in the accept queue
-+ *        to the second server socket.
-+ *   8. call listen() for the last server.
-+ *   9. call shutdown() for the second server
-+ *        and migrate the requests in the accept queue
-+ *        to the last server socket.
-+ *  10. call accept() for the last server socket.
-+ *
-+ * Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-+ */
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include "test_progs.h"
-+#include "test_migrate_reuseport.skel.h"
-+#include "network_helpers.h"
-+
-+#define IFINDEX_LO 1
-+
-+#define NR_SERVERS 5
-+#define NR_CLIENTS (NR_SERVERS * 5)
-+#define MIGRATED_TO (NR_SERVERS - 1)
-+
-+/* fastopenq->max_qlen and sk->sk_max_ack_backlog */
-+#define QLEN (NR_CLIENTS * 5)
-+
-+#define MSG "Hello World\0"
-+#define MSGLEN 12
-+
-+static struct migrate_reuseport_test_case {
-+	const char *name;
-+	__s64 servers[NR_SERVERS];
-+	__s64 clients[NR_CLIENTS];
-+	struct sockaddr_storage addr;
-+	socklen_t addrlen;
-+	int family;
-+	int state;
-+	bool drop_ack;
-+	bool expire_synack_timer;
-+	bool fastopen;
-+	struct bpf_link *link;
-+} test_cases[] = {
-+	{
-+		.name = "IPv4 TCP_ESTABLISHED  inet_csk_listen_stop",
-+		.family = AF_INET,
-+		.state = BPF_TCP_ESTABLISHED,
-+		.drop_ack = false,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv4 TCP_SYN_RECV     inet_csk_listen_stop",
-+		.family = AF_INET,
-+		.state = BPF_TCP_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = true,
-+	},
-+	{
-+		.name = "IPv4 TCP_NEW_SYN_RECV reqsk_timer_handler",
-+		.family = AF_INET,
-+		.state = BPF_TCP_NEW_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = true,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv4 TCP_NEW_SYN_RECV inet_csk_complete_hashdance",
-+		.family = AF_INET,
-+		.state = BPF_TCP_NEW_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 TCP_ESTABLISHED  inet_csk_listen_stop",
-+		.family = AF_INET6,
-+		.state = BPF_TCP_ESTABLISHED,
-+		.drop_ack = false,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 TCP_SYN_RECV     inet_csk_listen_stop",
-+		.family = AF_INET6,
-+		.state = BPF_TCP_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = true,
-+	},
-+	{
-+		.name = "IPv6 TCP_NEW_SYN_RECV reqsk_timer_handler",
-+		.family = AF_INET6,
-+		.state = BPF_TCP_NEW_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = true,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 TCP_NEW_SYN_RECV inet_csk_complete_hashdance",
-+		.family = AF_INET6,
-+		.state = BPF_TCP_NEW_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	}
-+};
-+
-+static void init_fds(__s64 fds[], int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		fds[i] = -1;
-+}
-+
-+static void close_fds(__s64 fds[], int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++) {
-+		if (fds[i] != -1) {
-+			close(fds[i]);
-+			fds[i] = -1;
-+		}
-+	}
-+}
-+
-+static int setup_fastopen(char *buf, int size, int *saved_len, bool restore)
-+{
-+	int err = 0, fd, len;
-+
-+	fd = open("/proc/sys/net/ipv4/tcp_fastopen", O_RDWR);
-+	if (!ASSERT_NEQ(fd, -1, "open"))
-+		return -1;
-+
-+	if (restore) {
-+		len = write(fd, buf, *saved_len);
-+		if (!ASSERT_EQ(len, *saved_len, "write - restore"))
-+			err = -1;
-+	} else {
-+		*saved_len = read(fd, buf, size);
-+		if (!ASSERT_GE(*saved_len, 1, "read")) {
-+			err = -1;
-+			goto close;
-+		}
-+
-+		err = lseek(fd, 0, SEEK_SET);
-+		if (!ASSERT_OK(err, "lseek"))
-+			goto close;
-+
-+		/* (TFO_CLIENT_ENABLE | TFO_SERVER_ENABLE |
-+		 *  TFO_CLIENT_NO_COOKIE | TFO_SERVER_COOKIE_NOT_REQD)
-+		 */
-+		len = write(fd, "519", 3);
-+		if (!ASSERT_EQ(len, 3, "write - setup"))
-+			err = -1;
-+	}
-+
-+close:
-+	close(fd);
-+
-+	return err;
-+}
-+
-+static int drop_ack(struct migrate_reuseport_test_case *test_case,
-+		    struct test_migrate_reuseport *skel)
-+{
-+	if (test_case->family == AF_INET)
-+		skel->bss->server_port = ((struct sockaddr_in *)
-+					  &test_case->addr)->sin_port;
-+	else
-+		skel->bss->server_port = ((struct sockaddr_in6 *)
-+					  &test_case->addr)->sin6_port;
-+
-+	test_case->link = bpf_program__attach_xdp(skel->progs.drop_ack,
-+						  IFINDEX_LO);
-+	if (!ASSERT_OK_PTR(test_case->link, "bpf_program__attach_xdp"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int pass_ack(struct migrate_reuseport_test_case *test_case)
-+{
-+	int err;
-+
-+	err = bpf_link__detach(test_case->link);
-+	if (!ASSERT_OK(err, "bpf_link__detach"))
-+		return -1;
-+
-+	test_case->link = NULL;
-+
-+	return 0;
-+}
-+
-+static int start_servers(struct migrate_reuseport_test_case *test_case,
-+			 struct test_migrate_reuseport *skel)
-+{
-+	int i, err, prog_fd, reuseport = 1, qlen = QLEN;
-+
-+	prog_fd = bpf_program__fd(skel->progs.migrate_reuseport);
-+
-+	make_sockaddr(test_case->family,
-+		      test_case->family == AF_INET ? "127.0.0.1" : "::1", 0,
-+		      &test_case->addr, &test_case->addrlen);
-+
-+	for (i = 0; i < NR_SERVERS; i++) {
-+		test_case->servers[i] = socket(test_case->family, SOCK_STREAM,
-+					       IPPROTO_TCP);
-+		if (!ASSERT_NEQ(test_case->servers[i], -1, "socket"))
-+			return -1;
-+
-+		err = setsockopt(test_case->servers[i], SOL_SOCKET,
-+				 SO_REUSEPORT, &reuseport, sizeof(reuseport));
-+		if (!ASSERT_OK(err, "setsockopt - SO_REUSEPORT"))
-+			return -1;
-+
-+		err = bind(test_case->servers[i],
-+			   (struct sockaddr *)&test_case->addr,
-+			   test_case->addrlen);
-+		if (!ASSERT_OK(err, "bind"))
-+			return -1;
-+
-+		if (i == 0) {
-+			err = setsockopt(test_case->servers[i], SOL_SOCKET,
-+					 SO_ATTACH_REUSEPORT_EBPF,
-+					 &prog_fd, sizeof(prog_fd));
-+			if (!ASSERT_OK(err,
-+				       "setsockopt - SO_ATTACH_REUSEPORT_EBPF"))
-+				return -1;
-+
-+			err = getsockname(test_case->servers[i],
-+					  (struct sockaddr *)&test_case->addr,
-+					  &test_case->addrlen);
-+			if (!ASSERT_OK(err, "getsockname"))
-+				return -1;
-+		}
-+
-+		if (test_case->fastopen) {
-+			err = setsockopt(test_case->servers[i],
-+					 SOL_TCP, TCP_FASTOPEN,
-+					 &qlen, sizeof(qlen));
-+			if (!ASSERT_OK(err, "setsockopt - TCP_FASTOPEN"))
-+				return -1;
-+		}
-+
-+		/* All requests will be tied to the first four listeners */
-+		if (i != MIGRATED_TO) {
-+			err = listen(test_case->servers[i], qlen);
-+			if (!ASSERT_OK(err, "listen"))
-+				return -1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int start_clients(struct migrate_reuseport_test_case *test_case)
-+{
-+	char buf[MSGLEN] = MSG;
-+	int i, err;
-+
-+	for (i = 0; i < NR_CLIENTS; i++) {
-+		test_case->clients[i] = socket(test_case->family, SOCK_STREAM,
-+					       IPPROTO_TCP);
-+		if (!ASSERT_NEQ(test_case->clients[i], -1, "socket"))
-+			return -1;
-+
-+		/* The attached XDP program drops only the final ACK, so
-+		 * clients will transition to TCP_ESTABLISHED immediately.
-+		 */
-+		err = settimeo(test_case->clients[i], 100);
-+		if (!ASSERT_OK(err, "settimeo"))
-+			return -1;
-+
-+		if (test_case->fastopen) {
-+			int fastopen = 1;
-+
-+			err = setsockopt(test_case->clients[i], IPPROTO_TCP,
-+					 TCP_FASTOPEN_CONNECT, &fastopen,
-+					 sizeof(fastopen));
-+			if (!ASSERT_OK(err,
-+				       "setsockopt - TCP_FASTOPEN_CONNECT"))
-+				return -1;
-+		}
-+
-+		err = connect(test_case->clients[i],
-+			      (struct sockaddr *)&test_case->addr,
-+			      test_case->addrlen);
-+		if (!ASSERT_OK(err, "connect"))
-+			return -1;
-+
-+		err = write(test_case->clients[i], buf, MSGLEN);
-+		if (!ASSERT_EQ(err, MSGLEN, "write"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int update_maps(struct migrate_reuseport_test_case *test_case,
-+		       struct test_migrate_reuseport *skel)
-+{
-+	int i, err, migrated_to = MIGRATED_TO;
-+	int reuseport_map_fd, migrate_map_fd;
-+	__u64 value;
-+
-+	reuseport_map_fd = bpf_map__fd(skel->maps.reuseport_map);
-+	migrate_map_fd = bpf_map__fd(skel->maps.migrate_map);
-+
-+	for (i = 0; i < NR_SERVERS; i++) {
-+		value = (__u64)test_case->servers[i];
-+		err = bpf_map_update_elem(reuseport_map_fd, &i, &value,
-+					  BPF_NOEXIST);
-+		if (!ASSERT_OK(err, "bpf_map_update_elem - reuseport_map"))
-+			return -1;
-+
-+		err = bpf_map_lookup_elem(reuseport_map_fd, &i, &value);
-+		if (!ASSERT_OK(err, "bpf_map_lookup_elem - reuseport_map"))
-+			return -1;
-+
-+		err = bpf_map_update_elem(migrate_map_fd, &value, &migrated_to,
-+					  BPF_NOEXIST);
-+		if (!ASSERT_OK(err, "bpf_map_update_elem - migrate_map"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int migrate_dance(struct migrate_reuseport_test_case *test_case)
-+{
-+	int i, err;
-+
-+	/* Migrate TCP_ESTABLISHED and TCP_SYN_RECV requests
-+	 * to the last listener based on eBPF.
-+	 */
-+	for (i = 0; i < MIGRATED_TO; i++) {
-+		err = shutdown(test_case->servers[i], SHUT_RDWR);
-+		if (!ASSERT_OK(err, "shutdown"))
-+			return -1;
-+	}
-+
-+	/* No dance for TCP_NEW_SYN_RECV to migrate based on eBPF */
-+	if (test_case->state == BPF_TCP_NEW_SYN_RECV)
-+		return 0;
-+
-+	/* Note that we use the second listener instead of the
-+	 * first one here.
-+	 *
-+	 * The fist listener is bind()ed with port 0 and,
-+	 * SOCK_BINDPORT_LOCK is not set to sk_userlocks, so
-+	 * calling listen() again will bind() the first listener
-+	 * on a new ephemeral port and detach it from the existing
-+	 * reuseport group.  (See: __inet_bind(), tcp_set_state())
-+	 *
-+	 * OTOH, the second one is bind()ed with a specific port,
-+	 * and SOCK_BINDPORT_LOCK is set. Thus, re-listen() will
-+	 * resurrect the listener on the existing reuseport group.
-+	 */
-+	err = listen(test_case->servers[1], QLEN);
-+	if (!ASSERT_OK(err, "listen"))
-+		return -1;
-+
-+	/* Migrate from the last listener to the second one.
-+	 *
-+	 * All listeners were detached out of the reuseport_map,
-+	 * so migration will be done by kernel random pick from here.
-+	 */
-+	err = shutdown(test_case->servers[MIGRATED_TO], SHUT_RDWR);
-+	if (!ASSERT_OK(err, "shutdown"))
-+		return -1;
-+
-+	/* Back to the existing reuseport group */
-+	err = listen(test_case->servers[MIGRATED_TO], QLEN);
-+	if (!ASSERT_OK(err, "listen"))
-+		return -1;
-+
-+	/* Migrate back to the last one from the second one */
-+	err = shutdown(test_case->servers[1], SHUT_RDWR);
-+	if (!ASSERT_OK(err, "shutdown"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static void count_requests(struct migrate_reuseport_test_case *test_case,
-+			   struct test_migrate_reuseport *skel)
-+{
-+	struct sockaddr_storage addr;
-+	socklen_t len = sizeof(addr);
-+	int err, cnt = 0, client;
-+	char buf[MSGLEN];
-+
-+	err = settimeo(test_case->servers[MIGRATED_TO], 4000);
-+	if (!ASSERT_OK(err, "settimeo"))
-+		goto out;
-+
-+	for (; cnt < NR_CLIENTS; cnt++) {
-+		client = accept(test_case->servers[MIGRATED_TO],
-+				(struct sockaddr *)&addr, &len);
-+		if (!ASSERT_NEQ(client, -1, "accept"))
-+			goto out;
-+
-+		memset(buf, 0, MSGLEN);
-+		read(client, &buf, MSGLEN);
-+		close(client);
-+
-+		if (!ASSERT_STREQ(buf, MSG, "read"))
-+			goto out;
-+	}
-+
-+out:
-+	ASSERT_EQ(cnt, NR_CLIENTS, "count in userspace");
-+
-+	switch (test_case->state) {
-+	case BPF_TCP_ESTABLISHED:
-+		cnt = skel->bss->migrated_at_close;
-+		break;
-+	case BPF_TCP_SYN_RECV:
-+		cnt = skel->bss->migrated_at_close_fastopen;
-+		break;
-+	case BPF_TCP_NEW_SYN_RECV:
-+		if (test_case->expire_synack_timer)
-+			cnt = skel->bss->migrated_at_send_synack;
-+		else
-+			cnt = skel->bss->migrated_at_recv_ack;
-+		break;
-+	default:
-+		cnt = 0;
-+	}
-+
-+	ASSERT_EQ(cnt, NR_CLIENTS, "count in BPF prog");
-+}
-+
-+static void run_test(struct migrate_reuseport_test_case *test_case,
-+		     struct test_migrate_reuseport *skel)
-+{
-+	int err, saved_len;
-+	char buf[16];
-+
-+	skel->bss->migrated_at_close = 0;
-+	skel->bss->migrated_at_close_fastopen = 0;
-+	skel->bss->migrated_at_send_synack = 0;
-+	skel->bss->migrated_at_recv_ack = 0;
-+
-+	init_fds(test_case->servers, NR_SERVERS);
-+	init_fds(test_case->clients, NR_CLIENTS);
-+
-+	if (test_case->fastopen) {
-+		memset(buf, 0, sizeof(buf));
-+
-+		err = setup_fastopen(buf, sizeof(buf), &saved_len, false);
-+		if (!ASSERT_OK(err, "setup_fastopen - setup"))
-+			return;
-+	}
-+
-+	err = start_servers(test_case, skel);
-+	if (!ASSERT_OK(err, "start_servers"))
-+		goto close_servers;
-+
-+	if (test_case->drop_ack) {
-+		/* Drop the final ACK of the 3-way handshake and stick the
-+		 * in-flight requests on TCP_SYN_RECV or TCP_NEW_SYN_RECV.
-+		 */
-+		err = drop_ack(test_case, skel);
-+		if (!ASSERT_OK(err, "drop_ack"))
-+			goto close_servers;
-+	}
-+
-+	/* Tie requests to the first four listners */
-+	err = start_clients(test_case);
-+	if (!ASSERT_OK(err, "start_clients"))
-+		goto close_clients;
-+
-+	err = listen(test_case->servers[MIGRATED_TO], QLEN);
-+	if (!ASSERT_OK(err, "listen"))
-+		goto close_clients;
-+
-+	err = update_maps(test_case, skel);
-+	if (!ASSERT_OK(err, "fill_maps"))
-+		goto close_clients;
-+
-+	/* Migrate the requests in the accept queue only.
-+	 * TCP_NEW_SYN_RECV requests are not migrated at this point.
-+	 */
-+	err = migrate_dance(test_case);
-+	if (!ASSERT_OK(err, "migrate_dance"))
-+		goto close_clients;
-+
-+	if (test_case->expire_synack_timer) {
-+		/* Wait for SYN+ACK timers to expire so that
-+		 * reqsk_timer_handler() migrates TCP_NEW_SYN_RECV requests.
-+		 */
-+		sleep(1);
-+	}
-+
-+	if (test_case->link) {
-+		/* Resume 3WHS and migrate TCP_NEW_SYN_RECV requests */
-+		err = pass_ack(test_case);
-+		if (!ASSERT_OK(err, "pass_ack"))
-+			goto close_clients;
-+	}
-+
-+	count_requests(test_case, skel);
-+
-+close_clients:
-+	close_fds(test_case->clients, NR_CLIENTS);
-+
-+	if (test_case->link) {
-+		err = pass_ack(test_case);
-+		ASSERT_OK(err, "pass_ack - clean up");
-+	}
-+
-+close_servers:
-+	close_fds(test_case->servers, NR_SERVERS);
-+
-+	if (test_case->fastopen) {
-+		err = setup_fastopen(buf, sizeof(buf), &saved_len, true);
-+		ASSERT_OK(err, "setup_fastopen - restore");
-+	}
-+}
-+
-+void test_migrate_reuseport(void)
-+{
-+	struct test_migrate_reuseport *skel;
-+	int i;
-+
-+	skel = test_migrate_reuseport__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
-+		test__start_subtest(test_cases[i].name);
-+		run_test(&test_cases[i], skel);
-+	}
-+
-+	test_migrate_reuseport__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c b/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
-new file mode 100644
-index 000000000000..27df571abf5b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
-@@ -0,0 +1,135 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Check if we can migrate child sockets.
-+ *
-+ *   1. If reuse_md->migrating_sk is NULL (SYN packet),
-+ *        return SK_PASS without selecting a listener.
-+ *   2. If reuse_md->migrating_sk is not NULL (socket migration),
-+ *        select a listener (reuseport_map[migrate_map[cookie]])
-+ *
-+ * Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-+ */
-+
-+#include <stddef.h>
-+#include <string.h>
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+#include <linux/in.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
-+	__uint(max_entries, 256);
-+	__type(key, int);
-+	__type(value, __u64);
-+} reuseport_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 256);
-+	__type(key, __u64);
-+	__type(value, int);
-+} migrate_map SEC(".maps");
-+
-+int migrated_at_close = 0;
-+int migrated_at_close_fastopen = 0;
-+int migrated_at_send_synack = 0;
-+int migrated_at_recv_ack = 0;
-+__be16 server_port;
-+
-+SEC("xdp")
-+int drop_ack(struct xdp_md *xdp)
-+{
-+	void *data_end = (void *)(long)xdp->data_end;
-+	void *data = (void *)(long)xdp->data;
-+	struct ethhdr *eth = data;
-+	struct tcphdr *tcp = NULL;
-+
-+	if (eth + 1 > data_end)
-+		goto pass;
-+
-+	switch (bpf_ntohs(eth->h_proto)) {
-+	case ETH_P_IP: {
-+		struct iphdr *ip = (struct iphdr *)(eth + 1);
-+
-+		if (ip + 1 > data_end)
-+			goto pass;
-+
-+		if (ip->protocol != IPPROTO_TCP)
-+			goto pass;
-+
-+		tcp = (struct tcphdr *)((void *)ip + ip->ihl * 4);
-+		break;
-+	}
-+	case ETH_P_IPV6: {
-+		struct ipv6hdr *ipv6 = (struct ipv6hdr *)(eth + 1);
-+
-+		if (ipv6 + 1 > data_end)
-+			goto pass;
-+
-+		if (ipv6->nexthdr != IPPROTO_TCP)
-+			goto pass;
-+
-+		tcp = (struct tcphdr *)(ipv6 + 1);
-+		break;
-+	}
-+	default:
-+		goto pass;
-+	}
-+
-+	if (tcp + 1 > data_end)
-+		goto pass;
-+
-+	if (tcp->dest != server_port)
-+		goto pass;
-+
-+	if (!tcp->syn && tcp->ack)
-+		return XDP_DROP;
-+
-+pass:
-+	return XDP_PASS;
-+}
-+
-+SEC("sk_reuseport/migrate")
-+int migrate_reuseport(struct sk_reuseport_md *reuse_md)
-+{
-+	int *key, flags = 0, state, err;
-+	__u64 cookie;
-+
-+	if (!reuse_md->migrating_sk)
-+		return SK_PASS;
-+
-+	state = reuse_md->migrating_sk->state;
-+	cookie = bpf_get_socket_cookie(reuse_md->sk);
-+
-+	key = bpf_map_lookup_elem(&migrate_map, &cookie);
-+	if (!key)
-+		return SK_DROP;
-+
-+	err = bpf_sk_select_reuseport(reuse_md, &reuseport_map, key, flags);
-+	if (err)
-+		return SK_PASS;
-+
-+	switch (state) {
-+	case BPF_TCP_ESTABLISHED:
-+		__sync_fetch_and_add(&migrated_at_close, 1);
-+		break;
-+	case BPF_TCP_SYN_RECV:
-+		__sync_fetch_and_add(&migrated_at_close_fastopen, 1);
-+		break;
-+	case BPF_TCP_NEW_SYN_RECV:
-+		if (!reuse_md->len)
-+			__sync_fetch_and_add(&migrated_at_send_synack, 1);
-+		else
-+			__sync_fetch_and_add(&migrated_at_recv_ack, 1);
-+		break;
-+	}
-+
-+	return SK_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+>=20
+> > ---
+> >  drivers/soc/imx/Makefile  |   2 +-
+> >  drivers/soc/imx/blk-ctl.c | 334
+> > ++++++++++++++++++++++++++++++++++++++
+> >  drivers/soc/imx/blk-ctl.h |  85 ++++++++++
+> >  3 files changed, 420 insertions(+), 1 deletion(-)  create mode 100644
+> > drivers/soc/imx/blk-ctl.c  create mode 100644
+> > drivers/soc/imx/blk-ctl.h
+> >
+> > diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile index
+> > 078dc918f4f3..d3d2b49a386c 100644
+> > --- a/drivers/soc/imx/Makefile
+> > +++ b/drivers/soc/imx/Makefile
+> > @@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) +=3D soc-imx.o  endif
+> >  obj-$(CONFIG_HAVE_IMX_GPC) +=3D gpc.o
+> >  obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) +=3D gpcv2.o
+> > -obj-$(CONFIG_SOC_IMX8M) +=3D soc-imx8m.o
+> > +obj-$(CONFIG_SOC_IMX8M) +=3D soc-imx8m.o blk-ctl.o
+>=20
+> As it's a generic blk-ctl driver, should we have a dedicated Kconfig opti=
+on for
+> it?
 
+I think no need a dedicated Kconfig option, It is almost a must have
+driver for i.MX8M.
+
+>=20
+> > diff --git a/drivers/soc/imx/blk-ctl.c b/drivers/soc/imx/blk-ctl.c new
+> > file mode 100644 index 000000000000..8e286b8ef1b3
+> > --- /dev/null
+> > +++ b/drivers/soc/imx/blk-ctl.c
+> > @@ -0,0 +1,334 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright 2021 NXP.
+> > + */
+> > +
+> > +#include <linux/clk.h>
+> > +#include <linux/completion.h>
+> > +#include <linux/err.h>
+> > +#include <linux/io.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_address.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/pm_runtime.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/string.h>
+> > +#include <linux/types.h>
+> > +#include <linux/pm_domain.h>
+> > +#include <linux/reset-controller.h>
+>=20
+> Some of the includes are out of alphabetic order.  Also please check if y=
+ou
+> need all of these headers.
+
+Fix in V7.
+
+>=20
+> > +
+> > +#include "blk-ctl.h"
+> > +
+> > +static inline struct imx_blk_ctl_domain *to_imx_blk_ctl_pd(struct
+> > +generic_pm_domain *genpd)
+>=20
+> Did you run checkpatch on it?  Isn't this line beyond 80 column?
+
+Yes. I ran, kernel new rule has been 100 column as I know.
+
+>=20
+> > +{
+> > +	return container_of(genpd, struct imx_blk_ctl_domain, genpd); }
+> > +
+> > +static int imx_blk_ctl_enable_hsk(struct device *dev) {
+> > +	struct imx_blk_ctl *blk_ctl =3D dev_get_drvdata(dev);
+> > +	const struct imx_blk_ctl_hw *hw =3D blk_ctl->dev_data->hw_hsk;
+> > +	struct regmap *regmap =3D blk_ctl->regmap;
+> > +	int ret;
+> > +
+> > +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
+> > +		ret =3D regmap_update_bits(regmap, hw->rst_offset, hw->rst_mask,
+> hw->rst_mask);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> > +	ret =3D regmap_update_bits(regmap, hw->offset, hw->mask, hw->mask);
+> > +
+> > +	/* Wait for handshake */
+> > +	udelay(5);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +int imx_blk_ctl_power_on(struct generic_pm_domain *domain)
+>=20
+> static?
+
+Fix in v7.
+
+>=20
+> > +{
+> > +	struct imx_blk_ctl_domain *pd =3D to_imx_blk_ctl_pd(domain);
+> > +	struct imx_blk_ctl *blk_ctl =3D pd->blk_ctl;
+> > +	struct regmap *regmap =3D blk_ctl->regmap;
+> > +	const struct imx_blk_ctl_hw *hw =3D &blk_ctl->dev_data->pds[pd->id];
+> > +	int ret;
+> > +
+> > +	mutex_lock(&blk_ctl->lock);
+> > +
+> > +	ret =3D clk_bulk_prepare_enable(blk_ctl->num_clks, blk_ctl->clks);
+> > +	if (ret) {
+> > +		mutex_unlock(&blk_ctl->lock);
+> > +		return ret;
+> > +	}
+> > +
+> > +	if (hw->flags & IMX_BLK_CTL_PD_HANDSHAKE) {
+> > +		ret =3D imx_blk_ctl_enable_hsk(blk_ctl->dev);
+> > +		if (ret)
+> > +			dev_err(blk_ctl->dev, "Hankshake failed when power on\n");
+> > +
+> > +		goto disable_clk;
+>=20
+> Goto disable_clk regardless of the ret check?
+
+Oh, this was introduced in v6, fix in V7.
+
+>=20
+> > +	}
+> > +
+> > +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
+> > +		ret =3D regmap_clear_bits(regmap, hw->rst_offset, hw->rst_mask);
+> > +		if (ret)
+> > +			goto disable_clk;
+> > +	}
+> > +
+> > +	/* Wait for reset propagate */
+> > +	udelay(5);
+>=20
+> The delay will be there even when IMX_BLK_CTL_PD_RESET is not set.
+
+Fix in V7.
+
+>=20
+> > +
+> > +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
+> > +		ret =3D regmap_update_bits(regmap, hw->rst_offset, hw->rst_mask,
+> hw->rst_mask);
+> > +		if (ret)
+> > +			goto disable_clk;
+> > +	}
+> > +
+> > +	ret =3D regmap_update_bits(regmap, hw->offset, hw->mask, hw->mask);
+> > +	if (ret)
+> > +		goto disable_clk;
+>=20
+> Useless goto.
+
+Fix in V7.
+
+>=20
+> > +
+> > +disable_clk:
+> > +	clk_bulk_disable_unprepare(blk_ctl->num_clks, blk_ctl->clks);
+> > +
+> > +	mutex_unlock(&blk_ctl->lock);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +int imx_blk_ctl_power_off(struct generic_pm_domain *domain) {
+> > +	struct imx_blk_ctl_domain *pd =3D to_imx_blk_ctl_pd(domain);
+> > +	struct imx_blk_ctl *blk_ctl =3D pd->blk_ctl;
+> > +	struct regmap *regmap =3D blk_ctl->regmap;
+> > +	const struct imx_blk_ctl_hw *hw =3D &blk_ctl->dev_data->pds[pd->id];
+> > +	int ret;
+> > +
+> > +	mutex_lock(&blk_ctl->lock);
+> > +
+> > +	ret =3D clk_bulk_prepare_enable(blk_ctl->num_clks, blk_ctl->clks);
+> > +	if (ret) {
+> > +		mutex_unlock(&blk_ctl->lock);
+> > +		return ret;
+> > +	}
+> > +
+> > +	if (!(hw->flags & IMX_BLK_CTL_PD_HANDSHAKE)) {
+> > +		ret =3D regmap_clear_bits(regmap, hw->offset, hw->mask);
+> > +		if (ret)
+> > +			goto hsk_fail;
+> > +
+> > +		if (hw->flags & IMX_BLK_CTL_PD_RESET) {
+> > +			ret =3D regmap_clear_bits(regmap, hw->rst_offset,
+> hw->rst_mask);
+> > +			if (ret)
+> > +				goto hsk_fail;
+> > +		}
+> > +	}
+> > +
+> > +	if (hw->flags & IMX_BLK_CTL_PD_HANDSHAKE) {
+> > +		ret =3D imx_blk_ctl_enable_hsk(blk_ctl->dev);
+> > +		if (ret)
+> > +			dev_err(blk_ctl->dev, "Hankshake failed when power off\n");
+> > +	}
+> > +
+> > +hsk_fail:
+>=20
+> You use disable_clk in above function for the same code.  Inconsistent
+> labeling strategy.
+
+Fix in V7.
+
+>=20
+> > +	clk_bulk_disable_unprepare(blk_ctl->num_clks, blk_ctl->clks);
+> > +
+> > +	mutex_unlock(&blk_ctl->lock);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int imx_blk_ctl_probe(struct platform_device *pdev) {
+> > +	struct imx_blk_ctl_domain *domain =3D pdev->dev.platform_data;
+> > +	struct imx_blk_ctl *blk_ctl =3D domain->blk_ctl;
+> > +	struct generic_pm_domain *parent_genpd;
+> > +	struct device *dev =3D &pdev->dev;
+> > +	struct device *active_pd;
+> > +	int ret;
+> > +
+> > +	pdev->dev.of_node =3D blk_ctl->dev->of_node;
+>=20
+> Have a newline.
+
+Fix in V7.
+
+>=20
+> > +	if (domain->hw->active_pd_name) {
+> > +		active_pd =3D dev_pm_domain_attach_by_name(dev,
+> domain->hw->active_pd_name);
+> > +		if (IS_ERR_OR_NULL(active_pd)) {
+> > +			ret =3D PTR_ERR(active_pd) ? : -ENODATA;
+> > +			pdev->dev.of_node =3D NULL;
+>=20
+> Why is this necessary?
+
+This is to avoid blk-ctl match with is parent's device driver, if
+it use same dt node.
+
+>=20
+> > +			return ret;
+> > +		}
+>=20
+> Have a newline.
+>=20
+> > +		domain->active_pd =3D active_pd;
+> > +	} else {
+> > +		if (!blk_ctl->bus_domain) {
+> > +			pdev->dev.of_node =3D NULL;
+> > +			return -EPROBE_DEFER;
+> > +		}
+> > +	}
+> > +
+> > +	if (domain->hw->active_pd_name)
+> > +		parent_genpd =3D pd_to_genpd(active_pd->pm_domain);
+> > +	else
+> > +		parent_genpd =3D blk_ctl->bus_domain;
+> > +
+> > +	if (pm_genpd_add_subdomain(parent_genpd, &domain->genpd)) {
+> > +		pr_warn("failed to add subdomain: %s\n", domain->genpd.name);
+>=20
+> dev_warn()?
+>=20
+> > +	} else {
+> > +		mutex_lock(&blk_ctl->lock);
+> > +		domain->hooked =3D true;
+> > +		mutex_unlock(&blk_ctl->lock);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int imx_blk_ctl_remove(struct platform_device *pdev) {
+> > +	struct imx_blk_ctl_domain *domain =3D pdev->dev.platform_data;
+> > +	struct imx_blk_ctl *blk_ctl =3D domain->blk_ctl;
+> > +	struct generic_pm_domain *parent_genpd;
+> > +	struct device *active_pd;
+> > +
+> > +	pdev->dev.of_node =3D blk_ctl->dev->of_node;
+>=20
+> Why is this needed for .remove?
+Fix in v7.
+>=20
+> I stop right here.  The patch really needs some level cross reviewing.
+
+ok, we are almost done in V5, but have to introduce a new design in V6.
+I'll try to invite someone to help review.
+
+Thanks,
+Peng.
+
+>=20
+> Shawn
+>=20
+> > +	if (domain->hw->active_pd_name)
+> > +		parent_genpd =3D pd_to_genpd(active_pd->pm_domain);
+> > +	else
+> > +		parent_genpd =3D blk_ctl->bus_domain;
+> > +
+> > +	pm_genpd_remove_subdomain(parent_genpd, &domain->genpd);
+> > +
+> > +	mutex_lock(&blk_ctl->lock);
+> > +	domain->hooked =3D false;
+> > +	mutex_unlock(&blk_ctl->lock);
+> > +
+> > +	if (domain->hw->active_pd_name)
+> > +		dev_pm_domain_detach(domain->active_pd, false);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct platform_device_id imx_blk_ctl_id[] =3D {
+> > +	{ "imx-vpumix-blk-ctl", },
+> > +	{ "imx-dispmix-blk-ctl", },
+> > +	{ },
+> > +};
+> > +
+> > +static struct platform_driver imx_blk_ctl_driver =3D {
+> > +	.driver =3D {
+> > +		.name =3D "imx-blk-ctl",
+> > +	},
+> > +	.probe    =3D imx_blk_ctl_probe,
+> > +	.remove   =3D imx_blk_ctl_remove,
+> > +	.id_table =3D imx_blk_ctl_id,
+> > +};
+> > +builtin_platform_driver(imx_blk_ctl_driver)
+> > +
+> > +static struct generic_pm_domain *imx_blk_ctl_genpd_xlate(struct
+> of_phandle_args *genpdspec,
+> > +							 void *data)
+> > +{
+> > +	struct genpd_onecell_data *genpd_data =3D data;
+> > +	unsigned int idx =3D genpdspec->args[0];
+> > +	struct imx_blk_ctl_domain *domain;
+> > +	struct generic_pm_domain *genpd =3D ERR_PTR(-EPROBE_DEFER);
+> > +
+> > +	if (genpdspec->args_count !=3D 1)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	if (idx >=3D genpd_data->num_domains) {
+> > +		pr_err("%s: invalid domain index %u\n", __func__, idx);
+> > +		return ERR_PTR(-EINVAL);
+> > +	}
+> > +
+> > +	if (!genpd_data->domains[idx])
+> > +		return ERR_PTR(-ENOENT);
+> > +
+> > +	domain =3D to_imx_blk_ctl_pd(genpd_data->domains[idx]);
+> > +	mutex_lock(&domain->blk_ctl->lock);
+> > +	if (domain->hooked)
+> > +		genpd =3D genpd_data->domains[idx];
+> > +	mutex_unlock(&domain->blk_ctl->lock);
+> > +
+> > +	return genpd;
+> > +}
+> > +
+> > +int imx_blk_ctl_register(struct device *dev) {
+> > +	struct imx_blk_ctl *blk_ctl =3D dev_get_drvdata(dev);
+> > +	const struct imx_blk_ctl_dev_data *dev_data =3D blk_ctl->dev_data;
+> > +	int num =3D dev_data->pds_num;
+> > +	struct imx_blk_ctl_domain *domain;
+> > +	struct generic_pm_domain *genpd;
+> > +	struct platform_device *pd_pdev;
+> > +	int domain_index;
+> > +	int i, ret;
+> > +
+> > +	blk_ctl->onecell_data.num_domains =3D num;
+> > +	blk_ctl->onecell_data.xlate =3D imx_blk_ctl_genpd_xlate;
+> > +	blk_ctl->onecell_data.domains =3D devm_kcalloc(dev, num, sizeof(struc=
+t
+> generic_pm_domain *),
+> > +						     GFP_KERNEL);
+> > +	if (!blk_ctl->onecell_data.domains)
+> > +		return -ENOMEM;
+> > +
+> > +	for (i =3D 0; i < num; i++) {
+> > +		domain_index =3D dev_data->pds[i].id;
+> > +		if (domain_index >=3D num) {
+> > +			dev_warn(dev, "Domain index %d is out of bounds\n",
+> domain_index);
+> > +			continue;
+> > +		}
+> > +
+> > +		domain =3D devm_kzalloc(dev, sizeof(struct imx_blk_ctl_domain),
+> GFP_KERNEL);
+> > +		if (!domain)
+> > +			goto error;
+> > +
+> > +		pd_pdev =3D platform_device_alloc(dev_data->name, domain_index);
+> > +		if (!pd_pdev) {
+> > +			dev_err(dev, "Failed to allocate platform device\n");
+> > +			goto error;
+> > +		}
+> > +
+> > +		pd_pdev->dev.platform_data =3D domain;
+> > +
+> > +		domain->blk_ctl =3D blk_ctl;
+> > +		domain->hw =3D &dev_data->pds[i];
+> > +		domain->id =3D domain_index;
+> > +		domain->genpd.name =3D dev_data->pds[i].name;
+> > +		domain->genpd.power_off =3D imx_blk_ctl_power_off;
+> > +		domain->genpd.power_on =3D imx_blk_ctl_power_on;
+> > +		domain->dev =3D &pd_pdev->dev;
+> > +		domain->hooked =3D false;
+> > +
+> > +		ret =3D pm_genpd_init(&domain->genpd, NULL, true);
+> > +		pd_pdev->dev.parent =3D dev;
+> > +
+> > +		if (domain->hw->flags & IMX_BLK_CTL_PD_HANDSHAKE)
+> > +			blk_ctl->bus_domain =3D &domain->genpd;
+> > +
+> > +		ret =3D platform_device_add(pd_pdev);
+> > +		if (ret) {
+> > +			platform_device_put(pd_pdev);
+> > +			goto error;
+> > +		}
+> > +		blk_ctl->onecell_data.domains[i] =3D &domain->genpd;
+> > +	}
+> > +
+> > +	return of_genpd_add_provider_onecell(dev->of_node,
+> > +&blk_ctl->onecell_data);
+> > +
+> > +error:
+> > +	for (; i >=3D 0; i--) {
+> > +		genpd =3D blk_ctl->onecell_data.domains[i];
+> > +		if (!genpd)
+> > +			continue;
+> > +		domain =3D to_imx_blk_ctl_pd(genpd);
+> > +		if (domain->dev)
+> > +			platform_device_put(to_platform_device(domain->dev));
+> > +	}
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(imx_blk_ctl_register);
+> > +
+> > +const struct dev_pm_ops imx_blk_ctl_pm_ops =3D {
+> > +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+> > +			   pm_runtime_force_resume)
+> > +};
+> > +EXPORT_SYMBOL_GPL(imx_blk_ctl_pm_ops);
+> > diff --git a/drivers/soc/imx/blk-ctl.h b/drivers/soc/imx/blk-ctl.h new
+> > file mode 100644 index 000000000000..6780d00ec8c5
+> > --- /dev/null
+> > +++ b/drivers/soc/imx/blk-ctl.h
+> > @@ -0,0 +1,85 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */ #ifndef __SOC_IMX_BLK_CTL_H
+> > +#define __SOC_IMX_BLK_CTL_H
+> > +
+> > +enum imx_blk_ctl_pd_type {
+> > +	BLK_CTL_PD,
+> > +};
+> > +
+> > +struct imx_blk_ctl_hw {
+> > +	int type;
+> > +	char *name;
+> > +	char *active_pd_name;
+> > +	u32 offset;
+> > +	u32 mask;
+> > +	u32 flags;
+> > +	u32 id;
+> > +	u32 rst_offset;
+> > +	u32 rst_mask;
+> > +	u32 errata;
+> > +};
+> > +
+> > +struct imx_blk_ctl_domain {
+> > +	struct generic_pm_domain genpd;
+> > +	struct device *active_pd;
+> > +	struct imx_blk_ctl *blk_ctl;
+> > +	struct imx_blk_ctl_hw *hw;
+> > +	struct device *dev;
+> > +	bool hooked;
+> > +	u32 id;
+> > +};
+> > +
+> > +struct imx_blk_ctl_dev_data {
+> > +	struct regmap_config config;
+> > +	struct imx_blk_ctl_hw *pds;
+> > +	struct imx_blk_ctl_hw *hw_hsk;
+> > +	u32 pds_num;
+> > +	u32 max_num;
+> > +	char *name;
+> > +};
+> > +
+> > +struct imx_blk_ctl {
+> > +	struct device *dev;
+> > +	struct regmap *regmap;
+> > +	struct genpd_onecell_data onecell_data;
+> > +	const struct imx_blk_ctl_dev_data *dev_data;
+> > +	struct clk_bulk_data *clks;
+> > +	u32 num_clks;
+> > +	struct generic_pm_domain *bus_domain;
+> > +
+> > +	struct mutex lock;
+> > +};
+> > +
+> > +#define IMX_BLK_CTL(_type, _name, _active_pd, _id, _offset, _mask,
+> _rst_offset, _rst_mask,	\
+> > +		    _flags, _errata)								\
+> > +	{											\
+> > +		.type =3D _type,									\
+> > +		.name =3D _name,									\
+> > +		.active_pd_name =3D _active_pd,							\
+> > +		.id =3D _id,									\
+> > +		.offset =3D _offset,								\
+> > +		.mask =3D _mask,									\
+> > +		.flags =3D _flags,								\
+> > +		.rst_offset =3D _rst_offset,							\
+> > +		.rst_mask =3D _rst_mask,								\
+> > +		.errata =3D _errata,								\
+> > +	}
+> > +
+> > +#define IMX_BLK_CTL_PD(_name, _active_pd, _id, _offset, _mask,
+> _rst_offset, _rst_mask, _flags)	\
+> > +	IMX_BLK_CTL(BLK_CTL_PD, _name, _active_pd, _id, _offset, _mask,
+> _rst_offset,		\
+> > +		    _rst_mask, _flags, 0)
+> > +
+> > +#define IMX_BLK_CTL_PD_ERRATA(_name, _active_pd, _id, _offset, _mask,
+> _rst_offset, _rst_mask,	\
+> > +			      _flags, _errata)							\
+> > +	IMX_BLK_CTL(BLK_CTL_PD, _name, _active_pd, _id, _offset, _mask,
+> _rst_offset,		\
+> > +		    _rst_mask, _flags, _errata)
+> > +
+> > +int imx_blk_ctl_register(struct device *dev);
+> > +
+> > +#define IMX_BLK_CTL_PD_HANDSHAKE	BIT(0)
+> > +#define IMX_BLK_CTL_PD_RESET		BIT(1)
+> > +#define IMX_BLK_CTL_PD_BUS		BIT(2)
+> > +
+> > +const extern struct dev_pm_ops imx_blk_ctl_pm_ops;
+> > +
+> > +#endif
+> > --
+> > 2.30.0
+> >
