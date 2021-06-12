@@ -2,59 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2523A4BD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 02:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7154A3A4BD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 03:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhFLA7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 20:59:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229942AbhFLA7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 20:59:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CE1461374;
-        Sat, 12 Jun 2021 00:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623459437;
-        bh=/TJC72+RVmNPqO1eugc1bbx0117oCXx3BCvzlI4l3U0=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=ipEIINRPrx0hkuex//oPLxzO2v2pDfu6ME2jygnjGfuDrT4w9kA5730G5Nyg3i69Y
-         48cnzRlr47uBG03VBbzRMQKKsZtnFZNL9OxX7/idQSeEliXpfuf+CQE/WjyF7TCJd0
-         p4UrKZ87R7mkO7XzkUPIHMLltlm7zdF1vms/ea58U/GXVm4LaR6/TL05qiR9I5+Fdq
-         QseR0SoAhMiekdZlmPX9rg8XCkuViEYSehnQMMoH+50etbunUeTTD/JoEEFMG0onKI
-         CItMcbOhbduaFfxyl71+XxWlpJj4mgZoaNGQqMv5SD8oV1cM2zJDQSztSXTMY7b9an
-         mQVT3CJKHDDIg==
-Received: by mail-oi1-f181.google.com with SMTP id s23so7641249oiw.9;
-        Fri, 11 Jun 2021 17:57:17 -0700 (PDT)
-X-Gm-Message-State: AOAM532+y+gGERaCTAF8wajRymll5NKXi60hygQOeGIxO3JDUJxpRrhW
-        CIipX8LUm4FfAtn7xblMJHRD7VGwzhPKgKSHciM=
-X-Google-Smtp-Source: ABdhPJxvDONfM9WhER6OoqpCyWQRlGyleYD7xWkZVmT/mxfpjclRYhlpjnrVCb+DVd/DhG4RZGajj9i7+B75fcFCNVs=
-X-Received: by 2002:aca:dc84:: with SMTP id t126mr4095908oig.32.1623459436659;
- Fri, 11 Jun 2021 17:57:16 -0700 (PDT)
+        id S230368AbhFLBDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 21:03:19 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:48782 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhFLBDS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 21:03:18 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15C11IoQ053113;
+        Fri, 11 Jun 2021 20:01:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623459678;
+        bh=O+z6rxDk43Xhjtwb3FQLdhrotsk/08Dn822tfzEbcTo=;
+        h=From:To:CC:Subject:Date;
+        b=Fh2Xh5JkIbhVjAxwE0ozQM3AVkLC0X4gqUOVqs/Ql82BjtN5FUraaKs8IOnaFbRDH
+         FTE3HvdLrPwfLRJn7KOQr7VDmw/cZgspwKxc2/qhmss6UxL1ciWPSThduqkbNi0uA4
+         Wf4LEx825Jil9fi/Pa++BD7t3bfleAt1Dr2E4Qm0=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15C11IRL071950
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Jun 2021 20:01:18 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
+ Jun 2021 20:01:18 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 11 Jun 2021 20:01:18 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15C11GI9080530;
+        Fri, 11 Jun 2021 20:01:17 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tony Lindgren <tony@atomide.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-omap@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH next] ARM: dts: am335x-bone: switch to new cpsw switch drv
+Date:   Sat, 12 Jun 2021 04:01:06 +0300
+Message-ID: <20210612010106.9970-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: by 2002:ac9:4443:0:0:0:0:0 with HTTP; Fri, 11 Jun 2021 17:57:16
- -0700 (PDT)
-In-Reply-To: <87a6nz4s0o.wl-chenli@uniontech.com>
-References: <87a6nz4s0o.wl-chenli@uniontech.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Sat, 12 Jun 2021 09:57:16 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd_dDQATXMqZ1P6tMSFDR22X55uBvcNtDFSbJQafyT7Ogg@mail.gmail.com>
-Message-ID: <CAKYAXd_dDQATXMqZ1P6tMSFDR22X55uBvcNtDFSbJQafyT7Ogg@mail.gmail.com>
-Subject: Re: [PATCH] exfat: avoid incorrectly releasing for root inode
-To:     Chen Li <chenli@uniontech.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Namjae Jeon <namjae.jeon@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-06-09 12:48 GMT+09:00, Chen Li <chenli@uniontech.com>:
->
-> In d_make_root, when we fail to allocate dentry for root inode,
-> we will iput root inode and returned value is NULL in this function.
->
-> So we do not need to release this inode again at d_make_root's caller.
->
-> Signed-off-by: Chen Li <chenli@uniontech.com>
-merged into #dev, Thanks for your patch!
+The dual_mac mode has been preserved the same way between legacy and new
+driver, and one port devices works the same as 1 dual_mac port - it's safe
+to switch drivers.
+
+So, Switch BeagleBone boards to use new cpsw switch driver. Those boards
+have or 2 Ext. port wired and configured in dual_mac mode by default, or
+only 1 Ext. port.
+
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ arch/arm/boot/dts/am335x-bone-common.dtsi     | 13 +++++---
+ .../boot/dts/am335x-boneblack-wireless.dts    |  2 +-
+ .../boot/dts/am335x-bonegreen-wireless.dts    |  2 +-
+ arch/arm/boot/dts/am335x-sancloud-bbe.dts     | 33 ++-----------------
+ 4 files changed, 12 insertions(+), 38 deletions(-)
+
+diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
+index 2d51d4bba6d4..37e1539f0211 100644
+--- a/arch/arm/boot/dts/am335x-bone-common.dtsi
++++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
+@@ -353,24 +353,27 @@
+ 	};
+ };
+ 
+-&cpsw_emac0 {
++&cpsw_port1 {
+ 	phy-handle = <&ethphy0>;
+ 	phy-mode = "mii";
++	ti,dual-emac-pvid = <1>;
+ };
+ 
+-&mac {
+-	slaves = <1>;
++&cpsw_port2 {
++	status = "disabled";
++};
++
++&mac_sw {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&cpsw_default>;
+ 	pinctrl-1 = <&cpsw_sleep>;
+ 	status = "okay";
+ };
+ 
+-&davinci_mdio {
++&davinci_mdio_sw {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&davinci_mdio_default>;
+ 	pinctrl-1 = <&davinci_mdio_sleep>;
+-	status = "okay";
+ 
+ 	ethphy0: ethernet-phy@0 {
+ 		reg = <0>;
+diff --git a/arch/arm/boot/dts/am335x-boneblack-wireless.dts b/arch/arm/boot/dts/am335x-boneblack-wireless.dts
+index 80116646a3fe..5a4d5d4ab7b8 100644
+--- a/arch/arm/boot/dts/am335x-boneblack-wireless.dts
++++ b/arch/arm/boot/dts/am335x-boneblack-wireless.dts
+@@ -62,7 +62,7 @@
+ 	};
+ };
+ 
+-&mac {
++&mac_sw {
+ 	status = "disabled";
+ };
+ 
+diff --git a/arch/arm/boot/dts/am335x-bonegreen-wireless.dts b/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
+index 74db0fc39397..215f279e476b 100644
+--- a/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
++++ b/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
+@@ -62,7 +62,7 @@
+ 	};
+ };
+ 
+-&mac {
++&mac_sw {
+ 	status = "disabled";
+ };
+ 
+diff --git a/arch/arm/boot/dts/am335x-sancloud-bbe.dts b/arch/arm/boot/dts/am335x-sancloud-bbe.dts
+index 275ba339adf4..86dcd1144db4 100644
+--- a/arch/arm/boot/dts/am335x-sancloud-bbe.dts
++++ b/arch/arm/boot/dts/am335x-sancloud-bbe.dts
+@@ -53,22 +53,6 @@
+ 		>;
+ 	};
+ 
+-	davinci_mdio_default: davinci_mdio_default {
+-		pinctrl-single,pins = <
+-			/* MDIO */
+-			AM33XX_PADCONF(AM335X_PIN_MDIO, PIN_INPUT_PULLUP | SLEWCTRL_FAST, MUX_MODE0)
+-			AM33XX_PADCONF(AM335X_PIN_MDC, PIN_OUTPUT_PULLUP, MUX_MODE0)
+-		>;
+-	};
+-
+-	davinci_mdio_sleep: davinci_mdio_sleep {
+-		pinctrl-single,pins = <
+-			/* MDIO reset value */
+-			AM33XX_PADCONF(AM335X_PIN_MDIO, PIN_INPUT_PULLDOWN, MUX_MODE7)
+-			AM33XX_PADCONF(AM335X_PIN_MDC, PIN_INPUT_PULLDOWN, MUX_MODE7)
+-		>;
+-	};
+-
+ 	usb_hub_ctrl: usb_hub_ctrl {
+ 		pinctrl-single,pins = <
+ 			AM33XX_PADCONF(AM335X_PIN_RMII1_REF_CLK, PIN_OUTPUT_PULLUP, MUX_MODE7)     /* rmii1_refclk.gpio0_29 */
+@@ -88,25 +72,12 @@
+ 	};
+ };
+ 
+-&mac {
+-	pinctrl-names = "default", "sleep";
++&mac_sw {
+ 	pinctrl-0 = <&cpsw_default>;
+ 	pinctrl-1 = <&cpsw_sleep>;
+-	status = "okay";
+-};
+-
+-&davinci_mdio {
+-	pinctrl-names = "default", "sleep";
+-	pinctrl-0 = <&davinci_mdio_default>;
+-	pinctrl-1 = <&davinci_mdio_sleep>;
+-	status = "okay";
+-
+-	ethphy0: ethernet-phy@0 {
+-		reg = <0>;
+-	};
+ };
+ 
+-&cpsw_emac0 {
++&cpsw_port1 {
+ 	phy-handle = <&ethphy0>;
+ 	phy-mode = "rgmii-id";
+ };
+-- 
+2.17.1
+
