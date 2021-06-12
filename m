@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226DF3A4D3D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEC13A4D40
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbhFLHGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 03:06:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48074 "EHLO mail.kernel.org"
+        id S230425AbhFLHIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:08:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhFLHGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 03:06:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42AC161248;
-        Sat, 12 Jun 2021 07:04:21 +0000 (UTC)
+        id S230229AbhFLHIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 03:08:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0065C61248;
+        Sat, 12 Jun 2021 07:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623481462;
-        bh=KavCCSPixTnLQ43Ecp1rRwL8vEmLDi7nRxaggiZK8/4=;
+        s=k20201202; t=1623481608;
+        bh=X2YGd7IvwLs5/YhL39fN+g8Xt2AWO41M1z0301CaslM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uzaD2te/tV05iI6tuY94Mm9/yrfN8dMnMRnn3yhwXISiAqy0GAtR3WJ+zcw+opkF1
-         E3Bv8Qt/fgL2nGGau5mZU3CYQ9GIrYT0d3MEuAihVlp5njD+95HEtvpUjv9sCtysgA
-         1PXnCenS7hUDm/9qese2rGtGC/jyjLtS+LiA3FP6FV/aagZvD0LtLFCTmGHqyVWAVG
-         cS78r9s1U3wr7Ow1Cd+c9797wdL3Kwh/D6aH74I2JLhYWoHlYWxw4n40HgyNqKlWDr
-         Xb8AgrgoMGaYwJW3nC4QAYgCdO1hDCJq2EeGtEPZB3OrtQWcoaN7KxAvjxIb07z8db
-         4WTBlbhm30pzw==
-Date:   Sat, 12 Jun 2021 15:04:17 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6sl: add PXP module
-Message-ID: <20210612070416.GV29138@dragon>
-References: <20210527210742.2609-1-andreas@kemnade.info>
+        b=VfXwA0O8UvREklELiTqek9VlzA8LWrHhKF36DShjyC+PA0B6UBrkCqE4kes7rWCZ3
+         bM2Tt4M9yEY5jTwLCEmRpkhaP9MAd9weHhnJsrfES+MWE7oxURvBYV6dnHes+/XFmI
+         S/9dSM/tY4DmwXtdCLy4XUTUM4lOopLmUbdz1/pc4kCM6CK01V8XjN5uWpzkgqfAVy
+         xaip1+cJ4IUfCbzCxuLF87l+pzE80At+gMzfrl7E9ZtCXSfixOl2slRTLDrCRTXSFU
+         29vs60iYhohvyyg2EHa85kXmTS+c9JLRHnsTqmNrYyTvTO1JCZlH6Z+pWPaq26n9AN
+         1N95EITrq0yRQ==
+Date:   Sat, 12 Jun 2021 12:36:38 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     hemantk@codeaurora.org, loic.poulain@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] bus: mhi: pci-generic: Add missing
+ 'pci_disable_pcie_error_reporting()' calls
+Message-ID: <20210612070638.GC22149@thinkpad>
+References: <f70c14701f4922d67e717633c91b6c481b59f298.1623445348.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527210742.2609-1-andreas@kemnade.info>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <f70c14701f4922d67e717633c91b6c481b59f298.1623445348.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 11:07:42PM +0200, Andreas Kemnade wrote:
-> While the EPDC is optional, all editions have the PXP module, so adding
-> it to the corresponding .dtsi
-> Information taken from freescale kernel, compared with the
-> reference manual and tested by a separate program.
+On Fri, Jun 11, 2021 at 11:03:50PM +0200, Christophe JAILLET wrote:
+> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+> call
 > 
-> Since it does not depend on external wiring, the
-> status = "disabled" is left out here.
+> Add the missing call in the error handling path of the probe and in the
+> remove function.
 > 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> Fixes: b012ee6bfe2a ("mhi: pci_generic: Add PCI error handlers")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
 > ---
->  arch/arm/boot/dts/imx6sl.dtsi | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/bus/mhi/pci_generic.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-> index 997b96c1c47b..6be83e863f19 100644
-> --- a/arch/arm/boot/dts/imx6sl.dtsi
-> +++ b/arch/arm/boot/dts/imx6sl.dtsi
-> @@ -762,8 +762,11 @@
->  			};
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index 7c810f02a2ef..d84b74396c6a 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -665,7 +665,7 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 >  
->  			pxp: pxp@20f0000 {
-> +				compatible = "fsl,imx6sl-pxp", "fsl,imx6ull-pxp";
-
-"fsl,imx6sl-pxp" needs to be documented.
-
-Shawn
-
->  				reg = <0x020f0000 0x4000>;
->  				interrupts = <0 98 IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&clks IMX6SL_CLK_PXP_AXI>;
-> +				clock-names = "axi";
->  			};
+>  	err = mhi_register_controller(mhi_cntrl, mhi_cntrl_config);
+>  	if (err)
+> -		return err;
+> +		goto err_disable_reporting;
 >  
->  			epdc: epdc@20f4000 {
+>  	/* MHI bus does not power up the controller by default */
+>  	err = mhi_prepare_for_power_up(mhi_cntrl);
+> @@ -699,6 +699,8 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	mhi_unprepare_after_power_down(mhi_cntrl);
+>  err_unregister:
+>  	mhi_unregister_controller(mhi_cntrl);
+> +err_disable_reporting:
+> +	pci_disable_pcie_error_reporting(pdev);
+>  
+>  	return err;
+>  }
+> @@ -721,6 +723,7 @@ static void mhi_pci_remove(struct pci_dev *pdev)
+>  		pm_runtime_get_noresume(&pdev->dev);
+>  
+>  	mhi_unregister_controller(mhi_cntrl);
+> +	pci_disable_pcie_error_reporting(pdev);
+>  }
+>  
+>  static void mhi_pci_shutdown(struct pci_dev *pdev)
 > -- 
-> 2.20.1
+> 2.30.2
 > 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
