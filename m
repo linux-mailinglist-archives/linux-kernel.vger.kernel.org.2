@@ -2,61 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430113A4C85
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 05:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C843A4C8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 05:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFLD5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 23:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFLD5w (ORCPT
+        id S230487AbhFLD7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 23:59:03 -0400
+Received: from mail-pl1-f182.google.com ([209.85.214.182]:43786 "EHLO
+        mail-pl1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhFLD7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 23:57:52 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330D0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 20:55:43 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso8179157pjx.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 20:55:43 -0700 (PDT)
+        Fri, 11 Jun 2021 23:59:01 -0400
+Received: by mail-pl1-f182.google.com with SMTP id v12so3782017plo.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 20:56:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=xldIaWK9sg7NVoAQhYOc4tzAvd8jQwjusXEXaSEXCb4=;
-        b=mHnDwU5j5HKJl+3b27naK1uUsKJHsIx0/EjabcaJeiYn5/gW2UGfo2FdMlfXZenS8F
-         W2xFBOOB7/2DT+0xxtjlb9RpzHMGJeDgVMc5CskAtns0iJo3adlgs0Tt3y3ZmPZY37Jk
-         ZYHcjJc5gw3ZGwd/nQTt5yyFatrR9w8BRAOOHr3e2JVKeD+Sa2eEC8YcaQGQUu2qKEF1
-         ttsRElmCax48NI3G/W3uHJRR74G49Ec+/ytrpMHDPxOv33mJzakabJ+kMgzxxNVJPqbH
-         u4Ma3KCshYdHNmTRVw5FS6shA8hkHFB+jsLFCCisFvAUmrbsRp5+GAwb4gdFHU+rUZ9G
-         4ZWg==
+        bh=+GByGP4Zio4ePdYziSNNhX9dbLjqpzpCre4Ofs+j1Tg=;
+        b=xm+EukzNYMN3n89FwjPIMnLTXxesXhmUwWfTe0JHLBBP4fhfuiU33WbEbVRDmhOyDG
+         K2Pzyohu5tKlSXNl+3PoZy80sR7FeeCpu66O/6tOa0zpLzb+oxyZi2tKitYKKhGPhNYJ
+         qHZoah0GiPi+eIwue3swfZzWbatTlzHyi7kCW9+quiTPipX3uP5ebG3mMsALUeRdX/S/
+         LKC64oaxKH+Kma6XfX28OIaiWcuo+OD6RLZIH8FGBz+SH4WsSOKZdAIDaaZIJ1O1yl8H
+         IgvNT8LswFN5DtAA01XDirEtheXJketvotd5TVu6rZrUjcFKlMbx6hOSTXKigI/qZXuQ
+         67uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=xldIaWK9sg7NVoAQhYOc4tzAvd8jQwjusXEXaSEXCb4=;
-        b=VE/XBdFJh9bEtmNzplgtNzIKjdhQ1GP1TwQkZEzbVAooQsiZ9T/CNFg+bp14EJpb5B
-         wXr018mUR0vbsGjk02s4fBCseFG7vx6KafIrKjfMyTfXgQbHIg1gljmlwrKrJq5EJbuP
-         HJNv0uqv1R2ycZLofdEWejEFyUKLzu4aIgIcR+uz/ds8QWKlzyuXENvnEhdrTDqDQ0fX
-         XolG7OJyB6ZVuSR2W5eCpuen+ZUN7g31u65e3+bq5yA7MOEKVE2PR2msCTmTDMJwIrPc
-         fqSm6jZi/4LxOeakcrqg87GV2An558vIz8yYOQyvTuYEUiVZlDqDWCJmFEZMnUPyloCI
-         TXBg==
-X-Gm-Message-State: AOAM533rfp19Do6eYhHCirUmmYsmscWB8mquUhcpvjLUPQeOojlAVkQ2
-        fp67x5Wy0O9KStChC+9puWCqmg==
-X-Google-Smtp-Source: ABdhPJzlUeF1RtfU+gBaZf6zidWmxHiIcaFA5xb0fHqmUrUPvHhMBSREN4UbsxU1WLFXHseHQWS+dQ==
-X-Received: by 2002:a17:90a:de15:: with SMTP id m21mr7698977pjv.87.1623470142344;
-        Fri, 11 Jun 2021 20:55:42 -0700 (PDT)
+        bh=+GByGP4Zio4ePdYziSNNhX9dbLjqpzpCre4Ofs+j1Tg=;
+        b=SrRPaRgUIUat41umC+xB6aCMP/mHZBn00mnsC9lBqEHkEDRkCvVksoxjgF4+KbKBOW
+         OGPTchlo5RSm7EcbAlgczWSaMBnX9dnpCYu8NeWj+tNzu4p4BdUeeZZ/ZJamJfdZfmZO
+         2QnIWQ5zIMR7zCtAeWZtTNMb0uBnQ1U1BFKU+wj3iqgbJwFmk4gdr7wJ7G8eaIwh2uPA
+         lqnNfCLHlZ5C39eMsTSBDyHoNCF/tJ0dMPoZbrSUGCHbH+Ak+OA4TW8I7XoH8BPffTOV
+         YfDODnl16X4xQ4CPPxwAjuhmgeAfuYwMZ/qMm+fsjL1CeY6ZX+nujguFueKBqeD3RixO
+         CN4A==
+X-Gm-Message-State: AOAM530VrH8ooO4ua8JKrNA53GTpiGzwk5EDA1ZBGqUNmAtC5InWPPKH
+        30QFbHuLmp/ucOiO+o+WS9T2Sg==
+X-Google-Smtp-Source: ABdhPJy4awiAVpPV7adFr4lZZQ+oqbdaFZS6wYVDA3eO5pEzFaicYYU/LEkQfjAhIYIDhk8eXh2jlQ==
+X-Received: by 2002:a17:90a:ab0c:: with SMTP id m12mr7665811pjq.179.1623470146004;
+        Fri, 11 Jun 2021 20:55:46 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id x206sm6400659pfc.211.2021.06.11.20.55.41
+        by smtp.gmail.com with ESMTPSA id a13sm6588370pgm.3.2021.06.11.20.55.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 20:55:41 -0700 (PDT)
-Date:   Fri, 11 Jun 2021 20:55:41 -0700 (PDT)
-X-Google-Original-Date: Fri, 11 Jun 2021 20:37:09 PDT (-0700)
-Subject:     Re: drivers/clk/clk-k210.c:717:6: warning: variable 'reg' set but not used
-In-Reply-To: <DM6PR04MB7081C0499CCCA8C9B9E36610E73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
-CC:     sboyd@kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Message-ID: <mhng-7814f596-6d02-4031-b90d-7db1cfed8970@palmerdabbelt-glaptop>
+        Fri, 11 Jun 2021 20:55:45 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 20:55:45 -0700 (PDT)
+X-Google-Original-Date: Fri, 11 Jun 2021 20:48:32 PDT (-0700)
+Subject:     Re: [PATCH -next] riscv: add VMAP_STACK overflow detection
+In-Reply-To: <00469a95-22ff-5a1a-3b46-01f9dc60e37d@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     tongtiangen@huawei.com
+Message-ID: <mhng-f59de097-dd42-480a-9755-478037f44fbc@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -64,168 +61,299 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Jun 2021 03:03:14 PDT (-0700), Damien Le Moal wrote:
->> On 2021/06/03 18:35, kernel test robot wrote:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   324c92e5e0ee0e993bdb106fac407846ed677f6b
->> commit: c6ca7616f7d5c2ce166280107ba74db1d528fcb7 clk: Add RISC-V Canaan Kendryte K210 clock driver
->> date:   3 months ago
->> config: riscv-randconfig-r033-20210603 (attached as .config)
->> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project d8e0ae9a76a62bdc6117630d59bf9967ac9bb4ea)
->> reproduce (this is a W=1 build):
->>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # install riscv cross compiling tool for clang build
->>         # apt-get install binutils-riscv64-linux-gnu
->>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c6ca7616f7d5c2ce166280107ba74db1d528fcb7
->>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>         git fetch --no-tags linus master
->>         git checkout c6ca7616f7d5c2ce166280107ba74db1d528fcb7
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=riscv 
->> 
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->> 
->> All warnings (new ones prefixed by >>):
->> 
->>    In file included from drivers/clk/clk-k210.c:8:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/riscv/include/asm/io.h:149:
->>    include/asm-generic/io.h:556:9: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>            return inb(addr);
->>                   ^~~~~~~~~
->>    arch/riscv/include/asm/io.h:55:76: note: expanded from macro 'inb'
->>    #define inb(c)          ({ u8  __v; __io_pbr(); __v = readb_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
->>                                                                            ~~~~~~~~~~ ^
->>    arch/riscv/include/asm/mmio.h:87:48: note: expanded from macro 'readb_cpu'
->>    #define readb_cpu(c)            ({ u8  __r = __raw_readb(c); __r; })
->>                                                             ^
->>    In file included from drivers/clk/clk-k210.c:8:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/riscv/include/asm/io.h:149:
->>    include/asm-generic/io.h:564:9: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>            return inw(addr);
->>                   ^~~~~~~~~
->>    arch/riscv/include/asm/io.h:56:76: note: expanded from macro 'inw'
->>    #define inw(c)          ({ u16 __v; __io_pbr(); __v = readw_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
->>                                                                            ~~~~~~~~~~ ^
->>    arch/riscv/include/asm/mmio.h:88:76: note: expanded from macro 'readw_cpu'
->>    #define readw_cpu(c)            ({ u16 __r = le16_to_cpu((__force __le16)__raw_readw(c)); __r; })
->>                                                                                         ^
->>    include/uapi/linux/byteorder/little_endian.h:36:51: note: expanded from macro '__le16_to_cpu'
->>    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
->>                                                      ^
->>    In file included from drivers/clk/clk-k210.c:8:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/riscv/include/asm/io.h:149:
->>    include/asm-generic/io.h:572:9: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>            return inl(addr);
->>                   ^~~~~~~~~
->>    arch/riscv/include/asm/io.h:57:76: note: expanded from macro 'inl'
->>    #define inl(c)          ({ u32 __v; __io_pbr(); __v = readl_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
->>                                                                            ~~~~~~~~~~ ^
->>    arch/riscv/include/asm/mmio.h:89:76: note: expanded from macro 'readl_cpu'
->>    #define readl_cpu(c)            ({ u32 __r = le32_to_cpu((__force __le32)__raw_readl(c)); __r; })
->>                                                                                         ^
->>    include/uapi/linux/byteorder/little_endian.h:34:51: note: expanded from macro '__le32_to_cpu'
->>    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
->>                                                      ^
->>    In file included from drivers/clk/clk-k210.c:8:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/riscv/include/asm/io.h:149:
->>    include/asm-generic/io.h:580:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>            outb(value, addr);
->>            ^~~~~~~~~~~~~~~~~
->>    arch/riscv/include/asm/io.h:59:68: note: expanded from macro 'outb'
->>    #define outb(v,c)       ({ __io_pbw(); writeb_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
->>                                                                  ~~~~~~~~~~ ^
->>    arch/riscv/include/asm/mmio.h:91:52: note: expanded from macro 'writeb_cpu'
->>    #define writeb_cpu(v, c)        ((void)__raw_writeb((v), (c)))
->>                                                              ^
->>    In file included from drivers/clk/clk-k210.c:8:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/riscv/include/asm/io.h:149:
->>    include/asm-generic/io.h:588:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>            outw(value, addr);
->>            ^~~~~~~~~~~~~~~~~
->>    arch/riscv/include/asm/io.h:60:68: note: expanded from macro 'outw'
->>    #define outw(v,c)       ({ __io_pbw(); writew_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
->>                                                                  ~~~~~~~~~~ ^
->>    arch/riscv/include/asm/mmio.h:92:76: note: expanded from macro 'writew_cpu'
->>    #define writew_cpu(v, c)        ((void)__raw_writew((__force u16)cpu_to_le16(v), (c)))
->>                                                                                      ^
->>    In file included from drivers/clk/clk-k210.c:8:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/riscv/include/asm/io.h:149:
->>    include/asm-generic/io.h:596:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>            outl(value, addr);
->>            ^~~~~~~~~~~~~~~~~
->>    arch/riscv/include/asm/io.h:61:68: note: expanded from macro 'outl'
->>    #define outl(v,c)       ({ __io_pbw(); writel_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
->>                                                                  ~~~~~~~~~~ ^
->>    arch/riscv/include/asm/mmio.h:93:76: note: expanded from macro 'writel_cpu'
->>    #define writel_cpu(v, c)        ((void)__raw_writel((__force u32)cpu_to_le32(v), (c)))
->>                                                                                      ^
->>    In file included from drivers/clk/clk-k210.c:8:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/riscv/include/asm/io.h:149:
->>    include/asm-generic/io.h:1005:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>            return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
->>                                                      ~~~~~~~~~~ ^
->>>> drivers/clk/clk-k210.c:717:6: warning: variable 'reg' set but not used [-Wunused-but-set-variable]
->>            u32 reg;
->>                ^
->>    8 warnings generated.
->> 
->> 
->> vim +/reg +717 drivers/clk/clk-k210.c
->> 
->>    710	
->>    711	static int k210_clk_set_parent(struct clk_hw *hw, u8 index)
->>    712	{
->>    713		struct k210_clk *kclk = to_k210_clk(hw);
->>    714		struct k210_sysclk *ksc = kclk->ksc;
->>    715		struct k210_clk_cfg *cfg = &k210_clk_cfgs[kclk->id];
->>    716		unsigned long flags;
->>  > 717		u32 reg;
+On Thu, 03 Jun 2021 05:49:54 PDT (-0700), tongtiangen@huawei.com wrote:
+> Hi Paul & Palmer & Albert :
 >
-> Palmer,
+>      kindly ping...
+
+Sorry about that.  I remember having read this before, I'm not sure what 
+happened though.  It's on for-next now.
+
+Thanks!
+
 >
-> I do not think this driver is the real cause of this error. Did something change
-> recently with risc-v mmio readl()/writel() ?
-
-I have no idea what's going on here.  When I try to re-build that config 
-I don't get any warnings or errors.  That said...
-
->>    718	
->>    719		spin_lock_irqsave(&ksc->clk_lock, flags);
->>    720		reg = readl(ksc->regs + cfg->mux_reg);
->>    721		if (index)
->>    722			reg |= BIT(cfg->mux_bit);
->>    723		else
->>    724			reg &= ~BIT(cfg->mux_bit);
->>    725		spin_unlock_irqrestore(&ksc->clk_lock, flags);
-
-Isn't reg unused here?  That's one of the warnings.
-
-The void* casting has been there for a while and looks like a real bug, 
-but asm-generic adopted our {in,out}{bwlq} implementation so I'm just 
-going to toss ours.  I'm not quite sure why the generic ones aren't 
-doing arithmetic on void*, but I'm not getting warnings.
-
->>    726	
->>    727		return 0;
->>    728	}
->>    729	
->> 
+>
+> On 2021/5/24 21:54, tongtiangen wrote:
+>> This patch adds stack overflow detection to riscv, usable when
+>> CONFIG_VMAP_STACK=y.
+>>
+>> Overflow is detected in kernel exception entry(kernel/entry.S), if the kernel
+>> stack is overflow and been detected, the overflow handler is invoked on a
+>> per-cpu overflow stack. This approach preserves GPRs and the original exception
+>> information.
+>>
+>> The overflow detect is performed before any attempt is made to access the stack
+>> and the principle of stack overflow detection: kernel stacks are aligned to
+>> double their size, enabling overflow to be detected with a single bit test. For
+>> example, a 16K stack is aligned to 32K, ensuring that bit 14 of the SP must be
+>> zero. On an overflow (or underflow), this bit is flipped. Thus, overflow (of
+>> less than the size of the stack) can be detected by testing whether this bit is
+>> set.
+>>
+>> This gives us a useful error message on stack overflow, as can be trigger with
+>> the LKDTM overflow test:
+>>
+>> [  388.053267] lkdtm: Performing direct entry EXHAUST_STACK
+>> [  388.053663] lkdtm: Calling function with 1024 frame size to depth 32 ...
+>> [  388.054016] lkdtm: loop 32/32 ...
+>> [  388.054186] lkdtm: loop 31/32 ...
+>> [  388.054491] lkdtm: loop 30/32 ...
+>> [  388.054672] lkdtm: loop 29/32 ...
+>> [  388.054859] lkdtm: loop 28/32 ...
+>> [  388.055010] lkdtm: loop 27/32 ...
+>> [  388.055163] lkdtm: loop 26/32 ...
+>> [  388.055309] lkdtm: loop 25/32 ...
+>> [  388.055481] lkdtm: loop 24/32 ...
+>> [  388.055653] lkdtm: loop 23/32 ...
+>> [  388.055837] lkdtm: loop 22/32 ...
+>> [  388.056015] lkdtm: loop 21/32 ...
+>> [  388.056188] lkdtm: loop 20/32 ...
+>> [  388.058145] Insufficient stack space to handle exception!
+>> [  388.058153] Task stack:     [0xffffffd014260000..0xffffffd014264000]
+>> [  388.058160] Overflow stack: [0xffffffe1f8d2c220..0xffffffe1f8d2d220]
+>> [  388.058168] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty #90
+>> [  388.058175] Hardware name: riscv-virtio,qemu (DT)
+>> [  388.058187] epc : number+0x32/0x2c0
+>> [  388.058247]  ra : vsnprintf+0x2ae/0x3f0
+>> [  388.058255] epc : ffffffe0002d38f6 ra : ffffffe0002d814e sp : ffffffd01425ffc0
+>> [  388.058263]  gp : ffffffe0012e4010 tp : ffffffe08014da00 t0 : ffffffd0142606e8
+>> [  388.058271]  t1 : 0000000000000000 t2 : 0000000000000000 s0 : ffffffd014260070
+>> [  388.058303]  s1 : ffffffd014260158 a0 : ffffffd01426015e a1 : ffffffd014260158
+>> [  388.058311]  a2 : 0000000000000013 a3 : ffff0a01ffffff10 a4 : ffffffe000c398e0
+>> [  388.058319]  a5 : 511b02ec65f3e300 a6 : 0000000000a1749a a7 : 0000000000000000
+>> [  388.058327]  s2 : ffffffff000000ff s3 : 00000000ffff0a01 s4 : ffffffe0012e50a8
+>> [  388.058335]  s5 : 0000000000ffff0a s6 : ffffffe0012e50a8 s7 : ffffffe000da1cc0
+>> [  388.058343]  s8 : ffffffffffffffff s9 : ffffffd0142602b0 s10: ffffffd0142602a8
+>> [  388.058351]  s11: ffffffd01426015e t3 : 00000000000f0000 t4 : ffffffffffffffff
+>> [  388.058359]  t5 : 000000000000002f t6 : ffffffd014260158
+>> [  388.058366] status: 0000000000000100 badaddr: ffffffd01425fff8 cause: 000000000000000f
+>> [  388.058374] Kernel panic - not syncing: Kernel stack overflow
+>> [  388.058381] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty #90
+>> [  388.058387] Hardware name: riscv-virtio,qemu (DT)
+>> [  388.058393] Call Trace:
+>> [  388.058400] [<ffffffe000004944>] walk_stackframe+0x0/0xce
+>> [  388.058406] [<ffffffe0006f0b28>] dump_backtrace+0x38/0x46
+>> [  388.058412] [<ffffffe0006f0b46>] show_stack+0x10/0x18
+>> [  388.058418] [<ffffffe0006f3690>] dump_stack+0x74/0x8e
+>> [  388.058424] [<ffffffe0006f0d52>] panic+0xfc/0x2b2
+>> [  388.058430] [<ffffffe0006f0acc>] print_trace_address+0x0/0x24
+>> [  388.058436] [<ffffffe0002d814e>] vsnprintf+0x2ae/0x3f0
+>> [  388.058956] SMP: stopping secondary CPUs
+>>
+>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 >> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->> 
->
->
->-- 
->Damien Le Moal
->Western Digital Research
->
+>> Change since rfc: fix rv32 and nommu defconfig compile error.
+>>
+>>   arch/riscv/Kconfig                   |   1 +
+>>   arch/riscv/include/asm/thread_info.h |  15 ++++
+>>   arch/riscv/kernel/entry.S            | 108 +++++++++++++++++++++++++++
+>>   arch/riscv/kernel/traps.c            |  35 +++++++++
+>>   4 files changed, 159 insertions(+)
+>>
+>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> index c426e7d20907..3e9c1945524d 100644
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@ -69,6 +69,7 @@ config RISCV
+>>   	select HAVE_ARCH_MMAP_RND_BITS if MMU
+>>   	select HAVE_ARCH_SECCOMP_FILTER
+>>   	select HAVE_ARCH_TRACEHOOK
+>> +	select HAVE_ARCH_VMAP_STACK if MMU && 64BIT
+>>   	select HAVE_ASM_MODVERSIONS
+>>   	select HAVE_CONTEXT_TRACKING
+>>   	select HAVE_DEBUG_KMEMLEAK
+>> diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
+>> index 0e549a3089b3..60da0dcacf14 100644
+>> --- a/arch/riscv/include/asm/thread_info.h
+>> +++ b/arch/riscv/include/asm/thread_info.h
+>> @@ -19,6 +19,21 @@
+>>   #endif
+>>   #define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+>>
+>> +/*
+>> + * By aligning VMAP'd stacks to 2 * THREAD_SIZE, we can detect overflow by
+>> + * checking sp & (1 << THREAD_SHIFT), which we can do cheaply in the entry
+>> + * assembly.
+>> + */
+>> +#ifdef CONFIG_VMAP_STACK
+>> +#define THREAD_ALIGN            (2 * THREAD_SIZE)
+>> +#else
+>> +#define THREAD_ALIGN            THREAD_SIZE
+>> +#endif
+>> +
+>> +#define THREAD_SHIFT            (PAGE_SHIFT + THREAD_SIZE_ORDER)
+>> +#define OVERFLOW_STACK_SIZE     SZ_4K
+>> +#define SHADOW_OVERFLOW_STACK_SIZE (1024)
+>> +
+>>   #ifndef __ASSEMBLY__
+>>
+>>   #include <asm/processor.h>
+>> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+>> index 80d5a9e017b0..98f502654edd 100644
+>> --- a/arch/riscv/kernel/entry.S
+>> +++ b/arch/riscv/kernel/entry.S
+>> @@ -30,6 +30,15 @@ ENTRY(handle_exception)
+>>   _restore_kernel_tpsp:
+>>   	csrr tp, CSR_SCRATCH
+>>   	REG_S sp, TASK_TI_KERNEL_SP(tp)
+>> +
+>> +#ifdef CONFIG_VMAP_STACK
+>> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+>> +	srli sp, sp, THREAD_SHIFT
+>> +	andi sp, sp, 0x1
+>> +	bnez sp, handle_kernel_stack_overflow
+>> +	REG_L sp, TASK_TI_KERNEL_SP(tp)
+>> +#endif
+>> +
+>>   _save_context:
+>>   	REG_S sp, TASK_TI_USER_SP(tp)
+>>   	REG_L sp, TASK_TI_KERNEL_SP(tp)
+>> @@ -376,6 +385,105 @@ handle_syscall_trace_exit:
+>>   	call do_syscall_trace_exit
+>>   	j ret_from_exception
+>>
+>> +#ifdef CONFIG_VMAP_STACK
+>> +handle_kernel_stack_overflow:
+>> +	la sp, shadow_stack
+>> +	addi sp, sp, SHADOW_OVERFLOW_STACK_SIZE
+>> +
+>> +	//save caller register to shadow stack
+>> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+>> +	REG_S x1,  PT_RA(sp)
+>> +	REG_S x5,  PT_T0(sp)
+>> +	REG_S x6,  PT_T1(sp)
+>> +	REG_S x7,  PT_T2(sp)
+>> +	REG_S x10, PT_A0(sp)
+>> +	REG_S x11, PT_A1(sp)
+>> +	REG_S x12, PT_A2(sp)
+>> +	REG_S x13, PT_A3(sp)
+>> +	REG_S x14, PT_A4(sp)
+>> +	REG_S x15, PT_A5(sp)
+>> +	REG_S x16, PT_A6(sp)
+>> +	REG_S x17, PT_A7(sp)
+>> +	REG_S x28, PT_T3(sp)
+>> +	REG_S x29, PT_T4(sp)
+>> +	REG_S x30, PT_T5(sp)
+>> +	REG_S x31, PT_T6(sp)
+>> +
+>> +	la ra, restore_caller_reg
+>> +	tail get_overflow_stack
+>> +
+>> +restore_caller_reg:
+>> +	//save per-cpu overflow stack
+>> +	REG_S a0, -8(sp)
+>> +	//restore caller register from shadow_stack
+>> +	REG_L x1,  PT_RA(sp)
+>> +	REG_L x5,  PT_T0(sp)
+>> +	REG_L x6,  PT_T1(sp)
+>> +	REG_L x7,  PT_T2(sp)
+>> +	REG_L x10, PT_A0(sp)
+>> +	REG_L x11, PT_A1(sp)
+>> +	REG_L x12, PT_A2(sp)
+>> +	REG_L x13, PT_A3(sp)
+>> +	REG_L x14, PT_A4(sp)
+>> +	REG_L x15, PT_A5(sp)
+>> +	REG_L x16, PT_A6(sp)
+>> +	REG_L x17, PT_A7(sp)
+>> +	REG_L x28, PT_T3(sp)
+>> +	REG_L x29, PT_T4(sp)
+>> +	REG_L x30, PT_T5(sp)
+>> +	REG_L x31, PT_T6(sp)
+>> +
+>> +	//load per-cpu overflow stack
+>> +	REG_L sp, -8(sp)
+>> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+>> +
+>> +	//save context to overflow stack
+>> +	REG_S x1,  PT_RA(sp)
+>> +	REG_S x3,  PT_GP(sp)
+>> +	REG_S x5,  PT_T0(sp)
+>> +	REG_S x6,  PT_T1(sp)
+>> +	REG_S x7,  PT_T2(sp)
+>> +	REG_S x8,  PT_S0(sp)
+>> +	REG_S x9,  PT_S1(sp)
+>> +	REG_S x10, PT_A0(sp)
+>> +	REG_S x11, PT_A1(sp)
+>> +	REG_S x12, PT_A2(sp)
+>> +	REG_S x13, PT_A3(sp)
+>> +	REG_S x14, PT_A4(sp)
+>> +	REG_S x15, PT_A5(sp)
+>> +	REG_S x16, PT_A6(sp)
+>> +	REG_S x17, PT_A7(sp)
+>> +	REG_S x18, PT_S2(sp)
+>> +	REG_S x19, PT_S3(sp)
+>> +	REG_S x20, PT_S4(sp)
+>> +	REG_S x21, PT_S5(sp)
+>> +	REG_S x22, PT_S6(sp)
+>> +	REG_S x23, PT_S7(sp)
+>> +	REG_S x24, PT_S8(sp)
+>> +	REG_S x25, PT_S9(sp)
+>> +	REG_S x26, PT_S10(sp)
+>> +	REG_S x27, PT_S11(sp)
+>> +	REG_S x28, PT_T3(sp)
+>> +	REG_S x29, PT_T4(sp)
+>> +	REG_S x30, PT_T5(sp)
+>> +	REG_S x31, PT_T6(sp)
+>> +
+>> +	REG_L s0, TASK_TI_KERNEL_SP(tp)
+>> +	csrr s1, CSR_STATUS
+>> +	csrr s2, CSR_EPC
+>> +	csrr s3, CSR_TVAL
+>> +	csrr s4, CSR_CAUSE
+>> +	csrr s5, CSR_SCRATCH
+>> +	REG_S s0, PT_SP(sp)
+>> +	REG_S s1, PT_STATUS(sp)
+>> +	REG_S s2, PT_EPC(sp)
+>> +	REG_S s3, PT_BADADDR(sp)
+>> +	REG_S s4, PT_CAUSE(sp)
+>> +	REG_S s5, PT_TP(sp)
+>> +	move a0, sp
+>> +	tail handle_bad_stack
+>> +#endif
+>> +
+>>   END(handle_exception)
+>>
+>>   ENTRY(ret_from_fork)
+>> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+>> index 0721b9798595..3f7f618dab42 100644
+>> --- a/arch/riscv/kernel/traps.c
+>> +++ b/arch/riscv/kernel/traps.c
+>> @@ -198,3 +198,38 @@ int is_valid_bugaddr(unsigned long pc)
+>>   void __init trap_init(void)
+>>   {
+>>   }
+>> +
+>> +#ifdef CONFIG_VMAP_STACK
+>> +DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack)
+>> +		__aligned(16);
+>> +/*
+>> + * shadow stack, handled_ kernel_ stack_ overflow(in kernel/entry.S) is used
+>> + * to get per-cpu overflow stack(get_overflow_stack).
+>> + */
+>> +long shadow_stack[SHADOW_OVERFLOW_STACK_SIZE/sizeof(long)];
+>> +asmlinkage unsigned long get_overflow_stack(void)
+>> +{
+>> +	return (unsigned long)this_cpu_ptr(overflow_stack) +
+>> +		OVERFLOW_STACK_SIZE;
+>> +}
+>> +
+>> +asmlinkage void handle_bad_stack(struct pt_regs *regs)
+>> +{
+>> +	unsigned long tsk_stk = (unsigned long)current->stack;
+>> +	unsigned long ovf_stk = (unsigned long)this_cpu_ptr(overflow_stack);
+>> +
+>> +	console_verbose();
+>> +
+>> +	pr_emerg("Insufficient stack space to handle exception!\n");
+>> +	pr_emerg("Task stack:     [0x%016lx..0x%016lx]\n",
+>> +			tsk_stk, tsk_stk + THREAD_SIZE);
+>> +	pr_emerg("Overflow stack: [0x%016lx..0x%016lx]\n",
+>> +			ovf_stk, ovf_stk + OVERFLOW_STACK_SIZE);
+>> +
+>> +	__show_regs(regs);
+>> +	panic("Kernel stack overflow");
+>> +
+>> +	for (;;)
+>> +		wait_for_interrupt();
+>> +}
+>> +#endif
