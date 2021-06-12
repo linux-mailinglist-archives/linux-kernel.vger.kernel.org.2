@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9E33A4F93
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 17:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669A23A4F94
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 17:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbhFLP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 11:56:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46820 "EHLO mail.kernel.org"
+        id S231493AbhFLP4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 11:56:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230200AbhFLP4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 11:56:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11504610FC;
-        Sat, 12 Jun 2021 15:54:13 +0000 (UTC)
+        id S230200AbhFLP4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 11:56:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFC34610FC;
+        Sat, 12 Jun 2021 15:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623513254;
-        bh=37tg6Z6PtjuzOW8ZCYh6Bik3TuAV0MEMXIOuh+nuMp8=;
+        s=korg; t=1623513273;
+        bh=SvDSe+71i4/sQt3EFhqr44mKrhHMTl790UTWD9pT+08=;
         h=Date:From:To:Cc:Subject:From;
-        b=cIFF/bJpO4XtSfTcJig9BMPs4JTqB0+qzCNkEgsM4n/bLZWcVp+MnLbWVB32vPk49
-         o7T3S/lqULDcwmjHHcv2kvqpulms0+fe8byGQ4hXNEkzatWo8kNSyA/d49yjp+TFpL
-         aJJPLK05ZrYrTFBQVG3hB56KcCFdpBVEC397QZw4=
-Date:   Sat, 12 Jun 2021 17:54:12 +0200
+        b=CXTy3l1nRm5xq5oJGNOttyXaz9c3cA2U2coEbk5Aid5AFfbC2+tKN2sJrj93U8Ls7
+         FIWo+GEeo/DJLO1kXW3E9Vs2dC1cbe8cBUZVdpkH1MqLQ+P0scs81yun4Az5gYkrQ8
+         9gDWPCUtk86QD9aJGBEJPa0exfy4btZos8xTiRv0=
+Date:   Sat, 12 Jun 2021 17:54:31 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Saravana Kannan <saravanak@google.com>
-Subject: [GIT PULL] Driver core fix for 5.13-rc6
-Message-ID: <YMTYpO790N/LAZ/Q@kroah.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     devel@linuxdriverproject.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [GIT PULL] Staging driver fixes for 5.13-rc6
+Message-ID: <YMTYtya0Sn/JVtz2@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -42,26 +42,30 @@ The following changes since commit 8124c8a6b35386f73523d27eacb71b5364a68c4c:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.13-rc6
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.13-rc6
 
-for you to fetch changes up to f501b6a2312e27fffe671d461770426fe5162184:
+for you to fetch changes up to e9de1ecadeab5fbffd873b9110e969c869554a56:
 
-  debugfs: Fix debugfs_read_file_str() (2021-06-04 15:01:08 +0200)
+  staging: ralink-gdma: Remove incorrect author information (2021-06-09 12:07:52 +0200)
 
 ----------------------------------------------------------------
-Driver core fix for 5.13-rc6
+Staging driver fixes for 5.13-rc6
 
-Here is a single debugfs fix for 5.13-rc6.
+Here are two tiny staging driver fixes for 5.13-rc6
+	- ralink-gdma driver authorship information fixed up
+	- rtl8723bs driver fix for reported regression
 
-It fixes a bug in debugfs_read_file_str() that showed up in 5.13-rc1.
-
-It has been in linux-next for a full week with no reported problems.
+Both have been in linux-next for a while with no reported problems.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Dietmar Eggemann (1):
-      debugfs: Fix debugfs_read_file_str()
+Lars-Peter Clausen (1):
+      staging: ralink-gdma: Remove incorrect author information
 
- fs/debugfs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Wenli Looi (1):
+      staging: rtl8723bs: Fix uninitialized variables
+
+ drivers/staging/ralink-gdma/ralink-gdma.c         | 2 --
+ drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
