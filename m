@@ -2,60 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106CC3A5063
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 21:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B733A5066
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 21:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhFLTjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 15:39:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230186AbhFLTjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 15:39:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 90209611CA;
-        Sat, 12 Jun 2021 19:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623526662;
-        bh=GKYLo/sNdEikOkvVvmowMF/vZaE0zZXqST0IZpz/H1o=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=M8SO5bRnYk4IaSZ6gDkek8dgsJzyHu7MyzkgZn0Xeoo1mhWT+8x0IE0/By/prth2f
-         HUF4LaDWUtbOXaNj1spmAb6Xs6CgjmN22EIEQj3WRpfdxzguuaWg385VXlnU81nO2M
-         MsCIgV2ldp5CMpvoUQ3rPM+WvWoIj/EIAj+5coduVHa4cD71NiyTEEQzI9/3I12Ea4
-         tNyVO40w9W3YlBtZKfQyaon63eszb5GiH8//F3qwSsy7IUzGx17yyKkboiN9ZAtqGo
-         B6dT+DuiJF7Op0JYKB0Bl00jy0YTLPWrAA8BVyCyEfkHxTPblNWqbCV5VlmV7AExap
-         rsRAqpJdzU/mQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8A88A60A49;
-        Sat, 12 Jun 2021 19:37:42 +0000 (UTC)
-Subject: Re: [GIT PULL] USB driver fixes for 5.13-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YMTY5JKo71X92y/S@kroah.com>
-References: <YMTY5JKo71X92y/S@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YMTY5JKo71X92y/S@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.13-rc6
-X-PR-Tracked-Commit-Id: 7c4363d3948535e6a9116a325b2fb56eab6b88ff
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 43cb5d49a99b3ecd9fef9826899aac948c3048da
-Message-Id: <162352666256.18796.5493327846133677612.pr-tracker-bot@kernel.org>
-Date:   Sat, 12 Jun 2021 19:37:42 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+        id S231630AbhFLTlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 15:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231479AbhFLTl2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 15:41:28 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B397CC061574;
+        Sat, 12 Jun 2021 12:39:27 -0700 (PDT)
+Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 2C9873F356;
+        Sat, 12 Jun 2021 21:39:24 +0200 (CEST)
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8250: Disable Adreno and Venus by
+ default
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Martin Botka <martin.botka@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210611113514.27173-1-konrad.dybcio@somainline.org>
+ <CAF6AEGv3UivqUKb8wkCgzpApORV=ucswOzUh7BQMWRiif5ZJdw@mail.gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <94bf5d73-6939-75dc-46da-ddb8d6ae017a@somainline.org>
+Date:   Sat, 12 Jun 2021 21:39:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAF6AEGv3UivqUKb8wkCgzpApORV=ucswOzUh7BQMWRiif5ZJdw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 12 Jun 2021 17:55:16 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.13-rc6
+On 11.06.2021 20:54, Rob Clark wrote:
+> On Fri, Jun 11, 2021 at 4:35 AM Konrad Dybcio
+> <konrad.dybcio@somainline.org> wrote:
+>> Components that rely on proprietary (not to mention signed!) firmware should
+>> not be enabled by default, as lack of the aforementioned firmware could cause
+>> various issues, from random errors to straight-up failing to boot.
+> I admit I probably don't test much without fw, but I think maybe
+> *that* is the issue to solve instead.
+>
+> Taking a guess, I think the situation is that you have *some* of the
+> fw (ie. the unsigned parts coming from linux-firmware) but not
+> specifically the zap fw.  So adreno_zap_shader_load() returns -ENODEV,
+> which is interpreted to mean "this is a platform that doesn't need zap
+> to take GPU out of secure mode", and then things go boom when we try
+> to write RBBM_SECVID_TRUST_CNTL ?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/43cb5d49a99b3ecd9fef9826899aac948c3048da
+While we're not yet there to test that out on A6xx-equipped platforms,
 
-Thank you!
+my experience with lack ofAdreno firmware so far has been like so:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+no ZAP, wrong ZAP address in the DT, bad ZAP - either a lockup or a reboot
+
+
+no pm4/pfp - mostly a sane failing route with GPU just not activating after all,
+
+yet still I can recall having some problems that I probably won't be able to
+
+reproduce right now
+
+
+no GMU fw - as stated before, can't really test properly just yet
+
+
+
+Konrad
+
