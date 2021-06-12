@@ -2,99 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A143A510A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035843A510C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhFLVmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 17:42:22 -0400
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:45037 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFLVmU (ORCPT
+        id S231166AbhFLVte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 17:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFLVtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 17:42:20 -0400
-Received: by mail-pf1-f181.google.com with SMTP id u18so7433063pfk.11;
-        Sat, 12 Jun 2021 14:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=epMHjnPhbNNlT6Qw4ItgSYLiUlQgXsV+IiGQEE2nlc8=;
-        b=l66IJcNglArpOxWXoB+BLSXBEUKRmWftbpOZsqpk/Y5vB0ZjjYIcpuZSYc+m/mysjb
-         F+D13P7dPAWaURph7SUKPIHgyho8JRfEI4SrdN7yE4+jkly5Lb3N+GWoISiTtOl3Yb+F
-         d3TpGJcq4CWXGq7QtN6WAWJ5DobKZyNLYHHssdgqdVgWJ54JyECO4cSTqF4++jUTCm5t
-         uzSVbA0BF6D83NR+AmVPEECCzTLkuGwF0/y7xOXVlZD9E1ZDjxD99pcDqSpb5EZzwyuI
-         z/WezFkonHwaMMQ1gE/xWPB3CtrdHCRESZHobp5OkwAp2SCUn47quU/CBD9qHYTbppgv
-         NozQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=epMHjnPhbNNlT6Qw4ItgSYLiUlQgXsV+IiGQEE2nlc8=;
-        b=Wpnf8p1QBIbEhSPqvLFArPVms9FSFJTXV2mCqlk/+XvcjQIXREAxwQgCYxUH/Fbmc/
-         2wcKT0/CYfAMbeP7hh4NDzK6jBR++Q5xMfSd8+6ZOc+70LnA0CA6vY+9tuilKgMFm6LN
-         wlJjiTdARq+WecVK9EEWyZ59c+nroQYmF/tlHQe9XKQ6Q510YYgV9aaR2rw3WP5XP0Ip
-         AhAyV0pvG/nQLJ/rla1jcMA2071r1qNh8twDeUS29boI4r2xhokqVoifGPDW6Ypj6W+x
-         WnUV7uiNJIPaCPIbP9EjJPPraFyCaJHgkIHxRUYQ/HNnWGO9N671KraW3ucQylsTWap8
-         HsPg==
-X-Gm-Message-State: AOAM530Lo6DObHM1wFwOSm3XaZ2O42rO2a7Gps/TgldyPPLFxJCP4a/o
-        sG7WVuxj+OihPSP3qSfgnBLG6XbCrR5Ufqvmx9M=
-X-Google-Smtp-Source: ABdhPJxfD1D+qTKWopXSDHqGrm7Vt+8P4foDxF9sJm9/aQlPk8kCLVvI1AYum+VfEO2AwSpfkVox0MEJrky3qP+qEfA=
-X-Received: by 2002:a05:6a00:139c:b029:2f7:102c:5393 with SMTP id
- t28-20020a056a00139cb02902f7102c5393mr7941129pfg.40.1623533949479; Sat, 12
- Jun 2021 14:39:09 -0700 (PDT)
+        Sat, 12 Jun 2021 17:49:33 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A8EC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 14:47:33 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lsBTV-007RbK-Mn; Sat, 12 Jun 2021 21:47:29 +0000
+Date:   Sat, 12 Jun 2021 21:47:29 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC 5/9] iov_iter: Add iov_iter_fault_in_writeable()
+Message-ID: <YMUrcUXS5jprfGPF@zeniv-ca.linux.org.uk>
+References: <20210531170123.243771-1-agruenba@redhat.com>
+ <20210531170123.243771-6-agruenba@redhat.com>
+ <YLUY/7pcFMibDnRn@zeniv-ca.linux.org.uk>
+ <YMUjQYtBCIxHvsYV@zeniv-ca.linux.org.uk>
+ <CAHk-=whcnziOWqVESWKJ6Y1_sG2S2AOa1vv5yKzUGs5gM7qYpQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210612123639.329047-1-yury.norov@gmail.com> <20210612123639.329047-2-yury.norov@gmail.com>
-In-Reply-To: <20210612123639.329047-2-yury.norov@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 13 Jun 2021 00:38:52 +0300
-Message-ID: <CAHp75VcfX4X5w7yeheostadvfTjhnnzgsTyhMM-9wgS9Lgfn1g@mail.gmail.com>
-Subject: Re: [PATCH 1/8] bitops: protect find_first_{,zero}_bit properly
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        David Hildenbrand <david@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whcnziOWqVESWKJ6Y1_sG2S2AOa1vv5yKzUGs5gM7qYpQ@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 3:38 PM Yury Norov <yury.norov@gmail.com> wrote:
->
-> find_first_bit() and find_first_zero_bit() are not protected with
-> ifdefs as other functions in find.h. It causes build errors on some
-> platforms if CONFIG_GENERIC_FIND_FIRST_BIT is enabled.
+On Sat, Jun 12, 2021 at 02:33:31PM -0700, Linus Torvalds wrote:
 
-Fixes?
+> That said, reads are obviously much easier, and I'd probably prefer
+> the model for writes to be to not necessarily pre-fault anything at
+> all, but just write to user space with page faults disabled.
 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+*nod*
+I don't like that write pre-fault model at all - note that unlike read
+we'll end up with atomic operations, etc. and there's a plenty of
+non-obvious ways for that to end up being costly, even assuming it
+works correctly in all cases.
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+	O_DIRECT case is a PITA - there we use GUP and there's no way
+to tell GUP that in the current situation we do *NOT* want to hit
+->fault()/->page_mkwrite()/etc.  pagefault_disable() won't be even
+noticed there...
