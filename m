@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2972C3A4F2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 15:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDFB3A4F2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhFLOAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 10:00:50 -0400
-Received: from mail-io1-f53.google.com ([209.85.166.53]:46940 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhFLOAt (ORCPT
+        id S231293AbhFLOJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 10:09:54 -0400
+Received: from mail-lj1-f180.google.com ([209.85.208.180]:36662 "EHLO
+        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLOJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 10:00:49 -0400
-Received: by mail-io1-f53.google.com with SMTP id b14so19579654iow.13
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 06:58:40 -0700 (PDT)
+        Sat, 12 Jun 2021 10:09:53 -0400
+Received: by mail-lj1-f180.google.com with SMTP id 131so13553133ljj.3;
+        Sat, 12 Jun 2021 07:07:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=himBjQKtq4rWlc/v9yNLPdlT7s2MvK1OSVhcMGgSEBU=;
-        b=ZxVsBil9YsJlisWXXU9+tXyw9zjxbqVO58KRicpvNsRFXG40lqnvNHOFOxqrMBcfzH
-         iNmTEeVMSg/FJvewUt5Txdpd+fok5jKQo21sYt+wEN8Kr2wiN1dM3DYPggk5JBrlhjOr
-         0yyxNtVKeOWpAQuvhQVFrKiyXavuy6OXBVzNAYsKqFfWgzn3OD2XC9dJgI/xSovfI+g2
-         ADzydnqU+UvyR0BMCPG0fCEmkp0dHv70HnmFq9C1HzyKgbdyWd+zR2/1uhVQ8R0vhfy+
-         q0mjDgbErJgkkZo8oZjC5eXqFgvEDfkAuzYd+J6x3kCrwW/8fSGpOnmIo1vV6aZRatT7
-         uLMA==
+        bh=5JZMHW5UG5CyvDN0SOE2Y9hqb0tFNng+vhQJCVqivJ8=;
+        b=D6A/v3863n804431JpJ/EPCUtfVYDzi5Uhzhb4quMvA3+UiYYEvk1ssSEFIblDNXjC
+         fduAtA1lKSPuxgPLQ1aIklkw8rwfDwxNlOJgWtwURLw/DCPAXr4mHVcxF4wD1R/bgMx/
+         OJ3EKf41fIzJJkYiWoQu8gZ1qgV6zWqngjpvUZmSLJC2zIUaKz6JsnM+uTv42IY3f7O4
+         APCOatnS29cF08zfcyOzV0CGUbWgukwmnxsc6/GlA8V0Jkehu7zGnpF5Heg09wES22i0
+         37haeWAjqYEcrjqK6G3pI5MrbZrP+cr8TwuA3A7ubAFNxsTSlkEhYVnKnx36yKOsgSlk
+         KeRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=himBjQKtq4rWlc/v9yNLPdlT7s2MvK1OSVhcMGgSEBU=;
-        b=BVk38hzOyiWpEOPzYLjo1gcQlQ+6ku47m5o6mAVBsCJHAvFDyJ1OECpkbLi/1Lwgya
-         4kUqdCNt+W/+j4hm189QotN32YaJXCyfgQAPtKc+aB2rz4vHNITgeoYo7teXb47rMR1E
-         r5CpxvX2OH1vD4T7BWxQeMCtlu/YK7OFJ5XCKuZN51ESvKTmQwxkeUqUqhwuUjh6BE/G
-         ZFH1TIBRBFS+kZ4Pmwu/6keRGcFMsywjHALc1f+SYwGN5DGEq9d8fk8cq40ySZkliXzI
-         j+OcE4O5QFxwr1p476SmClWLtoCY2iJFGylWVh4KXgV7meQ4TaNSdvQkbxIHsppSp6Sa
-         2POQ==
-X-Gm-Message-State: AOAM531GMWi2QFqFfpCJJqjLBDSVwQCgaooko6bdOJMohXt8J3J6uANB
-        KSStltgwLD+X/OKu4h8/Hsoyn78rOQgFJA96
-X-Google-Smtp-Source: ABdhPJzE0mf0zYYusr1qAKAcVGd97Ng2OSvQTtraMUG7rE+MYv0LAt6XAlBsWfH767pEF80H8rIs+Q==
-X-Received: by 2002:a5e:8e03:: with SMTP id a3mr7205454ion.116.1623506259839;
-        Sat, 12 Jun 2021 06:57:39 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id r11sm5021172ilm.23.2021.06.12.06.57.38
+        bh=5JZMHW5UG5CyvDN0SOE2Y9hqb0tFNng+vhQJCVqivJ8=;
+        b=Jw5to0LzmgW2ozFN+afjvJi1ratfVoYmRCI+ZNNOWTvkwCRAGC9/iMJx/tcDDMGzMU
+         snL9JMLIq4+NMI+OlVaHEKOUw4Qjj7KsIr7wbETJh8cbzckd+mBpfeV5yx7sdgyXAb0p
+         L18r6BF/CQNlv9uDVefsJs1icXfaNuAOCNSwpCMZLo6q3PTmAvnHBknFO+IIEpOwZAJP
+         CFPe6yFBiUXxGAAcW1YGkhF6ZB/3G0rHh3abdxsDgAIC4d+S7owk6SC8WEOwVLOY6Fyq
+         yBeGS9hc8RfaLezjc7fDsnTI2aEE8FFCgZ3y1M6Qjk5Atx8PDNI816MKtY5tKcV+Xycr
+         bbJA==
+X-Gm-Message-State: AOAM533r27gtzFdEE17m7LFoGVC3hlfWZMqu9+94fWPOg4zjzQYTj/mu
+        x3MG9LAo9BHqNvQXZJTfdAI=
+X-Google-Smtp-Source: ABdhPJwDIoSLztHI0HZlTQOE8nq1yqZDO6sHg/1dhl3DUU54eWh1CO8Dhf8podmF3gKUPOzdddIrWA==
+X-Received: by 2002:a2e:9192:: with SMTP id f18mr6692919ljg.77.1623506806242;
+        Sat, 12 Jun 2021 07:06:46 -0700 (PDT)
+Received: from localhost.localdomain ([185.215.60.70])
+        by smtp.gmail.com with ESMTPSA id y18sm1118264ljy.95.2021.06.12.07.06.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Jun 2021 06:57:39 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     lkp@intel.com, bjorn.andersson@linaro.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/1] net: qualcomm: rmnet: always expose a few functions
-Date:   Sat, 12 Jun 2021 08:57:36 -0500
-Message-Id: <20210612135736.3414477-1-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        Sat, 12 Jun 2021 07:06:19 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     konishi.ryusuke@gmail.com, Vyacheslav.Dubeyko@hgst.com,
+        akpm@linux-foundation.org
+Cc:     linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] nilfs2: fix memory leak in nilfs_sysfs_delete_device_group
+Date:   Sat, 12 Jun 2021 17:05:59 +0300
+Message-Id: <20210612140559.20022-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent change tidied up some conditional code, avoiding the use of
-some #ifdefs.  Unfortunately, if CONFIG_IPV6 was not enabled, it
-meant that two functions were referenced but never defined.
+My local syzbot instance hit memory leak in nilfs2.
+The problem was in missing kobject_put() in
+nilfs_sysfs_delete_device_group().
 
-The easiest fix is to just define stubs for these functions if
-CONFIG_IPV6 is not defined.  This will soon be simplified further
-by some other development in the works...
+kobject_del() does not call kobject_cleanup() for
+passed kobject and it leads to leaking duped
+kobject name if kobject_put() was not called.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 75db5b07f8c39 ("net: qualcomm: rmnet: eliminate some ifdefs")
-Signed-off-by: Alex Elder <elder@linaro.org>
+Fail log:
+
+BUG: memory leak
+unreferenced object 0xffff8880596171e0 (size 8):
+  comm "syz-executor379", pid 8381, jiffies 4294980258 (age 21.100s)
+  hex dump (first 8 bytes):
+    6c 6f 6f 70 30 00 00 00                          loop0...
+  backtrace:
+    [<ffffffff81a2c656>] kstrdup+0x36/0x70 mm/util.c:60
+    [<ffffffff81a2c6e3>] kstrdup_const+0x53/0x80 mm/util.c:83
+    [<ffffffff83ccc698>] kvasprintf_const+0x108/0x190 lib/kasprintf.c:48
+    [<ffffffff83e99926>] kobject_set_name_vargs+0x56/0x150 lib/kobject.c:289
+    [<ffffffff83e99fd9>] kobject_add_varg lib/kobject.c:384 [inline]
+    [<ffffffff83e99fd9>] kobject_init_and_add+0xc9/0x160 lib/kobject.c:473
+    [<ffffffff8304e840>] nilfs_sysfs_create_device_group+0x150/0x800 fs/nilfs2/sysfs.c:999
+    [<ffffffff830159f6>] init_nilfs+0xe26/0x12b0 fs/nilfs2/the_nilfs.c:637
+
+Fixes: da7141fb78db ("nilfs2: add /sys/fs/nilfs2/<device> group")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c  | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ fs/nilfs2/sysfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-index d4d23ab446ef5..8922324159164 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-@@ -188,6 +188,14 @@ rmnet_map_ipv6_dl_csum_trailer(struct sk_buff *skb,
- 		return -EINVAL;
- 	}
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 303d71430bdd..9c6c0e2e5880 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -1053,6 +1053,7 @@ void nilfs_sysfs_delete_device_group(struct the_nilfs *nilfs)
+ 	nilfs_sysfs_delete_superblock_group(nilfs);
+ 	nilfs_sysfs_delete_segctor_group(nilfs);
+ 	kobject_del(&nilfs->ns_dev_kobj);
++	kobject_put(&nilfs->ns_dev_kobj);
+ 	kfree(nilfs->ns_dev_subgroups);
  }
-+#else
-+static int
-+rmnet_map_ipv6_dl_csum_trailer(struct sk_buff *skb,
-+			       struct rmnet_map_dl_csum_trailer *csum_trailer,
-+			       struct rmnet_priv *priv)
-+{
-+	return 0;
-+}
- #endif
  
- static void rmnet_map_complement_ipv4_txporthdr_csum_field(void *iphdr)
-@@ -258,6 +266,13 @@ rmnet_map_ipv6_ul_csum_header(struct ipv6hdr *ipv6hdr,
- 
- 	rmnet_map_complement_ipv6_txporthdr_csum_field(ipv6hdr);
- }
-+#else
-+static void
-+rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
-+			      struct rmnet_map_ul_csum_header *ul_header,
-+			      struct sk_buff *skb)
-+{
-+}
- #endif
- 
- static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff *skb,
 -- 
-2.27.0
+2.32.0
 
