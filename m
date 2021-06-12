@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703613A50C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD813A50CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhFLVKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 17:10:14 -0400
-Received: from mga12.intel.com ([192.55.52.136]:4813 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229777AbhFLVKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 17:10:13 -0400
-IronPort-SDR: 0neGMO3e18bLcAdL2InHI6aoxR2TwPXX/p/gilfwT6i5TI6pAuqTnhcSHFO5NbdK/yaajPO+GE
- 8DVbqybfK2uA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10013"; a="185374068"
-X-IronPort-AV: E=Sophos;i="5.83,268,1616482800"; 
-   d="scan'208";a="185374068"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2021 14:08:13 -0700
-IronPort-SDR: LfhS9chPiX3yGk9Ef8BkAlXTIVrGajpE/XkWh/otUly7u+xxvzHa6cV5rChISujGcNI/tkyu/2
- KjwnKxMaZrJw==
-X-IronPort-AV: E=Sophos;i="5.83,268,1616482800"; 
-   d="scan'208";a="449468367"
-Received: from rong2-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.36.179])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2021 14:08:11 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/12] x86/tdx: Wire up KVM hypercalls
-Date:   Sat, 12 Jun 2021 14:08:07 -0700
-Message-Id: <20210612210807.2165241-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210602022136.2186759-10-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210602022136.2186759-10-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S231500AbhFLVPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 17:15:36 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:47962 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230281AbhFLVPf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 17:15:35 -0400
+Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafb:ee01:a4dd:c59:8cbd:ee0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 8619120C9CB;
+        Sat, 12 Jun 2021 23:13:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1623532413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zY3uAKWoBS4HTwQVc15m3cJceRfFQ8cEND+kw0FBIxA=;
+        b=Ttwn1Z/VZzlJV0k2mcMc29so5hE3c+NWahTxUPWmuJ3qTb1+xmKzlVUaX5JNex1qwFF2Bs
+        ac430hyuUaFo6QjDUloYTPgRfvDzELOhUVAMmzB23l1dTMmEypnuRLGm0wHhhhShMxqy0J
+        MIboM21u4X2sNn43GmzOIxLDP7JoH9+PlbRpN1hQxrHsagCifNSS3gX9FuGGw6sC2nBePq
+        kweKp5fD5ekFLjaaH9pTKUa65dIw5YvpHkz/qMOu43G+QBM4E4uCp7E3ka9yjPQetdtTm0
+        4v8MvgZzHmpPkCevVEn6tR7rMGxU144eFcQ6UGvNZ1cNNnmxY3pYMnHYwlRHAw==
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Sander Vanheule <sander@svanheule.net>
+Subject: [PATCH v5 0/8] RTL8231 GPIO expander support
+Date:   Sat, 12 Jun 2021 23:12:30 +0200
+Message-Id: <cover.1623532208.git.sander@svanheule.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -53,196 +55,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+The RTL8231 GPIO and LED expander can be configured for use as an MDIO or SMI
+bus device. Currently only the MDIO mode is supported, although SMI mode
+support should be fairly straightforward, once an SMI bus driver is available.
 
-KVM hypercalls use the "vmcall" or "vmmcall" instructions.
-Although the ABI is similar, those instructions no longer
-function for TDX guests. Make vendor-specific TDVMCALLs
-instead of VMCALL. This enables TDX guests to run with KVM
-acting as the hypervisor. TDX guests running under other
-hypervisors will continue to use those hypervisors'
-hypercalls.
+Provided features by the RTL8231:
+  - Up to 37 GPIOs
+    - Configurable drive strength: 8mA or 4mA (currently unsupported)
+    - Input debouncing on GPIOs 31-36
+  - Up to 88 LEDs in multiple scan matrix groups
+    - On, off, or one of six toggling intervals
+    - "single-color mode": 2×36 single color LEDs + 8 bi-color LEDs
+    - "bi-color mode": (12 + 2×6) bi-color LEDs + 24 single color LEDs
+  - Up to one PWM output (currently unsupported)
+    - Fixed duty cycle, 8 selectable frequencies (1.2kHz - 4.8kHz)
 
-Since KVM driver can be built as a kernel module, export
-tdx_kvm_hypercall*() to make the symbols visible to kvm.ko.
+The GPIO controller uses gpio-regmap. To support the aliased data input and
+output registers, the regmap interface is extended to supported atomic,
+uncached register reads. This is then used with a new quirk for gpio-regmap.
 
-[Isaku Yamahata: proposed KVM VENDOR string]
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Register access is provided through a new MDIO regmap provider. The required
+MDIO regmap support was merged in Mark Brown's regmap repository, and can be
+found under the regmap-mdio tag:
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git/tag/?h=regmap-mdio
+
 ---
+Another revision of this patch series, now without (virtual) register paging.
+After a few other (failed) attemps, I added a call to the regmap interface to
+perform atomic, uncached register reads. Combined with the appropriate caching
+of the register values, this can provide a split view of the data registers for
+gpio-regmap. See patches 1/7 and 2/7.
+
+These additions allowed the MFD core driver to be a bit less complex. The GPIO
+support didn't see significant changes, so I've kept the review tags. The
+bindings and LED driver are unchanged.
+
+With this patch series (hopefully) nearing its final form, I was wondering if
+this could be merged via the MFD tree, when all the necessary reviews and/or
+acks are present. Would that be OK for everyone?
+
+Changes since v4:
+  - List myself as maintainer for this chip
+  - Add uncached register reads to regmap; replaces virtual registers
+Link: https://lore.kernel.org/lkml/cover.1622713678.git.sander@svanheule.net/
+
+Changes since v3:
+  - Drop gpio-regmap direction-before-value quirk
+  - Use secondary virtual register range to enable proper read-modify-write
+    behaviour on GPIO output values
+  - Add pin debounce support
+  - Switch to generic pinmux functions
+
+Changes since v2:
+  - MDIO regmap support was merged, so patch is dropped here
+  - Implement feedback for DT bindings
+  - Use correct module names in Kconfigs
+  - Fix k*alloc return value checks
+  - Introduce GPIO regmap quirks to set output direction first
+  - pinctrl: Use static pin descriptions for pin controller
+  - pinctrl: Fix gpio consumer resource leak
+  - mfd: Replace CONFIG_PM-ifdef'ery
+  - leds: Rename interval to interval_ms
 
 Changes since v1:
- * Replaced is_tdx_guest() with prot_guest_has(PR_GUEST_TDX).
- * Replaced tdx_kvm_hypercall{1-4} with single generic 
-   function tdx_kvm_hypercall().
+  - Reintroduce MDIO regmap, with fixed Kconfig dependencies
+  - Add configurable dir/value order for gpio-regmap direction_out call
+  - Drop allocations for regmap fields that are used only on init
+  - Move some definitions to MFD header
+  - Add PM ops to replace driver remove for MFD
+  - Change pinctrl driver to (modified) gpio-regmap
+  - Change leds driver to use fwnode
 
- arch/x86/Kconfig                |  5 +++++
- arch/x86/include/asm/kvm_para.h | 21 +++++++++++++++++++++
- arch/x86/include/asm/tdx.h      | 19 +++++++++++++++++++
- arch/x86/kernel/tdcall.S        | 26 ++++++++++++++++++++++++++
- 4 files changed, 71 insertions(+)
+Changes since RFC:
+  - Dropped MDIO regmap interface. I was unable to resolve the Kconfig
+    dependency issue, so have reverted to using regmap_config.reg_read/write.
+  - Added pinctrl support
+  - Added LED support
+  - Changed root device to MFD, with pinctrl and leds child devices. Root
+    device is now an mdio_device driver.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index d506aae29dd9..fc51579e54ad 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -892,6 +892,11 @@ config INTEL_TDX_GUEST
- 	  run in a CPU mode that protects the confidentiality of TD memory
- 	  contents and the TD’s CPU state from other software, including VMM.
- 
-+# This option enables KVM specific hypercalls in TDX guest.
-+config INTEL_TDX_GUEST_KVM
-+	def_bool y
-+	depends on KVM_GUEST && INTEL_TDX_GUEST
-+
- endif #HYPERVISOR_GUEST
- 
- source "arch/x86/Kconfig.cpu"
-diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-index 69299878b200..00cf96de04a0 100644
---- a/arch/x86/include/asm/kvm_para.h
-+++ b/arch/x86/include/asm/kvm_para.h
-@@ -5,6 +5,7 @@
- #include <asm/processor.h>
- #include <asm/alternative.h>
- #include <linux/interrupt.h>
-+#include <linux/protected_guest.h>
- #include <uapi/asm/kvm_para.h>
- 
- #ifdef CONFIG_KVM_GUEST
-@@ -32,6 +33,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
- static inline long kvm_hypercall0(unsigned int nr)
- {
- 	long ret;
-+
-+	if (prot_guest_has(PR_GUEST_TDX))
-+		return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr)
-@@ -42,6 +47,10 @@ static inline long kvm_hypercall0(unsigned int nr)
- static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
- {
- 	long ret;
-+
-+	if (prot_guest_has(PR_GUEST_TDX))
-+		return tdx_kvm_hypercall(nr, p1, 0, 0, 0);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1)
-@@ -53,6 +62,10 @@ static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
- 				  unsigned long p2)
- {
- 	long ret;
-+
-+	if (prot_guest_has(PR_GUEST_TDX))
-+		return tdx_kvm_hypercall(nr, p1, p2, 0, 0);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2)
-@@ -64,6 +77,10 @@ static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
- 				  unsigned long p2, unsigned long p3)
- {
- 	long ret;
-+
-+	if (prot_guest_has(PR_GUEST_TDX))
-+		return tdx_kvm_hypercall(nr, p1, p2, p3, 0);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3)
-@@ -76,6 +93,10 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
- 				  unsigned long p4)
- {
- 	long ret;
-+
-+	if (prot_guest_has(PR_GUEST_TDX))
-+		return tdx_kvm_hypercall(nr, p1, p2, p3, p4);
-+
- 	asm volatile(KVM_HYPERCALL
- 		     : "=a"(ret)
- 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3), "S"(p4)
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 504291a57d48..7076f9c6dbd3 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -78,4 +78,23 @@ static inline bool tdx_protected_guest_has(unsigned long flag) { return false; }
- 
- #endif /* CONFIG_INTEL_TDX_GUEST */
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST_KVM
-+u64 __tdx_hypercall_vendor_kvm(u64 fn, u64 r12, u64 r13, u64 r14,
-+			       u64 r15, struct tdx_hypercall_output *out);
-+
-+static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
-+				      unsigned long p2, unsigned long p3,
-+				      unsigned long p4)
-+{
-+	return __tdx_hypercall_vendor_kvm(nr, p1, p2, p3, p4, NULL);
-+}
-+#else
-+static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
-+				     unsigned long p2, unsigned long p3,
-+				     unsigned long p4)
-+{
-+	return -ENODEV;
-+}
-+#endif /* CONFIG_INTEL_TDX_GUEST_KVM */
-+
- #endif /* _ASM_X86_TDX_H */
-diff --git a/arch/x86/kernel/tdcall.S b/arch/x86/kernel/tdcall.S
-index d95af4486155..289d7fab5b4a 100644
---- a/arch/x86/kernel/tdcall.S
-+++ b/arch/x86/kernel/tdcall.S
-@@ -3,6 +3,7 @@
- #include <asm/asm.h>
- #include <asm/frame.h>
- #include <asm/unwind_hints.h>
-+#include <asm/export.h>
- 
- #include <linux/linkage.h>
- #include <linux/bits.h>
-@@ -25,6 +26,8 @@
- 					  TDG_R12 | TDG_R13 | \
- 					  TDG_R14 | TDG_R15 )
- 
-+#define TDVMCALL_VENDOR_KVM		0x4d564b2e584454 /* "TDX.KVM" */
-+
- /*
-  * TDX guests use the TDCALL instruction to make requests to the
-  * TDX module and hypercalls to the VMM. It is supported in
-@@ -226,3 +229,26 @@ SYM_FUNC_START(__tdx_hypercall)
- 	FRAME_END
- 	retq
- SYM_FUNC_END(__tdx_hypercall)
-+
-+#ifdef CONFIG_INTEL_TDX_GUEST_KVM
-+
-+/*
-+ * Helper function for KVM vendor TDVMCALLs. This assembly wrapper
-+ * lets us reuse do_tdvmcall() for KVM-specific hypercalls (
-+ * TDVMCALL_VENDOR_KVM).
-+ */
-+SYM_FUNC_START(__tdx_hypercall_vendor_kvm)
-+	FRAME_BEGIN
-+	/*
-+	 * R10 is not part of the function call ABI, but it is a part
-+	 * of the TDVMCALL ABI. So set it before making call to the
-+	 * do_tdx_hypercall().
-+	 */
-+	movq $TDVMCALL_VENDOR_KVM, %r10
-+	call do_tdx_hypercall
-+	FRAME_END
-+	retq
-+SYM_FUNC_END(__tdx_hypercall_vendor_kvm)
-+
-+EXPORT_SYMBOL(__tdx_hypercall_vendor_kvm);
-+#endif /* CONFIG_INTEL_TDX_GUEST_KVM */
+Sander Vanheule (8):
+  regmap: Support atomic forced uncached reads
+  gpio: regmap: Add quirk for aliased data registers
+  dt-bindings: leds: Binding for RTL8231 scan matrix
+  dt-bindings: mfd: Binding for RTL8231
+  mfd: Add RTL8231 core device
+  pinctrl: Add RTL8231 pin control and GPIO support
+  leds: Add support for RTL8231 LED scan matrix
+  MAINTAINERS: Add RTL8231 MFD driver
+
+ .../bindings/leds/realtek,rtl8231-leds.yaml   | 166 +++++++
+ .../bindings/mfd/realtek,rtl8231.yaml         | 190 ++++++++
+ MAINTAINERS                                   |  10 +
+ drivers/base/regmap/regmap.c                  |  33 ++
+ drivers/gpio/gpio-regmap.c                    |   7 +-
+ drivers/leds/Kconfig                          |  10 +
+ drivers/leds/Makefile                         |   1 +
+ drivers/leds/leds-rtl8231.c                   | 291 ++++++++++++
+ drivers/mfd/Kconfig                           |   9 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/rtl8231.c                         | 186 ++++++++
+ drivers/pinctrl/Kconfig                       |  11 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-rtl8231.c             | 438 ++++++++++++++++++
+ include/linux/gpio/regmap.h                   |  13 +
+ include/linux/mfd/rtl8231.h                   |  71 +++
+ include/linux/regmap.h                        |   8 +
+ 17 files changed, 1445 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/realtek,rtl8231.yaml
+ create mode 100644 drivers/leds/leds-rtl8231.c
+ create mode 100644 drivers/mfd/rtl8231.c
+ create mode 100644 drivers/pinctrl/pinctrl-rtl8231.c
+ create mode 100644 include/linux/mfd/rtl8231.h
+
 -- 
-2.25.1
+2.31.1
 
