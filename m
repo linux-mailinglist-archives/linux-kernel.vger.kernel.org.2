@@ -2,61 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9973A4BB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 02:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B6C3A4BB5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 02:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhFLAYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 20:24:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229985AbhFLAYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 20:24:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0E1CF613CC;
-        Sat, 12 Jun 2021 00:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623457368;
-        bh=+DQL9x3ZjxnfugY3y91+3EoOWcDrpvkE5/sAkJ/QrNI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ON1fqgyXcm9+hqvmAf1cHX5Xafj+sbowjJN5RxaQt8knNy0weRDV4tHGyVxRRvvOY
-         D1WmcTw1HgKGG4+ygVYCjqRkeZmQ9I9RwZvqRzOZKWsQ//f47i1o/FipONMgbA4EHq
-         qiLad+FPkLBj5vA8ibDLuY2v6l1YYa/awK2dgcPRi1/4coMpA5tCg8XwKmYmz4w9wg
-         peXYHK5IOXP6GpC0J1Q/xTntyDIvycStyRBm2GbGmVKGVuzCECFsNfF6N6T5+jZmPl
-         j1QOSKeF9UTaSiwpPdsNpQKrQzlFX7rnML7rpLKTXEXsoBTq/Ozr6hIYvDTMif5/Z1
-         b86xOnrsYfFGQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 051CE60CE1;
-        Sat, 12 Jun 2021 00:22:48 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Fixes for 5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210611161339.25d815f7@gandalf.local.home>
-References: <20210611161339.25d815f7@gandalf.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210611161339.25d815f7@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.13-rc5-2
-X-PR-Tracked-Commit-Id: 3e08a9f9760f4a70d633c328a76408e62d6f80a3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ad347abe4a9876b1f65f408ab467137e88f77eb4
-Message-Id: <162345736801.23405.1427226429703634898.pr-tracker-bot@kernel.org>
-Date:   Sat, 12 Jun 2021 00:22:48 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
+        id S230490AbhFLAZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 20:25:30 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:53422 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhFLAZ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 20:25:29 -0400
+Received: from fsav313.sakura.ne.jp (fsav313.sakura.ne.jp [153.120.85.144])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 15C0N6Gl052432;
+        Sat, 12 Jun 2021 09:23:06 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav313.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp);
+ Sat, 12 Jun 2021 09:23:06 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 15C0N6Sg052420
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 12 Jun 2021 09:23:06 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC PATCH] mm/oom_kill: show oom eligibility when displaying the
+ current memory state of all tasks
+To:     Waiman Long <llong@redhat.com>, Aaron Tomlin <atomlin@redhat.com>,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        linux-kernel@vger.kernel.org
+References: <20210611171940.960887-1-atomlin@redhat.com>
+ <d233acb6-72ff-4914-88a3-75bf137e5286@redhat.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <eb77e210-1088-d140-043f-088141deb94d@i-love.sakura.ne.jp>
+Date:   Sat, 12 Jun 2021 09:23:03 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <d233acb6-72ff-4914-88a3-75bf137e5286@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 11 Jun 2021 16:13:39 -0400:
+On 2021/06/12 2:42, Waiman Long wrote:
+> A minor nit:
+> 
+> "oom eligible?" has 13 characters. The field width is 15. Maybe you should pad 2 more spaces to make the proper alignment.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.13-rc5-2
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ad347abe4a9876b1f65f408ab467137e88f77eb4
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Maybe single character (e.g. 'S' for OOM_SCORE_ADJ_MIN, 'R' for MMF_OOM_SKIP, 'V' for in_vfork(),
+none for eligible) is better because dump_task() might print many hundreds of lines?
