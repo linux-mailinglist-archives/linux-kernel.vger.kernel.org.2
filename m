@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBCB3A4BC3
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 02:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EEC3A4BC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 02:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFLAmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 20:42:33 -0400
-Received: from mga06.intel.com ([134.134.136.31]:11854 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhFLAma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 20:42:30 -0400
-IronPort-SDR: 820RkrKTtoszMjfF7zdC0LzJceEYdiFfM6Y8O5czkEphsv4DgMa6fhapT9GyvFB1oL2qGxLrmT
- P3VNveq8I/7w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="266783619"
-X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
-   d="scan'208";a="266783619"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 17:40:29 -0700
-IronPort-SDR: JIGLFgtCK9gmwD95pa2xd0cHK/07qv/ZQndsyPC7/8nEExKksl2ptKNqoOp89P9R9anlOaG8k/
- nFZN3RHhSslg==
-X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
-   d="scan'208";a="486783471"
-Received: from svkandu1-mobl1.amr.corp.intel.com (HELO [10.251.4.209]) ([10.251.4.209])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 17:40:28 -0700
-Subject: Re: [patch 00/41] x86/fpu: Spring cleaning and PKRU sanitizing
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-References: <20210611161523.508908024@linutronix.de>
- <871r98vsjy.ffs@nanos.tec.linutronix.de>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <00e786f8-033e-3d55-305c-385fa262fe5b@intel.com>
-Date:   Fri, 11 Jun 2021 17:40:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230312AbhFLApX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 20:45:23 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:56769 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229584AbhFLApW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 20:45:22 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4AED0580932;
+        Fri, 11 Jun 2021 20:43:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 11 Jun 2021 20:43:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        FxEV9iata6R86LklafTZvkJMZtuSkpOtZknlBZ5CHkc=; b=rrFAnW00dEQ00Mg6
+        AkIrxeBA63am+tsme2lHFhTchg7ZTuO0VBjVWuQ2yVoAFGvaBzUOwLsbCsi6kPtI
+        KySqME5ycW1V5nS4hznOZJTO3n1+UwpIWT/SzEEuW10qXt/C7OmXICBB1Dv239Wo
+        wuwolmaNbbbpnHLZggEOu/OdxnCZpCFWLLY4jhTtCMz99TfD7nxDjJhn1ehUf00d
+        npy5Dd3RTU55o9rsTsuaUakK//AgVhM9BFQCowfmNtVwqXzqaBy5VIp/LzYOvlPW
+        IMsce+ePeKEt7FiVpjxfNyxFQQvWmQQ40kRhPoyBk4Iyyzgd5hnzp3KsFmXwLTS4
+        FrlBrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=FxEV9iata6R86LklafTZvkJMZtuSkpOtZknlBZ5CH
+        kc=; b=USsl5TdGjX14fRPAXNWPO+81QkDcJbdV65io9DbEBomP2PwVC5Q25ke6I
+        CwAH1Cd7nvP3Rf4MUZbd0pdLv8Z8OZRUWgXI+6YVIuo70bSG7o0zUD1EfVdcIqcS
+        kmNVL5ja3TCoYz1Rt4iLrqYvn5b5TU14wGIBFM0NmNhPQ671Z5Znx6A2ifxID+U+
+        l0+aD4xWYqT6Z+vfQj+4IdGEi/8EEaTBiH740zcp3sbGAriTcvEVJVohxdQFQGU3
+        bONj3E4TEp2BKLyj1YeicFNhDSwHCT3NDSjfR9/jHVtJuzUj51cDNa3T+XN40Hlo
+        gQSSzt8zjsmxY+IHfxOw50LmJ06yg==
+X-ME-Sender: <xms:KgPEYPfib8foW0jS6tXGBZK5NDwm05xsEf2NUSJAwQy7DpGXnIHVhg>
+    <xme:KgPEYFOpNyYi428fwNq5zHiPeB1sJnj_UcPNAyREZ4nnCtmmVWsQNQuPxcAxDVQ9L
+    0MAKpVexCy9>
+X-ME-Received: <xmr:KgPEYIgCuFGa6gMwWdENOayoi990kQdYBieY2fxH8YxShkJfhXoAGA6Ahw8HWXBHmVh2eexd-Aq1w8lM6dBQuQuLCSdp3w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeduledgvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:KgPEYA-w4qfdMghNDtfVpaVIfXK3Fqqc4MrHyPre-r_dY3g2UTslBA>
+    <xmx:KgPEYLs0yrGDeciehE-6XVInogNP4LDmUQMgKHfIbmJ6KDp6HJzUIA>
+    <xmx:KgPEYPERw6XH4X6n7mt4cWB8a8BBHJ6e5rNNYTwzLhe5kPXRRdFYEw>
+    <xmx:KwPEYPGCdVxZm6fTnr0KX65ERJCehwJfm_2bYPj7hBQKxlIi2eLHJA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 11 Jun 2021 20:43:17 -0400 (EDT)
+Message-ID: <2ee74cbed729d66a38a5c7de9c4608d02fb89f26.camel@themaw.net>
+Subject: Re: [PATCH v6 3/7] kernfs: use VFS negative dentry caching
+From:   Ian Kent <raven@themaw.net>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sat, 12 Jun 2021 08:43:13 +0800
+In-Reply-To: <YMP6topegaTXGNgC@zeniv-ca.linux.org.uk>
+References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
+         <162322862726.361452.10114120072438540655.stgit@web.messagingengine.com>
+         <YMP6topegaTXGNgC@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <871r98vsjy.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 5:24 PM, Thomas Gleixner wrote:
-> The Intel SDM states in volume 1, chapter 13.6
+On Sat, 2021-06-12 at 00:07 +0000, Al Viro wrote:
+> On Wed, Jun 09, 2021 at 04:50:27PM +0800, Ian Kent wrote:
 > 
->  PROCESSOR TRACKING OF XSAVE-MANAGED STATE
+> > +       if (d_really_is_negative(dentry)) {
+> > +               struct dentry *d_parent = dget_parent(dentry);
+> > +               struct kernfs_node *parent;
 > 
->   * PKRU state. PKRU state is in its initial configuration if the value
->     of the PKRU is 0.>
-...
-> IOW there is no consistency vs. XINUSE and initial state guaranteed at
-> all. So why should the kernel worry about this?
+> What the hell is dget_parent() for?  You don't do anything blocking
+> here, so why not simply grab dentry->d_lock - that'll stabilize
+> the value of ->d_parent just fine.  Just don't forget to drop the
+> lock before returning and that's it...
 
-This is my feeling on it as well.  I may be a bit corrupted by having
-talked to the hardware folks who have built the init state "trackers",
-but I've always had the opinion that XINUSE is very weakly defined.
+Thanks Al, I'll change it.
 
-There are some other bits of the SDM that you noted that clearly call
-out that XINUSE is not strictly tied to the *value* of the component.
+> 
+> > +               /* If the kernfs parent node has changed discard
+> > and
+> > +                * proceed to ->lookup.
+> > +                */
+> > +               parent = kernfs_dentry_node(d_parent);
+> > +               if (parent) {
+> > +                       if (kernfs_dir_changed(parent, dentry)) {
+> > +                               dput(d_parent);
+> > +                               return 0;
+> > +                       }
+> > +               }
+> > +               dput(d_parent);
+> > +
+> > +               /* The kernfs node doesn't exist, leave the dentry
+> > +                * negative and return success.
+> > +                */
+> > +               return 1;
+> > +       }
+
+
