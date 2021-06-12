@@ -2,99 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3816F3A4EE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 14:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB283A4EEB
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 14:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhFLMl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 08:41:57 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:42694 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhFLMl4 (ORCPT
+        id S231260AbhFLMuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 08:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLMuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 08:41:56 -0400
-Received: by mail-wm1-f43.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso10129457wms.1;
-        Sat, 12 Jun 2021 05:39:56 -0700 (PDT)
+        Sat, 12 Jun 2021 08:50:18 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A9CC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 05:48:19 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so9681946wmq.1
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 05:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wATO3SBIvcHH5zKCoztgf7hTtPEc8pIrXiwcM0mnpqs=;
-        b=OK1SUX1TOjQQpyQgo4pmvkfbxVR2Zd5nIEsOWPIseXa0JLb3MRjFQBWV4iLCK1yDWP
-         VFoXklRs8RpO/GRHvabmSa61TawAtml+5dfE9fb7toQjAjeJnG+acNrdDoXCgTM3UgQM
-         bPBjCr82ej8L/tlZ8GX14GMgV9MNavaF4VKhYjHsvRn55TervHd4GmclDHJyC3lHOlaG
-         PxLvmiAX+NGHmQV/W1uxuLMTS/bE7qcNs3TWOBlL6EgHa5ylUe499JOVarBLKSJ2et5U
-         heeX3xulVp4yXrKgO5K93DWGXQM99Pr6IJbQZypWvuIIV/E6D39Q/i8Dxi9ub67ZpXfN
-         KAaA==
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=s8a7mfWFvs6eC15ym/j9QuskAkF0kKv6MAdi4OI7cqY=;
+        b=ZItJ93J1TRTOKVaIoVXtfxa3v/NAZIFDXHy377cPGr73f9LxpXFD4qTSaIpZjzits6
+         /G9Dk/pnP6bv3/aFTtHbV+fhYrNwmObHMlHJzjH3XtpnqMpm0jHorsN1RW3NbVrRSgjS
+         3Abcb3xiG6ed+RYOk1a1YG3PfGRiv/W6/53dSefZpCqRhWQngo6HJCEuQVuEBsWT6vTY
+         xKiqdf8StcZLgV0Il90U3+0hM031wV/U9GrS7lU/D4kbvLiKuP6x5WtMSN6C6BWPpTiV
+         agbIUIiYhMNR+7B3IotUmIeGNC0TJZEKSI3CsGZlOjChHvyMU3/EvgVqvqRopRX58D6L
+         aXAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wATO3SBIvcHH5zKCoztgf7hTtPEc8pIrXiwcM0mnpqs=;
-        b=lHiUU+7oV1r0dH+IkGbmIXrKmYgPaB1cydo+z/3fCpHk2V5h5hJkMDIGHDVLDDxJ3Q
-         DFAoop+1RphA1CUKzQ5Ewg5s8HwGaD2X9aNp883ImbtQFwB80YcsGG6RdpcsUMiCA8tm
-         wI4nFtmft1be6SrOKBAkQKrFbLs9M/AjekdGaNTxGTybTksH/PgAeTxglk9h7sXSCNVp
-         BGCxEkWgF8pd4skcLZZg9wOlOcaFfvQ2HbHXKSXBYnf3gIvu9vaB6TmBb1TjcUoB3T45
-         sj1+dlzY3ctlJKBJLRrmVT8n6STY058HSlmtFogqE5dHPc6vzpAjBGofZYkr4wk18r6C
-         UBCg==
-X-Gm-Message-State: AOAM531jVl8njZIfL0kRY3ONN0uyQRxX0u1/4HMKUIj4t9QWQD92rfcS
-        xlD+GDuBwnUJU7dWLJQ9DdVp8ryO2/lUqJyH3Cs=
-X-Google-Smtp-Source: ABdhPJw1k3oLECkOwrb2mi+jgLs5kQCXkmSXHEQOjtL/SYfz6lF2Vy2r9IM1+fho6fILVSszLIt6t/aa6gEOqEsiJKk=
-X-Received: by 2002:a05:600c:4ec8:: with SMTP id g8mr24368436wmq.62.1623501535722;
- Sat, 12 Jun 2021 05:38:55 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=s8a7mfWFvs6eC15ym/j9QuskAkF0kKv6MAdi4OI7cqY=;
+        b=ij9P/2Xuogq/XUwgVqJffE5uNvSZf91iLPDgqTi08C33m9C1BfuI++O3DTRaQKYabw
+         wZrpCt8Cd+SmzNGp9j2haque9XvnAzqQPR5UZd+/la6qNujbKQ9eTw3AAIogrZfRsZJi
+         2uUBJoXWaKtTILyvFaU+zIYOU2VUcjZmO/QpVwZEN2pW+w38c72cozzl+zRILx3WyuIU
+         f7WauhaPEUo2C5n059f1TZpqH56wtYC2iiVdCoCy6mQ6ZVhfBIdXM2VhlHhOyIm8ke91
+         IfNTB4eUYGL+yFwRhtQwQNLXqoEbc1T+xZIDZXGE/S8THFbMQnnp4IbgH8Rnb9/HzH+d
+         cU9g==
+X-Gm-Message-State: AOAM53302ncmIeODahczEZ2VOlT4evBSn+M7swUp678K3yx/wtqhwEh+
+        +M6Kj+PQkO7/LJrgsOEA2Is=
+X-Google-Smtp-Source: ABdhPJy8cIIwzoIqBFYhGtW1eo80sNvdBFWPcQjwF2A4u2g6O70a7rznPtCKjqeUAOyBAn9GrD6FdA==
+X-Received: by 2002:a1c:4b12:: with SMTP id y18mr8213536wma.70.1623502098004;
+        Sat, 12 Jun 2021 05:48:18 -0700 (PDT)
+Received: from gmail.com (77-234-80-172.pool.digikabel.hu. [77.234.80.172])
+        by smtp.gmail.com with ESMTPSA id k82sm16126524wmf.11.2021.06.12.05.48.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Jun 2021 05:48:17 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 12 Jun 2021 14:48:15 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] perf fixes
+Message-ID: <YMStDxqWUUZTxiz4@gmail.com>
 MIME-Version: 1.0
-References: <20210611015812.1626999-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210611015812.1626999-1-mudongliangabcd@gmail.com>
-From:   Alexander Aring <alex.aring@gmail.com>
-Date:   Sat, 12 Jun 2021 08:38:44 -0400
-Message-ID: <CAB_54W4akfaXse1KRO0oomh5i66wO5rUVZ28h2_PM9CSqNsHtA@mail.gmail.com>
-Subject: Re: [PATCH] ieee802154: hwsim: Fix possible memory leak in hwsim_subscribe_all_others
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Linus,
 
-On Thu, 10 Jun 2021 at 21:58, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> In hwsim_subscribe_all_others, the error handling code performs
-> incorrectly if the second hwsim_alloc_edge fails. When this issue occurs,
-> it goes to sub_fail, without cleaning the edges allocated before.
->
-> Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  drivers/net/ieee802154/mac802154_hwsim.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
-> index da9135231c07..366eaae3550a 100644
-> --- a/drivers/net/ieee802154/mac802154_hwsim.c
-> +++ b/drivers/net/ieee802154/mac802154_hwsim.c
-> @@ -715,6 +715,8 @@ static int hwsim_subscribe_all_others(struct hwsim_phy *phy)
->
->         return 0;
->
-> +sub_fail:
-> +       hwsim_edge_unsubscribe_me(phy);
->  me_fail:
->         rcu_read_lock();
->         list_for_each_entry_rcu(e, &phy->edges, list) {
-> @@ -722,8 +724,6 @@ static int hwsim_subscribe_all_others(struct hwsim_phy *phy)
->                 hwsim_free_edge(e);
->         }
->         rcu_read_unlock();
-> -sub_fail:
+Please pull the latest perf/urgent git tree from:
 
-this goto needs to be removed and all goto cases need to end in
-me_fail (better named to be fail only).
-In an error case both loops need to be iterated again to cleanup.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2021-06-12
 
-- Alex
+   # HEAD: a8383dfb2138742a1bb77b481ada047aededa2ba x86/nmi_watchdog: Fix old-style NMI watchdog regression on old Intel CPUs
+
+Misc fixes:
+
+ - Fix the NMI watchdog on ancient Intel CPUs
+
+ - Remove a misguided, NMI-unsafe KASAN callback
+   from the NMI-safe irq_work path used by perf.
+
+ - Fix uncore events on Ice Lake servers.
+
+ - Someone booted maxcpus=1 on an SNB-EP, and the
+   uncore driver emitted warnings and was probably
+   buggy. Fix it.
+
+ - KCSAN found a genuine data race in the core perf
+   code. Somewhat ironically the bug was introduced
+   through a recent race fix. :-/ In our defense, the
+   new race window was much more narrow. Fix it.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+CodyYao-oc (1):
+      x86/nmi_watchdog: Fix old-style NMI watchdog regression on old Intel CPUs
+
+Kan Liang (2):
+      perf/x86/intel/uncore: Fix a kernel WARNING triggered by maxcpus=1
+      perf/x86/intel/uncore: Fix M2M event umask for Ice Lake server
+
+Marco Elver (1):
+      perf: Fix data race between pin_count increment/decrement
+
+Peter Zijlstra (1):
+      irq_work: Make irq_work_queue() NMI-safe again
+
+
+ arch/x86/events/intel/uncore_snbep.c   | 9 ++++++---
+ arch/x86/kernel/cpu/perfctr-watchdog.c | 4 ++--
+ kernel/events/core.c                   | 2 ++
+ kernel/irq_work.c                      | 3 ---
+ 4 files changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 63f097289a84..3a75a2c601c2 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -1406,6 +1406,8 @@ static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool
+ 						die_id = i;
+ 					else
+ 						die_id = topology_phys_to_logical_pkg(i);
++					if (die_id < 0)
++						die_id = -ENODEV;
+ 					map->pbus_to_dieid[bus] = die_id;
+ 					break;
+ 				}
+@@ -1452,14 +1454,14 @@ static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool
+ 			i = -1;
+ 			if (reverse) {
+ 				for (bus = 255; bus >= 0; bus--) {
+-					if (map->pbus_to_dieid[bus] >= 0)
++					if (map->pbus_to_dieid[bus] != -1)
+ 						i = map->pbus_to_dieid[bus];
+ 					else
+ 						map->pbus_to_dieid[bus] = i;
+ 				}
+ 			} else {
+ 				for (bus = 0; bus <= 255; bus++) {
+-					if (map->pbus_to_dieid[bus] >= 0)
++					if (map->pbus_to_dieid[bus] != -1)
+ 						i = map->pbus_to_dieid[bus];
+ 					else
+ 						map->pbus_to_dieid[bus] = i;
+@@ -5097,9 +5099,10 @@ static struct intel_uncore_type icx_uncore_m2m = {
+ 	.perf_ctr	= SNR_M2M_PCI_PMON_CTR0,
+ 	.event_ctl	= SNR_M2M_PCI_PMON_CTL0,
+ 	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
++	.event_mask_ext	= SNR_M2M_PCI_PMON_UMASK_EXT,
+ 	.box_ctl	= SNR_M2M_PCI_PMON_BOX_CTL,
+ 	.ops		= &snr_m2m_uncore_pci_ops,
+-	.format_group	= &skx_uncore_format_group,
++	.format_group	= &snr_m2m_uncore_format_group,
+ };
+ 
+ static struct attribute *icx_upi_uncore_formats_attr[] = {
+diff --git a/arch/x86/kernel/cpu/perfctr-watchdog.c b/arch/x86/kernel/cpu/perfctr-watchdog.c
+index 3ef5868ac588..7aecb2fc3186 100644
+--- a/arch/x86/kernel/cpu/perfctr-watchdog.c
++++ b/arch/x86/kernel/cpu/perfctr-watchdog.c
+@@ -63,7 +63,7 @@ static inline unsigned int nmi_perfctr_msr_to_bit(unsigned int msr)
+ 		case 15:
+ 			return msr - MSR_P4_BPU_PERFCTR0;
+ 		}
+-		fallthrough;
++		break;
+ 	case X86_VENDOR_ZHAOXIN:
+ 	case X86_VENDOR_CENTAUR:
+ 		return msr - MSR_ARCH_PERFMON_PERFCTR0;
+@@ -96,7 +96,7 @@ static inline unsigned int nmi_evntsel_msr_to_bit(unsigned int msr)
+ 		case 15:
+ 			return msr - MSR_P4_BSU_ESCR0;
+ 		}
+-		fallthrough;
++		break;
+ 	case X86_VENDOR_ZHAOXIN:
+ 	case X86_VENDOR_CENTAUR:
+ 		return msr - MSR_ARCH_PERFMON_EVENTSEL0;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 6fee4a7e88d7..fe88d6eea3c2 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4609,7 +4609,9 @@ find_get_context(struct pmu *pmu, struct task_struct *task,
+ 		cpuctx = per_cpu_ptr(pmu->pmu_cpu_context, cpu);
+ 		ctx = &cpuctx->ctx;
+ 		get_ctx(ctx);
++		raw_spin_lock_irqsave(&ctx->lock, flags);
+ 		++ctx->pin_count;
++		raw_spin_unlock_irqrestore(&ctx->lock, flags);
+ 
+ 		return ctx;
+ 	}
+diff --git a/kernel/irq_work.c b/kernel/irq_work.c
+index 23a7a0ba1388..db8c248ebc8c 100644
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -70,9 +70,6 @@ bool irq_work_queue(struct irq_work *work)
+ 	if (!irq_work_claim(work))
+ 		return false;
+ 
+-	/*record irq_work call stack in order to print it in KASAN reports*/
+-	kasan_record_aux_stack(work);
+-
+ 	/* Queue the entry and raise the IPI if needed. */
+ 	preempt_disable();
+ 	__irq_work_queue_local(work);
