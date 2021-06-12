@@ -2,98 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164853A4D25
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 08:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CB03A4D27
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 08:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhFLGou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 02:44:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44488 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhFLGot (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 02:44:49 -0400
-Date:   Sat, 12 Jun 2021 06:42:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623480168;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=M5FTDgxLgRN4/SO+xik4v7C/W7vGt/0TqRg6a0Ipeuk=;
-        b=HNLt+kLZZuMH1FAx2qLPrLZhl1M3HWG4ZAnQeevrpICyFBDpvUjWhA61CBqeDpwW2Y2PKe
-        C2O8tpQeTqGtHojoPLd5chUaVgu3LC8jTWIicDsbi5TTVj6tnqERH0dOqN8hmE7cA/abkf
-        kLt3db7qdIJaZOgvwgXp/jyWY/6OjGGgdJZMs94NhbqBBOCaS688Jm0ZyKWJcVf2+auCV4
-        ObJEu5cTHxqEXQJ2EPQSnslrp/tnamj1Fb2QJTv231/7lUR+9Qzj+fhyJuSTYuhHvewjxl
-        wfZjAWdeCEavJ3kSjTumlHpGv7DIcLchnCbzxx11n+zsn7nEwtNbvBmqwPo85Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623480168;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=M5FTDgxLgRN4/SO+xik4v7C/W7vGt/0TqRg6a0Ipeuk=;
-        b=StlCiDWqACoMuvGrzzJ8F1uxFslAekicNFQiRiYcV61ZEnTWImalqcIhqbYof3Pl9O0KWN
-        L403b8k6goOHDJDw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/urgent] objtool: Only rewrite unconditional retpoline
- thunk calls
-Cc:     Lukasz Majczak <lma@semihalf.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S230515AbhFLGsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 02:48:36 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59807 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230361AbhFLGsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 02:48:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623480396; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7NYb7B4QXKDxF8cAiQnOBag/hkhG3bC2+FAfT4OZo9k=;
+ b=s3Vt/HLaDXULXdVVaQDCAiGTEugloq6AqWnG6GyoZbyGD7EJCcLxlZNeRk74GsgVb2c55rOg
+ mwNTlZZQIJo98YMZH52XFIhHEEl5+tAWMHXBpIW0q7m8csonx69L3Upl4PUSoD1ZsI3vZ9hq
+ eLpVMO+eY9T1HRd2yMAeGRhaZJE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60c4583ee27c0cc77fb75a79 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 06:46:21
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 34C26C4360C; Sat, 12 Jun 2021 06:46:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A38CC433D3;
+        Sat, 12 Jun 2021 06:46:20 +0000 (UTC)
 MIME-Version: 1.0
-Message-ID: <162348016780.19906.11444381943657157954.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Sat, 12 Jun 2021 14:46:20 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/9] scsi: ufs: Simplify error handling preparation
+In-Reply-To: <4f6ea52f-308e-8252-5a19-3911eb9b99b1@acm.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-6-git-send-email-cang@codeaurora.org>
+ <6abb81f6-4dd2-082e-9440-4b549f105788@intel.com>
+ <f0ae504bccc428fa674a183608174bdd@codeaurora.org>
+ <4f6ea52f-308e-8252-5a19-3911eb9b99b1@acm.org>
+Message-ID: <645c0e3c83c8917a8fd5c0493c5815a0@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/urgent branch of tip:
+On 2021-06-12 04:58, Bart Van Assche wrote:
+> On 6/10/21 8:01 PM, Can Guo wrote:
+>> Previously, without commit cb7e6f05fce67c965194ac04467e1ba7bc70b069,
+>> ufshcd_resume() may turn off pwr and clk due to UFS error, e.g., link
+>> transition failure and SSU error/abort (and these UFS error would
+>> invoke error handling).  When error handling kicks start, it should
+>> re-enable the pwr and clk before proceeding. Now, commit
+>> cb7e6f05fce67c965194ac04467e1ba7bc70b069 makes ufshcd_resume()
+>> purely control pwr and clk, meaning if ufshcd_resume() fails, there
+>> is nothing we can do about it - pwr or clk enabling must have failed,
+>> and it is not because of UFS error. This is why I am removing the
+>> re-enabling pwr/clk in error handling prepare.
+> 
+> Why are link transition failures handled in the error handler instead 
+> of
+> in the context where these errors are detected (ufshcd_resume())? Is it
+> even possible to recover from a link transition failure or does this
+> perhaps indicate a broken UFS controller?
 
-Commit-ID:     2d49b721dc18c113d5221f4cf5a6104eb66cb7f2
-Gitweb:        https://git.kernel.org/tip/2d49b721dc18c113d5221f4cf5a6104eb66cb7f2
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 10 Jun 2021 09:04:29 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 11 Jun 2021 08:53:06 +02:00
+Basically, almost all UFS failures are caused by errors in underlaying 
+layers,
+i.e., UIC errors, including link transition failures. And according to 
+UFSHCI
+spec, SW should do a full reset to recover it, just like handle any 
+other
+fatal UIC errors. All UIC errors are detected by HW and reported by IRQ 
+handler.
 
-objtool: Only rewrite unconditional retpoline thunk calls
+UFSHCI Spec Ver. 31
+8.2.7 Hibernate Enter/Exit Error Handling
+Hibernate Enter/Exit Error occurs when the UniPro link is broken. When 
+this condition occurs,
+host software should reset the host controller by setting register HCE 
+to ‘0’, re-initialize the host
+controller by setting register HCE to ‘1', and then start link startup 
+sequence as shown in Figure 16.
 
-It turns out that the compilers generate conditional branches to the
-retpoline thunks like:
+> 
+>>> but what I really wonder is why we don't just do recovery directly
+>>> in __ufshcd_wl_suspend() and  __ufshcd_wl_resume() and strip all
+>>> the PM complexity out of ufshcd_err_handling()?
+> 
+> +1
 
-  5d5:   0f 85 00 00 00 00       jne    5db <cpuidle_reflect+0x22>
-	5d7: R_X86_64_PLT32     __x86_indirect_thunk_r11-0x4
+I've explained why I chose not to do this in my last reply to Adrian.
+Please kindly check it.
 
-while the rewrite can only handle JMP/CALL to the thunks. The result
-is the alternative wrecking the code. Make sure to skip writing the
-alternatives for conditional branches.
+> 
+>> For system suspend/resume, since error handling has the same nature
+>> like user access, so we are using host_sem to avoid concurrency of
+>> error handling and system suspend/resume.
+> 
+> Why is host_sem used for that purpose instead of lock_system_sleep() 
+> and
+> unlock_system_sleep()?
+> 
 
-Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
-Reported-by: Lukasz Majczak <lma@semihalf.com>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
----
- tools/objtool/arch/x86/decode.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I was aware of it, but the situation is that host_sem is also used to
+avoid concurrency among user access, error handling and shutdown, so
+I think just use host_sem anyways to simply the lockings, otherwise
+user access and error handling would have to take both 
+system_transition_mutex
+and host_sem
 
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index 24295d3..523aa41 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -747,6 +747,10 @@ int arch_rewrite_retpolines(struct objtool_file *file)
- 
- 	list_for_each_entry(insn, &file->retpoline_call_list, call_node) {
- 
-+		if (insn->type != INSN_JUMP_DYNAMIC &&
-+		    insn->type != INSN_CALL_DYNAMIC)
-+			continue;
-+
- 		if (!strcmp(insn->sec->name, ".text.__x86.indirect_thunk"))
- 			continue;
- 
+Thanks,
+
+Can Guo.
+
+> Thanks,
+> 
+> Bart.
