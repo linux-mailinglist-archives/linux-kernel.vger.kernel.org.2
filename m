@@ -2,178 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438413A4FE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 19:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B689E3A4FEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 19:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhFLR20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 13:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhFLR2Z (ORCPT
+        id S230117AbhFLRkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 13:40:36 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:43971 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhFLRkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 13:28:25 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE5BC0617AF
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 10:26:11 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id k25so9359670eja.9
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 10:26:11 -0700 (PDT)
+        Sat, 12 Jun 2021 13:40:35 -0400
+Received: by mail-wr1-f46.google.com with SMTP id r9so9470622wrz.10
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 10:38:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K87q3ygNLZInfR0ONZVqvHllcQ29xNPoiT8D9b1JLuw=;
-        b=ZOkHFj6hSeWLUzU5sviAC8WsxV93dSuuwZ93byQQ+gjSihsf73nYF355no0qktkSba
-         NoyiypLwIjK48xpyeDXoZn3i3Scdlr3KC+NB+jfAm/F021o+wt/xGmLWO82eqGCyBOSf
-         LVIwxd8piswNkxPOnbivae67ddppYOLaVXMBYY5sR92J5bMSqqpHLZyD3QoOIH2yKD10
-         mMqBlzigrfqANNEEoyCkfjui49nI48BnVqcEhk44QYDLnhPmLTmsnkUV25aDxOzSAzGJ
-         ZSzQ9Sm8hk6NtEqRAgFWIGOlNvSzgMnln5ALbLw0EPaHHKGikF1PIi3bMqyQtx8vBxM2
-         ohmg==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vW8tFxi+eZ4ew0CNxb6xm4hWC8hncULQUNWJqEVWN5k=;
+        b=PKrZS0K+sJJRFXn1PyzgDQd04q8zWTUvBQ0PX2HHwZgAxzJf6evpMlzYjPqVJI13vF
+         liSPJ1uUAuc7U02J3nul8vZM/6CuzrTQAIs014yvgWf6H9T92FSFxj3jcubqroN6VGeJ
+         +FWD6Od8+R0oRfyMld/tPJvuaOQV3QnbGRgGotq6k0w2P/Cwy2VwlADPMnlJLrEBR2RS
+         BdvyeT2pt0X8x+noLzMLPIddrK7u+gj2vW8aELkhS17npUDIIqiSVR7NryNF/Ksd1IRp
+         e6i16Q73sQv3FCuIx6yiu+AxIiNNyF+eHE7aDgy9/OCVK8DB7Kpinn4LJ74HHuo4mkgT
+         +nLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K87q3ygNLZInfR0ONZVqvHllcQ29xNPoiT8D9b1JLuw=;
-        b=nYWz6p7pyVZE2Pp3JZ8CPRIH4tIRgVZmiGetOhjAmvxuD1FYlbo5SgePvMOLANB9bA
-         N4yd72ERSwe+bBewoiW6YCElyVxs8a03njcY7rQvKuVKJpYoJAVPA6OCZtC9eZr7cA7b
-         x7j9YHbR6dggaFpEnJW5AUTeKXEug7PbP2Stf3/GnbVjj9MA09QLc/PaZpLX/dbX/Rok
-         cLTkshjHOa5nx3F6mPBj19MwGWOx81exBXP6+0ne/X1BmubeXp2kEHt5TY27iEcyQoee
-         FYMa2wZ4L8OYOtsgOlqIKRjUKoSmj5woStsjj8gkN74dySQiwmUoWCc7bK7QWX+cgZRu
-         Lt8Q==
-X-Gm-Message-State: AOAM53095pVgmd521LHuiB3pQJrdTZVNDI0MCGNQs5oyCG7f89C3kT6c
-        hF+pHEdZHEauZRHA19ULenK/X8q2SwgkWIcQSDe/
-X-Google-Smtp-Source: ABdhPJzcY3PJ0i0kRZsXmsHSJkM2+xDm70FOyUiKPcUcD26i/kuZ5RA6kAtb5kTg/ogkCIII1l69j+DJn/YKYIB/yzQ=
-X-Received: by 2002:a17:906:7188:: with SMTP id h8mr8574666ejk.529.1623518769255;
- Sat, 12 Jun 2021 10:26:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vW8tFxi+eZ4ew0CNxb6xm4hWC8hncULQUNWJqEVWN5k=;
+        b=pAfG3mXxal0IDKy+gPReq1uzEPm3im8vS2+9etaJZaIhplE1dZwV+WG+liURS7Vvp7
+         z3XKXXQIccvv89Aa3dI6EXHoTlMUkw+1O1i+zJ78eBLg2pOBpcWHs02ZzNxRmD4F9yJY
+         1OfhueaLaH+i69vzikdMJm+g7AW+9se5nlhndI/5BJg9kdNdMmnoHfLCJ33Twdbb7yO/
+         nzMV4r5rZO3PCpUdsPuhkol14EmrQiw2ptk+TXwgdVEI7lqxHRfU0RpJw5EbpjEmO4Kd
+         oRw7rrdnzrEQg6qlaImoZQtTu2WWlnvTNSzNZ4O2ZuShME370J/i/4MM3Ua4J10nTTGr
+         56tA==
+X-Gm-Message-State: AOAM532tDihaBSHntIbXT+fP4npSGAElIpwSHQQQpOUtPzN0ji+HKlCp
+        qndKy1O5/2tqVDLVIyr/DsNYIQ==
+X-Google-Smtp-Source: ABdhPJzlBy5uJP96SgskJ/VIN/jo1WbK1RqcJFWUjDnz/7kmT8zCW9VN4JVjOrSFP8SehtgLXmPz4A==
+X-Received: by 2002:a05:6000:1203:: with SMTP id e3mr9830932wrx.107.1623519454717;
+        Sat, 12 Jun 2021 10:37:34 -0700 (PDT)
+Received: from KernelVM (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id 32sm12432991wrs.5.2021.06.12.10.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Jun 2021 10:37:34 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 18:37:32 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        straube.linux@gmail.com, kaixuxia@tencent.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        liushixin2@huawei.com, unixbhaskar@gmail.com,
+        gustavoars@kernel.org, martin@kaiser.cx, bkkarthik@pesu.pes.edu
+Subject: Re: [PATCH 5/6] staging: rtl8188eu: remove
+ DebugComponents/DebugLevel from odm_dm_struct
+Message-ID: <YMTw3OQbxRdUccK6@KernelVM>
+References: <20210611002504.166405-1-phil@philpotter.co.uk>
+ <20210611002504.166405-2-phil@philpotter.co.uk>
+ <20210611002504.166405-3-phil@philpotter.co.uk>
+ <20210611002504.166405-4-phil@philpotter.co.uk>
+ <20210611002504.166405-5-phil@philpotter.co.uk>
+ <20210611002504.166405-6-phil@philpotter.co.uk>
+ <20210611090819.GD10983@kadam>
 MIME-Version: 1.0
-References: <20210111081821.3041587-1-morbo@google.com> <20210407211704.367039-1-morbo@google.com>
- <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net>
-In-Reply-To: <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net>
-From:   Bill Wendling <morbo@google.com>
-Date:   Sat, 12 Jun 2021 10:25:57 -0700
-Message-ID: <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611090819.GD10983@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 9:59 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Apr 07, 2021 at 02:17:04PM -0700, Bill Wendling wrote:
-> > From: Sami Tolvanen <samitolvanen@google.com>
-> >
-> > Enable the use of clang's Profile-Guided Optimization[1]. To generate a
-> > profile, the kernel is instrumented with PGO counters, a representative
-> > workload is run, and the raw profile data is collected from
-> > /sys/kernel/debug/pgo/profraw.
-> >
-> > The raw profile data must be processed by clang's "llvm-profdata" tool
-> > before it can be used during recompilation:
-> >
-> >   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
-> >   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> >
-> > Multiple raw profiles may be merged during this step.
-> >
-> > The data can now be used by the compiler:
-> >
-> >   $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
-> >
-> > This initial submission is restricted to x86, as that's the platform we
-> > know works. This restriction can be lifted once other platforms have
-> > been verified to work with PGO.
->
-> *sigh*, and not a single x86 person on Cc, how nice :-/
->
-This tool is generic and, despite the fact that it's first enabled for
-x86, it contains no x86-specific code. The reason we're restricting it
-to x86 is because it's the platform we tested on.
+On Fri, Jun 11, 2021 at 12:08:19PM +0300, Dan Carpenter wrote:
+> On Fri, Jun 11, 2021 at 01:25:03AM +0100, Phillip Potter wrote:
+> > diff --git a/drivers/staging/rtl8188eu/hal/usb_halinit.c b/drivers/staging/rtl8188eu/hal/usb_halinit.c
+> > index 80cdcf6f7879..3e7f184ed39a 100644
+> > --- a/drivers/staging/rtl8188eu/hal/usb_halinit.c
+> > +++ b/drivers/staging/rtl8188eu/hal/usb_halinit.c
+> > @@ -1851,11 +1851,6 @@ u8 rtw_hal_get_def_var(struct adapter *Adapter, enum hal_def_variable eVariable,
+> >  		}
+> >  		break;
+> >  	case HW_DEF_ODM_DBG_FLAG:
+> > -		{
+> > -			struct odm_dm_struct *dm_ocm = &haldata->odmpriv;
+> > -
+> > -			pr_info("dm_ocm->DebugComponents = 0x%llx\n", dm_ocm->DebugComponents);
+> > -		}
+> >  		break;
+> 
+> We will want to delete everything to do with ODM_DBG_FLAG but that can
+> be done in later patches.
+> 
+> regards,
+> dan carpenter
+> 
+Dear Dan,
 
-> > Note that this method of profiling the kernel is clang-native, unlike
-> > the clang support in kernel/gcov.
-> >
-> > [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
->
-> Also, and I don't see this answered *anywhere*, why are you not using
-> perf for this? Your link even mentions Sampling Profilers (and I happen
-> to know there's been significant effort to make perf output work as
-> input for the PGO passes of the various compilers).
->
-Instruction-based (non-sampling) profiling gives us a better
-context-sensitive profile, making PGO more impactful. It's also useful
-for coverage whereas sampling profiles cannot.
+Thanks, yeah I considered taking this clause out of the switch
+completely, but I wanted to keep the patch set focused just to removal
+of odm_debug.h - I'll get this done next :-) Thanks for your feedback.
 
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Co-developed-by: Bill Wendling <morbo@google.com>
-> > Signed-off-by: Bill Wendling <morbo@google.com>
-> > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Reviewed-by: Fangrui Song <maskray@google.com>
-> > ---
-> >  Documentation/dev-tools/index.rst     |   1 +
-> >  Documentation/dev-tools/pgo.rst       | 127 +++++++++
-> >  MAINTAINERS                           |   9 +
-> >  Makefile                              |   3 +
-> >  arch/Kconfig                          |   1 +
-> >  arch/x86/Kconfig                      |   1 +
-> >  arch/x86/boot/Makefile                |   1 +
-> >  arch/x86/boot/compressed/Makefile     |   1 +
-> >  arch/x86/crypto/Makefile              |   4 +
-> >  arch/x86/entry/vdso/Makefile          |   1 +
-> >  arch/x86/kernel/vmlinux.lds.S         |   2 +
-> >  arch/x86/platform/efi/Makefile        |   1 +
-> >  arch/x86/purgatory/Makefile           |   1 +
-> >  arch/x86/realmode/rm/Makefile         |   1 +
-> >  arch/x86/um/vdso/Makefile             |   1 +
-> >  drivers/firmware/efi/libstub/Makefile |   1 +
-> >  include/asm-generic/vmlinux.lds.h     |  34 +++
-> >  kernel/Makefile                       |   1 +
-> >  kernel/pgo/Kconfig                    |  35 +++
-> >  kernel/pgo/Makefile                   |   5 +
-> >  kernel/pgo/fs.c                       | 389 ++++++++++++++++++++++++++
-> >  kernel/pgo/instrument.c               | 189 +++++++++++++
-> >  kernel/pgo/pgo.h                      | 203 ++++++++++++++
-> >  scripts/Makefile.lib                  |  10 +
-> >  24 files changed, 1022 insertions(+)
-> >  create mode 100644 Documentation/dev-tools/pgo.rst
-> >  create mode 100644 kernel/pgo/Kconfig
-> >  create mode 100644 kernel/pgo/Makefile
-> >  create mode 100644 kernel/pgo/fs.c
-> >  create mode 100644 kernel/pgo/instrument.c
-> >  create mode 100644 kernel/pgo/pgo.h
->
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -660,6 +660,9 @@ endif # KBUILD_EXTMOD
-> >  # Defaults to vmlinux, but the arch makefile usually adds further targets
-> >  all: vmlinux
-> >
-> > +CFLAGS_PGO_CLANG := -fprofile-generate
-> > +export CFLAGS_PGO_CLANG
-> > +
-> >  CFLAGS_GCOV  := -fprofile-arcs -ftest-coverage \
-> >       $(call cc-option,-fno-tree-loop-im) \
-> >       $(call cc-disable-warning,maybe-uninitialized,)
->
-> And which of the many flags in noinstr disables this?
->
-These flags aren't used with PGO. So there's no need to disable them.
-
-> Basically I would like to NAK this whole thing until someone can
-> adequately explain the interaction with noinstr and why we need those
-> many lines of kernel code and can't simply use perf for this.
-
--bw
+Regards,
+Phil
