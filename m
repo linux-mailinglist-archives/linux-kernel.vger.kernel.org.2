@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE623A4D5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E874C3A4D60
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhFLHck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 03:32:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55022 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhFLHci (ORCPT
+        id S230465AbhFLHd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:33:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47714 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhFLHdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 03:32:38 -0400
+        Sat, 12 Jun 2021 03:33:25 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 518E621994;
-        Sat, 12 Jun 2021 07:30:38 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 717F51FD7B;
+        Sat, 12 Jun 2021 07:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623483038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623483085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r2s1gQ67F+Qqs185IyCMy7UU3m8IkMgGFSBejMEBN2s=;
-        b=h/XSTcNP6FQSQ5sSo/oM1tdClqCRmGWni1uK7PwKdXaFgm+Wrucn0QDmPon79jN5zrpyna
-        tAE7H+p20nfg7KjHNIoPnxfsuDy7pf7rhBhmveBgdY6AscmPZx9PDsaMqnmR+ZJZozAwye
-        WY1bCFtOaJusxYLeLv/OnsU84j0o5Ug=
+        bh=0AzuUkzLo4ruyuK5SkVmh+ZfHnjfIQeuO610XtpJtoc=;
+        b=Th8MmK48g6ot7pnJc9RJa5NxgHqdKafjyupDDILXFgTJFqWxZV5jDYLcYpc6rEpqOS+qxB
+        DO8XZxUxVZmt7qWLL7Bb4H+AdxzJia/2isAqc0AfOmILjW0D3yB3EV+NE5twUtIB7eJOU8
+        MDucw0jD/isO2O0ntmm/xqlGPZc+1NA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623483038;
+        s=susede2_ed25519; t=1623483085;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r2s1gQ67F+Qqs185IyCMy7UU3m8IkMgGFSBejMEBN2s=;
-        b=YWPcWxMXp2sD40QH+v8C4nsxgXO9D5Bk0qj/FuhJl5vpiga79ftHwvrDSrx2Q4sq6013nK
-        igFjVldwoWfjDlDA==
+        bh=0AzuUkzLo4ruyuK5SkVmh+ZfHnjfIQeuO610XtpJtoc=;
+        b=tkMVi0+QeY0xP0fnmRmMKT5kFSL5KTNWmBTcOO0NwLZ7HZl5Q3WlfQ5qxBpAfZrbE5SnP6
+        98sxcfdLVwRiJABQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 402BFA3B83;
-        Sat, 12 Jun 2021 07:30:38 +0000 (UTC)
-Date:   Sat, 12 Jun 2021 09:30:38 +0200
-Message-ID: <s5him2j5yld.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id 618D0A3B85;
+        Sat, 12 Jun 2021 07:31:25 +0000 (UTC)
+Date:   Sat, 12 Jun 2021 09:31:25 +0200
+Message-ID: <s5hh7i35yk2.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Yang Yingliang <yangyingliang@huawei.com>
 Cc:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-tegra@vger.kernel.org>, <tiwai@suse.com>
-Subject: Re: [PATCH -next] ALSA: hda/tegra: Use devm_platform_get_and_ioremap_resource()
-In-Reply-To: <20210610131922.134788-1-yangyingliang@huawei.com>
-References: <20210610131922.134788-1-yangyingliang@huawei.com>
+        <tiwai@suse.com>
+Subject: Re: [PATCH -next] ALSA: n64: check return value after calling platform_get_resource()
+In-Reply-To: <20210610124958.116142-1-yangyingliang@huawei.com>
+References: <20210610124958.116142-1-yangyingliang@huawei.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -52,11 +52,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 15:19:22 +0200,
+On Thu, 10 Jun 2021 14:49:58 +0200,
 Yang Yingliang wrote:
 > 
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
+> It will cause null-ptr-deref if platform_get_resource() returns NULL,
+> we need check the return value.
 > 
 > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
