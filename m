@@ -2,100 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BED43A4D2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 08:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B633A4D32
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 08:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhFLGtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 02:49:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:59807 "EHLO m43-7.mailgun.net"
+        id S230468AbhFLHBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:01:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230516AbhFLGtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 02:49:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623480422; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=EFpndBjKGME2h4jUc1ykg57p30KYeOPOaDRAy8qnMwA=;
- b=c7iou9nWLNcDDxpI0tJtAdQqqlMYPoqa3zOgmDG6i9A7UYR0m62EUYQPiac3YL6+0tXvX/M3
- LGika5iLlU62QAwWpGi1j+pDCO5eyNXZMOQgjyECqUS4TZUQWzSEKNNZjaAxYamLupm7HCCe
- QMuZhTdvuidqSMTuB/WQ+FO2FSY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60c4585ded59bf69cc68fca2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 06:46:53
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4907DC4323A; Sat, 12 Jun 2021 06:46:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A06C7C433F1;
-        Sat, 12 Jun 2021 06:46:52 +0000 (UTC)
+        id S229584AbhFLHB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 03:01:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E543E61009;
+        Sat, 12 Jun 2021 06:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623481170;
+        bh=K4jM6AUqyTLpmK+CZISvtI1+6QvgFWFIceLUxFTnUuU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nH2cG9VdBAWwISy2gKPXunRORyLet3xJcWUC5gf3am+6JcBR9WY24Kx5UgyzWkzU6
+         ZyxXSt0SEFATJ1lzxbOSECEbJr2/Adjwcci96biU0JQ9qxUk5RVSX+WkE08LvpbpYx
+         zFbv8voLI8GLKaomkR14Ouu4JDtCiCP7yZPAjIbM=
+Date:   Sat, 12 Jun 2021 08:59:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     syzbot <syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com>
+Cc:     johan@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, mathias.nyman@linux.intel.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in vmk80xx_auto_attach/usb_submit_urb
+Message-ID: <YMRbTj2RAbIFZKw6@kroah.com>
+References: <00000000000074a21005c482fce2@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 12 Jun 2021 14:46:52 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 7/9] scsi: ufs: Let host_sem cover the entire system
- suspend/resume
-In-Reply-To: <b480d5a9-463d-9c51-8fd6-a2cff3396dc7@acm.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-8-git-send-email-cang@codeaurora.org>
- <b480d5a9-463d-9c51-8fd6-a2cff3396dc7@acm.org>
-Message-ID: <51f136db226e56a38b8cc1664a2b578f@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000074a21005c482fce2@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-12 05:00, Bart Van Assche wrote:
-> On 6/9/21 9:43 PM, Can Guo wrote:
->> UFS error handling now is doing more than just re-probing, but also 
->> sending
->> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, 
->> which
->> may change runtime status of scsi devices. To protect system 
->> suspend/resume
->> from being disturbed by error handling, move the host_sem from wl pm 
->> ops
->> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
+On Fri, Jun 11, 2021 at 01:02:23PM -0700, syzbot wrote:
+> Hello,
 > 
-> If lock_system_sleep() and unlock_system_sleep() would be used in the
-> error handler, would that allow to remove host_sem?
-
-Please kindly check my reply in patch #5.
-
-Thanks,
-
-Can Guo.
-
+> syzbot found the following issue on:
 > 
-> Thanks,
+> HEAD commit:    614124be Linux 5.13-rc5
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12188667d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=547a5e42ca601229
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5f29dc6a889fc42bd896
+> compiler:       Debian clang version 11.0.1-2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1687ec3fd00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172f44ffd00000
 > 
-> Bart.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
+> 
+> usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+> usb 1-1: config 0 descriptor??
+> ------------[ cut here ]------------
+> usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+> WARNING: CPU: 1 PID: 20 at drivers/usb/core/urb.c:494 usb_submit_urb+0xacd/0x1550 drivers/usb/core/urb.c:493
+
+Looks correct to me, you did not create a valid USB device for the
+system to use :)
+
