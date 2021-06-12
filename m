@@ -2,64 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B633A4D32
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 08:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6480A3A4D36
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhFLHBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 03:01:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47514 "EHLO mail.kernel.org"
+        id S230517AbhFLHDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:03:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhFLHB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 03:01:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E543E61009;
-        Sat, 12 Jun 2021 06:59:29 +0000 (UTC)
+        id S229584AbhFLHDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 03:03:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 104C561009;
+        Sat, 12 Jun 2021 07:01:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623481170;
-        bh=K4jM6AUqyTLpmK+CZISvtI1+6QvgFWFIceLUxFTnUuU=;
+        s=korg; t=1623481275;
+        bh=iKKyGp0fUDKDEcJ9RZ05rQW+0YvDlhXFzxPG/BdB7KE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nH2cG9VdBAWwISy2gKPXunRORyLet3xJcWUC5gf3am+6JcBR9WY24Kx5UgyzWkzU6
-         ZyxXSt0SEFATJ1lzxbOSECEbJr2/Adjwcci96biU0JQ9qxUk5RVSX+WkE08LvpbpYx
-         zFbv8voLI8GLKaomkR14Ouu4JDtCiCP7yZPAjIbM=
-Date:   Sat, 12 Jun 2021 08:59:26 +0200
+        b=0I63GfFvAYt0uAA2pS1BDbGxuAsn5MfkmsuAmA9dpSGAvePJOH49D8iUzi7o7ZXEm
+         arMa95ZzYmBqT1pqnb0j7UICbMD+ejJkIp2Z4FWDQP4LbJxryPD5lkEDHWMkMNhuKN
+         4OtaaFAUP5nTa5o5jJaz1C17jSKDeh6re6Kd5HmY=
+Date:   Sat, 12 Jun 2021 09:01:11 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     syzbot <syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com>
-Cc:     johan@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, mathias.nyman@linux.intel.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in vmk80xx_auto_attach/usb_submit_urb
-Message-ID: <YMRbTj2RAbIFZKw6@kroah.com>
-References: <00000000000074a21005c482fce2@google.com>
+To:     Jonathan Davies <jonathan.davies@nutanix.com>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usbnet: allow overriding of default USB interface
+ naming
+Message-ID: <YMRbt+or+QTlqqP9@kroah.com>
+References: <20210611152339.182710-1-jonathan.davies@nutanix.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00000000000074a21005c482fce2@google.com>
+In-Reply-To: <20210611152339.182710-1-jonathan.davies@nutanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 01:02:23PM -0700, syzbot wrote:
-> Hello,
+On Fri, Jun 11, 2021 at 03:23:39PM +0000, Jonathan Davies wrote:
+> When the predictable device naming scheme for NICs is not in use, it is
+> common for there to be udev rules to rename interfaces to names with
+> prefix "eth".
 > 
-> syzbot found the following issue on:
+> Since the timing at which USB NICs are discovered is unpredictable, it
+> can be interfere with udev's attempt to rename another interface to
+> "eth0" if a freshly discovered USB interface is initially given the name
+> "eth0".
 > 
-> HEAD commit:    614124be Linux 5.13-rc5
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12188667d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=547a5e42ca601229
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5f29dc6a889fc42bd896
-> compiler:       Debian clang version 11.0.1-2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1687ec3fd00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172f44ffd00000
+> Hence it is useful to be able to override the default name. A new usbnet
+> module parameter allows this to be configured.
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
+> Signed-off-by: Jonathan Davies <jonathan.davies@nutanix.com>
+> Suggested-by: Prashanth Sreenivasa <prashanth.sreenivasa@nutanix.com>
+> ---
+>  drivers/net/usb/usbnet.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 > 
-> usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
-> usb 1-1: config 0 descriptor??
-> ------------[ cut here ]------------
-> usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-> WARNING: CPU: 1 PID: 20 at drivers/usb/core/urb.c:494 usb_submit_urb+0xacd/0x1550 drivers/usb/core/urb.c:493
+> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+> index ecf6284..55f6230 100644
+> --- a/drivers/net/usb/usbnet.c
+> +++ b/drivers/net/usb/usbnet.c
+> @@ -72,6 +72,13 @@ static int msg_level = -1;
+>  module_param (msg_level, int, 0);
+>  MODULE_PARM_DESC (msg_level, "Override default message level");
+>  
+> +#define DEFAULT_ETH_DEV_NAME "eth%d"
+> +
+> +static char *eth_device_name = DEFAULT_ETH_DEV_NAME;
+> +module_param(eth_device_name, charp, 0644);
+> +MODULE_PARM_DESC(eth_device_name, "Device name pattern for Ethernet devices"
+> +				  " (default: \"" DEFAULT_ETH_DEV_NAME "\")");
 
-Looks correct to me, you did not create a valid USB device for the
-system to use :)
+This is not the 1990's, please do not add new module parameters as they
+are on a global driver level, and not on a device level.
 
+Also changing the way usb network devices are named is up to userspace,
+the kernel should not be involved in this.  What is wrong with just
+renaming it in userspace as you want to today?
+
+thanks,
+
+greg k-h
