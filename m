@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793F63A5084
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 22:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEEB3A508C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 22:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhFLUWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 16:22:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhFLUWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 16:22:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 75AC961156;
-        Sat, 12 Jun 2021 20:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623529204;
-        bh=FgnpdG6AYPjS5jbqTlZT9ZgVhDC6xQonY2AStbspRNo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=o3+bXzYJsjEmF9Qxm08ayZz0KZvfFu0iDnzzY4+56l6r0XnvfT9tik22slnAalPvY
-         YtUcp+8kGShCouUlonjz39iL6C3hxFa6/cQ0l8HqhOFZNsjFubjPasPLqniO7xC4BN
-         s/JQjrvHPWUYCE5WSqldLBkgO+sBPfKlmQHDEUbd0sZyG20v9Vf7x9wvtI8B9zEulN
-         zjXvCw1ZNduh/Y6gedMLiv1wHfKOzg7pbQNK9jEC9ZBiPl9ircUkq6AqPqsHjwqxFe
-         cR/pzGgxOGFTDb0+CwLnHU8xvI+IWDMvgccUpicaDo8fnqVPdbXx2fpWK/nThbWO6S
-         b64XllEZpyvrA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 69F2A60CE2;
-        Sat, 12 Jun 2021 20:20:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231577AbhFLUXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 16:23:40 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:34677 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhFLUXh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 16:23:37 -0400
+Received: by mail-pf1-f169.google.com with SMTP id g6so7363672pfq.1
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 13:21:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KSRBKv2aAWVPJTwPuTubBt5RbpntSvBl6+11N6OojZo=;
+        b=QUEhRvwhvVtoBZtgcHgGDV+UgXwb9uoWbieX3KPLqZy5GADa8YIM7/MIIZCZeCgW2/
+         MK+4kS/JplsEQHmuIlrisQDPV7VeIYF7DuU4aTIe0VrnOwj0PAvi4ZH9NwbVvhrG8GQM
+         QW+ZqlExPyyrWLrFqEYPwWdbre0fBQ8Fkp9Yei6eaLusnx54zL3Ehcc8Ei16gcJ+AqD4
+         X82oEBMPd41mlAGzbfz2Ju9ioTsRGP175MAL5dod7OSg646AW6nXaxpBxLVziBC+yl4C
+         obJQlbCoMlcvGlpc/60q6vnU0QTrL/tnwYlfn+B08jI5x+dWj3CSy7VRAXok4zWSWwGi
+         4oZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KSRBKv2aAWVPJTwPuTubBt5RbpntSvBl6+11N6OojZo=;
+        b=syMkj+H0R7DWBtue2Vp4ozJ3kQysQIrKIpPT72qZ2Wyy8y/FrCdk+iFNxCaZa96Qx3
+         2YEtL38Tw/9vKRwxLfQawlMfQwDvVJ9fPGi8l2J4HYiuEcpLCVH9QEiMFz3EPsn3bF0W
+         K1Q2JsAatS+9p/wx9EDf35JZyyiQXdNZI50sXkgmvsljnOWc9TLgap0Vfic6bndpZwyf
+         8lEK0Ez+Bg/8LmN2f0UxSEhcqcrdKlsQLVSKTQMg1Tk9GwZwabe5GaYCf2RSFHBquWrF
+         6X8HBFhHgclDQQwYO0SNagjUP19EhgEU06b+MtVMGJ7x0nJLcW+TEKusTen1El5SRbEv
+         doaQ==
+X-Gm-Message-State: AOAM532EcsfL9IHdTZcoO/5+fDmUB19AtRZrMZb+UnmzOusMPZKDDR3l
+        heQJZtDBIvyTx4FHT97ROM/NYQ==
+X-Google-Smtp-Source: ABdhPJysGKYhgvGAvdEDH7zzoFJJfcSIP9bR/mVs7u8jxxuyhlyrJS9H95cthtKfRYCkOUlvlZgoNQ==
+X-Received: by 2002:a63:205b:: with SMTP id r27mr9947707pgm.95.1623529220871;
+        Sat, 12 Jun 2021 13:20:20 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:200:425c:5da8:ed33:260e])
+        by smtp.gmail.com with ESMTPSA id i10sm8523806pfk.74.2021.06.12.13.20.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Jun 2021 13:20:20 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 13:20:15 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Bill Wendling <morbo@google.com>, Kees Cook <keescook@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
+ infrastructure
+Message-ID: <20210612202015.s4743sr6d3lv3lgf@google.com>
+References: <20210111081821.3041587-1-morbo@google.com>
+ <20210407211704.367039-1-morbo@google.com>
+ <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net>
+ <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
+ <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/4] Add 25G BASE-R support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162352920442.6609.17972913437151607132.git-patchwork-notify@kernel.org>
-Date:   Sat, 12 Jun 2021 20:20:04 +0000
-References: <20210611125453.313308-1-steen.hegelund@microchip.com>
-In-Reply-To: <20210611125453.313308-1-steen.hegelund@microchip.com>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     linux@armlinux.org.uk, andrew@lunn.ch, hkallweit1@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 2021-06-12, Peter Zijlstra wrote:
+>On Sat, Jun 12, 2021 at 10:25:57AM -0700, Bill Wendling wrote:
+>> On Sat, Jun 12, 2021 at 9:59 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>> > Also, and I don't see this answered *anywhere*, why are you not using
+>> > perf for this? Your link even mentions Sampling Profilers (and I happen
+>> > to know there's been significant effort to make perf output work as
+>> > input for the PGO passes of the various compilers).
+>> >
+>> Instruction-based (non-sampling) profiling gives us a better
+>> context-sensitive profile, making PGO more impactful. It's also useful
+>> for coverage whereas sampling profiles cannot.
+>
+>We've got KCOV and GCOV support already. Coverage is also not an
+>argument mentioned anywhere else. Coverage can go pound sand, we really
+>don't need a third means of getting that.
+>
+>Do you have actual numbers that back up the sampling vs instrumented
+>argument? Having the instrumentation will affect performance which can
+>scew the profile just the same.
+>
+>Also, sampling tends to capture the hot spots very well.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+[I don't do kernel development. My experience is user-space toolchain.]
 
-On Fri, 11 Jun 2021 14:54:49 +0200 you wrote:
-> This series add the 25G BASE-R mode to the set modes supported.
-> This mode is used by the Sparx5 Switch for its 25G SerDes.
-> 
-> Steen Hegelund (4):
->   dt-bindings: net: Add 25G BASE-R phy interface
->   net: phy: Add 25G BASE-R interface mode
->   net: sfp: add support for 25G BASE-R SFPs
->   net: phylink: Add 25G BASE-R support
-> 
-> [...]
+For applications, I think instrumentation based PGO can be 1%~4% faster
+than sample-based PGO (e.g. AutoFDO) on x86.
 
-Here is the summary with links:
-  - [net-next,1/4] dt-bindings: net: Add 25G BASE-R phy interface
-    https://git.kernel.org/netdev/net-next/c/858252c9c346
-  - [net-next,2/4] net: phy: Add 25G BASE-R interface mode
-    https://git.kernel.org/netdev/net-next/c/a56c28686569
-  - [net-next,3/4] net: sfp: add support for 25G BASE-R SFPs
-    https://git.kernel.org/netdev/net-next/c/452d2c6fbae2
-  - [net-next,4/4] net: phylink: Add 25G BASE-R support
-    https://git.kernel.org/netdev/net-next/c/21e0c59edc09
+Sample-based PGO has CPU requirement (e.g. Performance Monitoring Unit).
+(my gut feeling is that there may be larger gap between instrumentation
+based PGO and sample-based PGO for aarch64/ppc64, even though they can
+use sample-based PGO.)
+Instrumentation based PGO can be ported to more architectures.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+In addition, having an infrastructure for instrumentation based PGO
+makes it easy to deploy newer techniques like context-sensitive PGO
+(just changed compile options; it doesn't need new source level
+annotation).
