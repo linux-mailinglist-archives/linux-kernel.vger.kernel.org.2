@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F503A4D71
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5741D3A4D74
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhFLHkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 03:40:35 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12010 "EHLO m43-7.mailgun.net"
+        id S230374AbhFLHzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:55:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229942AbhFLHke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 03:40:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623483515; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Sqvb0JaG61PaXbtftxIbY4pVwmcAlQv37dOCDE0jmNY=;
- b=RfLH6PTKKBsXJv14I3+Vz9iuxHbN76Xlj8xR+u0oF0OQ3eysfTaBJ8mq+OgOdlxhLtKcXIpN
- yPTsxrDu+BI5hJiR6YRGAi3LRY7FaqA8Mavb2U5GV2Dq61GTI3qKSYd5jm68E6bCMB1paghZ
- wMTXFtrNWhObWBkHYy/fDAlyR5Y=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60c46467ed59bf69cc83018a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 07:38:15
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8287CC4360C; Sat, 12 Jun 2021 07:38:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7FCFC433D3;
-        Sat, 12 Jun 2021 07:38:14 +0000 (UTC)
+        id S229942AbhFLHzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 03:55:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 467DA600EF;
+        Sat, 12 Jun 2021 07:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623484432;
+        bh=oCwkNHhkWKOxjdFxSnrTrgHE/Aq9OTaliKcLMCi2kGI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g3ynf+RHh5/BuZbJRA+x2AdP/KsD/WldeWCp0yWddTkROg2316TOAW2dL9PLW/qrM
+         qRn+wnCMw9ER4cHHewFQpYu1M9cstKO8+zD7ZXo33SbeJNEZ8eW5YEjAFFqCuzPGP3
+         H+rTL5lemg2FNZ1F7pIc0aP6KXRbLgmuIes2qZVHk6poFIP1mZvHVrUXUxjs5dG4p9
+         mdBXJXXMRzZ1v/F6edxEzKZIg5km5jNdIgW2ufTlZtZMvDa1ZH2fPAtcEm6arzYNbg
+         PXHXUiY47AT/rCoTCSYIx9UUgsi8BC/dESLBGUv73jyS/1+A+klNFtxUZf/e0NEE7v
+         tH1uFnEMwdyvQ==
+Date:   Sat, 12 Jun 2021 15:53:47 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     devicetree@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH] arm64: dts: fix node name for the sysclk
+Message-ID: <20210612075346.GZ29138@dragon>
+References: <20210608112658.4087235-1-olteanv@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 12 Jun 2021 15:38:14 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/9] scsi: ufs: Complete the cmd before returning in
- queuecommand
-In-Reply-To: <d017548a-16fb-8ad0-2363-09dad00c9642@acm.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-5-git-send-email-cang@codeaurora.org>
- <d017548a-16fb-8ad0-2363-09dad00c9642@acm.org>
-Message-ID: <80926df7e3e41088e59ce5e0dbdec28a@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608112658.4087235-1-olteanv@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-12 04:52, Bart Van Assche wrote:
-> On 6/9/21 9:43 PM, Can Guo wrote:
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 0c9d2ee..7dc0fda 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -2758,6 +2758,16 @@ static int ufshcd_queuecommand(struct Scsi_Host 
->> *host, struct scsi_cmnd *cmd)
->>  		goto out;
->>  	}
->> 
->> +	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
->> +		if (hba->wl_pm_op_in_progress) {
->> +			set_host_byte(cmd, DID_BAD_TARGET);
->> +			cmd->scsi_done(cmd);
->> +		} else {
->> +			err = SCSI_MLQUEUE_HOST_BUSY;
->> +		}
->> +		goto out;
->> +	}
->> +
->>  	hba->req_abort_count = 0;
->> 
->>  	err = ufshcd_hold(hba, true);
->> @@ -2768,15 +2778,6 @@ static int ufshcd_queuecommand(struct Scsi_Host 
->> *host, struct scsi_cmnd *cmd)
->>  	WARN_ON(ufshcd_is_clkgating_allowed(hba) &&
->>  		(hba->clk_gating.state != CLKS_ON));
->> 
->> -	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
->> -		if (hba->wl_pm_op_in_progress)
->> -			set_host_byte(cmd, DID_BAD_TARGET);
->> -		else
->> -			err = SCSI_MLQUEUE_HOST_BUSY;
->> -		ufshcd_release(hba);
->> -		goto out;
->> -	}
->> -
->>  	lrbp = &hba->lrb[tag];
->>  	WARN_ON(lrbp->cmd);
->>  	lrbp->cmd = cmd;
+On Tue, Jun 08, 2021 at 02:26:58PM +0300, Vladimir Oltean wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 > 
-> Can the code under "if (unlikely(test_bit(tag,
-> &hba->outstanding_reqs)))" be deleted instead of moving it? I don't
-> think that it is useful to verify whether the block layer tag allocator
-> works correctly. Additionally, I'm not aware of any similar code in any
-> other SCSI LLD.
+> U-Boot attempts to fix up the "clock-frequency" property of the "/sysclk" node:
+> https://elixir.bootlin.com/u-boot/v2021.04/source/arch/arm/cpu/armv8/fsl-layerscape/fdt.c#L512
 > 
-
-ufshcd_abort() aborts PM requests differently from other requests -
-it simply evicts the cmd from lrbp [1], schedules error handler and
-returns SUCCESS (the reason why I am doing it this way is in patch #8).
-
-After ufshcd_abort() returns, the tag shall be released, the logic
-here is to prevent subsequent cmds re-use the lrbp [1] before error
-handler recovers the device and host.
-
-Thanks,
-
-Can Guo.
-
-> Thanks,
+> but fails to do so:
 > 
-> Bart.
+>   ## Booting kernel from Legacy Image at a1000000 ...
+>      Image Name:
+>      Created:      2021-06-08  10:31:38 UTC
+>      Image Type:   AArch64 Linux Kernel Image (gzip compressed)
+>      Data Size:    15431370 Bytes = 14.7 MiB
+>      Load Address: 80080000
+>      Entry Point:  80080000
+>      Verifying Checksum ... OK
+>   ## Flattened Device Tree blob at a0000000
+>      Booting using the fdt blob at 0xa0000000
+>      Uncompressing Kernel Image
+>      Loading Device Tree to 00000000fbb19000, end 00000000fbb22717 ... OK
+>   Unable to update property /sysclk:clock-frequency, err=FDT_ERR_NOTFOUND
+> 
+>   Starting kernel ...
+> 
+> All Layerscape SoCs except LS1028A use "sysclk" as the node name, and
+> not "clock-sysclk". So change the node name of LS1028A accordingly.
+
+Wouldn't it more flexible to use alias/label for finding the node?
+Using node name/path looks fragile. 
+
+Shawn
+
+> 
+> Fixes: 8897f3255c9c ("arm64: dts: Add support for NXP LS1028A SoC")
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> index d0dddf19578a..03e1ca7fea9a 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> @@ -66,7 +66,7 @@ CPU_PW20: cpu-pw20 {
+>  		};
+>  	};
+>  
+> -	sysclk: clock-sysclk {
+> +	sysclk: sysclk {
+>  		compatible = "fixed-clock";
+>  		#clock-cells = <0>;
+>  		clock-frequency = <100000000>;
+> -- 
+> 2.25.1
+> 
