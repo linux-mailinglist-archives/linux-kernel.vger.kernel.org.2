@@ -2,186 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E953A4E0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 11:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612A33A4E13
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 11:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhFLJtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 05:49:08 -0400
-Received: from m-r2.th.seeweb.it ([5.144.164.171]:58639 "EHLO
-        m-r2.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbhFLJtD (ORCPT
+        id S231233AbhFLJvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 05:51:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11032 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231173AbhFLJvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 05:49:03 -0400
-Received: from localhost.localdomain (bband-dyn73.178-41-129.t-com.sk [178.41.129.73])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 7BE3A3F483;
-        Sat, 12 Jun 2021 11:47:01 +0200 (CEST)
-From:   Martin Botka <martin.botka@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Martin Botka <martin.botka@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 2/2] arch: arm64: dts: qcom: Add support for Sony Xperia 10II
-Date:   Sat, 12 Jun 2021 11:46:51 +0200
-Message-Id: <20210612094652.90354-2-martin.botka@somainline.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210612094652.90354-1-martin.botka@somainline.org>
-References: <20210612094652.90354-1-martin.botka@somainline.org>
+        Sat, 12 Jun 2021 05:51:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623491376; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=h+lKHMirYOo4CZO75qbhiOYJsV8XQqazDat76Bs0AYM=;
+ b=B/ui3EZyULBJewoZFt3Xs80hfNP8LHGW/8RZIJF8yVa0C42C6leIC3MhFojjIhLdcdFhb11G
+ dp222SvEXtF+qfRKVIF6VansswiKayltg1EGKXY10gBV3dK/gg/uCssOstWcNVFr+37kSLWL
+ I7xu3dolczX5PpkKb7f9wtuYrtA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60c483278491191eb3373ff2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 09:49:27
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D0CC2C43460; Sat, 12 Jun 2021 09:49:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC8DEC433D3;
+        Sat, 12 Jun 2021 09:49:26 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Date:   Sat, 12 Jun 2021 17:49:26 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/9] scsi: ufs: Simplify error handling preparation
+In-Reply-To: <645c0e3c83c8917a8fd5c0493c5815a0@codeaurora.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-6-git-send-email-cang@codeaurora.org>
+ <6abb81f6-4dd2-082e-9440-4b549f105788@intel.com>
+ <f0ae504bccc428fa674a183608174bdd@codeaurora.org>
+ <4f6ea52f-308e-8252-5a19-3911eb9b99b1@acm.org>
+ <645c0e3c83c8917a8fd5c0493c5815a0@codeaurora.org>
+Message-ID: <d3c57c8e52f7a251b5c536a893b1f101@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commits add support for Sony Xperia 10II based on the SM6125 SoC.
+Hi Bart,
 
-Currently working features:
-- dmesg output to bootloader preconfigured display
-- USB
-- eMMC
-- Volume down button
+On 2021-06-12 14:46, Can Guo wrote:
+> On 2021-06-12 04:58, Bart Van Assche wrote:
+>> On 6/10/21 8:01 PM, Can Guo wrote:
+>>> Previously, without commit cb7e6f05fce67c965194ac04467e1ba7bc70b069,
+>>> ufshcd_resume() may turn off pwr and clk due to UFS error, e.g., link
+>>> transition failure and SSU error/abort (and these UFS error would
+>>> invoke error handling).  When error handling kicks start, it should
+>>> re-enable the pwr and clk before proceeding. Now, commit
+>>> cb7e6f05fce67c965194ac04467e1ba7bc70b069 makes ufshcd_resume()
+>>> purely control pwr and clk, meaning if ufshcd_resume() fails, there
+>>> is nothing we can do about it - pwr or clk enabling must have failed,
+>>> and it is not because of UFS error. This is why I am removing the
+>>> re-enabling pwr/clk in error handling prepare.
+>> 
+>> Why are link transition failures handled in the error handler instead 
+>> of
+>> in the context where these errors are detected (ufshcd_resume())? Is 
+>> it
+>> even possible to recover from a link transition failure or does this
+>> perhaps indicate a broken UFS controller?
+> 
+> Basically, almost all UFS failures are caused by errors in underlaying 
+> layers,
+> i.e., UIC errors, including link transition failures. And according to 
+> UFSHCI
+> spec, SW should do a full reset to recover it, just like handle any 
+> other
+> fatal UIC errors. All UIC errors are detected by HW and reported by IRQ 
+> handler.
+> 
+> UFSHCI Spec Ver. 31
+> 8.2.7 Hibernate Enter/Exit Error Handling
+> Hibernate Enter/Exit Error occurs when the UniPro link is broken. When
+> this condition occurs,
+> host software should reset the host controller by setting register HCE
+> to ‘0’, re-initialize the host
+> controller by setting register HCE to ‘1', and then start link startup
+> sequence as shown in Figure 16.
+> 
+>> 
+>>>> but what I really wonder is why we don't just do recovery directly
+>>>> in __ufshcd_wl_suspend() and  __ufshcd_wl_resume() and strip all
+>>>> the PM complexity out of ufshcd_err_handling()?
+>> 
+>> +1
+> 
+> I've explained why I chose not to do this in my last reply to Adrian.
+> Please kindly check it.
+> 
+>> 
+>>> For system suspend/resume, since error handling has the same nature
+>>> like user access, so we are using host_sem to avoid concurrency of
+>>> error handling and system suspend/resume.
+>> 
+>> Why is host_sem used for that purpose instead of lock_system_sleep() 
+>> and
+>> unlock_system_sleep()?
+>> 
+> 
+> I was aware of it, but the situation is that host_sem is also used to
+> avoid concurrency among user access, error handling and shutdown, so
+> I think just use host_sem anyways to simply the lockings, otherwise
+> user access and error handling would have to take both 
+> system_transition_mutex
+> and host_sem
 
-Signed-off-by: Martin Botka <martin.botka@somainline.org>
----
-Changes in v2:
-None
- arch/arm64/boot/dts/qcom/Makefile             |   1 +
- .../qcom/sm6125-sony-xperia-seine-pdx201.dts  | 105 ++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
+On second thought, I will take your suggestion to use 
+lock_system_sleep()
+and unlock_system_sleep() in error handler and remove the host_sem used
+in suspend/resume, which can make the code more readable by keeping the
+changes within error handler itself. However, please note that host_sem
+will still be used to avoid concurrency of user access, error handler 
+and
+shutdown.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 456502aeee49..5a70dd9593c2 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -69,6 +69,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-oneplus-enchilada.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-oneplus-fajita.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-hdk.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-new file mode 100644
-index 000000000000..b1d6de430273
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Martin Botka <martin.botka@somainline.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "sm6125.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/input/gpio-keys.h>
-+
-+/ {
-+	/* required for bootloader to select correct board */
-+	qcom,msm-id = <394 0x10000>; /* sm6125 v1 */
-+	qcom,board-id = <34 0>;
-+
-+	model = "Sony Xperia 10 II";
-+	compatible = "sony,pdx201", "qcom,sm6125";
-+
-+	chosen {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		framebuffer0: framebuffer@5c000000 {
-+			compatible = "simple-framebuffer";
-+			reg = <0 0x5c000000 0 (2520 * 1080 * 4)>;
-+			width = <1080>;
-+			height = <2520>;
-+			stride = <(1080 * 4)>;
-+			format = "a8r8g8b8";
-+		};
-+	};
-+
-+	extcon_usb: extcon-usb {
-+		compatible = "linux,extcon-usb-gpio";
-+		id-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	gpio_keys {
-+		status = "okay";
-+		compatible = "gpio-keys";
-+		input-name = "gpio-keys";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		autorepeat;
-+
-+		vol_dn {
-+			label = "Volume Down";
-+			gpios = <&tlmm 47 GPIO_ACTIVE_LOW>;
-+			linux,input-type = <1>;
-+			linux,code = <KEY_VOLUMEDOWN>;
-+			gpio-key,wakeup;
-+			debounce-interval = <15>;
-+		};
-+	};
-+	
-+	reserved_memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		debug_mem: memory@ffb00000 {
-+			reg = <0x0 0xffb00000 0x0 0xc0000>;
-+			no-map;
-+		};
-+
-+		last_log_mem: memory@ffbc0000 {
-+			reg = <0x0 0xffbc0000 0x0 0x80000>;
-+			no-map;
-+		};
-+
-+		pstore_mem: ramoops@ffc00000 {
-+			compatible = "ramoops";
-+			reg = <0x0 0xffc40000 0x0 0xc0000>;
-+			record-size = <0x1000>;
-+			console-size = <0x40000>;
-+			msg-size = <0x20000 0x20000>;
-+		};
-+
-+		cmdline_mem: memory@ffd00000 {
-+			reg = <0x0 0xffd40000 0x0 0x1000>;
-+			no-map;
-+		};
-+	};
-+};
-+
-+&hsusb_phy1 {
-+	status = "okay";
-+};
-+
-+&sdhc_1 {
-+	status = "okay";
-+};
-+
-+&tlmm {
-+	gpio-reserved-ranges = <22 2>, <28 6>;
-+};
-+
-+&usb3 {
-+	status = "okay";
-+};
-+
-+&usb3_dwc3 {
-+	extcon = <&extcon_usb>;
-+};
--- 
-2.31.1
+Thanks,
+Can Guo.
 
+> 
+> Thanks,
+> 
+> Can Guo.
+> 
+>> Thanks,
+>> 
+>> Bart.
