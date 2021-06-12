@@ -2,57 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489093A503F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 21:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9483A503B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 21:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhFLTLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 15:11:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42690 "EHLO mail.kernel.org"
+        id S231528AbhFLTLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 15:11:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231512AbhFLTLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 15:11:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8B54761001;
+        id S231311AbhFLTLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 15:11:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9D07C6120E;
         Sat, 12 Jun 2021 19:09:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623524987;
-        bh=z34QiRyINkAhbWILvOAIGhVphoVaG7+8QtauwTRgAu4=;
+        s=k20201202; t=1623524986;
+        bh=PSbS8PC+Cavs00oynfVl/jxQFi1qt6STkd3GM5ovAfE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=enpPPSX/jrHuYgGfSjCYJZCFoUq3KefK4dq2gdXMCFo9HO38CAgY0XGm48cwSBJNs
-         kvs55jCDhvIOIr9ODiJxVGEtq2kTfYpKT1ntdkFTQ59RbWfpntWoF7HBK9kVkYXKp3
-         phbrEzPaN4ws3aDxqcPRB3njC3E6bku9cNEp06h+8rkRqSkv6FrTGpsml+VOmEa6te
-         bX7VOWicPWmxTeOwCaG3IIIctcqw7iWXDVC790HTLB8Le0P0CnuEslA8ZsK/LSxuAa
-         uyZhUBgM41DIS5/PFJLky09MTHWE9rzTHQXI5mvxuXctos91iG2zyQtZEPv7I8z2ss
-         9OESq7C8VmF1Q==
+        b=SSCaIK8NRAxMPaNHAQDQAVGv+cjKHsBKUa9JHSo+Yh7kbJ3EqhaC6kbE28DIhOdPs
+         947TajX4HFQpiAH05JdLr2rXjn58izaVBwySgdrrTpmAuGajOBh3/n0baFJ6OsxytV
+         5OhiRW/9gg3V16A7BM5OHaxnQ3TKdziFt2HzX7B41s7wkkrlWAonLWNQ1p/GsF0SWp
+         IZC+wF9O8YVBkQBP54DxvWMXiIv7hawengONvvzKoOQGsrhu5us9MFXCPOUmrkNkCY
+         vBh+1nZk/NbjcJzd3KyKCj0bFqZtKUWLRMYuL5WTxNzL66ZI1yQjv1ufXLxfGxkQ4i
+         bApzQ2ELmxfYg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 819FD609E4;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9199960CE2;
         Sat, 12 Jun 2021 19:09:46 +0000 (UTC)
-Subject: Re: [GIT PULL] pin control fixes for v5.13
+Subject: Re: [GIT PULL] objtool fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdY+DKx-c+74b2xiGQ2H9+e2yeup+HEqg1+u1nvQoO6pXA@mail.gmail.com>
-References: <CACRpkdY+DKx-c+74b2xiGQ2H9+e2yeup+HEqg1+u1nvQoO6pXA@mail.gmail.com>
+In-Reply-To: <YMSqmtLIojtlZQIQ@gmail.com>
+References: <YMSqmtLIojtlZQIQ@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdY+DKx-c+74b2xiGQ2H9+e2yeup+HEqg1+u1nvQoO6pXA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git tags/pinctrl-v5.13-2
-X-PR-Tracked-Commit-Id: 30e9857a134905ac0d03ca244b615cc3ff0a076e
+X-PR-Tracked-Message-Id: <YMSqmtLIojtlZQIQ@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-urgent-2021-06-12
+X-PR-Tracked-Commit-Id: 2d49b721dc18c113d5221f4cf5a6104eb66cb7f2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 141415d7379a02f0a75b1a7611d6b50928b3c46d
-Message-Id: <162352498652.5734.16100087693827735034.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 768895fb774d7af32d17cf3a455b0bd6df272f14
+Message-Id: <162352498659.5734.17566740387247227664.pr-tracker-bot@kernel.org>
 Date:   Sat, 12 Jun 2021 19:09:46 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
+To:     Ingo Molnar <mingo@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 12 Jun 2021 12:07:25 +0200:
+The pull request you sent on Sat, 12 Jun 2021 14:37:46 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git tags/pinctrl-v5.13-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-urgent-2021-06-12
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/141415d7379a02f0a75b1a7611d6b50928b3c46d
+https://git.kernel.org/torvalds/c/768895fb774d7af32d17cf3a455b0bd6df272f14
 
 Thank you!
 
