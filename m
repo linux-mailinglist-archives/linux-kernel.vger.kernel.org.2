@@ -2,153 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87D73A4C5A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 05:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0043D3A4C5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 05:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhFLDLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 23:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFLDLI (ORCPT
+        id S230215AbhFLDNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 23:13:07 -0400
+Received: from mail-qk1-f172.google.com ([209.85.222.172]:40736 "EHLO
+        mail-qk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhFLDNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 23:11:08 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A13C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 20:08:55 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id ei4so6701487pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 20:08:55 -0700 (PDT)
+        Fri, 11 Jun 2021 23:13:06 -0400
+Received: by mail-qk1-f172.google.com with SMTP id u30so33086529qke.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 20:11:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=kpUTcvo6O2tGi/GNfmLN2Nx7EN/UMr+yD7v9046xIR8=;
-        b=HgCHlQT+NjLsi/EXuC0ScHCl6kNZOg7lKSGqbaj2NLCzRycChsUNtX5N4T77o0McJA
-         dOtPJMvkeSq7+ASt+umIGIk6N9RgXlCp1J2xNeFXasdJaRgKxKlb9xkJfrtbXuVx9sYY
-         9WjB2xhXbNsZO+PsO83ggtD7whQwFPqlVhFNEZ0uKcSAryu3AA04minqQfq3LG13aWpz
-         HJKhyIbnlcD8iS/iF3okFFS10JHihn1EuuqrH8C0JpWDEUazXP+tri2cFScNec79Fdye
-         i5o+wDwTrq8J9EaBRyV5OK9jX/VulavimQqVl1ZZxbaOiKHlTU3qfLlsFppd1BeumF+L
-         ArpQ==
+        d=0x0f.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=YHbD/mqCuSEzcC4RtK8XYrrBs5SxDQZwxPGKgUy8SlM=;
+        b=rpinneijh7hd0eRqrHUCVKLm7oZHpwZB0G+4hgQ8j8yaa6WTiRsRY7o6T+YMvPqrra
+         ejTlsWMIz86dBpbLlaSzfXLMF1i1CU67t9sJaBXloBEdnuYJ8vdZt/2ursU1NrvxTAE8
+         vMzLDoSaWtzDzQpF7NJVYbrm9ZkF5cDyhQQg4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=kpUTcvo6O2tGi/GNfmLN2Nx7EN/UMr+yD7v9046xIR8=;
-        b=FdG4pOp8tMMQHQ1kaQfii5MHUGMbVa1ajRl48sbqZ7AjVXfKRiggGSbn6ic1dlTh9L
-         2oN2gVkmrWQK6Vklau/fbUFCeYbDKNcgwDO8F2ELqzQx7/EyoEx8ZerXCBC1lIn4bbzV
-         +Dt46s90ulEemf+/+BT0ArBIJ8j7dDlIsMk3HL7FWpb5v7zX8Ft2yGXitGY7pq56cOqw
-         1fFL6mqTX999kQMicT5dk+9bZ1zuzXEVi8MXYDo+v/lZC4iLcmReIOnpevoqJG4cY9mU
-         rrQ0B43W2kED2nOBgMFoOzMuzenW7CYLVYU25sFpPqqC/MmjHd9mfSpQegqP3G2kKBNU
-         FkZQ==
-X-Gm-Message-State: AOAM531weiv9hZ6LifVTGLoUWsw89+Lsj851vUnUfECjeJPvBNntlfWn
-        hMES7xtE/RDAIbIdXfJDdzpySqxifOk=
-X-Google-Smtp-Source: ABdhPJwpBaGqcNIEYfky5Z6XAT9lCdE4ALMgr0PP+R/uUoNFCyASBGvueMnO6HF1zqyC30JPlNVCrg==
-X-Received: by 2002:a17:902:b585:b029:f6:5cd5:f128 with SMTP id a5-20020a170902b585b02900f65cd5f128mr6634920pls.43.1623467334232;
-        Fri, 11 Jun 2021 20:08:54 -0700 (PDT)
-Received: from owniadeMacBook-Pro.local ([129.227.156.200])
-        by smtp.gmail.com with ESMTPSA id z185sm6618080pgb.4.2021.06.11.20.08.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Jun 2021 20:08:53 -0700 (PDT)
-Subject: Re: [RFC PATCH] mm/oom_kill: show oom eligibility when displaying the
- current memory state of all tasks
-To:     Aaron Tomlin <atomlin@redhat.com>, linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        penguin-kernel@i-love.sakura.ne.jp, llong@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20210611171940.960887-1-atomlin@redhat.com>
-From:   ownia <ownia.linux@gmail.com>
-Message-ID: <18a14e1a-df91-23b2-16d6-610e3c3c200e@gmail.com>
-Date:   Sat, 12 Jun 2021 11:08:50 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=YHbD/mqCuSEzcC4RtK8XYrrBs5SxDQZwxPGKgUy8SlM=;
+        b=MOhfdvOtyE8jHL51WFnFz+bOAFUPIrUldxeXOXkCb+sTri1hBogojkV3kXqOk8/MD1
+         fXEjD4YgrYhmnhdIUydvaFPDvSeichIvsavnNgqXzlLFLhKFau3cJHYAfMWhJkvgxL6m
+         F/zbbcElgnTHUmOBJIUuVWabHSfuatOOcDMtn8oDU3n2cQ36qyq/vsZAP7VylO8pcnQJ
+         F6rDbQHgOF4bAOuWdFcyCsnAXz1UMrpfU91eDJQu5xvfKdf+KmA7naE0p72dnOZiq4Le
+         X2pdZeAQIj6AwOUDEyWHzBrIOL7wC498TLiNjN6vXhHvOP05f2YrElXL3tTIIj3KRBbD
+         HNRw==
+X-Gm-Message-State: AOAM533XQHYFCQ+l2s3luxYpOK6/lp8k0alqvPkOxkjQf/mKne3wzCdf
+        arPEjxxtMWkfzyBUMxGRik3toF6G1jPwpfVBYuR/tA==
+X-Google-Smtp-Source: ABdhPJxuioRL5IHEdYVJvdAATuTZJJREI76GNFQ6UykbwmNwyly3PJZuJdWcqHaduWqlSNmreaAtSxscYYu0md6s6xw=
+X-Received: by 2002:a05:620a:b:: with SMTP id j11mr7094529qki.159.1623467407535;
+ Fri, 11 Jun 2021 20:10:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210611171940.960887-1-atomlin@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Sat, 12 Jun 2021 12:09:56 +0900
+Message-ID: <CAFr9PXkMSDvks+DeCNJ6iKf6zDH0VaOL6msirR3g2K7BNL8YkQ@mail.gmail.com>
+Subject: [GIT PULL] ARM: mstar for v5.14
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        arm@kernel.org, SoC Team <soc@kernel.org>
+Cc:     Romain Perier <romain.perier@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnd, Olof,
 
-On 2021/6/12 01:19, Aaron Tomlin wrote:
-> At the present time, when showing potential OOM victims, we do not
-> exclude tasks which already have MMF_OOM_SKIP set; it is possible that
-> the last OOM killable victim was already OOM killed, yet the OOM
-> reaper failed to reclaim memory and set MMF_OOM_SKIP.
-> This can be confusing/or perhaps even misleading, to the reader of the
-> OOM report. Now, we already unconditionally display a task's
-> oom_score_adj_min value that can be set to OOM_SCORE_ADJ_MIN which is
-> indicative of an "unkillable" task i.e. is not eligible.
->
-> This patch provides a clear indication with regard to the OOM
-> eligibility of each displayed task.
->
-> Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
-> ---
->  mm/oom_kill.c | 31 +++++++++++++++++++++++++++----
->  1 file changed, 27 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index eefd3f5fde46..70781d681a6e 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -160,6 +160,27 @@ static inline bool is_sysrq_oom(struct oom_control *oc)
->  	return oc->order == -1;
->  }
->  
-> +/**
-> + * is_task_eligible_oom - determine if and why a task cannot be OOM killed
-> + * @tsk: task to check
-> + *
-> + * Needs to be called with task_lock().
-> + */
-> +static const char * is_task_oom_eligible(struct task_struct *p)
-> +{
-> +	long adj;
-> +
-> +	adj = (long)p->signal->oom_score_adj;
-accoring to the origin type, adj this place maybe use *short* instead.
-> +	if (adj == OOM_SCORE_ADJ_MIN)
-> +		return "no: oom score";
-> +	else if (test_bit(MMF_OOM_SKIP, &p->mm->flags)
-> +		return "no: oom reaped";
-> +	else if (in_vfork(p))
-> +		return "no: in vfork";
-> +	else
-> +		return "yes";
-> +}
-> +
->  /* return true if the task is not adequate as candidate victim task. */
->  static bool oom_unkillable_task(struct task_struct *p)
->  {
-> @@ -401,12 +422,13 @@ static int dump_task(struct task_struct *p, void *arg)
->  		return 0;
->  	}
->  
-> -	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n",
-> +	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %-15s %s\n",
->  		task->pid, from_kuid(&init_user_ns, task_uid(task)),
->  		task->tgid, task->mm->total_vm, get_mm_rss(task->mm),
->  		mm_pgtables_bytes(task->mm),
->  		get_mm_counter(task->mm, MM_SWAPENTS),
-> -		task->signal->oom_score_adj, task->comm);
-> +		task->signal->oom_score_adj, is_task_oom_eligible(task),
-> +		task->comm);
->  	task_unlock(task);
->  
->  	return 0;
-> @@ -420,12 +442,13 @@ static int dump_task(struct task_struct *p, void *arg)
->   * memcg, not in the same cpuset, or bound to a disjoint set of mempolicy nodes
->   * are not shown.
->   * State information includes task's pid, uid, tgid, vm size, rss,
-> - * pgtables_bytes, swapents, oom_score_adj value, and name.
-> + * pgtables_bytes, swapents, oom_score_adj value, oom eligible status
-> + * and name.
->   */
->  static void dump_tasks(struct oom_control *oc)
->  {
->  	pr_info("Tasks state (memory values in pages):\n");
-> -	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name\n");
-> +	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom eligible? name\n");
->  
->  	if (is_memcg_oom(oc))
->  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
+This is my first time doing this so apologies in advance if I've messed this up.
+Anyhow, we have two very small patches for 5.14.
+
+- Romain has stepped up to clean up some of the ~300 patch backlog for
+MStar and he added support for earlyprintk in the process.
+- In an effort to do things properly I've moved work on the MStar
+stuff from my personal github account to one for this project. So
+people can find it I've added a link in MAINTAINERS.
+
+The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+
+ Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+
+are available in the Git repository at:
+
+ https://github.com/linux-chenxing/linux.git tags/mstar-5.14
+
+for you to fetch changes up to 06d09c789e2a78852adc99c54945457870247b09:
+
+ MAINTAINERS: ARM/MStar/Sigmastar SoCs: Add a link to the MStar tree
+(2021-06-12 11:40:49 +0900)
+
+----------------------------------------------------------------
+Daniel Palmer (1):
+     MAINTAINERS: ARM/MStar/Sigmastar SoCs: Add a link to the MStar tree
+
+Romain Perier (1):
+     ARM: debug: add UART early console support for MSTAR SoCs
+
+MAINTAINERS            |  1 +
+arch/arm/Kconfig.debug | 11 +++++++++++
+2 files changed, 12 insertions(+)
