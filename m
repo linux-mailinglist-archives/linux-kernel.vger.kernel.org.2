@@ -2,198 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4443A4D18
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 08:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECE43A4D1A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 08:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhFLGUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 02:20:50 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:8895 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhFLGUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 02:20:49 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G26wm2nXvzBD9b;
-        Sat, 12 Jun 2021 08:18:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id QlCphcttEh5f; Sat, 12 Jun 2021 08:18:48 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G26wk5B2tzBD9Y;
-        Sat, 12 Jun 2021 08:18:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A81AB8B772;
-        Sat, 12 Jun 2021 08:18:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id lY-zE4bzAve2; Sat, 12 Jun 2021 08:18:46 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 220D58B763;
-        Sat, 12 Jun 2021 08:18:46 +0200 (CEST)
-Subject: Re: [PATCH v2 08/12] powerpc/32s: Allow disabling KUAP at boot time
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <cover.1622708530.git.christophe.leroy@csgroup.eu>
- <cd79e8008455fba5395d099f9bb1305c039b931c.1622708530.git.christophe.leroy@csgroup.eu>
-Message-ID: <ee1fb979-3503-2c56-cde5-1ea7eed790d7@csgroup.eu>
-Date:   Sat, 12 Jun 2021 08:18:44 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230409AbhFLGWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 02:22:34 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42735 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhFLGWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 02:22:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623478833; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=jFsckA0yGeSVWnv5qUXKF1pxjXigefzOQ4QCAiw+cNI=;
+ b=tMlvLX+Ka5Zt6NXENSaoojTTZkTlDTL6hkT4LHScw6KvytZoHg1SQQyOs5SCQSqd6+Da8WH+
+ 0qutxNDlueR2tnfrnq6zuqRsK24gSZGBC/+6AS1VSEeX4epdoeDrDUcBsp07fqYZ5Ov9pUuQ
+ PgtxmhlXMs9ygWDU96RDvRpuuTM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60c4522be27c0cc77faa5a2d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 06:20:27
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CE474C43148; Sat, 12 Jun 2021 06:20:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 045C0C433F1;
+        Sat, 12 Jun 2021 06:20:24 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <cd79e8008455fba5395d099f9bb1305c039b931c.1622708530.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 12 Jun 2021 14:20:24 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/9] scsi: ufs: Differentiate status between hba pm ops
+ and wl pm ops
+In-Reply-To: <1b581673-a5f7-f2a8-787c-f055082dc9d2@acm.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-2-git-send-email-cang@codeaurora.org>
+ <1b581673-a5f7-f2a8-787c-f055082dc9d2@acm.org>
+Message-ID: <b01ed2e8c00152f8fc7f6a7e1238328c@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 03/06/2021 à 10:41, Christophe Leroy a écrit :
-> PPC64 uses MMU features to enable/disable KUAP at boot time.
-> But feature fixups are applied way too early on PPC32.
+On 2021-06-12 04:40, Bart Van Assche wrote:
+> On 6/9/21 9:43 PM, Can Guo wrote:
+>> Put pm_op_in_progress and is_sys_suspend flags back to ufshcd hba pm 
+>> ops,
+>> add two new flags, namely wl_pm_op_in_progress and 
+>> is_wl_sys_suspended, to
+>> track the UFS device W-LU pm ops. This helps us differentiate the 
+>> status of
+>> hba and wl pm ops when we need to do troubleshooting.
 > 
-> Now that all KUAP related actions are in C following the
-> conversion of KUAP initial setup and context switch in C,
-> static branches can be used to enable/disable KUAP.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->   arch/powerpc/include/asm/book3s/32/kup.h | 27 +++++++++++++++++++++++-
->   arch/powerpc/mm/book3s32/kuap.c          | 11 ++++++----
->   2 files changed, 33 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
-> index 2854d970dabe..68fbe28c6d7e 100644
-> --- a/arch/powerpc/include/asm/book3s/32/kup.h
-> +++ b/arch/powerpc/include/asm/book3s/32/kup.h
-> @@ -9,11 +9,12 @@
->   
->   #include <linux/jump_label.h>
->   
-> +extern struct static_key_false disable_kuap_key;
+> Since "WL" is an uncommon abbreviation, please add a comment above the
+> definition of struct ufs_hba that explains the meaning of the new 
+> member
+> variables.
 
-Same as 8xx, this needs to be exported for modules.
+Sure, will add in next version.
 
->   extern struct static_key_false disable_kuep_key;
->   
->   static __always_inline bool kuap_is_disabled(void)
->   {
-> -	return !IS_ENABLED(CONFIG_PPC_KUAP);
-> +	return !IS_ENABLED(CONFIG_PPC_KUAP) || static_branch_unlikely(&disable_kuap_key);
->   }
->   
->   static __always_inline bool kuep_is_disabled(void)
-> @@ -62,6 +63,9 @@ static inline void kuap_save_and_lock(struct pt_regs *regs)
->   	u32 addr = kuap & 0xf0000000;
->   	u32 end = kuap << 28;
->   
-> +	if (kuap_is_disabled())
-> +		return;
-> +
->   	regs->kuap = kuap;
->   	if (unlikely(!kuap))
->   		return;
-> @@ -79,6 +83,9 @@ static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long kuap)
->   	u32 addr = regs->kuap & 0xf0000000;
->   	u32 end = regs->kuap << 28;
->   
-> +	if (kuap_is_disabled())
-> +		return;
-> +
->   	current->thread.kuap = regs->kuap;
->   
->   	if (unlikely(regs->kuap == kuap))
-> @@ -91,6 +98,9 @@ static inline unsigned long kuap_get_and_assert_locked(void)
->   {
->   	unsigned long kuap = current->thread.kuap;
->   
-> +	if (kuap_is_disabled())
-> +		return 0;
-> +
->   	WARN_ON_ONCE(IS_ENABLED(CONFIG_PPC_KUAP_DEBUG) && kuap != 0);
->   
->   	return kuap;
-> @@ -106,6 +116,9 @@ static __always_inline void allow_user_access(void __user *to, const void __user
->   {
->   	u32 addr, end;
->   
-> +	if (kuap_is_disabled())
-> +		return;
-> +
->   	BUILD_BUG_ON(!__builtin_constant_p(dir));
->   	BUILD_BUG_ON(dir & ~KUAP_READ_WRITE);
->   
-> @@ -128,6 +141,9 @@ static __always_inline void prevent_user_access(void __user *to, const void __us
->   {
->   	u32 addr, end;
->   
-> +	if (kuap_is_disabled())
-> +		return;
-> +
->   	BUILD_BUG_ON(!__builtin_constant_p(dir));
->   
->   	if (dir & KUAP_CURRENT_WRITE) {
-> @@ -159,6 +175,9 @@ static inline unsigned long prevent_user_access_return(void)
->   	unsigned long end = flags << 28;
->   	void __user *to = (__force void __user *)addr;
->   
-> +	if (kuap_is_disabled())
-> +		return 0;
-> +
->   	if (flags)
->   		prevent_user_access(to, to, end - addr, KUAP_READ_WRITE);
->   
-> @@ -171,6 +190,9 @@ static inline void restore_user_access(unsigned long flags)
->   	unsigned long end = flags << 28;
->   	void __user *to = (__force void __user *)addr;
->   
-> +	if (kuap_is_disabled())
-> +		return;
-> +
->   	if (flags)
->   		allow_user_access(to, to, end - addr, KUAP_READ_WRITE);
->   }
-> @@ -181,6 +203,9 @@ bad_kuap_fault(struct pt_regs *regs, unsigned long address, bool is_write)
->   	unsigned long begin = regs->kuap & 0xf0000000;
->   	unsigned long end = regs->kuap << 28;
->   
-> +	if (kuap_is_disabled())
-> +		return false;
-> +
->   	return is_write && (address < begin || address >= end);
->   }
->   
-> diff --git a/arch/powerpc/mm/book3s32/kuap.c b/arch/powerpc/mm/book3s32/kuap.c
-> index 5533ed92ab3d..a4ce6cdc28e5 100644
-> --- a/arch/powerpc/mm/book3s32/kuap.c
-> +++ b/arch/powerpc/mm/book3s32/kuap.c
-> @@ -3,15 +3,18 @@
->   #include <asm/kup.h>
->   #include <asm/smp.h>
->   
-> +struct static_key_false disable_kuap_key;
-> +
->   void __init setup_kuap(bool disabled)
->   {
-> -	kuap_update_sr(mfsr(0) | SR_KS, 0, TASK_SIZE);
-> +	if (!disabled)
-> +		kuap_update_sr(mfsr(0) | SR_KS, 0, TASK_SIZE);
->   
->   	if (smp_processor_id() != boot_cpuid)
->   		return;
->   
-> -	pr_info("Activating Kernel Userspace Access Protection\n");
-> -
->   	if (disabled)
-> -		pr_warn("KUAP cannot be disabled yet on 6xx when compiled in\n");
-> +		static_branch_enable(&disable_kuap_key);
-> +	else
-> +		pr_info("Activating Kernel Userspace Access Protection\n");
->   }
+Thanks,
+Can Guo.
+
 > 
+> Thanks,
+> 
+> Bart.
