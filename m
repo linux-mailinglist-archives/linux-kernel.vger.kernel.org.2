@@ -2,387 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C004D3A4D54
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8755C3A4D56
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhFLHUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 03:20:53 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:22346 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230115AbhFLHUu (ORCPT
+        id S230305AbhFLHXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:23:52 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:33984 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhFLHXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 03:20:50 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d74 with ME
-        id G7Jp2500D21Fzsu037Jq2t; Sat, 12 Jun 2021 09:18:50 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 12 Jun 2021 09:18:50 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     subbu.seetharaman@broadcom.com, ketan.mukadam@broadcom.com,
-        jitendra.bhivare@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, minhduc.tran@emulex.com,
-        sony.john-n@emulex.com, JBottomley@Parallels.com,
-        jayamohank@gmail.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/2] scsi: be2iscsi: Fix some missing space in some messages (+some extra style issues)
-Date:   Sat, 12 Jun 2021 09:18:47 +0200
-Message-Id: <8cb62f0eb96ec7ce7a73fe97cb4490dd5121ecff.1623482155.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <77adb02cfea7f1364e5603ecf3930d8597ae356e.1623482155.git.christophe.jaillet@wanadoo.fr>
-References: <77adb02cfea7f1364e5603ecf3930d8597ae356e.1623482155.git.christophe.jaillet@wanadoo.fr>
+        Sat, 12 Jun 2021 03:23:51 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15C7LlC1067900;
+        Sat, 12 Jun 2021 02:21:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623482507;
+        bh=YzSaoRQU35DpLlcWUVC889LLvvrRwlO1hWjuvl74KpI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=e8BAXI0fJ7Jm+izmuW8MDcjtWCvDZaLnUwNuv8bInZPv7/D6MFNh6KobPkF2otcEA
+         89z8Tg3tLTBBTD6MtQvkVGIE8T0HkpvSK3exJ9LMp8N0Glrz54w+yzpl7rWF6TtRfe
+         pdtyCxN4+jJOF4Bq6knLJRIKP40A6Q1O/wV9uoZ8=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15C7LlRN035598
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 12 Jun 2021 02:21:47 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 12
+ Jun 2021 02:21:46 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Sat, 12 Jun 2021 02:21:46 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15C7LhVb089548;
+        Sat, 12 Jun 2021 02:21:44 -0500
+Subject: Re: [PATCH] arm64: dts: ti: k3-am64-main: Add SYSFW reserved ranges
+ in OCRAM
+To:     Nishanth Menon <nm@ti.com>
+CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Aswath Govindraju <a-govindraju@ti.com>
+References: <20210609140604.9490-1-vigneshr@ti.com>
+ <20210611191640.lczsliyzasjie6lm@dismantle>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <84e5865f-e107-f0e1-ca8b-b6bd655e92e6@ti.com>
+Date:   Sat, 12 Jun 2021 12:51:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210611191640.lczsliyzasjie6lm@dismantle>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a few style issues reported by checkpatch.pl
-  Avoid duplicated word in comment.
-  Add missing space in messages.
-  Unneeded continuation line character.
-  Unneeded extra spaces.
-  Unneeded log message after memory allocation failure.
++Aswath
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This driver looks old, so fixing some style issue could be useless.
-However, the ones fixed here look useful to me, either because it improves
-the readability of log messages (missing spaces), reduce warnings
-generated by some static checker (extra space/alignment issue) or removes
-some weird style (continuation line)
+On 6/12/21 12:46 AM, Nishanth Menon wrote:
+> On 19:36-20210609, Vignesh Raghavendra wrote:
+>> Last 256K of OCRAM (256K@0x701c0000) is reserved for SYSFW usage. Hence
+>> add an entry in DT so that its not used for generic pool memory
+>> allocation.
+> 
+> Are you really sure?? I know that I had set a budget for 16K in sysfw
+> when I did the memory split up for sysfw of which 16k is actually used.
+> 
+> Not sure where this 256K bucket started off from.. am I missing
+> something here?
+> 
 
-Much more could be done, but many of the remaining style issues are related
-to split messages, and such warnings are, IMHO, mostly useless to fix.
+Per: http://software-dl.ti.com/tisci/esd/latest/5_soc_doc/am64x/firewalls.html
 
-Feel free to ignore this patch :)
----
- drivers/scsi/be2iscsi/be_main.c | 102 ++++++++++++--------------------
- 1 file changed, 38 insertions(+), 64 deletions(-)
+24	dmsc	0x44060000	0x4407BFFF	dmsc,rwcd	 	 // alias for 0x701E0000
+24	dmsc	0x701FC000	0x701FFFFF	sproxy_private,rwcd	 	 
+24	dmsc	0x4407C000	0x4407FFFF	sproxy_private,rwcd	 	 
+24	dmsc	0x701C0000	0x701DFFFF	everyone,rwcd	 	 
 
-diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index b89a7db477c7..e70f69f791db 100644
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -143,8 +143,7 @@ DEVICE_ATTR(beiscsi_##_name, S_IRUGO | S_IWUSR,\
- 	      beiscsi_##_name##_disp, beiscsi_##_name##_store)
- 
- /*
-- * When new log level added update the
-- * the MAX allowed value for log_enable
-+ * When new log level added update MAX allowed value for log_enable
-  */
- BEISCSI_RW_ATTR(log_enable, 0x00,
- 		0xFF, 0x00, "Enable logging Bit Mask\n"
-@@ -825,9 +824,8 @@ static int beiscsi_init_irqs(struct beiscsi_hba *phba)
- 					  &phwi_context->be_eq[i]);
- 			if (ret) {
- 				beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--					    "BM_%d : beiscsi_init_irqs-Failed to"
--					    "register msix for i = %d\n",
--					    i);
-+					    "BM_%d : %s-Failed to register msix for i = %d\n",
-+					    __func__, i);
- 				kfree(phba->msi_name[i]);
- 				goto free_msix_irqs;
- 			}
-@@ -841,9 +839,9 @@ static int beiscsi_init_irqs(struct beiscsi_hba *phba)
- 		ret = request_irq(pci_irq_vector(pcidev, i), be_isr_mcc, 0,
- 				  phba->msi_name[i], &phwi_context->be_eq[i]);
- 		if (ret) {
--			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT ,
--				    "BM_%d : beiscsi_init_irqs-"
--				    "Failed to register beiscsi_msix_mcc\n");
-+			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
-+				    "BM_%d : %s-Failed to register beiscsi_msix_mcc\n",
-+				    __func__);
- 			kfree(phba->msi_name[i]);
- 			goto free_msix_irqs;
- 		}
-@@ -853,8 +851,8 @@ static int beiscsi_init_irqs(struct beiscsi_hba *phba)
- 				  "beiscsi", phba);
- 		if (ret) {
- 			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--				    "BM_%d : beiscsi_init_irqs-"
--				    "Failed to register irq\\n");
-+				    "BM_%d : %s-Failed to register irq\n",
-+				    __func__);
- 			return ret;
- 		}
- 	}
-@@ -1030,7 +1028,7 @@ free_wrb_handle(struct beiscsi_hba *phba, struct hwi_wrb_context *pwrb_context,
- 			       phba->params.wrbs_per_cxn);
- 	beiscsi_log(phba, KERN_INFO,
- 		    BEISCSI_LOG_IO | BEISCSI_LOG_CONFIG,
--		    "BM_%d : FREE WRB: pwrb_handle=%p free_index=0x%x"
-+		    "BM_%d : FREE WRB: pwrb_handle=%p free_index=0x%x "
- 		    "wrb_handles_available=%d\n",
- 		    pwrb_handle, pwrb_context->free_index,
- 		    pwrb_context->wrb_handles_available);
-@@ -1374,7 +1372,7 @@ static void hwi_complete_cmd(struct beiscsi_conn *beiscsi_conn,
- 		beiscsi_log(phba, KERN_ERR,
- 			    BEISCSI_LOG_CONFIG | BEISCSI_LOG_IO,
- 			    "BM_%d :\t\t No HWH_TYPE_LOGIN Expected in"
--			    " hwi_complete_cmd- Solicited path\n");
-+			    " %s- Solicited path\n", __func__);
- 		break;
- 
- 	case HWH_TYPE_NOP:
-@@ -1384,8 +1382,8 @@ static void hwi_complete_cmd(struct beiscsi_conn *beiscsi_conn,
- 	default:
- 		beiscsi_log(phba, KERN_WARNING,
- 			    BEISCSI_LOG_CONFIG | BEISCSI_LOG_IO,
--			    "BM_%d : In hwi_complete_cmd, unknown type = %d"
--			    "wrb_index 0x%x CID 0x%x\n", type,
-+			    "BM_%d : In %s, unknown type = %d "
-+			    "wrb_index 0x%x CID 0x%x\n", __func__, type,
- 			    csol_cqe.wrb_index,
- 			    csol_cqe.cid);
- 		break;
-@@ -1883,9 +1881,9 @@ unsigned int beiscsi_process_cq(struct be_eq_obj *pbe_eq, int budget)
- 				cid = AMAP_GET_BITS(
- 						    struct amap_i_t_dpdu_cqe_v2,
- 						    cid, sol);
--			 else
--				 cid = AMAP_GET_BITS(struct amap_sol_cqe_v2,
--						     cid, sol);
-+			else
-+				cid = AMAP_GET_BITS(struct amap_sol_cqe_v2,
-+						    cid, sol);
- 		}
- 
- 		cri_index = BE_GET_CRI_FROM_CID(cid);
-@@ -2010,8 +2008,7 @@ unsigned int beiscsi_process_cq(struct be_eq_obj *pbe_eq, int budget)
- 		default:
- 			beiscsi_log(phba, KERN_ERR,
- 				    BEISCSI_LOG_IO | BEISCSI_LOG_CONFIG,
--				    "BM_%d : Invalid CQE Event Received Code : %d"
--				    "CID 0x%x...\n",
-+				    "BM_%d : Invalid CQE Event Received Code : %d CID 0x%x...\n",
- 				    code, cid);
- 			break;
- 		}
-@@ -3001,7 +2998,7 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
- 	void *eq_vaddress;
- 	dma_addr_t paddr;
- 
--	num_eq_pages = PAGES_REQUIRED(phba->params.num_eq_entries * \
-+	num_eq_pages = PAGES_REQUIRED(phba->params.num_eq_entries *
- 				      sizeof(struct be_eq_entry));
- 
- 	if (phba->pcidev->msix_enabled)
-@@ -3034,8 +3031,7 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
- 					    BEISCSI_EQ_DELAY_DEF);
- 		if (ret) {
- 			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--				    "BM_%d : beiscsi_cmd_eq_create"
--				    "Failed for EQ\n");
-+				    "BM_%d : beiscsi_cmd_eq_create Failed for EQ\n");
- 			goto create_eq_error;
- 		}
- 
-@@ -3068,7 +3064,7 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 	int ret = -ENOMEM;
- 	dma_addr_t paddr;
- 
--	num_cq_pages = PAGES_REQUIRED(phba->params.num_cq_entries * \
-+	num_cq_pages = PAGES_REQUIRED(phba->params.num_cq_entries *
- 				      sizeof(struct sol_cqe));
- 
- 	for (i = 0; i < phba->num_cpus; i++) {
-@@ -3090,8 +3086,7 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 				    sizeof(struct sol_cqe), cq_vaddress);
- 		if (ret) {
- 			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--				    "BM_%d : be_fill_queue Failed "
--				    "for ISCSI CQ\n");
-+				    "BM_%d : be_fill_queue Failed for ISCSI CQ\n");
- 			goto create_cq_error;
- 		}
- 
-@@ -3100,8 +3095,7 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 					    false, 0);
- 		if (ret) {
- 			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--				    "BM_%d : beiscsi_cmd_eq_create"
--				    "Failed for ISCSI CQ\n");
-+				    "BM_%d : beiscsi_cmd_eq_create Failed for ISCSI CQ\n");
- 			goto create_cq_error;
- 		}
- 		beiscsi_log(phba, KERN_INFO, BEISCSI_LOG_INIT,
-@@ -3226,8 +3220,8 @@ beiscsi_create_def_data(struct beiscsi_hba *phba,
- 		    phwi_context->be_def_dataq[ulp_num].id);
- 
- 	beiscsi_log(phba, KERN_INFO, BEISCSI_LOG_INIT,
--		    "BM_%d : DEFAULT PDU DATA RING CREATED"
--		    "on ULP : %d\n", ulp_num);
-+		    "BM_%d : DEFAULT PDU DATA RING CREATED on ULP : %d\n",
-+		    ulp_num);
- 	return 0;
- }
- 
-@@ -3253,13 +3247,13 @@ beiscsi_post_template_hdr(struct beiscsi_hba *phba)
- 
- 			if (status != 0) {
- 				beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--					    "BM_%d : Post Template HDR Failed for"
-+					    "BM_%d : Post Template HDR Failed for "
- 					    "ULP_%d\n", ulp_num);
- 				return status;
- 			}
- 
- 			beiscsi_log(phba, KERN_INFO, BEISCSI_LOG_INIT,
--				    "BM_%d : Template HDR Pages Posted for"
-+				    "BM_%d : Template HDR Pages Posted for "
- 				    "ULP_%d\n", ulp_num);
- 		}
- 	}
-@@ -3374,18 +3368,17 @@ beiscsi_create_wrb_rings(struct beiscsi_hba *phba,
- 		} else {
- 			idx++;
- 			wrb_vaddr = mem_descr->mem_array[idx].virtual_address;
--			pa_addr_lo = mem_descr->mem_array[idx].\
-+			pa_addr_lo = mem_descr->mem_array[idx].
- 					bus_address.u.a64.address;
- 			num_wrb_rings = mem_descr->mem_array[idx].size /
- 					(phba->params.wrbs_per_cxn *
- 					sizeof(struct iscsi_wrb));
- 			pwrb_arr[num].virtual_address = wrb_vaddr;
--			pwrb_arr[num].bus_address.u.a64.address\
--						= pa_addr_lo;
-+			pwrb_arr[num].bus_address.u.a64.address = pa_addr_lo;
- 			pwrb_arr[num].size = phba->params.wrbs_per_cxn *
- 						 sizeof(struct iscsi_wrb);
- 			wrb_vaddr += pwrb_arr[num].size;
--			pa_addr_lo   += pwrb_arr[num].size;
-+			pa_addr_lo += pwrb_arr[num].size;
- 			num_wrb_rings--;
- 		}
- 	}
-@@ -3937,7 +3930,7 @@ static int beiscsi_init_sgl_handle(struct beiscsi_hba *phba)
- 		idx++;
- 	}
- 	beiscsi_log(phba, KERN_INFO, BEISCSI_LOG_INIT,
--		    "BM_%d : phba->io_sgl_hndl_avbl=%d"
-+		    "BM_%d : phba->io_sgl_hndl_avbl=%d "
- 		    "phba->eh_sgl_hndl_avbl=%d\n",
- 		    phba->io_sgl_hndl_avbl,
- 		    phba->eh_sgl_hndl_avbl);
-@@ -3995,13 +3988,8 @@ static int hba_setup_cid_tbls(struct beiscsi_hba *phba)
- 					       GFP_KERNEL);
- 
- 			if (!ptr_cid_info) {
--				beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--					    "BM_%d : Failed to allocate memory"
--					    "for ULP_CID_INFO for ULP : %d\n",
--					    ulp_num);
- 				ret = -ENOMEM;
- 				goto free_memory;
--
- 			}
- 
- 			/* Allocate memory for CID array */
-@@ -4010,10 +3998,6 @@ static int hba_setup_cid_tbls(struct beiscsi_hba *phba)
- 					sizeof(*ptr_cid_info->cid_array),
- 					GFP_KERNEL);
- 			if (!ptr_cid_info->cid_array) {
--				beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--					    "BM_%d : Failed to allocate memory"
--					    "for CID_ARRAY for ULP : %d\n",
--					    ulp_num);
- 				kfree(ptr_cid_info);
- 				ptr_cid_info = NULL;
- 				ret = -ENOMEM;
-@@ -4031,9 +4015,6 @@ static int hba_setup_cid_tbls(struct beiscsi_hba *phba)
- 				 sizeof(struct iscsi_endpoint *),
- 				 GFP_KERNEL);
- 	if (!phba->ep_array) {
--		beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--			    "BM_%d : Failed to allocate memory in "
--			    "hba_setup_cid_tbls\n");
- 		ret = -ENOMEM;
- 
- 		goto free_memory;
-@@ -4043,10 +4024,6 @@ static int hba_setup_cid_tbls(struct beiscsi_hba *phba)
- 				   sizeof(struct beiscsi_conn *),
- 				   GFP_KERNEL);
- 	if (!phba->conn_table) {
--		beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
--			    "BM_%d : Failed to allocate memory in"
--			    "hba_setup_cid_tbls\n");
--
- 		kfree(phba->ep_array);
- 		phba->ep_array = NULL;
- 		ret = -ENOMEM;
-@@ -4399,7 +4376,7 @@ static int beiscsi_alloc_pdu(struct iscsi_task *task, uint8_t opcode)
- 		if (!io_task->psgl_handle) {
- 			beiscsi_log(phba, KERN_ERR,
- 				    BEISCSI_LOG_IO | BEISCSI_LOG_CONFIG,
--				    "BM_%d : Alloc of IO_SGL_ICD Failed"
-+				    "BM_%d : Alloc of IO_SGL_ICD Failed "
- 				    "for the CID : %d\n",
- 				    beiscsi_conn->beiscsi_conn_cid);
- 			goto free_hndls;
-@@ -4410,7 +4387,7 @@ static int beiscsi_alloc_pdu(struct iscsi_task *task, uint8_t opcode)
- 		if (!io_task->pwrb_handle) {
- 			beiscsi_log(phba, KERN_ERR,
- 				    BEISCSI_LOG_IO | BEISCSI_LOG_CONFIG,
--				    "BM_%d : Alloc of WRB_HANDLE Failed"
-+				    "BM_%d : Alloc of WRB_HANDLE Failed "
- 				    "for the CID : %d\n",
- 				    beiscsi_conn->beiscsi_conn_cid);
- 			goto free_io_hndls;
-@@ -4426,10 +4403,9 @@ static int beiscsi_alloc_pdu(struct iscsi_task *task, uint8_t opcode)
- 					beiscsi_log(phba, KERN_ERR,
- 						    BEISCSI_LOG_IO |
- 						    BEISCSI_LOG_CONFIG,
--						    "BM_%d : Alloc of MGMT_SGL_ICD Failed"
-+						    "BM_%d : Alloc of MGMT_SGL_ICD Failed "
- 						    "for the CID : %d\n",
--						    beiscsi_conn->
--						    beiscsi_conn_cid);
-+						    beiscsi_conn->beiscsi_conn_cid);
- 					goto free_hndls;
- 				}
- 
-@@ -4444,10 +4420,9 @@ static int beiscsi_alloc_pdu(struct iscsi_task *task, uint8_t opcode)
- 					beiscsi_log(phba, KERN_ERR,
- 						    BEISCSI_LOG_IO |
- 						    BEISCSI_LOG_CONFIG,
--						    "BM_%d : Alloc of WRB_HANDLE Failed"
-+						    "BM_%d : Alloc of WRB_HANDLE Failed "
- 						    "for the CID : %d\n",
--						    beiscsi_conn->
--						    beiscsi_conn_cid);
-+						    beiscsi_conn->beiscsi_conn_cid);
- 					goto free_mgmt_hndls;
- 				}
- 				beiscsi_conn->plogin_wrb_handle =
-@@ -4465,10 +4440,9 @@ static int beiscsi_alloc_pdu(struct iscsi_task *task, uint8_t opcode)
- 				beiscsi_log(phba, KERN_ERR,
- 					    BEISCSI_LOG_IO |
- 					    BEISCSI_LOG_CONFIG,
--					    "BM_%d : Alloc of MGMT_SGL_ICD Failed"
-+					    "BM_%d : Alloc of MGMT_SGL_ICD Failed "
- 					    "for the CID : %d\n",
--					    beiscsi_conn->
--					    beiscsi_conn_cid);
-+					    beiscsi_conn->beiscsi_conn_cid);
- 				goto free_hndls;
- 			}
- 			io_task->pwrb_handle =
-@@ -4478,7 +4452,7 @@ static int beiscsi_alloc_pdu(struct iscsi_task *task, uint8_t opcode)
- 			if (!io_task->pwrb_handle) {
- 				beiscsi_log(phba, KERN_ERR,
- 					    BEISCSI_LOG_IO | BEISCSI_LOG_CONFIG,
--					    "BM_%d : Alloc of WRB_HANDLE Failed"
-+					    "BM_%d : Alloc of WRB_HANDLE Failed "
- 					    "for the CID : %d\n",
- 					    beiscsi_conn->beiscsi_conn_cid);
- 				goto free_mgmt_hndls;
--- 
-2.30.2
+So it looks like only 128K@0x701E0000 is firewalled off. 
+Will update the patch.
 
+This makes me wonder why ATF is being moved to 0x701a0000-0x701c0000
+leaving a hole at 0x701C0000-0x701DFFFF? 
+
+
+> 
+>>
+>> Without this certain drivers using SRAM as generic shared memory pool
+>> may end up being allocated memory from this range and will lead to boot
+>> time crash when the reserved range is accessed (due to firewall
+>> violation).
+>>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> index f1c42ef05e52..77b88e536534 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> @@ -16,6 +16,10 @@ oc_sram: sram@70000000 {
+>>  		atf-sram@0 {
+>>  			reg = <0x0 0x1a000>;
+>>  		};
+>> +
+>> +		dmsc-sram@1c0000 {
+>> +			reg = <0x1c0000 0x40000>;
+> 
+>> +		};
+>>  	};
+>>  
+>>  	gic500: interrupt-controller@1800000 {
+>> -- 
+>> 2.31.1
+>>
+> 
