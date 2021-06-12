@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCB03A4BE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 03:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5ECE3A4BE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 03:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhFLBPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 21:15:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229622AbhFLBPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 21:15:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61268610F8;
-        Sat, 12 Jun 2021 01:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623460430;
-        bh=hOWj5oxUzKrR7TOCf/4ZU1SJcAZxb5xvcGCReAuhJ3A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Oi1FHr0Ehnn0ao9HxhLQB3q8Yt8hjSQNYQkdnj8h5Mipb3IQJcZ22uIWNhYUtvC/u
-         w55wS1XQwM0a1Pa8kPetHN7P2Ugb37kTOvVq1o4nuQ9epEZXVNNS/K++3CMfvLCRZ5
-         5zpT8giWvmciecWimABZDSI3VYwIp7e3fupPk5Ya1kIHVUAv7wjhiSQAbK8ZyJ1Fiq
-         qXoPXHPW7cWZCdfpegrLtO3KdAu8TbL6Tnbw5HW2CXUcGNKB2DkE8eUPstqbZ+6Ebu
-         RD2KQWoXP6HFRmocEhs4+NJZi75cjCgeSkmR1TmEQPXtPzjNEb49tfc7cSkflAWheW
-         LEzlRP4b6WYcg==
-Date:   Sat, 12 Jun 2021 10:13:47 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
-Message-Id: <20210612101347.a8e317344b0e6380d41f1cfe@kernel.org>
-In-Reply-To: <1623419180.o4u5xf72jm.naveen@linux.ibm.com>
-References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
-        <20210610191643.d24e7d56d102567070fe8386@kernel.org>
-        <1623419180.o4u5xf72jm.naveen@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230428AbhFLBQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 21:16:51 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60644 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhFLBQu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 21:16:50 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15C1Emqs093591;
+        Fri, 11 Jun 2021 20:14:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623460488;
+        bh=YhfzaOgplXxGDdxcfrU93rDby0wlyVyx6fZXeEstpsM=;
+        h=From:To:CC:Subject:Date;
+        b=rmLDNcHcSyZy8O0dS4D8rkqfOQjYJ075Jmc2ln0ycLca5i1ODn8LNTf2rcY/YFvwQ
+         aihLH3yAGMETHoRvrLuen2hGG75Gc4q1ia4SqEe6xPagxJIcWS0Q3mywtHZPULI6wN
+         x5zxNGRo4L0+APOjTKzi68qt3jX+d77uT5zQ8k8s=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15C1EmNP056785
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Jun 2021 20:14:48 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
+ Jun 2021 20:14:48 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 11 Jun 2021 20:14:48 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15C1Ek8H100010;
+        Fri, 11 Jun 2021 20:14:47 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tony Lindgren <tony@atomide.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-omap@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH next 00/15] ARM: dts: am335x: switch rest boards to new cpsw switch drv
+Date:   Sat, 12 Jun 2021 04:14:21 +0300
+Message-ID: <20210612011436.10437-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naveen,
+Hi Tony,
 
-On Fri, 11 Jun 2021 19:25:38 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+This series converts rest of am335x boards to use new CPSW switchdev driver.
+Only build tested.
 
-> Hi Masami,
-> Thanks for the review.
-> 
-> 
-> Masami Hiramatsu wrote:
-> > Hi Naveen,
-> > 
-> > On Thu, 10 Jun 2021 14:26:17 +0530
-> > "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
-> > 
-> >> When probing at different locations in the kernel, it is not always
-> >> evident if the location can be probed or not. As an example:
-> >> 
-> >>     $ perf probe __radix__flush_tlb_range:35
-> >>     Failed to write event: Invalid argument
-> >>       Error: Failed to add events.
-> >> 
-> >> The probed line above is:
-> >>      35         if (!mmu_has_feature(MMU_FTR_GTSE) && type == FLUSH_TYPE_GLOBAL) {
-> >> 
-> >> This ends up trying to probe on BUILD_BUG_ON(), which is rejected.
-> >> However, the user receives no indication at all as to why the probe
-> >> failed. Print an error in such cases so that it is clear that the probe
-> >> was rejected.
-> > 
-> > Hmm, Nack for this way, but I understand that is a problem.
-> > If you got the error in perf probe, which uses ftrace dynamic-event interface.
-> > In that case, the errors should not be output in the dmesg, but are reported
-> > via error_log in tracefs.
-> 
-> That would be a nice thing to add to perf, but I don't see why this 
-> should be a either/or. I still think it is good to have the core kprobe 
-> infrastructure print such errors in the kernel log.
+After this only dm814x.dtsi related part left.
 
-Yes, but that is only when if there is any unexpected errors.
+Grygorii Strashko (15):
+  ARM: dts: am335x-baltos: switch to new cpsw switch drv
+  ARM: dts: am335x-nano: switch to new cpsw switch drv
+  ARM: dts: am335x-chiliboard: switch to new cpsw switch drv
+  ARM: dts: am335x-cm-t335: switch to new cpsw switch drv
+  ARM: dts: am335x-igep0033: switch to new cpsw switch drv
+  ARM: dts: am335x-lxm: switch to new cpsw switch drv
+  ARM: dts: am335x-moxa-uc: switch to new cpsw switch drv
+  ARM: dts: am335x-myirtech: switch to new cpsw switch drv
+  ARM: dts: am335x-osd3358-sm-red: switch to new cpsw switch drv
+  ARM: dts: am335x-pdu001: switch to new cpsw switch drv
+  ARM: dts: am335x-pepper: switch to new cpsw switch drv
+  ARM: dts: am335x-phycore: switch to new cpsw switch drv
+  ARM: dts: am335x-shc: switch to new cpsw switch drv
+  ARM: dts: am335x-sl50: switch to new cpsw switch drv
+  ARM: dts: am33xx: update ethernet aliases
 
-For the expected error (e.g. rejecting user input), the design policy is
-- kprobes API should return correct error code.
-- kprobe tracefs I/F should return correct error code and put a human
-  readable error mesage in the error_log.
-Thus, the perf probe should decode the error code or reuse the error_log.
-
-> It is easier to look 
-> up such error strings in the kernel source to understand why a probe was 
-> rejected.
-
-I don't like to put a log message for rejecting user input on dmesg anymore.
-
-
-> We also have perf_event_open() as an interface to add probes, and I 
-> don't think it would be helpful to require all tools to utilize the 
-> error log from tracefs for this purpose.
-
-No, perf probe doesn't use perf-event interface to add probes. It uses
-the tracefs for adding probes.
-
-Thank you,
-
-
-> 
-> 
-> - Naveen
-> 
-
+ arch/arm/boot/dts/am335x-baltos-ir2110.dts    | 10 ++---
+ arch/arm/boot/dts/am335x-baltos-ir3220.dts    |  8 ++--
+ arch/arm/boot/dts/am335x-baltos-ir5221.dts    |  8 ++--
+ arch/arm/boot/dts/am335x-baltos.dtsi          |  5 +--
+ arch/arm/boot/dts/am335x-chiliboard.dts       | 13 ++++---
+ arch/arm/boot/dts/am335x-cm-t335.dts          | 13 ++++---
+ arch/arm/boot/dts/am335x-igep0033.dtsi        | 12 +++---
+ arch/arm/boot/dts/am335x-lxm.dts              | 14 +++----
+ .../boot/dts/am335x-moxa-uc-2100-common.dtsi  | 12 +++---
+ arch/arm/boot/dts/am335x-moxa-uc-2101.dts     |  7 ++--
+ .../boot/dts/am335x-moxa-uc-8100-common.dtsi  | 16 +++-----
+ arch/arm/boot/dts/am335x-myirtech-myc.dtsi    | 25 ++++++------
+ arch/arm/boot/dts/am335x-myirtech-myd.dts     | 18 +++++----
+ arch/arm/boot/dts/am335x-nano.dts             | 13 +++----
+ arch/arm/boot/dts/am335x-netcan-plus-1xx.dts  | 10 ++---
+ arch/arm/boot/dts/am335x-netcom-plus-2xx.dts  | 10 ++---
+ arch/arm/boot/dts/am335x-netcom-plus-8xx.dts  | 10 ++---
+ arch/arm/boot/dts/am335x-osd3358-sm-red.dts   | 13 ++++---
+ arch/arm/boot/dts/am335x-pcm-953.dtsi         | 10 ++---
+ arch/arm/boot/dts/am335x-pdu001.dts           | 14 +++----
+ arch/arm/boot/dts/am335x-pepper.dts           | 14 +++----
+ arch/arm/boot/dts/am335x-phycore-som.dtsi     | 14 ++++---
+ arch/arm/boot/dts/am335x-regor.dtsi           | 11 +++---
+ arch/arm/boot/dts/am335x-shc.dts              | 38 ++++++++++---------
+ arch/arm/boot/dts/am335x-sl50.dts             | 12 ++++--
+ arch/arm/boot/dts/am335x-wega.dtsi            | 11 +++---
+ arch/arm/boot/dts/am33xx.dtsi                 |  4 +-
+ 27 files changed, 176 insertions(+), 169 deletions(-)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.17.1
+
