@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66A83A4E17
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 11:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FCA3A4E1F
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 12:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhFLJ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 05:56:47 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:56305 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFLJ4p (ORCPT
+        id S230208AbhFLKJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 06:09:10 -0400
+Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:48974 "EHLO
+        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229584AbhFLKJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 05:56:45 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mbies-1lKKIE362I-00dFkY; Sat, 12 Jun 2021 11:54:44 +0200
-Received: by mail-wm1-f44.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so10047685wms.0;
-        Sat, 12 Jun 2021 02:54:44 -0700 (PDT)
-X-Gm-Message-State: AOAM530a7rvG6rXdc+YKD0sSnOIawFnnWgUnwaXSNZiPtOTo9lacYERe
-        i1Mzkjlyrj4skK87nMjMTbFWMiIRSmfBryh/4vQ=
-X-Google-Smtp-Source: ABdhPJwn2BYTX5/QkNEs0bR510OlVhGDCvA1jD8WEIHjWsisXpME1WyYu5aNpbTe+mRGf89UPeAHmHX4C3mi2ayVlT0=
-X-Received: by 2002:a1c:c90f:: with SMTP id f15mr24171181wmb.142.1623491684384;
- Sat, 12 Jun 2021 02:54:44 -0700 (PDT)
+        Sat, 12 Jun 2021 06:09:09 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 9859ABAB48
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 11:07:08 +0100 (IST)
+Received: (qmail 3549 invoked from network); 12 Jun 2021 10:07:08 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Jun 2021 10:07:08 -0000
+Date:   Sat, 12 Jun 2021 11:07:06 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Zi Yan <ziy@nvidia.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm/page_alloc: Allow high-order pages to be stored on
+ the per-cpu lists
+Message-ID: <20210612100706.GE30378@techsingularity.net>
+References: <20210611135753.GC30378@techsingularity.net>
+ <20210611162331.272f67eabffa491fc83798b4@linux-foundation.org>
 MIME-Version: 1.0
-References: <20210612003128.372238-1-leoyang.li@nxp.com>
-In-Reply-To: <20210612003128.372238-1-leoyang.li@nxp.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 12 Jun 2021 11:52:45 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0K-S+9iHYfs-4AQZOzta6D_jH8Zy32-pfotYncBcJyDg@mail.gmail.com>
-Message-ID: <CAK8P3a0K-S+9iHYfs-4AQZOzta6D_jH8Zy32-pfotYncBcJyDg@mail.gmail.com>
-Subject: Re: [PATCH] usb: gadget: fsl: properly remove remnant of MXC support
-To:     Li Yang <leoyang.li@nxp.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Stanley <joel@jms.id.au>,
-        USB list <linux-usb@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ran.wang_1@nxp.com, Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:5I/qH79G8W4Fw2dZCrD+oWkYGlsmOAfcogW3dYzYhKKKGbwd3XG
- 8vOSMswLSp3q+mguTZaKohueFwx0RtQr4ixoDDNnYnO186J7e1NaJwwqi/YBeZ49F7jBm0y
- ujYCWs/1JXGn+smFRAhpe9AHU8qLFVj5Kwo5KR0LrFCcY0vCvZ4Az3DNBeBhWZWBQBWXUTv
- 13RN5FlbI6Ce22s2HbGsg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7OO7KzuRSI0=:KZsignqFI6FgXZ2blSBuwH
- GOwS/mH9n2+tj+AXUqq/okN0EN41rwItgRhkYDrNkIvAybfPiojUnIyJOdJBlQraYVPnZfSk5
- gb3fTooUYSbuhJ2MC5OPp4ylt4XZYltmm3LESLh7D4J5XSO5GT3q2dedxseB/iYd4QZT3pWSL
- RGhvH38YOmCWOoWixfTw1rPInVGICveoF9oKCHcRzNWWdoUwhiozfnUR0avkPfJpM0Zp8UYbD
- aoPXZ8qqaPkeVq+eaBMSR0p5GnB4rf2I1+DLqUZ4nECKt8OSmKkvRe4XnyWzDgXXZC/Iw+QPt
- Il78icX570lEsfE3mcj0wt+ji2sYWI9n4LhfRzT4M1L41MTavY24ZgbM+LguXb/dTeXOups+Q
- 3KVnAPPXlCqdOnsr1zuPgbpXP+4fVPQ3KR0O9aIimqz0NpxW8Io1/CBoG9w/w6ecGbT9IcR0L
- uHVnt7DfUnk1NJxhlr+8C3ss+XYCk3lc9wslDwRQGVDrsPLMoHdg4qW8Peh1nO3qh+CSBj7XC
- PlcD0vsfKf5pMelFxHhJQX6+A+yIXtaJdMoh2IZ9PNGIKH66Fork4VxYdQn6/kB9b5wjrU7EY
- mXj3SZG36BJJ2AQkst6+rJXbLRO6T8llMeN/L1sjxdbHTDUBNHwKzQBrdyu/CUSS/sYEcl8mC
- K148=
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210611162331.272f67eabffa491fc83798b4@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 2:31 AM Li Yang <leoyang.li@nxp.com> wrote:
->
-> Commit a390bef7db1f ("usb: gadget: fsl_mxc_udc: Remove the driver")
-> didn't remove all the MXC related stuff which can cause build problem
-> for LS1021 when enabled again in Kconfig.  This patch remove all the
-> remnants.
->
-> Signed-off-by: Li Yang <leoyang.li@nxp.com>
+On Fri, Jun 11, 2021 at 04:23:31PM -0700, Andrew Morton wrote:
+> > +static inline int pindex_to_order(unsigned int pindex)
+> > +{
+> > +	int order = pindex / MIGRATE_PCPTYPES;
+> > +
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +	if (order > PAGE_ALLOC_COSTLY_ORDER) {
+> > +		order = pageblock_order;
+> > +		VM_BUG_ON(order != pageblock_order);
+> 
+> Somebody has trust issues?
+> 
 
-Looks good to me,
+Just a little bit :P
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > +	}
+> > +#else
+> > +	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
+> > +#endif
+> > +
+> > +	return order;
+> > +}
+> 
+> Do we really need all these assertions, long-term?
+> 
+
+No, definitely not. Even now it's but already the patch caught me by
+surprise (breaking kvm boot) so I'd like to leave them in for at least
+one release given the number of changes queued in your tree for the next
+merge window.
+
+Thanks.
+
+-- 
+Mel Gorman
+SUSE Labs
