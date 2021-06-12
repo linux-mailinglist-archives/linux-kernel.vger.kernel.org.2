@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925913A4FF0
+	by mail.lfdr.de (Postfix) with ESMTP id DA15D3A4FF1
 	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 19:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhFLRl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 13:41:57 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:36543 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFLRl4 (ORCPT
+        id S231158AbhFLRmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 13:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhFLRmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 13:41:56 -0400
-Received: by mail-wr1-f45.google.com with SMTP id n7so3359012wri.3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 10:39:56 -0700 (PDT)
+        Sat, 12 Jun 2021 13:42:10 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0CDC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 10:40:11 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id w4so10857863qvr.11
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 10:40:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zc5UZZSa3ySEXVarFqXVRJeSGls1BBSSN2jPWTbN13I=;
-        b=SELjJCU4h+/WZ7uorJ6FiJQw00/Gn4ivVL05A8YIpfCs/+p0MiR4MhdDDQFsjzKGJw
-         f2WrHtm02jmT3E/5BIgNwf/vUTsmrSmQfyJXhMvj/3iuDm+PseaFRbXpJlH0LD3nQL/9
-         c8eeLK+43U4DGqxIKqE/J4R8SwP6zSZBLdXtp59GGmpXc2R/95MKHSLds8vZodZx1Hic
-         4Z+pk2UBn29nxUjTuO76IJ7b38CqsKBig9GAuJFCzQiKTtjZ1Vk4vY4TGGoLFGT5MHaY
-         oN32MRn0B2UAbBs/Afyp+HymBCLX4D0ecMJ1On+00OPJDrZjfyk7RYGu2mrD0kJ2qfwV
-         Z0HQ==
+        d=0x0f.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=792MN8Q01TsEjQvOuKUTJLcam45aGsdx9B+TJ/7s/WY=;
+        b=Kill2/I0AYROyL7hXkgFZNPRf4ZnD0HhJM1NwjBe6GbFys+CQo9iD34/j3KokskJ9+
+         GSYMIEy0plvw1gFwNOJfneSDNoaTHcfd8nU5RBG9No8mVP6+X7QI6JMo23rqz9ALJOzT
+         YCqMdQlEzAoLwv8GkCpDmZdgABOoy7KhK405c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zc5UZZSa3ySEXVarFqXVRJeSGls1BBSSN2jPWTbN13I=;
-        b=KZFtoZ+2K8nHAv0GDek7SmInmtgiAyIiSd9/5iFCF0JS2OZYQSeVivS+nzQoARj+a9
-         37CtFWBDFCECjMs9Y5eiIgJTiq30dz/HwE2lPywltgafQRtGEADSa71iS1OrYEsXcrod
-         +E5IN9DjMmenQN7LCVOqlinJTRxm9hXBNlLyhDnahJBLglQurwQxe9VtxyWj768kM0bt
-         Km4eyfzannToO6dMIqX6vfjJYuwcXTlm0OfND2Eh7EXYeDijVXfalm8GC+tDhnGHq4Q1
-         2XdGOeFiFvPzaB+g8rxUMhzRP8CCyGmhyWuXeCCHWORdcugAJfqkzgE0kjpdW9tYbYMY
-         T3bA==
-X-Gm-Message-State: AOAM533DQluWcLMxUPRlJEIihxgmtHxD5KxyuJrI12yXIr+M4vsZK2YK
-        qRt6joeS2PhEQETK1x5dGwkf8Q==
-X-Google-Smtp-Source: ABdhPJy8Yurr0n1n8na2fQmGEgZjA/cbHa4Zd88YONWWQl7/0D6AamPpruinTzfk3sL7NoG9qJ7YyQ==
-X-Received: by 2002:a5d:4c4b:: with SMTP id n11mr10246432wrt.269.1623519536413;
-        Sat, 12 Jun 2021 10:38:56 -0700 (PDT)
-Received: from KernelVM (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id a12sm9152006wmj.36.2021.06.12.10.38.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Jun 2021 10:38:56 -0700 (PDT)
-Date:   Sat, 12 Jun 2021 18:38:54 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        straube.linux@gmail.com, kaixuxia@tencent.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        liushixin2@huawei.com, unixbhaskar@gmail.com,
-        gustavoars@kernel.org, bkkarthik@pesu.pes.edu
-Subject: Re: [PATCH 0/6] staging: rtl8188eu: remove hal/odm_debug.h
-Message-ID: <YMTxLsrbzr6iPYsx@KernelVM>
-References: <20210611002504.166405-1-phil@philpotter.co.uk>
- <20210611091010.GE10983@kadam>
- <20210611153550.7p2deovau37rlpju@viti.kaiser.cx>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=792MN8Q01TsEjQvOuKUTJLcam45aGsdx9B+TJ/7s/WY=;
+        b=jqchevToOPYnzWXV6qmTNUEwcKxqG/oNtAxUTsSHe8Y0aEUlmoTJrMZ+hSC4d5ax4t
+         Qpzrn0y/NQ7dEd0GZWfv5CtXQdz25QWitOpBlKC8XgiFm5d175gnTD3ZBP5654F1MDw3
+         RREeNO6Q20klfpBXOb5+GXCCyWn8162zUkt03z6fAoNTCwVIoiNp/Xeps+WhU3z1B7c2
+         jaopaR1g6BKy3GcL+T8fZoXfMxRAYmKbs5W33cRvfFn1VXtgYXmzrBeffjor3kry5TAd
+         +jjIoopKZol6zjDl6mzOXC6qmPdD8mzYUN9Ln6hwLuOejrCdwGjVWPdPJY+apGoFZMF7
+         JEMQ==
+X-Gm-Message-State: AOAM531XozoOVHC2N+kI+Gi398lFj8TlhFXZ2KrF1AacWVPJteIEmF39
+        6mgPIReA2xb4i2fJ9zyADESuiBrK5oPvciq39+tjBg==
+X-Google-Smtp-Source: ABdhPJzsg8UxUaXch78d+uWHZZjCwPid4FgFs5BfE2DdGpneuGxgjKvCYQq8yl7I7K8wXeWtrlBbC2iz9MvFUV2O5qk=
+X-Received: by 2002:a0c:f0c7:: with SMTP id d7mr10622178qvl.45.1623519610207;
+ Sat, 12 Jun 2021 10:40:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210611153550.7p2deovau37rlpju@viti.kaiser.cx>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Sun, 13 Jun 2021 02:39:59 +0900
+Message-ID: <CAFr9PXnBb7OmOAMumDodC+0usWqRT-RXwC+YUHZ2Y43Xe_uTQQ@mail.gmail.com>
+Subject: [GIT PULL] ARM: mstar for v5.14 v2
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 05:35:50PM +0200, Martin Kaiser wrote:
-> Thus wrote Dan Carpenter (dan.carpenter@oracle.com):
-> 
-> > On Fri, Jun 11, 2021 at 01:24:58AM +0100, Phillip Potter wrote:
-> > > This series removes hal/odm_debug.h, which contains various preprocessor
-> > > definitions, as well as an unwieldy ODM_RT_TRACE macro which is not best
-> > > practice. It also removes all uses of this macro, and the associated
-> > > fields in struct odm_dm_struct which are only used by this macro.
-> 
-> > > This makes the code cleaner, thus moving it closer to getting out of
-> > > staging.
-> 
-> > Looks good.
-> 
-> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> same here: looks ok and doesn't break anything
-> 
-> Reviewed-by: Martin Kaiser <martin@kaiser.cx>
-> Tested-by: Martin Kaiser <martin@kaiser.cx>
-> 
-> Best regards,
-> 
->    Martin
+Hi Arnd, Olof,
 
-Dear Martin,
+Here is a fixed version of the PR with my s-o-b for Romain's patch.
 
-Thank you for reviewing and testing.
+Content is as before:
 
-Regards,
-Phil
+- Romain has stepped up to clean up some of the ~300 patch backlog for
+MStar and he added support for earlyprintk in the process.
+- In an effort to do things properly I've moved work on the MStar
+stuff from my personal github account to one for this project. So
+people can find it I've added a link in MAINTAINERS.
+
+The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+
+ Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+
+are available in the Git repository at:
+
+ https://github.com/linux-chenxing/linux.git tags/mstar-5.14-v2
+
+for you to fetch changes up to eb5e7693630c6039d040e428840be82b7e3a8614:
+
+ MAINTAINERS: ARM/MStar/Sigmastar SoCs: Add a link to the MStar tree
+(2021-06-13 02:12:18 +0900)
+
+----------------------------------------------------------------
+Daniel Palmer (1):
+     MAINTAINERS: ARM/MStar/Sigmastar SoCs: Add a link to the MStar tree
+
+Romain Perier (1):
+     ARM: debug: add UART early console support for MSTAR SoCs
+
+MAINTAINERS            |  1 +
+arch/arm/Kconfig.debug | 11 +++++++++++
+2 files changed, 12 insertions(+)
