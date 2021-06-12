@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E7E3A4F41
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E1F3A4F44
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhFLOhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 10:37:55 -0400
-Received: from mout.gmx.net ([212.227.15.18]:53379 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230191AbhFLOhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 10:37:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623508529;
-        bh=4GRBqMXu77f5LzS1AYmY/Pv3PyBwvmo8iWWSKO+eOSM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=MOUpEMFz2zwru/v/vvDy+q8zQBqjKnDBqkptW8QS+wxzQ/4z4NfOnO77JaNYUHowL
-         ZJ8JmgUjJLtNAAUF0bHUqvK3lvjRpAh18C7y7Yu+A5CxXTPlTeuA7X53oKA6TKZWaX
-         MyN/WQIGTLnBllo9wSB3BDcAECZ3hdySw3bx96fU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MG9gE-1m6QjE3X3M-00Gct6; Sat, 12 Jun 2021 16:35:29 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>
-Cc:     John Wood <john.wood@gmx.com>, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mt76/mt7915: Fix unsigned compared against zero
-Date:   Sat, 12 Jun 2021 16:35:05 +0200
-Message-Id: <20210612143505.7637-1-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S231383AbhFLOiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 10:38:20 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:55432 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLOiS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 10:38:18 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:41668 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1ls4kC-0001KT-UU; Sat, 12 Jun 2021 10:36:16 -0400
+Message-ID: <9628ac27c07db760415d382e26b5a0ced41f5851.camel@trillion01.com>
+Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Date:   Sat, 12 Jun 2021 10:36:15 -0400
+In-Reply-To: <87sg1p4h0g.fsf_-_@disp2133>
+References: <192c9697e379bf084636a8213108be6c3b948d0b.camel@trillion01.com>
+         <9692dbb420eef43a9775f425cb8f6f33c9ba2db9.camel@trillion01.com>
+         <87h7i694ij.fsf_-_@disp2133>
+         <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+         <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
+         <87eeda7nqe.fsf@disp2133>
+         <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+         <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
+         <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
+         <87y2bh4jg5.fsf@disp2133>
+         <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
+         <87sg1p4h0g.fsf_-_@disp2133>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RLOmvHMXqv6YzC6MbWRgT6VnA5VAhfOSQfIeL9vcZRQOX2acGVX
- iFXwCXoE4TnDXw5rfZ0VQBHl2rJ2xS7R4Rm6FhL3+iTmFFmT1Okpy9Uu5nwBDJ2vGH8lxoK
- Q01TmeCapD6wUdgI51jJ9t176VmNcezyrJMHUELa/8EKxo5VcJPOf4vvbu7y3dkc60p4QAK
- xzAYFKNLbqYHIs81Pc8Dg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XQhJptkxzu8=:GGdsO5+3quPg2/g0XpWZlq
- y0lAUcznNQGLmuH16OSKkJIM4Y5/1EoH2WK6+oqLGe6LgZu+8x9SKeHr0djXqltXoF6J5XxOY
- ALRycaueYFMpUZzbNG+RmXleNj8jO4mlKOjmioYPHZYFP/gxNYUGEDMFCxURxp7zBiktfG2iT
- ZvFlCmZoILCizNSKhbF/yp9oyHxgVpe4kkd9S3KOMl5ashU5DCAXWqnfXUkRDcwieCuI72R7R
- AhTugHHYhE3uIzwp2LUwAKfrabcXNMb4mJ3NuY3iAqDHJ3NK4S0EN6IJc4ezxK3LloMal67eY
- /ibmICAdETG+6pvTI2v+KjiMra/M1gFQEK8mnILXE8cVLSLb/We3HxAD+l6kPWSo6c3vqcJi6
- iJmTmfncgmAvpJuEKYMkA05p1ImF2/+BBpRBRf80H2SwAmFehKOjBuitB5K03cs+DGqRVza69
- IJrCBKj4DfiXd2UlCBf77jYdL7SsVWW4cMYvX4Hn4//c5++RowKsZ8y9btg8vGyETa+Ll9jfl
- uwUi/1PWRmoQl+/SgU5sEGugHB0ap7Ttmb+9yTvYZPBfL8N3+bjNM4Rpv4gmDK+L3RdjPLAIi
- dqtdPCXRpERtFzyJD1SQKMBaqbPzpnPS/Ag8ebeqwdQWf3Z8LeYbPaIk0Q+Zhxb4bMZWRIF+l
- OuRngIlIRrfsA1AMvDkqhdxdP4rbvonSfwhkFzvx6exXl4pgko6I0x75PY7SIizeunCxMIaBy
- GsAH0TSCWn8i3HKLBwNvp52UvZZVeUJBqREQ0ut3F+C4+dDea1o62bKlhtDxHRQsELyXKxYQG
- 3pwq/ojHjW1fjCybKyu4HiQBMSsg6Dqdk5DX6bLK/b/xpD6kPW/mDwH+tI1uZMVwh9iFBUBhe
- q2CKAxApNZfzEzIRpIdAEN0FTESLfRiuj97IGsFaPF/hTbavQtdEHryZejTlNmHCkHGA3lw5+
- p/5HmwTAS74AydtlI6QbhXE02pnCKspy77tuHpb+Pg166zkwTeu7jYYK8qvXsy8Z3BcmsvDqU
- TM10UDILOhMK9Rfu+vDGNHorrpxBZIqzyToOEZ9msLnhqvYdu4GCST0Rh9tSFx6RZhfG5ap4I
- 9vA83+u7aHTVXJEwAKBoW9mOAN3l/eIkbc9
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mt7915_dpd_freq_idx() function can return a negative value but this
-value is assigned to an unsigned variable named idx. Then, the code
-tests if this variable is less than zero. This can never happen with an
-unsigned type.
+On Thu, 2021-06-10 at 15:11 -0500, Eric W. Biederman wrote:
+> 
+> Olivier Langlois has been struggling with coredumps being incompletely
+> written in
+> processes using io_uring.
+> 
+> Olivier Langlois <olivier@trillion01.com> writes:
+> > io_uring is a big user of task_work and any event that io_uring made
+> > a
+> > task waiting for that occurs during the core dump generation will
+> > generate a TIF_NOTIFY_SIGNAL.
+> > 
+> > Here are the detailed steps of the problem:
+> > 1. io_uring calls vfs_poll() to install a task to a file wait queue
+> >    with io_async_wake() as the wakeup function cb from
+> > io_arm_poll_handler()
+> > 2. wakeup function ends up calling task_work_add() with TWA_SIGNAL
+> > 3. task_work_add() sets the TIF_NOTIFY_SIGNAL bit by calling
+> >    set_notify_signal()
+> 
+> The coredump code deliberately supports being interrupted by SIGKILL,
+> and depends upon prepare_signal to filter out all other signals.   Now
+> that signal_pending includes wake ups for TIF_NOTIFY_SIGNAL this hack
+> in dump_emitted by the coredump code no longer works.
+> 
+> Make the coredump code more robust by explicitly testing for all of
+> the wakeup conditions the coredump code supports.  This prevents
+> new wakeup conditions from breaking the coredump code, as well
+> as fixing the current issue.
+> 
+> The filesystem code that the coredump code uses already limits
+> itself to only aborting on fatal_signal_pending.  So it should
+> not develop surprising wake-up reasons either.
+> 
+> v2: Don't remove the now unnecessary code in prepare_signal.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
+> Reported-by: Olivier Langlois <olivier@trillion01.com>
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  fs/coredump.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index 2868e3e171ae..c3d8fc14b993 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -519,7 +519,7 @@ static bool dump_interrupted(void)
+>          * but then we need to teach dump_write() to restart and clear
+>          * TIF_SIGPENDING.
+>          */
+> -       return signal_pending(current);
+> +       return fatal_signal_pending(current) || freezing(current);
+>  }
+>  
+>  static void wait_for_dump_helpers(struct file *file)
 
-So, change the idx type to a signed one.
+Tested-by: Olivier Langlois <olivier@trillion01.com>
 
-Addresses-Coverity-ID: 1484753 ("Unsigned compared against 0")
-Fixes: 495184ac91bb8 ("mt76: mt7915: add support for applying pre-calibrat=
-ion data")
-Signed-off-by: John Wood <john.wood@gmx.com>
-=2D--
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net=
-/wireless/mediatek/mt76/mt7915/mcu.c
-index b3f14ff67c5a..764f25a828fa 100644
-=2D-- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -3440,8 +3440,9 @@ int mt7915_mcu_apply_tx_dpd(struct mt7915_phy *phy)
- {
- 	struct mt7915_dev *dev =3D phy->dev;
- 	struct cfg80211_chan_def *chandef =3D &phy->mt76->chandef;
--	u16 total =3D 2, idx, center_freq =3D chandef->center_freq1;
-+	u16 total =3D 2, center_freq =3D chandef->center_freq1;
- 	u8 *cal =3D dev->cal, *eep =3D dev->mt76.eeprom.data;
-+	int idx;
-
- 	if (!(eep[MT_EE_DO_PRE_CAL] & MT_EE_WIFI_CAL_DPD))
- 		return 0;
-=2D-
-2.25.1
 
