@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E874C3A4D60
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895BD3A4D64
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhFLHd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 03:33:26 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47714 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbhFLHdZ (ORCPT
+        id S230523AbhFLHeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:34:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55084 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhFLHeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 03:33:25 -0400
+        Sat, 12 Jun 2021 03:34:36 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 717F51FD7B;
-        Sat, 12 Jun 2021 07:31:25 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6AFE721997;
+        Sat, 12 Jun 2021 07:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623483085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623483156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0AzuUkzLo4ruyuK5SkVmh+ZfHnjfIQeuO610XtpJtoc=;
-        b=Th8MmK48g6ot7pnJc9RJa5NxgHqdKafjyupDDILXFgTJFqWxZV5jDYLcYpc6rEpqOS+qxB
-        DO8XZxUxVZmt7qWLL7Bb4H+AdxzJia/2isAqc0AfOmILjW0D3yB3EV+NE5twUtIB7eJOU8
-        MDucw0jD/isO2O0ntmm/xqlGPZc+1NA=
+        bh=BN/x1Lb4XHuqUfl+VT2+NHV4QJZ8D328rkqjy4dKwwA=;
+        b=AF8dHSAFLHbVNJBulUONbx9x7US7IYhqXdNw2Mh8YrbjcRySICwf34Dv/AvmbU5NWKuMHH
+        /6bhU7j4wUjXncc+SUYNZWUQtseiNRxlmYktvwnRoVv1J/G76M6WodRu+yQiv5hoAByDJP
+        Q8Y67Yo/miPFfJ1jVbpGK+4fzN0vEL8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623483085;
+        s=susede2_ed25519; t=1623483156;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0AzuUkzLo4ruyuK5SkVmh+ZfHnjfIQeuO610XtpJtoc=;
-        b=tkMVi0+QeY0xP0fnmRmMKT5kFSL5KTNWmBTcOO0NwLZ7HZl5Q3WlfQ5qxBpAfZrbE5SnP6
-        98sxcfdLVwRiJABQ==
+        bh=BN/x1Lb4XHuqUfl+VT2+NHV4QJZ8D328rkqjy4dKwwA=;
+        b=tOPcINzJFC3mCUWrCUjAKcy12bMlbT3aQ0CCj3HYn+iD+WsicaCNJQTvv9pKcn0T7cYJ8J
+        9jbiFTIi5xIYkJCQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 618D0A3B85;
-        Sat, 12 Jun 2021 07:31:25 +0000 (UTC)
-Date:   Sat, 12 Jun 2021 09:31:25 +0200
-Message-ID: <s5hh7i35yk2.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id 5862BA3B87;
+        Sat, 12 Jun 2021 07:32:36 +0000 (UTC)
+Date:   Sat, 12 Jun 2021 09:32:36 +0200
+Message-ID: <s5heed75yi3.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <tiwai@suse.com>
-Subject: Re: [PATCH -next] ALSA: n64: check return value after calling platform_get_resource()
-In-Reply-To: <20210610124958.116142-1-yangyingliang@huawei.com>
-References: <20210610124958.116142-1-yangyingliang@huawei.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: i2c: tea6330t: Remove redundant initialization of variable err
+In-Reply-To: <20210611165223.38983-1-colin.king@canonical.com>
+References: <20210611165223.38983-1-colin.king@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -52,13 +53,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 14:49:58 +0200,
-Yang Yingliang wrote:
+On Fri, 11 Jun 2021 18:52:23 +0200,
+Colin King wrote:
 > 
-> It will cause null-ptr-deref if platform_get_resource() returns NULL,
-> we need check the return value.
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> The variable err is being initialized with a value that is never read,
+> it is being updated later on. The assignment is redundant and can be
+> removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
 Thanks, applied.
 
