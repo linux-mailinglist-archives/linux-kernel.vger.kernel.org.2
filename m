@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669A23A4F94
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 17:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FF03A4F98
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 17:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhFLP4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 11:56:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47126 "EHLO mail.kernel.org"
+        id S231510AbhFLP5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 11:57:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230200AbhFLP4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 11:56:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFC34610FC;
-        Sat, 12 Jun 2021 15:54:32 +0000 (UTC)
+        id S231358AbhFLP5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 11:57:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D63B3610FC;
+        Sat, 12 Jun 2021 15:54:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623513273;
-        bh=SvDSe+71i4/sQt3EFhqr44mKrhHMTl790UTWD9pT+08=;
+        s=korg; t=1623513295;
+        bh=EDNW8qcQ6bxhsUUgeTf9VlCr0Q/8pLhBmFNUlwYgfuk=;
         h=Date:From:To:Cc:Subject:From;
-        b=CXTy3l1nRm5xq5oJGNOttyXaz9c3cA2U2coEbk5Aid5AFfbC2+tKN2sJrj93U8Ls7
-         FIWo+GEeo/DJLO1kXW3E9Vs2dC1cbe8cBUZVdpkH1MqLQ+P0scs81yun4Az5gYkrQ8
-         9gDWPCUtk86QD9aJGBEJPa0exfy4btZos8xTiRv0=
-Date:   Sat, 12 Jun 2021 17:54:31 +0200
+        b=u4NbBkFdja5kodz5RNxbK89yu42OrBd5/J+quHqqNI4MjSQh4byaLHXW6HhpI2XFd
+         ms6rYhkJ66q+2Oj/7nzrNeRvDNfSuxHYwbTv9rfbBo30nNYmanLd32td+UN71QlD67
+         nNnjuSrDRQtuxzvG63cKfbLR/LWri1zlA4m7LWxQ=
+Date:   Sat, 12 Jun 2021 17:54:53 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     devel@linuxdriverproject.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [GIT PULL] Staging driver fixes for 5.13-rc6
-Message-ID: <YMTYtya0Sn/JVtz2@kroah.com>
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [GIT PULL] TTY/Serial driver fix for 5.13-rc6
+Message-ID: <YMTYzUp9cv+e4U6R@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -42,30 +42,25 @@ The following changes since commit 8124c8a6b35386f73523d27eacb71b5364a68c4c:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.13-rc6
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.13-rc6
 
-for you to fetch changes up to e9de1ecadeab5fbffd873b9110e969c869554a56:
+for you to fetch changes up to 7c3e8d9df265bd0bdf6e328174cdfba26eb22f1c:
 
-  staging: ralink-gdma: Remove incorrect author information (2021-06-09 12:07:52 +0200)
+  serial: 8250_exar: Avoid NULL pointer dereference at ->exit() (2021-06-09 14:40:48 +0200)
 
 ----------------------------------------------------------------
-Staging driver fixes for 5.13-rc6
+Serial driver fix for 5.13-rc6
 
-Here are two tiny staging driver fixes for 5.13-rc6
-	- ralink-gdma driver authorship information fixed up
-	- rtl8723bs driver fix for reported regression
+Here is a single 8250_exar serial driver fix for a reported problem with
+a change that happened in 5.13-rc1.
 
-Both have been in linux-next for a while with no reported problems.
+It has been in linux-next with no reported problems.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Lars-Peter Clausen (1):
-      staging: ralink-gdma: Remove incorrect author information
+Andy Shevchenko (1):
+      serial: 8250_exar: Avoid NULL pointer dereference at ->exit()
 
-Wenli Looi (1):
-      staging: rtl8723bs: Fix uninitialized variables
-
- drivers/staging/ralink-gdma/ralink-gdma.c         | 2 --
- drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ drivers/tty/serial/8250/8250_exar.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
