@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244F13A510E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB453A5110
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhFLVuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 17:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFLVuD (ORCPT
+        id S231408AbhFLV5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 17:57:24 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:48805 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFLV5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 17:50:03 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2333C061574;
-        Sat, 12 Jun 2021 14:47:47 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id p13so7489562pfw.0;
-        Sat, 12 Jun 2021 14:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=93BDk6ii6Pzm95rLYvyCEAhPCJypbard9KLuegJmtkA=;
-        b=tdOajCxOaB1QVuqnE5e2BJncjyoNLaur2vmkKimf73qd0dGIu0pNcmGci50BlaN6JS
-         Q604+FNuaj/LxqmBBI57CQt0pFAnGt4OToX+VMhO9IoxDzyVfAbcGwRR4TmsYs5/R7jm
-         7ek8fAgWHq1w9+5fmrzvBKv0hmUoyFyetZ/cllmSuymPanj0WKNgHZ6sDqw3+1c64r2t
-         MQbAg6Pm8YETs+L4ETcqD+G57R1+xbEnOYVehOWFNnuDWQEOHJ+sx+ZUJ+xKQ43Q3Zr4
-         CGZDfjU1YIfYP1d+NBPDLZJSUCtmLmWUqeZQuJl3pOxE7/+gjWIZmEZU1eHd6wiXqkSl
-         8z3w==
+        Sat, 12 Jun 2021 17:57:23 -0400
+Received: by mail-io1-f69.google.com with SMTP id u19-20020a6be3130000b02904a77f550cbcso20876527ioc.15
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 14:55:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=93BDk6ii6Pzm95rLYvyCEAhPCJypbard9KLuegJmtkA=;
-        b=M8hUh2jR0pH+P1s5A09yuGCe7QctNSVuoLmTKzNcz2jDfNgHoCdhYCgRz2qfMEm7cl
-         M3vdd2uhxTVBhZ+tVVKYC8+fF71qAEb4tpLx5tNRv6nyHC4dg0EYks/6CbdJx1LvBTG5
-         eojd1vLU5dhgfdYMlsow0cVX+GFsXN/fhsojXlvvjBvVbFya1MYDaj1eMF0h38bXyWwY
-         sgJ2P8He+HJgtH9kJAkh+d8Z7RVfe3jBWku1KRJz1sqscF7pABRNGJ2RH3ZRa5q3hTfG
-         CdQq5TwLiNjg/qL4RM50LFS99WByLv63eW5bDuiw1Apz2Y6XKJGLdC6UbOF9xpN/riIa
-         jW6w==
-X-Gm-Message-State: AOAM533i4OW22MjNm316tKTxKnRVaRC3KyNyCzD3wiemBAx6M974WfMg
-        nXkVmjAvxVXnn4x0ZDts2rWpeGWLb5m2RExYJiA=
-X-Google-Smtp-Source: ABdhPJwEUrc8Jgbcf8aITJR5mWDcB4sziIvoDhteE1kfD9qINugQ1zcYbFRHNih3Yvhl8ag/iqVI9Bc0MrSMFVJg9jI=
-X-Received: by 2002:a63:4145:: with SMTP id o66mr10139317pga.4.1623534467337;
- Sat, 12 Jun 2021 14:47:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=JvW3AZLZ5AU0AeVEQLVMqJQnd1D3HCg+m7PNitgUroM=;
+        b=CR/3r0FdMEpa2owkH6ANg9Aif1vnQ4QToylsWGY5XN/g3WPDaBY27OGrAXmLQc5RFD
+         GLzb6oQv/vXYQs1ZZ5OYYWZZZ1+gCKu3tpM7zmfBU4SyMHusDlgEG1hCpBNVV5ZQ9+9+
+         e/+Kvz153tlWetyiZW5Age1k01MlzVWh2DyqoHMGZ6BwVNVgqR5cLrZjAxlTuAvB1pl+
+         umFrMrFQ+hVwIgMbpeIvM0j8b5JEFZKLkk+stONLYIjWK4PSS879QuMPk+Y7MMJ/d3Cf
+         PAKDYd/ktGvbw3Zq2vcsvlj3WYHWdAtKzIbxAHdZ3ALE1U8oriPq0slVPbsG2m7AHu0F
+         vOUw==
+X-Gm-Message-State: AOAM532BFFmqCE9f3a2X9nkIM8JTbYOSv6Wu4gZL8D/rwse2FS0aB0jc
+        mUG9zsE+0GyG06V7aSX17ZLG+em0j2twCf0/ZkMEsuFvR4kY
+X-Google-Smtp-Source: ABdhPJxNWr/Wn2tHOO2mB6LLlN2OjW+gCFbH9DQt3FSPTw+LzePWeA3imaEKyodEkCq1yzO/L4Lvs6h4jl9qh6qM+lNBmGGAqgP5
 MIME-Version: 1.0
-References: <20210612123639.329047-1-yury.norov@gmail.com> <20210612123639.329047-8-yury.norov@gmail.com>
-In-Reply-To: <20210612123639.329047-8-yury.norov@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 13 Jun 2021 00:47:31 +0300
-Message-ID: <CAHp75VerU1NJMweWCR7MsE9hiMFZyJP8m751OFKmGrJ1gVhMWw@mail.gmail.com>
-Subject: Re: [PATCH 7/8] all: replace find_next{,_zero}_bit with
- find_first{,_zero}_bit where appropriate
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        David Hildenbrand <david@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
+X-Received: by 2002:a05:6638:3393:: with SMTP id h19mr10392817jav.0.1623534922684;
+ Sat, 12 Jun 2021 14:55:22 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 14:55:22 -0700
+In-Reply-To: <0000000000003853da05c39afd00@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000058deb505c498ae70@google.com>
+Subject: Re: [syzbot] kernel BUG in mpage_prepare_extent_to_map
+From:   syzbot <syzbot+99043e2052d9c50c81fc@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 3:39 PM Yury Norov <yury.norov@gmail.com> wrote:
->
-> find_first{,_zero}_bit is a more effective analogue of 'next' version if
-> start == 0. This patch replaces 'next' with 'first' where things look
-> trivial.
+syzbot has found a reproducer for the following issue on:
 
-Depending on the maintainers (but I think there will be at least few
-in this case) they would like to have this be split on a per-driver
-basis.
-I counted 17 patches. I would split.
+HEAD commit:    ad347abe Merge tag 'trace-v5.13-rc5-2' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16223e3fd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=30f476588412c065
+dashboard link: https://syzkaller.appspot.com/bug?extid=99043e2052d9c50c81fc
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1204231fd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1324e4d0300000
 
-Since many of them are independent you may send without Cc'ing all
-non-relevant people in each case.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+99043e2052d9c50c81fc@syzkaller.appspotmail.com
 
->  arch/powerpc/platforms/pasemi/dma_lib.c |  4 ++--
->  arch/s390/kvm/kvm-s390.c                |  2 +-
->  drivers/block/rnbd/rnbd-clt.c           |  2 +-
->  drivers/dma/ti/edma.c                   |  2 +-
->  drivers/iio/adc/ad7124.c                |  2 +-
->  drivers/infiniband/hw/irdma/hw.c        | 16 ++++++++--------
->  drivers/media/cec/core/cec-core.c       |  2 +-
->  drivers/media/mc/mc-devnode.c           |  2 +-
->  drivers/pci/controller/dwc/pci-dra7xx.c |  2 +-
->  drivers/scsi/lpfc/lpfc_sli.c            | 10 +++++-----
->  drivers/soc/ti/k3-ringacc.c             |  4 ++--
->  drivers/tty/n_tty.c                     |  2 +-
->  drivers/virt/acrn/ioreq.c               |  3 +--
->  fs/f2fs/segment.c                       |  8 ++++----
->  fs/ocfs2/cluster/heartbeat.c            |  2 +-
->  fs/ocfs2/dlm/dlmdomain.c                |  4 ++--
->  fs/ocfs2/dlm/dlmmaster.c                | 18 +++++++++---------
->  fs/ocfs2/dlm/dlmrecovery.c              |  2 +-
->  fs/ocfs2/dlm/dlmthread.c                |  2 +-
->  lib/genalloc.c                          |  2 +-
->  net/ncsi/ncsi-manage.c                  |  4 ++--
->  21 files changed, 47 insertions(+), 48 deletions(-)
+loop0: detected capacity change from 0 to 512
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue. Quota mode: none.
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2704!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8394 Comm: syz-executor475 Not tainted 5.13.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ext4_writepages+0x244d/0x3b70 fs/ext4/inode.c:2704
+Code: e1 be 00 10 00 00 4c 89 ef 48 d3 ee ba 01 00 00 00 e8 57 23 fe ff 83 c0 01 89 84 24 bc 00 00 00 e9 2d e2 ff ff e8 73 d5 66 ff <0f> 0b e8 6c d5 66 ff 44 0f b6 a4 24 db 00 00 00 89 5c 24 08 e9 a7
+RSP: 0018:ffffc900019ff580 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88801cad54c0 RSI: ffffffff820e071d RDI: 0000000000000003
+RBP: ffff888035bc5a08 R08: 0000000000000000 R09: ffff888035bc5a0f
+R10: ffffffff820dfbf3 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff888035bc5cf0 R14: ffffc900019ffa08 R15: ffff88801d9ea000
+FS:  0000000000865300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff50003d188 CR3: 000000002e66c000 CR4: 0000000000350ee0
+Call Trace:
+ do_writepages+0xec/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x2a5/0x390 mm/filemap.c:413
+ file_write_and_wait_range+0xb2/0x120 mm/filemap.c:792
+ ext4_sync_file+0x21f/0xfd0 fs/ext4/fsync.c:151
+ vfs_fsync_range+0x13a/0x220 fs/sync.c:200
+ generic_write_sync include/linux/fs.h:2982 [inline]
+ ext4_buffered_write_iter+0x36a/0x4d0 fs/ext4/file.c:277
+ ext4_file_write_iter+0x423/0x14e0 fs/ext4/file.c:680
+ call_write_iter include/linux/fs.h:2114 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x796/0xa30 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x443dc9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffef54952a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 0000000000443dc9
+RDX: 0000000000000082 RSI: 0000000020000180 RDI: 0000000000000004
+RBP: 0000000000403660 R08: 00000000004004a0 R09: 00000000004004a0
+R10: 00000000004004a0 R11: 0000000000000246 R12: 00000000004036f0
+R13: 0000000000000000 R14: 00000000004b2018 R15: 00000000004004a0
+Modules linked in:
+---[ end trace e0abbb4b21cfac7f ]---
+RIP: 0010:ext4_writepages+0x244d/0x3b70 fs/ext4/inode.c:2704
+Code: e1 be 00 10 00 00 4c 89 ef 48 d3 ee ba 01 00 00 00 e8 57 23 fe ff 83 c0 01 89 84 24 bc 00 00 00 e9 2d e2 ff ff e8 73 d5 66 ff <0f> 0b e8 6c d5 66 ff 44 0f b6 a4 24 db 00 00 00 89 5c 24 08 e9 a7
+RSP: 0018:ffffc900019ff580 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88801cad54c0 RSI: ffffffff820e071d RDI: 0000000000000003
+RBP: ffff888035bc5a08 R08: 0000000000000000 R09: ffff888035bc5a0f
+R10: ffffffff820dfbf3 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff888035bc5cf0 R14: ffffc900019ffa08 R15: ffff88801d9ea000
+FS:  0000000000865300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f205933e000 CR3: 000000002e66c000 CR4: 0000000000350ef0
 
-
--- 
-With Best Regards,
-Andy Shevchenko
