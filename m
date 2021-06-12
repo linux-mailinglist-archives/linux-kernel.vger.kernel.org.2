@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A573A4C18
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 03:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54693A4C1C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 03:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFLBYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 21:24:04 -0400
-Received: from mga14.intel.com ([192.55.52.115]:27949 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229942AbhFLBYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 21:24:04 -0400
-IronPort-SDR: SHfz12V4XM5GN/V3nwuTVG1Wmh7khPlWkwM6xa0ally7u2cMlRA9cuyPXkAnOf0uhr+WdOuanJ
- zffATOqw/iEg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="205453110"
-X-IronPort-AV: E=Sophos;i="5.83,268,1616482800"; 
-   d="scan'208";a="205453110"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 18:22:05 -0700
-IronPort-SDR: HGSyKzehp43FjYp0rgwHlcVfxC/9mqaKeNAcAIonOHPHnDnfDerhV26RKa823oHg4ZqVAypTei
- ihffYAKT/tTA==
-X-IronPort-AV: E=Sophos;i="5.83,268,1616482800"; 
-   d="scan'208";a="483464843"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.238.4.20]) ([10.238.4.20])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 18:22:02 -0700
-Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
-        thunder.leizhen@huawei.com, chenxiang66@hisilicon.com
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, dwmw2@infradead.org, robin.murphy@arm.com
-References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
- <1623414043-40745-3-git-send-email-john.garry@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH v12 2/5] iommu: Enhance IOMMU default DMA mode build
- options
-Message-ID: <a4c85f00-918b-5952-7585-8e1110ac5195@linux.intel.com>
-Date:   Sat, 12 Jun 2021 09:21:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230330AbhFLB0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 21:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhFLB0U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 21:26:20 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05548C061574;
+        Fri, 11 Jun 2021 18:24:22 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lrsNb-0079kf-2D; Sat, 12 Jun 2021 01:24:07 +0000
+Date:   Sat, 12 Jun 2021 01:24:07 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 4/7] kernfs: switch kernfs to use an rwsem
+Message-ID: <YMQMtwa/hv4Rmwba@zeniv-ca.linux.org.uk>
+References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
+ <162322865230.361452.5882168567975703664.stgit@web.messagingengine.com>
 MIME-Version: 1.0
-In-Reply-To: <1623414043-40745-3-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162322865230.361452.5882168567975703664.stgit@web.messagingengine.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/11 20:20, John Garry wrote:
-> +config IOMMU_DEFAULT_LAZY
-> +	bool "lazy"
-> +	help
-> +	  Support lazy mode, where for every IOMMU DMA unmap operation, the
-> +	  flush operation of IOTLB and the free operation of IOVA are deferred.
-> +	  They are only guaranteed to be done before the related IOVA will be
-> +	  reused.
-> +
-> +	  The isolation provided in this mode is not as secure as STRICT mode,
-> +	  such that a vulnerable time window may be created between the DMA
-> +	  unmap and the mapping finally being torn down in the IOMMU, where the
-> +	  device can still access the system memory. However this mode may
+On Wed, Jun 09, 2021 at 04:50:52PM +0800, Ian Kent wrote:
+> The kernfs global lock restricts the ability to perform kernfs node
+> lookup operations in parallel during path walks.
+> 
+> Change the kernfs mutex to an rwsem so that, when opportunity arises,
+> node searches can be done in parallel with path walk lookups.
 
-" ... and the mappings cached in the IOMMU IOTLB or device TLB finally
-being invalidated, where the device probably can still access the memory
-which has already been unmapped by the device driver."
+> diff --git a/fs/kernfs/symlink.c b/fs/kernfs/symlink.c
+> index 5432883d819f2..c8f8e41b84110 100644
+> --- a/fs/kernfs/symlink.c
+> +++ b/fs/kernfs/symlink.c
+> @@ -116,9 +116,9 @@ static int kernfs_getlink(struct inode *inode, char *path)
+>  	struct kernfs_node *target = kn->symlink.target_kn;
+>  	int error;
+>  
+> -	mutex_lock(&kernfs_mutex);
+> +	down_read(&kernfs_rwsem);
+>  	error = kernfs_get_target_path(parent, target, path);
+> -	mutex_unlock(&kernfs_mutex);
+> +	up_read(&kernfs_rwsem);
 
-Best regards,
-baolu
+Unrelated to this patchset, two notes from reading through that area:
+	1) parent is fetched outside of rwsem.  Unstable, IOW.
+	2) kernfs_get_target_path() is an atrocity.  On *any* symlink you
+get an arseload of ../ (up to kernfs root), followed by into whatever
+directory we want.  Even if the target is in the same directory.
+Think what happens if you mount --bind a subtree that contains both the
+symlink and its destination.  And try to follow that symlink.
+	It really ought to generate the minimal relative pathname.
+And it's not hard to do:
+	calculate the depth of source
+	calculate the depth of destination
+	walk up from the deeper one until we get to the depth of the
+shallower one.
+	walk up from both in tandem until two paths converge.
+Now we have the LCA of those nodes and can use the to generate the relative
+pathname.
+
