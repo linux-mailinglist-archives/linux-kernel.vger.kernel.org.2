@@ -2,102 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2B33A4F4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0413A4F58
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhFLOkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 10:40:51 -0400
-Received: from mail-io1-f53.google.com ([209.85.166.53]:45639 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhFLOkq (ORCPT
+        id S231298AbhFLOpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 10:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLOpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 10:40:46 -0400
-Received: by mail-io1-f53.google.com with SMTP id k5so24915626iow.12
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:38:46 -0700 (PDT)
+        Sat, 12 Jun 2021 10:45:08 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3B5C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:42:59 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so6213140otk.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:42:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LC9SvpQ/Uxhg0GO1cMqQXuwzbE3v2RjkJ7G/fhbU/Z8=;
-        b=HRrIfU2NNwbt/T1Aemqlv+f2Xej+RwSv/MeoPgIqoPaMIOBE6iL1XEcTKsDfMgWeVu
-         5h2/usTr/2oL62fd6HaJuz/YeVB5PyQCW1CKGl4fkp6ODbjURk3nJam6Xf6FElB1LBr5
-         Ce3sSaKo6mzxz/deimuGU/UzsCcARcEz/RLCSb6m2n8pT/d1fbVDjD2eXEIJ8wtO8FGA
-         UxLi9yKXxgUheSvoba3EZ5DZXgiYfK7hvGT0gJp4lBx9CG3umMi2/sRfNqrKBljM/hpr
-         lfa9ljIggY8SzHCCGt4LuP0M0NzpvWlywmVHZg38qmTqawy+1NXscfkp7C+LkKh4HOo7
-         kDuA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iH7EgL9X46ZYFZJtSIwwFSnS3uKaFXLbIujUQXunbi0=;
+        b=wNxXyE/0okBDTG9XmRTHjerp356Pfi5go1rJh6p6vqJuOZDqvO/1DMRy1LLkCezXFr
+         TBbJQo08srak+Nx2xyguxnoqNOiMM/xDH/v9RqAcITpn/VUsEJC2S4bmfS3lo4rn+up8
+         gh0GCZxE6FN8z5zsmkhEJIAzMnQlGeQDYULtdyskGHIAzkVAG6Xa9koNb5uzhsj6UN37
+         psWiIwk8Ve3qnNfd3xzf3oyXy1IUaxZDCfybFJArdYSixI5CRF7NLfc8utPz3YhMvJ0m
+         XzN9p/3OSeBSNFhyPfp00qFyS5Lmb8YD6IUXFGjNNFVZiQsBmEiGl1r7iwYRNskSI07K
+         DBUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LC9SvpQ/Uxhg0GO1cMqQXuwzbE3v2RjkJ7G/fhbU/Z8=;
-        b=EQOPIEhaV8z6CGiBibAd3zhkp6Q1ZQWseeZhTPYoFnwGEQFHwaHpwCFSV74VTtXBqX
-         wl9smGa/wy8cvCmJW6kA1277hYA2smSSxn2YJbZeKvmSUKIMt/c29xSQLIle/cgAhmVV
-         5M0er0AtVOEZJKzf1k2OZkoQ32bp90dn8BzvfnUeiZu9R1CQI38KvjP6XSQ3PbCM3gsw
-         JHlo7dLbhSpCe7togF2/6ksMWguuc+WZXWZ+ge0clHYgYRvCa7TBrgfg96tJQ/J8M6nF
-         tZ5YyTWNsH9WXuUjqhyEs9p/7UhBnQ0m3gLtHaqjfxtsJPTqjVnggdLWuts0nk/QPRlB
-         5Hgw==
-X-Gm-Message-State: AOAM530lbe2cL5Lydzz5NETah8KBSOlxFoc4vMaVKvdkqg+nUFikF2M/
-        8yk/QT585Vt2QolQ5yELKwyuWl3RgrtCd/7q
-X-Google-Smtp-Source: ABdhPJzw9KYRciou0IdBEOqS/8G1/fotTFk7/EiGDzNUuYyZWTbSdIF5Y4Ttix5h3abVDCFn9RDe1Q==
-X-Received: by 2002:a5d:9916:: with SMTP id x22mr7217178iol.160.1623508666642;
-        Sat, 12 Jun 2021 07:37:46 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id k4sm5126559ior.55.2021.06.12.07.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Jun 2021 07:37:46 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 8/8] net: qualcomm: rmnet: IPv6 payload length is simple
-Date:   Sat, 12 Jun 2021 09:37:36 -0500
-Message-Id: <20210612143736.3498712-9-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210612143736.3498712-1-elder@linaro.org>
-References: <20210612143736.3498712-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iH7EgL9X46ZYFZJtSIwwFSnS3uKaFXLbIujUQXunbi0=;
+        b=J8wvLLzcpMpbMg2FjTJn+Ev4t/3G3wcfoTuTKf5ES/jgLM94VJ2Qd+Hp47aSSxvA1L
+         aMyPNFzzYyG8nGy38Kr6DsT5flxN5/zqANZIF2Mh+svsCEvvGYNMkxrZ7cVlBF9aZkwu
+         f9Dc5DeZ9z5NSOHFeIJDrBrngsV+gtZsPbDCm1rhQsPBmiMCOxD8sGH133joWPuBm1+B
+         WgK9xASJqcLiz/g4+iu0uF+CORtRGh5xhGBMUOujAvVlCp+uI5vk+nBSC+p9s1GPyW4T
+         3ytiFImbjADfsIXWY4hBHif0ZP4E9ehmDwVF/hOnqoZNeaX37/2nkEXg+aUUc9yQUVNI
+         MGEg==
+X-Gm-Message-State: AOAM5300vgqnD76PseCf+RRKwKcjn8CPeI88rEXa4NCH/UkgVQFH75rH
+        8jdADSDdQXShm73qfJsak1UGBTHs8CtS/T4jfA2RBQ==
+X-Google-Smtp-Source: ABdhPJyBUGhk0Z9OC45WMmiRoeWwNVm++xa8VAU766aiv7xkUKDVGHjax+HBCNIyA2St+uM3/cLLEb5DZlgRxuPmJp8=
+X-Received: by 2002:a05:6830:1c7b:: with SMTP id s27mr7290621otg.233.1623508976605;
+ Sat, 12 Jun 2021 07:42:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210612045156.44763-1-kylee0686026@gmail.com> <20210612045156.44763-3-kylee0686026@gmail.com>
+In-Reply-To: <20210612045156.44763-3-kylee0686026@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Sat, 12 Jun 2021 16:42:44 +0200
+Message-ID: <CANpmjNMLzxMO0k_kvGaAvzyGoyKxBTtjx4PH=-MKKgDb1-dQaA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] kasan: integrate the common part of two KASAN
+ tag-based modes
+To:     Kuan-Ying Lee <kylee0686026@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't support any extension headers for IPv6 packets.  Extension
-headers therefore contribute 0 bytes to the payload length.  As a
-result we can just use the IPv6 payload length as the length used to
-compute the pseudo header checksum for both UDP and TCP messages.
+On Sat, 12 Jun 2021 at 06:52, Kuan-Ying Lee <kylee0686026@gmail.com> wrote:
+> 1. Move kasan_get_free_track() and kasan_set_free_info()
+>    into tags.c
+> 2. Move kasan_get_bug_type() to header file
+>
+> Signed-off-by: Kuan-Ying Lee <kylee0686026@gmail.com>
+> Suggested-by: Marco Elver <elver@google.com>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+>  mm/kasan/Makefile         |  4 +--
+>  mm/kasan/hw_tags.c        | 22 ---------------
+>  mm/kasan/report_hw_tags.c |  6 +---
+>  mm/kasan/report_sw_tags.c | 46 +------------------------------
+>  mm/kasan/report_tags.h    | 56 +++++++++++++++++++++++++++++++++++++
+>  mm/kasan/sw_tags.c        | 41 ---------------------------
+>  mm/kasan/tags.c           | 58 +++++++++++++++++++++++++++++++++++++++
+>  7 files changed, 118 insertions(+), 115 deletions(-)
+>  create mode 100644 mm/kasan/report_tags.h
+>  create mode 100644 mm/kasan/tags.c
+[...]
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index ed5e5b833d61..4ea8c368b5b8 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -216,28 +216,6 @@ void __init kasan_init_hw_tags(void)
+>         pr_info("KernelAddressSanitizer initialized\n");
+>  }
+>
+> -void kasan_set_free_info(struct kmem_cache *cache,
+> -                               void *object, u8 tag)
+> -{
+> -       struct kasan_alloc_meta *alloc_meta;
+> -
+> -       alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (alloc_meta)
+> -               kasan_set_track(&alloc_meta->free_track[0], GFP_NOWAIT);
+> -}
+> -
+> -struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
+> -                               void *object, u8 tag)
+> -{
+> -       struct kasan_alloc_meta *alloc_meta;
+> -
+> -       alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (!alloc_meta)
+> -               return NULL;
+> -
+> -       return &alloc_meta->free_track[0];
+> -}
+> -
+>  void kasan_alloc_pages(struct page *page, unsigned int order, gfp_t flags)
+>  {
+>         /*
+> diff --git a/mm/kasan/report_hw_tags.c b/mm/kasan/report_hw_tags.c
+> index 42b2168755d6..ef5e7378f3aa 100644
+> --- a/mm/kasan/report_hw_tags.c
+> +++ b/mm/kasan/report_hw_tags.c
+> @@ -14,11 +14,7 @@
+>  #include <linux/types.h>
+>
+>  #include "kasan.h"
+> -
+> -const char *kasan_get_bug_type(struct kasan_access_info *info)
+> -{
+> -       return "invalid-access";
+> -}
+> +#include "report_tags.h"
+>
+>  void *kasan_find_first_bad_addr(void *addr, size_t size)
+>  {
+> diff --git a/mm/kasan/report_sw_tags.c b/mm/kasan/report_sw_tags.c
+> index 821a14a19a92..d965a170083e 100644
+> --- a/mm/kasan/report_sw_tags.c
+> +++ b/mm/kasan/report_sw_tags.c
+> @@ -26,51 +26,7 @@
+>
+>  #include <asm/sections.h>
+>
+> -#include "kasan.h"
+> -#include "../slab.h"
+> -
+> -const char *kasan_get_bug_type(struct kasan_access_info *info)
+> -{
+> -#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> -       struct kasan_alloc_meta *alloc_meta;
+> -       struct kmem_cache *cache;
+> -       struct page *page;
+> -       const void *addr;
+> -       void *object;
+> -       u8 tag;
+> -       int i;
+> -
+> -       tag = get_tag(info->access_addr);
+> -       addr = kasan_reset_tag(info->access_addr);
+> -       page = kasan_addr_to_page(addr);
+> -       if (page && PageSlab(page)) {
+> -               cache = page->slab_cache;
+> -               object = nearest_obj(cache, page, (void *)addr);
+> -               alloc_meta = kasan_get_alloc_meta(cache, object);
+> -
+> -               if (alloc_meta) {
+> -                       for (i = 0; i < KASAN_NR_FREE_STACKS; i++) {
+> -                               if (alloc_meta->free_pointer_tag[i] == tag)
+> -                                       return "use-after-free";
+> -                       }
+> -               }
+> -               return "out-of-bounds";
+> -       }
+> -
+> -#endif
+> -       /*
+> -        * If access_size is a negative number, then it has reason to be
+> -        * defined as out-of-bounds bug type.
+> -        *
+> -        * Casting negative numbers to size_t would indeed turn up as
+> -        * a large size_t and its value will be larger than ULONG_MAX/2,
+> -        * so that this can qualify as out-of-bounds.
+> -        */
+> -       if (info->access_addr + info->access_size < info->access_addr)
+> -               return "out-of-bounds";
+> -
+> -       return "invalid-access";
+> -}
+> +#include "report_tags.h"
+>
+>  void *kasan_find_first_bad_addr(void *addr, size_t size)
+>  {
+> diff --git a/mm/kasan/report_tags.h b/mm/kasan/report_tags.h
+> new file mode 100644
+> index 000000000000..4f740d4d99ee
+> --- /dev/null
+> +++ b/mm/kasan/report_tags.h
+> @@ -0,0 +1,56 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __MM_KASAN_REPORT_TAGS_H
+> +#define __MM_KASAN_REPORT_TAGS_H
+> +
+> +#include "kasan.h"
+> +#include "../slab.h"
+> +
+> +#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> +const char *kasan_get_bug_type(struct kasan_access_info *info)
+> +{
+[...]
+> +       /*
+> +        * If access_size is a negative number, then it has reason to be
+> +        * defined as out-of-bounds bug type.
+> +        *
+> +        * Casting negative numbers to size_t would indeed turn up as
+> +        * a large size_t and its value will be larger than ULONG_MAX/2,
+> +        * so that this can qualify as out-of-bounds.
+> +        */
+> +       if (info->access_addr + info->access_size < info->access_addr)
+> +               return "out-of-bounds";
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+This seems to change behaviour for SW_TAGS because it was there even
+if !CONFIG_KASAN_TAGS_IDENTIFY. Does it still work as before?
 
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-index ed4737d0043d6..a6ce22f60a00c 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-@@ -114,7 +114,6 @@ rmnet_map_ipv6_dl_csum_trailer(struct sk_buff *skb,
- 	__sum16 *csum_field, pseudo_csum;
- 	__sum16 ip6_payload_csum;
- 	__be16 ip_header_csum;
--	u32 length;
- 
- 	/* Checksum offload is only supported for UDP and TCP protocols;
- 	 * the packet cannot include any IPv6 extension headers
-@@ -134,11 +133,9 @@ rmnet_map_ipv6_dl_csum_trailer(struct sk_buff *skb,
- 	ip_header_csum = (__force __be16)ip_fast_csum(ip6h, sizeof(*ip6h) / 4);
- 	ip6_payload_csum = csum16_sub(csum_trailer->csum_value, ip_header_csum);
- 
--	length = (ip6h->nexthdr == IPPROTO_UDP) ?
--		 ntohs(((struct udphdr *)txporthdr)->len) :
--		 ntohs(ip6h->payload_len);
- 	pseudo_csum = csum_ipv6_magic(&ip6h->saddr, &ip6h->daddr,
--				      length, ip6h->nexthdr, 0);
-+				      ntohs(ip6h->payload_len),
-+				      ip6h->nexthdr, 0);
- 
- 	/* It's sufficient to compare the IP payload checksum with the
- 	 * negated pseudo checksum to determine whether the packet
--- 
-2.27.0
+> +
+> +       return "invalid-access";
+> +}
+> +#else
+> +const char *kasan_get_bug_type(struct kasan_access_info *info)
+> +{
+> +       return "invalid-access";
+> +}
+> +#endif
+> +
+> +#endif
+> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+> index dd05e6c801fa..bd3f540feb47 100644
+> --- a/mm/kasan/sw_tags.c
+> +++ b/mm/kasan/sw_tags.c
+> @@ -167,47 +167,6 @@ void __hwasan_tag_memory(unsigned long addr, u8 tag, unsigned long size)
+>  }
+>  EXPORT_SYMBOL(__hwasan_tag_memory);
+>
+> -void kasan_set_free_info(struct kmem_cache *cache,
+> -                               void *object, u8 tag)
+> -{
+> -       struct kasan_alloc_meta *alloc_meta;
+> -       u8 idx = 0;
+> -
+> -       alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (!alloc_meta)
+> -               return;
+> -
+> -#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> -       idx = alloc_meta->free_track_idx;
+> -       alloc_meta->free_pointer_tag[idx] = tag;
+> -       alloc_meta->free_track_idx = (idx + 1) % KASAN_NR_FREE_STACKS;
+> -#endif
+> -
+> -       kasan_set_track(&alloc_meta->free_track[idx], GFP_NOWAIT);
+> -}
+> -
+> -struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
+> -                               void *object, u8 tag)
+> -{
+> -       struct kasan_alloc_meta *alloc_meta;
+> -       int i = 0;
+> -
+> -       alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (!alloc_meta)
+> -               return NULL;
+> -
+> -#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> -       for (i = 0; i < KASAN_NR_FREE_STACKS; i++) {
+> -               if (alloc_meta->free_pointer_tag[i] == tag)
+> -                       break;
+> -       }
+> -       if (i == KASAN_NR_FREE_STACKS)
+> -               i = alloc_meta->free_track_idx;
+> -#endif
+> -
+> -       return &alloc_meta->free_track[i];
+> -}
+> -
+>  void kasan_tag_mismatch(unsigned long addr, unsigned long access_info,
+>                         unsigned long ret_ip)
+>  {
+> diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
+> new file mode 100644
+> index 000000000000..9c33c0ebe1d1
+> --- /dev/null
+> +++ b/mm/kasan/tags.c
+> @@ -0,0 +1,58 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * This file contains common tag-based KASAN code.
+> + *
+> + * Author: Kuan-Ying Lee <kylee0686026@gmail.com>
 
+We appreciate your work on this, but this is misleading. Because you
+merely copied/moved the code, have a look what sw_tags.c says -- that
+should either be preserved, or we add nothing here.
+
+I prefer to add nothing or the bare minimum (e.g. if the company
+requires a Copyright line) for non-substantial additions because this
+stuff becomes out-of-date fast and just isn't useful at all. 'git log'
+is the source of truth.
+
+Cc'ing Greg for process advice. For moved code, does it have to
+preserve the original Copyright line if there was one?
+
+Thanks,
+-- Marco
