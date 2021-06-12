@@ -2,146 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240B23A4FF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 19:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925913A4FF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 19:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhFLRsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 13:48:17 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:37422 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhFLRsP (ORCPT
+        id S230364AbhFLRl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 13:41:57 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:36543 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhFLRl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 13:48:15 -0400
-Received: by mail-wm1-f43.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso10421609wmg.2;
-        Sat, 12 Jun 2021 10:46:01 -0700 (PDT)
+        Sat, 12 Jun 2021 13:41:56 -0400
+Received: by mail-wr1-f45.google.com with SMTP id n7so3359012wri.3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 10:39:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=75mouw3BFiq70jHhBUAkpXJpGq2eH3Umtp3XMvh/izM=;
-        b=QNeaRBMlgWsTqyJVbHik85vIm39QVMvDWe2pzmH92pwSCPQsg9sAC1eXoatsz+iorl
-         MDaGxjKWEloqO6GYMQdI+SujA+qv2lE509kL6xKKZmzNlvrMBNCwbDGO6EYvy/4H94Sr
-         Fy9wopCfHlvNf/l/Fe/99J/65IC+dJveMwypjb6De2G6jG9BZO1Y2rqOQz0OfMyentNT
-         gKzettbSYW1F/11jx36sGqfQ0buSMcOTO4SF2dub8VaDegkmloLJlEWZz6F7enGk/2PS
-         JZ9pdY4VwlrAa5dUxmyzvHyrcTWVpOSn4+esS6Yoaehyta1FqSfu3WDO99dg+HPqLMv1
-         q1DQ==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zc5UZZSa3ySEXVarFqXVRJeSGls1BBSSN2jPWTbN13I=;
+        b=SELjJCU4h+/WZ7uorJ6FiJQw00/Gn4ivVL05A8YIpfCs/+p0MiR4MhdDDQFsjzKGJw
+         f2WrHtm02jmT3E/5BIgNwf/vUTsmrSmQfyJXhMvj/3iuDm+PseaFRbXpJlH0LD3nQL/9
+         c8eeLK+43U4DGqxIKqE/J4R8SwP6zSZBLdXtp59GGmpXc2R/95MKHSLds8vZodZx1Hic
+         4Z+pk2UBn29nxUjTuO76IJ7b38CqsKBig9GAuJFCzQiKTtjZ1Vk4vY4TGGoLFGT5MHaY
+         oN32MRn0B2UAbBs/Afyp+HymBCLX4D0ecMJ1On+00OPJDrZjfyk7RYGu2mrD0kJ2qfwV
+         Z0HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=75mouw3BFiq70jHhBUAkpXJpGq2eH3Umtp3XMvh/izM=;
-        b=jH6Se/zNct+/BLt/mjEc4DrW6CuUJkHuPbBTAMphyT9NYWQ4eWOAQIeU6Tj7+LmWBG
-         ikjLg8Z3K9EWiaDBF6rG82Darym/KL3ldcGaU+IukuvTfIE5pNNZGPHC8sfXeJL1p501
-         PX/0+Blk0q2nP7fjx4VO7sysl2V1YKLNiwxlRiOByvkrUIZ+Z72iZ9mNZxZwvvKjxf6m
-         VbBaEfytRG/oLHa/d6g/TakAlxadnRyIPQUNHOjTtmvuvoiW/gZc8CJ6SPpKrIxHcWBv
-         JU6vwUI5X4EuWWOARVj5c7eiapVy5wsq9V73nC3wDCSE4Ji8YE7Xs/BxBBHoROf7uonx
-         AWNQ==
-X-Gm-Message-State: AOAM530XDXVJSoO3j0AjjR0rTPaRB98G/gPNz2wBJ1hk5+uiuC2X+pBa
-        ooCX1tERR6y7OAN6ZK7IAKM=
-X-Google-Smtp-Source: ABdhPJxA5Vnvc29Cs0erprdLZGKvqa0DkfM6awxCUvixIbm7gxStLfraZ0j6OEKADu549uOQoC9MvA==
-X-Received: by 2002:a05:600c:3555:: with SMTP id i21mr11037678wmq.51.1623519900818;
-        Sat, 12 Jun 2021 10:45:00 -0700 (PDT)
-Received: from honeypot.lan ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.googlemail.com with ESMTPSA id z11sm11147366wrs.7.2021.06.12.10.44.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zc5UZZSa3ySEXVarFqXVRJeSGls1BBSSN2jPWTbN13I=;
+        b=KZFtoZ+2K8nHAv0GDek7SmInmtgiAyIiSd9/5iFCF0JS2OZYQSeVivS+nzQoARj+a9
+         37CtFWBDFCECjMs9Y5eiIgJTiq30dz/HwE2lPywltgafQRtGEADSa71iS1OrYEsXcrod
+         +E5IN9DjMmenQN7LCVOqlinJTRxm9hXBNlLyhDnahJBLglQurwQxe9VtxyWj768kM0bt
+         Km4eyfzannToO6dMIqX6vfjJYuwcXTlm0OfND2Eh7EXYeDijVXfalm8GC+tDhnGHq4Q1
+         2XdGOeFiFvPzaB+g8rxUMhzRP8CCyGmhyWuXeCCHWORdcugAJfqkzgE0kjpdW9tYbYMY
+         T3bA==
+X-Gm-Message-State: AOAM533DQluWcLMxUPRlJEIihxgmtHxD5KxyuJrI12yXIr+M4vsZK2YK
+        qRt6joeS2PhEQETK1x5dGwkf8Q==
+X-Google-Smtp-Source: ABdhPJy8Yurr0n1n8na2fQmGEgZjA/cbHa4Zd88YONWWQl7/0D6AamPpruinTzfk3sL7NoG9qJ7YyQ==
+X-Received: by 2002:a5d:4c4b:: with SMTP id n11mr10246432wrt.269.1623519536413;
+        Sat, 12 Jun 2021 10:38:56 -0700 (PDT)
+Received: from KernelVM (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id a12sm9152006wmj.36.2021.06.12.10.38.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Jun 2021 10:44:59 -0700 (PDT)
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] perf ksymbol: fix memory leak: decrease refcount of map and dso
-Date:   Sat, 12 Jun 2021 19:37:48 +0200
-Message-Id: <20210612173751.188582-1-rickyman7@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <YLpxDf6+YOxYI5z3@kernel.org>
-References: <YLpxDf6+YOxYI5z3@kernel.org>
+        Sat, 12 Jun 2021 10:38:56 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 18:38:54 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        straube.linux@gmail.com, kaixuxia@tencent.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        liushixin2@huawei.com, unixbhaskar@gmail.com,
+        gustavoars@kernel.org, bkkarthik@pesu.pes.edu
+Subject: Re: [PATCH 0/6] staging: rtl8188eu: remove hal/odm_debug.h
+Message-ID: <YMTxLsrbzr6iPYsx@KernelVM>
+References: <20210611002504.166405-1-phil@philpotter.co.uk>
+ <20210611091010.GE10983@kadam>
+ <20210611153550.7p2deovau37rlpju@viti.kaiser.cx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611153550.7p2deovau37rlpju@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ASan reported a memory leak of BPF-related ksymbols
-map and dso. The leak is caused by refount never
-reaching 0, due to missing __put calls in the function
-machine__process_ksymbol_register.
-Once the dso is inserted in the map, dso__put should be
-called (map__new2 increases the refcount to 2).
-The same thing applies for the map when it's inserted
-into maps (maps__insert increases the refcount to 2).
+On Fri, Jun 11, 2021 at 05:35:50PM +0200, Martin Kaiser wrote:
+> Thus wrote Dan Carpenter (dan.carpenter@oracle.com):
+> 
+> > On Fri, Jun 11, 2021 at 01:24:58AM +0100, Phillip Potter wrote:
+> > > This series removes hal/odm_debug.h, which contains various preprocessor
+> > > definitions, as well as an unwieldy ODM_RT_TRACE macro which is not best
+> > > practice. It also removes all uses of this macro, and the associated
+> > > fields in struct odm_dm_struct which are only used by this macro.
+> 
+> > > This makes the code cleaner, thus moving it closer to getting out of
+> > > staging.
+> 
+> > Looks good.
+> 
+> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> same here: looks ok and doesn't break anything
+> 
+> Reviewed-by: Martin Kaiser <martin@kaiser.cx>
+> Tested-by: Martin Kaiser <martin@kaiser.cx>
+> 
+> Best regards,
+> 
+>    Martin
 
-$ sudo ./perf record -- sleep 5
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.025 MB perf.data (8 samples) ]
+Dear Martin,
 
-=================================================================
-==297735==ERROR: LeakSanitizer: detected memory leaks
+Thank you for reviewing and testing.
 
-Direct leak of 6992 byte(s) in 19 object(s) allocated from:
-    #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
-    #1 0x8e4e53 in map__new2 /home/user/linux/tools/perf/util/map.c:216:20
-    #2 0x8cf68c in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:778:10
-    [...]
-
-Indirect leak of 8702 byte(s) in 19 object(s) allocated from:
-    #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
-    #1 0x8728d7 in dso__new_id /home/user/linux/tools/perf/util/dso.c:1256:20
-    #2 0x872015 in dso__new /home/user/linux/tools/perf/util/dso.c:1295:9
-    #3 0x8cf623 in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:774:21
-    [...]
-
-Indirect leak of 1520 byte(s) in 19 object(s) allocated from:
-    #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
-    #1 0x87b3da in symbol__new /home/user/linux/tools/perf/util/symbol.c:269:23
-    #2 0x888954 in map__process_kallsym_symbol /home/user/linux/tools/perf/util/symbol.c:710:8
-    [...]
-
-Indirect leak of 1406 byte(s) in 19 object(s) allocated from:
-    #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
-    #1 0x87b3da in symbol__new /home/user/linux/tools/perf/util/symbol.c:269:23
-    #2 0x8cfbd8 in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:803:8
-    [...]
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
----
- tools/perf/util/machine.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 3ff4936a15a4..da19be7da284 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -776,10 +776,10 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 		if (dso) {
- 			dso->kernel = DSO_SPACE__KERNEL;
- 			map = map__new2(0, dso);
-+			dso__put(dso);
- 		}
- 
- 		if (!dso || !map) {
--			dso__put(dso);
- 			return -ENOMEM;
- 		}
- 
-@@ -792,6 +792,7 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 		map->start = event->ksymbol.addr;
- 		map->end = map->start + event->ksymbol.len;
- 		maps__insert(&machine->kmaps, map);
-+		map__put(map);
- 		dso__set_loaded(dso);
- 
- 		if (is_bpf_image(event->ksymbol.name)) {
--- 
-2.23.0
-
+Regards,
+Phil
