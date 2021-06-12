@@ -2,121 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0F63A4F38
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814483A4F3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 16:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhFLOU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 10:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhFLOU6 (ORCPT
+        id S231352AbhFLOV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 10:21:28 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:36467 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230191AbhFLOV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 10:20:58 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F4BC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:18:47 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id f12-20020a056402150cb029038fdcfb6ea2so17313283edw.14
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 07:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=xb2QAx7zepAh/lQE/CJVc+d/CGuwmfQ6M6AYYspdx1I=;
-        b=Pn1g/j4Q/Ps8hO/Wv4OvCFaicBjrttTarkv+9pOFkNnWNh42V8bddGeTBrO7Vlw5cg
-         4Re/hLQOA9OFtL8OPulFNerctA3fi6rLZzfhwueqHLWuSSMio0KiWvt527JC1LgSqsb2
-         0BGa8BtMC9LNQROvUh4K4i3i8r4C1wLe3tGLLQZbGZvaVLEyjSIUSe0t+qtRBffeeF7d
-         kfctmL+xofvpBMsrn7fJkFCk7I4CIOn2L3ofNk9TRXWSYNS8is69W9dcKsEkIRQAK7FU
-         5Nr9P35dYmK7LOYSRj8fb1RokC30zVaHTZQ5vy0hjLOghItjI4u9ECqBDv2AxmgW5+3h
-         +T0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=xb2QAx7zepAh/lQE/CJVc+d/CGuwmfQ6M6AYYspdx1I=;
-        b=QYOUSOK9C9JR4cf3pMknENEqFgGdE0Vy+8OMm9zr2RIsLS+pylrJ9rDj39KypF7wau
-         cXekpiA1VLtWGUjq/Wpf2SOKRK4+l9uIsYhCEVgjzcpnNdDFWN+EqoZKr1f9Wsp9dEMe
-         DfVf+iGw+ZtRghv2MUp8HunE2SF42DaAHvBppx3H9GhrJ8Tg1FYB9obUTpfyG9rJxfe4
-         VVR7sOcLcd1m1SoVCqaL6QV7Qq1oZX0SckpT7efHHoWnZlIGjdRhMofsGdp0G7FDZzr0
-         gsfumtFjyzbWMQ0Yly+bHiglkYi6N/Lx2Yr4urj5i2nhRvovh8niBZEC4fSiQvfjabL7
-         zlrQ==
-X-Gm-Message-State: AOAM531pPwLscBv2WOFpeioiPTiCUsbJtidnpgjzBnZCdAmYq2sIrQun
-        GunjNprhhBOpZVtuF6a4GKieg3BANWw4NV8Nfd6htWW0xsX6d7YCGffv3wBQMt+bjQSwW142CC2
-        L+wJgVdDt27QuF1BzvAIbHwF0FZVXXzWeVhd3re4ZJfscd01WWVQR+UHE6mVBMW4ntZkknQd/76
-        s=
-X-Google-Smtp-Source: ABdhPJxV4Tljny9btCWJBH1v2SI+ztKhUT2tTQK+HNQFAwxoBsiqTJfeNy9EcbO/TEDFQfbxpoi5va0A06egsA==
-X-Received: from lux.lon.corp.google.com ([2a00:79e0:d:210:f276:1917:882e:b90d])
- (user=maennich job=sendgmr) by 2002:a05:6402:1458:: with SMTP id
- d24mr8742698edx.85.1623507525727; Sat, 12 Jun 2021 07:18:45 -0700 (PDT)
-Date:   Sat, 12 Jun 2021 15:18:38 +0100
-Message-Id: <20210612141838.1073085-1-maennich@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-Subject: [PATCH] kbuild: mkcompile_h: consider timestamp if
- KBUILD_BUILD_TIMESTAMP is set
-From:   Matthias Maennich <maennich@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, maennich@google.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 12 Jun 2021 10:21:27 -0400
+Received: (qmail 78830 invoked by uid 1000); 12 Jun 2021 10:19:26 -0400
+Date:   Sat, 12 Jun 2021 10:19:26 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     syzbot <syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com>,
+        johan@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, mathias.nyman@linux.intel.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in vmk80xx_auto_attach/usb_submit_urb
+Message-ID: <20210612141926.GA78629@rowland.harvard.edu>
+References: <00000000000074a21005c482fce2@google.com>
+ <YMRbTj2RAbIFZKw6@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMRbTj2RAbIFZKw6@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid unnecessary recompilations, mkcompile_h does not regenerate
-compile.h if just the timestamp changed.
-Though, if KBUILD_BUILD_TIMESTAMP is set, an explicit timestamp for the
-build was requested, in which case we should not ignore it.
+On Sat, Jun 12, 2021 at 08:59:26AM +0200, Greg KH wrote:
+> On Fri, Jun 11, 2021 at 01:02:23PM -0700, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    614124be Linux 5.13-rc5
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=12188667d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=547a5e42ca601229
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=5f29dc6a889fc42bd896
+> > compiler:       Debian clang version 11.0.1-2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1687ec3fd00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172f44ffd00000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com
+> > 
+> > usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+> > usb 1-1: config 0 descriptor??
+> > ------------[ cut here ]------------
+> > usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+> > WARNING: CPU: 1 PID: 20 at drivers/usb/core/urb.c:494 usb_submit_urb+0xacd/0x1550 drivers/usb/core/urb.c:493
+> 
+> Looks correct to me, you did not create a valid USB device for the
+> system to use :)
 
-If a user follows the documentation for reproducible builds [1] and
-defines KBUILD_BUILD_TIMESTAMP as the git commit timestamp, a clean
-build will have the correct timestamp. A subsequent cherry-pick (or
-amend) changes the commit timestamp and if an incremental build is done
-with a different KBUILD_BUILD_TIMESTAMP now, that new value is not taken
-into consideration. But it should for reproducibility.
+The problem is that vmk80xx_write_packet submits an interrupt URB to 
+the ep_tx endpoint, but vmk80xx_find_usb_endpoints will set ep_tx to the 
+first OUT endpoint it finds that is either interrupt or bulk.  In this 
+case it was bulk, so the driver submitted an interrupt URB to a bulk 
+endpoint.
 
-Hence, whenever KBUILD_BUILD_TIMESTAMP is explicitly set, do not ignore
-UTS_VERSION when making a decision about whether the regenerated version
-of compile.h should be moved into place.
-
-[1] https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
-
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org
-Signed-off-by: Matthias Maennich <maennich@google.com>
----
- scripts/mkcompile_h | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
-index 4ae735039daf..a72b154de7b0 100755
---- a/scripts/mkcompile_h
-+++ b/scripts/mkcompile_h
-@@ -70,15 +70,23 @@ UTS_VERSION="$(echo $UTS_VERSION $CONFIG_FLAGS $TIMESTAMP | cut -b -$UTS_LEN)"
- # Only replace the real compile.h if the new one is different,
- # in order to preserve the timestamp and avoid unnecessary
- # recompilations.
--# We don't consider the file changed if only the date/time changed.
-+# We don't consider the file changed if only the date/time changed,
-+# unless KBUILD_BUILD_TIMESTAMP was explicitly set (e.g. for
-+# reproducible builds with that value referring to a commit timestamp).
- # A kernel config change will increase the generation number, thus
- # causing compile.h to be updated (including date/time) due to the
- # changed comment in the
- # first line.
- 
-+if [ -z "$KBUILD_BUILD_TIMESTAMP" ]; then
-+   IGNORE_PATTERN="UTS_VERSION"
-+else
-+   IGNORE_PATTERN="NOT_A_PATTERN_TO_BE_MATCHED"
-+fi
-+
- if [ -r $TARGET ] && \
--      grep -v 'UTS_VERSION' $TARGET > .tmpver.1 && \
--      grep -v 'UTS_VERSION' .tmpcompile > .tmpver.2 && \
-+      grep -v $IGNORE_PATTERN $TARGET > .tmpver.1 && \
-+      grep -v $IGNORE_PATTERN .tmpcompile > .tmpver.2 && \
-       cmp -s .tmpver.1 .tmpver.2; then
-    rm -f .tmpcompile
- else
--- 
-2.32.0.272.g935e593368-goog
-
+Alan Stern
