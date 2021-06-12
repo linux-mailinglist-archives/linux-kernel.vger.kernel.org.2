@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D553A4FAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 18:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E62F3A4FAF
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 18:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhFLQHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 12:07:45 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:17974 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhFLQHj (ORCPT
+        id S231551AbhFLQHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 12:07:47 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:42497 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231500AbhFLQHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 12:07:39 -0400
+        Sat, 12 Jun 2021 12:07:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623513939; x=1655049939;
+  t=1623513942; x=1655049942;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:content-transfer-encoding:mime-version;
-  bh=molq+9BvRBWgXvYu+GnJ8B3+6FgUyar1XzPFp4qPDO4=;
-  b=LfoMc3AIqbPZqpKhri/hwuaTg7S/Cmin9f/N2PdWaNJhy8JJoGyKduwA
-   /vGWQfzSXBNE8chDtHjTjivAni06s1wmUFpke/hMVVlgoj9roE0J3QyAT
-   WbEJMnJxB7fzL06tG0Q2N0rGy1ScIwHY29T3b7G+N9PCBA3JJp7k+Ltxp
-   SnmGKd6A6pzrGMrG+YiIZFfJ2Qs2YoyI1z+Ba4pRmVz3LrEphKNKaZHeN
-   gMVhxSILI74UR/NDzbsy078PrXNwMIXK9kSYSS4ycWcAM/oU91lJmAGDM
-   YgmFjhofB/8Lb1JNasb1f3d+QD8WtRqwTyQBUHoGaOtONFrj1t4/xElYH
-   A==;
-IronPort-SDR: j1MiUtqm1ozeR+8rfJZCpxeaHRnHt1v1iQw+9pr1+0RaPMFt7I4c03fET5EtXj31moRgl2mGsw
- 9vYjfhuYsB5FgcSV0pV9F336QBFBUk9ZlDE2ONHdvMFkDZ4F7J3dTWDxKovsbo4UMGePLCiBO7
- VcHdiMdHmjlZdNu4PjWZ/73TFowJ9gzdQ1UAcZq1/p3kGey+Q0lSh4pvxZpfCwPN9IBZNeVMJ+
- 8veR3GuU+nvd+OkjDIBydLta/MAe+gajmM9FLqPgN+YG4yeWdETQ4wFH5SBq9E0ORdqalqpFLs
- V1A=
+  bh=qfg/Aq4VfuKMl+XFVyg+80MLJYyE1rKYjxTp8Wix7Ng=;
+  b=SUVkg9u8UXB5oys2oK29T7j5v9LBS9/jhreczPrI3n+MbGuRzlFf7iIB
+   HAYkTHKWu25S9MN6w/TyGA+0jRJqOQfatOk5HJgLFBGNHGBti73bFDXvM
+   OtyVBwRVHtT40twaCjAHzYsggnZcodk7d1pwK5DpNrdn5NzhhjQ/nekrV
+   va/g/qmkd6H+1MgphtXRof973PlQeAv1urEZmg8TqXUDtRD3vvmNH/DPT
+   Cty6I9E4KqzNYjE3ROlQDuHZLzTcEPkAlUIQLbYU3ExaoD6lDZv+RYNs4
+   +nhwwRX3jqtJ1JALpMbJi/6tLZWYOI8mf/q+pBJfkFqSvmsTZsLVXrEaO
+   w==;
+IronPort-SDR: sgS2cijaG0bFyzthBi4iXM8rzFrqf49xPotANzHPUWYVZJXWmUd354S/POlFgn+RMCiQWcQsoz
+ /Qv8IXKA6keud9tcxmkLZEKynEqYc/gL/i0pGXx1uOce6YXTsm7qaBF3RfKiFIS4WOpPhOOKOM
+ HYq8E6B6n3AaCjMldwj22DFmifM4wSsNqRH1GQX3ox9nafrFDO//37JckkyIJO8D+wSkntw94X
+ LSEPsL5+w6+/t5l/sVbGmjI3L++69DMkycXNkcf8hVm7y9JawJunsc6pE5BMbUAcMrLyUCUREQ
+ IwY=
 X-IronPort-AV: E=Sophos;i="5.83,268,1616428800"; 
-   d="scan'208";a="170973902"
-Received: from mail-bn7nam10lp2104.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.104])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jun 2021 00:05:36 +0800
+   d="scan'208";a="176494361"
+Received: from mail-bn7nam10lp2101.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.101])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Jun 2021 00:05:40 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Uu5bQmTcf+nxjMdX2CcXQAWudjoMI4/AD/rlapCy5rO8E0Mo3lm6I15lpZUKbwS+SrsdZCUdkNI17zMBRLhJzN+50/7j3Ow3NrB2JZxKUK/zPQ0vqeK/S1JkewHJ4NYRXsnYg9Y22daY9B8WAy7ZItp7mDiGU5ieWBSJZIXs/M83JxN4lo+gv3d2A3tnpSOzlZEfysur9I7I2hSrNwJB2GkIDUeNaXdPrlByNpo7TCXAZd20n//8CFdwgkFVKF3ApjdvfpKlHfnTXbd4phBrcSZmSjVf05Zael4AhVJl4Zg3MKRY4fDlLW3g9hmaJHoB+8gm8ZKiX8rr6kEA3mKnUw==
+ b=S4nAcvfkp5sZ9JV8/QZPrI/Cw1r7KVTlIhLRNXwHq+7qN8T9xTcibeIMmxPJMig2rLQEgLtuPRw1Goq70E8QDUmmOqcQjdcy0GFPmE6avp9iw0zuGEk0wBBfJjn5GVqGi7x16RuahJ54U8QNUgPASeDPp/Qpra0fB2gTeeV4VmdRChJ72YojJ9fy0hnWHgNVjQtVA3Z5+b1o34H46W2FMvRVBoyHchYpNhz4sZLw9I4yUZvylNdTF/0uDyyRrgn3a1mfWjHXx6cRlkrNTFHJNAYeP4oWBq4eTvD7Yssfkn2QAxqq5ZvMfLQxzT8KprE2XBGjajmc379H3ckQq5Tffg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dVTBhXVXKTMHpkREQc6xnEWE+Qe+xnXqnTRLhnY2lqE=;
- b=EXUHo0Yd+LSxxUIRQI5KOyActojahoxFqpJK5fO6CVeQ3rLjCgU+yMfDtXqrAdILVpS3Y95FfAAIVyudr8JIS2QSvFApkkAP8kE7NIfXIZjIYfWh5gjoGWDjkvD5lwvH3Cj8lZLedNo4lOmQ5JH8jlr3EkxbR32Q52sc+miMWbCyG8iyqJIXAsvrFZUyf8hOghUYfGLuS/SC+aH9AzebvlAmRzbG3WfK3spQ9+D5eBVXDiUJ1FAL5cAv61Kq0zE0wsyVyrpPkGl8O4x1yeZUgaC5ZiFQpPt7FUdqcfp1P4UmWcJ1iTKZMDl0Pem7coXQyYtA9bJvPNCBPW1nRsB68w==
+ bh=l6nO9+zvHF2BW8iRaUuUWvLNeem5iqK/wUCxD2y3icA=;
+ b=gGCuGT0tHaozY0M2hUifmwIuCSjIzCg8Hl7tsB3KN3cbO/kayPuTQGt4UoPo+evwfF3xy/2F2FjKWmCAufPigb9GZZxlbJ/IY4d69RoEqJZ2j71QRcLoPpRACzKg+dwIbXeBsZWHmZlK/qW6jYxz6eGmIqm8zGerZXq8iRiSvGyAbQklyHg651QrElPhPotW2rWdZloDAq19TvqynAAsipU0HEpIf278vVkmJl2CchdjtW5bLXAJbC/ReJxq3Sfw7qDTcQUTBhYDNucWOH5kHvOF0GD8J2JkBp36aY6F4NnZ18LrmrZY9FiMk+v9wsbjq8zKep0kVYv9lr6T9HCwzQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dVTBhXVXKTMHpkREQc6xnEWE+Qe+xnXqnTRLhnY2lqE=;
- b=kECHcgG2uC3xQhsXD9yB1h0SUaJkuPRPom5wQEROGg7Jhl77c1MUliJwlQXckrqYV6Ezgg+zoSZcoz0REbUWQM0xGhM+w6tHVtHbGS4tF8F0Kx0qCjf96LAGBBqfKCHsjCk3UFQuA+lmkca2BgYUHSQx8OiBsioASmJVCaD3psc=
+ bh=l6nO9+zvHF2BW8iRaUuUWvLNeem5iqK/wUCxD2y3icA=;
+ b=Y4OlaO7n5pMXqIDOJuNz0hVag8ehNmsvjhomYcubPDhENKRWWZZvMeCgGyHAH0RbatN7LL4ml0lj4qZ2tb5tcXT0WADHDQJx88k3McoPj0vDYrqWqvIIp4COsPild1j39nL368udpuliEH1DHVEFEsyV4PRetMT/O6O/LpM1HZg=
 Authentication-Results: dabbelt.com; dkim=none (message not signed)
  header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
 Received: from CO6PR04MB7812.namprd04.prod.outlook.com (2603:10b6:303:138::6)
  by CO6PR04MB7747.namprd04.prod.outlook.com (2603:10b6:5:35b::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Sat, 12 Jun
- 2021 16:05:35 +0000
+ 2021 16:05:40 +0000
 Received: from CO6PR04MB7812.namprd04.prod.outlook.com
  ([fe80::a153:b7f8:c87f:89f8]) by CO6PR04MB7812.namprd04.prod.outlook.com
  ([fe80::a153:b7f8:c87f:89f8%9]) with mapi id 15.20.4219.025; Sat, 12 Jun 2021
- 16:05:35 +0000
+ 16:05:40 +0000
 From:   Anup Patel <anup.patel@wdc.com>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
@@ -73,9 +73,9 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Anup Patel <anup@brainfault.org>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Anup Patel <anup.patel@wdc.com>
-Subject: [RFC PATCH v1 07/10] clocksource: clint: Add support for ACLINT MTIMER device
-Date:   Sat, 12 Jun 2021 21:34:19 +0530
-Message-Id: <20210612160422.330705-8-anup.patel@wdc.com>
+Subject: [RFC PATCH v1 08/10] dt-bindings: timer: Add ACLINT MTIMER bindings
+Date:   Sat, 12 Jun 2021 21:34:20 +0530
+Message-Id: <20210612160422.330705-9-anup.patel@wdc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210612160422.330705-1-anup.patel@wdc.com>
 References: <20210612160422.330705-1-anup.patel@wdc.com>
@@ -87,160 +87,127 @@ X-ClientProxiedBy: MA1PR0101CA0052.INDPRD01.PROD.OUTLOOK.COM
  (2603:10b6:303:138::6)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (122.171.171.205) by MA1PR0101CA0052.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Sat, 12 Jun 2021 16:05:29 +0000
+Received: from wdc.com (122.171.171.205) by MA1PR0101CA0052.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Sat, 12 Jun 2021 16:05:35 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 44bdd14f-9869-4c6f-09c0-08d92dbbe964
+X-MS-Office365-Filtering-Correlation-Id: 1eed982b-58fd-401d-f01f-08d92dbbec9e
 X-MS-TrafficTypeDiagnostic: CO6PR04MB7747:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR04MB77477E5395392EA6493E116C8D339@CO6PR04MB7747.namprd04.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <CO6PR04MB7747C1656B40759195476B738D339@CO6PR04MB7747.namprd04.prod.outlook.com>
 WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:785;
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NCHjm85vcPzerGDn4DV+PyVNwL95/7oxo/e0qpTSh3D7eDXIZN+XgLt/nQrkZSLBXFDtbaTpPl5N7rcBeGnDt7FqTCGT7803BO/yiHYx0XDokzw0tzwNEGtk+ECetK3c0o2lbD7XrQuwMGzpPG6fvNRIB9buoDTfY1CfzrA+ISCJbvUSFa2tFsdjxVV7Gx1sMTGW2pvQyNZoPvV0WJyHiJPgvF737RE83XgPpQAYK7kw9dbQIejjmrSIY5DUKLxDK3BAGFr+SPKokGsCLIDBvlQBk8Iz2zZoY2g1uBY+EMRodJRP1Evf6G8SF18u/dp0cjQ4hjxW5nU6lHuUEltqP3pftZWyy89sm7Nyt90cHKLgUicbnmBis2VNBM69bbpz/CEdIwASWmx+kVSHwamftzm08DlhHe8jbr//7QlQVGqp882j/6Iet4Rzi7DXkGuIUx8drWSvUoj/7cOtJM255sP3GpTWJGlFgkaQrK7htKcoQ8GUJOB3R7g0i8REI7072h+7ZJPTVhqvvGWHdbXDExXv+MCOHdj7PoE22trEVntscC73xH9eFvQ10SWb+K5jo8oUF1iuHRWEblJ1smMB7quwe83qUjO8UzGR5HoHy4LA8OpI+WxLYg7jnecm2jSXIwfrskBz0A1jRjqZ27SuzQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR04MB7812.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(396003)(376002)(26005)(7696005)(55016002)(52116002)(6666004)(36756003)(5660300002)(83380400001)(478600001)(1076003)(7416002)(8886007)(2616005)(66476007)(66556008)(44832011)(16526019)(186003)(8936002)(8676002)(54906003)(4326008)(110136005)(38100700002)(38350700002)(86362001)(316002)(956004)(66946007)(2906002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: yLbBqSBXgXSTJwFGULF8Gv8P/iMhMZKSBH6huhoeeeMj0EC6V51WY+D9utJfrIw8+EsFGyUuXD7Gxcu2pIF6c9s4UBkFCPjR0dt/7Za/Z+tmsOFrjGARZEtwLHtxthW6vsaep1jY6aQBObqqCLdNFxCSy6988W+jaF47zVElYG51E6JhJisC60eCdyXcMIT0dNkIUbQxtt5y1sJgekZ7A+3WgnR9HU1xUKqOeDzstaWvJ/6WGuzEiyoO1Wr3Xn+0VH0nVMl7oC7k7PuXe71yTPMQlToqDfXC16aBiwds+zuCuUj2iHlnE4kZRqDatHgAMDBZAZqwXhJHgCSJRfbaEdVPbivo++3jIG4nl7s/0CYP79z5qSxF16Vf2D02yCImQ0DN3UjadJAO351KT9yYi16Kam7AdIrU3xisPUVBpzmg/fqkf9IlmvtHlg8KN73dp1g+co1lzgTtzSkiGBhd4tuXQC0txnphmFcVT7lGBIEgsm99Jiz+DhGAnOcc1f43Mcp8g9ridifVcT5bbgZtk2u785uz2ZSSUkRJUKz+GMT35IDeOu63Dzu4IGF/Kr2Swkx205UrNuko5N0J3OiBlqWemNsx3gLSi9RHsIWMYjOQpn9KdxinbAhupFNvmBzk3CgbRO/X4V4EoUH2cWRZJeS2JVLH8EzYqPtw/7u8HaRESc4YpXmWtJ7bUKPk4wvVnhqH6z22RpPVylfTJNGPs5QVRvI7vJjA9eg44BOlrfXsx05BNdfPDuucw0IFSQGo0hsifSczCeNcKyWQcziY2rHU+pFyqvKu9VuQ7qtmSzJf1jPNF4nNLOpxrGTMVgNmLLRG2kVsIQ2MVq/IRXh9Sw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR04MB7812.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(366004)(346002)(39860400002)(54906003)(8936002)(8676002)(110136005)(4326008)(2616005)(44832011)(16526019)(186003)(66476007)(66556008)(66946007)(2906002)(956004)(316002)(38350700002)(86362001)(38100700002)(55016002)(26005)(7696005)(966005)(7416002)(8886007)(36756003)(52116002)(6666004)(83380400001)(1076003)(478600001)(5660300002)(473944003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j7yBOZutKJXwEm/UzPW+erubUN1Wx9XlVndn3ZDtrLoQds39JkcwwK1w2RAV?=
- =?us-ascii?Q?IV3NzxVIFzSdcyOitGIk/pvfRl1aMAHNT5x98ilQCUZPQeAXLFHaKYsPouO6?=
- =?us-ascii?Q?THfA3TP71WmglXLL7IDSLXKqjGzH4pAcHC7Ejxcr8AWGT1UgI1Pz1kNls+dm?=
- =?us-ascii?Q?6LRzvdcALa0RjqfgO1d2enP1kVmsRb8S6P3KIUOLNTFC6XKRPdBFgNI1sp9l?=
- =?us-ascii?Q?/YxdKh64XKtz13mIWvJhXtFjCoTfUpEbZ0rZdFe6kQf6Sx+VXzth75VaYQsh?=
- =?us-ascii?Q?pVvaPNhaySOHJaNHFujIOSgx0fyEFgQ2ms4q8IDdiKZUu8y/P9czCn/uib4J?=
- =?us-ascii?Q?kY/393nOD9CbWVQNbiht/uc8UUb7TCq+mDHYgrtdRxpQcvzSn0BJQk1tXu3U?=
- =?us-ascii?Q?F0YV5e5TACIcgvAGItHNx/yS+sHY8QeT/R1EDNhAK+YUkwANH253nHA14jrm?=
- =?us-ascii?Q?Ou3SYs1vKAFFMuMPiAq3A6a4OndHlge6M29MkXzVAk6YacikeaBhEvIp7uyK?=
- =?us-ascii?Q?sOTThtGFe5SKqcf0ifAoMEkmsvrzcza8BwkYGrTlYSK004TWAcFjUVzto7bf?=
- =?us-ascii?Q?uZdfjGWQkVKjNXh7Ycik/1nAiJo47s5782aUjF23C+xeqUic9DDGIUgZWNi1?=
- =?us-ascii?Q?QdLPz4qhUtLQo4lEdCMrenuZvFkU82DjCf1EpgNQVQzztFBfsufWoj1L2h9Q?=
- =?us-ascii?Q?xFxpHJ4i+7s4PRRrMIumIKFJCY0+xerygkccE65va/hx2f0sN9MrH2oA+dDu?=
- =?us-ascii?Q?p2zE0Q4ia3cowuFEp4NrzkgzLI7tzDKwwMIsY+m+n5ChNhmYdCr5e237d76g?=
- =?us-ascii?Q?whHUdr/j6f2kf2KNTDO6rn+ULFsuFh8ThPrJPgyPiRZIACviohHQyk+TGFHu?=
- =?us-ascii?Q?ygGY6+isSlGtF2+/eDeeHXksId0ypxMM1rDvMRMOhbuic8wDo4dKHsnQstEQ?=
- =?us-ascii?Q?S99GUK/rmkFLIOW4u11cBv2NJEKI8wcD5QlR0U8p+86EfBSakZgwWCwgOLLH?=
- =?us-ascii?Q?KXphg5cw5fnCEO22ADijsQdKWBSk/DKrR5zFCyGumAph6n+XzY4VHDILrMhF?=
- =?us-ascii?Q?eQQvx1qkcN7VRBMYy+iborOXIo65l6yFXT4SBRUYX3joujQBegvSc6cVNr9l?=
- =?us-ascii?Q?sGAcqpH1AO+RKS/NnS+cKrTHBZLDks8ox2Y8VS7K3bE96ZKvPWqhPE1CVNWA?=
- =?us-ascii?Q?wDy5FjjKBf+InG1Lmwkzwv6aRoGxC5xprjBnqcy407G3d/GJTZUcISIU+79P?=
- =?us-ascii?Q?csoLnFGBzwW1fim+of4LXHsIETMcOIBGDLtEVwq2bkgXng43aX7rsAB0Tlek?=
- =?us-ascii?Q?umAG5nrJVf+B2w5CJvMwqIAy?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+mYz9rzNDGO7iCHksZSAq5UvaZkUIGj14D+PiCMd3E9vzMm7k9nP7Csc5DA2?=
+ =?us-ascii?Q?CT60AOzSjkqOWQmz9LMMvM6m773jB4R0wxTRRXgxIokMIE/vOTnSqoI3eWyI?=
+ =?us-ascii?Q?bPyD3dyoG5/U7HQ4QgrZCmlpfjdmOifmdOoDskxV/f2u9zE3KfkfWRLs6kaw?=
+ =?us-ascii?Q?bQTUFtn4V/t4dhcCo/uOidkrDdJwLlfD886NPgA95t1+gioIpqNEvEdYxiaL?=
+ =?us-ascii?Q?vLe9tiV8lkR5/I+MyXCJ5ekk/VZn4WPOCYrhG/iPGO9sqjJlML6sg0QiDAZB?=
+ =?us-ascii?Q?dOeZPF3QtWpkdaJL7fXwcB+i1wTecVQlU0SEnlUopR386MqgHHtTVSZhsWfw?=
+ =?us-ascii?Q?T2v0ijL+lIlsqbpHzVVKvkq+mvptMn7v0PZo4Y2JxwNMV28vCre/JMn63nCI?=
+ =?us-ascii?Q?aiDVGYIPN0I7Gflhf9oDIOjZSvIHWXb5s2Ks5DoXOIm4oj7fjZQATTS4TYtK?=
+ =?us-ascii?Q?zVZ+Zm+NwXEJAE9r12sAmRoGs0U2p3dgH+DrOUv/hRxbvBWQ4dQ/QY7u+1ro?=
+ =?us-ascii?Q?cwvsE5wmmS7WdWtoqGAZ0xVMwtyytUs3YlUCf6ZHirr5ESLvGeRucXbOW19G?=
+ =?us-ascii?Q?jswhADj4n//wmWbx0CClHXTw/vDmlDPvlpVMJm6UIJ77II30W/1VLdRmvF1K?=
+ =?us-ascii?Q?LUrCeTfqsCjCeEja0aEAzgADNTP0To/UiOrztmHyC2CNHxTwHhRMy2u/90R/?=
+ =?us-ascii?Q?eoXTdXCZMWQqPNdoYPBbtiabpGIQKuXRHg/OzS64bZwErgiFSPGsjGEs+rQE?=
+ =?us-ascii?Q?pe/fdgwZKs6Az9TqI626LRTk0ma6y7Vqblj90fQJR3LiLbQG+pCtQzXMWhGB?=
+ =?us-ascii?Q?hXcnmEqbCHfQ/GWrXqpjlVg68Nq5Qr8kQ5jgGWTabCM8NKdvBcYoChZkh9i4?=
+ =?us-ascii?Q?mKRblWi9x8En0qcLbUuOEcIFsvLAzJ9oj8kA9PcP5sypNMrimT6oR3zGVzJ0?=
+ =?us-ascii?Q?hQ3Ly+T3Xg8M9o/Tszhe35lQSmjhKg7xOHlVrcThyRlaftQyKYiO1UAoTSTJ?=
+ =?us-ascii?Q?nqhxssyjGjMtJit2ZQcXlt9vx6L0gRksURMmjVu32iLgMtomkCxGr/+Q4hal?=
+ =?us-ascii?Q?MSihokO4MJ08KrFkviDnqKpwrGUa5C2Cvwm9BZVlK3OjEgJEiEt3SvtDjPEM?=
+ =?us-ascii?Q?uVs/qFM61zIFGnsay4S4xZ7L8Uxas9uf6Niny6uFgGFefto8S5Gt2QITo7Of?=
+ =?us-ascii?Q?K8TnkdPRVeQwtfa5Pt84chmx/nZy91mhfIh1cR90fF9L57CfueLW6YCfOc0g?=
+ =?us-ascii?Q?c5+6U+XdtqpENGrPdfPGlVpAPaZp6oZNjKkgZUHgDSI0vePkqHvpWF0jpPg9?=
+ =?us-ascii?Q?XC5oawT/+b+cMc+i32IQxN1G?=
 X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44bdd14f-9869-4c6f-09c0-08d92dbbe964
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1eed982b-58fd-401d-f01f-08d92dbbec9e
 X-MS-Exchange-CrossTenant-AuthSource: CO6PR04MB7812.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2021 16:05:34.9189
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2021 16:05:40.3929
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RNPnYbImiQ9mWORSrDfT5mEYHslXMPJ1yKzCkae6bMu5+8uXTKOpSUovNYRA30c9/PL7iCgys6nu/9ynUxVIqg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 04QVyIygWysW0Y+ElnQOKeEBJZipFAI7iT2oynSBo7rhjc6BrGISZBP8Nw8teJM4UIwgT2ZuXv5sjK0CwyLFRQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR04MB7747
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RISC-V ACLINT specification is a modular specification and the
-ACLINT MTIMER device is compatible with the M-mode timer functionality
-of the CLINT device. This patch extends the CLINT driver to support
-both CLINT device and ACLINT MTIMER device.
+We add DT bindings documentation for the ACLINT MTIMER device
+found on RISC-V SOCs.
 
 Signed-off-by: Anup Patel <anup.patel@wdc.com>
 ---
- drivers/clocksource/timer-clint.c | 43 +++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 13 deletions(-)
+ .../bindings/timer/riscv,aclint-mtimer.yaml   | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
 
-diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-index dfdcd94c1fd5..ca329c450810 100644
---- a/drivers/clocksource/timer-clint.c
-+++ b/drivers/clocksource/timer-clint.c
-@@ -2,8 +2,15 @@
- /*
-  * Copyright (C) 2020 Western Digital Corporation or its affiliates.
-  *
-- * Most of the M-mode (i.e. NoMMU) RISC-V systems usually have a
-- * CLINT MMIO timer device.
-+ * Most of the M-mode (i.e. NoMMU) RISC-V systems usually have a CLINT
-+ * MMIO device which is a composite device capable of injecting M-mode
-+ * software interrupts and M-mode timer interrupts.
-+ *
-+ * The RISC-V ACLINT specification is modular in nature and defines
-+ * separate devices for M-mode software interrupt (MSWI), M-mode timer
-+ * (MTIMER) and S-mode software interrupt (SSWI).
-+ *
-+ * This is a common driver for CLINT device and ACLINT MTIMER device.
-  */
- 
- #define pr_fmt(fmt) "clint: " fmt
-@@ -21,14 +28,20 @@
- #include <linux/smp.h>
- #include <linux/timex.h>
- 
--#ifndef CONFIG_RISCV_M_MODE
-+#ifdef CONFIG_RISCV_M_MODE
- #include <asm/clint.h>
+diff --git a/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+new file mode 100644
+index 000000000000..21c718f8ab4c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+@@ -0,0 +1,55 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/riscv,aclint-mtimer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+u64 __iomem *clint_time_val;
-+EXPORT_SYMBOL(clint_time_val);
- #endif
- 
- #define CLINT_IPI_OFF		0
- #define CLINT_TIMER_CMP_OFF	0x4000
- #define CLINT_TIMER_VAL_OFF	0xbff8
- 
-+#define ACLINT_MTIMER_CMP_OFF	0x0000
-+#define ACLINT_MTIMER_VAL_OFF	0x7ff8
++title: RISC-V ACLINT M-level Timer
 +
- /* CLINT manages IPI and Timer for RISC-V M-mode  */
- static u32 __iomem *clint_ipi_base;
- static u64 __iomem *clint_timer_cmp;
-@@ -36,11 +49,6 @@ static u64 __iomem *clint_timer_val;
- static unsigned long clint_timer_freq;
- static unsigned int clint_timer_irq;
- 
--#ifdef CONFIG_RISCV_M_MODE
--u64 __iomem *clint_time_val;
--EXPORT_SYMBOL(clint_time_val);
--#endif
--
- static void clint_send_ipi(const struct cpumask *target)
- {
- 	unsigned int cpu;
-@@ -191,9 +199,15 @@ static int __init clint_timer_init_dt(struct device_node *np)
- 		return -ENODEV;
- 	}
- 
--	clint_ipi_base = base + CLINT_IPI_OFF;
--	clint_timer_cmp = base + CLINT_TIMER_CMP_OFF;
--	clint_timer_val = base + CLINT_TIMER_VAL_OFF;
-+	if (of_device_is_compatible(np, "riscv,aclint-mtimer")) {
-+		clint_ipi_base = NULL;
-+		clint_timer_cmp = base + ACLINT_MTIMER_CMP_OFF;
-+		clint_timer_val = base + ACLINT_MTIMER_VAL_OFF;
-+	} else {
-+		clint_ipi_base = base + CLINT_IPI_OFF;
-+		clint_timer_cmp = base + CLINT_TIMER_CMP_OFF;
-+		clint_timer_val = base + CLINT_TIMER_VAL_OFF;
-+	}
- 	clint_timer_freq = riscv_timebase;
- 
- #ifdef CONFIG_RISCV_M_MODE
-@@ -230,8 +244,10 @@ static int __init clint_timer_init_dt(struct device_node *np)
- 		goto fail_free_irq;
- 	}
- 
--	riscv_set_ipi_ops(&clint_ipi_ops);
--	clint_clear_ipi();
-+	if (clint_ipi_base) {
-+		riscv_set_ipi_ops(&clint_ipi_ops);
-+		clint_clear_ipi();
-+	}
- 
- 	return 0;
- 
-@@ -244,3 +260,4 @@ static int __init clint_timer_init_dt(struct device_node *np)
- 
- TIMER_OF_DECLARE(clint_timer, "riscv,clint0", clint_timer_init_dt);
- TIMER_OF_DECLARE(clint_timer1, "sifive,clint0", clint_timer_init_dt);
-+TIMER_OF_DECLARE(clint_timer2, "riscv,aclint-mtimer", clint_timer_init_dt);
++maintainers:
++  - Anup Patel <anup.patel@wdc.com>
++
++description:
++  RISC-V SOCs include an implementation of the M-level timer (MTIMER) defined
++  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification. The
++  ACLINT MTIMER device is documented in the RISC-V ACLINT specification found
++  at https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
++
++  The ACLINT MTIMER device directly connect to the M-level timer interrupt
++  lines of various HARTs (or CPUs) so the RISC-V per-HART (or per-CPU) local
++  interrupt controller is the parent interrupt controller for the ACLINT
++  MTIMER device.
++
++  The clock frequency of ACLINT is specified via "timebase-frequency" DT
++  property of "/cpus" DT node. The "timebase-frequency" DT property is
++  described in Documentation/devicetree/bindings/riscv/cpus.yaml
++
++properties:
++  compatible:
++    items:
++      - const: riscv,aclint-mtimer
++
++    description:
++      Should be "<vendor>,<chip>-aclint-mtimer" and "riscv,aclint-mtimer".
++
++  reg:
++    maxItems: 1
++
++  interrupts-extended:
++    minItems: 1
++
++additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts-extended
++
++examples:
++  - |
++    timer@2004000 {
++      compatible = "riscv,aclint-mtimer";
++      interrupts-extended = <&cpu1intc 7 &cpu2intc 7 &cpu3intc 7 &cpu4intc 7>;
++      reg = <0x2004000 0x8000>;
++    };
++...
 -- 
 2.25.1
 
