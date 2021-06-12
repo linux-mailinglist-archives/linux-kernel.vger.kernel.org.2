@@ -2,163 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612A33A4E13
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 11:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66A83A4E17
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 11:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbhFLJvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 05:51:38 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11032 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhFLJvf (ORCPT
+        id S230348AbhFLJ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 05:56:47 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:56305 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhFLJ4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 05:51:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623491376; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=h+lKHMirYOo4CZO75qbhiOYJsV8XQqazDat76Bs0AYM=;
- b=B/ui3EZyULBJewoZFt3Xs80hfNP8LHGW/8RZIJF8yVa0C42C6leIC3MhFojjIhLdcdFhb11G
- dp222SvEXtF+qfRKVIF6VansswiKayltg1EGKXY10gBV3dK/gg/uCssOstWcNVFr+37kSLWL
- I7xu3dolczX5PpkKb7f9wtuYrtA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60c483278491191eb3373ff2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 09:49:27
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D0CC2C43460; Sat, 12 Jun 2021 09:49:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC8DEC433D3;
-        Sat, 12 Jun 2021 09:49:26 +0000 (UTC)
+        Sat, 12 Jun 2021 05:56:45 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mbies-1lKKIE362I-00dFkY; Sat, 12 Jun 2021 11:54:44 +0200
+Received: by mail-wm1-f44.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so10047685wms.0;
+        Sat, 12 Jun 2021 02:54:44 -0700 (PDT)
+X-Gm-Message-State: AOAM530a7rvG6rXdc+YKD0sSnOIawFnnWgUnwaXSNZiPtOTo9lacYERe
+        i1Mzkjlyrj4skK87nMjMTbFWMiIRSmfBryh/4vQ=
+X-Google-Smtp-Source: ABdhPJwn2BYTX5/QkNEs0bR510OlVhGDCvA1jD8WEIHjWsisXpME1WyYu5aNpbTe+mRGf89UPeAHmHX4C3mi2ayVlT0=
+X-Received: by 2002:a1c:c90f:: with SMTP id f15mr24171181wmb.142.1623491684384;
+ Sat, 12 Jun 2021 02:54:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Sat, 12 Jun 2021 17:49:26 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/9] scsi: ufs: Simplify error handling preparation
-In-Reply-To: <645c0e3c83c8917a8fd5c0493c5815a0@codeaurora.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-6-git-send-email-cang@codeaurora.org>
- <6abb81f6-4dd2-082e-9440-4b549f105788@intel.com>
- <f0ae504bccc428fa674a183608174bdd@codeaurora.org>
- <4f6ea52f-308e-8252-5a19-3911eb9b99b1@acm.org>
- <645c0e3c83c8917a8fd5c0493c5815a0@codeaurora.org>
-Message-ID: <d3c57c8e52f7a251b5c536a893b1f101@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210612003128.372238-1-leoyang.li@nxp.com>
+In-Reply-To: <20210612003128.372238-1-leoyang.li@nxp.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 12 Jun 2021 11:52:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0K-S+9iHYfs-4AQZOzta6D_jH8Zy32-pfotYncBcJyDg@mail.gmail.com>
+Message-ID: <CAK8P3a0K-S+9iHYfs-4AQZOzta6D_jH8Zy32-pfotYncBcJyDg@mail.gmail.com>
+Subject: Re: [PATCH] usb: gadget: fsl: properly remove remnant of MXC support
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Stanley <joel@jms.id.au>,
+        USB list <linux-usb@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ran.wang_1@nxp.com, Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:5I/qH79G8W4Fw2dZCrD+oWkYGlsmOAfcogW3dYzYhKKKGbwd3XG
+ 8vOSMswLSp3q+mguTZaKohueFwx0RtQr4ixoDDNnYnO186J7e1NaJwwqi/YBeZ49F7jBm0y
+ ujYCWs/1JXGn+smFRAhpe9AHU8qLFVj5Kwo5KR0LrFCcY0vCvZ4Az3DNBeBhWZWBQBWXUTv
+ 13RN5FlbI6Ce22s2HbGsg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7OO7KzuRSI0=:KZsignqFI6FgXZ2blSBuwH
+ GOwS/mH9n2+tj+AXUqq/okN0EN41rwItgRhkYDrNkIvAybfPiojUnIyJOdJBlQraYVPnZfSk5
+ gb3fTooUYSbuhJ2MC5OPp4ylt4XZYltmm3LESLh7D4J5XSO5GT3q2dedxseB/iYd4QZT3pWSL
+ RGhvH38YOmCWOoWixfTw1rPInVGICveoF9oKCHcRzNWWdoUwhiozfnUR0avkPfJpM0Zp8UYbD
+ aoPXZ8qqaPkeVq+eaBMSR0p5GnB4rf2I1+DLqUZ4nECKt8OSmKkvRe4XnyWzDgXXZC/Iw+QPt
+ Il78icX570lEsfE3mcj0wt+ji2sYWI9n4LhfRzT4M1L41MTavY24ZgbM+LguXb/dTeXOups+Q
+ 3KVnAPPXlCqdOnsr1zuPgbpXP+4fVPQ3KR0O9aIimqz0NpxW8Io1/CBoG9w/w6ecGbT9IcR0L
+ uHVnt7DfUnk1NJxhlr+8C3ss+XYCk3lc9wslDwRQGVDrsPLMoHdg4qW8Peh1nO3qh+CSBj7XC
+ PlcD0vsfKf5pMelFxHhJQX6+A+yIXtaJdMoh2IZ9PNGIKH66Fork4VxYdQn6/kB9b5wjrU7EY
+ mXj3SZG36BJJ2AQkst6+rJXbLRO6T8llMeN/L1sjxdbHTDUBNHwKzQBrdyu/CUSS/sYEcl8mC
+ K148=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+On Sat, Jun 12, 2021 at 2:31 AM Li Yang <leoyang.li@nxp.com> wrote:
+>
+> Commit a390bef7db1f ("usb: gadget: fsl_mxc_udc: Remove the driver")
+> didn't remove all the MXC related stuff which can cause build problem
+> for LS1021 when enabled again in Kconfig.  This patch remove all the
+> remnants.
+>
+> Signed-off-by: Li Yang <leoyang.li@nxp.com>
 
-On 2021-06-12 14:46, Can Guo wrote:
-> On 2021-06-12 04:58, Bart Van Assche wrote:
->> On 6/10/21 8:01 PM, Can Guo wrote:
->>> Previously, without commit cb7e6f05fce67c965194ac04467e1ba7bc70b069,
->>> ufshcd_resume() may turn off pwr and clk due to UFS error, e.g., link
->>> transition failure and SSU error/abort (and these UFS error would
->>> invoke error handling).  When error handling kicks start, it should
->>> re-enable the pwr and clk before proceeding. Now, commit
->>> cb7e6f05fce67c965194ac04467e1ba7bc70b069 makes ufshcd_resume()
->>> purely control pwr and clk, meaning if ufshcd_resume() fails, there
->>> is nothing we can do about it - pwr or clk enabling must have failed,
->>> and it is not because of UFS error. This is why I am removing the
->>> re-enabling pwr/clk in error handling prepare.
->> 
->> Why are link transition failures handled in the error handler instead 
->> of
->> in the context where these errors are detected (ufshcd_resume())? Is 
->> it
->> even possible to recover from a link transition failure or does this
->> perhaps indicate a broken UFS controller?
-> 
-> Basically, almost all UFS failures are caused by errors in underlaying 
-> layers,
-> i.e., UIC errors, including link transition failures. And according to 
-> UFSHCI
-> spec, SW should do a full reset to recover it, just like handle any 
-> other
-> fatal UIC errors. All UIC errors are detected by HW and reported by IRQ 
-> handler.
-> 
-> UFSHCI Spec Ver. 31
-> 8.2.7 Hibernate Enter/Exit Error Handling
-> Hibernate Enter/Exit Error occurs when the UniPro link is broken. When
-> this condition occurs,
-> host software should reset the host controller by setting register HCE
-> to ‘0’, re-initialize the host
-> controller by setting register HCE to ‘1', and then start link startup
-> sequence as shown in Figure 16.
-> 
->> 
->>>> but what I really wonder is why we don't just do recovery directly
->>>> in __ufshcd_wl_suspend() and  __ufshcd_wl_resume() and strip all
->>>> the PM complexity out of ufshcd_err_handling()?
->> 
->> +1
-> 
-> I've explained why I chose not to do this in my last reply to Adrian.
-> Please kindly check it.
-> 
->> 
->>> For system suspend/resume, since error handling has the same nature
->>> like user access, so we are using host_sem to avoid concurrency of
->>> error handling and system suspend/resume.
->> 
->> Why is host_sem used for that purpose instead of lock_system_sleep() 
->> and
->> unlock_system_sleep()?
->> 
-> 
-> I was aware of it, but the situation is that host_sem is also used to
-> avoid concurrency among user access, error handling and shutdown, so
-> I think just use host_sem anyways to simply the lockings, otherwise
-> user access and error handling would have to take both 
-> system_transition_mutex
-> and host_sem
+Looks good to me,
 
-On second thought, I will take your suggestion to use 
-lock_system_sleep()
-and unlock_system_sleep() in error handler and remove the host_sem used
-in suspend/resume, which can make the code more readable by keeping the
-changes within error handler itself. However, please note that host_sem
-will still be used to avoid concurrency of user access, error handler 
-and
-shutdown.
-
-Thanks,
-Can Guo.
-
-> 
-> Thanks,
-> 
-> Can Guo.
-> 
->> Thanks,
->> 
->> Bart.
+Acked-by: Arnd Bergmann <arnd@arndb.de>
