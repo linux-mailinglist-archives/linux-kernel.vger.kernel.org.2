@@ -2,141 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88D63A4CCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 06:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500D23A4CCE
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 06:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhFLE2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 00:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhFLE2s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 00:28:48 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E02C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Jun 2021 21:26:49 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lrvEH-0008IN-Uw; Sat, 12 Jun 2021 06:26:41 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lrvEF-0002Aj-Hc; Sat, 12 Jun 2021 06:26:39 +0200
-Date:   Sat, 12 Jun 2021 06:26:39 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
-        UNGLinuxDriver@microchip.com,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next v4 4/9] net: phy: micrel: apply resume errata
- workaround for ksz8873 and ksz8863
-Message-ID: <20210612042639.bgsloltuqoipmwtk@pengutronix.de>
-References: <20210611071527.9333-1-o.rempel@pengutronix.de>
- <20210611071527.9333-5-o.rempel@pengutronix.de>
- <20210611192010.ptmblzpj6ilt24ly@skbuf>
+        id S230299AbhFLE30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 00:29:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229446AbhFLE3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 00:29:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2418E611CB;
+        Sat, 12 Jun 2021 04:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623472046;
+        bh=G0+2nGRRVIUoCr/WIFqTqLXmFCWX4fIZWw/3LoSObFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vRPoAp3eO4ZeIHfw1rE+n4qJ3ACanh5dw7YUA1QKHE3KHAxQffyDzgMELbyLaosQ2
+         iE8GFDGNqEUp5sc96Ev8PsJegnWMs0DJKKZWPP18yexpvuUNH/K0BbTM7wbNwicrpU
+         WUrx0xazK9P7FXjp901zcihzNv02Lu1wITO241Ena7TW77b1GbaKUKh/DfpSMQ3zf0
+         djiEn1xhJIiswASZMRmEbY7eUmx3joIXdrngiKXKcsrk02P4dyE9i738zdnXIK9qqo
+         OixQ27dCENubTnLNUrVIHTKMnpNRPEdEnUA7kGuxeQWXYZZNpnZfySaIhrWX0H0a9r
+         2ZLKpogOQIL4g==
+Date:   Sat, 12 Jun 2021 07:27:23 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 3/5] selftests/sgx: Dump enclave memory map
+Message-ID: <20210612042723.vp26eafhyzrv7t66@kernel.org>
+References: <20210610083021.392269-1-jarkko@kernel.org>
+ <20210610083021.392269-3-jarkko@kernel.org>
+ <bb39b6af-5921-64e8-793b-5ef4b150153e@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210611192010.ptmblzpj6ilt24ly@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 06:26:05 up 191 days, 18:32, 38 users,  load average: 0.17, 0.10,
- 0.02
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <bb39b6af-5921-64e8-793b-5ef4b150153e@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:20:10PM +0300, Vladimir Oltean wrote:
-> On Fri, Jun 11, 2021 at 09:15:22AM +0200, Oleksij Rempel wrote:
-> > The ksz8873 and ksz8863 switches are affected by following errata:
+On Fri, Jun 11, 2021 at 04:45:19PM -0600, Shuah Khan wrote:
+> On 6/10/21 2:30 AM, Jarkko Sakkinen wrote:
+> > Often, it's useful to check whether /proc/self/maps looks sane when
+> > dealing with memory mapped objects, especially when they are JIT'ish
+> > dynamically constructed objects. Therefore, dump "/dev/sgx_enclave"
+> > matching lines from the memory map in FIXTURE_SETUP().
 > > 
-> > | "Receiver error in 100BASE-TX mode following Soft Power Down"
-> > |
-> > | Some KSZ8873 devices may exhibit receiver errors after transitioning
-> > | from Soft Power Down mode to Normal mode, as controlled by register 195
-> > | (0xC3) bits [1:0]. When exiting Soft Power Down mode, the receiver
-> > | blocks may not start up properly, causing the PHY to miss data and
-> > | exhibit erratic behavior. The problem may appear on either port 1 or
-> > | port 2, or both ports. The problem occurs only for 100BASE-TX, not
-> > | 10BASE-T.
-> > |
-> > | END USER IMPLICATIONS
-> > | When the failure occurs, the following symptoms are seen on the affected
-> > | port(s):
-> > | - The port is able to link
-> > | - LED0 blinks, even when there is no traffic
-> > | - The MIB counters indicate receive errors (Rx Fragments, Rx Symbol
-> > |   Errors, Rx CRC Errors, Rx Alignment Errors)
-> > | - Only a small fraction of packets is correctly received and forwarded
-> > |   through the switch. Most packets are dropped due to receive errors.
-> > |
-> > | The failing condition cannot be corrected by the following:
-> > | - Removing and reconnecting the cable
-> > | - Hardware reset
-> > | - Software Reset and PCS Reset bits in register 67 (0x43)
-> > |
-> > | Work around:
-> > | The problem can be corrected by setting and then clearing the Port Power
-> > | Down bits (registers 29 (0x1D) and 45 (0x2D), bit 3). This must be done
-> > | separately for each affected port after returning from Soft Power Down
-> > | Mode to Normal Mode. The following procedure will ensure no further
-> > | issues due to this erratum. To enter Soft Power Down Mode, set register
-> > | 195 (0xC3), bits [1:0] = 10.
-> > |
-> > | To exit Soft Power Down Mode, follow these steps:
-> > | 1. Set register 195 (0xC3), bits [1:0] = 00 // Exit soft power down mode
-> > | 2. Wait 1ms minimum
-> > | 3. Set register 29 (0x1D), bit [3] = 1 // Enter PHY port 1 power down mode
-> > | 4. Set register 29 (0x1D), bit [3] = 0 // Exit PHY port 1 power down mode
-> > | 5. Set register 45 (0x2D), bit [3] = 1 // Enter PHY port 2 power down mode
-> > | 6. Set register 45 (0x2D), bit [3] = 0 // Exit PHY port 2 power down mode
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> >   tools/testing/selftests/sgx/main.c | 14 ++++++++++++++
+> >   1 file changed, 14 insertions(+)
 > > 
-> > This patch implements steps 2...6 of the suggested workaround. During
-> > (initial) switch power up, step 1 is executed by the dsa/ksz8795
-> > driver's probe function.
-> > 
-> > Note: In this workaround we toggle the MII_BMCR register's BMCR_PDOWN
-> > bit, this is translated to the actual register and bit (as mentioned in
-> > the arratum) by the ksz8_r_phy()/ksz8_w_phy() functions.
+> > diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
+> > index 6da19b6bf287..14030f8b85ff 100644
+> > --- a/tools/testing/selftests/sgx/main.c
+> > +++ b/tools/testing/selftests/sgx/main.c
+> > @@ -117,6 +117,8 @@ FIXTURE_SETUP(enclave)
+> >   	Elf64_Sym *sgx_enter_enclave_sym = NULL;
+> >   	struct vdso_symtab symtab;
+> >   	struct encl_segment *seg;
+> > +	char maps_line[256];
+> > +	FILE *maps_file;
+> >   	unsigned int i;
+> >   	void *addr;
+> > @@ -167,6 +169,18 @@ FIXTURE_SETUP(enclave)
+> >   	memset(&self->run, 0, sizeof(self->run));
+> >   	self->run.tcs = self->encl.encl_base;
+> > +	maps_file = fopen("/proc/self/maps", "r");
 > 
-> s/arratum/erratum/
+> I almost applied these. Does this require root access, if so,
+> please add logic to skip the test if non-root user runs it.
 > 
-> Also, the commit message is still missing this piece of information you
-> gave in the previous thread:
-> 
-> | this issue was seen  at some early point of development (back in 2019)
-> | reproducible on system start. Where switch was in some default state or
-> | on a state configured by the bootloader. I didn't tried to reproduce it
-> | now.
-> 
-> Years from now, some poor souls might struggle to understand why this
-> patch was done this way. If it is indeed the case that the issue is only
-> seen during the handover between bootloader and kernel, there is really
-> no reason to implement the ERR workaround in phy_resume instead of doing
-> it once at probe time.
+> Same comments for all other paths that might require root access.
 
-Ok, i'll drop this patch for now.
+As Dave stated, it does not. A process can inspect its own state
+through /proc/self path. E.g. Chrome web browser uses /proc/self/exe
+to initialize multiple instances of itself for browser tabs...
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+As far as other things go, this patch set does not bind to any other
+new OS resources.
+
+> thanks,
+> -- Shuah
+
+/Jarkko
