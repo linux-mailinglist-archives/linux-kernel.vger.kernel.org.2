@@ -2,99 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310663A4F9B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 17:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFC03A4F9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 17:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhFLP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 11:57:59 -0400
-Received: from mail-il1-f177.google.com ([209.85.166.177]:46913 "EHLO
-        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhFLP5z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 11:57:55 -0400
-Received: by mail-il1-f177.google.com with SMTP id v13so8259666ilh.13
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 08:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=P6ac0Ww4T6oJ0phbMKZtJ+VvTTiNnlNYz6Fb9ylb51E=;
-        b=QTgJvLq07YnRCX0RbgLhREEDNYtX/r5I9Xpt5TWmdgYZsdXCcHj+bTZFr9ZYCbMDDP
-         Rv+KGHTlLeRwlwwVn4ZTAZB5/8nve7uv5SGez49fBqI5JM+gcF/2c4GuXfgbiM0WjC8G
-         lG5bC6WHU02XHOP0p936T+/naq+ABeJjd47VKx9NrHH1XnRn+JvZqudh167NkbIegp0A
-         GgS5oFw/p2RuqGMOWH3Ny9bFZCXdi5gaAAARYeGh60N1l6BaioH1xYS69kbMX+CAckQs
-         7zCo60l1WG6V2A82QuVYznNYFBejj3VRx4vuz8gp5gOLbYrd/VabAJBLLXgNwlPWm8/k
-         g0zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=P6ac0Ww4T6oJ0phbMKZtJ+VvTTiNnlNYz6Fb9ylb51E=;
-        b=b162WtuceJaBFSObo9nh4D9jCgEwS7DKh5rSq5fzLOKZtvC08JbHJHGgZEnbD8izO0
-         J7aYr8GsQer1JbMsuOZRwUkWSnLT/Efn5tWbHdHaUmBar9FwLBlimNUOBh+i/pv6LdSx
-         0ExgXbFf+r0/nL0ExmSAgQ+e2UtEsyNOiye3jMWlZzYF/cZOW0nyRhGAzP5Io3BasQRi
-         VMptHOG7VGd3oeTM/Mt8lKGEoUSXb8kBKNBuuxbtmcsCZnLhO9LCtpOiA0y65OQrXAbF
-         p/fHilfZEE3yRORRIfA1hue13ejUjYsQa8Y2L1WiveN9dy/dy1ATJPOY8Ei8sf/AVCR6
-         elmQ==
-X-Gm-Message-State: AOAM533PvRe9bzCHI4W2xJYU7bbi7Rr2TsRIMolAe8t0d/bpamhjhQ/b
-        eosx8V/nheXdJ+MaAygojofIaEU8+la+L7USwPA=
-X-Google-Smtp-Source: ABdhPJyZXpy+LhmPBPBxaZ9Nz3zRDIs1wn8ogpbQprvqD78v6M84ydsW+XMLUtR4rE4koSGpBFcdMeOCYUUQ77Fni1U=
-X-Received: by 2002:a92:b00d:: with SMTP id x13mr7992532ilh.181.1623513295837;
- Sat, 12 Jun 2021 08:54:55 -0700 (PDT)
+        id S231522AbhFLP5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 11:57:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231373AbhFLP53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 11:57:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7657B610FC;
+        Sat, 12 Jun 2021 15:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623513319;
+        bh=JG9O4NfiHdk3nCHbc/jik2VZDdoYJZACnH1oPGBd1q0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=M5/Dcja4NYy5DoWnRJo5eDcjoealiVBlAPB3mpwJdb5kF1T980YEjit8go345+kMc
+         5XeH9F0s91ePwfNd7GX75WR6MM7EjVunikOw3gw/6MmWZ4jkGLAN81ukfRiDkUW1gi
+         /dADR/eu63TztBHK8KEB9K5KjynAMwrzysPsF9o8=
+Date:   Sat, 12 Jun 2021 17:55:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB driver fixes for 5.13-rc6
+Message-ID: <YMTY5JKo71X92y/S@kroah.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6622:c46:0:0:0:0 with HTTP; Sat, 12 Jun 2021 08:54:55
- -0700 (PDT)
-Reply-To: mrmichelduku@outlook.com
-From:   Duku Michel <mrmichel2233@gmail.com>
-Date:   Sat, 12 Jun 2021 15:54:55 +0000
-Message-ID: <CALSo2NYWrZXqSNJzNszs8mO5pVWBKtdDzUn+rUSP4hOvnmweUA@mail.gmail.com>
-Subject: Please respond urgently
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+The following changes since commit 8124c8a6b35386f73523d27eacb71b5364a68c4c:
 
-I know that this mail will come to you as a surprise as we have never
-met before, but never mind I have decided to seek confidential
-cooperation with you for the execution of the deal described here
-under for our mutual benefit. I hope you will keep it a secret due to
-the nature of the transaction. During the course of our audit, I
-discovered an unclaimed/abandoned fund totaling US$11.3 million in a
-bank account that belongs to our customer who unfortunately lost his
-life and entire family in a plane crash.
+  Linux 5.13-rc4 (2021-05-30 11:58:25 -1000)
 
-Now our bank has been waiting for any of the relatives to come-up for
-the claim but nobody has done that. I personally has been unsuccessful
-in locating any of the relatives, now, I sincerely seek your consent
-to present you as the next of kin / Will Beneficiary to the deceased
-so that the proceeds of this account valued at {US$11.3 Million United
-State Dollars} can be paid to you, which we will share in these
-percentages ratio, 60% for me and 40% for you. All I request is your
-utmost sincere co- operation; trust and maximum confidentiality to
-achieve this project successfully. I have carefully mapped out the
-moralities for execution of this transaction under a legitimate
-arrangement to protect you from any breach of the law both in your
-country and here in my country when the fund is being transferred to
-your bank account.
+are available in the Git repository at:
 
-I will have to provide the entire relevant document that will be
-requested to indicate that you are the rightful beneficiary of this
-legacy and our bank will release the fund to you without any further
-delay, upon your consideration and acceptance of this offer, please
-send me the following information as stated below;
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.13-rc6
 
-Your full name:
-Country:
-Address:
-Occupation:
-Age:
-Mobile phone number:
+for you to fetch changes up to 7c4363d3948535e6a9116a325b2fb56eab6b88ff:
 
-Upon receipt of the above-mentioned information, i will send to you a
-letter of application which you will send to the Head Administrative
-Department of our Bank, for the release of the fund.
+  Merge tag 'usb-serial-5.13-rc6' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus (2021-06-11 12:32:49 +0200)
 
-Best regards,
-Mr.Michel Duku
+----------------------------------------------------------------
+USB fixes for 5.13-rc6
+
+Here are a number of tiny USB fixes for 5.13-rc6.
+
+There are more than I would normally like, but there's been a bunch of
+people banging on the gadget and dwc3 and typec code recently for I
+think an Android release, which has resulted in a number of small fixes.
+It's nice to see companies send fixes upstream for this type of work, a
+notable change from years ago.
+
+Anyway, fixes in here are:
+	- usb-serial device id updates
+	- usb-serial cp210x driver fixes for broken firmware versions
+	- typec fixes for crazy charging devices and other reported
+	  problems
+	- dwc3 fixes for reported problems found
+	- gadget fixes for reported problems
+	- tiny xhci fixes
+	- other small fixes for reported issues.
+	- revert of a problem fix found by linux-next testing
+
+All of these have passed 0-day and linux-next testing with no reported
+problems (the revert for the found linux-next build problem included).
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Alexandre GRIVEAUX (2):
+      USB: serial: omninet: add device id for Zyxel Omni 56K Plus
+      USB: serial: omninet: update driver description
+
+Alexandru Elisei (1):
+      Revert "usb: dwc3: core: Add shutdown callback for dwc3"
+
+Andy Shevchenko (4):
+      usb: typec: intel_pmc_mux: Put fwnode in error case during ->probe()
+      usb: typec: intel_pmc_mux: Add missed error check for devm_ioremap_resource()
+      usb: typec: intel_pmc_mux: Put ACPI device using acpi_dev_put()
+      usb: typec: wcove: Use LE to CPU conversion when accessing msg->header
+
+Bjorn Andersson (1):
+      usb: typec: mux: Fix copy-paste mistake in typec_mux_match
+
+Christophe JAILLET (1):
+      usb: dwc3: meson-g12a: Disable the regulator in the error handling path of the probe
+
+George McCollister (1):
+      USB: serial: ftdi_sio: add NovaTech OrionMX product ID
+
+Greg Kroah-Hartman (4):
+      Merge tag 'usb-serial-5.13-rc5' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
+      Merge tag 'usb-v5.13-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb into usb-linus
+      Revert "usb: gadget: fsl: Re-enable driver for ARM SoCs"
+      Merge tag 'usb-serial-5.13-rc6' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
+
+Jack Pham (2):
+      usb: dwc3: gadget: Bail from dwc3_gadget_exit() if dwc->gadget is NULL
+      usb: dwc3: debugfs: Add and remove endpoint dirs dynamically
+
+Joel Stanley (1):
+      usb: gadget: fsl: Re-enable driver for ARM SoCs
+
+Johan Hovold (2):
+      USB: serial: quatech2: fix control-request directions
+      USB: serial: cp210x: fix CP2102N-A01 modem control
+
+Kyle Tso (8):
+      usb: pd: Set PD_T_SINK_WAIT_CAP to 310ms
+      dt-bindings: connector: Replace BIT macro with generic bit ops
+      usb: typec: tcpm: Correct the responses in SVDM Version 2.0 DFP
+      dt-bindings: connector: Add PD rev 2.0 VDO definition
+      usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM version 1.0
+      usb: typec: tcpm: Fix misuses of AMS invocation
+      usb: typec: tcpm: Properly handle Alert and Status Messages
+      usb: typec: tcpm: Do not finish VDM AMS for retrying Responses
+
+Li Jun (3):
+      usb: typec: tcpm: cancel vdm and state machine hrtimer when unregister tcpm port
+      usb: typec: tcpm: cancel frs hrtimer when unregister tcpm port
+      usb: typec: tcpm: cancel send discover hrtimer when unregister tcpm port
+
+Linyu Yuan (1):
+      usb: gadget: eem: fix wrong eem header operation
+
+Maciej Żenczykowski (4):
+      USB: f_ncm: ncm_bitrate (speed) is unsigned
+      usb: f_ncm: only first packet of aggregate needs to start timer
+      usb: fix various gadgets null ptr deref on 10gbps cabling.
+      usb: fix various gadget panics on 10gbps cabling
+
+Marian-Cristian Rotariu (1):
+      usb: dwc3: ep0: fix NULL pointer exception
+
+Mario Limonciello (1):
+      usb: pci-quirks: disable D3cold on xhci suspend for s2idle on AMD Renoir
+
+Mayank Rana (1):
+      usb: typec: ucsi: Clear PPM capability data in ucsi_init() error path
+
+Neil Armstrong (1):
+      usb: dwc3-meson-g12a: fix usb2 PHY glue init when phy0 is disabled
+
+Pawel Laszczak (1):
+      usb: cdnsp: Fix deadlock issue in cdnsp_thread_irq_handler
+
+Rui Miguel Silva (1):
+      MAINTAINERS: usb: add entry for isp1760
+
+Sanket Parmar (1):
+      usb: cdns3: Enable TDL_CHK only for OUT ep
+
+Stefan Agner (1):
+      USB: serial: cp210x: fix alternate function for CP2102N QFN20
+
+Thomas Petazzoni (1):
+      usb: musb: fix MUSB_QUIRK_B_DISCONNECT_99 handling
+
+Wesley Cheng (2):
+      usb: dwc3: gadget: Disable gadget IRQ during pullup disable
+      usb: gadget: f_fs: Ensure io_completion_wq is idle during unbind
+
+Yang Yingliang (1):
+      usb: misc: brcmstb-usb-pinmap: check return value after calling platform_get_resource()
+
+ .../bindings/connector/usb-connector.yaml          |  15 +++
+ MAINTAINERS                                        |   7 ++
+ drivers/usb/cdns3/cdns3-gadget.c                   |   8 +-
+ drivers/usb/cdns3/cdnsp-ring.c                     |   7 +-
+ drivers/usb/dwc3/core.c                            |   6 -
+ drivers/usb/dwc3/debug.h                           |   3 +
+ drivers/usb/dwc3/debugfs.c                         |  21 +---
+ drivers/usb/dwc3/dwc3-meson-g12a.c                 |  13 ++-
+ drivers/usb/dwc3/ep0.c                             |   3 +
+ drivers/usb/dwc3/gadget.c                          |  18 ++-
+ drivers/usb/gadget/config.c                        |   8 ++
+ drivers/usb/gadget/function/f_ecm.c                |   2 +-
+ drivers/usb/gadget/function/f_eem.c                |   6 +-
+ drivers/usb/gadget/function/f_fs.c                 |   3 +
+ drivers/usb/gadget/function/f_hid.c                |   3 +-
+ drivers/usb/gadget/function/f_loopback.c           |   2 +-
+ drivers/usb/gadget/function/f_ncm.c                |  10 +-
+ drivers/usb/gadget/function/f_printer.c            |   3 +-
+ drivers/usb/gadget/function/f_rndis.c              |   2 +-
+ drivers/usb/gadget/function/f_serial.c             |   2 +-
+ drivers/usb/gadget/function/f_sourcesink.c         |   3 +-
+ drivers/usb/gadget/function/f_subset.c             |   2 +-
+ drivers/usb/gadget/function/f_tcm.c                |   3 +-
+ drivers/usb/host/xhci-pci.c                        |   7 +-
+ drivers/usb/host/xhci.h                            |   1 +
+ drivers/usb/misc/brcmstb-usb-pinmap.c              |   2 +
+ drivers/usb/musb/musb_core.c                       |   3 +-
+ drivers/usb/serial/cp210x.c                        |  84 +++++++++++++-
+ drivers/usb/serial/ftdi_sio.c                      |   1 +
+ drivers/usb/serial/ftdi_sio_ids.h                  |   1 +
+ drivers/usb/serial/omninet.c                       |   8 +-
+ drivers/usb/serial/quatech2.c                      |   6 +-
+ drivers/usb/typec/mux.c                            |   2 +-
+ drivers/usb/typec/mux/intel_pmc_mux.c              |  15 ++-
+ drivers/usb/typec/tcpm/tcpm.c                      | 123 +++++++++++++--------
+ drivers/usb/typec/tcpm/wcove.c                     |   2 +-
+ drivers/usb/typec/ucsi/ucsi.c                      |   1 +
+ include/dt-bindings/usb/pd.h                       |  89 ++++++++++++---
+ include/linux/usb/pd.h                             |   2 +-
+ include/linux/usb/pd_ext_sdb.h                     |   4 -
+ 40 files changed, 357 insertions(+), 144 deletions(-)
