@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B5A3A4F14
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 15:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC193A4F12
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 15:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhFLNRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 09:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhFLNRj (ORCPT
+        id S231268AbhFLNRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 09:17:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45626 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLNRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 09:17:39 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 85D91C061574;
-        Sat, 12 Jun 2021 06:15:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=hpF82FbzK3dvrZKLG58TMGKoVTQlhY9cugq9/lUm9Xo=; b=njZNJngaWiUd/
-        FeUXBIDCYXAWyLT5JK3peJzZjKpfwwV4pmnTNRWkLpcG8DvaDn1P7yzAZMIuCMIE
-        3ycPkVEc6WTW/KpnJvM47yZr4OuJAOdn9GlxfjMObnCCIS+zqy8rrCUd4HIVRlSJ
-        aqnOaau3oRZQaA5dAa8iz89Ws9uApE=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHTYlws8RgpwzNAA--.48913S2;
-        Sat, 12 Jun 2021 21:15:28 +0800 (CST)
-Date:   Sat, 12 Jun 2021 21:09:53 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>
-Cc:     kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] fs/proc/vmcore: hide mmap_vmcore_fault() and
- vmcore_mmap_ops for nommu
-Message-ID: <20210612210953.34dff323@xhacker>
+        Sat, 12 Jun 2021 09:17:37 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623503737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+kGaqZ0+T0luScHewSwRbmNtRqpRVptleB8XemF+sKU=;
+        b=w7dD+O80GKX4laiNHXuoV8AOLXqlZ0ZqsKe/Q/enXEQi9tA09dOCadrajKP06o8KxvlQHw
+        /QkNNxqtcU7JuUnoNQVLv9YrI5q1hIWd1x3DlKsMw1WWRMmpBnbO/gsYi/p8IpLE7mRdrZ
+        wsBNto4Rv/9zdeH6Mo7fuyM+zttWe5DnHhix7c70G44OoNqObPYmT9yoah9cOGnUbwgDQJ
+        Hpss8RTnfHcbAwv9SDTHuq9YQVvg5MCXKR7XOFvx9vLE2bw/W4HymXkvWZuCQPx17YkdMJ
+        Mv4Iil8NOryb3NJlDjSgSVWOKETXwsxjt0xLStOpKVtPsURVBqukp6hxEM8Qfg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623503737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+kGaqZ0+T0luScHewSwRbmNtRqpRVptleB8XemF+sKU=;
+        b=zYe7CC99Uau5nWzWhiCX6OqJpWhuslM4a9V5+Twp6scd2HbP/ykte1Ki3f9SSMrzNHE9dG
+        NW4r70fYGPtkN7DQ==
+To:     Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch 08/41] x86/fpu: Restrict fpstate sanitizing to legacy components
+In-Reply-To: <874ke4vynu.ffs@nanos.tec.linutronix.de>
+References: <20210611161523.508908024@linutronix.de> <20210611163111.820639606@linutronix.de> <2be2ef6c-fcb8-46cf-976c-2b3a9537b660@kernel.org> <874ke4vynu.ffs@nanos.tec.linutronix.de>
+Date:   Sat, 12 Jun 2021 15:15:36 +0200
+Message-ID: <87r1h7usuf.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygBHTYlws8RgpwzNAA--.48913S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyfCFyDKw45tF48Gw45Wrg_yoW8JFy8pF
-        15tw1UGF17Wrn8W3W8GFs8GFyrGa4DXFWYgrWUGw1ayrsxJwsruw4YgFsYqFyDWFyxKa4f
-        WFWj9rykXay5XrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUy2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_
-        Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jY6wZUUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On Sat, Jun 12 2021 at 00:12, Thomas Gleixner wrote:
+> On Fri, Jun 11 2021 at 12:03, Andy Lutomirski wrote:
+>> On 6/11/21 9:15 AM, Thomas Gleixner wrote:
+>>> + *
+>>> + * This is required for the legacy regset functions.
+>>> + */
+>>> +static void fpstate_sanitize_legacy(struct fpu *fpu)
+>>> +{
+>>> +	struct fxregs_state *fx = &fpu->state.fxsave;
+>>> +	u64 xfeatures;
+>>> +
+>>> +	if (!use_xsaveopt())
+>>> +		return;
+>>
+>> This is confusing, since we never use xsaveopt.  It's also wrong -- see
+>> above.  How about just removing it?
+>
+> We do and this code is buggy because xsaves does not clear the component
+> storage either. Neither does xsavec which we in fact do not use in the
+> kernel.
 
-Without CONFIG_MMU, we get a W=1 build warning:
+So that kinda works because the CPUs which have XSAVES have XSAVEOPT
+too. But XSAVESOPT can be disabled on the command line, which then makes
+that condition false...
 
-fs/proc/vmcore.c:443:42: warning: unused variable 'vmcore_mmap_ops' [-Wunused-const-variable]
-static const struct vm_operations_struct vmcore_mmap_ops = {
-
-The vmcore_mmap_ops is only referenced from an #ifdef'ed caller, so
-this uses the same #ifdef around vmcore_mmap_ops and mmap_vmcore_fault().
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- fs/proc/vmcore.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
-index 9a15334da208..d902a67cc3ea 100644
---- a/fs/proc/vmcore.c
-+++ b/fs/proc/vmcore.c
-@@ -401,6 +401,7 @@ static ssize_t read_vmcore(struct file *file, char __user *buffer,
- 	return __read_vmcore((__force char *) buffer, buflen, fpos, 1);
- }
- 
-+#ifdef CONFIG_MMU
- /*
-  * The vmcore fault handler uses the page cache and fills data using the
-  * standard __vmcore_read() function.
-@@ -443,6 +444,7 @@ static vm_fault_t mmap_vmcore_fault(struct vm_fault *vmf)
- static const struct vm_operations_struct vmcore_mmap_ops = {
- 	.fault = mmap_vmcore_fault,
- };
-+#endif
- 
- /**
-  * vmcore_alloc_buf - allocate buffer in vmalloc memory
--- 
-2.32.0
-
+Oh well.
 
