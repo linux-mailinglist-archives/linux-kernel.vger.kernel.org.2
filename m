@@ -2,134 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F113A3A4D42
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F333A4D47
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhFLHKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 03:10:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:49505 "EHLO m43-7.mailgun.net"
+        id S230502AbhFLHLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:11:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229898AbhFLHJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 03:09:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623481681; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uALzKA03nwUGmdoVFggm2ud1rs/4hZQVgjZNIyhKlGE=;
- b=IV9rCdHUL4dGrtXuDgnZyjxINWb/WDsHGCoP5YijVgkuMwOsWvphtJwavjd5cDGg5mTi59/y
- 6ogCHn0K+6P3KVyz2PApg1GTqkLq13wHtqIxH6Cv/Z621UJzo4mV74Nz1QkPwOC60ucCpSND
- w7w55RToMviq2p6fKKolwY+UDQM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60c45d3c51f29e6bae6074cc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 07:07:40
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 24531C43143; Sat, 12 Jun 2021 07:07:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48F91C433F1;
-        Sat, 12 Jun 2021 07:07:38 +0000 (UTC)
+        id S229898AbhFLHLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 03:11:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35D3A61249;
+        Sat, 12 Jun 2021 07:09:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623481763;
+        bh=qpopxrhB7/n8po7l7amxHfzs4lB/k5A/1bGo3DagKVs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q3kDxCmWWliMocij9xAnRmaz4aeiBWsXeGAitQ+mtTcXUZvzQ3tvbypCLrJ4R+U8c
+         et29162Yqdal1B+4gJ3PwmHCoHBRQUsTr+x+KYfo2gaUw3pDU0AtoxlMaUO307SUzK
+         AVZlhBnnZoDAydSmEAKD2k3unCMXEtZ7DA/N35WFCA+VyR6Et0pXDMBBtkVK9t9LlJ
+         hW476C09luQmT7O9mDuaJKrSAhqEe4xP3GFqfoQ/79BCmAG/ZIhefH3EUVke9w8doS
+         6OYDvEc8ocKChuBxihbxrzejeBmh3+NrUJ2cUc6rFh65Kgv4n5i+bICiiDHwWDoHBD
+         UfJbvsZu053LQ==
+Date:   Sat, 12 Jun 2021 12:39:14 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     hemantk@codeaurora.org, loic.poulain@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] bus: mhi: pci-generic: Add missing
+ 'pci_disable_pcie_error_reporting()' calls
+Message-ID: <20210612070914.GD22149@thinkpad>
+References: <f70c14701f4922d67e717633c91b6c481b59f298.1623445348.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 12 Jun 2021 15:07:38 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-In-Reply-To: <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-9-git-send-email-cang@codeaurora.org>
- <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
-Message-ID: <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f70c14701f4922d67e717633c91b6c481b59f298.1623445348.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-12 05:02, Bart Van Assche wrote:
-> On 6/9/21 9:43 PM, Can Guo wrote:
->> If PM requests fail during runtime suspend/resume, RPM framework saves 
->> the
->> error to dev->power.runtime_error. Before the runtime_error gets 
->> cleared,
->> runtime PM on this specific device won't work again, leaving the 
->> device
->> either runtime active or runtime suspended permanently.
->> 
->> When task abort happens to a PM request sent during runtime 
->> suspend/resume,
->> even if it can be successfully aborted, RPM framework anyways saves 
->> the
->> (TIMEOUT) error. In this situation, we can leverage error handling to
->> recover and clear the runtime_error. So, let PM requests take the fast
->> abort path in ufshcd_abort().
+On Fri, Jun 11, 2021 at 11:03:50PM +0200, Christophe JAILLET wrote:
+> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+> call
 > 
-> How can a PM request fail during runtime suspend/resume? Does such a
-> failure perhaps indicate an UFS controller bug?
-
-I've replied your similar question in previous series. I've seen too 
-much
-SSU cmd and SYNCHRONIZE_CACHE cmd timed out these years, 60s is not even
-enough for them to complete. And you are right, most cases are that 
-device
-is not responding - UFS controller is busy with housekeeping.
-
-> I appreciate your work
-> but I'm wondering whether it's worth to complicate the UFS driver for
-> issues that should be fixed in the controller instead of in software.
+> Add the missing call in the error handling path of the probe and in the
+> remove function.
 > 
+> Fixes: b012ee6bfe2a ("mhi: pci_generic: Add PCI error handlers")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Sigh... I also want my life and work to be easier... I agree with you.
-
-In project bring up stage, we fix whatever error/bug/failure we face to
-unblock the project, during which we only focus on and try to fix the 
-very
-first UFS error, but not quite care about the error recovery or what the
-error can possibly cause (usually more UFS errors and system stability 
-issues
-follow the very first UFS error).
-
-However, these years our customers tend to ask for more - they want UFS 
-error
-handling to recover everything whenever UFS error occurs, because they 
-believe
-it is the last line of defense after their products go out to market. So 
-I took
-a lot of effort fixing, testing and trying to make it robust. Now here 
-we are.
-FYI, I am on a tight schedule to have these UFS error handling changes 
-ready in
-Android12-5.10.
+Cced stable and applied to mhi-next!
 
 Thanks,
+Mani
 
-Can Guo.
-
-> Thanks,
+> ---
+>  drivers/bus/mhi/pci_generic.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> Bart.
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index 7c810f02a2ef..d84b74396c6a 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -665,7 +665,7 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  
+>  	err = mhi_register_controller(mhi_cntrl, mhi_cntrl_config);
+>  	if (err)
+> -		return err;
+> +		goto err_disable_reporting;
+>  
+>  	/* MHI bus does not power up the controller by default */
+>  	err = mhi_prepare_for_power_up(mhi_cntrl);
+> @@ -699,6 +699,8 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	mhi_unprepare_after_power_down(mhi_cntrl);
+>  err_unregister:
+>  	mhi_unregister_controller(mhi_cntrl);
+> +err_disable_reporting:
+> +	pci_disable_pcie_error_reporting(pdev);
+>  
+>  	return err;
+>  }
+> @@ -721,6 +723,7 @@ static void mhi_pci_remove(struct pci_dev *pdev)
+>  		pm_runtime_get_noresume(&pdev->dev);
+>  
+>  	mhi_unregister_controller(mhi_cntrl);
+> +	pci_disable_pcie_error_reporting(pdev);
+>  }
+>  
+>  static void mhi_pci_shutdown(struct pci_dev *pdev)
+> -- 
+> 2.30.2
+> 
