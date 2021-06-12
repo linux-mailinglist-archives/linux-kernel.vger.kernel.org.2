@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917733A4BC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 02:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBCB3A4BC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 02:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhFLAgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Jun 2021 20:36:43 -0400
-Received: from mga06.intel.com ([134.134.136.31]:11529 "EHLO mga06.intel.com"
+        id S230291AbhFLAmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Jun 2021 20:42:33 -0400
+Received: from mga06.intel.com ([134.134.136.31]:11854 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhFLAgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Jun 2021 20:36:41 -0400
-IronPort-SDR: Aia5AvZpTkz+8wpFZEiDEAiWFP+UMq1+mdULKi/7j9NGyqM0/h5LnlCBCiCDHk6e+jtH4wCH3e
- cou+8O35rJlg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="266783225"
+        id S229584AbhFLAma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Jun 2021 20:42:30 -0400
+IronPort-SDR: 820RkrKTtoszMjfF7zdC0LzJceEYdiFfM6Y8O5czkEphsv4DgMa6fhapT9GyvFB1oL2qGxLrmT
+ P3VNveq8I/7w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="266783619"
 X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
-   d="scan'208";a="266783225"
+   d="scan'208";a="266783619"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 17:34:41 -0700
-IronPort-SDR: 1J4nclyDz9Ncrq4EjuDR2bN8196DUcFI3KZYaQyYWjQQxCaOAd3V2IWo0GlbXIvn8c8t14PRoM
- 3cRi40NLAJBQ==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 17:40:29 -0700
+IronPort-SDR: JIGLFgtCK9gmwD95pa2xd0cHK/07qv/ZQndsyPC7/8nEExKksl2ptKNqoOp89P9R9anlOaG8k/
+ nFZN3RHhSslg==
 X-IronPort-AV: E=Sophos;i="5.83,267,1616482800"; 
-   d="scan'208";a="486782447"
+   d="scan'208";a="486783471"
 Received: from svkandu1-mobl1.amr.corp.intel.com (HELO [10.251.4.209]) ([10.251.4.209])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 17:34:40 -0700
-Subject: Re: [PATCH v8 3/5] selftests/sgx: Dump enclave memory map
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 17:40:28 -0700
+Subject: Re: [patch 00/41] x86/fpu: Spring cleaning and PKRU sanitizing
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20210610083021.392269-1-jarkko@kernel.org>
- <20210610083021.392269-3-jarkko@kernel.org>
- <bb39b6af-5921-64e8-793b-5ef4b150153e@linuxfoundation.org>
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+References: <20210611161523.508908024@linutronix.de>
+ <871r98vsjy.ffs@nanos.tec.linutronix.de>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -78,12 +82,12 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <b04fa04a-7a5e-94b3-7c72-d6c96f25b49f@intel.com>
-Date:   Fri, 11 Jun 2021 17:34:38 -0700
+Message-ID: <00e786f8-033e-3d55-305c-385fa262fe5b@intel.com>
+Date:   Fri, 11 Jun 2021 17:40:25 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <bb39b6af-5921-64e8-793b-5ef4b150153e@linuxfoundation.org>
+In-Reply-To: <871r98vsjy.ffs@nanos.tec.linutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,17 +95,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 3:45 PM, Shuah Khan wrote:
->>
->>   @@ -167,6 +169,18 @@ FIXTURE_SETUP(enclave)
->>       memset(&self->run, 0, sizeof(self->run));
->>       self->run.tcs = self->encl.encl_base;
->>   +    maps_file = fopen("/proc/self/maps", "r");
+On 6/11/21 5:24 PM, Thomas Gleixner wrote:
+> The Intel SDM states in volume 1, chapter 13.6
 > 
-> I almost applied these. Does this require root access, if so,
-> please add logic to skip the test if non-root user runs it.
+>  PROCESSOR TRACKING OF XSAVE-MANAGED STATE
 > 
-> Same comments for all other paths that might require root access.
+>   * PKRU state. PKRU state is in its initial configuration if the value
+>     of the PKRU is 0.>
+...
+> IOW there is no consistency vs. XINUSE and initial state guaranteed at
+> all. So why should the kernel worry about this?
 
-This specifically doesn't require root.  Anything can read its own
-/proc/self/maps file.
+This is my feeling on it as well.  I may be a bit corrupted by having
+talked to the hardware folks who have built the init state "trackers",
+but I've always had the opinion that XINUSE is very weakly defined.
+
+There are some other bits of the SDM that you noted that clearly call
+out that XINUSE is not strictly tied to the *value* of the component.
