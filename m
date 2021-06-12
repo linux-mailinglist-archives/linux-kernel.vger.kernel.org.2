@@ -2,134 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58DB3A4F73
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 17:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9877C3A4F79
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 17:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhFLPLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 11:11:00 -0400
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:44686 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhFLPK5 (ORCPT
+        id S231371AbhFLPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 11:16:47 -0400
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:41645 "EHLO
+        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLPQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 11:10:57 -0400
-Received: by mail-ed1-f51.google.com with SMTP id u24so40603603edy.11;
-        Sat, 12 Jun 2021 08:08:57 -0700 (PDT)
+        Sat, 12 Jun 2021 11:16:45 -0400
+Received: by mail-ed1-f43.google.com with SMTP id g18so38644613edq.8;
+        Sat, 12 Jun 2021 08:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=MyHAGIpkkv5FhdCV+dmubHT6fI0J4Qtzj9J4fslDtcQ=;
-        b=W0TBv8YxPCk0CMIX/i/QLdgS9KiKeQNoLDvGMD8SlDDMPEk6JkrNmNWNTTwzESG1DS
-         VocDE82KQpTdDCqbqJn9RnvauCxSTCdFPH0GvzqxPLAfzKxYE5RsZ4RIbhMQ5LDR+H35
-         zoRR+nzmC0a1z4dA97a7ZhTm6+eH4/zUC47HyMZKzVDU59gg250UVuGDeaVKnCvFbjb0
-         GJ2HEvLaGKba8mdh7LQ0i4DLMzZaRLWsayayPUaFwVAY054QBMNB2YrSpcOJtc/LEEB+
-         va0d42hOiUVzQa60NOHtISexG3n0qBdKgrIAy6bwb1z6ZtPsemBkGGQjvIXwkf+puHb1
-         uJ/w==
+        bh=AOS+6E45S4HFlEAHfUqlAx96+7qdQmswXk2G8O9G+yg=;
+        b=BKKFAex71wFiloEQA5nApi9o7oz3J/7uxJQTmlOv8vZJBD1mw0088i/RB4Ts4bWeXI
+         MvdGd43slkg5C91If7iZ+4a/W974bi4fYWCRroZ5259ByS58WnaIo+fHlwX2pjfh2GQ/
+         FcydXJbJW/ElntWx0voiAxrxzbS6cf+U1xvljMrzoxnmluF+cK+ogR66vI60VmNTPfrQ
+         5Lmmxdql798BNc0WxLlsH/zxv1eL5QZX/3n9ySHNyggAp0Zrl6qgdCOEFxMHK6372+mw
+         +zOCh/LhLLjp3YKJDBlXhDo1mQ1ZexgTbhsd7NjtD90vYGTYTTS4PnnUx4icQ/jGzGTa
+         pK3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=MyHAGIpkkv5FhdCV+dmubHT6fI0J4Qtzj9J4fslDtcQ=;
-        b=pgT8hxxXWFahFkoXrjMH2bzbsGG4Fvm8do5sKRTjiQdxUxJOwsc800w3uhPyud+OlH
-         X1+Y7M0/zWoCvtaTDj+gP+71KNtahrne39+yAGEShzutd8KiZr0x6arXcyV2Aus3/nQx
-         sNyZ9Wy2rgRA15eHhqF9VkkPNVpVBYRafKqYgvhoFkZjMFqtrJ6SY5A9uS7y8l/bCgJe
-         N+Q6ciyE0d3gG5V2SzK4qAzb8aUEjZ4TSTv7VI5T8ONHAursgf+4iZa2LGWhoOYQo8n8
-         90yx0RsY48NDSYD8zoLx7YGmHLXro6cwRvlGeb6FGXQzeLWVdrNbAbBKQXfXXt4MY2kd
-         XZlA==
-X-Gm-Message-State: AOAM531JPg1g83B18P0qRupt+lefKA7VidLlpleT9l5bJGOY+7hucwLf
-        NO/4SCTlCCRhdhekHuA0OhY=
-X-Google-Smtp-Source: ABdhPJzxp36MU7OxaYVh1dgVnXetWoZR9dLwm9Xiwc/QVPJuVTP+udohcInDHSZkGVZKBTRk6s1urA==
-X-Received: by 2002:a50:d943:: with SMTP id u3mr9250028edj.175.1623510476839;
-        Sat, 12 Jun 2021 08:07:56 -0700 (PDT)
+        bh=AOS+6E45S4HFlEAHfUqlAx96+7qdQmswXk2G8O9G+yg=;
+        b=Wfggs9w2ovxqN5IHAnOAeEjQrSUX2hL8VDtDWHsf5TcGw7hE9Ec271hiMDGIg07VNu
+         uHLif8if2yMOdY2K1l7oUWaFtV7NaMofg5MNKUMosPYuLvBNZHgwwi+JszdeLOXiuwuz
+         Jet2EGsxtQQbKPF9rV+XQyo1H7tLrj+FfVo2CkyDt8fUnlZBqMa1gmbDNEWfOl3BfEHB
+         DfQgjDo5LTQ+4ODAN1aRHCbzxQcdHjyxxaLB5VA+gFSZFQ57KAw2bz9713O+M4vk2px/
+         5qTgly0kZnFYGYXcvAXmvX+QYfLGKLKc9mpDRFRYawq0dp9gY6x2w/FPtiOPKmEdrXtL
+         PNlQ==
+X-Gm-Message-State: AOAM530Smpe+vGViqonS/TE3uy9Tsh3PeQYDhcOpa8kZi0xeGnWj9nEt
+        PTk+9sUUMUjPqNBhE3rJK9s=
+X-Google-Smtp-Source: ABdhPJz82KCcENI3Zmz+OCSBgrBu4f30Zfb941T9pVoUYwD7a86n0Lt8V09ZsCEd6/CdI61w19v67w==
+X-Received: by 2002:a05:6402:1644:: with SMTP id s4mr8989433edx.190.1623510812559;
+        Sat, 12 Jun 2021 08:13:32 -0700 (PDT)
 Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id n5sm4002476edd.40.2021.06.12.08.07.55
+        by smtp.gmail.com with ESMTPSA id r2sm3209162ejc.78.2021.06.12.08.13.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Jun 2021 08:07:56 -0700 (PDT)
-Date:   Sat, 12 Jun 2021 18:07:55 +0300
+        Sat, 12 Jun 2021 08:13:31 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 18:13:30 +0300
 From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/5] dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
-Message-ID: <20210612150755.efb5hw3xujkkh2va@skbuf>
-References: <20210610232727.1383117-1-mnhagan88@gmail.com>
- <20210610232727.1383117-2-mnhagan88@gmail.com>
- <20210611194644.64lvhvp76wy6guqp@skbuf>
- <f0af3f0a-ab13-ecdc-d834-c95ddcb52866@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next v4 4/9] net: phy: micrel: apply resume errata
+ workaround for ksz8873 and ksz8863
+Message-ID: <20210612151330.nvin5ldcx6xunexx@skbuf>
+References: <20210611071527.9333-1-o.rempel@pengutronix.de>
+ <20210611071527.9333-5-o.rempel@pengutronix.de>
+ <20210611192010.ptmblzpj6ilt24ly@skbuf>
+ <20210612042639.bgsloltuqoipmwtk@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f0af3f0a-ab13-ecdc-d834-c95ddcb52866@gmail.com>
+In-Reply-To: <20210612042639.bgsloltuqoipmwtk@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 10:21:31AM +0100, Matthew Hagan wrote:
-> Hi Vladimir,
+On Sat, Jun 12, 2021 at 06:26:39AM +0200, Oleksij Rempel wrote:
+> On Fri, Jun 11, 2021 at 10:20:10PM +0300, Vladimir Oltean wrote:
+> > On Fri, Jun 11, 2021 at 09:15:22AM +0200, Oleksij Rempel wrote:
+> > > The ksz8873 and ksz8863 switches are affected by following errata:
+> > > 
+> > > | "Receiver error in 100BASE-TX mode following Soft Power Down"
+> > > |
+> > > | Some KSZ8873 devices may exhibit receiver errors after transitioning
+> > > | from Soft Power Down mode to Normal mode, as controlled by register 195
+> > > | (0xC3) bits [1:0]. When exiting Soft Power Down mode, the receiver
+> > > | blocks may not start up properly, causing the PHY to miss data and
+> > > | exhibit erratic behavior. The problem may appear on either port 1 or
+> > > | port 2, or both ports. The problem occurs only for 100BASE-TX, not
+> > > | 10BASE-T.
+> > > |
+> > > | END USER IMPLICATIONS
+> > > | When the failure occurs, the following symptoms are seen on the affected
+> > > | port(s):
+> > > | - The port is able to link
+> > > | - LED0 blinks, even when there is no traffic
+> > > | - The MIB counters indicate receive errors (Rx Fragments, Rx Symbol
+> > > |   Errors, Rx CRC Errors, Rx Alignment Errors)
+> > > | - Only a small fraction of packets is correctly received and forwarded
+> > > |   through the switch. Most packets are dropped due to receive errors.
+> > > |
+> > > | The failing condition cannot be corrected by the following:
+> > > | - Removing and reconnecting the cable
+> > > | - Hardware reset
+> > > | - Software Reset and PCS Reset bits in register 67 (0x43)
+> > > |
+> > > | Work around:
+> > > | The problem can be corrected by setting and then clearing the Port Power
+> > > | Down bits (registers 29 (0x1D) and 45 (0x2D), bit 3). This must be done
+> > > | separately for each affected port after returning from Soft Power Down
+> > > | Mode to Normal Mode. The following procedure will ensure no further
+> > > | issues due to this erratum. To enter Soft Power Down Mode, set register
+> > > | 195 (0xC3), bits [1:0] = 10.
+> > > |
+> > > | To exit Soft Power Down Mode, follow these steps:
+> > > | 1. Set register 195 (0xC3), bits [1:0] = 00 // Exit soft power down mode
+> > > | 2. Wait 1ms minimum
+> > > | 3. Set register 29 (0x1D), bit [3] = 1 // Enter PHY port 1 power down mode
+> > > | 4. Set register 29 (0x1D), bit [3] = 0 // Exit PHY port 1 power down mode
+> > > | 5. Set register 45 (0x2D), bit [3] = 1 // Enter PHY port 2 power down mode
+> > > | 6. Set register 45 (0x2D), bit [3] = 0 // Exit PHY port 2 power down mode
+> > > 
+> > > This patch implements steps 2...6 of the suggested workaround. During
+> > > (initial) switch power up, step 1 is executed by the dsa/ksz8795
+> > > driver's probe function.
+> > > 
+> > > Note: In this workaround we toggle the MII_BMCR register's BMCR_PDOWN
+> > > bit, this is translated to the actual register and bit (as mentioned in
+> > > the arratum) by the ksz8_r_phy()/ksz8_w_phy() functions.
+> > 
+> > s/arratum/erratum/
+> > 
+> > Also, the commit message is still missing this piece of information you
+> > gave in the previous thread:
+> > 
+> > | this issue was seen  at some early point of development (back in 2019)
+> > | reproducible on system start. Where switch was in some default state or
+> > | on a state configured by the bootloader. I didn't tried to reproduce it
+> > | now.
+> > 
+> > Years from now, some poor souls might struggle to understand why this
+> > patch was done this way. If it is indeed the case that the issue is only
+> > seen during the handover between bootloader and kernel, there is really
+> > no reason to implement the ERR workaround in phy_resume instead of doing
+> > it once at probe time.
 > 
-> Many thanks for taking the time to review the submission.
-> 
-> On 11/06/2021 20:46, Vladimir Oltean wrote:
-> 
-> > On Fri, Jun 11, 2021 at 12:27:13AM +0100, Matthew Hagan wrote:
-> >> Add bindings for the Meraki MX64/MX65 series. Note this patch should be
-> >> applied on top of "dt-bindings: arm: bcm: add NSP devices to SoCs".
-> >>
-> >> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> >> ---
-> >>  Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml | 6 ++++++
-> >>  1 file changed, 6 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-> >> index 78dfa315f3d0..7d184ba7d180 100644
-> >> --- a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-> >> +++ b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-> >> @@ -62,6 +62,12 @@ properties:
-> >>            - enum:
-> >>                - brcm,bcm958625hr
-> >>                - brcm,bcm958625k
-> >> +              - meraki,mx64
-> >> +              - meraki,mx64-a0
-> >> +              - meraki,mx64w
-> >> +              - meraki,mx64w-a0
-> >> +              - meraki,mx65
-> >> +              - meraki,mx65w
-> >>            - const: brcm,bcm58625
-> >>            - const: brcm,nsp
-> >>  
-> >> -- 
-> >> 2.26.3
-> >>
-> > I think these compatibles describe SoCs, whereas Meraki MX64/MX65 are
-> > boards, so this is a miscategorization. Can you not just describe the
-> > Northstar Plus SoC that you are using in your compatible string?
-> 
-> My understanding is that the bcm958625hr and bcm958625k are dev boards
-> using the BCM58625 SoC variant of NSP. For reference, a close example
-> can be found in brcm,bcm4708.yaml in the same directory:
-> 
->       - description: BCM53012 based boards
->         items:
->           - enum:
->               - brcm,bcm953012er
->               - brcm,bcm953012hr
->               - brcm,bcm953012k
->               - meraki,mr32
->           - const: brcm,brcm53012
->           - const: brcm,brcm53016
->           - const: brcm,bcm4708
-> 
-> For the compatible string we would definitely need to specify a unique
-> device name for identification by the OS, rather than just the SoC.
-> 
-> Of course I could be mistaken. Will await confirmation on this.
+> Ok, i'll drop this patch for now.
 
-Yeah, ok, fair, after rechecking I think you're right. I'm dropping this charge.
+I mean, you don't have to drop it, you just have to provide a competent
+explanation for how the patch addresses the ERR as described by Microchip.
+Do you still have a board with this switch?
