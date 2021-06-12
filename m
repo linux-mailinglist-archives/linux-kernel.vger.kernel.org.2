@@ -2,154 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4583E3A5002
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 20:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E7E3A5007
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 20:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhFLSDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 14:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbhFLSD0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 14:03:26 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9772AC061767;
-        Sat, 12 Jun 2021 11:01:24 -0700 (PDT)
-Received: from dslb-188-097-213-151.188.097.pools.vodafone-ip.de ([188.97.213.151] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1ls7we-0003B8-Iv; Sat, 12 Jun 2021 20:01:20 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 6/6] staging: rtl8188eu: remove RT_TRACE and DBG_88E prints from usb_intf.c
-Date:   Sat, 12 Jun 2021 20:00:19 +0200
-Message-Id: <20210612180019.20387-6-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210612180019.20387-1-martin@kaiser.cx>
-References: <20210612180019.20387-1-martin@kaiser.cx>
+        id S231350AbhFLSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 14:08:01 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60962 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhFLSIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 14:08:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=/35SgsFs9hgahTBuNzkzeWoHQo3+tcwGW6U2uOxlfB4=; b=a8ArgNX3CuWQyNAXlJiyw8yhgI
+        4AQ20doaRWuLLoU+aRC9ETqgIgyUYRcNKGcD4y9UZOp+p42DcApLN/2uFYWVNIANwjnATZtvWiiJ1
+        5bcucxdX9cwcgiMAE+TEczbA0x8iZTEA+HdSbRjcbQqeRU73LnI3/TjGC57koHWJRL3o=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ls810-0091I4-BS; Sat, 12 Jun 2021 20:05:50 +0200
+Date:   Sat, 12 Jun 2021 20:05:50 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>
+Subject: Re: [PATCH net-next 1/4] dt-bindings: net: Add 25G BASE-R phy
+ interface
+Message-ID: <YMT3fm3BhOtn7FY6@lunn.ch>
+References: <20210611125453.313308-1-steen.hegelund@microchip.com>
+ <20210611125453.313308-2-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611125453.313308-2-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These prints are disabled by default.
+On Fri, Jun 11, 2021 at 02:54:50PM +0200, Steen Hegelund wrote:
+> Add 25gbase-r PHY interface mode.
+> 
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
 
-Replace the print after dev_alloc_name with proper error handling.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/staging/rtl8188eu/os_dep/usb_intf.c | 30 +++------------------
- 1 file changed, 3 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-index 3a970d67aa8c..b03d6aa629ad 100644
---- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-@@ -143,16 +143,6 @@ static void usb_dvobj_deinit(struct usb_interface *usb_intf)
- 
- void usb_intf_stop(struct adapter *padapter)
- {
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+%s\n", __func__));
--
--	/* disable_hw_interrupt */
--	if (!padapter->bSurpriseRemoved) {
--		/* device still exists, so driver can do i/o operation */
--		/* TODO: */
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
--			 ("SurpriseRemoved == false\n"));
--	}
--
- 	/* cancel in irp */
- 	rtw_hal_inirp_deinit(padapter);
- 
-@@ -160,14 +150,10 @@ void usb_intf_stop(struct adapter *padapter)
- 	usb_write_port_cancel(padapter);
- 
- 	/* todo:cancel other irps */
--
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-%s\n", __func__));
- }
- 
- static void rtw_dev_unload(struct adapter *padapter)
- {
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+%s\n", __func__));
--
- 	if (padapter->bup) {
- 		pr_debug("===> %s\n", __func__);
- 		padapter->bDriverStopped = true;
-@@ -186,14 +172,9 @@ static void rtw_dev_unload(struct adapter *padapter)
- 		}
- 
- 		padapter->bup = false;
--	} else {
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
--			 ("r871x_dev_unload():padapter->bup == false\n"));
- 	}
- 
- 	pr_debug("<=== %s\n", __func__);
--
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-%s\n", __func__));
- }
- 
- static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
-@@ -351,7 +332,6 @@ static int rtw_usb_if1_init(struct usb_interface *pusb_intf)
- 
- 	padapter->HalData = kzalloc(sizeof(struct hal_data_8188e), GFP_KERNEL);
- 	if (!padapter->HalData) {
--		DBG_88E("Failed to allocate memory for HAL data\n");
- 		err = -ENOMEM;
- 		goto free_adapter;
- 	}
-@@ -367,8 +347,6 @@ static int rtw_usb_if1_init(struct usb_interface *pusb_intf)
- 
- 	/* step 5. */
- 	if (rtw_init_drv_sw(padapter) == _FAIL) {
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
--			 ("Initialize driver software resource Failed!\n"));
- 		err = -ENOMEM;
- 		goto free_hal_data;
- 	}
-@@ -388,8 +366,9 @@ static int rtw_usb_if1_init(struct usb_interface *pusb_intf)
- 		pr_debug("can't get autopm:\n");
- 
- 	/*  alloc dev name after read efuse. */
--	if (dev_alloc_name(pnetdev, padapter->registrypriv.ifname) < 0)
--		RT_TRACE(_module_os_intfs_c_, _drv_err_, ("dev_alloc_name, fail!\n"));
-+	err = dev_alloc_name(pnetdev, padapter->registrypriv.ifname)
-+	if (err < 0)
-+		goto free_hal_data;
- 
- 	netif_carrier_off(pnetdev);
- 
-@@ -401,7 +380,6 @@ static int rtw_usb_if1_init(struct usb_interface *pusb_intf)
- 	/* step 6. Tell the network stack we exist */
- 	err = register_netdev(pnetdev);
- 	if (err) {
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("register_netdev() failed\n"));
- 		goto free_hal_data;
- 	}
- 
-@@ -478,7 +456,6 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
- 	struct adapter *padapter = dvobj->if1;
- 
- 	pr_debug("+%s\n", __func__);
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+dev_remove()\n"));
- 
- 	if (!pusb_intf->unregistering)
- 		padapter->bSurpriseRemoved = true;
-@@ -492,7 +469,6 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
- 
- 	usb_dvobj_deinit(pusb_intf);
- 
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-dev_remove()\n"));
- 	pr_debug("-r871xu_dev_remove, done\n");
- }
- 
--- 
-2.20.1
-
+    Andrew
