@@ -2,145 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B47B3A50D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173953A50C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 23:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbhFLVPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 17:15:43 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:48018 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbhFLVPi (ORCPT
+        id S231428AbhFLVOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 17:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFLVOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 17:15:38 -0400
-Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafb:ee01:a4dd:c59:8cbd:ee0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 4A2EE20C9CE;
-        Sat, 12 Jun 2021 23:13:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1623532415;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=317W/muonwzc8HyyIWPeaiAscRYe6DIw3INbtrhWtnM=;
-        b=RuCEaKtiUTzxYp/z23JXa71RRL9w5iN+5OQaQKxpJAXMoOgumORYPsBRakUWfcZiWSaAlY
-        s7kxGe0yVVIvzgB13qclbFAPPeMnMucXX5H9bPVrxUNLF2oe28nt3lS6Wsm5FM4REYhNye
-        eMHDRzgOKW54n6/YmKyKNhtWnX4v7pY81GtZBzFeChxxpZyfLMA1gnI5TBrmPeUrRj5n1u
-        fWmpLfPornw8GBY91LkkziaFgwLQRadl18URvbew+T5ojUMK4Y5Fe/Phw+KIhSPazgE81n
-        pKVJ55PKXBM3W9oRoH86Mj4+luMW3Fp09S5HrW4itOwTQweVsWq48xWuG1THwQ==
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Sander Vanheule <sander@svanheule.net>
-Subject: [PATCH v5 2/8] gpio: regmap: Add quirk for aliased data registers
-Date:   Sat, 12 Jun 2021 23:12:32 +0200
-Message-Id: <5d8e5e8a29ecf39da48beb94c42003a5c686ec4e.1623532208.git.sander@svanheule.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623532208.git.sander@svanheule.net>
-References: <cover.1623532208.git.sander@svanheule.net>
+        Sat, 12 Jun 2021 17:14:38 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583CCC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 14:12:38 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lsAvh-007RAr-8b; Sat, 12 Jun 2021 21:12:33 +0000
+Date:   Sat, 12 Jun 2021 21:12:33 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC 5/9] iov_iter: Add iov_iter_fault_in_writeable()
+Message-ID: <YMUjQYtBCIxHvsYV@zeniv-ca.linux.org.uk>
+References: <20210531170123.243771-1-agruenba@redhat.com>
+ <20210531170123.243771-6-agruenba@redhat.com>
+ <YLUY/7pcFMibDnRn@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLUY/7pcFMibDnRn@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some chips have the read-only input and write-only output data registers
-aliased to the same offset. As a result it is not possible to perform
-read-modify-writes on the output values, when a line is still configured
-as input.
+On Mon, May 31, 2021 at 05:12:31PM +0000, Al Viro wrote:
 
-Add a quirk for aliased data registers, and document how the regmap
-should be set up for correct operation.
+> > +int iov_iter_fault_in_writeable(struct iov_iter *i, size_t bytes)
+> > +{
+> > +	size_t skip = i->iov_offset;
+> > +	const struct iovec *iov;
+> > +	int err;
+> > +	struct iovec v;
+> > +
+> > +	if (!(i->type & (ITER_BVEC|ITER_KVEC))) {
+> > +		iterate_iovec(i, bytes, v, iov, skip, ({
+> > +			err = fault_in_pages_writeable(v.iov_base, v.iov_len);
+> > +			if (unlikely(err))
+> > +				return err;
+> > +		0;}))
+> > +	}
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL(iov_iter_fault_in_writeable);
+> 
+> I really don't like that.  Conflicts with iov_iter patches are not hard to
+> deal with, but (like fault_in_pages_writeable() itself) it's dangerous as
+> hell - fault-in for read is non-destructive, but that is *not*.  Existing
+> users have to be careful with it and there are very few of those.  Adding
+> that as a new primitive is inviting trouble; at the very least it needs
+> a big fat "Don't use unless you really know what you are doing" kind of
+> warning.
 
-Signed-off-by: Sander Vanheule <sander@svanheule.net>
----
- drivers/gpio/gpio-regmap.c  |  7 ++++++-
- include/linux/gpio/regmap.h | 13 +++++++++++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
+Actually, is there any good way to make sure that write fault is triggered
+_without_ modification of the data?  On x86 lock xadd (of 0, that is) would
+probably do it and some of the other architectures could probably get away
+with using cmpxchg and its relatives, but how reliable it is wrt always
+triggering a write fault if the page is currently read-only?
 
-diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
-index 134cedf151a7..3a3d0d9a945c 100644
---- a/drivers/gpio/gpio-regmap.c
-+++ b/drivers/gpio/gpio-regmap.c
-@@ -15,6 +15,7 @@ struct gpio_regmap {
- 	struct device *parent;
- 	struct regmap *regmap;
- 	struct gpio_chip gpio_chip;
-+	unsigned int quirks;
- 
- 	int reg_stride;
- 	int ngpio_per_reg;
-@@ -68,7 +69,10 @@ static int gpio_regmap_get(struct gpio_chip *chip, unsigned int offset)
- 	if (ret)
- 		return ret;
- 
--	ret = regmap_read(gpio->regmap, reg, &val);
-+	if (gpio->quirks & GPIO_REGMAP_QUIRK_ALIASED_DATA)
-+		ret = regmap_read_bypassed(gpio->regmap, reg, &val);
-+	else
-+		ret = regmap_read(gpio->regmap, reg, &val);
- 	if (ret)
- 		return ret;
- 
-@@ -227,6 +231,7 @@ struct gpio_regmap *gpio_regmap_register(const struct gpio_regmap_config *config
- 
- 	gpio->parent = config->parent;
- 	gpio->regmap = config->regmap;
-+	gpio->quirks = config->quirks;
- 	gpio->ngpio_per_reg = config->ngpio_per_reg;
- 	gpio->reg_stride = config->reg_stride;
- 	gpio->reg_mask_xlate = config->reg_mask_xlate;
-diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
-index 334dd928042b..b0751a10fa4a 100644
---- a/include/linux/gpio/regmap.h
-+++ b/include/linux/gpio/regmap.h
-@@ -12,6 +12,17 @@ struct regmap;
- #define GPIO_REGMAP_ADDR_ZERO ((unsigned int)(-1))
- #define GPIO_REGMAP_ADDR(addr) ((addr) ? : GPIO_REGMAP_ADDR_ZERO)
- 
-+enum gpio_regmap_quirk {
-+	/*
-+	 * For hardware where the (read-only) input and (write-only) output
-+	 * registers are aliased to the same offset. In this case the register
-+	 * must not be marked as volatile and a regcache must be used, to cache
-+	 * the write-only output values. Register reads for the input values
-+	 * will be performed by bypassing the cache.
-+	 */
-+	GPIO_REGMAP_QUIRK_ALIASED_DATA = BIT(0),
-+};
-+
- /**
-  * struct gpio_regmap_config - Description of a generic regmap gpio_chip.
-  * @parent:		The parent device
-@@ -31,6 +42,7 @@ struct regmap;
-  * @reg_stride:		(Optional) May be set if the registers (of the
-  *			same type, dat, set, etc) are not consecutive.
-  * @ngpio_per_reg:	Number of GPIOs per register
-+ * @quirks:		Flags indicating GPIO chip hardware issues
-  * @irq_domain:		(Optional) IRQ domain if the controller is
-  *			interrupt-capable
-  * @reg_mask_xlate:     (Optional) Translates base address and GPIO
-@@ -73,6 +85,7 @@ struct gpio_regmap_config {
- 	unsigned int reg_dir_out_base;
- 	int reg_stride;
- 	int ngpio_per_reg;
-+	unsigned int quirks;
- 	struct irq_domain *irq_domain;
- 
- 	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int base,
--- 
-2.31.1
-
+I mean, something like
+	do {
+		r0 = r = *p
+		atomically [if (*p == r) *p = r; r = *p;]
+	} while (r != r0);
+would look like a feasible candidate, but what if the processor
+"optimizes" that cmpxchg to simple load, seeing that new value is
+equal to expected old one?
