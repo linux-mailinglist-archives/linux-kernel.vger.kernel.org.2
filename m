@@ -2,82 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576403A5038
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 21:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56203A5036
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 21:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbhFLTLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 15:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
+        id S231423AbhFLTLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 15:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbhFLTLQ (ORCPT
+        with ESMTP id S231311AbhFLTLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 15:11:16 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C59C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 12:09:05 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 131so14222686ljj.3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 12:09:05 -0700 (PDT)
+        Sat, 12 Jun 2021 15:11:00 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9783C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 12:09:00 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id c9so9621393wrt.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 12:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ga1InjZw/kSI9gDXsr9QAikDRt/eqge6C65ybQbAbWw=;
-        b=gJJJE7LJ5IT0Jmn4YVDLEtNdz6exMrFOkDQlKfDi12eIH9fwYVGEKP4iYCgZmlmzeH
-         A4mQgg2zJjGrgsekQe27BTfIeVb2sjEC4J7eOzzS4iE/xiZRqUZ/Uy2bVcp3Vt4zWlrh
-         Plz8Ch8WXiZznUhpMBxlsBZQP86tNSmkKprzw=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kuRUfV+q7qAHGhHA5OLkse4agRm/XQx10cHb9gtUZW8=;
+        b=s06PhCZ3835jxxHTzKKRAtggi+TT9vGycYDn2PwEvmdswflLsTbcKhHiQ3SgfeuhH6
+         UTln/RH6xWVbaX5RJOFqC82Q/B3f3aYTC1orv+iBF8A/jjX6lcbV8+YDnG6WZw88QncR
+         6/DPIpmwfURHFT8Z70F2lt3ihOMkw2zQLWf9Janx0PZqnzaVW797rMWZNae5ABVdTTR4
+         6wfj2/D50XUX5qidQbly9Bx5wKCartZD2mrOLbdWRXNB7AGZEe7R3pefGju+feqgl3M5
+         XLJ2YJ+uErX1tbov1ypjLHcEozMNCKlScPDMkYZp5Mbe9sb4N52H+XXgm1KC1BWqVtrd
+         Sx0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ga1InjZw/kSI9gDXsr9QAikDRt/eqge6C65ybQbAbWw=;
-        b=I3BHzdaxrXiVJNlS3KPT1hOx0rG24XHxXEQbS97Tu62Fk8UwLh/eZMaNAdbY6y44es
-         4XzuGKUj/MfiIAt1ewUIXn7zsucnAFPJnwJCKvlO5vEL2HeCT09Tn+AAoGzyBxY2Uf5b
-         Slri6kn/Hdf8Fk1ZfJ8l60Lf9uRiaLzvbvptLw44yukchLPwS+MYYCjQYbsfq/dRxUJ9
-         5+YqvcukIov2UrA5Og8hJBhHutT6PUo8FYUpV4gsYHVguoUVxpPTEfbiHH6+HjOqShHJ
-         2TkcGHChgI8saBweO4ZTVzAABxnGFnzbcJjRf5j6x7NNqUQBZL4a30tNekbHZQTaHh+p
-         Cj2g==
-X-Gm-Message-State: AOAM5303goSchHqY+E4KIPXAga7vVZmMVobGdZPMcNvTsBdP/HBvtRIU
-        zhtYeqlDKrkSqXSZQVHHy31NFEsuumJQIgNtecQ=
-X-Google-Smtp-Source: ABdhPJy3L3JhMS6WNDYb+N/+KScAk9WiIehPWpoUfgBhuR4mRy1aEk+vQ4CW9Y18/noCVy4a27Trmg==
-X-Received: by 2002:a2e:751d:: with SMTP id q29mr7373121ljc.118.1623524941605;
-        Sat, 12 Jun 2021 12:09:01 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id f4sm962412lfc.147.2021.06.12.12.09.00
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kuRUfV+q7qAHGhHA5OLkse4agRm/XQx10cHb9gtUZW8=;
+        b=EHj2qkjeiMdjO9tfKoNmpw9U12xJ9wDJPDLzN00Uf9bL/7NtiNYsL4xc0Lmei68D1n
+         GkavodZGMdpHnSGAJplcYAqZEH7rnHj+pFeU+oqOCbEH4jeX4F4KC8f5UJJDYUk/wimg
+         OyeV1Y30PnUd/oiuHVnO75TZLoHePXhoQIDQBcZHWhX0a9tmyUGNs6UIAeXKU7LOsWKe
+         Oh2Ha1BnJ4DYrFmXrjV2aWkHVUCmSa2fBFuS/whtaE8N711DDa8tVLPnyDKQy2kDizoK
+         3k8rdCgswMF3KLwTlGPUpiYVkOJk2snEQIe/ZpNxO0OaNYd6Q3LPqhf8bTmmdp/jiYpI
+         xwog==
+X-Gm-Message-State: AOAM532jX3cKm5dOtAZ+T+yRavTiUusXmJI/8ZAMRhjI7Ooa3rqwXszC
+        o5rLSbCQWB70RITOtE816twJZA==
+X-Google-Smtp-Source: ABdhPJyOO34sWQdESQfjFKmlyoRdLrIAAIE/NVc0QzHnaUCTC12w4DGk0b3HOz9ZD+OqNoC72INAGA==
+X-Received: by 2002:a5d:5752:: with SMTP id q18mr10390688wrw.419.1623524939237;
+        Sat, 12 Jun 2021 12:08:59 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:15bb:2e33:aa66:1b44? ([2a01:e34:ed2f:f020:15bb:2e33:aa66:1b44])
+        by smtp.googlemail.com with ESMTPSA id v15sm10812484wrw.24.2021.06.12.12.08.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Jun 2021 12:09:01 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id m21so13825172lfg.13
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 12:09:00 -0700 (PDT)
-X-Received: by 2002:a19:7d04:: with SMTP id y4mr6282565lfc.201.1623524940718;
- Sat, 12 Jun 2021 12:09:00 -0700 (PDT)
+        Sat, 12 Jun 2021 12:08:58 -0700 (PDT)
+Subject: Re: [PATCH v2 08/40] docs: driver-api: thermal: Use ASCII subset
+ instead of UTF-8 alternate symbols
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+ <6866f10fbfbe599448fafa0ca35f1b5b262ce60f.1620823573.git.mchehab+huawei@kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <059fe414-8bb0-a0b4-9fab-cc7c8fc73eaa@linaro.org>
+Date:   Sat, 12 Jun 2021 21:08:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <CACRpkdY+DKx-c+74b2xiGQ2H9+e2yeup+HEqg1+u1nvQoO6pXA@mail.gmail.com>
-In-Reply-To: <CACRpkdY+DKx-c+74b2xiGQ2H9+e2yeup+HEqg1+u1nvQoO6pXA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 12 Jun 2021 12:08:44 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgRA2B1b0gn18t+e_TaJdJGQ8Lurpw7qmyZZmQaGwZo8Q@mail.gmail.com>
-Message-ID: <CAHk-=wgRA2B1b0gn18t+e_TaJdJGQ8Lurpw7qmyZZmQaGwZo8Q@mail.gmail.com>
-Subject: Re: [GIT PULL] pin control fixes for v5.13
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6866f10fbfbe599448fafa0ca35f1b5b262ce60f.1620823573.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 3:07 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git
-> tags/pinctrl-v5.13-2
+On 12/05/2021 14:50, Mauro Carvalho Chehab wrote:
+> The conversion tools used during DocBook/LaTeX/Markdown->ReST conversion
+> and some automatic rules which exists on certain text editors like
+> LibreOffice turned ASCII characters into some UTF-8 alternatives that
+> are better displayed on html and PDF.
+> 
+> While it is OK to use UTF-8 characters in Linux, it is better to
+> use the ASCII subset instead of using an UTF-8 equivalent character
+> as it makes life easier for tools like grep, and are easier to edit
+> with the some commonly used text/source code editors.
+> 
+> Also, Sphinx already do such conversion automatically outside literal blocks:
+>    https://docutils.sourceforge.io/docs/user/smartquotes.html
+> 
+> So, replace the occurences of the following UTF-8 characters:
+> 
+> 	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
+> 	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Nope, not there.
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-I think that "linux-nomadik" is bogus, I do find those commits in the
-usual "linux-pinctrl" tree.
+> ---
+>  .../driver-api/thermal/cpu-idle-cooling.rst        | 14 +++++++-------
+>  .../driver-api/thermal/intel_powerclamp.rst        |  6 +++---
+>  .../thermal/x86_pkg_temperature_thermal.rst        |  2 +-
+>  3 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Documentation/driver-api/thermal/cpu-idle-cooling.rst b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
+> index c2a7ca676853..60934a518560 100644
+> --- a/Documentation/driver-api/thermal/cpu-idle-cooling.rst
+> +++ b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
+> @@ -49,7 +49,7 @@ belong to the same cluster, with a duration greater than the cluster
+>  idle state target residency, we lead to dropping the static and the
+>  dynamic leakage for this period (modulo the energy needed to enter
+>  this state). So the sustainable power with idle cycles has a linear
+> -relation with the OPP’s sustainable power and can be computed with a
+> +relation with the OPP's sustainable power and can be computed with a
+>  coefficient similar to::
+>  
+>  	    Power(IdleCycle) = Coef x Power(OPP)
+> @@ -134,7 +134,7 @@ The idle injection duration value must comply with the constraints:
+>    user experience, reactivity vs performance trade off we want. This
+>    value should be specified.
+>  
+> -- It is greater than the idle state’s target residency we want to go
+> +- It is greater than the idle state's target residency we want to go
+>    for thermal mitigation, otherwise we end up consuming more energy.
+>  
+>  Power considerations
+> @@ -146,11 +146,11 @@ power for a specific temperature but at this time we consume::
+>   Power = Capacitance x Voltage^2 x Frequency x Utilisation
+>  
+>  ... which is more than the sustainable power (or there is something
+> -wrong in the system setup). The ‘Capacitance’ and ‘Utilisation’ are a
+> -fixed value, ‘Voltage’ and the ‘Frequency’ are fixed artificially
+> -because we don’t want to change the OPP. We can group the
+> -‘Capacitance’ and the ‘Utilisation’ into a single term which is the
+> -‘Dynamic Power Coefficient (Cdyn)’ Simplifying the above, we have::
+> +wrong in the system setup). The 'Capacitance' and 'Utilisation' are a
+> +fixed value, 'Voltage' and the 'Frequency' are fixed artificially
+> +because we don't want to change the OPP. We can group the
+> +'Capacitance' and the 'Utilisation' into a single term which is the
+> +'Dynamic Power Coefficient (Cdyn)' Simplifying the above, we have::
+>  
+>   Pdyn = Cdyn x Voltage^2 x Frequency
+>  
+> diff --git a/Documentation/driver-api/thermal/intel_powerclamp.rst b/Documentation/driver-api/thermal/intel_powerclamp.rst
+> index 3f6dfb0b3ea6..d349c1b64281 100644
+> --- a/Documentation/driver-api/thermal/intel_powerclamp.rst
+> +++ b/Documentation/driver-api/thermal/intel_powerclamp.rst
+> @@ -29,7 +29,7 @@ By:
+>  INTRODUCTION
+>  ============
+>  
+> -Consider the situation where a system’s power consumption must be
+> +Consider the situation where a system's power consumption must be
+>  reduced at runtime, due to power budget, thermal constraint, or noise
+>  level, and where active cooling is not preferred. Software managed
+>  passive power reduction must be performed to prevent the hardware
+> @@ -39,7 +39,7 @@ Currently, P-states, T-states (clock modulation), and CPU offlining
+>  are used for CPU throttling.
+>  
+>  On Intel CPUs, C-states provide effective power reduction, but so far
+> -they’re only used opportunistically, based on workload. With the
+> +they're only used opportunistically, based on workload. With the
+>  development of intel_powerclamp driver, the method of synchronizing
+>  idle injection across all online CPU threads was introduced. The goal
+>  is to achieve forced and controllable C-state residency.
+> @@ -264,7 +264,7 @@ CPUs).
+>  Usage and Interfaces
+>  ====================
+>  The powerclamp driver is registered to the generic thermal layer as a
+> -cooling device. Currently, it’s not bound to any thermal zones::
+> +cooling device. Currently, it's not bound to any thermal zones::
+>  
+>    jacob@chromoly:/sys/class/thermal/cooling_device14$ grep . *
+>    cur_state:0
+> diff --git a/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst b/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
+> index 2ac42ccd236f..5b95af96e40f 100644
+> --- a/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
+> +++ b/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
+> @@ -13,7 +13,7 @@ Authors: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+>  Reference
+>  ---------
+>  
+> -Intel® 64 and IA-32 Architectures Software Developer’s Manual (Jan, 2013):
+> +Intel® 64 and IA-32 Architectures Software Developer's Manual (Jan, 2013):
+>  Chapter 14.6: PACKAGE LEVEL THERMAL MANAGEMENT
+>  
+>  Description
+> 
 
-How did that odd thing happen?
 
-           Linus
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
