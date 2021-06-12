@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6480A3A4D36
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992B53A4D3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Jun 2021 09:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhFLHDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 03:03:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47730 "EHLO mail.kernel.org"
+        id S230504AbhFLHFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 03:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhFLHDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 03:03:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 104C561009;
-        Sat, 12 Jun 2021 07:01:13 +0000 (UTC)
+        id S229584AbhFLHE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 03:04:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AFF961186;
+        Sat, 12 Jun 2021 07:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623481275;
-        bh=iKKyGp0fUDKDEcJ9RZ05rQW+0YvDlhXFzxPG/BdB7KE=;
+        s=korg; t=1623481366;
+        bh=cyYgnn12E0TUjCf1JhTdpZWgTwBzpbkz1bQDyTJlhMM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0I63GfFvAYt0uAA2pS1BDbGxuAsn5MfkmsuAmA9dpSGAvePJOH49D8iUzi7o7ZXEm
-         arMa95ZzYmBqT1pqnb0j7UICbMD+ejJkIp2Z4FWDQP4LbJxryPD5lkEDHWMkMNhuKN
-         4OtaaFAUP5nTa5o5jJaz1C17jSKDeh6re6Kd5HmY=
-Date:   Sat, 12 Jun 2021 09:01:11 +0200
+        b=yJSnl7XvMM4cnz9idU0uiHyw0U8UmcOhjJUkAVkPeKLRojAjWo41UycxvpWwUJl4x
+         VtiFZyJarVfZjTQmo5Lxd8mWDPWeNA9ZJo9rmuL4nJ90SwBel1si1DcECLZLjExCUm
+         P22i9T5WMTFEHtlgPBvXAp7oENanh6JL9MJ9b+cs=
+Date:   Sat, 12 Jun 2021 09:02:43 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jonathan Davies <jonathan.davies@nutanix.com>
-Cc:     Oliver Neukum <oneukum@suse.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: usbnet: allow overriding of default USB interface
- naming
-Message-ID: <YMRbt+or+QTlqqP9@kroah.com>
-References: <20210611152339.182710-1-jonathan.davies@nutanix.com>
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Charles Haithcock <chaithco@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Adrian Reber <areber@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v9] exec: Fix dead-lock in de_thread with ptrace_attach
+Message-ID: <YMRcE8NXspQjSwQZ@kroah.com>
+References: <AM8PR10MB4708AFBD838138A84CE89EF8E4359@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
+ <20210610143642.e4535dbdc0db0b1bd3ee5367@linux-foundation.org>
+ <AM8PR10MB470896FBC519ABCC20486958E4349@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210611152339.182710-1-jonathan.davies@nutanix.com>
+In-Reply-To: <AM8PR10MB470896FBC519ABCC20486958E4349@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 03:23:39PM +0000, Jonathan Davies wrote:
-> When the predictable device naming scheme for NICs is not in use, it is
-> common for there to be udev rules to rename interfaces to names with
-> prefix "eth".
+On Fri, Jun 11, 2021 at 05:55:09PM +0200, Bernd Edlinger wrote:
+> This introduces signal->unsafe_execve_in_progress,
+> which is used to fix the case when at least one of the
+> sibling threads is traced, and therefore the trace
+> process may dead-lock in ptrace_attach, but de_thread
+> will need to wait for the tracer to continue execution.
 > 
-> Since the timing at which USB NICs are discovered is unpredictable, it
-> can be interfere with udev's attempt to rename another interface to
-> "eth0" if a freshly discovered USB interface is initially given the name
-> "eth0".
+> The solution is to detect this situation and allow
+> ptrace_attach to continue, while de_thread() is still
+> waiting for traced zombies to be eventually released.
+> When the current thread changed the ptrace status from
+> non-traced to traced, we can simply abort the whole
+> execve and restart it by returning -ERESTARTSYS.
+> This needs to be done before changing the thread leader,
+> because the PTRACE_EVENT_EXEC needs to know the old
+> thread pid.
 > 
-> Hence it is useful to be able to override the default name. A new usbnet
-> module parameter allows this to be configured.
+> Although it is technically after the point of no return,
+> we just have to reset bprm->point_of_no_return here,
+> since at this time only the other threads have received
+> a fatal signal, not the current thread.
 > 
-> Signed-off-by: Jonathan Davies <jonathan.davies@nutanix.com>
-> Suggested-by: Prashanth Sreenivasa <prashanth.sreenivasa@nutanix.com>
+> >From the user's point of view the whole execve was
+> simply delayed until after the ptrace_attach.
+> 
+> Other threads die quickly since the cred_guard_mutex
+> is released, but a deadly signal is already pending.
+> In case the mutex_lock_killable misses the signal,
+> ->unsafe_execve_in_progress makes sure they release
+> the mutex immediately and return with -ERESTARTNOINTR.
+> 
+> This means there is no API change, unlike the previous
+> version of this patch which was discussed here:
+> 
+> https://lore.kernel.org/lkml/b6537ae6-31b1-5c50-f32b-8b8332ace882@hotmail.de/
+> 
+> See tools/testing/selftests/ptrace/vmaccess.c
+> for a test case that gets fixed by this change.
+> 
+> Note that since the test case was originally designed to
+> test the ptrace_attach returning an error in this situation,
+> the test expectation needed to be adjusted, to allow the
+> API to succeed at the first attempt.
+> 
+> Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
 > ---
->  drivers/net/usb/usbnet.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
+>  fs/exec.c                                 | 37 +++++++++++++++++++++++++++++--
+>  fs/proc/base.c                            |  6 +++++
+>  include/linux/sched/signal.h              | 13 +++++++++++
+>  kernel/ptrace.c                           |  9 ++++++++
+>  kernel/seccomp.c                          | 12 +++++++---
+>  tools/testing/selftests/ptrace/vmaccess.c | 25 ++++++++++++++-------
+>  6 files changed, 89 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-> index ecf6284..55f6230 100644
-> --- a/drivers/net/usb/usbnet.c
-> +++ b/drivers/net/usb/usbnet.c
-> @@ -72,6 +72,13 @@ static int msg_level = -1;
->  module_param (msg_level, int, 0);
->  MODULE_PARM_DESC (msg_level, "Override default message level");
->  
-> +#define DEFAULT_ETH_DEV_NAME "eth%d"
-> +
-> +static char *eth_device_name = DEFAULT_ETH_DEV_NAME;
-> +module_param(eth_device_name, charp, 0644);
-> +MODULE_PARM_DESC(eth_device_name, "Device name pattern for Ethernet devices"
-> +				  " (default: \"" DEFAULT_ETH_DEV_NAME "\")");
 
-This is not the 1990's, please do not add new module parameters as they
-are on a global driver level, and not on a device level.
+<formletter>
 
-Also changing the way usb network devices are named is up to userspace,
-the kernel should not be involved in this.  What is wrong with just
-renaming it in userspace as you want to today?
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-thanks,
-
-greg k-h
+</formletter>
