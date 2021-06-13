@@ -2,270 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C990C3A56D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 09:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A343A56DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 09:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhFMHMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 03:12:25 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:60116 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbhFMHMY (ORCPT
+        id S230358AbhFMHgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 03:36:24 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:60121 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229777AbhFMHgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 03:12:24 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d31 with ME
-        id GXAK2500121Fzsu03XAKqL; Sun, 13 Jun 2021 09:10:20 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 13 Jun 2021 09:10:20 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] scsi: mptfc: switch from 'pci_' to 'dma_' API
-Date:   Sun, 13 Jun 2021 09:10:16 +0200
-Message-Id: <95afc589713ade2110e7812159ce3e9ab453ec18.1623568121.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 13 Jun 2021 03:36:23 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6746B5809B2;
+        Sun, 13 Jun 2021 03:34:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 13 Jun 2021 03:34:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=7vEofM
+        Aqg+f6wYxXxRpaft9RyBo6WXP9j/L+Lqm8oNE=; b=ErznCTvCm07KfuGG0pAzTr
+        3PMMfqK2nzr9kgdlzirnP4WhrG/ZHL4qiCxe8j4PjzFI3j6e9NU019cZ+kAGUnQG
+        5Sdd+V/J0uwDYl5Nor/ITTxU0r2IgZV2E2HU2CNtJMbzjHLR7lwlZO4P02dUKNoe
+        XWbrYjJcouyM+HVAC7hdvOSzYLey9bMmR74o1LY3nsqnTgry9Tq5iuJCYhNOcsrH
+        Dqt8pROxGjeFOryGmnQxPiN3NzNZ03tBuJy9KSx2Umy8ZPWfm7/UfPIZMaqswEsI
+        jOMbVjxzeImsUCXw6urSQkhBdGP42xVAIz4Viy0xpbEInJWDNV1WuVLB12KpY/CQ
+        ==
+X-ME-Sender: <xms:_bTFYAzIBEI_T9MHN9gDDq8N48J96lL9aN6Pjo8LQniLjpqK-J9guA>
+    <xme:_bTFYEQRyoIXbUE1jegwZg6Lot0dRdXXCX9tmDojHsiLE1X6t2Wz9sQpzh6M80jP0
+    h1bx1Og_wZjnT0>
+X-ME-Received: <xmr:_bTFYCXKnBXMLsK09R66YcE7_O5Ra0pmEjR8DUCL39KIg1x4faUNQBTfBL5J>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvvddgvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeethfeijeefudehtddvheekteejheetvdekleffveekfeetiedtgeettdfhledv
+    ueenucffohhmrghinhepmhgrnhejrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:_bTFYOi7Xsbo9lcodfi_4duQiKmqCy1lrLl4C3Y2t0Idq3SwPRGFIw>
+    <xmx:_bTFYCA2TDka-ZJs0ZkEzqzS7xO3OxP3gOv82dU6CfJp-iwk8lX75g>
+    <xmx:_bTFYPJnegSu7qlEOH_I_IXCfKUdN_Q_UPVRfrgkVW0glPXvnoYvoA>
+    <xmx:_rTFYG6QrDvt7QiFCoEj5WNUIq4Y6tnx60xaJeA6MD9iVfg3jKvyTg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 13 Jun 2021 03:34:20 -0400 (EDT)
+Date:   Sun, 13 Jun 2021 10:34:18 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        "jiri@nvidia.com" <jiri@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+Subject: Re: [PATCH net-next 10/11] net: marvell: prestera: add storm control
+ (rate limiter) implementation
+Message-ID: <YMW0+vERwH+d8sT1@shredder>
+References: <20210609151602.29004-1-oleksandr.mazur@plvision.eu>
+ <20210609151602.29004-11-oleksandr.mazur@plvision.eu>
+ <YMIIcgKjIH5V+Exf@lunn.ch>
+ <AM0P190MB0738E3909FB0EA0031A24F07E4349@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
+ <YMOYcHleEOjmnqjt@lunn.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMOYcHleEOjmnqjt@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On Fri, Jun 11, 2021 at 07:08:00PM +0200, Andrew Lunn wrote:
+> On Fri, Jun 11, 2021 at 01:19:13PM +0000, Oleksandr Mazur wrote:
+> > >>  On Wed, Jun 09, 2021 at 06:16:00PM +0300, Oleksandr Mazur wrote:
+> > > Storm control (BUM) provides a mechanism to limit rate of ingress
+> > > > port traffic (matched by type). Devlink port parameter API is used:
+> > > > driver registers a set of per-port parameters that can be accessed to both
+> > > > get/set per-port per-type rate limit.
+> > > > Add new FW command - RATE_LIMIT_MODE_SET.
+> > 
+> > > Hi Oleksandr
+> > 
+> > > Just expanding on the two comments you already received about this.
+> > 
+> > > We often see people miss that switchdev is about. It is not about
+> > > writing switch drivers. It is about writing network stack
+> > > accelerators. You take a feature of the Linux network stack and you
+> > > accelerate it by offloading it to the hardware. So look around the
+> > > network stack and see how you configure it to perform rate limiting of
+> > > broadcast traffic ingress. Once you have found a suitable mechanism,
+> > > accelerate it via offloading.
+> > 
+> > > If you find Linux has no way to perform a feature the hardware could
+> > > accelerate, you first need to add a pure software version of that
+> > > feature to the network stack, and then add acceleration support for
+> > > it.
+> > 
+> > 
+> > Hello Andrew, Ido, Nikolay,
+> > I appreciate your time and comments provided over this patchset, though i have a few questions to ask, if you don't mind:
+> > 
+> 
+> > 1. Does it mean that in order to support storm control in switchdev
+> > driver i need to implement software storm control in bridge driver,
+> > and then using the switchdev attributes (notifiers) mechanism
+> > offload the configuration itself to the HW?
+> 
+> Hi Oleksandr
+> 
+> Not necessarily. Is storm control anything more than ingress packet
+> matching and rate limiting?
+> 
+> I'm not TC expert, but look for example at
+> https://man7.org/linux/man-pages/man8/tc-police.8.html
+> 
+> and the example:
+> 
+> # tc qdisc add dev eth0 handle ffff: ingress
+> # tc filter add dev eth0 parent ffff: u32 \
+>                    match u32 0 0 \
+>                    police rate 1mbit burst 100k
+> 
+> Replace the "match u32 0 0" with something which matches on broadcast
+> frames.  Maybe "flower dst_mac ff:ff:ff:ff:ff:ff"
+> 
+> So there is a software solution. Now accelerate it.
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+Storm control also needs the ability to limit other types of flooded
+traffic such unknown unicast and unregistered multicast packets. The
+entity which classifies packets as such is the bridge, which happens
+after the ingress hook.
 
-When memory is allocated in 'mptfc_GetFcDevPage0()' GFP_KERNEL can be used
-because it is already used in this function and no lock is acquired in the
-between.
+I see two options to support storm control in Linux:
 
-When memory is allocated in 'mptfc_GetFcPortPage0()' and
-'mptfc_GetFcPortPage1()' GFP_KERNEL can be used because they already call
-'mpt_config()' which has an explicit 'might_sleep()'.
+1. By adding support in the bridge itself as a new bridge slave option.
+Something like:
 
-While at it, also remove some useless casting.
+# ip link set dev swp1 type bridge_slave \
+	storm_control type { uuc | umc | bc} rate RATE mode { packet | byte }
 
-@@ @@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+I suspect this similar to more traditional implementations that users
+might be used to and also maps nicely to hardware implementations
 
-@@ @@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+2. Teaching tc to call into the bridge to classify a packet. Not sure a
+whole new classifier is needed for this. Maybe just extend flower with a
+new key: dst_mac_type { uuc | umc }. I personally find this a bit weird,
+but it is more flexible and allows to reuse existing actions
 
-@@ @@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
+> 
+> > 2. Is there any chance of keeping devlink solution untill the
+> > discussed (storm control implemented in the bridge driver) mechanism
+> > will be ready/implemented?
+> 
+> No. Please do it correctly from the beginning. No hacks.
 
-@@ @@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/message/fusion/mptfc.c | 35 +++++++++++++++++-----------------
- 1 file changed, 18 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/message/fusion/mptfc.c b/drivers/message/fusion/mptfc.c
-index 0484e9c15c09..572333fadd68 100644
---- a/drivers/message/fusion/mptfc.c
-+++ b/drivers/message/fusion/mptfc.c
-@@ -331,8 +331,8 @@ mptfc_GetFcDevPage0(MPT_ADAPTER *ioc, int ioc_port,
- 			break;
- 
- 		data_sz = hdr.PageLength * 4;
--		ppage0_alloc = pci_alloc_consistent(ioc->pcidev, data_sz,
--		    					&page0_dma);
-+		ppage0_alloc = dma_alloc_coherent(&ioc->pcidev->dev, data_sz,
-+						  &page0_dma, GFP_KERNEL);
- 		rc = -ENOMEM;
- 		if (!ppage0_alloc)
- 			break;
-@@ -367,8 +367,8 @@ mptfc_GetFcDevPage0(MPT_ADAPTER *ioc, int ioc_port,
- 			*p_p0 = *ppage0_alloc;	/* save data */
- 			*p_pp0++ = p_p0++;	/* save addr */
- 		}
--		pci_free_consistent(ioc->pcidev, data_sz,
--		    			(u8 *) ppage0_alloc, page0_dma);
-+		dma_free_coherent(&ioc->pcidev->dev, data_sz,
-+				  ppage0_alloc, page0_dma);
- 		if (rc != 0)
- 			break;
- 
-@@ -763,7 +763,8 @@ mptfc_GetFcPortPage0(MPT_ADAPTER *ioc, int portnum)
- 
- 	data_sz = hdr.PageLength * 4;
- 	rc = -ENOMEM;
--	ppage0_alloc = pci_alloc_consistent(ioc->pcidev, data_sz, &page0_dma);
-+	ppage0_alloc = dma_alloc_coherent(&ioc->pcidev->dev, data_sz,
-+					  &page0_dma, GFP_KERNEL);
- 	if (ppage0_alloc) {
- 
-  try_again:
-@@ -817,7 +818,8 @@ mptfc_GetFcPortPage0(MPT_ADAPTER *ioc, int portnum)
- 			mptfc_display_port_link_speed(ioc, portnum, pp0dest);
- 		}
- 
--		pci_free_consistent(ioc->pcidev, data_sz, (u8 *) ppage0_alloc, page0_dma);
-+		dma_free_coherent(&ioc->pcidev->dev, data_sz, ppage0_alloc,
-+				  page0_dma);
- 	}
- 
- 	return rc;
-@@ -904,9 +906,8 @@ mptfc_GetFcPortPage1(MPT_ADAPTER *ioc, int portnum)
- 		if (data_sz < sizeof(FCPortPage1_t))
- 			data_sz = sizeof(FCPortPage1_t);
- 
--		page1_alloc = pci_alloc_consistent(ioc->pcidev,
--						data_sz,
--						&page1_dma);
-+		page1_alloc = dma_alloc_coherent(&ioc->pcidev->dev, data_sz,
-+						 &page1_dma, GFP_KERNEL);
- 		if (!page1_alloc)
- 			return -ENOMEM;
- 	}
-@@ -916,8 +917,8 @@ mptfc_GetFcPortPage1(MPT_ADAPTER *ioc, int portnum)
- 		data_sz = ioc->fc_data.fc_port_page1[portnum].pg_sz;
- 		if (hdr.PageLength * 4 > data_sz) {
- 			ioc->fc_data.fc_port_page1[portnum].data = NULL;
--			pci_free_consistent(ioc->pcidev, data_sz, (u8 *)
--				page1_alloc, page1_dma);
-+			dma_free_coherent(&ioc->pcidev->dev, data_sz,
-+					  page1_alloc, page1_dma);
- 			goto start_over;
- 		}
- 	}
-@@ -932,8 +933,8 @@ mptfc_GetFcPortPage1(MPT_ADAPTER *ioc, int portnum)
- 	}
- 	else {
- 		ioc->fc_data.fc_port_page1[portnum].data = NULL;
--		pci_free_consistent(ioc->pcidev, data_sz, (u8 *)
--			page1_alloc, page1_dma);
-+		dma_free_coherent(&ioc->pcidev->dev, data_sz, page1_alloc,
-+				  page1_dma);
- 	}
- 
- 	return rc;
-@@ -1514,10 +1515,10 @@ static void mptfc_remove(struct pci_dev *pdev)
- 
- 	for (ii=0; ii<ioc->facts.NumberOfPorts; ii++) {
- 		if (ioc->fc_data.fc_port_page1[ii].data) {
--			pci_free_consistent(ioc->pcidev,
--				ioc->fc_data.fc_port_page1[ii].pg_sz,
--				(u8 *) ioc->fc_data.fc_port_page1[ii].data,
--				ioc->fc_data.fc_port_page1[ii].dma);
-+			dma_free_coherent(&ioc->pcidev->dev,
-+					  ioc->fc_data.fc_port_page1[ii].pg_sz,
-+					  ioc->fc_data.fc_port_page1[ii].data,
-+					  ioc->fc_data.fc_port_page1[ii].dma);
- 			ioc->fc_data.fc_port_page1[ii].data = NULL;
- 		}
- 	}
--- 
-2.30.2
-
++1
