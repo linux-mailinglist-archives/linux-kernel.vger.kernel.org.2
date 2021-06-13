@@ -2,86 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD033A59A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 18:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854D13A59B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 19:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhFMQn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 12:43:58 -0400
-Received: from mail-ed1-f43.google.com ([209.85.208.43]:40638 "EHLO
-        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbhFMQnz (ORCPT
+        id S231996AbhFMROD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 13:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231902AbhFMRN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 12:43:55 -0400
-Received: by mail-ed1-f43.google.com with SMTP id t3so43324183edc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 09:41:39 -0700 (PDT)
+        Sun, 13 Jun 2021 13:13:59 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1747DC061574;
+        Sun, 13 Jun 2021 10:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zRPRNwiv+Qa7LFNhBGliyXNB+ILCSmwq5eW3TGTSNt4=;
-        b=Ir8CB+iHpFkcvuC0iayj4871f+XLzvhX6J/Kt97Mt3KEOnhKF2FuoPmCgCXiyFHVZb
-         a3vZ1bFlfJqYsgReA//8fKfvmfAw9UQ9L3/FROogtXl5Y+0Yg5/PdSLnMyCqRq9wloMj
-         c8xEpAkHe1qMxWqPIzfxymaDwcEWycewdrirLQW5fQ1KX1FzjvOTpfvXdrZ1MU1hqc0c
-         rMXOCxvDfsS2Hl/dVNhr7LxGEB6v70IW3ddxeuBeK6C1UCVhQEqVklTR+kXXr/isMR3L
-         m8GVKj/SMqD9dU+fdcwhkuCbMXWfF9S5kS3y5eJj6PZqeVG10KUByzLXnFKoSlvftplU
-         Q81w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zRPRNwiv+Qa7LFNhBGliyXNB+ILCSmwq5eW3TGTSNt4=;
-        b=aMYahrn+XZSrVI/JUPmnKD5DrqCBhqrrPHw0agsw3o/+Je5QuzJ6g2LDe5f2Evmp4V
-         pNixTgEwfuC8YAz0ijZhHF4bCzUSG0MNT5/XfKanpARr3fhbWRkZvy9GPVK4VoKRL04n
-         6wMyAZgpvOostQCS42p2fuUKM1ZfMDQ3j3Iu85M/GtrrrbEiNuLOrfZccDJTLC6aGhR8
-         gcnTDvmJbLVdS9pjtfy27JSB1LSWwpnndaocDHaTiDkdNgkKF8CeZ1MI10CnC41QsFvP
-         /1mqJs+tY07dtHtAkAmkchSXyK8bRq8bhmJFa3K8FS+uJD7c5nfY+4bWmupIBUPoRjKI
-         B0ug==
-X-Gm-Message-State: AOAM530ZvsoJR6FmpUwzC43znMSO3soR/kwqFy69BIVhNvsMjYJjKPxf
-        U5yQgDRlQjv+SzBw12zmAYQ1Z0S8YthVmUzkjnQ=
-X-Google-Smtp-Source: ABdhPJxrUobJ0ZeGHRd9i3Birfg+SOyHtdoiO8WUhzM4VEBRpOW85ihfvEdSnxiIhRdS435p3BLfS1Ka3cwS4fldJ4k=
-X-Received: by 2002:aa7:c7cd:: with SMTP id o13mr13362281eds.269.1623602438426;
- Sun, 13 Jun 2021 09:40:38 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=9YrEcNG/N2YFUqtgoD+2CSLrFOJntdnn7M
+        Cq89XsJdc=; b=oZ8DSkyl3+yzFHd/bMM1IVyZR4lHE4DiiDHKsVLWkCHYILS2SF
+        xqU3nsWL92FjLm8qwLrgL7LPMQWfHnVLRWkWOM/qBCEYJtlOiAm75Yseriobp9hY
+        u220xym9G2f7sidk/jOrCjv269pdfSloeqBcTIit4McfRTumFBZkhXhCI=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj1s2PMZgI9DTAA--.35616S2;
+        Mon, 14 Jun 2021 01:11:19 +0800 (CST)
+Date:   Mon, 14 Jun 2021 01:05:46 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 7/9] riscv: bpf: Avoid breaking W^X
+Message-ID: <20210614010546.7a0d5584@xhacker>
+In-Reply-To: <87bl8cqrpv.fsf@igel.home>
+References: <20210330022144.150edc6e@xhacker>
+        <20210330022521.2a904a8c@xhacker>
+        <87o8ccqypw.fsf@igel.home>
+        <20210612002334.6af72545@xhacker>
+        <87bl8cqrpv.fsf@igel.home>
 MIME-Version: 1.0
-References: <20210613122858.1433252-1-fbihjmeric@gmail.com> <YMX7SRSPgvMA/Pw1@kroah.com>
-In-Reply-To: <YMX7SRSPgvMA/Pw1@kroah.com>
-From:   Jhih Ming Huang <fbihjmeric@gmail.com>
-Date:   Mon, 14 Jun 2021 00:40:27 +0800
-Message-ID: <CAKgboZ8QUQpiinL0xCxUmcp6nEVU20jXkDXbrK_QisUMiLEo1A@mail.gmail.com>
-Subject: Re: [PATCH v2] rtw_security: fix cast to restricted __le32
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
-        maqianga@uniontech.com, marcocesati@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygCHj1s2PMZgI9DTAA--.35616S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw1fKF4UZF1fWF17XFW3Awb_yoW5XF4fpr
+        1UCFWfKryvqr1Ig348Z3sF93Wjvw13J3sxKrsxXFyUAa1IqF1kZw1YgFW3JrnFqF4xK3y0
+        9rW29rsava95Zw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkGb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07b5sjbUUU
+        UU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 8:34 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sun, Jun 13, 2021 at 08:28:58PM +0800, Jhih-Ming Huang wrote:
-> > This patch fixes the sparse warning of fix cast to restricted __le32.
+Hi,
+
+On Fri, 11 Jun 2021 18:41:16 +0200
+Andreas Schwab <schwab@linux-m68k.org> wrote:
+
+> On Jun 12 2021, Jisheng Zhang wrote:
+> 
+> > I reproduced an kernel panic with the defconfig on qemu, but I'm not sure whether
+> > this is the issue you saw, I will check.
 > >
-> > Last month, there was a change for replacing private CRC-32 routines with
-> > in-kernel ones.
-> > In that patch, we replaced getcrc32 with crc32_le in calling le32_to_cpu.
-> > le32_to_cpu accepts __le32 type as arg, but crc32_le returns unsigned int.
-> > That how it introduced the sparse warning.
->
-> As crc32_le returns a u32 which is in native-endian format, how can you
-> cast it to le32?  Why do you cast it to le32?  Isn't that going to be
-> incorrect for big endian systems?
->
-> thanks,
->
-> greg k-h
+> >     0.161959] futex hash table entries: 512 (order: 3, 32768 bytes, linear)
+> > [    0.167028] pinctrl core: initialized pinctrl subsystem
+> > [    0.190727] Unable to handle kernel paging request at virtual address ffffffff81651bd8
+> > [    0.191361] Oops [#1]
+> > [    0.191509] Modules linked in:
+> > [    0.191814] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #3
+> > [    0.192179] Hardware name: riscv-virtio,qemu (DT)
+> > [    0.192492] epc : __memset+0xc4/0xfc
+> > [    0.192712]  ra : skb_flow_dissector_init+0x22/0x86  
+> 
+> Yes, that's the same.
+> 
+> Andreas.
+> 
 
-Thanks for the fast reply.
-Yes, you are right. I did not notice that le32_to_cpu already handles
-both of the cases.
+I think I found the root cause: commit 2bfc6cd81bd ("move kernel mapping
+outside of linear mapping") moves BPF JIT region after the kernel:
 
-So it seems the warning from sparse is false positives, am I right?
+#define BPF_JIT_REGION_START   PFN_ALIGN((unsigned long)&_end)
 
-thanks
+The &_end is unlikely aligned with PMD SIZE, so the front bpf jit region
+sits with kernel .data section in one PMD. But kenrel is mapped in PMD SIZE,
+so when bpf_jit_binary_lock_ro() is called to make the first bpf jit prog
+ROX, we will make part of kernel .data section RO too, so when we write, for example
+memset the .data section, MMU will trigger store page fault.
 
---jmhuang
+To fix the issue, we need to make the bpf jit region PMD size aligned by either
+patch BPF_JIT_REGION_START to align on PMD size rather than PAGE SIZE, or
+something as below patch to move the BPF region before modules region:
+
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 9469f464e71a..997b894edbc2 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -31,8 +31,8 @@
+ #define BPF_JIT_REGION_SIZE	(SZ_128M)
+ #ifdef CONFIG_64BIT
+ /* KASLR should leave at least 128MB for BPF after the kernel */
+-#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+-#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
++#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
++#define BPF_JIT_REGION_END	(MODULES_VADDR)
+ #else
+ #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+ #define BPF_JIT_REGION_END	(VMALLOC_END)
+@@ -40,8 +40,8 @@
+ 
+ /* Modules always live before the kernel */
+ #ifdef CONFIG_64BIT
+-#define MODULES_VADDR	(PFN_ALIGN((unsigned long)&_end) - SZ_2G)
+ #define MODULES_END	(PFN_ALIGN((unsigned long)&_start))
++#define MODULES_VADDR	(MODULES_END - SZ_128M)
+ #endif
+ 
+ 
+can you please try it? Per my test, the issue is fixed.
+
+Thanks
+
+
