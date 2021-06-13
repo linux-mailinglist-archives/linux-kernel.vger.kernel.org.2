@@ -2,191 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43123A59DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 19:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2543A59E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 19:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhFMR1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 13:27:09 -0400
-Received: from sonic313-15.consmr.mail.ne1.yahoo.com ([66.163.185.38]:36364
-        "EHLO sonic313-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231902AbhFMR1H (ORCPT
+        id S232002AbhFMRio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 13:38:44 -0400
+Received: from out07.smtpout.orange.fr ([193.252.22.91]:38020 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231951AbhFMRin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 13:27:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1623605106; bh=DLuPs7ftfr4ZowcqzSHhvL6aPTCxobhVLAv5UcbHEsc=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=dMVFdG/2AZ0i421D91SfJPAXD2inwouX6csJXSWVMmq1PtF4rB4v/fLysPp6zCbNmXD4bQ/Au4lHhlNcio4CVGVWJAOGe0LcHM76iGEmdVw+1q87pbcSJsgkDmO5MujZi7mrddeCmapS9vvaKj5HGqStjn0Au7kOSVoZ1/t7WMdAF4riH2fcFYIXP7BSnXiOY1S+OCD9kjGeaHxAbPkg6lFSS8XBFa2ecJSVUVo36TD329BZGxWI6nh5K6f+KAkcBbDWlwBBQHz3qYcfrudP9YgflI06l0SU1+awzkKj9noCr8WASGr9vEQyW0eEKl8jROJFCmR+0N6bXyVKpwKx6w==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1623605106; bh=3GjYIAqUAsJ6b4mFFNXPtdNdfNMd0ODCWgBiIKS0uEc=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=db5oNXAFCrXyGjsx8WeO54FgGWJKItdan3HrPMm020tyZRA0HNo6sbqAVo5lEqONG3RkzyHivET2P6eYO96vbzGTJ6DnrDLo8/Ny7qgML1sbw7cP0dQSpeTgZT87ve4tOCyFgs8wffPBLVcX4ckosjErdMre3h//xkO/K8QEfZExUmYWE/893KACmFsbR2JVPYBqNGH83/2lVhuYDVa5CNJBMNYah6IAf9GKJpGhVLIJYelcC6wA05ZgueN2OvcFu57sLUnBjWy5uMzTHc2Gz6EwgIwT9kVs8ylLf3uX6aVI56GTVzJf8qyBkdHxODOBRYzgM06YlveC5Ym33jHjrQ==
-X-YMail-OSG: umy4OcsVM1n19Gipb48XkXGJfzCQR5sEoBjS.5bcu9CVMLKWCw2iG8ZGZxqWaF4
- eE6Nn__xe3ua.GB6xd55CK_K19XlaVaBjnweJhQPvrLWskt6JFdlvBR8SvBInlJBwcZEOzfNcwOf
- OvIAgvHwj0jWW6AdfRmN_GNTLfFBPV5vwUcHuObmYOG2Lg4Umm7fF5VyGXGxaBICUNSSFu.qX2eu
- yAmL6HRl8Y9lsZNaMQR7duhck2YAXT21pIdZZ7HE8MBfrWoIhBWIubi1ljivyk3XIhGwCi259EJu
- iJnZZ2jX9LKT3jfSs57eS4jAmw8iDao.yy4OH8WPoHs0Y3i5.Qf_ZQK8kFEImyfAQbrYZ6MJ0nkY
- oTWpr0XBL.Etyp6BI7TSXrlVkkYGiqI9S97KwSusAC5fEAKiR5s0Zjyhfa2IKcFKtTzhZtWspnOK
- oWTfFBXEaPFWh6SVPpuyK5g0Qr7Ec722Duy2GvvTFn0jqppFm5dxY5hEs0Lop5nTVmHz4iof2uNg
- ATWiYBBqO11VC.UOyx4posYRPLBlTDP0PdrlTKTL1bj16F2E8c7LpEug5H.Kdz9DpjKeKc.BHhvv
- tOPfLOWM4xuUEq8jKUecHFmqTIi0ifrQ4BFXVAZHijxI1FI9yYNyNpm.laSV.3kFmlts6XzNqoaN
- ynOOAxAiKc93BRki5DqONFMcmI4lUrK4zn1a3lU2CSOSDzBuXBMi1cMwXZoLOceuCEEFWmvnPNMq
- KCAoffouH2QUV3ZH31_61w0u6oE0blJiqcqok3znh5mRwsy5N_7Pz8oTYbpM1XRrI7DMT8Fz_LNi
- 7x_uJkxPQTizV.5I5ROhSx4Ky3lToIC2luDnu8vxQK4iZOI5uW1Vyy23s04rpLhWAPQaOXKoltNI
- 4Da.4.ITl7oWuTagA7XxPrZyKOyYRTDD9T4Dl0RcYUlWldZeUCZIbQeUbueLL2zlYB17LCchZJ7Z
- _5Vhf0YJPWhBt1IQ3kL00AsYmYR7pFD7Z47pKQdnTv7lq9H49g6Hy2_rcP7U1aF7u10I1sjKF54f
- .jiZmGRHttB7aUM8ger164tcjjit1IR3pfPYke3htsrEB9s26NXm2xz8BtrmbpzH6CILzGz49csY
- jDHdtaABG6aEmTYctZj2XtzHegQ4SWMXW.4ArnC7WIScZiXv629I2R6ol.ivYUPQUVJSaOehWJnO
- 8AZwR89q.tSdCh9eueC4QDL7DDBVz8b6H9Bq0TU9KKtT8aknF1nbRpErnBCdjVRofLfLfEUqHNjG
- wH0Lz_4oisn3hgskBHTG.LrN.4RXiAJUGMd0r5bIAxzyo95FjthTwvBxSwoB0AIh2Q0y_TfMcg0g
- pow3abGk16Y4tw_3naLL1UGqkwOFbOEyiDLxAtfti6g6gnzX4fv8ZVacjoLLeEvF7FymnwoSZTf0
- s6llQoxYezO0bhQFQv7_UyN4yWKG..zc9NRXpsy6YMAWQxvLkyXyhYexxrO7PDP0o3VmmGrne.4Q
- ryErwcGvl7HL3XE5VaAvpFDQaIyMVO7t7SrtnNfxTVCVYJ8UgU69TfNMopmKzMdIHgP7ifcvlQ4I
- 1nQey7nJlRD3YgnpSpqTapIrUkaUiKObZfomM_KciOHh5etdPF6O.Jl2z6mi4lfcI9w1SopL3Qfu
- t8TImf4FRava6_QSeIga2Nvk1hpSlZOdo4akMQBvnuggpL6V3LshKq.VKyobIxenQwTgueLFwoGT
- rRg0EVt49QjvM6ZXoldlEqxQU0eFeQTNbrtoJ.oume.Jx_dzD3XNVdUVGlgPnNwsFGk298ru2JyM
- zfGRjkli8PUShigx58bBM5tjFSEXeL07RIuKvrnrcK_gqbs74J.ruGO0T1AfndZ7w8H6MeHZuteE
- 5SXXfmCPcDXekwyZYB6lxB1Kx5e5VwsoNeUOBGfGitRmAAZBAw_zWYfHkNqkYEc_I7ryyCb4zpX9
- ratM8iPqLjE4hMtuUnMytjVpnGC8ddruJS_dTG3AEgz4LKqYrjro_mvpEl23ON.TKhDhyiRDlH3x
- orBMmc1QvviDXkFYl6FK2puEmVynfaR.PaoiXuOWrGV_nwbvsmnTEyED6JFn90oVn1gcPMPgKQDR
- CbeWZt7PMghrSU3D_MQWTzIZZ9dFJhSTN.6G8V8rFFCmovzRfpY3E.l244G4BUzmfc8dwaqEUdDX
- .QfOTinLhfJP80.oPY4huw0DwxWLciX2a_.EiBAL_.oRaBEW8vfm3u.7NzcGm_w467s0hmiX1vgI
- kIq2CqkgiMH2kcd7p_x_3uT1F83W8iba6HC04IyNxmNg4_IY6F6xrxdTbd4eBCnqiKQhPF_u7JBQ
- fSBkglak.m_zTECL5Wntv7lX5ruAvg6z2QfsveshHRucYlIN_HSJ3836VniBLgByTrb0lOzdIUuJ
- fiel0l9i1BFlSm9XnqmIgzzSNSftMvFSYQJJ4iHfbi7drFZ8QoGkg70FVGZ3gmIMaTlR4kkR6Q4t
- 4BgiKhdqgZ0c2bYFJRnXEtr8GzwZ_Fc0OzhuQZU0TdDz_4All2Ue6NoEQAujASa.JzScD55qZrc8
- KS9ZSOp3LyviOFKh_O8v_WqA8uy4r1vbSqPTNCzIfIClEerr0F2AWoHWrf6yYvjeCD7nXS2KZb9W
- J59xaT1bc1rWlsuVC2uv8z5r8ZoRxW_WezsLNEOL8LQnzoC5x5nXvJUPuBgeztaIXjbX7s1G_PTB
- JXJ679D.G.w0cPhNRl76aSTSxEj3gFjjQXb.3dvLK5GG0vPtpIANNwDPWh1pGZB50_ZStUUS2uvA
- jmD_Ir_GRI6bI8YfQ_c07kYPTwP2ImRJmVurlsjyEVKEFACTisfecR0RwP8_fR91.CO3S5NEYG7r
- kRul2X1NSloq0Okg_2e5nuYFzkg291If_njwycTTJKrBOudvJcYyb8CNZX62E3AvCP3tQNKtamWy
- opm6X4IIfIJeF4yPSvN6U28LbHMThpQQJsHzI.SHb
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Sun, 13 Jun 2021 17:25:06 +0000
-Received: by kubenode528.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID a03e59b121b5e90ed39505ff4a18b473;
-          Sun, 13 Jun 2021 17:25:02 +0000 (UTC)
-Subject: Re: [PATCH] security: add LSM hook at the memfd_create point
-To:     Li Qiang <liq3ea@163.com>, akpm@linux-foundation.org,
-        jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
-        paul@paul-moore.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org, liq3ea@gmail.com,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20210613064359.389683-1-liq3ea@163.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <0661e74b-9b2d-6752-8251-79988e3b735a@schaufler-ca.com>
-Date:   Sun, 13 Jun 2021 10:25:01 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 13 Jun 2021 13:38:43 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d78 with ME
+        id Ghcb2500321Fzsu03hcbeh; Sun, 13 Jun 2021 19:36:39 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 13 Jun 2021 19:36:39 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, leon@kernel.org,
+        m.szyprowski@samsung.com, vulab@iscas.ac.cn, gustavoars@kernel.org,
+        sakari.ailus@linux.intel.com, vaibhavgupta40@gmail.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: pci: cx88: switch from 'pci_' to 'dma_' API
+Date:   Sun, 13 Jun 2021 19:36:34 +0200
+Message-Id: <ac1b23b29b5abe2884bdc4849e20728deacfba2d.1623605641.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210613064359.389683-1-liq3ea@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.18469 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/12/2021 11:43 PM, Li Qiang wrote:
-> memfd_create is often used in the fileless attack.
-> Let's create a LSM hook so that we can detect and prevent
-> anonymous file creation.
->
-> Signed-off-by: Li Qiang <liq3ea@163.com>
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-We don't add LSM hooks on speculation. Resubmit when you have
-an LSM that needs the hook.
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-> ---
->  include/linux/lsm_hook_defs.h |  4 ++++
->  include/linux/lsm_hooks.h     |  5 +++++
->  include/linux/security.h      | 15 +++++++++++++++
->  mm/memfd.c                    |  6 ++++++
->  security/security.c           |  7 +++++++
->  5 files changed, 37 insertions(+)
->
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index 04c01794de83..955556d0d084 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -403,3 +403,7 @@ LSM_HOOK(void, LSM_RET_VOID, perf_event_free, struct perf_event *event)
->  LSM_HOOK(int, 0, perf_event_read, struct perf_event *event)
->  LSM_HOOK(int, 0, perf_event_write, struct perf_event *event)
->  #endif /* CONFIG_PERF_EVENTS */
-> +
-> +#ifdef CONFIG_MEMFD_CREATE
-> +LSM_HOOK(int, 0, memfd_create, const char *name, unsigned int flags)
-> +#endif /* CONFIG_MEMFD_CREATE */
-> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-> index 5c4c5c0602cb..e9c31dbb2783 100644
-> --- a/include/linux/lsm_hooks.h
-> +++ b/include/linux/lsm_hooks.h
-> @@ -1557,6 +1557,11 @@
->   * 	Read perf_event security info if allowed.
->   * @perf_event_write:
->   * 	Write perf_event security info if allowed.
-> + *
-> + * Security hooks for anonymous file
-> + *
-> + * @memfd_create:
-> + *	Check whether anonymous file creation is allowed
->   */
->  union security_list_options {
->  	#define LSM_HOOK(RET, DEFAULT, NAME, ...) RET (*NAME)(__VA_ARGS__);
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 06f7c50ce77f..44b43a7569b5 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -2037,4 +2037,19 @@ static inline int security_perf_event_write(struct perf_event *event)
->  #endif /* CONFIG_SECURITY */
->  #endif /* CONFIG_PERF_EVENTS */
->  
-> +#ifdef CONFIG_MEMFD_CREATE
-> +#ifdef CONFIG_SECURITY
-> +
-> +extern int security_memfd_create(const char *name, unsigned int flags);
-> +
-> +#else
-> +
-> +static inline int security_memfd_create(const char *name, unsigned int flags)
-> +{
-> +	return 0;
-> +}
-> +
-> +#endif /* CONFIG_SECURITY */
-> +#endif /* CONFIG_MEMFD_CREATE */
-> +
->  #endif /* ! __LINUX_SECURITY_H */
-> diff --git a/mm/memfd.c b/mm/memfd.c
-> index 2647c898990c..dbd309e455d2 100644
-> --- a/mm/memfd.c
-> +++ b/mm/memfd.c
-> @@ -18,6 +18,7 @@
->  #include <linux/hugetlb.h>
->  #include <linux/shmem_fs.h>
->  #include <linux/memfd.h>
-> +#include <linux/security.h>
->  #include <uapi/linux/memfd.h>
->  
->  /*
-> @@ -290,6 +291,11 @@ SYSCALL_DEFINE2(memfd_create,
->  		goto err_name;
->  	}
->  
-> +	if (security_memfd_create(name, flags)) {
-> +		error = -EPERM;
-> +		goto err_name;
-> +	}
-> +
->  	fd = get_unused_fd_flags((flags & MFD_CLOEXEC) ? O_CLOEXEC : 0);
->  	if (fd < 0) {
->  		error = fd;
-> diff --git a/security/security.c b/security/security.c
-> index b38155b2de83..5723408c5d0b 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2624,3 +2624,10 @@ int security_perf_event_write(struct perf_event *event)
->  	return call_int_hook(perf_event_write, 0, event);
->  }
->  #endif /* CONFIG_PERF_EVENTS */
-> +
-> +#ifdef CONFIG_MEMFD_CREATE
-> +int security_memfd_create(const char *name, unsigned int flags)
-> +{
-> +	return call_int_hook(memfd_create, 0, name, flags);
-> +}
-> +#endif /* CONFIG_MEMFD_CREATE */
+Only 2 functions allocate some memory. They are both in cx88-core.c
+
+When memory is allocated in 'cx88_risc_buffer()', GFP_KERNEL can be
+used because its 2 callers end up to '.buf_prepare' functions in 'vb2_ops'
+structures.
+The call chains are:
+
+  .buf_prepare                   (cx88-vbi.c)
+    --> buffer_prepare           (cx88-vbi.c)
+      --> cx88_risc_buffer
+
+  .buf_prepare                   (cx88-video.c)
+    --> buffer_prepare           (cx88-video.c)
+      --> cx88_risc_buffer
+
+When memory is allocated in 'cx88_risc_databuffer()', GFP_KERNEL can be
+used because its 2 callers end up to 'snd_cx88_hw_params' which already
+uses GFP_KERNEL and '.buf_prepare' functions in 'vb2_ops' structures.
+The call chains are:
+
+  snd_cx88_hw_params                   (cx88-alsa.c)
+    --> cx88_risc_databuffer
+
+  .buf_prepare                         (cx88-blackbird.c)
+    --> buffer_prepare                 (cx88-blackbird.c)
+      --> cx8802_buf_prepare           (cx88-mpeg.c)
+        --> cx88_risc_databuffer
+
+  .buf_prepare                         (cx88-dvb.c)
+    --> buffer_prepare                 (cx88-dvb.c)
+      --> cx8802_buf_prepare           (cx88-mpeg.c)
+        --> cx88_risc_databuffer
+
+@@ @@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@ @@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@ @@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@ @@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/media/pci/cx88/cx88-alsa.c      | 6 +++---
+ drivers/media/pci/cx88/cx88-blackbird.c | 3 ++-
+ drivers/media/pci/cx88/cx88-core.c      | 6 ++++--
+ drivers/media/pci/cx88/cx88-dvb.c       | 3 ++-
+ drivers/media/pci/cx88/cx88-mpeg.c      | 6 +++---
+ drivers/media/pci/cx88/cx88-vbi.c       | 3 ++-
+ drivers/media/pci/cx88/cx88-video.c     | 5 +++--
+ 7 files changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/media/pci/cx88/cx88-alsa.c b/drivers/media/pci/cx88/cx88-alsa.c
+index c83814c052d3..29fb1311e443 100644
+--- a/drivers/media/pci/cx88/cx88-alsa.c
++++ b/drivers/media/pci/cx88/cx88-alsa.c
+@@ -357,8 +357,8 @@ static int dsp_buffer_free(struct cx88_audio_dev *chip)
+ 	cx88_alsa_dma_unmap(chip);
+ 	cx88_alsa_dma_free(chip->buf);
+ 	if (risc->cpu)
+-		pci_free_consistent(chip->pci, risc->size,
+-				    risc->cpu, risc->dma);
++		dma_free_coherent(&chip->pci->dev, risc->size, risc->cpu,
++				  risc->dma);
+ 	kfree(chip->buf);
+ 
+ 	chip->buf = NULL;
+@@ -868,7 +868,7 @@ static int snd_cx88_create(struct snd_card *card, struct pci_dev *pci,
+ 		return err;
+ 	}
+ 
+-	err = pci_set_dma_mask(pci, DMA_BIT_MASK(32));
++	err = dma_set_mask(&pci->dev, DMA_BIT_MASK(32));
+ 	if (err) {
+ 		dprintk(0, "%s/1: Oops: no 32bit PCI DMA ???\n", core->name);
+ 		cx88_core_put(core, pci);
+diff --git a/drivers/media/pci/cx88/cx88-blackbird.c b/drivers/media/pci/cx88/cx88-blackbird.c
+index fa4ca002ed19..d5da3bd5695d 100644
+--- a/drivers/media/pci/cx88/cx88-blackbird.c
++++ b/drivers/media/pci/cx88/cx88-blackbird.c
+@@ -685,7 +685,8 @@ static void buffer_finish(struct vb2_buffer *vb)
+ 	struct cx88_riscmem *risc = &buf->risc;
+ 
+ 	if (risc->cpu)
+-		pci_free_consistent(dev->pci, risc->size, risc->cpu, risc->dma);
++		dma_free_coherent(&dev->pci->dev, risc->size, risc->cpu,
++				  risc->dma);
+ 	memset(risc, 0, sizeof(*risc));
+ }
+ 
+diff --git a/drivers/media/pci/cx88/cx88-core.c b/drivers/media/pci/cx88/cx88-core.c
+index 48c8a3429542..89d4d5a3ba34 100644
+--- a/drivers/media/pci/cx88/cx88-core.c
++++ b/drivers/media/pci/cx88/cx88-core.c
+@@ -152,7 +152,8 @@ int cx88_risc_buffer(struct pci_dev *pci, struct cx88_riscmem *risc,
+ 	instructions += 4;
+ 	risc->size = instructions * 8;
+ 	risc->dma = 0;
+-	risc->cpu = pci_zalloc_consistent(pci, risc->size, &risc->dma);
++	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
++				       GFP_KERNEL);
+ 	if (!risc->cpu)
+ 		return -ENOMEM;
+ 
+@@ -190,7 +191,8 @@ int cx88_risc_databuffer(struct pci_dev *pci, struct cx88_riscmem *risc,
+ 	instructions += 3;
+ 	risc->size = instructions * 8;
+ 	risc->dma = 0;
+-	risc->cpu = pci_zalloc_consistent(pci, risc->size, &risc->dma);
++	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
++				       GFP_KERNEL);
+ 	if (!risc->cpu)
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/media/pci/cx88/cx88-dvb.c b/drivers/media/pci/cx88/cx88-dvb.c
+index 202ff9e8c257..2087f2491c42 100644
+--- a/drivers/media/pci/cx88/cx88-dvb.c
++++ b/drivers/media/pci/cx88/cx88-dvb.c
+@@ -103,7 +103,8 @@ static void buffer_finish(struct vb2_buffer *vb)
+ 	struct cx88_riscmem *risc = &buf->risc;
+ 
+ 	if (risc->cpu)
+-		pci_free_consistent(dev->pci, risc->size, risc->cpu, risc->dma);
++		dma_free_coherent(&dev->pci->dev, risc->size, risc->cpu,
++				  risc->dma);
+ 	memset(risc, 0, sizeof(*risc));
+ }
+ 
+diff --git a/drivers/media/pci/cx88/cx88-mpeg.c b/drivers/media/pci/cx88/cx88-mpeg.c
+index a3edb548afde..680e1e3fe89b 100644
+--- a/drivers/media/pci/cx88/cx88-mpeg.c
++++ b/drivers/media/pci/cx88/cx88-mpeg.c
+@@ -226,8 +226,8 @@ int cx8802_buf_prepare(struct vb2_queue *q, struct cx8802_dev *dev,
+ 				  dev->ts_packet_size, dev->ts_packet_count, 0);
+ 	if (rc) {
+ 		if (risc->cpu)
+-			pci_free_consistent(dev->pci, risc->size,
+-					    risc->cpu, risc->dma);
++			dma_free_coherent(&dev->pci->dev, risc->size,
++					  risc->cpu, risc->dma);
+ 		memset(risc, 0, sizeof(*risc));
+ 		return rc;
+ 	}
+@@ -386,7 +386,7 @@ static int cx8802_init_common(struct cx8802_dev *dev)
+ 	if (pci_enable_device(dev->pci))
+ 		return -EIO;
+ 	pci_set_master(dev->pci);
+-	err = pci_set_dma_mask(dev->pci, DMA_BIT_MASK(32));
++	err = dma_set_mask(&dev->pci->dev, DMA_BIT_MASK(32));
+ 	if (err) {
+ 		pr_err("Oops: no 32bit PCI DMA ???\n");
+ 		return -EIO;
+diff --git a/drivers/media/pci/cx88/cx88-vbi.c b/drivers/media/pci/cx88/cx88-vbi.c
+index 58489ea0c1da..a075788c64d4 100644
+--- a/drivers/media/pci/cx88/cx88-vbi.c
++++ b/drivers/media/pci/cx88/cx88-vbi.c
+@@ -159,7 +159,8 @@ static void buffer_finish(struct vb2_buffer *vb)
+ 	struct cx88_riscmem *risc = &buf->risc;
+ 
+ 	if (risc->cpu)
+-		pci_free_consistent(dev->pci, risc->size, risc->cpu, risc->dma);
++		dma_free_coherent(&dev->pci->dev, risc->size, risc->cpu,
++				  risc->dma);
+ 	memset(risc, 0, sizeof(*risc));
+ }
+ 
+diff --git a/drivers/media/pci/cx88/cx88-video.c b/drivers/media/pci/cx88/cx88-video.c
+index 8cffdacf6007..c17ad9f7d822 100644
+--- a/drivers/media/pci/cx88/cx88-video.c
++++ b/drivers/media/pci/cx88/cx88-video.c
+@@ -492,7 +492,8 @@ static void buffer_finish(struct vb2_buffer *vb)
+ 	struct cx88_riscmem *risc = &buf->risc;
+ 
+ 	if (risc->cpu)
+-		pci_free_consistent(dev->pci, risc->size, risc->cpu, risc->dma);
++		dma_free_coherent(&dev->pci->dev, risc->size, risc->cpu,
++				  risc->dma);
+ 	memset(risc, 0, sizeof(*risc));
+ }
+ 
+@@ -1288,7 +1289,7 @@ static int cx8800_initdev(struct pci_dev *pci_dev,
+ 		(unsigned long long)pci_resource_start(pci_dev, 0));
+ 
+ 	pci_set_master(pci_dev);
+-	err = pci_set_dma_mask(pci_dev, DMA_BIT_MASK(32));
++	err = dma_set_mask(&pci_dev->dev, DMA_BIT_MASK(32));
+ 	if (err) {
+ 		pr_err("Oops: no 32bit PCI DMA ???\n");
+ 		goto fail_core;
+-- 
+2.30.2
+
