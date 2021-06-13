@@ -2,222 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865D73A5944
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 17:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAEF3A5945
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 17:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhFMPNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 11:13:18 -0400
-Received: from out06.smtpout.orange.fr ([193.252.22.215]:55827 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhFMPNM (ORCPT
+        id S231935AbhFMPOO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Jun 2021 11:14:14 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:42639 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231852AbhFMPON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 11:13:12 -0400
-X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Sun, 13 Jun 2021 11:13:11 EDT
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d66 with ME
-        id Gf3Z2500121Fzsu03f3Z2K; Sun, 13 Jun 2021 17:03:34 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 13 Jun 2021 17:03:34 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        Julia.Lawall@inria.fr, vaibhavgupta40@gmail.com,
-        yangyingliang@huawei.com, tasos@tasossah.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: saa7134: switch from 'pci_' to 'dma_' API
-Date:   Sun, 13 Jun 2021 17:03:31 +0200
-Message-Id: <166687202d3802c07447b0c150c46ccd8e8cab99.1623596428.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 13 Jun 2021 11:14:13 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 34F4C1BF205;
+        Sun, 13 Jun 2021 15:12:09 +0000 (UTC)
+Date:   Sun, 13 Jun 2021 17:12:08 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>
+Subject: Re: [PATCH 0/6] Fix deadlock in ftl formating on mtd
+Message-ID: <20210613171208.64395d32@xps13>
+In-Reply-To: <20210613113035.2329421-1-chengzhihao1@huawei.com>
+References: <20210613113035.2329421-1-chengzhihao1@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Hi Zhihao,
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sun, 13 Jun 2021
+19:30:29 +0800:
 
-When memory is allocated in 'saa7134_pgtable_alloc()', GFP_KERNEL can be
-used because its 4 callers (one function calls it 2 times, so there is
-only 3 functions that call it):
+> There is an AA-deadlock problem while formating mtd device to generate
+> a ftl device. Fix it by reverting "mtd: allow to unload the mtdtrans
+> module if its block devices aren't open" recommended in [1].
+> 
+> [<0>] blktrans_open+0x47/0x340            LOCK(mtd_table_mutex)
+> [<0>] __blkdev_get+0x5b/0x3e0
+> [<0>] blkdev_get_by_dev+0x18f/0x370
+> [<0>] __device_add_disk+0x2db/0x700
+> [<0>] device_add_disk+0x17/0x20
+> [<0>] add_mtd_blktrans_dev+0x39e/0x6d0
+> [<0>] ftl_add_mtd+0x792/0x908 [ftl]
+> [<0>] register_mtd_blktrans+0xfb/0x170    LOCK(mtd_table_mutex)
+> [<0>] ftl_tr_init+0x18/0x1000 [ftl]
+> [<0>] do_one_initcall+0x71/0x330
+> [<0>] do_init_module+0xa6/0x350
+> 
+> [1] http://lists.infradead.org/pipermail/linux-mtd/2017-March/072899.html
+> 
+> Zhihao Cheng (6):
+>   Revert "mtd: blkdevs: fix potential deadlock + lockdep warnings"
+>   Revert "mtd: fix: avoid race condition when accessing mtd->usecount"
+>   Revert "mtd: mtd_blkdevs: don't increase 'open' count on error path"
+>   Revert "mtd: mtd_blkdevs: fix error path in blktrans_open"
+>   Revert "mtd: Remove redundant mutex from mtd_blkdevs.c"
+>   Revert "mtd: allow to unload the mtdtrans module if its block devices
+>     aren't open"
 
-.hw_params in a struct snd_pcm_ops (saa7134-alsa.c)
-  --> snd_card_saa7134_hw_params   (saa7134-alsa.c)
-    --> saa7134_pgtable_alloc
-==> .hw_params function can use GFP_KERNEL
+I understand that some fixes need to revert a couple of patches, but
+isn't reverting 6 commits from the v2.6.32 kernel a bit odd for that?
+At least, can you justify this choice? Are all these commits useless
+and buggy?
 
-saa7134_initdev                    (saa7134-core.c)
-  --> saa7134_hwinit1              (saa7134-core.c)
-    --> saa7134_ts_init1           (saa7134-ts.c)
-      --> saa7134_pgtable_alloc
-==> saa7134_initdev already uses GFP_KERNEL
+> 
+>  drivers/mtd/mtd_blkdevs.c | 77 +++++++++++++++------------------------
+>  1 file changed, 30 insertions(+), 47 deletions(-)
+> 
 
-saa7134_initdev                    (saa7134-core.c)
-  --> saa7134_hwinit1              (saa7134-core.c)
-    --> saa7134_video_init1        (saa7134-video.c)
-      --> saa7134_pgtable_alloc    (called 2 times)
-==> saa7134_initdev already uses GFP_KERNEL
-
-and no spin_lock is taken in the between.
-
-@@ @@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@ @@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@ @@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@ @@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/saa7134/saa7134-core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
-index ec8dd41f9ebb..911fd05de31f 100644
---- a/drivers/media/pci/saa7134/saa7134-core.c
-+++ b/drivers/media/pci/saa7134/saa7134-core.c
-@@ -223,7 +223,8 @@ int saa7134_pgtable_alloc(struct pci_dev *pci, struct saa7134_pgtable *pt)
- 	__le32       *cpu;
- 	dma_addr_t   dma_addr = 0;
- 
--	cpu = pci_alloc_consistent(pci, SAA7134_PGTABLE_SIZE, &dma_addr);
-+	cpu = dma_alloc_coherent(&pci->dev, SAA7134_PGTABLE_SIZE, &dma_addr,
-+				 GFP_KERNEL);
- 	if (NULL == cpu)
- 		return -ENOMEM;
- 	pt->size = SAA7134_PGTABLE_SIZE;
-@@ -254,7 +255,7 @@ void saa7134_pgtable_free(struct pci_dev *pci, struct saa7134_pgtable *pt)
- {
- 	if (NULL == pt->cpu)
- 		return;
--	pci_free_consistent(pci, pt->size, pt->cpu, pt->dma);
-+	dma_free_coherent(&pci->dev, pt->size, pt->cpu, pt->dma);
- 	pt->cpu = NULL;
- }
- 
-@@ -1092,7 +1093,7 @@ static int saa7134_initdev(struct pci_dev *pci_dev,
- 		dev->pci_lat,
- 		(unsigned long long)pci_resource_start(pci_dev, 0));
- 	pci_set_master(pci_dev);
--	err = pci_set_dma_mask(pci_dev, DMA_BIT_MASK(32));
-+	err = dma_set_mask(&pci_dev->dev, DMA_BIT_MASK(32));
- 	if (err) {
- 		pr_warn("%s: Oops: no 32bit PCI DMA ???\n", dev->name);
- 		goto fail1;
--- 
-2.30.2
-
+Thanks,
+Miquèl
