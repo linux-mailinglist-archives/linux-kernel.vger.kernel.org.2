@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE49D3A5928
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 16:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EC23A592F
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 17:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhFMPBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 11:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhFMPBx (ORCPT
+        id S231953AbhFMPE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 11:04:27 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:34633 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231755AbhFMPEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 11:01:53 -0400
-Received: from mxout012.mail.hostpoint.ch (mxout012.mail.hostpoint.ch [IPv6:2a00:d70:0:e::312])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE47C061574;
-        Sun, 13 Jun 2021 07:59:52 -0700 (PDT)
-Received: from [10.0.2.46] (helo=asmtp013.mail.hostpoint.ch)
-        by mxout012.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lsRaV-000AWg-EJ; Sun, 13 Jun 2021 16:59:47 +0200
-Received: from [2a02:168:6182:1:d747:8127:5b7a:4266] (helo=eleanor.home.reto-schneider.ch)
-        by asmtp013.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lsRaV-00020T-BT; Sun, 13 Jun 2021 16:59:47 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-From:   Reto Schneider <code@reto-schneider.ch>
-To:     devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        netdev@vger.kernel.org
-Cc:     Stefan Roese <sr@denx.de>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Felix Fietkau <nbd@nbd.name>, Jakub Kicinski <kuba@kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] net: ethernet: mtk_eth_soc: Support custom ifname
-Date:   Sun, 13 Jun 2021 16:59:01 +0200
-Message-Id: <20210613145859.1774246-2-code@reto-schneider.ch>
+        Sun, 13 Jun 2021 11:04:25 -0400
+Received: by mail-lj1-f178.google.com with SMTP id bn21so16487085ljb.1;
+        Sun, 13 Jun 2021 08:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ASZtt9RicUC6Li5nnAiBicxpu/Z78FYFE+q293rWAv4=;
+        b=WjENKTp316jAB/g3HUjC5zwc5CBlihmCSLBIhFpD/wzCb2VjZpLJ1F57d2ky/M8Kda
+         5D8IjWM1UgO/ivr/ItE2579NYXdqi4689uTwS8tvsybXCDRxuns0zle+ZomNBrroJTPe
+         UeZzk831ppOrd2bDRaJmEU3zDUUHiLvnN7fIGQOGYvoQDoT3l+iTzV0VGtYj6QfjLBAq
+         67PeR5J2ZaTOEicGb02kOjgWy3mFmxvjYU+vFFCmyfcgTozXtMF0W5ZQhxathC6LJlsP
+         RwYbfXFH/yrkUW3aeHkl2YbHuN7Iric782426fQWHVsuaQ65qyjPHHGycg/4nIAKxTZm
+         haBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ASZtt9RicUC6Li5nnAiBicxpu/Z78FYFE+q293rWAv4=;
+        b=cMGeAi9LQo+v8V7t6K2m2An1eT6hS1tmg1p6gKTLvoyntk3jDS8QIxuVwT39125h0D
+         YQrbsDm7vgyfla5WpP5tKz8ODpisDKKRt5kcpqd4a90GFDflVGzU+rBGNYTAoFA7/lXa
+         qB+nIEKPgLi78jty51GQI9YB3X4YN2fQByMbDUOzHv+MpFv+htPLPFjwKNbn1cjt61Nq
+         j5bkgoaffcHstnvZp2k+otelEEcZzdVjpL9JF/fCh+uf7UbSSH8ji+2hqET/MOXNMbwi
+         z1xJxYhd/29bw0rna+anwufv1AWEbPjfVFYkXjMNqaVILcWxV1GEqlWo+650HvTr94aK
+         KzxA==
+X-Gm-Message-State: AOAM531aUHqYTJi/JfIp0k/PrLl2WzsTjz6W89lXjrj3Lx4duDljT4V/
+        sxC/5KLXAJP6d98eI7Mbvp4=
+X-Google-Smtp-Source: ABdhPJzDUZYYGFXmlBUv9wVpn8FtmOm3sjTTS5l1UfkXwSPIEyrBJss8+Yy1uo0ZkV2fLg7B/cSSag==
+X-Received: by 2002:a2e:1414:: with SMTP id u20mr10180144ljd.416.1623596483438;
+        Sun, 13 Jun 2021 08:01:23 -0700 (PDT)
+Received: from localhost.localdomain (46-138-6-137.dynamic.spd-mgts.ru. [46.138.6.137])
+        by smtp.gmail.com with ESMTPSA id b16sm1473192ljh.93.2021.06.13.08.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Jun 2021 08:01:23 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/2] usb: phy: tegra: Wait for VBUS wakeup status deassertion on suspend
+Date:   Sun, 13 Jun 2021 17:59:35 +0300
+Message-Id: <20210613145936.9902-1-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210613115820.1525478-1-code@reto-schneider.ch>
-References: <20210613115820.1525478-1-code@reto-schneider.ch>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Reto Schneider <reto.schneider@husqvarnagroup.com>
+Some devices need an extra delay after losing VBUS, otherwise VBUS may
+be detected as active at suspend time, preventing the PHY's suspension
+by the VBUS detection sensor. This problem was found on Asus Transformer
+TF700T (Tegra30) tablet device, where the USB PHY wakes up immediately
+from suspend because VBUS sensor continues to detect VBUS as active after
+disconnection. We need to poll the PHY's VBUS wakeup status until it's
+deasserted before suspending PHY in order to fix this minor trouble.
 
-Name the MAC interface name according to the label property. If the
-property is missing, the default name (ethX) gets used.
-
-Labels with more than IFNAMSIZ -1 characters will be truncated silently,
-which seems to be what most of the code base does when using strscpy.
-
-Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
-
+Fixes: 35192007d28d ("usb: phy: tegra: Support waking up from a low power mode")
+Reported-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
+ drivers/usb/phy/phy-tegra-usb.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Changes in v2:
-- Avoid dangerous usage of strncpy
-
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index 64adfd24e134..a921ecc1c997 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -2948,6 +2948,7 @@ static const struct net_device_ops mtk_netdev_ops = {
- static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
- {
- 	const __be32 *_id = of_get_property(np, "reg", NULL);
-+	const char *const name = of_get_property(np, "label", NULL);
- 	phy_interface_t phy_mode;
- 	struct phylink *phylink;
- 	struct mtk_mac *mac;
-@@ -3020,6 +3021,9 @@ static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
+diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
+index fc5c6cab58ba..ff482c694200 100644
+--- a/drivers/usb/phy/phy-tegra-usb.c
++++ b/drivers/usb/phy/phy-tegra-usb.c
+@@ -64,6 +64,7 @@
+ #define   A_VBUS_VLD_WAKEUP_EN			BIT(30)
  
- 	mac->phylink = phylink;
+ #define USB_PHY_VBUS_WAKEUP_ID			0x408
++#define   VBUS_WAKEUP_STS			BIT(10)
+ #define   VBUS_WAKEUP_WAKEUP_EN			BIT(30)
  
-+	if (name)
-+		strscpy(eth->netdev[id]->name, name, IFNAMSIZ);
+ #define USB1_LEGACY_CTRL			0x410
+@@ -645,6 +646,15 @@ static int utmi_phy_power_off(struct tegra_usb_phy *phy)
+ 	void __iomem *base = phy->regs;
+ 	u32 val;
+ 
++	/*
++	 * Give hardware time to settle down after VBUS disconnection,
++	 * otherwise PHY will immediately wake up from suspend.
++	 */
++	if (phy->wakeup_enabled && phy->mode != USB_DR_MODE_HOST)
++		readl_relaxed_poll_timeout(base + USB_PHY_VBUS_WAKEUP_ID,
++					   val, !(val & VBUS_WAKEUP_STS),
++					   5000, 100000);
 +
- 	SET_NETDEV_DEV(eth->netdev[id], eth->dev);
- 	eth->netdev[id]->watchdog_timeo = 5 * HZ;
- 	eth->netdev[id]->netdev_ops = &mtk_netdev_ops;
+ 	utmi_phy_clk_disable(phy);
+ 
+ 	/* PHY won't resume if reset is asserted */
 -- 
 2.30.2
 
