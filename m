@@ -2,58 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48DE3A5A0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 20:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1573A5A12
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 20:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhFMSmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 14:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
+        id S232054AbhFMSqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 14:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbhFMSmm (ORCPT
+        with ESMTP id S232000AbhFMSqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 14:42:42 -0400
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27D4C061574;
-        Sun, 13 Jun 2021 11:40:39 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 424FA1F578;
-        Sun, 13 Jun 2021 20:40:37 +0200 (CEST)
-Subject: Re: [PATCH v2 3/5] pcie-qcom: provide a way to power up qca6390 chip
- on RB5 platform
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-References: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
- <20210128175225.3102958-4-dmitry.baryshkov@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <58800e5a-b1ff-0435-3f1c-c4679edd81ec@somainline.org>
-Date:   Sun, 13 Jun 2021 20:40:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 13 Jun 2021 14:46:18 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C95C061574;
+        Sun, 13 Jun 2021 11:44:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=zd0ykvRTbEDpr2q2WgUG100JamY8WG7iW9Jws5t14Yc=; b=C0a5LoW6hFM+jmDI7Ejooc5Ot
+        swqQSr8yHOXmKy6c7Hdu3ure1bUTpBsdVtyOJYtNCMjEjgsvWUjM+sVb1a9Eix/bytRECO+5uKYJd
+        mGNQAHcp1aAgkjZkqWqwmOfOeKi0RdqHT7F18kp3MC5P69LFZIOI3TW399IGymE78osRTN4OeqqBq
+        fBOyuQnwxEMCVv2F/xysisyiXK8Cd3ha3MRq78GZ1HdtEVKw3eT5y2EPoyngHB3MUsp1/dCBhoUdL
+        lMldUTRynEcuIfB+RKVrPdkeEGKktKYXKqy8EIsl+xmcXeeoqIbeqbfB9XSZjlZVhk5IhRu+y+UF9
+        luaNsTeZg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44982)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lsV5g-0003Zw-Ii; Sun, 13 Jun 2021 19:44:12 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lsV5d-0003OV-W4; Sun, 13 Jun 2021 19:44:10 +0100
+Date:   Sun, 13 Jun 2021 19:44:09 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jaz@semihalf.com,
+        gjb@semihalf.com, upstream@semihalf.com,
+        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com
+Subject: Re: [net-next: PATCH 2/3] net: mvpp2: enable using phylink with ACPI
+Message-ID: <20210613184409.GQ22278@shell.armlinux.org.uk>
+References: <20210613183520.2247415-1-mw@semihalf.com>
+ <20210613183520.2247415-3-mw@semihalf.com>
 MIME-Version: 1.0
-In-Reply-To: <20210128175225.3102958-4-dmitry.baryshkov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210613183520.2247415-3-mw@semihalf.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, bumping the discussion as solving this is crucial for Wi-Fi and Bluetooth to work on a good number (which will probably increase with time) of Qualcomm devices, including newer phones.
+On Sun, Jun 13, 2021 at 08:35:19PM +0200, Marcin Wojtas wrote:
+>  
+>  	/* Phylink isn't used w/ ACPI as of now */
+> -	if (port_node) {
+> +	if (!mvpp2_use_acpi_compat_mode(port_fwnode)) {
 
+Does this comment need to be updated?
 
-Konrad
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
