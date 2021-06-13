@@ -2,136 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672F33A5B01
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93FF3A5B11
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhFMXea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 19:34:30 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:37825 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232154AbhFMXe2 (ORCPT
+        id S232266AbhFMXgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 19:36:40 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:34467 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232181AbhFMXgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 19:34:28 -0400
-Received: by mail-wr1-f45.google.com with SMTP id i94so12404070wri.4;
-        Sun, 13 Jun 2021 16:32:25 -0700 (PDT)
+        Sun, 13 Jun 2021 19:36:39 -0400
+Received: by mail-lj1-f181.google.com with SMTP id bn21so17617247ljb.1;
+        Sun, 13 Jun 2021 16:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6vRsWsGP4YXz3sR8PQrN46Lc4ndr5AXjtPjUiVcdyyE=;
-        b=CBS5Rsj0QLCWj+9FAmolUTz2yIeTKYcEVyiWRcGgrqZuJfrlCIGghsH0sy/fEy76y4
-         25ADmTOq8DcxYrVb9/gnRZWCjvTE5Z2i2i845qfCRVxAvljIsFEGoZ5Acra6EAAhJXKG
-         xvt7UMvIy8r7lcfoq1CTBau+MWrH5Uy7f/CbNWQZQBOeKdp8WW1pg3goC01aUsJOfGhz
-         s4QGAgb0aRts0k6HqNMrhw5nlP181FNL/9/POm5G5YFAQupcjhhoiSRgiculLbzxwIWL
-         T0xaEYaQWu9HkjBGu71nA8VB1gzkGtgpDnigyyq2QeB8zn2Bq2N3I0yeQ3jK1rt6RsC3
-         Znpw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vV90fcW15TwLBPqHX4M775nsbVmDSBXQLEB4HxZLGiU=;
+        b=seRI9gnaOlXqsebUbY+0EN2h31nRN9n29+w6E/Yx07jhyfc5lmimOLjlpBQ2ZmWXOt
+         QZZTYfQVaqTB6KlTdUGhCEFyTlFAnEZk1M6iIxWovvkZgJitCEWKbpfz+msd5OjRqAEu
+         458+/fspmIX1Dn+UukB9FpSxC0XvVtmzaaf1lg+jK0OgwaKZ2q8F6LP7SZRuR2yBVtEc
+         brkyT+zIPf0NauAK9rXQhU57B3zcj7sIGrVc0j14pV7NeD/pxu7SWq6Ox/Ac83oLvTjZ
+         zUc4HTEQMmwTmEpvEJ3StL5Hev64Lo/ryfTlpb/yXAjn6y6cjIkkPZ0Anm3wn7++KvF1
+         7LJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6vRsWsGP4YXz3sR8PQrN46Lc4ndr5AXjtPjUiVcdyyE=;
-        b=kQHLQY4mIOXyggp7nvcZv17fmNdIB7fbhrF9MUK4Fh7e97duXN/NERXtsAU/CB7aDq
-         hmz97ml31tsE0RNem6vpo52hWUWs+OurnQcEP0As3CtEQSp0y6+IuavSviED8T2b2G2S
-         05im5C4pqpdOqnHrnJy19osn/tE0uC2vitSyWC2PC/ZkiCADPokTm5W15G0vh0sULMHV
-         UrKY5KyGQt7KvjC2iKETEf3sp22lmyQne7mF5pfyYWnpemma23mZ1cnezRBN2WOPcCNA
-         HHZI78F8ufVdyENQiSdlNis0hxXztNh4AC09zo8JE82xAu6Fmv8QkSumLNZQk9hFfsio
-         3OYQ==
-X-Gm-Message-State: AOAM531WQBc9uh+o/7f5JAIa+OmvcuEzhSKwPQb+v49Q6EXBgIIvpPhA
-        jLmKp63LlS8tPKLAXgUgdJI=
-X-Google-Smtp-Source: ABdhPJyanqsqf+Jzg7vxKNXr0HvZ/x/EjXJ2+1TDl0bJhQEWTP06uHVrD7q9jtXJm8p9MBOxBpsgNg==
-X-Received: by 2002:adf:e944:: with SMTP id m4mr16568800wrn.244.1623627085533;
-        Sun, 13 Jun 2021 16:31:25 -0700 (PDT)
-Received: from localhost.localdomain ([195.245.23.224])
-        by smtp.gmail.com with ESMTPSA id i9sm17882511wrn.54.2021.06.13.16.31.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 16:31:25 -0700 (PDT)
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        linux-pwm@vger.kernel.org
-Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] pwm: ep93xx: Prepare clock before using it
-Date:   Mon, 14 Jun 2021 01:30:41 +0200
-Message-Id: <20210613233041.128961-8-alexander.sverdlin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
-References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vV90fcW15TwLBPqHX4M775nsbVmDSBXQLEB4HxZLGiU=;
+        b=SCZm+Q3zVw+0mU/d4DuOoh1D+iZFv2B1Wa8zAwSFndL2TVomcu6j4Epli024I0LjjW
+         pB+dyJtpb5lJQdtfJfN6Vyc5fPqjYGgATElCx0f0lRxCwHrTTxkEQotgctZbUpFZlypC
+         TzZ2K3/i8uspbtKf2sNe6p6+tGU4F8KVpmUKswg1z7GKCLuVHq2JrP0iSMA/tksYOAx0
+         kJ/8hk23Y3XfcBAZlwdnxghQvR7MMHSQpMbFPFvJ682J2HtuoM58cicmElflck/ucMwd
+         X/U/5OHpFbr2uUkfrERtJO9Y/yifIjWAfs8yqCGsgNQriAhsZqW11jSbODuKjrk8/dBO
+         +G6Q==
+X-Gm-Message-State: AOAM5323/YJGS747RJYnI/0gaLSY+iCtV70QAJfN1zaR0FIubz8pioI1
+        R8NdwX1o/yd7OxMy5SRbRgDI8XCN6b7zt5yIiTmBsxzEMYM=
+X-Google-Smtp-Source: ABdhPJwF5rfK6nFEkoOSqYEGVSSNwf7lZ471cE2ZhMxDz1+qpvKgXjMZibrLWN34Tem81MF0KE0MUFNh7nfE9lFIwpY=
+X-Received: by 2002:a2e:a7ca:: with SMTP id x10mr11349512ljp.218.1623627201751;
+ Sun, 13 Jun 2021 16:33:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210613140123.74900-1-colin.king@canonical.com>
+In-Reply-To: <20210613140123.74900-1-colin.king@canonical.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sun, 13 Jun 2021 18:33:10 -0500
+Message-ID: <CAH2r5msKOBuZzvW83OyN4o5S34U=pBcgLcXPFPywL8c3wV_ixQ@mail.gmail.com>
+Subject: Re: [PATCH] cifs: remove redundant initialization of variable rc
+To:     Colin King <colin.king@canonical.com>
+Cc:     Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
-to Common Clock Framework.
+merged into cifs-2.6.git for-next
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
----
- drivers/pwm/pwm-ep93xx.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+On Sun, Jun 13, 2021 at 9:02 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable rc is being initialized with a value that is never read, the
+> assignment is redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  fs/cifs/cifssmb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/cifs/cifssmb.c b/fs/cifs/cifssmb.c
+> index 037c44bf48f1..277cb1044cbe 100644
+> --- a/fs/cifs/cifssmb.c
+> +++ b/fs/cifs/cifssmb.c
+> @@ -1238,7 +1238,7 @@ SMBLegacyOpen(const unsigned int xid, struct cifs_tcon *tcon,
+>             int *pOplock, FILE_ALL_INFO *pfile_info,
+>             const struct nls_table *nls_codepage, int remap)
+>  {
+> -       int rc = -EACCES;
+> +       int rc;
+>         OPENX_REQ *pSMB = NULL;
+>         OPENX_RSP *pSMBr = NULL;
+>         int bytes_returned;
+> --
+> 2.31.1
+>
 
-diff --git a/drivers/pwm/pwm-ep93xx.c b/drivers/pwm/pwm-ep93xx.c
-index 4ca70794ad96..8c0d4d69d9e6 100644
---- a/drivers/pwm/pwm-ep93xx.c
-+++ b/drivers/pwm/pwm-ep93xx.c
-@@ -74,7 +74,7 @@ static int ep93xx_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
- 	 * Configuration can be changed at any time.
- 	 */
- 	if (!pwm_is_enabled(pwm)) {
--		ret = clk_enable(ep93xx_pwm->clk);
-+		ret = clk_prepare_enable(ep93xx_pwm->clk);
- 		if (ret)
- 			return ret;
- 	}
-@@ -105,7 +105,7 @@ static int ep93xx_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
- 	}
- 
- 	if (!pwm_is_enabled(pwm))
--		clk_disable(ep93xx_pwm->clk);
-+		clk_disable_unprepare(ep93xx_pwm->clk);
- 
- 	return ret;
- }
-@@ -120,7 +120,7 @@ static int ep93xx_pwm_polarity(struct pwm_chip *chip, struct pwm_device *pwm,
- 	 * The clock needs to be enabled to access the PWM registers.
- 	 * Polarity can only be changed when the PWM is disabled.
- 	 */
--	ret = clk_enable(ep93xx_pwm->clk);
-+	ret = clk_prepare_enable(ep93xx_pwm->clk);
- 	if (ret)
- 		return ret;
- 
-@@ -129,7 +129,7 @@ static int ep93xx_pwm_polarity(struct pwm_chip *chip, struct pwm_device *pwm,
- 	else
- 		writew(0x0, ep93xx_pwm->base + EP93XX_PWMx_INVERT);
- 
--	clk_disable(ep93xx_pwm->clk);
-+	clk_disable_unprepare(ep93xx_pwm->clk);
- 
- 	return 0;
- }
-@@ -139,7 +139,7 @@ static int ep93xx_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	struct ep93xx_pwm *ep93xx_pwm = to_ep93xx_pwm(chip);
- 	int ret;
- 
--	ret = clk_enable(ep93xx_pwm->clk);
-+	ret = clk_prepare_enable(ep93xx_pwm->clk);
- 	if (ret)
- 		return ret;
- 
-@@ -153,7 +153,7 @@ static void ep93xx_pwm_disable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	struct ep93xx_pwm *ep93xx_pwm = to_ep93xx_pwm(chip);
- 
- 	writew(0x0, ep93xx_pwm->base + EP93XX_PWMx_ENABLE);
--	clk_disable(ep93xx_pwm->clk);
-+	clk_disable_unprepare(ep93xx_pwm->clk);
- }
- 
- static const struct pwm_ops ep93xx_pwm_ops = {
+
 -- 
-2.32.0
+Thanks,
 
+Steve
