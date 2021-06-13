@@ -2,81 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CCC3A57B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 12:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02523A57B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 12:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhFMKaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 06:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
+        id S231699AbhFMKcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 06:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbhFMKaW (ORCPT
+        with ESMTP id S231620AbhFMKcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 06:30:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6C2C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 03:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GI1B2TWOcVYfBM9mpBoycoXz69MytErLgsWQehgKcn8=; b=pd2nYi5uyQvVnMy+oYDubRyjt4
-        2t2NtygYzNzvYplPrjmJblv+Ykwp7dPQGc0CncRuC6WYasdtByDCy7K7SSpRZ34Jdyi7nWwnNXy+7
-        sWxN6rGBiTDrF6Xtvl0XNaTYK/I8Yaw1L6Z7SXcvBPHqDzNeBmSWxXkRn7EfwDiPrq5e/Agckb8Vq
-        eYh4llxjzT1/GKPdUetp9yFH/mZyC1fIqEbty6Ngx9+w6/PQFjsBKobr0qX2YYe/iguMjUIlZnrW5
-        g0843wbMxEDJ1+Qz7NFUZY5KEx2QIv7Bo3thTFDOQXFMOXg+oTmbp5CBEeRiKRJFrOkXR2TwRZlWS
-        uuUc0zeg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lsNKw-004SQS-T1; Sun, 13 Jun 2021 10:27:34 +0000
-Date:   Sun, 13 Jun 2021 11:27:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhang Yi <wetpzy@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Neel Natu <neelnatu@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm, futex: Fix shared futex pgoff on shmem huge page
-Message-ID: <YMXdjhwpRzP6r8Uj@casper.infradead.org>
-References: <45e8fd67-51fd-7828-fe43-d261d6c33727@google.com>
- <YMTdtRZG+7q8OtkK@casper.infradead.org>
- <b17d946b-d09-326e-b42a-52884c36df32@google.com>
+        Sun, 13 Jun 2021 06:32:53 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA889C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 03:30:51 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id v22so16002566lfa.3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 03:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=J/2tGPrXfOAj/oCrXNVEWB8pkHxFBTQvD2JNFMyBZ5Y=;
+        b=VBIs6IbT3HJNG49Js3Zqlkd5+C/KTmMPktiUXDcsILprUmUeYH2/7rpL10rk1+J+uv
+         oqoSoeGp3zQpwiOZ4wAyCwYLoqUZlY35kbUx4iKtcQcZjDV9D4KcbBvq/AO3vSzt70U9
+         JGXHyAZnO2bnhRsGbY1DpNk9EZ1yAL7q/XB96G7YMUrn4FutoS4z4cSuJ+RVsNuizgV4
+         1WHI0wABTRZJhe4O9o73CH9Vx6MC5+801lRMX9bYaeg8AqhCDzKae8JcSfVwQbC40WXQ
+         0VvZe9i3G2tT6sXnuEtTsXKDbo9OEHmgl4P+C9qgkq/ukR8LyDvCxdVM6q7H2n3B4MJ3
+         IYXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=J/2tGPrXfOAj/oCrXNVEWB8pkHxFBTQvD2JNFMyBZ5Y=;
+        b=YIJPga5z2iwIBOzQJAklNDIaMFKcdrjbiLkAPkCJAXvjp/BDEMqjZdTkn/pYGecMYo
+         63EdYnlMjT1elSMfWGw/oSG250yBI/EIYV4fXJzly2M4Ltjv5rso/sTp6zCftg7GKnaG
+         ENevKuMBoNrzr5tgX7OnoqoXjRdVFlqRs1YUFjSIDzysvtQBbcK41XxdyyNJfXrfze10
+         sMP0oOV3gYdejUjzEK3AJtXmkrziqr7jEW3K3vjUt4LWRUr2AKbWk2YwQgupd4ONgi/G
+         8te2EP58ExsH62vw5hBzqEjIMwrC7qiAo0c+fPS7TwYLBaeJzNWxgdmH+jYiQE+VXzV+
+         xLbQ==
+X-Gm-Message-State: AOAM530r2GP7Ri9LnXQ9YDzOHZpRl1wilLMHiTX7LIJZ0ZOfDg56uRAd
+        bYAUTIi6mPuKYSLn+Wd4Plvq5iT4K4NDPEdf4dg=
+X-Google-Smtp-Source: ABdhPJwtr29uNw7zYIpcGl4b7oqwEg6+wjWO5vGpyWoVX+K56Zbrs4ArzVB56uP+P805P0tl1VAPjl+ilTCEXs8o6V8=
+X-Received: by 2002:a05:6512:388f:: with SMTP id n15mr9329453lft.280.1623580250149;
+ Sun, 13 Jun 2021 03:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b17d946b-d09-326e-b42a-52884c36df32@google.com>
+References: <CAFf+5zhSH_dJ2Zc5EcfqgTew8w0sEu4hLjKYf3fTmqB5mdgfwQ@mail.gmail.com>
+ <YMXYYgR82VZISjtO@ArchLinux>
+In-Reply-To: <YMXYYgR82VZISjtO@ArchLinux>
+From:   Amit Choudhary <amitchoudhary0523@gmail.com>
+Date:   Sun, 13 Jun 2021 16:00:41 +0530
+Message-ID: <CAFf+5zhydkMMYd9cDJMzc8_YhLWdoQ6YTnDV5AJoXgF3tVHqsA@mail.gmail.com>
+Subject: Re: [Code] Fastest String Search Algorithm.
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Amit Choudhary <amitchoudhary0523@gmail.com>,
+        LinuxKernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 08:16:58PM -0700, Hugh Dickins wrote:
-> If more than one futex is placed on a shmem huge page, it can happen that
-> waking the second wakes the first instead, and leaves the second waiting:
-> the key's shared.pgoff is wrong.
-> 
-> When 3.11 commit 13d60f4b6ab5 ("futex: Take hugepages into account when
-> generating futex_key"), the only shared huge pages came from hugetlbfs,
-> and the code added to deal with its exceptional page->index was put into
-> hugetlb source.  Then that was missed when 4.8 added shmem huge pages.
-> 
-> page_to_pgoff() is what others use for this nowadays: except that, as
-> currently written, it gives the right answer on hugetlbfs head, but
-> nonsense on hugetlbfs tails.  Fix that by calling hugetlbfs-specific
-> hugetlb_basepage_index() on PageHuge tails as well as on head.
-> 
-> Yes, it's unconventional to declare hugetlb_basepage_index() there in
-> pagemap.h, rather than in hugetlb.h; but I do not expect anything but
-> page_to_pgoff() ever to need it.
-> 
-> Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-> Reported-by: Neel Natu <neelnatu@google.com>
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
+Bhaskar,
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fuck you.
+
+You are not the owner of linux kernel.
+
+You are a very big idiot.
+
+You really don't know who you are talking to.
+
+You are just assuming that I am a stupid guy without knowing anything about me.
+
+My linux kernel patches are in linux kernel since 2005-2006.
+
+What are your educational and professional qualifications?
+
+I don't think you are from IIT like me, probably you are from a third
+grade donation based college.
+
+I have invented a new search engine architecture and implemented it
+and it is hosted on sourceforge.
+
+Have you ever invented anything?
+
+World is full of idiots like you from India who think that they are
+supreme and other Indians are fools.
+
+Amit
+
+
+
+On Sun, Jun 13, 2021, 3:35 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+>
+> On 14:00 Sun 13 Jun 2021, Amit Choudhary wrote:
+>
+> Ahhhhhhhh...
+>
+> Oh crap! Get off the lawn , kiddo. Do NOT USE THIS PLACE for your obnoxious
+> desire.
+>
+> We don't have time and energy to evaluate some airy-fairy stuff .
+>
+> How do you know we will ever bother to think about "include your code"?? Let
+> alone other factor...huh...you are living in fool's paradise ...meh... look
+> like your head is filled with lots of preconceived dogma....where have you got
+> those?? Heck..
+>
+> Your intention is not wise...this mailing list solely exist for people
+> interested in Linux and only in Linux Kernel. Period.
+>
+> IOW , PLEASE DO NOT BOTHER US.
+>
+> ~Bhaskar
+>
+> >Hi All,
+> >
+> >I have invented a new string search algorithm. It has performed better
+> >than strstr(), Boyer-Moore, and KPM algorithms.
+> >
+> >But I am not sending my code so that my algorithm gets included in linux kernel.
+> >
+> >I am sending this code because linux kernel mailing list is in public
+> >domain and getting indexed by search engines. So, people can see this
+> >algo if they search for fastest string search algorithm on web.
+> >
+> >Code:
+> >
+> >===================================================================================
+> >
+> >// Choudhary string search algorithm
+> >static char * choudhary_string_search_algorithm(char *text, char *pattern)
+> >{
+> >
+> >#define false 0
+> >#define true 1
+> >#define ALPHABET_SIZE 256
+> >
+> >    int i = 0;
+> >    int end_index = 0;
+> >    int not_found = false;
+> >
+> >    char pattern_char[ALPHABET_SIZE] = {0};
+> >
+> >    int text_len = strlen(text);
+> >    int pattern_len = strlen(pattern);
+> >
+> >    int pi_44 = pattern_len - 1;
+> >    int pi_34 = (3 * pattern_len) / 4;
+> >    int pi_24 = pattern_len / 2;
+> >    int pi_14 = pattern_len / 4;
+> >
+> >    int last_failed_index = -1;
+> >
+> >    // preprocessing
+> >    for (i = 0; i < pattern_len; i++) {
+> >        pattern_char[(int)(pattern[i])] = 1;
+> >    }
+> >
+> >    // now search
+> >    for (i = 0; i < text_len; i++) {
+> >
+> >        if ((text_len - i) < pattern_len) {
+> >            return NULL;
+> >            //return -1;
+> >        }
+> >
+> >        if (pattern[pi_44] != text[i + pi_44]) {
+> >
+> >            last_failed_index = pi_44;
+> >
+> >            // this character doesn't appear in pattern, so skip
+> >            if (pattern_char[(int)(text[i + pi_44])] == 0) {
+> >                i = i + pi_44;
+> >            }
+> >
+> >            continue;
+> >
+> >        } else if (pattern[pi_34] != text[i + pi_34]) {
+> >
+> >            last_failed_index = pi_34;
+> >
+> >            // this character doesn't appear in pattern, so skip
+> >            if (pattern_char[(int)(text[i + pi_34])] == 0) {
+> >                i = i + pi_34;
+> >            }
+> >
+> >            continue;
+> >
+> >        } else if (pattern[pi_24] != text[i + pi_24]) {
+> >
+> >            last_failed_index = pi_24;
+> >
+> >            // this character doesn't appear in pattern, so skip
+> >            if (pattern_char[(int)(text[i + pi_24])] == 0) {
+> >                i = i + pi_24;
+> >            }
+> >
+> >            continue;
+> >
+> >        } else if (pattern[pi_14] != text[i + pi_14]) {
+> >
+> >            last_failed_index = pi_14;
+> >
+> >            // this character doesn't appear in pattern, so skip
+> >            if (pattern_char[(int)(text[i + pi_14])] == 0) {
+> >                i = i + pi_14;
+> >            }
+> >
+> >            continue;
+> >
+> >        } // end of if-else.. block
+> >
+> >        // compare with character at last failed index.
+> >        if (last_failed_index >= 0) {
+> >
+> >            if (pattern[last_failed_index] != text[i + last_failed_index]) {
+> >                continue;
+> >            }
+> >
+> >        }
+> >
+> >        if (pattern[0] == text[i]) {
+> >
+> >            //full_pattern_search = full_pattern_search + 1;
+> >            end_index = i + pi_44;
+> >            not_found = false;
+> >            int index = 0;
+> >
+> >            for (index = i; index <= end_index; index++) {
+> >                if (text[index] != pattern[index - i]) {
+> >                    last_failed_index = index - i;
+> >                    not_found = true;
+> >                    break;
+> >                }
+> >            } // end of inner for loop
+> >
+> >            if (not_found == false) { // match is found
+> >                return (text + i);
+> >                //return i;
+> >            } else if (pattern_char[(int)(text[index])] == 0) {
+> >                i = index;
+> >            }
+> >        } // end of if pattern[0]
+> >
+> >    } // end of outer for loop
+> >
+> >    return NULL;
+> >    //return -1;
+> >
+> >} // end of choudhary_string_search_algorithm
+> >
+> >===================================================================================
+> >
+> >Regards,
+> >Amit
