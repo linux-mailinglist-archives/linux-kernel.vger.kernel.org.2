@@ -2,209 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8CB3A561F
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 05:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEC93A5621
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 05:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbhFMDTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 23:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbhFMDTQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 23:19:16 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821C8C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 20:17:04 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id n17-20020a4ae1d10000b029024a49ea822bso1782664oot.5
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 20:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=NQEk3B/D9DQqdbqI2jqXdPIDfvBL0SmgQfWxdc0tj48=;
-        b=J3T0NdWAGgeAJ2pSB1pbIn1dBxJe2lBUZoYhkqV735mwHyxeul41xMoGX/MX0uaCWr
-         SuMBu2Gp1ryVQOe/LAdjZmeTJN9iNiQwVGA8h8TpEQwPTwa/Kp24uebk4qRgjDMiApxi
-         yS7baEthtnZLGygqQErWmmzlCnMNF31x5Opz95L1Ml7vW54Lk6upzjzC0/EMrEitfxUm
-         XlLHgd0P7pgqqQ+IGpQuQOBjneWh6eDoeOJ8d1g2Ena4Fn3xqIOziNXf2kycAaIjcnO7
-         G5K/+QNzQTRUUxaMT5w2wvKYgAJbpF667K5LQIB3imResymR1E8wvIEEWmcwFGb/OiWB
-         cAUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=NQEk3B/D9DQqdbqI2jqXdPIDfvBL0SmgQfWxdc0tj48=;
-        b=Br+q8MOQKtB15KNxmwiG5RvuZ4Rmo4sE4QVh+NLPxu785Eln8j81IsPvBm6J/EhwiO
-         Xnigzo1gwGIyjnYXnZi2rUSUbdE0RHOrra1QLZ08Pj+NzQVZjkVL/YJSR5vvxkz84gIj
-         mzR9yS/QTFKw5RHDMbcc/ktl5bgVJ5PjCknFrU8QcyevSy6B3xWZMsCVhXVZav3TPHzS
-         9HnOAZOUPgs9puqL0PzAeFFniz2MXj+wO9vAkDJ3XD7qf55uQpBx1iRxRaBuAlQhS8IZ
-         Q1fMTJz51eVZ+d2yHDyKLcNr2nJVQu4AWf4mHPuKfRHVW9+VY8BH+IIZpHslcOrx+yXI
-         b2lg==
-X-Gm-Message-State: AOAM532wTncDoZTI/CCLiwgxbl+3rj+biC49htV0mO+US+PNPBY5AtHC
-        vdP3A+eSvGEUzX2NIHNDx5T4Sw==
-X-Google-Smtp-Source: ABdhPJwpuOaHt86XVL/vsr2gc5S0e7/tSsfFr5jAwgEk7ve6yi4Xn+CgsuUogZTf5spoyyGSxCB6Og==
-X-Received: by 2002:a4a:a802:: with SMTP id o2mr8721061oom.91.1623554221876;
-        Sat, 12 Jun 2021 20:17:01 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id p203sm1120452oib.40.2021.06.12.20.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Jun 2021 20:17:01 -0700 (PDT)
-Date:   Sat, 12 Jun 2021 20:16:58 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhang Yi <wetpzy@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Neel Natu <neelnatu@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mm, futex: Fix shared futex pgoff on shmem huge page
-In-Reply-To: <YMTdtRZG+7q8OtkK@casper.infradead.org>
-Message-ID: <b17d946b-d09-326e-b42a-52884c36df32@google.com>
-References: <45e8fd67-51fd-7828-fe43-d261d6c33727@google.com> <YMTdtRZG+7q8OtkK@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S231642AbhFMD1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 23:27:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:53882 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230281AbhFMD1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 23:27:40 -0400
+IronPort-SDR: IWpK5c/D7V81XjanoirRbTwN1jH348F7pZiCgCJkG6gBtx9mmuTDS80P43Hxuc8/7FrRqihBSO
+ 72BQ+5Gcmfng==
+X-IronPort-AV: E=McAfee;i="6200,9189,10013"; a="186066748"
+X-IronPort-AV: E=Sophos;i="5.83,270,1616482800"; 
+   d="scan'208";a="186066748"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2021 20:25:36 -0700
+IronPort-SDR: HUGo9qOeNR94Lt0nN5DrKSLfpa9hk/uhsL97rD2lb/Lj7s2MKZIZokuPvKUYhnqSCSqB0v7mBo
+ l5o/Zz4s4oew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,270,1616482800"; 
+   d="scan'208";a="449521634"
+Received: from host.sh.intel.com ([10.239.154.115])
+  by orsmga008.jf.intel.com with ESMTP; 12 Jun 2021 20:25:34 -0700
+From:   Ye Xiang <xiang.ye@intel.com>
+To:     jikos@kernel.org, jic23@kernel.org,
+        srinivas.pandruvada@linux.intel.com
+Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
+Subject: [PATCH] HID: intel-ish-hid: use async resume function
+Date:   Sun, 13 Jun 2021 11:25:07 +0800
+Message-Id: <20210613032507.7474-1-xiang.ye@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If more than one futex is placed on a shmem huge page, it can happen that
-waking the second wakes the first instead, and leaves the second waiting:
-the key's shared.pgoff is wrong.
+ISH IPC driver uses asynchronous workqueue to do resume now, but there is
+a potential timing issue: when child devices resume before bus driver, it
+will cause child devices resume failed and cannot be recovered until
+reboot. The current implementation in this case do wait for IPC to resume
+but fail to accommodate for a case when there is no ISH reboot and soft
+resume is taking time. This issue is apparent on Tiger Lake platform with
+5.11.13 kernel when doing suspend to idle then resume(s0ix) test. To
+resolve this issue, we change ISHTP HID client to use asynchronous resume
+callback too. In the asynchronous resume callback, it waits for the ISHTP
+resume done event, and then notify ISHTP HID client link ready.
 
-When 3.11 commit 13d60f4b6ab5 ("futex: Take hugepages into account when
-generating futex_key"), the only shared huge pages came from hugetlbfs,
-and the code added to deal with its exceptional page->index was put into
-hugetlb source.  Then that was missed when 4.8 added shmem huge pages.
-
-page_to_pgoff() is what others use for this nowadays: except that, as
-currently written, it gives the right answer on hugetlbfs head, but
-nonsense on hugetlbfs tails.  Fix that by calling hugetlbfs-specific
-hugetlb_basepage_index() on PageHuge tails as well as on head.
-
-Yes, it's unconventional to declare hugetlb_basepage_index() there in
-pagemap.h, rather than in hugetlb.h; but I do not expect anything but
-page_to_pgoff() ever to need it.
-
-Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-Reported-by: Neel Natu <neelnatu@google.com>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: <stable@vger.kernel.org>
+Signed-off-by: Ye Xiang <xiang.ye@intel.com>
 ---
-v2: restored TODO comments, per Matthew; make "hugetlb pages" explicit.
+ drivers/hid/intel-ish-hid/ishtp-hid-client.c | 15 +++++++++-
+ drivers/hid/intel-ish-hid/ishtp-hid.h        |  1 +
+ drivers/hid/intel-ish-hid/ishtp/bus.c        | 29 +++++++++++++++-----
+ include/linux/intel-ish-client-if.h          |  2 ++
+ 4 files changed, 39 insertions(+), 8 deletions(-)
 
- include/linux/hugetlb.h |   16 ----------------
- include/linux/pagemap.h |   13 +++++++------
- kernel/futex.c          |    3 +--
- mm/hugetlb.c            |    5 +----
- 4 files changed, 9 insertions(+), 28 deletions(-)
-
---- 5.13-rc5/include/linux/hugetlb.h	2021-05-09 17:25:09.278703159 -0700
-+++ linux/include/linux/hugetlb.h	2021-06-11 17:30:28.726720252 -0700
-@@ -733,17 +733,6 @@ static inline int hstate_index(struct hs
- 	return h - hstates;
- }
- 
--pgoff_t __basepage_index(struct page *page);
--
--/* Return page->index in PAGE_SIZE units */
--static inline pgoff_t basepage_index(struct page *page)
--{
--	if (!PageCompound(page))
--		return page->index;
--
--	return __basepage_index(page);
--}
--
- extern int dissolve_free_huge_page(struct page *page);
- extern int dissolve_free_huge_pages(unsigned long start_pfn,
- 				    unsigned long end_pfn);
-@@ -980,11 +969,6 @@ static inline int hstate_index(struct hs
- 	return 0;
- }
- 
--static inline pgoff_t basepage_index(struct page *page)
--{
--	return page->index;
--}
--
- static inline int dissolve_free_huge_page(struct page *page)
- {
- 	return 0;
---- 5.13-rc5/include/linux/pagemap.h	2021-05-16 22:49:30.036176843 -0700
-+++ linux/include/linux/pagemap.h	2021-06-12 19:29:23.364387191 -0700
-@@ -516,7 +516,7 @@ static inline struct page *read_mapping_
- }
- 
- /*
-- * Get index of the page with in radix-tree
-+ * Get index of the page within radix-tree (but not for hugetlb pages).
-  * (TODO: remove once hugetlb pages will have ->index in PAGE_SIZE)
-  */
- static inline pgoff_t page_to_index(struct page *page)
-@@ -536,14 +536,15 @@ static inline pgoff_t page_to_index(stru
- }
- 
- /*
-- * Get the offset in PAGE_SIZE.
-- * (TODO: hugepage should have ->index in PAGE_SIZE)
-+ * Get the offset in PAGE_SIZE (even for hugetlb pages).
-+ * (TODO: hugetlb pages should have ->index in PAGE_SIZE)
-  */
- static inline pgoff_t page_to_pgoff(struct page *page)
- {
--	if (unlikely(PageHeadHuge(page)))
--		return page->index << compound_order(page);
--
-+	if (unlikely(PageHuge(page))) {
-+		extern pgoff_t hugetlb_basepage_index(struct page *page);
-+		return hugetlb_basepage_index(page);
-+	}
- 	return page_to_index(page);
- }
- 
---- 5.13-rc5/kernel/futex.c	2021-05-09 17:25:09.670705811 -0700
-+++ linux/kernel/futex.c	2021-06-11 17:30:28.726720252 -0700
-@@ -35,7 +35,6 @@
- #include <linux/jhash.h>
- #include <linux/pagemap.h>
- #include <linux/syscalls.h>
--#include <linux/hugetlb.h>
- #include <linux/freezer.h>
- #include <linux/memblock.h>
- #include <linux/fault-inject.h>
-@@ -650,7 +649,7 @@ again:
- 
- 		key->both.offset |= FUT_OFF_INODE; /* inode-based key */
- 		key->shared.i_seq = get_inode_sequence_number(inode);
--		key->shared.pgoff = basepage_index(tail);
-+		key->shared.pgoff = page_to_pgoff(tail);
- 		rcu_read_unlock();
+diff --git a/drivers/hid/intel-ish-hid/ishtp-hid-client.c b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
+index 7167412d89d9..9d53e85fdef3 100644
+--- a/drivers/hid/intel-ish-hid/ishtp-hid-client.c
++++ b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
+@@ -779,6 +779,17 @@ static void hid_ishtp_cl_reset_handler(struct work_struct *work)
  	}
- 
---- 5.13-rc5/mm/hugetlb.c	2021-06-06 16:57:26.263006733 -0700
-+++ linux/mm/hugetlb.c	2021-06-11 17:30:28.730720276 -0700
-@@ -1588,15 +1588,12 @@ struct address_space *hugetlb_page_mappi
- 	return NULL;
  }
  
--pgoff_t __basepage_index(struct page *page)
-+pgoff_t hugetlb_basepage_index(struct page *page)
- {
- 	struct page *page_head = compound_head(page);
- 	pgoff_t index = page_index(page_head);
- 	unsigned long compound_idx;
++static void hid_ishtp_cl_resume_handler(struct work_struct *work)
++{
++	struct ishtp_cl_data *client_data = container_of(work, struct ishtp_cl_data, resume_work);
++	struct ishtp_cl *hid_ishtp_cl = client_data->hid_ishtp_cl;
++
++	if (ishtp_wait_resume(ishtp_get_ishtp_device(hid_ishtp_cl))) {
++		client_data->suspended = false;
++		wake_up_interruptible(&client_data->ishtp_resume_wait);
++	}
++}
++
+ void (*hid_print_trace)(void *unused, const char *format, ...);
  
--	if (!PageHuge(page_head))
--		return page_index(page);
+ /**
+@@ -817,6 +828,8 @@ static int hid_ishtp_cl_probe(struct ishtp_cl_device *cl_device)
+ 	init_waitqueue_head(&client_data->ishtp_resume_wait);
+ 
+ 	INIT_WORK(&client_data->work, hid_ishtp_cl_reset_handler);
++	INIT_WORK(&client_data->resume_work, hid_ishtp_cl_resume_handler);
++
+ 
+ 	hid_print_trace = ishtp_trace_callback(cl_device);
+ 
+@@ -918,7 +931,7 @@ static int hid_ishtp_cl_resume(struct device *device)
+ 
+ 	hid_ishtp_trace(client_data, "%s hid_ishtp_cl %p\n", __func__,
+ 			hid_ishtp_cl);
+-	client_data->suspended = false;
++	schedule_work(&client_data->resume_work);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/hid/intel-ish-hid/ishtp-hid.h b/drivers/hid/intel-ish-hid/ishtp-hid.h
+index 5ffd0da3cf1f..e5fa753fe92f 100644
+--- a/drivers/hid/intel-ish-hid/ishtp-hid.h
++++ b/drivers/hid/intel-ish-hid/ishtp-hid.h
+@@ -140,6 +140,7 @@ struct ishtp_cl_data {
+ 	int multi_packet_cnt;
+ 
+ 	struct work_struct work;
++	struct work_struct resume_work;
+ 	struct ishtp_cl_device *cl_device;
+ };
+ 
+diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
+index 0d6465f0eaa8..ead6c8f32759 100644
+--- a/drivers/hid/intel-ish-hid/ishtp/bus.c
++++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
+@@ -329,13 +329,6 @@ static int ishtp_cl_device_resume(struct device *dev)
+ 	if (!device)
+ 		return 0;
+ 
+-	/*
+-	 * When ISH needs hard reset, it is done asynchrnously, hence bus
+-	 * resume will  be called before full ISH resume
+-	 */
+-	if (device->ishtp_dev->resume_flag)
+-		return 0;
 -
- 	if (compound_order(page_head) >= MAX_ORDER)
- 		compound_idx = page_to_pfn(page) - page_to_pfn(page_head);
- 	else
+ 	driver = to_ishtp_cl_driver(dev->driver);
+ 	if (driver && driver->driver.pm) {
+ 		if (driver->driver.pm->resume)
+@@ -863,6 +856,28 @@ struct device *ishtp_device(struct ishtp_cl_device *device)
+ }
+ EXPORT_SYMBOL(ishtp_device);
+ 
++/**
++ * ishtp_wait_resume() - Wait for IPC resume
++ *
++ * Wait for IPC resume
++ *
++ * Return: resume complete or not
++ */
++bool ishtp_wait_resume(struct ishtp_device *dev)
++{
++	/* 50ms to get resume response */
++	#define WAIT_FOR_RESUME_ACK_MS		50
++
++	/* Waiting to get resume response */
++	if (dev->resume_flag)
++		wait_event_interruptible_timeout(dev->resume_wait,
++						 !dev->resume_flag,
++						 msecs_to_jiffies(WAIT_FOR_RESUME_ACK_MS));
++
++	return (!dev->resume_flag);
++}
++EXPORT_SYMBOL_GPL(ishtp_wait_resume);
++
+ /**
+  * ishtp_get_pci_device() - Return PCI device dev pointer
+  * This interface is used to return PCI device pointer
+diff --git a/include/linux/intel-ish-client-if.h b/include/linux/intel-ish-client-if.h
+index 1153e0030133..ec3a6ccbece4 100644
+--- a/include/linux/intel-ish-client-if.h
++++ b/include/linux/intel-ish-client-if.h
+@@ -76,6 +76,8 @@ int ishtp_register_event_cb(struct ishtp_cl_device *device,
+ 
+ /* Get the device * from ishtp device instance */
+ struct device *ishtp_device(struct ishtp_cl_device *cl_device);
++/* wait for IPC resume */
++bool ishtp_wait_resume(struct ishtp_device *dev);
+ /* Trace interface for clients */
+ void *ishtp_trace_callback(struct ishtp_cl_device *cl_device);
+ /* Get device pointer of PCI device for DMA acces */
+
+base-commit: f5711311bfa1abcc64c6dd1e912666a8c0b29a1a
+-- 
+2.17.1
+
