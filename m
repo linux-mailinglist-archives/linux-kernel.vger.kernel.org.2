@@ -2,309 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFE93A5707
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 10:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9C43A5709
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 10:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhFMISN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 04:18:13 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:48464 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhFMISM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 04:18:12 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 173AB20B7178;
-        Sun, 13 Jun 2021 01:16:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 173AB20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623572171;
-        bh=RX5L9/vMiTAqQrSPkgSMaD4Jf8rbizNA57SWyXai4DA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cY5+3ZHxWNdDrUVgXxi8Hkn7GqaUxykIrTrFn7M1PQuY6EudqwchKL6z/1VTI6QAe
-         bsC8EavkM14VkjSyPD/QDQNn6tn7VZYvoK/uh+20sVg9omL1jTVTL8ORcFUb+VYWYk
-         r0upiFCiHznqExXmflcDON9jZb4yap1ereD5uKAs=
-Date:   Sun, 13 Jun 2021 03:16:07 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 6/8] tee: Support kernel shm registration without
- dma-buf backing
-Message-ID: <20210613081607.GT4910@sequoia>
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
- <20210610210913.536081-7-tyhicks@linux.microsoft.com>
- <CAFA6WYMcGGkAAWxK2vmM8CNsgTKJpegkZZjJZy4pvXhKe9WGvA@mail.gmail.com>
- <20210611130958.GR4910@sequoia>
- <20210611131619.GS4910@sequoia>
- <CAFA6WYPJXmeepe=4EiiA0_MUz=KsAGnbwY98FfEm1Z2EaGxz-w@mail.gmail.com>
+        id S231173AbhFMIWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 04:22:00 -0400
+Received: from mail-mw2nam10on2081.outbound.protection.outlook.com ([40.107.94.81]:7644
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229870AbhFMIV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 04:21:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U0yPUTneFNT+Kt7qo8p+dRLGMtGI58s+Yf+gR87+h5rZIvdvfncE+cEHWFGBT1WljylEPIm1wSvfVPVRDNRt2YuhaA77KGKx0aTGCpTIRgETUiLbDNq9vflk+ui47+a5jEeM+rsiKKWOy+OdtgTjkC9SF388NpOqM0ktN5AHxXxhhr9Jhvi/K0z9aGJpvPPK469npObr9F75jeWnTLvb99kgvUHl9VJo82t4R2sYjTcXIcwdL2M3N5hYFXWh6ZJYcZ3/GAVozdLmG9JWNPvnGb5vQxMSeFDZ6oA1s7ClVc98jzYzGqyV5iaYDqtExcZsm3QTDnIgIqo1b/Z1kJlYNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0cvyCwhlGDFxtNKXXaSA96jahjjRIkxi3XW42aqH2tQ=;
+ b=KQI78JzJXf1CwWzHOUJayD7fmxC/7LNnKVpCzewTtk2EXLxAhli/oGzdVs4oZVw74LFRw6Y/TBtn3cuc15vS8GiYWoPxaU5e2eIGnIAgSp9Ki3SSjEY09kfkauheV71MxAdkKL8rjYTLTVbt5Tlr4czzKkZiopcJUSBr1XJFescfW/xk7LipE/8lfkswc1F5rNKPbHL/H5ueXJ7M4m9KuXTBsBif8jD5rjlSqKgSmiSlVDRRmQ2yEdfvgnAneKuH50EIPUo/jwkz8q3MBEPCmtO7DVJWTsKnmbBkmFmrlNR0F611nOQJrYeKzIivlICUE8v4kHCIAZyRMggeT1UQlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0cvyCwhlGDFxtNKXXaSA96jahjjRIkxi3XW42aqH2tQ=;
+ b=VXQb6zc4WEsbU0mKFN7oWQlJ6c997oM4AlsuKvX4fj0yAam56Qy2nwXFsdDWFcGRua5HQ1B180y/e7Adzjgpc/rJbcnbGeXrjAnmwAoQtY4MiNb//MYdDLZr1jEEbwbBGLapleuX2GXsmN3VHxxL0vxSZszGcLxpUrCKcsPP8t+hpmtHXCq1gK9gkxV+wYTHP85SGRTljjYnJLyYbW/H+YslZug7f+CA0xvEJJ8djUlSXYQ5lAa4KIPMKRf3GXolNEqVRMi0/0ARE+vdJCJvGlmxkVdtW2+q9nNu5ET6AMkkji0gRo+4EXS3YA7BtfsTrIwxJr6jg8WzHK4WBDyueQ==
+Received: from BN0PR02CA0053.namprd02.prod.outlook.com (2603:10b6:408:e5::28)
+ by PH0PR12MB5433.namprd12.prod.outlook.com (2603:10b6:510:e1::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20; Sun, 13 Jun
+ 2021 08:19:56 +0000
+Received: from BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e5:cafe::8e) by BN0PR02CA0053.outlook.office365.com
+ (2603:10b6:408:e5::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend
+ Transport; Sun, 13 Jun 2021 08:19:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT012.mail.protection.outlook.com (10.13.177.55) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4219.21 via Frontend Transport; Sun, 13 Jun 2021 08:19:56 +0000
+Received: from [172.27.14.244] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 13 Jun
+ 2021 08:19:49 +0000
+Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
+ binding
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <aviadye@nvidia.com>,
+        <oren@nvidia.com>, <shahafs@nvidia.com>, <parav@nvidia.com>,
+        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
+        <cjia@nvidia.com>, <yishaih@nvidia.com>, <kevin.tian@intel.com>,
+        <hch@infradead.org>, <targupta@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <liulongfang@huawei.com>,
+        <yan.y.zhao@intel.com>
+References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
+ <20210603160809.15845-10-mgurtovoy@nvidia.com>
+ <20210608152643.2d3400c1.alex.williamson@redhat.com>
+ <20210608224517.GQ1002214@nvidia.com>
+ <20210608192711.4956cda2.alex.williamson@redhat.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
+Date:   Sun, 13 Jun 2021 11:19:46 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYPJXmeepe=4EiiA0_MUz=KsAGnbwY98FfEm1Z2EaGxz-w@mail.gmail.com>
+In-Reply-To: <20210608192711.4956cda2.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f20f8297-c4c9-438e-95ce-08d92e440724
+X-MS-TrafficTypeDiagnostic: PH0PR12MB5433:
+X-Microsoft-Antispam-PRVS: <PH0PR12MB543391C882ADC10B81F20F04DE329@PH0PR12MB5433.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nq978ruzOKbhCOot2KyDoc/7S89gpyhp7Teuptb/nVb+8jMsZHkSf2lsVapRSHrNIqVd/UGBtvISPMN9UBKLGO+3oetgKbNJLxujXmHTp4Vn1OHSR8j8v4ICgbkd54Y+25+4OEBJDdufCKppK19tYIBTRW7FXqdNixX8bhG0vGxU6wCfQPmBGTufUOqJfsutysAR8KVAW6lwz0i5lol0SLZUl/+YvHbvG8GWxxWDLdu2ivv+GY11Kz0WiRa+bJbCN5p9DdhWTTxVCOYo+zwSM8IkBWSZilwMVxxE2xsHnGZW9Sn2kmbET8WUoP22GWq3rwZhWhLUHiKpxj74peLdMfgi+atTqjnez8aoyF57RDxJ5ZeqCLQGdPkteSacg6DK0YZ8wGTpqAscDY+jIQMZ9BzOJ0uPwaG11gsVkCGHVyVyNp7BKreWsOAZ4WYY0rGNs6ASRCJTD3hxN+rrkh1ie5RhU7sRot2V5a/KqkdCoBx5rIySDJ71S0OnCroDSHXFBWVfvHtl9jYmXqEBG0e4xZiMXCU4AnQntMtkwscA2eaURcAmhDAv6kI22QdLcgNwZmanQ8RgLAw2CW85TqPEG2255ywp8Fs3OKFK+8h5Bk+7UIgrNilFYyL9trNNo5AuVh2wTl/Je4CNysJGTyujGLfYDBrnQDMlz5r1zudBuYqtvUjzNFiPkDj3tUWUUJ8O
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(136003)(46966006)(36840700001)(70586007)(110136005)(4326008)(336012)(70206006)(31696002)(86362001)(8936002)(36906005)(54906003)(36756003)(2616005)(316002)(16576012)(6636002)(7636003)(26005)(426003)(356005)(83380400001)(36860700001)(16526019)(186003)(5660300002)(31686004)(82740400003)(47076005)(82310400003)(478600001)(6666004)(53546011)(8676002)(2906002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jun 2021 08:19:56.0338
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f20f8297-c4c9-438e-95ce-08d92e440724
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5433
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-12 13:49:38, Sumit Garg wrote:
-> On Fri, 11 Jun 2021 at 18:46, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> >
-> > On 2021-06-11 08:10:01, Tyler Hicks wrote:
-> > > On 2021-06-11 10:46:20, Sumit Garg wrote:
-> > > > On Fri, 11 Jun 2021 at 02:39, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> > > > >
-> > > > > Uncouple the registration of kernel shared memory buffers from the
-> > > > > TEE_SHM_DMA_BUF flag. Drivers may wish to allocate multi-page contiguous
-> > > > > shared memory regions but do not need them to be backed by a dma-buf
-> > > > > when the memory region is only used by the driver.
-> > > > >
-> > > > > If the TEE implementation does not require shared memory to be
-> > > > > registered, clear the flag prior to calling the corresponding pool alloc
-> > > > > function. Update the OP-TEE driver to respect TEE_SHM_REGISTER, rather
-> > > > > than TEE_SHM_DMA_BUF, when deciding whether to (un)register on
-> > > > > alloc/free operations.
-> > > >
-> > > > > The AMD-TEE driver continues to ignore the
-> > > > > TEE_SHM_REGISTER flag.
-> > > > >
-> > > >
-> > > > That's the main point that no other TEE implementation would honour
-> > > > TEE_SHM_REGISTER and I think it's just the incorrect usage of
-> > > > TEE_SHM_REGISTER flag to suffice OP-TEE underlying implementation.
-> > > >
-> > > > > Allow callers of tee_shm_alloc_kernel_buf() to allocate and register a
-> > > > > shared memory region without the backing of dma-buf.
-> > > > >
-> > > > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > > > ---
-> > > > >  drivers/tee/optee/shm_pool.c |  5 ++---
-> > > > >  drivers/tee/tee_shm.c        | 13 +++++++++++--
-> > > > >  2 files changed, 13 insertions(+), 5 deletions(-)
-> > > > >
-> > > >
-> > > > This patch is just mixing two separate approaches to TEE shared
-> > > > memory. Have a look at alternative suggestions below.
-> > > >
-> > > > > diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
-> > > > > index da06ce9b9313..6054343a29fb 100644
-> > > > > --- a/drivers/tee/optee/shm_pool.c
-> > > > > +++ b/drivers/tee/optee/shm_pool.c
-> > > > > @@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
-> > > > >         shm->paddr = page_to_phys(page);
-> > > > >         shm->size = PAGE_SIZE << order;
-> > > > >
-> > > > > -       if (shm->flags & TEE_SHM_DMA_BUF) {
-> > > > > +       if (shm->flags & TEE_SHM_REGISTER) {
-> > > >
-> > > > Here you can just do following check instead:
-> > > >
-> > > >        if (!(shm->flags & TEE_SHM_PRIV)) {
-> > >
-> > > This is a bug fix series that's intended to fix the current and older
-> > > kernels. tee_shm_alloc_anon_kernel_buf()/TEE_SHM_PRIV is not present in
-> > > older kernels and isn't required to fix these kexec/kdump bugs. Your
-> > > suggestion feels like something that should be done in the allocator
-> > > rewrite that Jens is working on to clean all of this up going forward.
-> >
-> > I want to add that I do fully agree with you that TEE_SHM_REGISTER is an
-> > OP-TEE thing and not a TEE thing. Ideally, it wouldn't be defined in
-> > tee_drv.h and would be completely private to the OP-TEE driver.
-> > Likewise, I don't think that tee_shm_register() should exist (certainly
-> > not at the TEE level) because it only works with OP-TEE.
-> 
-> I think there is some confusion going on. tee_shm_register() is a
-> standard interface that is listed in TEE client API specification as
-> an alternative approach to tee_shm_alloc(). As I earlier mentioned,
-> please read through "3.2.4. Shared Memory" in TEE Client API
-> Specification.
 
-Thanks for the reminder to go read this spec. I had forgotten to read it
-after you previously mentioned it.
+On 6/9/2021 4:27 AM, Alex Williamson wrote:
+> On Tue, 8 Jun 2021 19:45:17 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+>> On Tue, Jun 08, 2021 at 03:26:43PM -0600, Alex Williamson wrote:
+>>>> drivers that specifically opt into this feature and the driver now has
+>>>> the opportunity to provide a proper match table that indicates what HW
+>>>> it can properly support. vfio-pci continues to support everything.
+>>> In doing so, this also breaks the new_id method for vfio-pci.
+>> Does it? How? The driver_override flag is per match entry not for the
+>> entire device so new_id added things will work the same as before as
+>> their new match entry's flags will be zero.
+> Hmm, that might have been a testing issue; combining driverctl with
+> manual new_id testing might have left a driver_override in place.
+>   
+>>> Sorry, with so many userspace regressions, crippling the
+>>> driver_override interface with an assumption of such a narrow focus,
+>>> creating a vfio specific match flag, I don't see where this can go.
+>>> Thanks,
+>> On the other hand it overcomes all the objections from the last go
+>> round: how userspace figures out which driver to use with
+>> driver_override and integrating the universal driver into the scheme.
+>>
+>> pci_stub could be delt with by marking it for driver_override like
+>> vfio_pci.
+> By marking it a "vfio driver override"? :-\
+>
+>> But driverctl as a general tool working with any module is not really
+>> addressable.
+>>
+>> Is the only issue the blocking of the arbitary binding? That is not a
+>> critical peice of this, IIRC
+> We can't break userspace, which means new_id and driver_override need
+> to work as they do now.  There are scads of driver binding scripts in
+> the wild, for vfio-pci and other drivers.  We can't assume such a
+> narrow scope.  Thanks,
 
-Yes, there was confusion on my part due to reading the code but not
-discovering/reading the spec prior to now.
+what about the following code ?
 
-> In the initial times, OP-TEE only supported tee_shm_alloc() approach
-> but with the addition of dynamic shared memory feature it became
-> possible to support tee_shm_register() as well but we had to add new
-> capability as TEE_GEN_CAP_REG_MEM in order to maintain OP-TEE
-> backwards compatibility. It can very well be the same case for AMD-TEE
-> which currently only supports tee_shm_alloc() approach.
-> 
-> The reason for confusion here seems to be that OP-TEE driver is
-> providing a way to leverage dynamic shared memory approach in order to
-> implement tee_shm_alloc() but that doesn't mean at TEE level we should
-> intermix both approaches via using TEE_SHM_REGISTER to implement
-> tee_shm_alloc().
+@@ -152,12 +152,28 @@ static const struct pci_device_id 
+*pci_match_device(struct pci_driver *drv,
+         }
+         spin_unlock(&drv->dynids.lock);
 
-I think that was the reason for my confusion. I didn't understand why
-AMD-TEE didn't have the same need to register memory.
+-       if (!found_id)
+-               found_id = pci_match_id(drv->id_table, dev);
++       if (found_id)
++               return found_id;
 
-> 
-> >
-> > That said, I think the first step is to fix the kexec/kdump bugs and the
-> > second step is to clean up the code to remove the layering violation of
-> > exposing shm registration from the TEE interfaces.
-> >
-> 
-> Doesn't the following patch sound suitable to be backported to a
-> stable kernel? It has even less changes compared to your patch as well
-> :).
-> 
-> -Sumit
-> 
-> -------------------------------------------
-> Subject: [PATCH] tee: Correct inappropriate usage of TEE_SHM_DMA_BUF flag
-> 
-> Currently TEE_SHM_DMA_BUF flag has been inappropriately used to not
+-       /* driver_override will always match, send a dummy id */
+-       if (!found_id && dev->driver_override)
++       found_id = pci_match_id(drv->id_table, dev);
++       if (found_id) {
++               /*
++                * if we found id in the static table, we must fulfill the
++                * matching flags (i.e. if PCI_ID_F_DRIVER_OVERRIDE flag is
++                * set, driver_override should be provided).
++                */
++               bool is_driver_override =
++                       (found_id->flags & PCI_ID_F_DRIVER_OVERRIDE) != 0;
++               if ((is_driver_override && !dev->driver_override) ||
++                   (dev->driver_override && !is_driver_override))
++                       return NULL;
++       } else if (dev->driver_override) {
++               /*
++                * if we didn't find suitable id in the static table,
++                * driver_override will still , send a dummy id
++                */
+                 found_id = &pci_device_id_any;
++       }
 
-I think the "not" at the end of this line should be removed, right?
+         return found_id;
+  }
 
-> register shared memory allocated for private usage by underlying TEE
-> driver: OP-TEE in this case. So rather add a new flag as TEE_SHM_PRIV
-> that can be utilized by underlying TEE drivers for private allocation
-> and usage of shared memory.
-> 
-> With this corrected, allow tee_shm_alloc_kernel_buf() to allocate a
-> shared memory region without the backing of dma-buf.
 
-I noticed a couple things wrong with this patch during testing.
+dynamic ids (new_id) works as before.
 
-The first is obviously an oversight. tee_shm_alloc() needs to be updated
-to accept the TEE_SHM_PRIV or it'll throw an "invalid shm flags ..."
-error.
+Old driver_override works as before.
 
-The second issue is a little more unclear. I am testing these patches
-along with a debugging patch that prints a bit of info when
-optee_shm_register() or optee_shm_unregister() is called so that I can
-track the (un)registrations. I built a kernel with my v4 series but with
-this patch in place of my 'tee: Support kernel shm registration without
-dma-buf backing' patch. I performed 10x kexec operations and then let
-the system set idle for a while. After a while of sitting idle, I
-noticed a couple calls to optee_shm_register() that I hadn't seen before
-(and haven't seen again). It made me worried that your patch could
-result in us registering shared memory that we previously weren't
-registering so I decided to try to perform another kexec operation to
-ensure that the two shms were properly unregistered. At this point, the
-system became unresponsive and I wasn't able to get a stack trace or any
-more useful information about what happened.
+For "new" driver_override we must fulfill the new rules.
 
-Unfortunately, my debugging patch was only printing the shm's virtual
-address and the shm's size. The shm's size was 4096 bytes.
-
-My current thought is that the two new/unexpected calls to
-optee_shm_register() were triggered by one of the tee_shm_alloc()'s in
-drivers/tee/optee/rpc.c. Neither of those shm allocations would have
-been registered before your change but they both would be after your
-change. I think the easy fix is to use the TEE_SHM_PRIV flag for both of
-the allocations in rpc.c. Do you agree? If so, I'll make these changes
-and fold this patch into my series and send out a v5.
-
-I still can't explain why the system became unresponsive after the two
-registrations...
-
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  drivers/tee/optee/call.c     | 2 +-
->  drivers/tee/optee/core.c     | 3 ++-
->  drivers/tee/optee/shm_pool.c | 8 ++++++--
->  drivers/tee/tee_shm.c        | 2 +-
->  include/linux/tee_drv.h      | 1 +
->  5 files changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> index 6132cc8d014c..faaa13c9172b 100644
-> --- a/drivers/tee/optee/call.c
-> +++ b/drivers/tee/optee/call.c
-> @@ -184,7 +184,7 @@ static struct tee_shm *get_msg_arg(struct
-> tee_context *ctx, size_t num_params,
->         struct optee_msg_arg *ma;
-> 
->         shm = tee_shm_alloc(ctx, OPTEE_MSG_GET_ARG_SIZE(num_params),
-> -                           TEE_SHM_MAPPED);
-> +                           TEE_SHM_MAPPED | TEE_SHM_PRIV);
->         if (IS_ERR(shm))
->                 return shm;
-> 
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index ddb8f9ecf307..eac0e91ec559 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -277,7 +277,8 @@ static void optee_release(struct tee_context *ctx)
->         if (!ctxdata)
->                 return;
-> 
-> -       shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg), TEE_SHM_MAPPED);
-> +       shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg),
-> +                           TEE_SHM_MAPPED | TEE_SHM_PRIV);
->         if (!IS_ERR(shm)) {
->                 arg = tee_shm_get_va(shm, 0);
->                 /*
-> diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
-> index d767eebf30bd..3b4a3853a10f 100644
-> --- a/drivers/tee/optee/shm_pool.c
-> +++ b/drivers/tee/optee/shm_pool.c
-> @@ -27,7 +27,11 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
->         shm->paddr = page_to_phys(page);
->         shm->size = PAGE_SIZE << order;
-> 
-> -       if (shm->flags & TEE_SHM_DMA_BUF) {
-> +       /*
-> +        * Shared memory private to the OP-TEE driver doesn't need
-> +        * to be registered with OP-TEE.
-> +        */
-> +       if (!(shm->flags & TEE_SHM_PRIV)) {
->                 unsigned int nr_pages = 1 << order, i;
->                 struct page **pages;
-> 
-> @@ -52,7 +56,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
->  static void pool_op_free(struct tee_shm_pool_mgr *poolm,
->                          struct tee_shm *shm)
->  {
-> -       if (shm->flags & TEE_SHM_DMA_BUF)
-> +       if (!(shm->flags & TEE_SHM_PRIV))
->                 optee_shm_unregister(shm->ctx, shm);
-> 
->         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
-> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-> index c425ad80d6a6..f8b73e734094 100644
-> --- a/drivers/tee/tee_shm.c
-> +++ b/drivers/tee/tee_shm.c
-> @@ -207,7 +207,7 @@ EXPORT_SYMBOL_GPL(tee_shm_alloc);
->   */
->  struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
->  {
-> -       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-> +       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED);
->  }
->  EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
-
-This was a malformed patch due to this hunk. I think an empty line was
-left out of the context.
-
-Tyler
-
-> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-> index 8990f7628387..3ebfea0781f1 100644
-> --- a/include/linux/tee_drv.h
-> +++ b/include/linux/tee_drv.h
-> @@ -27,6 +27,7 @@
->  #define TEE_SHM_USER_MAPPED    BIT(4)  /* Memory mapped in user space */
->  #define TEE_SHM_POOL           BIT(5)  /* Memory allocated from pool */
->  #define TEE_SHM_KERNEL_MAPPED  BIT(6)  /* Memory mapped in kernel space */
-> +#define TEE_SHM_PRIV           BIT(7)  /* Memory private to TEE driver */
-> 
->  struct device;
->  struct tee_device;
-> 
+>
+> Alex
+>
