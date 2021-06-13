@@ -2,118 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C953D3A5730
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 11:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D64A3A573D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 11:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhFMJEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 05:04:11 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22947 "EHLO m43-7.mailgun.net"
+        id S231270AbhFMJWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 05:22:30 -0400
+Received: from mout.gmx.net ([212.227.17.20]:45219 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231277AbhFMJEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 05:04:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623574930; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=dQoeZwVu2n9jRfR6UQm6hwPctLkAmGru9+XJJja6Lvo=; b=vu5qMjjo5EnLRHtI7sOrsaOA3/wsy4d58yDSo5cjhnBIvzl5SiIIxIuiMlyn4Gu1thsjMelu
- HxArDJopEvRW0BS7DSdhN0/71+Yh89xelQKQm/6DbFPVnuMRZwRyg1Kfc6o6MpRDdz4lARFS
- GYlhKk86qQSJ/xS8Jzm8Cz0w50k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60c5c98c8491191eb36e29b9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 13 Jun 2021 09:02:04
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7794AC433D3; Sun, 13 Jun 2021 09:02:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3D256C433D3;
-        Sun, 13 Jun 2021 09:02:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3D256C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ath10k: demote chan info without scan request warning
-References: <20210522171609.299611-1-caleb@connolly.tech>
-        <20210612103640.2FD93C433F1@smtp.codeaurora.org>
-        <f39034ea-f4da-1564-e22f-398e4a1ae077@connolly.tech>
-Date:   Sun, 13 Jun 2021 12:01:56 +0300
-In-Reply-To: <f39034ea-f4da-1564-e22f-398e4a1ae077@connolly.tech> (Caleb
-        Connolly's message of "Sat, 12 Jun 2021 13:00:57 +0000")
-Message-ID: <871r96yw6z.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S230255AbhFMJWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 05:22:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1623576015;
+        bh=4aeYiabSX0nj7F62pRc9fqIhD9O/lda/PM4X2/aALEE=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=bxtIl+Jwm8MDim7+aGMLnj9IuHOdm6ToFc0kfoVdM1kEI29zH509VhMB0nJ5S4One
+         27eG51HJZIs9OZu1s2SN0fmBL4GCsXVEfVE4LVRhRZCDpIPxzeO9OBJnYUHW0FBUtM
+         EZwggSXzXUHpyfCq+N/iX1D23jSqak9jU+FL+C5o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.247]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MwfWU-1l8W0517BS-00y8wI; Sun, 13
+ Jun 2021 11:20:15 +0200
+Date:   Sun, 13 Jun 2021 11:20:12 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>
+Subject: Re: [PATCH 1/8] dt-bindings: arm/npcm: Add binding for global
+ control registers (GCR)
+Message-ID: <YMXNzHv3Fvr+X/XY@latitude>
+References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
+ <20210602120329.2444672-2-j.neuschaefer@gmx.net>
+ <CACRpkdaC8jzzE=9TSs-eRy3j3fk3=k_xhgjPXw7DW=rK=Csx0g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8X9q+WG9BCh5yl+O"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdaC8jzzE=9TSs-eRy3j3fk3=k_xhgjPXw7DW=rK=Csx0g@mail.gmail.com>
+X-Provags-ID: V03:K1:gKrhXXiECnwjKoe6Mb7YC+Nz/AqQK7EUnsB+yuLGUoAFaX2oU89
+ bERQOcRQudZ0FrVyunZiyldjS/NBYv583TKA7hkR6cPAllbhZaqjPqtsKPGsopoBZxrtdDv
+ 6C+BOLGAyG4k1Wq/a6OuB19E0jhWqMvBlFLTJE93Rq0jNRZnYaWAKAAenlPYj2Fx/oZR3CS
+ qMF6Iw3RdvwOxuANQVcvQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hmIBtzr6924=:4izV/eysmc+dyImPz1M5hZ
+ 6mE0WuB+pNcgf+DB7uNBKIJCDFaK7xwcl07K2Zkl6zke+1rU1R3DD8n18Xo7do9MDz1X3EmwU
+ Jxb2kdZRd5XYOxgBi96eFM9sfzrdEov7uJ1T+TIUXHXHpfOcWPpO1vS2tQ2C1gObkUHUhiI25
+ wVdI1KkluSka50dV3dpAVgbR/Y6rl+N9OtaWLhQAfE542v1el3irqXkw39N89McY8iYHGc7cS
+ kYf5mq/s+x3xsCXQTv3om4vyifTxWsQJ3HXPynK/k9NwqBFqbHqx077q6MwQJ51sxfCdvR5Md
+ +z6HiM/plcv5dmgQOOKYh+o5VCdMCMWX7l3Ve/ylJTeBjIN+mCq7V3N5sJQ86wwABJf7sGuEC
+ dL+cg07ziMeqOVMcSbBiwjr70f7bXyXrEk3q8HgDNrdDnzGelvq5DFJYXRkiSsFXLSiN83rXk
+ DduNDCTSRaQEMi1jlqQtyu7Im3yEjkQKpGIyPAisMPSvJctyxp3mt8UIo2UADSSvAMljBP518
+ PcHfKnaY+EqHOAsTXvn59CrG+7rAsFKgV1CICMgkgd4tdZr6PyMgvl2odUBQhNwcNx2uGZKoc
+ rdPoxuuVeW7uCbj4NL6OD2oMl+q7tUIAh9cP+Wg4Esx1tHLAnSdgH70YTQYJ3Raqlv0LybTPK
+ FCGpR4bVS78icgEK9rbVW3n7zsxaUIiL4sUlVVaeaJbfRnXvl8WO8JH500kjOIqtlg5nm0qJ3
+ x3OyzbwuqTouSVodz4mZoJIKoMYu6XAHS0O+LDFzxOHPLu6/O3Da7XsaXVEUxRD/9sQ5XDroB
+ cRMjgb03rHPKfP0L8JYRjot1I5JWQDjBR8Fj2V9U+HurA1Duls9wpMi6VaTnY6iNDoYFGp2rw
+ cAgnZurZAqFdso12csuhfcbK/7Jz89nikSqqkT27WPcmRaAkuchXYE/6dHDjlCwgYMtTBYiVG
+ CFLPxkunAcfM5EymUvApCtSMXX3uD5b1nRobZBQy5vKY3aCOIxYBNPtFBhhgRHQcT0NCgXMhd
+ RsUd+fdHUcAlOhgGyYZ2AbZ87+OzwIOCGYnjSEctdPjzCX66w2o5Hat6Bxb3Mj1ed11DQDSve
+ R80fYBFY0+1vxiBBeCOwLI8xmqVqAF4DD/yzC+8PX/5lLdxnjC0rJ9IBQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Caleb Connolly <caleb@connolly.tech> writes:
 
-> Hi Kalle,
->
-> On 12/06/2021 11:36 am, Kalle Valo wrote:
->> Caleb Connolly <caleb@connolly.tech> wrote:
->>
->>> Some devices/firmwares cause this to be printed every 5-15 seconds,
->>> though it has no impact on functionality. Demote this to a debug
->>> message.
->>>
->>> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
->>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->
-> Is this meant to be an Ack?
+--8X9q+WG9BCh5yl+O
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No, my patchwork script has few quirks and it actually takes the quoted
-text from my pending branch, not from your actual email. That's why you
-see my s-o-b there. I haven't bothered to fix that yet, but hopefully
-one day.
+On Fri, Jun 04, 2021 at 10:00:18AM +0200, Linus Walleij wrote:
+> On Wed, Jun 2, 2021 at 2:04 PM Jonathan Neusch=C3=A4fer
+> <j.neuschaefer@gmx.net> wrote:
+>=20
+> > A nuvoton,*-gcr node is present in nuvoton-common-npcm7xx.dtsi and will
+> > be added to nuvoton-wpcm450.dtsi. It is necessary for the NPCM7xx and
+> > WPCM450 pinctrl drivers, and may later be used to retrieve SoC model and
+> > version information.
+> >
+> > This patch adds a binding to describe this node.
+> >
+> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+>=20
+> (...)
+>=20
+> > +    gcr: gcr@800000 {
+> > +      compatible =3D "nuvoton,npcm750-gcr", "syscon", "simple-mfd";
+> > +      reg =3D <0x800000 0x1000>;
+> > +    };
+>=20
+> gcr looks a bit idiomatic, isn't
+>=20
+> syscon:  syscon@... better?
 
->> On what hardware and firmware version do you see this?
->
-> I see this on SDM845 and MSM8998 platforms, specifically the OnePlus 6
-> devices, PocoPhone F1 and OnePlus 5.
-> On the OnePlus 6 (SDM845) we are stuck with the following signed vendor fw:
->
-> [    9.339873] ath10k_snoc 18800000.wifi: qmi chip_id 0x30214
-> chip_family 0x4001 board_id 0xff soc_id 0x40030001
-> [    9.339897] ath10k_snoc 18800000.wifi: qmi fw_version 0x20060029
-> fw_build_timestamp 2019-07-12 02:14 fw_build_id
-> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c8-00041-QCAHLSWMTPLZ-1
->
-> The OnePlus 5 (MSM8998) is using firmware:
->
-> [ 6096.956799] ath10k_snoc 18800000.wifi: qmi chip_id 0x30214
-> chip_family 0x4001 board_id 0xff soc_id 0x40010002
-> [ 6096.956824] ath10k_snoc 18800000.wifi: qmi fw_version 0x1007007e
-> fw_build_timestamp 2020-04-14 22:45 fw_build_id
-> QC_IMAGE_VERSION_STRING=WLAN.HL.1.0.c6-00126-QCAHLSWMTPLZ-1.211883.1.278648.
+I think I'll go with syscon@..., because it's the right generic name,
+but gcr for the label, matching current usage.
 
-Thanks, I'll include this information to the commit log and then apply
-the patch. And I'll assume you have also tested this patch on those
-platforms so that I can add a Tested-on tag?
+> Nitpicky though and looks good to me either way:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-BTW, ath10k should strip that ugly "QC_IMAGE_VERSION_STRING=" string in
-the firmware version. Patches very welcome :)
+Thanks!
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Jonathan Neusch=C3=A4fer
+
+--8X9q+WG9BCh5yl+O
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDFzaEACgkQCDBEmo7z
+X9tLtw//VMgWu2B/K3UESUNI1pfH+CK6F7TOG0Yq4L1wJKPrWvwZ67SkjbITSMNb
+GmkRx16/lrWhOT99XX0/ZxgKxQyEXj1FSJfOM9bs8XhmlLNvVtjdL1TkLEDTX5ll
+ZnR4tymLwStGv9pCvmcGKLFYui3vb0PQ/SiieXzK4xryMvTrxUtvA5amNgf2Vulv
+LTu0QK+G4qFE17tlH0m885njuM6XEdMFHDXhye/uKWY41/7Il0h4mM2WGi/bUZAP
+1AnRx+m8uDkz9ckl2fTrnJowwSJHB2Ql22JvRX/hjMNZsqyvlNZPEIMrLHIpXLaR
+KePUhrtN7PpKYBStaHRvtgcx1xTOVDTRri9OWzjjuXSBYVq5yVp/kYruyGTmCO8G
+UQcUhZskqj2jXIa04OFjc84o2rBl2+Yj2OIxJvpx2UY2aVkZE3b1YVVRPZiyijZ4
+XR3odEmCMna6F6ew6NbGZi5UV9RhCqFcI+AKh7LtI5KbydUw7sWLjq5FV4yYXzsG
+/V/gBCt/i/nRuMjJp5QQtMRc38v16hgAdyHNj1nrIf73VodraYelzanIUnE4MJkv
+c4VcIbDufvnGXvKyLvoCWB6cYvBOQNtsVAfXuFluieV46cYLgVTZiwtNjkw0igwv
+Jp7lODEYkyPb5c1v3cAdJin5rv1FZlV2C38aBuHloZLfN6qK910=
+=aXV9
+-----END PGP SIGNATURE-----
+
+--8X9q+WG9BCh5yl+O--
