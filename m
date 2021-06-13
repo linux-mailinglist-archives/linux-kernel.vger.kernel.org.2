@@ -2,137 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A403A5716
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 10:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A547B3A571B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 10:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231600AbhFMIZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 04:25:31 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:45336 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbhFMIZ2 (ORCPT
+        id S231245AbhFMI2i convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Jun 2021 04:28:38 -0400
+Received: from out28-124.mail.aliyun.com ([115.124.28.124]:34219 "EHLO
+        out28-124.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhFMI2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 04:25:28 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d41 with ME
-        id GYPS2500221Fzsu03YPSex; Sun, 13 Jun 2021 10:23:26 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 13 Jun 2021 10:23:26 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 3/3] scsi: mptbase: use 'dma_set_mask_and_coherent()' to simplify code
-Date:   Sun, 13 Jun 2021 10:23:24 +0200
-Message-Id: <a93e5e750d9d7bbbd873eaa4de2f968341ade7f3.1623571676.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1623571676.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1623571676.git.christophe.jaillet@wanadoo.fr>
+        Sun, 13 Jun 2021 04:28:37 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1052365|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0758817-0.0072256-0.916893;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=21;RT=21;SR=0;TI=SMTPD_---.KRgdwVg_1623572789;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KRgdwVg_1623572789)
+          by smtp.aliyun-inc.com(10.147.41.121);
+          Sun, 13 Jun 2021 16:26:31 +0800
+Date:   Sun, 13 Jun 2021 16:26:28 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com, paul@crapouillou.net
+Subject: Re: [PATCH v2 2/2] net: stmmac: Add Ingenic SoCs MAC support.
+Message-ID: <20210613162628.2a21d7ea@zhouyanjie-virtual-machine>
+In-Reply-To: <YMIk0NfOPryoY607@lunn.ch>
+References: <1623260110-25842-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1623260110-25842-3-git-send-email-zhouyanjie@wanyeetech.com>
+        <YMGEutCet7fP1NZ9@lunn.ch>
+        <405696cb-5987-0e56-87f8-5a1443eadc19@wanyeetech.com>
+        <YMICTvjyEAgPMH9u@lunn.ch>
+        <346f64d9-6949-b506-258f-4cfa7eb22784@wanyeetech.com>
+        <YMIk0NfOPryoY607@lunn.ch>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'dma_set_mask_and_coherent()' instead of
-'dma_set_mask()/dma_set_coherent_mask()', it is less verbose.
+Hi Andrew,
 
-While at it, fix a typo in a comment (s/Reseting/Resetting/).
+于 Thu, 10 Jun 2021 16:42:24 +0200
+Andrew Lunn <andrew@lunn.ch> 写道:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-The code about the "1078 errata workaround" (around line 4449) looks
-spurious to me. Test, value of 'dma_mask' and message are all about 35 bit
-addressing, BUT the code uses DMA_BIT_MASK(32).
-Having 35 here would look more logical to me
+> >     We are much more strict about this now than before. You have to
+> > use standard units and convert to hardware values. It also makes it
+> > a lot easier for DT writers, if they have an idea what the units
+> > mean.
+> > 
+> >     Having the MAC add small delays is something you can add later,
+> >     without breaking backwards compatibility. So if you cannot
+> > determine what the units are now, just submit the glue driver
+> > without support for this feature. If anybody really needs it, they
+> > can do the needed research, maybe do some measurements, and then
+> > add the code.
+> > 
+> > 
+> > I did an experiment, when the tx delay is not set, RGMII works a  
+> 
+> You had rgmii-id in your device tree, so that the PHY added the
+> delays?
 
-Just my 2 cents.
----
- drivers/message/fusion/mptbase.c | 30 ++++++++++++------------------
- 1 file changed, 12 insertions(+), 18 deletions(-)
+I have tried rgmii-id and rgmii-txid. If we don’t add a fine-tuning
+parameter, it still can’t work properly. In these two modes, we still
+need to add about 500ps delay on the mac side to ensure it works
+properly.
 
-diff --git a/drivers/message/fusion/mptbase.c b/drivers/message/fusion/mptbase.c
-index 2add74f92323..ad3f5d8a5f7c 100644
---- a/drivers/message/fusion/mptbase.c
-+++ b/drivers/message/fusion/mptbase.c
-@@ -1665,15 +1665,14 @@ mpt_mapresources(MPT_ADAPTER *ioc)
- 	if (sizeof(dma_addr_t) > 4) {
- 		const uint64_t required_mask = dma_get_required_mask
- 		    (&pdev->dev);
--		if (required_mask > DMA_BIT_MASK(32)
--			&& !dma_set_mask(&pdev->dev, DMA_BIT_MASK(64))
--			&& !dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64))) {
-+		if (required_mask > DMA_BIT_MASK(32) &&
-+		    !dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
- 			ioc->dma_mask = DMA_BIT_MASK(64);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 64 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
- 				ioc->name));
--		} else if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))
--			   && !dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32))) {
-+		} else if (!dma_set_mask_and_coherent(&pdev->dev,
-+						      DMA_BIT_MASK(32))) {
- 			ioc->dma_mask = DMA_BIT_MASK(32);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 32 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
-@@ -1684,8 +1683,7 @@ mpt_mapresources(MPT_ADAPTER *ioc)
- 			goto out_pci_release_region;
- 		}
- 	} else {
--		if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))
--			&& !dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32))) {
-+		if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
- 			ioc->dma_mask = DMA_BIT_MASK(32);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 32 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
-@@ -4451,19 +4449,17 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 		 */
- 		if (ioc->pcidev->device == MPI_MANUFACTPAGE_DEVID_SAS1078 &&
- 		    ioc->dma_mask > DMA_BIT_MASK(35)) {
--			if (!dma_set_mask(&ioc->pcidev->dev, DMA_BIT_MASK(32))
--			    && !dma_set_coherent_mask(&ioc->pcidev->dev, DMA_BIT_MASK(32))) {
-+			if (!dma_set_mask_and_coherent(&ioc->pcidev->dev,
-+						       DMA_BIT_MASK(32))) {
- 				dma_mask = DMA_BIT_MASK(35);
- 				d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 				    "setting 35 bit addressing for "
- 				    "Request/Reply/Chain and Sense Buffers\n",
- 				    ioc->name));
- 			} else {
--				/*Reseting DMA mask to 64 bit*/
--				dma_set_mask(&ioc->pcidev->dev,
--					     DMA_BIT_MASK(64));
--				dma_set_coherent_mask(&ioc->pcidev->dev,
--						      DMA_BIT_MASK(64));
-+				/* Resetting DMA mask to 64 bit */
-+				dma_set_mask_and_coherent(&ioc->pcidev->dev,
-+							  DMA_BIT_MASK(64));
- 
- 				printk(MYIOC_s_ERR_FMT
- 				    "failed setting 35 bit addressing for "
-@@ -4599,8 +4595,7 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 	}
- 
- 	if (dma_mask == DMA_BIT_MASK(35) &&
--	    !dma_set_mask(&ioc->pcidev->dev, ioc->dma_mask) &&
--	    !dma_set_coherent_mask(&ioc->pcidev->dev, ioc->dma_mask))
-+	    !dma_set_mask_and_coherent(&ioc->pcidev->dev, ioc->dma_mask))
- 		d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 		    "restoring 64 bit addressing\n", ioc->name));
- 
-@@ -4624,8 +4619,7 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 	}
- 
- 	if (dma_mask == DMA_BIT_MASK(35) &&
--	    !dma_set_mask(&ioc->pcidev->dev, DMA_BIT_MASK(64)) &&
--	    !dma_set_coherent_mask(&ioc->pcidev->dev, DMA_BIT_MASK(64)))
-+	    !dma_set_mask_and_coherent(&ioc->pcidev->dev, DMA_BIT_MASK(64)))
- 		d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 		    "restoring 64 bit addressing\n", ioc->name));
- 
--- 
-2.30.2
+Thanks and best regards!
 
+> 
+> 	Andrew
