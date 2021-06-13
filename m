@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8CD3A5740
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 11:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9F83A575B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 11:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhFMJZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 05:25:14 -0400
-Received: from mout.gmx.net ([212.227.17.21]:44317 "EHLO mout.gmx.net"
+        id S231533AbhFMJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 05:35:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230255AbhFMJZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 05:25:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623576186;
-        bh=okNCnhz8ZcJc8WTr8+XvkczOnp6GsFLk6kg/e2sFsg8=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=eRvjSB0iWPWP66dr02za6lhNEELH+HFGuVB2iXxnZG2rIqunvxVi8KTAT8OEtqZEI
-         D4aw0k/OgsYKFPzfysV/gJtavawYqeUk2KSuCKv/29bK0BIPTxCp+u1rpbUkFKcrdB
-         IjQgSkqMadz5C+ko4A2Ctx1TceV7rknehg3mChwk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.247]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N95eJ-1lDmE12cUh-016APA; Sun, 13
- Jun 2021 11:23:06 +0200
-Date:   Sun, 13 Jun 2021 11:23:04 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/8] ARM: dts: wpcm450: Add global control registers
- (GCR) node
-Message-ID: <YMXOeBWu31LC+23X@latitude>
-References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
- <20210602120329.2444672-4-j.neuschaefer@gmx.net>
- <CACRpkdY7AqcE4CMAdZHR-DfV-3ZCO3h9kYUZoZCUodLQmyyfXw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="e6m2u25cBZWWEgkD"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdY7AqcE4CMAdZHR-DfV-3ZCO3h9kYUZoZCUodLQmyyfXw@mail.gmail.com>
-X-Provags-ID: V03:K1:7dJQb3p8adrc+g8Un5qHDgxFkFzatiPk/BDCWczj+T39aSmdeul
- r3ibglWBNORKNbCUZZI39cr2UkhymiYhva5qwHtDbc+DB31IN/o1cyV/hLLrBZLLkR8HrJ4
- SBn0WN7jiVPwfNuACbNi8Rl1YkNm7cvUqwJ0BXhEr1WTChESP9D+WR5NMX2UngBSGLRLSMD
- 58MA08VMhfSEvKX0EHE1w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8WwyLXGQffA=:LDai38MS5FyP7r2snIsCT9
- v18Fc7ffHbAdpyb4Rwqe6rNLKW25A9JUYOript0Q0WgZ52JOJOx2ytvxxeIuNg8oCM6C3H9bF
- 5AlgItw5/M/GraEM/fh7SFCBposrFRh+W5V70T0HeKgQSm6Xor3Jr/8qwE3L84NXDFlhecuqV
- fj6ymLSr4aKKhC3LFd/tzK6oyZYLrWpfoSXLg8bDSyP4pG1J/fZLWBktfK3Q6ztcphwHFK2x/
- Gw0VnFXQK/BTN4B5cnmarTgAKXOCbzqCNFbkJ+DJ7c2f0xBTFm3IatJbx1cUZ9XdIwIotLqP7
- JwAZIEC4WNJ1kbze3vGtsgmedJZl5vuWLN0h5Tv7MwvI/cSvlu2SiOmEhmc2bPN6Cc3a88/t4
- 19okC490OZ/tMYVII9GlpTIDyVcKqOdq6fphyKEDhTwY9UP52sfDvnBrL++QdGL8ugvcXFWMQ
- 1M5oOJFBturcje4LontH3HROBIMhfiBh7jmtOJLsRK2Dj1lyQfm0za52/14jAb3MWQa9OeSXp
- Bq1pqFsusu8RJs4b8F63qbs2o8EGj7RhjOvMTUELdsGtGCUwRhfY7TpOwbHL4h/qIxgL15pVa
- fjiF8Lns0xggXFm04WHA/wOKYvmofP7SWCvSTlAuSdlXZaXaR/rHNgoDXEENC5KqKGJxMdvvN
- fBjSzmStzNT5FtxGUhlEQyfy9MT2j6pd8Kzn0jqci2WXOErW7uXjJrN4uteIPVGv10MM7CtM/
- WvEvS9xNRxH+46CvPRC/fF4lBTRPjS8TEw3q40ZgY5+pdLd9BMhvzU5u35/7KoBpdcrjVvYUg
- S1x0OhnDvWtON8Rmk5yEBHeX+/Vst2p2xK4ZI+QiBb2DlmJYGx30bTBVBpMzDMI3aNvJPhtat
- cNEC6fPENScb2haC7WTPWHcp6Bm5MVgx658KfOcRpXB11O1IYFI27NQRLHKbJjN8ZjPok1omw
- CjJ0yO24THU+8sDNUrvZtbLaFb+1aBvynlPUfFWbU7LaQDUFYXxLXojcki3mMn7Tfuv5xg3W/
- YkaktY7cVYqzbTpxO7X7sR0T65uLxOc2I1EeCtQEzgRVWlg4pPSs+fAAv3RG78IkxoRYPt7vI
- X6m2bD4QK8Oa2IQOWwbIDm+KRHaM9ddHePFI/mWkOWTbnhc2mLNwNPAQw==
+        id S230255AbhFMJfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 05:35:07 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9FC86109E;
+        Sun, 13 Jun 2021 09:33:06 +0000 (UTC)
+Received: from [185.219.108.64] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lsMUK-007FuW-Se; Sun, 13 Jun 2021 10:33:05 +0100
+Date:   Sun, 13 Jun 2021 10:33:06 +0100
+Message-ID: <87a6nut8h9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH v1 04/10] RISC-V: Use IPIs for remote TLB flush when possible
+In-Reply-To: <20210612160422.330705-5-anup.patel@wdc.com>
+References: <20210612160422.330705-1-anup.patel@wdc.com>
+        <20210612160422.330705-5-anup.patel@wdc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anup.patel@wdc.com, palmer@dabbelt.com, palmerdabbelt@google.com, paul.walmsley@sifive.com, tglx@linutronix.de, daniel.lezcano@linaro.org, robh+dt@kernel.org, atish.patra@wdc.com, Alistair.Francis@wdc.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 12 Jun 2021 17:04:16 +0100,
+Anup Patel <anup.patel@wdc.com> wrote:
+> 
+> If IPI calls are injected using SBI IPI calls then remote TLB flush
+> using SBI RFENCE calls is much faster because using IPIs for remote
+> TLB flush would still endup as SBI IPI calls with extra processing
+> on kernel side.
+> 
+> It is now possible to have specialized hardware (such as RISC-V AIA)
+> which allows S-mode software to directly inject IPIs without any
+> assistance from M-mode runtime firmware.
+> 
+> This patch extends remote TLB flush functions to use IPIs whenever
+> underlying IPI operations are suitable for remote FENCEs.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> ---
+>  arch/riscv/mm/tlbflush.c | 62 +++++++++++++++++++++++++++++++---------
+>  1 file changed, 48 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 720b443c4528..009c56fa102d 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -1,39 +1,73 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * TLB flush implementation.
+> + *
+> + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
+> + */
 
---e6m2u25cBZWWEgkD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I find this a bit odd. You don't mention this addition in the commit
+message, and a quick look at the commits touching tlbflush.[ch]
+doesn't make the copyright assignment obvious (most commits originate
+from either SiFive or Christoph).
 
-On Fri, Jun 04, 2021 at 10:01:07AM +0200, Linus Walleij wrote:
-> On Wed, Jun 2, 2021 at 2:04 PM Jonathan Neusch=C3=A4fer
-> <j.neuschaefer@gmx.net> wrote:
->=20
-> > The Global Control Registers (GCR) are a block of registers in Nuvoton
-> > SoCs that expose misc functionality such as chip model and version
-> > information or pinmux settings.
-> >
-> > This patch adds a GCR node to nuvoton-wpcm450.dtsi in preparation for
-> > enabling pinctrl on this SoC.
-> >
-> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
->=20
-> As noted I would name this architecture-neutral with
-> syscon@...
+In any way, please keep this kind of changes out of this series if
+possible, and have a separate discussion on who gets to brag about
+this code.
 
-Will do.
+Thanks,
 
+	M.
 
-Jonathan Neusch=C3=A4fer
-
---e6m2u25cBZWWEgkD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDFzngACgkQCDBEmo7z
-X9t6JQ//chcN7SkKZs+e33NvgLaS4erJo3PPq7tgIrSyot+fc9+JClf7/gK3sdxw
-Y4LJaOFI+Ueg6nrQXayFFni61GC1DEMtCoLQbgWsR8G91H5HHA5gBXmWu/9GKNTE
-ctuNCII0PKszX/jB3hMDP4rQ0szMZNjWQShbtOMgBUMvMarOtXzJBNb4Pblh3GYI
-DODgdRfIMIQZDPRUpVq2OwamCpD3sX4QUY9XGSJtm9uj3unvVzCroDmzZuf0FnYq
-USgZCEsFnpTtq87+TMUw/mO5LEK4vD4H5tZ7GYguVpiwJr8fW8qzY1xxkFgM4rmb
-qK9vH+bot2jkKwn4xIpK528YOnBAuo5zF+VcIu+y9KPWDOCEZH7+qb/mKyXUv2Sm
-vS2+LPkXc0YjVvSCR7p6wWwvsS3djpBIVkVA8y3Dj5TiJhih/yJd+UVr9SlaEB8y
-u7RWu9Whbhz6wPpEBHE6sn7bhT7ArM3ZKqMvvv3eKOI3osqaol/vnHRFch5qNaMC
-Anz4TCT7h3NpFtXodAfbel/Czznhl06EN8EWp0HaCWz+0aV4plR0K4le0wNdnfW7
-nlgy/cD2SozTC1+048iR8pv8SHQEVxBEb9eFtTsMIWWhoYxH/mscuR7NFtYPDc1I
-GtQXVYzAlftsfU6QMY/3zZwlrcAJt6L+xqkeQGJQyetHCLFlSco=
-=flg7
------END PGP SIGNATURE-----
-
---e6m2u25cBZWWEgkD--
+-- 
+Without deviation from the norm, progress is not possible.
