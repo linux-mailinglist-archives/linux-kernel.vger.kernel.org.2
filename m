@@ -2,171 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DE73A5178
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 02:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87773A517D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 02:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhFMA1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 20:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
+        id S231579AbhFMAei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 20:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbhFMA1G (ORCPT
+        with ESMTP id S229777AbhFMAed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 20:27:06 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C181EC061574;
-        Sat, 12 Jun 2021 17:25:05 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id t6so1289697lfk.2;
-        Sat, 12 Jun 2021 17:25:05 -0700 (PDT)
+        Sat, 12 Jun 2021 20:34:33 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8116C061574;
+        Sat, 12 Jun 2021 17:32:31 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id w4so11169323qvr.11;
+        Sat, 12 Jun 2021 17:32:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KIwbG53ecWl77WVsi2ropmqeb/Fl2ifGF7YYQIbAPD4=;
-        b=Cu1R1EbM6rac6aVxHGFvmMiYgMKPS2Hz0D3jGkIkgBiR3lV/GSsBOjlmQDJku0/O6Q
-         qfEfhR4p0ieyhSSG/XdrtgDcEtm3dwFZ/ELH9OsEBCTsGr4MVsExyIPyLYSmHihdtewg
-         Lrvwt9LiZNkKhZLeRRjiCtgI2qpJa/tsy0nkS7TLXQfTtnLekfTcYJwDMAAaj6Omfoyt
-         vni4EcToXIeiOsqXdypmXETVKgOBxy1gcbEFDpog2DHYn48RjZzOAZF3tl9QQq0lkhQa
-         l5eXhuyKZCk13P4idIWH9IGjhXRjmOJVtbm78hwT0W+nlqI94F1Bl2b5yEKpeO1ig5yH
-         RY0Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FNzPKnSXhXWUUtCqhfyDGdE5DfwKp+pUbI/lt2bIt54=;
+        b=X7BVkoFhomXc6Mr06l1zFOCcjKm24UnyDK5ut72hZIk362Qp/5S0LB6lpqL+26jwad
+         EFrFv6ZkFQT5s5kFXyH9bf4zYqqN40npBqk6sE94E78HmvMKff+5yE0dOE4QqRtOW9ng
+         6Z6etzslhE82ujx/f2Q/K68YF1s7XhjhSsF0+eqfzi9d2UD2ICH1MFAaW/J/Dc40n3kV
+         rjPj+A34eK9hKcCuE2MV+YBJCAitL6JFRy8amaN6D7V8VlcSPqsXPt76fUTM9P3JP/WR
+         cMKqm1m/+TzPSBHQ0vtgsQkosdhEzQVXp9k558BWb9AKRIuFxXMd6/hP+DM3QhlLCRbs
+         aMJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KIwbG53ecWl77WVsi2ropmqeb/Fl2ifGF7YYQIbAPD4=;
-        b=p89iWNMI7zJ9XiXqN7Dli8Jir2P+XHMbNIKmVmFWNmETRFKlUWFtildBgEKFgQkMCz
-         uvld+lq+Wq82s9jFhIJiuQghjSdzTIkRhC7YzsRY/VWwfdyhHSzOuZLfRU8ZeYTdXA6U
-         YoC2VXaV4j8n3+vx9zeZGIOVyw3G+tSjXtMRV8UjxXGZ0IbkmrmUApFB+gRDUsO7mbL2
-         j9j1GMIo8qRh6L35Onjqkh24iDSiVS2r4+gn66Rs/sk2prLq2ziPh5RIHYKnqpkFf38L
-         vQj1LzP89hAXqc8hfxYSrSPArWhp9yTbBwcac2VZZlDu31TyRkT0tyQTElfl3HoHusp1
-         Ly9g==
-X-Gm-Message-State: AOAM531EJk2q5H0wJvvlGK5+otwgyHyJ6coyIEbGfqmXH3tzi06+HbeF
-        pj5IaYZC283RMFjIt3Pxa7uLrhxNxOs=
-X-Google-Smtp-Source: ABdhPJzu8AnTInHWsGBbHE66gMIhly8XL6gg8cIJBn2KKEDEv8y/ZNCBh54zTTLJCH97wJrrZ/A8Vg==
-X-Received: by 2002:a19:ef0a:: with SMTP id n10mr7101704lfh.352.1623543904010;
-        Sat, 12 Jun 2021 17:25:04 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-10-201.dynamic.spd-mgts.ru. [94.29.10.201])
-        by smtp.googlemail.com with ESMTPSA id f6sm325008lfm.28.2021.06.12.17.25.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Jun 2021 17:25:03 -0700 (PDT)
-Subject: Re: [PATCH v1 03/10] ARM: tegra: acer-a500: Bump thermal trips by 10C
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210510202600.12156-1-digetx@gmail.com>
- <20210510202600.12156-4-digetx@gmail.com>
- <20210514211601.GA1969@qmqm.qmqm.pl>
- <ecc89faf-97f5-65e9-0eb8-93c8414c69e5@linaro.org>
- <eedb5792-d3a5-78b3-ec89-b26d2e45f9c4@gmail.com>
- <c65a732d-b203-a1a0-e90b-0aa0664cfb55@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e73b64b2-77a8-3671-1fc6-0bf77e2287c4@gmail.com>
-Date:   Sun, 13 Jun 2021 03:25:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FNzPKnSXhXWUUtCqhfyDGdE5DfwKp+pUbI/lt2bIt54=;
+        b=Df/odb75Ffx6CQgqi1FerD/xcjVnk0fSnTbo5roqNK3TB7iaTueJGQKIjnDVUevr8r
+         iVNFY29AF6mqFgbMC7Hjh4OsM6a0GeA//DPQJyPTYQPQYH1t964PHll41BZR2wN/axAw
+         bKwdNamji5K8jE6J88d4Dw+LyR7ALOYw15xFCVACA/Mkalk1+xS6mRcuWxiCAyOoJqOm
+         oYNvzTwyHce8pzTY+aNnKKEwL6BOMEs1HmVYNKmMdDCUuFWo4dV4iI4wVnB3xNL3w8c6
+         gvAGgxBqg9HA4BrIZhBU8W2R/4yTP5C+zOfwOOdrgSEJNrAkzMd/bP1uHHPY+kCftJ/M
+         eWTg==
+X-Gm-Message-State: AOAM531PveSiXQ5ma0gv6UGKV7wJQlXAUDFeoGOJxIuMB72lugve0Kmk
+        mH1zhKieFcquSg3BNXb6YcY=
+X-Google-Smtp-Source: ABdhPJzem78VQKF5fPsK00zoYwH1QbcT2d8vLvKIOk+qMLiPR4DzgIdzj4zIy4RMpWfZs7QkFTtEvw==
+X-Received: by 2002:ad4:424b:: with SMTP id l11mr11991733qvq.58.1623544349820;
+        Sat, 12 Jun 2021 17:32:29 -0700 (PDT)
+Received: from localhost ([12.21.13.160])
+        by smtp.gmail.com with ESMTPSA id 7sm7076168qtx.33.2021.06.12.17.32.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Jun 2021 17:32:29 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 17:32:28 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 7/8] all: replace find_next{,_zero}_bit with
+ find_first{,_zero}_bit where appropriate
+Message-ID: <YMVSHCY9yEocmfVD@yury-ThinkPad>
+References: <20210612123639.329047-1-yury.norov@gmail.com>
+ <20210612123639.329047-8-yury.norov@gmail.com>
+ <CAHp75VerU1NJMweWCR7MsE9hiMFZyJP8m751OFKmGrJ1gVhMWw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c65a732d-b203-a1a0-e90b-0aa0664cfb55@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VerU1NJMweWCR7MsE9hiMFZyJP8m751OFKmGrJ1gVhMWw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.06.2021 17:24, Daniel Lezcano пишет:
-> On 12/06/2021 12:40, Dmitry Osipenko wrote:
->> 11.06.2021 12:52, Daniel Lezcano пишет:
->>> On 14/05/2021 23:16, Michał Mirosław wrote:
->>>> On Mon, May 10, 2021 at 11:25:53PM +0300, Dmitry Osipenko wrote:
->>>>> It's possible to hit the temperature of the thermal zone in a very warm
->>>>> environment under a constant load, like watching a video using software
->>>>> decoding. It's even easier to hit the limit with a slightly overclocked
->>>>> CPU. Bump the temperature limit by 10C in order to improve user
->>>>> experience. Acer A500 has a large board and 10" display panel which are
->>>>> used for the heat dissipation, the SoC is placed far away from battery,
->>>>> hence we can safely bump the temperature limit.
->>>>
->>>> 60^C looks like a touch-safety limit (to avoid burns for users). Did you
->>>> verify the touchable parts' temperature somehow after the change?
->>>
->>> The skin temperature and the CPU/GPU etc ... temperatures are different
->>> things.
->>>
->>> For the embedded system there is the dissipation system and a
->>> temperature sensor on it which is the skin temp. This temperature is the
->>> result of the heat of all the thermal zones on the board and must be
->>> below 45°C. The temperature slowly changes.
->>>
->>> On the CPU, the temperature changes can be very fast and you have to
->>> take care of keeping it below the max temperature specified in the TRM
->>> by using different techniques (freq changes, idle injection, ...) but
->>> the temperature can be 75°C, 85°C or whatever the manual says.
->>>
->>> 50°C and 60°C are low temperature for a CPU and that will inevitably
->>> impact the performances, so setting the temperature close the max
->>> temperature is what will allow max performances.
->>>
->>> What matters is the skin temperature.
->>>
->>> The skin temperature must be monitored by other techniques, eg. using
->>> the TDP of the system and throttle the different devices to keep them in
->>> this power budget. That is the role of an thermal daemon.
->>
->> Thank you for the clarification. Indeed, I wasn't sure how to make use
->> of the skin temperature properly.
->>
->> The skin temperature varies a lot depending on the thermal capabilities
->> of a particular device. It's about 15C below CPU core at a full load on
->> A500, while it's 2C below CPU core on Nexus 7. But this is expected
->> since Nexus 7 can't dissipate heat efficiently.
-> Yeah, but it can not be directly related to the CPU because if the GPU
-> is intensively used and the battery is charging at the same time, the
-> skin temp will increase anyway.
-
-Sure, we just added the memory devfreq throttling as a cooling device to
-Nexus 7 and Ouya DTs in addition to the CPU throttling.
-
-The GPU and other h/w units are on the pending list. For the starter we
-need to add GENPD and runtime PM support to all drivers, which solves
-the overheating problem of idling systems. We have Tegra30 Ouya game
-console that is getting hot during idle without the runtime PM support.
-Afterwards we can add the devfreq support to improve the active cooling.
-I'm already working on it.
-
-> You should set the trip points close to the functioning boundary
-> temperature given in the hardware specification whatever the resulting
-> heating effect is on the device.
+On Sun, Jun 13, 2021 at 12:47:31AM +0300, Andy Shevchenko wrote:
+> On Sat, Jun 12, 2021 at 3:39 PM Yury Norov <yury.norov@gmail.com> wrote:
+> >
+> > find_first{,_zero}_bit is a more effective analogue of 'next' version if
+> > start == 0. This patch replaces 'next' with 'first' where things look
+> > trivial.
 > 
-> The thermal zone is there to protect the silicon and the system from a
-> wild reboot.
+> Depending on the maintainers (but I think there will be at least few
+> in this case) they would like to have this be split on a per-driver
+> basis.
+> I counted 17 patches. I would split.
 > 
-> If the Nexus 7 is too hot after the changes, then you may act on the
-> sources of the heat. For instance, set the the highest OPP to turbo or
-> remove it, or, if there is one, change the thermal daemon to reduce the
-> overall power consumption.
-> In case you are interested in: https://lwn.net/Articles/839318/
+> Since many of them are independent you may send without Cc'ing all
+> non-relevant people in each case.
 
-The DTPM is a very interesting approach. For now Tegra still misses some
-basics in mainline kernel which have a higher priority, so I think it
-should be good enough to perform the in-kernel thermal management for
-the starter. We may consider a more complex solutions later on if will
-be necessary.
+submitting-patches.rst says:
 
-What I'm currently thinking to do is:
+        On the other hand, if you make a single change to numerous files,
+        group those changes into a single patch.  Thus a single logical change
+        is contained within a single patch.
 
-1. Set up the trips of SoC/CPU core thermal zones in accordance to the
-silicon limits.
+Also refer 96d4f267e40f9 ("Remove 'type' argument from access_ok() functioin.")
 
-2. Set up the skin trips in accordance to the device limits.
-
-The breached skin trips will cause a mild throttling, while the SoC/CPU
-trips will be allowed to cause the severe throttling. Does this sound
-good to you?
-
-> Hope that helps
-
-Helps a lot, thank you very much.
+Yury
