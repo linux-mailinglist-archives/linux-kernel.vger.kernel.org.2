@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5D43A5A3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 21:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47533A5A41
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 21:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhFMTxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 15:53:05 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:56880 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbhFMTxE (ORCPT
+        id S231889AbhFMUBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 16:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231788AbhFMUBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 15:53:04 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4G34vN64Cwz1qtQV;
-        Sun, 13 Jun 2021 21:50:56 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4G34vN363qz1qsYj;
-        Sun, 13 Jun 2021 21:50:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id HJAVNxtJklRu; Sun, 13 Jun 2021 21:50:54 +0200 (CEST)
-X-Auth-Info: LElrgumow5j7MizGUQKNpWrnXWIF9Qr7mZEEQCIJzLKJl+b0lrS27gPvl8MTWt4G
-Received: from igel.home (ppp-46-244-177-185.dynamic.mnet-online.de [46.244.177.185])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Sun, 13 Jun 2021 21:50:54 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id D34602C369D; Sun, 13 Jun 2021 21:50:53 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 7/9] riscv: bpf: Avoid breaking W^X
-References: <20210330022144.150edc6e@xhacker>
-        <20210330022521.2a904a8c@xhacker> <87o8ccqypw.fsf@igel.home>
-        <20210612002334.6af72545@xhacker> <87bl8cqrpv.fsf@igel.home>
-        <20210614010546.7a0d5584@xhacker>
-X-Yow:  ..  Once upon a time, four AMPHIBIOUS HOG CALLERS attacked a family
- of DEFENSELESS, SENSITIVE COIN COLLECTORS and brought DOWN their
- PROPERTY VALUES!!
-Date:   Sun, 13 Jun 2021 21:50:53 +0200
-In-Reply-To: <20210614010546.7a0d5584@xhacker> (Jisheng Zhang's message of
-        "Mon, 14 Jun 2021 01:05:46 +0800")
-Message-ID: <87im2hsfvm.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Sun, 13 Jun 2021 16:01:19 -0400
+Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAF3C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 12:59:17 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id CBAC5222;
+        Sun, 13 Jun 2021 21:59:13 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id EDEJtg76cm0w; Sun, 13 Jun 2021 21:59:11 +0200 (CEST)
+Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 301D34F;
+        Sun, 13 Jun 2021 21:59:11 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.94.2)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1lsWGE-004hMP-1D; Sun, 13 Jun 2021 21:59:10 +0200
+Date:   Sun, 13 Jun 2021 21:59:09 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org,
+        Trevor Astrope <astrope@tabbweb.com>
+Subject: [speakup] Separate out translations for bright colors names
+Message-ID: <20210613195909.n7ssor6iqeo3pcno@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        speakup@linux-speakup.org, Trevor Astrope <astrope@tabbweb.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spamd-Bar: --
+Authentication-Results: hera.aquilenet.fr
+X-Rspamd-Server: hera
+X-Rspamd-Queue-Id: CBAC5222
+X-Spamd-Result: default: False [-2.50 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         HAS_ORG_HEADER(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         BAYES_HAM(-3.00)[100.00%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jun 14 2021, Jisheng Zhang wrote:
+The existing code was assuming that bright color names can be forged by just
+prepending the "bright" word to the color name. But some langages may rather
+append it, or require completely different names ("grey" is actually already an
+example).
 
-> I think I found the root cause: commit 2bfc6cd81bd ("move kernel mapping
-> outside of linear mapping") moves BPF JIT region after the kernel:
->
-> #define BPF_JIT_REGION_START   PFN_ALIGN((unsigned long)&_end)
->
-> The &_end is unlikely aligned with PMD SIZE, so the front bpf jit region
-> sits with kernel .data section in one PMD. But kenrel is mapped in PMD SIZE,
-> so when bpf_jit_binary_lock_ro() is called to make the first bpf jit prog
-> ROX, we will make part of kernel .data section RO too, so when we write, for example
-> memset the .data section, MMU will trigger store page fault.
->
-> To fix the issue, we need to make the bpf jit region PMD size aligned by either
-> patch BPF_JIT_REGION_START to align on PMD size rather than PAGE SIZE, or
-> something as below patch to move the BPF region before modules region:
->
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 9469f464e71a..997b894edbc2 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -31,8 +31,8 @@
->  #define BPF_JIT_REGION_SIZE	(SZ_128M)
->  #ifdef CONFIG_64BIT
->  /* KASLR should leave at least 128MB for BPF after the kernel */
-> -#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
-> -#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
-> +#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
-> +#define BPF_JIT_REGION_END	(MODULES_VADDR)
->  #else
->  #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
->  #define BPF_JIT_REGION_END	(VMALLOC_END)
-> @@ -40,8 +40,8 @@
->  
->  /* Modules always live before the kernel */
->  #ifdef CONFIG_64BIT
-> -#define MODULES_VADDR	(PFN_ALIGN((unsigned long)&_end) - SZ_2G)
->  #define MODULES_END	(PFN_ALIGN((unsigned long)&_start))
-> +#define MODULES_VADDR	(MODULES_END - SZ_128M)
->  #endif
->  
->  
-> can you please try it? Per my test, the issue is fixed.
+From: Trevor Astrope <astrope@tabbweb.com>
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-I can confirm that this fixes the issue.
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Index: linux/drivers/accessibility/speakup/i18n.c
+===================================================================
+--- linux.orig/drivers/accessibility/speakup/i18n.c
++++ linux/drivers/accessibility/speakup/i18n.c
+@@ -90,6 +90,13 @@ static char *speakup_default_msgs[MSG_LA
+ 	[MSG_COLOR_YELLOW] = "yellow",
+ 	[MSG_COLOR_WHITE] = "white",
+ 	[MSG_COLOR_GREY] = "grey",
++	[MSG_COLOR_BRIGHTBLUE] "bright blue",
++	[MSG_COLOR_BRIGHTGREEN] "bright green",
++	[MSG_COLOR_BRIGHTCYAN] "bright cyan",
++	[MSG_COLOR_BRIGHTRED] "bright red",
++	[MSG_COLOR_BRIGHTMAGENTA] "bright magenta",
++	[MSG_COLOR_BRIGHTYELLOW] "bright yellow",
++	[MSG_COLOR_BRIGHTWHITE] "bright white",
+ 
+ 	/* Names of key states. */
+ 	[MSG_STATE_DOUBLE] = "double",
+Index: linux/drivers/accessibility/speakup/i18n.h
+===================================================================
+--- linux.orig/drivers/accessibility/speakup/i18n.h
++++ linux/drivers/accessibility/speakup/i18n.h
+@@ -99,7 +99,14 @@ enum msg_index_t {
+ 	MSG_COLOR_YELLOW,
+ 	MSG_COLOR_WHITE,
+ 	MSG_COLOR_GREY,
+-	MSG_COLORS_END = MSG_COLOR_GREY,
++	MSG_COLOR_BRIGHTBLUE,
++	MSG_COLOR_BRIGHTGREEN,
++	MSG_COLOR_BRIGHTCYAN,
++	MSG_COLOR_BRIGHTRED,
++	MSG_COLOR_BRIGHTMAGENTA,
++	MSG_COLOR_BRIGHTYELLOW,
++	MSG_COLOR_BRIGHTWHITE,
++	MSG_COLORS_END = MSG_COLOR_BRIGHTWHITE,
+ 
+ 	MSG_STATES_START,
+ 	MSG_STATE_DOUBLE = MSG_STATES_START,
+Index: linux/drivers/accessibility/speakup/main.c
+===================================================================
+--- linux.orig/drivers/accessibility/speakup/main.c
++++ linux/drivers/accessibility/speakup/main.c
+@@ -389,10 +389,6 @@ static void say_attributes(struct vc_dat
+ 	int fg = spk_attr & 0x0f;
+ 	int bg = spk_attr >> 4;
+ 
+-	if (fg > 8) {
+-		synth_printf("%s ", spk_msg_get(MSG_BRIGHT));
+-		fg -= 8;
+-	}
+ 	synth_printf("%s", spk_msg_get(MSG_COLORS_START + fg));
+ 	if (bg > 7) {
+ 		synth_printf(" %s ", spk_msg_get(MSG_ON_BLINKING));
