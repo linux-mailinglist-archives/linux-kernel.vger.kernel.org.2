@@ -2,145 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A553A56CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C45E3A56C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhFMGlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 02:41:51 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:49349 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230238AbhFMGlu (ORCPT
+        id S230295AbhFMGc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 02:32:57 -0400
+Received: from mail-ej1-f46.google.com ([209.85.218.46]:44693 "EHLO
+        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhFMGc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 02:41:50 -0400
-X-UUID: 46a22b5b74424896b63f4b4647a019de-20210613
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=F4X/8TVsc/5yj4EipGih8Ae/4NiaO/0GdQ7SxHdjPnU=;
-        b=uPd+rzzx3PoqcO/ROMGx49qfa5I7q/A+lA4fR9CcfvaHOwo/PsxJuuvCX+lgiPfRIlxgIQNmj+5CWwDqbFSsLrUjoFBIFaw9eGNmk7ZphXU6Unoe189agc1h3oyqh1j2L0JjysUXSCAJMLXB4UETXGfriMbfLwfH+pd6DsOwZi4=;
-X-UUID: 46a22b5b74424896b63f4b4647a019de-20210613
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 830828355; Sun, 13 Jun 2021 14:39:47 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 13 Jun 2021 14:39:45 +0800
-Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 13 Jun 2021 14:39:44 +0800
-Message-ID: <1623565530.11212.4.camel@mbjsdccf07>
-Subject: Re: [PATCH v2 1/1] arm64: dts: mediatek: add MT6779 spi master dts
- node
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
-        <wsd_upstream@mediatek.com>
-Date:   Sun, 13 Jun 2021 14:25:30 +0800
-In-Reply-To: <faafa83d-4831-2b70-78ec-0e9f3636b5c9@gmail.com>
-References: <20210409015651.11474-1-Mason.Zhang@mediatek.com>
-         <faafa83d-4831-2b70-78ec-0e9f3636b5c9@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sun, 13 Jun 2021 02:32:56 -0400
+Received: by mail-ej1-f46.google.com with SMTP id c10so10956768eja.11
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 23:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nownNaLyh+w2Hh2hW4XMdkpyjXZowhZ5hjX6G051lLE=;
+        b=lwzDq4P822FD7x7i1tDBpyVYCy/giWAHWZxhe3KDt4Og2Ld+UYFPvzQJYbufImNACE
+         MbeMajFChJylYVz2YzhzmJmMZsH5yMaNgMYmNVLfDBsNtKkRtzGaKNp1kU4hqNETa6LK
+         mice6EaId4gnYzYXacc5bAec3HAT03HlN39y0nQw4YxL5/wBc4t/OeKZft/m9BK7d4At
+         8TRpiRrAUWyFoMYP83wNu19oga0SgH6TzsC0k0cFD0fFbbsZpbZb9gRAUYo+JQNj1W4R
+         zd9vPqZ3/POWxNWhTSJr5vQnXr12VTGp3B06uaGX+t+mYUHgZP3IRXNGr+poq8D6bTtS
+         UU+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=nownNaLyh+w2Hh2hW4XMdkpyjXZowhZ5hjX6G051lLE=;
+        b=KLBy4H1B2WDgRtUpAIrDeau1J3hoQXFac1fcMkLNqGL8ZCy0cxjXfF9MWoIXkpHPI0
+         +Bot+z8+NalrPb4YHYjJO1HM17ZAEeCEWhx8wm4CFpuq5a6dn1rVTNns07euNsBBUBmx
+         LQ6+DBC8zD1mRrYNGhqZZeY04j5ysADCX1jGcPGWgPU4LfnAOZDOLFJQUxC85NVVp6x1
+         TbB18O38u6AA568DJ/FPNP6hdJZt/8nXHFdw69/AWc+TUkSPzS/8bYlJtwcKW2vAuByn
+         Gj7JQO2pVAfJa67SBhUd3UGFWujG7f4kMFXHO4qeIpREPNZPziLJjQdmeQVa+LEiIfYL
+         SUnw==
+X-Gm-Message-State: AOAM5334ImuXM3mV92X553SdBSjx30JHSLVEmTYMMy8JAPJgxImuYH0z
+        elLiGfamKGStdSAOuSuYwf+5RVZ/4VBF7w==
+X-Google-Smtp-Source: ABdhPJyCZLvVBZwnmjVV9bW3wGTKBQLXrnDE4vdwzq3ihX/PNWK29zGPP6lAzW4+QKO3OLlfuXpc4Q==
+X-Received: by 2002:a17:906:4e91:: with SMTP id v17mr10641608eju.119.1623565795327;
+        Sat, 12 Jun 2021 23:29:55 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id bh2sm4076028ejb.80.2021.06.12.23.29.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Jun 2021 23:29:54 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Sun, 13 Jun 2021 08:29:53 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     =?utf-8?B?5bCP5aSq?= <nospam@kota.moe>,
+        Jianxiong Gao <jxgao@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        xen-devel@lists.xenproject.org
+Cc:     989778-maintonly@bugs.debian.org
+Subject: Regression in at least 5.10.y and mainline: Firewire audio interface
+ fails to work properly (when booted under Xen)
+Message-ID: <YMWl4UnFBAVRDnys@eldamar.lan>
+References: <162352833546.2353.230557992597997974.reportbug@home.kota.moe>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <162352833546.2353.230557992597997974.reportbug@home.kota.moe>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA2LTExIGF0IDE1OjU4ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
-Og0KPiANCj4gT24gMDkvMDQvMjAyMSAwMzo1NiwgTWFzb24gWmhhbmcgd3JvdGU6DQo+ID4gVGhp
-cyBwYXRjaCBhZGQgYWRkcmVzcy1jZWxscyAmJiBzaXplLWNlbGxzIGluIHNwaSBub2RlIGJhc2Vk
-IG9uIHBhdGNoIHYxLg0KPiA+IA0KPiANCj4gQ2FuIHlvdSBwbGVhc2UgY29tZSB1cCB3aXRoIGEg
-YmV0dGVyIGNvbW1pdCBtZXNzYWdlLCBvdGhlcndpc2UgcGF0Y2ggbG9va3MgZ29vZC4NCj4gDQo+
-IFJlZ2FyZHMsDQo+IE1hdHRoaWFzDQo+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hc29uIFpoYW5n
-IDxNYXNvbi5aaGFuZ0BtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9v
-dC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kgfCAxMTIgKysrKysrKysrKysrKysrKysrKysrKysN
-Cj4gPiAgMSBmaWxlIGNoYW5nZWQsIDExMiBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAt
-LWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kgYi9hcmNoL2Fy
-bTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpDQo+ID4gaW5kZXggMzcwZjMwOWQzMmRl
-Li5jODFlNzY4NjVkMWIgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRp
-YXRlay9tdDY3NzkuZHRzaQ0KPiA+ICsrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsv
-bXQ2Nzc5LmR0c2kNCj4gPiBAQCAtMjE5LDYgKzIxOSwxMTggQEANCj4gPiAgCQkJc3RhdHVzID0g
-ImRpc2FibGVkIjsNCj4gPiAgCQl9Ow0KPiA+ICANCj4gPiArCQlzcGkwOiBzcGkwQDExMDBhMDAw
-IHsNCj4gPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gPiArCQkJ
-CSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiA+ICsJCQkjYWRkcmVzcy1jZWxscyA9IDwx
-PjsNCj4gPiArCQkJI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gKwkJCW1lZGlhdGVrLHBhZC1zZWxl
-Y3QgPSA8MD47DQo+ID4gKwkJCXJlZyA9IDwwIDB4MTEwMGEwMDAgMCAweDEwMDA+Ow0KPiA+ICsJ
-CQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQzIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gPiAr
-CQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiA+ICsJCQkJ
-PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ID4gKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZS
-QV9TUEkwPjsNCj4gPiArCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwg
-InNwaS1jbGsiOw0KPiA+ICsJCX07DQo+ID4gKw0KPiA+ICsJCXNwaTE6IHNwaTFAMTEwMTAwMDAg
-ew0KPiA+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiA+ICsJCQkJ
-ICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ID4gKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+
-Ow0KPiA+ICsJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVj
-dCA9IDwwPjsNCj4gPiArCQkJcmVnID0gPDAgMHgxMTAxMDAwMCAwIDB4MTAwMD47DQo+ID4gKwkJ
-CWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDcgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiA+ICsJ
-CQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ID4gKwkJCQk8
-JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gPiArCQkJCTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJB
-X1NQSTE+Ow0KPiA+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAi
-c3BpLWNsayI7DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gKwkJc3BpMjogc3BpMkAxMTAxMjAwMCB7
-DQo+ID4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ID4gKwkJCQkg
-ICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCj4gPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47
-DQo+ID4gKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KPiA+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0
-ID0gPDA+Ow0KPiA+ICsJCQlyZWcgPSA8MCAweDExMDEyMDAwIDAgMHgxMDAwPjsNCj4gPiArCQkJ
-aW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MiBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQo+ID4gKwkJ
-CWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gPiArCQkJCSA8
-JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gPiArCQkJCTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJB
-X1NQSTI+Ow0KPiA+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAi
-c3BpLWNsayI7DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gKwkJc3BpMzogc3BpM0AxMTAxMzAwMCB7
-DQo+ID4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ID4gKwkJCQkg
-ICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCj4gPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47
-DQo+ID4gKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KPiA+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0
-ID0gPDA+Ow0KPiA+ICsJCQlyZWcgPSA8MCAweDExMDEzMDAwIDAgMHgxMDAwPjsNCj4gPiArCQkJ
-aW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MyBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQo+ID4gKwkJ
-CWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gPiArCQkJCSA8
-JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gPiArCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZS
-QV9TUEkzPjsNCj4gPiArCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwg
-InNwaS1jbGsiOw0KPiA+ICsJCX07DQo+ID4gKw0KPiA+ICsJCXNwaTQ6IHNwaTRAMTEwMTgwMDAg
-ew0KPiA+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiA+ICsJCQkJ
-ICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ID4gKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+
-Ow0KPiA+ICsJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVj
-dCA9IDwwPjsNCj4gPiArCQkJcmVnID0gPDAgMHgxMTAxODAwMCAwIDB4MTAwMD47DQo+ID4gKwkJ
-CWludGVycnVwdHMgPSA8R0lDX1NQSSAxNTYgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiA+ICsJ
-CQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ID4gKwkJCQkg
-PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ID4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5G
-UkFfU1BJND47DQo+ID4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIs
-ICJzcGktY2xrIjsNCj4gPiArCQl9Ow0KPiA+ICsNCj4gPiArCQlzcGk1OiBzcGk1QDExMDE5MDAw
-IHsNCj4gPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gPiArCQkJ
-CSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiA+ICsJCQkjYWRkcmVzcy1jZWxscyA9IDwx
-PjsNCj4gPiArCQkJI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gKwkJCW1lZGlhdGVrLHBhZC1zZWxl
-Y3QgPSA8MD47DQo+ID4gKwkJCXJlZyA9IDwwIDB4MTEwMTkwMDAgMCAweDEwMDA+Ow0KPiA+ICsJ
-CQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTU3IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gPiAr
-CQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiA+ICsJCQkJ
-PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ID4gKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZS
-QV9TUEk1PjsNCj4gPiArCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwg
-InNwaS1jbGsiOw0KPiA+ICsJCX07DQo+ID4gKw0KPiA+ICsJCXNwaTY6IHNwaTZAMTEwMWQwMDAg
-ew0KPiA+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiA+ICsJCQkJ
-ICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ID4gKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+
-Ow0KPiA+ICsJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVj
-dCA9IDwwPjsNCj4gPiArCQkJcmVnID0gPDAgMHgxMTAxZDAwMCAwIDB4MTAwMD47DQo+ID4gKwkJ
-CWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDQgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiA+ICsJ
-CQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ID4gKwkJCQkg
-PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ID4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5G
-UkFfU1BJNj47DQo+ID4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIs
-ICJzcGktY2xrIjsNCj4gPiArCQl9Ow0KPiA+ICsNCj4gPiArCQlzcGk3OiBzcGk3QDExMDFlMDAw
-IHsNCj4gPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gPiArCQkJ
-CSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiA+ICsJCQkjYWRkcmVzcy1jZWxscyA9IDwx
-PjsNCj4gPiArCQkJI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gKwkJCW1lZGlhdGVrLHBhZC1zZWxl
-Y3QgPSA8MD47DQo+ID4gKwkJCXJlZyA9IDwwIDB4MTEwMWUwMDAgMCAweDEwMDA+Ow0KPiA+ICsJ
-CQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQ1IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gPiAr
-CQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiA+ICsJCQkJ
-IDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiA+ICsJCQkJIDwmaW5mcmFjZmdfYW8gQ0xLX0lO
-RlJBX1NQSTc+Ow0KPiA+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsi
-LCAic3BpLWNsayI7DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gIAkJYXVkaW86IGNsb2NrLWNvbnRy
-b2xsZXJAMTEyMTAwMDAgew0KPiA+ICAJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1h
-dWRpbyIsICJzeXNjb24iOw0KPiA+ICAJCQlyZWcgPSA8MCAweDExMjEwMDAwIDAgMHgxMDAwPjsN
-Cj4gPiANCg0KRGVhciBNYXR0aGlhczoNCgkNCglUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbnMs
-IGFuZCBJIGhhdmUgdXBkYXRlIGNvbW1pdCBtZXNzYWdlIG9uIHBhdGNoDQp2My5Db3VsZCB5b3Ug
-cGxlYXNlIGhlbHAgdG8gZ2VudGxlIHBpbmcgb24gcGF0Y2ggdjMgaWYgaXQgaGFzIG5vIG90aGVy
-DQpwcm9ibGVtcz8NCglUaGFua3MgYSBsb3R+DQoNClRoYW5rcw0KTWFzb24NCgkNCg0KDQoNCg0K
+Hi,
 
+On Sun, Jun 13, 2021 at 06:05:37AM +1000, 小太 wrote:
+> Package: src:linux
+> Version: 5.10.40-1
+> Severity: normal
+> Tags: upstream
+> X-Debbugs-Cc: nospam@kota.moe
+> 
+> After updating from linux-image-5.10.0-6-amd64, jackd now fails to sync to my
+> DICE-compatible firewire audio interface (Profire 610), with the following
+> error messages (full log attached):
+> 
+> > $ jackd -d firewire -v
+> > jackdmp 1.9.12
+> > ...snip...
+> > 00301056761: Warning (StreamProcessorManager.cpp)[ 913] alignReceivedStreams:
+> xrun while aligning streams...
+> > 00301056793: Error (StreamProcessorManager.cpp)[ 877] syncStartAll: Could not
+> align streams...
+> > 00301056829: Fatal (StreamProcessorManager.cpp)[1025] start: Could not
+> syncStartAll...
+> > 00301400626: Warning (TimestampedBuffer.cpp)[ 248] calculateRate: (0x1fa5a20)
+> rate ( 708.18713) more that 10% off nominal (rate= 512.00000, diff=
+> 5665.497, update_period=8)
+> > 00301416642: Warning (TimestampedBuffer.cpp)[ 248] calculateRate: (0x1fa5a20)
+> rate ( 686.49011) more that 10% off nominal (rate= 512.00000, diff=
+> 5491.921, update_period=8)
+> > 00301416925: Warning (devicemanager.cpp)[ 925] startStreaming: Failed to
+> start SPM!
+> > firewire ERR: Could not start streaming threads
+> > Cannot start driver
+> > JackServer::Start() failed with -1
+> > 00301424329: Warning (ieee1394service.cpp)[1509] freeIsoChannel:  Channel 1
+> not registered
+> > 00301424360: Error (dice_avdevice.cpp)[1440] startstopStreamByIndex: Could
+> not deallocate iso channel for SP 1 (ARX 0)
+> > 00301424397: Warning (devicemanager.cpp)[ 959] stopStreamingOnDevice: Could
+> not stop stream 1 of device 0x1f6e600
+> > 00301424406: Warning (devicemanager.cpp)[ 931] startStreaming: Could not stop
+> streaming on device 0x1f6e600!
+> > 00301424429: Fatal (ffado.cpp)[ 220] ffado_streaming_start: Could not start
+> the streaming system
+> > Failed to start server
+> > no message buffer overruns
+> 
+> Additionally, I also tried using the snd-dice driver to expose the audio
+> interface directly in ALSA. While the interface did appear and was usable
+> there, all inputs came out of my speakers highly distorted, with channels
+> bleeding into each other - practically unusable.
+> 
+> I've reproduced the issue on upstream kernel version v5.13-rc5+
+> (ad347abe4a9876b1f65f408ab467137e88f77eb4), and bisected the first bad commit
+> down to 85a5a6875ca93dc4efbf20df942ba41d27a917e3.
+> 
+> To double check commit 85a5a6875ca93dc4efbf20df942ba41d27a917e3 was indeed the
+> issue, I built the latest v5.10 kernel v5.10.43 with the commit reverted, and
+> indeed the issue went away.
+> Unfortunately, the reverse patch would not apply to v5.13-rc5+, since it seems
+> like the file has changed too much.
+
+A user in Debian reported the above issue, which was reproducible with
+5.13-rc5 and 5.10.y as packaged in Debian and found that 85a5a6875ca9
+("swiotlb: don't modify orig_addr in swiotlb_tbl_sync_single") that
+introduced the issue.
+
+The full bug log is at https://bugs.debian.org/989778
+
+I'm CC'ing as well the xen-devel list, as it appears from
+https://bugs.debian.org/989778#10 that the issue is only exposed when booting
+under Xen.
+
+Any ideas?
+
+Regards,
+Salvatore
