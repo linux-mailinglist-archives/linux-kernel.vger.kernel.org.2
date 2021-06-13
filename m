@@ -2,175 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEC93A5621
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 05:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7383A5625
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 05:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhFMD1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Jun 2021 23:27:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53882 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230281AbhFMD1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Jun 2021 23:27:40 -0400
-IronPort-SDR: IWpK5c/D7V81XjanoirRbTwN1jH348F7pZiCgCJkG6gBtx9mmuTDS80P43Hxuc8/7FrRqihBSO
- 72BQ+5Gcmfng==
-X-IronPort-AV: E=McAfee;i="6200,9189,10013"; a="186066748"
-X-IronPort-AV: E=Sophos;i="5.83,270,1616482800"; 
-   d="scan'208";a="186066748"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2021 20:25:36 -0700
-IronPort-SDR: HUGo9qOeNR94Lt0nN5DrKSLfpa9hk/uhsL97rD2lb/Lj7s2MKZIZokuPvKUYhnqSCSqB0v7mBo
- l5o/Zz4s4oew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,270,1616482800"; 
-   d="scan'208";a="449521634"
-Received: from host.sh.intel.com ([10.239.154.115])
-  by orsmga008.jf.intel.com with ESMTP; 12 Jun 2021 20:25:34 -0700
-From:   Ye Xiang <xiang.ye@intel.com>
-To:     jikos@kernel.org, jic23@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
-Subject: [PATCH] HID: intel-ish-hid: use async resume function
-Date:   Sun, 13 Jun 2021 11:25:07 +0800
-Message-Id: <20210613032507.7474-1-xiang.ye@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S231657AbhFMDeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Jun 2021 23:34:08 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:38822 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231597AbhFMDeG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Jun 2021 23:34:06 -0400
+Received: by mail-il1-f198.google.com with SMTP id k14-20020a92b70e0000b02901ed867bd16fso5848567ili.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Jun 2021 20:32:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=WqYJoqJsyMYgUdC6b62PxEbDszhLAQSkrOXeTsrlnio=;
+        b=jnO9z+aAMe0iG1abxH4T5lfqwN2kiFQALYWLl9NXqtbQWHByBsttEXN8hqxBzebZB/
+         O7AycafSCkcnEJnNu1CidjhvGigyvLmPdGA2Mn96JpSOpdXZulEQTqU3xc0Y97PV3Osg
+         xeufCK0Bz+sZuwcONkRbbDQKPwVtcptlLpQqhRFgcy0KWx3m/mqnJKtZ6O2QVjZukSw9
+         bZ0Ft6FRyyqdT0G1WrIhtpI9W9SsBGEU4lZ8OjcPSP6tDhHbA+dcvq0hExMuEmxpwrbF
+         fTYmwmtVAv6OHdI+K0T/bTylDaicGg1qzcfn5Fiq0TFzMb9UQ7kHdfJ/XKwSEiqWYqpp
+         EdCA==
+X-Gm-Message-State: AOAM531i31OBOysGs5P9p7Sq2JRR0HygxLKFS1DqLe2SRnU3gSwPxpwE
+        mC8/4cYdL8D03jnrruau3y/wfKBjM4sbIxfQ/VMRWAdcoFYq
+X-Google-Smtp-Source: ABdhPJzDOFEG6Wg4cWREEDblKTALjgnN8DAxe+xCPOjk7jLrBUKsgnxTA8ujHlnxJZ0WJz9qqJIR7tuhzNoFGg5z3L7qAMNvUCGf
+MIME-Version: 1.0
+X-Received: by 2002:a92:c569:: with SMTP id b9mr8679474ilj.3.1623555126267;
+ Sat, 12 Jun 2021 20:32:06 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 20:32:06 -0700
+In-Reply-To: <0000000000003853da05c39afd00@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000093166f05c49d62ea@google.com>
+Subject: Re: [syzbot] kernel BUG in mpage_prepare_extent_to_map
+From:   syzbot <syzbot+99043e2052d9c50c81fc@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, duyuyang@gmail.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ISH IPC driver uses asynchronous workqueue to do resume now, but there is
-a potential timing issue: when child devices resume before bus driver, it
-will cause child devices resume failed and cannot be recovered until
-reboot. The current implementation in this case do wait for IPC to resume
-but fail to accommodate for a case when there is no ISH reboot and soft
-resume is taking time. This issue is apparent on Tiger Lake platform with
-5.11.13 kernel when doing suspend to idle then resume(s0ix) test. To
-resolve this issue, we change ISHTP HID client to use asynchronous resume
-callback too. In the asynchronous resume callback, it waits for the ISHTP
-resume done event, and then notify ISHTP HID client link ready.
+syzbot has bisected this issue to:
 
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
----
- drivers/hid/intel-ish-hid/ishtp-hid-client.c | 15 +++++++++-
- drivers/hid/intel-ish-hid/ishtp-hid.h        |  1 +
- drivers/hid/intel-ish-hid/ishtp/bus.c        | 29 +++++++++++++++-----
- include/linux/intel-ish-client-if.h          |  2 ++
- 4 files changed, 39 insertions(+), 8 deletions(-)
+commit 68e9dc29f8f42c79d2a3755223ed910ce36b4ae2
+Author: Yuyang Du <duyuyang@gmail.com>
+Date:   Mon May 6 08:19:36 2019 +0000
 
-diff --git a/drivers/hid/intel-ish-hid/ishtp-hid-client.c b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
-index 7167412d89d9..9d53e85fdef3 100644
---- a/drivers/hid/intel-ish-hid/ishtp-hid-client.c
-+++ b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
-@@ -779,6 +779,17 @@ static void hid_ishtp_cl_reset_handler(struct work_struct *work)
- 	}
- }
- 
-+static void hid_ishtp_cl_resume_handler(struct work_struct *work)
-+{
-+	struct ishtp_cl_data *client_data = container_of(work, struct ishtp_cl_data, resume_work);
-+	struct ishtp_cl *hid_ishtp_cl = client_data->hid_ishtp_cl;
-+
-+	if (ishtp_wait_resume(ishtp_get_ishtp_device(hid_ishtp_cl))) {
-+		client_data->suspended = false;
-+		wake_up_interruptible(&client_data->ishtp_resume_wait);
-+	}
-+}
-+
- void (*hid_print_trace)(void *unused, const char *format, ...);
- 
- /**
-@@ -817,6 +828,8 @@ static int hid_ishtp_cl_probe(struct ishtp_cl_device *cl_device)
- 	init_waitqueue_head(&client_data->ishtp_resume_wait);
- 
- 	INIT_WORK(&client_data->work, hid_ishtp_cl_reset_handler);
-+	INIT_WORK(&client_data->resume_work, hid_ishtp_cl_resume_handler);
-+
- 
- 	hid_print_trace = ishtp_trace_callback(cl_device);
- 
-@@ -918,7 +931,7 @@ static int hid_ishtp_cl_resume(struct device *device)
- 
- 	hid_ishtp_trace(client_data, "%s hid_ishtp_cl %p\n", __func__,
- 			hid_ishtp_cl);
--	client_data->suspended = false;
-+	schedule_work(&client_data->resume_work);
- 	return 0;
- }
- 
-diff --git a/drivers/hid/intel-ish-hid/ishtp-hid.h b/drivers/hid/intel-ish-hid/ishtp-hid.h
-index 5ffd0da3cf1f..e5fa753fe92f 100644
---- a/drivers/hid/intel-ish-hid/ishtp-hid.h
-+++ b/drivers/hid/intel-ish-hid/ishtp-hid.h
-@@ -140,6 +140,7 @@ struct ishtp_cl_data {
- 	int multi_packet_cnt;
- 
- 	struct work_struct work;
-+	struct work_struct resume_work;
- 	struct ishtp_cl_device *cl_device;
- };
- 
-diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
-index 0d6465f0eaa8..ead6c8f32759 100644
---- a/drivers/hid/intel-ish-hid/ishtp/bus.c
-+++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
-@@ -329,13 +329,6 @@ static int ishtp_cl_device_resume(struct device *dev)
- 	if (!device)
- 		return 0;
- 
--	/*
--	 * When ISH needs hard reset, it is done asynchrnously, hence bus
--	 * resume will  be called before full ISH resume
--	 */
--	if (device->ishtp_dev->resume_flag)
--		return 0;
--
- 	driver = to_ishtp_cl_driver(dev->driver);
- 	if (driver && driver->driver.pm) {
- 		if (driver->driver.pm->resume)
-@@ -863,6 +856,28 @@ struct device *ishtp_device(struct ishtp_cl_device *device)
- }
- EXPORT_SYMBOL(ishtp_device);
- 
-+/**
-+ * ishtp_wait_resume() - Wait for IPC resume
-+ *
-+ * Wait for IPC resume
-+ *
-+ * Return: resume complete or not
-+ */
-+bool ishtp_wait_resume(struct ishtp_device *dev)
-+{
-+	/* 50ms to get resume response */
-+	#define WAIT_FOR_RESUME_ACK_MS		50
-+
-+	/* Waiting to get resume response */
-+	if (dev->resume_flag)
-+		wait_event_interruptible_timeout(dev->resume_wait,
-+						 !dev->resume_flag,
-+						 msecs_to_jiffies(WAIT_FOR_RESUME_ACK_MS));
-+
-+	return (!dev->resume_flag);
-+}
-+EXPORT_SYMBOL_GPL(ishtp_wait_resume);
-+
- /**
-  * ishtp_get_pci_device() - Return PCI device dev pointer
-  * This interface is used to return PCI device pointer
-diff --git a/include/linux/intel-ish-client-if.h b/include/linux/intel-ish-client-if.h
-index 1153e0030133..ec3a6ccbece4 100644
---- a/include/linux/intel-ish-client-if.h
-+++ b/include/linux/intel-ish-client-if.h
-@@ -76,6 +76,8 @@ int ishtp_register_event_cb(struct ishtp_cl_device *device,
- 
- /* Get the device * from ishtp device instance */
- struct device *ishtp_device(struct ishtp_cl_device *cl_device);
-+/* wait for IPC resume */
-+bool ishtp_wait_resume(struct ishtp_device *dev);
- /* Trace interface for clients */
- void *ishtp_trace_callback(struct ishtp_cl_device *cl_device);
- /* Get device pointer of PCI device for DMA acces */
+    locking/lockdep: Check redundant dependency only when CONFIG_LOCKDEP_SMALL
 
-base-commit: f5711311bfa1abcc64c6dd1e912666a8c0b29a1a
--- 
-2.17.1
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12f2bda8300000
+start commit:   ad347abe Merge tag 'trace-v5.13-rc5-2' of git://git.kernel..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11f2bda8300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f2bda8300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=30f476588412c065
+dashboard link: https://syzkaller.appspot.com/bug?extid=99043e2052d9c50c81fc
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1204231fd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1324e4d0300000
 
+Reported-by: syzbot+99043e2052d9c50c81fc@syzkaller.appspotmail.com
+Fixes: 68e9dc29f8f4 ("locking/lockdep: Check redundant dependency only when CONFIG_LOCKDEP_SMALL")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
