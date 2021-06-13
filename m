@@ -2,151 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854D13A59B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 19:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6164F3A59B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 19:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhFMROD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 13:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbhFMRN7 (ORCPT
+        id S232006AbhFMROb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 13:14:31 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:43978 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232000AbhFMRO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 13:13:59 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1747DC061574;
-        Sun, 13 Jun 2021 10:11:55 -0700 (PDT)
+        Sun, 13 Jun 2021 13:14:27 -0400
+Received: by mail-ot1-f41.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso8512979otu.10
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 10:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=9YrEcNG/N2YFUqtgoD+2CSLrFOJntdnn7M
-        Cq89XsJdc=; b=oZ8DSkyl3+yzFHd/bMM1IVyZR4lHE4DiiDHKsVLWkCHYILS2SF
-        xqU3nsWL92FjLm8qwLrgL7LPMQWfHnVLRWkWOM/qBCEYJtlOiAm75Yseriobp9hY
-        u220xym9G2f7sidk/jOrCjv269pdfSloeqBcTIit4McfRTumFBZkhXhCI=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj1s2PMZgI9DTAA--.35616S2;
-        Mon, 14 Jun 2021 01:11:19 +0800 (CST)
-Date:   Mon, 14 Jun 2021 01:05:46 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 7/9] riscv: bpf: Avoid breaking W^X
-Message-ID: <20210614010546.7a0d5584@xhacker>
-In-Reply-To: <87bl8cqrpv.fsf@igel.home>
-References: <20210330022144.150edc6e@xhacker>
-        <20210330022521.2a904a8c@xhacker>
-        <87o8ccqypw.fsf@igel.home>
-        <20210612002334.6af72545@xhacker>
-        <87bl8cqrpv.fsf@igel.home>
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vBBy6St8FkUvFoOw7EGXmngtbokUJY/bqhzPml+W86c=;
+        b=MePmkULJTM5oQwk7zs2nFJZpMMpZLySe6JtvZ9xrB0qOe1+nSjmQPIhz5t2oT0EvAm
+         ZmZveNZg1h2ooksoKadmeVXvk0f4JOzw40UOvUcsaENsxjizSw0ZNQlzxosMr6TKk6Mf
+         Zjmzgo2cDx93p2ZWu++A7Hc/nl7jyfc26HyOgsceJNGyx/duN0OBVyHpvwXfCh0r7Oyt
+         hkZUjmf5b1YKFiKE8E+cDQmzpUO0UIZ/DqyWGlJEIz9/4GSr7TJ2ZZvzjvQtjEGCg6l2
+         G/7IIfivjJRuYvqiWS4aQ2ymaej2abz6eGBM9rbVy0v2/o6dFXLqYdga39c9+F+e2w1W
+         T8nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vBBy6St8FkUvFoOw7EGXmngtbokUJY/bqhzPml+W86c=;
+        b=PAP03JH4xhUNv5X46S0F2qGUWmsfzbnVrO6qK48zECRjL7POEWU4/xYzMAJRtoglVU
+         Qqyfmx+cmtLxWTfogsS8hC+Cn3ed+r0k9JqQzhNCOmUTXkN577N7tu3EljcP4DvUA0cy
+         GENXVc4otmGeRroKkisAAP6vdjU9HY4xRh2CAr/smy1Y5pKUqb4nni285wf3NulGtptQ
+         A+YZVG1e69tDXWkaoHz1+ImS4ngf4r3UXjkePPFP8ZXXY43H98rOiwamXujq+F6ECwm1
+         0cwdVkLlNn52dw+pMziL2K1UG2N3vpKkvXu1637I7mpfc72hjDeF4YiArM7X1aZK7x+y
+         D7fQ==
+X-Gm-Message-State: AOAM533KihXHO2Ciegx0ZTjOrt5Ua7+o3Tntui8TOnHJfKqi0fsVR7rg
+        be3P/HRUnfXuXwPSYcrcmL0Y3g==
+X-Google-Smtp-Source: ABdhPJxRafcjqtvKsbQb9zEe9aUB0PnaQaENf16Z38L5f/GmjU8cMUw/qh2LFSOKASFfAWzEPfN6jQ==
+X-Received: by 2002:a9d:1ea5:: with SMTP id n34mr2114978otn.340.1623604285061;
+        Sun, 13 Jun 2021 10:11:25 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id d136sm2401178oib.4.2021.06.13.10.11.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Jun 2021 10:11:24 -0700 (PDT)
+Date:   Sun, 13 Jun 2021 12:11:21 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 2/4] input: add Qualcomm QPNP haptics driver
+Message-ID: <YMY8OcMrDh2D4qVg@yoga>
+References: <20210612205405.1233588-1-caleb@connolly.tech>
+ <20210612205405.1233588-3-caleb@connolly.tech>
+ <YMWE+p5zlntC88ti@yoga>
+ <b821c5d4-f406-f4bf-638b-59fb20bc2f36@connolly.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygCHj1s2PMZgI9DTAA--.35616S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw1fKF4UZF1fWF17XFW3Awb_yoW5XF4fpr
-        1UCFWfKryvqr1Ig348Z3sF93Wjvw13J3sxKrsxXFyUAa1IqF1kZw1YgFW3JrnFqF4xK3y0
-        9rW29rsava95Zw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkGb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
-        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07b5sjbUUU
-        UU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b821c5d4-f406-f4bf-638b-59fb20bc2f36@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun 13 Jun 11:24 CDT 2021, Caleb Connolly wrote:
 
-On Fri, 11 Jun 2021 18:41:16 +0200
-Andreas Schwab <schwab@linux-m68k.org> wrote:
-
-> On Jun 12 2021, Jisheng Zhang wrote:
+> Hi Bjorn,
 > 
-> > I reproduced an kernel panic with the defconfig on qemu, but I'm not sure whether
-> > this is the issue you saw, I will check.
+> Thanks a lot for your feedback.
+> 
+> On 13/06/2021 5:09 am, Bjorn Andersson wrote:
+> > On Sat 12 Jun 15:54 CDT 2021, Caleb Connolly wrote:
 > >
-> >     0.161959] futex hash table entries: 512 (order: 3, 32768 bytes, linear)
-> > [    0.167028] pinctrl core: initialized pinctrl subsystem
-> > [    0.190727] Unable to handle kernel paging request at virtual address ffffffff81651bd8
-> > [    0.191361] Oops [#1]
-> > [    0.191509] Modules linked in:
-> > [    0.191814] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #3
-> > [    0.192179] Hardware name: riscv-virtio,qemu (DT)
-> > [    0.192492] epc : __memset+0xc4/0xfc
-> > [    0.192712]  ra : skb_flow_dissector_init+0x22/0x86  
-> 
-> Yes, that's the same.
-> 
-> Andreas.
-> 
+> >> Add support for the haptics found in pmi8998 and related PMICs.
+> >> Based on the ff-memless interface. Currently this driver provides
+> >> a partial implementation of hardware features.
+> >>
+> >> This driver only supports LRAs (Linear Resonant Actuators) in the "buffer"
+> >> mode with a single wave pattern.
+> >>
+> >> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> >
+> > Please use a cover letter when posting multiple patches.
+> I'm not sure why the cover letter didn't make it to your inbox, here's a
+> link:
+> https://lore.kernel.org/linux-arm-msm/20210612205405.1233588-1-caleb@connolly.tech/
 
-I think I found the root cause: commit 2bfc6cd81bd ("move kernel mapping
-outside of linear mapping") moves BPF JIT region after the kernel:
+It arrived later, for some reason. Sorry for the fuzz.
 
-#define BPF_JIT_REGION_START   PFN_ALIGN((unsigned long)&_end)
+> >
+> >> ---
+> >>  drivers/input/misc/Kconfig        |   11 +
+> >>  drivers/input/misc/Makefile       |    1 +
+> >>  drivers/input/misc/qpnp-haptics.c | 1022 +++++++++++++++++++++++++++++
+> >>  3 files changed, 1034 insertions(+)
+> >>  create mode 100644 drivers/input/misc/qpnp-haptics.c
+> >>
+> >> diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+> >> index 498cde376981..b5ba03e6cf58 100644
+> >> --- a/drivers/input/misc/Kconfig
+> >> +++ b/drivers/input/misc/Kconfig
+> >> @@ -186,6 +186,17 @@ config INPUT_PMIC8XXX_PWRKEY
+> >>  	  To compile this driver as a module, choose M here: the
+> >>  	  module will be called pmic8xxx-pwrkey.
+> >>
+> >> +config INPUT_QPNP_HAPTICS
+> >
+> > No-one knows what "QPNP" really is, so please name this
+> > "INPUT_QCOM_SPMI_HAPTICS"
+> >
+> >> +	tristate "Qualcomm QPNP HAPTICS"
+> >> +	depends on ARCH_QCOM
+> >
+> > "depends on SPMI" makes sense here.
+> >
+> >> +	select INPUT_FF_MEMLESS
+> >> +	help
+> >> +	  This option enables support for the haptics found in pmi8998 and
+> >> +	  related PMICs. Based on the ff-memless interface.
+> >> +
+> >> +	  To compile this driver as module, choose M here: the
+> >> +	  module will be called qpnp-haptics.
+> >> +
+> >>  config INPUT_SPARCSPKR
+> >>  	tristate "SPARC Speaker support"
+> >>  	depends on PCI && SPARC64
+> >> diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+> >> index f593beed7e05..c43290163db0 100644
+> >> --- a/drivers/input/misc/Makefile
+> >> +++ b/drivers/input/misc/Makefile
+> >> @@ -65,6 +65,7 @@ obj-$(CONFIG_INPUT_PMIC8XXX_PWRKEY)	+= pmic8xxx-pwrkey.o
+> >>  obj-$(CONFIG_INPUT_POWERMATE)		+= powermate.o
+> >>  obj-$(CONFIG_INPUT_PWM_BEEPER)		+= pwm-beeper.o
+> >>  obj-$(CONFIG_INPUT_PWM_VIBRA)		+= pwm-vibra.o
+> >> +obj-$(CONFIG_INPUT_QPNP_HAPTICS)	+= qpnp-haptics.o
+> >>  obj-$(CONFIG_INPUT_RAVE_SP_PWRBUTTON)	+= rave-sp-pwrbutton.o
+> >>  obj-$(CONFIG_INPUT_RB532_BUTTON)	+= rb532_button.o
+> >>  obj-$(CONFIG_INPUT_REGULATOR_HAPTIC)	+= regulator-haptic.o
+> >> diff --git a/drivers/input/misc/qpnp-haptics.c b/drivers/input/misc/qpnp-haptics.c
+> >
+> > Again, qcom-spmi-haptics.c
+> >
+> >> new file mode 100644
+> >> index 000000000000..daa7a18ffc7d
+> >> --- /dev/null
+> >> +++ b/drivers/input/misc/qpnp-haptics.c
+> >> @@ -0,0 +1,1022 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-only
+> >> +/*
+> >> + * Copyright (c) 2021, Caleb Connolly <caleb@connolly.tech>
+> >> + * Qualcomm Plug and Play haptics driver for pmi8998 and related PMICs.
+> >> + * Based on ./pm8xxx-vibrator.c
+> >
+> > Enough "based on" to warrant carrying some copyrights?
+> Hmm, I only stole the input device parts, so perhaps not.
 
-The &_end is unlikely aligned with PMD SIZE, so the front bpf jit region
-sits with kernel .data section in one PMD. But kenrel is mapped in PMD SIZE,
-so when bpf_jit_binary_lock_ro() is called to make the first bpf jit prog
-ROX, we will make part of kernel .data section RO too, so when we write, for example
-memset the .data section, MMU will trigger store page fault.
+Then I think you can drop this comment as well.
 
-To fix the issue, we need to make the bpf jit region PMD size aligned by either
-patch BPF_JIT_REGION_START to align on PMD size rather than PAGE SIZE, or
-something as below patch to move the BPF region before modules region:
-
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 9469f464e71a..997b894edbc2 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -31,8 +31,8 @@
- #define BPF_JIT_REGION_SIZE	(SZ_128M)
- #ifdef CONFIG_64BIT
- /* KASLR should leave at least 128MB for BPF after the kernel */
--#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
--#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
-+#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
-+#define BPF_JIT_REGION_END	(MODULES_VADDR)
- #else
- #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
- #define BPF_JIT_REGION_END	(VMALLOC_END)
-@@ -40,8 +40,8 @@
- 
- /* Modules always live before the kernel */
- #ifdef CONFIG_64BIT
--#define MODULES_VADDR	(PFN_ALIGN((unsigned long)&_end) - SZ_2G)
- #define MODULES_END	(PFN_ALIGN((unsigned long)&_start))
-+#define MODULES_VADDR	(MODULES_END - SZ_128M)
- #endif
- 
- 
-can you please try it? Per my test, the issue is fixed.
-
-Thanks
-
-
+Regards,
+Bjorn
