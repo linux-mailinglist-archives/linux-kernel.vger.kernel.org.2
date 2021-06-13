@@ -2,135 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774BF3A56BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE1A3A56C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFMGRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 02:17:03 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:59065 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhFMGRC (ORCPT
+        id S230190AbhFMGcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 02:32:00 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34327 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229777AbhFMGb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 02:17:02 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 2C5B0E0006;
-        Sun, 13 Jun 2021 06:14:54 +0000 (UTC)
-Subject: Re: [PATCH v4 1/4] riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     emil.renner.berthing@gmail.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, jszhang@kernel.org,
-        Christoph Hellwig <hch@infradead.org>, zong.li@sifive.com,
-        anup@brainfault.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <CANBLGcy3HrnmrweSpnDZViVstoWJYh4sCBoaX_24AsgWd=Q9XA@mail.gmail.com>
- <mhng-dfabeabd-e6df-4035-a9d0-c16269390120@palmerdabbelt-glaptop>
- <20210613084447.6db3cc02@xhacker>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <98bfae5f-748e-f951-876a-254d98197e10@ghiti.fr>
-Date:   Sun, 13 Jun 2021 08:14:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 13 Jun 2021 02:31:59 -0400
+X-UUID: 2d6da5cb709540e6bba1623a01784112-20210613
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=8WtSPGkNuQ7241ILje9VJjGKNPvfoYVf4vIrsfMG0ug=;
+        b=K8UiGnfvo+MCmjEpBErRXJzmLG2dzqGpm+hPQ8CRhlR+FzF0UZ56imdR7N0iWkyZ/giPNEXRsp2aNqu9/7vjMnidEZXO5MhnbDawIWlS2KIGfm8NxFHDZU/3L5VmhfdBgFuL2/h3BZDLoEzqQ86FU2FTNnVVbxprimPUHq5se+g=;
+X-UUID: 2d6da5cb709540e6bba1623a01784112-20210613
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1006012958; Sun, 13 Jun 2021 14:29:55 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 13 Jun 2021 14:29:48 +0800
+Received: from [10.15.20.246] (10.15.20.246) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 13 Jun 2021 14:29:47 +0800
+Message-ID: <1623564933.15174.5.camel@mbjsdccf07>
+Subject: Re: [PATCH v2 1/1] arm64: dts: mediatek: add MT6779 spi master dts
+ node
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
+        <wsd_upstream@mediatek.com>
+Date:   Sun, 13 Jun 2021 14:15:33 +0800
+In-Reply-To: <faafa83d-4831-2b70-78ec-0e9f3636b5c9@gmail.com>
+References: <20210409015651.11474-1-Mason.Zhang@mediatek.com>
+         <faafa83d-4831-2b70-78ec-0e9f3636b5c9@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20210613084447.6db3cc02@xhacker>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+T24gRnJpLCAyMDIxLTA2LTExIGF0IDE1OjU4ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMDkvMDQvMjAyMSAwMzo1NiwgTWFzb24gWmhhbmcgd3JvdGU6DQo+ID4gVGhp
+cyBwYXRjaCBhZGQgYWRkcmVzcy1jZWxscyAmJiBzaXplLWNlbGxzIGluIHNwaSBub2RlIGJhc2Vk
+IG9uIHBhdGNoIHYxLg0KPiA+IA0KPiANCj4gQ2FuIHlvdSBwbGVhc2UgY29tZSB1cCB3aXRoIGEg
+YmV0dGVyIGNvbW1pdCBtZXNzYWdlLCBvdGhlcndpc2UgcGF0Y2ggbG9va3MgZ29vZC4NCj4gDQo+
+IFJlZ2FyZHMsDQo+IE1hdHRoaWFzDQo+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hc29uIFpoYW5n
+IDxNYXNvbi5aaGFuZ0BtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9v
+dC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kgfCAxMTIgKysrKysrKysrKysrKysrKysrKysrKysN
+Cj4gPiAgMSBmaWxlIGNoYW5nZWQsIDExMiBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAt
+LWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kgYi9hcmNoL2Fy
+bTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpDQo+ID4gaW5kZXggMzcwZjMwOWQzMmRl
+Li5jODFlNzY4NjVkMWIgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRp
+YXRlay9tdDY3NzkuZHRzaQ0KPiA+ICsrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsv
+bXQ2Nzc5LmR0c2kNCj4gPiBAQCAtMjE5LDYgKzIxOSwxMTggQEANCj4gPiAgCQkJc3RhdHVzID0g
+ImRpc2FibGVkIjsNCj4gPiAgCQl9Ow0KPiA+ICANCj4gPiArCQlzcGkwOiBzcGkwQDExMDBhMDAw
+IHsNCj4gPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gPiArCQkJ
+CSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiA+ICsJCQkjYWRkcmVzcy1jZWxscyA9IDwx
+PjsNCj4gPiArCQkJI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gKwkJCW1lZGlhdGVrLHBhZC1zZWxl
+Y3QgPSA8MD47DQo+ID4gKwkJCXJlZyA9IDwwIDB4MTEwMGEwMDAgMCAweDEwMDA+Ow0KPiA+ICsJ
+CQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQzIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gPiAr
+CQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiA+ICsJCQkJ
+PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ID4gKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZS
+QV9TUEkwPjsNCj4gPiArCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwg
+InNwaS1jbGsiOw0KPiA+ICsJCX07DQo+ID4gKw0KPiA+ICsJCXNwaTE6IHNwaTFAMTEwMTAwMDAg
+ew0KPiA+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiA+ICsJCQkJ
+ICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ID4gKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+
+Ow0KPiA+ICsJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVj
+dCA9IDwwPjsNCj4gPiArCQkJcmVnID0gPDAgMHgxMTAxMDAwMCAwIDB4MTAwMD47DQo+ID4gKwkJ
+CWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDcgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiA+ICsJ
+CQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ID4gKwkJCQk8
+JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gPiArCQkJCTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJB
+X1NQSTE+Ow0KPiA+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAi
+c3BpLWNsayI7DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gKwkJc3BpMjogc3BpMkAxMTAxMjAwMCB7
+DQo+ID4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ID4gKwkJCQkg
+ICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCj4gPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47
+DQo+ID4gKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KPiA+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0
+ID0gPDA+Ow0KPiA+ICsJCQlyZWcgPSA8MCAweDExMDEyMDAwIDAgMHgxMDAwPjsNCj4gPiArCQkJ
+aW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MiBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQo+ID4gKwkJ
+CWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gPiArCQkJCSA8
+JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gPiArCQkJCTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJB
+X1NQSTI+Ow0KPiA+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAi
+c3BpLWNsayI7DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gKwkJc3BpMzogc3BpM0AxMTAxMzAwMCB7
+DQo+ID4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ID4gKwkJCQkg
+ICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCj4gPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47
+DQo+ID4gKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KPiA+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0
+ID0gPDA+Ow0KPiA+ICsJCQlyZWcgPSA8MCAweDExMDEzMDAwIDAgMHgxMDAwPjsNCj4gPiArCQkJ
+aW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MyBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQo+ID4gKwkJ
+CWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gPiArCQkJCSA8
+JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gPiArCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZS
+QV9TUEkzPjsNCj4gPiArCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwg
+InNwaS1jbGsiOw0KPiA+ICsJCX07DQo+ID4gKw0KPiA+ICsJCXNwaTQ6IHNwaTRAMTEwMTgwMDAg
+ew0KPiA+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiA+ICsJCQkJ
+ICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ID4gKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+
+Ow0KPiA+ICsJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVj
+dCA9IDwwPjsNCj4gPiArCQkJcmVnID0gPDAgMHgxMTAxODAwMCAwIDB4MTAwMD47DQo+ID4gKwkJ
+CWludGVycnVwdHMgPSA8R0lDX1NQSSAxNTYgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiA+ICsJ
+CQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ID4gKwkJCQkg
+PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ID4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5G
+UkFfU1BJND47DQo+ID4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIs
+ICJzcGktY2xrIjsNCj4gPiArCQl9Ow0KPiA+ICsNCj4gPiArCQlzcGk1OiBzcGk1QDExMDE5MDAw
+IHsNCj4gPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gPiArCQkJ
+CSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiA+ICsJCQkjYWRkcmVzcy1jZWxscyA9IDwx
+PjsNCj4gPiArCQkJI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gKwkJCW1lZGlhdGVrLHBhZC1zZWxl
+Y3QgPSA8MD47DQo+ID4gKwkJCXJlZyA9IDwwIDB4MTEwMTkwMDAgMCAweDEwMDA+Ow0KPiA+ICsJ
+CQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTU3IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gPiAr
+CQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiA+ICsJCQkJ
+PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ID4gKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZS
+QV9TUEk1PjsNCj4gPiArCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwg
+InNwaS1jbGsiOw0KPiA+ICsJCX07DQo+ID4gKw0KPiA+ICsJCXNwaTY6IHNwaTZAMTEwMWQwMDAg
+ew0KPiA+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiA+ICsJCQkJ
+ICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ID4gKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+
+Ow0KPiA+ICsJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVj
+dCA9IDwwPjsNCj4gPiArCQkJcmVnID0gPDAgMHgxMTAxZDAwMCAwIDB4MTAwMD47DQo+ID4gKwkJ
+CWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDQgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiA+ICsJ
+CQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ID4gKwkJCQkg
+PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ID4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5G
+UkFfU1BJNj47DQo+ID4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIs
+ICJzcGktY2xrIjsNCj4gPiArCQl9Ow0KPiA+ICsNCj4gPiArCQlzcGk3OiBzcGk3QDExMDFlMDAw
+IHsNCj4gPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gPiArCQkJ
+CSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiA+ICsJCQkjYWRkcmVzcy1jZWxscyA9IDwx
+PjsNCj4gPiArCQkJI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gKwkJCW1lZGlhdGVrLHBhZC1zZWxl
+Y3QgPSA8MD47DQo+ID4gKwkJCXJlZyA9IDwwIDB4MTEwMWUwMDAgMCAweDEwMDA+Ow0KPiA+ICsJ
+CQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQ1IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gPiAr
+CQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiA+ICsJCQkJ
+IDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiA+ICsJCQkJIDwmaW5mcmFjZmdfYW8gQ0xLX0lO
+RlJBX1NQSTc+Ow0KPiA+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsi
+LCAic3BpLWNsayI7DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gIAkJYXVkaW86IGNsb2NrLWNvbnRy
+b2xsZXJAMTEyMTAwMDAgew0KPiA+ICAJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1h
+dWRpbyIsICJzeXNjb24iOw0KPiA+ICAJCQlyZWcgPSA8MCAweDExMjEwMDAwIDAgMHgxMDAwPjsN
+Cg0KDQpEZWFyIE1hdHRpYXM6DQoNCglUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbn4NCg0KCUkg
+aGF2ZSB1cGRhdGUgY29tbWl0IG1lc3NhZ2UgaW4gcGF0Y2ggdjMuQ291bGQgeW91IHBsZWFzZSBn
+ZW50bGUgcGluZw0Kb24gcGF0Y2ggdjMgaWYgaXQgaGFzIG5vIG90aGVyIHByb2JsZW1zLg0KDQpU
+aGFua3MNCk1hc29uDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQo+ID4gDQoNCg==
 
-Le 13/06/2021 à 02:44, Jisheng Zhang a écrit :
-> On Sat, 12 Jun 2021 17:23:51 -0700 (PDT)
-> Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> 
->> On Sat, 12 Jun 2021 16:23:03 PDT (-0700), emil.renner.berthing@gmail.com wrote:
->>> On Fri, 4 Jun 2021 at 13:51, Alexandre Ghiti <alex@ghiti.fr> wrote:
->>>>
->>>> Make the physical RAM base address available for all kernels, not only
->>>> XIP kernels as it will allow to simplify address conversions macros.
->>>
->>> Am I just reading it wrong or won't this patch make it so that the same kernel
->>> can't run on two chips with physical ram starting at different addresses?
-> 
-> I mentioned this point in http://lists.infradead.org/pipermail/linux-riscv/2021-June/006840.html
-> 
->>
->> IIUC we were in that position, at least without relocatable kernels.
->> Maybe I'm misunderstanding this, though?
-> 
-> Just my humble opinion, before this series patch, at least geneirc Image
-> for RV64 + MMU + !XIP is doable.
-> 
-
-This patch declares that the physical ram address is at 0x8000_0000, 
-whatever the chip, which may not be the case in practice. I did not 
-expect Palmer would take this one and had planned to simply push a v5 
-without the first 2 patches, but things happened this week that 
-prevented me to do that. IMO, we should just wait for a v5 that I'll 
-push when possible (probably today or in the coming days).
-
-Thanks,
-
-Alex
-
-> Thanks
-> 
->>
->>>
->>> /Emil
->>>   
->>>> ---
->>>>   arch/riscv/Kconfig | 6 ------
->>>>   1 file changed, 6 deletions(-)
->>>>
->>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->>>> index b58596b141fc..3d8e7e4bb45c 100644
->>>> --- a/arch/riscv/Kconfig
->>>> +++ b/arch/riscv/Kconfig
->>>> @@ -493,13 +493,8 @@ config STACKPROTECTOR_PER_TASK
->>>>          def_bool y
->>>>          depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
->>>>
->>>> -config PHYS_RAM_BASE_FIXED
->>>> -       bool "Explicitly specified physical RAM address"
->>>> -       default n
->>>> -
->>>>   config PHYS_RAM_BASE
->>>>          hex "Platform Physical RAM address"
->>>> -       depends on PHYS_RAM_BASE_FIXED
->>>>          default "0x80000000"
->>>>          help
->>>>            This is the physical address of RAM in the system. It has to be
->>>> @@ -512,7 +507,6 @@ config XIP_KERNEL
->>>>          # This prevents XIP from being enabled by all{yes,mod}config, which
->>>>          # fail to build since XIP doesn't support large kernels.
->>>>          depends on !COMPILE_TEST
->>>> -       select PHYS_RAM_BASE_FIXED
->>>>          help
->>>>            Execute-In-Place allows the kernel to run from non-volatile storage
->>>>            directly addressable by the CPU, such as NOR flash. This saves RAM
->>>> --
->>>> 2.30.2
->>>>
->>>>
->>>> _______________________________________________
->>>> linux-riscv mailing list
->>>> linux-riscv@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
