@@ -2,153 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222E03A5767
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 11:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638743A576E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 11:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhFMJuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 05:50:55 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:34437 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbhFMJuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 05:50:54 -0400
-Received: by mail-wr1-f49.google.com with SMTP id q5so10967559wrm.1;
-        Sun, 13 Jun 2021 02:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IDfBcudzWJBKabnnvY8z/cQCBRgnrN5jAmw/3Eca5LM=;
-        b=mIUAFX4VpiU75CUcRASXp/3YKIOqCFjR04uNxvfwu3mQuXu55ZIMdPOjBCpOtwd/hJ
-         SrF0ZhSw6Kzk4rVC/uzFsABKltCWHe69iY0VyooaZYXlYOilK9pLkRaRzBKv89jCTu8o
-         8b3PJTsuzLyUEgYQFYBsANQVkmALybai5UZ621ndXMYJ8cqIZb8EG8SItOe2HCocmRdw
-         HoKhGQ6YAWSyVjcZMKIHqj8uVb1V8MIy5JsxeNxd5/XSkeg5sVCLUufbG6D5+OKl4Egm
-         NPFgtMtJGxx8anfhQ4JpBQnEWCPq04as6CYm+vxP2zmbo34KjaQH3YO4vahODo2Yoeba
-         T+mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IDfBcudzWJBKabnnvY8z/cQCBRgnrN5jAmw/3Eca5LM=;
-        b=EFDdcnpYe0SGkE8xkkP1GgYF64UboZ7+chZwZZ2ILj0Z/o9fPmREpQy5YYLAJlynFj
-         VYVPIGUFXQgGGImDeq40d/ZvgqBrbc1Razs5Qw3LRPv5kv/u0qEn0hOeDhqWL8RMqkma
-         nW01XChAVAINSGwHLbdpAdaPPij9rjwQFBgSUtEDFgkoTcJ7Jv7SxteaBBeiPtXkw/Bf
-         FnDHOv4+vvdEXQyTvnvKeV0GohM0aT0YIV5nZ+/VSAKtv6ExQ579rZdjl9UQal7UKA+R
-         qPx1XjfGqdMYHHhaSMUVolHfZ2XCX21WSK55X9o8tE4UBaKR/LhZu1p3zf4E3gAuIKKh
-         JsBg==
-X-Gm-Message-State: AOAM531/6wMMHMAvjAl4woLdRnD9jgEfXJn1oSv5IfiMPdgYamnLCLak
-        m/ePrZ6ET+B+kigoBKAF9lCbTYwYdjM=
-X-Google-Smtp-Source: ABdhPJy1oD1q0kSYxcHbnuLF0CAphsMk6y07KdPjoM5BuVtzdozideQb7kcc94K0shW8eB3HfJFdug==
-X-Received: by 2002:a05:6000:188:: with SMTP id p8mr5874031wrx.296.1623577672062;
-        Sun, 13 Jun 2021 02:47:52 -0700 (PDT)
-Received: from cluster5 ([80.76.206.81])
-        by smtp.gmail.com with ESMTPSA id 2sm12827599wrz.87.2021.06.13.02.47.51
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sun, 13 Jun 2021 02:47:51 -0700 (PDT)
-From:   Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        Matthew Hagan <mnhagan88@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] ARM: dts: NSP: Move USB3 PHY to internal MDIO bus
-Date:   Sun, 13 Jun 2021 10:46:37 +0100
-Message-Id: <20210613094639.3242151-4-mnhagan88@gmail.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210613094639.3242151-1-mnhagan88@gmail.com>
-References: <20210613094639.3242151-1-mnhagan88@gmail.com>
+        id S231635AbhFMJzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 05:55:23 -0400
+Received: from mout.gmx.net ([212.227.15.18]:33715 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231277AbhFMJzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 05:55:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1623577992;
+        bh=0kpyZbGSx5JAM84EgmJkbBps8ECGSxZ3E65rk8u8364=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=PBD7O8uJm09k1iRvPDbQAvQGOQr+wC6zAdKun87vrGvv+uz6Ljapvdt0rzOjytdNc
+         q8amxIPNn+Hs4RfMzdZfS4/AXiDI6QF5JlQgkCPnBYYQDaixYbTTBHmsSOBGXa1GhL
+         ofyekc/TChbdzf+UM0umPfZj6U19u2OZkn8m6NwU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.247]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIwzA-1ldSa22OOg-00KNPF; Sun, 13
+ Jun 2021 11:53:12 +0200
+Date:   Sun, 13 Jun 2021 11:53:11 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] dt-bindings: pinctrl: Add Nuvoton WPCM450
+Message-ID: <YMXVh9FiW9SOWUCV@latitude>
+References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
+ <20210602120329.2444672-5-j.neuschaefer@gmx.net>
+ <CACRpkdY6c750Dnh2H_6uEhOHJv-kLd_OpHqnuDKu4DQezZ2C_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eeAjEw1TF8Acq/Ni"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdY6c750Dnh2H_6uEhOHJv-kLd_OpHqnuDKu4DQezZ2C_w@mail.gmail.com>
+X-Provags-ID: V03:K1:w8V/EC+bd+jIcKisoLQPcYP8Xx/SbGdpKgtGNr0oSPFe3hawrXI
+ iSrPtnSEMlCzm5mVFspA4U+O1CTWaHqkmAXIoOtPt8rLVnTzl6FWFPAZS3z9SG78tyOT4rB
+ j6rmhY8MrcimQUUTe+nC24mL0aAfEczemru/r23KKf+XuKqzUZnxDYjFb9xukRy0LPcgrPF
+ /vTHpr2b2H2geeEDl3zEg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JT47csGo7bg=:CtSzEQvlfbTQAHx/iqp8yl
+ i2vMKWSa7NVsTQbkQ3cNOHXp650+6/M6HWiFjDk3nVEUSUNKWBudPMln/9Y8wCksTrin00/HE
+ FxC1iQRhTF7YUzIEtN/GHLseFDU10YLTMqccQSUI/kko+QASoFbrmZVhb67A5LN8iH6s9mtVo
+ avTUkcNkTh3EFF4QA83RGeXQNML/cVKs+IU3GmZtBUWY+cWf+YeHhTaXESWTh1OWQf5ENkaoS
+ 9c2naFSZyPz3BLCnE/k4pWzHYtMsB3BpstNE+gOQoq/M6jKlW6849LNPOBEp8LaXe8XXKJ9zM
+ CMsnf8ZtPk0ObhRKGeCPK/6QLG2EFulgXzck8TWYF9+Od2xRNaEeChEuJMr6e/irzoFV4lMjX
+ E0xhD/zYloucj2Z7c4hoLI5SZIeqUAo03zY7WWM8zybhg0qJefMsCq59XCNwge7aah8b71b3m
+ qIj27SQjh/gxj+QtAV6SPfOwoyqOHl/om8Mbts8lId3622T+OCSvk9Rve7Dwx0Zz47y6Bmzy3
+ b3+SCw2ezf0ZJqMOHDlZLkeaXu83KmOXcXEOTskXlzNbsbHsdvj4b90oeb4X4rOvfCccVqwRm
+ GV6OYCwiAgtBL9G2o9yK53B1jqHFW3kj1lG2mJXLmt6SnN7pAFJiKn+Q5ZfKv/SCQEs5ZNPls
+ keLee2WLO4JQxX34x9WNJm4nDcQmwfa46q2I71oymE02Vmm0oRrF2YWpFdrMoh8QPLLDZmDuj
+ KBRneQ/vFZdapH+iPqFVXCpR7bobOUUq9BPbCubcTCj68PncbUeOArtHppU/LsihwkAoY3ZTI
+ CDad6WsekDiOZLy1OA6HK6ipFFdCotoagLrkh/pz2q5YUamT1mvzjdcc7intVQnxXpZjkz/wY
+ wMgVH5GHSkR13Vh/ZlhUlKxd3dqOuRpzJHaaXrePwjNT2mEXOHXzqLNdOf3nTVNBTbdPVKM0e
+ pBYX3Cq/BicifeO1at15h4bklrxZMa5VytBmhrxBFeSjqbp1KZBaU4UrQZKkVwQdAQc5VFV6U
+ dkhEvKj+EkK36wFR/Zubc+5fyhpfw1wY5bipaR+iO1cBVhixpU+UnZUs84rXz10FRa/pk6eSG
+ 6TsVOscYKH9/7VQ6b9Hx7BjPeQEt1kXh9qu4cb/S9b8SGwB3YGOPSI1yg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch largely replicates Vivek Unune's patch "ARM: dts:
-BCM5301X:Make usb3 phy use mdio phy driver"[1] for the NSP platform,
-whereby we need to create an mdio-mux to facilitate switches
-configured via external MDIO, in this case on the Meraki MX65.
 
-However in doing so, we are creating an overlap with usb3_phy's
-ccb-mii range. To resolve this, usb3_phy should be moved to a child
-node of the internal MDIO bus. The result is heavily based upon Vivek's
-patch. This has also been cross-referenced with Yendapally Reddy's
-earlier work which utilised the subsequently dropped brcm,nsp-usb3-phy
-driver: "[PATCH v2 4/4] arm: dts: nsp: Add USB nodes to device tree"
-[2]. Finally, this change provides conformance to the bcm-ns-usb3-phy
-documentation, utilising the required usb3-dmp-syscon property. Note
-that support for the deprecated ccb-mii bindings has been dropped as of
-"phy: phy-bcm-ns-usb3: drop support for deprecated DT binding"[3].
+--eeAjEw1TF8Acq/Ni
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1] https://lore.kernel.org/patchwork/patch/933971/
-[2] https://www.spinics.net/lists/arm-kernel/msg555132.html
-[3] https://lore.kernel.org/linux-devicetree/20201113113423.9466-1-zajec5@gmail.com/
+On Fri, Jun 04, 2021 at 11:35:48AM +0200, Linus Walleij wrote:
+> Hi Jonathan!
+>=20
+> thanks for your patch!
 
-Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
----
- arch/arm/boot/dts/bcm-nsp.dtsi | 38 +++++++++++++++++++++++++++-------
- 1 file changed, 31 insertions(+), 7 deletions(-)
+Hi again!
 
-diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
-index e91a68996986..7c59816fdb32 100644
---- a/arch/arm/boot/dts/bcm-nsp.dtsi
-+++ b/arch/arm/boot/dts/bcm-nsp.dtsi
-@@ -370,6 +370,35 @@ mdio: mdio@32000 {
- 			#address-cells = <1>;
- 		};
- 
-+		mdio-mux@32000 {
-+			compatible = "mdio-mux-mmioreg";
-+			reg = <0x32000 0x4>;
-+			mux-mask = <0x200>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mdio-parent-bus = <&mdio>;
-+
-+			mdio_int: mdio@0 {
-+				reg = <0x0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				usb3_phy: usb3-phy@10 {
-+					compatible = "brcm,ns-bx-usb3-phy";
-+					reg = <0x10>;
-+					usb3-dmp-syscon = <&usb3_dmp>;
-+					#phy-cells = <0>;
-+					status = "disabled";
-+				};
-+			};
-+
-+			mdio_ext: mdio@200 {
-+				reg = <0x200>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+		};
-+
- 		rng: rng@33000 {
- 			compatible = "brcm,bcm-nsp-rng";
- 			reg = <0x33000 0x14>;
-@@ -530,13 +559,8 @@ sata1: sata-port@1 {
- 			};
- 		};
- 
--		usb3_phy: usb3-phy@104000 {
--			compatible = "brcm,ns-bx-usb3-phy";
--			reg = <0x104000 0x1000>,
--			      <0x032000 0x1000>;
--			reg-names = "dmp", "ccb-mii";
--			#phy-cells = <0>;
--			status = "disabled";
-+		usb3_dmp: syscon@104000 {
-+			reg = <0x104000 0x1000>;
- 		};
- 	};
- 
--- 
-2.26.3
+> On Wed, Jun 2, 2021 at 2:04 PM Jonathan Neusch=C3=A4fer
+> <j.neuschaefer@gmx.net> wrote:
+>=20
+> > +  interrupts: true
+>=20
+> maxitems 4 right?
 
+Yes.
+
+> Make an enum:
+>=20
+> interrupts:
+>   - description: what IRQ0 is for
+>   - description: what IRQ1 is for
+>   - description: what IRQ2 is for
+>   - description: what IRQ3 is for
+>=20
+> And describe how these interrupts are used.
+
+Good point.
+
+- IRQ0 is for events (interrupts) from GPIOs  0 to  3.
+- IRQ1 is for events (interrupts) from GPIOs  4 to 11.
+- IRQ2 is for events (interrupts) from GPIOs 12 to 15.
+- IRQ3 is for events (interrupts) from GPIOs 24 to 25.
+
+> Because I am suspicious that they actually correspond to 4 different
+> GPIO blocks, which should then be their own nodes.
+
+Unfortunately, It's not that simple. The GPIO ports (as defined by the
+groups of registers that do GPIO direction/input/output) are organised
+like this:
+
+- GPIO port 0 starts at GPIO   0 and is 16 GPIOs long.
+- GPIO port 1 starts at GPIO  16 and is 16 GPIOs long.
+- GPIO port 2 starts at GPIO  32 and is 16 GPIOs long.
+- GPIO port 3 starts at GPIO  48 and is 16 GPIOs long.
+- GPIO port 4 starts at GPIO  64 and is 16 GPIOs long.
+- GPIO port 5 starts at GPIO  80 and is 16 GPIOs long.
+- GPIO port 6 starts at GPIO  96 and is 18 GPIOs long.
+- GPIO port 7 starts at GPIO 114 and is 14 GPIOs long.
+
+(They didn't even make it so that each one has 16 GPIOs...)
+
+As you can see, only a few GPIOs are connected to interrupt logic; most
+of them are in port 0, and the remaining two are in port 1.
+
+Forthermore, the GPIO ports don't all have the same set of registers, so
+that the register layout of each can't be predicted by the offset of the
+first register.
+
+>=20
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    pinctrl: pinctrl@b8003000 {
+> > +      compatible =3D "nuvoton,wpcm450-pinctrl";
+> > +      reg =3D <0xb8003000 0x1000>;
+> > +      gpio-controller;
+> > +      #gpio-cells =3D <2>;
+> > +      interrupts =3D <2 IRQ_TYPE_LEVEL_HIGH
+> > +                    3 IRQ_TYPE_LEVEL_HIGH
+> > +                    4 IRQ_TYPE_LEVEL_HIGH
+> > +                    5 IRQ_TYPE_LEVEL_HIGH>;
+>=20
+> So these.
+>=20
+> > +      rmii2 {
+> > +        groups =3D "rmii2";
+> > +        function =3D "rmii2";
+> > +      };
+> > +
+> > +      pinctrl_uid: uid {
+> > +        pins =3D "gpio14";
+> > +        input-debounce =3D <1>;
+> > +      };
+>=20
+> I challenge you here and encourage you to put a node for each
+> GPIO "port":
+>=20
+>   port0: gpio@0 {
+>  ....
+>   };
+>   port1: gpio@1 {
+>  ....
+>   };
+
+Hmm, well, if the unit addresses simply go from 0 to 7, rather than
+encoding offsets, this could work. But it won't help much with the IRQ
+problem.
+
+
+Thanks,
+Jonathan Neusch=C3=A4fer
+
+--eeAjEw1TF8Acq/Ni
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDF1WYACgkQCDBEmo7z
+X9vvgg/+NjP0ej1MKT9aUcOcF5Vp77+zynVdqbXduGemb16BNYTXsULObigZyQqe
+5LJshwRpK5jRZNRIdWDscndY+rzg0vwjlcG0lF75a4Ol/bWs/uI/d7sIaZPO13s7
+zfCWLw240N1NkNFDcK449Z1OrQ7nAkn6BEeJrZ1TTBHV6GyTGqD7WZGMRCA9Kcag
+xFwjRNWEhxeuxaQklbm1PADy8qt4WBk7z4yt+SGZmJYZyHloAFJOsHVIiOlxSYQH
+DWoFc9ydsK6jK+Rxdo8Xsgt7G2Ei2u/tBly1og5iR9gWh2abA3pO2xLIm9QDud9+
+hIwPjzH/XAUbqVFy6fGmOM+qif1Uvs2rAcybx5ewRQRFhA7mQeOd3Wfv+DW05QXG
+OKHBR0fGeqqE4gHBTscy5eftpmToIczYwFP+oZx8uIksReJ3IQv3SS5s9JjHFoe/
+Yy06P8rm06jqvt+cZeSEg55yLe95IZvVMZxbbGNhRXF80afMExfVLBx6YJaSI8cz
+7aHmTlDTG1HyLdCTLrDBDB8pP+fke/FN+uBiJucEg+jzz64qQheW30DyKjlSMP+W
+QCx3k9eTBl5AzPqvpEfQwMcyZpMdMFpwg3Dm/kulKU/zIwI4nu1Ef1+5aTz8T+Ze
+oRnm+9VQmzSV0W2HC24PxJrtbmpTbID1XRN/95gZfl0K17OFuZQ=
+=negl
+-----END PGP SIGNATURE-----
+
+--eeAjEw1TF8Acq/Ni--
