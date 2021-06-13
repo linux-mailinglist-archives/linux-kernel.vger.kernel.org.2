@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B583A5B17
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E90E3A5B19
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhFMXmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 19:42:12 -0400
-Received: from exvmail4.hynix.com ([166.125.252.92]:42648 "EHLO
-        invmail4.hynix.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232076AbhFMXmL (ORCPT
+        id S232229AbhFMXqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 19:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232196AbhFMXqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 19:42:11 -0400
-X-AuditID: a67dfc5b-c37ff70000013791-73-60c69754b341
-Received: from hymail21.hynixad.com (10.156.135.51) by hymail22.hynixad.com
- (10.156.135.52) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.792.3; Mon, 14 Jun 2021
- 08:40:04 +0900
-Received: from hymail21.hynixad.com ([10.156.135.51]) by hymail21.hynixad.com
- ([10.156.135.51]) with mapi id 15.02.0792.010; Mon, 14 Jun 2021 08:40:04
- +0900
-From:   =?ks_c_5601-1987?B?waS/5MfRKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
-        <yohan.joung@sk.com>
-To:     "avri.altman@wdc.com" <avri.altman@wdc.com>
-CC:     "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "d_hyun.kwon@samsung.com" <d_hyun.kwon@samsung.com>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "j-young.choi@samsung.com" <j-young.choi@samsung.com>,
-        "jaemyung.lee@samsung.com" <jaemyung.lee@samsung.com>,
-        =?ks_c_5601-1987?B?w9bA57+1KENIT0kgSkFFIFlPVU5HKSBNb2JpbGUgU0U=?= 
-        <jaeyoung21.choi@sk.com>,
-        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "jh.i.park@samsung.com" <jh.i.park@samsung.com>,
-        "jieon.seol@samsung.com" <jieon.seol@samsung.com>,
-        "keosung.park@samsung.com" <keosung.park@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "sungjun07.park@samsung.com" <sungjun07.park@samsung.com>,
-        =?ks_c_5601-1987?B?waS/5MfRKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
-        <yohan.joung@sk.com>
-Subject: RE: [PATCH v37 3/4] scsi: ufs: Prepare HPB read for cached sub-region
-Thread-Topic: RE: [PATCH v37 3/4] scsi: ufs: Prepare HPB read for cached
- sub-region
-Thread-Index: Addgq8fAZ5jjWmnhQIC9oaNz2KTkmw==
-Date:   Sun, 13 Jun 2021 23:40:04 +0000
-Message-ID: <d38fbfa83d1f421c8a0d201a3cb6dce3@sk.com>
-Accept-Language: ko-KR, en-US
-Content-Language: ko-KR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.152.36.34]
-Content-Type: text/plain; charset="ks_c_5601-1987"
-Content-Transfer-Encoding: base64
+        Sun, 13 Jun 2021 19:46:45 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD3BC061574;
+        Sun, 13 Jun 2021 16:44:43 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 681012C0;
+        Sun, 13 Jun 2021 23:44:43 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 681012C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1623627883; bh=d1TtPFBTK4Qk5H6nv24+5P0QvXYMUJpqAJ7Mpv3BtHw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=X8iQ7/0XXxASHlaRjqQ4h62Z7Yy9P3F9zgCKF/E76XoYblogvs4JB3nQy0I+g684D
+         8Kc6NfAA0BylGwRaFdKMWzIC1U4eM/fqCBqjvEc0K4cJLbSKDpq1t5rjgIFkuKh3u3
+         7btx8SLM/UtyTRGopJYGBonauP603D6IMnAN2rEkkq7rsXaOpZGfyO6vb+SIh8MvCg
+         luuAP1oYSpnVRltt2HUYN4ZqTh4GuVyH5WHXTXJrQSK/4MqQBE4M1Oddh0syjjEkTS
+         1J2egGP+Q3W6Hwy9G5itypQGBfUTSuequ2UND6wOUllgPVUelqPJiZqtUgbr1cx0vW
+         W/80aoqo9Jzfw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org, kexec@lists.infradead.org,
+        akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, vgoyal@redhat.com,
+        x86@kernel.org, Eric Biederman <ebiederm@xmission.com>,
+        dyoung@redhat.com
+Subject: Re: [PATCH v3] Documentation: kdump: update kdump guide
+In-Reply-To: <878s3dbbuz.fsf@meer.lwn.net>
+References: <20210609083218.GB591017@MiWiFi-R3L-srv>
+ <878s3dbbuz.fsf@meer.lwn.net>
+Date:   Sun, 13 Jun 2021 17:44:42 -0600
+Message-ID: <87sg1l9vo5.fsf@meer.lwn.net>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsXCNUdUWTd0+rEEg8072Swu75rDZtF9fQeb
-        A5PH501yAYxRXDYpqTmZZalF+nYJXBkLpk5nLPjEV7Fy2VbmBsYDfF2MnBwSAiYSf458Yu5i
-        5OIQEnjFKPHs/ms2CGcBo0T3935WkCo2gSiJx60r2EFsEQF9ifall5lAbGaBf5wSU3aLg9jC
-        An4SJx5sY4SoCZXom7CABcLWk3h+ug+sl0VAVWLZoc9gM3kFTCXer3kLtJmDg1FAVuLqNRmI
-        keISi79eY4Y4TkBiyZ7zULaoxMvH/1ghbAWJld8vQJ1gJLFk9XwoW1FiSvdDdojxghInZz5h
-        gaiXlDi44gbLBEaRWUhWzELSPgtJ+ywk7QsYWVYxCmXmleUmZuaY6GVU5mVW6CXn525iBAb/
-        sto/0TsYP10IPsQowMGoxMPr8etoghBrYllxZe4hRgkOZiUR3mddhxOEeFMSK6tSi/Lji0pz
-        UosPMUpzsCiJ834LS00QEkhPLEnNTk0tSC2CyTJxcEo1MK75FbJLwUfxHCNfspjBRP/bLav+
-        W2o933GN+fC2N9NV/pSUXs2w0JRLrg4L/FinbKC99nRfkiTb75W1nbwXE6eKXJ1f2FqSG6IX
-        IpZuYfB5zbdnNrNvOOZqFLH/ejHltPzeyH1LLK8W3LYx3HIm+o73mtcChWoq779srmVR8z/E
-        /uG2obDKBiWW4oxEQy3mouJEAG40gQN6AgAA
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+ID4rICAgICAgLyoNCj4gPiA+KyAgICAgICAqIElmIHRoZSByZWdpb24gc3RhdGUgaXMgYWN0
-aXZlLCBtY3R4IG11c3QgYmUgYWxsb2NhdGVkLg0KPiA+ID4rICAgICAgICogSW4gdGhpcyBjYXNl
-LCBjaGVjayB3aGV0aGVyIHRoZSByZWdpb24gaXMgZXZpY3RlZCBvcg0KPiA+ID4rICAgICAgICog
-bWN0eCBhbGxjYXRpb24gZmFpbC4NCj4gPiA+KyAgICAgICAqLw0KPiA+ID4rICAgICAgaWYgKHVu
-bGlrZWx5KCFzcmduLT5tY3R4KSkgew0KPiA+ID4rICAgICAgICAgICAgICBkZXZfZXJyKCZocGIt
-PnNkZXZfdWZzX2x1LT5zZGV2X2RldiwNCj4gPiA+KyAgICAgICAgICAgICAgICAgICAgICAibm8g
-bWN0eCBpbiByZWdpb24gJWQgc3VicmVnaW9uICVkLlxuIiwNCj4gPiA+KyAgICAgICAgICAgICAg
-ICAgICAgICBzcmduLT5yZ25faWR4LCBzcmduLT5zcmduX2lkeCk7DQo+ID4gPisgICAgICAgICAg
-ICAgIHJldHVybiB0cnVlOw0KPiA+ID4rICAgICAgfQ0KPiA+ID4rDQo+ID4gPisgICAgICBpZiAo
-KHNyZ25fb2Zmc2V0ICsgY250KSA+IGJpdG1hcF9sZW4pDQo+ID4gPisgICAgICAgICAgICAgIGJp
-dF9sZW4gPSBiaXRtYXBfbGVuIC0gc3Jnbl9vZmZzZXQ7DQo+ID4gPisgICAgICBlbHNlDQo+ID4g
-PisgICAgICAgICAgICAgIGJpdF9sZW4gPSBjbnQ7DQo+ID4gPisNCj4gPiA+KyAgICAgIGlmIChm
-aW5kX25leHRfYml0KHNyZ24tPm1jdHgtPnBwbl9kaXJ0eSwgYml0bWFwX2xlbiwNCj4gPiA+KyAg
-ICAgICAgICAgICAgICAgICAgICAgIHNyZ25fb2Zmc2V0KSA8IGJpdF9sZW4gKyBzcmduX29mZnNl
-dCkNCj4gPiA+KyAgICAgICAgICAgICAgcmV0dXJuIHRydWU7DQo+ID4gPisNCj4gPiANCj4gPiBJ
-dCBzZWVtcyB1bm5lY2Vzc2FyeSB0byBzZWFyY2ggdGhyb3VnaCBiaXRtYXBfbGVuDQo+ID4gSG93
-IGFib3V0IHNlYXJjaGluZyBieSB0cmFuc2ZlciBzaXplPw0KPiA+IA0KPiA+IGlmIChmaW5kX25l
-eHRfYml0KHNyZ24tPm1jdHgtPnBwbl9kaXJ0eSwNCj4gPiAgICAgICAgICAgICAgIGJpdF9sZW4g
-KyBzcmduX29mZnNldCwgc3Jnbl9vZmZzZXQpIDwgYml0X2xlbiArIHNyZ25fb2Zmc2V0KQ0KPiBJ
-c24ndCBiaXRfbGVuIHNob3VsZCBiZSB1c2VkIGZvciBzaXplLCBhbmQgbm90IGJpdF9sZW4gKyBz
-cmduX29mZnNldCA/DQoNCnRoZW4gZmluZF9uZXh0X2JpdCBjaGVja3MgZnJvbSBzdGFydCB0byBi
-aXRfbGVuLg0KZmluZF9uZXh0X2JpdCBzdG9wcyBjaGVja2luZyBpZiBzdGFydCBpcyBncmVhdGVy
-IHRoYW4gYml0X2xlbi4NCml0IGRvZXMgbm90IGNoZWNrIGZvciBkaXJ0eSBhcyB0cmFuc2Zlcl9z
-aXplLg0KDQpUaGFua3MNCllvaGFuDQoNCj4gDQo+IFRoYW5rcywNCj4gQXZyaQ0KPiANCj4gPiAN
-Cj4gPiBUaGFua3MNCj4gPiBZb2hhbg0K
+Jonathan Corbet <corbet@lwn.net> writes:
+
+> Baoquan He <bhe@redhat.com> writes:
+>
+>> Some parts of the guide are aged, hence need be updated.
+>>
+>> 1) The backup area of the 1st 640K on X86_64 has been removed
+>>    by below commits, update the description accordingly.
+>>
+>>    commit 7c321eb2b843 ("x86/kdump: Remove the backup region handling")
+>>    commit 6f599d84231f ("x86/kdump: Always reserve the low 1M when the crashkernel option is specified")
+>>
+>> 2) Sort out the descripiton of "crashkernel syntax" part.
+>>
+>> 3) And some other minor cleanups.
+>>
+>> Signed-off-by: Baoquan He <bhe@redhat.com>
+>
+> Applied, thanks.
+
+Actually, this patch added a docs build warning:
+
+  /stuff/k/git/kernel/Documentation/admin-guide/kdump/kdump.rst:286: WARNING: Literal block ends without a blank line; unexpected unindent.
+
+I've gone ahead and inserted the blank line to fix this.  In the future,
+please build-test your changes to make sure that you are not adding new
+warnings.
+
+Thanks,
+
+jon
