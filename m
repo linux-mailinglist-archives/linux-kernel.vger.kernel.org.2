@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE1A3A56C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A553A56CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhFMGcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 02:32:00 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34327 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229777AbhFMGb7 (ORCPT
+        id S231157AbhFMGlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 02:41:51 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:49349 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230238AbhFMGlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 02:31:59 -0400
-X-UUID: 2d6da5cb709540e6bba1623a01784112-20210613
+        Sun, 13 Jun 2021 02:41:50 -0400
+X-UUID: 46a22b5b74424896b63f4b4647a019de-20210613
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=8WtSPGkNuQ7241ILje9VJjGKNPvfoYVf4vIrsfMG0ug=;
-        b=K8UiGnfvo+MCmjEpBErRXJzmLG2dzqGpm+hPQ8CRhlR+FzF0UZ56imdR7N0iWkyZ/giPNEXRsp2aNqu9/7vjMnidEZXO5MhnbDawIWlS2KIGfm8NxFHDZU/3L5VmhfdBgFuL2/h3BZDLoEzqQ86FU2FTNnVVbxprimPUHq5se+g=;
-X-UUID: 2d6da5cb709540e6bba1623a01784112-20210613
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=F4X/8TVsc/5yj4EipGih8Ae/4NiaO/0GdQ7SxHdjPnU=;
+        b=uPd+rzzx3PoqcO/ROMGx49qfa5I7q/A+lA4fR9CcfvaHOwo/PsxJuuvCX+lgiPfRIlxgIQNmj+5CWwDqbFSsLrUjoFBIFaw9eGNmk7ZphXU6Unoe189agc1h3oyqh1j2L0JjysUXSCAJMLXB4UETXGfriMbfLwfH+pd6DsOwZi4=;
+X-UUID: 46a22b5b74424896b63f4b4647a019de-20210613
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
         (envelope-from <mason.zhang@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1006012958; Sun, 13 Jun 2021 14:29:55 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+        with ESMTP id 830828355; Sun, 13 Jun 2021 14:39:47 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
  mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 13 Jun 2021 14:29:48 +0800
-Received: from [10.15.20.246] (10.15.20.246) by mtkcas11.mediatek.inc
+ 15.0.1497.2; Sun, 13 Jun 2021 14:39:45 +0800
+Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 13 Jun 2021 14:29:47 +0800
-Message-ID: <1623564933.15174.5.camel@mbjsdccf07>
+ Transport; Sun, 13 Jun 2021 14:39:44 +0800
+Message-ID: <1623565530.11212.4.camel@mbjsdccf07>
 Subject: Re: [PATCH v2 1/1] arm64: dts: mediatek: add MT6779 spi master dts
  node
 From:   Mason Zhang <mason.zhang@mediatek.com>
@@ -37,7 +37,7 @@ CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
         <wsd_upstream@mediatek.com>
-Date:   Sun, 13 Jun 2021 14:15:33 +0800
+Date:   Sun, 13 Jun 2021 14:25:30 +0800
 In-Reply-To: <faafa83d-4831-2b70-78ec-0e9f3636b5c9@gmail.com>
 References: <20210409015651.11474-1-Mason.Zhang@mediatek.com>
          <faafa83d-4831-2b70-78ec-0e9f3636b5c9@gmail.com>
@@ -139,8 +139,8 @@ RlJBX1NQSTc+Ow0KPiA+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsi
 LCAic3BpLWNsayI7DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gIAkJYXVkaW86IGNsb2NrLWNvbnRy
 b2xsZXJAMTEyMTAwMDAgew0KPiA+ICAJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1h
 dWRpbyIsICJzeXNjb24iOw0KPiA+ICAJCQlyZWcgPSA8MCAweDExMjEwMDAwIDAgMHgxMDAwPjsN
-Cg0KDQpEZWFyIE1hdHRpYXM6DQoNCglUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbn4NCg0KCUkg
-aGF2ZSB1cGRhdGUgY29tbWl0IG1lc3NhZ2UgaW4gcGF0Y2ggdjMuQ291bGQgeW91IHBsZWFzZSBn
-ZW50bGUgcGluZw0Kb24gcGF0Y2ggdjMgaWYgaXQgaGFzIG5vIG90aGVyIHByb2JsZW1zLg0KDQpU
-aGFua3MNCk1hc29uDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQo+ID4gDQoNCg==
+Cj4gPiANCg0KRGVhciBNYXR0aGlhczoNCgkNCglUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbnMs
+IGFuZCBJIGhhdmUgdXBkYXRlIGNvbW1pdCBtZXNzYWdlIG9uIHBhdGNoDQp2My5Db3VsZCB5b3Ug
+cGxlYXNlIGhlbHAgdG8gZ2VudGxlIHBpbmcgb24gcGF0Y2ggdjMgaWYgaXQgaGFzIG5vIG90aGVy
+DQpwcm9ibGVtcz8NCglUaGFua3MgYSBsb3R+DQoNClRoYW5rcw0KTWFzb24NCgkNCg0KDQoNCg0K
 
