@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AC53A5A56
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 22:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F563A5A5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 22:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhFMU0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 16:26:10 -0400
-Received: from mga14.intel.com ([192.55.52.115]:38972 "EHLO mga14.intel.com"
+        id S232047AbhFMUcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 16:32:15 -0400
+Received: from mga17.intel.com ([192.55.52.151]:12504 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231840AbhFMU0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 16:26:09 -0400
-IronPort-SDR: 3BYpwSaMmaJyYt//+qv9lDLxsgZIQnshJTF0HvVmBJmT7iHrgsqB29OQFRU2e4iJ/bD7UdfyfI
- oKirt4mR+u8A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10014"; a="205555943"
+        id S231883AbhFMUcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 16:32:14 -0400
+IronPort-SDR: 85ZCgQe072mT17P7tR6zSZ2nboTLTKNWRu/46/pmiAF3FMzQFsgn68lUFRtFgKtL6URiv3r65b
+ R0DJqI6IDaQw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10014"; a="186111620"
 X-IronPort-AV: E=Sophos;i="5.83,271,1616482800"; 
-   d="gz'50?scan'50,208,50";a="205555943"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2021 13:24:07 -0700
-IronPort-SDR: sHlAUqo4+WsB+cBAonG9s2aKxGl5cjqpEQcYo9twdTelWUzBsJz7Wd13mB/VeC5Ff9BlRyKqm9
- zRLwuBlv7qUg==
+   d="gz'50?scan'50,208,50";a="186111620"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2021 13:30:12 -0700
+IronPort-SDR: ckYGqqtTDuhYTpC2ZW6b7h5fGI/P1AeQcO37fISMnrAC0nri0Y55O028fGOTUgiVRmf+6ZwY7i
+ z/VCS0H4J5qw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,271,1616482800"; 
-   d="gz'50?scan'50,208,50";a="451364995"
+   d="gz'50?scan'50,208,50";a="553919729"
 Received: from lkp-server02.sh.intel.com (HELO 3cb98b298c7e) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Jun 2021 13:24:05 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 13 Jun 2021 13:30:11 -0700
 Received: from kbuild by 3cb98b298c7e with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lsWeN-0001Uj-4Q; Sun, 13 Jun 2021 20:24:07 +0000
-Date:   Mon, 14 Jun 2021 04:23:32 +0800
+        id 1lsWkG-0001Up-4w; Sun, 13 Jun 2021 20:30:12 +0000
+Date:   Mon, 14 Jun 2021 04:29:14 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Ingo Molnar <mingo@kernel.org>
 Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
         x86@kernel.org
-Subject: [tip:tmp.tmp2 154/364] include/linux/syscall_user_dispatch.h:29:10:
- error: 'EINVAL' undeclared
-Message-ID: <202106140428.edeFqVY0-lkp@intel.com>
+Subject: [tip:tmp.tmp2 253/364] arch/riscv/kernel/asm-offsets.c:313:27:
+ error: implicit declaration of function 'ALIGN'
+Message-ID: <202106140411.easp8sck-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="oyUTqETQ0mS9luUI"
+Content-Type: multipart/mixed; boundary="3V7upXqbjpZ4EhLz"
 Content-Disposition: inline
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
@@ -45,22 +45,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---oyUTqETQ0mS9luUI
+--3V7upXqbjpZ4EhLz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
+Hi Ingo,
+
+First bad commit (maybe != root cause):
+
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tmp.tmp2
 head:   adcceb5eb7aee38e4a9c15bdf599655f0e1b1324
-commit: 6ca85f643325cbbcd70bc08bfab7ee67c26b8607 [154/364] sched/headers: Remove <linux/nodemask.h> from <linux/sched.h>
+commit: d9c2c90ff3d122ee8c4bf9129c91eb741b5c6463 [253/364] sched/headers: Simplify <linux/kernel.h>
 config: riscv-nommu_k210_defconfig (attached as .config)
 compiler: riscv64-linux-gcc (GCC) 9.3.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=6ca85f643325cbbcd70bc08bfab7ee67c26b8607
+        # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=d9c2c90ff3d122ee8c4bf9129c91eb741b5c6463
         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
         git fetch --no-tags tip tmp.tmp2
-        git checkout 6ca85f643325cbbcd70bc08bfab7ee67c26b8607
+        git checkout d9c2c90ff3d122ee8c4bf9129c91eb741b5c6463
         # save the attached .config to linux build tree
         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv 
 
@@ -69,15 +73,10 @@ Reported-by: kernel test robot <lkp@intel.com>
 
 All errors (new ones prefixed by >>):
 
-   In file included from include/linux/sched.h:25,
-                    from arch/riscv/kernel/asm-offsets.c:10:
-   include/linux/syscall_user_dispatch.h: In function 'set_syscall_user_dispatch':
->> include/linux/syscall_user_dispatch.h:29:10: error: 'EINVAL' undeclared (first use in this function)
-      29 |  return -EINVAL;
-         |          ^~~~~~
-   include/linux/syscall_user_dispatch.h:29:10: note: each undeclared identifier is reported only once for each function it appears in
-   In file included from arch/riscv/kernel/asm-offsets.c:9:
-   arch/riscv/kernel/asm-offsets.c: In function 'asm_offsets':
+         |                                ^~~~~~~~~~~~~~~~~~~
+   arch/riscv/kernel/asm-offsets.c:290:5: note: in expansion of macro 'offsetof'
+     290 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -87,12 +86,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:18:2: note: in expansion of macro 'OFFSET'
-      18 |  OFFSET(TASK_THREAD_RA, task_struct, thread.ra);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:293:5: note: in expansion of macro 'offsetof'
+     293 |     offsetof(struct task_struct, thread.fstate.f[29])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -102,12 +98,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:19:2: note: in expansion of macro 'OFFSET'
-      19 |  OFFSET(TASK_THREAD_SP, task_struct, thread.sp);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:294:5: note: in expansion of macro 'offsetof'
+     294 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -117,12 +110,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:20:2: note: in expansion of macro 'OFFSET'
-      20 |  OFFSET(TASK_THREAD_S0, task_struct, thread.s[0]);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:297:5: note: in expansion of macro 'offsetof'
+     297 |     offsetof(struct task_struct, thread.fstate.f[30])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -132,12 +122,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:21:2: note: in expansion of macro 'OFFSET'
-      21 |  OFFSET(TASK_THREAD_S1, task_struct, thread.s[1]);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:298:5: note: in expansion of macro 'offsetof'
+     298 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -147,12 +134,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:22:2: note: in expansion of macro 'OFFSET'
-      22 |  OFFSET(TASK_THREAD_S2, task_struct, thread.s[2]);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:301:5: note: in expansion of macro 'offsetof'
+     301 |     offsetof(struct task_struct, thread.fstate.f[31])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -162,27 +146,45 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:23:2: note: in expansion of macro 'OFFSET'
-      23 |  OFFSET(TASK_THREAD_S3, task_struct, thread.s[3]);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:302:5: note: in expansion of macro 'offsetof'
+     302 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
    include/linux/kbuild.h:6:62: note: in definition of macro 'DEFINE'
        6 |  asm volatile("\n.ascii \"->" #sym " %0 " #val "\"" : : "i" (val))
+         |                                                              ^~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   arch/riscv/kernel/asm-offsets.c:305:5: note: in expansion of macro 'offsetof'
+     305 |     offsetof(struct task_struct, thread.fstate.fcsr)
+         |     ^~~~~~~~
+   include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/kbuild.h:6:62: note: in definition of macro 'DEFINE'
+       6 |  asm volatile("\n.ascii \"->" #sym " %0 " #val "\"" : : "i" (val))
+         |                                                              ^~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   arch/riscv/kernel/asm-offsets.c:306:5: note: in expansion of macro 'offsetof'
+     306 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
+>> arch/riscv/kernel/asm-offsets.c:313:27: error: implicit declaration of function 'ALIGN' [-Werror=implicit-function-declaration]
+     313 |  DEFINE(PT_SIZE_ON_STACK, ALIGN(sizeof(struct pt_regs), STACK_ALIGN));
+         |                           ^~~~~
+   include/linux/kbuild.h:6:62: note: in definition of macro 'DEFINE'
+       6 |  asm volatile("\n.ascii \"->" #sym " %0 " #val "\"" : : "i" (val))
+         |                                                              ^~~
+   cc1: some warnings being treated as errors
 --
-   In file included from include/linux/sched.h:25,
-                    from arch/riscv/kernel/asm-offsets.c:10:
-   include/linux/syscall_user_dispatch.h: In function 'set_syscall_user_dispatch':
->> include/linux/syscall_user_dispatch.h:29:10: error: 'EINVAL' undeclared (first use in this function)
-      29 |  return -EINVAL;
-         |          ^~~~~~
-   include/linux/syscall_user_dispatch.h:29:10: note: each undeclared identifier is reported only once for each function it appears in
-   In file included from arch/riscv/kernel/asm-offsets.c:9:
-   arch/riscv/kernel/asm-offsets.c: In function 'asm_offsets':
+         |                                ^~~~~~~~~~~~~~~~~~~
+   arch/riscv/kernel/asm-offsets.c:290:5: note: in expansion of macro 'offsetof'
+     290 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -192,12 +194,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:18:2: note: in expansion of macro 'OFFSET'
-      18 |  OFFSET(TASK_THREAD_RA, task_struct, thread.ra);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:293:5: note: in expansion of macro 'offsetof'
+     293 |     offsetof(struct task_struct, thread.fstate.f[29])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -207,12 +206,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:19:2: note: in expansion of macro 'OFFSET'
-      19 |  OFFSET(TASK_THREAD_SP, task_struct, thread.sp);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:294:5: note: in expansion of macro 'offsetof'
+     294 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -222,12 +218,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:20:2: note: in expansion of macro 'OFFSET'
-      20 |  OFFSET(TASK_THREAD_S0, task_struct, thread.s[0]);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:297:5: note: in expansion of macro 'offsetof'
+     297 |     offsetof(struct task_struct, thread.fstate.f[30])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -237,12 +230,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:21:2: note: in expansion of macro 'OFFSET'
-      21 |  OFFSET(TASK_THREAD_S1, task_struct, thread.s[1]);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:298:5: note: in expansion of macro 'offsetof'
+     298 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -252,12 +242,9 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:22:2: note: in expansion of macro 'OFFSET'
-      22 |  OFFSET(TASK_THREAD_S2, task_struct, thread.s[2]);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:301:5: note: in expansion of macro 'offsetof'
+     301 |     offsetof(struct task_struct, thread.fstate.f[31])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
@@ -267,45 +254,307 @@ All errors (new ones prefixed by >>):
    include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
       17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
          |                                ^~~~~~~~~~~~~~~~~~~
-   include/linux/kbuild.h:11:14: note: in expansion of macro 'offsetof'
-      11 |  DEFINE(sym, offsetof(struct str, mem))
-         |              ^~~~~~~~
-   arch/riscv/kernel/asm-offsets.c:23:2: note: in expansion of macro 'OFFSET'
-      23 |  OFFSET(TASK_THREAD_S3, task_struct, thread.s[3]);
-         |  ^~~~~~
+   arch/riscv/kernel/asm-offsets.c:302:5: note: in expansion of macro 'offsetof'
+     302 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
    include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
      140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
          |                                   ^~~~~~~~~~~~~~~~~~
    include/linux/kbuild.h:6:62: note: in definition of macro 'DEFINE'
        6 |  asm volatile("\n.ascii \"->" #sym " %0 " #val "\"" : : "i" (val))
+         |                                                              ^~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   arch/riscv/kernel/asm-offsets.c:305:5: note: in expansion of macro 'offsetof'
+     305 |     offsetof(struct task_struct, thread.fstate.fcsr)
+         |     ^~~~~~~~
+   include/linux/compiler_types.h:140:35: error: 'struct task_struct' has no member named 'thread'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/kbuild.h:6:62: note: in definition of macro 'DEFINE'
+       6 |  asm volatile("\n.ascii \"->" #sym " %0 " #val "\"" : : "i" (val))
+         |                                                              ^~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   arch/riscv/kernel/asm-offsets.c:306:5: note: in expansion of macro 'offsetof'
+     306 |   - offsetof(struct task_struct, thread.fstate.f[0])
+         |     ^~~~~~~~
+>> arch/riscv/kernel/asm-offsets.c:313:27: error: implicit declaration of function 'ALIGN' [-Werror=implicit-function-declaration]
+     313 |  DEFINE(PT_SIZE_ON_STACK, ALIGN(sizeof(struct pt_regs), STACK_ALIGN));
+         |                           ^~~~~
+   include/linux/kbuild.h:6:62: note: in definition of macro 'DEFINE'
+       6 |  asm volatile("\n.ascii \"->" #sym " %0 " #val "\"" : : "i" (val))
+         |                                                              ^~~
+   cc1: some warnings being treated as errors
+   make[2]: *** [scripts/Makefile.build:117: arch/riscv/kernel/asm-offsets.s] Error 1
+   make[2]: Target '__build' not remade because of errors.
+   make[1]: *** [Makefile:1232: prepare0] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:215: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
 
 
-vim +/EINVAL +29 include/linux/syscall_user_dispatch.h
+vim +/ALIGN +313 arch/riscv/kernel/asm-offsets.c
 
-1446e1df9eb183 Gabriel Krisman Bertazi 2020-11-27  25  
-1446e1df9eb183 Gabriel Krisman Bertazi 2020-11-27  26  static inline int set_syscall_user_dispatch(unsigned long mode, unsigned long offset,
-1446e1df9eb183 Gabriel Krisman Bertazi 2020-11-27  27  					    unsigned long len, char __user *selector)
-1446e1df9eb183 Gabriel Krisman Bertazi 2020-11-27  28  {
-1446e1df9eb183 Gabriel Krisman Bertazi 2020-11-27 @29  	return -EINVAL;
-1446e1df9eb183 Gabriel Krisman Bertazi 2020-11-27  30  }
-1446e1df9eb183 Gabriel Krisman Bertazi 2020-11-27  31  
+7db91e57a0acde Palmer Dabbelt    2017-07-10   74  
+7db91e57a0acde Palmer Dabbelt    2017-07-10   75  	DEFINE(PT_SIZE, sizeof(struct pt_regs));
+a4c3733d32a72f Christoph Hellwig 2019-10-28   76  	OFFSET(PT_EPC, pt_regs, epc);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   77  	OFFSET(PT_RA, pt_regs, ra);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   78  	OFFSET(PT_FP, pt_regs, s0);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   79  	OFFSET(PT_S0, pt_regs, s0);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   80  	OFFSET(PT_S1, pt_regs, s1);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   81  	OFFSET(PT_S2, pt_regs, s2);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   82  	OFFSET(PT_S3, pt_regs, s3);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   83  	OFFSET(PT_S4, pt_regs, s4);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   84  	OFFSET(PT_S5, pt_regs, s5);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   85  	OFFSET(PT_S6, pt_regs, s6);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   86  	OFFSET(PT_S7, pt_regs, s7);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   87  	OFFSET(PT_S8, pt_regs, s8);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   88  	OFFSET(PT_S9, pt_regs, s9);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   89  	OFFSET(PT_S10, pt_regs, s10);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   90  	OFFSET(PT_S11, pt_regs, s11);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   91  	OFFSET(PT_SP, pt_regs, sp);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   92  	OFFSET(PT_TP, pt_regs, tp);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   93  	OFFSET(PT_A0, pt_regs, a0);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   94  	OFFSET(PT_A1, pt_regs, a1);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   95  	OFFSET(PT_A2, pt_regs, a2);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   96  	OFFSET(PT_A3, pt_regs, a3);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   97  	OFFSET(PT_A4, pt_regs, a4);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   98  	OFFSET(PT_A5, pt_regs, a5);
+7db91e57a0acde Palmer Dabbelt    2017-07-10   99  	OFFSET(PT_A6, pt_regs, a6);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  100  	OFFSET(PT_A7, pt_regs, a7);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  101  	OFFSET(PT_T0, pt_regs, t0);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  102  	OFFSET(PT_T1, pt_regs, t1);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  103  	OFFSET(PT_T2, pt_regs, t2);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  104  	OFFSET(PT_T3, pt_regs, t3);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  105  	OFFSET(PT_T4, pt_regs, t4);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  106  	OFFSET(PT_T5, pt_regs, t5);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  107  	OFFSET(PT_T6, pt_regs, t6);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  108  	OFFSET(PT_GP, pt_regs, gp);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  109  	OFFSET(PT_ORIG_A0, pt_regs, orig_a0);
+a4c3733d32a72f Christoph Hellwig 2019-10-28  110  	OFFSET(PT_STATUS, pt_regs, status);
+a4c3733d32a72f Christoph Hellwig 2019-10-28  111  	OFFSET(PT_BADADDR, pt_regs, badaddr);
+a4c3733d32a72f Christoph Hellwig 2019-10-28  112  	OFFSET(PT_CAUSE, pt_regs, cause);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  113  
+7db91e57a0acde Palmer Dabbelt    2017-07-10  114  	/*
+7db91e57a0acde Palmer Dabbelt    2017-07-10  115  	 * THREAD_{F,X}* might be larger than a S-type offset can handle, but
+7db91e57a0acde Palmer Dabbelt    2017-07-10  116  	 * these are used in performance-sensitive assembly so we can't resort
+7db91e57a0acde Palmer Dabbelt    2017-07-10  117  	 * to loading the long immediate every time.
+7db91e57a0acde Palmer Dabbelt    2017-07-10  118  	 */
+7db91e57a0acde Palmer Dabbelt    2017-07-10  119  	DEFINE(TASK_THREAD_RA_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  120  		  offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  121  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  122  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  123  	DEFINE(TASK_THREAD_SP_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  124  		  offsetof(struct task_struct, thread.sp)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  125  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  126  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  127  	DEFINE(TASK_THREAD_S0_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  128  		  offsetof(struct task_struct, thread.s[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  129  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  130  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  131  	DEFINE(TASK_THREAD_S1_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  132  		  offsetof(struct task_struct, thread.s[1])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  133  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  134  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  135  	DEFINE(TASK_THREAD_S2_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  136  		  offsetof(struct task_struct, thread.s[2])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  137  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  138  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  139  	DEFINE(TASK_THREAD_S3_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  140  		  offsetof(struct task_struct, thread.s[3])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  141  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  142  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  143  	DEFINE(TASK_THREAD_S4_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  144  		  offsetof(struct task_struct, thread.s[4])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  145  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  146  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  147  	DEFINE(TASK_THREAD_S5_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  148  		  offsetof(struct task_struct, thread.s[5])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  149  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  150  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  151  	DEFINE(TASK_THREAD_S6_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  152  		  offsetof(struct task_struct, thread.s[6])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  153  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  154  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  155  	DEFINE(TASK_THREAD_S7_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  156  		  offsetof(struct task_struct, thread.s[7])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  157  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  158  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  159  	DEFINE(TASK_THREAD_S8_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  160  		  offsetof(struct task_struct, thread.s[8])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  161  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  162  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  163  	DEFINE(TASK_THREAD_S9_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  164  		  offsetof(struct task_struct, thread.s[9])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  165  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  166  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  167  	DEFINE(TASK_THREAD_S10_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  168  		  offsetof(struct task_struct, thread.s[10])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  169  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  170  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  171  	DEFINE(TASK_THREAD_S11_RA,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  172  		  offsetof(struct task_struct, thread.s[11])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  173  		- offsetof(struct task_struct, thread.ra)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  174  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  175  
+7db91e57a0acde Palmer Dabbelt    2017-07-10  176  	DEFINE(TASK_THREAD_F0_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  177  		  offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  178  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  179  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  180  	DEFINE(TASK_THREAD_F1_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  181  		  offsetof(struct task_struct, thread.fstate.f[1])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  182  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  183  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  184  	DEFINE(TASK_THREAD_F2_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  185  		  offsetof(struct task_struct, thread.fstate.f[2])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  186  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  187  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  188  	DEFINE(TASK_THREAD_F3_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  189  		  offsetof(struct task_struct, thread.fstate.f[3])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  190  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  191  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  192  	DEFINE(TASK_THREAD_F4_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  193  		  offsetof(struct task_struct, thread.fstate.f[4])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  194  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  195  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  196  	DEFINE(TASK_THREAD_F5_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  197  		  offsetof(struct task_struct, thread.fstate.f[5])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  198  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  199  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  200  	DEFINE(TASK_THREAD_F6_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  201  		  offsetof(struct task_struct, thread.fstate.f[6])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  202  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  203  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  204  	DEFINE(TASK_THREAD_F7_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  205  		  offsetof(struct task_struct, thread.fstate.f[7])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  206  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  207  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  208  	DEFINE(TASK_THREAD_F8_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  209  		  offsetof(struct task_struct, thread.fstate.f[8])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  210  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  211  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  212  	DEFINE(TASK_THREAD_F9_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  213  		  offsetof(struct task_struct, thread.fstate.f[9])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  214  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  215  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  216  	DEFINE(TASK_THREAD_F10_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  217  		  offsetof(struct task_struct, thread.fstate.f[10])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  218  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  219  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  220  	DEFINE(TASK_THREAD_F11_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  221  		  offsetof(struct task_struct, thread.fstate.f[11])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  222  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  223  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  224  	DEFINE(TASK_THREAD_F12_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  225  		  offsetof(struct task_struct, thread.fstate.f[12])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  226  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  227  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  228  	DEFINE(TASK_THREAD_F13_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  229  		  offsetof(struct task_struct, thread.fstate.f[13])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  230  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  231  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  232  	DEFINE(TASK_THREAD_F14_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  233  		  offsetof(struct task_struct, thread.fstate.f[14])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  234  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  235  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  236  	DEFINE(TASK_THREAD_F15_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  237  		  offsetof(struct task_struct, thread.fstate.f[15])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  238  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  239  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  240  	DEFINE(TASK_THREAD_F16_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  241  		  offsetof(struct task_struct, thread.fstate.f[16])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  242  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  243  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  244  	DEFINE(TASK_THREAD_F17_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  245  		  offsetof(struct task_struct, thread.fstate.f[17])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  246  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  247  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  248  	DEFINE(TASK_THREAD_F18_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  249  		  offsetof(struct task_struct, thread.fstate.f[18])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  250  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  251  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  252  	DEFINE(TASK_THREAD_F19_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  253  		  offsetof(struct task_struct, thread.fstate.f[19])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  254  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  255  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  256  	DEFINE(TASK_THREAD_F20_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  257  		  offsetof(struct task_struct, thread.fstate.f[20])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  258  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  259  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  260  	DEFINE(TASK_THREAD_F21_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  261  		  offsetof(struct task_struct, thread.fstate.f[21])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  262  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  263  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  264  	DEFINE(TASK_THREAD_F22_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  265  		  offsetof(struct task_struct, thread.fstate.f[22])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  266  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  267  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  268  	DEFINE(TASK_THREAD_F23_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  269  		  offsetof(struct task_struct, thread.fstate.f[23])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  270  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  271  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  272  	DEFINE(TASK_THREAD_F24_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  273  		  offsetof(struct task_struct, thread.fstate.f[24])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  274  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  275  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  276  	DEFINE(TASK_THREAD_F25_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  277  		  offsetof(struct task_struct, thread.fstate.f[25])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  278  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  279  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  280  	DEFINE(TASK_THREAD_F26_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  281  		  offsetof(struct task_struct, thread.fstate.f[26])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  282  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  283  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  284  	DEFINE(TASK_THREAD_F27_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  285  		  offsetof(struct task_struct, thread.fstate.f[27])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  286  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  287  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  288  	DEFINE(TASK_THREAD_F28_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  289  		  offsetof(struct task_struct, thread.fstate.f[28])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  290  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  291  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  292  	DEFINE(TASK_THREAD_F29_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  293  		  offsetof(struct task_struct, thread.fstate.f[29])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  294  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  295  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  296  	DEFINE(TASK_THREAD_F30_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  297  		  offsetof(struct task_struct, thread.fstate.f[30])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  298  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  299  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  300  	DEFINE(TASK_THREAD_F31_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  301  		  offsetof(struct task_struct, thread.fstate.f[31])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  302  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  303  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  304  	DEFINE(TASK_THREAD_FCSR_F0,
+7db91e57a0acde Palmer Dabbelt    2017-07-10  305  		  offsetof(struct task_struct, thread.fstate.fcsr)
+7db91e57a0acde Palmer Dabbelt    2017-07-10  306  		- offsetof(struct task_struct, thread.fstate.f[0])
+7db91e57a0acde Palmer Dabbelt    2017-07-10  307  	);
+7db91e57a0acde Palmer Dabbelt    2017-07-10  308  
+7db91e57a0acde Palmer Dabbelt    2017-07-10  309  	/*
+7db91e57a0acde Palmer Dabbelt    2017-07-10  310  	 * We allocate a pt_regs on the stack when entering the kernel.  This
+7db91e57a0acde Palmer Dabbelt    2017-07-10  311  	 * ensures the alignment is sane.
+7db91e57a0acde Palmer Dabbelt    2017-07-10  312  	 */
+7db91e57a0acde Palmer Dabbelt    2017-07-10 @313  	DEFINE(PT_SIZE_ON_STACK, ALIGN(sizeof(struct pt_regs), STACK_ALIGN));
 
-:::::: The code at line 29 was first introduced by commit
-:::::: 1446e1df9eb183fdf81c3f0715402f1d7595d4cb kernel: Implement selective syscall userspace redirection
+:::::: The code at line 313 was first introduced by commit
+:::::: 7db91e57a0acde126a162ababfb1e0ab190130cb RISC-V: Task implementation
 
-:::::: TO: Gabriel Krisman Bertazi <krisman@collabora.com>
-:::::: CC: Thomas Gleixner <tglx@linutronix.de>
+:::::: TO: Palmer Dabbelt <palmer@dabbelt.com>
+:::::: CC: Palmer Dabbelt <palmer@dabbelt.com>
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---oyUTqETQ0mS9luUI
+--3V7upXqbjpZ4EhLz
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICMpoxmAAAy5jb25maWcAlFzbc+M2r3/vX6HZzpzp97CtL7Fjz5k80BRtq9ZtRcl28qJx
+H4sICCFqxmAAAy5jb25maWcAlFzbc+M2r3/vX6HZzpzp97CtL7Fjz5k80BRtq9ZtRcl28qJx
 He+up4mdsZ1+u//9AagbJYFKT2e2uyHAGwACP4BUfv3lV4u9386vu9txv3t5+Wl9O5wOl93t
 8Gx9Pb4c/teyA8sPYkvYTvw7MLvH0/uPPy7H6/4fa/R7f/h77/NlP7JWh8vp8GLx8+nr8ds7
 9D+eT7/8+gsP/LmzSDlP1yKSTuCnsdjGD59U//Hd5xcc7fO3/d76bcH5f6zp7zDgJ62bI1Mg
@@ -464,4 +713,4 @@ Jbmjh9bUQe6NhwwP5lNL9OWF6hcwbDksZdJEfF+r/samCg8ZoR3x3SM9wMluDz7mijeH3zyM
 F5sTZPfVO6J/+HtzXG2tVF2jKaffVNPczW/D3ElgdnKCx1XfRn42a6lASvGBBCDYsWMrmzXw
 0/MFUp8kOB2hO11HObNiuL5QCh2wWs44+IicbJ0d2LK5osnj/++kNtjvfwAA
 
---oyUTqETQ0mS9luUI--
+--3V7upXqbjpZ4EhLz--
