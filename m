@@ -2,54 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E1F3A5850
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 14:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EB93A5883
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 14:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhFMMgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 08:36:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231733AbhFMMgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 08:36:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B9E96120E;
-        Sun, 13 Jun 2021 12:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623587660;
-        bh=Uo6KONhUM11rl9mF6xj85ye4nwHE9oZO9QBwRDhb8p4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u9JyDikhxDstULDFDS0ugvs71ttab4Nqo2saxD5cWbYp65d48E5YVyZ2vr1w3m2T3
-         yEoic68Qzhb9u2+8hhI4YoPs5SOkkmXmHBhI5vbJx0aR24TZDVdoCfJbqNevWyvu7Y
-         eM6oX2KiYQErdnlSgjs2JuLL0FfHuBM9VRPN4210=
-Date:   Sun, 13 Jun 2021 14:34:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jhih-Ming Huang <fbihjmeric@gmail.com>
-Cc:     fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
-        maqianga@uniontech.com, marcocesati@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rtw_security: fix cast to restricted __le32
-Message-ID: <YMX7SRSPgvMA/Pw1@kroah.com>
-References: <20210613122858.1433252-1-fbihjmeric@gmail.com>
+        id S231872AbhFMMyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 08:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231819AbhFMMyU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 08:54:20 -0400
+Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3A5C061766;
+        Sun, 13 Jun 2021 05:52:19 -0700 (PDT)
+Received: from localhost.localdomain (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 6035C1F5EB;
+        Sun, 13 Jun 2021 14:52:14 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sm8[12]50-pm8150: Move RESIN to pm8150 dtsi
+Date:   Sun, 13 Jun 2021 14:48:22 +0200
+Message-Id: <20210613124822.124039-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210613122858.1433252-1-fbihjmeric@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 08:28:58PM +0800, Jhih-Ming Huang wrote:
-> This patch fixes the sparse warning of fix cast to restricted __le32.
-> 
-> Last month, there was a change for replacing private CRC-32 routines with
-> in-kernel ones.
-> In that patch, we replaced getcrc32 with crc32_le in calling le32_to_cpu.
-> le32_to_cpu accepts __le32 type as arg, but crc32_le returns unsigned int.
-> That how it introduced the sparse warning.
+It's not worth duplicating the same node over and over and over and over again,
+so let's keep the common bits in the pm8150 DTSI, making only changing the
+status and keycode necessary.
 
-As crc32_le returns a u32 which is in native-endian format, how can you
-cast it to le32?  Why do you cast it to le32?  Isn't that going to be
-incorrect for big endian systems?
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ arch/arm64/boot/dts/qcom/pm8150.dtsi    |  9 +++++++++
+ arch/arm64/boot/dts/qcom/sm8150-hdk.dts | 18 +++++++-----------
+ arch/arm64/boot/dts/qcom/sm8150-mtp.dts | 18 +++++++-----------
+ arch/arm64/boot/dts/qcom/sm8250-hdk.dts | 20 ++++++++------------
+ 4 files changed, 31 insertions(+), 34 deletions(-)
 
-thanks,
+diff --git a/arch/arm64/boot/dts/qcom/pm8150.dtsi b/arch/arm64/boot/dts/qcom/pm8150.dtsi
+index 3b5e80dce5d2..7d5a35f52df1 100644
+--- a/arch/arm64/boot/dts/qcom/pm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm8150.dtsi
+@@ -59,6 +59,15 @@ pon_pwrkey: pwrkey {
+ 
+ 				status = "disabled";
+ 			};
++
++			pon_resin: resin {
++				compatible = "qcom,pm8941-resin";
++				interrupts = <0x0 0x8 0x1 IRQ_TYPE_EDGE_BOTH>;
++				debounce = <15625>;
++				bias-pull-up;
++
++				status = "disabled";
++			};
+ 		};
+ 
+ 		pm8150_temp: temp-alarm@2400 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8150-hdk.dts b/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
+index 50ee3bb97325..335aa0753fc0 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
++++ b/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
+@@ -362,18 +362,14 @@ &gpu {
+ 	status = "okay";
+ };
+ 
+-&pon {
+-	pwrkey {
+-		status = "okay";
+-	};
++&pon_pwrkey {
++	status = "okay";
++};
+ 
+-	resin {
+-		compatible = "qcom,pm8941-resin";
+-		interrupts = <0x0 0x8 0x1 IRQ_TYPE_EDGE_BOTH>;
+-		debounce = <15625>;
+-		bias-pull-up;
+-		linux,code = <KEY_VOLUMEDOWN>;
+-	};
++&pon_resin {
++	status = "okay";
++
++	linux,code = <KEY_VOLUMEDOWN>;
+ };
+ 
+ &qupv3_id_1 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
+index 7de54b2e497e..53edf7541169 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
+@@ -357,18 +357,14 @@ &gpu {
+ 	status = "okay";
+ };
+ 
+-&pon {
+-	pwrkey {
+-		status = "okay";
+-	};
++&pon_pwrkey {
++	status = "okay";
++};
+ 
+-	resin {
+-		compatible = "qcom,pm8941-resin";
+-		interrupts = <0x0 0x8 0x1 IRQ_TYPE_EDGE_BOTH>;
+-		debounce = <15625>;
+-		bias-pull-up;
+-		linux,code = <KEY_VOLUMEDOWN>;
+-	};
++&pon_resin {
++	status = "okay";
++
++	linux,code = <KEY_VOLUMEDOWN>;
+ };
+ 
+ &qupv3_id_1 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-hdk.dts b/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
+index 397359ee2f85..e911a254aa0b 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
++++ b/arch/arm64/boot/dts/qcom/sm8250-hdk.dts
+@@ -373,22 +373,18 @@ &gpu {
+ 	status = "okay";
+ };
+ 
+-&qupv3_id_1 {
++&pon_pwrkey {
+ 	status = "okay";
+ };
+ 
+-&pon {
+-	pwrkey {
+-		status = "okay";
+-	};
++&pon_resin {
++	status = "okay";
+ 
+-	resin {
+-		compatible = "qcom,pm8941-resin";
+-		interrupts = <0x0 0x8 0x1 IRQ_TYPE_EDGE_BOTH>;
+-		debounce = <15625>;
+-		bias-pull-up;
+-		linux,code = <KEY_VOLUMEDOWN>;
+-	};
++	linux,code = <KEY_VOLUMEDOWN>;
++};
++
++&qupv3_id_1 {
++	status = "okay";
+ };
+ 
+ &tlmm {
+-- 
+2.32.0
 
-greg k-h
