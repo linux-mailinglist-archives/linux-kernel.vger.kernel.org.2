@@ -2,134 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59893A5B1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D823A5B1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhFMXsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 19:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhFMXse (ORCPT
+        id S232243AbhFMXvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 19:51:04 -0400
+Received: from mail-pl1-f181.google.com ([209.85.214.181]:46677 "EHLO
+        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232076AbhFMXvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 19:48:34 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795B6C061766
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 16:46:19 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id w4so12146008qvr.11
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 16:46:19 -0700 (PDT)
+        Sun, 13 Jun 2021 19:51:03 -0400
+Received: by mail-pl1-f181.google.com with SMTP id e1so5611459pld.13
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 16:48:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yLX/ur54moqzu2PisxABzO9lUlcTtlTTvRud0ukIiTk=;
-        b=iJysEGEpYjvUbxf5+O4wQ1DEhhnGeJwGafwWPI9gepZeKQeb7Gn/IENgjQsuPaMrk1
-         9IjCl9PwgVeaU15y4JXUGCWcU3ROOoA1O1Ky7x0HFWt1uOtieTa7AKY8GLPtDGj0Tgl2
-         G1ur5vWkCdj6WPCe1PYLkXVZHpGk/DuzIZ7YMHox3J0i1yKDHzwgHsT/G0L2A+wBiuCM
-         NRB+jWVbH30meokSi6YF0eiV0GhziuNpJdX3tfGvFq4VPkuDy/esPKdv37XONc38GxRK
-         pKM4BBOw2p0YAPTH65QJXjI7h/jE8nd/YtIthzvfP3S+fSooCNHfghgeMzGmVhhOvKHA
-         2EOw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=4++lM/c5yuFezao0v/U58iKYZqak4/2YPsi6jthi/MU=;
+        b=u8qk9ovErk+yiRsO1K7EN2usvRMWNFKFdUfVoGMl1WvFo6M7EsTp2V//cxltF69Via
+         IQltky9u/ZvWFmfRgky/wUTBjPx3AWS036M8pvXCnmVNzgKX7KDNn18Z3MEGiXO374vj
+         4L+MC1GFlhcqDTbCCzNn0HZmKfisGY/fBokJTP696RN244cMyn+tEspvbOf5DIboi1Hb
+         nCmT1/dDqq5wRp3KIf4/wVvRzTW1mm3SODX1WxfYVrWwueDL/Hrz1nq5EsBeDRCJcsWr
+         VFIrnUzBmjQ6KYukM19zW8HlkBVQMnBFFrzSS+luS/Y2ORVllbkjUD7+3CN6n7NhLgpd
+         uiqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yLX/ur54moqzu2PisxABzO9lUlcTtlTTvRud0ukIiTk=;
-        b=bgzmxxFnJVYbGwNfnsn8HfsisBlapXSD/5r/swNOSIYk/f7VDZQNdG1IrckAc+b3JX
-         QbXIeMKEsPzvLyBlA+RAGKhAMrLNZ+E4QjIYcroSC0VB08oVhKGEaiEqalQ73evQVBDA
-         Eo+nPtXg2VvrN0PxbK3+nWicO/+Wr+jJqNraUByYz6NsSC5tVv/j44Dbta6MRER0cRMf
-         brFyb/ERENcd1LtjHqgMeCHsYPbxLCvygndaSpRRDmQrmj7Jc7IBTEp9NWj4o4gSEK+R
-         SunvfA4V3TAuUqsuBbvjLVxauXh+b54loBjvN0+NQHHgUtz6e4S9uMivYuaIR9ilmuoo
-         HyCg==
-X-Gm-Message-State: AOAM530KcpAUVda17NyK8vIvQMX1f3rPtBclAzA0avud43VKua2B0JGC
-        Nei7W/t3eWqN+mpmdiS/1uVxR/o2jC5c6+JQB8yBaA==
-X-Google-Smtp-Source: ABdhPJwVZOm0oZpxf/OFlCWVmNh53+dZLinoQHcz6FQlzXLDzr1idWR0CVdsHuZH4Is3newhFtg94mhPJrdY7YqInig=
-X-Received: by 2002:ad4:5f0e:: with SMTP id fo14mr3043268qvb.16.1623627978540;
- Sun, 13 Jun 2021 16:46:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=4++lM/c5yuFezao0v/U58iKYZqak4/2YPsi6jthi/MU=;
+        b=s6ONGwVrsQ+yteuWsWTyTfDtPYjGWB2cg5megwoXCXy20oPfxpl7lbxDiNHy8UzvQK
+         gfM4Yt3SkI1UFvdBSzFBLPa7sxuZcwXWlWmcAi7oMVbxp7dgH/OQPUeo654KwzuSdbzp
+         kV1MV/h0OhGYriExULbY+YnqolmbVOijDGvN0qdcaKoTENOkmgWGFUQtyiYze3ZHzCan
+         MIwQkmsBLXq6e89XoVISSWRcgTbZzLDUEWW/bypPU7MSrIwIml4UbsLnydRXvgxmfrp8
+         oPnVVgK3lYquTtRTDVEf6NakxGilhu7f6tg6IfxD5MLbSzIGyaiKMG6yAIOY3KdwqD1o
+         3oTQ==
+X-Gm-Message-State: AOAM532mPicNrR7QJwjlX2XETejfXxVgN8CP4Td7ozpvujt55sjJB9DH
+        Mu/QMc5Ufsm+q5WuyKAZ6ri+bQ==
+X-Google-Smtp-Source: ABdhPJyL3rXVwtBroZkchCFGQh1DDDu76JX+VN/SjqFUHcThf3l8wb3D04Gb3OX6YXdk8pQf3m05Vw==
+X-Received: by 2002:a17:90b:3696:: with SMTP id mj22mr21233255pjb.124.1623628070809;
+        Sun, 13 Jun 2021 16:47:50 -0700 (PDT)
+Received: from [2620:15c:17:3:da04:749c:4915:4eee] ([2620:15c:17:3:da04:749c:4915:4eee])
+        by smtp.gmail.com with ESMTPSA id t14sm11208701pgm.9.2021.06.13.16.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Jun 2021 16:47:50 -0700 (PDT)
+Date:   Sun, 13 Jun 2021 16:47:49 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+To:     Aaron Tomlin <atomlin@redhat.com>
+cc:     linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
+        mhocko@suse.com, penguin-kernel@i-love.sakura.ne.jp,
+        llong@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/oom_kill: show oom eligibility when displaying
+ the current memory state of all tasks
+In-Reply-To: <20210612204634.1102472-1-atomlin@redhat.com>
+Message-ID: <6fc8beef-4dbb-b49a-4653-90fe564941a6@google.com>
+References: <20210612204634.1102472-1-atomlin@redhat.com>
 MIME-Version: 1.0
-References: <20210613183520.2247415-1-mw@semihalf.com> <20210613183520.2247415-3-mw@semihalf.com>
- <YMZg27EkTuebBXwo@lunn.ch> <CAPv3WKfWqdpntPKknZ+H+sscyH9mursvCUwe8Q1DH-wGpsWknQ@mail.gmail.com>
- <YMZ6E99Q/zuFh4b1@lunn.ch>
-In-Reply-To: <YMZ6E99Q/zuFh4b1@lunn.ch>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Mon, 14 Jun 2021 01:46:06 +0200
-Message-ID: <CAPv3WKetRLOkkOz3Cj_D5pf824VGoz+sQ6wNukTS2PKoAcdFyw@mail.gmail.com>
-Subject: Re: [net-next: PATCH 2/3] net: mvpp2: enable using phylink with ACPI
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Jon Masters <jcm@redhat.com>, rjw@rjwysocki.net,
-        lenb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<Adding ACPI Maintainers>
+On Sat, 12 Jun 2021, Aaron Tomlin wrote:
 
-Hi Andrew,
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index eefd3f5fde46..094b7b61d66f 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -160,6 +160,27 @@ static inline bool is_sysrq_oom(struct oom_control *oc)
+>  	return oc->order == -1;
+>  }
+>  
+> +/**
+> + * is_task_eligible_oom - determine if and why a task cannot be OOM killed
+> + * @tsk: task to check
+> + *
+> + * Needs to be called with task_lock().
+> + */
+> +static const char * is_task_oom_eligible(struct task_struct *p)
 
-niedz., 13 cze 2021 o 23:35 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
->
-> > True. I picked the port type properties that are interpreted by
-> > phylink. Basically, I think that everything that's described in:
-> > devicetree/bindings/net/ethernet-controller.yaml
-> > is valid for the ACPI as well
->
-> So you are saying ACPI is just DT stuff into tables? Then why bother
-> with ACPI? Just use DT.
+You should be able to just return a char.
 
-Any user is free to use whatever they like, however apparently there
-must have been valid reasons, why ARM is choosing ACPI as the
-preferred way of describing the hardware over DT. In such
-circumstances, we all work to improve adoption and its usability for
-existing devices.
+> +{
+> +	long adj;
+> +
+> +	adj = (long)p->signal->oom_score_adj;
+> +	if (adj == OOM_SCORE_ADJ_MIN)
+> +		return "S";
 
-Regarding the properties in _DSD package, please refer to
-https://www.kernel.org/doc/html/latest/firmware-guide/acpi/DSD-properties-r=
-ules.html,
-especially to two fragments:
-"The _DSD (Device Specific Data) configuration object, introduced in
-ACPI 5.1, allows any type of device configuration data to be provided
-via the ACPI namespace. In principle, the format of the data may be
-arbitrary [...]"
-"It often is useful to make _DSD return property sets that follow
-Device Tree bindings."
-Therefore what I understand is that (within some constraints) simple
-reusing existing sets of nodes' properties, should not violate ACPI
-spec. In this patchset no new extension/interfaces/method is
-introduced.
+The value is already printed in the task dump, this doesn't look to add 
+any information.
 
->
-> Right, O.K. Please document anything which phylink already supports:
->
-> hylink.c:               ret =3D fwnode_property_read_u32(fixed_node, "spe=
-ed", &speed);
-> phylink.c:              if (fwnode_property_read_bool(fixed_node, "full-d=
-uplex"))
-> phylink.c:              if (fwnode_property_read_bool(fixed_node, "pause"=
-))
-> phylink.c:              if (fwnode_property_read_bool(fixed_node, "asym-p=
-ause"))
-> phylink.c:              ret =3D fwnode_property_read_u32_array(fwnode, "f=
-ixed-link",
-> phylink.c:              ret =3D fwnode_property_read_u32_array(fwnode, "f=
-ixed-link",
-> phylink.c:      if (dn || fwnode_property_present(fwnode, "fixed-link"))
-> phylink.c:      if ((fwnode_property_read_string(fwnode, "managed", &mana=
-ged) =3D=3D 0 &&
->
-> If you are adding new properties, please do that In a separate patch,
-> which needs an ACPI maintainer to ACK it before it gets merged.
->
+> +	else if (test_bit(MMF_OOM_SKIP, &p->mm->flags)
+> +		return "R";
 
-Ok, I can extend the documentation.
+We should be doing the task dump only when we're killing a victim (unless 
+we're panicking), so something else has been chosen.  Since we would have 
+oom killed a process with MMF_OOM_SKIP already, can we simply choose to 
+not print a line for this process?
 
-Best regards,
-Marcin
+> +	else if (in_vfork(p))
+> +		return "V";
+
+Is this a transition state that we can simply disregard from the output as 
+well unless/until it becomes eligible?
+
+> +	else
+> +		return "";
+> +}
+> +
+>  /* return true if the task is not adequate as candidate victim task. */
+>  static bool oom_unkillable_task(struct task_struct *p)
+>  {
+> @@ -401,12 +422,13 @@ static int dump_task(struct task_struct *p, void *arg)
+>  		return 0;
+>  	}
+>  
+> -	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n",
+> +	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %13s %s\n",
+
+13 characters for one char output?
+
+>  		task->pid, from_kuid(&init_user_ns, task_uid(task)),
+>  		task->tgid, task->mm->total_vm, get_mm_rss(task->mm),
+>  		mm_pgtables_bytes(task->mm),
+>  		get_mm_counter(task->mm, MM_SWAPENTS),
+> -		task->signal->oom_score_adj, task->comm);
+> +		task->signal->oom_score_adj, is_task_oom_eligible(task),
+> +		task->comm);
+>  	task_unlock(task);
+>  
+>  	return 0;
+> @@ -420,12 +442,13 @@ static int dump_task(struct task_struct *p, void *arg)
+>   * memcg, not in the same cpuset, or bound to a disjoint set of mempolicy nodes
+>   * are not shown.
+>   * State information includes task's pid, uid, tgid, vm size, rss,
+> - * pgtables_bytes, swapents, oom_score_adj value, and name.
+> + * pgtables_bytes, swapents, oom_score_adj value, oom eligibility status
+> + * and name.
+>   */
+>  static void dump_tasks(struct oom_control *oc)
+>  {
+>  	pr_info("Tasks state (memory values in pages):\n");
+> -	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name\n");
+> +	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom eligible? name\n");
+
+Field names are single words.
+
+>  
+>  	if (is_memcg_oom(oc))
+>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
