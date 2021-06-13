@@ -2,80 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEEB3A58E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 15:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5823A58E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 16:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhFMN4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 09:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhFMN4A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 09:56:00 -0400
-Received: from mxout017.mail.hostpoint.ch (mxout017.mail.hostpoint.ch [IPv6:2a00:d70:0:e::317])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33C5C061574;
-        Sun, 13 Jun 2021 06:53:58 -0700 (PDT)
-Received: from [10.0.2.45] (helo=asmtp012.mail.hostpoint.ch)
-        by mxout017.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lsQYh-000NnB-6r; Sun, 13 Jun 2021 15:53:51 +0200
-Received: from [2a02:168:6182:1:d747:8127:5b7a:4266]
-        by asmtp012.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lsQYh-000JXF-4H; Sun, 13 Jun 2021 15:53:51 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-Subject: Re: [PATCH v1 2/2] net: ethernet: mtk_eth_soc: Support custom ifname
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        netdev@vger.kernel.org, Stefan Roese <sr@denx.de>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Felix Fietkau <nbd@nbd.name>, Jakub Kicinski <kuba@kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210613115820.1525478-1-code@reto-schneider.ch>
- <20210613115820.1525478-2-code@reto-schneider.ch>
- <20210613122043.GP22278@shell.armlinux.org.uk>
-From:   Reto Schneider <code@reto-schneider.ch>
-Message-ID: <aa7a15cc-761f-00b0-5582-a8045d8f30ed@reto-schneider.ch>
-Date:   Sun, 13 Jun 2021 15:53:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231855AbhFMODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 10:03:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231755AbhFMODD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 10:03:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8BEC6128B
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 14:01:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623592862;
+        bh=0GuJ8MA8YvAb5LFEu1wccuQD+B/n8HPSEdt3rIsJcas=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o+51Gt//Duy1u56s/dk9eBSqfx7WwhWuvnaaLdrcMaG3LmeZrVtGkRkI0C4u7F+xe
+         MxBf0MbTrfv0YH/G6frmBvYzEuaW6sMJahhiCIvqmWnkPBI768dvBpziGRFpQSGnJQ
+         Kw7IJpvWeimsERuU/hgc07usgvl1rNQG03BeR0t6imRpYE4d960nqdYjJPaCOl9t6f
+         YZyIUp/KPawWcIo6YortJ8GsP/C6ZZ7N4JC6L+MCWK34JxuTCNX+HDy0cm9zJZYQpV
+         IF4eKBEJiwc1AqZkcKAiObyK0Xr18kE6SKRBUxzlTr07ucdXnGiyumBZKLXih4B07+
+         /5bcHZKbI8W2w==
+Received: by mail-pj1-f51.google.com with SMTP id k22-20020a17090aef16b0290163512accedso9238373pjz.0
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 07:01:02 -0700 (PDT)
+X-Gm-Message-State: AOAM530SwtF3OnaEnsOElI58ovMf3yLOKDFbJxznjo+Nn8ZGuA9N1Bp2
+        4cuMht6sn5g0X74nBNwo5QPkIe2qBVjMaNi3Uzc=
+X-Google-Smtp-Source: ABdhPJyFOyiJWkaOurdmvQmKHDKj6R/+QYd0Y/yarti/BChQroTPj0Zm9Ag2edUHztcoSXwOu7UmDfTXDUlbEeJ5BU4=
+X-Received: by 2002:a17:902:d4c8:b029:102:715b:e3a5 with SMTP id
+ o8-20020a170902d4c8b0290102715be3a5mr12622809plg.83.1623592862495; Sun, 13
+ Jun 2021 07:01:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210613122043.GP22278@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210611093626.579176-1-yangyingliang@huawei.com> <20210611093626.579176-10-yangyingliang@huawei.com>
+In-Reply-To: <20210611093626.579176-10-yangyingliang@huawei.com>
+From:   Timur Tabi <timur@kernel.org>
+Date:   Sun, 13 Jun 2021 09:00:25 -0500
+X-Gmail-Original-Message-ID: <CAOZdJXUn9FgdhiPAqbxMrz4tSeqQ_S+L9jkpg48NxCo5Fz7PXQ@mail.gmail.com>
+Message-ID: <CAOZdJXUn9FgdhiPAqbxMrz4tSeqQ_S+L9jkpg48NxCo5Fz7PXQ@mail.gmail.com>
+Subject: Re: [PATCH -next 9/9] ASoC: fsl_xcvr: check return value after
+ calling platform_get_resource_byname()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        PowerPC Mailing List <linuxppc-dev@lists.ozlabs.org>,
+        alsa-devel mailing list <alsa-devel@alsa-project.org>,
+        timur@kernel.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+On Fri, Jun 11, 2021 at 4:32 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
 
-On 13.06.21 14:20, Russell King (Oracle) wrote:
-> Please don't use strncpy() - this is a good example why strncpy() is bad
-> news.
-> 
->   * strncpy - Copy a length-limited, C-string
->   * @dest: Where to copy the string to
->   * @src: Where to copy the string from
->   * @count: The maximum number of bytes to copy
->   *
->   * The result is not %NUL-terminated if the source exceeds
->   * @count bytes.
-> 
-> Consequently, if "name" is IFNAMSIZ bytes or longer,
-> eth->netdev[id]->name will not be NUL terminated, and subsequent use
-> will run off the end of the string. strscpy() is safer to use here.
+>         rx_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rxfifo");
+>         tx_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "txfifo");
+> +       if (!rx_res || !tx_res) {
+> +               dev_err(dev, "Invalid resource\n");
+> +               return -EINVAL;
+> +       }
 
-Thanks a lot for finding this (embarrassing mistake) and pointing me in 
-the right direction (did dot know about strscpy).
+If platform_get_resource_byname() returns an error, it's probably
+because the name cannot be found.  So I think this error message is
+more accurate:
 
-Will send v2 soon.
-
-Kind regards,
-Reto
+"could not find rxfifo or txfifo resource"
