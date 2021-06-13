@@ -2,106 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4406D3A5932
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 17:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865D73A5944
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 17:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbhFMPE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 11:04:29 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:35502 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbhFMPE0 (ORCPT
+        id S231933AbhFMPNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 11:13:18 -0400
+Received: from out06.smtpout.orange.fr ([193.252.22.215]:55827 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231908AbhFMPNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 11:04:26 -0400
-Received: by mail-lj1-f178.google.com with SMTP id n17so16509076ljg.2;
-        Sun, 13 Jun 2021 08:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vwLc+Cwj3JuQAE0/T4amXW2tbDrWfyGTYXqxA4e2OyA=;
-        b=fO7EoFAKItDv6Z5MzvtL7UIFVHmALkSBXDxitKBqJcSK0fFZQCJSLujj2XcnyKI+VX
-         UPSlVQcQ1VdALrAa9IDI+So8b/movDBeyejfwjs87iGRpR6jnGbhaZPaV1lts2ECkk9C
-         ES6dOlnHjCVR1/yet35rL+phW8tVlj8jaqBHPkE/ciJJIgm4edVxY+r/b/IcGLiv3kqt
-         yATCv6Oe6JXFTRhQxdYhSDoDcNrHp5rfRkN9jbJJoMwqGX0wi+o+RRh5bY444ir2osnI
-         yHNhB2L4RYkkYj7IRxYIPjSQ5fMdjoNgdrfOsEYpPT3y0rl/xLf0Jk+PhIifeCnNkEXs
-         QF9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vwLc+Cwj3JuQAE0/T4amXW2tbDrWfyGTYXqxA4e2OyA=;
-        b=iwoYqgOiZ63oapBQu8ODulM5jfdw7d2TpYHs1HMiMW129TwxnDf+HQdtf+w0DOBUHt
-         nDjUVTt4jANXi66L/JyJw7lg5Y8QOrlk6bbnpvppqfuiD/+/KBYpKgqmTNNwUGu6mtsQ
-         YhnCpbk5lvntjFO/Qrk+L2pr0eDq787+E6pPubgnU/cYz2I+ixvVYXN4vplQjRF4JNQ2
-         IY5BRstJ1I7QtQIan9xCNnnGmYhfxvupwznlKz3fCcw0k3OpAB+WWK/W6NSXc4210EKV
-         kUwefz5ke/sVPRqZzwCVMuFPbA56NHwmSL+LEAAanh8XMcF2fIyCEPISxSsATEZp0J7T
-         CEnQ==
-X-Gm-Message-State: AOAM530OmTv4j7zV7O8o8IZCoVab6Cv/12OIKYYXmvjeX2a5xjRu2qYd
-        O7dmCKxFccvnwJ5GVKBxUOQ=
-X-Google-Smtp-Source: ABdhPJz5iw9M2VyooUEsY/17QxKjJSsLfqND4f//c5Q67oFJL4LNqLskgq1PIW/4rG6V0gvzNJWn7g==
-X-Received: by 2002:a2e:9c4a:: with SMTP id t10mr10577162ljj.307.1623596484035;
-        Sun, 13 Jun 2021 08:01:24 -0700 (PDT)
-Received: from localhost.localdomain (46-138-6-137.dynamic.spd-mgts.ru. [46.138.6.137])
-        by smtp.gmail.com with ESMTPSA id b16sm1473192ljh.93.2021.06.13.08.01.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 08:01:23 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] usb: phy: tegra: Correct definition of B_SESS_VLD_WAKEUP_EN bit
-Date:   Sun, 13 Jun 2021 17:59:36 +0300
-Message-Id: <20210613145936.9902-2-digetx@gmail.com>
+        Sun, 13 Jun 2021 11:13:12 -0400
+X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Sun, 13 Jun 2021 11:13:11 EDT
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d66 with ME
+        id Gf3Z2500121Fzsu03f3Z2K; Sun, 13 Jun 2021 17:03:34 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 13 Jun 2021 17:03:34 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        Julia.Lawall@inria.fr, vaibhavgupta40@gmail.com,
+        yangyingliang@huawei.com, tasos@tasossah.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: saa7134: switch from 'pci_' to 'dma_' API
+Date:   Sun, 13 Jun 2021 17:03:31 +0200
+Message-Id: <166687202d3802c07447b0c150c46ccd8e8cab99.1623596428.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210613145936.9902-1-digetx@gmail.com>
-References: <20210613145936.9902-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The B_SESS_VLD_WAKEUP_EN bit 6 was added by a mistake in a previous
-commit. This bit corresponds to B_SESS_END_WAKEUP_EN, which we don't use.
-The B_VBUS_VLD_WAKEUP_EN doesn't exist at all and B_SESS_VLD_WAKEUP_EN
-needs to be in place of it. We don't utilize B-sensors in the driver,
-so it never was a problem, nevertheless let's correct the definition of
-the bits.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Fixes: 35192007d28d ("usb: phy: tegra: Support waking up from a low power mode")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
+
+When memory is allocated in 'saa7134_pgtable_alloc()', GFP_KERNEL can be
+used because its 4 callers (one function calls it 2 times, so there is
+only 3 functions that call it):
+
+.hw_params in a struct snd_pcm_ops (saa7134-alsa.c)
+  --> snd_card_saa7134_hw_params   (saa7134-alsa.c)
+    --> saa7134_pgtable_alloc
+==> .hw_params function can use GFP_KERNEL
+
+saa7134_initdev                    (saa7134-core.c)
+  --> saa7134_hwinit1              (saa7134-core.c)
+    --> saa7134_ts_init1           (saa7134-ts.c)
+      --> saa7134_pgtable_alloc
+==> saa7134_initdev already uses GFP_KERNEL
+
+saa7134_initdev                    (saa7134-core.c)
+  --> saa7134_hwinit1              (saa7134-core.c)
+    --> saa7134_video_init1        (saa7134-video.c)
+      --> saa7134_pgtable_alloc    (called 2 times)
+==> saa7134_initdev already uses GFP_KERNEL
+
+and no spin_lock is taken in the between.
+
+@@ @@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@ @@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@ @@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@ @@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/usb/phy/phy-tegra-usb.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/media/pci/saa7134/saa7134-core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
-index ff482c694200..cd425b937750 100644
---- a/drivers/usb/phy/phy-tegra-usb.c
-+++ b/drivers/usb/phy/phy-tegra-usb.c
-@@ -58,8 +58,7 @@
- #define   USB_WAKEUP_DEBOUNCE_COUNT(x)		(((x) & 0x7) << 16)
+diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
+index ec8dd41f9ebb..911fd05de31f 100644
+--- a/drivers/media/pci/saa7134/saa7134-core.c
++++ b/drivers/media/pci/saa7134/saa7134-core.c
+@@ -223,7 +223,8 @@ int saa7134_pgtable_alloc(struct pci_dev *pci, struct saa7134_pgtable *pt)
+ 	__le32       *cpu;
+ 	dma_addr_t   dma_addr = 0;
  
- #define USB_PHY_VBUS_SENSORS			0x404
--#define   B_SESS_VLD_WAKEUP_EN			BIT(6)
--#define   B_VBUS_VLD_WAKEUP_EN			BIT(14)
-+#define   B_SESS_VLD_WAKEUP_EN			BIT(14)
- #define   A_SESS_VLD_WAKEUP_EN			BIT(22)
- #define   A_VBUS_VLD_WAKEUP_EN			BIT(30)
+-	cpu = pci_alloc_consistent(pci, SAA7134_PGTABLE_SIZE, &dma_addr);
++	cpu = dma_alloc_coherent(&pci->dev, SAA7134_PGTABLE_SIZE, &dma_addr,
++				 GFP_KERNEL);
+ 	if (NULL == cpu)
+ 		return -ENOMEM;
+ 	pt->size = SAA7134_PGTABLE_SIZE;
+@@ -254,7 +255,7 @@ void saa7134_pgtable_free(struct pci_dev *pci, struct saa7134_pgtable *pt)
+ {
+ 	if (NULL == pt->cpu)
+ 		return;
+-	pci_free_consistent(pci, pt->size, pt->cpu, pt->dma);
++	dma_free_coherent(&pci->dev, pt->size, pt->cpu, pt->dma);
+ 	pt->cpu = NULL;
+ }
  
-@@ -548,7 +547,7 @@ static int utmi_phy_power_on(struct tegra_usb_phy *phy)
- 
- 		val = readl_relaxed(base + USB_PHY_VBUS_SENSORS);
- 		val &= ~(A_VBUS_VLD_WAKEUP_EN | A_SESS_VLD_WAKEUP_EN);
--		val &= ~(B_VBUS_VLD_WAKEUP_EN | B_SESS_VLD_WAKEUP_EN);
-+		val &= ~(B_SESS_VLD_WAKEUP_EN);
- 		writel_relaxed(val, base + USB_PHY_VBUS_SENSORS);
- 
- 		val = readl_relaxed(base + UTMIP_BAT_CHRG_CFG0);
+@@ -1092,7 +1093,7 @@ static int saa7134_initdev(struct pci_dev *pci_dev,
+ 		dev->pci_lat,
+ 		(unsigned long long)pci_resource_start(pci_dev, 0));
+ 	pci_set_master(pci_dev);
+-	err = pci_set_dma_mask(pci_dev, DMA_BIT_MASK(32));
++	err = dma_set_mask(&pci_dev->dev, DMA_BIT_MASK(32));
+ 	if (err) {
+ 		pr_warn("%s: Oops: no 32bit PCI DMA ???\n", dev->name);
+ 		goto fail1;
 -- 
 2.30.2
 
