@@ -2,127 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47533A5A41
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 21:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9563A5A45
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 22:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhFMUBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 16:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
+        id S231906AbhFMUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 16:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbhFMUBT (ORCPT
+        with ESMTP id S231788AbhFMUGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 16:01:19 -0400
-Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAF3C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 12:59:17 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id CBAC5222;
-        Sun, 13 Jun 2021 21:59:13 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EDEJtg76cm0w; Sun, 13 Jun 2021 21:59:11 +0200 (CEST)
-Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 301D34F;
-        Sun, 13 Jun 2021 21:59:11 +0200 (CEST)
-Received: from samy by begin with local (Exim 4.94.2)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1lsWGE-004hMP-1D; Sun, 13 Jun 2021 21:59:10 +0200
-Date:   Sun, 13 Jun 2021 21:59:09 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org,
-        Trevor Astrope <astrope@tabbweb.com>
-Subject: [speakup] Separate out translations for bright colors names
-Message-ID: <20210613195909.n7ssor6iqeo3pcno@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        speakup@linux-speakup.org, Trevor Astrope <astrope@tabbweb.com>
+        Sun, 13 Jun 2021 16:06:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA25C061574;
+        Sun, 13 Jun 2021 13:04:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=5jdQRt7Z6/fU16jagmX4zMd3V2C9IXzmhJfviU+tOnQ=; b=hQ/qBOQmNo7mysrvLMExqqTH+J
+        ME/ZUm3b9yftNm/SBF+rKA9X6l6xSER9K/SDj3slAaJ3Uu+4Q5ah/8TCY5TyP0/6QfW6pxC6WZXlU
+        FbnDKUmpHncA6xtYMa9Zjcmj/c51Bjw+d5mNGJB9KgMTyEnqp6p2nj+VlZ5zOW6ICr3agJlsICCT7
+        WLdmqufNVzTdXwlTVNfBBc58vB/K0Od+EafPW4WHo/oTAI+UsSoN6cJiI8zhdHcRfPA5SJ1Ck9PnN
+        dJc6+xooSRrtySmcz4MH5criXvgTsvRXk9pfK4dcNxdIqm6IVtECaCPWtu3vWoJEMlVS8kk/zdFuO
+        Wpyy1l4A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lsWLC-004lqs-Vt; Sun, 13 Jun 2021 20:04:21 +0000
+Date:   Sun, 13 Jun 2021 21:04:18 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Mozes <david.mozes@silk.us>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: futex/call -to plist_for_each_entry_safe with head=NULL
+Message-ID: <YMZkwsa4yQ/SsMW/@casper.infradead.org>
+References: <AM6PR04MB563958D1E2CA011493F4BCC8F1329@AM6PR04MB5639.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
-X-Spamd-Bar: --
-Authentication-Results: hera.aquilenet.fr
-X-Rspamd-Server: hera
-X-Rspamd-Queue-Id: CBAC5222
-X-Spamd-Result: default: False [-2.50 / 15.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         HAS_ORG_HEADER(0.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MID_RHS_NOT_FQDN(0.50)[];
-         BAYES_HAM(-3.00)[100.00%]
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AM6PR04MB563958D1E2CA011493F4BCC8F1329@AM6PR04MB5639.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing code was assuming that bright color names can be forged by just
-prepending the "bright" word to the color name. But some langages may rather
-append it, or require completely different names ("grey" is actually already an
-example).
+On Sun, Jun 13, 2021 at 12:24:52PM +0000, David Mozes wrote:
+> Hi *,
+> Under a very high load of io traffic, we got the below  BUG trace.
+> We can see that:
+> plist_for_each_entry_safe(this, next, &hb1->chain, list) {
+>                 if (match_futex (&this->key, &key1))
+>  
+> were called with hb1 = NULL at futex_wake_up function.
+> And there is no protection on the code regarding such a scenario.
+>  
+> The NULL can  be geting from:
+> hb1 = hash_futex(&key1);
+>  
+> How can we protect against such a situation?
 
-From: Trevor Astrope <astrope@tabbweb.com>
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Can you reproduce it without loading proprietary modules?
 
-Index: linux/drivers/accessibility/speakup/i18n.c
-===================================================================
---- linux.orig/drivers/accessibility/speakup/i18n.c
-+++ linux/drivers/accessibility/speakup/i18n.c
-@@ -90,6 +90,13 @@ static char *speakup_default_msgs[MSG_LA
- 	[MSG_COLOR_YELLOW] = "yellow",
- 	[MSG_COLOR_WHITE] = "white",
- 	[MSG_COLOR_GREY] = "grey",
-+	[MSG_COLOR_BRIGHTBLUE] "bright blue",
-+	[MSG_COLOR_BRIGHTGREEN] "bright green",
-+	[MSG_COLOR_BRIGHTCYAN] "bright cyan",
-+	[MSG_COLOR_BRIGHTRED] "bright red",
-+	[MSG_COLOR_BRIGHTMAGENTA] "bright magenta",
-+	[MSG_COLOR_BRIGHTYELLOW] "bright yellow",
-+	[MSG_COLOR_BRIGHTWHITE] "bright white",
- 
- 	/* Names of key states. */
- 	[MSG_STATE_DOUBLE] = "double",
-Index: linux/drivers/accessibility/speakup/i18n.h
-===================================================================
---- linux.orig/drivers/accessibility/speakup/i18n.h
-+++ linux/drivers/accessibility/speakup/i18n.h
-@@ -99,7 +99,14 @@ enum msg_index_t {
- 	MSG_COLOR_YELLOW,
- 	MSG_COLOR_WHITE,
- 	MSG_COLOR_GREY,
--	MSG_COLORS_END = MSG_COLOR_GREY,
-+	MSG_COLOR_BRIGHTBLUE,
-+	MSG_COLOR_BRIGHTGREEN,
-+	MSG_COLOR_BRIGHTCYAN,
-+	MSG_COLOR_BRIGHTRED,
-+	MSG_COLOR_BRIGHTMAGENTA,
-+	MSG_COLOR_BRIGHTYELLOW,
-+	MSG_COLOR_BRIGHTWHITE,
-+	MSG_COLORS_END = MSG_COLOR_BRIGHTWHITE,
- 
- 	MSG_STATES_START,
- 	MSG_STATE_DOUBLE = MSG_STATES_START,
-Index: linux/drivers/accessibility/speakup/main.c
-===================================================================
---- linux.orig/drivers/accessibility/speakup/main.c
-+++ linux/drivers/accessibility/speakup/main.c
-@@ -389,10 +389,6 @@ static void say_attributes(struct vc_dat
- 	int fg = spk_attr & 0x0f;
- 	int bg = spk_attr >> 4;
- 
--	if (fg > 8) {
--		synth_printf("%s ", spk_msg_get(MSG_BRIGHT));
--		fg -= 8;
--	}
- 	synth_printf("%s", spk_msg_get(MSG_COLORS_START + fg));
- 	if (bg > 7) {
- 		synth_printf(" %s ", spk_msg_get(MSG_ON_BLINKING));
+Your analysis doesn't quite make sense:
+
+        hb1 = hash_futex(&key1);
+        hb2 = hash_futex(&key2);
+
+retry_private:
+        double_lock_hb(hb1, hb2);
+
+If hb1 were NULL, then the oops would come earlier, in double_lock_hb().
+
+> RIP: 0010:do_futex+0xdf/0xa90
+>  
+> 0xffffffff81138eff is in do_futex (kernel/futex.c:1748).
+> 1743                                       put_futex_key(&key1);
+> 1744                                       cond_resched();
+> 1745                                       goto retry;
+> 1746                       }
+> 1747      
+> 1748                       plist_for_each_entry_safe(this, next, &hb1->chain, list) {
+> 1749                                       if (match_futex (&this->key, &key1)) {
+> 1750                                                       if (this->pi_state || this->rt_waiter) {
+> 1751                                                                       ret = -EINVAL;
+> 1752                                                                       goto out_unlock;
+> (gdb)
+>  
+>  
+>  
+> plist_for_each_entry_safe(this, next, &hb1->chain, list) {
+>                 if (match_futex (&this->key, &key1)) {
+>  
+>  
+>  
+>  
+> This happened in kernel  4.19.149 running on Azure vm
+>  
+>  
+> Thx
+> David
+> Reply 
+> Forward 
+> MO
+> 
