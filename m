@@ -2,151 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE463A56CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C990C3A56D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 09:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhFMGsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 02:48:02 -0400
-Received: from m12-14.163.com ([220.181.12.14]:37430 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229979AbhFMGsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 02:48:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=+GKmK
-        TI4RYtXz8Sc9ZBp4cs0XGgq7AZpUGAzKjq4WhI=; b=XLYqdcH2DF91JkKCjl8kj
-        Lbq8J8/Xu/kCvLNLyrpJzBvUmRl6IZX2X/bva2X4EEZBC5JsDhCj/n7/9MzbLifx
-        zcAEbziApATxxATicI3NTgUREJ5C5g45Yspv8Wwrex264TUNiXjm3KD/4Bj9AqWS
-        QHDJUOVM1Vz1zJzwP7wWvQ=
-Received: from ubuntu.localdomain (unknown [183.159.69.187])
-        by smtp10 (Coremail) with SMTP id DsCowACHhD0xqcVgnClcOg--.2017S4;
-        Sun, 13 Jun 2021 14:44:02 +0800 (CST)
-From:   Li Qiang <liq3ea@163.com>
-To:     akpm@linux-foundation.org, jmorris@namei.org, serge@hallyn.com,
-        keescook@chromium.org, paul@paul-moore.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org, liq3ea@gmail.com,
-        Li Qiang <liq3ea@163.com>
-Subject: [PATCH] security: add LSM hook at the memfd_create point
-Date:   Sat, 12 Jun 2021 23:43:59 -0700
-Message-Id: <20210613064359.389683-1-liq3ea@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230481AbhFMHMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 03:12:25 -0400
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:60116 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230285AbhFMHMY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 03:12:24 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d31 with ME
+        id GXAK2500121Fzsu03XAKqL; Sun, 13 Jun 2021 09:10:20 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 13 Jun 2021 09:10:20 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com
+Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] scsi: mptfc: switch from 'pci_' to 'dma_' API
+Date:   Sun, 13 Jun 2021 09:10:16 +0200
+Message-Id: <95afc589713ade2110e7812159ce3e9ab453ec18.1623568121.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowACHhD0xqcVgnClcOg--.2017S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWr1xJFW3KryxKr4xGF4rKrg_yoW5uw43pF
-        4kCF4rta18AFy7Z393C3W7G3W3J3yFgr47XrW2gw1UAF1Iqw4vqF4DuF1Ykrn5GrZrZFW0
-        9ayxWrW3CrWjqaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UI1v3UUUUU=
-X-Originating-IP: [183.159.69.187]
-X-CM-SenderInfo: 5oltjvrd6rljoofrz/1tbiTxCwbVsGZJBP6gABsP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-memfd_create is often used in the fileless attack.
-Let's create a LSM hook so that we can detect and prevent
-anonymous file creation.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Signed-off-by: Li Qiang <liq3ea@163.com>
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
+
+When memory is allocated in 'mptfc_GetFcDevPage0()' GFP_KERNEL can be used
+because it is already used in this function and no lock is acquired in the
+between.
+
+When memory is allocated in 'mptfc_GetFcPortPage0()' and
+'mptfc_GetFcPortPage1()' GFP_KERNEL can be used because they already call
+'mpt_config()' which has an explicit 'might_sleep()'.
+
+While at it, also remove some useless casting.
+
+@@ @@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@ @@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@ @@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@ @@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- include/linux/lsm_hook_defs.h |  4 ++++
- include/linux/lsm_hooks.h     |  5 +++++
- include/linux/security.h      | 15 +++++++++++++++
- mm/memfd.c                    |  6 ++++++
- security/security.c           |  7 +++++++
- 5 files changed, 37 insertions(+)
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/message/fusion/mptfc.c | 35 +++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 04c01794de83..955556d0d084 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -403,3 +403,7 @@ LSM_HOOK(void, LSM_RET_VOID, perf_event_free, struct perf_event *event)
- LSM_HOOK(int, 0, perf_event_read, struct perf_event *event)
- LSM_HOOK(int, 0, perf_event_write, struct perf_event *event)
- #endif /* CONFIG_PERF_EVENTS */
-+
-+#ifdef CONFIG_MEMFD_CREATE
-+LSM_HOOK(int, 0, memfd_create, const char *name, unsigned int flags)
-+#endif /* CONFIG_MEMFD_CREATE */
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 5c4c5c0602cb..e9c31dbb2783 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -1557,6 +1557,11 @@
-  * 	Read perf_event security info if allowed.
-  * @perf_event_write:
-  * 	Write perf_event security info if allowed.
-+ *
-+ * Security hooks for anonymous file
-+ *
-+ * @memfd_create:
-+ *	Check whether anonymous file creation is allowed
-  */
- union security_list_options {
- 	#define LSM_HOOK(RET, DEFAULT, NAME, ...) RET (*NAME)(__VA_ARGS__);
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 06f7c50ce77f..44b43a7569b5 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -2037,4 +2037,19 @@ static inline int security_perf_event_write(struct perf_event *event)
- #endif /* CONFIG_SECURITY */
- #endif /* CONFIG_PERF_EVENTS */
+diff --git a/drivers/message/fusion/mptfc.c b/drivers/message/fusion/mptfc.c
+index 0484e9c15c09..572333fadd68 100644
+--- a/drivers/message/fusion/mptfc.c
++++ b/drivers/message/fusion/mptfc.c
+@@ -331,8 +331,8 @@ mptfc_GetFcDevPage0(MPT_ADAPTER *ioc, int ioc_port,
+ 			break;
  
-+#ifdef CONFIG_MEMFD_CREATE
-+#ifdef CONFIG_SECURITY
-+
-+extern int security_memfd_create(const char *name, unsigned int flags);
-+
-+#else
-+
-+static inline int security_memfd_create(const char *name, unsigned int flags)
-+{
-+	return 0;
-+}
-+
-+#endif /* CONFIG_SECURITY */
-+#endif /* CONFIG_MEMFD_CREATE */
-+
- #endif /* ! __LINUX_SECURITY_H */
-diff --git a/mm/memfd.c b/mm/memfd.c
-index 2647c898990c..dbd309e455d2 100644
---- a/mm/memfd.c
-+++ b/mm/memfd.c
-@@ -18,6 +18,7 @@
- #include <linux/hugetlb.h>
- #include <linux/shmem_fs.h>
- #include <linux/memfd.h>
-+#include <linux/security.h>
- #include <uapi/linux/memfd.h>
+ 		data_sz = hdr.PageLength * 4;
+-		ppage0_alloc = pci_alloc_consistent(ioc->pcidev, data_sz,
+-		    					&page0_dma);
++		ppage0_alloc = dma_alloc_coherent(&ioc->pcidev->dev, data_sz,
++						  &page0_dma, GFP_KERNEL);
+ 		rc = -ENOMEM;
+ 		if (!ppage0_alloc)
+ 			break;
+@@ -367,8 +367,8 @@ mptfc_GetFcDevPage0(MPT_ADAPTER *ioc, int ioc_port,
+ 			*p_p0 = *ppage0_alloc;	/* save data */
+ 			*p_pp0++ = p_p0++;	/* save addr */
+ 		}
+-		pci_free_consistent(ioc->pcidev, data_sz,
+-		    			(u8 *) ppage0_alloc, page0_dma);
++		dma_free_coherent(&ioc->pcidev->dev, data_sz,
++				  ppage0_alloc, page0_dma);
+ 		if (rc != 0)
+ 			break;
  
- /*
-@@ -290,6 +291,11 @@ SYSCALL_DEFINE2(memfd_create,
- 		goto err_name;
+@@ -763,7 +763,8 @@ mptfc_GetFcPortPage0(MPT_ADAPTER *ioc, int portnum)
+ 
+ 	data_sz = hdr.PageLength * 4;
+ 	rc = -ENOMEM;
+-	ppage0_alloc = pci_alloc_consistent(ioc->pcidev, data_sz, &page0_dma);
++	ppage0_alloc = dma_alloc_coherent(&ioc->pcidev->dev, data_sz,
++					  &page0_dma, GFP_KERNEL);
+ 	if (ppage0_alloc) {
+ 
+  try_again:
+@@ -817,7 +818,8 @@ mptfc_GetFcPortPage0(MPT_ADAPTER *ioc, int portnum)
+ 			mptfc_display_port_link_speed(ioc, portnum, pp0dest);
+ 		}
+ 
+-		pci_free_consistent(ioc->pcidev, data_sz, (u8 *) ppage0_alloc, page0_dma);
++		dma_free_coherent(&ioc->pcidev->dev, data_sz, ppage0_alloc,
++				  page0_dma);
  	}
  
-+	if (security_memfd_create(name, flags)) {
-+		error = -EPERM;
-+		goto err_name;
-+	}
-+
- 	fd = get_unused_fd_flags((flags & MFD_CLOEXEC) ? O_CLOEXEC : 0);
- 	if (fd < 0) {
- 		error = fd;
-diff --git a/security/security.c b/security/security.c
-index b38155b2de83..5723408c5d0b 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -2624,3 +2624,10 @@ int security_perf_event_write(struct perf_event *event)
- 	return call_int_hook(perf_event_write, 0, event);
- }
- #endif /* CONFIG_PERF_EVENTS */
-+
-+#ifdef CONFIG_MEMFD_CREATE
-+int security_memfd_create(const char *name, unsigned int flags)
-+{
-+	return call_int_hook(memfd_create, 0, name, flags);
-+}
-+#endif /* CONFIG_MEMFD_CREATE */
+ 	return rc;
+@@ -904,9 +906,8 @@ mptfc_GetFcPortPage1(MPT_ADAPTER *ioc, int portnum)
+ 		if (data_sz < sizeof(FCPortPage1_t))
+ 			data_sz = sizeof(FCPortPage1_t);
+ 
+-		page1_alloc = pci_alloc_consistent(ioc->pcidev,
+-						data_sz,
+-						&page1_dma);
++		page1_alloc = dma_alloc_coherent(&ioc->pcidev->dev, data_sz,
++						 &page1_dma, GFP_KERNEL);
+ 		if (!page1_alloc)
+ 			return -ENOMEM;
+ 	}
+@@ -916,8 +917,8 @@ mptfc_GetFcPortPage1(MPT_ADAPTER *ioc, int portnum)
+ 		data_sz = ioc->fc_data.fc_port_page1[portnum].pg_sz;
+ 		if (hdr.PageLength * 4 > data_sz) {
+ 			ioc->fc_data.fc_port_page1[portnum].data = NULL;
+-			pci_free_consistent(ioc->pcidev, data_sz, (u8 *)
+-				page1_alloc, page1_dma);
++			dma_free_coherent(&ioc->pcidev->dev, data_sz,
++					  page1_alloc, page1_dma);
+ 			goto start_over;
+ 		}
+ 	}
+@@ -932,8 +933,8 @@ mptfc_GetFcPortPage1(MPT_ADAPTER *ioc, int portnum)
+ 	}
+ 	else {
+ 		ioc->fc_data.fc_port_page1[portnum].data = NULL;
+-		pci_free_consistent(ioc->pcidev, data_sz, (u8 *)
+-			page1_alloc, page1_dma);
++		dma_free_coherent(&ioc->pcidev->dev, data_sz, page1_alloc,
++				  page1_dma);
+ 	}
+ 
+ 	return rc;
+@@ -1514,10 +1515,10 @@ static void mptfc_remove(struct pci_dev *pdev)
+ 
+ 	for (ii=0; ii<ioc->facts.NumberOfPorts; ii++) {
+ 		if (ioc->fc_data.fc_port_page1[ii].data) {
+-			pci_free_consistent(ioc->pcidev,
+-				ioc->fc_data.fc_port_page1[ii].pg_sz,
+-				(u8 *) ioc->fc_data.fc_port_page1[ii].data,
+-				ioc->fc_data.fc_port_page1[ii].dma);
++			dma_free_coherent(&ioc->pcidev->dev,
++					  ioc->fc_data.fc_port_page1[ii].pg_sz,
++					  ioc->fc_data.fc_port_page1[ii].data,
++					  ioc->fc_data.fc_port_page1[ii].dma);
+ 			ioc->fc_data.fc_port_page1[ii].data = NULL;
+ 		}
+ 	}
 -- 
-2.25.1
+2.30.2
 
