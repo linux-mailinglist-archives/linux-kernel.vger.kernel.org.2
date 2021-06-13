@@ -2,113 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5EE3A58A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 15:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE60D3A58AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 15:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhFMNKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 09:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
+        id S231768AbhFMNRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 09:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhFMNKB (ORCPT
+        with ESMTP id S231286AbhFMNRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 09:10:01 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9423DC061574;
-        Sun, 13 Jun 2021 06:08:00 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Sun, 13 Jun 2021 09:17:19 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F32C061574;
+        Sun, 13 Jun 2021 06:15:18 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 15A91128055B;
+        Sun, 13 Jun 2021 06:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1623590116;
+        bh=pzxdLNEzqGnMnPZNOdg/sBCq6TrbljgRZQnji/Mau6Q=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=av96WejD7f0Pm6wVnOKP4mgskrdazILpjKwIi5oVLu25LR96wdWtHcarOJNgEH2iN
+         3kDFfzxvlvW1Pj4peMkQp6N0rpSpoBy6UKntodKVAFrY5W+kbIi4Yvt5wG5WhIYN9D
+         M97iXEkDZ/7FR10M1zXfi/JMqEg1H9CA4ZNxmklc=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id im6BXv7YPCau; Sun, 13 Jun 2021 06:15:16 -0700 (PDT)
+Received: from [10.71.4.154] (unknown [134.204.103.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4G2vyN3cWPzQjld;
-        Sun, 13 Jun 2021 15:07:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-language:content-type
-        :content-type:mime-version:date:date:message-id:subject:subject
-        :from:from:received; s=mail20150812; t=1623589670; bh=ccqv7qyiWt
-        qLYecevOiYfROlLLhMW52pT4dZGTqxQMg=; b=cJzY7je4w8vasuaqbe2Y9MgUk5
-        PgNbSt2BgT+c6Ze+K6ae/KESUbrVnlwkAfPmvX64BVarDFpoiBd33JzsN/phC2bl
-        XrZyiykJ64I+9+Uc9TOK5diUOUZmbCDM/IZS6BJOtkcaokuKVeB7WzvEnwAj3jKV
-        +sXcBB1597aOE/X6fp8FJSSptHUYVkIsIOMVXS1PX8R8rh18g2HqHqLqvD1i1kzZ
-        cBuDzLlVBz1f9XhO8o3HLf9W/KXhkISMtzcBhp2lDyCAJ/UXC5KADKv8Bpb8pIxS
-        A5GHn/nzer4/3sfa97LnH/o4YanI7z9azprkZRorQEmDI/cDFJu2r1kRpgQQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1623589674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5ePQnm+3HJZeWjTq3ey819ji536NrzATHln8V3feSI8=;
-        b=fa4jZnl35wmVZqArRoo471/QIc1kwcSJG2VHe3f91Q1OCngaQuG29yByPhnQBSarcoPTQl
-        VqFDQzlRfWo7gDyaoPHA0UozpVy9Jb8NVpHftrFjxJ03CFSJfSrnan0Lc7a+S+tZ8r8X12
-        1oY7wlexwbgwaj40SWuXjV0Q7GyRojdQ1I6YWlo/hBBc5hrFjLr3xXlKH9ijPLyaCahz1B
-        goHLvY6JlBmnQv+rLXcRuQ7CVBV1e83rjZKG2DGX+M11eJRgICQPKa/HneDyevYy7+DQN9
-        ENafRtFPmcb+S7CrmCP6uqRJ5+Ydx0nUF2kmxEUmaMQiaUxfzioaSZu//AIyhQ==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122]) (amavisd-new, port 10030)
-        with ESMTP id vnV9vcHeMag1; Sun, 13 Jun 2021 15:07:50 +0200 (CEST)
-From:   Tor Vic <torvic9@mailbox.org>
-Subject: [PATCH 1/1] Makefile: Pass -warn-stack-size only on LLD < 13.0.0
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        masahiroy@kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        keescook@chromium.org
-Cc:     "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>, linux-kbuild@vger.kernel.org
-Message-ID: <7631bab7-a8ab-f884-ab54-f4198976125c@mailbox.org>
-Date:   Sun, 13 Jun 2021 13:07:49 +0000
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 6ABE11280558;
+        Sun, 13 Jun 2021 06:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1623590115;
+        bh=pzxdLNEzqGnMnPZNOdg/sBCq6TrbljgRZQnji/Mau6Q=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=oEdMjy6RiuXfgYkpx1WBhMESyBRAbrubGaordZIcRsE/Frrj2jTVCeiyUr341kE9+
+         E4UGVk1vmk8zlvJOJei7q0gIh/ZY9wLg+kkrXbUqWnTrwJ9VFKwAS6FYvY/M5ijAjH
+         oWc9vnfL4JxmM4F/DbdICdmV70qixUP7aM5O/rNQ=
+Message-ID: <3eba0f658b27558cd0e023d58912443886bc723e.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.13-rc5
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sun, 13 Jun 2021 09:15:13 -0400
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -1.31 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 3E50C1890
-X-Rspamd-UID: d27c46
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since LLVM commit fc018eb, the '-warn-stack-size' flag has been dropped
-[1], leading to the following error message when building with Clang-13
-and LLD-13:
+Four reasonably small fixes to the core for scsi host allocation
+failure paths.  The root problem is that we're not freeing the memory
+allocated by dev_set_name(), which involves a rejig of may of the free
+on error paths to do put_device() instead of kfree which, in turn, has
+several other knock on ramifications and inspection turned up a few
+other lurking bugs.
 
-    ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
-    '-warn-stack-size=2048'.  Try: 'ld.lld --help'
-    ld.lld: Did you mean '--asan-stack=2048'?
+The patch is available here:
 
-In the same way as with commit 2398ce80152a ("x86, lto: Pass
--stack-alignment only on LLD < 13.0.0") , make '-warn-stack-size'
-conditional on LLD < 13.0.0.
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-[1] https://reviews.llvm.org/D103928
+The short changelog is:
 
-Fixes: 24845dcb170e ("Makefile: LTO: have linker check -Wframe-larger-than")
-Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/1377
-Signed-off-by: Tor Vic <torvic9@mailbox.org>
+Ming Lei (4):
+      scsi: core: Only put parent device if host state differs from SHOST_CREATED
+      scsi: core: Put .shost_dev in failure path if host state changes to RUNNING
+      scsi: core: Fix failure handling of scsi_add_host_with_dma()
+      scsi: core: Fix error handling of scsi_host_alloc()
+
+And the diffstat:
+
+ drivers/scsi/hosts.c | 47 ++++++++++++++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
+
+With full diff below.
+
+James
+
 ---
- Makefile | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 144d4f8b7eb3..51a1b6b2c2ab 100644
---- a/Makefile
-+++ b/Makefile
-@@ -929,11 +929,14 @@ CC_FLAGS_LTO	+= -fvisibility=hidden
- # Limit inlining across translation units to reduce binary size
- KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
+diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
+index 697c09ef259b..cd52664920e1 100644
+--- a/drivers/scsi/hosts.c
++++ b/drivers/scsi/hosts.c
+@@ -254,12 +254,11 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
+ 
+ 	device_enable_async_suspend(&shost->shost_dev);
+ 
++	get_device(&shost->shost_gendev);
+ 	error = device_add(&shost->shost_dev);
+ 	if (error)
+ 		goto out_del_gendev;
+ 
+-	get_device(&shost->shost_gendev);
+-
+ 	if (shost->transportt->host_size) {
+ 		shost->shost_data = kzalloc(shost->transportt->host_size,
+ 					 GFP_KERNEL);
+@@ -278,33 +277,36 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
+ 
+ 		if (!shost->work_q) {
+ 			error = -EINVAL;
+-			goto out_free_shost_data;
++			goto out_del_dev;
+ 		}
+ 	}
+ 
+ 	error = scsi_sysfs_add_host(shost);
+ 	if (error)
+-		goto out_destroy_host;
++		goto out_del_dev;
+ 
+ 	scsi_proc_host_add(shost);
+ 	scsi_autopm_put_host(shost);
+ 	return error;
+ 
+- out_destroy_host:
+-	if (shost->work_q)
+-		destroy_workqueue(shost->work_q);
+- out_free_shost_data:
+-	kfree(shost->shost_data);
++	/*
++	 * Any host allocation in this function will be freed in
++	 * scsi_host_dev_release().
++	 */
+  out_del_dev:
+ 	device_del(&shost->shost_dev);
+  out_del_gendev:
++	/*
++	 * Host state is SHOST_RUNNING so we have to explicitly release
++	 * ->shost_dev.
++	 */
++	put_device(&shost->shost_dev);
+ 	device_del(&shost->shost_gendev);
+  out_disable_runtime_pm:
+ 	device_disable_async_suspend(&shost->shost_gendev);
+ 	pm_runtime_disable(&shost->shost_gendev);
+ 	pm_runtime_set_suspended(&shost->shost_gendev);
+ 	pm_runtime_put_noidle(&shost->shost_gendev);
+-	scsi_mq_destroy_tags(shost);
+  fail:
+ 	return error;
+ }
+@@ -345,7 +347,7 @@ static void scsi_host_dev_release(struct device *dev)
+ 
+ 	ida_simple_remove(&host_index_ida, shost->host_no);
+ 
+-	if (parent)
++	if (shost->shost_state != SHOST_CREATED)
+ 		put_device(parent);
+ 	kfree(shost);
+ }
+@@ -388,8 +390,10 @@ struct Scsi_Host *scsi_host_alloc(struct scsi_host_template *sht, int privsize)
+ 	mutex_init(&shost->scan_mutex);
+ 
+ 	index = ida_simple_get(&host_index_ida, 0, 0, GFP_KERNEL);
+-	if (index < 0)
+-		goto fail_kfree;
++	if (index < 0) {
++		kfree(shost);
++		return NULL;
++	}
+ 	shost->host_no = index;
+ 
+ 	shost->dma_channel = 0xff;
+@@ -481,7 +485,7 @@ struct Scsi_Host *scsi_host_alloc(struct scsi_host_template *sht, int privsize)
+ 		shost_printk(KERN_WARNING, shost,
+ 			"error handler thread failed to spawn, error = %ld\n",
+ 			PTR_ERR(shost->ehandler));
+-		goto fail_index_remove;
++		goto fail;
+ 	}
+ 
+ 	shost->tmf_work_q = alloc_workqueue("scsi_tmf_%d",
+@@ -490,17 +494,18 @@ struct Scsi_Host *scsi_host_alloc(struct scsi_host_template *sht, int privsize)
+ 	if (!shost->tmf_work_q) {
+ 		shost_printk(KERN_WARNING, shost,
+ 			     "failed to create tmf workq\n");
+-		goto fail_kthread;
++		goto fail;
+ 	}
+ 	scsi_proc_hostdir_add(shost->hostt);
+ 	return shost;
++ fail:
++	/*
++	 * Host state is still SHOST_CREATED and that is enough to release
++	 * ->shost_gendev. scsi_host_dev_release() will free
++	 * dev_name(&shost->shost_dev).
++	 */
++	put_device(&shost->shost_gendev);
+ 
+- fail_kthread:
+-	kthread_stop(shost->ehandler);
+- fail_index_remove:
+-	ida_simple_remove(&host_index_ida, shost->host_no);
+- fail_kfree:
+-	kfree(shost);
+ 	return NULL;
+ }
+ EXPORT_SYMBOL(scsi_host_alloc);
 
--# Check for frame size exceeding threshold during prolog/epilog insertion.
-+# Check for frame size exceeding threshold during prolog/epilog insertion
-+# when using lld < 13.0.0.
- ifneq ($(CONFIG_FRAME_WARN),0)
-+ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
- KBUILD_LDFLAGS	+= -plugin-opt=-warn-stack-size=$(CONFIG_FRAME_WARN)
- endif
- endif
-+endif
-
- ifdef CONFIG_LTO
- KBUILD_CFLAGS	+= -fno-lto $(CC_FLAGS_LTO)
--- 
-2.32.0
