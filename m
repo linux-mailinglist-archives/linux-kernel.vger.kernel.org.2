@@ -2,132 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ECE3A5915
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 16:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE9F3A591E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 16:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhFMOjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 10:39:23 -0400
-Received: from mail-pj1-f43.google.com ([209.85.216.43]:37753 "EHLO
-        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbhFMOjV (ORCPT
+        id S231926AbhFMOpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 10:45:24 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:54145 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231794AbhFMOpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 10:39:21 -0400
-Received: by mail-pj1-f43.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so8570533pjs.2;
-        Sun, 13 Jun 2021 07:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EA4ywZJGJgO/S0GCMMfw5wsW/fmHuUSs+6+pUCTlOuw=;
-        b=VoDm0XhRof9E9YzseYhNh0LHoXNNqDwwyl1kLv7tOXi+Mq8XaMu36G0gQJ/6rBswLa
-         5ISLicU1zrU9vZpLL5u/s8sXH2uXzzTdSsKgMyV5NQ/tghZUpboEhBtRXx1D6s8uhH9l
-         jRXes9J2M8dVYwqxR3dTaz4+2c+wOa0djILU5sq5dK6e/7IY0Q5A4N6nlt9Fh/zpJ+Zy
-         aa67tee7Dk4oYNjLdMZPXBUNiZ6Spf0+mCihx5mK6mUFtjUAHOxK8C2fBFsslHd2T+PO
-         A9jjSJxcstF0LyazwW1zkuGKBT09KIheU0XDCCJkRMXQCXoGNPPvCuasG6V4COIl0jbp
-         p60Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EA4ywZJGJgO/S0GCMMfw5wsW/fmHuUSs+6+pUCTlOuw=;
-        b=QU7vFekzYB98f5gsww1SHcV5lZd0MZGXhdAKcRBaKDkhGVV349pgvJXjl8bFNyec1j
-         tINSU5iqEn8z0oCwFolYAfcmJ8E11QnEs4LDriCPXmytWhoncawMorcLl6bqGvX9kflg
-         sizRuGbBzHXOWYmSOs0dgVSIYr2+lEmLOGlhIbWoIDp4L34JTuGTusPOmqLWBtVHWqpU
-         XqSAYcZRiYyym4JxIXezxoEhorMATfbWgnA1ARV/IUgup+0/oIN99oETQa4ck/BL5GGY
-         l5KNbLhLSVr8XIV5QLRz8p3oOAVx/Ty+r/6UtHxhcibRprgGml0PxSuL2xIWlQRGGqqG
-         3Ukw==
-X-Gm-Message-State: AOAM533hX3fUmvo6TvsdAWrym6bFw6Da22FLAby+bVFAaE/27P/xvUbY
-        XsMl5BGwavNRbWs08uKGixI=
-X-Google-Smtp-Source: ABdhPJygLdD8SUpY6TYgvdshITwhWKYR50QBGYOfWAjZh7xkmcVgmLV7ZGyTu5GM66kuTQ0eFU/lrQ==
-X-Received: by 2002:a17:90a:8c14:: with SMTP id a20mr14029790pjo.167.1623594966297;
-        Sun, 13 Jun 2021 07:36:06 -0700 (PDT)
-Received: from localhost.localdomain ([14.169.121.97])
-        by smtp.gmail.com with ESMTPSA id kb14sm8181985pjb.2.2021.06.13.07.36.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 07:36:06 -0700 (PDT)
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-Cc:     minhquangbui99@gmail.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Roman Gushchin <guro@fb.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] bpf: Fix integer overflow in argument calculation for bpf_map_area_alloc
-Date:   Sun, 13 Jun 2021 21:34:39 +0700
-Message-Id: <20210613143440.71975-1-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 13 Jun 2021 10:45:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623595401; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=dkkBohdmxX4AMm5TOqURPJf+1cAVzehkXSkKCYGxK/k=;
+ b=Jco7lQxUJkJdbFtOshlnqkYiOI347o8duGY8EeQYxLrKqNrlfoP5E/Jh/GPbV9ZuJitGrz6e
+ Cxw8x/T+vFKZvz7KlGZn4rHxZAhcRRh5tHbZIEyc6j3lkh/LDSEAFKV/QQAZdRGYszTM4Jiy
+ 7RiXPt8kuukTFi14wu0OOelsFeA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60c61971ed59bf69cc07e3d9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 13 Jun 2021 14:42:57
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EFC9FC4338A; Sun, 13 Jun 2021 14:42:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8F12AC433F1;
+        Sun, 13 Jun 2021 14:42:55 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 13 Jun 2021 22:42:55 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
+ ufshcd_abort() for PM requests
+In-Reply-To: <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-9-git-send-email-cang@codeaurora.org>
+ <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
+ <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
+ <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
+Message-ID: <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 32-bit architecture, the result of sizeof() is a 32-bit integer so
-the expression becomes the multiplication between 2 32-bit integer which
-can potentially leads to integer overflow. As a result,
-bpf_map_area_alloc() allocates less memory than needed.
+Hi Bart,
 
-Fix this by casting 1 operand to u64.
+On 2021-06-13 00:50, Bart Van Assche wrote:
+> On 6/12/21 12:07 AM, Can Guo wrote:
+>> Sigh... I also want my life and work to be easier...
+> 
+> How about reducing the number of states and state transitions in the 
+> UFS
+> driver? One source of complexity is that ufshcd_err_handler() is 
+> scheduled
+> independently of the SCSI error handler and hence may run concurrently
+> with the SCSI error handler. Has the following already been considered?
+> - Call ufshcd_err_handler() synchronously from ufshcd_abort() and
+> ufshcd_eh_host_reset_handler() instead of asynchronously.
 
-Fixes: 0d2c4f964050 ("bpf: Eliminate rlimit-based memory accounting for sockmap
-and sockhash maps")
-Fixes: 99c51064fb06 ("devmap: Use bpf_map_area_alloc() for allocating hash
-buckets")
-Fixes: 546ac1ffb70d ("bpf: add devmap, a map for storing net device references")
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
----
-v2: Add Fixes tag
+1. ufshcd_eh_host_reset_handler() invokes ufshcd_err_handler() and 
+flushes
+it, so it is synchronous. ufshcd_eh_host_reset_handler() used to call
+reset_and_restore() directly, which can run concurrently with UFS error 
+handler,
+so I fixed it last year [1].
 
- kernel/bpf/devmap.c | 4 ++--
- net/core/sock_map.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+2. ufshcd_abort() invokes ufshcd_err_handler() synchronously can have a
+live lock issue, which is why I chose the asynchronous way (from the 
+first
+day I started to fix error handling). The live lock happens when abort 
+happens
+to a PM request, e.g., a SSU cmd sent from suspend/resume. Because UFS 
+error
+handler is synchronized with suspend/resume (by calling 
+pm_runtime_get_sync()
+and lock_system_sleep()), the sequence is like:
+[1] ufshcd_wl_resume() sends SSU cmd
+[2] ufshcd_abort() calls UFS error handler
+[3] UFS error handler calls lock_system_sleep() and 
+pm_runtime_get_sync()
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index aa516472ce46..3b45c23286c0 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -92,7 +92,7 @@ static struct hlist_head *dev_map_create_hash(unsigned int entries,
- 	int i;
- 	struct hlist_head *hash;
- 
--	hash = bpf_map_area_alloc(entries * sizeof(*hash), numa_node);
-+	hash = bpf_map_area_alloc((u64) entries * sizeof(*hash), numa_node);
- 	if (hash != NULL)
- 		for (i = 0; i < entries; i++)
- 			INIT_HLIST_HEAD(&hash[i]);
-@@ -143,7 +143,7 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 
- 		spin_lock_init(&dtab->index_lock);
- 	} else {
--		dtab->netdev_map = bpf_map_area_alloc(dtab->map.max_entries *
-+		dtab->netdev_map = bpf_map_area_alloc((u64) dtab->map.max_entries *
- 						      sizeof(struct bpf_dtab_netdev *),
- 						      dtab->map.numa_node);
- 		if (!dtab->netdev_map)
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 6f1b82b8ad49..60decd6420ca 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -48,7 +48,7 @@ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
- 	bpf_map_init_from_attr(&stab->map, attr);
- 	raw_spin_lock_init(&stab->lock);
- 
--	stab->sks = bpf_map_area_alloc(stab->map.max_entries *
-+	stab->sks = bpf_map_area_alloc((u64) stab->map.max_entries *
- 				       sizeof(struct sock *),
- 				       stab->map.numa_node);
- 	if (!stab->sks) {
--- 
-2.25.1
+In above sequence, either lock_system_sleep() or pm_runtime_get_sync() 
+shall
+be blocked - [3] is blocked by [1], [2] is blocked by [3], while [1] is 
+blocked by [2].
 
+For PM requests, I chose to abort them fast to unblock suspend/resume,
+suspend/resume shall fail of course, but UFS error handler recovers
+PM errors anyways.
+
+> - Call scsi_schedule_eh() from ufshcd_uic_pwr_ctrl() and
+> ufshcd_check_errors() instead of ufshcd_schedule_eh_work().
+
+When ufshcd_uic_pwr_ctrl() and/or ufshcd_check_errors() report errors,
+usually they are fatal errors, according to UFSHCI spec, SW should 
+re-probe
+UFS to recover.
+
+However scsi_schedule_eh() does more than that - scsi_unjam_host() sends
+request sense cmd and calls scsi_eh_ready_devs(), while 
+scsi_eh_ready_devs()
+sends test unit ready cmd and calls all the way down to 
+scsi_eh_device/target/
+bus/host_reset(). But we only need scsi_eh_host_reset() in this case. I 
+know
+you have concerns that scsi_schedule_eh() may run concurrently with UFS 
+error
+handler, but as I mentioned above in [1] - I've made 
+ufshcd_eh_host_reset_handler()
+synchronized with UFS error handler, hope that can ease your concern.
+
+I am not saying your idea won't work, it is a good suggestion. I will 
+try
+it after these changes go in, because it would require extra effort and 
+the
+effort won't be minor - I need to consider how to remove/reduce the 
+ufshcd
+states along with the change and the error injection and stability test 
+all
+over again, which is a long way to go. As for now, at least current 
+changes
+works well as per my test and we really need these changes for 
+Andriod12-5.10.
+
+Thanks,
+
+Can Guo.
+
+> 
+> These changes will guarantee that all commands have completed or timed
+> out before ufshcd_err_handler() is called. I think that would allow to
+> remove e.g. the following code from the error handler:
+> 
+> 	ufshcd_scsi_block_requests(hba);
+> 	/* Drain ufshcd_queuecommand() */
+> 	down_write(&hba->clk_scaling_lock);
+> 	up_write(&hba->clk_scaling_lock);
+> 
+> Thanks,
+> 
+> Bart.
