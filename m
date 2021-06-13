@@ -2,137 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA1C3A57F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 13:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1D53A57F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 13:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhFMLXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 07:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbhFMLXA (ORCPT
+        id S231739AbhFMLXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 07:23:16 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:6347 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231658AbhFMLXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 07:23:00 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B075EC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 04:20:48 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id j12so6382039pgh.7
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 04:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=km7fFSoakwLzBL2K4C+XOrORhJcE9EZrDxM5qTTgCOg=;
-        b=EVJ4IsPbyK9Sj8w5NYgL4BjGXMDVJ/sTd/Sf8kbEd+6MvzMRLCpjdOYBSH6+WVO3AK
-         oVScYkOnPrjZYQGfznN9DxDHEgzZZalD2qAa+g9IJBC2ucq6GxuUFPG1jvEyl9UFzpcs
-         P2qssZdMyqAhxklk3sP0DFHwCtV52Oxjl/XCIGn3ftmvJ7ZMwk/phuCLwwRUK8QmJVLg
-         6o9ZztKWVtu7VvJW1uq/sLWMoC+vz3TnKoaD1RAO1V2eRAQDRA7APrMfOfrN5I4Kmoax
-         qXdLYV3FEzS55cVcEeGFW9kIKvU9XX3lAwqJPQXoy2xSFPULA/9ga2BFKhyAyftunyAy
-         KqCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=km7fFSoakwLzBL2K4C+XOrORhJcE9EZrDxM5qTTgCOg=;
-        b=L7QPAKrNOvvaI6lOASWWENw3yga436cWAubvmK3wPpmJoeZYTTzLCqAVh93crFQ7e5
-         C1G91Okh1TL98ueSszEoeBW/yQMixyb34q7wLjiOJyCWIjXGKVfNFcpYS3VLblxdt7q0
-         bbEtIYZPx6tB8cpOBnUq0GC/uj53ZvJNuaPBGnJf9mS1tx5rJP0WDdYfSbKi/wQ2VS43
-         dNTRc7BCEK6EJbEHORsVTbL/136tVsqdte/nhhM9CrRPZPvV/zdC+5KC9O1SXCbR1YAp
-         hcBADOhRWyLNuocuVldzhBmzVMV8c4+4agFpfZvLYZ+nx4peLAVk8fSUTgx0YfsNTKVa
-         pg2Q==
-X-Gm-Message-State: AOAM530gldepOI4VKg3idmzK5SCLmwF/3H8lTjVuUtL0S6UQwdTy5mv9
-        hKS37iM9zWo5GZrf/ink8/A=
-X-Google-Smtp-Source: ABdhPJzUiGJ1yIHs4EorvIoB5w2vzkEzl8kzr/5ccH+zbckWpdu6tvfVwa1iOirPhvkpacyDXQwCtg==
-X-Received: by 2002:a63:b10:: with SMTP id 16mr12369772pgl.90.1623583248107;
-        Sun, 13 Jun 2021 04:20:48 -0700 (PDT)
-Received: from localhost.localdomain ([209.58.129.97])
-        by smtp.gmail.com with ESMTPSA id l5sm9392162pff.20.2021.06.13.04.20.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 04:20:47 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch
-Cc:     lukas.bulwahn@gmail.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: [PATCH --next] drm/amd/amdgpu: Fix kernel doc warnings
-Date:   Sun, 13 Jun 2021 16:50:34 +0530
-Message-Id: <20210613112034.19235-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Sun, 13 Jun 2021 07:23:16 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G2sVg6Mmtz6xBX;
+        Sun, 13 Jun 2021 19:17:15 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sun, 13 Jun 2021 19:21:11 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 13
+ Jun 2021 19:21:11 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <boris.brezillon@bootlin.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH] mtd: ftl: Initialize rq.limits.discard_granularity
+Date:   Sun, 13 Jun 2021 19:29:42 +0800
+Message-ID: <20210613112942.2329192-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit cb1c81467af3 ("drm/ttm: flip the switch for driver
-allocated resources v2") changed few ttm_resource pointer names.
-The corresponding kernel doc comments were not updated, which
-produces few kernel doc build warnings of the type:
+Since commit b35fd7422c2f8("block: check queue's limits.discard_granularity
+in __blkdev_issue_discard()") checks rq.limits.discard_granularity in
+__blkdev_issue_discard(), we may get following warnings while formating ftl:
 
-./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:193: warning: Excess
-function parameter 'mem' description in 'amdgpu_gtt_mgr_del'
+  WARNING: CPU: 2 PID: 7313 at block/blk-lib.c:51
+  __blkdev_issue_discard+0x2a7/0x390
 
-Rename the kernel doc function arguments to match the prototype.
+Reproducer:
+  1. ftl_format /dev/mtd0
+  2. modprobe ftl
+  3. mkfs.vfat /dev/ftla
+  4. mount -odiscard /dev/ftla temp
+  5. dd if=/dev/zero of=temp/tst bs=1M count=10 oflag=direct
+  6. dd if=/dev/zero of=temp/tst bs=1M count=10 oflag=direct
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Fix it by initializing rq.limits.discard_granularity in ftl_add_mtd().
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c  | 4 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/ftl.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-index ec96e0b26b11..fa88273364b3 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-@@ -118,7 +118,7 @@ bool amdgpu_gtt_mgr_has_gart_addr(struct ttm_resource *res)
-  * @man: TTM memory type manager
-  * @tbo: TTM BO we need this range for
-  * @place: placement flags and restrictions
-- * @mem: the resulting mem object
-+ * @res: the resulting TTM memory object
-  *
-  * Dummy, allocate the node but no space for it yet.
-  */
-@@ -184,7 +184,7 @@ static int amdgpu_gtt_mgr_new(struct ttm_resource_manager *man,
-  * amdgpu_gtt_mgr_del - free ranges
-  *
-  * @man: TTM memory type manager
-- * @mem: TTM memory object
-+ * @res: TTM memory object
-  *
-  * Free the allocated GTT again.
-  */
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-index 436ec246a7da..f06813f04e8c 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -361,7 +361,7 @@ static void amdgpu_vram_mgr_virt_start(struct ttm_resource *mem,
-  * @man: TTM memory type manager
-  * @tbo: TTM BO we need this range for
-  * @place: placement flags and restrictions
-- * @mem: the resulting mem object
-+ * @res: the resulting TTM memory object
-  *
-  * Allocate VRAM for the given BO.
-  */
-@@ -482,7 +482,7 @@ static int amdgpu_vram_mgr_new(struct ttm_resource_manager *man,
-  * amdgpu_vram_mgr_del - free ranges
-  *
-  * @man: TTM memory type manager
-- * @mem: TTM memory object
-+ * @res: TTM memory object
-  *
-  * Free the allocated VRAM again.
-  */
-@@ -517,7 +517,7 @@ static void amdgpu_vram_mgr_del(struct ttm_resource_manager *man,
-  * amdgpu_vram_mgr_alloc_sgt - allocate and fill a sg table
-  *
-  * @adev: amdgpu device pointer
-- * @mem: TTM memory object
-+ * @res: TTM memory object
-  * @offset: byte offset from the base of VRAM BO
-  * @length: number of bytes to export in sg_table
-  * @dev: the other device
+diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+index 9b33c082179d..fb31e33b8a77 100644
+--- a/drivers/mtd/ftl.c
++++ b/drivers/mtd/ftl.c
+@@ -70,6 +70,7 @@
+ #include <linux/hdreg.h>
+ #include <linux/vmalloc.h>
+ #include <linux/blkpg.h>
++#include <linux/blkdev.h>
+ #include <linux/uaccess.h>
+ 
+ #include <linux/mtd/ftl.h>
+@@ -1029,8 +1030,11 @@ static void ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ 
+ 		partition->mbd.tr = tr;
+ 		partition->mbd.devnum = -1;
+-		if (!add_mtd_blktrans_dev((void *)partition))
++		if (!add_mtd_blktrans_dev((void *)partition)) {
++			partition->mbd.rq->limits.discard_granularity =
++								tr->blksize;
+ 			return;
++		}
+ 	}
+ 
+ 	kfree(partition);
 -- 
-2.28.0
+2.31.1
 
