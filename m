@@ -2,250 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A653A577C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 12:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D967B3A577B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 12:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbhFMKIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 06:08:50 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:35670 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbhFMKIt (ORCPT
+        id S231629AbhFMKIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 06:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230293AbhFMKIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 06:08:49 -0400
-Received: by mail-qk1-f182.google.com with SMTP id g19so2908647qkk.2
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 03:06:38 -0700 (PDT)
+        Sun, 13 Jun 2021 06:08:35 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11526C061574;
+        Sun, 13 Jun 2021 03:06:35 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v13so5064685ple.9;
+        Sun, 13 Jun 2021 03:06:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Au4QKTus+XgKR2vBRU7aKb0qORCXsYtbUG6Uiq/nA7E=;
-        b=Wa+LSpR6IORg8oWvqY30jJsiSDLCW5trlKsbwjQ3HWYA/l+wbCz2LpXVxfjeF543bJ
-         W2J5kJqNn1wowxtqoIdAGNxCVWYyfITFZrmNBpboNAJDVbZm1KmTdsJllSXTeGc5+FSG
-         p714uKWBqaHKvZppn2CIVeN7xXkxftObhA0sPqWryVzT7K4IS/YOMQ7Xh0opfKGtixBy
-         O0Ondcpbl/eJwWUSwzTzfepxm5xIL2cVxBezBRMhPyAMG8nbsI4mrsIP5KiWKUHyS4Xb
-         YuSB0yAG6w0qjMZlq7dXAHT2JKUXwnLbT4EL9EcUynWWS193URRFbT4OXoc/9lROytdQ
-         3q7A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dmdhVPXKoyiUaz/UceIGPTISFReWjVbR2rEWBrtoQCw=;
+        b=NxjIvQScwkUpIMuR4wM1STfFJqTO/L9Ii2gEjfu97ZCVjUJ+/8jvX5jAya7aWesdL4
+         YIkPKVyxLR0mXeQegdROBKDqnV/T2tSQv/o6WF/rvxW2UB6/sDRT6gmuJBVIIqtbRQZr
+         RII9iOGRvQDQPr5iycrIrFy/vLLMuT6KQfVH1vDAdKACfLGXvIMRpZQ4Dgv6kghV4sDO
+         wZivgvsNvJZZjNwsFXZTUVVVJ5jR3+wdHWE5Qf882t3M54q7PvkMKZkob8Kty2obISU/
+         zbkuH5IVG2o12rkszy113co1/eB2d1OVl96VfwjTjymWlZ0e7jNlYoiTrKd4MGE1P+nq
+         7BsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Au4QKTus+XgKR2vBRU7aKb0qORCXsYtbUG6Uiq/nA7E=;
-        b=k5UmD5tOJ0Df+xwT3+kywybHstmuE5bIStzJAgf3a9e7wOfEZ28C6V7VCNSBo9MNYq
-         oMuahqVNSwF+Kh1pNEnFGgEh09kG9+vt5bR2eL0OeBGzqqe/wDGtyeCqTsdHuSPRDE7I
-         lrbw1xYSkt/5nqk0HMRfTqw85noMYMQfvvhuEinyiqeDSMhkds+HXIqbKXLqpM3HtN8u
-         ALimUmQE8A9L9XhtW/ruGMVaXOPncGEKvg3BGRe71F3dAZRrKeJTL0EBqXflC8xBVWM6
-         JE2yktg6sYnB7Dsj+gzm1Wipu2En0lMydlazmjKQh86gSow/e3FwByxaJicx1Ea1ubQh
-         eQ8g==
-X-Gm-Message-State: AOAM530IumpnfeGfruYQxdyIFHkjpmUxMQRCVAu3M9/5Fwi8dzMqeDxB
-        3gTMmQLB634wmojV8SxRq7IO2a0gaj8u2w==
-X-Google-Smtp-Source: ABdhPJwi4w2WDz064TubEJdv3YJV+YdWzyf9aJBBVe3kRA/6UrIsc+YNrZfgRzc0+ZwGLvikxTUWEQ==
-X-Received: by 2002:a05:620a:29d4:: with SMTP id s20mr11568627qkp.287.1623578738291;
-        Sun, 13 Jun 2021 03:05:38 -0700 (PDT)
-Received: from ArchLinux ([191.96.227.140])
-        by smtp.gmail.com with ESMTPSA id w4sm7552046qtv.79.2021.06.13.03.05.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 03:05:37 -0700 (PDT)
-Date:   Sun, 13 Jun 2021 15:35:22 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Amit Choudhary <amitchoudhary0523@gmail.com>
-Cc:     LinuxKernel <linux-kernel@vger.kernel.org>
-Subject: Re: [Code] Fastest String Search Algorithm.
-Message-ID: <YMXYYgR82VZISjtO@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Amit Choudhary <amitchoudhary0523@gmail.com>,
-        LinuxKernel <linux-kernel@vger.kernel.org>
-References: <CAFf+5zhSH_dJ2Zc5EcfqgTew8w0sEu4hLjKYf3fTmqB5mdgfwQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dmdhVPXKoyiUaz/UceIGPTISFReWjVbR2rEWBrtoQCw=;
+        b=ju5l6Lm/4GMRTGvCXs/gRNb1j2rBDLqTx+9vlpbeJx8pu++26pWnW6Xy6d5lGZwHM9
+         GH0n+QwizYdaS0WM4J7DQsOwJpIaFnEYXE0XN/UXy+ZYUTn/hmCH5aSIJnO9d62a4kYf
+         myPX27AjY5pIrnhxXF+AsRA8BLmuLCbEXTTP7M2ke2Ha/a7qvqdjqnV+pbTcHaXoTcrH
+         8/0COdZsM4RWb4M27qysPo8aR9gv4V2hj1v6UAZ0u+RfECH2G9C5POqTI8i7EEg6RGpY
+         FUV0/lk+OprplHZWfe+IpMqMNUDb5k0OZV1lKLmLzoBmjsA3RJDDjHvSRN/BV4pC5stA
+         Qb/Q==
+X-Gm-Message-State: AOAM530qDqxZBpqxDXn6qAPWOAOm+AHOXAxUlwAbRktZKnpOfTVsUZbB
+        pGlpyhcxPzt7fcd2fsdZZ94uvqLxEJOQn7yTKKY=
+X-Google-Smtp-Source: ABdhPJw+csIyisxCvQnicRcCuZFcFFbK0WZBj7GREsXw4jVsdK9NKeXC9g9iPo1rxyW16nk7M2r0Sas5hn3Vvb3DbhM=
+X-Received: by 2002:a17:90a:af90:: with SMTP id w16mr2545061pjq.129.1623578792162;
+ Sun, 13 Jun 2021 03:06:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="A62bU5pp696mrwWI"
-Content-Disposition: inline
-In-Reply-To: <CAFf+5zhSH_dJ2Zc5EcfqgTew8w0sEu4hLjKYf3fTmqB5mdgfwQ@mail.gmail.com>
+References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
+ <20210602120329.2444672-6-j.neuschaefer@gmx.net> <CAHp75Vci1DSFu-tpgwQZfuVycqHYmhGhLDDCOH_dX8HKvqpY_A@mail.gmail.com>
+ <YMVBTp4VaSilFi0H@latitude>
+In-Reply-To: <YMVBTp4VaSilFi0H@latitude>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 13 Jun 2021 13:06:15 +0300
+Message-ID: <CAHp75Vd9FEGuaVbRUK67uzRoeQSXQUGAhXExHgJvkDd585kxwA@mail.gmail.com>
+Subject: Re: [PATCH 5/8] pinctrl: nuvoton: Add driver for WPCM450
+To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jun 13, 2021 at 2:20 AM Jonathan Neusch=C3=A4fer
+<j.neuschaefer@gmx.net> wrote:
+> On Wed, Jun 02, 2021 at 03:50:39PM +0300, Andy Shevchenko wrote:
+> > On Wed, Jun 2, 2021 at 3:05 PM Jonathan Neusch=C3=A4fer
+> > <j.neuschaefer@gmx.net> wrote:
 
---A62bU5pp696mrwWI
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+...
 
-On 14:00 Sun 13 Jun 2021, Amit Choudhary wrote:
+> > > +       help
+> > > +         Say Y here to enable pin controller and GPIO support
+> > > +         for the Nuvoton WPCM450 SoC.
+> >
+> > >From this help it's not clear why user should or shouldn't enable it.
+> > Please, elaborate (and hence fix checkpatch warning).
+>
+> I'll try something like this, but I'm open for better ideas:
+>
+>         help
+>           Say Y or M here to enable pin controller and GPIO support for
+>           the Nuvoton WPCM450 SoC. This is strongly recommended when
+>           building a kernel that will run on this chip.
+>
+>           If this driver is compiled as a module, it will be named
+>           pinctrl-wpcm450.
 
-Ahhhhhhhh...
+This looks good enough.
 
-Oh crap! Get off the lawn , kiddo. Do NOT USE THIS PLACE for your obnoxious
-desire.
+> I could mention some examples of functionality enabled by this driver:
+> LEDs, host power control, Ethernet.
+>
+> (LEDs and host power control use GPIOs, at least on the Supermicro X9
+>  board I've been using. Ethernet MDIO must be enabled through the
+>  pinctrl driver, unless the bootloader has done so already; on my board
+>  the bootloader doesn't do this.)
 
-We don't have time and energy to evaluate some airy-fairy stuff .
+...
 
-How do you know we will ever bother to think about "include your code"?? Let
-alone other factor...huh...you are living in fool's paradise ...meh... look
-like your head is filled with lots of preconceived dogma....where have you got
-those?? Heck..
+> > > +static int wpcm450_gpio_get_direction(struct gpio_chip *chip,
+> > > +                                     unsigned int offset)
+> > > +{
+> > > +       struct wpcm450_pinctrl *pctrl =3D gpiochip_get_data(chip);
+> > > +       const struct wpcm450_port *port =3D to_port(offset);
+> > > +       unsigned long flags;
+> > > +       u32 cfg0;
+> > > +       int dir;
+> > > +
+> > > +       spin_lock_irqsave(&pctrl->lock, flags);
+> > > +       if (port->cfg0) {
+> > > +               cfg0 =3D ioread32(pctrl->gpio_base + port->cfg0);
+> >
+> > > +               dir =3D !(cfg0 & port_mask(port, offset));
+> > > +       } else {
+> > > +               /* If cfg0 is unavailable, the GPIO is always an inpu=
+t */
+> > > +               dir =3D 1;
+> > > +       }
+> >
+> > Why above is under spin lock?
+> > Same question for all other similar places in different functions, if a=
+ny.
+>
+> My intention was to protect the ioread32. But given that it's just a
+> single MMIO read, this might be unnecessary.
 
-Your intention is not wise...this mailing list solely exist for people
-interested in Linux and only in Linux Kernel. Period.
+Sometimes it's necessary and I'm not talking about it. (I put blank
+lines around the code I was commenting on)
 
-IOW , PLEASE DO NOT BOTHER US.
+So, What I meant above is to get something like this
 
-~Bhaskar
+if (port->cfg0) {
+  spin lock
+  ...
+  spin unlock
+} else {
+  ...
+}
 
->Hi All,
->
->I have invented a new string search algorithm. It has performed better
->than strstr(), Boyer-Moore, and KPM algorithms.
->
->But I am not sending my code so that my algorithm gets included in linux kernel.
->
->I am sending this code because linux kernel mailing list is in public
->domain and getting indexed by search engines. So, people can see this
->algo if they search for fastest string search algorithm on web.
->
->Code:
->
->===================================================================================
->
->// Choudhary string search algorithm
->static char * choudhary_string_search_algorithm(char *text, char *pattern)
->{
->
->#define false 0
->#define true 1
->#define ALPHABET_SIZE 256
->
->    int i = 0;
->    int end_index = 0;
->    int not_found = false;
->
->    char pattern_char[ALPHABET_SIZE] = {0};
->
->    int text_len = strlen(text);
->    int pattern_len = strlen(pattern);
->
->    int pi_44 = pattern_len - 1;
->    int pi_34 = (3 * pattern_len) / 4;
->    int pi_24 = pattern_len / 2;
->    int pi_14 = pattern_len / 4;
->
->    int last_failed_index = -1;
->
->    // preprocessing
->    for (i = 0; i < pattern_len; i++) {
->        pattern_char[(int)(pattern[i])] = 1;
->    }
->
->    // now search
->    for (i = 0; i < text_len; i++) {
->
->        if ((text_len - i) < pattern_len) {
->            return NULL;
->            //return -1;
->        }
->
->        if (pattern[pi_44] != text[i + pi_44]) {
->
->            last_failed_index = pi_44;
->
->            // this character doesn't appear in pattern, so skip
->            if (pattern_char[(int)(text[i + pi_44])] == 0) {
->                i = i + pi_44;
->            }
->
->            continue;
->
->        } else if (pattern[pi_34] != text[i + pi_34]) {
->
->            last_failed_index = pi_34;
->
->            // this character doesn't appear in pattern, so skip
->            if (pattern_char[(int)(text[i + pi_34])] == 0) {
->                i = i + pi_34;
->            }
->
->            continue;
->
->        } else if (pattern[pi_24] != text[i + pi_24]) {
->
->            last_failed_index = pi_24;
->
->            // this character doesn't appear in pattern, so skip
->            if (pattern_char[(int)(text[i + pi_24])] == 0) {
->                i = i + pi_24;
->            }
->
->            continue;
->
->        } else if (pattern[pi_14] != text[i + pi_14]) {
->
->            last_failed_index = pi_14;
->
->            // this character doesn't appear in pattern, so skip
->            if (pattern_char[(int)(text[i + pi_14])] == 0) {
->                i = i + pi_14;
->            }
->
->            continue;
->
->        } // end of if-else.. block
->
->        // compare with character at last failed index.
->        if (last_failed_index >= 0) {
->
->            if (pattern[last_failed_index] != text[i + last_failed_index]) {
->                continue;
->            }
->
->        }
->
->        if (pattern[0] == text[i]) {
->
->            //full_pattern_search = full_pattern_search + 1;
->            end_index = i + pi_44;
->            not_found = false;
->            int index = 0;
->
->            for (index = i; index <= end_index; index++) {
->                if (text[index] != pattern[index - i]) {
->                    last_failed_index = index - i;
->                    not_found = true;
->                    break;
->                }
->            } // end of inner for loop
->
->            if (not_found == false) { // match is found
->                return (text + i);
->                //return i;
->            } else if (pattern_char[(int)(text[index])] == 0) {
->                i = index;
->            }
->        } // end of if pattern[0]
->
->    } // end of outer for loop
->
->    return NULL;
->    //return -1;
->
->} // end of choudhary_string_search_algorithm
->
->===================================================================================
->
->Regards,
->Amit
+or equivalent ideas.
 
---A62bU5pp696mrwWI
-Content-Type: application/pgp-signature; name="signature.asc"
+> > > +       spin_unlock_irqrestore(&pctrl->lock, flags);
+> > > +       return dir;
+> > > +}
 
------BEGIN PGP SIGNATURE-----
+...
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmDF2F8ACgkQsjqdtxFL
-KRWryAf/XUHCnPR4i3X4E44fNoJz8vUw8MWjMYqIz3NGwqSzC9qQF+dRxGRYXnGz
-zmJKBmtGIw2l8Kmv7QLQMoY0qeHG6s/nxcXpW7Recry8HaEc3et8XPzZUdtdakpL
-eAGRYTXZPiBl5dFru2ZjqoXMGXbnyPNBUtKUFfwBEDx3UHyQS/OjjXOloq7dfn3h
-0FUnmWw0fYZ1pM8QmabmvkIy7NjNIHJV5u9IdqvWdShc1SqJ1IAyfUO224Fh/MIl
-SyMaxYecGeC++Q9pbnjE2Rg12I51pcA7tifX3hmQKbuUaNMA+2bdPpkGwQtvWugr
-Y9+qtspj9TmpQOzmVJGeY/Wdl+Qv6w==
-=s03S
------END PGP SIGNATURE-----
+> > > +static int wpcm450_gpio_direction_output(struct gpio_chip *chip,
+> > > +                                        unsigned int offset, int val=
+ue)
+> > > +{
+> > > +       struct wpcm450_pinctrl *pctrl =3D gpiochip_get_data(chip);
+> > > +       const struct wpcm450_port *port =3D to_port(offset);
+> > > +       unsigned long flags;
+> > > +       u32 dataout, cfg0;
+> >
+> > > +       int ret =3D 0;
+> >
+> > Redundant. Can do it without it.
+> >
+> > > +       spin_lock_irqsave(&pctrl->lock, flags);
+> > > +       if (port->cfg0) {
+> >
+> > > +       } else {
+> > > +               ret =3D -EINVAL;
+> > > +       }
+> > > +       spin_unlock_irqrestore(&pctrl->lock, flags);
+> > > +       return ret;
+> > > +}
+>
+> I'll refactor it to return -EINVAL early.
 
---A62bU5pp696mrwWI--
+Here a similar approach can be used.
+
+...
+
+> > What about the GPIO library API that does some additional stuff?
+>
+> I don't know which gpiolib function would be appropriate here, sorry.
+
+When you leave those request and release callbacks untouched the GPIO
+library will assign default ones. You may see what they do.
+
+...
+
+> > > +       if (!of_find_property(np, "gpio-controller", NULL))
+> > > +               return -ENODEV;
+> >
+> > Dead code?
+>
+> The point here was to check if the node is marked as a GPIO controller,
+> with the boolean property "gpio-controller" (so device_property_read_bool
+> would probably be more appropriate).
+>
+> However, since the gpio-controller property is already defined as
+> required in the DT binding, I'm not sure it's worth checking here.
+
+Exactly my point.
+
+--=20
+With Best Regards,
+Andy Shevchenko
