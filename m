@@ -2,180 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85C13A56BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB683A56B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 08:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhFMGMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 02:12:16 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:37456 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230007AbhFMGMP (ORCPT
+        id S229976AbhFMGDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 02:03:13 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51220 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhFMGDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 02:12:15 -0400
-X-UUID: ef3f0f97a89c4e5e88d7fc5376686f14-20210613
-X-UUID: ef3f0f97a89c4e5e88d7fc5376686f14-20210613
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2129828998; Sun, 13 Jun 2021 14:10:10 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 13 Jun 2021 14:10:09 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 13 Jun 2021 14:10:08 +0800
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <hanks.chen@mediatek.com>, <mason.zhang@mediatek.com>,
-        Mason Zhang <Mason.Zhang@mediatek.com>
-Subject: [PATCH v3 1/1] arm64: dts: mediatek: add MT6779 spi master dts node
-Date:   Sun, 13 Jun 2021 13:54:59 +0800
-Message-ID: <20210613055458.6073-1-mason.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Sun, 13 Jun 2021 02:03:12 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15D5tdDB145614;
+        Sun, 13 Jun 2021 06:00:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=lrDHu/B7kRhqXFBy0o1juB+Fx+ejQRdmlkOp47EaafU=;
+ b=lwTtw9Q5e0OOKQxMhoYnqr1+XHjMJ7uAhn0ZGnlWw+OdQsq+FIvXS9wh2KOCmEG4KkVH
+ 1zVNqHaMA8aLbUPQcDpFtOIzGa8vjEpjB1RzlVAhIPltSOVL91vyz/ybLxSGeGJddJWi
+ sCmuzSQ4wGitqqS78Eb7m8ILPMBwjtJAXhSe5kkAUP4VbsLR0MqDC8utgh8lRD5S/IPN
+ HaMxb7HRJNZTzQrAFeIKMz44vdiIlGp3Kle6UTDU+CQr8OOgFNGCsra4jWnrgwPQnOH5
+ 9f19MlWj+o25gLuLOEaGzmyXrTUqx/E9TcIqaRH0/FBSwgY4t7Yzp2k5zNkBpI++ehOw aQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 394mvn9dt3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Jun 2021 06:00:57 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15D5snRB177468;
+        Sun, 13 Jun 2021 06:00:57 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 394mr3y2r3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Jun 2021 06:00:57 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15D60u06007204;
+        Sun, 13 Jun 2021 06:00:56 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 394mr3y2pq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Jun 2021 06:00:56 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15D60jqG009234;
+        Sun, 13 Jun 2021 06:00:45 GMT
+Received: from localhost.localdomain (/10.159.245.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 13 Jun 2021 06:00:44 +0000
+From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
+To:     arm@kernel.org, arnd@arndb.de, olof@lixom.net
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        santosh.shilimkar@oracle.com, soc@kernel.org
+Subject: [GIT PULL 1/2] ARM: DTS: Keystone K2G cleanup for v5.13
+Date:   Sat, 12 Jun 2021 23:00:20 -0700
+Message-Id: <1623564020-9958-1-git-send-email-santosh.shilimkar@oracle.com>
+X-Mailer: git-send-email 1.9.1
+X-Proofpoint-ORIG-GUID: qnOH2JPI7zgfoKjMI5Lv8xD6DffMrukR
+X-Proofpoint-GUID: qnOH2JPI7zgfoKjMI5Lv8xD6DffMrukR
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10013 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ priorityscore=1501 clxscore=1011 mlxlogscore=904 phishscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106130045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mason Zhang <Mason.Zhang@mediatek.com>
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-This patch add spi master dts node for MT6779 SOC.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt6779.dtsi | 112 +++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
+are available in the git repository at:
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-index 370f309d32de..c81e76865d1b 100644
---- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-@@ -219,6 +219,118 @@
- 			status = "disabled";
- 		};
- 
-+		spi0: spi0@1100a000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1100a000 0 0x1000>;
-+			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI0>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi1: spi1@11010000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11010000 0 0x1000>;
-+			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI1>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi2: spi2@11012000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11012000 0 0x1000>;
-+			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI2>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi3: spi3@11013000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11013000 0 0x1000>;
-+			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI3>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi4: spi4@11018000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11018000 0 0x1000>;
-+			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI4>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi5: spi5@11019000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11019000 0 0x1000>;
-+			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI5>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi6: spi6@1101d000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101d000 0 0x1000>;
-+			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI6>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi7: spi7@1101e000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101e000 0 0x1000>;
-+			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI7>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
- 		audio: clock-controller@11210000 {
- 			compatible = "mediatek,mt6779-audio", "syscon";
- 			reg = <0 0x11210000 0 0x1000>;
--- 
-2.18.0
+  git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git tags/keystone_dts_for_5.13
 
+for you to fetch changes up to 0b5194dec85b9f3971900129f9a3584a6cb5918d:
+
+  ARM: dts: keystone: k2g-evm: Move audio oscillator assigned clock to mcasp (2021-06-04 13:32:47 -0700)
+
+----------------------------------------------------------------
+ARM: DTS: Keystone K2G cleanup for v5.13
+
+  - Rename message manager node
+  - Rename the TI-SCI node and clock
+  - assign clock to McAsp
+
+----------------------------------------------------------------
+Nishanth Menon (4):
+      ARM: dts: keystone: k2g: Rename message-manager node
+      ARM: dts: keystone: k2g: Rename the TI-SCI node
+      ARM: dts: keystone: k2g: Rename the TI-SCI clocks node name
+      ARM: dts: keystone: k2g-evm: Move audio oscillator assigned clock to mcasp
+
+ arch/arm/boot/dts/keystone-k2g-evm.dts | 11 +++--------
+ arch/arm/boot/dts/keystone-k2g.dtsi    |  6 +++---
+ 2 files changed, 6 insertions(+), 11 deletions(-)
