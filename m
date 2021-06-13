@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5823A58E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 16:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDEA3A58EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 16:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhFMODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 10:03:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhFMODD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 10:03:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8BEC6128B
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 14:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623592862;
-        bh=0GuJ8MA8YvAb5LFEu1wccuQD+B/n8HPSEdt3rIsJcas=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o+51Gt//Duy1u56s/dk9eBSqfx7WwhWuvnaaLdrcMaG3LmeZrVtGkRkI0C4u7F+xe
-         MxBf0MbTrfv0YH/G6frmBvYzEuaW6sMJahhiCIvqmWnkPBI768dvBpziGRFpQSGnJQ
-         Kw7IJpvWeimsERuU/hgc07usgvl1rNQG03BeR0t6imRpYE4d960nqdYjJPaCOl9t6f
-         YZyIUp/KPawWcIo6YortJ8GsP/C6ZZ7N4JC6L+MCWK34JxuTCNX+HDy0cm9zJZYQpV
-         IF4eKBEJiwc1AqZkcKAiObyK0Xr18kE6SKRBUxzlTr07ucdXnGiyumBZKLXih4B07+
-         /5bcHZKbI8W2w==
-Received: by mail-pj1-f51.google.com with SMTP id k22-20020a17090aef16b0290163512accedso9238373pjz.0
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 07:01:02 -0700 (PDT)
-X-Gm-Message-State: AOAM530SwtF3OnaEnsOElI58ovMf3yLOKDFbJxznjo+Nn8ZGuA9N1Bp2
-        4cuMht6sn5g0X74nBNwo5QPkIe2qBVjMaNi3Uzc=
-X-Google-Smtp-Source: ABdhPJyFOyiJWkaOurdmvQmKHDKj6R/+QYd0Y/yarti/BChQroTPj0Zm9Ag2edUHztcoSXwOu7UmDfTXDUlbEeJ5BU4=
-X-Received: by 2002:a17:902:d4c8:b029:102:715b:e3a5 with SMTP id
- o8-20020a170902d4c8b0290102715be3a5mr12622809plg.83.1623592862495; Sun, 13
- Jun 2021 07:01:02 -0700 (PDT)
+        id S231890AbhFMOD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 10:03:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53977 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231755AbhFMOD0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 10:03:26 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lsQg0-0004Tq-6D; Sun, 13 Jun 2021 14:01:24 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Steve French <sfrench@samba.org>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] cifs: remove redundant initialization of variable rc
+Date:   Sun, 13 Jun 2021 15:01:23 +0100
+Message-Id: <20210613140123.74900-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210611093626.579176-1-yangyingliang@huawei.com> <20210611093626.579176-10-yangyingliang@huawei.com>
-In-Reply-To: <20210611093626.579176-10-yangyingliang@huawei.com>
-From:   Timur Tabi <timur@kernel.org>
-Date:   Sun, 13 Jun 2021 09:00:25 -0500
-X-Gmail-Original-Message-ID: <CAOZdJXUn9FgdhiPAqbxMrz4tSeqQ_S+L9jkpg48NxCo5Fz7PXQ@mail.gmail.com>
-Message-ID: <CAOZdJXUn9FgdhiPAqbxMrz4tSeqQ_S+L9jkpg48NxCo5Fz7PXQ@mail.gmail.com>
-Subject: Re: [PATCH -next 9/9] ASoC: fsl_xcvr: check return value after
- calling platform_get_resource_byname()
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        PowerPC Mailing List <linuxppc-dev@lists.ozlabs.org>,
-        alsa-devel mailing list <alsa-devel@alsa-project.org>,
-        timur@kernel.org, Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 4:32 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
->         rx_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rxfifo");
->         tx_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "txfifo");
-> +       if (!rx_res || !tx_res) {
-> +               dev_err(dev, "Invalid resource\n");
-> +               return -EINVAL;
-> +       }
+The variable rc is being initialized with a value that is never read, the
+assignment is redundant and can be removed.
 
-If platform_get_resource_byname() returns an error, it's probably
-because the name cannot be found.  So I think this error message is
-more accurate:
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ fs/cifs/cifssmb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-"could not find rxfifo or txfifo resource"
+diff --git a/fs/cifs/cifssmb.c b/fs/cifs/cifssmb.c
+index 037c44bf48f1..277cb1044cbe 100644
+--- a/fs/cifs/cifssmb.c
++++ b/fs/cifs/cifssmb.c
+@@ -1238,7 +1238,7 @@ SMBLegacyOpen(const unsigned int xid, struct cifs_tcon *tcon,
+ 	    int *pOplock, FILE_ALL_INFO *pfile_info,
+ 	    const struct nls_table *nls_codepage, int remap)
+ {
+-	int rc = -EACCES;
++	int rc;
+ 	OPENX_REQ *pSMB = NULL;
+ 	OPENX_RSP *pSMBr = NULL;
+ 	int bytes_returned;
+-- 
+2.31.1
+
