@@ -2,184 +2,546 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68163A57AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 12:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78C63A57A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 12:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhFMK2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 06:28:48 -0400
-Received: from mout.gmx.net ([212.227.15.18]:35479 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231738AbhFMK2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231750AbhFMK2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 06:28:47 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:59593 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231715AbhFMK2p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 13 Jun 2021 06:28:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623580000;
-        bh=d4E+kciTQxcNlP5jSRxQvEg4hYKuus+UUXiR7+u147Y=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=VoOw6l/GPeE4xqQYgqKWY8Bhm9f8AvkOEF3NOV+91A7EbzSDuUzmXS/xgT0rQol79
-         BTN5TRo1X+olvtPeeNv/42/4HZUPGSaUUZ9FQlpYlNAOwCaC1iT1WOuozKCzjsLkBZ
-         QKJ08Ik4yNeJAt2zToNTJjsSZxiUrlhyz2LGWcEg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.247]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MuDc7-1l2BRt00Fh-00uXXE; Sun, 13
- Jun 2021 12:26:40 +0200
-Date:   Sun, 13 Jun 2021 12:26:37 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/8] pinctrl: nuvoton: Add driver for WPCM450
-Message-ID: <YMXdXY+R4e1m3nbx@latitude>
-References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
- <20210602120329.2444672-6-j.neuschaefer@gmx.net>
- <CACRpkdb=8e=D9JdwxA+oPGj80WnsV86apuECBp1m-Edd+hKPFQ@mail.gmail.com>
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d10 with ME
+        id GaSi2500N21Fzsu03aSiff; Sun, 13 Jun 2021 12:26:42 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 13 Jun 2021 12:26:42 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com
+Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] scsi: mptsas: switch from 'pci_' to 'dma_' API
+Date:   Sun, 13 Jun 2021 12:26:41 +0200
+Message-Id: <9a75be87376306fba8e655733725efd72a8bb558.1623579808.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1623579808.git.christophe.jaillet@wanadoo.fr>
+References: <cover.1623579808.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4WYBDV7PX24WFKS5"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdb=8e=D9JdwxA+oPGj80WnsV86apuECBp1m-Edd+hKPFQ@mail.gmail.com>
-X-Provags-ID: V03:K1:xDElZdTm30JePFgpUqRFCJry4/CcaELo2vki50JqN2GNP87eerU
- CMUVtFIPMZGLEOQbIvRb95mh6xRKsRABGWfRRbbQlcGPhIJgQGFoUFejPN/tdKVmWQHgk6k
- gqZ9jb68naPqkOBiXEEOtEUFW9TvqgXl4HxQJF3wvOzabaT6luNXXLdEjcHhjUQStYeGP7z
- JY5L4qE6BR7xAxAwd7YwQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VGEL0/EOpvk=:68gPD6XLLZrtbjYwkbMxMV
- mlZVE+YdS7bUos8wvhGhURtz+RplzvBxj6MlqXOyyP9kR7GP/aY+EYT0OWuUqWQnNsMkfnivh
- zi/SlvHOieewSVa1GckASeMQEWuqOl5OYNLouVngLeVh4OIgCsCzYSZf/RbAH0kB7K0A4Rgho
- Ndz/iMOxeDppWUTGyz5sS17uabzwihpiJvUDk3zzmeGimRf+3ix+NyU2lkWkfo+Fz2Aox9yVc
- mRXKR4bXoJkPkNMJlxLJDcj/c8JBKAJe8NrySFH2tH+5tqYF/7k2J+yL5aOj8K+iALXYENTYv
- VtC4pHnxzaYm2mvz2IN2WfR3ssK0U03SXhRso7SOi6wjNs+HtCf3zXNnwwWeFFTNT0XfFeM0l
- tidBDwldtWQQv7AnJNQMrvMxPieUQl2XObvR7x0STZ8mtSTed2PRUBS7dSa07AsG62ZZXwpsv
- AdkKGJx9Lo7PzVuA1nA+MWRUEU2mUZovM+FMQbb3wDKFOVZbx17k+ahVJZhC5Bh9CgYEz2gOS
- qi8Oyb7D2NPrn0ReFXyihj+TRJzSrCC3h8il4BXkTrQnnzH+v0YURwc41rC6ODZYJFY5pXJbf
- J15JXuVxAXRdDJInq7EZL/GkVm19gxQjYBwF3tA7prew5xkvAz696WQEf90gW8gPVXLg6gnC2
- oDFscLsaSvs8PToLzfm4VTBzzMN8P/dAttNogf+XGrvq6JRJT26WGuz0CGtLE6oAbTpeKnArj
- +nOedFkoot0Jz8YuK1ZHbmGXdgJxjhhxx8CeNHc9XeYMt5TJZOk5QfVFi5nfO753tJvKe0xxm
- sWU7iIuJWHHEyma3PxbsLq+8STnAvVfbkoWgiLkx/EkzYBbMhBEMhQVeAVWEVqyXlVaDj8m/E
- wHXTTuqJ4k8V/60nRP04PHq0yl2IgQYneExpg92FAE59snWUNAPZJGWUYEclbrPpNxNqFw3ib
- /oc/1b5PPwIsOVmN1gW/lNXKxxf0/VHA0dhtYPXfBCEYKyrRhBjLjOVzAGKuXMyfQp2OwqhjW
- EHulGUolczcl8DTTJEV7y5UxbL/UnA9i+2y7QdkDxiljkd0SQmqae8jd8UhtIeuSyB+Y+Gik/
- PQS4KIrPf40xZdmZQM6KhdbBtqaCWfpKAZFtK1i/oBActOIRWM1Q/OdZA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
---4WYBDV7PX24WFKS5
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-On Fri, Jun 04, 2021 at 11:31:07AM +0200, Linus Walleij wrote:
-> Hi Jonathan!
->=20
-> thanks for your patch!
->=20
-> On Wed, Jun 2, 2021 at 2:04 PM Jonathan Neusch=C3=A4fer
-> <j.neuschaefer@gmx.net> wrote:
-> >
-> > This driver is heavily based on the one for NPCM7xx, because the WPCM450
-> > is a predecessor of those SoCs.
-> >
-> > The biggest difference is in how the GPIO controller works. In the
-> > WPCM450, the GPIO registers are not organized in multiple banks, but
-> > rather placed continually into the same register block, and the driver
-> > reflects this.
->=20
-> This is unfortunate because now you can't use GPIO_GENERIC anymore.
->=20
-> > Some functionality implemented in the hardware was (for now) left unused
-> > in the driver, specifically blinking and pull-up/down.
-> >
-> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
->=20
-> (...)
->=20
-> > +config PINCTRL_WPCM450
-> > +       bool "Pinctrl and GPIO driver for Nuvoton WPCM450"
-> > +       depends on (ARCH_WPCM450 || COMPILE_TEST) && OF
-> > +       select PINMUX
-> > +       select PINCONF
-> > +       select GENERIC_PINCONF
-> > +       select GPIOLIB
-> > +       select GPIO_GENERIC
->=20
-> You are not using GPIO_GENERIC
+In all these places where some memory is allocated GFP_KERNEL can be used
+because they already call 'mpt_config()' which has an explicit
+'might_sleep()'.
 
-I'll remove the this line (depending on the outcome of the rest of the
-discussion).
+@@ @@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
->=20
-> > +struct wpcm450_port {
-> > +       /* Range of GPIOs in this port */
-> > +       u8 base;
-> > +       u8 length;
-> > +
-> > +       /* Register offsets (0 =3D register doesn't exist in this port)=
- */
-> > +       u8 cfg0, cfg1, cfg2;
-> > +       u8 blink;
-> > +       u8 dataout, datain;
-> > +};
->=20
-> If you used to have "GPIO banks" and you now have
-> "GPIO ports" what is the difference? Why can't these ports
-> just be individula gpio_chip:s with their own device tree
-> nodes inside the pin controller node?
+@@ @@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-The naming difference is a fairly arbitrary choice by me.
+@@ @@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-The real difference is in how the GPIO registers are laid out.
-On NPCM7xx, there are blocks of registers at +0, +0x1000, +0x2000,
-etc., and within a block, the registers have the same offsets.
-On WPCM450, the registers are all mushed together as tightly as
-possible[1], so that (a) the ports/banks don't start at nice addresses,
-and (b) the register layout can't be predicted from the offset of the
-first register in a port (because not all ports have all registers).
+@@ @@
+-    PCI_DMA_NONE
++    DMA_NONE
 
-> If you split it up then you can go back to using
-> GPIO_GENERIC with bgpio_init() again which is a
-> big win.
->=20
-> All you seem to be doing is setting consecutive
-> bits in a register by offset, which is what GPIO_GENERIC
-> is for, just that it assumes offset is always from zero.
-> If you split it into individual gpio_chips per register
-> then you get this nice separation and code reuse.
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-Indeed, if I keep the wpcm450_ports table but use it to call bgpio_init()
-with the right register addresses, I think bgpio_init() can work.
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-Thanks,
-Jonathan Neusch=C3=A4fer
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
 
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
 
-[1]: https://github.com/neuschaefer/wpcm450/wiki/GPIOs-and-pinmux#gpio
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
 
---4WYBDV7PX24WFKS5
-Content-Type: application/pgp-signature; name="signature.asc"
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
 
------BEGIN PGP SIGNATURE-----
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
 
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDF3TEACgkQCDBEmo7z
-X9uaQRAAgPgT9cAFmkTos1fzl8wauxYh9+aWU8XP1j3aKFa3dkNRBwqe6dKfp8lm
-VeyK7U9Tl0V5nunMa26tnD2/emiP4DYSqwUlC6YdItePWflbl7XEm3M56MWQU6eQ
-Y6QkMEKrKU8CoRvjA/kBGrsgzCdR0NgNqmhnONuGZuqUJqsOsRkDfYwjHGdybHb7
-1WVTLzDW6wsWFmLjKUkxxYCFaxN9EAFpYY00Bb7SD/x+bFhW1GY0rwBuMXKltITN
-iQAnpYvj5GZpYZYmXtIlEoGvXj7U2ScPtNQNojE6cPL/pu7In4Mi6GdkO+OYzmb0
-bsod4VMccwurLUuF2TdVmLb8L/8CGfGgPuq2EpRrnX4pTLvReZrFRPiku0mioFjH
-hPre6tpLtqSA3AXF+R0S6Y8vF6800iFMTwgJx5tqATSHkjpVZTv1VlFQnynHF2mA
-XXr3RDdeXa2zcQbm/0uEs5rpFN/4xmMUVvNjvlHgdTEBchLMYn0Ua1bwDHIcnoal
-ozd8VH5Paq/vJms8wlJUM2sdqrgYDef1++IH5JYifaZ1NVCUfYHlAsIbgT9swsQa
-NjKui87mkPU+Xox2/Aaq3oigOjyg+1LXtz9v5aikhhROkHHSTom7oe0CjZg4/Uf+
-j6ISpEZRPBac67UiKJuNYfApbZIFg/4s7ZAECQNgtWDJWPEnlts=
-=OZD3
------END PGP SIGNATURE-----
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
 
---4WYBDV7PX24WFKS5--
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/message/fusion/mptsas.c | 130 ++++++++++++++++----------------
+ 1 file changed, 65 insertions(+), 65 deletions(-)
+
+diff --git a/drivers/message/fusion/mptsas.c b/drivers/message/fusion/mptsas.c
+index 85285ba8e817..1c898322316a 100644
+--- a/drivers/message/fusion/mptsas.c
++++ b/drivers/message/fusion/mptsas.c
+@@ -702,8 +702,8 @@ mptsas_add_device_component_starget_ir(MPT_ADAPTER *ioc,
+ 	if (!hdr.PageLength)
+ 		goto out;
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.PageLength * 4,
+-	    &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.PageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 
+ 	if (!buffer)
+ 		goto out;
+@@ -769,8 +769,8 @@ mptsas_add_device_component_starget_ir(MPT_ADAPTER *ioc,
+ 
+  out:
+ 	if (buffer)
+-		pci_free_consistent(ioc->pcidev, hdr.PageLength * 4, buffer,
+-		    dma_handle);
++		dma_free_coherent(&ioc->pcidev->dev, hdr.PageLength * 4,
++				  buffer, dma_handle);
+ }
+ 
+ /**
+@@ -1399,8 +1399,8 @@ mptsas_sas_enclosure_pg0(MPT_ADAPTER *ioc, struct mptsas_enclosure *enclosure,
+ 		goto out;
+ 	}
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			&dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 	if (!buffer) {
+ 		error = -ENOMEM;
+ 		goto out;
+@@ -1411,7 +1411,7 @@ mptsas_sas_enclosure_pg0(MPT_ADAPTER *ioc, struct mptsas_enclosure *enclosure,
+ 
+ 	error = mpt_config(ioc, &cfg);
+ 	if (error)
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 
+ 	/* save config data */
+ 	memcpy(&le_identifier, &buffer->EnclosureLogicalID, sizeof(__le64));
+@@ -1425,9 +1425,9 @@ mptsas_sas_enclosure_pg0(MPT_ADAPTER *ioc, struct mptsas_enclosure *enclosure,
+ 	enclosure->sep_id = buffer->SEPTargetID;
+ 	enclosure->sep_channel = buffer->SEPBus;
+ 
+- out_free_consistent:
+-	pci_free_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			    buffer, dma_handle);
++ out_free_coherent:
++	dma_free_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4, buffer,
++			  dma_handle);
+  out:
+ 	return error;
+ }
+@@ -2058,8 +2058,8 @@ static int mptsas_get_linkerrors(struct sas_phy *phy)
+ 	if (!hdr.ExtPageLength)
+ 		return -ENXIO;
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-				      &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 	if (!buffer)
+ 		return -ENOMEM;
+ 
+@@ -2068,7 +2068,7 @@ static int mptsas_get_linkerrors(struct sas_phy *phy)
+ 
+ 	error = mpt_config(ioc, &cfg);
+ 	if (error)
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 
+ 	mptsas_print_phy_pg1(ioc, buffer);
+ 
+@@ -2080,9 +2080,9 @@ static int mptsas_get_linkerrors(struct sas_phy *phy)
+ 	phy->phy_reset_problem_count =
+ 		le32_to_cpu(buffer->PhyResetProblemCount);
+ 
+- out_free_consistent:
+-	pci_free_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			    buffer, dma_handle);
++ out_free_coherent:
++	dma_free_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4, buffer,
++			  dma_handle);
+ 	return error;
+ }
+ 
+@@ -2301,7 +2301,7 @@ static void mptsas_smp_handler(struct bsg_job *job, struct Scsi_Host *shost,
+ 		       << MPI_SGE_FLAGS_SHIFT;
+ 
+ 	if (!dma_map_sg(&ioc->pcidev->dev, job->request_payload.sg_list,
+-			1, PCI_DMA_BIDIRECTIONAL))
++			1, DMA_BIDIRECTIONAL))
+ 		goto put_mf;
+ 
+ 	flagsLength |= (sg_dma_len(job->request_payload.sg_list) - 4);
+@@ -2318,7 +2318,7 @@ static void mptsas_smp_handler(struct bsg_job *job, struct Scsi_Host *shost,
+ 	flagsLength = flagsLength << MPI_SGE_FLAGS_SHIFT;
+ 
+ 	if (!dma_map_sg(&ioc->pcidev->dev, job->reply_payload.sg_list,
+-			1, PCI_DMA_BIDIRECTIONAL))
++			1, DMA_BIDIRECTIONAL))
+ 		goto unmap_out;
+ 	flagsLength |= sg_dma_len(job->reply_payload.sg_list) + 4;
+ 	ioc->add_sge(psge, flagsLength,
+@@ -2356,10 +2356,10 @@ static void mptsas_smp_handler(struct bsg_job *job, struct Scsi_Host *shost,
+ 
+ unmap_in:
+ 	dma_unmap_sg(&ioc->pcidev->dev, job->reply_payload.sg_list, 1,
+-			PCI_DMA_BIDIRECTIONAL);
++			DMA_BIDIRECTIONAL);
+ unmap_out:
+ 	dma_unmap_sg(&ioc->pcidev->dev, job->request_payload.sg_list, 1,
+-			PCI_DMA_BIDIRECTIONAL);
++			DMA_BIDIRECTIONAL);
+ put_mf:
+ 	if (mf)
+ 		mpt_free_msg_frame(ioc, mf);
+@@ -2412,8 +2412,8 @@ mptsas_sas_io_unit_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info)
+ 		goto out;
+ 	}
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-					    &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 	if (!buffer) {
+ 		error = -ENOMEM;
+ 		goto out;
+@@ -2424,14 +2424,14 @@ mptsas_sas_io_unit_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info)
+ 
+ 	error = mpt_config(ioc, &cfg);
+ 	if (error)
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 
+ 	port_info->num_phys = buffer->NumPhys;
+ 	port_info->phy_info = kcalloc(port_info->num_phys,
+ 		sizeof(struct mptsas_phyinfo), GFP_KERNEL);
+ 	if (!port_info->phy_info) {
+ 		error = -ENOMEM;
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 	}
+ 
+ 	ioc->nvdata_version_persistent =
+@@ -2451,9 +2451,9 @@ mptsas_sas_io_unit_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info)
+ 		    le16_to_cpu(buffer->PhyData[i].ControllerDevHandle);
+ 	}
+ 
+- out_free_consistent:
+-	pci_free_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			    buffer, dma_handle);
++ out_free_coherent:
++	dma_free_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4, buffer,
++			  dma_handle);
+  out:
+ 	return error;
+ }
+@@ -2487,8 +2487,8 @@ mptsas_sas_io_unit_pg1(MPT_ADAPTER *ioc)
+ 		goto out;
+ 	}
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-					    &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 	if (!buffer) {
+ 		error = -ENOMEM;
+ 		goto out;
+@@ -2499,7 +2499,7 @@ mptsas_sas_io_unit_pg1(MPT_ADAPTER *ioc)
+ 
+ 	error = mpt_config(ioc, &cfg);
+ 	if (error)
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 
+ 	ioc->io_missing_delay  =
+ 	    le16_to_cpu(buffer->IODeviceMissingDelay);
+@@ -2508,9 +2508,9 @@ mptsas_sas_io_unit_pg1(MPT_ADAPTER *ioc)
+ 	    (device_missing_delay & MPI_SAS_IOUNIT1_REPORT_MISSING_TIMEOUT_MASK) * 16 :
+ 	    device_missing_delay & MPI_SAS_IOUNIT1_REPORT_MISSING_TIMEOUT_MASK;
+ 
+- out_free_consistent:
+-	pci_free_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			    buffer, dma_handle);
++ out_free_coherent:
++	dma_free_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4, buffer,
++			  dma_handle);
+  out:
+ 	return error;
+ }
+@@ -2551,8 +2551,8 @@ mptsas_sas_phy_pg0(MPT_ADAPTER *ioc, struct mptsas_phyinfo *phy_info,
+ 		goto out;
+ 	}
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-				      &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 	if (!buffer) {
+ 		error = -ENOMEM;
+ 		goto out;
+@@ -2563,7 +2563,7 @@ mptsas_sas_phy_pg0(MPT_ADAPTER *ioc, struct mptsas_phyinfo *phy_info,
+ 
+ 	error = mpt_config(ioc, &cfg);
+ 	if (error)
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 
+ 	mptsas_print_phy_pg0(ioc, buffer);
+ 
+@@ -2572,9 +2572,9 @@ mptsas_sas_phy_pg0(MPT_ADAPTER *ioc, struct mptsas_phyinfo *phy_info,
+ 	phy_info->identify.handle = le16_to_cpu(buffer->OwnerDevHandle);
+ 	phy_info->attached.handle = le16_to_cpu(buffer->AttachedDevHandle);
+ 
+- out_free_consistent:
+-	pci_free_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			    buffer, dma_handle);
++ out_free_coherent:
++	dma_free_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4, buffer,
++			  dma_handle);
+  out:
+ 	return error;
+ }
+@@ -2614,8 +2614,8 @@ mptsas_sas_device_pg0(MPT_ADAPTER *ioc, struct mptsas_devinfo *device_info,
+ 		goto out;
+ 	}
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-				      &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 	if (!buffer) {
+ 		error = -ENOMEM;
+ 		goto out;
+@@ -2628,11 +2628,11 @@ mptsas_sas_device_pg0(MPT_ADAPTER *ioc, struct mptsas_devinfo *device_info,
+ 
+ 	if (error == MPI_IOCSTATUS_CONFIG_INVALID_PAGE) {
+ 		error = -ENODEV;
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 	}
+ 
+ 	if (error)
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 
+ 	mptsas_print_device_pg0(ioc, buffer);
+ 
+@@ -2653,9 +2653,9 @@ mptsas_sas_device_pg0(MPT_ADAPTER *ioc, struct mptsas_devinfo *device_info,
+ 	    le32_to_cpu(buffer->DeviceInfo);
+ 	device_info->flags = le16_to_cpu(buffer->Flags);
+ 
+- out_free_consistent:
+-	pci_free_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			    buffer, dma_handle);
++ out_free_coherent:
++	dma_free_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4, buffer,
++			  dma_handle);
+  out:
+ 	return error;
+ }
+@@ -2697,8 +2697,8 @@ mptsas_sas_expander_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info,
+ 		goto out;
+ 	}
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-				      &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 	if (!buffer) {
+ 		error = -ENOMEM;
+ 		goto out;
+@@ -2710,11 +2710,11 @@ mptsas_sas_expander_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info,
+ 	error = mpt_config(ioc, &cfg);
+ 	if (error == MPI_IOCSTATUS_CONFIG_INVALID_PAGE) {
+ 		error = -ENODEV;
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 	}
+ 
+ 	if (error)
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 
+ 	/* save config data */
+ 	port_info->num_phys = (buffer->NumPhys) ? buffer->NumPhys : 1;
+@@ -2722,7 +2722,7 @@ mptsas_sas_expander_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info,
+ 		sizeof(struct mptsas_phyinfo), GFP_KERNEL);
+ 	if (!port_info->phy_info) {
+ 		error = -ENOMEM;
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 	}
+ 
+ 	memcpy(&sas_address, &buffer->SASAddress, sizeof(__le64));
+@@ -2736,9 +2736,9 @@ mptsas_sas_expander_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info,
+ 		    le16_to_cpu(buffer->ParentDevHandle);
+ 	}
+ 
+- out_free_consistent:
+-	pci_free_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			    buffer, dma_handle);
++ out_free_coherent:
++	dma_free_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4, buffer,
++			  dma_handle);
+  out:
+ 	return error;
+ }
+@@ -2777,8 +2777,8 @@ mptsas_sas_expander_pg1(MPT_ADAPTER *ioc, struct mptsas_phyinfo *phy_info,
+ 		goto out;
+ 	}
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-				      &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 	if (!buffer) {
+ 		error = -ENOMEM;
+ 		goto out;
+@@ -2791,11 +2791,11 @@ mptsas_sas_expander_pg1(MPT_ADAPTER *ioc, struct mptsas_phyinfo *phy_info,
+ 
+ 	if (error == MPI_IOCSTATUS_CONFIG_INVALID_PAGE) {
+ 		error = -ENODEV;
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 	}
+ 
+ 	if (error)
+-		goto out_free_consistent;
++		goto out_free_coherent;
+ 
+ 
+ 	mptsas_print_expander_pg1(ioc, buffer);
+@@ -2809,9 +2809,9 @@ mptsas_sas_expander_pg1(MPT_ADAPTER *ioc, struct mptsas_phyinfo *phy_info,
+ 	phy_info->identify.handle = le16_to_cpu(buffer->OwnerDevHandle);
+ 	phy_info->attached.handle = le16_to_cpu(buffer->AttachedDevHandle);
+ 
+- out_free_consistent:
+-	pci_free_consistent(ioc->pcidev, hdr.ExtPageLength * 4,
+-			    buffer, dma_handle);
++ out_free_coherent:
++	dma_free_coherent(&ioc->pcidev->dev, hdr.ExtPageLength * 4, buffer,
++			  dma_handle);
+  out:
+ 	return error;
+ }
+@@ -4271,8 +4271,8 @@ mptsas_adding_inactive_raid_components(MPT_ADAPTER *ioc, u8 channel, u8 id)
+ 	if (!hdr.PageLength)
+ 		goto out;
+ 
+-	buffer = pci_alloc_consistent(ioc->pcidev, hdr.PageLength * 4,
+-	    &dma_handle);
++	buffer = dma_alloc_coherent(&ioc->pcidev->dev, hdr.PageLength * 4,
++				    &dma_handle, GFP_KERNEL);
+ 
+ 	if (!buffer)
+ 		goto out;
+@@ -4318,8 +4318,8 @@ mptsas_adding_inactive_raid_components(MPT_ADAPTER *ioc, u8 channel, u8 id)
+ 
+  out:
+ 	if (buffer)
+-		pci_free_consistent(ioc->pcidev, hdr.PageLength * 4, buffer,
+-		    dma_handle);
++		dma_free_coherent(&ioc->pcidev->dev, hdr.PageLength * 4,
++				  buffer, dma_handle);
+ }
+ /*
+  * Work queue thread to handle SAS hotplug events
+-- 
+2.30.2
+
