@@ -2,159 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46503A5727
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 10:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD8A3A5729
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 10:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbhFMIqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 04:46:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50770 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229777AbhFMIqh (ORCPT
+        id S231205AbhFMI52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 04:57:28 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35920 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229777AbhFMI50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 04:46:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623573876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FHEEdqa7cqln4XKJYtrL82d5dzyuGs+JlNcccHmAJK4=;
-        b=H/NTdufQx/mwn+xt2K7UHpLOdMEj9PlMCx7+5y6X3lXCeCHYUtDm7rK5nlnDnywGEmcuZf
-        Zl217XZVip61Lkk1K2rlflliBmbfiT1qi7Z5z6ON5Ooi37wvIkZadO3XyoIsbsuuyppj2i
-        aCJBjq/l8WrVdM+5s4JeTDmI7ADMdUU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-nk1NYrweM1WDZWJVQtYJIQ-1; Sun, 13 Jun 2021 04:44:34 -0400
-X-MC-Unique: nk1NYrweM1WDZWJVQtYJIQ-1
-Received: by mail-wr1-f71.google.com with SMTP id k25-20020a5d52590000b0290114dee5b660so5300392wrc.16
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 01:44:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=FHEEdqa7cqln4XKJYtrL82d5dzyuGs+JlNcccHmAJK4=;
-        b=P9UMek+ufcaLv30D0a0Ipi2sWPDfkVyy9+XcDqzK3cNwVrxBVm7iSaBQzBivW4FTBE
-         JLwDKtCenlTbZuoStifWijAjrODwOQVffDy3mI6JnQvdHrIJciK6DDfX38/VfkX6ljze
-         +GOZoJ+eNe/MfKOtaff0+eIXSK3xgqnF+fZ1lxaiM7a2QnpHWtXBHzs+IGX62WQXxRiY
-         6eJbrLOEw6qFVbO7nAtk7K0mSyVcfmFbon2IHzvZ1QVljFei8rFExaIGCzDEeaHPD9Ef
-         NzmqIXeR3Nu5s0buOEuf5pdd+FhNwGmwmBNF6qOeGj2LOX6khte+C+QX90srrsZEDCgS
-         hHqQ==
-X-Gm-Message-State: AOAM5331UeRMzGcAQWxfOTg1SjMDgzGY3jCleHm5iXnNS2H2XxJetuph
-        b6Nqm19R/zOp9YjLSh5zS7uTpBmfY4CZ+4VwVRUeImJoUSAENTc2y2RmFWJcOZ7hAx5zQDas8Kt
-        BINesoctdFsDzMllAECtyrebx
-X-Received: by 2002:a5d:4689:: with SMTP id u9mr12894324wrq.31.1623573873475;
-        Sun, 13 Jun 2021 01:44:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPV5Df5jlQniyi+mEa+LESxC0jsxbRNrsfkQ0E+V2REF6TTCGUK0DwVzr+uD6OmWQlwPAVMQ==
-X-Received: by 2002:a5d:4689:: with SMTP id u9mr12894306wrq.31.1623573873233;
-        Sun, 13 Jun 2021 01:44:33 -0700 (PDT)
-Received: from 0.7.3.c.2.b.0.0.0.3.7.8.9.5.0.2.0.0.0.0.a.d.f.f.0.b.8.0.1.0.0.2.ip6.arpa (0.7.3.c.2.b.0.0.0.3.7.8.9.5.0.2.0.0.0.0.a.d.f.f.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:ffda:0:2059:8730:b2:c370])
-        by smtp.gmail.com with ESMTPSA id k42sm19768540wms.0.2021.06.13.01.44.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 01:44:32 -0700 (PDT)
-Message-ID: <3ae2eac460c27a9f58a1b89b49da710c0c9d43ed.camel@redhat.com>
-Subject: Re: [Cluster-devel] [RFC 4/9] gfs2: Fix mmap + page fault deadlocks
- (part 1)
-From:   Steven Whitehouse <swhiteho@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     cluster-devel <cluster-devel@redhat.com>, Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Date:   Sun, 13 Jun 2021 09:44:31 +0100
-In-Reply-To: <YMUokdiLMIpr8ee/@zeniv-ca.linux.org.uk>
-References: <20210531170123.243771-1-agruenba@redhat.com>
-         <20210531170123.243771-5-agruenba@redhat.com>
-         <CAHk-=wiB9gvUsebmiOaRXzYVUxJDUt1SozGtRyxR_MDR=Nv7YQ@mail.gmail.com>
-         <CAHc6FU4n_F9sPjP7getGRKLpB-KsZt_qhHctqwY5pJrxGxLr2w@mail.gmail.com>
-         <YMOOZsBzg/6SKSzT@zeniv-ca.linux.org.uk>
-         <YMUhpI/ZIuxvKCt8@zeniv-ca.linux.org.uk>
-         <YMUokdiLMIpr8ee/@zeniv-ca.linux.org.uk>
-Organization: Red Hat UK Ltd
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Sun, 13 Jun 2021 04:57:26 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15D8nLgV193761;
+        Sun, 13 Jun 2021 04:55:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=esj5tPQeJcpVec3YFOVQCWEg/G/ACHW+fjAwIVzKyGE=;
+ b=E+aLP59bKP9foOqTDO8Dvr2hHt/84XVZGP4VheKc6ECvV9tSZglRf2KpGTSZYObZiHJO
+ Qk18MzyqoLpgiBzenb2KoYrMMxRE226ByUkuqANldtlYTV8yWLKNznA6nn8tk0P/d0/+
+ dWHwsrKThkgjYE5DYShT+Z4yyEviMABkjJdVqoFz1U+fnhwTBvu5uK1SiNfBeh40ZYHS
+ lPQluVLf2raiYgSsfn+uS2zp6A7DB8qRO4yJwhLFCsSBkeuOEt1krT1yOfIvE9YUGHgc
+ AsCHn1RzCgp8HQ9FKDnidcMYxcu7MRuStDELrgk3+sWsCops4AkJwGHAHaoFmctnZFHh Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 395euk8218-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Jun 2021 04:55:02 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15D8o6mj195548;
+        Sun, 13 Jun 2021 04:55:02 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 395euk820w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Jun 2021 04:55:02 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15D8qHDt017996;
+        Sun, 13 Jun 2021 08:55:01 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma04wdc.us.ibm.com with ESMTP id 394mj8ypj0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Jun 2021 08:55:01 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15D8t0eW22741264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Jun 2021 08:55:00 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F1C1DC6057;
+        Sun, 13 Jun 2021 08:54:59 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 78886C6059;
+        Sun, 13 Jun 2021 08:54:54 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.85.68.237])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Sun, 13 Jun 2021 08:54:54 +0000 (GMT)
+X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>, tglx@linutronix.de,
+        linuxram@us.ibm.com, sandipan@linux.ibm.com,
+        akpm@linux-foundation.org, fweimer@redhat.com,
+        desnesn@linux.vnet.ibm.com, mingo@kernel.org,
+        bauerman@linux.ibm.com, mpe@ellerman.id.au, mhocko@kernel.org,
+        msuchanek@suse.de, shuah@kernel.org, x86@kernel.org
+Subject: Re: [PATCH 0/4] selftests/vm/pkeys: Bug fixes and a new test
+In-Reply-To: <20210611164153.91B76FB8@viggo.jf.intel.com>
+References: <20210611164153.91B76FB8@viggo.jf.intel.com>
+Date:   Sun, 13 Jun 2021 14:24:50 +0530
+Message-ID: <871r96b0v9.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4PGnVxs3JmjNcpMh8tEmaxzCWjgdiESr
+X-Proofpoint-GUID: aHKAA9II48l7VeEN5pIxoKV2fFUPT7EP
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-13_02:2021-06-11,2021-06-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106130063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Dave Hansen <dave.hansen@linux.intel.com> writes:
 
-On Sat, 2021-06-12 at 21:35 +0000, Al Viro wrote:
-> On Sat, Jun 12, 2021 at 09:05:40PM +0000, Al Viro wrote:
-> 
-> > Is the above an accurate description of the mainline situation
-> > there?
-> > In particular, normal read doesn't seem to bother with locks at
-> > all.
-> > What exactly are those cluster locks for in O_DIRECT read?
-> 
-> BTW, assuming the lack of contention, how costly is
-> dropping/regaining
-> such cluster lock?
-> 
+> There has been a lot of activity on the x86 front around the XSAVE
+> architecture which is used to context-switch processor state (among
+> other things).  In addition, AMD has recently joined the protection
+> keys club by adding processor support for PKU.
+>
+> The AMD implementation helped uncover a kernel bug around the PKRU
+> "init state", which actually applied to Intel's implementation but
+> was just harder to hit.  This series adds a test which is expected
+> to help find this class of bug both on AMD and Intel.  All the work
+> around pkeys on x86 also uncovered a few bugs in the selftest.
+>
+> Any testing of this new code (especially from my powerpc friends)
+> would be appreciated.
 
-The answer is that it depends...
+I tested this on ppc64.
 
-The locking modes for glocks for inodes look like this:
+Tested-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-==========      ==========   ==============   ==========   ==============
-Glock mode      Cache data   Cache Metadata   Dirty Data   Dirty Metadata
-==========      ==========   ==============   ==========   ==============
-    UN             No              No             No            No
-    SH             Yes             Yes            No            No
-    DF             No              Yes            No            No
-    EX             Yes             Yes            Yes           Yes
-==========      ==========   ==============   ==========   ==============
-
-The above is a copy & paste from Documentation/filesystems/gfs2-
-glocks.rst. If you think of these locks as cache control, then it makes
-a lot more sense.
-
-The DF (deferred) mode is there only for DIO. It is a shared lock mode
-that is incompatible with the normal SH mode. That is because it is ok
-to cache data pages under SH but not under DF. That the only other
-difference between the two shared modes. DF is used for both read and
-write under DIO meaning that it is possible for multiple nodes to read
-& write the same file at the same time with DIO, leaving any
-synchronisation to the application layer. As soon as one performs an
-operation which alters the metadata tree (truncate, extend, hole
-filling) then we drop back to the normal EX mode, so DF is only used
-for preallocated files.
-
-Your original question though was about the cost of locking, and there
-is a wide variation according to circumstances. The glock layer caches
-the results of the DLM requests and will continue to hold glocks gained
-from remote nodes until either memory pressure or requests to drop the
-lock from another node is received.
-
-When no other nodes are interested in a lock, all such cluster lock
-activity is local. There is a cost to it though, and if (for example)
-you tried to take and drop the cluster lock on every page, that would
-definitely be noticeable. There are probably optimisations that could
-be done on what is quite a complex code path, but in general thats what
-we've discovered from testing. The introduction of ->readpages() vs the
-old ->readpage() made a measurable difference and likewise on the write
-side, iomap has also show performance increases due to the reduction in
-locking on multi-page writes.
-
-If there is another node that has an interest in a lock, then it can
-get very expensive in terms of latency to regain a lock. To drop the
-lock to a lower mode may involve I/O (from EX mode) and journal
-flush(es) and to get the lock back again involves I/O to other nodes
-and then a wait while they finish what they are doing. To avoid
-starvation there is a "minimum hold time" so that when a node gains a
-glock, it is allowed to retain it, in the absence of local requests,
-for a short period. The idea being that if a large number of glock
-requests are being made on a node, each for a short time, we allow
-several of those to complete before we do the expensive glock release
-to another node.
-
-See Documentation/filesystems/gfs2-glocks.rst for a longer explanation
-and locking order/rules between different lock types,
-
-Steve.
-
-
+>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ram Pai <linuxram@us.ibm.com>
+> Cc: Sandipan Das <sandipan@linux.ibm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Florian Weimer <fweimer@redhat.com>
+> Cc: "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+> Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Michal Suchanek <msuchanek@suse.de>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: x86@kernel.org
