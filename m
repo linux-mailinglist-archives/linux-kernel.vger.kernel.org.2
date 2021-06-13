@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9F83A575B
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 11:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8413A575E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 11:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhFMJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 05:35:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52922 "EHLO mail.kernel.org"
+        id S231258AbhFMJnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 05:43:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230255AbhFMJfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 05:35:07 -0400
+        id S230255AbhFMJnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 05:43:41 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9FC86109E;
-        Sun, 13 Jun 2021 09:33:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 146366109E;
+        Sun, 13 Jun 2021 09:41:41 +0000 (UTC)
 Received: from [185.219.108.64] (helo=wait-a-minute.misterjones.org)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1lsMUK-007FuW-Se; Sun, 13 Jun 2021 10:33:05 +0100
-Date:   Sun, 13 Jun 2021 10:33:06 +0100
-Message-ID: <87a6nut8h9.wl-maz@kernel.org>
+        id 1lsMcd-007FxO-2Q; Sun, 13 Jun 2021 10:41:39 +0100
+Date:   Sun, 13 Jun 2021 10:41:38 +0100
+Message-ID: <878s3et831.wl-maz@kernel.org>
 From:   Marc Zyngier <maz@kernel.org>
 To:     Anup Patel <anup.patel@wdc.com>
 Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
@@ -36,10 +36,10 @@ Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
         Anup Patel <anup@brainfault.org>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH v1 04/10] RISC-V: Use IPIs for remote TLB flush when possible
-In-Reply-To: <20210612160422.330705-5-anup.patel@wdc.com>
+Subject: Re: [RFC PATCH v1 05/10] irqchip: Add ACLINT software interrupt driver
+In-Reply-To: <20210612160422.330705-6-anup.patel@wdc.com>
 References: <20210612160422.330705-1-anup.patel@wdc.com>
-        <20210612160422.330705-5-anup.patel@wdc.com>
+        <20210612160422.330705-6-anup.patel@wdc.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
  (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -53,46 +53,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Jun 2021 17:04:16 +0100,
+On Sat, 12 Jun 2021 17:04:17 +0100,
 Anup Patel <anup.patel@wdc.com> wrote:
 > 
-> If IPI calls are injected using SBI IPI calls then remote TLB flush
-> using SBI RFENCE calls is much faster because using IPIs for remote
-> TLB flush would still endup as SBI IPI calls with extra processing
-> on kernel side.
-> 
-> It is now possible to have specialized hardware (such as RISC-V AIA)
-> which allows S-mode software to directly inject IPIs without any
-> assistance from M-mode runtime firmware.
-> 
-> This patch extends remote TLB flush functions to use IPIs whenever
-> underlying IPI operations are suitable for remote FENCEs.
+> The RISC-V ACLINT provides MSWI and SSWI devices for M-mode and
+> S-mode software interrupts respectively. We add irqchip driver
+> which provide IPI operations based on ACLINT [M|S]SWI devices
+> to the Linux RISC-V kernel.
 > 
 > Signed-off-by: Anup Patel <anup.patel@wdc.com>
 > ---
->  arch/riscv/mm/tlbflush.c | 62 +++++++++++++++++++++++++++++++---------
->  1 file changed, 48 insertions(+), 14 deletions(-)
+>  drivers/irqchip/Kconfig          |  11 +++
+>  drivers/irqchip/Makefile         |   1 +
+>  drivers/irqchip/irq-aclint-swi.c | 122 +++++++++++++++++++++++++++++++
+>  3 files changed, 134 insertions(+)
+>  create mode 100644 drivers/irqchip/irq-aclint-swi.c
 > 
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 720b443c4528..009c56fa102d 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -1,39 +1,73 @@
->  // SPDX-License-Identifier: GPL-2.0
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index 62543a4eccc0..2010d493b03b 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -508,6 +508,17 @@ config RISCV_INTC
+>  
+>  	   If you don't know what to do here, say Y.
+>  
+> +config RISCV_ACLINT_SWI
+> +	bool "RISC-V Advanced Core Local Interruptor Software Interrupts"
+> +	depends on RISCV
+> +	help
+> +	   This enables support for software interrupts using the Advanced
+> +	   Core Local Interruptor (ACLINT) found in RISC-V systems.  The
+> +	   RISC-V ACLINT provides devices for inter-process interrupt and
+> +	   timer functionality.
+> +
+> +	   If you don't know what to do here, say Y.
+> +
+>  config SIFIVE_PLIC
+>  	bool "SiFive Platform-Level Interrupt Controller"
+>  	depends on RISCV
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index f88cbf36a9d2..a6edf6733c1d 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -97,6 +97,7 @@ obj-$(CONFIG_QCOM_PDC)			+= qcom-pdc.o
+>  obj-$(CONFIG_CSKY_MPINTC)		+= irq-csky-mpintc.o
+>  obj-$(CONFIG_CSKY_APB_INTC)		+= irq-csky-apb-intc.o
+>  obj-$(CONFIG_RISCV_INTC)		+= irq-riscv-intc.o
+> +obj-$(CONFIG_RISCV_ACLINT_SWI)		+= irq-aclint-swi.o
+>  obj-$(CONFIG_SIFIVE_PLIC)		+= irq-sifive-plic.o
+>  obj-$(CONFIG_IMX_IRQSTEER)		+= irq-imx-irqsteer.o
+>  obj-$(CONFIG_IMX_INTMUX)		+= irq-imx-intmux.o
+> diff --git a/drivers/irqchip/irq-aclint-swi.c b/drivers/irqchip/irq-aclint-swi.c
+> new file mode 100644
+> index 000000000000..f9607072cc7b
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-aclint-swi.c
+> @@ -0,0 +1,122 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +/*
-> + * TLB flush implementation.
-> + *
-> + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
+> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
 > + */
+> +
+> +#define pr_fmt(fmt) "aclint-swi: " fmt
+> +#include <linux/cpu.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/smp.h>
+> +
+> +struct aclint_swi {
+> +	void __iomem *sip_reg;
+> +};
+> +static DEFINE_PER_CPU(struct aclint_swi, aclint_swis);
+> +
+> +static void aclint_swi_send_ipi(const struct cpumask *target)
+> +{
+> +	unsigned int cpu;
+> +	struct aclint_swi *swi;
+> +
+> +	for_each_cpu(cpu, target) {
+> +		swi = per_cpu_ptr(&aclint_swis, cpu);
+> +		if (!swi->sip_reg) {
+> +			pr_warn("%s: CPU%d SIP register not available\n",
+> +				__func__, cpu);
+> +			continue;
+> +		}
+> +
+> +		writel(1, swi->sip_reg);
+> +	}
+> +}
+> +
+> +static void aclint_swi_clear_ipi(void)
+> +{
+> +	struct aclint_swi *swi = this_cpu_ptr(&aclint_swis);
+> +
+> +	if (!swi->sip_reg) {
+> +		pr_warn("%s: CPU%d SIP register not available\n",
+> +			__func__, smp_processor_id());
+> +		return;
+> +	}
+> +
+> +	writel(0, swi->sip_reg);
+> +}
+> +
+> +static struct riscv_ipi_ops aclint_swi_ipi_ops = {
+> +	.name = "ACLINT-SWI",
+> +	.use_for_rfence = true,
+> +	.ipi_inject = aclint_swi_send_ipi,
+> +	.ipi_clear = aclint_swi_clear_ipi,
+> +};
+> +
+> +static int __init aclint_swi_init(struct device_node *node,
+> +				  struct device_node *parent)
+> +{
+> +	void __iomem *base;
+> +	struct aclint_swi *swi;
+> +	u32 i, nr_irqs, nr_cpus = 0;
+> +
+> +	/* Map the registers */
+> +	base = of_iomap(node, 0);
+> +	if (!base) {
+> +		pr_err("%pOFP: could not map registers\n", node);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* Iterarte over each target CPU connected with this ACLINT */
+> +	nr_irqs = of_irq_count(node);
+> +	for (i = 0; i < nr_irqs; i++) {
+> +		struct of_phandle_args parent;
+> +		int cpu, hartid;
+> +
+> +		if (of_irq_parse_one(node, i, &parent)) {
+> +			pr_err("%pOFP: failed to parse irq %d.\n",
+> +			       node, i);
+> +			continue;
+> +		}
+> +
+> +		if (parent.args[0] != RV_IRQ_SOFT) {
+> +			pr_err("%pOFP: invalid irq %d (hwirq %d)\n",
+> +			       node, i, parent.args[0]);
+> +			continue;
+> +		}
+> +
+> +		hartid = riscv_of_parent_hartid(parent.np);
+> +		if (hartid < 0) {
+> +			pr_warn("failed to parse hart ID for irq %d.\n", i);
+> +			continue;
+> +		}
+> +
+> +		cpu = riscv_hartid_to_cpuid(hartid);
+> +		if (cpu < 0) {
+> +			pr_warn("Invalid cpuid for irq %d\n", i);
+> +			continue;
+> +		}
+> +
+> +		swi = per_cpu_ptr(&aclint_swis, cpu);
+> +		swi->sip_reg = base + i * sizeof(u32);
+> +		nr_cpus++;
+> +	}
+> +
+> +	/* Announce the ACLINT SWI device */
+> +	pr_info("%pOFP: providing IPIs for %d CPUs\n", node, nr_cpus);
+> +
+> +	/* Register the IPI operations */
+> +	riscv_set_ipi_ops(&aclint_swi_ipi_ops);
+> +
+> +	return 0;
+> +}
+> +
+> +#ifdef CONFIG_RISCV_M_MODE
+> +IRQCHIP_DECLARE(riscv_aclint_swi, "riscv,aclint-mswi", aclint_swi_init);
+> +#else
+> +IRQCHIP_DECLARE(riscv_aclint_swi, "riscv,aclint-sswi", aclint_swi_init);
+> +#endif
 
-I find this a bit odd. You don't mention this addition in the commit
-message, and a quick look at the commits touching tlbflush.[ch]
-doesn't make the copyright assignment obvious (most commits originate
-from either SiFive or Christoph).
+I'm sorry, but this really isn't an irqchip driver. This is a piece of
+arch-specific code that uses *none* of the irq subsystem abstractions
+apart from the IRQCHIP_DECLARE() macro.
 
-In any way, please keep this kind of changes out of this series if
-possible, and have a separate discussion on who gets to brag about
-this code.
+If you implemented it on top of the IPI irq_domain abstraction, making
+your IPIs actual IRQs, use the proper interrupt flows and accounting,
+then it would make sense to call it an irqchip driver. But as it
+stands, it has no place in drivers/irqchip.
 
 Thanks,
 
