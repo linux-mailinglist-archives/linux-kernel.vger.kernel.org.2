@@ -2,361 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A913A57B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 12:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521D43A57B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 12:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbhFMKfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 06:35:15 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:33644 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbhFMKfO (ORCPT
+        id S231730AbhFMKgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 06:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231620AbhFMKgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 06:35:14 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d10 with ME
-        id GaZB2500a21Fzsu03aZBVb; Sun, 13 Jun 2021 12:33:12 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 13 Jun 2021 12:33:12 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] scsi: mptlan: switch from 'pci_' to 'dma_' API
-Date:   Sun, 13 Jun 2021 12:33:10 +0200
-Message-Id: <db56a78d7d04b809abd32a6fb4839d698587bf7c.1623580326.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 13 Jun 2021 06:36:21 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CC5C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 03:34:21 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id j184so35708195qkd.6
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 03:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ItIPBAIHEXbe1Lun0dGrCgGkZ4iW53VwGWvUtNP7+Uo=;
+        b=rD8rpMYCE2NqgjqMkZkF+MfSZNzmA+q34Ul2rRvP/QNS8tM3u/HfOPDxn/624uFjzm
+         8AaQT5d6JOH0RAYErLjQyrCGXwAYshNBnQshoKs3yZ8uUu8/5tWfzHu63CsT6fdkrFy4
+         w8Q2q+De6hGzdWXowkAWTyBGbGCLiL6lVKIw1QESKkTllJ/rM8AJkbw3PRrRr+Fg2z7z
+         0B+Wn1JiEmguP8lI+i/fMWHq983KMC4y2m9AnWMrg33OOrwgjHlkpNE9l210hsXL94kb
+         UyerKS/mHS6iKZW+HRyo94F3IQQlBgKl8rsLYoM/vBtV5ro5+YUBDaIAGcXSzdV0oplF
+         Rkjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=ItIPBAIHEXbe1Lun0dGrCgGkZ4iW53VwGWvUtNP7+Uo=;
+        b=ejF6/THjVn3y/WRSY8Yj0vTHOG9gKC8K55paTsWoy+/Rqb/+2Dx5+dKCyErGD+aqcM
+         /sAaFwKom58zpkbgU/VIwj+/8fUusOvQGzAx+e1HsZuV4VkqtZFq032Zx6eioKMkxdhm
+         petVahbJVtOyT+sEGi2romWkC3P2ahJzW9eba/ygo6P57BJp8hWpnXum4JNnQCDdYgLU
+         y6Ne4WkLrs+qAyT9oKjhivY3fdZJUH0GxICzBclHM6+MrqZj8w9kW8zmu/IErvu/gmxy
+         D70jDBHiCDM5b037G1hNafCfXbc+DbBiRmf7AYxBrBmE72xXHTtOtWEtS4ghVopHDqr0
+         RPDA==
+X-Gm-Message-State: AOAM531JB3GtJ//X1qJPkcWs/wmW2T6lp6FO8jfMYGesrY0jpymt9IQb
+        Br1WrGvYpBhIXHFNxsskxvs9cXAF5g7bfg==
+X-Google-Smtp-Source: ABdhPJzIXOa7OXxpXfg61yv8MQOuQPVNrei3M6NJnxus0XACZGOpTmZLIHdr15aVW4Sb6m8FzCfwpA==
+X-Received: by 2002:a37:f510:: with SMTP id l16mr11491706qkk.205.1623580459351;
+        Sun, 13 Jun 2021 03:34:19 -0700 (PDT)
+Received: from ArchLinux ([191.96.227.140])
+        by smtp.gmail.com with ESMTPSA id z136sm8190708qkb.34.2021.06.13.03.34.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Jun 2021 03:34:18 -0700 (PDT)
+Date:   Sun, 13 Jun 2021 16:04:04 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Amit Choudhary <amitchoudhary0523@gmail.com>
+Cc:     LinuxKernel <linux-kernel@vger.kernel.org>
+Subject: Re: [Code] Fastest String Search Algorithm.
+Message-ID: <YMXfHIRojUomB+yx@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Amit Choudhary <amitchoudhary0523@gmail.com>,
+        LinuxKernel <linux-kernel@vger.kernel.org>
+References: <CAFf+5zhSH_dJ2Zc5EcfqgTew8w0sEu4hLjKYf3fTmqB5mdgfwQ@mail.gmail.com>
+ <YMXYYgR82VZISjtO@ArchLinux>
+ <CAFf+5zjn9K-ufRGLQdH9B1OrMEzQdP2M-xPkbuss9Uq0c82Z5w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="YsEPcNjTTMqyY4ap"
+Content-Disposition: inline
+In-Reply-To: <CAFf+5zjn9K-ufRGLQdH9B1OrMEzQdP2M-xPkbuss9Uq0c82Z5w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
 
-The patch has been generated with the coccinelle script below.
-It has been compile tested.
+--YsEPcNjTTMqyY4ap
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No memory allocation in involved in this patch, so no GFP_ tweak is needed.
+On 15:47 Sun 13 Jun 2021, Amit Choudhary wrote:
 
-@@ @@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+Woohooo , kiddo.... you told me where exactly you came from.
 
-@@ @@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+  You are now ignored....blocked ...feel really sorry for you.
 
-@@ @@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
 
-@@ @@
--    PCI_DMA_NONE
-+    DMA_NONE
 
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+>   Bhaskar,
+>   Fuck you.
+>   You are not the owner of linux kernel.
+>   You are a very big idiot.
+>   You really don't know who you are talking to.
+>   You are just assuming that I am a stupid guy without knowing anything
+>   about me.
+>   My linux kernel patches are in linux kernel since 2005-2006.
+>   What are your educational and professional qualifications?
+>   I don't think you are from IIT like me, probably you are from a third
+>   grade donation based college.
+>   I have invented a new search engine architecture and implemented it and
+>   it is hosted on sourceforge.
+>   Have you ever invented anything?
+>   World is full of idiots like you from India who think that they are
+>   supreme and everyone else is a fool.
+>   Amit
+>   On Sun, Jun 13, 2021, 3:35 PM Bhaskar Chowdhury
+>   <[1]unixbhaskar@gmail.com> wrote:
+>
+>     On 14:00 Sun 13 Jun 2021, Amit Choudhary wrote:
+>     Ahhhhhhhh...
+>     Oh crap! Get off the lawn , kiddo. Do NOT USE THIS PLACE for your
+>     obnoxious
+>     desire.
+>     We don't have time and energy to evaluate some airy-fairy stuff .
+>     How do you know we will ever bother to think about "include your
+>     code"?? Let
+>     alone other factor...huh...you are living in fool's paradise
+>     ...meh... look
+>     like your head is filled with lots of preconceived dogma....where
+>     have you got
+>     those?? Heck..
+>     Your intention is not wise...this mailing list solely exist for
+>     people
+>     interested in Linux and only in Linux Kernel. Period.
+>     IOW , PLEASE DO NOT BOTHER US.
+>     ~Bhaskar
+>     >Hi All,
+>     >
+>     >I have invented a new string search algorithm. It has performed
+>     better
+>     >than strstr(), Boyer-Moore, and KPM algorithms.
+>     >
+>     >But I am not sending my code so that my algorithm gets included in
+>     linux kernel.
+>     >
+>     >I am sending this code because linux kernel mailing list is in
+>     public
+>     >domain and getting indexed by search engines. So, people can see
+>     this
+>     >algo if they search for fastest string search algorithm on web.
+>     >
+>     >Code:
+>     >
+>     >=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>     >
+>     >// Choudhary string search algorithm
+>     >static char * choudhary_string_search_algorithm(char *text, char
+>     *pattern)
+>     >{
+>     >
+>     >#define false 0
+>     >#define true 1
+>     >#define ALPHABET_SIZE 256
+>     >
+>     >=C2  =C2  int i =3D 0;
+>     >=C2  =C2  int end_index =3D 0;
+>     >=C2  =C2  int not_found =3D false;
+>     >
+>     >=C2  =C2  char pattern_char[ALPHABET_SIZE] =3D {0};
+>     >
+>     >=C2  =C2  int text_len =3D strlen(text);
+>     >=C2  =C2  int pattern_len =3D strlen(pattern);
+>     >
+>     >=C2  =C2  int pi_44 =3D pattern_len - 1;
+>     >=C2  =C2  int pi_34 =3D (3 * pattern_len) / 4;
+>     >=C2  =C2  int pi_24 =3D pattern_len / 2;
+>     >=C2  =C2  int pi_14 =3D pattern_len / 4;
+>     >
+>     >=C2  =C2  int last_failed_index =3D -1;
+>     >
+>     >=C2  =C2  // preprocessing
+>     >=C2  =C2  for (i =3D 0; i < pattern_len; i++) {
+>     >=C2  =C2  =C2  =C2  pattern_char[(int)(pattern[i])] =3D 1;
+>     >=C2  =C2  }
+>     >
+>     >=C2  =C2  // now search
+>     >=C2  =C2  for (i =3D 0; i < text_len; i++) {
+>     >
+>     >=C2  =C2  =C2  =C2  if ((text_len - i) < pattern_len) {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  return NULL;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  //return -1;
+>     >=C2  =C2  =C2  =C2  }
+>     >
+>     >=C2  =C2  =C2  =C2  if (pattern[pi_44] !=3D text[i + pi_44]) {
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  last_failed_index =3D pi_44;
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  // this character doesn't appear in pa=
+ttern, so
+>     skip
+>     >=C2  =C2  =C2  =C2  =C2  =C2  if (pattern_char[(int)(text[i + pi_44]=
+)] =3D=3D 0) {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  i =3D i + pi_44;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  }
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  continue;
+>     >
+>     >=C2  =C2  =C2  =C2  } else if (pattern[pi_34] !=3D text[i + pi_34]) {
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  last_failed_index =3D pi_34;
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  // this character doesn't appear in pa=
+ttern, so
+>     skip
+>     >=C2  =C2  =C2  =C2  =C2  =C2  if (pattern_char[(int)(text[i + pi_34]=
+)] =3D=3D 0) {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  i =3D i + pi_34;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  }
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  continue;
+>     >
+>     >=C2  =C2  =C2  =C2  } else if (pattern[pi_24] !=3D text[i + pi_24]) {
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  last_failed_index =3D pi_24;
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  // this character doesn't appear in pa=
+ttern, so
+>     skip
+>     >=C2  =C2  =C2  =C2  =C2  =C2  if (pattern_char[(int)(text[i + pi_24]=
+)] =3D=3D 0) {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  i =3D i + pi_24;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  }
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  continue;
+>     >
+>     >=C2  =C2  =C2  =C2  } else if (pattern[pi_14] !=3D text[i + pi_14]) {
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  last_failed_index =3D pi_14;
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  // this character doesn't appear in pa=
+ttern, so
+>     skip
+>     >=C2  =C2  =C2  =C2  =C2  =C2  if (pattern_char[(int)(text[i + pi_14]=
+)] =3D=3D 0) {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  i =3D i + pi_14;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  }
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  continue;
+>     >
+>     >=C2  =C2  =C2  =C2  } // end of if-else.. block
+>     >
+>     >=C2  =C2  =C2  =C2  // compare with character at last failed index.
+>     >=C2  =C2  =C2  =C2  if (last_failed_index >=3D 0) {
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  if (pattern[last_failed_index] !=3D te=
+xt[i +
+>     last_failed_index]) {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  continue;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  }
+>     >
+>     >=C2  =C2  =C2  =C2  }
+>     >
+>     >=C2  =C2  =C2  =C2  if (pattern[0] =3D=3D text[i]) {
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  //full_pattern_search =3D full_pattern=
+_search + 1;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  end_index =3D i + pi_44;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  not_found =3D false;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  int index =3D 0;
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  for (index =3D i; index <=3D end_index=
+; index++) {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  if (text[index] !=3D pattern=
+[index - i]) {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  last_failed_index =
+=3D index - i;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  not_found =3D true;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  break;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  }
+>     >=C2  =C2  =C2  =C2  =C2  =C2  } // end of inner for loop
+>     >
+>     >=C2  =C2  =C2  =C2  =C2  =C2  if (not_found =3D=3D false) { // match=
+ is found
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  return (text + i);
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  //return i;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  } else if (pattern_char[(int)(text[ind=
+ex])] =3D=3D 0)
+>     {
+>     >=C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  i =3D index;
+>     >=C2  =C2  =C2  =C2  =C2  =C2  }
+>     >=C2  =C2  =C2  =C2  } // end of if pattern[0]
+>     >
+>     >=C2  =C2  } // end of outer for loop
+>     >
+>     >=C2  =C2  return NULL;
+>     >=C2  =C2  //return -1;
+>     >
+>     >} // end of choudhary_string_search_algorithm
+>     >
+>     >=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>     >
+>     >Regards,
+>     >Amit
+>
+>References
+>
+>   1. mailto:unixbhaskar@gmail.com
 
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+--YsEPcNjTTMqyY4ap
+Content-Type: application/pgp-signature; name="signature.asc"
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
+-----BEGIN PGP SIGNATURE-----
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmDF3xkACgkQsjqdtxFL
+KRWkqAf/QWhwfQWQSEVlZdjIw7sb82hbd7ZFTqeaCoFe+V2nZhN2bNXpO1m1c9qY
+/xd/fCK+OQGDmuAK340JxnXJSnBps9rXdvwYp1yBICfuaa6VjtdDN2IvPI1QQqLj
+Lc0yrKOrTfx6F6h/HoTbxwUe/yrvzzeKxg97y7yhuwBtv0ECl8WT2b8GTWn624M4
+v+hdu7Mt3oB1DRGQCyyxgeTIJUEimpyVenrdar0+ps6Fc1cuH0s5us4M0bhuOnGp
+UbujnQVq2/6qpdZkCQ8Ex4AQnPF4zA8yHpDBcCuD5FFh49RLHQ8IoJmVz8+2EnbR
+q6PZdDGyNqZKz4thB8VoUCHjcZn44g==
+=d6S2
+-----END PGP SIGNATURE-----
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/message/fusion/mptlan.c | 90 ++++++++++++++++++---------------
- 1 file changed, 48 insertions(+), 42 deletions(-)
-
-diff --git a/drivers/message/fusion/mptlan.c b/drivers/message/fusion/mptlan.c
-index 3261cac762de..e62c90127cc2 100644
---- a/drivers/message/fusion/mptlan.c
-+++ b/drivers/message/fusion/mptlan.c
-@@ -516,9 +516,9 @@ mpt_lan_close(struct net_device *dev)
- 		if (priv->RcvCtl[i].skb != NULL) {
- /**/			dlprintk((KERN_INFO MYNAM "/lan_close: bucket %05x "
- /**/				  "is still out\n", i));
--			pci_unmap_single(mpt_dev->pcidev, priv->RcvCtl[i].dma,
--					 priv->RcvCtl[i].len,
--					 PCI_DMA_FROMDEVICE);
-+			dma_unmap_single(&mpt_dev->pcidev->dev,
-+					 priv->RcvCtl[i].dma,
-+					 priv->RcvCtl[i].len, DMA_FROM_DEVICE);
- 			dev_kfree_skb(priv->RcvCtl[i].skb);
- 		}
- 	}
-@@ -528,9 +528,9 @@ mpt_lan_close(struct net_device *dev)
- 
- 	for (i = 0; i < priv->tx_max_out; i++) {
- 		if (priv->SendCtl[i].skb != NULL) {
--			pci_unmap_single(mpt_dev->pcidev, priv->SendCtl[i].dma,
--					 priv->SendCtl[i].len,
--					 PCI_DMA_TODEVICE);
-+			dma_unmap_single(&mpt_dev->pcidev->dev,
-+					 priv->SendCtl[i].dma,
-+					 priv->SendCtl[i].len, DMA_TO_DEVICE);
- 			dev_kfree_skb(priv->SendCtl[i].skb);
- 		}
- 	}
-@@ -582,8 +582,8 @@ mpt_lan_send_turbo(struct net_device *dev, u32 tmsg)
- 			__func__, sent));
- 
- 	priv->SendCtl[ctx].skb = NULL;
--	pci_unmap_single(mpt_dev->pcidev, priv->SendCtl[ctx].dma,
--			 priv->SendCtl[ctx].len, PCI_DMA_TODEVICE);
-+	dma_unmap_single(&mpt_dev->pcidev->dev, priv->SendCtl[ctx].dma,
-+			 priv->SendCtl[ctx].len, DMA_TO_DEVICE);
- 	dev_kfree_skb_irq(sent);
- 
- 	spin_lock_irqsave(&priv->txfidx_lock, flags);
-@@ -648,8 +648,9 @@ mpt_lan_send_reply(struct net_device *dev, LANSendReply_t *pSendRep)
- 				__func__, sent));
- 
- 		priv->SendCtl[ctx].skb = NULL;
--		pci_unmap_single(mpt_dev->pcidev, priv->SendCtl[ctx].dma,
--				 priv->SendCtl[ctx].len, PCI_DMA_TODEVICE);
-+		dma_unmap_single(&mpt_dev->pcidev->dev,
-+				 priv->SendCtl[ctx].dma,
-+				 priv->SendCtl[ctx].len, DMA_TO_DEVICE);
- 		dev_kfree_skb_irq(sent);
- 
- 		priv->mpt_txfidx[++priv->mpt_txfidx_tail] = ctx;
-@@ -720,8 +721,8 @@ mpt_lan_sdu_send (struct sk_buff *skb, struct net_device *dev)
- 	skb_reset_mac_header(skb);
- 	skb_pull(skb, 12);
- 
--        dma = pci_map_single(mpt_dev->pcidev, skb->data, skb->len,
--			     PCI_DMA_TODEVICE);
-+	dma = dma_map_single(&mpt_dev->pcidev->dev, skb->data, skb->len,
-+			     DMA_TO_DEVICE);
- 
- 	priv->SendCtl[ctx].skb = skb;
- 	priv->SendCtl[ctx].dma = dma;
-@@ -868,13 +869,17 @@ mpt_lan_receive_post_turbo(struct net_device *dev, u32 tmsg)
- 			return -ENOMEM;
- 		}
- 
--		pci_dma_sync_single_for_cpu(mpt_dev->pcidev, priv->RcvCtl[ctx].dma,
--					    priv->RcvCtl[ctx].len, PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_cpu(&mpt_dev->pcidev->dev,
-+					priv->RcvCtl[ctx].dma,
-+					priv->RcvCtl[ctx].len,
-+					DMA_FROM_DEVICE);
- 
- 		skb_copy_from_linear_data(old_skb, skb_put(skb, len), len);
- 
--		pci_dma_sync_single_for_device(mpt_dev->pcidev, priv->RcvCtl[ctx].dma,
--					       priv->RcvCtl[ctx].len, PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_device(&mpt_dev->pcidev->dev,
-+					   priv->RcvCtl[ctx].dma,
-+					   priv->RcvCtl[ctx].len,
-+					   DMA_FROM_DEVICE);
- 		goto out;
- 	}
- 
-@@ -882,8 +887,8 @@ mpt_lan_receive_post_turbo(struct net_device *dev, u32 tmsg)
- 
- 	priv->RcvCtl[ctx].skb = NULL;
- 
--	pci_unmap_single(mpt_dev->pcidev, priv->RcvCtl[ctx].dma,
--			 priv->RcvCtl[ctx].len, PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&mpt_dev->pcidev->dev, priv->RcvCtl[ctx].dma,
-+			 priv->RcvCtl[ctx].len, DMA_FROM_DEVICE);
- 
- out:
- 	spin_lock_irqsave(&priv->rxfidx_lock, flags);
-@@ -927,8 +932,8 @@ mpt_lan_receive_post_free(struct net_device *dev,
- //		dlprintk((KERN_INFO MYNAM "@rpr[2] TC + 3\n"));
- 
- 		priv->RcvCtl[ctx].skb = NULL;
--		pci_unmap_single(mpt_dev->pcidev, priv->RcvCtl[ctx].dma,
--				 priv->RcvCtl[ctx].len, PCI_DMA_FROMDEVICE);
-+		dma_unmap_single(&mpt_dev->pcidev->dev, priv->RcvCtl[ctx].dma,
-+				 priv->RcvCtl[ctx].len, DMA_FROM_DEVICE);
- 		dev_kfree_skb_any(skb);
- 
- 		priv->mpt_rxfidx[++priv->mpt_rxfidx_tail] = ctx;
-@@ -1028,16 +1033,16 @@ mpt_lan_receive_post_reply(struct net_device *dev,
- //					IOC_AND_NETDEV_NAMES_s_s(dev),
- //					i, l));
- 
--			pci_dma_sync_single_for_cpu(mpt_dev->pcidev,
--						    priv->RcvCtl[ctx].dma,
--						    priv->RcvCtl[ctx].len,
--						    PCI_DMA_FROMDEVICE);
-+			dma_sync_single_for_cpu(&mpt_dev->pcidev->dev,
-+						priv->RcvCtl[ctx].dma,
-+						priv->RcvCtl[ctx].len,
-+						DMA_FROM_DEVICE);
- 			skb_copy_from_linear_data(old_skb, skb_put(skb, l), l);
- 
--			pci_dma_sync_single_for_device(mpt_dev->pcidev,
--						       priv->RcvCtl[ctx].dma,
--						       priv->RcvCtl[ctx].len,
--						       PCI_DMA_FROMDEVICE);
-+			dma_sync_single_for_device(&mpt_dev->pcidev->dev,
-+						   priv->RcvCtl[ctx].dma,
-+						   priv->RcvCtl[ctx].len,
-+						   DMA_FROM_DEVICE);
- 
- 			priv->mpt_rxfidx[++priv->mpt_rxfidx_tail] = ctx;
- 			szrem -= l;
-@@ -1056,17 +1061,17 @@ mpt_lan_receive_post_reply(struct net_device *dev,
- 			return -ENOMEM;
- 		}
- 
--		pci_dma_sync_single_for_cpu(mpt_dev->pcidev,
--					    priv->RcvCtl[ctx].dma,
--					    priv->RcvCtl[ctx].len,
--					    PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_cpu(&mpt_dev->pcidev->dev,
-+					priv->RcvCtl[ctx].dma,
-+					priv->RcvCtl[ctx].len,
-+					DMA_FROM_DEVICE);
- 
- 		skb_copy_from_linear_data(old_skb, skb_put(skb, len), len);
- 
--		pci_dma_sync_single_for_device(mpt_dev->pcidev,
--					       priv->RcvCtl[ctx].dma,
--					       priv->RcvCtl[ctx].len,
--					       PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_device(&mpt_dev->pcidev->dev,
-+					   priv->RcvCtl[ctx].dma,
-+					   priv->RcvCtl[ctx].len,
-+					   DMA_FROM_DEVICE);
- 
- 		spin_lock_irqsave(&priv->rxfidx_lock, flags);
- 		priv->mpt_rxfidx[++priv->mpt_rxfidx_tail] = ctx;
-@@ -1077,8 +1082,8 @@ mpt_lan_receive_post_reply(struct net_device *dev,
- 
- 		priv->RcvCtl[ctx].skb = NULL;
- 
--		pci_unmap_single(mpt_dev->pcidev, priv->RcvCtl[ctx].dma,
--				 priv->RcvCtl[ctx].len, PCI_DMA_FROMDEVICE);
-+		dma_unmap_single(&mpt_dev->pcidev->dev, priv->RcvCtl[ctx].dma,
-+				 priv->RcvCtl[ctx].len, DMA_FROM_DEVICE);
- 		priv->RcvCtl[ctx].dma = 0;
- 
- 		priv->mpt_rxfidx[++priv->mpt_rxfidx_tail] = ctx;
-@@ -1199,10 +1204,10 @@ mpt_lan_post_receive_buckets(struct mpt_lan_priv *priv)
- 
- 			skb = priv->RcvCtl[ctx].skb;
- 			if (skb && (priv->RcvCtl[ctx].len != len)) {
--				pci_unmap_single(mpt_dev->pcidev,
-+				dma_unmap_single(&mpt_dev->pcidev->dev,
- 						 priv->RcvCtl[ctx].dma,
- 						 priv->RcvCtl[ctx].len,
--						 PCI_DMA_FROMDEVICE);
-+						 DMA_FROM_DEVICE);
- 				dev_kfree_skb(priv->RcvCtl[ctx].skb);
- 				skb = priv->RcvCtl[ctx].skb = NULL;
- 			}
-@@ -1218,8 +1223,9 @@ mpt_lan_post_receive_buckets(struct mpt_lan_priv *priv)
- 					break;
- 				}
- 
--				dma = pci_map_single(mpt_dev->pcidev, skb->data,
--						     len, PCI_DMA_FROMDEVICE);
-+				dma = dma_map_single(&mpt_dev->pcidev->dev,
-+						     skb->data, len,
-+						     DMA_FROM_DEVICE);
- 
- 				priv->RcvCtl[ctx].skb = skb;
- 				priv->RcvCtl[ctx].dma = dma;
--- 
-2.30.2
-
+--YsEPcNjTTMqyY4ap--
