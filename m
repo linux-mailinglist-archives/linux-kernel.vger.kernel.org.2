@@ -2,186 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE42B3A5A1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 21:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59D33A5A29
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 21:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhFMTKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 15:10:41 -0400
-Received: from mout.gmx.net ([212.227.15.19]:36867 "EHLO mout.gmx.net"
+        id S232062AbhFMTWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 15:22:16 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:33784 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231912AbhFMTKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 15:10:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623611313;
-        bh=i0Mw312qLzd6b/+QxKnjdD1a41SqoAdt39SqpcwjESM=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=k3fDP0+XpJ0mERPxpnrG1w4s1YiAnW2OJHaGqTrZFiafF61ZUc3Mb28kCXYp1dudr
-         bAHXOTS7BwLWqyCvWeHRv4+1fQnkj7sy0haeBZzA9S+kntPdbnxuBvI9PS2E6hmX2I
-         QmU52zd24m9W7TQc75DsALLLg7ioO3b/PewDtWNQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.247]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MAwbz-1m3p4C0JBp-00BNuS; Sun, 13
- Jun 2021 21:08:33 +0200
-Date:   Sun, 13 Jun 2021 21:08:31 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/8] pinctrl: nuvoton: Add driver for WPCM450
-Message-ID: <YMZXr2py6Esl6U2H@latitude>
-References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
- <20210602120329.2444672-6-j.neuschaefer@gmx.net>
- <CAHp75Vci1DSFu-tpgwQZfuVycqHYmhGhLDDCOH_dX8HKvqpY_A@mail.gmail.com>
- <YMVBTp4VaSilFi0H@latitude>
- <CAHp75Vd9FEGuaVbRUK67uzRoeQSXQUGAhXExHgJvkDd585kxwA@mail.gmail.com>
+        id S231912AbhFMTWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 15:22:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=b+44vKs6VriBl5euKFeZE0tFHHDGn+m9x2DT4kAxVlI=; b=SbxmZ24OJykt28WsfYLMGUq/lV
+        YHXkl/CsWs8O+1XAXJ2EDQ+0p/LmbkwU8Lbu2SMF1UNt8vZ18FeNMquIQzMC4FZCK1Dy7mEX+2Vzi
+        q46496XbqHG+HqMu+xHyHRet8DeCxas4epEEq0gHJbk217G4G6iMb+BUy7lx2cz2iGvA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lsVeR-009Bnd-Ny; Sun, 13 Jun 2021 21:20:07 +0200
+Date:   Sun, 13 Jun 2021 21:20:07 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
+        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com
+Subject: Re: [net-next: PATCH 1/3] net: mvmdio: add ACPI support
+Message-ID: <YMZaZx3oZ7tYCEPH@lunn.ch>
+References: <20210613183520.2247415-1-mw@semihalf.com>
+ <20210613183520.2247415-2-mw@semihalf.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DDWQ4B6GayNZj/6h"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75Vd9FEGuaVbRUK67uzRoeQSXQUGAhXExHgJvkDd585kxwA@mail.gmail.com>
-X-Provags-ID: V03:K1:A8u/VWr25EDlAyw608pKKSgF/NtZTMvqE/N1Z3Urcwvncdvbduf
- 6eRNbWtHYlzu/P5hI5btrI5pUpLQSbi1ZvxWYSdrSghBHsazLyWZz9ook1S6+W+mod85F8F
- eQZfTco9qvnJ8qprx0Er5AAzyUO5lc6X4SA6MDwV18TTsx0tgCdETok13P7fhv+j5dbvmkg
- EF0tp9vH6FhTiSrjI67zQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8Pz1L6EfyZ4=:ZL9mTNEevabQLNS05PDY6H
- YxgmMcwv7IdkwzBM25O1MRvBPq5TGlgYwM2badHy1olhwMDt7QS7hJ366/0EY/5KnF4WLyLUp
- hTzxA4SzAnnzsfiMp9MHHQLtTovhYqRNp0ikih/1jW8E/Nof4Kr5BWlb4HJomiDmCcyq3ikXk
- PFLYLjcIJsmbxZh+ItSBPVJxJGQ8oob2AGizZYUpFOmDAWvVI3MHN2Wqa1ZEtg3nSY/jBBTTr
- Ab40FLZV9Pm3c+xDRBDzc061iXiOoK0aiQslCoE5WlF0MfkJizjWCu3hU4aTMuOzpn9XO6h/x
- ImrBce34AnDbKsIB0xPcRz/850LmX1poLaJ1bkHKsIpTHoSI962n1fMmRuEXtZh7c4YmkQOyI
- uEyOwNZfjLkfgQWNHEgKUa0CKTCkLBIDVnQTI+jn45aXJQ5NgSy6y+CYmBbmrRoDluhWCtYPh
- gXKlheBe5S7VCjp7DU5vekV3Ng6/6os5Z5gDrh+Sxop9moO+GyF4VgBMpXcw2VxcsZTm/l+1H
- 4PuNnmM/yEca4OvqIKNYZJbNcOaoCb63jIajMwdfPwV58tSFrLZ/rVJ6bjjrOblpQHcpOLhuI
- ZyDIQHeiY+HrDho+V4w8WOM0XsoGd11yBvMIuk3kz0Uz4pJA06wX9emQ4tqI8FATAc/1phpPD
- JvgcCsPH2HBXgSlL51bzX8el7+mEvd2/r9XCrAGzdsSRNMgCa9mVGmxyX0KCPY5Orn4hA1a26
- ZmcLTa8lswkcId7GXTojDmSeUQiTRCJpW4d44uLrboguOq0lAC9K+fCDOfXetFinIILYT35eJ
- 6o0NIbBAVpGgyRtgnA7QvXz7AuYghWF7M1J+JJmK4e4QcLAlSo2sVQIfbcdGG0N0RjVSfOjXb
- Gw1XCklntsN6NLH+JyExBPi90FJeeonrKHPUkrZInoL8gA/51a5AFYQRUBzywMJKB4MzXFuzO
- wDflyye5exIuhPmXKVOKo/t+GOBoMgkL7sB99UBBqSgSmCYTkIUdgZp8GFVkbNaXw9vSmOPNb
- voEaLyi30bN3MAWiJIcXu4tKy4MvcPIbY5sFLB/tvqA56LXQZEyDkcRhNF6aPpwBZ5E420Xap
- kpzHi0/f1yNPQeXVUzXQ/qU/r5jS9Z+HnQ4n/eRgIkaaA9s81BamG+DTg==
+In-Reply-To: <20210613183520.2247415-2-mw@semihalf.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---DDWQ4B6GayNZj/6h
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Jun 13, 2021 at 01:06:15PM +0300, Andy Shevchenko wrote:
-> On Sun, Jun 13, 2021 at 2:20 AM Jonathan Neusch=C3=A4fer <j.neuschaefer@g=
-mx.net> wrote:
-> > On Wed, Jun 02, 2021 at 03:50:39PM +0300, Andy Shevchenko wrote:
-> > > On Wed, Jun 2, 2021 at 3:05 PM Jonathan Neusch=C3=A4fer <j.neuschaefe=
-r@gmx.net> wrote:
-[...]
-> > > > +static int wpcm450_gpio_get_direction(struct gpio_chip *chip,
-> > > > +                                     unsigned int offset)
-> > > > +{
-> > > > +       struct wpcm450_pinctrl *pctrl =3D gpiochip_get_data(chip);
-> > > > +       const struct wpcm450_port *port =3D to_port(offset);
-> > > > +       unsigned long flags;
-> > > > +       u32 cfg0;
-> > > > +       int dir;
-> > > > +
-> > > > +       spin_lock_irqsave(&pctrl->lock, flags);
-> > > > +       if (port->cfg0) {
-> > > > +               cfg0 =3D ioread32(pctrl->gpio_base + port->cfg0);
-> > >
-> > > > +               dir =3D !(cfg0 & port_mask(port, offset));
-> > > > +       } else {
-> > > > +               /* If cfg0 is unavailable, the GPIO is always an in=
-put */
-> > > > +               dir =3D 1;
-> > > > +       }
-> > >
-> > > Why above is under spin lock?
-> > > Same question for all other similar places in different functions, if=
- any.
-> >
-> > My intention was to protect the ioread32. But given that it's just a
-> > single MMIO read, this might be unnecessary.
->=20
-> Sometimes it's necessary and I'm not talking about it. (I put blank
-> lines around the code I was commenting on)
->=20
-> So, What I meant above is to get something like this
->=20
-> if (port->cfg0) {
->   spin lock
->   ...
->   spin unlock
-> } else {
->   ...
-> }
->=20
-> or equivalent ideas.
-
-Ah, in other words: Narrowing the scope of the lock as far as possible.
-I'll keep it in mind for v2.
+> -	ret = of_mdiobus_register(bus, pdev->dev.of_node);
+> +	if (pdev->dev.of_node)
+> +		ret = of_mdiobus_register(bus, pdev->dev.of_node);
+> +	else if (is_acpi_node(pdev->dev.fwnode))
+> +		ret = acpi_mdiobus_register(bus, pdev->dev.fwnode);
+> +	else
+> +		ret = -EINVAL;
 
 
-> > > What about the GPIO library API that does some additional stuff?
-> >
-> > I don't know which gpiolib function would be appropriate here, sorry.
->=20
-> When you leave those request and release callbacks untouched the GPIO
-> library will assign default ones. You may see what they do.
+This seems like something which could be put into fwnode_mdio.c.
 
-Ah, I see. I'll look into it.
-
-
-> ...
->=20
-> > > > +       if (!of_find_property(np, "gpio-controller", NULL))
-> > > > +               return -ENODEV;
-> > >
-> > > Dead code?
-> >
-> > The point here was to check if the node is marked as a GPIO controller,
-> > with the boolean property "gpio-controller" (so device_property_read_bo=
-ol
-> > would probably be more appropriate).
-> >
-> > However, since the gpio-controller property is already defined as
-> > required in the DT binding, I'm not sure it's worth checking here.
->=20
-> Exactly my point.
-
-Alright.
-
-
-Thanks,
-Jonthan Neusch=C3=A4fer
-
---DDWQ4B6GayNZj/6h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDGV4kACgkQCDBEmo7z
-X9s1ew/+MOmEBq0/62YYJrwtuBhjOqWUWoye5bwkJbFzS6rYDMgNnT/xc3UOBkeV
-4zL+GbDPdPwAToGEJABiz/7NdQcm95awPJP2Dif9zvNYPMrLXe19NEc+PhG33lZB
-9JL2XPefl58H3Xm7qrmx4roFA85rAuKJT9lu4UwdY382J3gJFupP2EcHFXDFpqqv
-lB6zGHdlrrsNRKjPsQ1C22B7hNBgcY8vKCurkeTgrPmn37QVipCkZMyrLat99FLi
-AUtdYRJcg1hwQD8RhGwyp9H0jbBDlbUWBhJr4JKd53mIElmB4K2J8krBVHccED1C
-iXNeRsgdjidJfz3vXLNh1vwdF0s0+4ScmtWmNvEPz2pJPx19Sh+UJFFni/P7KetC
-+fQUHyLvJnEi9EBwH2F/PnSS9jJKLAoDLD6hbaE9l5d9EhxJjHrlSU2Po6nRkUt4
-LTCyXqZ4sTPwUHQP0pWzi+sceflrjMTrRSY5itLr0cBCTvaqN7R9/kWuPHoaGLWO
-l5T6bsIKIXsrd3jHdbf/kyT2TGjBAi+0YAJMh156vxlm/zQbiGsGPVNDgW+1ghgV
-knmavClhOvzkqCKXWgUWfIMuJn9mF1bYSgQFNBvVkz5hTExzJyUAhSKXhKAqCOaA
-guOUkGM3kjpE1O2Z8mKaeXM0ZJmP6Y6m9eti9pFq0nV7CKr9a/U=
-=cSu3
------END PGP SIGNATURE-----
-
---DDWQ4B6GayNZj/6h--
+     Andrew
