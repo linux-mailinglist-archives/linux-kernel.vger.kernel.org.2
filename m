@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7283A5B14
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B583A5B17
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbhFMXh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 19:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbhFMXhz (ORCPT
+        id S232220AbhFMXmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 19:42:12 -0400
+Received: from exvmail4.hynix.com ([166.125.252.92]:42648 "EHLO
+        invmail4.hynix.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232076AbhFMXmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 19:37:55 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B31FC061574;
-        Sun, 13 Jun 2021 16:35:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id j2so17894726lfg.9;
-        Sun, 13 Jun 2021 16:35:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pLASACZgoEcl1P3pbbsnivd00oF00ItQz/xXGbfD/EQ=;
-        b=N8yCzvNIgGxKzDVHLs6pGnODwSmKhFqbrXx7BeqkOGVqxPFVXrHPsx25dEJnz4R2ir
-         2l7YB6osG/lUkbOXtobn3Fg3xvIgcDDA/6sBX0pOf/U7/DjjTSvA++JEjLQWj87wcv3G
-         Va137eXEb97CBLGkVw8XnswjjxV0fBOVrvke1gJxDl40qWrIs2bjqGapG0kXISPuxKYD
-         H0+JatL1I3IoYJK4bZW13sdimWAYaKqwHLRq6AD3R8KadOcC1YEJ3S9hr4Q9DzrzbEMF
-         Xo4xe4m8GCxXJTWtrql5iTDFo4Xl0rDbmLWlPfelnp/ntLguOR5Q/9K0CVS6DHQm733w
-         30/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pLASACZgoEcl1P3pbbsnivd00oF00ItQz/xXGbfD/EQ=;
-        b=O6Td3MbYGzkvTyI90Y9MgBST8a4aWru4u44WMtM82AXiyd2Mu8E6dQaCDikqvuiT+8
-         jjwlFYZ7rCH0XZrpxns2FL4Zu+pEx1/LAVuOtwS82Jb76YAnwTYyBFW/LF+5CXwa9bFK
-         7LM1k8RnD5elDq8Eo3snqIQ3w8G6HG3njPawJ+WChINOg005FVQcFqAMUOTp0vEUMoBW
-         pNWsyfyAjGmJRCeVL/cJDEp+qPbaEwP5XnPxVnoP1nTIvujqnY1IG+wHxWr23VIHDl9K
-         PLZ4+OGow2NuMCZMra1UMYjbDZV1wUHNkLfa8LEAQiN2hO0SZnA4nfWZPUHncmq5DCZl
-         N2HA==
-X-Gm-Message-State: AOAM533hPJ8cLaGGGaoCmy9cPAHuSfuYz50BCuHVqfwcBfrzCVMOxRTq
-        vg+KQ7keu31OP3rWc746H3OevxmFk2H1JqCOlbY=
-X-Google-Smtp-Source: ABdhPJx+Lw4Xbs1wZzyzLdqYERPwT2cOIF0xwW4dXW328s5oJqjcLoZ9f5LbnFns68wyKfnYZ7qu0XXyinSuw7ze+rs=
-X-Received: by 2002:ac2:43b2:: with SMTP id t18mr9819944lfl.133.1623627341275;
- Sun, 13 Jun 2021 16:35:41 -0700 (PDT)
+        Sun, 13 Jun 2021 19:42:11 -0400
+X-AuditID: a67dfc5b-c37ff70000013791-73-60c69754b341
+Received: from hymail21.hynixad.com (10.156.135.51) by hymail22.hynixad.com
+ (10.156.135.52) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.792.3; Mon, 14 Jun 2021
+ 08:40:04 +0900
+Received: from hymail21.hynixad.com ([10.156.135.51]) by hymail21.hynixad.com
+ ([10.156.135.51]) with mapi id 15.02.0792.010; Mon, 14 Jun 2021 08:40:04
+ +0900
+From:   =?ks_c_5601-1987?B?waS/5MfRKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
+        <yohan.joung@sk.com>
+To:     "avri.altman@wdc.com" <avri.altman@wdc.com>
+CC:     "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "d_hyun.kwon@samsung.com" <d_hyun.kwon@samsung.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "j-young.choi@samsung.com" <j-young.choi@samsung.com>,
+        "jaemyung.lee@samsung.com" <jaemyung.lee@samsung.com>,
+        =?ks_c_5601-1987?B?w9bA57+1KENIT0kgSkFFIFlPVU5HKSBNb2JpbGUgU0U=?= 
+        <jaeyoung21.choi@sk.com>,
+        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "jh.i.park@samsung.com" <jh.i.park@samsung.com>,
+        "jieon.seol@samsung.com" <jieon.seol@samsung.com>,
+        "keosung.park@samsung.com" <keosung.park@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "sungjun07.park@samsung.com" <sungjun07.park@samsung.com>,
+        =?ks_c_5601-1987?B?waS/5MfRKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
+        <yohan.joung@sk.com>
+Subject: RE: [PATCH v37 3/4] scsi: ufs: Prepare HPB read for cached sub-region
+Thread-Topic: RE: [PATCH v37 3/4] scsi: ufs: Prepare HPB read for cached
+ sub-region
+Thread-Index: Addgq8fAZ5jjWmnhQIC9oaNz2KTkmw==
+Date:   Sun, 13 Jun 2021 23:40:04 +0000
+Message-ID: <d38fbfa83d1f421c8a0d201a3cb6dce3@sk.com>
+Accept-Language: ko-KR, en-US
+Content-Language: ko-KR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.152.36.34]
+Content-Type: text/plain; charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210610114817.3524037-1-libaokun1@huawei.com>
-In-Reply-To: <20210610114817.3524037-1-libaokun1@huawei.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Sun, 13 Jun 2021 18:35:30 -0500
-Message-ID: <CAH2r5mtOfwzNqTmuPhwejk2JBm6YFbF8LgPzyNsKwnrT0V4P2g@mail.gmail.com>
-Subject: Re: [PATCH -next] cifs: fix doc warnings in cifs_dfs_ref.c
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>, yangjihong1@huawei.com,
-        yukuai3@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsXCNUdUWTd0+rEEg8072Swu75rDZtF9fQeb
+        A5PH501yAYxRXDYpqTmZZalF+nYJXBkLpk5nLPjEV7Fy2VbmBsYDfF2MnBwSAiYSf458Yu5i
+        5OIQEnjFKPHs/ms2CGcBo0T3935WkCo2gSiJx60r2EFsEQF9ifall5lAbGaBf5wSU3aLg9jC
+        An4SJx5sY4SoCZXom7CABcLWk3h+ug+sl0VAVWLZoc9gM3kFTCXer3kLtJmDg1FAVuLqNRmI
+        keISi79eY4Y4TkBiyZ7zULaoxMvH/1ghbAWJld8vQJ1gJLFk9XwoW1FiSvdDdojxghInZz5h
+        gaiXlDi44gbLBEaRWUhWzELSPgtJ+ywk7QsYWVYxCmXmleUmZuaY6GVU5mVW6CXn525iBAb/
+        sto/0TsYP10IPsQowMGoxMPr8etoghBrYllxZe4hRgkOZiUR3mddhxOEeFMSK6tSi/Lji0pz
+        UosPMUpzsCiJ834LS00QEkhPLEnNTk0tSC2CyTJxcEo1MK75FbJLwUfxHCNfspjBRP/bLav+
+        W2o933GN+fC2N9NV/pSUXs2w0JRLrg4L/FinbKC99nRfkiTb75W1nbwXE6eKXJ1f2FqSG6IX
+        IpZuYfB5zbdnNrNvOOZqFLH/ejHltPzeyH1LLK8W3LYx3HIm+o73mtcChWoq779srmVR8z/E
+        /uG2obDKBiWW4oxEQy3mouJEAG40gQN6AgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-merged into cifs-2.6.git for-next
-
-On Thu, Jun 10, 2021 at 6:39 AM Baokun Li <libaokun1@huawei.com> wrote:
->
-> Add description for `cifs_compose_mount_options` to fix the W=1 warnings:
->
->  fs/cifs/cifs_dfs_ref.c:139: warning: Function parameter or
->   member 'devname' not described in 'cifs_compose_mount_options'
->
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->  fs/cifs/cifs_dfs_ref.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/cifs/cifs_dfs_ref.c b/fs/cifs/cifs_dfs_ref.c
-> index c87c37cf2914..ec57cdb1590f 100644
-> --- a/fs/cifs/cifs_dfs_ref.c
-> +++ b/fs/cifs/cifs_dfs_ref.c
-> @@ -125,7 +125,7 @@ cifs_build_devname(char *nodename, const char *prepath)
->   * @sb_mountdata:      parent/root DFS mount options (template)
->   * @fullpath:          full path in UNC format
->   * @ref:               optional server's referral
-> - *
-> + * @devname:           return the built cifs device name if passed pointer not NULL
->   * creates mount options for submount based on template options sb_mountdata
->   * and replacing unc,ip,prefixpath options with ones we've got form ref_unc.
->   *
-> --
-> 2.31.1
->
-
-
--- 
-Thanks,
-
-Steve
+PiA+ID4rICAgICAgLyoNCj4gPiA+KyAgICAgICAqIElmIHRoZSByZWdpb24gc3RhdGUgaXMgYWN0
+aXZlLCBtY3R4IG11c3QgYmUgYWxsb2NhdGVkLg0KPiA+ID4rICAgICAgICogSW4gdGhpcyBjYXNl
+LCBjaGVjayB3aGV0aGVyIHRoZSByZWdpb24gaXMgZXZpY3RlZCBvcg0KPiA+ID4rICAgICAgICog
+bWN0eCBhbGxjYXRpb24gZmFpbC4NCj4gPiA+KyAgICAgICAqLw0KPiA+ID4rICAgICAgaWYgKHVu
+bGlrZWx5KCFzcmduLT5tY3R4KSkgew0KPiA+ID4rICAgICAgICAgICAgICBkZXZfZXJyKCZocGIt
+PnNkZXZfdWZzX2x1LT5zZGV2X2RldiwNCj4gPiA+KyAgICAgICAgICAgICAgICAgICAgICAibm8g
+bWN0eCBpbiByZWdpb24gJWQgc3VicmVnaW9uICVkLlxuIiwNCj4gPiA+KyAgICAgICAgICAgICAg
+ICAgICAgICBzcmduLT5yZ25faWR4LCBzcmduLT5zcmduX2lkeCk7DQo+ID4gPisgICAgICAgICAg
+ICAgIHJldHVybiB0cnVlOw0KPiA+ID4rICAgICAgfQ0KPiA+ID4rDQo+ID4gPisgICAgICBpZiAo
+KHNyZ25fb2Zmc2V0ICsgY250KSA+IGJpdG1hcF9sZW4pDQo+ID4gPisgICAgICAgICAgICAgIGJp
+dF9sZW4gPSBiaXRtYXBfbGVuIC0gc3Jnbl9vZmZzZXQ7DQo+ID4gPisgICAgICBlbHNlDQo+ID4g
+PisgICAgICAgICAgICAgIGJpdF9sZW4gPSBjbnQ7DQo+ID4gPisNCj4gPiA+KyAgICAgIGlmIChm
+aW5kX25leHRfYml0KHNyZ24tPm1jdHgtPnBwbl9kaXJ0eSwgYml0bWFwX2xlbiwNCj4gPiA+KyAg
+ICAgICAgICAgICAgICAgICAgICAgIHNyZ25fb2Zmc2V0KSA8IGJpdF9sZW4gKyBzcmduX29mZnNl
+dCkNCj4gPiA+KyAgICAgICAgICAgICAgcmV0dXJuIHRydWU7DQo+ID4gPisNCj4gPiANCj4gPiBJ
+dCBzZWVtcyB1bm5lY2Vzc2FyeSB0byBzZWFyY2ggdGhyb3VnaCBiaXRtYXBfbGVuDQo+ID4gSG93
+IGFib3V0IHNlYXJjaGluZyBieSB0cmFuc2ZlciBzaXplPw0KPiA+IA0KPiA+IGlmIChmaW5kX25l
+eHRfYml0KHNyZ24tPm1jdHgtPnBwbl9kaXJ0eSwNCj4gPiAgICAgICAgICAgICAgIGJpdF9sZW4g
+KyBzcmduX29mZnNldCwgc3Jnbl9vZmZzZXQpIDwgYml0X2xlbiArIHNyZ25fb2Zmc2V0KQ0KPiBJ
+c24ndCBiaXRfbGVuIHNob3VsZCBiZSB1c2VkIGZvciBzaXplLCBhbmQgbm90IGJpdF9sZW4gKyBz
+cmduX29mZnNldCA/DQoNCnRoZW4gZmluZF9uZXh0X2JpdCBjaGVja3MgZnJvbSBzdGFydCB0byBi
+aXRfbGVuLg0KZmluZF9uZXh0X2JpdCBzdG9wcyBjaGVja2luZyBpZiBzdGFydCBpcyBncmVhdGVy
+IHRoYW4gYml0X2xlbi4NCml0IGRvZXMgbm90IGNoZWNrIGZvciBkaXJ0eSBhcyB0cmFuc2Zlcl9z
+aXplLg0KDQpUaGFua3MNCllvaGFuDQoNCj4gDQo+IFRoYW5rcywNCj4gQXZyaQ0KPiANCj4gPiAN
+Cj4gPiBUaGFua3MNCj4gPiBZb2hhbg0K
