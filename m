@@ -2,86 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811A33A58B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 15:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0D63A58B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Jun 2021 15:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhFMN3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 09:29:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53613 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhFMN3s (ORCPT
+        id S231824AbhFMN3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 09:29:53 -0400
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:48672 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhFMN3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 13 Jun 2021 09:29:48 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lsQ9M-0002Rk-D3; Sun, 13 Jun 2021 13:27:40 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: phy: micrel: remove redundant assignment to pointer of_node
-Date:   Sun, 13 Jun 2021 14:27:40 +0100
-Message-Id: <20210613132740.73854-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d31 with ME
+        id GdTk2500721Fzsu03dTlg6; Sun, 13 Jun 2021 15:27:46 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 13 Jun 2021 15:27:46 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     stefanr@s5r6.in-berlin.de, greg@kroah.com
+Cc:     linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] firewire: nosy: switch from 'pci_' to 'dma_' API
+Date:   Sun, 13 Jun 2021 15:27:43 +0200
+Message-Id: <e1d7fa558f31abf294659a9d4edcc1e4fc065fab.1623590706.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-The pointer of_node is being initialized with a value that is never
-read and it is being updated later with a new value inside a do-while
-loop. The initialization is redundant and can be removed and the
-pointer dev is no longer required and can be removed too.
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+When memory is allocated in 'add_card()', GFP_KERNEL can be used because
+this flag is already used a few lines above and no lock is taken in the
+between.
+
+While at it, also remove some useless casting.
+
+@@ @@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@ @@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@ @@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@ @@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/net/phy/micrel.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/firewire/nosy.c | 43 +++++++++++++++++++++++------------------
+ 1 file changed, 24 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index a14a00328fa3..93cf9500728f 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -488,8 +488,7 @@ static int ksz9021_load_values_from_of(struct phy_device *phydev,
+diff --git a/drivers/firewire/nosy.c b/drivers/firewire/nosy.c
+index 88ed971e32c0..b0d671db178a 100644
+--- a/drivers/firewire/nosy.c
++++ b/drivers/firewire/nosy.c
+@@ -511,12 +511,12 @@ remove_card(struct pci_dev *dev)
+ 		wake_up_interruptible(&client->buffer.wait);
+ 	spin_unlock_irq(&lynx->client_list_lock);
  
- static int ksz9021_config_init(struct phy_device *phydev)
- {
--	const struct device *dev = &phydev->mdio.dev;
--	const struct device_node *of_node = dev->of_node;
-+	const struct device_node *of_node;
- 	const struct device *dev_walker;
+-	pci_free_consistent(lynx->pci_device, sizeof(struct pcl),
+-			    lynx->rcv_start_pcl, lynx->rcv_start_pcl_bus);
+-	pci_free_consistent(lynx->pci_device, sizeof(struct pcl),
+-			    lynx->rcv_pcl, lynx->rcv_pcl_bus);
+-	pci_free_consistent(lynx->pci_device, PAGE_SIZE,
+-			    lynx->rcv_buffer, lynx->rcv_buffer_bus);
++	dma_free_coherent(&lynx->pci_device->dev, sizeof(struct pcl),
++			  lynx->rcv_start_pcl, lynx->rcv_start_pcl_bus);
++	dma_free_coherent(&lynx->pci_device->dev, sizeof(struct pcl),
++			  lynx->rcv_pcl, lynx->rcv_pcl_bus);
++	dma_free_coherent(&lynx->pci_device->dev, PAGE_SIZE, lynx->rcv_buffer,
++			  lynx->rcv_buffer_bus);
  
- 	/* The Micrel driver has a deprecated option to place phy OF
-@@ -711,8 +710,7 @@ static int ksz9031_config_rgmii_delay(struct phy_device *phydev)
+ 	iounmap(lynx->registers);
+ 	pci_disable_device(dev);
+@@ -532,7 +532,7 @@ add_card(struct pci_dev *dev, const struct pci_device_id *unused)
+ 	u32 p, end;
+ 	int ret, i;
  
- static int ksz9031_config_init(struct phy_device *phydev)
- {
--	const struct device *dev = &phydev->mdio.dev;
--	const struct device_node *of_node = dev->of_node;
-+	const struct device_node *of_node;
- 	static const char *clk_skews[2] = {"rxc-skew-ps", "txc-skew-ps"};
- 	static const char *rx_data_skews[4] = {
- 		"rxd0-skew-ps", "rxd1-skew-ps",
-@@ -907,8 +905,7 @@ static int ksz9131_config_rgmii_delay(struct phy_device *phydev)
+-	if (pci_set_dma_mask(dev, DMA_BIT_MASK(32))) {
++	if (dma_set_mask(&dev->dev, DMA_BIT_MASK(32))) {
+ 		dev_err(&dev->dev,
+ 		    "DMA address limits not supported for PCILynx hardware\n");
+ 		return -ENXIO;
+@@ -564,12 +564,16 @@ add_card(struct pci_dev *dev, const struct pci_device_id *unused)
+ 		goto fail_deallocate_lynx;
+ 	}
  
- static int ksz9131_config_init(struct phy_device *phydev)
- {
--	const struct device *dev = &phydev->mdio.dev;
--	struct device_node *of_node = dev->of_node;
-+	struct device_node *of_node;
- 	char *clk_skews[2] = {"rxc-skew-psec", "txc-skew-psec"};
- 	char *rx_data_skews[4] = {
- 		"rxd0-skew-psec", "rxd1-skew-psec",
+-	lynx->rcv_start_pcl = pci_alloc_consistent(lynx->pci_device,
+-				sizeof(struct pcl), &lynx->rcv_start_pcl_bus);
+-	lynx->rcv_pcl = pci_alloc_consistent(lynx->pci_device,
+-				sizeof(struct pcl), &lynx->rcv_pcl_bus);
+-	lynx->rcv_buffer = pci_alloc_consistent(lynx->pci_device,
+-				RCV_BUFFER_SIZE, &lynx->rcv_buffer_bus);
++	lynx->rcv_start_pcl = dma_alloc_coherent(&lynx->pci_device->dev,
++						 sizeof(struct pcl),
++						 &lynx->rcv_start_pcl_bus,
++						 GFP_KERNEL);
++	lynx->rcv_pcl = dma_alloc_coherent(&lynx->pci_device->dev,
++					   sizeof(struct pcl),
++					   &lynx->rcv_pcl_bus, GFP_KERNEL);
++	lynx->rcv_buffer = dma_alloc_coherent(&lynx->pci_device->dev,
++					      RCV_BUFFER_SIZE,
++					      &lynx->rcv_buffer_bus, GFP_KERNEL);
+ 	if (lynx->rcv_start_pcl == NULL ||
+ 	    lynx->rcv_pcl == NULL ||
+ 	    lynx->rcv_buffer == NULL) {
+@@ -667,14 +671,15 @@ add_card(struct pci_dev *dev, const struct pci_device_id *unused)
+ 
+ fail_deallocate_buffers:
+ 	if (lynx->rcv_start_pcl)
+-		pci_free_consistent(lynx->pci_device, sizeof(struct pcl),
+-				lynx->rcv_start_pcl, lynx->rcv_start_pcl_bus);
++		dma_free_coherent(&lynx->pci_device->dev, sizeof(struct pcl),
++				  lynx->rcv_start_pcl,
++				  lynx->rcv_start_pcl_bus);
+ 	if (lynx->rcv_pcl)
+-		pci_free_consistent(lynx->pci_device, sizeof(struct pcl),
+-				lynx->rcv_pcl, lynx->rcv_pcl_bus);
++		dma_free_coherent(&lynx->pci_device->dev, sizeof(struct pcl),
++				  lynx->rcv_pcl, lynx->rcv_pcl_bus);
+ 	if (lynx->rcv_buffer)
+-		pci_free_consistent(lynx->pci_device, PAGE_SIZE,
+-				lynx->rcv_buffer, lynx->rcv_buffer_bus);
++		dma_free_coherent(&lynx->pci_device->dev, PAGE_SIZE,
++				  lynx->rcv_buffer, lynx->rcv_buffer_bus);
+ 	iounmap(lynx->registers);
+ 
+ fail_deallocate_lynx:
 -- 
-2.31.1
+2.30.2
 
