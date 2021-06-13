@@ -2,62 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5815E3A5AFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C67E3A5AFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhFMXds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 19:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbhFMXdp (ORCPT
+        id S232263AbhFMXe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 19:34:26 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:54259 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232154AbhFMXeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 19:33:45 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DE9C061767;
-        Sun, 13 Jun 2021 16:31:27 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 3-20020a05600c0243b029019f2f9b2b8aso11712948wmj.2;
-        Sun, 13 Jun 2021 16:31:27 -0700 (PDT)
+        Sun, 13 Jun 2021 19:34:25 -0400
+Received: by mail-wm1-f51.google.com with SMTP id b205so6337186wmb.3;
+        Sun, 13 Jun 2021 16:32:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=16tOXTFARRM7dKHNQ+/96ISTaL6FsxfGvA/KqriFMEI=;
-        b=n7zBl0CXUp2knd7Z1u/xgP7MXaDYm2cbdIJwuSJe458mygeXpa++bY9+2NGqacnEyx
-         HfGuSmD33i+4kO0faJr8etKOREGsXRU8CAAlbHp7oUAW+7PDfYKGVTR+RZulQnZHIJat
-         OCXk+39Hx3w24wLllbNPQ+EiRcSXVzMy76nV17epgpz4PuwwJ71/9i35hOUpyaZlfImB
-         S9LAyWLtt8sZQKZdtyyXHYfn5/98xb/9prbXIjfxcGkME1+yiUhHKfD2PEggkRXFqgqP
-         ySdDgYLiIZh7Xw4XEzeXFhGNUmRH7fIrL2QGuElWewLRnyFMqdbhKibTYZ92NKp5FSAD
-         DAcg==
+        bh=QwXW92AMV2Zj//j5lOIkr635SG8SKf3W/g8yx73Deyw=;
+        b=DUroW1l97aA1bQpXB1gL/Mva4UMt3HN8cVre8KVO/G992+d6by8qKBsM83pW6Q107Y
+         hs8iSCaoamecyCYycUEnWrL/eyxV4bNO+BE1ySyXaKbgLjqjS4jiVLbJ56Xcsv9GSNHP
+         VOTygISZ/LJ4CnrgejEQx2gjuFyVzMBr7Zl0QhsQErcjbFmyLaLrv3DWnIqakCI5yNob
+         IYB4F5XlvobD/KVRSwPxJjwd9JFeV3SzQODCwbysgNtWvC8qS3BO1lL9i8SrpY/Qnq8g
+         XnLn+6bq1aNwZcfcY+uVBU9DcvepLFJZ729Tl/HB5LRLV5R1XBGgxJp5UXph2dwV6Wge
+         L3CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=16tOXTFARRM7dKHNQ+/96ISTaL6FsxfGvA/KqriFMEI=;
-        b=r/dYTLXcniPKFXrafZnXlwXWPloSSK+wIAOHBilLhNwgY4MxlDm/ofFPIKEc1pKXNO
-         Y3SBtmJhbDz/jac1BgMxuateuvmo1EYl4T9HQ+24V4AEex0tlzUzWG+DNtpZh6P1nF6w
-         Lv4kFHzLG2NiaGRCBVNSJ4J5VRBvX33G10Px00iOgucdoRLI6deFDB3qdDPQdibuAvxK
-         zUqEaEX9Ge6UqvNITTE6bUcHm70A1C7Q6w1VUXTZFvNqKyMCcjo8/4ih7BNBjYEcE5RL
-         hapBfdoYkQSd7hLfTQtf+nJZdhxM7jzZotikTX05YtnKq+K15Oh9jd7/ITlFcFjmua6/
-         torw==
-X-Gm-Message-State: AOAM530kXsk93BbSdPFT1uAUO6YXuNYrgcl0EkzIkj6LYKdfHKxplR4r
-        cAY80kfg/xoem0VZD7mCl2Q=
-X-Google-Smtp-Source: ABdhPJyenv4WmNvHo9WeEQc1A13FYXEHa5yHxB+e6gDqJyLjjfp5k8D6OjkKq5vTzruexNKKgHgR3Q==
-X-Received: by 2002:a05:600c:1c1b:: with SMTP id j27mr13670286wms.133.1623627082242;
-        Sun, 13 Jun 2021 16:31:22 -0700 (PDT)
+        bh=QwXW92AMV2Zj//j5lOIkr635SG8SKf3W/g8yx73Deyw=;
+        b=gvlDWQlOUFleoEKkmMkMUplon/FudvE9tbn0Yt7H7RK5UAl7DI+DpnrvIESei+hBZs
+         fUCRHV/ppqY0q1CnGmB36OLNJFBvlBjq7JHy4BHuRlqydBFc7qslM7vce1k5EWGpFn9h
+         kUxX0qYCZcGe4FT9ea4Wh5ph4WNWPTo7tnCnf20QCqYFieT/J+luGudXAGCXsyXRSxp+
+         hqpLQeVI/XreRBjyUJdB52tHdYv2apeuqRk53mCE1l9FyI+DNMd+E6SsX5zOYIes5e9D
+         u03YjC+Jmxn8MDnJT7gNHtHwPXhtG174jw2cJG2YBpKXgnLyQf+YS8peTejAl0XAN90l
+         shTg==
+X-Gm-Message-State: AOAM533Uw0imReAc9pWZSaNzxYzKhPf4osZhhQztBbSMBskRpnW+tqJ8
+        ry6e49Z63FV8dsVcC5lom70=
+X-Google-Smtp-Source: ABdhPJzLxMVGfF57HHlMph/YXajIfLnISEATl7O2cTyaAnm2qogppDHsEpF3EIVNuiYET/ha1sCf9Q==
+X-Received: by 2002:a05:600c:3786:: with SMTP id o6mr13460279wmr.170.1623627083066;
+        Sun, 13 Jun 2021 16:31:23 -0700 (PDT)
 Received: from localhost.localdomain ([195.245.23.224])
-        by smtp.gmail.com with ESMTPSA id i9sm17882511wrn.54.2021.06.13.16.31.21
+        by smtp.gmail.com with ESMTPSA id i9sm17882511wrn.54.2021.06.13.16.31.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 16:31:21 -0700 (PDT)
+        Sun, 13 Jun 2021 16:31:22 -0700 (PDT)
 From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Nikita Shubin <nikita.shubin@maquefel.me>,
-        linux-input@vger.kernel.org
+        linux-fbdev@vger.kernel.org
 Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
-Date:   Mon, 14 Jun 2021 01:30:37 +0200
-Message-Id: <20210613233041.128961-4-alexander.sverdlin@gmail.com>
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 4/7] video: ep93xx: Prepare clock before using it
+Date:   Mon, 14 Jun 2021 01:30:38 +0200
+Message-Id: <20210613233041.128961-5-alexander.sverdlin@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
 References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
@@ -72,31 +68,31 @@ to Common Clock Framework.
 
 Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 ---
- drivers/input/keyboard/ep93xx_keypad.c | 4 ++--
+ drivers/video/fbdev/ep93xx-fb.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
-index c8194333d612..e0e931e796fa 100644
---- a/drivers/input/keyboard/ep93xx_keypad.c
-+++ b/drivers/input/keyboard/ep93xx_keypad.c
-@@ -157,7 +157,7 @@ static int ep93xx_keypad_open(struct input_dev *pdev)
- 
- 	if (!keypad->enabled) {
- 		ep93xx_keypad_config(keypad);
--		clk_enable(keypad->clk);
-+		clk_prepare_enable(keypad->clk);
- 		keypad->enabled = true;
+diff --git a/drivers/video/fbdev/ep93xx-fb.c b/drivers/video/fbdev/ep93xx-fb.c
+index ba33b4dce0df..2398b3d48fed 100644
+--- a/drivers/video/fbdev/ep93xx-fb.c
++++ b/drivers/video/fbdev/ep93xx-fb.c
+@@ -548,7 +548,7 @@ static int ep93xxfb_probe(struct platform_device *pdev)
  	}
  
-@@ -169,7 +169,7 @@ static void ep93xx_keypad_close(struct input_dev *pdev)
- 	struct ep93xx_keypad *keypad = input_get_drvdata(pdev);
+ 	ep93xxfb_set_par(info);
+-	clk_enable(fbi->clk);
++	clk_prepare_enable(fbi->clk);
  
- 	if (keypad->enabled) {
--		clk_disable(keypad->clk);
-+		clk_disable_unprepare(keypad->clk);
- 		keypad->enabled = false;
- 	}
- }
+ 	err = register_framebuffer(info);
+ 	if (err)
+@@ -577,7 +577,7 @@ static int ep93xxfb_remove(struct platform_device *pdev)
+ 	struct ep93xx_fbi *fbi = info->par;
+ 
+ 	unregister_framebuffer(info);
+-	clk_disable(fbi->clk);
++	clk_disable_unprepare(fbi->clk);
+ 	ep93xxfb_dealloc_videomem(info);
+ 	fb_dealloc_cmap(&info->cmap);
+ 
 -- 
 2.32.0
 
