@@ -2,58 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54C13A6DDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3DA3A6DE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 20:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234680AbhFNSBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 14:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234637AbhFNSBN (ORCPT
+        id S234975AbhFNSCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 14:02:34 -0400
+Received: from mail-pl1-f171.google.com ([209.85.214.171]:36563 "EHLO
+        mail-pl1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234848AbhFNSC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 14:01:13 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22428C0617AF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:59:10 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id k7so10168656pjf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:59:10 -0700 (PDT)
+        Mon, 14 Jun 2021 14:02:26 -0400
+Received: by mail-pl1-f171.google.com with SMTP id x10so6996996plg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 11:00:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CEhJJ0I3n+465SJ2OQg4qV6RTAF3hyu2gH1k9jBoTOg=;
-        b=ORyklIpGZd7xWxuqsxdXJPwiACup5toMdSnvCu5RVrIvVygDCbJV3Oa4UQ4Eekc48E
-         07DgbCWWq38os9FG8K0I4rvXPe0LV1N9Ub5bhq1q0SIKOm3SiKD14MLaMOtgUaAK5vTm
-         Ca+nHGih5Sq2iJPw0S20YHYcX/Uqr5bI7xh6pLoBvVRNUumcwqb05iqfW2EiTRrtDZB2
-         vmLyotVaNg22/Knqw2YqifBcfuGQXwUV7PZf5CnUeSS2e87++UwkZucXA+2U+V99bBsE
-         M7OrG+FHlLdpaXFtvxZtsqrDAgjr7UcXLhM6uOjUSFpAu10xaw28YF0F6sjvf1wOy5NM
-         ILNw==
+        bh=ikgWymc1ypzBC+qNXVUU0vzqUyTd66gZ/nAfzMGF6Gs=;
+        b=WY/R0WLaBaiYdlkocqkG/FJRbohR+AMqvPTJBgCgQ6WUpM6WGjKHryGL50t5NkWvsm
+         vMcH1hbSdap6cslA79RfB+rP6Fc2nsooTv9Fbah/pcwb7KaiyIr0RTqlzXX2SPnreISO
+         M6r2ObUm6QdboLUe/Xsmg1vyziPOxsnZSQ8FUxZS3TQkMFiYm2vJ7tlkj5xJb1iVoQ6q
+         k/FYyV8gYGC1iOQSj0xq6w2U0mlqDjyCCZBI0riuo17i4vKea++vngs2XSPoKPjaXVMa
+         UnmI5/8WQ0BpC+Mq9BVZPrmd5tYBXBXV9esqEQSVd+pvT895+vg5+SyfmCSnWUpHUr7W
+         2Z3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CEhJJ0I3n+465SJ2OQg4qV6RTAF3hyu2gH1k9jBoTOg=;
-        b=Iv7hC2UWCYwwKmmDKO+iKstVOmkEDJzuda7myQqn7sSmIJxJ84axrVtnl2gTa3PmeT
-         bJuw6HH1qq8/KqgDcMqrmwFkmh2ULPmc7aUkmsVECxxaxLrAgeWx/Zcc/44MYOngC1t4
-         vqXsbjKyiawK/TYqYIx3NpOAquD6pyMWNrR3cnhzhxhi+dOu2126tIy1jFJQIBCg0kHJ
-         s1iNiXuRszdblFDo8dhLAa1We1C5uj853wIVspB4Eg+c3NxxZ5wXPwiXkwtl/4/liUY0
-         38i5W/81xQQ2NyaLA1XKMQICNMts1MhiJ4rosq5UASv4+GwI90dIKRwUQjvv1Bk3s3Sg
-         J7gw==
-X-Gm-Message-State: AOAM532R7r2IjHUw+n4xYh7kNI7xCmPGvcwBvbgfE9+/FD3EsX1/Nf+f
-        Y8ZaoEwJmPdugvG+N6QAAC2bIQ==
-X-Google-Smtp-Source: ABdhPJzROmNgV42dhmtSHXpS9dDJtftzasUha1TC2gZkpg5Ah8QIZsUbUjqKMNMnW2S4ZsplIjq6kg==
-X-Received: by 2002:a17:90b:1808:: with SMTP id lw8mr19960036pjb.30.1623693549668;
-        Mon, 14 Jun 2021 10:59:09 -0700 (PDT)
+        bh=ikgWymc1ypzBC+qNXVUU0vzqUyTd66gZ/nAfzMGF6Gs=;
+        b=HT+0jxnJJC6b1PMJB8PA5/NqY/2P/prpa3YCaKLBeLpt0bYCKkhNd3nvrtB+5Vgyms
+         n6Advn9xQVuRNW43vh4MeDyRUnXeLncyz2C8kGLOveWfQrsNP5RrvhrHIX1eJCdXw4Z4
+         9EYXsVt+Y2E7voKw/pacMRybzuo7drOIPg6A3LivmNUBNH13KyiqnkWzMpuV2gasFA0m
+         bqEj7ORcJ9Xj5xfJpar8Kl2/gVQ0i3evuIFf+JNE3bX9YS/ET9HY4MC+d2/Gb9A6UC1J
+         nEmHVlmqM1tfgohHNu8YVuAV6kTQzyDe+qijwA6S0EhObedhGo0HgpbdGPUPlAKZYeld
+         LWHg==
+X-Gm-Message-State: AOAM531XwpKrZLk21zXj0H0KjICISKcmYjTx/GFKVpyvOKiR35ofpm0r
+        92oFBUwRdLKVYMJqjp+KBqyYTg==
+X-Google-Smtp-Source: ABdhPJzgBl1fU+pCey+nzBpjvGIYgZkPno3JTYM2mPOn574FE4xRd5Go9RIDWay2rJHRcRbQPliVpA==
+X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr20698468pjb.13.1623693551409;
+        Mon, 14 Jun 2021 10:59:11 -0700 (PDT)
 Received: from p14s.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id z17sm13553246pfq.218.2021.06.14.10.59.08
+        by smtp.gmail.com with ESMTPSA id z17sm13553246pfq.218.2021.06.14.10.59.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 10:59:09 -0700 (PDT)
+        Mon, 14 Jun 2021 10:59:10 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/6] coresight: etm4x: core: Remove redundant check of attr
-Date:   Mon, 14 Jun 2021 11:58:59 -0600
-Message-Id: <20210614175901.532683-5-mathieu.poirier@linaro.org>
+Subject: [PATCH 5/6] coresight: tmc-etf: Fix global-out-of-bounds in tmc_update_etf_buffer()
+Date:   Mon, 14 Jun 2021 11:59:00 -0600
+Message-Id: <20210614175901.532683-6-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210614175901.532683-1-mathieu.poirier@linaro.org>
 References: <20210614175901.532683-1-mathieu.poirier@linaro.org>
@@ -63,36 +60,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junhao He <hejunhao2@hisilicon.com>
+From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-"attr" is checked by perf framework, so remove the redundant check in
-etm4_parse_event_config().
+commit 6f755e85c332 ("coresight: Add helper for inserting synchronization
+packets") removed trailing '\0' from barrier_pkt array and updated the
+call sites like etb_update_buffer() to have proper checks for barrier_pkt
+size before read but missed updating tmc_update_etf_buffer() which still
+reads barrier_pkt past the array size resulting in KASAN out-of-bounds
+bug. Fix this by adding a check for barrier_pkt size before accessing
+like it is done in etb_update_buffer().
 
-Link: https://lore.kernel.org/r/1620912469-52222-4-git-send-email-liuqi115@huawei.com
-Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
+ BUG: KASAN: global-out-of-bounds in tmc_update_etf_buffer+0x4b8/0x698
+ Read of size 4 at addr ffffffd05b7d1030 by task perf/2629
+
+ Call trace:
+  dump_backtrace+0x0/0x27c
+  show_stack+0x20/0x2c
+  dump_stack+0x11c/0x188
+  print_address_description+0x3c/0x4a4
+  __kasan_report+0x140/0x164
+  kasan_report+0x10/0x18
+  __asan_report_load4_noabort+0x1c/0x24
+  tmc_update_etf_buffer+0x4b8/0x698
+  etm_event_stop+0x248/0x2d8
+  etm_event_del+0x20/0x2c
+  event_sched_out+0x214/0x6f0
+  group_sched_out+0xd0/0x270
+  ctx_sched_out+0x2ec/0x518
+  __perf_event_task_sched_out+0x4fc/0xe6c
+  __schedule+0x1094/0x16a0
+  preempt_schedule_irq+0x88/0x170
+  arm64_preempt_schedule_irq+0xf0/0x18c
+  el1_irq+0xe8/0x180
+  perf_event_exec+0x4d8/0x56c
+  setup_new_exec+0x204/0x400
+  load_elf_binary+0x72c/0x18c0
+  search_binary_handler+0x13c/0x420
+  load_script+0x500/0x6c4
+  search_binary_handler+0x13c/0x420
+  exec_binprm+0x118/0x654
+  __do_execve_file+0x77c/0xba4
+  __arm64_compat_sys_execve+0x98/0xac
+  el0_svc_common+0x1f8/0x5e0
+  el0_svc_compat_handler+0x84/0xb0
+  el0_svc_compat+0x10/0x50
+
+ The buggy address belongs to the variable:
+  barrier_pkt+0x10/0x40
+
+ Memory state around the buggy address:
+  ffffffd05b7d0f00: fa fa fa fa 04 fa fa fa fa fa fa fa 00 00 00 00
+  ffffffd05b7d0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ >ffffffd05b7d1000: 00 00 00 00 00 00 fa fa fa fa fa fa 00 00 00 03
+                                      ^
+  ffffffd05b7d1080: fa fa fa fa 00 02 fa fa fa fa fa fa 03 fa fa fa
+  ffffffd05b7d1100: fa fa fa fa 00 00 00 00 05 fa fa fa fa fa fa fa
+ ==================================================================
+
+Link: https://lore.kernel.org/r/20210505093430.18445-1-saiprakash.ranjan@codeaurora.org
+Fixes: 0c3fc4d5fa26 ("coresight: Add barrier packet for synchronisation")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/hwtracing/coresight/coresight-tmc-etf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index db881993c211..da27cd4a3c38 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -568,11 +568,6 @@ static int etm4_parse_event_config(struct etmv4_drvdata *drvdata,
- 	struct etmv4_config *config = &drvdata->config;
- 	struct perf_event_attr *attr = &event->attr;
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+index 45b85edfc690..cd0fb7bfba68 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+@@ -530,7 +530,7 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
+ 		buf_ptr = buf->data_pages[cur] + offset;
+ 		*buf_ptr = readl_relaxed(drvdata->base + TMC_RRD);
  
--	if (!attr) {
--		ret = -EINVAL;
--		goto out;
--	}
--
- 	/* Clear configuration from previous run */
- 	memset(config, 0, sizeof(struct etmv4_config));
- 
+-		if (lost && *barrier) {
++		if (lost && i < CORESIGHT_BARRIER_PKT_SIZE) {
+ 			*buf_ptr = *barrier;
+ 			barrier++;
+ 		}
 -- 
 2.25.1
 
