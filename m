@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301873A6A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4E83A6A56
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhFNP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbhFNP22 (ORCPT
+        id S233946AbhFNPbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:31:00 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:38852 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233383AbhFNP3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:28:28 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C18C06124A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:26:23 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id g20so17440039ejt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:26:22 -0700 (PDT)
+        Mon, 14 Jun 2021 11:29:41 -0400
+Received: by mail-ed1-f52.google.com with SMTP id t7so1836495edd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:27:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qiJguyfqDey32XuRUsbQQb3E8cPJcAN2K8bbAeonWds=;
-        b=Y1tFnPR/wIxPrvHeUyi8kQCqzu4h/YSe1mwmX5SYlfcYRBfYXuSRYHnb8XiFzpYn9Y
-         3lPuA5CR0jerqiyBbMBbz5MEHCFNKAhjF/zfe1HFBSaLreHkSJjbY3L1fixpJfiT4H6D
-         /123aOci5sqYApHFdymqObiRqt9817SDyAtB+VH3bkEMKLBYCbC0YavSmWc/0jRpbUz3
-         Ml1qKMMQI+Y9jTONK9L4X+famK2j0GdHt1h/DQiLOkUTrXR2ZbG9kaD1r/T4LdsfnpLb
-         tQtiX9dqnxPefO0SsvlqGWKDv2TcYThMaiNoTPqlixSwTEYErDZp0X0G+FFE0nezPhRq
-         Jdow==
+        bh=dDT5rlW0N7H4VvpBkB/rB2GqsHgubckjDkxPaOtr/xo=;
+        b=eSdx8zyzDm9ucytlOww51RgKl5j8xPNdBuP/pNIZGcFWXEyWFGP+oXDdaYOrnRAns5
+         tCvBx0oeOsaaHUTxQdrwTGlW6z6uIhzqYhlz3rHiXJcACTp7IsBNiDbjhl/osXSNqIKK
+         W2D5kGv1YQESPcMPI90eUooFkDqjB/bpjfHERtgkN/j31SHejexuPCo7a7pk9s+L7C32
+         tHxW8qbvfGze3OtqwQGh5SlRiPJOX3mYUfld3q42yC4/EGlyKeqExxdFSEmbgQA5crds
+         U9WenDMH3VqOvivbH0PmGOBRYE/a7WPAu1qhcJqNmluqGokalg/MQ2Mq4xNA3nPoExV2
+         IwKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=qiJguyfqDey32XuRUsbQQb3E8cPJcAN2K8bbAeonWds=;
-        b=Tc/bXokIh43ZQlvyol/gr5ekK1erSca4JRHQUEskTAcHg9WL4+W8gPc50gA3gpEAOh
-         9H+wGNnV1pUwp5XsRsjk+AobYu/oWPL/UfD+6sW1uzVAk9DlCnFdP8BtUjaTC7vD3UNu
-         iaf6D6Wg90yn8qI7Do2evst7Om6j748Am6WSt7XvjtbQ3hwbgDggiPUujYUh9ARlX/ZT
-         Pq0OvX3E0qUombjBazOlSK2PUKCUncJ1TU4CLGN1+jvJ0JQRlE03xgbwPjrQuxOKsCE5
-         Lr6d4tVvTo7kjBS+bnsHNUWF2nLl2bhJC/fp4teZaYzEM3zMqWLS83waoTRgM8vqU9UM
-         qNDQ==
-X-Gm-Message-State: AOAM533iptt+12DHGyNaIePngkKaiP90ODr7rdnGi1ZpZ82lOg2NhEYO
-        NJsuHaqB4ts1xG3KKN7ff9MPqrJ0pisrR0Tu
-X-Google-Smtp-Source: ABdhPJyN6xgCUnvU8yatvX+iCpxha7cLj9bHiSn/aMOeyiL6QgvlwgOkUk3jWCbE8o1pXQKYufQMVA==
-X-Received: by 2002:a17:906:268c:: with SMTP id t12mr15531952ejc.441.1623684381496;
-        Mon, 14 Jun 2021 08:26:21 -0700 (PDT)
+        bh=dDT5rlW0N7H4VvpBkB/rB2GqsHgubckjDkxPaOtr/xo=;
+        b=IezMAVaxiZOsyVpl0h0fXrqRdLMhAtOGNNJeLpttH4xe1gvR52M0tnGKBklcm4VkK+
+         KM4drINRPzUuzpPGW54pPY2mMUtMdHf5XFRwjhfDMKmUdCaFb9LpWlTNCjylqqL1Ifeq
+         cZIMZkuK4HtQFiTWZOLfwNYCQS2ZrEINf9zLy2yCWw+HL+0AZbQ5e1lc6Ni0yTfmHLK7
+         j8qUb1tKsQsYM7ZZJiFHXnnYR2chzZTzJ7LofHXPHiQUxI93rEWDlZCQDEIIIaaJMM2Y
+         MvPOJJLVB3+5BlP8gF8I2QcrBsJRYaqQgTgxwdgDhRO7HiwpXNb7K/MGqvacTbPfOr2h
+         LydQ==
+X-Gm-Message-State: AOAM531IqwAnA8u20tLi+nCHoOpjCTphyxd3xpL5PfNiXFvVwyCcvgN1
+        5S7ryAsajI/b67OBCjoqpBFupgj0Xkv0EyN8
+X-Google-Smtp-Source: ABdhPJzUsfoA0QONluP+sE0c5qOTK68fAZbX/3ipyn6BYTFQ1TPq5xaTcq4t3zQ1mjs0pJuSKsmpUg==
+X-Received: by 2002:aa7:d5c9:: with SMTP id d9mr17497072eds.278.1623684382874;
+        Mon, 14 Jun 2021 08:26:22 -0700 (PDT)
 Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
-        by smtp.gmail.com with ESMTPSA id v8sm9118369edc.59.2021.06.14.08.26.21
+        by smtp.gmail.com with ESMTPSA id s18sm7948219ejh.12.2021.06.14.08.26.22
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Jun 2021 08:26:21 -0700 (PDT)
+        Mon, 14 Jun 2021 08:26:22 -0700 (PDT)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com,
         Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 26/33] arm64: zynqmp: Move rtc to different location on zcu104-revA
-Date:   Mon, 14 Jun 2021 17:25:34 +0200
-Message-Id: <fe6c3f96fbd359409b7fef85d2c2ada584b3d0cc.1623684253.git.michal.simek@xilinx.com>
+Subject: [PATCH v2 27/33] arm64: zynqmp: Add reset description for sata
+Date:   Mon, 14 Jun 2021 17:25:35 +0200
+Message-Id: <b7f61daa2fe1a2300767af73c46b8082088f741a.1623684253.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1623684253.git.michal.simek@xilinx.com>
 References: <cover.1623684253.git.michal.simek@xilinx.com>
@@ -68,42 +66,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move it the same location as is on zcu104-revC for easier comparison.
+Sata needs to get reset before configuration that's why add property for it
+there.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
 Changes in v2: None
 
- arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-index 84c4a9003e2e..048df043b45c 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-@@ -417,10 +417,6 @@ conf-tx {
- 	};
- };
- 
--&rtc {
--	status = "okay";
--};
--
- &psgtr {
- 	status = "okay";
- 	/* nc, sata, usb3, dp */
-@@ -441,6 +437,10 @@ flash@0 {
- 	};
- };
- 
-+&rtc {
-+	status = "okay";
-+};
-+
- &sata {
- 	status = "okay";
- 	/* SATA OOB timing settings */
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+index da54a2d35552..6f0fcec28ae2 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
++++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+@@ -673,6 +673,7 @@ sata: ahci@fd0c0000 {
+ 			interrupt-parent = <&gic>;
+ 			interrupts = <0 133 4>;
+ 			power-domains = <&zynqmp_firmware PD_SATA>;
++			resets = <&zynqmp_reset ZYNQMP_RESET_SATA>;
+ 			#stream-id-cells = <4>;
+ 			iommus = <&smmu 0x4c0>, <&smmu 0x4c1>,
+ 				 <&smmu 0x4c2>, <&smmu 0x4c3>;
 -- 
 2.32.0
 
