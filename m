@@ -2,159 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC333A67F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FFC3A67F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhFNNfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233298AbhFNNfb (ORCPT
+        id S233902AbhFNNf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:35:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48936 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233805AbhFNNf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:35:31 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8151EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 06:33:28 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id v6so8496876qta.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 06:33:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=cAUqeEpvWCkYWomZHT8Du/PXR9Hb0hXmraoq1aYdJeI=;
-        b=pjAEL3RklamT2ea9ks/JNUzw0Kpgv4zYuHuOL6SFc5mRQeVO99/7YT5gy5JVYZ4/Iw
-         3AYgtTRyl1fymKmlRu4eQBHOfx488ruY60Wjj4kvx4pVsdk6sY5WecqGPr+DTh2SniM1
-         7wtYNmPY26n5X7qrbIqj2ytr9thPyiS/f36pPdntQFodAYSKtWoB3OsjFCwaCLB6unXf
-         jarKxmU45MHI5BRKbhBJKhXptH3nOlPGMx+ADeCmvHsLBAinbdSxfGZVG0ECRWHa6jMa
-         Rbr8b9hb8uza+KYOedL9UhIQ9fBroWOPasYZ51WQgu5yp56+bnfeXN31/s6v9QMdZpoW
-         zTRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=cAUqeEpvWCkYWomZHT8Du/PXR9Hb0hXmraoq1aYdJeI=;
-        b=kYtn5dZDFjXlR6PDPVW+00xQG6DKciFxGdfeyXmeSs/WnRvfQrC3hNvLZewMhkYI22
-         GdSLWJ2F5xpnDChm98r2H6Xpky7DRMhq8Qn3q8Uq88ofUT2+P/I/Y8mT08f8+qn5OMDo
-         +LWS2nJ2adsu6p/qXZKxK2sTk3hJLHGdwrnNk+FhB6KpuvpqmAsuRKJmeZXiej5UKFLt
-         4h1Fz84o/y0ylnunzPVuZMxArPhEe/hPBIqshp9Eq+UWLKkj1T5zXnXdk/PyGns380Gn
-         jsAsUeyMxIQk3xynh4ekHGf6dYuSB/ajOJ8yjHPsW4oUFd0Ey8p00kkXuYsqpdoqJwqq
-         ty4w==
-X-Gm-Message-State: AOAM5300/Bh6t2BlxF6LERmyOU3PabbqvkI4JHEJcMDb7jBknHWaeb+3
-        bg4fSjLFvfC5UkAgZBg7lRfIkQ==
-X-Google-Smtp-Source: ABdhPJyYC+nZRV+fy4AzCGkEGO6Ybe9Z+87K1jGmsTNrB9WnRW+68Auv6i4mlFxbSA9N1CDorD5IXg==
-X-Received: by 2002:a05:622a:d1:: with SMTP id p17mr9570218qtw.141.1623677607558;
-        Mon, 14 Jun 2021 06:33:27 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id l6sm10217007qkk.117.2021.06.14.06.33.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 06:33:26 -0700 (PDT)
-Message-ID: <d18bfce0b7cbd18594faa6b1013e27e6719f0a71.camel@ndufresne.ca>
-Subject: Re: [PATCH v2 7/8] media: hevc: Add scaling matrix control
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, p.zabel@pengutronix.de,
-        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk, jernej.skrabec@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Mon, 14 Jun 2021 09:33:25 -0400
-In-Reply-To: <96e63be705b04b40a943307c81ed71e8c573ef96.camel@collabora.com>
-References: <20210610154442.806107-1-benjamin.gaignard@collabora.com>
-         <20210610154442.806107-8-benjamin.gaignard@collabora.com>
-         <87a1e585-688e-7c4d-b9a9-24f42772a1a8@xs4all.nl>
-         <d5b010c8-c0c5-8800-b2c3-9371923ca10c@collabora.com>
-         <96e63be705b04b40a943307c81ed71e8c573ef96.camel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        Mon, 14 Jun 2021 09:35:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623677634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DJ181kjLrZlfCW+M6blAkWvz5Hz7Ug2IkqhD/vilICM=;
+        b=RRNRpFepwyTxKrvZveH78VcawZXMiecU+VGt7efU7ME9p6X3Nh7HvzYSTgoZxn6oa2IlDe
+        k+6ZyFoU0deSXWL9REHcxs0XB+LOLsR2RkLTPTRPDqulbzY4g4+7mcvAxxtAqYG2O2upgf
+        dbwCqQNNS4UWWF9iG2l4quprGe+fS00=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-sjqxyUcoO3Wp7_3Fs6RSCw-1; Mon, 14 Jun 2021 09:33:52 -0400
+X-MC-Unique: sjqxyUcoO3Wp7_3Fs6RSCw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E6A5802ED3;
+        Mon, 14 Jun 2021 13:33:45 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 326385C23E;
+        Mon, 14 Jun 2021 13:33:44 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <162367683365.460125.4467036947364047314.stgit@warthog.procyon.org.uk>
+References: <162367683365.460125.4467036947364047314.stgit@warthog.procyon.org.uk> <162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk>
+Cc:     dhowells@redhat.com, jlayton@kernel.org, willy@infradead.org,
+        Andrew W Elble <aweits@rit.edu>, ceph-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] netfs: fix test for whether we can skip read when writing beyond EOF
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <466345.1623677623.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 14 Jun 2021 14:33:43 +0100
+Message-ID: <466346.1623677623@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le lundi 14 juin 2021 à 09:50 -0300, Ezequiel Garcia a écrit :
-> On Mon, 2021-06-14 at 09:43 +0200, Benjamin Gaignard wrote:
-> > 
-> > Le 14/06/2021 à 09:27, Hans Verkuil a écrit :
-> > > On 10/06/2021 17:44, Benjamin Gaignard wrote:
-> > > > HEVC scaling lists are used for the scaling process for transform
-> > > > coefficients.
-> > > > V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
-> > > > encoded in the bitstream.
-> > > Comparing H264 with HEVC I noticed that the corresponding flag for H264 is
-> > > called V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT.
-> > > 
-> > > Should those names be aligned? Also, it is part of PPS for H264 and SPS in HEVC,
-> > > is that difference correct?
-> > 
-> > In ITU specifications ("7.4.3.2.1 General sequence parameter set RBSP semantics") this flag is define like that:
-> > scaling_list_enabled_flag equal to 1 specifies that a scaling list is used for the scaling process for transform coefficients.
-> > scaling_list_enabled_flag equal to 0 specifies that scaling list is not used for the scaling process for transform coefficients.
-> > 
-> > So for me the naming is correct.
-> > 
-> 
-> The bitstream is really parsed in userspace (gstreamer, ffmpeg, chromium).
-> Not all bitstream parameters need to be passed as-is, because the kernel
-> is actually a sort of low-level layer in the decoder stack.
-> 
-> I think it's probably most appropriate to follow our H.264 interface
-> semantics, see https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=54889c51b833d236228f983be16212fbe806bb89.
-> 
-> The H.264 story goes like this:
-> 
-> * Default scaling list is used for decoding, but can be modified
->   by a bitstream-provided scaling list.
->    
-> * The scaling list modification can be in SPS or in PPS.
-> 
-> * For each frame, the SPS and PPS headers will tell if
->   a modified scaling list must be used for decoding,
->   and if it's provided in the SPS header or the PPS header.
-> 
-> The userspace parser must take care of this, and pass
-> a scaling matrix to the kernel via V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX,
-> setting PPS_FLAG_SCALING_MATRIX_PRESENT.
-> 
-> This flag is at the PPS control, so the scaling modification
-> can be applied on each frame.
-> 
-> In other words, the kernel interface is simpler, it just
-> receives a scaling matrix and a flag telling if it must be used or not. 
-> 
-> We should probably clarify the documentation, so this process is more clear.
-> 
-> From the HEVC spec, it seems the process should be similar.
-> The only difference is the SPS "scaling_list_enabled_flag" parameter,
-> which doesn't exist in H.264.
-> 
-> Nicolas: what do you think?
+David Howells <dhowells@redhat.com> wrote:
 
-I believe its a fine "driver convenience". In the sense that the flag might not
-have been strictly needed, but may make the driver code simpler. Whenever
-possible, and within the spec, I'd agree to keep things as consistant as
-possible.
+> +static noinline bool netfs_skip_page_read(struct page *page, loff_t pos=
+, size_t len)
 
-From the doc, there seems to be a "default" or "flat" version of the scaling
-matrix in H264. I think if I had notice this before, I would have pushed forward
-the same semantic as the MPEG2 quantisation. In MPEG2, the quantisation control
-is set to it's default value in the control framework. What I like of this
-approach is that the control becomes always valid. Perhaps there is some
-differences here and there I'm not noticing though.
+I should've removed the "noinline".
 
-Semantically, it would also be totally different if there is a HW fast path to
-the "flat" scaling matrix, in which case you need that flag to enable it. I
-think the fact one prepend SPS/PPS is simply to help locate the relevant part of
-the specification.
-
-> 
-> Thanks,
-> Ezequiel
-> 
-
+David
 
