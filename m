@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2393A62B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDCD3A63FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhFNLDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:03:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58192 "EHLO mail.kernel.org"
+        id S235857AbhFNLTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234847AbhFNKyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:54:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1859261490;
-        Mon, 14 Jun 2021 10:40:22 +0000 (UTC)
+        id S233298AbhFNLHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:07:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1D556193A;
+        Mon, 14 Jun 2021 10:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667222;
-        bh=pKJfy3nXKu+knlbuBGoOjIAmt7isEgtgwAYMAdlimKE=;
+        s=korg; t=1623667545;
+        bh=4nV3/BeEgo/DV38BQTjloHoYRjcZGmt8Old9ymBqRC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CWHXQxv1GoEo1wG5oXqyBduCjuMZytS0Uovg8k4GE6ibyxU9IjMF6PpAG4bS0b4A8
-         qVdd6Apo7hI1D3qa5kvRrVDORKU9eUbxXN/vL72FnP9TwuNLS1xOHUGqR6FBQLGVIk
-         6I/zm073SCvSsOLwG9KwulW+KYZr5WVHkfk2jemA=
+        b=0HJac+h59NM6KaQL4hGeAhTUWx71x9VaRW9NcGC5YqfUt/Az0XEjVzeJcT0QzqgPM
+         Hl2XVPPMQjAcN8aO7mzBrDs7B54O7Zv2K+vbdpqGQLQ1iiM21yxPNWoMkvU/nMFIih
+         wC5dwZRzNYq73qAqMW08kRKxuwKN19kOofBL74TE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 74/84] perf session: Correct buffer copying when peeking events
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.10 111/131] phy: ti: Fix an error code in wiz_probe()
 Date:   Mon, 14 Jun 2021 12:27:52 +0200
-Message-Id: <20210614102648.872694302@linuxfoundation.org>
+Message-Id: <20210614102656.780263349@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,55 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit 197eecb6ecae0b04bd694432f640ff75597fed9c ]
+commit b8203ec7f58ae925e10fadd3d136073ae7503a6e upstream.
 
-When peeking an event, it has a short path and a long path.  The short
-path uses the session pointer "one_mmap_addr" to directly fetch the
-event; and the long path needs to read out the event header and the
-following event data from file and fill into the buffer pointer passed
-through the argument "buf".
+When the code execute this if statement, the value of ret is 0.
+However, we can see from the dev_err() log that the value of
+ret should be -EINVAL.
 
-The issue is in the long path that it copies the event header and event
-data into the same destination address which pointer "buf", this means
-the event header is overwritten.  We are just lucky to run into the
-short path in most cases, so we don't hit the issue in the long path.
+Clean up smatch warning:
 
-This patch adds the offset "hdr_sz" to the pointer "buf" when copying
-the event data, so that it can reserve the event header which can be
-used properly by its caller.
+drivers/phy/ti/phy-j721e-wiz.c:1216 wiz_probe() warn: missing error code 'ret'
 
-Fixes: 5a52f33adf02 ("perf session: Add perf_session__peek_event()")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20210605052957.1070720-1-leo.yan@linaro.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: c9f9eba06629 ("phy: ti: j721e-wiz: Manage typec-gpio-dir")
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Link: https://lore.kernel.org/r/1621939832-65535-1-git-send-email-yang.lee@linux.alibaba.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/session.c | 1 +
+ drivers/phy/ti/phy-j721e-wiz.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 56f3039fe2a7..8ff2c98e9032 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -1631,6 +1631,7 @@ int perf_session__peek_event(struct perf_session *session, off_t file_offset,
- 	if (event->header.size < hdr_sz || event->header.size > buf_sz)
- 		return -1;
+--- a/drivers/phy/ti/phy-j721e-wiz.c
++++ b/drivers/phy/ti/phy-j721e-wiz.c
+@@ -894,6 +894,7 @@ static int wiz_probe(struct platform_dev
  
-+	buf += hdr_sz;
- 	rest = event->header.size - hdr_sz;
- 
- 	if (readn(fd, buf, rest) != (ssize_t)rest)
--- 
-2.30.2
-
+ 		if (wiz->typec_dir_delay < WIZ_TYPEC_DIR_DEBOUNCE_MIN ||
+ 		    wiz->typec_dir_delay > WIZ_TYPEC_DIR_DEBOUNCE_MAX) {
++			ret = -EINVAL;
+ 			dev_err(dev, "Invalid typec-dir-debounce property\n");
+ 			goto err_addr_to_resource;
+ 		}
 
 
