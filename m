@@ -2,54 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90BF3A6A90
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519F23A6A91
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233850AbhFNPiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:38:46 -0400
-Received: from verein.lst.de ([213.95.11.211]:45022 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233644AbhFNPiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:38:09 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E0F6C68AFE; Mon, 14 Jun 2021 17:36:03 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 17:36:03 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Dong Aisheng <dongas86@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        iommu@lists.linux-foundation.org,
-        open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 1/1] dma: coherent: check no-map property for arm64
-Message-ID: <20210614153603.GA1998@lst.de>
-References: <20210611131056.3731084-1-aisheng.dong@nxp.com> <20210614083609.GA18701@willie-the-truck> <CAA+hA=S8x4S0sgAiJbqOC-wgtOshV_jhAq6eVqX5-EAeg3Dczg@mail.gmail.com> <20210614145105.GC30667@arm.com> <6f897830-301f-3eb4-785f-de446476e676@arm.com>
+        id S233859AbhFNPiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233644AbhFNPix (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 11:38:53 -0400
+Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B6EC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:36:49 -0700 (PDT)
+Received: from tux.applied-asynchrony.com (p5ddd760d.dip0.t-ipconnect.de [93.221.118.13])
+        by mail.itouring.de (Postfix) with ESMTPSA id 59CF61259D3;
+        Mon, 14 Jun 2021 17:36:46 +0200 (CEST)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id 02209F01606;
+        Mon, 14 Jun 2021 17:36:45 +0200 (CEST)
+Subject: Re: [PATCH 5.10 000/131] 5.10.44-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+References: <20210614102652.964395392@linuxfoundation.org>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <83a2f94d-dd6e-2796-ad04-2f92ac3e583d@applied-asynchrony.com>
+Date:   Mon, 14 Jun 2021 17:36:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f897830-301f-3eb4-785f-de446476e676@arm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 04:34:05PM +0100, Robin Murphy wrote:
->> Looking at the rmem_dma_device_init() -> dma_init_coherent_memory(), it
->> ends up calling memremap(MEMREMAP_WC) which would warn if it intersects
->> with system RAM regardless of the architecture. If the memory region is
->> nomap, it doesn't end up as IORESOURCE_SYSTEM_RAM, so memremap() won't
->> warn. But why is this specific only to arm (or arm64)?
->
-> Didn't some ARMv7 implementations permit unexpected cache hits for the 
-> non-cacheable address if the same PA has been speculatively fetched via the 
-> cacheable alias?
+On 2021-06-14 12:26, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.44 release.
 
-If we care about that we need to change these platforms to change the
-cache attributes of the kernel direct mapping instead of using vmap.
-We already have code to do that for openrisc, someone just needs to
-write the glue code for other platforms.
+Hmm..I build my kernel with BTF for bpftrace and this gives me:
+
+...
+   CC      init/version.o
+   AR      init/built-in.a
+   LD      vmlinux.o
+   MODPOST vmlinux.symvers
+   MODINFO modules.builtin.modinfo
+   GEN     modules.builtin
+   LD      .tmp_vmlinux.btf
+   BTF     .btf.vmlinux.bin.o
+   LD      .tmp_vmlinux.kallsyms1
+   KSYMS   .tmp_vmlinux.kallsyms1.S
+   AS      .tmp_vmlinux.kallsyms1.S
+   LD      .tmp_vmlinux.kallsyms2
+   KSYMS   .tmp_vmlinux.kallsyms2.S
+   AS      .tmp_vmlinux.kallsyms2.S
+   LD      vmlinux
+   BTFIDS  vmlinux
+FAILED unresolved symbol migrate_enable
+
+thanks to:
+
+> Jiri Olsa <jolsa@kernel.org>
+>      bpf: Add deny list of btf ids check for tracing programs
+
+When I revert this it builds fine, just like before. Maybe a missing
+requirement or followup fix? I didn't find anything with a quick search.
+Using gcc-11, if it matters.
+
+-h
