@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6374E3A64C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427063A631C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235666AbhFNL3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:29:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42846 "EHLO mail.kernel.org"
+        id S235435AbhFNLKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:10:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235467AbhFNLOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:14:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BB7661242;
-        Mon, 14 Jun 2021 10:49:08 +0000 (UTC)
+        id S234756AbhFNK7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:59:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA11761432;
+        Mon, 14 Jun 2021 10:42:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667749;
-        bh=SFAV6JONZscqsQay6VWZtgYL8AY1KB8MG4hRcvLumLg=;
+        s=korg; t=1623667334;
+        bh=rBdCQKo4oTB5NfIG2Xln7Et4gcFivtkkr+NcTYq4zbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RWUw9riKXzBkZDbeHM9v7aCr/1/KXsb9g/EfQFJSKitRo0vGAnb3CURJyC7Kccbix
-         lcCy2EM00TK5cQHn5wA6RwI59hLR5KYZWIFKlrxWVgR7/5cyl6oYTHcuPcmPnCSIrm
-         NojABw5++ux1cYCX6v4bccgChPtlCk6qsFcuCgxI=
+        b=KmaYO1XsDs4TuMjqzlh2SxBJn/yebvok89420PzRm1mm2Ucjs4Xp1DbvRBzfDKvnA
+         pYF9dIXebQX8ndvK2pt1NMI6ngT0niBZNy8HtrviIDDk1p4RYQHMqi7cehPS0vYoD1
+         lHp5NKow7bF0GxiBsZ/dXeJ+rIysDp45+NVaGZso=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.12 058/173] ACPI: Pass the same capabilities to the _OSC regardless of the query flag
-Date:   Mon, 14 Jun 2021 12:26:30 +0200
-Message-Id: <20210614102700.095347454@linuxfoundation.org>
+        stable@vger.kernel.org, Zong Li <zong.li@sifive.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 030/131] net: macb: ensure the device is available before accessing GEMGXL control registers
+Date:   Mon, 14 Jun 2021 12:26:31 +0200
+Message-Id: <20210614102654.039561750@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,98 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Zong Li <zong.li@sifive.com>
 
-commit 159d8c274fd92438ca6d7068d7a5eeda157227f4 upstream.
+[ Upstream commit 5eff1461a6dec84f04fafa9128548bad51d96147 ]
 
-Commit 719e1f561afb ("ACPI: Execute platform _OSC also with query bit
-clear") makes acpi_bus_osc_negotiate_platform_control() not only query
-the platforms capabilities but it also commits the result back to the
-firmware to report which capabilities are supported by the OS back to
-the firmware
+If runtime power menagement is enabled, the gigabit ethernet PLL would
+be disabled after macb_probe(). During this period of time, the system
+would hang up if we try to access GEMGXL control registers.
 
-On certain systems the BIOS loads SSDT tables dynamically based on the
-capabilities the OS claims to support. However, on these systems the
-_OSC actually clears some of the bits (under certain conditions) so what
-happens is that now when we call the _OSC twice the second time we pass
-the cleared values and that results errors like below to appear on the
-system log:
+We can't put runtime_pm_get/runtime_pm_put/ there due to the issue of
+sleep inside atomic section (7fa2955ff70ce453 ("sh_eth: Fix sleeping
+function called from invalid context"). Add netif_running checking to
+ensure the device is available before accessing GEMGXL device.
 
-  ACPI BIOS Error (bug): Could not resolve symbol [\_PR.PR00._CPC], AE_NOT_FOUND (20210105/psargs-330)
-  ACPI Error: Aborting method \_PR.PR01._CPC due to previous error (AE_NOT_FOUND) (20210105/psparse-529)
+Changed in v2:
+ - Use netif_running instead of its own flag
 
-In addition the ACPI 6.4 spec says following [1]:
-
-  If the OS declares support of a feature in the Support Field in one
-  call to _OSC, then it must preserve the set state of that bit
-  (declaring support for that feature) in all subsequent calls.
-
-Based on the above we can fix the issue by passing the same set of
-capabilities to the platform wide _OSC in both calls regardless of the
-query flag.
-
-While there drop the context.ret.length checks which were wrong to begin
-with (as the length is number of bytes not elements). This is already
-checked in acpi_run_osc() that also returns an error in that case.
-
-Includes fixes by Hans de Goede.
-
-[1] https://uefi.org/specs/ACPI/6.4/06_Device_Configuration/Device_Configuration.html#sequence-of-osc-calls
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213023
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1963717
-Fixes: 719e1f561afb ("ACPI: Execute platform _OSC also with query bit clear")
-Cc: 5.12+ <stable@vger.kernel.org> # 5.12+
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Zong Li <zong.li@sifive.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/bus.c |   27 ++++++++-------------------
- 1 file changed, 8 insertions(+), 19 deletions(-)
+ drivers/net/ethernet/cadence/macb_main.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -330,32 +330,21 @@ static void acpi_bus_osc_negotiate_platf
- 	if (ACPI_FAILURE(acpi_run_osc(handle, &context)))
- 		return;
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 390f45e49eaf..1e8bf6b9834b 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -2709,6 +2709,9 @@ static struct net_device_stats *gem_get_stats(struct macb *bp)
+ 	struct gem_stats *hwstat = &bp->hw_stats.gem;
+ 	struct net_device_stats *nstat = &bp->dev->stats;
  
--	capbuf_ret = context.ret.pointer;
--	if (context.ret.length <= OSC_SUPPORT_DWORD) {
--		kfree(context.ret.pointer);
--		return;
--	}
-+	kfree(context.ret.pointer);
++	if (!netif_running(bp->dev))
++		return nstat;
++
+ 	gem_update_stats(bp);
  
--	/*
--	 * Now run _OSC again with query flag clear and with the caps
--	 * supported by both the OS and the platform.
--	 */
-+	/* Now run _OSC again with query flag clear */
- 	capbuf[OSC_QUERY_DWORD] = 0;
--	capbuf[OSC_SUPPORT_DWORD] = capbuf_ret[OSC_SUPPORT_DWORD];
--	kfree(context.ret.pointer);
- 
- 	if (ACPI_FAILURE(acpi_run_osc(handle, &context)))
- 		return;
- 
- 	capbuf_ret = context.ret.pointer;
--	if (context.ret.length > OSC_SUPPORT_DWORD) {
--		osc_sb_apei_support_acked =
--			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_APEI_SUPPORT;
--		osc_pc_lpi_support_confirmed =
--			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_PCLPI_SUPPORT;
--		osc_sb_native_usb4_support_confirmed =
--			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
--	}
-+	osc_sb_apei_support_acked =
-+		capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_APEI_SUPPORT;
-+	osc_pc_lpi_support_confirmed =
-+		capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_PCLPI_SUPPORT;
-+	osc_sb_native_usb4_support_confirmed =
-+		capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
- 
- 	kfree(context.ret.pointer);
- }
+ 	nstat->rx_errors = (hwstat->rx_frame_check_sequence_errors +
+-- 
+2.30.2
+
 
 
