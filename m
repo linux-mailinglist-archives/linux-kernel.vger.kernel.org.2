@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F1E3A653F
+	by mail.lfdr.de (Postfix) with ESMTP id 467973A653D
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235487AbhFNLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:36:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49422 "EHLO mail.kernel.org"
+        id S235923AbhFNLgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:36:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233187AbhFNLWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:22:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF1266199E;
-        Mon, 14 Jun 2021 10:52:20 +0000 (UTC)
+        id S235362AbhFNLWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:22:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A13161438;
+        Mon, 14 Jun 2021 10:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667941;
-        bh=2AXDpNHRTbKZ6lA610OkurqIG42bGIMAkWYr4zAw8+k=;
+        s=korg; t=1623667944;
+        bh=32Cie78WcU2RXZccCpobeXEb38nYkx9bFQdJIO/nR5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zfJq3JWi4AUNEsX/V1WtBsrc2uulIW3j3nAm1WEkmk50aTtxIX3MdL5dvAVM5zwsG
-         xh2qmKw2z5pYLoc8C4vGLgWjo+wlo5x2r3ltKNe8oJYm5GD2suZQeLNcZIkFPyXpVG
-         bmtqG5bFX7PCOegUh1+Wf0xP9aVa1s821P2dU8W8=
+        b=XXbPMURO94iWPbfFwQUG/Nj3/eEvtN6dngiFmeSPvPItcY6I/NZv6CoEyF2d/QXvq
+         eFDU3aNtA1M9r1w+gsBb8UNJBjcnsLcTXyqF9XWQLvrAB28Nz3K9EjnTfFHP13cckr
+         L/hQ5Z6Ik+cca9gjhKXf98ZgESPcUlzHj0jUQXmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre GRIVEAUX <agriveaux@deutnet.info>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.12 101/173] USB: serial: omninet: add device id for Zyxel Omni 56K Plus
-Date:   Mon, 14 Jun 2021 12:27:13 +0200
-Message-Id: <20210614102701.525249363@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.12 102/173] USB: serial: quatech2: fix control-request directions
+Date:   Mon, 14 Jun 2021 12:27:14 +0200
+Message-Id: <20210614102701.558124995@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -40,48 +38,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+From: Johan Hovold <johan@kernel.org>
 
-commit fc0b3dc9a11771c3919eaaaf9d649138b095aa0f upstream.
+commit eb8dbe80326c3d44c1e38ee4f40e0d8d3e06f2d0 upstream.
 
-Add device id for Zyxel Omni 56K Plus modem, this modem include:
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-USB chip:
-NetChip
-NET2888
+Fix the three requests which erroneously used usb_rcvctrlpipe().
 
-Main chip:
-901041A
-F721501APGF
-
-Another modem using the same chips is the Zyxel Omni 56K DUO/NEO,
-could be added with the right USB ID.
-
-Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
-Cc: stable@vger.kernel.org
+Fixes: f7a33e608d9a ("USB: serial: add quatech2 usb to serial driver")
+Cc: stable@vger.kernel.org      # 3.5
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/omninet.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/serial/quatech2.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/serial/omninet.c
-+++ b/drivers/usb/serial/omninet.c
-@@ -26,6 +26,7 @@
+--- a/drivers/usb/serial/quatech2.c
++++ b/drivers/usb/serial/quatech2.c
+@@ -416,7 +416,7 @@ static void qt2_close(struct usb_serial_
  
- #define ZYXEL_VENDOR_ID		0x0586
- #define ZYXEL_OMNINET_ID	0x1000
-+#define ZYXEL_OMNI_56K_PLUS_ID	0x1500
- /* This one seems to be a re-branded ZyXEL device */
- #define BT_IGNITIONPRO_ID	0x2000
+ 	/* flush the port transmit buffer */
+ 	i = usb_control_msg(serial->dev,
+-			    usb_rcvctrlpipe(serial->dev, 0),
++			    usb_sndctrlpipe(serial->dev, 0),
+ 			    QT2_FLUSH_DEVICE, 0x40, 1,
+ 			    port_priv->device_port, NULL, 0, QT2_USB_TIMEOUT);
  
-@@ -40,6 +41,7 @@ static void omninet_port_remove(struct u
+@@ -426,7 +426,7 @@ static void qt2_close(struct usb_serial_
  
- static const struct usb_device_id id_table[] = {
- 	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNINET_ID) },
-+	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNI_56K_PLUS_ID) },
- 	{ USB_DEVICE(ZYXEL_VENDOR_ID, BT_IGNITIONPRO_ID) },
- 	{ }						/* Terminating entry */
- };
+ 	/* flush the port receive buffer */
+ 	i = usb_control_msg(serial->dev,
+-			    usb_rcvctrlpipe(serial->dev, 0),
++			    usb_sndctrlpipe(serial->dev, 0),
+ 			    QT2_FLUSH_DEVICE, 0x40, 0,
+ 			    port_priv->device_port, NULL, 0, QT2_USB_TIMEOUT);
+ 
+@@ -654,7 +654,7 @@ static int qt2_attach(struct usb_serial
+ 	int status;
+ 
+ 	/* power on unit */
+-	status = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
++	status = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
+ 				 0xc2, 0x40, 0x8000, 0, NULL, 0,
+ 				 QT2_USB_TIMEOUT);
+ 	if (status < 0) {
 
 
