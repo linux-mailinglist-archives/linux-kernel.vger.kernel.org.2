@@ -2,137 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B047C3A6D46
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1D73A6D4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235456AbhFNRie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:38:34 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:43174 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233510AbhFNRic (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:38:32 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lsqVg-00EAHg-Rf; Mon, 14 Jun 2021 11:36:28 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lsqVf-00AJ9J-8D; Mon, 14 Jun 2021 11:36:28 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     "Enrico Weigelt\, metux IT consult" <lkml@metux.net>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Hannes Reinecke <hare@suse.de>, gregkh@linuxfoundation.org,
-        containers@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <YL9liW99Ytf6uBlu@kroah.com>
-        <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
-        <20210608142911.ievp2rpuquxjuyus@wittgenstein>
-        <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de>
-        <877dj4ff9g.fsf@disp2133>
-        <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
-        <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
-        <20210609072108.ldhsxfnfql4pacqx@wittgenstein>
-        <85a0d777-dea6-9574-8946-9fc8f912c1af@suse.de>
-        <20210609080918.ma2klvxkjad4pjrn@wittgenstein>
-        <87v96k1d65.fsf@disp2133>
-        <c504a8c6-73f8-b45c-6d6b-6f5a1300ab3a@metux.net>
-Date:   Mon, 14 Jun 2021 12:36:19 -0500
-In-Reply-To: <c504a8c6-73f8-b45c-6d6b-6f5a1300ab3a@metux.net> (Enrico
-        Weigelt's message of "Mon, 14 Jun 2021 09:49:22 +0200")
-Message-ID: <874ke0s60c.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S233550AbhFNRjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:39:14 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36208 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235576AbhFNRjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 13:39:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=yNJZdu5e9R9IKJLMXzwlJdT1h35Mb6+Vu9cSblpMexw=; b=ZS
+        KVZMYvVbzNUjqEwyxpEivD5BHmDXQdFmXDlwsUAfxEy07XyluMcabpUle5H5ZNTlSvWB4khgr7WwR
+        SHWWk/hNzMPcEPeXbB3a2+T5/ZVepAo7dFI1ZQsFWtOdM76xQYQ0j9sV2dFWQdkvxLW/kGtDsIIws
+        pA0kkT9QLeZtg8s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lsqVy-009MmX-Ti; Mon, 14 Jun 2021 19:36:46 +0200
+Date:   Mon, 14 Jun 2021 19:36:46 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        matthias.bgg@gmail.com, alexandre.torgue@st.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: Re: [PATCH v3 2/2] net: stmmac: Add Ingenic SoCs MAC support.
+Message-ID: <YMeTrq/j7728lCN0@lunn.ch>
+References: <1623690937-52389-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1623690937-52389-3-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lsqVf-00AJ9J-8D;;;mid=<874ke0s60c.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18oIIyhANhT0NvXzEtqGitDOHZZn1qI5O4=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4981]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;"Enrico Weigelt\, metux IT consult" <lkml@metux.net>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 823 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 11 (1.3%), b_tie_ro: 9 (1.1%), parse: 1.11 (0.1%),
-         extract_message_metadata: 13 (1.5%), get_uri_detail_list: 1.67 (0.2%),
-         tests_pri_-1000: 6 (0.7%), tests_pri_-950: 1.33 (0.2%),
-        tests_pri_-900: 1.13 (0.1%), tests_pri_-90: 137 (16.7%), check_bayes:
-        126 (15.3%), b_tokenize: 7 (0.8%), b_tok_get_all: 6 (0.8%),
-        b_comp_prob: 2.4 (0.3%), b_tok_touch_all: 107 (13.0%), b_finish: 0.89
-        (0.1%), tests_pri_0: 637 (77.4%), check_dkim_signature: 0.96 (0.1%),
-        check_dkim_adsp: 3.0 (0.4%), poll_dns_idle: 0.46 (0.1%), tests_pri_10:
-        2.1 (0.3%), tests_pri_500: 10 (1.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: device namespaces
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1623690937-52389-3-git-send-email-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Enrico Weigelt, metux IT consult" <lkml@metux.net> writes:
+On Tue, Jun 15, 2021 at 01:15:37AM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> Add support for Ingenic SoC MAC glue layer support for the stmmac
+> device driver. This driver is used on for the MAC ethernet controller
+> found in the JZ4775 SoC, the X1000 SoC, the X1600 SoC, the X1830 SoC,
+> and the X2000 SoC.
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 
-> On 11.06.21 20:14, Eric W. Biederman wrote:
->
-> Hi,
->
->> I favor none of the virtual devices showing up in sysfs.  Maybe existing
->> userspace needs the devices in sysfs, but if the solution is simply to
->> skip sysfs for virtual devices that is much simpler.
->
-> Sorry for being a little bit confused, but by virtual devices you mean
-> things like pty's or all the other stuff we already see under
-> /sys/device/virtual ?
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-By virtual devices I mean all devices that are not physical pieces
-of hardware.  For block devices I mean devices such as loopback
-devices that are created on demand.  Ramdisks that start this
-conversation could also be considered virtual devices.
-
-> How would you skip the virtual devices from sysfs ? Adding some filter
-> into sysfs that looks at the device class (or some flag within it) ?
-
-I would just not run the code to create sysfs entries when the virtual
-devices are created.
-
-If you have virtual devices showing up in their own filesystem they
-don't even need major or minor numbers.  You can just have files
-that accept ioctls like device nodes.  In principle it is
-possible to skip a lot of the historical infrastructure.  If the
-infrastructure is not needed it is worth skipping.
-
-I haven't dug into the block layer recently enough to say what is needed
-or not.  I think there are some thing such as stat on a mounted
-filesystem that need a major and minor numbers.  Which probably means
-you have to use major and minor numbers.  By virtue of using common
-infrastructure that implies showing up in sysfs and devtmpfs.  Things
-would be limited just by not mounting devtmpfs in a container.
-
-It is worth checking how much of the common infrastructure you need when
-you start creating virtual devices.
-
-The only reason the network devices need changes to sysfs is to allow
-different network devices with the same name to show up in different
-network namespaces.
-
-If you can fundamentally avoid the problem of devices with the same
-name needing to show up in sysfs and devtmpfs by using filesystems
-then sysfs and devtmpfs needs no changes.
-
-Hotplug is sufficiently widespread now that it should be possible
-to avoid the hard problem of having duplicate names for block devices,
-one way or another.  Thus talking of changing sysfs seems completely
-unnecessary.
-
-Eric
+    Andrew
