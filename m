@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F233A6061
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0AA43A61B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbhFNKd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:33:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38932 "EHLO mail.kernel.org"
+        id S233090AbhFNKue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:50:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233061AbhFNKcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:32:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85C43611BE;
-        Mon, 14 Jun 2021 10:30:01 +0000 (UTC)
+        id S233838AbhFNKly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:41:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE55661428;
+        Mon, 14 Jun 2021 10:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666602;
-        bh=xoZMD9S+hIguTlzjytB+jS3FkMHAa3Vay7kvrmYrUsw=;
+        s=korg; t=1623666916;
+        bh=RxRzjs37Z16O8QQuSrx+MFkFoVjRhSb6rul8hbNnyUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hPzdBee0K59sWbfT8WdG47Nzh3NBp1xHesA4r/FIrrHikWw4IDFZMRU4cLhltaB4b
-         1DGpsnRnWWQns9CrbAbrJ0qnReY8Wq1LJwB75j/Im/3epBH0FpR7D3XzTzDE8grCYn
-         Cf+NV4cfGTNAV/J242f2pxGn1p+X1BI3F0supDvc=
+        b=rmc1VJBUAU8iOq7K85o6ayFZ865dsaRIEVEMmuF77j7XpP2deHhC7P6NuN/Ns0Eq6
+         /kTvwCz/yTZcyoxhGbRJnYz4t6CC7lfY7TR4uzZB2+pCTRteD24/igkNQa0vMrwtq2
+         /KTvCzZi7QBtYZkJpcitK5x1BDlzBDchHLECrud0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 18/34] i2c: mpc: implement erratum A-004447 workaround
-Date:   Mon, 14 Jun 2021 12:27:09 +0200
-Message-Id: <20210614102642.176717924@linuxfoundation.org>
+        stable@vger.kernel.org, Anson Huang <Anson.Huang@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 4.19 27/67] ARM: dts: imx6qdl-sabresd: Assign corresponding power supply for LDOs
+Date:   Mon, 14 Jun 2021 12:27:10 +0200
+Message-Id: <20210614102644.679892714@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,148 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Anson Huang <anson.huang@nxp.com>
 
-[ Upstream commit 8f0cdec8b5fd94135d643662506ee94ae9e98785 ]
+commit 93385546ba369182220436f60ceb3beabe4b7de1 upstream.
 
-The P2040/P2041 has an erratum where the normal i2c recovery mechanism
-does not work. Implement the alternative recovery mechanism documented
-in the P2040 Chip Errata Rev Q.
+On i.MX6Q/DL SabreSD board, vgen5 supplies vdd1p1/vdd2p5 LDO and
+sw2 supplies vdd3p0 LDO, this patch assigns corresponding power
+supply for vdd1p1/vdd2p5/vdd3p0 to avoid confusion by below log:
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+vdd1p1: supplied by regulator-dummy
+vdd3p0: supplied by regulator-dummy
+vdd2p5: supplied by regulator-dummy
+
+With this patch, the power supply is more accurate:
+
+vdd1p1: supplied by VGEN5
+vdd3p0: supplied by SW2
+vdd2p5: supplied by VGEN5
+
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-mpc.c | 79 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 78 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6qdl-sabresd.dtsi |   12 ++++++++++++
+ arch/arm/boot/dts/imx6qdl.dtsi         |    6 +++---
+ 2 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index f2e8b9a159a7..2e083a71c221 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -23,6 +23,7 @@
- 
- #include <linux/clk.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/fsl_devices.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
-@@ -49,6 +50,7 @@
- #define CCR_MTX  0x10
- #define CCR_TXAK 0x08
- #define CCR_RSTA 0x04
-+#define CCR_RSVD 0x02
- 
- #define CSR_MCF  0x80
- #define CSR_MAAS 0x40
-@@ -70,6 +72,7 @@ struct mpc_i2c {
- 	u8 fdr, dfsrr;
- #endif
- 	struct clk *clk_per;
-+	bool has_errata_A004447;
+--- a/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
+@@ -671,6 +671,18 @@
+        vin-supply = <&sw1c_reg>;
  };
  
- struct mpc_i2c_divider {
-@@ -178,6 +181,75 @@ static int i2c_wait(struct mpc_i2c *i2c, unsigned timeout, int writing)
- 	return 0;
- }
++&reg_vdd1p1 {
++	vin-supply = <&vgen5_reg>;
++};
++
++&reg_vdd3p0 {
++	vin-supply = <&sw2_reg>;
++};
++
++&reg_vdd2p5 {
++	vin-supply = <&vgen5_reg>;
++};
++
+ &snvs_poweroff {
+ 	status = "okay";
+ };
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -686,7 +686,7 @@
+ 					     <0 54 IRQ_TYPE_LEVEL_HIGH>,
+ 					     <0 127 IRQ_TYPE_LEVEL_HIGH>;
  
-+static int i2c_mpc_wait_sr(struct mpc_i2c *i2c, int mask)
-+{
-+	void __iomem *addr = i2c->base + MPC_I2C_SR;
-+	u8 val;
-+
-+	return readb_poll_timeout(addr, val, val & mask, 0, 100);
-+}
-+
-+/*
-+ * Workaround for Erratum A004447. From the P2040CE Rev Q
-+ *
-+ * 1.  Set up the frequency divider and sampling rate.
-+ * 2.  I2CCR - a0h
-+ * 3.  Poll for I2CSR[MBB] to get set.
-+ * 4.  If I2CSR[MAL] is set (an indication that SDA is stuck low), then go to
-+ *     step 5. If MAL is not set, then go to step 13.
-+ * 5.  I2CCR - 00h
-+ * 6.  I2CCR - 22h
-+ * 7.  I2CCR - a2h
-+ * 8.  Poll for I2CSR[MBB] to get set.
-+ * 9.  Issue read to I2CDR.
-+ * 10. Poll for I2CSR[MIF] to be set.
-+ * 11. I2CCR - 82h
-+ * 12. Workaround complete. Skip the next steps.
-+ * 13. Issue read to I2CDR.
-+ * 14. Poll for I2CSR[MIF] to be set.
-+ * 15. I2CCR - 80h
-+ */
-+static void mpc_i2c_fixup_A004447(struct mpc_i2c *i2c)
-+{
-+	int ret;
-+	u32 val;
-+
-+	writeccr(i2c, CCR_MEN | CCR_MSTA);
-+	ret = i2c_mpc_wait_sr(i2c, CSR_MBB);
-+	if (ret) {
-+		dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+		return;
-+	}
-+
-+	val = readb(i2c->base + MPC_I2C_SR);
-+
-+	if (val & CSR_MAL) {
-+		writeccr(i2c, 0x00);
-+		writeccr(i2c, CCR_MSTA | CCR_RSVD);
-+		writeccr(i2c, CCR_MEN | CCR_MSTA | CCR_RSVD);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MBB);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+			return;
-+		}
-+		val = readb(i2c->base + MPC_I2C_DR);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN | CCR_RSVD);
-+	} else {
-+		val = readb(i2c->base + MPC_I2C_DR);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN);
-+	}
-+}
-+
- #if defined(CONFIG_PPC_MPC52xx) || defined(CONFIG_PPC_MPC512x)
- static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] = {
- 	{20, 0x20}, {22, 0x21}, {24, 0x22}, {26, 0x23},
-@@ -636,7 +708,10 @@ static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
- {
- 	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
+-				regulator-1p1 {
++				reg_vdd1p1: regulator-1p1 {
+ 					compatible = "fsl,anatop-regulator";
+ 					regulator-name = "vdd1p1";
+ 					regulator-min-microvolt = <1000000>;
+@@ -701,7 +701,7 @@
+ 					anatop-enable-bit = <0>;
+ 				};
  
--	mpc_i2c_fixup(i2c);
-+	if (i2c->has_errata_A004447)
-+		mpc_i2c_fixup_A004447(i2c);
-+	else
-+		mpc_i2c_fixup(i2c);
+-				regulator-3p0 {
++				reg_vdd3p0: regulator-3p0 {
+ 					compatible = "fsl,anatop-regulator";
+ 					regulator-name = "vdd3p0";
+ 					regulator-min-microvolt = <2800000>;
+@@ -716,7 +716,7 @@
+ 					anatop-enable-bit = <0>;
+ 				};
  
- 	return 0;
- }
-@@ -740,6 +815,8 @@ static int fsl_i2c_probe(struct platform_device *op)
- 	dev_info(i2c->dev, "timeout %u us\n", mpc_ops.timeout * 1000000 / HZ);
- 
- 	platform_set_drvdata(op, i2c);
-+	if (of_property_read_bool(op->dev.of_node, "fsl,i2c-erratum-a004447"))
-+		i2c->has_errata_A004447 = true;
- 
- 	i2c->adap = mpc_ops;
- 	of_address_to_resource(op->dev.of_node, 0, &res);
--- 
-2.30.2
-
+-				regulator-2p5 {
++				reg_vdd2p5: regulator-2p5 {
+ 					compatible = "fsl,anatop-regulator";
+ 					regulator-name = "vdd2p5";
+ 					regulator-min-microvolt = <2250000>;
 
 
