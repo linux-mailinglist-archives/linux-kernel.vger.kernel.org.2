@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5DF3A636F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C103A636B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbhFNLMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:12:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
+        id S234962AbhFNLM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:12:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234016AbhFNLAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234079AbhFNLAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 07:00:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 956C86162E;
-        Mon, 14 Jun 2021 10:43:15 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E7B2616E9;
+        Mon, 14 Jun 2021 10:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667396;
-        bh=Ijj6w/xRH62dLAhfw625MvzJ53wokV09FozBDVbrmOE=;
+        s=korg; t=1623667398;
+        bh=l99QUVxOd0wTmQVHZDR6sSnkO+h0/lCiQR1BFpcFR4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pHM+3LH4ms8m5FACUk+DN1H3QAg+BxIPgLj5y5TfQvV5MK0IEkSB7i0ACVipljqkm
-         7NbszLX85VVqMgLZjU/NcNa5h8Iw6tqEng+xWjmb5jBSJZ0mWLLRCS7Ish+jhHXj3C
-         k/DDYaiMNMkgfnwsrrHqJYF7SJcGPM2jlhgDkSY0=
+        b=j0xWgWQ5eJn0Fz819ux73ItT/tCbvZRLCyaExJ46fdQ2n2gXc3Zix96+IPS+eHC3C
+         3JTjmK3NWoqKSXPJxDRB1NkzXO4g+sEsuCUqdtsICQ70zaqQgqJBnAPy1NAW9mQ9g9
+         9RQCfBOxf4G5ebNjT++PeNU31HpDHDqFNLjwp/CM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 5.10 055/131] drm: Lock pointer access in drm_master_release()
-Date:   Mon, 14 Jun 2021 12:26:56 +0200
-Message-Id: <20210614102654.894773297@linuxfoundation.org>
+        stable@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.10 056/131] perf/x86/intel/uncore: Fix M2M event umask for Ice Lake server
+Date:   Mon, 14 Jun 2021 12:26:57 +0200
+Message-Id: <20210614102654.927486580@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -40,52 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit c336a5ee984708db4826ef9e47d184e638e29717 upstream.
+commit 848ff3768684701a4ce73a2ec0e5d438d4e2b0da upstream.
 
-This patch eliminates the following smatch warning:
-drivers/gpu/drm/drm_auth.c:320 drm_master_release() warn: unlocked access 'master' (line 318) expected lock '&dev->master_mutex'
+Perf tool errors out with the latest event list for the Ice Lake server.
 
-The 'file_priv->master' field should be protected by the mutex lock to
-'&dev->master_mutex'. This is because other processes can concurrently
-modify this field and free the current 'file_priv->master'
-pointer. This could result in a use-after-free error when 'master' is
-dereferenced in subsequent function calls to
-'drm_legacy_lock_master_cleanup()' or to 'drm_lease_revoke()'.
+event syntax error: 'unc_m2m_imc_reads.to_pmm'
+                           \___ value too big for format, maximum is 255
 
-An example of a scenario that would produce this error can be seen
-from a similar bug in 'drm_getunique()' that was reported by Syzbot:
-https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+The same as the Snow Ridge server, the M2M uncore unit in the Ice Lake
+server has the unit mask extension field as well.
 
-In the Syzbot report, another process concurrently acquired the
-device's master mutex in 'drm_setmaster_ioctl()', then overwrote
-'fpriv->master' in 'drm_new_set_master()'. The old value of
-'fpriv->master' was subsequently freed before the mutex was unlocked.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Fixes: 2b3b76b5ec67 ("perf/x86/intel/uncore: Add Ice Lake server uncore support")
+Reported-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210609092119.173590-1-desmondcheongzx@gmail.com
+Link: https://lkml.kernel.org/r/1622552943-119174-1-git-send-email-kan.liang@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_auth.c |    3 ++-
+ arch/x86/events/intel/uncore_snbep.c |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_auth.c
-+++ b/drivers/gpu/drm/drm_auth.c
-@@ -314,9 +314,10 @@ int drm_master_open(struct drm_file *fil
- void drm_master_release(struct drm_file *file_priv)
- {
- 	struct drm_device *dev = file_priv->minor->dev;
--	struct drm_master *master = file_priv->master;
-+	struct drm_master *master;
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -5067,9 +5067,10 @@ static struct intel_uncore_type icx_unco
+ 	.perf_ctr	= SNR_M2M_PCI_PMON_CTR0,
+ 	.event_ctl	= SNR_M2M_PCI_PMON_CTL0,
+ 	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
++	.event_mask_ext	= SNR_M2M_PCI_PMON_UMASK_EXT,
+ 	.box_ctl	= SNR_M2M_PCI_PMON_BOX_CTL,
+ 	.ops		= &snr_m2m_uncore_pci_ops,
+-	.format_group	= &skx_uncore_format_group,
++	.format_group	= &snr_m2m_uncore_format_group,
+ };
  
- 	mutex_lock(&dev->master_mutex);
-+	master = file_priv->master;
- 	if (file_priv->magic)
- 		idr_remove(&file_priv->master->magic_map, file_priv->magic);
- 
+ static struct attribute *icx_upi_uncore_formats_attr[] = {
 
 
