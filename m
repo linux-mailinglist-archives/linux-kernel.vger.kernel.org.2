@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B1B3A63E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D533A62E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbhFNLSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:18:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39538 "EHLO mail.kernel.org"
+        id S234629AbhFNLGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:06:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234174AbhFNLFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B15BD61929;
-        Mon, 14 Jun 2021 10:45:21 +0000 (UTC)
+        id S234210AbhFNK4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:56:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62E7761424;
+        Mon, 14 Jun 2021 10:41:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667522;
-        bh=AdvAlk2XjJ93Yp9FH0iy+xJSk6GCoKJdFtkav7fB8AY=;
+        s=korg; t=1623667269;
+        bh=yQxys6AFAqEuGjbV0OeqfCLtaLZmstlnTDI3hMtYk4s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jWAmN57gN9QzvvgFBv9K44V6noccRKGByWam0mszsH9S2sCFqjsFZutIdv+CS3KsG
-         iuormMTZkeal7Vkaw2vACmJOlAI6AvuX1O+LQXy1MTj0mFZF82+XkdrWqLOi3Tr9oj
-         MD9jcHjnzN4jnoczetyFVUWlRL5L5nprOEuw0kjA=
+        b=HGiKjzN+dzZvdWiOM7kgLpg8KXe98y6UQofDSVjTEL7El6n4hyjz73JVsmKGdo5GE
+         25COZpD8ENrLMzb3AwFZDnryBsjGPOxI6vURkDCeanFD0AWjOWqbRBEhb/TrQdz2sH
+         qBJmPE1H27D+YpTIR1LDMUy0MMcmSlLX+DniGAAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        stable@vger.kernel.org, Shay Drory <shayd@nvidia.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.10 103/131] RDMA/ipoib: Fix warning caused by destroying non-initial netns
+Subject: [PATCH 5.4 66/84] RDMA/mlx4: Do not map the core_clock page to user space unless enabled
 Date:   Mon, 14 Jun 2021 12:27:44 +0200
-Message-Id: <20210614102656.505845280@linuxfoundation.org>
+Message-Id: <20210614102648.616465350@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,80 +40,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Shay Drory <shayd@nvidia.com>
 
-commit a3e74fb9247cd530dca246699d5eb5a691884d32 upstream.
+commit 404e5a12691fe797486475fe28cc0b80cb8bef2c upstream.
 
-After the commit 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for ipoib
-interfaces"), if the IPoIB device is moved to non-initial netns,
-destroying that netns lets the device vanish instead of moving it back to
-the initial netns, This is happening because default_device_exit() skips
-the interfaces due to having rtnl_link_ops set.
+Currently when mlx4 maps the hca_core_clock page to the user space there
+are read-modifiable registers, one of which is semaphore, on this page as
+well as the clock counter. If user reads the wrong offset, it can modify
+the semaphore and hang the device.
 
-Steps to reporoduce:
-  ip netns add foo
-  ip link set mlx5_ib0 netns foo
-  ip netns delete foo
+Do not map the hca_core_clock page to the user space unless the device has
+been put in a backwards compatibility mode to support this feature.
 
-WARNING: CPU: 1 PID: 704 at net/core/dev.c:11435 netdev_exit+0x3f/0x50
-Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
-nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack
-nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun d
- fuse
-CPU: 1 PID: 704 Comm: kworker/u64:3 Tainted: G S      W  5.13.0-rc1+ #1
-Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.1.5 04/11/2016
-Workqueue: netns cleanup_net
-RIP: 0010:netdev_exit+0x3f/0x50
-Code: 48 8b bb 30 01 00 00 e8 ef 81 b1 ff 48 81 fb c0 3a 54 a1 74 13 48
-8b 83 90 00 00 00 48 81 c3 90 00 00 00 48 39 d8 75 02 5b c3 <0f> 0b 5b
-c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f 44 00
-RSP: 0018:ffffb297079d7e08 EFLAGS: 00010206
-RAX: ffff8eb542c00040 RBX: ffff8eb541333150 RCX: 000000008010000d
-RDX: 000000008010000e RSI: 000000008010000d RDI: ffff8eb440042c00
-RBP: ffffb297079d7e48 R08: 0000000000000001 R09: ffffffff9fdeac00
-R10: ffff8eb5003be000 R11: 0000000000000001 R12: ffffffffa1545620
-R13: ffffffffa1545628 R14: 0000000000000000 R15: ffffffffa1543b20
-FS:  0000000000000000(0000) GS:ffff8ed37fa00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005601b5f4c2e8 CR3: 0000001fc8c10002 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ops_exit_list.isra.9+0x36/0x70
- cleanup_net+0x234/0x390
- process_one_work+0x1cb/0x360
- ? process_one_work+0x360/0x360
- worker_thread+0x30/0x370
- ? process_one_work+0x360/0x360
- kthread+0x116/0x130
- ? kthread_park+0x80/0x80
- ret_from_fork+0x22/0x30
+After this patch, mlx4 core_clock won't be mapped to user space on the
+majority of existing devices and the uverbs device time feature in
+ibv_query_rt_values_ex() will be disabled.
 
-To avoid the above warning and later on the kernel panic that could happen
-on shutdown due to a NULL pointer dereference, make sure to set the
-netns_refund flag that was introduced by commit 3a5ca857079e ("can: dev:
-Move device back to init netns on owning netns delete") to properly
-restore the IPoIB interfaces to the initial netns.
-
-Fixes: 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces")
-Link: https://lore.kernel.org/r/20210525150134.139342-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Fixes: 52033cfb5aab ("IB/mlx4: Add mmap call to map the hardware clock")
+Link: https://lore.kernel.org/r/9632304e0d6790af84b3b706d8c18732bc0d5e27.1622726305.git.leonro@nvidia.com
+Signed-off-by: Shay Drory <shayd@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/ulp/ipoib/ipoib_netlink.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/mlx4/main.c         |    5 +----
+ drivers/net/ethernet/mellanox/mlx4/fw.c   |    3 +++
+ drivers/net/ethernet/mellanox/mlx4/fw.h   |    1 +
+ drivers/net/ethernet/mellanox/mlx4/main.c |    6 ++++++
+ include/linux/mlx4/device.h               |    1 +
+ 5 files changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-@@ -163,6 +163,7 @@ static size_t ipoib_get_size(const struc
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -577,12 +577,9 @@ static int mlx4_ib_query_device(struct i
+ 	props->cq_caps.max_cq_moderation_count = MLX4_MAX_CQ_COUNT;
+ 	props->cq_caps.max_cq_moderation_period = MLX4_MAX_CQ_PERIOD;
  
- static struct rtnl_link_ops ipoib_link_ops __read_mostly = {
- 	.kind		= "ipoib",
-+	.netns_refund   = true,
- 	.maxtype	= IFLA_IPOIB_MAX,
- 	.policy		= ipoib_policy,
- 	.priv_size	= sizeof(struct ipoib_dev_priv),
+-	if (!mlx4_is_slave(dev->dev))
+-		err = mlx4_get_internal_clock_params(dev->dev, &clock_params);
+-
+ 	if (uhw->outlen >= resp.response_length + sizeof(resp.hca_core_clock_offset)) {
+ 		resp.response_length += sizeof(resp.hca_core_clock_offset);
+-		if (!err && !mlx4_is_slave(dev->dev)) {
++		if (!mlx4_get_internal_clock_params(dev->dev, &clock_params)) {
+ 			resp.comp_mask |= MLX4_IB_QUERY_DEV_RESP_MASK_CORE_CLOCK_OFFSET;
+ 			resp.hca_core_clock_offset = clock_params.offset % PAGE_SIZE;
+ 		}
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+@@ -823,6 +823,7 @@ int mlx4_QUERY_DEV_CAP(struct mlx4_dev *
+ #define QUERY_DEV_CAP_MAD_DEMUX_OFFSET		0xb0
+ #define QUERY_DEV_CAP_DMFS_HIGH_RATE_QPN_BASE_OFFSET	0xa8
+ #define QUERY_DEV_CAP_DMFS_HIGH_RATE_QPN_RANGE_OFFSET	0xac
++#define QUERY_DEV_CAP_MAP_CLOCK_TO_USER 0xc1
+ #define QUERY_DEV_CAP_QP_RATE_LIMIT_NUM_OFFSET	0xcc
+ #define QUERY_DEV_CAP_QP_RATE_LIMIT_MAX_OFFSET	0xd0
+ #define QUERY_DEV_CAP_QP_RATE_LIMIT_MIN_OFFSET	0xd2
+@@ -841,6 +842,8 @@ int mlx4_QUERY_DEV_CAP(struct mlx4_dev *
+ 
+ 	if (mlx4_is_mfunc(dev))
+ 		disable_unsupported_roce_caps(outbox);
++	MLX4_GET(field, outbox, QUERY_DEV_CAP_MAP_CLOCK_TO_USER);
++	dev_cap->map_clock_to_user = field & 0x80;
+ 	MLX4_GET(field, outbox, QUERY_DEV_CAP_RSVD_QP_OFFSET);
+ 	dev_cap->reserved_qps = 1 << (field & 0xf);
+ 	MLX4_GET(field, outbox, QUERY_DEV_CAP_MAX_QP_OFFSET);
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.h
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.h
+@@ -131,6 +131,7 @@ struct mlx4_dev_cap {
+ 	u32 health_buffer_addrs;
+ 	struct mlx4_port_cap port_cap[MLX4_MAX_PORTS + 1];
+ 	bool wol_port[MLX4_MAX_PORTS + 1];
++	bool map_clock_to_user;
+ };
+ 
+ struct mlx4_func_cap {
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -498,6 +498,7 @@ static int mlx4_dev_cap(struct mlx4_dev
+ 		}
+ 	}
+ 
++	dev->caps.map_clock_to_user  = dev_cap->map_clock_to_user;
+ 	dev->caps.uar_page_size	     = PAGE_SIZE;
+ 	dev->caps.num_uars	     = dev_cap->uar_size / PAGE_SIZE;
+ 	dev->caps.local_ca_ack_delay = dev_cap->local_ca_ack_delay;
+@@ -1948,6 +1949,11 @@ int mlx4_get_internal_clock_params(struc
+ 	if (mlx4_is_slave(dev))
+ 		return -EOPNOTSUPP;
+ 
++	if (!dev->caps.map_clock_to_user) {
++		mlx4_dbg(dev, "Map clock to user is not supported.\n");
++		return -EOPNOTSUPP;
++	}
++
+ 	if (!params)
+ 		return -EINVAL;
+ 
+--- a/include/linux/mlx4/device.h
++++ b/include/linux/mlx4/device.h
+@@ -632,6 +632,7 @@ struct mlx4_caps {
+ 	bool			wol_port[MLX4_MAX_PORTS + 1];
+ 	struct mlx4_rate_limit_caps rl_caps;
+ 	u32			health_buffer_addrs;
++	bool			map_clock_to_user;
+ };
+ 
+ struct mlx4_buf_list {
 
 
