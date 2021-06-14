@@ -2,140 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5BC3A6B9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0953A6B9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbhFNQ1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:27:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:40490 "EHLO foss.arm.com"
+        id S234662AbhFNQ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:27:32 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:50914 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233593AbhFNQ1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:27:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A6F71FB;
-        Mon, 14 Jun 2021 09:25:16 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B7B23F70D;
-        Mon, 14 Jun 2021 09:25:14 -0700 (PDT)
-Subject: Re: [PATCH v12 5/5] iommu: Remove mode argument from
- iommu_set_dma_strict()
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, dwmw2@infradead.org, baolu.lu@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linuxarm@huawei.com, thunder.leizhen@huawei.com,
-        chenxiang66@hisilicon.com
-References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
- <1623414043-40745-6-git-send-email-john.garry@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <868374d4-e816-b607-82de-7e7c27a4c66b@arm.com>
-Date:   Mon, 14 Jun 2021 17:25:09 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233593AbhFNQ1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 12:27:30 -0400
+Received: from zn.tnic (p200300ec2f09b900f41fb76786649a77.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:b900:f41f:b767:8664:9a77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6540E1EC04AD;
+        Mon, 14 Jun 2021 18:25:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623687926;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SsxVz2r5oN4lnCyZbTvn/5Zz+6zt1F06cejR2VGMXJg=;
+        b=Vo00EAKNgD7AFNhgm49YEDwGuLn98ZSZ2j4ts2lt7+AjJGooEdju5hgyyfWHl+5RkB+ies
+        mAsS/wthE7dX6kaEIBjy5kLOKZGp78o+BTNok/EvMkb6G0Ct7BpVv3LyJC/49oT7fv2OlA
+        CR5GJZWqXsOypS7uRrIX879uLLHqvmc=
+Date:   Mon, 14 Jun 2021 18:25:18 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v5 2/6] x86/sev-es: Make sure IRQs are disabled while
+ GHCB is active
+Message-ID: <YMeC7vJxm0OVJJhr@zn.tnic>
+References: <20210614135327.9921-1-joro@8bytes.org>
+ <20210614135327.9921-3-joro@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <1623414043-40745-6-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210614135327.9921-3-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-11 13:20, John Garry wrote:
-> We only ever now set strict mode enabled in iommu_set_dma_strict(), so
-> just remove the argument.
+On Mon, Jun 14, 2021 at 03:53:23PM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
-> Signed-off-by: John Garry <john.garry@huawei.com>
+> The #VC handler only cares about IRQs being disabled while the GHCB is
+> active, as it must not be interrupted by something which could cause
+> another #VC while it holds the GHCB (NMI is the exception for which the
+> backup GHCB exits).
+> 
+> Make sure nothing interrupts the code path while the GHCB is active by
+> disabling IRQs in sev_es_get_ghcb() and restoring the previous irq state
+> in sev_es_put_ghcb().
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
 > ---
->   drivers/iommu/amd/init.c    | 2 +-
->   drivers/iommu/intel/iommu.c | 6 +++---
->   drivers/iommu/iommu.c       | 5 ++---
->   include/linux/iommu.h       | 2 +-
->   4 files changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 0e6ae6d68f14..27e9677ec303 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -3098,7 +3098,7 @@ static int __init parse_amd_iommu_options(char *str)
->   {
->   	for (; *str; ++str) {
->   		if (strncmp(str, "fullflush", 9) == 0)
-> -			iommu_set_dma_strict(true);
-> +			iommu_set_dma_strict();
->   		if (strncmp(str, "force_enable", 12) == 0)
->   			amd_iommu_force_enable = true;
->   		if (strncmp(str, "off", 3) == 0)
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 6763e516362c..e77b8b6e7838 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -452,7 +452,7 @@ static int __init intel_iommu_setup(char *str)
->   			pr_warn("intel_iommu=forcedac deprecated; use iommu.forcedac instead\n");
->   			iommu_dma_forcedac = true;
->   		} else if (!strncmp(str, "strict", 6)) {
-> -			iommu_set_dma_strict(true);
-> +			iommu_set_dma_strict();
->   		} else if (!strncmp(str, "sp_off", 6)) {
->   			pr_info("Disable supported super page\n");
->   			intel_iommu_superpage = 0;
-> @@ -4392,7 +4392,7 @@ int __init intel_iommu_init(void)
->   		 */
->   		if (cap_caching_mode(iommu->cap)) {
->   			pr_warn("IOMMU batching disallowed due to virtualization\n");
-> -			iommu_set_dma_strict(true);
-> +			iommu_set_dma_strict();
->   		}
->   		iommu_device_sysfs_add(&iommu->iommu, NULL,
->   				       intel_iommu_groups,
-> @@ -5663,7 +5663,7 @@ static void quirk_calpella_no_shadow_gtt(struct pci_dev *dev)
->   	} else if (dmar_map_gfx) {
->   		/* we have to ensure the gfx device is idle before we flush */
->   		pci_info(dev, "Disabling batched IOTLB flush on Ironlake\n");
-> -		iommu_set_dma_strict(true);
-> +		iommu_set_dma_strict();
->   	}
->   }
->   DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x0040, quirk_calpella_no_shadow_gtt);
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index ccbd5d4c1a50..146cb71c7441 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -350,10 +350,9 @@ static int __init iommu_dma_setup(char *str)
->   }
->   early_param("iommu.strict", iommu_dma_setup);
->   
-> -void iommu_set_dma_strict(bool strict)
-> +void iommu_set_dma_strict(void)
->   {
-> -	if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+>  arch/x86/kernel/sev.c | 48 ++++++++++++++++++++++++++++++-------------
+>  1 file changed, 34 insertions(+), 14 deletions(-)
 
-We shouldn't need to keep IOMMU_CMD_LINE_STRICT at all now, since it was 
-only to prevent a driver's "default lazy" setting passed in here from 
-downgrading an explicitly-set strict mode.
+Here's a diff ontop of yours with a couple of points:
 
-With that cleaned up too,
+* I've named the low-level, interrupts-enabled workers
+__sev_get_ghcb()/__sev_put_ghcb() to mean a couple of things:
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+** underscored to mean, that callers need to disable local locks. There's
+also a lockdep_assert_irqs_disabled() to make sure, both in the get and
+put function.
 
-Thanks,
-Robin.
+** also only "sev" in the name because this code is not used for SEV-ES
+only anymore.
 
-> -		iommu_dma_strict = strict;
-> +		iommu_dma_strict = true;
->   }
->   
->   bool iommu_get_dma_strict(struct iommu_domain *domain)
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 32d448050bf7..754f67d6dd90 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -476,7 +476,7 @@ int iommu_enable_nesting(struct iommu_domain *domain);
->   int iommu_set_pgtable_quirks(struct iommu_domain *domain,
->   		unsigned long quirks);
->   
-> -void iommu_set_dma_strict(bool val);
-> +void iommu_set_dma_strict(void);
->   bool iommu_get_dma_strict(struct iommu_domain *domain);
->   
->   extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
-> 
+* I've done it this way because you have a well-recognized code pattern
+where the caller disables interrupts, calls the low-level helpers and
+then enables interrupts again when done. VS passing a flags pointer back
+and forth which just looks weird.
+
+And as to being easy to use - users can botch flags too, when passing
+around so they can just as well do proper interrupts toggling like a
+gazillion other places in the kernel.
+
+Also, you have places like exc_vmm_communication() where you have
+to artifically pass in flags - I'm looking at your previous version
+- even if you already make sure interrupts are disabled with the
+BUG_ON assertion on entry. So in those cases you can simply call the
+interrupt-enabled, __-variants.
+
+Btw, while we're on exc_vmm_communication, it has a:
+
+	BUG_ON(!irqs_disabled());
+
+on entry and then later
+
+	lockdep_assert_irqs_disabled();
+
+and that second assertion is not really needed, methinks. So a hunk
+below removes it.
+
+Thoughts?
+
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 7d70cddc38be..b85c4a2be9fa 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -192,11 +192,19 @@ void noinstr __sev_es_ist_exit(void)
+ 	this_cpu_write(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC], *(unsigned long *)ist);
+ }
+ 
+-static __always_inline struct ghcb *__sev_es_get_ghcb(struct ghcb_state *state)
++/*
++ * Nothing shall interrupt this code path while holding the per-CPU
++ * GHCB. The backup GHCB is only for NMIs interrupting this path.
++ *
++ * Callers must disable local interrupts around it.
++ */
++static __always_inline struct ghcb *__sev_get_ghcb(struct ghcb_state *state)
+ {
+ 	struct sev_es_runtime_data *data;
+ 	struct ghcb *ghcb;
+ 
++	lockdep_assert_irqs_disabled();
++
+ 	data = this_cpu_read(runtime_data);
+ 	ghcb = &data->ghcb_page;
+ 
+@@ -231,18 +239,6 @@ static __always_inline struct ghcb *__sev_es_get_ghcb(struct ghcb_state *state)
+ 	return ghcb;
+ }
+ 
+-static __always_inline struct ghcb *sev_es_get_ghcb(struct ghcb_state *state,
+-						    unsigned long *flags)
+-{
+-	/*
+-	 * Nothing shall interrupt this code path while holding the per-cpu
+-	 * GHCB. The backup GHCB is only for NMIs interrupting this path.
+-	 */
+-	local_irq_save(*flags);
+-
+-	return __sev_es_get_ghcb(state);
+-}
+-
+ /* Needed in vc_early_forward_exception */
+ void do_early_exception(struct pt_regs *regs, int trapnr);
+ 
+@@ -491,11 +487,13 @@ static enum es_result vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt
+ /* Include code shared with pre-decompression boot stage */
+ #include "sev-shared.c"
+ 
+-static __always_inline void __sev_es_put_ghcb(struct ghcb_state *state)
++static __always_inline void __sev_put_ghcb(struct ghcb_state *state)
+ {
+ 	struct sev_es_runtime_data *data;
+ 	struct ghcb *ghcb;
+ 
++	lockdep_assert_irqs_disabled();
++
+ 	data = this_cpu_read(runtime_data);
+ 	ghcb = &data->ghcb_page;
+ 
+@@ -514,13 +512,6 @@ static __always_inline void __sev_es_put_ghcb(struct ghcb_state *state)
+ 	}
+ }
+ 
+-static __always_inline void sev_es_put_ghcb(struct ghcb_state *state,
+-					    unsigned long flags)
+-{
+-	__sev_es_put_ghcb(state);
+-	local_irq_restore(flags);
+-}
+-
+ void noinstr __sev_es_nmi_complete(void)
+ {
+ 	struct ghcb_state state;
+@@ -528,7 +519,7 @@ void noinstr __sev_es_nmi_complete(void)
+ 
+ 	BUG_ON(!irqs_disabled());
+ 
+-	ghcb = __sev_es_get_ghcb(&state);
++	ghcb = __sev_get_ghcb(&state);
+ 
+ 	vc_ghcb_invalidate(ghcb);
+ 	ghcb_set_sw_exit_code(ghcb, SVM_VMGEXIT_NMI_COMPLETE);
+@@ -538,7 +529,7 @@ void noinstr __sev_es_nmi_complete(void)
+ 	sev_es_wr_ghcb_msr(__pa_nodebug(ghcb));
+ 	VMGEXIT();
+ 
+-	__sev_es_put_ghcb(&state);
++	__sev_put_ghcb(&state);
+ }
+ 
+ static u64 get_jump_table_addr(void)
+@@ -548,7 +539,9 @@ static u64 get_jump_table_addr(void)
+ 	struct ghcb *ghcb;
+ 	u64 ret = 0;
+ 
+-	ghcb = sev_es_get_ghcb(&state, &flags);
++	local_irq_save(flags);
++
++	ghcb = __sev_get_ghcb(&state);
+ 
+ 	vc_ghcb_invalidate(ghcb);
+ 	ghcb_set_sw_exit_code(ghcb, SVM_VMGEXIT_AP_JUMP_TABLE);
+@@ -562,7 +555,9 @@ static u64 get_jump_table_addr(void)
+ 	    ghcb_sw_exit_info_2_is_valid(ghcb))
+ 		ret = ghcb->save.sw_exit_info_2;
+ 
+-	sev_es_put_ghcb(&state, flags);
++	__sev_put_ghcb(&state);
++
++	local_irq_restore(flags);
+ 
+ 	return ret;
+ }
+@@ -686,7 +681,9 @@ static void sev_es_ap_hlt_loop(void)
+ 	unsigned long flags;
+ 	struct ghcb *ghcb;
+ 
+-	ghcb = sev_es_get_ghcb(&state, &flags);
++	local_irq_save(flags);
++
++	ghcb = __sev_get_ghcb(&state);
+ 
+ 	while (true) {
+ 		vc_ghcb_invalidate(ghcb);
+@@ -703,7 +700,9 @@ static void sev_es_ap_hlt_loop(void)
+ 			break;
+ 	}
+ 
+-	sev_es_put_ghcb(&state, flags);
++	__sev_put_ghcb(&state);
++
++	local_irq_restore(flags);
+ }
+ 
+ /*
+@@ -1364,7 +1363,6 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
+ 	}
+ 
+ 	irq_state = irqentry_nmi_enter(regs);
+-	lockdep_assert_irqs_disabled();
+ 	instrumentation_begin();
+ 
+ 	/*
+@@ -1373,7 +1371,7 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
+ 	 * keep the IRQs disabled to protect us against concurrent TLB flushes.
+ 	 */
+ 
+-	ghcb = __sev_es_get_ghcb(&state);
++	ghcb = __sev_get_ghcb(&state);
+ 
+ 	vc_ghcb_invalidate(ghcb);
+ 	result = vc_init_em_ctxt(&ctxt, regs, error_code);
+@@ -1381,7 +1379,7 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
+ 	if (result == ES_OK)
+ 		result = vc_handle_exitcode(&ctxt, ghcb, error_code);
+ 
+-	__sev_es_put_ghcb(&state);
++	__sev_put_ghcb(&state);
+ 
+ 	/* Done - now check the result */
+ 	switch (result) {
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
