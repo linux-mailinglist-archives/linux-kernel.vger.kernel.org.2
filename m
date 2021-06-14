@@ -2,153 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE84F3A6982
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AEE3A6984
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbhFNPFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:05:30 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:33534 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbhFNPF2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:05:28 -0400
-Received: by mail-ot1-f44.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so11149718otl.0;
-        Mon, 14 Jun 2021 08:03:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SPbYMcbVjJFWR65dIngP8E9l9yv1eYtUSpLAZBQAiGE=;
-        b=JI2pWFu8vuXqYrS5MEVNrJfwWBREkOBYPYmmTn5GGkpOvOEv8IPdfoBJ90lh/xvxxT
-         z8FZrw4+TUDCtW18yW4FafIiqgY1mdqRTGzoAXiVpObQxoHCTYfSp/GyxvJ6+hv8wglM
-         QnWr38PnFiXFYsmCYHMVUF/nBEAmCSBkFxhgzn3JN6OT1mu4RV7XRjX+QOUB6i8OTKLY
-         qtrl2lQsGbJ4LGg1N4VZY3hzY81wwONANCMswwzojV/ICiY08IQbCGAl0A6hNo16rMxu
-         JcQt1Ehl06WsaWAuSE0WgJ/+0mEwIXt7YvmTDhZOmrWgNauMXZ5A91QNnnDmEnSAtazV
-         RBeQ==
-X-Gm-Message-State: AOAM532iwwRSkfOs3kx0S2F3yUjm/Dpl/Ky3IhG/exlceB8HRBIubMK5
-        G76DwaJnVbOJSsYue3xvOIxytOD6LEXXLPpfdkMNZVEe
-X-Google-Smtp-Source: ABdhPJx3ouKCmYIbDp2yAp+zCPOGsXosGoyuHXKH7HI4h/1a3kmDUMFJK00QteD8JEQPCBmB7+gE1yNouu6XO//cJ4Y=
-X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr14214484otb.206.1623682991631;
- Mon, 14 Jun 2021 08:03:11 -0700 (PDT)
+        id S233183AbhFNPFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:05:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:38132 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232869AbhFNPFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 11:05:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB0361FB;
+        Mon, 14 Jun 2021 08:03:31 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CC263F70D;
+        Mon, 14 Jun 2021 08:03:30 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 16:03:27 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 3/3] sched: Make uclamp changes depend on CAP_SYS_NICE
+Message-ID: <20210614150327.3humrvztv3fxurvk@e107158-lin.cambridge.arm.com>
+References: <20210610151306.1789549-1-qperret@google.com>
+ <20210610151306.1789549-4-qperret@google.com>
+ <20210611124820.ksydlg4ncw2xowd3@e107158-lin.cambridge.arm.com>
+ <YMNgPyfiIaIIsjqq@google.com>
+ <20210611132653.o5iljqtmr2hcvtsl@e107158-lin.cambridge.arm.com>
+ <YMNp3EigvYjeMVAj@google.com>
+ <20210611141737.spzlmuh7ml266c5a@e107158-lin.cambridge.arm.com>
+ <YMN2ljLMUikvCBXk@google.com>
 MIME-Version: 1.0
-References: <20210610074812.57973-1-chenxiaosong2@huawei.com>
-In-Reply-To: <20210610074812.57973-1-chenxiaosong2@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 14 Jun 2021 17:03:00 +0200
-Message-ID: <CAJZ5v0j6S4DxuNiN_VeZQ1hc8kAMJ4oz7-P=PmR4OnsN0PEURw@mail.gmail.com>
-Subject: Re: [PATCH -next] ACPI: fix doc warnings
-To:     ChenXiaoSong <chenxiaosong2@huawei.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        yu kuai <yukuai3@huawei.com>, yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YMN2ljLMUikvCBXk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 9:41 AM ChenXiaoSong <chenxiaosong2@huawei.com> wrote:
->
-> Fix gcc W=1 warnings:
-> drivers/acpi/cppc_acpi.c:1356: warning: Function parameter or member 'cpu_num' not described in 'cppc_get_transition_latency'
-> drivers/acpi/cppc_acpi.c:573: warning: Function parameter or member 'pcc_ss_id' not described in 'pcc_data_alloc'
-> drivers/acpi/dock.c:388: warning: Function parameter or member 'ds' not described in 'handle_eject_request'
-> drivers/acpi/dock.c:388: warning: Function parameter or member 'event' not described in 'handle_eject_request'
-> drivers/acpi/sleep.c:496: warning: Function parameter or member 'acpi_state' not described in 'acpi_pm_start'
-> drivers/acpi/sleep.c:536: warning: Function parameter or member 'pm_state' not described in 'acpi_suspend_begin'
-> drivers/acpi/sleep.c:663: warning: Function parameter or member 'pm_state' not described in 'acpi_suspend_begin_old'
-> drivers/acpi/sleep.c:956: warning: Function parameter or member 'stage' not described in 'acpi_hibernation_begin_old'
->
-> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-> ---
->  drivers/acpi/cppc_acpi.c | 2 ++
->  drivers/acpi/dock.c      | 2 ++
->  drivers/acpi/sleep.c     | 4 ++++
->  3 files changed, 8 insertions(+)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index a4d4eebba1da..611938f2c132 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -561,6 +561,7 @@ bool __weak cpc_ffh_supported(void)
->
->  /**
->   * pcc_data_alloc() - Allocate the pcc_data memory for pcc subspace
-> + * @pcc_ss_id: pcc subspace id.
->   *
->   * Check and allocate the cppc_pcc_data memory.
->   * In some processor configurations it is possible that same subspace
-> @@ -1346,6 +1347,7 @@ EXPORT_SYMBOL_GPL(cppc_set_perf);
->
->  /**
->   * cppc_get_transition_latency - returns frequency transition latency in ns
-> + * @cpu: CPU for which to get transition latency.
->   *
->   * ACPI CPPC does not explicitly specify how a platform can specify the
->   * transition latency for performance change requests. The closest we have
-> diff --git a/drivers/acpi/dock.c b/drivers/acpi/dock.c
-> index 7cf92158008f..6c0fb5c9b938 100644
-> --- a/drivers/acpi/dock.c
-> +++ b/drivers/acpi/dock.c
-> @@ -380,6 +380,8 @@ static int dock_in_progress(struct dock_station *ds)
->
->  /**
->   * handle_eject_request - handle an undock request checking for error conditions
-> + * @ds: the dock station.
-> + * @event: Event code.
->   *
->   * Check to make sure the dock device is still present, then undock and
->   * hotremove all the devices that may need removing.
-> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-> index aaea10d39201..95521a8b49fc 100644
-> --- a/drivers/acpi/sleep.c
-> +++ b/drivers/acpi/sleep.c
-> @@ -491,6 +491,7 @@ static void acpi_pm_finish(void)
->
->  /**
->   * acpi_pm_start - Start system PM transition.
-> + * @acpi_state: Power state value.
->   */
->  static void acpi_pm_start(u32 acpi_state)
->  {
-> @@ -531,6 +532,7 @@ static u32 acpi_suspend_states[] = {
->  /**
->   *     acpi_suspend_begin - Set the target system sleep state to the state
->   *             associated with given @pm_state, if supported.
-> + *     @pm_state: pm suspend state.
+On 06/11/21 14:43, Quentin Perret wrote:
+> On Friday 11 Jun 2021 at 15:17:37 (+0100), Qais Yousef wrote:
+> > On 06/11/21 13:49, Quentin Perret wrote:
+> > > Thinking about it a bit more, a more involved option would be to have
+> > > this patch as is, but to also introduce a new RLIMIT_UCLAMP on top of
+> > > it. The semantics could be:
+> > > 
+> > >   - if the clamp requested by the non-privileged task is lower than its
+> > >     existing clamp, then allow;
+> > >   - otherwise, if the requested clamp is less than UCLAMP_RLIMIT, then
+> > >     allow;
+> > >   - otherwise, deny,
+> > > 
+> > > And the same principle would apply to both uclamp.min and uclamp.max,
+> > > and UCLAMP_RLIMIT would default to 0.
+> > > 
+> > > Thoughts?
+> > 
+> > That could work. But then I'd prefer your patch to go as-is. I don't think
+> > uclamp can do with this extra complexity in using it.
+> 
+> Sorry I'm not sure what you mean here?
 
-Well, I appreciate the effort, but this change doesn't really improve
-the kerneldoc too much regarding the information provided by it.
+Hmm. I understood this as a new flag to sched_setattr() syscall first, but now
+I get it. You want to use getrlimit()/setrlimit()/prlimit() API to impose
+a restriction. My comment was in regard to this being a sys call extension,
+which it isn't. So please ignore it.
 
-In fact, @pm_state is documented already here, you just need to
-rearrange this comment.
+> 
+> > We basically want to specify we want to be paranoid about uclamp CAP or not. In
+> > my view that is simple and can't see why it would be a big deal to have
+> > a procfs entry to define the level of paranoia the system wants to impose. If
+> > it is a big deal though (would love to hear the arguments);
+> 
+> Not saying it's a big deal, but I think there are a few arguments in
+> favor of using rlimit instead of a sysfs knob. It allows for a much
+> finer grain configuration  -- constraints can be set per-task as well as
+> system wide if needed, and it is the standard way of limiting resources
+> that tasks can ask for.
 
->   */
->  static int acpi_suspend_begin(suspend_state_t pm_state)
->  {
-> @@ -658,6 +660,7 @@ static const struct platform_suspend_ops acpi_suspend_ops = {
->   *             state associated with given @pm_state, if supported, and
->   *             execute the _PTS control method.  This function is used if the
->   *             pre-ACPI 2.0 suspend ordering has been requested.
-> + *     @pm_state: pm suspend state.
+Is it system wide or per user?
 
-Pretty much same as above.
+> 
+> > requiring apps that
+> > want to self regulate to have CAP_SYS_NICE is better approach.
+> 
+> Rlimit wouldn't require that though, which is also nice as CAP_SYS_NICE
+> grants you a lot more power than just clamps ...
 
->   */
->  static int acpi_suspend_begin_old(suspend_state_t pm_state)
->  {
-> @@ -951,6 +954,7 @@ static const struct platform_hibernation_ops acpi_hibernation_ops = {
->   *             ACPI_STATE_S4 and execute the _PTS control method.  This
->   *             function is used if the pre-ACPI 2.0 suspend ordering has been
->   *             requested.
-> + *     @stage: pm event massage
+Now I better understand your suggestion. It seems a viable option I agree.
+I need to digest it more still though. The devil is in the details :)
 
-And here too.
+Shouldn't the default be RLIM_INIFINITY? ie: no limit?
 
->   */
->  static int acpi_hibernation_begin_old(pm_message_t stage)
->  {
-> --
-> 2.25.4
->
+We will need to add two limit, RLIMIT_UCLAMP_MIN/MAX, right?
+
+We have the following hierarchy now:
+
+	1. System Wide (/proc/sys/kerenl/sched_util_clamp_min/max)
+	2. Cgroup
+	3. Per-Task
+
+In that order of priority where 1 limits/overrides 2 and 3. And
+2 limits/overrides 3.
+
+Where do you see the RLIMIT fit in this hierarchy? It should be between 2 and
+3, right? Cgroup settings should still win even if the user/processes were
+limited?
+
+If the framework decided a user can't request any boost at all (can't increase
+its uclamp_min above 0). IIUC then setting the hard limit of RLIMIT_UCLAMP_MIN
+to 0 would achieve that, right?
+
+Since the framework and the task itself would go through the same
+sched_setattr() call, how would the framework circumvent this limit? IIUC it
+has to raise the RLIMIT_UCLAMP_MIN first then perform sched_setattr() to
+request the boost value, right? Would this overhead be acceptable? It looks
+considerable to me.
+
+Also, Will prlimit() allow you to go outside what was set for the user via
+setrlimit()? Reading the man pages it seems to override, so that should be
+fine.
+
+For 1 (System Wide) limits, sched_setattr() requests are accepted, but the
+effective uclamp is *capped by* the system wide limit.
+
+Were you thinking RLIMIT_UCLAMP* will behave similarly? If they do, we have
+consistent behavior with how the current system wide limits work; but this will
+break your use case because tasks can change the requested uclamp value for
+a task, albeit the effective value will be limited.
+
+	RLIMIT_UCLAMP_MIN=512
+	p->uclamp[UCLAMP_min] = 800	// this request is allowed but
+					// Effective UCLAMP_MIN = 512
+
+If not, then
+
+	RLIMIT_UCLAMP_MIN=no limit
+	p->uclamp[UCLAMP_min] = 800	// task changed its uclamp_min to 800
+	RLIMIT_UCLAMP_MIN=512		// limit was lowered for task/user
+
+what will happen to p->uclamp[UCLAMP_MIN] in this case? Will it be lowered to
+match the new limit? And this will be inconsistent with the current system wide
+limits we already have.
+
+Sorry too many questions. I was mainly thinking loudly. I need to spend more
+time to dig into the details of how RLIMITs are imposed to understand how this
+could be a good fit. I already see some friction points that needs more
+thinking.
+
+Thanks
+
+--
+Qais Yousef
