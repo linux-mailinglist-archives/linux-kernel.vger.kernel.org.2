@@ -2,69 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9E63A6FD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40F83A6FF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhFNUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234866AbhFNUMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:12:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A9C3F6134F;
-        Mon, 14 Jun 2021 20:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623701403;
-        bh=G2fXRs/94NeTqMMqJICSXSVM/FXQTKFbAzQvgAKg7r4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lpfvZyTYU+7iaWwMgZA62Pe10nXRSPS7XVLX0V8EGzEnn5ZNPj4re244yK2IQZ8ol
-         tGoZZg8R8U4EeW4HcyCAXrnHKGjLru8sEfHqfFx8YilLVJ0gH8BlLEGNCj5y0seCjx
-         stFinSU3nzIEo9Ju1JJrwWVxzX6EP8rthlMb1D6n7IcXjRB4eaxwwttPX/vVjA2Fb8
-         MzoRifuGg2JxKdgASrIX/1l1p1JzRVudYFDrTUYZ+R5Xz/tJTK/VUNOgeHautGLxaI
-         Sa7wggXMvK2fwEII2m30qt2w3yMgFkmmASG06fKAU5gTVl0oQBfN0+acX1/qSHVtqG
-         mPdjfDcpEdqFA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A0FB3609E7;
-        Mon, 14 Jun 2021 20:10:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235566AbhFNUNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235770AbhFNUN0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 16:13:26 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7844BC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:11:23 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f09b9000c5f6a5325ce378c.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:b900:c5f:6a53:25ce:378c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 91EE11EC04DB;
+        Mon, 14 Jun 2021 22:11:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623701481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=YLEhCAu033Ko8s2B8FzpAXaxJKlECW6GNIUYVXNIkQE=;
+        b=ilceE67y8YnWP+BUuC6TjumeZ636ybrSUu7mJdcsizepjehdRIdcqHmMxehsNTPjOR+FhE
+        Ge21GlebDKXLSMToJp3f/hWBf+ieBkyMCwZuo8+mJ9udZN8Sz/Bg00B94Z6DnvU2syKWzs
+        z++mawFYn6Syxf5HZbnQ4MIRiA/iKiw=
+Date:   Mon, 14 Jun 2021 22:11:14 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v1 05/11] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+Message-ID: <YMe34ptb8CCV7Vg9@zn.tnic>
+References: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210602022136.2186759-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YMcXvzD2o7rWsl0W@zn.tnic>
+ <b0dff409-d084-bfc1-c260-e1732b5e8ee5@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: qrtr: fix OOB Read in qrtr_endpoint_post
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162370140365.19720.3346569665571735760.git-patchwork-notify@kernel.org>
-Date:   Mon, 14 Jun 2021 20:10:03 +0000
-References: <20210614120650.2731-1-paskripkin@gmail.com>
-In-Reply-To: <20210614120650.2731-1-paskripkin@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     mani@kernel.org, davem@davemloft.net, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+1917d778024161609247@syzkaller.appspotmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b0dff409-d084-bfc1-c260-e1732b5e8ee5@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, Jun 14, 2021 at 12:45:45PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> May be I should define a macro for it and use Mov to keep it uniform
+> with other register updates.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Macro?
 
-On Mon, 14 Jun 2021 15:06:50 +0300 you wrote:
-> Syzbot reported slab-out-of-bounds Read in
-> qrtr_endpoint_post. The problem was in wrong
-> _size_ type:
+There's the, well, *MOV* instruction, if you insist on keeping it
+uniform. But this is not about keeping it uniform - it is about having
+the code as clear as understandable as possible:
+
+
+	/* Set RAX to TDCALL leaf function 0 */
+	xor %eax, %eax
+
+Plain and simple and clear why the XORing is done.
+
+> But, I am fine with passing it via stack, if this is recommended.
 > 
-> 	if (len != ALIGN(size, 4) + hdrlen)
-> 		goto err;
-> 
-> [...]
+> Please let me know.
 
-Here is the summary with links:
-  - net: qrtr: fix OOB Read in qrtr_endpoint_post
-    https://git.kernel.org/netdev/net/c/ad9d24c9429e
+Yes, please do.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> With the trace support, they should be able to see the flow before making
+> the tdx_*_call(). That should be enough clue for debug right?
 
+Are you expecting all those cloud users to trace their guests just to
+figure that out? I'm sceptical they will...
 
+Rather, I'd try to allocate a special error value that
+do_tdx_hypercall() returns in %eax and then have the wrapper which will
+puts %r10 on the stack, check that error value and panic with a nice
+error message.
+
+> Ok. I will follow your recommendation. I have done it this way to fix
+> checkpatch reports.
+
+Yeah but you should not take checkpatch reports to the letter and use
+common sense instead.
+
+> If we need helper functions for other output registers in future, we might
+> have to add the suffix.
+
+Btw, where is that function used? Gurgling, it shows it in some MMIO
+patch, I'm guessing that's still coming.
+
+As to how to do it properly, you pass in
+
+	struct tdx_hypercall_output *out
+
+as a function parameter and caller can pick out whatever it wants from
+that struct.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
