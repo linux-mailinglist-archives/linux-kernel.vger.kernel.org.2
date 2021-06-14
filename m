@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6713A64CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0D63A6324
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235920AbhFNL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:29:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42876 "EHLO mail.kernel.org"
+        id S235610AbhFNLK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:10:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235536AbhFNLOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:14:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F079B6195A;
-        Mon, 14 Jun 2021 10:49:13 +0000 (UTC)
+        id S234828AbhFNK7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2213E6142F;
+        Mon, 14 Jun 2021 10:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667754;
-        bh=Ijj6w/xRH62dLAhfw625MvzJ53wokV09FozBDVbrmOE=;
+        s=korg; t=1623667339;
+        bh=sqob/9gAvgLS5yP52CmR/Jxa1TU4Yw2R3RZ2tNKUKAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nJ4BoHUiernA8zKKP2hn9ZPJSvt+RgG5Q8u4F1d/hIFoUROdSQ7DDIiGu8BVuQFId
-         FACnFihHrEpZHWa32LLIj5abpySxhwrRWeSmtDUjsxU1pJRb6wG41Ns5+amhOJ5U6L
-         eAEw3APhrX+u4mpmk3U8zBJ6/aa+0P/tsuHcC8ow=
+        b=N1YgFgCeNTpBkDykcWz2Xe4dIvBNDo3E9GwIj3QwRZk2Nnz9dqhfmjGb529EQs2K7
+         NIz5+caBKCJxvBoRc+55x1LNq/LYjnX0/gBb6u40nUYIKl7a8eu9QzYwZ7XxeJW/DI
+         aYZl0s8GGxZp0H7jLmf60lusFGdhqPj0M1KFelXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 5.12 060/173] drm: Lock pointer access in drm_master_release()
-Date:   Mon, 14 Jun 2021 12:26:32 +0200
-Message-Id: <20210614102700.159634610@linuxfoundation.org>
+        stable@vger.kernel.org,
+        George McCollister <george.mccollister@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 032/131] net: dsa: microchip: enable phy errata workaround on 9567
+Date:   Mon, 14 Jun 2021 12:26:33 +0200
+Message-Id: <20210614102654.101065442@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: George McCollister <george.mccollister@gmail.com>
 
-commit c336a5ee984708db4826ef9e47d184e638e29717 upstream.
+[ Upstream commit 8c42a49738f16af0061f9ae5c2f5a955f268d9e3 ]
 
-This patch eliminates the following smatch warning:
-drivers/gpu/drm/drm_auth.c:320 drm_master_release() warn: unlocked access 'master' (line 318) expected lock '&dev->master_mutex'
+Also enable phy errata workaround on 9567 since has the same errata as
+the 9477 according to the manufacture's documentation.
 
-The 'file_priv->master' field should be protected by the mutex lock to
-'&dev->master_mutex'. This is because other processes can concurrently
-modify this field and free the current 'file_priv->master'
-pointer. This could result in a use-after-free error when 'master' is
-dereferenced in subsequent function calls to
-'drm_legacy_lock_master_cleanup()' or to 'drm_lease_revoke()'.
-
-An example of a scenario that would produce this error can be seen
-from a similar bug in 'drm_getunique()' that was reported by Syzbot:
-https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
-
-In the Syzbot report, another process concurrently acquired the
-device's master mutex in 'drm_setmaster_ioctl()', then overwrote
-'fpriv->master' in 'drm_new_set_master()'. The old value of
-'fpriv->master' was subsequently freed before the mutex was unlocked.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210609092119.173590-1-desmondcheongzx@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: George McCollister <george.mccollister@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_auth.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/dsa/microchip/ksz9477.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/drm_auth.c
-+++ b/drivers/gpu/drm/drm_auth.c
-@@ -314,9 +314,10 @@ int drm_master_open(struct drm_file *fil
- void drm_master_release(struct drm_file *file_priv)
- {
- 	struct drm_device *dev = file_priv->minor->dev;
--	struct drm_master *master = file_priv->master;
-+	struct drm_master *master;
+diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
+index abfd3802bb51..b3aa99eb6c2c 100644
+--- a/drivers/net/dsa/microchip/ksz9477.c
++++ b/drivers/net/dsa/microchip/ksz9477.c
+@@ -1532,6 +1532,7 @@ static const struct ksz_chip_data ksz9477_switch_chips[] = {
+ 		.num_statics = 16,
+ 		.cpu_ports = 0x7F,	/* can be configured as cpu port */
+ 		.port_cnt = 7,		/* total physical port count */
++		.phy_errata_9477 = true,
+ 	},
+ };
  
- 	mutex_lock(&dev->master_mutex);
-+	master = file_priv->master;
- 	if (file_priv->magic)
- 		idr_remove(&file_priv->master->magic_map, file_priv->magic);
- 
+-- 
+2.30.2
+
 
 
