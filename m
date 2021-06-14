@@ -2,82 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79723A5E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAF73A5E52
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhFNIZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232528AbhFNIZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:25:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6C2C61370;
-        Mon, 14 Jun 2021 08:22:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623658974;
-        bh=fKEG1QQdsee0y5BUfnFwrYpg138QJfLVS/JCvDtXSNw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BYPCCet+A5JIifh7UMTn1H1tGYFUHr2l14ShJ65eT+860NNtuiR8stnL96zddKq9e
-         d0tX+xqvB22TODvwTwhTwl+6Jbo17g/R7iqcuj8LjsI5Wa8FUw96ByqYv662+axxB8
-         9Pw4rHtzu3V0FPjRQAcClKEkaSPvGVqq4+l2Brbw=
-Date:   Mon, 14 Jun 2021 10:22:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Hannes Reinecke <hare@suse.de>, containers@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: device namespaces
-Message-ID: <YMcR2982KSjFu8kM@kroah.com>
-References: <20210608142911.ievp2rpuquxjuyus@wittgenstein>
- <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de>
- <877dj4ff9g.fsf@disp2133>
- <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
- <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
- <20210609072108.ldhsxfnfql4pacqx@wittgenstein>
- <85a0d777-dea6-9574-8946-9fc8f912c1af@suse.de>
- <20210609080918.ma2klvxkjad4pjrn@wittgenstein>
- <87v96k1d65.fsf@disp2133>
- <c504a8c6-73f8-b45c-6d6b-6f5a1300ab3a@metux.net>
+        id S232604AbhFNIZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:25:00 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:42732 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232528AbhFNIY6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 04:24:58 -0400
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lshrx-0003mW-V4; Mon, 14 Jun 2021 08:22:54 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lshrv-0004ab-Hf; Mon, 14 Jun 2021 09:22:53 +0100
+Subject: Re: [PATCH 1/2] ubd: remove the code to register as the legacy IDE
+ driver
+To:     Christoph Hellwig <hch@lst.de>,
+        Richard Weinberger <richard@nod.at>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+References: <20210614060759.3965724-1-hch@lst.de>
+ <20210614060759.3965724-2-hch@lst.de>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <5a9207a0-91e9-d843-9968-2db26946be73@cambridgegreys.com>
+Date:   Mon, 14 Jun 2021 09:22:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c504a8c6-73f8-b45c-6d6b-6f5a1300ab3a@metux.net>
+In-Reply-To: <20210614060759.3965724-2-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 09:49:22AM +0200, Enrico Weigelt, metux IT consult wrote:
-> On 11.06.21 20:14, Eric W. Biederman wrote:
-> 
-> Hi,
-> 
-> > I favor none of the virtual devices showing up in sysfs.  Maybe existing
-> > userspace needs the devices in sysfs, but if the solution is simply to
-> > skip sysfs for virtual devices that is much simpler.
-> 
-> Sorry for being a little bit confused, but by virtual devices you mean
-> things like pty's or all the other stuff we already see under
-> /sys/device/virtual ?
-> 
-> I'm yet unsure what the better way is. If we're just talking about pty's
-> specifically, I maybe could live with threating them like "special sort
-> of pipes", but I guess that would require some extra magic.
-> 
-> If I'm not mistaken, the whole sysfs stuff is automatically handled
-> device classes and bus'es - seems that tty's are also class devs.
-> 
-> How would you skip the virtual devices from sysfs ? Adding some filter
-> into sysfs that looks at the device class (or some flag within it) ?
 
-Wait, step back.  What _EXACTLY_ are you wanting to do here?  If you
-have not looked at how sysfs handles devices today, that leads me to
-believe that you do not have a real model in place.
 
-Again, spend some time and write some code please before continuing this
-thread.  We don't like to talk about vague things when you do not even
-have an idea of what you want.
+On 14/06/2021 07:07, Christoph Hellwig wrote:
+> With the legacy IDE driver long deprecated, and modern userspace being
+> much more flexible about dev_t assignments there is no reason to fake
+> a registration as the legacy IDE driver in ubd.  This registeration
+> is a little problematic as it registers the same request_queue for
+> multiple gendisks, so just remove it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   arch/um/drivers/ubd_kern.c | 106 +++++--------------------------------
+>   1 file changed, 12 insertions(+), 94 deletions(-)
+> 
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index 8e0b43cf089f..f508d45f7a69 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -125,9 +125,7 @@ static const struct block_device_operations ubd_blops = {
+>   };
+>   
+>   /* Protected by ubd_lock */
+> -static int fake_major = UBD_MAJOR;
+>   static struct gendisk *ubd_gendisk[MAX_DEV];
+> -static struct gendisk *fake_gendisk[MAX_DEV];
+>   
+>   #ifdef CONFIG_BLK_DEV_UBD_SYNC
+>   #define OPEN_FLAGS ((struct openflags) { .r = 1, .w = 1, .s = 1, .c = 0, \
+> @@ -197,54 +195,19 @@ struct ubd {
+>   /* Protected by ubd_lock */
+>   static struct ubd ubd_devs[MAX_DEV] = { [0 ... MAX_DEV - 1] = DEFAULT_UBD };
+>   
+> -/* Only changed by fake_ide_setup which is a setup */
+> -static int fake_ide = 0;
+> -static struct proc_dir_entry *proc_ide_root = NULL;
+> -static struct proc_dir_entry *proc_ide = NULL;
+> -
+>   static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
+>   				 const struct blk_mq_queue_data *bd);
+>   
+> -static void make_proc_ide(void)
+> -{
+> -	proc_ide_root = proc_mkdir("ide", NULL);
+> -	proc_ide = proc_mkdir("ide0", proc_ide_root);
+> -}
+> -
+> -static int fake_ide_media_proc_show(struct seq_file *m, void *v)
+> -{
+> -	seq_puts(m, "disk\n");
+> -	return 0;
+> -}
+> -
+> -static void make_ide_entries(const char *dev_name)
+> -{
+> -	struct proc_dir_entry *dir, *ent;
+> -	char name[64];
+> -
+> -	if(proc_ide_root == NULL) make_proc_ide();
+> -
+> -	dir = proc_mkdir(dev_name, proc_ide);
+> -	if(!dir) return;
+> -
+> -	ent = proc_create_single("media", S_IRUGO, dir,
+> -			fake_ide_media_proc_show);
+> -	if(!ent) return;
+> -	snprintf(name, sizeof(name), "ide0/%s", dev_name);
+> -	proc_symlink(dev_name, proc_ide_root, name);
+> -}
+> -
+>   static int fake_ide_setup(char *str)
+>   {
+> -	fake_ide = 1;
+> +	pr_warn("The fake_ide option has been removed\n");
+>   	return 1;
+>   }
+> -
+>   __setup("fake_ide", fake_ide_setup);
+>   
+>   __uml_help(fake_ide_setup,
+>   "fake_ide\n"
+> -"    Create ide0 entries that map onto ubd devices.\n\n"
+> +"    Obsolete stub.\n\n"
+>   );
+>   
+>   static int parse_unit(char **ptr)
+> @@ -296,20 +259,8 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
+>   			return err;
+>   		}
+>   
+> -		mutex_lock(&ubd_lock);
+> -		if (fake_major != UBD_MAJOR) {
+> -			*error_out = "Can't assign a fake major twice";
+> -			goto out1;
+> -		}
+> -
+> -		fake_major = major;
+> -
+> -		printk(KERN_INFO "Setting extra ubd major number to %d\n",
+> -		       major);
+> -		err = 0;
+> -	out1:
+> -		mutex_unlock(&ubd_lock);
+> -		return err;
+> +		pr_warn("fake major not supported any more\n");
+> +		return 0;
+>   	}
+>   
+>   	n = parse_unit(&str);
+> @@ -917,7 +868,6 @@ static const struct attribute_group *ubd_attr_groups[] = {
+>   static int ubd_disk_register(int major, u64 size, int unit,
+>   			     struct gendisk **disk_out)
+>   {
+> -	struct device *parent = NULL;
+>   	struct gendisk *disk;
+>   
+>   	disk = alloc_disk(1 << UBD_SHIFT);
+> @@ -928,24 +878,17 @@ static int ubd_disk_register(int major, u64 size, int unit,
+>   	disk->first_minor = unit << UBD_SHIFT;
+>   	disk->fops = &ubd_blops;
+>   	set_capacity(disk, size / 512);
+> -	if (major == UBD_MAJOR)
+> -		sprintf(disk->disk_name, "ubd%c", 'a' + unit);
+> -	else
+> -		sprintf(disk->disk_name, "ubd_fake%d", unit);
+> -
+> -	/* sysfs register (not for ide fake devices) */
+> -	if (major == UBD_MAJOR) {
+> -		ubd_devs[unit].pdev.id   = unit;
+> -		ubd_devs[unit].pdev.name = DRIVER_NAME;
+> -		ubd_devs[unit].pdev.dev.release = ubd_device_release;
+> -		dev_set_drvdata(&ubd_devs[unit].pdev.dev, &ubd_devs[unit]);
+> -		platform_device_register(&ubd_devs[unit].pdev);
+> -		parent = &ubd_devs[unit].pdev.dev;
+> -	}
+> +	sprintf(disk->disk_name, "ubd%c", 'a' + unit);
+> +
+> +	ubd_devs[unit].pdev.id   = unit;
+> +	ubd_devs[unit].pdev.name = DRIVER_NAME;
+> +	ubd_devs[unit].pdev.dev.release = ubd_device_release;
+> +	dev_set_drvdata(&ubd_devs[unit].pdev.dev, &ubd_devs[unit]);
+> +	platform_device_register(&ubd_devs[unit].pdev);
+>   
+>   	disk->private_data = &ubd_devs[unit];
+>   	disk->queue = ubd_devs[unit].queue;
+> -	device_add_disk(parent, disk, ubd_attr_groups);
+> +	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
+>   
+>   	*disk_out = disk;
+>   	return 0;
+> @@ -1001,17 +944,6 @@ static int ubd_add(int n, char **error_out)
+>   		goto out_cleanup_tags;
+>   	}
+>   
+> -	if (fake_major != UBD_MAJOR)
+> -		ubd_disk_register(fake_major, ubd_dev->size, n,
+> -				  &fake_gendisk[n]);
+> -
+> -	/*
+> -	 * Perhaps this should also be under the "if (fake_major)" above
+> -	 * using the fake_disk->disk_name
+> -	 */
+> -	if (fake_ide)
+> -		make_ide_entries(ubd_gendisk[n]->disk_name);
+> -
+>   	err = 0;
+>   out:
+>   	return err;
+> @@ -1126,12 +1058,6 @@ static int ubd_remove(int n, char **error_out)
+>   		put_disk(disk);
+>   	}
+>   
+> -	if(fake_gendisk[n] != NULL){
+> -		del_gendisk(fake_gendisk[n]);
+> -		put_disk(fake_gendisk[n]);
+> -		fake_gendisk[n] = NULL;
+> -	}
+> -
+>   	err = 0;
+>   	platform_device_unregister(&ubd_dev->pdev);
+>   out:
+> @@ -1188,14 +1114,6 @@ static int __init ubd_init(void)
+>   	if (register_blkdev(UBD_MAJOR, "ubd"))
+>   		return -1;
+>   
+> -	if (fake_major != UBD_MAJOR) {
+> -		char name[sizeof("ubd_nnn\0")];
+> -
+> -		snprintf(name, sizeof(name), "ubd_%d", fake_major);
+> -		if (register_blkdev(fake_major, "ubd"))
+> -			return -1;
+> -	}
+> -
+>   	irq_req_buffer = kmalloc_array(UBD_REQ_BUFFER_SIZE,
+>   				       sizeof(struct io_thread_req *),
+>   				       GFP_KERNEL
+> 
 
-good luck!
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-greg k-h
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
