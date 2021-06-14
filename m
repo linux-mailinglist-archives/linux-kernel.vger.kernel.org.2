@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39833A6FA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4E73A6FA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235741AbhFNT5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:57:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53690 "EHLO mail.kernel.org"
+        id S235749AbhFNT5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:57:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235679AbhFNT5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64C236134F;
-        Mon, 14 Jun 2021 19:55:26 +0000 (UTC)
+        id S235708AbhFNT5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:57:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8FE461166;
+        Mon, 14 Jun 2021 19:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623700526;
-        bh=NWfwBAl37uZr0GzMxOWdBMjl8COCgIrfBVJda3rqPoY=;
+        s=k20201202; t=1623700529;
+        bh=7xDxmxG4Ta9fQN68e3Utug451ue+9mXqf6QY/N18kaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rWKkz30eXbWepa4X39gBPY5Oc/8LEHE2qHSC5TnegqqsDZt2CmSTIn+a+caQFvvVC
-         1pSBvO0749Uxq2dgXKoPRdOhijbHDLeMu1HuA88391XR68/D/rIOwsL88wUPTFoWG6
-         FrziAAtZ4N8DvRCxbPhiXZpGEDcrtPHblIAoPXDtignI258IVvZBDFd2c9HP/DjMg5
-         XsNejABziWzewG2APjpka5O6NUW3kTVDbrCQTSYMSpQa1LB2A6RxSuoYW+udv8cR+/
-         o0FWrhmOvr7noVgGkgf6sJCmowF+8e3PVK6xhQ3Y/hTncUgSXfvgNOvONxHXatulrc
-         CT61/f6R+SLxw==
+        b=Zssg79GRTB9L/oTyZXEXCGJyMP7orW2fEBsHcqmaA+t+7EIJFCMYekzSSriUsWXtA
+         TTXkc/W5Qd0c2l63uxDcKV17znVYQ3zHjReD7nZcVZ4V6l4+7ys1AjHBq7zQ6arLI3
+         ctFjT3NRuAUfIABB1hGSZqhiicTfDULDJNkrCDtM7yWC1uVxoYc3kIXdX9IPZUHmXo
+         sNOTJq3Kushsff/jyzcceN8HXoJZqwSBe4qmmg3q1PuJkm5DEAeSGvWoMIOTRjJt2L
+         cmn/FAo2FYzIbZRIPj18eTX8JqbXLmQHiy4LqCY8khbu2CfRfXQWdLiiLRrNuIB8Zb
+         +1ELdi+C5jlWw==
 From:   Mark Brown <broonie@kernel.org>
-To:     agross@kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        plai@codeaurora.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com,
-        devicetree@vger.kernel.org, bgoswami@codeaurora.org,
-        bjorn.andersson@linaro.org, judyhsiao@chromium.org,
-        alsa-devel@alsa-project.org, perex@perex.cz
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: qcom: Fix for DMA interrupt clear reg overwriting
-Date:   Mon, 14 Jun 2021 20:53:55 +0100
-Message-Id: <162369994007.34524.2234994672815898510.b4-ty@kernel.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>, lgirdwood@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, tiwai@suse.com,
+        alsa-devel@alsa-project.org, perex@perex.cz,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ASoC: codecs: wcd: Remove unneeded semicolon
+Date:   Mon, 14 Jun 2021 20:53:56 +0100
+Message-Id: <162369994007.34524.11243148752521690336.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210609072310.26099-1-srivasam@codeaurora.org>
-References: <20210609072310.26099-1-srivasam@codeaurora.org>
+In-Reply-To: <1623221171-105359-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1623221171-105359-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,15 +41,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 12:53:10 +0530, Srinivasa Rao Mandadapu wrote:
-> The DMA interrupt clear register overwritten during
-> simultaneous playback and capture in lpass platform
-> interrupt handler. It's causing playback or capture stuck
-> in similtaneous plaback on speaker and capture on dmic test.
-> Update appropriate reg fields of corresponding channel instead
-> of entire register write.
-> 
-> [...]
+On Wed, 9 Jun 2021 14:46:11 +0800, Yang Li wrote:
+> Eliminate the following coccicheck warning:
+> ./sound/soc/codecs/wcd-mbhc-v2.c:990:2-3: Unneeded semicolon.
 
 Applied to
 
@@ -63,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: Fix for DMA interrupt clear reg overwriting
-      commit: da0363f7bfd3c32f8d5918e40bfddb9905c86ee1
+[1/1] ASoC: codecs: wcd: Remove unneeded semicolon
+      commit: 03c0cbd946958af9cc10e55bdb047fd37d30735e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
