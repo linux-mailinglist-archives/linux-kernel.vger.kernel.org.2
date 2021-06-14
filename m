@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7FC3A6FA5
+	by mail.lfdr.de (Postfix) with ESMTP id C39833A6FA6
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235725AbhFNT5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:57:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53630 "EHLO mail.kernel.org"
+        id S235741AbhFNT5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235667AbhFNT51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:57:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2D62611EE;
-        Mon, 14 Jun 2021 19:55:23 +0000 (UTC)
+        id S235679AbhFNT5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64C236134F;
+        Mon, 14 Jun 2021 19:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623700524;
-        bh=Ntq4kqfa7yTnx8mVPDsS8IPwujI3mWFLjDWMxG8jalE=;
+        s=k20201202; t=1623700526;
+        bh=NWfwBAl37uZr0GzMxOWdBMjl8COCgIrfBVJda3rqPoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RABkBT+nggojxbBjepS2TJ3VTzPGjdLTL36uau2ylN8z5+ED/J8ChW7N8muSgqKaj
-         j906CKpN9WJQ8IGjkdqSxRhmI7qtWt+bfCFaYri4HloD5EJhgJzzTXhJoi0RXYQ6gP
-         0urj8N1SPZig0dp7YU2G2Z7QTJhYj9oIAD47RWlcQebpA7j8HTlsj0oPR8vXNm1Oiv
-         xzqyhwq6wU4KCgdtyWKAVnBI7i38hfNPJ2C7cK59NWR/Qlj9hT8wD1rgL9Jf+veNPA
-         Bzb0pWJxKkicVy4SPNgvJTCzytXqjHdrbOOVaWrsQ42vieY5LDwzb/Er/tvcZkEYZ3
-         FKnszJfCHZpPw==
+        b=rWKkz30eXbWepa4X39gBPY5Oc/8LEHE2qHSC5TnegqqsDZt2CmSTIn+a+caQFvvVC
+         1pSBvO0749Uxq2dgXKoPRdOhijbHDLeMu1HuA88391XR68/D/rIOwsL88wUPTFoWG6
+         FrziAAtZ4N8DvRCxbPhiXZpGEDcrtPHblIAoPXDtignI258IVvZBDFd2c9HP/DjMg5
+         XsNejABziWzewG2APjpka5O6NUW3kTVDbrCQTSYMSpQa1LB2A6RxSuoYW+udv8cR+/
+         o0FWrhmOvr7noVgGkgf6sJCmowF+8e3PVK6xhQ3Y/hTncUgSXfvgNOvONxHXatulrc
+         CT61/f6R+SLxw==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
-        codrin.ciubotariu@microchip.com
-Subject: Re: [PATCH -next] ASoC: mchp-i2s-mcc: Use devm_platform_get_and_ioremap_resource()
-Date:   Mon, 14 Jun 2021 20:53:54 +0100
-Message-Id: <162369994010.34524.5545642364893372960.b4-ty@kernel.org>
+To:     agross@kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        plai@codeaurora.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com,
+        devicetree@vger.kernel.org, bgoswami@codeaurora.org,
+        bjorn.andersson@linaro.org, judyhsiao@chromium.org,
+        alsa-devel@alsa-project.org, perex@perex.cz
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: qcom: Fix for DMA interrupt clear reg overwriting
+Date:   Mon, 14 Jun 2021 20:53:55 +0100
+Message-Id: <162369994007.34524.2234994672815898510.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210611044256.3899583-1-yangyingliang@huawei.com>
-References: <20210611044256.3899583-1-yangyingliang@huawei.com>
+In-Reply-To: <20210609072310.26099-1-srivasam@codeaurora.org>
+References: <20210609072310.26099-1-srivasam@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,9 +47,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 12:42:56 +0800, Yang Yingliang wrote:
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
+On Wed, 9 Jun 2021 12:53:10 +0530, Srinivasa Rao Mandadapu wrote:
+> The DMA interrupt clear register overwritten during
+> simultaneous playback and capture in lpass platform
+> interrupt handler. It's causing playback or capture stuck
+> in similtaneous plaback on speaker and capture on dmic test.
+> Update appropriate reg fields of corresponding channel instead
+> of entire register write.
+> 
+> [...]
 
 Applied to
 
@@ -52,8 +63,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mchp-i2s-mcc: Use devm_platform_get_and_ioremap_resource()
-      commit: be374dc0b5062eb8ec3feb5cb1795a24c399f6cc
+[1/1] ASoC: qcom: Fix for DMA interrupt clear reg overwriting
+      commit: da0363f7bfd3c32f8d5918e40bfddb9905c86ee1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
