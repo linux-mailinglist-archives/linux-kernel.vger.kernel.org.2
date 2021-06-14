@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CAE3A6F8A
+	by mail.lfdr.de (Postfix) with ESMTP id 6447B3A6F8B
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235530AbhFNT4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52840 "EHLO mail.kernel.org"
+        id S235553AbhFNT4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235350AbhFNT4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:56:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B0DB611CA;
-        Mon, 14 Jun 2021 19:54:39 +0000 (UTC)
+        id S235518AbhFNT4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:56:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3AC861246;
+        Mon, 14 Jun 2021 19:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623700480;
-        bh=OFqLWt9YcU2q5M/HjfpqEhWhcGqRS3yWcy7sAyaGMeE=;
+        s=k20201202; t=1623700483;
+        bh=rHsL5zO3qV53Kq7tZnvcepUF9YN1NPGgwiK41SgDBH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XXHHa4xq/Isu9+95fpnbyi2ZUuVcWVETqOU2y5lYYjop2Z0KMVbhP99crM0rdDsD0
-         MmwcnZuz6xNJx8gLnUL3pkCyU4tHYbxoF2AP57ivb7ZUTvaKnJJXfkOtWKM8+gbnVc
-         z9vnoM8eg9dpGInpzCPv0moeAhHkdqNPEfK7zZER93LoN5HgFN67rx9M9WKqq8Umfa
-         D9QyOkL1yrYAk8h0i2owJypIHiSZ7qPegPaURJ3hYaLaMDtKbiTgoLV35d6zln1GRP
-         Sfyk/nM9dKthDNMD0AmoOLGy4NsMvkl6C+RgK/L/ORbju9cSDjO2rGYFu+4hzAMsEr
-         89swlSD9TdVSg==
+        b=XpPn7BKkmczHCNV9PTcTZP5wyFted1Gbw6E+R3Ai6nW+EJ8Oyd2i+PjZE33tXJ8BV
+         6uj+e/LvozNWq+7RRKAD+AxUitN4SLXCjfhpvjOObsjVjiOfqSEapxgamJY3CdfAiI
+         vIXv7U99SBanQRMf3sPoD8JPPA9JEXTixZWaNHhRksX2NOvicQSs2RxSLt3TLzLjZa
+         fKbKK6vklApx+bahGb/QR9ELSXW9eA/PnI5SUhmcHPI1DdP/FC1Mpn09JGJwJJhkxy
+         wZVzn4VXRi9Pg1jyj4c5HBgUgFnzNGlukiIqFWLDma7Wr5MZtOeupZplYaDD51zUnk
+         U5tXHYpWdjFcA==
 From:   Mark Brown <broonie@kernel.org>
-To:     timur@kernel.org, tiwai@suse.com, Zhongjun Tan <hbut_tan@163.com>,
-        nicoleotsuka@gmail.com, shengjiu.wang@gmail.com,
-        lgirdwood@gmail.com, festevam@gmail.com, perex@perex.cz,
-        Xiubo.Lee@gmail.com
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Tan Zhongjun <tanzhongjun@yulong.com>,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] ASoC:fsl_spdif:Remove superfluous error message around platform_get_irq()
-Date:   Mon, 14 Jun 2021 20:53:39 +0100
-Message-Id: <162369994008.34524.18042209109927514476.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
+        codrin.ciubotariu@microchip.com
+Subject: Re: [PATCH -next] ASoC: atmel-classd: Use devm_platform_get_and_ioremap_resource()
+Date:   Mon, 14 Jun 2021 20:53:40 +0100
+Message-Id: <162369994009.34524.9266310956959429482.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210610040037.1064-1-hbut_tan@163.com>
-References: <20210610040037.1064-1-hbut_tan@163.com>
+In-Reply-To: <20210611022115.3583765-1-yangyingliang@huawei.com>
+References: <20210611022115.3583765-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,9 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 12:00:37 +0800, Zhongjun Tan wrote:
-> The platform_get_irq() prints error message telling that interrupt is
-> missing, hence there is no need to duplicated that message.
+On Fri, 11 Jun 2021 10:21:15 +0800, Yang Yingliang wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 
 Applied to
 
@@ -54,8 +52,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC:fsl_spdif:Remove superfluous error message around platform_get_irq()
-      commit: 2e8a8adb96a335a04f1697dd4314f5569521328f
+[1/1] ASoC: atmel-classd: Use devm_platform_get_and_ioremap_resource()
+      commit: 9494d059971c5120c60bbe4aae5cba00b20ed774
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
