@@ -2,234 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28ABD3A6D0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601BA3A6D13
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235294AbhFNRXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:23:30 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:37952 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233795AbhFNRX3 (ORCPT
+        id S235370AbhFNRZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:25:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41913 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234031AbhFNRZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:23:29 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D1DC4436;
-        Mon, 14 Jun 2021 19:21:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623691285;
-        bh=aKY7UtieT5exgbf/JPK7G/X0gPU3KnH1SU01c4l8VCk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vdwc4+tSLnL557QeggHLPZ1vC/x5dMSJIfcrM8CG6W+DZWbkHs7lbNa9PZPGnNmeZ
-         /o2+qHpqr9/F9PqSGjyHDwu06s5qcMOK09yWZdF1Or7BeSS0QTavkh21+uuaSTfNY4
-         UxpBmmLHQezCQUHeGQHeQwCCMbLAbhnhnE3ewT7s=
-Date:   Mon, 14 Jun 2021 20:21:05 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: [PATCH v3 8/8] media: subdev: disallow ioctl for saa6588/davinci
-Message-ID: <YMeQARKbdVIZ8Rp9@pendragon.ideasonboard.com>
-References: <20210614103409.3154127-1-arnd@kernel.org>
- <20210614103409.3154127-9-arnd@kernel.org>
+        Mon, 14 Jun 2021 13:25:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623691417;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JHofTgDnAfH9up9hmcVY1pzQsltC1O56Hl0KypQcsag=;
+        b=PAMOchzGtOa48k4pPcxKpXNJYJ2JFe/Ep830q5B7SjEi5cR9scXNHKuTADlVe6lRLjqOmQ
+        x1Hv3U8ysaCkAjLZrc64R5KX3gsblId1X/3CD61Bv/n0NnfIucOP9dGQoyQPdu1tlC3lEA
+        KhCxTkzQUwAhTbGEB67CbROubaMi25A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-BCI4OM8YP6WM6ilrahYegQ-1; Mon, 14 Jun 2021 13:23:36 -0400
+X-MC-Unique: BCI4OM8YP6WM6ilrahYegQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE0C580363A;
+        Mon, 14 Jun 2021 17:23:33 +0000 (UTC)
+Received: from work-vm (ovpn-114-158.ams2.redhat.com [10.36.114.158])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 016135D6A8;
+        Mon, 14 Jun 2021 17:23:05 +0000 (UTC)
+Date:   Mon, 14 Jun 2021 18:23:03 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 21/22] x86/sev: Register SNP guest request
+ platform device
+Message-ID: <YMeQd6z1iwYyj6JK@work-vm>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-22-brijesh.singh@amd.com>
+ <YMEVedGOrYgI1Klc@work-vm>
+ <aef906ea-764d-0bbc-49c6-b3ecfc192214@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210614103409.3154127-9-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aef906ea-764d-0bbc-49c6-b3ecfc192214@amd.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-Thank you for the patch.
-
-On Mon, Jun 14, 2021 at 12:34:09PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+* Brijesh Singh (brijesh.singh@amd.com) wrote:
+> I see that Tom answered few comments. I will cover others.
 > 
-> The saa6588_ioctl() function expects to get called from other kernel
-> functions with a 'saa6588_command' pointer, but I found nothing stops it
-> from getting called from user space instead, which seems rather dangerous.
 > 
-> The same thing happens in the davinci vpbe driver with its VENC_GET_FLD
-> command.
+> On 6/9/21 2:24 PM, Dr. David Alan Gilbert wrote:
+> + /*
+> >> +	 * The message sequence counter for the SNP guest request is a 64-bit value
+> >> +	 * but the version 2 of GHCB specification defines the 32-bit storage for the
+> >> +	 * it.
+> >> +	 */
+> >> +	if ((count + 1) >= INT_MAX)
+> >> +		return 0;
+> > Is that UINT_MAX?
 > 
-> As a quick fix, add a separate .command() callback pointer for this
-> driver and change the two callers over to that.  This change can easily
-> get backported to stable kernels if necessary, but since there are only
-> two drivers, we may want to eventually replace this with a set of more
-> specialized callbacks in the long run.
-> 
-> Fixes: c3fda7f835b0 ("V4L/DVB (10537): saa6588: convert to v4l2_subdev.")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Good catch. It should be UINT_MAX.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+OK, but I'm also confused by two things:
+  a) Why +1 given that Tom's reply says this gets incremented by 2 each
+time (once for the message, once for the reply)
+  b) Why >= ? I think here is count was INT_MAX-1 you'd skip to 0,
+skipping INT_MAX - is that what you want?
 
-> ---
->  drivers/media/i2c/saa6588.c                   | 4 ++--
->  drivers/media/pci/bt8xx/bttv-driver.c         | 6 +++---
->  drivers/media/pci/saa7134/saa7134-video.c     | 6 +++---
->  drivers/media/platform/davinci/vpbe_display.c | 2 +-
->  drivers/media/platform/davinci/vpbe_venc.c    | 6 ++----
->  include/media/v4l2-subdev.h                   | 4 ++++
->  6 files changed, 15 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/media/i2c/saa6588.c b/drivers/media/i2c/saa6588.c
-> index ecb491d5f2ab..d1e0716bdfff 100644
-> --- a/drivers/media/i2c/saa6588.c
-> +++ b/drivers/media/i2c/saa6588.c
-> @@ -380,7 +380,7 @@ static void saa6588_configure(struct saa6588 *s)
->  
->  /* ---------------------------------------------------------------------- */
->  
-> -static long saa6588_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
-> +static long saa6588_command(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
->  {
->  	struct saa6588 *s = to_saa6588(sd);
->  	struct saa6588_command *a = arg;
-> @@ -433,7 +433,7 @@ static int saa6588_s_tuner(struct v4l2_subdev *sd, const struct v4l2_tuner *vt)
->  /* ----------------------------------------------------------------------- */
->  
->  static const struct v4l2_subdev_core_ops saa6588_core_ops = {
-> -	.ioctl = saa6588_ioctl,
-> +	.command = saa6588_command,
->  };
->  
->  static const struct v4l2_subdev_tuner_ops saa6588_tuner_ops = {
-> diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
-> index 1f62a9d8ea1d..0e9df8b35ac6 100644
-> --- a/drivers/media/pci/bt8xx/bttv-driver.c
-> +++ b/drivers/media/pci/bt8xx/bttv-driver.c
-> @@ -3179,7 +3179,7 @@ static int radio_release(struct file *file)
->  
->  	btv->radio_user--;
->  
-> -	bttv_call_all(btv, core, ioctl, SAA6588_CMD_CLOSE, &cmd);
-> +	bttv_call_all(btv, core, command, SAA6588_CMD_CLOSE, &cmd);
->  
->  	if (btv->radio_user == 0)
->  		btv->has_radio_tuner = 0;
-> @@ -3260,7 +3260,7 @@ static ssize_t radio_read(struct file *file, char __user *data,
->  	cmd.result = -ENODEV;
->  	radio_enable(btv);
->  
-> -	bttv_call_all(btv, core, ioctl, SAA6588_CMD_READ, &cmd);
-> +	bttv_call_all(btv, core, command, SAA6588_CMD_READ, &cmd);
->  
->  	return cmd.result;
->  }
-> @@ -3281,7 +3281,7 @@ static __poll_t radio_poll(struct file *file, poll_table *wait)
->  	cmd.instance = file;
->  	cmd.event_list = wait;
->  	cmd.poll_mask = res;
-> -	bttv_call_all(btv, core, ioctl, SAA6588_CMD_POLL, &cmd);
-> +	bttv_call_all(btv, core, command, SAA6588_CMD_POLL, &cmd);
->  
->  	return cmd.poll_mask;
->  }
-> diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-> index 0f9d6b9edb90..374c8e1087de 100644
-> --- a/drivers/media/pci/saa7134/saa7134-video.c
-> +++ b/drivers/media/pci/saa7134/saa7134-video.c
-> @@ -1181,7 +1181,7 @@ static int video_release(struct file *file)
->  
->  	saa_call_all(dev, tuner, standby);
->  	if (vdev->vfl_type == VFL_TYPE_RADIO)
-> -		saa_call_all(dev, core, ioctl, SAA6588_CMD_CLOSE, &cmd);
-> +		saa_call_all(dev, core, command, SAA6588_CMD_CLOSE, &cmd);
->  	mutex_unlock(&dev->lock);
->  
->  	return 0;
-> @@ -1200,7 +1200,7 @@ static ssize_t radio_read(struct file *file, char __user *data,
->  	cmd.result = -ENODEV;
->  
->  	mutex_lock(&dev->lock);
-> -	saa_call_all(dev, core, ioctl, SAA6588_CMD_READ, &cmd);
-> +	saa_call_all(dev, core, command, SAA6588_CMD_READ, &cmd);
->  	mutex_unlock(&dev->lock);
->  
->  	return cmd.result;
-> @@ -1216,7 +1216,7 @@ static __poll_t radio_poll(struct file *file, poll_table *wait)
->  	cmd.event_list = wait;
->  	cmd.poll_mask = 0;
->  	mutex_lock(&dev->lock);
-> -	saa_call_all(dev, core, ioctl, SAA6588_CMD_POLL, &cmd);
-> +	saa_call_all(dev, core, command, SAA6588_CMD_POLL, &cmd);
->  	mutex_unlock(&dev->lock);
->  
->  	return rc | cmd.poll_mask;
-> diff --git a/drivers/media/platform/davinci/vpbe_display.c b/drivers/media/platform/davinci/vpbe_display.c
-> index d19bad997f30..bf3c3e76b921 100644
-> --- a/drivers/media/platform/davinci/vpbe_display.c
-> +++ b/drivers/media/platform/davinci/vpbe_display.c
-> @@ -47,7 +47,7 @@ static int venc_is_second_field(struct vpbe_display *disp_dev)
->  
->  	ret = v4l2_subdev_call(vpbe_dev->venc,
->  			       core,
-> -			       ioctl,
-> +			       command,
->  			       VENC_GET_FLD,
->  			       &val);
->  	if (ret < 0) {
-> diff --git a/drivers/media/platform/davinci/vpbe_venc.c b/drivers/media/platform/davinci/vpbe_venc.c
-> index 8caa084e5704..bde241c26d79 100644
-> --- a/drivers/media/platform/davinci/vpbe_venc.c
-> +++ b/drivers/media/platform/davinci/vpbe_venc.c
-> @@ -521,9 +521,7 @@ static int venc_s_routing(struct v4l2_subdev *sd, u32 input, u32 output,
->  	return ret;
->  }
->  
-> -static long venc_ioctl(struct v4l2_subdev *sd,
-> -			unsigned int cmd,
-> -			void *arg)
-> +static long venc_command(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
->  {
->  	u32 val;
->  
-> @@ -542,7 +540,7 @@ static long venc_ioctl(struct v4l2_subdev *sd,
->  }
->  
->  static const struct v4l2_subdev_core_ops venc_core_ops = {
-> -	.ioctl      = venc_ioctl,
-> +	.command      = venc_command,
->  };
->  
->  static const struct v4l2_subdev_video_ops venc_video_ops = {
-> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> index 42aa1f6c7c3f..115b1e41e933 100644
-> --- a/include/media/v4l2-subdev.h
-> +++ b/include/media/v4l2-subdev.h
-> @@ -162,6 +162,9 @@ struct v4l2_subdev_io_pin_config {
->   * @s_gpio: set GPIO pins. Very simple right now, might need to be extended with
->   *	a direction argument if needed.
->   *
-> + * @command: called by in-kernel drivers in order to call functions internal
-> + *	   to subdev drivers driver that have a separate callback.
-> + *
->   * @ioctl: called at the end of ioctl() syscall handler at the V4L2 core.
->   *	   used to provide support for private ioctls used on the driver.
->   *
-> @@ -193,6 +196,7 @@ struct v4l2_subdev_core_ops {
->  	int (*load_fw)(struct v4l2_subdev *sd);
->  	int (*reset)(struct v4l2_subdev *sd, u32 val);
->  	int (*s_gpio)(struct v4l2_subdev *sd, u32 val);
-> +	long (*command)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
->  	long (*ioctl)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
->  #ifdef CONFIG_COMPAT
->  	long (*compat_ioctl32)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
+> > +	/*
+> > +	 * The secret page contains the VM encryption key used for encrypting the
+> > +	 * messages between the guest and the PSP. The secrets page location is
+> > +	 * available either through the setup_data or EFI configuration table.
+> > +	 */
+> > +	if (hdr->cc_blob_address) {
+> > +		paddr = hdr->cc_blob_address;
+> > Can you trust the paddr the host has given you or do you need to do some
+> > form of validation?
+> The paddr is mapped encrypted. That means that data  in the paddr must
+> be encrypted either through the guest or PSP. After locating the paddr,
+> we perform a simply sanity check (32-bit magic string "AMDE"). See the
+> verify header check below. Unfortunately the secrets page itself does
+> not contain any magic key which we can use to ensure that
+> hdr->secret_paddr is actually pointing to the secrets pages but all of
+> these memory is accessed encrypted so its safe to access it. If VMM
+> lying to us that basically means guest will not be able to communicate
+> with the PSP and can't do the attestation etc.
 
+OK; that nails pretty much anything bad that can happen - I was just
+thinking if the host did something odd like give you an address in the
+middle of some other useful structure.
+
+Dave
+
+> >
+> > Dave
+> > +	} else if (efi_enabled(EFI_CONFIG_TABLES)) {
+> > +#ifdef CONFIG_EFI
+> > +		paddr = cc_blob_phys;
+> > +#else
+> > +		return -ENODEV;
+> > +#endif
+> > +	} else {
+> > +		return -ENODEV;
+> > +	}
+> > +
+> > +	info = memremap(paddr, sizeof(*info), MEMREMAP_WB);
+> > +	if (!info)
+> > +		return -ENOMEM;
+> > +
+> > +	/* Verify the header that its a valid SEV_SNP CC header */
+> > +	if ((info->magic == CC_BLOB_SEV_HDR_MAGIC) &&
+> > +	    info->secrets_phys &&
+> > +	    (info->secrets_len == PAGE_SIZE)) {
+> > +		res->start = info->secrets_phys;
+> > +		res->end = info->secrets_phys + info->secrets_len;
+> > +		res->flags = IORESOURCE_MEM;
+> > +		snp_secrets_phys = info->secrets_phys;
+> > +		ret = 0;
+> > +	}
+> > +
+> > +	memunmap(info);
+> > +	return ret;
+> > +}
+> > +
+> 
 -- 
-Regards,
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
-Laurent Pinchart
