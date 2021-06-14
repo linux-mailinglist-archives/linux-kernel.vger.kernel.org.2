@@ -2,141 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A9E3A71DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B943A71E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhFNWZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 18:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhFNWZW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 18:25:22 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7295AC061574;
-        Mon, 14 Jun 2021 15:23:02 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id g22so4749607pgk.1;
-        Mon, 14 Jun 2021 15:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Zy95WLjXytpC9PA0Bxhiy7YbVeAlOqBwSRRJi5/GujM=;
-        b=ALA0aOO4zZ/Yj2B72JsrRI3+M+MYSKj13EqDlVPyLSQUWFdaA/VnpbK76WL2jKOiqP
-         hYt52rVc99j0UMwW/g6MOGvC/HllLnTLXjGqXSzTQEIV1BcuHPStIZnOwutnryNWG7CU
-         QqxeSXKIKoPRdLD98BhfXPh4WQRDpxupBY5+aLaAHj8qUeKfeaEkcCljWMkVdGD6g81m
-         YfNWz45tYBbe95GLCSkWrkMBLiqdrhL0xy9Frg1cFBlTNi3Clb7MzbxbbO8HcdsIzxk4
-         XdqO3tDR2rijzANi2X3FV1k6IXaKcwe25XSUBSqWANdPSyD3c5JXpTaQUN9xnt6LCbTg
-         NQFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zy95WLjXytpC9PA0Bxhiy7YbVeAlOqBwSRRJi5/GujM=;
-        b=DKjVCX0eGa4mF90J1Ljjs6Jn4YKIq8KDR8QMD8aYDIi8VHdSqNe1AlrtsxerO8/sTF
-         G+zUbu6t/y91rbVs27L4uJClovEM1FKVOwz9KJ07eYlZPwWqXc5Y8/QB7dksJKAUZ6WM
-         Xifbobms/Y/ARHNZYDSV6eyycC06pI5F1EDu5Y0HL3HQ8+wY50GpoekmluqofrBcHNmq
-         sJ577IybzZ9AT929ubdp0WRK9CXtf3gGyljOXzl/Vdb2kkO7w2QcHx/UAFpErqCtzhCX
-         J2VZ+yXkcudkXsuWq77imgEI41W1J98vMFShbMGjHUPt/gKwltZGiIQg5rxv35477I6D
-         w0ig==
-X-Gm-Message-State: AOAM533mcYcywlVBXspR9AyS7kPWwD6L7KLUvacZ4TBQhC+zIrhkk6Qz
-        WNzuqxhO9mpRkjTS5w8ZLM8=
-X-Google-Smtp-Source: ABdhPJwUd6Nup08PI/tjLofl2mSwnNASXdMDiGciIRaq/f9u2R8lD0tO32rgpptldT+MPMBtmqJ++A==
-X-Received: by 2002:a63:a50a:: with SMTP id n10mr19105289pgf.13.1623709380953;
-        Mon, 14 Jun 2021 15:23:00 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id i74sm14395769pgc.85.2021.06.14.15.22.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 15:23:00 -0700 (PDT)
-Subject: Re: Kernel 4.14: SQUASHFS error: xz decompression failed, data
- probably corrupt
-To:     Pintu Agarwal <pintu.ping@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel@kvack.org, Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>
-References: <CAOuPNLi8_PDyxtt+=j8AsX9pwLWcT4LmVWKj+UcyFOnj4RDBzg@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <dacd3fd3-faf5-9795-1bf9-92b1a237626b@gmail.com>
-Date:   Mon, 14 Jun 2021 15:22:58 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <CAOuPNLi8_PDyxtt+=j8AsX9pwLWcT4LmVWKj+UcyFOnj4RDBzg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S231210AbhFNW1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:27:43 -0400
+Received: from mga06.intel.com ([134.134.136.31]:47951 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhFNW1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 18:27:42 -0400
+IronPort-SDR: 0od/GL/+NNiRXXG9lTAO5nci3OhucSKjeS4FxvxorVyvkMJkdydE0DbfVPdNvv7JfWpriODw6c
+ rtp3sx42hFMw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="267036265"
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="267036265"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 15:25:37 -0700
+IronPort-SDR: f3cWHzUgT7jOHyd18r0lRpwulvZFohRS6R6d8U3a3GjP0mGiz8IX9Deg8m4O6CSPo1Ke9C6ZtZ
+ iemaKmp/xt/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="471452825"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by fmsmga004.fm.intel.com with ESMTP; 14 Jun 2021 15:25:37 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 14 Jun 2021 15:25:37 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 14 Jun 2021 15:25:37 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.008;
+ Mon, 14 Jun 2021 15:25:37 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+        Robert Richter <rric@kernel.org>
+Subject: RE: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA
+ feature bit is not exposed
+Thread-Topic: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA
+ feature bit is not exposed
+Thread-Index: AQHXYWNK3FqBHVBWmECrS7erxBQl9KsUhEiA//+OjFA=
+Date:   Mon, 14 Jun 2021 22:25:36 +0000
+Message-ID: <16a34b6834f94f139444c2ff172645e9@intel.com>
+References: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
+ <YMfRxX/M4rJ5gM/R@zn.tnic>
+In-Reply-To: <YMfRxX/M4rJ5gM/R@zn.tnic>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/14/2021 3:39 AM, Pintu Agarwal wrote:
-> Hi All,
-> 
-> With Kernel 4.14 we are getting squashfs error during bootup resulting
-> in kernel panic.
-> The details are below:
-> Device: ARM-32 board with Cortex-A7 (Single Core)
-> Storage: NAND Flash 512MiB
-> Kernel Version: 4.14.170 (maybe with some Linaro updates)
-> File system: Simple busybox with systemd (without Android)
-> File system type: UBIFS + SQUASHFS
-> UBI Volumes supported: rootfs (ro), others (rw)
-> -------------------
-> 
-> When we try to flash the UBI images and then try to boot the device,
-> we observe the below errors:
-
-Someone in The OpenWrt community seems to have run into this problem,
-possibly on the exact same QCOM SoC than you and came up with the following:
-
-https://forum.openwrt.org/t/patch-squashfs-data-probably-corrupt/70480
-
-> {{{
-> [    5.608810] SQUASHFS error: xz decompression failed, data probably corrupt
-> [    5.608846] SQUASHFS error: squashfs_read_data failed to read block 0x4d7ffe
-> [    5.614745] SQUASHFS error: Unable to read data cache entry [4d7ffe]
-> [    5.621939] SQUASHFS error: Unable to read page, block 4d7ffe, size 7a3c
-> [    5.628274] SQUASHFS error: Unable to read data cache entry [4d7ffe]
-> [    5.634934] SQUASHFS error: Unable to read page, block 4d7ffe, size 7a3c
-> [    5.641309] SQUASHFS error: Unable to read data cache entry [4d7ffe]
-> [    5.647954] SQUASHFS error: Unable to read page, block 4d7ffe, size 7a3c
-> [    5.654304] SQUASHFS error: Unable to read data cache entry [4d7ffe]
-> [    5.660977] SQUASHFS error: Unable to read page, block 4d7ffe, size 7a3c
-> [    5.667309] SQUASHFS error: Unable to read data cache entry [4d7ffe]
-> [    5.673997] SQUASHFS error: Unable to read page, block 4d7ffe, size 7a3c
-> [    5.680497] Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x00007f00
-> [....]
-> }}}
-> We also observed that some of our Yocto build images will work and
-> boots fine, while sometimes the build images cause this issue.
-> 
-> So we wanted to know:
-> a) What could be the root cause of this issue ?
-> b) Is it related to squashfs ?
-> c) If yes, are there any fixes available already in the latest mainline ?
->     Please share some references.
-> 
-> Please let us know if anybody encountered this similar issue with
-> squashfs and how did you handle it ?
-> 
-> Note:
-> Our current commit in fs/squashfs is pointing at:
-> Squashfs: Compute expected length from inode size rather than block length
-> 
-> 
-> Thanks,
-> Pintu
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
--- 
-Florian
+PiBCdXQgYXBwYXJlbnRseSB0aG9zZSB3cm9uZyBlcnJvciBtZXNzYWdlcyBidWcgcGVvcGxlIG9u
+IGEgcmVndWxhciBiYXNpcw0KPiBhbmQgSSdtIHRpcmVkIG9mIHR5cGluZyB0aGlzIGVhY2ggdGlt
+ZSBzbyBJJ2xsIHRha2UgYSBkaWZmZXJlbnQgdmVyc2lvbg0KPiBvZiB0aGlzIHBhdGNoOiBjaGVj
+ayBYODZfRkVBVFVSRV9IWVBFUlZJU09SIG9uIGVudHJ5IGluIG1jZV9hbWRfaW5pdCgpDQo+IGFu
+ZCByZXR1cm4gLUVOT0RFViBpZiBzZXQuDQo+DQo+IFNvIHRoYXQgdGhpcyBpcyBkb25lIG9uY2Ug
+YW5kIGZvciBhbGwuDQoNCkkgZXhwZWN0IGFsbCB0aGUgSW50ZWwgRURBQyBkcml2ZXJzIHRoYXQg
+bG9hZCBiYXNlZCBvbiBDUFUgbW9kZWwgaGF2ZSBzaW1pbGFyDQppc3N1ZXMuIE1heWJlIHRoZXkg
+YXJlbid0IHdoaW5pbmcgYXMgbG91ZGx5IGFib3V0IG5vdCBiZWluZyBhYmxlIHRvIGZpbmQgdGhl
+DQptZW1vcnkgY29udHJvbGxlciBkZXZpY2VzPw0KDQpUaGV5IHNob3VsZCBhbHNvIGNoZWNrIGZv
+ciBYODZfRkVBVFVSRV9IWVBFUlZJU09SIHRvby4NCg0KJCBnaXQgZ3JlcCAtbCB4ODZfbWF0Y2hf
+Y3B1IC0tIGRyaXZlcnMvZWRhYw0KZHJpdmVycy9lZGFjL2FtZDY0X2VkYWMuYw0KZHJpdmVycy9l
+ZGFjL2kxMG5tX2Jhc2UuYw0KZHJpdmVycy9lZGFjL2llaF9lZGFjLmMNCmRyaXZlcnMvZWRhYy9w
+bmQyX2VkYWMuYw0KZHJpdmVycy9lZGFjL3NiX2VkYWMuYw0KZHJpdmVycy9lZGFjL3NreF9iYXNl
+LmMNCg0KVGhvdWdoIHBlcmhhcHMgdGhpcyBpcyBhbiBpc3N1ZSBvdXRzaWRlIG9mIEVEQUMgYW5k
+IHg4Nl9tYXRjaF9jcHUoKQ0KY291bGQgZG8gdGhlIEhZUEVSVklTT1IgY2hlY2sgYW5kIHJldHVy
+biBubyBtYXRjaC4gVGhlIGZldyBjYWxsZXJzDQp3aG8gd2FudCB0byBiZWxpZXZlIHRoZSBmaWN0
+aW9uYWwgQ1BVIG1vZGVsIG51bWJlciBwYXNzZWQgaW4gYnkgdGhlDQpWTU0gd291bGQgbmVlZCB0
+byB1c2Ugc29tZSBuZXcgdmFyaWFudCBvZiB0aGUgY2FsbD8NCg0KLVRvbnkNCg0KDQo=
