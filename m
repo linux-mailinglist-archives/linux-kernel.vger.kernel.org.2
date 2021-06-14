@@ -2,143 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C993A6D05
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28ABD3A6D0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235614AbhFNRVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:21:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:42092 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234137AbhFNRVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:21:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8101F11D4;
-        Mon, 14 Jun 2021 10:19:36 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07B363F70D;
-        Mon, 14 Jun 2021 10:19:34 -0700 (PDT)
-Subject: Re: [PATCH v12 5/5] iommu: Remove mode argument from
- iommu_set_dma_strict()
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, dwmw2@infradead.org, baolu.lu@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linuxarm@huawei.com, thunder.leizhen@huawei.com,
-        chenxiang66@hisilicon.com
-References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
- <1623414043-40745-6-git-send-email-john.garry@huawei.com>
- <868374d4-e816-b607-82de-7e7c27a4c66b@arm.com>
- <b12d96fa-9879-2739-fadd-2ebb02d75918@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <56f1fc88-baec-e1cf-109e-59978e2d16a8@arm.com>
-Date:   Mon, 14 Jun 2021 18:19:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S235294AbhFNRXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:23:30 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:37952 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233795AbhFNRX3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 13:23:29 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D1DC4436;
+        Mon, 14 Jun 2021 19:21:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623691285;
+        bh=aKY7UtieT5exgbf/JPK7G/X0gPU3KnH1SU01c4l8VCk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vdwc4+tSLnL557QeggHLPZ1vC/x5dMSJIfcrM8CG6W+DZWbkHs7lbNa9PZPGnNmeZ
+         /o2+qHpqr9/F9PqSGjyHDwu06s5qcMOK09yWZdF1Or7BeSS0QTavkh21+uuaSTfNY4
+         UxpBmmLHQezCQUHeGQHeQwCCMbLAbhnhnE3ewT7s=
+Date:   Mon, 14 Jun 2021 20:21:05 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [PATCH v3 8/8] media: subdev: disallow ioctl for saa6588/davinci
+Message-ID: <YMeQARKbdVIZ8Rp9@pendragon.ideasonboard.com>
+References: <20210614103409.3154127-1-arnd@kernel.org>
+ <20210614103409.3154127-9-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b12d96fa-9879-2739-fadd-2ebb02d75918@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210614103409.3154127-9-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-14 18:03, John Garry wrote:
-> On 14/06/2021 17:25, Robin Murphy wrote:
->> On 2021-06-11 13:20, John Garry wrote:
->>> We only ever now set strict mode enabled in iommu_set_dma_strict(), so
->>> just remove the argument.
->>>
->>> Signed-off-by: John Garry <john.garry@huawei.com>
->>> ---
->>>   drivers/iommu/amd/init.c    | 2 +-
->>>   drivers/iommu/intel/iommu.c | 6 +++---
->>>   drivers/iommu/iommu.c       | 5 ++---
->>>   include/linux/iommu.h       | 2 +-
->>>   4 files changed, 7 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
->>> index 0e6ae6d68f14..27e9677ec303 100644
->>> --- a/drivers/iommu/amd/init.c
->>> +++ b/drivers/iommu/amd/init.c
->>> @@ -3098,7 +3098,7 @@ static int __init parse_amd_iommu_options(char 
->>> *str)
->>>   {
->>>       for (; *str; ++str) {
->>>           if (strncmp(str, "fullflush", 9) == 0)
->>> -            iommu_set_dma_strict(true);
->>> +            iommu_set_dma_strict();
->>>           if (strncmp(str, "force_enable", 12) == 0)
->>>               amd_iommu_force_enable = true;
->>>           if (strncmp(str, "off", 3) == 0)
->>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->>> index 6763e516362c..e77b8b6e7838 100644
->>> --- a/drivers/iommu/intel/iommu.c
->>> +++ b/drivers/iommu/intel/iommu.c
->>> @@ -452,7 +452,7 @@ static int __init intel_iommu_setup(char *str)
->>>               pr_warn("intel_iommu=forcedac deprecated; use 
->>> iommu.forcedac instead\n");
->>>               iommu_dma_forcedac = true;
->>>           } else if (!strncmp(str, "strict", 6)) {
->>> -            iommu_set_dma_strict(true);
->>> +            iommu_set_dma_strict();
->>>           } else if (!strncmp(str, "sp_off", 6)) {
->>>               pr_info("Disable supported super page\n");
->>>               intel_iommu_superpage = 0;
->>> @@ -4392,7 +4392,7 @@ int __init intel_iommu_init(void)
->>>            */
->>>           if (cap_caching_mode(iommu->cap)) {
->>>               pr_warn("IOMMU batching disallowed due to 
->>> virtualization\n");
->>> -            iommu_set_dma_strict(true);
->>> +            iommu_set_dma_strict();
->>>           }
->>>           iommu_device_sysfs_add(&iommu->iommu, NULL,
->>>                          intel_iommu_groups,
->>> @@ -5663,7 +5663,7 @@ static void quirk_calpella_no_shadow_gtt(struct 
->>> pci_dev *dev)
->>>       } else if (dmar_map_gfx) {
->>>           /* we have to ensure the gfx device is idle before we flush */
->>>           pci_info(dev, "Disabling batched IOTLB flush on Ironlake\n");
->>> -        iommu_set_dma_strict(true);
->>> +        iommu_set_dma_strict();
->>>       }
->>>   }
->>>   DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x0040, 
->>> quirk_calpella_no_shadow_gtt);
->>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>> index ccbd5d4c1a50..146cb71c7441 100644
->>> --- a/drivers/iommu/iommu.c
->>> +++ b/drivers/iommu/iommu.c
->>> @@ -350,10 +350,9 @@ static int __init iommu_dma_setup(char *str)
->>>   }
->>>   early_param("iommu.strict", iommu_dma_setup);
->>> -void iommu_set_dma_strict(bool strict)
->>> +void iommu_set_dma_strict(void)
->>>   {
->>> -    if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
->>
->> We shouldn't need to keep IOMMU_CMD_LINE_STRICT at all now, since it 
->> was only to prevent a driver's "default lazy" setting passed in here 
->> from downgrading an explicitly-set strict mode.
->>
->> With that cleaned up too,
->>
+Hi Arnd,
+
+Thank you for the patch.
+
+On Mon, Jun 14, 2021 at 12:34:09PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Patch 1/5 mentions whether the invalidation policy comes from the 
-> cmdline - similar to the default domain type print - so I was going to 
-> keep that.
+> The saa6588_ioctl() function expects to get called from other kernel
+> functions with a 'saa6588_command' pointer, but I found nothing stops it
+> from getting called from user space instead, which seems rather dangerous.
+> 
+> The same thing happens in the davinci vpbe driver with its VENC_GET_FLD
+> command.
+> 
+> As a quick fix, add a separate .command() callback pointer for this
+> driver and change the two callers over to that.  This change can easily
+> get backported to stable kernels if necessary, but since there are only
+> two drivers, we may want to eventually replace this with a set of more
+> specialized callbacks in the long run.
+> 
+> Fixes: c3fda7f835b0 ("V4L/DVB (10537): saa6588: convert to v4l2_subdev.")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Oh, silly me, I'd forgotten that already and was just looking at my 
-local tree... Let's keep it for consistency with how we report the 
-domain type then.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-> And then maybe we should also set it from the deprecated x86 
-> driver-specific params.
+> ---
+>  drivers/media/i2c/saa6588.c                   | 4 ++--
+>  drivers/media/pci/bt8xx/bttv-driver.c         | 6 +++---
+>  drivers/media/pci/saa7134/saa7134-video.c     | 6 +++---
+>  drivers/media/platform/davinci/vpbe_display.c | 2 +-
+>  drivers/media/platform/davinci/vpbe_venc.c    | 6 ++----
+>  include/media/v4l2-subdev.h                   | 4 ++++
+>  6 files changed, 15 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/saa6588.c b/drivers/media/i2c/saa6588.c
+> index ecb491d5f2ab..d1e0716bdfff 100644
+> --- a/drivers/media/i2c/saa6588.c
+> +++ b/drivers/media/i2c/saa6588.c
+> @@ -380,7 +380,7 @@ static void saa6588_configure(struct saa6588 *s)
+>  
+>  /* ---------------------------------------------------------------------- */
+>  
+> -static long saa6588_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
+> +static long saa6588_command(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
+>  {
+>  	struct saa6588 *s = to_saa6588(sd);
+>  	struct saa6588_command *a = arg;
+> @@ -433,7 +433,7 @@ static int saa6588_s_tuner(struct v4l2_subdev *sd, const struct v4l2_tuner *vt)
+>  /* ----------------------------------------------------------------------- */
+>  
+>  static const struct v4l2_subdev_core_ops saa6588_core_ops = {
+> -	.ioctl = saa6588_ioctl,
+> +	.command = saa6588_command,
+>  };
+>  
+>  static const struct v4l2_subdev_tuner_ops saa6588_tuner_ops = {
+> diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
+> index 1f62a9d8ea1d..0e9df8b35ac6 100644
+> --- a/drivers/media/pci/bt8xx/bttv-driver.c
+> +++ b/drivers/media/pci/bt8xx/bttv-driver.c
+> @@ -3179,7 +3179,7 @@ static int radio_release(struct file *file)
+>  
+>  	btv->radio_user--;
+>  
+> -	bttv_call_all(btv, core, ioctl, SAA6588_CMD_CLOSE, &cmd);
+> +	bttv_call_all(btv, core, command, SAA6588_CMD_CLOSE, &cmd);
+>  
+>  	if (btv->radio_user == 0)
+>  		btv->has_radio_tuner = 0;
+> @@ -3260,7 +3260,7 @@ static ssize_t radio_read(struct file *file, char __user *data,
+>  	cmd.result = -ENODEV;
+>  	radio_enable(btv);
+>  
+> -	bttv_call_all(btv, core, ioctl, SAA6588_CMD_READ, &cmd);
+> +	bttv_call_all(btv, core, command, SAA6588_CMD_READ, &cmd);
+>  
+>  	return cmd.result;
+>  }
+> @@ -3281,7 +3281,7 @@ static __poll_t radio_poll(struct file *file, poll_table *wait)
+>  	cmd.instance = file;
+>  	cmd.event_list = wait;
+>  	cmd.poll_mask = res;
+> -	bttv_call_all(btv, core, ioctl, SAA6588_CMD_POLL, &cmd);
+> +	bttv_call_all(btv, core, command, SAA6588_CMD_POLL, &cmd);
+>  
+>  	return cmd.poll_mask;
+>  }
+> diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
+> index 0f9d6b9edb90..374c8e1087de 100644
+> --- a/drivers/media/pci/saa7134/saa7134-video.c
+> +++ b/drivers/media/pci/saa7134/saa7134-video.c
+> @@ -1181,7 +1181,7 @@ static int video_release(struct file *file)
+>  
+>  	saa_call_all(dev, tuner, standby);
+>  	if (vdev->vfl_type == VFL_TYPE_RADIO)
+> -		saa_call_all(dev, core, ioctl, SAA6588_CMD_CLOSE, &cmd);
+> +		saa_call_all(dev, core, command, SAA6588_CMD_CLOSE, &cmd);
+>  	mutex_unlock(&dev->lock);
+>  
+>  	return 0;
+> @@ -1200,7 +1200,7 @@ static ssize_t radio_read(struct file *file, char __user *data,
+>  	cmd.result = -ENODEV;
+>  
+>  	mutex_lock(&dev->lock);
+> -	saa_call_all(dev, core, ioctl, SAA6588_CMD_READ, &cmd);
+> +	saa_call_all(dev, core, command, SAA6588_CMD_READ, &cmd);
+>  	mutex_unlock(&dev->lock);
+>  
+>  	return cmd.result;
+> @@ -1216,7 +1216,7 @@ static __poll_t radio_poll(struct file *file, poll_table *wait)
+>  	cmd.event_list = wait;
+>  	cmd.poll_mask = 0;
+>  	mutex_lock(&dev->lock);
+> -	saa_call_all(dev, core, ioctl, SAA6588_CMD_POLL, &cmd);
+> +	saa_call_all(dev, core, command, SAA6588_CMD_POLL, &cmd);
+>  	mutex_unlock(&dev->lock);
+>  
+>  	return rc | cmd.poll_mask;
+> diff --git a/drivers/media/platform/davinci/vpbe_display.c b/drivers/media/platform/davinci/vpbe_display.c
+> index d19bad997f30..bf3c3e76b921 100644
+> --- a/drivers/media/platform/davinci/vpbe_display.c
+> +++ b/drivers/media/platform/davinci/vpbe_display.c
+> @@ -47,7 +47,7 @@ static int venc_is_second_field(struct vpbe_display *disp_dev)
+>  
+>  	ret = v4l2_subdev_call(vpbe_dev->venc,
+>  			       core,
+> -			       ioctl,
+> +			       command,
+>  			       VENC_GET_FLD,
+>  			       &val);
+>  	if (ret < 0) {
+> diff --git a/drivers/media/platform/davinci/vpbe_venc.c b/drivers/media/platform/davinci/vpbe_venc.c
+> index 8caa084e5704..bde241c26d79 100644
+> --- a/drivers/media/platform/davinci/vpbe_venc.c
+> +++ b/drivers/media/platform/davinci/vpbe_venc.c
+> @@ -521,9 +521,7 @@ static int venc_s_routing(struct v4l2_subdev *sd, u32 input, u32 output,
+>  	return ret;
+>  }
+>  
+> -static long venc_ioctl(struct v4l2_subdev *sd,
+> -			unsigned int cmd,
+> -			void *arg)
+> +static long venc_command(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
+>  {
+>  	u32 val;
+>  
+> @@ -542,7 +540,7 @@ static long venc_ioctl(struct v4l2_subdev *sd,
+>  }
+>  
+>  static const struct v4l2_subdev_core_ops venc_core_ops = {
+> -	.ioctl      = venc_ioctl,
+> +	.command      = venc_command,
+>  };
+>  
+>  static const struct v4l2_subdev_video_ops venc_video_ops = {
+> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> index 42aa1f6c7c3f..115b1e41e933 100644
+> --- a/include/media/v4l2-subdev.h
+> +++ b/include/media/v4l2-subdev.h
+> @@ -162,6 +162,9 @@ struct v4l2_subdev_io_pin_config {
+>   * @s_gpio: set GPIO pins. Very simple right now, might need to be extended with
+>   *	a direction argument if needed.
+>   *
+> + * @command: called by in-kernel drivers in order to call functions internal
+> + *	   to subdev drivers driver that have a separate callback.
+> + *
+>   * @ioctl: called at the end of ioctl() syscall handler at the V4L2 core.
+>   *	   used to provide support for private ioctls used on the driver.
+>   *
+> @@ -193,6 +196,7 @@ struct v4l2_subdev_core_ops {
+>  	int (*load_fw)(struct v4l2_subdev *sd);
+>  	int (*reset)(struct v4l2_subdev *sd, u32 val);
+>  	int (*s_gpio)(struct v4l2_subdev *sd, u32 val);
+> +	long (*command)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
+>  	long (*ioctl)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
+>  #ifdef CONFIG_COMPAT
+>  	long (*compat_ioctl32)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
 
-I don't think it's worth exporting more low-level guts to allow that to 
-happen - tying in to iommu_set_dma_strict() would be too late, as 
-before. I think the separate pr_warn()s which announce the relevant 
-parameter is deprecated (but has still taken effect) should be enough.
+-- 
+Regards,
 
-Cheers,
-Robin.
+Laurent Pinchart
