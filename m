@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D533A62E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9843A63F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbhFNLGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:06:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35516 "EHLO mail.kernel.org"
+        id S233750AbhFNLSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:18:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234210AbhFNK4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:56:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62E7761424;
-        Mon, 14 Jun 2021 10:41:09 +0000 (UTC)
+        id S234650AbhFNLG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:06:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3104C6191E;
+        Mon, 14 Jun 2021 10:45:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667269;
-        bh=yQxys6AFAqEuGjbV0OeqfCLtaLZmstlnTDI3hMtYk4s=;
+        s=korg; t=1623667524;
+        bh=A18hCNEy7xcPwBnOghVhvoAvi/QJ5o68YH9wmgkL5j0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HGiKjzN+dzZvdWiOM7kgLpg8KXe98y6UQofDSVjTEL7El6n4hyjz73JVsmKGdo5GE
-         25COZpD8ENrLMzb3AwFZDnryBsjGPOxI6vURkDCeanFD0AWjOWqbRBEhb/TrQdz2sH
-         qBJmPE1H27D+YpTIR1LDMUy0MMcmSlLX+DniGAAQ=
+        b=qNTs9ALj+nhIWuKwEBjZoc2Xk86DeAp37cwzejr8m3liEVSnWJze45NSeKqHRxub9
+         bKBprUIhZtKpEfPeS9Jkp8mykGZ/P5wCNDrgA4GJ1g1nkaWkWaONJN0IvhAhAEDcqI
+         mxuhLvgnTcV5ijDQh6g+kTmfXRko5ARsSf4kjRvo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Shay Drory <shayd@nvidia.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.4 66/84] RDMA/mlx4: Do not map the core_clock page to user space unless enabled
-Date:   Mon, 14 Jun 2021 12:27:44 +0200
-Message-Id: <20210614102648.616465350@linuxfoundation.org>
+Subject: [PATCH 5.10 104/131] RDMA/mlx4: Do not map the core_clock page to user space unless enabled
+Date:   Mon, 14 Jun 2021 12:27:45 +0200
+Message-Id: <20210614102656.541247879@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -72,7 +72,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/infiniband/hw/mlx4/main.c
 +++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -577,12 +577,9 @@ static int mlx4_ib_query_device(struct i
+@@ -580,12 +580,9 @@ static int mlx4_ib_query_device(struct i
  	props->cq_caps.max_cq_moderation_count = MLX4_MAX_CQ_COUNT;
  	props->cq_caps.max_cq_moderation_period = MLX4_MAX_CQ_PERIOD;
  
@@ -139,7 +139,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
 --- a/include/linux/mlx4/device.h
 +++ b/include/linux/mlx4/device.h
-@@ -632,6 +632,7 @@ struct mlx4_caps {
+@@ -631,6 +631,7 @@ struct mlx4_caps {
  	bool			wol_port[MLX4_MAX_PORTS + 1];
  	struct mlx4_rate_limit_caps rl_caps;
  	u32			health_buffer_addrs;
