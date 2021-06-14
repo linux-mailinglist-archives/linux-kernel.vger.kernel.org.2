@@ -2,151 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4187E3A5B72
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 04:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4186C3A5B78
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 04:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbhFNCEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 22:04:41 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:45720 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232269AbhFNCEk (ORCPT
+        id S232326AbhFNCID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 22:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232287AbhFNCIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 22:04:40 -0400
-Received: by mail-pg1-f171.google.com with SMTP id q15so7385404pgg.12;
-        Sun, 13 Jun 2021 19:02:23 -0700 (PDT)
+        Sun, 13 Jun 2021 22:08:00 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83983C061766;
+        Sun, 13 Jun 2021 19:05:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id w14-20020a17090aea0eb029016e9e0e7983so2592607pjy.4;
+        Sun, 13 Jun 2021 19:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=aPSRd8P5hbet2BrvYpNfkNZg8dhljgNsDNnwb2YMsGI=;
-        b=JC1aQPJj+qQigSbo7O1IkpT/ka2zI8z8qKcoPOz7lofHF1ouNK2Tq5SBQcCN8BZsSG
-         3HeiW8S0XFbcS986M7UMAmdXxAjQMHPiXu2HXficRiEVNihtq5xmaCdbw1tG6TgTNgpl
-         R3EhfVBn/sp6CEuadFI9Eu+8pw5A3gG9IfK4UG0aUy1XNOzlIh3pwfZWjvkV4lWdstEv
-         WJAuPCTeGnrkbJOMlorMlfx9+b4vN08OKAQkYcyVj9f3fzjiKgzCYZv2qWQle7Bo3D43
-         yp4eXdlvw5YZDi9X+7pXuuFZekS+SvY/YYJIrikSN7H7FVSqvz0g7//ErOVKCik9BL/Y
-         pSYQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=+U4GoEm12Mv2KWeNTFflh3iSMJxQvnIQYGnEBokeD3E=;
+        b=bAhH8lpYP7l8LZwdKg5n4tzz+dADfCxOx1lDGRVuMMRc9dYcyt25Ixyes2Xr6G7IC9
+         mfqt9HfSdeD3+s0RfqxaiJtfYK6DS4SM83//4OdzNK1JLLOmJfCycZrx0BNJB6dnKIQ3
+         rU1NeM/syVD/5Y4VlJvwx4tJEJfBt93odbs4wxu6S9cXIP3nnpX4FO/0sUySL7C6vkJ1
+         OoJQcYG8axVj/JnaG/QzNKmFDKgJKtVwzz1IuijO/PepMZ6JFiyuG3blM3h+vUlvDOHm
+         7w7lLerUmE+wtEKzgHNOFs23F41k0r6Z2JKa3OG6nyoZPU6r41Xd5AZBkllpsWQFwfXD
+         Ivzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=aPSRd8P5hbet2BrvYpNfkNZg8dhljgNsDNnwb2YMsGI=;
-        b=uAupY9zLNz9RYXUQQaApgup/VVzJINPnUs1k4o6UIhElSqGgFprCqZ9OQGPRWyUVNG
-         BOtyEs9jrF6hKX5ikyQ/tzoGp4f1we4j+Lm+LfIb9ynncz/FR876F1gJgG6MByFjhML9
-         7uW/ovgBU4Z7VRGU/BA7xAEHn/MeDSH3m3528j+JWBg5Pnc0ZfNTTIumgFpjZFWRhXUj
-         Li1cKcMbRpJV4IoD7ZfubIoh0775kHqmanFs1VjrGufbjB5t2P0dcTaJ65Hb3k6MeRXX
-         0hAxkrdPAeA7aiuX9TO96cokqpuWWoqVIhbX4PdtZc82MEuIyJQ4En4d/SKHJpDUEsrX
-         VKoQ==
-X-Gm-Message-State: AOAM532sSlB7f0N2EjsFZ4O4o9ZGLIXANnon38t444yJJDyL+dQZ73TO
-        3CQfPJr4dYaRLeGtlmYZ//Y5tILAe9g=
-X-Google-Smtp-Source: ABdhPJyyH00nJQUuyvLRvmwKzG2y669zY7GJTP55TKXM+laNn6eQIVX8mu49pYmwdCKmwiupJn2dNQ==
-X-Received: by 2002:a65:4689:: with SMTP id h9mr14893660pgr.347.1623636083110;
-        Sun, 13 Jun 2021 19:01:23 -0700 (PDT)
-Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
-        by smtp.gmail.com with ESMTPSA id b21sm8322294pgj.74.2021.06.13.19.01.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 19:01:22 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 12:01:17 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v3 1/2] mm/vmalloc: add vmalloc_no_huge
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>, borntraeger@de.ibm.com,
-        Catalin Marinas <catalin.marinas@arm.com>, cohuck@redhat.com,
-        david@redhat.com, frankja@linux.ibm.com,
-        Christoph Hellwig <hch@infradead.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>
-References: <20210610154220.529122-1-imbrenda@linux.ibm.com>
-        <20210610154220.529122-2-imbrenda@linux.ibm.com>
-In-Reply-To: <20210610154220.529122-2-imbrenda@linux.ibm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=+U4GoEm12Mv2KWeNTFflh3iSMJxQvnIQYGnEBokeD3E=;
+        b=pOoyTcjaTDSYaFii4XTj/XnANxJM2DAzGlx4w69Zral38gzXXghCbxxg/TtlTZQymm
+         sb9nK72C3j9lgSaez1Jwcj5tjO7AsYAjaUjuduncC9LN15zv5MN+QCMSrSRUN56jVk4J
+         CTuLz1+MSZMLeB3ZxGW75OblP8mPoHnxPhRTzlHypPmJhhG16uEnbhTf18UfpdSRXLes
+         Q0hgrXfUAQSKbVuz4Qn/6dZv+4AVEa8C5UoaEjY35o/73orK7nvvz+uB9wuFfMS6RMxB
+         DVMwlaVp1Dn9GpFyTnDUHH2OQ7LNBUxv+REATrZf2xpGAU2g30+/3esXYcB2fGj9jNJz
+         UhHQ==
+X-Gm-Message-State: AOAM5338leM4CRU20y6CfmAD0RYcRS/eTGwbyfDKCpg1XxAE7XZBJVlO
+        hqv8HTq9/6nVkwabhni/6zE=
+X-Google-Smtp-Source: ABdhPJzwdNr+8U0wqnwHYMkv0x+AhvzhZ3EaBdlAYetKQkdr5ik4N9gkI3C2OMLZ17iJ171cdE2x7g==
+X-Received: by 2002:a17:902:bcc3:b029:11c:5ffb:61fb with SMTP id o3-20020a170902bcc3b029011c5ffb61fbmr215350pls.18.1623636348845;
+        Sun, 13 Jun 2021 19:05:48 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:9034:3fbe:cf28:988a? ([2001:df0:0:200c:9034:3fbe:cf28:988a])
+        by smtp.gmail.com with ESMTPSA id mr23sm10703299pjb.12.2021.06.13.19.05.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Jun 2021 19:05:48 -0700 (PDT)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        Daniel Jacobowitz <drow@nevyn.them.org>,
+        Kees Cook <keescook@chromium.org>
+References: <87sg1p30a1.fsf@disp2133>
+ <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+ <87pmwsytb3.fsf@disp2133>
+ <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133>
+ <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+Date:   Mon, 14 Jun 2021 14:05:38 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-Id: <1623635127.zn5jrobj51.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Claudio Imbrenda's message of June 11, 2021 1:42 am:
-> The recent patches to add support for hugepage vmalloc mappings added a
-> flag for __vmalloc_node_range to allow to request small pages.
-> This flag is not accessible when calling vmalloc, the only option is to
-> call directly __vmalloc_node_range, which is not exported.
->=20
-> This means that a module can't vmalloc memory with small pages.
->=20
-> Case in point: KVM on s390x needs to vmalloc a large area, and it needs
-> to be mapped with small pages, because of a hardware limitation.
->=20
-> This patch adds the function vmalloc_no_huge, which works like vmalloc,
-> but it is guaranteed to always back the mapping using small pages. This
-> function is exported, therefore it is usable by modules.
->=20
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> ---
->  include/linux/vmalloc.h |  1 +
->  mm/vmalloc.c            | 16 ++++++++++++++++
->  2 files changed, 17 insertions(+)
->=20
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 4d668abb6391..bfaaf0b6fa76 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -135,6 +135,7 @@ extern void *__vmalloc_node_range(unsigned long size,=
- unsigned long align,
->  			const void *caller);
->  void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_=
-mask,
->  		int node, const void *caller);
-> +void *vmalloc_no_huge(unsigned long size);
-> =20
->  extern void vfree(const void *addr);
->  extern void vfree_atomic(const void *addr);
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index a13ac524f6ff..296a2fcc3fbe 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2998,6 +2998,22 @@ void *vmalloc(unsigned long size)
->  }
->  EXPORT_SYMBOL(vmalloc);
-> =20
-> +/**
-> + * vmalloc_no_huge - allocate virtually contiguous memory using small pa=
-ges
-> + * @size:    allocation size
-> + *
-> + * Allocate enough non-huge pages to cover @size from the page level
-> + * allocator and map them into contiguous kernel virtual space.
-> + *
-> + * Return: pointer to the allocated memory or %NULL on error
-> + */
-> +void *vmalloc_no_huge(unsigned long size)
-> +{
-> +	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END, GFP_KE=
-RNEL, PAGE_KERNEL,
-> +				    VM_NO_HUGE_VMAP, NUMA_NO_NODE, __builtin_return_address(0));
-> +}
-> +EXPORT_SYMBOL(vmalloc_no_huge);
+Hi Linus,
 
-At some point if the combination of flags becomes too much we will need a=20
-different strategy. A vmalloc API with (size, align, gfp_t, vm_flags,=20
-node) args would help 3/6 of the existing non-arch callers too. And one=20
-more if you had a prot parameter or _exec variant.
+On 14/06/21 10:18 am, Linus Torvalds wrote:
+> On Sun, Jun 13, 2021 at 2:55 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>> The alpha_switch_to will remove the extra registers from the stack and
+>> then call ret which if I understand alpha assembly correctly is
+>> equivalent to jumping to where $26 points.  Which is
+>> ret_from_kernel_thread (as setup by copy_thread).
+>>
+>> Which leaves ret_from_kernel_thread and everything it calls without
+>> the extra context saved on the stack.
+> Uhhuh. Right you are, I think. It's been ages since I worked on that
+> code and my alpha handbook is somewhere else, but yes, when
+> alpha_switch_to() has context-switched to the new PCB state, it will
+> then pop those registers in the new context and return.
+>
+> So we do set up the right stack frame for the worker thread, but as
+> you point out, it then gets used up immediately when running. So by
+> the time the IO worker thread calls get_signal(), it's no longer
+> useful.
+>
+> How very annoying.
+>
+> The (obviously UNTESTED) patch might be something like the attached.
+>
+> I wouldn't be surprised if m68k has the exact same thing for the exact
+> same reason, but I didn't check..
 
-But for now I'm okay with this.
+m68k is indeed similar, it has:
 
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
+        if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+                 /* kernel thread */
+                 memset(frame, 0, sizeof(struct fork_frame));
+                 frame->regs.sr = PS_S;
+                 frame->sw.a3 = usp; /* function */
+                 frame->sw.d7 = arg;
+                 frame->sw.retpc = (unsigned long)ret_from_kernel_thread;
+                 p->thread.usp = 0;
+                 return 0;
+         }
 
-Thanks,
-Nick
+so a similar patch should be possible.
+
+Cheers,
+
+     Michael
+
+
+
+>
+>                    Linus
