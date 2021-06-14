@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D113A618C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B078F3A6256
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhFNKsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:48:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45358 "EHLO mail.kernel.org"
+        id S234798AbhFNK7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233863AbhFNKmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:42:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B497661440;
-        Mon, 14 Jun 2021 10:35:23 +0000 (UTC)
+        id S234061AbhFNKuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:50:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 392F261463;
+        Mon, 14 Jun 2021 10:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666924;
-        bh=uO4dyww9HqWEH+ir6OUdMrbH/D28e7nPwHWB7LH7R/w=;
+        s=korg; t=1623667119;
+        bh=tudlBHqZenoctlRrfSERZSkHBViNR5fCAbzX/OHuqOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RK3bkRfFsgr9BqkXCEp4rXdNj16Sz6x+Ju9TE1Vlur+/Kr2jBxoHs+92xhNpesCuW
-         J/H6CD+0aZR48bsSlRZ70tRL7dLzTH0/AOUhTJdB5f6531MpRVK3XHoZm6gamyumqO
-         lE0oToMC0CulKDkCY4dhlSifmRxLBLW/YFLiMg2o=
+        b=o8wN9EKbqSdyChdSNR68cP87sWKjowurHAZzIEuWoXq2taJm05kcBPgWTlj4Mqc9J
+         E6qPKHt9G/iG6Hvzwpn3Smi7RS2rrhZX7LXFqQHjMarjHYqN5M08ciY23hrEzhLYMO
+         FOjTlB1oevWJ4ctPp4gDdGeHUgkwRWR662HSExVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.19 30/67] drm: Lock pointer access in drm_master_release()
+        stable@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 35/84] i2c: mpc: Make use of i2c_recover_bus()
 Date:   Mon, 14 Jun 2021 12:27:13 +0200
-Message-Id: <20210614102644.785964590@linuxfoundation.org>
+Message-Id: <20210614102647.557612923@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-commit c336a5ee984708db4826ef9e47d184e638e29717 upstream.
+[ Upstream commit 65171b2df15eb7545431d75c2729b5062da89b43 ]
 
-This patch eliminates the following smatch warning:
-drivers/gpu/drm/drm_auth.c:320 drm_master_release() warn: unlocked access 'master' (line 318) expected lock '&dev->master_mutex'
+Move the existing calls of mpc_i2c_fixup() to a recovery function
+registered via bus_recovery_info. This makes it more obvious that
+recovery is supported and allows for a future where recovery is
+triggered by the i2c core.
 
-The 'file_priv->master' field should be protected by the mutex lock to
-'&dev->master_mutex'. This is because other processes can concurrently
-modify this field and free the current 'file_priv->master'
-pointer. This could result in a use-after-free error when 'master' is
-dereferenced in subsequent function calls to
-'drm_legacy_lock_master_cleanup()' or to 'drm_lease_revoke()'.
-
-An example of a scenario that would produce this error can be seen
-from a similar bug in 'drm_getunique()' that was reported by Syzbot:
-https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
-
-In the Syzbot report, another process concurrently acquired the
-device's master mutex in 'drm_setmaster_ioctl()', then overwrote
-'fpriv->master' in 'drm_new_set_master()'. The old value of
-'fpriv->master' was subsequently freed before the mutex was unlocked.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210609092119.173590-1-desmondcheongzx@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_auth.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-mpc.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/drm_auth.c
-+++ b/drivers/gpu/drm/drm_auth.c
-@@ -265,9 +265,10 @@ int drm_master_open(struct drm_file *fil
- void drm_master_release(struct drm_file *file_priv)
+diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
+index d94f05c8b8b7..6a0d55e9e8e3 100644
+--- a/drivers/i2c/busses/i2c-mpc.c
++++ b/drivers/i2c/busses/i2c-mpc.c
+@@ -586,7 +586,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
+ 				writeb(status & ~CSR_MAL,
+ 				       i2c->base + MPC_I2C_SR);
+-				mpc_i2c_fixup(i2c);
++				i2c_recover_bus(&i2c->adap);
+ 			}
+ 			return -EIO;
+ 		}
+@@ -622,7 +622,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
+ 				writeb(status & ~CSR_MAL,
+ 				       i2c->base + MPC_I2C_SR);
+-				mpc_i2c_fixup(i2c);
++				i2c_recover_bus(&i2c->adap);
+ 			}
+ 			return -EIO;
+ 		}
+@@ -637,6 +637,15 @@ static u32 mpc_functionality(struct i2c_adapter *adap)
+ 	  | I2C_FUNC_SMBUS_READ_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL;
+ }
+ 
++static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
++{
++	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
++
++	mpc_i2c_fixup(i2c);
++
++	return 0;
++}
++
+ static const struct i2c_algorithm mpc_algo = {
+ 	.master_xfer = mpc_xfer,
+ 	.functionality = mpc_functionality,
+@@ -648,6 +657,10 @@ static struct i2c_adapter mpc_ops = {
+ 	.timeout = HZ,
+ };
+ 
++static struct i2c_bus_recovery_info fsl_i2c_recovery_info = {
++	.recover_bus = fsl_i2c_bus_recovery,
++};
++
+ static const struct of_device_id mpc_i2c_of_match[];
+ static int fsl_i2c_probe(struct platform_device *op)
  {
- 	struct drm_device *dev = file_priv->minor->dev;
--	struct drm_master *master = file_priv->master;
-+	struct drm_master *master;
+@@ -740,6 +753,7 @@ static int fsl_i2c_probe(struct platform_device *op)
+ 	i2c_set_adapdata(&i2c->adap, i2c);
+ 	i2c->adap.dev.parent = &op->dev;
+ 	i2c->adap.dev.of_node = of_node_get(op->dev.of_node);
++	i2c->adap.bus_recovery_info = &fsl_i2c_recovery_info;
  
- 	mutex_lock(&dev->master_mutex);
-+	master = file_priv->master;
- 	if (file_priv->magic)
- 		idr_remove(&file_priv->master->magic_map, file_priv->magic);
- 
+ 	result = i2c_add_adapter(&i2c->adap);
+ 	if (result < 0)
+-- 
+2.30.2
+
 
 
