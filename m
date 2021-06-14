@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BAA3A5C66
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628E13A5C76
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhFNF0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 01:26:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16474 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232057AbhFNF0W (ORCPT
+        id S232351AbhFNF3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 01:29:40 -0400
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:38804 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229696AbhFNF3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 01:26:22 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E53iSi095506;
-        Mon, 14 Jun 2021 01:23:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=gXb92jLZltP0TlGgpp4tnPgvWeahwiv76pBDu+u4I1U=;
- b=qzGazO2kJOJCe6de0TuORyD9Dcjv7HccmB7wzLKSmyoeOh+vfmftP110+x7T2QxHKRMX
- RxDtVPj3D5Bm2IcTfOhTS+1cs8Wu6W1KgDUwtM3v77QrEGMDafmhMwu39jWtKAms3pYK
- 14UMVrkDFh7/lpZ9SBRGDmqjgaQkJt9pqe2yKaIvZjNeHt2+R/lVw4WEjHM5n7t+CUud
- owvdVfYOZIkQ+JbdtOjWziF8MsBsmqpTe6JOeQuqEw86qcsiBYm5T8TmBRm0TjBHe46S
- bvfMMCg7ecsxoTyoUl3tfVvWpb1VrhXcS/TsG/J+Huyr5e+W5tiMiCB8AivNHcon8tRc 7A== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3960dyrk3g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 01:23:55 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15E5Gn5E027355;
-        Mon, 14 Jun 2021 05:23:52 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 394mj90ct2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 05:23:52 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15E5Nni113959548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 05:23:49 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9CE7752052;
-        Mon, 14 Jun 2021 05:23:49 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.33.211])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 47D2D5204E;
-        Mon, 14 Jun 2021 05:23:46 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        kjain@linux.ibm.com, rnsastry@linux.ibm.com
-Subject: [PATCH v2 4/4] powerpc/papr_scm: Document papr_scm sysfs event format entries
-Date:   Mon, 14 Jun 2021 10:53:26 +0530
-Message-Id: <20210614052326.285710-5-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210614052326.285710-1-kjain@linux.ibm.com>
-References: <20210614052326.285710-1-kjain@linux.ibm.com>
+        Mon, 14 Jun 2021 01:29:39 -0400
+Received: by mail-pg1-f178.google.com with SMTP id t17so7721195pga.5
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 22:27:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SKkIWihex8iN4vHyV2ULlQRHidyqRPcEAHjFrEdw0eo=;
+        b=Ztkc32hhSlxDlYO/aubdvIkMY/qTaOmjdAcpUSwoddC36oiCXbW0t6Fgj7dqeMLjGr
+         GKKydNoa0tuWwuRm9W2Oku1KuwQbuQOU2vGNe8iqT5qZpembeOWkm6pzrzcJ4UtTfT3O
+         2e868LLS7FN9kx0eyKZAZvbNfNgLUlJuXj7X9NiAHHdoSF54ImmSfOU4XZRvkkb4q+zS
+         4n3axSTfriXtldwQE7uH4sqiNUTf1F6IEBtIlG+THkwuA/uo2Dwz3YbQDLu64X6E4IsQ
+         KnRwXOZqqYRo41Ey01DOqng25fgXBzlcHhBQhLIZGYVo/TgWDOPU1MK/3+ddM/Lr4vPs
+         Pwhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SKkIWihex8iN4vHyV2ULlQRHidyqRPcEAHjFrEdw0eo=;
+        b=GzFkfv9862bVhOpbzLzlbNl7S7xDHj7pulu9xDhaWYqkci6jNiaHTK3mrKquKklD7k
+         ZX6qG0sDuOGHpGNRG5/uauuZNbJ5Zi+IOAr5J0uRIkz1jpb+Ui8XEd3xmtt82WlWU7M1
+         KBpsSEiloF8t366oqqZ1LFkHfTAOOUkzEbbQ3JAeXhEXBpVdO9V1bKkPQvs5LiC1EAZQ
+         v38ohCwYiUrftpH+WZ9RRfFpK2ezLVS2tIJ+Sq3rRz+lfu6z07+fEZMwBYnsjCumRqpO
+         DhFM2Chzu9B06yWcehgrzLcBH4NBvgyM3DwrnD5I/txt5k4+AtEf46UClGKthejqS3Xq
+         GPOw==
+X-Gm-Message-State: AOAM5300uMMJtHQGKQRP2ezNAEM4Q7GR2g86EpA4tJcEA4fhDG/m3tGJ
+        VZvJYU9ajZitPvI//eNAXjogXw==
+X-Google-Smtp-Source: ABdhPJxQbwYoqWhTfdLy3aAMNginzsjm12had6Yj2Ufq28W5WByJrv24ex9t825/WyIyYjOTicJLzg==
+X-Received: by 2002:a62:87c9:0:b029:2ea:572c:e4b1 with SMTP id i192-20020a6287c90000b02902ea572ce4b1mr20241936pfe.34.1623648381981;
+        Sun, 13 Jun 2021 22:26:21 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id gf10sm10515354pjb.35.2021.06.13.22.26.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Jun 2021 22:26:20 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 10:56:17 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@linaro.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>
+Subject: Re: [Stratos-dev] [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <20210614052617.jfdgunichi73eup5@vireshk-i7>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <01000179f5da7763-2ea817c6-e176-423a-952e-de02443f71e2-000000@email.amazonses.com>
+ <YMJOk6RWuztRNBXO@myrica>
+ <01000179f9276678-ae2bb25f-4c0c-4176-b906-650c585b9753-000000@email.amazonses.com>
+ <CAK8P3a2-bXfDcPymMct2aUXs2m+YgbKdmAatMMs9tnc+HjS_xQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7FwRtp6goBst1m_1bOMdxu71PcUoKtSf
-X-Proofpoint-ORIG-GUID: 7FwRtp6goBst1m_1bOMdxu71PcUoKtSf
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-13_11:2021-06-11,2021-06-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 adultscore=0 mlxscore=0 spamscore=0
- clxscore=1015 impostorscore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106140037
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2-bXfDcPymMct2aUXs2m+YgbKdmAatMMs9tnc+HjS_xQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Details is added for the event, cpumask and format attributes
-in the ABI documentation.
+On 11-06-21, 10:34, Arnd Bergmann wrote:
+> Extraneous __packed annotations do cause real problems:
+> 
+> - On architectures without hardware unaligned accesses, the compiler is
+>   forced to emit byte load/store instructions, which is slower and breaks
+>   atomic updates to shared variables
+> 
+> - If a function takes a pointer of a packed struct member, and passes that
+>   pointer to a function that expects a regular aligned pointer, you
+> get undefined
+>   behavior. Newer compilers produce a warning if you do that (we currently
+>   shut up that warning because there are many false positives in the kernel),
+>   but you can also run into CPU exceptions or broken code even on CPUs
+>   that do support unaligned accesses when the variable ends up being
+>   actually unaligned (as you just told the compiler that it is allowed to do).
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- Documentation/ABI/testing/sysfs-bus-papr-pmem | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
+I understand that these problems will happen if the structure isn't
+aligned, but in this case the structure is aligned properly, just that
+we are explicitly telling the compiler to not add any padding (it
+won't have added any in here). Is it still harmful ?
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-index 92e2db0e2d3d..be91de341454 100644
---- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
-+++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-@@ -59,3 +59,34 @@ Description:
- 		* "CchRHCnt" : Cache Read Hit Count
- 		* "CchWHCnt" : Cache Write Hit Count
- 		* "FastWCnt" : Fast Write Count
-+
-+What:		/sys/devices/nmemX/format
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-+Description:	(RO) Attribute group to describe the magic bits
-+                that go into perf_event_attr.config for a particular pmu.
-+                (See ABI/testing/sysfs-bus-event_source-devices-format).
-+
-+                Each attribute under this group defines a bit range of the
-+                perf_event_attr.config. Supported attribute is listed
-+                below::
-+
-+		    event  = "config:0-4"  - event ID
-+
-+		For example::
-+		    noopstat = "event=0x1"
-+
-+What:		/sys/devices/nmemX/events
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-+Description:    (RO) Attribute group to describe performance monitoring
-+                events specific to papr-scm. Each attribute in this group describes
-+                a single performance monitoring event supported by this nvdimm pmu.
-+                The name of the file is the name of the event.
-+                (See ABI/testing/sysfs-bus-event_source-devices-events).
-+
-+What:		/sys/devices/nmemX/cpumask
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-+Description:	(RO) This sysfs file exposes the cpumask which is designated to make
-+                HCALLs to retrieve nvdimm pmu event counter data.
 -- 
-2.27.0
-
+viresh
