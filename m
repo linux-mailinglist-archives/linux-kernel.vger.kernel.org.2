@@ -2,143 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B581E3A68EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF05B3A68F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbhFNO1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232809AbhFNO1U (ORCPT
+        id S234235AbhFNOaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:30:09 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:38566 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232809AbhFNOaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:27:20 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C58C061766;
-        Mon, 14 Jun 2021 07:25:17 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id p17so21407130lfc.6;
-        Mon, 14 Jun 2021 07:25:17 -0700 (PDT)
+        Mon, 14 Jun 2021 10:30:09 -0400
+Received: by mail-oi1-f181.google.com with SMTP id q10so10336177oij.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:28:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lKRSk5HzbOmXuCA3rliZmeLLBLcB5mMmfL/kTP5W7uo=;
-        b=HbMu/AK0B3ZfYZGiK5bqwr12vcZCA4Wfjhr3rxx6x4APBSV5+cOcztbmz4h5XipUdL
-         MhyYGmxgkp9icxgpqfvhZt5G/HyEBlVLbaFbNDonII4Bjh4ELvWIMtUjSj7AHco8rlUt
-         D4GVfGRX6NZl3JLyPa7hbtokhQlnFj25aGZhi5+zWRAsrIYc7kRcaW4CS3TwYubyBV9T
-         n1AZtghp3yzkw3muaYmf1ZqIBw7NqRG3rW8kMjS4YxPEnW6r794JlDrYZCKIvfPzC8Sa
-         c28L1eLRnhEhsJazcJjbriUBxugYbTvN1Zal+/7mOqwxT0ITT5eOmcRDNnP9TrClphXb
-         HPjw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cS1D61UWM7D7f9J7258UNtSJuuL2xJgwPnJmsK1CIKE=;
+        b=Drq4euRexolAYmKsw5YnQsTY+Ac/Qk3DtXRFtHBS2i9AvbFlh2UncXnNxs//tB8OdG
+         ZSeIEHyqDQdGg7U4fbjvSRz+XnA9w1bsdX2BIxzhiPbgWumFBjtoTxx99m1SNaHyVBTF
+         OFW5ki9GHslxZBUTKuwX1FKmf5mElQfY29yNc59EwGAFK7Nx9nDJBBI19HrJrAe5+f3F
+         /FK4zekhGvSs3dLferQ5veRiKFDjRQFeZ2Gr6JiJwjugnjWk7B8Nh+j0KEhwPCU7X/Rx
+         t25ppOPClB8MCpzBH9fDz74VXG+JQp2XaGr2xbkPBYO41Wxd01wGnkF3YLXSRW1Mpv0V
+         k4pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lKRSk5HzbOmXuCA3rliZmeLLBLcB5mMmfL/kTP5W7uo=;
-        b=qUh+W/20i5Tj12ZF+ZlFIv2yypOPXWaKj7rsdFxe3sq4J79PJ4wH8mVIVZmDf0hXXh
-         UsIRWtQDJlyZxI+bIe/PM5LKxfAUct1Yo+kU/oAidheMh/vkuHyYPnVE27LDLhhRY6gi
-         gPabXmMIg1+exQrnSM5RQsdw83hGUyg66uJGN6BfGavqYsYBHS9MVXwteYYusQmqmiqT
-         K7QI4qFBJbJ1InhLym02VDaJgInDefGfNgPXFYN8/uZP/7toP9Glzfx0nXa9ti3rO1hy
-         8WyjXzkRvfY+xVaJPPzM1ziX3C4y9GpVW+bCC7U+WhE3jfbY3NWeuLHow0B+xSpBA/ws
-         QotQ==
-X-Gm-Message-State: AOAM531eOF+YtLoaFEFdU9srWT2NaPQIcM/rtKoSUDGpj3qviFuxtkdM
-        oDnC1pBzk1h94Md9TPhQWUo=
-X-Google-Smtp-Source: ABdhPJz0cLTrRyc7MvmhGfJeBleE0yG9ThwWkjdAMqFhKJLurHNe6u0i14XCh5e9VyDIYl8Ns74Atg==
-X-Received: by 2002:a05:6512:ba3:: with SMTP id b35mr1580844lfv.7.1623680715685;
-        Mon, 14 Jun 2021 07:25:15 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.24])
-        by smtp.gmail.com with ESMTPSA id z16sm1498670lfs.24.2021.06.14.07.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 07:25:15 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 17:25:12 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     alex.aring@gmail.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        stefan@datenfreihafen.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: Suggestions on how to debug kernel crashes where printk and gdb
- both does not work
-Message-ID: <20210614172512.799db10d@gmail.com>
-In-Reply-To: <CAD-N9QV5_91A6n5QcrafmQRbqH_qzFRatno-6z0i7q-V9VnLzg@mail.gmail.com>
-References: <CAD-N9QUUCSpZjg5RwdKBNF7xx127E6fUowTZkUhm66C891Fpkg@mail.gmail.com>
-        <20210614163401.52807197@gmail.com>
-        <CAD-N9QV5_91A6n5QcrafmQRbqH_qzFRatno-6z0i7q-V9VnLzg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cS1D61UWM7D7f9J7258UNtSJuuL2xJgwPnJmsK1CIKE=;
+        b=N2FqSHUYgxtDrU+/pKhg0LR8QDU9PD1fTZ27S7cZLG3BoIY0C5y/uae89x5rv8LZAE
+         bympkanphCZ/aRd88jh49+LRrN162nXyz0SZ2JKzF+aRZ24+jYFttCy7lRF/ZUIaM9jD
+         ZjbnsGuvgwXKCEETMiQUj5j1Wb5cuLMxK9TiKUVEGOfsIVRJaML5kb55JDJv6vUjr6q+
+         FI9PSxa+QnRM8ojSJlQgXBYrzvchFa5rMe+5ARCD9ATYNnMZV/n6sjCULue+4XkoX+Vs
+         JeaZyNKU6Axp+zA9sD1iDgxbdRlBFu5DW3MflsVxId/qjTpcy/2u8UyFPVKS8U4F9R56
+         MotA==
+X-Gm-Message-State: AOAM532PTqaqO9QeLTl4RFN2KwNW7NS15zyrxS/vUctyNxyOF/4qukuz
+        b6FnhoU5Yq/Udh6BeUsrMGQSbw==
+X-Google-Smtp-Source: ABdhPJy3zOStR4414HcnVU/hu0fUTjtzRD0SvMKTxiAT0JtYMmXILVT3id2ffgfVSbs6vvST1aQoyA==
+X-Received: by 2002:aca:b406:: with SMTP id d6mr10656391oif.71.1623680825976;
+        Mon, 14 Jun 2021 07:27:05 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id x187sm2981180oia.17.2021.06.14.07.27.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 07:27:05 -0700 (PDT)
+Subject: Re: [PATCH v2 RESEND] ata: ahci_sunxi: Disable DIPM
+To:     Timo Sigurdsson <public_timo.s@silentcreek.de>, mripard@kernel.org,
+        wens@csie.org, jernej.skrabec@siol.net, linux-ide@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     sergei.shtylyov@gmail.com, gregkh@linuxfoundation.org,
+        oliver@schinagl.nl
+References: <20210614072539.3307-1-public_timo.s@silentcreek.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4c873409-db09-31ea-485e-daa0433c674b@kernel.dk>
+Date:   Mon, 14 Jun 2021 08:27:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210614072539.3307-1-public_timo.s@silentcreek.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 22:19:10 +0800
-Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+On 6/14/21 1:25 AM, Timo Sigurdsson wrote:
+> DIPM is unsupported or broken on sunxi. Trying to enable the power
+> management policy med_power_with_dipm on an Allwinner A20 SoC based board
+> leads to immediate I/O errors and the attached SATA disk disappears from
+> the /dev filesystem. A reset (power cycle) is required to make the SATA
+> controller or disk work again. The A10 and A20 SoC data sheets and manuals
+> don't mention DIPM at all [1], so it's fair to assume that it's simply not
+> supported. But even if it was, it should be considered broken and best be
+> disabled in the ahci_sunxi driver.
 
-> On Mon, Jun 14, 2021 at 9:34 PM Pavel Skripkin <paskripkin@gmail.com>
-> wrote:
-> >
-> > On Mon, 14 Jun 2021 21:22:43 +0800
-> > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> >
-> > > Dear kernel developers,
-> > >
-> > > I was trying to debug the crash - memory leak in hwsim_add_one [1]
-> > > recently. However, I encountered a disgusting issue: my
-> > > breakpoint and printk/pr_alert in the functions that will be
-> > > surely executed do not work. The stack trace is in the following.
-> > > I wrote this email to ask for some suggestions on how to debug
-> > > such cases?
-> > >
-> > > Thanks very much. Looking forward to your reply.
-> > >
-> >
-> > Hi, Dongliang!
-> >
-> > This bug is not similar to others on the dashboard. I spent some
-> > time debugging it a week ago. The main problem here, that memory
-> > allocation happens in the boot time:
-> >
-> > > [<ffffffff84359255>] kernel_init+0xc/0x1a7 init/main.c:1447
-> >
-> 
-> Oh, nice catch. No wonder why my debugging does not work. :(
-> 
-> > and reproducer simply tries to
-> > free this data. You can use ftrace to look at it. Smth like this:
-> >
-> > $ echo 'hwsim_*' > $TRACE_DIR/set_ftrace_filter
-> 
-> Thanks for your suggestion.
-> 
-> Do you have any conclusions about this case? If you have found out the
-> root cause and start writing patches, I will turn my focus to other
-> cases.
+Applied, thanks.
 
-No, I had some busy days and I have nothing about this bug for now.
-I've just traced the reproducer execution and that's all :)
+-- 
+Jens Axboe
 
-I guess, some error handling paths are broken, but Im not sure 
- 
-
-> 
-> BTW, I only found another possible memory leak after some manual code
-> review [1]. However, it is not the root cause for this crash.
-> 
-> [1] https://lkml.org/lkml/2021/6/10/1297
-> 
-> >
-> > would work.
-> >
-> >
-> > With regards,
-> > Pavel Skripkin
-
-
-
-
-With regards,
-Pavel Skripkin
