@@ -2,143 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C993A68D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFD43A68D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234523AbhFNOTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:19:44 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:35411 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234493AbhFNOTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234503AbhFNOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 14 Jun 2021 10:19:42 -0400
-Received: by mail-ot1-f45.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so5481025oti.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:17:28 -0700 (PDT)
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:34403 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233226AbhFNOTk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 10:19:40 -0400
+Received: by mail-lj1-f182.google.com with SMTP id bn21so20427161ljb.1;
+        Mon, 14 Jun 2021 07:17:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FBYjVJRS+b/w4pnsYesBjbYpCL3m16xVdTBky4XS4D0=;
-        b=VbC94GJ4DfIQmAwxyQpCMvzQjzFuU7+D96764TvBV0xOZvHK0y2l/Cv22fZQPkrEjS
-         Qhyzk/QT78EnsWos8WsffbqHz2A9eXnuu9JjXR9X+PdLxj3P+VAlPexiym38RrHeNnlf
-         ldwldkgVcse3rIHvqVk12WtjOTiLZvFYxlP/VhoR8TgEE6f2GZ5vajgk3RCMOyChf2w2
-         x6nfojz2FJML9kA+MUQuA1B+XfxLIOmSZUhsvhpLPjkbDYhdmnTVTXMqNsfiZoseRKt9
-         3OI9nkfmzPaKVoJXOIY3OARtrt/EUJJ2MDRU2fvV8/Q1D8MJqAjr8v4sXg6evBPl70/e
-         k5kw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8BlLLE4wDr6ltjz5dSFEHFOPamj/qVyBPiAb+f+NmXc=;
+        b=QQVLIWgyE2ofr1xYN11XUD4p8ZGOY0LPVoSn6QP2cOCGIfrM/ZycjrA5Ir7jVo3CK1
+         HU7iXqvLbJT+9blc0tzJosqsYfFXDPk21SdeqS3rNEa/+9H7OWmtfxJXBN1mtqVC9U6C
+         rqohm73+5QdXKN1LNrVDQTWLHt261VeTh8/4IjCwazTrFul+3RiuUKF55CzPZdNDv0GC
+         99h892B2/CaX+JVVtGuc0fQgJFvpoxl003CWAUZrZKWD2WGoE7v5Kp5GIWEOnWsKKBwP
+         SyhFSJWCB47PwfphyyuU4TUHLcweiCoVFXQTS1a5hsbWOHtcO+teswMBhFEnBPpPY3YX
+         kxBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FBYjVJRS+b/w4pnsYesBjbYpCL3m16xVdTBky4XS4D0=;
-        b=JYQk9HjZuCNyFbd6ScgNNRiPoKDCZ/8hqxfAX/dR6x645VjS0Ry94mclyCPzpzI6X+
-         O9Xn/AxH/cq/xo/nZs8XqnH47OyEvKsb9fLEkg2c9dsaAbPtFim5vxV15sWSj3os/x98
-         HDNR28VV2Wcz51J/TzNn44JfAau5H4eIoaWv81U/plMxi+6gyiP60CYyQafsyn8rlev/
-         jLi8l3cxpyCzyQVGTYCFQzVGcPU7+Y44QpMxYbjNofG/JxzQ+mz1tcrlGBGIBcEfO6Nf
-         OZHJ2uiheN0b2OUIWIk06aM9frQAPXBcV8sjf1Z54DqqoF+otItIN0SeJlojwik/5kMl
-         /O9w==
-X-Gm-Message-State: AOAM532J9Zp68VZ5XNdV8dkDF6vN1KUFn18EBL/C55NvsGO3KJ9bCdQb
-        zIM5oTmttOtuBdHCErv0PLDKu8g4AvMx/8tDXnTM2Q==
-X-Google-Smtp-Source: ABdhPJy04P/W+yfF08gJxtdwOnS1uTLYOi8I+vr2HeO5DdS0IbVsX1i5lctRMUeHT7e5lJIJbrs7J3CK8E/LTjN9VHc=
-X-Received: by 2002:a05:6830:93:: with SMTP id a19mr13523515oto.17.1623680187940;
- Mon, 14 Jun 2021 07:16:27 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8BlLLE4wDr6ltjz5dSFEHFOPamj/qVyBPiAb+f+NmXc=;
+        b=PopTZGWv4O0yv7tm5bX9oKd2pnfoaBEAmW/kSzQCueOYfCImz6C6a/a+viRbGh4Xem
+         mTnVi2dZGuFO51HJwDfupCTn4gbO7lo5G4Ztu0EcFrne7smqV2QFic7OmhXJfq8gvb3M
+         7hAMBAQsXZHk/Tv5KAcLoRFWx9nXTSlAtLNy3kZ31T+KKVQtu3ZuSrPmxm85TuA+SwBR
+         TObm++t8jaAGPc2ZZbh6uHhLsnWFcrcMzb/4e9zHA94xJSa4jI0kR3uwxEmPra61HhLy
+         C42sEJTzFvcgah6BPT8XF/Sjf0ddon4G7ERXjbqC6jKzxPyvopgZXZyTTEdzgYC7G8c7
+         9b/w==
+X-Gm-Message-State: AOAM53269qZiVjZgJoqAtsADQPVn9O4/3fWoWd9e0WT0MAckth3j15fm
+        aLR+fROpOh5aHrLEVH+bkHs=
+X-Google-Smtp-Source: ABdhPJxnEtruNGt0t/5KE8y5mVk6Q2z91RIRyflrjLqoUsqtzKFx9/LwzK2WOVaOb/v8h6j6EoSSpw==
+X-Received: by 2002:a2e:5319:: with SMTP id h25mr13878260ljb.501.1623680196833;
+        Mon, 14 Jun 2021 07:16:36 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-22-64.dynamic.spd-mgts.ru. [46.138.22.64])
+        by smtp.googlemail.com with ESMTPSA id y24sm1822197ljy.15.2021.06.14.07.16.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 07:16:36 -0700 (PDT)
+Subject: Re: [PATCH 1/2] memory: tegra: Add missing dependencies
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>
+References: <20210609112806.3565057-1-thierry.reding@gmail.com>
+ <20210609112806.3565057-2-thierry.reding@gmail.com>
+ <0c762772-929e-2eb8-6568-4aa82ea2f9ad@gmail.com>
+ <ee2846c0-9274-0888-90ac-dac72d2ab5fd@canonical.com>
+ <a3110fbd-c4af-0317-5a6d-1f780f1dac91@gmail.com>
+ <1400979c-c7a7-9618-1168-70185ed10546@canonical.com>
+ <8d8d019a-34c1-50bd-5eba-ce361c263d35@gmail.com>
+ <57f8e55d-d708-f304-cf35-3036ec2e64f5@gmail.com>
+ <99f98088-fed4-45bf-b0a1-241bfc896487@canonical.com>
+ <f5112945-1b07-8760-4180-4d7152b7dcba@gmail.com>
+ <YMNCPhHx+s4W7BP3@orome.fritz.box>
+ <99fb42e9-26f9-cc79-965d-989c65e7882d@gmail.com>
+ <8efc327c-1321-4e04-36de-4b52b2b8fcf7@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <334bb138-f336-9759-bc0b-351b2590cc84@gmail.com>
+Date:   Mon, 14 Jun 2021 17:16:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210111081821.3041587-1-morbo@google.com> <20210407211704.367039-1-morbo@google.com>
- <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net> <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
- <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net> <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
- <20210612202505.GG68208@worktop.programming.kicks-ass.net>
- <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
- <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net> <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
- <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
-In-Reply-To: <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 14 Jun 2021 16:16:16 +0200
-Message-ID: <CANpmjNNnZv7DHYaJBL7knn9P+50F+SOCvis==Utaf-avENnVsw@mail.gmail.com>
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Bill Wendling <morbo@google.com>, Kees Cook <keescook@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, johannes.berg@intel.com,
-        oberpar@linux.vnet.ibm.com, linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8efc327c-1321-4e04-36de-4b52b2b8fcf7@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 at 12:45, Peter Zijlstra <peterz@infradead.org> wrote:
-[...]
-> I've also been led to believe that the KCOV data format is not in fact
-> dependent on which toolchain is used.
+14.06.2021 14:50, Krzysztof Kozlowski пишет:
+> On 11/06/2021 15:40, Dmitry Osipenko wrote:
+>> 11.06.2021 14:00, Thierry Reding пишет:
+>>> On Fri, Jun 11, 2021 at 10:21:41AM +0300, Dmitry Osipenko wrote:
+>>>> 11.06.2021 09:50, Krzysztof Kozlowski пишет:
+>>>>> On 10/06/2021 18:23, Dmitry Osipenko wrote:
+>>>>>> 10.06.2021 18:50, Dmitry Osipenko пишет:
+>>>>>>> 10.06.2021 09:43, Krzysztof Kozlowski пишет:
+>>>>>>>> The stubs might be good idea anyway, but the driver explicitly needs for
+>>>>>>>> runtime working reservedmem, so it should select it.
+>>>>>>>
+>>>>>>> The OF and reservedmem are both selected by the ARCH for the runtime
+>>>>>>> use. They may not be selected in the case of compile-testing.
+>>>>>>>
+>>>>>>> Both OF core and reservedmem provide stubs needed for compile-testing,
+>>>>>>> it's only the RESERVEDMEM_OF_DECLARE() that is missing the stub. Adding
+>>>>>>> the missing stub should be a more appropriate solution than adding extra
+>>>>>>> Kconfig dependencies, IMO.
+>>>>>
+>>>>> Ah, in such case everything looks good. Stubs is indeed proper choice.
+>>>>
+>>>> Although, I see that there are only two Kconfigs that have
+>>>> OF_RESERVED_MEM, one defines the OF_RESERVED_MEM, the other is QCOM
+>>>> Kconfig which depends on OF_RESERVED_MEM. The OF_RESERVED_MEM is enabled
+>>>> by default in defconfig.
+>>>>
+>>>> You're right, we need the Kconfig change to be entirely correct, since
+>>>> driver won't work properly without OF_RESERVED_MEM.
+>>>>
+>>>> config TEGRA210_EMC
+>>>> 	tristate "NVIDIA Tegra210 External Memory Controller driver"
+>>>> -	depends on ARCH_TEGRA_210_SOC || COMPILE_TEST
+>>>> +	depends on (ARCH_TEGRA_210_SOC && OF_RESERVED_MEM) || COMPILE_TEST
+>>>>
+>>>> I will send that change later today.
+>>>
+>>> That's completely unnecessary. OF_RESERVED_MEM is enabled by default if
+>>> OF_EARLY_FLATTREE is enabled, which it is for ARM64 and that is always
+>>> enabled for ARCH_TEGRA_210_SOC.
+>>
+>> But it doesn't stop you from disabling OF_RESERVED_MEM. The Kconfig
+>> dependencies should reflect the build and runtime requirements of the
+>> driver, otherwise only driver author knows which config options are need.
+> 
+> OF_RESERVED_MEM is not selectable, so it cannot be disabled for regular
+> builds.
+> 
+> When I proposed to add dependencies, I indeed did not check whether
+> these are selectable symbols. My advise was not accurate.
+> 
+> Usually we do not add dependencies to each driver on each kernel
+> non-selectable feature. It would be too much (depends on HAS_IOMEM,
+> REGMAP, OF, MFD_SYSCON, OF_RESERVED_MEM and probably many more)... There
+> are of course exceptions and mistakes (I think I should not add
+> OF_ADDRESS to OMAP_GPMC).
+> 
+> If such features are non-selectable, usually architecture enforces them
+> so the driver does not need to. For compile testing, these features
+> should come with stubs. If there are no stubs, the dependency for
+> compile testing could be added:
+> ARCH_TEGRA_210_SOC || (COMPILE_TEST && OF_RESERVED_MEM)
+> 
+> We add the dependencies for selectable options which driver needs, e.g.
+> DEVFREQ, CPUFREQ, PM_xxx
+> 
+> Since you proposed already to add stubs for OF_RESERVED_MEM, adding
+> dependency on it does not bring any benefit.
 
-Correct, we use KCOV with both gcc and clang. Both gcc and clang emit
-the same instrumentation for -fsanitize-coverage. Thus, the user-space
-portion and interface is indeed identical:
-https://www.kernel.org/doc/html/latest/dev-tools/kcov.html
+Right, I also missed that OF_RESERVED_MEM is non-selectable.
 
-> > > I'm thinking it might be about time to build _one_ infrastructure for
-> > > that and define a kernel arc format and call it a day.
-> > >
-> > That may be nice, but it's a rather large request.
->
-> Given GCOV just died, perhaps you can look at what KCOV does and see if
-> that can be extended to do as you want. KCOV is actively used and
-> we actually tripped over all the fun little noinstr bugs at the time.
-
-There might be a subtle mismatch between coverage instrumentation for
-testing/fuzzing and for profiling. (Disclaimer: I'm not too familiar
-with Clang-PGO's requirements.) For example, while for testing/fuzzing
-we may only require information if a code-path has been visited, for
-profiling the "hotness" might be of interest. Therefore, the
-user-space exported data format can make several trade-offs in
-complexity.
-
-In theory, I imagine there's a limit to how generic one could make
-profiling information, because one compiler's optimizations are not
-another compiler's optimizations. On the other hand, it may be doable
-to collect unified profiling information for common stuff, but I guess
-there's little motivation for figuring out the common ground given the
-producer and consumer of the PGO data is the same compiler by design
-(unlike coverage info for testing/fuzzing).
-
-Therefore, if KCOV's exposed information does not match PGO's
-requirements today, I'm not sure what realistically can be done
-without turning KCOV into a monster. Because KCOV is optimized for
-testing/fuzzing coverage, and I'm not sure how complex we can or want
-to make it to cater to a new use-case.
-
-My intuition is that the simpler design is to have 2 subsystems for
-instrumentation-based coverage collection: one for testing/fuzzing,
-and the other for profiling.
-
-Alas, there's the problem of GCOV, which should be replaceable by KCOV
-for most use cases. But it would be good to hear from a GCOV user if
-there are some.
-
-But as we learned GCOV is broken on x86 now, I see these options:
-
-1. Remove GCOV, make KCOV the de-facto test-coverage collection
-subsystem. Introduce PGO-instrumentation subsystem for profile
-collection only, and make it _very_ clear that KCOV != PGO data as
-hinted above. A pre-requisite is that compiler-support for PGO
-instrumentation adds selective instrumentation support, likely just
-making attribute no_instrument_function do the right thing.
-
-2. Like (1) but also keep GCOV, given proper support for attribute
-no_instrument_function would probably fix it (?).
-
-3. Keep GCOV (and KCOV of course). Somehow extract PGO profiles from KCOV.
-
-4. Somehow extract PGO profiles from GCOV, or modify kernel/gcov to do so.
-
-Thanks.
