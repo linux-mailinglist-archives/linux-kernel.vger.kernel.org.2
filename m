@@ -2,152 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4023A65E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EFB3A65E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhFNLn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:43:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49840 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235822AbhFNLfr (ORCPT
+        id S236743AbhFNLoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:44:09 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45686 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233353AbhFNLhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:35:47 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4FCF61FD33;
-        Mon, 14 Jun 2021 11:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623670424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQ/Zr+B5rceGHvOw/tPouQhqXtR9UafewGuLuc3uVLI=;
-        b=EPdzRnbEbEW10p6To68pPtyz4dSwKpPg6ArCbcPhdwJ8yVAjqRMJxOx2fsCQ34ct6O4DNV
-        fj1OH5l9LWfcAc0UeFcw2VRZCh8lgPvr0xGQl3EOWChNl1J413McyZnPXYp7UHLGbY3dTL
-        sQRsJU9U51k86P6/J1y2qyNnv4NvMtI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623670424;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQ/Zr+B5rceGHvOw/tPouQhqXtR9UafewGuLuc3uVLI=;
-        b=xiHIjsfqqTWgNLLq3VIdpd7zPgtlbVvo+NR6S+n6SSrWGwSQh3Lp8GlI19qg3f2icTTngE
-        TxLG8l5HX3Ya4cCA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 23B87118DD;
-        Mon, 14 Jun 2021 11:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623670424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQ/Zr+B5rceGHvOw/tPouQhqXtR9UafewGuLuc3uVLI=;
-        b=EPdzRnbEbEW10p6To68pPtyz4dSwKpPg6ArCbcPhdwJ8yVAjqRMJxOx2fsCQ34ct6O4DNV
-        fj1OH5l9LWfcAc0UeFcw2VRZCh8lgPvr0xGQl3EOWChNl1J413McyZnPXYp7UHLGbY3dTL
-        sQRsJU9U51k86P6/J1y2qyNnv4NvMtI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623670424;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQ/Zr+B5rceGHvOw/tPouQhqXtR9UafewGuLuc3uVLI=;
-        b=xiHIjsfqqTWgNLLq3VIdpd7zPgtlbVvo+NR6S+n6SSrWGwSQh3Lp8GlI19qg3f2icTTngE
-        TxLG8l5HX3Ya4cCA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id +684CJg+x2BFFQAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Mon, 14 Jun 2021 11:33:44 +0000
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-References: <20210609113903.1421-1-vbabka@suse.cz>
- <20210609113903.1421-34-vbabka@suse.cz>
- <c553c26f-1f9c-e5ab-b71b-b2b5eeb59ad2@suse.cz>
- <20210614111619.l3ral7tt2wasvlb4@linutronix.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC v2 33/34] mm, slub: use migrate_disable() on PREEMPT_RT
-Message-ID: <390fc59e-17ed-47eb-48ff-8dae93c9a718@suse.cz>
-Date:   Mon, 14 Jun 2021 13:33:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 14 Jun 2021 07:37:21 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15EBYAqb065243;
+        Mon, 14 Jun 2021 11:35:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=tpxItPxD79i/QAY2x5Bbh4wo+vTKY0MzDCdkSRZoFM8=;
+ b=IMy4wnSt0t8I1juhnAOQAc3mw/B6EIgQW9qaq/KFvaDva1pS7y2x7BBd8ecKWyC3dEa8
+ SCDAJD7iVEgozQj0jR+HAWPfYefRH+pkYSPZRTCHxrAOLojysB/4eVXEp5brVO5nXexI
+ W3TaCUD62yzBsK1R75dQ9asOLbbLxnP5ZKtADguyi8V2/hXIs7wx2z9J2oayLLRVflYq
+ HKvdhUxb4GswZhpLrpRQV5Hdx71Ppb2UKWIu45hruzM3G/61UClpu7D2IvEtHUu806V2
+ 3GCSyu/WYbmHwXOussrsgv3CBAZVSFUEjx5/NQOhtZdlDErnXojxlEVOnid7l30YWleJ PQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 394mvnb3ss-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 11:35:02 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15EBYu1U193282;
+        Mon, 14 Jun 2021 11:35:02 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 394mr6970s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 11:35:02 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15EBZ0IU194171;
+        Mon, 14 Jun 2021 11:35:00 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 394mr696qa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 11:35:00 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15EBYk7E001613;
+        Mon, 14 Jun 2021 11:34:46 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Jun 2021 11:34:45 +0000
+Date:   Mon, 14 Jun 2021 14:34:39 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] staging: rtl8188eu: remove RT_TRACE and DBG_88E
+ prints from usb_intf.c
+Message-ID: <20210614113439.GM1955@kadam>
+References: <20210612180019.20387-1-martin@kaiser.cx>
+ <20210612180019.20387-6-martin@kaiser.cx>
 MIME-Version: 1.0
-In-Reply-To: <20210614111619.l3ral7tt2wasvlb4@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210612180019.20387-6-martin@kaiser.cx>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: ttSQkChxyfAqucEoy4wdIV8hanVw9u_K
+X-Proofpoint-GUID: ttSQkChxyfAqucEoy4wdIV8hanVw9u_K
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10014 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ priorityscore=1501 clxscore=1015 mlxlogscore=999 phishscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106140081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/14/21 1:16 PM, Sebastian Andrzej Siewior wrote:
-> On 2021-06-14 13:07:14 [+0200], Vlastimil Babka wrote:
->> > +#ifdef CONFIG_PREEMPT_RT
->> > +#define slub_get_cpu_ptr(var)	get_cpu_ptr(var)
->> > +#define slub_put_cpu_ptr(var)	put_cpu_ptr(var)
->> 
->> After Mel's report and bisect pointing to this patch, I realized I got the
->> #ifdef wrong and it should be #ifnded
+On Sat, Jun 12, 2021 at 08:00:19PM +0200, Martin Kaiser wrote:
+> These prints are disabled by default.
 > 
-> So if you got the ifdef wrong (and kept everything as-is) then you
-> tested the RT version on !RT. migrate_disable() behaves on !RT as on RT.
-> As per changelog you don't use migrate_disable() unconditionally because
-> it increases the overhead on !RT.
 
-Correct.
+Not, just by default.  There is literally no way to enable them.
 
-> I haven't looked at the series and I have just this tiny question: why
-> did migrate_disable() crash for Mel on !RT and why do you expect that it
-> does not happen on PREEMPT_RT?
+> Replace the print after dev_alloc_name with proper error handling.
+> 
 
-Right, so it's because __slab_alloc() has this optimization to avoid re-reading
-'c' in case there is no preemption enabled at all (or it's just voluntary).
+Ugh...  :(  This part really needs to be done first and in a separate
+patch.  You can delete the RT_TRACE() from that one call site since it's
+on the same line but the subject of the patch needs to say something
+like "check for allocation failure".  It can't be "remove RT_TRACE and
+DBG_88E prints".
 
-#ifdef CONFIG_PREEMPTION
-        /*
-         * We may have been preempted and rescheduled on a different
-         * cpu before disabling preemption. Need to reload cpu area
-         * pointer.
-         */
-        c = slub_get_cpu_ptr(s->cpu_slab);
-#endif
+The first five of these patch look good though.
 
-Mel's config has CONFIG_PREEMPT_VOLUNTARY, which means CONFIG_PREEMPTION is not
-enabled.
+regards,
+dan carpenter
 
-But then later in ___slab_alloc() we have
-
-        slub_put_cpu_ptr(s->cpu_slab);
-        page = new_slab(s, gfpflags, node);
-        c = slub_get_cpu_ptr(s->cpu_slab);
-
-And this is not hidden under CONFIG_PREEMPTION, so with the #ifdef bug the
-slub_put_cpu_ptr did a migrate_enable() with Mel's config, without prior
-migrate_disable().
-
-If there wasn't the #ifdef PREEMPT_RT bug:
-- this slub_put_cpu_ptr() would translate to put_cpu_ptr() thus
-preempt_enable(), which on this config is just a barrier(), so it doesn't matter
-that there was no matching preempt_disable() before.
-- with PREEMPT_RT the CONFIG_PREEMPTION would be enabled, so the
-slub_get_cpu_ptr() would do a migrate_disable() and there's no imbalance.
-
-But now that I dig into this in detail, I can see there might be another
-instance of this imbalance bug, if CONFIG_PREEMPTION is disabled, but
-CONFIG_PREEMPT_COUNT is enabled, which seems to be possible in some debug
-scenarios. Because then preempt_disable()/preempt_enable() still manipulate the
-preempt counter and compiling them out in __slab_alloc() will cause imbalance.
-
-So I think the guards in __slab_alloc() should be using CONFIG_PREEMPT_COUNT
-instead of CONFIG_PREEMPT to be correct on all configs. I dare not remove them
-completely :)
