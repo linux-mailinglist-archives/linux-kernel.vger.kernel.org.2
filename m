@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB583A6C0D
+	by mail.lfdr.de (Postfix) with ESMTP id 422193A6C0C
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbhFNQkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234833AbhFNQkJ (ORCPT
+        id S235027AbhFNQko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:40:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55858 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234794AbhFNQkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 12:40:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B74C0613A2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:38:06 -0700 (PDT)
-Message-Id: <20210614155355.354479349@linutronix.de>
+Message-Id: <20210614155355.450669490@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688685;
+        s=2020; t=1623688686;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=rsts9erWqJk36WQpWh+9WIajOyfRU5jT3My7JmYuy4w=;
-        b=zwRf6kA34YGFQKF4qNKjJuvT8m8QY0dxSuxoxPhvALjjbio4VUe+d2lCkeMVSWKSiiWtaQ
-        Fee9i0SyyleVwkeF+j7D/fG0bZDj2EnRauriEk60g+Dvp6ZbhuLDWppm6py3CBKcC1MSnI
-        kjWqd96qnCo4JYfzsw6iagkDPD5v44HMfJIz6v6JP7kn0zh61vZmK1xg0L89tbxvAXzFQm
-        krz7d8r26RUPYqiShfrDKHCkayc2KQ8RO95pb537MPStFVPXhVhCFnW0dWov7vO5w1h7XS
-        eFq+IUkcxZwAlHij32mDwnI4iddz1G6DRQv7HZsHFOjsdGrk3o1HbqG4ehmcXg==
+        bh=Zry/aCz6tZrob0Eu6Oq9myNlC+l2iPoXNdIeHzuizhQ=;
+        b=tfRE8FWztq8YE4iZ6AQoNT1U8qpoatuZ375J+d6N91UgMpDCB5iosgSzAF5v4cYeRArpqf
+        JQxPJjJBIR5hGAGuVQNZxo31YRNgSsvQiBdiwpz+Ca0ZQ8hifazyK7zMkG2X697BkRKSTh
+        hFEw7jU2XbSDSK+wVKinzm6BKGxBFoEoihL1BRb9GWK1wtLBMvikSbp0tkgb2l373r59FK
+        Nmgl33LKRRpTCyUc/g0E2PWxActJJLpbTJ7wUA394bFtx8SCNGERRqzP63IiR35u92VEIc
+        k5nnUYEAI2GuWYcRPqLyzg3DdrFpYwoeTBPvpmTTHJPg8R3CFoHwCYNgnwjFTw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688685;
+        s=2020e; t=1623688686;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=rsts9erWqJk36WQpWh+9WIajOyfRU5jT3My7JmYuy4w=;
-        b=qQdSCho243KyrEqzhirlzq27r8kx3SdXEJhDJpCXY2PCaPXthjGQNdutpA9iRHuDLBLD6f
-        kccg17+d/PjyV/Cw==
-Date:   Mon, 14 Jun 2021 17:44:24 +0200
+        bh=Zry/aCz6tZrob0Eu6Oq9myNlC+l2iPoXNdIeHzuizhQ=;
+        b=bJZdwfPM/xMa19qsJSzEpNEPLYoOBhDfKsLipV/Gvfk2iF8RQROZ8+QoEzaYzSN1h5pxmP
+        ZipLsKaZxDQmbmAg==
+Date:   Mon, 14 Jun 2021 17:44:25 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 16/52] x86/fpu: Use copy_uabi_xstate_to_membuf() in fpregs_get()
+Subject: [patch V2 17/52] x86/fpu: Remove fpstate_sanitize_xstate()
 References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,82 +53,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new functionality of copy_uabi_xstate_to_membuf() to retrieve the
-FX state when XSAVE* is in use. This avoids to overwrite the FPU state
-buffer with fpstate_sanitize_xstate() which is error prone and duplicated
-code.
+No more users.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 V2: New patch
 ---
- arch/x86/kernel/fpu/regset.c |   30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    2 
+ arch/x86/kernel/fpu/xstate.c        |   79 ------------------------------------
+ 2 files changed, 81 deletions(-)
 
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -211,10 +211,10 @@ static inline u32 twd_fxsr_to_i387(struc
-  * FXSR floating point environment conversions.
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -87,8 +87,6 @@ extern void fpstate_init_soft(struct swr
+ static inline void fpstate_init_soft(struct swregs_state *soft) {}
+ #endif
+ 
+-extern void fpstate_sanitize_xstate(struct fpu *fpu);
+-
+ #define user_insn(insn, output, input...)				\
+ ({									\
+ 	int err;							\
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -129,85 +129,6 @@ static bool xfeature_is_supervisor(int x
+ }
+ 
+ /*
+- * When executing XSAVEOPT (or other optimized XSAVE instructions), if
+- * a processor implementation detects that an FPU state component is still
+- * (or is again) in its initialized state, it may clear the corresponding
+- * bit in the header.xfeatures field, and can skip the writeout of registers
+- * to the corresponding memory layout.
+- *
+- * This means that when the bit is zero, the state component might still contain
+- * some previous - non-initialized register state.
+- *
+- * Before writing xstate information to user-space we sanitize those components,
+- * to always ensure that the memory layout of a feature will be in the init state
+- * if the corresponding header bit is zero. This is to ensure that user-space doesn't
+- * see some stale state in the memory layout during signal handling, debugging etc.
+- */
+-void fpstate_sanitize_xstate(struct fpu *fpu)
+-{
+-	struct fxregs_state *fx = &fpu->state.fxsave;
+-	int feature_bit;
+-	u64 xfeatures;
+-
+-	if (!use_xsaveopt())
+-		return;
+-
+-	xfeatures = fpu->state.xsave.header.xfeatures;
+-
+-	/*
+-	 * None of the feature bits are in init state. So nothing else
+-	 * to do for us, as the memory layout is up to date.
+-	 */
+-	if ((xfeatures & xfeatures_mask_all) == xfeatures_mask_all)
+-		return;
+-
+-	/*
+-	 * FP is in init state
+-	 */
+-	if (!(xfeatures & XFEATURE_MASK_FP)) {
+-		fx->cwd = 0x37f;
+-		fx->swd = 0;
+-		fx->twd = 0;
+-		fx->fop = 0;
+-		fx->rip = 0;
+-		fx->rdp = 0;
+-		memset(fx->st_space, 0, sizeof(fx->st_space));
+-	}
+-
+-	/*
+-	 * SSE is in init state
+-	 */
+-	if (!(xfeatures & XFEATURE_MASK_SSE))
+-		memset(fx->xmm_space, 0, sizeof(fx->xmm_space));
+-
+-	/*
+-	 * First two features are FPU and SSE, which above we handled
+-	 * in a special way already:
+-	 */
+-	feature_bit = 0x2;
+-	xfeatures = (xfeatures_mask_user() & ~xfeatures) >> 2;
+-
+-	/*
+-	 * Update all the remaining memory layouts according to their
+-	 * standard xstate layout, if their header bit is in the init
+-	 * state:
+-	 */
+-	while (xfeatures) {
+-		if (xfeatures & 0x1) {
+-			int offset = xstate_comp_offsets[feature_bit];
+-			int size = xstate_sizes[feature_bit];
+-
+-			memcpy((void *)fx + offset,
+-			       (void *)&init_fpstate.xsave + offset,
+-			       size);
+-		}
+-
+-		xfeatures >>= 1;
+-		feature_bit++;
+-	}
+-}
+-
+-/*
+  * Enable the extended processor state save/restore feature.
+  * Called once per CPU onlining.
   */
- 
--void
--convert_from_fxsr(struct user_i387_ia32_struct *env, struct task_struct *tsk)
-+static void __convert_from_fxsr(struct user_i387_ia32_struct *env,
-+				struct task_struct *tsk,
-+				struct fxregs_state *fxsave)
- {
--	struct fxregs_state *fxsave = &tsk->thread.fpu.state.fxsave;
- 	struct _fpreg *to = (struct _fpreg *) &env->st_space[0];
- 	struct _fpxreg *from = (struct _fpxreg *) &fxsave->st_space[0];
- 	int i;
-@@ -248,6 +248,12 @@ convert_from_fxsr(struct user_i387_ia32_
- 		memcpy(&to[i], &from[i], sizeof(to[0]));
- }
- 
-+void
-+convert_from_fxsr(struct user_i387_ia32_struct *env, struct task_struct *tsk)
-+{
-+	__convert_from_fxsr(env, tsk, &tsk->thread.fpu.state.fxsave);
-+}
-+
- void convert_to_fxsr(struct fxregs_state *fxsave,
- 		     const struct user_i387_ia32_struct *env)
- 
-@@ -280,25 +286,29 @@ int fpregs_get(struct task_struct *targe
- {
- 	struct fpu *fpu = &target->thread.fpu;
- 	struct user_i387_ia32_struct env;
-+	struct fxregs_state fxsave, *fx;
- 
- 	fpu__prepare_read(fpu);
- 
--	if (!boot_cpu_has(X86_FEATURE_FPU))
-+	if (!static_cpu_has(X86_FEATURE_FPU))
- 		return fpregs_soft_get(target, regset, to);
- 
--	if (!boot_cpu_has(X86_FEATURE_FXSR)) {
-+	if (!static_cpu_has(X86_FEATURE_FXSR)) {
- 		return membuf_write(&to, &fpu->state.fsave,
- 				    sizeof(struct fregs_state));
- 	}
- 
--	fpstate_sanitize_xstate(fpu);
-+	if (use_xsave()) {
-+		struct membuf mb = { .p = &fxsave, .left = sizeof(fxsave) };
- 
--	if (to.left == sizeof(env)) {
--		convert_from_fxsr(to.p, target);
--		return 0;
-+		/* Handle init state optimized xstate correctly */
-+		copy_uabi_xstate_to_membuf(mb, &fpu->state.xsave, XSTATE_COPY_FP);
-+		fx = &fxsave;
-+	} else {
-+		fx = &fpu->state.fxsave;
- 	}
- 
--	convert_from_fxsr(&env, target);
-+	__convert_from_fxsr(&env, target, fx);
- 	return membuf_write(&to, &env, sizeof(env));
- }
- 
 
