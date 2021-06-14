@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11BD3A661B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A6F3A6620
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhFNL4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:56:43 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:47026 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232685AbhFNL4m (ORCPT
+        id S233264AbhFNL5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:57:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:15317 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233213AbhFNL5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:56:42 -0400
-Received: by mail-ot1-f49.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso10477767otl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 04:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ieOvNU/x+INuKn7N76sND0jvwlaKXgF7dEwq8ZAwvEc=;
-        b=rCt9Y+sUnZlZqtFz97xO/gzUd+LR+vnvY+fW66IipHT9fm7vGqbidMU6wd4Z0hPMnx
-         uypyIgcKDK9VbGCWAjFJZI1HFTtyqDS0XVGFe5gwPrKLbuwbZguERJ+CeNzp4oGnF6ZD
-         0qyxQqbE7DdKz9N7/OGYLY8vuIb5u2g08oGEqfXH690V1qu9i/UXo6fdDvZZIU8SvohI
-         f9HKQJoNw67loqIWwijfF6dSkU5QB1kAu0uSmc4qY2HS+29Tingut6R+oGjSGCxbMfo8
-         HKkiAxpum2aUISoQ3QiGeFMA2QwFAGz1dOJUSrzGyljLAd3go+ATvuiL4qB4VMu6+N6Y
-         1SAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ieOvNU/x+INuKn7N76sND0jvwlaKXgF7dEwq8ZAwvEc=;
-        b=tLpVbXHEy0KmACQvP+N9NuOMBu+cX8B3M43OhRIHg0rfGwtLh2Wzd09v1ttiVzQ4ER
-         TPChQkBi9Kur7hjfN8NL5njJJv4bWq1ApT8djNXrkNh6HEbKXJg3TwZh7CgtbbYdEEsP
-         R/4QlqTx/ssjpuocucidPC0JEy5L9l4Qptf8eH1YhAmTtcH0kPvYx2HSyH2HUtKdPgAY
-         YIy6AqQ663OGVjEW51HMVbJmhyOy4+uToE8oUnt6LsO6x71tjLdUbgB+V1N/zhO72wNX
-         M/LyZHjk4UCOV1n1cY6CPXpEPvbahtgWJeWLDHja//LSZyBmG7lxfc9YU/T09AFbDm52
-         5xOg==
-X-Gm-Message-State: AOAM531uqge+ESRC2KpE1d6i34nd1AAuncDITk7HBmfMt/jkwDAyhOhu
-        qPPp59vS3NsXEWV5bEYnxhtvfmr0WZE=
-X-Google-Smtp-Source: ABdhPJy5xjvEqZWExtX5Z5KrBKg9SJAmMRz3WfABPjHiNR0EOUf2mtN6f/ltXC8LAPqeP+EmhvaqOw==
-X-Received: by 2002:a05:6830:25d6:: with SMTP id d22mr13067144otu.249.1623671619322;
-        Mon, 14 Jun 2021 04:53:39 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 30sm2749492ott.78.2021.06.14.04.53.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 04:53:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 14 Jun 2021 04:53:37 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.13-rc6
-Message-ID: <20210614115337.GA3657031@roeck-us.net>
-References: <CAHk-=wi9so00V0_ZVBP8oSZpowoWu5VKKTswGz=nuYTpWkkqQA@mail.gmail.com>
+        Mon, 14 Jun 2021 07:57:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623671732; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cqG1thvBylRxuDcCaNArs/dxgNQZPARI5YwgxMBAoi8=;
+ b=cyxD2b+qd5+Fgc12SX0+w3IzSDjEEix/qpSJlTsEuAe5pioVIX+HoxDW3KPOrBIVVx0mk1rB
+ AqZ9E/GzLsPpExAKobnPuzSliUoX1GQ4vS2sy6+oQXiKGSsDQ9EuF3EIw4EJxToCp46Eb6bU
+ FBi4oNYEsT9nSdLUNZxXuTPp/KA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60c743b4ed59bf69cc2c9f7e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 11:55:32
+ GMT
+Sender: sbhanu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E5222C4338A; Mon, 14 Jun 2021 11:55:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbhanu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 97EB0C433D3;
+        Mon, 14 Jun 2021 11:55:30 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi9so00V0_ZVBP8oSZpowoWu5VKKTswGz=nuYTpWkkqQA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Jun 2021 17:25:30 +0530
+From:   sbhanu@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, asutoshd@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        rampraka@codeaurora.org, sayalil@codeaurora.org,
+        sartgarg@codeaurora.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
+        okukatla@codeaurora.org, djakov@kernel.org, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        agross@kernel.org
+Subject: Re: [PATCH V1] arm64: dts: qcom: sc7180: Added xo clock for eMMC and
+ Sd card
+In-Reply-To: <YMLm96edhIYOJF+E@builder.lan>
+References: <1623309107-27833-1-git-send-email-sbhanu@codeaurora.org>
+ <YMLm96edhIYOJF+E@builder.lan>
+Message-ID: <1230be3c7f350b1f33110df2a9744e15@codeaurora.org>
+X-Sender: sbhanu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 03:32:22PM -0700, Linus Torvalds wrote:
-> Nothing particularly special to say about this - rc6 is certainly
-> smaller than rc5 was, so we're moving in the right direction.
+On 2021-06-11 10:00, Bjorn Andersson wrote:
+> On Thu 10 Jun 02:11 CDT 2021, Shaik Sajida Bhanu wrote:
 > 
-> It's also not larger (or smaller) than usual for this stage, nor am I
-> aware of any particularly worrying reports, so I think we're all good.
-> The diffstat is nice and flat with a couple of small spikes for a few
-> specific drivers. It all looks very normal and non-threatening, in
-> other words.
+>> Added xo clock for eMMC and Sd card.
 > 
-> Most of the diff by far is drivers (usb, gpu, regulator, rdma, spi,
-> pinctrl, scsi..), with just a few other areas: some x86 fixes (mainly
-> kvm), some RISC-V ones, tiny btrfs and nfs client fixes, a couple of
-> core kernel (scheduler, tracing) fixes.
+> Was about to push out my branch of patches, but before I do. Can you
+> please describe WHY this is needed?
 > 
-> It's all really pretty small.
-> 
-> Let's hope the trend continues, and we'll have a nice timely 5.13
-> release. But please do keep testing and verifying,
-> 
+> Regards,
+> Bjorn
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 462 pass: 462 fail: 0
+We are making use of this clock in dll register value calculation,
+The default PoR value is also same as calculated value for
+HS200/HS400/SDR104 modes.
+But just not to rely on default register values we need this entry.
 
-Guenter
+> 
+>> 
+>> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 10 ++++++----
+>>  1 file changed, 6 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> index 295844e..5bb6bd4 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> @@ -701,8 +701,9 @@
+>>  			interrupt-names = "hc_irq", "pwr_irq";
+>> 
+>>  			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
+>> -					<&gcc GCC_SDCC1_AHB_CLK>;
+>> -			clock-names = "core", "iface";
+>> +					<&gcc GCC_SDCC1_AHB_CLK>,
+>> +					<&rpmhcc RPMH_CXO_CLK>;
+>> +			clock-names = "core", "iface","xo";
+>>  			interconnects = <&aggre1_noc MASTER_EMMC 0 &mc_virt SLAVE_EBI1 0>,
+>>  					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_EMMC_CFG 0>;
+>>  			interconnect-names = "sdhc-ddr","cpu-sdhc";
+>> @@ -2666,8 +2667,9 @@
+>>  			interrupt-names = "hc_irq", "pwr_irq";
+>> 
+>>  			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
+>> -					<&gcc GCC_SDCC2_AHB_CLK>;
+>> -			clock-names = "core", "iface";
+>> +					<&gcc GCC_SDCC2_AHB_CLK>,
+>> +					<&rpmhcc RPMH_CXO_CLK>;
+>> +			clock-names = "core", "iface", "xo";
+>> 
+>>  			interconnects = <&aggre1_noc MASTER_SDCC_2 0 &mc_virt SLAVE_EBI1 
+>> 0>,
+>>  					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_SDCC_2 0>;
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
