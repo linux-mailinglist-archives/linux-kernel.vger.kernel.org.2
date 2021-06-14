@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D913A6319
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07C53A64CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235367AbhFNLJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:09:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35526 "EHLO mail.kernel.org"
+        id S235860AbhFNL3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:29:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234667AbhFNK6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:58:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E2606142E;
-        Mon, 14 Jun 2021 10:42:07 +0000 (UTC)
+        id S235517AbhFNLOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:14:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF9E761958;
+        Mon, 14 Jun 2021 10:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667328;
-        bh=BzaYx7fpMsxsiOeTmJBdfTpVjnWGpnleTHfSLKwCxIY=;
+        s=korg; t=1623667746;
+        bh=eDA8Gw8M9wvDeozjqkyJrOAl3J7vn9KFXeNeaE5zfcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I7ma/JERoU7kXF0DSSL+1DFv5/DZY6+xqVOHXBy0TwvUeXe+UKlj0Dp+NiRHgXbi8
-         D5PbQpZpQ1l6FzvuqmfxFK+oaYhlgkx5wJ3+0lIP489skk/E1cyzyKGCbLhxLoBIhK
-         OGEzl+Jxb0ma04rZrRd+SswRLR2WOejH19/6Thls=
+        b=oGwmTUWvkLoiePcjl9yIA7IciD0KrYk1D/BuMlT0oWsgLwasiOgGB2i3NIb30IvYK
+         ggO3bQlUM7TpjIBsPXmPVq1vPGSyb4qiFyEgptjV4sDFmjXE13CnWOf/xGb3QSaDhs
+         3IOddre092ZGR6O+jeLIK5eVRsHL5MaZfSwDx2fc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 028/131] scsi: hisi_sas: Drop free_irq() of devm_request_irq() allocated irq
+        stable@vger.kernel.org, Stephan Hohe <sth.dev@tejp.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.12 057/173] Revert "ACPI: sleep: Put the FACS table after using it"
 Date:   Mon, 14 Jun 2021 12:26:29 +0200
-Message-Id: <20210614102653.961626619@linuxfoundation.org>
+Message-Id: <20210614102700.057572226@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Zhang Rui <rui.zhang@intel.com>
 
-[ Upstream commit 7907a021e4bbfa29cccacd2ba2dade894d9a7d4c ]
+commit f1ffa9d4cccc8fdf6c03fb1b3429154d22037988 upstream.
 
-irqs allocated with devm_request_irq() should not be freed using
-free_irq(). Doing so causes a dangling pointer and a subsequent double
-free.
+Commit 95722237cb2a ("ACPI: sleep: Put the FACS table after using it")
+puts the FACS table during initialization.
 
-Link: https://lore.kernel.org/r/20210519130519.2661938-1-yangyingliang@huawei.com
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Acked-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But the hardware signature bits in the FACS table need to be accessed,
+after every hibernation, to compare with the original hardware
+signature.
+
+So there is no reason to release the FACS table mapping after
+initialization.
+
+This reverts commit 95722237cb2ae4f7b73471058cdb19e8f4057c93.
+
+An alternative solution is to use acpi_gbl_FACS variable instead, which
+is mapped by the ACPICA core and never released.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=212277
+Reported-by: Stephan Hohe <sth.dev@tejp.de>
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/acpi/sleep.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-index 19170c7ac336..e9a82a390672 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-@@ -3359,14 +3359,14 @@ hisi_sas_v3_destroy_irqs(struct pci_dev *pdev, struct hisi_hba *hisi_hba)
- {
- 	int i;
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -1009,10 +1009,8 @@ static void acpi_sleep_hibernate_setup(v
+ 		return;
  
--	free_irq(pci_irq_vector(pdev, 1), hisi_hba);
--	free_irq(pci_irq_vector(pdev, 2), hisi_hba);
--	free_irq(pci_irq_vector(pdev, 11), hisi_hba);
-+	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 1), hisi_hba);
-+	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 2), hisi_hba);
-+	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 11), hisi_hba);
- 	for (i = 0; i < hisi_hba->cq_nvecs; i++) {
- 		struct hisi_sas_cq *cq = &hisi_hba->cq[i];
- 		int nr = hisi_sas_intr_conv ? 16 : 16 + i;
- 
--		free_irq(pci_irq_vector(pdev, nr), cq);
-+		devm_free_irq(&pdev->dev, pci_irq_vector(pdev, nr), cq);
- 	}
- 	pci_free_irq_vectors(pdev);
+ 	acpi_get_table(ACPI_SIG_FACS, 1, (struct acpi_table_header **)&facs);
+-	if (facs) {
++	if (facs)
+ 		s4_hardware_signature = facs->hardware_signature;
+-		acpi_put_table((struct acpi_table_header *)facs);
+-	}
  }
--- 
-2.30.2
-
+ #else /* !CONFIG_HIBERNATION */
+ static inline void acpi_sleep_hibernate_setup(void) {}
 
 
