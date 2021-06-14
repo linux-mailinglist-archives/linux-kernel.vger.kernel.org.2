@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75A53A6ABA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1C93A6AA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhFNPpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:45:39 -0400
-Received: from muminek.juszkiewicz.com.pl ([213.251.184.221]:44950 "EHLO
-        muminek.juszkiewicz.com.pl" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232776AbhFNPpf (ORCPT
+        id S234010AbhFNPkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:40:41 -0400
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:42598 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233528AbhFNPkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:45:35 -0400
-X-Greylist: delayed 356 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Jun 2021 11:45:34 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by muminek.juszkiewicz.com.pl (Postfix) with ESMTP id B76D5260657;
-        Mon, 14 Jun 2021 17:37:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=juszkiewicz.com.pl;
-        s=mail; t=1623685052;
-        bh=3e9HH+VzgjsfX5+R84xh1L7i/6vHLNzstnqfbyxutG8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZsTv0HczxkVdVyhfcUbF9K/tcM46nYLM5Y/iHgfaMbDdv5G6BWgebYRfRo3KQEicP
-         kMctJHD1lDH2H36Gsal55obmZEreWmykNGJZNk4nHzfCdW4sN+pS53QtDizria3IjX
-         gKBb4v6XQX+CG9b6JpFzR1u5YxIJbMxg6KUpoi4Y=
-X-Virus-Scanned: Debian amavisd-new at juszkiewicz.com.pl
-Received: from muminek.juszkiewicz.com.pl ([127.0.0.1])
-        by localhost (muminek.juszkiewicz.com.pl [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8vKLDKml5FLQ; Mon, 14 Jun 2021 17:37:29 +0200 (CEST)
-Received: from puchatek.lan (83.11.32.185.ipv4.supernova.orange.pl [83.11.32.185])
-        by muminek.juszkiewicz.com.pl (Postfix) with ESMTPSA id 248BB2600CD;
-        Mon, 14 Jun 2021 17:37:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=juszkiewicz.com.pl;
-        s=mail; t=1623685049;
-        bh=3e9HH+VzgjsfX5+R84xh1L7i/6vHLNzstnqfbyxutG8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mhDVWvqlSGZ/palOhvR7qRv/tiJuVDJtMwuT6mpGata8+thKFWdwwgwkVh/ZLzeMU
-         uIjk9mU7877pkM8+FxqF32aBHHi8V4TblMS+YUgIYlGSGkDRZhoEejO7kTixJsyGqo
-         t7t7vNUaW+U5Y/2Zetzkg2phC2HQOh3fq/mHnfSQ=
-From:   Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arch@vger.kernel.org,
-        Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-Subject: [PATCH] quota: finish disable quotactl_path syscall
-Date:   Mon, 14 Jun 2021 17:37:12 +0200
-Message-Id: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
-X-Mailer: git-send-email 2.31.1
+        Mon, 14 Jun 2021 11:40:36 -0400
+Received: by mail-pg1-f178.google.com with SMTP id i34so8936625pgl.9;
+        Mon, 14 Jun 2021 08:38:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k0S1cmvYXsguMzhn//4kJjmpVofxyX3uWpaVIXA04XY=;
+        b=RdfUGhVGFRZUhJaIg6tmSBAzhW2dDn+0dJ/8oEa+w5mP7UHzck/r9lTG7T2WwnY13w
+         5zqIUZj8oIqr5ZDL97A+hACiJFJ9q19DiaIe3QJsGO4HjSRAWctmz9GYRB72/PljDh7U
+         i2cKAwo+uGY0ahOh7Xurf+jIJ6fVR7uPSljJ+sVgmPYy7gInoHF3Y6yCWF3kcarnTNBn
+         P8uCHaNDdtxQ/wdc7kBuENjJx0rMT0YV2mFshOBNXGd6WbvbNEY5RAkN/1FPd+4PXNQr
+         yFOhIycBuSWzSfbM7xeQy+FzkSv28G/VGITt8KQr6FJnC2eEyTyRP3CveTNXRdj524LD
+         OmeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k0S1cmvYXsguMzhn//4kJjmpVofxyX3uWpaVIXA04XY=;
+        b=ZmMuf6iI9vKTkzqefqMbpTmgqapZ/Jow1Guizx1FN52bk5tHfWk3NUCd4ncRTWlVC6
+         xkpAHIe73Qv7ffqRrzUWtGwspI0x1xzAw1u1G5lGYHj0NkRvSCfgFwZ4glDJasgyGDW9
+         1Q2XF5KT+g2/NHyLCHpbsYCFe3zkbe0Txdm25Gplhmc+B9mPXu0poRenOhydt+iIzBj0
+         x2wQUFn32PbGIrXwLKbT9SU/6z0hPmMAZkaB77ecSTNV+EwLJ+FreIGZx7xBykp4+LOu
+         Yvk+jrf8NSd93wH2R/N5geXsNRUibJ8nVfc28qnEQmauvxn/HVFLDIsCN07w36XLdlrk
+         pIEQ==
+X-Gm-Message-State: AOAM532EU0DR1I4o7iRNKlsnQkHowj6PsyQ/zYnWKCxaDVEhQZe5dRi7
+        u1p01QP3e261Vs7mYVdeFrY=
+X-Google-Smtp-Source: ABdhPJyE7XZOKUhHvkQqFzcFoLFmaeIi7yd9MTxC3uYdE+DkmYD9+fvnMjRYrO2FAvGcZO8wB199dA==
+X-Received: by 2002:a63:d213:: with SMTP id a19mr17878821pgg.28.1623685045224;
+        Mon, 14 Jun 2021 08:37:25 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.34])
+        by smtp.gmail.com with ESMTPSA id z18sm1216630pfe.214.2021.06.14.08.37.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 08:37:24 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     steve.glendinning@shawell.net, davem@davemloft.net,
+        kuba@kernel.org, paskripkin@gmail.com
+Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Subject: [PATCH] net: usb: fix possible use-after-free in smsc75xx_bind
+Date:   Mon, 14 Jun 2021 23:37:12 +0800
+Message-Id: <20210614153712.2172662-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 5b9fedb31e47 ("quota: Disable quotactl_path syscall") Jan Kara
-disabled quotactl_path syscall on several architectures.
+The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+fails to clean up the work scheduled in smsc75xx_reset->
+smsc75xx_set_multicast, which leads to use-after-free if the work is
+scheduled to start after the deallocation. In addition, this patch also
+removes one dangling pointer - dev->data[0].
 
-This commit disables it on all architectures using unified list of
-system calls:
+This patch calls cancel_work_sync to cancel the schedule work and set
+the dangling pointer to NULL.
 
-- arm64
-- arc
-- csky
-- h8300
-- hexagon
-- nds32
-- nios2
-- openrisc
-- riscv (32/64)
-
-CC: Jan Kara <jack@suse.cz>
-CC: Christian Brauner <christian.brauner@ubuntu.com>
-CC: Sascha Hauer <s.hauer@pengutronix.de>
-Link: https://lore.kernel.org/lkml/20210512153621.n5u43jsytbik4yze@wittgenstein
-
-Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
- include/uapi/asm-generic/unistd.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/usb/smsc75xx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index 6de5a7fc066b..d2a942086fcb 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -863,8 +863,7 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
- __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
- #define __NR_mount_setattr 442
- __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
--#define __NR_quotactl_path 443
--__SYSCALL(__NR_quotactl_path, sys_quotactl_path)
-+/* 443 is reserved for quotactl_path */
+diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
+index b286993da67c..f81740fcc8d5 100644
+--- a/drivers/net/usb/smsc75xx.c
++++ b/drivers/net/usb/smsc75xx.c
+@@ -1504,7 +1504,10 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	return 0;
  
- #define __NR_landlock_create_ruleset 444
- __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
+ err:
++	cancel_work_sync(&pdata->set_multicast);
+ 	kfree(pdata);
++	pdata = NULL;
++	dev->data[0] = 0;
+ 	return ret;
+ }
+ 
 -- 
-2.31.1
+2.25.1
 
