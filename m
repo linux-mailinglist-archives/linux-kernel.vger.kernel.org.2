@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849A63A5E0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DF13A5E1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhFNIGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:06:01 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:60919 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232579AbhFNIF6 (ORCPT
+        id S232615AbhFNILv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:11:51 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3228 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232528AbhFNILu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:05:58 -0400
-Received: from [192.168.1.155] ([95.115.71.85]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1N2m3G-1lC24S3Wxw-0139xw; Mon, 14 Jun 2021 10:03:45 +0200
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
- <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
- <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <db2d29fd-ff27-0c75-2472-dd031564dbf1@metux.net>
-Date:   Mon, 14 Jun 2021 10:03:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Mon, 14 Jun 2021 04:11:50 -0400
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G3P0s5vvHz6H7n1;
+        Mon, 14 Jun 2021 15:56:45 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 14 Jun 2021 10:09:46 +0200
+Received: from [10.47.95.26] (10.47.95.26) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 14 Jun
+ 2021 09:09:46 +0100
+Subject: Re: [PATCH v12 3/5] iommu/vt-d: Add support for IOMMU default DMA
+ mode build options
+To:     Lu Baolu <baolu.lu@linux.intel.com>, <joro@8bytes.org>,
+        <will@kernel.org>, <dwmw2@infradead.org>, <robin.murphy@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
+        <chenxiang66@hisilicon.com>
+References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
+ <1623414043-40745-4-git-send-email-john.garry@huawei.com>
+ <f3940a3f-d1c1-148d-e4b5-51cecf924ff5@linux.intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <03675e2f-c3a6-ce33-ef96-f9ae544b2d13@huawei.com>
+Date:   Mon, 14 Jun 2021 09:03:43 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
+In-Reply-To: <f3940a3f-d1c1-148d-e4b5-51cecf924ff5@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:a1TH943iNPJU0DBABn30QUTNQbG26NROFfuw6N6R2mBvsA7XAR7
- kEPNOQsE8fSppcP5+xrqfNJzCGc6Kynnici5xXsA+KwIE/NskgFY5mkYbhr9If3dJ5ykPnI
- GP38GA986wJFdpb2caTCrzIVJ5PrbJYo89RNV/6ygVxomnc5Qu8a9uMN1ipZV99tUeN3ofN
- wk3OMkryakXWptJFeYBUQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:o8I6iU3YHHE=:hSoiMl1lG1SgsJU1sHl3Oa
- uT9NCeDq4+mii9kzBqGQlgQ78I+ESdtk1gaIi5ZkErFWrC1uLaJPwkZfZ3GSezu1imPOKk4Z7
- cu0EDqa4IzbTeKcrGdk4uEVZpUbhZBR/EclOT43Yd9TApqJA+PrynMXuIo1Wlv7YU1GPurHGZ
- ZXOOoZYIkqGL+AnhX+x8VxNt1EeVHSWPVIo/Vdc0ZVCv+Dmt1hhsm9O06IKYWGaOl+Rd8GxSS
- AMTQfYYa8KSRgkVC0AYASrZArSgzDHuORyBIAUSOop081mFfZQ1G6RRNAK+ToCxc/Ldtn8wiS
- JppP8/L3FjslZXTW2+e+O/xWAHYgJS9Xj3Lzo4qxFa60AB6lxSZVINglqaFGgc3asHw2g/OJl
- 49CqPgc3Rcc1Tp/78nBrlQXmhGbYlDhrefk4x/M4wa5QVn4I7hCSLUQHH6TYJWIIU3/OCYdW5
- F+i6ecjCaXnlY1KKN6MsjTDz9b5fdSpWtujdca7fq9aMX2qAQGLW28dbRniC08OLcGiCV3omv
- Kk4/tFWUcXadITfKxhQDZI=
+X-Originating-IP: [10.47.95.26]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.06.21 09:42, Geert Uytterhoeven wrote:
+On 12/06/2021 03:14, Lu Baolu wrote:
+> On 2021/6/11 20:20, John Garry wrote:
+>> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+>> index 2a71347611d4..4467353f981b 100644
+>> --- a/drivers/iommu/Kconfig
+>> +++ b/drivers/iommu/Kconfig
+>> @@ -94,6 +94,7 @@ choice
+>>       prompt "IOMMU default DMA mode"
+>>       depends on IOMMU_DMA
+>> +    default IOMMU_DEFAULT_LAZY if INTEL_IOMMU
+>>       default IOMMU_DEFAULT_STRICT
+> 
+> If two default values are different. Which one will be overridden?
 
-hi,
+If I understand your question correctly, I think you are asking if both 
+are set:
+CONFIG_IOMMU_DEFAULT_LAZY=y
+CONFIG_IOMMU_DEFAULT_STRICT=y
 
-> I my PoC "[PATCH QEMU v2 0/5] Add a GPIO backend"[1], I didn't have
-> a virtio transport, but just hooked into the PL061 GPIO emulation
-> in QEMU.  The PL061 QEMU driver talked to the GPIO backend, which
-> talked to /dev/gpiochipN on the host.
+If this happens, then make defconfig complains about both being set, and 
+selects the 2nd, whatever that is.
 
-for qemu side you might be interested in my patch queue from last year
-(including the virtio-gpio implementation) - it also introduces an
-gpio backend subsys that allows attaching simulation gpio's to various
-backends. so far just implemented a dummy backend (that can be
-manipulated by qemu console) and using it just in the virtio-gpio
-device emulation.
+If neither are set, then IOMMU_DEFAULT_LAZY is set if INTEL_IOMMU is 
+set, otherwise IOMMU_DEFAULT_STRICT.
 
-https://github.com/oss-qm/qemu/tree/wip/gpio-v2
-
-> So QEMU has to translate the virtio-gpio communication to e.g.
-> /dev/gpiochipN on the host (or a different backend on non-Linux or
-> bare-metal HV).
-
-For qemu case, yes, depending on your actual configuration. You can
-attach the virtual device to any gpio backend you like (once it's 
-actually implemented). Yet only implemented the dummy, which doesn't
-speak to a real hosts gpio, but can be used simulations like HIL.
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Thanks,
+John
