@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7EC3A6C35
+	by mail.lfdr.de (Postfix) with ESMTP id 553A93A6C36
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235490AbhFNQml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:42:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56354 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235069AbhFNQkq (ORCPT
+        id S235501AbhFNQmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235106AbhFNQks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:40:46 -0400
-Message-Id: <20210614155358.495410783@linutronix.de>
+        Mon, 14 Jun 2021 12:40:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91FEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:38:45 -0700 (PDT)
+Message-Id: <20210614155358.593518187@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688723;
+        s=2020; t=1623688724;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=5Dw7qcBDRmMpugc8tyWKbYt9kmXObsJamMv/YcZGPQU=;
-        b=rydJ6zByenz+/9jmusDgkLyDzeOjkW7QPoMABo+hsJEiiXCbnk3Tn0yGXUzRfVHxzVFtJ0
-        FXBNHKZulXTc2IhMXRTdNflwuixtyM1ahJzNHyHq5izJuDx6o1SEj/fnW+DUHwgY5+x84n
-        MrNuGbgdLIo4tnwWVSvmxXmdX64CC6pBvtSFZo8niKV7yjkfrS5SNxmUy6j+AYgk9uPkIh
-        dVk42lRHL3VvuCcjLVpu6lnUuP1dFblfI5ZPRiKe3W1bsgnqu8Jza5QXB7xy+/vHUTE82H
-        ROBCAygn1GIigXFOih/K1+z62yX4a9JxWC3tIdb54Xzi+CEJAbE+fT0YB7NSzQ==
+        bh=i7IIHWcuB9KMEXUCF16pqcBqqY5QyYxSTtIMR5VLhk0=;
+        b=iy9bv7Ybm4itBsRMHhrrwchdFDDlwcD55un9eWHObvMi6gmCDfxhmbrOKi9mia9rTUfRvo
+        HEbtQFm8r1oynt24x4b5i0E9OS1fHZSBeeGMNrVivT7YeJ8NaZ3NBP4+5lgkcnegNb/IOp
+        D+VL/b23j3gWf4COrylc/3JVJfLklkvk+KMifjwXkdWHxeultAryzzKrmoLFsiSejwKMhI
+        jFDhrIYU51Jwnx7eQVc6ec+SxEY0Hoe7gtW6gAwMCuQKLxjne6aauZBfa2uccfGKCNFPaY
+        R4pbF0qg/Za4dHEdaExW3Wy7gVyWbOUMflW11gQ6RIMrAGAZhDM52JNFiXWf3Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688723;
+        s=2020e; t=1623688724;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=5Dw7qcBDRmMpugc8tyWKbYt9kmXObsJamMv/YcZGPQU=;
-        b=NeQiddtZUu3u66lZv7Dmn2Dy+tz+H2DPu+1GgGWaAUSfqiDiJubIe3KYgCq952uBimFQhH
-        ziIa0DNsDytQHoDA==
-Date:   Mon, 14 Jun 2021 17:44:55 +0200
+        bh=i7IIHWcuB9KMEXUCF16pqcBqqY5QyYxSTtIMR5VLhk0=;
+        b=irWqifHFVLvuA6OBWT0PipNZ/ArMwj/8eTd2BE2SbcnLFFbqb9PEy0QQoOpWx8eAAbqR+o
+        FFxWp4SYw2bYuVBA==
+Date:   Mon, 14 Jun 2021 17:44:56 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +47,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 47/52] x86/fpu: Hook up PKRU into ptrace()
+Subject: [patch V2 48/52] x86/fpu: Mask PKRU from kernel XRSTOR[S] operations
 References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,103 +56,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+As the PKRU state is managed seperately restoring it from the xstate buffer
+would be counterproductive as it might either restore a stale value or
+reinit the PKRU state to 0.
 
-One nice thing about having PKRU be XSAVE-managed is that it gets naturally
-exposed into the XSAVE-using ABIs.  Now that XSAVE will not be used to
-manage PKRU, these ABIs need to be manually enabled to deal with PKRU.
-
-ptrace() uses copy_uabi_xstate_to_kernel() to collect the tracee's
-XSTATE. As PKRU is not in the task's XSTATE buffer, use task->thread.pkru
-for filling in up the ptrace buffer.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/fpu/xstate.h |    2 +-
- arch/x86/kernel/fpu/regset.c      |    6 ++----
- arch/x86/kernel/fpu/xstate.c      |   25 ++++++++++++++++++-------
- 3 files changed, 21 insertions(+), 12 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    4 ++--
+ arch/x86/include/asm/fpu/xstate.h   |   10 ++++++++++
+ arch/x86/kernel/fpu/xstate.c        |    1 +
+ arch/x86/mm/extable.c               |    2 +-
+ 4 files changed, 14 insertions(+), 3 deletions(-)
 
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -139,7 +139,7 @@ enum xstate_copy_mode {
- };
- 
- struct membuf;
--void copy_uabi_xstate_to_membuf(struct membuf to, struct xregs_state *xsave,
-+void copy_uabi_xstate_to_membuf(struct membuf to, struct task_struct *tsk,
- 				enum xstate_copy_mode mode);
- 
- #endif
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -93,14 +93,12 @@ int xfpregs_set(struct task_struct *targ
- int xstateregs_get(struct task_struct *target, const struct user_regset *regset,
- 		struct membuf to)
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -281,7 +281,7 @@ static inline void xsave_to_kernel_booti
+  */
+ static inline void xrstor_from_kernel_booting(struct xregs_state *xstate)
  {
--	struct fpu *fpu = &target->thread.fpu;
--
- 	if (!boot_cpu_has(X86_FEATURE_XSAVE))
- 		return -ENODEV;
+-	u64 mask = -1;
++	u64 mask = xfeatures_mask_fpstate();
+ 	u32 lmask = mask;
+ 	u32 hmask = mask >> 32;
+ 	int err;
+@@ -408,7 +408,7 @@ extern void __restore_fpregs_from_fpstat
  
--	fpu__prepare_read(fpu);
-+	fpu__prepare_read(&target->thread.fpu);
- 
--	copy_uabi_xstate_to_membuf(to, &fpu->state.xsave, XSTATE_COPY_XSAVE);
-+	copy_uabi_xstate_to_membuf(to, target, XSTATE_COPY_XSAVE);
- 	return 0;
+ static inline void restore_fpregs_from_fpstate(union fpregs_state *fpstate)
+ {
+-	__restore_fpregs_from_fpstate(fpstate, -1);
++	__restore_fpregs_from_fpstate(fpstate, xfeatures_mask_fpstate());
  }
  
+ extern int copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
+--- a/arch/x86/include/asm/fpu/xstate.h
++++ b/arch/x86/include/asm/fpu/xstate.h
+@@ -111,6 +111,16 @@ static inline u64 xfeatures_mask_restore
+ 	return xfeatures_mask_all & XFEATURE_MASK_USER_RESTORE;
+ }
+ 
++/*
++ * Like xfeatures_mask_restore_user() but additionally restors the
++ * supported supervisor states.
++ */
++static inline u64 xfeatures_mask_fpstate(void)
++{
++	return xfeatures_mask_all & \
++		(XFEATURE_MASK_USER_RESTORE | XFEATURE_MASK_SUPERVISOR_SUPPORTED);
++}
++
+ static inline u64 xfeatures_mask_independent(void)
+ {
+ 	if (!boot_cpu_has(X86_FEATURE_ARCH_LBR))
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -973,7 +973,7 @@ static void copy_feature(bool from_xstat
- /**
-  * copy_uabi_xstate_to_membuf - Copy kernel saved xstate to a UABI buffer
-  * @to:		membuf descriptor
-- * @xsave:	The kernel xstate buffer to copy from
-+ * @tsk:	The task from which to copy the saved xstate
-  * @copy_mode:	The requested copy mode
-  *
-  * Converts from kernel XSAVE or XSAVES compacted format to UABI conforming
-@@ -982,10 +982,11 @@ static void copy_feature(bool from_xstat
-  *
-  * It supports partial copy but @to.pos always starts from zero.
+@@ -60,6 +60,7 @@ static short xsave_cpuid_features[] __in
+  * XSAVE buffer, both supervisor and user xstates.
   */
--void copy_uabi_xstate_to_membuf(struct membuf to, struct xregs_state *xsave,
-+void copy_uabi_xstate_to_membuf(struct membuf to, struct task_struct *tsk,
- 				enum xstate_copy_mode copy_mode)
- {
- 	const unsigned int off_mxcsr = offsetof(struct fxregs_state, mxcsr);
-+	struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
- 	struct xregs_state *xinit = &init_fpstate.xsave;
- 	struct xstate_header header;
- 	unsigned int zerofrom;
-@@ -1059,11 +1060,21 @@ void copy_uabi_xstate_to_membuf(struct m
- 		if (zerofrom < xstate_offsets[i])
- 			membuf_zero(&to, xstate_offsets[i] - zerofrom);
+ u64 xfeatures_mask_all __ro_after_init;
++EXPORT_SYMBOL_GPL(xfeatures_mask_all);
  
--		copy_feature(header.xfeatures & BIT_ULL(i), &to,
--			     __raw_xsave_addr(xsave, i),
--			     __raw_xsave_addr(xinit, i),
--			     xstate_sizes[i]);
--
-+		if (i == XFEATURE_PKRU) {
-+			struct pkru_state pkru = {0};
-+			/*
-+			 * PKRU is not necessarily up to date in the
-+			 * thread's XSAVE buffer.  Fill this part from the
-+			 * per-thread storage.
-+			 */
-+			pkru.pkru = target->thread.pkru;
-+			membuf_write(&to, &pkru, sizeof(pkru));
-+		} else {
-+			copy_feature(header.xfeatures & BIT_ULL(i), &to,
-+				     __raw_xsave_addr(xsave, i),
-+				     __raw_xsave_addr(xinit, i),
-+				     xstate_sizes[i]);
-+		}
- 		/*
- 		 * Keep track of the last copied state in the non-compacted
- 		 * target buffer for gap zeroing.
+ static unsigned int xstate_offsets[XFEATURE_MAX] __ro_after_init =
+ 	{ [ 0 ... XFEATURE_MAX - 1] = -1};
+--- a/arch/x86/mm/extable.c
++++ b/arch/x86/mm/extable.c
+@@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(ex_handler_fault);
+ 	WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
+ 		  (void *)instruction_pointer(regs));
+ 
+-	__restore_fpregs_from_fpstate(&init_fpstate, -1);
++	__restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(ex_handler_fprestore);
 
