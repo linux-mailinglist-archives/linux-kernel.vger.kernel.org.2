@@ -2,210 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD37E3A6D3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF223A6D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbhFNRd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:33:26 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:47024 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233843AbhFNRdZ (ORCPT
+        id S235515AbhFNRfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231499AbhFNRfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:33:25 -0400
-Received: by mail-oi1-f178.google.com with SMTP id c13so15091410oib.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xLux/4m5ofoODBdUbT7Ehl5QrekB6WictYiNsn1mOWI=;
-        b=BmXLqT56g32BvBM3bzR5kCvabeozm5NrpVSpsIpgvkOTPWRPJlxZ/z/D73OSBK/6W5
-         6A5m0lZLGJQrk0wbOzn8azG01wcz2L7fv3KIn5f+5da/PfQrL2Jj+557OyLbNa9Lqrer
-         8KztQ1xFxpDOcaY4LfrVezdrtI0n1Y6Elzgs5dh8Hl1F/TueJNJO4giGIFov47dp7kTZ
-         AGxDoJ2L3ig2rYKdAyR0GGF3tq0K5rTrQW3NZH8wS/6twS9QR0yZeHE5iOjmi1EOxiwm
-         upaQMi/vLbzIB1+4Elozh2AyCxcKDl1DyEq3zToBpNm8On3qgzOIKhkII3HppjMv2rnf
-         /qAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xLux/4m5ofoODBdUbT7Ehl5QrekB6WictYiNsn1mOWI=;
-        b=sdKmYfsZrF5GmpEJGvE+36njwlTNdoB1z4W1A+P+AZSBiFVGeVpTi9Jn2BU1ltKFaj
-         xG9WOAfsS9Jsea+JSZ2h5Vzm+dmJgSTa9yt/9r3yc08Dytp9hGEZotVGxOcrKS1BMomV
-         SeCcTsnVAPOHDM/xQwvYVuM0dI/ItRtvK+0M+QmqkFiraEETKWwri8NuoL0dGZrVQsaj
-         3GpmUpTj8rKqF9Kpkg6IOr7n9sqtypDvisVxqNCMmrQAQ24LPDf5/Hk2iB3BD1LsR3dD
-         B7HscChSuyrY1ukKS950Dzn8lHi6ajuxDYCusw1h88WGRWGmXzRsVRsvUYzCF11JP9dA
-         /BRw==
-X-Gm-Message-State: AOAM533wNQemQ+GRGNmFE8yWaWz9fsimhFOB681M3/lb9Wrp3SVfo1Qm
-        JEeN9whPsWrQFlElEZHQKzi/PndaKZ0pCg==
-X-Google-Smtp-Source: ABdhPJw8j+3e3AKEgROrlKNjzXSDsCtRrFzgE31HIB9XuZeQfTHZGaNm//El0eGHEbYeJRKmO7lkjg==
-X-Received: by 2002:aca:ac47:: with SMTP id v68mr11196061oie.160.1623691813324;
-        Mon, 14 Jun 2021 10:30:13 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f7sm3169502oot.36.2021.06.14.10.30.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 10:30:12 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 12:30:10 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/5] iommu/arm-smmu-qcom: Add an adreno-smmu-priv
- callback to get pagefault info
-Message-ID: <YMeSIv1bkZEverhO@yoga>
-References: <20210610214431.539029-1-robdclark@gmail.com>
- <20210610214431.539029-3-robdclark@gmail.com>
+        Mon, 14 Jun 2021 13:35:53 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4484BC061574;
+        Mon, 14 Jun 2021 10:33:50 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lsqSt-008ALc-Bt; Mon, 14 Jun 2021 17:33:35 +0000
+Date:   Mon, 14 Jun 2021 17:33:35 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Kees Cook <keescook@chromium.org>, axboe@kernel.dk,
+        anton@enomsg.org, ccross@android.com, tony.luck@intel.com,
+        gmpy.liaowx@gmail.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mark pstore-blk as broken
+Message-ID: <YMeS780YarlA30E0@zeniv-ca.linux.org.uk>
+References: <20210608161327.1537919-1-hch@lst.de>
+ <202106081033.F59D7A4@keescook>
+ <20210614070712.GA29881@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210610214431.539029-3-robdclark@gmail.com>
+In-Reply-To: <20210614070712.GA29881@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10 Jun 16:44 CDT 2021, Rob Clark wrote:
-
-> From: Jordan Crouse <jcrouse@codeaurora.org>
+On Mon, Jun 14, 2021 at 09:07:12AM +0200, Christoph Hellwig wrote:
+> On Tue, Jun 08, 2021 at 10:34:29AM -0700, Kees Cook wrote:
+> > NAK, please answer my concerns about your patches instead:
+> > https://lore.kernel.org/lkml/202012011149.5650B9796@keescook/
 > 
-> Add a callback in adreno-smmu-priv to read interesting SMMU
-> registers to provide an opportunity for a richer debug experience
-> in the GPU driver.
-> 
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> No.  This code pokes into block layer internals with all kinds of issues
+> and without any signoff from the relevant parties.  We just can't keep it
+> around.
 
-I presume this implies that more generic options has been discussed.
-Regardless, if further conclusions are made in that regard I expect that
-this could serve as a base for such efforts.
+There's a much more interesting question about that code: seeing that
+psblk_generic_blk_write() contains this
+        /* Console/Ftrace backend may handle buffer until flush dirty zones */
+	if (in_interrupt() || irqs_disabled())
+		return -EBUSY;
+just what are the locking conditions guaranteed to that thing?
+Because if it's ever called with one of the destination pages
+held locked by the caller, we are fucked.  It won't get caught
+by that test.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> ---
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 17 ++++++++++++
->  drivers/iommu/arm/arm-smmu/arm-smmu.h      |  2 ++
->  include/linux/adreno-smmu-priv.h           | 31 +++++++++++++++++++++-
->  3 files changed, 49 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index 98b3a1c2a181..b2e31ea84128 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -32,6 +32,22 @@ static void qcom_adreno_smmu_write_sctlr(struct arm_smmu_device *smmu, int idx,
->  	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
->  }
->  
-> +static void qcom_adreno_smmu_get_fault_info(const void *cookie,
-> +		struct adreno_smmu_fault_info *info)
-> +{
-> +	struct arm_smmu_domain *smmu_domain = (void *)cookie;
-> +	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
-> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
-> +
-> +	info->fsr = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_FSR);
-> +	info->fsynr0 = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_FSYNR0);
-> +	info->fsynr1 = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_FSYNR1);
-> +	info->far = arm_smmu_cb_readq(smmu, cfg->cbndx, ARM_SMMU_CB_FAR);
-> +	info->cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(cfg->cbndx));
-> +	info->ttbr0 = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_TTBR0);
-> +	info->contextidr = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_CONTEXTIDR);
-> +}
-> +
->  #define QCOM_ADRENO_SMMU_GPU_SID 0
->  
->  static bool qcom_adreno_smmu_is_gpu_device(struct device *dev)
-> @@ -156,6 +172,7 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
->  	priv->cookie = smmu_domain;
->  	priv->get_ttbr1_cfg = qcom_adreno_smmu_get_ttbr1_cfg;
->  	priv->set_ttbr0_cfg = qcom_adreno_smmu_set_ttbr0_cfg;
-> +	priv->get_fault_info = qcom_adreno_smmu_get_fault_info;
->  
->  	return 0;
->  }
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> index c31a59d35c64..84c21c4b0691 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> @@ -224,6 +224,8 @@ enum arm_smmu_cbar_type {
->  #define ARM_SMMU_CB_FSYNR0		0x68
->  #define ARM_SMMU_FSYNR0_WNR		BIT(4)
->  
-> +#define ARM_SMMU_CB_FSYNR1		0x6c
-> +
->  #define ARM_SMMU_CB_S1_TLBIVA		0x600
->  #define ARM_SMMU_CB_S1_TLBIASID		0x610
->  #define ARM_SMMU_CB_S1_TLBIVAL		0x620
-> diff --git a/include/linux/adreno-smmu-priv.h b/include/linux/adreno-smmu-priv.h
-> index a889f28afb42..53fe32fb9214 100644
-> --- a/include/linux/adreno-smmu-priv.h
-> +++ b/include/linux/adreno-smmu-priv.h
-> @@ -8,6 +8,32 @@
->  
->  #include <linux/io-pgtable.h>
->  
-> +/**
-> + * struct adreno_smmu_fault_info - container for key fault information
-> + *
-> + * @far: The faulting IOVA from ARM_SMMU_CB_FAR
-> + * @ttbr0: The current TTBR0 pagetable from ARM_SMMU_CB_TTBR0
-> + * @contextidr: The value of ARM_SMMU_CB_CONTEXTIDR
-> + * @fsr: The fault status from ARM_SMMU_CB_FSR
-> + * @fsynr0: The value of FSYNR0 from ARM_SMMU_CB_FSYNR0
-> + * @fsynr1: The value of FSYNR1 from ARM_SMMU_CB_FSYNR0
-> + * @cbfrsynra: The value of CBFRSYNRA from ARM_SMMU_GR1_CBFRSYNRA(idx)
-> + *
-> + * This struct passes back key page fault information to the GPU driver
-> + * through the get_fault_info function pointer.
-> + * The GPU driver can use this information to print informative
-> + * log messages and provide deeper GPU specific insight into the fault.
-> + */
-> +struct adreno_smmu_fault_info {
-> +	u64 far;
-> +	u64 ttbr0;
-> +	u32 contextidr;
-> +	u32 fsr;
-> +	u32 fsynr0;
-> +	u32 fsynr1;
-> +	u32 cbfrsynra;
-> +};
-> +
->  /**
->   * struct adreno_smmu_priv - private interface between adreno-smmu and GPU
->   *
-> @@ -17,6 +43,8 @@
->   * @set_ttbr0_cfg: Set the TTBR0 config for the GPUs context bank.  A
->   *                 NULL config disables TTBR0 translation, otherwise
->   *                 TTBR0 translation is enabled with the specified cfg
-> + * @get_fault_info: Called by the GPU fault handler to get information about
-> + *                  the fault
->   *
->   * The GPU driver (drm/msm) and adreno-smmu work together for controlling
->   * the GPU's SMMU instance.  This is by necessity, as the GPU is directly
-> @@ -31,6 +59,7 @@ struct adreno_smmu_priv {
->      const void *cookie;
->      const struct io_pgtable_cfg *(*get_ttbr1_cfg)(const void *cookie);
->      int (*set_ttbr0_cfg)(const void *cookie, const struct io_pgtable_cfg *cfg);
-> +    void (*get_fault_info)(const void *cookie, struct adreno_smmu_fault_info *info);
->  };
->  
-> -#endif /* __ADRENO_SMMU_PRIV_H */
-> \ No newline at end of file
-> +#endif /* __ADRENO_SMMU_PRIV_H */
-> -- 
-> 2.31.1
-> 
+That really should've been discussed back when the entire thing
+got merged; at the absolute least we need the locking environment
+documented.
