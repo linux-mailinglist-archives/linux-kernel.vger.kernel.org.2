@@ -2,117 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4323A6BD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AF23A6BDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234731AbhFNQdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234589AbhFNQdi (ORCPT
+        id S234732AbhFNQeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:34:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25901 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234772AbhFNQeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:33:38 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C257C061574;
-        Mon, 14 Jun 2021 09:31:35 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id nd37so9941436ejc.3;
-        Mon, 14 Jun 2021 09:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Zlmxi2wCgt9WhbtdmvFXQwYxxvsh3PG6DG0dZOeCj8M=;
-        b=oYEjwtSw1ps8mtrR4cJTl6qYja4hUIlPpys5trsCq74B+IRJcUtSedDyvxzUrqoLh3
-         FM88Sjtn4wnILy4IKzv3XlCKVnKIRHfY2uFkvTXBpdak58ISgbzhIhOS4Yu2YVULKAJg
-         l3dwAb0CeRU3GkiqtsrvCKYKBTeOo3Kx1SC/2HCyKmUmCzRMv5o9zOaBwlWWYO5tTfej
-         /hsTtqtmD9tS8Kq1yMwRpBwv0ckkb9vtedPUugM/RHm5xS/N4Rof4lbNlq0xP/YBRCIR
-         qZvJgrmJSg6gGVQk7jqVJZ3Q4bAM71hhZx3hcKIx/CFIgf/1iur2bVfOjeTcjNV2xU/2
-         8/6g==
+        Mon, 14 Jun 2021 12:34:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623688332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DISslyfLGhpMa3WyA2T18Pg0TsQiGkTpC7aVUBeR5IM=;
+        b=Oe/bs1dw5xCZp+QOubuLqot8KPdio+mTh9GK/0/vpzYkG+t2Mwkkh+QVDaKi6Q4mAOsdwN
+        NBgJE5znqOTAmCDi26+lkS2FUIovXNc4qyJzrzYWZ3s2EZVvCKrD5zWIt7/WrOzKOaQZeT
+        a4AYlspw48Loe5bN22NnCbQ5bzd83Jo=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-9Rt0MFACNfm04za9HN9Tmw-1; Mon, 14 Jun 2021 12:32:04 -0400
+X-MC-Unique: 9Rt0MFACNfm04za9HN9Tmw-1
+Received: by mail-qk1-f199.google.com with SMTP id c3-20020a37b3030000b02903ad0001a2e8so4653781qkf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:32:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Zlmxi2wCgt9WhbtdmvFXQwYxxvsh3PG6DG0dZOeCj8M=;
-        b=WxMKRZFzoURoiwVysG7gHe1mLGf+xjF1bRC4SxYxasrqYA54CiwBCyxiWvErl9IcH1
-         NvkqoG6vEa2SSRwhXQDQcLfd7CJ+Hm5ii5lP5JmZdS1BawBv5C9XpnHpe3Vq2auchxAT
-         aKwy4e+p6nGbBmY/8t6tmlqtwXCBeh9CXfwMoEvbcqFDT74F7y1xBAhkXjtPrVBhmHQI
-         MTlAMUOr/3u1vB5Yn9kOHipuR2zwHyVY5OLjJ3OB2WQN7XV+bAxxw/ZzbrZNSRfU6igT
-         pZnKOwfThjfhDr4THySXvvZRW5pg1mgTqjyw1zhMEh7lJ/HscSNNBeQLCYoOUIrBGAwr
-         5OWQ==
-X-Gm-Message-State: AOAM532vVL706sNAd9n6OqM6bwmlTDmIBZ9/GOVCgAKTm+3Gnst9dFwH
-        bkKAonf9N9xuxk+MgLOYcvU=
-X-Google-Smtp-Source: ABdhPJzHoirpErYXI6gCLkKFOD+VtOVFU/oE4C7pVu5IM7atl14XV25sRPwkvKtViQinTNnZPgFY4w==
-X-Received: by 2002:a17:906:b754:: with SMTP id fx20mr15347815ejb.201.1623688293747;
-        Mon, 14 Jun 2021 09:31:33 -0700 (PDT)
-Received: from kista.localnet (cpe1-4-249.cable.triera.net. [213.161.4.249])
-        by smtp.gmail.com with ESMTPSA id h24sm7701239ejy.35.2021.06.14.09.31.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 09:31:33 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Maxime Ripard <maxime@cerno.tech>, Guo Ren <guoren@kernel.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
-        Wei Wu =?utf-8?B?KOWQtOS8nyk=?= <lazyparser@gmail.com>,
-        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: Re: [RFC PATCH v2 09/11] riscv: soc: Initial DTS for Allwinner D1 NeZha board
-Date:   Mon, 14 Jun 2021 18:31:31 +0200
-Message-ID: <4070697.crMumLFoW0@kista>
-In-Reply-To: <CAJF2gTTfMAGbHv3PN_0BmA1pRqU1UvZny4mKg14AtWKjAm8=vw@mail.gmail.com>
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org> <20210614153341.z2nkx6sazaahhjfd@gilmour> <CAJF2gTTfMAGbHv3PN_0BmA1pRqU1UvZny4mKg14AtWKjAm8=vw@mail.gmail.com>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=DISslyfLGhpMa3WyA2T18Pg0TsQiGkTpC7aVUBeR5IM=;
+        b=lyB3euYA7Pex8ZRG1wZzzW9qXVD5Or/ggqfKTsRn7LVWYcjOGfaRU0JhNRyqcQr5hb
+         HSTqyIJjJqfrNBJNfyd1uVnR1XnozvKgFC5rRMthLFMTt0Wyqk9hQvwfBeFEAuNg0DN+
+         fkGL4estcNI6swrpZUzjYh+GlhSE6mdUSoOM8nw4U6Rbhl6fc+W+5ePEXvmil4xfgWKq
+         0LCam3sHL8sHnSoUjkTfwcFX21LI/NeEyoTr8kbUUjhFOybPX/Ez2cDp02PsQO3je/04
+         bkqJ70OqZnxuTboeRXEAZlXDXqaAZGq572PEu3yrJ5d1A5JNCAf1TcEsZ5Eg9+mTgaoT
+         UVhw==
+X-Gm-Message-State: AOAM532IorUWpbFPPY5ZCQfGmEmUg88VKYp+DL+cr5EEETw3RsYvqhJq
+        +i47z0ZaQ0aJaebyZYDSeJ21Ci0xF9ZwkNJmyNORfMnoCNsWc/rNDwXPTavutCSsG5+v5X1saIQ
+        E5XsGD88pi+mjHCyo+NlMBJfZ
+X-Received: by 2002:a37:a2d6:: with SMTP id l205mr17106000qke.326.1623688324322;
+        Mon, 14 Jun 2021 09:32:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwCvxn+ltzjQlfYVUxjQ+5bHloF+7JsMElf+UL5szMp3AVyCsKA+9NhZBjoT78OZ0Xt7flNDw==
+X-Received: by 2002:a37:a2d6:: with SMTP id l205mr17105966qke.326.1623688324062;
+        Mon, 14 Jun 2021 09:32:04 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id j14sm8455892qtq.56.2021.06.14.09.32.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 09:32:03 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 4/4] driver core: Allow showing cpu as offline if not
+ valid in cpuset context
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20210614152306.25668-1-longman@redhat.com>
+ <20210614152306.25668-5-longman@redhat.com> <YMd7PEU0KPulsgMz@kroah.com>
+Message-ID: <ad33a662-7ebe-fb92-4459-5dd85a013501@redhat.com>
+Date:   Mon, 14 Jun 2021 12:32:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <YMd7PEU0KPulsgMz@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne ponedeljek, 14. junij 2021 ob 18:28:28 CEST je Guo Ren napisal(a):
-> On Mon, Jun 14, 2021 at 11:33 PM Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > On Mon, Jun 07, 2021 at 04:07:37PM +0800, Guo Ren wrote:
-> > > On Mon, Jun 7, 2021 at 3:24 PM Maxime Ripard <maxime@cerno.tech> wrote:
-> > > > > +             reset: reset-sample {
-> > > > > +                     compatible = "thead,reset-sample";
-> > > > > +                     plic-delegate = <0x0 0x101ffffc>;
-> > > > > +             };
-> > > >
-> > > > This compatible is not documented anywhere?
-> > >
-> > > It used by opensbi (riscv runtime firmware), not in Linux. But I think
-> > > we should keep it.
-> >
-> > This should have a documentation still.
-> 
-> Could we detail the above in [1]?
+On 6/14/21 11:52 AM, Greg KH wrote:
+> On Mon, Jun 14, 2021 at 11:23:06AM -0400, Waiman Long wrote:
+>> Make /sys/devices/system/cpu/cpu<n>/online file to show a cpu as
+>> offline if it is not a valid cpu in a proper cpuset context when the
+>> cpuset_bound_cpuinfo sysctl parameter is turned on.
+> This says _what_ you are doing, but I do not understand _why_ you want
+> to do this.
+>
+> What is going to use this information?  And now you are showing more
+> files than you previously did, so what userspace tool is now going to
+> break?
 
-All DT nodes must be documented in
-Documentation/devicetree/bindings folder in yaml format, so DTs can be machine 
-verified.
+One reason that is provided by the customer asking for this 
+functionality is because some applications use the number of cpu cores 
+for licensing purpose. Even though the applications are running in a 
+container with a smaller set of cpus, they may still charge as if all 
+the cpus are available. They ended up using a bind mount to mount over 
+the cpuX/online file.
 
-Best regards,
-Jernej
+I should have included this information in the patchset.
 
-> 
-> 1: https://github.com/riscv/opensbi/blob/master/docs/platform/thead-c9xx.md
-> 
-> >
-> > Maxime
-> 
-> 
-> 
-> -- 
-> Best Regards
->  Guo Ren
-> 
-> ML: https://lore.kernel.org/linux-csky/
-> 
-> 
 
+>
+>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   drivers/base/core.c | 14 ++++++++++++++
+>>   1 file changed, 14 insertions(+)
+>>
+>> diff --git a/drivers/base/core.c b/drivers/base/core.c
+>> index 54ba506e5a89..176b927fade2 100644
+>> --- a/drivers/base/core.c
+>> +++ b/drivers/base/core.c
+>> @@ -29,6 +29,7 @@
+>>   #include <linux/sched/mm.h>
+>>   #include <linux/sysfs.h>
+>>   #include <linux/dma-map-ops.h> /* for dma_default_coherent */
+>> +#include <linux/cpuset.h>
+>>   
+>>   #include "base.h"
+>>   #include "power/power.h"
+>> @@ -2378,11 +2379,24 @@ static ssize_t uevent_store(struct device *dev, struct device_attribute *attr,
+>>   }
+>>   static DEVICE_ATTR_RW(uevent);
+>>   
+>> +static bool is_device_cpu(struct device *dev)
+>> +{
+>> +	return dev->bus && dev->bus->dev_name
+>> +			&& !strcmp(dev->bus->dev_name, "cpu");
+>> +}
+> No, this is not ok, there is a reason we did not put RTTI in struct
+> devices, so don't try to fake one here please.
+>
+>> +
+>>   static ssize_t online_show(struct device *dev, struct device_attribute *attr,
+>>   			   char *buf)
+>>   {
+>>   	bool val;
+>>   
+>> +	/*
+>> +	 * Show a cpu as offline if the cpu number is not valid in a
+>> +	 * proper cpuset bounding cpuinfo context.
+>> +	 */
+>> +	if (is_device_cpu(dev) && !cpuset_current_cpu_valid(dev->id))
+>> +		return sysfs_emit(buf, "0\n");
+> Why are you changing the driver core for a single random, tiny set of
+> devices?  The device code for those devices can handle this just fine,
+> do NOT modify the driver core for each individual driver type, that way
+> lies madness.
+>
+> This change is not ok, sorry.
+
+OK, thanks for the comments. I will see if there is alternative way of 
+doing it.
+
+Cheers,
+Longman
 
