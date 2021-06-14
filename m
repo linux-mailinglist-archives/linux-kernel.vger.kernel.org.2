@@ -2,139 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7E03A6867
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD793A6862
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhFNNwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:52:47 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:35736 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbhFNNwq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:52:46 -0400
-Received: by mail-wr1-f47.google.com with SMTP id m18so14642789wrv.2;
-        Mon, 14 Jun 2021 06:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=rK9Q1mNWnb94FFuQqkdC7VJ2nzbzqNo9H25GvMLEJag=;
-        b=TRi/aZqILauPquOhvVzePZlwFemjM4DxUaMTDQZuaTyYe7FcMc2FKib8fBfUF2/hsY
-         t4W9pTVMOLFf6fn093Vi0o1aBgNb4u9k0+FB6BsZpmfNDx5unCYSM2dXeC/mFI5o/A+G
-         IBVcqsSfZhRihX13zRhrZjA9bgCdAlgF8zQr9wLrNEbws5D3lWnoXT/X6KMw2SIwJjFW
-         promwW+1MwOsHvY8f6GYe+qAbZyrSgcQ1gZbMEvoBIeUC6E+uGz6z7nES4XXnx6eitWB
-         IXfMCOf+rVj4Oq+MoKjDVMmvWyo7hyoFy7osSU1vRHdLBMKf7aVUXMpiPPLFhwH5dHDx
-         Je/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=rK9Q1mNWnb94FFuQqkdC7VJ2nzbzqNo9H25GvMLEJag=;
-        b=pyV/+WAPfYR4S7GV9cVmcgriDyJA0QzatHOAraMiy+JWAC0FOedPe5Kej0BznsvEk7
-         mYYoxnAk+a6qmrr/MBgWcTQQbkux/1mffK5z4Kx6lWGBdX8S6aMXKPNfIXlS58LLgI4n
-         Jt6quO+R8VkNb+kOrgZ7Dl2df8KzInD+R+DPd7ulZQSMdyhptrBzImoRofhMZv/NZOVT
-         4JgY/8NNNWuV5JlMc6fLOFK1cMw2fciXJ/4fQPXUlFy48WGpCxBkzr1GYvPnZxqqoYaf
-         g3urjLpYp8nKEc0clu1r21NJU0zG5Hh8ViyI0gSSZA9rIROGR2bQKUXMnzI8UakOZlL9
-         8O/g==
-X-Gm-Message-State: AOAM531YDy1lpadpa+Zdcs6sqk2NpmvzmZ/eb79Qpa0XIwPF7cZWk0D+
-        X5YFMHi5b/tJ8XR190DtpYQ=
-X-Google-Smtp-Source: ABdhPJxDCuIQ5fy9tEkTO0AgnukU7YnvgAVRLYDvp2FsT6EU7U7C1evAhiiPzCTMg4DkDSft24eMWQ==
-X-Received: by 2002:a5d:6546:: with SMTP id z6mr19043411wrv.100.1623678576619;
-        Mon, 14 Jun 2021 06:49:36 -0700 (PDT)
-Received: from felia ([2001:16b8:2d62:e800:a8e7:80e:6e34:237d])
-        by smtp.gmail.com with ESMTPSA id o5sm16637577wrw.65.2021.06.14.06.49.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 06:49:36 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Mon, 14 Jun 2021 15:49:22 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-cc:     corbet@lwn.net, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com, joe@perches.com, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3] docs: checkpatch: Document and segregate more checkpatch
- message types
-In-Reply-To: <20210611060833.1802-1-dwaipayanray1@gmail.com>
-Message-ID: <alpine.DEB.2.21.2106141330240.27009@felia>
-References: <20210611060833.1802-1-dwaipayanray1@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S234232AbhFNNwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:52:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:36608 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233803AbhFNNwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 09:52:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 294C36D;
+        Mon, 14 Jun 2021 06:50:04 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A2A83F70D;
+        Mon, 14 Jun 2021 06:49:57 -0700 (PDT)
+Subject: Re: [RFC PATCH V3 08/11] swiotlb: Add bounce buffer remap address
+ setting function
+To:     Christoph Hellwig <hch@lst.de>, Tianyu Lan <ltykernel@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        arnd@arndb.de, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, Tianyu.Lan@microsoft.com,
+        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+References: <20210530150628.2063957-1-ltykernel@gmail.com>
+ <20210530150628.2063957-9-ltykernel@gmail.com>
+ <20210607064312.GB24478@lst.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <94038087-a33c-93c5-27bf-7ec1f6f5f0e3@arm.com>
+Date:   Mon, 14 Jun 2021 14:49:51 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210607064312.GB24478@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 11 Jun 2021, Dwaipayan Ray wrote:
-
-> Add and document more checkpatch message types. About 50% of all
-> message types are documented now.
+On 2021-06-07 07:43, Christoph Hellwig wrote:
+> On Sun, May 30, 2021 at 11:06:25AM -0400, Tianyu Lan wrote:
+>> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+>>
+>> For Hyper-V isolation VM with AMD SEV SNP, the bounce buffer(shared memory)
+>> needs to be accessed via extra address space(e.g address above bit39).
+>> Hyper-V code may remap extra address space outside of swiotlb. swiotlb_
+>> bounce() needs to use remap virtual address to copy data from/to bounce
+>> buffer. Add new interface swiotlb_set_bounce_remap() to do that.
 > 
-> In addition to this:
-> 
-> - Create a new subsection 'Indentation and Line Breaks'.
-> - Rename subsection 'Comment style' to simply 'Comments'.
-> - Refactor some of the existing types to appropriate subsections.
-> 
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> Why can't you use the bus_dma_region ranges to remap to your preferred
+> address?
 
-Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Tested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+FWIW, I think a better generalisation for this would be allowing 
+set_memory_decrypted() to return an address rather than implicitly 
+operating in-place, and hide all the various hypervisor hooks behind that.
 
-'make htmldocs' produces no new warnings.
-
-See one further comment on the html presentation below; other than that no 
-further comments.
-
-Lukas
-
-> ---
-> 
-> Changes in v3:
-> - Update explanation for CONSTANT_CONVERSION
-> - Add more reference links
-> - Fix grammatical errors
-> 
-> Changes in v2:
-> - Correct DEVICE_ATTR message types as suggested by Joe Perches.
->   https://lore.kernel.org/lkml/eab0487d7b4e68badbbe0505b2a7903b9d8931c4.camel@perches.com/T/#t
-> - Use passive voice in the documentation
-> 
->  Documentation/dev-tools/checkpatch.rst | 397 ++++++++++++++++++++-----
->  1 file changed, 327 insertions(+), 70 deletions(-)
-> 
-> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-> index 87b859f321de..ad84e709aa25 100644
-> --- a/Documentation/dev-tools/checkpatch.rst
-> +++ b/Documentation/dev-tools/checkpatch.rst
-
-<snip>
-> +
-> +  **FUNCTION_ARGUMENTS**
-> +    This warning is emitted due to any of the following reasons::
-
-I think here you wnt to have an enumeration, but the "::" makes it
-a code block.
-
-> +
-> +      1. Arguments for the function declaration do not follow
-> +         the identifier name.  Example::
-> +
-> +           void foo
-> +           (int bar, int baz)
-> +
-> +         This should be corrected to::
-> +
-> +           void foo(int bar, int baz)
-> +
-> +      2. Some arguments for the function definition do not
-> +         have an identifier name.  Example::
-> +
-> +           void foo(int)
-> +
-> +         All arguments should have identifier names.
-> +
->    **FUNCTION_WITHOUT_ARGS**
->      Function declarations without arguments like::
->  
+Robin.
