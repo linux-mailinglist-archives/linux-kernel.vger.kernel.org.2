@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94553A68C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF913A68C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbhFNOQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        id S233881AbhFNOQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232761AbhFNOQO (ORCPT
+        with ESMTP id S233780AbhFNOQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:16:14 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F5DC061766
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:14:11 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E8C422B4;
-        Mon, 14 Jun 2021 14:14:10 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E8C422B4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1623680051; bh=84hiFI19DiptVMLMg3BpxaUs+Oe9dUr6GlBqtCGKFTs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bcQ3XuhS504Do2ASrtbD8mymWytRAK0Al9Jnm/o8QPH4i5eraEXv1eid0rTGDkfGO
-         0BBiS5oaDdvW2QIHhYHwqL1pXcxSYwjAibjvBf4VAnlVjO4e+N3ukasXYyTUHjZSzq
-         cVOtE+S2v4CW+YrCeuvKDl8p+IdYH6ijn21vz865mFg76Ad6aJWPVbpZzX/m8qWwaf
-         MeE0FDesfknHzQzAPmD2LzF0t+ZDRK9El7qsJaXatzMMiW6U5PiIV6lu/JBrP5zSok
-         lFqXNPzlfleepmjpVUW4BXi5PC2u8GfkOJl/uxVfdYfdpDirJLhQJJSXGI+rtHU7oU
-         NJ5RpLiACcrhg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v3 0/2] memory-hotplug.rst: complete admin-guide overhaul
-In-Reply-To: <d517106f-64ba-5d3a-59f5-c87d5e032bdc@redhat.com>
-References: <20210609075752.4596-1-david@redhat.com>
- <87y2bd9wse.fsf@meer.lwn.net>
- <d517106f-64ba-5d3a-59f5-c87d5e032bdc@redhat.com>
-Date:   Mon, 14 Jun 2021 08:14:10 -0600
-Message-ID: <87fsxka5zh.fsf@meer.lwn.net>
+        Mon, 14 Jun 2021 10:16:46 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFD5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:14:43 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lsnLz-0086xp-Gz; Mon, 14 Jun 2021 14:14:15 +0000
+Date:   Mon, 14 Jun 2021 14:14:15 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Jhih Ming Huang <fbihjmeric@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, maqianga@uniontech.com,
+        marcocesati@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rtw_security: fix cast to restricted __le32
+Message-ID: <YMdkN9cft6KHcFn3@zeniv-ca.linux.org.uk>
+References: <20210613122858.1433252-1-fbihjmeric@gmail.com>
+ <YMX7SRSPgvMA/Pw1@kroah.com>
+ <CAKgboZ8QUQpiinL0xCxUmcp6nEVU20jXkDXbrK_QisUMiLEo1A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgboZ8QUQpiinL0xCxUmcp6nEVU20jXkDXbrK_QisUMiLEo1A@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Hildenbrand <david@redhat.com> writes:
+On Mon, Jun 14, 2021 at 12:40:27AM +0800, Jhih Ming Huang wrote:
+> On Sun, Jun 13, 2021 at 8:34 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sun, Jun 13, 2021 at 08:28:58PM +0800, Jhih-Ming Huang wrote:
+> > > This patch fixes the sparse warning of fix cast to restricted __le32.
+> > >
+> > > Last month, there was a change for replacing private CRC-32 routines with
+> > > in-kernel ones.
+> > > In that patch, we replaced getcrc32 with crc32_le in calling le32_to_cpu.
+> > > le32_to_cpu accepts __le32 type as arg, but crc32_le returns unsigned int.
+> > > That how it introduced the sparse warning.
+> >
+> > As crc32_le returns a u32 which is in native-endian format, how can you
+> > cast it to le32?  Why do you cast it to le32?  Isn't that going to be
+> > incorrect for big endian systems?
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Thanks for the fast reply.
+> Yes, you are right. I did not notice that le32_to_cpu already handles
+> both of the cases.
+> 
+> So it seems the warning from sparse is false positives, am I right?
 
-> Essentially against Andrew's mmotm, which already contains v1. Note 
-> mmotm was chosen due to a conflict in:
->
-> https://lkml.kernel.org/r/20210510030027.56044-1-songmuchun@bytedance.com
->
-> I'd suggest we take this via Andrew's tree, unless you have other 
-> preference on how to handle the conflict. Thanks!
+In a sense that on all architectures we would be ever likely to support
+le32_to_cpu and cpu_to_le32 do the same bit-shuffling - yes.  In a sense
+of having those used correctly it's not a false positive, though - it's
+much easier to follow "this variable always hold native-endian, this -
+little-endian" and watch for conversions done correctly than to count
+the byteswaps and try to prove that it's either even for all execution
+histories or odd for all execution histories.
 
-That's fine with me - one less thing for me to deal with :)
-
-Thanks,
-
-jon
+IOW, there's a good reason for keeping separate cpu_to_le32 and le32_to_cpu
+and not mixing them with each other - it's easier to prove correctness that
+way *and* easier to look for endianness bugs.
