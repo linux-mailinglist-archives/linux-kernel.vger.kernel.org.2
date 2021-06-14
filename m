@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABBA3A6203
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874623A60B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbhFNKyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:54:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50974 "EHLO mail.kernel.org"
+        id S232855AbhFNKgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:36:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233995AbhFNKrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:47:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DF2561412;
-        Mon, 14 Jun 2021 10:37:20 +0000 (UTC)
+        id S232937AbhFNKeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:34:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F51613D9;
+        Mon, 14 Jun 2021 10:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667041;
-        bh=VFWQh30kQM8bCbUVAFfCZPuRbE6N7444tw/64ahKIG4=;
+        s=korg; t=1623666720;
+        bh=ee0kuuNohkMrmsZ52BlDHlUuQJPZqLZoxGPBNEPm7UE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l3LfDGcTzk1dHafMKefLkE5+elGwm6iK4Mqu/+XAq6KAkzKFbboNJTrdkP+jzdJHC
-         EjdEIvaP+rre2VxFLdpiSHnguQoSrRB3mF1UVy8Q6VIJEUaoAiaFl8RM7ahVjGc9+t
-         gilEv5qGzMxlnTL4twtYi4TuCefkZPZVs6GlY+Yc=
+        b=LVFoIaQiY/5fYv4o0Z2d5tZOgUwUmrTCYWVoH9Iu/mKtpGdmh9uOycE73KqEzu5Zw
+         ZqcVCzBaHRPep5YjSU4oMSTyxZJeKAtjG9T0M/X4z8V19boADcZ/t0aIB39r9e30p1
+         G3aYAW+UfILwbup/qAcB3hQBFndKc3iXN//ompcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 45/67] USB: serial: cp210x: fix alternate function for CP2102N QFN20
-Date:   Mon, 14 Jun 2021 12:27:28 +0200
-Message-Id: <20210614102645.314090615@linuxfoundation.org>
+        stable@vger.kernel.org, Dai Ngo <dai.ngo@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.9 38/42] NFSv4: nfs4_proc_set_acl needs to restore NFS_CAP_UIDGID_NOMAP on error.
+Date:   Mon, 14 Jun 2021 12:27:29 +0200
+Message-Id: <20210614102643.919139152@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Dai Ngo <dai.ngo@oracle.com>
 
-commit 6f7ec77cc8b64ff5037c1945e4650c65c458037d upstream.
+commit f8849e206ef52b584cd9227255f4724f0cc900bb upstream.
 
-The QFN20 part has a different GPIO/port function assignment. The
-configuration struct bit field ordered as TX/RX/RS485/WAKEUP/CLK
-which exactly matches GPIO0-3 for QFN24/28. However, QFN20 has a
-different GPIO to primary function assignment.
+Currently if __nfs4_proc_set_acl fails with NFS4ERR_BADOWNER it
+re-enables the idmapper by clearing NFS_CAP_UIDGID_NOMAP before
+retrying again. The NFS_CAP_UIDGID_NOMAP remains cleared even if
+the retry fails. This causes problem for subsequent setattr
+requests for v4 server that does not have idmapping configured.
 
-Special case QFN20 to follow to properly detect which GPIOs are
-available.
+This patch modifies nfs4_proc_set_acl to detect NFS4ERR_BADOWNER
+and NFS4ERR_BADNAME and skips the retry, since the kernel isn't
+involved in encoding the ACEs, and return -EINVAL.
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Link: https://lore.kernel.org/r/51830b2b24118eb0f77c5c9ac64ffb2f519dbb1d.1622218300.git.stefan@agner.ch
-Fixes: c8acfe0aadbe ("USB: serial: cp210x: implement GPIO support for CP2102N")
-Cc: stable@vger.kernel.org	# 4.19
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Steps to reproduce the problem:
+
+ # mount -o vers=4.1,sec=sys server:/export/test /tmp/mnt
+ # touch /tmp/mnt/file1
+ # chown 99 /tmp/mnt/file1
+ # nfs4_setfacl -a A::unknown.user@xyz.com:wrtncy /tmp/mnt/file1
+ Failed setxattr operation: Invalid argument
+ # chown 99 /tmp/mnt/file1
+ chown: changing ownership of ‘/tmp/mnt/file1’: Invalid argument
+ # umount /tmp/mnt
+ # mount -o vers=4.1,sec=sys server:/export/test /tmp/mnt
+ # chown 99 /tmp/mnt/file1
+ #
+
+v2: detect NFS4ERR_BADOWNER and NFS4ERR_BADNAME and skip retry
+       in nfs4_proc_set_acl.
+Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |   20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ fs/nfs/nfs4proc.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -485,6 +485,12 @@ struct cp210x_config {
- #define CP210X_2NCONFIG_GPIO_RSTLATCH_IDX	587
- #define CP210X_2NCONFIG_GPIO_CONTROL_IDX	600
- 
-+/* CP2102N QFN20 port configuration values */
-+#define CP2102N_QFN20_GPIO2_TXLED_MODE		BIT(2)
-+#define CP2102N_QFN20_GPIO3_RXLED_MODE		BIT(3)
-+#define CP2102N_QFN20_GPIO1_RS485_MODE		BIT(4)
-+#define CP2102N_QFN20_GPIO0_CLK_MODE		BIT(6)
-+
- /* CP210X_VENDOR_SPECIFIC, CP210X_WRITE_LATCH call writes these 0x2 bytes. */
- struct cp210x_gpio_write {
- 	u8	mask;
-@@ -1630,7 +1636,19 @@ static int cp2102n_gpioconf_init(struct
- 	priv->gpio_pushpull = (gpio_pushpull >> 3) & 0x0f;
- 
- 	/* 0 indicates GPIO mode, 1 is alternate function */
--	priv->gpio_altfunc = (gpio_ctrl >> 2) & 0x0f;
-+	if (priv->partnum == CP210X_PARTNUM_CP2102N_QFN20) {
-+		/* QFN20 is special... */
-+		if (gpio_ctrl & CP2102N_QFN20_GPIO0_CLK_MODE)   /* GPIO 0 */
-+			priv->gpio_altfunc |= BIT(0);
-+		if (gpio_ctrl & CP2102N_QFN20_GPIO1_RS485_MODE) /* GPIO 1 */
-+			priv->gpio_altfunc |= BIT(1);
-+		if (gpio_ctrl & CP2102N_QFN20_GPIO2_TXLED_MODE) /* GPIO 2 */
-+			priv->gpio_altfunc |= BIT(2);
-+		if (gpio_ctrl & CP2102N_QFN20_GPIO3_RXLED_MODE) /* GPIO 3 */
-+			priv->gpio_altfunc |= BIT(3);
-+	} else {
-+		priv->gpio_altfunc = (gpio_ctrl >> 2) & 0x0f;
-+	}
- 
- 	/*
- 	 * The CP2102N does not strictly has input and output pin modes,
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -5183,6 +5183,14 @@ static int nfs4_proc_set_acl(struct inod
+ 	do {
+ 		err = __nfs4_proc_set_acl(inode, buf, buflen);
+ 		trace_nfs4_set_acl(inode, err);
++		if (err == -NFS4ERR_BADOWNER || err == -NFS4ERR_BADNAME) {
++			/*
++			 * no need to retry since the kernel
++			 * isn't involved in encoding the ACEs.
++			 */
++			err = -EINVAL;
++			break;
++		}
+ 		err = nfs4_handle_exception(NFS_SERVER(inode), err,
+ 				&exception);
+ 	} while (exception.retry);
 
 
