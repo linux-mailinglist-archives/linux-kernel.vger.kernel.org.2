@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C7C3A6FAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CEF3A6FB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235764AbhFNT60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:58:26 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:38414 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235787AbhFNT6U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:58:20 -0400
-Received: by mail-oi1-f181.google.com with SMTP id q10so11396260oij.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 12:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BdsuCVLPpNnrbfSL5g/fk2xq3euV/Wu/9eio50TshnE=;
-        b=T/oPQiiell2DPwIJdWKES1xG++hgYrUOK81mrtGVnRXUz5VdsezVRq8PBMkWrGKbkg
-         xorhUMkXhM3F8qt1XVUPc6ut7wVFm3FHpwbOJpORMKi2dMjBobIsKo0iuUdtD1f04zs0
-         uuusL7lDevVzbUbDLvXemhhrRTAyyRD45Td2w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BdsuCVLPpNnrbfSL5g/fk2xq3euV/Wu/9eio50TshnE=;
-        b=fzyuqH3FLmEWJkttOYMY+OgsQvzxq1TcHpyqy5PErPLZOWv7xwW7vg8ojyy+Rxl2YF
-         rvtT74WrIX2Y1ohaXd6U3HLcz5aAR5LU8vK9pm/w3Rz4F7Dj0DXe+mF9t38so9V7wWqB
-         HcSC2G3sWLzFyFRf+KD9gKH6WtCkeIa87dmrmVIkKikqQtiKj9s1qymeJgRybYNB+6/k
-         ZZGzaX7lRLv5bacrgY0lZ0zY39W4cGyspwh42zxXPJNc5MIM64UdX74usbuh3P25lNds
-         6tv5Dqew4uUwDeQPOEuNvHbiSgEIHCocAPVJXaLgfmBhXZ6C41jPFPq4uvQheYujUHa5
-         n7+w==
-X-Gm-Message-State: AOAM530Lhg1c7IUvaMlIviUxSbLv1ev8dodVzWAvnjo9xqogyDR8yCab
-        HDJh23NTdSK0nMCVWt6gegUNDA==
-X-Google-Smtp-Source: ABdhPJzSK1Kj3WDX6aM3YbJOM/qfoCE81ZytiUducyHuOzTNvHGdtvc8kSPsBdS9ntylqPc9SG+FTw==
-X-Received: by 2002:a05:6808:1287:: with SMTP id a7mr7641701oiw.88.1623700517132;
-        Mon, 14 Jun 2021 12:55:17 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id a74sm3121182oib.21.2021.06.14.12.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 12:55:16 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 14:55:14 -0500
-From:   Justin Forbes <jmforbes@linuxtx.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 000/173] 5.12.11-rc1 review
-Message-ID: <YMe0IqfoComs9ok6@fedora64.linuxtx.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+        id S234585AbhFNUCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:02:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232975AbhFNUCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 16:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AA8D16134F;
+        Mon, 14 Jun 2021 20:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623700805;
+        bh=NIL6FfVydqrHqY5U+xnw0XMWti5Sw6fy702fap4tuh8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NzCK0COPe+PpdC4R5qkrJeazSk9aBH12/fLBbE7dIOCir7CQRd3de2aEEjnqj7Fnl
+         PmbP9dZV0Ik4GRIFk/k5n+M+48pF4Rk95w3oRoiTMtOVUGdWv5Lo5lM+ZIp8WNPLdk
+         MsVqgYEWb/ROZ+swUjwOJDVtCFw5ZxQKOad1cmwJJuy8fpXWy3iQxVRsqdYJPZfsK/
+         4Fl9GG6pYFQF3+W2O5ZDCYGsA/Hxh5q0nKkemz/pRk4xvCycOuo4m3yXDWJ3HdoV3l
+         zbxsCnnSmuTiWx7TVmhQo9BUtslF08s++/JqcRC8itGnErBh+L/EbQrdyvmNJCJsvZ
+         wzhfWP3ij7EZA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9DAD5609D8;
+        Mon, 14 Jun 2021 20:00:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v5 0/8] provide cable test support for the ksz886x
+ switch
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162370080564.15507.12458489307428965124.git-patchwork-notify@kernel.org>
+Date:   Mon, 14 Jun 2021 20:00:05 +0000
+References: <20210614043125.11658-1-o.rempel@pengutronix.de>
+In-Reply-To: <20210614043125.11658-1-o.rempel@pengutronix.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
+        andrew@lunn.ch, f.fainelli@gmail.com, vivien.didelot@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        m.grzeschik@pengutronix.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 12:25:32PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.11 release.
-> There are 173 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.11-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hello:
 
-Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions noted.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+On Mon, 14 Jun 2021 06:31:17 +0200 you wrote:
+> changes v5:
+> - drop resume() patch
+> - add Reviewed-by tags.
+> - rework dsa_slave_phy_connect() patch
+> 
+> changes v4:
+> - use fallthrough;
+> - use EOPNOTSUPP instead of ENOTSUPP
+> - drop flags variable in dsa_slave_phy_connect patch
+> - extend description for the "net: phy: micrel: apply resume errat"
+>   patch
+> - fix "use consistent alignments" patch
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v5,1/8] net: phy: micrel: move phy reg offsets to common header
+    https://git.kernel.org/netdev/net-next/c/ec4b94f9b37b
+  - [net-next,v5,2/8] net: dsa: microchip: ksz8795: add phylink support
+    https://git.kernel.org/netdev/net-next/c/2c709e0bdad4
+  - [net-next,v5,3/8] net: phy: micrel: use consistent alignments
+    https://git.kernel.org/netdev/net-next/c/0033f890f95b
+  - [net-next,v5,4/8] net: phy/dsa micrel/ksz886x add MDI-X support
+    https://git.kernel.org/netdev/net-next/c/52939393bd68
+  - [net-next,v5,5/8] net: phy: micrel: ksz8081 add MDI-X support
+    https://git.kernel.org/netdev/net-next/c/f873f112553b
+  - [net-next,v5,6/8] net: dsa: microchip: ksz8795: add LINK_MD register support
+    https://git.kernel.org/netdev/net-next/c/36838050c453
+  - [net-next,v5,7/8] net: dsa: dsa_slave_phy_connect(): extend phy's flags with port specific phy flags
+    https://git.kernel.org/netdev/net-next/c/c916e8e1ea72
+  - [net-next,v5,8/8] net: phy: micrel: ksz886x/ksz8081: add cabletest support
+    https://git.kernel.org/netdev/net-next/c/49011e0c1555
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
