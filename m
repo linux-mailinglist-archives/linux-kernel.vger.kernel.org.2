@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A33F3A7022
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A913A7034
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235052AbhFNUWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:22:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233295AbhFNUWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:22:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3EC986124B;
-        Mon, 14 Jun 2021 20:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623702006;
-        bh=g3tGQjOoqa8eRy0+pYfSj9oFL0aVqFwrn6FSoYfKRUo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=W+4U5nyVLYovk6hpeOjvHO9qqsyvTxO0dBII4b/+/V81K/qFrXDhhKKSm/JvhSBiv
-         D/hJ3cqozPbJ0kjU8HsrnQjhG0SODsA19g3oAEJEddUbk2mTvB+8lVKZVcAF2HMul9
-         eReqdQn0i0JPBBfTDjECD26yVNQpYgRHL2azplmzfTM4FQksK0IvL3FFlylc/JdnDl
-         ZfIrpGFYyXrolMCzwj1cNEJCa4hsWqV5UpOtN5ySkCzVK3q1aKM2MXzDb8qZr9R2w1
-         CyKc3N4j7rKjbsdsWuA8oSKd4mmD8ahKNPXbR00Cps3dJ/pYxje1ccojqIaclkxGlr
-         OkPCfO1UHEEyg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2CF42609E7;
-        Mon, 14 Jun 2021 20:20:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235441AbhFNUYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:24:19 -0400
+Received: from mail-pj1-f51.google.com ([209.85.216.51]:42896 "EHLO
+        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235200AbhFNUYN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 16:24:13 -0400
+Received: by mail-pj1-f51.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so52159pjn.1;
+        Mon, 14 Jun 2021 13:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xat/qbGpfR/D0GzQjKqjwphadsiT4yXBSQlPfqst2Pk=;
+        b=WFmXtiEPmDEZDcdA78V7VP0al5TpxiniASocr2eCzeTg5AvZbbFmhC5H/aV20c/QQJ
+         wOt6QBnf0i0oxcdFtZACgWQjhYwDcnfAr1RmeKxRjIP5RnAWZ/y+NG8c86DzzP9W122h
+         822k+2bAV1QfO62Ab3WCty4o3pYhaq+clwx2xLPUUVOGw5UcX1FTTYi9RPvx59E4GwZb
+         kxpdpDujj2XWwMFOp7+MzNrZyWoEg2wuu319uVOF6eqehrKzzm+hO38SmmmhBGqd/8UT
+         hmfXKJP1XXR05Urn2otQJ1jvf9xdK+Ni1fNbzVL0EZy0xvDv5bMDoGuJ8H/ZPrlaU00t
+         CPww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xat/qbGpfR/D0GzQjKqjwphadsiT4yXBSQlPfqst2Pk=;
+        b=hU7eJd4JYaAc6MRuu2m9X3mx9nxk5nJr4a1gawDenfZU4OJ+SxPcLeZKpGR+yKowJ6
+         hTShJMXxiBLFLyXzFi6DGMsUuMejFnocfZdZ1S/JqIrOIWbxwtIphTCE1kocrNcJNOhV
+         UdMJIEGja9ImrgzhSErydwKHCcL1XYwcXjXLup7Ebb019BqVDChQ/c39ETQ6Kbsrur8s
+         1IW5KoMUjf9VBSIlkH43G019WVw+Y2M3XCSAWF0XPt0p4wAYcDXnlboHqqt9VasgeENA
+         ta2n/q5jj9EWyW+1Rd7PdhyzuflldG9CT7+t7stQfE2HMm480FINkd1z07TObjBPZpii
+         X3Dw==
+X-Gm-Message-State: AOAM531AyuhhjRMWrJALQpkWyQABzofoMqwMizqBtI8FGEeMKda6vQlc
+        ej6uI3mKu7GpoZAfHyJPRY3ks3OvB3Y=
+X-Google-Smtp-Source: ABdhPJzuS2+gft6vKWXNCd6H7MAnUgGuRk3JlMCbaDEsdjtNdpMXv6Qfx04Pi+tcAqhPSlOfuyITtA==
+X-Received: by 2002:a17:90b:1203:: with SMTP id gl3mr21173036pjb.145.1623702057326;
+        Mon, 14 Jun 2021 13:20:57 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id w79sm13976013pff.21.2021.06.14.13.20.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 13:20:56 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/130] 5.10.44-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210614161424.091266895@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <3505d28a-ebb5-f457-e2e3-b8f22bec78ef@gmail.com>
+Date:   Mon, 14 Jun 2021 13:20:54 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/7] Marvell Prestera driver implementation of
- devlink functionality.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162370200617.25455.15935922022828642128.git-patchwork-notify@kernel.org>
-Date:   Mon, 14 Jun 2021 20:20:06 +0000
-References: <20210614130118.20395-1-oleksandr.mazur@plvision.eu>
-In-Reply-To: <20210614130118.20395-1-oleksandr.mazur@plvision.eu>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     jiri@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vadym.kochan@plvision.eu, andrew@lunn.ch, nikolay@nvidia.com,
-        idosch@idosch.org
+In-Reply-To: <20210614161424.091266895@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 14 Jun 2021 16:01:11 +0300 you wrote:
-> This patch series implement Prestera Switchdev driver devlink traps,
-> that are registered within the driver, as well as extend current devlink
-> functionality by adding new hard drop statistics counter, that could be
-> retrieved on-demand: the counter shows number of packets that have been
-> dropped by the underlying device and haven't been passed to the devlink
-> subsystem.
+On 6/14/2021 9:15 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.44 release.
+> There are 130 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> [...]
+> Responses should be made by Wed, 16 Jun 2021 16:13:59 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Here is the summary with links:
-  - [net-next,v2,1/7] net: core: devlink: add dropped stats traps field
-    https://git.kernel.org/netdev/net-next/c/ddee9dbc3d7a
-  - [net-next,v2,2/7] testing: selftests: net: forwarding: add devlink-required functionality to test (hard) dropped stats field
-    https://git.kernel.org/netdev/net-next/c/53f1bd6b2819
-  - [net-next,v2,3/7] drivers: net: netdevsim: add devlink trap_drop_counter_get implementation
-    https://git.kernel.org/netdev/net-next/c/a7b3527a43fe
-  - [net-next,v2,4/7] testing: selftests: drivers: net: netdevsim: devlink: add test case for hard drop statistics
-    https://git.kernel.org/netdev/net-next/c/7a4f54798a53
-  - [net-next,v2,5/7] net: marvell: prestera: devlink: add traps/groups implementation
-    https://git.kernel.org/netdev/net-next/c/0a9003f45e91
-  - [net-next,v2,6/7] net: marvell: prestera: devlink: add traps with DROP action
-    https://git.kernel.org/netdev/net-next/c/a80cf955c9e5
-  - [net-next,v2,7/7] documentation: networking: devlink: add prestera switched driver Documentation
-    https://git.kernel.org/netdev/net-next/c/66826c43e63d
+On ARCH_BRCMSTB using 32-bit and 64-bit kernels:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>On ARCH_BRCMSTB using
+32-bit and 64-bit kernels:
 
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
