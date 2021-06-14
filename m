@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9193A62C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEFE3A643D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235018AbhFNLEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58288 "EHLO mail.kernel.org"
+        id S235130AbhFNLWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:22:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234868AbhFNKyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:54:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2514613B2;
-        Mon, 14 Jun 2021 10:40:24 +0000 (UTC)
+        id S235357AbhFNLJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:09:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B657361456;
+        Mon, 14 Jun 2021 10:46:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667225;
-        bh=Yl+uSzJrXU/T1rjMigbL8ARDVORP+1HyJq7z6XFioZM=;
+        s=korg; t=1623667617;
+        bh=maORWLPVrr9ivQoLTNE0VfpAaNk2Qk2q3HQkmhtjt/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ardE2Yy26BAYMeWPxRzZ/dsfloZoUUZRn+YYnnHFvVBV3Pp/FPZGkY87wDmQXtdk7
-         DsrPdwgHwZry9n+AUO0Fv9qOkapNeDPO/ek2XU5iXjIGgGyKxHFUCLogfEsv//NVp9
-         rvRgV1HVXg+HEesl3Or/rKh6Urx9c7OBUzvGwLMg=
+        b=hIDRI37H9S1XE3aQ72WyhL3YZJppW3i2+RLmj9Bfc6Q78xIUWopzbFFGH75+yghl6
+         wa26CX1bgl63uAQJp67GCjIiauUNgX9YNQD68dG7YS6Hw6AB69yIv63ROO/Q8tUTo+
+         XzoOgHO8MzIVTyUXgn4GYMGy9e1QC/5PRWTlNYak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.4 75/84] kvm: fix previous commit for 32-bit builds
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.10 112/131] gpio: wcd934x: Fix shift-out-of-bounds error
 Date:   Mon, 14 Jun 2021 12:27:53 +0200
-Message-Id: <20210614102648.912571411@linuxfoundation.org>
+Message-Id: <20210614102656.812266049@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,33 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-commit 4422829e8053068e0225e4d0ef42dc41ea7c9ef5 upstream.
+commit dbec64b11c65d74f31427e2b9d5746fbf17bf840 upstream.
 
-array_index_nospec does not work for uint64_t on 32-bit builds.
-However, the size of a memory slot must be less than 20 bits wide
-on those system, since the memory slot must fit in the user
-address space.  So just store it in an unsigned long.
+bit-mask for pins 0 to 4 is BIT(0) to BIT(4) however we ended up with BIT(n - 1)
+which is not right, and this was caught by below usban check
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+UBSAN: shift-out-of-bounds in drivers/gpio/gpio-wcd934x.c:34:14
+
+Fixes: 59c324683400 ("gpio: wcd934x: Add support to wcd934x gpio controller")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/kvm_host.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-wcd934x.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1051,8 +1051,8 @@ __gfn_to_hva_memslot(struct kvm_memory_s
- 	 * table walks, do not let the processor speculate loads outside
- 	 * the guest's registered memslots.
- 	 */
--	unsigned long offset = array_index_nospec(gfn - slot->base_gfn,
--						  slot->npages);
-+	unsigned long offset = gfn - slot->base_gfn;
-+	offset = array_index_nospec(offset, slot->npages);
- 	return slot->userspace_addr + offset * PAGE_SIZE;
- }
+--- a/drivers/gpio/gpio-wcd934x.c
++++ b/drivers/gpio/gpio-wcd934x.c
+@@ -7,7 +7,7 @@
+ #include <linux/slab.h>
+ #include <linux/of_device.h>
  
+-#define WCD_PIN_MASK(p) BIT(p - 1)
++#define WCD_PIN_MASK(p) BIT(p)
+ #define WCD_REG_DIR_CTL_OFFSET 0x42
+ #define WCD_REG_VAL_CTL_OFFSET 0x43
+ #define WCD934X_NPINS		5
 
 
