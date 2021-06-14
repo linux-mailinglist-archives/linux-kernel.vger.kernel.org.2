@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E9A3A71B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAE63A71BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhFNWD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 18:03:58 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47190 "EHLO mail.skyhub.de"
+        id S230136AbhFNWHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:07:45 -0400
+Received: from ms.lwn.net ([45.79.88.28]:50566 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229979AbhFNWD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 18:03:57 -0400
-Received: from zn.tnic (p200300ec2f09b90088ef25f957385d7b.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:b900:88ef:25f9:5738:5d7b])
+        id S229685AbhFNWHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 18:07:43 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A61D71EC036C;
-        Tue, 15 Jun 2021 00:01:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623708112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=m3AAJQrbVnts2lZ7AysK1yHmxX97aQiFdJvbzt+9ix0=;
-        b=JJWYSaJWG78Fa9MtqsKq+CyxtHjYq+dSqxbMEG7flxvc8w1UV9TWPGkVHOCk1q8uNPtDDV
-        7DMdmaBqU2FsFoxFpZmtjGeAVmagYkYXzA4olD+IFqo2D1pMgBduqEoTIUqRabLMq8THx6
-        DObhAFmO+8yEM2P6l/1vvBPoYrGy9qI=
-Date:   Tue, 15 Jun 2021 00:01:41 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        James Morse <james.morse@arm.com>, yazen.ghannam@amd.com,
-        Robert Richter <rric@kernel.org>
-Subject: Re: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA
- feature bit is not exposed
-Message-ID: <YMfRxX/M4rJ5gM/R@zn.tnic>
-References: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id A580777F;
+        Mon, 14 Jun 2021 22:05:39 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A580777F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1623708339; bh=JXKxgVtyfym5ejRYyvNFxzLZwmC//wkp7N7U5xwVYYU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=hOH0CGMtVkvSvFBvGZ8et5SCljtcnZQid985rqxNAqQE4DAr1e5GMOedUIhjwKPou
+         n0urV4TG0vf8frq3KIvRk3USk/o3eLd1sIZxnJGcMsvB6cF5Qwu24KH/gLd4l3P9Xn
+         kvdpoSoh+Xb4UTgjmqx/h1jnBhktPIJRgMgHl0lAJOgcgeJmgkXPMXH1BMxKWMuVVC
+         wXlCMGnB9L5ABBz0RUZ+DK85rtEYT2jbzOPamTvQ0V3JZaExqwSiakzXBtEU5S/oA+
+         51Jz4v+Ltqlospj/EVCeNxFWyBXISrDsRYSYdcH/faSNyUvFLKzo1LW2MqofheeEKZ
+         uUb5Oydmbz1NQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Barry Song <song.bao.hua@hisilicon.com>, linux-doc@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: Re: [PATCH] docs: cputopology: move the sysfs ABI description to
+ right place
+In-Reply-To: <20210611052249.25776-1-song.bao.hua@hisilicon.com>
+References: <20210611052249.25776-1-song.bao.hua@hisilicon.com>
+Date:   Mon, 14 Jun 2021 16:05:39 -0600
+Message-ID: <87a6ns14r0.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 04:21:29PM -0500, Smita Koralahalli wrote:
-> The SMCA feature bit is not exposed on the guest.
-> 
-> This causes a lot of noise in dmesg as the warning is printed for each
-> logical CPU.
-> 
-> $ dmesg |grep -i family
-> 
-> [    0.031000] smpboot: CPU0: AMD EPYC-Milan Processor (family: 0x19, model: 0x1, stepping: 0x1)
-> [    4.653422] Huh? What family is it: 0x19?!
-> [    4.720732] Huh? What family is it: 0x19?!
-> [    6.171028] Huh? What family is it: 0x19?!
-> [    6.766552] Huh? What family is it: 0x19?!
-> [    6.811119] Huh? What family is it: 0x19?!
-> [    6.839855] Huh? What family is it: 0x19?!
-> 
-> Give these messages debug severity and output once as it is mostly useful
-> for module developers and just noise for users.
+Barry Song <song.bao.hua@hisilicon.com> writes:
 
-I'm getting a patch like that on a pretty regular basis and each time I
-tell people simply not to load the module in guests. Hypervisors do not
-support SMCA...
+> From: Tian Tao <tiantao6@hisilicon.com>
+>
+> Documentation/admin-guide/cputopology.rst is the wrong place to describe
+> sysfs ABI. So move the cputopology ABI things to
+> Documentation/ABI/stable/sysfs-devices-system-cpu and add a reference to
+> ABI doc in Documentation/admin-guide/cputopology.rst.
+>
+> Link: https://lkml.kernel.org/r/20210319041618.14316-1-song.bao.hua@hisilicon.com
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 
-But apparently those wrong error messages bug people on a regular basis
-and I'm tired of typing this each time so I'll take a different version
-of this patch: check X86_FEATURE_HYPERVISOR on entry in mce_amd_init()
-and return -ENODEV if set.
+Applied, thanks.
 
-So that this is done once and for all.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+jon
