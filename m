@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1073A6033
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4019C3A603A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbhFNKcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:32:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37818 "EHLO mail.kernel.org"
+        id S233017AbhFNKce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:32:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232904AbhFNKbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2369A61004;
-        Mon, 14 Jun 2021 10:29:19 +0000 (UTC)
+        id S232911AbhFNKba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:31:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C387611C0;
+        Mon, 14 Jun 2021 10:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666559;
-        bh=0sRQ9tU2KQUbj0eHW1bhSJkUB7cgtfIDfHGBMa24Nhk=;
+        s=korg; t=1623666567;
+        bh=garON5RXTgVwCiYSp8F7v2qJyPtTNSWSja2qsVwO0NE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AHzGsMCpjgFCxo6KNFWaScxMmdGI0aFOagAEIMkvHVQnCSNLjAAcwpif20BanVlRS
-         TwzQp/0jAdPTTPYcuKgvMuAp2bI5TzeFIIuEzs8iUg11+u5waulJ8s6EKseZ6g4V2c
-         OFwIvmcysBtlLuQDocsdTjh5ttJS6EhAuGW33YQo=
+        b=YgNCOnGqkkypU9KU2pXYvoagSgAgy2ZsOWA6bbdtHjJ1jlJQSs4SvEBDoExHHNQ1z
+         KO0Z/G1gl77RfF1nLFAAD6rvskU99HOP+KDynPndQ46vBp9XmoIuYqlAVCFoGwjAnl
+         lTxj8Db3ptBZXzJH74HJHl7slatFjXg3Yelhg/Sc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
-Subject: [PATCH 4.4 23/34] usb: dwc3: ep0: fix NULL pointer exception
-Date:   Mon, 14 Jun 2021 12:27:14 +0200
-Message-Id: <20210614102642.326815452@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 26/34] USB: serial: quatech2: fix control-request directions
+Date:   Mon, 14 Jun 2021 12:27:17 +0200
+Message-Id: <20210614102642.422090356@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
 References: <20210614102641.582612289@linuxfoundation.org>
@@ -39,67 +38,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit d00889080ab60051627dab1d85831cd9db750e2a upstream.
+commit eb8dbe80326c3d44c1e38ee4f40e0d8d3e06f2d0 upstream.
 
-There is no validation of the index from dwc3_wIndex_to_dep() and we might
-be referring a non-existing ep and trigger a NULL pointer exception. In
-certain configurations we might use fewer eps and the index might wrongly
-indicate a larger ep index than existing.
-
-By adding this validation from the patch we can actually report a wrong
-index back to the caller.
-
-In our usecase we are using a composite device on an older kernel, but
-upstream might use this fix also. Unfortunately, I cannot describe the
-hardware for others to reproduce the issue as it is a proprietary
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
 implementation.
 
-[   82.958261] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000a4
-[   82.966891] Mem abort info:
-[   82.969663]   ESR = 0x96000006
-[   82.972703]   Exception class = DABT (current EL), IL = 32 bits
-[   82.978603]   SET = 0, FnV = 0
-[   82.981642]   EA = 0, S1PTW = 0
-[   82.984765] Data abort info:
-[   82.987631]   ISV = 0, ISS = 0x00000006
-[   82.991449]   CM = 0, WnR = 0
-[   82.994409] user pgtable: 4k pages, 39-bit VAs, pgdp = 00000000c6210ccc
-[   83.000999] [00000000000000a4] pgd=0000000053aa5003, pud=0000000053aa5003, pmd=0000000000000000
-[   83.009685] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[   83.026433] Process irq/62-dwc3 (pid: 303, stack limit = 0x000000003985154c)
-[   83.033470] CPU: 0 PID: 303 Comm: irq/62-dwc3 Not tainted 4.19.124 #1
-[   83.044836] pstate: 60000085 (nZCv daIf -PAN -UAO)
-[   83.049628] pc : dwc3_ep0_handle_feature+0x414/0x43c
-[   83.054558] lr : dwc3_ep0_interrupt+0x3b4/0xc94
+Fix the three requests which erroneously used usb_rcvctrlpipe().
 
-...
-
-[   83.141788] Call trace:
-[   83.144227]  dwc3_ep0_handle_feature+0x414/0x43c
-[   83.148823]  dwc3_ep0_interrupt+0x3b4/0xc94
-[   83.181546] ---[ end trace aac6b5267d84c32f ]---
-
-Signed-off-by: Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210608162650.58426-1-marian.c.rotariu@gmail.com
+Fixes: f7a33e608d9a ("USB: serial: add quatech2 usb to serial driver")
+Cc: stable@vger.kernel.org      # 3.5
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/ep0.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/serial/quatech2.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/dwc3/ep0.c
-+++ b/drivers/usb/dwc3/ep0.c
-@@ -331,6 +331,9 @@ static struct dwc3_ep *dwc3_wIndex_to_de
- 		epnum |= 1;
+--- a/drivers/usb/serial/quatech2.c
++++ b/drivers/usb/serial/quatech2.c
+@@ -419,7 +419,7 @@ static void qt2_close(struct usb_serial_
  
- 	dep = dwc->eps[epnum];
-+	if (dep == NULL)
-+		return NULL;
-+
- 	if (dep->flags & DWC3_EP_ENABLED)
- 		return dep;
+ 	/* flush the port transmit buffer */
+ 	i = usb_control_msg(serial->dev,
+-			    usb_rcvctrlpipe(serial->dev, 0),
++			    usb_sndctrlpipe(serial->dev, 0),
+ 			    QT2_FLUSH_DEVICE, 0x40, 1,
+ 			    port_priv->device_port, NULL, 0, QT2_USB_TIMEOUT);
  
+@@ -429,7 +429,7 @@ static void qt2_close(struct usb_serial_
+ 
+ 	/* flush the port receive buffer */
+ 	i = usb_control_msg(serial->dev,
+-			    usb_rcvctrlpipe(serial->dev, 0),
++			    usb_sndctrlpipe(serial->dev, 0),
+ 			    QT2_FLUSH_DEVICE, 0x40, 0,
+ 			    port_priv->device_port, NULL, 0, QT2_USB_TIMEOUT);
+ 
+@@ -701,7 +701,7 @@ static int qt2_attach(struct usb_serial
+ 	int status;
+ 
+ 	/* power on unit */
+-	status = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
++	status = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
+ 				 0xc2, 0x40, 0x8000, 0, NULL, 0,
+ 				 QT2_USB_TIMEOUT);
+ 	if (status < 0) {
 
 
