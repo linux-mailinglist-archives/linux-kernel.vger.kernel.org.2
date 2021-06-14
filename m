@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9053A60F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47053A60B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233109AbhFNKkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:40:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40356 "EHLO mail.kernel.org"
+        id S233675AbhFNKgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:36:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233451AbhFNKga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:36:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D218613D3;
-        Mon, 14 Jun 2021 10:33:07 +0000 (UTC)
+        id S232746AbhFNKeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:34:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95FBA611C0;
+        Mon, 14 Jun 2021 10:31:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666787;
-        bh=GV27hkCxBzVg7WFlPM5Nf69j3UR766E4pJZ4IkfkPLM=;
+        s=korg; t=1623666707;
+        bh=uH7X4E4uXYwz4moQg9ZSqhZ98whTmhNzkyKbhStAGOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SS0CC1nvoRMPVws/sPLYFMAzK2XzgqZY6MvJQWdBs4QKyR+w26Ikg7AJ80aGqBtxU
-         Nx0i0M/nJnOunlU9en39GNqGZgdCn8JHmYfN8p6F+e2pgqpF5X9xnyZVbHQxtQ2BDN
-         DjvJtt0z/eYF02sjKtTaWY5Dl/XZZMV6cVC75NMc=
+        b=mUFmhdmiXwRRKjRDoUwgEb41zURV8fKSOAzq1hbKiXOgf12sKMp5ZyYJEiUaGjoSe
+         obG9w4BxzUQ4wKwKAKH8wuklMIoGjbPSiSUWQJVR9LpavvDNLzT0IqZaMjHJtESddZ
+         pl2IjHa//hsiqVffAiyW19ePAP63X2g7xNNdCQ2U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 4.14 30/49] usb: gadget: f_fs: Ensure io_completion_wq is idle during unbind
-Date:   Mon, 14 Jun 2021 12:27:23 +0200
-Message-Id: <20210614102642.861513136@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 33/42] regulator: core: resolve supply for boot-on/always-on regulators
+Date:   Mon, 14 Jun 2021 12:27:24 +0200
+Message-Id: <20210614102643.758079144@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,42 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <wcheng@codeaurora.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-commit 6fc1db5e6211e30fbb1cee8d7925d79d4ed2ae14 upstream.
+commit 98e48cd9283dbac0e1445ee780889f10b3d1db6a upstream.
 
-During unbind, ffs_func_eps_disable() will be executed, resulting in
-completion callbacks for any pending USB requests.  When using AIO,
-irrespective of the completion status, io_data work is queued to
-io_completion_wq to evaluate and handle the completed requests.  Since
-work runs asynchronously to the unbind() routine, there can be a
-scenario where the work runs after the USB gadget has been fully
-removed, resulting in accessing of a resource which has been already
-freed. (i.e. usb_ep_free_request() accessing the USB ep structure)
+For the boot-on/always-on regulators the set_machine_constrainst() is
+called before resolving rdev->supply. Thus the code would try to enable
+rdev before enabling supplying regulator. Enforce resolving supply
+regulator before enabling rdev.
 
-Explicitly drain the io_completion_wq, instead of relying on the
-destroy_workqueue() (in ffs_data_put()) to make sure no pending
-completion work items are running.
-
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1621644261-1236-1-git-send-email-wcheng@codeaurora.org
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210519221224.2868496-1-dmitry.baryshkov@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_fs.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/regulator/core.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -3459,6 +3459,9 @@ static void ffs_func_unbind(struct usb_c
- 		ffs->func = NULL;
- 	}
- 
-+	/* Drain any pending AIO completions */
-+	drain_workqueue(ffs->io_completion_wq);
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1080,6 +1080,12 @@ static int set_machine_constraints(struc
+ 	 * and we have control then make sure it is enabled.
+ 	 */
+ 	if (rdev->constraints->always_on || rdev->constraints->boot_on) {
++		/* If we want to enable this regulator, make sure that we know
++		 * the supplying regulator.
++		 */
++		if (rdev->supply_name && !rdev->supply)
++			return -EPROBE_DEFER;
 +
- 	if (!--opts->refcnt)
- 		functionfs_unbind(ffs);
- 
+ 		ret = _regulator_do_enable(rdev);
+ 		if (ret < 0 && ret != -EINVAL) {
+ 			rdev_err(rdev, "failed to enable\n");
 
 
