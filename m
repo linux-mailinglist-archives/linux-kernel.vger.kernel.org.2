@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0B43A69F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192E93A69F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhFNPWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:22:43 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:39450 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233352AbhFNPWm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:22:42 -0400
-Received: by mail-oi1-f178.google.com with SMTP id m137so14755205oig.6;
-        Mon, 14 Jun 2021 08:20:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gbBfsd6QEJyPQsk1CFsyqjVRFq1U4IMEejVMTtFMNhw=;
-        b=Mr8g5S0U4PyApU8CUmzu9GiKe2D9uks/omGEQQvYc9pdGyDGFN6odg8ohEJQJNexXk
-         NFCVmr0E4tLfmqb0DhJN535AXcE2qgfpZQo/oJXuW6ndR6HSASZ3HWMgZVv0yQ/5gJHa
-         CJ7DJZGX5dPPLLjskwZEMd5bo4uEWwe9X0l0l3tfseNwwJu678gXFYFWBb7SuZNBf85i
-         bs48otkvrabsrPUnneStE+2D9R/zZUMmPOB0Um6yFkFi9rrd5gWklIz1dOMfBJidMyzb
-         zffwwF5SvZitTH2AU0UBsb4ep/aouNPzWYR0NscwkGpdjk9r+wj+cwqFugY2jcCwFrE2
-         TX6A==
-X-Gm-Message-State: AOAM531d4QMUOuIqulqPrka8hVRJ8xSONWiChlIglyGEJMw2yre1R0TQ
-        N2AM70vA6rBPkVqgz82WNX1Jy03MoDuoT2EPNMo=
-X-Google-Smtp-Source: ABdhPJxo1NPLcjNmblnmCOGnKctiYGjLLtuut1juPQ/9q+mVa97ENZvUcN6GtP/HnlSjlrGRK3NgsaPhFfIxPSBMDNA=
-X-Received: by 2002:aca:b406:: with SMTP id d6mr10830977oif.71.1623684039411;
- Mon, 14 Jun 2021 08:20:39 -0700 (PDT)
+        id S233245AbhFNPWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:22:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:12966 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232809AbhFNPWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 11:22:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623684035; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=TgruFaOHgaX1w1KfWjUbiFXZ4JxCDk9YTxQIoQffRp0=;
+ b=rLtqtof+G/HA7bL0h6tqWFs4Fhij1PEMl1OeRDXegnMcIDIr4WyBiKBZY6+mb9HQMSKZJsJT
+ HkhYlhGBaqQxd5pkXnpBLcZDArKPdYgfZTXiQfKLMIPQD8j2izznx71s9ZKL5rfLoN12dNPl
+ i7w4q85QefDu3gxgMzfusvnvNLw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60c773c2ed59bf69cc41d322 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 15:20:34
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9BA62C4323A; Mon, 14 Jun 2021 15:20:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10BBCC433D3;
+        Mon, 14 Jun 2021 15:20:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 10BBCC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <1623318039-57133-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1623318039-57133-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 14 Jun 2021 17:20:28 +0200
-Message-ID: <CAJZ5v0gjjS=f5jmA4+SL=K2D1073y3oa5J1yaeFqwkC9tUv2yQ@mail.gmail.com>
-Subject: Re: [PATCH -next 1/2] ACPI: processor_throttling: Remove redundant
- initialization of 'obj'
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wcn36xx: Fix inconsistent indenting
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1622024568-32130-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1622024568-32130-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210614152034.9BA62C4323A@smtp.codeaurora.org>
+Date:   Mon, 14 Jun 2021 15:20:34 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 11:40 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> 'obj' is being initialized, however this value is never read as
-> 'obj' is assigned an updated value later. Remove the redundant
-> initialization.
->
-> Clean up clang warning:
-> drivers/acpi/processor_throttling.c:409:20: warning: Value stored to
-> 'obj' during its initialization is never read
-> [clang-analyzer-deadcode.DeadStores]
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/acpi/processor_throttling.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/processor_throttling.c b/drivers/acpi/processor_throttling.c
-> index 0086afe..017fd02 100644
-> --- a/drivers/acpi/processor_throttling.c
-> +++ b/drivers/acpi/processor_throttling.c
-> @@ -406,7 +406,7 @@ static int acpi_processor_get_throttling_control(struct acpi_processor *pr)
->         acpi_status status = 0;
->         struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->         union acpi_object *ptc = NULL;
-> -       union acpi_object obj = { 0 };
-> +       union acpi_object obj;
->         struct acpi_processor_throttling *throttling;
->
->         status = acpi_evaluate_object(pr->handle, "_PTC", NULL, &buffer);
-> --
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
 
-Applied as 5.14 material, thanks!
+> Eliminate the follow smatch warning:
+> 
+> drivers/net/wireless/ath/wcn36xx/dxe.c:803 wcn36xx_dxe_tx_frame() warn:
+> inconsistent indenting.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+743b575af18d wcn36xx: Fix inconsistent indenting
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1622024568-32130-1-git-send-email-jiapeng.chong@linux.alibaba.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
