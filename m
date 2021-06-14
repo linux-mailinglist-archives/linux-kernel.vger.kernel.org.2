@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744FC3A64CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082EC3A62E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbhFNL3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45478 "EHLO mail.kernel.org"
+        id S234184AbhFNLGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:06:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235649AbhFNLOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:14:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D85261952;
-        Mon, 14 Jun 2021 10:49:21 +0000 (UTC)
+        id S233867AbhFNK4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:56:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D67C61601;
+        Mon, 14 Jun 2021 10:41:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667762;
-        bh=87XpyyJ9i7M+apfwWnDHr4EMnI24tv0eOjqFr6ZvkYo=;
+        s=korg; t=1623667278;
+        bh=se+aOlbWApVvK3k0JF45tpjgMrRLW7650QOY6f5iKO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tbJPEDu6jmrNHfAcD5tf2lmnnl8BkWo3c/Akt/BMXMEw3ENCAIyQ12nu1qvegoN0Z
-         ayFOJxGxrUxQ2zzMtxbzzXuCaOq0qJptAfTl70Vp98aWDhnXND5ocfSzrbCh1IT1T+
-         vmjSMDdw60r/Ic/3phvOvIcOx9bvEcdlkATWBIys=
+        b=CCVsoRf/B2T9QUJhVW8+dnQa/wTwPAKIZyknsuyFLU0rsJws1UX8oKzGfCRYis+OS
+         +3+ZZSGIm/a+Pun+uFZH/SCDFMUQaTm6O6uVxFPAwCaUvCP3r6XobeKlbSt0crG/Im
+         0w9C1/TQNkEeobJkP0uSkpx5XxnEzphz9Ihdsp90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
-        Dmitry Bogdanov <d.bogdanov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 031/173] scsi: target: qla2xxx: Wait for stop_phase1 at WWN removal
+Subject: [PATCH 5.10 002/131] ASoC: max98088: fix ni clock divider calculation
 Date:   Mon, 14 Jun 2021 12:26:03 +0200
-Message-Id: <20210614102659.181637629@linuxfoundation.org>
+Message-Id: <20210614102653.051315433@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +40,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Marco Felsch <m.felsch@pengutronix.de>
 
-[ Upstream commit 2ef7665dfd88830f15415ba007c7c9a46be7acd8 ]
+[ Upstream commit 6c9762a78c325107dc37d20ee21002b841679209 ]
 
-Target de-configuration panics at high CPU load because TPGT and WWPN can
-be removed on separate threads.
+The ni1/ni2 ratio formula [1] uses the pclk which is the prescaled mclk.
+The max98088 datasheet [2] has no such formula but table-12 equals so
+we can assume that it is the same for both devices.
 
-TPGT removal requests a reset HBA on a separate thread and waits for reset
-complete (phase1). Due to high CPU load that HBA reset can be delayed for
-some time.
+While on it make use of DIV_ROUND_CLOSEST_ULL().
 
-WWPN removal does qlt_stop_phase2(). There it is believed that phase1 has
-already completed and thus tgt.tgt_ops is subsequently cleared. However,
-tgt.tgt_ops is needed to process incoming traffic and therefore this will
-cause one of the following panics:
+[1] https://datasheets.maximintegrated.com/en/ds/MAX98089.pdf; page 86
+[2] https://datasheets.maximintegrated.com/en/ds/MAX98088.pdf; page 82
 
-NIP qlt_reset+0x7c/0x220 [qla2xxx]
-LR  qlt_reset+0x68/0x220 [qla2xxx]
-Call Trace:
-0xc000003ffff63a78 (unreliable)
-qlt_handle_imm_notify+0x800/0x10c0 [qla2xxx]
-qlt_24xx_atio_pkt+0x208/0x590 [qla2xxx]
-qlt_24xx_process_atio_queue+0x33c/0x7a0 [qla2xxx]
-qla83xx_msix_atio_q+0x54/0x90 [qla2xxx]
-
-or
-
-NIP qlt_24xx_handle_abts+0xd0/0x2a0 [qla2xxx]
-LR  qlt_24xx_handle_abts+0xb4/0x2a0 [qla2xxx]
-Call Trace:
-qlt_24xx_handle_abts+0x90/0x2a0 [qla2xxx] (unreliable)
-qlt_24xx_process_atio_queue+0x500/0x7a0 [qla2xxx]
-qla83xx_msix_atio_q+0x54/0x90 [qla2xxx]
-
-or
-
-NIP qlt_create_sess+0x90/0x4e0 [qla2xxx]
-LR  qla24xx_do_nack_work+0xa8/0x180 [qla2xxx]
-Call Trace:
-0xc0000000348fba30 (unreliable)
-qla24xx_do_nack_work+0xa8/0x180 [qla2xxx]
-qla2x00_do_work+0x674/0xbf0 [qla2xxx]
-qla2x00_iocb_work_fn
-
-The patch fixes the issue by serializing qlt_stop_phase1() and
-qlt_stop_phase2() functions to make WWPN removal wait for phase1
-completion.
-
-Link: https://lore.kernel.org/r/20210415203554.27890-1-d.bogdanov@yadro.com
-Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Link: https://lore.kernel.org/r/20210423135402.32105-1-m.felsch@pengutronix.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_target.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/max98088.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
-index 480e7d2dcf3e..745d6d98c02e 100644
---- a/drivers/scsi/qla2xxx/qla_target.c
-+++ b/drivers/scsi/qla2xxx/qla_target.c
-@@ -1558,10 +1558,12 @@ void qlt_stop_phase2(struct qla_tgt *tgt)
- 		return;
- 	}
- 
-+	mutex_lock(&tgt->ha->optrom_mutex);
- 	mutex_lock(&vha->vha_tgt.tgt_mutex);
- 	tgt->tgt_stop = 0;
- 	tgt->tgt_stopped = 1;
- 	mutex_unlock(&vha->vha_tgt.tgt_mutex);
-+	mutex_unlock(&tgt->ha->optrom_mutex);
- 
- 	ql_dbg(ql_dbg_tgt_mgt, vha, 0xf00c, "Stop of tgt %p finished\n",
- 	    tgt);
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index 4be24e7f51c8..f8e49e45ce33 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -41,6 +41,7 @@ struct max98088_priv {
+ 	enum max98088_type devtype;
+ 	struct max98088_pdata *pdata;
+ 	struct clk *mclk;
++	unsigned char mclk_prescaler;
+ 	unsigned int sysclk;
+ 	struct max98088_cdata dai[2];
+ 	int eq_textcnt;
+@@ -998,13 +999,16 @@ static int max98088_dai1_hw_params(struct snd_pcm_substream *substream,
+        /* Configure NI when operating as master */
+        if (snd_soc_component_read(component, M98088_REG_14_DAI1_FORMAT)
+                & M98088_DAI_MAS) {
++               unsigned long pclk;
++
+                if (max98088->sysclk == 0) {
+                        dev_err(component->dev, "Invalid system clock frequency\n");
+                        return -EINVAL;
+                }
+                ni = 65536ULL * (rate < 50000 ? 96ULL : 48ULL)
+                                * (unsigned long long int)rate;
+-               do_div(ni, (unsigned long long int)max98088->sysclk);
++               pclk = DIV_ROUND_CLOSEST(max98088->sysclk, max98088->mclk_prescaler);
++               ni = DIV_ROUND_CLOSEST_ULL(ni, pclk);
+                snd_soc_component_write(component, M98088_REG_12_DAI1_CLKCFG_HI,
+                        (ni >> 8) & 0x7F);
+                snd_soc_component_write(component, M98088_REG_13_DAI1_CLKCFG_LO,
+@@ -1065,13 +1069,16 @@ static int max98088_dai2_hw_params(struct snd_pcm_substream *substream,
+        /* Configure NI when operating as master */
+        if (snd_soc_component_read(component, M98088_REG_1C_DAI2_FORMAT)
+                & M98088_DAI_MAS) {
++               unsigned long pclk;
++
+                if (max98088->sysclk == 0) {
+                        dev_err(component->dev, "Invalid system clock frequency\n");
+                        return -EINVAL;
+                }
+                ni = 65536ULL * (rate < 50000 ? 96ULL : 48ULL)
+                                * (unsigned long long int)rate;
+-               do_div(ni, (unsigned long long int)max98088->sysclk);
++               pclk = DIV_ROUND_CLOSEST(max98088->sysclk, max98088->mclk_prescaler);
++               ni = DIV_ROUND_CLOSEST_ULL(ni, pclk);
+                snd_soc_component_write(component, M98088_REG_1A_DAI2_CLKCFG_HI,
+                        (ni >> 8) & 0x7F);
+                snd_soc_component_write(component, M98088_REG_1B_DAI2_CLKCFG_LO,
+@@ -1113,8 +1120,10 @@ static int max98088_dai_set_sysclk(struct snd_soc_dai *dai,
+         */
+        if ((freq >= 10000000) && (freq < 20000000)) {
+                snd_soc_component_write(component, M98088_REG_10_SYS_CLK, 0x10);
++               max98088->mclk_prescaler = 1;
+        } else if ((freq >= 20000000) && (freq < 30000000)) {
+                snd_soc_component_write(component, M98088_REG_10_SYS_CLK, 0x20);
++               max98088->mclk_prescaler = 2;
+        } else {
+                dev_err(component->dev, "Invalid master clock frequency\n");
+                return -EINVAL;
 -- 
 2.30.2
 
