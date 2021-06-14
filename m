@@ -2,93 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43B53A6977
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D333A6975
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbhFNPBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:01:53 -0400
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:44569 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232919AbhFNPBa (ORCPT
+        id S233280AbhFNPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232919AbhFNPAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:01:30 -0400
-Received: by mail-lj1-f177.google.com with SMTP id d2so20508297ljj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G2ifPKFPXw+H1+XH/FElieTkSuvTHAXJjptrAzf+O/o=;
-        b=WFXINDqaAXfBVeiL3HnMRcJ+t27wzLTnISKsyZAtOmblsbkkBS4MCZ46zTlpjK4JvE
-         /Pf+CdFhiSbVJ/W6e+PMAKVo3D+wnSihIYddEJpNrYHpmPks3H0BOj3zjmhn+6Kz4PNb
-         uMNIHC0LKBqWwfD7FT2jfCqBDQsPnct2KsDuI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G2ifPKFPXw+H1+XH/FElieTkSuvTHAXJjptrAzf+O/o=;
-        b=jo8LNeg1EzcK/cye7TIc3MaZIu9OTQBhLp/GvtBFBjFPr6iDlKlm6ObN7UiwnN9vki
-         lY2XdIyEzzil/Xvc4SUbM/QBbbKKaS7oX5SgIQV1vCfPr80FPQnRvAiyXKdWgx3pVeiD
-         PeYpLO56FNwuHe6/DRY8EZD4Onkr1/+HJZhxYNFNjWy32S34oIvbTh7VnJg1S/K77ABn
-         OBFQLDsbNcB+L2pZWjJvsf4ni48w+/Ra48Mww2HVinOkl4ASL5/9+yDNPKMUerssrNGy
-         k0M3VzYqdkjn2TqIx//hpTKgb5NPW7gLw26TREsY5nE2vv2JZGqO3RzzSa5mDDB9Hsr8
-         UJ2w==
-X-Gm-Message-State: AOAM532HznVYtGYkQmVMDaFTBiSIpSA+ZAqHFGwkTU6gG9YQJGZAi5yQ
-        nKxjXPWNAWR6kmBZQSMscs5gELlgPwTJbW/J
-X-Google-Smtp-Source: ABdhPJwTb0obDHBmE2HtlGh7qX4aMHHjZjxQx9Lrr0UE3iAXSnobXpi2dLO2mkSIzCzqmCIbC2Jk3g==
-X-Received: by 2002:a05:651c:211d:: with SMTP id a29mr14134929ljq.115.1623682705467;
-        Mon, 14 Jun 2021 07:58:25 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id z139sm1626944lfc.150.2021.06.14.07.58.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 07:58:23 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id k8so3680598lja.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:58:23 -0700 (PDT)
-X-Received: by 2002:a2e:a549:: with SMTP id e9mr2705701ljn.411.1623682703202;
- Mon, 14 Jun 2021 07:58:23 -0700 (PDT)
+        Mon, 14 Jun 2021 11:00:34 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124A0C061574;
+        Mon, 14 Jun 2021 07:58:31 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1lso2g-0004Fk-R4; Mon, 14 Jun 2021 16:58:22 +0200
+Date:   Mon, 14 Jun 2021 16:58:22 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] staging: rtl8188eu: remove RT_TRACE and DBG_88E
+ prints from usb_intf.c
+Message-ID: <20210614145822.c3dk3e7p44ypglk7@viti.kaiser.cx>
+References: <20210612180019.20387-1-martin@kaiser.cx>
+ <20210612180019.20387-6-martin@kaiser.cx>
+ <20210614113439.GM1955@kadam>
 MIME-Version: 1.0
-References: <20210607055131.156184-3-aneesh.kumar@linux.ibm.com> <20210614145536.GB28801@xsang-OptiPlex-9020>
-In-Reply-To: <20210614145536.GB28801@xsang-OptiPlex-9020>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 14 Jun 2021 07:58:07 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg+TcJtrwEUzoht2j0R3+jw=OCqckptdf4Q9vNgCPSpXA@mail.gmail.com>
-Message-ID: <CAHk-=wg+TcJtrwEUzoht2j0R3+jw=OCqckptdf4Q9vNgCPSpXA@mail.gmail.com>
-Subject: Re: [mm/mremap] ecf8443e51: vm-scalability.throughput -29.4% regression
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614113439.GM1955@kadam>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 7:39 AM kernel test robot <oliver.sang@intel.com> wrote:
->
+Thus wrote Dan Carpenter (dan.carpenter@oracle.com):
 
-> FYI, we noticed a -29.4% regression of vm-scalability.throughput due to commit:
-> ecf8443e51a8 ("[PATCH v7 02/11] mm/mremap: Fix race between MOVE_PUD mremap and pageout")
+> On Sat, Jun 12, 2021 at 08:00:19PM +0200, Martin Kaiser wrote:
+> > These prints are disabled by default.
 
-Ouch.
 
-I guess it's not a huge surprise, but that's a fairly large regression.
+> Not, just by default.  There is literally no way to enable them.
 
-Probably because the pud lock is just one single lock ("No scalability
-reason to split PUD locks yet").
+> > Replace the print after dev_alloc_name with proper error handling.
 
-What happens if pud_lockptr() were to do the same thing that pmd_lockptr() does?
 
-                Linus
+> Ugh...  :(  This part really needs to be done first and in a separate
+> patch.  You can delete the RT_TRACE() from that one call site since it's
+> on the same line but the subject of the patch needs to say something
+> like "check for allocation failure".  It can't be "remove RT_TRACE and
+> DBG_88E prints".
+
+ok, understood. I'll split this in two (and fix it, I forgot a
+semicolon).
+
+Thanks,
+
+   Martin
