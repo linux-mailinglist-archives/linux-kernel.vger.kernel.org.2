@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D493A6788
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367303A6792
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbhFNNQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:16:57 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:36465 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbhFNNQz (ORCPT
+        id S233478AbhFNNUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:20:42 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:40807 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232825AbhFNNUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:16:55 -0400
-Received: by mail-wr1-f45.google.com with SMTP id n7so8342025wri.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 06:14:37 -0700 (PDT)
+        Mon, 14 Jun 2021 09:20:32 -0400
+Received: by mail-wr1-f42.google.com with SMTP id y7so14516473wrh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 06:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XaqFjDhdi9dIScXFDsKNQBeWGz1HwBH0TF+QCGhEDg4=;
-        b=HwYvbf7w8uywUzYEqLUcnCZiAoF1NoeXpwx56KYax2Bqehbxafzv0waHhZPevrg34z
-         nMVIV1K2SC/msQ0BkfdJVwOnqO7JGAR3knwH8dySAyCL6llJHF/ZBeBexlWz9Rj1w6ME
-         /qsPwb9mSuOs1YXOWxV6d8fSl67TpC0S6DAu1duEPhbxAYsXpUCUufv180Y56LA+2UA2
-         7I28bWDD3lZPoygb9Mue5oUHuN2FeGyqZyD+Vg3QeMdAYFkhGqQ0om3jqjWlhXIcRStK
-         cmxS9cTwwQWja5rRwcthhKqHsu/h3SifiTTuP5aWrznboqD4461X5ez91LokOV7+f/vd
-         X/tQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XFmTmIPfKkU5RhaamFAr4BhwN+bI45kmR+Vj5S8aLqU=;
+        b=MI23UFo2gw40h05XL7Pjtm04CvcZuvV3D76vFSblYhKAqMRSwGee6QT2SOz5MWEC5p
+         wPEYoGXmtBbJp25N/LLJKUBrNpgzIc0BeeTZOAABDlQ7+Kg1DvWf+hXvrhCxYFDizznS
+         VyWrPvoU1K+x+qtLSBXxlAILt8Gh5ueBIqmYycf+a5XsBThzzzh+7/w6T8yxakKT5hUv
+         4UfqScr2UVlMZ6xnhJmZ4gsN/GTjCTHk+V3Onk3Idn4h3ufVKvVR12QJclD+k8LHYlwb
+         VeB6yNchqkFxqKmchayU8ty8HDq7xFYh4rpVSWJplvrZzJf7blR5ZAVZoJ7iLaHnpo2o
+         EUSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XaqFjDhdi9dIScXFDsKNQBeWGz1HwBH0TF+QCGhEDg4=;
-        b=lxBBKWwSZYN6R88cvYx7yw0xMa/LuK6o5aap9Mm7tsYizaLnnA9Z7SEj0UnMdK4nFz
-         +AXaflQq1Lrd6R34tfzdIn5lbnRJoe8YVfU/a4ZXe0AzuH0NvKno6iTjKslE5ocG66lm
-         FmpoB4KIAoaZ5rsI5wOxN6iPiO4oiU/Avd4zJifPo0MevVED9Q7Fw7CjOTwUgiWvrYCn
-         cva1O146MGO79cZIZsMFf1hj5Nb1lVZ6kmt7dooQP45Jl/SJZKSpDfcYZWqOFfZddJDC
-         VROOWfaq/EVyAlGiAKDUQUJPSItUWDfPrpffiCHjYjxl4Lubf7x33ftXQbkPHJ9PC8Z7
-         lpPA==
-X-Gm-Message-State: AOAM533XR3/xaBJCebFBlPcauKwTt0IPeQa0CSscGHT+TeJ3LgtvzJVJ
-        ZyUQEHft4J3gfuaxzqLDOFoc4G0wk6ezuJ1ZhKhuHA==
-X-Google-Smtp-Source: ABdhPJwaIml99G0JVblKb/bJU6ZJxhC4NnG3pECobXr6p0v0dm5rhMCSciB3jhJPIU6+0Ueq2o9rrQ5zrI4HAOZY5mY=
-X-Received: by 2002:a5d:6b81:: with SMTP id n1mr18528505wrx.144.1623676416729;
- Mon, 14 Jun 2021 06:13:36 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=XFmTmIPfKkU5RhaamFAr4BhwN+bI45kmR+Vj5S8aLqU=;
+        b=jBvWYYSoeUcQcpQjJbnB/0FS0NOpVweHrEL3aw1yodmzyv06GM+u5SLI+69usnVe0b
+         RDLsz3Fv0pE7Ep6zW1Z7Had0mjYmXoWypDPo5WqJziBZGpJj8bTiKdcBJYHuXU+fLbQq
+         GwpaD7S0B6Q2HvV/0yR/fT5QVaywR3E9m0Z6krhnNE67bzbCV9a+o4fRw3MfVN8dZ5Vv
+         jl+L1EhbYGX8C83oVi8xKZL2yYLSP5TI5hIIDweoGzB598RrkcXpoIPcWZfiwWhDtmP9
+         MtGK9JMIx5Wuvd6RTLtrEH0kko0JA0USV3RXbRON/R3gXZkO2M4Cmu+CSa6ImNFQd0BX
+         0x6w==
+X-Gm-Message-State: AOAM533NCHeGa/vR7W3g14omp5qzrW2zXGecSm91TC14RCVGzdhUki6f
+        Jm6Pr0uX0kinDUKtQ6zMq+dhvA3JqcHpkxqc
+X-Google-Smtp-Source: ABdhPJxjXjeRZW524D+N0JUBk4ULOtEQmBImEKhaFK8PHTuHPrQ61s0G80mnJlVwIQRwoR4b6kWf8g==
+X-Received: by 2002:a05:6000:18f:: with SMTP id p15mr18683034wrx.102.1623676649106;
+        Mon, 14 Jun 2021 06:17:29 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:f0d4:3c02:f06a:77bb? ([2a01:e0a:90c:e290:f0d4:3c02:f06a:77bb])
+        by smtp.gmail.com with ESMTPSA id f13sm16372661wmg.7.2021.06.14.06.17.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 06:17:28 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: meson: vim3: reduce cpu thermal fan trigger
+ temperature
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Nick Xie <xieqinick@gmail.com>
+Cc:     robh+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nick <nick@khadas.com>, artem@khadas.com
+References: <20210609012849.797576-1-xieqinick@gmail.com>
+ <11da3ae4-91d4-1e51-c652-e4ad518f13bd@baylibre.com>
+ <CAP4nuTVMZV7pz8NrM2MHcZzBdueRXjS+KYsU4=cQ1CB67gr_Hg@mail.gmail.com>
+ <ee3341d9-350e-a84d-6836-3401be679b2a@baylibre.com>
+ <CAP4nuTUt1vQjVP=3_NYaeu+m47f78ru6-MgGBiAqLeU9fJAsNg@mail.gmail.com>
+ <09c65310-9441-9b97-d9ae-4695f0dd16af@linaro.org>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <259e150c-f25a-86cf-1109-b7370b5d7c10@baylibre.com>
+Date:   Mon, 14 Jun 2021 15:17:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210612160422.330705-1-anup.patel@wdc.com> <20210612160422.330705-6-anup.patel@wdc.com>
- <878s3et831.wl-maz@kernel.org> <CAAhSdy2e9BsgtTL3ETRC-dvHW9hgKmgRi87Gsk+vUT-kMsJ4NQ@mail.gmail.com>
- <87a6nsrdkm.wl-maz@kernel.org>
-In-Reply-To: <87a6nsrdkm.wl-maz@kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 14 Jun 2021 18:43:25 +0530
-Message-ID: <CAAhSdy0jZTqZ+zTazpQLeCnbAHr99t40vEa-_GD0_UjBZsXWzg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 05/10] irqchip: Add ACLINT software interrupt driver
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <09c65310-9441-9b97-d9ae-4695f0dd16af@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 3:08 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Sun, 13 Jun 2021 13:25:40 +0100,
-> Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Sun, Jun 13, 2021 at 3:11 PM Marc Zyngier <maz@kernel.org> wrote:
-> > >
-> > > I'm sorry, but this really isn't an irqchip driver. This is a piece of
-> > > arch-specific code that uses *none* of the irq subsystem abstractions
-> > > apart from the IRQCHIP_DECLARE() macro.
-> >
-> > Yes, I was not sure we can call it IRQCHIP hence the RFC PATCH.
-> >
-> > Both ACLINT MSWI and SSWI are special devices providing only IPI
-> > support so I will re-think how to fit this.
->
-> It depends on how you think of IPIs in your architecture.
->
-> arm64 (and even now 32bit) have been moved to a mode where IPIs are
-> normal interrupts, as it helps with other things such as our pseudo
-> NMIs, and reduces code duplication. MIPS has done the same for a long
-> time (they don't have dedicated HW for that).
+Hi,
+On 11/06/2021 09:45, Daniel Lezcano wrote:
+> On 11/06/2021 09:30, Nick Xie wrote:
+>> Hello Neil,
+>>
+>>
+>> Neil Armstrong <narmstrong@baylibre.com> 于2021年6月11日周五 下午3:15写道：
+>>>
+>>> Hi,
+>>>
+>>> On 11/06/2021 08:54, Nick Xie wrote:
+>>>> Hello Neil,
+>>>>
+>>>> The MCU FAN won't work until the temperature reach to 80 degree centigrade,
+>>>> Do you think the temperature is too high?
+>>>
+>>> I think 80 is tool high, but I fear 50 is way too low, but if you think 50 is OK after you ran some tests, just add it to the commit log and it's ok for me.
+>>
+>> I think it is OK, we use it for a long time.
+> 
+> 50°C sounds like normal temperature with regular load. That means the
+> fan will be switched on most of the time when the board is used.
+> 
+> And this change may be put in regard with the other trip points in the
+> common DT. For instance, enable the fan when reaching 80°C but set the
+> passive trip point to 75°C instead of 85°C.
+> 
+> All that depends on the hardware characteristics and TDP which are in
+> the TRM normally.
+> 
 
-RISC-V is also moving in a similar direction with the RISC-V advanced
-interrupt architecture (AIA) specification which aims at defining an
-interrupt controller having MSI support, virtualization support and
-scalable for a large number of CPUs. The RISC-V AIA treats IPIs as
-normal interrupts.
+I don't think such data exist in the datasheet or other public document, but the vendor source tree
+sets:
+- passive: 75°C
+- hot 85°C
+- critical 110°C
 
-The RISC-V ACLINT based IPI support is for RISC-V systems which
-only need a simple interrupt controller without MSI support and
-virtualization support. These systems will not implement RISC-V AIA.
+we set upstream:
+- passive: 85°C
+- hot 95°C
+- critical 110°C
 
-Regards,
-Anup
+so maybe we should lower the passive & hot trip points, then the FAN 80°C trip point would be ok now according to Daniel's explanation.
 
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+Neil
