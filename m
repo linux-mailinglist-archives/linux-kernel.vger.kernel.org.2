@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227DB3A6195
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE09D3A615F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbhFNKtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45918 "EHLO mail.kernel.org"
+        id S233439AbhFNKq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:46:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232847AbhFNKml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:42:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46B0C61434;
-        Mon, 14 Jun 2021 10:35:40 +0000 (UTC)
+        id S233984AbhFNKj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:39:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0816613F0;
+        Mon, 14 Jun 2021 10:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666940;
-        bh=2SgvNj6ou6VNa7dm/tdITAyo9EzdsLrOwNOltAcAyho=;
+        s=korg; t=1623666854;
+        bh=dA5bjy7QX3MLpTI+QsI2EARSHA+gqsgQ+gB3nd4Mz8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G29Hv3Ox6qcodcgaFMhrerYMMLEPCK5yLkXNVuVt+Jc/1kZxL8fEx5nUZy8kh6b+6
-         BfZa7mKXRH/b2AQiwmGXYXaML3kPJH5hqOA5Wl3qYz4BPNnXJY74vhuVorKtvm7r+U
-         Y4ptUbM5SzPdcYKJkuelji6ukq7g4ovaPZzWd3XE=
+        b=mKX2MvTJpGiUUTJB30CxTsEA4Isfk7FO9tpedJ1Fi3L+W7PKRJroLmShFeltINkDS
+         VeKc1ED7cDOSSGPxIrPwtyU/0RcuWWutyOhDvFt9oaW/dFlJFMgASlkiy4NSmxR+K7
+         IloBPnJPUvrSx6Xv4eTjXfyTEj4DyqZ9jaBVlKbE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
-        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@nokia.com>,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 4.19 35/67] USB: f_ncm: ncm_bitrate (speed) is unsigned
+        stable@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.14 25/49] btrfs: return value from btrfs_mark_extent_written() in case of error
 Date:   Mon, 14 Jun 2021 12:27:18 +0200
-Message-Id: <20210614102644.953669068@linuxfoundation.org>
+Message-Id: <20210614102642.691369531@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Ritesh Harjani <riteshh@linux.ibm.com>
 
-commit 3370139745853f7826895293e8ac3aec1430508e upstream.
+commit e7b2ec3d3d4ebeb4cff7ae45cf430182fa6a49fb upstream.
 
-[  190.544755] configfs-gadget gadget: notify speed -44967296
+We always return 0 even in case of an error in btrfs_mark_extent_written().
+Fix it to return proper error value in case of a failure. All callers
+handle it.
 
-This is because 4250000000 - 2**32 is -44967296.
-
-Fixes: 9f6ce4240a2b ("usb: gadget: f_ncm.c added")
-Cc: Brooke Basile <brookebasile@gmail.com>
-Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Cc: Yauheni Kaliuta <yauheni.kaliuta@nokia.com>
-Cc: Linux USB Mailing List <linux-usb@vger.kernel.org>
-Acked-By: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210608005344.3762668-1-zenczykowski@gmail.com
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_ncm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/file.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -583,7 +583,7 @@ static void ncm_do_notify(struct f_ncm *
- 		data[0] = cpu_to_le32(ncm_bitrate(cdev->gadget));
- 		data[1] = data[0];
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1100,7 +1100,7 @@ int btrfs_mark_extent_written(struct btr
+ 	int del_nr = 0;
+ 	int del_slot = 0;
+ 	int recow;
+-	int ret;
++	int ret = 0;
+ 	u64 ino = btrfs_ino(inode);
  
--		DBG(cdev, "notify speed %d\n", ncm_bitrate(cdev->gadget));
-+		DBG(cdev, "notify speed %u\n", ncm_bitrate(cdev->gadget));
- 		ncm->notify_state = NCM_NOTIFY_CONNECT;
- 		break;
+ 	path = btrfs_alloc_path();
+@@ -1320,7 +1320,7 @@ again:
  	}
+ out:
+ 	btrfs_free_path(path);
+-	return 0;
++	return ret;
+ }
+ 
+ /*
 
 
