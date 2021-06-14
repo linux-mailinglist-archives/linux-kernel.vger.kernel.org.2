@@ -2,167 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403B93A6B3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788C93A6B40
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbhFNQHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:07:00 -0400
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:44989 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233910AbhFNQG7 (ORCPT
+        id S234449AbhFNQHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233901AbhFNQHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:06:59 -0400
-Received: by mail-lf1-f42.google.com with SMTP id r198so21927496lff.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:04:46 -0700 (PDT)
+        Mon, 14 Jun 2021 12:07:20 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B713C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:05:17 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id x14so20867512ljp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lTise3u7DUw/GSwrfGFy2ZCu2gr1M+jVma19ukLn4cw=;
-        b=wMamYv5y1SDOIBuBMVMUNWyN6l0EBkMyGouM/b6So5/CUEPxxYk1T6lCxM3kTpItRK
-         2dlDTCjm5bQ52+vwyZPtee0AbnD+ULpJfAOAtGoLGwaJPmpgpW9vDiSi0xwvONZ1+yJL
-         EwpTMssnf1Oc6Fu+0YycbXNMQVhM5vKLUg3JxcDbujE7MHiNNxI7moliMQfDC6NKYyGk
-         GcE1QXP1CbMnKLY+oYLHvWDxSDVk38ethXqqZHwK1Iq8ow2g2UZloUPU0fVt/Z7Iq2Xp
-         T96xPecbpiWrQ+cqLTkWb7encaaYuFiP+BlU2tLbFAp5V6ZgK4sL3kcLq8we7h3DriKq
-         4nvA==
+        bh=Ow7a+sii5rGTLkrzdJ8CF/zyjgA3Ko7ArHu5WM0zFOY=;
+        b=pcVFWS9j3xz3+z2SwG8vfG4mk0s2B60pXXIzfrX/S8ZaMJsmtVpLKynNRkTRIuBVYT
+         XTsotc0T5WjESI4i+vbJdShTnSaWXoDjGMqiI91qZwB3P7+i05VPnRtEzBdBk6cJXyId
+         AJFqrBAntEVTuEyoBUWZUse1WPHGYACF2Nm9yPpGOnOMLB1tmcwVAVeDledwRl4TVO3x
+         jeMusJkb6DQFvKDuSt1SaZj5vOrOgeK5W5frjuVZv6ESbHJAlvNDQ+J4v4A36IUNMTc7
+         7qJxgntaT3mSB8xKYSPyCtxdfsKekCwtee9DWr/H0NBek+OkJ03yTBCMgDC5eWKuiycg
+         7Fdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lTise3u7DUw/GSwrfGFy2ZCu2gr1M+jVma19ukLn4cw=;
-        b=cHNAQilXMaWccVJLR/cjSSp82E8655lR/Qw1VgV5s1wkEhJ20dbdNO96lkRK8qlAUz
-         EMRl9tPqk9lJd8106/8yN8VzFLiXoPuXqrPVxvkNnJZ8m24NvlyncLS4Ed+Dg1TVRq9v
-         uS0y+aFwDFMN6YTB2BXnN33Ggsccc7Q8EOmLYygHYO19qDvFxY0TMwFiS+RUvLhRhCey
-         4Xu/3AL/Qdbsl33dyhHxjitq+jWY2WKH2prBiSoH9M/HTCLrvY+Lh5Mu7i4BJjDygqAt
-         JaCac3TqCJEC1da5gCbXDm26y8RsteLzOmrhIwkrGkbWbwNdpNbqS22/9KBB0vhkEQLs
-         EsFw==
-X-Gm-Message-State: AOAM530Fn/K/yrAggLm/wAWh/w6HILP2yapPR1lL3QiHwZyfbDmux6Ru
-        NDXnELmFhfYlMRShqxjiL8ecdiU78wVWseKMV/Kvtg==
-X-Google-Smtp-Source: ABdhPJyOoWRlrED4Goky2EOjXReGM1dUHHdlbwtEtE4QvWtGuRvF53tM5yVcNSnmscF6Zb/ZVNJp9kUcBJNGi+q3F2o=
-X-Received: by 2002:ac2:4acf:: with SMTP id m15mr3929557lfp.286.1623686626088;
- Mon, 14 Jun 2021 09:03:46 -0700 (PDT)
+        bh=Ow7a+sii5rGTLkrzdJ8CF/zyjgA3Ko7ArHu5WM0zFOY=;
+        b=hSDdpQilcg/gNUocFcw+4QuKKpNLmW1tWfDhIHwY3WPG9RxxI0JBRE6pQSQ91TNkX7
+         wLwpi6gbqj+vjw6+1k0/qijH3gE/ZpjQaTm1X5Vidppb7POXUmfXjCwkWsHEcRBKftCX
+         zkXVtZ3FNfIFah0Q6aOUCiKyODQw77HQPe4Foli2mSU/6xPpkc6AyKribgrsuC6kFK7c
+         Pu1bqrixL0Ek+wrZCgsYFglL0Aj/q/TFIOuZbf5lWJHMxQXDZtYjwYoj2ZM73IJAG163
+         H7ZOKPtw/5FTiSdgrANbVupa7LDNRXITvxdOfm06HzE7ITjyhxaBWjVb8++u5GNitqv4
+         6Wag==
+X-Gm-Message-State: AOAM530Qw492HHkTbB3PpHeJHjt5Y+xmc4K/k7f+LLLc0Ave21BOwiwt
+        ztz3kRnQHaTbz9kU5gFSwhC1JNNblTxj/IvKdlmg2Q==
+X-Google-Smtp-Source: ABdhPJwZ9MQ5vsdMZvePpTLaQdMArN0PHh9W12ZVCrWjYO1IRTPO7nsFC8QAjZn4SeuaVcLsFvar8/xGYBTEmK/TM9A=
+X-Received: by 2002:a2e:b5b5:: with SMTP id f21mr14340185ljn.479.1623686715439;
+ Mon, 14 Jun 2021 09:05:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210610150324.22919-1-lukasz.luba@arm.com> <20210610150324.22919-3-lukasz.luba@arm.com>
-In-Reply-To: <20210610150324.22919-3-lukasz.luba@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 14 Jun 2021 18:03:34 +0200
-Message-ID: <CAKfTPtAq5Hn7iQ-USO5La4B_jkYXzSvFSFrCDq47gjXDGghyTQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] sched/fair: Take thermal pressure into account
- while estimating energy
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Beata Michalska <Beata.Michalska@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Amit Kachhap <amit.kachhap@gmail.com>, amitk@kernel.org,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
+References: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
+In-Reply-To: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 14 Jun 2021 09:05:04 -0700
+Message-ID: <CAKwvOd=PYrMnNOu060T3Z26RJriNXqu3iM85Daink4-BN__2sQ@mail.gmail.com>
+Subject: Re: [PATCH] gcov,x86: Mark GCOV broken for x86
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 at 17:03, Lukasz Luba <lukasz.luba@arm.com> wrote:
+On Mon, Jun 14, 2021 at 3:17 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> Energy Aware Scheduling (EAS) needs to be able to predict the frequency
-> requests made by the SchedUtil governor to properly estimate energy used
-> in the future. It has to take into account CPUs utilization and forecast
-> Performance Domain (PD) frequency. There is a corner case when the max
-> allowed frequency might be reduced due to thermal. SchedUtil is aware of
-> that reduced frequency, so it should be taken into account also in EAS
-> estimations.
 >
-> SchedUtil, as a CPUFreq governor, knows the maximum allowed frequency of
-> a CPU, thanks to cpufreq_driver_resolve_freq() and internal clamping
-> to 'policy::max'. SchedUtil is responsible to respect that upper limit
-> while setting the frequency through CPUFreq drivers. This effective
-> frequency is stored internally in 'sugov_policy::next_freq' and EAS has
-> to predict that value.
->
-> In the existing code the raw value of arch_scale_cpu_capacity() is used
-> for clamping the returned CPU utilization from effective_cpu_util().
-> This patch fixes issue with too big single CPU utilization, by introducing
-> clamping to the allowed CPU capacity. The allowed CPU capacity is a CPU
-> capacity reduced by thermal pressure signal. We rely on this load avg
+> As recently discovered, there is no function attribute to disable the
+> -fprofile-generate instrumentation. As such, GCOV is fundamentally
+> incompatible with architectures that rely on 'noinstr' for correctness.
 
-you don't rely on load avg value but on raw thermal pressure value now
+Is there context for comment, or is this patch meant as a joke?
 
-> geometric series in similar way as other mechanisms in the scheduler.
 >
-> Thanks to knowledge about allowed CPU capacity, we don't get too big value
-> for a single CPU utilization, which is then added to the util sum. The
-> util sum is used as a source of information for estimating whole PD energy.
-> To avoid wrong energy estimation in EAS (due to capped frequency), make
-> sure that the calculation of util sum is aware of allowed CPU capacity.
+> Until such time as that compilers have added a function attribute to
+> disable this instrumentation, mark GCOV as broken.
 >
-> This thermal pressure might be visible in scenarios where the CPUs are not
-> heavily loaded, but some other component (like GPU) drastically reduced
-> available power budget and increased the SoC temperature. Thus, we still
-> use EAS for task placement and CPUs are not over-utilized.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  kernel/sched/fair.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+>  arch/x86/Kconfig    | 2 +-
+>  kernel/gcov/Kconfig | 4 ++++
+>  2 files changed, 5 insertions(+), 1 deletion(-)
 >
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 161b92aa1c79..237726217dad 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6527,8 +6527,12 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
->         struct cpumask *pd_mask = perf_domain_span(pd);
->         unsigned long cpu_cap = arch_scale_cpu_capacity(cpumask_first(pd_mask));
->         unsigned long max_util = 0, sum_util = 0;
-> +       unsigned long _cpu_cap, thermal_pressure;
->         int cpu;
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 86dae426798b..c0f8c9d4c31a 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -75,7 +75,7 @@ config X86
+>         select ARCH_HAS_FAST_MULTIPLIER
+>         select ARCH_HAS_FILTER_PGPROT
+>         select ARCH_HAS_FORTIFY_SOURCE
+> -       select ARCH_HAS_GCOV_PROFILE_ALL
+> +       select ARCH_HAS_GCOV_BROKEN
+>         select ARCH_HAS_KCOV                    if X86_64 && STACK_VALIDATION
+>         select ARCH_HAS_MEM_ENCRYPT
+>         select ARCH_HAS_MEMBARRIER_SYNC_CORE
+> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> index 58f87a3092f3..74b028a66ebe 100644
+> --- a/kernel/gcov/Kconfig
+> +++ b/kernel/gcov/Kconfig
+> @@ -1,10 +1,14 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  menu "GCOV-based kernel profiling"
 >
-> +       thermal_pressure = arch_scale_thermal_pressure(cpumask_first(pd_mask));
-
-Do you really need to use this intermediate variable thermal_pressure
-? Seems to be used only below
-
-With these 2 comments above fixed,
-
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-
-> +       _cpu_cap = cpu_cap - thermal_pressure;
+> +config ARCH_HAS_GCOV_BROKEN
+> +       def_bool n
 > +
->         /*
->          * The capacity state of CPUs of the current rd can be driven by CPUs
->          * of another rd if they belong to the same pd. So, account for the
-> @@ -6564,8 +6568,10 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
->                  * is already enough to scale the EM reported power
->                  * consumption at the (eventually clamped) cpu_capacity.
->                  */
-> -               sum_util += effective_cpu_util(cpu, util_running, cpu_cap,
-> -                                              ENERGY_UTIL, NULL);
-> +               cpu_util = effective_cpu_util(cpu, util_running, cpu_cap,
-> +                                             ENERGY_UTIL, NULL);
-> +
-> +               sum_util += min(cpu_util, _cpu_cap);
->
->                 /*
->                  * Performance domain frequency: utilization clamping
-> @@ -6576,7 +6582,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
->                  */
->                 cpu_util = effective_cpu_util(cpu, util_freq, cpu_cap,
->                                               FREQUENCY_UTIL, tsk);
-> -               max_util = max(max_util, cpu_util);
-> +               max_util = max(max_util, min(cpu_util, _cpu_cap));
->         }
->
->         return em_cpu_energy(pd->em_pd, max_util, sum_util);
-> --
-> 2.17.1
->
+>  config GCOV_KERNEL
+>         bool "Enable gcov-based kernel profiling"
+>         depends on DEBUG_FS
+>         depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
+> +       depends on !ARCH_HAS_GCOV_BROKEN
+>         select CONSTRUCTORS
+>         default n
+>         help
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
