@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF5F3A647F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D3B3A6325
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234609AbhFNLZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42526 "EHLO mail.kernel.org"
+        id S235633AbhFNLLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:11:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234717AbhFNLLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:11:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FCDA61951;
-        Mon, 14 Jun 2021 10:48:03 +0000 (UTC)
+        id S234907AbhFNK7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:59:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4128261628;
+        Mon, 14 Jun 2021 10:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667684;
-        bh=ROxKfwcxodE0zhvauAbH2Wq6lyAIhtvHimFSA8eXLvA=;
+        s=korg; t=1623667344;
+        bh=GuPFsSuib4mnjhLtL2ddfg1ENJrgqkvaZ4q0gRNk1Tw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JRi6odW9pNYr0QBFWAg7XPnCLruJIsJf04TkL+vKmZZcgScMKp1iJBXV3U28aIy9e
-         G9tWyYVq7AFLK81jslNy4zTxp4B5MoIZOysOJun9hcgWo4ZVCoxlXArx09AwDzeYmh
-         uoAGf6Q6Ahx+b+1bsAN5IJxrfwpiFGFDuVSaTtYw=
+        b=En/h0YyeI/mQtRWk4TMcuf1Rpmf1iUm6qPsj3pBhdqSj+ubFDMFsseMktUmKQz22y
+         ZhJi26h0g3mGA2u/Lb1bBlNeiNz8CQU6aSC0SCuykBbnj7fRwUIQocTvRl1WYlsCAP
+         nL7aLk3doqq/rbdZWRnuav7HLe0jOIL/z1geAV7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        Candle Sun <candlesea@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org, Jeimon <jjjinmeng.zhou@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 035/173] Makefile: LTO: have linker check -Wframe-larger-than
-Date:   Mon, 14 Jun 2021 12:26:07 +0200
-Message-Id: <20210614102659.317088098@linuxfoundation.org>
+Subject: [PATCH 5.10 007/131] net/nfc/rawsock.c: fix a permission check bug
+Date:   Mon, 14 Jun 2021 12:26:08 +0200
+Message-Id: <20210614102653.218539315@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Jeimon <jjjinmeng.zhou@gmail.com>
 
-[ Upstream commit 24845dcb170e16b3100bd49743687648c71387ae ]
+[ Upstream commit 8ab78863e9eff11910e1ac8bcf478060c29b379e ]
 
--Wframe-larger-than= requires stack frame information, which the
-frontend cannot provide. This diagnostic is emitted late during
-compilation once stack frame size is available.
+The function rawsock_create() calls a privileged function sk_alloc(), which requires a ns-aware check to check net->user_ns, i.e., ns_capable(). However, the original code checks the init_user_ns using capable(). So we replace the capable() with ns_capable().
 
-When building with LTO, the frontend simply lowers C to LLVM IR and does
-not have stack frame information, so it cannot emit this diagnostic.
-When the linker drives LTO, it restarts optimizations and lowers LLVM IR
-to object code. At that point, it has stack frame information but
-doesn't know to check for a specific max stack frame size.
-
-I consider this a bug in LLVM that we need to fix. There are some
-details we're working out related to LTO such as which value to use when
-there are multiple different values specified per TU, or how to
-propagate these to compiler synthesized routines properly, if at all.
-
-Until it's fixed, ensure we don't miss these. At that point we can wrap
-this in a compiler version guard or revert this based on the minimum
-support version of Clang.
-
-The error message is not generated during link:
-  LTO     vmlinux.o
-ld.lld: warning: stack size limit exceeded (8224) in foobarbaz
-
-Cc: Sami Tolvanen <samitolvanen@google.com>
-Reported-by: Candle Sun <candlesea@gmail.com>
-Suggested-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210312010942.1546679-1-ndesaulniers@google.com
+Signed-off-by: Jeimon <jjjinmeng.zhou@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/nfc/rawsock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index ebc02c56db03..358a2b103de9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -912,6 +912,11 @@ CC_FLAGS_LTO	+= -fvisibility=hidden
+diff --git a/net/nfc/rawsock.c b/net/nfc/rawsock.c
+index 9c7eb8455ba8..5f1d438a0a23 100644
+--- a/net/nfc/rawsock.c
++++ b/net/nfc/rawsock.c
+@@ -329,7 +329,7 @@ static int rawsock_create(struct net *net, struct socket *sock,
+ 		return -ESOCKTNOSUPPORT;
  
- # Limit inlining across translation units to reduce binary size
- KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
-+
-+# Check for frame size exceeding threshold during prolog/epilog insertion.
-+ifneq ($(CONFIG_FRAME_WARN),0)
-+KBUILD_LDFLAGS	+= -plugin-opt=-warn-stack-size=$(CONFIG_FRAME_WARN)
-+endif
- endif
- 
- ifdef CONFIG_LTO
+ 	if (sock->type == SOCK_RAW) {
+-		if (!capable(CAP_NET_RAW))
++		if (!ns_capable(net->user_ns, CAP_NET_RAW))
+ 			return -EPERM;
+ 		sock->ops = &rawsock_raw_ops;
+ 	} else {
 -- 
 2.30.2
 
