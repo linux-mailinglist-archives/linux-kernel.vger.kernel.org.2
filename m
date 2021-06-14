@@ -2,158 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1A73A5E30
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934D43A5E3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhFNIRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
+        id S232633AbhFNITt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhFNIRN (ORCPT
+        with ESMTP id S232530AbhFNITr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:17:13 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19D7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:15:10 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id r16so13152563oiw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:15:10 -0700 (PDT)
+        Mon, 14 Jun 2021 04:19:47 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC14C061574;
+        Mon, 14 Jun 2021 01:17:44 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id l4so6446761ljg.0;
+        Mon, 14 Jun 2021 01:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4pRtgfvLbGPzrLhFG65GMYSzicptmrP7vbR+C97caBc=;
-        b=VLHHZ0qLq+e7z8mXy3BFipUHYhcLBO1dtTbP+GpZ8lf5jb4Wb7dMhxrKM/y1J1+0op
-         vN46g/Vzkb0i00DVJoeF8QlS5q1e53+oymDEFhYowhF6pCPTB/kOkGV2xGeB/qbzoJIh
-         Xw1HJo58vzSk9A7XrMPcc08h355oz320QSQkORduz65QZgI0wvaqDaC/d6+UlqlZlIVw
-         aENedEszspBTRK0cT9DKqqfnByy00IvN68Dc9c9ecQHaBN2TFnnAUtiNqFZTvgGKGFIg
-         e17ely+2aYpwHizBSy5y32mtnkjOez6fyOeFkXpucVfclQ+sN61lnoyba8EHPObuSDcs
-         wGrA==
+        bh=f5Jp7erhWbJZ5+XSgSsBZF1Q+dz9Itr2uV4OBRRsdC8=;
+        b=bZi5B8thvLyqDRJYtVqVlXEcW/9SPCjHKySHjl5Z3P96ady14ZNgfE5hW9D1NHQlHo
+         sZ+xz7jfk7C+pSo1adb78JeSvcKOYFscRLz3C+U6+tOMkMRl/JrX7m0C22ISFqZlsJ3D
+         NZG01kq2aDkgwl8RW45yDhR2Yf34gMO4UVrGxChIXyskKfJMXOmuotCdZps+bsJ2rGyJ
+         lqtRD00X3shgCvM88jH/F7Z/KzZWeXB+HY0b1sP4ACJafI/ThlqmgmTQJGlj+mab2+gE
+         nqxZDwCwishPFA5TsmfvjXOEBv3drNb47dQYwxZRUB5JnL8VRSLTVj17FfUhr4jekLIC
+         lg1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4pRtgfvLbGPzrLhFG65GMYSzicptmrP7vbR+C97caBc=;
-        b=cX3hCy7V/SaMpBQSWN+ioDMdI1YKmLsgMj3AXnkxQaOyB4t5JKvhLGeotwNDUtkY1b
-         kujUhkxmlrnT0xoMH5LGRlPAPTE1SyGUdJEvfhd/Aupwo0zj7/a7p8r7qghXT7KBFRpN
-         GSPsRfFra4FBhkbh9sM19MgS2FScUY+gDsnnTQvUjYVwGClSsJajBiwoEBRiKR4UoExd
-         xpGuPY880NmfYhI9ZPZ+Zw/FNxUAY6TUATtC8wGOJOs2pcqk5n4CU1ktjFMJBpakVBeM
-         6oXnSziHIVPXkTQw4zR1hUOLhX7u0+rPubaV7y/XyP8e7/vZ+WvlNYWOXi0j6gOat8+y
-         ysOQ==
-X-Gm-Message-State: AOAM530TTWQB+7dWdB7qULq8IQvpZsOnT2g2a+2MoZeW8N3h3Ub8FRSm
-        +VnkwYSwjNE1xMq7LRpHrRsNGl+LrgEG4ZSl7lc9nQ==
-X-Google-Smtp-Source: ABdhPJwp5tDx5MW8YWHgRbHBggboYibKfTG3AL0Ime7FWwsGYf/0YkJDNZP3s/tm9klzMC7W1IE2swCR3zMVVqiR/tg=
-X-Received: by 2002:aca:4bd7:: with SMTP id y206mr9838923oia.40.1623658510036;
- Mon, 14 Jun 2021 01:15:10 -0700 (PDT)
+        bh=f5Jp7erhWbJZ5+XSgSsBZF1Q+dz9Itr2uV4OBRRsdC8=;
+        b=VCmpt4rxMZPmmmNw7mpE6eKVBIKlUNjezTAafXFGXjq/5tcUZKtduOCYIuneMj0W5q
+         7PYy4TsXclNv5CGw0mb6mk7W5xdpb7iRUI06cc9CsPD+HzjvUTDe8v1lIXRq3pFfEEe1
+         6nj5XiHngHqkcwIk2dQVXcXC+dZyrufk9XNiTDt7G73GRDBc3uDe8WFxQiT64GOXYbUc
+         4dG12KW5zzeFFac60SKzz4/VBqv9nNgi8ATysBB6QUXcIwfgOysytlDCy+zkRGqbF0Om
+         xXAB9KIY1W48xx04d/vaat4DRiqupS/JYiVOBX2aZQrE1080/PVohm4bRW/LkgKKoT7h
+         PmEQ==
+X-Gm-Message-State: AOAM530KWD7pxNYvrUCDsMTEgTGqd9SGQMX0bms+CY1Mpyhjdal2RnfW
+        wlUuw7RgW6I/X5o1QUWI4tYwt7eml3aSdTimGw==
+X-Google-Smtp-Source: ABdhPJyRr56ya1c+rK9ezq+7JqOn63buDppcbORgtGLvt571A8HhQHeqv24NcTXaBgSk4SUs8zBHiKzv/DG0ZLshoZ4=
+X-Received: by 2002:a2e:b614:: with SMTP id r20mr12881018ljn.382.1623658663145;
+ Mon, 14 Jun 2021 01:17:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
- <20210607113840.15435-4-bhupesh.sharma@linaro.org> <YMLRpLoc7LiegLp/@builder.lan>
-In-Reply-To: <YMLRpLoc7LiegLp/@builder.lan>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Mon, 14 Jun 2021 13:44:59 +0530
-Message-ID: <CAH=2Ntxo3sqYuqe67fh5oqFG_sgnbc26pvvu0Dg=Nsux7tk-YA@mail.gmail.com>
-Subject: Re: [PATCH 3/8] dt-bindings: arm: qcom: Add compatible for
- SA8155p-adp board
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        bhupesh.linux@gmail.com
+References: <3494dcf6-14ca-be2b-dbf8-dda2e208b70b@ti.com> <20210610004342.4493-1-praneeth@ti.com>
+ <YMGP/aim6CD270Yo@lunn.ch> <CAHvQdo0YAmAo_1m7LgLS200a7fNz-vYJkwR74AxckQm-iu0tuA@mail.gmail.com>
+ <e4f3a1c2-069e-b58a-eadf-b5505fb42e02@ti.com>
+In-Reply-To: <e4f3a1c2-069e-b58a-eadf-b5505fb42e02@ti.com>
+From:   Johannes Pointner <h4nn35.work@gmail.com>
+Date:   Mon, 14 Jun 2021 10:17:32 +0200
+Message-ID: <CAHvQdo1U_L=pETmTJXjdzO+k7vNTxMyujn99Y3Ot9xAyQu=atQ@mail.gmail.com>
+Subject: Re: [PATCH v2] net: phy: dp83867: perform soft reset and retain
+ established link
+To:     "Bajjuri, Praneeth" <praneeth@ti.com>,
+        Geet Modi <geet.modi@ti.com>, Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Bjorn,
+Hello Praneeth,
 
-On Fri, 11 Jun 2021 at 08:29, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Fri, Jun 11, 2021 at 7:05 PM Bajjuri, Praneeth <praneeth@ti.com> wrote:
 >
-> On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
+> Hannes,
 >
-> > SA8155p-adp board is based on Qualcomm Snapdragon sm8150
-> > SoC.
+> On 6/10/2021 12:53 AM, Johannes Pointner wrote:
+> > Hello,
 > >
-> > Add support for the same.
->
-> The SA8155p is similar to SM8150 and we can reuse most things, but I
-> think we can afford to add qcom,sa8155p in the DT bindings.
-
-Sure will do the same in v2.
-
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: Liam Girdwood <lgirdwood@gmail.com>
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Andy Gross <agross@kernel.org>
-> > Cc: devicetree@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: linux-gpio@vger.kernel.org
-> > Cc: bhupesh.linux@gmail.com
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/arm/qcom.yaml | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
+> > On Thu, Jun 10, 2021 at 6:10 AM Andrew Lunn <andrew@lunn.ch> wrote:
+> >>
+> >> On Wed, Jun 09, 2021 at 07:43:42PM -0500, praneeth@ti.com wrote:
+> >>> From: Praneeth Bajjuri <praneeth@ti.com>
+> >>>
+> >>> Current logic is performing hard reset and causing the programmed
+> >>> registers to be wiped out.
+> >>>
+> >>> as per datasheet: https://www.ti.com/lit/ds/symlink/dp83867cr.pdf
+> >>> 8.6.26 Control Register (CTRL)
+> >>>
+> >>> do SW_RESTART to perform a reset not including the registers,
+> >>> If performed when link is already present,
+> >>> it will drop the link and trigger re-auto negotiation.
+> >>>
+> >>> Signed-off-by: Praneeth Bajjuri <praneeth@ti.com>
+> >>> Signed-off-by: Geet Modi <geet.modi@ti.com>
+> >>
+> >> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> >>
+> >>      Andrew
 > >
-> > diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-> > index 9b27e991bddc..b5897f1f9695 100644
-> > --- a/Documentation/devicetree/bindings/arm/qcom.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-> > @@ -42,11 +42,13 @@ description: |
-> >          sdm660
-> >          sdm845
-> >          sdx55
-> > +        sm8150
+> > I reported a few days ago an issue with the DP83822 which I think is
+> > caused by a similar change.
+> > https://lore.kernel.org/netdev/CAHvQdo2yzJC89K74c_CZFjPydDQ5i22w36XPR5tKVv_W8a2vcg@mail.gmail.com/
+> > In my case I can't get an link after this change, reverting it fixes
+> > the problem for me.
 >
-> Naturally sm8150 should be part of this list, but please also add
-> sa8155p as well.
+> Are you saying that instead of reset if sw_restart is done as per this
+> patch, there is no issue?
+In my case(DP83822 connected to an i.MX6) if the digital(SW) restart
+is used (Bit 14) I have the issue that I can' get a link.
+ip addr shows:
+1: lo: <LOOPBACK> mtu 65536 qdisc noop qlen 1000
+   link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 1000
+   link/ether 00:60:65:54:32:10 brd ff:ff:ff:ff:ff:ff
 
-Ok.
-
-> >          sm8250
-> >          sm8350
-> >
-> >    The 'board' element must be one of the following strings:
-> >
-> > +        adp
-> >          cdp
-> >          cp01-c1
-> >          dragonboard
-> > @@ -198,6 +200,12 @@ properties:
-> >                - qcom,ipq6018-cp01-c1
-> >            - const: qcom,ipq6018
-> >
-> > +      - items:
-> > +          - enum:
-> > +              - qcom,sa8155p-adp
-> > +              - qcom,sm8150-mtp
-> > +          - const: qcom,sm8150
->
-> And please split this in two (one qcom,sm8150-mtp and qcom,sm8150, and
-> one qcom,sa8155p-adp and qcom,sa8155p).
->
-> And note that this is saying that your compatible needs to be one of the
-> enum entries, followed by the const, but in your dts you only specified
-> qcom,sa8155p-adp. It needs to be:
->
->         compatible = "qcom,sa8155p-adp", "qcom,sa8155p";
-
-Sure will do the same in v2.
+If I revert this back to using the SW reset (Bit 15) it works again.
 
 Regards,
-Bhupesh
-
-> > +
-> >        - items:
-> >            - enum:
-> >                - qcom,qrb5165-rb5
-> > --
-> > 2.31.1
-> >
+Hannes
