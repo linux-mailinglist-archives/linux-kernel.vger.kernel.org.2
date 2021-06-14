@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998BC3A6BF9
+	by mail.lfdr.de (Postfix) with ESMTP id E16B93A6BFA
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234777AbhFNQj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:39:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55752 "EHLO
+        id S234802AbhFNQkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:40:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55772 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbhFNQjw (ORCPT
+        with ESMTP id S234552AbhFNQjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:39:52 -0400
-Message-Id: <20210614155353.825709513@linutronix.de>
+        Mon, 14 Jun 2021 12:39:53 -0400
+Message-Id: <20210614155353.984120664@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688668;
+        s=2020; t=1623688669;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=b0UE/Wtjy44wT2PV0JtkA5Gooc1f+d4nXKHTY1eGR+U=;
-        b=w1zegg7b1eOG6S4k8sglb7A/QuR3mRpIUnDnIDvck1d8pWBQv1rIrGn/TnywuFBpJgdcJe
-        HJ7uhQRb51vwkKRMO6bqQgmGSGvjKWwlwRpFwwxLKNoE+RhmxYSNxSSBLMs8oy8JabReFA
-        ZXhqHUun+7ERjDWDY1WAve4IZaVA94K6yrKZupLBfyqbU8yKAEDrK1cdGc4mb1zPNzB3tE
-        KIbYpOiprnflov+3n1jrOmR8SIAi99H39/UEGjEfPMtQEH+0NWDLA3q8dBzV0ouyP/ovzR
-        vdOk77XCKVDzfi/z6HrU6HEF1qrj5UwM7E+j81W14xdFx3NFyLcnlEw6E1MGWw==
+        bh=OxziZc4Tj4SRAuxrciou8wAkOhY6kml5MAK8bosSTdw=;
+        b=Wpd3279xswIsq6IZJ3SuM5ZZFGRfBUfL0RcpfSyVDR6Lk9lQuoQXOyiMm3r6TwW6P4rJyT
+        /vCB5fwuv0aPhsZZr8ower6WZTeg5PatSnwToNHDqMNJjkpeLce2WFzWMhQb4ipTTIS+MO
+        ERfZP56VZ0iNTWjSHYeSxo30W5DdTWosC2e6SzXv9ZzrDNc4mvXZfrkAVCFQgVJVhkI9re
+        K+N53cWMNhVu3QrXE6Lq3tMR2VAd0TU8z41q/5UVMoeUHgnANRsaJk/Om8Be6J5MOV6Xiv
+        QUJPiHnuKVNzBfKk4nQ0Il6otQ69/MRFhGhN57z2ZY9brIW6bkHFZfSUhfU5fA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688668;
+        s=2020e; t=1623688669;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=b0UE/Wtjy44wT2PV0JtkA5Gooc1f+d4nXKHTY1eGR+U=;
-        b=fd3oRFJMyne6H2BQFJQcQwPANLdfliowx+Xh+oIYAr9oqumzfDFonYc7uAhSdTQsNIm0QR
-        w8u4fkoyeI3CAWBQ==
-Date:   Mon, 14 Jun 2021 17:44:10 +0200
+        bh=OxziZc4Tj4SRAuxrciou8wAkOhY6kml5MAK8bosSTdw=;
+        b=NqAhYbwrYhN+2LtnvT4iKgBx+5lQrCm8ozsStKlKEwT5s7DAo3j820bCRI9/lk1JUUqH3k
+        WP95cLq7wyeY15Aw==
+Date:   Mon, 14 Jun 2021 17:44:11 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,8 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 02/52] x86/fpu: Fix copy_xstate_to_kernel() gap handling
+Subject: [patch V2 03/52] x86/pkeys: Revert a5eff7259790 ("x86/pkeys: Add PKRU
+ value to init_fpstate")
 References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,179 +54,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gap handling in copy_xstate_to_kernel() is wrong in two aspects when
-XSAVES is in use.
+This cannot work and it's unclear how that ever made a difference.
 
-  1) Copying of xstate.i387.xmm_space is only copied when the SSE feature
-     bit is set. This is not correct because YMM (AVX) shares the XMM space
-     and that state must also be copied if only the YMM feature bit set
-     like already done for MXCSR.
+init_fpstate.xsave.header.xfeatures is always 0 so get_xsave_addr() will
+always return a NULL pointer, which will prevent storing the default PKRU
+value in initfp_state.
 
-  2) Using init_fpstate for copying the init state of features which are
-     not set in the xstate header is only correct for the legacy area, but
-     not for the extended features area because when XSAVES is in use then
-     init_fpstate is in compacted form which means the xstate offsets which
-     are used to copy from init_fpstate are not valid.
-
-     Fortunately this is not a real problem today because all extended
-     features in use have an all zeros init state, but it is wrong
-     nevertheless and with a potentially dynamically sized init_fpstate
-     this would result in access outside of the init_fpstate.
-
-Fix this by:
-
-  1) Copying XMM space when the SSE or the YMM feature bits are set
-
-  2) Keeping track of the last copied state in the target buffer and
-     explicitely zero it when there is a feature or alignment gap.
-
-     Use the compacted offset when accessing the extended feature space
-     in init_fpstate.
-
-Fixes: b8be15d58806 ("x86/fpu/xstate: Re-enable XSAVES")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
 ---
-V2: New patch
+V2: Fix subject
 ---
- arch/x86/kernel/fpu/xstate.c |  105 ++++++++++++++++++++++++-------------------
- 1 file changed, 61 insertions(+), 44 deletions(-)
+ arch/x86/kernel/cpu/common.c |    5 -----
+ arch/x86/mm/pkeys.c          |    6 ------
+ 2 files changed, 11 deletions(-)
 
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1082,20 +1082,10 @@ static inline bool xfeatures_mxcsr_quirk
- 	return true;
- }
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -466,8 +466,6 @@ static bool pku_disabled;
  
--static void fill_gap(struct membuf *to, unsigned *last, unsigned offset)
-+static void copy_feature(bool from_xstate, struct membuf *to, void *xstate,
-+			 void *init_xstate, unsigned int size)
+ static __always_inline void setup_pku(struct cpuinfo_x86 *c)
  {
--	if (*last >= offset)
--		return;
--	membuf_write(to, (void *)&init_fpstate.xsave + *last, offset - *last);
--	*last = offset;
--}
+-	struct pkru_state *pk;
 -
--static void copy_part(struct membuf *to, unsigned *last, unsigned offset,
--		      unsigned size, void *from)
--{
--	fill_gap(to, last, offset);
--	membuf_write(to, from, size);
--	*last = offset + size;
-+	membuf_write(to, from_xstate ? xstate : init_xstate, size);
- }
+ 	/* check the boot processor, plus compile options for PKU: */
+ 	if (!cpu_feature_enabled(X86_FEATURE_PKU))
+ 		return;
+@@ -478,9 +476,6 @@ static __always_inline void setup_pku(st
+ 		return;
  
- /*
-@@ -1107,10 +1097,10 @@ static void copy_part(struct membuf *to,
-  */
- void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave)
- {
-+	const unsigned int off_mxcsr = offsetof(struct fxregs_state, mxcsr);
-+	struct xregs_state *xinit = &init_fpstate.xsave;
- 	struct xstate_header header;
--	const unsigned off_mxcsr = offsetof(struct fxregs_state, mxcsr);
--	unsigned size = to.left;
--	unsigned last = 0;
-+	unsigned int zerofrom;
- 	int i;
- 
+ 	cr4_set_bits(X86_CR4_PKE);
+-	pk = get_xsave_addr(&init_fpstate.xsave, XFEATURE_PKRU);
+-	if (pk)
+-		pk->pkru = init_pkru_value;
  	/*
-@@ -1120,41 +1110,68 @@ void copy_xstate_to_kernel(struct membuf
- 	header.xfeatures = xsave->header.xfeatures;
- 	header.xfeatures &= xfeatures_mask_user();
+ 	 * Setting X86_CR4_PKE will cause the X86_FEATURE_OSPKE
+ 	 * cpuid bit to be set.  We need to ensure that we
+--- a/arch/x86/mm/pkeys.c
++++ b/arch/x86/mm/pkeys.c
+@@ -10,7 +10,6 @@
  
--	if (header.xfeatures & XFEATURE_MASK_FP)
--		copy_part(&to, &last, 0, off_mxcsr, &xsave->i387);
--	if (header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM))
--		copy_part(&to, &last, off_mxcsr,
--			  MXCSR_AND_FLAGS_SIZE, &xsave->i387.mxcsr);
--	if (header.xfeatures & XFEATURE_MASK_FP)
--		copy_part(&to, &last, offsetof(struct fxregs_state, st_space),
--			  128, &xsave->i387.st_space);
--	if (header.xfeatures & XFEATURE_MASK_SSE)
--		copy_part(&to, &last, xstate_offsets[XFEATURE_SSE],
--			  256, &xsave->i387.xmm_space);
--	/*
--	 * Fill xsave->i387.sw_reserved value for ptrace frame:
--	 */
--	copy_part(&to, &last, offsetof(struct fxregs_state, sw_reserved),
--		  48, xstate_fx_sw_bytes);
--	/*
--	 * Copy xregs_state->header:
--	 */
--	copy_part(&to, &last, offsetof(struct xregs_state, header),
--		  sizeof(header), &header);
-+	/* Copy FP state up to MXCSR */
-+	copy_feature(header.xfeatures & XFEATURE_MASK_FP, &to, &xsave->i387,
-+		     &xinit->i387, off_mxcsr);
-+
-+	/* Copy MXCSR when SSE or YMM are set in the feature mask */
-+	copy_feature(header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM),
-+		     &to, &xsave->i387.mxcsr, &xinit->i387.mxcsr,
-+		     MXCSR_AND_FLAGS_SIZE);
-+
-+	/* Copy the remaining FP state */
-+	copy_feature(header.xfeatures & XFEATURE_MASK_FP,
-+		     &to, &xsave->i387.st_space, &xinit->i387.st_space,
-+		     sizeof(xsave->i387.st_space));
-+
-+	/* Copy the SSE state - shared with YMM */
-+	copy_feature(header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM),
-+		     &to, &xsave->i387.xmm_space, &xinit->i387.xmm_space,
-+		     16 * 16);
-+
-+	/* Zero the padding area */
-+	membuf_zero(&to, sizeof(xsave->i387.padding));
-+
-+	/* Copy xsave->i387.sw_reserved */
-+	membuf_write(&to, xstate_fx_sw_bytes, sizeof(xsave->i387.sw_reserved));
-+
-+	/* Copy the user space relevant state of @xsave->header */
-+	membuf_write(&to, &header, sizeof(header));
-+
-+	zerofrom = offsetof(struct xregs_state, extended_state_area);
+ #include <asm/cpufeature.h>             /* boot_cpu_has, ...            */
+ #include <asm/mmu_context.h>            /* vma_pkey()                   */
+-#include <asm/fpu/internal.h>		/* init_fpstate			*/
  
- 	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
- 		/*
--		 * Copy only in-use xstates:
-+		 * The ptrace buffer is XSAVE format which is non-compacted.
-+		 * In non-compacted format disabled features still occupy
-+		 * state space, but there is no state to copy from in the
-+		 * compacted init_fpstate. The gap tracking will zero this
-+		 * later.
-+		 */
-+		if (!(xfeatures_mask_user() & BIT_ULL(i)))
-+			continue;
-+
-+		/*
-+		 * If there was a feature or alignment gap, zero the space
-+		 * in the destination buffer.
- 		 */
--		if ((header.xfeatures >> i) & 1) {
--			void *src = __raw_xsave_addr(xsave, i);
-+		if (zerofrom < xstate_offsets[i])
-+			membuf_zero(&to, xstate_offsets[i] - zerofrom);
+ int __execute_only_pkey(struct mm_struct *mm)
+ {
+@@ -154,7 +153,6 @@ static ssize_t init_pkru_read_file(struc
+ static ssize_t init_pkru_write_file(struct file *file,
+ 		 const char __user *user_buf, size_t count, loff_t *ppos)
+ {
+-	struct pkru_state *pk;
+ 	char buf[32];
+ 	ssize_t len;
+ 	u32 new_init_pkru;
+@@ -177,10 +175,6 @@ static ssize_t init_pkru_write_file(stru
+ 		return -EINVAL;
  
--			copy_part(&to, &last, xstate_offsets[i],
--				  xstate_sizes[i], src);
--		}
-+		copy_feature(header.xfeatures & BIT_ULL(i), &to,
-+			     __raw_xsave_addr(xsave, i),
-+			     __raw_xsave_addr(xinit, i),
-+			     xstate_sizes[i]);
- 
-+		/*
-+		 * Keep track of the last copied state in the non-compacted
-+		 * target buffer for gap zeroing.
-+		 */
-+		zerofrom = xstate_offsets[i] + xstate_sizes[i];
- 	}
--	fill_gap(&to, &last, size);
-+
-+	if (to.left)
-+		membuf_zero(&to, to.left);
+ 	WRITE_ONCE(init_pkru_value, new_init_pkru);
+-	pk = get_xsave_addr(&init_fpstate.xsave, XFEATURE_PKRU);
+-	if (!pk)
+-		return -EINVAL;
+-	pk->pkru = new_init_pkru;
+ 	return count;
  }
  
- /*
 
