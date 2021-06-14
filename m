@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21E63A6DEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 20:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411AE3A6DEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 20:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhFNSGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 14:06:09 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:43912 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232776AbhFNSGI (ORCPT
+        id S234576AbhFNSGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 14:06:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42495 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232776AbhFNSGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 14:06:08 -0400
-Received: by mail-lj1-f181.google.com with SMTP id r14so21254547ljd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 11:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hth5OJx5DLnrqVkGsO9sFZaOxm24SUjgcf7q16vYO9k=;
-        b=SYh2bWEUABHXqRB6ouYLMnFXIxkuBj3g9OGoJcjymr/uDkZ0b2ocpQIxY7OD3aoqry
-         y/WDysWKakiopu5mag8D+4V2VdjD01blp+N5edF/BQ0EXgzT8QLbBsWXILbf7+h84XUb
-         ftZIOw1NIhwgxMzRUzmXKeXGQC6u8yO//bp98=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hth5OJx5DLnrqVkGsO9sFZaOxm24SUjgcf7q16vYO9k=;
-        b=RZvyqxrPut5Sxyjw1A8nLJYiiGv13A+0GPqooLo635FQ+Z+NgOUACYiwhUUEUJ3ZVw
-         w9kMsU/0R7+jz8NfFWsMuvsHEIaGgF+GeU7w2UlGwm5XwTEoVRWx9EqhoiauWpYJsT5P
-         owq6tOPUE1v0KRZYlKIytL1wBbhnul0ThNm9Vk51CTVYdglAbJ1Hun1GgO07JWkDPCmA
-         tTmghAj9ATT+BXXYpRNxcjvL2KPWx2dglNQAwAhAFH89tJ221GarrM/XeP5FWFW3gRYy
-         2mOOQ+3VlX4dnTNbpLOHsfttwy3AQQrW+nTyw5UVB7XyPakdbYNd5t7LKFa+8vfCBn5/
-         ZyxQ==
-X-Gm-Message-State: AOAM532K/YAcw7G8G72jkUXlHrRM+lz5Iin3hH2NMruWvhkGgDWzOhFt
-        2MIeSPGIhXfqrdmnnP8RDT5m8GiYwSA2EilLutU=
-X-Google-Smtp-Source: ABdhPJw+rTbL7lmOtYd0WRPdlg6/Zzi8W59QL6hCagG2YZeAQtHwAUTFzpI6M4IDH5vOmNahd8wFHQ==
-X-Received: by 2002:a2e:9e16:: with SMTP id e22mr13739144ljk.447.1623693783757;
-        Mon, 14 Jun 2021 11:03:03 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id p9sm1547095lfo.276.2021.06.14.11.03.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 11:03:02 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id r198so22488707lff.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 11:03:02 -0700 (PDT)
-X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr12358175lfa.421.1623693782157;
- Mon, 14 Jun 2021 11:03:02 -0700 (PDT)
+        Mon, 14 Jun 2021 14:06:48 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EHlY0m191055;
+        Mon, 14 Jun 2021 14:03:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Q6Q4H24APbAc+PJPlsJ3iPAFbiUVQkvxhE/ezUDR55U=;
+ b=dkGTqCMKO2llonZiog7V9fwLiPjliTXblLaqqSy3RGX8FMDl74uFGjt0Q22GROBzb/dY
+ 6/ryt6AzeO95xPxbuCKFWnFc1cF1CNZFaZTGqs0FFw0ptBnGWO3m5ZgqNEIngZAchlqM
+ BZPwlAiVrMpHqfeYFGVWKJYHgfOaUYgs6Xr8TSCy/lf40aOu+nnafItxAHweSZJ0Ol8v
+ LkEVasiUdUKgnL3v4ymTZmvCxJyW007OfYp+r7xD2L+Wqs5kZKSflWMIRAJrs7dr+aD6
+ Wx+Mf3vvPZe+i4EWkRasOfF8x0TIxqQmwNCprjwvaNjc4/T8kKepkPQwNYQn9G5WFRJv CA== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 396btv8bn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 14:03:45 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15EI27CK030146;
+        Mon, 14 Jun 2021 18:03:44 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 394mj8s39q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 18:03:43 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15EI3fmu17760594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 18:03:41 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 840ED11C050;
+        Mon, 14 Jun 2021 18:03:41 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6626511C04A;
+        Mon, 14 Jun 2021 18:03:39 +0000 (GMT)
+Received: from naverao1-tp.in.ibm.com (unknown [9.85.73.215])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Jun 2021 18:03:38 +0000 (GMT)
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+To:     <linux-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Anton Blanchard <anton@ozlabs.org>
+Subject: [PATCH 0/2] trace/kprobe: Two fixes for kretprobes
+Date:   Mon, 14 Jun 2021 23:33:27 +0530
+Message-Id: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210608171221.276899-1-keescook@chromium.org>
- <20210614100234.12077-1-youling257@gmail.com> <202106140826.7912F27CD@keescook>
- <202106140941.7CE5AE64@keescook>
-In-Reply-To: <202106140941.7CE5AE64@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 14 Jun 2021 11:02:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whLBq63v_h71YuBM2aNjCSBprkBEO3fevbWnkp8TDeh5g@mail.gmail.com>
-Message-ID: <CAHk-=whLBq63v_h71YuBM2aNjCSBprkBEO3fevbWnkp8TDeh5g@mail.gmail.com>
-Subject: Re: [PATCH] proc: Track /proc/$pid/attr/ opener mm_struct
-To:     Kees Cook <keescook@chromium.org>
-Cc:     youling257 <youling257@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>, regressions@lists.linux.dev,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: scTf_HXmsg4URaAtoBsb6pEWDiwo2ZWe
+X-Proofpoint-GUID: scTf_HXmsg4URaAtoBsb6pEWDiwo2ZWe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-14_10:2021-06-14,2021-06-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ phishscore=0 adultscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ mlxscore=0 mlxlogscore=956 lowpriorityscore=0 impostorscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106140110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 9:45 AM Kees Cook <keescook@chromium.org> wrote:
->
->         /* A task may only write when it was the opener. */
-> -       if (file->private_data != current->mm)
-> +       if (!file->private_data || file->private_data != current->mm)
+The first patch fixes accounting of missed kretprobes in kprobe_profile.  
+The second patch removes limit on the maximum active kretprobe 
+instances, when registering a kretprobe through tracefs.
 
-I don't think this is necessary.
+- Naveen
 
-If file->private_data is NULL, then the old test for private_data !=
-current->mm will still work just fine.
 
-Because if you can fool kernel threads to do the write for you, you
-have bigger security issues than that test.
+Naveen N. Rao (2):
+  trace/kprobe: Fix count of missed kretprobes in kprobe_profile
+  trace/kprobe: Remove limit on kretprobe maxactive
 
-               Linus
+ kernel/trace/trace_kprobe.c                           | 11 ++---------
+ kernel/trace/trace_probe.h                            |  1 -
+ .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc      |  1 -
+ .../ftrace/test.d/kprobe/kretprobe_maxactive.tc       |  3 ---
+ 4 files changed, 2 insertions(+), 14 deletions(-)
+
+
+base-commit: 0b42677e2e5d87c730ddc41544b289b88596738c
+-- 
+2.31.1
+
