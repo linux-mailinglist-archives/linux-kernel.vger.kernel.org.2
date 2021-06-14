@@ -2,149 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0D93A6DBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1423A6DC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234269AbhFNR4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:56:50 -0400
-Received: from mail-dm6nam12on2073.outbound.protection.outlook.com ([40.107.243.73]:16353
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233199AbhFNR4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:56:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WwpSIZhe+pqvY0q09r+khSr7drtmcz301vh7dkhJPbP3Fo0RKa6k9sm1BilI/90PG/uMg1BTz486vBVoRTzy7uYyXA4PWlQmjDKWZShMMLj0JgMhHdEGso06RycIvd7Ec1i0emv2KfQrDzN0wWMw/g6yWITJJJaK1sMn9elbKCUiT2ohkz7Q0uNyrCUr9HkXrDowTyXQSySX8H16SS7y3YZ/YYaCIaDEEJPZJ9Pxjgfd6SoBP0WqgfUJBY0Y97Hw6DSPWSlS94KnWDDPseNivG+YUZfj3rcI7yStDZiKI41TtkUvtf7UzHnyz+xGCxIzUKnnb96YlmBW2Vli06mWdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y7H32s6MOcjqvsXuAl3Src2d6mjubpaIprokXrEeR8U=;
- b=D8dn9f3O+NGYkIv0bk4waHR1s+74KknUhQclutccV/FBLhnEQThGitXIyzPeqyEqHtJDAhsU4Kfvarf3hkKLDsNJxRIBEAlF6vsnD23mdLCGSRtkRQOCFnHV61Ge8Q0vK7X+/W3ugFPsJBLqPlPV6dcsNaNyB67mrmZ3BWrRcNkb8oRhQ3SBiTklDcsOquA5mhH16CXll3C7A4v4GzCvGadZkbI6cgUX6dO9D/1Y9YDf+B0EySn9G86DGMrGRxW5uTtdLiDi2NYD8piuqTI+i5NoMWN7h/sFOvr4oZYbjIbp7HD1yIisSfRx0JJytBCJ0O2TQre5oKfWApMBpdeOFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linux-foundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y7H32s6MOcjqvsXuAl3Src2d6mjubpaIprokXrEeR8U=;
- b=OfZzEZbjlD0KFiYg5b0TjJ5m54t97XKwMFbK/GcDDTDsX8r6RNDy32Bg/C3DnhVCBf5sHdJrbXaK+qZAhLgfDtROlXHqW2Vg7KKwFzFpWvDCR5lxaC/BeIbBxt0Wy0jSh88Ng5pfsR6jY/Cum6N/cPtF9lKS7+SsJcaCjSi+Irle9rOInwmYZDTjnHDl5SvalhvuWT6J3eZPz0AmTGTek6WcrC1NVzBixG8QGZ7So26/ZbDodLF0V0QN44jKkEnsQssmEZ5Iv/3NkeSEM43yRNjz0Yodq2YbDkoItw3lsaaI1FxjClmodb7Ofq5xLTpW5BaAQ8W98c0VoWz1Y7qxRg==
-Received: from DM6PR21CA0002.namprd21.prod.outlook.com (2603:10b6:5:174::12)
- by DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20; Mon, 14 Jun
- 2021 17:54:42 +0000
-Received: from DM6NAM11FT014.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:174:cafe::8c) by DM6PR21CA0002.outlook.office365.com
- (2603:10b6:5:174::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.0 via Frontend
- Transport; Mon, 14 Jun 2021 17:54:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linux-foundation.org; dkim=none (message not
- signed) header.d=none;linux-foundation.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT014.mail.protection.outlook.com (10.13.173.132) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4219.21 via Frontend Transport; Mon, 14 Jun 2021 17:54:42 +0000
-Received: from [10.26.49.10] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 14 Jun
- 2021 17:54:39 +0000
-Subject: Re: [PATCH 4.9 00/42] 4.9.273-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <f.fainelli@gmail.com>, <stable@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20210614102642.700712386@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <f4eb8896-699b-1363-2d73-dde162375c6c@nvidia.com>
-Date:   Mon, 14 Jun 2021 18:54:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234348AbhFNR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233134AbhFNR5Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 13:57:16 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAB7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:55:03 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id d27-20020a4a3c1b0000b029024983ef66dbso2859907ooa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RZlshWzShRr/1bxvI5qOhZ1dQlVIKovO57VSbDQdZFU=;
+        b=Mg3/SfBqtNf7mgH1NsaYekPfohhc46bBdfe4bze5h9yw87oo0g6Tubo8ceS0mU4lbS
+         YrOJFVzXaEREnDk6QfLMegA5sA6jXbkra30Y973xYjAvkOLGCa3A3XLBTjbArGSWzcRu
+         ZLZHp7MrBMIAw/rtyRje/sdFpR7oFAH9f4PXGR+eNGrUt1rwBipxF+U8qVJy01+Z2ctI
+         35RAPRCWroEBmT6zTirlKX3h/6nh5vLfRKkt3FYFZ4W7bnVbJ8wK2sfwV4nH4s9AZN4J
+         MUSi42oyIsBS+fWSQTZ13sb55pNj3zjUfChF3o6gwZDXfPr4at+lupCH2JUBCkpb5G3/
+         r+XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RZlshWzShRr/1bxvI5qOhZ1dQlVIKovO57VSbDQdZFU=;
+        b=GmS4PVdu1Z6CpSQljkeKOdzXAlx4uo19xaY77fYLKrZggqiqCr9QqDm6fBKiT2Neg7
+         83OlZfyi4N55OlDYEZzd186sbGxaQJiea8w/95wJQBSVpURqmyBy84nbZHxJG1Jgh8aw
+         w85J6Tfd8JYGFYLmkE+19ztu2JvqtlIOFhS7YNcyIdut/FuEAx2Ztz0CnhRjM//2LPdU
+         t86qLsFSLXeZn1YKJUwif2AyTcAeZ7VeCePDBCzSynQes9zj1B/wYlCJYS1b8l1+PNkk
+         WszuoPaXyPCivGy862Iu4BUAu+nhitmbi6mp3Fg07RrWJXtLhRQgEyLwUVnMQjP1a6Ix
+         aHVQ==
+X-Gm-Message-State: AOAM531qVlrX3+49qlYICRskACnYVFF/wCgEh34L234FrIpeKoSz1tnh
+        ME0xiRIsutBw4xBFe7Uwcsyo/48tmnJnIw==
+X-Google-Smtp-Source: ABdhPJz1bHjlWmc11NEr6kmjCyfD8umeBOwZX3ymRU4S8kgueYx+/o5al/nmOVkubv+jft5vHI4vzQ==
+X-Received: by 2002:a05:6820:29b:: with SMTP id q27mr14003988ood.32.1623693299312;
+        Mon, 14 Jun 2021 10:54:59 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 2sm3400587ota.58.2021.06.14.10.54.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 10:54:58 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 12:54:56 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        "moderated list:ARM SMMU DRIVERS" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 4/5] iommu/arm-smmu-qcom: Add stall support
+Message-ID: <YMeX8NnVw80b9Qpe@yoga>
+References: <20210610214431.539029-1-robdclark@gmail.com>
+ <20210610214431.539029-5-robdclark@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b552d6ae-cd60-4250-6d42-08d92f5d7cf2
-X-MS-TrafficTypeDiagnostic: DM6PR12MB5565:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB55659BC75E172ECDC3BA937AD9319@DM6PR12MB5565.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jYEdDI120VKFBwqCwur4bEyWiSEH89wdZhpj5p8xEWs443R6xYZxiR5k0Wh/yE39w3/yykDO3LXI/mrrxuB3AgSDBpncZrZWQOAGwV6xI7AnpDfi8wuzpppLzmy3M0teaPgwlW/2mT10fEboqC5x/vcsGtTMYno2VdDIYkBcDvYJIr+tPs6nrLs+G8GDzzABQsWFrCt598lfQ2QB0LnsjEDEhhQNA9OiDV6ZrNjLl2MhFPt71uWL7sKxPws3eZ522paiYCgTKDdd5WY7HIL0lQQE3b+1SuYqa4VXWJ7Rx+JtixcXwn3lYIh2D1Lcw77/p0GF7pAJjl+oNq6AH5eQ4FVHY1tf4ekMnknf8/ZvnmVp6DwmNzj+pPCH2FXuGlZXC9O7yFb8EbFfqFUd/q831hWfCcGhR5jc+Az2xS2yx7Ohd0lS/mQln21GFZuvGY6SsiBV1VOI43CL4cuNqTV5HSO3pu+RQEm01URo4JmbvSIrTH5flAo6txwIxMAvlFzTsrc2OnFKGsZi5joXNi9TbXLzxgAO6296FrJMPXPy/MQCi24+D5aFigvjcNAHp1fs8TRgwWJUxbGC/omE08OLVGUvKzDhOQUZKhJGTTU9/yPwgLPsp9pNDTbzluMC+tVBCyqU2zWSnyn3sad+4IBnbz9v3F+9YAZavvF47nnGauZtfospl4P2L2nBRK+wRXZ93cvz6BGWDZizDYoCcYwZ5PtMPueagBvWttTYPMCoPSVV2+hCo/KdrNUJ1OEC0kwZ7D4wxU/vCbCAEWzXHwwtUQVsqdM6mtsJrFl9EFSaM+MriHGd7nGZw8r8lfwO19Aq
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(396003)(39860400002)(46966006)(36840700001)(36756003)(356005)(82310400003)(16526019)(186003)(426003)(336012)(86362001)(53546011)(8676002)(2906002)(5660300002)(82740400003)(8936002)(478600001)(316002)(70206006)(36860700001)(54906003)(110136005)(16576012)(47076005)(31696002)(966005)(26005)(83380400001)(2616005)(31686004)(4326008)(7636003)(7416002)(70586007)(36906005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2021 17:54:42.3162
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b552d6ae-cd60-4250-6d42-08d92f5d7cf2
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT014.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5565
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610214431.539029-5-robdclark@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Thu 10 Jun 16:44 CDT 2021, Rob Clark wrote:
 
-On 14/06/2021 11:26, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.273 release.
-> There are 42 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
+> Add, via the adreno-smmu-priv interface, a way for the GPU to request
+> the SMMU to stall translation on faults, and then later resume the
+> translation, either retrying or terminating the current translation.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.273-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
+> This will be used on the GPU side to "freeze" the GPU while we snapshot
+> useful state for devcoredump.
 > 
-> thanks,
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 33 ++++++++++++++++++++++
+>  include/linux/adreno-smmu-priv.h           |  7 +++++
+>  2 files changed, 40 insertions(+)
 > 
-> greg k-h
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index b2e31ea84128..61fc645c1325 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -13,6 +13,7 @@ struct qcom_smmu {
+>  	struct arm_smmu_device smmu;
+>  	bool bypass_quirk;
+>  	u8 bypass_cbndx;
+> +	u32 stall_enabled;
+>  };
+>  
+>  static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+> @@ -23,12 +24,17 @@ static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>  static void qcom_adreno_smmu_write_sctlr(struct arm_smmu_device *smmu, int idx,
+>  		u32 reg)
+>  {
+> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +
+>  	/*
+>  	 * On the GPU device we want to process subsequent transactions after a
+>  	 * fault to keep the GPU from hanging
+>  	 */
+>  	reg |= ARM_SMMU_SCTLR_HUPCF;
+>  
+> +	if (qsmmu->stall_enabled & BIT(idx))
+> +		reg |= ARM_SMMU_SCTLR_CFCFG;
+> +
+>  	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
+>  }
+>  
+> @@ -48,6 +54,31 @@ static void qcom_adreno_smmu_get_fault_info(const void *cookie,
+>  	info->contextidr = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_CONTEXTIDR);
+>  }
+>  
+> +static void qcom_adreno_smmu_set_stall(const void *cookie, bool enabled)
+> +{
+> +	struct arm_smmu_domain *smmu_domain = (void *)cookie;
+> +	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
+> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu_domain->smmu);
+> +
+> +	if (enabled)
+> +		qsmmu->stall_enabled |= BIT(cfg->cbndx);
+> +	else
+> +		qsmmu->stall_enabled &= ~BIT(cfg->cbndx);
+> +}
+> +
+> +static void qcom_adreno_smmu_resume_translation(const void *cookie, bool terminate)
+> +{
+> +	struct arm_smmu_domain *smmu_domain = (void *)cookie;
+> +	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
+> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +	u32 reg = 0;
+> +
+> +	if (terminate)
+> +		reg |= ARM_SMMU_RESUME_TERMINATE;
+> +
+> +	arm_smmu_cb_write(smmu, cfg->cbndx, ARM_SMMU_CB_RESUME, reg);
+> +}
+> +
+>  #define QCOM_ADRENO_SMMU_GPU_SID 0
+>  
+>  static bool qcom_adreno_smmu_is_gpu_device(struct device *dev)
+> @@ -173,6 +204,8 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>  	priv->get_ttbr1_cfg = qcom_adreno_smmu_get_ttbr1_cfg;
+>  	priv->set_ttbr0_cfg = qcom_adreno_smmu_set_ttbr0_cfg;
+>  	priv->get_fault_info = qcom_adreno_smmu_get_fault_info;
+> +	priv->set_stall = qcom_adreno_smmu_set_stall;
+> +	priv->resume_translation = qcom_adreno_smmu_resume_translation;
+>  
+>  	return 0;
+>  }
+> diff --git a/include/linux/adreno-smmu-priv.h b/include/linux/adreno-smmu-priv.h
+> index 53fe32fb9214..c637e0997f6d 100644
+> --- a/include/linux/adreno-smmu-priv.h
+> +++ b/include/linux/adreno-smmu-priv.h
+> @@ -45,6 +45,11 @@ struct adreno_smmu_fault_info {
+>   *                 TTBR0 translation is enabled with the specified cfg
+>   * @get_fault_info: Called by the GPU fault handler to get information about
+>   *                  the fault
+> + * @set_stall:     Configure whether stall on fault (CFCFG) is enabled.  Call
+> + *                 before set_ttbr0_cfg().  If stalling on fault is enabled,
+> + *                 the GPU driver must call resume_translation()
+> + * @resume_translation: Resume translation after a fault
+> + *
+>   *
+>   * The GPU driver (drm/msm) and adreno-smmu work together for controlling
+>   * the GPU's SMMU instance.  This is by necessity, as the GPU is directly
+> @@ -60,6 +65,8 @@ struct adreno_smmu_priv {
+>      const struct io_pgtable_cfg *(*get_ttbr1_cfg)(const void *cookie);
+>      int (*set_ttbr0_cfg)(const void *cookie, const struct io_pgtable_cfg *cfg);
+>      void (*get_fault_info)(const void *cookie, struct adreno_smmu_fault_info *info);
+> +    void (*set_stall)(const void *cookie, bool enabled);
+> +    void (*resume_translation)(const void *cookie, bool terminate);
+>  };
+>  
+>  #endif /* __ADRENO_SMMU_PRIV_H */
+> -- 
+> 2.31.1
 > 
-> -------------
-> Pseudo-Shortlog of commits:
-
-...
-
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->     regulator: core: resolve supply for boot-on/always-on regulators
-
-
-I am seeing a boot regression on one board with 4.9.273-rc1 and bisect
-is pointing to the above commit. Reverting this on top of 4.9.273-rc1
-fixes the problem.
-
-Test results for stable-v4.9:
-    8 builds:	8 pass, 0 fail
-    18 boots:	16 pass, 2 fail
-    30 tests:	30 pass, 0 fail
-
-Linux version:	4.9.273-rc1-gaf46d32b472e
-Boards tested:	tegra124-jetson-tk1, tegra20-ventana,
-                tegra210-p2371-2180, tegra30-cardhu-a04
-
-Boot failures:	tegra210-p2371-2180
-
-Cheers
-Jon
-
--- 
-nvpublic
