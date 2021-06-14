@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26A83A6571
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18463A654C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbhFNLiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:38:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50444 "EHLO mail.kernel.org"
+        id S236399AbhFNLhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235408AbhFNLWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:22:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E02AC6147F;
-        Mon, 14 Jun 2021 10:52:28 +0000 (UTC)
+        id S235112AbhFNLWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:22:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C399C611CA;
+        Mon, 14 Jun 2021 10:52:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667949;
-        bh=Jxb18nTjLudlt8/gG6MDsCAFjbUYwb62PmS3kIaBtJw=;
+        s=korg; t=1623667952;
+        bh=5j+UuKM1H9kfB9W91AEjqQUEDdJ/O8DXtfhWcR0/Mx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QoTv05x/2+Uq7EUrUZWP5F6Pwg0gLycbctJ9urlEEf851Wzih7+puMLlp25VlN+e1
-         lLB4Q7Ter/0jMWlRYDx6fJ+nkb1BSCH7yDA4fNVNuX9dBKW3zgZS62v8iQAkDY/+s8
-         QTypCmOqIGCMqUTu3n8IUq1fxmGk43xdEDV9BcD8=
+        b=FzdXykEpe5TU/Daqjm4KKN59RogVFNzoSgJKXf0JPD34tJobXQR/8UCXZezNVYiSD
+         QtpvX87NSfQ+aspYDccjxkzMujqXFYvvXAuCLRhkMkCcvPEdXr12N8ZmG1kCy5EKDt
+         8TXMQ4kxMqjCZugWEcw+DwtcBR0de/CbQReiMqb4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Frey <dpfrey@gmail.com>,
-        =?UTF-8?q?Alex=20Villac=C3=ADs=20Lasso?= <a_villacis@palosanto.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.12 104/173] USB: serial: cp210x: fix CP2102N-A01 modem control
-Date:   Mon, 14 Jun 2021 12:27:16 +0200
-Message-Id: <20210614102701.627522025@linuxfoundation.org>
+        stable@vger.kernel.org, Pawel Laszczak <pawell@cadence.com>,
+        Peter Chen <peter.chen@kernel.org>
+Subject: [PATCH 5.12 105/173] usb: cdnsp: Fix deadlock issue in cdnsp_thread_irq_handler
+Date:   Mon, 14 Jun 2021 12:27:17 +0200
+Message-Id: <20210614102701.660621135@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -40,161 +39,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Pawel Laszczak <pawell@cadence.com>
 
-commit 63a8eef70ccb5199534dec56fed9759d214bfe55 upstream.
+commit a9aecef198faae3240921b707bc09b602e966fce upstream.
 
-CP2102N revision A01 (firmware version <= 1.0.4) has a buggy
-flow-control implementation that uses the ulXonLimit instead of
-ulFlowReplace field of the flow-control settings structure (erratum
-CP2102N_E104).
+Patch fixes the following critical issue caused by deadlock which has been
+detected during testing NCM class:
 
-A recent change that set the input software flow-control limits
-incidentally broke RTS control for these devices when CRTSCTS is not set
-as the new limits would always enable hardware flow control.
+smp: csd: Detected non-responsive CSD lock (#1) on CPU#0
+smp:     csd: CSD lock (#1) unresponsive.
+....
+RIP: 0010:native_queued_spin_lock_slowpath+0x61/0x1d0
+RSP: 0018:ffffbc494011cde0 EFLAGS: 00000002
+RAX: 0000000000000101 RBX: ffff9ee8116b4a68 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9ee8116b4658
+RBP: ffffbc494011cde0 R08: 0000000000000001 R09: 0000000000000000
+R10: ffff9ee8116b4670 R11: 0000000000000000 R12: ffff9ee8116b4658
+R13: ffff9ee8116b4670 R14: 0000000000000246 R15: ffff9ee8116b4658
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7bcc41a830 CR3: 000000007a612003 CR4: 00000000001706e0
+Call Trace:
+ <IRQ>
+ do_raw_spin_lock+0xc0/0xd0
+ _raw_spin_lock_irqsave+0x95/0xa0
+ cdnsp_gadget_ep_queue.cold+0x88/0x107 [cdnsp_udc_pci]
+ usb_ep_queue+0x35/0x110
+ eth_start_xmit+0x220/0x3d0 [u_ether]
+ ncm_tx_timeout+0x34/0x40 [usb_f_ncm]
+ ? ncm_free_inst+0x50/0x50 [usb_f_ncm]
+ __hrtimer_run_queues+0xac/0x440
+ hrtimer_run_softirq+0x8c/0xb0
+ __do_softirq+0xcf/0x428
+ asm_call_irq_on_stack+0x12/0x20
+ </IRQ>
+ do_softirq_own_stack+0x61/0x70
+ irq_exit_rcu+0xc1/0xd0
+ sysvec_apic_timer_interrupt+0x52/0xb0
+ asm_sysvec_apic_timer_interrupt+0x12/0x20
+RIP: 0010:do_raw_spin_trylock+0x18/0x40
+RSP: 0018:ffffbc494138bda8 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: ffff9ee8116b4658 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff9ee8116b4658
+RBP: ffffbc494138bda8 R08: 0000000000000001 R09: 0000000000000000
+R10: ffff9ee8116b4670 R11: 0000000000000000 R12: ffff9ee8116b4658
+R13: ffff9ee8116b4670 R14: ffff9ee7b5c73d80 R15: ffff9ee8116b4000
+ _raw_spin_lock+0x3d/0x70
+ ? cdnsp_thread_irq_handler.cold+0x32/0x112c [cdnsp_udc_pci]
+ cdnsp_thread_irq_handler.cold+0x32/0x112c [cdnsp_udc_pci]
+ ? cdnsp_remove_request+0x1f0/0x1f0 [cdnsp_udc_pci]
+ ? cdnsp_thread_irq_handler+0x5/0xa0 [cdnsp_udc_pci]
+ ? irq_thread+0xa0/0x1c0
+ irq_thread_fn+0x28/0x60
+ irq_thread+0x105/0x1c0
+ ? __kthread_parkme+0x42/0x90
+ ? irq_forced_thread_fn+0x90/0x90
+ ? wake_threads_waitq+0x30/0x30
+ ? irq_thread_check_affinity+0xe0/0xe0
+ kthread+0x12a/0x160
+ ? kthread_park+0x90/0x90
+ ret_from_fork+0x22/0x30
 
-Fix this by explicitly disabling flow control for the buggy firmware
-versions and only updating the input software flow-control limits when
-IXOFF is requested. This makes sure that the terminal settings matches
-the default zero ulXonLimit (ulFlowReplace) for these devices.
+The root cause of issue is spin_lock/spin_unlock instruction instead
+spin_lock_irqsave/spin_lock_irqrestore in cdnsp_thread_irq_handler
+function.
 
-Link: https://lore.kernel.org/r/20210609161509.9459-1-johan@kernel.org
-Reported-by: David Frey <dpfrey@gmail.com>
-Reported-by: Alex Villacís Lasso <a_villacis@palosanto.com>
-Tested-by: Alex Villacís Lasso <a_villacis@palosanto.com>
-Fixes: f61309d9c96a ("USB: serial: cp210x: set IXOFF thresholds")
-Cc: stable@vger.kernel.org      # 5.12
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+Link: https://lore.kernel.org/r/20210526060527.7197-1-pawell@gli-login.cadence.com
+Signed-off-by: Peter Chen <peter.chen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |   64 ++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 59 insertions(+), 5 deletions(-)
+ drivers/usb/cdns3/cdnsp-ring.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -252,9 +252,11 @@ struct cp210x_serial_private {
- 	u8			gpio_input;
- #endif
- 	u8			partnum;
-+	u32			fw_version;
- 	speed_t			min_speed;
- 	speed_t			max_speed;
- 	bool			use_actual_rate;
-+	bool			no_flow_control;
- };
- 
- enum cp210x_event_state {
-@@ -398,6 +400,7 @@ struct cp210x_special_chars {
- 
- /* CP210X_VENDOR_SPECIFIC values */
- #define CP210X_READ_2NCONFIG	0x000E
-+#define CP210X_GET_FW_VER_2N	0x0010
- #define CP210X_READ_LATCH	0x00C2
- #define CP210X_GET_PARTNUM	0x370B
- #define CP210X_GET_PORTCONFIG	0x370C
-@@ -1128,6 +1131,7 @@ static bool cp210x_termios_change(const
- static void cp210x_set_flow_control(struct tty_struct *tty,
- 		struct usb_serial_port *port, struct ktermios *old_termios)
+--- a/drivers/usb/cdns3/cdnsp-ring.c
++++ b/drivers/usb/cdns3/cdnsp-ring.c
+@@ -1517,13 +1517,14 @@ irqreturn_t cdnsp_thread_irq_handler(int
  {
-+	struct cp210x_serial_private *priv = usb_get_serial_data(port->serial);
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
- 	struct cp210x_special_chars chars;
- 	struct cp210x_flow_ctl flow_ctl;
-@@ -1135,6 +1139,15 @@ static void cp210x_set_flow_control(stru
- 	u32 ctl_hs;
- 	int ret;
+ 	struct cdnsp_device *pdev = (struct cdnsp_device *)data;
+ 	union cdnsp_trb *event_ring_deq;
++	unsigned long flags;
+ 	int counter = 0;
  
-+	/*
-+	 * Some CP2102N interpret ulXonLimit as ulFlowReplace (erratum
-+	 * CP2102N_E104). Report back that flow control is not supported.
-+	 */
-+	if (priv->no_flow_control) {
-+		tty->termios.c_cflag &= ~CRTSCTS;
-+		tty->termios.c_iflag &= ~(IXON | IXOFF);
-+	}
-+
- 	if (old_termios &&
- 			C_CRTSCTS(tty) == (old_termios->c_cflag & CRTSCTS) &&
- 			I_IXON(tty) == (old_termios->c_iflag & IXON) &&
-@@ -1191,19 +1204,20 @@ static void cp210x_set_flow_control(stru
- 		port_priv->crtscts = false;
+-	spin_lock(&pdev->lock);
++	spin_lock_irqsave(&pdev->lock, flags);
+ 
+ 	if (pdev->cdnsp_state & (CDNSP_STATE_HALTED | CDNSP_STATE_DYING)) {
+ 		cdnsp_died(pdev);
+-		spin_unlock(&pdev->lock);
++		spin_unlock_irqrestore(&pdev->lock, flags);
+ 		return IRQ_HANDLED;
  	}
  
--	if (I_IXOFF(tty))
-+	if (I_IXOFF(tty)) {
- 		flow_repl |= CP210X_SERIAL_AUTO_RECEIVE;
--	else
-+
-+		flow_ctl.ulXonLimit = cpu_to_le32(128);
-+		flow_ctl.ulXoffLimit = cpu_to_le32(128);
-+	} else {
- 		flow_repl &= ~CP210X_SERIAL_AUTO_RECEIVE;
-+	}
+@@ -1539,7 +1540,7 @@ irqreturn_t cdnsp_thread_irq_handler(int
  
- 	if (I_IXON(tty))
- 		flow_repl |= CP210X_SERIAL_AUTO_TRANSMIT;
- 	else
- 		flow_repl &= ~CP210X_SERIAL_AUTO_TRANSMIT;
+ 	cdnsp_update_erst_dequeue(pdev, event_ring_deq, 1);
  
--	flow_ctl.ulXonLimit = cpu_to_le32(128);
--	flow_ctl.ulXoffLimit = cpu_to_le32(128);
--
- 	dev_dbg(&port->dev, "%s - ctrl = 0x%02x, flow = 0x%02x\n", __func__,
- 			ctl_hs, flow_repl);
+-	spin_unlock(&pdev->lock);
++	spin_unlock_irqrestore(&pdev->lock, flags);
  
-@@ -1919,6 +1933,45 @@ static void cp210x_init_max_speed(struct
- 	priv->use_actual_rate = use_actual_rate;
+ 	return IRQ_HANDLED;
  }
- 
-+static int cp210x_get_fw_version(struct usb_serial *serial, u16 value)
-+{
-+	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
-+	u8 ver[3];
-+	int ret;
-+
-+	ret = cp210x_read_vendor_block(serial, REQTYPE_DEVICE_TO_HOST, value,
-+			ver, sizeof(ver));
-+	if (ret)
-+		return ret;
-+
-+	dev_dbg(&serial->interface->dev, "%s - %d.%d.%d\n", __func__,
-+			ver[0], ver[1], ver[2]);
-+
-+	priv->fw_version = ver[0] << 16 | ver[1] << 8 | ver[2];
-+
-+	return 0;
-+}
-+
-+static void cp210x_determine_quirks(struct usb_serial *serial)
-+{
-+	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
-+	int ret;
-+
-+	switch (priv->partnum) {
-+	case CP210X_PARTNUM_CP2102N_QFN28:
-+	case CP210X_PARTNUM_CP2102N_QFN24:
-+	case CP210X_PARTNUM_CP2102N_QFN20:
-+		ret = cp210x_get_fw_version(serial, CP210X_GET_FW_VER_2N);
-+		if (ret)
-+			break;
-+		if (priv->fw_version <= 0x10004)
-+			priv->no_flow_control = true;
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
- static int cp210x_attach(struct usb_serial *serial)
- {
- 	int result;
-@@ -1939,6 +1992,7 @@ static int cp210x_attach(struct usb_seri
- 
- 	usb_set_serial_data(serial, priv);
- 
-+	cp210x_determine_quirks(serial);
- 	cp210x_init_max_speed(serial);
- 
- 	result = cp210x_gpio_init(serial);
 
 
