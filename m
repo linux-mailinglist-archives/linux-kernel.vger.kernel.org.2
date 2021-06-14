@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22CC3A651E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9D63A6527
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235613AbhFNLdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:33:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47448 "EHLO mail.kernel.org"
+        id S236728AbhFNLen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:34:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235859AbhFNLTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:19:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 893056146D;
-        Mon, 14 Jun 2021 10:51:22 +0000 (UTC)
+        id S236024AbhFNLUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:20:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A2BB6198F;
+        Mon, 14 Jun 2021 10:51:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667883;
-        bh=eZoL2bR4zZrJTCBHg1P1deW+/wiQH08DCVcdTQ25AWI=;
+        s=korg; t=1623667885;
+        bh=uOuAHXP9EQLyzOxXuegsg55MUjHHW5Q0Wdl/IVh8Eok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NHHaWdPZFIzJuf/XsqUcKDv3K6/K8jEmFrCPyIAyLMxFGrm/qkfNHAYXpFKI2InbS
-         GsfNbJNASCumiSTO/7VcNPBj2jEmgpAxiT1exbokvgjERqiDn1vOPqAXHGWa2fh1kb
-         Kybp91EBooDJIiP+D2g6RbhqCp4makmJdP8hY6go=
+        b=iaop4UDPizunfS2ba+nIJKA0ttn/D5IqOVq3/s7nQpp9j2onY1OnYzGCpYnOBRytJ
+         HsKSN1ACGniAxdO46l2r4J+CMScnJcTJH/qbQdYSh8f2e6ApsXaVBp35SYZu9AQo1K
+         9ys6mFweOgbxaeTImoCZX2Fi1BbY00NCZy3X5oVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Kyle Tso <kyletso@google.com>
-Subject: [PATCH 5.12 112/173] usb: typec: tcpm: Do not finish VDM AMS for retrying Responses
-Date:   Mon, 14 Jun 2021 12:27:24 +0200
-Message-Id: <20210614102701.891223351@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.12 113/173] regulator: core: resolve supply for boot-on/always-on regulators
+Date:   Mon, 14 Jun 2021 12:27:25 +0200
+Message-Id: <20210614102701.931104529@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -40,35 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kyle Tso <kyletso@google.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-commit 5ab14ab1f2db24ffae6c5c39a689660486962e6e upstream.
+commit 98e48cd9283dbac0e1445ee780889f10b3d1db6a upstream.
 
-If the VDM responses couldn't be sent successfully, it doesn't need to
-finish the AMS until the retry count reaches the limit.
+For the boot-on/always-on regulators the set_machine_constrainst() is
+called before resolving rdev->supply. Thus the code would try to enable
+rdev before enabling supplying regulator. Enforce resolving supply
+regulator before enabling rdev.
 
-Fixes: 0908c5aca31e ("usb: typec: tcpm: AMS and Collision Avoidance")
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Kyle Tso <kyletso@google.com>
-Link: https://lore.kernel.org/r/20210606081452.764032-1-kyletso@google.com
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210519221224.2868496-1-dmitry.baryshkov@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/tcpm/tcpm.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/regulator/core.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -1917,6 +1917,9 @@ static void vdm_run_state_machine(struct
- 			tcpm_log(port, "VDM Tx error, retry");
- 			port->vdm_retries++;
- 			port->vdm_state = VDM_STATE_READY;
-+			if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT)
-+				tcpm_ams_finish(port);
-+		} else {
- 			tcpm_ams_finish(port);
- 		}
- 		break;
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1422,6 +1422,12 @@ static int set_machine_constraints(struc
+ 	 * and we have control then make sure it is enabled.
+ 	 */
+ 	if (rdev->constraints->always_on || rdev->constraints->boot_on) {
++		/* If we want to enable this regulator, make sure that we know
++		 * the supplying regulator.
++		 */
++		if (rdev->supply_name && !rdev->supply)
++			return -EPROBE_DEFER;
++
+ 		if (rdev->supply) {
+ 			ret = regulator_enable(rdev->supply);
+ 			if (ret < 0) {
 
 
