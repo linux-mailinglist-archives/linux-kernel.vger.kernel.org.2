@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D3B3A6325
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6313A647D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235633AbhFNLLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:11:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35838 "EHLO mail.kernel.org"
+        id S234957AbhFNLZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:25:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234907AbhFNK7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:59:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4128261628;
-        Mon, 14 Jun 2021 10:42:24 +0000 (UTC)
+        id S234727AbhFNLLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:11:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E9106194E;
+        Mon, 14 Jun 2021 10:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667344;
-        bh=GuPFsSuib4mnjhLtL2ddfg1ENJrgqkvaZ4q0gRNk1Tw=;
+        s=korg; t=1623667687;
+        bh=DNn8YgMWuL79KlSNWON5bYkl35B1Ce482gDniI7RIgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=En/h0YyeI/mQtRWk4TMcuf1Rpmf1iUm6qPsj3pBhdqSj+ubFDMFsseMktUmKQz22y
-         ZhJi26h0g3mGA2u/Lb1bBlNeiNz8CQU6aSC0SCuykBbnj7fRwUIQocTvRl1WYlsCAP
-         nL7aLk3doqq/rbdZWRnuav7HLe0jOIL/z1geAV7w=
+        b=UGVHpjDTbuGBVNU4VZo8qArr4pgFUT8wvOB8PFFhlkpC0I+/2rofbMn6kfqs1Mzi0
+         oFSuF/qm6G9C8JIVTiyPcKad3lJ4DpjNkB5Y1tRC2hDZus9r19WkwbK0eemx+5Jmhq
+         WhiijKr990O/MxFgnjXdynQRfsNlNSjsQ4IDL7gk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeimon <jjjinmeng.zhou@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 007/131] net/nfc/rawsock.c: fix a permission check bug
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 036/173] nvme-fabrics: decode host pathing error for connect
 Date:   Mon, 14 Jun 2021 12:26:08 +0200
-Message-Id: <20210614102653.218539315@linuxfoundation.org>
+Message-Id: <20210614102659.357226395@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeimon <jjjinmeng.zhou@gmail.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 8ab78863e9eff11910e1ac8bcf478060c29b379e ]
+[ Upstream commit 4d9442bf263ac45d495bb7ecf75009e59c0622b2 ]
 
-The function rawsock_create() calls a privileged function sk_alloc(), which requires a ns-aware check to check net->user_ns, i.e., ns_capable(). However, the original code checks the init_user_ns using capable(). So we replace the capable() with ns_capable().
+Add an additional decoding for 'host pathing error' during connect.
 
-Signed-off-by: Jeimon <jjjinmeng.zhou@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/rawsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/fabrics.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/nfc/rawsock.c b/net/nfc/rawsock.c
-index 9c7eb8455ba8..5f1d438a0a23 100644
---- a/net/nfc/rawsock.c
-+++ b/net/nfc/rawsock.c
-@@ -329,7 +329,7 @@ static int rawsock_create(struct net *net, struct socket *sock,
- 		return -ESOCKTNOSUPPORT;
+diff --git a/drivers/nvme/host/fabrics.c b/drivers/nvme/host/fabrics.c
+index 604ab0e5a2ad..fb02ca2e3096 100644
+--- a/drivers/nvme/host/fabrics.c
++++ b/drivers/nvme/host/fabrics.c
+@@ -336,6 +336,11 @@ static void nvmf_log_connect_error(struct nvme_ctrl *ctrl,
+ 			cmd->connect.recfmt);
+ 		break;
  
- 	if (sock->type == SOCK_RAW) {
--		if (!capable(CAP_NET_RAW))
-+		if (!ns_capable(net->user_ns, CAP_NET_RAW))
- 			return -EPERM;
- 		sock->ops = &rawsock_raw_ops;
- 	} else {
++	case NVME_SC_HOST_PATH_ERROR:
++		dev_err(ctrl->device,
++			"Connect command failed: host path error\n");
++		break;
++
+ 	default:
+ 		dev_err(ctrl->device,
+ 			"Connect command failed, error wo/DNR bit: %d\n",
 -- 
 2.30.2
 
