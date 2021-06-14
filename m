@@ -2,239 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0C13A5E05
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCFD3A5E07
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhFNIDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:03:13 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:54765 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232520AbhFNIDJ (ORCPT
+        id S232577AbhFNIDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232520AbhFNIDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:03:09 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id shWjlak7ahqltshWmllraP; Mon, 14 Jun 2021 10:01:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1623657662; bh=qYegCn8bghApdRTOt7yc45P5rLD/KRziiVFVMHXr67Y=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=hJ9bVRxMgJzr6+rxmZE0wKabQivXopaWVmbU/JuEh4uJC5x8yMBSwVCqegwxvETkw
-         D5qTCR0orRpXCaweRdWbcy/ch4yDgrl0DaM1+HqtlPbGMgNTDAmLMe+DYGsxdJLbGL
-         Y9otO90gVNSXutow/m1C4EuaKacHUoV8SfB5O5mrZfmKine3WrSnWK4pvOfbBJonzB
-         jQjsJ+q00xPRqhXeEL/7tMOM4fJtSQnwqe5XAAoquF6Dbe5F+VjHuowEFwNII4/x7r
-         ZdFpUfEuMgGM5uazhtZiOwgF2wfNoYaCKk3cToVjcO2O8LUpl69GzllprzhAGI1qAa
-         DyqifWV6fH8zg==
-Subject: Re: [PATCH v2 2/7] media: v4l2-core: explicitly clear ioctl input
- data
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-References: <20210610214305.4170835-1-arnd@kernel.org>
- <20210610214305.4170835-3-arnd@kernel.org>
- <a59eeddd-34bb-6b84-06b3-9fb1934d447e@xs4all.nl>
- <CAK8P3a2XbiU9SdafUapKABXJes8C5roLGKynL5LnGfTN3n=Evw@mail.gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <8ba91833-5388-8534-45d8-f7ae5d701d5a@xs4all.nl>
-Date:   Mon, 14 Jun 2021 10:00:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Mon, 14 Jun 2021 04:03:48 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63834C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:01:28 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id z8so13444301wrp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=L3lbqWZTEszNETQXU+jhXVvtElOXfGcCoN5XqLAJJws=;
+        b=YgR1ctmLRMdXS9l9GQnO/y/kmcq4SDIqC2bGXJwz9Ol620nwEb9vnEUDQxPZr2SRxW
+         QK8Wo+dXhWQBINn+pnWrUeg/HOVzn8BavWIGdZ8MP4Ue6ka/zFuPICSDl91OF08k/gRX
+         NjsIgk+ljTV0Sz1XbvDUVW9dZGS3tjbM67vcFUGCur+/s9P2LBr4BZR4XzQNzwnpPiTy
+         /F4xi3aZjTjIpAwKXJRY4Ylp3CajAsHonmqcsCENUeiXZui/M70D4nS1mwzCI8Hkcdp5
+         XOW9tpNG84HzdaNKE5a0pPIAOt2djX6tzJJL1QH9lGtAUa9THR8sczRHNDinfWY/Vr4A
+         KRfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=L3lbqWZTEszNETQXU+jhXVvtElOXfGcCoN5XqLAJJws=;
+        b=QpH+SmXkfBVdb/MPInpxnB1kdkfIrLFiYToJH8KFWKmSsabtE7bD964g1/RzbPy4jM
+         XCSD4+pFp9N7M8fRUWfOepG/fgHPJTMa3lNuWfC0V5FD4GV0tYWgE4RWlJqihOfblRlT
+         pqxI2QT3q3q6RMNdXE3e+FdamtBNB4vMg6o/joVrqynAsNNUGF6XgUWo2tnGOdQda8Eg
+         YSHQ3VIbM6l1dVJWWnh2b+UGXwO6zwRkYwT4dOCaGNUamHEXgVqcj+iVcCau4lO3cT1a
+         mx/juDSvr8UGOb9r3LW11uzevIpfW+z/UnjEtc5eaYgiTJ7h+8Vy6dmX7Tl1J1KF/sAz
+         QaNA==
+X-Gm-Message-State: AOAM530dYK1GqwDZzp0De1lLv/8il5t5Owe3tjPkBR3TsmPHje4bhEyq
+        32+tC1+GNeCiSRgj4aGaAR04wQ==
+X-Google-Smtp-Source: ABdhPJy3GrxHrAITne9gl53/cvM/13scb2PdbnRj0oH6g7HVlaW5iLq1RYGExS4z050i+vVDy5Mi7w==
+X-Received: by 2002:adf:f907:: with SMTP id b7mr17086296wrr.357.1623657686850;
+        Mon, 14 Jun 2021 01:01:26 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:71f0:4862:1742:37fd])
+        by smtp.gmail.com with ESMTPSA id o5sm15825751wrw.65.2021.06.14.01.01.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 01:01:26 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        jbrunet@baylibre.com
+Subject: Re: [PATCH] ARM: dts: meson: Set the fifo-size of uart_A to 128 bytes
+Date:   Mon, 14 Jun 2021 10:01:24 +0200
+Message-Id: <162365768004.30373.6312960282628075528.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210604170844.2201229-1-martin.blumenstingl@googlemail.com>
+References: <20210604170844.2201229-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2XbiU9SdafUapKABXJes8C5roLGKynL5LnGfTN3n=Evw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfL8VRkDlHn8BdQLCWBk3xRLr6A7ruzmSa24cuWe51M8NmzkwNYBBBRAqRQRoWYknQ5+EoavBBZjNKv8jDg+XCiu/c++GsGc0JWkjXZKeNHzpeSv4XggZ
- loCL9V6Iv5p5zXaTynQ2bZV0kmRn3eEYztQrkIVsTh/SahK5jaRTf5ar8OWvjggtNK0pzbayUovWRYypDGCUlpbXGO9EVK1hwbEtqji3OFFgTF3c9w2Yiivc
- EtaafQiQUomvVt6l7DCoQrBFiHcQasPBBpA1Ri1/K0xqSDnlfmVGKg5RILD5RwboJOlIpgdHYGtooPCCvtDxZ/h4TkbSKx3KEBNDIdNCoYRfogT3Dt1JDeAe
- /ADbgt7YJ5V/GQLsdxYDPqymCNJ3GcXlBPlRp5I0zZrdpVzPX6LT3IJsLImU7zMeds+JqVZb3NsloW/8US7lsimRJhWyWSjOEabnplR89zGpaGDp2VjJglO2
- KjlruMzKp03tkz4jPHbAss7GNncrY1KjcZNR7SOw0H1aDz05k6SNm6ruKCya9ZL8RAmoAZKSoSDkV3LLXPu8D2GlvftIPGFMhNoOyKONxlULS1gxLuXZWuv9
- qdhlx03YuXHTY5+zZjdZhjNE7yHlFUsiqjPd1P4Fd5RHm84QjnGJ3bLXYZcu+WaIESYh3uzgm9ss7Hws8CkzYPoQMGdhiUJIPuZGzr1u1wAOtXn095E9sILR
- B8VXLJPCK7w=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Hi,
 
-On 11/06/2021 17:22, Arnd Bergmann wrote:
-> On Fri, Jun 11, 2021 at 2:05 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->> On 10/06/2021 23:43, Arnd Bergmann wrote:
->>> @@ -3122,12 +3122,23 @@ static int video_get_user(void __user *arg, void *parg,
->>>
->>>       if (cmd == real_cmd) {
->>>               if (copy_from_user(parg, (void __user *)arg, n))
->>> -                     err = -EFAULT;
->>> -     } else if (in_compat_syscall()) {
->>> -             err = v4l2_compat_get_user(arg, parg, cmd);
->>> -     } else {
->>> -             switch (cmd) {
->>> +                     return -EFAULT;
->>> +
->>> +             /* zero out anything we don't copy from userspace */
->>> +             if (n < _IOC_SIZE(real_cmd))
->>> +                     memset((u8 *)parg + n, 0, _IOC_SIZE(real_cmd) - n);
->>
->> This should always happen, not just when cmd == real_cmd.
-> 
-> Ok, got it. I was trying to simplify this, but I went a little too far, so
-> in the case of VIDIOC_QUERYBUF_TIME32 I dropped the final
-> clearing of the extra data, leaving the user data in place.
-> 
->> The comment is a bit misleading: besides zeroing what isn't copied from
->> userspace, it also zeroes copied fields based on INFO_FL_CLEAR_MASK.
-> 
-> I'm not following here, isn't that the same? We copy 'n' bytes, and then we
-> clear 'size - n' bytes, which is everything that wasn't copied.
-> 
->> With this change that no longer happens and v4l2-compliance starts complaining.
->>
->>> +
->>> +             return 0;
->>> +     }
->>> +
->>> +     /* zero out whole buffer first to deal with missing emulation */
->>> +     memset(parg, 0, _IOC_SIZE(real_cmd));
->>> +
->>> +     if (in_compat_syscall())
->>> +             return v4l2_compat_get_user(arg, parg, cmd);
->>> +
->>>  #if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
->>> +     switch (cmd) {
->>>               case VIDIOC_QUERYBUF_TIME32:
->>>               case VIDIOC_QBUF_TIME32:
->>>               case VIDIOC_DQBUF_TIME32:
->>
->> The 'case' statements need to be indented one tab less.
-> 
-> It seems this is no longer needed when I go back to having the switch()
-> inside the else{}.
-> 
->>> @@ -3140,28 +3151,24 @@ static int video_get_user(void __user *arg, void *parg,
->>>
->>>                       *vb = (struct v4l2_buffer) {
->>>                               .index          = vb32.index,
->>> -                                     .type           = vb32.type,
->>> -                                     .bytesused      = vb32.bytesused,
->>> -                                     .flags          = vb32.flags,
->>> -                                     .field          = vb32.field,
->>> -                                     .timestamp.tv_sec       = vb32.timestamp.tv_sec,
->>> -                                     .timestamp.tv_usec      = vb32.timestamp.tv_usec,
->>> -                                     .timecode       = vb32.timecode,
->>> -                                     .sequence       = vb32.sequence,
->>> -                                     .memory         = vb32.memory,
->>> -                                     .m.userptr      = vb32.m.userptr,
->>> -                                     .length         = vb32.length,
->>> -                                     .request_fd     = vb32.request_fd,
->>> +                             .type           = vb32.type,
->>> +                             .bytesused      = vb32.bytesused,
->>> +                             .flags          = vb32.flags,
->>> +                             .field          = vb32.field,
->>> +                             .timestamp.tv_sec       = vb32.timestamp.tv_sec,
->>> +                             .timestamp.tv_usec      = vb32.timestamp.tv_usec,
->>> +                             .timecode       = vb32.timecode,
->>> +                             .sequence       = vb32.sequence,
->>> +                             .memory         = vb32.memory,
->>> +                             .m.userptr      = vb32.m.userptr,
->>> +                             .length         = vb32.length,
->>> +                             .request_fd     = vb32.request_fd,
->>
->> Can you put these whitespace changes in a separate patch?
-> 
-> Sure.
-> 
->> I ended up with this code, and then my tests passed:
->>
->>        if (cmd == real_cmd) {
->>                 if (copy_from_user(parg, (void __user *)arg, n))
->>                         return -EFAULT;
->>         } else if (in_compat_syscall()) {
->>                 memset(parg, 0, n);
->>                 err = v4l2_compat_get_user(arg, parg, cmd);
->>         } else {
->> #if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
->>                 memset(parg, 0, n);
->>                 switch (cmd) {
->>                 case VIDIOC_QUERYBUF_TIME32:
->>                 case VIDIOC_QBUF_TIME32:
->>                 case VIDIOC_DQBUF_TIME32:
->>                 case VIDIOC_PREPARE_BUF_TIME32: {
->>                         struct v4l2_buffer_time32 vb32;
->>                         struct v4l2_buffer *vb = parg;
->>
->>                         if (copy_from_user(&vb32, arg, sizeof(vb32)))
->>                                 return -EFAULT;
->>
->>                         *vb = (struct v4l2_buffer) {
->>                                 .index          = vb32.index,
->>                                         .type           = vb32.type,
->>                                         .bytesused      = vb32.bytesused,
->>                                         .flags          = vb32.flags,
->>                                         .field          = vb32.field,
->>                                         .timestamp.tv_sec       = vb32.timestamp.tv_sec,
->>                                         .timestamp.tv_usec      = vb32.timestamp.tv_usec,
->>                                         .timecode       = vb32.timecode,
->>                                         .sequence       = vb32.sequence,
->>                                         .memory         = vb32.memory,
->>                                         .m.userptr      = vb32.m.userptr,
->>                                         .length         = vb32.length,
->>                                         .request_fd     = vb32.request_fd,
->>                         };
->>                         break;
->>                 }
->>                 }
->> #endif
->>         }
->>
->>         /* zero out anything we don't copy from userspace */
->>         if (!err && n < _IOC_SIZE(real_cmd))
->>                 memset((u8 *)parg + n, 0, _IOC_SIZE(real_cmd) - n);
->>
->>         return err;
-> 
-> Ok, so this version just adds the two memset(), without any other
-> changes. That is clearly the safest change, and I'll send it like this
-> in v3.
-> 
->> That said, I also ran the regression tests on a i686 VM, and there I got a
->> bunch of failures, but that was *without* your patches, so I think something
->> unrelated broke. I'll have to dig more into this in the next few days.
->>
->> But I wanted to get this out first, since this patch is clearly wrong.
-> 
-> Thanks a lot for taking a look and giving it an initial test. I have
-> updated the git tree at
-> 
-> git://git.kernel.org:/pub/scm/linux/kernel/git/arnd/playground.git
-> playground/v4l2-compat-ioctl
-> 
-> with the changes you pointed out. Let me know when you have found
-> out what was going on in the VM guest, and I'll send it as v3 or integrate
-> additional fixes that you find necessary.
+On Fri, 4 Jun 2021 19:08:44 +0200, Martin Blumenstingl wrote:
+> The first UART controller in the "Everything-Else" power domain is
+> called uart_A. Unlike all other UARTs (which use a 64 byte fifo-size in
+> hardware) uart_A has a fifo-size of 128 bytes. This UART controller is
+> typically used for Bluetooth HCI.
+> The fifo-size of 128 bytes is valid from all SoCs from Meson6 (or
+> possibly even earlier) all the way up to the latest 64-bit ones.
 
-Please post v3: one issue I had turned out to be due to a misconfiguration
-causing some of the tests to run out of memory.
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.14/dt)
 
-The other issue is with the X32 ABI: that is currently failing, with or
-without your series. I'm not sure why yet, from what I remember this worked fine
-last time I tested. But my memory may be faulty, since it is so long ago.
+[1/1] ARM: dts: meson: Set the fifo-size of uart_A to 128 bytes
+      https://git.kernel.org/amlogic/c/7db3cde5123e2acdd65ff7458628a9835c804b27
 
-Regards,
-
-	Hans
-
-> 
->      Arnd
-> 
-
+-- 
+Neil
