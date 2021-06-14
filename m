@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAAD3A603D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865A13A6090
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhFNKcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38204 "EHLO mail.kernel.org"
+        id S233365AbhFNKfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:35:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232926AbhFNKbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FECA61004;
-        Mon, 14 Jun 2021 10:29:24 +0000 (UTC)
+        id S233238AbhFNKdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:33:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93F5161206;
+        Mon, 14 Jun 2021 10:31:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666565;
-        bh=ffnJT3aMVqI0dolVHoYIXBOTKwyMvCNA5Z8XNCl3N/U=;
+        s=korg; t=1623666664;
+        bh=nIABbGFDIi3CQkEggmptsX4x7g/ManHCNEpNMEegHLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k607HOKXJq41WPjwO4J3K4gvbY4UOA4KXvsUD7D0JOg9ic5yrYRnm6zFBZwpXm6Mp
-         8Imsk12WClMdc8/uP2X4nTey6DdnOkQU8tHck0UF3UcdJsoiCgmUll96z8sj7P9BvV
-         IEyJ1Ylm7uRO+4WwliwI/rpjMNsFjmt/xA8oX3FA=
+        b=NZQ2J0WKxxsvIqzXOkK423DmEKeGb6Zqpfkuf287C6B7HR2dcTvdZiEYFGFyuvdPW
+         17bTj65lHkxs8pxj1OfSWzcVG/gtry9sZJNoItPxESyTR4+Nnb29x+NvxKwzePvCSO
+         j6jnpxbtPFksP8Zk3b/4zS+2Fcla9iwuK2Pjvp28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexandre GRIVEAUX <agriveaux@deutnet.info>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 25/34] USB: serial: omninet: add device id for Zyxel Omni 56K Plus
-Date:   Mon, 14 Jun 2021 12:27:16 +0200
-Message-Id: <20210614102642.387998905@linuxfoundation.org>
+        Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
+Subject: [PATCH 4.9 26/42] usb: dwc3: ep0: fix NULL pointer exception
+Date:   Mon, 14 Jun 2021 12:27:17 +0200
+Message-Id: <20210614102643.540257953@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+From: Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
 
-commit fc0b3dc9a11771c3919eaaaf9d649138b095aa0f upstream.
+commit d00889080ab60051627dab1d85831cd9db750e2a upstream.
 
-Add device id for Zyxel Omni 56K Plus modem, this modem include:
+There is no validation of the index from dwc3_wIndex_to_dep() and we might
+be referring a non-existing ep and trigger a NULL pointer exception. In
+certain configurations we might use fewer eps and the index might wrongly
+indicate a larger ep index than existing.
 
-USB chip:
-NetChip
-NET2888
+By adding this validation from the patch we can actually report a wrong
+index back to the caller.
 
-Main chip:
-901041A
-F721501APGF
+In our usecase we are using a composite device on an older kernel, but
+upstream might use this fix also. Unfortunately, I cannot describe the
+hardware for others to reproduce the issue as it is a proprietary
+implementation.
 
-Another modem using the same chips is the Zyxel Omni 56K DUO/NEO,
-could be added with the right USB ID.
+[   82.958261] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000a4
+[   82.966891] Mem abort info:
+[   82.969663]   ESR = 0x96000006
+[   82.972703]   Exception class = DABT (current EL), IL = 32 bits
+[   82.978603]   SET = 0, FnV = 0
+[   82.981642]   EA = 0, S1PTW = 0
+[   82.984765] Data abort info:
+[   82.987631]   ISV = 0, ISS = 0x00000006
+[   82.991449]   CM = 0, WnR = 0
+[   82.994409] user pgtable: 4k pages, 39-bit VAs, pgdp = 00000000c6210ccc
+[   83.000999] [00000000000000a4] pgd=0000000053aa5003, pud=0000000053aa5003, pmd=0000000000000000
+[   83.009685] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+[   83.026433] Process irq/62-dwc3 (pid: 303, stack limit = 0x000000003985154c)
+[   83.033470] CPU: 0 PID: 303 Comm: irq/62-dwc3 Not tainted 4.19.124 #1
+[   83.044836] pstate: 60000085 (nZCv daIf -PAN -UAO)
+[   83.049628] pc : dwc3_ep0_handle_feature+0x414/0x43c
+[   83.054558] lr : dwc3_ep0_interrupt+0x3b4/0xc94
 
-Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+...
+
+[   83.141788] Call trace:
+[   83.144227]  dwc3_ep0_handle_feature+0x414/0x43c
+[   83.148823]  dwc3_ep0_interrupt+0x3b4/0xc94
+[   83.181546] ---[ end trace aac6b5267d84c32f ]---
+
+Signed-off-by: Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210608162650.58426-1-marian.c.rotariu@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/omninet.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/dwc3/ep0.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/serial/omninet.c
-+++ b/drivers/usb/serial/omninet.c
-@@ -27,6 +27,7 @@
+--- a/drivers/usb/dwc3/ep0.c
++++ b/drivers/usb/dwc3/ep0.c
+@@ -328,6 +328,9 @@ static struct dwc3_ep *dwc3_wIndex_to_de
+ 		epnum |= 1;
  
- #define ZYXEL_VENDOR_ID		0x0586
- #define ZYXEL_OMNINET_ID	0x1000
-+#define ZYXEL_OMNI_56K_PLUS_ID	0x1500
- /* This one seems to be a re-branded ZyXEL device */
- #define BT_IGNITIONPRO_ID	0x2000
+ 	dep = dwc->eps[epnum];
++	if (dep == NULL)
++		return NULL;
++
+ 	if (dep->flags & DWC3_EP_ENABLED)
+ 		return dep;
  
-@@ -44,6 +45,7 @@ static int omninet_port_remove(struct us
- 
- static const struct usb_device_id id_table[] = {
- 	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNINET_ID) },
-+	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNI_56K_PLUS_ID) },
- 	{ USB_DEVICE(ZYXEL_VENDOR_ID, BT_IGNITIONPRO_ID) },
- 	{ }						/* Terminating entry */
- };
 
 
