@@ -2,1152 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6803A6A58
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B656F3A6A4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbhFNPbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:31:07 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:33537 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234196AbhFNP3u (ORCPT
+        id S234282AbhFNPaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:30:12 -0400
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:39828 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233717AbhFNP3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:29:50 -0400
-Received: by mail-ej1-f47.google.com with SMTP id g20so17440937ejt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:27:32 -0700 (PDT)
+        Mon, 14 Jun 2021 11:29:06 -0400
+Received: by mail-pj1-f44.google.com with SMTP id w14-20020a17090aea0eb029016e9e0e7983so3767439pjy.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:27:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Zn8Y8N57YHd1bEFyCFoGR6ey+RtBpPTsCBiCe8Jyrhc=;
-        b=18AO2fYsuLQpKw7M+i8R/s2nSsjxyepVSHn7Aj55Re8glAoSIgxEZ/5amuRHCf/N4f
-         KB9upfOeLoHZs/I5aFqWaELoO2T9B6HwgCxpbIqj1t+mRvA5VeKL53R3aoLiMWhKTG3H
-         J4AYdvJnAM77XfsuYif/YUMe8dcoP/t5k8LsBQ1H3nWUx4wgCDAgSJcLBjLDfFhYzAfO
-         pEbW2Pdv+Cs/MN8ZxBbFV/vIjuZF+DltIi0DdHX26p4iv5aUhPspyyLYfSl11mUr1LIO
-         zekG9wGS7YwUBXjkzEdCy9AGZqCo3qukXMa9slM3EudQj0ZayN87hO7QnmEdjoqCSgOI
-         PKtQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bcx1hZnVCYvsuGOQgk+jA811yV1iF9Tsc5R2/Wvf6PA=;
+        b=Y6OLntP0geemb8Nz9JjVtcKVBsdGG35jU3eYPpYS9bQJxQvbZkfcyMMlrh/HH04Y6w
+         Oe9FQP4EGgS3kf3NpY+ClRZ2aqrnbmnPAjZv6s26ReE4xY8Uw6PLmIEgvwUnINHItGv1
+         9DZJ5Y5UDiCTh8VBT3ntK5NI4YiWJcKYwKqYg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=Zn8Y8N57YHd1bEFyCFoGR6ey+RtBpPTsCBiCe8Jyrhc=;
-        b=sxObocJhnl+hlVCi+U7qQASKNynOa9wpa6C9N63sh1g1PQDjhc9ap1NK3AjDFvPOlg
-         wYKqUZfl/0PRgyOasH6UjR17LJcnoJ++nVFzlUCONcMaQLGcMDG40tgirC8sA6S8lqO+
-         m/PpXk93uR7ZOe/ukae/eWqQH6HWxondhTz8mM4umzuxLLgFUDBGfSB3uST7Dv1F243y
-         W50pZDXj3nWbGKK8O1swhac4XdptotMHHnVdEcZMwcHFT6aHDBv/aM7wf30mIsoMS/Su
-         U6BcohyD1sWSxmslbk5A317+3+FX/rOWrRbT+9N/ZsXst7eMGxFlvtpVtW7ykQ/4Tk7S
-         XtaA==
-X-Gm-Message-State: AOAM530jR/RQJMQdFNqkhFvlPcNahSZhqBvxRWm7EsMA76AStJRBoGlh
-        breYNoWArFh4vG0FbsOMxtx6461A/9kwzcxd
-X-Google-Smtp-Source: ABdhPJxyAqW9YP/TjSWvSiaecvjD8eQVeiISwwwZLkhsZyl39T2sHxZXHaEZEIsZEH8Szh7y/xdANA==
-X-Received: by 2002:a17:906:a294:: with SMTP id i20mr15999237ejz.330.1623684391734;
-        Mon, 14 Jun 2021 08:26:31 -0700 (PDT)
-Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
-        by smtp.gmail.com with ESMTPSA id j22sm7479024eje.123.2021.06.14.08.26.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Jun 2021 08:26:31 -0700 (PDT)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 33/33] arm64: zynqmp: Add support for Xilinx Kria SOM board
-Date:   Mon, 14 Jun 2021 17:25:41 +0200
-Message-Id: <97588ccfcdc21c53f732d3948ae85abed6539256.1623684253.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1623684253.git.michal.simek@xilinx.com>
-References: <cover.1623684253.git.michal.simek@xilinx.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bcx1hZnVCYvsuGOQgk+jA811yV1iF9Tsc5R2/Wvf6PA=;
+        b=BW7oPgiqd8Hxbvqi6LbqpWkPNh3OUF+BgiwsB26WtNBcdcjo2ep9TRmB/yLt72Gxs2
+         3peQMEr9j6oJEeFFSQNaIpqfis/1285RjMi8mZMFN/Qf0GU5DL4/Owdwxux8gNQUADyi
+         XSjF3Pbn+dv1WTR2jYi9YcOKDjGWhkt35E6qO5wBctmxcVrXJVNHJiDY91JiwPJznMCE
+         b+d9yx1uhzXR418bV137P1D/UDwFAL45Lyx8kYTxflskzGbKW0H3+n0MuqhG20h4eZH5
+         peOOADYKPEhgez3qxq2tpWWug29RsxkgLAt7ZJwOqOPomcE/Oa0lxwW93gz9msNz5Ci/
+         +8hQ==
+X-Gm-Message-State: AOAM533SiG3MTp3Afd0trfKKYjm5Ud2Zu8Onz3tyKqO4ZcUfYWJagE1K
+        KTrwTKfVjQzisQqaaPg8hvTbzQ==
+X-Google-Smtp-Source: ABdhPJx5Kn+AoWunoG1/b1o7/X32QLfEpD4izGhpvHsO6yITGe/4DAt53UUWQHkjZd0DSnub82KSZw==
+X-Received: by 2002:a17:90b:3709:: with SMTP id mg9mr11738509pjb.47.1623684363165;
+        Mon, 14 Jun 2021 08:26:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m134sm13253034pfd.148.2021.06.14.08.26.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 08:26:02 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 08:26:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <morbo@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, johannes.berg@intel.com,
+        oberpar@linux.vnet.ibm.com, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
+ infrastructure
+Message-ID: <202106140817.F584D2F@keescook>
+References: <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net>
+ <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
+ <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
+ <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
+ <20210612202505.GG68208@worktop.programming.kicks-ass.net>
+ <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+ <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net>
+ <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
+ <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
+ <CANpmjNNnZv7DHYaJBL7knn9P+50F+SOCvis==Utaf-avENnVsw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNNnZv7DHYaJBL7knn9P+50F+SOCvis==Utaf-avENnVsw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are couple of revisions of SOMs (k26) and associated carrier cards
-(kv260).
-SOM itself has two major versions:
-sm-k26 - SOM with EMMC
-smk-k26 - SOM without EMMC used on starter kit with preprogrammed firmware
-in QSPI.
+On Mon, Jun 14, 2021 at 04:16:16PM +0200, 'Marco Elver' via Clang Built Linux wrote:
+> On Mon, 14 Jun 2021 at 12:45, Peter Zijlstra <peterz@infradead.org> wrote:
+> [...]
+> > I've also been led to believe that the KCOV data format is not in fact
+> > dependent on which toolchain is used.
+> 
+> Correct, we use KCOV with both gcc and clang. Both gcc and clang emit
+> the same instrumentation for -fsanitize-coverage. Thus, the user-space
+> portion and interface is indeed identical:
+> https://www.kernel.org/doc/html/latest/dev-tools/kcov.html
+> 
+> > > > I'm thinking it might be about time to build _one_ infrastructure for
+> > > > that and define a kernel arc format and call it a day.
+> > > >
+> > > That may be nice, but it's a rather large request.
+> >
+> > Given GCOV just died, perhaps you can look at what KCOV does and see if
+> > that can be extended to do as you want. KCOV is actively used and
+> > we actually tripped over all the fun little noinstr bugs at the time.
+> 
+> There might be a subtle mismatch between coverage instrumentation for
+> testing/fuzzing and for profiling. (Disclaimer: I'm not too familiar
+> with Clang-PGO's requirements.) For example, while for testing/fuzzing
+> we may only require information if a code-path has been visited, for
+> profiling the "hotness" might be of interest. Therefore, the
+> user-space exported data format can make several trade-offs in
+> complexity.
 
-SOMs are describing only devices available on the SOM or connections which
-are described in specification (for example UART, fwuen).
+This has been my primary take-away: given that Clang's PGO is different
+enough from the other things and provides more specific/actionable
+results, I think it's justified to exist on its own separate from the
+other parts.
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+> In theory, I imagine there's a limit to how generic one could make
+> profiling information, because one compiler's optimizations are not
+> another compiler's optimizations. On the other hand, it may be doable
+> to collect unified profiling information for common stuff, but I guess
+> there's little motivation for figuring out the common ground given the
+> producer and consumer of the PGO data is the same compiler by design
+> (unlike coverage info for testing/fuzzing).
+> 
+> Therefore, if KCOV's exposed information does not match PGO's
+> requirements today, I'm not sure what realistically can be done
+> without turning KCOV into a monster. Because KCOV is optimized for
+> testing/fuzzing coverage, and I'm not sure how complex we can or want
+> to make it to cater to a new use-case.
+> 
+> My intuition is that the simpler design is to have 2 subsystems for
+> instrumentation-based coverage collection: one for testing/fuzzing,
+> and the other for profiling.
+> 
+> Alas, there's the problem of GCOV, which should be replaceable by KCOV
+> for most use cases. But it would be good to hear from a GCOV user if
+> there are some.
+> 
+> But as we learned GCOV is broken on x86 now, I see these options:
+> 
+> 1. Remove GCOV, make KCOV the de-facto test-coverage collection
+> subsystem. Introduce PGO-instrumentation subsystem for profile
+> collection only, and make it _very_ clear that KCOV != PGO data as
+> hinted above. A pre-requisite is that compiler-support for PGO
+> instrumentation adds selective instrumentation support, likely just
+> making attribute no_instrument_function do the right thing.
 
-Changes in v2:
-- Use sugar syntax - reported by Geert
-- Update copyright years
-- Fix SD3.0 comment alignment
-- Remove one newline from Makefile
+Right. I can't speak to GCOV, but KCOV certainly isn't PGO.
 
-https://www.xilinx.com/products/som/kria.html
----
- .../devicetree/bindings/arm/xilinx.yaml       |  31 ++
- arch/arm64/boot/dts/xilinx/Makefile           |  10 +
- .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts  | 335 ++++++++++++++++++
- .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts  | 318 +++++++++++++++++
- .../boot/dts/xilinx/zynqmp-sm-k26-revA.dts    | 289 +++++++++++++++
- .../boot/dts/xilinx/zynqmp-smk-k26-revA.dts   |  21 ++
- 6 files changed, 1004 insertions(+)
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
+> 2. Like (1) but also keep GCOV, given proper support for attribute
+> no_instrument_function would probably fix it (?).
+> 
+> 3. Keep GCOV (and KCOV of course). Somehow extract PGO profiles from KCOV.
+> 
+> 4. Somehow extract PGO profiles from GCOV, or modify kernel/gcov to do so.
 
-diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Documentation/devicetree/bindings/arm/xilinx.yaml
-index a0b1ae6e3e71..1a4a03dfaf7f 100644
---- a/Documentation/devicetree/bindings/arm/xilinx.yaml
-+++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
-@@ -116,6 +116,37 @@ properties:
-           - const: xlnx,zynqmp-zcu111
-           - const: xlnx,zynqmp
- 
-+      - description: Xilinx Kria SOMs
-+        items:
-+          - const: xlnx,zynqmp-sm-k26-rev1
-+          - const: xlnx,zynqmp-sm-k26-revB
-+          - const: xlnx,zynqmp-sm-k26-revA
-+          - const: xlnx,zynqmp-sm-k26
-+          - const: xlnx,zynqmp
-+
-+      - description: Xilinx Kria SOMs (starter)
-+        items:
-+          - const: xlnx,zynqmp-smk-k26-rev1
-+          - const: xlnx,zynqmp-smk-k26-revB
-+          - const: xlnx,zynqmp-smk-k26-revA
-+          - const: xlnx,zynqmp-smk-k26
-+          - const: xlnx,zynqmp
-+
-+      - description: Xilinx Kria Carrier Cards (revA/Y/Z)
-+        items:
-+          - const: xlnx,zynqmp-sk-kv260-revZ
-+          - const: xlnx,zynqmp-sk-kv260-revY
-+          - const: xlnx,zynqmp-sk-kv260-revA
-+          - const: xlnx,zynqmp-sk-k260
-+          - const: xlnx,zynqmp
-+
-+      - description: Xilinx Kria Carrier Cards (revB/1)
-+        items:
-+          - const: xlnx,zynqmp-sk-kv260-rev1
-+          - const: xlnx,zynqmp-sk-kv260-revB
-+          - const: xlnx,zynqmp-sk-k260
-+          - const: xlnx,zynqmp
-+
- additionalProperties: true
- 
- ...
-diff --git a/arch/arm64/boot/dts/xilinx/Makefile b/arch/arm64/boot/dts/xilinx/Makefile
-index 083ed52337fd..8e43bef2c57e 100644
---- a/arch/arm64/boot/dts/xilinx/Makefile
-+++ b/arch/arm64/boot/dts/xilinx/Makefile
-@@ -17,3 +17,13 @@ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revA.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revC.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu106-revA.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu111-revA.dtb
-+
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-sm-k26-revA.dtb
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-smk-k26-revA.dtb
-+
-+som-AA-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
-+som-AB-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
-+starter-AA-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
-+starter-AB-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
-+
-+dtb-$(CONFIG_ARCH_ZYNQMP) += som-AA.dtb som-AB.dtb starter-AA.dtb starter-AB.dtb
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
-new file mode 100644
-index 000000000000..59d5751e0634
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
-@@ -0,0 +1,335 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for KV260 revA Carrier Card
-+ *
-+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
-+ *
-+ * SD level shifter:
-+ * "A" – A01 board un-modified (NXP)
-+ * "Y" – A01 board modified with legacy interposer (Nexperia)
-+ * "Z" – A01 board modified with Diode interposer
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+ #include <dt-bindings/gpio/gpio.h>
-+ #include <dt-bindings/net/ti-dp83867.h>
-+ #include <dt-bindings/phy/phy.h>
-+ #include <dt-bindings/pinctrl/pinctrl-zynqmp.h>
-+
-+/dts-v1/;
-+/plugin/;
-+
-+&{/} {
-+	compatible = "xlnx,zynqmp-sk-kv260-revA",
-+		     "xlnx,zynqmp-sk-kv260-revY",
-+		     "xlnx,zynqmp-sk-kv260-revZ",
-+		     "xlnx,zynqmp-sk-kv260", "xlnx,zynqmp";
-+};
-+
-+&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c1_default>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
-+
-+	u14: ina260@40 { /* u14 */
-+		compatible = "ti,ina260";
-+		#io-channel-cells = <1>;
-+		label = "ina260-u14";
-+		reg = <0x40>;
-+	};
-+	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
-+};
-+
-+&amba {
-+	ina260-u14 {
-+		compatible = "iio-hwmon";
-+		io-channels = <&u14 0>, <&u14 1>, <&u14 2>;
-+	};
-+
-+	si5332_0: si5332_0 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <125000000>;
-+	};
-+
-+	si5332_1: si5332_1 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	si5332_2: si5332_2 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <48000000>;
-+	};
-+
-+	si5332_3: si5332_3 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+
-+	si5332_4: si5332_4 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <26000000>;
-+	};
-+
-+	si5332_5: si5332_5 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <27000000>;
-+	};
-+};
-+
-+/* DP/USB 3.0 and SATA */
-+&psgtr {
-+	status = "okay";
-+	/* pcie, usb3, sata */
-+	clocks = <&si5332_5>, <&si5332_4>, <&si5332_0>;
-+	clock-names = "ref0", "ref1", "ref2";
-+};
-+
-+&sata {
-+	status = "okay";
-+	/* SATA OOB timing settings */
-+	ceva,p0-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
-+	ceva,p0-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
-+	ceva,p0-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
-+	ceva,p0-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
-+	ceva,p1-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
-+	ceva,p1-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
-+	ceva,p1-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
-+	ceva,p1-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
-+	phy-names = "sata-phy";
-+	phys = <&psgtr 3 PHY_TYPE_SATA 1 2>;
-+};
-+
-+&zynqmp_dpsub {
-+	status = "disabled";
-+	phy-names = "dp-phy0", "dp-phy1";
-+	phys = <&psgtr 1 PHY_TYPE_DP 0 0>, <&psgtr 0 PHY_TYPE_DP 1 0>;
-+};
-+
-+&zynqmp_dpdma {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usb0_default>;
-+	usbhub: usb5744 { /* u43 */
-+		compatible = "microchip,usb5744";
-+		reset-gpios = <&gpio 44 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-+
-+&dwc3_0 {
-+	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
-+	phy-names = "usb3-phy";
-+	phys = <&psgtr 2 PHY_TYPE_USB3 0 1>;
-+	maximum-speed = "super-speed";
-+};
-+
-+&sdhci1 { /* on CC with tuned parameters */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sdhci1_default>;
-+	/*
-+	 * SD 3.0 requires level shifter and this property
-+	 * should be removed if the board has level shifter and
-+	 * need to work in UHS mode
-+	 */
-+	no-1-8-v;
-+	disable-wp;
-+	xlnx,mio-bank = <1>;
-+};
-+
-+&gem3 { /* required by spec */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_gem3_default>;
-+	phy-handle = <&phy0>;
-+	phy-mode = "rgmii-id";
-+
-+	mdio: mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reset-gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
-+		reset-delay-us = <2>;
-+
-+		phy0: ethernet-phy@1 {
-+			#phy-cells = <1>;
-+			reg = <1>;
-+			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-+			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
-+			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+			ti,dp83867-rxctrl-strap-quirk;
-+		};
-+	};
-+};
-+
-+&pinctrl0 { /* required by spec */
-+	status = "okay";
-+
-+	pinctrl_uart1_default: uart1-default {
-+		conf {
-+			groups = "uart1_9_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			drive-strength = <12>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO37";
-+			bias-high-impedance;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO36";
-+			bias-disable;
-+		};
-+
-+		mux {
-+			groups = "uart1_9_grp";
-+			function = "uart1";
-+		};
-+	};
-+
-+	pinctrl_i2c1_default: i2c1-default {
-+		conf {
-+			groups = "i2c1_6_grp";
-+			bias-pull-up;
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux {
-+			groups = "i2c1_6_grp";
-+			function = "i2c1";
-+		};
-+	};
-+
-+	pinctrl_i2c1_gpio: i2c1-gpio {
-+		conf {
-+			groups = "gpio0_24_grp", "gpio0_25_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux {
-+			groups = "gpio0_24_grp", "gpio0_25_grp";
-+			function = "gpio0";
-+		};
-+	};
-+
-+	pinctrl_gem3_default: gem3-default {
-+		conf {
-+			groups = "ethernet3_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO70", "MIO72", "MIO74";
-+			bias-high-impedance;
-+			low-power-disable;
-+		};
-+
-+		conf-bootstrap {
-+			pins = "MIO71", "MIO73", "MIO75";
-+			bias-disable;
-+			low-power-disable;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO64", "MIO65", "MIO66",
-+				"MIO67", "MIO68", "MIO69";
-+			bias-disable;
-+			low-power-enable;
-+		};
-+
-+		conf-mdio {
-+			groups = "mdio3_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			bias-disable;
-+		};
-+
-+		mux-mdio {
-+			function = "mdio3";
-+			groups = "mdio3_0_grp";
-+		};
-+
-+		mux {
-+			function = "ethernet3";
-+			groups = "ethernet3_0_grp";
-+		};
-+	};
-+
-+	pinctrl_usb0_default: usb0-default {
-+		conf {
-+			groups = "usb0_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO52", "MIO53", "MIO55";
-+			bias-high-impedance;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO54", "MIO56", "MIO57", "MIO58", "MIO59",
-+			"MIO60", "MIO61", "MIO62", "MIO63";
-+			bias-disable;
-+		};
-+
-+		mux {
-+			groups = "usb0_0_grp";
-+			function = "usb0";
-+		};
-+	};
-+
-+	pinctrl_sdhci1_default: sdhci1-default {
-+		conf {
-+			groups = "sdio1_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			bias-disable;
-+		};
-+
-+		conf-cd {
-+			groups = "sdio1_cd_0_grp";
-+			bias-high-impedance;
-+			bias-pull-up;
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux-cd {
-+			groups = "sdio1_cd_0_grp";
-+			function = "sdio1_cd";
-+		};
-+
-+		mux {
-+			groups = "sdio1_0_grp";
-+			function = "sdio1";
-+		};
-+	};
-+};
-+
-+&uart1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1_default>;
-+};
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
-new file mode 100644
-index 000000000000..b5443afff982
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
-@@ -0,0 +1,318 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for KV260 revA Carrier Card
-+ *
-+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+ #include <dt-bindings/gpio/gpio.h>
-+ #include <dt-bindings/net/ti-dp83867.h>
-+ #include <dt-bindings/phy/phy.h>
-+ #include <dt-bindings/pinctrl/pinctrl-zynqmp.h>
-+
-+/dts-v1/;
-+/plugin/;
-+
-+&{/} {
-+	compatible = "xlnx,zynqmp-sk-kv260-rev1",
-+		     "xlnx,zynqmp-sk-kv260-revB",
-+		     "xlnx,zynqmp-sk-kv260", "xlnx,zynqmp";
-+};
-+
-+&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c1_default>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
-+
-+	u14: ina260@40 { /* u14 */
-+		compatible = "ti,ina260";
-+		#io-channel-cells = <1>;
-+		label = "ina260-u14";
-+		reg = <0x40>;
-+	};
-+	usbhub: usb5744@2d { /* u43 */
-+		compatible = "microchip,usb5744";
-+		reg = <0x2d>;
-+		reset-gpios = <&gpio 44 GPIO_ACTIVE_HIGH>;
-+	};
-+	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
-+};
-+
-+&amba {
-+	ina260-u14 {
-+		compatible = "iio-hwmon";
-+		io-channels = <&u14 0>, <&u14 1>, <&u14 2>;
-+	};
-+
-+	si5332_0: si5332_0 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <125000000>;
-+	};
-+
-+	si5332_1: si5332_1 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	si5332_2: si5332_2 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <48000000>;
-+	};
-+
-+	si5332_3: si5332_3 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+
-+	si5332_4: si5332_4 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <26000000>;
-+	};
-+
-+	si5332_5: si5332_5 { /* u17 */
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <27000000>;
-+	};
-+};
-+
-+/* DP/USB 3.0 */
-+&psgtr {
-+	status = "okay";
-+	/* pcie, usb3, sata */
-+	clocks = <&si5332_5>, <&si5332_4>, <&si5332_0>;
-+	clock-names = "ref0", "ref1", "ref2";
-+};
-+
-+&zynqmp_dpsub {
-+	status = "disabled";
-+	phy-names = "dp-phy0", "dp-phy1";
-+	phys = <&psgtr 1 PHY_TYPE_DP 0 0>, <&psgtr 0 PHY_TYPE_DP 1 0>;
-+};
-+
-+&zynqmp_dpdma {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usb0_default>;
-+};
-+
-+&dwc3_0 {
-+	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
-+	phy-names = "usb3-phy";
-+	phys = <&psgtr 2 PHY_TYPE_USB3 0 1>;
-+	maximum-speed = "super-speed";
-+};
-+
-+&sdhci1 { /* on CC with tuned parameters */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sdhci1_default>;
-+	/*
-+	 * SD 3.0 requires level shifter and this property
-+	 * should be removed if the board has level shifter and
-+	 * need to work in UHS mode
-+	 */
-+	no-1-8-v;
-+	disable-wp;
-+	xlnx,mio-bank = <1>;
-+	clk-phase-sd-hs = <126>, <60>;
-+	clk-phase-uhs-sdr25 = <120>, <60>;
-+	clk-phase-uhs-ddr50 = <126>, <48>;
-+};
-+
-+&gem3 { /* required by spec */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_gem3_default>;
-+	phy-handle = <&phy0>;
-+	phy-mode = "rgmii-id";
-+
-+	mdio: mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reset-gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
-+		reset-delay-us = <2>;
-+
-+		phy0: ethernet-phy@1 {
-+			#phy-cells = <1>;
-+			reg = <1>;
-+			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-+			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
-+			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+			ti,dp83867-rxctrl-strap-quirk;
-+		};
-+	};
-+};
-+
-+&pinctrl0 { /* required by spec */
-+	status = "okay";
-+
-+	pinctrl_uart1_default: uart1-default {
-+		conf {
-+			groups = "uart1_9_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			drive-strength = <12>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO37";
-+			bias-high-impedance;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO36";
-+			bias-disable;
-+		};
-+
-+		mux {
-+			groups = "uart1_9_grp";
-+			function = "uart1";
-+		};
-+	};
-+
-+	pinctrl_i2c1_default: i2c1-default {
-+		conf {
-+			groups = "i2c1_6_grp";
-+			bias-pull-up;
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux {
-+			groups = "i2c1_6_grp";
-+			function = "i2c1";
-+		};
-+	};
-+
-+	pinctrl_i2c1_gpio: i2c1-gpio {
-+		conf {
-+			groups = "gpio0_24_grp", "gpio0_25_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux {
-+			groups = "gpio0_24_grp", "gpio0_25_grp";
-+			function = "gpio0";
-+		};
-+	};
-+
-+	pinctrl_gem3_default: gem3-default {
-+		conf {
-+			groups = "ethernet3_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO70", "MIO72", "MIO74";
-+			bias-high-impedance;
-+			low-power-disable;
-+		};
-+
-+		conf-bootstrap {
-+			pins = "MIO71", "MIO73", "MIO75";
-+			bias-disable;
-+			low-power-disable;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO64", "MIO65", "MIO66",
-+				"MIO67", "MIO68", "MIO69";
-+			bias-disable;
-+			low-power-enable;
-+		};
-+
-+		conf-mdio {
-+			groups = "mdio3_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			bias-disable;
-+		};
-+
-+		mux-mdio {
-+			function = "mdio3";
-+			groups = "mdio3_0_grp";
-+		};
-+
-+		mux {
-+			function = "ethernet3";
-+			groups = "ethernet3_0_grp";
-+		};
-+	};
-+
-+	pinctrl_usb0_default: usb0-default {
-+		conf {
-+			groups = "usb0_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		conf-rx {
-+			pins = "MIO52", "MIO53", "MIO55";
-+			bias-high-impedance;
-+		};
-+
-+		conf-tx {
-+			pins = "MIO54", "MIO56", "MIO57", "MIO58", "MIO59",
-+			"MIO60", "MIO61", "MIO62", "MIO63";
-+			bias-disable;
-+		};
-+
-+		mux {
-+			groups = "usb0_0_grp";
-+			function = "usb0";
-+		};
-+	};
-+
-+	pinctrl_sdhci1_default: sdhci1-default {
-+		conf {
-+			groups = "sdio1_0_grp";
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+			bias-disable;
-+		};
-+
-+		conf-cd {
-+			groups = "sdio1_cd_0_grp";
-+			bias-high-impedance;
-+			bias-pull-up;
-+			slew-rate = <SLEW_RATE_SLOW>;
-+			power-source = <IO_STANDARD_LVCMOS18>;
-+		};
-+
-+		mux-cd {
-+			groups = "sdio1_cd_0_grp";
-+			function = "sdio1_cd";
-+		};
-+
-+		mux {
-+			groups = "sdio1_0_grp";
-+			function = "sdio1";
-+		};
-+	};
-+};
-+
-+&uart1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1_default>;
-+};
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
-new file mode 100644
-index 000000000000..173a59ceb49a
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
-@@ -0,0 +1,289 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for Xilinx ZynqMP SM-K26 rev1/B/A
-+ *
-+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "zynqmp.dtsi"
-+#include "zynqmp-clk-ccf.dtsi"
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/phy/phy.h>
-+
-+/ {
-+	model = "ZynqMP SM-K26 Rev1/B/A";
-+	compatible = "xlnx,zynqmp-sm-k26-rev1", "xlnx,zynqmp-sm-k26-revB",
-+		     "xlnx,zynqmp-sm-k26-revA", "xlnx,zynqmp-sm-k26",
-+		     "xlnx,zynqmp";
-+
-+	aliases {
-+		i2c0 = &i2c0;
-+		i2c1 = &i2c1;
-+		mmc0 = &sdhci0;
-+		mmc1 = &sdhci1;
-+		nvmem0 = &eeprom;
-+		nvmem1 = &eeprom_cc;
-+		rtc0 = &rtc;
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+		serial2 = &dcc;
-+		spi0 = &qspi;
-+		spi1 = &spi0;
-+		spi2 = &spi1;
-+		usb0 = &usb0;
-+		usb1 = &usb1;
-+	};
-+
-+	chosen {
-+		bootargs = "earlycon";
-+		stdout-path = "serial1:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory"; /* 4GB */
-+		reg = <0x0 0x0 0x0 0x80000000>, <0x8 0x00000000 0x0 0x80000000>;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		autorepeat;
-+		fwuen {
-+			label = "fwuen";
-+			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		ds35 {
-+			label = "heartbeat";
-+			gpios = <&gpio 7 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		ds36 {
-+			label = "vbus_det";
-+			gpios = <&gpio 8 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+	};
-+};
-+
-+&uart1 { /* MIO36/MIO37 */
-+	status = "okay";
-+};
-+
-+&qspi { /* MIO 0-5 - U143 */
-+	status = "okay";
-+	flash@0 { /* MT25QU512A */
-+		compatible = "mt25qu512a", "jedec,spi-nor"; /* 64MB */
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		reg = <0>;
-+		spi-tx-bus-width = <1>;
-+		spi-rx-bus-width = <4>;
-+		spi-max-frequency = <40000000>; /* 40MHz */
-+		partition@0 {
-+			label = "Image Selector";
-+			reg = <0x0 0x80000>; /* 512KB */
-+			read-only;
-+			lock;
-+		};
-+		partition@80000 {
-+			label = "Image Selector Golden";
-+			reg = <0x80000 0x80000>; /* 512KB */
-+			read-only;
-+			lock;
-+		};
-+		partition@100000 {
-+			label = "Persistent Register";
-+			reg = <0x100000 0x20000>; /* 128KB */
-+		};
-+		partition@120000 {
-+			label = "Persistent Register Backup";
-+			reg = <0x120000 0x20000>; /* 128KB */
-+		};
-+		partition@140000 {
-+			label = "Open_1";
-+			reg = <0x140000 0xC0000>; /* 768KB */
-+		};
-+		partition@200000 {
-+			label = "Image A (FSBL, PMU, ATF, U-Boot)";
-+			reg = <0x200000 0xD00000>; /* 13MB */
-+		};
-+		partition@f00000 {
-+			label = "ImgSel Image A Catch";
-+			reg = <0xF00000 0x80000>; /* 512KB */
-+			read-only;
-+			lock;
-+		};
-+		partition@f80000 {
-+			label = "Image B (FSBL, PMU, ATF, U-Boot)";
-+			reg = <0xF80000 0xD00000>; /* 13MB */
-+		};
-+		partition@1c80000 {
-+			label = "ImgSel Image B Catch";
-+			reg = <0x1C80000 0x80000>; /* 512KB */
-+			read-only;
-+			lock;
-+		};
-+		partition@1d00000 {
-+			label = "Open_2";
-+			reg = <0x1D00000 0x100000>; /* 1MB */
-+		};
-+		partition@1e00000 {
-+			label = "Recovery Image";
-+			reg = <0x1E00000 0x200000>; /* 2MB */
-+			read-only;
-+			lock;
-+		};
-+		partition@2000000 {
-+			label = "Recovery Image Backup";
-+			reg = <0x2000000 0x200000>; /* 2MB */
-+			read-only;
-+			lock;
-+		};
-+		partition@2200000 {
-+			label = "U-Boot storage variables";
-+			reg = <0x2200000 0x20000>; /* 128KB */
-+		};
-+		partition@2220000 {
-+			label = "U-Boot storage variables backup";
-+			reg = <0x2220000 0x20000>; /* 128KB */
-+		};
-+		partition@2240000 {
-+			label = "SHA256";
-+			reg = <0x2240000 0x10000>; /* 256B but 64KB sector */
-+			read-only;
-+			lock;
-+		};
-+		partition@2250000 {
-+			label = "User";
-+			reg = <0x2250000 0x1db0000>; /* 29.5 MB */
-+		};
-+	};
-+};
-+
-+&sdhci0 { /* MIO13-23 - 16GB emmc MTFC16GAPALBH-IT - U133A*/
-+	status = "okay";
-+	non-removable;
-+	disable-wp;
-+	bus-width = <8>;
-+	xlnx,mio-bank = <0>;
-+};
-+
-+&spi1 { /* MIO6, 9-11 */
-+	status = "okay";
-+	label = "TPM";
-+	num-cs = <1>;
-+	tpm@0 { /* slm9670 - U144 */
-+		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
-+		reg = <0>;
-+		spi-max-frequency = <18500000>;
-+	};
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
-+
-+	eeprom: eeprom@50 { /* u46 - also at address 0x58 */
-+		compatible = "st,24c64", "atmel,24c64"; /* st m24c64 */
-+		reg = <0x50>;
-+		/* WP pin EE_WP_EN connected to slg7x644092@68 */
-+	};
-+
-+	eeprom_cc: eeprom@51 { /* required by spec - also at address 0x59 */
-+		compatible = "st,24c64", "atmel,24c64"; /* st m24c64 */
-+		reg = <0x51>;
-+	};
-+
-+	/* da9062@30 - u170 - also at address 0x31 */
-+	/* da9131@33 - u167 */
-+	da9131: pmic@33 {
-+		compatible = "dlg,da9131";
-+		reg = <0x33>;
-+		regulators {
-+			da9131_buck1: buck1 {
-+				regulator-name = "da9131_buck1";
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+			da9131_buck2: buck2 {
-+				regulator-name = "da9131_buck2";
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+
-+	/* da9130@32 - u166 */
-+	da9130: pmic@32 {
-+		compatible = "dlg,da9130";
-+		reg = <0x32>;
-+		regulators {
-+			da9130_buck1: buck1 {
-+				regulator-name = "da9130_buck1";
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+
-+	/* slg7x644091@70 - u168 NOT accessible due to address conflict with stdp4320 */
-+	/*
-+	 * stdp4320 - u27 FW has below two issues to be fixed in next board revision.
-+	 * Device acknowledging to addresses 0x5C, 0x5D, 0x70, 0x72, 0x76.
-+	 * Address conflict with slg7x644091@70 making both the devices NOT accessible.
-+	 * With the FW fix, stdp4320 should respond to address 0x73 only.
-+	 */
-+	/* slg7x644092@68 - u169 */
-+	/* Also connected via JA1C as C23/C24 */
-+};
-+
-+&gpio {
-+	status = "okay";
-+	gpio-line-names = "QSPI_CLK", "QSPI_DQ1", "QSPI_DQ2", "QSPI_DQ3", "QSPI_DQ0", /* 0 - 4 */
-+			  "QSPI_CS_B", "SPI_CLK", "LED1", "LED2", "SPI_CS_B", /* 5 - 9 */
-+			  "SPI_MISO", "SPI_MOSI", "FWUEN", "EMMC_DAT0", "EMMC_DAT1", /* 10 - 14 */
-+			  "EMMC_DAT2", "EMMC_DAT3", "EMMC_DAT4", "EMMC_DAT5", "EMMC_DAT6", /* 15 - 19 */
-+			  "EMMC_DAT7", "EMMC_CMD", "EMMC_CLK", "EMMC_RST", "I2C1_SCL", /* 20 - 24 */
-+			  "I2C1_SDA", "", "", "", "", /* 25 - 29 */
-+			  "", "", "", "", "", /* 30 - 34 */
-+			  "", "", "", "", "", /* 35 - 39 */
-+			  "", "", "", "", "", /* 40 - 44 */
-+			  "", "", "", "", "", /* 45 - 49 */
-+			  "", "", "", "", "", /* 50 - 54 */
-+			  "", "", "", "", "", /* 55 - 59 */
-+			  "", "", "", "", "", /* 60 - 64 */
-+			  "", "", "", "", "", /* 65 - 69 */
-+			  "", "", "", "", "", /* 70 - 74 */
-+			  "", "", "", /* 75 - 77, MIO end and EMIO start */
-+			  "", "", /* 78 - 79 */
-+			  "", "", "", "", "", /* 80 - 84 */
-+			  "", "", "", "", "", /* 85 - 89 */
-+			  "", "", "", "", "", /* 90 - 94 */
-+			  "", "", "", "", "", /* 95 - 99 */
-+			  "", "", "", "", "", /* 100 - 104 */
-+			  "", "", "", "", "", /* 105 - 109 */
-+			  "", "", "", "", "", /* 110 - 114 */
-+			  "", "", "", "", "", /* 115 - 119 */
-+			  "", "", "", "", "", /* 120 - 124 */
-+			  "", "", "", "", "", /* 125 - 129 */
-+			  "", "", "", "", "", /* 130 - 134 */
-+			  "", "", "", "", "", /* 135 - 139 */
-+			  "", "", "", "", "", /* 140 - 144 */
-+			  "", "", "", "", "", /* 145 - 149 */
-+			  "", "", "", "", "", /* 150 - 154 */
-+			  "", "", "", "", "", /* 155 - 159 */
-+			  "", "", "", "", "", /* 160 - 164 */
-+			  "", "", "", "", "", /* 165 - 169 */
-+			  "", "", "", ""; /* 170 - 174 */
-+};
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
-new file mode 100644
-index 000000000000..c70966c1f344
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for Xilinx ZynqMP SMK-K26 rev1/B/A
-+ *
-+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+#include "zynqmp-sm-k26-revA.dts"
-+
-+/ {
-+	model = "ZynqMP SMK-K26 Rev1/B/A";
-+	compatible = "xlnx,zynqmp-smk-k26-rev1", "xlnx,zynqmp-smk-k26-revB",
-+		     "xlnx,zynqmp-smk-k26-revA", "xlnx,zynqmp-smk-k26",
-+		     "xlnx,zynqmp";
-+};
-+
-+&sdhci0 {
-+	status = "disabled";
-+};
+If there *is* a way to "combine" these, I don't think it makes sense
+to do it now. PGO has users (and is expanding[1]), and trying to
+optimize the design before even landing the first version seems like a
+needless obstruction, and to likely not address currently undiscovered
+requirements.
+
+So, AFAICT, the original blocking issue ("PGO does not respect noinstr")
+is not actually an issue (noinstr contains notrace, which IS respected
+by PGO[2]), I think this is fine to move forward.
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20210612032425.11425-1-jarmo.tiitto@gmail.com/
+[2] https://lore.kernel.org/lkml/CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com/
+
 -- 
-2.32.0
-
+Kees Cook
