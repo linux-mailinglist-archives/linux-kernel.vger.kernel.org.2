@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58233A63FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE1F3A62C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235669AbhFNLTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:19:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39876 "EHLO mail.kernel.org"
+        id S235070AbhFNLEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235270AbhFNLHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:07:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D603E6192D;
-        Mon, 14 Jun 2021 10:45:36 +0000 (UTC)
+        id S234854AbhFNKyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:54:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D533B61493;
+        Mon, 14 Jun 2021 10:40:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667537;
-        bh=2uwaVsPK2zTkalP0xt6gnzMNcxNWQd6t3tx/lFS8+MA=;
+        s=korg; t=1623667217;
+        bh=semQgj5UxOlSDaqdQr+dG80vFTxmFn52UONl68Yr8bI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OqB+eEjQ+8NTTg50+VfYNrS/NVHXL8atwpx5ey5J83dRIQIqSSNunzTTn5JcPG2cl
-         ssqp8Ab2bIRpnFmxYemi1dD3NgnGqhMDeajYyLXG6OmePzWdU5VlQtC2axskq7wc/Q
-         EgqEUaRSDiwEPgfY2oEE+v86qRcYCroD6YLOWrRc=
+        b=jyihUaBvmuMBrvaKFGhJQpPvI4kKJ7iLfBjg5KTKfTr8kKKBqyEtrok7ptwdI1NoX
+         RRuFlUR6Y0a2zqzP6Kv5CG/0OTW5dCH1Ii3ZfIBU4q9IjW4FVcCzXhIJQGwGo9w7kz
+         GSZJts6S2B2+0+qJnjEeDOc0QZZa0ddsiI+DUDMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Wensheng <wangwensheng4@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.10 108/131] phy: cadence: Sierra: Fix error return code in cdns_sierra_phy_probe()
-Date:   Mon, 14 Jun 2021 12:27:49 +0200
-Message-Id: <20210614102656.680924421@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 72/84] NFS: Fix a potential NULL dereference in nfs_get_client()
+Date:   Mon, 14 Jun 2021 12:27:50 +0200
+Message-Id: <20210614102648.804103545@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Wensheng <wangwensheng4@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 6411e386db0a477217607015e7d2910d02f75426 upstream.
+[ Upstream commit 09226e8303beeec10f2ff844d2e46d1371dc58e0 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+None of the callers are expecting NULL returns from nfs_get_client() so
+this code will lead to an Oops.  It's better to return an error
+pointer.  I expect that this is dead code so hopefully no one is
+affected.
 
-Fixes: a43f72ae136a ("phy: cadence: Sierra: Change MAX_LANES of Sierra to 16")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-Link: https://lore.kernel.org/r/20210517015749.127799-1-wangwensheng4@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 31434f496abb ("nfs: check hostname in nfs_get_client")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/cadence/phy-cadence-sierra.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/nfs/client.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/phy/cadence/phy-cadence-sierra.c
-+++ b/drivers/phy/cadence/phy-cadence-sierra.c
-@@ -614,6 +614,7 @@ static int cdns_sierra_phy_probe(struct
- 	sp->nsubnodes = node;
+diff --git a/fs/nfs/client.c b/fs/nfs/client.c
+index a05f77f9c21e..af838d1ed281 100644
+--- a/fs/nfs/client.c
++++ b/fs/nfs/client.c
+@@ -399,7 +399,7 @@ struct nfs_client *nfs_get_client(const struct nfs_client_initdata *cl_init)
  
- 	if (sp->num_lanes > SIERRA_MAX_LANES) {
-+		ret = -EINVAL;
- 		dev_err(dev, "Invalid lane configuration\n");
- 		goto put_child2;
+ 	if (cl_init->hostname == NULL) {
+ 		WARN_ON(1);
+-		return NULL;
++		return ERR_PTR(-EINVAL);
  	}
+ 
+ 	/* see if the client already exists */
+-- 
+2.30.2
+
 
 
