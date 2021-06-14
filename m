@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BCB3A6267
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1E53A60FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235207AbhFNLAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:00:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57326 "EHLO mail.kernel.org"
+        id S233116AbhFNKk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234420AbhFNKve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:51:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C1A061476;
-        Mon, 14 Jun 2021 10:39:13 +0000 (UTC)
+        id S233301AbhFNKgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:36:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6068361408;
+        Mon, 14 Jun 2021 10:33:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667154;
-        bh=J5V1QVOgXXFiFt0IqM+CYK36Ta3RwIHNPWq3G/S5GvI=;
+        s=korg; t=1623666796;
+        bh=iCb/FEzRAyUBTSv8nKglHrE0uJlyUl2D0IIh9LF2Qt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=flqMShXdRn6JJlldoMXnrANvroEMCBKyAfb5MMy5iNwDfUWJR3pc/v8WuX3bVrk7a
-         lk3aEanjwQVOEn9z+9u+I6fXaKd3bBPd4I0mEh4WRQaLEzPdXrYONl1fQraMrFdOse
-         YqpAVaAtNo9kWz2ApnrQEnmr8KnG6GD5SK6QulJM=
+        b=ER8y5+VT0AVrgOcV/jEu8XUcyoIrULcP/8rgnvx3WNLOIf2fnOsfJgmcmWHHy/4N+
+         CgyE8Uy3VPmFzjmgIIis0CdQ51bQYIjkNumZwEIEQzbOTl3RPAoADuNoYRCviLiycE
+         2pmJbJQ0ac7dLsV9nJYDQGt6+1oM/fMUfMoMOPZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
-        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 5.4 47/84] usb: f_ncm: only first packet of aggregate needs to start timer
-Date:   Mon, 14 Jun 2021 12:27:25 +0200
-Message-Id: <20210614102647.971186568@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 33/49] USB: serial: quatech2: fix control-request directions
+Date:   Mon, 14 Jun 2021 12:27:26 +0200
+Message-Id: <20210614102642.953824817@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +38,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 1958ff5ad2d4908b44a72bcf564dfe67c981e7fe upstream.
+commit eb8dbe80326c3d44c1e38ee4f40e0d8d3e06f2d0 upstream.
 
-The reasoning for this change is that if we already had
-a packet pending, then we also already had a pending timer,
-and as such there is no need to reschedule it.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-This also prevents packets getting delayed 60 ms worst case
-under a tiny packet every 290us transmit load, by keeping the
-timeout always relative to the first queued up packet.
-(300us delay * 16KB max aggregation / 80 byte packet =~ 60 ms)
+Fix the three requests which erroneously used usb_rcvctrlpipe().
 
-As such the first packet is now at most delayed by 300us.
-
-Under low transmit load, this will simply result in us sending
-a shorter aggregate, as originally intended.
-
-This patch has the benefit of greatly reducing (by ~10 factor
-with 1500 byte frames aggregated into 16 kiB) the number of
-(potentially pretty costly) updates to the hrtimer.
-
-Cc: Brooke Basile <brookebasile@gmail.com>
-Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Link: https://lore.kernel.org/r/20210608085438.813960-1-zenczykowski@gmail.com
-Cc: stable <stable@vger.kernel.org>
+Fixes: f7a33e608d9a ("USB: serial: add quatech2 usb to serial driver")
+Cc: stable@vger.kernel.org      # 3.5
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_ncm.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/serial/quatech2.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -1101,11 +1101,11 @@ static struct sk_buff *ncm_wrap_ntb(stru
- 			ncm->ndp_dgram_count = 1;
+--- a/drivers/usb/serial/quatech2.c
++++ b/drivers/usb/serial/quatech2.c
+@@ -420,7 +420,7 @@ static void qt2_close(struct usb_serial_
  
- 			/* Note: we skip opts->next_ndp_index */
--		}
+ 	/* flush the port transmit buffer */
+ 	i = usb_control_msg(serial->dev,
+-			    usb_rcvctrlpipe(serial->dev, 0),
++			    usb_sndctrlpipe(serial->dev, 0),
+ 			    QT2_FLUSH_DEVICE, 0x40, 1,
+ 			    port_priv->device_port, NULL, 0, QT2_USB_TIMEOUT);
  
--		/* Delay the timer. */
--		hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
--			      HRTIMER_MODE_REL_SOFT);
-+			/* Start the timer. */
-+			hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
-+				      HRTIMER_MODE_REL_SOFT);
-+		}
+@@ -430,7 +430,7 @@ static void qt2_close(struct usb_serial_
  
- 		/* Add the datagram position entries */
- 		ntb_ndp = skb_put_zero(ncm->skb_tx_ndp, dgram_idx_len);
+ 	/* flush the port receive buffer */
+ 	i = usb_control_msg(serial->dev,
+-			    usb_rcvctrlpipe(serial->dev, 0),
++			    usb_sndctrlpipe(serial->dev, 0),
+ 			    QT2_FLUSH_DEVICE, 0x40, 0,
+ 			    port_priv->device_port, NULL, 0, QT2_USB_TIMEOUT);
+ 
+@@ -696,7 +696,7 @@ static int qt2_attach(struct usb_serial
+ 	int status;
+ 
+ 	/* power on unit */
+-	status = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
++	status = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
+ 				 0xc2, 0x40, 0x8000, 0, NULL, 0,
+ 				 QT2_USB_TIMEOUT);
+ 	if (status < 0) {
 
 
