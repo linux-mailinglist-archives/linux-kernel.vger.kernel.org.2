@@ -2,125 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD773A6969
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079C13A696E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233059AbhFNO64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:58:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232869AbhFNO6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1D396100A;
-        Mon, 14 Jun 2021 14:56:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623682610;
-        bh=wwsEr6bp93L7CQlqKTWMpSzbfOD6urfHaP/eGF1ZhoE=;
+        id S233241AbhFNO7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233110AbhFNO7D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 10:59:03 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255F0C061574;
+        Mon, 14 Jun 2021 07:57:00 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 99C036210; Mon, 14 Jun 2021 10:56:59 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 99C036210
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1623682619;
+        bh=Nig4SRLFwGTkSDjGzkaXTrnIYKCs+LArMeR6OvYivBM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q5DMRde1kJv39YAGLcKsyghlbFadWjtimpp0bS2dZxeOjD2Iau6PtbpNdFFKO+3Np
-         tgdaoTLJioR1eWMe1ELg5I8+KvAYZvuz09iXWxqcxOkiivk+T9H+9fUi38rAkfJF9x
-         rWdWi/brflCkpzNCXC6XXNB6h4bBgVWRO0lklXXHklrEm99+GEJTdZxN48+CUlzunK
-         jsgFFbIbVErdyfEDlzTil+udR52hdZDDS9NylqTUbx0jR/jGeMYIQOc8ixQ+dC3Tnc
-         yko9pw+TSnstkqB9w7uVlkS25r7lzuFfvfwgm4GMKSCPF5J65f3i1qI35+RcFHWvnG
-         be6Yw+M4YnwZA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5858D40B1A; Mon, 14 Jun 2021 11:56:47 -0300 (-03)
-Date:   Mon, 14 Jun 2021 11:56:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     John Garry <john.garry@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        kajoljain <kjain@linux.ibm.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] perf metricgroup: Return error code from
- metricgroup__add_metric_sys_event_iter()
-Message-ID: <YMduL3nCJ9NU8Va2@kernel.org>
-References: <1623335580-187317-1-git-send-email-john.garry@huawei.com>
- <1623335580-187317-3-git-send-email-john.garry@huawei.com>
- <CAP-5=fV3L5HoJrXry5fvjedJG1dksJ7JJfy54YOQcgfPQMn4Og@mail.gmail.com>
+        b=QnqBevZr597BwRamPTMics1AmDeLp4Mh2JrqVI8lYIk0rPPxsNS9IN5faX6TaZGPC
+         BiLI2cuRLMytAyyXZEQOPpATQ12RASHYhw8cGv3yJoH6uqJjgWSAzy9rWea74C6woj
+         UFLWJS2ReEAjN+kAvQRTrcgrU6gh6zhZKZaNqY9A=
+Date:   Mon, 14 Jun 2021 10:56:59 -0400
+From:   "J . Bruce Fields" <bfields@fieldses.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rpc: remove redundant initialization of variable status
+Message-ID: <20210614145659.GA13304@fieldses.org>
+References: <20210613140652.75190-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fV3L5HoJrXry5fvjedJG1dksJ7JJfy54YOQcgfPQMn4Og@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210613140652.75190-1-colin.king@canonical.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 10, 2021 at 11:45:17AM -0700, Ian Rogers escreveu:
-> On Thu, Jun 10, 2021 at 7:37 AM John Garry <john.garry@huawei.com> wrote:
-> >
-> > The error code is not set at all in the sys event iter function.
-> >
-> > This may lead to an uninitialized value of "ret" in
-> > metricgroup__add_metric() when no CPU metric is added.
-> >
-> > Fix by properly setting the error code.
-> >
-> > It is not necessary to init "ret" to 0 in metricgroup__add_metric(), as
-> > if we have no CPU or sys event metric matching, then "has_match" should
-> > be 0 and "ret" is set to -EINVAL.
-> >
-> > However gcc cannot detect that it may not have been set after the
-> > map_for_each_metric() loop for CPU metrics, which is strange.
-> >
-> > Fixes: be335ec28efa8 ("perf metricgroup: Support adding metrics for system PMUs")
-> > Signed-off-by: John Garry <john.garry@huawei.com>
+Thanks, applied.--b.
+
+On Sun, Jun 13, 2021 at 03:06:52PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Acked-by: Ian Rogers <irogers@google.com>
-
-Do your Acked-by applies to both patches? Or just 2/2?  I reproduced the
-problem fixed by 1/2 on a Thinkpad T450S (broadwell) and after applying
-the patch it doesn't segfaults.
-
-Please clarify,
-
-- Arnaldo
-
- 
-> Thanks,
-> Ian
+> The variable status is being initialized with a value that is never
+> read, the assignment is redundant and can be removed.
 > 
-> > ---
-> >  tools/perf/util/metricgroup.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> > index c456fdeae06a..d3cf2dee36c8 100644
-> > --- a/tools/perf/util/metricgroup.c
-> > +++ b/tools/perf/util/metricgroup.c
-> > @@ -1073,16 +1073,18 @@ static int metricgroup__add_metric_sys_event_iter(struct pmu_event *pe,
-> >
-> >         ret = add_metric(d->metric_list, pe, d->metric_no_group, &m, NULL, d->ids);
-> >         if (ret)
-> > -               return ret;
-> > +               goto out;
-> >
-> >         ret = resolve_metric(d->metric_no_group,
-> >                                      d->metric_list, NULL, d->ids);
-> >         if (ret)
-> > -               return ret;
-> > +               goto out;
-> >
-> >         *(d->has_match) = true;
-> >
-> > -       return *d->ret;
-> > +out:
-> > +       *(d->ret) = ret;
-> > +       return ret;
-> >  }
-> >
-> >  static int metricgroup__add_metric(const char *metric, bool metric_no_group,
-> > --
-> > 2.26.2
-> >
-
--- 
-
-- Arnaldo
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  net/sunrpc/auth_gss/svcauth_gss.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
+> index 6dff64374bfe..a81be45f40d9 100644
+> --- a/net/sunrpc/auth_gss/svcauth_gss.c
+> +++ b/net/sunrpc/auth_gss/svcauth_gss.c
+> @@ -1275,7 +1275,7 @@ static int gss_proxy_save_rsc(struct cache_detail *cd,
+>  	long long ctxh;
+>  	struct gss_api_mech *gm = NULL;
+>  	time64_t expiry;
+> -	int status = -EINVAL;
+> +	int status;
+>  
+>  	memset(&rsci, 0, sizeof(rsci));
+>  	/* context handle */
+> -- 
+> 2.31.1
