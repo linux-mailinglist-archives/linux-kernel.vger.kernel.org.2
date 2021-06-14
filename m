@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824503A6573
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060B63A6582
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236010AbhFNLib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:38:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50242 "EHLO mail.kernel.org"
+        id S236763AbhFNLj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:39:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235848AbhFNLXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:23:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08D4D619A2;
-        Mon, 14 Jun 2021 10:53:04 +0000 (UTC)
+        id S234805AbhFNLXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:23:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C9E8619A3;
+        Mon, 14 Jun 2021 10:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667985;
-        bh=QJdEwiuXfE1cLkoL32HR+rcplTC6nwjYcacGBPjnDXk=;
+        s=korg; t=1623667988;
+        bh=bcBtk3Qe+n/HjpQxU6fFPcomTKra5P/+yoosp2c/xFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EN0QGtoLnCvJPgLpvFwd1HryVFXtPONbsmWXmK+tStGqdQmpyQsLnqfkbeAyAsBQO
-         oZTzVLahXl/xTxnznSU9NtMJaPTQSjCTaYMUDPr0Sd14hOzenm+EXT2IK0lcSb42b6
-         QgI6wQG4Nwo1iYAgoE2vjCrOJFGcImn+JcdIYNHM=
+        b=Iw8eL/fuU7YNTIcerNLBnjdgv2bmjtI1N9HmOBG8X5LoV4w35eAQrO0u17Go4sofE
+         KbRvwS1zRKDFhtEvS0AwqO1V2XxYQrHIrBXtWdowfxZ3lRmq0f+j5DqrC4SklSYYQk
+         0uzS+ivOWl1xFechC9IcYeKLJSCdvnwfBBI5xqoE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Donnelly <john.p.donnelly@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org,
+        syzbot+142c9018f5962db69c7e@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.12 151/173] perf/x86/intel/uncore: Fix a kernel WARNING triggered by maxcpus=1
-Date:   Mon, 14 Jun 2021 12:28:03 +0200
-Message-Id: <20210614102703.195306414@linuxfoundation.org>
+Subject: [PATCH 5.12 152/173] perf: Fix data race between pin_count increment/decrement
+Date:   Mon, 14 Jun 2021 12:28:04 +0200
+Message-Id: <20210614102703.226522660@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -40,86 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Marco Elver <elver@google.com>
 
-commit 4a0e3ff30980b7601b13dd3b7ee275212b852843 upstream.
+commit 6c605f8371159432ec61cbb1488dcf7ad24ad19a upstream.
 
-A kernel WARNING may be triggered when setting maxcpus=1.
+KCSAN reports a data race between increment and decrement of pin_count:
 
-The uncore counters are Die-scope. When probing a PCI device, only the
-BUS information can be retrieved. The uncore driver has to maintain a
-mapping table used to calculate the logical Die ID from a given BUS#.
+  write to 0xffff888237c2d4e0 of 4 bytes by task 15740 on cpu 1:
+   find_get_context		kernel/events/core.c:4617
+   __do_sys_perf_event_open	kernel/events/core.c:12097 [inline]
+   __se_sys_perf_event_open	kernel/events/core.c:11933
+   ...
+  read to 0xffff888237c2d4e0 of 4 bytes by task 15743 on cpu 0:
+   perf_unpin_context		kernel/events/core.c:1525 [inline]
+   __do_sys_perf_event_open	kernel/events/core.c:12328 [inline]
+   __se_sys_perf_event_open	kernel/events/core.c:11933
+   ...
 
-Before the patch ba9506be4e40, the mapping table stores the mapping
-information from the BUS# -> a Physical Socket ID. To calculate the
-logical die ID, perf does,
-- In snbep_pci2phy_map_init(), retrieve the BUS# -> a Physical Socket ID
-  from the UBOX PCI configure space.
-- Calculate the mapping information (a BUS# -> a Physical Socket ID) for
-  the other PCI BUS.
-- In the uncore_pci_probe(), get the physical Socket ID from a given BUS
-  and the mapping table.
-- Calculate the logical Die ID
+Because neither read-modify-write here is atomic, this can lead to one
+of the operations being lost, resulting in an inconsistent pin_count.
+Fix it by adding the missing locking in the CPU-event case.
 
-Since only the logical Die ID is required, with the patch ba9506be4e40,
-the mapping table stores the mapping information from the BUS# -> a
-logical Die ID. Now perf does,
-- In snbep_pci2phy_map_init(), retrieve the BUS# -> a Physical Socket ID
-  from the UBOX PCI configure space.
-- Calculate the logical Die ID
-- Calculate the mapping information (a BUS# -> a logical Die ID) for the
-  other PCI BUS.
-- In the uncore_pci_probe(), get the logical die ID from a given BUS and
-  the mapping table.
-
-When calculating the logical Die ID, -1 may be returned, especially when
-maxcpus=1. Here, -1 means the logical Die ID is not found. But when
-calculating the mapping information for the other PCI BUS, -1 indicates
-that it's the other PCI BUS that requires the calculation of the
-mapping. The driver will mistakenly do the calculation.
-
-Uses the -ENODEV to indicate the case which the logical Die ID is not
-found. The driver will not mess up the mapping table anymore.
-
-Fixes: ba9506be4e40 ("perf/x86/intel/uncore: Store the logical die id instead of the physical die id.")
-Reported-by: John Donnelly <john.p.donnelly@oracle.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Fixes: fe4b04fa31a6 ("perf: Cure task_oncpu_function_call() races")
+Reported-by: syzbot+142c9018f5962db69c7e@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: John Donnelly <john.p.donnelly@oracle.com>
-Tested-by: John Donnelly <john.p.donnelly@oracle.com>
-Link: https://lkml.kernel.org/r/1622037527-156028-1-git-send-email-kan.liang@linux.intel.com
+Link: https://lkml.kernel.org/r/20210527104711.2671610-1-elver@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/events/intel/uncore_snbep.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/events/core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -1406,6 +1406,8 @@ static int snbep_pci2phy_map_init(int de
- 						die_id = i;
- 					else
- 						die_id = topology_phys_to_logical_pkg(i);
-+					if (die_id < 0)
-+						die_id = -ENODEV;
- 					map->pbus_to_dieid[bus] = die_id;
- 					break;
- 				}
-@@ -1452,14 +1454,14 @@ static int snbep_pci2phy_map_init(int de
- 			i = -1;
- 			if (reverse) {
- 				for (bus = 255; bus >= 0; bus--) {
--					if (map->pbus_to_dieid[bus] >= 0)
-+					if (map->pbus_to_dieid[bus] != -1)
- 						i = map->pbus_to_dieid[bus];
- 					else
- 						map->pbus_to_dieid[bus] = i;
- 				}
- 			} else {
- 				for (bus = 0; bus <= 255; bus++) {
--					if (map->pbus_to_dieid[bus] >= 0)
-+					if (map->pbus_to_dieid[bus] != -1)
- 						i = map->pbus_to_dieid[bus];
- 					else
- 						map->pbus_to_dieid[bus] = i;
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4542,7 +4542,9 @@ find_get_context(struct pmu *pmu, struct
+ 		cpuctx = per_cpu_ptr(pmu->pmu_cpu_context, cpu);
+ 		ctx = &cpuctx->ctx;
+ 		get_ctx(ctx);
++		raw_spin_lock_irqsave(&ctx->lock, flags);
+ 		++ctx->pin_count;
++		raw_spin_unlock_irqrestore(&ctx->lock, flags);
+ 
+ 		return ctx;
+ 	}
 
 
