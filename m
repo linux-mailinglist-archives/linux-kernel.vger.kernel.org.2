@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78533A6348
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD31D3A649A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbhFNLLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35516 "EHLO mail.kernel.org"
+        id S235320AbhFNL0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235159AbhFNLAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:00:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 102F661407;
-        Mon, 14 Jun 2021 10:42:50 +0000 (UTC)
+        id S234863AbhFNLMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:12:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08CB361955;
+        Mon, 14 Jun 2021 10:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667371;
-        bh=m+LaYFiCsNm/VLxY+ll7GZAJWy+jxrvvDPN+qpNEfwQ=;
+        s=korg; t=1623667697;
+        bh=YsrmrDyiB+yexP44Ab1YAEuDP9sNt8FMawYVpodek7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NVAyjWeHVucowPLOkuQ8n82+aIuBuM9Co1nmyEF2bBwKhvXdu9ojGf/ivsC1vLrak
-         1to/ngRFTlRW1RF1uOJUzfESxvZlTw8X5dXdc0RpT/rB7G76mg+hmiqXBKJDIy62ke
-         AfeZxsBlmkTuOdu7BsQ+/eEGlYbm906YRqG1ffBA=
+        b=pZO5xBN4L1V25bOoMovMrNHnfH7OxIX6uMYuB+RJKBs8bk3TH91WeE49bbNUpXzCb
+         8kbYLXE80ge4jMoJaOIe2B/KinSoCTVvXu99DJoupKh+ZFnxSJvyned8J4a6kEGAAZ
+         1PPJbcHVhr3x9I0YcGlijRgkP2SYdq3d2IAEa9Xk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 011/131] bpf: Add deny list of btf ids check for tracing programs
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 040/173] bnx2x: Fix missing error code in bnx2x_iov_init_one()
 Date:   Mon, 14 Jun 2021 12:26:12 +0200
-Message-Id: <20210614102653.366112005@linuxfoundation.org>
+Message-Id: <20210614102659.496460811@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,86 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit 35e3815fa8102fab4dee75f3547472c66581125d ]
+[ Upstream commit 65161c35554f7135e6656b3df1ce2c500ca0bdcf ]
 
-The recursion check in __bpf_prog_enter and __bpf_prog_exit
-leaves some (not inlined) functions unprotected:
+Eliminate the follow smatch warning:
 
-In __bpf_prog_enter:
-  - migrate_disable is called before prog->active is checked
+drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1227
+bnx2x_iov_init_one() warn: missing error code 'err'.
 
-In __bpf_prog_exit:
-  - migrate_enable,rcu_read_unlock_strict are called after
-    prog->active is decreased
-
-When attaching trampoline to them we get panic like:
-
-  traps: PANIC: double fault, error_code: 0x0
-  double fault: 0000 [#1] SMP PTI
-  RIP: 0010:__bpf_prog_enter+0x4/0x50
-  ...
-  Call Trace:
-   <IRQ>
-   bpf_trampoline_6442466513_0+0x18/0x1000
-   migrate_disable+0x5/0x50
-   __bpf_prog_enter+0x9/0x50
-   bpf_trampoline_6442466513_0+0x18/0x1000
-   migrate_disable+0x5/0x50
-   __bpf_prog_enter+0x9/0x50
-   bpf_trampoline_6442466513_0+0x18/0x1000
-   migrate_disable+0x5/0x50
-   __bpf_prog_enter+0x9/0x50
-   bpf_trampoline_6442466513_0+0x18/0x1000
-   migrate_disable+0x5/0x50
-   ...
-
-Fixing this by adding deny list of btf ids for tracing
-programs and checking btf id during program verification.
-Adding above functions to this list.
-
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210429114712.43783-1-jolsa@kernel.org
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 4f50d6f128be..8ed0dc2f07f1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12206,6 +12206,17 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+index 9c2f51f23035..9108b497b3c9 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+@@ -1224,8 +1224,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
+ 		goto failed;
  
-+BTF_SET_START(btf_id_deny)
-+BTF_ID_UNUSED
-+#ifdef CONFIG_SMP
-+BTF_ID(func, migrate_disable)
-+BTF_ID(func, migrate_enable)
-+#endif
-+#if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
-+BTF_ID(func, rcu_read_unlock_strict)
-+#endif
-+BTF_SET_END(btf_id_deny)
-+
- static int check_attach_btf_id(struct bpf_verifier_env *env)
- {
- 	struct bpf_prog *prog = env->prog;
-@@ -12265,6 +12276,9 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 		ret = bpf_lsm_verify_prog(&env->log, prog);
- 		if (ret < 0)
- 			return ret;
-+	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
-+		   btf_id_set_contains(&btf_id_deny, btf_id)) {
-+		return -EINVAL;
- 	}
+ 	/* SR-IOV capability was enabled but there are no VFs*/
+-	if (iov->total == 0)
++	if (iov->total == 0) {
++		err = -EINVAL;
+ 		goto failed;
++	}
  
- 	key = bpf_trampoline_compute_key(tgt_prog, btf_id);
+ 	iov->nr_virtfn = min_t(u16, iov->total, num_vfs_param);
+ 
 -- 
 2.30.2
 
