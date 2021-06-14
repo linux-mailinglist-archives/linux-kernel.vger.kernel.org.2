@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE2D3A5E20
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4282F3A5E26
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhFNINu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
+        id S232622AbhFNIOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbhFNINr (ORCPT
+        with ESMTP id S232530AbhFNIOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:13:47 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D41AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:11:44 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x24so14045264lfr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:11:44 -0700 (PDT)
+        Mon, 14 Jun 2021 04:14:40 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF8CC061767;
+        Mon, 14 Jun 2021 01:12:25 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id a127so4144337pfa.10;
+        Mon, 14 Jun 2021 01:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0BEbkxd+coc4mV5frYA2CTc/Kx4z/lGk05PAH5ifxEQ=;
-        b=iz0osfI7UH34CCxwg2BuXZJkJ51thqYSdaT1B6BsjC7rKW9nXM5RjMn5wRN3KgeWfF
-         GUvBfXgPCU8SPpHYb8XbtGPVdTazBWIrGz7Wuy22QcbjbnekhxQH+cqbttNVYDBjpbF2
-         WPfjnDvExbl5cZyouylQoBU7iN6bYOSO1AGQE=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Vv3hBAQ8kpZIe+1+G82nUGelWzwqMrss8OA+ER4ISc=;
+        b=c4fGtjeg/GfqEDJFxCfTs2qulnbzuKMp0HYaOci+oQWvyQM4dQ7rcIDbSs28NollGJ
+         3TfnXLmrNnyCeUoYBrT6kPf1LySbpdqm9+fZ2yBD2Hw1Z4k4R7o3l6UidYHfhxQ151m/
+         MD5wP9xxOkMmZWiml42sWS2OMHvvYyzQqZJyMvE87DohZjCJMRmcXWLybcsRYqwQ3gyK
+         eCVWaiYa9epVi8oi50IEWlMypfrBpZ9vwUq1IZ2ShmB3bjAIM1O3NOwjfIh0U78zqhMr
+         mK9GFJFicIgurMGWWACJqLodhke8XP+w8c/DqpaxgC9Zt/Mdm02QiaZdUXTBg6yZW/DE
+         aJHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0BEbkxd+coc4mV5frYA2CTc/Kx4z/lGk05PAH5ifxEQ=;
-        b=CDRIQekz/DXv12a5V7emn0ZcCJGqyOSNW8mm5V0SGry8w+hiRWxGkPfNjfB6tXNKhw
-         bPvwhBdU9fAbiKs7nM1ymkmeW7iH26tQJalIYCuFokLxrkXvCMbKXPeKvugN8+n5v4mc
-         YIk/LTGNE2b5qYDsze7AZgjNFKE45iOzkq2p4411nsGQXrIjShjydPCx3XEPb1Ts9N+W
-         rTNw3BD6TBsO5GoL5ceZAxkIgNf8AQ6WjvyZPYXunQdKWXRHiG2VTkIOvxDuy9bxNHKb
-         00rHDJhPziJ0JWKL2TB4PfjPqokpcGn6ezLE1fQp3Az7SFS4BEF3wcPpbkb6yoW350ZL
-         afRw==
-X-Gm-Message-State: AOAM530EhYNhHTJJqiHvW3k93ol0LJa8e8fsGOHKFAOkEgL9/qOgkHlm
-        0jTiiWWMKEmqlEEPxkod9jcIcll1fIg8ow==
-X-Google-Smtp-Source: ABdhPJzTAEL38B3e9u48hCVTMl3da8TxUJ4f2pUNSzat8WRewW7XqvBpnHXN/mNz0imfhNOx2TTpHQ==
-X-Received: by 2002:a05:6512:318d:: with SMTP id i13mr11784701lfe.407.1623658302652;
-        Mon, 14 Jun 2021 01:11:42 -0700 (PDT)
-Received: from [172.17.20.33] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id c15sm1403909lfh.32.2021.06.14.01.11.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 01:11:42 -0700 (PDT)
-Subject: Re: Panic on ppc64le using kernel 5.13.0-rc3
-To:     Bruno Goncalves <bgoncalv@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, CKI Project <cki-project@redhat.com>
-References: <CA+QYu4qxf2CYe2gC6EYnOHXPKS-+cEXL=MnUvqRFaN7W1i6ahQ@mail.gmail.com>
- <d13db73d-0806-00cd-ff84-5f5b03ffbef6@rasmusvillemoes.dk>
- <CA+QYu4oFGkP1G+9TqGtqffgOEBycSMKtFbV-1X+kL4NeTyEegg@mail.gmail.com>
- <45ea5042-9136-6f0c-144c-f09d05cd69ed@rasmusvillemoes.dk>
- <CA+QYu4rF6Bx5OwLzBSam_VXJ6gWqSjTocxTNxanfHuV5nZuzrA@mail.gmail.com>
- <4434f245-db3b-c02a-36c4-0111a0dfb78d@rasmusvillemoes.dk>
- <CA+QYu4q4HBCRo_e9i0WZ2mvm0w2xRC5RkPDQ4h=r9ybOtNXqWg@mail.gmail.com>
- <CA+QYu4pMHaUna48RJtn2cBZD0bHjoQEQcdrUKZbHT0-cm7g4Zw@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <32b37ca7-fde8-8f9a-5631-a88857324803@rasmusvillemoes.dk>
-Date:   Mon, 14 Jun 2021 10:11:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Vv3hBAQ8kpZIe+1+G82nUGelWzwqMrss8OA+ER4ISc=;
+        b=l/uscmRrM0Zbou93iQbtQW0ctWtsQx1SlRJjNTWq+HR94295GC/YphygsjP3nYEKx2
+         0Q4Av9F8DjXi5mxyF/+uV8SEGTMj9i0h+YaNqDQkHNv13g2Q3egDfmD5ef/vSTaz06YH
+         br8FC2P+wMU0ZNeqe/5/RSQxks2igblVwLpK4RMylK1uAXE0yjzkaS2EwL82jc1alvOY
+         NtZBYCecJ7bOcEzBzQJTfRO9Hth2GW/F7cpRHiiDJqcR6mlCSG6AxAHXPsqaxAGe1xut
+         vbp+NcFppu50S0R7YhYlCn+FYARbVc58jjitAKGUHeRWA5BwtW+c9KKbABIlZ9x3HOFj
+         fm6A==
+X-Gm-Message-State: AOAM5318oMs8AHlvvKxsTi/I0Rnd7iHBdMyczJSLmSpvoSn8n49lIVsn
+        OL5404Q8ZbpaMKIJKeZLxjPaRnLspNdI+BRw38M=
+X-Google-Smtp-Source: ABdhPJxhe15j5OGsgf6ubg65hqo067+sEZz2F1/eOHojX+9gZ7QSWo1iAgCyufmjG6vo/Icejnu1ejDf08TGvFILI5M=
+X-Received: by 2002:a05:6a00:139c:b029:2f7:102c:5393 with SMTP id
+ t28-20020a056a00139cb02902f7102c5393mr13962018pfg.40.1623658344790; Mon, 14
+ Jun 2021 01:12:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+QYu4pMHaUna48RJtn2cBZD0bHjoQEQcdrUKZbHT0-cm7g4Zw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <20210611035623.z4f2ynumzozigqnv@vireshk-i7> <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
+ <20210611080122.tlkidv6bowuka6fw@vireshk-i7> <0478822f-9d10-deb8-86ae-3b4ac3bb0c6c@metux.net>
+In-Reply-To: <0478822f-9d10-deb8-86ae-3b4ac3bb0c6c@metux.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 14 Jun 2021 11:12:08 +0300
+Message-ID: <CAHp75Vf0+bCnnD3wtkrPvFbr2k3A0r3eWNp87PyksiC7euaqdw@mail.gmail.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/06/2021 10.03, Bruno Goncalves wrote:
-> On Mon, Jun 14, 2021 at 7:47 AM Bruno Goncalves <bgoncalv@redhat.com> wrote:
->>
->> On Fri, Jun 11, 2021 at 11:49 PM Rasmus Villemoes
->> <linux@rasmusvillemoes.dk> wrote:
->>>
+On Mon, Jun 14, 2021 at 11:08 AM Enrico Weigelt, metux IT consult
+<lkml@metux.net> wrote:
+>
+> On 11.06.21 10:01, Viresh Kumar wrote:
+>
+> > No, QEMU passes the raw messages to the backend daemon running in host
+> > userspace (which shares a socket with qemu). The backend understands
+> > the virtio/vhost protocols and so won't be required to change at all
+> > if we move from Qemu to something else. And that's what we (Linaro)
+> > are looking to do here with Project Stratos.
+>
+> Note that this is completely different from my approach that I've posted
+> in autumn last year. Viresh's protocol hasn't much in common with mine.
 
->>>
->>> And, perhaps asking a silly question, does the crash go away if you
->>> revert e7cb072eb988e46295512617c39d004f9e1c26f8 ?
-> 
-> Okay, indeed the problem is not with this commit , I've just hit the
-> panic with reverted commit.
+That's why we have a thing called standard. And AFAIU virtio API/ABIs
+should be officially registered and standardized.
 
-OK, thanks for trying and confirming. Unless I here otherwise I'll
-ignore the ppc64 issue (there's another report, with completely
-different symptoms, on that patch which does go away when passing
-initramfs_async=0, so something does seem to be weird around it).
-
-Happy hunting.
-
-Rasmus
+-- 
+With Best Regards,
+Andy Shevchenko
