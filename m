@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155A83A61FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5960B3A60BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhFNKyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:54:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232892AbhFNKqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:46:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C78D0610CD;
-        Mon, 14 Jun 2021 10:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667027;
-        bh=ATYZqRrsRPfehS+o/jS6KNB3jqIPcn7jKi6aPZDxvIM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KVCPMWEftrPRZBz5DjTeRc8GiYrRnIWrAaWHM8T6ncm6sfzqd+q2Kgnt6N4OwoABX
-         mSmzijZzVQ161e0L4R8+ivXtE4CwR6jeF1+AijqSoPawGtkR6zNtUdSNfdJId3BRXO
-         1zn7xEAoSWcOW/Tw03Nds4wCCXLT9qFB943wAtRI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        yinbinbin <yinbinbin@alibabacloud.com>,
-        Wetp Zhang <wetp.zy@linux.alibaba.com>,
-        James Wang <jnwang@linux.alibaba.com>,
-        Liangyan <liangyan.peng@linux.alibaba.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 67/67] tracing: Correct the length check which causes memory corruption
-Date:   Mon, 14 Jun 2021 12:27:50 +0200
-Message-Id: <20210614102646.035773202@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233736AbhFNKhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:37:19 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:45855 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233102AbhFNKel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:34:41 -0400
+Received: by mail-oo1-f43.google.com with SMTP id q20-20020a4a6c140000b029024915d1bd7cso2523327ooc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a3zVS6nyi7LiL4xn1RNS2VQkLq9gRbTSKDhN/ZJSarM=;
+        b=FAyM5z53qVuI7g5skOJEti9RDZqIbJt0/3K/mjKqfLf0ipT1HoDrm0xpsDboofxzlA
+         mwuTZHM9E8FuZa4rhdTkkeqwLYDf/Nv90nU8z0wEPH/RjywIvYrVnJmFMZq1nWy/3ksY
+         byvogLI1Na5YRXurst+e6TFQNSwnEAefuQbQ2oN3JB/yeF4hjW3jAxptQS02OXcJgk43
+         5zj4cm18eGPOWdatgkAFfDTUgx34PUD+s4RNYcP7XmzC6UrAitd/JEghOKbVbhNN5E3i
+         CDDN9t6Oa+XSBaDEuDqLL+XXVhHa1ZZbXAYP4pqM87vnFETCcQjIxYtuTcCOBtBvqhqR
+         xveQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a3zVS6nyi7LiL4xn1RNS2VQkLq9gRbTSKDhN/ZJSarM=;
+        b=MRzXzsM+JSJKhHDPtg2103HRQDYgk8UL7EpwssMCOJAaFF4R35VFTI3UHx+pgNTjdR
+         eZ+OnCxcVMRzZey4LX14bCLl/U+2MGm1mR9oxrvtd+84nAXAH03AhrWiCvCrIyTcdaaP
+         mEMhahJtF/j5crzK90/nhaJsZUe64r8F4VOPnvSSYvgMJ7DtAQC1Uj+Hab/+4SneAer9
+         AKy2HOW6yMMnlyeDrqvkZu4KnvKgPXWZrkvRP8oMMo9fp0UPi46XnKabH9diZqScfKd4
+         G7fzTN0Lb4Bt86bpdUsM/2/6sbU9r/mATJMzJbu9GRW9ar6KuAwxJzw25xUtc5Bnrdw/
+         Dl/Q==
+X-Gm-Message-State: AOAM533M6DLT2pQVt7FyOKbg4hWolexCaasLw1ydF0OlHykvVgSWGDvN
+        lCWBzbhsX3ZbZxgRHWZ4wG4Pt6ZMiNOPpBVDa/PgrA==
+X-Google-Smtp-Source: ABdhPJxQU9aS5c7LhdzMGD9O5VDN8lHkLArVFi8SlZOhS7/4OwgF7vi2WhiUmkc1b51ySGandx+KwIHmKaBN6Y5Fuv0=
+X-Received: by 2002:a4a:c101:: with SMTP id s1mr12588790oop.54.1623666698514;
+ Mon, 14 Jun 2021 03:31:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
+In-Reply-To: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 14 Jun 2021 12:31:27 +0200
+Message-ID: <CANpmjNN2Jv=2AqH0ZbwrVwSG9XMzkyHGdhM6tYhoK5DokYbnig@mail.gmail.com>
+Subject: Re: [PATCH] gcov,x86: Mark GCOV broken for x86
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>, johannes.berg@intel.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liangyan <liangyan.peng@linux.alibaba.com>
+On Mon, 14 Jun 2021 at 12:17, Peter Zijlstra <peterz@infradead.org> wrote:
+> As recently discovered, there is no function attribute to disable the
+> -fprofile-generate instrumentation. As such, GCOV is fundamentally
+> incompatible with architectures that rely on 'noinstr' for correctness.
 
-commit 3e08a9f9760f4a70d633c328a76408e62d6f80a3 upstream.
+GCOV today uses only -fprofile-arcs -ftest-coverage. But the problem
+is the same: https://godbolt.org/z/fr9cs4sar
 
-We've suffered from severe kernel crashes due to memory corruption on
-our production environment, like,
-
-Call Trace:
-[1640542.554277] general protection fault: 0000 [#1] SMP PTI
-[1640542.554856] CPU: 17 PID: 26996 Comm: python Kdump: loaded Tainted:G
-[1640542.556629] RIP: 0010:kmem_cache_alloc+0x90/0x190
-[1640542.559074] RSP: 0018:ffffb16faa597df8 EFLAGS: 00010286
-[1640542.559587] RAX: 0000000000000000 RBX: 0000000000400200 RCX:
-0000000006e931bf
-[1640542.560323] RDX: 0000000006e931be RSI: 0000000000400200 RDI:
-ffff9a45ff004300
-[1640542.560996] RBP: 0000000000400200 R08: 0000000000023420 R09:
-0000000000000000
-[1640542.561670] R10: 0000000000000000 R11: 0000000000000000 R12:
-ffffffff9a20608d
-[1640542.562366] R13: ffff9a45ff004300 R14: ffff9a45ff004300 R15:
-696c662f65636976
-[1640542.563128] FS:  00007f45d7c6f740(0000) GS:ffff9a45ff840000(0000)
-knlGS:0000000000000000
-[1640542.563937] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[1640542.564557] CR2: 00007f45d71311a0 CR3: 000000189d63e004 CR4:
-00000000003606e0
-[1640542.565279] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[1640542.566069] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[1640542.566742] Call Trace:
-[1640542.567009]  anon_vma_clone+0x5d/0x170
-[1640542.567417]  __split_vma+0x91/0x1a0
-[1640542.567777]  do_munmap+0x2c6/0x320
-[1640542.568128]  vm_munmap+0x54/0x70
-[1640542.569990]  __x64_sys_munmap+0x22/0x30
-[1640542.572005]  do_syscall_64+0x5b/0x1b0
-[1640542.573724]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[1640542.575642] RIP: 0033:0x7f45d6e61e27
-
-James Wang has reproduced it stably on the latest 4.19 LTS.
-After some debugging, we finally proved that it's due to ftrace
-buffer out-of-bound access using a debug tool as follows:
-[   86.775200] BUG: Out-of-bounds write at addr 0xffff88aefe8b7000
-[   86.780806]  no_context+0xdf/0x3c0
-[   86.784327]  __do_page_fault+0x252/0x470
-[   86.788367]  do_page_fault+0x32/0x140
-[   86.792145]  page_fault+0x1e/0x30
-[   86.795576]  strncpy_from_unsafe+0x66/0xb0
-[   86.799789]  fetch_memory_string+0x25/0x40
-[   86.804002]  fetch_deref_string+0x51/0x60
-[   86.808134]  kprobe_trace_func+0x32d/0x3a0
-[   86.812347]  kprobe_dispatcher+0x45/0x50
-[   86.816385]  kprobe_ftrace_handler+0x90/0xf0
-[   86.820779]  ftrace_ops_assist_func+0xa1/0x140
-[   86.825340]  0xffffffffc00750bf
-[   86.828603]  do_sys_open+0x5/0x1f0
-[   86.832124]  do_syscall_64+0x5b/0x1b0
-[   86.835900]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-commit b220c049d519 ("tracing: Check length before giving out
-the filter buffer") adds length check to protect trace data
-overflow introduced in 0fc1b09ff1ff, seems that this fix can't prevent
-overflow entirely, the length check should also take the sizeof
-entry->array[0] into account, since this array[0] is filled the
-length of trace data and occupy addtional space and risk overflow.
-
-Link: https://lkml.kernel.org/r/20210607125734.1770447-1-liangyan.peng@linux.alibaba.com
-
-Cc: stable@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Xunlei Pang <xlpang@linux.alibaba.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Fixes: b220c049d519 ("tracing: Check length before giving out the filter buffer")
-Reviewed-by: Xunlei Pang <xlpang@linux.alibaba.com>
-Reviewed-by: yinbinbin <yinbinbin@alibabacloud.com>
-Reviewed-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-Tested-by: James Wang <jnwang@linux.alibaba.com>
-Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/trace/trace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2281,7 +2281,7 @@ trace_event_buffer_lock_reserve(struct r
- 	    (entry = this_cpu_read(trace_buffered_event))) {
- 		/* Try to use the per cpu buffer first */
- 		val = this_cpu_inc_return(trace_buffered_event_cnt);
--		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
-+		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
- 			trace_event_setup(entry, type, flags, pc);
- 			entry->array[0] = len;
- 			return entry;
-
-
+> Until such time as that compilers have added a function attribute to
+> disable this instrumentation, mark GCOV as broken.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/Kconfig    | 2 +-
+>  kernel/gcov/Kconfig | 4 ++++
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 86dae426798b..c0f8c9d4c31a 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -75,7 +75,7 @@ config X86
+>         select ARCH_HAS_FAST_MULTIPLIER
+>         select ARCH_HAS_FILTER_PGPROT
+>         select ARCH_HAS_FORTIFY_SOURCE
+> -       select ARCH_HAS_GCOV_PROFILE_ALL
+> +       select ARCH_HAS_GCOV_BROKEN
+>         select ARCH_HAS_KCOV                    if X86_64 && STACK_VALIDATION
+>         select ARCH_HAS_MEM_ENCRYPT
+>         select ARCH_HAS_MEMBARRIER_SYNC_CORE
+> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> index 58f87a3092f3..74b028a66ebe 100644
+> --- a/kernel/gcov/Kconfig
+> +++ b/kernel/gcov/Kconfig
+> @@ -1,10 +1,14 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  menu "GCOV-based kernel profiling"
+>
+> +config ARCH_HAS_GCOV_BROKEN
+> +       def_bool n
+> +
+>  config GCOV_KERNEL
+>         bool "Enable gcov-based kernel profiling"
+>         depends on DEBUG_FS
+>         depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
+> +       depends on !ARCH_HAS_GCOV_BROKEN
+>         select CONSTRUCTORS
+>         default n
+>         help
