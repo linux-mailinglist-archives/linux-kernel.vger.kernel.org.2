@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5231C3A6321
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA063A64C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235528AbhFNLKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36658 "EHLO mail.kernel.org"
+        id S235427AbhFNL3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:29:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234075AbhFNK7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:59:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6921361440;
-        Mon, 14 Jun 2021 10:42:05 +0000 (UTC)
+        id S234266AbhFNLOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:14:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6541B6145B;
+        Mon, 14 Jun 2021 10:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667326;
-        bh=o4gimoPiJ3bHPHqjEjBBHmZXwQuE/CmhBTkx++jA4UI=;
+        s=korg; t=1623667743;
+        bh=qvfO6rWQb7mAwjSIEGjJoAIEmSpD/qlH9Ekye5y9Tew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y/dbJ0tgh2bPU5Dnmhd+HvTFpJh9Nx9BvqWrVmdq155Objk7d7s/YEIa5y83LSnP8
-         AUm6BS9Ie/nNIqj8DRxsqrntt3oIrwUGXKY8uYENL4kRBJJWodOUAqNZ08vWCAobWo
-         UiGdfbwQNnktA2wBlbYJshsEu7iG92nFMWQ6t9Vc=
+        b=q5VEC55CIUCYKkVYQGvju0T9/F0eBdkqIrDJN6ZSW0PqsPUThczkeOnLBZ9m6q2Ic
+         xYtEju/MP7fCm4cnHqimYxIKlncMLSXYd6CjuqOql8+qDIBYCBKw5MHFcCVajaTI6H
+         6wKy/E3ZzcYOCIXMf26Bm3v10hgALuhqb9rWkSZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matt Wang <wwentao@vmware.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 027/131] scsi: vmw_pvscsi: Set correct residual data length
+        stable@vger.kernel.org,
+        Joe Burmeister <joe.burmeister@devtank.co.uk>,
+        Lukas Wunner <lukas@wunner.de>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.12 056/173] spi: bcm2835: Fix out-of-bounds access with more than 4 slaves
 Date:   Mon, 14 Jun 2021 12:26:28 +0200
-Message-Id: <20210614102653.931445493@linuxfoundation.org>
+Message-Id: <20210614102700.018037636@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Wang <wwentao@vmware.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit e662502b3a782d479e67736a5a1c169a703d853a ]
+commit 13817d466eb8713a1ffd254f537402f091d48444 upstream.
 
-Some commands (such as INQUIRY) may return less data than the initiator
-requested. To avoid conducting useless information, set the right residual
-count to make upper layer aware of this.
+Commit 571e31fa60b3 ("spi: bcm2835: Cache CS register value for
+->prepare_message()") limited the number of slaves to 3 at compile-time.
+The limitation was necessitated by a statically-sized array prepare_cs[]
+in the driver private data which contains a per-slave register value.
 
-Before (INQUIRY PAGE 0xB0 with 128B buffer):
+The commit sought to enforce the limitation at run-time by setting the
+controller's num_chipselect to 3:  Slaves with a higher chipselect are
+rejected by spi_add_device().
 
-$ sg_raw -r 128 /dev/sda 12 01 B0 00 80 00
-SCSI Status: Good
+However the commit neglected that num_chipselect only limits the number
+of *native* chipselects.  If GPIO chipselects are specified in the
+device tree for more than 3 slaves, num_chipselect is silently raised by
+of_spi_get_gpio_numbers() and the result are out-of-bounds accesses to
+the statically-sized array prepare_cs[].
 
-Received 128 bytes of data:
- 00 00 b0 00 3c 01 00 00 00 00 00 00 00 00 00 00 00 ...<............
- 10 00 00 00 00 00 01 00 00 00 00 00 40 00 00 08 00 ...........@....
- 20 80 00 00 00 00 00 00 00 00 00 20 00 00 00 00 00 .......... .....
- 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
- 40 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
- 50 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
- 60 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
- 70 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+As a bandaid fix which is backportable to stable, raise the number of
+allowed slaves to 24 (which "ought to be enough for anybody"), enforce
+the limitation on slave ->setup and revert num_chipselect to 3 (which is
+the number of native chipselects supported by the controller).
+An upcoming for-next commit will allow an arbitrary number of slaves.
 
-After:
-
-$ sg_raw -r 128 /dev/sda 12 01 B0 00 80 00
-SCSI Status: Good
-
-Received 64 bytes of data:
-00 00 b0 00 3c 01 00 00 00 00 00 00 00 00 00 00 00 ...<............
-10 00 00 00 00 00 01 00 00 00 00 00 40 00 00 08 00 ...........@....
-20 80 00 00 00 00 00 00 00 00 00 20 00 00 00 00 00 .......... .....
-30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-
-[mkp: clarified description]
-
-Link: https://lore.kernel.org/r/03C41093-B62E-43A2-913E-CFC92F1C70C3@vmware.com
-Signed-off-by: Matt Wang <wwentao@vmware.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 571e31fa60b3 ("spi: bcm2835: Cache CS register value for ->prepare_message()")
+Reported-by: Joe Burmeister <joe.burmeister@devtank.co.uk>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v5.4+
+Cc: Phil Elwell <phil@raspberrypi.com>
+Link: https://lore.kernel.org/r/75854affc1923309fde05e47494263bde73e5592.1621703210.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/vmw_pvscsi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/spi/spi-bcm2835.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/vmw_pvscsi.c b/drivers/scsi/vmw_pvscsi.c
-index 081f54ab7d86..1421b1394d81 100644
---- a/drivers/scsi/vmw_pvscsi.c
-+++ b/drivers/scsi/vmw_pvscsi.c
-@@ -587,7 +587,13 @@ static void pvscsi_complete_request(struct pvscsi_adapter *adapter,
- 		case BTSTAT_SUCCESS:
- 		case BTSTAT_LINKED_COMMAND_COMPLETED:
- 		case BTSTAT_LINKED_COMMAND_COMPLETED_WITH_FLAG:
--			/* If everything went fine, let's move on..  */
-+			/*
-+			 * Commands like INQUIRY may transfer less data than
-+			 * requested by the initiator via bufflen. Set residual
-+			 * count to make upper layer aware of the actual amount
-+			 * of data returned.
-+			 */
-+			scsi_set_resid(cmd, scsi_bufflen(cmd) - e->dataLen);
- 			cmd->result = (DID_OK << 16);
- 			break;
+--- a/drivers/spi/spi-bcm2835.c
++++ b/drivers/spi/spi-bcm2835.c
+@@ -68,7 +68,7 @@
+ #define BCM2835_SPI_FIFO_SIZE		64
+ #define BCM2835_SPI_FIFO_SIZE_3_4	48
+ #define BCM2835_SPI_DMA_MIN_LENGTH	96
+-#define BCM2835_SPI_NUM_CS		4   /* raise as necessary */
++#define BCM2835_SPI_NUM_CS		24  /* raise as necessary */
+ #define BCM2835_SPI_MODE_BITS	(SPI_CPOL | SPI_CPHA | SPI_CS_HIGH \
+ 				| SPI_NO_CS | SPI_3WIRE)
  
--- 
-2.30.2
-
+@@ -1195,6 +1195,12 @@ static int bcm2835_spi_setup(struct spi_
+ 	struct gpio_chip *chip;
+ 	u32 cs;
+ 
++	if (spi->chip_select >= BCM2835_SPI_NUM_CS) {
++		dev_err(&spi->dev, "only %d chip-selects supported\n",
++			BCM2835_SPI_NUM_CS - 1);
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * Precalculate SPI slave's CS register value for ->prepare_message():
+ 	 * The driver always uses software-controlled GPIO chip select, hence
+@@ -1288,7 +1294,7 @@ static int bcm2835_spi_probe(struct plat
+ 	ctlr->use_gpio_descriptors = true;
+ 	ctlr->mode_bits = BCM2835_SPI_MODE_BITS;
+ 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
+-	ctlr->num_chipselect = BCM2835_SPI_NUM_CS;
++	ctlr->num_chipselect = 3;
+ 	ctlr->setup = bcm2835_spi_setup;
+ 	ctlr->transfer_one = bcm2835_spi_transfer_one;
+ 	ctlr->handle_err = bcm2835_spi_handle_err;
 
 
