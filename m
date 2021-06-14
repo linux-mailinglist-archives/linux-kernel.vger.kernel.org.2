@@ -2,55 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19DD3A5D7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963723A5D8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhFNHOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:14:36 -0400
-Received: from verein.lst.de ([213.95.11.211]:43092 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232096AbhFNHOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:14:31 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 537CA67373; Mon, 14 Jun 2021 09:12:23 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 09:12:23 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        rppt@kernel.org, hannes@cmpxchg.org, cai@lca.pw,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        Tianyu.Lan@microsoft.com, konrad.wilk@oracle.com,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
-        xen-devel@lists.xenproject.org, davem@davemloft.net,
-        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, sunilmut@microsoft.com
-Subject: Re: [RFC PATCH V3 08/11] swiotlb: Add bounce buffer remap address
- setting function
-Message-ID: <20210614071223.GA30171@lst.de>
-References: <20210530150628.2063957-1-ltykernel@gmail.com> <20210530150628.2063957-9-ltykernel@gmail.com> <20210607064312.GB24478@lst.de> <48516ce3-564c-419e-b355-0ce53794dcb1@gmail.com>
+        id S232504AbhFNHSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232486AbhFNHSU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 03:18:20 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E99C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:16:18 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lsgog-0000BB-Lg; Mon, 14 Jun 2021 09:15:26 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lsgoe-0005Jf-D8; Mon, 14 Jun 2021 09:15:24 +0200
+Date:   Mon, 14 Jun 2021 09:15:21 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Vinod Koul <vkoul@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, dmaengine@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/7] Prepare EP93xx drivers for Common Clock Framework
+Message-ID: <20210614071521.bv6tc5d27tj3yvlv@pengutronix.de>
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tzksnyblxledsl3b"
 Content-Disposition: inline
-In-Reply-To: <48516ce3-564c-419e-b355-0ce53794dcb1@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 10:56:47PM +0800, Tianyu Lan wrote:
-> These addresses in extra address space works as system memory mirror. The 
-> shared memory with host in Isolation VM needs to be accessed via extra 
-> address space which is above shared gpa boundary.
 
-Why?
+--tzksnyblxledsl3b
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jun 14, 2021 at 01:30:34AM +0200, Alexander Sverdlin wrote:
+> Nikita posted a patch converting EP93xx to use Common Clock Framework. It
+> turns out some cleanup is necessary in the EP93xx drivers to avoid
+> "Enabling unprepared" clock warnings.
+>=20
+> Patches with stack traces in the commit messages are tested on EP9302.
+
+One thing to note is: ep93xx currently doesn't provide a clk_prepare
+function, this isn't a problem though because include/linux/clk.h
+provides a dummy if CONFIG_HAVE_CLK_PREPARE isn't defined. So as ep93xx
+doesn't define this symbol the changes here effectively only add a
+might_sleep.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--tzksnyblxledsl3b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDHAgYACgkQwfwUeK3K
+7Anz4wf/fZ6UpIbiQ9trvkqr6Bj6ontdmEdjh7ZjZkt/uCGHoWMQ1h2blpmdMD/z
+wzcscbTaQkBDOdRPlWqqRB77EOqy7TdJe7vKeGygZflhyBx6so3Yk+Jf9NhZ73sY
+WpFRQP5v/utpk7qmx7SXBdlJG3mkWmIujPAJd56OX6RwFped6Bqh+bpRv+jMKhHv
+KLWyqkKehDsDd9EQtPokkcgnhvFo584TGv3oWUFi0AtPTgVXCSSNCiIxkR8BKLhs
+/pwCZo/rdneUeHPZpvBsR2AAVefwMmCQphi9CA4JaCsxGkA6Hfa5c1YBpsPXKnSZ
+aL6XNpm9fn67SU0C3GhW4R4lGjRoMQ==
+=giTe
+-----END PGP SIGNATURE-----
+
+--tzksnyblxledsl3b--
