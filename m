@@ -2,91 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148F73A6CBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636F23A6CC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235124AbhFNRKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:10:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:27173 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234056AbhFNRJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:09:59 -0400
-IronPort-SDR: 5rJdn/tN7TQkKY8GtrKjIKfAw4xEas4+dr4gOJGFiRlioUlnHSebn3PfkpBT1jcUbQErQ9iPM6
- qQJSvIfMmU7Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="186219185"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="186219185"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 10:07:39 -0700
-IronPort-SDR: 4XeDyNei1DGThgPXtXTDeh7EMz9LgxDeeJpLhA64s4Vd/30J39NLMDB1xVHIyZu/YZjYL0+sT3
- 5d8XfE5Y2JyA==
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="420841276"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 10:07:37 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1lsq3h-002Hnw-QP; Mon, 14 Jun 2021 20:07:33 +0300
-Date:   Mon, 14 Jun 2021 20:07:33 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Dave Young <dyoung@redhat.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Javier =?iso-8859-1?B?VGnh?= <javier.tia@gmail.com>,
-        kexec@lists.infradead.org, Eric Biederman <ebiederm@xmission.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed
- kernel
-Message-ID: <YMeM1Xee9Yg3j21D@smile.fi.intel.com>
-References: <YLdEZoSWI41fcTB1@smile.fi.intel.com>
- <YLdG91qspr19heDS@smile.fi.intel.com>
- <YLss6ZNPMIXleLLF@dhcp-128-65.nay.redhat.com>
- <YL5HvUqtsDXx5CzM@smile.fi.intel.com>
- <YL5U/zSb50SnbLgW@smile.fi.intel.com>
- <YL9hxPdPj0dYMyaD@dhcp-128-65.nay.redhat.com>
- <CAHp75VcPuf6BLGf7Y3RO2M-gHMFZMTeb4ftnj_tbGS4TxvThxA@mail.gmail.com>
- <YMCsSqzmG4jb1Ojo@dhcp-128-65.nay.redhat.com>
- <YMQ62d1EFFjRcv6w@dhcp-128-65.nay.redhat.com>
- <YMd39tIPercgljll@smile.fi.intel.com>
+        id S235347AbhFNRKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235185AbhFNRKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 13:10:23 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA08C061574;
+        Mon, 14 Jun 2021 10:08:20 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DCA0A436;
+        Mon, 14 Jun 2021 19:08:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623690499;
+        bh=Y62fPdVrSYoDiDWZVQlRpOQy23UZWZkKTNtRurbrjNM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ip2dd0BFn4k0uceKwk6AsRoJ7m6ppXHgN6HDXUl+580Z532sCO4imhCFiJjv8Vzhb
+         H2EBMFMZAb2y8lk3rtgT4uySV6sfr/1FAwNQh7lv2OaRGQ6p2YzWA9cFg+jN6AgIc4
+         kAie756Ck4NyPzkIHyT6Q6weFlqzrSrL7o36Pj+Q=
+Date:   Mon, 14 Jun 2021 20:07:59 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, Hans Verkuil <hverkuil@xs4all.nl>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 6/8] media: atomisp: remove compat_ioctl32 code
+Message-ID: <YMeM73cHgomYQNcs@pendragon.ideasonboard.com>
+References: <20210614103409.3154127-1-arnd@kernel.org>
+ <20210614103409.3154127-7-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YMd39tIPercgljll@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210614103409.3154127-7-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 06:38:30PM +0300, Andy Shevchenko wrote:
-> On Sat, Jun 12, 2021 at 12:40:57PM +0800, Dave Young wrote:
-> > > Probably it is doable to have kexec on 32bit efi working
-> > > without runtime service support, that means no need the trick of fixed
-> > > mapping.
-> > > 
-> > > If I can restore my vm to boot 32bit efi on this weekend then I may provide some draft
-> > > patches for test.
-> > 
-> > Unfortunately I failed to setup a 32bit efi guest,  here are some
-> > untested draft patches, please have a try.
-> 
-> Thanks for the patches.
-> 
-> As previously, I have reverted my hacks and applied your patches (also I
-> dropped patches from previous mail against kernel and kexec-tools) for both
-> kernel and user space on first and second environments.
-> 
-> It does NOT solve the issue.
-> 
-> If there is no idea pops up soon, I'm going to resend my series that
-> workarounds the issue.
+Hi Arnd,
 
-Hold on, I may have made a mistake during testing. Let me retest this.
+Thank you for the patch.
+
+On Mon, Jun 14, 2021 at 12:34:07PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> This is one of the last remaining users of compat_alloc_user_space()
+> and copy_in_user(), which are in the process of getting removed.
+> 
+> As of commit 57e6b6f2303e ("media: atomisp_fops.c: disable
+> atomisp_compat_ioctl32"), nothing in this file is actually getting used
+> as the only reference has been stubbed out.
+> 
+> Remove the entire file -- anyone willing to restore the functionality
+> can equally well just look up the contents in the git history if needed.
+> 
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Hans Verkuil <hverkuil@xs4all.nl>
+> Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Suggested-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/staging/media/atomisp/Makefile        |    1 -
+>  drivers/staging/media/atomisp/TODO            |    5 +
+>  .../atomisp/pci/atomisp_compat_ioctl32.c      | 1202 -----------------
+>  .../staging/media/atomisp/pci/atomisp_fops.c  |    8 +-
+>  4 files changed, 8 insertions(+), 1208 deletions(-)
+>  delete mode 100644 drivers/staging/media/atomisp/pci/atomisp_compat_ioctl32.c
+> 
+> diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
+> index 51498b2e85b8..606b7754fdfd 100644
+> --- a/drivers/staging/media/atomisp/Makefile
+> +++ b/drivers/staging/media/atomisp/Makefile
+> @@ -16,7 +16,6 @@ atomisp-objs += \
+>  	pci/atomisp_acc.o \
+>  	pci/atomisp_cmd.o \
+>  	pci/atomisp_compat_css20.o \
+> -	pci/atomisp_compat_ioctl32.o \
+>  	pci/atomisp_csi2.o \
+>  	pci/atomisp_drvfs.o \
+>  	pci/atomisp_file.o \
+> diff --git a/drivers/staging/media/atomisp/TODO b/drivers/staging/media/atomisp/TODO
+> index 6987bb2d32cf..2d1ef9eb262a 100644
+> --- a/drivers/staging/media/atomisp/TODO
+> +++ b/drivers/staging/media/atomisp/TODO
+> @@ -120,6 +120,11 @@ TODO
+>      for this driver until the other work is done, as there will be a lot
+>      of code churn until this driver becomes functional again.
+>  
+> +16. Fix private ioctls to not need a compat_ioctl handler for running
+> +    32-bit tasks. The compat code has been removed because of bugs,
+> +    and should not be needed for modern drivers. Fixing this properly
+> +    unfortunately means an incompatible ABI change.
+> +
+>  Limitations
+>  ===========
+>  
+
+[snip]
+
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_fops.c b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> index 26d05474a035..be58f21ab208 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> @@ -1283,7 +1283,8 @@ const struct v4l2_file_operations atomisp_fops = {
+>  	.unlocked_ioctl = video_ioctl2,
+>  #ifdef CONFIG_COMPAT
+>  	/*
+> -	 * There are problems with this code. Disable this for now.
+> +	 * this was removed because of bugs, the interface
+> +	 * needs to be made safe for compat tasks instead.
+>  	.compat_ioctl32 = atomisp_compat_ioctl32,
+>  	 */
+>  #endif
+> @@ -1297,10 +1298,7 @@ const struct v4l2_file_operations atomisp_file_fops = {
+>  	.mmap = atomisp_file_mmap,
+>  	.unlocked_ioctl = video_ioctl2,
+>  #ifdef CONFIG_COMPAT
+> -	/*
+> -	 * There are problems with this code. Disable this for now.
+> -	.compat_ioctl32 = atomisp_compat_ioctl32,
+> -	 */
+> +	/* .compat_ioctl32 = atomisp_compat_ioctl32, */
+>  #endif
+>  	.poll = atomisp_poll,
+>  };
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
 
-
+Laurent Pinchart
