@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869193A630B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BAC43A649E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235008AbhFNLIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36098 "EHLO mail.kernel.org"
+        id S235525AbhFNL0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234529AbhFNK56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:57:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01F7A61622;
-        Mon, 14 Jun 2021 10:41:38 +0000 (UTC)
+        id S234944AbhFNLMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:12:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 961486195C;
+        Mon, 14 Jun 2021 10:48:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667299;
-        bh=qSRmlgwWY0K2z6udKhRE0dNSDZmP8qs5pPPXI909R3I=;
+        s=korg; t=1623667718;
+        bh=tudlBHqZenoctlRrfSERZSkHBViNR5fCAbzX/OHuqOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t1TfqbSnRfRa4Rn1MV813rGFgwsgTk0SfHNb1n2OQ/iUo8ZvwJSejdGx2WLyq8BL2
-         3WHrih1rUDzDzEACyxYHYrJNYNc3y8G0MSJMgvQVc3FNgTdXV5OycCqHuRE/Lzh1cr
-         7/JxB06aT+oFEC6yElkqXbgdU/gIpEEa+/7Y3XZY=
+        b=1ymVot4LWISISca3vfLLvqRqDI1xuDzCyXJ0kUE2iR09BCORxfo22Jb/fiE3BXQlZ
+         RobyzbalTmF37c9GxW2CF5ToIPm+xUFROxikveVGACYcysMbiM1sWhTUQPe4+nve2r
+         5Pqq8py3JlnrlVMX2WiYwIoq3xOunNIbzPK21aFk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+bfda097c12a00c8cae67@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 018/131] bonding: init notify_work earlier to avoid uninitialized use
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 047/173] i2c: mpc: Make use of i2c_recover_bus()
 Date:   Mon, 14 Jun 2021 12:26:19 +0200
-Message-Id: <20210614102653.613686097@linuxfoundation.org>
+Message-Id: <20210614102659.721222841@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-[ Upstream commit 35d96e631860226d5dc4de0fad0a415362ec2457 ]
+[ Upstream commit 65171b2df15eb7545431d75c2729b5062da89b43 ]
 
-If bond_kobj_init() or later kzalloc() in bond_alloc_slave() fail,
-then we call kobject_put() on the slave->kobj. This in turn calls
-the release function slave_kobj_release() which will always try to
-cancel_delayed_work_sync(&slave->notify_work), which shouldn't be
-done on an uninitialized work struct.
+Move the existing calls of mpc_i2c_fixup() to a recovery function
+registered via bus_recovery_info. This makes it more obvious that
+recovery is supported and allows for a future where recovery is
+triggered by the i2c core.
 
-Always initialize the work struct earlier to avoid problems here.
-
-Syzbot bisected this down to a completely pointless commit, some
-fault injection may have been at work here that caused the alloc
-failure in the first place, which may interact badly with bisect.
-
-Reported-by: syzbot+bfda097c12a00c8cae67@syzkaller.appspotmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-mpc.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 47afc5938c26..345a3f61c723 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -1502,6 +1502,7 @@ static struct slave *bond_alloc_slave(struct bonding *bond,
- 
- 	slave->bond = bond;
- 	slave->dev = slave_dev;
-+	INIT_DELAYED_WORK(&slave->notify_work, bond_netdev_notify_work);
- 
- 	if (bond_kobj_init(slave))
- 		return NULL;
-@@ -1514,7 +1515,6 @@ static struct slave *bond_alloc_slave(struct bonding *bond,
- 			return NULL;
+diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
+index d94f05c8b8b7..6a0d55e9e8e3 100644
+--- a/drivers/i2c/busses/i2c-mpc.c
++++ b/drivers/i2c/busses/i2c-mpc.c
+@@ -586,7 +586,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
+ 				writeb(status & ~CSR_MAL,
+ 				       i2c->base + MPC_I2C_SR);
+-				mpc_i2c_fixup(i2c);
++				i2c_recover_bus(&i2c->adap);
+ 			}
+ 			return -EIO;
  		}
- 	}
--	INIT_DELAYED_WORK(&slave->notify_work, bond_netdev_notify_work);
- 
- 	return slave;
+@@ -622,7 +622,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
+ 				writeb(status & ~CSR_MAL,
+ 				       i2c->base + MPC_I2C_SR);
+-				mpc_i2c_fixup(i2c);
++				i2c_recover_bus(&i2c->adap);
+ 			}
+ 			return -EIO;
+ 		}
+@@ -637,6 +637,15 @@ static u32 mpc_functionality(struct i2c_adapter *adap)
+ 	  | I2C_FUNC_SMBUS_READ_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL;
  }
+ 
++static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
++{
++	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
++
++	mpc_i2c_fixup(i2c);
++
++	return 0;
++}
++
+ static const struct i2c_algorithm mpc_algo = {
+ 	.master_xfer = mpc_xfer,
+ 	.functionality = mpc_functionality,
+@@ -648,6 +657,10 @@ static struct i2c_adapter mpc_ops = {
+ 	.timeout = HZ,
+ };
+ 
++static struct i2c_bus_recovery_info fsl_i2c_recovery_info = {
++	.recover_bus = fsl_i2c_bus_recovery,
++};
++
+ static const struct of_device_id mpc_i2c_of_match[];
+ static int fsl_i2c_probe(struct platform_device *op)
+ {
+@@ -740,6 +753,7 @@ static int fsl_i2c_probe(struct platform_device *op)
+ 	i2c_set_adapdata(&i2c->adap, i2c);
+ 	i2c->adap.dev.parent = &op->dev;
+ 	i2c->adap.dev.of_node = of_node_get(op->dev.of_node);
++	i2c->adap.bus_recovery_info = &fsl_i2c_recovery_info;
+ 
+ 	result = i2c_add_adapter(&i2c->adap);
+ 	if (result < 0)
 -- 
 2.30.2
 
