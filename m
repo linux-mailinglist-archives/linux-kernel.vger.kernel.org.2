@@ -2,112 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343C23A67C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB643A67CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbhFNN1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:27:18 -0400
-Received: from mga17.intel.com ([192.55.52.151]:8141 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234014AbhFNN1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:27:02 -0400
-IronPort-SDR: jO6+yc1+3LGBVPzOSSBy5G0fqArW80zTOGGiCFccSA5XKD450VNgSohf6n543/3hCkiRvqhrs+
- Q2HDVduQZpjQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="186183346"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="186183346"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 06:24:45 -0700
-IronPort-SDR: 4uA4aG4ATRGcELj6mVIIipsj7S31i78lSJSkdTZtppZIp9IBhVKQcWeTB6JAWaOAhVgc0IR5Qw
- LVsjj7oq1qIw==
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="553365800"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 06:24:41 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lsmZx-002Ejc-DY; Mon, 14 Jun 2021 16:24:37 +0300
-Date:   Mon, 14 Jun 2021 16:24:37 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        syzbot+142888ffec98ab194028@syzkaller.appspotmail.com
-Subject: Re: [PATCH v3 1/8] media: v4l2-core: ignore native time32 ioctls on
- 64-bit
-Message-ID: <YMdYlcVThyh7sFgv@smile.fi.intel.com>
-References: <20210614103409.3154127-1-arnd@kernel.org>
- <20210614103409.3154127-2-arnd@kernel.org>
+        id S233628AbhFNN2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:28:06 -0400
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:38564 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233102AbhFNN2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 09:28:04 -0400
+Received: by mail-lf1-f47.google.com with SMTP id r5so21139728lfr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 06:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xltRc6v0RYzP2GYCLquSH6jOzZUqizX4njH8fTXxQ8U=;
+        b=BUxPBTkFwZSeaUFSb0ogjPS8sVETik0sAKjL2T3mRTIF/6LU9JTiVFEVPBzNcVasid
+         tKE6xCy0ROIQjV1+EK9I5obP9Vh2jC573aLmG0NXBQ8ZscvC3Rb0BR7+EsqRNESFX9Dl
+         6ZsEW+JlbtEG7obEeUoJrzwkm5PAuohU1OpBtQBG8pkbpKU66n1Q+ciEDPE2BMF4Kwda
+         u+CIQ6gNLKiJX1lqZyTFwZ3BYQi03NkSxRbhqpDM3Lvdde1nNbA3RzeYu5DkH4gIv7yY
+         JcpX3Sjbap1xDib3abHgKBqkw6fU2LOV8h91Ij0Tn56DSd0JPXwBDFOdV3/Af6OjRhHD
+         EuPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xltRc6v0RYzP2GYCLquSH6jOzZUqizX4njH8fTXxQ8U=;
+        b=DWc1vY8uU28n1Kx2xu2Ra0+GPXDmPcq8tfn6OJNs5jGpYlqs09kAAOkaICQJieu6Hd
+         mvYkrnPd6PckIIYeYtuBRC3Q4447gPSRoSttI2c9xH6X4POFj74LTEkA9wj+RHD2rHbL
+         PcCfrAgn5heXgoS/RNXO96WCRtySJG9BEUJnUt5BxtqRr252TQuUBP7q6fNdzl57Rv5n
+         8JXlxcieweCHsbw/NPpUP+cXv0LCBSfoXFA5vSSW0nTGTXgDcbNcjD9cfCRXZuBU79Vo
+         xW6/4+o2Olbz+z7Q9UxMSH7+OtZlrWS1HT6Ev5ogYKflkXyjkTpgckJMRAINva6+yGX3
+         HLHQ==
+X-Gm-Message-State: AOAM5322TIEGjPufQfUlBAVi3uABA033JvxfduIn8TowQZ8wNLR/HyLH
+        nST/QHZQNMBAOxicq23XcE8vmodais9jwZGqkHv0dQ==
+X-Google-Smtp-Source: ABdhPJzxu/bbJj/tjk+9kiZjUXBMExtN/SoD6He5VyGix4LZaxl4y/uFjPI1E/gacHMwLVvWATmzF1kDDEcSkKoCPoM=
+X-Received: by 2002:a05:6512:3483:: with SMTP id v3mr12270789lfr.154.1623677088786;
+ Mon, 14 Jun 2021 06:24:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614103409.3154127-2-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
+ <20210614102119.qifm5sj7fpg54iqo@vireshk-i7> <CAK8P3a10yObfX_dFMSsqW_fGugdtz0nutJFwDB_OY0DebdGjXQ@mail.gmail.com>
+ <0100017a0a9264cc-57668c56-fdbf-412a-9f82-9bf95f5c653e-000000@email.amazonses.com>
+ <CAK8P3a0-cVF=n1OxURZM8yXLKCPAAgBnZNXZVUzxA8m2ZzjP1A@mail.gmail.com>
+In-Reply-To: <CAK8P3a0-cVF=n1OxURZM8yXLKCPAAgBnZNXZVUzxA8m2ZzjP1A@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 14 Jun 2021 15:24:37 +0200
+Message-ID: <CAKfTPtDya2gY5nxvEA7mFQN2myQEocVz2Ugc4Of4rkNiUtpgiw@mail.gmail.com>
+Subject: Re: [Stratos-dev] [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 12:34:02PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Syzbot found that passing ioctl command 0xc0505609 into a 64-bit
-> kernel from a 32-bit process causes uninitialized kernel memory to
-> get passed to drivers instead of the user space data:
+On Mon, 14 Jun 2021 at 15:00, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Mon, Jun 14, 2021 at 2:50 PM Vincent Guittot via Stratos-dev
+> <stratos-dev@op-lists.linaro.org> wrote:>
+> > On Mon, 14 Jun 2021 at 14:33, Arnd Bergmann <arnd@kernel.org> wrote:
+> > > On Mon, Jun 14, 2021 at 12:23 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > I think most importantly we need a DT binding to describe what device
+> > > nodes are supposed to look like underneath a virtio-mmio or
+> > > virtio-pci device in order for a hypervisor to pass down the
+> > > information to a guest OS in a generic way. We can probably borrow
+> > > the USB naming, and replace compatible="usbVID,PID" with
+> > > compatible="virtioDID", with the device ID in hexadecimal digits,
+> > > such as "virtio22" for I2C (virtio device ID 34 == 0x22) if we decide
+> > > to have a sub-node under the device, or we just point dev->of_node
+> > > of the virtio device to the platform/pci device that is its parent
+> > > in Linux.
+> > >
+> > > Adding the Linux guest code to the virtio layer should be fairly
+> > > straightforward, and I suppose it could be mostly copied from the
+> > > corresponding code that added this for mmc in commit 25185f3f31c9
+> > > ("mmc: Add SDIO function devicetree subnode parsing") and for USB
+> > > in commit 69bec7259853 ("USB: core: let USB device know device
+> > > node") and 1a7e3948cb9f ("USB: add device-tree support for
+> > > interfaces").
+> >
+> > And something similar is also done with SCMI protocols which are
+> > defined in a SCMI node. A  typical example:
+> >
+> >     cpu@0 {
+> >         ...
+> >         clocks = <&scmi_dvfs 0>;
+> >         ...
+> >     };
+> >
+> >     deviceX: deviceX@YYYYYYY {
+> >         ...
+> >         clocks = <&scmi_clk 0>;
+> >         ...
+> >     };
+> >
+> >     scmi: scmi {
+> >         compatible = "arm,scmi-virtio";
+> >         #address-cells = <1>;
+> >         #size-cells = <0>;
+> >
+> >         scmi_devpd: protocol@11 {
+> >             reg = <0x11>;
+> >             #power-domain-cells = <1>;
+> >         };
+> >
+> >         scmi_clk: protocol@14 {
+> >             reg = <0x14>;
+> >             #clock-cells = <1>;
+> >         };
+> >
+> >         scmi_sensors: protocol@15 {
+> >             reg = <0x15>;
+> >             #thermal-sensor-cells = <1>;
+> >         };
+> >
+> >         scmi_dvfs: protocol@13 {
+> >             reg = <0x13>;
+> >             #clock-cells = <1>;
+> >         };
+> >     };
+>
+> But this example seem to be completely different from the ones I mentioned:
+> The scmi node that you have here looks like it shows up under the root of the
+> device tree, not below the virtio device that implements the scmi transport.
 
-> BUG: KMSAN: uninit-value in check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
-> BUG: KMSAN: uninit-value in video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
-> CPU: 0 PID: 19595 Comm: syz-executor.4 Not tainted 5.11.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x21c/0x280 lib/dump_stack.c:120
->  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
->  __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
->  check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
->  video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
->  video_ioctl2+0x9f/0xb0 drivers/media/v4l2-core/v4l2-ioctl.c:3391
->  v4l2_ioctl+0x255/0x290 drivers/media/v4l2-core/v4l2-dev.c:360
->  v4l2_compat_ioctl32+0x2c6/0x370 drivers/media/v4l2-core/v4l2-compat-ioctl32.c:1248
->  __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
->  __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
->  __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
->  do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
->  __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
->  do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
->  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+I was thinking of something like below:
 
-Can we, please, get a habit to reduce tracebacks to only significant lines?
-This is not only reduces the storage foot print of repositories in the world
-(and thus electricity consumed for any operation on it) but also increases
-density of useful information on one (small, due to reading on laptops / small
-screen size devices) page.
+    deviceX: deviceX@YYYYYYY {
+        ...
+        gpio = <&virtio_gpio 0>;
+        ...
+    };
 
-> The time32 commands are defined but were never meant to be called on
-> 64-bit machines, as those have always used time64 interfaces.  I missed
-> this in my patch that introduced the time64 handling on 32-bit platforms.
-> 
-> The problem in this case is the mismatch of one function checking for
-> the numeric value of the command and another function checking for the
-> type of process (native vs compat) instead, with the result being that
-> for this combination, nothing gets copied into the buffer at all.
-> 
-> Avoid this by only trying to convert the time32 commands when running
-> on a 32-bit kernel where these are defined in a meaningful way.
+    virtio_mmio@a000000 {
+        dma-coherent;
+        interrupts = <0x0 0x10 0x1>;
+        reg = <0x0 0xa000000 0x0 0x200>;
+        compatible = "virtio,mmio";
 
--- 
-With Best Regards,
-Andy Shevchenko
+        virtio_gpio: protocol@22 {
+            reg = <0x22>;
+        };
+    };
 
-
+>
+>          Arnd
