@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD663A6056
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370E73A60E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbhFNKdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:33:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38154 "EHLO mail.kernel.org"
+        id S233328AbhFNKkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:40:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233003AbhFNKb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1814E61242;
-        Mon, 14 Jun 2021 10:29:39 +0000 (UTC)
+        id S233613AbhFNKgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:36:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B1A3611C1;
+        Mon, 14 Jun 2021 10:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666580;
-        bh=1x6PxafyRvve4h7r3JvKh1m6RtnWVAKfi6AjhpfWSFE=;
+        s=korg; t=1623666785;
+        bh=a3FK9UDXjjavE0Rd+YnPxUmCeg7rAl3DHAPTtV5WDeY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hDL6Ewiz9/C38tMngK4aqriUrs+MzWYoTJTs+//xBVlzBkaf82ZWWhCJ8PblWLiqc
-         UNyPjE9+h9/odAZ1CEvFXqvTjm3I9ajbpicqYdIracWUsUreF5nXJgbePAa4mhV+aT
-         ZGyw/0NeVDRFVJ/cQad6pC6B7T4iu1Nn26kF770U=
+        b=140X9gdrGSrcb9iGzbK0OyWFQ6BbGrO9APclZi5meXwYPdLGYSw7MbuCg7whqer7s
+         hAasuFf86dzlzKUr8bNP51f8j46t7co0jGYQPyH1pg7egUV4KsS9MXDpQxrk5W0E72
+         jlg4YH3h+BWKA+kjLkeIbD7Cpq5wEk7BGx9dz8FE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.4 31/34] kvm: fix previous commit for 32-bit builds
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Mayank Rana <mrana@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH 4.14 29/49] usb: typec: ucsi: Clear PPM capability data in ucsi_init() error path
 Date:   Mon, 14 Jun 2021 12:27:22 +0200
-Message-Id: <20210614102642.582276111@linuxfoundation.org>
+Message-Id: <20210614102642.822191363@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,33 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Mayank Rana <mrana@codeaurora.org>
 
-commit 4422829e8053068e0225e4d0ef42dc41ea7c9ef5 upstream.
+commit f247f0a82a4f8c3bfed178d8fd9e069d1424ee4e upstream.
 
-array_index_nospec does not work for uint64_t on 32-bit builds.
-However, the size of a memory slot must be less than 20 bits wide
-on those system, since the memory slot must fit in the user
-address space.  So just store it in an unsigned long.
+If ucsi_init() fails for some reason (e.g. ucsi_register_port()
+fails or general communication failure to the PPM), particularly at
+any point after the GET_CAPABILITY command had been issued, this
+results in unwinding the initialization and returning an error.
+However the ucsi structure's ucsi_capability member retains its
+current value, including likely a non-zero num_connectors.
+And because ucsi_init() itself is done in a workqueue a UCSI
+interface driver will be unaware that it failed and may think the
+ucsi_register() call was completely successful.  Later, if
+ucsi_unregister() is called, due to this stale ucsi->cap value it
+would try to access the items in the ucsi->connector array which
+might not be in a proper state or not even allocated at all and
+results in NULL or invalid pointer dereference.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fix this by clearing the ucsi->cap value to 0 during the error
+path of ucsi_init() in order to prevent a later ucsi_unregister()
+from entering the connector cleanup loop.
+
+Fixes: c1b0bc2dabfa ("usb: typec: Add support for UCSI interface")
+Cc: stable@vger.kernel.org
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Mayank Rana <mrana@codeaurora.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Link: https://lore.kernel.org/r/20210609073535.5094-1-jackp@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/kvm_host.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/typec/ucsi/ucsi.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -959,8 +959,8 @@ __gfn_to_hva_memslot(struct kvm_memory_s
- 	 * table walks, do not let the processor speculate loads outside
- 	 * the guest's registered memslots.
- 	 */
--	unsigned long offset = array_index_nospec(gfn - slot->base_gfn,
--						  slot->npages);
-+	unsigned long offset = gfn - slot->base_gfn;
-+	offset = array_index_nospec(offset, slot->npages);
- 	return slot->userspace_addr + offset * PAGE_SIZE;
- }
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -724,6 +724,7 @@ err_unregister:
+ 	}
  
+ err_reset:
++	memset(&ucsi->cap, 0, sizeof(ucsi->cap));
+ 	ucsi_reset_ppm(ucsi);
+ err:
+ 	mutex_unlock(&ucsi->ppm_lock);
 
 
