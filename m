@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568A93A6264
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222B53A60B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235312AbhFNLAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:00:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58288 "EHLO mail.kernel.org"
+        id S233696AbhFNKhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:37:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234428AbhFNKwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:52:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F9561004;
-        Mon, 14 Jun 2021 10:39:29 +0000 (UTC)
+        id S232988AbhFNKeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:34:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB3D6613F1;
+        Mon, 14 Jun 2021 10:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667169;
-        bh=HschcZvN4hezXY4DSCghgaTzlnM+FqVxKmRTWtTIU9Q=;
+        s=korg; t=1623666726;
+        bh=Ug5aL0ei8EamdokhMXWHFw7MHos6vIKShgbtggwhT0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rz2BRchpePftd0aTJoAxCvqz/BG3K2b5KRztXhwVUlgcN8xmcpLwZwJk6ijP1OVuF
-         1aXRS6LoUsASjlF4CY16tJk6qzmAn9yuRjVLflvAGoKFOO3OEbZejDan/59/akHnNl
-         L/5hqG8+Z92Hyejs4ksuUZoX80kDpl0D4Mu96SF8=
+        b=wn1kcH8K+WA+/Qo2ZFagDHSZRcRUhhOhYcn/twE8Y+tNqQN3BAsJ+ZkCYuFv1DHPC
+         326QpQXcyvYmV0VJOjKGDSRvq2+sEDCjeGyYLDO1+2RJKeiFe63tLKDvkASDS0DrdP
+         sGN+9P7XHJJzNmxueZEZEUrzUOt+K1fe6Uj9u5K4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 5.4 52/84] usb: typec: wcove: Use LE to CPU conversion when accessing msg->header
-Date:   Mon, 14 Jun 2021 12:27:30 +0200
-Message-Id: <20210614102648.135395887@linuxfoundation.org>
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        John Garry <john.garry@huawei.com>,
+        Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.9 40/42] scsi: core: Only put parent device if host state differs from SHOST_CREATED
+Date:   Mon, 14 Jun 2021 12:27:31 +0200
+Message-Id: <20210614102643.986990916@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-commit d5ab95da2a41567440097c277c5771ad13928dad upstream.
+commit 1e0d4e6225996f05271de1ebcb1a7c9381af0b27 upstream.
 
-As LKP noticed the Sparse is not happy about strict type handling:
-   .../typec/tcpm/wcove.c:380:50: sparse:     expected unsigned short [usertype] header
-   .../typec/tcpm/wcove.c:380:50: sparse:     got restricted __le16 const [usertype] header
+get_device(shost->shost_gendev.parent) is called after host state has
+switched to SHOST_RUNNING. scsi_host_dev_release() shouldn't release the
+parent device if host state is still SHOST_CREATED.
 
-Fix this by switching to use pd_header_cnt_le() instead of pd_header_cnt()
-in the affected code.
-
-Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
-Fixes: 3c4fb9f16921 ("usb: typec: wcove: start using tcpm for USB PD support")
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210609172202.83377-1-andriy.shevchenko@linux.intel.com
-Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210602133029.2864069-5-ming.lei@redhat.com
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Hannes Reinecke <hare@suse.de>
+Tested-by: John Garry <john.garry@huawei.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/tcpm/wcove.c |    2 +-
+ drivers/scsi/hosts.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/typec/tcpm/wcove.c
-+++ b/drivers/usb/typec/tcpm/wcove.c
-@@ -377,7 +377,7 @@ static int wcove_pd_transmit(struct tcpc
- 		const u8 *data = (void *)msg;
- 		int i;
+--- a/drivers/scsi/hosts.c
++++ b/drivers/scsi/hosts.c
+@@ -368,7 +368,7 @@ static void scsi_host_dev_release(struct
  
--		for (i = 0; i < pd_header_cnt(msg->header) * 4 + 2; i++) {
-+		for (i = 0; i < pd_header_cnt_le(msg->header) * 4 + 2; i++) {
- 			ret = regmap_write(wcove->regmap, USBC_TX_DATA + i,
- 					   data[i]);
- 			if (ret)
+ 	ida_simple_remove(&host_index_ida, shost->host_no);
+ 
+-	if (parent)
++	if (shost->shost_state != SHOST_CREATED)
+ 		put_device(parent);
+ 	kfree(shost);
+ }
 
 
