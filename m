@@ -2,163 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FA43A6946
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7FD3A6955
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhFNOus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:50:48 -0400
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:40827 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232875AbhFNOui (ORCPT
+        id S232805AbhFNOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:53:06 -0400
+Received: from mail-il1-f169.google.com ([209.85.166.169]:35766 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232852AbhFNOxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:50:38 -0400
-Received: by mail-lj1-f176.google.com with SMTP id x14so20519600ljp.7;
-        Mon, 14 Jun 2021 07:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lM05KvIv1j/pV1PSbzENxv/91mH5aJpm+cLZAmrkR2g=;
-        b=SxhBYOtYm0RJHNdT8zx+1gcaPThONE2p1Z+UFp5Y9Y2Bep6JxdBjwHI5QU1QxAcu2t
-         OD+Yv5o03/0caxpQLYOO8Vcxm8NLg7GOqO+qpLXW9NuSLynluXXn8FteXUg/QlFkg9A8
-         RAgNpoPmbQG6fTbiMLyMbdEKs7cPTMhYkyqAlstpbiPN2UxEEyRtri3kicchp62g68JO
-         EGjQ28vnf3ya5ldoAGYjgpYKJucCbQ7cXrqrPWEfcvlIPFRe3QSbzRZxnPCrc7HEkh2c
-         258PxMMomM+nua3dvHmRPeDMjbavGz47XpNbJP5gbg9Y/JuSGXmVhQsKCOCfYBZQYdgL
-         BTeA==
+        Mon, 14 Jun 2021 10:53:03 -0400
+Received: by mail-il1-f169.google.com with SMTP id b9so12458574ilr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:51:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lM05KvIv1j/pV1PSbzENxv/91mH5aJpm+cLZAmrkR2g=;
-        b=Dtu7Pq+7XJ7yk1gQAbgZ+vaabVUOux+H3QIFukzLVWr83XBGFWKWpucEbmJQU3RxNq
-         KXb02rA8kiyCCrddozKO8Ma5jlJUi3pNNlO8Vso5oYDC/LrSzvQpFkr0uHVNCboGFJDe
-         vTFXWMzxSbrc6Gz1t++JRDN/fQLP3LvEjNllGV70DpDAZ/vY/V+KhowHToMuUqH6PRvI
-         TcmC3f4h5L4ZWld+rSICp6gtJywtn3+o3wEQNfU2W4sfwPzTP1Ul74hBIXVvXcdDKjlM
-         iZcEZ2DbuBz6lcQ0vOGVXEgCq/VZBKTdFOv0de1cPHEjiwib2UWq1obe45Sfo+uuuwxR
-         l0wA==
-X-Gm-Message-State: AOAM532/Y9KOCG9qrYxSftIaxKBpsWgWb7lq2lLCChemXR+6SNfb1Z1r
-        eO6EGPhwd+7CxGHDeKlojhw=
-X-Google-Smtp-Source: ABdhPJzfFWuHrL5QAU0bW9cV1qIGISwEJA3hdr+8J7J/FjJZkcWwo83kc3ohJUuGsQasWn9giJ6CTw==
-X-Received: by 2002:a2e:9855:: with SMTP id e21mr14624487ljj.295.1623682051507;
-        Mon, 14 Jun 2021 07:47:31 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.24])
-        by smtp.gmail.com with ESMTPSA id bn27sm1806449ljb.110.2021.06.14.07.47.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pni7rpqE1FW1FClvYjK9AqvghJIehVdwsak3wJBmgPw=;
+        b=bo9RQZsNAa/GVIeY30oYVrU2GmVtxNak/a4vZqYWkxATL4xndb50CFec+e/znw5Y+w
+         sWc+v4MBG6tR126o+/p+7i/nZ33casQEX5Tn8rAKe+qGHBjXg6PKZvcbhZ9so4P7dxQ5
+         6Yo2Oy+ri5Cp2hN3cJNTIheNabYh/2aPfLkL9GGttmXI0pDaKBHLot+cv8FfXpWpBxzG
+         kTyf+WyJy9WU3biufpKa9ozkfPjnN+nIbTXU/4JKh3Bvv+PgC1k72tCYRqv9aA/Rq5vU
+         aieqGLA71P94uF++xCzs2LN5gH0s34FlO4AJBNyz8H9Tk3Q+mb+t65XldqY/Bb9Mx3sr
+         Eu/g==
+X-Gm-Message-State: AOAM530d6X00qk9S/xMKbYjTTdZRsrq7nF+lezYhoPVfQh4Gk73ILUb+
+        k0XkPHcmbDAF9Bulc9SkW4E=
+X-Google-Smtp-Source: ABdhPJyYTZCCa5KdLDhWat+CcyfLYG0jp/N4a8MKcpG+27+jQXlzKazy+lyYCyayxvxQWQDNQhFdqg==
+X-Received: by 2002:a05:6e02:cc5:: with SMTP id c5mr14366617ilj.152.1623682258502;
+        Mon, 14 Jun 2021 07:50:58 -0700 (PDT)
+Received: from abasin.c.googlers.com.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id u18sm8350925ilb.51.2021.06.14.07.50.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 07:47:31 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 17:47:27 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     alex.aring@gmail.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        stefan@datenfreihafen.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: Suggestions on how to debug kernel crashes where printk and gdb
- both does not work
-Message-ID: <20210614174727.6a38b584@gmail.com>
-In-Reply-To: <CAD-N9QUhQT8pG8Une8Fac1pJaiVd_mi9AU2c_nkPjTi36xbutQ@mail.gmail.com>
-References: <CAD-N9QUUCSpZjg5RwdKBNF7xx127E6fUowTZkUhm66C891Fpkg@mail.gmail.com>
-        <20210614163401.52807197@gmail.com>
-        <CAD-N9QV5_91A6n5QcrafmQRbqH_qzFRatno-6z0i7q-V9VnLzg@mail.gmail.com>
-        <20210614172512.799db10d@gmail.com>
-        <CAD-N9QUhQT8pG8Une8Fac1pJaiVd_mi9AU2c_nkPjTi36xbutQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Mon, 14 Jun 2021 07:50:57 -0700 (PDT)
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Dennis Zhou <dennis@kernel.org>, Tom Rix <trix@redhat.com>
+Subject: [PATCH 1/1] percpu: initialize best_upa variable
+Date:   Mon, 14 Jun 2021 14:50:49 +0000
+Message-Id: <20210614145049.1585477-1-dennis@kernel.org>
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 22:40:55 +0800
-Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+Tom reported this finding from clang 10's static analysis [1].
 
-> On Mon, Jun 14, 2021 at 10:25 PM Pavel Skripkin
-> <paskripkin@gmail.com> wrote:
-> >
-> > On Mon, 14 Jun 2021 22:19:10 +0800
-> > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> >
-> > > On Mon, Jun 14, 2021 at 9:34 PM Pavel Skripkin
-> > > <paskripkin@gmail.com> wrote:
-> > > >
-> > > > On Mon, 14 Jun 2021 21:22:43 +0800
-> > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> > > >
-> > > > > Dear kernel developers,
-> > > > >
-> > > > > I was trying to debug the crash - memory leak in
-> > > > > hwsim_add_one [1] recently. However, I encountered a
-> > > > > disgusting issue: my breakpoint and printk/pr_alert in the
-> > > > > functions that will be surely executed do not work. The stack
-> > > > > trace is in the following. I wrote this email to ask for some
-> > > > > suggestions on how to debug such cases?
-> > > > >
-> > > > > Thanks very much. Looking forward to your reply.
-> > > > >
-> > > >
-> > > > Hi, Dongliang!
-> > > >
-> > > > This bug is not similar to others on the dashboard. I spent some
-> > > > time debugging it a week ago. The main problem here, that memory
-> > > > allocation happens in the boot time:
-> > > >
-> > > > > [<ffffffff84359255>] kernel_init+0xc/0x1a7 init/main.c:1447
-> > > >
-> > >
-> > > Oh, nice catch. No wonder why my debugging does not work. :(
-> > >
-> > > > and reproducer simply tries to
-> > > > free this data. You can use ftrace to look at it. Smth like
-> > > > this:
-> > > >
-> > > > $ echo 'hwsim_*' > $TRACE_DIR/set_ftrace_filter
-> > >
-> > > Thanks for your suggestion.
-> > >
-> > > Do you have any conclusions about this case? If you have found
-> > > out the root cause and start writing patches, I will turn my
-> > > focus to other cases.
-> >
-> > No, I had some busy days and I have nothing about this bug for now.
-> > I've just traced the reproducer execution and that's all :)
-> >
-> > I guess, some error handling paths are broken, but Im not sure
-> 
-> In the beginning, I agreed with you. However, after I manually checked
-> functions: hwsim_probe (initialization) and  hwsim_remove (cleanup),
-> then things may be different. The cleanup looks correct to me. I would
-> like to debug but stuck with the debugging process.
-> 
-> And there is another issue: the cleanup function also does not output
-> anything or hit the breakpoint. I don't quite understand it since the
-> cleanup is not at the boot time.
-> 
-> Any idea?
-> 
+Due to the way the code is written, it will always see a successful loop
+iteration. Instead of setting an initial value, check that it was set
+instead with BUG_ON() because 0 units per allocation is bogus.
 
-Output from ftrace (syzkaller repro):
+[1] https://lore.kernel.org/lkml/20210515180817.1751084-1-trix@redhat.com/
 
-root@syzkaller:~# cat /sys/kernel/tracing/trace
-# tracer: function_graph
-#
-# CPU  DURATION                  FUNCTION CALLS
-# |     |   |                     |   |   |   |
- 1)               |  hwsim_del_radio_nl() {
- 1)               |    hwsim_del() {
- 1)               |      hwsim_edge_unsubscribe_me() {
- 1) ! 310.041 us  |        hwsim_free_edge();
- 1) ! 665.221 us  |      }
- 1) * 52999.05 us |    }
- 1) * 53035.38 us |  }
+Reported-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Dennis Zhou <dennis@kernel.org>
+---
+Sorry this hasn't been my highest priority. I'll apply this shortly to
+for-5.14.
 
-Cleanup function is not the case, I think :)
+ mm/percpu.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/mm/percpu.c b/mm/percpu.c
+index e7b9ca82e9aa..6667dfa0fcec 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -2888,6 +2888,7 @@ static struct pcpu_alloc_info * __init __flatten pcpu_build_alloc_info(
+ 	 * Related to atom_size, which could be much larger than the unit_size.
+ 	 */
+ 	last_allocs = INT_MAX;
++	best_upa = 0;
+ 	for (upa = max_upa; upa; upa--) {
+ 		int allocs = 0, wasted = 0;
+ 
+@@ -2914,6 +2915,7 @@ static struct pcpu_alloc_info * __init __flatten pcpu_build_alloc_info(
+ 		last_allocs = allocs;
+ 		best_upa = upa;
+ 	}
++	BUG_ON(!best_upa);
+ 	upa = best_upa;
+ 
+ 	/* allocate and fill alloc_info */
+-- 
+2.32.0.272.g935e593368-goog
 
-
-With regards,
-Pavel Skripkin
