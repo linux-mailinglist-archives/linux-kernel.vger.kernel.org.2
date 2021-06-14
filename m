@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC16B3A632A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3229B3A648A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhFNLLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:11:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35246 "EHLO mail.kernel.org"
+        id S234970AbhFNL0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:26:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235111AbhFNLAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:00:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FB7461435;
-        Mon, 14 Jun 2021 10:42:46 +0000 (UTC)
+        id S234131AbhFNLL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:11:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CF9761458;
+        Mon, 14 Jun 2021 10:48:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667367;
-        bh=uNmQHtF4vciy2TE01Oie6xixhd9Gj6s9B0Qvc/6zMpg=;
+        s=korg; t=1623667692;
+        bh=S0arLeFgiygFNv2SwSBpMgnp3DpjxMX41fEk6gYS1c0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VJvkcSK/+Du3b+kIHDPDTwZPhToxTY8CZverxznuIm8qbGddvUBuRRBJYBrsa7zly
-         svG5bb6x05Tobb00sOIwEIHcIE2b8zw/qRO/NNHlthx8OBDfPFpiVLdinVXPkRkPam
-         OKdLKm3y1Eavpyo3goOY+yQuulr5x1RNCTV5/B6g=
+        b=vX83eOedq8WtcTQPx+MmOj1QDiFgQDA5cGo3lVx2utAA2wU+m6OyTNqZMbVdphi7j
+         D4RU3KavT7Wmgn13irogXBFRWVXK5clkxT3w1A8qYTRUOFaa8txP4zyVDxVYPJ+r9j
+         cx/miv+zl/veCnZ7hKWCBcNz2Tvd6j7It86WKQAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 009/131] ASoC: Intel: bytcr_rt5640: Add quirk for the Glavey TM800A550L tablet
+Subject: [PATCH 5.12 038/173] bpf, selftests: Adjust few selftest result_unpriv outcomes
 Date:   Mon, 14 Jun 2021 12:26:10 +0200
-Message-Id: <20210614102653.297818535@linuxfoundation.org>
+Message-Id: <20210614102659.427415368@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit 28c268d3acdd4cbcd2ac320b85609e77f84e74a7 ]
+[ Upstream commit 1bad6fd52be4ce12d207e2820ceb0f29ab31fc53 ]
 
-Add a quirk for the Glavey TM800A550L tablet, this BYTCR tablet has no CHAN
-package in its ACPI tables and uses SSP0-AIF1 rather then SSP0-AIF2 which
-is the default for BYTCR devices.
+Given we don't need to simulate the speculative domain for registers with
+immediates anymore since the verifier uses direct imm-based rewrites instead
+of having to mask, we can also lift a few cases that were previously rejected.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210508150146.28403-1-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ tools/testing/selftests/bpf/verifier/stack_ptr.c       | 2 --
+ tools/testing/selftests/bpf/verifier/value_ptr_arith.c | 8 --------
+ 2 files changed, 10 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 1ef0464249d1..d5c905b00685 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -570,6 +570,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
+diff --git a/tools/testing/selftests/bpf/verifier/stack_ptr.c b/tools/testing/selftests/bpf/verifier/stack_ptr.c
+index 07eaa04412ae..8ab94d65f3d5 100644
+--- a/tools/testing/selftests/bpf/verifier/stack_ptr.c
++++ b/tools/testing/selftests/bpf/verifier/stack_ptr.c
+@@ -295,8 +295,6 @@
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1, 0),
+ 	BPF_EXIT_INSN(),
  	},
-+	{	/* Glavey TM800A550L */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "Aptio CRB"),
-+			/* Above strings are too generic, also match on BIOS version */
-+			DMI_MATCH(DMI_BIOS_VERSION, "ZY-8-BI-PX4S70VTR400-X423B-005-D"),
-+		},
-+		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+-	.result_unpriv = REJECT,
+-	.errstr_unpriv = "invalid write to stack R1 off=0 size=1",
+ 	.result = ACCEPT,
+ 	.retval = 42,
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+index e5913fd3b903..7ae2859d495c 100644
+--- a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
++++ b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+@@ -300,8 +300,6 @@
+ 	},
+ 	.fixup_map_array_48b = { 3 },
+ 	.result = ACCEPT,
+-	.result_unpriv = REJECT,
+-	.errstr_unpriv = "R0 pointer arithmetic of map value goes out of range",
+ 	.retval = 1,
+ },
+ {
+@@ -371,8 +369,6 @@
+ 	},
+ 	.fixup_map_array_48b = { 3 },
+ 	.result = ACCEPT,
+-	.result_unpriv = REJECT,
+-	.errstr_unpriv = "R0 pointer arithmetic of map value goes out of range",
+ 	.retval = 1,
+ },
+ {
+@@ -472,8 +468,6 @@
+ 	},
+ 	.fixup_map_array_48b = { 3 },
+ 	.result = ACCEPT,
+-	.result_unpriv = REJECT,
+-	.errstr_unpriv = "R0 pointer arithmetic of map value goes out of range",
+ 	.retval = 1,
+ },
+ {
+@@ -766,8 +760,6 @@
+ 	},
+ 	.fixup_map_array_48b = { 3 },
+ 	.result = ACCEPT,
+-	.result_unpriv = REJECT,
+-	.errstr_unpriv = "R0 pointer arithmetic of map value goes out of range",
+ 	.retval = 1,
+ },
+ {
 -- 
 2.30.2
 
