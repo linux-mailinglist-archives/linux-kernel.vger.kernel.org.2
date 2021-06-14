@@ -2,470 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3053A6CA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFBB3A6CA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235266AbhFNRF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:05:29 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:33400 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233795AbhFNRF0 (ORCPT
+        id S235360AbhFNRGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:06:04 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:35765 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235033AbhFNRGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:05:26 -0400
-Received: by mail-wr1-f53.google.com with SMTP id a20so15349898wrc.0;
-        Mon, 14 Jun 2021 10:03:23 -0700 (PDT)
+        Mon, 14 Jun 2021 13:06:03 -0400
+Received: by mail-il1-f171.google.com with SMTP id b9so12849573ilr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:04:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=H7yznGHlzfPxvDpvZSbqFd5fVDqQ5LFFKjpUq3W88rg=;
-        b=eQzf6PJn6Zk1h/GN3B0JmHx0rAjPNLihmapVuV7mJKiCo3bhpaST/DcK68HSBsBf9D
-         yXYoRlPQkhGh3DRxeuzzAxfmsYyrhLaB/feUN0ym1TwyNSPGph3eElvlw6WFShiRbv+F
-         gEzkzGHGMzREQQYj1bWXp/OaIyT91fhFtlxzaDrfxZ5uPlDM8SuSgfs4t23tCSMxl1Sh
-         g5S4L/6o3NA1Zbhld8CYwXiaT6/hdC3x0+UScFFW3LwOplSe/SwcCWC4ohHo12nFmxEx
-         xJEhu/wWEZAqtt3N6VDjte7t4Phs80dBzqkWap2LdIUEMzXxNck81+EJqwGOnjk0dXwj
-         oL2w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fDEJvzVDtSfELBppHjOJTDlz3SBQ7tQh4DTdZHi87Fk=;
+        b=nWWhReFvItPqdoThw5Vg30r4EaocJ0TlY6efwSeDqBJo8Ww+Q5tmUbb8w82U9EUVSM
+         nwmkar5KjLWUFdB62NwkyYc9/HKGd5yeSV1g0n7Vt3qtBXe7S5weiNBj/oSSut29U2xT
+         N8c5ILNBpbEGYlQ9rPmUiIx6CrsNdAiHZci7aKn7o1yAD6aP0xTtYp2yBQd9e+lpw8Qx
+         fEW2EiDiOdUCBfN8aFSfE48oXIrAuXP3273t3oQ0T9E8daIaNIQAWWfoO842NLBnbo13
+         NHOLjfguhZ6FFfJfJFBYAoDwdF+1MjVvAtEHew06471SMRK/4bdMHMosSso2tBo0KT68
+         3zVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=H7yznGHlzfPxvDpvZSbqFd5fVDqQ5LFFKjpUq3W88rg=;
-        b=dmvpqw/BGXjA8XRpjZZx3b3gbdQEYr35y85QzPbZpupPfwRZSuiCda4c+leNllIPIt
-         KPWfpVTOaPg9egJg7b6f42gz6nnnZrpydmLMGBA9NCssOaznpqFmZhPWit06Hs88GkEz
-         /5lE9qYXld4OyA2bf3hgbfh3QVCLoy7EhhIhTwcZ3ggraxmHYd+w2kj0i06f9dQZF+H2
-         4+5oWXRt1oPiG38qe0XoAylbG+ZaWktNV5QC1F03nlJiEMmY6M0zi6WwooDtoRavwYJ8
-         KSYDBX1z2w0/i4T8k/y6+H32TKV9UsId8rOxpU5bzCRNOONayCcLsLJtt0MRnGS2Hwzz
-         6ssw==
-X-Gm-Message-State: AOAM530Tt4sGco50yzCLlnXiCFmqmfxm5ZddWz0bH5GkzHVqQejCVMrd
-        jjpWsGrCsW+3AHsp4s5sLA==
-X-Google-Smtp-Source: ABdhPJy7b4eSjTkgfw/IxRkzpfMfUcVmAIq1umEwAkfPgPl7K9B+Fd5iZM/qYWqycRgOBXrogfGRjw==
-X-Received: by 2002:a5d:494c:: with SMTP id r12mr19591862wrs.421.1623690142709;
-        Mon, 14 Jun 2021 10:02:22 -0700 (PDT)
-Received: from [192.168.200.247] (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
-        by smtp.gmail.com with ESMTPSA id u15sm374626wmq.1.2021.06.14.10.02.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 10:02:22 -0700 (PDT)
-Subject: Re: [PATCH v2 05/12] media: hantro: merge Rockchip platform drivers
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-References: <20210525152225.154302-1-knaerzche@gmail.com>
- <20210527154455.358869-1-knaerzche@gmail.com>
- <20210527154455.358869-6-knaerzche@gmail.com>
- <35c24063aec561ca9696ab696fda86d34c38016e.camel@collabora.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <f591c11d-3c9d-961d-ce72-6c7cf8e0d403@gmail.com>
-Date:   Mon, 14 Jun 2021 19:02:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fDEJvzVDtSfELBppHjOJTDlz3SBQ7tQh4DTdZHi87Fk=;
+        b=E7X+3yRNM6Or1cUKRT6BYaZ06sDH48SAVcvuC9JVjhTd+1qpJz0cozt090jCWl46rW
+         6ADfD/G6KZEgt+OJwjfoIaf547JUdF+GVSyFXCMtUvpyya7dj2FPp3XmvWvRZ//DUCqH
+         NHtarb5Vqo+IQKE2ThS488q7LSOHreXZIT2VvQoPmBZNBDsVYJuG/66PMVaVLoFF3MJh
+         7eV8VSMtc5qh9l2bHK34ySgP45lpXATVA2m27pvXjyGC8OQ8mHTKqcV1yPbyOAd0IO4U
+         pzVJXf+ssFXnaX2J4i8PoBCUfW61PQxxF5LQ+swSrOghadvkay9sTUq6ODtHBAkgrkDw
+         MCtQ==
+X-Gm-Message-State: AOAM533gfdTnnWMSQojhSd9gaolOoLRT8vYnUjE40tlViCviTDgJ2Lsf
+        wriPH79khDTMamrNwHFqC+jAS/+fFUtMsx3BEfuMfg==
+X-Google-Smtp-Source: ABdhPJxw6NhfOXvWx63Age9/O5LC9WfTyskqAytwNgnh4FadvjyYczKt95cFqk9abPdXS5U/in6dSGOIa9dG+6YPAWQ=
+X-Received: by 2002:a92:d486:: with SMTP id p6mr5450985ilg.57.1623690180268;
+ Mon, 14 Jun 2021 10:03:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <35c24063aec561ca9696ab696fda86d34c38016e.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210414191903.18349-1-mike.leach@linaro.org> <20210414191903.18349-6-mike.leach@linaro.org>
+ <dfbb1acf-b174-1990-33d3-39e2ab746959@arm.com>
+In-Reply-To: <dfbb1acf-b174-1990-33d3-39e2ab746959@arm.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Mon, 14 Jun 2021 11:02:48 -0600
+Message-ID: <CANLsYkyR-kUO7CiK4vuw+DNFMxCCsLN24s3mZ2Uw4vAq5aPD3g@mail.gmail.com>
+Subject: Re: [PATCH v7 05/10] coresight: syscfg: Add API to activate and
+ enable configurations
+To:     Branislav Rankov <branislav.rankov@arm.com>
+Cc:     Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Yabin Cui <yabinc@google.com>, Jon Corbet <corbet@lwn.net>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
+Hi Branislav,
 
-Am 11.06.21 um 17:36 schrieb Ezequiel Garcia:
-> Hi Alex,
+On Thu, 10 Jun 2021 at 05:05, Branislav Rankov <branislav.rankov@arm.com> wrote:
 >
-> This cleanup looks nice, thanks!
 >
-> Just a comment about the clock rate and a minor typo.
+> On 4/14/21 8:18 PM, Mike Leach wrote:
+> > Configurations are first activated, then when any coresight device is
+> > enabled, the active configurations are checked and any matching
+> > one is enabled.
+> >
+> > This patch provides the activation / enable API.
+> >
+> > Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > ---
+> >   .../hwtracing/coresight/coresight-config.h    |   2 +
+> >   .../hwtracing/coresight/coresight-syscfg.c    | 172 ++++++++++++++++++
+> >   .../hwtracing/coresight/coresight-syscfg.h    |   8 +
+> >   include/linux/coresight.h                     |   2 +
+> >   4 files changed, 184 insertions(+)
+> >
+> > diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
+> > index 0667581822c1..25eb6c632692 100644
+> > --- a/drivers/hwtracing/coresight/coresight-config.h
+> > +++ b/drivers/hwtracing/coresight/coresight-config.h
+> > @@ -127,6 +127,7 @@ struct cscfg_feature_desc {
+> >    * @nr_total_params:        Sum of all parameters declared by used features
+> >    * @presets:                Array of preset values.
+> >    * @event_ea:               Extended attribute for perf event value
+> > + * @active_cnt:              ref count for activate on this configuration.
+> >    *
+> >    */
+> >   struct cscfg_config_desc {
+> > @@ -139,6 +140,7 @@ struct cscfg_config_desc {
+> >       int nr_total_params;
+> >       const u64 *presets; /* nr_presets * nr_total_params */
+> >       struct dev_ext_attribute *event_ea;
+> > +     atomic_t active_cnt;
+> >   };
+> >
+> >   /**
+> > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+> > index e35f8c0ac2f8..b234e45c153f 100644
+> > --- a/drivers/hwtracing/coresight/coresight-syscfg.c
+> > +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+> > @@ -283,6 +283,7 @@ static int cscfg_load_config(struct cscfg_config_desc *config_desc)
+> >               return err;
+> >
+> >       list_add(&config_desc->item, &cscfg_mgr->config_desc_list);
+> > +     atomic_set(&config_desc->active_cnt, 0);
+> >       return 0;
+> >   }
+> >
+> > @@ -468,6 +469,176 @@ void cscfg_unregister_csdev(struct coresight_device *csdev)
+> >   }
+> >   EXPORT_SYMBOL_GPL(cscfg_unregister_csdev);
+> >
+> > +/**
+> > + * cscfg_csdev_reset_feats - reset features for a CoreSight device.
+> > + *
+> > + * Resets all parameters and register values for any features loaded
+> > + * into @csdev to their default values.
+> > + *
+> > + * @csdev: The CoreSight device.
+> > + */
+> > +void cscfg_csdev_reset_feats(struct coresight_device *csdev)
+> > +{
+> > +     struct cscfg_feature_csdev *feat_csdev;
+> > +
+> > +     mutex_lock(&cscfg_csdev_mutex);
+> > +     if (list_empty(&csdev->feature_csdev_list))
+> > +             goto unlock_exit;
+> > +
+> > +     list_for_each_entry(feat_csdev, &csdev->feature_csdev_list, node)
+> > +             cscfg_reset_feat(feat_csdev);
+> > +
+> > +unlock_exit:
+> > +     mutex_unlock(&cscfg_csdev_mutex);
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_csdev_reset_feats);
+> > +
+> > +/**
+> > + * cscfg_activate_config -  Mark a configuration descriptor as active.
+> > + *
+> > + * This will be seen when csdev devices are enabled in the system.
+> > + * Only activated configurations can be enabled on individual devices.
+> > + * Activation protects the configuration from alteration or removal while
+> > + * active.
+> > + *
+> > + * Selection by hash value - generated from the configuration name when it
+> > + * was loaded and added to the cs_etm/configurations file system for selection
+> > + * by perf.
+> > + *
+> > + * Increments the configuration descriptor active count and the global active
+> > + * count.
+> > + *
+> > + * @cfg_hash: Hash value of the selected configuration name.
+> > + */
+> > +int cscfg_activate_config(unsigned long cfg_hash)
+> > +{
+> > +     struct cscfg_config_desc *config_desc;
+> > +     int err = -EINVAL;
+> > +
+> > +     mutex_lock(&cscfg_mutex);
+> > +
+> > +     list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
+> > +             if ((unsigned long)config_desc->event_ea->var == cfg_hash) {
+> > +                     /*
+> > +                      * increment the global active count - control changes to
+> > +                      * active configurations
+> > +                      */
+> > +                     atomic_inc(&cscfg_mgr->sys_active_cnt);
+> > +
+> > +                     /*
+> > +                      * mark the descriptor as active so enable config on a
+> > +                      * device instance will use it
+> > +                      */
+> > +                     atomic_inc(&config_desc->active_cnt);
+> > +
+> > +                     err = 0;
+> > +                     dev_dbg(cscfg_device(), "Activate config %s.\n", config_desc->name);
+> > +                     break;
+> > +             }
+> > +     }
+> > +     mutex_unlock(&cscfg_mutex);
+> > +
+> > +     return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_activate_config);
+> > +
+> > +/**
+> > + * cscfg_deactivate_config -  Mark a config descriptor as inactive.
+> > + *
+> > + * Decrement the configuration and global active counts.
+> > + *
+> > + * @cfg_hash: Hash value of the selected configuration name.
+> > + */
+> > +void cscfg_deactivate_config(unsigned long cfg_hash)
+> > +{
+> > +     struct cscfg_config_desc *config_desc;
+> > +
+> > +     mutex_lock(&cscfg_mutex);
+> > +
+> > +     list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
+> > +             if ((unsigned long)config_desc->event_ea->var == cfg_hash) {
+> > +                     atomic_dec(&config_desc->active_cnt);
+> > +                     atomic_dec(&cscfg_mgr->sys_active_cnt);
+> > +                     dev_dbg(cscfg_device(), "Deactivate config %s.\n", config_desc->name);
+> > +                     break;
+> > +             }
+> > +     }
+> > +     mutex_unlock(&cscfg_mutex);
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_deactivate_config);
+> > +
+> > +/**
+> > + * cscfg_csdev_enable_active_config - Enable matching active configuration for device.
+> > + *
+> > + * Enables the configuration selected by @cfg_hash if the configuration is supported
+> > + * on the device and has been activated.
+> > + *
+> > + * If active and supported the CoreSight device @csdev will be programmed with the
+> > + * configuration, using @preset parameters.
+> > + *
+> > + * Should be called before driver hardware enable for the requested device, prior to
+> > + * programming and enabling the physical hardware.
+> > + *
+> > + * @csdev:   CoreSight device to program.
+> > + * @cfg_hash:        Selector for the configuration.
+> > + * @preset:  Preset parameter values to use, 0 for current / default values.
+> > + */
+> > +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
+> > +                                  unsigned long cfg_hash, int preset)
+> > +{
+> > +     struct cscfg_config_csdev *config_csdev_active = NULL, *config_csdev_item;
+> > +     const struct cscfg_config_desc *config_desc;
+> > +     int err = 0;
+> > +
+> > +     /* quickly check global count */
+> > +     if (!atomic_read(&cscfg_mgr->sys_active_cnt))
+> > +             return 0;
+> > +
+> > +     mutex_lock(&cscfg_csdev_mutex);
+> > +     list_for_each_entry(config_csdev_item, &csdev->config_csdev_list, node) {
+> > +             config_desc = config_csdev_item->config_desc;
+> > +             if ((atomic_read(&config_desc->active_cnt)) &&
+> > +                 ((unsigned long)config_desc->event_ea->var == cfg_hash)) {
+> > +                     config_csdev_active = config_csdev_item;
+> > +                     break;
+> > +             }
+> > +     }
+> > +     if (config_csdev_active) {
+> > +             err = cscfg_csdev_enable_config(config_csdev_active, preset);
+> > +             if (!err)
+> > +                     csdev->active_cscfg_ctxt = (void *)config_csdev_active;
+> > +     }
+> > +     mutex_unlock(&cscfg_csdev_mutex);
+> > +     return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_csdev_enable_active_config);
+> > +
+> > +/**
+> > + * cscfg_csdev_disable_active_config - disable an active config on the device.
+> > + *
+> > + * Disables the active configuration on the CoreSight device @csdev.
+> > + * Disable will save the values of any registers marked in the configurations
+> > + * as save on disable.
+> > + *
+> > + * Should be called after driver hardware disable for the requested device,
+> > + * after disabling the physical hardware and reading back registers.
+> > + *
+> > + * @csdev: The CoreSight device.
+> > + */
+> > +void cscfg_csdev_disable_active_config(struct coresight_device *csdev)
+> > +{
+> > +     struct cscfg_config_csdev *config_csdev;
+> > +
+> > +     mutex_lock(&cscfg_csdev_mutex);
 >
-> On Thu, 2021-05-27 at 17:44 +0200, Alex Bee wrote:
->> Merge the two Rockchip platform drivers into one as it was suggested at
->> [1] and [2].
->> This will hopefully make it easier to add new variants (which are surely
->> to come for Rockchip).
->> Also rename from "rk3288" to "v(d/e)pu1" and "rk3399" to "v(d/e)pu2"
->> where applicable, as this is the dicition the vendor uses and will
->> also refelect the variants that get added later in this series. Rename
->> from "rk3288" to "rockchip" if applicable to both hardware versions.
->>
->> [1] https://patchwork.kernel.org/project/linux-rockchip/patch/20210107134101.195426-6-paul.kocialkowski@bootlin.com/
->> [2] https://patchwork.kernel.org/project/linux-rockchip/patch/20210525152225.154302-5-knaerzche@gmail.com/
->>
->> Signed-off-by: Alex Bee <knaerzche@gmail.com>
->> ---
->>
->>   Changes in v2:
->>   - added patch
->>
->>   drivers/staging/media/hantro/Makefile         |   9 +-
->>   drivers/staging/media/hantro/hantro_hw.h      |  22 +-
->>   drivers/staging/media/hantro/rk3288_vpu_hw.c  | 208 ----------
->>   drivers/staging/media/hantro/rk3399_vpu_hw.c  | 222 -----------
->>   ...jpeg_enc.c => rockchip_vpu2_hw_jpeg_enc.c} |  30 +-
->>   ...eg2_dec.c => rockchip_vpu2_hw_mpeg2_dec.c} |  25 +-
->>   ...w_vp8_dec.c => rockchip_vpu2_hw_vp8_dec.c} |   2 +-
->>   ...rk3399_vpu_regs.h => rockchip_vpu2_regs.h} |   6 +-
->>   .../staging/media/hantro/rockchip_vpu_hw.c    | 356 ++++++++++++++++++
->>   9 files changed, 402 insertions(+), 478 deletions(-)
->>   delete mode 100644 drivers/staging/media/hantro/rk3288_vpu_hw.c
->>   delete mode 100644 drivers/staging/media/hantro/rk3399_vpu_hw.c
->>   rename drivers/staging/media/hantro/{rk3399_vpu_hw_jpeg_enc.c => rockchip_vpu2_hw_jpeg_enc.c} (87%)
->>   rename drivers/staging/media/hantro/{rk3399_vpu_hw_mpeg2_dec.c => rockchip_vpu2_hw_mpeg2_dec.c} (93%)
->>   rename drivers/staging/media/hantro/{rk3399_vpu_hw_vp8_dec.c => rockchip_vpu2_hw_vp8_dec.c} (99%)
->>   rename drivers/staging/media/hantro/{rk3399_vpu_regs.h => rockchip_vpu2_regs.h} (99%)
->>   create mode 100644 drivers/staging/media/hantro/rockchip_vpu_hw.c
->>
-> [..]
->> diff --git a/drivers/staging/media/hantro/rockchip_vpu_hw.c b/drivers/staging/media/hantro/rockchip_vpu_hw.c
->> new file mode 100644
->> index 000000000000..175d0c5dfdbe
->> --- /dev/null
->> +++ b/drivers/staging/media/hantro/rockchip_vpu_hw.c
->> @@ -0,0 +1,356 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Hantro VPU codec driver
->> + *
->> + * Copyright (C) 2018 Rockchip Electronics Co., Ltd.
->> + *     Jeffy Chen <jeffy.chen@rock-chips.com>
->> + */
->> +
->> +#include <linux/clk.h>
->> +
->> +#include "hantro.h"
->> +#include "hantro_jpeg.h"
->> +#include "hantro_h1_regs.h"
->> +#include "rockchip_vpu2_regs.h"
->> +
->> +#define RK3288_ACLK_MAX_FREQ (400 * 1000 * 1000)
->> +
-> Something for later, could we bump this clock?
+> This line seems to cause a bug report when the kernel is compiled with CONFIG_DEBUG_ATOMIC_SLEEP=y
 >
-> Rockchip uses 300MHz and 600MHz even for RK3288,
-> see arch/arm/boot/dts/rk3288.dtsi:
+> I have tested this by applying the series to 5.10 kernel on Dragonboard 845c.
 >
->          vdpu: vdpu@ff9a0400 {
->                  compatible = "rockchip,vpu-decoder-rk3288", "rockchip,vpu-decoder-v1";
->                  reg = <0x0 0xff9a0400 0x0 0x400>;
->                  interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
->                  interrupt-names = "irq_dec";
->                  clocks = <&cru ACLK_VCODEC>, <&cru HCLK_VCODEC>;
->                  clock-names = "aclk_vcodec", "hclk_vcodec";
->                  rockchip,normal-rates = <300000000>, <0>;
->                  rockchip,advanced-rates = <600000000>, <0>;
->
-> On vdpu1 for instance, it switches to the "advanced-rate"
-> when width > 2560, which I think it's too naive for us.
->
-> At least on RK3566 I tested bumping this rate, while still
-> passing conformance tests.
+> It only happens when strobing is used.
 
-Yes, RK3288's can (and maybe also should) run at 600 MHz (since we are 
-sugesting to "Bump ACLK to max. possible freq. to improve performance." 
-currently) - but I never ran conformance tests after setting this rate, tbh.
+Thanks for reporting this.  Unfortunately Mike is away and likely
+won't be able to look at this in time for the merge window.  As such I
+backed out the complex configuration feature from the next branch but
+that code is still available on next-complex-configuration.
 
-I'm also not sure, VDPU2 (RK3399) variant supports VP8 up to 3840x2160p. 
-It would be the only codec supported up that frame size (we already 
-know, that H.264 is supported up to 1920x1088, even if it is not 
-supported currently by upstream hantro driver) and TRM says the hantro 
-IP block is a "1080P encoder/decoder Processing Core", without saying 
-anything specific per codec.
+Thanks,
+Mathieu
 
-Both should be checked and addressed in a upcoming series.
-
->> +/*
->> + * Supported formats.
->> + */
->> +
->> +static const struct hantro_fmt rockchip_vpu_enc_fmts[] = {
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_YUV420M,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +               .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420P,
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_NV12M,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +               .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420SP,
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_YUYV,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +               .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUYV422,
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_UYVY,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +               .enc_fmt = ROCKCHIP_VPU_ENC_FMT_UYVY422,
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_JPEG,
->> +               .codec_mode = HANTRO_MODE_JPEG_ENC,
->> +               .max_depth = 2,
->> +               .header_size = JPEG_HEADER_SIZE,
->> +               .frmsize = {
->> +                       .min_width = 96,
->> +                       .max_width = 8192,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 32,
->> +                       .max_height = 8192,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +};
->> +
->> +static const struct hantro_fmt rockchip_vpu1_postproc_fmts[] = {
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_YUYV,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +       },
->> +};
->> +
->> +static const struct hantro_fmt rk3288_vpu_dec_fmts[] = {
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_NV12,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_H264_SLICE,
->> +               .codec_mode = HANTRO_MODE_H264_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 4096,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 2304,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_MPEG2_SLICE,
->> +               .codec_mode = HANTRO_MODE_MPEG2_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 1920,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 1088,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_VP8_FRAME,
->> +               .codec_mode = HANTRO_MODE_VP8_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 3840,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 2160,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +};
->> +
->> +static const struct hantro_fmt rk3399_vpu_dec_fmts[] = {
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_NV12,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_MPEG2_SLICE,
->> +               .codec_mode = HANTRO_MODE_MPEG2_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 1920,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 1088,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_VP8_FRAME,
->> +               .codec_mode = HANTRO_MODE_VP8_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 3840,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 2160,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +};
->> +
->> +static irqreturn_t rockchip_vpu1_vepu_irq(int irq, void *dev_id)
->> +{
->> +       struct hantro_dev *vpu = dev_id;
->> +       enum vb2_buffer_state state;
->> +       u32 status;
->> +
->> +       status = vepu_read(vpu, H1_REG_INTERRUPT);
->> +       state = (status & H1_REG_INTERRUPT_FRAME_RDY) ?
->> +               VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
->> +
->> +       vepu_write(vpu, 0, H1_REG_INTERRUPT);
->> +       vepu_write(vpu, 0, H1_REG_AXI_CTRL);
->> +
->> +       hantro_irq_done(vpu, state);
->> +
->> +       return IRQ_HANDLED;
->> +}
->> +
->> +static irqreturn_t rockchip_vpu2_vdpu_irq(int irq, void *dev_id)
->> +{
->> +       struct hantro_dev *vpu = dev_id;
->> +       enum vb2_buffer_state state;
->> +       u32 status;
->> +
->> +       status = vdpu_read(vpu, VDPU_REG_INTERRUPT);
->> +       state = (status & VDPU_REG_INTERRUPT_DEC_IRQ) ?
->> +               VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
->> +
->> +       vdpu_write(vpu, 0, VDPU_REG_INTERRUPT);
->> +       vdpu_write(vpu, 0, VDPU_REG_AXI_CTRL);
->> +
->> +       hantro_irq_done(vpu, state);
->> +
->> +       return IRQ_HANDLED;
->> +}
->> +
->> +static irqreturn_t rockchip_vpu2_vepu_irq(int irq, void *dev_id)
->> +{
->> +       struct hantro_dev *vpu = dev_id;
->> +       enum vb2_buffer_state state;
->> +       u32 status;
->> +
->> +       status = vepu_read(vpu, VEPU_REG_INTERRUPT);
->> +       state = (status & VEPU_REG_INTERRUPT_FRAME_READY) ?
->> +               VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
->> +
->> +       vepu_write(vpu, 0, VEPU_REG_INTERRUPT);
->> +       vepu_write(vpu, 0, VEPU_REG_AXI_CTRL);
->> +
->> +       hantro_irq_done(vpu, state);
->> +
->> +       return IRQ_HANDLED;
->> +}
->> +
->> +static int rockchip_vpu_hw_init(struct hantro_dev *vpu)
->> +{
->> +       /* Bump ACLK to max. possible freq. to improve performance. */
->> +       clk_set_rate(vpu->clocks[0].clk, RK3288_ACLK_MAX_FREQ);
->> +       return 0;
->> +}
->> +
->> +static void rockchip_vpu1_enc_reset(struct hantro_ctx *ctx)
->> +{
->> +       struct hantro_dev *vpu = ctx->dev;
->> +
->> +       vepu_write(vpu, H1_REG_INTERRUPT_DIS_BIT, H1_REG_INTERRUPT);
->> +       vepu_write(vpu, 0, H1_REG_ENC_CTRL);
->> +       vepu_write(vpu, 0, H1_REG_AXI_CTRL);
->> +}
->> +
->> +static void rockchip_vpu2_dec_reset(struct hantro_ctx *ctx)
->> +{
->> +       struct hantro_dev *vpu = ctx->dev;
->> +
->> +       vdpu_write(vpu, VDPU_REG_INTERRUPT_DEC_IRQ_DIS, VDPU_REG_INTERRUPT);
->> +       vdpu_write(vpu, 0, VDPU_REG_EN_FLAGS);
->> +       vdpu_write(vpu, 1, VDPU_REG_SOFT_RESET);
->> +}
->> +
->> +static void rockchip_vpu2_enc_reset(struct hantro_ctx *ctx)
->> +{
->> +       struct hantro_dev *vpu = ctx->dev;
->> +
->> +       vepu_write(vpu, VEPU_REG_INTERRUPT_DIS_BIT, VEPU_REG_INTERRUPT);
->> +       vepu_write(vpu, 0, VEPU_REG_ENCODE_START);
->> +       vepu_write(vpu, 0, VEPU_REG_AXI_CTRL);
->> +}
->> +
->> +/*
->> + * Supported codec ops.
->> + */
->> +
->> +static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
->> +       [HANTRO_MODE_JPEG_ENC] = {
->> +               .run = hantro_h1_jpeg_enc_run,
->> +               .reset = rockchip_vpu1_enc_reset,
->> +               .init = hantro_jpeg_enc_init,
->> +               .done = hantro_jpeg_enc_done,
->> +               .exit = hantro_jpeg_enc_exit,
->> +       },
->> +       [HANTRO_MODE_H264_DEC] = {
->> +               .run = hantro_g1_h264_dec_run,
->> +               .reset = hantro_g1_reset,
->> +               .init = hantro_h264_dec_init,
->> +               .exit = hantro_h264_dec_exit,
->> +       },
->> +       [HANTRO_MODE_MPEG2_DEC] = {
->> +               .run = hantro_g1_mpeg2_dec_run,
->> +               .reset = hantro_g1_reset,
->> +               .init = hantro_mpeg2_dec_init,
->> +               .exit = hantro_mpeg2_dec_exit,
->> +       },
->> +       [HANTRO_MODE_VP8_DEC] = {
->> +               .run = hantro_g1_vp8_dec_run,
->> +               .reset = hantro_g1_reset,
->> +               .init = hantro_vp8_dec_init,
->> +               .exit = hantro_vp8_dec_exit,
->> +       },
->> +};
->> +
->> +static const struct hantro_codec_ops rk3399_vpu_codec_ops[] = {
->> +       [HANTRO_MODE_JPEG_ENC] = {
->> +               .run = rockchip_vpu2_jpeg_enc_run,
->> +               .reset = rockchip_vpu2_enc_reset,
->> +               .init = hantro_jpeg_enc_init,
->> +               .exit = hantro_jpeg_enc_exit,
->> +       },
->> +       [HANTRO_MODE_MPEG2_DEC] = {
->> +               .run = rockchip_vpu2_mpeg2_dec_run,
->> +               .reset = rockchip_vpu2_dec_reset,
->> +               .init = hantro_mpeg2_dec_init,
->> +               .exit = hantro_mpeg2_dec_exit,
->> +       },
->> +       [HANTRO_MODE_VP8_DEC] = {
->> +               .run = rockchip_vpu2_vp8_dec_run,
->> +               .reset = rockchip_vpu2_dec_reset,
->> +               .init = hantro_vp8_dec_init,
->> +               .exit = hantro_vp8_dec_exit,
->> +       },
->> +};
->> +
->> +/*
->> + * VPU variant.
->> + */
->> +
->> +static const struct hantro_irq rockchip_vpu1_irqs[] = {
->> +       { "vepu", rockchip_vpu1_vepu_irq },
->> +       { "vdpu", hantro_g1_irq },
->> +};
->> +
->> +static const struct hantro_irq rockchip_vpdu2_irqs[] = {
-> Typo: vpdu -> vdpu?
-Will fix it in v3.
 >
->> +       { "vdpu", rockchip_vpu2_vdpu_irq },
->> +};
->> +
-> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+> The report is this:
 >
-> Thanks,
-> Ezequiel
+> [13431.885395] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:283
+> [13431.893919] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 3525, name: perf
+> [13431.901882] CPU: 0 PID: 3525 Comm: perf Tainted: G        W         5.10.0-rc5-17282-g923b456a55fb #124
+> [13431.911436] Hardware name: Thundercomm Dragonboard 845c (DT)
+> [13431.917450] Call trace:
+> [13431.919938]  dump_backtrace+0x0/0x1a0
+> [13431.923644]  show_stack+0x18/0x68
+> [13431.927008]  dump_stack+0xd0/0x12c
+> [13431.930444]  ___might_sleep+0xf0/0x130
+> [13431.934228]  __might_sleep+0x54/0x90
+> [13431.937945]  mutex_lock+0x28/0x80
+> [13431.941468]  cscfg_csdev_disable_active_config+0x24/0x50
+> [13431.946952]  etm4_disable+0xf0/0x100
+> [13431.950571]  etm_event_stop+0xb8/0x130
+> [13431.954380]  etm_event_del+0x14/0x20
+> [13431.958008]  event_sched_out.isra.0+0x84/0x1c8
+> [13431.962496]  group_sched_out.part.0+0x44/0xc8
+> [13431.967010]  __perf_event_disable+0xe4/0x198
+> [13431.971549]  event_function+0x8c/0xe8
+> [13431.975256]  remote_function+0x64/0x78
+> [13431.979161]  generic_exec_single+0xa0/0x100
+> [13431.983876]  smp_call_function_single+0x158/0x1d8
+> [13431.988629]  event_function_call+0x128/0x138
+> [13431.992942]  _perf_event_disable+0x48/0x70
+> [13431.997082]  perf_event_for_each_child+0x3c/0x90
+> [13432.001751]  _perf_ioctl+0x198/0x4a8
+> [13432.005359]  perf_ioctl+0x4c/0x78
+> [13432.008715]  __arm64_sys_ioctl+0xa8/0xf0
+> [13432.012835]  el0_svc_common.constprop.0+0x78/0x1a0
+> [13432.017767]  do_el0_svc+0x24/0x90
+> [13432.021616]  el0_sync_handler+0x160/0x168
+> [13432.025670]  el0_sync+0x174/0x180
 >
-Alex
+>
+> > +     config_csdev = (struct cscfg_config_csdev *)csdev->active_cscfg_ctxt;
+> > +     if (config_csdev) {
+> > +             cscfg_csdev_disable_config(config_csdev);
+> > +             csdev->active_cscfg_ctxt = NULL;
+> > +     }
+> > +     mutex_unlock(&cscfg_csdev_mutex);
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_csdev_disable_active_config);
+> > +
+> >   /* Initialise system configuration management device. */
+> >
+> >   struct device *cscfg_device(void)
+> > @@ -536,6 +707,7 @@ int __init cscfg_init(void)
+> >       INIT_LIST_HEAD(&cscfg_mgr->csdev_desc_list);
+> >       INIT_LIST_HEAD(&cscfg_mgr->feat_desc_list);
+> >       INIT_LIST_HEAD(&cscfg_mgr->config_desc_list);
+> > +     atomic_set(&cscfg_mgr->sys_active_cnt, 0);
+> >
+> >       dev_info(cscfg_device(), "CoreSight Configuration manager initialised");
+> >       return 0;
+> > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
+> > index 5bcae3b374c6..a52775890670 100644
+> > --- a/drivers/hwtracing/coresight/coresight-syscfg.h
+> > +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
+> > @@ -24,12 +24,14 @@
+> >    * @csdev_desc_list:        List of coresight devices registered with the configuration manager.
+> >    * @feat_desc_list: List of feature descriptors to load into registered devices.
+> >    * @config_desc_list:       List of system configuration descriptors to load into registered devices.
+> > + * @sys_active_cnt:  Total number of active config descriptor references.
+> >    */
+> >   struct cscfg_manager {
+> >       struct device dev;
+> >       struct list_head csdev_desc_list;
+> >       struct list_head feat_desc_list;
+> >       struct list_head config_desc_list;
+> > +     atomic_t sys_active_cnt;
+> >   };
+> >
+> >   /* get reference to dev in cscfg_manager */
+> > @@ -61,5 +63,11 @@ int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
+> >   int cscfg_register_csdev(struct coresight_device *csdev, u32 match_flags,
+> >                        struct cscfg_csdev_feat_ops *ops);
+> >   void cscfg_unregister_csdev(struct coresight_device *csdev);
+> > +int cscfg_activate_config(unsigned long cfg_hash);
+> > +void cscfg_deactivate_config(unsigned long cfg_hash);
+> > +void cscfg_csdev_reset_feats(struct coresight_device *csdev);
+> > +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
+> > +                                  unsigned long cfg_hash, int preset);
+> > +void cscfg_csdev_disable_active_config(struct coresight_device *csdev);
+> >
+> >   #endif /* CORESIGHT_SYSCFG_H */
+> > diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> > index 6fb516e1b22e..a348049ee08b 100644
+> > --- a/include/linux/coresight.h
+> > +++ b/include/linux/coresight.h
+> > @@ -222,6 +222,7 @@ struct coresight_sysfs_link {
+> >    * @has_conns_grp: Have added a "connections" group for sysfs links.
+> >    * @feature_csdev_list: List of complex feature programming added to the device.
+> >    * @config_csdev_list:  List of system configurations added to the device.
+> > + * @active_cscfg_ctxt:  Context information for current active system configuration.
+> >    */
+> >   struct coresight_device {
+> >       struct coresight_platform_data *pdata;
+> > @@ -246,6 +247,7 @@ struct coresight_device {
+> >       /* system configuration and feature lists */
+> >       struct list_head feature_csdev_list;
+> >       struct list_head config_csdev_list;
+> > +     void *active_cscfg_ctxt;
+> >   };
+> >
+> >   /*
+> >
