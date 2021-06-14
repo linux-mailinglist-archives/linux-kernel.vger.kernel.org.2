@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4487F3A6ECB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0845A3A6ECD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234410AbhFNTWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:22:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39804 "EHLO mail.kernel.org"
+        id S234212AbhFNTWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:22:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234212AbhFNTWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234229AbhFNTWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 15:22:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3DFCA61042;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 594FA61356;
         Mon, 14 Jun 2021 19:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623698404;
-        bh=85IWey3+lXJIdMbIth3GdXO8nyYfRPhVNRs95tsu/qM=;
+        bh=w9nkzA0FtqkCBvZlJQPMHx5/VmZeYLcstDHH7eQrsB0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=TkrT3f13m3pvkiBtuY94WmN4ajlKC3jAFLBURaufO2sfSDyyXkxqnTHhbhGrs9l1u
-         REKNpRfD2JEgnki/qRmk3OO4V0m+EGTuETykc3zzbB17iX0QbKl5j739lnR95CEWxB
-         8X58gWag00RheDN76BdezVcN+BiRX4n6hPxjbMFj70jecxu/6Hix/tnnIOYFMDyETj
-         65T8YCBv59QKD5C2D1yWhyXWv2GBeDMS9S/0WxAkiACm5v8SgKx2GJBMgRDy9Xcjpr
-         aYQb52Mi35PgegumOZWkZsF3RbJoFuXbYla98Ai472b1PCX71D8XhYlV1FE16+TYul
-         4QTIDqMUCXOfA==
+        b=GyhO/vk0V1FTnJSRYdweY+GnfUoT9PtRSNZ1FlU+mT4VnaBNI2AmPdbi4D3l9RSaO
+         RsKwrZ3ovzk5SXcaMuKyx/HaAsDHDLLKLRUMSzOe22/mJIX5wzYUuaTxhdXIByK//V
+         jlhdVmCCAxpYrqggYcKsQJbpw50UmiEtFEAQ8Eu5K7kqxseJkL4yxoZtfVLr4mbISn
+         Max0b8MiJ6VUXbYY0zzhpAtBeR8PVpAAv+FD8Uy9Tpp26Fsutb2+IUemu9NO1EauGy
+         W5o4xqOX99bG8Tkfb8MJbNyLm5ZxPfKevA3noGYfqi0Xh5uwEZgfaBD3f2SEzIHEEX
+         oLIaVNfIAkUtw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2B3DD609E7;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4CFC360977;
         Mon, 14 Jun 2021 19:20:04 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] netxen_nic: Fix an error handling path in
- 'netxen_nic_probe()'
+Subject: Re: [PATCH] qlcnic: Fix an error handling path in 'qlcnic_probe()'
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162369840417.27454.3247486724427017414.git-patchwork-notify@kernel.org>
+Message-Id: <162369840431.27454.11306229186572767869.git-patchwork-notify@kernel.org>
 Date:   Mon, 14 Jun 2021 19:20:04 +0000
-References: <bb27f74af33b2b5eb238598fbd8aaafa51ccb50c.1623502316.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <bb27f74af33b2b5eb238598fbd8aaafa51ccb50c.1623502316.git.christophe.jaillet@wanadoo.fr>
+References: <2b582e7e0f777ad2a04f9d0568045bee1483a27f.1623501317.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <2b582e7e0f777ad2a04f9d0568045bee1483a27f.1623501317.git.christophe.jaillet@wanadoo.fr>
 To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     manishc@marvell.com, rahulv@marvell.com,
+Cc:     shshaikh@marvell.com, manishc@marvell.com,
         GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net, kuba@kernel.org,
-        amit.salecha@qlogic.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+        amit.salecha@qlogic.com, sucheta.chakraborty@qlogic.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,19 +49,19 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Sat, 12 Jun 2021 14:53:12 +0200 you wrote:
+On Sat, 12 Jun 2021 14:37:46 +0200 you wrote:
 > If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
 > must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
 > call, as already done in the remove function.
 > 
-> Fixes: e87ad5539343 ("netxen: support pci error handlers")
+> Fixes: 451724c821c1 ("qlcnic: aer support")
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > 
 > [...]
 
 Here is the summary with links:
-  - netxen_nic: Fix an error handling path in 'netxen_nic_probe()'
-    https://git.kernel.org/netdev/net/c/49a10c7b1762
+  - qlcnic: Fix an error handling path in 'qlcnic_probe()'
+    https://git.kernel.org/netdev/net/c/cb3376604a67
 
 You are awesome, thank you!
 --
