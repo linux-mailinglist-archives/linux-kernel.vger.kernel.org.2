@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C883A64D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B934E3A62E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236119AbhFNL3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45480 "EHLO mail.kernel.org"
+        id S234048AbhFNLGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:06:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235754AbhFNLOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:14:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A9476195B;
-        Mon, 14 Jun 2021 10:49:23 +0000 (UTC)
+        id S234382AbhFNK4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:56:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FAE661581;
+        Mon, 14 Jun 2021 10:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667764;
-        bh=GghXjoJEiEXGpt6UZ9fgnvphVsXqO7FGEeYuGy6Cf5E=;
+        s=korg; t=1623667280;
+        bh=Yj6PSnT7sMaVAfUtyqwp/ioxZKN6h05NLJ/hGU0xVfA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDQeaiA9luroioRc/RasKQNTTLUgT9fDCL6EoG5s/OgKiziAnENsNKAHNQd0RHrxs
-         WPleHtUvfqxrFIvpXqQNVfONNVBv69ZT3LELIvjmJbVQYNMklw07f7cGIAVzdUvZgU
-         miAu7aP63E1dyiifLFO8Sli/ibJvaVObMQT+j+xQ=
+        b=gqBbD8JMEyfImRrrF2mtiAnAHklN+O9twZPju/IPsHFyhakLliClBHRiGqNeB/ZEw
+         PSjhFKsAQb4zDYA8+9SiXoagoGlp/q7frLXF1WTytsZqZPcDQDbA64AU8MXGtjmPEc
+         cMmQs8Hh/Qwt/wPy3lOp8VjZmOSZBnpzZQwnc4kM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zong Li <zong.li@sifive.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 032/173] net: macb: ensure the device is available before accessing GEMGXL control registers
+Subject: [PATCH 5.10 003/131] ASoC: amd: fix for pcm_read() error
 Date:   Mon, 14 Jun 2021 12:26:04 +0200
-Message-Id: <20210614102659.214078495@linuxfoundation.org>
+Message-Id: <20210614102653.081896115@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zong Li <zong.li@sifive.com>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 
-[ Upstream commit 5eff1461a6dec84f04fafa9128548bad51d96147 ]
+[ Upstream commit 6879e8e759bf9e05eaee85e32ca1a936e6b46da1 ]
 
-If runtime power menagement is enabled, the gigabit ethernet PLL would
-be disabled after macb_probe(). During this period of time, the system
-would hang up if we try to access GEMGXL control registers.
+Below phython script throwing pcm_read() error.
 
-We can't put runtime_pm_get/runtime_pm_put/ there due to the issue of
-sleep inside atomic section (7fa2955ff70ce453 ("sh_eth: Fix sleeping
-function called from invalid context"). Add netif_running checking to
-ensure the device is available before accessing GEMGXL device.
+import subprocess
 
-Changed in v2:
- - Use netif_running instead of its own flag
+p = subprocess.Popen(["aplay -t raw -D plughw:1,0 /dev/zero"], shell=True)
+subprocess.call(["arecord -Dhw:1,0 --dump-hw-params"], shell=True)
+subprocess.call(["arecord -Dhw:1,0 -fdat -d1 /dev/null"], shell=True)
+p.kill()
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Handling ACP global external interrupt enable register
+causing this issue.
+This register got updated wrongly when there is active
+stream causing interrupts disabled for active stream.
+Refactored code to handle enabling and disabling external interrupts.
+
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Link: https://lore.kernel.org/r/1619555017-29858-1-git-send-email-Vijendar.Mukunda@amd.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cadence/macb_main.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 10 ----------
+ sound/soc/amd/raven/acp3x.h         |  1 +
+ sound/soc/amd/raven/pci-acp3x.c     | 15 +++++++++++++++
+ 3 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 0f6a6cb7e98d..51b19172d63b 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -2837,6 +2837,9 @@ static struct net_device_stats *gem_get_stats(struct macb *bp)
- 	struct gem_stats *hwstat = &bp->hw_stats.gem;
- 	struct net_device_stats *nstat = &bp->dev->stats;
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index 417cda24030c..2447a1e6e913 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -237,10 +237,6 @@ static int acp3x_dma_open(struct snd_soc_component *component,
+ 		return ret;
+ 	}
  
-+	if (!netif_running(bp->dev))
-+		return nstat;
+-	if (!adata->play_stream && !adata->capture_stream &&
+-	    !adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
+-		rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
+-
+ 	i2s_data->acp3x_base = adata->acp3x_base;
+ 	runtime->private_data = i2s_data;
+ 	return ret;
+@@ -367,12 +363,6 @@ static int acp3x_dma_close(struct snd_soc_component *component,
+ 		}
+ 	}
+ 
+-	/* Disable ACP irq, when the current stream is being closed and
+-	 * another stream is also not active.
+-	 */
+-	if (!adata->play_stream && !adata->capture_stream &&
+-		!adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
+-		rv_writel(0, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index 03fe93913e12..c3f0c8b7545d 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -77,6 +77,7 @@
+ #define ACP_POWER_OFF_IN_PROGRESS	0x03
+ 
+ #define ACP3x_ITER_IRER_SAMP_LEN_MASK	0x38
++#define ACP_EXT_INTR_STAT_CLEAR_MASK 0xFFFFFFFF
+ 
+ struct acp3x_platform_info {
+ 	u16 play_i2s_instance;
+diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
+index 77f2d9389606..df83d2ce75ea 100644
+--- a/sound/soc/amd/raven/pci-acp3x.c
++++ b/sound/soc/amd/raven/pci-acp3x.c
+@@ -76,6 +76,19 @@ static int acp3x_reset(void __iomem *acp3x_base)
+ 	return -ETIMEDOUT;
+ }
+ 
++static void acp3x_enable_interrupts(void __iomem *acp_base)
++{
++	rv_writel(0x01, acp_base + mmACP_EXTERNAL_INTR_ENB);
++}
 +
- 	gem_update_stats(bp);
++static void acp3x_disable_interrupts(void __iomem *acp_base)
++{
++	rv_writel(ACP_EXT_INTR_STAT_CLEAR_MASK, acp_base +
++		  mmACP_EXTERNAL_INTR_STAT);
++	rv_writel(0x00, acp_base + mmACP_EXTERNAL_INTR_CNTL);
++	rv_writel(0x00, acp_base + mmACP_EXTERNAL_INTR_ENB);
++}
++
+ static int acp3x_init(struct acp3x_dev_data *adata)
+ {
+ 	void __iomem *acp3x_base = adata->acp3x_base;
+@@ -93,6 +106,7 @@ static int acp3x_init(struct acp3x_dev_data *adata)
+ 		pr_err("ACP3x reset failed\n");
+ 		return ret;
+ 	}
++	acp3x_enable_interrupts(acp3x_base);
+ 	return 0;
+ }
  
- 	nstat->rx_errors = (hwstat->rx_frame_check_sequence_errors +
+@@ -100,6 +114,7 @@ static int acp3x_deinit(void __iomem *acp3x_base)
+ {
+ 	int ret;
+ 
++	acp3x_disable_interrupts(acp3x_base);
+ 	/* Reset */
+ 	ret = acp3x_reset(acp3x_base);
+ 	if (ret) {
 -- 
 2.30.2
 
