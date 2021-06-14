@@ -2,102 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819723A5E02
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0C13A5E05
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbhFNIBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232542AbhFNIBm (ORCPT
+        id S232605AbhFNIDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:03:13 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:54765 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232520AbhFNIDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:01:42 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0563CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:59:26 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id m3so6314007wms.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:59:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5tuJ1U1oQdCxdR2Ogc8v5z1mBF2S7N+I6jU2dYfmsAs=;
-        b=SFODf6ZXNO7NVTz9A/PT4aQ8DER+BqnRCMFHsjd4EcESRIwT2uBLqmree0Ng3Sa+Mn
-         A6P9gtvu+DIKXWOCT4IBtl+14Eh1hli0TWsW/3qogSj661gg9Zn+GNevOeZNMfGlJGOa
-         loxQflUlnoQMwnZr7DAw1gkClDh8ofpZxczDBaymOvpEt5Q0D4hDD8Ghl5Q3J9OSeVD7
-         Wiej2JAvn73KytGDg3ZLDt5c75aGdAUOFu7OLo82NFhjn6nzkGpQOzBBqL5KbeeLH7Xr
-         9nvCAL+0wlt9TUmF/FJMUA3LM7ie/FLZwxZYGqOrKzAKAou5SMEa7gP4oboj0LKs9EN7
-         yBUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5tuJ1U1oQdCxdR2Ogc8v5z1mBF2S7N+I6jU2dYfmsAs=;
-        b=ufJtQotxHm1f52vB9XNKGvgdYaFMF2gw1p5VWOrrKXSe4NXrPVRqZZ4K8XQmFmEW70
-         5ylJwBMmERYGWMhZB7bVR/Ay6Bfex6UmcEFiJWvmKOsMz9qnubxDeygdg5oOgH9u3FWU
-         30Bt7C1uDn4tHMagCkMupieS0fx2wjFov+6JdftfNM/EQ83yL39U7fqL69CYhLJKP9DQ
-         jO20ks4sTrUYyKMIO5XrtV28Yo8OdjXSdWK4k1Am/UOfYVfoXksXvZrCFTRrrkUKekzS
-         EOpflY3gq9yZOD7b8fwDqJNa4PdoWm7vP5A10LwjD6yLzmJWOs+hGyebAl75D5EE46a/
-         jsfw==
-X-Gm-Message-State: AOAM532Py54z5cn38hElqqahp95VFcOFu2YEs2hxtCezPkEz0cOBxk7D
-        oDJ1aHFeEri4T9PBBZpVu4u9ig==
-X-Google-Smtp-Source: ABdhPJxKRlOiE2KNA9Lj3LnL/AwzcvgTcnLne2X4hj3ipqSMjinzGRafcG66LKKN8dmGKCPQrzoxEg==
-X-Received: by 2002:a05:600c:354f:: with SMTP id i15mr30142407wmq.131.1623657564356;
-        Mon, 14 Jun 2021 00:59:24 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:71f0:4862:1742:37fd])
-        by smtp.gmail.com with ESMTPSA id b8sm19968466wmd.35.2021.06.14.00.59.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:59:23 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        martin.blumenstingl@googlemail.com, khilman@baylibre.com,
-        jbrunet@baylibre.com
-Cc:     tobetter@gmail.com, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/7] arm64: dts: meson-sm1-odroid: various fixes for C4/HC4
-Date:   Mon, 14 Jun 2021 09:59:21 +0200
-Message-Id: <162365755420.29993.17717376637508529981.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210607065435.577334-1-narmstrong@baylibre.com>
-References: <20210607065435.577334-1-narmstrong@baylibre.com>
+        Mon, 14 Jun 2021 04:03:09 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id shWjlak7ahqltshWmllraP; Mon, 14 Jun 2021 10:01:02 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1623657662; bh=qYegCn8bghApdRTOt7yc45P5rLD/KRziiVFVMHXr67Y=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=hJ9bVRxMgJzr6+rxmZE0wKabQivXopaWVmbU/JuEh4uJC5x8yMBSwVCqegwxvETkw
+         D5qTCR0orRpXCaweRdWbcy/ch4yDgrl0DaM1+HqtlPbGMgNTDAmLMe+DYGsxdJLbGL
+         Y9otO90gVNSXutow/m1C4EuaKacHUoV8SfB5O5mrZfmKine3WrSnWK4pvOfbBJonzB
+         jQjsJ+q00xPRqhXeEL/7tMOM4fJtSQnwqe5XAAoquF6Dbe5F+VjHuowEFwNII4/x7r
+         ZdFpUfEuMgGM5uazhtZiOwgF2wfNoYaCKk3cToVjcO2O8LUpl69GzllprzhAGI1qAa
+         DyqifWV6fH8zg==
+Subject: Re: [PATCH v2 2/7] media: v4l2-core: explicitly clear ioctl input
+ data
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-staging@lists.linux.dev
+References: <20210610214305.4170835-1-arnd@kernel.org>
+ <20210610214305.4170835-3-arnd@kernel.org>
+ <a59eeddd-34bb-6b84-06b3-9fb1934d447e@xs4all.nl>
+ <CAK8P3a2XbiU9SdafUapKABXJes8C5roLGKynL5LnGfTN3n=Evw@mail.gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <8ba91833-5388-8534-45d8-f7ae5d701d5a@xs4all.nl>
+Date:   Mon, 14 Jun 2021 10:00:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a2XbiU9SdafUapKABXJes8C5roLGKynL5LnGfTN3n=Evw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfL8VRkDlHn8BdQLCWBk3xRLr6A7ruzmSa24cuWe51M8NmzkwNYBBBRAqRQRoWYknQ5+EoavBBZjNKv8jDg+XCiu/c++GsGc0JWkjXZKeNHzpeSv4XggZ
+ loCL9V6Iv5p5zXaTynQ2bZV0kmRn3eEYztQrkIVsTh/SahK5jaRTf5ar8OWvjggtNK0pzbayUovWRYypDGCUlpbXGO9EVK1hwbEtqji3OFFgTF3c9w2Yiivc
+ EtaafQiQUomvVt6l7DCoQrBFiHcQasPBBpA1Ri1/K0xqSDnlfmVGKg5RILD5RwboJOlIpgdHYGtooPCCvtDxZ/h4TkbSKx3KEBNDIdNCoYRfogT3Dt1JDeAe
+ /ADbgt7YJ5V/GQLsdxYDPqymCNJ3GcXlBPlRp5I0zZrdpVzPX6LT3IJsLImU7zMeds+JqVZb3NsloW/8US7lsimRJhWyWSjOEabnplR89zGpaGDp2VjJglO2
+ KjlruMzKp03tkz4jPHbAss7GNncrY1KjcZNR7SOw0H1aDz05k6SNm6ruKCya9ZL8RAmoAZKSoSDkV3LLXPu8D2GlvftIPGFMhNoOyKONxlULS1gxLuXZWuv9
+ qdhlx03YuXHTY5+zZjdZhjNE7yHlFUsiqjPd1P4Fd5RHm84QjnGJ3bLXYZcu+WaIESYh3uzgm9ss7Hws8CkzYPoQMGdhiUJIPuZGzr1u1wAOtXn095E9sILR
+ B8VXLJPCK7w=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Arnd,
 
-On Mon, 7 Jun 2021 08:54:28 +0200, Neil Armstrong wrote:
-> Here is a collection of fixes/small additions to Odroid-C4 & Odroid-HC4 concerning
-> regulators handling, USB and SPI NOR Flash of HC4.
+On 11/06/2021 17:22, Arnd Bergmann wrote:
+> On Fri, Jun 11, 2021 at 2:05 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>> On 10/06/2021 23:43, Arnd Bergmann wrote:
+>>> @@ -3122,12 +3122,23 @@ static int video_get_user(void __user *arg, void *parg,
+>>>
+>>>       if (cmd == real_cmd) {
+>>>               if (copy_from_user(parg, (void __user *)arg, n))
+>>> -                     err = -EFAULT;
+>>> -     } else if (in_compat_syscall()) {
+>>> -             err = v4l2_compat_get_user(arg, parg, cmd);
+>>> -     } else {
+>>> -             switch (cmd) {
+>>> +                     return -EFAULT;
+>>> +
+>>> +             /* zero out anything we don't copy from userspace */
+>>> +             if (n < _IOC_SIZE(real_cmd))
+>>> +                     memset((u8 *)parg + n, 0, _IOC_SIZE(real_cmd) - n);
+>>
+>> This should always happen, not just when cmd == real_cmd.
 > 
-> Changes from v1 at [1]:
-> - added review tags from martin
-> - removed invalid patch about hub_5v
-> - added proper vcc_5v gpio control
-> - removed invalid hub_5v regulator already controlled by a gpio hog
+> Ok, got it. I was trying to simplify this, but I went a little too far, so
+> in the case of VIDIOC_QUERYBUF_TIME32 I dropped the final
+> clearing of the extra data, leaving the user data in place.
 > 
-> [...]
+>> The comment is a bit misleading: besides zeroing what isn't copied from
+>> userspace, it also zeroes copied fields based on INFO_FL_CLEAR_MASK.
+> 
+> I'm not following here, isn't that the same? We copy 'n' bytes, and then we
+> clear 'size - n' bytes, which is everything that wasn't copied.
+> 
+>> With this change that no longer happens and v4l2-compliance starts complaining.
+>>
+>>> +
+>>> +             return 0;
+>>> +     }
+>>> +
+>>> +     /* zero out whole buffer first to deal with missing emulation */
+>>> +     memset(parg, 0, _IOC_SIZE(real_cmd));
+>>> +
+>>> +     if (in_compat_syscall())
+>>> +             return v4l2_compat_get_user(arg, parg, cmd);
+>>> +
+>>>  #if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
+>>> +     switch (cmd) {
+>>>               case VIDIOC_QUERYBUF_TIME32:
+>>>               case VIDIOC_QBUF_TIME32:
+>>>               case VIDIOC_DQBUF_TIME32:
+>>
+>> The 'case' statements need to be indented one tab less.
+> 
+> It seems this is no longer needed when I go back to having the switch()
+> inside the else{}.
+> 
+>>> @@ -3140,28 +3151,24 @@ static int video_get_user(void __user *arg, void *parg,
+>>>
+>>>                       *vb = (struct v4l2_buffer) {
+>>>                               .index          = vb32.index,
+>>> -                                     .type           = vb32.type,
+>>> -                                     .bytesused      = vb32.bytesused,
+>>> -                                     .flags          = vb32.flags,
+>>> -                                     .field          = vb32.field,
+>>> -                                     .timestamp.tv_sec       = vb32.timestamp.tv_sec,
+>>> -                                     .timestamp.tv_usec      = vb32.timestamp.tv_usec,
+>>> -                                     .timecode       = vb32.timecode,
+>>> -                                     .sequence       = vb32.sequence,
+>>> -                                     .memory         = vb32.memory,
+>>> -                                     .m.userptr      = vb32.m.userptr,
+>>> -                                     .length         = vb32.length,
+>>> -                                     .request_fd     = vb32.request_fd,
+>>> +                             .type           = vb32.type,
+>>> +                             .bytesused      = vb32.bytesused,
+>>> +                             .flags          = vb32.flags,
+>>> +                             .field          = vb32.field,
+>>> +                             .timestamp.tv_sec       = vb32.timestamp.tv_sec,
+>>> +                             .timestamp.tv_usec      = vb32.timestamp.tv_usec,
+>>> +                             .timecode       = vb32.timecode,
+>>> +                             .sequence       = vb32.sequence,
+>>> +                             .memory         = vb32.memory,
+>>> +                             .m.userptr      = vb32.m.userptr,
+>>> +                             .length         = vb32.length,
+>>> +                             .request_fd     = vb32.request_fd,
+>>
+>> Can you put these whitespace changes in a separate patch?
+> 
+> Sure.
+> 
+>> I ended up with this code, and then my tests passed:
+>>
+>>        if (cmd == real_cmd) {
+>>                 if (copy_from_user(parg, (void __user *)arg, n))
+>>                         return -EFAULT;
+>>         } else if (in_compat_syscall()) {
+>>                 memset(parg, 0, n);
+>>                 err = v4l2_compat_get_user(arg, parg, cmd);
+>>         } else {
+>> #if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
+>>                 memset(parg, 0, n);
+>>                 switch (cmd) {
+>>                 case VIDIOC_QUERYBUF_TIME32:
+>>                 case VIDIOC_QBUF_TIME32:
+>>                 case VIDIOC_DQBUF_TIME32:
+>>                 case VIDIOC_PREPARE_BUF_TIME32: {
+>>                         struct v4l2_buffer_time32 vb32;
+>>                         struct v4l2_buffer *vb = parg;
+>>
+>>                         if (copy_from_user(&vb32, arg, sizeof(vb32)))
+>>                                 return -EFAULT;
+>>
+>>                         *vb = (struct v4l2_buffer) {
+>>                                 .index          = vb32.index,
+>>                                         .type           = vb32.type,
+>>                                         .bytesused      = vb32.bytesused,
+>>                                         .flags          = vb32.flags,
+>>                                         .field          = vb32.field,
+>>                                         .timestamp.tv_sec       = vb32.timestamp.tv_sec,
+>>                                         .timestamp.tv_usec      = vb32.timestamp.tv_usec,
+>>                                         .timecode       = vb32.timecode,
+>>                                         .sequence       = vb32.sequence,
+>>                                         .memory         = vb32.memory,
+>>                                         .m.userptr      = vb32.m.userptr,
+>>                                         .length         = vb32.length,
+>>                                         .request_fd     = vb32.request_fd,
+>>                         };
+>>                         break;
+>>                 }
+>>                 }
+>> #endif
+>>         }
+>>
+>>         /* zero out anything we don't copy from userspace */
+>>         if (!err && n < _IOC_SIZE(real_cmd))
+>>                 memset((u8 *)parg + n, 0, _IOC_SIZE(real_cmd) - n);
+>>
+>>         return err;
+> 
+> Ok, so this version just adds the two memset(), without any other
+> changes. That is clearly the safest change, and I'll send it like this
+> in v3.
+> 
+>> That said, I also ran the regression tests on a i686 VM, and there I got a
+>> bunch of failures, but that was *without* your patches, so I think something
+>> unrelated broke. I'll have to dig more into this in the next few days.
+>>
+>> But I wanted to get this out first, since this patch is clearly wrong.
+> 
+> Thanks a lot for taking a look and giving it an initial test. I have
+> updated the git tree at
+> 
+> git://git.kernel.org:/pub/scm/linux/kernel/git/arnd/playground.git
+> playground/v4l2-compat-ioctl
+> 
+> with the changes you pointed out. Let me know when you have found
+> out what was going on in the VM guest, and I'll send it as v3 or integrate
+> additional fixes that you find necessary.
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.14/dt64)
+Please post v3: one issue I had turned out to be due to a misconfiguration
+causing some of the tests to run out of memory.
 
-[1/7] arm64: dts: meson-sm1-odroid: add missing enable gpio and supply for tf_io regulator
-      https://git.kernel.org/amlogic/c/1f80a5cf74a60997b92d2cde772edec093bec4d9
-[2/7] arm64: dts: meson-sm1-odroid: set tf_io regulator gpio as open source
-      https://git.kernel.org/amlogic/c/7881df51368027b2d3fed3dcd43b480f45157d81
-[3/7] arm64: dts: meson-sm1-odroid: add 5v regulator gpio
-      https://git.kernel.org/amlogic/c/45d736ab17b44257e15e75e0dba364139fdb0983
-[4/7] arm64: dts: meson-sm1-odroid-hc4: disable unused USB PHY0
-      https://git.kernel.org/amlogic/c/703e84d6615a4a95fb504c8f2e4c9426b86f3930
-[5/7] arm64: dts: meson-sm1-odroid-hc4: add regulators controlled by GPIOH_8
-      https://git.kernel.org/amlogic/c/164147f094ec5d0fc2c2098a888f4b50cf3096a7
-[6/7] arm64: dts: meson-sm1-odroid-hc4: add spifc node to ODROID-HC4
-      https://git.kernel.org/amlogic/c/7178f340e9299dc886e6ddf6e938f09967902109
-[7/7] arm64: dts: meson-sm1-odroid-c4: remove invalid hub_5v regulator
-      https://git.kernel.org/amlogic/c/303d2af21aedeaebe824411fbff912dfcdb48de5
+The other issue is with the X32 ABI: that is currently failing, with or
+without your series. I'm not sure why yet, from what I remember this worked fine
+last time I tested. But my memory may be faulty, since it is so long ago.
 
--- 
-Neil
+Regards,
+
+	Hans
+
+> 
+>      Arnd
+> 
+
