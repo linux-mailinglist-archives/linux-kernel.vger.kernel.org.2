@@ -2,106 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7773A5EC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDAF3A5EC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhFNJD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
+        id S232664AbhFNJEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbhFNJDy (ORCPT
+        with ESMTP id S232589AbhFNJEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:03:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A32EC061574;
-        Mon, 14 Jun 2021 02:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gvQrFSkw5++aiUZW2ki8ogkV2fD43cfF9pJvBzEa8wU=; b=XoM1gHYxIjqvMxVJMY4CKuk4Ox
-        IwVhisqSDwezb2nX2yE8GfR1RZCrHUTemjXuVSCL02rc/oOZ6x7E0HeCyP7ivy6gDGPuZZNN5J+A9
-        K3GaK/Zas0BRbCWZUODpk+TPSTEUNxxq4fstiigTygn8OVkx5deC4qJ/z5cFUWo9uPUf3fxaMRePP
-        jw4aKCtoHGcRswYTAGupqN2waJ5Eh25rWDRCA6qg/jTpEptLp4ksg7m5DCO7Zd9TdE34RWD0MOgup
-        ZVYkkagevDV4dSRT4rQz0awKixNEq7/Ay6xGqiV3qvIODL5Indo/l+ZcFn/6+8PVKy4MoEqFoKxve
-        62eEj5Ew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lsiT5-005BXk-BI; Mon, 14 Jun 2021 09:01:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 08C5A300252;
-        Mon, 14 Jun 2021 11:01:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E0E572026A646; Mon, 14 Jun 2021 11:01:13 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 11:01:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        andreyknvl@gmail.com, dvyukov@google.com, elver@google.com,
-        johannes.berg@intel.com, oberpar@linux.vnet.ibm.com
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
- infrastructure
-Message-ID: <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net>
-References: <20210111081821.3041587-1-morbo@google.com>
- <20210407211704.367039-1-morbo@google.com>
- <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net>
- <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
- <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
- <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
- <20210612202505.GG68208@worktop.programming.kicks-ass.net>
- <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+        Mon, 14 Jun 2021 05:04:12 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3685FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 02:02:10 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id CA9A2C020; Mon, 14 Jun 2021 11:02:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1623661325; bh=AE8xWq3+O6y8F4JIxC9P1TzjZjOLXYNQVdQLQm0W2PY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=3ISs6qI8xXvss0UhLXH7OC25/miPDXriKk7/HaF77S72iDnZbySAYKvv4xyBjM5hX
+         nHwbnBI8IxPwHdcP2mR8VoAwn624EIFIpk28AcOvyDW9m21l5UEMC/Nx5VwSkspQZo
+         AQfe+U8K9FE9makBwwWuDniWr+5s7+DxSLhVDKGG20b8BCmvzepHyfWdrevLzt0Oh8
+         OwD9s0Jmwxi/Y9HS4vcJ8IIzUPMx+vz6h2h4HWcsD3KSHhzKlebZx8fye2NO4y3zis
+         kVQc+TRhaR9RKXf5xJUZziSwfB2sSpZ3V8OSPzuQHpt3y+FQA/xgCXVqQlq+gfG64J
+         ZWL8ySBHfBs0w==
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.2
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id 17624C01B;
+        Mon, 14 Jun 2021 11:02:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1623661324; bh=AE8xWq3+O6y8F4JIxC9P1TzjZjOLXYNQVdQLQm0W2PY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O1rsHoPVY22AMd4p7M+BgKFly+4EE6cYp8gmk0Mm8Sbi7fW4uGFQQjEzHl/1Au0mA
+         mFlFh1o4zuEvkPEJELUswT6QHeCxZ6UvaYB+bzNVwc5z3hj90IQknbh5IKYow7HKkr
+         zrAYvK58PRZlqvYPxexGngL260zjelfN3qer0QLd39EdQ59jkM39UZ0BsYepLiu+lj
+         BnQ6ZJR7a+84I5T6VRHMgIsGQornIU/xD6NgMvVXMUqIB71s/bw9yLc7mtdG3yLS4r
+         r+RK451He4pIyklmmsE7kvcAalQdcQI588/CJ2Any0jJg4OMbR/IUvETv4k6OcisCO
+         MVHMEsxynqJ4g==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id df5f9604;
+        Mon, 14 Jun 2021 09:01:59 +0000 (UTC)
+Date:   Mon, 14 Jun 2021 18:01:44 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
+Subject: Re: [PATCH v3 0/3] 9p: add support for root file systems
+Message-ID: <YMca+N0UiGNZ1lSm@codewreck.org>
+References: <20210606230922.77268-1-changbin.du@gmail.com>
+ <YMcaEq95T+1GxZz2@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+In-Reply-To: <YMcaEq95T+1GxZz2@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 01:56:41PM -0700, Bill Wendling wrote:
-> On Sat, Jun 12, 2021 at 1:25 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > On Sat, Jun 12, 2021 at 12:10:03PM -0700, Bill Wendling wrote:
-> > Yes it is, but is that sufficient in this case? It very much isn't for
-> > KASAN, UBSAN, and a whole host of other instrumentation crud. They all
-> > needed their own 'bugger-off' attributes.
-> >
-> > > > We've got KCOV and GCOV support already. Coverage is also not an
-> > > > argument mentioned anywhere else. Coverage can go pound sand, we really
-> > > > don't need a third means of getting that.
-> > > >
-> > > Those aren't useful for clang-based implementations. And I like to
-> > > look forward to potential improvements.
-> >
-> > I look forward to less things doing the same over and over. The obvious
-> > solution if of course to make clang use what we have, not the other way
-> > around.
-> >
-> That is not the obvious "solution".
+Josh Triplett wrote on Mon, Jun 14, 2021 at 01:57:54AM -0700:
+> On Mon, Jun 07, 2021 at 07:09:19AM +0800, Changbin Du wrote:
+> > Just like cifs and nfs, this short series enables rootfs support for 9p.
+> > Bellow is an example which mounts v9fs with tag 'r' as rootfs in qemu
+> > guest via virtio transport.
+> > 
+> >   $ qemu-system-x86_64 -enable-kvm -cpu host -m 1024 \
+> >         -virtfs local,path=$rootfs_dir,mount_tag=r,security_model=passthrough,id=r \
+> >         -kernel /path/to/linux/arch/x86/boot/bzImage -nographic \
+> >         -append "root=/dev/v9fs v9fsroot=r,trans=virtio rw console=ttyS0 3"
+> 
+> Rather than inventing a pseudo-device /dev/v9fs for this, would it
+> potentially work to use the existing rootfstype and rootflags options
+> for this? rootfstype already determines what filesystem should be used
+> to mount the root, and rootflags already provides options for that
+> filesystem.
+> 
+> For instance, for the above example:
+> rootfstype=9p root=r rootflags=trans=virtio
+> 
+> That would require a bit of fiddling to make rootfstype=9p allow a root
+> that's just the mount_tag. If that isn't an option, then even with
+> root=/dev/v9fs I think it still makes sense to use the existing
+> rootflags for "trans=virtio" rather than creating a new "v9fsroot"
+> option for that.
 
-Because having GCOV, KCOV and PGO all do essentially the same thing
-differently, makes heaps of sense?
+This doesn't work as is because of the way the code is written, if
+there's no block device associated with a root=x option right now it
+will lead to kernel panic.
 
-I understand that the compilers actually generates radically different
-instrumentation for the various cases, but essentially they're all
-collecting (function/branch) arcs.
+I replied with folks in Cc but there's another thread on linux-fsdevel@
+with a more generic approach that will build a list of filesystems which
+don't require such a block device (either hardcoded with virtiofs and 9p
+or based on FS_REQUIRES_DEV), thread started there but there's a second
+patch hidden an more discussion below:
+https://lore.kernel.org/linux-fsdevel/20210608153524.GB504497@redhat.com/
 
-I'm thinking it might be about time to build _one_ infrastructure for
-that and define a kernel arc format and call it a day.
 
-Note that if your compiler does arcs with functions (like gcc, unlike
-clang) we can also trivially augment the arcs with PMU counter data. I
-once did that for userspace.
+My preferred approach right now would be to go with their approach, and
+adjust the documentation Changbin Du wrote here, to have the best of
+both worlds.
+
+-- 
+Dominique
