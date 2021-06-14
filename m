@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7C03A6C08
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CA03A6C09
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbhFNQkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234789AbhFNQkE (ORCPT
+        id S234977AbhFNQki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:40:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55792 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234816AbhFNQkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 12:40:04 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B06C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:38:01 -0700 (PDT)
-Message-Id: <20210614155354.935915316@linutronix.de>
+Message-Id: <20210614155355.033134539@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688680;
+        s=2020; t=1623688681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=QEpaw02U7+Qp+O5kTJbVqJSDsevvpgnJvGsvNmpTKDE=;
-        b=elB7lDCTIPMDd8y7sPeY6nk50hVhtfeJr46B0rEZ9lvlWpkPz/8B2CLq02GVfN+Ee17usW
-        7trWvXkegZBRzDuntzZlmsx8DkOUOgEuMRZSHCkq1c9n5NERUsI09JXSeg8L5yADnWvEno
-        P5dJBIOQga37LjBxVOYdQ2MKqudyECyzKOVuChVc5mVrIDkfaea1T2pIfB0+NA++Wf74go
-        qSaAlP9PladA+1B/gfzcvFa217CbMMVM548ehIoYj2YXHk7NlwmW2+vPF41XDaNN0nUw04
-        R2C30k2wsWjajOfsQuROR8UabqoIedhFrE/iqwh5IJeYfF9bNDyPZ5NvT2u2KA==
+        bh=DhgG+To0NPaV0bHYehzggyKCJz1+iIOLOOUQ4EIN+Qg=;
+        b=10huUe0IgEP5CZR25eLN4KaNDg3iv3vS/rcFAy5Tw6+XbJLk+Mo1UDIkb/4VERQ79a/P7V
+        fhx721221TKSQ5eZUmKa6BA829jZeFZWPqqFOi0jomOE1ZU5gxqcJ8UUogQoVpngUtVp6v
+        ysckD4NDxlmE/Avy4PmR3oFrXKepm8dU7spqhZgLqRz3UA2KNkEUeMk+BqYJkA8gx4EORA
+        vND0/vwig1YvxNcbZAjLUKfH3ELgVDc1Qp9G3BkSyC8PJy+1dA6YPyeQH7jI/dO/J5iMG7
+        dkUKMs2tduBVJNwILWDwwJ1V5GtCpPTyy7tFOSzOgiaeiwLMK/8zYl8xH+zqfA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688680;
+        s=2020e; t=1623688681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=QEpaw02U7+Qp+O5kTJbVqJSDsevvpgnJvGsvNmpTKDE=;
-        b=KxFcBbBZRhnB3H6TRFuPDwSh7oFPz9T8BglpgKIx9xUQtGlcVOuA6A9G4xqJXz3X1XQ7Ps
-        GbDwG8qxnEKZVpAg==
-Date:   Mon, 14 Jun 2021 17:44:20 +0200
+        bh=DhgG+To0NPaV0bHYehzggyKCJz1+iIOLOOUQ4EIN+Qg=;
+        b=frGLo6tONW5ZKEX0rOOJxhC57WbqBGJ8HVHaSLWEtWELNooge6rCfhrbheg7xAvUV8qxuv
+        Po6PC5vECix8hmAA==
+Date:   Mon, 14 Jun 2021 17:44:21 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,8 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 12/52] x86/fpu: Fail ptrace() requests that try to set
- invalid MXCSR values
+Subject: [patch V2 13/52] x86/fpu: Clean up fpregs_set()
 References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,32 +55,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andy Lutomirski <luto@kernel.org>
 
-We're not doing anyone any favors by accepting and silently changing an
-invalid MXCSR value supplied via ptrace().  Instead, return -EINVAL on
-invalid input.
-
-If this breaks something, we can revert it.
+fpregs_set() had unnecessary complexity to support short or nonzero-offset
+writes and to handle the case in which a copy from userspace overwrites
+some of the target buffer and then fails.  Support for partial writes is
+useless -- just require that the write have offset 0 and the correct size,
+and copy into a temporary kernel buffer to avoid clobbering the state if
+the user access fails.
 
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: New patch. Picked up from Andy.
+V2: New patch. Picked up from Andy
 ---
- arch/x86/kernel/fpu/regset.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kernel/fpu/regset.c |   27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 ---
 --- a/arch/x86/kernel/fpu/regset.c
 +++ b/arch/x86/kernel/fpu/regset.c
-@@ -65,8 +65,9 @@ int xfpregs_set(struct task_struct *targ
- 	if (ret)
- 		return ret;
+@@ -305,31 +305,32 @@ int fpregs_set(struct task_struct *targe
+ 	struct user_i387_ia32_struct env;
+ 	int ret;
  
--	/* Mask invalid MXCSR bits (for historical reasons). */
--	newstate.mxcsr &= mxcsr_feature_mask;
-+	/* Do not allow an invalid MXCSR value. */
-+	if (newstate.mxcsr & ~mxcsr_feature_mask)
-+		ret = -EINVAL;
+-	fpu__prepare_write(fpu);
+-	fpstate_sanitize_xstate(fpu);
++	/* No funny business with partial or oversized writes is permitted. */
++	if (pos != 0 || count != sizeof(struct user_i387_ia32_struct))
++		return -EINVAL;
  
- 	fpu__prepare_write(fpu);
+ 	if (!boot_cpu_has(X86_FEATURE_FPU))
+ 		return fpregs_soft_set(target, regset, pos, count, kbuf, ubuf);
  
+-	if (!boot_cpu_has(X86_FEATURE_FXSR))
+-		return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+-					  &fpu->state.fsave, 0,
+-					  -1);
++	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &env, 0, -1);
++	if (ret)
++		return ret;
+ 
+-	if (pos > 0 || count < sizeof(env))
+-		convert_from_fxsr(&env, target);
++	fpu__prepare_write(fpu);
+ 
+-	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &env, 0, -1);
+-	if (!ret)
++	if (static_cpu_has(X86_FEATURE_FXSR))
+ 		convert_to_fxsr(&target->thread.fpu.state.fxsave, &env);
++	else
++		memcpy(&target->thread.fpu.state.fsave, &env, sizeof(env));
+ 
+ 	/*
+-	 * update the header bit in the xsave header, indicating the
++	 * Update the header bit in the xsave header, indicating the
+ 	 * presence of FP.
+ 	 */
+-	if (boot_cpu_has(X86_FEATURE_XSAVE))
++	if (static_cpu_has(X86_FEATURE_XSAVE))
+ 		fpu->state.xsave.header.xfeatures |= XFEATURE_MASK_FP;
+-	return ret;
++
++	return 0;
+ }
+ 
+ #endif	/* CONFIG_X86_32 || CONFIG_IA32_EMULATION */
 
