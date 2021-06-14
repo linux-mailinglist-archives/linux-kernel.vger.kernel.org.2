@@ -2,156 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40773A6ADC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74F93A6AD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234425AbhFNPtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:49:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26784 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234465AbhFNPtK (ORCPT
+        id S234087AbhFNPtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233591AbhFNPsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:49:10 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EFY9ZQ018819;
-        Mon, 14 Jun 2021 11:46:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=iufwgfEldV70ORNGlohIey8QqufRHIAQPypVoFkjH/c=;
- b=g5x7zp+PG7xMDBOuvoeGo9SJ/yZacwobEq+73EjXMaihu3jab/BcA97o3+s1Dd1UcrAF
- oZ1tY2Q5WHIdtGt1BK6YiesgPewW04WfNcxfPFrLFg7S1tTm5+AIOsezdtqn1cmz+0UH
- hpw9cBsUS71JbcTQnqIQXRz8c/HeAVVzJ8aMiQX3IuxjVZ2WtFkf7opH5EFmYfk8jao7
- 3JWl8F82SvdVEjnGzzlGYdDfPhOJQIvaVQhAnv67y7COBbb/+ib23AZ2y6FcZnUYim8o
- tJ/b6qlbqohVEmUbdiHkM/PbKRfY+F35/cVDKVEtmoD4qN9SDUm99wmpsABZloGOHf5S 9Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39671apvn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 11:46:34 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15EFYEt1019125;
-        Mon, 14 Jun 2021 11:46:33 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39671apvm1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 11:46:33 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15EFguoA031047;
-        Mon, 14 Jun 2021 15:46:31 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 394m6hs1nx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 15:46:31 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15EFkThE35258682
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 15:46:29 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 54824AE055;
-        Mon, 14 Jun 2021 15:46:29 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D2DB6AE045;
-        Mon, 14 Jun 2021 15:46:28 +0000 (GMT)
-Received: from localhost (unknown [9.85.73.215])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Jun 2021 15:46:28 +0000 (GMT)
-Date:   Mon, 14 Jun 2021 21:16:26 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH -tip v7 03/13] kprobes: treewide: Remove
- trampoline_address from kretprobe_trampoline_handler()
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org,
-        bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, kernel-team@fb.com,
-        kuba@kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        Abhishek Sagar <sagar.abhishek@gmail.com>, tglx@linutronix.de,
-        X86 ML <x86@kernel.org>, yhs@fb.com
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-        <162209757191.436794.12654958417415894884.stgit@devnote2>
-In-Reply-To: <162209757191.436794.12654958417415894884.stgit@devnote2>
+        Mon, 14 Jun 2021 11:48:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2777C061574;
+        Mon, 14 Jun 2021 08:46:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QYZbYwbmFAlPHZAyueGumfXzbFC24Yyq8ZlF/TwUjkw=; b=ng9emBskU15gYywjflfBygUUYq
+        eZHcqnywd14BX7LrL+alDCm0LnySQDWq4iU5112HvNNg8M9WeWAFpHtcnCNy1m7/RAtd3uoU5kHqx
+        3n7b//QR34Ya51Ibwh7AL+Hrg5Pu9c8AXHQ1J48AC8yPEdDxiXY1NDtNuxvlJyClCAibpqq0jSpgX
+        T8ugRG9ZgSkfhlWL07cp8RL/10viIyiH/mJg0UtzLFLJJ17JbOW5q4EEFgngzlM4uWdx4u8Lf7A3m
+        l9AOVyLGrfjESKUHcACVgTEINhvOvr3+gjTRoIw3OE0eUSuUFnG5NKtzvzGFg6XQqqV5mOnWnT/Ft
+        Dh/UFbWw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lsonJ-0074ny-On; Mon, 14 Jun 2021 15:46:40 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF1C59831CA; Mon, 14 Jun 2021 17:46:39 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 17:46:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Marco Elver <elver@google.com>, Bill Wendling <morbo@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, johannes.berg@intel.com,
+        oberpar@linux.vnet.ibm.com, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
+ infrastructure
+Message-ID: <20210614154639.GB68749@worktop.programming.kicks-ass.net>
+References: <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
+ <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
+ <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
+ <20210612202505.GG68208@worktop.programming.kicks-ass.net>
+ <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+ <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net>
+ <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
+ <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
+ <CANpmjNNnZv7DHYaJBL7knn9P+50F+SOCvis==Utaf-avENnVsw@mail.gmail.com>
+ <202106140817.F584D2F@keescook>
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-23-gcdc62b30
- (https://github.com/astroidmail/astroid)
-Message-Id: <1623685371.y5qy4nxer2.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9fhSx89odVf5INJWR2yl-7U9AFcZNx8R
-X-Proofpoint-ORIG-GUID: UohyzDTtlp9FN-x5xY_KM1UScthLuuh-
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-14_10:2021-06-14,2021-06-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
- suspectscore=0 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106140099
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202106140817.F584D2F@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+On Mon, Jun 14, 2021 at 08:26:01AM -0700, Kees Cook wrote:
+> > 2. Like (1) but also keep GCOV, given proper support for attribute
+> > no_instrument_function would probably fix it (?).
+> > 
+> > 3. Keep GCOV (and KCOV of course). Somehow extract PGO profiles from KCOV.
+> > 
+> > 4. Somehow extract PGO profiles from GCOV, or modify kernel/gcov to do so.
+> 
+> If there *is* a way to "combine" these, I don't think it makes sense
+> to do it now. PGO has users (and is expanding[1]), and trying to
+> optimize the design before even landing the first version seems like a
+> needless obstruction, and to likely not address currently undiscovered
+> requirements.
 
-Masami Hiramatsu wrote:
-> Remove trampoline_address from kretprobe_trampoline_handler().
-> Instead of passing the address, kretprobe_trampoline_handler()
-> can use new kretprobe_trampoline_addr().
->=20
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Tested-by: Andrii Nakryik <andrii@kernel.org>
-> ---
->  Changes in v3:
->    - Remove wrong kretprobe_trampoline declaration from
->      arch/x86/include/asm/kprobes.h.
->  Changes in v2:
->    - Remove arch_deref_entry_point() from comment.
-> ---
->  arch/arc/kernel/kprobes.c          |    2 +-
->  arch/arm/probes/kprobes/core.c     |    3 +--
->  arch/arm64/kernel/probes/kprobes.c |    3 +--
->  arch/csky/kernel/probes/kprobes.c  |    2 +-
->  arch/ia64/kernel/kprobes.c         |    5 ++---
->  arch/mips/kernel/kprobes.c         |    3 +--
->  arch/parisc/kernel/kprobes.c       |    4 ++--
->  arch/powerpc/kernel/kprobes.c      |    2 +-
->  arch/riscv/kernel/probes/kprobes.c |    2 +-
->  arch/s390/kernel/kprobes.c         |    2 +-
->  arch/sh/kernel/kprobes.c           |    2 +-
->  arch/sparc/kernel/kprobes.c        |    2 +-
->  arch/x86/include/asm/kprobes.h     |    1 -
->  arch/x86/kernel/kprobes/core.c     |    2 +-
->  include/linux/kprobes.h            |   18 +++++++++++++-----
->  kernel/kprobes.c                   |    3 +--
->  16 files changed, 29 insertions(+), 27 deletions(-)
->=20
+Even if that were so (and I'm not yet convinced), the current proposal
+is wedded to llvm-pgo, there is no way gcc-pgo could reuse any of this
+code afaict, which then means they have to create yet another variant.
 
-<snip>
+Sorting this *before* the first version is exactly the right time.
 
-> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> index d65c041b5c22..65dadd4238a2 100644
-> --- a/include/linux/kprobes.h
-> +++ b/include/linux/kprobes.h
-> @@ -205,15 +205,23 @@ extern void arch_prepare_kretprobe(struct kretprobe=
-_instance *ri,
->  				   struct pt_regs *regs);
->  extern int arch_trampoline_kprobe(struct kprobe *p);
-> =20
-> +void kretprobe_trampoline(void);
-> +/*
-> + * Since some architecture uses structured function pointer,
-> + * use dereference_function_descriptor() to get real function address.
-> + */
-> +static nokprobe_inline void *kretprobe_trampoline_addr(void)
-> +{
-> +	return dereference_function_descriptor(kretprobe_trampoline);
+Since when are we merging code when the requirements are not clear?
 
-I'm afraid this won't work correctly. For kernel functions, please use=20
-dereference_kernel_function_descriptor() which checks if the function=20
-has a descriptor before dereferencing it.
+Just to clarify:
 
+Nacked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Thanks,
-Naveen
-
+For all this PGO crud.
