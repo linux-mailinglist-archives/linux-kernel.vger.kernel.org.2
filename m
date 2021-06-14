@@ -2,262 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D2A3A5D40
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 08:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BBB3A5D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 08:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhFNGvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 02:51:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:10308 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232096AbhFNGvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 02:51:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623653361; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=I38mQxV/Tbn+T1jBm45ueY8hqSAqFaS9oTZBJvKWkoU=;
- b=VjQ4FenXVZFCDhQLg1sZSaBeo40coprhfjiF7FLgFhE1s30oTaq8SfSv5/KgCS0Gnt4m+9qw
- 3daEyqMguLuQxj2djcgA0fZuZpibbatrjGpR/tsfqxa6+mNLh05w1HO4fj/8JPvsJXw6IfoJ
- D8flsXWJbFvvMz16Fea2J9KwEmI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60c6fbeae27c0cc77f921576 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 06:49:14
- GMT
-Sender: mansur=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6626EC43460; Mon, 14 Jun 2021 06:49:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mansur)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21BD3C433D3;
-        Mon, 14 Jun 2021 06:49:12 +0000 (UTC)
+        id S232427AbhFNGxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 02:53:12 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:49146 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232096AbhFNGxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 02:53:11 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E6oYKb015802;
+        Mon, 14 Jun 2021 06:50:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=6TxtYVbVeN40PyX2z0lSuHmK/znkiN1r2HxaM/JDI8E=;
+ b=EtKWoTpZNqHvX6O7FkHqI3ZJ+nlLjDDtmx6UVcMtz/agX/vEACHDvsewOD2YoP+/3Sp+
+ N2R6NhaHw7PMyRxkEgzu59EDTHPpHkdPRWsBYmX0RYh4ILwGLjpCRp7WIq2v2hO29ho4
+ twffcc9BPCGmFz2AU2B2rME4WMX43Oblha+/tK1BD/+5yPekfqWIo4cHwqasJ0FAA5cb
+ O+Ctb7Z7NYXRocXTC/jEOZHVVeRWAOc67saLBz3zTCcmAC+OIZ1eQ+8mkgIndnnNaYD5
+ sezkGNc1/w1Yg+vDasFLtjDll4TKWohr8AQGS+BS0QwNozu8C52qFQdKK1QUNLIXjRz4 0g== 
+Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 395nsar5kq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 06:50:34 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15E6mq4b103874;
+        Mon, 14 Jun 2021 06:50:33 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 394j1sr6vq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 06:50:33 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15E6oWlI107503;
+        Mon, 14 Jun 2021 06:50:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 394j1sr6ue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 06:50:32 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15E6oTH2029541;
+        Mon, 14 Jun 2021 06:50:29 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 13 Jun 2021 23:50:28 -0700
+Date:   Mon, 14 Jun 2021 09:50:19 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        insafonov@gmail.com, linux@roeck-us.net, straube.linux@gmail.com,
+        liushixin2@huawei.com, gustavoars@kernel.org,
+        christophe.jaillet@wanadoo.fr, yepeilin.cs@gmail.com,
+        martin@kaiser.cx, simon.fodin@gmail.com, romain.perier@gmail.com,
+        apais@linux.microsoft.com, mh12gx2825@gmail.com
+Subject: Re: [PATCH 1/3] staging: rtl8188eu: convert DBG_88E calls in
+ core/rtw_efuse.c
+Message-ID: <20210614065019.GK1955@kadam>
+References: <20210613224147.1045-1-phil@philpotter.co.uk>
+ <20210613224147.1045-2-phil@philpotter.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Jun 2021 12:19:12 +0530
-From:   mansur@codeaurora.org
-To:     Fritz Koenig <frkoenig@chromium.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: Re: [PATCH] venus: venc: add support for
- V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control
-In-Reply-To: <CAMfZQbyHN14OXVH4x8SsXD0My1QzdHocMLoi++pfCTk-XbABxg@mail.gmail.com>
-References: <1622438514-16657-1-git-send-email-mansur@codeaurora.org>
- <CAMfZQbyHN14OXVH4x8SsXD0My1QzdHocMLoi++pfCTk-XbABxg@mail.gmail.com>
-Message-ID: <7b26fdd6169ab8f8af475f2d4e68efcb@codeaurora.org>
-X-Sender: mansur@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210613224147.1045-2-phil@philpotter.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: PQPSBgZy1pfrK3gxTF83Riqc2ioIc4pc
+X-Proofpoint-ORIG-GUID: PQPSBgZy1pfrK3gxTF83Riqc2ioIc4pc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 2021-06-02 23:10, Fritz Koenig wrote:
->> On Sun, May 30, 2021 at 10:22 PM Mansur Alisha Shaik
->> <mansur@codeaurora.org> wrote:
->>> 
->>> Add support for V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control for
->>> H264 high profile and constrained high profile.
->>> 
->>> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
->>> ---
->>>  drivers/media/platform/qcom/venus/core.h       |  1 +
->>>  drivers/media/platform/qcom/venus/hfi_cmds.c   | 10 ++++++++++
->>>  drivers/media/platform/qcom/venus/hfi_helper.h |  5 +++++
->>>  drivers/media/platform/qcom/venus/venc.c       | 11 +++++++++++
->>>  drivers/media/platform/qcom/venus/venc_ctrls.c | 12 +++++++++++-
->>>  5 files changed, 38 insertions(+), 1 deletion(-)
->>> 
->>> diff --git a/drivers/media/platform/qcom/venus/core.h 
->>> b/drivers/media/platform/qcom/venus/core.h
->>> index 745f226..103fbd8 100644
->>> --- a/drivers/media/platform/qcom/venus/core.h
->>> +++ b/drivers/media/platform/qcom/venus/core.h
->>> @@ -235,6 +235,7 @@ struct venc_controls {
->>>         u32 h264_loop_filter_mode;
->>>         s32 h264_loop_filter_alpha;
->>>         s32 h264_loop_filter_beta;
->>> +       u32 h264_8x8_transform;
->>> 
->>>         u32 hevc_i_qp;
->>>         u32 hevc_p_qp;
->>> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c 
->>> b/drivers/media/platform/qcom/venus/hfi_cmds.c
->>> index 11a8347..61d04a5 100644
->>> --- a/drivers/media/platform/qcom/venus/hfi_cmds.c
->>> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
->>> @@ -1178,6 +1178,7 @@ pkt_session_set_property_4xx(struct 
->>> hfi_session_set_property_pkt *pkt,
->>>  {
->>>         void *prop_data;
->>> 
->>> +
->>>         if (!pkt || !cookie || !pdata)
->>>                 return -EINVAL;
->>> 
->>> @@ -1227,6 +1228,15 @@ pkt_session_set_property_4xx(struct 
->>> hfi_session_set_property_pkt *pkt,
->>>                 break;
->>>         }
->>> 
->>> +       case HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8: {
->>> +               struct hfi_h264_8x8x_transform *in = pdata, *tm = 
->>> prop_data;
->>> +
->>> +               tm->enable_type = in->enable_type;
->>> +               pkt->shdr.hdr.size += sizeof(u32) + sizeof(*tm);
->>> +               break;
->>> +
->>> +       }
->>> +
->>>         case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
->>>         case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
->>>         case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
->>> diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h 
->>> b/drivers/media/platform/qcom/venus/hfi_helper.h
->>> index 63cd347..81d0536 100644
->>> --- a/drivers/media/platform/qcom/venus/hfi_helper.h
->>> +++ b/drivers/media/platform/qcom/venus/hfi_helper.h
->>> @@ -510,6 +510,7 @@
->>>  #define HFI_PROPERTY_PARAM_VENC_MAX_NUM_B_FRAMES               
->>> 0x2005020
->>>  #define HFI_PROPERTY_PARAM_VENC_H264_VUI_BITSTREAM_RESTRC      
->>> 0x2005021
->>>  #define HFI_PROPERTY_PARAM_VENC_PRESERVE_TEXT_QUALITY          
->>> 0x2005023
->>> +#define HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8                   
->>>   0x2005025
->>>  #define HFI_PROPERTY_PARAM_VENC_HIER_P_MAX_NUM_ENH_LAYER       
->>> 0x2005026
->>>  #define HFI_PROPERTY_PARAM_VENC_DISABLE_RC_TIMESTAMP           
->>> 0x2005027
->>>  #define HFI_PROPERTY_PARAM_VENC_INITIAL_QP                     
->>> 0x2005028
->>> @@ -565,6 +566,10 @@ struct hfi_bitrate {
->>>         u32 layer_id;
->>>  };
->>> 
->>> +struct hfi_h264_8x8x_transform {
->>> +       u32 enable_type;
->>> +};
->>> +
->>>  #define HFI_CAPABILITY_FRAME_WIDTH                     0x01
->>>  #define HFI_CAPABILITY_FRAME_HEIGHT                    0x02
->>>  #define HFI_CAPABILITY_MBS_PER_FRAME                   0x03
->>> diff --git a/drivers/media/platform/qcom/venus/venc.c 
->>> b/drivers/media/platform/qcom/venus/venc.c
->>> index 8dd49d4..4ecf331 100644
->>> --- a/drivers/media/platform/qcom/venus/venc.c
->>> +++ b/drivers/media/platform/qcom/venus/venc.c
->>> @@ -567,6 +567,7 @@ static int venc_set_properties(struct venus_inst 
->>> *inst)
->>>                 struct hfi_h264_vui_timing_info info;
->>>                 struct hfi_h264_entropy_control entropy;
->>>                 struct hfi_h264_db_control deblock;
->>> +               struct hfi_h264_8x8x_transform h264_transform;
->>> 
->>>                 ptype = HFI_PROPERTY_PARAM_VENC_H264_VUI_TIMING_INFO;
->>>                 info.enable = 1;
->>> @@ -597,6 +598,16 @@ static int venc_set_properties(struct venus_inst 
->>> *inst)
->>>                 ret = hfi_session_set_property(inst, ptype, 
->>> &deblock);
->>>                 if (ret)
->>>                         return ret;
->>> +
->>> +               ptype = HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8;
->>> +               if (ctr->profile.h264 == HFI_H264_PROFILE_HIGH ||
->>> +                       ctr->profile.h264 == 
->>> HFI_H264_PROFILE_CONSTRAINED_HIGH)
->>> +                       h264_transform.enable_type = 
->>> ctr->h264_8x8_transform;
->>> +
->>> +               ret = hfi_session_set_property(inst, ptype, 
->>> &h264_transform);
->>> +               if (ret)
->>> +                       return ret;
->>> +
->>>         }
->>> 
->>>         if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
->>> diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c 
->>> b/drivers/media/platform/qcom/venus/venc_ctrls.c
->>> index 637c92f..e3ef611 100644
->>> --- a/drivers/media/platform/qcom/venus/venc_ctrls.c
->>> +++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
->>> @@ -319,6 +319,13 @@ static int venc_op_s_ctrl(struct v4l2_ctrl 
->>> *ctrl)
->>>         case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
->>>                 ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
->>>                 break;
->>> +       case V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM:
->>> +               if (ctr->profile.h264 != HFI_H264_PROFILE_HIGH ||
->>> +                       ctr->profile.h264 != 
->>> HFI_H264_PROFILE_CONSTRAINED_HIGH)
->> 
->> This appears to be incorrect as the comparison will always be true.  I
->> think it should be written as:
->>                if (ctr->profile.h264 == HFI_H264_PROFILE_HIGH ||
->>                        ctr->profile.h264 == 
->> HFI_H264_PROFILE_CONSTRAINED_HIGH)
->>                        ctr->h264_8x8_transform = ctrl->val;
->> 
->>> +                       return -EINVAL;
->> 
->> I'm not sure -EINVAL is appropriate here.  venc_op_s_ctrl will be
->> called to initialize the default control values from
->> v4l2_ctrl_handler_setup.  If the default profile isn't high or
->> constrained high, the driver will fail to initialize.
->> 
-As per codec spec, the 8x8 transform is enabled for high profile and
-constrained high profile, but I didn't found any document what happens
-when we set 8x8 transform for other profiles.
-Hence added a check to reject other profiles to inform the same to 
-client
->>> +
->>> +               ctr->h264_8x8_transform = ctrl->val;
->>> +               break;
->>> 
->>>         default:
->>>                 return -EINVAL;
->>>         }
->>> @@ -334,7 +341,7 @@ int venc_ctrl_init(struct venus_inst *inst)
->>>  {
->>>         int ret;
->>> 
->>> -       ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 57);
->>> +       ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 58);
->>>         if (ret)
->>>                 return ret;
->>> 
->>> @@ -438,6 +445,9 @@ int venc_ctrl_init(struct venus_inst *inst)
->>>                           V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP, 1, 
->>> 51, 1, 1);
->>> 
->>>         v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
->>> +               V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM, 0, 1, 1, 0);
->>> +
->>> +       v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
->>>                           V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP, 1, 
->>> 51, 1, 1);
->>> 
->>>         v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
->>> --
->>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
->>> member
->>> of Code Aurora Forum, hosted by The Linux Foundation
->>> 
+On Sun, Jun 13, 2021 at 11:41:45PM +0100, Phillip Potter wrote:
+> Convert all calls to the DBG_88E macro in core/rtw_efuse.c into
+> netdev_dbg calls. The DBG_88E macro is unnecessary, as visibility of
+> debug messages can be controlled more precisely by just using debugfs.
+> It is important to keep these messages still, as they are displayable
+> via a kernel module parameter when using DBG_88E.
 > 
+
+These are not 100% dead code like the previous debug macros but I think
+we are better off doing another mass delete.
+
+> Also modify efuse_phymap_to_logical function signature to pass through
+> a struct net_device pointer, so that we can use it to call netdev_dbg
+> in this function too.
+> 
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
+>  drivers/staging/rtl8188eu/core/rtw_efuse.c | 27 ++++++++++++++--------
+>  1 file changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/core/rtw_efuse.c b/drivers/staging/rtl8188eu/core/rtw_efuse.c
+> index 9bb3ec0cd62f..019796c0f1af 100644
+> --- a/drivers/staging/rtl8188eu/core/rtw_efuse.c
+> +++ b/drivers/staging/rtl8188eu/core/rtw_efuse.c
+> @@ -72,7 +72,7 @@ static void efuse_power_switch(struct adapter *pAdapter, u8 write, u8 pwrstate)
+>  }
+>  
+>  static void
+> -efuse_phymap_to_logical(u8 *phymap, u16 _offset, u16 _size_byte, u8  *pbuf)
+> +efuse_phymap_to_logical(struct net_device *dev, u8 *phymap, u16 _offset, u16 _size_byte, u8 *pbuf)
+>  {
+>  	u8 *efuseTbl = NULL;
+>  	u8 rtemp8;
+> @@ -92,7 +92,7 @@ efuse_phymap_to_logical(u8 *phymap, u16 _offset, u16 _size_byte, u8  *pbuf)
+>  		      sizeof(void *) + EFUSE_MAX_WORD_UNIT * sizeof(u16),
+>  		      GFP_KERNEL);
+>  	if (!tmp) {
+> -		DBG_88E("%s: alloc eFuseWord fail!\n", __func__);
+> +		netdev_dbg(dev, "alloc eFuseWord fail!\n");
+
+This print is pointless and wrong.  It shouldn't be a debug printk it
+should be an error message.  But kcalloc() already has an error message
+built in and adding an additional warning here will lead to a checkpatch
+complaint.
+
+>  		goto eFuseWord_failed;
+>  	}
+>  	for (i = 0; i < EFUSE_MAX_SECTION_88E; i++)
+> @@ -113,7 +113,9 @@ efuse_phymap_to_logical(u8 *phymap, u16 _offset, u16 _size_byte, u8  *pbuf)
+>  		efuse_utilized++;
+>  		eFuse_Addr++;
+>  	} else {
+> -		DBG_88E("EFUSE is empty efuse_Addr-%d efuse_data =%x\n", eFuse_Addr, rtemp8);
+> +		netdev_dbg(dev,
+> +			   "EFUSE is empty efuse_Addr-%d efuse_data =%x\n",
+> +			   eFuse_Addr, rtemp8);
+
+I don't know enough to say if this is useful or not, but I'm really
+skeptical.
+
+>  		goto exit;
+>  	}
+>  
+> @@ -220,7 +222,7 @@ static void efuse_read_phymap_from_txpktbuf(
+>  	if (bcnhead < 0) /* if not valid */
+>  		bcnhead = usb_read8(adapter, REG_TDECTRL + 1);
+>  
+> -	DBG_88E("%s bcnhead:%d\n", __func__, bcnhead);
+> +	netdev_dbg(adapter->pnetdev, "bcnhead:%d\n", bcnhead);
+
+The only caller is efuse_ReadEFuse() and bcnhead is always zero.  All
+these checks and debug code can be deleted.
+
+>  
+>  	usb_write8(adapter, REG_PKT_BUFF_ACCESS_CTRL, TXPKT_BUF_SELECT);
+>  
+> @@ -232,8 +234,10 @@ static void efuse_read_phymap_from_txpktbuf(
+>  		usb_write8(adapter, REG_TXPKTBUF_DBG, 0);
+>  		start = jiffies;
+>  		while (!(reg_0x143 = usb_read8(adapter, REG_TXPKTBUF_DBG)) &&
+> -		       jiffies_to_msecs(jiffies - start) < 1000) {
+> -			DBG_88E("%s polling reg_0x143:0x%02x, reg_0x106:0x%02x\n", __func__, reg_0x143, usb_read8(adapter, 0x106));
+> +			jiffies_to_msecs(jiffies - start) < 1000) {
+> +			netdev_dbg(adapter->pnetdev,
+> +				   "polling reg_0x143:0x%02x, reg_0x106:0x%02x\n",
+> +				   reg_0x143, usb_read8(adapter, 0x106));
+
+This is the wrong place to put debug code.  If the loop timesout it will
+print a thousand messages.  See?  So far whenever we can understand the
+code enough to say, then it's totally rubbish.
+
+Just do a mass delete.  You won't ever regret it.
+
+>  			usleep_range(1000, 2000);
+>  		}
+>  
+
+regards,
+dan carpenter
+
