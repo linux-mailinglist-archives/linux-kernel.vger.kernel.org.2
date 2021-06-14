@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D04C3A5F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4CE3A5F07
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhFNJVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:21:48 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:53573 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232528AbhFNJVq (ORCPT
+        id S232717AbhFNJWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:22:36 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3231 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232621AbhFNJWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:21:46 -0400
-Received: (Authenticated sender: josh@joshtriplett.org)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 769E01BF20A;
-        Mon, 14 Jun 2021 09:19:40 +0000 (UTC)
-Date:   Mon, 14 Jun 2021 02:19:38 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
-Subject: Re: [PATCH v3 0/3] 9p: add support for root file systems
-Message-ID: <YMcfKqbCq7ZWAyaO@localhost>
-References: <20210606230922.77268-1-changbin.du@gmail.com>
- <YMcaEq95T+1GxZz2@localhost>
- <YMca+N0UiGNZ1lSm@codewreck.org>
+        Mon, 14 Jun 2021 05:22:35 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G3QfT0cPDz6G9Jq;
+        Mon, 14 Jun 2021 17:10:57 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 14 Jun 2021 11:20:31 +0200
+Received: from localhost (10.52.126.149) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 14 Jun
+ 2021 10:20:30 +0100
+Date:   Mon, 14 Jun 2021 10:20:25 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Will Deacon <will@kernel.org>
+CC:     Qi Liu <liuqi115@huawei.com>, <mark.rutland@arm.com>,
+        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangshaokun@hisilicon.com>
+Subject: Re: [PATCH v6 2/2] drivers/perf: hisi: Add driver for HiSilicon
+ PCIe PMU
+Message-ID: <20210614102025.0000222b@Huawei.com>
+In-Reply-To: <20210611162347.GA16284@willie-the-truck>
+References: <1622467951-32114-1-git-send-email-liuqi115@huawei.com>
+        <1622467951-32114-3-git-send-email-liuqi115@huawei.com>
+        <20210611162347.GA16284@willie-the-truck>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMca+N0UiGNZ1lSm@codewreck.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.126.149]
+X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 06:01:44PM +0900, Dominique Martinet wrote:
-> Josh Triplett wrote on Mon, Jun 14, 2021 at 01:57:54AM -0700:
-> > On Mon, Jun 07, 2021 at 07:09:19AM +0800, Changbin Du wrote:
-> > > Just like cifs and nfs, this short series enables rootfs support for 9p.
-> > > Bellow is an example which mounts v9fs with tag 'r' as rootfs in qemu
-> > > guest via virtio transport.
-> > > 
-> > >   $ qemu-system-x86_64 -enable-kvm -cpu host -m 1024 \
-> > >         -virtfs local,path=$rootfs_dir,mount_tag=r,security_model=passthrough,id=r \
-> > >         -kernel /path/to/linux/arch/x86/boot/bzImage -nographic \
-> > >         -append "root=/dev/v9fs v9fsroot=r,trans=virtio rw console=ttyS0 3"
-> > 
-> > Rather than inventing a pseudo-device /dev/v9fs for this, would it
-> > potentially work to use the existing rootfstype and rootflags options
-> > for this? rootfstype already determines what filesystem should be used
-> > to mount the root, and rootflags already provides options for that
-> > filesystem.
-> > 
-> > For instance, for the above example:
-> > rootfstype=9p root=r rootflags=trans=virtio
-> > 
-> > That would require a bit of fiddling to make rootfstype=9p allow a root
-> > that's just the mount_tag. If that isn't an option, then even with
-> > root=/dev/v9fs I think it still makes sense to use the existing
-> > rootflags for "trans=virtio" rather than creating a new "v9fsroot"
-> > option for that.
-> 
-> This doesn't work as is because of the way the code is written, if
-> there's no block device associated with a root=x option right now it
-> will lead to kernel panic.
-> 
-> I replied with folks in Cc but there's another thread on linux-fsdevel@
-> with a more generic approach that will build a list of filesystems which
-> don't require such a block device (either hardcoded with virtiofs and 9p
-> or based on FS_REQUIRES_DEV), thread started there but there's a second
-> patch hidden an more discussion below:
-> https://lore.kernel.org/linux-fsdevel/20210608153524.GB504497@redhat.com/
+On Fri, 11 Jun 2021 17:23:48 +0100
+Will Deacon <will@kernel.org> wrote:
 
-The patch later on in that thread (either using a list of
-non-block-device filesystems or the version referenced elsewhere that
-uses a flag in the filesystem definition) looks really appealing! That's
-exactly what I was hoping for. That gets us closer to directly
-translating `mount -t type -o options rootdesc` into `rootfstype=type
-rootflags=options root=rootdesc` in the general case, rather than having
-special cases for different filesystems.
+> On Mon, May 31, 2021 at 09:32:31PM +0800, Qi Liu wrote:
+> > PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
+> > to sample bandwidth, latency, buffer occupation etc.
+> > 
+> > Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
+> > registered as a PMU in /sys/bus/event_source/devices, so users can
+> > select target PMU, and use filter to do further sets.
+> > 
+> > Filtering options contains:
+> > event        - select the event.
+> > subevent     - select the subevent.
+> > port         - select target Root Ports. Information of Root Ports
+> >                are shown under sysfs.
+> > bdf          - select requester_id of target EP device.
+> > trig_len     - set trigger condition for starting event statistics.
+> > trigger_mode - set trigger mode. 0 means starting to statistic when
+> >                bigger than trigger condition, and 1 means smaller.
+> > thr_len      - set threshold for statistics.
+> > thr_mode     - set threshold mode. 0 means count when bigger than
+> >                threshold, and 1 means smaller.
+> > 
+> > Reviewed-by: John Garry <john.garry@huawei.com>
+> > Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> > ---
+> >  MAINTAINERS                                |    6 +
+> >  drivers/perf/Kconfig                       |    2 +
+> >  drivers/perf/Makefile                      |    1 +
+> >  drivers/perf/pci/Kconfig                   |   16 +
+> >  drivers/perf/pci/Makefile                  |    2 +
+> >  drivers/perf/pci/hisilicon/Makefile        |    3 +
+> >  drivers/perf/pci/hisilicon/hisi_pcie_pmu.c | 1019 ++++++++++++++++++++++++++++  
+> 
+> Can we keep this under drivers/perf/hisilicon/ please? I don't see the
+> need to create a 'pci' directory here.
+
+https://lore.kernel.org/linux-pci/20190103154439.GC16311@edgewater-inn.cambridge.arm.com/
+
+Discussion back in 2018 about where to put these...
+
+Though, perf/pci/hisilicon does seem over the top in terms of depth, maybe perf/pci/
+or just give up on that plan and put them (for now at least) in per company directories.
+
+Jonathan
