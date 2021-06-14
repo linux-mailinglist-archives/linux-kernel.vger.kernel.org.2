@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD31D3A649A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE033A6496
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235320AbhFNL0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:26:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42846 "EHLO mail.kernel.org"
+        id S235531AbhFNL0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:26:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234863AbhFNLMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:12:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08CB361955;
-        Mon, 14 Jun 2021 10:48:16 +0000 (UTC)
+        id S234720AbhFNLMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:12:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85CFD6145A;
+        Mon, 14 Jun 2021 10:48:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667697;
-        bh=YsrmrDyiB+yexP44Ab1YAEuDP9sNt8FMawYVpodek7w=;
+        s=korg; t=1623667700;
+        bh=KQj6+Mec5t1lduI9hVJiOB+XDnYJwpycELEWfMg/2Js=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pZO5xBN4L1V25bOoMovMrNHnfH7OxIX6uMYuB+RJKBs8bk3TH91WeE49bbNUpXzCb
-         8kbYLXE80ge4jMoJaOIe2B/KinSoCTVvXu99DJoupKh+ZFnxSJvyned8J4a6kEGAAZ
-         1PPJbcHVhr3x9I0YcGlijRgkP2SYdq3d2IAEa9Xk=
+        b=oL62cGoJxEEe+Qu/xUchH5CSXr1jtEzQ8eVHPm+6vHC1llQF1jtowqp/znzzAlho8
+         7EMdCybYhG48HOema7qSe9Qaq8adm+g61KiUsaApShAaaDWh4P4Ynytk+4Qis+H3Dq
+         oyVkdhDPy4z5odA85l84uo5S+x0sYQIXATgM7s3g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 040/173] bnx2x: Fix missing error code in bnx2x_iov_init_one()
-Date:   Mon, 14 Jun 2021 12:26:12 +0200
-Message-Id: <20210614102659.496460811@linuxfoundation.org>
+        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 041/173] nvme-tcp: remove incorrect Kconfig dep in BLK_DEV_NVME
+Date:   Mon, 14 Jun 2021 12:26:13 +0200
+Message-Id: <20210614102659.537376169@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -41,39 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit 65161c35554f7135e6656b3df1ce2c500ca0bdcf ]
+[ Upstream commit 042a3eaad6daeabcfaf163aa44da8ea3cf8b5496 ]
 
-Eliminate the follow smatch warning:
+We need to select NVME_CORE.
 
-drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1227
-bnx2x_iov_init_one() warn: missing error code 'err'.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/nvme/host/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-index 9c2f51f23035..9108b497b3c9 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-@@ -1224,8 +1224,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
- 		goto failed;
- 
- 	/* SR-IOV capability was enabled but there are no VFs*/
--	if (iov->total == 0)
-+	if (iov->total == 0) {
-+		err = -EINVAL;
- 		goto failed;
-+	}
- 
- 	iov->nr_virtfn = min_t(u16, iov->total, num_vfs_param);
- 
+diff --git a/drivers/nvme/host/Kconfig b/drivers/nvme/host/Kconfig
+index a44d49d63968..494675aeaaad 100644
+--- a/drivers/nvme/host/Kconfig
++++ b/drivers/nvme/host/Kconfig
+@@ -71,7 +71,8 @@ config NVME_FC
+ config NVME_TCP
+ 	tristate "NVM Express over Fabrics TCP host driver"
+ 	depends on INET
+-	depends on BLK_DEV_NVME
++	depends on BLOCK
++	select NVME_CORE
+ 	select NVME_FABRICS
+ 	select CRYPTO
+ 	select CRYPTO_CRC32C
 -- 
 2.30.2
 
