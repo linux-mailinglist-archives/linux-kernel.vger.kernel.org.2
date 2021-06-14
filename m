@@ -2,334 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5CE3A6B29
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D360E3A6B2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbhFNQDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233152AbhFNQC6 (ORCPT
+        id S234401AbhFNQDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:03:18 -0400
+Received: from mail-il1-f175.google.com ([209.85.166.175]:40615 "EHLO
+        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234187AbhFNQDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:02:58 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55995C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:00:39 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id k15so10874788pfp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:00:39 -0700 (PDT)
+        Mon, 14 Jun 2021 12:03:15 -0400
+Received: by mail-il1-f175.google.com with SMTP id b14so12652838ilq.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:01:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A/YrRFRLaVHO1+sPzFsBtD9ot5MF3cKN262LxR6KfXw=;
-        b=VmvGSd/M0hMCoAINvkgpn/C7SBvaCkFFXMAnoKnl5I4lxyzCcJK+OOKh8MJYLMjdsC
-         O460iJithsValhtXy2H+iytvEogj/FgLjSiLedcoly9cKaiKTudoaceCZs/xpjz4cNAe
-         Yv3Grcp5wfcAykM6c1qwfAWC99Bd8Szkl9JEs=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=bXIOpXty1ev+pQBgiRMuI/vbY9HsNHNYSyOaqdGDdmk=;
+        b=LnFuMHr+mk21j0sg9Q6t/q84i7xlqR50j+7vXt6Odzpvl3A0pKoGDsQOTH5Apr6Tvt
+         PRAFuAXcGXmxetZobzS1V/sZrPH/VkeYdyI+BxQb/U/kjUKigJnU20k9niLDbEFJ7SSf
+         yO8KwIxv5T86ZUUh2yT+TQiUVqZMwSXAv6ntWKPdYxhYmf4QgnCuTRraqEGWLNFPWyc/
+         05tf8oOWSazHAhjWmJs1cbL4s9wixeXAddtekQztD2X1jCdKLxUY7d6GviceIKO+fyGq
+         maaNL5BsoijvRtPjY3BMxYzldvdrOFg+vxbuyf9bUC+pbEtcm5qOrvVGlJLOgK+8KF2c
+         gGVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A/YrRFRLaVHO1+sPzFsBtD9ot5MF3cKN262LxR6KfXw=;
-        b=F+4hmD0s2Q9iPs8hRUzESFu1K5n1UNooD7bCCO4rpnCwb/e5mJU1rFcwl/bK9wE3Fj
-         SuRemDFoujOnpmccNPJXrV6mLG4HDjJbF2i+fccibqMU0oHtUr3J9hiqA62kwVR55CVo
-         Vt8Fe5CA/U/Z1Ca8eLCaLUuFhmY5KWkKy6PyQXK0oJOQ9Dgxdxi4jEqpofkttq+sbJJ5
-         T+QFRjFBPET/QAsGxvd4LClrbzLvxhZhx5+dSnXSVVYkthWXf0nqSiXcspng+IupZM3m
-         iETmtbA1p39bMY+b9RLqjyRo3e1S5bLBhhhvpBVgchw0qUFPZqMPxeQKDUPQ6TSVOmYw
-         2t2g==
-X-Gm-Message-State: AOAM5334JHDr+XROnMD+tCKbAMN5tzVPxjwyTKOhe1kc16x1Q7p+BG5i
-        xXGx5/q75sdmoM2M9viEKzLluQ==
-X-Google-Smtp-Source: ABdhPJzIjMkPfZxvwE8qBFnjblq0arhcCk3xBhQrTQv1nIo8/LK7FcVWbuTodG/fW84e+Y2/GjVziA==
-X-Received: by 2002:a05:6a00:88b:b029:2de:33b3:76c9 with SMTP id q11-20020a056a00088bb02902de33b376c9mr22662665pfj.30.1623686438816;
-        Mon, 14 Jun 2021 09:00:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h12sm13414232pfq.72.2021.06.14.09.00.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 09:00:35 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 09:00:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jarmo Tiitto <jarmo.tiitto@gmail.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        morbo@google.com
-Subject: Re: [RFC PATCH 4/5] pgo: Add module notifier machinery
-Message-ID: <202106140855.2094DF30BB@keescook>
-References: <20210612032425.11425-1-jarmo.tiitto@gmail.com>
- <20210612032425.11425-5-jarmo.tiitto@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=bXIOpXty1ev+pQBgiRMuI/vbY9HsNHNYSyOaqdGDdmk=;
+        b=NKA8QhZRAs1b2XNZVha3Ho0EhTipqZFAiEk9JW93N6nTa+zFYJ8rEQ7mtmiQVRAHea
+         MP0Whcz4d7qMyXVMiDhijkaFfAyZTrUY182KG7Au2NdlZhmCj/2A+kWqjzlm+cImGIAv
+         3RlGIBd++fWEMXXc0rQX4nwzzYyQTFf9j85UeR2g7EpH/vcdlh3qGh0wUFyofzFn95nT
+         Zf8yG4jjGSOVt5lSPyKJK0PIONEL4j4CGkdl/494QJKD95wPqq1BxKR52BGOazceL5Sn
+         ggEFozBuJupmNGSR5ekuXRJ/3kceg+erCWxMb2v170+1OK9Y+igxFkxchYfV8JjGTKsT
+         sPbg==
+X-Gm-Message-State: AOAM531GK5JEL68f5FsY9BnQnvLIdZpUG5oAPupoxL+7JzoTAo+6FD7l
+        YgedDad59hAIADs1yMPyVSgukvs64v9fyu3C+fbT6bAmhmU=
+X-Google-Smtp-Source: ABdhPJwnnFtTMbFvOWbgHXJsCmicLdY+oAlpdvUauCveDLj6gZH8gAuOmlughZHyjQolLt0hn1zFu+ZGENWVbSeRUMs=
+X-Received: by 2002:a92:260b:: with SMTP id n11mr14248059ile.134.1623686400589;
+ Mon, 14 Jun 2021 09:00:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210612032425.11425-5-jarmo.tiitto@gmail.com>
+From:   denis bider <denisbider.ietf@gmail.com>
+Date:   Mon, 14 Jun 2021 10:59:49 -0500
+Message-ID: <CADPMZDD=1W-jb+9o15djZ-VhdzB8=RT1oNQJ=DxBmcvXhcjnCg@mail.gmail.com>
+Subject: Linus's "let's kill people" rant (Re: Maintainers / Kernel Summit
+ 2021 planning kick-off)
+To:     linux-kernel@vger.kernel.org, torvalds@transmeta.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 06:24:25AM +0300, Jarmo Tiitto wrote:
-> Add module notifier callback and register modules
-> into prf_list.
-> 
-> For each module that has __llvm_prf_{data,cnts,names,vnds} sections
-> The callback creates debugfs <module>.profraw entry and
-> links new prf_object into prf_list.
-> 
-> This enables profiling for all loaded modules.
-> 
-> * Moved rcu_read_lock() outside of allocate_node() in order
->   to protect __llvm_profile_instrument_target() from module unload(s)
-> 
-> Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
-> ---
-> v2: Passed QEMU SMP boot test into minimal Arch Linux distro,
-> module loading and unloading work without warnings.
-> Module profile data looks ok. :-)
-> ---
->  kernel/pgo/fs.c         | 111 ++++++++++++++++++++++++++++++++++++++++
->  kernel/pgo/instrument.c |  19 ++++---
->  2 files changed, 122 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
-> index 84b36e61758b..98b982245b58 100644
-> --- a/kernel/pgo/fs.c
-> +++ b/kernel/pgo/fs.c
-> @@ -419,6 +419,110 @@ static const struct file_operations prf_reset_fops = {
->  	.llseek		= noop_llseek,
->  };
->  
-> +static void pgo_module_init(struct module *mod)
-> +{
-> +	struct prf_object *po;
-> +	char fname[MODULE_NAME_LEN + 9]; /* +strlen(".profraw") */
-> +	unsigned long flags;
-> +
-> +	/* add new prf_object entry for the module */
-> +	po = kzalloc(sizeof(*po), GFP_KERNEL);
-> +	if (!po)
-> +		goto out;
-> +
-> +	po->mod_name = mod->name;
-> +
-> +	fname[0] = 0;
-> +	snprintf(fname, sizeof(fname), "%s.profraw", po->mod_name);
-> +
-> +	/* setup prf_object sections */
-> +	po->data = mod->prf_data;
-> +	po->data_num = prf_get_count(mod->prf_data,
-> +		(char *)mod->prf_data + mod->prf_data_size, sizeof(po->data[0]));
-> +
-> +	po->cnts = mod->prf_cnts;
-> +	po->cnts_num = prf_get_count(mod->prf_cnts,
-> +		(char *)mod->prf_cnts + mod->prf_cnts_size, sizeof(po->cnts[0]));
-> +
-> +	po->names = mod->prf_names;
-> +	po->names_num = prf_get_count(mod->prf_names,
-> +		(char *)mod->prf_names + mod->prf_names_size, sizeof(po->names[0]));
-> +
-> +	po->vnds = mod->prf_vnds;
-> +	po->vnds_num = prf_get_count(mod->prf_vnds,
-> +		(char *)mod->prf_vnds + mod->prf_vnds_size, sizeof(po->vnds[0]));
-> +
-> +	/* create debugfs entry */
-> +	po->file = debugfs_create_file(fname, 0600, directory, po, &prf_fops);
-> +	if (!po->file) {
-> +		pr_err("Failed to setup module pgo: %s", fname);
-> +		kfree(po);
-> +		goto out;
-> +	}
-> +
-> +	/* finally enable profiling for the module */
-> +	flags = prf_list_lock();
-> +	list_add_tail_rcu(&po->link, &prf_list);
-> +	prf_list_unlock(flags);
-> +
-> +out:
-> +	return;
-> +}
-> +
-> +static int pgo_module_notifier(struct notifier_block *nb, unsigned long event,
-> +				void *pdata)
-> +{
-> +	struct module *mod = pdata;
-> +	struct prf_object *po;
-> +	unsigned long flags;
-> +
-> +	if (event == MODULE_STATE_LIVE) {
-> +		/* does the module have profiling info? */
-> +		if (mod->prf_data
-> +			&& mod->prf_cnts
-> +			&& mod->prf_names
-> +			&& mod->prf_vnds) {
-> +
-> +			/* setup module profiling */
-> +			pgo_module_init(mod);
-> +		}
-> +	}
-> +
-> +	if (event == MODULE_STATE_GOING) {
-> +		/* find the prf_object from the list */
-> +		rcu_read_lock();
-> +
-> +		list_for_each_entry_rcu(po, &prf_list, link) {
-> +			if (strcmp(po->mod_name, mod->name) == 0)
-> +				goto out_unlock;
-> +		}
-> +		/* no such module */
-> +		po = NULL;
-> +
-> +out_unlock:
-> +		rcu_read_unlock();
+Linus -
 
-Is it correct to do the unlock before the possible list_del_rcu()?
+what you wrote here on June 10 is fatally wrong. You mistake a neat,
+cute narrative of how we imagine mRNA works, with what these vaccines
+actually do in the body.
 
-> +
-> +		if (po) {
-> +			/* remove from profiled modules */
-> +			flags = prf_list_lock();
-> +			list_del_rcu(&po->link);
-> +			prf_list_unlock(flags);
-> +
-> +			debugfs_remove(po->file);
-> +			po->file = NULL;
-> +
-> +			/* cleanup memory */
-> +			kfree_rcu(po, rcu);
-> +		}
+You owe it to yourself, and to anyone who trusts you, to postpone
+non-urgent work, and spend a month researching these vaccines.
 
-Though I thought module load/unload was already under a global lock, so
-maybe a race isn't possible here.
+Look into the number of deaths and side effects "after" the vaccines.
+Even the numbers in official reports (VAERS and its European
+equivalent) are unprecedented compared to any previous treatment. The
+number of deaths officially logged is hundreds of times beyond
+anything before.
 
-For the next version of this series, please Cc the module subsystem
-maintainer as well:
-	Jessica Yu <jeyu@kernel.org>
+These unprecedented numbers are accompanied by suppression of
+information, deplatforming and censorship that we had never seen.
+Doctors and nurses are being fired and having licenses suspended for
+doubting the administrators' narrative. Filling out a VAERS report is
+12+ pages of work with penalties.
 
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static struct notifier_block pgo_module_nb = {
-> +	.notifier_call = pgo_module_notifier
-> +};
-> +
->  /* Create debugfs entries. */
->  static int __init pgo_init(void)
->  {
-> @@ -444,6 +548,7 @@ static int __init pgo_init(void)
->  
->  	/* enable profiling */
->  	flags = prf_list_lock();
-> +	prf_vmlinux.mod_name = "vmlinux";
->  	list_add_tail_rcu(&prf_vmlinux.link, &prf_list);
->  	prf_list_unlock(flags);
->  
-> @@ -460,6 +565,9 @@ static int __init pgo_init(void)
->  				 &prf_reset_fops))
->  		goto err_remove;
->  
-> +	/* register module notifer */
-> +	register_module_notifier(&pgo_module_nb);
-> +
->  	/* show notice why the system slower: */
->  	pr_notice("Clang PGO instrumentation is active.");
->  
-> @@ -473,6 +581,9 @@ static int __init pgo_init(void)
->  /* Remove debugfs entries. */
->  static void __exit pgo_exit(void)
->  {
-> +	/* unsubscribe the notifier and do cleanup. */
-> +	unregister_module_notifier(&pgo_module_nb);
-> +
->  	debugfs_remove_recursive(directory);
->  }
->  
-> diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
-> index e214c9d7a113..70bab7e4c153 100644
-> --- a/kernel/pgo/instrument.c
-> +++ b/kernel/pgo/instrument.c
-> @@ -33,7 +33,6 @@
->   * ensures that we don't try to serialize data that's only partially updated.
->   */
->  static DEFINE_SPINLOCK(pgo_lock);
-> -static int current_node;
->  
->  unsigned long prf_lock(void)
->  {
-> @@ -62,8 +61,6 @@ static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
->  	struct llvm_prf_data *data_end;
->  	int max_vnds;
->  
-> -	rcu_read_lock();
-> -
+The VAERS numbers are backlogged and suppressed, and the real numbers
+may be 10x higher.
 
-Please move these rcu locks change into the patch that introduces them
-to avoid adding those changes here.
+You believe these vaccines are saving millions. But the same
+dishonesty which is used to suppress information about them was used
+to inflate the pandemic, in all ways you can think of.
 
->  	list_for_each_entry_rcu(po, &prf_list, link) {
->  		/* get section limits */
->  		max_vnds = prf_vnds_count(po);
-> @@ -76,7 +73,6 @@ static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
->  		 */
->  		if (memory_contains(po->data, data_end, p, sizeof(*p))) {
->  
-> -
->  			if (WARN_ON_ONCE(po->current_node >= max_vnds))
->  				return NULL; /* Out of nodes */
->  
-> @@ -87,7 +83,6 @@ static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
->  	}
->  
->  out:
-> -	rcu_read_unlock();
->  	return vnode;
->  }
->  
-> @@ -108,8 +103,14 @@ void __llvm_profile_instrument_target(u64 target_value, void *data, u32 index)
->  	u8 values = 0;
->  	unsigned long flags;
->  
-> +	/*
-> +	 * lock the underlying prf_object(s) in place,
-> +	 * so they won't vanish while we are operating on it.
-> +	 */
-> +	rcu_read_lock();
-> +
->  	if (!p || !p->values)
-> -		return;
-> +		goto rcu_unlock;
->  
->  	counters = (struct llvm_prf_value_node **)p->values;
->  	curr = counters[index];
-> @@ -117,7 +118,7 @@ void __llvm_profile_instrument_target(u64 target_value, void *data, u32 index)
->  	while (curr) {
->  		if (target_value == curr->value) {
->  			curr->count++;
-> -			return;
-> +			goto rcu_unlock;
->  		}
->  
->  		if (curr->count < min_count) {
-> @@ -136,7 +137,7 @@ void __llvm_profile_instrument_target(u64 target_value, void *data, u32 index)
->  			curr->value = target_value;
->  			curr->count++;
->  		}
-> -		return;
-> +		goto rcu_unlock;
->  	}
->  
->  	/* Lock when updating the value node structure. */
-> @@ -156,6 +157,8 @@ void __llvm_profile_instrument_target(u64 target_value, void *data, u32 index)
->  
->  out:
->  	prf_unlock(flags);
-> +rcu_unlock:
-> +	rcu_read_unlock();
->  }
->  EXPORT_SYMBOL(__llvm_profile_instrument_target);
->  
-> -- 
-> 2.32.0
-> 
+Putting people with respiratory issues into nursing homes LITERALLY to
+drive up deaths. PCR tests with 40+ cycles and 10% false positives,
+while testing much of the population every week. Rewarding hospitals
+$13k for each Covid diagnosis and $30k to put them on a ventilator,
+which is a death sentence. Changed reporting guidelines so that deaths
+"with virus" are treated as if "of" the virus. If the common cold were
+treated this way, it would be the most lethal disease in history.
+According to CDC, only 6% of US deaths "with Covid" actually listed it
+as the single cause. Suppressing HCQ and ivermectin EVEN NOW when
+hundreds of studies have shown they are safe and effective cures. In
+Queensland, a doctor can't prescribe HCQ for Covid on penalty of up to
+6 months in prison.
 
--- 
-Kees Cook
+Now with these vaccines, the opposite. Every death "with" Covid is
+because of Covid, but every death "after" vaccines is unrelated to
+vaccines. An anonymous report by a doctor in the Kansas City area
+states that out of 500 people who got vaccinated in nursing homes, 22
+died within 48 hours. Are you willing to bet your life that this is
+false?
+
+You are making the stereotypical mistake of an engineer. You work with
+simple deterministic systems. This gives you confidence to treat
+everything as a simple deterministic system - including the body.
+
+You have little in common with PhDs who treat the body as complex and
+holistic, and warn about the effects of our interventions. Such people
+seem like Debby Downers to you.
+
+You find much more in common with those drug and vaccine developers
+who use a gung-ho, engineer mentality. Even when the penalty for their
+mistakes and dishonesty is death.
+
+Can you recall, off-hand, the most recent experience of merging a
+kernel commit which you 100% believed will not break userspace - and
+then it broke userspace? Isn't it nice, for you, that the penalty for
+this is not disability or death for 5% of your users?
+
+Count the number of times you have done this. How many of your users
+would still be alive if your product was an annual injectable? What
+does this say about a vax developed this way?
+
+You MUST research this, or more will die; including people you know.
+Your current knowledge - not to even mention the statement you made -
+is extremely dangerous and harmful.
+
+The West Coast is a bubble bordering on self-indoctrinated and insane.
+There's nothing technical that you can do right now that's more
+important than waking yourself up from this.
+
+It's not that this discussion does not belong on this mailing list.
+It's that 90% of the work on this mailing list should stop right now,
+and EVERYONE should research Covid and the vaccines.
+
+Regards,
+
+denis bider
+
+
+----- Original Message -----
+
+>
+> And I know *a lot* of people who will never take part in this generic
+> human experiment that basically creates a new humanoid race (people
+> who generate and exhaust the toxic spike proteine, whose gene sequence
+> doesn't look quote natural). I'm one of them, as my whole family.
+
+Please keep your insane and technically incorrect anti-vax comments to yourself.
+
+You don't know what you are talking about, you don't know what mRNA
+is, and you're spreading idiotic lies. Maybe you do so unwittingly,
+because of bad education. Maybe you do so because you've talked to
+"experts" or watched youtube videos by charlatans that don't know what
+they are talking about.
+
+But dammit, regardless of where you have gotten your mis-information
+from, any Linux kernel discussion list isn't going to have your
+idiotic drivel pass uncontested from me.
+
+Vaccines have saved the lives of literally tens of millions of people.
+
+Just for your edification in case you are actually willing to be
+educated: mRNA doesn't change your genetic sequence in any way. It is
+the exact same intermediate - and temporary - kind of material that
+your cells generate internally all the time as part of your normal
+cell processes, and all that the mRNA vaccines do is to add a dose
+their own specialized sequence that then makes your normal cell
+machinery generate that spike protein so that your body learns how to
+recognize it.
+
+The half-life of mRNA is a few hours. Any injected mRNA will be all
+gone from your body in a day or two. It doesn't change anything
+long-term, except for that natural "your body now knows how to
+recognize and fight off a new foreign protein" (which then tends to
+fade over time too, but lasts a lot longer than a few days). And yes,
+while your body learns to fight off that foreign material, you may
+feel like shit for a while. That's normal, and it's your natural
+response to your cells spending resources on learning how to deal with
+the new threat.
+
+And of the vaccines, the mRNA ones are the most modern, and the most
+targeted - exactly because they do *not* need to have any of the other
+genetic material that you traditionally have in a vaccine (ie no need
+for basically the whole - if weakened - bacterial or virus genetic
+material). So the mRNA vaccines actually have *less* of that foreign
+material in them than traditional vaccines do. And a *lot* less than
+the very real and actual COVID-19 virus that is spreading in your
+neighborhood.
+
+Honestly, anybody who has told you differently, and who has told you
+that it changes your genetic material, is simply uneducated. You need
+to stop believing the anti-vax lies, and you need to start protecting
+your family and the people around you. Get vaccinated.
+
+I think you are in Germany, and COVID-19 numbers are going down. It's
+spreading a lot less these days, largely because people around you
+have started getting the vaccine - about half having gotten their
+first dose around you, and about a quarter being fully vaccinated. If
+you and your family are more protected these days, it's because of all
+those other people who made the right choice, but it's worth noting
+that as you see the disease numbers go down in your neighborhood,
+those diminishing numbers are going to predominantly be about people
+like you and your family.
+
+So don't feel all warm and fuzzy about the fact that covid cases have
+dropped a lot around you. Yes, all those vaccinated people around you
+will protect you too, but if there is another wave, possibly due to a
+more transmissible version - you and your family will be at _much_
+higher risk than those vaccinated people because of your ignorance and
+mis-information.
+
+Get vaccinated. Stop believing the anti-vax lies.
+
+And if you insist on believing in the crazy conspiracy theories, at
+least SHUT THE HELL UP about it on Linux kernel discussion lists.
+
+Linus
