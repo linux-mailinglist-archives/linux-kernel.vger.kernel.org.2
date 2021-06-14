@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF943A6547
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8223A6529
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235893AbhFNLg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:36:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52394 "EHLO mail.kernel.org"
+        id S236772AbhFNLet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235471AbhFNLWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:22:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EE1C6199F;
-        Mon, 14 Jun 2021 10:52:36 +0000 (UTC)
+        id S236057AbhFNLUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:20:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9B746124B;
+        Mon, 14 Jun 2021 10:51:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667957;
-        bh=gohvI4mWJAJfGGA4eos4bQ73q0I6BiOm3CySF1JfH6Q=;
+        s=korg; t=1623667896;
+        bh=M+mp2mty580h+8V6h5y5VU36PuJpZXnftEuPQHDzZyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wO669HWUMEzaN9qKVI1V1bHzTjTLLR6CVDCxFxgIOeSWPRaw+w0TPBksk+FgJE6ba
-         X0U7C3VYgvDuRHJs3+J77MH12yUjh8xRZFfWbZm1p3UKkMVQeQxS/KgETAoV8jJ2fk
-         UBXS6eHQmlRORaig3QLupC+4SxwbIGASfGY3jA8c=
+        b=qjF/2eSFaHAW8bi6MpWKwglTYCq2nuTJ7IFegW4AV/g75jVLup9dBEvKoiO1+usFX
+         +TQYC1mxfSbrVJZC8h0tMlCYhuNXCQzjskNtFmqLtgwVUeheleBpeR02NKIbOpK+kN
+         ZKuuZUIxweGDxBoU91SsdZyS1U6Y5KvK3u6eNsiA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH 5.12 097/173] usb: typec: intel_pmc_mux: Put fwnode in error case during ->probe()
-Date:   Mon, 14 Jun 2021 12:27:09 +0200
-Message-Id: <20210614102701.394133903@linuxfoundation.org>
+        stable@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH 5.12 099/173] usb: gadget: f_fs: Ensure io_completion_wq is idle during unbind
+Date:   Mon, 14 Jun 2021 12:27:11 +0200
+Message-Id: <20210614102701.455627186@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -40,37 +38,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Wesley Cheng <wcheng@codeaurora.org>
 
-commit 1a85b350a7741776a406005b943e3dec02c424ed upstream.
+commit 6fc1db5e6211e30fbb1cee8d7925d79d4ed2ae14 upstream.
 
-device_get_next_child_node() bumps a reference counting of a returned variable.
-We have to balance it whenever we return to the caller.
+During unbind, ffs_func_eps_disable() will be executed, resulting in
+completion callbacks for any pending USB requests.  When using AIO,
+irrespective of the completion status, io_data work is queued to
+io_completion_wq to evaluate and handle the completed requests.  Since
+work runs asynchronously to the unbind() routine, there can be a
+scenario where the work runs after the USB gadget has been fully
+removed, resulting in accessing of a resource which has been already
+freed. (i.e. usb_ep_free_request() accessing the USB ep structure)
 
-Fixes: 6701adfa9693 ("usb: typec: driver for Intel PMC mux control")
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Explicitly drain the io_completion_wq, instead of relying on the
+destroy_workqueue() (in ffs_data_put()) to make sure no pending
+completion work items are running.
+
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210607205007.71458-1-andy.shevchenko@gmail.com
+Link: https://lore.kernel.org/r/1621644261-1236-1-git-send-email-wcheng@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/mux/intel_pmc_mux.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_fs.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -636,8 +636,10 @@ static int pmc_usb_probe(struct platform
- 			break;
- 
- 		ret = pmc_usb_register_port(pmc, i, fwnode);
--		if (ret)
-+		if (ret) {
-+			fwnode_handle_put(fwnode);
- 			goto err_remove_ports;
-+		}
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -3567,6 +3567,9 @@ static void ffs_func_unbind(struct usb_c
+ 		ffs->func = NULL;
  	}
  
- 	platform_set_drvdata(pdev, pmc);
++	/* Drain any pending AIO completions */
++	drain_workqueue(ffs->io_completion_wq);
++
+ 	if (!--opts->refcnt)
+ 		functionfs_unbind(ffs);
+ 
 
 
