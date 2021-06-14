@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2F43A68A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49ADD3A689D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbhFNOEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:04:48 -0400
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:39918 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbhFNOEq (ORCPT
+        id S234209AbhFNODp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:03:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54976 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233180AbhFNODn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:04:46 -0400
-Received: by mail-pl1-f172.google.com with SMTP id v11so6606029ply.6;
-        Mon, 14 Jun 2021 07:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=s4p3dw7oIfdQoFT07HVLF2BIw5Xk5aaqZSJ+5CsRAH8=;
-        b=tij0bsvbnbllhsjEvjQapbZcIKGkodJud3kAUj35bR8BpmF1Q/Yq6gzLlXVnBdrizd
-         0WP3uVrYGnjuDYqn9KPDAdXnM+Ow5gJSYROoiK2MwHI/6YMaAju3n1RhEEkJaPP2x1Ar
-         QrxeJ9liRXibkdPaa5V2lEm052dzUIZBaHVx0F2O7Nj0l4TLw1TgO6auglbegquJ+vgB
-         eTF4B/qWfKuP4hgUt5JoBbaowKeJXuHVQ5RhXci0KS5vEQVwMS1+1bK5WTQOXzF6RwJ4
-         kPXX8UQyiWjAcOpmGvGQuiEPCud6UsoAbLNlhj9jXYFT4KBRSs7bTXZx7FtnC4XPrRiU
-         86EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=s4p3dw7oIfdQoFT07HVLF2BIw5Xk5aaqZSJ+5CsRAH8=;
-        b=TjApuHBSSXz74EvcGv+kAB+JsgpbeN7q0r6wbU2AI7HRTO/W2R4QqPWzhkKhQ01Ych
-         obvVH7GQxSuM9Z72cc7G/uYcY0x2IA9WjZ473p2ryMJJXp8IAsxbsfHQggzR8PdHl6fn
-         maC2Bg6LLu7RuaVEmEJ4EjJRMIuHfJQyZsVrANq/whqo7m40v9O1GBKRH6+SrGokDfcM
-         5wNjDBkFvPSu2cxrOjjVok2A/YSmwonwPHO/35WSrxGoLGl7+/DhchWAGytj0KsiULS8
-         GTGGEp7gcD8kEA+eLo6MUqyltYSWpi1VVjCHiIg5KxrwFlqFNQdz1m5iWYzchfYifvb/
-         WwAQ==
-X-Gm-Message-State: AOAM532yKs7WpGxPE+Q1boFlPh4IrY/kKenxpkgKBY/dbJhKObqcuBXl
-        Kl/BDDuRgE6zGuY8EM3dNt3M8NHROQ1Rifv+xkg=
-X-Google-Smtp-Source: ABdhPJxHhqfrNxrAmYejLohWEqvmGIR/4Q6zI9EwAT0Mm+oNEmZIB5sYp6ecXTfiKcS1915dW8iFHQ==
-X-Received: by 2002:a17:90a:31c4:: with SMTP id j4mr24063049pjf.105.1623679288403;
-        Mon, 14 Jun 2021 07:01:28 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id t1sm12584258pjs.20.2021.06.14.07.01.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 07:01:27 -0700 (PDT)
-Message-ID: <60c76137.1c69fb81.65d98.3853@mx.google.com>
-Date:   Mon, 14 Jun 2021 07:01:27 -0700 (PDT)
-X-Google-Original-Date: Mon, 14 Jun 2021 14:01:26 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/131] 5.10.44-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 14 Jun 2021 10:03:43 -0400
+Date:   Mon, 14 Jun 2021 16:01:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623679299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3DT1R4sMY2Bm8waC43/W6qp1g1k6z/nnrssefIHXpts=;
+        b=l/jgwy4bBanobhax+edKgJIdrMspIYO3LBw1gsyL6zm2wUjsZNdilic6SMXWTOTkeVhhDe
+        u6y4/SmiHs+wQ+iHphLvqeHbzQGdY/UflX7yvxrCbEVt4E+E2gJTCmAYIXVE+dSUZFsEOk
+        J38+zl9sgDY9gdqsBftWhpnMVk7J0UoOqBytPCHmorcPyFm0DD2oCBpnWa5ibMsK9k01Vv
+        kjBMFtbizppkoDq20i29KNwKLG8y/fyNfgj9MVAVXIdLqsbwRF0EQYpydqwxXnt6UpCkwU
+        TyV089RJon43uKDL52oCLS9pgQ8yhqrybokTn59OqmRWJK21kVL43vBRA4z0HA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623679299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3DT1R4sMY2Bm8waC43/W6qp1g1k6z/nnrssefIHXpts=;
+        b=7DRKZukesw9FZsY7e3oUrBpBBFHFgoTIzeQsVbdN0CTO4DMYe8m1pG4PtXvix6ifMRiejR
+        T/E6tm3gRegIWeBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [RFC v2 33/34] mm, slub: use migrate_disable() on PREEMPT_RT
+Message-ID: <20210614140138.urxtrsk3jddnv57r@linutronix.de>
+References: <20210609113903.1421-1-vbabka@suse.cz>
+ <20210609113903.1421-34-vbabka@suse.cz>
+ <c553c26f-1f9c-e5ab-b71b-b2b5eeb59ad2@suse.cz>
+ <20210614111619.l3ral7tt2wasvlb4@linutronix.de>
+ <390fc59e-17ed-47eb-48ff-8dae93c9a718@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <390fc59e-17ed-47eb-48ff-8dae93c9a718@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 12:26:01 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.44 release.
-> There are 131 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 2021-06-14 13:33:43 [+0200], Vlastimil Babka wrote:
+> On 6/14/21 1:16 PM, Sebastian Andrzej Siewior wrote:
+> > I haven't looked at the series and I have just this tiny question: why
+> > did migrate_disable() crash for Mel on !RT and why do you expect that it
+> > does not happen on PREEMPT_RT?
 > 
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
+> Right, so it's because __slab_alloc() has this optimization to avoid re-reading
+> 'c' in case there is no preemption enabled at all (or it's just voluntary).
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> #ifdef CONFIG_PREEMPTION
+>         /*
+>          * We may have been preempted and rescheduled on a different
+>          * cpu before disabling preemption. Need to reload cpu area
+>          * pointer.
+>          */
+>         c = slub_get_cpu_ptr(s->cpu_slab);
+> #endif
 > 
-> thanks,
+> Mel's config has CONFIG_PREEMPT_VOLUNTARY, which means CONFIG_PREEMPTION is not
+> enabled.
 > 
-> greg k-h
+> But then later in ___slab_alloc() we have
 > 
+>         slub_put_cpu_ptr(s->cpu_slab);
+>         page = new_slab(s, gfpflags, node);
+>         c = slub_get_cpu_ptr(s->cpu_slab);
+> 
+> And this is not hidden under CONFIG_PREEMPTION, so with the #ifdef bug the
+> slub_put_cpu_ptr did a migrate_enable() with Mel's config, without prior
+> migrate_disable().
 
-5.10.44-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Ach, right. The update to this field is done with cmpxchg-double (if I
+remember correctly) but I don't remember if this is also re-entry safe. 
 
+> If there wasn't the #ifdef PREEMPT_RT bug:
+> - this slub_put_cpu_ptr() would translate to put_cpu_ptr() thus
+> preempt_enable(), which on this config is just a barrier(), so it doesn't matter
+> that there was no matching preempt_disable() before.
+> - with PREEMPT_RT the CONFIG_PREEMPTION would be enabled, so the
+> slub_get_cpu_ptr() would do a migrate_disable() and there's no imbalance.
+> 
+> But now that I dig into this in detail, I can see there might be another
+> instance of this imbalance bug, if CONFIG_PREEMPTION is disabled, but
+> CONFIG_PREEMPT_COUNT is enabled, which seems to be possible in some debug
+> scenarios. Because then preempt_disable()/preempt_enable() still manipulate the
+> preempt counter and compiling them out in __slab_alloc() will cause imbalance.
+> 
+> So I think the guards in __slab_alloc() should be using CONFIG_PREEMPT_COUNT
+> instead of CONFIG_PREEMPT to be correct on all configs. I dare not remove them
+> completely :)
+
+:)
+
+Sebastian
