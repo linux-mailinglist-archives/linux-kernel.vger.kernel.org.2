@@ -2,144 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E57A3A69CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B8E3A69DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbhFNPLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232958AbhFNPLi (ORCPT
+        id S233281AbhFNPSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:18:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54698 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233080AbhFNPSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:11:38 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D136C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:09:35 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id g20so17352006ejt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nS4UUGRoYFO8XuhntM83rYU5OFIuElNUgrC4hv5zVEw=;
-        b=Gx19XFniz0S90ZOzBRGyKfu6K3XR2SeYSfvZ/jCrcZRiJ3iI2PU4fy//dH/geP6bnT
-         dGF5XRn6BYT3tee634X6a0ocuq9Tecw+Tp+Pfvi/dqKYe4cxJQBjpl6h28i+EKzVjdko
-         T9FvB4YD1XgdsEKrQjOVmctUlFaPH9P8teNfpMr5R78Z0RsIoV6yJl+wBb/DzG78/U7X
-         QiP8f5I12g6ODDeT6VKN+fzgTbzpok9LC7dDY3ROGmgU/yZBT6KGqR0z6RvCV8qo5T5z
-         eWAqeBx+NUO00QGVkvSDpIHqTmSHhV+d0sEa8ppAbr5J0geVuLlBO3g3eKhblUiq5ZzY
-         kosw==
+        Mon, 14 Jun 2021 11:18:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623683760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tseWl+ar2j5bgA3GbFaHmCrYs1B8K7aJoZuY0R4FknU=;
+        b=YS6PBhEG+GdcaDKD2xrXxo0RCRSTZbrxW0ZkgA7cBFZ8kB+xU5wSu9v3KpJ4TSzYMmXPe9
+        dP68iFC41uEHRr88ZwOTTxgHWTSOrXi/7VFNSpPznJuSRFbLndpLAbbT1HQaL12G+44Slm
+        eNkGuLg4F5+bjf4vCX0sATXJHswgj+s=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-QHzBaR2MOD64zEAL-z7q8w-1; Mon, 14 Jun 2021 11:15:59 -0400
+X-MC-Unique: QHzBaR2MOD64zEAL-z7q8w-1
+Received: by mail-oo1-f71.google.com with SMTP id e10-20020a4ab14a0000b029020e1573bdb7so7136467ooo.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:15:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nS4UUGRoYFO8XuhntM83rYU5OFIuElNUgrC4hv5zVEw=;
-        b=gGNAMFT363cvZ8JJNr8cwmtpmhhu/h4PmRHFtj4QxblDKWE1LT+gi/frzKISwoZbHY
-         IF6AMghtIRyGLKXmmufD1376AAQ6InpAtHTzhiW+Y09dEUIh7kEIKnMo2BS3wm70fHnM
-         p5k2F56HyH/n3HzjxoEixiIRAI/Loe+Dwenkyx9f1Yob5rvJYOldQWivVj684RztiXm6
-         xUoperNXgzY9wFJ77Nr8/PJqKKbxv/bxk9pT37uK8BkedBEPhOtbqTIbLa02U7AGEU3A
-         KZqVa+ljpHSM3Z6uoEwnBARIexFnQBy52HSjd0Y5Zu1jBF0Bs0kNznCrER4vYzRBia/s
-         ZHSA==
-X-Gm-Message-State: AOAM5314qH429PPn5k4D6eChw34AiJzhMU2cAHJXMWE0dsu2J9ZxYNll
-        tYUVd1EZISR13cSt4GM3kpg=
-X-Google-Smtp-Source: ABdhPJwybqirNZF9TD5nNpOuJH6sW6OWCb7SUxeFPY75PFg3bJpbgVpK8wDuby9nbS0u/Yw251amsA==
-X-Received: by 2002:a17:906:eb88:: with SMTP id mh8mr15549128ejb.540.1623683374015;
-        Mon, 14 Jun 2021 08:09:34 -0700 (PDT)
-Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
-        by smtp.gmail.com with ESMTPSA id du7sm9137288edb.1.2021.06.14.08.09.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 08:09:33 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v3] x86/resctrl: Fix kernel-doc in pseudo_lock.c
-Date:   Mon, 14 Jun 2021 17:09:29 +0200
-Message-Id: <20210614150929.3151-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tseWl+ar2j5bgA3GbFaHmCrYs1B8K7aJoZuY0R4FknU=;
+        b=tomJ5k+NEeBK5o97hpeGXwSU8nqCCWqkXQN55Fxv//swnkGmb5aksnyqd/v9ppZ6E0
+         IKdzK2nvLH+Cm0jbeXEIEht3rGGp4ciwFgV7SUsHp+0mVvAr5gJTSASUGX5S3ePcrVpL
+         HJaFHjvlknjmBYGVdmMIhE4xC1ulngeanCNjnb7QLz8Iq7bh6D8txg1o4f7mDeuqg1As
+         QMKc5zBT2iF5mzYtpEoODIv2bY+dj9U7fSEI4pQAQzd8nXZe5FX4d9s7ZDOs21oJVlk+
+         jE7z8eh5QIVzexaUtyoh0yESsJPa5AZpfP0kTtzGxlW10crkwIcIvkp8Todejeul9rM5
+         /iig==
+X-Gm-Message-State: AOAM5303Ax7Tk1LAnHGBr9NSwcCW8HQnrQPI15QraaIlFhRG6aRPmNNz
+        nkbRqZu/K8CI7YEgrEno/9D9wvukncNaqEejBHaVmPIGWubZpB/WBaaol8Ww06h4tHpuciRl7y9
+        4EsDRmK5wc6vIJ4DfbSoM9QCm
+X-Received: by 2002:a9d:4d12:: with SMTP id n18mr14245631otf.128.1623683758961;
+        Mon, 14 Jun 2021 08:15:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcaCZ7HY5QTYsEFbkVzcsOtHFA2QLCLpRc2qiT/TOz9XlKqbbHHsOe3awXHQkzSxP0bJe4eQ==
+X-Received: by 2002:a9d:4d12:: with SMTP id n18mr14245619otf.128.1623683758789;
+        Mon, 14 Jun 2021 08:15:58 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a24sm3365436otr.3.2021.06.14.08.15.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 08:15:58 -0700 (PDT)
+Subject: Re: [PATCH v3 1/4] fpga: dfl: reorganize to subdir layout
+To:     Luca Ceresoli <luca@lucaceresoli.net>, mdf@kernel.org,
+        hao.wu@intel.com, michal.simek@xilinx.com,
+        gregkh@linuxfoundation.org, krzysztof.kozlowski@canonical.com,
+        dinguyen@kernel.org, nava.manne@xilinx.com, yilun.xu@intel.com,
+        davidgow@google.com, fpacheco@redhat.com, richard.gong@intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210611162129.3203483-1-trix@redhat.com>
+ <20210611162129.3203483-3-trix@redhat.com>
+ <3e83dee8-4746-b22b-c032-1d73364f9cb7@lucaceresoli.net>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <c8ff863b-e904-3e39-f397-31efb0762a95@redhat.com>
+Date:   Mon, 14 Jun 2021 08:15:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3e83dee8-4746-b22b-c032-1d73364f9cb7@lucaceresoli.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add undocumented parameters detected by scripts/kernel-doc.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
-v2->v3: According to a second review by Reinette Chatre, drop many 
-unrelated changes that should go in separate patches. Modify also the
-patch log.
-v1->v2: According to a first review by Reinette Chatre
-<reinette.chatre@intel.com>, modify the 'Subject' to conform to x86
-subsystem, modify a wrong description, and run 'scripts/kernel-doc'
-to find out more warnings that 'sparse' didn't notice.
+On 6/14/21 2:28 AM, Luca Ceresoli wrote:
+> Hi Tom,
+>
+> On 11/06/21 18:21, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> Follow drivers/net/ethernet/ which has control configs
+>> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+>> Since fpgas do not have many vendors, drop the 'VENDOR' and use
+>> FPGA_BLA.
+>>
+>> There are several new subdirs
+>> altera/
+>> dfl/
+>> lattice/
+>> xilinx/
+>>
+>> Each subdir has a Kconfig that has a new/reused
+>>
+>> if FPGA_BLA
+>>    ... existing configs ...
+>> endif FPGA_BLA
+>>
+>> Which is sourced into the main fpga/Kconfig
+>>
+>> Each subdir has a Makefile whose transversal is controlled in the
+>> fpga/Makefile by
+>>
+>> obj-$(CONFIG_FPGA_BLA) += bla/
+>>
+>> This is the dfl/ subdir part.
+>>
+>> Create a dfl/ subdir
+>> Move dfl-* files to it.
+>> Add a Kconfig and Makefile
+>>
+>> Because FPGA_DFL is now used in dfl/Kconfig in a if/endif
+>> block, all the other configs in dfl/Kconfig implicitly depend
+>> on FPGA_DFL.  So the explicit dependence can be removed.  Also
+>> since FPGA_DFL depends on HAS_IOMEM, it can be removed from the
+>> other configs.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   MAINTAINERS                                 |  2 +-
+>>   drivers/fpga/Kconfig                        | 80 +-------------------
+>>   drivers/fpga/Makefile                       | 18 +----
+>>   drivers/fpga/dfl/Kconfig                    | 83 +++++++++++++++++++++
+>>   drivers/fpga/dfl/Makefile                   | 16 ++++
+>>   drivers/fpga/{ => dfl}/dfl-afu-dma-region.c |  0
+>>   drivers/fpga/{ => dfl}/dfl-afu-error.c      |  0
+>>   drivers/fpga/{ => dfl}/dfl-afu-main.c       |  0
+>>   drivers/fpga/{ => dfl}/dfl-afu-region.c     |  0
+>>   drivers/fpga/{ => dfl}/dfl-afu.h            |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme-br.c         |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme-error.c      |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme-main.c       |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme-mgr.c        |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme-perf.c       |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme-pr.c         |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme-pr.h         |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme-region.c     |  0
+>>   drivers/fpga/{ => dfl}/dfl-fme.h            |  0
+>>   drivers/fpga/{ => dfl}/dfl-n3000-nios.c     |  0
+>>   drivers/fpga/{ => dfl}/dfl-pci.c            |  0
+>>   drivers/fpga/{ => dfl}/dfl.c                |  0
+>>   drivers/fpga/{ => dfl}/dfl.h                |  0
+>>   23 files changed, 102 insertions(+), 97 deletions(-)
+>>   create mode 100644 drivers/fpga/dfl/Kconfig
+>>   create mode 100644 drivers/fpga/dfl/Makefile
+>>   rename drivers/fpga/{ => dfl}/dfl-afu-dma-region.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-afu-error.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-afu-main.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-afu-region.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-afu.h (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-fme-br.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-fme-error.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-fme-main.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-fme-mgr.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-fme-perf.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-fme-pr.c (100%)
+> You should update Documentation/fpga/dfl.rst too as it mentions
+> "drivers/fpga/dfl-fme-pr.c". This update was in your initial patch 5 so
+> it's lost now, but it really should be in this patch.
+>
+>>   rename drivers/fpga/{ => dfl}/dfl-fme-pr.h (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-fme-region.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-fme.h (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-n3000-nios.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl-pci.c (100%)
+>>   rename drivers/fpga/{ => dfl}/dfl.c (100%)
+> Same as above.
 
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Yes to both, will be fixed in v4
 
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-index 05a89e33fde2..84b9bf4daa33 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -49,6 +49,7 @@ static struct class *pseudo_lock_class;
- 
- /**
-  * get_prefetch_disable_bits - prefetch disable bits of supported platforms
-+ * @void: It takes no parameters.
-  *
-  * Capture the list of platforms that have been validated to support
-  * pseudo-locking. This includes testing to ensure pseudo-locked regions
-@@ -162,8 +163,9 @@ static struct rdtgroup *region_find_by_minor(unsigned int minor)
- }
- 
- /**
-- * pseudo_lock_pm_req - A power management QoS request list entry
-- * @list:	Entry within the @pm_reqs list for a pseudo-locked region
-+ * struct pseudo_lock_pm_req - A power management QoS request list entry
-+ * @list:	Entry within the power management requests list for a
-+ *		pseudo-locked region
-  * @req:	PM QoS request
-  */
- struct pseudo_lock_pm_req {
-@@ -184,6 +186,7 @@ static void pseudo_lock_cstates_relax(struct pseudo_lock_region *plr)
- 
- /**
-  * pseudo_lock_cstates_constrain - Restrict cores from entering C6
-+ * @plr: Pseudo-locked region
-  *
-  * To prevent the cache from being affected by power management entering
-  * C6 has to be avoided. This is accomplished by requesting a latency
-@@ -196,6 +199,8 @@ static void pseudo_lock_cstates_relax(struct pseudo_lock_region *plr)
-  * the ACPI latencies need to be considered while keeping in mind that C2
-  * may be set to map to deeper sleep states. In this case the latency
-  * requirement needs to prevent entering C2 also.
-+ *
-+ * Return: 0 on success, <0 on failure
-  */
- static int pseudo_lock_cstates_constrain(struct pseudo_lock_region *plr)
- {
-@@ -520,7 +525,7 @@ static int pseudo_lock_fn(void *_rdtgrp)
- 
- /**
-  * rdtgroup_monitor_in_progress - Test if monitoring in progress
-- * @r: resource group being queried
-+ * @rdtgrp: resource group being queried
-  *
-  * Return: 1 if monitor groups have been created for this resource
-  * group, 0 otherwise.
-@@ -1140,6 +1145,8 @@ static int measure_l3_residency(void *_plr)
- 
- /**
-  * pseudo_lock_measure_cycles - Trigger latency measure to pseudo-locked region
-+ * @rdtgrp: Resource group to which the pseudo-locked region belongs.
-+ * @sel: Selector of which measurement to perform on a pseudo-locked region.
-  *
-  * The measurement of latency to access a pseudo-locked region should be
-  * done from a cpu that is associated with that pseudo-locked region.
--- 
-2.32.0
+Tom
+
+
+>
 
