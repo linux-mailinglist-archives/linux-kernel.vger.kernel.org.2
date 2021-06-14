@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AA63A6BF8
+	by mail.lfdr.de (Postfix) with ESMTP id 998BC3A6BF9
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhFNQjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:39:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55740 "EHLO
+        id S234777AbhFNQj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:39:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55752 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233153AbhFNQju (ORCPT
+        with ESMTP id S234519AbhFNQjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:39:50 -0400
-Message-Id: <20210614155353.658707307@linutronix.de>
+        Mon, 14 Jun 2021 12:39:52 -0400
+Message-Id: <20210614155353.825709513@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688666;
+        s=2020; t=1623688668;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=sgptCqwazHrrUQbLGDvWvkWN4HvYgcn0Vjf8UKM6zI0=;
-        b=AoQhk1/dIp05jUPL4pLRjCJ6UZyvYFS2sFMRVHSCKKMgAnPar8vVaE6tA5jtwDas+ykXTU
-        8VoR8VvhUthHEXmZJ6rW/VZdayvcD8RzQUk/vABZDxPYy8T7XrTdIrciu6Q92VgsYbun5i
-        Lg6tI6lB/z3cKIvAZhsEF81kWG7d6hd3L8fRwRhaojTAEIlgSaI7vjLNlzBzAkGda22D+h
-        pti6FSG89+86U97iEW++VuKCPQQfVMwlwAp1BNkpL6sDxzjQJpZdgrvNWV1BpvwYzk99R9
-        zbNKQozMUf6m1V9Ehfq+YZJidrniNLyPztMohLL+ALgtTsU2C38/DnWPZSFAew==
+        bh=b0UE/Wtjy44wT2PV0JtkA5Gooc1f+d4nXKHTY1eGR+U=;
+        b=w1zegg7b1eOG6S4k8sglb7A/QuR3mRpIUnDnIDvck1d8pWBQv1rIrGn/TnywuFBpJgdcJe
+        HJ7uhQRb51vwkKRMO6bqQgmGSGvjKWwlwRpFwwxLKNoE+RhmxYSNxSSBLMs8oy8JabReFA
+        ZXhqHUun+7ERjDWDY1WAve4IZaVA94K6yrKZupLBfyqbU8yKAEDrK1cdGc4mb1zPNzB3tE
+        KIbYpOiprnflov+3n1jrOmR8SIAi99H39/UEGjEfPMtQEH+0NWDLA3q8dBzV0ouyP/ovzR
+        vdOk77XCKVDzfi/z6HrU6HEF1qrj5UwM7E+j81W14xdFx3NFyLcnlEw6E1MGWw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688666;
+        s=2020e; t=1623688668;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=sgptCqwazHrrUQbLGDvWvkWN4HvYgcn0Vjf8UKM6zI0=;
-        b=6xQe5yoPWda8gnaqB19zyYrq7u+kE/ITJhQ9n9J5r/haENOZe5Y9E7ruZCiJFIMpmJRqBO
-        2wMxEQj5VNM9nLAA==
-Date:   Mon, 14 Jun 2021 17:44:09 +0200
+        bh=b0UE/Wtjy44wT2PV0JtkA5Gooc1f+d4nXKHTY1eGR+U=;
+        b=fd3oRFJMyne6H2BQFJQcQwPANLdfliowx+Xh+oIYAr9oqumzfDFonYc7uAhSdTQsNIm0QR
+        w8u4fkoyeI3CAWBQ==
+Date:   Mon, 14 Jun 2021 17:44:10 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 01/52] x86/fpu: Make init_fpstate correct with optimized XSAVE
+Subject: [patch V2 02/52] x86/fpu: Fix copy_xstate_to_kernel() gap handling
 References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,157 +53,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The XSAVE init code initializes all enabled and supported components with
-XRSTOR(S) to init state. Then it XSAVEs the state of the components back
-into init_fpstate which is used in several places to fill in the init state
-of components.
+The gap handling in copy_xstate_to_kernel() is wrong in two aspects when
+XSAVES is in use.
 
-This works correctly with XSAVE, but not with XSAVEOPT and XSAVES because
-those use the init optimization and skip writing state of components which
-are in init state. So init_fpstate.xsave still contains all zeroes after
-this operation.
+  1) Copying of xstate.i387.xmm_space is only copied when the SSE feature
+     bit is set. This is not correct because YMM (AVX) shares the XMM space
+     and that state must also be copied if only the YMM feature bit set
+     like already done for MXCSR.
 
-There are two ways to solve that:
+  2) Using init_fpstate for copying the init state of features which are
+     not set in the xstate header is only correct for the legacy area, but
+     not for the extended features area because when XSAVES is in use then
+     init_fpstate is in compacted form which means the xstate offsets which
+     are used to copy from init_fpstate are not valid.
 
-   1) Use XSAVE unconditionally, but that requires to reshuffle the buffer when
-      XSAVES is enabled because XSAVES uses compacted format.
+     Fortunately this is not a real problem today because all extended
+     features in use have an all zeros init state, but it is wrong
+     nevertheless and with a potentially dynamically sized init_fpstate
+     this would result in access outside of the init_fpstate.
 
-   2) Save the components which are known to have a non-zero init state by other
-      means.
+Fix this by:
 
-Looking deeper #2 is the right thing to do because all components the
-kernel supports have all-zeroes init state except the legacy features (FP,
-SSE). Those cannot be hardcoded because the states are not identical on all
-CPUs, but they can be saved with FXSAVE which avoids all conditionals.
+  1) Copying XMM space when the SSE or the YMM feature bits are set
 
-Use FXSAVE to save the legacy FP/SSE components in init_fpstate along with
-a BUILD_BUG_ON() which reminds developers to validate that a newly added
-component has all zeroes init state. As a bonus remove the now unused
-copy_xregs_to_kernel_booting() crutch.
+  2) Keeping track of the last copied state in the target buffer and
+     explicitely zero it when there is a feature or alignment gap.
 
-The XSAVE and reshuffle method can still be implemented in the unlikely
-case that components are added which have a non-zero init state and no
-other means to save them. For now FXSAVE is just simple and good enough.
+     Use the compacted offset when accessing the extended feature space
+     in init_fpstate.
 
-Add fxsave_to_kernel() for that purpose. The duplication with
-copy_fxregs_to_kernel() is cleaned up later.
-
-Fixes: 6bad06b76892 ("x86, xsave: Use xsaveopt in context-switch path when supported")
+Fixes: b8be15d58806 ("x86/fpu/xstate: Re-enable XSAVES")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: stable@vger.kernel.org
 ---
-V2: New patch.
+V2: New patch
 ---
- arch/x86/include/asm/fpu/internal.h |   30 +++++++--------------------
- arch/x86/kernel/fpu/xstate.c        |   39 +++++++++++++++++++++++++++++++++---
- 2 files changed, 44 insertions(+), 25 deletions(-)
+ arch/x86/kernel/fpu/xstate.c |  105 ++++++++++++++++++++++++-------------------
+ 1 file changed, 61 insertions(+), 44 deletions(-)
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -204,6 +204,14 @@ static inline void copy_fxregs_to_kernel
- 		asm volatile("fxsaveq %[fx]" : [fx] "=m" (fpu->state.fxsave));
- }
- 
-+static inline void fxsave_to_kernel(struct fxregs_state *fx)
-+{
-+	if (IS_ENABLED(CONFIG_X86_32))
-+		asm volatile( "fxsave %[fx]" : [fx] "=m" (*fx));
-+	else
-+		asm volatile("fxsaveq %[fx]" : [fx] "=m" (*fx));
-+}
-+
- /* These macros all use (%edi)/(%rdi) as the single memory argument. */
- #define XSAVE		".byte " REX_PREFIX "0x0f,0xae,0x27"
- #define XSAVEOPT	".byte " REX_PREFIX "0x0f,0xae,0x37"
-@@ -270,28 +278,6 @@ static inline void copy_fxregs_to_kernel
- 
- /*
-  * This function is called only during boot time when x86 caps are not set
-- * up and alternative can not be used yet.
-- */
--static inline void copy_xregs_to_kernel_booting(struct xregs_state *xstate)
--{
--	u64 mask = xfeatures_mask_all;
--	u32 lmask = mask;
--	u32 hmask = mask >> 32;
--	int err;
--
--	WARN_ON(system_state != SYSTEM_BOOTING);
--
--	if (boot_cpu_has(X86_FEATURE_XSAVES))
--		XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
--	else
--		XSTATE_OP(XSAVE, xstate, lmask, hmask, err);
--
--	/* We should never fault when copying to a kernel buffer: */
--	WARN_ON_FPU(err);
--}
--
--/*
-- * This function is called only during boot time when x86 caps are not set
-  * up and alternative can not be used yet.
-  */
- static inline void copy_kernel_to_xregs_booting(struct xregs_state *xstate)
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -441,12 +441,35 @@ static void __init print_xstate_offset_s
+@@ -1082,20 +1082,10 @@ static inline bool xfeatures_mxcsr_quirk
+ 	return true;
+ }
+ 
+-static void fill_gap(struct membuf *to, unsigned *last, unsigned offset)
++static void copy_feature(bool from_xstate, struct membuf *to, void *xstate,
++			 void *init_xstate, unsigned int size)
+ {
+-	if (*last >= offset)
+-		return;
+-	membuf_write(to, (void *)&init_fpstate.xsave + *last, offset - *last);
+-	*last = offset;
+-}
+-
+-static void copy_part(struct membuf *to, unsigned *last, unsigned offset,
+-		      unsigned size, void *from)
+-{
+-	fill_gap(to, last, offset);
+-	membuf_write(to, from, size);
+-	*last = offset + size;
++	membuf_write(to, from_xstate ? xstate : init_xstate, size);
  }
  
  /*
-+ * All supported features have either init state all zeros or are
-+ * handled in setup_init_fpu() individually. This is an explicit
-+ * feature list and does not use XFEATURE_MASK*SUPPORTED to catch
-+ * newly added supported features at build time and make people
-+ * actually look at the init state for the new feature.
-+ */
-+#define XFEATURES_INIT_FPSTATE_HANDLED		\
-+	(XFEATURE_MASK_FP |			\
-+	 XFEATURE_MASK_SSE |			\
-+	 XFEATURE_MASK_YMM |			\
-+	 XFEATURE_MASK_OPMASK |			\
-+	 XFEATURE_MASK_ZMM_Hi256 |		\
-+	 XFEATURE_MASK_Hi16_ZMM	 |		\
-+	 XFEATURE_MASK_PKRU |			\
-+	 XFEATURE_MASK_BNDREGS |		\
-+	 XFEATURE_MASK_BNDCSR |			\
-+	 XFEATURE_MASK_PASID)
-+
-+/*
-  * setup the xstate image representing the init state
+@@ -1107,10 +1097,10 @@ static void copy_part(struct membuf *to,
   */
- static void __init setup_init_fpu_buf(void)
+ void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave)
  {
- 	static int on_boot_cpu __initdata = 1;
- 
-+	BUILD_BUG_ON((XFEATURE_MASK_USER_SUPPORTED |
-+		      XFEATURE_MASK_SUPERVISOR_SUPPORTED) !=
-+		     XFEATURES_INIT_FPSTATE_HANDLED);
-+
- 	WARN_ON_FPU(!on_boot_cpu);
- 	on_boot_cpu = 0;
- 
-@@ -466,10 +489,20 @@ static void __init setup_init_fpu_buf(vo
- 	copy_kernel_to_xregs_booting(&init_fpstate.xsave);
++	const unsigned int off_mxcsr = offsetof(struct fxregs_state, mxcsr);
++	struct xregs_state *xinit = &init_fpstate.xsave;
+ 	struct xstate_header header;
+-	const unsigned off_mxcsr = offsetof(struct fxregs_state, mxcsr);
+-	unsigned size = to.left;
+-	unsigned last = 0;
++	unsigned int zerofrom;
+ 	int i;
  
  	/*
--	 * Dump the init state again. This is to identify the init state
--	 * of any feature which is not represented by all zero's.
-+	 * All components are now in init state. Read the state back so
-+	 * that init_fpstate contains all non-zero init state. This is only
-+	 * working with XSAVE, but not with XSAVEOPT and XSAVES because
-+	 * those use the init optimization which skips writing data for
-+	 * components in init state. So XSAVE could be used, but that would
-+	 * require to reshuffle the data when XSAVES is available because
-+	 * XSAVES uses xstate compaction. But doing so is a pointless
-+	 * exercise because most components have an all zeros init state
-+	 * except for the legacy ones (FP and SSE). Those can be saved with
-+	 * FXSAVE into the legacy area. Adding new features requires to
-+	 * ensure that init state is all zeroes or if not to add the
-+	 * necessary handling here.
- 	 */
--	copy_xregs_to_kernel_booting(&init_fpstate.xsave);
-+	fxsave_to_kernel(&init_fpstate.fxsave);
+@@ -1120,41 +1110,68 @@ void copy_xstate_to_kernel(struct membuf
+ 	header.xfeatures = xsave->header.xfeatures;
+ 	header.xfeatures &= xfeatures_mask_user();
+ 
+-	if (header.xfeatures & XFEATURE_MASK_FP)
+-		copy_part(&to, &last, 0, off_mxcsr, &xsave->i387);
+-	if (header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM))
+-		copy_part(&to, &last, off_mxcsr,
+-			  MXCSR_AND_FLAGS_SIZE, &xsave->i387.mxcsr);
+-	if (header.xfeatures & XFEATURE_MASK_FP)
+-		copy_part(&to, &last, offsetof(struct fxregs_state, st_space),
+-			  128, &xsave->i387.st_space);
+-	if (header.xfeatures & XFEATURE_MASK_SSE)
+-		copy_part(&to, &last, xstate_offsets[XFEATURE_SSE],
+-			  256, &xsave->i387.xmm_space);
+-	/*
+-	 * Fill xsave->i387.sw_reserved value for ptrace frame:
+-	 */
+-	copy_part(&to, &last, offsetof(struct fxregs_state, sw_reserved),
+-		  48, xstate_fx_sw_bytes);
+-	/*
+-	 * Copy xregs_state->header:
+-	 */
+-	copy_part(&to, &last, offsetof(struct xregs_state, header),
+-		  sizeof(header), &header);
++	/* Copy FP state up to MXCSR */
++	copy_feature(header.xfeatures & XFEATURE_MASK_FP, &to, &xsave->i387,
++		     &xinit->i387, off_mxcsr);
++
++	/* Copy MXCSR when SSE or YMM are set in the feature mask */
++	copy_feature(header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM),
++		     &to, &xsave->i387.mxcsr, &xinit->i387.mxcsr,
++		     MXCSR_AND_FLAGS_SIZE);
++
++	/* Copy the remaining FP state */
++	copy_feature(header.xfeatures & XFEATURE_MASK_FP,
++		     &to, &xsave->i387.st_space, &xinit->i387.st_space,
++		     sizeof(xsave->i387.st_space));
++
++	/* Copy the SSE state - shared with YMM */
++	copy_feature(header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM),
++		     &to, &xsave->i387.xmm_space, &xinit->i387.xmm_space,
++		     16 * 16);
++
++	/* Zero the padding area */
++	membuf_zero(&to, sizeof(xsave->i387.padding));
++
++	/* Copy xsave->i387.sw_reserved */
++	membuf_write(&to, xstate_fx_sw_bytes, sizeof(xsave->i387.sw_reserved));
++
++	/* Copy the user space relevant state of @xsave->header */
++	membuf_write(&to, &header, sizeof(header));
++
++	zerofrom = offsetof(struct xregs_state, extended_state_area);
+ 
+ 	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
+ 		/*
+-		 * Copy only in-use xstates:
++		 * The ptrace buffer is XSAVE format which is non-compacted.
++		 * In non-compacted format disabled features still occupy
++		 * state space, but there is no state to copy from in the
++		 * compacted init_fpstate. The gap tracking will zero this
++		 * later.
++		 */
++		if (!(xfeatures_mask_user() & BIT_ULL(i)))
++			continue;
++
++		/*
++		 * If there was a feature or alignment gap, zero the space
++		 * in the destination buffer.
+ 		 */
+-		if ((header.xfeatures >> i) & 1) {
+-			void *src = __raw_xsave_addr(xsave, i);
++		if (zerofrom < xstate_offsets[i])
++			membuf_zero(&to, xstate_offsets[i] - zerofrom);
+ 
+-			copy_part(&to, &last, xstate_offsets[i],
+-				  xstate_sizes[i], src);
+-		}
++		copy_feature(header.xfeatures & BIT_ULL(i), &to,
++			     __raw_xsave_addr(xsave, i),
++			     __raw_xsave_addr(xinit, i),
++			     xstate_sizes[i]);
+ 
++		/*
++		 * Keep track of the last copied state in the non-compacted
++		 * target buffer for gap zeroing.
++		 */
++		zerofrom = xstate_offsets[i] + xstate_sizes[i];
+ 	}
+-	fill_gap(&to, &last, size);
++
++	if (to.left)
++		membuf_zero(&to, to.left);
  }
  
- static int xfeature_uncompacted_offset(int xfeature_nr)
+ /*
 
