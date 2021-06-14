@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358593A7197
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5443A719B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhFNV5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:57:40 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:42444 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhFNV4w (ORCPT
+        id S231718AbhFNV5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231624AbhFNV51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:56:52 -0400
-Received: from netfilter.org (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 2988664229;
-        Mon, 14 Jun 2021 23:52:37 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 23:53:51 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, roid@nvidia.com, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH nf] Revert "netfilter: flowtable: Remove redundant hw
- refresh bit"
-Message-ID: <20210614215351.GA734@salvia>
-References: <20210614193440.3813-1-olek2@wp.pl>
+        Mon, 14 Jun 2021 17:57:27 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB92C061574;
+        Mon, 14 Jun 2021 14:55:18 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 9ADB1734;
+        Mon, 14 Jun 2021 21:55:18 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 9ADB1734
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1623707718; bh=SvCPEL3LymRJY8Z4zFDjusjTKlfzkWoiS1/ZZxd122Y=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=VRcO5xEuHvCJwtBVqAoftQoyPdyhozTSlEx4GDEM2mB/zNGORsI4XmVSiUZFnvBug
+         s9ha4MwVsxWqU7mi20fthSZ3rriHwS9tmKeS7+qEky6sXVDArkG/R/s1rKQKLKuuL4
+         v4Ki6cAZBdJwzA++o869koK/ChllfrU2YaDseelroKovJP0cfEu3d7P56NowrEQAc3
+         v64gsRzEIAr+udcIAoegsUn8wj9jqIbFEi0cUVufngJdgOpPZ6ECPmfT7Zk/CTQ5ep
+         YOacoUYiYj9n7XnPWLX4AT9C4TCOqZrBn7BP6YlzOPictSAi/IqssOMYIUwpTkbazk
+         12zYgLqwEoGpg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Hu Haowen <src.res@email.cn>, alexs@kernel.org, bobwxc@email.cn,
+        maskray@google.com, bernard@vivo.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hu Haowen <src.res@email.cn>
+Subject: Re: [PATCH v2 1/2] docs/zh_CN: update a translation in
+ zh_CN/dev-tools/gcov
+In-Reply-To: <20210522025545.57275-1-src.res@email.cn>
+References: <20210522025545.57275-1-src.res@email.cn>
+Date:   Mon, 14 Jun 2021 15:55:18 -0600
+Message-ID: <87im2g1589.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210614193440.3813-1-olek2@wp.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hu Haowen <src.res@email.cn> writes:
 
-On Mon, Jun 14, 2021 at 09:34:40PM +0200, Aleksander Jan Bajkowski wrote:
-> This reverts commit c07531c01d8284aedaf95708ea90e76d11af0e21.
+> The original file has added some words in commit c797997a244cd2c58908
+> ("Documentation: dev-tools: Add Testing Overview"), hence update the
+> Chinese translation of them.
 >
-> The previously mentioned commit significantly reduces NAT performance
-> in OpenWRT. Another user reports a high ping issue. The results of
-> IPv4 NAT benchmark on BT Home Hub 5A (with software flow offloading):
-> * 5.4.124             515 Mb/s
-> * 5.10.41             570 Mb/s
-> * 5.10.42             250 Mb/s
-> * 5.10.42 + revert    580 Mb/s
->
-> Reverting this commit fixes this issue.
+> Signed-off-by: Hu Haowen <src.res@email.cn>
+> ---
+>  Documentation/translations/zh_CN/dev-tools/index.rst | 3 +++
+>  1 file changed, 3 insertions(+)
 
-The xt_flowoffload module is inconditionally setting on the hardware
-offload flag:
+I have been holding onto this series in the hope that somebody would
+review it ... any takers?
 
-static int __init xt_flowoffload_tg_init(void)
-{
-       int ret;
+Thanks,
 
-       register_netdevice_notifier(&flow_offload_netdev_notifier);
-
-       ret = init_flowtable(&flowtable[0]);
-       if (ret)
-               return ret;
-
-       ret = init_flowtable(&flowtable[1]);
-       if (ret)
-               goto cleanup;
-
-       flowtable[1].ft.flags = NF_FLOWTABLE_HW_OFFLOAD;
-[...]
-
-which is triggering the slow down because packet path is allocating
-work to offload the entry to hardware, however, this driver does not
-support for hardware offload.
-
-Probably this module can be updated to unset the flowtable flag if the
-harware does not support hardware offload.
+jon
