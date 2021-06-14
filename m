@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13613A62C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62853A6436
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhFNLFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:05:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34858 "EHLO mail.kernel.org"
+        id S235318AbhFNLVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233120AbhFNKzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:55:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1395A61483;
-        Mon, 14 Jun 2021 10:40:50 +0000 (UTC)
+        id S235332AbhFNLJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:09:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14C1561939;
+        Mon, 14 Jun 2021 10:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667251;
-        bh=hg2etSYp3Z8RPqBWijfisQRDw67a3/HVIR3sHEC4MJM=;
+        s=korg; t=1623667614;
+        bh=xziSFdnAwMDDGKdSzpAciJj3k+e4RNL1gpBubW3Lqz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nE7VvIPcgFAWkzEbh2hhD4sBzfePKnbVagqXeO5Xh2DOyG4XHP+b7aGseqB0ud/oe
-         Iotr/HtKFy+SKfIJve3dsKSwcF+ZKna3UThL/Y+GZZ6l4/989YttR70TZtw6ZZU/nG
-         OSISGmBwkp/iCAgEICSQrIpC2o6SjU+ou9kdBg1w=
+        b=bQDCsEdGnVbKarhcQC6lZ4MgTpopMbxcLaIq/vfkmIJd/Ial9AB13GkgZEyZE9Cra
+         GFeQXI52SdlnBXIxzokHQ5v65svT9jplB0P8Z4/nKq62nmYn8dANNILx1rU0hhEzmd
+         p0SFoyS2jCbeC8ZEjxRlKRxM6EgCJGDv4pzgOURk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        yinbinbin <yinbinbin@alibabacloud.com>,
-        Wetp Zhang <wetp.zy@linux.alibaba.com>,
-        James Wang <jnwang@linux.alibaba.com>,
-        Liangyan <liangyan.peng@linux.alibaba.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.4 84/84] tracing: Correct the length check which causes memory corruption
+        stable@vger.kernel.org,
+        "zhangxiaoxu (A)" <zhangxiaoxu5@huawei.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 121/131] NFSv4: Fix deadlock between nfs4_evict_inode() and nfs4_opendata_get_inode()
 Date:   Mon, 14 Jun 2021 12:28:02 +0200
-Message-Id: <20210614102649.246813415@linuxfoundation.org>
+Message-Id: <20210614102657.123649011@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,102 +41,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liangyan <liangyan.peng@linux.alibaba.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit 3e08a9f9760f4a70d633c328a76408e62d6f80a3 upstream.
+[ Upstream commit dfe1fe75e00e4c724ede7b9e593f6f680e446c5f ]
 
-We've suffered from severe kernel crashes due to memory corruption on
-our production environment, like,
+If the inode is being evicted, but has to return a delegation first,
+then it can cause a deadlock in the corner case where the server reboots
+before the delegreturn completes, but while the call to iget5_locked() in
+nfs4_opendata_get_inode() is waiting for the inode free to complete.
+Since the open call still holds a session slot, the reboot recovery
+cannot proceed.
 
-Call Trace:
-[1640542.554277] general protection fault: 0000 [#1] SMP PTI
-[1640542.554856] CPU: 17 PID: 26996 Comm: python Kdump: loaded Tainted:G
-[1640542.556629] RIP: 0010:kmem_cache_alloc+0x90/0x190
-[1640542.559074] RSP: 0018:ffffb16faa597df8 EFLAGS: 00010286
-[1640542.559587] RAX: 0000000000000000 RBX: 0000000000400200 RCX:
-0000000006e931bf
-[1640542.560323] RDX: 0000000006e931be RSI: 0000000000400200 RDI:
-ffff9a45ff004300
-[1640542.560996] RBP: 0000000000400200 R08: 0000000000023420 R09:
-0000000000000000
-[1640542.561670] R10: 0000000000000000 R11: 0000000000000000 R12:
-ffffffff9a20608d
-[1640542.562366] R13: ffff9a45ff004300 R14: ffff9a45ff004300 R15:
-696c662f65636976
-[1640542.563128] FS:  00007f45d7c6f740(0000) GS:ffff9a45ff840000(0000)
-knlGS:0000000000000000
-[1640542.563937] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[1640542.564557] CR2: 00007f45d71311a0 CR3: 000000189d63e004 CR4:
-00000000003606e0
-[1640542.565279] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[1640542.566069] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[1640542.566742] Call Trace:
-[1640542.567009]  anon_vma_clone+0x5d/0x170
-[1640542.567417]  __split_vma+0x91/0x1a0
-[1640542.567777]  do_munmap+0x2c6/0x320
-[1640542.568128]  vm_munmap+0x54/0x70
-[1640542.569990]  __x64_sys_munmap+0x22/0x30
-[1640542.572005]  do_syscall_64+0x5b/0x1b0
-[1640542.573724]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[1640542.575642] RIP: 0033:0x7f45d6e61e27
+In order to break the logjam, we can turn the delegation return into a
+privileged operation for the case where we're evicting the inode. We
+know that in that case, there can be no other state recovery operation
+that conflicts.
 
-James Wang has reproduced it stably on the latest 4.19 LTS.
-After some debugging, we finally proved that it's due to ftrace
-buffer out-of-bound access using a debug tool as follows:
-[   86.775200] BUG: Out-of-bounds write at addr 0xffff88aefe8b7000
-[   86.780806]  no_context+0xdf/0x3c0
-[   86.784327]  __do_page_fault+0x252/0x470
-[   86.788367]  do_page_fault+0x32/0x140
-[   86.792145]  page_fault+0x1e/0x30
-[   86.795576]  strncpy_from_unsafe+0x66/0xb0
-[   86.799789]  fetch_memory_string+0x25/0x40
-[   86.804002]  fetch_deref_string+0x51/0x60
-[   86.808134]  kprobe_trace_func+0x32d/0x3a0
-[   86.812347]  kprobe_dispatcher+0x45/0x50
-[   86.816385]  kprobe_ftrace_handler+0x90/0xf0
-[   86.820779]  ftrace_ops_assist_func+0xa1/0x140
-[   86.825340]  0xffffffffc00750bf
-[   86.828603]  do_sys_open+0x5/0x1f0
-[   86.832124]  do_syscall_64+0x5b/0x1b0
-[   86.835900]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-commit b220c049d519 ("tracing: Check length before giving out
-the filter buffer") adds length check to protect trace data
-overflow introduced in 0fc1b09ff1ff, seems that this fix can't prevent
-overflow entirely, the length check should also take the sizeof
-entry->array[0] into account, since this array[0] is filled the
-length of trace data and occupy addtional space and risk overflow.
-
-Link: https://lkml.kernel.org/r/20210607125734.1770447-1-liangyan.peng@linux.alibaba.com
-
-Cc: stable@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Xunlei Pang <xlpang@linux.alibaba.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Fixes: b220c049d519 ("tracing: Check length before giving out the filter buffer")
-Reviewed-by: Xunlei Pang <xlpang@linux.alibaba.com>
-Reviewed-by: yinbinbin <yinbinbin@alibabacloud.com>
-Reviewed-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-Tested-by: James Wang <jnwang@linux.alibaba.com>
-Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: zhangxiaoxu (A) <zhangxiaoxu5@huawei.com>
+Fixes: 5fcdfacc01f3 ("NFSv4: Return delegations synchronously in evict_inode")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/nfs4_fs.h  |  1 +
+ fs/nfs/nfs4proc.c | 12 +++++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2487,7 +2487,7 @@ trace_event_buffer_lock_reserve(struct r
- 	    (entry = this_cpu_read(trace_buffered_event))) {
- 		/* Try to use the per cpu buffer first */
- 		val = this_cpu_inc_return(trace_buffered_event_cnt);
--		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
-+		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
- 			trace_event_setup(entry, type, flags, pc);
- 			entry->array[0] = len;
- 			return entry;
+diff --git a/fs/nfs/nfs4_fs.h b/fs/nfs/nfs4_fs.h
+index 065cb04222a1..543d916f79ab 100644
+--- a/fs/nfs/nfs4_fs.h
++++ b/fs/nfs/nfs4_fs.h
+@@ -205,6 +205,7 @@ struct nfs4_exception {
+ 	struct inode *inode;
+ 	nfs4_stateid *stateid;
+ 	long timeout;
++	unsigned char task_is_privileged : 1;
+ 	unsigned char delay : 1,
+ 		      recovering : 1,
+ 		      retry : 1;
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index c92d6ff0fcea..959c2aa2180d 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -592,6 +592,8 @@ int nfs4_handle_exception(struct nfs_server *server, int errorcode, struct nfs4_
+ 		goto out_retry;
+ 	}
+ 	if (exception->recovering) {
++		if (exception->task_is_privileged)
++			return -EDEADLOCK;
+ 		ret = nfs4_wait_clnt_recover(clp);
+ 		if (test_bit(NFS_MIG_FAILED, &server->mig_status))
+ 			return -EIO;
+@@ -617,6 +619,8 @@ nfs4_async_handle_exception(struct rpc_task *task, struct nfs_server *server,
+ 		goto out_retry;
+ 	}
+ 	if (exception->recovering) {
++		if (exception->task_is_privileged)
++			return -EDEADLOCK;
+ 		rpc_sleep_on(&clp->cl_rpcwaitq, task, NULL);
+ 		if (test_bit(NFS4CLNT_MANAGER_RUNNING, &clp->cl_state) == 0)
+ 			rpc_wake_up_queued_task(&clp->cl_rpcwaitq, task);
+@@ -6383,6 +6387,7 @@ static void nfs4_delegreturn_done(struct rpc_task *task, void *calldata)
+ 	struct nfs4_exception exception = {
+ 		.inode = data->inode,
+ 		.stateid = &data->stateid,
++		.task_is_privileged = data->args.seq_args.sa_privileged,
+ 	};
+ 
+ 	if (!nfs4_sequence_done(task, &data->res.seq_res))
+@@ -6506,7 +6511,6 @@ static int _nfs4_proc_delegreturn(struct inode *inode, const struct cred *cred,
+ 	data = kzalloc(sizeof(*data), GFP_NOFS);
+ 	if (data == NULL)
+ 		return -ENOMEM;
+-	nfs4_init_sequence(&data->args.seq_args, &data->res.seq_res, 1, 0);
+ 
+ 	nfs4_state_protect(server->nfs_client,
+ 			NFS_SP4_MACH_CRED_CLEANUP,
+@@ -6537,6 +6541,12 @@ static int _nfs4_proc_delegreturn(struct inode *inode, const struct cred *cred,
+ 		}
+ 	}
+ 
++	if (!data->inode)
++		nfs4_init_sequence(&data->args.seq_args, &data->res.seq_res, 1,
++				   1);
++	else
++		nfs4_init_sequence(&data->args.seq_args, &data->res.seq_res, 1,
++				   0);
+ 	task_setup_data.callback_data = data;
+ 	msg.rpc_argp = &data->args;
+ 	msg.rpc_resp = &data->res;
+-- 
+2.30.2
+
 
 
