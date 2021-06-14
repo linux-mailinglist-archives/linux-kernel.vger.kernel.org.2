@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626673A5B34
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 02:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846D43A5B45
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 03:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhFNAsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 20:48:42 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:43920 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhFNAsl (ORCPT
+        id S232281AbhFNBL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 21:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232212AbhFNBL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 20:48:41 -0400
-Received: by mail-pg1-f173.google.com with SMTP id e22so7286524pgv.10;
-        Sun, 13 Jun 2021 17:46:28 -0700 (PDT)
+        Sun, 13 Jun 2021 21:11:58 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30D6C061574;
+        Sun, 13 Jun 2021 18:09:41 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id y15so9337602pfl.4;
+        Sun, 13 Jun 2021 18:09:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=XxuG7Ca+3NTnEr0aQpNCozkotiEBll347Hs/ZeeBTEE=;
-        b=mm2A1acBjDH7g2IowT4ikVA0PGuvvUKAqKzu0e1WiA7lFyUa/IlSllbZTfUlcwYGgI
-         SwY2xIh2GjsYJSZkx8ezsCjaRxCJeKFP0aBwLHlECyiXyLU3CQsShC9mUFO88Jo2GW7j
-         jHkGQsMV153/u1T9xp86sMn5EyV+97RBdP+HkwVmjTTcpG7/AwiY6g0VhXL00nWz6Ikz
-         E6UhlEfr1QOet/Kb36AM9BRuYqt4j0SORqJJ4Ja0XHE13zOobYtwVo2w1hZS7ifKGRQG
-         jrIlNZOrfeETCuB9HlDjdKurGlFn369VV65lIgM1JiNWrQ3vmKG7pG6rg48DFQu3FPjt
-         wAkQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lfTRNFalgvE8W3BaBubJpxlJYdBX6Ni/M9RnLGhDGdg=;
+        b=giJUOc64A/HReLaviyDuLGgkjEioiHD2twGRkxCH2mil9TuqvPeHO8TPDcMQ3LUbT7
+         xJA7Jozne4xmbp/w3x68hJ/5VyG/u/3TfbBTeRqEuU335lR7KTMDYoRDIDGaIm/28JMO
+         fzI6R38pdIBZo6Xv3uU13gxuzQvLcEMMlfekdSOe2HOk6wSR3ZzG55RYaVaKCD/3xRWT
+         WNiFFUleWT83HkijsPXrc6vgjgkz+XOzeQRY6wEYN6bMKtBR51hLBcTHZwWVsrZdBSKU
+         1tVH1T4KDxLoyBk1RFZ/6ZHd7OVBi1vN6jI96lGEGNU5bhzlKiy2958fW2BSQQun3pug
+         fbnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=XxuG7Ca+3NTnEr0aQpNCozkotiEBll347Hs/ZeeBTEE=;
-        b=Xz6zxRs4hW7Jn5dRE0Jd1a02/HIvS75Mn3wJ+6n4n3+ngFCcgiwsSlqMIyGgUNC2Ln
-         JGMG/OpAXOp1CRM/iytc6BQz+tFrnSSSmkgtmHSYRCwA1t0dSASvY0MyLo/HLg9Ci0l5
-         VmjZBeOD2oukjHg76EvfPA61Tbpvt2J9ALipZkjarZBd/cxvbiirTzkxNYX+NW4hjqGB
-         OqOFcZbqgcdb/LaFTGFxYJOHF+eshfZSLGrz4H0vPB9iRE+j2dqb93r730dTOWpzheXI
-         3EVEQMobnc5JoKzQ80vc/4U5LvxIC5pAsTRYGcrKzy+5RqBPQJzE6c6fBNiSZtW5nAOz
-         RY9Q==
-X-Gm-Message-State: AOAM532tyIzgJy3I0UDzILLyCo/XWAOhGEAvxIHGShsTxxv3x3hJ+U+i
-        TGlK3ctS6T83X9G606GEGTM=
-X-Google-Smtp-Source: ABdhPJx0cMBzdEpBTdoXhdRfERuKep5LD+E6eqItgLbvkLf7+nCitT8/U5nRSCNsZiXV0o1/PEHbmw==
-X-Received: by 2002:a62:bd14:0:b029:2de:8bf7:2df8 with SMTP id a20-20020a62bd140000b02902de8bf72df8mr19268697pff.60.1623631527972;
-        Sun, 13 Jun 2021 17:45:27 -0700 (PDT)
-Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
-        by smtp.gmail.com with ESMTPSA id em22sm2575307pjb.27.2021.06.13.17.45.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lfTRNFalgvE8W3BaBubJpxlJYdBX6Ni/M9RnLGhDGdg=;
+        b=qMjS+567kRE8ath1u7eGUexIjbIJeNUvdj3Snq+g15E0YxQ0RP5d6fUX8/A4PZAutd
+         qITZ0tqWE3pVJRAFDnsZ41sLMlrR7yAS6zWORc2w2L9xeKjqdBUe6aLH5S08o1q6t7va
+         HAZxedVroTPZC7LB4s9u/fDpxyWY3CwudN5oqyvcE94UqcKVzwKoGWfA60sGmZqmturC
+         /KOCuQR9TIdNQ6El5RfvabxuSed061/XlZ0u7Bn+c0HkW59KmVOyHK1/zHzSL/rmId1N
+         ot+Gvk/kNgc1gV9T5QDwLrboc1DpFLbbzh5w0KsxHAcsK3D174in0dHcJ+biTFH9Zqds
+         zyPg==
+X-Gm-Message-State: AOAM531oEryIDIO4OeS58hi3FCeDwh5Ngdnr03eOqTBFlkzelp5jNHlJ
+        HQ0+nEe/va12zqskVsir+64=
+X-Google-Smtp-Source: ABdhPJyXxemMmvRcWWFjy/8zrZR5cT5hqRdDgziWJi6fwTFTllyV7zTq3nilU3KOGZZEE747GyXaig==
+X-Received: by 2002:a63:5f46:: with SMTP id t67mr14925506pgb.37.1623632980544;
+        Sun, 13 Jun 2021 18:09:40 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id t1sm10303269pjs.20.2021.06.13.18.09.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 17:45:27 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 10:45:22 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v4 2/4] lazy tlb: allow lazy tlb mm refcounting to be
- configurable
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210605014216.446867-1-npiggin@gmail.com>
-        <20210605014216.446867-3-npiggin@gmail.com>
-        <8ac1d420-b861-f586-bacf-8c3949e9b5c4@kernel.org>
-In-Reply-To: <8ac1d420-b861-f586-bacf-8c3949e9b5c4@kernel.org>
+        Sun, 13 Jun 2021 18:09:39 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 09:09:29 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        kbuild-all@lists.01.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Subject: Re: [PATCH v3 1/3] 9p: add support for root file systems
+Message-ID: <20210614010929.mwvmpdy3dv7k2xnh@mail.google.com>
+References: <20210606230922.77268-2-changbin.du@gmail.com>
+ <202106070913.SLIBAxBQ-lkp@intel.com>
 MIME-Version: 1.0
-Message-Id: <1623629185.fxzl5xdab6.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202106070913.SLIBAxBQ-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Andy Lutomirski's message of June 9, 2021 2:20 am:
-> On 6/4/21 6:42 PM, Nicholas Piggin wrote:
->> Add CONFIG_MMU_TLB_REFCOUNT which enables refcounting of the lazy tlb mm
->> when it is context switched. This can be disabled by architectures that
->> don't require this refcounting if they clean up lazy tlb mms when the
->> last refcount is dropped. Currently this is always enabled, which is
->> what existing code does, so the patch is effectively a no-op.
->>=20
->> Rename rq->prev_mm to rq->prev_lazy_mm, because that's what it is.
->=20
-> I am in favor of this approach, but I would be a lot more comfortable
-> with the resulting code if task->active_mm were at least better
-> documented and possibly even guarded by ifdefs.
+On Mon, Jun 07, 2021 at 09:06:54AM +0800, kernel test robot wrote:
+> Hi Changbin,
+> 
+> I love your patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on lwn/docs-next]
+> [also build test WARNING on linus/master v5.13-rc5 next-20210604]
+> [cannot apply to v9fs/for-next]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Changbin-Du/9p-add-support-for-root-file-systems/20210607-071229
+> base:   git://git.lwn.net/linux-2.6 docs-next
+> config: arm-allyesconfig (attached as .config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/96098f751038703cc0fda4f018236d240a86930d
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Changbin-Du/9p-add-support-for-root-file-systems/20210607-071229
+>         git checkout 96098f751038703cc0fda4f018236d240a86930d
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> fs/9p/v9fsroot.c:53:12: warning: no previous prototype for 'v9fs_root_data' [-Wmissing-prototypes]
+>       53 | int __init v9fs_root_data(char **dev, char **opts)
+>          |            ^~~~~~~~~~~~~~
+>
+This just follows the existing rootfs support manner. This function doesn't have
+a dedicated header file to place. So I think we can ignore this warning.
 
-active_mm is fairly well documented in Documentation/active_mm.rst IMO.
-I don't think anything has changed in 20 years, I don't know what more
-is needed, but if you can add to documentation that would be nice. Maybe
-moving a bit of that into .c and .h files?
+> 
+> vim +/v9fs_root_data +53 fs/9p/v9fsroot.c
+> 
+>     52	
+>   > 53	int __init v9fs_root_data(char **dev, char **opts)
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-> x86 bare metal currently does not need the core lazy mm refcounting, and
-> x86 bare metal *also* does not need ->active_mm.  Under the x86 scheme,
-> if lazy mm refcounting were configured out, ->active_mm could become a
-> dangling pointer, and this makes me extremely uncomfortable.
->=20
-> So I tend to think that, depending on config, the core code should
-> either keep ->active_mm [1] alive or get rid of it entirely.
 
-I don't actually know what you mean.
 
-core code needs the concept of an "active_mm". This is the mm that your=20
-kernel threads are using, even in the unmerged CONFIG_LAZY_TLB=3Dn patch,
-active_mm still points to init_mm for kernel threads.
-
-We could hide that idea behind an active_mm() function that would always=20
-return &init_mm if mm=3D=3DNULL, but you still have the concept of an activ=
-e
-mm and a pointer that callers must not access after free (because some
-cases will be CONFIG_LAZY_TLB=3Dy).
-
-> [1] I don't really think it belongs in task_struct at all.  It's not a
-> property of the task.  It's the *per-cpu* mm that the core code is
-> keeping alive for lazy purposes.  How about consolidating it with the
-> copy in rq?
-
-I agree it's conceptually a per-cpu property. I don't know why it was=20
-done this way, maybe it was just convenient and works well for mm and=20
-active_mm to be adjacent. Linus might have a better insight.
-
-> I guess the short summary of my opinion is that I like making this
-> configurable, but I do not like the state of the code.
-
-I don't think I'd object to moving active_mm to rq and converting all
-usages to active_mm() while we're there, it would make things a bit
-more configurable. But I don't see it making core code fundamentally
-less complex... if you're referring to the x86 mm switching monstrosity,
-then that's understandable, but I admit I haven't spent enough time
-looking at it to make a useful comment. A patch would be enlightening,
-I have the leftover CONFIG_LAZY_TLB=3Dn patch if you were thinking of=20
-building on that I can send it to you.
-
-Thanks,
-Nick
+-- 
+Cheers,
+Changbin Du
