@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4A63A6AB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B1F3A6AC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhFNPpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233392AbhFNPpe (ORCPT
+        id S234228AbhFNPqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:46:19 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:50476 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233968AbhFNPqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:45:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945E8C061574;
-        Mon, 14 Jun 2021 08:43:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k+GlvjVi0BRrHEyiA/n5n3EFf4shy2W6VnVssDLXioA=; b=s6ODF9OtR3BlZ9XVnzGicasAeY
-        jlfVoPRVG14lRRMJYIoCdqvGejj20VXBRmKTPwEPzxS4L4lLLzJJfPpHIS69xpFRtsXdnFZvcUmmf
-        VIJHAi4f8Hj7w0SuXn1gGvkVRR6xhFjuvsDcWD9rCyGSjaK/KQg5HEAV6KlA+eAZQZQDeoA/7+fWC
-        VB0I/BoJI1/kpsMFd25OBHVJ5DnorcIYTBZ9LfkHgPretBNDi1v4YLVLU2aFnn7BCyDM5iKNzP0P2
-        kl4bcdjc/BG7rhdGOb33aNMn14/BFV0hwb+MjSEolasxnORciQAD8kzEE2tlW1Zd/z8bpaLY0/iqM
-        57ayFTqg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lsoju-005Zja-3U; Mon, 14 Jun 2021 15:43:07 +0000
-Date:   Mon, 14 Jun 2021 16:43:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     jlayton@kernel.org, linux-afs@lists.infradead.org,
-        ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] afs: Fix afs_write_end() to handle short writes
-Message-ID: <YMd5BqIKucO6rW4R@casper.infradead.org>
-References: <YMdpxbYafHnE0F8N@casper.infradead.org>
- <162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk>
- <162367682522.460125.5652091227576721609.stgit@warthog.procyon.org.uk>
- <475131.1623685101@warthog.procyon.org.uk>
+        Mon, 14 Jun 2021 11:46:13 -0400
+Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:1f5e:e45f:238:7e73])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6F44E1F42B13;
+        Mon, 14 Jun 2021 16:44:08 +0100 (BST)
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, pgwipeout@gmail.com
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH 0/4] Add USB2 support for rk3568
+Date:   Mon, 14 Jun 2021 17:43:55 +0200
+Message-Id: <20210614154359.805555-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <475131.1623685101@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 04:38:21PM +0100, David Howells wrote:
-> Matthew Wilcox <willy@infradead.org> wrote:
-> 
-> > > -	ASSERT(PageUptodate(page));
-> > > -
-> > >  	if (PagePrivate(page)) {
-> > >  		priv = page_private(page);
-> > >  		f = afs_page_dirty_from(page, priv);
-> > 
-> > Why are you removing this assertion?  Does AFS now support dirty,
-> > partially-uptodate pages?  If so, a subsequent read() to that
-> > page is going to need to be careful to only read the parts of the page
-> > from the server that haven't been written ...
-> 
-> Because the previous hunk in the patch:
-> 
-> 	+	if (!PageUptodate(page)) {
-> 	+		if (copied < len) {
-> 	+			copied = 0;
-> 	+			goto out;
-> 	+		}
-> 	+
-> 	+		SetPageUptodate(page);
-> 	+	}
-> 
-> means you can't get there unless PageUptodate() is true by that point.
+The original pacth from Peter Geis is here:
+https://gitlab.com/pine64-org/quartz-bsp/linux-next/-/commit/cda136f853628259198d6f70c3e14c9e5c8e097f
 
-Isn't the point of an assertion to check that this is true?
+I have split the driver part of this patch in two:
+ - one to update reg usage
+ - one to add USB2 support for rk3568
+I have added patches for the bindings:
+ - some clean up
+ - add compatible for rk3568
+
+Benjamin
+
+Benjamin Gaignard (4):
+  dt-bindings: phy: rockchip: USB2: remove useless #phy-cells property
+  dt-bindings: phy: rockchip: USB2: Add compatible for rk3568
+  PHY: rockchip: USB2: Allow 64 bits reg property
+  phy: rockchip: USB2: Add support for rk3568
+
+ .../bindings/phy/phy-rockchip-inno-usb2.yaml  |  3 +-
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 85 +++++++++++++++++--
+ 2 files changed, 78 insertions(+), 10 deletions(-)
+
+-- 
+2.25.1
+
