@@ -2,81 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D893A6F69
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3923A6F70
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbhFNTwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S235260AbhFNTwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:52:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234742AbhFNTwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 15:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233356AbhFNTwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:52:23 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D99C061574;
-        Mon, 14 Jun 2021 12:50:20 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f09b9000c5f6a5325ce378c.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:b900:c5f:6a53:25ce:378c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3E1DE1EC04DB;
-        Mon, 14 Jun 2021 21:50:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623700219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9YY3xAUgDz0EUh/pTeFLuR4h6BtRben1A76O8bKSCS4=;
-        b=Jt47Xz5W/6Qvfgerh3MVE24F5/Tn1CluSb47AQVTTILN/PaJ7nWjQUpDTPTGXTp0tDG21W
-        TggwwZfiPtrBh6i1M3hI1h41NT8b7ver/35pKyd0ggOpu1QJ7xqdTCqHjMXvvyG4MfMDlL
-        HlI12X8iQE4A9fA1yqcWFqkftOL+fL0=
-Date:   Mon, 14 Jun 2021 21:50:11 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 16/22] KVM: SVM: Create a separate mapping
- for the SEV-ES save area
-Message-ID: <YMey8xMXLcB/0WnA@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-17-brijesh.singh@amd.com>
- <YMc2R4JRZ3yFffy/@zn.tnic>
- <f6ad5b50-f462-35e1-3be4-e7113feee3a9@amd.com>
+Received: by mail.kernel.org (Postfix) with ESMTPS id 75ACA61246;
+        Mon, 14 Jun 2021 19:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623700221;
+        bh=OF4Rz0e11Pd0LgSyl1+ksRrZX8NjyX2T3cthL48Qx2E=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=G/sV8W4v8swfsjYvbFui882j9ySOsPq9aK0z36kLm40TBB2Jn4fhbBU/17yUjipw1
+         4eKEhg2h/iGZNOxGIwzxuiGT2FtLXOe9qSSrsTmCa2cjfn11CJFRhP9VEVJ0KD/8nL
+         tf9uBeYaiVMQLitrlxy904Z1NMWyA5BZYEJiFDJy6EFKWnleBpE1SkH3K7adCApXZG
+         N+hPALnri5jWgCB9cRuBZ864kvuaIEnyH4WmExi817qwT7SbXhoLqFBbnCiKK1StBf
+         XwO9+KLlNuRLKc8+j/enJ5bYVWqUKzmAjrCVTukEjvpfKX/vfM3g9dJxLGLuSCNrpt
+         BLOAz7GhPtuHw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 634F0609E7;
+        Mon, 14 Jun 2021 19:50:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f6ad5b50-f462-35e1-3be4-e7113feee3a9@amd.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: phy: micrel: remove redundant assignment to pointer
+ of_node
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162370022140.10983.8086940228900145661.git-patchwork-notify@kernel.org>
+Date:   Mon, 14 Jun 2021 19:50:21 +0000
+References: <20210613132740.73854-1-colin.king@canonical.com>
+In-Reply-To: <20210613132740.73854-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 02:34:03PM -0500, Tom Lendacky wrote:
-> I guess we can call it just prot_save_area or protected_save_area or even
-> encrypted_save_area (no need for guest, since guest is implied, e.g. we
-> don't call the normal save area guest_save_area).
+Hello:
 
-All three sound good to me.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Thx.
+On Sun, 13 Jun 2021 14:27:40 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The pointer of_node is being initialized with a value that is never
+> read and it is being updated later with a new value inside a do-while
+> loop. The initialization is redundant and can be removed and the
+> pointer dev is no longer required and can be removed too.
+> 
+> [...]
 
--- 
-Regards/Gruss,
-    Boris.
+Here is the summary with links:
+  - net: phy: micrel: remove redundant assignment to pointer of_node
+    https://git.kernel.org/netdev/net-next/c/ce4f8afd85d6
 
-https://people.kernel.org/tglx/notes-about-netiquette
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
