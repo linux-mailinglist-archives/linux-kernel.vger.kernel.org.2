@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115ED3A6148
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C2A3A61BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbhFNKpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:45:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46340 "EHLO mail.kernel.org"
+        id S234358AbhFNKvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:51:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233142AbhFNKih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:38:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7628D61356;
-        Mon, 14 Jun 2021 10:34:05 +0000 (UTC)
+        id S233563AbhFNKnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:43:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 123DF613FF;
+        Mon, 14 Jun 2021 10:36:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623666846;
-        bh=Lk48o2qLj6bgfpm6K80Agsg0f6fwEF9lq3lLe0tDo+c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qlv8o5bqOFA1C4eoryKnM3zip0RBZBkLIWFuPWuFGpdXL7BHkcSSETudt68fnLOj1
-         NHGotGL0IppIebMpRVj+gD/5Fj3PFp7YujkgUuflsFlZf1GJeIHAGqfhYN79CT0Rsi
-         joitk6ZsSf5Q8Hqs4UR5N0SIgnJ6A0v8tBSt9AVmn0U9QW5oPNzUdmfH3bH7qLRwK6
-         q/ZjsDyJO7y8KqtnClx1/PBXIAIdCrcQVXysjkQVYIHy6h//19wMqKPWe69qYH1uWl
-         9f+8dlGH4ElrBc7ofHU1Oy8d0EPY+tvzaCwzoomCLdPn2CP5vDPL4AyF40Yt3pEqP5
-         +B4iI8rdMqEjg==
-Date:   Mon, 14 Jun 2021 11:33:46 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        s=k20201202; t=1623666967;
+        bh=JPZ5zj3IxD3FR5sU3ObVpGn5WX3fiepB/VsQBEhqAYk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Xizi1Cfi7uzc+y8ytgZAVcH2DMxZ4vsuIfZG43hqDIPabjS6HSXVyDvBVXXg6wzHv
+         O2YOuGTurGxte+isxXYsj4j8348mQ3xmVJDyJIGwfLZijHFFMjej9MtZsBAJe9R2kL
+         88dHpVPUS110dDyHuJ0FYLd17haxpSmjGF+73n7tnfAxMcO0KMDk/EygWpR/5irOAM
+         rjkrbKjrB+g3jFuym8dvBZLFYKtK0XT4oJEuR9vkEOci2GCLv2B8f8w0loGw//z8O8
+         kCN3BFVgRq245aaToXfsUpB9exojN64K7k057UyZuyIXQOQfDCoi3jpyS8HjzKWiaQ
+         OQphDq5rokEdg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/8] regmap: Support atomic forced uncached reads
-Message-ID: <20210614103346.GB5646@sirena.org.uk>
-References: <cover.1623532208.git.sander@svanheule.net>
- <e1be20bb92cff2688153125b534b738b71c3a743.1623532208.git.sander@svanheule.net>
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH v3 0/7] media: v4l2: compat ioctl fixes
+Date:   Mon, 14 Jun 2021 12:34:01 +0200
+Message-Id: <20210614103409.3154127-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gatW/ieO32f1wygP"
-Content-Disposition: inline
-In-Reply-To: <e1be20bb92cff2688153125b534b738b71c3a743.1623532208.git.sander@svanheule.net>
-X-Cookie: Some restrictions may apply.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---gatW/ieO32f1wygP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There was a report from Syzbot a while ago that I tried fixed earlier,
+but my fix did not get picked up because of a merge conflict with
+another patch I had in my tree.
 
-On Sat, Jun 12, 2021 at 11:12:31PM +0200, Sander Vanheule wrote:
+I finally managed to take a close enough look at the merge conflict
+to figure out that the subdev driver handling for VIDIOC_DQEVENT_TIME32
+was wrong in all combinations of the patches and just needs to be
+removed. In the process I also came across a couple of other issues,
+so the series has now grown to seven patches.
 
-> When a user wants to read a single uncached register, cache bypassing
-> can be enabled. However, this is not atomic unless an external lock is
-> used for the regmap. When using regcache_cache_bypass, the original
-> bypass state also cannot be restored.
+I have done randconfig build testing and found no compile time issues,
+but the driver specific patches have not been tested so far.
 
-> Add support to atomically read a single uncached value, bypassing any
-> regmap cache.
+        Arnd
 
-The expectation here is that if there is a need to do this for some
-reason the user can arrange to do this for itself - if something is
-happening that makes a normally non-volatile register volatile then=20
-it probably needs higher level coordination.  What's the use case?
+Link: https://patchwork.linuxtv.org/project/linux-media/patch/20210318134334.2933141-1-arnd@kernel.org/
+Link: https://patchwork.linuxtv.org/project/linux-media/list/?series=5655
 
-> +int regmap_read_bypassed(struct regmap *map, unsigned int reg, unsigned =
-int *val)
+Arnd Bergmann (8):
+  media: v4l2-core: ignore native time32 ioctls on 64-bit
+  media: v4l2-core: explicitly clear ioctl input data
+  media: v4l2-core: fix whitespace damage in video_get_user()
+  media: subdev: remove VIDIOC_DQEVENT_TIME32 handling
+  media: v4l2-core: return -ENODEV from ioctl when not registered
+  media: atomisp: remove compat_ioctl32 code
+  media: subdev: fix compat_ioctl32
+  media: subdev: disallow ioctl for saa6588/davinci
 
-Bypassed what?  I think Andy's naming suggestion was much better.
+ drivers/media/i2c/adv7842.c                   |    3 +
+ drivers/media/i2c/saa6588.c                   |    4 +-
+ drivers/media/pci/bt8xx/bttv-driver.c         |    6 +-
+ drivers/media/pci/saa7134/saa7134-video.c     |    6 +-
+ drivers/media/platform/davinci/vpbe_display.c |    2 +-
+ drivers/media/platform/davinci/vpbe_venc.c    |    6 +-
+ drivers/media/radio/si4713/si4713.c           |    3 +
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c |    3 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   32 +-
+ drivers/media/v4l2-core/v4l2-subdev.c         |   43 +-
+ drivers/staging/media/atomisp/Makefile        |    1 -
+ drivers/staging/media/atomisp/TODO            |    5 +
+ .../atomisp/pci/atomisp_compat_ioctl32.c      | 1202 -----------------
+ .../staging/media/atomisp/pci/atomisp_fops.c  |    8 +-
+ include/media/v4l2-subdev.h                   |    7 +-
+ 15 files changed, 66 insertions(+), 1265 deletions(-)
+ delete mode 100644 drivers/staging/media/atomisp/pci/atomisp_compat_ioctl32.c
 
-Please also keep to 80 columns if you can, I know the requirements got
-relaxed a bit but no need to do it excessively.
+-- 
+2.29.2
 
---gatW/ieO32f1wygP
-Content-Type: application/pgp-signature; name="signature.asc"
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc: Eduardo Valentin <edubezval@gmail.com>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc: Liu Shixin <liushixin2@huawei.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: linux-staging@lists.linux.dev
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDHMIkACgkQJNaLcl1U
-h9AVKgf8DG38L+uh12gqBaGzENI6AwYWhYFF7fxG15+iMEqcDc/+KojOLV19AsOD
-bZy4/g0ejJWDACovU34ee9CYGrrVOsoWxe7731Sx6dhy4EmiKlX5lSl9ujINyqv6
-kRnjrVK4WRDOENsotnlKS32NXE0IGlI/56XfhB6Or6tNcb7T63YYEVReJFXW5V/7
-zT62SoDlipWFedJ+v5m1sp/3clwM6O/IV46KmpWtQuetGjLf3sjG9GQkh3qDvEwf
-7MT+tqzJiymYfbXu/udiQQfkFxR7kSb4KvWvGQVnZ4yqtX4jhCH+6atr23dCO1id
-rWLPlACVcIHjAElEvzJ5IAqZnRpprQ==
-=g941
------END PGP SIGNATURE-----
-
---gatW/ieO32f1wygP--
