@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661A03A68A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E302E3A68AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbhFNOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:06:32 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3234 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234246AbhFNOG0 (ORCPT
+        id S234473AbhFNOHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:07:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49938 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234246AbhFNOG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:06:26 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G3Xt040pMz6H7qR;
-        Mon, 14 Jun 2021 21:51:20 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 14 Jun 2021 16:04:22 +0200
-Received: from localhost (10.52.124.209) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 14 Jun
- 2021 15:04:21 +0100
-Date:   Mon, 14 Jun 2021 15:04:15 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <virtio-dev@lists.oasis-open.org>, <sudeep.holla@arm.com>,
-        <james.quinlan@broadcom.com>, <f.fainelli@gmail.com>,
-        <etienne.carriere@linaro.org>, <vincent.guittot@linaro.org>,
-        <souvik.chakravarty@arm.com>, <igor.skalkin@opensynergy.com>,
-        <peter.hilber@opensynergy.com>, <alex.bennee@linaro.org>,
-        <jean-philippe@linaro.org>, <mikhail.golubev@opensynergy.com>,
-        <anton.yakovlev@opensynergy.com>,
-        <Vasyl.Vavrychuk@opensynergy.com>,
-        <Andriy.Tryshnivskyy@opensynergy.com>
-Subject: Re: [PATCH v4 07/16] firmware: arm_scmi: Add op to override max
- message #
-Message-ID: <20210614150415.00005d92@Huawei.com>
-In-Reply-To: <20210611165937.701-8-cristian.marussi@arm.com>
-References: <20210611165937.701-1-cristian.marussi@arm.com>
-        <20210611165937.701-8-cristian.marussi@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Mon, 14 Jun 2021 10:06:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623679495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K18SaxL7pqOT5ezBYnXMObDqxTM59sv8KTPuqWaSQpg=;
+        b=Nec6Q2ACmOsB5V4YOv71By30T2oiHFz0Zifet2LJ+3gcubHgbtafRkDCIU7O/sgIKk0T7w
+        ykxPV1nlThmrcQP6TRSvYa7j2117RatafZs6TH+Y6devIaXcfJbleK2Rk1CyAkYhE0mXAy
+        gT5TmzRLdrSxn6wVCHbt8KDs0FWI1tw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462--Yh-n_SOMT6GoVj9P0XwgA-1; Mon, 14 Jun 2021 10:04:54 -0400
+X-MC-Unique: -Yh-n_SOMT6GoVj9P0XwgA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7D1B8015F8;
+        Mon, 14 Jun 2021 14:04:52 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 795DF5C1A3;
+        Mon, 14 Jun 2021 14:04:51 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YMddm2P0vD+4edBu@casper.infradead.org>
+References: <YMddm2P0vD+4edBu@casper.infradead.org> <YMdZbsvBNYBtZDC2@casper.infradead.org> <162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk> <162367682522.460125.5652091227576721609.stgit@warthog.procyon.org.uk> <466590.1623677832@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
+        jlayton@kernel.org, linux-afs@lists.infradead.org,
+        ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] afs: Fix afs_write_end() to handle short writes
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.124.209]
-X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <468964.1623679490.1@warthog.procyon.org.uk>
+Date:   Mon, 14 Jun 2021 15:04:50 +0100
+Message-ID: <468965.1623679490@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 17:59:28 +0100
-Cristian Marussi <cristian.marussi@arm.com> wrote:
+Matthew Wilcox <willy@infradead.org> wrote:
 
-> From: Igor Skalkin <igor.skalkin@opensynergy.com>
+> > Al Viro made such a change for Ceph - and we're writing, not reading.
 > 
-> The number of simultaneously pending messages that the upcoming
-> scmi-virtio transport can support depends on the virtio device (SCMI
-> platform) and can differ for each channel. (The scmi-virtio transport
-> does only have one tx and at most 1 rx channel.)
-> 
-> Add an optional transport op so that scmi-virtio can report the actual
-> max message # for each channel type. Respect these new limits.
-> 
-> Reflect that the limit in struct scmi_desc is now only a default any
-> more.
-> 
-> [ Peter: Adapted patch for submission to upstream. ]
-> 
-> Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
-> Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
-> Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
-Cristian,
+> I'd feel better if you said "xfstests doesn't show any new problems"
+> than arguing to authority.
 
-Give you are sending this on to the list, should have your
-Signed-off-by as well.
+I'm kind of referring it to Al - I added him to the to: list.  And xfstests
+doesn't show any new problems - but that doesn't mean that this path got
+tested.
 
-Jonathan
+David
+
