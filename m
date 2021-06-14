@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427063A631C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BC63A64CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhFNLKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:10:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
+        id S235940AbhFNL30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:29:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234756AbhFNK7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:59:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA11761432;
-        Mon, 14 Jun 2021 10:42:13 +0000 (UTC)
+        id S235585AbhFNLO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:14:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B862613D9;
+        Mon, 14 Jun 2021 10:49:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667334;
-        bh=rBdCQKo4oTB5NfIG2Xln7Et4gcFivtkkr+NcTYq4zbM=;
+        s=korg; t=1623667752;
+        bh=tAgHRmkXbDK9L6KTY2aEI9h5uKtmlvcQL2UoUrvwWgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KmaYO1XsDs4TuMjqzlh2SxBJn/yebvok89420PzRm1mm2Ucjs4Xp1DbvRBzfDKvnA
-         pYF9dIXebQX8ndvK2pt1NMI6ngT0niBZNy8HtrviIDDk1p4RYQHMqi7cehPS0vYoD1
-         lHp5NKow7bF0GxiBsZ/dXeJ+rIysDp45+NVaGZso=
+        b=SqAZUb85oG0Y9FwaJV+H/gCNEGqAW3WLG4w/gdg5KAMdii8oO1KD1U/XwtDNo4b+d
+         2ppBETH1/jCs1Xi+w+MHBFuU1ZaSCIPmmrJtcJcK0Be4IF+BBThLPx+AVbP2IzZmhZ
+         NXQXLyYykAFleSBZzhHxbVSUhTHXAz/iKvR+JpDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zong Li <zong.li@sifive.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 030/131] net: macb: ensure the device is available before accessing GEMGXL control registers
+        stable@vger.kernel.org,
+        syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.12 059/173] drm: Fix use-after-free read in drm_getunique()
 Date:   Mon, 14 Jun 2021 12:26:31 +0200
-Message-Id: <20210614102654.039561750@linuxfoundation.org>
+Message-Id: <20210614102700.127017027@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zong Li <zong.li@sifive.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-[ Upstream commit 5eff1461a6dec84f04fafa9128548bad51d96147 ]
+commit b436acd1cf7fac0ba987abd22955d98025c80c2b upstream.
 
-If runtime power menagement is enabled, the gigabit ethernet PLL would
-be disabled after macb_probe(). During this period of time, the system
-would hang up if we try to access GEMGXL control registers.
+There is a time-of-check-to-time-of-use error in drm_getunique() due
+to retrieving file_priv->master prior to locking the device's master
+mutex.
 
-We can't put runtime_pm_get/runtime_pm_put/ there due to the issue of
-sleep inside atomic section (7fa2955ff70ce453 ("sh_eth: Fix sleeping
-function called from invalid context"). Add netif_running checking to
-ensure the device is available before accessing GEMGXL device.
+An example can be seen in the crash report of the use-after-free error
+found by Syzbot:
+https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
 
-Changed in v2:
- - Use netif_running instead of its own flag
+In the report, the master pointer was used after being freed. This is
+because another process had acquired the device's master mutex in
+drm_setmaster_ioctl(), then overwrote fpriv->master in
+drm_new_set_master(). The old value of fpriv->master was subsequently
+freed before the mutex was unlocked.
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+To fix this, we lock the device's master mutex before retrieving the
+pointer from from fpriv->master. This patch passes the Syzbot
+reproducer test.
+
+Reported-by: syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210608110436.239583-1-desmondcheongzx@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/cadence/macb_main.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/drm_ioctl.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 390f45e49eaf..1e8bf6b9834b 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -2709,6 +2709,9 @@ static struct net_device_stats *gem_get_stats(struct macb *bp)
- 	struct gem_stats *hwstat = &bp->hw_stats.gem;
- 	struct net_device_stats *nstat = &bp->dev->stats;
+--- a/drivers/gpu/drm/drm_ioctl.c
++++ b/drivers/gpu/drm/drm_ioctl.c
+@@ -118,17 +118,18 @@ int drm_getunique(struct drm_device *dev
+ 		  struct drm_file *file_priv)
+ {
+ 	struct drm_unique *u = data;
+-	struct drm_master *master = file_priv->master;
++	struct drm_master *master;
  
-+	if (!netif_running(bp->dev))
-+		return nstat;
-+
- 	gem_update_stats(bp);
+-	mutex_lock(&master->dev->master_mutex);
++	mutex_lock(&dev->master_mutex);
++	master = file_priv->master;
+ 	if (u->unique_len >= master->unique_len) {
+ 		if (copy_to_user(u->unique, master->unique, master->unique_len)) {
+-			mutex_unlock(&master->dev->master_mutex);
++			mutex_unlock(&dev->master_mutex);
+ 			return -EFAULT;
+ 		}
+ 	}
+ 	u->unique_len = master->unique_len;
+-	mutex_unlock(&master->dev->master_mutex);
++	mutex_unlock(&dev->master_mutex);
  
- 	nstat->rx_errors = (hwstat->rx_frame_check_sequence_errors +
--- 
-2.30.2
-
+ 	return 0;
+ }
 
 
