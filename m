@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBBC3A64E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54683A6372
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbhFNLam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:30:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45478 "EHLO mail.kernel.org"
+        id S235055AbhFNLMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:12:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235082AbhFNLQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:16:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96E1D6145F;
-        Mon, 14 Jun 2021 10:50:09 +0000 (UTC)
+        id S233203AbhFNLAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:00:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3243061437;
+        Mon, 14 Jun 2021 10:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667810;
-        bh=H9LxPabRaj0Sw9Tm3vQwnwMqQyKenshaGMFopBcNAXo=;
+        s=korg; t=1623667393;
+        bh=tAgHRmkXbDK9L6KTY2aEI9h5uKtmlvcQL2UoUrvwWgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M3rKkuYP9Atlj4qyXQIet27WMnT8QOfcVLeaUoCkieedLfnUOsN0VY+HWTWW/At8J
-         /FBVz4dGYPPW2+iwLIBLpIjnYP8d1b5ivZXv/jH69ISVRWzULJsqa1EU+rIwbzvqQv
-         ItX+0CGRZbOWC5iQrA+6u899dAUm+zkIBAnpj6q4=
+        b=XbYOL6ZOCs2HQDVOstnw3sUthnyhqxDTbLzZC0OGIZEst3oD6nwjceJAPQjrnXing
+         0ulPyWnavDxocOXymqj4s01HG8uJJXoAJw3xbG5vUwqDUfgk71SuQbkmr3Bt/ete5A
+         rN22xe3TO0sk1IAxSzVhvGdwVEksUhpTD3gBv/vI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.12 083/173] mmc: renesas_sdhi: abort tuning when timeout detected
+        syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.10 054/131] drm: Fix use-after-free read in drm_getunique()
 Date:   Mon, 14 Jun 2021 12:26:55 +0200
-Message-Id: <20210614102700.926234641@linuxfoundation.org>
+Message-Id: <20210614102654.857406795@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-commit 2c9017d0b5d3fbf17e69577a42d9e610ca122810 upstream.
+commit b436acd1cf7fac0ba987abd22955d98025c80c2b upstream.
 
-We have to bring the eMMC from sending-data state back to transfer state
-once we detected a CRC error (timeout) during tuning. So, send a stop
-command via mmc_abort_tuning().
+There is a time-of-check-to-time-of-use error in drm_getunique() due
+to retrieving file_priv->master prior to locking the device's master
+mutex.
 
-Fixes: 4f11997773b6 ("mmc: tmio: Add tuning support")
-Reported-by Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/20210602073435.5955-1-wsa+renesas@sang-engineering.com
+An example can be seen in the crash report of the use-after-free error
+found by Syzbot:
+https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+
+In the report, the master pointer was used after being freed. This is
+because another process had acquired the device's master mutex in
+drm_setmaster_ioctl(), then overwrote fpriv->master in
+drm_new_set_master(). The old value of fpriv->master was subsequently
+freed before the mutex was unlocked.
+
+To fix this, we lock the device's master mutex before retrieving the
+pointer from from fpriv->master. This patch passes the Syzbot
+reproducer test.
+
+Reported-by: syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210608110436.239583-1-desmondcheongzx@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/renesas_sdhi_core.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/drm_ioctl.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/mmc/host/renesas_sdhi_core.c
-+++ b/drivers/mmc/host/renesas_sdhi_core.c
-@@ -679,14 +679,19 @@ static int renesas_sdhi_execute_tuning(s
+--- a/drivers/gpu/drm/drm_ioctl.c
++++ b/drivers/gpu/drm/drm_ioctl.c
+@@ -118,17 +118,18 @@ int drm_getunique(struct drm_device *dev
+ 		  struct drm_file *file_priv)
+ {
+ 	struct drm_unique *u = data;
+-	struct drm_master *master = file_priv->master;
++	struct drm_master *master;
  
- 	/* Issue CMD19 twice for each tap */
- 	for (i = 0; i < 2 * priv->tap_num; i++) {
-+		int cmd_error;
-+
- 		/* Set sampling clock position */
- 		sd_scc_write32(host, priv, SH_MOBILE_SDHI_SCC_TAPSET, i % priv->tap_num);
- 
--		if (mmc_send_tuning(mmc, opcode, NULL) == 0)
-+		if (mmc_send_tuning(mmc, opcode, &cmd_error) == 0)
- 			set_bit(i, priv->taps);
- 
- 		if (sd_scc_read32(host, priv, SH_MOBILE_SDHI_SCC_SMPCMP) == 0)
- 			set_bit(i, priv->smpcmp);
-+
-+		if (cmd_error)
-+			mmc_abort_tuning(mmc, opcode);
+-	mutex_lock(&master->dev->master_mutex);
++	mutex_lock(&dev->master_mutex);
++	master = file_priv->master;
+ 	if (u->unique_len >= master->unique_len) {
+ 		if (copy_to_user(u->unique, master->unique, master->unique_len)) {
+-			mutex_unlock(&master->dev->master_mutex);
++			mutex_unlock(&dev->master_mutex);
+ 			return -EFAULT;
+ 		}
  	}
+ 	u->unique_len = master->unique_len;
+-	mutex_unlock(&master->dev->master_mutex);
++	mutex_unlock(&dev->master_mutex);
  
- 	ret = renesas_sdhi_select_tuning(host);
+ 	return 0;
+ }
 
 
