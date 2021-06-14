@@ -2,108 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817A13A6EC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4823A6EC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbhFNTV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:21:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39554 "EHLO mail.kernel.org"
+        id S234206AbhFNTWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:22:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233048AbhFNTVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:21:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDE5461076;
-        Mon, 14 Jun 2021 19:19:50 +0000 (UTC)
+        id S234042AbhFNTWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:22:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C5561076;
+        Mon, 14 Jun 2021 19:20:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623698391;
-        bh=NQBklGVerSpRXCeIFhcT9srvsqM7Ilq8/ae/R7QiO8k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VbuCgKGrQtzWpphJqRBuup/QMyyieIWlT8MaOR0amac2RPFzK4hHxClIBbXaY/lCs
-         a3Xy0T/iOKMY8VMyLPB3emTUcf1hSEncDUkTKRDOvQLY5FvZKSA7k0aTBjFzakJ55I
-         Gp7vRtarSmSuAq9B/+uCKBqChCw4diQSo8r43+WqE3teuBtrANLlBD+3+QgO5jNdVY
-         FRLQzxJqvXF8lR65Im54A4wVW5DxBGCYyfkLs9aR92zr47W4IAZAmYoW4pGC62Nysh
-         YuUxqvvIVZXnYvkIlkVe2liUclfJmvicz1zJz4C2stbTjKuZUnZPPVlryhnfD7Bcb9
-         938yesVJT+BZA==
-Date:   Mon, 14 Jun 2021 22:19:48 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, zohar@linux.ibm.com, nayna@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/4] Add support for ECDSA-signed kernel modules
-Message-ID: <20210614191948.io4waff5aisah36q@kernel.org>
-References: <20210610125623.1553792-1-stefanb@linux.ibm.com>
+        s=k20201202; t=1623698401;
+        bh=SNkJm9bxSe/6nodnBazmIwjcG/N4cjyDH9DNPYhdXwE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CdDnwWSODrTycBFJZSoQIeXc5TgOdBsMyl8AZkylgumPP+Q3WhX4MN32SgYrSnb+n
+         x3MIPCEe2t2oZ9D23ASuKz0RM+2NQ77i/treC+6oj4alRXmXnWUKK4M19KAAL/i7Bt
+         aE097ih7a9WfF3/sRmPu2QMjJ//FtHGiqaSidbu3y1i4CrAZJPTo8lQPBrL5446M3e
+         wA2Xv0FpiNBYDkrszMFZw35YbM32YwUkZDBI5+7LMCtmZ2fUiCucSwp18zF/VVxsJO
+         SKIJM0Kg7hzHXzFbxK8Rs7w/M/3yOXhOCz+Ja+9ZvPrEO6XKbFBfCuk3+rvG0vkW+k
+         NpQn50G2Wt6IA==
+Date:   Mon, 14 Jun 2021 12:20:00 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jonathan Davies <jonathan.davies@nutanix.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrew@lunn.ch
+Subject: Re: [PATCH] net: usbnet: allow overriding of default USB interface
+ naming
+Message-ID: <20210614122000.7cdef052@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <80b6e3ab-6b8f-abaa-9d20-859c89789add@nutanix.com>
+References: <20210611152339.182710-1-jonathan.davies@nutanix.com>
+        <YMRbt+or+QTlqqP9@kroah.com>
+        <469dd530-ebd2-37a4-9c6a-9de86e7a38dc@nutanix.com>
+        <YMckz2Yu8L3IQNX9@kroah.com>
+        <a620bc87-5ee7-6132-6aa0-6b99e1052960@nutanix.com>
+        <YMde1fN+qIBfCWpD@kroah.com>
+        <80b6e3ab-6b8f-abaa-9d20-859c89789add@nutanix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610125623.1553792-1-stefanb@linux.ibm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 08:56:19AM -0400, Stefan Berger wrote:
-> This series adds support for ECDSA-signed kernel modules. It also
-> attempts to address a kbuild issue where a developer created an ECDSA
-> key for signing kernel modules and then builds an older version of the
-> kernel, when bisecting the kernel for example, that does not support
-> ECDSA keys.
-> 
-> The first patch addresses the kbuild issue of needing to delete that
-> ECDSA key if it is in certs/signing_key.pem and trigger the creation
-> of an RSA key. However, for this to work this patch would have to be
-> backported to previous versions of the kernel but would also only work
-> for the developer if he/she used a stable version of the kernel to which
-> this patch was applied. So whether this patch actually achieves the
-> wanted effect is not always guaranteed.
-> 
-> The 2nd patch adds the support for the ECSDA-signed kernel modules.
-> 
-> This patch depends on the ECDSA support series currently queued here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/log/?h=ecc
-> 
->   Stefan
-> 
-> v6:
->   - Patch 2/4 is fixing V4's 1/2 and 4/4 is fixing V4's 2/2. Both fixup
->     patches to be squashed.
-> 
-> v5:
->   - do not touch the key files if openssl is not installed; likely
->     addresses an issue pointed out by kernel test robot
-> 
-> v4:
->   - extending 'depends on' with MODULES to (IMA_APPRAISE_MODSIG && MODULES)
->   
-> v3: - added missing OIDs for ECDSA signed hashes to pkcs7_sig_note_pkey_algo
->   - added recommendation to use string hash to Kconfig help text
-> 
-> v2:
->   - Adjustment to ECDSA key detector string in 2/2
->   - Rephrased cover letter and patch descriptions with Mimi
-> 
-> 
-> Stefan Berger (4):
->   certs: Trigger creation of RSA module signing key if it's not an RSA
->     key
->   certs: Check whether openssl tool is available
->   certs: Add support for using elliptic curve keys for signing modules
->   certs: Adjustment due to 'Check whether openssl tool is available'
-> 
->  certs/Kconfig                         | 26 ++++++++++++++++++++++++++
->  certs/Makefile                        | 21 +++++++++++++++++++++
->  crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
->  3 files changed, 55 insertions(+)
-> 
-> -- 
-> 2.29.2
-> 
-> 
+On Mon, 14 Jun 2021 15:53:53 +0100 Jonathan Davies wrote:
+> >> Compare implementations of rename_netif in
+> >> https://git.kernel.org/pub/scm/linux/hotplug/udev.git/tree/src/udev-event.c 
+> >> (traditional udev, which handles collisions) and
+> >> https://github.com/systemd/systemd/blob/main/src/udev/udev-event.c 
+> >> (systemd-udevd, which does not handle collisions).  
 
-Since you know the commit ID's in
+That explains some user reports I've been seeing :o
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
+> > Then submit a change to add the logic back.  This looks like a userspace
+> > tool breaking existing setups, so please take it up with the developers
+> > of that tool.  The kernel has not changed or "broken" anything here.  
+> 
+> (I didn't mean to imply that the kernel was to blame, merely that a 
+> kernel change could help make things tidier.)
 
-you could just use fixes-tags and send exactly two patch series. Works
-better with various tools (e.g. https://pypi.org/project/b4/)
-
-/Jarkko
+If you're attempting to fix this in systemd please share the PR info
+so we can voice support!
