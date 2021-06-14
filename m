@@ -2,61 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF223A6D43
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2272A3A6D48
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235515AbhFNRfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231499AbhFNRfx (ORCPT
+        id S235558AbhFNRjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:39:06 -0400
+Received: from mail-pl1-f170.google.com ([209.85.214.170]:41848 "EHLO
+        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234031AbhFNRjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:35:53 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4484BC061574;
-        Mon, 14 Jun 2021 10:33:50 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lsqSt-008ALc-Bt; Mon, 14 Jun 2021 17:33:35 +0000
-Date:   Mon, 14 Jun 2021 17:33:35 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Kees Cook <keescook@chromium.org>, axboe@kernel.dk,
-        anton@enomsg.org, ccross@android.com, tony.luck@intel.com,
-        gmpy.liaowx@gmail.com, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mark pstore-blk as broken
-Message-ID: <YMeS780YarlA30E0@zeniv-ca.linux.org.uk>
-References: <20210608161327.1537919-1-hch@lst.de>
- <202106081033.F59D7A4@keescook>
- <20210614070712.GA29881@lst.de>
+        Mon, 14 Jun 2021 13:39:04 -0400
+Received: by mail-pl1-f170.google.com with SMTP id e1so6954086plh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=jFxOJ2sNlaTP2oY/1tOoZt+pjnC/fp0BF0cd3UacWKs=;
+        b=PBufRmGAhMtuvaAA3A9gVrHkgFthtx5a9k9CdTuC7Zk6bWxhjqsUwjSkCMgQYLqD6D
+         D/Cb+nXpHp4ofir1Yx0TZ/W1PfpzP3535b+toBTglbx4ind/t2CkaBO07RwSXL84pzH8
+         QmxQO+YJ/ooTDsUWzgyvJ2rKRGieHBzxIWWPdlvUUsipsA/0E+e9ZCnNe0JkRtIeL0qp
+         JkuxERee00bdtOznIBuNfwWcL0P3JNRsjDT1R2MEW4NKhDAic+VM0/KekJLmc4OMCfDi
+         nPEDFQh4tnCU9soyFaFR/JpatLgo+QaGqzTVxCU6Z+7H+TOA1qjHCZfs6MvDDgDduaHn
+         u5OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=jFxOJ2sNlaTP2oY/1tOoZt+pjnC/fp0BF0cd3UacWKs=;
+        b=jLIFeVW3j6vdaOYjMDf7RanqFebpxP8V38HLJC4gVm1qJ5uSHUIro933DDAipQc9vn
+         3FDX4AIEAOaKauwSPqpoQKT0FNYIgm1Zgz4IQshdPd2BA/Zd3OGHBD1GwoUCyzUdhZx9
+         OQZ2dUm9l+JYH/Xf20M35J1JCwxPOlbF+ZkPX8G65okPz2eyF1ypokN/8EZZyNXwx1He
+         u9yaZjCYW1Sy3+b5SREDul/2Xk3jhM6olwQ3iila9OadD2tw7fH+/NOxB2v2NuO3YozJ
+         0HpcedolSZuDiQdQAeZGVOdPUP+07mqSRWamqgjncGFtLF/hz0sgoQt8kupTFV92bWFC
+         Tlsw==
+X-Gm-Message-State: AOAM532QZSCt+qFYUHqTeIoBU5BdLUanvCZnXtZ0N9wYtHUCM/CZL8hJ
+        qZ7PeMO0038yOR0IAowxgcgJ7w==
+X-Google-Smtp-Source: ABdhPJznWNeTiit7/SGu60G684FYkuKoY8YSsBjZc3t8NAngrtT4QqDdIbNZcZWdN8/t0QD2Z9vO8Q==
+X-Received: by 2002:a17:90a:3801:: with SMTP id w1mr258363pjb.138.1623692161330;
+        Mon, 14 Jun 2021 10:36:01 -0700 (PDT)
+Received: from localhost ([2601:602:9200:1465:3410:5b3a:5eb6:9380])
+        by smtp.gmail.com with ESMTPSA id 21sm13521088pfy.92.2021.06.14.10.36.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 10:36:00 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] arm64: meson: remove COMMON_CLK
+In-Reply-To: <20210609202009.1424879-1-jbrunet@baylibre.com>
+References: <20210609202009.1424879-1-jbrunet@baylibre.com>
+Date:   Mon, 14 Jun 2021 10:36:00 -0700
+Message-ID: <7him2gxsan.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614070712.GA29881@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 09:07:12AM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 08, 2021 at 10:34:29AM -0700, Kees Cook wrote:
-> > NAK, please answer my concerns about your patches instead:
-> > https://lore.kernel.org/lkml/202012011149.5650B9796@keescook/
-> 
-> No.  This code pokes into block layer internals with all kinds of issues
-> and without any signoff from the relevant parties.  We just can't keep it
-> around.
+Jerome Brunet <jbrunet@baylibre.com> writes:
 
-There's a much more interesting question about that code: seeing that
-psblk_generic_blk_write() contains this
-        /* Console/Ftrace backend may handle buffer until flush dirty zones */
-	if (in_interrupt() || irqs_disabled())
-		return -EBUSY;
-just what are the locking conditions guaranteed to that thing?
-Because if it's ever called with one of the destination pages
-held locked by the caller, we are fucked.  It won't get caught
-by that test.
+> This reverts commit aea7a80ad5effd48f44a7a08c3903168be038a43.
+> Selecting COMMON_CLK is not necessary, it is already selected by
+> CONFIG_ARM64
+>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 
-That really should've been discussed back when the entire thing
-got merged; at the absolute least we need the locking environment
-documented.
+Reviewed-by: Kevin Hilman <khilman@baylibre.com>
