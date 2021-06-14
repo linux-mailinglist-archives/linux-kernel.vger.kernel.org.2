@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F743A6208
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CD73A61A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234966AbhFNKy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:54:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50484 "EHLO mail.kernel.org"
+        id S233990AbhFNKuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:50:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233777AbhFNKsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:48:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB0F161453;
-        Mon, 14 Jun 2021 10:37:38 +0000 (UTC)
+        id S233239AbhFNKnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:43:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40CD3613EE;
+        Mon, 14 Jun 2021 10:35:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667059;
-        bh=GUmsdrypy+WfvYXFVm51F2A01cgs32RP1c4xJfdyHK0=;
+        s=korg; t=1623666956;
+        bh=f2a0HndQRgm6ba+MJh1HP4RrugdLadnN5+YztHXIBz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xs4vkaiekrB9R2dYw49Bbx83hzKi77UozbgEdApa0tps6thy07KKfvpEhxFmw7O9d
-         m6sSDYviiqemSbwr69DK+tWU+DquY9M3E9tkLQ2s3M+atOKWwosZq1qTQoZBaNsPsa
-         7dNjBz7HhTEa7ddGWdjwmm4dn7Iohaya0jSHmGVw=
+        b=FCqasjTVnTmlNUtuQ1l1PX+6eoAjPNLpZlKtOUZ/K2+O/uATbBxNS5Fmivqv6ZwNk
+         1RYxYI22nHqKvACxVAgvHDr7FFscMiZP3chcF8CUUIreyXN38d70JBkDI6SboZrAWZ
+         EYgZUFj7ZjXODZbyOEvzrN+G+i1HOsPnEx0Ue+Bk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Johannes Berg <johannes.berg@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 13/84] netlink: disable IRQs for netlink_lock_table()
-Date:   Mon, 14 Jun 2021 12:26:51 +0200
-Message-Id: <20210614102646.804167355@linuxfoundation.org>
+Subject: [PATCH 4.19 09/67] netlink: disable IRQs for netlink_lock_table()
+Date:   Mon, 14 Jun 2021 12:26:52 +0200
+Message-Id: <20210614102644.101265288@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -90,10 +90,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index c2a5174387ff..9d993b4cf1af 100644
+index 1bb9f219f07d..ac3fe507bc1c 100644
 --- a/net/netlink/af_netlink.c
 +++ b/net/netlink/af_netlink.c
-@@ -452,11 +452,13 @@ void netlink_table_ungrab(void)
+@@ -461,11 +461,13 @@ void netlink_table_ungrab(void)
  static inline void
  netlink_lock_table(void)
  {
