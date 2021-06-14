@@ -2,195 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C3C3A7114
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2234D3A711F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbhFNVQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:16:19 -0400
-Received: from mga04.intel.com ([192.55.52.120]:8972 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230081AbhFNVQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:16:16 -0400
-IronPort-SDR: jYHdijB1pxm3717zC9F5Xs2MOugIatvU4FVzsK/E6D5ww/rjGf+KFf7N5gGVaKWZv1/pYkGZq0
- jsCt+bA4JfTg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="204050250"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="204050250"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 14:14:12 -0700
-IronPort-SDR: NFW8qtjUYqYWseSbnCoCikGqjRvUznLEb1OFBCCTBYwzAqw/46Q7e2lY1LGM+JdEg5vTgQ/hdt
- XXSys/Tg0YUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="487534730"
-Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
-  by fmsmga002.fm.intel.com with ESMTP; 14 Jun 2021 14:14:11 -0700
-Date:   Mon, 14 Jun 2021 14:14:25 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tony Luck <tony.luck@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Victor Ding <victording@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Anand K Mistry <amistry@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH v2 3/3] x86/tsx: Clear CPUID bits when TSX always force aborts
-Message-ID: <5209b3d72ffe5bd3cafdcc803f5b883f785329c3.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
-References: <cover.b592910a3829c87c83cf5605718c415c80c0c4a9.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
+        id S235223AbhFNVWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:22:23 -0400
+Received: from mail-qk1-f180.google.com ([209.85.222.180]:42874 "EHLO
+        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235156AbhFNVWW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 17:22:22 -0400
+Received: by mail-qk1-f180.google.com with SMTP id q16so13945445qkm.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sgb+fuaFTgoZ/okWwz0fCGk2erI6Ba+62W428kydMsA=;
+        b=cVWUH0f1+aGvFTLqzf7RJTBR7K+/orq4vCRKi2GARBla0mItJiAjqyUPfz33yCFaI+
+         d0JyTzYOR/pT75cxDCwyBcC0FWBIWv05whp2rKIiIhZOQO2mzw6aQcsAwD6UhGJqu6gR
+         1ygYrnw9gO6hV74fvHExc+Ffz2U3L6lPZXvn3btl4L55IRHmMKjR8ZNQRvkNQssayzvg
+         TWMG+irrP+wXze7QsjXXVzJOzyK0xtmZ51LYuG0lldGynOKFf74cCyTR+OQjf4RVD1sq
+         isP6Zq5/uhz2bHgliaTpKb8krNnXDulKBT0ULL4UM2pJrlJ/q50J0vCzTfltNPAVV+pG
+         RKNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sgb+fuaFTgoZ/okWwz0fCGk2erI6Ba+62W428kydMsA=;
+        b=NMBzotCVO4G0S7RimyAJxZb0EpL0ad0mgnW2HaEq6cC0R7UZ9+EkXFycHmiVAbgb1Y
+         xlpHozJZZUbJ83Uf9m0ZjBuaxL7BPwl//9v+WBy08LCOOwCn9Zz713QVXVBYamTFPa2b
+         Nfh1GYIBsnJ972QEuS6az+MHVoR99L+Y6RTfh5W3PTZpteLKn//2SOYjTRDOFAGiKBqH
+         AL/PBDnWJWEZexGlgjoH6GlxXgK4/nuj8KIM0vWLpZqF2SUSVAohRus++/VwAX+MU0VX
+         UMe8z+6u4R6zi+sY7k2S+3kBT/mnXxYlnXL6vMkj6lctGx1r145iWKaAZ0J8KZYKoeDG
+         iHvA==
+X-Gm-Message-State: AOAM532EkKL8iyx+8xSOZShc7EMcAOe+DS6sj5ETvNmp9s1bmThQeOH5
+        lnM68fM29raln701p9waCQAamQ==
+X-Google-Smtp-Source: ABdhPJzSF4akbF9UeyuNlv52c3S5EjiIMmK/poM1yMN0hqxBsN6pWFJcNTaVJKemRIyhzASAXKFzzQ==
+X-Received: by 2002:ae9:f205:: with SMTP id m5mr12202354qkg.412.1623705545942;
+        Mon, 14 Jun 2021 14:19:05 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id q16sm10895592qkq.121.2021.06.14.14.19.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 14:19:05 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 1/4] mm: remove irqsave/restore locking from contexts with irqs enabled
+Date:   Mon, 14 Jun 2021 17:19:01 -0400
+Message-Id: <20210614211904.14420-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.b592910a3829c87c83cf5605718c415c80c0c4a9.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a result of TSX deprecation some processors always aborts TSX
-transactions by default.
+The page cache deletion paths all have interrupts enabled, so no need
+to use irqsafe/irqrestore locking variants.
 
-When TSX feature cannot be used it is better to hide it. Clear CPUID.RTM
-and CPUID.HLE bits when TSX transactions always aborts.
+They used to have irqs disabled by the memcg lock added in commit
+c4843a7593a9 ("memcg: add per cgroup dirty page accounting"), but that
+has since been replaced by memcg taking the page lock instead, commit
+0a31bc97c80c ("mm: memcontrol: rewrite uncharge AP").
 
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Tested-by: Neelima Krishnan <neelima.krishnan@intel.com>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- arch/x86/kernel/cpu/cpu.h   |  2 ++
- arch/x86/kernel/cpu/intel.c |  4 +++-
- arch/x86/kernel/cpu/tsx.c   | 37 +++++++++++++++++++++++++++++++++++--
- 3 files changed, 40 insertions(+), 3 deletions(-)
+ mm/filemap.c  | 15 ++++++---------
+ mm/truncate.c |  8 +++-----
+ mm/vmscan.c   |  9 ++++-----
+ 3 files changed, 13 insertions(+), 19 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/cpu.h b/arch/x86/kernel/cpu/cpu.h
-index 67944128876d..95521302630d 100644
---- a/arch/x86/kernel/cpu/cpu.h
-+++ b/arch/x86/kernel/cpu/cpu.h
-@@ -48,6 +48,7 @@ extern const struct cpu_dev *const __x86_cpu_dev_start[],
- enum tsx_ctrl_states {
- 	TSX_CTRL_ENABLE,
- 	TSX_CTRL_DISABLE,
-+	TSX_CTRL_RTM_ALWAYS_ABORT,
- 	TSX_CTRL_NOT_SUPPORTED,
- };
+diff --git a/mm/filemap.c b/mm/filemap.c
+index ba1068a1837f..819d2589abef 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -258,12 +258,11 @@ static void page_cache_free_page(struct address_space *mapping,
+ void delete_from_page_cache(struct page *page)
+ {
+ 	struct address_space *mapping = page_mapping(page);
+-	unsigned long flags;
  
-@@ -56,6 +57,7 @@ extern __ro_after_init enum tsx_ctrl_states tsx_ctrl_state;
- extern void __init tsx_init(void);
- extern void tsx_enable(void);
- extern void tsx_disable(void);
-+extern void tsx_clear_cpuid(void);
- #else
- static inline void tsx_init(void) { }
- #endif /* CONFIG_CPU_SUP_INTEL */
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 8adffc17fa8b..861e919eba9a 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -717,8 +717,10 @@ static void init_intel(struct cpuinfo_x86 *c)
+ 	BUG_ON(!PageLocked(page));
+-	xa_lock_irqsave(&mapping->i_pages, flags);
++	xa_lock_irq(&mapping->i_pages);
+ 	__delete_from_page_cache(page, NULL);
+-	xa_unlock_irqrestore(&mapping->i_pages, flags);
++	xa_unlock_irq(&mapping->i_pages);
  
- 	if (tsx_ctrl_state == TSX_CTRL_ENABLE)
- 		tsx_enable();
--	if (tsx_ctrl_state == TSX_CTRL_DISABLE)
-+	else if (tsx_ctrl_state == TSX_CTRL_DISABLE)
- 		tsx_disable();
-+	else if (tsx_ctrl_state == TSX_CTRL_RTM_ALWAYS_ABORT)
-+		tsx_clear_cpuid();
+ 	page_cache_free_page(mapping, page);
+ }
+@@ -335,19 +334,18 @@ void delete_from_page_cache_batch(struct address_space *mapping,
+ 				  struct pagevec *pvec)
+ {
+ 	int i;
+-	unsigned long flags;
  
- 	split_lock_init();
- 	bus_lock_init();
-diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
-index e2ad30e474f8..fd258a383bfc 100644
---- a/arch/x86/kernel/cpu/tsx.c
-+++ b/arch/x86/kernel/cpu/tsx.c
-@@ -2,7 +2,7 @@
- /*
-  * Intel Transactional Synchronization Extensions (TSX) control.
-  *
-- * Copyright (C) 2019 Intel Corporation
-+ * Copyright (C) 2019-2021 Intel Corporation
-  *
-  * Author:
-  *	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-@@ -84,13 +84,46 @@ static enum tsx_ctrl_states x86_get_tsx_auto_mode(void)
- 	return TSX_CTRL_ENABLE;
+ 	if (!pagevec_count(pvec))
+ 		return;
+ 
+-	xa_lock_irqsave(&mapping->i_pages, flags);
++	xa_lock_irq(&mapping->i_pages);
+ 	for (i = 0; i < pagevec_count(pvec); i++) {
+ 		trace_mm_filemap_delete_from_page_cache(pvec->pages[i]);
+ 
+ 		unaccount_page_cache_page(mapping, pvec->pages[i]);
+ 	}
+ 	page_cache_delete_batch(mapping, pvec);
+-	xa_unlock_irqrestore(&mapping->i_pages, flags);
++	xa_unlock_irq(&mapping->i_pages);
+ 
+ 	for (i = 0; i < pagevec_count(pvec); i++)
+ 		page_cache_free_page(mapping, pvec->pages[i]);
+@@ -821,7 +819,6 @@ void replace_page_cache_page(struct page *old, struct page *new)
+ 	void (*freepage)(struct page *) = mapping->a_ops->freepage;
+ 	pgoff_t offset = old->index;
+ 	XA_STATE(xas, &mapping->i_pages, offset);
+-	unsigned long flags;
+ 
+ 	VM_BUG_ON_PAGE(!PageLocked(old), old);
+ 	VM_BUG_ON_PAGE(!PageLocked(new), new);
+@@ -833,7 +830,7 @@ void replace_page_cache_page(struct page *old, struct page *new)
+ 
+ 	mem_cgroup_migrate(old, new);
+ 
+-	xas_lock_irqsave(&xas, flags);
++	xas_lock_irq(&xas);
+ 	xas_store(&xas, new);
+ 
+ 	old->mapping = NULL;
+@@ -846,7 +843,7 @@ void replace_page_cache_page(struct page *old, struct page *new)
+ 		__dec_lruvec_page_state(old, NR_SHMEM);
+ 	if (PageSwapBacked(new))
+ 		__inc_lruvec_page_state(new, NR_SHMEM);
+-	xas_unlock_irqrestore(&xas, flags);
++	xas_unlock_irq(&xas);
+ 	if (freepage)
+ 		freepage(old);
+ 	put_page(old);
+diff --git a/mm/truncate.c b/mm/truncate.c
+index 57a618c4a0d6..b92b86222625 100644
+--- a/mm/truncate.c
++++ b/mm/truncate.c
+@@ -563,21 +563,19 @@ void invalidate_mapping_pagevec(struct address_space *mapping,
+ static int
+ invalidate_complete_page2(struct address_space *mapping, struct page *page)
+ {
+-	unsigned long flags;
+-
+ 	if (page->mapping != mapping)
+ 		return 0;
+ 
+ 	if (page_has_private(page) && !try_to_release_page(page, GFP_KERNEL))
+ 		return 0;
+ 
+-	xa_lock_irqsave(&mapping->i_pages, flags);
++	xa_lock_irq(&mapping->i_pages);
+ 	if (PageDirty(page))
+ 		goto failed;
+ 
+ 	BUG_ON(page_has_private(page));
+ 	__delete_from_page_cache(page, NULL);
+-	xa_unlock_irqrestore(&mapping->i_pages, flags);
++	xa_unlock_irq(&mapping->i_pages);
+ 
+ 	if (mapping->a_ops->freepage)
+ 		mapping->a_ops->freepage(page);
+@@ -585,7 +583,7 @@ invalidate_complete_page2(struct address_space *mapping, struct page *page)
+ 	put_page(page);	/* pagecache ref */
+ 	return 1;
+ failed:
+-	xa_unlock_irqrestore(&mapping->i_pages, flags);
++	xa_unlock_irq(&mapping->i_pages);
+ 	return 0;
  }
  
-+void tsx_clear_cpuid(void)
-+{
-+	u64 msr;
-+
-+	/*
-+	 * MSR_TFA_TSX_CPUID_CLEAR bit is only present when both CPUID bits
-+	 * RTM_ALWAYS_ABORT and TSX_FORCE_ABORT are present.
-+	 */
-+	if (boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT) &&
-+	    boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
-+		rdmsrl(MSR_TSX_FORCE_ABORT, msr);
-+		msr |= MSR_TFA_TSX_CPUID_CLEAR;
-+		wrmsrl(MSR_TSX_FORCE_ABORT, msr);
-+	}
-+}
-+
- void __init tsx_init(void)
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index eb314525c889..cc5d7cd75935 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1049,14 +1049,13 @@ static pageout_t pageout(struct page *page, struct address_space *mapping)
+ static int __remove_mapping(struct address_space *mapping, struct page *page,
+ 			    bool reclaimed, struct mem_cgroup *target_memcg)
  {
- 	char arg[5] = {};
- 	int ret;
+-	unsigned long flags;
+ 	int refcount;
+ 	void *shadow = NULL;
  
--	if (!tsx_ctrl_is_supported())
-+	/*
-+	 * Hardware will always abort a TSX transaction if both CPUID bits
-+	 * RTM_ALWAYS_ABORT and TSX_FORCE_ABORT are set.  In this case it is
-+	 * better not to enumerate CPUID.RTM and CPUID.HLE bits. Clear them
-+	 * here.
-+	 */
-+	if (boot_cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT) &&
-+	    boot_cpu_has(X86_FEATURE_TSX_FORCE_ABORT)) {
-+		tsx_ctrl_state = TSX_CTRL_RTM_ALWAYS_ABORT;
-+		tsx_clear_cpuid();
-+		setup_clear_cpu_cap(X86_FEATURE_RTM);
-+		setup_clear_cpu_cap(X86_FEATURE_HLE);
- 		return;
-+	}
-+
-+	if (!tsx_ctrl_is_supported()) {
-+		tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
-+		return;
-+	}
+ 	BUG_ON(!PageLocked(page));
+ 	BUG_ON(mapping != page_mapping(page));
  
- 	ret = cmdline_find_option(boot_command_line, "tsx", arg, sizeof(arg));
- 	if (ret >= 0) {
+-	xa_lock_irqsave(&mapping->i_pages, flags);
++	xa_lock_irq(&mapping->i_pages);
+ 	/*
+ 	 * The non racy check for a busy page.
+ 	 *
+@@ -1097,7 +1096,7 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
+ 		if (reclaimed && !mapping_exiting(mapping))
+ 			shadow = workingset_eviction(page, target_memcg);
+ 		__delete_from_swap_cache(page, swap, shadow);
+-		xa_unlock_irqrestore(&mapping->i_pages, flags);
++		xa_unlock_irq(&mapping->i_pages);
+ 		put_swap_page(page, swap);
+ 	} else {
+ 		void (*freepage)(struct page *);
+@@ -1123,7 +1122,7 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
+ 		    !mapping_exiting(mapping) && !dax_mapping(mapping))
+ 			shadow = workingset_eviction(page, target_memcg);
+ 		__delete_from_page_cache(page, shadow);
+-		xa_unlock_irqrestore(&mapping->i_pages, flags);
++		xa_unlock_irq(&mapping->i_pages);
+ 
+ 		if (freepage != NULL)
+ 			freepage(page);
+@@ -1132,7 +1131,7 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
+ 	return 1;
+ 
+ cannot_free:
+-	xa_unlock_irqrestore(&mapping->i_pages, flags);
++	xa_unlock_irq(&mapping->i_pages);
+ 	return 0;
+ }
+ 
 -- 
-git-series 0.9.1
+2.32.0
 
