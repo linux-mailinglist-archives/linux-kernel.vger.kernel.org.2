@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3FD3A611E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D0E3A6255
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbhFNKnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:43:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44668 "EHLO mail.kernel.org"
+        id S234763AbhFNK7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:59:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233748AbhFNKh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:37:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B31861411;
-        Mon, 14 Jun 2021 10:33:28 +0000 (UTC)
+        id S234033AbhFNKui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:50:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C3A461460;
+        Mon, 14 Jun 2021 10:38:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666809;
-        bh=ROmdGCMgyJmEdIh8sl4OpTLSLWePKaqKWNlIOPLkcMA=;
+        s=korg; t=1623667122;
+        bh=tyn97TXx1BX8TXUEh7mwRv4SbFUY+HG02nTqWPv0ptI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cc/GXBzBWSFONAMzFwRt2tSw0n8wzPjNlIDkObjSvgMAviKLI95stODt/la49kNiQ
-         Vt5cb3UBD70bf8svIAb+KdterJHuar6IY+pTQvAyl/Zzfo6hYYpF0K33m5EFW1Elr1
-         pLePev+uLg4c2ZtyVDnw5Vh8qDkbwNVzxAGmB8I0=
+        b=ZH2V4r62kkeAYUQLtti2250LgFEqjgS8OWhzCB94q5GMxgyGCG/qyzIIZ7tMYbO75
+         aQqFjb02wSqL54SLFJOwZ9q06rK3kHGMaweQWwqc04XE/eRVacMuUMZqBPDuepnq49
+         VYLj6qzDO523L6rvFosU7YQxsFFnFP3sXhtO/+z4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Chris Packham <chris.packham@alliedtelesis.co.nz>,
         Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 20/49] i2c: mpc: implement erratum A-004447 workaround
-Date:   Mon, 14 Jun 2021 12:27:13 +0200
-Message-Id: <20210614102642.531347444@linuxfoundation.org>
+Subject: [PATCH 5.4 36/84] i2c: mpc: implement erratum A-004447 workaround
+Date:   Mon, 14 Jun 2021 12:27:14 +0200
+Message-Id: <20210614102647.594853965@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,7 +56,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 78 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index d94df068c073..7db5554d2b4e 100644
+index 6a0d55e9e8e3..af349661fd76 100644
 --- a/drivers/i2c/busses/i2c-mpc.c
 +++ b/drivers/i2c/busses/i2c-mpc.c
 @@ -23,6 +23,7 @@
@@ -83,7 +83,7 @@ index d94df068c073..7db5554d2b4e 100644
  };
  
  struct mpc_i2c_divider {
-@@ -178,6 +181,75 @@ static int i2c_wait(struct mpc_i2c *i2c, unsigned timeout, int writing)
+@@ -176,6 +179,75 @@ static int i2c_wait(struct mpc_i2c *i2c, unsigned timeout, int writing)
  	return 0;
  }
  
@@ -159,7 +159,7 @@ index d94df068c073..7db5554d2b4e 100644
  #if defined(CONFIG_PPC_MPC52xx) || defined(CONFIG_PPC_MPC512x)
  static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] = {
  	{20, 0x20}, {22, 0x21}, {24, 0x22}, {26, 0x23},
-@@ -636,7 +708,10 @@ static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
+@@ -641,7 +713,10 @@ static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
  {
  	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
  
@@ -171,7 +171,7 @@ index d94df068c073..7db5554d2b4e 100644
  
  	return 0;
  }
-@@ -740,6 +815,8 @@ static int fsl_i2c_probe(struct platform_device *op)
+@@ -745,6 +820,8 @@ static int fsl_i2c_probe(struct platform_device *op)
  	dev_info(i2c->dev, "timeout %u us\n", mpc_ops.timeout * 1000000 / HZ);
  
  	platform_set_drvdata(op, i2c);
