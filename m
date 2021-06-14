@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F00C3A6041
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4935B3A6069
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhFNKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38468 "EHLO mail.kernel.org"
+        id S233419AbhFNKeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232918AbhFNKbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB6A9611C0;
-        Mon, 14 Jun 2021 10:29:42 +0000 (UTC)
+        id S233088AbhFNKce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:32:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52F3B6128C;
+        Mon, 14 Jun 2021 10:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666583;
-        bh=0NXTFvWE17t98H7R7BVX/lsCPyLJTlsSyz/0pbNeoiM=;
+        s=korg; t=1623666631;
+        bh=3LvHQp1xxlyxC7ZpjBoqWXgvRjOcDdp7uDfoI2xNWCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I4Rfe9mWpo2zPYIBWT1aIkl0xSGai1jG33STzzVP3/XNz3ZNY6Xqd7PTM51P07yM6
-         egvFKroHTg3BOc8H1hyJ8PJWrsiOlBqq23alAQnVpWXAvOF1B4EHEwx+KYBWbjmPFP
-         X9M4sd0754FIaOd0Uqsy/TAhR8ToH5gQzRu8tjqA=
+        b=GwMlRo6h2CbtfRd1kp3y+I8lckg9pYyq2PvMcinmUxH9YtDNA5hcp1z6XCHwpiwec
+         wBgw0+woiVaeqan1hrvuWiZQpMhIKOTMotk2eckiNYn7+7LWtqHCswxMhtp9DUPlHF
+         LzskfAx6nRpNdOa/MSmj4gUFBBYs4F2V+Ye21Udw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 14/34] bnx2x: Fix missing error code in bnx2x_iov_init_one()
-Date:   Mon, 14 Jun 2021 12:27:05 +0200
-Message-Id: <20210614102642.048442269@linuxfoundation.org>
+Subject: [PATCH 4.9 15/42] MIPS: Fix kernel hang under FUNCTION_GRAPH_TRACER and PREEMPT_TRACER
+Date:   Mon, 14 Jun 2021 12:27:06 +0200
+Message-Id: <20210614102643.189894763@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-[ Upstream commit 65161c35554f7135e6656b3df1ce2c500ca0bdcf ]
+[ Upstream commit 78cf0eb926cb1abeff2106bae67752e032fe5f3e ]
 
-Eliminate the follow smatch warning:
+When update the latest mainline kernel with the following three configs,
+the kernel hangs during startup:
 
-drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1227
-bnx2x_iov_init_one() warn: missing error code 'err'.
+(1) CONFIG_FUNCTION_GRAPH_TRACER=y
+(2) CONFIG_PREEMPT_TRACER=y
+(3) CONFIG_FTRACE_STARTUP_TEST=y
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+When update the latest mainline kernel with the above two configs (1)
+and (2), the kernel starts normally, but it still hangs when execute
+the following command:
+
+echo "function_graph" > /sys/kernel/debug/tracing/current_tracer
+
+Without CONFIG_PREEMPT_TRACER=y, the above two kinds of kernel hangs
+disappeared, so it seems that CONFIG_PREEMPT_TRACER has some influences
+with function_graph tracer at the first glance.
+
+I use ejtag to find out the epc address is related with preempt_enable()
+in the file arch/mips/lib/mips-atomic.c, because function tracing can
+trace the preempt_{enable,disable} calls that are traced, replace them
+with preempt_{enable,disable}_notrace to prevent function tracing from
+going into an infinite loop, and then it can fix the kernel hang issue.
+
+By the way, it seems that this commit is a complement and improvement of
+commit f93a1a00f2bd ("MIPS: Fix crash that occurs when function tracing
+is enabled").
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/mips/lib/mips-atomic.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-index 55a7774e8ef5..92c965cb3633 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-@@ -1245,8 +1245,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
- 		goto failed;
+diff --git a/arch/mips/lib/mips-atomic.c b/arch/mips/lib/mips-atomic.c
+index 5530070e0d05..57497a26e79c 100644
+--- a/arch/mips/lib/mips-atomic.c
++++ b/arch/mips/lib/mips-atomic.c
+@@ -37,7 +37,7 @@
+  */
+ notrace void arch_local_irq_disable(void)
+ {
+-	preempt_disable();
++	preempt_disable_notrace();
  
- 	/* SR-IOV capability was enabled but there are no VFs*/
--	if (iov->total == 0)
-+	if (iov->total == 0) {
-+		err = -EINVAL;
- 		goto failed;
-+	}
+ 	__asm__ __volatile__(
+ 	"	.set	push						\n"
+@@ -53,7 +53,7 @@ notrace void arch_local_irq_disable(void)
+ 	: /* no inputs */
+ 	: "memory");
  
- 	iov->nr_virtfn = min_t(u16, iov->total, num_vfs_param);
+-	preempt_enable();
++	preempt_enable_notrace();
+ }
+ EXPORT_SYMBOL(arch_local_irq_disable);
+ 
+@@ -61,7 +61,7 @@ notrace unsigned long arch_local_irq_save(void)
+ {
+ 	unsigned long flags;
+ 
+-	preempt_disable();
++	preempt_disable_notrace();
+ 
+ 	__asm__ __volatile__(
+ 	"	.set	push						\n"
+@@ -78,7 +78,7 @@ notrace unsigned long arch_local_irq_save(void)
+ 	: /* no inputs */
+ 	: "memory");
+ 
+-	preempt_enable();
++	preempt_enable_notrace();
+ 
+ 	return flags;
+ }
+@@ -88,7 +88,7 @@ notrace void arch_local_irq_restore(unsigned long flags)
+ {
+ 	unsigned long __tmp1;
+ 
+-	preempt_disable();
++	preempt_disable_notrace();
+ 
+ 	__asm__ __volatile__(
+ 	"	.set	push						\n"
+@@ -106,7 +106,7 @@ notrace void arch_local_irq_restore(unsigned long flags)
+ 	: "0" (flags)
+ 	: "memory");
+ 
+-	preempt_enable();
++	preempt_enable_notrace();
+ }
+ EXPORT_SYMBOL(arch_local_irq_restore);
  
 -- 
 2.30.2
