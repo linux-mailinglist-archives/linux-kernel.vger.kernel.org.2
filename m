@@ -2,100 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B594D3A5E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369FE3A5E9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhFNIvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbhFNIvT (ORCPT
+        id S232640AbhFNIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:53:40 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:47307 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232528AbhFNIxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:51:19 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7BBC061574;
-        Mon, 14 Jun 2021 01:49:17 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id j17-20020a0568200231b029024900620310so2470515oob.7;
-        Mon, 14 Jun 2021 01:49:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zhc5KrH7nB+vP5Okxryb0H1oOssNZwvGPDnO0KweY9U=;
-        b=MorrzZBJZZfI2Eoa3wtobeR693l2V/0WBRrC4FXETifIrlWqp0THVdgdgBVc3DHKd2
-         IzdersvWZpPPDTS9SyASCal2DLh7gbZpWWBdJPqfrdH6eZm3YNrgxCSAdYUzLtRbmdRG
-         bHmVStMu8LKY5fwx1+1AcvFq8UNadbc5dUOlWbXhByxJYCzFFScqBHc0Z5zde9tofCKV
-         YQjeNzCWGZO98W0Ap8QO4YZE+Akxxbn0ZqiDThU7CUKMA4lvXjuG/QbWanJGRE45jLIa
-         5ZDYXDYW6WnrUeJeWeZCoR1SOur+fLpse5SipfEz5l66j62z415wDWOeBO1nlGcvvK8A
-         KBRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zhc5KrH7nB+vP5Okxryb0H1oOssNZwvGPDnO0KweY9U=;
-        b=rzApEInQs1CkJzsTo1+zxzgPwrvT3V1MOwNBJpdbMEJXT9sEx/auEvX6bbqdjLREGv
-         DT6wenJN5d12JUypU6voIOAVyf89sgBOKAVw1x2iynUflU6NmvpCi0Ka85k8hQuyVP16
-         pHuiM4Ml/joJBzGg+JlwMih7v/qRUIhVKDbVJbU6VMEBzX0hEjB2+tWAookSF6wjEVER
-         wwnBwWbrkuCqbEzio7NMWZdLvQx6HQS6KiAtTIV0uCkcMvEpN9VuQAW2tOhU/tfUitVF
-         MKSeCGKC9fKUFZkjGxMhIoU+D+CaMCnIMG0LkZd5J/94GHRTHVL9dxcUe/oam0ksCzvb
-         0GRg==
-X-Gm-Message-State: AOAM5309y8LVWN2mxc6hArSicn0NlJeCWexByNSnCnX+EVjs4mX8RpzM
-        11TguEYhGSBVDLCksjmpM4EHQzNtosSGEbcHU3hmA3uyWVs=
-X-Google-Smtp-Source: ABdhPJx48Q8vH/+qZq1gYLRoTJmGsY/tY/M9GXb80XM1Od6Tsq56xgD13o0XCiqSabUrsw9hJ5S4dhbfk37gYIB7Lo0=
-X-Received: by 2002:a4a:9bcb:: with SMTP id b11mr12139019ook.44.1623660556399;
- Mon, 14 Jun 2021 01:49:16 -0700 (PDT)
+        Mon, 14 Jun 2021 04:53:33 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id siJZlb5ZFhqltsiJclm6MC; Mon, 14 Jun 2021 10:51:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1623660689; bh=+H5uVlIFNhykOXsC5lcJztNlsLEis8cXwhsHsGpQVBM=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=sRWKwmvG7ZZx4G6NyEPJevdP1zfXTscMM7a4uRE+d/MCRRN86ZQ+x4DIHbV02Hi4E
+         6CQyLeAMR+m2mV6BMycQ8ILSRnZzcGGS5zLBGO3+e5j6rNpvlDQj/PeyX9a28wYFQh
+         Ngo33I2mplQYkdcAyBj6ymkYbmoVxYsbZKlPWnKCSgTp76NEEncV1PuPNcC94UaTZE
+         W9lpluwB8grgWx4PlKqYCR2eivijqJr87Qbm2+NQ4pQPMQMSCjU8mpkRmp7zD/rYPb
+         GEVgoqozWA+YLbxRj8Rn6s2j/8etlNPnS0S7aQHiqe1CdyXg/OA1K8oDSARQVsU1Z8
+         VPw516I7GDJ4w==
+Subject: Re: [PATCH v4 16/17] media: v4l2-subdev: De-deprecate init() subdev
+ op
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sakari Ailus <sakari.ailus@iki.fi>
+References: <20210412093451.14198-1-jacopo+renesas@jmondi.org>
+ <20210412093451.14198-17-jacopo+renesas@jmondi.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <2ad9747e-7e2d-2c95-a98b-b6b0e7534e42@xs4all.nl>
+Date:   Mon, 14 Jun 2021 10:51:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <e0d146b034576c755cb98018159fa30f8dba2101.1623476278.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <e0d146b034576c755cb98018159fa30f8dba2101.1623476278.git.christophe.jaillet@wanadoo.fr>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Mon, 14 Jun 2021 11:48:49 +0300
-Message-ID: <CAFCwf109JLqs+Qb5MUDEjG6EXK09JmH+bJjDXvLhNXOrr2aF3A@mail.gmail.com>
-Subject: Re: [PATCH] habanalabs: Fix an error handling path in 'hl_pci_probe()'
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ofir Bitton <obitton@habana.ai>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        farah kassabri <fkassabri@habana.ai>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210412093451.14198-17-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfDfU7v0cY3T1PcpmbPx7u+dbBQhnVFqgDAD4lNxgvusljxV1IJzKzzfP6uPRjP4bj56HYOVI/AZr1LVqx7B1CLPMIco6RqR+RIFUYj7O91ClS40crQId
+ f5GXfMGqoGUUwZLUp0ZyDWW4WPX9Dwi7sKQojH2zkCeAhQt8SgqyyswISQsm3leiQycwjU3GffX8NnMOEaWfswJF5VRP5dJXRYI7zAF+EHKTgG7qOhFgMpxy
+ gp+LthCsmoSFmWkis3HRQ7Ku/qX1/aNCUn79R9ib6kPqpqJkJ8oY9FfZLfSnt0riOWClJ8k+iH/DfsNqx8U3dMuhdkHUm2Y3Q27LFLjyX7VP0CM8RVfzTEhK
+ EWrmL3cmODtFMq/4HYqD/Z1HjtMnnV1rBa8H3m+MIIpf7l+hsXzWaCcsUDFDKBthARYevL86ifMDq+tf5KH7ZGF6wBddJ20FOaK4twD2Rj8YzgdKZ8L9F8L7
+ nNVM5JvX+dqpq3t22Jh9ZMIfSmPzW9gh1t7E6BIsYLSaGI9Xl6wNAwZ6N22wgZ43z6Qwc4nI5ZqjdRWYd2jkuKbwJLC2h/JeujfmRqi14+U6pUUZPLRbziwL
+ xeMVxGhs2vAaWLRTRTxKV/v+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 8:42 AM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-> call, as already done in the remove function.
->
-> Fixes: 2e5eda4681f9 ("habanalabs: PCIe Advanced Error Reporting support")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On 12/04/2021 11:34, Jacopo Mondi wrote:
+> The init() subdev core operation is deemed to be deprecated for new
+> subdevice drivers. However it could prove useful for complex
+> architectures to defer operation that require access to the
+> communication bus if said bus is not available (or fully configured)
+> at the time when the subdevice probe() function is run.
+> 
+> As an example, the GMSL architecture requires the GMSL configuration
+> link to be configured on the host side after the remote subdevice
+> has completed its probe function. After the configuration on the host
+> side has been performed, the subdevice registers can be accessed through
+> the communication bus.
+> 
+> In particular:
+> 
+> 	HOST			REMOTE
+> 
+> 	probe()
+> 	   |
+> 	   ---------------------> |
+> 				  probe() {
+> 				     bus config()
+> 				  }
+> 	   |<--------------------|
+> 	v4l2 async bound {
+> 	    bus config()
+> 	    call subdev init()
+> 	   |-------------------->|
+> 				 init() {
+> 				     access register on the bus()
+> 				}
+> 	   |<-------------------
+> 	}
+> 
+> In the GMSL use case the bus configuration requires the enablement of the
+> noise immunity threshold on the remote side which ensures reliability
+> of communications in electrically noisy environments. After the subdevice
+> has enabled the threshold at the end of its probe() sequence the host
+> side shall compensate it with an higher signal amplitude. Once this
+> sequence has completed the bus can be accessed with noise protection
+> enabled and all the operations that require a considerable number of
+> transactions on the bus (such as the image sensor configuration
+> sequence) are run in the subdevice init() operation implementation.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 > ---
->  drivers/misc/habanalabs/common/habanalabs_drv.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-> index 64d1530db985..d15b912a347b 100644
-> --- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-> +++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-> @@ -464,6 +464,7 @@ static int hl_pci_probe(struct pci_dev *pdev,
->         return 0;
->
->  disable_device:
-> +       pci_disable_pcie_error_reporting(pdev);
->         pci_set_drvdata(pdev, NULL);
->         destroy_hdev(hdev);
->
+>  include/media/v4l2-subdev.h | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> index d0e9a5bdb08b..3068d9940669 100644
+> --- a/include/media/v4l2-subdev.h
+> +++ b/include/media/v4l2-subdev.h
+> @@ -148,9 +148,18 @@ struct v4l2_subdev_io_pin_config {
+>   *	each pin being configured.  This function could be called at times
+>   *	other than just subdevice initialization.
+>   *
+> - * @init: initialize the sensor registers to some sort of reasonable default
+> - *	values. Do not use for new drivers and should be removed in existing
+> - *	drivers.
+> + * @init: initialize the subdevice registers to some sort of reasonable default
+> + *	values. Do not use for new drivers (and should be removed in existing
+> + *	ones) for regular architectures where the image sensor is connected to
+> + *	the host receiver. For more complex architectures where the subdevice
+> + *	initialization should be deferred to the completion of the probe
+> + *	sequence of some intermediate component, or the communication bus
+> + *	requires configurations on the host side that depend on the completion
+> + *	of the probe sequence of the remote subdevices, the usage of this
+> + *	operation could be considered to allow the devices along the pipeline to
+> + *	probe and register in the media graph and to defer any operation that
+> + *	require actual access to the communication bus to their init() function
+> + *	implementation.
+
+I don't like de-deprecating init. It was deprecated for a good reason, and
+I'd like to keep it that way.
+
+There are two alternatives: one is a bit quick-and-dirty, the other is a hint
+towards a more generic solution (just a hint since it will require more research):
+
+1) Quick-and-dirty: use the core callback op to create a custom INIT callback.
+This depends on this patch:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/20210610214305.4170835-8-arnd@kernel.org/
+
+This will make it clear to the reader that this is a highly specific interaction
+between two drivers that are tightly coupled. It works in the current situation,
+but not if we want to make this more generic.
+
+2) Subdev drivers can implement the registered() op which is called by
+v4l2_device_register_subdev(). This in turn is called from v4l2_async_match_notify().
+
+What you want is that when max9286 calls v4l2_async_subdev_notifier_register, it
+can set a flag or something indicating that initialization has to be postponed.
+Then, when v4l2_async_match_notify() calls the register() callback, that flag can
+be read. If false, then the register() callback will initialize the device, if
+true then that won't happen. Instead, it will do that when the max9286 calls a
+post_register() callback.
+
+This is a lot more work (and research, since this is just a brainstorm from my
+side), but it is a way towards making this a generic solution.
+
+Regards,
+
+	Hans
+
+>   *
+>   * @load_fw: load firmware.
+>   *
 > --
-> 2.30.2
->
+> 2.31.1
+> 
 
-Thanks for catching it.
-This patch is:
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-
-Applied to -next.
-Oded
