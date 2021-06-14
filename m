@@ -2,69 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851353A68CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C993A68D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhFNOSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbhFNOSQ (ORCPT
+        id S234523AbhFNOTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:19:44 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:35411 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234493AbhFNOTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:18:16 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964CDC061766
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:16:13 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:bda0:7de0:767e:26f9])
-        by xavier.telenet-ops.be with bizsmtp
-        id H2G92500N4N5gS3012G9j2; Mon, 14 Jun 2021 16:16:11 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lsnNo-00H8uV-L6; Mon, 14 Jun 2021 16:16:08 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lsnNn-004jiP-WF; Mon, 14 Jun 2021 16:16:08 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jiri Kosina <trivial@kernel.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.com>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH trivial] nvme: Grammar s/each namespaces/each namespace/
-Date:   Mon, 14 Jun 2021 16:16:07 +0200
-Message-Id: <d195ebc405033c1de6ca01937a906afc97f285f7.1623680137.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Mon, 14 Jun 2021 10:19:42 -0400
+Received: by mail-ot1-f45.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so5481025oti.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:17:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FBYjVJRS+b/w4pnsYesBjbYpCL3m16xVdTBky4XS4D0=;
+        b=VbC94GJ4DfIQmAwxyQpCMvzQjzFuU7+D96764TvBV0xOZvHK0y2l/Cv22fZQPkrEjS
+         Qhyzk/QT78EnsWos8WsffbqHz2A9eXnuu9JjXR9X+PdLxj3P+VAlPexiym38RrHeNnlf
+         ldwldkgVcse3rIHvqVk12WtjOTiLZvFYxlP/VhoR8TgEE6f2GZ5vajgk3RCMOyChf2w2
+         x6nfojz2FJML9kA+MUQuA1B+XfxLIOmSZUhsvhpLPjkbDYhdmnTVTXMqNsfiZoseRKt9
+         3OI9nkfmzPaKVoJXOIY3OARtrt/EUJJ2MDRU2fvV8/Q1D8MJqAjr8v4sXg6evBPl70/e
+         k5kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FBYjVJRS+b/w4pnsYesBjbYpCL3m16xVdTBky4XS4D0=;
+        b=JYQk9HjZuCNyFbd6ScgNNRiPoKDCZ/8hqxfAX/dR6x645VjS0Ry94mclyCPzpzI6X+
+         O9Xn/AxH/cq/xo/nZs8XqnH47OyEvKsb9fLEkg2c9dsaAbPtFim5vxV15sWSj3os/x98
+         HDNR28VV2Wcz51J/TzNn44JfAau5H4eIoaWv81U/plMxi+6gyiP60CYyQafsyn8rlev/
+         jLi8l3cxpyCzyQVGTYCFQzVGcPU7+Y44QpMxYbjNofG/JxzQ+mz1tcrlGBGIBcEfO6Nf
+         OZHJ2uiheN0b2OUIWIk06aM9frQAPXBcV8sjf1Z54DqqoF+otItIN0SeJlojwik/5kMl
+         /O9w==
+X-Gm-Message-State: AOAM532J9Zp68VZ5XNdV8dkDF6vN1KUFn18EBL/C55NvsGO3KJ9bCdQb
+        zIM5oTmttOtuBdHCErv0PLDKu8g4AvMx/8tDXnTM2Q==
+X-Google-Smtp-Source: ABdhPJy04P/W+yfF08gJxtdwOnS1uTLYOi8I+vr2HeO5DdS0IbVsX1i5lctRMUeHT7e5lJIJbrs7J3CK8E/LTjN9VHc=
+X-Received: by 2002:a05:6830:93:: with SMTP id a19mr13523515oto.17.1623680187940;
+ Mon, 14 Jun 2021 07:16:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210111081821.3041587-1-morbo@google.com> <20210407211704.367039-1-morbo@google.com>
+ <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net> <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
+ <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net> <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
+ <20210612202505.GG68208@worktop.programming.kicks-ass.net>
+ <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+ <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net> <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
+ <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
+In-Reply-To: <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 14 Jun 2021 16:16:16 +0200
+Message-ID: <CANpmjNNnZv7DHYaJBL7knn9P+50F+SOCvis==Utaf-avENnVsw@mail.gmail.com>
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Bill Wendling <morbo@google.com>, Kees Cook <keescook@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, johannes.berg@intel.com,
+        oberpar@linux.vnet.ibm.com, linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a singular/plural mismatch in the CONFIG_NVME_MULTIPATH help text.
+On Mon, 14 Jun 2021 at 12:45, Peter Zijlstra <peterz@infradead.org> wrote:
+[...]
+> I've also been led to believe that the KCOV data format is not in fact
+> dependent on which toolchain is used.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/nvme/host/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Correct, we use KCOV with both gcc and clang. Both gcc and clang emit
+the same instrumentation for -fsanitize-coverage. Thus, the user-space
+portion and interface is indeed identical:
+https://www.kernel.org/doc/html/latest/dev-tools/kcov.html
 
-diff --git a/drivers/nvme/host/Kconfig b/drivers/nvme/host/Kconfig
-index f76cc4690bfc37bc..26ddd34ae45b76fc 100644
---- a/drivers/nvme/host/Kconfig
-+++ b/drivers/nvme/host/Kconfig
-@@ -21,7 +21,7 @@ config NVME_MULTIPATH
- 	help
- 	   This option enables support for multipath access to NVMe
- 	   subsystems.  If this option is enabled only a single
--	   /dev/nvmeXnY device will show up for each NVMe namespaces,
-+	   /dev/nvmeXnY device will show up for each NVMe namespace,
- 	   even if it is accessible through multiple controllers.
- 
- config NVME_HWMON
--- 
-2.25.1
+> > > I'm thinking it might be about time to build _one_ infrastructure for
+> > > that and define a kernel arc format and call it a day.
+> > >
+> > That may be nice, but it's a rather large request.
+>
+> Given GCOV just died, perhaps you can look at what KCOV does and see if
+> that can be extended to do as you want. KCOV is actively used and
+> we actually tripped over all the fun little noinstr bugs at the time.
 
+There might be a subtle mismatch between coverage instrumentation for
+testing/fuzzing and for profiling. (Disclaimer: I'm not too familiar
+with Clang-PGO's requirements.) For example, while for testing/fuzzing
+we may only require information if a code-path has been visited, for
+profiling the "hotness" might be of interest. Therefore, the
+user-space exported data format can make several trade-offs in
+complexity.
+
+In theory, I imagine there's a limit to how generic one could make
+profiling information, because one compiler's optimizations are not
+another compiler's optimizations. On the other hand, it may be doable
+to collect unified profiling information for common stuff, but I guess
+there's little motivation for figuring out the common ground given the
+producer and consumer of the PGO data is the same compiler by design
+(unlike coverage info for testing/fuzzing).
+
+Therefore, if KCOV's exposed information does not match PGO's
+requirements today, I'm not sure what realistically can be done
+without turning KCOV into a monster. Because KCOV is optimized for
+testing/fuzzing coverage, and I'm not sure how complex we can or want
+to make it to cater to a new use-case.
+
+My intuition is that the simpler design is to have 2 subsystems for
+instrumentation-based coverage collection: one for testing/fuzzing,
+and the other for profiling.
+
+Alas, there's the problem of GCOV, which should be replaceable by KCOV
+for most use cases. But it would be good to hear from a GCOV user if
+there are some.
+
+But as we learned GCOV is broken on x86 now, I see these options:
+
+1. Remove GCOV, make KCOV the de-facto test-coverage collection
+subsystem. Introduce PGO-instrumentation subsystem for profile
+collection only, and make it _very_ clear that KCOV != PGO data as
+hinted above. A pre-requisite is that compiler-support for PGO
+instrumentation adds selective instrumentation support, likely just
+making attribute no_instrument_function do the right thing.
+
+2. Like (1) but also keep GCOV, given proper support for attribute
+no_instrument_function would probably fix it (?).
+
+3. Keep GCOV (and KCOV of course). Somehow extract PGO profiles from KCOV.
+
+4. Somehow extract PGO profiles from GCOV, or modify kernel/gcov to do so.
+
+Thanks.
