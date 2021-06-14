@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A273A6831
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757773A6829
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbhFNNmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:42:14 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:34557 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233803AbhFNNmJ (ORCPT
+        id S234103AbhFNNl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:41:56 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:41809 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhFNNly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:42:09 -0400
-Received: by mail-io1-f45.google.com with SMTP id 5so39612028ioe.1;
-        Mon, 14 Jun 2021 06:39:56 -0700 (PDT)
+        Mon, 14 Jun 2021 09:41:54 -0400
+Received: by mail-io1-f42.google.com with SMTP id p66so37754013iod.8;
+        Mon, 14 Jun 2021 06:39:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=tK4mvObzT5yhHWFs5yQAbbm4CHtG0x0FL1g6TUnbVOw=;
-        b=WPRBlR0xy0SxOp49vsHvlK2nixIaLnEGqjn/MhDJGdD/+IEKDoUYm9enm2tFEQ0xKv
-         D75rrPDGQpK0JsXFXY4r5VmCPhgispYSOcymCCMpHF2rxw/CAUXT02JjO47+Ib0tx+ck
-         LRYz898ghQvxKP4lV5VYtFxzqJ8dUqRNHP93HOvlLGcsmJ2QLR+gkf7UaqL5cesU5eQX
-         We3B7E85bisqgUuaYk26YG6DU/tdlUqhoWk4FZdEYt24xngAg4G5Dc8FNFoyjw0DFF/+
-         +FcVFRvY6+wrRm6R2OHNo6Ba6z3/KglFD70Qv+IyaPwY8Biggg4w1ZICjCyKHJg+ek9z
-         GDjw==
-X-Gm-Message-State: AOAM5313/s3jQUG/Nv7c41UnYlYAioB0JYao30sjejr83XpESsPx8rqm
-        I1O3SBLHUTOsiqmiTtkRyl8lpczoXA==
-X-Google-Smtp-Source: ABdhPJz651Pxax/XP5gAmnBT/RYQV/ZXl9Az215uyTRwLEIj/k0EwlCzE6a4IMUZ3d6+lSbb322r8A==
-X-Received: by 2002:a5d:904c:: with SMTP id v12mr14106122ioq.95.1623677996262;
-        Mon, 14 Jun 2021 06:39:56 -0700 (PDT)
+        bh=IiRIEUjnGSSY6A6cJgxgBuXoA5APJSnapeUm1MgEDYU=;
+        b=N9W/rs15y71TDThs9RSZC9j3YuFRQvCnBiFP6kBvgzcbfm6fEa6NbkcJaA6g9HqS8R
+         uJG7KVPoQZKuZ0aCWLQd/3owaxN80TLnLLVh6vSXDQtnQgekw5t/9sEjADoo2O5A0uv0
+         5hk61WG3Abe+Wco6G39ZphEcPMTku3UWWDNzjx52UlCFKo1UGEUJQRiNUd6bPkaNCd0M
+         C3rNw7uwfi7Nx0d32A15/DfvkB4foT0cLqD80vE3kOA7JUkADFc6wZ6rxSpCHNIKXtER
+         N7RMO6z2Gj0181HGkXwv7cIER7tX48GhKLEkSaBNJ3XD9wm3SrIWc3BnYrSYM60waEW6
+         0XkA==
+X-Gm-Message-State: AOAM533zpBqewi3Zpif2hywgzJFvT+gYrjQIMHwPfrVVL2ytpdFx6VLM
+        bKYp0NME2iOYr3kkLMJqFvX3ZgeekQ==
+X-Google-Smtp-Source: ABdhPJzSt2Rr9BWPfO4JiRQHeqf35gLGxcEPRqi+J73RDgb1b9gPlNMhPVThxExigVjmTWW6KNA38Q==
+X-Received: by 2002:a5e:8513:: with SMTP id i19mr14239071ioj.50.1623677991480;
+        Mon, 14 Jun 2021 06:39:51 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id v1sm7726151ilo.81.2021.06.14.06.39.54
+        by smtp.gmail.com with ESMTPSA id f3sm7336700ilk.78.2021.06.14.06.39.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 06:39:55 -0700 (PDT)
-Received: (nullmailer pid 630751 invoked by uid 1000);
+        Mon, 14 Jun 2021 06:39:50 -0700 (PDT)
+Received: (nullmailer pid 630746 invoked by uid 1000);
         Mon, 14 Jun 2021 13:39:48 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     linux-fpga@vger.kernel.org, shubhrajyoti.datta@xilinx.com,
-        gregkh@linuxfoundation.org, peter.crosthwaite@xilinx.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        navam@xilinx.com, michal.simek@xilinx.com,
-        soren.brinkmann@xilinx.com, linux-arm-kernel@lists.infradead.org,
-        linux-serial@vger.kernel.org
-In-Reply-To: <20210613213359.296400-1-iwamatsu@nigauri.org>
-References: <20210613213359.296400-1-iwamatsu@nigauri.org>
-Subject: Re: [PATCH] dt-bindings: serial: convert Cadence UART bindings to YAML
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, konrad.dybcio@somainline.org,
+        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20210612094534.88992-1-martin.botka@somainline.org>
+References: <20210612094534.88992-1-martin.botka@somainline.org>
+Subject: Re: [PATCH V4 1/2] dt-bindings: pinctrl: qcom: sm6125: Document SM6125 pinctrl driver
 Date:   Mon, 14 Jun 2021 07:39:48 -0600
-Message-Id: <1623677988.138699.630750.nullmailer@robh.at.kernel.org>
+Message-Id: <1623677988.119452.630745.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 06:33:59 +0900, Nobuhiro Iwamatsu wrote:
-> Convert serial for Cadence UART bindings documentation to YAML.
+On Sat, 12 Jun 2021 11:45:30 +0200, Martin Botka wrote:
+> Document the newly added SM6125 pinctrl driver
 > 
-> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
 > ---
->  .../devicetree/bindings/serial/cdns,uart.txt  | 27 --------
->  .../devicetree/bindings/serial/cdns,uart.yaml | 68 +++++++++++++++++++
->  2 files changed, 68 insertions(+), 27 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/serial/cdns,uart.txt
->  create mode 100644 Documentation/devicetree/bindings/serial/cdns,uart.yaml
+> Changes in V2:
+> Add commit description
+> Changes in V3:
+> Fix syntax errors
+> Remove not needed state from example
+> Changes in V4:
+> maxItems set to 3
+> Correct the pattern
+> Remove deleted enums
+> Fix the compatible
+>  .../bindings/pinctrl/qcom,sm6125-pinctrl.yaml | 124 ++++++++++++++++++
+>  1 file changed, 124 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/serial/cdns,uart.yaml:21:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
-./Documentation/devicetree/bindings/serial/cdns,uart.yaml:26:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
 
 dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.example.dt.yaml: pinctrl@500000: 'reg-names' does not match any of the regexes: '-state$', 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.yaml
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1491509
+See https://patchwork.ozlabs.org/patch/1491257
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
