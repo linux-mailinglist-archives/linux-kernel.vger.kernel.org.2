@@ -2,148 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DD33A5F19
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F683A5F1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhFNJax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:30:53 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:54950 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232528AbhFNJau (ORCPT
+        id S232699AbhFNJbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:31:32 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:48155 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232528AbhFNJbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:30:50 -0400
-Received: from [77.244.183.192] (port=64040 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lsiti-00079a-67; Mon, 14 Jun 2021 11:28:46 +0200
-Subject: Re: [PATCH v3 1/4] fpga: dfl: reorganize to subdir layout
-To:     trix@redhat.com, mdf@kernel.org, hao.wu@intel.com,
-        michal.simek@xilinx.com, gregkh@linuxfoundation.org,
-        krzysztof.kozlowski@canonical.com, dinguyen@kernel.org,
-        nava.manne@xilinx.com, yilun.xu@intel.com, davidgow@google.com,
-        fpacheco@redhat.com, richard.gong@intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210611162129.3203483-1-trix@redhat.com>
- <20210611162129.3203483-3-trix@redhat.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <3e83dee8-4746-b22b-c032-1d73364f9cb7@lucaceresoli.net>
-Date:   Mon, 14 Jun 2021 11:28:41 +0200
+        Mon, 14 Jun 2021 05:31:31 -0400
+Received: from [192.168.1.155] ([95.115.71.85]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MWiYo-1lqaDm37MW-00X1fI; Mon, 14 Jun 2021 11:29:18 +0200
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
+ <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
+ <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
+ <0478822f-9d10-deb8-86ae-3b4ac3bb0c6c@metux.net>
+ <20210614091218.mj5hdx4xhy4vho5x@vireshk-i7>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <b7c28e22-31a3-24ea-4317-b5babeccf519@metux.net>
+Date:   Mon, 14 Jun 2021 11:29:14 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210611162129.3203483-3-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+In-Reply-To: <20210614091218.mj5hdx4xhy4vho5x@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:MqV3Z2CyoWMK6/vzPEuCWPVb1Ozuwu6FCqfnYZ4TbTh2IYwSa61
+ txmFcsxKD8LDGc8bhre8U2Fn5xyZ2TfSE5ywX6l96uol/MhqgVPmu5fP/wFaJrrhvZAWQlK
+ 1MyP7jSt4JIEd2/c/C6YiLeaR5GNP5LRukB4FFUwK2S13gtRfwKwlkpHuaSLlNmNJ/X0ZSm
+ NmBUf7N1FfjCu+vEsaSfg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:t7VQLhZbY88=:CzAWpyZgqYmgRnvUC7ng9r
+ b+X53sr3TpZmKIOXB7l+7jmwWnM4tAPlD3HbBpsAeIknEIAeDa7rHQVVS/JNWumy2qyoLqOjp
+ dggY9QxeuOrj3akonjiaFxbclLZc7OuJr/rrA+OE6eUDR3NRI/MApQ0qc1z5jAgJIve8d1Hy3
+ 9R/eGtNUd/QwU+qwWvEHnOjXgjuxzsA45cSjYIuX/DFW5qYKt7r3iJSc0numt/nnvtpNjJ4Bv
+ 3csyY7ZvFl7o9wk/sRmp01/sZEz8ZLNBB9oesSzzT9I+kkHWCFCwI+5Bx+QWXZASov7PmLytg
+ EOjt7fi+LnZfbQey9u462qEVKBY0lwPX+1xiLU2Ux1qa5/nqvgadEcWDGx7ZZk4sfu8ng4WiW
+ lwgQNtYxRElvY99HzbFoi+7ovf5dYAV2pYgYqyYJmOAQTcfF8IH+64Fgb/I9ujzs6RR+9LnbM
+ tH87z5Dj2QecoAxkROX7Jz782hucJT7X05AyPeogenXMUU0FiZChhVanE0jcdFf4qvHeoO5dF
+ W2rXxt6cAcBrKjEuSLeA49m3yoox5aBULM7qnnntCWA6fPT/f9zaxmEhvoi9mb4Cx5IsY4mQS
+ d3H0pice8sNbX9dyqCv3td+rtEAFEulyN2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+On 14.06.21 11:12, Viresh Kumar wrote:
+>> Note that this is completely different from my approach that I've posted
+>> in autumn last year. Viresh's protocol hasn't much in common with mine.
+> 
+> The protocol hasn't changed in a sense on how it can be used. 
 
-On 11/06/21 18:21, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Follow drivers/net/ethernet/ which has control configs
-> NET_VENDOR_BLA that map to drivers/net/ethernet/bla
-> Since fpgas do not have many vendors, drop the 'VENDOR' and use
-> FPGA_BLA.
-> 
-> There are several new subdirs
-> altera/
-> dfl/
-> lattice/
-> xilinx/
-> 
-> Each subdir has a Kconfig that has a new/reused
-> 
-> if FPGA_BLA
->   ... existing configs ...
-> endif FPGA_BLA
-> 
-> Which is sourced into the main fpga/Kconfig
-> 
-> Each subdir has a Makefile whose transversal is controlled in the
-> fpga/Makefile by
-> 
-> obj-$(CONFIG_FPGA_BLA) += bla/
-> 
-> This is the dfl/ subdir part.
-> 
-> Create a dfl/ subdir
-> Move dfl-* files to it.
-> Add a Kconfig and Makefile
-> 
-> Because FPGA_DFL is now used in dfl/Kconfig in a if/endif
-> block, all the other configs in dfl/Kconfig implicitly depend
-> on FPGA_DFL.  So the explicit dependence can be removed.  Also
-> since FPGA_DFL depends on HAS_IOMEM, it can be removed from the
-> other configs.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  MAINTAINERS                                 |  2 +-
->  drivers/fpga/Kconfig                        | 80 +-------------------
->  drivers/fpga/Makefile                       | 18 +----
->  drivers/fpga/dfl/Kconfig                    | 83 +++++++++++++++++++++
->  drivers/fpga/dfl/Makefile                   | 16 ++++
->  drivers/fpga/{ => dfl}/dfl-afu-dma-region.c |  0
->  drivers/fpga/{ => dfl}/dfl-afu-error.c      |  0
->  drivers/fpga/{ => dfl}/dfl-afu-main.c       |  0
->  drivers/fpga/{ => dfl}/dfl-afu-region.c     |  0
->  drivers/fpga/{ => dfl}/dfl-afu.h            |  0
->  drivers/fpga/{ => dfl}/dfl-fme-br.c         |  0
->  drivers/fpga/{ => dfl}/dfl-fme-error.c      |  0
->  drivers/fpga/{ => dfl}/dfl-fme-main.c       |  0
->  drivers/fpga/{ => dfl}/dfl-fme-mgr.c        |  0
->  drivers/fpga/{ => dfl}/dfl-fme-perf.c       |  0
->  drivers/fpga/{ => dfl}/dfl-fme-pr.c         |  0
->  drivers/fpga/{ => dfl}/dfl-fme-pr.h         |  0
->  drivers/fpga/{ => dfl}/dfl-fme-region.c     |  0
->  drivers/fpga/{ => dfl}/dfl-fme.h            |  0
->  drivers/fpga/{ => dfl}/dfl-n3000-nios.c     |  0
->  drivers/fpga/{ => dfl}/dfl-pci.c            |  0
->  drivers/fpga/{ => dfl}/dfl.c                |  0
->  drivers/fpga/{ => dfl}/dfl.h                |  0
->  23 files changed, 102 insertions(+), 97 deletions(-)
->  create mode 100644 drivers/fpga/dfl/Kconfig
->  create mode 100644 drivers/fpga/dfl/Makefile
->  rename drivers/fpga/{ => dfl}/dfl-afu-dma-region.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-afu-error.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-afu-main.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-afu-region.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-afu.h (100%)
->  rename drivers/fpga/{ => dfl}/dfl-fme-br.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-fme-error.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-fme-main.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-fme-mgr.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-fme-perf.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-fme-pr.c (100%)
+Sorry, but that's not correct. It's an entirely different protocol,
+entirely different signal flow, different data structures, different
+queue layout, ... in no way compatible.
 
-You should update Documentation/fpga/dfl.rst too as it mentions
-"drivers/fpga/dfl-fme-pr.c". This update was in your initial patch 5 so
-it's lost now, but it really should be in this patch.
+The only thing they've got in common is they're both do gpios via virtio.
 
->  rename drivers/fpga/{ => dfl}/dfl-fme-pr.h (100%)
->  rename drivers/fpga/{ => dfl}/dfl-fme-region.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-fme.h (100%)
->  rename drivers/fpga/{ => dfl}/dfl-n3000-nios.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl-pci.c (100%)
->  rename drivers/fpga/{ => dfl}/dfl.c (100%)
 
-Same as above.
+--mtx
 
 -- 
-Luca
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
