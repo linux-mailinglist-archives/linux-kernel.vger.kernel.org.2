@@ -2,98 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F233A6595
+	by mail.lfdr.de (Postfix) with ESMTP id 765B13A6597
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237219AbhFNLlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:41:03 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:44585 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234285AbhFNL12 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:27:28 -0400
-Received: by mail-wr1-f49.google.com with SMTP id f2so14132698wri.11;
-        Mon, 14 Jun 2021 04:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=aExKys5nPg/zXn5F7DojkmqPz+FIBM7Z0Dn8A8LEku4=;
-        b=Ie24aQaoyChqcb+HNOMsLTUkczQc8SP6l2BP3Hf6Qu48t+V7K3taL3rqxFmTVtgM2O
-         pizDcO9ixTJSIxoNRnvcC4rwKR5lAX5eWgd5KNwI9gO9xUjbdZmN7Bhaf1YN/EoBzRvO
-         cYLLFyWBgA0u7m/kmf39btqJMJN2J6hHmbBoRqeLAubpTMSAWc4YxUZapjei3D4Zj+nL
-         UWWvBwZk/7/BmTH15mV1BpUqUfi+MT2QdNnSwaSFbl9SYiO12usYrYhKRDT9Mfd88ubG
-         7W0+bvZo6erPWGl79Y8/rNLJlXnM54CLHWFc+V4ZRJXT8QKHn2BY0wlKqAC1DtLpEVQe
-         aevw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=aExKys5nPg/zXn5F7DojkmqPz+FIBM7Z0Dn8A8LEku4=;
-        b=sKGKl8C3x9NAfmyJWmSmHdm5LgL3uyLFG1Y1neiCczZ9JSSr6ZvuzrP8S6wCcucTkg
-         ovI0uWPtyS0A6pu1vR0mUVUB+cP0uvtjtGL6a7RnFv65QsJhtcJcfUayQL4Dl7hZ9U91
-         En41FhgQfdOeAq0cQAXJZpapygtUeU9/fZHGsc7F3LPCFLlAfMQfWTnxvWEkTUx/bvEx
-         dC0sUJ4cgtfSfcnL0EDmCM4cvG2HZ5CCOCaVOD9vssBywER7HmcTAO76L8teltkwjPT+
-         QYToWqdpNp2fzhuTM39RHOecPUtAR9F6kzZLu2o6EJjsKhirQbr0k16XeGjebkepeRG4
-         s27w==
-X-Gm-Message-State: AOAM530VD9kKkDTYkREQ1CD2F4g1yNJV+jdM1VAL5L9wWhfEHhCJ8zPQ
-        zznx4YILKx9SJKNcg384I4o=
-X-Google-Smtp-Source: ABdhPJwwItFDBd59d0Z3WIlkUwimhgq5j5SPp5Xw+uvteNXopxbzmDC40kuQPmaoUjGaNQDdxUMeuw==
-X-Received: by 2002:adf:efc3:: with SMTP id i3mr18139641wrp.356.1623669852100;
-        Mon, 14 Jun 2021 04:24:12 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d62:e800:a8e7:80e:6e34:237d])
-        by smtp.gmail.com with ESMTPSA id w13sm17269485wrc.31.2021.06.14.04.24.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 04:24:11 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Yu Chen <chenyu56@huawei.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v2 3/3] MAINTAINERS: rectify entry for INTEL KEEM BAY DRM DRIVER
-Date:   Mon, 14 Jun 2021 13:23:49 +0200
-Message-Id: <20210614112349.26108-4-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210614112349.26108-1-lukas.bulwahn@gmail.com>
-References: <20210614112349.26108-1-lukas.bulwahn@gmail.com>
+        id S237248AbhFNLlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:41:05 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24353 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235163AbhFNL1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:27:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623669927; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=LHTJHs8WLtG+cQlDY6gAWUCMiRc/oQhmi+dCZfmozBQ=;
+ b=N4Mjtb6OpsSzx9bmxpeAN7n09/o92qXGJXslZvxZwSFETchmTjCK7tQlk61vHc4/DEqXUqqP
+ C/ZJWetLOlgjVqi8J7mw2fo7lw6HbFWbvF2kEXTf4IrSAtPhbkx3hWP1hGv/C3gJ8TuCKZXx
+ oQBNivhcvFuUJ+jO9d7KtxkaJYw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60c73ca38491191eb34ab6ea (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 11:25:23
+ GMT
+Sender: sbhanu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C5846C0091E; Mon, 14 Jun 2021 11:25:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbhanu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48FF6C43145;
+        Mon, 14 Jun 2021 11:25:18 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Jun 2021 16:55:17 +0530
+From:   sbhanu@codeaurora.org
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, asutoshd@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        rampraka@codeaurora.org, sayalil@codeaurora.org,
+        sartgarg@codeaurora.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
+        okukatla@codeaurora.org, djakov@kernel.org, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org
+Subject: Re: [PATCH V3] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
+ card
+In-Reply-To: <793c9596-73f3-42b2-291e-1c728e279e28@somainline.org>
+References: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
+ <793c9596-73f3-42b2-291e-1c728e279e28@somainline.org>
+Message-ID: <1c22c4f5ca372988491181b3d0bd55e8@codeaurora.org>
+X-Sender: sbhanu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ed794057b052 ("drm/kmb: Build files for KeemBay Display driver")
-refers to the non-existing file intel,kmb_display.yaml in
-./Documentation/devicetree/bindings/display/.
-
-Commit 5a76b1ed73b9 ("dt-bindings: display: Add support for Intel KeemBay
-Display") originating from the same patch series however adds the file
-intel,keembay-display.yaml in that directory instead.
-
-So, refer to intel,keembay-display.yaml in the INTEL KEEM BAY DRM DRIVER
-section instead.
-
-Fixes: ed794057b052 ("drm/kmb: Build files for KeemBay Display driver")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8e8dfe48afd8..89089c7ed77b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9388,7 +9388,7 @@ INTEL KEEM BAY DRM DRIVER
- M:	Anitha Chrisanthus <anitha.chrisanthus@intel.com>
- M:	Edmund Dea <edmund.j.dea@intel.com>
- S:	Maintained
--F:	Documentation/devicetree/bindings/display/intel,kmb_display.yaml
-+F:	Documentation/devicetree/bindings/display/intel,keembay-display.yaml
- F:	drivers/gpu/drm/kmb/
- 
- INTEL KEEM BAY OCS AES/SM4 CRYPTO DRIVER
--- 
-2.17.1
-
+On 2021-06-10 02:15, Konrad Dybcio wrote:
+> Hi,
+> 
+> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> index 3900cfc..8b159d1 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> @@ -11,6 +11,7 @@
+>>  #include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
+>>  #include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
+>>  #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
+>> +#include <dt-bindings/gpio/gpio.h>
+>>  #include "sc7280.dtsi"
+>>  #include "pm7325.dtsi"
+>>  #include "pmr735a.dtsi"
+>> @@ -272,6 +273,36 @@
+>>  	status = "okay";
+>>  };
+>> 
+>> +&sdhc_1 {
+>> +	status = "okay";
+>> +
+>> +	pinctrl-names = "default", "sleep";
+>> +	pinctrl-0 = <&sdc1_clk &sdc1_cmd &sdc1_data &sdc1_rclk>;
+>> +	pinctrl-1 = <&sdc1_clk_sleep &sdc1_cmd_sleep &sdc1_data_sleep 
+>> &sdc1_rclk_sleep>;
+> 
+> Please condense these pins into a since sdc1_on_state/sdc1_off_state
+> (check sdc1_state_on in [1])
+> 
+Sure
+> 
+> 
+>> +
+>> +	non-removable;
+>> +	no-sd;
+>> +	no-sdio;
+>> +
+>> +	vmmc-supply = <&vreg_l7b_2p9>;
+>> +	vqmmc-supply = <&vreg_l19b_1p8>;
+>> +
+>> +};
+>> +
+>> +&sdhc_2 {
+>> +	status = "okay";
+>> +
+>> +	pinctrl-names = "default", "sleep";
+>> +	pinctrl-0 = <&sdc2_clk &sdc2_cmd &sdc2_data &sd_cd>;
+>> +	pinctrl-1 = <&sdc2_clk_sleep &sdc2_cmd_sleep &sdc2_data_sleep>;
+> 
+> Ditto
+> 
+Sure
+> 
+> 
+>> +&tlmm {
+>> +	sdc1_clk: sdc1-clk {
+>> +		pins = "sdc1_clk";
+>> +		bias-disable;
+>> +		drive-strength = <16>;
+>> +	};
+>> +
+>> +	sdc1_cmd: sdc1-cmd {
+>> +		pins = "sdc1_cmd";
+>> +		bias-pull-up;
+>> +		drive-strength = <10>;
+>> +	};
+>> +
+>> +	sdc1_data: sdc1-data {
+>> +		pins = "sdc1_data";
+>> +		bias-pull-up;
+>> +		drive-strength = <10>;
+>> +	};
+>> +	sdc1_rclk: sdc1-rclk {
+>> +		pins = "sdc1_rclk";
+>> +		bias-pull-down;
+>> +	};
+>> +
+>> +	sdc2_clk: sdc2-clk {
+>> +		pins = "sdc2_clk";
+>> +		bias-disable;
+>> +		drive-strength = <16>;
+>> +	};
+>> +
+>> +	sdc2_cmd: sdc2-cmd {
+>> +		pins = "sdc2_cmd";
+>> +		bias-pull-up;
+>> +		drive-strength = <10>;
+>> +	};
+>> +
+>> +	sdc2_data: sdc2-data {
+>> +		pins = "sdc2_data";
+>> +		bias-pull-up;
+>> +		drive-strength = <10>;
+>> +	};
+>> +
+>> +	sd_cd: sd-cd {
+> 
+> Please make it sdc2 to keep things coherent.
+> 
+Sure
+> 
+> 
+>> +		pins = "gpio91";
+>> +		bias-pull-up;
+>> +	};
+>> +
+>> +};
+> 
+> Why are you defining on_state pins in the device dt and sleep state in
+> the SoC one?
+> 
+> Most devices share a common config for these, often coming from MTP or
+> QRD boards
+> 
+> and it makes little to no sense to define these separately every time,
+> because if you hit the
+> 
+> rare case of needing to make a change against that, it's probably just
+> drive-strength.
+> 
+I have made this change as per Doug Anderson comment on patch V2 
+(https://lore.kernel.org/patchwork/patch/1399453/#1598871)
+And along with drive-strength change, on some of boards Sd card gpio pin 
+also may change right.
+> 
+> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 0b6f119..eab6f7b 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -24,6 +24,11 @@
+>> 
+>>  	chosen { };
+>> 
+>> +	aliases {
+>> +		mmc1 = &sdhc_1;
+>> +		mmc2 = &sdhc_2;
+>> +	};
+> 
+> This is board specific. Something might have a SDIO Wi-Fi card on it.
+we are assuming eMMC and SD support available on all boards and if any 
+board supports SDIO Wi-Fi card
+they can add aliases for SDIO Wi-Fi card in that particular board device 
+DT file.
+> 
+> 
+> 
+>> +			mmc-ddr-1_8v;
+>> +			mmc-hs200-1_8v;
+>> +			mmc-hs400-1_8v;
+>> +			mmc-hs400-enhanced-strobe;
+> 
+> These properties should probably be in the device DT, unless the SoC 
+> controller
+> 
+> can only support these speeds and only at 1.8v
+> 
+we are keeping these flags in SOC file because all platforms would 
+support these modes,
+and yes we support only these and at 1.8V.
+> 
+> 
+> [1]
+> https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/commit/?h=for-next&id=35a4a8b6e9b133cf3a7d059ad4cf0e24cb4bd029
+> 
+> 
+> Konrad
