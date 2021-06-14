@@ -2,155 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265903A67E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629F33A67EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbhFNNbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:31:43 -0400
-Received: from mail-dm6nam10on2047.outbound.protection.outlook.com ([40.107.93.47]:30368
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233180AbhFNNbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:31:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TssKbYwq4JWlNirEuKAXIYFbhBum6dE3vzgfeTkaYzrFB2ioxzfCDymBenqjoIxsqQPYP0ra6zqPSmmYq7WYxyvB+OzR/MAuRcbIg3oEgSuBJ/RapBVR1QTpsbkSlOzDbY8GiQcK715dwRURWXGuF77ieoSaQWpl5z8aUlDoVOIpLBtGWv1NPO/p9dO4Pu3ag2UtYfvlKh8M2ku0gqXCevHduCdlU5RtJj/Ku5pnp0nvGTc+DJabdFMUh1y28+6XTetqezJtddMY9QEJmqQnFxz8xxyAx9sOK0x6+9gdDNeyGSqSwuHw6mNhOdB/F04oRTiXvDH/axh0KXsylHquzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4tEwxi4hVyxOZ0eN1UAOCZfBuAaTWIOrLO/RC/MnHdI=;
- b=R4DLhS/2GP2HTh8B08DBVpbcfhE849XDYc3nE2CaVJs0p3ux8lNYleOiKQxzNm9HWzev8MyrrNoOpeHll69FSbZxjuqzWb8XxMIty5PCj42rTbhi/+AVTPQPMmvk5Tgy0hyh3cbIqcHI1E35kQg36ek+XERq5x2WsxdURc52lgwVWy35mXDp5Jx4+en5upDtAFvZ8wuraOJerrkoxtuDzuGuUNW4rbSC2lrF2/GMwP4V3GNTkpDMx/bTAq9bg2r7Z201maQfivlEjZyQB8621MlkDsj/03zP4ClfxrkubKNg47IX208lklIbOXqzjr6lKMicoe5c4ijWdIE34TyjGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4tEwxi4hVyxOZ0eN1UAOCZfBuAaTWIOrLO/RC/MnHdI=;
- b=ZzpgrFF/sG/4Nosw4z7DxYtRE3dX36+KREkrQTnaqtOGDEEDGAnJlUIbQeIwixqknnSmvJryf5PqfFrsjID1VgKioG1ac5FQcg9mASJqfmBLr8Raj7FQ1A9PH8WqnX6GWNuNIY6B//1YzYneknadUbCKQUzBPwZoqomkTbhc8aU=
-Authentication-Results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB3369.namprd12.prod.outlook.com (2603:10b6:5:117::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4219.23; Mon, 14 Jun 2021 13:29:31 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::6437:2e87:f7dc:a686]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::6437:2e87:f7dc:a686%12]) with mapi id 15.20.4219.025; Mon, 14 Jun
- 2021 13:29:31 +0000
-Subject: Re: [RFC PATCH V3 08/11] swiotlb: Add bounce buffer remap address
- setting function
-To:     Christoph Hellwig <hch@lst.de>, Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        arnd@arndb.de, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, Tianyu.Lan@microsoft.com,
-        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
-        xen-devel@lists.xenproject.org, davem@davemloft.net,
-        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, brijesh.singh@amd.com, sunilmut@microsoft.com
-References: <20210530150628.2063957-1-ltykernel@gmail.com>
- <20210530150628.2063957-9-ltykernel@gmail.com>
- <20210607064312.GB24478@lst.de>
- <48516ce3-564c-419e-b355-0ce53794dcb1@gmail.com>
- <20210614071223.GA30171@lst.de>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <e76644b9-8eda-8e9c-8837-42299b0754d5@amd.com>
-Date:   Mon, 14 Jun 2021 08:29:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210614071223.GA30171@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SA9PR13CA0156.namprd13.prod.outlook.com
- (2603:10b6:806:28::11) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        id S234015AbhFNNcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:32:08 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3232 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233699AbhFNNcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 09:32:07 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G3XBN2YHHz6G9K3;
+        Mon, 14 Jun 2021 21:20:28 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 14 Jun 2021 15:30:03 +0200
+Received: from localhost (10.52.124.209) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 14 Jun
+ 2021 14:30:02 +0100
+Date:   Mon, 14 Jun 2021 14:29:56 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <virtio-dev@lists.oasis-open.org>, <sudeep.holla@arm.com>,
+        <james.quinlan@broadcom.com>, <f.fainelli@gmail.com>,
+        <etienne.carriere@linaro.org>, <vincent.guittot@linaro.org>,
+        <souvik.chakravarty@arm.com>, <igor.skalkin@opensynergy.com>,
+        <peter.hilber@opensynergy.com>, <alex.bennee@linaro.org>,
+        <jean-philippe@linaro.org>, <mikhail.golubev@opensynergy.com>,
+        <anton.yakovlev@opensynergy.com>,
+        <Vasyl.Vavrychuk@opensynergy.com>,
+        <Andriy.Tryshnivskyy@opensynergy.com>
+Subject: Re: [PATCH v4 03/16] firmware: arm_scmi: Add transport optional
+ init/exit support
+Message-ID: <20210614142956.000030f5@Huawei.com>
+In-Reply-To: <20210611165937.701-4-cristian.marussi@arm.com>
+References: <20210611165937.701-1-cristian.marussi@arm.com>
+        <20210611165937.701-4-cristian.marussi@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-ryzen.texastahm.com (67.79.209.213) by SA9PR13CA0156.namprd13.prod.outlook.com (2603:10b6:806:28::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend Transport; Mon, 14 Jun 2021 13:29:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6e989d99-af08-4a06-4c51-08d92f38711e
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3369:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3369A3BCC0CC33B7CD0B7E7FEC319@DM6PR12MB3369.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1QmDGjWWEbGHHVdPamyugQhhazHt47b+mkPusoQGt9Ms/n426x5PB2UvkugkitKBIBvfXLnNi2ZR9RnQuO7cvIN8/Ly0sf02CRgcGMcO+jaRMDZZSHVa/uA2jgenuLLMsuxN1hwvTRjJDDqrBUyVYSUVlgWd55AUbLzUHNNfmG23XzYvY4ciyBTTsx0ffYIqDd3QseUNFZe8uKhh7vdTxLHZkHJZehOdMlY1eRqRSFQlYXKpppWVBBuZbEgMIbyHsUgDVajruTR3ygUazc3U4AcvEb4SiDUnt1UdMGBCCHSvUBkLWKdVtVI2N7w+0pBfL/dtQhDrVozV5/+i/Gb1dQ1Zk9gFHxrb10QTaRIOLpwDj2sTFJAZeUG/fxCxkk6s7YHXZBxrDIJS8M4XVLeDxAzDrtLjMvQF9i7K3471NZbYwEz/YNXh9yJS/zTO4o5gAoRTXYE41QZxbxJWHfPe3xxvCf3T69KL2V2s+5O6G8AzLJVTkc6mV2BTcsMKK6nR703FY/Ilf8iHpUYn3yqXMCWGTpe/0hd3Cfpi0gW0JiLgdl/u/F0mhjsHsi1SqVnY+qABvw+Ks6ZtLvwM4eETAPkOPNQohevxatH4sqYaA7tIpAkbNapUhRCKbbxrRnVPg7pBnjSK6EyLv6zjR7N/+Xg/EVl4pbBKgq8+1dQPqFJbArKwS179+AMIaX5k5WhUPXTKyAEe+MvOHa+0mbIN8ppm8xlm3WL5wpSlOpGOiRxuVwESXB8nDimPgpsST2H9J+hcALOIjl2ipXIoS9cOTVYBZIwjtehtjPIpYO4C9fxlxqHZWiWjyhcKhuTeLnoD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(346002)(396003)(376002)(2906002)(16526019)(26005)(83380400001)(186003)(6506007)(7406005)(53546011)(7416002)(5660300002)(66946007)(4326008)(4744005)(86362001)(66476007)(8676002)(956004)(8936002)(2616005)(66556008)(38100700002)(31696002)(6512007)(36756003)(31686004)(966005)(316002)(110136005)(478600001)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U09KclZSaDBTaTI3bnJlL0oyUzg2OHVoU1lETnluRVByV3JlT25FZk5ZcjMx?=
- =?utf-8?B?aS83R1BiUkdNVjRuZ09yYjJBYTE3bSs3Z3JWWHJweXlPK3FTTzM3NjFQYWNE?=
- =?utf-8?B?aTA0czVZNU1ZOVA2SEFVT3lkZ2dDdDQ1ZkU0dWN2WHdNNHByWVA2VDFYeGtV?=
- =?utf-8?B?QmpNdWtzYXo5VWJnVXB6c1YxRHJUQWdqb3FmWkJqaWdOMldNNkxvNFRUM1Zn?=
- =?utf-8?B?c1FCWTZKRWFnNGthVDdiWHVTU0MvVUNOcW5TeDZ4dkVLUnpMS0x0cFk1R1lS?=
- =?utf-8?B?L2FCNGVzSTl6ajUvT0ZnbHZWd1VoMVJvTFdnUjNnVFRxNmFDNzdnMmtOd2NY?=
- =?utf-8?B?UzArc2liWU41UzNldFF4ZmVDTW9FR0tIMzhLYXlvNWNsakZiS1FpckQ4aC8z?=
- =?utf-8?B?d2s3QjlBbnBXSFhTNTNBVmlEZytuZzBlVGdFcUE4R1d2Mmh5ZlJSZjlPY0JS?=
- =?utf-8?B?bmV0SmpNNk45ZFRFMXlsQm5GWGhGT1M2M1UrWVY1ZmorNTZWSEE5VkEvWG9S?=
- =?utf-8?B?UzJjd25HZGxveCsvRkkxTFlNQ1ZYei85Mjlya3NISkxadDRkRFhuWC9lV0Rh?=
- =?utf-8?B?bERCTmQ4UTcyOGxnR20zM1ZMNzFHMDR1QTRndG4ydlhOZUNnRlk3a2xKMDlz?=
- =?utf-8?B?aldJSDdvTll6QkZSaGpjRUhjNzZwb1hOTFpCc0lMdXpGZ05LM1JOWUFsM1dt?=
- =?utf-8?B?YmNlWDJZV0pRUGxwOGhuQnRxTzlZdnJsM0h5cnJWSjU5bkJEbEtFUzM3YjVl?=
- =?utf-8?B?YVpseGRkYW92QXRpWjd5V3NOYmE0Z1VlZ2FSYTQyNzUyVU9yaWJxS1ZZZWo3?=
- =?utf-8?B?a2NBMmpjVVIwVU1RaXRvQStqQmxlYTQzTUhmYU1IWXFaczVOSXZaM3dCVXZW?=
- =?utf-8?B?WDgwNXh1UnJsdUhRTE1ocm5WTWFzMHI2Q3pzcVIxNW9HZ2doc1NCMHdRSWFT?=
- =?utf-8?B?aW5zaGlUV09sd0VsTGVJOXorZ2RxNzJxTDFZMmlUeG1HYlpidkZWUmJLWGM4?=
- =?utf-8?B?VEh5SlJYMzhWMVVJTmxERHpGbjBoTjNOdkNzMHUvamVyeWVzOHhjRmtNeHV4?=
- =?utf-8?B?NUlTTGgyVHVOd0t3bndIU3NLejViNlJlS2h1TmFScHlWc1Z4bm1pR1NLQkR1?=
- =?utf-8?B?WHBUeTNyWm1UODJ1QnpRZndXN0dORWVzOHJCdVRVVnhTUmU1NzJUOFZvNFNv?=
- =?utf-8?B?TWZHSHNpWUhoRklic1l4TjNNU21nTlRyR2RlMFAycmtKN1dFQUtnSmw1cEdJ?=
- =?utf-8?B?WWdEMnc3bzdkK3laMFhoVDRPeW0vRlZ6bEhlN092eVI3RTYrSVIwTHpiRCti?=
- =?utf-8?B?TVJkY1lhenNZZCtPL1RCMkVpSGkrV1lVYWZiT3BvcU1KVlc0cjlTR2xlaXll?=
- =?utf-8?B?NFdUN3Z5VVRiY1BQb3BZOTBKODJoVHZ2dStMRWlUMG0zamdLN1BFL05lbjMr?=
- =?utf-8?B?RTZYaDFtQ0dXSE1Hdkxhd090cXFpb1BWa0lqQmJ5QnhMNXZ0c0lpNDdoZ1VB?=
- =?utf-8?B?RTBjTDBGUDZORkc5TGorOGtKQTRMaUs0UlVVRGhpSDlJVkd6RTI4VHg0Wlc3?=
- =?utf-8?B?Sk1RQlNoakdJNVFzOEx2eUJBNmVsM1Aydmtod0FFYjBIRmxPOC9DbEM1aU0x?=
- =?utf-8?B?U1N4aHRFZjNNOFF4WlUvL2hSYmt2RDJTaWlQVHFHVk05czFQS2s0S01RZUFZ?=
- =?utf-8?B?ZmRMT3Z3SkpGR1JiWHBjWkZyeVJBeEJYclQ1YzBpVG9acjFsT3k5UUpoL2xL?=
- =?utf-8?Q?ZHYZOzjn4BogJ5Uq0Zqb/GJaQ7hliEsKT3RlIOF?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e989d99-af08-4a06-4c51-08d92f38711e
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2021 13:29:31.5169
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WI31GdrXDga81nCxIOcSfQ8NG9RmlJ/RvBfGoXtWFVMP2J3ukSn6BXcu+zCQcToiNLLEwGct1WP42ocHUZLDKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3369
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.209]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/14/21 2:12 AM, Christoph Hellwig wrote:
-> On Mon, Jun 07, 2021 at 10:56:47PM +0800, Tianyu Lan wrote:
->> These addresses in extra address space works as system memory mirror. The 
->> shared memory with host in Isolation VM needs to be accessed via extra 
->> address space which is above shared gpa boundary.
+On Fri, 11 Jun 2021 17:59:24 +0100
+Cristian Marussi <cristian.marussi@arm.com> wrote:
+
+> Some SCMI transport could need to perform some transport specific setup
+> before they can be used by the SCMI core transport layer: typically this
+> early setup consists in registering with some other kernel subsystem.
 > 
-> Why?
+> Add the optional capability for a transport to provide a couple of .init
+> and .exit functions that are assured to be called early during the SCMI
+> core initialization phase, well before the SCMI core probing step.
 > 
+> [ Peter: Adapted RFC patch by Cristian for submission to upstream. ]
+> Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+> [ Cristian: Fixed scmi_transports_exit point of invocation ]
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 
-IIUC, this is using the vTOM feature of SEV-SNP. When this feature is
-enabled for a VMPL level, any physical memory addresses below vTOM are
-considered private/encrypted and any physical memory addresses above vTOM
-are considered shared/unencrypted. With this option, you don't need a
-fully enlightened guest that sets and clears page table encryption bits.
-You just need the DMA buffers to be allocated in the proper range above vTOM.
+Drive by comment inline.  Feel free to ignore ;)
 
-See the section on "Virtual Machine Privilege Levels" in
-https://www.amd.com/system/files/TechDocs/SEV-SNP-strengthening-vm-isolation-with-integrity-protection-and-more.pdf.
+Jonathan
 
-Thanks,
-Tom
+> ---
+>  drivers/firmware/arm_scmi/common.h |  8 ++++
+>  drivers/firmware/arm_scmi/driver.c | 59 ++++++++++++++++++++++++++++++
+>  2 files changed, 67 insertions(+)
+> 
+> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> index 7c2b9fd7e929..6bb734e0e3ac 100644
+> --- a/drivers/firmware/arm_scmi/common.h
+> +++ b/drivers/firmware/arm_scmi/common.h
+> @@ -321,6 +321,12 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
+>  /**
+>   * struct scmi_desc - Description of SoC integration
+>   *
+> + * @init: An optional function that a transport can provide to initialize some
+> + *	  transport-specific setup during SCMI core initialization, so ahead of
+> + *	  SCMI core probing.
+> + * @exit: An optional function that a transport can provide to de-initialize
+> + *	  some transport-specific setup during SCMI core de-initialization, so
+> + *	  after SCMI core removal.
+>   * @ops: Pointer to the transport specific ops structure
+>   * @max_rx_timeout_ms: Timeout for communication with SoC (in Milliseconds)
+>   * @max_msg: Maximum number of messages that can be pending
+> @@ -328,6 +334,8 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
+>   * @max_msg_size: Maximum size of data per message that can be handled.
+>   */
+>  struct scmi_desc {
+> +	int (*init)(void);
+> +	void (*exit)(void);
+>  	const struct scmi_transport_ops *ops;
+>  	int max_rx_timeout_ms;
+>  	int max_msg;
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index f15d75af87ea..20f8f0581f3a 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -1594,10 +1594,67 @@ static struct platform_driver scmi_driver = {
+>  	.remove = scmi_remove,
+>  };
+>  
+> +/**
+> + * __scmi_transports_setup  - Common helper to call transport-specific
+> + * .init/.exit code if provided.
+> + *
+> + * @init: A flag to distinguish between init and exit.
+> + *
+> + * Note that, if provided, we invoke .init/.exit functions for all the
+> + * transports currently compiled in.
+> + *
+> + * Return: 0 on Success.
+> + */
+> +static inline int __scmi_transports_setup(bool init)
+> +{
+> +	int ret = 0;
+> +	const struct of_device_id *trans;
+> +
+> +	for (trans = scmi_of_match; trans->data; trans++) {
+> +		const struct scmi_desc *tdesc = trans->data;
+> +
+> +		if ((init && !tdesc->init) || (!init && !tdesc->exit))
+> +			continue;
+> +
+> +		pr_debug("SCMI %sInitializing %s transport\n",
+> +			 init ? "" : "De-", trans->compatible);
+
+Clever formatting can makes grepping for messages harder.
+
+Perhaps
+		if (init)
+			pr_debug("SCMI Initializing %s transport\n",
+				 trans->compatible);
+		else
+			pr_debug("SCMI Deinitializing %s transport\n",
+				 trans->compatible);
+
+would be nicer even though it burns some lines. Also avoids somewhat
+ugly capitalization : De-Initializing xxx transport.
+
+You could combine it with the convenient if(init) below
+
+> +
+> +		if (init)
+> +			ret = tdesc->init();
+> +		else
+> +			tdesc->exit();
+> +
+> +		if (ret) {
+> +			pr_err("SCMI transport %s FAILED initialization!\n",
+> +			       trans->compatible);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int __init scmi_transports_init(void)
+> +{
+> +	return __scmi_transports_setup(true);
+> +}
+> +
+> +static void __exit scmi_transports_exit(void)
+> +{
+> +	__scmi_transports_setup(false);
+> +}
+> +
+>  static int __init scmi_driver_init(void)
+>  {
+> +	int ret;
+> +
+>  	scmi_bus_init();
+>  
+> +	/* Initialize any compiled-in transport which provided an init/exit */
+> +	ret = scmi_transports_init();
+> +	if (ret)
+> +		return ret;
+> +
+>  	scmi_base_register();
+>  
+>  	scmi_clock_register();
+> @@ -1626,6 +1683,8 @@ static void __exit scmi_driver_exit(void)
+>  
+>  	scmi_bus_exit();
+>  
+> +	scmi_transports_exit();
+> +
+>  	platform_driver_unregister(&scmi_driver);
+>  }
+>  module_exit(scmi_driver_exit);
+
