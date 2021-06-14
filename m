@@ -2,43 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EF13A60BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8DF3A610D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbhFNKhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:37:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39860 "EHLO mail.kernel.org"
+        id S233595AbhFNKmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:42:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233196AbhFNKea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:34:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0FC861245;
-        Mon, 14 Jun 2021 10:31:54 +0000 (UTC)
+        id S233514AbhFNKhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:37:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F5206140D;
+        Mon, 14 Jun 2021 10:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666715;
-        bh=Orrf/8HQCxsdAsNoUTaVt4kXDOyRkH/lzRwD6tPRPYk=;
+        s=korg; t=1623666798;
+        bh=7P8EsJh8qLdqkjWHvgkVR97WWApO6HK8ZHQQN7jUtY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tyw01gGYYlNs6lbpJhVHWgifLNUmhd4yrswikSYnUfteleo5vksvHGM0WltbxcCCH
-         Ezs2Du3KUOoLTvCBfragfCR+PpZE+y9q4reTWC+pdP2JgaJsGNxuKYDyopeFYvGEb3
-         VkosC1xUzMuE6QYegc/p04xc6weFW+tCBl0e+Aac=
+        b=gm9rwOGrr/JKKfJH8VIKGHkDZdjskIOvc2fMDlgU67fF+BFYJsAOSQgDBFKHciUb2
+         JeL3u0ba9wmjTwIoRCixAOZjEx/DMXhTNYzOEd88wFjZi7jmSw8VMQusjGd50lgbBA
+         d4XDlY8cengRI8dMTEh7nhGxOzZMeuo5SkqDDW8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 36/42] perf session: Correct buffer copying when peeking events
+        stable@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.com>
+Subject: [PATCH 4.14 34/49] usb: gadget: eem: fix wrong eem header operation
 Date:   Mon, 14 Jun 2021 12:27:27 +0200
-Message-Id: <20210614102643.850989621@linuxfoundation.org>
+Message-Id: <20210614102642.991598495@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,55 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Linyu Yuan <linyyuan@codeaurora.com>
 
-[ Upstream commit 197eecb6ecae0b04bd694432f640ff75597fed9c ]
+commit 305f670846a31a261462577dd0b967c4fa796871 upstream.
 
-When peeking an event, it has a short path and a long path.  The short
-path uses the session pointer "one_mmap_addr" to directly fetch the
-event; and the long path needs to read out the event header and the
-following event data from file and fill into the buffer pointer passed
-through the argument "buf".
+when skb_clone() or skb_copy_expand() fail,
+it should pull skb with lengh indicated by header,
+or not it will read network data and check it as header.
 
-The issue is in the long path that it copies the event header and event
-data into the same destination address which pointer "buf", this means
-the event header is overwritten.  We are just lucky to run into the
-short path in most cases, so we don't hit the issue in the long path.
-
-This patch adds the offset "hdr_sz" to the pointer "buf" when copying
-the event data, so that it can reserve the event header which can be
-used properly by its caller.
-
-Fixes: 5a52f33adf02 ("perf session: Add perf_session__peek_event()")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20210605052957.1070720-1-leo.yan@linaro.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Linyu Yuan <linyyuan@codeaurora.com>
+Link: https://lore.kernel.org/r/20210608233547.3767-1-linyyuan@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/session.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/gadget/function/f_eem.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 89808ab008ad..9187d8119a75 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -1427,6 +1427,7 @@ int perf_session__peek_event(struct perf_session *session, off_t file_offset,
- 	if (event->header.size < hdr_sz || event->header.size > buf_sz)
- 		return -1;
+--- a/drivers/usb/gadget/function/f_eem.c
++++ b/drivers/usb/gadget/function/f_eem.c
+@@ -502,7 +502,7 @@ static int eem_unwrap(struct gether *por
+ 			skb2 = skb_clone(skb, GFP_ATOMIC);
+ 			if (unlikely(!skb2)) {
+ 				DBG(cdev, "unable to unframe EEM packet\n");
+-				continue;
++				goto next;
+ 			}
+ 			skb_trim(skb2, len - ETH_FCS_LEN);
  
-+	buf += hdr_sz;
- 	rest = event->header.size - hdr_sz;
- 
- 	if (readn(fd, buf, rest) != (ssize_t)rest)
--- 
-2.30.2
-
+@@ -513,7 +513,7 @@ static int eem_unwrap(struct gether *por
+ 			if (unlikely(!skb3)) {
+ 				DBG(cdev, "unable to realign EEM packet\n");
+ 				dev_kfree_skb_any(skb2);
+-				continue;
++				goto next;
+ 			}
+ 			dev_kfree_skb_any(skb2);
+ 			skb_queue_tail(list, skb3);
 
 
