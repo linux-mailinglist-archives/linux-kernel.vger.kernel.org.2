@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8069A3A61B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF9C3A60CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbhFNKup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45360 "EHLO mail.kernel.org"
+        id S233300AbhFNKiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:38:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233827AbhFNKlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:41:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEEA5613E9;
-        Mon, 14 Jun 2021 10:35:12 +0000 (UTC)
+        id S233522AbhFNKf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:35:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76AEA613CC;
+        Mon, 14 Jun 2021 10:32:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666913;
-        bh=tyn97TXx1BX8TXUEh7mwRv4SbFUY+HG02nTqWPv0ptI=;
+        s=korg; t=1623666751;
+        bh=QdZB6oaUzPkhXXzrrTSLwMqnHrdiW2LbpnlzOJ4ai/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WihWDJGkWfbNhu+sLTrliFfCp9Ibd2mkkGG3/Ol3ivqLv+MkpGn2Spz3M5fUh6/1c
-         XbbTNYAa+MuWtPuBL2XopUDLx4KN4cSiZBu1gNhuIAd1cqOHgu8bB6pTxpe7BLCyPt
-         XCwq7zgbBXb/LkzO0ma9fCsgbPwIRDyomO4LLFzg=
+        b=ewRAhNhoB+F3KYP4Fnqcbzj5tp87f8MX2bpV8SGUeXENxObOv1BLXBQlU40nqeFr+
+         dRN77nu6D1w6Xo65rbuDBiq9qPkFGw5taQujS661DFXTTGffTDhZUFaCY5z27IPhA2
+         AWQ3IvxyqDMzNIOlq0F1zSH4hc1b0Vp/bE4AUU8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 26/67] i2c: mpc: implement erratum A-004447 workaround
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 16/49] bnx2x: Fix missing error code in bnx2x_iov_init_one()
 Date:   Mon, 14 Jun 2021 12:27:09 +0200
-Message-Id: <20210614102644.643974359@linuxfoundation.org>
+Message-Id: <20210614102642.412502263@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,146 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit 8f0cdec8b5fd94135d643662506ee94ae9e98785 ]
+[ Upstream commit 65161c35554f7135e6656b3df1ce2c500ca0bdcf ]
 
-The P2040/P2041 has an erratum where the normal i2c recovery mechanism
-does not work. Implement the alternative recovery mechanism documented
-in the P2040 Chip Errata Rev Q.
+Eliminate the follow smatch warning:
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1227
+bnx2x_iov_init_one() warn: missing error code 'err'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mpc.c | 79 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 78 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index 6a0d55e9e8e3..af349661fd76 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -23,6 +23,7 @@
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+index 1977e0c552df..e4d1aaf838a4 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+@@ -1242,8 +1242,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
+ 		goto failed;
  
- #include <linux/clk.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/fsl_devices.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
-@@ -49,6 +50,7 @@
- #define CCR_MTX  0x10
- #define CCR_TXAK 0x08
- #define CCR_RSTA 0x04
-+#define CCR_RSVD 0x02
- 
- #define CSR_MCF  0x80
- #define CSR_MAAS 0x40
-@@ -70,6 +72,7 @@ struct mpc_i2c {
- 	u8 fdr, dfsrr;
- #endif
- 	struct clk *clk_per;
-+	bool has_errata_A004447;
- };
- 
- struct mpc_i2c_divider {
-@@ -176,6 +179,75 @@ static int i2c_wait(struct mpc_i2c *i2c, unsigned timeout, int writing)
- 	return 0;
- }
- 
-+static int i2c_mpc_wait_sr(struct mpc_i2c *i2c, int mask)
-+{
-+	void __iomem *addr = i2c->base + MPC_I2C_SR;
-+	u8 val;
-+
-+	return readb_poll_timeout(addr, val, val & mask, 0, 100);
-+}
-+
-+/*
-+ * Workaround for Erratum A004447. From the P2040CE Rev Q
-+ *
-+ * 1.  Set up the frequency divider and sampling rate.
-+ * 2.  I2CCR - a0h
-+ * 3.  Poll for I2CSR[MBB] to get set.
-+ * 4.  If I2CSR[MAL] is set (an indication that SDA is stuck low), then go to
-+ *     step 5. If MAL is not set, then go to step 13.
-+ * 5.  I2CCR - 00h
-+ * 6.  I2CCR - 22h
-+ * 7.  I2CCR - a2h
-+ * 8.  Poll for I2CSR[MBB] to get set.
-+ * 9.  Issue read to I2CDR.
-+ * 10. Poll for I2CSR[MIF] to be set.
-+ * 11. I2CCR - 82h
-+ * 12. Workaround complete. Skip the next steps.
-+ * 13. Issue read to I2CDR.
-+ * 14. Poll for I2CSR[MIF] to be set.
-+ * 15. I2CCR - 80h
-+ */
-+static void mpc_i2c_fixup_A004447(struct mpc_i2c *i2c)
-+{
-+	int ret;
-+	u32 val;
-+
-+	writeccr(i2c, CCR_MEN | CCR_MSTA);
-+	ret = i2c_mpc_wait_sr(i2c, CSR_MBB);
-+	if (ret) {
-+		dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+		return;
+ 	/* SR-IOV capability was enabled but there are no VFs*/
+-	if (iov->total == 0)
++	if (iov->total == 0) {
++		err = -EINVAL;
+ 		goto failed;
 +	}
-+
-+	val = readb(i2c->base + MPC_I2C_SR);
-+
-+	if (val & CSR_MAL) {
-+		writeccr(i2c, 0x00);
-+		writeccr(i2c, CCR_MSTA | CCR_RSVD);
-+		writeccr(i2c, CCR_MEN | CCR_MSTA | CCR_RSVD);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MBB);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+			return;
-+		}
-+		val = readb(i2c->base + MPC_I2C_DR);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN | CCR_RSVD);
-+	} else {
-+		val = readb(i2c->base + MPC_I2C_DR);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN);
-+	}
-+}
-+
- #if defined(CONFIG_PPC_MPC52xx) || defined(CONFIG_PPC_MPC512x)
- static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] = {
- 	{20, 0x20}, {22, 0x21}, {24, 0x22}, {26, 0x23},
-@@ -641,7 +713,10 @@ static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
- {
- 	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
  
--	mpc_i2c_fixup(i2c);
-+	if (i2c->has_errata_A004447)
-+		mpc_i2c_fixup_A004447(i2c);
-+	else
-+		mpc_i2c_fixup(i2c);
+ 	iov->nr_virtfn = min_t(u16, iov->total, num_vfs_param);
  
- 	return 0;
- }
-@@ -745,6 +820,8 @@ static int fsl_i2c_probe(struct platform_device *op)
- 	dev_info(i2c->dev, "timeout %u us\n", mpc_ops.timeout * 1000000 / HZ);
- 
- 	platform_set_drvdata(op, i2c);
-+	if (of_property_read_bool(op->dev.of_node, "fsl,i2c-erratum-a004447"))
-+		i2c->has_errata_A004447 = true;
- 
- 	i2c->adap = mpc_ops;
- 	of_address_to_resource(op->dev.of_node, 0, &res);
 -- 
 2.30.2
 
