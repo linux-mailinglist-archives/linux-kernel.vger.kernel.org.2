@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628E13A5C76
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76813A5C82
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbhFNF3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 01:29:40 -0400
-Received: from mail-pg1-f178.google.com ([209.85.215.178]:38804 "EHLO
-        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhFNF3j (ORCPT
+        id S232025AbhFNFmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 01:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229696AbhFNFmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 01:29:39 -0400
-Received: by mail-pg1-f178.google.com with SMTP id t17so7721195pga.5
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 22:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SKkIWihex8iN4vHyV2ULlQRHidyqRPcEAHjFrEdw0eo=;
-        b=Ztkc32hhSlxDlYO/aubdvIkMY/qTaOmjdAcpUSwoddC36oiCXbW0t6Fgj7dqeMLjGr
-         GKKydNoa0tuWwuRm9W2Oku1KuwQbuQOU2vGNe8iqT5qZpembeOWkm6pzrzcJ4UtTfT3O
-         2e868LLS7FN9kx0eyKZAZvbNfNgLUlJuXj7X9NiAHHdoSF54ImmSfOU4XZRvkkb4q+zS
-         4n3axSTfriXtldwQE7uH4sqiNUTf1F6IEBtIlG+THkwuA/uo2Dwz3YbQDLu64X6E4IsQ
-         KnRwXOZqqYRo41Ey01DOqng25fgXBzlcHhBQhLIZGYVo/TgWDOPU1MK/3+ddM/Lr4vPs
-         Pwhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SKkIWihex8iN4vHyV2ULlQRHidyqRPcEAHjFrEdw0eo=;
-        b=GzFkfv9862bVhOpbzLzlbNl7S7xDHj7pulu9xDhaWYqkci6jNiaHTK3mrKquKklD7k
-         ZX6qG0sDuOGHpGNRG5/uauuZNbJ5Zi+IOAr5J0uRIkz1jpb+Ui8XEd3xmtt82WlWU7M1
-         KBpsSEiloF8t366oqqZ1LFkHfTAOOUkzEbbQ3JAeXhEXBpVdO9V1bKkPQvs5LiC1EAZQ
-         v38ohCwYiUrftpH+WZ9RRfFpK2ezLVS2tIJ+Sq3rRz+lfu6z07+fEZMwBYnsjCumRqpO
-         DhFM2Chzu9B06yWcehgrzLcBH4NBvgyM3DwrnD5I/txt5k4+AtEf46UClGKthejqS3Xq
-         GPOw==
-X-Gm-Message-State: AOAM5300uMMJtHQGKQRP2ezNAEM4Q7GR2g86EpA4tJcEA4fhDG/m3tGJ
-        VZvJYU9ajZitPvI//eNAXjogXw==
-X-Google-Smtp-Source: ABdhPJxQbwYoqWhTfdLy3aAMNginzsjm12had6Yj2Ufq28W5WByJrv24ex9t825/WyIyYjOTicJLzg==
-X-Received: by 2002:a62:87c9:0:b029:2ea:572c:e4b1 with SMTP id i192-20020a6287c90000b02902ea572ce4b1mr20241936pfe.34.1623648381981;
-        Sun, 13 Jun 2021 22:26:21 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id gf10sm10515354pjb.35.2021.06.13.22.26.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 22:26:20 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 10:56:17 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@linaro.org>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jason Wang <jasowang@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>
-Subject: Re: [Stratos-dev] [PATCH V3 1/3] gpio: Add virtio-gpio driver
-Message-ID: <20210614052617.jfdgunichi73eup5@vireshk-i7>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <01000179f5da7763-2ea817c6-e176-423a-952e-de02443f71e2-000000@email.amazonses.com>
- <YMJOk6RWuztRNBXO@myrica>
- <01000179f9276678-ae2bb25f-4c0c-4176-b906-650c585b9753-000000@email.amazonses.com>
- <CAK8P3a2-bXfDcPymMct2aUXs2m+YgbKdmAatMMs9tnc+HjS_xQ@mail.gmail.com>
+        Mon, 14 Jun 2021 01:42:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CF1C061574;
+        Sun, 13 Jun 2021 22:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D2vwkZHeV1Mmvx+DKepIzag2hqp+Ued0hIaFPq9qKG4=; b=Yakg1J/sCs5ZVsvqSqoWCnxyPW
+        ZgFm98pIUEZic5lMz9vZwQkr2beKbrKlZNbvLc1oAP8jtrevc6WW0aZgzqRUFAre4gC6+WcmS+qW+
+        V8ZJSl7maD7jHPiSaUVL+6gCroHSIY8NEfKrLiZ7m7WgIHHaFBFXClZroAzTmiGhsZOoQxmtCjUHC
+        TJdi+j5BnV8tOcpfK1IUbBePLJCkBm0wzUMX1IYjvMdzpzL5NpTLY+Dnq6WW/YtCcCYC816X8SZNV
+        HBBCgHutXpsie256AFhMna/UU25je4laURKmv8zCEdQQpxLWXlJ6tl4iNANsmFZvcZ85HAAyRZJc4
+        ujSrgwiw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lsfKe-0053jJ-Ml; Mon, 14 Jun 2021 05:40:24 +0000
+Date:   Mon, 14 Jun 2021 06:40:20 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        aviadye@nvidia.com, oren@nvidia.com, shahafs@nvidia.com,
+        parav@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        kevin.tian@intel.com, hch@infradead.org, targupta@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, liulongfang@huawei.com,
+        yan.y.zhao@intel.com
+Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
+ binding
+Message-ID: <YMbrxP/5D4vVLE0j@infradead.org>
+References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
+ <20210603160809.15845-10-mgurtovoy@nvidia.com>
+ <20210608152643.2d3400c1.alex.williamson@redhat.com>
+ <20210608224517.GQ1002214@nvidia.com>
+ <20210608192711.4956cda2.alex.williamson@redhat.com>
+ <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a2-bXfDcPymMct2aUXs2m+YgbKdmAatMMs9tnc+HjS_xQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-06-21, 10:34, Arnd Bergmann wrote:
-> Extraneous __packed annotations do cause real problems:
+On Sun, Jun 13, 2021 at 11:19:46AM +0300, Max Gurtovoy wrote:
+> what about the following code ?
 > 
-> - On architectures without hardware unaligned accesses, the compiler is
->   forced to emit byte load/store instructions, which is slower and breaks
->   atomic updates to shared variables
+> @@ -152,12 +152,28 @@ static const struct pci_device_id
+> *pci_match_device(struct pci_driver *drv,
+> ?????????????? }
+> ?????????????? spin_unlock(&drv->dynids.lock);
 > 
-> - If a function takes a pointer of a packed struct member, and passes that
->   pointer to a function that expects a regular aligned pointer, you
-> get undefined
->   behavior. Newer compilers produce a warning if you do that (we currently
->   shut up that warning because there are many false positives in the kernel),
->   but you can also run into CPU exceptions or broken code even on CPUs
->   that do support unaligned accesses when the variable ends up being
->   actually unaligned (as you just told the compiler that it is allowed to do).
+> -???????????? if (!found_id)
+> -???????????????????????????? found_id = pci_match_id(drv->id_table, dev);
+> +???????????? if (found_id)
+> +???????????????????????????? return found_id;
 
-I understand that these problems will happen if the structure isn't
-aligned, but in this case the structure is aligned properly, just that
-we are explicitly telling the compiler to not add any padding (it
-won't have added any in here). Is it still harmful ?
-
--- 
-viresh
+Something is broken in your mailer because this does not look like code
+at all.
