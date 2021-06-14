@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D033A5B24
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 02:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595313A5B29
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 02:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhFNALm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 20:11:42 -0400
-Received: from mail-pj1-f44.google.com ([209.85.216.44]:50774 "EHLO
-        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232249AbhFNALk (ORCPT
+        id S232277AbhFNAU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 20:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232208AbhFNAU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 20:11:40 -0400
-Received: by mail-pj1-f44.google.com with SMTP id g4so8752877pjk.0
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 17:09:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=h32ZdeK5RKzC063QoYBvXTN/Sk1/Ao8RIMdPAqhyDvc=;
-        b=bBY1iLjq5KAsOgJJU9XWtgGslSWkB5InMwOPPqBd0ktGNr9MXZpNGRbU9pUUbSqX8o
-         Armx4gdwy07gyOtKjB0oCddPDzOEtfbejApzoU+Dv8Pw38wGzHNY163cyQlIM6jw37lq
-         frjE0cW0VWqZWb0eWG42Pfwc4CFqbC+EfsyHGpvlPU/JcXEfifCs071hH0lfIJ+ervJN
-         nnE+NMQkr0QFff+KaJQ04UxObUoEWnqGD8tuBP3W6UnZIdkQGr/RmCKIrzE6dI0VbD50
-         hfEMOSADw4FjkIRHQ4XnMShNZOJwHVG+SiTdbey4DxxBkZmPY/HwzLmLIFFU4zfMhVHz
-         3FLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=h32ZdeK5RKzC063QoYBvXTN/Sk1/Ao8RIMdPAqhyDvc=;
-        b=rPk6CazE/65hEXZ/rUbtDkAgfgInD/pcZkoKJYHFAlal+2/8Ff6QzAA4tsCcM1zzbm
-         nk4Q8nP2iqd5IYbpwQkqcC3jAVaY3TLndlE2BZ26FwKSylCyPVyzPT0VsJt7DCGctJkV
-         sPrOe42PQdOFpAsdzxR6RMiHxAA3LKLhxSq20sJaLFodXTXp1GfMrq+xdPnEE8I61Bpy
-         LhPx0n4n2g751oOJgVURYhVLTQNhgun9tiMi41dV9H8wgYws1skKcWdmlvzVK5MOUEow
-         QwKaOoH2n5pKUXSiOfxKN1RGW6IdRgyiSlGEYVmjOKl0XglauPTzrygMyzr79J18+d9/
-         x4Vg==
-X-Gm-Message-State: AOAM5334bFpQLFovIZVbKnG5YZ6ZBLwxdb51sW2FIe1vpHqQGvbGqKwo
-        l3wzaLak1t7OJ4FH83rb5URsQg==
-X-Google-Smtp-Source: ABdhPJzCyv2B2aY7dk+E8FAkNlWGxhRsGlbNrxsPKTN5Csu+qaiSjOqhurb/y5JF6ObiuZ9LcYTk4g==
-X-Received: by 2002:a17:902:c789:b029:110:4933:71ce with SMTP id w9-20020a170902c789b0290110493371cemr14271292pla.56.1623629318660;
-        Sun, 13 Jun 2021 17:08:38 -0700 (PDT)
-Received: from [2620:15c:17:3:da04:749c:4915:4eee] ([2620:15c:17:3:da04:749c:4915:4eee])
-        by smtp.gmail.com with ESMTPSA id o133sm11072412pfd.49.2021.06.13.17.08.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 17:08:37 -0700 (PDT)
-Date:   Sun, 13 Jun 2021 17:08:36 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Oliver Glitta <glittao@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-cc:     cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, faiyazm@codeaurora.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org
-Subject: Re: [RFC 4/4] docs: add description of debugfs files for SLUB
- cache
-In-Reply-To: <20210608084517.6119-1-glittao@gmail.com>
-Message-ID: <7996da8b-793-5f14-6844-78fd378d99c@google.com>
-References: <20210521121127.24653-1-glittao@gmail.com> <20210608084517.6119-1-glittao@gmail.com>
+        Sun, 13 Jun 2021 20:20:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3DDC061574;
+        Sun, 13 Jun 2021 17:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=QT899P7cnZ+OavoKwMjdK7EHSjBMVrz89zrq8vC4muU=; b=FVTM/S6kVb8n2Xu/KQzgMF6Wcy
+        TMnTODUE3+WxGnow6MVXu9GH0At649lNh6N7iOTpGLTjvv/dy/HgZzZBrNkipxWR7+koSq6fI+Kww
+        azH3cc4mk2pjj0K4Cqj5xaWj/NxVFAQGzO5KdHlqlgMAgEsg9EG2uev325UQcn8esarGdH6P2AUNs
+        U522fjJR2OWCeVbo8gGuUmKks3vFCrXKtxEA8OW4VH13fdNky93iYkJOu1dHG2k/jgpPOEWfbOle2
+        C0H9je3pIzuGExInNQtvDeSjNX7RmJqVVicrL2qKqMwyaYxxXTu8btAz3yeKvfbaMjFmXVB8YoCzk
+        Af+0lcRw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lsaIm-004u8i-J2; Mon, 14 Jun 2021 00:18:08 +0000
+Date:   Mon, 14 Jun 2021 01:18:04 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: add traditional Chinese translation for kernel
+ Documentation
+Message-ID: <YMagPMuKYKWDpUj8@casper.infradead.org>
+References: <20210607132414.44601-1-src.res@email.cn>
+ <4ecfaca0-801b-1827-2d6a-13690e016957@email.cn>
+ <87wnqxbcjb.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87wnqxbcjb.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021, glittao@gmail.com wrote:
-
-> From: Oliver Glitta <glittao@gmail.com>
+On Sun, Jun 13, 2021 at 04:55:04PM -0600, Jonathan Corbet wrote:
+> Hu Haowen <src.res@email.cn> writes:
+> > 在 2021/6/7 下午9:24, Hu Haowen 写道:
+> >> Add traditional Chinese translation (zh_TW) for the Linux Kernel
+> >> documentation with a series of translated files.
+> >
+> > Is this patch applied? I have another amount of changes on this, so
+> > please handle it as soon as possible.
 > 
-> Add description of debugfs files alloc_traces, free_traces
-> and all_objects to SLUB cache documentation.
+> I have been away from the keyboard for the last week, and haven't had a
+> chance to look at it yet.  That will happen soon.  Meanwhile, please be
+> patient; it has not yet even been a week since you posted this work.
 > 
-> Signed-off-by: Oliver Glitta <glittao@gmail.com>
+> Taking a quick look, there are a couple of things you can do:
+> 
+>  - We have a Chinese translation, now you are creating a different one.
+>    Please explain why that is needed?
 
-This looks good to me, thanks Oliver.
+I think this explains it:
 
-Adding in Randy Dunlap as well for Documentation changes if he has a 
-chance to take a look.
+https://stackoverflow.com/questions/4892372/language-codes-for-simplified-chinese-and-traditional-chinese
 
-Acked-by: David Rientjes <rientjes@google.com>
+So if we would consider having (eg) fr_FR and fr_CA, it's reasonable to
+have both zh_CN and zh_TW.  No, I'm not volunteering to produce en_GB
+(or is that en_UK?)
