@@ -2,202 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351C03A5D67
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17E83A5D6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhFNHKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232096AbhFNHKK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:10:10 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FC9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:08:08 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id e33so3162550pgm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cE3BItc0etFTtT3DKKS6LEXcYghKEYuPi31YretVNcI=;
-        b=hWGT7pC/nY1a2nMRch8iUAFWwQsjRaVi4BiGQljxV/RwRoCWJ01uKjH5GmCBiGtGkB
-         GLLf/GjcUX7EgxD5tTYCyHuRD4t0QfSopGKWadTOWw8aSoO4NC+U2JYiiIsvzVkqqozS
-         2PI1oTA4Y3K+cj2SqXFa2JzN3fvJZVJylNsG4UttFA6yYMP2ViTnkFWBGvZE2yqmZmqT
-         gUsKmEBGP7NGyTCPge1i5aQHj5dCqzRCVjV/hBavRvjBgLI4wfnCpSrhiyyMKW6Nqmj9
-         PD0v6gSlTaAhbmmz+VUpIQ/0IEapL5qUYbW9GBTULD78lJ2JPu/MkHHPvIZjPMKelz2u
-         mpEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cE3BItc0etFTtT3DKKS6LEXcYghKEYuPi31YretVNcI=;
-        b=Dkrz4Pyn2cRhHIadPAOPP20zf3cJWUPI2mOPwZ/to0zWEErp/yqzoZy+8rm+ULPmeZ
-         q7z+/OsYAj11rgW8q56heYlg6ntQCwHdNSq2rj/Y/R+sRmfrFWFVgtpAZkogpvlK/SeI
-         AlrmkS6o5/QaECqP/ZJ53Sq2RhzTn8BTEDv7U+MOAs6D55AsG5Lz7xzTVzSGPJsnMHFf
-         j/i/lozirk9mb9QrJyCu9ezcgzldP1oqh40dPt9/la5SNitDuzGNTKJUaRZTZFneqAFC
-         cr8d882NGB0Jkinfcei8Xokq6DlVO+hD3s/gF8lwzc2O2BGcnJlAIxCHzajMDesekWBx
-         dZPg==
-X-Gm-Message-State: AOAM533d/Jx6KZ1xuDjdQUYCBLjeXXlXZ29/Pf66kvOZn0wy/nrpJ4RA
-        MSAu6LSqCp3QZOKjm2TRREtDSA==
-X-Google-Smtp-Source: ABdhPJwv8FULBhRjCLmONqNqPjUMDKsZ3zKpN+cND2VwYFv5+MAD8+DlWsZbZGvBVCHy0VZ4Wi3A0g==
-X-Received: by 2002:aa7:949c:0:b029:2fa:c881:dd0 with SMTP id z28-20020aa7949c0000b02902fac8810dd0mr639470pfk.9.1623654484468;
-        Mon, 14 Jun 2021 00:08:04 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id t143sm13203696pgb.93.2021.06.14.00.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:08:03 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 12:38:01 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH V3 2/3] gpio: virtio: Add IRQ support
-Message-ID: <20210614070801.5tbkebxmz4gvcpai@vireshk-i7>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <911941d4bf19f18abdc9700abca9f26b3c04c343.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdYHMtG_X3FgiArbQW49kTwJwOGn90peDvAV5Bs5oDiC7A@mail.gmail.com>
+        id S232515AbhFNHLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:11:15 -0400
+Received: from verein.lst.de ([213.95.11.211]:43049 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232455AbhFNHLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 03:11:12 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1F7FB67373; Mon, 14 Jun 2021 09:09:04 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 09:09:03 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, hannes@cmpxchg.org, cai@lca.pw,
+        krish.sadhukhan@oracle.com, saravanand@fb.com,
+        Tianyu.Lan@microsoft.com, konrad.wilk@oracle.com,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+Subject: Re: [RFC PATCH V3 10/11] HV/Netvsc: Add Isolation VM support for
+ netvsc driver
+Message-ID: <20210614070903.GA29976@lst.de>
+References: <20210530150628.2063957-1-ltykernel@gmail.com> <20210530150628.2063957-11-ltykernel@gmail.com> <20210607065007.GE24478@lst.de> <279cb4bf-c5b6-6db9-0f1e-9238e902c8f2@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdYHMtG_X3FgiArbQW49kTwJwOGn90peDvAV5Bs5oDiC7A@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <279cb4bf-c5b6-6db9-0f1e-9238e902c8f2@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-06-21, 23:30, Linus Walleij wrote:
-> On Thu, Jun 10, 2021 at 2:16 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > +static void virtio_gpio_irq_unmask(struct irq_data *d)
-> > +{
-> > +       struct gpio_chip *gc = irq_data_to_gpio_chip(d);
-> > +       struct virtio_gpio *vgpio = gpio_chip_to_vgpio(gc);
-> > +       struct vgpio_line *line = &vgpio->lines[d->hwirq];
-> > +
-> > +       line->masked = false;
-> > +       line->masked_pending = true;
-> > +}
-> 
-> This looks dangerous in combination with this:
-> 
-> > +static void virtio_gpio_interrupt(struct virtqueue *vq)
-> > +{
-> (...)
-> > +       local_irq_disable();
-> > +       ret = generic_handle_irq(irq);
-> > +       local_irq_enable();
-> 
-> Nominally slow IRQs like those being marshalled over
-> virtio should be nested, handle_nested_irq(irq);
-> but are they?
+On Mon, Jun 07, 2021 at 11:21:20PM +0800, Tianyu Lan wrote:
+>> dma_map_single can only be used on page baked memory, and if this is
+>> using page backed memory you wouldn't need to do thee phys_to_virt
+>> tricks.  Can someone explain the mess here in more detail?
+>
+> Sorry. Could you elaborate the issue? These pages in the pb array are not 
+> allocated by DMA API and using dma_map_single() here is to map these pages' 
+> address to bounce buffer physical address.
 
-Hmm, this is the call trace:
-
-Call trace:
- virtio_gpio_interrupt+0x34/0x168
- vring_interrupt+0x64/0x98
- vp_vring_interrupt+0x5c/0xa8
- vp_interrupt+0x40/0x78
- __handle_irq_event_percpu+0x5c/0x180
- handle_irq_event_percpu+0x38/0x90
- handle_irq_event+0x48/0xe0
- handle_fasteoi_irq+0xb0/0x138
- generic_handle_irq+0x30/0x48
- __handle_domain_irq+0x60/0xb8
- gic_handle_irq+0x58/0x128
- el1_irq+0xb0/0x180
- arch_cpu_idle+0x18/0x28
- default_idle_call+0x24/0x5c
- do_idle+0x1ec/0x288
- cpu_startup_entry+0x28/0x68
- rest_init+0xd8/0xe8
- arch_call_rest_init+0x10/0x1c
- start_kernel+0x508/0x540
-
-I don't see a threaded interrupt in the path and vp_vring_interrupt()
-already takes spin_lock_irqsave().
-
-This is what handle_nested_irq() says:
-
- *	Handle interrupts which are nested into a threaded interrupt
- *	handler. The handler function is called inside the calling
- *	threads context.
-
-So AFAICT, handle_nested_irq() is relevant if the irq-chip's handler
-is called in threaded context instead of hard one. In this case it is
-called from hard-irq context and so calling generic_handle_irq() looks
-to be the right thing.
-
-Right ?
-
-> Or are they just quite slow not super slow?
-
-It doesn't use another slow bus like I2C, but this should be slow
-anyway.
-
-> If a threaded IRQF_ONESHOT was requested the
-> IRQ core will kick the thread and *MASK* this IRQ,
-> which means it will call back to your .irq_mask() function
-> and expect it to be masked from this
-> point.
-> 
-> But the IRQ will not actually be masked until you issue
-> your callbacks in the .irq_bus_sync_unlock() callback
-> right?
-
-Yes.
-
-> So from this point until .irq_bus_sync_unlock()
-> get called and actually mask the IRQ, it could be
-> fired again?
-
-Since we are defining the spec right now, this is up to us to decide
-how we want to do it.
-
-> I suppose the IRQ handler is reentrant?
-
-It shouldn't happen because of the locking in place in the virtqueue
-core (vp_vring_interrupt()).
-
-> This would violate the API.
-> 
-> I would say that from this point and until you sync
-> you need a spinlock or other locking primitive to
-> stop this IRQ from fireing again, and a spinlock will
-> imply local_irq_disable() so this gets really complex.
-> 
-> I would say only using nesting IRQs or guarantee this
-> some other way, one way would be to specify that
-> whatever is at the other side of virtio cannot send another
-> GPIO IRQ message before the last one is handled,
-> so you would need to send a specific (new)
-> VIRTIO_GPIO_REQ_IRQ_ACK after all other messages
-> have been sent in .irq_bus_sync_unlock()
-> so that the next GPIO IRQ can be dispatched after that.
-
-I was thinking of mentioning this clearly in the spec at first, but
-now after checking the sequence of things it looks like Linux will do
-it anyway. Though adding this clearly in the spec can be better. We
-should just send a response message here instead of another message
-type VIRTIO_GPIO_REQ_IRQ_ACK.
-
-> (Is this how messaged signalled interrupts work? No idea.
-> When in doubt ask the IRQ maintainers.)
-
--- 
-viresh
+dma_map_single just calls dma_map_page using virt_to_page.  So this
+can't work on addresses not in the kernel linear mapping.
