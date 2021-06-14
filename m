@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBA33A6640
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588D03A6648
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbhFNMJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 08:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232809AbhFNMJA (ORCPT
+        id S232925AbhFNMNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 08:13:08 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:47162 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232559AbhFNMNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:09:00 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49DCC061574;
-        Mon, 14 Jun 2021 05:06:57 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id v22so20758260lfa.3;
-        Mon, 14 Jun 2021 05:06:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YvCTZ8Ov3VDpQbRCsTM4YPqIWNSx/HQdD9qBch5pmqM=;
-        b=Rn660CcH4NICQmGulWlYdC8iDhHyqwQBhdMkYPV0WtMEfdJIeHOcSn62tKuerNOglg
-         +Davlc/9jecoZE8351ZMz8/V/GQtJHT9FPIX0lSmMA/AkFW7BfW7Df9p1GEBbgXq+k5E
-         WpbsvAh8/hJf4YbdZc0Y/CWRofX/076tJpstkfp6ZCORseYjCPxXbk8LFs1oPliiBc2a
-         dB1Xqj4LqIwAsUkNSKKo2mpyUNuTlKICM40DSArDVycLJKdg5OLmWoJ/MDUv5kRzaw7q
-         a8zL6P/WEqqkmX1iIG6EClcnE1rr1nt7LfZhPiUMKsUULAnjrgGP5WOM4JQ8P34GTZs1
-         Osjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YvCTZ8Ov3VDpQbRCsTM4YPqIWNSx/HQdD9qBch5pmqM=;
-        b=WWARCpXQLI6QfRm1h/j/kj84aB9805bg6tSXQ9a/j0lTg5Sn/FoBN+gki4wGhj2dUp
-         ZTC4i3TkjsC4eeyIZhTEjrRRvB2i9E9CDqhkWwaMBxsUTwwnLs3VgASpSA+nWB+8/rDQ
-         RnCTE8lzN+cpLdjdFKfMs1rPMESK2lBcJLlVcdPkcj7F53cv0uJWsi++QHSOysB58/iK
-         +dqgrjl8BwK9xT3MhPWLyFTn2qe3ZbvsNgTw/Sndf9lSs0ZY/vyzjh381GN2Yfh67LRE
-         ETA7ukaH7SFH6HOYWwUouoG5mt9MEFZ5KbQeEdSbUgl7hugyQpgiYk5HSH8hCFoVBQ6B
-         04jQ==
-X-Gm-Message-State: AOAM5326uSP92R7bA+A1plsIk2+CljIAN/Kx/2lknauGtTtvLsty9RsQ
-        i24gtyKT3E5GjJwBK3smKsQ=
-X-Google-Smtp-Source: ABdhPJygl9rxk2JNOkZNkFoxlvl7VNgZYvRDtsB5F+1jfOqxhOZuxtwluYZnU2AkZBtupmb77CWbDA==
-X-Received: by 2002:a19:383:: with SMTP id 125mr11789671lfd.228.1623672415968;
-        Mon, 14 Jun 2021 05:06:55 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.24])
-        by smtp.gmail.com with ESMTPSA id h12sm1789212ljg.59.2021.06.14.05.06.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 05:06:54 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     mani@kernel.org, davem@davemloft.net, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+1917d778024161609247@syzkaller.appspotmail.com
-Subject: [PATCH] net: qrtr: fix OOB Read in qrtr_endpoint_post
-Date:   Mon, 14 Jun 2021 15:06:50 +0300
-Message-Id: <20210614120650.2731-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 14 Jun 2021 08:13:06 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EC67uX029012;
+        Mon, 14 Jun 2021 12:10:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=PRI3ZbgvF7XvhqI9wXPGuawQLkmg0GBcZQdugIdIQU4=;
+ b=D4vxZRGzqAsXDpbqLet4KrkleKx2phlVOy+1OWM9pPy9E0TL5YcYvQFO/eJcAVIfBi9p
+ c+V7Ie3RP5sWcC0bSEs0sl85ApzR+YPxuicOeTxfB/GunSw7Ccv2e4Jv5K9SlAamrL2G
+ wzja/4FhDTY0ijvOnWZRbapQZYpUP/ewUJi2SNbwiteexGmVz22hJ1EzVHuAwdmo1pXd
+ dAs8kqGG5aOUEwIkuqSYhAEI/Wfq9SoDbWodfEjevjl3HaXHsjXeW54rGvL+WsG4qtyD
+ JRHr9C5ApPLQH4TzQ9gK/MySceG+WN2J9GxvDfNcMlROqbIKFo4tBLamclV+BSrKQ+3Q xw== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 395x06g4y3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 12:10:43 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15ECAgip168196;
+        Mon, 14 Jun 2021 12:10:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 394mr6b4s3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 12:10:42 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15ECAgPi168072;
+        Mon, 14 Jun 2021 12:10:42 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 394mr6b4r7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 12:10:42 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15ECAdnV007959;
+        Mon, 14 Jun 2021 12:10:39 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Jun 2021 12:10:39 +0000
+Date:   Mon, 14 Jun 2021 15:10:32 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux@roeck-us.net, straube.linux@gmail.com, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8188eu: convert DBG_88E calls in
+ core/rtw_sta_mgt.c
+Message-ID: <20210614121032.GN1955@kadam>
+References: <20210612232831.1325-1-phil@philpotter.co.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210612232831.1325-1-phil@philpotter.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: bWqRKij9z9hHX_2MxOzgKrSytKjtUhhu
+X-Proofpoint-GUID: bWqRKij9z9hHX_2MxOzgKrSytKjtUhhu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported slab-out-of-bounds Read in
-qrtr_endpoint_post. The problem was in wrong
-_size_ type:
+On Sun, Jun 13, 2021 at 12:28:31AM +0100, Phillip Potter wrote:
+> Convert both calls to the DBG_88E macro in core/rtw_sta_mgt.c into
+> netdev_dbg calls. The DBG_88E macro is unnecessary, as visibility of
+> debug messages can be controlled more precisely by just using debugfs.
+> It is important to keep these messages still, as they are displayable
+> via a kernel module parameter when using DBG_88E.
+> 
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
+>  drivers/staging/rtl8188eu/core/rtw_sta_mgt.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c b/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
+> index 5af7af5f5a5a..ad1d851a2f69 100644
+> --- a/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
+> +++ b/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
+> @@ -113,17 +113,20 @@ u32 _rtw_init_sta_priv(struct sta_priv *pstapriv)
+>  inline int rtw_stainfo_offset(struct sta_priv *stapriv, struct sta_info *sta)
+>  {
+>  	int offset = (((u8 *)sta) - stapriv->pstainfo_buf) / sizeof(struct sta_info);
+> +	struct net_device *pnetdev = stapriv->padapter->pnetdev;
+>  
+>  	if (!stainfo_offset_valid(offset))
+> -		DBG_88E("%s invalid offset(%d), out of range!!!", __func__, offset);
+> +		netdev_dbg(pnetdev, "invalid offset(%d), out of range!!!", offset);
+>  
+>  	return offset;
+>  }
+>  
+>  inline struct sta_info *rtw_get_stainfo_by_offset(struct sta_priv *stapriv, int offset)
+>  {
+> +	struct net_device *pnetdev = stapriv->padapter->pnetdev;
+> +
+>  	if (!stainfo_offset_valid(offset))
+> -		DBG_88E("%s invalid offset(%d), out of range!!!", __func__, offset);
+> +		netdev_dbg(pnetdev, "invalid offset(%d), out of range!!!", offset);
 
-	if (len != ALIGN(size, 4) + hdrlen)
-		goto err;
+This should be an error and the code should handle it correctly instead
+of reading beyond the end of the struct.
 
-If size from qrtr_hdr is 4294967293 (0xfffffffd), the result of
-ALIGN(size, 4) will be 0. In case of len == hdrlen and size == 4294967293
-in header this check won't fail and
-
-	skb_put_data(skb, data + hdrlen, size);
-
-will read out of bound from data, which is hdrlen allocated block.
-
-Fixes: 194ccc88297a ("net: qrtr: Support decoding incoming v2 packets")
-Reported-and-tested-by: syzbot+1917d778024161609247@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/qrtr/qrtr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index c0477bec09bd..f2efaa4225f9 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -436,7 +436,7 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
- 	struct qrtr_sock *ipc;
- 	struct sk_buff *skb;
- 	struct qrtr_cb *cb;
--	unsigned int size;
-+	size_t size;
- 	unsigned int ver;
- 	size_t hdrlen;
- 
--- 
-2.32.0
+regards,
+dan carpenter
 
