@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF863A7118
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78D73A711B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhFNVVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
+        id S235110AbhFNVV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhFNVVM (ORCPT
+        with ESMTP id S234866AbhFNVVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:21:12 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA68BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:19:08 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id f70so24723796qke.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:19:08 -0700 (PDT)
+        Mon, 14 Jun 2021 17:21:24 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A92C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:19:09 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id f70so24723849qke.13
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:19:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kPFT6nLLi1vvs4YFnK7DHOeGhzIW1Fs6DFQ1T0gCrck=;
-        b=biiUnj1ExqttolBbEAb89QL8bsuWSOP8ozPOvpGyIPVXaX48+dqGxyTo+1pSUVs7xJ
-         DOM157n2vskD+MQ7M6Wa2ZyYhIffBRELYKQfSKi6vCy6qJb5yq2/FsmsOx3G9MErNhE5
-         AckuooFjPNHwzfRp7zu4otoudRs+NTd3qiCWoDG9CwIpCJxBaNR4gt/3xYyuQVyhD6OG
-         1UVooRbjWx3DLZnqMCgS4WVnS93O2FIHISxYKfYVa51c5PITxwNolcDZfLaMdSaftBNp
-         RqHBG2wZ8AvQf0JWzVViLZjJbtEaow1MSGLmMKdErHotkPeWlY2SbSgzZPJdDRltjrUm
-         Z4ZQ==
+        bh=dPrRC5GgzYjCmG/sOcyalcGlRFIg9CpzRtffxeyBsJs=;
+        b=Cq8Kh47l8CTW8cX2gegKOmPYyRubXDBLX8Wra8IzL6m6emUBcjZl3GKYuVRjuPm0v9
+         c8de88BP5fIqRjTKx231bOte4GqGnXQa5hRxJAXZ+iTiOAm2AKnIdPPGwFBl7rm+BupS
+         rtTtKLbNKohQeqdYJVJSHO92kBetmnTG+rxFCT9JPqkF3aeC6dM+TflTPVIG9wTwdhjt
+         aprvCNb3nTKFMGz12ZOCSNZuyeBhL6XL5r4uMlViOup2ZnYSFgNBSarroZlxVKO+JybG
+         syK0UQnL89xa3dQyaH9afsouyOR1DSfr+T31Aw3k56HwDy//BIeRhq00BKxnJLzo1dvn
+         xHPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kPFT6nLLi1vvs4YFnK7DHOeGhzIW1Fs6DFQ1T0gCrck=;
-        b=JIUfYPya8+FC0H8WBk8hk09JC/BJ9Hq7YS0IzAxaV4rilQskx6Z2+y2I+GQjvIhETW
-         cRQaQDoeszh/fbqYGU2eLz8m9Kv8Zc5/qNi5ymncxFJUeaOzirL+2hOhorJLm1nACljn
-         siRwTxuG25G3RRXURavkWgql7MAqQWLn62+5RqVwISnbq3hvit+jfioehy29TrhZ8Bfd
-         ctNnsSgaKSgelKfS0N33b9nckGmstM94I3XUiQZ/dBXIC2Hu8QYTk+lFmFHLZfDS6d6u
-         lyP7Uy08a5H2iC8y4QHUL20yPMI+uKkFqpfjUUONNY3ZZ/mDJMXQgewn2mhdvcLelN4q
-         L01g==
-X-Gm-Message-State: AOAM5323P58wD2Xmkef6wn80DEsLSxlbNDMSsc4QU32DH4GY/R02vb4B
-        gghJ0AS0BlDQ8St4F3zNUUaXuA==
-X-Google-Smtp-Source: ABdhPJzvbqbfUECNW/9wGSUb5hxtP8w89hrKHvoC2k0yCleVRDRQ6BXu2QO6aCEMxPYVsmeHcsi6pg==
-X-Received: by 2002:a37:814:: with SMTP id 20mr18822511qki.243.1623705547189;
-        Mon, 14 Jun 2021 14:19:07 -0700 (PDT)
+        bh=dPrRC5GgzYjCmG/sOcyalcGlRFIg9CpzRtffxeyBsJs=;
+        b=Mx8KS1qN1CkamrJjcSWEQQN/EKzvRm3fYKT4ZDBIHNzMbYfBE8I4X4n96FMd70ZkXH
+         VBfgpl/+TCBVm85yYj+P253u/907NUCurtVHKEBa0qPOuuNreWL1316Ex/X1+93O86Ys
+         xaYvZHOEX9mlWfpHthTqKcvljPRulmdVXZqNVgiIw2pysfsVSPzlCv8zoHxeLSJto6Zt
+         BnVPtBxuY+wpYFk++8ozHtSHvKe7TE+wArHfaTRx7g0oFZ8ILSvi4IUPCp9gOx8KLzHa
+         vj3bS/QV7jmh+bXVpf07RXYChBwQ6hq41JukMyeM5GPEVF1RsYpvkENRXOd1Cfiqxmx/
+         bXtA==
+X-Gm-Message-State: AOAM531EI9NDpChd56fTBeMAEkXjpSgETEFcpP2xac5ao1CX7NC9LXdQ
+        Q2wNhFK0scQVqL1sdAmJKmTQOQ==
+X-Google-Smtp-Source: ABdhPJzhFoyCqJfWV/336OnsiH+zuoKpzlTCfmft41UKsBXIgezPkNBEAf1ehK2PH+sWsE9isbmljQ==
+X-Received: by 2002:a37:5943:: with SMTP id n64mr18642452qkb.122.1623705548426;
+        Mon, 14 Jun 2021 14:19:08 -0700 (PDT)
 Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id e4sm10146101qtw.62.2021.06.14.14.19.06
+        by smtp.gmail.com with ESMTPSA id 4sm10968318qkv.134.2021.06.14.14.19.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 14:19:06 -0700 (PDT)
+        Mon, 14 Jun 2021 14:19:07 -0700 (PDT)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
         linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/4] fs: drop_caches: fix skipping over shadow cache inodes
-Date:   Mon, 14 Jun 2021 17:19:02 -0400
-Message-Id: <20210614211904.14420-2-hannes@cmpxchg.org>
+Subject: [PATCH 3/4] fs: inode: count invalidated shadow pages in pginodesteal
+Date:   Mon, 14 Jun 2021 17:19:03 -0400
+Message-Id: <20210614211904.14420-3-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614211904.14420-1-hannes@cmpxchg.org>
 References: <20210614211904.14420-1-hannes@cmpxchg.org>
@@ -65,41 +65,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When drop_caches truncates the page cache in an inode it also includes
-any shadow entries for evicted pages. However, there is a preliminary
-check on whether the inode has pages: if it has *only* shadow entries,
-it will skip running truncation on the inode and leave it behind.
+pginodesteal is supposed to capture the impact that inode reclaim has
+on the page cache state. Currently, it doesn't consider shadow pages
+that get dropped this way, even though this can have a significant
+impact on paging behavior, memory pressure calculations etc.
 
-Fix the check to mapping_empty(), such that it runs truncation on any
-inode that has cache entries at all.
+To improve visibility into these effects, make sure shadow pages get
+counted when they get dropped through inode reclaim.
 
-Reported-by: Roman Gushchin <guro@fb.com>
+This changes the return value semantics of invalidate_mapping_pages()
+semantics slightly, but the only two users are the inode shrinker
+itsel and a usb driver that logs it for debugging purposes.
+
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- fs/drop_caches.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/inode.c    |  2 +-
+ mm/truncate.c | 20 ++++++++++----------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/fs/drop_caches.c b/fs/drop_caches.c
-index f00fcc4a4f72..e619c31b6bd9 100644
---- a/fs/drop_caches.c
-+++ b/fs/drop_caches.c
-@@ -3,6 +3,7 @@
-  * Implement the manual drop-all-pagecache function
-  */
+diff --git a/fs/inode.c b/fs/inode.c
+index c93500d84264..8830a727b0af 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -768,7 +768,7 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
+ 		return LRU_ROTATE;
+ 	}
  
-+#include <linux/pagemap.h>
- #include <linux/kernel.h>
- #include <linux/mm.h>
- #include <linux/fs.h>
-@@ -27,7 +28,7 @@ static void drop_pagecache_sb(struct super_block *sb, void *unused)
- 		 * we need to reschedule to avoid softlockups.
- 		 */
- 		if ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
--		    (inode->i_mapping->nrpages == 0 && !need_resched())) {
-+		    (mapping_empty(inode->i_mapping) && !need_resched())) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
- 		}
+-	if (inode_has_buffers(inode) || inode->i_data.nrpages) {
++	if (inode_has_buffers(inode) || !mapping_empty(&inode->i_data)) {
+ 		__iget(inode);
+ 		spin_unlock(&inode->i_lock);
+ 		spin_unlock(lru_lock);
+diff --git a/mm/truncate.c b/mm/truncate.c
+index b92b86222625..95934c98259a 100644
+--- a/mm/truncate.c
++++ b/mm/truncate.c
+@@ -486,8 +486,9 @@ static unsigned long __invalidate_mapping_pages(struct address_space *mapping,
+ 			index = indices[i];
+ 
+ 			if (xa_is_value(page)) {
+-				invalidate_exceptional_entry(mapping, index,
+-							     page);
++				count += invalidate_exceptional_entry(mapping,
++								      index,
++								      page);
+ 				continue;
+ 			}
+ 			index += thp_nr_pages(page) - 1;
+@@ -515,19 +516,18 @@ static unsigned long __invalidate_mapping_pages(struct address_space *mapping,
+ }
+ 
+ /**
+- * invalidate_mapping_pages - Invalidate all the unlocked pages of one inode
+- * @mapping: the address_space which holds the pages to invalidate
++ * invalidate_mapping_pages - Invalidate all clean, unlocked cache of one inode
++ * @mapping: the address_space which holds the cache to invalidate
+  * @start: the offset 'from' which to invalidate
+  * @end: the offset 'to' which to invalidate (inclusive)
+  *
+- * This function only removes the unlocked pages, if you want to
+- * remove all the pages of one inode, you must call truncate_inode_pages.
++ * This function removes pages that are clean, unmapped and unlocked,
++ * as well as shadow entries. It will not block on IO activity.
+  *
+- * invalidate_mapping_pages() will not block on IO activity. It will not
+- * invalidate pages which are dirty, locked, under writeback or mapped into
+- * pagetables.
++ * If you want to remove all the pages of one inode, regardless of
++ * their use and writeback state, use truncate_inode_pages().
+  *
+- * Return: the number of the pages that were invalidated
++ * Return: the number of the cache entries that were invalidated
+  */
+ unsigned long invalidate_mapping_pages(struct address_space *mapping,
+ 		pgoff_t start, pgoff_t end)
 -- 
 2.32.0
 
