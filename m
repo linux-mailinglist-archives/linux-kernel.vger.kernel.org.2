@@ -2,104 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3E73A6713
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B103A670D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233845AbhFNMx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 08:53:28 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48788 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233721AbhFNMxK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:53:10 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id D30551F4035A
-Message-ID: <96e63be705b04b40a943307c81ed71e8c573ef96.camel@collabora.com>
-Subject: Re: [PATCH v2 7/8] media: hevc: Add scaling matrix control
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, p.zabel@pengutronix.de,
-        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk, jernej.skrabec@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Mon, 14 Jun 2021 09:50:46 -0300
-In-Reply-To: <d5b010c8-c0c5-8800-b2c3-9371923ca10c@collabora.com>
-References: <20210610154442.806107-1-benjamin.gaignard@collabora.com>
-         <20210610154442.806107-8-benjamin.gaignard@collabora.com>
-         <87a1e585-688e-7c4d-b9a9-24f42772a1a8@xs4all.nl>
-         <d5b010c8-c0c5-8800-b2c3-9371923ca10c@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        id S233754AbhFNMxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 08:53:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233711AbhFNMxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 08:53:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41BF661378;
+        Mon, 14 Jun 2021 12:51:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623675066;
+        bh=6hzHZ5yQeQhYYQkQ/sGhgsfezRI5BfO208XXZAp5tHI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Il48mGRYK55xqw5zmeb9Mx5r9uxZxc12DS3Ih5m5IZPRWbHtgzMzplhQM+Md0h+Ll
+         napBoJa/HjRhSa2hHq7BE0o3lCa3L7SmMqc5lyjxEvcExHf1x7lD0gP24D4ckSLBfg
+         mMJ77OvBwV7wpxeCuwv2hPpo1i6ipwOOYUe266lIGdLO+8tvhRYUrQMn4FiN24TroS
+         0kGoHZdRtu/B5+ZRoYthaIRzyZ1j5izNuDjn1I5wl3PRsaUuc1VCH3/XDYApz3ReuZ
+         qDmZdyB2owCc4dj09XxUyTEbAWsmlE8gEvAZnTXNucpCbz6FGqjX8dySSJX9cA6gx8
+         LmCADg/F49eug==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Tomer Tayar <ttayar@habana.ai>
+Subject: [PATCH 1/9] habanalabs: print more info when failing to pin user memory
+Date:   Mon, 14 Jun 2021 15:50:52 +0300
+Message-Id: <20210614125100.17627-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-14 at 09:43 +0200, Benjamin Gaignard wrote:
-> 
-> Le 14/06/2021 à 09:27, Hans Verkuil a écrit :
-> > On 10/06/2021 17:44, Benjamin Gaignard wrote:
-> > > HEVC scaling lists are used for the scaling process for transform
-> > > coefficients.
-> > > V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
-> > > encoded in the bitstream.
-> > Comparing H264 with HEVC I noticed that the corresponding flag for H264 is
-> > called V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT.
-> > 
-> > Should those names be aligned? Also, it is part of PPS for H264 and SPS in HEVC,
-> > is that difference correct?
-> 
-> In ITU specifications ("7.4.3.2.1 General sequence parameter set RBSP semantics") this flag is define like that:
-> scaling_list_enabled_flag equal to 1 specifies that a scaling list is used for the scaling process for transform coefficients.
-> scaling_list_enabled_flag equal to 0 specifies that scaling list is not used for the scaling process for transform coefficients.
-> 
-> So for me the naming is correct.
-> 
+From: Tomer Tayar <ttayar@habana.ai>
 
-The bitstream is really parsed in userspace (gstreamer, ffmpeg, chromium).
-Not all bitstream parameters need to be passed as-is, because the kernel
-is actually a sort of low-level layer in the decoder stack.
+pin_user_pages_fast() might fail and return a negative number, or pin
+less pages than requested and return the number of the pages that were
+pinned.
+For the latter, it is informative to print also the memory size and the
+number of requested pages.
 
-I think it's probably most appropriate to follow our H.264 interface
-semantics, see https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=54889c51b833d236228f983be16212fbe806bb89.
+Signed-off-by: Tomer Tayar <ttayar@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/memory.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The H.264 story goes like this:
-
-* Default scaling list is used for decoding, but can be modified
-  by a bitstream-provided scaling list.
-   
-* The scaling list modification can be in SPS or in PPS.
-
-* For each frame, the SPS and PPS headers will tell if
-  a modified scaling list must be used for decoding,
-  and if it's provided in the SPS header or the PPS header.
-
-The userspace parser must take care of this, and pass
-a scaling matrix to the kernel via V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX,
-setting PPS_FLAG_SCALING_MATRIX_PRESENT.
-
-This flag is at the PPS control, so the scaling modification
-can be applied on each frame.
-
-In other words, the kernel interface is simpler, it just
-receives a scaling matrix and a flag telling if it must be used or not. 
-
-We should probably clarify the documentation, so this process is more clear.
-
-From the HEVC spec, it seems the process should be similar.
-The only difference is the SPS "scaling_list_enabled_flag" parameter,
-which doesn't exist in H.264.
-
-Nicolas: what do you think?
-
-Thanks,
-Ezequiel
+diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
+index a7a8984e6af2..1cff1887e2e8 100644
+--- a/drivers/misc/habanalabs/common/memory.c
++++ b/drivers/misc/habanalabs/common/memory.c
+@@ -1612,8 +1612,8 @@ static int get_user_memory(struct hl_device *hdev, u64 addr, u64 size,
+ 
+ 	if (rc != npages) {
+ 		dev_err(hdev->dev,
+-			"Failed (%d) to pin host memory with user ptr 0x%llx\n",
+-			rc, addr);
++			"Failed (%d) to pin host memory with user ptr 0x%llx, size 0x%llx, npages %d\n",
++			rc, addr, size, npages);
+ 		if (rc < 0)
+ 			goto destroy_pages;
+ 		npages = rc;
+-- 
+2.25.1
 
