@@ -2,168 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096AC3A6B4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDE33A6B54
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhFNQLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbhFNQLY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:11:24 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992DFC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:09:21 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id o5-20020a4a2c050000b0290245d6c7b555so2760190ooo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WxkwNm6ZYNWIa0Lk9ntav/xspFP7K0YWVjmpKlkqGHM=;
-        b=MWIRhnftb8ptws/gw00LvdIp2qhm1pyKeix9DxnZhFxe/rLAFyLuhnb38KFxVFY21U
-         3qLBPzwgtR/Zmw7YzqRBONHujLPBW4+yapefexTWW0MVYi2rQOyDaqUjbQN7jKkb1zdR
-         r23kkH0xw1v2vJk+VmHiPi9exwOB/LvoNC7Ak0VjKQFTo51DdmHO137vb6gHMMnQE0d0
-         UHbtQT79HZg+zxRbowzUu+UtJliuRU1cDeKNYxQzP9J9ThSy/+fF5Hlvkp77e3BjnVgl
-         mG8FAT0sZNXqf9eBKUJMORz6vQvy8P6biOO8WI2jV3NWqs5S76l3Ctu1k/w71JWtukmn
-         jByA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WxkwNm6ZYNWIa0Lk9ntav/xspFP7K0YWVjmpKlkqGHM=;
-        b=Ho/jUMuLXDOyLNX5ogvig4LgbDJpAvEpaKWKvd+4qhLBs1hPH00nyBVCkDM+8CUOke
-         9Pzr+98gdKCQCLDPHqXpmXyUXFveJh4Mzliz8/fJ8LLKzttWLwNTk2gzzJfYsO46cvca
-         177RbWmOnVGsf0uE6gj8i2p5UfrV7OvCZNTu0X3VQctvsLUYsy5tTwjFLM47kN8PehqZ
-         vFdeX0BZNFmPjOz32Qg5Mcp+B0CD6L254d6DADS7Efd5Vx/7HpoYPyQWH4x7Lcxco0ih
-         7GXD90ITTRrbbNrFdPiedOAj3HEE9xPmZwyqIutiyWtUvzyhzU02LBCpdZdlDgTv9KIL
-         iEBw==
-X-Gm-Message-State: AOAM531S7o0ECMD8+r8IKmw0dK6nnmTh33GIESVuKKXmd61df8LVE3bc
-        DxCWInoyItCw0amz+zVoZ32Dqg==
-X-Google-Smtp-Source: ABdhPJyKjW8ZTmKRNbtA7KEhYwH5Q70ndZULWrCYGmo8BGF/gqf4pAvVS2xZT8D5iVtAzeG7g/aryQ==
-X-Received: by 2002:a4a:9210:: with SMTP id f16mr13429698ooh.17.1623686960994;
-        Mon, 14 Jun 2021 09:09:20 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g25sm3433972otn.81.2021.06.14.09.09.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 09:09:20 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 11:09:18 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH 2/8] dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible
- for SA8155p-adp
-Message-ID: <YMd/LqGVbC+F/Qsm@yoga>
-References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
- <20210607113840.15435-3-bhupesh.sharma@linaro.org>
- <YMLPvrVVdx0MZJlO@builder.lan>
- <CAH=2Nty=VB2G6_eEAna8ZAysSCt9mMydR0cXLyTa=jrZ7nQO5A@mail.gmail.com>
+        id S234488AbhFNQNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234071AbhFNQNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 12:13:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CB5B61245;
+        Mon, 14 Jun 2021 16:11:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623687077;
+        bh=mCCajpVFmAKPfyqCanoKSj9iuz7ExznsWTObsblRRT4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MxmyVwVIab1QLHpYofe2yxmrihigIDDJou71cn+GJ3Bp8hlI/u27NSsQf4QuuyyxS
+         Y5x3OxZ2yFzDI8vaR5r0UIAz/BpK/jfPL+ukuzTfSe6HefEFx14UMQqPnOMcA8HUMm
+         vZtzhUImx1P1ER0PPaQ5O3sKjwFlBM+qT+GmFk7g=
+Date:   Mon, 14 Jun 2021 18:11:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
+        <holger@applied-asynchrony.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 000/131] 5.10.44-rc1 review
+Message-ID: <YMd/owzz9xQ9p0ca@kroah.com>
+References: <20210614102652.964395392@linuxfoundation.org>
+ <83a2f94d-dd6e-2796-ad04-2f92ac3e583d@applied-asynchrony.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAH=2Nty=VB2G6_eEAna8ZAysSCt9mMydR0cXLyTa=jrZ7nQO5A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <83a2f94d-dd6e-2796-ad04-2f92ac3e583d@applied-asynchrony.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14 Jun 03:13 CDT 2021, Bhupesh Sharma wrote:
+On Mon, Jun 14, 2021 at 05:36:45PM +0200, Holger Hoffstätte wrote:
+> On 2021-06-14 12:26, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.44 release.
+> 
+> Hmm..I build my kernel with BTF for bpftrace and this gives me:
+> 
+> ...
+>   CC      init/version.o
+>   AR      init/built-in.a
+>   LD      vmlinux.o
+>   MODPOST vmlinux.symvers
+>   MODINFO modules.builtin.modinfo
+>   GEN     modules.builtin
+>   LD      .tmp_vmlinux.btf
+>   BTF     .btf.vmlinux.bin.o
+>   LD      .tmp_vmlinux.kallsyms1
+>   KSYMS   .tmp_vmlinux.kallsyms1.S
+>   AS      .tmp_vmlinux.kallsyms1.S
+>   LD      .tmp_vmlinux.kallsyms2
+>   KSYMS   .tmp_vmlinux.kallsyms2.S
+>   AS      .tmp_vmlinux.kallsyms2.S
+>   LD      vmlinux
+>   BTFIDS  vmlinux
+> FAILED unresolved symbol migrate_enable
+> 
+> thanks to:
+> 
+> > Jiri Olsa <jolsa@kernel.org>
+> >      bpf: Add deny list of btf ids check for tracing programs
+> 
+> When I revert this it builds fine, just like before. Maybe a missing
+> requirement or followup fix? I didn't find anything with a quick search.
+> Using gcc-11, if it matters.
 
-> Hi Bjorn,
-> 
-> On Fri, 11 Jun 2021 at 08:21, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
-> >
-> > > Add pmic-gpio compatible strings for pmm8155au_1 and pmm8155au_2 pmics
-> > > found on SA8155p-adp board.
-> > >
-> > > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > > Cc: Liam Girdwood <lgirdwood@gmail.com>
-> > > Cc: Mark Brown <broonie@kernel.org>
-> > > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > Cc: Vinod Koul <vkoul@kernel.org>
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > Cc: Andy Gross <agross@kernel.org>
-> > > Cc: devicetree@vger.kernel.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > > Cc: linux-gpio@vger.kernel.org
-> > > Cc: bhupesh.linux@gmail.com
-> > > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> > > index f6a9760558a6..ee4721f1c477 100644
-> > > --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> > > +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> > > @@ -27,6 +27,8 @@ PMIC's from Qualcomm.
-> > >                   "qcom,pm660l-gpio"
-> > >                   "qcom,pm8150-gpio"
-> > >                   "qcom,pm8150b-gpio"
-> > > +                 "qcom,pmm8155au-1-gpio"
-> > > +                 "qcom,pmm8155au-2-gpio"
-> >
-> > As with the regulator this seems to be a single component.
-> >
-> > >                   "qcom,pm8350-gpio"
-> > >                   "qcom,pm8350b-gpio"
-> > >                   "qcom,pm8350c-gpio"
-> > > @@ -116,6 +118,9 @@ to specify in a pin configuration subnode:
-> > >                                            and gpio8)
-> > >                   gpio1-gpio12 for pm8150b (holes on gpio3, gpio4, gpio7)
-> > >                   gpio1-gpio12 for pm8150l (hole on gpio7)
-> > > +                 gpio1-gpio10 for pmm8155au-1 (holes on gpio2, gpio5, gpio7
-> > > +                                               and gpio8)
-> > > +                 gpio1-gpio10 for pmm8155au-2 (holes on gpio2, gpio5, gpio7)
-> >
-> > In the schematics all 10 pins are wired on both of these PMICs, so I
-> > don't think there are holes. Please omit the comment.
-> 
-> But if we look at the downstream dts (see [1]), we clearly have holes
-> on gpio 2, 5 and 7 on PMM8155AU_2 whereas if we see [2], we can see
-> PMM8155AU_1 has holes on gpio 2, 5, 7 and 8.
-> 
-> As I understand, the schematics mention some optional configurations
-> as well which might not be available depending on the default board
-> configuration.
-> 
-> [1]. https://source.codeaurora.org/quic/la/kernel/msm-4.14/tree/arch/arm64/boot/dts/qcom/sa8155-pmic-overlay.dtsi?h=LV.AU.0.1.0.r1-15900-gen3meta.0#n92
-> [2]. https://source.codeaurora.org/quic/la/kernel/msm-4.14/tree/arch/arm64/boot/dts/qcom/sa8155-pmic-overlay.dtsi?h=LV.AU.0.1.0.r1-15900-gen3meta.0#n36
-> 
+Looks like we need the change that exported this function, let me see if
+it's worth to add that, or to revert this one...
 
-Perhaps these "holes" means that they are reserved for use by one of the
-other subsystems in the SoC - similar to how we have
-gpio-reserved-ranges in the TLMM. Because according to the PMS8155AU
-documentation and the schematics, there's no physical holes there.
+thanks,
 
-As such, the binding and driver should not describe these "holes". If
-they aren't used by Linux, then the DT won't reference them - and if
-there's reasons for prohibiting Linux from touching the registers we
-should use gpio-reserved-ranges, as this will depend on firmware
-configuration.
-
-Regards,
-Bjorn
-
-> Regards,
-> Bhupesh
-> 
-> >
-> > >                   gpio1-gpio10 for pm8350
-> > >                   gpio1-gpio8 for pm8350b
-> > >                   gpio1-gpio9 for pm8350c
-> > > --
-> > > 2.31.1
-> > >
+greg k-h
