@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFB33A6E98
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB323A6E9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhFNTNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:13:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:44206 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233169AbhFNTNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:13:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1F6B113E;
-        Mon, 14 Jun 2021 12:10:57 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.5.127])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DE5123F694;
-        Mon, 14 Jun 2021 12:10:53 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-pm@vger.kernel.org, peterz@infradead.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
-        qperret@google.com, dietmar.eggemann@arm.com,
-        vincent.donnefort@arm.com, lukasz.luba@arm.com,
-        Beata.Michalska@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        rostedt@goodmis.org, segall@google.com, mgorman@suse.de,
-        bristot@redhat.com, thara.gopinath@linaro.org,
-        amit.kachhap@gmail.com, amitk@kernel.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org
-Subject: [PATCH 1/3] thermal: cpufreq_cooling: Update also offline CPUs per-cpu thermal_pressure
-Date:   Mon, 14 Jun 2021 20:10:30 +0100
-Message-Id: <20210614191030.22241-1-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210614185815.15136-1-lukasz.luba@arm.com>
-References: <20210614185815.15136-1-lukasz.luba@arm.com>
+        id S233904AbhFNTOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:14:19 -0400
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:50767 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233048AbhFNTOS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:14:18 -0400
+Received: by mail-pj1-f47.google.com with SMTP id g4so10332516pjk.0;
+        Mon, 14 Jun 2021 12:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XPsSUjzJXtsHgenYYwSTN6yvsrboaFmgosrUO0P4ZHo=;
+        b=PJHFx1V6wbi8lO0zo6mNrDW/FMFy97BZlv0+bC82Tj5B9I1feJR0HyTbJMm55baQ0y
+         nkRljIrYcjyJLpL6UwiocTmDcvLuCFeODCKFji89FgeXHGE2kJDZFvYeiTOSCV+wLOUT
+         TKtu/fycqfhyz/xLo09pKxnx0qJnipxgMpH9O2wttMv6zV7fKKV1ROlTRC6bwD8BwlaZ
+         ZDgUVDO9jxV9gEWPZfgmEhJiWm65R8vnc4qvSIRpB3OIzYdkLCf1umZTnOpt+5cp8kWO
+         +mVes8DD35CyXzjPGrniT+h7WVvu61RF8mxg/HIErI5BlV+KKkUuviVtQCDPpD0ZjgMv
+         HUXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XPsSUjzJXtsHgenYYwSTN6yvsrboaFmgosrUO0P4ZHo=;
+        b=bhrxOn5nMVk2JYXI6v27hBZQitE8iuDb5fzwCsJWeeab0rCyLsoU9glV5KvJDwjwbT
+         uCbGZ55Y5WPJEc1nF4plTBu8UcXaJ8j9YkhXRVGgckOM/LO5ICFrn8fVW9canXyNucat
+         R3ueDvx0E9PV8x3mlU9zR6hhX6CiWKP57F2WWDjn5oSOu2JKnCpoi2Hq8Die5bZBxwhY
+         gJFWP2XgWOZ8Rl95AZBDHhPMpa6G1OjtfEWDgTEHI3hDv6LtK0OHRj6U6355K1DtOlCI
+         YLW6G7WyeHql0E3dg0F/GjM0Q6DkHiu03Kp1C5BrNe/qKk+cuB1pqdoOrGvye0ovg4Um
+         7Zdw==
+X-Gm-Message-State: AOAM533noEx8punAC0A4uRlihrzmaSfMhCVPADYwOdLPLXts0zaUCP4u
+        bJoM+mpNk5y3pqwd7jtrrFHgPQyGuic=
+X-Google-Smtp-Source: ABdhPJw42FOL3ROhL9/hY1zg9LZkua3syrlFOlETh3ZBkvQOe4BtPBentF/Ho61RD8kQhDlKUsLCdA==
+X-Received: by 2002:a17:90a:7e0c:: with SMTP id i12mr671121pjl.172.1623697863086;
+        Mon, 14 Jun 2021 12:11:03 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id o7sm14331703pgs.45.2021.06.14.12.11.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 12:11:02 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/42] 4.9.273-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210614102642.700712386@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <fda07a93-e036-822e-e4b3-80c5117c4a25@gmail.com>
+Date:   Mon, 14 Jun 2021 12:11:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
+MIME-Version: 1.0
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The thermal pressure signal gives information to the scheduler about
-reduced CPU capacity due to thermal. It is based on a value stored in a
-per-cpu 'thermal_pressure' variable. The online CPUs will get the new
-value there, while the offline won't. Unfortunately, when the CPU is back
-online, the value read from per-cpu variable might be wrong (stale data).
-This might affect the scheduler decisions, since it sees the CPU capacity
-differently than what is actually available.
 
-Fix it by making sure that all online+offline CPUs would get the proper
-value in their per-cpu variable when thermal framework sets capping.
 
-Fixes: f12e4f66ab6a3 ("thermal/cpu-cooling: Update thermal pressure in case of a maximum frequency capping")
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- drivers/thermal/cpufreq_cooling.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 6/14/2021 3:26 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.273 release.
+> There are 42 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.273-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index eeb4e4b76c0b..43b1ae8a7789 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -478,7 +478,7 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
- 	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
- 	if (ret >= 0) {
- 		cpufreq_cdev->cpufreq_state = state;
--		cpus = cpufreq_cdev->policy->cpus;
-+		cpus = cpufreq_cdev->policy->related_cpus;
- 		max_capacity = arch_scale_cpu_capacity(cpumask_first(cpus));
- 		capacity = frequency * max_capacity;
- 		capacity /= cpufreq_cdev->policy->cpuinfo.max_freq;
+On ARCH_BRCMSTB using 32-bit and 64-bit kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.17.1
-
+Florian
