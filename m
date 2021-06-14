@@ -2,88 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFD53A5D76
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19DD3A5D7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhFNHMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:12:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36342 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232454AbhFNHMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:12:16 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CDC1621975;
-        Mon, 14 Jun 2021 07:10:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623654612; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=imIsqFRpuOqsurBwOcFSF/CSyRUJvFV1150r+mLEIm8=;
-        b=M8dqK02tZL4zmjx3seBXwzbI/Oz7WbwJnxleltAvLimSE9OWRyVZCS/B8cUYDyn0iHHzi5
-        T/J4A7dFP4oTb5d40kHIfjtUnUluQLOsNDZQHzT96LZiC9yCI4Iv8Pmter5zFBh17NaaCg
-        jyoFuAmsj+obATrMBPFKCjeJCi93h8U=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id AD2A7A3B87;
-        Mon, 14 Jun 2021 07:10:12 +0000 (UTC)
-Date:   Mon, 14 Jun 2021 09:10:12 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Martin Liu <liumartin@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tejun Heo <tj@kernel.org>, minchan@google.com,
-        davidchao@google.com, jenhaochen@google.com,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] kthread: Prevent deadlock when
- kthread_mod_delayed_work() races with kthread_cancel_delayed_work_sync()
-Message-ID: <YMcA1BL5RVRm25bu@alley>
-References: <20210610133051.15337-1-pmladek@suse.com>
- <20210610133051.15337-3-pmladek@suse.com>
- <20210610143030.f599946ec11e1eccde6af4f0@linux-foundation.org>
- <YMMN5IoXyXqoRsBX@alley>
- <20210611134125.bdb08ba0d2b6b87dc60d446d@linux-foundation.org>
+        id S232516AbhFNHOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:14:36 -0400
+Received: from verein.lst.de ([213.95.11.211]:43092 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232096AbhFNHOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 03:14:31 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 537CA67373; Mon, 14 Jun 2021 09:12:23 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 09:12:23 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, hannes@cmpxchg.org, cai@lca.pw,
+        krish.sadhukhan@oracle.com, saravanand@fb.com,
+        Tianyu.Lan@microsoft.com, konrad.wilk@oracle.com,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+Subject: Re: [RFC PATCH V3 08/11] swiotlb: Add bounce buffer remap address
+ setting function
+Message-ID: <20210614071223.GA30171@lst.de>
+References: <20210530150628.2063957-1-ltykernel@gmail.com> <20210530150628.2063957-9-ltykernel@gmail.com> <20210607064312.GB24478@lst.de> <48516ce3-564c-419e-b355-0ce53794dcb1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210611134125.bdb08ba0d2b6b87dc60d446d@linux-foundation.org>
+In-Reply-To: <48516ce3-564c-419e-b355-0ce53794dcb1@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-06-11 13:41:25, Andrew Morton wrote:
-> On Fri, 11 Jun 2021 09:16:52 +0200 Petr Mladek <pmladek@suse.com> wrote:
-> 
-> > On Thu 2021-06-10 14:30:30, Andrew Morton wrote:
-> > > On Thu, 10 Jun 2021 15:30:50 +0200 Petr Mladek <pmladek@suse.com> wrote:
-> > > 
-> > > > The system might hang with the following backtrace:
-> > > 
-> > > Well that's not good.
-> > 
-> > Fortunately, the API users normally synchronize these operations
-> > another way. The race should never happen when the API is used
-> > a reasonable way,
-> > see https://lore.kernel.org/lkml/YKZLnTNOlUQ85F2s@alley/
-> > 
-> > > > Fixes: 9a6b06c8d9a220860468a ("kthread: allow to modify delayed kthread work")
-> > > > Reported-by: Martin Liu <liumartin@google.com>
-> > > > Signed-off-by: Petr Mladek <pmladek@suse.com>
-> > > 
-> > > Was a -stable backport considered?
-> > 
-> > Good point! It would make sense to backport it. System hang is never
-> > good.
-> > 
-> > Could you please add Cc: stable@vger.kernel.org or should I resend the
-> > patchset?
-> 
-> I made that change to patches 1&2.  I don't think patch 3 need be
-> backported?
+On Mon, Jun 07, 2021 at 10:56:47PM +0800, Tianyu Lan wrote:
+> These addresses in extra address space works as system memory mirror. The 
+> shared memory with host in Isolation VM needs to be accessed via extra 
+> address space which is above shared gpa boundary.
 
-Sounds good to me. Thanks a lot for the update.
-
-Best Regards,
-Petr
+Why?
