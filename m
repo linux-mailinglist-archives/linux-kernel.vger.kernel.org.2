@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3986E3A64F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62143A6386
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbhFNLbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:31:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45864 "EHLO mail.kernel.org"
+        id S235426AbhFNLOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:14:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235285AbhFNLRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:17:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41D9061975;
-        Mon, 14 Jun 2021 10:50:22 +0000 (UTC)
+        id S234378AbhFNLBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:01:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 003C461864;
+        Mon, 14 Jun 2021 10:43:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667822;
-        bh=ZcfdP4wZpIkbwOWLzuaTBwIoeeY2OSRxS/uPiLlq+MI=;
+        s=korg; t=1623667411;
+        bh=YV5/Yb7PaY3u2uKpCLqzCY3uL8Md7KaRVh0jHHSiMRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/ypeKaELiEVnaxq8ojw7z3UXyNzMlnXdQJp8Lf2tqAF2YU6E7GIiDMzP0hGb/8lC
-         aeq5WzScp4Ky+2q6b/+00+5WWj/nCA2L1OoNpFk7MDj98busz4ZLJlL8aD/FxSwUPe
-         bm0A39Axy5XqhWwod4ZSJs2+ThhniyiqdOiLLs0w=
+        b=1SLH8iNX/5D6Dt1L7Dd5ZxeXAIc2trZCyiKv5eEdj6pci5WfDVPC0qha1SB51l383
+         zpBKrCNdtWUz6A7EUCblHi5uzsIB+xrUARdThlJTvBPpUyoDtjqP17emzwt3qGkvVc
+         xfQ5LpxfQW+LjuhMwckcbC1xVJ4zSrxPIQeq9E3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 5.12 088/173] usb: dwc3-meson-g12a: fix usb2 PHY glue init when phy0 is disabled
-Date:   Mon, 14 Jun 2021 12:27:00 +0200
-Message-Id: <20210614102701.092625791@linuxfoundation.org>
+        Oleksandr Shchirskyi <oleksandr.shchirskyi@linux.intel.com>,
+        Oleksandr Shchirskyi <oleksandr.shchirskyi@intel.com>,
+        Xiao Ni <xni@redhat.com>, Song Liu <song@kernel.org>
+Subject: [PATCH 5.10 060/131] async_xor: check src_offs is not NULL before updating it
+Date:   Mon, 14 Jun 2021 12:27:01 +0200
+Message-Id: <20210614102655.053157239@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neil Armstrong <narmstrong@baylibre.com>
+From: Xiao Ni <xni@redhat.com>
 
-commit 4d2aa178d2ad2fb156711113790dde13e9aa2376 upstream.
+commit 9be148e408df7d361ec5afd6299b7736ff3928b0 upstream.
 
-When only PHY1 is used (for example on Odroid-HC4), the regmap init code
-uses the usb2 ports when doesn't initialize the PHY1 regmap entry.
+When PAGE_SIZE is greater than 4kB, multiple stripes may share the same
+page. Thus, src_offs is added to async_xor_offs() with array of offsets.
+However, async_xor() passes NULL src_offs to async_xor_offs(). In such
+case, src_offs should not be updated. Add a check before the update.
 
-This fixes:
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
-...
-pc : regmap_update_bits_base+0x40/0xa0
-lr : dwc3_meson_g12a_usb2_init_phy+0x4c/0xf8
-...
-Call trace:
-regmap_update_bits_base+0x40/0xa0
-dwc3_meson_g12a_usb2_init_phy+0x4c/0xf8
-dwc3_meson_g12a_usb2_init+0x7c/0xc8
-dwc3_meson_g12a_usb_init+0x28/0x48
-dwc3_meson_g12a_probe+0x298/0x540
-platform_probe+0x70/0xe0
-really_probe+0xf0/0x4d8
-driver_probe_device+0xfc/0x168
-...
-
-Fixes: 013af227f58a97 ("usb: dwc3: meson-g12a: handle the phy and glue registers separately")
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210601084830.260196-1-narmstrong@baylibre.com
+Fixes: ceaf2966ab08(async_xor: increase src_offs when dropping destination page)
+Cc: stable@vger.kernel.org # v5.10+
+Reported-by: Oleksandr Shchirskyi <oleksandr.shchirskyi@linux.intel.com>
+Tested-by: Oleksandr Shchirskyi <oleksandr.shchirskyi@intel.com>
+Signed-off-by: Xiao Ni <xni@redhat.com>
+Signed-off-by: Song Liu <song@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/dwc3-meson-g12a.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ crypto/async_tx/async_xor.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-+++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
-@@ -651,7 +651,7 @@ static int dwc3_meson_g12a_setup_regmaps
- 		return PTR_ERR(priv->usb_glue_regmap);
+--- a/crypto/async_tx/async_xor.c
++++ b/crypto/async_tx/async_xor.c
+@@ -233,7 +233,8 @@ async_xor_offs(struct page *dest, unsign
+ 		if (submit->flags & ASYNC_TX_XOR_DROP_DST) {
+ 			src_cnt--;
+ 			src_list++;
+-			src_offs++;
++			if (src_offs)
++				src_offs++;
+ 		}
  
- 	/* Create a regmap for each USB2 PHY control register set */
--	for (i = 0; i < priv->usb2_ports; i++) {
-+	for (i = 0; i < priv->drvdata->num_phys; i++) {
- 		struct regmap_config u2p_regmap_config = {
- 			.reg_bits = 8,
- 			.val_bits = 32,
-@@ -659,6 +659,9 @@ static int dwc3_meson_g12a_setup_regmaps
- 			.max_register = U2P_R1,
- 		};
- 
-+		if (!strstr(priv->drvdata->phy_names[i], "usb2"))
-+			continue;
-+
- 		u2p_regmap_config.name = devm_kasprintf(priv->dev, GFP_KERNEL,
- 							"u2p-%d", i);
- 		if (!u2p_regmap_config.name)
+ 		/* wait for any prerequisite operations */
 
 
