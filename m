@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4883A62FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63243A64A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhFNLHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:07:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35768 "EHLO mail.kernel.org"
+        id S234517AbhFNL1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:27:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234479AbhFNK5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:57:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 224FB61425;
-        Mon, 14 Jun 2021 10:41:27 +0000 (UTC)
+        id S234940AbhFNLMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:12:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F40C61457;
+        Mon, 14 Jun 2021 10:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667288;
-        bh=UtaTbqjqvTZDE1FmFEJXLNETUsHxwA5ZfmWH+yUhYX4=;
+        s=korg; t=1623667705;
+        bh=J7r/lrRoLtgpXhPKTHPUodPNJJKZXvNW2z4QxIPjKlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KhIfQ7vUFEn6cL9xhmyITlUFVGLeROS3TO80OjOGm0mNALEVhd8Nu8smu6wQa7G7k
-         ig4L6LSMiTg/SgRQDFgkiv342mAAYn7dYAuhYpmNFpvvQM/Hrq3z/Pz2YM7KnMXZh7
-         8lWxaOayl/FHpL+kksNdt5zlIzgTs+t1VEirvZzk=
+        b=gTtLLaPnLfu3GUsdlgNPtqHQy4Fc+YI3HA5Zh4aUoykGTnFVz1gUhs2N50FTWgGP2
+         08dZSnJwXIRTxuMmrn4HqMJS8gDDKHCa8mjVCEVH4o6Eyh7vWgLvrkzA+jEAFsBjDR
+         1QEudsWDQJiV0YWq796P1npvnAyoKH36SJX2RWxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 014/131] ASoC: sti-sas: add missing MODULE_DEVICE_TABLE
+        stable@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 043/173] powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P2041 i2c controllers
 Date:   Mon, 14 Jun 2021 12:26:15 +0200
-Message-Id: <20210614102653.475282344@linuxfoundation.org>
+Message-Id: <20210614102659.597453984@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-[ Upstream commit e072b2671606c77538d6a4dd5dda80b508cb4816 ]
+[ Upstream commit 7adc7b225cddcfd0f346d10144fd7a3d3d9f9ea7 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+The i2c controllers on the P2040/P2041 have an erratum where the
+documented scheme for i2c bus recovery will not work (A-004447). A
+different mechanism is needed which is documented in the P2040 Chip
+Errata Rev Q (latest available at the time of writing).
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Link: https://lore.kernel.org/r/1620789145-14936-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/sti-sas.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/boot/dts/fsl/p2041si-post.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
-index ec9933b054ad..423daac9d5a9 100644
---- a/sound/soc/codecs/sti-sas.c
-+++ b/sound/soc/codecs/sti-sas.c
-@@ -411,6 +411,7 @@ static const struct of_device_id sti_sas_dev_match[] = {
- 	},
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, sti_sas_dev_match);
+diff --git a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+index 872e4485dc3f..ddc018d42252 100644
+--- a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
++++ b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+@@ -371,7 +371,23 @@
+ 	};
  
- static int sti_sas_driver_probe(struct platform_device *pdev)
- {
+ /include/ "qoriq-i2c-0.dtsi"
++	i2c@118000 {
++		fsl,i2c-erratum-a004447;
++	};
++
++	i2c@118100 {
++		fsl,i2c-erratum-a004447;
++	};
++
+ /include/ "qoriq-i2c-1.dtsi"
++	i2c@119000 {
++		fsl,i2c-erratum-a004447;
++	};
++
++	i2c@119100 {
++		fsl,i2c-erratum-a004447;
++	};
++
+ /include/ "qoriq-duart-0.dtsi"
+ /include/ "qoriq-duart-1.dtsi"
+ /include/ "qoriq-gpio-0.dtsi"
 -- 
 2.30.2
 
