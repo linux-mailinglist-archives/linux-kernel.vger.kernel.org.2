@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B13B3A5DC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE4D3A5DB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhFNHhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:37:45 -0400
-Received: from dd20004.kasserver.com ([85.13.150.92]:43012 "EHLO
-        dd20004.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhFNHhm (ORCPT
+        id S232507AbhFNHdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:33:13 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:56169 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232454AbhFNHdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:37:42 -0400
-X-Greylist: delayed 582 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Jun 2021 03:37:42 EDT
-Received: from timo-desktop.lan.xusig.net (i59F4DBF8.versanet.de [89.244.219.248])
-        by dd20004.kasserver.com (Postfix) with ESMTPSA id 80EBD544DC36;
-        Mon, 14 Jun 2021 09:25:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=silentcreek.de;
-        s=kas202012291009; t=1623655553;
-        bh=OHjbJOgZC9lH9A5epG61N9yp14naYRxyoht5m0VTHWI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WJj5DqKi3Zr3v5hMU/B/hcW1un+Ce8pqwsBmdMoLBp5tRg8q9LOHCDI8p8nc63xXV
-         wLc5YHSvGXLpuwBQgw/WxmdJNUR1JImtsU6nNO8Xx8IxyLWl90di4OCiQB8Ch4LhbR
-         jNMz/SMUPi4OOognGlPGdKrFwCrDrcUbuhxeOjp2lQKWgkOMDFOjRrCPxxqrfRjq8t
-         VdV999w5z1Lh644UIUcMD9brsZA5VUN8phsKei5lQf763M/PPo2Mjd36+IFLfZCBru
-         z+FmK3IONxe1lMnODWEUIifk5TnFC1XP2x8CmCJH3II3FFjtJUcHuFZIa/kVoobiWl
-         UONMAyffUr+Cw==
-From:   Timo Sigurdsson <public_timo.s@silentcreek.de>
-To:     axboe@kernel.dk, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@siol.net, linux-ide@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     sergei.shtylyov@gmail.com, gregkh@linuxfoundation.org,
-        oliver@schinagl.nl, Timo Sigurdsson <public_timo.s@silentcreek.de>
-Subject: [PATCH v2 RESEND] ata: ahci_sunxi: Disable DIPM
-Date:   Mon, 14 Jun 2021 09:25:39 +0200
-Message-Id: <20210614072539.3307-1-public_timo.s@silentcreek.de>
-X-Mailer: git-send-email 2.26.2
+        Mon, 14 Jun 2021 03:33:12 -0400
+Received: by mail-wm1-f43.google.com with SMTP id g204so11481186wmf.5;
+        Mon, 14 Jun 2021 00:31:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=ETABA9jx0BN9sK74+u7FDNgO87mcXSRwrOssxg2Cmps=;
+        b=ndHe4WYVyX4v6nhsQbu5ZTb0HoWPN+CcX2A9ftYfr+C5OJdHOt4L6qyp1FXgHRV3xG
+         WSBLm0Nh/c+JgjN4aTxqHlue44WAcUhIMXp7PbQgPI0YAkyMFE2j++jBOm5TmZ3uYuw8
+         jCYpCYHwHk67PaxD2T+Yh4bUpgP5+tMtrCc5R7cUC27GNEJM+Qh1vVMwtTcG0xJQA29N
+         Q1TqqP0eYgg64bXQ3f3S30w8CUmQ05SieM/eQlQke1K7OxPtu9QLXbz9MwdCaBMMyjxG
+         DcMjEsb4PSW0OqcOnDEIzL00d1uCS3V0h5oSqPlbQgMOtrquKlVAI1hs5KPj3ygQYaem
+         ThrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=ETABA9jx0BN9sK74+u7FDNgO87mcXSRwrOssxg2Cmps=;
+        b=BzqcJyBR49qUmnijnOlAXU+rXAuxrTHLMELEpWWTvozzkKc01STOVlk6dGsoA5u4be
+         FFvWslunprCSlbNxoCvxb+nx/DyVaoJjHFrSAa2fqCgQhF+MI2N6/bDO9Nu3Dj8sMYDO
+         9Fk7bzsQsj/XRsoJ5jJz7fx4P/iWH+QuUFw2mA2jl/esltM8mO6eV+nY4cdstEpw1I0p
+         IKK3BAxGoa9FnxrQalCleF5uS9VOA+YEHDtItGtKBYbAE1qgX11jEzeLAO8E2YcdfH2V
+         mcrBvJ/pMmrTYKwspeIx/N2j2awmVQgyoeDKsEAK9Qq9LCuo2zCWloCHTlJyGhuu5lWL
+         9RQg==
+X-Gm-Message-State: AOAM5316r1am1nmsiBiHMtk7jLl3Ive5yr7tOrUKxh71NuIFnol+Vux5
+        vaG4jERCfWABcsuZ5fU/0RikV/V0Bku0Aw==
+X-Google-Smtp-Source: ABdhPJyYbSRKCCp6su+USg6Cf9HNE8y5Y5xQ4p5oD6WkqeX5BSosKGlLy/YbTbvCoFtLPeswcCZS5w==
+X-Received: by 2002:a1c:ed0a:: with SMTP id l10mr14888354wmh.151.1623655809582;
+        Mon, 14 Jun 2021 00:30:09 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.23.224])
+        by smtp.gmail.com with ESMTPSA id l13sm15962340wrz.34.2021.06.14.00.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 00:30:09 -0700 (PDT)
+Message-ID: <abf0b0cb8299f820be0d1ee32f445a956abf1202.camel@gmail.com>
+Subject: Re: [PATCH 7/7] pwm: ep93xx: Prepare clock before using it
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de,
+        H Hartley Sweeten <hsweeten@visionengravers.com>
+Date:   Mon, 14 Jun 2021 09:30:08 +0200
+In-Reply-To: <20210614072222.wgivnzbaekxxw7qu@pengutronix.de>
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+         <20210613233041.128961-8-alexander.sverdlin@gmail.com>
+         <20210614072222.wgivnzbaekxxw7qu@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DIPM is unsupported or broken on sunxi. Trying to enable the power
-management policy med_power_with_dipm on an Allwinner A20 SoC based board
-leads to immediate I/O errors and the attached SATA disk disappears from
-the /dev filesystem. A reset (power cycle) is required to make the SATA
-controller or disk work again. The A10 and A20 SoC data sheets and manuals
-don't mention DIPM at all [1], so it's fair to assume that it's simply not
-supported. But even if it was, it should be considered broken and best be
-disabled in the ahci_sunxi driver.
+Hi Uwe!
 
-[1] https://github.com/allwinner-zh/documents/tree/master/
+On Mon, 2021-06-14 at 09:22 +0200, Uwe Kleine-König wrote:
+> > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> > to Common Clock Framework.
+> > 
+> > Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> 
+> Maybe it would make sense to move the prepare into the probe function?!
 
-Fixes: c5754b5220f0 ("ARM: sunxi: Add support for Allwinner SUNXi SoCs sata to ahci_platform")
-Cc: stable@vger.kernel.org
-Signed-off-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
-Tested-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
----
-Changes since v1:
+If one thinks about real meaningful clk_prepare(), not like in EP93xx,
+then clk_is_enabled_when_prepared() shall be considered and this might
+change behaviour. That's why this "stupid" approach was chosen for this
+conversion. Also, unfortunately, I don't have a test setup for PWM, this
+made me shy towards this driver ;)
 
-- Formal changes to the commit message as suggested by Greg Kroah-Hartman
-  and Sergei Shtylyov (Fixes and Cc lines). No changes to the patch
-  itself.
----
- drivers/ata/ahci_sunxi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/ata/ahci_sunxi.c b/drivers/ata/ahci_sunxi.c
-index cb69b737cb49..56b695136977 100644
---- a/drivers/ata/ahci_sunxi.c
-+++ b/drivers/ata/ahci_sunxi.c
-@@ -200,7 +200,7 @@ static void ahci_sunxi_start_engine(struct ata_port *ap)
- }
- 
- static const struct ata_port_info ahci_sunxi_port_info = {
--	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ,
-+	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ | ATA_FLAG_NO_DIPM,
- 	.pio_mask	= ATA_PIO4,
- 	.udma_mask	= ATA_UDMA6,
- 	.port_ops	= &ahci_platform_ops,
 -- 
-2.26.2
+Alexander Sverdlin.
+
 
