@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EB93A70B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5CB3A70B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbhFNUuz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Jun 2021 16:50:55 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:40413 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234143AbhFNUux (ORCPT
+        id S235187AbhFNUwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:52:47 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:33594 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233479AbhFNUwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:50:53 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-65-ON67q3ytPwmYheTyY52QOw-1; Mon, 14 Jun 2021 21:48:46 +0100
-X-MC-Unique: ON67q3ytPwmYheTyY52QOw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 14 Jun
- 2021 21:48:45 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Mon, 14 Jun 2021 21:48:45 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jhih-Ming Huang' <fbihjmeric@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "fabioaiuto83@gmail.com" <fabioaiuto83@gmail.com>,
-        "ross.schm.dev@gmail.com" <ross.schm.dev@gmail.com>,
-        "maqianga@uniontech.com" <maqianga@uniontech.com>,
-        "marcocesati@gmail.com" <marcocesati@gmail.com>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rtw_security: fix cast to restricted __le32
-Thread-Topic: [PATCH] rtw_security: fix cast to restricted __le32
-Thread-Index: AQHXYD46HyWlcwiQGkiXWqpP7mZmBasT+umQ
-Date:   Mon, 14 Jun 2021 20:48:45 +0000
-Message-ID: <8974a58823d74d118595d4f8db5ac870@AcuMS.aculab.com>
-References: <20210613102229.1424495-1-fbihjmeric@gmail.com>
-In-Reply-To: <20210613102229.1424495-1-fbihjmeric@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 14 Jun 2021 16:52:45 -0400
+Received: by mail-lf1-f44.google.com with SMTP id bp38so23308246lfb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/8yZyD8Qxeaf9TxEOG5j+rcsyw3CCIJC6f3Y8GUzKlI=;
+        b=FwsY9dIC3IaG2Ak8rp0lm7uluQN8dbgehHV2TIVQyx98A+obaK1k4e2raRoeYlnfKU
+         1Mqe08vQex+QNkn+2ZHVa6wan1Cwx/lX8eYch/6jucnH21Q+8JaBKiF4RQmUCXHtN4Ql
+         0NNJi7Ti6hCKtulSglwykq2lBRq3m/lg+TZskSPYR3r7DonLl+Ft1xlc6vunbF62NYEu
+         l4oHURk707CoxCGWPfKXXKfeCdaYb2b/G4OdpK4pwerASPRmQoG83cXVtPDyNWw/ZqK5
+         Vv3nDV3z1F4haStaGLxHeYZ3SI1OjiVBnT6LNl4mAhtQ9wcmvX1So8gC1sjAaVKKve0k
+         XuYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/8yZyD8Qxeaf9TxEOG5j+rcsyw3CCIJC6f3Y8GUzKlI=;
+        b=K9dkTrM9gqe2g+MFKSeJi4y6AxcBAxml+ooCZCra3gVCoSPMvKBaaUnrT3z8i0corr
+         pFMpDu6ks/L+zNCOgucx9dR2NoqaKofy+zdyFghoUdVtK9n+0x+mRyobSf2Yf+aGSoo2
+         P2gEpu6573JIUq1ntjD9wvaG+GOYBZlt3MIPPlbG4q5BbHghS2bOm9Vz3U9QBzBXuYf1
+         fGWbiuhM4K46Q5eIyLoc3tlqFj+M/M9G2y5zOzcq6BhAgBniGWdVeRuyPsbP8mAMxua1
+         dcer/ODLCieyKBvpjmLdamUgddMvy/CLmFxqkuDZM35py3LpPDR9GLwUfy6VzRb9m2HA
+         BE7Q==
+X-Gm-Message-State: AOAM532GBQhJBIQ8MTqME8phgwFW4P9NoXaL1CRSzCWKbNifADF2Fx2L
+        dzNIzIm70M47NY0DEjleWBAPC0+ww1F0UF/5kR1c1Q==
+X-Google-Smtp-Source: ABdhPJwEyfMEBTymX7iJX4uhK2ViDEmCDThTv4U+RoZC2hiqVBRU5+NheHfIWcc38hpYP76juY/W0FF4SfuBlmgs+y8=
+X-Received: by 2002:a19:4843:: with SMTP id v64mr13899409lfa.374.1623703781370;
+ Mon, 14 Jun 2021 13:49:41 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
+ <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
+ <20210612202505.GG68208@worktop.programming.kicks-ass.net>
+ <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+ <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net> <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
+ <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net> <CANpmjNNnZv7DHYaJBL7knn9P+50F+SOCvis==Utaf-avENnVsw@mail.gmail.com>
+ <202106140817.F584D2F@keescook> <20210614153545.GA68749@worktop.programming.kicks-ass.net>
+ <202106140921.5E591BD@keescook> <CAKwvOdkiQCuWB7VrQ4T-OCdoNfqKhpLx_jtBQ_uyjVVwHSOc=A@mail.gmail.com>
+In-Reply-To: <CAKwvOdkiQCuWB7VrQ4T-OCdoNfqKhpLx_jtBQ_uyjVVwHSOc=A@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 14 Jun 2021 13:49:29 -0700
+Message-ID: <CAKwvOdmqLh_9WkBmMYGZ9ztX+eJ95aTQsyUB+qXYPZHun8+nMg@mail.gmail.com>
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Marco Elver <elver@google.com>, Bill Wendling <morbo@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        oberpar@linux.vnet.ibm.com, linux-toolchains@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jhih-Ming Huang
-> Sent: 13 June 2021 11:22
-> 
-> This patch fixes the sparse warning of fix cast to restricted __le32.
-> 
-> Signed-off-by: Jhih-Ming Huang <fbihjmeric@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_security.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c
-> b/drivers/staging/rtl8723bs/core/rtw_security.c
-> index a99f439328f1..2f4da67e31c6 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_security.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-> @@ -121,7 +121,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
->  		arc4_crypt(ctx, payload, payload,  length);
-> 
->  		/* calculate icv and compare the icv */
-> -		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-> +		*((u32 *)crc) = le32_to_cpu((__force __le32)~crc32_le(~0, payload, length - 4));
-> 
->  	}
->  }
-> @@ -618,7 +618,8 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
->  			arc4_setkey(ctx, rc4key, 16);
->  			arc4_crypt(ctx, payload, payload, length);
+On Mon, Jun 14, 2021 at 11:07 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Mon, Jun 14, 2021 at 9:23 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Mon, Jun 14, 2021 at 05:35:45PM +0200, Peter Zijlstra wrote:
+> > > On Mon, Jun 14, 2021 at 08:26:01AM -0700, Kees Cook wrote:
+> > > > So, AFAICT, the original blocking issue ("PGO does not respect noinstr")
+> > > > is not actually an issue (noinstr contains notrace, which IS respected
+> > > > by PGO[2]), I think this is fine to move forward.
+> > >
+> > > It is *NOT*: https://godbolt.org/z/9c7xdvGd9
+> > >
+> > > Look at how both compilers generate instrumentation in the no_instr()
+> > > function.
+> >
+> > Well that's disappointing. I'll put this on hold until Clang can grow an
+> > appropriate attribute (or similar work-around). Thanks for catching
+> > that.
+>
+> Cross referencing since these two threads are related.
+> https://lore.kernel.org/lkml/CAKwvOdmPTi93n2L0_yQkrzLdmpxzrOR7zggSzonyaw2PGshApw@mail.gmail.com/
 
-Is someone using 'rc4' and 'security' in the same file?
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223 looked appropriate
+to me, so I commented on it.
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223#c6
 
-> 
-> -			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-> +			*((u32 *)crc) = le32_to_cpu((__force __le32)~crc32_le(~0, payload,
-> +						length - 4));
-> 
->  			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
->  			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
-
-In both cases the *((u32 *)crc) is also very dubious.
-Casts of pointers to integer types are almost always broken.
-Given the code that follows the second hunk I'm guessing you
-have 'u8 crc[4];' (or equivalent).
-That can be misaligned and then access will panic on some systems.
-
-There is a get_unaligned_be32() (or something similar) that can be used
-to read the crc from (payload + length - 4).
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Patches for:
+PGO: https://reviews.llvm.org/D104253
+GCOV: https://reviews.llvm.org/D104257
+--
+Thanks,
+~Nick Desaulniers
