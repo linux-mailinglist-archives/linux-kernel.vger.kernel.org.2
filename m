@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE033A6496
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73BC3A6379
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235531AbhFNL0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:26:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
+        id S235279AbhFNLNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:13:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234720AbhFNLMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:12:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85CFD6145A;
-        Mon, 14 Jun 2021 10:48:19 +0000 (UTC)
+        id S235301AbhFNLAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:00:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53BB26162A;
+        Mon, 14 Jun 2021 10:42:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667700;
-        bh=KQj6+Mec5t1lduI9hVJiOB+XDnYJwpycELEWfMg/2Js=;
+        s=korg; t=1623667373;
+        bh=96gJs0MHtdFpp5U5h3iNdCzcmTuO23CVLlLTBMXL7KQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oL62cGoJxEEe+Qu/xUchH5CSXr1jtEzQ8eVHPm+6vHC1llQF1jtowqp/znzzAlho8
-         7EMdCybYhG48HOema7qSe9Qaq8adm+g61KiUsaApShAaaDWh4P4Ynytk+4Qis+H3Dq
-         oyVkdhDPy4z5odA85l84uo5S+x0sYQIXATgM7s3g=
+        b=jVoPKg0GnBxjY+thgd5cop7UiNbWuj/THTz0ZuZ+wdE4NgP+wAy4s6TlbDZNUMW2W
+         DO9ASd4uncn0tV9v5ZPtim+PIFjp71l+iq0pzTNnAaclWtym2EOVKqKRLuYZP+YsSP
+         qH7mcIGG0JaRSHFPqWAww6kxLrhl+eCxYZgSan98=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 041/173] nvme-tcp: remove incorrect Kconfig dep in BLK_DEV_NVME
+        stable@vger.kernel.org, Eric Farman <farman@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 012/131] vfio-ccw: Reset FSM state to IDLE inside FSM
 Date:   Mon, 14 Jun 2021 12:26:13 +0200
-Message-Id: <20210614102659.537376169@linuxfoundation.org>
+Message-Id: <20210614102653.405376039@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Eric Farman <farman@linux.ibm.com>
 
-[ Upstream commit 042a3eaad6daeabcfaf163aa44da8ea3cf8b5496 ]
+[ Upstream commit 6c02ac4c9211edabe17bda437ac97e578756f31b ]
 
-We need to select NVME_CORE.
+When an I/O request is made, the fsm_io_request() routine
+moves the FSM state from IDLE to CP_PROCESSING, and then
+fsm_io_helper() moves it to CP_PENDING if the START SUBCHANNEL
+received a cc0. Yet, the error case to go from CP_PROCESSING
+back to IDLE is done after the FSM call returns.
 
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Let's move this up into the FSM proper, to provide some
+better symmetry when unwinding in this case.
+
+Signed-off-by: Eric Farman <farman@linux.ibm.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Acked-by: Matthew Rosato <mjrosato@linux.ibm.com>
+Message-Id: <20210511195631.3995081-3-farman@linux.ibm.com>
+Signed-off-by: Cornelia Huck <cohuck@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/s390/cio/vfio_ccw_fsm.c | 1 +
+ drivers/s390/cio/vfio_ccw_ops.c | 2 --
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/Kconfig b/drivers/nvme/host/Kconfig
-index a44d49d63968..494675aeaaad 100644
---- a/drivers/nvme/host/Kconfig
-+++ b/drivers/nvme/host/Kconfig
-@@ -71,7 +71,8 @@ config NVME_FC
- config NVME_TCP
- 	tristate "NVM Express over Fabrics TCP host driver"
- 	depends on INET
--	depends on BLK_DEV_NVME
-+	depends on BLOCK
-+	select NVME_CORE
- 	select NVME_FABRICS
- 	select CRYPTO
- 	select CRYPTO_CRC32C
+diff --git a/drivers/s390/cio/vfio_ccw_fsm.c b/drivers/s390/cio/vfio_ccw_fsm.c
+index 23e61aa638e4..e435a9cd92da 100644
+--- a/drivers/s390/cio/vfio_ccw_fsm.c
++++ b/drivers/s390/cio/vfio_ccw_fsm.c
+@@ -318,6 +318,7 @@ static void fsm_io_request(struct vfio_ccw_private *private,
+ 	}
+ 
+ err_out:
++	private->state = VFIO_CCW_STATE_IDLE;
+ 	trace_vfio_ccw_fsm_io_request(scsw->cmd.fctl, schid,
+ 				      io_region->ret_code, errstr);
+ }
+diff --git a/drivers/s390/cio/vfio_ccw_ops.c b/drivers/s390/cio/vfio_ccw_ops.c
+index 1ad5f7018ec2..2280f51dd679 100644
+--- a/drivers/s390/cio/vfio_ccw_ops.c
++++ b/drivers/s390/cio/vfio_ccw_ops.c
+@@ -276,8 +276,6 @@ static ssize_t vfio_ccw_mdev_write_io_region(struct vfio_ccw_private *private,
+ 	}
+ 
+ 	vfio_ccw_fsm_event(private, VFIO_CCW_EVENT_IO_REQ);
+-	if (region->ret_code != 0)
+-		private->state = VFIO_CCW_STATE_IDLE;
+ 	ret = (region->ret_code != 0) ? region->ret_code : count;
+ 
+ out_unlock:
 -- 
 2.30.2
 
