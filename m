@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A178A3A6C16
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216AD3A6C17
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235190AbhFNQlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:41:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55792 "EHLO
+        id S235125AbhFNQlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:41:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56018 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234760AbhFNQkU (ORCPT
+        with ESMTP id S234865AbhFNQkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:40:20 -0400
-Message-Id: <20210614155356.343591326@linutronix.de>
+        Mon, 14 Jun 2021 12:40:22 -0400
+Message-Id: <20210614155356.439865233@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688697;
+        s=2020; t=1623688698;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=k7VV3l92V/rIwwci1AxNetWz45bQmo+lWEnqmELScvg=;
-        b=PIGhrYHlkISQBBqh1pNy0c7zj/F2XbXb+IBTQcv/3N8WI1hx0fDjs7lIWU+055nOx+7CXE
-        TDDfkg9isVaCWPzMnODqLLpEDtE1rPiV9zfZdpsIJ+tP2bGDW/ilYZOzz8cplqoEWFRn9V
-        0wpPsZ6p2z9s++mCZc6Tdpd7tM4zCLR+VCPxMLVj0BLW+nZzXq7acVeykqYg/SV3TXqf2d
-        9UkVzCJ9JiDoKoFzxDn6GTbLW9GPWIluajxuZ6uqP566Ybqd9/KapCwskWwbfzgQvMrtFX
-        Qzx/pFKe66FZ4YphsrMOK/rUYM0XjoRC/tIEn4nuygMEzFbBTZ15G1QMdmT5bQ==
+        bh=dJeSK1j7dRYoxJwZlKLMQS5FZcOanbgxF55IvVHDTwM=;
+        b=eZSLrXORms39hhKTgt8MgGLb0qDxq//X8TE8MEFzPyxTlQj1l1jEbV7yDAdRKf18aEaXLS
+        qsGrwnSDFEaMtTzE27CAIC0nZkEft8hFZOYcS9sOyrx2lfz2AVoG4XI/zWEVMxutW+7IqP
+        Ycr0oj/Hk1B3FpUfDd3ouxMLWFJNVUZnq/n5HKwY7Wm9nkOlYEQNA4IcaHJbwDz5moqt0K
+        Es2NGY1Kx2zLGfWlXF6DG3gRXq4yfaXNX5v5quMrwheFBD4BdAJaMXIK/3GMQIegg9rEQI
+        rC1VpVnygfG7ZjTwqmZJFvQlyN7TOLj3G32W/tuLx90OhBa73L5mY1+zI9vb2w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688697;
+        s=2020e; t=1623688698;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=k7VV3l92V/rIwwci1AxNetWz45bQmo+lWEnqmELScvg=;
-        b=5kYvyiROgGlNKqdmdRPMVg+ai3xlu5O+hL2MsSp2CVrE7WXZGSDOdNU5cliQnj0T7rIpyL
-        r/b9hoV7bJca7wAw==
-Date:   Mon, 14 Jun 2021 17:44:34 +0200
+        bh=dJeSK1j7dRYoxJwZlKLMQS5FZcOanbgxF55IvVHDTwM=;
+        b=R1fbC1O1t9nG3vRozI7+dHdqz3A0WZnq1C12MmPFyQ29TjtGiy17fiUw1/Q8Dch1ggDfIV
+        sOeGh5yL76z5kAAg==
+Date:   Mon, 14 Jun 2021 17:44:35 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,8 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 26/52] x86/fpu: Rename xstate copy functions which are
- related to UABI
+Subject: [patch V2 27/52] x86/fpu: Deduplicate copy_uabi_from_user/kernel_to_xstate()
 References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,78 +53,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename them to reflect that these functions deal with user space format
-XSAVE buffers.
+copy_uabi_from_user_to_xstate() and copy_uabi_from_kernel_to_xstate() are
+almost identical except for the copy function.
 
-      copy_xstate_to_kernel() -> copy_uabi_xstate_to_membuf()
-      copy_kernel_to_xstate() -> copy_uabi_from_kernel_to_xstate()
-      copy_user_to_xstate()   -> copy_sigframe_from_user_to_xstate()
+Unify them.
 
-Again a clear statement that these functions deal with user space ABI.
-
-Suggested-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/include/asm/fpu/xstate.h |    4 ++--
- arch/x86/kernel/fpu/regset.c      |    2 +-
- arch/x86/kernel/fpu/signal.c      |    2 +-
- arch/x86/kernel/fpu/xstate.c      |    5 +++--
- 4 files changed, 7 insertions(+), 6 deletions(-)
+ arch/x86/kernel/fpu/xstate.c |   84 +++++++++++++++----------------------------
+ 1 file changed, 30 insertions(+), 54 deletions(-)
 
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -102,8 +102,8 @@ extern void __init update_regset_xstate_
- 
- void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
- int xfeature_size(int xfeature_nr);
--int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
--int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
-+int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
-+int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
- void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
- void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask);
- 
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -132,7 +132,7 @@ int xstateregs_set(struct task_struct *t
- 	}
- 
- 	fpu__prepare_write(fpu);
--	ret = copy_kernel_to_xstate(&fpu->state.xsave, kbuf ?: tmpbuf);
-+	ret = copy_uabi_from_kernel_to_xstate(&fpu->state.xsave, kbuf ?: tmpbuf);
- 
- out:
- 	vfree(tmpbuf);
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -431,7 +431,7 @@ static int __fpu__restore_sig(void __use
- 	if (use_xsave() && !fx_only) {
- 		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
- 
--		ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
-+		ret = copy_sigframe_from_user_to_xstate(&fpu->state.xsave, buf_fx);
- 		if (ret)
- 			goto out;
- 
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1080,7 +1080,7 @@ void copy_uabi_xstate_to_membuf(struct m
-  * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S] format
-  * and copy to the target thread. This is called from xstateregs_set().
-  */
--int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
-+int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
+@@ -1076,20 +1076,30 @@ void copy_uabi_xstate_to_membuf(struct m
+ 		membuf_zero(&to, to.left);
+ }
+ 
+-/*
+- * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S] format
+- * and copy to the target thread. This is called from xstateregs_set().
+- */
+-int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
++static int copy_from_buffer(void *dst, unsigned int offset, unsigned int size,
++			    const void *kbuf, const void __user *ubuf)
++{
++	if (kbuf) {
++		memcpy(dst, kbuf + offset, size);
++	} else {
++		if (copy_from_user(dst, ubuf + offset, size))
++			return -EFAULT;
++	}
++	return 0;
++}
++
++static int copy_uabi_to_xstate(struct xregs_state *xsave, const void *kbuf,
++			       const void __user *ubuf)
  {
  	unsigned int offset, size;
- 	int i;
-@@ -1140,7 +1140,8 @@ int copy_kernel_to_xstate(struct xregs_s
+-	int i;
+ 	struct xstate_header hdr;
++	int i;
+ 
+ 	offset = offsetof(struct xregs_state, header);
+ 	size = sizeof(hdr);
+ 
+-	memcpy(&hdr, kbuf + offset, size);
++	if (copy_from_buffer(&hdr, offset, size, kbuf, ubuf))
++		return -EFAULT;
+ 
+ 	if (validate_user_xstate_header(&hdr))
+ 		return -EINVAL;
+@@ -1111,7 +1121,8 @@ int copy_uabi_from_kernel_to_xstate(stru
+ 			offset = xstate_offsets[i];
+ 			size = xstate_sizes[i];
+ 
+-			memcpy(dst, kbuf + offset, size);
++			if (copy_from_buffer(dst, offset, size, kbuf, ubuf))
++				return -EFAULT;
+ 		}
+ 	}
+ 
+@@ -1136,6 +1147,16 @@ int copy_uabi_from_kernel_to_xstate(stru
+ }
+ 
+ /*
++ * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S]
++ * format and copy to the target thread. This is called from
++ * xstateregs_set().
++ */
++int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
++{
++	return copy_uabi_to_xstate(xsave, kbuf, NULL);
++}
++
++/*
+  * Convert from a sigreturn standard-format user-space buffer to kernel
   * XSAVE[S] format and copy to the target thread. This is called from the
   * sigreturn() and rt_sigreturn() system calls.
-  */
--int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf)
-+int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave,
-+				      const void __user *ubuf)
+@@ -1143,52 +1164,7 @@ int copy_uabi_from_kernel_to_xstate(stru
+ int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave,
+ 				      const void __user *ubuf)
  {
- 	unsigned int offset, size;
- 	int i;
+-	unsigned int offset, size;
+-	int i;
+-	struct xstate_header hdr;
+-
+-	offset = offsetof(struct xregs_state, header);
+-	size = sizeof(hdr);
+-
+-	if (copy_from_user(&hdr, ubuf + offset, size))
+-		return -EFAULT;
+-
+-	if (validate_user_xstate_header(&hdr))
+-		return -EINVAL;
+-
+-	for (i = 0; i < XFEATURE_MAX; i++) {
+-		u64 mask = ((u64)1 << i);
+-
+-		if (hdr.xfeatures & mask) {
+-			void *dst = __raw_xsave_addr(xsave, i);
+-
+-			offset = xstate_offsets[i];
+-			size = xstate_sizes[i];
+-
+-			if (copy_from_user(dst, ubuf + offset, size))
+-				return -EFAULT;
+-		}
+-	}
+-
+-	if (xfeatures_mxcsr_quirk(hdr.xfeatures)) {
+-		offset = offsetof(struct fxregs_state, mxcsr);
+-		size = MXCSR_AND_FLAGS_SIZE;
+-		if (copy_from_user(&xsave->i387.mxcsr, ubuf + offset, size))
+-			return -EFAULT;
+-	}
+-
+-	/*
+-	 * The state that came in from userspace was user-state only.
+-	 * Mask all the user states out of 'xfeatures':
+-	 */
+-	xsave->header.xfeatures &= XFEATURE_MASK_SUPERVISOR_ALL;
+-
+-	/*
+-	 * Add back in the features that came in from userspace:
+-	 */
+-	xsave->header.xfeatures |= hdr.xfeatures;
+-
+-	return 0;
++	return copy_uabi_to_xstate(xsave, NULL, ubuf);
+ }
+ 
+ /**
 
