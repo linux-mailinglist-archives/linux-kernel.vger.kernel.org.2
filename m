@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EA73A67BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0CB3A67C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbhFNNZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233102AbhFNNZO (ORCPT
+        id S233959AbhFNN02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:26:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61472 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233224AbhFNN00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:25:14 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8B0C061574;
-        Mon, 14 Jun 2021 06:23:11 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id w21so46411846edv.3;
-        Mon, 14 Jun 2021 06:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=RUx64tq9BpIwVZt1SvBA673QJ3mEok3gmg2Ilw9YkAw=;
-        b=edAA06FfFrqR55mdDZHjATZP2XflwzR4lokED4y77aoKEyLqnkDPxKYC+w90mKk++U
-         pFg2SuYmbbV+qjgaC4ZlHlbsWxhWVWxpsPZkBYDrAIhmmlaDA6akh1MjwgZkCS1YKVEK
-         G16IW7FfBqkvb6GUHhfbBPA733Z4KcHU6oPf0fH9XpqakBA2qgugMb1RNPD3gcBwh6fo
-         7nEeIL+vZkuKxHYbw+Miny8+AXwS69hDPMUzbPbZABibnW3XiWIwDiqpQFpFv9IPxuNr
-         8pXq3oB3bkpfoAOjdjSMJdrX7dJV3cC+ziAtKE6Gt8NFehxL7zJPxnok+VpOZlAZs01K
-         ue/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=RUx64tq9BpIwVZt1SvBA673QJ3mEok3gmg2Ilw9YkAw=;
-        b=PrWdmsJcGl8pwXDyjTCCrfxhDi4R22zBLfcY8X49L3cZb+20Gq1yfAXbzhT7x7GbIF
-         t9NwLpSyx7OipqsXIJ1WJk73XTpmCAkLPANhOR0NdGGozJjFpeFlL2LU6721a6fRLgxE
-         C2oryufYyVxTKmwBDDggUzuMKZ8f7cTNJSlL41jFXiKEy9CDL9cd17p0hzNqkCEOp2jn
-         WsXMcgZOMyDHEgiiZ2v97QMBAOoih68cCbtRryN2uZ1JQceawqqA+RkdVoSbIkHQW95B
-         44oqgA7KI2Pfcodca3Dp+g88YejS1S/tZ9q8lHmBCeyVlKqmRELPz0pTE8DK5/pkkK1W
-         iQoA==
-X-Gm-Message-State: AOAM532nsx5bBgBSRL/qUjQ1reFy3g7B/u8HtCpPmNeSnGGDR8re2ixk
-        eiWZFR/FhpYhXj8TA/OccSFbtn/7UK9WA7hTjBA=
-X-Google-Smtp-Source: ABdhPJwj7ZM5/GfOD9oHG48QJhQeKaOGZLGhXIFLtD6xyup/eUmEGjWlC27fAHOQoenMThw9CnBQR/XbRSYRc5ooilY=
-X-Received: by 2002:a05:6402:22f9:: with SMTP id dn25mr16985626edb.241.1623676989585;
- Mon, 14 Jun 2021 06:23:09 -0700 (PDT)
+        Mon, 14 Jun 2021 09:26:26 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15ED37dM184565;
+        Mon, 14 Jun 2021 09:24:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=AOd7hT6IqUJsqtAr/hajjvw5zxOTDer/KKMrZIafiWQ=;
+ b=hlRYDCKlwNFrFKg9Ss3RfUAxuhI+MkRZ4mxNZ0HA2TCMpsF4DSLvPOKKqMe9e/ANSdrr
+ v7acOImlVice4cPAxk61B/W7TpQ+m2i8BPZqQDhBeU4WI6sNtkJVXoCxBg/Q9G34NHhj
+ bVpQwNTVWJ9126dihZafHRXLTETMmdNCiii7A7Ky3TUt18tyApak+cY9eVwY4WmaEBur
+ ch1qxv9MhLURLLt5+67DqDBpJ7r8i8tHHP6OSFYc4SiihEWtb+N+ZN/lbghMxooUmoBa
+ gEvNIIjS0zmHeppi5QXjYB9SRVkD0NILto3p3eNMcKGchRRpq96czwJaueUuILiu2nPv Zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39673fsu1q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 09:24:04 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15ED3J66187742;
+        Mon, 14 Jun 2021 09:24:04 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39673fsu0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 09:24:04 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15EDO14J001901;
+        Mon, 14 Jun 2021 13:24:01 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 394mj8rych-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 13:24:01 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15EDMx1M28901652
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 13:22:59 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AF3AF52054;
+        Mon, 14 Jun 2021 13:23:58 +0000 (GMT)
+Received: from ibm-vm.ibmuc.com (unknown [9.145.5.73])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id F18F65204E;
+        Mon, 14 Jun 2021 13:23:57 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
+        david@redhat.com, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH v4 0/2] mm: add vmalloc_no_huge and use it
+Date:   Mon, 14 Jun 2021 15:23:55 +0200
+Message-Id: <20210614132357.10202-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 14 Jun 2021 21:22:43 +0800
-Message-ID: <CAD-N9QUUCSpZjg5RwdKBNF7xx127E6fUowTZkUhm66C891Fpkg@mail.gmail.com>
-Subject: Suggestions on how to debug kernel crashes where printk and gdb both
- does not work
-To:     alex.aring@gmail.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        stefan@datenfreihafen.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: f6LuAo1etUlBZ1PUEMEEyzesdKRCqQfk
+X-Proofpoint-GUID: uSO97Z_Tmc4NkHhim8c2LbWtvWR-aVVK
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-14_07:2021-06-14,2021-06-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ spamscore=0 mlxlogscore=522 impostorscore=0 suspectscore=0 clxscore=1015
+ mlxscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106140089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear kernel developers,
+Add vmalloc_no_huge and export it, so modules can allocate memory with
+small pages.
 
-I was trying to debug the crash - memory leak in hwsim_add_one [1]
-recently. However, I encountered a disgusting issue: my breakpoint and
-printk/pr_alert in the functions that will be surely executed do not
-work. The stack trace is in the following. I wrote this email to ask
-for some suggestions on how to debug such cases?
+Use the newly added vmalloc_no_huge in KVM on s390 to get around a
+hardware limitation.
 
-Thanks very much. Looking forward to your reply.
+v3->v4:
+* reword commit messages to be more clear
+* add comment in the second patch
 
-[<ffffffff82b09f12>] kmalloc include/linux/slab.h:556 [inline]
-[<ffffffff82b09f12>] kzalloc include/linux/slab.h:686 [inline]
-[<ffffffff82b09f12>] hwsim_alloc_edge.constprop.0+0x22/0x80
-drivers/net/ieee802154/mac802154_hwsim.c:385
-[<ffffffff82b0b0f3>] hwsim_subscribe_all_others
-drivers/net/ieee802154/mac802154_hwsim.c:709 [inline]
-[<ffffffff82b0b0f3>] hwsim_add_one+0x3b3/0x640
-drivers/net/ieee802154/mac802154_hwsim.c:802
-[<ffffffff82b0b3c4>] hwsim_probe+0x44/0xd0
-drivers/net/ieee802154/mac802154_hwsim.c:848
-[<ffffffff82628bf1>] platform_probe+0x81/0x120 drivers/base/platform.c:1447
-[<ffffffff82625679>] really_probe+0x159/0x500 drivers/base/dd.c:576
-[<ffffffff82625aab>] driver_probe_device+0x8b/0x100 drivers/base/dd.c:763
-[<ffffffff82626325>] device_driver_attach+0x105/0x110 drivers/base/dd.c:1039
-[<ffffffff826263d1>] __driver_attach drivers/base/dd.c:1117 [inline]
-[<ffffffff826263d1>] __driver_attach+0xa1/0x140 drivers/base/dd.c:1070
-[<ffffffff82622459>] bus_for_each_dev+0xa9/0x100 drivers/base/bus.c:305
-[<ffffffff826244e0>] bus_add_driver+0x160/0x280 drivers/base/bus.c:622
-[<ffffffff82627233>] driver_register+0xc3/0x150 drivers/base/driver.c:171
-[<ffffffff874fa3dc>] hwsim_init_module+0xae/0x107
-drivers/net/ieee802154/mac802154_hwsim.c:899
-[<ffffffff81001083>] do_one_initcall+0x63/0x2e0 init/main.c:1249
-[<ffffffff87489873>] do_initcall_level init/main.c:1322 [inline]
-[<ffffffff87489873>] do_initcalls init/main.c:1338 [inline]
-[<ffffffff87489873>] do_basic_setup init/main.c:1358 [inline]
-[<ffffffff87489873>] kernel_init_freeable+0x1f4/0x26e init/main.c:1560
-[<ffffffff84359255>] kernel_init+0xc/0x1a7 init/main.c:1447
-[<ffffffff810022ef>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+v2->v3:
+* do not export __vmalloc_node_range
+* add vmalloc_no_huge as a wrapper around __vmalloc_node_range
+* use vmalloc_no_huge instead of __vmalloc_node_range in kvm on s390x
 
-[1] https://groups.google.com/g/syzkaller-bugs/c/iEEZ_UOvoEY/m/6sm4bt6EAgAJ
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Christoph Hellwig <hch@infradead.org>
 
---
-My best regards to you.
+Claudio Imbrenda (2):
+  mm/vmalloc: add vmalloc_no_huge
+  KVM: s390: prepare for hugepage vmalloc
 
-     No System Is Safe!
-     Dongliang Mu
+ arch/s390/kvm/pv.c      |  7 ++++++-
+ include/linux/vmalloc.h |  1 +
+ mm/vmalloc.c            | 16 ++++++++++++++++
+ 3 files changed, 23 insertions(+), 1 deletion(-)
+
+-- 
+2.31.1
+
