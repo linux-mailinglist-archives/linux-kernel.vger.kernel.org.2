@@ -2,199 +2,432 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71ADB3A5F6B
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFFB3A5F69
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhFNJxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:53:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53439 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232767AbhFNJxN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232778AbhFNJxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 14 Jun 2021 05:53:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623664270;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+Received: from smtp-out1.suse.de ([195.135.220.28]:55264 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232752AbhFNJxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 05:53:11 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A7E5B21978;
+        Mon, 14 Jun 2021 09:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623664267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=pkbuA5hf8p6fEJiSHAXuHkzswzV57iOl5tZWDJ1RMuQ=;
-        b=BvGa2m+9TkD8iE9BJagPLEsncCFsYpOHjBvaqhfj3bXUVRycdIfASUmmpdtUT2AQkIgK5F
-        es8Hqzc/UZk9Ioa3AO6eBvjDjKjdKJ/w8GrBhjLG+QlB6itqdcMtyrwQD9fFPSF8Y9krOJ
-        1Z9x/kW6ceyTPBAk+bB0VS2xglKYR5s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-LuLRukLhPFesTH-wtx8tTw-1; Mon, 14 Jun 2021 05:51:07 -0400
-X-MC-Unique: LuLRukLhPFesTH-wtx8tTw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 397BB192296B;
-        Mon, 14 Jun 2021 09:51:06 +0000 (UTC)
-Received: from starship (unknown [10.40.194.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D381560938;
-        Mon, 14 Jun 2021 09:51:03 +0000 (UTC)
-Message-ID: <d175c6ee68f357280166464bbacf6a468c3d9a74.camel@redhat.com>
-Subject: Re: [PATCH v3 0/4] KVM: x86: hyper-v: Conditionally allow SynIC
- with APICv/AVIC
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Date:   Mon, 14 Jun 2021 12:51:02 +0300
-In-Reply-To: <87zgvsx5b1.fsf@vitty.brq.redhat.com>
-References: <20210609150911.1471882-1-vkuznets@redhat.com>
-         <f294faba4e5d25aba8773f36170d1309236edd3b.camel@redhat.com>
-         <87zgvsx5b1.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=ADpTy1Zsz+YbXQxTcfSvsIEb4OaYKOLvMPfGISmBi/w=;
+        b=oDbB5BUJOLmHLTQP8nZZcsRjKHsbYgE4ls1yW45QOQ+bxakqgfUmYAAcc7fgDAM5K+MLJx
+        /hRShLJJw6s8W0Uffd8bew356/OX9BPKLzD+RSh4xODqQDGPiFHUDMbNIML++FDskYAAKb
+        njvKpF2N60hMC7a1HvlDg2LzmMFewW8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623664267;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ADpTy1Zsz+YbXQxTcfSvsIEb4OaYKOLvMPfGISmBi/w=;
+        b=BjyVGykxE34GN41hhuif4YcFLs81vP53GGU3gwK+M5Tcybqa4Uqclf0F/GfrY1YaOfcex+
+        VETnzjnEc25usXCw==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 8CCACA3B87;
+        Mon, 14 Jun 2021 09:51:07 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 668161F2B82; Mon, 14 Jun 2021 11:51:07 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 11:51:07 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mm: require ->set_page_dirty to be explicitly wire up
+Message-ID: <20210614095107.GD26615@quack2.suse.cz>
+References: <20210614061512.3966143-1-hch@lst.de>
+ <20210614061512.3966143-4-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614061512.3966143-4-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-14 at 09:40 +0200, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
+On Mon 14-06-21 08:15:12, Christoph Hellwig wrote:
+> Remove the CONFIG_BLOCK default to __set_page_dirty_buffers and just
+> wire that method up for the missing instances.
 > 
-> > On Wed, 2021-06-09 at 17:09 +0200, Vitaly Kuznetsov wrote:
-> > > Changes since v2:
-> > > - First two patches got merged, rebase.
-> > > - Use 'enable_apicv = avic = ...' in PATCH1 [Paolo]
-> > > - Collect R-b tags for PATCH2 [Sean, Max]
-> > > - Use hv_apicv_update_work() to get out of SRCU lock [Max]
-> > > - "KVM: x86: Check for pending interrupts when APICv is getting disabled"
-> > >   added.
-> > > 
-> > > Original description:
-> > > 
-> > > APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
-> > > SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
-> > > however, possible to track whether the feature was actually used by the
-> > > guest and only inhibit APICv/AVIC when needed.
-> > > 
-> > > The series can be tested with the followin hack:
-> > > 
-> > > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > > index 9a48f138832d..65a9974f80d9 100644
-> > > --- a/arch/x86/kvm/cpuid.c
-> > > +++ b/arch/x86/kvm/cpuid.c
-> > > @@ -147,6 +147,13 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
-> > >                                            vcpu->arch.ia32_misc_enable_msr &
-> > >                                            MSR_IA32_MISC_ENABLE_MWAIT);
-> > >         }
-> > > +
-> > > +       /* Dirty hack: force HV_DEPRECATING_AEOI_RECOMMENDED. Not to be merged! */
-> > > +       best = kvm_find_cpuid_entry(vcpu, HYPERV_CPUID_ENLIGHTMENT_INFO, 0);
-> > > +       if (best) {
-> > > +               best->eax &= ~HV_X64_APIC_ACCESS_RECOMMENDED;
-> > > +               best->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
-> > > +       }
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(kvm_update_cpuid_runtime);
-> > >  
-> > > Vitaly Kuznetsov (4):
-> > >   KVM: x86: Use common 'enable_apicv' variable for both APICv and AVIC
-> > >   KVM: x86: Drop vendor specific functions for APICv/AVIC enablement
-> > >   KVM: x86: Check for pending interrupts when APICv is getting disabled
-> > >   KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in
-> > >     use
-> > > 
-> > >  arch/x86/include/asm/kvm_host.h |  9 +++++-
-> > >  arch/x86/kvm/hyperv.c           | 51 +++++++++++++++++++++++++++++----
-> > >  arch/x86/kvm/svm/avic.c         | 14 ++++-----
-> > >  arch/x86/kvm/svm/svm.c          | 22 ++++++++------
-> > >  arch/x86/kvm/svm/svm.h          |  2 --
-> > >  arch/x86/kvm/vmx/capabilities.h |  1 -
-> > >  arch/x86/kvm/vmx/vmx.c          |  2 --
-> > >  arch/x86/kvm/x86.c              | 18 ++++++++++--
-> > >  8 files changed, 86 insertions(+), 33 deletions(-)
-> > > 
-> > 
-> > Hi!
-> > 
-> > I hate to say it, but at least one of my VMs doesn't boot amymore
-> > with avic=1, after the recent updates. I'll bisect this soon,
-> > but this is likely related to this series.
-> > 
-> > I will also review this series very soon.
-> > 
-> > When the VM fails, it hangs on the OVMF screen and I see this
-> > in qemu logs:
-> > 
-> > KVM: injection failed, MSI lost (Operation not permitted)
-> > KVM: injection failed, MSI lost (Operation not permitted)
-> > KVM: injection failed, MSI lost (Operation not permitted)
-> > KVM: injection failed, MSI lost (Operation not permitted)
-> > KVM: injection failed, MSI lost (Operation not permitted)
-> > KVM: injection failed, MSI lost (Operation not permitted)
-> > 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Make sense. Did you somehow autogenerate this? If this patch would race
+with addition of new aops struct, we'd get null-ptr-defer out of that so
+maybe providing the script would be better. But other than that the changes
+look good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+
+								Honza
+
+> ---
+>  fs/adfs/inode.c     |  1 +
+>  fs/affs/file.c      |  2 ++
+>  fs/bfs/file.c       |  1 +
+>  fs/block_dev.c      |  1 +
+>  fs/exfat/inode.c    |  1 +
+>  fs/ext2/inode.c     |  2 ++
+>  fs/fat/inode.c      |  1 +
+>  fs/gfs2/meta_io.c   |  2 ++
+>  fs/hfs/inode.c      |  2 ++
+>  fs/hfsplus/inode.c  |  2 ++
+>  fs/hpfs/file.c      |  1 +
+>  fs/jfs/inode.c      |  1 +
+>  fs/minix/inode.c    |  1 +
+>  fs/nilfs2/mdt.c     |  1 +
+>  fs/ocfs2/aops.c     |  1 +
+>  fs/omfs/file.c      |  1 +
+>  fs/sysv/itree.c     |  1 +
+>  fs/udf/file.c       |  1 +
+>  fs/udf/inode.c      |  1 +
+>  fs/ufs/inode.c      |  1 +
+>  mm/page-writeback.c | 18 ++++--------------
+>  21 files changed, 29 insertions(+), 14 deletions(-)
 > 
-> -EPERM?? Interesting... strace(1) may come handy...
-
-
-Hi Vitaly!
- 
-I spent all yesterday debugging this and I found out what is going on:
-(spoiler alert: hacks are bad)
-
-The call to kvm_request_apicv_update was moved to a delayed work which is fine at first glance 
-but turns out that we both don't notice that kvm doesn't allow to update the guest
-memory map from non vcpu thread which is what kvm_request_apicv_update does
-on AVIC.
- 
-The memslot update is to switch between regular r/w mapped dummy page
-which is not really used but doesn't hurt to be there, and between paging entry with
-reserved bits, used for MMIO, which AVIC sadly needs because it is written in the
-spec that AVIC's MMIO despite being redirected to the avic_vapic_bar, still needs a valid
-R/W mapping in the NPT, whose physical address is ignored.
-
-So, in avic_update_access_page we have this nice hack:
- 
-if ((kvm->arch.apic_access_page_done == activate) ||
-	    (kvm->mm != current->mm))
-		goto out;
- 
-So instead of crashing this function just does nothing.
-So AVIC MMIO is still mapped R/W to a dummy page, but the AVIC itself
-is disabled on all vCPUs by kvm_request_apicv_update (with 
-KVM_REQ_APICV_UPDATE request)
-
-So now all guest APIC writes just disappear to that dummy
-page, and we have a guest that seems to run but can't really
-continue. 
-
-The -EPERM in the error message I reported, is just -1, returned by 
-KVM_SIGNAL_MSI which is likely result of gross missmatch between
-state of the KVM's APIC registers and that dummy page which contains
-whatever the guest wrote there and what the guest thinks
-the APIC registers are.
-
-I am curently thinking on how to do the whole thing with
-KVM's requests, I'll try to prepare a patch today.
- 
-Best regards,
-	Maxim Levitsky
-
+> diff --git a/fs/adfs/inode.c b/fs/adfs/inode.c
+> index fb7ee026d101..adbb3a1edcbf 100644
+> --- a/fs/adfs/inode.c
+> +++ b/fs/adfs/inode.c
+> @@ -73,6 +73,7 @@ static sector_t _adfs_bmap(struct address_space *mapping, sector_t block)
+>  }
+>  
+>  static const struct address_space_operations adfs_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= adfs_readpage,
+>  	.writepage	= adfs_writepage,
+>  	.write_begin	= adfs_write_begin,
+> diff --git a/fs/affs/file.c b/fs/affs/file.c
+> index d91b0133d95d..75ebd2b576ca 100644
+> --- a/fs/affs/file.c
+> +++ b/fs/affs/file.c
+> @@ -453,6 +453,7 @@ static sector_t _affs_bmap(struct address_space *mapping, sector_t block)
+>  }
+>  
+>  const struct address_space_operations affs_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage = affs_readpage,
+>  	.writepage = affs_writepage,
+>  	.write_begin = affs_write_begin,
+> @@ -833,6 +834,7 @@ static int affs_write_end_ofs(struct file *file, struct address_space *mapping,
+>  }
+>  
+>  const struct address_space_operations affs_aops_ofs = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage = affs_readpage_ofs,
+>  	//.writepage = affs_writepage_ofs,
+>  	.write_begin = affs_write_begin_ofs,
+> diff --git a/fs/bfs/file.c b/fs/bfs/file.c
+> index 0dceefc54b48..7f8544abf636 100644
+> --- a/fs/bfs/file.c
+> +++ b/fs/bfs/file.c
+> @@ -188,6 +188,7 @@ static sector_t bfs_bmap(struct address_space *mapping, sector_t block)
+>  }
+>  
+>  const struct address_space_operations bfs_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= bfs_readpage,
+>  	.writepage	= bfs_writepage,
+>  	.write_begin	= bfs_write_begin,
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 6cc4d4cfe0c2..eb34f5c357cf 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1754,6 +1754,7 @@ static int blkdev_writepages(struct address_space *mapping,
+>  }
+>  
+>  static const struct address_space_operations def_blk_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= blkdev_readpage,
+>  	.readahead	= blkdev_readahead,
+>  	.writepage	= blkdev_writepage,
+> diff --git a/fs/exfat/inode.c b/fs/exfat/inode.c
+> index 1803ef3220fd..ca37d4344361 100644
+> --- a/fs/exfat/inode.c
+> +++ b/fs/exfat/inode.c
+> @@ -491,6 +491,7 @@ int exfat_block_truncate_page(struct inode *inode, loff_t from)
+>  }
+>  
+>  static const struct address_space_operations exfat_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= exfat_readpage,
+>  	.readahead	= exfat_readahead,
+>  	.writepage	= exfat_writepage,
+> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+> index 68178b2234bd..bf41f579ed3e 100644
+> --- a/fs/ext2/inode.c
+> +++ b/fs/ext2/inode.c
+> @@ -961,6 +961,7 @@ ext2_dax_writepages(struct address_space *mapping, struct writeback_control *wbc
+>  }
+>  
+>  const struct address_space_operations ext2_aops = {
+> +	.set_page_dirty		= __set_page_dirty_buffers,
+>  	.readpage		= ext2_readpage,
+>  	.readahead		= ext2_readahead,
+>  	.writepage		= ext2_writepage,
+> @@ -975,6 +976,7 @@ const struct address_space_operations ext2_aops = {
+>  };
+>  
+>  const struct address_space_operations ext2_nobh_aops = {
+> +	.set_page_dirty		= __set_page_dirty_buffers,
+>  	.readpage		= ext2_readpage,
+>  	.readahead		= ext2_readahead,
+>  	.writepage		= ext2_nobh_writepage,
+> diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+> index bab9b202b496..de0c9b013a85 100644
+> --- a/fs/fat/inode.c
+> +++ b/fs/fat/inode.c
+> @@ -342,6 +342,7 @@ int fat_block_truncate_page(struct inode *inode, loff_t from)
+>  }
+>  
+>  static const struct address_space_operations fat_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= fat_readpage,
+>  	.readahead	= fat_readahead,
+>  	.writepage	= fat_writepage,
+> diff --git a/fs/gfs2/meta_io.c b/fs/gfs2/meta_io.c
+> index d68184ebbfdd..7c9619997355 100644
+> --- a/fs/gfs2/meta_io.c
+> +++ b/fs/gfs2/meta_io.c
+> @@ -89,11 +89,13 @@ static int gfs2_aspace_writepage(struct page *page, struct writeback_control *wb
+>  }
+>  
+>  const struct address_space_operations gfs2_meta_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.writepage = gfs2_aspace_writepage,
+>  	.releasepage = gfs2_releasepage,
+>  };
+>  
+>  const struct address_space_operations gfs2_rgrp_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.writepage = gfs2_aspace_writepage,
+>  	.releasepage = gfs2_releasepage,
+>  };
+> diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
+> index 3fc5cb346586..4a95a92546a0 100644
+> --- a/fs/hfs/inode.c
+> +++ b/fs/hfs/inode.c
+> @@ -159,6 +159,7 @@ static int hfs_writepages(struct address_space *mapping,
+>  }
+>  
+>  const struct address_space_operations hfs_btree_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= hfs_readpage,
+>  	.writepage	= hfs_writepage,
+>  	.write_begin	= hfs_write_begin,
+> @@ -168,6 +169,7 @@ const struct address_space_operations hfs_btree_aops = {
+>  };
+>  
+>  const struct address_space_operations hfs_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= hfs_readpage,
+>  	.writepage	= hfs_writepage,
+>  	.write_begin	= hfs_write_begin,
+> diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
+> index 8ea447e5c470..70e8374ddac4 100644
+> --- a/fs/hfsplus/inode.c
+> +++ b/fs/hfsplus/inode.c
+> @@ -156,6 +156,7 @@ static int hfsplus_writepages(struct address_space *mapping,
+>  }
+>  
+>  const struct address_space_operations hfsplus_btree_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= hfsplus_readpage,
+>  	.writepage	= hfsplus_writepage,
+>  	.write_begin	= hfsplus_write_begin,
+> @@ -165,6 +166,7 @@ const struct address_space_operations hfsplus_btree_aops = {
+>  };
+>  
+>  const struct address_space_operations hfsplus_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= hfsplus_readpage,
+>  	.writepage	= hfsplus_writepage,
+>  	.write_begin	= hfsplus_write_begin,
+> diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
+> index 077c25128eb7..c3a49aacf20a 100644
+> --- a/fs/hpfs/file.c
+> +++ b/fs/hpfs/file.c
+> @@ -196,6 +196,7 @@ static int hpfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>  }
+>  
+>  const struct address_space_operations hpfs_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage = hpfs_readpage,
+>  	.writepage = hpfs_writepage,
+>  	.readahead = hpfs_readahead,
+> diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
+> index 6f65bfa9f18d..3663dd5a23bc 100644
+> --- a/fs/jfs/inode.c
+> +++ b/fs/jfs/inode.c
+> @@ -356,6 +356,7 @@ static ssize_t jfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+>  }
+>  
+>  const struct address_space_operations jfs_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= jfs_readpage,
+>  	.readahead	= jfs_readahead,
+>  	.writepage	= jfs_writepage,
+> diff --git a/fs/minix/inode.c b/fs/minix/inode.c
+> index a532a99bbe81..a71f1cf894b9 100644
+> --- a/fs/minix/inode.c
+> +++ b/fs/minix/inode.c
+> @@ -442,6 +442,7 @@ static sector_t minix_bmap(struct address_space *mapping, sector_t block)
+>  }
+>  
+>  static const struct address_space_operations minix_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage = minix_readpage,
+>  	.writepage = minix_writepage,
+>  	.write_begin = minix_write_begin,
+> diff --git a/fs/nilfs2/mdt.c b/fs/nilfs2/mdt.c
+> index c0361ce45f62..97769fe4d588 100644
+> --- a/fs/nilfs2/mdt.c
+> +++ b/fs/nilfs2/mdt.c
+> @@ -434,6 +434,7 @@ nilfs_mdt_write_page(struct page *page, struct writeback_control *wbc)
+>  
+>  
+>  static const struct address_space_operations def_mdt_aops = {
+> +	.set_page_dirty		= __set_page_dirty_buffers,
+>  	.writepage		= nilfs_mdt_write_page,
+>  };
+>  
+> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
+> index 1294925ac94a..b3517de178ff 100644
+> --- a/fs/ocfs2/aops.c
+> +++ b/fs/ocfs2/aops.c
+> @@ -2454,6 +2454,7 @@ static ssize_t ocfs2_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+>  }
+>  
+>  const struct address_space_operations ocfs2_aops = {
+> +	.set_page_dirty		= __set_page_dirty_buffers,
+>  	.readpage		= ocfs2_readpage,
+>  	.readahead		= ocfs2_readahead,
+>  	.writepage		= ocfs2_writepage,
+> diff --git a/fs/omfs/file.c b/fs/omfs/file.c
+> index 11e733aab25d..89725b15a64b 100644
+> --- a/fs/omfs/file.c
+> +++ b/fs/omfs/file.c
+> @@ -372,6 +372,7 @@ const struct inode_operations omfs_file_inops = {
+>  };
+>  
+>  const struct address_space_operations omfs_aops = {
+> +	.set_page_dirty = __set_page_dirty_buffers,
+>  	.readpage = omfs_readpage,
+>  	.readahead = omfs_readahead,
+>  	.writepage = omfs_writepage,
+> diff --git a/fs/sysv/itree.c b/fs/sysv/itree.c
+> index 8b2e99b7bc9f..749385015a8d 100644
+> --- a/fs/sysv/itree.c
+> +++ b/fs/sysv/itree.c
+> @@ -495,6 +495,7 @@ static sector_t sysv_bmap(struct address_space *mapping, sector_t block)
+>  }
+>  
+>  const struct address_space_operations sysv_aops = {
+> +	.set_page_dirty = __set_page_dirty_buffers,
+>  	.readpage = sysv_readpage,
+>  	.writepage = sysv_writepage,
+>  	.write_begin = sysv_write_begin,
+> diff --git a/fs/udf/file.c b/fs/udf/file.c
+> index 2846dcd92197..1baff8ddb754 100644
+> --- a/fs/udf/file.c
+> +++ b/fs/udf/file.c
+> @@ -125,6 +125,7 @@ static int udf_adinicb_write_end(struct file *file, struct address_space *mappin
+>  }
+>  
+>  const struct address_space_operations udf_adinicb_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= udf_adinicb_readpage,
+>  	.writepage	= udf_adinicb_writepage,
+>  	.write_begin	= udf_adinicb_write_begin,
+> diff --git a/fs/udf/inode.c b/fs/udf/inode.c
+> index 0dd2f93ac048..4917670860a0 100644
+> --- a/fs/udf/inode.c
+> +++ b/fs/udf/inode.c
+> @@ -235,6 +235,7 @@ static sector_t udf_bmap(struct address_space *mapping, sector_t block)
+>  }
+>  
+>  const struct address_space_operations udf_aops = {
+> +	.set_page_dirty	= __set_page_dirty_buffers,
+>  	.readpage	= udf_readpage,
+>  	.readahead	= udf_readahead,
+>  	.writepage	= udf_writepage,
+> diff --git a/fs/ufs/inode.c b/fs/ufs/inode.c
+> index debc282c1bb4..ac628de69601 100644
+> --- a/fs/ufs/inode.c
+> +++ b/fs/ufs/inode.c
+> @@ -526,6 +526,7 @@ static sector_t ufs_bmap(struct address_space *mapping, sector_t block)
+>  }
+>  
+>  const struct address_space_operations ufs_aops = {
+> +	.set_page_dirty = __set_page_dirty_buffers,
+>  	.readpage = ufs_readpage,
+>  	.writepage = ufs_writepage,
+>  	.write_begin = ufs_write_begin,
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index 0062d5c57d41..081fa02236c2 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -32,7 +32,6 @@
+>  #include <linux/sysctl.h>
+>  #include <linux/cpu.h>
+>  #include <linux/syscalls.h>
+> -#include <linux/buffer_head.h> /* __set_page_dirty_buffers */
+>  #include <linux/pagevec.h>
+>  #include <linux/timer.h>
+>  #include <linux/sched/rt.h>
+> @@ -2546,13 +2545,9 @@ EXPORT_SYMBOL(redirty_page_for_writepage);
+>  /*
+>   * Dirty a page.
+>   *
+> - * For pages with a mapping this should be done under the page lock
+> - * for the benefit of asynchronous memory errors who prefer a consistent
+> - * dirty state. This rule can be broken in some special cases,
+> - * but should be better not to.
+> - *
+> - * If the mapping doesn't provide a set_page_dirty a_op, then
+> - * just fall through and assume that it wants buffer_heads.
+> + * For pages with a mapping this should be done under the page lock for the
+> + * benefit of asynchronous memory errors who prefer a consistent dirty state.
+> + * This rule can be broken in some special cases, but should be better not to.
+>   */
+>  int set_page_dirty(struct page *page)
+>  {
+> @@ -2560,7 +2555,6 @@ int set_page_dirty(struct page *page)
+>  
+>  	page = compound_head(page);
+>  	if (likely(mapping)) {
+> -		int (*spd)(struct page *) = mapping->a_ops->set_page_dirty;
+>  		/*
+>  		 * readahead/lru_deactivate_page could remain
+>  		 * PG_readahead/PG_reclaim due to race with end_page_writeback
+> @@ -2573,11 +2567,7 @@ int set_page_dirty(struct page *page)
+>  		 */
+>  		if (PageReclaim(page))
+>  			ClearPageReclaim(page);
+> -#ifdef CONFIG_BLOCK
+> -		if (!spd)
+> -			spd = __set_page_dirty_buffers;
+> -#endif
+> -		return (*spd)(page);
+> +		return mapping->a_ops->set_page_dirty(page);
+>  	}
+>  	if (!PageDirty(page)) {
+>  		if (!TestSetPageDirty(page))
+> -- 
+> 2.30.2
 > 
-> $ git grep EPERM kvm/queue arch/x86/kvm/ 
-> kvm/queue:arch/x86/kvm/x86.c:           ret = -KVM_EPERM;
-> (just this one)
-> 
-> kvm_emulate_hypercall():
-> ...
-> b3646477d458f arch/x86/kvm/x86.c (Jason Baron                2021-01-14 22:27:56 -0500  8433)   if (static_call(kvm_x86_get_cpl)(vcpu) != 0) {
-> 07708c4af1346 arch/x86/kvm/x86.c (Jan Kiszka                 2009-08-03 18:43:28 +0200  8434)           ret = -KVM_EPERM;
-> 696ca779a928d arch/x86/kvm/x86.c (Radim Krčmář               2018-05-24 17:50:56 +0200  8435)           goto out;
-> 07708c4af1346 arch/x86/kvm/x86.c (Jan Kiszka                 2009-08-03 18:43:28 +0200  8436)   }
-> ...
-> 
-> Doesn't seem we have any updates here, curious what your bisection will
-> point us to.
-> 
-
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
