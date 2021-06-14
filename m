@@ -2,197 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1423A6DC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4B53A6DCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbhFNR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233134AbhFNR5Q (ORCPT
+        id S234549AbhFNR5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:57:48 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:55645 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232776AbhFNR5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:57:16 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAB7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:55:03 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id d27-20020a4a3c1b0000b029024983ef66dbso2859907ooa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RZlshWzShRr/1bxvI5qOhZ1dQlVIKovO57VSbDQdZFU=;
-        b=Mg3/SfBqtNf7mgH1NsaYekPfohhc46bBdfe4bze5h9yw87oo0g6Tubo8ceS0mU4lbS
-         YrOJFVzXaEREnDk6QfLMegA5sA6jXbkra30Y973xYjAvkOLGCa3A3XLBTjbArGSWzcRu
-         ZLZHp7MrBMIAw/rtyRje/sdFpR7oFAH9f4PXGR+eNGrUt1rwBipxF+U8qVJy01+Z2ctI
-         35RAPRCWroEBmT6zTirlKX3h/6nh5vLfRKkt3FYFZ4W7bnVbJ8wK2sfwV4nH4s9AZN4J
-         MUSi42oyIsBS+fWSQTZ13sb55pNj3zjUfChF3o6gwZDXfPr4at+lupCH2JUBCkpb5G3/
-         r+XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RZlshWzShRr/1bxvI5qOhZ1dQlVIKovO57VSbDQdZFU=;
-        b=GmS4PVdu1Z6CpSQljkeKOdzXAlx4uo19xaY77fYLKrZggqiqCr9QqDm6fBKiT2Neg7
-         83OlZfyi4N55OlDYEZzd186sbGxaQJiea8w/95wJQBSVpURqmyBy84nbZHxJG1Jgh8aw
-         w85J6Tfd8JYGFYLmkE+19ztu2JvqtlIOFhS7YNcyIdut/FuEAx2Ztz0CnhRjM//2LPdU
-         t86qLsFSLXeZn1YKJUwif2AyTcAeZ7VeCePDBCzSynQes9zj1B/wYlCJYS1b8l1+PNkk
-         WszuoPaXyPCivGy862Iu4BUAu+nhitmbi6mp3Fg07RrWJXtLhRQgEyLwUVnMQjP1a6Ix
-         aHVQ==
-X-Gm-Message-State: AOAM531qVlrX3+49qlYICRskACnYVFF/wCgEh34L234FrIpeKoSz1tnh
-        ME0xiRIsutBw4xBFe7Uwcsyo/48tmnJnIw==
-X-Google-Smtp-Source: ABdhPJz1bHjlWmc11NEr6kmjCyfD8umeBOwZX3ymRU4S8kgueYx+/o5al/nmOVkubv+jft5vHI4vzQ==
-X-Received: by 2002:a05:6820:29b:: with SMTP id q27mr14003988ood.32.1623693299312;
-        Mon, 14 Jun 2021 10:54:59 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 2sm3400587ota.58.2021.06.14.10.54.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 10:54:58 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 12:54:56 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 4/5] iommu/arm-smmu-qcom: Add stall support
-Message-ID: <YMeX8NnVw80b9Qpe@yoga>
-References: <20210610214431.539029-1-robdclark@gmail.com>
- <20210610214431.539029-5-robdclark@gmail.com>
+        Mon, 14 Jun 2021 13:57:46 -0400
+Received: from [192.168.1.155] ([95.115.71.85]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MeTkC-1lIQ7m0G9M-00aVfp; Mon, 14 Jun 2021 19:55:26 +0200
+Subject: Re: [PATCH 2/3] watchdog: iTCO_wdt: use dev_*() instead of pr_*() for
+ logging
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org, wim@linux-watchdog.org,
+        linux-watchdog@vger.kernel.org
+References: <20201117152214.32244-2-info@metux.net>
+ <20210609203229.GA2664456@bjorn-Precision-5520>
+ <20210609235446.GA2542004@roeck-us.net>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <3d4ea22d-a97c-b803-134c-751cb648f5f7@metux.net>
+Date:   Mon, 14 Jun 2021 19:55:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610214431.539029-5-robdclark@gmail.com>
+In-Reply-To: <20210609235446.GA2542004@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:KbXQG8znsYymTMdT/k0zlh/a7KWw8fPRszZ6ui2n3m/fRvzgR0U
+ yY5N5WHs41GWE/dxFUgCTurmf/BvwZxtkm76s1Jo3NyTXnQA1nJBBq2FZx3CTC3k1i/CKOu
+ nledMcKLmTyDEJAJeABbm/0LtUqXWc4v1EaLRKu7aP6peY6iTf1RnJKd+sOOCuYECFhJesl
+ 6dv2x8lf9PFK34IKUsp4A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:t1OqwrV1P3Q=:TX/IkJ79rlkIXYfBzBf81Q
+ FmIjA+bx9TlEDjfnDdt9St5Y6KFHkdPJA12u6ll/y4cYZODqN4ifgcFNM/QivvA9FRGWdcx4U
+ +USfWYN09Sdeiue5BDcrYPftB14jmDKJV4q/HyqiUiLM83CWUcnRYRAXxhfgqdjzfAllsxefG
+ oeuwKvru3uQsbbnXtZDBg6EL+/xtwMcp+cKgDk1BK+Ww5XJhahfhy89GU7ppacK51iWRz8vHn
+ egCpUj3/CJy/inyutILIG/+MSsLHWqTLvxHfTL1d0xQHay/qyMbsd1bgXkf4DK464DiaejoyV
+ QrOSvaQRUx8j4V4r90EJqiv4NI4vCVCyqbXh+Gu6OEP1BuIzy2102cEug2A74aZWC4WgCpDVu
+ o7cqLuLi+qVsr843JFyqf6SNF08g0xAURl0RjvuuhVNK60sn2nUulA/EMN5hREQfk15hVLTlH
+ z4Cdy5xCmePx1QW8AFLZ1I8pDkQuNgE6zcTQJHEDlN7Hz6P5kk5AkN3LeDDGY9arZqXU29Mmb
+ w3E60dtn9fjex4+LQv+2gk=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10 Jun 16:44 CDT 2021, Rob Clark wrote:
+On 10.06.21 01:54, Guenter Roeck wrote:
 
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Add, via the adreno-smmu-priv interface, a way for the GPU to request
-> the SMMU to stall translation on faults, and then later resume the
-> translation, either retrying or terminating the current translation.
-> 
-> This will be used on the GPU side to "freeze" the GPU while we snapshot
-> useful state for devcoredump.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> The above came in with a recent commit. I suspect they simply got lost,
+> and they should be converted as well.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Since I might need to touch it again in near future, I'll do it in
+one of the next rounds.
 
-Regards,
-Bjorn
 
-> ---
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 33 ++++++++++++++++++++++
->  include/linux/adreno-smmu-priv.h           |  7 +++++
->  2 files changed, 40 insertions(+)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index b2e31ea84128..61fc645c1325 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -13,6 +13,7 @@ struct qcom_smmu {
->  	struct arm_smmu_device smmu;
->  	bool bypass_quirk;
->  	u8 bypass_cbndx;
-> +	u32 stall_enabled;
->  };
->  
->  static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
-> @@ -23,12 +24,17 @@ static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
->  static void qcom_adreno_smmu_write_sctlr(struct arm_smmu_device *smmu, int idx,
->  		u32 reg)
->  {
-> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
-> +
->  	/*
->  	 * On the GPU device we want to process subsequent transactions after a
->  	 * fault to keep the GPU from hanging
->  	 */
->  	reg |= ARM_SMMU_SCTLR_HUPCF;
->  
-> +	if (qsmmu->stall_enabled & BIT(idx))
-> +		reg |= ARM_SMMU_SCTLR_CFCFG;
-> +
->  	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
->  }
->  
-> @@ -48,6 +54,31 @@ static void qcom_adreno_smmu_get_fault_info(const void *cookie,
->  	info->contextidr = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_CONTEXTIDR);
->  }
->  
-> +static void qcom_adreno_smmu_set_stall(const void *cookie, bool enabled)
-> +{
-> +	struct arm_smmu_domain *smmu_domain = (void *)cookie;
-> +	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
-> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu_domain->smmu);
-> +
-> +	if (enabled)
-> +		qsmmu->stall_enabled |= BIT(cfg->cbndx);
-> +	else
-> +		qsmmu->stall_enabled &= ~BIT(cfg->cbndx);
-> +}
-> +
-> +static void qcom_adreno_smmu_resume_translation(const void *cookie, bool terminate)
-> +{
-> +	struct arm_smmu_domain *smmu_domain = (void *)cookie;
-> +	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
-> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
-> +	u32 reg = 0;
-> +
-> +	if (terminate)
-> +		reg |= ARM_SMMU_RESUME_TERMINATE;
-> +
-> +	arm_smmu_cb_write(smmu, cfg->cbndx, ARM_SMMU_CB_RESUME, reg);
-> +}
-> +
->  #define QCOM_ADRENO_SMMU_GPU_SID 0
->  
->  static bool qcom_adreno_smmu_is_gpu_device(struct device *dev)
-> @@ -173,6 +204,8 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
->  	priv->get_ttbr1_cfg = qcom_adreno_smmu_get_ttbr1_cfg;
->  	priv->set_ttbr0_cfg = qcom_adreno_smmu_set_ttbr0_cfg;
->  	priv->get_fault_info = qcom_adreno_smmu_get_fault_info;
-> +	priv->set_stall = qcom_adreno_smmu_set_stall;
-> +	priv->resume_translation = qcom_adreno_smmu_resume_translation;
->  
->  	return 0;
->  }
-> diff --git a/include/linux/adreno-smmu-priv.h b/include/linux/adreno-smmu-priv.h
-> index 53fe32fb9214..c637e0997f6d 100644
-> --- a/include/linux/adreno-smmu-priv.h
-> +++ b/include/linux/adreno-smmu-priv.h
-> @@ -45,6 +45,11 @@ struct adreno_smmu_fault_info {
->   *                 TTBR0 translation is enabled with the specified cfg
->   * @get_fault_info: Called by the GPU fault handler to get information about
->   *                  the fault
-> + * @set_stall:     Configure whether stall on fault (CFCFG) is enabled.  Call
-> + *                 before set_ttbr0_cfg().  If stalling on fault is enabled,
-> + *                 the GPU driver must call resume_translation()
-> + * @resume_translation: Resume translation after a fault
-> + *
->   *
->   * The GPU driver (drm/msm) and adreno-smmu work together for controlling
->   * the GPU's SMMU instance.  This is by necessity, as the GPU is directly
-> @@ -60,6 +65,8 @@ struct adreno_smmu_priv {
->      const struct io_pgtable_cfg *(*get_ttbr1_cfg)(const void *cookie);
->      int (*set_ttbr0_cfg)(const void *cookie, const struct io_pgtable_cfg *cfg);
->      void (*get_fault_info)(const void *cookie, struct adreno_smmu_fault_info *info);
-> +    void (*set_stall)(const void *cookie, bool enabled);
-> +    void (*resume_translation)(const void *cookie, bool terminate);
->  };
->  
->  #endif /* __ADRENO_SMMU_PRIV_H */
-> -- 
-> 2.31.1
-> 
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
