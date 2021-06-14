@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54683A6372
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F603A64EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhFNLMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:12:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36770 "EHLO mail.kernel.org"
+        id S235014AbhFNLas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:30:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233203AbhFNLAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:00:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3243061437;
-        Mon, 14 Jun 2021 10:43:13 +0000 (UTC)
+        id S235549AbhFNLQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:16:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3D996196A;
+        Mon, 14 Jun 2021 10:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667393;
-        bh=tAgHRmkXbDK9L6KTY2aEI9h5uKtmlvcQL2UoUrvwWgI=;
+        s=korg; t=1623667812;
+        bh=j7cxBDtCIikpzGwmTnc+//5Mw/Dr1B6zUBTs45B9AUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XbYOL6ZOCs2HQDVOstnw3sUthnyhqxDTbLzZC0OGIZEst3oD6nwjceJAPQjrnXing
-         0ulPyWnavDxocOXymqj4s01HG8uJJXoAJw3xbG5vUwqDUfgk71SuQbkmr3Bt/ete5A
-         rN22xe3TO0sk1IAxSzVhvGdwVEksUhpTD3gBv/vI=
+        b=MDIguhMBFPVsN6jxIBPg+1Wn7XwCLMoLc7hnUA1e5WCpzeHZZ0uGsNzowBeBK98wn
+         R1oUuJHJZ0i1BRNSIEymRoxQgLh2MOcuHVJuzcpK/RW60RG/X1pb36K+iWUa43RHcQ
+         s2loUizE5yVQXHZNCJkmuw3NPg1KB8p53yXhAdws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 5.10 054/131] drm: Fix use-after-free read in drm_getunique()
-Date:   Mon, 14 Jun 2021 12:26:55 +0200
-Message-Id: <20210614102654.857406795@linuxfoundation.org>
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.12 084/173] mmc: renesas_sdhi: Fix HS400 on R-Car M3-W+
+Date:   Mon, 14 Jun 2021 12:26:56 +0200
+Message-Id: <20210614102700.961426872@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit b436acd1cf7fac0ba987abd22955d98025c80c2b upstream.
+commit 6687cd72aa9112a454a4646986e0402dd1b07d0e upstream.
 
-There is a time-of-check-to-time-of-use error in drm_getunique() due
-to retrieving file_priv->master prior to locking the device's master
-mutex.
+R-Car M3-W ES3.0 is marketed as R-Car M3-W+ (R8A77961), and has its own
+compatible value "renesas,r8a77961".
 
-An example can be seen in the crash report of the use-after-free error
-found by Syzbot:
-https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+Hence using soc_device_match() with soc_id = "r8a7796" and revision =
+"ES3.*" does not actually match running on an R-Car M3-W+ SoC.
 
-In the report, the master pointer was used after being freed. This is
-because another process had acquired the device's master mutex in
-drm_setmaster_ioctl(), then overwrote fpriv->master in
-drm_new_set_master(). The old value of fpriv->master was subsequently
-freed before the mutex was unlocked.
+Fix this by matching with soc_id = "r8a77961" instead.
 
-To fix this, we lock the device's master mutex before retrieving the
-pointer from from fpriv->master. This patch passes the Syzbot
-reproducer test.
-
-Reported-by: syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Fixes: a38c078fea0b1393 ("mmc: renesas_sdhi: Avoid bad TAP in HS400")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/ee8af5d631f5331139ffea714539030d97352e93.1622811525.git.geert+renesas@glider.be
 Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210608110436.239583-1-desmondcheongzx@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_ioctl.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/mmc/host/renesas_sdhi_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -118,17 +118,18 @@ int drm_getunique(struct drm_device *dev
- 		  struct drm_file *file_priv)
- {
- 	struct drm_unique *u = data;
--	struct drm_master *master = file_priv->master;
-+	struct drm_master *master;
- 
--	mutex_lock(&master->dev->master_mutex);
-+	mutex_lock(&dev->master_mutex);
-+	master = file_priv->master;
- 	if (u->unique_len >= master->unique_len) {
- 		if (copy_to_user(u->unique, master->unique, master->unique_len)) {
--			mutex_unlock(&master->dev->master_mutex);
-+			mutex_unlock(&dev->master_mutex);
- 			return -EFAULT;
- 		}
- 	}
- 	u->unique_len = master->unique_len;
--	mutex_unlock(&master->dev->master_mutex);
-+	mutex_unlock(&dev->master_mutex);
- 
- 	return 0;
- }
+--- a/drivers/mmc/host/renesas_sdhi_core.c
++++ b/drivers/mmc/host/renesas_sdhi_core.c
+@@ -931,7 +931,7 @@ static const struct soc_device_attribute
+ 	{ .soc_id = "r8a7795", .revision = "ES3.*", .data = &sdhi_quirks_bad_taps2367 },
+ 	{ .soc_id = "r8a7796", .revision = "ES1.[012]", .data = &sdhi_quirks_4tap_nohs400 },
+ 	{ .soc_id = "r8a7796", .revision = "ES1.*", .data = &sdhi_quirks_r8a7796_es13 },
+-	{ .soc_id = "r8a7796", .revision = "ES3.*", .data = &sdhi_quirks_bad_taps1357 },
++	{ .soc_id = "r8a77961", .data = &sdhi_quirks_bad_taps1357 },
+ 	{ .soc_id = "r8a77965", .data = &sdhi_quirks_r8a77965 },
+ 	{ .soc_id = "r8a77980", .data = &sdhi_quirks_nohs400 },
+ 	{ .soc_id = "r8a77990", .data = &sdhi_quirks_r8a77990 },
 
 
