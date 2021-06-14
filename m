@@ -2,126 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DD63A5D9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF343A5DA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhFNHXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:23:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23782 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232454AbhFNHXm (ORCPT
+        id S232535AbhFNHYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232471AbhFNHYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:23:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623655300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ipsvS6A+HlAzDhWVC1tQRKuJP6hbewkOM+0HTeXP3I=;
-        b=W3xDbMQZQn2F8Iks7x1sI2J1Dmyz4LFOZM00/IlRhN7m75R1ASxK+kWlctPkWuN65+TFcZ
-        l4dIo8n9mskK/tL9ZQSMX8VOG/LfotAIgJqc2NG1aKG2pHW3c+pzLtPhmBIJiAzy49/XdB
-        ZERIxA1tUdKtuEKAUi+FoUX8JZDvSN4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-h-gOCg95O_K8yAbEioqdPw-1; Mon, 14 Jun 2021 03:21:38 -0400
-X-MC-Unique: h-gOCg95O_K8yAbEioqdPw-1
-Received: by mail-wr1-f69.google.com with SMTP id g14-20020a5d698e0000b0290117735bd4d3so6578195wru.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:21:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=3ipsvS6A+HlAzDhWVC1tQRKuJP6hbewkOM+0HTeXP3I=;
-        b=MV/eGvlyF4q+qz5ASLcY3MpizIL9UamQrnANqW8RlfWO5hNvtMongtSXffdcSQaJUB
-         VllUpms28kqW8Jn27I/3BuJZHz6eGntVqFgjqU2tRv8kEZLB39zi9fgGuK6dbtJb8Zhb
-         IxTJTQ5rKIGa2QJQSrc+FbwMUiWLFfo0yKzwXy177AWnXt0rSRB4KExj4kT79m5xCttj
-         Dmt66Sk1NeCgZPpOA7GzDLH4F89QK/iS4SddDvmqxtAvjRy1K2YOxQmWc16J+QTIomtN
-         9YikQuYqwAH9YOrZlVYHvlupY5R6ulKVwZ5fy3OA5el/sNIxIezbUclFQrFS6AKX7Knl
-         qvgw==
-X-Gm-Message-State: AOAM530JFMcH835imUFKFE+KTmFVpnPzPQWZUXYLmvTMB00m7R8HydyO
-        BV2dwWkwxxBvjeDd76bVMqsIa6S6jW2LE8WMh9bmbXXUEn01ocLEh76Gb2xe88FTnpwGejIaK6P
-        Hy9gvhB/m04UP/+doXym1WWlC
-X-Received: by 2002:a7b:c417:: with SMTP id k23mr30456986wmi.71.1623655297242;
-        Mon, 14 Jun 2021 00:21:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZygjtzbVwMFmk9Lw/cG1jtTA4mlUghRbuPrFBqZz2O9z35PVkC1q/cwfLCvXMamx+pM01Aw==
-X-Received: by 2002:a7b:c417:: with SMTP id k23mr30456975wmi.71.1623655297104;
-        Mon, 14 Jun 2021 00:21:37 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c66ca.dip0.t-ipconnect.de. [91.12.102.202])
-        by smtp.gmail.com with ESMTPSA id w13sm16698909wrc.31.2021.06.14.00.21.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 00:21:36 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] memory-hotplug.rst: complete admin-guide overhaul
-To:     Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20210609075752.4596-1-david@redhat.com>
- <87y2bd9wse.fsf@meer.lwn.net>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <d517106f-64ba-5d3a-59f5-c87d5e032bdc@redhat.com>
-Date:   Mon, 14 Jun 2021 09:21:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 14 Jun 2021 03:24:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69385C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:22:30 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lsgvS-0000zF-4I; Mon, 14 Jun 2021 09:22:26 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lsgvR-00068g-8s; Mon, 14 Jun 2021 09:22:25 +0200
+Date:   Mon, 14 Jun 2021 09:22:22 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de,
+        H Hartley Sweeten <hsweeten@visionengravers.com>
+Subject: Re: [PATCH 7/7] pwm: ep93xx: Prepare clock before using it
+Message-ID: <20210614072222.wgivnzbaekxxw7qu@pengutronix.de>
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+ <20210613233041.128961-8-alexander.sverdlin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87y2bd9wse.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7qdhm5hxduamuxfg"
+Content-Disposition: inline
+In-Reply-To: <20210613233041.128961-8-alexander.sverdlin@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.06.21 01:20, Jonathan Corbet wrote:
-> David Hildenbrand <david@redhat.com> writes:
-> 
->> This is v3 of the memory hot(un)plug admin-guide overhaul.
->>
->> v2 -> v3:
->> - Added ACKs and RBs (thanks!)
->> - s/aarch64/arm64/
->> - Refine error handling when onlining/offlining
->> - s/memory hotplug/memory offlining/ in the vmemmap optimization section
->>    for huge pages
-> 
-> So this set doesn't apply to docs-next, even when I correct for the fact
-> that you didn't make the patch from the top-level kernel directory.
 
-Hi Jon,
+--7qdhm5hxduamuxfg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-oh, looks like I messed up v3 by git-format-patching from the wrong 
-directory ...
+On Mon, Jun 14, 2021 at 01:30:41AM +0200, Alexander Sverdlin wrote:
+> Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> to Common Clock Framework.
+>=20
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 
-> What tree is this against?
-> 
+Maybe it would make sense to move the prepare into the probe function?!
+Anyhow, for now preparing the driver for the common-clk switch is the
+focus and for that the conversion is correct, so:
 
-Essentially against Andrew's mmotm, which already contains v1. Note 
-mmotm was chosen due to a conflict in:
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-https://lkml.kernel.org/r/20210510030027.56044-1-songmuchun@bytedance.com
+Best regards
+Uwe
 
-I'd suggest we take this via Andrew's tree, unless you have other 
-preference on how to handle the conflict. Thanks!
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-> Thanks,
-> 
-> jon
-> 
+--7qdhm5hxduamuxfg
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Thanks,
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDHA6sACgkQwfwUeK3K
+7An4UQf/bv7niFaS9SbdW9F3d1rel1x9K+f/z7FGHWWHl07v+iTpBzXL+fizLqAE
+Cm01ON8UcKB4tMuCj/1h8h+wXVv6j4PYUtrdInjgOjOqVYEFDE//I8mL/eMPkv30
+m2Hg5s82SL+EXFgy2Wi6RYnXPjMJO+OWYxZmr8IaSGvW6J7j/ipoGcEnSQSnUlCq
+EqM1XMhETsxj3ilYr9F4QJwixYZTk7lI/HytVBy91nFTqf8U/foOEnG6TvFwrWQw
+zpwqqmUcP4G4onTenXo4b0bt996QNfI7XLh37X9c5lHiYLHW6IzAn7I1j5clOfWt
+qHRH1NtndolPU9Cf8yiqSSX+JxcvIA==
+=hUiz
+-----END PGP SIGNATURE-----
 
-David / dhildenb
-
+--7qdhm5hxduamuxfg--
