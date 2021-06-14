@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE3E3A64A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895673A6309
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbhFNL1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:27:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42800 "EHLO mail.kernel.org"
+        id S233585AbhFNLIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:08:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235009AbhFNLMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:12:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 417126195E;
-        Mon, 14 Jun 2021 10:48:40 +0000 (UTC)
+        id S233996AbhFNK56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:57:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA437613CC;
+        Mon, 14 Jun 2021 10:41:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667720;
-        bh=yk5nP4Z2yF99S1xKiRhh/3Y7IMkPWAz53o3nKVV0B1o=;
+        s=korg; t=1623667302;
+        bh=D5m5Ua65xuliYjpRaX83P8tRHKXhEtMPRdQH6X3fvoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gyJcNCV8eBZxF9X30LC8SSknW9/uHiNCozyDDVUyjzGi8erCpHKolbDhlzP4ORPTu
-         wAKupR8qtvoFZM7HY75+Te8rh+Xv6OH1CePCtL0zZDO4boh4T2fZBnLJCsKHWqPW5/
-         UcrCD/2yyLC41JPMK8B9Z9E3pbJWVzYxFZoosjfg=
+        b=Yru8Pg6QyLAErWVVyRr12iB5eH4vHSbIC/K/aqh0Bwa/4IsDfo/qDQVcnSJPyZz0Y
+         7m9DmUZFpKK0q8NZgsW1n/dLz2Rkv0BPLLgvOOAETljVg6Uirpra50+frUpldoQgQw
+         5QabmCnqcIx8/bgVcd1Qbw6RyyR9AcJ+jrNKWZ+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 048/173] i2c: mpc: implement erratum A-004447 workaround
+        syzbot+69ff9dff50dcfe14ddd4@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 019/131] netlink: disable IRQs for netlink_lock_table()
 Date:   Mon, 14 Jun 2021 12:26:20 +0200
-Message-Id: <20210614102659.754436098@linuxfoundation.org>
+Message-Id: <20210614102653.645544568@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,146 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit drivers/i2c/busses/i2c-mpc.c ]
+[ Upstream commit 1d482e666b8e74c7555dbdfbfb77205eeed3ff2d ]
 
-The P2040/P2041 has an erratum where the normal i2c recovery mechanism
-does not work. Implement the alternative recovery mechanism documented
-in the P2040 Chip Errata Rev Q.
+Syzbot reports that in mac80211 we have a potential deadlock
+between our "local->stop_queue_reasons_lock" (spinlock) and
+netlink's nl_table_lock (rwlock). This is because there's at
+least one situation in which we might try to send a netlink
+message with this spinlock held while it is also possible to
+take the spinlock from a hardirq context, resulting in the
+following deadlock scenario reported by lockdep:
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+       CPU0                    CPU1
+       ----                    ----
+  lock(nl_table_lock);
+                               local_irq_disable();
+                               lock(&local->queue_stop_reason_lock);
+                               lock(nl_table_lock);
+  <Interrupt>
+    lock(&local->queue_stop_reason_lock);
+
+This seems valid, we can take the queue_stop_reason_lock in
+any kind of context ("CPU0"), and call ieee80211_report_ack_skb()
+with the spinlock held and IRQs disabled ("CPU1") in some
+code path (ieee80211_do_stop() via ieee80211_free_txskb()).
+
+Short of disallowing netlink use in scenarios like these
+(which would be rather complex in mac80211's case due to
+the deep callchain), it seems the only fix for this is to
+disable IRQs while nl_table_lock is held to avoid hitting
+this scenario, this disallows the "CPU0" portion of the
+reported deadlock.
+
+Note that the writer side (netlink_table_grab()) already
+disables IRQs for this lock.
+
+Unfortunately though, this seems like a huge hammer, and
+maybe the whole netlink table locking should be reworked.
+
+Reported-by: syzbot+69ff9dff50dcfe14ddd4@syzkaller.appspotmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mpc.c | 79 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 78 insertions(+), 1 deletion(-)
+ net/netlink/af_netlink.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index 6a0d55e9e8e3..af349661fd76 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -23,6 +23,7 @@
- 
- #include <linux/clk.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/fsl_devices.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
-@@ -49,6 +50,7 @@
- #define CCR_MTX  0x10
- #define CCR_TXAK 0x08
- #define CCR_RSTA 0x04
-+#define CCR_RSVD 0x02
- 
- #define CSR_MCF  0x80
- #define CSR_MAAS 0x40
-@@ -70,6 +72,7 @@ struct mpc_i2c {
- 	u8 fdr, dfsrr;
- #endif
- 	struct clk *clk_per;
-+	bool has_errata_A004447;
- };
- 
- struct mpc_i2c_divider {
-@@ -176,6 +179,75 @@ static int i2c_wait(struct mpc_i2c *i2c, unsigned timeout, int writing)
- 	return 0;
- }
- 
-+static int i2c_mpc_wait_sr(struct mpc_i2c *i2c, int mask)
-+{
-+	void __iomem *addr = i2c->base + MPC_I2C_SR;
-+	u8 val;
-+
-+	return readb_poll_timeout(addr, val, val & mask, 0, 100);
-+}
-+
-+/*
-+ * Workaround for Erratum A004447. From the P2040CE Rev Q
-+ *
-+ * 1.  Set up the frequency divider and sampling rate.
-+ * 2.  I2CCR - a0h
-+ * 3.  Poll for I2CSR[MBB] to get set.
-+ * 4.  If I2CSR[MAL] is set (an indication that SDA is stuck low), then go to
-+ *     step 5. If MAL is not set, then go to step 13.
-+ * 5.  I2CCR - 00h
-+ * 6.  I2CCR - 22h
-+ * 7.  I2CCR - a2h
-+ * 8.  Poll for I2CSR[MBB] to get set.
-+ * 9.  Issue read to I2CDR.
-+ * 10. Poll for I2CSR[MIF] to be set.
-+ * 11. I2CCR - 82h
-+ * 12. Workaround complete. Skip the next steps.
-+ * 13. Issue read to I2CDR.
-+ * 14. Poll for I2CSR[MIF] to be set.
-+ * 15. I2CCR - 80h
-+ */
-+static void mpc_i2c_fixup_A004447(struct mpc_i2c *i2c)
-+{
-+	int ret;
-+	u32 val;
-+
-+	writeccr(i2c, CCR_MEN | CCR_MSTA);
-+	ret = i2c_mpc_wait_sr(i2c, CSR_MBB);
-+	if (ret) {
-+		dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+		return;
-+	}
-+
-+	val = readb(i2c->base + MPC_I2C_SR);
-+
-+	if (val & CSR_MAL) {
-+		writeccr(i2c, 0x00);
-+		writeccr(i2c, CCR_MSTA | CCR_RSVD);
-+		writeccr(i2c, CCR_MEN | CCR_MSTA | CCR_RSVD);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MBB);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+			return;
-+		}
-+		val = readb(i2c->base + MPC_I2C_DR);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN | CCR_RSVD);
-+	} else {
-+		val = readb(i2c->base + MPC_I2C_DR);
-+		ret = i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN);
-+	}
-+}
-+
- #if defined(CONFIG_PPC_MPC52xx) || defined(CONFIG_PPC_MPC512x)
- static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] = {
- 	{20, 0x20}, {22, 0x21}, {24, 0x22}, {26, 0x23},
-@@ -641,7 +713,10 @@ static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index daca50d6bb12..e527f5686e2b 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -453,11 +453,13 @@ void netlink_table_ungrab(void)
+ static inline void
+ netlink_lock_table(void)
  {
- 	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
++	unsigned long flags;
++
+ 	/* read_lock() synchronizes us to netlink_table_grab */
  
--	mpc_i2c_fixup(i2c);
-+	if (i2c->has_errata_A004447)
-+		mpc_i2c_fixup_A004447(i2c);
-+	else
-+		mpc_i2c_fixup(i2c);
- 
- 	return 0;
+-	read_lock(&nl_table_lock);
++	read_lock_irqsave(&nl_table_lock, flags);
+ 	atomic_inc(&nl_table_users);
+-	read_unlock(&nl_table_lock);
++	read_unlock_irqrestore(&nl_table_lock, flags);
  }
-@@ -745,6 +820,8 @@ static int fsl_i2c_probe(struct platform_device *op)
- 	dev_info(i2c->dev, "timeout %u us\n", mpc_ops.timeout * 1000000 / HZ);
  
- 	platform_set_drvdata(op, i2c);
-+	if (of_property_read_bool(op->dev.of_node, "fsl,i2c-erratum-a004447"))
-+		i2c->has_errata_A004447 = true;
- 
- 	i2c->adap = mpc_ops;
- 	of_address_to_resource(op->dev.of_node, 0, &res);
+ static inline void
 -- 
 2.30.2
 
