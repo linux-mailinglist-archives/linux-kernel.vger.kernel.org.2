@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC2B3A6189
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39213A6297
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhFNKsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:48:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46902 "EHLO mail.kernel.org"
+        id S234525AbhFNLCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:02:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233559AbhFNKl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:41:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37AF2613D0;
-        Mon, 14 Jun 2021 10:35:10 +0000 (UTC)
+        id S234597AbhFNKx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:53:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59EC461414;
+        Mon, 14 Jun 2021 10:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666910;
-        bh=tudlBHqZenoctlRrfSERZSkHBViNR5fCAbzX/OHuqOE=;
+        s=korg; t=1623667195;
+        bh=ZcE9PpXHCn4O0oMyM7g8LoUcwic1ehwjmPutK4onjzI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0hfkDak3QgeJIQL7Do0BgWj2nfWjbgSHufL5O6k1uJp5CYJVVSNjL6Gw6g3XDZvFc
-         B4gyvgmhd8OzomPhMgRyhAEdFb16kaR1YLrRYMKiKGfUT+yDG/YbNUKE+ArMNq7fJ5
-         MPzoXH9cZ8VPtFo+q80jt39OQxxrSOUc+tjB6UWk=
+        b=uQy29Tso3q27MpFueOAFAvU1ZeGyfn/YNoGEpfSo6l3VtM/XQbwNsI+3Dabzb1Ex0
+         /doW/0VIZdZ2J8KB0fArpBpL1VDmi5SzvanngMDdz6hory/nGDj2uBEp2T/18eRF5U
+         +YhnPwfROYrqEJ+VNqK0z1v8gI0U1KBUYJWrhaCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/67] i2c: mpc: Make use of i2c_recover_bus()
+        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 30/84] nvme-tcp: remove incorrect Kconfig dep in BLK_DEV_NVME
 Date:   Mon, 14 Jun 2021 12:27:08 +0200
-Message-Id: <20210614102644.603728995@linuxfoundation.org>
+Message-Id: <20210614102647.384311667@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,79 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit 65171b2df15eb7545431d75c2729b5062da89b43 ]
+[ Upstream commit 042a3eaad6daeabcfaf163aa44da8ea3cf8b5496 ]
 
-Move the existing calls of mpc_i2c_fixup() to a recovery function
-registered via bus_recovery_info. This makes it more obvious that
-recovery is supported and allows for a future where recovery is
-triggered by the i2c core.
+We need to select NVME_CORE.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mpc.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ drivers/nvme/host/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index d94f05c8b8b7..6a0d55e9e8e3 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -586,7 +586,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
- 				writeb(status & ~CSR_MAL,
- 				       i2c->base + MPC_I2C_SR);
--				mpc_i2c_fixup(i2c);
-+				i2c_recover_bus(&i2c->adap);
- 			}
- 			return -EIO;
- 		}
-@@ -622,7 +622,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
- 				writeb(status & ~CSR_MAL,
- 				       i2c->base + MPC_I2C_SR);
--				mpc_i2c_fixup(i2c);
-+				i2c_recover_bus(&i2c->adap);
- 			}
- 			return -EIO;
- 		}
-@@ -637,6 +637,15 @@ static u32 mpc_functionality(struct i2c_adapter *adap)
- 	  | I2C_FUNC_SMBUS_READ_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL;
- }
- 
-+static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
-+{
-+	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
-+
-+	mpc_i2c_fixup(i2c);
-+
-+	return 0;
-+}
-+
- static const struct i2c_algorithm mpc_algo = {
- 	.master_xfer = mpc_xfer,
- 	.functionality = mpc_functionality,
-@@ -648,6 +657,10 @@ static struct i2c_adapter mpc_ops = {
- 	.timeout = HZ,
- };
- 
-+static struct i2c_bus_recovery_info fsl_i2c_recovery_info = {
-+	.recover_bus = fsl_i2c_bus_recovery,
-+};
-+
- static const struct of_device_id mpc_i2c_of_match[];
- static int fsl_i2c_probe(struct platform_device *op)
- {
-@@ -740,6 +753,7 @@ static int fsl_i2c_probe(struct platform_device *op)
- 	i2c_set_adapdata(&i2c->adap, i2c);
- 	i2c->adap.dev.parent = &op->dev;
- 	i2c->adap.dev.of_node = of_node_get(op->dev.of_node);
-+	i2c->adap.bus_recovery_info = &fsl_i2c_recovery_info;
- 
- 	result = i2c_add_adapter(&i2c->adap);
- 	if (result < 0)
+diff --git a/drivers/nvme/host/Kconfig b/drivers/nvme/host/Kconfig
+index 7b3f6555e67b..cf0ae71c489e 100644
+--- a/drivers/nvme/host/Kconfig
++++ b/drivers/nvme/host/Kconfig
+@@ -62,7 +62,8 @@ config NVME_FC
+ config NVME_TCP
+ 	tristate "NVM Express over Fabrics TCP host driver"
+ 	depends on INET
+-	depends on BLK_DEV_NVME
++	depends on BLOCK
++	select NVME_CORE
+ 	select NVME_FABRICS
+ 	select CRYPTO
+ 	select CRYPTO_CRC32C
 -- 
 2.30.2
 
