@@ -2,155 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C67D3A5E8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B594D3A5E93
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbhFNIvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
+        id S232677AbhFNIvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232632AbhFNIu6 (ORCPT
+        with ESMTP id S232664AbhFNIvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:50:58 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFE5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:48:40 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id l12so5922884oig.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:48:40 -0700 (PDT)
+        Mon, 14 Jun 2021 04:51:19 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7BBC061574;
+        Mon, 14 Jun 2021 01:49:17 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id j17-20020a0568200231b029024900620310so2470515oob.7;
+        Mon, 14 Jun 2021 01:49:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g5pXCAj2QuRES1o2pFYr1kobiKA7QQMUK/Q0IqCq9h8=;
-        b=VWEYtLKRoyzykCKCWKAnyyeFrhGqGLwAOXy2u3vartWNSYoGumsrbuXEw3exPA57bA
-         S5OQDe8cZc6Mmh2yHw/F3JzUdhVWvLB+6MNC3tQZ2Yxls847Ssku94TD0W0mWL8kDITn
-         CMQUqIG/gyOF8G+UA5KZE5oeGGcu9+kgbqY8O4ICYygUfnxb2S0Y2wNlWg6fRyqj3tPg
-         JZS+ZsUUEJR65v1WYyKCEuPQitf1oAilKEVRt3DPfTOBv9J9GPzt+uRK2cHF0tR/1F2N
-         ndXXMhMJx2wCiryXN7Y3zvVr/hblikY3DQS/7Bn6G3redPtk55bc6+YxS4m8iiyxcUdn
-         vKbA==
+        bh=zhc5KrH7nB+vP5Okxryb0H1oOssNZwvGPDnO0KweY9U=;
+        b=MorrzZBJZZfI2Eoa3wtobeR693l2V/0WBRrC4FXETifIrlWqp0THVdgdgBVc3DHKd2
+         IzdersvWZpPPDTS9SyASCal2DLh7gbZpWWBdJPqfrdH6eZm3YNrgxCSAdYUzLtRbmdRG
+         bHmVStMu8LKY5fwx1+1AcvFq8UNadbc5dUOlWbXhByxJYCzFFScqBHc0Z5zde9tofCKV
+         YQjeNzCWGZO98W0Ap8QO4YZE+Akxxbn0ZqiDThU7CUKMA4lvXjuG/QbWanJGRE45jLIa
+         5ZDYXDYW6WnrUeJeWeZCoR1SOur+fLpse5SipfEz5l66j62z415wDWOeBO1nlGcvvK8A
+         KBRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g5pXCAj2QuRES1o2pFYr1kobiKA7QQMUK/Q0IqCq9h8=;
-        b=TWVzpqg2MGcNF9NZrrH9YL05mP7SUxabJ7jtuQ0CgC4pPyQVdC8yU85u0J3v5I+vSm
-         JyJ7TyLR6qFssxrKxxhSqX2VwIJMyH5fLxmUd8evjTRVsHgES3rgOis1DyELOe5+gBXK
-         J+0SUx/bzFwhTlAHmqqo4SeQw61z7AlawIrv92RE99XVGoVA80pyo4H6nF4tA2NdUPCh
-         i71ODKDl2U4l3Ffa02gfaC309wrEleMGtVAMwGzGgBT7qeYfPn3FrpkQKFOmSwbxA1QY
-         5jVOXpVXbVykB0VsM2MQjraw7flEg5OinFeNruE+abZDOHFfr5CI/4XLG46Y6BF4rHa2
-         vv6g==
-X-Gm-Message-State: AOAM530hWwbJmzxSgd8vlxV6QFAviUwEB0L8YKF+frS5jq/D1eHrgz+3
-        TmhaHmpVSv2tGBc/SAAfF4xjKeLdGflJTvjStx34hg==
-X-Google-Smtp-Source: ABdhPJxqyqU5dcuuO+/JAQ+RVrrvsoRJk9Qzh/PRxas95xERvwPgPwTvMclro7vWYNOlKSzHVGjCwjK2iC5MreUI250=
-X-Received: by 2002:aca:120f:: with SMTP id 15mr3849142ois.172.1623660519486;
- Mon, 14 Jun 2021 01:48:39 -0700 (PDT)
+        bh=zhc5KrH7nB+vP5Okxryb0H1oOssNZwvGPDnO0KweY9U=;
+        b=rzApEInQs1CkJzsTo1+zxzgPwrvT3V1MOwNBJpdbMEJXT9sEx/auEvX6bbqdjLREGv
+         DT6wenJN5d12JUypU6voIOAVyf89sgBOKAVw1x2iynUflU6NmvpCi0Ka85k8hQuyVP16
+         pHuiM4Ml/joJBzGg+JlwMih7v/qRUIhVKDbVJbU6VMEBzX0hEjB2+tWAookSF6wjEVER
+         wwnBwWbrkuCqbEzio7NMWZdLvQx6HQS6KiAtTIV0uCkcMvEpN9VuQAW2tOhU/tfUitVF
+         MKSeCGKC9fKUFZkjGxMhIoU+D+CaMCnIMG0LkZd5J/94GHRTHVL9dxcUe/oam0ksCzvb
+         0GRg==
+X-Gm-Message-State: AOAM5309y8LVWN2mxc6hArSicn0NlJeCWexByNSnCnX+EVjs4mX8RpzM
+        11TguEYhGSBVDLCksjmpM4EHQzNtosSGEbcHU3hmA3uyWVs=
+X-Google-Smtp-Source: ABdhPJx48Q8vH/+qZq1gYLRoTJmGsY/tY/M9GXb80XM1Od6Tsq56xgD13o0XCiqSabUrsw9hJ5S4dhbfk37gYIB7Lo0=
+X-Received: by 2002:a4a:9bcb:: with SMTP id b11mr12139019ook.44.1623660556399;
+ Mon, 14 Jun 2021 01:49:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210612045156.44763-1-kylee0686026@gmail.com>
- <20210612045156.44763-3-kylee0686026@gmail.com> <CANpmjNMLzxMO0k_kvGaAvzyGoyKxBTtjx4PH=-MKKgDb1-dQaA@mail.gmail.com>
- <20210612155108.GA68@DESKTOP-PJLD54P.localdomain>
-In-Reply-To: <20210612155108.GA68@DESKTOP-PJLD54P.localdomain>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 14 Jun 2021 10:48:27 +0200
-Message-ID: <CANpmjNOf8i6HPxFb3gjTrUWMh_6c4zdsh29izrSrHDi9ud4+gw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] kasan: integrate the common part of two KASAN
- tag-based modes
-To:     Kuan-Ying Lee <kylee0686026@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+References: <e0d146b034576c755cb98018159fa30f8dba2101.1623476278.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <e0d146b034576c755cb98018159fa30f8dba2101.1623476278.git.christophe.jaillet@wanadoo.fr>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Mon, 14 Jun 2021 11:48:49 +0300
+Message-ID: <CAFCwf109JLqs+Qb5MUDEjG6EXK09JmH+bJjDXvLhNXOrr2aF3A@mail.gmail.com>
+Subject: Re: [PATCH] habanalabs: Fix an error handling path in 'hl_pci_probe()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ofir Bitton <obitton@habana.ai>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        farah kassabri <fkassabri@habana.ai>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Jun 2021 at 17:51, Kuan-Ying Lee <kylee0686026@gmail.com> wrote:
-[...]
-> > > diff --git a/mm/kasan/report_tags.h b/mm/kasan/report_tags.h
-> > > new file mode 100644
-> > > index 000000000000..4f740d4d99ee
-> > > --- /dev/null
-> > > +++ b/mm/kasan/report_tags.h
-> > > @@ -0,0 +1,56 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +#ifndef __MM_KASAN_REPORT_TAGS_H
-> > > +#define __MM_KASAN_REPORT_TAGS_H
-> > > +
-> > > +#include "kasan.h"
-> > > +#include "../slab.h"
-> > > +
-> > > +#ifdef CONFIG_KASAN_TAGS_IDENTIFY
-> > > +const char *kasan_get_bug_type(struct kasan_access_info *info)
-> > > +{
-> > [...]
-> > > +       /*
-> > > +        * If access_size is a negative number, then it has reason to be
-> > > +        * defined as out-of-bounds bug type.
-> > > +        *
-> > > +        * Casting negative numbers to size_t would indeed turn up as
-> > > +        * a large size_t and its value will be larger than ULONG_MAX/2,
-> > > +        * so that this can qualify as out-of-bounds.
-> > > +        */
-> > > +       if (info->access_addr + info->access_size < info->access_addr)
-> > > +               return "out-of-bounds";
-> >
-> > This seems to change behaviour for SW_TAGS because it was there even
-> > if !CONFIG_KASAN_TAGS_IDENTIFY. Does it still work as before?
-> >
+On Sat, Jun 12, 2021 at 8:42 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 >
-> You are right. It will change the behavior.
-> However, I think that if !CONFIG_KASAN_TAG_IDENTIFY, it should be reported
-> "invalid-access".
-
-There's no reason that if !CONFIG_KASAN_TAG_IDENTIFY it should be
-reported as "invalid-acces" if we can do better without the additional
-state that the config option introduces.
-
-It's trivial to give a slightly better report without additional
-state, see the comment explaining why it's reasonable to infer
-out-of-bounds here.
-
-> Or is it better to keep it in both conditions?
-
-We want to make this patch a non-functional change.
-
-[...]
-> > > diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
-> > > new file mode 100644
-> > > index 000000000000..9c33c0ebe1d1
-> > > --- /dev/null
-> > > +++ b/mm/kasan/tags.c
-> > > @@ -0,0 +1,58 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * This file contains common tag-based KASAN code.
-> > > + *
-> > > + * Author: Kuan-Ying Lee <kylee0686026@gmail.com>
-> >
-> > We appreciate your work on this, but this is misleading. Because you
-> > merely copied/moved the code, have a look what sw_tags.c says -- that
-> > should either be preserved, or we add nothing here.
-> >
-> > I prefer to add nothing or the bare minimum (e.g. if the company
-> > requires a Copyright line) for non-substantial additions because this
-> > stuff becomes out-of-date fast and just isn't useful at all. 'git log'
-> > is the source of truth.
+> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+> call, as already done in the remove function.
 >
-> This was my first time to upload a new file.
-> Thanks for the suggestions. :)
-> I will remove this author tag and wait for Greg's process advice.
+> Fixes: 2e5eda4681f9 ("habanalabs: PCIe Advanced Error Reporting support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/misc/habanalabs/common/habanalabs_drv.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> >
-> > Cc'ing Greg for process advice. For moved code, does it have to
-> > preserve the original Copyright line if there was one?
+> diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
+> index 64d1530db985..d15b912a347b 100644
+> --- a/drivers/misc/habanalabs/common/habanalabs_drv.c
+> +++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
+> @@ -464,6 +464,7 @@ static int hl_pci_probe(struct pci_dev *pdev,
+>         return 0;
+>
+>  disable_device:
+> +       pci_disable_pcie_error_reporting(pdev);
+>         pci_set_drvdata(pdev, NULL);
+>         destroy_hdev(hdev);
+>
+> --
+> 2.30.2
+>
 
-Greg responded, see his emails. Please preserve the original header
-from the file the code was moved from (hw_tags.c/sw_tags.c).
+Thanks for catching it.
+This patch is:
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 
-Thanks,
--- Marco
+Applied to -next.
+Oded
