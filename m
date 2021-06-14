@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA9E3A60F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F083A6063
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233715AbhFNKk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:40:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40118 "EHLO mail.kernel.org"
+        id S233013AbhFNKd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:33:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233607AbhFNKgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:36:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0240E61244;
-        Mon, 14 Jun 2021 10:32:58 +0000 (UTC)
+        id S233067AbhFNKcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:32:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98562611EE;
+        Mon, 14 Jun 2021 10:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666779;
-        bh=H4tI61InI25qWIcrrnymFGEvfpZlGePFNnD7MpJfmII=;
+        s=korg; t=1623666610;
+        bh=YDAiIfHevNO5ORjS0kTUf9NlrNBWQqz2BWZOZuDAUng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lq5myVGi7zLVxTaiLDQqkIHsOPZmFN/LaVO+mJWo/Gqeh+OkXnxqZCK9ZUrnu9IWL
-         LnXUiRcRq7znZbkr1SkDuiTAgW+k1d2AoP/uslcecBTHvJXBh7kE4nyKWRbHnC76vt
-         9FcVnpRwKq+acM39v5RCJKl3Eh4GlkApgdTKjH14=
+        b=TFa5bP0Gq9kQ1M/PGzO6aDHS1wJA//UX9+PXY9ocPkR49ff70k96D8CDu4yRYc+68
+         TW6rKH5fGtjscVC5R9qvbsfCH9TYkm/jjsFTZJgYxGBxd+t3/WO4QiKnVL617B14cc
+         nQElTpxmV354zpf76Sl9XMhBci5oJt+eScKeKa94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 19/49] i2c: mpc: Make use of i2c_recover_bus()
+        stable@vger.kernel.org, Alexander Kuznetsov <wwfq@yandex-team.ru>,
+        Andrey Krasichkov <buglloc@yandex-team.ru>,
+        Dmitry Yakunin <zeil@yandex-team.ru>, Tejun Heo <tj@kernel.org>
+Subject: [PATCH 4.4 21/34] cgroup1: dont allow \n in renaming
 Date:   Mon, 14 Jun 2021 12:27:12 +0200
-Message-Id: <20210614102642.502504476@linuxfoundation.org>
+Message-Id: <20210614102642.265837815@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
+References: <20210614102641.582612289@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Alexander Kuznetsov <wwfq@yandex-team.ru>
 
-[ Upstream commit 65171b2df15eb7545431d75c2729b5062da89b43 ]
+commit b7e24eb1caa5f8da20d405d262dba67943aedc42 upstream.
 
-Move the existing calls of mpc_i2c_fixup() to a recovery function
-registered via bus_recovery_info. This makes it more obvious that
-recovery is supported and allows for a future where recovery is
-triggered by the i2c core.
+cgroup_mkdir() have restriction on newline usage in names:
+$ mkdir $'/sys/fs/cgroup/cpu/test\ntest2'
+mkdir: cannot create directory
+'/sys/fs/cgroup/cpu/test\ntest2': Invalid argument
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But in cgroup1_rename() such check is missed.
+This allows us to make /proc/<pid>/cgroup unparsable:
+$ mkdir /sys/fs/cgroup/cpu/test
+$ mv /sys/fs/cgroup/cpu/test $'/sys/fs/cgroup/cpu/test\ntest2'
+$ echo $$ > $'/sys/fs/cgroup/cpu/test\ntest2'
+$ cat /proc/self/cgroup
+11:pids:/
+10:freezer:/
+9:hugetlb:/
+8:cpuset:/
+7:blkio:/user.slice
+6:memory:/user.slice
+5:net_cls,net_prio:/
+4:perf_event:/
+3:devices:/user.slice
+2:cpu,cpuacct:/test
+test2
+1:name=systemd:/
+0::/
+
+Signed-off-by: Alexander Kuznetsov <wwfq@yandex-team.ru>
+Reported-by: Andrey Krasichkov <buglloc@yandex-team.ru>
+Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
+Cc: stable@vger.kernel.org
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-mpc.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ kernel/cgroup.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index 96caf378b1dc..d94df068c073 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -581,7 +581,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
- 				writeb(status & ~CSR_MAL,
- 				       i2c->base + MPC_I2C_SR);
--				mpc_i2c_fixup(i2c);
-+				i2c_recover_bus(&i2c->adap);
- 			}
- 			return -EIO;
- 		}
-@@ -617,7 +617,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
- 				writeb(status & ~CSR_MAL,
- 				       i2c->base + MPC_I2C_SR);
--				mpc_i2c_fixup(i2c);
-+				i2c_recover_bus(&i2c->adap);
- 			}
- 			return -EIO;
- 		}
-@@ -632,6 +632,15 @@ static u32 mpc_functionality(struct i2c_adapter *adap)
- 	  | I2C_FUNC_SMBUS_READ_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL;
- }
+--- a/kernel/cgroup.c
++++ b/kernel/cgroup.c
+@@ -3310,6 +3310,10 @@ static int cgroup_rename(struct kernfs_n
+ 	struct cgroup *cgrp = kn->priv;
+ 	int ret;
  
-+static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
-+{
-+	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
++	/* do not accept '\n' to prevent making /proc/<pid>/cgroup unparsable */
++	if (strchr(new_name_str, '\n'))
++		return -EINVAL;
 +
-+	mpc_i2c_fixup(i2c);
-+
-+	return 0;
-+}
-+
- static const struct i2c_algorithm mpc_algo = {
- 	.master_xfer = mpc_xfer,
- 	.functionality = mpc_functionality,
-@@ -643,6 +652,10 @@ static struct i2c_adapter mpc_ops = {
- 	.timeout = HZ,
- };
- 
-+static struct i2c_bus_recovery_info fsl_i2c_recovery_info = {
-+	.recover_bus = fsl_i2c_bus_recovery,
-+};
-+
- static const struct of_device_id mpc_i2c_of_match[];
- static int fsl_i2c_probe(struct platform_device *op)
- {
-@@ -735,6 +748,7 @@ static int fsl_i2c_probe(struct platform_device *op)
- 	i2c_set_adapdata(&i2c->adap, i2c);
- 	i2c->adap.dev.parent = &op->dev;
- 	i2c->adap.dev.of_node = of_node_get(op->dev.of_node);
-+	i2c->adap.bus_recovery_info = &fsl_i2c_recovery_info;
- 
- 	result = i2c_add_adapter(&i2c->adap);
- 	if (result < 0)
--- 
-2.30.2
-
+ 	if (kernfs_type(kn) != KERNFS_DIR)
+ 		return -ENOTDIR;
+ 	if (kn->parent != new_parent)
 
 
