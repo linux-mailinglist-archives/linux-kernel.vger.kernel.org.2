@@ -2,191 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FAE3A5D8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459B93A5D91
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbhFNHTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:19:07 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:41851 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232498AbhFNHTD (ORCPT
+        id S232511AbhFNHUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:20:03 -0400
+Received: from esa8.fujitsucc.c3s2.iphmx.com ([68.232.159.88]:24981 "EHLO
+        esa8.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232471AbhFNHUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:19:03 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4802E580C24;
-        Mon, 14 Jun 2021 03:17:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 14 Jun 2021 03:17:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        4fr5SDHy37EcRezWa7kOUkmOhocGu42HH+g7wJIzW7s=; b=uuiugjIQd2Bp5F5j
-        BbUbhj2GCMiagWlQsQJCJ3E/dpPrZA7dpgCKFZmLBrhWeN9wTL2MkLn6ZPWfA/6e
-        55It0KVGjfeiv75nyNNaWMdO0XtV1Knk9wX/td1ZNX8TPZgnvUeXlucTD71qFd23
-        2ABtLnMeqACJXXWFi9EC6rBPeNZdtBazmV9OjzmfAbhwJvJGLJKEYuYeheVryeI3
-        Vc1UpI/zrEjGTkSyWZGDyWJQr9ao94Om11KMEIjongp5/l2wmUnXTkIYYS92FLmQ
-        lumz9A4tMJYeynSXCBzCjAbsMjTjsd2f96GT1Kip2eYVpoYznFac/aBRmk/km/ru
-        npl/9g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=4fr5SDHy37EcRezWa7kOUkmOhocGu42HH+g7wJIzW
-        7s=; b=QCWThDqlgfklmmLHwVZq1lMX2RWQ27cl1yuE9aT4bRXBPmDG2mtSVined
-        gdRZz7mRNKZ+bSxoxwJXudh/ZCmVD6JEFG+ngGF7iVkF6p/qZrqRwaMu/xT7pbzA
-        1JDvlKPyZD5LzasALha25qxpBUXT1+s35b0cPRSWKCp5nB68vV+wyQfiGvs/zDOM
-        jzIgsXwJQdUPtrlfj3ll26HK2eZBy8l3MeyAYfZM/RsBRnGKvQpMPrfk3vqXE6YL
-        bM1vweJ7ZZy3QGw9JUBVUiLzh68i3OJi4T2E1zAQnaOxb8z6tx1921E92JxnJgs6
-        Zjj1jVyEvuojrI60YDd0sUTeRJHMg==
-X-ME-Sender: <xms:bALHYEdvBLmLOUKPtYKG_HAlnPoRdvLvGqmDz2CwB6b1Z05tKXNRmg>
-    <xme:bALHYGNHRzKqoI6g2T1gSCBN3hWInHu5SgpojTb_4kj-Tyj-UsVByRFmfi58AdC2g
-    Bworf3bwDK0>
-X-ME-Received: <xmr:bALHYFivIBPL3fkBkRcAn4kQ0PXOjuf4RdNE1-IEka3jH9VUkF6dQRdD7No3bgHUmWsORawxEpeTHwCRyJxfNOf4CN9zmQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvgedgudduhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefkuffhvfffjghftggfggfgsehtkeertddtreejnecuhfhrohhmpefkrghn
-    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
-    epgfelleekteehleegheeujeeuudfhueffgfelhefgvedthefhhffhhfdtudfgfeehnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
-    esthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:bALHYJ8kd7xPhKeDj5WNzhkuEKFB_JegPyNFTx3ZZ6zUGKGvbuxlJg>
-    <xmx:bALHYAs2eSrJ0HGfXBThkiBHebzNMbE7Z-uv0Fih5iY2HDT5tPWAJg>
-    <xmx:bALHYAGBNNmTFtp37VjoGywnFREJZdcEhT_LTBsyJCJR2SmcmlldjA>
-    <xmx:bQLHYAHWYKLutpqk1dbfUmB8xjYy-ageANkXDXLlMh1kJifl4kVkug>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 14 Jun 2021 03:16:55 -0400 (EDT)
-Message-ID: <83baef7ddeaf9d60885933683eeaff8511eff10e.camel@themaw.net>
-Subject: Re: [PATCH v6 5/7] kernfs: use i_lock to protect concurrent inode
- updates
-From:   Ian Kent <raven@themaw.net>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 14 Jun 2021 15:16:51 +0800
-In-Reply-To: <4172edfc1e66a96efe687e94c18710682406f5d5.camel@themaw.net>
-References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
-         <162322868275.361452.17585267026652222121.stgit@web.messagingengine.com>
-         <YMQRzl4guvQQJwG0@zeniv-ca.linux.org.uk>
-         <43fe46a18bdc2e46f62a07f1e4a9b3d042ef3c01.camel@themaw.net>
-         <4172edfc1e66a96efe687e94c18710682406f5d5.camel@themaw.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 14 Jun 2021 03:20:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1623655080; x=1655191080;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=XtSJEKW5nV82EUP66Fi4KT99XmZoGWXhsLjx1W6G0/M=;
+  b=uE3OV2jtlSgfxvKn98pcAa4CYMEDMFx1OLgUnlwsBEJP+WweUcslUKHW
+   +z8PKbUv3Rj5Iu1PYU0yOLQsFqgiZXgHeY2rXCqqktasyBERlcXgG64FE
+   1zyjom2WUZPkmfLFe133jR2lH6iqeA7FonKHbHB1jt+tyWZzvKB7OwS3E
+   s2Zqa2f5j5tHqcfpHUppUO3zbSP93nDzm3rDBmc/A1XFrD5Q3HKZTAl+K
+   vjQSgNAIZNm03R9nH2CHj3Bs9u8xRhATHGZFgu22bQPVYg3jxq3Bi+u0j
+   2NmtlgnnYSCqjMRHF3axd9gB9I6/W3G02vy+qNCCGXYDM6UgI2lKpupPy
+   g==;
+IronPort-SDR: Sly8PQ1cJqrKjVUv2k9huOwu7GGFqMVSRZjsYszf/3PMSYmZI2aGPe5qHfpNw6kE0q3hmUoYp7
+ BrQPOMtsCRXaD/fo38AVXqxdeNzvmTTrpPdnogTWas5uAQ8L1jTxFP66kQWRQ4IMaUpmXmYWaH
+ ugxjJzmtqqaKbHgJ73CYxdTV/TiS5OMnkxY1HXbGOuWcTbJTpaq0psr7DwfeDwOdlnWTc4hSVp
+ 3ws8rKf8MQWoYSg8gzdktM96fcKWCF+zm2vXcM9j/0kU5VWRKx9wep9z/jGzZeHzeCH2WtSXTq
+ VIc=
+X-IronPort-AV: E=McAfee;i="6200,9189,10014"; a="33029602"
+X-IronPort-AV: E=Sophos;i="5.83,272,1616425200"; 
+   d="scan'208";a="33029602"
+Received: from mail-ty1jpn01lp2051.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.51])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 16:17:56 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oPLIzhAyXJLhEdMh5D0myMGcX5Q/ZXHFLL0PCBoxtwZ+oDGqVKlGwTZ3iVBAbMYhjCPEtJwuG/M8c6KAkQJkTzCRccyzqMoltIPVS2TSCBCB24T40llqJwbfrhE4VvIm0Wa53GpjyyQpAxTuEWZQ+DipSr1EXqt02ssiAur7awYqYz8nRad0FWZShrA9iFWYddNUOI/fuj/6y0esDCC0BCV6tUcA7H/2HIqnN3Ps8/QMXkwaWPu1sHfFOe476eZUQKmSuOxHIdGSm9oEKlrmkfzg48Ch7Wt4Jg1g9Fa0/FyHyL5zv+ufZlk28Fckk6fv8fnXackJIX6BQ4jsjLrcYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XtSJEKW5nV82EUP66Fi4KT99XmZoGWXhsLjx1W6G0/M=;
+ b=D5WhEUQe/UUnN7TZmx6mnjMWMHqI5K7eDle2kpXlP3Yo6DOpUfVywlQ7MB3/8yA7Cz8ThrZ2VnyKvnE+nSFJE/eCYu2As+qUuKxQ4Lf6KIt71boPzop6PJULNGQqbvoPSHquxSY5WRC8RPsIDYBG/Z98uGaurqCttqDZCU8JLDfV6Q0pCyQatSFCg9k86FsOz82Cw/k3EJYrHh+zBkCsijRhEj4flJcvEYFD4vL+E5OMcZq30P6BJQ5lGPuJ5x4QevpPkmzxxEcb7/C9ls6o7qfVJO5EiObqv+ug15kcvZAmeveEQ7AOLBASFp0Jo1+Oyay2GWkavIaebGTdv2hbvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XtSJEKW5nV82EUP66Fi4KT99XmZoGWXhsLjx1W6G0/M=;
+ b=ZMPNUlTztahfcpIpfqCzf9uucgpL8ttStW2PubB/qNUK6JKXwDT8vojbzXLx1Y/RzvubyOnhEBrLDVSnRlOAhLCKI0YAVOoCp/fVNlcvtfEwMWYWUv31F+YNQhZBKr+p9bOTYBwkYHpvOD2xHqKhXOu83lx8iCQtFcsJP/jOjCg=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSBPR01MB4197.jpnprd01.prod.outlook.com (2603:1096:604:4e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Mon, 14 Jun
+ 2021 07:17:53 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::8cd6:d0ec:739d:5284]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::8cd6:d0ec:739d:5284%6]) with mapi id 15.20.4219.025; Mon, 14 Jun 2021
+ 07:17:53 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+CC:     "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: libperf : Can not create event group
+Thread-Topic: libperf : Can not create event group
+Thread-Index: AQHXYOz1byLB4GfrUUijoG/ejweJRA==
+Date:   Mon, 14 Jun 2021 07:17:53 +0000
+Message-ID: <OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=True;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2021-06-14T07:17:52.801Z;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fujitsu.com;
+x-originating-ip: [218.44.52.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 26d5ccf4-5be4-441a-6f0b-08d92f04867c
+x-ms-traffictypediagnostic: OSBPR01MB4197:
+x-microsoft-antispam-prvs: <OSBPR01MB41973D25D6D69870E1608438F7319@OSBPR01MB4197.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Yvzd2ra0b40FoCEViUbjuwIZbMTGfHhV6MJ7NCq4AfTrW4PoQfEai3tBln8lB95eFNOVoE7dIzjAcj+3DKL6kfHPpQUdgGlIwEHtPgnIfNWXMvcQl1U8OBorM3fzvyJqtQKnL5VjfUMmlFXMyMcTyP2rqKYs26VWcwNa+H+uQy8WEgFClNn3eXGmv6MCD2SSJvTpXZpf2GUDDlXB/ZuVO2zYOVyamL/AM1V0HS6H0rRl8f4a1olOcjR1v4BGj+fQ3Ldc8A6n5JKKC52H/07zuGXEJyQNJrrKxSBCzgPmDXDeTboVqo3hFWS0by6LNnBqFizvni50u3/IB83EO6eCJ4iFjeQKkwVzj8jR9rRJh9YXifIshwdhxMTz751PCYW/fo3NdSRRsk9rUXVKVVoxlXJOoN1bVoyVA+xX3YD84xnXjsKyuMUegu6YjNM1LKqc7gIAWaXTzj4Oi5OZsw68wlOmB9HBnJZHkAykIcYlRmWxW4J9f5F+lV41qK+vktNcVpDWLbKruOUEiwK28BmGNWaJMljo5tIx8nnwspVwFeHUtyUC7U2knOCsJfnu9g/xrwi9jGHk2AZUJS7oOyAWTUB00HgZs49VVXYe3TIqckE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(366004)(396003)(136003)(71200400001)(9686003)(66946007)(66446008)(66556008)(33656002)(8676002)(85182001)(55016002)(76116006)(558084003)(478600001)(64756008)(66476007)(2906002)(4326008)(8936002)(26005)(7696005)(86362001)(5660300002)(52536014)(110136005)(122000001)(54906003)(38100700002)(316002)(6506007)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?TW8xYnQ0VGRjcmo4UzlGSlZRR1ZRS09sTy93OGNGYVByK3J6UnBscmw1?=
+ =?iso-2022-jp?B?ajQ2ejlKdy84NjF6YS92WWtISHk1S0wvclFGZENFWkU3YlY5UjZiaGxZ?=
+ =?iso-2022-jp?B?Rno1TXlFd05XVk9MTVF6M1FXV0JxNkN2TWIrUHBKUDF4RVUyRmNBM2ps?=
+ =?iso-2022-jp?B?eDNFc0dzZnF0alBVVk5CMGlnbHFlSnFFRFpja01LQklscE5vYTE3VDdT?=
+ =?iso-2022-jp?B?OG1idDVETWdybTZsNnVMOXltR1U1NFVuT2Z5aEcxaG9raGFCTTFIWUt0?=
+ =?iso-2022-jp?B?TXdZVEE2VUpIRzdIQUFrVlpTa0tDM0NZTnhxTkhsRGRudE5EMzNVSERK?=
+ =?iso-2022-jp?B?VVlNRjRCNlozR0p4OFBPeE1NZlRpdHYwVnRoVGdsS1c4Rlo4cGxEbkZL?=
+ =?iso-2022-jp?B?bnd0V3ZnZEFVUHF2dm4rZlJyNUFCeXhab0lUSU5raVBrZnkwUVFmbk5W?=
+ =?iso-2022-jp?B?amJRRmpkVnRpYjJoeCs3Q0tHY2RqY0tkRVRxVXM2bndrdklFa09SRGlz?=
+ =?iso-2022-jp?B?YS9acnd6TEUzaUF5ZXpFdUNhK2gxUUxIVW0wbkRUczNmajFnQjlFRzI0?=
+ =?iso-2022-jp?B?ejBSRmZHU0tCMVYwNHhqNDZHejVXTFA4djFucEdpdldtNkZleFFSZkVY?=
+ =?iso-2022-jp?B?UTZYaW9XTEhxVkw3NlRXNjh3Mk5Gekd0L0JUWHJSTEpIcG01QmtYVE9Y?=
+ =?iso-2022-jp?B?Z3Q1bmRrdE1YeStVdVVmVlczelVyOG1ROTBCYzdnQUIrZlYrekVXNDRG?=
+ =?iso-2022-jp?B?bWZ5MHp0RjNNS3lrakFETFlkNWd2NFpVaDFPcitoblZVc1VXWCtBWEk3?=
+ =?iso-2022-jp?B?UDU5bUN5aFFTdHA2OW5WQ01ON0liK1F2QWl3Ky9McXNrRThRUkFjNjY4?=
+ =?iso-2022-jp?B?MUNvc0F0QkZ4SHJ5NldKR3ZaWmwzeTZKYlZhNXdBQTd5cXlEKzJZQ0gz?=
+ =?iso-2022-jp?B?d2U2eTU4SkE4Ujd0MkJsVEREbHlLOFR1MXlRZXc4bi9Jb2kvWWZDSTRu?=
+ =?iso-2022-jp?B?VTZOY1pqZTltdnJISjZlbzJhMzJOVEJUSVU3NEpoclQ3WFBBblRFdTZB?=
+ =?iso-2022-jp?B?b0oxRzBiNE0xbUtKTHc5UFZvMXV1Zkhkb2VqZWNHZUNsZitsemE2UEVQ?=
+ =?iso-2022-jp?B?Y3UySVJVSmNIVnAza0VMMlFYV0tsOXJ3VnBaQVpuL3ZGUS9YbEcxOGZq?=
+ =?iso-2022-jp?B?QnB2c1JpbDZzcDdDWG9hZCtIWEFjeU5Pc0xmb3RHOFdNN3NmMW1ZdUdY?=
+ =?iso-2022-jp?B?b3lQUmRZTTZSLzVsL0w1SkFwNTdtaG1qZkhPOFg2WFNGN3RjWkpvM2N5?=
+ =?iso-2022-jp?B?cmR0MHd4S1QxaUpjdVVxT0pOcTFBZkJqRWMzSUdYc0V0ZFhwYUw3SDNG?=
+ =?iso-2022-jp?B?L2dLN1FsWEpKemJ0bE00Y2NKVzVTQldmckVxaFV5SklzcjZXYTlpS0Zp?=
+ =?iso-2022-jp?B?aEJoNEZyUnFFTXVpOVpWaWtsQ2xCYi9vdUtpK0JCZVBuNzlkQ01zUldU?=
+ =?iso-2022-jp?B?dFVsSUxObHlhZG5zbDltQnV1N040ZWhVRkpzWUxDcEg5dVhzQVVwUm4y?=
+ =?iso-2022-jp?B?UlA1WU5aTm9sQU5LMkx2d3YzUnIxWHB1NDdGUnBoeFBVczdjeDNSdVd5?=
+ =?iso-2022-jp?B?RXhJV2M5d2RrdmtMUTZ0Sm5yOWdTb2JWcXdKUWtHTnQ1VmNtTisxME0x?=
+ =?iso-2022-jp?B?YnZUdlFKRnpGWm45TTMvSVlGcXd4d1k3S3N1eVc1cERxT09EK2Nha0Iv?=
+ =?iso-2022-jp?B?SXhFYUFCeUM4TTJlYS9sSXFVSFdoc01WcE1zL1RUUC9GUzBNQlk5Qmt2?=
+ =?iso-2022-jp?B?RHg2aVI2QnhUdTF4ajNNcnNsVzFjdC9qMktvS3ZTUkg2aFlhc1hHWVRY?=
+ =?iso-2022-jp?B?SmZGSDU3clJ2OWE1RjFwaTdVSG5zPQ==?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26d5ccf4-5be4-441a-6f0b-08d92f04867c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2021 07:17:53.1732
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BGx6LNOfKfDsq+vVjzeIsOk6fEPpKBpU0v4TEy3LfgSeOEM2M7Izx4ipDnz5am2/QlFEyXccXcSmEv0nB6JpRzvArolqKspvTO/IRVHRYNw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4197
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-14 at 14:52 +0800, Ian Kent wrote:
-> On Mon, 2021-06-14 at 09:32 +0800, Ian Kent wrote:
-> > On Sat, 2021-06-12 at 01:45 +0000, Al Viro wrote:
-> > > On Wed, Jun 09, 2021 at 04:51:22PM +0800, Ian Kent wrote:
-> > > > The inode operations .permission() and .getattr() use the
-> > > > kernfs
-> > > > node
-> > > > write lock but all that's needed is to keep the rb tree stable
-> > > > while
-> > > > updating the inode attributes as well as protecting the update
-> > > > itself
-> > > > against concurrent changes.
-> > > 
-> > > Huh?  Where does it access the rbtree at all?  Confused...
-> > > 
-> > > > diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-> > > > index 3b01e9e61f14e..6728ecd81eb37 100644
-> > > > --- a/fs/kernfs/inode.c
-> > > > +++ b/fs/kernfs/inode.c
-> > > > @@ -172,6 +172,7 @@ static void kernfs_refresh_inode(struct
-> > > > kernfs_node *kn, struct inode *inode)
-> > > >  {
-> > > >         struct kernfs_iattrs *attrs = kn->iattr;
-> > > >  
-> > > > +       spin_lock(&inode->i_lock);
-> > > >         inode->i_mode = kn->mode;
-> > > >         if (attrs)
-> > > >                 /*
-> > > > @@ -182,6 +183,7 @@ static void kernfs_refresh_inode(struct
-> > > > kernfs_node *kn, struct inode *inode)
-> > > >  
-> > > >         if (kernfs_type(kn) == KERNFS_DIR)
-> > > >                 set_nlink(inode, kn->dir.subdirs + 2);
-> > > > +       spin_unlock(&inode->i_lock);
-> > > >  }
-> > > 
-> > > Even more so - just what are you serializing here?  That code
-> > > synchronizes inode
-> > > metadata with those in kernfs_node.  Suppose you've got two
-> > > threads
-> > > doing
-> > > ->permission(); the first one gets through kernfs_refresh_inode()
-> > > and
-> > > goes into
-> > > generic_permission().  No locks are held, so
-> > > kernfs_refresh_inode()
-> > > from another
-> > > thread can run in parallel with generic_permission().
-> > > 
-> > > If that's not a problem, why two kernfs_refresh_inode() done in
-> > > parallel would
-> > > be a problem?
-> > > 
-> > > Thread 1:
-> > >         permission
-> > >                 done refresh, all locks released now
-> > > Thread 2:
-> > >         change metadata in kernfs_node
-> > > Thread 2:
-> > >         permission
-> > >                 goes into refresh, copying metadata into inode
-> > > Thread 1:
-> > >                 generic_permission()
-> > > No locks in common between the last two operations, so
-> > > we generic_permission() might see partially updated metadata.
-> > > Either we don't give a fuck (in which case I don't understand
-> > > what purpose does that ->i_lock serve) *or* we need the exclusion
-> > > to cover a wider area.
-> > 
-> > This didn't occur to me, obviously.
-> > 
-> > It seems to me this can happen with the original code too although
-> > using a mutex might reduce the likelihood of it happening.
-> > 
-> > Still ->permission() is meant to be a read-only function so the VFS
-> > shouldn't need to care about it.
-> > 
-> > Do you have any suggestions on how to handle this.
-> > Perhaps the only way is to ensure the inode is updated only in
-> > functions that are expected to do this.
-> 
-> IIRC Greg and Tejun weren't averse to adding a field to the 
-> struct kernfs_iattrs, but there were concerns about increasing
-> memory usage.
-> 
-> Because of this I think the best way to handle this would be to
-> broaden the scope of the i_lock to cover the generic calls in
-> kernfs_iop_getattr() and kernfs_iop_permission(). The only other
-> call to kernfs_refresh_inode() is at inode initialization and
-> then only for I_NEW inodes so that should be ok. Also both
-> generic_permission() and generic_fillattr() are reading from the
-> inode so not likely to need to take the i_lock any time soon (is
-> this a reasonable assumption Al?).
-> 
-> Do you think this is a sensible way to go Al?
-
-Unless of course we don't care about taking a lock here at all,
-Greg, Tejun?
-
-
-Ian
-
+Hello.=0A=
+=0A=
+perf_evsel__open cannot create an event group because it set group_fd=0A=
+to -1 when it ran perf_event_open.=0A=
+Is there any reason why group_fd is fixed at -1?=0A=
+=0A=
+Best Regards=0A=
+Shunsuke=0A=
