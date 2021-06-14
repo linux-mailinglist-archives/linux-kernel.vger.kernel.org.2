@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505B13A6B39
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840503A6B35
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbhFNQGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:06:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30642 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233901AbhFNQF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:05:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623686636; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=h/MYTAGzh1yqIwqzV/V7jJRRMLxM6iJicH91XeZOxsI=; b=WOtE3kuKuKTC4BDJ669fAO76A+Swm9wIt3IObHMKbNYBj+aFb/qB49aFHeTaWR6B332LfSw+
- ph3WycB7IH9rrxSN72DaBpGSe2E6i8n0+egqLvy9F7GOAo9FxbzNu0TCJWMTsAuhqy/iBO2y
- o1gCKuGJgn/nc5Y6nR0Nl26Pp98=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60c77db2e27c0cc77f903b9a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 16:02:58
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9B563C433D3; Mon, 14 Jun 2021 16:02:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F07B8C43460;
-        Mon, 14 Jun 2021 16:02:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F07B8C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        ath11k@lists.infradead.org
-Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
-References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
-        <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
-        <20210521135152.GL70095@thinkpad>
-Date:   Mon, 14 Jun 2021 19:02:38 +0300
-In-Reply-To: <20210521135152.GL70095@thinkpad> (Manivannan Sadhasivam's
-        message of "Fri, 21 May 2021 19:21:52 +0530")
-Message-ID: <87h7i0juxt.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S233779AbhFNQFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233135AbhFNQFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 12:05:33 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7BDC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:03:15 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id r198so21924548lff.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:03:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3MqGDvp9ypUCvhlLUOO4ezsTJgglqtbS6x/EUZzU8+Q=;
+        b=Fy7Y+DeoKvsZICPPwA01TqMBiH2RFRKDNCaiYWD2UTBYSxZ4pdeg1d/ChfVV734TmQ
+         DT17igrzvRDC6rSUoqpPatzrJNeyqYGImyCufJH3ofLDeNrnxly9mav9aZJLyg1UVkoB
+         1qO7A8Pp7Sw0Yt1+gn+KVxTl9wtq5gPrdjAgo7p8Dw6cP35cf73qe5IC2SZlU4EN6JST
+         e57ab6dbcs/ksdm+WbwRkuTpfFsQSuzRLgI1XcClxOzoNJYFUWWYmvcoi9U0nWAQ/FND
+         HDaz4KI7R9lqXlsABdzH8orcCS5kRcK7Gl62H7bYrC+WblskggwIu+lBaRzzUoj/M9As
+         nNVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3MqGDvp9ypUCvhlLUOO4ezsTJgglqtbS6x/EUZzU8+Q=;
+        b=WubQvHu9CQGewFLE35bcsRDJpNUe7Qknzt8JMyld6HXNm6xaLN98EA9uVJS7m0d35c
+         aIuFWU7jEfZltz6UFJ11b8HHvF3tme03s11EC7nIwDItMq1O+VLX1pL+beDWzTugTpbw
+         g86cRjInJbVF4jBU1hDwG5L1ocn+OfPj5bgZuuzMU1zqGyUe/fNrDUDM0X/k0xB2TGDx
+         SBB1T+nh4C1AO8GjWDpqtJXsSTuGlWXDg75tVcCD7P2fU026AUn0iCU5J9qeMfIwaqEx
+         twNUCqr1kCMSKceussh827XDct0LQjekYe9fxXfw83DlV/o7BQQm0Gim78kzECkIynGS
+         K0xQ==
+X-Gm-Message-State: AOAM532R/qffr/J6MBoczPBkKvc9IDbCvBSuXPwb7DAPtWBdaBqe39Xu
+        rzvjg7LnPH45N52/UJ1pbW2J+yVjR0PCCg/kTEbnZw==
+X-Google-Smtp-Source: ABdhPJy9T1fv6ss2YqKm05JzBWeSmxI3e8pir4dr37jITMTf4Csn9UJP+HwVMcgnlLH3mP9Ymy3BeWib7d8pn9zu3KY=
+X-Received: by 2002:ac2:5cd6:: with SMTP id f22mr13208808lfq.73.1623686592188;
+ Mon, 14 Jun 2021 09:03:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
+ <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net> <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
+ <20210612202505.GG68208@worktop.programming.kicks-ass.net>
+ <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+ <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net> <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
+ <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net> <CANpmjNNnZv7DHYaJBL7knn9P+50F+SOCvis==Utaf-avENnVsw@mail.gmail.com>
+ <202106140817.F584D2F@keescook> <20210614154639.GB68749@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210614154639.GB68749@worktop.programming.kicks-ass.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 14 Jun 2021 09:03:00 -0700
+Message-ID: <CAKwvOd=aAo72j-iE2PNE5Os8BPc0y-Zs7ZoMzd21ck+QNeboBA@mail.gmail.com>
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        oberpar@linux.vnet.ibm.com, linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
-
-> On Thu, May 06, 2021 at 12:51:43PM -0700, Bhaumik Bhatt wrote:
->> MHI driver requires register space length to add range checks and
->> prevent memory region accesses outside of that for MMIO space.
->> Set it before registering the MHI controller.
->> 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+On Mon, Jun 14, 2021 at 8:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> On Mon, Jun 14, 2021 at 08:26:01AM -0700, Kees Cook wrote:
+> > > 2. Like (1) but also keep GCOV, given proper support for attribute
+> > > no_instrument_function would probably fix it (?).
+> > >
+> > > 3. Keep GCOV (and KCOV of course). Somehow extract PGO profiles from KCOV.
+> > >
+> > > 4. Somehow extract PGO profiles from GCOV, or modify kernel/gcov to do so.
+> >
+> > If there *is* a way to "combine" these, I don't think it makes sense
+> > to do it now. PGO has users (and is expanding[1]), and trying to
+> > optimize the design before even landing the first version seems like a
+> > needless obstruction, and to likely not address currently undiscovered
+> > requirements.
 >
-> Kalle, should we do immutable branch for this patch or I can pick it up via MHI
-> tree (if there are no other patches expected from ath11k for this controller)?
+> Even if that were so (and I'm not yet convinced), the current proposal
+> is wedded to llvm-pgo, there is no way gcc-pgo could reuse any of this
+> code afaict, which then means they have to create yet another variant.
 
-I'm not expecting any conflicts with this, and if there are, they should
-be easy for Stephen or Linus to fix. So it's easiest to route this via
-your tree. But I'm not giving my ack yet, see below.
-
-I'm worried that this patchset breaks bisect. Every patch in the
-patchset should not break existing functionality, what if only patches
-1-3 are included in the tree but not patch 4? Wouldn't ath11k be broken
-then? I didn't review the whole patchset, but I suspect the fix is to
-include the ath11k change in the actual mhi patch which changes the
-functionality. So that way we would not have a separate ath11k patch at
-all.
-
-Also I'm not able to test this patchset at the moment. Can someone else
-help and do a quick test with QCA6390 to verify these doesn't break
-ath11k?
-
+Similar to GCOV, the runtime support for exporting such data is
+heavily compiler (and compiler version) specific, as is the data
+format for compilers to consume.  We were able to reuse most of the
+runtime code between GCC and Clang support in GCOV; I don't see why we
+couldn't do a similar factoring of the runtime code being added to the
+kernel here, should anyone care to pursue implementing PGO with GCC.
+Having an implementation is a great starting point for folks looking
+to extend support or to understand how to support PGO in such a bare
+metal environment (one that doesn't dynamically link against
+traditional compiler runtimes).
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Thanks,
+~Nick Desaulniers
