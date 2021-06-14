@@ -2,96 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580C93A71F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51B73A71F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFNWfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 18:35:20 -0400
-Received: from fallback17.m.smailru.net ([94.100.176.130]:42984 "EHLO
-        fallback17.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhFNWfR (ORCPT
+        id S231226AbhFNWdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:33:42 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:54256 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230230AbhFNWdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 18:35:17 -0400
-X-Greylist: delayed 464 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Jun 2021 18:35:17 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=ebl3xdhYGvj9/7812T4hnqlfSVRcvMkfrf7lI/JJuGY=;
-        b=TBm9gPs2NThc9NrLyWwN7NYMMffszEVTcqNW7DIVdrTdWXCu5dzKVAufnjGUCNz/GcbjyHdYf0Y9CVpnorvcUTYxFPPBd+Geh+XT9ce0DZjh6SEtXLrs9Urh+5o67TN0GII6gPNrs9pN7eJKEDrs6Br3gvT88aSHac3qR2CTsh0=;
-Received: from [10.161.25.37] (port=59954 helo=smtp60.i.mail.ru)
-        by fallback17.m.smailru.net with esmtp (envelope-from <cerg2010cerg2010@mail.ru>)
-        id 1lsv1M-0005DM-8I
-        for linux-kernel@vger.kernel.org; Tue, 15 Jun 2021 01:25:28 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=ebl3xdhYGvj9/7812T4hnqlfSVRcvMkfrf7lI/JJuGY=;
-        b=Zgi+f/EkoALcTwn+8By6jR2eAbJbH7CXOSlWa73HGvb6fPa0Hokb3BbVwp+hGXpqUqvz3FSx9WDUb5GLyvrLC6RW7MIYpPX2EbPs1wZtcrOSga7kHZTMHptQrtmc20e7i+IqK/1skLYcWeggJ5kgTAHpaz0GxW5J5mqbZlMmp6M=;
-Received: by smtp60.i.mail.ru with esmtpa (envelope-from <cerg2010cerg2010@mail.ru>)
-        id 1lsv1J-0006ZD-7K; Tue, 15 Jun 2021 01:25:25 +0300
-From:   Sergey Larin <cerg2010cerg2010@mail.ru>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Larin <cerg2010cerg2010@mail.ru>
-Subject: [PATCH] mfd: max8907: Remove IRQF_NO_AUTOEN flag
-Date:   Tue, 15 Jun 2021 01:24:20 +0300
-Message-Id: <20210614222420.89865-1-cerg2010cerg2010@mail.ru>
-X-Mailer: git-send-email 2.32.0
+        Mon, 14 Jun 2021 18:33:41 -0400
+Received: by mail-pj1-f53.google.com with SMTP id ei4so10618253pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 15:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=70OFgrz/CgZYU63H5upJDLWkyC7MeK33Rz+09jwywK4=;
+        b=q0DGUYEBsR1Wd7MyTCOUMhEO/pYWZKf8S3lBCgsCHWEOJGuiiV0CAYBRXS/F9X7T3/
+         qVYgl/rmYI7oYLzyAV8o/CtU/Oqt4mC/Vzme5RWIJQDWayLlm/atSkprAoZrLOLoHcFH
+         LtB2fCu7O6l5kmWA/HOEfiWto8OvHbopWHsnbwV2TX/0XQzY8/qDx/+WY/bKdLHy3unR
+         yaGaTnfQYGvcFWZsQZTrHfe55DWm9KKPTnFZ5JduTEfbq25t1hZbo2+8i0YORpYi9Rbp
+         rTmVuXj2MyyoNoCVXaecdUmzMvqO+qNcAjtYD9ftQaHQHgv6BU3xPXpAwzLJydUBmqJm
+         tcIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=70OFgrz/CgZYU63H5upJDLWkyC7MeK33Rz+09jwywK4=;
+        b=JQZv00Ncd6joszIJc6BzKhW8TYBCd0+3KW422gfurkC4t3ZGSzsfk3DtWAgmkHdK0H
+         uNzrfphpNJyJ4riNxfKv+sqzHh+EJfKUq5x5T2syGh/w7QGQ6Pnkp3LuLHME3vvzKCnw
+         vTyiBlQmnDDG66BOgQq084wO/fxoXuKEIiwvThHZPXqg7Bj/zHngiXjItr/DDA075VDt
+         GctwtdofFoj2cMz5XSlw0ExkVN6yRjmGULtuD8zFfiQPbLcJBqiDureZHdPpdct2M6uM
+         d8THEbE4CWNhUci6Ah3dovWkcOL+IaoWqlU0ZsV/oPlytMVpPiX2EyiPqLH5fiEH57ce
+         LFQw==
+X-Gm-Message-State: AOAM530Ozy6Gt1hKolQow8y2DZbmcDUOszhU4F/4XUcg8dfrf8y7QsEG
+        wKyXSKP1gYtZz0cw2asfby/ryA==
+X-Google-Smtp-Source: ABdhPJwGGoYzguT8I9l/jIiDPz+FK0UawrWbYcIw8QuXkcT/GKcbrs0gkwY4fqmlIzmr5c7vITO2Zw==
+X-Received: by 2002:a17:90b:1810:: with SMTP id lw16mr20990555pjb.203.1623709823827;
+        Mon, 14 Jun 2021 15:30:23 -0700 (PDT)
+Received: from localhost ([2601:602:9200:1465:3130:f4da:b90:8ba2])
+        by smtp.gmail.com with ESMTPSA id 25sm491336pgp.51.2021.06.14.15.30.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 15:30:23 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Marc Zyngier <maz@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
+ as a module
+In-Reply-To: <87r1hwwier.wl-maz@kernel.org>
+References: <20201020072532.949137-1-narmstrong@baylibre.com>
+ <20201020072532.949137-2-narmstrong@baylibre.com>
+ <7hsga8kb8z.fsf@baylibre.com>
+ <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
+ <87r1hwwier.wl-maz@kernel.org>
+Date:   Mon, 14 Jun 2021 15:30:22 -0700
+Message-ID: <7h7diwgjup.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD9D5B0DA836B685C549A9F97C297FFF2C725C7934AD8E7B4B9182A05F538085040D8C23678FB9131890731DF87AAC3A0203DE02A7433ECA3F6CBC43DA4EF8F4D22
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE72AC9FB60380F23AEEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637889C00975665ABF68638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8A5A2B37DCE303AB09BCA39370C33E1E36F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE74601F13E4625331C9FA2833FD35BB23D9E625A9149C048EE26055571C92BF10FCB629EEF1311BF91D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8B1BE95B8C87527B4BA471835C12D1D977C4224003CC836476EB9C4185024447017B076A6E789B0E975F5C1EE8F4F765FCF3ED982F7DACF4823AA81AA40904B5D9CF19DD082D7633A078D18283394535A93AA81AA40904B5D98AA50765F7900637BCD0514DF617FB8BEC76A7562686271EEC990983EF5C03292E808ACE2090B5E14AD6D5ED66289B5259CC434672EE63711DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C3CE5B583A975D522235872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2368A440D3B0F6089093C9A16E5BC824A2A04A2ABAA09D25379311020FFC8D4ADA41A69504E55846B5BD3A1831C588AAA
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C9EE13681E9091B6A47B025F20016DF3BB7424071B622A3639C2B6934AE262D3EE7EAB7254005DCED894F55CB5DA17CFA1E0A4E2319210D9B64D260DF9561598F01A9E91200F654B02120514CE2D1D3528E8E86DC7131B365E7726E8460B7C23C
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D34D2AC226BFD4557242EE9E73A605945236A7B65BBAED91E9CC42E7486D109BC5127FD1A8F8AE7ADEA1D7E09C32AA3244CB4FC9908D82E1B20582E9B5BC75251BB55E75C8D0ED9F6EEFACE5A9C96DEB163
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj6OL1iHTyIM2wgcD/h9NS9Q==
-X-Mailru-Sender: 24CCEAA761B392C83D438B890C7CDC3C766863BE20904A4C0731DF87AAC3A020BDDB26EEA8DAF3A6CAD91EC71FC00F3837D2A27E1A8065646C7A2150F6097340301919DCEDD5454186FA049C4F996C4B5FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
-X-4EC0790: 1
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4F6336583864642B6A590A1161B3E79A697EF4D9042F6ED7B68F3CF0E9FE49B69F384871053BAF99D1282D362B0295F312529BCDF440715E5637D4C2AD75762ED
-X-7FA49CB5: 0D63561A33F958A5CD19D37C32E8FED108F20E416C356CE269AC95DD5B60E6A1CACD7DF95DA8FC8BD5E8D9A59859A8B6520746E264B47742CC7F00164DA146DAFE8445B8C89999728AA50765F7900637CA7571BDE729DAE7389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC83775554D4E35D8F5F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C4CB6874B0BCFF0B803F1AB874ED890284AD6D5ED66289B52698AB9A7B718F8C442539A7722CA490CD5E8D9A59859A8B61E7D461CEF46D50775ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2AD77751E876CB595E8F7B195E1C978316F07A8264902B0B68513B07AB14EF0B5
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C9EE13681E9091B6AB35704D5C1A74434A75EFB80FF2805B99C2B6934AE262D3EE7EAB7254005DCED3A96BCF046FC1CF1DC48ACC2A39D04F89CDFB48F4795C241BDAD6C7F3747799A
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj6OL1iHTyIM0sJx4yJT+RQQ==
-X-Mailru-MI: 1000000000800
-X-Mailru-Sender: A5480F10D64C9005631A4012884FA16315411C38BCF2BF9BBAB9D78B9276F05BD776CA2DFBE07C79CAD91EC71FC00F3837D2A27E1A8065646C7A2150F6097340301919DCEDD5454186FA049C4F996C4B5FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IRQF_NO_AUTOEN flag doesn't go well with IRQF_SHARED flag - the
-check in request_threaded_irq fails and exits with EINVAL.
+Marc Zyngier <maz@kernel.org> writes:
 
-So we ignore the flag and enable it on the first IRQ request. No
-interrupt should arrive from the chip as all interrupts are masked
-by default.
+> On Fri, 21 May 2021 10:47:48 +0100,
+> Lee Jones <lee.jones@linaro.org> wrote:
+>> 
+>> [1  <text/plain; UTF-8 (quoted-printable)>]
+>> On Tue, 20 Oct 2020 at 19:23, Kevin Hilman <khilman@baylibre.com> wrote:
+>> 
+>> > Neil Armstrong <narmstrong@baylibre.com> writes:
+>> >
+>> > > In order to reduce the kernel Image size on multi-platform distributions,
+>> > > make it possible to build the Amlogic GPIO IRQ controller as a module
+>> > > by switching it to a platform driver.
+>> > >
+>> > > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> >
+>> > Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+>> > Tested-by: Kevin Hilman <khilman@baylibre.com>
+>> >
+>> > Tested as a module on meson-sm1-khadas-vim3l where the wired networking
+>> > uses GPIO IRQs.
+>> >
+>> 
+>> Good morning Neil, Kevin,
+>> 
+>> What happened to this set in the end?  I still don't see it in Mainline.
+>
+> Last time I tried this patch, it broke my test setup in non-obvious
+> ways. Has someone checked that the issue I reported back then has been
+> resolved now that fw_devlink is more usable?
 
-Signed-off-by: Sergey Larin <cerg2010cerg2010@mail.ru>
----
- drivers/mfd/max8907.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+OK, after much anticipation (and much delay due to me forgetting about
+this), I just gave this series a spin again on top of v5.13-rc6, and it
+seems to work fine with `fw_devlink=on`
 
-diff --git a/drivers/mfd/max8907.c b/drivers/mfd/max8907.c
-index 40e70ab88956..41f566e6a096 100644
---- a/drivers/mfd/max8907.c
-+++ b/drivers/mfd/max8907.c
-@@ -229,7 +229,7 @@ static int max8907_i2c_probe(struct i2c_client *i2c,
- 	}
- 
- 	ret = regmap_add_irq_chip(max8907->regmap_gen, max8907->i2c_gen->irq,
--				  IRQF_ONESHOT | IRQF_SHARED | IRQF_NO_AUTOEN,
-+				  IRQF_ONESHOT | IRQF_SHARED,
- 				  -1, &max8907_chg_irq_chip,
- 				  &max8907->irqc_chg);
- 	if (ret != 0) {
-@@ -253,8 +253,6 @@ static int max8907_i2c_probe(struct i2c_client *i2c,
- 		goto err_irqc_rtc;
- 	}
- 
--	enable_irq(max8907->i2c_gen->irq);
--
- 	ret = mfd_add_devices(max8907->dev, -1, max8907_cells,
- 			      ARRAY_SIZE(max8907_cells), NULL, 0, NULL);
- 	if (ret != 0) {
--- 
-2.32.0
+I started with your config[1] and accepting all the defaults of any new
+configs.  IOW, I ran: yes '' | make oldconfig after copying your config
+to .config.
+
+With that it seems to be working fine for me.
+
+Right after boot (and before network probes) I see module loaded, but no
+users yet in /proc/interrupts:
+
+/ # uname -a
+Linux buildroot 5.13.0-rc6-00002-g679c8e852942 #5 SMP PREEMPT Mon Jun 14 15:08:40 PDT 2021 aarch64 GNU/Linux
+/ # lsmod |grep gpio
+irq_meson_gpio         20480  0
+leds_gpio              16384  0
+/ # cat /proc/interrupts
+           CPU0       CPU1       CPU2       CPU3
+  9:          0          0          0          0     GICv2  25 Level     vgic
+ 11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
+ 12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
+ 13:       1416        916        534       1421     GICv2  26 Level     arch_timer
+ 15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
+ 22:         38          0          0          0     GICv2 225 Edge      ttyAML0
+ 23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
+ 25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
+ 28:        322          0          0          0     GICv2  35 Edge      meson
+ 31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
+ 32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
+ 34:          0          0          0          0     GICv2 194 Level     panfrost-job
+ 35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
+ 36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
+ 39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
+ 40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
+IPI0:       425        544        664        925       Rescheduling interrupts
+IPI1:        86        166        269        136       Function call interrupts
+IPI2:         0          0          0          0       CPU stop interrupts
+IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
+IPI4:         0          0          0          0       Timer broadcast interrupts
+IPI5:         0          0          0          0       IRQ work interrupts
+IPI6:         0          0          0          0       CPU wake-up interrupts
+Err:          0
+
+So then I init the network interface and PHY works, DHCP works etc.
+
+/ # udhcpc
+udhcpc: started, v1.31.1
+[  102.250449] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=37)
+[  102.256413] meson8b-dwmac ff3f0000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+[  102.269433] meson8b-dwmac ff3f0000.ethernet eth0: No Safety Features support found
+[  102.271357] meson8b-dwmac ff3f0000.ethernet eth0: PTP not supported by HW
+[  102.278493] meson8b-dwmac ff3f0000.ethernet eth0: configuring for phy/rgmii link mode
+udhcpc: sending discover
+[  104.743301] meson8b-dwmac ff3f0000.ethernet eth0: Link is Up - 100Mbps/Full - flow control rx/tx
+[  104.746470] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+udhcpc: sending discover
+udhcpc: sending select for 192.168.0.122
+udhcpc: lease of 192.168.0.122 obtained, lease time 600
+deleting routers
+adding dns 192.168.0.254
+adding dns 192.168.0.254
+/ # cat /proc/interrupts
+           CPU0       CPU1       CPU2       CPU3
+  9:          0          0          0          0     GICv2  25 Level     vgic
+ 11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
+ 12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
+ 13:       1575       1018        604       1588     GICv2  26 Level     arch_timer
+ 14:          8          0          0          0     GICv2  40 Level     eth0
+ 15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
+ 22:        132          0          0          0     GICv2 225 Edge      ttyAML0
+ 23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
+ 25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
+ 28:        322          0          0          0     GICv2  35 Edge      meson
+ 31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
+ 32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
+ 34:          0          0          0          0     GICv2 194 Level     panfrost-job
+ 35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
+ 36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
+ 37:          2          0          0          0  meson-gpio-irqchip  26 Level     0.0:00
+ 39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
+ 40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
+IPI0:       476        567        720        956       Rescheduling interrupts
+IPI1:        93        166        270        137       Function call interrupts
+IPI2:         0          0          0          0       CPU stop interrupts
+IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
+IPI4:         0          0          0          0       Timer broadcast interrupts
+IPI5:         0          0          0          0       IRQ work interrupts
+IPI6:         0          0          0          0       CPU wake-up interrupts
+Err:          0
+/ #
+
+
+Kevin
+
+
+[1] http://www.loen.fr/tmp/Config.full-arm64
+
+
 
