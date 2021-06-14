@@ -2,212 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345C63A68FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944BD3A6900
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbhFNOaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:30:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45499 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234380AbhFNOaT (ORCPT
+        id S234380AbhFNObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:31:10 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57612 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232984AbhFNObH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:30:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623680896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3i/0Xqcuqs9Z53r8ziuGN5pdDlWOmZITjoXYMrInUI0=;
-        b=G4HDkC25jP4U959tzPWMRr8OUI8x34ACUzWhVpMV7OaEDaxgegWaFbn1eQZksIoEuf9/K1
-        nkGe46i0lYrCNGdeaPd32KeKoPlzoAi5EjncLLAAtESIWHdeV19JUlhr5VrTBbtoHQZ7OG
-        WGORerrrb4yFFI0uqpMuK0BiovwFgAY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-eYOC521FM2OGzLqsgSW1lg-1; Mon, 14 Jun 2021 10:28:14 -0400
-X-MC-Unique: eYOC521FM2OGzLqsgSW1lg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 435651015C84;
-        Mon, 14 Jun 2021 14:28:13 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-174.rdu2.redhat.com [10.10.114.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ADF1C60657;
-        Mon, 14 Jun 2021 14:28:04 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 3CB2122054F; Mon, 14 Jun 2021 10:28:04 -0400 (EDT)
-Date:   Mon, 14 Jun 2021 10:28:04 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        dgilbert@redhat.com, v9fs-developer@lists.sourceforge.net,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] init/do_mounts.c: Add root="fstag:<tag>" syntax for root
- device
-Message-ID: <20210614142804.GA869400@redhat.com>
-References: <20210608153524.GB504497@redhat.com>
- <YMCPPCbjbRoPAEcL@stefanha-x1.localdomain>
- <20210609154543.GA579806@redhat.com>
- <YMHKZhfT0CUgeLno@stefanha-x1.localdomain>
- <YMHOXn2cpGh1T9vz@codewreck.org>
- <YMXyW0KXc3HqdUAj@codewreck.org>
+        Mon, 14 Jun 2021 10:31:07 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15EESnwd040412;
+        Mon, 14 Jun 2021 09:28:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623680929;
+        bh=+4NtWY3cuQShN1zQE/NiVLAmhqWotJAF5lyZWU71+cQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=BosDe65qpSRNQ8+oFac8/3XawPJ7QQK+tMYxrP0X4+TGO4SI1BOmbXwHHz/ZpVG0a
+         hAwxR5tkLqfvMg7raDq2yv6NCmcdHtkqFI2rU70X8oluoRqxwcIsid+iPuk6Vt6aWm
+         SfYZIsDLW/vw4k3dorWGYUo3tKb8lp8rzAj21RfE=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15EESn89073580
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Jun 2021 09:28:49 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 14
+ Jun 2021 09:28:49 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 14 Jun 2021 09:28:49 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15EESn1T061901;
+        Mon, 14 Jun 2021 09:28:49 -0500
+Date:   Mon, 14 Jun 2021 09:28:49 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am64-main: Add SYSFW reserved ranges
+ in OCRAM
+Message-ID: <20210614142849.ogi4emuqgxg3m7ls@constrict>
+References: <20210609140604.9490-1-vigneshr@ti.com>
+ <20210611191640.lczsliyzasjie6lm@dismantle>
+ <84e5865f-e107-f0e1-ca8b-b6bd655e92e6@ti.com>
+ <36ff3c65-2f5e-2997-9fb5-a5e8d3230a75@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <YMXyW0KXc3HqdUAj@codewreck.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <36ff3c65-2f5e-2997-9fb5-a5e8d3230a75@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 08:56:11PM +0900, Dominique Martinet wrote:
-> Dominique Martinet wrote on Thu, Jun 10, 2021 at 05:33:34PM +0900:
-> > Stefan Hajnoczi wrote on Thu, Jun 10, 2021 at 09:16:38AM +0100:
-> > > virtio-9p should be simple. I'm not sure how much additional setup the
-> > > other 9p transports require. TCP and RDMA seem doable if there are
-> > > kernel parameters to configure things before the root file system is
-> > > mounted.
+On 10:18-20210614, Aswath Govindraju wrote:
+> Hi Vignesh,
+> 
+> On 12/06/21 12:51 pm, Vignesh Raghavendra wrote:
+> > +Aswath
 > > 
-> > For TCP, we can probably piggyback on what nfs does for this, see the
-> > ip= parameter in Documentation/admin-guide/nfs/nfsroot.rst -- it lives
-> > in net/ipv4/ipconfig.c so should just work out of the box
+> > On 6/12/21 12:46 AM, Nishanth Menon wrote:
+> >> On 19:36-20210609, Vignesh Raghavendra wrote:
+> >>> Last 256K of OCRAM (256K@0x701c0000) is reserved for SYSFW usage. Hence
+> >>> add an entry in DT so that its not used for generic pool memory
+> >>> allocation.
+> >>
+> >> Are you really sure?? I know that I had set a budget for 16K in sysfw
+> >> when I did the memory split up for sysfw of which 16k is actually used.
+> >>
+> >> Not sure where this 256K bucket started off from.. am I missing
+> >> something here?
+> >>
+> > 
+> > Per: http://software-dl.ti.com/tisci/esd/latest/5_soc_doc/am64x/firewalls.html
+> > 
+> > 24	dmsc	0x44060000	0x4407BFFF	dmsc,rwcd	 	 // alias for 0x701E0000
+> > 24	dmsc	0x701FC000	0x701FFFFF	sproxy_private,rwcd	 	 
+> > 24	dmsc	0x4407C000	0x4407FFFF	sproxy_private,rwcd	 	 
+> > 24	dmsc	0x701C0000	0x701DFFFF	everyone,rwcd	 	 
+> > 
+> > So it looks like only 128K@0x701E0000 is firewalled off. 
+> > Will update the patch.
+> > 
+> > This makes me wonder why ATF is being moved to 0x701a0000-0x701c0000
+> > leaving a hole at 0x701C0000-0x701DFFFF? 
+> > 
+> > 
 > 
-> Hm, just tried and it doesn't quite work for some reason -- in this
-> stack trace:
->  kthread_should_stop+0x71/0xb0
->  wait_woken+0x182/0x1c0
->  __inet_stream_connect+0x48a/0xc00
->  inet_stream_connect+0x53/0xa0
->  p9_fd_create_tcp+0x2d6/0x420
->  p9_client_create+0x7bc/0x11d0
->  v9fs_session_init+0x1cd/0x1220
->  v9fs_mount+0x8c/0x870
->  legacy_get_tree+0xef/0x1d0
->  vfs_get_tree+0x83/0x240
->  path_mount+0xda3/0x1800
->  init_mount+0x98/0xdd
->  do_mount_root+0xe0/0x255
->  mount_root+0x47/0xd7
->  prepare_namespace+0x136/0x165
->  kernel_init+0xd/0x123
->  ret_from_fork+0x22/0x30
-> 
-> current->set_child_tid is null, causing a null deref when checking
-> &to_kthread(current)->flags
-> 
-> It does work with nfsroot though so even if this doesn't look 9p
-> specific I guess I'll need to debug that eventually, but this can
-> be done later... I'm guessing they don't use the same connect() function
-> as 9p's is ipv4-specific (ugh) and that needs fixing eventually anyway.
-> 
-> For reference this is relevant part of kernel command line I used for
-> tcp:
-> root=fstag:x.y.z.t rootflags=trans=tcp,aname=rootfs rootfstype=9p ip=dhcp
-> 
-> (and ip=dhcp requires CONFIG_IP_PNP_DHCP=y)
-> 
-> 
-> 
-> Virtio does work quite well though and that's good enough for me -- I
-> was going to suggest also documenting increasing the msize (setting
-> e.g. rootflags=msize=262144) but we really ought to increase the
-> default, that came up recently and since no patch was sent I kind of
-> forgot... Will do that now.
-> 
-> 
-> 
-> @Vivek - I personally don't really care much, but would tend to prefer
-> your v2 (without fstag:) from a user perspective the later is definitely
-> better but I don't really like the static nobdev_filesystems array --
+> The reason for leaving the hole at 0x701C0000-0x701DFFFF was because
+> initially there was a bug in SYSFW which lead to the usage of the above
+> region too by it. However, this bug was recently fixed and the the above
+> region can be used for ATF.
 
-I am not a big fan of nobdev_filesystems array but I really don't feel
-comfortable opening up this code by default to all filesystems having
-flag FS_REQUIRES_DEV. Use cases of this code path are not well documented
-and something somewhere will be broken and called regression.
 
-I think nobdev_filesystems is sort of a misfit. Even mtd, ubi, cifs
-and nfs are nobdev filesystems but they are not covered by this.
+OK. I am going to drop the TF-A update patch from my queue.
 
-May be this array needs to be called say "tag_based_rootfs[]" and
-array entries can be gated by config options from filesystems.
+NOTE:
+a) Default device configuration (if no specific API call[1]) is done
+   assumes last 128K is reserved.
+b) if bootloader does invoke optionally a call[1] then only 16K is
+   reserved for communication and remainder of 128K is released for usage
+   with the constraint that TF-A/OPTEE takes control of security resources.
+c) This is only a feature in AM64x devices so, handling is device
+   specific.
 
-#ifdef CONFIG_VIRTIO_FS
-  "virtiofs",
-#endif
-#ifdef CONFIG_FOO
-  "foo",
-#endif
+Hence, on AM64x: (a) should be our default configuration and (b) can
+be board specific configuration OR overlay depending on bootloader
+capability.
 
-Now all the filesystems which want to simply pass a "tag" as source of
-mount to filesystem directly during mount can opt-in into this.
-virtiofs and 9p are the first two filesystmes to opt-in. And then
-flow of mount code becomes much more clean.
-
-Is it mtd or ubi device
-   mount mtd/ubi root
-Is it nfs/cifs device
-   mount nfs/cifs root
-Is it tag based fs
-   mount tag based fs
-else
-   mount block device based fs. 
-
-Calling it nobdev based fs makes it too generic while we are not
-covering all the cases.
-
-So my personal perference is that just to carve out a new class
-of rootfs (tag based) and let users opt in if they fit into
-this class. This kind of approach also reduces risk of any 
-regression significantly.
-
-I don't know enough about mtd/ubi but I suspect that it might be
-possible that they can make use of this option as well.
-
-> I'd bite the bullet and use FS_REQUIRES_DEV (and move this part of the
-> code just a bit below after the root_wait check just in case it matters,
-
-Problem with moving this below root_wait check is that if user boots
-with root_wait option for virtiofs/9p, it will loop infitely. Reason
-being that ROOT_DEV=0 and device will never show up.
-
-I am assuming that for out use cases, device will need to be present
-at the time of boot. We can't have a notion of waiting for device to
-show up.
-
-> but at that point if something would mount with /dev/root but not with
-> the raw root=argument then they probably do require a device!)
-> 
-> It could also be gated by a config option like e.g. CONFIG_ROOT_NFS and
-> others all are to make sure it doesn't impact anyone who doesn't want to
-> be impacted - I'm sure some people want to make sure their device
-> doesn't boot off a weird root if someone manages to change kernel params
-> so would want a way of disabling the option...
-
-I guess I could do that. Given more than one filesystem will use this
-option (virtiofs and 9p to begin with), so we will have to have a 
-config option name which is little more generic and not filesystem
-specific like CONFIG_ROOT_NFS or CONFIG_ROOT_CIFS.
-
-> 
-> 
-> Well, if you keep the array, please add 9p to the list and resend as a
-> proper patch so I can reply with tested-by/reviewed-by tags on something
-> more final.
-
-Sure, I will add 9p to list.
-
-> 
-> 
-> Also, matter-of-factedly, how is this going to be picked up?
-> Is the plan to send it directly to Linus as part of the next virtiofs
-> PR? Going through Al Viro?
-
-I was hoping that this patch can be routed through Al Viro.
-
-Thanks
-Vivek
-
+[1] http://downloads.ti.com/tisci/esd/latest/6_topic_user_guides/security_handover.html#triggering-security-handover
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
