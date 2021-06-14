@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C933A6FE8
+	by mail.lfdr.de (Postfix) with ESMTP id 827D53A6FE9
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbhFNUMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:12:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:45760 "EHLO foss.arm.com"
+        id S235474AbhFNUMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:12:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:45810 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234590AbhFNUMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:12:40 -0400
+        id S235365AbhFNUMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 16:12:43 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F1EA143D;
-        Mon, 14 Jun 2021 13:10:37 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F18CD11D4;
+        Mon, 14 Jun 2021 13:10:39 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 428123F694;
-        Mon, 14 Jun 2021 13:10:35 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 240303F694;
+        Mon, 14 Jun 2021 13:10:38 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Jamie Iles <jamie@nuviainc.com>,
         D Scott Phillips OS <scott@os.amperecomputing.com>,
         lcherian@marvell.com
-Subject: [PATCH v4 15/24] x86/resctrl: Add a helper to read a closid's configuration
-Date:   Mon, 14 Jun 2021 20:09:32 +0000
-Message-Id: <20210614200941.12383-16-james.morse@arm.com>
+Subject: [PATCH v4 16/24] x86/resctrl: Add a helper to read/set the CDP configuration
+Date:   Mon, 14 Jun 2021 20:09:33 +0000
+Message-Id: <20210614200941.12383-17-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210614200941.12383-1-james.morse@arm.com>
 References: <20210614200941.12383-1-james.morse@arm.com>
@@ -42,26 +42,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Functions like show_doms() reach into the architecture's private
-structure to retrieve the configuration from the struct rdt_hw_resource.
+Whether CDP is enabled for a hardware resource like the L3 cache can
+be found by inspecting the alloc_enabled flags of the L3CODE/L3DATA
+struct rdt_hw_resources, even if they aren't in use.
 
-The hardware configuration may look completely different to the
-values resctrl gets from user-space. The staged configuration
-and resctrl_arch_update_domains() allow the architecture to
-convert or translate these values.
+Once these resources are merged, the flags can't be compared. Whether
+CDP is enabled needs tracking explicitly. If another architecture is
+emulating CDP the behaviour may not be per-resource.
 
-Resctrl shouldn't read or write the ctrl_val[] values directly.
-Add a helper to read the current configuration. This will allow another
-architecture to scale the bitmaps if necessary, and possibly use controls
-that don't take the user-space control format at all.
-Of the remaining functions that access ctrl_val[] directly,
-apply_config() is part of the architecture specific code, and is called
-via resctrl_arch_update_domains(). reset_all_ctrls() will be an
-architecture specific helper.
-update_mba_bw() manipulates both ctrl_val[], mbps_val[] and the
-hardware. The mbps_val[] that matches the mba_sc state of the
-resource is changed, but the other is left unchanged. Abstracting
-this is the subject of later patches that affect set_mba_sc() too.
+Add cdp_capable and cdp_enabled to struct rdt_hw_resource and
+add resctrl_arch_set_cdp_enabled() to let resctrl enable or disable
+CDP on a resource. resctrl_arch_get_cdp_enabled() lets it read the
+current state.
 
 Reviewed-by: Jamie Iles <jamie@nuviainc.com>
 Signed-off-by: James Morse <james.morse@arm.com>
@@ -70,229 +62,237 @@ Changes since v3:
  * Fixed a spelling mistake.
 
 Changes since v2:
+ * Merged rdt_domain_reconfigure_cdp() changes here.
  * Shuffled commit message,
----
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 16 ++++++---
- arch/x86/kernel/cpu/resctrl/monitor.c     |  6 +++-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 43 ++++++++++-------------
- include/linux/resctrl.h                   |  2 ++
- 4 files changed, 37 insertions(+), 30 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-index 271f5d28412a..1cd54402b02a 100644
---- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-+++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-@@ -401,22 +401,30 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
- 	return ret ?: nbytes;
+Changes since v1:
+ * Added prototype for resctrl_arch_set_cdp_enabled()
+ * s/Currently/Previously/
+ * rdt_get_cdp_config() accesses the array directly as most of the code
+   here disappears once the resources are merged.
+
+It isn't practical for MPAM to hide the CDP emulation by applying the same
+'L3' configuration to the two closid that are in use, as this would
+then consume two monitors, which are likely to be in short supply.
+---
+ arch/x86/kernel/cpu/resctrl/core.c        |  4 ++
+ arch/x86/kernel/cpu/resctrl/internal.h    | 13 +++-
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  4 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 75 +++++++++++++----------
+ 4 files changed, 62 insertions(+), 34 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index be974517ba0d..a2cbd2832d73 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -374,6 +374,10 @@ static void rdt_get_cdp_config(int level, int type)
+ 	 * "cdp" during resctrl file system mount time.
+ 	 */
+ 	r->alloc_enabled = false;
++	rdt_resources_all[level].cdp_enabled = false;
++	rdt_resources_all[type].cdp_enabled = false;
++	rdt_resources_all[level].cdp_capable = true;
++	rdt_resources_all[type].cdp_capable = true;
  }
  
-+void resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
-+			     u32 closid, u32 *value)
+ static void rdt_get_cdp_l3_config(void)
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 44f2b8f7b5d7..af230135ad7c 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -375,6 +375,8 @@ struct rdt_parse_data {
+  * @msr_update:		Function pointer to update QOS MSRs
+  * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
+  * @mbm_width:		Monitor width, to detect and correct for overflow.
++ * @cdp_enabled:	CDP state of this resource
++ * @cdp_capable:	Is the CDP feature available on this resource
+  *
+  * Members of this structure are either private to the architecture
+  * e.g. mbm_width, or accessed via helpers that provide abstraction. e.g.
+@@ -389,6 +391,8 @@ struct rdt_hw_resource {
+ 				 struct rdt_resource *r);
+ 	unsigned int		mon_scale;
+ 	unsigned int		mbm_width;
++	bool			cdp_enabled;
++	bool			cdp_capable;
+ };
+ 
+ static inline struct rdt_hw_resource *resctrl_to_arch_res(struct rdt_resource *r)
+@@ -409,7 +413,7 @@ DECLARE_STATIC_KEY_FALSE(rdt_alloc_enable_key);
+ 
+ extern struct dentry *debugfs_resctrl;
+ 
+-enum {
++enum resctrl_res_level {
+ 	RDT_RESOURCE_L3,
+ 	RDT_RESOURCE_L3DATA,
+ 	RDT_RESOURCE_L3CODE,
+@@ -430,6 +434,13 @@ static inline struct rdt_resource *resctrl_inc(struct rdt_resource *res)
+ 	return &hw_res->resctrl;
+ }
+ 
++static inline bool resctrl_arch_get_cdp_enabled(enum resctrl_res_level l)
 +{
-+	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
-+
-+	if (!is_mba_sc(r))
-+		*value = hw_dom->ctrl_val[closid];
-+	else
-+		*value = hw_dom->mbps_val[closid];
++	return rdt_resources_all[l].cdp_enabled;
 +}
 +
- static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int closid)
- {
- 	struct rdt_resource *r = schema->res;
--	struct rdt_hw_domain *hw_dom;
- 	struct rdt_domain *dom;
- 	bool sep = false;
- 	u32 ctrl_val;
- 
- 	seq_printf(s, "%*s:", max_name_width, schema->name);
- 	list_for_each_entry(dom, &r->domains, list) {
--		hw_dom = resctrl_to_arch_dom(dom);
- 		if (sep)
- 			seq_puts(s, ";");
- 
--		ctrl_val = (!is_mba_sc(r) ? hw_dom->ctrl_val[closid] :
--			    hw_dom->mbps_val[closid]);
-+		resctrl_arch_get_config(r, dom, closid, &ctrl_val);
- 		seq_printf(s, r->format_str, dom->id, max_data_width,
- 			   ctrl_val);
- 		sep = true;
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 76eea10f2e2c..647c0be76ea6 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -442,8 +442,12 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- 	hw_dom_mba = resctrl_to_arch_dom(dom_mba);
- 
- 	cur_bw = pmbm_data->prev_bw;
--	user_bw = hw_dom_mba->mbps_val[closid];
-+	resctrl_arch_get_config(r_mba, dom_mba, closid, &user_bw);
- 	delta_bw = pmbm_data->delta_bw;
-+	/*
-+	 * resctrl_arch_get_config() chooses the mbps/ctrl value to return
-+	 * based on is_mba_sc(). For now, reach into the hw_dom.
-+	 */
- 	cur_msr_val = hw_dom_mba->ctrl_val[closid];
- 
- 	/*
++int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable);
++
+ /*
+  * To return the common struct rdt_resource, which is contained in struct
+  * rdt_hw_resource, walk the resctrl member of struct rdt_hw_resource.
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+index 2f99210a9d69..f322f5c78a41 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -684,8 +684,8 @@ int rdtgroup_locksetup_enter(struct rdtgroup *rdtgrp)
+ 	 *   resource, the portion of cache used by it should be made
+ 	 *   unavailable to all future allocations from both resources.
+ 	 */
+-	if (rdt_resources_all[RDT_RESOURCE_L3DATA].resctrl.alloc_enabled ||
+-	    rdt_resources_all[RDT_RESOURCE_L2DATA].resctrl.alloc_enabled) {
++	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L3) ||
++	    resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L2)) {
+ 		rdt_last_cmd_puts("CDP enabled\n");
+ 		return -EINVAL;
+ 	}
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 1dec9afd9ff4..57e4d793f576 100644
+index 57e4d793f576..6b01902ac037 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -910,27 +910,27 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
- 	int i, hwb, swb, excl, psl;
- 	enum rdtgrp_mode mode;
- 	bool sep = false;
--	u32 *ctrl;
-+	u32 ctrl_val;
- 
- 	mutex_lock(&rdtgroup_mutex);
- 	hw_shareable = r->cache.shareable_bits;
- 	list_for_each_entry(dom, &r->domains, list) {
- 		if (sep)
- 			seq_putc(seq, ';');
--		ctrl = resctrl_to_arch_dom(dom)->ctrl_val;
- 		sw_shareable = 0;
- 		exclusive = 0;
- 		seq_printf(seq, "%d=", dom->id);
--		for (i = 0; i < closids_supported(); i++, ctrl++) {
-+		for (i = 0; i < closids_supported(); i++) {
- 			if (!closid_allocated(i))
- 				continue;
-+			resctrl_arch_get_config(r, dom, i, &ctrl_val);
- 			mode = rdtgroup_mode_by_closid(i);
- 			switch (mode) {
- 			case RDT_MODE_SHAREABLE:
--				sw_shareable |= *ctrl;
-+				sw_shareable |= ctrl_val;
- 				break;
- 			case RDT_MODE_EXCLUSIVE:
--				exclusive |= *ctrl;
-+				exclusive |= ctrl_val;
- 				break;
- 			case RDT_MODE_PSEUDO_LOCKSETUP:
- 			/*
-@@ -1188,7 +1188,6 @@ static bool __rdtgroup_cbm_overlaps(struct rdt_resource *r, struct rdt_domain *d
+@@ -1933,14 +1933,16 @@ static int set_cache_qos_cfg(int level, bool enable)
+ /* Restore the qos cfg state when a domain comes online */
+ void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
  {
- 	enum rdtgrp_mode mode;
- 	unsigned long ctrl_b;
--	u32 *ctrl;
- 	int i;
+-	if (!r->alloc_capable)
++	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
++
++	if (!hw_res->cdp_capable)
+ 		return;
  
- 	/* Check for any overlap with regions used by hardware directly */
-@@ -1199,9 +1198,8 @@ static bool __rdtgroup_cbm_overlaps(struct rdt_resource *r, struct rdt_domain *d
+ 	if (r == &rdt_resources_all[RDT_RESOURCE_L2DATA].resctrl)
+-		l2_qos_cfg_update(&r->alloc_enabled);
++		l2_qos_cfg_update(&hw_res->cdp_enabled);
+ 
+ 	if (r == &rdt_resources_all[RDT_RESOURCE_L3DATA].resctrl)
+-		l3_qos_cfg_update(&r->alloc_enabled);
++		l3_qos_cfg_update(&hw_res->cdp_enabled);
+ }
+ 
+ /*
+@@ -1984,51 +1986,62 @@ static int cdp_enable(int level, int data_type, int code_type)
+ 		r_l->alloc_enabled = false;
+ 		r_ldata->alloc_enabled = true;
+ 		r_lcode->alloc_enabled = true;
++		rdt_resources_all[level].cdp_enabled = true;
++		rdt_resources_all[data_type].cdp_enabled = true;
++		rdt_resources_all[code_type].cdp_enabled = true;
  	}
+ 	return ret;
+ }
  
- 	/* Check for overlap with other resource groups */
--	ctrl = resctrl_to_arch_dom(d)->ctrl_val;
--	for (i = 0; i < closids_supported(); i++, ctrl++) {
--		ctrl_b = *ctrl;
-+	for (i = 0; i < closids_supported(); i++) {
-+		resctrl_arch_get_config(r, d, i, (u32 *)&ctrl_b);
- 		mode = rdtgroup_mode_by_closid(i);
- 		if (closid_allocated(i) && i != closid &&
- 		    mode != RDT_MODE_PSEUDO_LOCKSETUP) {
-@@ -1269,12 +1267,12 @@ bool rdtgroup_cbm_overlaps(struct resctrl_schema *s, struct rdt_domain *d,
-  */
- static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
+-static int cdpl3_enable(void)
+-{
+-	return cdp_enable(RDT_RESOURCE_L3, RDT_RESOURCE_L3DATA,
+-			  RDT_RESOURCE_L3CODE);
+-}
+-
+-static int cdpl2_enable(void)
+-{
+-	return cdp_enable(RDT_RESOURCE_L2, RDT_RESOURCE_L2DATA,
+-			  RDT_RESOURCE_L2CODE);
+-}
+-
+ static void cdp_disable(int level, int data_type, int code_type)
  {
--	struct rdt_hw_domain *hw_dom;
- 	int closid = rdtgrp->closid;
- 	struct resctrl_schema *s;
- 	struct rdt_resource *r;
- 	bool has_cache = false;
- 	struct rdt_domain *d;
-+	u32 ctrl;
+-	struct rdt_resource *r = &rdt_resources_all[level].resctrl;
++	struct rdt_hw_resource *r_hw = &rdt_resources_all[level];
++	struct rdt_resource *r = &r_hw->resctrl;
  
- 	list_for_each_entry(s, &resctrl_schema_all, list) {
- 		r = s->res;
-@@ -1282,10 +1280,8 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
- 			continue;
- 		has_cache = true;
- 		list_for_each_entry(d, &r->domains, list) {
--			hw_dom = resctrl_to_arch_dom(d);
--			if (rdtgroup_cbm_overlaps(s, d,
--						  hw_dom->ctrl_val[closid],
--						  rdtgrp->closid, false)) {
-+			resctrl_arch_get_config(r, d, closid, &ctrl);
-+			if (rdtgroup_cbm_overlaps(s, d, ctrl, closid, false)) {
- 				rdt_last_cmd_puts("Schemata overlaps\n");
- 				return false;
- 			}
-@@ -1417,7 +1413,6 @@ static int rdtgroup_size_show(struct kernfs_open_file *of,
- 			      struct seq_file *s, void *v)
- {
- 	struct resctrl_schema *schema;
--	struct rdt_hw_domain *hw_dom;
- 	struct rdtgroup *rdtgrp;
- 	struct rdt_resource *r;
- 	struct rdt_domain *d;
-@@ -1453,15 +1448,13 @@ static int rdtgroup_size_show(struct kernfs_open_file *of,
- 		sep = false;
- 		seq_printf(s, "%*s:", max_name_width, schema->name);
- 		list_for_each_entry(d, &r->domains, list) {
--			hw_dom = resctrl_to_arch_dom(d);
- 			if (sep)
- 				seq_putc(s, ';');
- 			if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
- 				size = 0;
- 			} else {
--				ctrl = (!is_mba_sc(r) ?
--						hw_dom->ctrl_val[rdtgrp->closid] :
--						hw_dom->mbps_val[rdtgrp->closid]);
-+				resctrl_arch_get_config(r, d, rdtgrp->closid,
-+							&ctrl);
- 				if (r->rid == RDT_RESOURCE_MBA)
- 					size = ctrl;
- 				else
-@@ -2736,7 +2729,7 @@ static int __init_one_rdt_domain(struct rdt_domain *d, struct resctrl_schema *s,
- 	u32 used_b = 0, unused_b = 0;
- 	unsigned long tmp_cbm;
- 	enum rdtgrp_mode mode;
--	u32 peer_ctl, *ctrl;
-+	u32 peer_ctl, ctrl_val;
- 	int i;
+ 	r->alloc_enabled = r->alloc_capable;
  
- 	rdt_cdp_peer_get(r, d, &r_cdp, &d_cdp);
-@@ -2744,8 +2737,7 @@ static int __init_one_rdt_domain(struct rdt_domain *d, struct resctrl_schema *s,
- 	cfg->have_new_ctrl = false;
- 	cfg->new_ctrl = r->cache.shareable_bits;
- 	used_b = r->cache.shareable_bits;
--	ctrl = resctrl_to_arch_dom(d)->ctrl_val;
--	for (i = 0; i < closids_supported(); i++, ctrl++) {
-+	for (i = 0; i < closids_supported(); i++) {
- 		if (closid_allocated(i) && i != closid) {
- 			mode = rdtgroup_mode_by_closid(i);
- 			if (mode == RDT_MODE_PSEUDO_LOCKSETUP)
-@@ -2761,12 +2753,13 @@ static int __init_one_rdt_domain(struct rdt_domain *d, struct resctrl_schema *s,
- 			 * with an exclusive group.
- 			 */
- 			if (d_cdp)
--				peer_ctl = resctrl_to_arch_dom(d_cdp)->ctrl_val[i];
-+				resctrl_arch_get_config(r_cdp, d_cdp, i, &peer_ctl);
- 			else
- 				peer_ctl = 0;
--			used_b |= *ctrl | peer_ctl;
-+			resctrl_arch_get_config(r, d, i, &ctrl_val);
-+			used_b |= ctrl_val | peer_ctl;
- 			if (mode == RDT_MODE_SHAREABLE)
--				cfg->new_ctrl |= *ctrl | peer_ctl;
-+				cfg->new_ctrl |= ctrl_val | peer_ctl;
- 		}
+-	if (rdt_resources_all[data_type].resctrl.alloc_enabled) {
++	if (r_hw->cdp_enabled) {
+ 		rdt_resources_all[data_type].resctrl.alloc_enabled = false;
+ 		rdt_resources_all[code_type].resctrl.alloc_enabled = false;
+ 		set_cache_qos_cfg(level, false);
++		r_hw->cdp_enabled = false;
++		rdt_resources_all[data_type].cdp_enabled = false;
++		rdt_resources_all[code_type].cdp_enabled = false;
  	}
- 	if (d->plr && d->plr->cbm > 0)
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index c7a187de5708..d8c9080f0237 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -196,5 +196,7 @@ struct resctrl_schema {
- /* The number of closid supported by this resource regardless of CDP */
- u32 resctrl_arch_get_num_closid(struct rdt_resource *r);
- int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid);
-+void resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
-+			     u32 closid, u32 *value);
+ }
  
- #endif /* _RESCTRL_H */
+-static void cdpl3_disable(void)
++int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable)
+ {
+-	cdp_disable(RDT_RESOURCE_L3, RDT_RESOURCE_L3DATA, RDT_RESOURCE_L3CODE);
+-}
++	struct rdt_hw_resource *hw_res = &rdt_resources_all[l];
++	enum resctrl_res_level code_type, data_type;
+ 
+-static void cdpl2_disable(void)
+-{
+-	cdp_disable(RDT_RESOURCE_L2, RDT_RESOURCE_L2DATA, RDT_RESOURCE_L2CODE);
++	if (!hw_res->cdp_capable)
++		return -EINVAL;
++
++	if (l == RDT_RESOURCE_L3) {
++		code_type = RDT_RESOURCE_L3CODE;
++		data_type = RDT_RESOURCE_L3DATA;
++	} else if (l == RDT_RESOURCE_L2) {
++		code_type = RDT_RESOURCE_L2CODE;
++		data_type = RDT_RESOURCE_L2DATA;
++	} else {
++		return -EINVAL;
++	}
++
++	if (enable)
++		return cdp_enable(l, data_type, code_type);
++
++	cdp_disable(l, data_type, code_type);
++
++	return 0;
+ }
+ 
+ static void cdp_disable_all(void)
+ {
+-	if (rdt_resources_all[RDT_RESOURCE_L3DATA].resctrl.alloc_enabled)
+-		cdpl3_disable();
+-	if (rdt_resources_all[RDT_RESOURCE_L2DATA].resctrl.alloc_enabled)
+-		cdpl2_disable();
++	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L3))
++		resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
++	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L2))
++		resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
+ }
+ 
+ /*
+@@ -2106,10 +2119,10 @@ static int rdt_enable_ctx(struct rdt_fs_context *ctx)
+ 	int ret = 0;
+ 
+ 	if (ctx->enable_cdpl2)
+-		ret = cdpl2_enable();
++		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, true);
+ 
+ 	if (!ret && ctx->enable_cdpl3)
+-		ret = cdpl3_enable();
++		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, true);
+ 
+ 	if (!ret && ctx->enable_mba_mbps)
+ 		ret = set_mba_sc(true);
+@@ -3208,10 +3221,10 @@ static int rdtgroup_rmdir(struct kernfs_node *kn)
+ 
+ static int rdtgroup_show_options(struct seq_file *seq, struct kernfs_root *kf)
+ {
+-	if (rdt_resources_all[RDT_RESOURCE_L3DATA].resctrl.alloc_enabled)
++	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L3))
+ 		seq_puts(seq, ",cdp");
+ 
+-	if (rdt_resources_all[RDT_RESOURCE_L2DATA].resctrl.alloc_enabled)
++	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L2))
+ 		seq_puts(seq, ",cdpl2");
+ 
+ 	if (is_mba_sc(&rdt_resources_all[RDT_RESOURCE_MBA].resctrl))
 -- 
 2.30.2
 
