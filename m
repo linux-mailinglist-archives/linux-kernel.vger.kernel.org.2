@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A954F3A6188
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A633A60CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbhFNKsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:48:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46840 "EHLO mail.kernel.org"
+        id S233182AbhFNKiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:38:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233702AbhFNKlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:41:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A93C1613CC;
-        Mon, 14 Jun 2021 10:35:04 +0000 (UTC)
+        id S233505AbhFNKfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:35:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED0C661206;
+        Mon, 14 Jun 2021 10:32:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666905;
-        bh=Wxtvq9eHMKPN54ne+ZQrK/BlFetohqLhABaJbiMUsWE=;
+        s=korg; t=1623666745;
+        bh=bYIvQUL/L8SXdwowI50911FbHROn5SVxawabsKcL6vo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lVNnDF5ZtLNlji6sV6v+l1lzzQ9xsM8a+E4HgQ41h+uxdpuDzyw4ohIxtsWIERH3A
-         LjnhNGXeStzGKMzSXO98d+wsSJ3TGHc9Xwp/CZ9sKL5U57pa5X3wOqChpt1ALFIf4b
-         KEZH3IfKDuREgoPFroWXwVHYpXnE6eEEZWbxyVqE=
+        b=Q8hOxTUL+eD9hJc1OjjtHjcSpETFPMMNjeD99pKY/4zpEkpLmU3XHQ4ker3pOjKfa
+         aV+NesD5nFh/x5jQD+zNuHsIACaMvn7okBH7AvUICOU0fMWQc7EpQ6hAvr7y2Cyl58
+         W8NlZa6ATLJgJWNd2i/VHd3voiRwSjNSsBF6kn5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 23/67] powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P2041 i2c controllers
-Date:   Mon, 14 Jun 2021 12:27:06 +0200
-Message-Id: <20210614102644.534772871@linuxfoundation.org>
+        Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 14/49] net: appletalk: cops: Fix data race in cops_probe1
+Date:   Mon, 14 Jun 2021 12:27:07 +0200
+Message-Id: <20210614102642.339160940@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
 
-[ Upstream commit 7adc7b225cddcfd0f346d10144fd7a3d3d9f9ea7 ]
+[ Upstream commit a4dd4fc6105e54393d637450a11d4cddb5fabc4f ]
 
-The i2c controllers on the P2040/P2041 have an erratum where the
-documented scheme for i2c bus recovery will not work (A-004447). A
-different mechanism is needed which is documented in the P2040 Chip
-Errata Rev Q (latest available at the time of writing).
+In cops_probe1(), there is a write to dev->base_addr after requesting an
+interrupt line and registering the interrupt handler cops_interrupt().
+The handler might be called in parallel to handle an interrupt.
+cops_interrupt() tries to read dev->base_addr leading to a potential
+data race. So write to dev->base_addr before calling request_irq().
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/boot/dts/fsl/p2041si-post.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/net/appletalk/cops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
-index 51e975d7631a..8921f17fca42 100644
---- a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
-+++ b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
-@@ -389,7 +389,23 @@
- 	};
+diff --git a/drivers/net/appletalk/cops.c b/drivers/net/appletalk/cops.c
+index 486e1e6997fc..dde0cda3f696 100644
+--- a/drivers/net/appletalk/cops.c
++++ b/drivers/net/appletalk/cops.c
+@@ -324,6 +324,8 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			break;
+ 	}
  
- /include/ "qoriq-i2c-0.dtsi"
-+	i2c@118000 {
-+		fsl,i2c-erratum-a004447;
-+	};
++	dev->base_addr = ioaddr;
 +
-+	i2c@118100 {
-+		fsl,i2c-erratum-a004447;
-+	};
-+
- /include/ "qoriq-i2c-1.dtsi"
-+	i2c@119000 {
-+		fsl,i2c-erratum-a004447;
-+	};
-+
-+	i2c@119100 {
-+		fsl,i2c-erratum-a004447;
-+	};
-+
- /include/ "qoriq-duart-0.dtsi"
- /include/ "qoriq-duart-1.dtsi"
- /include/ "qoriq-gpio-0.dtsi"
+ 	/* Reserve any actual interrupt. */
+ 	if (dev->irq) {
+ 		retval = request_irq(dev->irq, cops_interrupt, 0, dev->name, dev);
+@@ -331,8 +333,6 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			goto err_out;
+ 	}
+ 
+-	dev->base_addr = ioaddr;
+-
+         lp = netdev_priv(dev);
+         spin_lock_init(&lp->lock);
+ 
 -- 
 2.30.2
 
