@@ -2,232 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B43F3A5CAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805833A5CB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 08:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhFNGAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 02:00:41 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:41742 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231968AbhFNGAc (ORCPT
+        id S232401AbhFNGCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 02:02:22 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:6371 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229696AbhFNGCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 02:00:32 -0400
-Received: by mail-il1-f198.google.com with SMTP id v15-20020a92d24f0000b02901e85881a504so7337540ilg.8
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 22:58:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=iolwSrBLU5wcSTW/N0CiJLq6wC7qoEFtQEKW0DDo1fc=;
-        b=ZWAi4MVJFyIKsTyBYNHIuQnoUCZzYqVZrC84o8wAKycO7uSl3VpgH4/KSJrPNeGMoA
-         9D7bA20Ec5EYpsdMmb7uwocmHTh27D/5s9GHlfFwMknSx720qpPM/xd2Ur9yTCawyi18
-         cf9Gz/Skgb2kA2RovRqHm1Po+I7u8crcedgw3N74nPi/kOXC9a+KYtq1v1XaObevyrmS
-         HynRrmNoEfhIev28fXXwJnGf2fYbadlgK55F1n1DyS/UVZc8d8IVrlVIRmF3ZEOqRAJC
-         395n4Y4mDYFNy6qXJzk8Oaivh6mKMQsbTJqIClVyfA12L+K0msiOOgnntOpAkIccZQYt
-         UknQ==
-X-Gm-Message-State: AOAM5305di/9zx12y9s+Onp/kBot18vT4o8XqRq5Vd1s3vJdnbVHz3PQ
-        t/qofUsUvciSR1b3atx/uUPrml+e8JPGCLNqj4lB0z10MDG+
-X-Google-Smtp-Source: ABdhPJy6CFJhViExCUyijYTrppYaOtBX+UmeEp+WNK5oxst0Kvv0cP1NrKo57iwv0a/qyhrK0GfcrmSxdXbovNwmor5OrY1FQJYp
-MIME-Version: 1.0
-X-Received: by 2002:a92:d24a:: with SMTP id v10mr13215606ilg.246.1623650296720;
- Sun, 13 Jun 2021 22:58:16 -0700 (PDT)
-Date:   Sun, 13 Jun 2021 22:58:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002cf2d905c4b38bee@google.com>
-Subject: [syzbot] BUG: stack guard page was hit in preempt_count_add
-From:   syzbot <syzbot+df16599805dec43e5fc2@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jirislaby@kernel.org,
-        jpoimboe@redhat.com, jthierry@redhat.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 14 Jun 2021 02:02:21 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 13 Jun 2021 23:00:19 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 13 Jun 2021 23:00:17 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 14 Jun 2021 11:29:55 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 9CC5B21AFC; Mon, 14 Jun 2021 11:29:54 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v4] arm64: dts: qcom: sc7280: Add venus DT node
+Date:   Mon, 14 Jun 2021 11:29:51 +0530
+Message-Id: <1623650391-28144-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add DT entries for the sc7280 venus encoder/decoder.
 
-syzbot found the following issue on:
+Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 
-HEAD commit:    2aa8eca6 net: appletalk: fix some mistakes in grammar
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10c653afd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a43776cd214e447a
-dashboard link: https://syzkaller.appspot.com/bug?extid=df16599805dec43e5fc2
+change since v3:
+ - added firmware node back.
+change since v2:
+ - removed firmware node.
+change since v1:
+ - added rpmh power domain and opp table.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+this patch depends on [1],[2] & [3].
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+df16599805dec43e5fc2@syzkaller.appspotmail.com
-
-BUG: stack guard page was hit at ffffc90009defff8 (stack is ffffc90009df0000..ffffc90009df7fff)
-kernel stack overflow (double-fault): 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 17591 Comm: syz-executor.0 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:get_lock_parent_ip include/linux/ftrace.h:841 [inline]
-RIP: 0010:preempt_latency_start kernel/sched/core.c:4780 [inline]
-RIP: 0010:preempt_latency_start kernel/sched/core.c:4777 [inline]
-RIP: 0010:preempt_count_add+0x6f/0x140 kernel/sched/core.c:4805
-Code: 05 16 f0 b2 7e 0f b6 c0 3d f4 00 00 00 7f 64 65 8b 05 05 f0 b2 7e 25 ff ff ff 7f 39 c3 74 03 5b 5d c3 48 8b 5c 24 10 48 89 df <e8> 8c cd 0b 00 85 c0 75 35 65 48 8b 2c 25 00 f0 01 00 48 8d bd f0
-RSP: 0018:ffffc90009df0000 EFLAGS: 00010246
-RAX: 0000000000000001 RBX: ffffffff81331a80 RCX: 1ffffffff20f20e4
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81331a80
-RBP: 0000000000000001 R08: 0000000000000001 R09: ffffc90009df0140
-R10: fffff520013be033 R11: 0000000000000000 R12: ffffc90009df0188
-R13: fffff520013be029 R14: ffffc90009df0140 R15: ffffc90009df0140
-FS:  00007f6395c14700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90009defff8 CR3: 0000000094018000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- unwind_next_frame+0x120/0x1ce0 arch/x86/kernel/unwind_orc.c:428
- __unwind_start+0x51b/0x800 arch/x86/kernel/unwind_orc.c:699
- unwind_start arch/x86/include/asm/unwind.h:60 [inline]
- arch_stack_walk+0x5c/0xe0 arch/x86/kernel/stacktrace.c:24
- stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:428 [inline]
- __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
- kasan_slab_alloc include/linux/kasan.h:236 [inline]
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:2913 [inline]
- kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2949
- __alloc_skb+0x20b/0x340 net/core/skbuff.c:414
- alloc_skb include/linux/skbuff.h:1112 [inline]
- nlmsg_new include/net/netlink.h:953 [inline]
- rtmsg_ifinfo_build_skb+0x72/0x1a0 net/core/rtnetlink.c:3791
- rtmsg_ifinfo_event net/core/rtnetlink.c:3827 [inline]
- rtmsg_ifinfo_event net/core/rtnetlink.c:3818 [inline]
- rtnetlink_event+0x123/0x1d0 net/core/rtnetlink.c:5603
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
- call_netdevice_notifiers net/core/dev.c:2147 [inline]
- netdev_features_change net/core/dev.c:1493 [inline]
- netdev_sync_lower_features net/core/dev.c:9814 [inline]
- __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
- netdev_change_features+0x61/0xb0 net/core/dev.c:10033
- bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
- bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
- __netdev_update_features+0x9
-Lost 457 message(s)!
----[ end trace 910abc79cbd754ed ]---
-RIP: 0010:get_lock_parent_ip include/linux/ftrace.h:841 [inline]
-RIP: 0010:preempt_latency_start kernel/sched/core.c:4780 [inline]
-RIP: 0010:preempt_latency_start kernel/sched/core.c:4777 [inline]
-RIP: 0010:preempt_count_add+0x6f/0x140 kernel/sched/core.c:4805
-Code: 05 16 f0 b2 7e 0f b6 c0 3d f4 00 00 00 7f 64 65 8b 05 05 f0 b2 7e 25 ff ff ff 7f 39 c3 74 03 5b 5d c3 48 8b 5c 24 10 48 89 df <e8> 8c cd 0b 00 85 c0 75 35 65 48 8b 2c 25 00 f0 01 00 48 8d bd f0
-RSP: 0018:ffffc90009df0000 EFLAGS: 00010246
-RAX: 0000000000000001 RBX: ffffffff81331a80 RCX: 1ffffffff20f20e4
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81331a80
-RBP: 0000000000000001 R08: 0000000000000001 R09: ffffc90009df0140
-R10: fffff520013be033 R11: 0000000000000000 R12: ffffc90009df0188
-R13: fffff520013be029 R14: ffffc90009df0140 R15: ffffc90009df0140
-FS:  00007f6395c14700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90009defff8 CR3: 0000000094018000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+[1] https://patchwork.kernel.org/project/linux-clk/list/?series=449621
+[2] https://lkml.org/lkml/2021/4/9/812
+[3] https://lore.kernel.org/patchwork/project/lkml/list/?series=488429#
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 4c44a52..4982f96 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -60,6 +60,11 @@
+ 			no-map;
+ 			reg = <0x0 0x80b00000 0x0 0x100000>;
+ 		};
++
++		video_mem: memory@8b200000 {
++			reg = <0x0 0x8b200000 0x0 0x500000>;
++			no-map;
++		};
+ 	};
+ 
+ 	cpus {
+@@ -850,6 +855,76 @@
+ 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
++		venus: video-codec@0aa00000 {
++			compatible = "qcom,sc7280-venus";
++			reg = <0 0x0aa00000 0 0xd0600>;
++			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
++				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
++				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
++				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
++				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
++			clock-names = "core", "bus", "iface",
++				      "vcodec_core", "vcodec_bus";
++
++			power-domains = <&videocc MVSC_GDSC>,
++					<&videocc MVS0_GDSC>;
++					<&rpmhpd SC7280_CX>;
++			power-domain-names = "venus", "vcodec0", "cx";
++			operating-points-v2 = <&venus_opp_table>;
++
++			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
++					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
++			interconnect-names = "cpu-cfg", "video-mem";
++
++			iommus = <&apps_smmu 0x2180 0x20>,
++				 <&apps_smmu 0x2184 0x20>;
++			memory-region = <&video_mem>;
++
++			video-decoder {
++				compatible = "venus-decoder";
++			};
++
++			video-encoder {
++				compatible = "venus-encoder";
++			};
++
++			video-firmware {
++				iommus = <&apps_smmu 0x21a2 0x0>;
++			};
++
++			venus_opp_table: venus-opp-table {
++				compatible = "operating-points-v2";
++
++				opp-133330000 {
++					opp-hz = /bits/ 64 <133330000>;
++					required-opps = <&rpmhpd_opp_low_svs>;
++				};
++
++				opp-240000000 {
++					opp-hz = /bits/ 64 <240000000>;
++					required-opps = <&rpmhpd_opp_svs>;
++				};
++
++				opp-335000000 {
++					opp-hz = /bits/ 64 <335000000>;
++					required-opps = <&rpmhpd_opp_svs_l1>;
++				};
++
++				opp-424000000 {
++					opp-hz = /bits/ 64 <424000000>;
++					required-opps = <&rpmhpd_opp_nom>;
++				};
++
++				opp-460000000 {
++					opp-hz = /bits/ 64 <460000000>;
++					required-opps = <&rpmhpd_opp_turbo>;
++				};
++			};
++
++		};
++
+ 		videocc: clock-controller@aaf0000 {
+ 			compatible = "qcom,sc7280-videocc";
+ 			reg = <0 0xaaf0000 0 0x10000>;
+-- 
+2.7.4
+
