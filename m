@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48E93A6125
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDBB3A61CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbhFNKoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40062 "EHLO mail.kernel.org"
+        id S233726AbhFNKvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:51:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233777AbhFNKhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:37:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7BA3611BE;
-        Mon, 14 Jun 2021 10:33:38 +0000 (UTC)
+        id S234194AbhFNKoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:44:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFCCC61244;
+        Mon, 14 Jun 2021 10:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666819;
-        bh=Yg31k1HocdswqpPwLQx+peZ9oi2gE5TsZ/v3v/9vvYo=;
+        s=korg; t=1623666980;
+        bh=1l25weUlptaCXdQOOaYRvc5LIiHQ6ncwtcjRGSgx/tA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z19v4tmSd4++RQHuBIbXsA7g20Qpr97lagJQMODUOfwrviMl7AItv8ZnRjyozwhDh
-         6pOthfsHjwVM06cjNYCJmW/srspQ0irVqqT9L3vLthRZgIN2KUVlJRZmG96kYwlqKn
-         9/576tidILBVdgdymPyhOLSc26xcNp184lqv0K2w=
+        b=Uwx+Ywaefi+3G78fOhUcZE2n4CLfY4YZwDSBLYfwe2df3RoYfJPOMxCOrNPc85jlm
+         Uep9BA5iog4ghTh7doflg4J59cC8RAhCNj+8zHveSfYhqxCbVCUPkicdoZQUTSjuzb
+         L5alsGEHLO1kHVruhTgtejN46fWG6oxeEbM/rRLU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 41/49] perf session: Correct buffer copying when peeking events
-Date:   Mon, 14 Jun 2021 12:27:34 +0200
-Message-Id: <20210614102643.207576453@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH 4.19 52/67] vmlinux.lds.h: Avoid orphan section with !SMP
+Date:   Mon, 14 Jun 2021 12:27:35 +0200
+Message-Id: <20210614102645.531386842@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,55 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 197eecb6ecae0b04bd694432f640ff75597fed9c ]
+commit d4c6399900364facd84c9e35ce1540b6046c345f upstream.
 
-When peeking an event, it has a short path and a long path.  The short
-path uses the session pointer "one_mmap_addr" to directly fetch the
-event; and the long path needs to read out the event header and the
-following event data from file and fill into the buffer pointer passed
-through the argument "buf".
+With x86_64_defconfig and the following configs, there is an orphan
+section warning:
 
-The issue is in the long path that it copies the event header and event
-data into the same destination address which pointer "buf", this means
-the event header is overwritten.  We are just lucky to run into the
-short path in most cases, so we don't hit the issue in the long path.
+CONFIG_SMP=n
+CONFIG_AMD_MEM_ENCRYPT=y
+CONFIG_HYPERVISOR_GUEST=y
+CONFIG_KVM=y
+CONFIG_PARAVIRT=y
 
-This patch adds the offset "hdr_sz" to the pointer "buf" when copying
-the event data, so that it can reserve the event header which can be
-used properly by its caller.
+ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/cpu/vmware.o' being placed in section `.data..decrypted'
+ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/kvm.o' being placed in section `.data..decrypted'
 
-Fixes: 5a52f33adf02 ("perf session: Add perf_session__peek_event()")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20210605052957.1070720-1-leo.yan@linaro.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+These sections are created with DEFINE_PER_CPU_DECRYPTED, which
+ultimately turns into __PCPU_ATTRS, which in turn has a section
+attribute with a value of PER_CPU_BASE_SECTION + the section name. When
+CONFIG_SMP is not set, the base section is .data and that is not
+currently handled in any linker script.
+
+Add .data..decrypted to PERCPU_DECRYPTED_SECTION, which is included in
+PERCPU_INPUT -> PERCPU_SECTION, which is include in the x86 linker
+script when either CONFIG_X86_64 or CONFIG_SMP is unset, taking care of
+the warning.
+
+Fixes: ac26963a1175 ("percpu: Introduce DEFINE_PER_CPU_DECRYPTED")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1360
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com> # build
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210506001410.1026691-1-nathan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/session.c | 1 +
+ include/asm-generic/vmlinux.lds.h |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index decd5d147e81..735dc862c7f8 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -1475,6 +1475,7 @@ int perf_session__peek_event(struct perf_session *session, off_t file_offset,
- 	if (event->header.size < hdr_sz || event->header.size > buf_sz)
- 		return -1;
- 
-+	buf += hdr_sz;
- 	rest = event->header.size - hdr_sz;
- 
- 	if (readn(fd, buf, rest) != (ssize_t)rest)
--- 
-2.30.2
-
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -842,6 +842,7 @@
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+ #define PERCPU_DECRYPTED_SECTION					\
+ 	. = ALIGN(PAGE_SIZE);						\
++	*(.data..decrypted)						\
+ 	*(.data..percpu..decrypted)					\
+ 	. = ALIGN(PAGE_SIZE);
+ #else
 
 
