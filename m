@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79F83A63DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E4F3A62E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbhFNLSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:18:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39676 "EHLO mail.kernel.org"
+        id S234597AbhFNLGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:06:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232847AbhFNLFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:05:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EFDF61925;
-        Mon, 14 Jun 2021 10:45:17 +0000 (UTC)
+        id S233755AbhFNK4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:56:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B644615FF;
+        Mon, 14 Jun 2021 10:41:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667518;
-        bh=ho0bdOq5GnYwMGb1t/qr3DNJ4ESJIT4cUkcZnEaefuY=;
+        s=korg; t=1623667267;
+        bh=AdvAlk2XjJ93Yp9FH0iy+xJSk6GCoKJdFtkav7fB8AY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ZoQlvvz7jEIEmVuX721qsl0tEQIjnZ4pD+DcNRwY/O69mu5qVYozDnKQvZE4KxE8
-         /IzOED0EfxwAJ/QS9tyZ+zWwOu4GGCnA2brFhiqZknY3gDZrul6jyFmBE+N0TurnAR
-         vDZUJnuJMCQ7uP+rhy4By44tGHWBgT1m6ryneIYI=
+        b=Fp9MZ+uPmyqYSVJliR6NeNvfb+k/TFPVRANHunDEE58rew45mlSlM6AurRumhyvaJ
+         +GyjBxQssiR+dujRU6GFXPQVFC8nC53f0NfcJK+JuBwC3zjhELKV4ZilK12XGx3RKG
+         CV+NRwlGX38O3vsoEWatV3oSourRh4an9RQVEdH8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH 5.10 102/131] drm/msm/a6xx: avoid shadow NULL reference in failure path
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.4 65/84] RDMA/ipoib: Fix warning caused by destroying non-initial netns
 Date:   Mon, 14 Jun 2021 12:27:43 +0200
-Message-Id: <20210614102656.466490738@linuxfoundation.org>
+Message-Id: <20210614102648.585805988@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Marek <jonathan@marek.ca>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-commit ce86c239e4d218ae6040bec18e6d19a58edb8b7c upstream.
+commit a3e74fb9247cd530dca246699d5eb5a691884d32 upstream.
 
-If a6xx_hw_init() fails before creating the shadow_bo, the a6xx_pm_suspend
-code referencing it will crash. Change the condition to one that avoids
-this problem (note: creation of shadow_bo is behind this same condition)
+After the commit 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for ipoib
+interfaces"), if the IPoIB device is moved to non-initial netns,
+destroying that netns lets the device vanish instead of moving it back to
+the initial netns, This is happening because default_device_exit() skips
+the interfaces due to having rtnl_link_ops set.
 
-Fixes: e8b0b994c3a5 ("drm/msm/a6xx: Clear shadow on suspend")
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210513171431.18632-6-jonathan@marek.ca
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Steps to reporoduce:
+  ip netns add foo
+  ip link set mlx5_ib0 netns foo
+  ip netns delete foo
+
+WARNING: CPU: 1 PID: 704 at net/core/dev.c:11435 netdev_exit+0x3f/0x50
+Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
+nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack
+nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun d
+ fuse
+CPU: 1 PID: 704 Comm: kworker/u64:3 Tainted: G S      W  5.13.0-rc1+ #1
+Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.1.5 04/11/2016
+Workqueue: netns cleanup_net
+RIP: 0010:netdev_exit+0x3f/0x50
+Code: 48 8b bb 30 01 00 00 e8 ef 81 b1 ff 48 81 fb c0 3a 54 a1 74 13 48
+8b 83 90 00 00 00 48 81 c3 90 00 00 00 48 39 d8 75 02 5b c3 <0f> 0b 5b
+c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f 44 00
+RSP: 0018:ffffb297079d7e08 EFLAGS: 00010206
+RAX: ffff8eb542c00040 RBX: ffff8eb541333150 RCX: 000000008010000d
+RDX: 000000008010000e RSI: 000000008010000d RDI: ffff8eb440042c00
+RBP: ffffb297079d7e48 R08: 0000000000000001 R09: ffffffff9fdeac00
+R10: ffff8eb5003be000 R11: 0000000000000001 R12: ffffffffa1545620
+R13: ffffffffa1545628 R14: 0000000000000000 R15: ffffffffa1543b20
+FS:  0000000000000000(0000) GS:ffff8ed37fa00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005601b5f4c2e8 CR3: 0000001fc8c10002 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ops_exit_list.isra.9+0x36/0x70
+ cleanup_net+0x234/0x390
+ process_one_work+0x1cb/0x360
+ ? process_one_work+0x360/0x360
+ worker_thread+0x30/0x370
+ ? process_one_work+0x360/0x360
+ kthread+0x116/0x130
+ ? kthread_park+0x80/0x80
+ ret_from_fork+0x22/0x30
+
+To avoid the above warning and later on the kernel panic that could happen
+on shutdown due to a NULL pointer dereference, make sure to set the
+netns_refund flag that was introduced by commit 3a5ca857079e ("can: dev:
+Move device back to init netns on owning netns delete") to properly
+restore the IPoIB interfaces to the initial netns.
+
+Fixes: 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces")
+Link: https://lore.kernel.org/r/20210525150134.139342-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/ulp/ipoib/ipoib_netlink.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1128,7 +1128,7 @@ static int a6xx_pm_suspend(struct msm_gp
- 	if (ret)
- 		return ret;
+--- a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+@@ -163,6 +163,7 @@ static size_t ipoib_get_size(const struc
  
--	if (adreno_gpu->base.hw_apriv || a6xx_gpu->has_whereami)
-+	if (a6xx_gpu->shadow_bo)
- 		for (i = 0; i < gpu->nr_rings; i++)
- 			a6xx_gpu->shadow[i] = 0;
- 
+ static struct rtnl_link_ops ipoib_link_ops __read_mostly = {
+ 	.kind		= "ipoib",
++	.netns_refund   = true,
+ 	.maxtype	= IFLA_IPOIB_MAX,
+ 	.policy		= ipoib_policy,
+ 	.priv_size	= sizeof(struct ipoib_dev_priv),
 
 
