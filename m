@@ -2,91 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A804F3A5DE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B1F3A5DE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbhFNHwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:52:03 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:43301 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232520AbhFNHwB (ORCPT
+        id S232600AbhFNHx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:53:26 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18340 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232583AbhFNHxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:52:01 -0400
-Received: from [192.168.1.155] ([95.115.71.85]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MqJZl-1lW3zE1cfr-00nQqE; Mon, 14 Jun 2021 09:49:23 +0200
-Subject: Re: device namespaces
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Hannes Reinecke <hare@suse.de>, gregkh@linuxfoundation.org,
-        containers@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <YL9liW99Ytf6uBlu@kroah.com>
- <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
- <20210608142911.ievp2rpuquxjuyus@wittgenstein>
- <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de> <877dj4ff9g.fsf@disp2133>
- <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
- <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
- <20210609072108.ldhsxfnfql4pacqx@wittgenstein>
- <85a0d777-dea6-9574-8946-9fc8f912c1af@suse.de>
- <20210609080918.ma2klvxkjad4pjrn@wittgenstein> <87v96k1d65.fsf@disp2133>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <c504a8c6-73f8-b45c-6d6b-6f5a1300ab3a@metux.net>
-Date:   Mon, 14 Jun 2021 09:49:22 +0200
+        Mon, 14 Jun 2021 03:53:23 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E7XfmS107462;
+        Mon, 14 Jun 2021 03:51:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BxKI6DtgpRagaD4T7QD8EYfW5Yx5ORMfKAMndQ8F+r8=;
+ b=VoF4x+Zapn2sk9TMm8k4EWRl6/FZSYW86+NBYa06rierBJLM3e0a/ky3H1XbzVMCVH5z
+ 3vByhOFb0dM/RB9e/aBBOmb+k8OA4rA4S4GR6hnFtiTUzUsBiDtTyNgJ1ymQZsiLTTAw
+ F/TjIvWAU2RA165iwrpUYcy16KuIMtmxmMTq0LXIu+nPjzL1v1nhjxE+e8q4DJ7XaYvD
+ IZLhbq1RClPNfDrHlljkhKIy2JufLTNmtOzE3IYBYolMC48kYe1EeO3MMkZGUsYj5wsU
+ go3DCyRbf3mtjLBwf7D+MQOCOZmR7kFn8YD+QDBqUnpGEF3ZhoeNj/thZCXpDFIV1kUj mQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39629xs82s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 03:51:18 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15E7ZcOV115635;
+        Mon, 14 Jun 2021 03:51:18 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39629xs824-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 03:51:18 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15E7mqn9003674;
+        Mon, 14 Jun 2021 07:51:16 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 394mj8rsjj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 07:51:16 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15E7pDT331523222
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 07:51:13 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E5430A4060;
+        Mon, 14 Jun 2021 07:51:12 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5946DA4062;
+        Mon, 14 Jun 2021 07:51:12 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.91.122])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Jun 2021 07:51:12 +0000 (GMT)
+Subject: Re: [PATCH v4 0/2] s390/vfio-ap: fix memory leak in mdev remove
+ callback
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <b5ff6818-fb8c-3d50-2d2e-d3992be1644b@de.ibm.com>
+Date:   Mon, 14 Jun 2021 09:51:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <87v96k1d65.fsf@disp2133>
+In-Reply-To: <20210521193648.940864-1-akrowiak@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:vDcC/6vJGgs0xNiN8kqUu/HqX+nxu78r6MTjnn+RaYLuzq9x4kM
- 3AyrUtiJ4LfMoeezJW1RUrxpG3wlUPedT8vY7Posz4/koSgZ3bkxlF7O/vds1Zss5qK7a75
- aN96WycM772iK8O5+zblLAgmJrH947YEJwxNEzqiq7iP+ruA4XFHBmRiLMbgWvPW0Be3rrj
- MH4E5Y49mVP4cmczWyz3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:doK3sJdxH9U=:XMd3gz1LgI4ifBd/cLxrAS
- RLRlLPtxMnFJxzMHKxJPACZ9b+ex+7B7ul616LdwW1mrQshlwvpwnFbWqWZCcbb6eVhvE8MB2
- yxokDoMeqAmfyDW/xCHel32Q1ejOU3cSrBYgbj24tFqnjhqDOhCf+fbwSnsJMQpeV/EoU8Rhk
- c4yEge2gIidmm7SP+tQX5jbqSo8ah5czMjDUJyJs2n9mhXsr0K/yVeICvbDKlh3MaECOAcf7N
- m7fv6+e9Tg43z+kazu4lT0KC7eqie4KygXdMLYQ7FBUzWw8N1xOMFkA7fW2gc9wfUXUctaq4J
- jZp3h90Zf2MhGixNNKjDshLXzTEfs5Mra7Xpx5QhXmw6FvCXSKsi7ofMGpLKZXKXtke+++O7/
- nVIddDzBsCE8/TrJXxDL1RZzLhgg99BqI1U+RDJ0Bkrfd7AT2D7DkLLoIevLkd+MJ76Fj7VJO
- ifNxLd8TuLl8xZVu2GJNKIqWQ5ZXC1f2HD3IWbrMenBD9z1AKp9H2yudk4b6OP5obqYJAPNLL
- 3CsFvBWxmq2DSrwrB+49Gk=
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: BsCMWfQNzDh4WyVjLxEFSc-gN8Yb4rwU
+X-Proofpoint-ORIG-GUID: 2VX3HGAQ3RNWcKpgE-rFCND32A0gzw9A
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-14_01:2021-06-11,2021-06-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 suspectscore=0 clxscore=1011
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106140055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.06.21 20:14, Eric W. Biederman wrote:
 
-Hi,
+On 21.05.21 21:36, Tony Krowiak wrote:
+> Fixes a memory leak in the mdev remove callback when invoked while the
+> mdev is in use by a KVM guest. Instead of returning -EBUSY from the
+> callback, a full cleanup of the resources allocated to the mdev is
+> performed because regardless of the value returned from the function, the
+> mdev is removed from sysfs.
+> 
+> The cleanup of resources allocated to the mdev may coincide with the
+> interception of the PQAP(AQIC) instruction in which case data needed to
+> handle the interception may get removed. A patch is included in this series
+> to synchronize access to resources needed by the interception handler to
+> protect against invalid memory accesses.
+> 
+> The first pass (PATCH v3) at trying to synchronize access to the pqap
+> function pointer employed RCU. The problem is, the RCU read-side critical
+> section would have to include the execution of the pqap function which
+> sleeps; RCU disallows sleeping inside an RCU region. When I subsequently
+> tried to encompass the pqap function within the
+> rcu_read_lock/rcu_read_unlock, I ended up seeing lockdep warnings in the
+> syslog.
+> 
+> It was suggested that we use an rw_semaphore to synchronize access to
+> the pqap hook, but I also ran into similar lockdep complaints something
+> like the following:
+> 
+>    Possible unsafe locking scenario:
+> 
+>          CPU0                            CPU1
+>          ----                            ----
+>     down_read(&rwsem)
+>     in handle_pqap (priv.c);
+>     
+>                                    lock(&matrix_dev->lock);
+>                                    in vfio_ap_mdev_set_kvm (vfio_ap_ops.c)
+>                                  
+>                                    down_write(&rwsem;
+>                                    in vfio_ap_mdev_set_kvm (vfio_ap_ops.c)
+>                                  
+>     lock(&matrix_dev->lock);
+>     in handle_pqap(vfio_ap_ops.c)
+> 
+> Access to the mdev must be done under the matrix_dev->lock to ensure that
+> it doesn't get freed via the remove callback while in use. This appears
+> to be mutually exclusive with setting/unsetting the pqap_hook pointer
+> due to lockdep issues.
+> 
+> The solution:
+> ------------
+> The lifetime of the handle_pqap function (vfio_ap_ops) is syncrhonous
+> with the lifetime of the vfio_ap module, so there really is not reason
+> to tie the setting/clearing of its function pointer with the lifetime
+> of a guest or even an mdev. If the function pointer is set when the
+> vfio_ap module is loaded and cleared when the vfio_ap module is unloaded,
+> then access to it can be protected independently from mdev creation or
+> removal as well as the starting or shutdown of a guest. As long as
+> access to the mdev is always controlled by the matrix_dev->lock, the
+> mdev can not be freed without other functions being aware.
+> 
+> Change log:
+> v3 -> v4:
+> --------
+> * Created a registry for crypto hooks in priv.c with functions for
+>    registering/unregistering function pointers in kvm_host.h (for s390).
+> 
+> * Register the function pointer for handling the PQAP instruction when
+>    the vfio_ap module is loaded and unregister it when the module is
+>    unloaded.
 
-> I favor none of the virtual devices showing up in sysfs.  Maybe existing
-> userspace needs the devices in sysfs, but if the solution is simply to
-> skip sysfs for virtual devices that is much simpler.
-
-Sorry for being a little bit confused, but by virtual devices you mean
-things like pty's or all the other stuff we already see under
-/sys/device/virtual ?
-
-I'm yet unsure what the better way is. If we're just talking about pty's
-specifically, I maybe could live with threating them like "special sort
-of pipes", but I guess that would require some extra magic.
-
-If I'm not mistaken, the whole sysfs stuff is automatically handled
-device classes and bus'es - seems that tty's are also class devs.
-
-How would you skip the virtual devices from sysfs ? Adding some filter
-into sysfs that looks at the device class (or some flag within it) ?
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Was there a v5? I cannot find it.
