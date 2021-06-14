@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC1F3A6047
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2483A6204
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbhFNKc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38298 "EHLO mail.kernel.org"
+        id S234877AbhFNKyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:54:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232966AbhFNKbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D85611EE;
-        Mon, 14 Jun 2021 10:29:35 +0000 (UTC)
+        id S233584AbhFNKr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1D0661454;
+        Mon, 14 Jun 2021 10:37:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666575;
-        bh=JdWShn25uGNjts7Gh0cwlIcfkNhO76pSuhDxgBRD6mc=;
+        s=korg; t=1623667046;
+        bh=EIvTISSYajU82GNsW19d4zdW/MHrf2YIT8Bd+65matc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y8sAUZG4jrg24tI3o6IMKaDjuVZUg3sAipPMHp+VCk8Y9QuhV/JSof8hNKu1I3Pn3
-         8VRekrHpb1sdlr0+XEWgFajWwG6uH2JDbJqnw+mYr8+2+9Rh9zNM0a8acUWJdGqj3q
-         hbBigdu1oar9FBNSpoUxLR/rcPR4qlZW4rNePKaU=
+        b=dm1ZkIVIctrD6Ih9MtyF8igIXMb+P6v+RZH1oz3Jm6AvWcAITbNetmMsNipkhAErY
+         CpF4L0rcnG8oVa7b1poO1q+8NSjlBqcA/rSGOGVYDVo7n3kYHXvG+MkTrIaXy7vVBf
+         fZrAWJmvNjww0xZs5cUao/ura6et/++2wh7tu+VM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 29/34] NFS: Fix a potential NULL dereference in nfs_get_client()
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Kyle Tso <kyletso@google.com>
+Subject: [PATCH 4.19 37/67] usb: pd: Set PD_T_SINK_WAIT_CAP to 310ms
 Date:   Mon, 14 Jun 2021 12:27:20 +0200
-Message-Id: <20210614102642.515540737@linuxfoundation.org>
+Message-Id: <20210614102645.031428031@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Kyle Tso <kyletso@google.com>
 
-[ Upstream commit 09226e8303beeec10f2ff844d2e46d1371dc58e0 ]
+commit 6490fa565534fa83593278267785a694fd378a2b upstream.
 
-None of the callers are expecting NULL returns from nfs_get_client() so
-this code will lead to an Oops.  It's better to return an error
-pointer.  I expect that this is dead code so hopefully no one is
-affected.
+Current timer PD_T_SINK_WAIT_CAP is set to 240ms which will violate the
+SinkWaitCapTimer (tTypeCSinkWaitCap 310 - 620 ms) defined in the PD
+Spec if the port is faster enough when running the state machine. Set it
+to the lower bound 310ms to ensure the timeout is in Spec.
 
-Fixes: 31434f496abb ("nfs: check hostname in nfs_get_client")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f0690a25a140 ("staging: typec: USB Type-C Port Manager (tcpm)")
+Cc: stable <stable@vger.kernel.org>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Kyle Tso <kyletso@google.com>
+Link: https://lore.kernel.org/r/20210528081613.730661-1-kyletso@google.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/client.c | 2 +-
+ include/linux/usb/pd.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/client.c b/fs/nfs/client.c
-index d6d5d2a48e83..ba2cd0bd3894 100644
---- a/fs/nfs/client.c
-+++ b/fs/nfs/client.c
-@@ -377,7 +377,7 @@ nfs_get_client(const struct nfs_client_initdata *cl_init,
- 
- 	if (cl_init->hostname == NULL) {
- 		WARN_ON(1);
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	dprintk("--> nfs_get_client(%s,v%u)\n",
--- 
-2.30.2
-
+--- a/include/linux/usb/pd.h
++++ b/include/linux/usb/pd.h
+@@ -434,7 +434,7 @@ static inline unsigned int rdo_max_power
+ #define PD_T_SENDER_RESPONSE	60	/* 24 - 30 ms, relaxed */
+ #define PD_T_SOURCE_ACTIVITY	45
+ #define PD_T_SINK_ACTIVITY	135
+-#define PD_T_SINK_WAIT_CAP	240
++#define PD_T_SINK_WAIT_CAP	310	/* 310 - 620 ms */
+ #define PD_T_PS_TRANSITION	500
+ #define PD_T_SRC_TRANSITION	35
+ #define PD_T_DRP_SNK		40
 
 
