@@ -2,104 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A633A5D50
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 08:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0936B3A5D53
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 08:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbhFNG7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 02:59:07 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:47295 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbhFNG7F (ORCPT
+        id S232484AbhFNG77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 02:59:59 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:48924 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232434AbhFNG7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 02:59:05 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id BFB982225B;
-        Mon, 14 Jun 2021 08:56:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1623653820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1AgvWwEgWNbd/ZFEwqZyF0GXiy7g1Jx3V20t6vTDlAs=;
-        b=PKhJIU1/cFO6ly5cziLdB3k5N19D6kgoI3OGLCIasC5+h3qhqbETiSoEo9ukKb9YxDUth8
-        mB8ae63ghOZtPxByjBS8PcQPU1T8iHK+x/zi+wSTfR+H+0X3ep8jOmTW0ezrMcsLAENBoA
-        Xa6ITPxxKhtfSuh4aeEXDGXcJABPHqg=
+        Mon, 14 Jun 2021 02:59:55 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E6ucF6007613;
+        Mon, 14 Jun 2021 02:57:51 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 394su5e9nj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 02:57:51 -0400
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 15E6vnW2060166
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Jun 2021 02:57:49 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Mon, 14 Jun 2021 02:57:49 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Mon, 14 Jun 2021 02:57:49 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Mon, 14 Jun 2021 02:57:49 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 15E6vlpi028812;
+        Mon, 14 Jun 2021 02:57:47 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <sboyd@kernel.org>,
+        <mturquette@baylibre.com>, <petre.minciunescu@analog.com>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v2 0/2] clk: ad9545: Add support
+Date:   Mon, 14 Jun 2021 10:07:16 +0300
+Message-ID: <20210614070718.78041-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Jun 2021 08:56:59 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Reto Schneider <code@reto-schneider.ch>
-Cc:     linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
-In-Reply-To: <20210613121248.1529292-1-code@reto-schneider.ch>
-References: <20210613121248.1529292-1-code@reto-schneider.ch>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <1ba367f93650cb65122acd32fb4a4159@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: GAzMq89hqKJRHd9KXjYeONVTX0IhzZ_R
+X-Proofpoint-GUID: GAzMq89hqKJRHd9KXjYeONVTX0IhzZ_R
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-14_01:2021-06-11,2021-06-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 adultscore=0 phishscore=0 spamscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106140050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reto,
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Am 2021-06-13 14:12, schrieb Reto Schneider:
-> From: Reto Schneider <reto.schneider@husqvarnagroup.com>
-> 
-> The data sheets can be found here:
-> http://xmcwh.com/Uploads/2020-12-17/XM25QH64C_Ver1.1.pdf
+Add support for AD9545 Quad Input, 10-Output, Dual DPLL/IEEE 1588,
+1 pps Synchronizer and Jitter Cleaner.
 
-Could you add that as a "Datasheet:" tag before your Sob tag?
+At the core of the device there are PLL blocks. Each block consists
+of one DPLL and one APLL. The DPLL can be fed timestamps from one of
+the 4 reference input dividers or one of the two auxiliary NCOs.
 
-> This chip has been (briefly) tested on the MediaTek MT7688 based 
-> GARDENA
-> smart gateway.
+The APLL takes the output of the DPLL and up-converts this
+frequency to 1.2-2.0 GHZ. First 6 output dividers are receiving
+clock from APLL0 and last 4 outputs are receiving clock from APLL1.
 
-Could you also apply my SFDP patch [1] and send the dump? Unfortunately,
-I can't think of a good way to do that along with the patch and if this
-in some way regarded as copyrighted material. So feel free to send it to
-me privately. I'm starting to build a database.
+Current approach is to register under common clock framework,
+depending whether they are mentioned in the device-tree,
+any of the used references input dividers, the two auxiliary
+NCOs, PLL blocks, output dividers.
 
-> Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
+A clock tree example:
+Ref-B
+  Ref-B-Div
+    PLL0
+      Q0C-div
+    PLL1
+      Q1A-div
+      Q1B-div
 
-With that fixed:
-Reviewed-by: Michael Walle <michael@walle.cc>
+Alexandru Tachici (2):
+  clk: ad9545: Add support
+  dt-bindings: clock: ad9545: Add documentation
 
-NB. XMC ignores the continuation codes and this particular device will
-collide with M25PE64/M45PE64. Although I couldn't find any datasheet,
-so I don't know if these devices actually exist.
+Changelog v1 -> v2:
+- allow uHz DPLL loop bandwidth in DT
+- allow user to set different tub fill/drain rates per DPLL from DT
+for improved locking detection
+- added reference priorities, DPLLs now can have multiple parents selected based on
+the validity of the reference in question and priority
+- added fast ACQ process that can be configured in the DT
+- fixed DT bindings errors
+- added support for system clock compensation
 
--michael
+ .../devicetree/bindings/clock/clk-ad9545.yaml |  556 ++++
+ drivers/clk/Kconfig                           |    6 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/adi/Kconfig                       |   29 +
+ drivers/clk/adi/Makefile                      |    9 +
+ drivers/clk/adi/clk-ad9545-i2c.c              |   62 +
+ drivers/clk/adi/clk-ad9545-spi.c              |   76 +
+ drivers/clk/adi/clk-ad9545.c                  | 2428 +++++++++++++++++
+ drivers/clk/adi/clk-ad9545.h                  |   16 +
+ include/dt-bindings/clock/ad9545.h            |   69 +
+ 10 files changed, 3252 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/clk-ad9545.yaml
+ create mode 100644 drivers/clk/adi/Kconfig
+ create mode 100644 drivers/clk/adi/Makefile
+ create mode 100644 drivers/clk/adi/clk-ad9545-i2c.c
+ create mode 100644 drivers/clk/adi/clk-ad9545-spi.c
+ create mode 100644 drivers/clk/adi/clk-ad9545.c
+ create mode 100644 drivers/clk/adi/clk-ad9545.h
+ create mode 100644 include/dt-bindings/clock/ad9545.h
 
-[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=241877
-
-> 
-> ---
-> 
->  drivers/mtd/spi-nor/xmc.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
-> index 2c7773b68993..b6ac37bd59b8 100644
-> --- a/drivers/mtd/spi-nor/xmc.c
-> +++ b/drivers/mtd/spi-nor/xmc.c
-> @@ -12,6 +12,8 @@ static const struct flash_info xmc_parts[] = {
->  	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
->  	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128,
->  			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "XM25QH64C", INFO(0x204017, 0, 64 * 1024, 128,
-> +			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256,
->  			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  };
+--
+2.25.1
