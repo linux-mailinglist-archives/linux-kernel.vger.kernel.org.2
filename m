@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7909E3A5B83
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 04:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8B23A5B82
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 04:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbhFNCO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 22:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
+        id S232362AbhFNCO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 22:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232316AbhFNCOz (ORCPT
+        with ESMTP id S232356AbhFNCOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 22:14:55 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0658DC061767
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 19:12:37 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id z26so9421389pfj.5
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 19:12:37 -0700 (PDT)
+        Sun, 13 Jun 2021 22:14:54 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D95C0617AF
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 19:12:39 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id v11so5743420ply.6
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 19:12:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hc5tE0rYCbS37ZgBxKFPNr3nuu+6cVzWda11nQdq3iM=;
-        b=Vh+7NPD40igcWMA8ZxCKb882Omc6aDgbk/irfaju7R6OY9JHsN4hyxBDkVJB/XXQeb
-         vtzEuQVTi62SnxT6OobcfTLjOhUpuods3mnG6KdDw+Z59+x3hjUfsydiYzV2Br0XLibk
-         HmBowFSmZoqqKF/uRr4SBf7/xG3uxM+6OYL4WSZ7iCDcvycMF8DCOo1wHBC4eIZvAfjm
-         NQnCbAh1eLGVojwwuV7yl/Yzmj5Zt93GlIJ5JGMNA/QomFnvWoPayMRUSANzoMO/nX38
-         nMmm0LEQ0/F02e2wKpIbuhG+KZp+R0MDP6rNv6KNnifZP7HcdMmBfBsdO1sUQIQrMs4c
-         Ol4Q==
+        bh=06DPK/DIEfCFono0yuu1MCmhjq2CI/XtitXHneoP5fU=;
+        b=oWnsV+BezW5KT/QArk9QVETWeqDfJl2d0xSVEz5fNV0UeDg3N0nGB6rHIPLkhFMd/l
+         3CDyZjxsWdP0wNJJ09O9ZUkWN3NL2fnd92bwl6sjl34LSCcfK8bguFt6wZlcqfswg9pa
+         mrveVeMvidjJcKOLFf9eeAQvIRJIi+VnGYGTvCwf0dF3a7NbNRUWrYk9ECL8+s6chqk1
+         uLXgBjnhawBe2UKbquoCWVnptyLHUIzTBgkTIjQlAEB2Tf4+ytkwIMOFcaGUdA+d/jS+
+         Wgt2DoNznNULS4i12VJM4IW/Y+bRX5LXLjw4GXcc7LGQ5Wa4Xmhz2nx2xvY4ocpBGps4
+         dqpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hc5tE0rYCbS37ZgBxKFPNr3nuu+6cVzWda11nQdq3iM=;
-        b=mzr7YT+avYMF/z8d/p8rxod62bKvwNtJXmAGH860qXvQK181k0iy7G/grJJCMptslJ
-         7APonYmYKVr+lgHFjvD74j6W1Bwv7DpEYSIKcLD3WABqKKJDUtZV+9FmuaIIIG7JBufF
-         7NX2XOPxdBu2eLh0c3tlBTZQQMKMKkhTMQgaKb8xsBF4/1nMCryuV3sFUJ8oxfXKLpvk
-         LhfIL8l5buQRkz8MPHkpOecXgNySzFxdTgGl67OhBIMxvHKgTEQw0c4aNrd/PCEeScef
-         PP5yowO4cQK/8vVosi72OI6j8UWghgDos7MbAj2NL5oGPzD54epoVhq7OaYzHT9H1CUb
-         8DOA==
-X-Gm-Message-State: AOAM532WkPALCP/D8az5DkoY4Q8WfpFBmiBKcvOvVeWuUBZbpQabeRLk
-        n+E8c5PkDebD+68zgHGw3w==
-X-Google-Smtp-Source: ABdhPJw9PDSjTntjgblnpRRtXcC12ps1LpPVexLCN0hoszoS8nN9Si7jFc9Ikr9TWPNAO/xM0yrnhw==
-X-Received: by 2002:a63:ae01:: with SMTP id q1mr14567258pgf.216.1623636756646;
-        Sun, 13 Jun 2021 19:12:36 -0700 (PDT)
+        bh=06DPK/DIEfCFono0yuu1MCmhjq2CI/XtitXHneoP5fU=;
+        b=cUjURGNNfkqLY6/KIfJOKjX7Rx6PEOXHWdLZuTaot8gcGhinOTfV9rYUWCZ3NnfFPn
+         Tvexok3cX+GtHpKeoAgWVXRi3Tne5/UreYf61xXGZ8GVabSTLW7Z+JkKSoyX7k3Nrb+n
+         u5XaOkHm8B5Yc9k/4Dw9Mpz7KTwt2VzggWgYqGkpvTC39wI48tT5im/lLoSAExEk53w9
+         KXU5gBU2B460Vtye5Hs7CR5US/FSVA3oIg+g41+6frE4ObtH5NUWJqbuG6fp9OAndJy1
+         KIt2kBG6O5kImNQhPsnghQGx32OT04zLzmoj5bAV8BJ37dhNq2u5CWXCiVfD0Z/mk8vi
+         Gdsg==
+X-Gm-Message-State: AOAM5331dtzpbznoFpSpDyolmWG9b9LTQHqelp7kYAwxwHBTBxPdLJzC
+        M+f59xuB8scuq+GPJj1BFg==
+X-Google-Smtp-Source: ABdhPJyvl4bHahHn/RdmP86pL4VEvHOHD7AGza4lyMnl4KqJiAGuiYT+fHhiTBjNKFUP12KiHPsRMA==
+X-Received: by 2002:a17:90a:8816:: with SMTP id s22mr16662503pjn.231.1623636759326;
+        Sun, 13 Jun 2021 19:12:39 -0700 (PDT)
 Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
-        by smtp.gmail.com with ESMTPSA id z14sm10952986pfn.11.2021.06.13.19.12.34
+        by smtp.gmail.com with ESMTPSA id z14sm10952986pfn.11.2021.06.13.19.12.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 19:12:36 -0700 (PDT)
+        Sun, 13 Jun 2021 19:12:39 -0700 (PDT)
 From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -59,9 +59,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
         Naoya Horiguchi <naoya.horiguchi@nec.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1 4/6] mm/hwpoison: remove MF_MSG_BUDDY_2ND and MF_MSG_POISONED_HUGE
-Date:   Mon, 14 Jun 2021 11:12:10 +0900
-Message-Id: <20210614021212.223326-5-nao.horiguchi@gmail.com>
+Subject: [PATCH v1 5/6] mm/hwpoison: make some kernel pages handlable
+Date:   Mon, 14 Jun 2021 11:12:11 +0900
+Message-Id: <20210614021212.223326-6-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210614021212.223326-1-nao.horiguchi@gmail.com>
 References: <20210614021212.223326-1-nao.horiguchi@gmail.com>
@@ -73,75 +73,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-These action_page_types are no longer used, so remove them.
+HWPoisonHandlable() introduced by patch "mm,hwpoison: fix race with hugetlb
+page allocation" filters error events by page type, and only limited events
+reach get_page_unless_zero() to avoid race.
+
+Actually this is too restictive because get_hwpoison_page always fails
+to take refcount for any types of kernel page, leading to
+MF_MSG_KERNEL_HIGH_ORDER.  This is not critical (no panic), but less
+informative than MF_MSG_SLAB or MF_MSG_PAGETABLE, so extend
+HWPoisonHandlable() to some basic types of kernel pages (slab, pgtable,
+and reserved pages).
+
+The "handling" for these types are still primitive (just taking refcount
+and setting PG_hwpoison) and some more aggressive actions for memory
+error containment are possible and wanted.  But compared to the older code,
+these cases never enter the code block of page locks (note that
+page locks is not well-defined on these pages), so it's a little safer
+for functions intended for user pages not to be called for kernel pages.
 
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 ---
- include/linux/mm.h      | 2 --
- include/ras/ras_event.h | 2 --
- mm/memory-failure.c     | 2 --
- 3 files changed, 6 deletions(-)
+ mm/memory-failure.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
-diff --git v5.13-rc5/include/linux/mm.h v5.13-rc5_patched/include/linux/mm.h
-index 45008654f695..f1e3b82e1a93 100644
---- v5.13-rc5/include/linux/mm.h
-+++ v5.13-rc5_patched/include/linux/mm.h
-@@ -3105,7 +3105,6 @@ enum mf_action_page_type {
- 	MF_MSG_SLAB,
- 	MF_MSG_PAGETABLE,
- 	MF_MSG_DIFFERENT_COMPOUND,
--	MF_MSG_POISONED_HUGE,
- 	MF_MSG_HUGE,
- 	MF_MSG_FREE_HUGE,
- 	MF_MSG_NON_PMD_HUGE,
-@@ -3120,7 +3119,6 @@ enum mf_action_page_type {
- 	MF_MSG_CLEAN_LRU,
- 	MF_MSG_TRUNCATED_LRU,
- 	MF_MSG_BUDDY,
--	MF_MSG_BUDDY_2ND,
- 	MF_MSG_DAX,
- 	MF_MSG_UNSPLIT_THP,
- 	MF_MSG_UNKNOWN,
-diff --git v5.13-rc5/include/ras/ras_event.h v5.13-rc5_patched/include/ras/ras_event.h
-index 2f459f6f87fb..23306428f5e6 100644
---- v5.13-rc5/include/ras/ras_event.h
-+++ v5.13-rc5_patched/include/ras/ras_event.h
-@@ -359,7 +359,6 @@ TRACE_EVENT(aer_event,
- 	EM ( MF_MSG_SLAB, "kernel slab page" )				\
- 	EM ( MF_MSG_PAGETABLE, "page table page page" )			\
- 	EM ( MF_MSG_DIFFERENT_COMPOUND, "different compound page after locking" ) \
--	EM ( MF_MSG_POISONED_HUGE, "huge page already hardware poisoned" )	\
- 	EM ( MF_MSG_HUGE, "huge page" )					\
- 	EM ( MF_MSG_FREE_HUGE, "free huge page" )			\
- 	EM ( MF_MSG_NON_PMD_HUGE, "non-pmd-sized huge page" )		\
-@@ -374,7 +373,6 @@ TRACE_EVENT(aer_event,
- 	EM ( MF_MSG_CLEAN_LRU, "clean LRU page" )			\
- 	EM ( MF_MSG_TRUNCATED_LRU, "already truncated LRU page" )	\
- 	EM ( MF_MSG_BUDDY, "free buddy page" )				\
--	EM ( MF_MSG_BUDDY_2ND, "free buddy page (2nd try)" )		\
- 	EM ( MF_MSG_DAX, "dax page" )					\
- 	EM ( MF_MSG_UNSPLIT_THP, "unsplit thp" )			\
- 	EMe ( MF_MSG_UNKNOWN, "unknown page" )
 diff --git v5.13-rc5/mm/memory-failure.c v5.13-rc5_patched/mm/memory-failure.c
-index 30d6519ce203..b986936e50eb 100644
+index b986936e50eb..0d51067f0129 100644
 --- v5.13-rc5/mm/memory-failure.c
 +++ v5.13-rc5_patched/mm/memory-failure.c
-@@ -710,7 +710,6 @@ static const char * const action_page_types[] = {
- 	[MF_MSG_SLAB]			= "kernel slab page",
- 	[MF_MSG_PAGETABLE]		= "page table page",
- 	[MF_MSG_DIFFERENT_COMPOUND]	= "different compound page after locking",
--	[MF_MSG_POISONED_HUGE]		= "huge page already hardware poisoned",
- 	[MF_MSG_HUGE]			= "huge page",
- 	[MF_MSG_FREE_HUGE]		= "free huge page",
- 	[MF_MSG_NON_PMD_HUGE]		= "non-pmd-sized huge page",
-@@ -725,7 +724,6 @@ static const char * const action_page_types[] = {
- 	[MF_MSG_CLEAN_LRU]		= "clean LRU page",
- 	[MF_MSG_TRUNCATED_LRU]		= "already truncated LRU page",
- 	[MF_MSG_BUDDY]			= "free buddy page",
--	[MF_MSG_BUDDY_2ND]		= "free buddy page (2nd try)",
- 	[MF_MSG_DAX]			= "dax page",
- 	[MF_MSG_UNSPLIT_THP]		= "unsplit thp",
- 	[MF_MSG_UNKNOWN]		= "unknown page",
+@@ -1113,7 +1113,8 @@ static int page_action(struct page_state *ps, struct page *p,
+  */
+ static inline bool HWPoisonHandlable(struct page *page)
+ {
+-	return PageLRU(page) || __PageMovable(page);
++	return PageLRU(page) || __PageMovable(page) ||
++		PageSlab(page) || PageTable(page) || PageReserved(page);
+ }
+ 
+ static int __get_hwpoison_page(struct page *page)
+@@ -1260,12 +1261,6 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
+ 	struct page *hpage = *hpagep;
+ 	bool mlocked = PageMlocked(hpage);
+ 
+-	/*
+-	 * Here we are interested only in user-mapped pages, so skip any
+-	 * other types of pages.
+-	 */
+-	if (PageReserved(p) || PageSlab(p))
+-		return true;
+ 	if (!(PageLRU(hpage) || PageHuge(p)))
+ 		return true;
+ 
+@@ -1670,7 +1665,10 @@ int memory_failure(unsigned long pfn, int flags)
+ 				action_result(pfn, MF_MSG_BUDDY, res);
+ 				res = res == MF_RECOVERED ? 0 : -EBUSY;
+ 			} else {
+-				action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
++				if (PageCompound(p))
++					action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
++				else
++					action_result(pfn, MF_MSG_KERNEL, MF_IGNORED);
+ 				res = -EBUSY;
+ 			}
+ 			goto unlock_mutex;
+@@ -1681,6 +1679,20 @@ int memory_failure(unsigned long pfn, int flags)
+ 		}
+ 	}
+ 
++	if (PageSlab(p)) {
++		action_result(pfn, MF_MSG_SLAB, MF_IGNORED);
++		res = -EBUSY;
++		goto unlock_mutex;
++	} else if (PageTable(p)) {
++		action_result(pfn, MF_MSG_PAGETABLE, MF_IGNORED);
++		res = -EBUSY;
++		goto unlock_mutex;
++	} else if (PageReserved(p)) {
++		action_result(pfn, MF_MSG_KERNEL, MF_IGNORED);
++		res = -EBUSY;
++		goto unlock_mutex;
++	}
++
+ 	if (PageTransHuge(hpage)) {
+ 		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
+ 			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
 -- 
 2.25.1
 
