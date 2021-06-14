@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EDD3A6039
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193D33A6001
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbhFNKcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:32:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232908AbhFNKbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9DE5611CA;
-        Mon, 14 Jun 2021 10:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623666560;
-        bh=lSeXCd4lcJ0tTuMRN1HC4nFi6fATD6bu2jRIYot55WM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ko+f3laW2JB91Bc8p/Oxg7X5WOwVgspcCNOv3A/lGSGEFNFS0RZvmjPLuYLC37Zcy
-         FF9Dek5SERjFhw7J0R/SYulTkkNhuB7AHoVw8oRuFfOJ0s+PaQQxGisqrDS7gpFPCR
-         QvF8Bnzkm1llBwn7Wbiv9RAO9utRIAeIzYZKupieuN3qykkxjbQpnJjoh+0Yf3Dhw0
-         oPNCkTTmURuV3paBgSq0WXDOYnyO6zJw4pbcZv1nbBQobOKVXsq+iwcV4kTxpobuJr
-         P6oy/IKGBLvjmeECmOOFzOTa+jUm0VQFR6flZtRyTXMmmfxYQia41zd08i/CPRLS4W
-         LB+/BYqXHoPBQ==
-Date:   Mon, 14 Jun 2021 11:29:02 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mason Zhang <mason.zhang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
-        hanks.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] dt-binding: mediatek: mt6779: update spi document
-Message-ID: <20210614102902.GA5646@sirena.org.uk>
-References: <1623413625.22727.10.camel@mbjsdccf07>
+        id S232814AbhFNK2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:28:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20374 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232764AbhFNK2L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:28:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623666368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9XM61IljzLkk0ttuVusWr1Qy/8a5hNQuFNXR1LkOZec=;
+        b=jRR/I5W7KMMSwhvDZSDRp4p78MhpGuBW5OEFosMrS32gZbilHay6BV2QmYe5NHAam104/9
+        LdMacINyBgKbivMx8VecA63G3/iKUZtq4uWaUs1GOeDqqF0tFAbGLHcwHHWfuEDFXZ5WZC
+        yTQC4q5xh3DYN9p8gd3ZJDgBplduUHE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-NJ2QFjspOZWS_7Sya1dFiw-1; Mon, 14 Jun 2021 06:26:05 -0400
+X-MC-Unique: NJ2QFjspOZWS_7Sya1dFiw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A38DB1842A99;
+        Mon, 14 Jun 2021 10:26:03 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-47.bne.redhat.com [10.64.54.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 012D95C233;
+        Mon, 14 Jun 2021 10:26:00 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, mark.rutland@arm.com, shan.gavin@gmail.com
+Subject: [PATCH] arm64: mm: Pass origial fault address to handle_mm_fault()
+Date:   Mon, 14 Jun 2021 20:27:01 +0800
+Message-Id: <20210614122701.100515-1-gshan@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
-Content-Disposition: inline
-In-Reply-To: <1623413625.22727.10.camel@mbjsdccf07>
-X-Cookie: Some restrictions may apply.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, the lower bits of fault address is cleared before it's
+passed to handle_mm_fault(). It's unnecessary since generic code
+does same thing since the commit 1a29d85eb0f19 ("mm: use vmf->address
+instead of of vmf->virtual_address").
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This passes the original fault address to handle_mm_fault() in case
+the generic code needs to know the exact fault address.
 
-On Fri, Jun 11, 2021 at 08:13:45PM +0800, Mason Zhang wrote:
+Signed-off-by: Gavin Shan <gshan@redhat.com>
+---
+ arch/arm64/mm/fault.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 	I'm sorry to disturb you, this patch is stay here for a long time, Do
-> you have any suggestions about this patch?=20
-> 	We hope this patch will be merged as soon as possible,If you have any
-> concern, I will fix it in time.
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 871c82ab0a30..e2883237216d 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -504,7 +504,7 @@ static vm_fault_t __do_page_fault(struct mm_struct *mm, unsigned long addr,
+ 	 */
+ 	if (!(vma->vm_flags & vm_flags))
+ 		return VM_FAULT_BADACCESS;
+-	return handle_mm_fault(vma, addr & PAGE_MASK, mm_flags, regs);
++	return handle_mm_fault(vma, addr, mm_flags, regs);
+ }
+ 
+ static bool is_el0_instruction_abort(unsigned int esr)
+-- 
+2.23.0
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---LZvS9be/3tNcYl/X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDHL20ACgkQJNaLcl1U
-h9CsAQf+Nn4HRlnSP3tQV0DnMF2cdXi1Iq99YwPbLlaUcaR573n/pt3ERW1fG+RQ
-Buc3s5ft40NrHag2fnlP1plJY3hlhBvcjyyPvK+JhJanfYd0YmiOAuMAssVASA0E
-QDPO76npJtv1EJ+Y5ZmNec2Xyt9kpbbHVZrk/kQ1Uv01p/a/wXRLNN55ZYmeQ2kQ
-xFObSTgbJEEZtl/WXK5A7EDT7kfUSQO2kQIwHDI2AmiCOtE0WbqEYALgdd0ijAx9
-IAvq6Cte2W8E5S6bWtyJ/0wL7VFdyI+e8fIuhoaNK56cttomrsfDy/maEDQIRukA
-Vj8gFPHEmIY2r4tRjLbrBcwg1baueQ==
-=nGK1
------END PGP SIGNATURE-----
-
---LZvS9be/3tNcYl/X--
