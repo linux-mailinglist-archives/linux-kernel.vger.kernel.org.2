@@ -2,60 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5544E3A667B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FA23A6679
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbhFNM0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 08:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232791AbhFNM0K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:26:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DD2C061574;
-        Mon, 14 Jun 2021 05:24:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yr77KObtXWoCfBJmGjjbDCtdtoVUU/LuJUPsFZSj7WQ=; b=XCJN3bkwurBAhJkz94NPpmjseo
-        hP8asJscT7b4VSXvd9ChTSxQ2RbU8lyw/JrR76vuDJJtyPHZrmuznLmirVey8wlNfB64+u4lTfq7s
-        7EUzUbPYNSjMuF9yLtYjqVU1bdSpD6avcxtB+TQ3kGQDDILKabi1FS8/lT946ylpCF69uQCIt64RV
-        o2AA2YwEfhFeGM+YenorbjVvveeXFy8zafreMJkfVYtCLnGMUhajqZrPVn5T43jdFl+jpKM9qTyni
-        vpXGMzVGXQ1TdeZs+VccyLCDFAmtr1b8SCJdj7TSuPa5E5A3HqHDp6egOyJrKEofMPSz0x6Nxx4Ad
-        z+2O5K3A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lslch-005Obc-0i; Mon, 14 Jun 2021 12:23:28 +0000
-Date:   Mon, 14 Jun 2021 13:23:22 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: remove the implicit .set_page_dirty default
-Message-ID: <YMdKOst/Psnlxh8a@casper.infradead.org>
-References: <20210614061512.3966143-1-hch@lst.de>
+        id S233613AbhFNM0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 08:26:07 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35470 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233071AbhFNM0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 08:26:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=oiBH2JKjoAAJbc4R4FuVxQ59nQgyPuSoFXb64F6CMmU=; b=slkrvpp+tamTu2ZaMxFaIDixL+
+        oRV4DLfpYHor4zMd8HmORon+sEyP1ls3SpDmlnryret0sFXgIl9coS0dPWcz1G3peItdGfT1zXsnN
+        KykDF2++tlhKywwJkY07Aq+yKSK8hMPX+nfPt3jU2eLC+rCRErQAzTKFwfBdxBIrqlnY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lsldB-009JmZ-8C; Mon, 14 Jun 2021 14:23:53 +0200
+Date:   Mon, 14 Jun 2021 14:23:53 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jonathan Davies <jonathan.davies@nutanix.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usbnet: allow overriding of default USB interface
+ naming
+Message-ID: <YMdKWSjiXeiDESKR@lunn.ch>
+References: <20210611152339.182710-1-jonathan.davies@nutanix.com>
+ <YMRbt+or+QTlqqP9@kroah.com>
+ <469dd530-ebd2-37a4-9c6a-9de86e7a38dc@nutanix.com>
+ <YMckz2Yu8L3IQNX9@kroah.com>
+ <a620bc87-5ee7-6132-6aa0-6b99e1052960@nutanix.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614061512.3966143-1-hch@lst.de>
+In-Reply-To: <a620bc87-5ee7-6132-6aa0-6b99e1052960@nutanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 08:15:09AM +0200, Christoph Hellwig wrote:
-> Hi all,
+> > > Userspace solutions include:
+> > >   1. udev backing off and retrying in the event of a collision; or
+> > >   2. avoiding ever renaming a device to a name in the "eth%d" namespace.
+> > 
+> > Picking a different namespace does not cause a lack of collisions to
+> > happen, you could have multiple usb network devices being found at the
+> > same time, right?
+> > 
+> > So no matter what, 1) has to happen.
 > 
-> this series cleans up a few lose ends around ->set_page_dirty, most
-> importantly removes the default to the buffer head based on if no
-> method is wired up.
+> Within a namespace, the "%d" in "eth%d" means __dev_alloc_name finds a name
+> that's not taken. I didn't check the locking but assume that can only happen
+> serially, in which case two devices probed in parallel would not mutually
+> collide.
+> 
+> So I don't think it's necessarily true that 1) has to happen.
 
-i have a somewhat similar series in the works ...
+Say you changed the namespace to usb%d. And you want the device in USB
+port 1.4 to be usb1 and the device in USB port 1.3 to be usb0. They
+probe the other way around. You have the same problem, you need to
+handle the race condition in udev, back off an try again.
 
-https://git.infradead.org/users/willy/pagecache.git/commitdiff/1e7e8c2d82666b55690705d5bbe908e31d437edb
-https://git.infradead.org/users/willy/pagecache.git/commitdiff/bf767a4969c0bc6735275ff7457a8082eef4c3fd
+As GregKH said, 1) has to happen.
 
-... the other patches rather depend on the folio work.
+   Andrew
