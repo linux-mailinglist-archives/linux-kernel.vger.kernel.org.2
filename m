@@ -2,141 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A432F3A6D36
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2A13A6D31
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbhFNRcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:32:19 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:44673 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235625AbhFNRcQ (ORCPT
+        id S235618AbhFNRb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:31:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5060 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235578AbhFNRbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:32:16 -0400
-Received: by mail-wm1-f43.google.com with SMTP id m41-20020a05600c3b29b02901b9e5d74f02so425763wms.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=0HZoKw5adrZfJ9skcd1RFBbDTV0dwPz1XUywXf4yuGQ=;
-        b=KH4afTS4+SGTi1cTqbnj17kLVaHyIIdrXkw76mYjnBhCBVmacQqZWF8psAl99FXcj8
-         9vsXwwDyVyha/0K+hYWfiLoYMJM9EsCXOwoj6fDk5ppvq3/Bw8tOMLUYzNWSqBnVUg9e
-         NvuWRy5+SERZMK8cDJV/oc8y9m+1fgZ0zxJ0CxUcVZptEqewDbUTQbcm4Zpeu/MBS+kR
-         Ko4KBytCQC/dZr+WN0k8YFRUSG0CDYADE6/GjXvwaYeLOm98MVitNzm6QO+z5Ka7EOeP
-         OoXa/Ch27iS3FxCneanLpPVBzcCOjYqu2fvlN+bxTvr5VIrAxCJIVPzRy/UVaHHJXRQI
-         5fBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0HZoKw5adrZfJ9skcd1RFBbDTV0dwPz1XUywXf4yuGQ=;
-        b=WxEBEdIzFyuDAeMsKQrr6tgVBShZW9TZ47hMInDwgY3UbFg5sxb7QOzpukNKJOqzh4
-         iPHGAI0lAp2K/st/wkrMlNt4kOeTTbP4crs3kOGhFYbhVNSKistyo8DuGBcco5oM/iei
-         7r0z9P+CL7oOUTR2ZyjrXrFZchLsr03Sbc0LUSEwnyiSt0ntU0iDcBeaXMFyy3Hrcq6N
-         nwiCKRNXNA6eiD+Omaoew8OW/Ma2BsAv0O2P8YR06P+yNxdiiieYfSluj7uUH++p/Xnr
-         YwmtGZ4Dq+mrJMUUan50vYSYwts4rW3NY728rIxvu6nrc10pIxCRBD7btBUPkxonFPPr
-         dUJA==
-X-Gm-Message-State: AOAM531d3m0rkdQrvmw3n4G/uCkcVm/KciYy3rGjKnz+aATBMQ2+zc7h
-        P5hCrANaHXOoSfICCRREFSBIkPKqIpvW1UHQ
-X-Google-Smtp-Source: ABdhPJxF41GfivsXMDQfqC1DXXz60qhvtndPKA1Nj3+m/4k5rkP2AyYYalAZGfzGFq0SCDm8Zu6iug==
-X-Received: by 2002:a1c:9a8e:: with SMTP id c136mr184845wme.103.1623691736129;
-        Mon, 14 Jun 2021 10:28:56 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9d56:9c35:8a63:312c? ([2a01:e34:ed2f:f020:9d56:9c35:8a63:312c])
-        by smtp.googlemail.com with ESMTPSA id z10sm11106879wmp.39.2021.06.14.10.28.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 10:28:55 -0700 (PDT)
-Subject: Re: [RESEND PATCH 2/2] thermal: sprd: add missing of_node_put for
- loop iteration
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210528115036.18222-1-krzysztof.kozlowski@canonical.com>
- <20210528115036.18222-2-krzysztof.kozlowski@canonical.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <9d4b9827-74fb-43ea-bcc0-5c780296e6c0@linaro.org>
-Date:   Mon, 14 Jun 2021 19:28:53 +0200
+        Mon, 14 Jun 2021 13:31:55 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EH3v9T092828;
+        Mon, 14 Jun 2021 13:29:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=aND35PJ8MHGJdRYQIgpzffcskjOGhU3VFMYNJ/krR20=;
+ b=kFp5OUI8vTxhFGF1wwhqRRBy9LdDW8SCFmHYI0Oqbomb5UV4PSmGdoMjjnvZU1+hpPn3
+ SwcAN+Hy5acFMkWeyPrBz0qssXPnTHaLOuwe35KcDSG+UmkYfhF2V9jB/uppvL501dWZ
+ ya5KjSAyT8twORFNSD5R8N8iBu09UAfDIKr6E7hYbrpTT6gUZ9jURIEfAvsMsaHf25XJ
+ bdRbUc/xIsGGs2DeCP3PFyjOAI5JUiE2r5Bs+h6/0CUw4lC5fTrBtDVOkHaXu0UG+RER
+ FV+8sNAoSZUY4UtKEJ3IsFwbg4bTTcWgCclsszBtDFQjbfzZQz9VfWmeBkLNNGWsrjKL 0w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3969qq3qqa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 13:29:49 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15EH4HKR095953;
+        Mon, 14 Jun 2021 13:29:49 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3969qq3qpy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 13:29:49 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15EHDL7v016359;
+        Mon, 14 Jun 2021 17:29:48 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01wdc.us.ibm.com with ESMTP id 394mj91ee5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 17:29:48 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15EHTle39634686
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 17:29:47 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4CEC8AE076;
+        Mon, 14 Jun 2021 17:29:46 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDBDDAE064;
+        Mon, 14 Jun 2021 17:29:45 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.128.252])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Jun 2021 17:29:45 +0000 (GMT)
+Subject: Re: [PATCH 1/3] s390/vfio-ap: clean up mdev resources when remove
+ callback invoked
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210609224634.575156-1-akrowiak@linux.ibm.com>
+ <20210609224634.575156-2-akrowiak@linux.ibm.com>
+ <20210611164854.GT1002214@nvidia.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <2e16ab9c-8954-c598-e66a-6531538fefad@linux.ibm.com>
+Date:   Mon, 14 Jun 2021 13:29:45 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210528115036.18222-2-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210611164854.GT1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: V0ERs9jfOIjSaN6tFkao2x7AhQTu782C
+X-Proofpoint-GUID: rQ0ieAAtuRcv5OzsYiaI23XDxShI4Uao
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-14_10:2021-06-14,2021-06-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=963 adultscore=0
+ bulkscore=0 clxscore=1015 malwarescore=0 suspectscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106140108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/2021 13:50, Krzysztof Kozlowski wrote:
-> Early exits from for_each_available_child_of_node() should decrement the
-> node reference counter.  Reported by Coccinelle:
-> 
->   drivers/thermal/sprd_thermal.c:387:1-23: WARNING:
->     Function "for_each_child_of_node" should have of_node_put() before goto around lines 391.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
-> ---
->  drivers/thermal/sprd_thermal.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/thermal/sprd_thermal.c b/drivers/thermal/sprd_thermal.c
-> index 3682edb2f466..2778971aaf03 100644
-> --- a/drivers/thermal/sprd_thermal.c
-> +++ b/drivers/thermal/sprd_thermal.c
-> @@ -388,6 +388,7 @@ static int sprd_thm_probe(struct platform_device *pdev)
->  		sen = devm_kzalloc(&pdev->dev, sizeof(*sen), GFP_KERNEL);
->  		if (!sen) {
->  			ret = -ENOMEM;
-> +			of_node_put(sen_child);
-
-Why not a new label for the rollback routine?
-
-eg. goto out_of_node_put;
-
-Or a new function devm_for_each_available_child_of_node() ?
-
->  			goto disable_clk;
->  		}
->  
-> @@ -397,12 +398,14 @@ static int sprd_thm_probe(struct platform_device *pdev)
->  		ret = of_property_read_u32(sen_child, "reg", &sen->id);
->  		if (ret) {
->  			dev_err(&pdev->dev, "get sensor reg failed");
-> +			of_node_put(sen_child);
->  			goto disable_clk;
->  		}
->  
->  		ret = sprd_thm_sensor_calibration(sen_child, thm, sen);
->  		if (ret) {
->  			dev_err(&pdev->dev, "efuse cal analysis failed");
-> +			of_node_put(sen_child);
->  			goto disable_clk;
->  		}
->  
-> @@ -416,6 +419,7 @@ static int sprd_thm_probe(struct platform_device *pdev)
->  			dev_err(&pdev->dev, "register thermal zone failed %d\n",
->  				sen->id);
->  			ret = PTR_ERR(sen->tzd);
-> +			of_node_put(sen_child);
->  			goto disable_clk;
->  		}
->  
-> 
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+On 6/11/21 12:48 PM, Jason Gunthorpe wrote:
+> Reviewed-by: Jason Gunthorpe<jgg@nvidia.com>
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks for the review.
+
