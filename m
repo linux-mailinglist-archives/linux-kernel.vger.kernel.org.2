@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2943A6124
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9577B3A61C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234106AbhFNKoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:44:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40036 "EHLO mail.kernel.org"
+        id S234224AbhFNKv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:51:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233401AbhFNKhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:37:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68130613DF;
-        Mon, 14 Jun 2021 10:33:36 +0000 (UTC)
+        id S234100AbhFNKoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:44:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D0E361449;
+        Mon, 14 Jun 2021 10:36:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666817;
-        bh=3w6a5sGUFdxtDzZearDxzhYPLTX0r/3iYerWTm9zH+s=;
+        s=korg; t=1623666974;
+        bh=qGD3Y7ReUnMxN25WHoGUXf+mJGZOYHKyzKSknSl+WtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YRZ0JSwXNf1dUsqOpt25FyYOxH7WiC4gWQz3CLfR//JmRgG5h2VLe+sWvFS2edCoj
-         YrIdD+anoCAewM1mazCXxgH+P7Qh0PEp4zrD9ZkDK36Dl1RELw2ZefhJMRBWLDJKnx
-         3otSlNlQAlr4nzE1W48h+J7B4v9szEsKbZHEH564=
+        b=Z0lnFjLvVT/5Jl6M7L2grGW7Ec9xSjiJtINFa8U/l2Heq80oxwx9+f5gPMHbqgm6A
+         L75jB82FxUov+oRKrdD/d0RMp+NrIxxbIKkx0Hkh5wwdZjcJ8or3XwSw0x9r2D7EN3
+         PJcUe5LWRtZ/kiB9FZz7OY8873yVJzIZA+mEI/GQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 40/49] NFS: Fix a potential NULL dereference in nfs_get_client()
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 50/67] regulator: max77620: Use device_set_of_node_from_dev()
 Date:   Mon, 14 Jun 2021 12:27:33 +0200
-Message-Id: <20210614102643.175659643@linuxfoundation.org>
+Message-Id: <20210614102645.469259846@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 09226e8303beeec10f2ff844d2e46d1371dc58e0 ]
+commit 6f55c5dd1118b3076d11d9cb17f5c5f4bc3a1162 upstream.
 
-None of the callers are expecting NULL returns from nfs_get_client() so
-this code will lead to an Oops.  It's better to return an error
-pointer.  I expect that this is dead code so hopefully no one is
-affected.
+The MAX77620 driver fails to re-probe on deferred probe because driver
+core tries to claim resources that are already claimed by the PINCTRL
+device. Use device_set_of_node_from_dev() helper which marks OF node as
+reused, skipping erroneous execution of pinctrl_bind_pins() for the PMIC
+device on the re-probe.
 
-Fixes: 31434f496abb ("nfs: check hostname in nfs_get_client")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210523224243.13219-2-digetx@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/client.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/max77620-regulator.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/fs/nfs/client.c b/fs/nfs/client.c
-index 9e7d49fac4e3..1f74893b2b0c 100644
---- a/fs/nfs/client.c
-+++ b/fs/nfs/client.c
-@@ -406,7 +406,7 @@ struct nfs_client *nfs_get_client(const struct nfs_client_initdata *cl_init)
+--- a/drivers/regulator/max77620-regulator.c
++++ b/drivers/regulator/max77620-regulator.c
+@@ -792,6 +792,13 @@ static int max77620_regulator_probe(stru
+ 	config.dev = dev;
+ 	config.driver_data = pmic;
  
- 	if (cl_init->hostname == NULL) {
- 		WARN_ON(1);
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	/* see if the client already exists */
--- 
-2.30.2
-
++	/*
++	 * Set of_node_reuse flag to prevent driver core from attempting to
++	 * claim any pinmux resources already claimed by the parent device.
++	 * Otherwise PMIC driver will fail to re-probe.
++	 */
++	device_set_of_node_from_dev(&pdev->dev, pdev->dev.parent);
++
+ 	for (id = 0; id < MAX77620_NUM_REGS; id++) {
+ 		struct regulator_dev *rdev;
+ 		struct regulator_desc *rdesc;
 
 
