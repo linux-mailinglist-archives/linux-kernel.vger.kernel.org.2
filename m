@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DC53A5D1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 08:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F193A5D34
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 08:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhFNGa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 02:30:26 -0400
-Received: from verein.lst.de ([213.95.11.211]:42936 "EHLO verein.lst.de"
+        id S232390AbhFNGoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 02:44:12 -0400
+Received: from verein.lst.de ([213.95.11.211]:42971 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232045AbhFNGaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 02:30:24 -0400
+        id S232096AbhFNGoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 02:44:10 -0400
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4C6E068AFE; Mon, 14 Jun 2021 08:28:19 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 08:28:18 +0200
+        id 7AC2D67373; Mon, 14 Jun 2021 08:42:05 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 08:42:05 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v9 11/14] swiotlb: Add restricted DMA alloc/free
- support.
-Message-ID: <20210614062818.GK28343@lst.de>
-References: <20210611152659.2142983-1-tientzu@chromium.org> <20210611152659.2142983-12-tientzu@chromium.org> <20210614062801.GJ28343@lst.de>
+        linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
+        David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>, tales.aparecida@gmail.com
+Subject: Re: [PATCH v3 1/1] lib: Convert UUID runtime test to KUnit
+Message-ID: <20210614064205.GA29220@lst.de>
+References: <20210610163959.71634-1-andrealmeid@collabora.com> <20210610163959.71634-2-andrealmeid@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614062801.GJ28343@lst.de>
+In-Reply-To: <20210610163959.71634-2-andrealmeid@collabora.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 08:28:01AM +0200, Christoph Hellwig wrote:
-> I think merging this with the next two patches would be a little more
-> clear.
+> +config UUID_KUNIT_TEST
+> +	tristate "Unit test for UUID" if !KUNIT_ALL_TESTS
+> +	depends on KUNIT
+> +	default KUNIT_ALL_TESTS
+> +	help
+> +	  This builds the UUID unit test.
 
-Sorry, I mean the next patch and the previous one.
+Does this first help line really add any value if we have this second
+line:
+
+> +	  Tests parsing functions for UUID/GUID strings.
+
+?
+
+> +	  If unsure, say N.
+
+Not specific to this case, but IMHO we can drop this line for all kunit
+tests as it is completely obvious.
+
+> @@ -354,5 +353,6 @@ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+>  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+>  obj-$(CONFIG_BITS_TEST) += test_bits.o
+>  obj-$(CONFIG_CMDLINE_KUNIT_TEST) += cmdline_kunit.o
+> +obj-$(CONFIG_UUID_KUNIT_TEST) += test_uuid.o
+
+Another meta-comment on the kunit tests:  Wouldn't it make more sense
+to name them all as CONFIG_KUNIT_TEST_FOO to allow for easier grepping?
+
+> -struct test_uuid_data {
+> +struct test_data {
+>  	const char *uuid;
+>  	guid_t le;
+>  	uuid_t be;
+>  };
+>  
+> -static const struct test_uuid_data test_uuid_test_data[] = {
+> +static const struct test_data correct_data[] = {
+
+What is the reason for these renames?  Is this a pattern used for
+other kunit tests?
+
+> +static void uuid_correct_le(struct kunit *test)
+>  {
+> +	guid_t le;
+> +	const struct test_data *data = (const struct test_data *)(test->param_value);
+
+Overly long line.  But as far as I can tell there is no need for the
+case that causes this mess anyway given that param_value is a
+"const void *".
+
+Same for all the other instances of this.
+
+> +static void uuid_wrong_le(struct kunit *test)
+>  {
+>  	guid_t le;
+> +	const char **data = (const char **)(test->param_value);
+
+No need for the second pair of braces.  Same for various other instances.
