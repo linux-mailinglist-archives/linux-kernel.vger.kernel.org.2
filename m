@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72BF3A6075
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32AE3A626D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbhFNKer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:34:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39328 "EHLO mail.kernel.org"
+        id S233858AbhFNLAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:00:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233122AbhFNKcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:32:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B7D61242;
-        Mon, 14 Jun 2021 10:30:25 +0000 (UTC)
+        id S234525AbhFNKw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:52:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D34A6147E;
+        Mon, 14 Jun 2021 10:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666626;
-        bh=yl8hScry4M9QShKK1y5D0Ff/KUuEs0Mjc2f0Omi24F8=;
+        s=korg; t=1623667185;
+        bh=Qsd7/ZcxgyX7sGOwkV0r3LGLN/TenipAy3EBGId8fNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hA9TKHo6uiA+spCYa8JG+NbTzOydMdKoT1uMQ4jlrso5EZ8pRYKCSGjwx9BJH2Qpf
-         bozKxCSCj+ugc2LVAAgs5Z3WWrfsMmB4gxiBhp6yVs9x5TzeErW3NxmWx845/KENZE
-         IYZ81pPjseNmT6DDPzCVsH/G7dFEfEtzppvqZozE=
+        b=g+YMZ3GLErPTtpqa8hYdKBH7EHGztbM4JTnA3tTxyM49i+bBKmEBsfxFEZ1QOjfDR
+         sS6XPveiuQAzKy6pIUQQCiLHB6scIebzqxSG4QBT3VPxNsgAdJGmM+uz1WUzLfRlPz
+         n1Hx2tZKmZ/uDDF5jxG5osRWXV9yyCm4K8J0LVMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zong Li <zong.li@sifive.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 13/42] net: macb: ensure the device is available before accessing GEMGXL control registers
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 26/84] nvme-fabrics: decode host pathing error for connect
 Date:   Mon, 14 Jun 2021 12:27:04 +0200
-Message-Id: <20210614102643.131432285@linuxfoundation.org>
+Message-Id: <20210614102647.243331557@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zong Li <zong.li@sifive.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 5eff1461a6dec84f04fafa9128548bad51d96147 ]
+[ Upstream commit 4d9442bf263ac45d495bb7ecf75009e59c0622b2 ]
 
-If runtime power menagement is enabled, the gigabit ethernet PLL would
-be disabled after macb_probe(). During this period of time, the system
-would hang up if we try to access GEMGXL control registers.
+Add an additional decoding for 'host pathing error' during connect.
 
-We can't put runtime_pm_get/runtime_pm_put/ there due to the issue of
-sleep inside atomic section (7fa2955ff70ce453 ("sh_eth: Fix sleeping
-function called from invalid context"). Add netif_running checking to
-ensure the device is available before accessing GEMGXL device.
-
-Changed in v2:
- - Use netif_running instead of its own flag
-
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cadence/macb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/nvme/host/fabrics.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/cadence/macb.c b/drivers/net/ethernet/cadence/macb.c
-index f20718b730e5..69fa47351a32 100644
---- a/drivers/net/ethernet/cadence/macb.c
-+++ b/drivers/net/ethernet/cadence/macb.c
-@@ -2031,6 +2031,9 @@ static struct net_device_stats *gem_get_stats(struct macb *bp)
- 	struct gem_stats *hwstat = &bp->hw_stats.gem;
- 	struct net_device_stats *nstat = &bp->stats;
+diff --git a/drivers/nvme/host/fabrics.c b/drivers/nvme/host/fabrics.c
+index 3bb71f177dfd..d884187d7706 100644
+--- a/drivers/nvme/host/fabrics.c
++++ b/drivers/nvme/host/fabrics.c
+@@ -336,6 +336,11 @@ static void nvmf_log_connect_error(struct nvme_ctrl *ctrl,
+ 			cmd->connect.recfmt);
+ 		break;
  
-+	if (!netif_running(bp->dev))
-+		return nstat;
++	case NVME_SC_HOST_PATH_ERROR:
++		dev_err(ctrl->device,
++			"Connect command failed: host path error\n");
++		break;
 +
- 	gem_update_stats(bp);
- 
- 	nstat->rx_errors = (hwstat->rx_frame_check_sequence_errors +
+ 	default:
+ 		dev_err(ctrl->device,
+ 			"Connect command failed, error wo/DNR bit: %d\n",
 -- 
 2.30.2
 
