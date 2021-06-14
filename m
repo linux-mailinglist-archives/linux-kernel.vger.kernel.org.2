@@ -2,100 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720C93A6934
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CFF3A6939
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhFNOrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:47:19 -0400
-Received: from tux.runtux.com ([176.9.82.136]:41456 "EHLO tux.runtux.com"
+        id S233079AbhFNOtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:49:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232798AbhFNOrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:47:17 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by tux.runtux.com (Postfix) with ESMTP id 774556F033;
-        Mon, 14 Jun 2021 16:45:11 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
-Received: from tux.runtux.com ([127.0.0.1])
-        by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id YZTLetKhIJS7; Mon, 14 Jun 2021 16:45:10 +0200 (CEST)
-Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
-        (Authenticated sender: postmaster@runtux.com)
-        by tux.runtux.com (Postfix) with ESMTPSA id 1454A6EF74;
-        Mon, 14 Jun 2021 16:45:07 +0200 (CEST)
-Received: by bee.priv.zoo (Postfix, from userid 1002)
-        id 7B97346E; Mon, 14 Jun 2021 16:45:07 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 16:45:07 +0200
-From:   Ralf Schlatterbeck <rsc@runtux.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mirko Vogt <mirko-dev|linux@nanl.de>
-Subject: [PATCH v2 1/1] spi: spi-sun6i: Fix chipselect/clock bug
-Message-ID: <20210614144507.y3udezjfbko7eavv@runtux.com>
+        id S232798AbhFNOtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 10:49:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50B756054E;
+        Mon, 14 Jun 2021 14:46:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623682003;
+        bh=+o9b6y5kWybkxYBzKA6EBU6w59vTl9WPx7qNYYNQuqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2JTsY/mpVYRSuI8bgbBTK2QoLAz8VnT2unhc+OM7HqRwhTjR+NOZ7SdHkf16txPwt
+         vI5MPtv3CXZqam1quJrb2bnG9Rw37z/ntye/BtpN0J+uEdskBox5fP3SU3pbdKUuYj
+         X03z2/LJ1YQxEliUKkQPNPp7xxt0LZ9Mce6ZZGRs=
+Date:   Mon, 14 Jun 2021 16:46:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH 2/6] staging: rtl8188eu: fix usb_submit_urb error handling
+Message-ID: <YMdr0alJDEGfsqOA@kroah.com>
+References: <20210612180019.20387-1-martin@kaiser.cx>
+ <20210612180019.20387-2-martin@kaiser.cx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-ray:  beware
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210612180019.20387-2-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mirko Vogt <mirko-dev|linux@nanl.de>
+On Sat, Jun 12, 2021 at 08:00:15PM +0200, Martin Kaiser wrote:
+> -EPERM should be handled like any other error.
 
-The current sun6i SPI implementation initializes the transfer too early,
-resulting in SCK going high before the transfer. When using an additional
-(gpio) chipselect with sun6i, the chipselect is asserted at a time when
-clock is high, making the SPI transfer fail.
+Why?  This is not "any other error" for the usb core, right?
 
-This is due to SUN6I_GBL_CTL_BUS_ENABLE being written into
-SUN6I_GBL_CTL_REG at an early stage. Moving that to the transfer
-function, hence, right before the transfer starts, mitigates that
-problem.
+> 
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c b/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
+> index ec07b2017fb7..0ceb05f3884f 100644
+> --- a/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
+> +++ b/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
+> @@ -366,7 +366,6 @@ u32 usb_read_port(struct adapter *adapter, u32 addr, struct recv_buf *precvbuf)
+>  	struct usb_device *pusbd = pdvobj->pusbdev;
+>  	int err;
+>  	unsigned int pipe;
+> -	u32 ret = _SUCCESS;
+>  
+>  	if (adapter->bDriverStopped || adapter->bSurpriseRemoved ||
+>  	    adapter->pwrctrlpriv.pnp_bstop_trx) {
+> @@ -403,10 +402,10 @@ u32 usb_read_port(struct adapter *adapter, u32 addr, struct recv_buf *precvbuf)
+>  			  precvbuf);/* context is precvbuf */
+>  
+>  	err = usb_submit_urb(purb, GFP_ATOMIC);
+> -	if ((err) && (err != (-EPERM)))
+> -		ret = _FAIL;
 
-Fixes: 3558fe900e8af (spi: sunxi: Add Allwinner A31 SPI controller driver)
-Signed-off-by: Mirko Vogt <mirko-dev|linux@nanl.de>
-Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
----
-For oscilloscope screenshots with/without the patch, see my blog post
-https://blog.runtux.com/posts/2019/04/18/
-or the discussion in the armbian forum at
-https://forum.armbian.com/topic/4330-spi-gpio-chip-select-support/
-(my logo there is a penguin).
-As far as we can tell the driver never worked with gpio chipselects.
-History:
-Updated patch with suggested readability-improvements by Andre Przywara
+if -EPERM returns from this function, someone set the "reject" bit on
+the urb.
 
- drivers/spi/spi-sun6i.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Can this driver do that?  Where did this check originally come from, as
+it feels like this was added for a good reason.
 
-diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-index cc8401980125..23ad052528db 100644
---- a/drivers/spi/spi-sun6i.c
-+++ b/drivers/spi/spi-sun6i.c
-@@ -379,6 +379,10 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	}
- 
- 	sun6i_spi_write(sspi, SUN6I_CLK_CTL_REG, reg);
-+	/* Finally enable the bus - doing so before might raise SCK to HIGH */
-+	reg = sun6i_spi_read(sspi, SUN6I_GBL_CTL_REG);
-+	reg |= SUN6I_GBL_CTL_BUS_ENABLE;
-+	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG, reg);
- 
- 	/* Setup the transfer now... */
- 	if (sspi->tx_buf)
-@@ -504,7 +508,7 @@ static int sun6i_spi_runtime_resume(struct device *dev)
- 	}
- 
- 	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG,
--			SUN6I_GBL_CTL_BUS_ENABLE | SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
-+			SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
- 
- 	return 0;
- 
--- 
-2.20.1
+If this patch is "correct", I need a better changelog text explaining
+why it is so :)
 
+thanks,
+
+greg k-h
