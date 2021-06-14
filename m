@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F99F3A6C4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1053A6C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234901AbhFNQqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:46:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234808AbhFNQqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:46:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13849610A2;
-        Mon, 14 Jun 2021 16:44:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623689047;
-        bh=Ye0zQtj+te6CtBz9QXGkfBj+iOKH2E+XR9ONDLGB3Mw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OSSPh76pyLk2fyCNWEIp0jxZ4H8cPuhV7TRSOiBIiNcI7R60m1e/nJU/GgUz1Yh+A
-         R6OP5dx9qBpTuoSvPFQ/HumgiOOg0y9bGavIh5tj73DZIDIswXIAs/TrZhGV9vQvPR
-         kyEjMwYhxSoxczCsZpNTOmfv/w9UHk1I/yHRSFJUwW3Pey+Wo+x264j55DxE6YoP9D
-         n8pvsSbsq0LZQhZHs6sXkpOKpLvDwM6OF0z2hfexsJG0vFZLAY9u8FBO9X+rP9Sn1T
-         deemQf9ANGlF9ltp63pq5F7Wc0H366kw9zVI1nIR1fyZStvKyJwmQ3c94pFPPEmSrY
-         xDWtBsiBZSdBA==
-Date:   Mon, 14 Jun 2021 18:44:03 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Remove unnecessary tests and cast before
- kfree/kvfree
-Message-ID: <20210614184403.5e3097ba@coco.lan>
-In-Reply-To: <3355688.ByQz1z8koQ@linux.local>
-References: <20210605020855.1065-1-fmdefrancesco@gmail.com>
-        <3355688.ByQz1z8koQ@linux.local>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S234897AbhFNQq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:46:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55074 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233492AbhFNQq6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 12:46:58 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 17D911FD29;
+        Mon, 14 Jun 2021 16:44:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623689095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4jiBilChEIMtNgnA7zL0fhlqMNcZV7ysuCVLtr+JJY4=;
+        b=dqqNqv9HDbiRa9/Eb/N7cPF4huGJbP/qSv1NbtonRwJngSTTYYeecznIRCRJiLZMLNPcDt
+        2nXCXI8PgUxWfzVLP3ze/Q2s9exG2/CQ0hqUCgDz38BWj3fjKWxl56mQ/OkaQ1Ev7RVfHl
+        uJYuNKsw/2zGiErBfLqEnmbZXBIrw2c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623689095;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4jiBilChEIMtNgnA7zL0fhlqMNcZV7ysuCVLtr+JJY4=;
+        b=jid7hJRG71RaGnaqheo9HEVk6y9irRygn7BEuEM/LLWMk+QgD5ZsVKDL+AE+5CyTquxhIt
+        GLyogOiSWgSI3RCw==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 01236A3BA6;
+        Mon, 14 Jun 2021 16:44:54 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D3C291F2B82; Mon, 14 Jun 2021 18:44:54 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 18:44:54 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH] quota: finish disable quotactl_path syscall
+Message-ID: <20210614164454.GC29751@quack2.suse.cz>
+References: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 14 Jun 2021 18:33:55 +0200
-"Fabio M. De Francesco" <fmdefrancesco@gmail.com> escreveu:
-
-> Hi All,
+On Mon 14-06-21 17:37:12, Marcin Juszkiewicz wrote:
+> In commit 5b9fedb31e47 ("quota: Disable quotactl_path syscall") Jan Kara
+> disabled quotactl_path syscall on several architectures.
 > 
-> I've seen that some patches of mine, more recent the following ones, have 
-> already been applied. In the past I had noticed that the patches are 
-> (usually?) placed in a time of submission ordered FIFO, unless they are 
-> rejected.
+> This commit disables it on all architectures using unified list of
+> system calls:
 > 
-> I'm wondering if I should re-send them or if I am missing some details about 
-> the specific workflow of staging/media.
+> - arm64
+> - arc
+> - csky
+> - h8300
+> - hexagon
+> - nds32
+> - nios2
+> - openrisc
+> - riscv (32/64)
+> 
+> CC: Jan Kara <jack@suse.cz>
+> CC: Christian Brauner <christian.brauner@ubuntu.com>
+> CC: Sascha Hauer <s.hauer@pengutronix.de>
+> Link: https://lore.kernel.org/lkml/20210512153621.n5u43jsytbik4yze@wittgenstein
+> 
+> Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
 
-Any patches sent to linux-media@vger.kernel.org are automatically stored
-at patchwork:
+Aha, I've missed that one. Thanks for catching this. Arnd, will you take
+this patch or should I take it through my tree?
 
-	https://patchwork.linuxtv.org/project/linux-media/list/
+								Honza
 
-If the patches you sent are there and are marked with "New" state,
-there's no need to re-submit. On a quick check, there are 3 media
-patches from you there:
-
-	https://patchwork.linuxtv.org/project/linux-media/list/?series=&submitter=8492&state=&q=&archive=&delegate=
-	
-No need to resubmit those, except if some reviewer asks you to
-change your patch(es).
-
-Thanks,
-Mauro
+> ---
+>  include/uapi/asm-generic/unistd.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+> index 6de5a7fc066b..d2a942086fcb 100644
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@ -863,8 +863,7 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
+>  __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
+>  #define __NR_mount_setattr 442
+>  __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
+> -#define __NR_quotactl_path 443
+> -__SYSCALL(__NR_quotactl_path, sys_quotactl_path)
+> +/* 443 is reserved for quotactl_path */
+>  
+>  #define __NR_landlock_create_ruleset 444
+>  __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
