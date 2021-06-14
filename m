@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AA13A6532
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692AF3A652D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbhFNLfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:35:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48186 "EHLO mail.kernel.org"
+        id S232832AbhFNLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:35:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236152AbhFNLUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:20:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 118FD61995;
-        Mon, 14 Jun 2021 10:51:57 +0000 (UTC)
+        id S236111AbhFNLUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:20:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B8B261987;
+        Mon, 14 Jun 2021 10:52:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667918;
-        bh=XDR0XbaMH+KR0lEJhVvTqniKwFyeTncPzEqSs3St86s=;
+        s=korg; t=1623667921;
+        bh=aJZsaON+o9TM0IKbjypOYMh8bwqcXIaAA5s7mwJ5780=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0wphmBtLaj8+lDVxJ+QB/i3SO67j1WBtjSIDv/C4N7akAtfrQECnlA/GAThafd4/U
-         a0lPIYrLn6wOO2XXGn3A8TpUMex//pXMR1GVMH0pGmDIIJ4W/aoVSt7LhAIUy3nLM5
-         7me9TA1UShOxE64duF2oSNEuCKaXM1bU77hpB+3I=
+        b=C9vtZ4TaT6nL3rsp3dpShwwTAZSeSAfVaN0NeLrC90C4NTqFMEKUhnwAUCnpX8o+p
+         54tTjFFS4MPJBMy3f+K+mhhbUcDu6Y1n+h/cvD1r0iY22TNT185oprZxQyeDD2CmQG
+         xKj3qar9VcSPEebqlyAUXWX4Nqji7l6BE+3HOx8A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 5.12 125/173] usb: dwc3: gadget: Disable gadget IRQ during pullup disable
-Date:   Mon, 14 Jun 2021 12:27:37 +0200
-Message-Id: <20210614102702.329945319@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Kyle Tso <kyletso@google.com>
+Subject: [PATCH 5.12 126/173] usb: typec: tcpm: Correct the responses in SVDM Version 2.0 DFP
+Date:   Mon, 14 Jun 2021 12:27:38 +0200
+Message-Id: <20210614102702.361127436@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -38,57 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <wcheng@codeaurora.org>
+From: Kyle Tso <kyletso@google.com>
 
-commit 8212937305f84ef73ea81036dafb80c557583d4b upstream.
+commit f41bfc7e9c7c1d721c8752f1853cde43e606ad43 upstream.
 
-Current sequence utilizes dwc3_gadget_disable_irq() alongside
-synchronize_irq() to ensure that no further DWC3 events are generated.
-However, the dwc3_gadget_disable_irq() API only disables device
-specific events.  Endpoint events can still be generated.  Briefly
-disable the interrupt line, so that the cleanup code can run to
-prevent device and endpoint events. (i.e. __dwc3_gadget_stop() and
-dwc3_stop_active_transfers() respectively)
+In USB PD Spec Rev 3.1 Ver 1.0, section "6.12.5 Applicability of
+Structured VDM Commands", DFP is allowed and recommended to respond to
+Discovery Identity with ACK. And in section "6.4.4.2.5.1 Commands other
+than Attention", NAK should be returned only when receiving Messages
+with invalid fields, Messages in wrong situation, or unrecognize
+Messages.
 
-Without doing so, it can lead to both the interrupt handler and the
-pullup disable routine both writing to the GEVNTCOUNT register, which
-will cause an incorrect count being read from future interrupts.
+Still keep the original design for SVDM Version 1.0 for backward
+compatibilities.
 
-Fixes: ae7e86108b12 ("usb: dwc3: Stop active transfers before halting the controller")
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Link: https://lore.kernel.org/r/1621571037-1424-1-git-send-email-wcheng@codeaurora.org
+Fixes: 193a68011fdc ("staging: typec: tcpm: Respond to Discover Identity commands")
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Kyle Tso <kyletso@google.com>
+Link: https://lore.kernel.org/r/20210601123151.3441914-2-kyletso@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/gadget.c |   11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/usb/typec/tcpm/tcpm.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2240,13 +2240,10 @@ static int dwc3_gadget_pullup(struct usb
- 	}
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -1531,19 +1531,25 @@ static int tcpm_pd_svdm(struct tcpm_port
+ 			if (PD_VDO_VID(p[0]) != USB_SID_PD)
+ 				break;
  
- 	/*
--	 * Synchronize any pending event handling before executing the controller
--	 * halt routine.
-+	 * Synchronize and disable any further event handling while controller
-+	 * is being enabled/disabled.
- 	 */
--	if (!is_on) {
--		dwc3_gadget_disable_irq(dwc);
--		synchronize_irq(dwc->irq_gadget);
--	}
-+	disable_irq(dwc->irq_gadget);
+-			if (PD_VDO_SVDM_VER(p[0]) < svdm_version)
++			if (PD_VDO_SVDM_VER(p[0]) < svdm_version) {
+ 				typec_partner_set_svdm_version(port->partner,
+ 							       PD_VDO_SVDM_VER(p[0]));
++				svdm_version = PD_VDO_SVDM_VER(p[0]);
++			}
  
- 	spin_lock_irqsave(&dwc->lock, flags);
- 
-@@ -2284,6 +2281,8 @@ static int dwc3_gadget_pullup(struct usb
- 
- 	ret = dwc3_gadget_run_stop(dwc, is_on, false);
- 	spin_unlock_irqrestore(&dwc->lock, flags);
-+	enable_irq(dwc->irq_gadget);
-+
- 	pm_runtime_put(dwc->dev);
- 
- 	return ret;
+ 			tcpm_ams_start(port, DISCOVER_IDENTITY);
+-			/* 6.4.4.3.1: Only respond as UFP (device) */
+-			if (port->data_role == TYPEC_DEVICE &&
++			/*
++			 * PD2.0 Spec 6.10.3: respond with NAK as DFP (data host)
++			 * PD3.1 Spec 6.4.4.2.5.1: respond with NAK if "invalid field" or
++			 * "wrong configuation" or "Unrecognized"
++			 */
++			if ((port->data_role == TYPEC_DEVICE || svdm_version >= SVDM_VER_2_0) &&
+ 			    port->nr_snk_vdo) {
+ 				/*
+ 				 * Product Type DFP and Connector Type are not defined in SVDM
+ 				 * version 1.0 and shall be set to zero.
+ 				 */
+-				if (typec_get_negotiated_svdm_version(typec) < SVDM_VER_2_0)
++				if (svdm_version < SVDM_VER_2_0)
+ 					response[1] = port->snk_vdo[0] & ~IDH_DFP_MASK
+ 						      & ~IDH_CONN_MASK;
+ 				else
 
 
