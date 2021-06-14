@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607043A68A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320203A68B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234376AbhFNOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:05:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:36916 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233293AbhFNOF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:05:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7549B1FB;
-        Mon, 14 Jun 2021 07:03:53 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 855953F70D;
-        Mon, 14 Jun 2021 07:03:50 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 15:03:47 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
-        igor.skalkin@opensynergy.com, peter.hilber@opensynergy.com,
-        alex.bennee@linaro.org, jean-philippe@linaro.org,
-        mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
-        Vasyl.Vavrychuk@opensynergy.com,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: Re: [PATCH v4 00/16] Introduce SCMI VirtIO transport
-Message-ID: <20210614140347.GB35368@e120937-lin>
-References: <20210611165937.701-1-cristian.marussi@arm.com>
- <YMdA+GkgJ+GONuJr@infradead.org>
+        id S234484AbhFNOHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:07:33 -0400
+Received: from mail-pg1-f172.google.com ([209.85.215.172]:40837 "EHLO
+        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234235AbhFNOHZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 10:07:25 -0400
+Received: by mail-pg1-f172.google.com with SMTP id m2so2003980pgk.7;
+        Mon, 14 Jun 2021 07:05:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yJB+B/uqyT8Yj8oTe4yW/iwZF1PlGwEGbYmCRyf4VPs=;
+        b=WH301YVkd+NT/H+jeV6pcNYHdcjqtaqvIdtbpu0fkkYAmJ7rw0/VnTDAhSvIgbv4c0
+         oazbEKmF+c7M1WRPaxGMZU5xoCLTUJgtdxU9APUEzGlzXnchk40ZNp3QFWLwuNrBu83j
+         e2ylhCoSYk62pl120eNuhLwuvfMbaggtn+gXAD60VuMlb9RO9aR6yjsww4EENQAJey5G
+         2ZzxWZw9pL2yOQEQRAidkW9g0ErNbkj+wegNJA0H7wJ55BH2rzTM1HnAVz1Nh8SFyWFK
+         I7BbhU7Q2hwWxihuFlWkGm+R8myZotEgjwBltHJuCwGgHkDJ5/gTI6uquz0y/0l8g0ap
+         0ueg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yJB+B/uqyT8Yj8oTe4yW/iwZF1PlGwEGbYmCRyf4VPs=;
+        b=O7SsglrsisO5g9SvVXVyGOQsdgDPrGN+Z/o6DksgNz+HXxec6qxB6E5eZ5uSIxMAK/
+         hDgOrergHjYSlDA4avlmAJDSas3u8k29m7ZG6CujVv9WfbreHSG6yFU1VMMwcNE5+fRX
+         7EaiqmvjtvkT+8vP7jN33UWI0BPIh6xa2Kd421NuiUxSrhzBgPUmX51f3yjUFqnThOhX
+         fFcQ8r4jA8UCOkWLcydLpvmMvoyTudTVn02RtQHtJUi25CBAQ6b78KzHLv/zTuSEBfR6
+         Dvrt3VwDlxQRxuZHH6mHWweVx19h34MfBIHTgTLoH0mMu2M4avUkgMgLqZd+r5AmhgZN
+         I5Ug==
+X-Gm-Message-State: AOAM531prSayypQTp290EodSMoY1aDSwj3O+bnpNnPDgEU2a6wbQkqLE
+        zUAgPbpplvXgp/FTg+Hs4DY=
+X-Google-Smtp-Source: ABdhPJyxkq2bPSQ3rYusHXFwzEn3le7fAXsaXh5Rh36tAMz0+W6V1tW5a8HSqlbDYgsTNNATX2tI2A==
+X-Received: by 2002:a63:5760:: with SMTP id h32mr17200205pgm.367.1623679460361;
+        Mon, 14 Jun 2021 07:04:20 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id x206sm12950089pfc.211.2021.06.14.07.04.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 07:04:20 -0700 (PDT)
+Subject: Re: [RFC PATCH V3 10/11] HV/Netvsc: Add Isolation VM support for
+ netvsc driver
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        arnd@arndb.de, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, Tianyu.Lan@microsoft.com,
+        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+References: <20210530150628.2063957-1-ltykernel@gmail.com>
+ <20210530150628.2063957-11-ltykernel@gmail.com>
+ <20210607065007.GE24478@lst.de>
+ <279cb4bf-c5b6-6db9-0f1e-9238e902c8f2@gmail.com>
+ <20210614070903.GA29976@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <e10c2696-23c3-befe-4f4d-25e18918132f@gmail.com>
+Date:   Mon, 14 Jun 2021 22:04:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMdA+GkgJ+GONuJr@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210614070903.GA29976@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
 
-On Mon, Jun 14, 2021 at 12:43:52PM +0100, Christoph Hellwig wrote:
-> On Fri, Jun 11, 2021 at 05:59:21PM +0100, Cristian Marussi wrote:
-> > Hi all,
-> > 
-> > I'm posting this V4 series starting from the work done up to V3 by
-> > OpenSynergy.
+On 6/14/2021 3:09 PM, Christoph Hellwig wrote:
+> On Mon, Jun 07, 2021 at 11:21:20PM +0800, Tianyu Lan wrote:
+>>> dma_map_single can only be used on page baked memory, and if this is
+>>> using page backed memory you wouldn't need to do thee phys_to_virt
+>>> tricks.  Can someone explain the mess here in more detail?
+>>
+>> Sorry. Could you elaborate the issue? These pages in the pb array are not
+>> allocated by DMA API and using dma_map_single() here is to map these pages'
+>> address to bounce buffer physical address.
 > 
-> Who is 'OpenSynergy'?
+> dma_map_single just calls dma_map_page using virt_to_page.  So this
+> can't work on addresses not in the kernel linear mapping.
 > 
-> > The main aim of this rework is to simplify where possible the SCMI VirtIO
-> > support added in V3 by adding upfront and then using some new mechanisms in
-> > the SCMI Core Transport layer.
-> 
-> And what is 'SCMI', and why would anyone want a new virtio transport?
 
-I'll start answering this last question first : SCMI stands for System Control
-and Management Interface whose latest specification can be found at:
+The pages in the hv_page_buffer array here are in the kernel linear 
+mapping. The packet sent to host will contain an array which contains 
+transaction data. In the isolation VM, data in the these pages needs to 
+be copied to bounce buffer and so call dma_map_single() here to map 
+these data pages with bounce buffer. The vmbus has ring buffer where the 
+send/receive packets are copied to/from. The ring buffer has been 
+remapped to the extra space above shared gpa boundary/vTom during 
+probing Netvsc driver and so not call dma map function for vmbus ring
+buffer.
 
-https://developer.arm.com/documentation/den0056/latest
 
-The spec aims to provide a common way to handle power & performance related
-needs by standardizing a set of protocols (clocks, power domains, sensors,
-voltages, resets, etc..) to enable an SCMI agent (Kernel) to talk to an
-external System Control Processor entity which acts as an SCMI Platform and
-satisfies (or denies) such requests in a centralized manner for the Kernel
-and any other SCMI agent present on system.
 
-Such SCMI stack can be indeed deployed in a variety of way depending on
-where the SCP running the SCMI Platofrm if physically situated: an
-external microntroller ? part of the EL-3 Platform firmware ? some
-functionality embedded in an Hypervisor ? a guest acting as an SCP ?
 
-Support for SCMI is already in mainline as of today under:
-
-	drivers/firmware/arm_scmi
-
-But the currently existing transport mechanisms through which the SCMI agent
-and the platform talks are based on mailboxes or SMCs.
-
-In case the SCMI Stack is deployed in a virtualized environment we need
-some sort of SCMI transport that runs on VirtIO to establish comms
-between the VMs.
-
-OpenSynergy is an ARM partner who has deployed a virtualized SCMI stack
-in their own product and developed this series up to V3, taking care
-also the proposed related VirtIO spec changes:
-
-https://lists.oasis-open.org/archives/virtio-comment/202102/msg00018.html
-
-Such proposed VirtIO changes expose a new VirtiIO SCMI Device that represents
-the SCMI platform running the SCMI Server fw which answers the SCMI Kernel
-Agent requests.
-
-Similar approaches with virtualized SCMI stacks are being developed by
-Linaro and other partners as far as I know.
-
-I picked up this series from V4 since it was apparent that some changes were
-needed in the core SCMI stack to better integrate this new VirtIO transport
-that OpenSynergy developed up to V3.
-
-Hope to have been clear and concise (not really :D) enough.
-
-Thanks,
-Cristian
