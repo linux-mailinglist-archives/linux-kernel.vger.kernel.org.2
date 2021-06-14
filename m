@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1DF3A64F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBBC3A64E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbhFNLbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48186 "EHLO mail.kernel.org"
+        id S233508AbhFNLam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:30:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235554AbhFNLQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:16:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E704061979;
-        Mon, 14 Jun 2021 10:50:06 +0000 (UTC)
+        id S235082AbhFNLQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:16:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96E1D6145F;
+        Mon, 14 Jun 2021 10:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667807;
-        bh=NTfLOom7dZ4p9kTBXVZj/H0yZeFWVs30lQS5BXTI0WM=;
+        s=korg; t=1623667810;
+        bh=H9LxPabRaj0Sw9Tm3vQwnwMqQyKenshaGMFopBcNAXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PC69FNLc0MatFayz0H+t0wJJszw14wbqEE5KZP0ch1Wv3RM3ckKlC9GffqvJ6GKbC
-         11KsJONehzQ3HNRmv5Inv2WhP1y/g0FjSX/7fMk9A6jP3GX6yglj/LUDfI2EeqLlqB
-         P6CuT2YS/xCsQnNjuWhAsRq9XHrUl011Nenrnveg=
+        b=M3rKkuYP9Atlj4qyXQIet27WMnT8QOfcVLeaUoCkieedLfnUOsN0VY+HWTWW/At8J
+         /FBVz4dGYPPW2+iwLIBLpIjnYP8d1b5ivZXv/jH69ISVRWzULJsqa1EU+rIwbzvqQv
+         ItX+0CGRZbOWC5iQrA+6u899dAUm+zkIBAnpj6q4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.12 082/173] tools/bootconfig: Fix a build error accroding to undefined fallthrough
-Date:   Mon, 14 Jun 2021 12:26:54 +0200
-Message-Id: <20210614102700.886001786@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.12 083/173] mmc: renesas_sdhi: abort tuning when timeout detected
+Date:   Mon, 14 Jun 2021 12:26:55 +0200
+Message-Id: <20210614102700.926234641@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -40,43 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-commit 824afd55e95c3cb12c55d297a0ae408be1779cc8 upstream.
+commit 2c9017d0b5d3fbf17e69577a42d9e610ca122810 upstream.
 
-Since the "fallthrough" is defined only in the kernel, building
-lib/bootconfig.c as a part of user-space tools causes a build
-error.
+We have to bring the eMMC from sending-data state back to transfer state
+once we detected a CRC error (timeout) during tuning. So, send a stop
+command via mmc_abort_tuning().
 
-Add a dummy fallthrough to avoid the build error.
-
-Link: https://lkml.kernel.org/r/162087519356.442660.11385099982318160180.stgit@devnote2
-
-Cc: Ingo Molnar <mingo@kernel.org>
+Fixes: 4f11997773b6 ("mmc: tmio: Add tuning support")
+Reported-by Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/20210602073435.5955-1-wsa+renesas@sang-engineering.com
 Cc: stable@vger.kernel.org
-Fixes: 4c1ca831adb1 ("Revert "lib: Revert use of fallthrough pseudo-keyword in lib/"")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/bootconfig/include/linux/bootconfig.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mmc/host/renesas_sdhi_core.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/bootconfig/include/linux/bootconfig.h b/tools/bootconfig/include/linux/bootconfig.h
-index 078cbd2ba651..de7f30f99af3 100644
---- a/tools/bootconfig/include/linux/bootconfig.h
-+++ b/tools/bootconfig/include/linux/bootconfig.h
-@@ -4,4 +4,8 @@
+--- a/drivers/mmc/host/renesas_sdhi_core.c
++++ b/drivers/mmc/host/renesas_sdhi_core.c
+@@ -679,14 +679,19 @@ static int renesas_sdhi_execute_tuning(s
  
- #include "../../../../include/linux/bootconfig.h"
- 
-+#ifndef fallthrough
-+# define fallthrough
-+#endif
+ 	/* Issue CMD19 twice for each tap */
+ 	for (i = 0; i < 2 * priv->tap_num; i++) {
++		int cmd_error;
 +
- #endif
--- 
-2.32.0
-
+ 		/* Set sampling clock position */
+ 		sd_scc_write32(host, priv, SH_MOBILE_SDHI_SCC_TAPSET, i % priv->tap_num);
+ 
+-		if (mmc_send_tuning(mmc, opcode, NULL) == 0)
++		if (mmc_send_tuning(mmc, opcode, &cmd_error) == 0)
+ 			set_bit(i, priv->taps);
+ 
+ 		if (sd_scc_read32(host, priv, SH_MOBILE_SDHI_SCC_SMPCMP) == 0)
+ 			set_bit(i, priv->smpcmp);
++
++		if (cmd_error)
++			mmc_abort_tuning(mmc, opcode);
+ 	}
+ 
+ 	ret = renesas_sdhi_select_tuning(host);
 
 
