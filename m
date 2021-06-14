@@ -2,133 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEA93A5F2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF763A5F2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhFNJed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:34:33 -0400
-Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:54444 "EHLO
-        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232630AbhFNJeb (ORCPT
+        id S232754AbhFNJel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:34:41 -0400
+Received: from mx0a-002c1b01.pphosted.com ([148.163.151.68]:3542 "EHLO
+        mx0a-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232721AbhFNJej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:34:31 -0400
-Received: from pps.filterd (m0127842.ppops.net [127.0.0.1])
-        by mx0b-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E9P2tP025184;
-        Mon, 14 Jun 2021 02:32:19 -0700
+        Mon, 14 Jun 2021 05:34:39 -0400
+Received: from pps.filterd (m0127840.ppops.net [127.0.0.1])
+        by mx0a-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E9Oxkd021804;
+        Mon, 14 Jun 2021 02:32:30 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=proofpoint20171006;
- bh=Fv6GXCaxOeGsnSHBU5tXC/61x5fr5pUOpe7xtayhdcU=;
- b=bzltjwhA9w77HpH6CafR0de4NxtzhLw6xHHEcxRKqULdrpkB0Dn85lX6fiCr1hVmHgKd
- ttml5OWGdFRqxdwR2A4koCa4/nOIzT91kN8wJgobVUVMLQrqpE+DNq7r5CbvxcX97O6s
- WZzkm/p0B90i+XwdYNcA/DAZdD8IHiviCBHMjD4mYO+B2ui85ti+KG8IMZFmtvdM6nws
- yHVSAq2/S21qIpqETQXjILg0wNGB3D4XHSTIGHLh28fFxK2k5GMRMTIBrO6x9r3io2lV
- +dl+2tjey1LQvVlQOWndKyy+iivHRx+EOSlu6MvdDkhMUzEMD92h8zL2X20+ksAHoEKy qQ== 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
-        by mx0b-002c1b01.pphosted.com with ESMTP id 395p44s95p-1
+ bh=lDZNaSADPmBFS1l5GHq95ydo8FKkmCOyTPHN6Nf/iAU=;
+ b=AtSY43pX1qnvZG40ZdrbLJX3yak6917PukdBk9SuBF72MzGKIf4pyhPhr2Xn3kdQwLfa
+ d1HFK7dwTjX4NzOhZ3sPGCPzbUSrRqFZyd4tUGNd1jffLTYf6uObg24HgdK/jH0t5AsI
+ TDq2M8PD7k1I1nZkjvh0+g4ke6F+a11CwL/U+anki2ynoDbg4NlaHxuniTqgMe7886HW
+ kppNc2RkEyYH/HHOuYkCQQyBDABzfCqt/OwF3GbNuic7DMQrWZPpUaIcfy79g9uf55Pf
+ i5W4wf6T8XdSsXAUqAM5bNDIHTsQRouUUHuS8D/Av7Sb1FFO5qAjG9q8Xf2bvXwDA8Ba OQ== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-002c1b01.pphosted.com with ESMTP id 39606h0gg1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 02:32:19 -0700
+        Mon, 14 Jun 2021 02:32:29 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CwZzOmPcYQq3/U84Kh3SFLr6EExzXxZq+rPj6oJVp1RNpkLPmCbC4VhG/OxAzS8Ng6StF5WENzNlbRUvcsY0WFkpRukYqsHCxbxDRCQ2/vM1BSr9h/6f36Xq7z+hIPBDxm4MiuJaV13a4/Eg7zLRveoXLpIM/2Vc058jEyCirh2l/Z8xktAKchw//HvpUXP4nDvs/LK3FLIPz7rsgEIqXkmZyMj7dU2fxw8Elr8ne//OisvswJReO+NkzlRs7WHBj5F0G5J8DMGEzCGQhPIG0GWL+Zid66U9gy/WwDqzkt4z3JlUObl6Kf8EQHzMfuwWCoMm3c4nEfYLEd/Cl+EfuQ==
+ b=ZLLqNfJYje28/saqeaebJjxJ0k4nu7nN5w3K8+J3kF4HTRJlTkRdH6boeS+x8nVZaq9agT/1Z7M4yohismpclYDZzSULibxfARnKk76J16lShDNswq3dYLy0EXIKY61FWDV2QHfxoV/q7rIFRBiv6LQi41FYRIKiRQxXIQY8RXMu4m0fVBz/cl92AXTRJ4EIsDupO/ahpRp4tLmjBLehRm272KbVYzbrqKHD/ZfHhKhr/1838uchsdG3OMsloLvde5kUZkcYqYYquhlGpVcPON30X7Vef2PmCLlOnzbtHDPJZbWzKxJyuZhbSH/QJA74Zs2Bry/hxFhs+bGb8r19qQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fv6GXCaxOeGsnSHBU5tXC/61x5fr5pUOpe7xtayhdcU=;
- b=l1tpV9PYL7EvzddzFaS9Zrs42y5jtklbf+Yen8hZD/CYSGPOsAhzUgEN/YPsd/DrMKVcM23bAKpjx56/ARoevjrEnqkF/x2uEgseYP9i48jjHH1RlWSq9YVB2+Z/AwcWdT04jF4C0/Pz7QCrNebedcy/6mm9GGhhfTDPedOigyPvR6El7A7nrFnbOxSi+PhgHcONlBRPwT0Xtfy/y1enyHXsd5fKme7/sahRYIN5L4SpgE+RaykKC8oAGd3+XK5Lomc4xncgQ3F0pxtbA+NE7hV8Xruh7grGH//Y9nk911jM2cnmq/ox7ZiAwRIKlwPLpDQciz8D8rr31RMt9MbP5A==
+ bh=lDZNaSADPmBFS1l5GHq95ydo8FKkmCOyTPHN6Nf/iAU=;
+ b=SSsVgVHAEdYhlt778XzlnTckxpBYEaWkjXxiOUEyiFm3RH/9RPpRPam7TmB+V9bTK37x8h0dT0kNtk72DyZBgZsdQntqTTOJXu2/jNGCo1uqZuINW2lgjBbkhN25f3KL4UD/SNNiXPpz7VF5wMFZc+GycRNwIDHMCZ2v1eQex8B1ijix0rr6Du2EnwiRZQGxUQWtdDv12sxx1Wgmut4IU1iNXGbp9hps6btbi3/myK/ObJ5eK5QbB1NXoAFKhEuHvhMHD7YjdPf4QKhEDTHIbJ+DimGCE6n5rvxwJfJODYQBkFScW1qWcrieEaDo4r4SZOm7xrNQZzPDTY+blv50Rg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
  dkim=pass header.d=nutanix.com; arc=none
-Authentication-Results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=nutanix.com;
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=nutanix.com;
 Received: from CH0PR02MB7964.namprd02.prod.outlook.com (2603:10b6:610:105::16)
- by CH2PR02MB6998.namprd02.prod.outlook.com (2603:10b6:610:88::8) with
+ by CH2PR02MB6711.namprd02.prod.outlook.com (2603:10b6:610:ae::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Mon, 14 Jun
- 2021 09:32:18 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.25; Mon, 14 Jun
+ 2021 09:32:27 +0000
 Received: from CH0PR02MB7964.namprd02.prod.outlook.com
  ([fe80::f833:4420:8225:5d12]) by CH0PR02MB7964.namprd02.prod.outlook.com
  ([fe80::f833:4420:8225:5d12%7]) with mapi id 15.20.4219.025; Mon, 14 Jun 2021
- 09:32:18 +0000
+ 09:32:27 +0000
 Subject: Re: [PATCH] net: usbnet: allow overriding of default USB interface
  naming
-To:     Greg KH <gregkh@linuxfoundation.org>
+To:     Andrew Lunn <andrew@lunn.ch>
 Cc:     Oliver Neukum <oneukum@suse.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrew@lunn.ch
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210611152339.182710-1-jonathan.davies@nutanix.com>
- <YMRbt+or+QTlqqP9@kroah.com>
+ <YMOaZB6xf2xOpC0S@lunn.ch>
 From:   Jonathan Davies <jonathan.davies@nutanix.com>
-Message-ID: <469dd530-ebd2-37a4-9c6a-9de86e7a38dc@nutanix.com>
-Date:   Mon, 14 Jun 2021 10:32:05 +0100
+Message-ID: <e35ddece-3fd2-4252-6786-af507ba819d2@nutanix.com>
+Date:   Mon, 14 Jun 2021 10:32:22 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
-In-Reply-To: <YMRbt+or+QTlqqP9@kroah.com>
+In-Reply-To: <YMOaZB6xf2xOpC0S@lunn.ch>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [92.13.244.69]
-X-ClientProxiedBy: AM3PR05CA0086.eurprd05.prod.outlook.com
- (2603:10a6:207:1::12) To CH0PR02MB7964.namprd02.prod.outlook.com
+X-ClientProxiedBy: AM3PR05CA0088.eurprd05.prod.outlook.com
+ (2603:10a6:207:1::14) To CH0PR02MB7964.namprd02.prod.outlook.com
  (2603:10b6:610:105::16)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.249] (92.13.244.69) by AM3PR05CA0086.eurprd05.prod.outlook.com (2603:10a6:207:1::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22 via Frontend Transport; Mon, 14 Jun 2021 09:32:16 +0000
+Received: from [192.168.1.249] (92.13.244.69) by AM3PR05CA0088.eurprd05.prod.outlook.com (2603:10a6:207:1::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Mon, 14 Jun 2021 09:32:26 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 38a0c23e-79ea-4497-894a-08d92f174d73
-X-MS-TrafficTypeDiagnostic: CH2PR02MB6998:
-X-Microsoft-Antispam-PRVS: <CH2PR02MB6998D8B015DFA90DC58A0989CB319@CH2PR02MB6998.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 99bbb713-5206-4a36-20ff-08d92f17530e
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6711:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB67115FD69A27D5764761EE8ECB319@CH2PR02MB6711.namprd02.prod.outlook.com>
 x-proofpoint-crosstenant: true
 X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f0mbwj3Dir31GKjW1oe12CWKVAShUYr7BFdZCMBaZfMdU0FKC8Uv1vggs797rpqM3a0qNmJqgCuehLSL3WSvIfHjjF4bZeaLLL5KcK4Ph6en9dOdPMDjSAB27s9ueZ/hpytqf//tiBqfLWMQ1mI+St3ImGjK/EamQbpAuP9YUz2sy9BmNpyy8qZUMkMvmO1iguT1YxD7a2OgxvKRtKIdpFilZAA7cRfNpBKRzL/7u/2vX9Y6t8kajUtKi7AHhhtP97XHmNf5jBLpVcpx+bCYtPQQbLF0epJESnXNgoOoYtXuxSWDQlBRCZpJRpSsraq39sGCFIP0o5WxepjCZnp5gnCyV9ilMaQn/txpn4JE97+kq54BjPaIzWVnQAO/GIHo4niVMd3crnCxZp1gYj3VBICYOXLT9vr4kG6gaca0br4RmV6TX/OE1Go5rIbHhOpxFNWUvAJj96+c7npDzbqFhAHXGgUXUaUTqN6u51JAbuFs4xru62i36cu4UNc+KNwhGC08M35e9Nos9pIGloR7H76k6Pyiw+B0Wre056B9zadePH3i0dLj4joZd2FJCuB78GU5CYtZjrX3Z1DLrzEOy6uh1cG+EXJPcg1eINlPCwn2gBMuBUJSXjxhlwU0vN2vDBHJ0qCy3ew4zZ54wYwJDUKxTshhUzrmI+S8+/TcAwFwelAchUuMNHnlZ5AIQuEuCHJAZAipPL5gihQ0wYjpm0zn93VAl2wrmj6c2soz1vE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR02MB7964.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(346002)(376002)(136003)(8936002)(8676002)(53546011)(2906002)(52116002)(66556008)(44832011)(31696002)(66476007)(6486002)(6666004)(66946007)(4326008)(26005)(54906003)(6916009)(31686004)(5660300002)(16526019)(478600001)(316002)(16576012)(186003)(83380400001)(2616005)(36756003)(956004)(38100700002)(38350700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 2GCK+r6g3FK9wFhPItgvqUAXpuZ8yFWN/R7nuWgKUbyCGmh+5gn54fMB27HBb9FVwsX1wtIvXlBmfZPSRjsVsa+TsIhWQLqmSAhOqamSNzhz/kaX/nuP2+sBecKDJXrQK61/lfPX8kPapMUIBCAaPQO6UROnGZcrJG7vPPeO8NQU97kw35i2zx6XGqx/KfHI0AOQsOR6bDRf209Rz8Df9tN4pDGJMyVwD6brqskvs1P/bmkQ1ezsna3mtnIEQOnXnGQP9yFI/plSvGhtqSbhmYMpNzvXdGQDQ0HL3ttceMaapUQvR/ttDLfW04SeIqT/29RBehqU4lWKvmWWpMXn3O/MZ+JwBUCWGlqHtwQTTYybyF+6zpnk2wmvLBQ3zXeEWkWYgzpKAgq2Toy5GRD413OCBMZGCN818fnrlBrG96UeWSX/NwP+Bd9slHgwLJoVK6dgordjomO2E2sul3SsPaKCSREtJriEst4iSWKPQJSiNcga1srEkkxBG3gW/xHfM7ixU4/SOr4tZikJQnzpSl7MI6n/xS0hRPfc3B8xClotGhCRP06gFxy3wp+Ea/+YShMzFRXJlHIudmbnCc4griaYSDSNMyQVE7Haq86k2uQIZSy0uZIb0WLZF2mWbClCNyz87wC4CvVmFT6oW5rcX/J509GyMgb5bxb4GY1zTbe4gxm5blosj6ceOIAFsj8MmepxGkVtmfHgjVi7CMQHSXEupcraWgvg4EvntBdHa2Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR02MB7964.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(396003)(136003)(366004)(16576012)(6486002)(31686004)(2616005)(8936002)(316002)(2906002)(83380400001)(26005)(5660300002)(44832011)(6666004)(66946007)(4326008)(956004)(478600001)(54906003)(66476007)(16526019)(66556008)(53546011)(52116002)(6916009)(186003)(38100700002)(31696002)(38350700002)(8676002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bnVMVUE4VG9OQzc5NVpSSlZPQnpGZHRkSHpJcHJ4YlpCMUh5a3g5N0t3VWxu?=
- =?utf-8?B?bGtYNkxwcW4wbUJocFN6ejFNWUZYVGdBQnpwanJCODNmMWVsTXB0M0pMTEVC?=
- =?utf-8?B?ak12S3owblQvOWVCY09QNUNhNTViajM4L1FORkk1MHdtS2kvdEFZNG16dkt6?=
- =?utf-8?B?VVo5VytyY24rZnZpb0FCOGo3YjlKYUZHTTFCZS9hVEVaTTFyZVVmbEZBbU9v?=
- =?utf-8?B?YkorYlZId3FKcURFZEl2aU16MkpOUVpmUWVHWVRMaUVYa29sK0ZITjBCdjJO?=
- =?utf-8?B?M20zM1h1TFRwU1Zad1ZBUEdMZFhDMFpmQ0hvekRkVmZlMitCd09zTXgvU28x?=
- =?utf-8?B?QWQ1bDUvRUNOOGw3VS9HYkpXWDBJVDZrNHVNVkUzdlJJdU9UTlUxSWNsKy8r?=
- =?utf-8?B?TXMreEFMM2xzODNmZ2JSRDRadVArSjRUTzdnSTJ1OWh2enVXMHNHTEVrS08v?=
- =?utf-8?B?N3ZiNFJRYmhyWEN2U04rcUdhU081bGpWRnhNeFZZdk5JaHlCb3dUT29XckRw?=
- =?utf-8?B?ckVvdVIwaUVUNVU2OGllZlE2T3h1N0xUMnNKOWlRY3NSdU8vbHBpWEdDbXd4?=
- =?utf-8?B?TVk3NGNCUGdrZ2VGb2ZHaVBwSnc4VW9KQXBpZnRFcGdRVmNCcG1hK3Y3Q2Fl?=
- =?utf-8?B?VktwMmtvNHRtRnVTTUxxRHFyNXoxTHNrSXdIN3pOQi9FUTlxcit3M1A4NmQz?=
- =?utf-8?B?Z0JVS2cranVqNnBaWDlMM3J2enV6YWpvVEtLeElVcVNpWlc5S0s3L2FhMC9v?=
- =?utf-8?B?SHJWTDhkMzM2eTdFb21UV0h4MDhadUVBVERpVEdCVUdqcVlLU3RBdFNNUHdp?=
- =?utf-8?B?T21VKzkxQ2FXZWdodzNlZjhsMFJjTjQ4aTNEQm5hb0RXNmdnRTA3TFlwMTFz?=
- =?utf-8?B?eGRWbmNlRHJxbVI3d2ZGYUhBQ3hhclh3bG1xOXBjdm82eHVBLzRMUGFRdHJU?=
- =?utf-8?B?cWlzQnNsamo5bEVWaUNUT2Z6bkN4U2NRWHBXdWVOQXM3bzVNY21TNGVaOUM3?=
- =?utf-8?B?Tk1aTGhXaXRXUmR1UHk3M24zcE1YdjVGS2ZwT3RjQ2F1bHNXYnhKMlovcm1J?=
- =?utf-8?B?MDJTL1M0V28vMlFkNXJvVWlsOE1JU0FWQWQrZ1o5UGtHeUtQck1jL0xiQUEx?=
- =?utf-8?B?aFZwc3YxeXYwdHdEK2hMb1orMUN4eTRmd1JTN1ZxTUlrekVXS2VkRjhmb0Q2?=
- =?utf-8?B?LzRHRTJBeTQyV0RxNzNzbDZ3eG5tM0dNZGtFaTBXLzFmbkR0UG1RSTBURDNv?=
- =?utf-8?B?Qkt5S1cvTktvT2M1VVZRVG5OLzlRR0JpRlJjMDM0N05lQTRoejIrYmZWeGtD?=
- =?utf-8?B?SWViNGROVG5qc1BiVTQ0bHJZSnl4djdpSXJITWVhSlpReVNxOTRHVjBLV1ll?=
- =?utf-8?B?bEpncVRiWkN5NU40ZUxneHQ0cDRmN09zWll6YUxYZEluR1RMd3VqNjBTcUQ4?=
- =?utf-8?B?MXZYeW1SUjV1STJ4N0ErVXl2clpyeTFTZ3I2Q2hPb1NoZTdFekFsU3h1UmVS?=
- =?utf-8?B?NGIxNnBtMUVuSTBBR0dCVlR6NTFnR3h5emdlcTVUZTAzV3hRTGVwbDRJUFAv?=
- =?utf-8?B?SFRnY2NVUnl1b2xFMVM4ODdDZVVobFl5T01VaW5XRmFUQ1d4YTRYeit0QVND?=
- =?utf-8?B?WHVTYXBXTnVaUTcxell3bFpwZEhNdEJGc2NmWlI1cmk4VVN2RFVuSHRhSUZn?=
- =?utf-8?B?OTVuTEdEcEJTcFRvb3REK3cwQUV4QTVkWUdEVFFXVHdpeENkSTltRFlPM3I4?=
- =?utf-8?Q?nq6QMBjrC/5TFlwN/4WuvDlGS8yBVWzV/6Rypi1?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L2xsaDljZkM2N3FNayt1anZESlExY0RYdzRER3lER2pXUkJyVE4rSHlueHow?=
+ =?utf-8?B?YnhjQk9oRXNWbjFCQjhhUUV0Nm1pTEtpQm1lRkUrN3R5SklNdFRCazRDMlJi?=
+ =?utf-8?B?STEwbFh3ZjJ2ZHd2OHdIdVlhS0ZteC9OUFR0K2xEcHlaUXVEcFpWRkNxSFdQ?=
+ =?utf-8?B?L05adjlOK3ljeHVHL1hRVittaWFpR2FBNkxzSnlEZXZTSUNRU0FWZTFtb3dw?=
+ =?utf-8?B?MU03TmtvY1pHaHNSTnpkTW56eEZXR0pIeE5PMGlnOEFoQ0VqMm9ZSDJuakdB?=
+ =?utf-8?B?RlFyTmQ4MmpndWVmV3A2ZlE4SWwxdnE0ZWJwbXNWTUxvNWhscEx6Q2Y3ZlhP?=
+ =?utf-8?B?TDlxNGkvOEY0UmZ1cjFBT2xKckRNK05vSStoTTRQanFIMmpLZFcxUC9UVFg3?=
+ =?utf-8?B?blREZ3NSNy81eGRDaVQzVkJoWHVUMHJ0Vit5Tzl1clMzMUdTRnNtajZxSG82?=
+ =?utf-8?B?bVFmVGNHUmJCUDViYlc5RG5SRGJsUmZhamYzTTQwZmJlYmNKR3M0MzdzS0Vr?=
+ =?utf-8?B?dmNVZzhVSkMwUnZCZmR4ZS8vbVRmd3Q5ai84cnBWUExnZWtBVGl6VFRIZGdu?=
+ =?utf-8?B?WFMwQUhHNVk1YWdobk9KRXQ4QWVGMWI2anRMVmdrMlFlQy9YOEEvYlhnQ2Ni?=
+ =?utf-8?B?U1MrVDFrVFlqdUxhenU4TWFCY09BWXZCeVpObFJKQkdTYWl5MGMwMjF2L21I?=
+ =?utf-8?B?Ny9PVXhLQW9qdDY3UjMrM0I4MHErRTlSb3RIY2t6a1BDenZ1NitFV0VicXA1?=
+ =?utf-8?B?WVV6eExnQ0xxNENCMHRXMHpRdFlsWmJBM1RxcGpJN0hFUUJRekhqRG5VbHNy?=
+ =?utf-8?B?K1BvaTViYkpoaDJQdEM1ZjNDdnptTzd3aVQ3TFJQRE5hWFVVcThISHgrN2x3?=
+ =?utf-8?B?Z3piaXJNOTJQOTBJUUJlZWhRYnVQZS9GSjREVmloeGdGL2p6S2MwOHp6OUFW?=
+ =?utf-8?B?Qnl4SHR2V2sxNkdidDlvT1o5cEpUcG0rNGZuTW54VlUydk5QUDFSNGVLNFR4?=
+ =?utf-8?B?S0I4NHNyZFJYR3crSzNQVEFwZzltZmxTWjBsMm1RbFJMVzdETmdnMnlXbC90?=
+ =?utf-8?B?R011blc3Mjc1blhVR0tJUnhNQ0N0Tis4YllsTTF2U2dya2pHekdDdW12bGlz?=
+ =?utf-8?B?a2Qvd085emttamxWVmZMKy9uYXlvY20vN3FHeVR6TkxIWVdzdkNHVHZEOUhk?=
+ =?utf-8?B?NzcxSzBVcklaLzBFUnBjSHRuNHZmS3FFYSt4bGdzdngzcDg1SE5XU3FoM21C?=
+ =?utf-8?B?QUJwS25qTCtzNStJVDVyWmhWMmFrS2o3M0xBb3lOMVY0WFQydkc5SXF2Mmo3?=
+ =?utf-8?B?QW1nQzJJYWxRVkpORFNSUXJZdTd1WngvNVd0NEpSSnhjY1NyL0hPcUpGUjdW?=
+ =?utf-8?B?emtSc3VjeUgxcE1JOGNiR0xwcWo0TTJnamo3OFNsUWlseVZBRVQ3SjlvcDRD?=
+ =?utf-8?B?ZG9HMVBVa0RhVUg0VS83SkNQaUlMVTFjVncyNlJKc1d4TGJZeGIyZmdoRWpB?=
+ =?utf-8?B?eDhNQ1RSd01vYXFOSTlqSmM1cXRuWDY4eWVRT0ZCWUVTVnJMYzVnSmF0Vndj?=
+ =?utf-8?B?aC9mZ1RZRUU2OVBnOEhoOWQ1Y1d3REh3bXp4M3VJRkhkQUVqdlNEdGthNGt2?=
+ =?utf-8?B?UnJzVUVUclhUczEyYURKTGFQSG5RQzdvbHBpbnlYQU9KSDBNVDhMSXRNeVZt?=
+ =?utf-8?B?Q3R3WXJrelQwZXdCUjY3Uk0yT0pldFYyV2hYNFM3djMwdEpwb1UrYm1GWkJm?=
+ =?utf-8?Q?wF/GlSOxoHy3daDvvlHEFrBcs38qqDD6+ihNh5k?=
 X-OriginatorOrg: nutanix.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38a0c23e-79ea-4497-894a-08d92f174d73
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99bbb713-5206-4a36-20ff-08d92f17530e
 X-MS-Exchange-CrossTenant-AuthSource: CH0PR02MB7964.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2021 09:32:18.0841
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2021 09:32:27.4660
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: bb047546-786f-4de1-bd75-24e5b6f79043
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P27goWvI+cW2bNfqerCqkxSb72VCdyo7hvFYwf+Z4oevlbHhmrEJ/dKbzGCxL+8zwxbz73QAxtzjMhMc1QnDQxZKijMSCbhMvaCt5ThlFVg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6998
-X-Proofpoint-ORIG-GUID: hgRpvmp3trxcYpq5Qi_tHhStjwVquH0h
-X-Proofpoint-GUID: hgRpvmp3trxcYpq5Qi_tHhStjwVquH0h
+X-MS-Exchange-CrossTenant-UserPrincipalName: meLBWsk0H9BKETF5zHf2I6WlbbspTwfVzzXl2qOUPHqJMt3HqoaD33fDdvfMcdU7dNG5AcokJzW5h7Pci79s3uXYNfZjVQDxrqBBB/OXYzQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6711
+X-Proofpoint-GUID: jCwU21bFMVpTd9N9wXRNZAr8mHX5LSxR
+X-Proofpoint-ORIG-GUID: jCwU21bFMVpTd9N9wXRNZAr8mHX5LSxR
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-06-14_04:2021-06-11,2021-06-14 signatures=0
 X-Proofpoint-Spam-Reason: safe
@@ -136,7 +136,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/06/2021 08:01, Greg KH wrote:
+On 11/06/2021 18:16, Andrew Lunn wrote:
 > On Fri, Jun 11, 2021 at 03:23:39PM +0000, Jonathan Davies wrote:
 >> When the predictable device naming scheme for NICs is not in use, it is
 >> common for there to be udev rules to rename interfaces to names with
@@ -171,36 +171,25 @@ On 12/06/2021 08:01, Greg KH wrote:
 >> +MODULE_PARM_DESC(eth_device_name, "Device name pattern for Ethernet devices"
 >> +				  " (default: \"" DEFAULT_ETH_DEV_NAME "\")");
 > 
-> This is not the 1990's, please do not add new module parameters as they
-> are on a global driver level, and not on a device level.
+> Module parameter are not liked in the network stack.
 
-The initial name is set at probe-time, so the device doesn't exist yet. 
-So I felt like it was a choice between either changing the hard-coded 
-"eth%d" string or providing a driver-level module parameter. Is there a 
-better alternative?
+Thanks, I wasn't aware. Please help me understand: is that in an effort 
+to avoid configurability altogether, or because there's some preferred 
+mechanism for performing configuration?
 
-> Also changing the way usb network devices are named is up to userspace,
-> the kernel should not be involved in this.  What is wrong with just
-> renaming it in userspace as you want to today?
+> It actually seems like a udev problem, and you need to solve it
+> there. It is also not specific to USB. Any sort of interface can pop
+> up at an time, especially with parallel probing of busses.
 
-Yes, renaming devices is the responsibility of userspace. Normally udev 
-will rename a device shortly after it is probed. But there's a window 
-during which it has the name the kernel initially assigns. If there's 
-other renaming activity happening during that window there's a chance of 
-collisions.
+Yes, this is also applicable to the naming done for all ethernet 
+devices. But I've seen the problem multiple times for USB NICs, which is 
+why I proposed a fix here first.
 
-Userspace solutions include:
-  1. udev backing off and retrying in the event of a collision; or
-  2. avoiding ever renaming a device to a name in the "eth%d" namespace.
+> So you need
+> udev to detect there has been a race condition and try again with the
+> rename.
 
-Solution 1 is ugly and slow. It's much neater to avoid the collisions in 
-the first place where possible.
-
-Solution 2 arises naturally from use of the predictable device naming 
-scheme. But when userspace is not using that, solution 2 may not apply.
-
-Yes, the problem is a result of userspace decisions, but that doesn't 
-mean the kernel can't help make things easier.
+(See reply to similar question in sibling thread.)
 
 Thanks,
 Jonathan
