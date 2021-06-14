@@ -2,84 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192E93A69F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985EF3A69F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhFNPWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:22:39 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12966 "EHLO m43-7.mailgun.net"
+        id S233469AbhFNPXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:23:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232809AbhFNPWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:22:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623684035; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=TgruFaOHgaX1w1KfWjUbiFXZ4JxCDk9YTxQIoQffRp0=;
- b=rLtqtof+G/HA7bL0h6tqWFs4Fhij1PEMl1OeRDXegnMcIDIr4WyBiKBZY6+mb9HQMSKZJsJT
- HkhYlhGBaqQxd5pkXnpBLcZDArKPdYgfZTXiQfKLMIPQD8j2izznx71s9ZKL5rfLoN12dNPl
- i7w4q85QefDu3gxgMzfusvnvNLw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60c773c2ed59bf69cc41d322 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 15:20:34
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9BA62C4323A; Mon, 14 Jun 2021 15:20:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10BBCC433D3;
-        Mon, 14 Jun 2021 15:20:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 10BBCC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S233414AbhFNPXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 11:23:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93BE8613D3;
+        Mon, 14 Jun 2021 15:21:16 +0000 (UTC)
+Date:   Mon, 14 Jun 2021 16:21:14 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/mm: Drop SECTION_[SHIFT|SIZE|MASK]
+Message-ID: <20210614152113.GE30667@arm.com>
+References: <1623658706-7182-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wcn36xx: Fix inconsistent indenting
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1622024568-32130-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1622024568-32130-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210614152034.9BA62C4323A@smtp.codeaurora.org>
-Date:   Mon, 14 Jun 2021 15:20:34 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623658706-7182-1-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
-
-> Eliminate the follow smatch warning:
+On Mon, Jun 14, 2021 at 01:48:26PM +0530, Anshuman Khandual wrote:
+> SECTION_[SHIFT|SIZE|MASK] are essentially PMD_[SHIFT|SIZE|MASK]. But these
+> create confusion being similar to generic sparsemem memory sections, which
+> are derived from SECTION_SIZE_BITS. Section references have always implied
+> PMD level block mapping. Instead just use all PMD level macros which would
+> make it explicit and also remove confusion with sparsmem memory sections.
 > 
-> drivers/net/wireless/ath/wcn36xx/dxe.c:803 wcn36xx_dxe_tx_frame() warn:
-> inconsistent indenting.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+The clean-up looks good to me:
 
-743b575af18d wcn36xx: Fix inconsistent indenting
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1622024568-32130-1-git-send-email-jiapeng.chong@linux.alibaba.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
