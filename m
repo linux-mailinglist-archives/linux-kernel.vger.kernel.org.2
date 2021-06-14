@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900943A6444
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1602C3A62A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbhFNLWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:22:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39838 "EHLO mail.kernel.org"
+        id S234747AbhFNLDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:03:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234722AbhFNLGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:06:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA28F6192B;
-        Mon, 14 Jun 2021 10:45:31 +0000 (UTC)
+        id S234714AbhFNKyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:54:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A5E361420;
+        Mon, 14 Jun 2021 10:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667532;
-        bh=VDGTvehYTiZwDYip8hKvER9rrmV2fTvKrE5Cf+RAinE=;
+        s=korg; t=1623667211;
+        bh=Ai6QrPle0aVWEa77ZCFI5Nqvc4azHS+DWW55+gah+1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fyA8Hl4XcCn5/pkub97vHCJvrxGTRqIifWQO5XtFH7d9+BxtYr3Owlv+t4Jo080Xs
-         bQ0qHISGPZmtbLKQUbFfiKhozOg3SwYZ4+Zt/D6Ic7nH183gkPQtipC9qINtFgRaGV
-         2IWdKmdNLwgErDe31tHi5F4d+F6JAlOkXR2tSsAc=
+        b=CQoBymFNYVpkKiWs2BtLO0vv1h0DL6mrpPWKhpgV5/nFXYPgs+vonZN2N6XoJ3nG6
+         JgZn83I+8Sl78DUwCRwHNP6lApdXRbc6o209o5p2UGDikyYhlk3H0qoDQP0vE9zdnR
+         Pilk2UuQPxnpyXvKEqIDoGR/TNs/Gr/P91cB03ik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH 5.10 106/131] vmlinux.lds.h: Avoid orphan section with !SMP
-Date:   Mon, 14 Jun 2021 12:27:47 +0200
-Message-Id: <20210614102656.601568681@linuxfoundation.org>
+        stable@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH 5.4 70/84] KVM: x86: Ensure liveliness of nested VM-Enter fail tracepoint message
+Date:   Mon, 14 Jun 2021 12:27:48 +0200
+Message-Id: <20210614102648.741191107@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Sean Christopherson <seanjc@google.com>
 
-commit d4c6399900364facd84c9e35ce1540b6046c345f upstream.
+commit f31500b0d437a2464ca5972d8f5439e156b74960 upstream.
 
-With x86_64_defconfig and the following configs, there is an orphan
-section warning:
+Use the __string() machinery provided by the tracing subystem to make a
+copy of the string literals consumed by the "nested VM-Enter failed"
+tracepoint.  A complete copy is necessary to ensure that the tracepoint
+can't outlive the data/memory it consumes and deference stale memory.
 
-CONFIG_SMP=n
-CONFIG_AMD_MEM_ENCRYPT=y
-CONFIG_HYPERVISOR_GUEST=y
-CONFIG_KVM=y
-CONFIG_PARAVIRT=y
+Because the tracepoint itself is defined by kvm, if kvm-intel and/or
+kvm-amd are built as modules, the memory holding the string literals
+defined by the vendor modules will be freed when the module is unloaded,
+whereas the tracepoint and its data in the ring buffer will live until
+kvm is unloaded (or "indefinitely" if kvm is built-in).
 
-ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/cpu/vmware.o' being placed in section `.data..decrypted'
-ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/kvm.o' being placed in section `.data..decrypted'
+This bug has existed since the tracepoint was added, but was recently
+exposed by a new check in tracing to detect exactly this type of bug.
 
-These sections are created with DEFINE_PER_CPU_DECRYPTED, which
-ultimately turns into __PCPU_ATTRS, which in turn has a section
-attribute with a value of PER_CPU_BASE_SECTION + the section name. When
-CONFIG_SMP is not set, the base section is .data and that is not
-currently handled in any linker script.
+  fmt: '%s%s
+  ' current_buffer: ' vmx_dirty_log_t-140127  [003] ....  kvm_nested_vmenter_failed: '
+  WARNING: CPU: 3 PID: 140134 at kernel/trace/trace.c:3759 trace_check_vprintf+0x3be/0x3e0
+  CPU: 3 PID: 140134 Comm: less Not tainted 5.13.0-rc1-ce2e73ce600a-req #184
+  Hardware name: ASUS Q87M-E/Q87M-E, BIOS 1102 03/03/2014
+  RIP: 0010:trace_check_vprintf+0x3be/0x3e0
+  Code: <0f> 0b 44 8b 4c 24 1c e9 a9 fe ff ff c6 44 02 ff 00 49 8b 97 b0 20
+  RSP: 0018:ffffa895cc37bcb0 EFLAGS: 00010282
+  RAX: 0000000000000000 RBX: ffffa895cc37bd08 RCX: 0000000000000027
+  RDX: 0000000000000027 RSI: 00000000ffffdfff RDI: ffff9766cfad74f8
+  RBP: ffffffffc0a041d4 R08: ffff9766cfad74f0 R09: ffffa895cc37bad8
+  R10: 0000000000000001 R11: 0000000000000001 R12: ffffffffc0a041d4
+  R13: ffffffffc0f4dba8 R14: 0000000000000000 R15: ffff976409f2c000
+  FS:  00007f92fa200740(0000) GS:ffff9766cfac0000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000559bd11b0000 CR3: 000000019fbaa002 CR4: 00000000001726e0
+  Call Trace:
+   trace_event_printf+0x5e/0x80
+   trace_raw_output_kvm_nested_vmenter_failed+0x3a/0x60 [kvm]
+   print_trace_line+0x1dd/0x4e0
+   s_show+0x45/0x150
+   seq_read_iter+0x2d5/0x4c0
+   seq_read+0x106/0x150
+   vfs_read+0x98/0x180
+   ksys_read+0x5f/0xe0
+   do_syscall_64+0x40/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Add .data..decrypted to PERCPU_DECRYPTED_SECTION, which is included in
-PERCPU_INPUT -> PERCPU_SECTION, which is include in the x86 linker
-script when either CONFIG_X86_64 or CONFIG_SMP is unset, taking care of
-the warning.
-
-Fixes: ac26963a1175 ("percpu: Introduce DEFINE_PER_CPU_DECRYPTED")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1360
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com> # build
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210506001410.1026691-1-nathan@kernel.org
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Fixes: 380e0055bc7e ("KVM: nVMX: trace nested VM-Enter failures detected by H/W")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Message-Id: <20210607175748.674002-1-seanjc@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/asm-generic/vmlinux.lds.h |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kvm/trace.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -971,6 +971,7 @@
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- #define PERCPU_DECRYPTED_SECTION					\
- 	. = ALIGN(PAGE_SIZE);						\
-+	*(.data..decrypted)						\
- 	*(.data..percpu..decrypted)					\
- 	. = ALIGN(PAGE_SIZE);
- #else
+--- a/arch/x86/kvm/trace.h
++++ b/arch/x86/kvm/trace.h
+@@ -1483,16 +1483,16 @@ TRACE_EVENT(kvm_nested_vmenter_failed,
+ 	TP_ARGS(msg, err),
+ 
+ 	TP_STRUCT__entry(
+-		__field(const char *, msg)
++		__string(msg, msg)
+ 		__field(u32, err)
+ 	),
+ 
+ 	TP_fast_assign(
+-		__entry->msg = msg;
++		__assign_str(msg, msg);
+ 		__entry->err = err;
+ 	),
+ 
+-	TP_printk("%s%s", __entry->msg, !__entry->err ? "" :
++	TP_printk("%s%s", __get_str(msg), !__entry->err ? "" :
+ 		__print_symbolic(__entry->err, VMX_VMENTER_INSTRUCTION_ERRORS))
+ );
+ 
 
 
