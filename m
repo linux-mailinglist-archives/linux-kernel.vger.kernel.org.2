@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07C53A64CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4283A631B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbhFNL3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:29:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42902 "EHLO mail.kernel.org"
+        id S235413AbhFNLKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:10:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235517AbhFNLOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:14:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF9E761958;
-        Mon, 14 Jun 2021 10:49:05 +0000 (UTC)
+        id S234755AbhFNK7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:59:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 591BD6142B;
+        Mon, 14 Jun 2021 10:42:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667746;
-        bh=eDA8Gw8M9wvDeozjqkyJrOAl3J7vn9KFXeNeaE5zfcc=;
+        s=korg; t=1623667331;
+        bh=4CVml7otjDJGwBs2cMscAqEdXLLanjVXMjd5sFkOvo0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oGwmTUWvkLoiePcjl9yIA7IciD0KrYk1D/BuMlT0oWsgLwasiOgGB2i3NIb30IvYK
-         ggO3bQlUM7TpjIBsPXmPVq1vPGSyb4qiFyEgptjV4sDFmjXE13CnWOf/xGb3QSaDhs
-         3IOddre092ZGR6O+jeLIK5eVRsHL5MaZfSwDx2fc=
+        b=ZQ3xDdHAJ0dWa1VxArTcbI0OicLrEe8pKYhh2iY7S6lmynhlcx6XAHD86QAiiPHOF
+         MDZYWj+c+A+bzTJC5VrFkkTdGGZTsiQSZip38Ar/YfGVh8Aok5OP/VQOlikf9CvfPX
+         B4bXmB+mI8ko8NpvfUoSsCW2Nk2M9AXqLKc2gHN8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephan Hohe <sth.dev@tejp.de>,
-        Zhang Rui <rui.zhang@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.12 057/173] Revert "ACPI: sleep: Put the FACS table after using it"
-Date:   Mon, 14 Jun 2021 12:26:29 +0200
-Message-Id: <20210614102700.057572226@linuxfoundation.org>
+        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
+        Dmitry Bogdanov <d.bogdanov@yadro.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 029/131] scsi: target: qla2xxx: Wait for stop_phase1 at WWN removal
+Date:   Mon, 14 Jun 2021 12:26:30 +0200
+Message-Id: <20210614102653.999205807@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Rui <rui.zhang@intel.com>
+From: Dmitry Bogdanov <d.bogdanov@yadro.com>
 
-commit f1ffa9d4cccc8fdf6c03fb1b3429154d22037988 upstream.
+[ Upstream commit 2ef7665dfd88830f15415ba007c7c9a46be7acd8 ]
 
-Commit 95722237cb2a ("ACPI: sleep: Put the FACS table after using it")
-puts the FACS table during initialization.
+Target de-configuration panics at high CPU load because TPGT and WWPN can
+be removed on separate threads.
 
-But the hardware signature bits in the FACS table need to be accessed,
-after every hibernation, to compare with the original hardware
-signature.
+TPGT removal requests a reset HBA on a separate thread and waits for reset
+complete (phase1). Due to high CPU load that HBA reset can be delayed for
+some time.
 
-So there is no reason to release the FACS table mapping after
-initialization.
+WWPN removal does qlt_stop_phase2(). There it is believed that phase1 has
+already completed and thus tgt.tgt_ops is subsequently cleared. However,
+tgt.tgt_ops is needed to process incoming traffic and therefore this will
+cause one of the following panics:
 
-This reverts commit 95722237cb2ae4f7b73471058cdb19e8f4057c93.
+NIP qlt_reset+0x7c/0x220 [qla2xxx]
+LR  qlt_reset+0x68/0x220 [qla2xxx]
+Call Trace:
+0xc000003ffff63a78 (unreliable)
+qlt_handle_imm_notify+0x800/0x10c0 [qla2xxx]
+qlt_24xx_atio_pkt+0x208/0x590 [qla2xxx]
+qlt_24xx_process_atio_queue+0x33c/0x7a0 [qla2xxx]
+qla83xx_msix_atio_q+0x54/0x90 [qla2xxx]
 
-An alternative solution is to use acpi_gbl_FACS variable instead, which
-is mapped by the ACPICA core and never released.
+or
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=212277
-Reported-by: Stephan Hohe <sth.dev@tejp.de>
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+NIP qlt_24xx_handle_abts+0xd0/0x2a0 [qla2xxx]
+LR  qlt_24xx_handle_abts+0xb4/0x2a0 [qla2xxx]
+Call Trace:
+qlt_24xx_handle_abts+0x90/0x2a0 [qla2xxx] (unreliable)
+qlt_24xx_process_atio_queue+0x500/0x7a0 [qla2xxx]
+qla83xx_msix_atio_q+0x54/0x90 [qla2xxx]
+
+or
+
+NIP qlt_create_sess+0x90/0x4e0 [qla2xxx]
+LR  qla24xx_do_nack_work+0xa8/0x180 [qla2xxx]
+Call Trace:
+0xc0000000348fba30 (unreliable)
+qla24xx_do_nack_work+0xa8/0x180 [qla2xxx]
+qla2x00_do_work+0x674/0xbf0 [qla2xxx]
+qla2x00_iocb_work_fn
+
+The patch fixes the issue by serializing qlt_stop_phase1() and
+qlt_stop_phase2() functions to make WWPN removal wait for phase1
+completion.
+
+Link: https://lore.kernel.org/r/20210415203554.27890-1-d.bogdanov@yadro.com
+Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
+Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/sleep.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/scsi/qla2xxx/qla_target.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/acpi/sleep.c
-+++ b/drivers/acpi/sleep.c
-@@ -1009,10 +1009,8 @@ static void acpi_sleep_hibernate_setup(v
+diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
+index dcae8f071c35..8d4976725a75 100644
+--- a/drivers/scsi/qla2xxx/qla_target.c
++++ b/drivers/scsi/qla2xxx/qla_target.c
+@@ -1559,10 +1559,12 @@ void qlt_stop_phase2(struct qla_tgt *tgt)
  		return;
+ 	}
  
- 	acpi_get_table(ACPI_SIG_FACS, 1, (struct acpi_table_header **)&facs);
--	if (facs) {
-+	if (facs)
- 		s4_hardware_signature = facs->hardware_signature;
--		acpi_put_table((struct acpi_table_header *)facs);
--	}
- }
- #else /* !CONFIG_HIBERNATION */
- static inline void acpi_sleep_hibernate_setup(void) {}
++	mutex_lock(&tgt->ha->optrom_mutex);
+ 	mutex_lock(&vha->vha_tgt.tgt_mutex);
+ 	tgt->tgt_stop = 0;
+ 	tgt->tgt_stopped = 1;
+ 	mutex_unlock(&vha->vha_tgt.tgt_mutex);
++	mutex_unlock(&tgt->ha->optrom_mutex);
+ 
+ 	ql_dbg(ql_dbg_tgt_mgt, vha, 0xf00c, "Stop of tgt %p finished\n",
+ 	    tgt);
+-- 
+2.30.2
+
 
 
