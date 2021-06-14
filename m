@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AC93A6809
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DFA3A6800
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234170AbhFNNhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:37:42 -0400
-Received: from mail-yb1-f182.google.com ([209.85.219.182]:34763 "EHLO
-        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233383AbhFNNhd (ORCPT
+        id S234086AbhFNNgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234034AbhFNNgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:37:33 -0400
-Received: by mail-yb1-f182.google.com with SMTP id c8so13762613ybq.1;
-        Mon, 14 Jun 2021 06:35:18 -0700 (PDT)
+        Mon, 14 Jun 2021 09:36:25 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33984C061574;
+        Mon, 14 Jun 2021 06:34:22 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id e10so15450694ybb.7;
+        Mon, 14 Jun 2021 06:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ICFF0gvP4WNJHWCdVhPKr0RwlnFvCsrPtpKk22BCZLQ=;
-        b=EmhgcFk2DqMKDyHM3E7HQNDiGpXsM4m9T9EKkiHOjZuY2EH4B0WoHDwdiZ6Vg0vbqP
-         EJqQMOPAxLfrf3yW8OUr1y2QBfIF6RzDKplGH42ZszBAcRyrDhQsXtG2Kq81kzBKXK3X
-         9JWZtGUZ0DIlqLnitd5jv/on8BCNk1q/VF5ZlI56UO+b4Q7oeyi3nrX+PT5wpSJtDU5b
-         Xk+VlLJowpKxDoeOxnfzWKsRJL/o7scLS1EE20VIlzzqY+tpUfdFLDmylsIxMJU6IcH/
-         TdxWOn7xktZ4ngEQzk8d6uk6Cc7s8YrFXhbTUNui2AJvatgyDm4FquEh1lcbvW65Jtcp
-         1nHg==
+        bh=l2CANvuphZSrzl0ZTCZbinBRhj4LvztQqqmEWaSRDg0=;
+        b=KoTUuvNEyzlt2nSv9fHlcQl1VR8vNBR53V5fjD/wMvcVrjHpjDE8ogcm0GylBPv/Xd
+         6d62ELoGaKGuuPP4XC0t3L+RyxfBDZwfhqMuJYJYXYS1fOY/IVjGCmayExV6mvM2Hbo2
+         IKGYsN0NBXbjnEBxr+1hRKFA1+TH+7AMAcMB5EPiZVYgQeAhBM7Ofl5Wjn5MnpcNq1Ke
+         /4W3pF8BK0nbtJAPpua0gZH+g0fxBVSei4ust/PtbGCNGzBEQa6DBNfig64IZacds1US
+         1rtsLY3oEzmc2uKHdcpIN54kzreRwv5Y95j8tiyJrrvcBbeVDepjxyF8Wx6LN6bx5UL9
+         Gifw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ICFF0gvP4WNJHWCdVhPKr0RwlnFvCsrPtpKk22BCZLQ=;
-        b=A8/3lzKd6A6Pt0rogQKXbYil5d/6AuE8lvbCj+QPQD5aIkqhXbRfljSg/gax0pHwuB
-         sB4MxhJy7A6c6CyDKF8MvA5oejYfJ2nQ7zDJm2fhYZ85qwwWnOs2e31vPMi30lKxZ6nP
-         sUlcDlsGRshke7Z1ZhXjZFfX6pL1+OdrD+2bg7NJfA3UZBl4XpDQvhMI77e3Eq/GBHx1
-         aX5zoovwT4JgDwVYCr8MRIDbod8G1eJzVDZq1NIQCQOeqvH/LQCt2t5ndffkrGqgioT6
-         X3dAm3mxgb5wg399fmpZM3+bwOAEengZK4sGskOx5p2flOE09iKsS9eBI/WGFyayjNqc
-         cENw==
-X-Gm-Message-State: AOAM533hvOKaY95LlYseDJ2+vOnXgX/4Fy5l7jkH1RVcRHCOzSDuuV/Y
-        PdSSHSxO/oUvhPs703CWQMuM343IZhjNtGhoc+A=
-X-Google-Smtp-Source: ABdhPJzx0RiztLvnYqg26eV9a6k96ttW/ISNP/7urlvspkOhQ+qAr2ajxmUcXb/gW1OKFhvry41rf1BgdMgucq/zteM=
-X-Received: by 2002:a25:6c04:: with SMTP id h4mr24796509ybc.122.1623677658008;
- Mon, 14 Jun 2021 06:34:18 -0700 (PDT)
+        bh=l2CANvuphZSrzl0ZTCZbinBRhj4LvztQqqmEWaSRDg0=;
+        b=byEZor27/5Y1CLGaxbmq/RMGh1iBm+VlaFpVtcreZrzOISG0gmuxXXi7GaqCRE0siV
+         dfvHEXgDPMskLRIDmh0u4J6EHO7mM5wlXc6TuJdKBeUaludyPOFIkfJMui/0NbxaWGci
+         fOwbk3+lDhfeftTAdoMHNMAk7HXg3nWLyzNHKMOdnQ7DNghKl3S417tnNlT/cJsG9IAs
+         kjJUXdZsHQbj3ZTg7PxJt7oPzYBEsrp7cA+zqFg4KNRyCJD/HdcpwB+eVhpjEbYvrL+S
+         95uXKMOu9/H2Afg6mChgAlvHDZRsVeJkyrf9fFhOwm1TVDjwLemuLUzmvOwAgAJ8XOGp
+         eeug==
+X-Gm-Message-State: AOAM533g0fVr16wzwiy9ocaWzOSUdB/g7WOPu2ANCBGBed2td1B9X/zo
+        kYEwM3HLQi+d9xGxk/zlh+YUrYthtEZG2Zh3d1c=
+X-Google-Smtp-Source: ABdhPJyZWnm9HbeF+owrkleXq8g4uqtOD8ehLmaqnul69zdhZmFi+FmN5c76jOrf062uljYtnDWZj55qRTYSncryD7Y=
+X-Received: by 2002:a25:389:: with SMTP id 131mr25399003ybd.306.1623677661526;
+ Mon, 14 Jun 2021 06:34:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210612160422.330705-1-anup.patel@wdc.com> <20210612160422.330705-8-anup.patel@wdc.com>
-In-Reply-To: <20210612160422.330705-8-anup.patel@wdc.com>
+References: <20210612160422.330705-1-anup.patel@wdc.com> <20210612160422.330705-9-anup.patel@wdc.com>
+In-Reply-To: <20210612160422.330705-9-anup.patel@wdc.com>
 From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Mon, 14 Jun 2021 21:34:05 +0800
-Message-ID: <CAEUhbmUvjFg7a4xr9p_r0qynwa5DAOejtV77XMUJvwfTOOFu1A@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 07/10] clocksource: clint: Add support for ACLINT
- MTIMER device
+Date:   Mon, 14 Jun 2021 21:34:08 +0800
+Message-ID: <CAEUhbmV0CXuFvyDtiTXsV-S_qRa8r-yX_=CU8xDdqneNcxnOiw@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 08/10] dt-bindings: timer: Add ACLINT MTIMER bindings
 To:     Anup Patel <anup.patel@wdc.com>
 Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
@@ -68,114 +70,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 12:07 AM Anup Patel <anup.patel@wdc.com> wrote:
+On Sun, Jun 13, 2021 at 12:09 AM Anup Patel <anup.patel@wdc.com> wrote:
 >
-> The RISC-V ACLINT specification is a modular specification and the
-> ACLINT MTIMER device is compatible with the M-mode timer functionality
-> of the CLINT device. This patch extends the CLINT driver to support
-> both CLINT device and ACLINT MTIMER device.
+> We add DT bindings documentation for the ACLINT MTIMER device
+> found on RISC-V SOCs.
 >
 > Signed-off-by: Anup Patel <anup.patel@wdc.com>
 > ---
->  drivers/clocksource/timer-clint.c | 43 +++++++++++++++++++++----------
->  1 file changed, 30 insertions(+), 13 deletions(-)
+>  .../bindings/timer/riscv,aclint-mtimer.yaml   | 55 +++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
 >
-> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-> index dfdcd94c1fd5..ca329c450810 100644
-> --- a/drivers/clocksource/timer-clint.c
-> +++ b/drivers/clocksource/timer-clint.c
-> @@ -2,8 +2,15 @@
->  /*
->   * Copyright (C) 2020 Western Digital Corporation or its affiliates.
->   *
-> - * Most of the M-mode (i.e. NoMMU) RISC-V systems usually have a
-> - * CLINT MMIO timer device.
-> + * Most of the M-mode (i.e. NoMMU) RISC-V systems usually have a CLINT
-> + * MMIO device which is a composite device capable of injecting M-mode
-> + * software interrupts and M-mode timer interrupts.
-> + *
-> + * The RISC-V ACLINT specification is modular in nature and defines
-> + * separate devices for M-mode software interrupt (MSWI), M-mode timer
-> + * (MTIMER) and S-mode software interrupt (SSWI).
-> + *
-> + * This is a common driver for CLINT device and ACLINT MTIMER device.
->   */
->
->  #define pr_fmt(fmt) "clint: " fmt
-> @@ -21,14 +28,20 @@
->  #include <linux/smp.h>
->  #include <linux/timex.h>
->
-> -#ifndef CONFIG_RISCV_M_MODE
-> +#ifdef CONFIG_RISCV_M_MODE
->  #include <asm/clint.h>
+> diff --git a/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+> new file mode 100644
+> index 000000000000..21c718f8ab4c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+> @@ -0,0 +1,55 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/timer/riscv,aclint-mtimer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +u64 __iomem *clint_time_val;
-> +EXPORT_SYMBOL(clint_time_val);
->  #endif
->
->  #define CLINT_IPI_OFF          0
->  #define CLINT_TIMER_CMP_OFF    0x4000
->  #define CLINT_TIMER_VAL_OFF    0xbff8
->
-> +#define ACLINT_MTIMER_CMP_OFF  0x0000
-> +#define ACLINT_MTIMER_VAL_OFF  0x7ff8
+> +title: RISC-V ACLINT M-level Timer
 > +
->  /* CLINT manages IPI and Timer for RISC-V M-mode  */
->  static u32 __iomem *clint_ipi_base;
->  static u64 __iomem *clint_timer_cmp;
-> @@ -36,11 +49,6 @@ static u64 __iomem *clint_timer_val;
->  static unsigned long clint_timer_freq;
->  static unsigned int clint_timer_irq;
->
-> -#ifdef CONFIG_RISCV_M_MODE
-> -u64 __iomem *clint_time_val;
-> -EXPORT_SYMBOL(clint_time_val);
-> -#endif
-> -
->  static void clint_send_ipi(const struct cpumask *target)
->  {
->         unsigned int cpu;
-> @@ -191,9 +199,15 @@ static int __init clint_timer_init_dt(struct device_node *np)
->                 return -ENODEV;
->         }
->
-> -       clint_ipi_base = base + CLINT_IPI_OFF;
-> -       clint_timer_cmp = base + CLINT_TIMER_CMP_OFF;
-> -       clint_timer_val = base + CLINT_TIMER_VAL_OFF;
-> +       if (of_device_is_compatible(np, "riscv,aclint-mtimer")) {
+> +maintainers:
+> +  - Anup Patel <anup.patel@wdc.com>
+> +
+> +description:
+> +  RISC-V SOCs include an implementation of the M-level timer (MTIMER) defined
+> +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification. The
+> +  ACLINT MTIMER device is documented in the RISC-V ACLINT specification found
+> +  at https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
+> +
+> +  The ACLINT MTIMER device directly connect to the M-level timer interrupt
 
-This patch should come after patch 8 which introduces this DT binding
+connects
 
-> +               clint_ipi_base = NULL;
-> +               clint_timer_cmp = base + ACLINT_MTIMER_CMP_OFF;
-> +               clint_timer_val = base + ACLINT_MTIMER_VAL_OFF;
-> +       } else {
-> +               clint_ipi_base = base + CLINT_IPI_OFF;
-> +               clint_timer_cmp = base + CLINT_TIMER_CMP_OFF;
-> +               clint_timer_val = base + CLINT_TIMER_VAL_OFF;
-> +       }
->         clint_timer_freq = riscv_timebase;
->
->  #ifdef CONFIG_RISCV_M_MODE
-> @@ -230,8 +244,10 @@ static int __init clint_timer_init_dt(struct device_node *np)
->                 goto fail_free_irq;
->         }
->
-> -       riscv_set_ipi_ops(&clint_ipi_ops);
-> -       clint_clear_ipi();
-> +       if (clint_ipi_base) {
-> +               riscv_set_ipi_ops(&clint_ipi_ops);
-> +               clint_clear_ipi();
-> +       }
->
->         return 0;
->
-> @@ -244,3 +260,4 @@ static int __init clint_timer_init_dt(struct device_node *np)
->
->  TIMER_OF_DECLARE(clint_timer, "riscv,clint0", clint_timer_init_dt);
->  TIMER_OF_DECLARE(clint_timer1, "sifive,clint0", clint_timer_init_dt);
-> +TIMER_OF_DECLARE(clint_timer2, "riscv,aclint-mtimer", clint_timer_init_dt);
+> +  lines of various HARTs (or CPUs) so the RISC-V per-HART (or per-CPU) local
+> +  interrupt controller is the parent interrupt controller for the ACLINT
+> +  MTIMER device.
+> +
+> +  The clock frequency of ACLINT is specified via "timebase-frequency" DT
+> +  property of "/cpus" DT node. The "timebase-frequency" DT property is
+> +  described in Documentation/devicetree/bindings/riscv/cpus.yaml
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: riscv,aclint-mtimer
+> +
+> +    description:
+> +      Should be "<vendor>,<chip>-aclint-mtimer" and "riscv,aclint-mtimer".
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts-extended:
+> +    minItems: 1
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts-extended
+> +
+> +examples:
+> +  - |
+> +    timer@2004000 {
+> +      compatible = "riscv,aclint-mtimer";
+> +      interrupts-extended = <&cpu1intc 7 &cpu2intc 7 &cpu3intc 7 &cpu4intc 7>;
+> +      reg = <0x2004000 0x8000>;
+> +    };
+> +...
 
 Otherwise,
 Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
