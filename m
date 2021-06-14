@@ -2,209 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E7C3A6F2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FC53A6F33
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbhFNTgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:36:15 -0400
-Received: from mail-bn8nam12on2081.outbound.protection.outlook.com ([40.107.237.81]:41056
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233816AbhFNTgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:36:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DONaE1VZWbFh+8y1omSxl/092VaRzULn+lStjE8q1Vrk/HMzoSWE2S+Mf2hTw2FAZB29xF0RC24Njg+fXI7OVP/OVcZ/MlbYCgxr/JRzrJ9ec34IDL1BARrIvbpWrGaUxQvNjGv7aPxiSVOCNE+WhaU8ipC39c0at8WTW8VyqmMKblLAOUMFO3cOYTs07x9ch1AP0NoZn2I6KoXyHQvKmxd9bOY7QWNnM+WRI4/yYsBIQmRyBz+57WzmX7m2KTlI1xQJ7ID+nSHO58TjrkCnoPD+CMG4Fs4di6Lf/VnR14HjmhiEObQwwBPHJa+sm1Dftmv/lF/JpC+stiYf1vvzSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hqclddGsaGM8Guc+wmmkKai8E97EdF9Z5nn+QbKSBQE=;
- b=Bc76fzX+kfoeKv+roZ80VXkBdnzlCl4cLpwWQAnAxqqABGC6Bf5bGW7PIo1bKhr7MHrQB9WBRUqjSN/TT7WhOsoAuuOxGgb+B7p5bhlSKZvnrkt5nQOik5pWV0hONYif8AXC9kQqbdEJHl7jH1QXsQRJ68j5TRAHH+xGBK7CN6pPXy9GdIqZtPEI8GfDE45XnCogFKkRxr8JObVCs6YHxDxsNrUQKPcLOJgPq03X/qTDvPqD7UDDqgRPt/z2gzJp9dcVg3VwWSI/OywLIiMuQBXhBOPIrYx6HER/fmcWCVcRQLFtvpjvVr8o8cgRMWJBNmq768pxOpmGrcHJa2U5iw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hqclddGsaGM8Guc+wmmkKai8E97EdF9Z5nn+QbKSBQE=;
- b=iqmLVH9nEewH4S5UBdRUI+w/rmEtLVvJ4F4FYagv2ONTk6Lh+oqP+p7JlFRHRzFyTUAkMLlVCDH9ul/oTFQ+5U+wqn18leA+34S5iRJahiZeUuGU0dgvC7mYWcIQvDQ32Tnkes8jm2OKEYW2i7jncxoMT9nONmv1kBTJXqtL6mc=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB1449.namprd12.prod.outlook.com (2603:10b6:4:10::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4219.21; Mon, 14 Jun 2021 19:34:07 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::6437:2e87:f7dc:a686]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::6437:2e87:f7dc:a686%12]) with mapi id 15.20.4219.025; Mon, 14 Jun
- 2021 19:34:07 +0000
-Subject: Re: [PATCH Part1 RFC v3 16/22] KVM: SVM: Create a separate mapping
- for the SEV-ES save area
-To:     Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
+        id S235168AbhFNTgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:36:46 -0400
+Received: from mga05.intel.com ([192.55.52.43]:19852 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235138AbhFNTgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:36:41 -0400
+IronPort-SDR: sJLJS6vHOrBj8iksW0hv1PPXxuB4l+yN+wndkUFSyewUqVLZGomEtO2penzMoBffWIlcPg14Yd
+ n7toOn7xbptA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="291500757"
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="291500757"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 12:34:34 -0700
+IronPort-SDR: ynXsLDiELkRBmy6o8C2rIHhBfVbA7UJnfXSVUsVsMI4R4yNKxnPcN5DJhAM8pMmk9mcR8kntBV
+ s6x6hF3UbxWg==
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="451695454"
+Received: from sukulkar-mobl1.amr.corp.intel.com (HELO [10.212.204.222]) ([10.212.204.222])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 12:34:33 -0700
+Subject: Re: [patch 09/41] x86/kvm: Avoid looking up PKRU in XSAVE buffer
+To:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-17-brijesh.singh@amd.com> <YMc2R4JRZ3yFffy/@zn.tnic>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <f6ad5b50-f462-35e1-3be4-e7113feee3a9@amd.com>
-Date:   Mon, 14 Jun 2021 14:34:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <YMc2R4JRZ3yFffy/@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SA0PR11CA0131.namprd11.prod.outlook.com
- (2603:10b6:806:131::16) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        Kan Liang <kan.liang@linux.intel.com>
+References: <20210611161523.508908024@linutronix.de>
+ <20210611163111.931697147@linutronix.de> <YMcuzOOCGl+nKysP@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <918268bd-8092-7511-f0b8-d981143b7610@intel.com>
+Date:   Mon, 14 Jun 2021 12:34:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-ryzen.texastahm.com (67.79.209.213) by SA0PR11CA0131.namprd11.prod.outlook.com (2603:10b6:806:131::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Mon, 14 Jun 2021 19:34:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b334eb1e-6e40-4c22-f276-08d92f6b5fef
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1449:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1449DF079AC9F5AE53F4F123EC319@DM5PR12MB1449.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: i7IaklWShoqTFaie/R3VpxIaIk1bpWZ6JprJdtDM1m9Ddz2HfJa5qvzyilFeFt+Aa+TibDT3IaZHrN165eiiBcNte/1T1l3vVI7H0OCLmhtWBipDKQYOeZsRtuv7hG5qxY/1DKcQFls78XukKp+U+A4Hlu14L3X366Y9mtJ5WNvdjy/MoWKKNpsct1geH9wXqf8RcNULPdKUaIHmLXnj3PU22rcbVJp/jBluh+5Zm05Rt/rC1LhJYsQfxlF0Yy+mEtqszirXhveSCQZoxa36vpJtsrg2YRPmRQKyyRvN0eWFfoS7wuxY49I3xMd0Vnlwulh16wlvWGShhMhcacZo+ci5Cjh8DHmcqrOydrGq/ZJDgRSwpXWZxh3IfIVNnnBQnMHcMMOrGzmo8O9ekIEDmNVfwf3iFf1Z5Pk1hjCA4Bo8n2CaVN/kyKTtLPqxW/AxLK9B+cxxA/r3Sspi4rXrcac5PWH/irNUwAhJWyJZpcy/J+n7rqGsWVFfJNlkEVica+bMDZ2lHkGYB+aaZcQn9EIlwBu2UF3LttosDIwEbh8phbiSBhNZ/vaMbcyrua4zDmcHHjmFlBxU85QEnqEzwJXq8bsjQx0fGTvFcm3UtNyJ1IKw9gyHW9xb5GlVyqOdy6y6XtmRsYMGFNB2T+bRg7gzh73hSXPxBZbGpVdCZL9kUyqbll4uzSlr8NV57OAm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(396003)(376002)(39860400002)(478600001)(316002)(6512007)(26005)(66476007)(53546011)(6506007)(86362001)(110136005)(66556008)(66946007)(6486002)(2906002)(31696002)(6636002)(2616005)(38100700002)(8676002)(956004)(16526019)(186003)(83380400001)(31686004)(36756003)(4326008)(8936002)(5660300002)(7416002)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cGV0ejFlcW0veFBoeEZBRDJFVW93R2VRSXNxdk13cnpHL3Fod1FFZjJTRjk2?=
- =?utf-8?B?S3lIMEVVekZuTVhmSWM5ekN0c3NhSGROUFQySWNseUloVDA1eHdmUGk2ODJo?=
- =?utf-8?B?dTRrczVDWUQyOXAvWDRuKytZZk5pK0ZlSGlyZXYvOWVqWHRFUm1CdWxKMEd2?=
- =?utf-8?B?VHNuUmJNbitlK2J3UUd3bXBFYjBGV0RPM2Ntb1ZUUDh5Nzlnc0lCWldVYk9u?=
- =?utf-8?B?SDhkOTdnSjA2S0tXN0VKelpEdGh1amtUYWdCcFpTUnhYWnNxOTV3ZzhjZlBO?=
- =?utf-8?B?UGptVFByZFJka0pBUHJ3VFlzNFFuOXAzRVZzUmt4dHRyOXFLZVVleDd4Qmpk?=
- =?utf-8?B?SE8wbzA0anlRamtxSlBxR0ttUjVtMjk2aEplWHc4SUFJSXZNUXFRSkh3MWdH?=
- =?utf-8?B?UnhTS3NINmdqZk1nUEpvTlJyMnZNa0FWMnUyRncveVNjUjVmbURqK21NSlJ1?=
- =?utf-8?B?Y0ZsYUZ4UURkTzd4YnFiVGVZeGkzOG5zNE9nTk81Z3BZb1FyclMwK0NpUk1M?=
- =?utf-8?B?S1JRUzdzenoxajFkM0M2UzRnakE0ajlhU3BudEt6Y0wyczUzdXZiS29CYUx3?=
- =?utf-8?B?dFhyUkw2MkgwZ3ZvcXVjMzZCYjNFclpaRXk2d200a1JaS0xhVUp2S3lMVndK?=
- =?utf-8?B?OVgzeUM0TGI4dVZmVWs1N2NlUWNnL1RNTGZMRDdta2tPWHFFWnF2aVlHR3dU?=
- =?utf-8?B?MXQ3eVNrRDd5OVBzd2ZibzExU1crZTJDb3BUdGlMLzc5bC93bGZlY0dTZ3lK?=
- =?utf-8?B?Y3lnTTBNWXJ6dlhqWXdoT0RBNmFjbkQvTkI2R2I2eHUzNEw2NGszVnVNZmNo?=
- =?utf-8?B?azBqdlF3MFUwdmpyL3pTYTEva2VNOEJoNWxNNnN3MDErME05cEUyNGIzSWJR?=
- =?utf-8?B?ZHRaa3JkVno5NEphSjUrVkkzQTJqbkRsUEZadDJaSEhaWVJiUm5DN3BhVFFi?=
- =?utf-8?B?WUR4OC9ZbDgwS25qdElHQWpvOC91M3lWVFVzaE9rZ1BzR3ZWY1pEMUlaL2VQ?=
- =?utf-8?B?ZE4yOGd0RXJLcTZYeFFiZXVzbjBSWnA3MzVFZXJqaWVTWWlxZ0hnNk5FSnB4?=
- =?utf-8?B?ZzJXeWVJd01mZGRBVUlsM2hwS3dJUFZhYzdSMjBUeFc1bFFtNWkvTGJIdDQz?=
- =?utf-8?B?SE8xek05S2JyNzgzdW1Ob2IrREE1dkRSSDJ6SEFLNk9vMjdaOEc1UDlMM01X?=
- =?utf-8?B?TWVXVXNXYWpRSzZwdFlLT09VT1Erbmt2TnpUMWl1NTVGSVJPdU50N2JsUkpt?=
- =?utf-8?B?ZjI0K1BIY0pteUFBbXJsMmlSNG95akJTZTdTR1V4bzc3OWd4d1o5bEREVkZp?=
- =?utf-8?B?cEJVUCtIWTFZcWtZSnNhNmZpdEdSc1Vaem43TnJLaWZSZ3RtcFJna3YySGNR?=
- =?utf-8?B?SG1oeklKR2wySXBMRUUwbCtMditMUUxtSWZaS2VKaDlTbkZiVWU0WFVsVnVM?=
- =?utf-8?B?N3lLdkRBcm1sSGlQN0xRcnBPK1J3U3pZSC9QeEhpb2pBeVRpOWFodkJZUW1a?=
- =?utf-8?B?K0JERzRkZUJJRDF0SXB4cEtxSjY2VEpBcFFkaU9MYmNGKys4elNlK0cvNUl1?=
- =?utf-8?B?R1ZMWitYZkI2YzRZTkxjNFppd1hkU2Q4VXUvblpqS2FXeE15NzRNUXArUGNL?=
- =?utf-8?B?VFNhTWg4QlAwTy9aVm9YQkJORUhpbVJvRUhNd3JNVVJyTU11UXNEdFBTNXlC?=
- =?utf-8?B?WWJRVkxFWHduZnFTRE1HUkVOb29BdXdRZktXUW5uZE53ZjAwM1RqNW1hQkNw?=
- =?utf-8?Q?mT3PnwL7pZAsfpPODbCxbek/zpuoDDEuPKR6Xgb?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b334eb1e-6e40-4c22-f276-08d92f6b5fef
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2021 19:34:06.9241
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: toFIyaUiAz/X6jSV/Buk/qmHvWcc9x7U+kSzKI0tuLKTh93sN863b3bWnecrtE2HXPbJPLZvwaB/2WTZtyJV2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1449
+In-Reply-To: <YMcuzOOCGl+nKysP@zn.tnic>
+Content-Type: multipart/mixed;
+ boundary="------------4C51F0A24FF5C92C6F645E04"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/14/21 5:58 AM, Borislav Petkov wrote:
-> On Wed, Jun 02, 2021 at 09:04:10AM -0500, Brijesh Singh wrote:
->> +/* Save area definition for SEV-ES and SEV-SNP guests */
->> +struct sev_es_save_area {
-> 
-> Can we agree on a convention here to denote SEV-ES and later
-> variants VS earlier ones so that you don't have "SEV-ES" in the name
-> sev_es_save_area but to mean that this applies to SNP and future stuff
-> too?
+This is a multi-part message in MIME format.
+--------------4C51F0A24FF5C92C6F645E04
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
-I was just following the APM, which lists it as the "State Save Area for
-SEV-ES."
-
-> 
-> What about SEV-only guests? I'm assuming those use the old variant.
-
-Correct.
-
-> 
-> Which would mean you can call this
-> 
-> struct prot_guest_save_area
-> 
-> or so, so that it doesn't have "sev" in the name and so that there's no
-> confusion...
-
-I guess we can call it just prot_save_area or protected_save_area or even
-encrypted_save_area (no need for guest, since guest is implied, e.g. we
-don't call the normal save area guest_save_area).
-
-> 
-> Ditto for the size defines.
-> 
->> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
->> index 5bc887e9a986..d93a1c368b61 100644
->> --- a/arch/x86/kvm/svm/sev.c
->> +++ b/arch/x86/kvm/svm/sev.c
->> @@ -542,12 +542,20 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+On 6/14/21 3:26 AM, Borislav Petkov wrote:
+> On Fri, Jun 11, 2021 at 06:15:32PM +0200, Thomas Gleixner wrote:
+>> -		if (src) {
+>> -			u32 size, offset, ecx, edx;
+>> -			cpuid_count(XSTATE_CPUID, xfeature_nr,
+>> -				    &size, &offset, &ecx, &edx);
+>> -			if (xfeature_nr == XFEATURE_PKRU)
+>> -				memcpy(dest + offset, &vcpu->arch.pkru,
+>> -				       sizeof(vcpu->arch.pkru));
+>> -			else
+>> -				memcpy(dest + offset, src, size);
+>> +		cpuid_count(XSTATE_CPUID, xfeature_nr,
+>> +			    &size, &offset, &ecx, &edx);
 >>  
->>  static int sev_es_sync_vmsa(struct vcpu_svm *svm)
-> 
-> Not SEV-ES only anymore, so I guess sev_snp_sync_vmca() or so.
-> 
->> -	struct vmcb_save_area *save = &svm->vmcb->save;
->> +	struct sev_es_save_area *save = svm->vmsa;
+>> +		if (xfeature_nr == XFEATURE_PKRU) {
+>> +			memcpy(dest + offset, &vcpu->arch.pkru,
+>> +			       sizeof(vcpu->arch.pkru));
+>> +		} else {
+>> +			src = get_xsave_addr(xsave, xfeature_nr);
+>> +			if (src)
+>> +				memcpy(dest + offset, src, size);
+>>  		}
 >>  
->>  	/* Check some debug related fields before encrypting the VMSA */
->> -	if (svm->vcpu.guest_debug || (save->dr7 & ~DR7_FIXED_1))
->> +	if (svm->vcpu.guest_debug || (svm->vmcb->save.dr7 & ~DR7_FIXED_1))
->>  		return -EINVAL;
+>>  		valid -= xfeature_mask;
+> 
+> How about pulling up that PKRU case even further (pasting the whole
+> changed loop instead of an unreadable diff) and keeping the CPUID access
+> and the xsave address handling separate?
+> 
+>         valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
+>         while (valid) {
+>                 u32 size, offset, ecx, edx;
+>                 u64 xfeature_mask = valid & -valid;
+>                 int xfeature_nr = fls64(xfeature_mask) - 1;
+>                 void *src;
+> 
+>                 if (xfeature_nr == XFEATURE_PKRU) {
+>                         memcpy(dest + offset, &vcpu->arch.pkru, sizeof(vcpu->arch.pkru));
+>                         continue;
+>                 }
+> 
+>                 cpuid_count(XSTATE_CPUID, xfeature_nr, &size, &offset, &ecx, &edx);
+> 
+>                 src = get_xsave_addr(xsave, xfeature_nr);
+>                 if (src)
+>                         memcpy(dest + offset, src, size);
+> 
+>                 valid -= xfeature_mask;
+>         }
+
+I gave that a shot.  Two wrinkles: The PKRU memcpy() needs 'offset' from
+cpuid_count() and the PKRU case also needs the 'valid -=' manipulation.
+ The result is attached, and while it makes the diff look better, I
+don't think the resulting code is an improvement.
+
+> Btw, I'm wondering if that CPUID read in a loop can be replaced with
+> adding accessors for xstate_{offsets,sizes,..} etc and providing them to
+> kvm...
+
+I *think* these are already stored in xfeature_uncompacted_offset[].  It
+would be a pretty simple matter to export it.  I just assumed that this
+is a slow enough path that the KVM folks don't care.
+
+>> @@ -4632,18 +4633,20 @@ static void load_xsave(struct kvm_vcpu *
+>>  	 */
+>>  	valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
+>>  	while (valid) {
+>> +		u32 size, offset, ecx, edx;
+>>  		u64 xfeature_mask = valid & -valid;
+>>  		int xfeature_nr = fls64(xfeature_mask) - 1;
+>> -		void *dest = get_xsave_addr(xsave, xfeature_nr);
 >>  
->> +	/*
->> +	 * SEV-ES will use a VMSA that is pointed to by the VMCB, not
->> +	 * the traditional VMSA that is part of the VMCB. Copy the
->> +	 * traditional VMSA as it has been built so far (in prep
->> +	 * for LAUNCH_UPDATE_VMSA) to be the initial SEV-ES state.
-> 
-> Ditto - nomenclature.
-
-Yup, that can be made more generic.
-
-> 
->> +	 */
->> +	memcpy(save, &svm->vmcb->save, sizeof(svm->vmcb->save));
+>> -		if (dest) {
+>> -			u32 size, offset, ecx, edx;
+>> -			cpuid_count(XSTATE_CPUID, xfeature_nr,
+>> -				    &size, &offset, &ecx, &edx);
+>> -			if (xfeature_nr == XFEATURE_PKRU)
+>> -				memcpy(&vcpu->arch.pkru, src + offset,
+>> -				       sizeof(vcpu->arch.pkru));
+>> -			else
+>> +		cpuid_count(XSTATE_CPUID, xfeature_nr,
+>> +			    &size, &offset, &ecx, &edx);
 >> +
->>  	/* Sync registgers */
-> 		^^^^^^^^^^
+>> +		if (xfeature_nr == XFEATURE_PKRU) {
+>> +			memcpy(&vcpu->arch.pkru, src + offset,
+>> +			       sizeof(vcpu->arch.pkru));
+>> +		} else {
+>> +			void *dest = get_xsave_addr(xsave, xfeature_nr);
+>> +
 > 
-> typo. Might as well fix while at it.
-
-Will do.
-
-Thanks,
-Tom
-
 > 
+> ^ Superfluous newline.
+
+I'm happy to change it, but I usually like to separate declarations from
+pure code.  Although, I guess that's a bit inconsistent in that file.
+
+--------------4C51F0A24FF5C92C6F645E04
+Content-Type: text/x-patch; charset=UTF-8;
+ name="pkrukvm.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="pkrukvm.patch"
+
+commit a761b0a48fb62429bd98c9a1275ef3ce33f9925a
+Author: Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Thu Jun 3 16:08:12 2021 -0700
+
+    x86/kvm: Avoid looking up PKRU in XSAVE buffer
+   =20
+    PKRU is being removed from the kernel XSAVE/FPU buffers.  This remova=
+l
+    will probably include warnings for code that look up PKRU in those
+    buffers.
+   =20
+    KVM currently looks up the location of PKRU but doesn't even use the
+    pointer that it gets back.  Rework the code to avoid calling
+    get_xsave_addr() except in cases where its result is actually used.
+   =20
+    This makes the code more clear and also avoids the inevitable PKRU
+    warnings.
+   =20
+    This is probably a good cleanup and could go upstream idependently
+    of any PKRU rework.
+   =20
+    Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+    Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+   =20
+    --
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index b594275d49b5..ed4c3d90a18b 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -4589,20 +4589,21 @@ static void fill_xsave(u8 *dest, struct kvm_vcpu =
+*vcpu)
+ 	 */
+ 	valid =3D xstate_bv & ~XFEATURE_MASK_FPSSE;
+ 	while (valid) {
++		u32 size, offset, ecx, edx;
+ 		u64 xfeature_mask =3D valid & -valid;
+ 		int xfeature_nr =3D fls64(xfeature_mask) - 1;
+-		void *src =3D get_xsave_addr(xsave, xfeature_nr);
+-
+-		if (src) {
+-			u32 size, offset, ecx, edx;
+-			cpuid_count(XSTATE_CPUID, xfeature_nr,
+-				    &size, &offset, &ecx, &edx);
+-			if (xfeature_nr =3D=3D XFEATURE_PKRU)
+-				memcpy(dest + offset, &vcpu->arch.pkru,
+-				       sizeof(vcpu->arch.pkru));
+-			else
+-				memcpy(dest + offset, src, size);
++		void *src;
++
++		cpuid_count(XSTATE_CPUID, xfeature_nr,
++			    &size, &offset, &ecx, &edx);
+=20
++		if (xfeature_nr =3D=3D XFEATURE_PKRU) {
++			memcpy(dest + offset, &vcpu->arch.pkru,
++			       sizeof(vcpu->arch.pkru));
++		} else {
++			src =3D get_xsave_addr(xsave, xfeature_nr);
++			if (src)
++				memcpy(dest + offset, src, size);
+ 		}
+=20
+ 		valid -=3D xfeature_mask;
+@@ -4632,18 +4633,20 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 =
+*src)
+ 	 */
+ 	valid =3D xstate_bv & ~XFEATURE_MASK_FPSSE;
+ 	while (valid) {
++		u32 size, offset, ecx, edx;
+ 		u64 xfeature_mask =3D valid & -valid;
+ 		int xfeature_nr =3D fls64(xfeature_mask) - 1;
+-		void *dest =3D get_xsave_addr(xsave, xfeature_nr);
+-
+-		if (dest) {
+-			u32 size, offset, ecx, edx;
+-			cpuid_count(XSTATE_CPUID, xfeature_nr,
+-				    &size, &offset, &ecx, &edx);
+-			if (xfeature_nr =3D=3D XFEATURE_PKRU)
+-				memcpy(&vcpu->arch.pkru, src + offset,
+-				       sizeof(vcpu->arch.pkru));
+-			else
++
++		cpuid_count(XSTATE_CPUID, xfeature_nr,
++			    &size, &offset, &ecx, &edx);
++
++		if (xfeature_nr =3D=3D XFEATURE_PKRU) {
++			memcpy(&vcpu->arch.pkru, src + offset,
++			       sizeof(vcpu->arch.pkru));
++		} else {
++			void *dest =3D get_xsave_addr(xsave, xfeature_nr);
++
++			if (dest)
+ 				memcpy(dest, src + offset, size);
+ 		}
+=20
+
+--------------4C51F0A24FF5C92C6F645E04--
