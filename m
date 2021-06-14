@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4F93A6307
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4813A64AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbhFNLI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:08:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34858 "EHLO mail.kernel.org"
+        id S234915AbhFNL1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234503AbhFNK5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:57:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D0F661623;
-        Mon, 14 Jun 2021 10:41:44 +0000 (UTC)
+        id S235109AbhFNLNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:13:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4B6D61962;
+        Mon, 14 Jun 2021 10:48:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667304;
-        bh=u5s1YdcZSBXUWXhImeKcnymWGOplfXCUMLiVvmJzk2s=;
+        s=korg; t=1623667723;
+        bh=gPtPur8R9bU4BReM8hD8hLm4cefnseJxwoGY+DFyJo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=doBH1CINE4rF8U68l3QsJle+X6WDDBdDe1ddUrhZ6cdBwwwIcpv+km71JflZ62qge
-         LyuJ0Aql/S/8wUVD+Yeo/PutbtfOuL8SVdspdYa77Cp6jUn3LyhPsnfWeEW1mHyTFA
-         NizwN1HJChqYt+O5Tv0mY5ksqto0XjQj54uYyczM=
+        b=La3alQzEx+hUVNtatwL7iZVcgR9i2gukaluVSAYY46xW0PChoaTF1OsQrQWFxoTxq
+         ULdzdH6qWYN7EkVFQhBOpqwn26jHLsyFEm4WHffHSQetdrcwxExjpvHNd7ZkUseFaQ
+         j0jnMAgU0hhc0KJHOGmz+/nMDl+KbWtfEKz7EQEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 020/131] net: mdiobus: get rid of a BUG_ON()
+        syzbot+ddc1260a83ed1cbf6fb5@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.12 049/173] ALSA: seq: Fix race of snd_seq_timer_open()
 Date:   Mon, 14 Jun 2021 12:26:21 +0200
-Message-Id: <20210614102653.682470243@linuxfoundation.org>
+Message-Id: <20210614102659.784401656@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 1dde47a66d4fb181830d6fa000e5ea86907b639e ]
+commit 83e197a8414c0ba545e7e3916ce05f836f349273 upstream.
 
-We spotted a bug recently during a review where a driver was
-unregistering a bus that wasn't registered, which would trigger this
-BUG_ON().  Let's handle that situation more gracefully, and just print
-a warning and return.
+The timer instance per queue is exclusive, and snd_seq_timer_open()
+should have managed the concurrent accesses.  It looks as if it's
+checking the already existing timer instance at the beginning, but
+it's not right, because there is no protection, hence any later
+concurrent call of snd_seq_timer_open() may override the timer
+instance easily.  This may result in UAF, as the leftover timer
+instance can keep running while the queue itself gets closed, as
+spotted by syzkaller recently.
 
-Reported-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For avoiding the race, add a proper check at the assignment of
+tmr->timeri again, and return -EBUSY if it's been already registered.
+
+Reported-by: syzbot+ddc1260a83ed1cbf6fb5@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/000000000000dce34f05c42f110c@google.com
+Link: https://lore.kernel.org/r/20210610152059.24633-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/mdio_bus.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/core/seq/seq_timer.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 757e950fb745..b848439fa837 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -608,7 +608,8 @@ void mdiobus_unregister(struct mii_bus *bus)
- 	struct mdio_device *mdiodev;
- 	int i;
+--- a/sound/core/seq/seq_timer.c
++++ b/sound/core/seq/seq_timer.c
+@@ -297,8 +297,16 @@ int snd_seq_timer_open(struct snd_seq_qu
+ 		return err;
+ 	}
+ 	spin_lock_irq(&tmr->lock);
+-	tmr->timeri = t;
++	if (tmr->timeri)
++		err = -EBUSY;
++	else
++		tmr->timeri = t;
+ 	spin_unlock_irq(&tmr->lock);
++	if (err < 0) {
++		snd_timer_close(t);
++		snd_timer_instance_free(t);
++		return err;
++	}
+ 	return 0;
+ }
  
--	BUG_ON(bus->state != MDIOBUS_REGISTERED);
-+	if (WARN_ON_ONCE(bus->state != MDIOBUS_REGISTERED))
-+		return;
- 	bus->state = MDIOBUS_UNREGISTERED;
- 
- 	for (i = 0; i < PHY_MAX_ADDR; i++) {
--- 
-2.30.2
-
 
 
