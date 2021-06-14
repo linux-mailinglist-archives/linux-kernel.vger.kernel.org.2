@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47353A61D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D5E3A612C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234146AbhFNKwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:52:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50058 "EHLO mail.kernel.org"
+        id S234312AbhFNKox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:44:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234400AbhFNKpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:45:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDABA6144B;
-        Mon, 14 Jun 2021 10:36:30 +0000 (UTC)
+        id S233826AbhFNKiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:38:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C4D2613D9;
+        Mon, 14 Jun 2021 10:33:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666991;
-        bh=U9b19LqfA6gAVxSQN6qm/Ym1F4SLPLWT3NMoMmEoC/k=;
+        s=korg; t=1623666835;
+        bh=xWEwteo7NPXPsxqEdDDHdF/rrWH2BGQ2zXlGiNMmXxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TwQ64jpr61DT7I52GywblKh32by0/6DLA/kPKJGpMI9a4u75Qr/GBxMwLq3IIRFBr
-         ajhFl3brtUP40WR8tIiJUjIrby5xj+tZvtx4jHBC30Nhjt7nOj4eVZD6dwFOW9QOp8
-         b4lTsBZcc01vJbYopQsgl5SuXL+v5vGuB3MoAvP0=
+        b=Lmx4d1NnGi+IPP3Flzz22CzSh6ZXY8XV56LxoKjJ6lq0soIzztkJUJWE/qv5qqf7K
+         Kj74FDD2J+LNrTvT0s+/fJMBJ8XOCaGmavlbEYil4A8sGtIIfECw/8zPZqDvi31iRO
+         vsxZOxbYVsE6aq7NoW9kY6FyRHXnLouIMaeG7DLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 56/67] NFS: Fix a potential NULL dereference in nfs_get_client()
-Date:   Mon, 14 Jun 2021 12:27:39 +0200
-Message-Id: <20210614102645.657262029@linuxfoundation.org>
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        John Garry <john.garry@huawei.com>,
+        Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.14 47/49] scsi: core: Only put parent device if host state differs from SHOST_CREATED
+Date:   Mon, 14 Jun 2021 12:27:40 +0200
+Message-Id: <20210614102643.394116029@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 09226e8303beeec10f2ff844d2e46d1371dc58e0 ]
+commit 1e0d4e6225996f05271de1ebcb1a7c9381af0b27 upstream.
 
-None of the callers are expecting NULL returns from nfs_get_client() so
-this code will lead to an Oops.  It's better to return an error
-pointer.  I expect that this is dead code so hopefully no one is
-affected.
+get_device(shost->shost_gendev.parent) is called after host state has
+switched to SHOST_RUNNING. scsi_host_dev_release() shouldn't release the
+parent device if host state is still SHOST_CREATED.
 
-Fixes: 31434f496abb ("nfs: check hostname in nfs_get_client")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20210602133029.2864069-5-ming.lei@redhat.com
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Hannes Reinecke <hare@suse.de>
+Tested-by: John Garry <john.garry@huawei.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/client.c | 2 +-
+ drivers/scsi/hosts.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/client.c b/fs/nfs/client.c
-index 07c5ddd5d6d5..78b6f8bc9d76 100644
---- a/fs/nfs/client.c
-+++ b/fs/nfs/client.c
-@@ -407,7 +407,7 @@ struct nfs_client *nfs_get_client(const struct nfs_client_initdata *cl_init)
+--- a/drivers/scsi/hosts.c
++++ b/drivers/scsi/hosts.c
+@@ -355,7 +355,7 @@ static void scsi_host_dev_release(struct
  
- 	if (cl_init->hostname == NULL) {
- 		WARN_ON(1);
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
+ 	ida_simple_remove(&host_index_ida, shost->host_no);
  
- 	/* see if the client already exists */
--- 
-2.30.2
-
+-	if (parent)
++	if (shost->shost_state != SHOST_CREATED)
+ 		put_device(parent);
+ 	kfree(shost);
+ }
 
 
