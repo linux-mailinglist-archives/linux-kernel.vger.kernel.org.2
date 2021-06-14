@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8469D3A5FD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606BC3A5FDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbhFNKUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
+        id S232777AbhFNKU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232691AbhFNKUC (ORCPT
+        with ESMTP id S232691AbhFNKUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:20:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A165C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:17:59 -0700 (PDT)
+        Mon, 14 Jun 2021 06:20:55 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71204C061574;
+        Mon, 14 Jun 2021 03:18:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=64hwdugAIIv9kNHOATPjXIzNXpsGWBoWUpDeMqDSaN0=; b=RyUh4xEYN+8hlAaPXhDFHRA1OF
-        NbKG0YTIS4CWXyAHTwlXPCtxJgvHNSUserDHrp5sJl34QnqU4y7dL4c3Vzq9yFkKqy6LCkI7QoTJD
-        hXn0DtwoIBwmkgpZll5AAvRl4+3tesFjFuhD6mTs6VAEkcVuHNJf9P46kar7T8sAXB0dRLh1SOrmk
-        ea10h3LwMX621mJDNLEVlDQSXgHThDTJJC4Gmtz/qJeUOT7SvqR1/0Sz1TuJHeRiE4UdGz9avfFc1
-        d6MQSYp8FV0UUBQYwFRMdRhA+2aE9Sn251OhlpEzkmBXPgPOQX0SgwP1l3Lh8o2/0tk5ql9gcQVN4
-        cb+Iz4YA==;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NhIEo9sT28glTkM4CxprF+qgzCzmmeIS6U+43P+3xf0=; b=CaSvsj9J4I01ytahIOFo+aG8Jv
+        Wii8P4OUN18F3+xTqrL6LYLIBdU+beXTS3ohY9cnjAOBHka16OM/VG9QAPWYHhbeI6Ygh/+93xFaI
+        EJTw2DzHMYNenFtpJ4mrZ/UmrucjMOYCY9SKLITq5+7XO+v/YeSvY6EbYyAVAvKFNOLKvBJXY8SwN
+        DJaxaq+MJEtg4yREyAJieFeQ2XcUX3WcCvumbVVjuaIK5bTApqvelqF4tLPTkH5k7077lmFUHF8pa
+        gz3AHaspUYnzmM/Y/1cbGrpi9Cih5nAvdo1pO7z4r3ZnPsMDdc4DcQzZFCSmbCFIoiRqApZ8Kxeui
+        0BmHtICg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lsjen-005GD8-8v; Mon, 14 Jun 2021 10:17:29 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lsjfs-00706g-Mx; Mon, 14 Jun 2021 10:18:39 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C838F3001E3;
-        Mon, 14 Jun 2021 12:17:21 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A7C73001E3;
+        Mon, 14 Jun 2021 12:18:38 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9C7CE2027ABE6; Mon, 14 Jun 2021 12:17:21 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 12:17:21 +0200
+        id 43BBA2C5DAE9B; Mon, 14 Jun 2021 12:18:38 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 12:18:38 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, oberpar@linux.ibm.com, linux-kernel@vger.kernel.org
-Cc:     johannes.berg@intel.com, ndesaulniers@google.com,
-        nathan@kernel.org, keescook@chromium.org, elver@google.com,
-        mark.rutland@arm.com
-Subject: [PATCH] gcov,x86: Mark GCOV broken for x86
-Message-ID: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
+To:     Bill Wendling <morbo@google.com>
+Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        andreyknvl@gmail.com, dvyukov@google.com, elver@google.com,
+        johannes.berg@intel.com, oberpar@linux.vnet.ibm.com, mliska@suse.cz
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
+ infrastructure
+Message-ID: <YMcs/kOcylwvaSr3@hirez.programming.kicks-ass.net>
+References: <20210407211704.367039-1-morbo@google.com>
+ <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net>
+ <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
+ <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
+ <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
+ <20210612202505.GG68208@worktop.programming.kicks-ass.net>
+ <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+ <CAGG=3QUFRM85bpyjdokO93=Nem_w7-784-_qihP1P_CJMOsdqg@mail.gmail.com>
+ <CAGG=3QUrhVi37sYtybTUAZMpCDjB_pw+1OdkbZKvL6+UQrbMbQ@mail.gmail.com>
+ <YMcksKbnVGyi6jHy@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <YMcksKbnVGyi6jHy@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 14, 2021 at 11:43:12AM +0200, Peter Zijlstra wrote:
+> On Sun, Jun 13, 2021 at 11:07:26AM -0700, Bill Wendling wrote:
+> 
+> > > > Now, for the "nointr" issue. I'll see if we need an additional change for that.
+> > > >
+> > > The GCOV implementation disables profiling in those directories where
+> > > instrumentation would fail. We do the same. Both clang and gcc seem to
+> > > treat the no_instrument_function attribute similarly.
+> 
+> Both seem to emit instrumentation, so they're both, simliarly, *broken*.
+> 
+> noinstr *MUST* disable all compiler generated instrumentation. Also see:
+> 
+>   https://lkml.kernel.org/r/20210527194448.3470080-1-elver@google.com
+> 
+> I'll go mark GCOV support as BROKEN for x86.
 
-As recently discovered, there is no function attribute to disable the
--fprofile-generate instrumentation. As such, GCOV is fundamentally
-incompatible with architectures that rely on 'noinstr' for correctness.
-
-Until such time as that compilers have added a function attribute to
-disable this instrumentation, mark GCOV as broken.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/Kconfig    | 2 +-
- kernel/gcov/Kconfig | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 86dae426798b..c0f8c9d4c31a 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -75,7 +75,7 @@ config X86
- 	select ARCH_HAS_FAST_MULTIPLIER
- 	select ARCH_HAS_FILTER_PGPROT
- 	select ARCH_HAS_FORTIFY_SOURCE
--	select ARCH_HAS_GCOV_PROFILE_ALL
-+	select ARCH_HAS_GCOV_BROKEN
- 	select ARCH_HAS_KCOV			if X86_64 && STACK_VALIDATION
- 	select ARCH_HAS_MEM_ENCRYPT
- 	select ARCH_HAS_MEMBARRIER_SYNC_CORE
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 58f87a3092f3..74b028a66ebe 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -1,10 +1,14 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menu "GCOV-based kernel profiling"
- 
-+config ARCH_HAS_GCOV_BROKEN
-+	def_bool n
-+
- config GCOV_KERNEL
- 	bool "Enable gcov-based kernel profiling"
- 	depends on DEBUG_FS
- 	depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
-+	depends on !ARCH_HAS_GCOV_BROKEN
- 	select CONSTRUCTORS
- 	default n
- 	help
+https://lkml.kernel.org/r/YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net
