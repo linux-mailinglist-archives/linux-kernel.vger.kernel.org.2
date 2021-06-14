@@ -2,44 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4653A5F5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AD53A5F61
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhFNJv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:51:29 -0400
-Received: from verein.lst.de ([213.95.11.211]:43413 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232718AbhFNJv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:51:26 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 62CAC67373; Mon, 14 Jun 2021 11:49:19 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 11:49:19 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Richard Weinberger <richard@nod.at>,
-        Jens Axboe <axboe@kernel.dk>, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 2/2] ubd: use blk_mq_alloc_disk and blk_cleanup_disk
-Message-ID: <20210614094919.GA9501@lst.de>
-References: <20210614060759.3965724-1-hch@lst.de> <20210614060759.3965724-3-hch@lst.de> <847f7608-1d11-1410-5394-b5aa5de9f45e@cambridgegreys.com>
+        id S232750AbhFNJv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:51:59 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:45486 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232658AbhFNJvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 05:51:55 -0400
+X-UUID: 0c74c225e2fe454b810425872e916ca6-20210614
+X-UUID: 0c74c225e2fe454b810425872e916ca6-20210614
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 7990773; Mon, 14 Jun 2021 17:49:50 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 14 Jun 2021 17:49:48 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 14 Jun 2021 17:49:48 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <lecopzer.chen@mediatek.com>
+CC:     <clang-built-linux@googlegroups.com>, <keescook@chromium.org>,
+        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>,
+        <samitolvanen@google.com>, <yj.chiang@mediatek.com>
+Subject: RE: [PATCH] kbuild: lto: fix module versionings mismatch in incremental build
+Date:   Mon, 14 Jun 2021 17:49:48 +0800
+Message-ID: <20210614094948.30023-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210614055109.28774-1-lecopzer.chen@mediatek.com>
+References: <20210614055109.28774-1-lecopzer.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <847f7608-1d11-1410-5394-b5aa5de9f45e@cambridgegreys.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 09:26:58AM +0100, Anton Ivanov wrote:
-> This does not build for me when applied to master:
+Andy Lavr <andy.lavr@gmail.com> point out there is a build failed for
 
-Yes, as mentioned in the cover letter it needs for-5.14/block branch
-from here:
+M]  drivers/gpu/drm/nouveau/nvkm/engine/fifo/gpfifog84.o
 
-   git://git.kernel.dk/linux-block for-5.14/block
+make[6]: /bin/sh: Argument list too long
 
-Gitweb:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   https://git.kernel.dk/cgit/linux-block/log/?h=for-5.14/block
+make[6]: *** [/scripts/Makefile.build:463: 
+drivers/gpu/drm/amd/amdgpu/amdgpu.o] Error 127
+make[5]: *** [/scripts/Makefile.build:529: drivers/gpu/drm/amd/amdgpu] 
+Error 2
+make[5]: *** Waiting for unfinished jobs....
+   CC [M]  drivers/gpu/drm/nouveau/nvkm/engine/fifo/gpfifogf100.o
+
+
+I'll fix it in patch v2.
+
+thanks Andy
+
+Lecopzer
