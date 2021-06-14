@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341D73A6167
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BF53A6225
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233875AbhFNKrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:47:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45358 "EHLO mail.kernel.org"
+        id S234126AbhFNK4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:56:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234090AbhFNKkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:40:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E27B613F2;
-        Mon, 14 Jun 2021 10:34:34 +0000 (UTC)
+        id S233559AbhFNKsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 741796141D;
+        Mon, 14 Jun 2021 10:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666875;
-        bh=B5vQHtNPHM4qvNgXqiHo2brVwX9clzbvE9NGbD+LxGw=;
+        s=korg; t=1623667074;
+        bh=UFy/fNZZcXDiSUPifrg7RaZsPbIx8W3OHjSscJM5XlY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l2d6x1K5/xORG6B8pWvBZL+N148SL7RQsR2SUv1YlK6gtP4yjmjf8rzoBshO4ADda
-         KBtu0CeYqFriQPniztmb5u5yz+akf714NAI9IWyglD1lzI1lWortorNYWfAd0owty/
-         XST5sHcOGxxa/2ityAau53esGrl1LiHvj+C+EELw=
+        b=sDjmrsCGK7782p9eusjvV/ScnmVjZur5eRR0xfXWcz2RrhnJ5zTAFBgLp0nk/1EPY
+         0lE86tqU1Ie2ywBI2y7E2losrwrE51CzfxVB2fM3SdezDlPovwSay0/1u/GQi6aTNe
+         0bZ91Pr2+kHLTvOrEQoo8t/HtzdTx35/MEWaSHEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 13/67] net/qla3xxx: fix schedule while atomic in ql_sem_spinlock
-Date:   Mon, 14 Jun 2021 12:26:56 +0200
-Message-Id: <20210614102644.227519592@linuxfoundation.org>
+Subject: [PATCH 5.4 19/84] scsi: bnx2fc: Return failure if io_req is already in ABTS processing
+Date:   Mon, 14 Jun 2021 12:26:57 +0200
+Message-Id: <20210614102647.005565176@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,106 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Javed Hasan <jhasan@marvell.com>
 
-[ Upstream commit 13a6f3153922391e90036ba2267d34eed63196fc ]
+[ Upstream commit 122c81c563b0c1c6b15ff76a9159af5ee1f21563 ]
 
-When calling the 'ql_sem_spinlock', the driver has already acquired the
-spin lock, so the driver should not call 'ssleep' in atomic context.
+Return failure from bnx2fc_eh_abort() if io_req is already in ABTS
+processing.
 
-This bug can be fixed by using 'mdelay' instead of 'ssleep'.
-
-The KASAN's log reveals it:
-
-[    3.238124 ] BUG: scheduling while atomic: swapper/0/1/0x00000002
-[    3.238748 ] 2 locks held by swapper/0/1:
-[    3.239151 ]  #0: ffff88810177b240 (&dev->mutex){....}-{3:3}, at:
-__device_driver_lock+0x41/0x60
-[    3.240026 ]  #1: ffff888107c60e28 (&qdev->hw_lock){....}-{2:2}, at:
-ql3xxx_probe+0x2aa/0xea0
-[    3.240873 ] Modules linked in:
-[    3.241187 ] irq event stamp: 460854
-[    3.241541 ] hardirqs last  enabled at (460853): [<ffffffff843051bf>]
-_raw_spin_unlock_irqrestore+0x4f/0x70
-[    3.242245 ] hardirqs last disabled at (460854): [<ffffffff843058ca>]
-_raw_spin_lock_irqsave+0x2a/0x70
-[    3.242245 ] softirqs last  enabled at (446076): [<ffffffff846002e4>]
-__do_softirq+0x2e4/0x4b1
-[    3.242245 ] softirqs last disabled at (446069): [<ffffffff811ba5e0>]
-irq_exit_rcu+0x100/0x110
-[    3.242245 ] Preemption disabled at:
-[    3.242245 ] [<ffffffff828ca5ba>] ql3xxx_probe+0x2aa/0xea0
-[    3.242245 ] Kernel panic - not syncing: scheduling while atomic
-[    3.242245 ] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
-5.13.0-rc1-00145
--gee7dc339169-dirty #16
-[    3.242245 ] Call Trace:
-[    3.242245 ]  dump_stack+0xba/0xf5
-[    3.242245 ]  ? ql3xxx_probe+0x1f0/0xea0
-[    3.242245 ]  panic+0x15a/0x3f2
-[    3.242245 ]  ? vprintk+0x76/0x150
-[    3.242245 ]  ? ql3xxx_probe+0x2aa/0xea0
-[    3.242245 ]  __schedule_bug+0xae/0xe0
-[    3.242245 ]  __schedule+0x72e/0xa00
-[    3.242245 ]  schedule+0x43/0xf0
-[    3.242245 ]  schedule_timeout+0x28b/0x500
-[    3.242245 ]  ? del_timer_sync+0xf0/0xf0
-[    3.242245 ]  ? msleep+0x2f/0x70
-[    3.242245 ]  msleep+0x59/0x70
-[    3.242245 ]  ql3xxx_probe+0x307/0xea0
-[    3.242245 ]  ? _raw_spin_unlock_irqrestore+0x3a/0x70
-[    3.242245 ]  ? pci_device_remove+0x110/0x110
-[    3.242245 ]  local_pci_probe+0x45/0xa0
-[    3.242245 ]  pci_device_probe+0x12b/0x1d0
-[    3.242245 ]  really_probe+0x2a9/0x610
-[    3.242245 ]  driver_probe_device+0x90/0x1d0
-[    3.242245 ]  ? mutex_lock_nested+0x1b/0x20
-[    3.242245 ]  device_driver_attach+0x68/0x70
-[    3.242245 ]  __driver_attach+0x124/0x1b0
-[    3.242245 ]  ? device_driver_attach+0x70/0x70
-[    3.242245 ]  bus_for_each_dev+0xbb/0x110
-[    3.242245 ]  ? rdinit_setup+0x45/0x45
-[    3.242245 ]  driver_attach+0x27/0x30
-[    3.242245 ]  bus_add_driver+0x1eb/0x2a0
-[    3.242245 ]  driver_register+0xa9/0x180
-[    3.242245 ]  __pci_register_driver+0x82/0x90
-[    3.242245 ]  ? yellowfin_init+0x25/0x25
-[    3.242245 ]  ql3xxx_driver_init+0x23/0x25
-[    3.242245 ]  do_one_initcall+0x7f/0x3d0
-[    3.242245 ]  ? rdinit_setup+0x45/0x45
-[    3.242245 ]  ? rcu_read_lock_sched_held+0x4f/0x80
-[    3.242245 ]  kernel_init_freeable+0x2aa/0x301
-[    3.242245 ]  ? rest_init+0x2c0/0x2c0
-[    3.242245 ]  kernel_init+0x18/0x190
-[    3.242245 ]  ? rest_init+0x2c0/0x2c0
-[    3.242245 ]  ? rest_init+0x2c0/0x2c0
-[    3.242245 ]  ret_from_fork+0x1f/0x30
-[    3.242245 ] Dumping ftrace buffer:
-[    3.242245 ]    (ftrace buffer empty)
-[    3.242245 ] Kernel Offset: disabled
-[    3.242245 ] Rebooting in 1 seconds.
-
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210519061416.19321-1-jhasan@marvell.com
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qla3xxx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/bnx2fc/bnx2fc_io.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-index 1b5e098b2367..2d71646640ac 100644
---- a/drivers/net/ethernet/qlogic/qla3xxx.c
-+++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-@@ -115,7 +115,7 @@ static int ql_sem_spinlock(struct ql3_adapter *qdev,
- 		value = readl(&port_regs->CommonRegs.semaphoreReg);
- 		if ((value & (sem_mask >> 16)) == sem_bits)
- 			return 0;
--		ssleep(1);
-+		mdelay(1000);
- 	} while (--seconds);
- 	return -1;
- }
+diff --git a/drivers/scsi/bnx2fc/bnx2fc_io.c b/drivers/scsi/bnx2fc/bnx2fc_io.c
+index 401743e2b429..a0e776414889 100644
+--- a/drivers/scsi/bnx2fc/bnx2fc_io.c
++++ b/drivers/scsi/bnx2fc/bnx2fc_io.c
+@@ -1219,6 +1219,7 @@ int bnx2fc_eh_abort(struct scsi_cmnd *sc_cmd)
+ 		   was a result from the ABTS request rather than the CLEANUP
+ 		   request */
+ 		set_bit(BNX2FC_FLAG_IO_CLEANUP,	&io_req->req_flags);
++		rc = FAILED;
+ 		goto done;
+ 	}
+ 
 -- 
 2.30.2
 
