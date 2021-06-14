@@ -2,165 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1A33A6E9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1763A6EA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233972AbhFNTOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:14:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:44282 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233048AbhFNTOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:14:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEE86113E;
-        Mon, 14 Jun 2021 12:12:48 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.5.127])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2A8F43F694;
-        Mon, 14 Jun 2021 12:12:45 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-pm@vger.kernel.org, peterz@infradead.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
-        qperret@google.com, dietmar.eggemann@arm.com,
-        vincent.donnefort@arm.com, lukasz.luba@arm.com,
-        Beata.Michalska@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        rostedt@goodmis.org, segall@google.com, mgorman@suse.de,
-        bristot@redhat.com, thara.gopinath@linaro.org,
-        amit.kachhap@gmail.com, amitk@kernel.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org
-Subject: [PATCH v4 3/3] sched/cpufreq: Consider reduced CPU capacity in energy calculation
-Date:   Mon, 14 Jun 2021 20:12:38 +0100
-Message-Id: <20210614191238.23224-1-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210614185815.15136-1-lukasz.luba@arm.com>
-References: <20210614185815.15136-1-lukasz.luba@arm.com>
+        id S233714AbhFNTR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233169AbhFNTR0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:17:26 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB39C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 12:15:10 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id j2so22707995lfg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 12:15:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wy8kQavMtXmWXRWEMXyBLTsbu5eZVxKlmyQPGuM6Q58=;
+        b=FWr0n7oPVWQ+3ixl2B6aJCUI1aaCUd3rD6xJGopgi+G3S51eI5WKQ6RLQjpPrczgUw
+         Uv0FHlvR2bzE518D6Y8Nnd/A9KiVMaCI2gSxXq8KXbC9nPq7xPZUmdAb20/xqNrBMm2Q
+         CGXZz1OHoOXQIUe+85wv+Fkcar+3OSXseqHfWbcgWwW0BU6jkdXwsT97JMQNw7Tf/2+X
+         p7oPoA/6/h+DD9SL5oa6HWhxT5QuVdVfooxkkHO+C3hr+rcIBRMMAX8k0bck9jBNCTh1
+         Jm3gyrqgrVOn9jD0nZlU0ZGZpJBRY8kw5pL418zBh/RpWSEEhpl0Xk+GqptBgSYtL73c
+         9Cyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wy8kQavMtXmWXRWEMXyBLTsbu5eZVxKlmyQPGuM6Q58=;
+        b=uODHapUIBZDXk1aJ3YojI115lmyM4goYDQRBgsobmmk1q1SSl5rUWiUFz69zHr1GCQ
+         PL2yPnPgarITrLXG1b/JOEcSyTYMIsfCAeIlbqPxLopCQUatRpWeMC1nDkRjtT3BUUg0
+         lVtLhI0ye/ePCpNSFQZ/l2Y2v+uK6DU/NkmI24vVyHktvgU8NVWcnWQM6X2+60tT0wcF
+         SosFVMS5z0Qi8XhCaIU52HKK4zHZQ7oxu3zoaiSi0HsRMxwuUlyri6k1OUBiuULehdSk
+         hUXhF0x/0izu5RfZuMImIoY+KnzBMUMiYSmKswoI4eEI3iPkzcpi2FMD4lG9+UeovFFA
+         Rfqg==
+X-Gm-Message-State: AOAM5329rezTD6ZrZO1DiP/bb74l0ulm/VqU7hQyugTr/GaszWpRazF8
+        sP6ZfNmILXFhUQUuKoxXKEdiFg==
+X-Google-Smtp-Source: ABdhPJzy3L13GiiOVq+u0errQIuLZDbWTXWtPICnFywU3zpYMn5wnv69XzZ5bLPGkSg6b7LUTT5JwA==
+X-Received: by 2002:a19:480a:: with SMTP id v10mr12826757lfa.565.1623698108333;
+        Mon, 14 Jun 2021 12:15:08 -0700 (PDT)
+Received: from jade (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
+        by smtp.gmail.com with ESMTPSA id i5sm1559817lfe.113.2021.06.14.12.15.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 12:15:07 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 21:15:06 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/8] optee: Clear stale cache entries during
+ initialization
+Message-ID: <20210614191506.GA1373417@jade>
+References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
+ <20210610210913.536081-5-tyhicks@linux.microsoft.com>
+ <20210614082715.GC1033436@jade>
+ <20210614190646.GW4910@sequoia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210614190646.GW4910@sequoia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Energy Aware Scheduling (EAS) needs to predict the decisions made by
-SchedUtil. The map_util_freq() exists to do that.
+On Mon, Jun 14, 2021 at 02:06:46PM -0500, Tyler Hicks wrote:
+> On 2021-06-14 10:27:15, Jens Wiklander wrote:
+> > On Thu, Jun 10, 2021 at 04:09:09PM -0500, Tyler Hicks wrote:
+> > > The shm cache could contain invalid addresses if
+> > > optee_disable_shm_cache() was not called from the .shutdown hook of the
+> > > previous kernel before a kexec. These addresses could be unmapped or
+> > > they could point to mapped but unintended locations in memory.
+> > > 
+> > > Clear the shared memory cache, while being careful to not translate the
+> > > addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
+> > > initialization. Once all pre-cache shm objects are removed, proceed with
+> > > enabling the cache so that we know that we can handle cached shm objects
+> > > with confidence later in the .shutdown hook.
+> > > 
+> > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > ---
+> > >  drivers/tee/optee/call.c          | 11 ++++++++++-
+> > >  drivers/tee/optee/core.c          | 13 +++++++++++--
+> > >  drivers/tee/optee/optee_private.h |  2 +-
+> > >  3 files changed, 22 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+> > > index 6e6eb836e9b6..5dcba6105ed7 100644
+> > > --- a/drivers/tee/optee/call.c
+> > > +++ b/drivers/tee/optee/call.c
+> > > @@ -419,8 +419,10 @@ void optee_enable_shm_cache(struct optee *optee)
+> > >   * optee_disable_shm_cache() - Disables caching of some shared memory allocation
+> > >   *			      in OP-TEE
+> > >   * @optee:	main service struct
+> > > + * @is_mapped:	true if the cached shared memory addresses were mapped by this
+> > > + *		kernel, are safe to dereference, and should be freed
+> > >   */
+> > > -void optee_disable_shm_cache(struct optee *optee)
+> > > +void optee_disable_shm_cache(struct optee *optee, bool is_mapped)
+> > >  {
+> > >  	struct optee_call_waiter w;
+> > >  
+> > > @@ -439,6 +441,13 @@ void optee_disable_shm_cache(struct optee *optee)
+> > >  		if (res.result.status == OPTEE_SMC_RETURN_OK) {
+> > >  			struct tee_shm *shm;
+> > >  
+> > > +			/*
+> > > +			 * Shared memory references that were not mapped by
+> > > +			 * this kernel must be ignored to prevent a crash.
+> > > +			 */
+> > > +			if (!is_mapped)
+> > > +				continue;
+> > > +
+> > >  			shm = reg_pair_to_ptr(res.result.shm_upper32,
+> > >  					      res.result.shm_lower32);
+> > >  			tee_shm_free(shm);
+> > > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> > > index 0987074d7ed0..6974e1104bd4 100644
+> > > --- a/drivers/tee/optee/core.c
+> > > +++ b/drivers/tee/optee/core.c
+> > > @@ -589,7 +589,7 @@ static int optee_remove(struct platform_device *pdev)
+> > >  	 * reference counters and also avoid wild pointers in secure world
+> > >  	 * into the old shared memory range.
+> > >  	 */
+> > > -	optee_disable_shm_cache(optee);
+> > > +	optee_disable_shm_cache(optee, true);
+> > 
+> > Naked "true" or "false" parameters are normally not very descriptive.
+> > Would it make sense to write this as:
+> > optee_disable_shm_cache(optee, true /*is_mapped*/);
+> > instead (same for the other call sites in this patch)? That way it would
+> > be easier to see what it is that is true or false.
+> 
+> Yeah, I understand the issue with the naked bools. What about turning
+> 'optee_disable_shm_cache(struct optee *optee, bool is_mapped)' into
+> '__optee_disable_shm_cache(struct optee *optee, bool is_mapped)' and
+> introducing these two wrappers:
+> 
+> /**
+>  * optee_disable_shm_cache() - Disables caching of mapped shared memory
+>  *                             allocations in OP-TEE
+>  * @optee:     main service struct
+>  */
+> void optee_disable_shm_cache(struct optee *optee)
+> {
+>        return __optee_disable_shm_cache(optee, true);
+> }
+> 
+> /**
+>  * optee_disable_unmapped_shm_cache() - Disables caching of shared memory
+>  *                                      allocations in OP-TEE which are not
+>  *                                      currently mapped
+>  * @optee:     main service struct
+>  */
+> void optee_disable_unmapped_shm_cache(struct optee *optee)
+> {
+>        return __optee_disable_shm_cache(optee, false);
+> }
+> 
+> Existing callers of optee_disable_shm_cache() remain unchanged and we just add
+> one caller of optee_disable_unmapped_shm_cache() with this patch.
+> 
 
-There are corner cases where the max allowed frequency might be reduced
-(due to thermal). SchedUtil as a CPUFreq governor, is aware of that
-but EAS is not. This patch aims to address it.
+Sounds good.
 
-SchedUtil stores the maximum allowed frequency in
-'sugov_policy::next_freq' field. EAS has to predict that value, which is
-the real used frequency. That value is made after a call to
-cpufreq_driver_resolve_freq() which clamps to the CPUFreq policy limits.
-In the existing code EAS is not able to predict that real frequency.
-This leads to energy estimation errors.
-
-To avoid wrong energy estimation in EAS (due to frequency miss prediction)
-make sure that the step which calculates Performance Domain frequency,
-is also aware of the allowed CPU capacity.
-
-Furthermore, modify map_util_freq() to not extend the frequency value.
-Instead, use map_util_perf() to extend the util value in both places:
-SchedUtil and EAS, but for EAS clamp it to max allowed CPU capacity.
-In the end, we achieve the same desirable behavior for both subsystems
-and alignment in regards to the real CPU frequency.
-
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com> (For the schedutil part)
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- include/linux/energy_model.h     | 16 +++++++++++++---
- include/linux/sched/cpufreq.h    |  2 +-
- kernel/sched/cpufreq_schedutil.c |  1 +
- kernel/sched/fair.c              |  2 +-
- 4 files changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index 757fc60658fa..3f221dbf5f95 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -91,6 +91,8 @@ void em_dev_unregister_perf_domain(struct device *dev);
-  * @pd		: performance domain for which energy has to be estimated
-  * @max_util	: highest utilization among CPUs of the domain
-  * @sum_util	: sum of the utilization of all CPUs in the domain
-+ * @allowed_cpu_cap	: maximum allowed CPU capacity for the @pd, which
-+			  might reflect reduced frequency (due to thermal)
-  *
-  * This function must be used only for CPU devices. There is no validation,
-  * i.e. if the EM is a CPU type and has cpumask allocated. It is called from
-@@ -100,7 +102,8 @@ void em_dev_unregister_perf_domain(struct device *dev);
-  * a capacity state satisfying the max utilization of the domain.
-  */
- static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
--				unsigned long max_util, unsigned long sum_util)
-+				unsigned long max_util, unsigned long sum_util,
-+				unsigned long allowed_cpu_cap)
- {
- 	unsigned long freq, scale_cpu;
- 	struct em_perf_state *ps;
-@@ -112,11 +115,17 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 	/*
- 	 * In order to predict the performance state, map the utilization of
- 	 * the most utilized CPU of the performance domain to a requested
--	 * frequency, like schedutil.
-+	 * frequency, like schedutil. Take also into account that the real
-+	 * frequency might be set lower (due to thermal capping). Thus, clamp
-+	 * max utilization to the allowed CPU capacity before calculating
-+	 * effective frequency.
- 	 */
- 	cpu = cpumask_first(to_cpumask(pd->cpus));
- 	scale_cpu = arch_scale_cpu_capacity(cpu);
- 	ps = &pd->table[pd->nr_perf_states - 1];
-+
-+	max_util = map_util_perf(max_util);
-+	max_util = min(max_util, allowed_cpu_cap);
- 	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
- 
- 	/*
-@@ -209,7 +218,8 @@ static inline struct em_perf_domain *em_pd_get(struct device *dev)
- 	return NULL;
- }
- static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
--			unsigned long max_util, unsigned long sum_util)
-+			unsigned long max_util, unsigned long sum_util,
-+			unsigned long allowed_cpu_cap)
- {
- 	return 0;
- }
-diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
-index 6205578ab6ee..bdd31ab93bc5 100644
---- a/include/linux/sched/cpufreq.h
-+++ b/include/linux/sched/cpufreq.h
-@@ -26,7 +26,7 @@ bool cpufreq_this_cpu_can_update(struct cpufreq_policy *policy);
- static inline unsigned long map_util_freq(unsigned long util,
- 					unsigned long freq, unsigned long cap)
- {
--	return (freq + (freq >> 2)) * util / cap;
-+	return freq * util / cap;
- }
- 
- static inline unsigned long map_util_perf(unsigned long util)
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 4f09afd2f321..57124614363d 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -151,6 +151,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
- 	unsigned int freq = arch_scale_freq_invariant() ?
- 				policy->cpuinfo.max_freq : policy->cur;
- 
-+	util = map_util_perf(util);
- 	freq = map_util_freq(util, freq, max);
- 
- 	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 3634e077051d..75e082964250 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6584,7 +6584,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
- 		max_util = max(max_util, min(cpu_util, _cpu_cap));
- 	}
- 
--	return em_cpu_energy(pd->em_pd, max_util, sum_util);
-+	return em_cpu_energy(pd->em_pd, max_util, sum_util, _cpu_cap);
- }
- 
- /*
--- 
-2.17.1
-
+Jens
