@@ -2,187 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E9D3A66E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2283A66E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233291AbhFNMsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 08:48:51 -0400
-Received: from mail-pf1-f182.google.com ([209.85.210.182]:33563 "EHLO
-        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232992AbhFNMsq (ORCPT
+        id S233319AbhFNMtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 08:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232841AbhFNMtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:48:46 -0400
-Received: by mail-pf1-f182.google.com with SMTP id p13so10498179pfw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 05:46:43 -0700 (PDT)
+        Mon, 14 Jun 2021 08:49:41 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C916C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 05:47:38 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id bn21so20022247ljb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 05:47:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=0WPH3hjxXBLsSpR7DWHsVJlt9dhkg5b/9bT0LLsWmo0=;
-        b=ZG0sX2lQCF9+s9b3JXRpSAFu3a+dyqh8u264TEvZUod7aE9f7jmj/EcQtCQPMSy0XU
-         q6V7ZIImpi3E4fyA4Sgl32befqpBoWLXMb1r31el8SdtftiIZLABolBoM/f0gtTrTe8O
-         Pp+DGQd18YckizMSqdAorKKGWdRxkJtnvgcCw=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QUObwUNWvgk8Ic1w7m2h32Aq1YfuXrxksajQxqaMrIs=;
+        b=rj6ZqtY0hWRNdi47dSpXnG5VlOgr15kVbYhmu6VWU8u6FjoktZ8tvzKvzlkPnDP+pV
+         XO3nhrT0y6qyTJZjPH5sSQnLiK2So2RyVxzuj8bZTSrohk/KJTgF8P077y+Fvbm3p3MS
+         adrMOeNBlgRIAQ8M4JksRyHAk91ctiTVHRxKE+Ysd4cv7fxq0GrTjF2zot+++owhWgOZ
+         akrE4+2kZBZEEm5a4N3TOZdjIGXh/Ipfb6XTfSeGKR/mE8wojx+WFi//AUD6f13s38T+
+         dh0ynmjkc4C4o/Er1BLAEQaXeS2zTdDzm++TKc2dXCS2gvmp9hROmv+KiK5rYRK9W/Lu
+         mMbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=0WPH3hjxXBLsSpR7DWHsVJlt9dhkg5b/9bT0LLsWmo0=;
-        b=n4DXVf8iEdw8eB26B1ULQ3a7/pcNf3/+I45taAMISjBsDDfzu0KWzlQ+s2Z1f8jt+c
-         oRM8rlEOH6YOFcLYDyhJkCvMelVSYZEeJEAUxqz88GgHCMYHDIiRjvExCSjHxM9PJhIX
-         79Q8owtuN6Sy+x8KjE3R6CtQUQuXNWuXSJzsa4ZnLxsZ/JSVWlF4dJlS0DHTN+5GETMW
-         Bd7LUNY9lHtV2VPNZxpqA5N7k6SHpyY4SNcrsQLwq/MAGbkYaN+wNRklYulSwiis7Xj+
-         o443BZT2ZtPwMQ0U3ptZ3y4iB5UH4TQK2bdyTu9BqXzf9QQV3LKrDdLCZnOIqwcJwMi0
-         vHEg==
-X-Gm-Message-State: AOAM530jEAsp7rIWClfKC74QWFyDTHudbuy6/JMWBhhxtGPwuohoY5Re
-        d6GZJnDmbi0OP4DqkOFHCmh77A==
-X-Google-Smtp-Source: ABdhPJyVl60sQemzfpMYfU7sBdra5ITiOkMCODvou3wJumVZHT15gIThHUNcK01ELLsBz9W2sLkV1Q==
-X-Received: by 2002:a63:3ec3:: with SMTP id l186mr16665906pga.371.1623674743459;
-        Mon, 14 Jun 2021 05:45:43 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:f64:2ecb:b3c0:fd80])
-        by smtp.gmail.com with ESMTPSA id mi10sm16609030pjb.10.2021.06.14.05.45.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 05:45:42 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 21:45:37 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: drm/i915: __GFP_RETRY_MAYFAIL allocations in stable kernels
-Message-ID: <YMdPcWZi4x7vnCxI@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QUObwUNWvgk8Ic1w7m2h32Aq1YfuXrxksajQxqaMrIs=;
+        b=lZBsLmrGeVYs6f9RbW6xLuL2TBQctIz45cBkkvQptkN+Kv43qry+2h6/YinY7ZjRAl
+         TBa0CpVadi1pA7mal8US4Tfpwp/uqPc7iIpG7FJvn3q6GFRsbacR5aYcXXpXHFEN8TcW
+         VIzu6hHPZ1loB6ihyNv9L3axS8FaKQqNqQ3E147CEjyQ6LVxus0rC7FnZC7csJI2lhWd
+         eHNjFXyojJRf1hbB4bFMtBXfCvAhsjjbYNFiYW40oadnpSixm0MBC9zvvebHeiD/r7Gi
+         +obsWU6c9kdU9j+kzgdXPmot1KQZ8W9FXHft/uVXgzcfr/506Wf+qApUcrWcSzgsf4SQ
+         Q6Hw==
+X-Gm-Message-State: AOAM53251Zo/bhXF/KYM71XWZ0YlPvNh08b/0gyd6EJFocxOGWn7P+tP
+        Lm0qIMW0mCjYEOSAL0N+WhgZCjur4YR9FKzVu50=
+X-Google-Smtp-Source: ABdhPJxC86d8VXC4py9RRymEPfI5ESRE2fKe8HepltlfpWhz75a3A3JMLKsQJcx2NkZi9XGq2Uggz8yzDs460UQlrTk=
+X-Received: by 2002:a2e:b8cc:: with SMTP id s12mr13710166ljp.66.1623674855928;
+ Mon, 14 Jun 2021 05:47:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210611095528.9230-1-roman_skakun@epam.com> <855a58e2-1e03-4763-cb56-81367b73762c@oracle.com>
+In-Reply-To: <855a58e2-1e03-4763-cb56-81367b73762c@oracle.com>
+From:   Roman Skakun <rm.skakun@gmail.com>
+Date:   Mon, 14 Jun 2021 15:47:25 +0300
+Message-ID: <CADu_u-MqALJkG8RJHrr65vC_sHu-UyvCGwwUfaBong0eir5+hQ@mail.gmail.com>
+Subject: Re: [PATCH] swiotlb-xen: override common mmap and get_sgtable dma ops
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
+        Roman Skakun <roman_skakun@epam.com>,
+        Andrii Anisov <andrii_anisov@epam.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hey, Boris!
+Thanks for the review.
 
-We are observing some user-space crashes (sigabort, segfaults etc.)
-under moderate memory pressure (pretty far from severe pressure) which
-have one thing in common - restrictive GFP mask in setup_scratch_page().
+I have an additional question about current implementation that disturbed m=
+e.
+I think, that we can have cases when mapped memory can not be
+physically contiguous.
+In order to proceed this correctly need to apply some additional steps
+to current implementation as well.
 
-For instance, (stable 4.19) drivers/gpu/drm/i915/i915_gem_gtt.c
+In mmap() :
+1. Is the memory region physically contiguous?
+2. Remap multiple ranges if it is not.
 
-(trimmed down version)
+In get_sgtable() :
+1. Is the memory region physically contiguous?
+2. Create sgt that will be included multiple contiguous ranges if it is not=
+.
 
-static int gen8_init_scratch(struct i915_address_space *vm)
-{
-        setup_scratch_page(vm, __GFP_HIGHMEM);
+What do you think about it?
 
-        vm->scratch_pt = alloc_pt(vm);
-        vm->scratch_pd = alloc_pd(vm);
-        if (use_4lvl(vm)) {
-                vm->scratch_pdp = alloc_pdp(vm);
-        }
-}
-
-gen8_init_scratch() function puts a rather inconsistent restrictions on mm.
-
-Looking at it line by line:
-
-setup_scratch_page() uses very restrictive gfp mask:
-	__GFP_HIGHMEM | __GFP_ZERO | __GFP_RETRY_MAYFAIL
-
-it doesn't try to reclaim anything and fails almost immediately.
-
-alloc_pt() - uses more permissive gfp mask:
-	GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
-
-alloc_pd() - likewise:
-	GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
-
-alloc_pdp() - very permissive gfp mask:
-	GFP_KERNEL
+Cheers!
+Roman
 
 
-So can all allocations in gen8_init_scratch() use
-	GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
-?
-
-E.g.
-
----
-diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-index a12430187108..e862680b9c93 100644
---- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-+++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-@@ -792,7 +792,7 @@ alloc_pdp(struct i915_address_space *vm)
- 
-        GEM_BUG_ON(!use_4lvl(vm));
- 
--       pdp = kzalloc(sizeof(*pdp), GFP_KERNEL);
-+       pdp = kzalloc(sizeof(*pdp), I915_GFP_ALLOW_FAIL);
-        if (!pdp)
-                return ERR_PTR(-ENOMEM);
- 
-@@ -1262,7 +1262,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
- {
-        int ret;
- 
--       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-+       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-        if (ret)
-                return ret;
- 
-@@ -1972,7 +1972,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_hw_ppgtt *ppgtt)
-        u32 pde;
-        int ret;
- 
--       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-+       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-        if (ret)
-                return ret;
- 
-@@ -3078,7 +3078,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
-                return -ENOMEM;
-        }
- 
--       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
-+       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
-        if (ret) {
-                DRM_ERROR("Scratch setup failed\n");
-                /* iounmap will also get called at remove, but meh */
----
+=D0=BF=D1=82, 11 =D0=B8=D1=8E=D0=BD. 2021 =D0=B3. =D0=B2 18:20, Boris Ostro=
+vsky <boris.ostrovsky@oracle.com>:
+>
+>
+> On 6/11/21 5:55 AM, Roman Skakun wrote:
+> >
+> > +static int
+> > +xen_swiotlb_dma_mmap(struct device *dev, struct vm_area_struct *vma,
+> > +             void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> > +             unsigned long attrs)
+> > +{
+> > +     unsigned long user_count =3D vma_pages(vma);
+> > +     unsigned long count =3D PAGE_ALIGN(size) >> PAGE_SHIFT;
+> > +     unsigned long off =3D vma->vm_pgoff;
+> > +     struct page *page;
+> > +
+> > +     if (is_vmalloc_addr(cpu_addr))
+> > +             page =3D vmalloc_to_page(cpu_addr);
+> > +     else
+> > +             page =3D virt_to_page(cpu_addr);
+> > +
+> > +     vma->vm_page_prot =3D dma_pgprot(dev, vma->vm_page_prot, attrs);
+> > +
+> > +     if (dma_mmap_from_dev_coherent(dev, vma, cpu_addr, size, &ret))
+> > +             return -ENXIO;
+> > +
+> > +     if (off >=3D count || user_count > count - off)
+> > +             return -ENXIO;
+> > +
+> > +     return remap_pfn_range(vma, vma->vm_start,
+> > +                     page_to_pfn(page) + vma->vm_pgoff,
+> > +                     user_count << PAGE_SHIFT, vma->vm_page_prot);
+> > +}
+>
+>
+> I suggest you create a helper for computing page value and then revert 92=
+2659ea771b3fd728149262c5ea15608fab9719 and pass result of the helper instea=
+d of cpu_addr. Here and in xen_swiotlb_dma_get_sgtable().
+>
+>
+> And use this new helper in xen_swiotlb_free_coherent() too. I am curious =
+though why this was not a problem when Stefano was looking at the problem t=
+hat introduced this vmalloc check (i.e. 8b1e868f66076490189a36d984fcce286cd=
+d6295). Stefano?
+>
+>
+> -boris
 
 
 
-It's quite similar on stable 5.4 - setup_scratch_page() uses restrictive
-gfp mask again.
-
----
-diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-index f614646ed3f9..99d78b1052df 100644
---- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-+++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-@@ -1378,7 +1378,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
-                return 0;
-        }
- 
--       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-+       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-        if (ret)
-                return ret;
- 
-@@ -1753,7 +1753,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_ppgtt *ppgtt)
-        struct i915_page_directory * const pd = ppgtt->base.pd;
-        int ret;
- 
--       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-+       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-        if (ret)
-                return ret;
- 
-@@ -2860,7 +2860,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
-                return -ENOMEM;
-        }
- 
--       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
-+       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
-        if (ret) {
-                DRM_ERROR("Scratch setup failed\n");
-                /* iounmap will also get called at remove, but meh */
----
+--=20
+Best Regards, Roman.
