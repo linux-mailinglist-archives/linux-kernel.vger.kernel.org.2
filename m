@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7063A6C18
+	by mail.lfdr.de (Postfix) with ESMTP id B33F93A6C19
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbhFNQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:41:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55858 "EHLO
+        id S235226AbhFNQlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:41:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55792 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbhFNQkX (ORCPT
+        with ESMTP id S234894AbhFNQkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:40:23 -0400
-Message-Id: <20210614155356.549332888@linutronix.de>
+        Mon, 14 Jun 2021 12:40:24 -0400
+Message-Id: <20210614155356.662324472@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688699;
+        s=2020; t=1623688701;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=9/hGT5uCeUBODjxx6P7fIzGSMOXdABNPDxzLF3iZIA8=;
-        b=17rIYILfGhfJnzYC+cI6Bo52cWVinjqdT4Ewxz0yv8iyEYH04LtQvfw1+QhgXRnchHVHbi
-        ByKwVU92TNXtRjidxCrvQotp1CZl0LPR3reUUbeT4FFLjvG4agVklXkV33s+DuFgeXiWtN
-        4fYpHlyoVv9+6ScWf1i51kLliEIawayB79SBBqf5eGA5trWjR/aXMCBi7UPu6uJ3R7g6fM
-        Ry3yIVTUP1nxtPbIjoQW4yuSjpEmLBTQxZ4yiW7argwdt846sehAgLZNsS4VQb2bII+fKr
-        V6AkqC1DTkjYbbP8dFuQOfeVliRIaQwta06bSMpKc/YhLRP6NzXijX7zAjr7yw==
+        bh=uIyzve+zOKuT8bV4PNuiuDdVCNL24+3bwH/aedKE+KU=;
+        b=VzFehpR84rSaSaTkHutWVCa/xsjLiYljDpKjD5NXWmL9qTUqvPOQvujpPosmI9UP+52NmX
+        LrrTtC+VT0GfZaPAfAlUX3Z7asoXwnrNmTOh2T42BmJi9JnxfVQ1hPoKVusFaFaber/RS1
+        Rx2NLnrJzToWiv9eh2ZJRw91a5I/u9JltYZHWfkOiWZaABkT/fskaRBbhHLnPKZ+5JTQcy
+        C+9cpk+CvEQhLHLQRnjDqSWRFWBlE3ds2gvZh/fShmq7DVF+zOrtuLy76ANrsanJPYBPv8
+        rUVheITXcnM2wvuPddV0oKSb5fcIqZsW7GTzmG1nAIBNFCq5c4odVM/EDpfQwQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688699;
+        s=2020e; t=1623688701;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=9/hGT5uCeUBODjxx6P7fIzGSMOXdABNPDxzLF3iZIA8=;
-        b=5Qf3L6kjuk5RMRXh3dLimewibbqxjZtuyO6NgnzTyVbav/H1cvtVOif18D15pqxDwv6ETh
-        t991F+EazyTSLpDw==
-Date:   Mon, 14 Jun 2021 17:44:36 +0200
+        bh=uIyzve+zOKuT8bV4PNuiuDdVCNL24+3bwH/aedKE+KU=;
+        b=WvyhFUHjgM7Utre7DOnOjhl0egBfQUIpQypeP30hxNwIHgEKOEbfTMRzazXxt1PTZRTa2m
+        BJC4eRiI2OZWQKCg==
+Date:   Mon, 14 Jun 2021 17:44:37 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,8 +44,8 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 28/52] x86/fpu: Rename copy_fpregs_to_fpstate() to
- save_fpregs_to_fpstate()
+Subject: [patch V2 29/52] x86/fpu: Rename copy_kernel_to_fpregs() to
+ restore_fpregs_from_kernel()
 References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,94 +54,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A copy is guaranteed to leave the source intact, which is not the case when
-FNSAVE is used as that reinitilizes the registers.
-
-Rename it to save_fpregs_to_fpstate() which does not make such guarantees.
+This is not a copy functionality. It restores the register state from the
+supplied kernel buffer.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/fpu/internal.h |    4 ++--
- arch/x86/kernel/fpu/core.c          |   10 +++++-----
- arch/x86/kvm/x86.c                  |    2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    8 ++++----
+ arch/x86/kernel/fpu/core.c          |    4 ++--
+ arch/x86/kvm/x86.c                  |    4 ++--
+ arch/x86/mm/extable.c               |    2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -373,7 +373,7 @@ static inline int xrstor_from_kernel_err
- 	return err;
+@@ -375,7 +375,7 @@ static inline int xrstor_from_kernel_err
+ 
+ extern int save_fpregs_to_fpstate(struct fpu *fpu);
+ 
+-static inline void __copy_kernel_to_fpregs(union fpregs_state *fpstate, u64 mask)
++static inline void __restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask)
+ {
+ 	if (use_xsave()) {
+ 		xrstor_from_kernel(&fpstate->xsave, mask);
+@@ -387,7 +387,7 @@ static inline void __copy_kernel_to_fpre
+ 	}
  }
  
--extern int copy_fpregs_to_fpstate(struct fpu *fpu);
-+extern int save_fpregs_to_fpstate(struct fpu *fpu);
+-static inline void copy_kernel_to_fpregs(union fpregs_state *fpstate)
++static inline void restore_fpregs_from_fpstate(union fpregs_state *fpstate)
+ {
+ 	/*
+ 	 * AMD K7/K8 CPUs don't save/restore FDP/FIP/FOP unless an exception is
+@@ -402,7 +402,7 @@ static inline void copy_kernel_to_fpregs
+ 			: : [addr] "m" (fpstate));
+ 	}
  
- static inline void __copy_kernel_to_fpregs(union fpregs_state *fpstate, u64 mask)
- {
-@@ -505,7 +505,7 @@ static inline void __fpregs_load_activat
- static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
- {
- 	if (static_cpu_has(X86_FEATURE_FPU) && !(current->flags & PF_KTHREAD)) {
--		if (!copy_fpregs_to_fpstate(old_fpu))
-+		if (!save_fpregs_to_fpstate(old_fpu))
- 			old_fpu->last_cpu = -1;
- 		else
- 			old_fpu->last_cpu = cpu;
+-	__copy_kernel_to_fpregs(fpstate, -1);
++	__restore_fpregs_from_fpstate(fpstate, -1);
+ }
+ 
+ extern int copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
+@@ -473,7 +473,7 @@ static inline void __fpregs_load_activat
+ 		return;
+ 
+ 	if (!fpregs_state_valid(fpu, cpu)) {
+-		copy_kernel_to_fpregs(&fpu->state);
++		restore_fpregs_from_fpstate(&fpu->state);
+ 		fpregs_activate(fpu);
+ 		fpu->last_cpu = cpu;
+ 	}
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -92,7 +92,7 @@ EXPORT_SYMBOL(irq_fpu_usable);
-  * Modern FPU state can be kept in registers, if there are
-  * no pending FP exceptions.
-  */
--int copy_fpregs_to_fpstate(struct fpu *fpu)
-+int save_fpregs_to_fpstate(struct fpu *fpu)
- {
- 	if (likely(use_xsave())) {
- 		xsave_to_kernel(&fpu->state.xsave);
-@@ -119,7 +119,7 @@ int copy_fpregs_to_fpstate(struct fpu *f
- 
- 	return 0;
- }
--EXPORT_SYMBOL(copy_fpregs_to_fpstate);
-+EXPORT_SYMBOL(save_fpregs_to_fpstate);
- 
- void kernel_fpu_begin_mask(unsigned int kfpu_mask)
- {
-@@ -137,7 +137,7 @@ void kernel_fpu_begin_mask(unsigned int
- 		 * Ignore return value -- we don't care if reg state
- 		 * is clobbered.
- 		 */
--		copy_fpregs_to_fpstate(&current->thread.fpu);
-+		save_fpregs_to_fpstate(&current->thread.fpu);
- 	}
- 	__cpu_invalidate_fpregs_state();
- 
-@@ -172,7 +172,7 @@ void fpu__save(struct fpu *fpu)
- 	trace_x86_fpu_before_save(fpu);
+@@ -173,7 +173,7 @@ void fpu__save(struct fpu *fpu)
  
  	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
--		if (!copy_fpregs_to_fpstate(fpu)) {
-+		if (!save_fpregs_to_fpstate(fpu)) {
- 			copy_kernel_to_fpregs(&fpu->state);
+ 		if (!save_fpregs_to_fpstate(fpu)) {
+-			copy_kernel_to_fpregs(&fpu->state);
++			restore_fpregs_from_fpstate(&fpu->state);
  		}
  	}
-@@ -255,7 +255,7 @@ int fpu__copy(struct task_struct *dst, s
- 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+ 
+@@ -256,7 +256,7 @@ int fpu__copy(struct task_struct *dst, s
  		memcpy(&dst_fpu->state, &src_fpu->state, fpu_kernel_xstate_size);
  
--	else if (!copy_fpregs_to_fpstate(dst_fpu))
-+	else if (!save_fpregs_to_fpstate(dst_fpu))
- 		copy_kernel_to_fpregs(&dst_fpu->state);
+ 	else if (!save_fpregs_to_fpstate(dst_fpu))
+-		copy_kernel_to_fpregs(&dst_fpu->state);
++		restore_fpregs_from_fpstate(&dst_fpu->state);
  
  	fpregs_unlock();
+ 
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -9618,7 +9618,7 @@ static void kvm_save_current_fpu(struct
- 		memcpy(&fpu->state, &current->thread.fpu.state,
- 		       fpu_kernel_xstate_size);
- 	else
--		copy_fpregs_to_fpstate(fpu);
-+		save_fpregs_to_fpstate(fpu);
- }
+@@ -9634,7 +9634,7 @@ static void kvm_load_guest_fpu(struct kv
+ 	 */
+ 	if (vcpu->arch.guest_fpu)
+ 		/* PKRU is separately restored in kvm_x86_ops.run. */
+-		__copy_kernel_to_fpregs(&vcpu->arch.guest_fpu->state,
++		__restore_fpregs_from_fpstate(&vcpu->arch.guest_fpu->state,
+ 					~XFEATURE_MASK_PKRU);
  
- /* Swap (qemu) user FPU context for the guest FPU context. */
+ 	fpregs_mark_activate();
+@@ -9655,7 +9655,7 @@ static void kvm_put_guest_fpu(struct kvm
+ 	if (vcpu->arch.guest_fpu)
+ 		kvm_save_current_fpu(vcpu->arch.guest_fpu);
+ 
+-	copy_kernel_to_fpregs(&vcpu->arch.user_fpu->state);
++	restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state);
+ 
+ 	fpregs_mark_activate();
+ 	fpregs_unlock();
+--- a/arch/x86/mm/extable.c
++++ b/arch/x86/mm/extable.c
+@@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(ex_handler_fault);
+ 	WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
+ 		  (void *)instruction_pointer(regs));
+ 
+-	__copy_kernel_to_fpregs(&init_fpstate, -1);
++	__restore_fpregs_from_fpstate(&init_fpstate, -1);
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(ex_handler_fprestore);
 
