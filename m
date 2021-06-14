@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8413A6544
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26A83A6571
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235919AbhFNLgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:36:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52268 "EHLO mail.kernel.org"
+        id S235870AbhFNLiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:38:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235388AbhFNLWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235408AbhFNLWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 07:22:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2978261993;
-        Mon, 14 Jun 2021 10:52:25 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E02AC6147F;
+        Mon, 14 Jun 2021 10:52:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667946;
-        bh=Qf29Yt8VKmggPd1nqwsrPB6plFZxMFlbkUYBvnjwjl0=;
+        s=korg; t=1623667949;
+        bh=Jxb18nTjLudlt8/gG6MDsCAFjbUYwb62PmS3kIaBtJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ii4RULe7OM1xJOs+33ywgDRwnnIdLi+KDQIfwLnXLwHVv6sJBtCbOjtqWDilo2XSM
-         QtQTVMIE0ZKwl2Hj5/z3VUjhPhC8JQHDKpb13VI03LMOEleAgFROSp32pth6ws+oAE
-         OXGQGzji0lJv8x0qouJQAbSHXfHXdsAP3nUA1xrs=
+        b=QoTv05x/2+Uq7EUrUZWP5F6Pwg0gLycbctJ9urlEEf851Wzih7+puMLlp25VlN+e1
+         lLB4Q7Ter/0jMWlRYDx6fJ+nkb1BSCH7yDA4fNVNuX9dBKW3zgZS62v8iQAkDY/+s8
+         QTypCmOqIGCMqUTu3n8IUq1fxmGk43xdEDV9BcD8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+        stable@vger.kernel.org, David Frey <dpfrey@gmail.com>,
+        =?UTF-8?q?Alex=20Villac=C3=ADs=20Lasso?= <a_villacis@palosanto.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.12 103/173] USB: serial: cp210x: fix alternate function for CP2102N QFN20
-Date:   Mon, 14 Jun 2021 12:27:15 +0200
-Message-Id: <20210614102701.591906379@linuxfoundation.org>
+Subject: [PATCH 5.12 104/173] USB: serial: cp210x: fix CP2102N-A01 modem control
+Date:   Mon, 14 Jun 2021 12:27:16 +0200
+Message-Id: <20210614102701.627522025@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -39,63 +40,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Johan Hovold <johan@kernel.org>
 
-commit 6f7ec77cc8b64ff5037c1945e4650c65c458037d upstream.
+commit 63a8eef70ccb5199534dec56fed9759d214bfe55 upstream.
 
-The QFN20 part has a different GPIO/port function assignment. The
-configuration struct bit field ordered as TX/RX/RS485/WAKEUP/CLK
-which exactly matches GPIO0-3 for QFN24/28. However, QFN20 has a
-different GPIO to primary function assignment.
+CP2102N revision A01 (firmware version <= 1.0.4) has a buggy
+flow-control implementation that uses the ulXonLimit instead of
+ulFlowReplace field of the flow-control settings structure (erratum
+CP2102N_E104).
 
-Special case QFN20 to follow to properly detect which GPIOs are
-available.
+A recent change that set the input software flow-control limits
+incidentally broke RTS control for these devices when CRTSCTS is not set
+as the new limits would always enable hardware flow control.
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Link: https://lore.kernel.org/r/51830b2b24118eb0f77c5c9ac64ffb2f519dbb1d.1622218300.git.stefan@agner.ch
-Fixes: c8acfe0aadbe ("USB: serial: cp210x: implement GPIO support for CP2102N")
-Cc: stable@vger.kernel.org	# 4.19
+Fix this by explicitly disabling flow control for the buggy firmware
+versions and only updating the input software flow-control limits when
+IXOFF is requested. This makes sure that the terminal settings matches
+the default zero ulXonLimit (ulFlowReplace) for these devices.
+
+Link: https://lore.kernel.org/r/20210609161509.9459-1-johan@kernel.org
+Reported-by: David Frey <dpfrey@gmail.com>
+Reported-by: Alex Villacís Lasso <a_villacis@palosanto.com>
+Tested-by: Alex Villacís Lasso <a_villacis@palosanto.com>
+Fixes: f61309d9c96a ("USB: serial: cp210x: set IXOFF thresholds")
+Cc: stable@vger.kernel.org      # 5.12
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |   20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ drivers/usb/serial/cp210x.c |   64 ++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 59 insertions(+), 5 deletions(-)
 
 --- a/drivers/usb/serial/cp210x.c
 +++ b/drivers/usb/serial/cp210x.c
-@@ -537,6 +537,12 @@ struct cp210x_single_port_config {
- #define CP210X_2NCONFIG_GPIO_RSTLATCH_IDX	587
- #define CP210X_2NCONFIG_GPIO_CONTROL_IDX	600
+@@ -252,9 +252,11 @@ struct cp210x_serial_private {
+ 	u8			gpio_input;
+ #endif
+ 	u8			partnum;
++	u32			fw_version;
+ 	speed_t			min_speed;
+ 	speed_t			max_speed;
+ 	bool			use_actual_rate;
++	bool			no_flow_control;
+ };
  
-+/* CP2102N QFN20 port configuration values */
-+#define CP2102N_QFN20_GPIO2_TXLED_MODE		BIT(2)
-+#define CP2102N_QFN20_GPIO3_RXLED_MODE		BIT(3)
-+#define CP2102N_QFN20_GPIO1_RS485_MODE		BIT(4)
-+#define CP2102N_QFN20_GPIO0_CLK_MODE		BIT(6)
+ enum cp210x_event_state {
+@@ -398,6 +400,7 @@ struct cp210x_special_chars {
+ 
+ /* CP210X_VENDOR_SPECIFIC values */
+ #define CP210X_READ_2NCONFIG	0x000E
++#define CP210X_GET_FW_VER_2N	0x0010
+ #define CP210X_READ_LATCH	0x00C2
+ #define CP210X_GET_PARTNUM	0x370B
+ #define CP210X_GET_PORTCONFIG	0x370C
+@@ -1128,6 +1131,7 @@ static bool cp210x_termios_change(const
+ static void cp210x_set_flow_control(struct tty_struct *tty,
+ 		struct usb_serial_port *port, struct ktermios *old_termios)
+ {
++	struct cp210x_serial_private *priv = usb_get_serial_data(port->serial);
+ 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
+ 	struct cp210x_special_chars chars;
+ 	struct cp210x_flow_ctl flow_ctl;
+@@ -1135,6 +1139,15 @@ static void cp210x_set_flow_control(stru
+ 	u32 ctl_hs;
+ 	int ret;
+ 
++	/*
++	 * Some CP2102N interpret ulXonLimit as ulFlowReplace (erratum
++	 * CP2102N_E104). Report back that flow control is not supported.
++	 */
++	if (priv->no_flow_control) {
++		tty->termios.c_cflag &= ~CRTSCTS;
++		tty->termios.c_iflag &= ~(IXON | IXOFF);
++	}
 +
- /* CP210X_VENDOR_SPECIFIC, CP210X_WRITE_LATCH call writes these 0x2 bytes. */
- struct cp210x_gpio_write {
- 	u8	mask;
-@@ -1726,7 +1732,19 @@ static int cp2102n_gpioconf_init(struct
- 	priv->gpio_pushpull = (gpio_pushpull >> 3) & 0x0f;
+ 	if (old_termios &&
+ 			C_CRTSCTS(tty) == (old_termios->c_cflag & CRTSCTS) &&
+ 			I_IXON(tty) == (old_termios->c_iflag & IXON) &&
+@@ -1191,19 +1204,20 @@ static void cp210x_set_flow_control(stru
+ 		port_priv->crtscts = false;
+ 	}
  
- 	/* 0 indicates GPIO mode, 1 is alternate function */
--	priv->gpio_altfunc = (gpio_ctrl >> 2) & 0x0f;
-+	if (priv->partnum == CP210X_PARTNUM_CP2102N_QFN20) {
-+		/* QFN20 is special... */
-+		if (gpio_ctrl & CP2102N_QFN20_GPIO0_CLK_MODE)   /* GPIO 0 */
-+			priv->gpio_altfunc |= BIT(0);
-+		if (gpio_ctrl & CP2102N_QFN20_GPIO1_RS485_MODE) /* GPIO 1 */
-+			priv->gpio_altfunc |= BIT(1);
-+		if (gpio_ctrl & CP2102N_QFN20_GPIO2_TXLED_MODE) /* GPIO 2 */
-+			priv->gpio_altfunc |= BIT(2);
-+		if (gpio_ctrl & CP2102N_QFN20_GPIO3_RXLED_MODE) /* GPIO 3 */
-+			priv->gpio_altfunc |= BIT(3);
+-	if (I_IXOFF(tty))
++	if (I_IXOFF(tty)) {
+ 		flow_repl |= CP210X_SERIAL_AUTO_RECEIVE;
+-	else
++
++		flow_ctl.ulXonLimit = cpu_to_le32(128);
++		flow_ctl.ulXoffLimit = cpu_to_le32(128);
 +	} else {
-+		priv->gpio_altfunc = (gpio_ctrl >> 2) & 0x0f;
+ 		flow_repl &= ~CP210X_SERIAL_AUTO_RECEIVE;
 +	}
  
- 	if (priv->partnum == CP210X_PARTNUM_CP2102N_QFN28) {
- 		/*
+ 	if (I_IXON(tty))
+ 		flow_repl |= CP210X_SERIAL_AUTO_TRANSMIT;
+ 	else
+ 		flow_repl &= ~CP210X_SERIAL_AUTO_TRANSMIT;
+ 
+-	flow_ctl.ulXonLimit = cpu_to_le32(128);
+-	flow_ctl.ulXoffLimit = cpu_to_le32(128);
+-
+ 	dev_dbg(&port->dev, "%s - ctrl = 0x%02x, flow = 0x%02x\n", __func__,
+ 			ctl_hs, flow_repl);
+ 
+@@ -1919,6 +1933,45 @@ static void cp210x_init_max_speed(struct
+ 	priv->use_actual_rate = use_actual_rate;
+ }
+ 
++static int cp210x_get_fw_version(struct usb_serial *serial, u16 value)
++{
++	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
++	u8 ver[3];
++	int ret;
++
++	ret = cp210x_read_vendor_block(serial, REQTYPE_DEVICE_TO_HOST, value,
++			ver, sizeof(ver));
++	if (ret)
++		return ret;
++
++	dev_dbg(&serial->interface->dev, "%s - %d.%d.%d\n", __func__,
++			ver[0], ver[1], ver[2]);
++
++	priv->fw_version = ver[0] << 16 | ver[1] << 8 | ver[2];
++
++	return 0;
++}
++
++static void cp210x_determine_quirks(struct usb_serial *serial)
++{
++	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
++	int ret;
++
++	switch (priv->partnum) {
++	case CP210X_PARTNUM_CP2102N_QFN28:
++	case CP210X_PARTNUM_CP2102N_QFN24:
++	case CP210X_PARTNUM_CP2102N_QFN20:
++		ret = cp210x_get_fw_version(serial, CP210X_GET_FW_VER_2N);
++		if (ret)
++			break;
++		if (priv->fw_version <= 0x10004)
++			priv->no_flow_control = true;
++		break;
++	default:
++		break;
++	}
++}
++
+ static int cp210x_attach(struct usb_serial *serial)
+ {
+ 	int result;
+@@ -1939,6 +1992,7 @@ static int cp210x_attach(struct usb_seri
+ 
+ 	usb_set_serial_data(serial, priv);
+ 
++	cp210x_determine_quirks(serial);
+ 	cp210x_init_max_speed(serial);
+ 
+ 	result = cp210x_gpio_init(serial);
 
 
