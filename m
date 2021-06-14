@@ -2,170 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA933A6986
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E57A3A69CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233265AbhFNPFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:05:45 -0400
-Received: from mail-pf1-f182.google.com ([209.85.210.182]:35460 "EHLO
-        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbhFNPFo (ORCPT
+        id S233530AbhFNPLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232958AbhFNPLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:05:44 -0400
-Received: by mail-pf1-f182.google.com with SMTP id h12so10757997pfe.2;
-        Mon, 14 Jun 2021 08:03:27 -0700 (PDT)
+        Mon, 14 Jun 2021 11:11:38 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D136C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:09:35 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id g20so17352006ejt.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RzDEDEpKBts6WNgQTxPyJR77ugNq0XTyo2edIkuGISA=;
-        b=c7p5ZyWkblyeOc02Ule8fxjbb5vcHADAStMUSZXgY/Z9P0NcjVnr3Qrty9TUMiXaa6
-         Uyp7DlGp34QsrZTSpQu2jHFZBDjYRCx3PkGgP7HYKZ7nchXcFnQPK6ZP49JLN3pID7Nq
-         UahXGtROhEgvDnoRAUdWZgBtfqketLiOCiB76pxsnGai0Xx9g8yIIGwYd9UXgDhbxAvj
-         /403+lRSoExBjQRLzPgMKqNs2QRDNqVb9y8EXLHhZWkqfn/wWKi42EfHCPt+d/APLxvy
-         bRwHPUPehJrXFdN9lxmAxdHWQPsncnIeFkRiIKfxpgO9fM/4Oh7kjwDbzMr/4h6NYv18
-         qeDA==
+        bh=nS4UUGRoYFO8XuhntM83rYU5OFIuElNUgrC4hv5zVEw=;
+        b=Gx19XFniz0S90ZOzBRGyKfu6K3XR2SeYSfvZ/jCrcZRiJ3iI2PU4fy//dH/geP6bnT
+         dGF5XRn6BYT3tee634X6a0ocuq9Tecw+Tp+Pfvi/dqKYe4cxJQBjpl6h28i+EKzVjdko
+         T9FvB4YD1XgdsEKrQjOVmctUlFaPH9P8teNfpMr5R78Z0RsIoV6yJl+wBb/DzG78/U7X
+         QiP8f5I12g6ODDeT6VKN+fzgTbzpok9LC7dDY3ROGmgU/yZBT6KGqR0z6RvCV8qo5T5z
+         eWAqeBx+NUO00QGVkvSDpIHqTmSHhV+d0sEa8ppAbr5J0geVuLlBO3g3eKhblUiq5ZzY
+         kosw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RzDEDEpKBts6WNgQTxPyJR77ugNq0XTyo2edIkuGISA=;
-        b=m7ovv7ODegbLWVkBRdC1yd4bGv9O3gvs472c+N7mXBNusNmxJclJVxIHoczG4HHdFN
-         eshSNE2u+xCHEoxs6N514nSe4YhXwp5+nEUHezZoWjUeqqGE/scm7zJFVJ3Bp296LDvL
-         IG+Vri59WGkOiHtvm+XXO6N5bAkrnGG53e1jI//Lxuq6g0V19km2ikneoy4k6qmIDOaK
-         BaxiZCFFSoS7jg4Euqts0RpHCtJ4KhGjxY6syqvcjxtxZBRb2rnq1/6TyJRXw3wlxnFh
-         E5ZLWW7+kfzQ2DL1eQDEQuWCquUVscJTaGBYWhLv3Zv/m7AV0RcFxwsTr+gFUe0TEukj
-         DfjA==
-X-Gm-Message-State: AOAM530Phd4DNGxRCBqeZV6zl9y5fnJxnE9ZEGHZx22nfUU3vkAD1Uj6
-        C9qSCa9AtWurf1y2YuFbeBE=
-X-Google-Smtp-Source: ABdhPJzwb3/RHK7wDcLYlRy6N9DIv5cLskk99lnqJQ5GlUoNBwWTK3dABhbu2k9f1vFfvCIUp9LG/Q==
-X-Received: by 2002:a63:5f46:: with SMTP id t67mr17835519pgb.37.1623682947164;
-        Mon, 14 Jun 2021 08:02:27 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id n23sm13217072pff.93.2021.06.14.08.02.25
+        bh=nS4UUGRoYFO8XuhntM83rYU5OFIuElNUgrC4hv5zVEw=;
+        b=gGNAMFT363cvZ8JJNr8cwmtpmhhu/h4PmRHFtj4QxblDKWE1LT+gi/frzKISwoZbHY
+         IF6AMghtIRyGLKXmmufD1376AAQ6InpAtHTzhiW+Y09dEUIh7kEIKnMo2BS3wm70fHnM
+         p5k2F56HyH/n3HzjxoEixiIRAI/Loe+Dwenkyx9f1Yob5rvJYOldQWivVj684RztiXm6
+         xUoperNXgzY9wFJ77Nr8/PJqKKbxv/bxk9pT37uK8BkedBEPhOtbqTIbLa02U7AGEU3A
+         KZqVa+ljpHSM3Z6uoEwnBARIexFnQBy52HSjd0Y5Zu1jBF0Bs0kNznCrER4vYzRBia/s
+         ZHSA==
+X-Gm-Message-State: AOAM5314qH429PPn5k4D6eChw34AiJzhMU2cAHJXMWE0dsu2J9ZxYNll
+        tYUVd1EZISR13cSt4GM3kpg=
+X-Google-Smtp-Source: ABdhPJwybqirNZF9TD5nNpOuJH6sW6OWCb7SUxeFPY75PFg3bJpbgVpK8wDuby9nbS0u/Yw251amsA==
+X-Received: by 2002:a17:906:eb88:: with SMTP id mh8mr15549128ejb.540.1623683374015;
+        Mon, 14 Jun 2021 08:09:34 -0700 (PDT)
+Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
+        by smtp.gmail.com with ESMTPSA id du7sm9137288edb.1.2021.06.14.08.09.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 08:02:25 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: Add debugfs to trigger shrinker
-Date:   Mon, 14 Jun 2021 08:06:18 -0700
-Message-Id: <20210614150618.729610-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 14 Jun 2021 08:09:33 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v3] x86/resctrl: Fix kernel-doc in pseudo_lock.c
+Date:   Mon, 14 Jun 2021 17:09:29 +0200
+Message-Id: <20210614150929.3151-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Add undocumented parameters detected by scripts/kernel-doc.
 
-Just for the purposes of testing.  Write to it the # of objects to scan,
-read back the # freed.
-
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- drivers/gpu/drm/msm/msm_debugfs.c      | 28 ++++++++++++++++++++++++++
- drivers/gpu/drm/msm/msm_drv.h          |  4 ++++
- drivers/gpu/drm/msm/msm_gem_shrinker.c | 18 +++++++++++++++++
- 3 files changed, 50 insertions(+)
+v2->v3: According to a second review by Reinette Chatre, drop many 
+unrelated changes that should go in separate patches. Modify also the
+patch log.
+v1->v2: According to a first review by Reinette Chatre
+<reinette.chatre@intel.com>, modify the 'Subject' to conform to x86
+subsystem, modify a wrong description, and run 'scripts/kernel-doc'
+to find out more warnings that 'sparse' didn't notice.
 
-diff --git a/drivers/gpu/drm/msm/msm_debugfs.c b/drivers/gpu/drm/msm/msm_debugfs.c
-index d611cc8e54a4..7a2b53d35e6b 100644
---- a/drivers/gpu/drm/msm/msm_debugfs.c
-+++ b/drivers/gpu/drm/msm/msm_debugfs.c
-@@ -108,6 +108,31 @@ static const struct file_operations msm_gpu_fops = {
- 	.release = msm_gpu_release,
- };
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+index 05a89e33fde2..84b9bf4daa33 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -49,6 +49,7 @@ static struct class *pseudo_lock_class;
  
-+static unsigned long last_shrink_freed;
-+
-+static int
-+shrink_get(void *data, u64 *val)
-+{
-+	*val = last_shrink_freed;
-+
-+	return 0;
-+}
-+
-+static int
-+shrink_set(void *data, u64 val)
-+{
-+	struct drm_device *dev = data;
-+
-+	last_shrink_freed = msm_gem_shrinker_shrink(dev, val);
-+
-+	return 0;
-+}
-+
-+DEFINE_SIMPLE_ATTRIBUTE(shrink_fops,
-+			shrink_get, shrink_set,
-+			"0x%08llx\n");
-+
-+
- static int msm_gem_show(struct drm_device *dev, struct seq_file *m)
+ /**
+  * get_prefetch_disable_bits - prefetch disable bits of supported platforms
++ * @void: It takes no parameters.
+  *
+  * Capture the list of platforms that have been validated to support
+  * pseudo-locking. This includes testing to ensure pseudo-locked regions
+@@ -162,8 +163,9 @@ static struct rdtgroup *region_find_by_minor(unsigned int minor)
+ }
+ 
+ /**
+- * pseudo_lock_pm_req - A power management QoS request list entry
+- * @list:	Entry within the @pm_reqs list for a pseudo-locked region
++ * struct pseudo_lock_pm_req - A power management QoS request list entry
++ * @list:	Entry within the power management requests list for a
++ *		pseudo-locked region
+  * @req:	PM QoS request
+  */
+ struct pseudo_lock_pm_req {
+@@ -184,6 +186,7 @@ static void pseudo_lock_cstates_relax(struct pseudo_lock_region *plr)
+ 
+ /**
+  * pseudo_lock_cstates_constrain - Restrict cores from entering C6
++ * @plr: Pseudo-locked region
+  *
+  * To prevent the cache from being affected by power management entering
+  * C6 has to be avoided. This is accomplished by requesting a latency
+@@ -196,6 +199,8 @@ static void pseudo_lock_cstates_relax(struct pseudo_lock_region *plr)
+  * the ACPI latencies need to be considered while keeping in mind that C2
+  * may be set to map to deeper sleep states. In this case the latency
+  * requirement needs to prevent entering C2 also.
++ *
++ * Return: 0 on success, <0 on failure
+  */
+ static int pseudo_lock_cstates_constrain(struct pseudo_lock_region *plr)
  {
- 	struct msm_drm_private *priv = dev->dev_private;
-@@ -226,6 +251,9 @@ void msm_debugfs_init(struct drm_minor *minor)
- 	debugfs_create_file("gpu", S_IRUSR, minor->debugfs_root,
- 		dev, &msm_gpu_fops);
+@@ -520,7 +525,7 @@ static int pseudo_lock_fn(void *_rdtgrp)
  
-+	debugfs_create_file("shrink", S_IRWXU, minor->debugfs_root,
-+		dev, &shrink_fops);
-+
- 	if (priv->kms && priv->kms->funcs->debugfs_init)
- 		priv->kms->funcs->debugfs_init(priv->kms, minor);
- }
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index 3352125ce428..b58c9d1cc5f1 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -296,6 +296,10 @@ bool msm_use_mmu(struct drm_device *dev);
- int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
- 		struct drm_file *file);
+ /**
+  * rdtgroup_monitor_in_progress - Test if monitoring in progress
+- * @r: resource group being queried
++ * @rdtgrp: resource group being queried
+  *
+  * Return: 1 if monitor groups have been created for this resource
+  * group, 0 otherwise.
+@@ -1140,6 +1145,8 @@ static int measure_l3_residency(void *_plr)
  
-+#ifdef CONFIG_DEBUG_FS
-+unsigned long msm_gem_shrinker_shrink(struct drm_device *dev, unsigned long nr_to_scan);
-+#endif
-+
- void msm_gem_shrinker_init(struct drm_device *dev);
- void msm_gem_shrinker_cleanup(struct drm_device *dev);
- 
-diff --git a/drivers/gpu/drm/msm/msm_gem_shrinker.c b/drivers/gpu/drm/msm/msm_gem_shrinker.c
-index 1187ecf9d647..0f1b29ee04a9 100644
---- a/drivers/gpu/drm/msm/msm_gem_shrinker.c
-+++ b/drivers/gpu/drm/msm/msm_gem_shrinker.c
-@@ -145,6 +145,24 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
- 	return (freed > 0) ? freed : SHRINK_STOP;
- }
- 
-+#ifdef CONFIG_DEBUG_FS
-+unsigned long
-+msm_gem_shrinker_shrink(struct drm_device *dev, unsigned long nr_to_scan)
-+{
-+	struct msm_drm_private *priv = dev->dev_private;
-+	struct shrink_control sc = {
-+		.nr_to_scan = nr_to_scan,
-+	};
-+	int ret;
-+
-+	fs_reclaim_acquire(GFP_KERNEL);
-+	ret = msm_gem_shrinker_scan(&priv->shrinker, &sc);
-+	fs_reclaim_release(GFP_KERNEL);
-+
-+	return ret;
-+}
-+#endif
-+
- /* since we don't know any better, lets bail after a few
-  * and if necessary the shrinker will be invoked again.
-  * Seems better than unmapping *everything*
+ /**
+  * pseudo_lock_measure_cycles - Trigger latency measure to pseudo-locked region
++ * @rdtgrp: Resource group to which the pseudo-locked region belongs.
++ * @sel: Selector of which measurement to perform on a pseudo-locked region.
+  *
+  * The measurement of latency to access a pseudo-locked region should be
+  * done from a cpu that is associated with that pseudo-locked region.
 -- 
-2.31.1
+2.32.0
 
