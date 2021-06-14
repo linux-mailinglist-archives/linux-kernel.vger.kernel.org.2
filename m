@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3DF3A6404
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772803A63FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235982AbhFNLT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39866 "EHLO mail.kernel.org"
+        id S235829AbhFNLTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234711AbhFNLGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:06:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93C8D61926;
-        Mon, 14 Jun 2021 10:45:29 +0000 (UTC)
+        id S235278AbhFNLHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:07:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB80E6192E;
+        Mon, 14 Jun 2021 10:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667530;
-        bh=eqeihHTWHF6Qu3ZQpWRNZPeMqFh+DvbpQG4aY32zYsw=;
+        s=korg; t=1623667548;
+        bh=TUTo1GsdjuW143Sof0pwTsd3oqXK0ENbz1qo1DDTrGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GHN9w1+a/OxK4sOUhl460kCciQAoXYasPHjMotCRh+I/5+rqjCYaeY0db4JQRQTas
-         sDR5VfyNOZQGOrW55xzVqQ43FahBVFV2KMuTTQzegnmsMFPmRtlpIFo78sDoaD8F2e
-         eVHgbZFxnz2wf4K/sriN06F8O+tG4YZw5Mjwo2nE=
+        b=a05qneJDtouX/c4kyORk5svc0GVLT/nnjkj9eVGnq+HvYPfddx8WkWk4ogrItq/1b
+         23Neje0UX8jZRWyj+HhmDb8wIw14LOok40HI3EpxXgnJkY2YjNXXp4fscu42W/Wo3H
+         UE956tmvYxtckAiK35kbDiHezyLN26cC7WhFUOOE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH 5.10 079/131] usb: typec: intel_pmc_mux: Add missed error check for devm_ioremap_resource()
-Date:   Mon, 14 Jun 2021 12:27:20 +0200
-Message-Id: <20210614102655.710732959@linuxfoundation.org>
+        stable@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH 5.10 080/131] usb: gadget: f_fs: Ensure io_completion_wq is idle during unbind
+Date:   Mon, 14 Jun 2021 12:27:21 +0200
+Message-Id: <20210614102655.740009123@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -40,35 +38,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Wesley Cheng <wcheng@codeaurora.org>
 
-commit 843fabdd7623271330af07f1b7fbd7fabe33c8de upstream.
+commit 6fc1db5e6211e30fbb1cee8d7925d79d4ed2ae14 upstream.
 
-devm_ioremap_resource() can return an error, add missed check for it.
+During unbind, ffs_func_eps_disable() will be executed, resulting in
+completion callbacks for any pending USB requests.  When using AIO,
+irrespective of the completion status, io_data work is queued to
+io_completion_wq to evaluate and handle the completed requests.  Since
+work runs asynchronously to the unbind() routine, there can be a
+scenario where the work runs after the USB gadget has been fully
+removed, resulting in accessing of a resource which has been already
+freed. (i.e. usb_ep_free_request() accessing the USB ep structure)
 
-Fixes: 43d596e32276 ("usb: typec: intel_pmc_mux: Check the port status before connect")
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Explicitly drain the io_completion_wq, instead of relying on the
+destroy_workqueue() (in ffs_data_put()) to make sure no pending
+completion work items are running.
+
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210607205007.71458-2-andy.shevchenko@gmail.com
+Link: https://lore.kernel.org/r/1621644261-1236-1-git-send-email-wcheng@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/mux/intel_pmc_mux.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/gadget/function/f_fs.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -573,6 +573,11 @@ static int pmc_usb_probe_iom(struct pmc_
- 		return -ENOMEM;
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -3566,6 +3566,9 @@ static void ffs_func_unbind(struct usb_c
+ 		ffs->func = NULL;
  	}
  
-+	if (IS_ERR(pmc->iom_base)) {
-+		put_device(&adev->dev);
-+		return PTR_ERR(pmc->iom_base);
-+	}
++	/* Drain any pending AIO completions */
++	drain_workqueue(ffs->io_completion_wq);
 +
- 	pmc->iom_adev = adev;
+ 	if (!--opts->refcnt)
+ 		functionfs_unbind(ffs);
  
- 	return 0;
 
 
