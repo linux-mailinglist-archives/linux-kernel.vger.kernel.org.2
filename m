@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB463A607E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAAD3A603D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbhFNKfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:35:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38772 "EHLO mail.kernel.org"
+        id S233027AbhFNKcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233159AbhFNKdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:33:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3FE1611C0;
-        Mon, 14 Jun 2021 10:31:00 +0000 (UTC)
+        id S232926AbhFNKbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:31:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FECA61004;
+        Mon, 14 Jun 2021 10:29:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666661;
-        bh=QicEfaGcnhgcw1s1f4/5sec06a1yZXj2Cgd+966taq8=;
+        s=korg; t=1623666565;
+        bh=ffnJT3aMVqI0dolVHoYIXBOTKwyMvCNA5Z8XNCl3N/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Srgxjierj8KLMKZKbZ0oXwdAzneZnMSgbZg0/JXxnutQXoCpdUp+9hxnVSAjXQYBt
-         7LDi9ufM17O9H7RyQ4S0up+uyMYE83G5PkGUVqmtFUCU1bYqXLNu+J/pRFpqC8d0f4
-         SJcWclcAZyn4EhbeD1FXmViv+peUzmkR/oRQ1DOo=
+        b=k607HOKXJq41WPjwO4J3K4gvbY4UOA4KXvsUD7D0JOg9ic5yrYRnm6zFBZwpXm6Mp
+         8Imsk12WClMdc8/uP2X4nTey6DdnOkQU8tHck0UF3UcdJsoiCgmUll96z8sj7P9BvV
+         IEyJ1Ylm7uRO+4WwliwI/rpjMNsFjmt/xA8oX3FA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
-        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@nokia.com>,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 4.9 25/42] USB: f_ncm: ncm_bitrate (speed) is unsigned
+        stable@vger.kernel.org,
+        Alexandre GRIVEAUX <agriveaux@deutnet.info>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 25/34] USB: serial: omninet: add device id for Zyxel Omni 56K Plus
 Date:   Mon, 14 Jun 2021 12:27:16 +0200
-Message-Id: <20210614102643.510117396@linuxfoundation.org>
+Message-Id: <20210614102642.387998905@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
+References: <20210614102641.582612289@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Alexandre GRIVEAUX <agriveaux@deutnet.info>
 
-commit 3370139745853f7826895293e8ac3aec1430508e upstream.
+commit fc0b3dc9a11771c3919eaaaf9d649138b095aa0f upstream.
 
-[  190.544755] configfs-gadget gadget: notify speed -44967296
+Add device id for Zyxel Omni 56K Plus modem, this modem include:
 
-This is because 4250000000 - 2**32 is -44967296.
+USB chip:
+NetChip
+NET2888
 
-Fixes: 9f6ce4240a2b ("usb: gadget: f_ncm.c added")
-Cc: Brooke Basile <brookebasile@gmail.com>
-Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Cc: Yauheni Kaliuta <yauheni.kaliuta@nokia.com>
-Cc: Linux USB Mailing List <linux-usb@vger.kernel.org>
-Acked-By: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210608005344.3762668-1-zenczykowski@gmail.com
+Main chip:
+901041A
+F721501APGF
+
+Another modem using the same chips is the Zyxel Omni 56K DUO/NEO,
+could be added with the right USB ID.
+
+Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_ncm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/omninet.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -588,7 +588,7 @@ static void ncm_do_notify(struct f_ncm *
- 		data[0] = cpu_to_le32(ncm_bitrate(cdev->gadget));
- 		data[1] = data[0];
+--- a/drivers/usb/serial/omninet.c
++++ b/drivers/usb/serial/omninet.c
+@@ -27,6 +27,7 @@
  
--		DBG(cdev, "notify speed %d\n", ncm_bitrate(cdev->gadget));
-+		DBG(cdev, "notify speed %u\n", ncm_bitrate(cdev->gadget));
- 		ncm->notify_state = NCM_NOTIFY_CONNECT;
- 		break;
- 	}
+ #define ZYXEL_VENDOR_ID		0x0586
+ #define ZYXEL_OMNINET_ID	0x1000
++#define ZYXEL_OMNI_56K_PLUS_ID	0x1500
+ /* This one seems to be a re-branded ZyXEL device */
+ #define BT_IGNITIONPRO_ID	0x2000
+ 
+@@ -44,6 +45,7 @@ static int omninet_port_remove(struct us
+ 
+ static const struct usb_device_id id_table[] = {
+ 	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNINET_ID) },
++	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNI_56K_PLUS_ID) },
+ 	{ USB_DEVICE(ZYXEL_VENDOR_ID, BT_IGNITIONPRO_ID) },
+ 	{ }						/* Terminating entry */
+ };
 
 
