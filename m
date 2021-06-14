@@ -2,245 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6183A5DD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9B63A5DD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232547AbhFNHpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbhFNHpK (ORCPT
+        id S232575AbhFNHqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:46:23 -0400
+Received: from exvmail.skhynix.com ([166.125.252.79]:52078 "EHLO
+        invmail.skhynix.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232493AbhFNHqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:45:10 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97166C061574;
-        Mon, 14 Jun 2021 00:43:06 -0700 (PDT)
-Received: from [IPv6:2a01:e0a:4cb:a870:b4e0:7e9f:1348:5540] (unknown [IPv6:2a01:e0a:4cb:a870:b4e0:7e9f:1348:5540])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5D23A1F42376;
-        Mon, 14 Jun 2021 08:43:03 +0100 (BST)
-Subject: Re: [PATCH v2 7/8] media: hevc: Add scaling matrix control
-To:     Hans Verkuil <hverkuil@xs4all.nl>, ezequiel@collabora.com,
-        p.zabel@pengutronix.de, mchehab@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk, jernej.skrabec@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210610154442.806107-1-benjamin.gaignard@collabora.com>
- <20210610154442.806107-8-benjamin.gaignard@collabora.com>
- <87a1e585-688e-7c4d-b9a9-24f42772a1a8@xs4all.nl>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <d5b010c8-c0c5-8800-b2c3-9371923ca10c@collabora.com>
-Date:   Mon, 14 Jun 2021 09:43:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 14 Jun 2021 03:46:16 -0400
+X-AuditID: a67dfc4e-24fff700000066e1-8f-60c708c9ad52
+Received: from hymail21.hynixad.com (10.156.135.51) by hymail21.hynixad.com
+ (10.156.135.51) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.792.3; Mon, 14 Jun 2021
+ 16:44:09 +0900
+Received: from hymail21.hynixad.com ([10.156.135.51]) by hymail21.hynixad.com
+ ([10.156.135.51]) with mapi id 15.02.0792.010; Mon, 14 Jun 2021 16:44:09
+ +0900
+From:   =?ks_c_5601-1987?B?waS/5MfRKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
+        <yohan.joung@sk.com>
+To:     "avri.altman@wdc.com" <avri.altman@wdc.com>
+CC:     "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "d_hyun.kwon@samsung.com" <d_hyun.kwon@samsung.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "j-young.choi@samsung.com" <j-young.choi@samsung.com>,
+        "jaemyung.lee@samsung.com" <jaemyung.lee@samsung.com>,
+        =?ks_c_5601-1987?B?w9bA57+1KENIT0kgSkFFIFlPVU5HKSBNb2JpbGUgU0U=?= 
+        <jaeyoung21.choi@sk.com>,
+        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "jh.i.park@samsung.com" <jh.i.park@samsung.com>,
+        "jieon.seol@samsung.com" <jieon.seol@samsung.com>,
+        "keosung.park@samsung.com" <keosung.park@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "sungjun07.park@samsung.com" <sungjun07.park@samsung.com>,
+        =?ks_c_5601-1987?B?waS/5MfRKEpPVU5HIFlPSEFOKSBNb2JpbGUgU0U=?= 
+        <yohan.joung@sk.com>
+Subject: RE: [PATCH v37 3/4] scsi: ufs: Prepare HPB read for cached sub-region
+Thread-Topic: RE: [PATCH v37 3/4] scsi: ufs: Prepare HPB read for cached
+ sub-region
+Thread-Index: Addg8HnQRn32BXvqQgWqfIgV0ArbzA==
+Date:   Mon, 14 Jun 2021 07:44:08 +0000
+Message-ID: <1d1a5e83dfcf4b4b929d3482c19d7662@sk.com>
+Accept-Language: ko-KR, en-US
+Content-Language: ko-KR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.152.36.34]
+Content-Type: text/plain; charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <87a1e585-688e-7c4d-b9a9-24f42772a1a8@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-CFilter-Loop: Reflected
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsXCNUdUSfckx/EEg5czNCwu75rDZtF9fQeb
+        A5PH501yAYxRXDYpqTmZZalF+nYJXBnXmyoLfolUPJ71gbWBcYtIFyMnh4SAicSpO29Zuhi5
+        OIQEXjFKvO95yArhLGCUmHFyFjtIFZtAlMTj1hVgtoiAvkT70stMIDazwD9OiSm7xUFsYQE/
+        iRMPtjFC1IRK9E1YwAJh60lsn/qSFcRmEVCVaP6zGCzOK2Aq8erjbaCZHByMArISV6/JQIwU
+        l1j89RozxHECEkv2nIeyRSVePv7HCmErSKz8fgHqBCOJJavnQ9mKElO6H7JDjBeUODnzCQtE
+        vaTEwRU3WCYwisxCsmIWkvZZSNpnIWlfwMiyilE4M68sNzEzR684O6MyL7NCLzk/dxMjMPiX
+        1f7x28H45ULwIUYBDkYlHt4AxmMJQqyJZcWVuYcYJTiYlUR4n3UdThDiTUmsrEotyo8vKs1J
+        LT7EKM3BoiTO+y0sNUFIID2xJDU7NbUgtQgmy8TBKdXAyF2kXXR/tmJearP1EcW0+qfLVt3r
+        UT/ZfvGXoXnXM4VqbaeF/4uNv3lP2zgjfKfs11opH4XJZy6+nrQ764p6Z+axUwcWffsqtv5r
+        5fmD3uKN8TKZNe8mGx1fzeK/SSer3fnKuqyAUs8XKk9fNgqs9DVzMXS+2lsaeu68yQamgwf2
+        qMvrL/34VomlOCPRUIu5qDgRAG8YE2V6AgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Le 14/06/2021 à 09:27, Hans Verkuil a écrit :
-> On 10/06/2021 17:44, Benjamin Gaignard wrote:
->> HEVC scaling lists are used for the scaling process for transform
->> coefficients.
->> V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
->> encoded in the bitstream.
-> Comparing H264 with HEVC I noticed that the corresponding flag for H264 is
-> called V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT.
->
-> Should those names be aligned? Also, it is part of PPS for H264 and SPS in HEVC,
-> is that difference correct?
-
-In ITU specifications ("7.4.3.2.1 General sequence parameter set RBSP semantics") this flag is define like that:
-scaling_list_enabled_flag equal to 1 specifies that a scaling list is used for the scaling process for transform coefficients.
-scaling_list_enabled_flag equal to 0 specifies that scaling list is not used for the scaling process for transform coefficients.
-
-So for me the naming is correct.
-
-Regards,
-Benjamin
-
->
-> Regards,
->
-> 	Hans
->
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->> version 2:
->>   - Fix structure name in ext-ctrls-codec.rst
->>
->>   .../media/v4l/ext-ctrls-codec.rst             | 45 +++++++++++++++++++
->>   .../media/v4l/vidioc-queryctrl.rst            |  6 +++
->>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |  6 +++
->>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 ++
->>   include/media/hevc-ctrls.h                    | 11 +++++
->>   5 files changed, 72 insertions(+)
->>
->> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> index 8c6e2a11ed95..d4f40bb85263 100644
->> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> @@ -3068,6 +3068,51 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->>   
->>       \normalsize
->>   
->> +``V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX (struct)``
->> +    Specifies the HEVC scaling matrix parameters used for the scaling process
->> +    for transform coefficients.
->> +    These matrix and parameters are defined according to :ref:`hevc`.
->> +    They are described in section 7.4.5 "Scaling list data semantics" of
->> +    the specification.
->> +
->> +.. c:type:: v4l2_ctrl_hevc_scaling_matrix
->> +
->> +.. raw:: latex
->> +
->> +    \scriptsize
->> +
->> +.. tabularcolumns:: |p{5.4cm}|p{6.8cm}|p{5.1cm}|
->> +
->> +.. cssclass:: longtable
->> +
->> +.. flat-table:: struct v4l2_ctrl_hevc_scaling_matrix
->> +    :header-rows:  0
->> +    :stub-columns: 0
->> +    :widths:       1 1 2
->> +
->> +    * - __u8
->> +      - ``scaling_list_4x4[6][16]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_8x8[6][64]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_16x16[6][64]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_32x32[2][64]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_dc_coef_16x16[6]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_dc_coef_32x32[2]``
->> +      -
->> +
->> +.. raw:: latex
->> +
->> +    \normalsize
->> +
->>   .. c:type:: v4l2_hevc_dpb_entry
->>   
->>   .. raw:: latex
->> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->> index f9ecf6276129..2f491c17dd5d 100644
->> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->> @@ -495,6 +495,12 @@ See also the examples in :ref:`control`.
->>         - n/a
->>         - A struct :c:type:`v4l2_ctrl_hevc_slice_params`, containing HEVC
->>   	slice parameters for stateless video decoders.
->> +    * - ``V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX``
->> +      - n/a
->> +      - n/a
->> +      - n/a
->> +      - A struct :c:type:`v4l2_ctrl_hevc_scaling_matrix`, containing HEVC
->> +	scaling matrix for stateless video decoders.
->>       * - ``V4L2_CTRL_TYPE_VP8_FRAME``
->>         - n/a
->>         - n/a
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
->> index c4b5082849b6..70adfc1b9c81 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
->> @@ -687,6 +687,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->>   
->>   		break;
->>   
->> +	case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
->> +		break;
->> +
->>   	case V4L2_CTRL_TYPE_AREA:
->>   		area = p;
->>   		if (!area->width || !area->height)
->> @@ -1240,6 +1243,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->>   	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->>   		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
->>   		break;
->> +	case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
->> +		elem_size = sizeof(struct v4l2_ctrl_hevc_scaling_matrix);
->> +		break;
->>   	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
->>   		elem_size = sizeof(struct v4l2_ctrl_hevc_decode_params);
->>   		break;
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->> index b6344bbf1e00..cb29c2a7fabe 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->> @@ -996,6 +996,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SPS:			return "HEVC Sequence Parameter Set";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_PPS:			return "HEVC Picture Parameter Set";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:		return "HEVC Slice Parameters";
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:		return "HEVC Scaling Matrix";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:		return "HEVC Decode Parameters";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC Decode Mode";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return "HEVC Start Code";
->> @@ -1488,6 +1489,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
->>   		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
->>   		break;
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:
->> +		*type = V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX;
->> +		break;
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:
->>   		*type = V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS;
->>   		break;
->> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->> index 53c0038c792b..0e5c4a2eecff 100644
->> --- a/include/media/hevc-ctrls.h
->> +++ b/include/media/hevc-ctrls.h
->> @@ -19,6 +19,7 @@
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_SPS		(V4L2_CID_CODEC_BASE + 1008)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_PPS		(V4L2_CID_CODEC_BASE + 1009)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS	(V4L2_CID_CODEC_BASE + 1010)
->> +#define V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX	(V4L2_CID_CODEC_BASE + 1011)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS	(V4L2_CID_CODEC_BASE + 1012)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE	(V4L2_CID_CODEC_BASE + 1015)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_START_CODE	(V4L2_CID_CODEC_BASE + 1016)
->> @@ -27,6 +28,7 @@
->>   #define V4L2_CTRL_TYPE_HEVC_SPS 0x0120
->>   #define V4L2_CTRL_TYPE_HEVC_PPS 0x0121
->>   #define V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS 0x0122
->> +#define V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX 0x0123
->>   #define V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS 0x0124
->>   
->>   enum v4l2_mpeg_video_hevc_decode_mode {
->> @@ -224,6 +226,15 @@ struct v4l2_ctrl_hevc_decode_params {
->>   	__u64	flags;
->>   };
->>   
->> +struct v4l2_ctrl_hevc_scaling_matrix {
->> +	__u8	scaling_list_4x4[6][16];
->> +	__u8	scaling_list_8x8[6][64];
->> +	__u8	scaling_list_16x16[6][64];
->> +	__u8	scaling_list_32x32[2][64];
->> +	__u8	scaling_list_dc_coef_16x16[6];
->> +	__u8	scaling_list_dc_coef_32x32[2];
->> +};
->> +
->>   /*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2 */
->>   #define V4L2_CID_CODEC_HANTRO_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1200)
->>   /*
->>
+PiA+ID4gPiA+KyAgICAgIC8qDQo+ID4gPiA+ID4rICAgICAgICogSWYgdGhlIHJlZ2lvbiBzdGF0
+ZSBpcyBhY3RpdmUsIG1jdHggbXVzdCBiZSBhbGxvY2F0ZWQuDQo+ID4gPiA+ID4rICAgICAgICog
+SW4gdGhpcyBjYXNlLCBjaGVjayB3aGV0aGVyIHRoZSByZWdpb24gaXMgZXZpY3RlZCBvcg0KPiA+
+ID4gPiA+KyAgICAgICAqIG1jdHggYWxsY2F0aW9uIGZhaWwuDQo+ID4gPiA+ID4rICAgICAgICov
+DQo+ID4gPiA+ID4rICAgICAgaWYgKHVubGlrZWx5KCFzcmduLT5tY3R4KSkgew0KPiA+ID4gPiA+
+KyAgICAgICAgICAgICAgZGV2X2VycigmaHBiLT5zZGV2X3Vmc19sdS0+c2Rldl9kZXYsDQo+ID4g
+PiA+ID4rICAgICAgICAgICAgICAgICAgICAgICJubyBtY3R4IGluIHJlZ2lvbiAlZCBzdWJyZWdp
+b24gJWQuXG4iLA0KPiA+ID4gPiA+KyAgICAgICAgICAgICAgICAgICAgICBzcmduLT5yZ25faWR4
+LCBzcmduLT5zcmduX2lkeCk7DQo+ID4gPiA+ID4rICAgICAgICAgICAgICByZXR1cm4gdHJ1ZTsN
+Cj4gPiA+ID4gPisgICAgICB9DQo+ID4gPiA+ID4rDQo+ID4gPiA+ID4rICAgICAgaWYgKChzcmdu
+X29mZnNldCArIGNudCkgPiBiaXRtYXBfbGVuKQ0KPiA+ID4gPiA+KyAgICAgICAgICAgICAgYml0
+X2xlbiA9IGJpdG1hcF9sZW4gLSBzcmduX29mZnNldDsNCj4gPiA+ID4gPisgICAgICBlbHNlDQo+
+ID4gPiA+ID4rICAgICAgICAgICAgICBiaXRfbGVuID0gY250Ow0KPiA+ID4gPiA+Kw0KPiA+ID4g
+PiA+KyAgICAgIGlmIChmaW5kX25leHRfYml0KHNyZ24tPm1jdHgtPnBwbl9kaXJ0eSwgYml0bWFw
+X2xlbiwNCj4gPiA+ID4gPisgICAgICAgICAgICAgICAgICAgICAgICBzcmduX29mZnNldCkgPCBi
+aXRfbGVuICsgc3Jnbl9vZmZzZXQpDQo+ID4gPiA+ID4rICAgICAgICAgICAgICByZXR1cm4gdHJ1
+ZTsNCj4gPiA+ID4gPisNCj4gPiA+ID4NCj4gPiA+ID4gSXQgc2VlbXMgdW5uZWNlc3NhcnkgdG8g
+c2VhcmNoIHRocm91Z2ggYml0bWFwX2xlbg0KPiA+ID4gPiBIb3cgYWJvdXQgc2VhcmNoaW5nIGJ5
+IHRyYW5zZmVyIHNpemU/DQo+ID4gPiA+DQo+ID4gPiA+IGlmIChmaW5kX25leHRfYml0KHNyZ24t
+Pm1jdHgtPnBwbl9kaXJ0eSwNCj4gPiA+ID4gICAgICAgICAgICAgICBiaXRfbGVuICsgc3Jnbl9v
+ZmZzZXQsIHNyZ25fb2Zmc2V0KSA8IGJpdF9sZW4gKyBzcmduX29mZnNldCkNCj4gPiA+IElzbid0
+IGJpdF9sZW4gc2hvdWxkIGJlIHVzZWQgZm9yIHNpemUsIGFuZCBub3QgYml0X2xlbiArIHNyZ25f
+b2Zmc2V0ID8NCj4gPiANCj4gPiB0aGVuIGZpbmRfbmV4dF9iaXQgY2hlY2tzIGZyb20gc3RhcnQg
+dG8gYml0X2xlbi4NCj4gPiBmaW5kX25leHRfYml0IHN0b3BzIGNoZWNraW5nIGlmIHN0YXJ0IGlz
+IGdyZWF0ZXIgdGhhbiBiaXRfbGVuLg0KPiA+IGl0IGRvZXMgbm90IGNoZWNrIGZvciBkaXJ0eSBh
+cyB0cmFuc2Zlcl9zaXplLg0KPiBSaWdodC4gU2l6ZSAobmJpdHMgaW4gX2ZpbmRfbmV4dF9iaXQp
+IHByYWN0aWNhbGx5IG1lYW5zIEBlbmQgLSBDb25mdXNpbmcuLi4NCj4gRWl0aGVyIHdheSwgSXMg
+dGhpcyB0YWQgb3B0aW1pemF0aW9uIHdvcnRoIGFub3RoZXIgc3BpbiBpbiB5b3VyIG9waW5pb24/
+DQoNCldvcnN0IGNhc2UsIHdlIGhhdmUgdG8gc2VhcmNoIGV2ZXJ5IHRpbWUgdXAgdG8gdGhlIGJp
+dG1hcF9sZW4gc2l6ZS4gDQpFdmVuIHRob3VnaCwgd2hlbiBiaXRfbGVuIGlzIDEsIG9ubHkgMSBi
+aXQgbmVlZHMgdG8gYmUgY2hlY2tlZA0KaXQgY2FuIGluY3JlYXNlIHRoZSBlZmZlY3QsIGRlcGVu
+ZGluZyBvbiB0aGUgc3VicmVnaW9uIHNpemUuIA0KDQpUaGFua3MNCllvaGFuDQo+IA0KPiBUaGFu
+a3MsDQo+IEF2cmkNCj4gDQo+ID4gDQo+ID4gVGhhbmtzDQo+ID4gWW9oYW4NCj4gPiANCj4gPiA+
+DQo+ID4gPiBUaGFua3MsDQo+ID4gPiBBdnJpDQo+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiBUaGFu
+a3MNCj4gPiA+ID4gWW9oYW4NCg==
