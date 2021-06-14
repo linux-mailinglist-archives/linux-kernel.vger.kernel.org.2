@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537BE3A6EAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE113A6EAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233923AbhFNTRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:17:47 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37582 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233169AbhFNTRq (ORCPT
+        id S233824AbhFNTRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:17:42 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48132 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233169AbhFNTRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:17:46 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15EJFOB8042719;
-        Mon, 14 Jun 2021 14:15:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623698124;
-        bh=45zAPLvQCJnaXG/Xt6NAJCtou400q1d7LTyzDd2Q70c=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=AG0VBXIdeICzBJk0cSMUut2tcmYZKRpgYlYEI9/EGxBReEfvo6lf1mpvTKao+AM2c
-         8Qgsy4smY61YxETRYJ98jSqV13KjQHdb5wVoAmRcwP+LaHUn9V53Na18f1l1eSjOYY
-         +1oZBeqW7lxnV0JYdQVz0WnXJf4Jm5nOkVY/wjNI=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15EJFOmF039932
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Jun 2021 14:15:24 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 14
- Jun 2021 14:15:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 14 Jun 2021 14:15:24 -0500
-Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15EJFNau072913;
-        Mon, 14 Jun 2021 14:15:23 -0500
-Subject: Re: [RFC PATCH] dt-bindings: hwlock: sun6i: Fix various warnings in
- binding
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, <devicetree@vger.kernel.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>, <linux-sunxi@lists.linux.dev>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210603144216.10327-1-s-anna@ti.com>
- <CAL_Jsq+mhJgFZniXYTVf5ZEM84APhm2w_ozLJg_pFtgz+W_wYw@mail.gmail.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <cd7ab36e-76f3-3d13-6896-6d812c66b0e3@ti.com>
-Date:   Mon, 14 Jun 2021 14:15:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 14 Jun 2021 15:17:41 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D42E3219A1;
+        Mon, 14 Jun 2021 19:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623698137; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hFKWmKxcY2uwyqEckSpBrr89WgMLR1uS0uOPzy/Z8sk=;
+        b=e/MJnQBoMwn1BgbXCZo5MDxbNBD7EyW2oKNkhHxtqqbMnydNynxKa4RKFlsmjXVuRVZ/8p
+        mdJBngKgCXlo480Rqi6HkiFuhxogWuAuqG+rCeaWKgAfzA48BZPbh4oSBv+h/jmMa8qVLB
+        1/ZPXmKC6luySUSWn9CtNYuMKN7vPVA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623698137;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hFKWmKxcY2uwyqEckSpBrr89WgMLR1uS0uOPzy/Z8sk=;
+        b=wfhbs0zitTcEeN2wvKQNtL4wWPwvexl4kPHAwiKYEt6PiPBkReBDIjbLWHXOoMYY768LQj
+        74LioLvd9/suJaDQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id C06AF118DD;
+        Mon, 14 Jun 2021 19:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623698137; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hFKWmKxcY2uwyqEckSpBrr89WgMLR1uS0uOPzy/Z8sk=;
+        b=e/MJnQBoMwn1BgbXCZo5MDxbNBD7EyW2oKNkhHxtqqbMnydNynxKa4RKFlsmjXVuRVZ/8p
+        mdJBngKgCXlo480Rqi6HkiFuhxogWuAuqG+rCeaWKgAfzA48BZPbh4oSBv+h/jmMa8qVLB
+        1/ZPXmKC6luySUSWn9CtNYuMKN7vPVA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623698137;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hFKWmKxcY2uwyqEckSpBrr89WgMLR1uS0uOPzy/Z8sk=;
+        b=wfhbs0zitTcEeN2wvKQNtL4wWPwvexl4kPHAwiKYEt6PiPBkReBDIjbLWHXOoMYY768LQj
+        74LioLvd9/suJaDQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id zFb0Ldmqx2DAFQAALh3uQQ
+        (envelope-from <bp@suse.de>); Mon, 14 Jun 2021 19:15:37 +0000
+Date:   Mon, 14 Jun 2021 21:15:27 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V2 01/52] x86/fpu: Make init_fpstate correct with
+ optimized XSAVE
+Message-ID: <YMeqz6rav7V5UlLC@zn.tnic>
+References: <20210614154408.673478623@linutronix.de>
+ <20210614155353.658707307@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+mhJgFZniXYTVf5ZEM84APhm2w_ozLJg_pFtgz+W_wYw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210614155353.658707307@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Mon, Jun 14, 2021 at 05:44:09PM +0200, Thomas Gleixner wrote:
+> @@ -466,10 +489,20 @@ static void __init setup_init_fpu_buf(vo
+>  	copy_kernel_to_xregs_booting(&init_fpstate.xsave);
+>  
+>  	/*
+> -	 * Dump the init state again. This is to identify the init state
+> -	 * of any feature which is not represented by all zero's.
+> +	 * All components are now in init state. Read the state back so
+> +	 * that init_fpstate contains all non-zero init state. This is only
+> +	 * working with XSAVE,
 
-On 6/7/21 8:19 AM, Rob Herring wrote:
-> On Thu, Jun 3, 2021 at 9:42 AM Suman Anna <s-anna@ti.com> wrote:
->>
->> The allwinner,sun6i-a31-hwspinlock.yaml binding has a mismatched
->> $id and fails to compile the example due to undefined args specifier
->> values for clocks and resets. Fix both of these issues.
->>
->> Fixes: f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock")
->> Signed-off-by: Suman Anna <s-anna@ti.com>
->> ---
->> Hi Wilken,
->>
->> This fixes the warnings for now on linux-next, but I think the example
->> should be including sun6i-a31-ccu.h files instead to be accurate, and
->> those files are missing the definitions for CLK_BUS_SPINLOCK and
->> RST_BUS_SPINLOCK. Feel free to send a newer version or do an incremental
->> patch on top.
->>
->> regards
->> Suman
->>
->>  .../bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml      | 5 ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> 
+"This only works with XSAVE, ... "
 
-Gentle ping, can you pick up this patch and the remoteproc pas binding
-indentations fixes please so that linux-next is sane w.r.t these?
 
-regards
-Suman
+> but not with XSAVEOPT and XSAVES because
+> +	 * those use the init optimization which skips writing data for
+> +	 * components in init state.
+
+<--- Add a newline in the comment here so that it is not as dense.
+
+> So XSAVE could be used, but that would
+> +	 * require to reshuffle the data when XSAVES is available because
+> +	 * XSAVES uses xstate compaction. But doing so is a pointless
+> +	 * exercise because most components have an all zeros init state
+> +	 * except for the legacy ones (FP and SSE). Those can be saved with
+> +	 * FXSAVE into the legacy area. Adding new features requires to
+> +	 * ensure that init state is all zeroes or if not to add the
+> +	 * necessary handling here.
+>  	 */
+> -	copy_xregs_to_kernel_booting(&init_fpstate.xsave);
+> +	fxsave_to_kernel(&init_fpstate.fxsave);
+
+With those fixed:
+
+Reviewed-by: Borislav Petkov <bp@suse.de>
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
