@@ -2,233 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B543A692F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB5E3A6930
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbhFNOov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:44:51 -0400
-Received: from mail-qk1-f175.google.com ([209.85.222.175]:37829 "EHLO
-        mail-qk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232789AbhFNOou (ORCPT
+        id S233028AbhFNOp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:45:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9620 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232798AbhFNOp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:44:50 -0400
-Received: by mail-qk1-f175.google.com with SMTP id c5so1383154qka.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 07:42:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sNiSUhmuo6PUli3dytUxvfq21Zm6/lkb+kn6HsNIbC0=;
-        b=JNVTS1hKDRXaAVe9J9evET8zCGt6qlqMnrEICeJPguMoSf4nmVdLJvXp1T71WE+hUV
-         D6UrJ/F1eL73a10r0/I+1llZ/DrpPZCvX9IWKpMTUDz0MhDrWSeaDmZy3oJ5YZ3pE+BL
-         tnUIGj/X/729s5HLydkLrS0LSdKgj1hT4rVrbpiES0tIVeI6KoJMOJiKtJ/tnRtAEhnx
-         pInFo8g9pQMj6eB4aBWyWzrZdgbmFHvnf5DA89oNFB0jGBXidLbl32pXioBoVIJmkHDe
-         yLPkTSZ1Eta+VNASjHuGjB5A4e/FCTzow8A8V/OpM0WMMx94lZx53TFXYpDCjjdjbZgO
-         RhHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sNiSUhmuo6PUli3dytUxvfq21Zm6/lkb+kn6HsNIbC0=;
-        b=Ba8hIk5/XVSTthS7RuUdfJRo577Z5jjR2I69nqZqWvX+lZPlIUM0s3Sby42sdocUw2
-         CTuphg8f+d1iHRRyaq5GGp1nPSOJoG1mKQ92650Qe9WwosXdpoKmd7KuZpbqcmLHhrfc
-         enoRMrQ8g89ZWX4ce5kBGvMphhbbsZ2He+mRfw0rMFm5e2xmJl5HqTCMyBdtIg0wVRhe
-         MVNFTG86v3sG3iUYbuGm2UDyIUKsEESUYx/+rOrhZpYRIXLg5BP9dzpAlkQ/JKvIfhko
-         CxKYHJTuMS2o4OgtvL/vL0hCliurMB6MARAPTH1AYY6tvMYpv+0qMpDLK2DYT/S0G1Cd
-         sg7A==
-X-Gm-Message-State: AOAM533CXJ76IGPRylyBf31SQyX9uf/DiiFvz3I7daVLkKbJhxNE5Cs+
-        SLUckqYwJNUqCWk8IjkubZXG0g==
-X-Google-Smtp-Source: ABdhPJxeliyij6q3b2jMgsYMEQDyQtOwa0F/aSr0pJ5FBycij9y2XGSnP4WHMI8T1yxzWq3iqC7LDA==
-X-Received: by 2002:a05:620a:d45:: with SMTP id o5mr16395987qkl.319.1623681694162;
-        Mon, 14 Jun 2021 07:41:34 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id o12sm10123665qki.44.2021.06.14.07.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 07:41:32 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 10:41:32 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jared Pochtar <jpochtar@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH] psi: fix sampling artifact from pressure file read
- frequency
-Message-ID: <YMdqnDMgHSYtt3c2@cmpxchg.org>
-References: <20210608190336.77380-1-hannes@cmpxchg.org>
- <CAJuCfpHkug8t+yR+dtudANjJgzGs_T4v8_5fEoR0tg7Tw3h3bQ@mail.gmail.com>
- <YMIaiDaDA/lZ+l2j@cmpxchg.org>
- <CAJuCfpG8giDLgUNTMtEkN6QSoNeDPeQQitgxCaJamgx62Kp21A@mail.gmail.com>
+        Mon, 14 Jun 2021 10:45:57 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EEXSLv138823;
+        Mon, 14 Jun 2021 10:43:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BRzXoekHpQIcqP+Wrzi+wUkPG8kyErOkd763Vuqzaz0=;
+ b=PcfyZvKe+ng+/7NDpCcvmCgWnf7ORidibLHSJtwISGfT1mQ5MU6BFh8YsoC7XelgXeys
+ rDeI+qXzMP7yEDvKpim1VZYAQmO54IouOLgqiGI4uhc9x+sXjvs/OTxVTuGBvQeZVB7o
+ j335KuITHo5VoHtdyX6NGF8FLVHrJl70+8F7PdE6aP7E2rrKD379y77Hk6Aax2QkEKIs
+ H7w+qErukJODl0MBGKUUjF2ZNqb6AQBm5K+ek3cnwBbsRyQiNnnZZyUoFB5rrM2CjagF
+ aPR8VgMTsNXm77LEPI6DKZLpgGUiSnfyjZAM/3rJemUnlgU2JY2grwUt2SR1bKE8YfjT rQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39671amm2m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 10:43:33 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15EEXrX8140475;
+        Mon, 14 Jun 2021 10:43:32 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39671amm1s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 10:43:32 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15EEgPMQ017918;
+        Mon, 14 Jun 2021 14:43:31 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 394mj90hx1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 14:43:30 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15EEhSWk30015854
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 14:43:28 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7F47342047;
+        Mon, 14 Jun 2021 14:43:28 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 28F344203F;
+        Mon, 14 Jun 2021 14:43:28 +0000 (GMT)
+Received: from [9.145.17.205] (unknown [9.145.17.205])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Jun 2021 14:43:28 +0000 (GMT)
+Subject: Re: [PATCH] gcov,x86: Mark GCOV broken for x86
+To:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     johannes.berg@intel.com, ndesaulniers@google.com,
+        nathan@kernel.org, keescook@chromium.org, elver@google.com,
+        mark.rutland@arm.com
+References: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <2f8a4e21-a09b-8c8d-54ce-45cf2f0e83ff@linux.ibm.com>
+Date:   Mon, 14 Jun 2021 16:43:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpG8giDLgUNTMtEkN6QSoNeDPeQQitgxCaJamgx62Kp21A@mail.gmail.com>
+In-Reply-To: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 1iuG3h-z5-DcvqwERyuxIFJW0BKgyJ86
+X-Proofpoint-ORIG-GUID: gCNDwVqtasWfd6a6jUNOSYgUXL46o7NK
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-14_09:2021-06-14,2021-06-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
+ suspectscore=0 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106140095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:33:15AM -0700, Suren Baghdasaryan wrote:
-> On Thu, Jun 10, 2021 at 6:58 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Wed, Jun 09, 2021 at 08:32:51PM -0700, Suren Baghdasaryan wrote:
-> > > On Tue, Jun 8, 2021 at 12:03 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > >
-> > > > Currently, every time a psi pressure file is read, the per-cpu states
-> > > > are collected and aggregated according to the CPU's non-idle time
-> > > > weight. This dynamically changes the sampling period, which means read
-> > > > frequency can introduce variance into the observed results. This is
-> > > > somewhat unexpected for users and can be confusing, when e.g. two
-> > > > nested cgroups with the same workload report different pressure levels
-> > > > just because they have different consumers reading the pressure files.
-> > > >
-> > > > Consider the following two CPU timelines:
-> > > >
-> > > >         CPU0: [ STALL ] [ SLEEP ]
-> > > >         CPU1: [  RUN  ] [  RUN  ]
-> > > >
-> > > > If we sample and aggregate once for the whole period, we get the
-> > > > following total stall time for CPU0:
-> > > >
-> > > >         CPU0 = stall(1) + nonidle(1) / nonidle_total(3) = 0.3
-> > > >
-> > > > But if we sample twice, the total for the period is higher:
-> > > >
-> > > >         CPU0 = stall(1) + nonidle(1) / nonidle_total(2) = 0.5
-> > > >         CPU0 = stall(0) + nonidle(0) / nonidle_total(1) = 0
-> > > >                                                           ---
-> > > >                                                           0.5
+On 14.06.2021 12:17, Peter Zijlstra wrote:
+> As recently discovered, there is no function attribute to disable the
+> -fprofile-generate instrumentation. As such, GCOV is fundamentally
+> incompatible with architectures that rely on 'noinstr' for correctness.
+
+Does this problem affect all code or just those pieces that use
+'noinstr'? Doing a quick grep over kernel source shows me ~40 source
+files containing 'noinstr' vs. ~30000 that don't.
+
+It seems to me like an extreme measure to disable gcov-based profiling
+for all files on an architecture when only a small fraction of code
+would actually be affected.
+
+I'll gladly admit that I haven't followed the full discussion that lead
+to your patch, so maybe some of the following suggestions may already
+have been proposed.
+
+What about marking source files that contain 'noinstr' using the
+
+  GCOV_PROFILE_<filename.o> := n
+
+directive that gcov-kernel profiling provides to exclude those files
+from being compiled with the corresponding profiling flags? If that's
+too much effort there's also a directive for excluding all files in a
+directory.
+
+If there was a way to automatically identify 'noinstr'-afflicted source
+files (e.g. by grepping the pre-processed source files), one could also
+automate this process by adjusting the kbuild-code that adds profiling
+flags to automatically exclude such files.
+
 > 
-> Could you please clarify that above you are calculating the
-> nonidle/nonidle_total ratio? I understood your description in the text
-> but these calculations seem to claim that:
+> Until such time as that compilers have added a function attribute to
+> disable this instrumentation, mark GCOV as broken.
 > 
-> 1+1/3=0.3
-> 1+1/2=0.5
-> 0+0/1=0
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/Kconfig    | 2 +-
+>  kernel/gcov/Kconfig | 4 ++++
+>  2 files changed, 5 insertions(+), 1 deletion(-)
 > 
-> Clarification would be helpful IMHO.
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 86dae426798b..c0f8c9d4c31a 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -75,7 +75,7 @@ config X86
+>  	select ARCH_HAS_FAST_MULTIPLIER
+>  	select ARCH_HAS_FILTER_PGPROT
+>  	select ARCH_HAS_FORTIFY_SOURCE
+> -	select ARCH_HAS_GCOV_PROFILE_ALL
+> +	select ARCH_HAS_GCOV_BROKEN
 
-Oof, my bad, that's a plain typo. The + should be *:
+Assuming none of the above mentioned alternatives are viable, removing
+ARCH_HAS_GCOV_PROFILE_ALL should be enough for your purpose. This way
+you are already excluding all source files from automatic profiling on x86.
 
-stall(1) * nonidle(1)/nonidle_total(3) = 0.3
+Users that are absolutely sure that their code can work with
+gcov-profiling can manually edit their sub-Makefiles to list those files
+that should be instrumented. In my opinion your introduction of
+ARCH_HAS_GCOV_BROKEN unnecessarily takes away this capability.
 
-vs
 
-stall(1) * nonidle(1)/nonidle_total(2) = 0.5
-stall(0) * nonidle(0)/nonidle_total(1) = 0.0
+Regards,
+  Peter Oberparleiter
 
-> Also IIUC the state contributions are:
-> STALL == stall(1) + nonidle(1)
-> SLEEP == stall(0) + nonidle(0)
-> RUN == nonidle(1)
-> Is that correct?
-
-Correct. And nonidle_total is from STALL + RUN + RUN.
-
-> > > > Neither answer is inherently wrong: if the user asks for pressure
-> > > > after half the period, we can't know yet that the CPU will go to sleep
-> > > > right after and its weight would be lower over the combined period.
-> > > >
-> > > > We could normalize the weight averaging to a fixed window regardless
-> > > > of how often stall times themselves are sampled. But that would make
-> > > > reporting less adaptive to sudden changes when the user intentionally
-> > > > uses poll() with short intervals in order to get a higher resolution.
-> > > >
-> > > > For now, simply limit sampling of the pressure file contents to the
-> > > > fixed two-second period already used by the aggregation worker.
-> > >
-> > > Hmm. This is tricky.
-> >
-> > Yes ;)
-> >
-> > > So, userspace-visible effect of this change is that totals will not
-> > > update when the psi file is read unless the psi_period expires.
-> >
-> > That's a visible side effect, but yeah, correct.
-> >
-> > > We used to postpone updating only the averages and now the totals
-> > > will follow suit. Not sure if presenting stale data is better than
-> > > having this dependency on timing of the read. As you noted, the
-> > > value we get is not inherently wrong. But one could argue both ways
-> > > I guess... Having this "quantum" effect when the act of observation
-> > > changes the state of the object is indeed weird, to say the least.
-> >
-> > Yes. Especially *because* we don't update the averages more than once
-> > per 2s window. It gives the impression they would follow steady
-> > sampling, but they're calculated based on total= which is aggregated
-> > on every read.
-> >
-> > Tying the total= updates to the same fixed window presents slightly
-> > less current data, but results in more obvious and intuitive behavior.
-> >
-> > For more current data there is always poll() - which is a better idea
-> > than busy-reading the pressure files for a sub-2s resolution...
-> 
-> True, however triggers are rate-limited to one per tracking window
-> (0.5s min), so they have their own limitations.
-
-Right, but if somebody needed *higher* resolution than this, wouldn't
-it make more sense to lift the restrictions on poll() rather than read
-the pressure file several times per second?
-
-> > > In the paragraph above you say "For now". Do you have an idea that
-> > > could solve the issue with totals being stale while removing this
-> > > dependency on the timing of reads?
-> >
-> > Yeah, it's hinted at in the paragraph before that.
-> >
-> > What we could do is decouple the CPU weight sampling from the stall
-> > time sampling, and use a fixed-window average for the nonidle /
-> > nonidle_total ratio when aggregating. This way, no matter how
-> > frequently you read the stall times, you get the same results.
-> >
-> > However, because the update frequency absent any reads is 2s, that
-> > would be the window size we'd have to use. So while we could present
-> > updated total= on every read, they would still be aggregated based on
-> > a relatively stale CPU load distribution.
-> >
-> > They wouldn't be as current as they might seem - and as current as the
-> > user would assume them to be if they read the file frequently and got
-> > new totals every time. This is even more subtle than the status quo.
-> >
-> > IMO the cleanest interface is simply to be honest and consistent about
-> > the pressure files following a fixed 2s aggregation frequency, and
-> > refer people who need a higher resolution to poll().
-> 
-> I would agree, however 2s interval when (memory) pressure rises fast
-> is an eternity. The device can get into OOM state much faster than
-> that. I'm worried that this limitation might render totals useless.
-
-> The change does not pose issues for Android today because we rely on
-> poll() and then we read other stats. However in the ideal world we
-> would use only psi and after receiving the initial trigger we would
-> start reading psi periodically to detect any further spikes. This
-> would require totals to be up-to-date.
-
-I might be missing something, but why manually read the pressure files
-at a high frequency when you get the event? Wouldn't it be possible to
-keep listening for further trigger events from poll() in that case?
-
-Does it all come down to the 500ms window restriction?
-
-You're right that this change would make it impossible to use total=
-in the pressure files for manual high-frequency sampling, my question
-is whether that does something that poll() can not, even in theory.
-
-> These are my thoughts about long-term possible uses but I don't object
-> to this change as a short-term solution. Hopefully nobody uses totals
-> this way today, otherwise they are up for an unpleasant surprise.
-
-Yeah I think that's a valid concern. We shouldn't break such usecases
-if they exist. And it would break them in a non-obvious way. So let's
-table this version of the patch for now.
-
-Another option could be to use a separate aggregator state for avg=
-and total=, such that total= updates stay adaptive to the read
-frequency, but the canned avg= would at least behave more predictably
-for less sophisticated usecases.
-
-The implication would be that manual averaging of total= at sampling
-intervals other than 2s would no longer match up to avg=. But it's
-harder to imagine anybody would rely on that.
-
-What do you think?
+-- 
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
