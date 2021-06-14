@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3DC3A640C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74C53A6425
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236159AbhFNLUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39866 "EHLO mail.kernel.org"
+        id S233996AbhFNLVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:21:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235066AbhFNLIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:08:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C91786144A;
-        Mon, 14 Jun 2021 10:46:21 +0000 (UTC)
+        id S234768AbhFNLJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:09:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D3A6144C;
+        Mon, 14 Jun 2021 10:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667582;
-        bh=/1KNZ/znyTRUG+7STdg7tZ5hhc9k68YmT0skyYBc7jM=;
+        s=korg; t=1623667584;
+        bh=RH4EQxQ2TUvsfwUy4R7MqfP+T8OMT4TnkQWLRuy/yaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ez838GwRpQZPaICSmw2BpzDLldjmtnbEzkGhLPGG5XJXPRqGs5fRWa8i4b+pCWmvy
-         LQ/AVAOnA8UGpMaOrBtAjzzypvhr4Sfoy6EFjs28nRgeD4VPvop24g5dH2fBSIYLvZ
-         NwDQtPNzjfCQWkzpzjMxf3uSrZpBieqyHwG8pBso=
+        b=kWzXFwFyjtKj8PObD/uxi5ttCEMSs1QvYxs2tmb/LIvlplbeBO3zc0HG6CVp+uou3
+         p0iNyMXoUJzegvw2bSNzcrHzc0OG1m1VrqlJO0QeQ8y4KzDVlQNLhvgFeIV0J87epo
+         1FhVdHSRm8NnGUgkRhOdwG/Q7FEQEKzs4+lbqSKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         John Garry <john.garry@huawei.com>,
         Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 127/131] scsi: core: Fix error handling of scsi_host_alloc()
-Date:   Mon, 14 Jun 2021 12:28:08 +0200
-Message-Id: <20210614102657.325497009@linuxfoundation.org>
+Subject: [PATCH 5.10 128/131] scsi: core: Fix failure handling of scsi_add_host_with_dma()
+Date:   Mon, 14 Jun 2021 12:28:09 +0200
+Message-Id: <20210614102657.362543492@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -43,18 +43,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ming Lei <ming.lei@redhat.com>
 
-commit 66a834d092930cf41d809c0e989b13cd6f9ca006 upstream.
+commit 3719f4ff047e20062b8314c23ec3cab84d74c908 upstream.
 
-After device is initialized via device_initialize(), or its name is set via
-dev_set_name(), the device has to be freed via put_device().  Otherwise
-device name will be leaked because it is allocated dynamically in
-dev_set_name().
+When scsi_add_host_with_dma() returns failure, the caller will call
+scsi_host_put(shost) to release everything allocated for this host
+instance. Consequently we can't also free allocated stuff in
+scsi_add_host_with_dma(), otherwise we will end up with a double free.
 
-Fix the leak by replacing kfree() with put_device(). Since
-scsi_host_dev_release() properly handles IDA and kthread removal, remove
-special-casing these from the error handling as well.
+Strictly speaking, host resource allocations should have been done in
+scsi_host_alloc(). However, the allocations may need information which is
+not yet provided by the driver when that function is called. So leave the
+allocations where they are but rely on host device's release handler to
+free resources.
 
-Link: https://lore.kernel.org/r/20210602133029.2864069-2-ming.lei@redhat.com
+Link: https://lore.kernel.org/r/20210602133029.2864069-3-ming.lei@redhat.com
 Cc: Bart Van Assche <bvanassche@acm.org>
 Cc: John Garry <john.garry@huawei.com>
 Cc: Hannes Reinecke <hare@suse.de>
@@ -66,58 +68,48 @@ Signed-off-by: Ming Lei <ming.lei@redhat.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/hosts.c |   23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ drivers/scsi/hosts.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 --- a/drivers/scsi/hosts.c
 +++ b/drivers/scsi/hosts.c
-@@ -392,8 +392,10 @@ struct Scsi_Host *scsi_host_alloc(struct
- 	mutex_init(&shost->scan_mutex);
+@@ -278,23 +278,22 @@ int scsi_add_host_with_dma(struct Scsi_H
  
- 	index = ida_simple_get(&host_index_ida, 0, 0, GFP_KERNEL);
--	if (index < 0)
--		goto fail_kfree;
-+	if (index < 0) {
-+		kfree(shost);
-+		return NULL;
-+	}
- 	shost->host_no = index;
- 
- 	shost->dma_channel = 0xff;
-@@ -486,7 +488,7 @@ struct Scsi_Host *scsi_host_alloc(struct
- 		shost_printk(KERN_WARNING, shost,
- 			"error handler thread failed to spawn, error = %ld\n",
- 			PTR_ERR(shost->ehandler));
--		goto fail_index_remove;
-+		goto fail;
+ 		if (!shost->work_q) {
+ 			error = -EINVAL;
+-			goto out_free_shost_data;
++			goto out_del_dev;
+ 		}
  	}
  
- 	shost->tmf_work_q = alloc_workqueue("scsi_tmf_%d",
-@@ -495,17 +497,18 @@ struct Scsi_Host *scsi_host_alloc(struct
- 	if (!shost->tmf_work_q) {
- 		shost_printk(KERN_WARNING, shost,
- 			     "failed to create tmf workq\n");
--		goto fail_kthread;
-+		goto fail;
- 	}
- 	scsi_proc_hostdir_add(shost->hostt);
- 	return shost;
-+ fail:
+ 	error = scsi_sysfs_add_host(shost);
+ 	if (error)
+-		goto out_destroy_host;
++		goto out_del_dev;
+ 
+ 	scsi_proc_host_add(shost);
+ 	scsi_autopm_put_host(shost);
+ 	return error;
+ 
+- out_destroy_host:
+-	if (shost->work_q)
+-		destroy_workqueue(shost->work_q);
+- out_free_shost_data:
+-	kfree(shost->shost_data);
 +	/*
-+	 * Host state is still SHOST_CREATED and that is enough to release
-+	 * ->shost_gendev. scsi_host_dev_release() will free
-+	 * dev_name(&shost->shost_dev).
++	 * Any host allocation in this function will be freed in
++	 * scsi_host_dev_release().
 +	 */
-+	put_device(&shost->shost_gendev);
- 
-- fail_kthread:
--	kthread_stop(shost->ehandler);
-- fail_index_remove:
--	ida_simple_remove(&host_index_ida, shost->host_no);
-- fail_kfree:
--	kfree(shost);
- 	return NULL;
+  out_del_dev:
+ 	device_del(&shost->shost_dev);
+  out_del_gendev:
+@@ -304,7 +303,6 @@ int scsi_add_host_with_dma(struct Scsi_H
+ 	pm_runtime_disable(&shost->shost_gendev);
+ 	pm_runtime_set_suspended(&shost->shost_gendev);
+ 	pm_runtime_put_noidle(&shost->shost_gendev);
+-	scsi_mq_destroy_tags(shost);
+  fail:
+ 	return error;
  }
- EXPORT_SYMBOL(scsi_host_alloc);
 
 
