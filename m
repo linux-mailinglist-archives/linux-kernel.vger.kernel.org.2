@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09413A60E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1EB3A60A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233513AbhFNKjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:39:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
+        id S233588AbhFNKgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:36:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232819AbhFNKgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:36:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 752AF61241;
-        Mon, 14 Jun 2021 10:32:43 +0000 (UTC)
+        id S233318AbhFNKdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:33:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D19D611C1;
+        Mon, 14 Jun 2021 10:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666764;
-        bh=8pYC+sOlq33vB/hFjFsxEvEx5qvUaUZPcscS+mu75uw=;
+        s=korg; t=1623666685;
+        bh=v/zXBpze0qVz5SNggLiUZSwQ8Z80KlcQCzMin2Dijwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o8pXWfdXmaOD+2zobM1VkLMkn+OjFiWWSxq4mo7nx3pRC6wTmrzc55OeKZ4VRX6zv
-         9eH8j0k/WpcZs3jNuEsKOjydjPI15973BbowLyVl5/hGTe3rEnJuig+dUy4/8JDS7y
-         d/zsDUNzwPDKkZQl1OJu81wIFJr1gnDNDQe7MVxc=
+        b=M4nWwAzcQsC7NvWYA6xX7sFc+ETsNWD9LDqB9kN8mOmkxBoQCHZw8IdCRMagufaox
+         ueJUGIdvVgTbobqZpgFzgIsDGj8/kgUgRegz3sdCIv0Cx7u/92OdlhIKNoMSw070ro
+         LYQhBiQhZbnzWGboq2FMZKu2XnV/H90OWFPSeMdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+bfda097c12a00c8cae67@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 05/49] bonding: init notify_work earlier to avoid uninitialized use
+Subject: [PATCH 4.9 07/42] net: mdiobus: get rid of a BUG_ON()
 Date:   Mon, 14 Jun 2021 12:26:58 +0200
-Message-Id: <20210614102642.034529945@linuxfoundation.org>
+Message-Id: <20210614102642.939885834@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 35d96e631860226d5dc4de0fad0a415362ec2457 ]
+[ Upstream commit 1dde47a66d4fb181830d6fa000e5ea86907b639e ]
 
-If bond_kobj_init() or later kzalloc() in bond_alloc_slave() fail,
-then we call kobject_put() on the slave->kobj. This in turn calls
-the release function slave_kobj_release() which will always try to
-cancel_delayed_work_sync(&slave->notify_work), which shouldn't be
-done on an uninitialized work struct.
+We spotted a bug recently during a review where a driver was
+unregistering a bus that wasn't registered, which would trigger this
+BUG_ON().  Let's handle that situation more gracefully, and just print
+a warning and return.
 
-Always initialize the work struct earlier to avoid problems here.
-
-Syzbot bisected this down to a completely pointless commit, some
-fault injection may have been at work here that caused the alloc
-failure in the first place, which may interact badly with bisect.
-
-Reported-by: syzbot+bfda097c12a00c8cae67@syzkaller.appspotmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+Reported-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/mdio_bus.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 1250983616ef..340e7bf6463e 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -1295,6 +1295,7 @@ static struct slave *bond_alloc_slave(struct bonding *bond,
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index a9bbdcec0bad..8cc7563ab103 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -362,7 +362,8 @@ void mdiobus_unregister(struct mii_bus *bus)
+ 	struct mdio_device *mdiodev;
+ 	int i;
  
- 	slave->bond = bond;
- 	slave->dev = slave_dev;
-+	INIT_DELAYED_WORK(&slave->notify_work, bond_netdev_notify_work);
+-	BUG_ON(bus->state != MDIOBUS_REGISTERED);
++	if (WARN_ON_ONCE(bus->state != MDIOBUS_REGISTERED))
++		return;
+ 	bus->state = MDIOBUS_UNREGISTERED;
  
- 	if (bond_kobj_init(slave))
- 		return NULL;
-@@ -1307,7 +1308,6 @@ static struct slave *bond_alloc_slave(struct bonding *bond,
- 			return NULL;
- 		}
- 	}
--	INIT_DELAYED_WORK(&slave->notify_work, bond_netdev_notify_work);
- 
- 	return slave;
- }
+ 	for (i = 0; i < PHY_MAX_ADDR; i++) {
 -- 
 2.30.2
 
