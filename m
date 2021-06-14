@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E5A3A6F91
+	by mail.lfdr.de (Postfix) with ESMTP id E64B23A6F92
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235644AbhFNT5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:57:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53068 "EHLO mail.kernel.org"
+        id S235627AbhFNT5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:57:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235500AbhFNT4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:56:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC0E4611CA;
-        Mon, 14 Jun 2021 19:54:50 +0000 (UTC)
+        id S235539AbhFNT45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:56:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F76061166;
+        Mon, 14 Jun 2021 19:54:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623700491;
-        bh=YkjBzaYQqVslcwFlFmdUZmUuJIrU93d/ciBUzYyyyz8=;
+        s=k20201202; t=1623700493;
+        bh=9BrKXrQD+oi74tGWcEiEkzvbIWYd6bnHC+gYS3fPliA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T8RPq4WeGUCKsqhc15G349HkYbxWxvMReLKrkk4aV84zFI9hQpQJMIW7w/Pcd3iTL
-         vogvUEoVQEXVz77lCaDzV83BUGltnZSpdUAYSWjVV+kg+N4+Z16WmMcCh2uUG48/nx
-         DfrqpuM9zNBf1Df+T4UZD2ux4kIiN6Rc2oZt2hU7VM3V2VioquySVlXTKM5w2x/6yP
-         Btn04SdjZj6IwPoADpfwfZ6PBnYZfz6fMg32Rm4r2GP2VucUZnTiGZ2aJ/uTPUh7N4
-         i3+ilXgqbtvjmU0zDjt2rWvo3GAwNXfE/Fh29hPcBvjhYg9Lmo2qI4f9SxCBiuo8W3
-         oXzSF6Do2HpWQ==
+        b=ODI9FQJYo22izIiQbHH8d6ufa0jnMTDljnAEcK2Gg/EfeOm2dKocNuE4FPZzNqT1T
+         zUNVWg/lm/3+dYg+EKEI1+gu2873WF7ksIHhIP2gEoR5mxwhgJELN33pgEvUtcyyyT
+         C/k1zOIVX2vg4uOjc3MfDWaztg80AQe0KTFm1I4YJBeDMYKk7eJ4gTMCoVlkJfIhlM
+         BP7z6GjNQI4JLzuA5tt+QCOHfSPSgPoQCLyttWfNG1EDwv0eHCUwiWV8eZm0LAylPS
+         fCnT+mVnAYx1WPWPVmIme5CVTCPG8nF5Qbo3/kG3f7AYMKBx23RjYeYNXJvV6JgqJs
+         OLgERF4IEGRmw==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
-        codrin.ciubotariu@microchip.com
-Subject: Re: [PATCH -next] ASoC: atmel-pdmic: Use devm_platform_get_and_ioremap_resource()
-Date:   Mon, 14 Jun 2021 20:53:43 +0100
-Message-Id: <162369994010.34524.16386719671018487251.b4-ty@kernel.org>
+To:     timur@kernel.org, tiwai@suse.com,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        alsa-devel@alsa-project.org, nicoleotsuka@gmail.com,
+        festevam@gmail.com, perex@perex.cz, Xiubo.Lee@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] ASoC: fsl_spdif: Fix error handler with pm_runtime_enable
+Date:   Mon, 14 Jun 2021 20:53:44 +0100
+Message-Id: <162369994009.34524.13362380080934583613.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210611035351.3878091-1-yangyingliang@huawei.com>
-References: <20210611035351.3878091-1-yangyingliang@huawei.com>
+In-Reply-To: <1623392318-26304-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1623392318-26304-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,9 +43,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 11:53:51 +0800, Yang Yingliang wrote:
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
+On Fri, 11 Jun 2021 14:18:38 +0800, Shengjiu Wang wrote:
+> There is error message when defer probe happens:
+> 
+> fsl-spdif-dai 2dab0000.spdif: Unbalanced pm_runtime_enable!
+> 
+> Fix the error handler with pm_runtime_enable and add
+> fsl_spdif_remove() for pm_runtime_disable.
 
 Applied to
 
@@ -52,8 +57,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: atmel-pdmic: Use devm_platform_get_and_ioremap_resource()
-      commit: 92570939c8b952272f630f807f8ddfac58411869
+[1/1] ASoC: fsl_spdif: Fix error handler with pm_runtime_enable
+      commit: 28108d71ee11a7232e1102effab3361049dcd3b8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
