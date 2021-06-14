@@ -2,48 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D815F3A6119
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F5D3A60BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbhFNKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:42:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39532 "EHLO mail.kernel.org"
+        id S233539AbhFNKhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:37:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232932AbhFNKhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:37:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C90916134F;
-        Mon, 14 Jun 2021 10:33:20 +0000 (UTC)
+        id S233197AbhFNKea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:34:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6627D61356;
+        Mon, 14 Jun 2021 10:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666801;
-        bh=9nMimWrcfd9mZXp55A5h84CZ8/+GlF1cAqoC5D7ZmkI=;
+        s=korg; t=1623666718;
+        bh=5bqUyuGC4qPAzcsbT4hkqG7eCZ5cUtOm6k0n5Fu7zvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HAd83L2ElPnKVNaiz+EEqrtSEnXC9FZ5mxyzxlK8QbwmgK4PnGL/jowa3nJgnHxji
-         Homef4L041bdeeEjKNFH6B933MAQK+3c5AuhAmSc/5MhrV3hSn/m6rAA+7qE8nXlf2
-         FbEl1rmvVU+HwH4yWiRyecfBcRGF5UXJGCOLKZcs=
+        b=JkIg3n3gr6Qyb/qhcmBRUVah5XVM9EAHxUimGbfnSV5gwjD1xpLl93Ur20HblxbpX
+         qgq43OC3u7uTZelmQQ58b1y+ppwsqLoxvcwARt73Hi/ZNHove8ylT3Qg6LFtlYtN3k
+         Sac1pM7mNem/eWDAz3njAi1sX5LEZ7I/yzTndPyM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Felipe Balbi <balbi@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael R Sweet <msweet@msweet.org>,
-        Mike Christie <michael.christie@oracle.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        Sudhakar Panneerselvam <sudhakar.panneerselvam@oracle.com>,
-        Wei Ming Chen <jj251510319013@gmail.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Zqiang <qiang.zhang@windriver.com>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 4.14 35/49] usb: fix various gadgets null ptr deref on 10gbps cabling.
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.9 37/42] kvm: fix previous commit for 32-bit builds
 Date:   Mon, 14 Jun 2021 12:27:28 +0200
-Message-Id: <20210614102643.020799559@linuxfoundation.org>
+Message-Id: <20210614102643.881341114@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,159 +38,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 90c4d05780d47e14a50e11a7f17373104cd47d25 upstream.
+commit 4422829e8053068e0225e4d0ef42dc41ea7c9ef5 upstream.
 
-This avoids a null pointer dereference in
-f_{ecm,eem,hid,loopback,printer,rndis,serial,sourcesink,subset,tcm}
-by simply reusing the 5gbps config for 10gbps.
+array_index_nospec does not work for uint64_t on 32-bit builds.
+However, the size of a memory slot must be less than 20 bits wide
+on those system, since the memory slot must fit in the user
+address space.  So just store it in an unsigned long.
 
-Fixes: eaef50c76057 ("usb: gadget: Update usb_assign_descriptors for SuperSpeedPlus")
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Michael R Sweet <msweet@msweet.org>
-Cc: Mike Christie <michael.christie@oracle.com>
-Cc: Pawel Laszczak <pawell@cadence.com>
-Cc: Peter Chen <peter.chen@nxp.com>
-Cc: Sudhakar Panneerselvam <sudhakar.panneerselvam@oracle.com>
-Cc: Wei Ming Chen <jj251510319013@gmail.com>
-Cc: Will McVicker <willmcvicker@google.com>
-Cc: Zqiang <qiang.zhang@windriver.com>
-Reviewed-By: Lorenzo Colitti <lorenzo@google.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Link: https://lore.kernel.org/r/20210608044141.3898496-1-zenczykowski@gmail.com
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_ecm.c        |    2 +-
- drivers/usb/gadget/function/f_eem.c        |    2 +-
- drivers/usb/gadget/function/f_hid.c        |    3 ++-
- drivers/usb/gadget/function/f_loopback.c   |    2 +-
- drivers/usb/gadget/function/f_printer.c    |    3 ++-
- drivers/usb/gadget/function/f_rndis.c      |    2 +-
- drivers/usb/gadget/function/f_serial.c     |    2 +-
- drivers/usb/gadget/function/f_sourcesink.c |    3 ++-
- drivers/usb/gadget/function/f_subset.c     |    2 +-
- drivers/usb/gadget/function/f_tcm.c        |    3 ++-
- 10 files changed, 14 insertions(+), 10 deletions(-)
+ include/linux/kvm_host.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/function/f_ecm.c
-+++ b/drivers/usb/gadget/function/f_ecm.c
-@@ -793,7 +793,7 @@ ecm_bind(struct usb_configuration *c, st
- 		fs_ecm_notify_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, ecm_fs_function, ecm_hs_function,
--			ecm_ss_function, NULL);
-+			ecm_ss_function, ecm_ss_function);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_eem.c
-+++ b/drivers/usb/gadget/function/f_eem.c
-@@ -309,7 +309,7 @@ static int eem_bind(struct usb_configura
- 	eem_ss_out_desc.bEndpointAddress = eem_fs_out_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, eem_fs_function, eem_hs_function,
--			eem_ss_function, NULL);
-+			eem_ss_function, eem_ss_function);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -812,7 +812,8 @@ static int hidg_bind(struct usb_configur
- 		hidg_fs_out_ep_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, hidg_fs_descriptors,
--			hidg_hs_descriptors, hidg_ss_descriptors, NULL);
-+			hidg_hs_descriptors, hidg_ss_descriptors,
-+			hidg_ss_descriptors);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_loopback.c
-+++ b/drivers/usb/gadget/function/f_loopback.c
-@@ -211,7 +211,7 @@ autoconf_fail:
- 	ss_loop_sink_desc.bEndpointAddress = fs_loop_sink_desc.bEndpointAddress;
- 
- 	ret = usb_assign_descriptors(f, fs_loopback_descs, hs_loopback_descs,
--			ss_loopback_descs, NULL);
-+			ss_loopback_descs, ss_loopback_descs);
- 	if (ret)
- 		return ret;
- 
---- a/drivers/usb/gadget/function/f_printer.c
-+++ b/drivers/usb/gadget/function/f_printer.c
-@@ -1067,7 +1067,8 @@ autoconf_fail:
- 	ss_ep_out_desc.bEndpointAddress = fs_ep_out_desc.bEndpointAddress;
- 
- 	ret = usb_assign_descriptors(f, fs_printer_function,
--			hs_printer_function, ss_printer_function, NULL);
-+			hs_printer_function, ss_printer_function,
-+			ss_printer_function);
- 	if (ret)
- 		return ret;
- 
---- a/drivers/usb/gadget/function/f_rndis.c
-+++ b/drivers/usb/gadget/function/f_rndis.c
-@@ -793,7 +793,7 @@ rndis_bind(struct usb_configuration *c,
- 	ss_notify_desc.bEndpointAddress = fs_notify_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, eth_fs_function, eth_hs_function,
--			eth_ss_function, NULL);
-+			eth_ss_function, eth_ss_function);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_serial.c
-+++ b/drivers/usb/gadget/function/f_serial.c
-@@ -236,7 +236,7 @@ static int gser_bind(struct usb_configur
- 	gser_ss_out_desc.bEndpointAddress = gser_fs_out_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, gser_fs_function, gser_hs_function,
--			gser_ss_function, NULL);
-+			gser_ss_function, gser_ss_function);
- 	if (status)
- 		goto fail;
- 	dev_dbg(&cdev->gadget->dev, "generic ttyGS%d: %s speed IN/%s OUT/%s\n",
---- a/drivers/usb/gadget/function/f_sourcesink.c
-+++ b/drivers/usb/gadget/function/f_sourcesink.c
-@@ -435,7 +435,8 @@ no_iso:
- 	ss_iso_sink_desc.bEndpointAddress = fs_iso_sink_desc.bEndpointAddress;
- 
- 	ret = usb_assign_descriptors(f, fs_source_sink_descs,
--			hs_source_sink_descs, ss_source_sink_descs, NULL);
-+			hs_source_sink_descs, ss_source_sink_descs,
-+			ss_source_sink_descs);
- 	if (ret)
- 		return ret;
- 
---- a/drivers/usb/gadget/function/f_subset.c
-+++ b/drivers/usb/gadget/function/f_subset.c
-@@ -362,7 +362,7 @@ geth_bind(struct usb_configuration *c, s
- 		fs_subset_out_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, fs_eth_function, hs_eth_function,
--			ss_eth_function, NULL);
-+			ss_eth_function, ss_eth_function);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_tcm.c
-+++ b/drivers/usb/gadget/function/f_tcm.c
-@@ -2071,7 +2071,8 @@ static int tcm_bind(struct usb_configura
- 	uasp_fs_cmd_desc.bEndpointAddress = uasp_ss_cmd_desc.bEndpointAddress;
- 
- 	ret = usb_assign_descriptors(f, uasp_fs_function_desc,
--			uasp_hs_function_desc, uasp_ss_function_desc, NULL);
-+			uasp_hs_function_desc, uasp_ss_function_desc,
-+			uasp_ss_function_desc);
- 	if (ret)
- 		goto ep_fail;
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -939,8 +939,8 @@ __gfn_to_hva_memslot(struct kvm_memory_s
+ 	 * table walks, do not let the processor speculate loads outside
+ 	 * the guest's registered memslots.
+ 	 */
+-	unsigned long offset = array_index_nospec(gfn - slot->base_gfn,
+-						  slot->npages);
++	unsigned long offset = gfn - slot->base_gfn;
++	offset = array_index_nospec(offset, slot->npages);
+ 	return slot->userspace_addr + offset * PAGE_SIZE;
+ }
  
 
 
