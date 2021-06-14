@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54F03A604B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9773A625F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbhFNKdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:33:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38594 "EHLO mail.kernel.org"
+        id S235129AbhFNLAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232938AbhFNKbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 847B8611BE;
-        Mon, 14 Jun 2021 10:29:48 +0000 (UTC)
+        id S234411AbhFNKvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:51:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5368861469;
+        Mon, 14 Jun 2021 10:39:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666589;
-        bh=KPaqAh25fX0hFrqdDDg0IpLpr5RaI/agMsdrlMl/D2k=;
+        s=korg; t=1623667151;
+        bh=2SgvNj6ou6VNa7dm/tdITAyo9EzdsLrOwNOltAcAyho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RYgiS/IZDy3cKAHXczeK2NxacfloQGXTjg+Tsu7/byvaw82uabd6rdOm94ilLMzE+
-         tl37Roy1uhBHyRDU9euP7rjb0s6vSIf5eMV4IIh2NlqEHnEn7PSd3HLHTQezFQJ9qk
-         SnUPHT5nZibwDy7/YUPswVnlIR6TmXhueawmFmHY=
+        b=1Sq7OiRN3P2prPxsEhYlwh2e7holqcOKEwW3qGy2pTHmn9hCnIX1Djtch1Vt9nudJ
+         TIcGP4C/73x6IP/OVprF7NHmsmCiH5lMLvh0uMrOsV1Lj2qsw8uL0Q9PbWFF/q4Amf
+         nPvmQgEVz/KGJxiMr72WuGLmrFF8RGznulhZPprw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        John Garry <john.garry@huawei.com>,
-        Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.4 33/34] scsi: core: Only put parent device if host state differs from SHOST_CREATED
+        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@nokia.com>,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
+Subject: [PATCH 5.4 46/84] USB: f_ncm: ncm_bitrate (speed) is unsigned
 Date:   Mon, 14 Jun 2021 12:27:24 +0200
-Message-Id: <20210614102642.641326135@linuxfoundation.org>
+Message-Id: <20210614102647.941385889@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Maciej Żenczykowski <maze@google.com>
 
-commit 1e0d4e6225996f05271de1ebcb1a7c9381af0b27 upstream.
+commit 3370139745853f7826895293e8ac3aec1430508e upstream.
 
-get_device(shost->shost_gendev.parent) is called after host state has
-switched to SHOST_RUNNING. scsi_host_dev_release() shouldn't release the
-parent device if host state is still SHOST_CREATED.
+[  190.544755] configfs-gadget gadget: notify speed -44967296
 
-Link: https://lore.kernel.org/r/20210602133029.2864069-5-ming.lei@redhat.com
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Hannes Reinecke <hare@suse.de>
-Tested-by: John Garry <john.garry@huawei.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+This is because 4250000000 - 2**32 is -44967296.
+
+Fixes: 9f6ce4240a2b ("usb: gadget: f_ncm.c added")
+Cc: Brooke Basile <brookebasile@gmail.com>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Cc: Yauheni Kaliuta <yauheni.kaliuta@nokia.com>
+Cc: Linux USB Mailing List <linux-usb@vger.kernel.org>
+Acked-By: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210608005344.3762668-1-zenczykowski@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/hosts.c |    2 +-
+ drivers/usb/gadget/function/f_ncm.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/hosts.c
-+++ b/drivers/scsi/hosts.c
-@@ -355,7 +355,7 @@ static void scsi_host_dev_release(struct
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -583,7 +583,7 @@ static void ncm_do_notify(struct f_ncm *
+ 		data[0] = cpu_to_le32(ncm_bitrate(cdev->gadget));
+ 		data[1] = data[0];
  
- 	kfree(shost->shost_data);
- 
--	if (parent)
-+	if (shost->shost_state != SHOST_CREATED)
- 		put_device(parent);
- 	kfree(shost);
- }
+-		DBG(cdev, "notify speed %d\n", ncm_bitrate(cdev->gadget));
++		DBG(cdev, "notify speed %u\n", ncm_bitrate(cdev->gadget));
+ 		ncm->notify_state = NCM_NOTIFY_CONNECT;
+ 		break;
+ 	}
 
 
