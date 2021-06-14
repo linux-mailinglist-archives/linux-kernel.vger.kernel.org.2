@@ -2,69 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FC63A5B1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 01:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DFB3A5B22
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 02:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhFMX7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 19:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhFMX7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 19:59:41 -0400
-Received: from mxout017.mail.hostpoint.ch (mxout017.mail.hostpoint.ch [IPv6:2a00:d70:0:e::317])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07032C061574;
-        Sun, 13 Jun 2021 16:57:37 -0700 (PDT)
-Received: from [10.0.2.46] (helo=asmtp013.mail.hostpoint.ch)
-        by mxout017.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lsZyv-0002J6-6t; Mon, 14 Jun 2021 01:57:33 +0200
-Received: from [2a02:168:6182:1:d747:8127:5b7a:4266]
-        by asmtp013.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lsZyv-000Hc5-4Q; Mon, 14 Jun 2021 01:57:33 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-From:   Reto Schneider <code@reto-schneider.ch>
-Subject: Re: [PATCH v1] gpio: mt7621: Assign base field in gpio_chip
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>, Stefan Roese <sr@denx.de>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210613120608.1527394-1-code@reto-schneider.ch>
- <CAHp75Vc5LRRLc-1A5W4BVQ3QQx-+4Y5CUjG3ksosVdPEecEyqA@mail.gmail.com>
- <db862b9d-2003-08f4-6856-26fb4870caff@reto-schneider.ch>
- <CACRpkdbSv0h6hB_yR+_ZC3vxSUOkaa94EzCArSaSC=nvc5AT3g@mail.gmail.com>
-Message-ID: <04f4dda6-b16b-7862-0e88-daefc6d0110f@reto-schneider.ch>
-Date:   Mon, 14 Jun 2021 01:57:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232246AbhFNAK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 20:10:27 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:34874 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232076AbhFNAKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Jun 2021 20:10:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=Inv7FxLlJNFNOYFXJpWfC0TcFgAvHVW5NM8/fw1hffE=; b=R8
+        HjPwiPuSs8ZagDi0rLWtYL3jDyrZw7AGFoqVJyxU8y1B3u6KvRWdnek+HTTKdxgzIc8mAgX0GoARm
+        diDc+RUWwlsV9kejPxA2e3SwhxMPNttpwzNFxeP9miD8xF6uH5xQhYGkNjr87G6Yz8r4D8hJOLjLF
+        qoYvNcXHTu/RlzM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lsa9L-009E8L-GP; Mon, 14 Jun 2021 02:08:19 +0200
+Date:   Mon, 14 Jun 2021 02:08:19 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Jon Masters <jcm@redhat.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Subject: Re: [net-next: PATCH 2/3] net: mvpp2: enable using phylink with ACPI
+Message-ID: <YMad84t7mOl0DFzk@lunn.ch>
+References: <20210613183520.2247415-1-mw@semihalf.com>
+ <20210613183520.2247415-3-mw@semihalf.com>
+ <YMZg27EkTuebBXwo@lunn.ch>
+ <CAPv3WKfWqdpntPKknZ+H+sscyH9mursvCUwe8Q1DH-wGpsWknQ@mail.gmail.com>
+ <YMZ6E99Q/zuFh4b1@lunn.ch>
+ <CAPv3WKetRLOkkOz3Cj_D5pf824VGoz+sQ6wNukTS2PKoAcdFyw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdbSv0h6hB_yR+_ZC3vxSUOkaa94EzCArSaSC=nvc5AT3g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPv3WKetRLOkkOz3Cj_D5pf824VGoz+sQ6wNukTS2PKoAcdFyw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Jun 14, 2021 at 01:46:06AM +0200, Marcin Wojtas wrote:
+> <Adding ACPI Maintainers>
+> 
+> Hi Andrew,
+> 
+> niedz., 13 cze 2021 o 23:35 Andrew Lunn <andrew@lunn.ch> napisał(a):
+> >
+> > > True. I picked the port type properties that are interpreted by
+> > > phylink. Basically, I think that everything that's described in:
+> > > devicetree/bindings/net/ethernet-controller.yaml
+> > > is valid for the ACPI as well
+> >
+> > So you are saying ACPI is just DT stuff into tables? Then why bother
+> > with ACPI? Just use DT.
+> 
+> Any user is free to use whatever they like, however apparently there
+> must have been valid reasons, why ARM is choosing ACPI as the
+> preferred way of describing the hardware over DT. In such
+> circumstances, we all work to improve adoption and its usability for
+> existing devices.
+> 
+> Regarding the properties in _DSD package, please refer to
+> https://www.kernel.org/doc/html/latest/firmware-guide/acpi/DSD-properties-rules.html,
+> especially to two fragments:
+> "The _DSD (Device Specific Data) configuration object, introduced in
+> ACPI 5.1, allows any type of device configuration data to be provided
+> via the ACPI namespace. In principle, the format of the data may be
+> arbitrary [...]"
+> "It often is useful to make _DSD return property sets that follow
+> Device Tree bindings."
+> Therefore what I understand is that (within some constraints) simple
+> reusing existing sets of nodes' properties, should not violate ACPI
+> spec. In this patchset no new extension/interfaces/method is
+> introduced.
+> 
+> >
+> > Right, O.K. Please document anything which phylink already supports:
+> >
+> > hylink.c:               ret = fwnode_property_read_u32(fixed_node, "speed", &speed);
+> > phylink.c:              if (fwnode_property_read_bool(fixed_node, "full-duplex"))
+> > phylink.c:              if (fwnode_property_read_bool(fixed_node, "pause"))
+> > phylink.c:              if (fwnode_property_read_bool(fixed_node, "asym-pause"))
+> > phylink.c:              ret = fwnode_property_read_u32_array(fwnode, "fixed-link",
+> > phylink.c:              ret = fwnode_property_read_u32_array(fwnode, "fixed-link",
+> > phylink.c:      if (dn || fwnode_property_present(fwnode, "fixed-link"))
+> > phylink.c:      if ((fwnode_property_read_string(fwnode, "managed", &managed) == 0 &&
+> >
+> > If you are adding new properties, please do that In a separate patch,
+> > which needs an ACPI maintainer to ACK it before it gets merged.
+> >
+> 
+> Ok, I can extend the documentation.
 
-On 14.06.21 01:24, Linus Walleij wrote:
-> Hm isn't OpenWrt switched to the mainline driver?
+My real fear is snowflakes. Each ACPI implementation is unique. That
+is going to be a maintenance nightmare, and it will make it very hard
+to change the APIs between phylib/phylink and MAC drivers. To avoid
+that, we need to push are much as possible into the core, document as
+much as possible, and NACK anything does looks like a snowflake.
 
-They did, and people are now seeing this "issue" too [1]. Which got me 
-to post my "fix" [2] and then trying to upstream it here. :)
+I actually like what you pointed out above. It makes it possible to
+say, ACPI for phylink/phylib needs to follow device tree, 1 to 1.
+It also means we should be able to remove a lot of the
 
-Kind regards,
-Reto
+if (is_of()) {}
+else if (is_acpi() {}
+else
+	return -EINVAL;
 
-[1] https://lists.openwrt.org/pipermail/openwrt-devel/2020-May/028926.html
-[2] https://lists.openwrt.org/pipermail/openwrt-devel/2021-June/035497.html
+in drivers, and put it into the core.
+
+   Andrew
