@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81CE3A66AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2393A66A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233603AbhFNMfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 08:35:24 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:60160 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbhFNMfV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:35:21 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15ECX0g1126397;
-        Mon, 14 Jun 2021 07:33:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623673980;
-        bh=K9aA0EEHDadNv3Gx8t1nVIU1t9/F1DE1N2f1aCytT/Y=;
-        h=Subject:CC:References:To:From:Date:In-Reply-To;
-        b=laiaxztoru0AR/pQx7GoqGtV31haRRB6fir93GR4p9T6bvgFkUxHCq0IptbY0to0V
-         35WMAu/x8KS5pU/Zfhkyj6QYZ/GyVT2fj3DCl4y8O18M+3KeDNSSvG3DsbYaKzfMhj
-         MWzLE+GUrkL3IJxFVJgzxZ8cs89wUv27dtlrqq3E=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15ECX0Es064241
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Jun 2021 07:33:00 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 14
- Jun 2021 07:33:00 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 14 Jun 2021 07:33:00 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15ECWshU005055;
-        Mon, 14 Jun 2021 07:32:55 -0500
-Subject: Re: [PATCH v4 0/2] MCAN: Add support for implementing transceiver as
- a phy
-CC:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <linux-can@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-References: <20210510052541.14168-1-a-govindraju@ti.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <2c5b76f7-8899-ab84-736b-790482764384@ti.com>
-Date:   Mon, 14 Jun 2021 18:02:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233297AbhFNMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 08:35:11 -0400
+Received: from 8bytes.org ([81.169.241.247]:44400 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232809AbhFNMfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 08:35:10 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 05EE12DA; Mon, 14 Jun 2021 14:33:05 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 14:33:04 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Eric Biederman <ebiederm@xmission.com>, x86@kernel.org
+Cc:     Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 0/2] x86: Disable kexec for SEV-ES guests
+Message-ID: <YMdMgCAIYN4zOX4N@8bytes.org>
+References: <20210603132233.10004-1-joro@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <20210510052541.14168-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603132233.10004-1-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Gentle ping.
 
-On 10/05/21 10:55 am, Aswath Govindraju wrote:
-> The following series of patches add support for implementing the
-> transceiver as a phy of m_can_platform driver.
+On Thu, Jun 03, 2021 at 03:22:31PM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
-> TCAN1042 has a standby signal that needs to be pulled high for
-> sending/receiving messages[1]. TCAN1043 has a enable signal along with
-> standby signal that needs to be pulled up for sending/receiving
-> messages[2], and other combinations of the two lines can be used to put the
-> transceiver in different states to reduce power consumption. On boards
-> like the AM654-idk and J721e-evm these signals are controlled using gpios.
+> Changes v1->v2:
 > 
-> These gpios are set in phy driver, and the transceiver can be put in
-> different states using phy API. The phy driver is added in the series [3].
+> 	- Rebased to v5.13-rc4
+> 	- Add the check also to the kexec_file_load system call
 > 
-> This patch series is dependent on [4].
+> Original cover letter:
 > 
-
-[4] is now part of linux-next
-
-May I know if this series is okay to be picked up ?
-
-Thanks,
-Aswath
-
-> changes since v3:
-> - Added phy_power_off() in case of an error in m_can_open().
+> Hi,
 > 
-> changes since v2:
-> - changed dev_err to dev_err_probe in patch 2
-> - used mcan_class instead of priv to assign max bit rate
-> - Picked up  Rob Herring's acked-by for patch 1
+> two small patches to disable kexec on x86 when running as an SEV-ES
+> guest. Trying to kexec a new kernel would fail anyway because there is
+> no mechanism yet to hand over the APs from the old to the new kernel.
+> Supporting this needs changes in the Hypervisor and the guest kernel
+> as well.
 > 
-> changes since v1:
-> - Used the API devm_phy_get_optional() instead of
->   devm_of_phy_get_optional_by_index()
+> This code is currently being work on, but disable kexec in SEV-ES
+> guests until it is ready.
 > 
-> [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
-> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
-> [3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=498359
-> [4] - https://lore.kernel.org/patchwork/patch/1413286/
+> Please review.
 > 
-> Faiz Abbas (2):
->   dt-bindings: net: can: Document transceiver implementation as phy
->   can: m_can: Add support for transceiver as phy
+> Regards,
 > 
->  .../devicetree/bindings/net/can/bosch,m_can.yaml    |  3 +++
->  drivers/net/can/m_can/m_can.c                       | 11 +++++++++++
->  drivers/net/can/m_can/m_can.h                       |  2 ++
->  drivers/net/can/m_can/m_can_platform.c              | 13 +++++++++++++
->  4 files changed, 29 insertions(+)
+> 	Joerg
+> 
+> Joerg Roedel (2):
+>   kexec: Allow architecture code to opt-out at runtime
+>   x86/kexec/64: Forbid kexec when running as an SEV-ES guest
+> 
+>  arch/x86/kernel/machine_kexec_64.c |  8 ++++++++
+>  include/linux/kexec.h              |  1 +
+>  kernel/kexec.c                     | 14 ++++++++++++++
+>  kernel/kexec_file.c                |  9 +++++++++
+>  4 files changed, 32 insertions(+)
+> 
+> -- 
+> 2.31.1
