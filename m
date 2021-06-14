@@ -2,176 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997513A5DD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6183A5DD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhFNHm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:42:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46594 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232536AbhFNHmZ (ORCPT
+        id S232547AbhFNHpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232493AbhFNHpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:42:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623656422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pO1bs4aCeAGMi6QoUevwRlfOuXmOwF8LHg6aMdXgv4A=;
-        b=hYLKn+44wPWyjXfOHUpW3g+7Q/VZqyfvPr2mqS8QinqL74T3LkVCgOPeqLwncUop5o9Fuh
-        iucUHp6NqHcgFCQlf5T9dWqrfb+Qur2Supj1YdGJLa96bV3DVA1HRTgNpTIe1vsBRqb9wE
-        FcpfVRpJdBDTdMtjApcWQiLsnM6aRXo=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-TQ41e3XSN-OIoLANqed5Bg-1; Mon, 14 Jun 2021 03:40:21 -0400
-X-MC-Unique: TQ41e3XSN-OIoLANqed5Bg-1
-Received: by mail-ej1-f69.google.com with SMTP id nd10-20020a170907628ab02903a324b229bfso2689279ejc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:40:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=pO1bs4aCeAGMi6QoUevwRlfOuXmOwF8LHg6aMdXgv4A=;
-        b=Me38k8uzrW0KKVLRZFEsVbof9W1FhcSKqY/pH8x4o4FozKJA7v+A0MTY1I4xCITDIY
-         GxpIsG5fHP6qM2oLJMhWbXrNQPGRMx83w/0j0EkpUK8gE3nH7w4bXSEe6+35lC6ZS0eq
-         ayz82F0lq+Xtf6RNA7S3Bz21GQbyYH0FNFWIrmu52hrKpbnn0qDOzfhD4tfSi1Ai/eed
-         KP7K686CRGYw29EXmbt2VQsK67IfLqwR0e2NO7J0DruS2FsTbGesq58xn04yHK7Zi+Eu
-         ikVJiB0TJJrg0AO4aDbTRfX1s21yFQYEXHhgfpqgwaioIEqeK2kUYutDemvCXljQed8I
-         aGVw==
-X-Gm-Message-State: AOAM531Fk9h5MpaJudRPhyuO1ebkbB5lSZ8p5W2IY7QBF8bBGUsDRif8
-        GPFUeYVcKRSSgxl62f4IM3Uh+10wqP9VLfdPvipkdDMDuAeSWQgnN/toMbn1esV0Vk+U/P88rwo
-        6QAAtP7ASIBgmyHmrAvRJsqCc
-X-Received: by 2002:a17:906:5f99:: with SMTP id a25mr14108182eju.45.1623656420104;
-        Mon, 14 Jun 2021 00:40:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyHtYGUGNum+bcwXR+N/ohsUHAg9NGqifx/V1ATCaqzSQSYy3WvGVLoJyEXGm5FMnXAxqJu6w==
-X-Received: by 2002:a17:906:5f99:: with SMTP id a25mr14108166eju.45.1623656419835;
-        Mon, 14 Jun 2021 00:40:19 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id au11sm6707061ejc.88.2021.06.14.00.40.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 00:40:19 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v3 0/4] KVM: x86: hyper-v: Conditionally allow SynIC
- with APICv/AVIC
-In-Reply-To: <f294faba4e5d25aba8773f36170d1309236edd3b.camel@redhat.com>
-References: <20210609150911.1471882-1-vkuznets@redhat.com>
- <f294faba4e5d25aba8773f36170d1309236edd3b.camel@redhat.com>
-Date:   Mon, 14 Jun 2021 09:40:18 +0200
-Message-ID: <87zgvsx5b1.fsf@vitty.brq.redhat.com>
+        Mon, 14 Jun 2021 03:45:10 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97166C061574;
+        Mon, 14 Jun 2021 00:43:06 -0700 (PDT)
+Received: from [IPv6:2a01:e0a:4cb:a870:b4e0:7e9f:1348:5540] (unknown [IPv6:2a01:e0a:4cb:a870:b4e0:7e9f:1348:5540])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5D23A1F42376;
+        Mon, 14 Jun 2021 08:43:03 +0100 (BST)
+Subject: Re: [PATCH v2 7/8] media: hevc: Add scaling matrix control
+To:     Hans Verkuil <hverkuil@xs4all.nl>, ezequiel@collabora.com,
+        p.zabel@pengutronix.de, mchehab@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk, jernej.skrabec@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210610154442.806107-1-benjamin.gaignard@collabora.com>
+ <20210610154442.806107-8-benjamin.gaignard@collabora.com>
+ <87a1e585-688e-7c4d-b9a9-24f42772a1a8@xs4all.nl>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <d5b010c8-c0c5-8800-b2c3-9371923ca10c@collabora.com>
+Date:   Mon, 14 Jun 2021 09:43:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87a1e585-688e-7c4d-b9a9-24f42772a1a8@xs4all.nl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-> On Wed, 2021-06-09 at 17:09 +0200, Vitaly Kuznetsov wrote:
->> Changes since v2:
->> - First two patches got merged, rebase.
->> - Use 'enable_apicv =3D avic =3D ...' in PATCH1 [Paolo]
->> - Collect R-b tags for PATCH2 [Sean, Max]
->> - Use hv_apicv_update_work() to get out of SRCU lock [Max]
->> - "KVM: x86: Check for pending interrupts when APICv is getting disabled"
->>   added.
->>=20
->> Original description:
->>=20
->> APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
->> SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It =
-is,
->> however, possible to track whether the feature was actually used by the
->> guest and only inhibit APICv/AVIC when needed.
->>=20
->> The series can be tested with the followin hack:
->>=20
->> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> index 9a48f138832d..65a9974f80d9 100644
->> --- a/arch/x86/kvm/cpuid.c
->> +++ b/arch/x86/kvm/cpuid.c
->> @@ -147,6 +147,13 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
->>                                            vcpu->arch.ia32_misc_enable_m=
-sr &
->>                                            MSR_IA32_MISC_ENABLE_MWAIT);
->>         }
+Le 14/06/2021 à 09:27, Hans Verkuil a écrit :
+> On 10/06/2021 17:44, Benjamin Gaignard wrote:
+>> HEVC scaling lists are used for the scaling process for transform
+>> coefficients.
+>> V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
+>> encoded in the bitstream.
+> Comparing H264 with HEVC I noticed that the corresponding flag for H264 is
+> called V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT.
+>
+> Should those names be aligned? Also, it is part of PPS for H264 and SPS in HEVC,
+> is that difference correct?
+
+In ITU specifications ("7.4.3.2.1 General sequence parameter set RBSP semantics") this flag is define like that:
+scaling_list_enabled_flag equal to 1 specifies that a scaling list is used for the scaling process for transform coefficients.
+scaling_list_enabled_flag equal to 0 specifies that scaling list is not used for the scaling process for transform coefficients.
+
+So for me the naming is correct.
+
+Regards,
+Benjamin
+
+>
+> Regards,
+>
+> 	Hans
+>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>> version 2:
+>>   - Fix structure name in ext-ctrls-codec.rst
+>>
+>>   .../media/v4l/ext-ctrls-codec.rst             | 45 +++++++++++++++++++
+>>   .../media/v4l/vidioc-queryctrl.rst            |  6 +++
+>>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |  6 +++
+>>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 ++
+>>   include/media/hevc-ctrls.h                    | 11 +++++
+>>   5 files changed, 72 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> index 8c6e2a11ed95..d4f40bb85263 100644
+>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> @@ -3068,6 +3068,51 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>>   
+>>       \normalsize
+>>   
+>> +``V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX (struct)``
+>> +    Specifies the HEVC scaling matrix parameters used for the scaling process
+>> +    for transform coefficients.
+>> +    These matrix and parameters are defined according to :ref:`hevc`.
+>> +    They are described in section 7.4.5 "Scaling list data semantics" of
+>> +    the specification.
 >> +
->> +       /* Dirty hack: force HV_DEPRECATING_AEOI_RECOMMENDED. Not to be =
-merged! */
->> +       best =3D kvm_find_cpuid_entry(vcpu, HYPERV_CPUID_ENLIGHTMENT_INF=
-O, 0);
->> +       if (best) {
->> +               best->eax &=3D ~HV_X64_APIC_ACCESS_RECOMMENDED;
->> +               best->eax |=3D HV_DEPRECATING_AEOI_RECOMMENDED;
->> +       }
->>  }
->>  EXPORT_SYMBOL_GPL(kvm_update_cpuid_runtime);
->>=20=20
->> Vitaly Kuznetsov (4):
->>   KVM: x86: Use common 'enable_apicv' variable for both APICv and AVIC
->>   KVM: x86: Drop vendor specific functions for APICv/AVIC enablement
->>   KVM: x86: Check for pending interrupts when APICv is getting disabled
->>   KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in
->>     use
->>=20
->>  arch/x86/include/asm/kvm_host.h |  9 +++++-
->>  arch/x86/kvm/hyperv.c           | 51 +++++++++++++++++++++++++++++----
->>  arch/x86/kvm/svm/avic.c         | 14 ++++-----
->>  arch/x86/kvm/svm/svm.c          | 22 ++++++++------
->>  arch/x86/kvm/svm/svm.h          |  2 --
->>  arch/x86/kvm/vmx/capabilities.h |  1 -
->>  arch/x86/kvm/vmx/vmx.c          |  2 --
->>  arch/x86/kvm/x86.c              | 18 ++++++++++--
->>  8 files changed, 86 insertions(+), 33 deletions(-)
->>=20
->
-> Hi!
->
-> I hate to say it, but at least one of my VMs doesn't boot amymore
-> with avic=3D1, after the recent updates. I'll bisect this soon,
-> but this is likely related to this series.
->
-> I will also review this series very soon.
->
-> When the VM fails, it hangs on the OVMF screen and I see this
-> in qemu logs:
->
-> KVM: injection failed, MSI lost (Operation not permitted)
-> KVM: injection failed, MSI lost (Operation not permitted)
-> KVM: injection failed, MSI lost (Operation not permitted)
-> KVM: injection failed, MSI lost (Operation not permitted)
-> KVM: injection failed, MSI lost (Operation not permitted)
-> KVM: injection failed, MSI lost (Operation not permitted)
->
-
--EPERM?? Interesting... strace(1) may come handy...
-
-$ git grep EPERM kvm/queue arch/x86/kvm/=20
-kvm/queue:arch/x86/kvm/x86.c:           ret =3D -KVM_EPERM;
-(just this one)
-
-kvm_emulate_hypercall():
-...
-b3646477d458f arch/x86/kvm/x86.c (Jason Baron                2021-01-14 22:=
-27:56 -0500  8433)   if (static_call(kvm_x86_get_cpl)(vcpu) !=3D 0) {
-07708c4af1346 arch/x86/kvm/x86.c (Jan Kiszka                 2009-08-03 18:=
-43:28 +0200  8434)           ret =3D -KVM_EPERM;
-696ca779a928d arch/x86/kvm/x86.c (Radim Kr=C4=8Dm=C3=A1=C5=99              =
- 2018-05-24 17:50:56 +0200  8435)           goto out;
-07708c4af1346 arch/x86/kvm/x86.c (Jan Kiszka                 2009-08-03 18:=
-43:28 +0200  8436)   }
-...
-
-Doesn't seem we have any updates here, curious what your bisection will
-point us to.
-
---=20
-Vitaly
-
+>> +.. c:type:: v4l2_ctrl_hevc_scaling_matrix
+>> +
+>> +.. raw:: latex
+>> +
+>> +    \scriptsize
+>> +
+>> +.. tabularcolumns:: |p{5.4cm}|p{6.8cm}|p{5.1cm}|
+>> +
+>> +.. cssclass:: longtable
+>> +
+>> +.. flat-table:: struct v4l2_ctrl_hevc_scaling_matrix
+>> +    :header-rows:  0
+>> +    :stub-columns: 0
+>> +    :widths:       1 1 2
+>> +
+>> +    * - __u8
+>> +      - ``scaling_list_4x4[6][16]``
+>> +      -
+>> +    * - __u8
+>> +      - ``scaling_list_8x8[6][64]``
+>> +      -
+>> +    * - __u8
+>> +      - ``scaling_list_16x16[6][64]``
+>> +      -
+>> +    * - __u8
+>> +      - ``scaling_list_32x32[2][64]``
+>> +      -
+>> +    * - __u8
+>> +      - ``scaling_list_dc_coef_16x16[6]``
+>> +      -
+>> +    * - __u8
+>> +      - ``scaling_list_dc_coef_32x32[2]``
+>> +      -
+>> +
+>> +.. raw:: latex
+>> +
+>> +    \normalsize
+>> +
+>>   .. c:type:: v4l2_hevc_dpb_entry
+>>   
+>>   .. raw:: latex
+>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+>> index f9ecf6276129..2f491c17dd5d 100644
+>> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+>> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+>> @@ -495,6 +495,12 @@ See also the examples in :ref:`control`.
+>>         - n/a
+>>         - A struct :c:type:`v4l2_ctrl_hevc_slice_params`, containing HEVC
+>>   	slice parameters for stateless video decoders.
+>> +    * - ``V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX``
+>> +      - n/a
+>> +      - n/a
+>> +      - n/a
+>> +      - A struct :c:type:`v4l2_ctrl_hevc_scaling_matrix`, containing HEVC
+>> +	scaling matrix for stateless video decoders.
+>>       * - ``V4L2_CTRL_TYPE_VP8_FRAME``
+>>         - n/a
+>>         - n/a
+>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+>> index c4b5082849b6..70adfc1b9c81 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+>> @@ -687,6 +687,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>   
+>>   		break;
+>>   
+>> +	case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
+>> +		break;
+>> +
+>>   	case V4L2_CTRL_TYPE_AREA:
+>>   		area = p;
+>>   		if (!area->width || !area->height)
+>> @@ -1240,6 +1243,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>>   	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
+>>   		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
+>>   		break;
+>> +	case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
+>> +		elem_size = sizeof(struct v4l2_ctrl_hevc_scaling_matrix);
+>> +		break;
+>>   	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
+>>   		elem_size = sizeof(struct v4l2_ctrl_hevc_decode_params);
+>>   		break;
+>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>> index b6344bbf1e00..cb29c2a7fabe 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>> @@ -996,6 +996,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>   	case V4L2_CID_MPEG_VIDEO_HEVC_SPS:			return "HEVC Sequence Parameter Set";
+>>   	case V4L2_CID_MPEG_VIDEO_HEVC_PPS:			return "HEVC Picture Parameter Set";
+>>   	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:		return "HEVC Slice Parameters";
+>> +	case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:		return "HEVC Scaling Matrix";
+>>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:		return "HEVC Decode Parameters";
+>>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC Decode Mode";
+>>   	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return "HEVC Start Code";
+>> @@ -1488,6 +1489,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>   	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
+>>   		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
+>>   		break;
+>> +	case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:
+>> +		*type = V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX;
+>> +		break;
+>>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:
+>>   		*type = V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS;
+>>   		break;
+>> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+>> index 53c0038c792b..0e5c4a2eecff 100644
+>> --- a/include/media/hevc-ctrls.h
+>> +++ b/include/media/hevc-ctrls.h
+>> @@ -19,6 +19,7 @@
+>>   #define V4L2_CID_MPEG_VIDEO_HEVC_SPS		(V4L2_CID_CODEC_BASE + 1008)
+>>   #define V4L2_CID_MPEG_VIDEO_HEVC_PPS		(V4L2_CID_CODEC_BASE + 1009)
+>>   #define V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS	(V4L2_CID_CODEC_BASE + 1010)
+>> +#define V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX	(V4L2_CID_CODEC_BASE + 1011)
+>>   #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS	(V4L2_CID_CODEC_BASE + 1012)
+>>   #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE	(V4L2_CID_CODEC_BASE + 1015)
+>>   #define V4L2_CID_MPEG_VIDEO_HEVC_START_CODE	(V4L2_CID_CODEC_BASE + 1016)
+>> @@ -27,6 +28,7 @@
+>>   #define V4L2_CTRL_TYPE_HEVC_SPS 0x0120
+>>   #define V4L2_CTRL_TYPE_HEVC_PPS 0x0121
+>>   #define V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS 0x0122
+>> +#define V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX 0x0123
+>>   #define V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS 0x0124
+>>   
+>>   enum v4l2_mpeg_video_hevc_decode_mode {
+>> @@ -224,6 +226,15 @@ struct v4l2_ctrl_hevc_decode_params {
+>>   	__u64	flags;
+>>   };
+>>   
+>> +struct v4l2_ctrl_hevc_scaling_matrix {
+>> +	__u8	scaling_list_4x4[6][16];
+>> +	__u8	scaling_list_8x8[6][64];
+>> +	__u8	scaling_list_16x16[6][64];
+>> +	__u8	scaling_list_32x32[2][64];
+>> +	__u8	scaling_list_dc_coef_16x16[6];
+>> +	__u8	scaling_list_dc_coef_32x32[2];
+>> +};
+>> +
+>>   /*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2 */
+>>   #define V4L2_CID_CODEC_HANTRO_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1200)
+>>   /*
+>>
