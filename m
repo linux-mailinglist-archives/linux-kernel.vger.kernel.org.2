@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DB53A64A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E883A6305
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhFNL1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:27:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42880 "EHLO mail.kernel.org"
+        id S233880AbhFNLIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235019AbhFNLMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:12:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44ED861959;
-        Mon, 14 Jun 2021 10:48:27 +0000 (UTC)
+        id S234509AbhFNK53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:57:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9C46613D0;
+        Mon, 14 Jun 2021 10:41:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667707;
-        bh=oOZfVwqe4Q2H/WNxZodKKGnp1gY45NtnBA8IR4gLn8Q=;
+        s=korg; t=1623667291;
+        bh=f7+IsVAiTuk2fsnsSTO13i3VZaVGlWGF9fNo05lFuyQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VTF9yOlVVjhlhJjDTLMv9+u612e3JpIczqkuAd4vR9G/tQdbqxBNTxO+lfTRRv9A0
-         AKv2dOyKeUpaSU7Zr3QZlT2/I+1l1gttOAYI+7ccTQezYPrg20/A+Xl10ZoMUCf8Bi
-         pagVdiDKHK8Gbjo9zm8yRFk5/q3ayCzHfAW3Kmmo=
+        b=aAn8lggHQXU1tScNQsjDBxKqh0LkQQMRi3CiRM1OGo/hJGd0iBolZdRHrRuyvu0Xe
+         YUcmEiylTZQ625CkADxxqDHd3Z5c1hRDDXOR6dg5D6Q6xikxsKrpOnORiPSJTx1RIq
+         yyS9fBhsxvyQMThKJVPVbbd1Jfve6IN0cSRs6/w8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 044/173] powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P1010 i2c controllers
+        stable@vger.kernel.org, Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 015/131] spi: sprd: Add missing MODULE_DEVICE_TABLE
 Date:   Mon, 14 Jun 2021 12:26:16 +0200
-Message-Id: <20210614102659.628247224@linuxfoundation.org>
+Message-Id: <20210614102653.514399369@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-[ Upstream commit 19ae697a1e4edf1d755b413e3aa38da65e2db23b ]
+[ Upstream commit 7907cad7d07e0055789ec0c534452f19dfe1fc80 ]
 
-The i2c controllers on the P1010 have an erratum where the documented
-scheme for i2c bus recovery will not work (A-004447). A different
-mechanism is needed which is documented in the P1010 Chip Errata Rev L.
+MODULE_DEVICE_TABLE is used to extract the device information out of the
+driver and builds a table when being compiled. If using this macro,
+kernel can find the driver if available when the device is plugged in,
+and then loads that driver and initializes the device.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Link: https://lore.kernel.org/r/20210512093534.243040-1-zhang.lyra@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/boot/dts/fsl/p1010si-post.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/spi/spi-sprd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi b/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-index 1b4aafc1f6a2..9716a0484ecf 100644
---- a/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-+++ b/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-@@ -122,7 +122,15 @@
- 	};
+diff --git a/drivers/spi/spi-sprd.c b/drivers/spi/spi-sprd.c
+index b41a75749b49..28e70db9bbba 100644
+--- a/drivers/spi/spi-sprd.c
++++ b/drivers/spi/spi-sprd.c
+@@ -1068,6 +1068,7 @@ static const struct of_device_id sprd_spi_of_match[] = {
+ 	{ .compatible = "sprd,sc9860-spi", },
+ 	{ /* sentinel */ }
+ };
++MODULE_DEVICE_TABLE(of, sprd_spi_of_match);
  
- /include/ "pq3-i2c-0.dtsi"
-+	i2c@3000 {
-+		fsl,i2c-erratum-a004447;
-+	};
-+
- /include/ "pq3-i2c-1.dtsi"
-+	i2c@3100 {
-+		fsl,i2c-erratum-a004447;
-+	};
-+
- /include/ "pq3-duart-0.dtsi"
- /include/ "pq3-espi-0.dtsi"
- 	spi0: spi@7000 {
+ static struct platform_driver sprd_spi_driver = {
+ 	.driver = {
 -- 
 2.30.2
 
