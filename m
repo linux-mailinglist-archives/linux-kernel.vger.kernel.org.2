@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F46D3A6408
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F913A640B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236092AbhFNLUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:20:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39538 "EHLO mail.kernel.org"
+        id S236142AbhFNLU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:20:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234189AbhFNLH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:07:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B13B61933;
-        Mon, 14 Jun 2021 10:46:10 +0000 (UTC)
+        id S234608AbhFNLIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:08:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C88AE61444;
+        Mon, 14 Jun 2021 10:46:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667571;
-        bh=5v2OFS50SGrtKixBb1zZSrIBnC13A5UX6gk+6YxbADg=;
+        s=korg; t=1623667574;
+        bh=0yn5oIrFm35hUqC5US8/HECgH6nifrQYsV0i59dutGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FM+BzUlMf1cagelotL0A/UuNCrGXENgtsKtU0zwWPu/GkOJNvccAnabQ4nK+n3BNF
-         Oz/4QR2ORsURjzN/e0Uz5ZBb+gVHUgfoakAR5JuvveJyUwtHY3n6/XMkBYr0wU6s7v
-         oltdaXlzDXOfY+UbUYJL8dNR8cluY39GzJumW8x0=
+        b=DfiSqsYMx6Cz7Ia6Da8PwVA4Z/L+X1Ah7Zx28xlKZtJIKHNdvs7WvMiV59Eu9+1Vw
+         7Ts4qDf9iNMR0zVpRRfHuEavPoIOEW5SBn4S+rpKqpdYHqEh7YjKbL9v/6A7CuJkyI
+         4EsYAKi/q8UtrzOCh3VU7KKm7TgkNtFWnPAxlkqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 123/131] kvm: fix previous commit for 32-bit builds
-Date:   Mon, 14 Jun 2021 12:28:04 +0200
-Message-Id: <20210614102657.195583338@linuxfoundation.org>
+        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.10 124/131] NFS: Fix use-after-free in nfs4_init_client()
+Date:   Mon, 14 Jun 2021 12:28:05 +0200
+Message-Id: <20210614102657.227678117@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -38,33 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Anna Schumaker <Anna.Schumaker@Netapp.com>
 
-commit 4422829e8053068e0225e4d0ef42dc41ea7c9ef5 upstream.
+commit 476bdb04c501fc64bf3b8464ffddefc8dbe01577 upstream.
 
-array_index_nospec does not work for uint64_t on 32-bit builds.
-However, the size of a memory slot must be less than 20 bits wide
-on those system, since the memory slot must fit in the user
-address space.  So just store it in an unsigned long.
+KASAN reports a use-after-free when attempting to mount two different
+exports through two different NICs that belong to the same server.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Olga was able to hit this with kernels starting somewhere between 5.7
+and 5.10, but I traced the patch that introduced the clear_bit() call to
+4.13. So something must have changed in the refcounting of the clp
+pointer to make this call to nfs_put_client() the very last one.
+
+Fixes: 8dcbec6d20 ("NFSv41: Handle EXCHID4_FLAG_CONFIRMED_R during NFSv4.1 migration")
+Cc: stable@vger.kernel.org # 4.13+
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/kvm_host.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nfs/nfs4client.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1110,8 +1110,8 @@ __gfn_to_hva_memslot(struct kvm_memory_s
- 	 * table walks, do not let the processor speculate loads outside
- 	 * the guest's registered memslots.
- 	 */
--	unsigned long offset = array_index_nospec(gfn - slot->base_gfn,
--						  slot->npages);
-+	unsigned long offset = gfn - slot->base_gfn;
-+	offset = array_index_nospec(offset, slot->npages);
- 	return slot->userspace_addr + offset * PAGE_SIZE;
- }
+--- a/fs/nfs/nfs4client.c
++++ b/fs/nfs/nfs4client.c
+@@ -435,8 +435,8 @@ struct nfs_client *nfs4_init_client(stru
+ 		 */
+ 		nfs_mark_client_ready(clp, -EPERM);
+ 	}
+-	nfs_put_client(clp);
+ 	clear_bit(NFS_CS_TSM_POSSIBLE, &clp->cl_flags);
++	nfs_put_client(clp);
+ 	return old;
  
+ error:
 
 
