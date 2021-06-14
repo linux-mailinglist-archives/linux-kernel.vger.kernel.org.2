@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E593A6076
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F00C3A6041
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhFNKet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:34:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39386 "EHLO mail.kernel.org"
+        id S233130AbhFNKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:32:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233129AbhFNKcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:32:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA226134F;
-        Mon, 14 Jun 2021 10:30:28 +0000 (UTC)
+        id S232918AbhFNKbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:31:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB6A9611C0;
+        Mon, 14 Jun 2021 10:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666629;
-        bh=p7v+GAQYeiFOtTPwauiD39nslgDXZAnClVjwoDfAYZY=;
+        s=korg; t=1623666583;
+        bh=0NXTFvWE17t98H7R7BVX/lsCPyLJTlsSyz/0pbNeoiM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ns9sWQzoZlKpJ1Xfz2jgvfuBeBlcqHSdAFOgjKfXDL/1O+aT8+VEgh3F7ZKcJDnr3
-         mHZ9mZzDMEILLfEH2G3lb6/oYeJp7MYys5VeGCRpGo2OonfUVAP/9Fn0dzauLwSZrO
-         MZ/OWPJYsoKOUITY7Wia+n8101qRUujkucQr6Eyk=
+        b=I4Rfe9mWpo2zPYIBWT1aIkl0xSGai1jG33STzzVP3/XNz3ZNY6Xqd7PTM51P07yM6
+         egvFKroHTg3BOc8H1hyJ8PJWrsiOlBqq23alAQnVpWXAvOF1B4EHEwx+KYBWbjmPFP
+         X9M4sd0754FIaOd0Uqsy/TAhR8ToH5gQzRu8tjqA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 14/42] net: appletalk: cops: Fix data race in cops_probe1
+Subject: [PATCH 4.4 14/34] bnx2x: Fix missing error code in bnx2x_iov_init_one()
 Date:   Mon, 14 Jun 2021 12:27:05 +0200
-Message-Id: <20210614102643.160528390@linuxfoundation.org>
+Message-Id: <20210614102642.048442269@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
+References: <20210614102641.582612289@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit a4dd4fc6105e54393d637450a11d4cddb5fabc4f ]
+[ Upstream commit 65161c35554f7135e6656b3df1ce2c500ca0bdcf ]
 
-In cops_probe1(), there is a write to dev->base_addr after requesting an
-interrupt line and registering the interrupt handler cops_interrupt().
-The handler might be called in parallel to handle an interrupt.
-cops_interrupt() tries to read dev->base_addr leading to a potential
-data race. So write to dev->base_addr before calling request_irq().
+Eliminate the follow smatch warning:
 
-Found by Linux Driver Verification project (linuxtesting.org).
+drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1227
+bnx2x_iov_init_one() warn: missing error code 'err'.
 
-Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/appletalk/cops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/appletalk/cops.c b/drivers/net/appletalk/cops.c
-index 1b2e9217ec78..d520ce32ddbf 100644
---- a/drivers/net/appletalk/cops.c
-+++ b/drivers/net/appletalk/cops.c
-@@ -324,6 +324,8 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
- 			break;
- 	}
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+index 55a7774e8ef5..92c965cb3633 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+@@ -1245,8 +1245,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
+ 		goto failed;
  
-+	dev->base_addr = ioaddr;
-+
- 	/* Reserve any actual interrupt. */
- 	if (dev->irq) {
- 		retval = request_irq(dev->irq, cops_interrupt, 0, dev->name, dev);
-@@ -331,8 +333,6 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
- 			goto err_out;
- 	}
+ 	/* SR-IOV capability was enabled but there are no VFs*/
+-	if (iov->total == 0)
++	if (iov->total == 0) {
++		err = -EINVAL;
+ 		goto failed;
++	}
  
--	dev->base_addr = ioaddr;
--
-         lp = netdev_priv(dev);
-         spin_lock_init(&lp->lock);
+ 	iov->nr_virtfn = min_t(u16, iov->total, num_vfs_param);
  
 -- 
 2.30.2
