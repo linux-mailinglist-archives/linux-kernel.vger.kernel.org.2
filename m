@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84DC3A664E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806133A6658
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbhFNMPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 08:15:09 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:34752 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232559AbhFNMPH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:15:07 -0400
-Received: by mail-ej1-f47.google.com with SMTP id g8so16323077ejx.1;
-        Mon, 14 Jun 2021 05:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QLUxngfo3tVRsn8lxTbb2M+pKAJYV8dDKHPOOPKoTaQ=;
-        b=Bj60gfN//81FbKFsw8vmSYFyf9l4j9EcZ0FHlmCCiJcTgaPTWPvMz3ngEb9cFeox2L
-         J83g7X5gNn3rMiZorcToT8ihZhR+lKo5lAd4MFbFK9oidU39PP++s1KJSFjYh+W0KFYM
-         vzQhA2si4N0QYZYCurTZQwmm62tpOiJciqqQdyWcTprMZB9bEgalOVS4DhGUi9WIWxVg
-         JPySx84ag9rRTknbLwUECGucgre11bGerEFYkvHuBSMftO+UnGBuzZBd60mZVBX7COMW
-         VD1v7uyuqhxwYz58bE8GJKcENz3JsTvSJGQ9guFMp6e8tjylv3ZSCu6vONo+BxS04h1X
-         yqeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QLUxngfo3tVRsn8lxTbb2M+pKAJYV8dDKHPOOPKoTaQ=;
-        b=q+4PiH6EVKSWoTL2MAWKIL/OtfDTsTGQ+J1c8z0TU45i8ksLZFqngy2ShtH80NcMGL
-         kgf8mqTTyUEVM0JSf4IozyVrpg2FcUWUUaQg37pSZg+Acs7y92mDgXBjgcuHk6zSq8BT
-         4oAN4aTGld4++vGEuZwU0HOmEogzsgtZMRQ9iOKGdZqc2OzOSS9jUaMdvzEij3gBSUc8
-         2uHbkH/T5ntxxuemjhj+tOzGKCgCpVlQLiOcu35QI2aobDTZawrO42WS8e06esSI28bz
-         SQxmr/ryYh5MKQMi39dUUkcM78MuaSa9AN9VyzzfJRDVCYtTUxM4dp1OgCwO5tIE+hW1
-         1SLg==
-X-Gm-Message-State: AOAM533n4ggDpq/3YJtqvaL0xP+1QXK3zH6wYpatetdMQT34JkEN9b8P
-        6G3FDsNwPdgEykHL7g1lL7k=
-X-Google-Smtp-Source: ABdhPJy07Ww7kdGvvKtp/A8GhghbKQudQ2gRCkoXtVyIPHcVKEBxj97capoDt0Od0XC0i+mtJmK6XA==
-X-Received: by 2002:a17:906:3b99:: with SMTP id u25mr15017293ejf.539.1623672710305;
-        Mon, 14 Jun 2021 05:11:50 -0700 (PDT)
-Received: from BV030612LT ([188.24.178.25])
-        by smtp.gmail.com with ESMTPSA id o26sm8687476edi.15.2021.06.14.05.11.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 05:11:49 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 15:11:47 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Add Ethernet DTS for Actions Semi Owl S500 SoCs
-Message-ID: <20210614121147.GA1876517@BV030612LT>
-References: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
- <20210614112831.GB38584@thinkpad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614112831.GB38584@thinkpad>
+        id S233315AbhFNMST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 08:18:19 -0400
+Received: from comms.puri.sm ([159.203.221.185]:56530 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232559AbhFNMSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 08:18:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 639BCE145C;
+        Mon, 14 Jun 2021 05:15:45 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id GxXrigckZaEu; Mon, 14 Jun 2021 05:15:44 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm, laurent.pinchart@ideasonboard.com
+Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
+        kernel@pengutronix.de, kernel@puri.sm, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mchehab@kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org, shawnguo@kernel.org,
+        slongerbeam@gmail.com, m.felsch@pengutronix.de
+Subject: [PATCH v4 0/3] media: imx: add support for imx8mq MIPI RX
+Date:   Mon, 14 Jun 2021 14:15:19 +0200
+Message-Id: <20210614121522.2944593-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 04:58:31PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Jun 11, 2021 at 12:11:31PM +0300, Cristian Ciocaltea wrote:
-> > This patchset adds the required DTS changes for providing the ethernet
-> > functionality on the Actions S500 SoCs family.
-> > 
-> > For the moment I have been able to test the Ethernet MAC on the RoseaplePi
-> > SBC only.
-> > 
-> > Also, please note the patches depend on some clock changes that are
-> > currently under review:
-> > https://lore.kernel.org/lkml/cover.1623354574.git.cristian.ciocaltea@gmail.com/
-> > 
-> 
-> Waiting for the clk patches to be merged...
+hi,
 
-Thanks, Mani!
+This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
 
-Hopefully Stephen is going to pick them up in time..
+It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
 
-Kind regards,
-Cristi
+This is the vendor driver I'm basing the hardware-side of the driver on:
+https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/media/platform/imx8/mxc-mipi-csi2_yav.c?h=imx_5.4.70_2.3.0
 
-> Thanks,
-> Mani
-> 
-> > Thanks,
-> > Cristi
-> > 
-> > Changes in v2:
-> > - Added Reviewed-by tag from Mani in patch 1/2
-> > - Joined the groups sharing common function "eth_rmii" and switch the
-> >   order of "ref_clk-pinconf" and "phy_clk-pinmux", per Mani's review,
-> >   in patch 2/2
-> > 
-> > Cristian Ciocaltea (2):
-> >   ARM: dts: owl-s500: Add ethernet support
-> >   ARM: dts: owl-s500-roseapplepi: Add ethernet support
-> > 
-> >  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 45 ++++++++++++++++++++++
-> >  arch/arm/boot/dts/owl-s500.dtsi            | 10 +++++
-> >  2 files changed, 55 insertions(+)
-> > 
-> > -- 
-> > 2.32.0
-> > 
+Thanks Laurent who helped a lot. I'm happy for any feedback,
+
+                           martin
+
+revision history
+----------------
+v4: (thank you Rob and Marco)
+* create fsl,mipi-phy-gpr custom dt property instead of confusing "phy"
+* add imx8mq-specific compatibile to imx8mq.dtsi for future use
+
+v3: (thank you, Rob and Laurent)
+among minor other things according to v2 review, changes include:
+* better describe the clocks
+* rename DT property "phy-reset" to "reset" and "phy-gpr" to "phy"
+https://lore.kernel.org/linux-media/20210608104128.1616028-1-martin.kepplinger@puri.sm/T/#t
+
+v2: (thank you, Dan and Guido)
+among fixes according to v1 reviews, changes include:
+* remove status property from dt-bindings example
+* define a few bits in order to have less magic values
+* use "imx8mq_mipi_csi_" as local function prefix
+* read DT properties only during probe()
+* remove dead code (log_status)
+* add imx8mq_mipi_csi_release_icc()
+* fix imx8mq_mipi_csi_init_icc()
+https://lore.kernel.org/linux-media/20210531112326.90094-1-martin.kepplinger@puri.sm/
+
+v1:
+https://lore.kernel.org/linux-media/20210527075407.3180744-1-martin.kepplinger@puri.sm/T/#t
+
+Martin Kepplinger (3):
+  dt-bindings: media: document the nxp,imx8mq-mipi-csi2 receiver phy and
+    controller
+  media: imx: add a driver for i.MX8MQ mipi csi rx phy and controller
+  arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
+
+ .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 171 +++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 102 ++
+ drivers/staging/media/imx/Makefile            |   1 +
+ drivers/staging/media/imx/imx8mq-mipi-csi2.c  | 994 ++++++++++++++++++
+ 4 files changed, 1268 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+ create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
+
+-- 
+2.30.2
+
