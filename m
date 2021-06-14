@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D293A604C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BCB3A6267
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbhFNKdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:33:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38654 "EHLO mail.kernel.org"
+        id S235207AbhFNLAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:00:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232849AbhFNKbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5FE561245;
-        Mon, 14 Jun 2021 10:29:50 +0000 (UTC)
+        id S234420AbhFNKve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:51:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C1A061476;
+        Mon, 14 Jun 2021 10:39:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666591;
-        bh=EgHBOKPa1VR7ueQvBTaHZ2pNhJCTpuwY/RABMEZcPn4=;
+        s=korg; t=1623667154;
+        bh=J5V1QVOgXXFiFt0IqM+CYK36Ta3RwIHNPWq3G/S5GvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WHCPgHJo4OncgN/pG6bOeugHWz3O+/7KKgJy3G+nlR1QZ1Ykrc76/0TRRgxP6hdZE
-         uE47Baa/esTIWgEoKaFBHHvNxYOft9RRBzq88zdSPNqYlS8odODgrbwAlzZGFXxiPm
-         DQCMtiTTBGgKiX74mEgj0N3NtqsmMYoG7ICna2kw=
+        b=flqMShXdRn6JJlldoMXnrANvroEMCBKyAfb5MMy5iNwDfUWJR3pc/v8WuX3bVrk7a
+         lk3aEanjwQVOEn9z+9u+I6fXaKd3bBPd4I0mEh4WRQaLEzPdXrYONl1fQraMrFdOse
+         YqpAVaAtNo9kWz2ApnrQEnmr8KnG6GD5SK6QulJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.4 34/34] ftrace: Do not blindly read the ip address in ftrace_bug()
+        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
+Subject: [PATCH 5.4 47/84] usb: f_ncm: only first packet of aggregate needs to start timer
 Date:   Mon, 14 Jun 2021 12:27:25 +0200
-Message-Id: <20210614102642.674418435@linuxfoundation.org>
+Message-Id: <20210614102647.971186568@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,55 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Maciej Żenczykowski <maze@google.com>
 
-commit 6c14133d2d3f768e0a35128faac8aa6ed4815051 upstream.
+commit 1958ff5ad2d4908b44a72bcf564dfe67c981e7fe upstream.
 
-It was reported that a bug on arm64 caused a bad ip address to be used for
-updating into a nop in ftrace_init(), but the error path (rightfully)
-returned -EINVAL and not -EFAULT, as the bug caused more than one error to
-occur. But because -EINVAL was returned, the ftrace_bug() tried to report
-what was at the location of the ip address, and read it directly. This
-caused the machine to panic, as the ip was not pointing to a valid memory
-address.
+The reasoning for this change is that if we already had
+a packet pending, then we also already had a pending timer,
+and as such there is no need to reschedule it.
 
-Instead, read the ip address with copy_from_kernel_nofault() to safely
-access the memory, and if it faults, report that the address faulted,
-otherwise report what was in that location.
+This also prevents packets getting delayed 60 ms worst case
+under a tiny packet every 290us transmit load, by keeping the
+timeout always relative to the first queued up packet.
+(300us delay * 16KB max aggregation / 80 byte packet =~ 60 ms)
 
-Link: https://lore.kernel.org/lkml/20210607032329.28671-1-mark-pk.tsai@mediatek.com/
+As such the first packet is now at most delayed by 300us.
 
-Cc: stable@vger.kernel.org
-Fixes: 05736a427f7e1 ("ftrace: warn on failure to disable mcount callers")
-Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Under low transmit load, this will simply result in us sending
+a shorter aggregate, as originally intended.
+
+This patch has the benefit of greatly reducing (by ~10 factor
+with 1500 byte frames aggregated into 16 kiB) the number of
+(potentially pretty costly) updates to the hrtimer.
+
+Cc: Brooke Basile <brookebasile@gmail.com>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Link: https://lore.kernel.org/r/20210608085438.813960-1-zenczykowski@gmail.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/ftrace.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_ncm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -1943,12 +1943,18 @@ static int ftrace_hash_ipmodify_update(s
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1101,11 +1101,11 @@ static struct sk_buff *ncm_wrap_ntb(stru
+ 			ncm->ndp_dgram_count = 1;
  
- static void print_ip_ins(const char *fmt, unsigned char *p)
- {
-+	char ins[MCOUNT_INSN_SIZE];
- 	int i;
+ 			/* Note: we skip opts->next_ndp_index */
+-		}
  
-+	if (probe_kernel_read(ins, p, MCOUNT_INSN_SIZE)) {
-+		printk(KERN_CONT "%s[FAULT] %px\n", fmt, p);
-+		return;
-+	}
-+
- 	printk(KERN_CONT "%s", fmt);
+-		/* Delay the timer. */
+-		hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
+-			      HRTIMER_MODE_REL_SOFT);
++			/* Start the timer. */
++			hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
++				      HRTIMER_MODE_REL_SOFT);
++		}
  
- 	for (i = 0; i < MCOUNT_INSN_SIZE; i++)
--		printk(KERN_CONT "%s%02x", i ? ":" : "", p[i]);
-+		printk(KERN_CONT "%s%02x", i ? ":" : "", ins[i]);
- }
- 
- static struct ftrace_ops *
+ 		/* Add the datagram position entries */
+ 		ntb_ndp = skb_put_zero(ncm->skb_tx_ndp, dgram_idx_len);
 
 
