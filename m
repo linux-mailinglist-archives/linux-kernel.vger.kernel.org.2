@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5EA3A71AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9CC3A71AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhFNWBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 18:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbhFNWBX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 18:01:23 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497A8C061574;
-        Mon, 14 Jun 2021 14:59:05 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id b9so17554567ybg.10;
-        Mon, 14 Jun 2021 14:59:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TZ9IOmDtrZ7ni16mZAp2GrXLaKHRdUgj/PRjU6h2E4g=;
-        b=hyJC88zcRBbPbmWSBxuipd4CSWNL1IvjA7MZr+nsTkzyjCH5iRWCnlMNpIRqS9el9c
-         XtD8+XTXh5LqEx9SzMAm0LEcwpuklJ/GLTHUD0d1dwzRL0YXJcW6sDmRBZjCpkfb6wmv
-         feY+aawuh7VyjZz39qiMoMbW4BzFHVyk6lrUx+HNkXCcjHuQxTgZCo1jE7jjy7F0scQz
-         ZkFNTpUmQ61KIWhkjl4KzKvOxgFssx/2eZzBgXnY5jYkF8jKyFJ4MxwRnMu1nCJD8EsW
-         zL9xKAm93+/jb6Cu1MinBAUjdETuB1JKJdb/lw6i6Jgmf/RhoOq48OHToUgxlTh7jKKM
-         sTdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TZ9IOmDtrZ7ni16mZAp2GrXLaKHRdUgj/PRjU6h2E4g=;
-        b=ZbmYc21T9JS+bKdlhkV7TrOdEGZdzznJrPHOcU9c7sVtEA1g+Ka4rxpMf8DB974tgl
-         948CwFN+DHe2ffJwgoekbAug6Y3gQRikH4HVlco273JUJOr+NicHSAVQ/sIl7o0tP8pd
-         CXJIhDSqeppl5/0VUt705WPdfkIztZr9fuitp0PyBhqzjnEMzzZh1phEy3oKXfZghtr5
-         XgmNiwCjBg/18ej5CLO2c3tTMMb8OFps9auS8bdafuc1WN0x3r09Q2N5qC5JUAwfKeuI
-         XTLz9KoppINW2OgL2w8yuCHBVFSfUIRakuIDEGTK+nc8SZhc0B60Dvd9GTQzB2q2jEZp
-         XqeA==
-X-Gm-Message-State: AOAM5311e3JiKo0v446g9N/fHDOuFT6XTYM4Z5yDKcO09WvIQM65MZfZ
-        5RYBQnw6eNlnTRqV+Y4c7Ru8ZlgAZebxpWsbv73Or6/ONt4N8A==
-X-Google-Smtp-Source: ABdhPJwM4JriTTGxJctcBS5AHLq3/0YqXry11po9fnxM/+M939A6AkOG4ffHD4uRJYcu+d1NLAf1LXQjWPejUAOxq8E=
-X-Received: by 2002:a25:db93:: with SMTP id g141mr28180078ybf.141.1623707944462;
- Mon, 14 Jun 2021 14:59:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210614154359.805555-1-benjamin.gaignard@collabora.com>
- <20210614154359.805555-4-benjamin.gaignard@collabora.com> <19d8cb97-d715-eb5f-5b2c-0c273937fd00@arm.com>
-In-Reply-To: <19d8cb97-d715-eb5f-5b2c-0c273937fd00@arm.com>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Mon, 14 Jun 2021 17:58:52 -0400
-Message-ID: <CAMdYzYrD=qtwAPc8tNRB8Ko-f_zhOVKiOsbgPPqpAi2MrDzSSA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] PHY: rockchip: USB2: Allow 64 bits reg property
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>, kishon@ti.com,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+        id S231236AbhFNWBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:01:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229728AbhFNWBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 18:01:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 812B0611AB;
+        Mon, 14 Jun 2021 21:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623707952;
+        bh=pWkuBglv4mJnySzxhM7bwezoUP6TooTYCM8jj9C/mMc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YwSajIk1y4sYoZY1UBFqXv0/yZ/AiCakTI2i2mjtLiUBMYJ3Nx370PZ08rJnPm7iL
+         rnjeiU+qqZujCFrnI8IKr47zRkSzzon0gjd3rA8tzgplkkxe+ox7gjb4HPbKJPjzD4
+         7p/WfcR9LrREx8ocKOPJeaO+YA9ngbBjiKFSCgYs=
+Date:   Mon, 14 Jun 2021 14:59:12 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH 4/4] vfs: keep inodes with page cache off the inode
+ shrinker LRU
+Message-Id: <20210614145912.feb751df928f38476048ec15@linux-foundation.org>
+In-Reply-To: <20210614211904.14420-4-hannes@cmpxchg.org>
+References: <20210614211904.14420-1-hannes@cmpxchg.org>
+        <20210614211904.14420-4-hannes@cmpxchg.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 1:09 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-06-14 16:43, Benjamin Gaignard wrote:
-> > In rk356x device-tree "reg" property could be coded on 64 bits.
-> > Change reg type and of_property_read_ to make it works.
->
-> On platforms with #address-cells=1, this isn't going to do what you
-> think. Worse, it's not even going to fail, because you *can* read a
-> 64-bit value from an address cell with a size cell after it...
+On Mon, 14 Jun 2021 17:19:04 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
 
-Apologies, this was a hack and in no way ready for submission.
+> Historically (pre-2.5), the inode shrinker used to reclaim only empty
+> inodes and skip over those that still contained page cache. This
+> caused problems on highmem hosts: struct inode could put fill lowmem
+> zones before the cache was getting reclaimed in the highmem zones.
+> 
+> To address this, the inode shrinker started to strip page cache to
+> facilitate reclaiming lowmem. However, this comes with its own set of
+> problems: the shrinkers may drop actively used page cache just because
+> the inodes are not currently open or dirty - think working with a
+> large git tree. It further doesn't respect cgroup memory protection
+> settings and can cause priority inversions between containers.
+> 
+> Nowadays, the page cache also holds non-resident info for evicted
+> cache pages in order to detect refaults. We've come to rely heavily on
+> this data inside reclaim for protecting the cache workingset and
+> driving swap behavior. We also use it to quantify and report workload
+> health through psi. The latter in turn is used for fleet health
+> monitoring, as well as driving automated memory sizing of workloads
+> and containers, proactive reclaim and memory offloading schemes.
+> 
+> The consequences of dropping page cache prematurely is that we're
+> seeing subtle and not-so-subtle failures in all of the above-mentioned
+> scenarios, with the workload generally entering unexpected thrashing
+> states while losing the ability to reliably detect it.
+> 
+> To fix this on non-highmem systems at least, going back to rotating
+> inodes on the LRU isn't feasible. We've tried (commit a76cf1a474d7
+> ("mm: don't reclaim inodes with many attached pages")) and failed
+> (commit 69056ee6a8a3 ("Revert "mm: don't reclaim inodes with many
+> attached pages"")). The issue is mostly that shrinker pools attract
+> pressure based on their size, and when objects get skipped the
+> shrinkers remember this as deferred reclaim work. This accumulates
+> excessive pressure on the remaining inodes, and we can quickly eat
+> into heavily used ones, or dirty ones that require IO to reclaim, when
+> there potentially is plenty of cold, clean cache around still.
+> 
+> Instead, this patch keeps populated inodes off the inode LRU in the
+> first place - just like an open file or dirty state would. An
+> otherwise clean and unused inode then gets queued when the last cache
+> entry disappears. This solves the problem without reintroducing the
+> reclaim issues, and generally is a bit more scalable than having to
+> wade through potentially hundreds of thousands of busy inodes.
+> 
+> Locking is a bit tricky because the locks protecting the inode state
+> (i_lock) and the inode LRU (lru_list.lock) don't nest inside the
+> irq-safe page cache lock (i_pages.xa_lock). Page cache deletions are
+> serialized through i_lock, taken before the i_pages lock, to make sure
+> depopulated inodes are queued reliably. Additions may race with
+> deletions, but we'll check again in the shrinker. If additions race
+> with the shrinker itself, we're protected by the i_lock: if
+> find_inode() or iput() win, the shrinker will bail on the elevated
+> i_count or I_REFERENCED; if the shrinker wins and goes ahead with the
+> inode, it will set I_FREEING and inhibit further igets(), which will
+> cause the other side to create a new instance of the inode instead.
+> 
 
-While I've got you here, what would be the best way to handle this?
-Since previous generations #address-cells=1 and #size-cells=1, where
-the rk356x #address-cells=2 and #size-cells=2 and we need to account
-for both of them.
+And what hitherto unexpected problems will this one cause, sigh.
 
-Thanks,
-Peter
-
->
-> Robin.
->
-> > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > ---
-> >   drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-> > index 46ebdb1460a3d..45518f96d7217 100644
-> > --- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-> > +++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-> > @@ -1068,7 +1068,7 @@ static int rockchip_usb2phy_probe(struct platform_device *pdev)
-> >       struct rockchip_usb2phy *rphy;
-> >       const struct rockchip_usb2phy_cfg *phy_cfgs;
-> >       const struct of_device_id *match;
-> > -     unsigned int reg;
-> > +     u64 reg;
-> >       int index, ret;
-> >
-> >       rphy = devm_kzalloc(dev, sizeof(*rphy), GFP_KERNEL);
-> > @@ -1098,7 +1098,7 @@ static int rockchip_usb2phy_probe(struct platform_device *pdev)
-> >               rphy->usbgrf = NULL;
-> >       }
-> >
-> > -     if (of_property_read_u32(np, "reg", &reg)) {
-> > +     if (of_property_read_u64(np, "reg", &reg)) {
-> >               dev_err(dev, "the reg property is not assigned in %pOFn node\n",
-> >                       np);
-> >               return -EINVAL;
-> >
+How exhaustively has this approach been tested?
