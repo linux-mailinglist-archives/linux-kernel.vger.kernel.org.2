@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6613A6C28
+	by mail.lfdr.de (Postfix) with ESMTP id ED4D33A6C29
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235443AbhFNQm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56746 "EHLO
+        id S235454AbhFNQmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235020AbhFNQkm (ORCPT
+        with ESMTP id S234956AbhFNQkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:40:42 -0400
+        Mon, 14 Jun 2021 12:40:43 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990EAC0613A2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:38:39 -0700 (PDT)
-Message-Id: <20210614155358.058188608@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD0EC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:38:40 -0700 (PDT)
+Message-Id: <20210614155358.171482110@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688718;
+        s=2020; t=1623688719;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=UqxkWdMgauavrXsl+dPl+WOnHzKy/yWo5jtOch7Wn5E=;
-        b=aLjTgdtAJuj3e2qNJZ1IlV8gm6Sdz1V3WT3zVx1MNKjoj+HwxFb6Uqlg7zREMIy8NLMWDz
-        6a9lMfGwfve5wSyu6Q33ewM2l6d7CoRo7LeFXA+r1v5G10Ct/FXs9QoNqDnNHFxIDYP/EO
-        emiBo+NAo3oipIWYJQq3UbauP7Gbireb4hcK94w9HtnJCjlrcgexe5Th/Af0VijdLhA2C8
-        M89Kh2S7/ZRJfym77kXNsOARWb8cJuClZwdDUvXrHcJW033yXMHdk8JHOduhBC9IFhg7Hl
-        PVIic+QCdaOYYcOG4SDliEO2zrgSFdOTWrsK/AiELxn3XCaMfjhUeNwxiopF0A==
+        bh=rruod782V/lMqAQCx3Pe6SjkF+nyR1YtuOknbZ0orFQ=;
+        b=jM5IPQnJigiChhM3dwOQJIUXdNTbYW6yQWSWLOYwXystOTL596yzUEHOe+ybsv/RXg++WO
+        DhZsgSB8AQeMRJbt36rmVBq9JJ4/AlCMIRerdqgcyqXYekNDZ+JQzaMCRP/94rAYWM76oE
+        ZiIfJGIaf4x53QgoppjPRwVCxckyvrGKZiHoc7botb5rL07PcxMFywBRgpObsZ9cA23cHX
+        UecAJT/NbedwcppfFxrr2R82caGYlFeTmKmWqfM+KieF1H/uI858vCIvDcwnsOXBMS4ZNw
+        1sHGlvvG8f+j48YPqo0BfA+HxYiA+FrefKijtsAYLAdPm3TMKeVAa/fo/SFpBQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688718;
+        s=2020e; t=1623688719;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=UqxkWdMgauavrXsl+dPl+WOnHzKy/yWo5jtOch7Wn5E=;
-        b=Ln2/1nuuGtTZyxrPGYY9ZxBnZRTLjXVjaxx+lXFJh39Kix4AYAsCP0VYUAGA2oF1YNT5bm
-        0QJVfjAnO4r9KbBw==
-Date:   Mon, 14 Jun 2021 17:44:51 +0200
+        bh=rruod782V/lMqAQCx3Pe6SjkF+nyR1YtuOknbZ0orFQ=;
+        b=HJWBNhA1pDtGUBdn7SEjE498z5skprNRpgjz69tYu7FuAp6WvFpO7fCK3nWa9JW9NRufPf
+        6P0nV8YN3nC4vYCw==
+Date:   Mon, 14 Jun 2021 17:44:52 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,8 +47,8 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 43/52] x86/fpu: Move FXSAVE_LEAK quirk info
- __copy_kernel_to_fpregs()
+Subject: [patch V2 44/52] x86/fpu: Rename xfeatures_mask_user() to
+ xfeatures_mask_uabi()
 References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,92 +57,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-copy_kernel_to_fpregs() restores all xfeatures but it is also the place
-where the AMD FXSAVE_LEAK bug is handled.
-
-That prevents fpregs_restore_userregs() to limit the restored features,
-which is required to distangle PKRU and XSTATE handling and also for the
-upcoming supervisor state management.
-
-Move the FXSAVE_LEAK quirk into __copy_kernel_to_fpregs() and deinline that
-function which has become rather fat.
+Rename it so it's clear that this is about user ABI features which can
+differ from the feature set which the kernel saves and restores because the
+kernel handles e.g. PKRU differently. But the user ABI (ptrace, signal
+frame) expects it to be there.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/fpu/internal.h |   25 +------------------------
- arch/x86/kernel/fpu/core.c          |   26 ++++++++++++++++++++++++++
- 2 files changed, 27 insertions(+), 24 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    7 ++++++-
+ arch/x86/include/asm/fpu/xstate.h   |    6 +++++-
+ arch/x86/kernel/fpu/core.c          |    2 +-
+ arch/x86/kernel/fpu/signal.c        |   10 +++++-----
+ arch/x86/kernel/fpu/xstate.c        |   14 +++++++-------
+ 5 files changed, 24 insertions(+), 15 deletions(-)
 
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -399,33 +399,10 @@ static inline int xrstor_from_kernel_err
- extern void save_fpregs_to_fpstate(struct fpu *fpu);
- extern void copy_fpregs_to_fpstate(struct fpu *fpu);
- 
--static inline void __restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask)
--{
--	if (use_xsave()) {
--		xrstor_from_kernel(&fpstate->xsave, mask);
--	} else {
--		if (use_fxsr())
--			fxrstor_from_kernel(&fpstate->fxsave);
--		else
--			frstor_from_kernel(&fpstate->fsave);
--	}
--}
-+extern void __restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask);
- 
- static inline void restore_fpregs_from_fpstate(union fpregs_state *fpstate)
+@@ -319,7 +319,12 @@ static inline void xrstor_from_kernel(st
+  */
+ static inline int xsave_to_user_sigframe(struct xregs_state __user *buf)
  {
--	/*
--	 * AMD K7/K8 CPUs don't save/restore FDP/FIP/FOP unless an exception is
--	 * pending. Clear the x87 state here by setting it to fixed values.
--	 * "m" is a random variable that should be in L1.
--	 */
--	if (unlikely(static_cpu_has_bug(X86_BUG_FXSAVE_LEAK))) {
--		asm volatile(
--			"fnclex\n\t"
--			"emms\n\t"
--			"fildl %P[addr]"	/* set F?P to defined value */
--			: : [addr] "m" (fpstate));
--	}
--
- 	__restore_fpregs_from_fpstate(fpstate, -1);
+-	u64 mask = xfeatures_mask_user();
++	/*
++	 * Include the features which are not xsaved/rstored by the kernel
++	 * internally, e.g. PKRU. That's user space ABI and also required
++	 * to allow the signal handler to modify PKRU.
++	 */
++	u64 mask = xfeatures_mask_uabi();
+ 	u32 lmask = mask;
+ 	u32 hmask = mask >> 32;
+ 	int err;
+--- a/arch/x86/include/asm/fpu/xstate.h
++++ b/arch/x86/include/asm/fpu/xstate.h
+@@ -83,7 +83,11 @@ static inline u64 xfeatures_mask_supervi
+ 	return xfeatures_mask_all & XFEATURE_MASK_SUPERVISOR_SUPPORTED;
  }
  
+-static inline u64 xfeatures_mask_user(void)
++/*
++ * The xfeatures which are enabled in XCR0 and expected to be in ptrace
++ * buffers and signal frames.
++ */
++static inline u64 xfeatures_mask_uabi(void)
+ {
+ 	return xfeatures_mask_all & XFEATURE_MASK_USER_SUPPORTED;
+ }
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -145,6 +145,32 @@ void copy_fpregs_to_fpstate(struct fpu *
- 		restore_fpregs_from_fpstate(&fpu->state);
- }
+@@ -470,7 +470,7 @@ void fpu__clear_user_states(struct fpu *
+ 	}
  
-+void __restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask)
-+{
-+	/*
-+	 * AMD K7/K8 CPUs don't save/restore FDP/FIP/FOP unless an exception is
-+	 * pending. Clear the x87 state here by setting it to fixed values.
-+	 * "m" is a random variable that should be in L1.
-+	 */
-+	if (unlikely(static_cpu_has_bug(X86_BUG_FXSAVE_LEAK))) {
-+		asm volatile(
-+			"fnclex\n\t"
-+			"emms\n\t"
-+			"fildl %P[addr]"	/* set F?P to defined value */
-+			: : [addr] "m" (fpstate));
-+	}
-+
-+	if (use_xsave()) {
-+		xrstor_from_kernel(&fpstate->xsave, mask);
-+	} else {
-+		if (use_fxsr())
-+			fxrstor_from_kernel(&fpstate->fxsave);
-+		else
-+			frstor_from_kernel(&fpstate->fsave);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(__restore_fpregs_from_fpstate);
-+
- void kernel_fpu_begin_mask(unsigned int kfpu_mask)
+ 	/* Reset user states in registers. */
+-	load_fpregs_from_init_fpstate(xfeatures_mask_user());
++	load_fpregs_from_init_fpstate(xfeatures_mask_uabi());
+ 
+ 	/*
+ 	 * Now all FPU registers have their desired values.  Inform the FPU
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -267,14 +267,14 @@ static int copy_user_to_fpregs_zeroing(v
+ 
+ 	if (use_xsave()) {
+ 		if (fx_only) {
+-			init_bv = xfeatures_mask_user() & ~XFEATURE_MASK_FPSSE;
++			init_bv = xfeatures_mask_uabi() & ~XFEATURE_MASK_FPSSE;
+ 
+ 			r = fxrstor_from_user_sigframe(buf);
+ 			if (!r)
+ 				xrstor_from_kernel(&init_fpstate.xsave, init_bv);
+ 			return r;
+ 		} else {
+-			init_bv = xfeatures_mask_user() & ~xbv;
++			init_bv = xfeatures_mask_uabi() & ~xbv;
+ 
+ 			r = xrstor_from_user_sigframe(buf, xbv);
+ 			if (!r && unlikely(init_bv))
+@@ -429,7 +429,7 @@ static int __fpu__restore_sig(void __use
+ 	fpregs_unlock();
+ 
+ 	if (use_xsave() && !fx_only) {
+-		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
++		u64 init_bv = xfeatures_mask_uabi() & ~user_xfeatures;
+ 
+ 		ret = copy_sigframe_from_user_to_xstate(&fpu->state.xsave, buf_fx);
+ 		if (ret)
+@@ -463,7 +463,7 @@ static int __fpu__restore_sig(void __use
+ 		if (use_xsave()) {
+ 			u64 init_bv;
+ 
+-			init_bv = xfeatures_mask_user() & ~XFEATURE_MASK_FPSSE;
++			init_bv = xfeatures_mask_uabi() & ~XFEATURE_MASK_FPSSE;
+ 			xrstor_from_kernel(&init_fpstate.xsave, init_bv);
+ 		}
+ 
+@@ -558,7 +558,7 @@ void fpu__init_prepare_fx_sw_frame(void)
+ 
+ 	fx_sw_reserved.magic1 = FP_XSTATE_MAGIC1;
+ 	fx_sw_reserved.extended_size = size;
+-	fx_sw_reserved.xfeatures = xfeatures_mask_user();
++	fx_sw_reserved.xfeatures = xfeatures_mask_uabi();
+ 	fx_sw_reserved.xstate_size = fpu_user_xstate_size;
+ 
+ 	if (IS_ENABLED(CONFIG_IA32_EMULATION) ||
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -155,7 +155,7 @@ void fpu__init_cpu_xstate(void)
+ 	 * managed by XSAVE{C, OPT, S} and XRSTOR{S}.  Only XSAVE user
+ 	 * states can be set here.
+ 	 */
+-	xsetbv(XCR_XFEATURE_ENABLED_MASK, xfeatures_mask_user());
++	xsetbv(XCR_XFEATURE_ENABLED_MASK, xfeatures_mask_uabi());
+ 
+ 	/*
+ 	 * MSR_IA32_XSS sets supervisor states managed by XSAVES.
+@@ -462,7 +462,7 @@ int xfeature_size(int xfeature_nr)
+ static int validate_user_xstate_header(const struct xstate_header *hdr)
  {
- 	preempt_disable();
+ 	/* No unknown or supervisor features may be set */
+-	if (hdr->xfeatures & ~xfeatures_mask_user())
++	if (hdr->xfeatures & ~xfeatures_mask_uabi())
+ 		return -EINVAL;
+ 
+ 	/* Userspace must use the uncompacted format */
+@@ -764,7 +764,7 @@ void __init fpu__init_system_xstate(void
+ 	cpuid_count(XSTATE_CPUID, 1, &eax, &ebx, &ecx, &edx);
+ 	xfeatures_mask_all |= ecx + ((u64)edx << 32);
+ 
+-	if ((xfeatures_mask_user() & XFEATURE_MASK_FPSSE) != XFEATURE_MASK_FPSSE) {
++	if ((xfeatures_mask_uabi() & XFEATURE_MASK_FPSSE) != XFEATURE_MASK_FPSSE) {
+ 		/*
+ 		 * This indicates that something really unexpected happened
+ 		 * with the enumeration.  Disable XSAVE and try to continue
+@@ -795,7 +795,7 @@ void __init fpu__init_system_xstate(void
+ 	 * Update info used for ptrace frames; use standard-format size and no
+ 	 * supervisor xstates:
+ 	 */
+-	update_regset_xstate_info(fpu_user_xstate_size, xfeatures_mask_user());
++	update_regset_xstate_info(fpu_user_xstate_size, xfeatures_mask_uabi());
+ 
+ 	fpu__init_prepare_fx_sw_frame();
+ 	setup_init_fpu_buf();
+@@ -823,7 +823,7 @@ void fpu__resume_cpu(void)
+ 	 * Restore XCR0 on xsave capable CPUs:
+ 	 */
+ 	if (boot_cpu_has(X86_FEATURE_XSAVE))
+-		xsetbv(XCR_XFEATURE_ENABLED_MASK, xfeatures_mask_user());
++		xsetbv(XCR_XFEATURE_ENABLED_MASK, xfeatures_mask_uabi());
+ 
+ 	/*
+ 	 * Restore IA32_XSS. The same CPUID bit enumerates support
+@@ -1004,7 +1004,7 @@ void copy_uabi_xstate_to_membuf(struct m
+ 		break;
+ 
+ 	case XSTATE_COPY_XSAVE:
+-		header.xfeatures &= xfeatures_mask_user();
++		header.xfeatures &= xfeatures_mask_uabi();
+ 		break;
+ 	}
+ 
+@@ -1049,7 +1049,7 @@ void copy_uabi_xstate_to_membuf(struct m
+ 		 * compacted init_fpstate. The gap tracking will zero this
+ 		 * later.
+ 		 */
+-		if (!(xfeatures_mask_user() & BIT_ULL(i)))
++		if (!(xfeatures_mask_uabi() & BIT_ULL(i)))
+ 			continue;
+ 
+ 		/*
 
