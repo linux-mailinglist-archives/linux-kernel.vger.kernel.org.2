@@ -2,101 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FE43A5C96
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DEC3A5C9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhFNFxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 01:53:31 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:46377 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232276AbhFNFx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 01:53:26 -0400
-X-UUID: ee7ddcb7ec4b43a3a4cfb9ccec489cc4-20210614
-X-UUID: ee7ddcb7ec4b43a3a4cfb9ccec489cc4-20210614
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1636646899; Mon, 14 Jun 2021 13:51:17 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 14 Jun 2021 13:51:15 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 14 Jun 2021 13:51:15 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
-        <nathan@kernel.org>, <ndesaulniers@google.com>,
-        <keescook@chromium.org>, <samitolvanen@google.com>
-CC:     <linux-kbuild@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <yj.chiang@mediatek.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: [PATCH] kbuild: lto: fix module versionings mismatch in incremental build
-Date:   Mon, 14 Jun 2021 13:51:09 +0800
-Message-ID: <20210614055109.28774-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S232276AbhFNF5q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Jun 2021 01:57:46 -0400
+Received: from [183.90.58.236] ([183.90.58.236]:40920 "EHLO ns1.zackeruz.tk"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229696AbhFNF5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 01:57:45 -0400
+Received: from johnlewis.com (unknown [192.168.20.1])
+        by ns1.zackeruz.tk (Postfix) with ESMTPSA id DDC8C8424B1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:55:40 +0800 (+08)
+Reply-To: robert_turner@johnlewis-trading.com,
+          pippawicks.sales@johnlewis-trading.com
+From:   John Lewis Partnersip <robert.turner04@johnlewis.com>
+To:     linux-kernel@vger.kernel.org
+Subject: Product Inquiry [JL]  06/11/2021
+Date:   14 Jun 2021 05:55:40 +0000
+Message-ID: <20210614043314.5A65D42381147AF1@johnlewis.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building modules(CONFIG_...=m), I found some of module versions
-are incorrect and set to 0.
-This can be found in build log for first clean build which shows
+Dear linux-kernel
 
-WARNING: EXPORT symbol "XXXX" [drivers/XXX/XXX.ko] version generation failed, symbol will not be versioned.
+The famous brand John Lewis Partnership, is UK's largest multi-
+channel retailer with over 126 shops and multiple expansion in 
+Africa furnished by European/Asian/American products. We are 
+sourcing new products to attract new customers and also retain 
+our existing ones, create new partnerships with companies dealing 
+with different kinds of goods globally.
 
-But in second build(incremental build), the WARNING disappeared and the
-module version becomes valid CRC and make someone who want to change
-modules without updating kernel image can't insert their modules.
+Your company's products are of interest to our market as we have 
+an amazing market for your products.
 
-The problematic code is
-+	$(foreach n, $(filter-out FORCE,$^),				\
-+		$(if $(wildcard $(n).symversions),			\
-+			; cat $(n).symversions >> $@.symversions))
+Provide us your current catalog through email to review more. We 
+hope to be able to order with you and start a long-term friendly,
+respectable and solid business partnership. Please we would 
+appreciate it if you could send us your stock availability via 
+email if any.
 
-For example:
-  rm -f fs/notify/built-in.a.symversions    ; rm -f fs/notify/built-in.a; \
-llvm-ar cDPrST fs/notify/built-in.a fs/notify/fsnotify.o \
-fs/notify/notification.o fs/notify/group.o ...
+Our payment terms are 15 days net in Europe, 30 days Net in UK 
+and 30 days net in Asia/USA as we operate with over 5297 
+suppliers around the globe for the past 50 years now. For 
+immediate response Send your reply to robert_turner@johnlewis-
+trading.com for us to be able to 
+treat with care and urgency.
 
-`foreach n` shows nothing to `cat` into $(n).symversions because
-`if $(wildcard $(n).symversions)` return nothing, but actually
-they do exist during this line was executed.
 
--rw-r--r-- 1 root root 168580 Jun 13 19:10 fs/notify/fsnotify.o
--rw-r--r-- 1 root root    111 Jun 13 19:10 fs/notify/fsnotify.o.symversions
+Best Regards
 
-The reason is the $(n).symversions are generated at runtime, but
-Makefile wildcard function expends and checks the file exist or not
-during parsing the Makefile.
-
-Thus fix this by use `test` shell command to check the file
-existence in runtime.
-
-Fixes: 38e89184900385 ("kbuild: lto: fix module versioning")
-Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
----
- scripts/Makefile.build | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 949f723efe53..a91012b06ebb 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -387,8 +387,7 @@ ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
-       cmd_update_lto_symversions =					\
- 	rm -f $@.symversions						\
- 	$(foreach n, $(filter-out FORCE,$^),				\
--		$(if $(wildcard $(n).symversions),			\
--			; cat $(n).symversions >> $@.symversions))
-+			; test -s $(n).symversions && cat $(n).symversions >> $@.symversions)
- else
-       cmd_update_lto_symversions = echo >/dev/null
- endif
--- 
-2.18.0
-
+Rob Turner
+Head Of Procurement Operations
+John Lewis & Partners.
+robert_turner@johnlewis-trading.com
+Tel: +44-7451-274090
+WhatsApp: +447497483925
+www.johnlewis.com
+REGISTERED OFFICE: 171 VICTORIA STREET, LONDON SW1E 5NN  
