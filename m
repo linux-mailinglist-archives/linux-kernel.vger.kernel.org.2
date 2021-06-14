@@ -2,114 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3253A66B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B3F3A66AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbhFNMfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 08:35:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232775AbhFNMfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:35:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6646961244;
-        Mon, 14 Jun 2021 12:33:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623674028;
-        bh=dmo8qs/MKATYA1IZ7AKaDdhtV6InuuZs1/xAmbBoelg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tNeM8rM+lhmlbM045WN+IcMEQHT9GEmw3lCv0Hj8oSEfiazU1Jp8srjGbVwOIpBvL
-         tQIQT5ZF6vI55B69SdF2qkC9alHY6RjyX/SAHRSHRiQC3PoRS0L9zFDDAQQLRRnsq3
-         4EnydgJEtvF94ROI4jAv+sGkYNONW3PEGkeG8Sh7M3WH00XYHAWrw0KmnEIfi6m7hJ
-         jctPDMS7+g480SSRQDBg5k/kaWE3l5N4nEP0ovrCqUSUJPVwHGWKTbMJzRh8eLJydc
-         bj37EfY6qtAWhzEIYFNIAsxhbOnj5oKYk6gy8lG/kyTN//eM0+9RuB9ppcGDBmA7IM
-         6TqIG6S7wk/Xw==
-Received: by mail-wr1-f44.google.com with SMTP id f2so14361667wri.11;
-        Mon, 14 Jun 2021 05:33:48 -0700 (PDT)
-X-Gm-Message-State: AOAM533wJu2rLHDO/Igt86o9ewA0ORhIUa1M2zbihJxgrxYcNjMPDG0A
-        fHiZMV2+imQuymR4LPXpxxcthI29AhN6tRYPmhs=
-X-Google-Smtp-Source: ABdhPJzEzwMZ9lAEzL6goASqbV9BzfrcmBrbAr/mXOU1vhDrwPLQ4Gu51NELxrrSobNInTElCWXuBlr/adgJDGZiRs0=
-X-Received: by 2002:a5d:4e12:: with SMTP id p18mr17397922wrt.105.1623674026992;
- Mon, 14 Jun 2021 05:33:46 -0700 (PDT)
+        id S233449AbhFNMfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 08:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233218AbhFNMfL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 08:35:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DCDC061574;
+        Mon, 14 Jun 2021 05:33:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZZKvIEpsaGYUMFQ3fgpTkT5VsdH4goR4WcL96t1S438=; b=ORVU0RUBdzzZwfhSwmynH8ckhU
+        rpBKtHq7boJ9Nileky+klBSkC8A6BeUJXRzslqfq6khT0wWC4mqzz+aZmUVfCD6lIytp1KmIPNex9
+        Nc7iyDeoiQY5TzwTMydnzxSImGI6Xq2ghn1vXxJDPMk7avO2vVIx8jdH4U6+pRjzXlmpcTRfvhvG6
+        LM4A85lnby3/xwY1LSuXpXGenWYd/6+2UdBJHfKMkLOCh5d/XB97Kx4I1y8/Q0CorvK513Obz2CLs
+        Pawgn7oeabJGnzOzSonuhqvXdqLbySUAudKGBF2Z6SBV382kjUPkn2ZLvaq+G5jQBFTzkE4q3Xl+k
+        nJd7c/vg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lslli-005Pl9-28; Mon, 14 Jun 2021 12:32:44 +0000
+Date:   Mon, 14 Jun 2021 13:32:42 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] fs: unexport __set_page_dirty
+Message-ID: <YMdMaqC0DP26h+Gq@casper.infradead.org>
+References: <20210614061512.3966143-1-hch@lst.de>
+ <20210614061512.3966143-2-hch@lst.de>
 MIME-Version: 1.0
-References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com> <20210614102119.qifm5sj7fpg54iqo@vireshk-i7>
-In-Reply-To: <20210614102119.qifm5sj7fpg54iqo@vireshk-i7>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 14 Jun 2021 14:31:43 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a10yObfX_dFMSsqW_fGugdtz0nutJFwDB_OY0DebdGjXQ@mail.gmail.com>
-Message-ID: <CAK8P3a10yObfX_dFMSsqW_fGugdtz0nutJFwDB_OY0DebdGjXQ@mail.gmail.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614061512.3966143-2-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 12:23 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> On 10-06-21, 15:22, Arnd Bergmann wrote:
-> > Can you give an example of how this would be hooked up to other drivers
-> > using those gpios. Can you give an example of how using the "gpio-keys" or
-> > "gpio-leds" drivers in combination with virtio-gpio looks like in the DT?
-> >
-> > Would qemu simply add the required DT properties to the device node that
-> > corresponds to the virtio device in this case?
-> >
-> > From what I can tell, both the mmio and pci variants of virtio can have their
-> > dev->of_node populated, but I don't see the logic in register_virtio_device()
-> > that looks up the of_node of the virtio_device that the of_gpio code then
-> > tries to refer to.
->
-> To be honest, I haven't tried this yet and I was expecting it to be
-> already taken care of. I was relying on the DTB automatically
-> generated by Qemu to get the driver probed and didn't have a look at
-> it as well.
->
-> I now understand that it won't be that straight forward. The same must
-> be true for adding an i2c device to an i2c bus over virtio (The way I
-> tested that earlier was by using the sysfs file to add a device to a
-> bus).
+On Mon, Jun 14, 2021 at 08:15:10AM +0200, Christoph Hellwig wrote:
+> __set_page_dirty is only used by built-in code.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Yes, correct, we had the same discussion about i2c.  Again, this is
-relatively straightforward when the controller and the device attached
-to it (i2c controller/client or gpio controller/function) are both emulated
-by qemu, but a lot harder when the controller and device are
-implemented in different programs.
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-> This may be something lacking generally for virtio-pci thing, not
-> sure though.
+You might also want to do the equivalent of this:
 
-I think most importantly we need a DT binding to describe what device
-nodes are supposed to look like underneath a virtio-mmio or
-virtio-pci device in order for a hypervisor to pass down the
-information to a guest OS in a generic way. We can probably borrow
-the USB naming, and replace compatible="usbVID,PID" with
-compatible="virtioDID", with the device ID in hexadecimal digits,
-such as "virtio22" for I2C (virtio device ID 34 == 0x22) if we decide
-to have a sub-node under the device, or we just point dev->of_node
-of the virtio device to the platform/pci device that is its parent
-in Linux.
-
-Adding the Linux guest code to the virtio layer should be fairly
-straightforward, and I suppose it could be mostly copied from the
-corresponding code that added this for mmc in commit 25185f3f31c9
-("mmc: Add SDIO function devicetree subnode parsing") and for USB
-in commit 69bec7259853 ("USB: core: let USB device know device
-node") and 1a7e3948cb9f ("USB: add device-tree support for
-interfaces").
-
-        Arnd
+https://git.infradead.org/users/willy/pagecache.git/commitdiff/19b3bf0d1a51f41ce5450fdd863969c3d32dfe12
