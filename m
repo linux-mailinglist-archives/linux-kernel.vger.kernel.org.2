@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA373A651C
+	by mail.lfdr.de (Postfix) with ESMTP id C22CC3A651E
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234906AbhFNLdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:33:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45866 "EHLO mail.kernel.org"
+        id S235613AbhFNLdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:33:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235803AbhFNLTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:19:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 197E661988;
-        Mon, 14 Jun 2021 10:51:19 +0000 (UTC)
+        id S235859AbhFNLTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:19:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 893056146D;
+        Mon, 14 Jun 2021 10:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667880;
-        bh=kbxxd7nqoz8CxICtuZQ96bLBcJqebX66O3PCGblxZWc=;
+        s=korg; t=1623667883;
+        bh=eZoL2bR4zZrJTCBHg1P1deW+/wiQH08DCVcdTQ25AWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YaZwFx2q5595Jw7aJTp/zYqcAbTNBeIhTCSy0Gc/JplV2UD75At1OI161G8e9/GfF
-         N5QlFd3pZRhNZ2ZGXRZGs787USKt2rKjDrFLFs++BccDmFg/EnegcFry6229xMjR5s
-         YQaLdfDrCghZCbv5s1v6kc2BrYd5XUEpbjpsoX1A=
+        b=NHHaWdPZFIzJuf/XsqUcKDv3K6/K8jEmFrCPyIAyLMxFGrm/qkfNHAYXpFKI2InbS
+         GsfNbJNASCumiSTO/7VcNPBj2jEmgpAxiT1exbokvgjERqiDn1vOPqAXHGWa2fh1kb
+         Kybp91EBooDJIiP+D2g6RbhqCp4makmJdP8hY6go=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Li Jun <jun.li@nxp.com>
-Subject: [PATCH 5.12 111/173] usb: typec: tcpm: cancel frs hrtimer when unregister tcpm port
-Date:   Mon, 14 Jun 2021 12:27:23 +0200
-Message-Id: <20210614102701.858860025@linuxfoundation.org>
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Kyle Tso <kyletso@google.com>
+Subject: [PATCH 5.12 112/173] usb: typec: tcpm: Do not finish VDM AMS for retrying Responses
+Date:   Mon, 14 Jun 2021 12:27:24 +0200
+Message-Id: <20210614102701.891223351@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -39,32 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jun <jun.li@nxp.com>
+From: Kyle Tso <kyletso@google.com>
 
-commit 7ade4805e296c8d1e40c842395bbe478c7210555 upstream.
+commit 5ab14ab1f2db24ffae6c5c39a689660486962e6e upstream.
 
-Like the state_machine_timer, we should also cancel possible pending
-frs hrtimer when unregister tcpm port.
+If the VDM responses couldn't be sent successfully, it doesn't need to
+finish the AMS until the retry count reaches the limit.
 
-Fixes: 8dc4bd073663 ("usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)")
-Cc: stable <stable@vger.kernel.org>
+Fixes: 0908c5aca31e ("usb: typec: tcpm: AMS and Collision Avoidance")
 Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Li Jun <jun.li@nxp.com>
-Link: https://lore.kernel.org/r/1622627829-11070-2-git-send-email-jun.li@nxp.com
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Kyle Tso <kyletso@google.com>
+Link: https://lore.kernel.org/r/20210606081452.764032-1-kyletso@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/tcpm/tcpm.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/typec/tcpm/tcpm.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
 --- a/drivers/usb/typec/tcpm/tcpm.c
 +++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -6228,6 +6228,7 @@ void tcpm_unregister_port(struct tcpm_po
- {
- 	int i;
- 
-+	hrtimer_cancel(&port->enable_frs_timer);
- 	hrtimer_cancel(&port->vdm_state_machine_timer);
- 	hrtimer_cancel(&port->state_machine_timer);
- 
+@@ -1917,6 +1917,9 @@ static void vdm_run_state_machine(struct
+ 			tcpm_log(port, "VDM Tx error, retry");
+ 			port->vdm_retries++;
+ 			port->vdm_state = VDM_STATE_READY;
++			if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT)
++				tcpm_ams_finish(port);
++		} else {
+ 			tcpm_ams_finish(port);
+ 		}
+ 		break;
 
 
