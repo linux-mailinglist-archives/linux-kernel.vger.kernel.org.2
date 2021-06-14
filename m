@@ -2,144 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B993A642B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA07E3A64A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234978AbhFNLVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:21:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39872 "EHLO mail.kernel.org"
+        id S233029AbhFNL1o convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Jun 2021 07:27:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235165AbhFNLJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:09:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB0561166;
-        Mon, 14 Jun 2021 10:46:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667594;
-        bh=H8YZ+zpXrrz7Ipx8iYndMHa+HWjT9DOs5R514j5F51Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dI5TsL2U6SB4Tumc1K/41ZOGB4FHkgHeSzUszEJPcXF4Z9QxHA6wyATm6lVL6bgPG
-         ZIgHFKGM9K4xbHVhavly2ZNh3sTqePHgY8eVsGsmRn040feZID2LLASqbcxqXd2Tm8
-         9uvQDDMtTT95RKzdVOLqSyCBXwxnfK4tXlOYFboE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        yinbinbin <yinbinbin@alibabacloud.com>,
-        Wetp Zhang <wetp.zy@linux.alibaba.com>,
-        James Wang <jnwang@linux.alibaba.com>,
-        Liangyan <liangyan.peng@linux.alibaba.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.10 131/131] tracing: Correct the length check which causes memory corruption
-Date:   Mon, 14 Jun 2021 12:28:12 +0200
-Message-Id: <20210614102657.478134374@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S235126AbhFNLNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:13:12 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C194A61961;
+        Mon, 14 Jun 2021 10:48:42 +0000 (UTC)
+Date:   Mon, 14 Jun 2021 11:50:43 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] iio: ep93xx: Prepare clock before using it
+Message-ID: <20210614115043.07ea0ae1@jic23-huawei>
+In-Reply-To: <20210613233041.128961-2-alexander.sverdlin@gmail.com>
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+        <20210613233041.128961-2-alexander.sverdlin@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liangyan <liangyan.peng@linux.alibaba.com>
+On Mon, 14 Jun 2021 01:30:35 +0200
+Alexander Sverdlin <alexander.sverdlin@gmail.com> wrote:
 
-commit 3e08a9f9760f4a70d633c328a76408e62d6f80a3 upstream.
+> Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> to Common Clock Framework, otherwise the following is visible:
+> 
+> WARNING: CPU: 0 PID: 1 at drivers/clk/clk.c:1011 clk_core_enable+0x9c/0xbc
+> Enabling unprepared ep93xx-adc
+> CPU: 0 PID: 1 Comm: swapper Not tainted 5.13.0-rc5-... #1
+> Hardware name: Cirrus Logic EDB9302 Evaluation Board
+> [<c000d5b0>] (unwind_backtrace) from [<c000c590>] (show_stack+0x10/0x18)
+> [<c000c590>] (show_stack) from [<c03a5f38>] (dump_stack+0x20/0x2c)
+> [<c03a5f38>] (dump_stack) from [<c03a2098>] (__warn+0x98/0xc0)
+> [<c03a2098>] (__warn) from [<c03a2150>] (warn_slowpath_fmt+0x90/0xc0)
+> [<c03a2150>] (warn_slowpath_fmt) from [<c01d8358>] (clk_core_enable+0x9c/0xbc)
+> [<c01d8358>] (clk_core_enable) from [<c01d8698>] (clk_core_enable_lock+0x18/0x30)
+> [<c01d8698>] (clk_core_enable_lock) from [<c0266560>] (ep93xx_adc_probe+0xe4/0x1a0)
+> [<c0266560>] (ep93xx_adc_probe) from [<c02126e0>] (platform_probe+0x34/0x80)
+> [<c02126e0>] (platform_probe) from [<c0210bf8>] (really_probe+0xe8/0x394)
+> [<c0210bf8>] (really_probe) from [<c0211464>] (device_driver_attach+0x5c/0x64)
+> [<c0211464>] (device_driver_attach) from [<c02114e8>] (__driver_attach+0x7c/0xec)
+> [<c02114e8>] (__driver_attach) from [<c020f1b4>] (bus_for_each_dev+0x78/0xc4)
+> [<c020f1b4>] (bus_for_each_dev) from [<c0211570>] (driver_attach+0x18/0x24)
+> [<c0211570>] (driver_attach) from [<c020fab4>] (bus_add_driver+0x140/0x1cc)
+> [<c020fab4>] (bus_add_driver) from [<c0211c44>] (driver_register+0x74/0x114)
+> [<c0211c44>] (driver_register) from [<c02134f8>] (__platform_driver_register+0x18/0x24)
+> [<c02134f8>] (__platform_driver_register) from [<c0470148>] (ep93xx_adc_driver_init+0x10/0x1c)
+> [<c0470148>] (ep93xx_adc_driver_init) from [<c045ce88>] (do_one_initcall+0x7c/0x1a4)
+> [<c045ce88>] (do_one_initcall) from [<c045d184>] (kernel_init_freeable+0x17c/0x1fc)
+> [<c045d184>] (kernel_init_freeable) from [<c03a64d0>] (kernel_init+0x8/0xf8)
+> [<c03a64d0>] (kernel_init) from [<c00082d8>] (ret_from_fork+0x14/0x3c)
+> ...
+> ep93xx-adc ep93xx-adc: Cannot enable clock
+> ep93xx-adc: probe of ep93xx-adc failed with error -108
+> 
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-We've suffered from severe kernel crashes due to memory corruption on
-our production environment, like,
+From cover letter I'm assuming you want these to go through same route as
+the common clock conversion?  If not shout and I can pick this one up.
 
-Call Trace:
-[1640542.554277] general protection fault: 0000 [#1] SMP PTI
-[1640542.554856] CPU: 17 PID: 26996 Comm: python Kdump: loaded Tainted:G
-[1640542.556629] RIP: 0010:kmem_cache_alloc+0x90/0x190
-[1640542.559074] RSP: 0018:ffffb16faa597df8 EFLAGS: 00010286
-[1640542.559587] RAX: 0000000000000000 RBX: 0000000000400200 RCX:
-0000000006e931bf
-[1640542.560323] RDX: 0000000006e931be RSI: 0000000000400200 RDI:
-ffff9a45ff004300
-[1640542.560996] RBP: 0000000000400200 R08: 0000000000023420 R09:
-0000000000000000
-[1640542.561670] R10: 0000000000000000 R11: 0000000000000000 R12:
-ffffffff9a20608d
-[1640542.562366] R13: ffff9a45ff004300 R14: ffff9a45ff004300 R15:
-696c662f65636976
-[1640542.563128] FS:  00007f45d7c6f740(0000) GS:ffff9a45ff840000(0000)
-knlGS:0000000000000000
-[1640542.563937] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[1640542.564557] CR2: 00007f45d71311a0 CR3: 000000189d63e004 CR4:
-00000000003606e0
-[1640542.565279] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[1640542.566069] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[1640542.566742] Call Trace:
-[1640542.567009]  anon_vma_clone+0x5d/0x170
-[1640542.567417]  __split_vma+0x91/0x1a0
-[1640542.567777]  do_munmap+0x2c6/0x320
-[1640542.568128]  vm_munmap+0x54/0x70
-[1640542.569990]  __x64_sys_munmap+0x22/0x30
-[1640542.572005]  do_syscall_64+0x5b/0x1b0
-[1640542.573724]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[1640542.575642] RIP: 0033:0x7f45d6e61e27
+Jonathan
 
-James Wang has reproduced it stably on the latest 4.19 LTS.
-After some debugging, we finally proved that it's due to ftrace
-buffer out-of-bound access using a debug tool as follows:
-[   86.775200] BUG: Out-of-bounds write at addr 0xffff88aefe8b7000
-[   86.780806]  no_context+0xdf/0x3c0
-[   86.784327]  __do_page_fault+0x252/0x470
-[   86.788367]  do_page_fault+0x32/0x140
-[   86.792145]  page_fault+0x1e/0x30
-[   86.795576]  strncpy_from_unsafe+0x66/0xb0
-[   86.799789]  fetch_memory_string+0x25/0x40
-[   86.804002]  fetch_deref_string+0x51/0x60
-[   86.808134]  kprobe_trace_func+0x32d/0x3a0
-[   86.812347]  kprobe_dispatcher+0x45/0x50
-[   86.816385]  kprobe_ftrace_handler+0x90/0xf0
-[   86.820779]  ftrace_ops_assist_func+0xa1/0x140
-[   86.825340]  0xffffffffc00750bf
-[   86.828603]  do_sys_open+0x5/0x1f0
-[   86.832124]  do_syscall_64+0x5b/0x1b0
-[   86.835900]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-commit b220c049d519 ("tracing: Check length before giving out
-the filter buffer") adds length check to protect trace data
-overflow introduced in 0fc1b09ff1ff, seems that this fix can't prevent
-overflow entirely, the length check should also take the sizeof
-entry->array[0] into account, since this array[0] is filled the
-length of trace data and occupy addtional space and risk overflow.
-
-Link: https://lkml.kernel.org/r/20210607125734.1770447-1-liangyan.peng@linux.alibaba.com
-
-Cc: stable@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Xunlei Pang <xlpang@linux.alibaba.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Fixes: b220c049d519 ("tracing: Check length before giving out the filter buffer")
-Reviewed-by: Xunlei Pang <xlpang@linux.alibaba.com>
-Reviewed-by: yinbinbin <yinbinbin@alibabacloud.com>
-Reviewed-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-Tested-by: James Wang <jnwang@linux.alibaba.com>
-Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/trace/trace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2734,7 +2734,7 @@ trace_event_buffer_lock_reserve(struct t
- 	    (entry = this_cpu_read(trace_buffered_event))) {
- 		/* Try to use the per cpu buffer first */
- 		val = this_cpu_inc_return(trace_buffered_event_cnt);
--		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
-+		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
- 			trace_event_setup(entry, type, flags, pc);
- 			entry->array[0] = len;
- 			return entry;
-
+> ---
+>  drivers/iio/adc/ep93xx_adc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ep93xx_adc.c b/drivers/iio/adc/ep93xx_adc.c
+> index c08ab3c6dfaf..5c85257b814c 100644
+> --- a/drivers/iio/adc/ep93xx_adc.c
+> +++ b/drivers/iio/adc/ep93xx_adc.c
+> @@ -207,7 +207,7 @@ static int ep93xx_adc_probe(struct platform_device *pdev)
+>  		 */
+>  	}
+>  
+> -	ret = clk_enable(priv->clk);
+> +	ret = clk_prepare_enable(priv->clk);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Cannot enable clock\n");
+>  		return ret;
+> @@ -215,7 +215,7 @@ static int ep93xx_adc_probe(struct platform_device *pdev)
+>  
+>  	ret = iio_device_register(iiodev);
+>  	if (ret)
+> -		clk_disable(priv->clk);
+> +		clk_disable_unprepare(priv->clk);
+>  
+>  	return ret;
+>  }
+> @@ -226,7 +226,7 @@ static int ep93xx_adc_remove(struct platform_device *pdev)
+>  	struct ep93xx_adc_priv *priv = iio_priv(iiodev);
+>  
+>  	iio_device_unregister(iiodev);
+> -	clk_disable(priv->clk);
+> +	clk_disable_unprepare(priv->clk);
+>  
+>  	return 0;
+>  }
 
