@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B7E3A608E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50043A603E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhFNKfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39142 "EHLO mail.kernel.org"
+        id S233114AbhFNKcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:32:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233228AbhFNKdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:33:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02F6C61350;
-        Mon, 14 Jun 2021 10:30:57 +0000 (UTC)
+        id S232935AbhFNKbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:31:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE221611BE;
+        Mon, 14 Jun 2021 10:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666658;
-        bh=+pYqnORxBjo0yNKgQlpZJplIih3vMAl1S63XI3j5vpw=;
+        s=korg; t=1623666562;
+        bh=eds8IOZtnGhaffiJTb92aYTjf9GAJf65MJFEnvDn35c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sW7cCQn+ftwrU20mS3X698NbKKCp89+AVx1sgNVRijLdOaUs0tu6WVsRYvld4XmUv
-         oJKtJO0feI4U4C80X8ufr69ldN96MXp5eN6+Sk9xqFsqOR5iNwnnoxpyR2C6uvO2PY
-         pzCN+sScU/O6h+y7HXp0H1VZcNKXrCUg4BbZN62g=
+        b=MvSLngkaU4V4QzkD3lIwlBfwwYTc+t7aDb/FjdvlZSwQeUdoVnr8xF+93Z1Vytzwt
+         vavtTClSJ37Igja2IoqdHYnES7h1cB9DnBeCZHGYqKkztrQfBhF1Dry0BZN7r2njzc
+         ztmXbATkOriEMM/CO1Gd36LmpOA14RdHzJ5BuNKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Kuznetsov <wwfq@yandex-team.ru>,
-        Andrey Krasichkov <buglloc@yandex-team.ru>,
-        Dmitry Yakunin <zeil@yandex-team.ru>, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 4.9 24/42] cgroup1: dont allow \n in renaming
+        stable@vger.kernel.org,
+        George McCollister <george.mccollister@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 24/34] USB: serial: ftdi_sio: add NovaTech OrionMX product ID
 Date:   Mon, 14 Jun 2021 12:27:15 +0200
-Message-Id: <20210614102643.480406616@linuxfoundation.org>
+Message-Id: <20210614102642.358038337@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
+References: <20210614102641.582612289@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Kuznetsov <wwfq@yandex-team.ru>
+From: George McCollister <george.mccollister@gmail.com>
 
-commit b7e24eb1caa5f8da20d405d262dba67943aedc42 upstream.
+commit bc96c72df33ee81b24d87eab953c73f7bcc04f29 upstream.
 
-cgroup_mkdir() have restriction on newline usage in names:
-$ mkdir $'/sys/fs/cgroup/cpu/test\ntest2'
-mkdir: cannot create directory
-'/sys/fs/cgroup/cpu/test\ntest2': Invalid argument
+Add PID for the NovaTech OrionMX so it can be automatically detected.
 
-But in cgroup1_rename() such check is missed.
-This allows us to make /proc/<pid>/cgroup unparsable:
-$ mkdir /sys/fs/cgroup/cpu/test
-$ mv /sys/fs/cgroup/cpu/test $'/sys/fs/cgroup/cpu/test\ntest2'
-$ echo $$ > $'/sys/fs/cgroup/cpu/test\ntest2'
-$ cat /proc/self/cgroup
-11:pids:/
-10:freezer:/
-9:hugetlb:/
-8:cpuset:/
-7:blkio:/user.slice
-6:memory:/user.slice
-5:net_cls,net_prio:/
-4:perf_event:/
-3:devices:/user.slice
-2:cpu,cpuacct:/test
-test2
-1:name=systemd:/
-0::/
-
-Signed-off-by: Alexander Kuznetsov <wwfq@yandex-team.ru>
-Reported-by: Andrey Krasichkov <buglloc@yandex-team.ru>
-Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
+Signed-off-by: George McCollister <george.mccollister@gmail.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/cgroup.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/serial/ftdi_sio.c     |    1 +
+ drivers/usb/serial/ftdi_sio_ids.h |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/kernel/cgroup.c
-+++ b/kernel/cgroup.c
-@@ -3598,6 +3598,10 @@ static int cgroup_rename(struct kernfs_n
- 	struct cgroup *cgrp = kn->priv;
- 	int ret;
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -606,6 +606,7 @@ static const struct usb_device_id id_tab
+ 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONLX_PLUS_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORION_IO_PID) },
++	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONMX_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_SYNAPSE_SS200_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX2_PID) },
+--- a/drivers/usb/serial/ftdi_sio_ids.h
++++ b/drivers/usb/serial/ftdi_sio_ids.h
+@@ -580,6 +580,7 @@
+ #define FTDI_NT_ORIONLXM_PID		0x7c90	/* OrionLXm Substation Automation Platform */
+ #define FTDI_NT_ORIONLX_PLUS_PID	0x7c91	/* OrionLX+ Substation Automation Platform */
+ #define FTDI_NT_ORION_IO_PID		0x7c92	/* Orion I/O */
++#define FTDI_NT_ORIONMX_PID		0x7c93	/* OrionMX */
  
-+	/* do not accept '\n' to prevent making /proc/<pid>/cgroup unparsable */
-+	if (strchr(new_name_str, '\n'))
-+		return -EINVAL;
-+
- 	if (kernfs_type(kn) != KERNFS_DIR)
- 		return -ENOTDIR;
- 	if (kn->parent != new_parent)
+ /*
+  * Synapse Wireless product ids (FTDI_VID)
 
 
