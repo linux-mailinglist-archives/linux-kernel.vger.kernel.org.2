@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222B53A60B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9813A6121
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbhFNKhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:37:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40036 "EHLO mail.kernel.org"
+        id S233631AbhFNKnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232988AbhFNKeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:34:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB3D6613F1;
-        Mon, 14 Jun 2021 10:32:05 +0000 (UTC)
+        id S233137AbhFNKhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:37:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1926B613DB;
+        Mon, 14 Jun 2021 10:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666726;
-        bh=Ug5aL0ei8EamdokhMXWHFw7MHos6vIKShgbtggwhT0g=;
+        s=korg; t=1623666811;
+        bh=qGD3Y7ReUnMxN25WHoGUXf+mJGZOYHKyzKSknSl+WtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wn1kcH8K+WA+/Qo2ZFagDHSZRcRUhhOhYcn/twE8Y+tNqQN3BAsJ+ZkCYuFv1DHPC
-         326QpQXcyvYmV0VJOjKGDSRvq2+sEDCjeGyYLDO1+2RJKeiFe63tLKDvkASDS0DrdP
-         sGN+9P7XHJJzNmxueZEZEUrzUOt+K1fe6Uj9u5K4=
+        b=RakMHGkKArBDH7S4V9wvtiCrOqCRVNweoAM4VLYi+korYAMqyjkH6AZrnM2A6LFD8
+         HOtKvdXftJhJGOMNyQEBCamRlPiM1UfWuEuN2gzR5TzwMYo+/Fy1BeYcg+NZzxa+nC
+         1TUmn1ABYHXeHEN8wakovCa3N3RoW8DDrnFvGOaU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        John Garry <john.garry@huawei.com>,
-        Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.9 40/42] scsi: core: Only put parent device if host state differs from SHOST_CREATED
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 38/49] regulator: max77620: Use device_set_of_node_from_dev()
 Date:   Mon, 14 Jun 2021 12:27:31 +0200
-Message-Id: <20210614102643.986990916@linuxfoundation.org>
+Message-Id: <20210614102643.110771572@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit 1e0d4e6225996f05271de1ebcb1a7c9381af0b27 upstream.
+commit 6f55c5dd1118b3076d11d9cb17f5c5f4bc3a1162 upstream.
 
-get_device(shost->shost_gendev.parent) is called after host state has
-switched to SHOST_RUNNING. scsi_host_dev_release() shouldn't release the
-parent device if host state is still SHOST_CREATED.
+The MAX77620 driver fails to re-probe on deferred probe because driver
+core tries to claim resources that are already claimed by the PINCTRL
+device. Use device_set_of_node_from_dev() helper which marks OF node as
+reused, skipping erroneous execution of pinctrl_bind_pins() for the PMIC
+device on the re-probe.
 
-Link: https://lore.kernel.org/r/20210602133029.2864069-5-ming.lei@redhat.com
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Hannes Reinecke <hare@suse.de>
-Tested-by: John Garry <john.garry@huawei.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210523224243.13219-2-digetx@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/hosts.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/max77620-regulator.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/scsi/hosts.c
-+++ b/drivers/scsi/hosts.c
-@@ -368,7 +368,7 @@ static void scsi_host_dev_release(struct
+--- a/drivers/regulator/max77620-regulator.c
++++ b/drivers/regulator/max77620-regulator.c
+@@ -792,6 +792,13 @@ static int max77620_regulator_probe(stru
+ 	config.dev = dev;
+ 	config.driver_data = pmic;
  
- 	ida_simple_remove(&host_index_ida, shost->host_no);
- 
--	if (parent)
-+	if (shost->shost_state != SHOST_CREATED)
- 		put_device(parent);
- 	kfree(shost);
- }
++	/*
++	 * Set of_node_reuse flag to prevent driver core from attempting to
++	 * claim any pinmux resources already claimed by the parent device.
++	 * Otherwise PMIC driver will fail to re-probe.
++	 */
++	device_set_of_node_from_dev(&pdev->dev, pdev->dev.parent);
++
+ 	for (id = 0; id < MAX77620_NUM_REGS; id++) {
+ 		struct regulator_dev *rdev;
+ 		struct regulator_desc *rdesc;
 
 
