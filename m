@@ -2,114 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385373A6B62
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCB43A6B5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234607AbhFNQP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234572AbhFNQPX (ORCPT
+        id S234596AbhFNQO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:14:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51775 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234572AbhFNQO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:15:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5666C061574;
-        Mon, 14 Jun 2021 09:13:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=i0UaLutP0pg/vUIZxWE/ltq43kwiXqxNum5X8NZGTo8=; b=U8Xwjjw6zrH3Oo18gWDo7ilt9p
-        upiw+9VDQglmP39R9+HNWCk7Sqn7eO5XapCgeXWrdgUR9RZ7rMLT9sXYv92lkl4BNM9rYNb4Dy5lW
-        THftCVWv6HOLtRgimjqkSiMw4oh0rpPMQ4Qh6NHr+67Di+rBJGWyk7zAJxge1UsYbMmeemy8ywDrH
-        mpm10YJRQA/lVwl63ZkhVEa3X2FaTuwRM461jqfzvo4CYXPXe9vZnx9pSu7275MR2vrKiyKN8COiQ
-        vW8UC/vEqhczEdN/94MrjoOxmkngWizKEfRJsbZwR/at5SAxogX7Ilu9qnB1/gpUW4wX9XCpaYyv3
-        mNRhgoLQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lspCI-005bOz-2a; Mon, 14 Jun 2021 16:12:25 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 18DAB9831CA; Mon, 14 Jun 2021 18:12:21 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 18:12:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
-        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
-Message-ID: <20210614161221.GC68749@worktop.programming.kicks-ass.net>
-References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
- <20210614154246.GB13677@redhat.com>
+        Mon, 14 Jun 2021 12:14:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623687173;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U/Ya1k1nXvvGjrRExG8q3FmOawUUZX1h7T0TrtPnmSM=;
+        b=goCD3QgnotXIocEKYMZfH5VHj3SH8r1CrIdjRuQFOmtK6s+T5uQqMNdX+tp8hgxvd59hUz
+        Zw6bfEueQUOIzXiqINcQEnru9p01MTzM8XGKRMqFz0ADajzLjaxBcAW7mEhF2pvRVOYqTY
+        qwnMqK75yMAG7Qw98a7xk8IyGizTIW8=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-qIrTKRU6P6yLqHvQCAisZw-1; Mon, 14 Jun 2021 12:12:52 -0400
+X-MC-Unique: qIrTKRU6P6yLqHvQCAisZw-1
+Received: by mail-lf1-f70.google.com with SMTP id n4-20020a0565120ac4b02902fdd8d82fa6so5435632lfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:12:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U/Ya1k1nXvvGjrRExG8q3FmOawUUZX1h7T0TrtPnmSM=;
+        b=Ph6qS8orHe2/kjx3CjD/S39FSa+J2bqetiICIii/WEZpHC1NDSipjYxtWU8ilse/bn
+         lMf8alxhu8u7PYSg9BtBBcptr6OAsMkmGb/yEYwUAZcKhjATgReHSPVZpjzYnaLSwxQg
+         U84cqpSI0+tU6ExahQTtKgL5Pt5ptmUo5eGPh1TAa14pLzIL2+cq+AM8mPbewPz7OwCN
+         zWuo+MdBX78/xvrTQ5pTVCZgdBMdTdd1gx85240bjMGKl9TwneKcJOWFMF5ZdF/TyKkl
+         JKj86IAQxoH1e8zpVXGulZSSDcb9/BTbHq8vyFlvKgKyak95g+LgxVFwJsj2Pcet09LN
+         QdhQ==
+X-Gm-Message-State: AOAM5309Y3QAm6ejvEJKPuuQ0tUentzjrT4GohF5oOmkE6rFwjFo+neN
+        gdpAXei3EeLnzWraDDCKjrx4y5HEgpbvbyQUabuNwOjKPvZhprHrBHxl2qS5WjOlpWK8/yb1kEO
+        IxKO6Yo8p42QomaYRJNL2wSAHqh3iW7uKK42sqIkS
+X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr8877569lfr.647.1623687170838;
+        Mon, 14 Jun 2021 09:12:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAbGhpPvqkcHhSsuAdQ1FpWwNWtaQWb83YFBtFmuq7Xr7R/t1YH4+Rj9W+tz1cElNmEXnhxmp8Ko9KgVy5pjU=
+X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr8877529lfr.647.1623687170605;
+ Mon, 14 Jun 2021 09:12:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614154246.GB13677@redhat.com>
+References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
+ <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
+ <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
+ <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
+ <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
+ <87zgwo9u79.ffs@nanos.tec.linutronix.de> <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
+ <CAFki+L=QTOu_O=1uNobVMi2s9mbcxXgSdTLADCpeBWBoPAikgQ@mail.gmail.com>
+In-Reply-To: <CAFki+L=QTOu_O=1uNobVMi2s9mbcxXgSdTLADCpeBWBoPAikgQ@mail.gmail.com>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Mon, 14 Jun 2021 12:12:38 -0400
+Message-ID: <CAFki+LkJ9kj0TMz8dhGXLXdfwgYLibkMCRvKBwVVX5+F-DP37w@mail.gmail.com>
+Subject: Re: [PATCH] genirq: Provide new interfaces for affinity hints
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 05:42:47PM +0200, Oleg Nesterov wrote:
-> Hi Peter, sorry for delay,
-> 
-> On 06/11, Peter Zijlstra wrote:
+On Mon, Jun 7, 2021 at 1:00 PM Nitesh Lal <nilal@redhat.com> wrote:
+>
+> On Fri, May 21, 2021 at 8:03 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 > >
-> > +/* Recursion relies on tail-call optimization to not blow away the stack */
-> > +static bool __frozen(struct task_struct *p)
-> > +{
-> > +	if (p->state == TASK_FROZEN)
-> > +		return true;
+> > The discussion about removing the side effect of irq_set_affinity_hint() of
+> > actually applying the cpumask (if not NULL) as affinity to the interrupt,
+> > unearthed a few unpleasantries:
+> >
+> >   1) The modular perf drivers rely on the current behaviour for the very
+> >      wrong reasons.
+> >
+> >   2) While none of the other drivers prevents user space from changing
+> >      the affinity, a cursorily inspection shows that there are at least
+> >      expectations in some drivers.
+> >
+> > #1 needs to be cleaned up anyway, so that's not a problem
+> >
+> > #2 might result in subtle regressions especially when irqbalanced (which
+> >    nowadays ignores the affinity hint) is disabled.
+> >
+> > Provide new interfaces:
+> >
+> >   irq_update_affinity_hint() - Only sets the affinity hint pointer
+> >   irq_apply_affinity_hint()  - Set the pointer and apply the affinity to
+> >                                the interrupt
+> >
+> > Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
+> > document it to be phased out.
+> >
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > Link: https://lore.kernel.org/r/20210501021832.743094-1-jesse.brandeburg@intel.com
+> > ---
+> > Applies on:
+> >    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+> > ---
+> >  include/linux/interrupt.h |   41 ++++++++++++++++++++++++++++++++++++++++-
+> >  kernel/irq/manage.c       |    8 ++++----
+> >  2 files changed, 44 insertions(+), 5 deletions(-)
+> >
+> > --- a/include/linux/interrupt.h
+> > +++ b/include/linux/interrupt.h
+> > @@ -328,7 +328,46 @@ extern int irq_force_affinity(unsigned i
+> >  extern int irq_can_set_affinity(unsigned int irq);
+> >  extern int irq_select_affinity(unsigned int irq);
+> >
+> > -extern int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m);
+> > +extern int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
+> > +                                    bool setaffinity);
 > > +
-> > +	/*
-> > +	 * If stuck in TRACED, and the ptracer is FROZEN, we're frozen too.
-> > +	 */
-> > +	if (task_is_traced(p))
-> > +		return frozen(rcu_dereference(p->parent));
-> 
-> Why does it use frozen(), not __frozen() ?
+> > +/**
+> > + * irq_update_affinity_hint - Update the affinity hint
+> > + * @irq:       Interrupt to update
+> > + * @cpumask:   cpumask pointer (NULL to clear the hint)
+> > + *
+> > + * Updates the affinity hint, but does not change the affinity of the interrupt.
+> > + */
+> > +static inline int
+> > +irq_update_affinity_hint(unsigned int irq, const struct cpumask *m)
+> > +{
+> > +       return __irq_apply_affinity_hint(irq, m, true);
+> > +}
+> > +
+> > +/**
+> > + * irq_apply_affinity_hint - Update the affinity hint and apply the provided
+> > + *                          cpumask to the interrupt
+> > + * @irq:       Interrupt to update
+> > + * @cpumask:   cpumask pointer (NULL to clear the hint)
+> > + *
+> > + * Updates the affinity hint and if @cpumask is not NULL it applies it as
+> > + * the affinity of that interrupt.
+> > + */
+> > +static inline int
+> > +irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m)
+> > +{
+> > +       return __irq_apply_affinity_hint(irq, m, true);
+> > +}
+> > +
+> > +/*
+> > + * Deprecated. Use irq_update_affinity_hint() or irq_apply_affinity_hint()
+> > + * instead.
+> > + */
+> > +static inline int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
+> > +{
+> > +       return irq_apply_affinity_hint(irq, cpumask);
+>
+> Another change required here, the above should be 'm' instead of 'cpumask'.
 
-(because I'm an idiot :/)
+I am going to and make the suggested changes to this patch and will post it
+with driver patches.
+Please let me know if there are any objections to that.
 
-> This looks racy, p->parent can resume this task and then enter
-> __refrigerator().
+>
+> > +}
+> > +
+> >  extern int irq_update_affinity_desc(unsigned int irq,
+> >                                     struct irq_affinity_desc *affinity);
+> >
+> > --- a/kernel/irq/manage.c
+> > +++ b/kernel/irq/manage.c
+> > @@ -487,7 +487,8 @@ int irq_force_affinity(unsigned int irq,
+> >  }
+> >  EXPORT_SYMBOL_GPL(irq_force_affinity);
+> >
+> > -int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
+> > +int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
+> > +                             bool setaffinity)
+> >  {
+> >         unsigned long flags;
+> >         struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
+> > @@ -496,12 +497,11 @@ int irq_set_affinity_hint(unsigned int i
+> >                 return -EINVAL;
+> >         desc->affinity_hint = m;
+> >         irq_put_desc_unlock(desc, flags);
+> > -       /* set the initial affinity to prevent every interrupt being on CPU0 */
+> > -       if (m)
+> > +       if (m && setaffinity)
+> >                 __irq_set_affinity(irq, m, false);
+> >         return 0;
+> >  }
+> > -EXPORT_SYMBOL_GPL(irq_set_affinity_hint);
+> > +EXPORT_SYMBOL_GPL(__irq_apply_affinity_hint);
+> >
+> >  static void irq_affinity_notify(struct work_struct *work)
+> >  {
+> >
+>
+>
+> --
+> Thanks
+> Nitesh
 
-But this is about the child, we won't report it frozen, unless the
-parent is also frozen. If the parent is frozen, it cannot resume the
-task.
 
-The other way around, if the parent resumes the task and then gets
-frozen, then we'll wait until the task gets frozen.
 
-That is, I don't see the race. Maybe it's been too warm, but could you
-spell it out?
+-- 
+Thanks
+Nitesh
 
-> Plus this task can be SIGKILL'ed even if it is traced.
-
-Hurmm.. *that* is a problem.
-
-> > +	/*
-> > +	 * If stuck in STOPPED and the parent is FROZEN, we're frozen too.
-> > +	 */
-> > +	if (task_is_stopped(p))
-> > +		return frozen(rcu_dereference(p->real_parent));
-> 
-> (you could use ->parent in this case too and unify this check with the
-> "traced" case above)
-
-Are you sure? The way I read the code ptrace_attach() will change
-->parent, but STOPPED is controlled by the jobctl.
-
-> I don't understand. How this connects to ->parent or ->real_parent?
-> SIGCONT can come from anywhere and wake this stopped task up?
-
-Could be me who's not understanding, I thought only the real parent
-could do that.
-
-> I guess you do this to avoid freezable_schedule() in ptrace/signal_stop,
-> and we can't use TASK_STOPPED|TASK_FREEZABLE, it should not run after
-> thaw()... But see above, we can't rely on __frozen(parent).
-
-I do this because freezing puts a task in TASK_FROZEN, and that cannot
-preserve TAKS_STOPPED or TASK_TRACED without being subject to wakups
-from those bits. I suppose I can add TASK_FROZEN_STOPPED and
-TASK_FROZEN_TRACED bits. Let me try that... (tomorrow, brain is cooked).
