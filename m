@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFE63A63DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2363A62CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235417AbhFNLSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:18:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36908 "EHLO mail.kernel.org"
+        id S234327AbhFNLF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:05:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235204AbhFNLFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:05:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD5A261439;
-        Mon, 14 Jun 2021 10:45:09 +0000 (UTC)
+        id S233934AbhFNK4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:56:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A074261206;
+        Mon, 14 Jun 2021 10:40:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667510;
-        bh=sqXNUKRqZ/jQVQRs9cUbyrUHoCei3o6O3ABjrOCWC/U=;
+        s=korg; t=1623667259;
+        bh=xE4zS2vv7KNhhWgDhMlfTpZX94wdbK0NNqMY56tsSJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QiMHKWs6Vhlu/fi8MwftwFK41UFdzx2jMTg5jhKN0i5JFmrfC1HbiuikV42ucDq/3
-         Uw4DqgMPR4lsMOlxgOlvVqIAuwQh5Jsd4GkTzr5n9WJj8nuFpUugoP5PxHut84y51d
-         nugIru01I16T7m2dQoZUQHqps0Fj1ig2uLmNuB6s=
+        b=qYX+p6asvCpHA8DPYJ1m8FhBbspB7h9+eFPyhnJRKQcRHCCyD+Zl5JhNmt0H9AYx1
+         OUvOYMVYLrFx4KYpr46NqiUHoL/Q7Lw8kOxLyx1XvX6JkEi+ZQSo5F3dHpvVgRwK07
+         l7IHx5lqiYGNhQaax/MuC6NzPFU8uRLpiGgVK4j4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.10 099/131] drm/mcde: Fix off by 10^3 in calculation
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 62/84] regulator: core: resolve supply for boot-on/always-on regulators
 Date:   Mon, 14 Jun 2021 12:27:40 +0200
-Message-Id: <20210614102656.363462443@linuxfoundation.org>
+Message-Id: <20210614102648.490314334@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-commit c8a570443943304cac2e4186dbce6989b6c2b8b5 upstream.
+commit 98e48cd9283dbac0e1445ee780889f10b3d1db6a upstream.
 
-The calclulation of how many bytes we stuff into the
-DSI pipeline for video mode panels is off by three
-orders of magnitude because we did not account for the
-fact that the DRM mode clock is in kilohertz rather
-than hertz.
+For the boot-on/always-on regulators the set_machine_constrainst() is
+called before resolving rdev->supply. Thus the code would try to enable
+rdev before enabling supplying regulator. Enforce resolving supply
+regulator before enabling rdev.
 
-This used to be:
-drm_mode_vrefresh(mode) * mode->htotal * mode->vtotal
-which would become for example for s6e63m0:
-60 x 514 x 831 = 25628040 Hz, but mode->clock is
-25628 as it is in kHz.
-
-This affects only the Samsung GT-I8190 "Golden" phone
-right now since it is the only MCDE device with a video
-mode display.
-
-Curiously some specimen work with this code and wild
-settings in the EOL and empty packets at the end of the
-display, but I have noticed an eeire flicker until now.
-Others were not so lucky and got black screens.
-
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Reported-by: Stephan Gerhold <stephan@gerhold.net>
-Fixes: 920dd1b1425b ("drm/mcde: Use mode->clock instead of reverse calculating it from the vrefresh")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Tested-by: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210608213318.3897858-1-linus.walleij@linaro.org
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210519221224.2868496-1-dmitry.baryshkov@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/mcde/mcde_dsi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/core.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/gpu/drm/mcde/mcde_dsi.c
-+++ b/drivers/gpu/drm/mcde/mcde_dsi.c
-@@ -577,7 +577,7 @@ static void mcde_dsi_setup_video_mode(st
- 	 * porches and sync.
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1381,6 +1381,12 @@ static int set_machine_constraints(struc
+ 	 * and we have control then make sure it is enabled.
  	 */
- 	/* (ps/s) / (pixels/s) = ps/pixels */
--	pclk = DIV_ROUND_UP_ULL(1000000000000, mode->clock);
-+	pclk = DIV_ROUND_UP_ULL(1000000000000, (mode->clock * 1000));
- 	dev_dbg(d->dev, "picoseconds between two pixels: %llu\n",
- 		pclk);
- 
+ 	if (rdev->constraints->always_on || rdev->constraints->boot_on) {
++		/* If we want to enable this regulator, make sure that we know
++		 * the supplying regulator.
++		 */
++		if (rdev->supply_name && !rdev->supply)
++			return -EPROBE_DEFER;
++
+ 		if (rdev->supply) {
+ 			ret = regulator_enable(rdev->supply);
+ 			if (ret < 0) {
 
 
