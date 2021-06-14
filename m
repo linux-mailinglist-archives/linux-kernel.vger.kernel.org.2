@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221983A6387
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECB93A6388
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235442AbhFNLOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:14:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36434 "EHLO mail.kernel.org"
+        id S235464AbhFNLOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:14:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234453AbhFNLB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:01:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C8C0617ED;
-        Mon, 14 Jun 2021 10:43:38 +0000 (UTC)
+        id S234526AbhFNLCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:02:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F8C36190A;
+        Mon, 14 Jun 2021 10:43:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667419;
-        bh=KRjCISm4yquNeegIJ6KbpYAovwB+TTjR6etMae6EviM=;
+        s=korg; t=1623667421;
+        bh=hYvpvnY69XNqIy5q9W9se4DgvuawRvaneL4ZUD92l8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jLtpg7YPw89V+iMaRAXlfcaGNuVi0/EoL/lpBlmUVs/AK29ai2sLbJagqNZ7f8sMG
-         DvB6X4jK7u5UBnVOSNxF7Tgki2iZaPHNIadPDGO+h94jpiV3BnHZsoyuxnnj6tFZO6
-         HknY7DuQ5EZfzu+T7NjgrYmSrs/QX86ktOme0n8U=
+        b=ea8Aue61QYAcDX32uitQfvY4VLWAt8yEeeZmtbKmFD5az2ttTnIovJ+x4VkUpYyWn
+         ZNqtFyuiTj0qoAmmupTU3MXAkJHyg1Ime2DspDLggIsASECPdUQfUI4wiwieuvkBrX
+         NNek/4EZ2qqNPrqrbCmcGmfMJdyu9pj09MWTbt5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Kuznetsov <wwfq@yandex-team.ru>,
-        Andrey Krasichkov <buglloc@yandex-team.ru>,
-        Dmitry Yakunin <zeil@yandex-team.ru>, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 5.10 063/131] cgroup1: dont allow \n in renaming
-Date:   Mon, 14 Jun 2021 12:27:04 +0200
-Message-Id: <20210614102655.164161071@linuxfoundation.org>
+        stable@vger.kernel.org, Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.10 064/131] ftrace: Do not blindly read the ip address in ftrace_bug()
+Date:   Mon, 14 Jun 2021 12:27:05 +0200
+Message-Id: <20210614102655.199325002@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -40,57 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Kuznetsov <wwfq@yandex-team.ru>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit b7e24eb1caa5f8da20d405d262dba67943aedc42 upstream.
+commit 6c14133d2d3f768e0a35128faac8aa6ed4815051 upstream.
 
-cgroup_mkdir() have restriction on newline usage in names:
-$ mkdir $'/sys/fs/cgroup/cpu/test\ntest2'
-mkdir: cannot create directory
-'/sys/fs/cgroup/cpu/test\ntest2': Invalid argument
+It was reported that a bug on arm64 caused a bad ip address to be used for
+updating into a nop in ftrace_init(), but the error path (rightfully)
+returned -EINVAL and not -EFAULT, as the bug caused more than one error to
+occur. But because -EINVAL was returned, the ftrace_bug() tried to report
+what was at the location of the ip address, and read it directly. This
+caused the machine to panic, as the ip was not pointing to a valid memory
+address.
 
-But in cgroup1_rename() such check is missed.
-This allows us to make /proc/<pid>/cgroup unparsable:
-$ mkdir /sys/fs/cgroup/cpu/test
-$ mv /sys/fs/cgroup/cpu/test $'/sys/fs/cgroup/cpu/test\ntest2'
-$ echo $$ > $'/sys/fs/cgroup/cpu/test\ntest2'
-$ cat /proc/self/cgroup
-11:pids:/
-10:freezer:/
-9:hugetlb:/
-8:cpuset:/
-7:blkio:/user.slice
-6:memory:/user.slice
-5:net_cls,net_prio:/
-4:perf_event:/
-3:devices:/user.slice
-2:cpu,cpuacct:/test
-test2
-1:name=systemd:/
-0::/
+Instead, read the ip address with copy_from_kernel_nofault() to safely
+access the memory, and if it faults, report that the address faulted,
+otherwise report what was in that location.
 
-Signed-off-by: Alexander Kuznetsov <wwfq@yandex-team.ru>
-Reported-by: Andrey Krasichkov <buglloc@yandex-team.ru>
-Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
+Link: https://lore.kernel.org/lkml/20210607032329.28671-1-mark-pk.tsai@mediatek.com/
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Tejun Heo <tj@kernel.org>
+Fixes: 05736a427f7e1 ("ftrace: warn on failure to disable mcount callers")
+Reported-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/cgroup/cgroup-v1.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/trace/ftrace.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -820,6 +820,10 @@ static int cgroup1_rename(struct kernfs_
- 	struct cgroup *cgrp = kn->priv;
- 	int ret;
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -1968,12 +1968,18 @@ static int ftrace_hash_ipmodify_update(s
  
-+	/* do not accept '\n' to prevent making /proc/<pid>/cgroup unparsable */
-+	if (strchr(new_name_str, '\n'))
-+		return -EINVAL;
+ static void print_ip_ins(const char *fmt, const unsigned char *p)
+ {
++	char ins[MCOUNT_INSN_SIZE];
+ 	int i;
+ 
++	if (copy_from_kernel_nofault(ins, p, MCOUNT_INSN_SIZE)) {
++		printk(KERN_CONT "%s[FAULT] %px\n", fmt, p);
++		return;
++	}
 +
- 	if (kernfs_type(kn) != KERNFS_DIR)
- 		return -ENOTDIR;
- 	if (kn->parent != new_parent)
+ 	printk(KERN_CONT "%s", fmt);
+ 
+ 	for (i = 0; i < MCOUNT_INSN_SIZE; i++)
+-		printk(KERN_CONT "%s%02x", i ? ":" : "", p[i]);
++		printk(KERN_CONT "%s%02x", i ? ":" : "", ins[i]);
+ }
+ 
+ enum ftrace_bug_type ftrace_bug_type;
 
 
