@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B973A6328
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B3A3A6505
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235710AbhFNLLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:11:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34858 "EHLO mail.kernel.org"
+        id S236009AbhFNLca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:32:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234929AbhFNK7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:59:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0E0D61430;
-        Mon, 14 Jun 2021 10:42:32 +0000 (UTC)
+        id S233722AbhFNLS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:18:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B18E61465;
+        Mon, 14 Jun 2021 10:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667353;
-        bh=YsrmrDyiB+yexP44Ab1YAEuDP9sNt8FMawYVpodek7w=;
+        s=korg; t=1623667850;
+        bh=lyig/vl1bjdbO5vX6UtQv64c8WAGIgg1r8czovR4uDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vlnvDQRrB7V2WoaavX5xnOqfz8xMnpB9moM7vsik5Zz+mAMNpxL+CBA3GXPZ9ZQXw
-         7C0H2XuX3OK1RRvch0jAy6JXDI3Irom0kdxJhcbTAtqNDxX3D19ePq8l1PfGlxTqiS
-         nXAhD3fKzpePKXBmjQUjXVXwT0ZucunhGPZgB/As=
+        b=kEuEQ/sQuFeTYD67Aj32w1JCEY3Dc5ePrS6Or8Qg8eUAdjZmIYgtDHSO2rmWPOb1i
+         7AMgl1p4rF8Eubz0Zh2wUsHvq7iqjxJzS4SyIU5ggcWCSSMD8p7rkyN77SD2kAyjXF
+         CLSMF0heK25bjRVr7UAcupbs8RaauROt90w0PPko=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 036/131] bnx2x: Fix missing error code in bnx2x_iov_init_one()
+        stable@vger.kernel.org,
+        Artemiy Margaritov <artemiy.margaritov@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.12 065/173] kvm: avoid speculation-based attacks from out-of-range memslot accesses
 Date:   Mon, 14 Jun 2021 12:26:37 +0200
-Message-Id: <20210614102654.239793523@linuxfoundation.org>
+Message-Id: <20210614102700.322431722@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 65161c35554f7135e6656b3df1ce2c500ca0bdcf ]
+commit da27a83fd6cc7780fea190e1f5c19e87019da65c upstream.
 
-Eliminate the follow smatch warning:
+KVM's mechanism for accessing guest memory translates a guest physical
+address (gpa) to a host virtual address using the right-shifted gpa
+(also known as gfn) and a struct kvm_memory_slot.  The translation is
+performed in __gfn_to_hva_memslot using the following formula:
 
-drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1227
-bnx2x_iov_init_one() warn: missing error code 'err'.
+      hva = slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+It is expected that gfn falls within the boundaries of the guest's
+physical memory.  However, a guest can access invalid physical addresses
+in such a way that the gfn is invalid.
+
+__gfn_to_hva_memslot is called from kvm_vcpu_gfn_to_hva_prot, which first
+retrieves a memslot through __gfn_to_memslot.  While __gfn_to_memslot
+does check that the gfn falls within the boundaries of the guest's
+physical memory or not, a CPU can speculate the result of the check and
+continue execution speculatively using an illegal gfn. The speculation
+can result in calculating an out-of-bounds hva.  If the resulting host
+virtual address is used to load another guest physical address, this
+is effectively a Spectre gadget consisting of two consecutive reads,
+the second of which is data dependent on the first.
+
+Right now it's not clear if there are any cases in which this is
+exploitable.  One interesting case was reported by the original author
+of this patch, and involves visiting guest page tables on x86.  Right
+now these are not vulnerable because the hva read goes through get_user(),
+which contains an LFENCE speculation barrier.  However, there are
+patches in progress for x86 uaccess.h to mask kernel addresses instead of
+using LFENCE; once these land, a guest could use speculation to read
+from the VMM's ring 3 address space.  Other architectures such as ARM
+already use the address masking method, and would be susceptible to
+this same kind of data-dependent access gadgets.  Therefore, this patch
+proactively protects from these attacks by masking out-of-bounds gfns
+in __gfn_to_hva_memslot, which blocks speculation of invalid hvas.
+
+Sean Christopherson noted that this patch does not cover
+kvm_read_guest_offset_cached.  This however is limited to a few bytes
+past the end of the cache, and therefore it is unlikely to be useful in
+the context of building a chain of data dependent accesses.
+
+Reported-by: Artemiy Margaritov <artemiy.margaritov@gmail.com>
+Co-developed-by: Artemiy Margaritov <artemiy.margaritov@gmail.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/kvm_host.h |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-index 9c2f51f23035..9108b497b3c9 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-@@ -1224,8 +1224,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
- 		goto failed;
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1118,7 +1118,15 @@ __gfn_to_memslot(struct kvm_memslots *sl
+ static inline unsigned long
+ __gfn_to_hva_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
+ {
+-	return slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE;
++	/*
++	 * The index was checked originally in search_memslots.  To avoid
++	 * that a malicious guest builds a Spectre gadget out of e.g. page
++	 * table walks, do not let the processor speculate loads outside
++	 * the guest's registered memslots.
++	 */
++	unsigned long offset = array_index_nospec(gfn - slot->base_gfn,
++						  slot->npages);
++	return slot->userspace_addr + offset * PAGE_SIZE;
+ }
  
- 	/* SR-IOV capability was enabled but there are no VFs*/
--	if (iov->total == 0)
-+	if (iov->total == 0) {
-+		err = -EINVAL;
- 		goto failed;
-+	}
- 
- 	iov->nr_virtfn = min_t(u16, iov->total, num_vfs_param);
- 
--- 
-2.30.2
-
+ static inline int memslot_id(struct kvm *kvm, gfn_t gfn)
 
 
