@@ -2,68 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811713A5DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A804F3A5DE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhFNHue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:50:34 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:58119 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232520AbhFNHua (ORCPT
+        id S232570AbhFNHwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:52:03 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:43301 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232520AbhFNHwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:50:30 -0400
-Received: (Authenticated sender: jacopo@jmondi.org)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id D8D5724001A;
-        Mon, 14 Jun 2021 07:48:25 +0000 (UTC)
-Date:   Mon, 14 Jun 2021 09:49:15 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] media: mt9v111: Add missing MODULE_DEVICE_TABLE
-Message-ID: <20210614074915.y5w2umeh3j7s5s32@uno.localdomain>
-References: <1620704856-104451-1-git-send-email-zou_wei@huawei.com>
+        Mon, 14 Jun 2021 03:52:01 -0400
+Received: from [192.168.1.155] ([95.115.71.85]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MqJZl-1lW3zE1cfr-00nQqE; Mon, 14 Jun 2021 09:49:23 +0200
+Subject: Re: device namespaces
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Hannes Reinecke <hare@suse.de>, gregkh@linuxfoundation.org,
+        containers@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <YL9liW99Ytf6uBlu@kroah.com>
+ <9157affa-b27a-c0f4-f6ee-def4a991fd4e@suse.de>
+ <20210608142911.ievp2rpuquxjuyus@wittgenstein>
+ <d956398e-7ee6-ba36-43cc-4cdcea34b5b9@suse.de> <877dj4ff9g.fsf@disp2133>
+ <20210609063818.xnod4rzvti3ujkvn@wittgenstein>
+ <b9ea9116-7120-b0a7-b739-dd8513e12c5e@suse.de>
+ <20210609072108.ldhsxfnfql4pacqx@wittgenstein>
+ <85a0d777-dea6-9574-8946-9fc8f912c1af@suse.de>
+ <20210609080918.ma2klvxkjad4pjrn@wittgenstein> <87v96k1d65.fsf@disp2133>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <c504a8c6-73f8-b45c-6d6b-6f5a1300ab3a@metux.net>
+Date:   Mon, 14 Jun 2021 09:49:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1620704856-104451-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <87v96k1d65.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:vDcC/6vJGgs0xNiN8kqUu/HqX+nxu78r6MTjnn+RaYLuzq9x4kM
+ 3AyrUtiJ4LfMoeezJW1RUrxpG3wlUPedT8vY7Posz4/koSgZ3bkxlF7O/vds1Zss5qK7a75
+ aN96WycM772iK8O5+zblLAgmJrH947YEJwxNEzqiq7iP+ruA4XFHBmRiLMbgWvPW0Be3rrj
+ MH4E5Y49mVP4cmczWyz3g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:doK3sJdxH9U=:XMd3gz1LgI4ifBd/cLxrAS
+ RLRlLPtxMnFJxzMHKxJPACZ9b+ex+7B7ul616LdwW1mrQshlwvpwnFbWqWZCcbb6eVhvE8MB2
+ yxokDoMeqAmfyDW/xCHel32Q1ejOU3cSrBYgbj24tFqnjhqDOhCf+fbwSnsJMQpeV/EoU8Rhk
+ c4yEge2gIidmm7SP+tQX5jbqSo8ah5czMjDUJyJs2n9mhXsr0K/yVeICvbDKlh3MaECOAcf7N
+ m7fv6+e9Tg43z+kazu4lT0KC7eqie4KygXdMLYQ7FBUzWw8N1xOMFkA7fW2gc9wfUXUctaq4J
+ jZp3h90Zf2MhGixNNKjDshLXzTEfs5Mra7Xpx5QhXmw6FvCXSKsi7ofMGpLKZXKXtke+++O7/
+ nVIddDzBsCE8/TrJXxDL1RZzLhgg99BqI1U+RDJ0Bkrfd7AT2D7DkLLoIevLkd+MJ76Fj7VJO
+ ifNxLd8TuLl8xZVu2GJNKIqWQ5ZXC1f2HD3IWbrMenBD9z1AKp9H2yudk4b6OP5obqYJAPNLL
+ 3CsFvBWxmq2DSrwrB+49Gk=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Zou
+On 11.06.21 20:14, Eric W. Biederman wrote:
 
-On Tue, May 11, 2021 at 11:47:36AM +0800, Zou Wei wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Hi,
 
-Sorry for getting late on this
+> I favor none of the virtual devices showing up in sysfs.  Maybe existing
+> userspace needs the devices in sysfs, but if the solution is simply to
+> skip sysfs for virtual devices that is much simpler.
 
-Acked-by: Jacopo Mondi <jacopo@jmondi.org>
+Sorry for being a little bit confused, but by virtual devices you mean
+things like pty's or all the other stuff we already see under
+/sys/device/virtual ?
 
-Thanks
-   j
+I'm yet unsure what the better way is. If we're just talking about pty's
+specifically, I maybe could live with threating them like "special sort
+of pipes", but I guess that would require some extra magic.
 
-> ---
->  drivers/media/i2c/mt9v111.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/media/i2c/mt9v111.c b/drivers/media/i2c/mt9v111.c
-> index 97c7527..f16e632 100644
-> --- a/drivers/media/i2c/mt9v111.c
-> +++ b/drivers/media/i2c/mt9v111.c
-> @@ -1260,6 +1260,7 @@ static const struct of_device_id mt9v111_of_match[] = {
->  	{ .compatible = "aptina,mt9v111", },
->  	{ /* sentinel */ },
->  };
-> +MODULE_DEVICE_TABLE(of, mt9v111_of_match);
->
->  static struct i2c_driver mt9v111_driver = {
->  	.driver = {
-> --
-> 2.6.2
->
+If I'm not mistaken, the whole sysfs stuff is automatically handled
+device classes and bus'es - seems that tty's are also class devs.
+
+How would you skip the virtual devices from sysfs ? Adding some filter
+into sysfs that looks at the device class (or some flag within it) ?
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
