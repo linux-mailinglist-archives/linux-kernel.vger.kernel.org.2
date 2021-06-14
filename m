@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702B43A64AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80F63A6312
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234690AbhFNL1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:27:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44646 "EHLO mail.kernel.org"
+        id S234428AbhFNLJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235128AbhFNLNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:13:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAE326141D;
-        Mon, 14 Jun 2021 10:48:45 +0000 (UTC)
+        id S234633AbhFNK6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:58:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D70CD61625;
+        Mon, 14 Jun 2021 10:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667726;
-        bh=ypkhbd6xLWuIlpAF2/q2ak7ZXCHyjWVQj/Y5HvQwd/4=;
+        s=korg; t=1623667307;
+        bh=oP5uqppbhMT+aMCdFfU/PluXUbOZINnOeEafkkCOHEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tCOUNaIbtDv+gMqv9g0EUJG9+xhMxo73CFmw6jxNBvQ43+755wgH4jNXrwjRa9lmi
-         aTq4wJCyyI5V2L/fXTeMFMtTf6aRE/aLIiLMB7e8SzT2afum/e+kvSHauBC9odQsx9
-         WeCsWgm9uQsRRQ3LXmRxvaeflP4HixefMAc0fGmE=
+        b=AS2O2X6r2NliIQ2O2WrBZ2HUXSwWf/i19PcswvLXA/wjbB2/Rz82ONgxuTDxLV3nE
+         NFf2DhQCTjPPTk/VDN7vuuNBDheHQvS71Tq55sYI0bNoXCS+IDScmx375L9gpcllXL
+         zbwf6KTgXZciDIpaftoItUqYyJFIRRk2mqh2DuNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 050/173] ALSA: firewire-lib: fix the context to call snd_pcm_stop_xrun()
+        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        =?UTF-8?q?NOMURA=20JUNICHI ?= <junichi.nomura@nec.com>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 021/131] cgroup: disable controllers at parse time
 Date:   Mon, 14 Jun 2021 12:26:22 +0200
-Message-Id: <20210614102659.815561634@linuxfoundation.org>
+Message-Id: <20210614102653.726907409@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Shakeel Butt <shakeelb@google.com>
 
-commit 9981b20a5e3694f4625ab5a1ddc98ce7503f6d12 upstream.
+[ Upstream commit 45e1ba40837ac2f6f4d4716bddb8d44bd7e4a251 ]
 
-In the workqueue to queue wake-up event, isochronous context is not
-processed, thus it's useless to check context for the workqueue to switch
-status of runtime for PCM substream to XRUN. On the other hand, in
-software IRQ context of 1394 OHCI, it's needed.
+This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
+too early usage of static_branch_disable()"). The commit 6041186a3258
+("init: initialize jump labels before command line option parsing") has
+moved the jump_label_init() before parse_args() which has made the
+commit a3e72739b7a7 unnecessary. On the other hand there are
+consequences of disabling the controllers later as there are subsystems
+doing the controller checks for different decisions. One such incident
+is reported [1] regarding the memory controller and its impact on memory
+reclaim code.
 
-This commit fixes the bug introduced when tasklet was replaced with
-workqueue.
+[1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4@nec.com
 
-Cc: <stable@vger.kernel.org>
-Fixes: 2b3d2987d800 ("ALSA: firewire: Replace tasklet with work")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210605091054.68866-1-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reported-by: NOMURA JUNICHI(野村　淳一) <junichi.nomura@nec.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Tested-by: Jun'ichi Nomura <junichi.nomura@nec.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/firewire/amdtp-stream.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/cgroup/cgroup.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -804,7 +804,7 @@ static void generate_pkt_descs(struct am
- static inline void cancel_stream(struct amdtp_stream *s)
- {
- 	s->packet_index = -1;
--	if (current_work() == &s->period_work)
-+	if (in_interrupt())
- 		amdtp_stream_pcm_abort(s);
- 	WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 5d1fdf7c3ec6..c8b811e039cc 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5665,8 +5665,6 @@ int __init cgroup_init_early(void)
+ 	return 0;
  }
+ 
+-static u16 cgroup_disable_mask __initdata;
+-
+ /**
+  * cgroup_init - cgroup initialization
+  *
+@@ -5725,12 +5723,8 @@ int __init cgroup_init(void)
+ 		 * disabled flag and cftype registration needs kmalloc,
+ 		 * both of which aren't available during early_init.
+ 		 */
+-		if (cgroup_disable_mask & (1 << ssid)) {
+-			static_branch_disable(cgroup_subsys_enabled_key[ssid]);
+-			printk(KERN_INFO "Disabling %s control group subsystem\n",
+-			       ss->name);
++		if (!cgroup_ssid_enabled(ssid))
+ 			continue;
+-		}
+ 
+ 		if (cgroup1_ssid_disabled(ssid))
+ 			printk(KERN_INFO "Disabling %s control group subsystem in v1 mounts\n",
+@@ -6245,7 +6239,10 @@ static int __init cgroup_disable(char *str)
+ 			if (strcmp(token, ss->name) &&
+ 			    strcmp(token, ss->legacy_name))
+ 				continue;
+-			cgroup_disable_mask |= 1 << i;
++
++			static_branch_disable(cgroup_subsys_enabled_key[i]);
++			pr_info("Disabling %s control group subsystem\n",
++				ss->name);
+ 		}
+ 	}
+ 	return 1;
+-- 
+2.30.2
+
 
 
