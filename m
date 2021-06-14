@@ -2,285 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0953A6B9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62603A6BBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234662AbhFNQ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:27:32 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:50914 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233593AbhFNQ1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:27:30 -0400
-Received: from zn.tnic (p200300ec2f09b900f41fb76786649a77.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:b900:f41f:b767:8664:9a77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6540E1EC04AD;
-        Mon, 14 Jun 2021 18:25:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623687926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=SsxVz2r5oN4lnCyZbTvn/5Zz+6zt1F06cejR2VGMXJg=;
-        b=Vo00EAKNgD7AFNhgm49YEDwGuLn98ZSZ2j4ts2lt7+AjJGooEdju5hgyyfWHl+5RkB+ies
-        mAsS/wthE7dX6kaEIBjy5kLOKZGp78o+BTNok/EvMkb6G0Ct7BpVv3LyJC/49oT7fv2OlA
-        CR5GJZWqXsOypS7uRrIX879uLLHqvmc=
-Date:   Mon, 14 Jun 2021 18:25:18 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v5 2/6] x86/sev-es: Make sure IRQs are disabled while
- GHCB is active
-Message-ID: <YMeC7vJxm0OVJJhr@zn.tnic>
-References: <20210614135327.9921-1-joro@8bytes.org>
- <20210614135327.9921-3-joro@8bytes.org>
+        id S234674AbhFNQ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:29:07 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:51962 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234124AbhFNQ3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 12:29:00 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lspQM-00E1Ph-7M; Mon, 14 Jun 2021 10:26:54 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lspQL-00Bgki-8b; Mon, 14 Jun 2021 10:26:53 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+In-Reply-To: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> (Michael
+        Schmitz's message of "Mon, 14 Jun 2021 17:03:32 +1200")
+References: <87sg1p30a1.fsf@disp2133>
+        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+        <87pmwsytb3.fsf@disp2133>
+        <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Mon, 14 Jun 2021 11:26:39 -0500
+Message-ID: <87eed4v2dc.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210614135327.9921-3-joro@8bytes.org>
+Content-Type: text/plain
+X-XM-SPF: eid=1lspQL-00Bgki-8b;;;mid=<87eed4v2dc.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+p8M0GsrdXS5+5TC221baY4cqTIjSrQBA=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_08,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4998]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Michael Schmitz <schmitzmic@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 411 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 11 (2.6%), b_tie_ro: 9 (2.3%), parse: 0.90 (0.2%),
+         extract_message_metadata: 3.1 (0.7%), get_uri_detail_list: 1.28
+        (0.3%), tests_pri_-1000: 4.4 (1.1%), tests_pri_-950: 1.25 (0.3%),
+        tests_pri_-900: 1.02 (0.2%), tests_pri_-90: 105 (25.5%), check_bayes:
+        103 (25.1%), b_tokenize: 8 (1.9%), b_tok_get_all: 8 (1.9%),
+        b_comp_prob: 2.5 (0.6%), b_tok_touch_all: 81 (19.7%), b_finish: 1.07
+        (0.3%), tests_pri_0: 267 (64.8%), check_dkim_signature: 0.52 (0.1%),
+        check_dkim_adsp: 3.0 (0.7%), poll_dns_idle: 1.20 (0.3%), tests_pri_10:
+        3.0 (0.7%), tests_pri_500: 7 (1.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 03:53:23PM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> The #VC handler only cares about IRQs being disabled while the GHCB is
-> active, as it must not be interrupted by something which could cause
-> another #VC while it holds the GHCB (NMI is the exception for which the
-> backup GHCB exits).
-> 
-> Make sure nothing interrupts the code path while the GHCB is active by
-> disabling IRQs in sev_es_get_ghcb() and restoring the previous irq state
-> in sev_es_put_ghcb().
-> 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/kernel/sev.c | 48 ++++++++++++++++++++++++++++++-------------
->  1 file changed, 34 insertions(+), 14 deletions(-)
+Michael Schmitz <schmitzmic@gmail.com> writes:
 
-Here's a diff ontop of yours with a couple of points:
+> On second thought, I'm not certain what adding another empty stack frame would
+> achieve here.
+>
+> On m68k, 'frame' already is a new stack frame, for running the new thread
+> in. This new frame does not have any user context at all, and it's explicitly
+> wiped anyway.
+>
+> Unless we save all user context on the stack, then push that context to a new
+> save frame, and somehow point get_signal to look there for IO threads
+> (essentially what Eric suggested), I don't see how this could work?
+>
+> I must be missing something.
 
-* I've named the low-level, interrupts-enabled workers
-__sev_get_ghcb()/__sev_put_ghcb() to mean a couple of things:
+It is only designed to work well enough so that ptrace will access
+something well defined when ptrace accesses io_uring tasks.
 
-** underscored to mean, that callers need to disable local locks. There's
-also a lockdep_assert_irqs_disabled() to make sure, both in the get and
-put function.
+The io_uring tasks are special in that they are user process
+threads that never run in userspace.  So as long as everything
+ptrace can read is accessible on that process all is well.
 
-** also only "sev" in the name because this code is not used for SEV-ES
-only anymore.
+Having stared a bit longer at the code I think the short term
+fix for both of PTRACE_EVENT_EXIT and io_uring is to guard
+them both with CONFIG_HAVE_ARCH_TRACEHOOK.
 
-* I've done it this way because you have a well-recognized code pattern
-where the caller disables interrupts, calls the low-level helpers and
-then enables interrupts again when done. VS passing a flags pointer back
-and forth which just looks weird.
+Today CONFIG_HAVE_ARCH_TRACEHOOK guards access to /proc/self/syscall.
+Which out of necessity ensures that user context is always readable.
+Which seems to solve both the PTRACE_EVENT_EXIT and the io_uring
+problems.
 
-And as to being easy to use - users can botch flags too, when passing
-around so they can just as well do proper interrupts toggling like a
-gazillion other places in the kernel.
+What I especially like about that is there are a lot of other reasons
+to encourage architectures in a CONFIG_HAVE_ARCH_TRACEHOOK direction.
+I think the biggies are getting architectures to store the extra
+saved state on context switch into some place in task_struct
+and to implement the regset view of registers.
 
-Also, you have places like exc_vmm_communication() where you have
-to artifically pass in flags - I'm looking at your previous version
-- even if you already make sure interrupts are disabled with the
-BUG_ON assertion on entry. So in those cases you can simply call the
-interrupt-enabled, __-variants.
+Hmm. This is odd. CONFIG_HAVE_ARCH_TRACEHOOK is supposed to imply
+CORE_DUMP_USE_REGSET.  But alpha, csky, h8300, m68k, microblaze, nds32
+don't implement CORE_DUMP_USE_REGSET but nds32 implements
+CONFIG_ARCH_HAVE_TRACEHOOK.
 
-Btw, while we're on exc_vmm_communication, it has a:
+I will keep digging and see what clean code I can come up with.
 
-	BUG_ON(!irqs_disabled());
-
-on entry and then later
-
-	lockdep_assert_irqs_disabled();
-
-and that second assertion is not really needed, methinks. So a hunk
-below removes it.
-
-Thoughts?
-
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 7d70cddc38be..b85c4a2be9fa 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -192,11 +192,19 @@ void noinstr __sev_es_ist_exit(void)
- 	this_cpu_write(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC], *(unsigned long *)ist);
- }
- 
--static __always_inline struct ghcb *__sev_es_get_ghcb(struct ghcb_state *state)
-+/*
-+ * Nothing shall interrupt this code path while holding the per-CPU
-+ * GHCB. The backup GHCB is only for NMIs interrupting this path.
-+ *
-+ * Callers must disable local interrupts around it.
-+ */
-+static __always_inline struct ghcb *__sev_get_ghcb(struct ghcb_state *state)
- {
- 	struct sev_es_runtime_data *data;
- 	struct ghcb *ghcb;
- 
-+	lockdep_assert_irqs_disabled();
-+
- 	data = this_cpu_read(runtime_data);
- 	ghcb = &data->ghcb_page;
- 
-@@ -231,18 +239,6 @@ static __always_inline struct ghcb *__sev_es_get_ghcb(struct ghcb_state *state)
- 	return ghcb;
- }
- 
--static __always_inline struct ghcb *sev_es_get_ghcb(struct ghcb_state *state,
--						    unsigned long *flags)
--{
--	/*
--	 * Nothing shall interrupt this code path while holding the per-cpu
--	 * GHCB. The backup GHCB is only for NMIs interrupting this path.
--	 */
--	local_irq_save(*flags);
--
--	return __sev_es_get_ghcb(state);
--}
--
- /* Needed in vc_early_forward_exception */
- void do_early_exception(struct pt_regs *regs, int trapnr);
- 
-@@ -491,11 +487,13 @@ static enum es_result vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt
- /* Include code shared with pre-decompression boot stage */
- #include "sev-shared.c"
- 
--static __always_inline void __sev_es_put_ghcb(struct ghcb_state *state)
-+static __always_inline void __sev_put_ghcb(struct ghcb_state *state)
- {
- 	struct sev_es_runtime_data *data;
- 	struct ghcb *ghcb;
- 
-+	lockdep_assert_irqs_disabled();
-+
- 	data = this_cpu_read(runtime_data);
- 	ghcb = &data->ghcb_page;
- 
-@@ -514,13 +512,6 @@ static __always_inline void __sev_es_put_ghcb(struct ghcb_state *state)
- 	}
- }
- 
--static __always_inline void sev_es_put_ghcb(struct ghcb_state *state,
--					    unsigned long flags)
--{
--	__sev_es_put_ghcb(state);
--	local_irq_restore(flags);
--}
--
- void noinstr __sev_es_nmi_complete(void)
- {
- 	struct ghcb_state state;
-@@ -528,7 +519,7 @@ void noinstr __sev_es_nmi_complete(void)
- 
- 	BUG_ON(!irqs_disabled());
- 
--	ghcb = __sev_es_get_ghcb(&state);
-+	ghcb = __sev_get_ghcb(&state);
- 
- 	vc_ghcb_invalidate(ghcb);
- 	ghcb_set_sw_exit_code(ghcb, SVM_VMGEXIT_NMI_COMPLETE);
-@@ -538,7 +529,7 @@ void noinstr __sev_es_nmi_complete(void)
- 	sev_es_wr_ghcb_msr(__pa_nodebug(ghcb));
- 	VMGEXIT();
- 
--	__sev_es_put_ghcb(&state);
-+	__sev_put_ghcb(&state);
- }
- 
- static u64 get_jump_table_addr(void)
-@@ -548,7 +539,9 @@ static u64 get_jump_table_addr(void)
- 	struct ghcb *ghcb;
- 	u64 ret = 0;
- 
--	ghcb = sev_es_get_ghcb(&state, &flags);
-+	local_irq_save(flags);
-+
-+	ghcb = __sev_get_ghcb(&state);
- 
- 	vc_ghcb_invalidate(ghcb);
- 	ghcb_set_sw_exit_code(ghcb, SVM_VMGEXIT_AP_JUMP_TABLE);
-@@ -562,7 +555,9 @@ static u64 get_jump_table_addr(void)
- 	    ghcb_sw_exit_info_2_is_valid(ghcb))
- 		ret = ghcb->save.sw_exit_info_2;
- 
--	sev_es_put_ghcb(&state, flags);
-+	__sev_put_ghcb(&state);
-+
-+	local_irq_restore(flags);
- 
- 	return ret;
- }
-@@ -686,7 +681,9 @@ static void sev_es_ap_hlt_loop(void)
- 	unsigned long flags;
- 	struct ghcb *ghcb;
- 
--	ghcb = sev_es_get_ghcb(&state, &flags);
-+	local_irq_save(flags);
-+
-+	ghcb = __sev_get_ghcb(&state);
- 
- 	while (true) {
- 		vc_ghcb_invalidate(ghcb);
-@@ -703,7 +700,9 @@ static void sev_es_ap_hlt_loop(void)
- 			break;
- 	}
- 
--	sev_es_put_ghcb(&state, flags);
-+	__sev_put_ghcb(&state);
-+
-+	local_irq_restore(flags);
- }
- 
- /*
-@@ -1364,7 +1363,6 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
- 	}
- 
- 	irq_state = irqentry_nmi_enter(regs);
--	lockdep_assert_irqs_disabled();
- 	instrumentation_begin();
- 
- 	/*
-@@ -1373,7 +1371,7 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
- 	 * keep the IRQs disabled to protect us against concurrent TLB flushes.
- 	 */
- 
--	ghcb = __sev_es_get_ghcb(&state);
-+	ghcb = __sev_get_ghcb(&state);
- 
- 	vc_ghcb_invalidate(ghcb);
- 	result = vc_init_em_ctxt(&ctxt, regs, error_code);
-@@ -1381,7 +1379,7 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
- 	if (result == ES_OK)
- 		result = vc_handle_exitcode(&ctxt, ghcb, error_code);
- 
--	__sev_es_put_ghcb(&state);
-+	__sev_put_ghcb(&state);
- 
- 	/* Done - now check the result */
- 	switch (result) {
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Eric
