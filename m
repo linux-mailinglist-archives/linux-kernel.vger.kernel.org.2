@@ -2,498 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7D23A711A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281F73A7124
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234952AbhFNVVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234820AbhFNVVO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:21:14 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21BDC0613A2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:19:10 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id z4so9701875qts.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:19:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QcD57FtNiWWrNimGrimqF/td7GBZ9gYAGkV/5ivnuQo=;
-        b=QKRPAgQhM9SUJn2ILF83S8tR3b5HRzWek6zKuhYZsa42SpQMDIvDh7tiWzw0gnDIb0
-         on+8jWjW6+zeQFL+9zFsNDlO16NfOLlR8AGqc5P71prto0IvIS6HzMa3lQbddejj9nS6
-         Knkp1qSmpQd//eJ1TOe36iMX4b4dHJpynKFXV0FN7DWm5jL5iPNWIBSWBaN4GNVe4pzW
-         vz98Ufg1VhJ6PlD/etx37Dc4tAnkj0GCvaqvDrkrf1VpFjqCQMF1tGh+bLw3umyG4+wj
-         mxUPpmcP+9H/1ahep+qwu18iKtRLQIllIeZaABt4Am8MIH5lh+FzrAzqLnDl8lG0aab8
-         M0IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QcD57FtNiWWrNimGrimqF/td7GBZ9gYAGkV/5ivnuQo=;
-        b=OZ5mP5Dvw/1/+UyrLDDeZ7zkcpVDPL8yPaoYxoF40sNBFSLXWmaXjn7bk62Tl1LZGF
-         PIqrbXybHtZXLZC19Im8L+Xbcmn7GFuyIzzwOFrn4VQbXU8indQFv5hcSlM+60VgmloA
-         o0PI0m9X/xOxTqyLNa0QiNfRKoEprbaN6uevF9kIQal2YF6mTorQWUv/sSBPBdTwNjj/
-         8W6G12CNBKrsmt/5f1krU9fWU7eRh5Z5csGwqnS2M3e1C6IyOsgbaitiSOH4OIZxo66q
-         csvltxQz6vK4HYVYoQVdKB3nDwUEay2wca16Fw6mtLmOH7/txoRoh3sLcT2ty3P+579F
-         f7UA==
-X-Gm-Message-State: AOAM530hPylRc0FpqErHGaAQ7nAfQPJI8JTrssVaxhY/4kgV870t/qBn
-        DTJlT0Fpmd3oE4gR0B5Mu2YUxw==
-X-Google-Smtp-Source: ABdhPJwzrRrY2GPbYHtXtlQCHq58Du7ysF5zlWkgtjH22uYcEOuDKyojOhKRZpsNm2uJdI9Be4JxQg==
-X-Received: by 2002:aed:204c:: with SMTP id 70mr18858717qta.260.1623705549819;
-        Mon, 14 Jun 2021 14:19:09 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id 5sm8326659qkj.99.2021.06.14.14.19.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 14:19:09 -0700 (PDT)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 4/4] vfs: keep inodes with page cache off the inode shrinker LRU
-Date:   Mon, 14 Jun 2021 17:19:04 -0400
-Message-Id: <20210614211904.14420-4-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614211904.14420-1-hannes@cmpxchg.org>
-References: <20210614211904.14420-1-hannes@cmpxchg.org>
+        id S235257AbhFNVXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:23:51 -0400
+Received: from mail-mw2nam12on2087.outbound.protection.outlook.com ([40.107.244.87]:53473
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234397AbhFNVXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 17:23:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GzxpDb4PBP/62KtWnFhbtDBlWNwVWgYAYPjWNg5i5fiPuiGObd98sUTr4kDxw5FK7ZaNoVkYd+e8M9BW9m6STo0X0oe25zBAMDuf8hug59ZVNRWIF+b8q/f6sJufS4d1BGeUZhr4Mdevv7d5RXIbhLz8Cq6t/fOj3r7aDXWXxBKfrusTtKyx5mNIjvk3g9pWwCxxCKNBMiVVBYGHyz67nmRJInfcw4iAwdJluie/iYzdjIenyayz6XzDFr/QH4//oiyRv920ziX8cKaU2OpvqXu27J8Lo2MOxfKx0Q4nPcql9cHCOFm/wp/kSfBeil83fXcxcad7HLfui0pzvL3p+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lLC7XkH7zKA/gzvQENAfyU0qM1jY9yXmi+1PyGaYn+s=;
+ b=iD6W0lKnrmcWNgki8Z4o994im624JTRJslsJHBKNwMKka3+qmZ/UCC+8IZapuSghhWuVxbU9EPG1ojcsfLY1irXc0eeakGuQo8qFc3WIPa04Wl52Y9vSkQExTAqzCKuZDOOpt6f+V/CaA2OW5c5m3zmPBeE+4mCSZd1J+RMvDlQ9FYNyrhVwWOKf5u+bSF/pRpf+WJd5vG4eRUhSq/n0vjGOGW4Bs8BmkNjWF9VOoxcEkcptUVVO79DW/MDQsVug82+RXGZzmD2HZ/w56Dhz9ZQlab3w9pPi+gcshAblCBAFwadZCi0ImXCLZm6Ua1q67hvquLVKY7gXYXq04Rb9Vw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lLC7XkH7zKA/gzvQENAfyU0qM1jY9yXmi+1PyGaYn+s=;
+ b=WObb+NlaP7bBwUr1KpfPG13+M+6DEoLWtGyHPKPK6pSYTPSn44GftsWcuL3PNFfu1hmqzFx3gtRnP8kcpPH4DXOVpirP5lqEArYUpcXQKQZCPB8lQArzmIbdn4rPp2mfypVjYOdqkEd2vE/cRghvcRW0tpcSK0jaYTjBNuEFJfw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com (2603:10b6:805:67::33)
+ by SA0PR12MB4559.namprd12.prod.outlook.com (2603:10b6:806:9e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Mon, 14 Jun
+ 2021 21:21:45 +0000
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::c8f:eff7:df51:c837]) by SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::c8f:eff7:df51:c837%6]) with mapi id 15.20.4219.025; Mon, 14 Jun 2021
+ 21:21:45 +0000
+From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>, yazen.ghannam@amd.com,
+        Robert Richter <rric@kernel.org>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Subject: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA feature bit is not exposed
+Date:   Mon, 14 Jun 2021 16:21:29 -0500
+Message-Id: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.184.1]
+X-ClientProxiedBy: BN9PR03CA0931.namprd03.prod.outlook.com
+ (2603:10b6:408:108::6) To SN6PR12MB2685.namprd12.prod.outlook.com
+ (2603:10b6:805:67::33)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ethanolx50f7host.amd.com (165.204.184.1) by BN9PR03CA0931.namprd03.prod.outlook.com (2603:10b6:408:108::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Mon, 14 Jun 2021 21:21:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d40569d4-bf94-499b-32c1-08d92f7a693c
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4559:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB45596A9C44A7861B160EA7AB90319@SA0PR12MB4559.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1BvMmtlpv/zrNbvhU8nKL5wWfE9q30cP8jo4J3sI1zpCo7FuL2UdlkxXg/vBEX+LScJUQBYN8xi3R1zWiyGFeKMHlPdm6QG5okq4/+9eobY9rQZvxcMxKbxNfbmh2OnKQ4iDNFBuQbNVP2zWx0rQMJ1hc23hMpvQquseZKYYxUGo1UJ8c5Qwwii6LakpiQdro6QCOteEDKrdmYVRRB61lzoUfgoTBSu2k+TAoO9Qkq6YKQy8CLFCPGcXI6afqfJZNK8x3afZf/1vECrs46mnw1ptBIyGJkZ5Pi1kg5rVN+V7w/SUNHkuJ65Wf/54vgNRyC9KNAiO3Cd3eGzrsRRn3ZGClTu1sOfch4uBmkD28XZ2TzYttHcpZZyYwZnaOxWIX7kkgPcaFDxnfUHOnGqANG+zXaaixGdIVf4cEFvg8v6aklC9SyBcgQJUx/KwrWOFRVHdEFr4hcUroEcJkfieNU7/92b6H25WjolqSY3fgOsBNkEpaXEiZA5+DmpM4DwldWXjMhqnfooeGkkl7uTYcSANvza2JFAl+jnhipumzNHntqG64w04pWjenC0zajSdbSpzEsex3vkUBWu3DfoCJ3N0NwKPJSlhGXS/fFyIlU2LjwLh5LNq2eu4jq2W+mEvIpZthwOKZNZkgOP8gwVweQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(366004)(136003)(376002)(4326008)(83380400001)(8676002)(86362001)(6666004)(2616005)(956004)(478600001)(316002)(36756003)(5660300002)(66476007)(6486002)(8936002)(26005)(38100700002)(1076003)(52116002)(66946007)(186003)(38350700002)(16526019)(66556008)(54906003)(7696005)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cgNdnNALooQbkvhgrCpsOTZe1wgtUb0R8CJxRZGDH7k19G/eTlQR+QxUBN5C?=
+ =?us-ascii?Q?PCy28b3hKdD8tRH3ly3CiATLXqVqUmVrvd/bOfwdQ2SlgsRDlWLUXrj+cKFk?=
+ =?us-ascii?Q?AfSu/rJ3w+UpcOl1su4Q1zaeEOrjrAkMCOr2Enwl7tGFxUS6ihLgWrBxRN5r?=
+ =?us-ascii?Q?TKQtnsmYu2IAy6gPAJCPg4ZwFLIPrg1jejP0jJnskDmCK3AsYxU5pw9xi9S3?=
+ =?us-ascii?Q?o2RQI7538p2yvGmUt2KPkKglOsOQ7eAx3FZJFxJYCZoWT4QnwtEMSr1Og8DQ?=
+ =?us-ascii?Q?KqIZDCaFYGXbHc+5w/hOxVS3Z//B7eFCaGM92lGRoPRcAaFbZLGXkyIPcI1g?=
+ =?us-ascii?Q?ZbsYhAh/yrmDuO6+r9Mki2z/3QHCJtFPtMsEBBRz6ko7XFj5kIzaKuSAynxu?=
+ =?us-ascii?Q?F0931eKtJjDZu9Tof8DPk+7w9L/l7fmLodKW9PYEng1UyrwbOAIFGbB8TRp/?=
+ =?us-ascii?Q?OJdErJH3LvYXxjHwxe6ocG1CQ5abCFD5poRFvaa1k+Oa2oyojnw5s4CfdQwf?=
+ =?us-ascii?Q?2chc0bY8MTEMAX/Emkbbr/ETomMKGfWMIY981qpBWXmZ4HCX9nwojtlHjdas?=
+ =?us-ascii?Q?AiZDV0NRTwPfVuRS5haAH3ZLUdh5xJNsONHEEliYBGlkiTekwUKZ2G8zpH4o?=
+ =?us-ascii?Q?LwpV++wM0vXJdY1iMEmTHRErUz8qfAS0NJhOBVWhT+YJoVrypH3KzyRIGCQq?=
+ =?us-ascii?Q?ZgRDHoKLlQg9cBzKumUZVjPG4Yh6qA3LJH9Kf4e/LNJ0xpF/0/pUr9Uf7ltZ?=
+ =?us-ascii?Q?mPwY2EUIjg9hsUcMmGDs0v+WUllpx3Y3+36aOM9Vwvkgp0PtYg2iNTjyc3YD?=
+ =?us-ascii?Q?AeGG3dovIu1XU2BCk0N1OSSiPRwYktr6ac91NTTAG71kbN2iU+SWOwLQs6Ym?=
+ =?us-ascii?Q?k0KN/3A9oK+sdNfETt431BOhCnWWRBcpRJDDaoiWx6RNctAUm7ZVya9tmQOX?=
+ =?us-ascii?Q?FT1aT/RK7yl9D502PhQhocw5kSGS/qLBULl9IvFQASLsIcVZ8VUP5CWihKV8?=
+ =?us-ascii?Q?Hvyh6hbJZ04ZCyMt6zM/vygfuQTSHhgVByU2KwgQJQakbQxTKrWTsCjCSWOT?=
+ =?us-ascii?Q?J0PSypVGRg3EhMRntT6A7L1lvRygoQmN219xDK37ln1/ZItp/7atbxWMNGy5?=
+ =?us-ascii?Q?jBDIFB5i6HKvDtDSN3sN8/8bzUjUpIm06zl6CYJ74NiGWfqaVpDOIYqYIhO4?=
+ =?us-ascii?Q?W+ZnEZv/SclAhTGZPuF+M1RMy43gfLo+OsOGssYEjGC3bsSh9bHu4HnZY60m?=
+ =?us-ascii?Q?iOMhmXlr0yALAv4MXFvdVT21BpqlbK2mUAa0tvjYigC9k/2cXUjnh9SIhQOo?=
+ =?us-ascii?Q?aPg+r5dPx4sM4GuiOYn+hI8K?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d40569d4-bf94-499b-32c1-08d92f7a693c
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2021 21:21:44.9263
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bWqg21vnQjlI2YvPd/S3lLYLJAKkwcwSh+MAtmXJK3c4Jte1MqIuTnr7jXy/hQmLz09RyyVqrqQWc2ZeeM6poA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4559
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Historically (pre-2.5), the inode shrinker used to reclaim only empty
-inodes and skip over those that still contained page cache. This
-caused problems on highmem hosts: struct inode could put fill lowmem
-zones before the cache was getting reclaimed in the highmem zones.
+The SMCA feature bit is not exposed on the guest.
 
-To address this, the inode shrinker started to strip page cache to
-facilitate reclaiming lowmem. However, this comes with its own set of
-problems: the shrinkers may drop actively used page cache just because
-the inodes are not currently open or dirty - think working with a
-large git tree. It further doesn't respect cgroup memory protection
-settings and can cause priority inversions between containers.
+This causes a lot of noise in dmesg as the warning is printed for each
+logical CPU.
 
-Nowadays, the page cache also holds non-resident info for evicted
-cache pages in order to detect refaults. We've come to rely heavily on
-this data inside reclaim for protecting the cache workingset and
-driving swap behavior. We also use it to quantify and report workload
-health through psi. The latter in turn is used for fleet health
-monitoring, as well as driving automated memory sizing of workloads
-and containers, proactive reclaim and memory offloading schemes.
+$ dmesg |grep -i family
 
-The consequences of dropping page cache prematurely is that we're
-seeing subtle and not-so-subtle failures in all of the above-mentioned
-scenarios, with the workload generally entering unexpected thrashing
-states while losing the ability to reliably detect it.
+[    0.031000] smpboot: CPU0: AMD EPYC-Milan Processor (family: 0x19, model: 0x1, stepping: 0x1)
+[    4.653422] Huh? What family is it: 0x19?!
+[    4.720732] Huh? What family is it: 0x19?!
+[    6.171028] Huh? What family is it: 0x19?!
+[    6.766552] Huh? What family is it: 0x19?!
+[    6.811119] Huh? What family is it: 0x19?!
+[    6.839855] Huh? What family is it: 0x19?!
 
-To fix this on non-highmem systems at least, going back to rotating
-inodes on the LRU isn't feasible. We've tried (commit a76cf1a474d7
-("mm: don't reclaim inodes with many attached pages")) and failed
-(commit 69056ee6a8a3 ("Revert "mm: don't reclaim inodes with many
-attached pages"")). The issue is mostly that shrinker pools attract
-pressure based on their size, and when objects get skipped the
-shrinkers remember this as deferred reclaim work. This accumulates
-excessive pressure on the remaining inodes, and we can quickly eat
-into heavily used ones, or dirty ones that require IO to reclaim, when
-there potentially is plenty of cold, clean cache around still.
+Give these messages debug severity and output once as it is mostly useful
+for module developers and just noise for users.
 
-Instead, this patch keeps populated inodes off the inode LRU in the
-first place - just like an open file or dirty state would. An
-otherwise clean and unused inode then gets queued when the last cache
-entry disappears. This solves the problem without reintroducing the
-reclaim issues, and generally is a bit more scalable than having to
-wade through potentially hundreds of thousands of busy inodes.
+Rephrase the statement to make it more meaningful.
 
-Locking is a bit tricky because the locks protecting the inode state
-(i_lock) and the inode LRU (lru_list.lock) don't nest inside the
-irq-safe page cache lock (i_pages.xa_lock). Page cache deletions are
-serialized through i_lock, taken before the i_pages lock, to make sure
-depopulated inodes are queued reliably. Additions may race with
-deletions, but we'll check again in the shrinker. If additions race
-with the shrinker itself, we're protected by the i_lock: if
-find_inode() or iput() win, the shrinker will bail on the elevated
-i_count or I_REFERENCED; if the shrinker wins and goes ahead with the
-inode, it will set I_FREEING and inhibit further igets(), which will
-cause the other side to create a new instance of the inode instead.
-
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
 ---
- fs/inode.c              | 46 +++++++++++++++++++++----------------
- fs/internal.h           |  1 -
- include/linux/fs.h      |  1 +
- include/linux/pagemap.h | 50 +++++++++++++++++++++++++++++++++++++++++
- mm/filemap.c            |  8 +++++++
- mm/truncate.c           | 19 ++++++++++++++--
- mm/vmscan.c             |  7 ++++++
- mm/workingset.c         | 10 +++++++++
- 8 files changed, 120 insertions(+), 22 deletions(-)
+ drivers/edac/mce_amd.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 8830a727b0af..6b74701c1954 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -424,11 +424,20 @@ void ihold(struct inode *inode)
- }
- EXPORT_SYMBOL(ihold);
+diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
+index 5dd905a3f30c..2a9899088389 100644
+--- a/drivers/edac/mce_amd.c
++++ b/drivers/edac/mce_amd.c
+@@ -1227,13 +1227,9 @@ static int __init mce_amd_init(void)
+ 		fam_ops.mc2_mce = f16h_mc2_mce;
+ 		break;
  
--static void inode_lru_list_add(struct inode *inode)
-+static void __inode_add_lru(struct inode *inode, bool rotate)
- {
-+	if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING | I_WILL_FREE))
-+		return;
-+	if (atomic_read(&inode->i_count))
-+		return;
-+	if (!(inode->i_sb->s_flags & SB_ACTIVE))
-+		return;
-+	if (!mapping_shrinkable(&inode->i_data))
-+		return;
-+
- 	if (list_lru_add(&inode->i_sb->s_inode_lru, &inode->i_lru))
- 		this_cpu_inc(nr_unused);
--	else
-+	else if (rotate)
- 		inode->i_state |= I_REFERENCED;
- }
- 
-@@ -439,16 +448,11 @@ static void inode_lru_list_add(struct inode *inode)
-  */
- void inode_add_lru(struct inode *inode)
- {
--	if (!(inode->i_state & (I_DIRTY_ALL | I_SYNC |
--				I_FREEING | I_WILL_FREE)) &&
--	    !atomic_read(&inode->i_count) && inode->i_sb->s_flags & SB_ACTIVE)
--		inode_lru_list_add(inode);
-+	__inode_add_lru(inode, false);
- }
- 
+-	case 0x17:
+-	case 0x18:
+-		pr_warn_once("Decoding supported only on Scalable MCA processors.\n");
+-		return -EINVAL;
 -
- static void inode_lru_list_del(struct inode *inode)
- {
--
- 	if (list_lru_del(&inode->i_sb->s_inode_lru, &inode->i_lru))
- 		this_cpu_dec(nr_unused);
- }
-@@ -724,10 +728,6 @@ int invalidate_inodes(struct super_block *sb, bool kill_dirty)
- /*
-  * Isolate the inode from the LRU in preparation for freeing it.
-  *
-- * Any inodes which are pinned purely because of attached pagecache have their
-- * pagecache removed.  If the inode has metadata buffers attached to
-- * mapping->private_list then try to remove them.
-- *
-  * If the inode has the I_REFERENCED flag set, then it means that it has been
-  * used recently - the flag is set in iput_final(). When we encounter such an
-  * inode, clear the flag and move it to the back of the LRU so it gets another
-@@ -743,31 +743,39 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
- 	struct inode	*inode = container_of(item, struct inode, i_lru);
- 
- 	/*
--	 * we are inverting the lru lock/inode->i_lock here, so use a trylock.
--	 * If we fail to get the lock, just skip it.
-+	 * We are inverting the lru lock/inode->i_lock here, so use a
-+	 * trylock. If we fail to get the lock, just skip it.
- 	 */
- 	if (!spin_trylock(&inode->i_lock))
- 		return LRU_SKIP;
- 
- 	/*
--	 * Referenced or dirty inodes are still in use. Give them another pass
--	 * through the LRU as we canot reclaim them now.
-+	 * Inodes can get referenced, redirtied, or repopulated while
-+	 * they're already on the LRU, and this can make them
-+	 * unreclaimable for a while. Remove them lazily here; iput,
-+	 * sync, or the last page cache deletion will requeue them.
- 	 */
- 	if (atomic_read(&inode->i_count) ||
--	    (inode->i_state & ~I_REFERENCED)) {
-+	    (inode->i_state & ~I_REFERENCED) ||
-+	    !mapping_shrinkable(&inode->i_data)) {
- 		list_lru_isolate(lru, &inode->i_lru);
- 		spin_unlock(&inode->i_lock);
- 		this_cpu_dec(nr_unused);
- 		return LRU_REMOVED;
+ 	default:
+-		printk(KERN_WARNING "Huh? What family is it: 0x%x?!\n", c->x86);
++		pr_debug_once("MCE decoding is not supported for family: 0x%x\n",
++			      c->x86);
+ 		return -EINVAL;
  	}
  
--	/* recently referenced inodes get one more pass */
-+	/* Recently referenced inodes get one more pass */
- 	if (inode->i_state & I_REFERENCED) {
- 		inode->i_state &= ~I_REFERENCED;
- 		spin_unlock(&inode->i_lock);
- 		return LRU_ROTATE;
- 	}
- 
-+	/*
-+	 * On highmem systems, mapping_shrinkable() permits dropping
-+	 * page cache in order to free up struct inodes: lowmem might
-+	 * be under pressure before the cache inside the highmem zone.
-+	 */
- 	if (inode_has_buffers(inode) || !mapping_empty(&inode->i_data)) {
- 		__iget(inode);
- 		spin_unlock(&inode->i_lock);
-@@ -1634,7 +1642,7 @@ static void iput_final(struct inode *inode)
- 	if (!drop &&
- 	    !(inode->i_state & I_DONTCACHE) &&
- 	    (sb->s_flags & SB_ACTIVE)) {
--		inode_add_lru(inode);
-+		__inode_add_lru(inode, true);
- 		spin_unlock(&inode->i_lock);
- 		return;
- 	}
-diff --git a/fs/internal.h b/fs/internal.h
-index 6aeae7ef3380..3eb90dde62bd 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -146,7 +146,6 @@ extern int vfs_open(const struct path *, struct file *);
-  * inode.c
-  */
- extern long prune_icache_sb(struct super_block *sb, struct shrink_control *sc);
--extern void inode_add_lru(struct inode *inode);
- extern int dentry_needs_remove_privs(struct dentry *dentry);
- 
- /*
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 8652ed7cdce8..301cd0195036 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3214,6 +3214,7 @@ static inline void remove_inode_hash(struct inode *inode)
- }
- 
- extern void inode_sb_list_add(struct inode *inode);
-+extern void inode_add_lru(struct inode *inode);
- 
- extern int sb_set_blocksize(struct super_block *, int);
- extern int sb_min_blocksize(struct super_block *, int);
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index e89df447fae3..c9956fac640e 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -23,6 +23,56 @@ static inline bool mapping_empty(struct address_space *mapping)
- 	return xa_empty(&mapping->i_pages);
- }
- 
-+/*
-+ * mapping_shrinkable - test if page cache state allows inode reclaim
-+ * @mapping: the page cache mapping
-+ *
-+ * This checks the mapping's cache state for the pupose of inode
-+ * reclaim and LRU management.
-+ *
-+ * The caller is expected to hold the i_lock, but is not required to
-+ * hold the i_pages lock, which usually protects cache state. That's
-+ * because the i_lock and the list_lru lock that protect the inode and
-+ * its LRU state don't nest inside the irq-safe i_pages lock.
-+ *
-+ * Cache deletions are performed under the i_lock, which ensures that
-+ * when an inode goes empty, it will reliably get queued on the LRU.
-+ *
-+ * Cache additions do not acquire the i_lock and may race with this
-+ * check, in which case we'll report the inode as shrinkable when it
-+ * has cache pages. This is okay: the shrinker also checks the
-+ * refcount and the referenced bit, which will be elevated or set in
-+ * the process of adding new cache pages to an inode.
-+ */
-+static inline bool mapping_shrinkable(struct address_space *mapping)
-+{
-+	void *head;
-+
-+	/*
-+	 * On highmem systems, there could be lowmem pressure from the
-+	 * inodes before there is highmem pressure from the page
-+	 * cache. Make inodes shrinkable regardless of cache state.
-+	 */
-+	if (IS_ENABLED(CONFIG_HIGHMEM))
-+		return true;
-+
-+	/* Cache completely empty? Shrink away. */
-+	head = rcu_access_pointer(mapping->i_pages.xa_head);
-+	if (!head)
-+		return true;
-+
-+	/*
-+	 * The xarray stores single offset-0 entries directly in the
-+	 * head pointer, which allows non-resident page cache entries
-+	 * to escape the shadow shrinker's list of xarray nodes. The
-+	 * inode shrinker needs to pick them up under memory pressure.
-+	 */
-+	if (!xa_is_node(head) && xa_is_value(head))
-+		return true;
-+
-+	return false;
-+}
-+
- /*
-  * Bits in mapping->flags.
-  */
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 819d2589abef..0d0d72ced961 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -260,9 +260,13 @@ void delete_from_page_cache(struct page *page)
- 	struct address_space *mapping = page_mapping(page);
- 
- 	BUG_ON(!PageLocked(page));
-+	spin_lock(&mapping->host->i_lock);
- 	xa_lock_irq(&mapping->i_pages);
- 	__delete_from_page_cache(page, NULL);
- 	xa_unlock_irq(&mapping->i_pages);
-+	if (mapping_shrinkable(mapping))
-+		inode_add_lru(mapping->host);
-+	spin_unlock(&mapping->host->i_lock);
- 
- 	page_cache_free_page(mapping, page);
- }
-@@ -338,6 +342,7 @@ void delete_from_page_cache_batch(struct address_space *mapping,
- 	if (!pagevec_count(pvec))
- 		return;
- 
-+	spin_lock(&mapping->host->i_lock);
- 	xa_lock_irq(&mapping->i_pages);
- 	for (i = 0; i < pagevec_count(pvec); i++) {
- 		trace_mm_filemap_delete_from_page_cache(pvec->pages[i]);
-@@ -346,6 +351,9 @@ void delete_from_page_cache_batch(struct address_space *mapping,
- 	}
- 	page_cache_delete_batch(mapping, pvec);
- 	xa_unlock_irq(&mapping->i_pages);
-+	if (mapping_shrinkable(mapping))
-+		inode_add_lru(mapping->host);
-+	spin_unlock(&mapping->host->i_lock);
- 
- 	for (i = 0; i < pagevec_count(pvec); i++)
- 		page_cache_free_page(mapping, pvec->pages[i]);
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 95934c98259a..950d73fa995d 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -45,9 +45,13 @@ static inline void __clear_shadow_entry(struct address_space *mapping,
- static void clear_shadow_entry(struct address_space *mapping, pgoff_t index,
- 			       void *entry)
- {
-+	spin_lock(&mapping->host->i_lock);
- 	xa_lock_irq(&mapping->i_pages);
- 	__clear_shadow_entry(mapping, index, entry);
- 	xa_unlock_irq(&mapping->i_pages);
-+	if (mapping_shrinkable(mapping))
-+		inode_add_lru(mapping->host);
-+	spin_unlock(&mapping->host->i_lock);
- }
- 
- /*
-@@ -73,8 +77,10 @@ static void truncate_exceptional_pvec_entries(struct address_space *mapping,
- 		return;
- 
- 	dax = dax_mapping(mapping);
--	if (!dax)
-+	if (!dax) {
-+		spin_lock(&mapping->host->i_lock);
- 		xa_lock_irq(&mapping->i_pages);
-+	}
- 
- 	for (i = j; i < pagevec_count(pvec); i++) {
- 		struct page *page = pvec->pages[i];
-@@ -93,8 +99,12 @@ static void truncate_exceptional_pvec_entries(struct address_space *mapping,
- 		__clear_shadow_entry(mapping, index, page);
- 	}
- 
--	if (!dax)
-+	if (!dax) {
- 		xa_unlock_irq(&mapping->i_pages);
-+		if (mapping_shrinkable(mapping))
-+			inode_add_lru(mapping->host);
-+		spin_unlock(&mapping->host->i_lock);
-+	}
- 	pvec->nr = j;
- }
- 
-@@ -569,6 +579,7 @@ invalidate_complete_page2(struct address_space *mapping, struct page *page)
- 	if (page_has_private(page) && !try_to_release_page(page, GFP_KERNEL))
- 		return 0;
- 
-+	spin_lock(&mapping->host->i_lock);
- 	xa_lock_irq(&mapping->i_pages);
- 	if (PageDirty(page))
- 		goto failed;
-@@ -576,6 +587,9 @@ invalidate_complete_page2(struct address_space *mapping, struct page *page)
- 	BUG_ON(page_has_private(page));
- 	__delete_from_page_cache(page, NULL);
- 	xa_unlock_irq(&mapping->i_pages);
-+	if (mapping_shrinkable(mapping))
-+		inode_add_lru(mapping->host);
-+	spin_unlock(&mapping->host->i_lock);
- 
- 	if (mapping->a_ops->freepage)
- 		mapping->a_ops->freepage(page);
-@@ -584,6 +598,7 @@ invalidate_complete_page2(struct address_space *mapping, struct page *page)
- 	return 1;
- failed:
- 	xa_unlock_irq(&mapping->i_pages);
-+	spin_unlock(&mapping->host->i_lock);
- 	return 0;
- }
- 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index cc5d7cd75935..6dd5ef8a11bc 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1055,6 +1055,8 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
- 	BUG_ON(!PageLocked(page));
- 	BUG_ON(mapping != page_mapping(page));
- 
-+	if (!PageSwapCache(page))
-+		spin_lock(&mapping->host->i_lock);
- 	xa_lock_irq(&mapping->i_pages);
- 	/*
- 	 * The non racy check for a busy page.
-@@ -1123,6 +1125,9 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
- 			shadow = workingset_eviction(page, target_memcg);
- 		__delete_from_page_cache(page, shadow);
- 		xa_unlock_irq(&mapping->i_pages);
-+		if (mapping_shrinkable(mapping))
-+			inode_add_lru(mapping->host);
-+		spin_unlock(&mapping->host->i_lock);
- 
- 		if (freepage != NULL)
- 			freepage(page);
-@@ -1132,6 +1137,8 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
- 
- cannot_free:
- 	xa_unlock_irq(&mapping->i_pages);
-+	if (!PageSwapCache(page))
-+		spin_unlock(&mapping->host->i_lock);
- 	return 0;
- }
- 
-diff --git a/mm/workingset.c b/mm/workingset.c
-index 4f7a306ce75a..9d3d2b4ce44d 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -540,6 +540,13 @@ static enum lru_status shadow_lru_isolate(struct list_head *item,
- 		goto out;
- 	}
- 
-+	if (!spin_trylock(&mapping->host->i_lock)) {
-+		xa_unlock(&mapping->i_pages);
-+		spin_unlock_irq(lru_lock);
-+		ret = LRU_RETRY;
-+		goto out;
-+	}
-+
- 	list_lru_isolate(lru, item);
- 	__dec_lruvec_kmem_state(node, WORKINGSET_NODES);
- 
-@@ -559,6 +566,9 @@ static enum lru_status shadow_lru_isolate(struct list_head *item,
- 
- out_invalid:
- 	xa_unlock_irq(&mapping->i_pages);
-+	if (mapping_shrinkable(mapping))
-+		inode_add_lru(mapping->host);
-+	spin_unlock(&mapping->host->i_lock);
- 	ret = LRU_REMOVED_RETRY;
- out:
- 	cond_resched();
 -- 
-2.32.0
+2.17.1
 
