@@ -2,164 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AF23A6BDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5103A6BF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234732AbhFNQeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:34:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25901 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234772AbhFNQeP (ORCPT
+        id S234713AbhFNQgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:36:53 -0400
+Received: from mail-yb1-f174.google.com ([209.85.219.174]:36386 "EHLO
+        mail-yb1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234687AbhFNQgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:34:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623688332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DISslyfLGhpMa3WyA2T18Pg0TsQiGkTpC7aVUBeR5IM=;
-        b=Oe/bs1dw5xCZp+QOubuLqot8KPdio+mTh9GK/0/vpzYkG+t2Mwkkh+QVDaKi6Q4mAOsdwN
-        NBgJE5znqOTAmCDi26+lkS2FUIovXNc4qyJzrzYWZ3s2EZVvCKrD5zWIt7/WrOzKOaQZeT
-        a4AYlspw48Loe5bN22NnCbQ5bzd83Jo=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-9Rt0MFACNfm04za9HN9Tmw-1; Mon, 14 Jun 2021 12:32:04 -0400
-X-MC-Unique: 9Rt0MFACNfm04za9HN9Tmw-1
-Received: by mail-qk1-f199.google.com with SMTP id c3-20020a37b3030000b02903ad0001a2e8so4653781qkf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:32:04 -0700 (PDT)
+        Mon, 14 Jun 2021 12:36:48 -0400
+Received: by mail-yb1-f174.google.com with SMTP id c14so16319972ybk.3;
+        Mon, 14 Jun 2021 09:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zHVS3WQaKuRcUSo80HfryOgVHqso0RV0aNtGn7MfbhE=;
+        b=rDVduRpXgoSSl3osXLP/sZ3zt0F4WWMSDICVgNB4Yz7xzPcwGufou7Ylpl7580K08F
+         75oGhdoX+V5fjSPNCQTmFj/vv0k46JByxPpgBoyZGy7Fzx9Qi6Z6cGXAMibgACtxPHKQ
+         XX2maEf5yhqYS+TUuHNfOp44G1SZqtdUWQDXydZeSQnRsc9EFEW5boZ8uqBpSlGycAvm
+         3lZ24J4z+tHhsLc/qyBL79yZYURZNGfqMq88EwY43c++2ka1DHrZ1VB2Imd4D+7O2Igu
+         TbLkHMCZu+0MA2mCm35sB+sBOvuAFKiNxsjN1VtKHE0ZNDEEGApd9N4CmcPig2frm6AX
+         59aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=DISslyfLGhpMa3WyA2T18Pg0TsQiGkTpC7aVUBeR5IM=;
-        b=lyB3euYA7Pex8ZRG1wZzzW9qXVD5Or/ggqfKTsRn7LVWYcjOGfaRU0JhNRyqcQr5hb
-         HSTqyIJjJqfrNBJNfyd1uVnR1XnozvKgFC5rRMthLFMTt0Wyqk9hQvwfBeFEAuNg0DN+
-         fkGL4estcNI6swrpZUzjYh+GlhSE6mdUSoOM8nw4U6Rbhl6fc+W+5ePEXvmil4xfgWKq
-         0LCam3sHL8sHnSoUjkTfwcFX21LI/NeEyoTr8kbUUjhFOybPX/Ez2cDp02PsQO3je/04
-         bkqJ70OqZnxuTboeRXEAZlXDXqaAZGq572PEu3yrJ5d1A5JNCAf1TcEsZ5Eg9+mTgaoT
-         UVhw==
-X-Gm-Message-State: AOAM532IorUWpbFPPY5ZCQfGmEmUg88VKYp+DL+cr5EEETw3RsYvqhJq
-        +i47z0ZaQ0aJaebyZYDSeJ21Ci0xF9ZwkNJmyNORfMnoCNsWc/rNDwXPTavutCSsG5+v5X1saIQ
-        E5XsGD88pi+mjHCyo+NlMBJfZ
-X-Received: by 2002:a37:a2d6:: with SMTP id l205mr17106000qke.326.1623688324322;
-        Mon, 14 Jun 2021 09:32:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCvxn+ltzjQlfYVUxjQ+5bHloF+7JsMElf+UL5szMp3AVyCsKA+9NhZBjoT78OZ0Xt7flNDw==
-X-Received: by 2002:a37:a2d6:: with SMTP id l205mr17105966qke.326.1623688324062;
-        Mon, 14 Jun 2021 09:32:04 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id j14sm8455892qtq.56.2021.06.14.09.32.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 09:32:03 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 4/4] driver core: Allow showing cpu as offline if not
- valid in cpuset context
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>, x86@kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20210614152306.25668-1-longman@redhat.com>
- <20210614152306.25668-5-longman@redhat.com> <YMd7PEU0KPulsgMz@kroah.com>
-Message-ID: <ad33a662-7ebe-fb92-4459-5dd85a013501@redhat.com>
-Date:   Mon, 14 Jun 2021 12:32:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zHVS3WQaKuRcUSo80HfryOgVHqso0RV0aNtGn7MfbhE=;
+        b=WffZ1if/avJg1WeYsaVjzOHIQsO5V4telW7gV2f/szINCfxT54cpDsLtQ8c2HmluoE
+         OA6J/Xg8ceuJvMyG/DKG+fmx9hj4oOy5UG6lUIS1YQrPIdtYfFklBUAOjuE1ztmBDMT6
+         d1LB0woI97hrHJ6CSjVVOjLilUsROHdKqWhx9rrMSdirr6/u3Z7iC+vRCLSBnT7KgGcA
+         0+FojC2+MLfEdUbBi2ihYFspUkgQL93OsEqmA/4FM2xL5mM4bffiywOxFXUO7eHxylO2
+         LL8zp/4eq+9UDb6qo0UJAf84PESMxiOiqQJi/k+wJ6vfHwRpfdlm2Rq8TLdHB/jSd86w
+         Yxew==
+X-Gm-Message-State: AOAM531jyR8ZZ3RsV8i2m3a3DVB5nFUuo0K5B3tz5l7NHMWuPM7cWHMH
+        XnhZQCfIrp5g2EA0exRTcGiXj1IACLNGRwtwarg=
+X-Google-Smtp-Source: ABdhPJzA67sc555Y0IeG6J9Praw2nvtaHL9QvVpvvkuC9U1BVja5RKTrDUy3oepwkIKt/Dh7z1aR3p6V9pb3FvTgfiM=
+X-Received: by 2002:a5b:303:: with SMTP id j3mr23934839ybp.433.1623688424841;
+ Mon, 14 Jun 2021 09:33:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YMd7PEU0KPulsgMz@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210614154359.805555-1-benjamin.gaignard@collabora.com>
+In-Reply-To: <20210614154359.805555-1-benjamin.gaignard@collabora.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Mon, 14 Jun 2021 12:33:33 -0400
+Message-ID: <CAMdYzYq3ZYb-FA-SWmbgeUKk3gikNjz7Efc3rbLBxS9Erhb1yg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Add USB2 support for rk3568
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     kishon@ti.com, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/14/21 11:52 AM, Greg KH wrote:
-> On Mon, Jun 14, 2021 at 11:23:06AM -0400, Waiman Long wrote:
->> Make /sys/devices/system/cpu/cpu<n>/online file to show a cpu as
->> offline if it is not a valid cpu in a proper cpuset context when the
->> cpuset_bound_cpuinfo sysctl parameter is turned on.
-> This says _what_ you are doing, but I do not understand _why_ you want
-> to do this.
+Good Afternoon,
+
+This was a hack just to get it to bind.
+If you'll notice I've posted a second revision that works better, but
+still is untested against anything other than the rk356x.
+https://gitlab.com/pine64-org/quartz-bsp/linux-next/-/commit/51612157d7ae3f3c4267ed56676f5d1a952d698f
+
+Very Respectfully,
+Peter Geis
+
+On Mon, Jun 14, 2021 at 11:44 AM Benjamin Gaignard
+<benjamin.gaignard@collabora.com> wrote:
 >
-> What is going to use this information?  And now you are showing more
-> files than you previously did, so what userspace tool is now going to
-> break?
-
-One reason that is provided by the customer asking for this 
-functionality is because some applications use the number of cpu cores 
-for licensing purpose. Even though the applications are running in a 
-container with a smaller set of cpus, they may still charge as if all 
-the cpus are available. They ended up using a bind mount to mount over 
-the cpuX/online file.
-
-I should have included this information in the patchset.
-
-
+> The original pacth from Peter Geis is here:
+> https://gitlab.com/pine64-org/quartz-bsp/linux-next/-/commit/cda136f853628259198d6f70c3e14c9e5c8e097f
 >
+> I have split the driver part of this patch in two:
+>  - one to update reg usage
+>  - one to add USB2 support for rk3568
+> I have added patches for the bindings:
+>  - some clean up
+>  - add compatible for rk3568
 >
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   drivers/base/core.c | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/drivers/base/core.c b/drivers/base/core.c
->> index 54ba506e5a89..176b927fade2 100644
->> --- a/drivers/base/core.c
->> +++ b/drivers/base/core.c
->> @@ -29,6 +29,7 @@
->>   #include <linux/sched/mm.h>
->>   #include <linux/sysfs.h>
->>   #include <linux/dma-map-ops.h> /* for dma_default_coherent */
->> +#include <linux/cpuset.h>
->>   
->>   #include "base.h"
->>   #include "power/power.h"
->> @@ -2378,11 +2379,24 @@ static ssize_t uevent_store(struct device *dev, struct device_attribute *attr,
->>   }
->>   static DEVICE_ATTR_RW(uevent);
->>   
->> +static bool is_device_cpu(struct device *dev)
->> +{
->> +	return dev->bus && dev->bus->dev_name
->> +			&& !strcmp(dev->bus->dev_name, "cpu");
->> +}
-> No, this is not ok, there is a reason we did not put RTTI in struct
-> devices, so don't try to fake one here please.
+> Benjamin
 >
->> +
->>   static ssize_t online_show(struct device *dev, struct device_attribute *attr,
->>   			   char *buf)
->>   {
->>   	bool val;
->>   
->> +	/*
->> +	 * Show a cpu as offline if the cpu number is not valid in a
->> +	 * proper cpuset bounding cpuinfo context.
->> +	 */
->> +	if (is_device_cpu(dev) && !cpuset_current_cpu_valid(dev->id))
->> +		return sysfs_emit(buf, "0\n");
-> Why are you changing the driver core for a single random, tiny set of
-> devices?  The device code for those devices can handle this just fine,
-> do NOT modify the driver core for each individual driver type, that way
-> lies madness.
+> Benjamin Gaignard (4):
+>   dt-bindings: phy: rockchip: USB2: remove useless #phy-cells property
+>   dt-bindings: phy: rockchip: USB2: Add compatible for rk3568
+>   PHY: rockchip: USB2: Allow 64 bits reg property
+>   phy: rockchip: USB2: Add support for rk3568
 >
-> This change is not ok, sorry.
-
-OK, thanks for the comments. I will see if there is alternative way of 
-doing it.
-
-Cheers,
-Longman
-
+>  .../bindings/phy/phy-rockchip-inno-usb2.yaml  |  3 +-
+>  drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 85 +++++++++++++++++--
+>  2 files changed, 78 insertions(+), 10 deletions(-)
+>
+> --
+> 2.25.1
+>
