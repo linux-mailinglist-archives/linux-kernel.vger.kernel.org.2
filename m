@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC833A5C57
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8F83A5C58
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 07:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhFNFHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 01:07:02 -0400
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:43520 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhFNFHA (ORCPT
+        id S231983AbhFNFJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 01:09:19 -0400
+Received: from mail-pl1-f178.google.com ([209.85.214.178]:46941 "EHLO
+        mail-pl1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhFNFJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 01:07:00 -0400
-Received: by mail-pj1-f47.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso9410543pjp.2;
-        Sun, 13 Jun 2021 22:04:43 -0700 (PDT)
+        Mon, 14 Jun 2021 01:09:17 -0400
+Received: by mail-pl1-f178.google.com with SMTP id e1so5900695pld.13
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 22:07:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=/Shcl0CcwcVQvnqm4kjruvfteHB5V70Bgq+EW67+hVs=;
-        b=B5SBMSbjT8JJZ0clP7225Gi2clR3Q4OchlvIiY/CVvOS/s3gFjPf0ybYVRqwbIG/dZ
-         Y8fJHjfu8wY1guNyM/wNNFbHK+cMl/eMbnj3TVjh8v7tBKbjRrt5ivQORq0NjueN9QXa
-         x6x0nPCYp+HfTubRj1wmV4idu6a/kvc2wnsRx5LyQ7CLvBsu7qQIu6s5MRo+cSTHs51z
-         FJRDLeLVosLvWgeGb5rV8piHUEoVvgaZ8PYvVHCrSOExft7bgqRESMuQ+KAxHiCu22A+
-         lSmXN9GdGs/9vgPpg0Md5tu3/RxBd29BWkXJYO1MPH6PcllXlp8hVlnIvMHJQm5foksZ
-         Ue2A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7emn/WrNvxvMGRavk2ZZTU/O8HzrawGqoRrQamBs2vA=;
+        b=qmPKEk6nsUBRMtGUrK+YW0Y6lDW06gC2JDP/dJOSUGN5d342lCfmh+o3M/BfZEfIZ7
+         UrWWPBqwOHjOS1MKQODSCKijNdC9JZ92OBn6nxj9W6bdPynpTSWQ3OtItph7SXAfIJT7
+         HQGLMEn26hZi80/Yt4wgCTgGQPU5NujVvrFv0mtfvBo/qMXs3vVMBlI7qJv+sZzFfcS9
+         2qzQjmiLeOhEPveuGIknOh/CTaIRn1dceppwLt9Vcb8OomnIOKDtAPYo6hpgCcqXfq+X
+         TND5PXRfhgBChUUdpiBv7pZYLKpFhtd0nxI9ywJPuJTVNRIYiob76fP9q5bWf0edNWdq
+         jVOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=/Shcl0CcwcVQvnqm4kjruvfteHB5V70Bgq+EW67+hVs=;
-        b=nYlaa/HjpO0M/neBiKxWue1+wsMdMK072kksKmmnOZA/KzqXvuIDK7AO/HbuAK5r4y
-         g4kamt+x37eIKCptFnACQlfA9V8yzkMcG2kAgdlws8IcqbNx50vRl8u9jszq7H1jt+Oa
-         gaUaXpnVrlodd9Q7B3DZ3EfZrlBSVAHmHD2rJed2WOhdB7Xxso+cQWgX3uhRASnWpkid
-         ajFIerMwBzfKa6ph2K06+jL82cLVwBU9KznzX6M2HK0OeWDOfi0kxPTI1c+qEe0Lgtzz
-         dlsHQVYs30gKzLBdBMmnj+uFEYhOCpRWER16UTZc0+kdx9X81uRM9e317XjJtC2LLk+U
-         JNTg==
-X-Gm-Message-State: AOAM532UOoaAm9meOUGld+gwnZv8j1coeBKn3hJePpGvgiyXoLLywLda
-        6ilf53UIXSpBEJzF9nWjqH0=
-X-Google-Smtp-Source: ABdhPJwkPl8QjSwHR1OhgiNQGW21SvV1YCn2jXTQrmZjnukE9TtSBBVhBqVhbHYh9Co4wob1faZfnQ==
-X-Received: by 2002:a17:902:8307:b029:103:c733:e5e0 with SMTP id bd7-20020a1709028307b0290103c733e5e0mr15280288plb.8.1623647023369;
-        Sun, 13 Jun 2021 22:03:43 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id b5sm5251727pfp.102.2021.06.13.22.03.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 13 Jun 2021 22:03:42 -0700 (PDT)
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-References: <87sg1p30a1.fsf@disp2133>
- <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
- <87pmwsytb3.fsf@disp2133>
- <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133>
- <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
-Date:   Mon, 14 Jun 2021 17:03:32 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7emn/WrNvxvMGRavk2ZZTU/O8HzrawGqoRrQamBs2vA=;
+        b=dS/iild9v5srwmohXVKQdg+H1Atlb5mg/Rpi7Cci+rvzCDgNHy+YpqfaUFu4LvRya4
+         JiYkacYa+NxbCPnDP6rs2UHPtw2oFr9HsgcK12AAvFZs+BsOq2YhIT+hpxtr0w5F3jh3
+         hE1tlVzToeW6Phq6/XY3pE8GQb/3aJisrKISaR65UiDbD9SQGcxxcaCYfJoxf/maNDDe
+         O9BZ31pDANLFuVlLN6dXIliIOXFYA8xq7GkBDitn+6KbmWgl1xo/I2LJkT4LAeL+LIHK
+         JNeoVZq17a/IKpAmfb5l2muAc//Hud+5251kFSeFHWB8v995kFONZEM+2RHWmIXbU98B
+         SPAA==
+X-Gm-Message-State: AOAM531AIeycG+sdpczeurHVMN4BMCxAJkIM+tP7DhlzctBoTqXqZ8aM
+        LMSgh/3xP0cOlerJdLr87EQ=
+X-Google-Smtp-Source: ABdhPJxojE3pyUHguVc0JXxQWQkV3mdMX+hd3IyjHSemE7lgIVB5gm7wYYKQ+iXH8YsXHzE4WU90cQ==
+X-Received: by 2002:a17:90a:8c14:: with SMTP id a20mr16797974pjo.167.1623647166158;
+        Sun, 13 Jun 2021 22:06:06 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id q3sm10633391pfj.89.2021.06.13.22.06.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Jun 2021 22:06:05 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     anton@tuxera.com
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+Subject: [PATCH] ntfs: Fix validity check for file name attribute
+Date:   Mon, 14 Jun 2021 13:05:40 +0800
+Message-Id: <20210614050540.289494-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On second thought, I'm not certain what adding another empty stack frame 
-would achieve here.
+When checking the file name attribute, we want to ensure that it fits
+within the bounds of ATTR_RECORD. To do this, we should check
+that (attr record + file name offset + file name length) < (attr
+record + attr record length).
 
-On m68k, 'frame' already is a new stack frame, for running the new 
-thread in. This new frame does not have any user context at all, and 
-it's explicitly wiped anyway.
+However, the original check did not include the file name offset in
+the calculation. This means that corrupted on-disk metadata might not
+caught by the incorrect file name check, and lead to an invalid memory
+access.
 
-Unless we save all user context on the stack, then push that context to 
-a new save frame, and somehow point get_signal to look there for IO 
-threads (essentially what Eric suggested), I don't see how this could work?
+An example can be seen in the crash report of a memory corruption
+error found by Syzbot:
+https://syzkaller.appspot.com/bug?id=a1a1e379b225812688566745c3e2f7242bffc246
 
-I must be missing something.
+Adding the file name offset to the validity check fixes this error and
+passes the Syzbot reproducer test.
 
-Cheers,
+Reported-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+Tested-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+---
+ fs/ntfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	Michael Schmitz
+diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+index f5c058b3192c..4474adb393ca 100644
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -477,7 +477,7 @@ static int ntfs_is_extended_system_file(ntfs_attr_search_ctx *ctx)
+ 		}
+ 		file_name_attr = (FILE_NAME_ATTR*)((u8*)attr +
+ 				le16_to_cpu(attr->data.resident.value_offset));
+-		p2 = (u8*)attr + le32_to_cpu(attr->data.resident.value_length);
++		p2 = (u8 *)file_name_attr + le32_to_cpu(attr->data.resident.value_length);
+ 		if (p2 < (u8*)attr || p2 > p)
+ 			goto err_corrupt_attr;
+ 		/* This attribute is ok, but is it in the $Extend directory? */
+-- 
+2.25.1
 
-Am 14.06.2021 um 14:05 schrieb Michael Schmitz:
->>
->> I wouldn't be surprised if m68k has the exact same thing for the exact
->> same reason, but I didn't check..
->
-> m68k is indeed similar, it has:
->
->        if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
->                 /* kernel thread */
->                 memset(frame, 0, sizeof(struct fork_frame));
->                 frame->regs.sr = PS_S;
->                 frame->sw.a3 = usp; /* function */
->                 frame->sw.d7 = arg;
->                 frame->sw.retpc = (unsigned long)ret_from_kernel_thread;
->                 p->thread.usp = 0;
->                 return 0;
->         }
->
-> so a similar patch should be possible.
->
-> Cheers,
->
->     Michael
->
->
->
->>
->>                    Linus
