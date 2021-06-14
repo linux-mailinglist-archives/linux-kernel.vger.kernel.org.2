@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C424F3A67C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343C23A67C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbhFNN0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:26:32 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20480 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233972AbhFNN03 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:26:29 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EDFawj038966;
-        Mon, 14 Jun 2021 09:24:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=y9CL84wnQe7k7A1taQtIcuVMRjAuvsiBTF3+9QEQdGo=;
- b=U1Wgyf/Z0yoXHQFU2sbiLqZXm3/YHU9POZSg4qUdCy1XVz2EB6kzmJF2NyN13JP/CaX7
- Moi0MYc4PkyjaUy7F3UyPHMFXj+fVnXm+X2rpaQwf4YFdKFVIIdahXIZ/miV/aheN3VR
- MTMNVT8vtlUJAe4R1rvT9HtGug7iJ6UNivexOBVhb8op5k5Y9+ZDrisr0s6hr5HEdcmw
- EC2veyTa2IiWUZybIrK0x7S9JYDu20eLsM1obxESJuK0hbB+VnoTtKIA/K7ofSi4x/F8
- 9UQ7KBNOZDZ1VSxEi5Z/KJx+V/aJ9zHShmKUv0mxEkX+wt0xMAx4XZ5Gh9TDem9EVN5D tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3967ucr6je-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 09:24:06 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15EDHGUC046255;
-        Mon, 14 Jun 2021 09:24:06 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3967ucr6hb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 09:24:05 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15EDMHHo020121;
-        Mon, 14 Jun 2021 13:24:03 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 394mj90h85-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Jun 2021 13:24:03 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15EDO0a835455290
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 13:24:00 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 096C95204E;
-        Mon, 14 Jun 2021 13:24:00 +0000 (GMT)
-Received: from ibm-vm.ibmuc.com (unknown [9.145.5.73])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 655D452051;
-        Mon, 14 Jun 2021 13:23:59 +0000 (GMT)
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
-        david@redhat.com, linux-mm@kvack.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v4 2/2] KVM: s390: prepare for hugepage vmalloc
-Date:   Mon, 14 Jun 2021 15:23:57 +0200
-Message-Id: <20210614132357.10202-3-imbrenda@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210614132357.10202-1-imbrenda@linux.ibm.com>
-References: <20210614132357.10202-1-imbrenda@linux.ibm.com>
+        id S234000AbhFNN1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:27:18 -0400
+Received: from mga17.intel.com ([192.55.52.151]:8141 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234014AbhFNN1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 09:27:02 -0400
+IronPort-SDR: jO6+yc1+3LGBVPzOSSBy5G0fqArW80zTOGGiCFccSA5XKD450VNgSohf6n543/3hCkiRvqhrs+
+ Q2HDVduQZpjQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="186183346"
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="186183346"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 06:24:45 -0700
+IronPort-SDR: 4uA4aG4ATRGcELj6mVIIipsj7S31i78lSJSkdTZtppZIp9IBhVKQcWeTB6JAWaOAhVgc0IR5Qw
+ LVsjj7oq1qIw==
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="553365800"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 06:24:41 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lsmZx-002Ejc-DY; Mon, 14 Jun 2021 16:24:37 +0300
+Date:   Mon, 14 Jun 2021 16:24:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        syzbot+142888ffec98ab194028@syzkaller.appspotmail.com
+Subject: Re: [PATCH v3 1/8] media: v4l2-core: ignore native time32 ioctls on
+ 64-bit
+Message-ID: <YMdYlcVThyh7sFgv@smile.fi.intel.com>
+References: <20210614103409.3154127-1-arnd@kernel.org>
+ <20210614103409.3154127-2-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MACOUu0uzbxoBZ8s-N-FmWGSXvIVkZfQ
-X-Proofpoint-GUID: eP1R_AiSZTWmqqULMpxtGYKhlub9CE4J
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-14_07:2021-06-14,2021-06-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=563 malwarescore=0
- adultscore=0 clxscore=1015 priorityscore=1501 phishscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106140089
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614103409.3154127-2-arnd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Create Secure Configuration Ultravisor Call does not support using
-large pages for the virtual memory area. This is a hardware limitation.
+On Mon, Jun 14, 2021 at 12:34:02PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Syzbot found that passing ioctl command 0xc0505609 into a 64-bit
+> kernel from a 32-bit process causes uninitialized kernel memory to
+> get passed to drivers instead of the user space data:
 
-This patch replaces the vzalloc call with an almost equivalent call to
-the newly introduced vmalloc_no_huge function, which guarantees that
-only small pages will be used for the backing.
+> BUG: KMSAN: uninit-value in check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
+> BUG: KMSAN: uninit-value in video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
+> CPU: 0 PID: 19595 Comm: syz-executor.4 Not tainted 5.11.0-rc7-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x21c/0x280 lib/dump_stack.c:120
+>  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+>  __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+>  check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
+>  video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
+>  video_ioctl2+0x9f/0xb0 drivers/media/v4l2-core/v4l2-ioctl.c:3391
+>  v4l2_ioctl+0x255/0x290 drivers/media/v4l2-core/v4l2-dev.c:360
+>  v4l2_compat_ioctl32+0x2c6/0x370 drivers/media/v4l2-core/v4l2-compat-ioctl32.c:1248
+>  __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
+>  __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
+>  __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+>  __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
+>  do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
+>  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
+>  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 
-The new call will not clear the allocated memory, but that has never
-been an actual requirement.
+Can we, please, get a habit to reduce tracebacks to only significant lines?
+This is not only reduces the storage foot print of repositories in the world
+(and thus electricity consumed for any operation on it) but also increases
+density of useful information on one (small, due to reading on laptops / small
+screen size devices) page.
 
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Christoph Hellwig <hch@infradead.org>
----
- arch/s390/kvm/pv.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> The time32 commands are defined but were never meant to be called on
+> 64-bit machines, as those have always used time64 interfaces.  I missed
+> this in my patch that introduced the time64 handling on 32-bit platforms.
+> 
+> The problem in this case is the mismatch of one function checking for
+> the numeric value of the command and another function checking for the
+> type of process (native vs compat) instead, with the result being that
+> for this combination, nothing gets copied into the buffer at all.
+> 
+> Avoid this by only trying to convert the time32 commands when running
+> on a 32-bit kernel where these are defined in a meaningful way.
 
-diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-index 813b6e93dc83..c8841f476e91 100644
---- a/arch/s390/kvm/pv.c
-+++ b/arch/s390/kvm/pv.c
-@@ -140,7 +140,12 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
- 	/* Allocate variable storage */
- 	vlen = ALIGN(virt * ((npages * PAGE_SIZE) / HPAGE_SIZE), PAGE_SIZE);
- 	vlen += uv_info.guest_virt_base_stor_len;
--	kvm->arch.pv.stor_var = vzalloc(vlen);
-+	/*
-+	 * The Create Secure Configuration Ultravisor Call does not support
-+	 * using large pages for the virtual memory area.
-+	 * This is a hardware limitation.
-+	 */
-+	kvm->arch.pv.stor_var = vmalloc_no_huge(vlen);
- 	if (!kvm->arch.pv.stor_var)
- 		goto out_err;
- 	return 0;
 -- 
-2.31.1
+With Best Regards,
+Andy Shevchenko
+
 
