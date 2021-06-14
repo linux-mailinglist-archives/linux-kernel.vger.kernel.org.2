@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F99B3A652C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF5B3A6528
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236825AbhFNLe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48534 "EHLO mail.kernel.org"
+        id S236749AbhFNLeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:34:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236108AbhFNLUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:20:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41F1C61990;
-        Mon, 14 Jun 2021 10:51:53 +0000 (UTC)
+        id S236055AbhFNLUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:20:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 883DE61992;
+        Mon, 14 Jun 2021 10:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667913;
-        bh=41nKey4KNd6oAa0ShWkGLQ/9Rt5ckOWSjJEfbJE8Q9s=;
+        s=korg; t=1623667916;
+        bh=QZXp/cKN5WhzPCysf7z0qlKymyI6A6qSwpLFuPMD6lQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rjPcfJJcbtRqjHibYyrMyRO+cfy/4h8tqcMcF5xMJ7bkOL502v1XBokSKNccRKbAT
-         nbPnDXhOOSlwn/nEG7zOp0fEoVyEzk6tOW+T1+N5yNJSCoGHLSIcom1RjzpVLrltRx
-         3T/zbYUu69zMnjck4gLwM5uGzOG26u2QVJXXcijs=
+        b=NTwv1FSfgUXNb72LtC2LMFJQUDNN7YoYdkSCselIm6JfmT/YvANV5hFLsMpWVwXn9
+         6wItEcTcpKtFwObkuejrTPIDkX/lgXa7QK0RDIfU9IGfxS++461o1kse8i1lqLsy5+
+         ZJ4AIFyhRY/exI0N6YR7pcCdD/6FWwtl9tYOtbj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Li <chenli@uniontech.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.12 123/173] phy: usb: Fix misuse of IS_ENABLED
-Date:   Mon, 14 Jun 2021 12:27:35 +0200
-Message-Id: <20210614102702.261109384@linuxfoundation.org>
+        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
+        Sanket Parmar <sparmar@cadence.com>,
+        Peter Chen <peter.chen@kernel.org>
+Subject: [PATCH 5.12 124/173] usb: cdns3: Enable TDL_CHK only for OUT ep
+Date:   Mon, 14 Jun 2021 12:27:36 +0200
+Message-Id: <20210614102702.298119408@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -41,46 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Li <chenli@uniontech.com>
+From: Sanket Parmar <sparmar@cadence.com>
 
-commit 7c2fc79250cafa1a29befeb60163028ec4720814 upstream.
+commit d6eef886903c4bb5af41b9a31d4ba11dc7a6f8e8 upstream.
 
-While IS_ENABLED() is perfectly fine for CONFIG_* symbols, it is not
-for other symbols such as __BIG_ENDIAN that is provided directly by
-the compiler.
+ZLP gets stuck if TDL_CHK bit is set and TDL_FROM_TRB is used
+as TDL source for IN endpoints. To fix it, TDL_CHK is only
+enabled for OUT endpoints.
 
-Switch to use CONFIG_CPU_BIG_ENDIAN instead of __BIG_ENDIAN.
-
-Signed-off-by: Chen Li <chenli@uniontech.com>
-Reviewed-by: Al Cooper <alcooperx@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Fixes: 94583a41047e ("phy: usb: Restructure in preparation for adding 7216 USB support")
-Link: https://lore.kernel.org/r/87czuggpra.wl-chenli@uniontech.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
+Reported-by: Aswath Govindraju <a-govindraju@ti.com>
+Signed-off-by: Sanket Parmar <sparmar@cadence.com>
+Link: https://lore.kernel.org/r/1621263912-13175-1-git-send-email-sparmar@cadence.com
+Signed-off-by: Peter Chen <peter.chen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/phy/broadcom/phy-brcm-usb-init.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/cdns3/cdns3-gadget.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---- a/drivers/phy/broadcom/phy-brcm-usb-init.h
-+++ b/drivers/phy/broadcom/phy-brcm-usb-init.h
-@@ -78,7 +78,7 @@ static inline u32 brcm_usb_readl(void __
- 	 * Other architectures (e.g., ARM) either do not support big endian, or
- 	 * else leave I/O in little endian mode.
- 	 */
--	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
-+	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
- 		return __raw_readl(addr);
- 	else
- 		return readl_relaxed(addr);
-@@ -87,7 +87,7 @@ static inline u32 brcm_usb_readl(void __
- static inline void brcm_usb_writel(u32 val, void __iomem *addr)
- {
- 	/* See brcmnand_readl() comments */
--	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
-+	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
- 		__raw_writel(val, addr);
- 	else
- 		writel_relaxed(val, addr);
+--- a/drivers/usb/cdns3/cdns3-gadget.c
++++ b/drivers/usb/cdns3/cdns3-gadget.c
+@@ -2006,7 +2006,7 @@ static void cdns3_configure_dmult(struct
+ 		else
+ 			mask = BIT(priv_ep->num);
+ 
+-		if (priv_ep->type != USB_ENDPOINT_XFER_ISOC) {
++		if (priv_ep->type != USB_ENDPOINT_XFER_ISOC  && !priv_ep->dir) {
+ 			cdns3_set_register_bit(&regs->tdl_from_trb, mask);
+ 			cdns3_set_register_bit(&regs->tdl_beh, mask);
+ 			cdns3_set_register_bit(&regs->tdl_beh2, mask);
+@@ -2045,15 +2045,13 @@ int cdns3_ep_config(struct cdns3_endpoin
+ 	case USB_ENDPOINT_XFER_INT:
+ 		ep_cfg = EP_CFG_EPTYPE(USB_ENDPOINT_XFER_INT);
+ 
+-		if ((priv_dev->dev_ver == DEV_VER_V2 && !priv_ep->dir) ||
+-		    priv_dev->dev_ver > DEV_VER_V2)
++		if (priv_dev->dev_ver >= DEV_VER_V2 && !priv_ep->dir)
+ 			ep_cfg |= EP_CFG_TDL_CHK;
+ 		break;
+ 	case USB_ENDPOINT_XFER_BULK:
+ 		ep_cfg = EP_CFG_EPTYPE(USB_ENDPOINT_XFER_BULK);
+ 
+-		if ((priv_dev->dev_ver == DEV_VER_V2  && !priv_ep->dir) ||
+-		    priv_dev->dev_ver > DEV_VER_V2)
++		if (priv_dev->dev_ver >= DEV_VER_V2 && !priv_ep->dir)
+ 			ep_cfg |= EP_CFG_TDL_CHK;
+ 		break;
+ 	default:
 
 
