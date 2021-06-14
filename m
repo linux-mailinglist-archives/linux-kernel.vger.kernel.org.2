@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B3F3A71A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D3D3A71A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhFNV7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:59:40 -0400
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:39703 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhFNV6d (ORCPT
+        id S229895AbhFNWAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhFNWAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:58:33 -0400
-Received: by mail-pf1-f181.google.com with SMTP id k15so11665374pfp.6;
-        Mon, 14 Jun 2021 14:56:18 -0700 (PDT)
+        Mon, 14 Jun 2021 18:00:05 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EA5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:57:52 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id h1so7377595plt.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f4eWepDXU0v6tcMsUDUBZcPuMz+5jSWaxzQwye2N7ig=;
+        b=b4RR656fyY0crjU9zrn3CKrngTiVvuWEmhWr0uooNBimJylo5gUYNHuIPoMwFwrYC6
+         I5FZnh8VxVL38fRKk/SDL9/ClIMi0yh5p58EvOfWAPhUn3K8XSSdhiyWE0xrpDral9Yq
+         EjP3JYsHwIFb7VT00sFWOvOQJ9wxHfE/hreUc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S1XQUH/m8RP26gVRUSs66tHIaokdTzVysKqV1d4GWGY=;
-        b=GOD1KW7OG2PS04sdTk8J0W66ZBf+uS8XAAkpy/5+AF02yMs9H9LrmYznQi0FHWRAXI
-         rEFVBh3q/mLvLNnYIiyvKkY3N/WKiTFz2CefiFT8nhm/gHbp+z5B1bBWxfI7TsHtLbP5
-         +r/mUHOm2QKpJwREP5KHQ0lNzjZGX7i9Bu6DL1OCqTPtKoQ/6TR57iqRXDhkVQY7p/WB
-         ak97dmaKDVgWTZbqUgrVASkn6DPBfg3yz8Qy1FcGSmBkELQuTWrWDm7G9vS8JPdqNXYj
-         AOrhLikQQ0UeEGfhQQhEuYoqPTpd+2tQE+hDdhbmRnI9rxLZ2MXCXl0aY62xogaHjTir
-         JiDw==
-X-Gm-Message-State: AOAM531Aq2GVGxbvQL3RNlYYDnghx6vD0n4tBjm9HyObXrTdCqudS+yG
-        gRXqKURXYIenyuhHLANyQeY=
-X-Google-Smtp-Source: ABdhPJyGmG1xDZh+iEl6WQKrlTuny9a9lOx2NDPfV5j6TCBImjrIfVRrfu35gzZCSoTj7hmD3SijpQ==
-X-Received: by 2002:a62:5e05:0:b029:2fb:2ee4:2b9c with SMTP id s5-20020a625e050000b02902fb2ee42b9cmr1112264pfb.0.1623707777777;
-        Mon, 14 Jun 2021 14:56:17 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id ig1sm13024465pjb.27.2021.06.14.14.56.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f4eWepDXU0v6tcMsUDUBZcPuMz+5jSWaxzQwye2N7ig=;
+        b=ewJNis1ngzFdgx8ygEc7ICYelOnsc6R6MyRRKwE+noS70oQcY2UzRU93l9vy0qHqn4
+         owIZQzusIEfQ6Hltf+ZjGlq9YIzuF5Zgme3ZwgSfnZKqwYqtjYzkywpGUwoqthhQV5e0
+         2g4BQocHEo0eNxYk+0edmvlnIIzHeaHjicsCgVlKxraYce0tKGLBBr6uRDuiwDoOvkrc
+         yUarHyh2QztiUIK5qC46mdWP8mX/cVT6C5cjyB9GaL8StgSiapgV2kyXFJJAPJIAWQur
+         Z5dybtQWXo/24ijFyf36bEZIXIYz81LPronZ4MbZoMP4gkjXOK++0/XOupMLXz0o1zFu
+         tO3w==
+X-Gm-Message-State: AOAM532RK4A5YrrAV5xsKVRU2VUN2TLNvnlPuBxuZZN6+MUqDZm2nENL
+        i+h71BmRujmKWCfVf92CYXBexA==
+X-Google-Smtp-Source: ABdhPJwdGQHcQttVR153FbRHk1+iC1Ec3NVxFeWvtBgo1yaFLmQyjQrL2KwIDfqhicoyYl7WFq+8kg==
+X-Received: by 2002:a17:903:3053:b029:110:d36:af61 with SMTP id u19-20020a1709033053b02901100d36af61mr1111440pla.5.1623707869474;
+        Mon, 14 Jun 2021 14:57:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p9sm7342588pfo.106.2021.06.14.14.57.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 14:56:17 -0700 (PDT)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     mathias.nyman@intel.com
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH] usb: renesas-xhci: Replace BIT(15) with macro
-Date:   Mon, 14 Jun 2021 14:56:14 -0700
-Message-Id: <20210614215614.240489-1-mdf@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        Mon, 14 Jun 2021 14:57:47 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 14:57:46 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jarmo Tiitto <jarmo.tiitto@gmail.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Bill Wendling <wcw@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        morbo@google.com
+Subject: Re: [RFC PATCH 0/5] pgo: Add PGO support for module profile data
+Message-ID: <202106141455.45C7B198D7@keescook>
+References: <20210612032425.11425-1-jarmo.tiitto@gmail.com>
+ <202106140904.484E2337C@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202106140904.484E2337C@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace BIT(15) with RENESAS_ROM_STATUS_ROM_EXISTS.
+On Sat, Jun 12, 2021 at 06:24:21AM +0300, Jarmo Tiitto wrote:
+> [...]
+> The patches itself are based on Kees/for-next/clang/features tree
+> where I have two of my bug fix patches already in. :-)
 
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
----
- drivers/usb/host/xhci-pci-renesas.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+BTW, due to the (soon to be addressed) requirements of noinstr[1],
+I've removed PGO from my -next tree, and moved it into its own tree in
+"for-next/clang/pgo".
 
-diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
-index f97ac9f52bf4..5923844ed821 100644
---- a/drivers/usb/host/xhci-pci-renesas.c
-+++ b/drivers/usb/host/xhci-pci-renesas.c
-@@ -197,7 +197,7 @@ static int renesas_check_rom_state(struct pci_dev *pdev)
- 	if (err)
- 		return pcibios_err_to_errno(err);
- 
--	if (rom_state & BIT(15)) {
-+	if (rom_state & RENESAS_ROM_STATUS_ROM_EXISTS) {
- 		/* ROM exists */
- 		dev_dbg(&pdev->dev, "ROM exists\n");
- 
+-Kees
+
+[1] https://lore.kernel.org/lkml/202106140921.5E591BD@keescook/
+
 -- 
-2.31.1
-
+Kees Cook
