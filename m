@@ -2,157 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302003A708C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF873A707E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235437AbhFNUiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbhFNUiX (ORCPT
+        id S235745AbhFNUeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:34:36 -0400
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:38559 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233352AbhFNUec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:38:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066C9C061574;
-        Mon, 14 Jun 2021 13:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=X3GGI5ZixyDG1CrMjRxTv0etp3mo3ZL6Xx3w1pohK4U=; b=ZhloFGgATVktaHLgOafJwac97Z
-        x1iip5BW5KpcQ9flP/CsBIeWblS2w3bA8qYH/OT2fy8iXnsRBAyy2fYPnbzSPHk8piOQQCn7GU3sY
-        BIn9KxD81qOYIq9dwIU8APNYYnuJGWj0jSQuRBvYiTAq53AbkEdxc4SHk9l+wn0DCaFoM10wQVK3k
-        uSaJ+LMEuev87eM/IHGnNE4i1aLCDpaSWQ9ehF/l6lWnxMjy/x5I/1Q7Vfi/ZHtcrMxedY551DZ0F
-        vfPqyfclvlZbsA8jn4v1HRUVJXLDuriHYy7m91EFQn6e4mE4IEBLJu1Ujv9lwOdtqTPw8d7z70Gvn
-        UB3X9uoA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lstI9-005oUn-0x; Mon, 14 Jun 2021 20:34:58 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     akpm@linux-foundation.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: [PATCH v11 33/33] mm: Add folio_mapped()
-Date:   Mon, 14 Jun 2021 21:14:35 +0100
-Message-Id: <20210614201435.1379188-34-willy@infradead.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210614201435.1379188-1-willy@infradead.org>
-References: <20210614201435.1379188-1-willy@infradead.org>
+        Mon, 14 Jun 2021 16:34:32 -0400
+Received: by mail-pg1-f177.google.com with SMTP id t17so9626633pga.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=X0Dlg1OxNcsAdJyU64IBe8AUMc5WPVAjSibLW2UVq4k=;
+        b=u/rQ3fhLYXFiYDBOqpfaVdMnzxd6fBR1/DfmyScke8pC/ffiziSws6MXqcTVQQZ7Pb
+         xahdwAoWXKtSEAlqGsLgALVYebwLyupy/HuZxqRXfvvrywcuxRrVBpr8cbhIK2RZ+KOS
+         su0J3AXxY+d4MG2YPFAur8SPkUwZcDfmgAg2tm4RFINhvEkB08yu+bOSTwd4Dn9n8XYb
+         0kJpYABBJPz3pXA1sCDieibPiNaoERngiqXvtKqMPuoXXX4x3A2awSCVbark81IMBNlQ
+         7YyAkvQ42preQ+dkLuGuA3Go8xTWgD7ChBrH7tdU8MguIcW3CZeuwKqPSw3G7SsSVaMs
+         sjWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=X0Dlg1OxNcsAdJyU64IBe8AUMc5WPVAjSibLW2UVq4k=;
+        b=Mmvztzy5p9hWhHsIxBlGtMEZ2zNqlHsaIGgwVlSPwCipstm8C9fqwAumF1KqavPYJk
+         UadOt50zLAt5ttcGm9ZWiD0Je93UfMUB/aPb9R0z4lc3uxrdbwL+jp9iRAiL3IbXaGy+
+         sEM+Amjq+Ya8IddN6rZzFaYl8wWL6NG3adgrS71BuHYBzagyY9PXIlZZzn4tNgJJ838T
+         kLlOCxClMe9rH7MuhBhLblx5SGSpI5M1WC4LlcYHX0b7kgib6YfOdfudd7P9s2CHnCtu
+         a5jBX1SVvyHSlb14yUftOKNLNfTxtVYFIeYKm4tW7xLpxQCpHeL1uXT4bYPH7bO3TVDj
+         xyTA==
+X-Gm-Message-State: AOAM533ZJmNFGCQm/v2XGsTm+jK7WWLD4cVwigca4kH+kCM0iiCATJab
+        nrYkiT/5jQL2q1FDPUppeVk=
+X-Google-Smtp-Source: ABdhPJxxitlMoVrI5knF2a1+7X2aj42K8fpVmke45+iVElm+Oq8nBXyo1LvwuMFm8Ibg1DnYsoOsiw==
+X-Received: by 2002:aa7:820d:0:b029:2f1:d22d:f21d with SMTP id k13-20020aa7820d0000b02902f1d22df21dmr767579pfi.7.1623702679195;
+        Mon, 14 Jun 2021 13:31:19 -0700 (PDT)
+Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id r24sm301621pjz.11.2021.06.14.13.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 13:31:18 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 13:31:14 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        dvyukov@google.com, gregkh@linuxfoundation.org
+Subject: kmemleak memory scanning
+Message-ID: <YMe8ktUsdtwFKHuF@nuc10>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function is the equivalent of page_mapped().  It is slightly
-shorter as we do not need to handle the PageTail() case.  Reimplement
-page_mapped() as a wrapper around folio_mapped().  folio_mapped()
-is 13 bytes smaller than page_mapped(), but the page_mapped() wrapper
-is 30 bytes, for a net increase of 17 bytes of text.
+hello Catalin, Andrew!
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+while troubleshooting a false positive syzbot kmemleak report i have
+noticed an interesting behavior in kmemleak and i wonder whether it is
+behavior by design and should be documented, or maybe something to
+improve.
+apologies if some of the questions do not make sense, i am still going
+through kmemleak code..
+
+a) kmemleak scans struct page (kmemleak.c:1462), but it does not scan
+the actual contents (page_address(page)) of the page.
+if we allocate an object with kmalloc(), then allocate page with
+alloc_page(), and if we put kmalloc pointer somewhere inside that page, 
+kmemleak will report kmalloc pointer as a false positive.
+should we improve kmemleak and make it scan page contents?
+or will this bring too many false negatives?
+
+b) when kmemleak object gets created (kmemleak.c:598) it gets checksum
+of 0, by the time user requests kmemleak "scan" via debugfs the pointer
+will be most likely changed to some value by the kernel and during
+first scan kmemleak won't report the object as orphan even if it did not
+find any reference to it, because it will execute update_checksum() and
+after that will proceed to updating object->count (kmemleak.c:1502).
+and so the user will have to initiate a second "scan" via debugfs and
+only then kmemleak will produce the report.
+should we document this?
+
+below i am attaching a simplified reproducer for the false positive
+kmemleak report (a).
+i could have done it in the module, but i found it to be easier and
+faster to test when done in a syscall, so that i did not have to
+modprobe/modprobe -r.
+
+tyvm!
+
 ---
- include/linux/mm.h       |  1 +
- include/linux/mm_types.h |  6 ++++++
- mm/folio-compat.c        |  6 ++++++
- mm/util.c                | 29 ++++++++++++++++-------------
- 4 files changed, 29 insertions(+), 13 deletions(-)
+ arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+ include/linux/syscalls.h               |  1 +
+ mm/Makefile                            |  2 +-
+ mm/kmemleak_test.c                     | 45 ++++++++++++++++++++++++++
+ 4 files changed, 48 insertions(+), 1 deletion(-)
+ create mode 100644 mm/kmemleak_test.c
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index cd8078cbe21d..f75a17bb5f82 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1768,6 +1768,7 @@ static inline pgoff_t page_index(struct page *page)
- }
- 
- bool page_mapped(struct page *page);
-+bool folio_mapped(struct folio *folio);
- 
- /*
-  * Return true only if the page has been allocated with
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 943854268986..0a0d7e3d069f 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -284,6 +284,12 @@ FOLIO_MATCH(memcg_data, memcg_data);
- #endif
- #undef FOLIO_MATCH
- 
-+static inline atomic_t *folio_mapcount_ptr(struct folio *folio)
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index ce18119ea0d0..da967a87eb78 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -343,6 +343,7 @@
+ 332	common	statx			sys_statx
+ 333	common	io_pgetevents		sys_io_pgetevents
+ 334	common	rseq			sys_rseq
++335	common	kmemleak_test		sys_kmemleak_test
+ # don't use numbers 387 through 423, add new calls after the last
+ # 'common' entry
+ 424	common	pidfd_send_signal	sys_pidfd_send_signal
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 050511e8f1f8..0602308aabf4 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -1029,6 +1029,7 @@ asmlinkage long sys_statx(int dfd, const char __user *path, unsigned flags,
+ 			  unsigned mask, struct statx __user *buffer);
+ asmlinkage long sys_rseq(struct rseq __user *rseq, uint32_t rseq_len,
+ 			 int flags, uint32_t sig);
++asmlinkage long sys_kmemleak_test()
+ asmlinkage long sys_open_tree(int dfd, const char __user *path, unsigned flags);
+ asmlinkage long sys_move_mount(int from_dfd, const char __user *from_path,
+ 			       int to_dfd, const char __user *to_path,
+diff --git a/mm/Makefile b/mm/Makefile
+index bf71e295e9f6..878783838fa1 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -97,7 +97,7 @@ obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
+ obj-$(CONFIG_GUP_TEST) += gup_test.o
+ obj-$(CONFIG_MEMORY_FAILURE) += memory-failure.o
+ obj-$(CONFIG_HWPOISON_INJECT) += hwpoison-inject.o
+-obj-$(CONFIG_DEBUG_KMEMLEAK) += kmemleak.o
++obj-$(CONFIG_DEBUG_KMEMLEAK) += kmemleak.o kmemleak_test.o
+ obj-$(CONFIG_DEBUG_RODATA_TEST) += rodata_test.o
+ obj-$(CONFIG_DEBUG_VM_PGTABLE) += debug_vm_pgtable.o
+ obj-$(CONFIG_PAGE_OWNER) += page_owner.o
+diff --git a/mm/kmemleak_test.c b/mm/kmemleak_test.c
+new file mode 100644
+index 000000000000..828246e20b7f
+--- /dev/null
++++ b/mm/kmemleak_test.c
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0+
++
++#include <linux/sched.h>
++#include <linux/syscalls.h>
++#include <linux/types.h>
++#include <linux/mm.h>
++
++struct kmemleak_check {
++	unsigned long canary;
++	struct work_struct work;
++	struct page **pages;
++};
++
++static void work_func(struct work_struct *work)
 +{
-+	struct page *tail = &folio->page + 1;
-+	return &tail->compound_mapcount;
++	struct page **pages;
++	struct kmemleak_check *ptr;
++
++	set_current_state(TASK_INTERRUPTIBLE);
++	schedule_timeout(3600*HZ);
++
++	ptr = container_of(work, struct kmemleak_check, work);
++	pages = ptr->pages;
++	__free_page(pages[0]);
++	kvfree(pages);
 +}
 +
- static inline atomic_t *compound_mapcount_ptr(struct page *page)
- {
- 	return &page[1].compound_mapcount;
-diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-index 3c83f03b80d7..7044fcc8a8aa 100644
---- a/mm/folio-compat.c
-+++ b/mm/folio-compat.c
-@@ -35,3 +35,9 @@ void wait_for_stable_page(struct page *page)
- 	return folio_wait_stable(page_folio(page));
- }
- EXPORT_SYMBOL_GPL(wait_for_stable_page);
-+
-+bool page_mapped(struct page *page)
++SYSCALL_DEFINE0(kmemleak_test)
 +{
-+	return folio_mapped(page_folio(page));
-+}
-+EXPORT_SYMBOL(page_mapped);
-diff --git a/mm/util.c b/mm/util.c
-index afd99591cb81..a8766e7f1b7f 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -652,28 +652,31 @@ void *page_rmapping(struct page *page)
- 	return __page_rmapping(page);
- }
- 
--/*
-- * Return true if this page is mapped into pagetables.
-- * For compound page it returns true if any subpage of compound page is mapped.
-+/**
-+ * folio_mapped - Is this folio mapped into userspace?
-+ * @folio: The folio.
-+ *
-+ * Return: True if any page in this folio is referenced by user page tables.
-  */
--bool page_mapped(struct page *page)
-+bool folio_mapped(struct folio *folio)
- {
--	int i;
-+	int i, nr;
- 
--	if (likely(!PageCompound(page)))
--		return atomic_read(&page->_mapcount) >= 0;
--	page = compound_head(page);
--	if (atomic_read(compound_mapcount_ptr(page)) >= 0)
-+	if (folio_single(folio))
-+		return atomic_read(&folio->_mapcount) >= 0;
-+	if (atomic_read(folio_mapcount_ptr(folio)) >= 0)
- 		return true;
--	if (PageHuge(page))
-+	if (folio_hugetlb(folio))
- 		return false;
--	for (i = 0; i < compound_nr(page); i++) {
--		if (atomic_read(&page[i]._mapcount) >= 0)
++	struct page **pages, *page;
++	struct kmemleak_check *ptr;
 +
-+	nr = folio_nr_pages(folio);
-+	for (i = 0; i < nr; i++) {
-+		if (atomic_read(&folio_page(folio, i)->_mapcount) >= 0)
- 			return true;
- 	}
- 	return false;
- }
--EXPORT_SYMBOL(page_mapped);
-+EXPORT_SYMBOL(folio_mapped);
- 
- struct anon_vma *page_anon_vma(struct page *page)
- {
++	pages = kzalloc(sizeof(*pages), GFP_KERNEL);
++	page = alloc_page(GFP_KERNEL);
++	pages[0] = page;
++	ptr = page_address(page);
++	ptr->canary = 0x00FF00FF00FF00FF;
++	ptr->pages = pages;
++	pr_info("DEBUG: pages %px page %px ptr %px\n", pages, page, ptr);
++
++	INIT_WORK(&ptr->work, work_func);
++	schedule_work(&ptr->work);
++
++	return 0;
++}
 -- 
 2.30.2
 
