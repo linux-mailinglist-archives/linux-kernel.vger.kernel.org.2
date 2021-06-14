@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B81B3A638F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E423A639A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235809AbhFNLO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:14:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36694 "EHLO mail.kernel.org"
+        id S234526AbhFNLPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:15:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234686AbhFNLCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234681AbhFNLCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 07:02:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBCC0613FF;
-        Mon, 14 Jun 2021 10:44:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26CC36143A;
+        Mon, 14 Jun 2021 10:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667441;
-        bh=nzAyjLyV03WC2pA/xt/1Q15MP5i9n0ZYniC4TeU6imA=;
+        s=korg; t=1623667443;
+        bh=fJqNwFQZKtb2D/b++FzjAcS0aTJDZRcHfR1c37cWSFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRsX3YPUHg+yUDthfXZH6aW6sUB7IHLeYqEJTH2PDdLBZ5EU8SyK+obxOZYEUq/RG
-         9gxRs0vUUyfvWZK6280NqccHbVOPjraMGPChUf3RoOVwywh8k2sx/yNqazEZG0bbc5
-         WL+Fnip1Ti3gxucX5TqARmrbJYwhu3BWyimLclFc=
+        b=mZd+W/Zj0utcWqjQpMlRYcTznUEmBhBoaVnXbwtgriZSVtZuRlvCT0t72O1GruNqV
+         3YyCqyl/ixpxZDEcsSft/yzO0/a0WVRhRwrJO0imyzToWA/CKFn19Ol0SL7bAlds92
+         dmuyZ4gbHYx98BE0vasttpbrFBKE9zmXkaE6q2Iw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 5.10 071/131] usb: dwc3: meson-g12a: Disable the regulator in the error handling path of the probe
-Date:   Mon, 14 Jun 2021 12:27:12 +0200
-Message-Id: <20210614102655.451106856@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH 5.10 072/131] usb: dwc3: gadget: Bail from dwc3_gadget_exit() if dwc->gadget is NULL
+Date:   Mon, 14 Jun 2021 12:27:13 +0200
+Message-Id: <20210614102655.482158144@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -41,58 +39,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Jack Pham <jackp@codeaurora.org>
 
-commit 1d0d3d818eafe1963ec1eaf302175cd14938188e upstream.
+commit 03715ea2e3dbbc56947137ce3b4ac18a726b2f87 upstream.
 
-If an error occurs after a successful 'regulator_enable()' call,
-'regulator_disable()' must be called.
+There exists a possible scenario in which dwc3_gadget_init() can fail:
+during during host -> peripheral mode switch in dwc3_set_mode(), and
+a pending gadget driver fails to bind.  Then, if the DRD undergoes
+another mode switch from peripheral->host the resulting
+dwc3_gadget_exit() will attempt to reference an invalid and dangling
+dwc->gadget pointer as well as call dma_free_coherent() on unmapped
+DMA pointers.
 
-Fix the error handling path of the probe accordingly.
+The exact scenario can be reproduced as follows:
+ - Start DWC3 in peripheral mode
+ - Configure ConfigFS gadget with FunctionFS instance (or use g_ffs)
+ - Run FunctionFS userspace application (open EPs, write descriptors, etc)
+ - Bind gadget driver to DWC3's UDC
+ - Switch DWC3 to host mode
+   => dwc3_gadget_exit() is called. usb_del_gadget() will put the
+	ConfigFS driver instance on the gadget_driver_pending_list
+ - Stop FunctionFS application (closes the ep files)
+ - Switch DWC3 to peripheral mode
+   => dwc3_gadget_init() fails as usb_add_gadget() calls
+	check_pending_gadget_drivers() and attempts to rebind the UDC
+	to the ConfigFS gadget but fails with -19 (-ENODEV) because the
+	FFS instance is not in FFS_ACTIVE state (userspace has not
+	re-opened and written the descriptors yet, i.e. desc_ready!=0).
+ - Switch DWC3 back to host mode
+   => dwc3_gadget_exit() is called again, but this time dwc->gadget
+	is invalid.
 
-The remove function doesn't need to be fixed, because the
-'regulator_disable()' call is already hidden in 'dwc3_meson_g12a_suspend()'
-which is called via 'pm_runtime_set_suspended()' in the remove function.
+Although it can be argued that userspace should take responsibility
+for ensuring that the FunctionFS application be ready prior to
+allowing the composite driver bind to the UDC, failure to do so
+should not result in a panic from the kernel driver.
 
-Fixes: c99993376f72 ("usb: dwc3: Add Amlogic G12A DWC3 glue")
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/79df054046224bbb0716a8c5c2082650290eec86.1621616013.git.christophe.jaillet@wanadoo.fr
-Cc: stable <stable@vger.kernel.org>
+Fix this by setting dwc->gadget to NULL in the failure path of
+dwc3_gadget_init() and add a check to dwc3_gadget_exit() to bail out
+unless the gadget pointer is valid.
+
+Fixes: e81a7018d93a ("usb: dwc3: allocate gadget structure dynamically")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Peter Chen <peter.chen@kernel.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Link: https://lore.kernel.org/r/20210528160405.17550-1-jackp@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/dwc3-meson-g12a.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/usb/dwc3/gadget.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-+++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
-@@ -775,13 +775,13 @@ static int dwc3_meson_g12a_probe(struct
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -3936,6 +3936,7 @@ err5:
+ 	dwc3_gadget_free_endpoints(dwc);
+ err4:
+ 	usb_put_gadget(dwc->gadget);
++	dwc->gadget = NULL;
+ err3:
+ 	dma_free_coherent(dwc->sysdev, DWC3_BOUNCE_SIZE, dwc->bounce,
+ 			dwc->bounce_addr);
+@@ -3955,6 +3956,9 @@ err0:
  
- 	ret = priv->drvdata->usb_init(priv);
- 	if (ret)
--		goto err_disable_clks;
-+		goto err_disable_regulator;
- 
- 	/* Init PHYs */
- 	for (i = 0 ; i < PHY_COUNT ; ++i) {
- 		ret = phy_init(priv->phys[i]);
- 		if (ret)
--			goto err_disable_clks;
-+			goto err_disable_regulator;
- 	}
- 
- 	/* Set PHY Power */
-@@ -819,6 +819,10 @@ err_phys_exit:
- 	for (i = 0 ; i < PHY_COUNT ; ++i)
- 		phy_exit(priv->phys[i]);
- 
-+err_disable_regulator:
-+	if (priv->vbus)
-+		regulator_disable(priv->vbus);
+ void dwc3_gadget_exit(struct dwc3 *dwc)
+ {
++	if (!dwc->gadget)
++		return;
 +
- err_disable_clks:
- 	clk_bulk_disable_unprepare(priv->drvdata->num_clks,
- 				   priv->drvdata->clks);
+ 	usb_del_gadget(dwc->gadget);
+ 	dwc3_gadget_free_endpoints(dwc);
+ 	usb_put_gadget(dwc->gadget);
 
 
