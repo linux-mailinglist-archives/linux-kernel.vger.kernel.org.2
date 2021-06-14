@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8C43A5DF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819723A5E02
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhFNH7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:59:22 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:54103 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbhFNH7V (ORCPT
+        id S232599AbhFNIBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232542AbhFNIBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:59:21 -0400
-Received: by mail-wm1-f42.google.com with SMTP id b205so6840936wmb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:57:03 -0700 (PDT)
+        Mon, 14 Jun 2021 04:01:42 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0563CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:59:26 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id m3so6314007wms.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:59:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YFtSuQv3LCHTkS9qZQYFvwMGwlgP6Ey1HHzA5wPOVqw=;
-        b=XTJBTHThLVkVDyD9nRfrWfd6LXp2sdF+Q2BHknVacC7qynJjJkOy+iCkBlLSPJiJA6
-         yqUMUho+a9imaUkHYDgA1B+c7pFGGbNrseZ1tdsz2sK1au8q4fWu5jyGFBKbABGQpcfF
-         RYicjiaY1ykjV7hLClUIK0kJra547cBd+2SLZp/8YOZasMli+O/tSvqiTkmTVMHNafMp
-         Xy+iDVKUalW7NNCYlFOzM2OfXaxxLRUlnnqWXRVuX9C0xde/I/Y01IhS2bE4SG1abamj
-         tKQLuLXH5qaNYRjUlDoslz30z1V3SujV1R9K1bP3lKOzCn+5aiM0SJFFGZpAcqZE7+lq
-         KAkg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5tuJ1U1oQdCxdR2Ogc8v5z1mBF2S7N+I6jU2dYfmsAs=;
+        b=SFODf6ZXNO7NVTz9A/PT4aQ8DER+BqnRCMFHsjd4EcESRIwT2uBLqmree0Ng3Sa+Mn
+         A6P9gtvu+DIKXWOCT4IBtl+14Eh1hli0TWsW/3qogSj661gg9Zn+GNevOeZNMfGlJGOa
+         loxQflUlnoQMwnZr7DAw1gkClDh8ofpZxczDBaymOvpEt5Q0D4hDD8Ghl5Q3J9OSeVD7
+         Wiej2JAvn73KytGDg3ZLDt5c75aGdAUOFu7OLo82NFhjn6nzkGpQOzBBqL5KbeeLH7Xr
+         9nvCAL+0wlt9TUmF/FJMUA3LM7ie/FLZwxZYGqOrKzAKAou5SMEa7gP4oboj0LKs9EN7
+         yBUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=YFtSuQv3LCHTkS9qZQYFvwMGwlgP6Ey1HHzA5wPOVqw=;
-        b=hWpTZpAv5ZAfU9hF4A8WAnQblAq6keOALnt+Klm786pPt+Ow02Din+aLv79dVMSTZL
-         nBahdoDyO/4cVpls4tmnYCtU1qOmeBpw36eLCzo0dFqUSwfJ0Shk+7x+bR/cw0Njqnw+
-         VsWkQze9jN+oHgt3kPMvqByh+/ZsBlLWqQ0Xw0bi+q0iGLeJtsj2IZUQBni0KwMwqHkd
-         Q+3FeQtChJ0D2kW7phICVebC7WtbhTh18luF4pPuii3HmS0DsQSLcXyHuKux+rmbOnhA
-         VXz08dStQx0a3Ci7UWH4N2mLGOBUBt7KEKyVmvLaTWnP1vKY9IARJsC4JZVTgQE+XWz0
-         +/5w==
-X-Gm-Message-State: AOAM532ihAKUNiJW8y7CF9YU0GZJSY6HnZJ3v2YpVxBpsTcN0ODwo9Pn
-        TEZyJLVmMyISuI8ILNKD6f6gvA==
-X-Google-Smtp-Source: ABdhPJwXiCFSQ5nXOlDH3D+m1LZ6V9tiBVDzD62PR4ZSSay1CB+Y6o4yT9bRqZBZXyOCThu5gRjhKw==
-X-Received: by 2002:a05:600c:2188:: with SMTP id e8mr32297464wme.129.1623657362889;
-        Mon, 14 Jun 2021 00:56:02 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:71f0:4862:1742:37fd? ([2a01:e0a:90c:e290:71f0:4862:1742:37fd])
-        by smtp.gmail.com with ESMTPSA id u12sm15793274wrr.40.2021.06.14.00.56.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 00:56:02 -0700 (PDT)
-Subject: Re: [PATCH] ARM: dts: meson: Set the fifo-size of uart_A to 128 bytes
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jbrunet@baylibre.com, khilman@baylibre.com
-References: <20210604170844.2201229-1-martin.blumenstingl@googlemail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5tuJ1U1oQdCxdR2Ogc8v5z1mBF2S7N+I6jU2dYfmsAs=;
+        b=ufJtQotxHm1f52vB9XNKGvgdYaFMF2gw1p5VWOrrKXSe4NXrPVRqZZ4K8XQmFmEW70
+         5ylJwBMmERYGWMhZB7bVR/Ay6Bfex6UmcEFiJWvmKOsMz9qnubxDeygdg5oOgH9u3FWU
+         30Bt7C1uDn4tHMagCkMupieS0fx2wjFov+6JdftfNM/EQ83yL39U7fqL69CYhLJKP9DQ
+         jO20ks4sTrUYyKMIO5XrtV28Yo8OdjXSdWK4k1Am/UOfYVfoXksXvZrCFTRrrkUKekzS
+         EOpflY3gq9yZOD7b8fwDqJNa4PdoWm7vP5A10LwjD6yLzmJWOs+hGyebAl75D5EE46a/
+         jsfw==
+X-Gm-Message-State: AOAM532Py54z5cn38hElqqahp95VFcOFu2YEs2hxtCezPkEz0cOBxk7D
+        oDJ1aHFeEri4T9PBBZpVu4u9ig==
+X-Google-Smtp-Source: ABdhPJxKRlOiE2KNA9Lj3LnL/AwzcvgTcnLne2X4hj3ipqSMjinzGRafcG66LKKN8dmGKCPQrzoxEg==
+X-Received: by 2002:a05:600c:354f:: with SMTP id i15mr30142407wmq.131.1623657564356;
+        Mon, 14 Jun 2021 00:59:24 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:71f0:4862:1742:37fd])
+        by smtp.gmail.com with ESMTPSA id b8sm19968466wmd.35.2021.06.14.00.59.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 00:59:23 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <0e3b8d5b-756b-fefe-fbd3-8a786d7344ac@baylibre.com>
-Date:   Mon, 14 Jun 2021 09:56:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        martin.blumenstingl@googlemail.com, khilman@baylibre.com,
+        jbrunet@baylibre.com
+Cc:     tobetter@gmail.com, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/7] arm64: dts: meson-sm1-odroid: various fixes for C4/HC4
+Date:   Mon, 14 Jun 2021 09:59:21 +0200
+Message-Id: <162365755420.29993.17717376637508529981.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210607065435.577334-1-narmstrong@baylibre.com>
+References: <20210607065435.577334-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20210604170844.2201229-1-martin.blumenstingl@googlemail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/06/2021 19:08, Martin Blumenstingl wrote:
-> The first UART controller in the "Everything-Else" power domain is
-> called uart_A. Unlike all other UARTs (which use a 64 byte fifo-size in
-> hardware) uart_A has a fifo-size of 128 bytes. This UART controller is
-> typically used for Bluetooth HCI.
-> The fifo-size of 128 bytes is valid from all SoCs from Meson6 (or
-> possibly even earlier) all the way up to the latest 64-bit ones.
-> 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  arch/arm/boot/dts/meson.dtsi | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/boot/dts/meson.dtsi b/arch/arm/boot/dts/meson.dtsi
-> index 8bae6ed0abb2..bd0e864964e9 100644
-> --- a/arch/arm/boot/dts/meson.dtsi
-> +++ b/arch/arm/boot/dts/meson.dtsi
-> @@ -50,6 +50,7 @@ uart_A: serial@84c0 {
->  				compatible = "amlogic,meson6-uart", "amlogic,meson-uart";
->  				reg = <0x84c0 0x18>;
->  				interrupts = <GIC_SPI 26 IRQ_TYPE_EDGE_RISING>;
-> +				fifo-size = <128>;
->  				status = "disabled";
->  			};
->  
-> 
+Hi,
 
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+On Mon, 7 Jun 2021 08:54:28 +0200, Neil Armstrong wrote:
+> Here is a collection of fixes/small additions to Odroid-C4 & Odroid-HC4 concerning
+> regulators handling, USB and SPI NOR Flash of HC4.
+> 
+> Changes from v1 at [1]:
+> - added review tags from martin
+> - removed invalid patch about hub_5v
+> - added proper vcc_5v gpio control
+> - removed invalid hub_5v regulator already controlled by a gpio hog
+> 
+> [...]
+
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.14/dt64)
+
+[1/7] arm64: dts: meson-sm1-odroid: add missing enable gpio and supply for tf_io regulator
+      https://git.kernel.org/amlogic/c/1f80a5cf74a60997b92d2cde772edec093bec4d9
+[2/7] arm64: dts: meson-sm1-odroid: set tf_io regulator gpio as open source
+      https://git.kernel.org/amlogic/c/7881df51368027b2d3fed3dcd43b480f45157d81
+[3/7] arm64: dts: meson-sm1-odroid: add 5v regulator gpio
+      https://git.kernel.org/amlogic/c/45d736ab17b44257e15e75e0dba364139fdb0983
+[4/7] arm64: dts: meson-sm1-odroid-hc4: disable unused USB PHY0
+      https://git.kernel.org/amlogic/c/703e84d6615a4a95fb504c8f2e4c9426b86f3930
+[5/7] arm64: dts: meson-sm1-odroid-hc4: add regulators controlled by GPIOH_8
+      https://git.kernel.org/amlogic/c/164147f094ec5d0fc2c2098a888f4b50cf3096a7
+[6/7] arm64: dts: meson-sm1-odroid-hc4: add spifc node to ODROID-HC4
+      https://git.kernel.org/amlogic/c/7178f340e9299dc886e6ddf6e938f09967902109
+[7/7] arm64: dts: meson-sm1-odroid-c4: remove invalid hub_5v regulator
+      https://git.kernel.org/amlogic/c/303d2af21aedeaebe824411fbff912dfcdb48de5
+
+-- 
+Neil
