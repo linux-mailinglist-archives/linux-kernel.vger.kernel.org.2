@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E883A6305
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1953A649F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233880AbhFNLIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:08:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60830 "EHLO mail.kernel.org"
+        id S235678AbhFNL06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:26:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234509AbhFNK53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:57:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9C46613D0;
-        Mon, 14 Jun 2021 10:41:30 +0000 (UTC)
+        id S234937AbhFNLMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:12:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B630D6194D;
+        Mon, 14 Jun 2021 10:48:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667291;
-        bh=f7+IsVAiTuk2fsnsSTO13i3VZaVGlWGF9fNo05lFuyQ=;
+        s=korg; t=1623667713;
+        bh=KiF5Pn9t9UbJ2sPnJsZqQ3jPhMuVoanoL+BPurUt2ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aAn8lggHQXU1tScNQsjDBxKqh0LkQQMRi3CiRM1OGo/hJGd0iBolZdRHrRuyvu0Xe
-         YUcmEiylTZQ625CkADxxqDHd3Z5c1hRDDXOR6dg5D6Q6xikxsKrpOnORiPSJTx1RIq
-         yyS9fBhsxvyQMThKJVPVbbd1Jfve6IN0cSRs6/w8=
+        b=K03XqGowt+lTqHTaP5Ejx2C+GKnHu3Rt6h2VGlZEhsfFugLJhIUN7/c7UA1hY5c9U
+         /FJPk1Y8+3DnCcRDtFdqqigRS2SCJh35mZbuchykTUYdj6dSXsqsNliB8tvWMU4R+/
+         sDrbLwYsLebvDS6Ekhui5YK13zzLaUHfXIEemozg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Saravana Kannan <saravanak@google.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 015/131] spi: sprd: Add missing MODULE_DEVICE_TABLE
-Date:   Mon, 14 Jun 2021 12:26:16 +0200
-Message-Id: <20210614102653.514399369@linuxfoundation.org>
+Subject: [PATCH 5.12 045/173] spi: Dont have controller clean up spi device before driver unbind
+Date:   Mon, 14 Jun 2021 12:26:17 +0200
+Message-Id: <20210614102659.660270934@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+From: Saravana Kannan <saravanak@google.com>
 
-[ Upstream commit 7907cad7d07e0055789ec0c534452f19dfe1fc80 ]
+[ Upstream commit 27e7db56cf3dffd302bd7ddfacb1d405cf671a2a ]
 
-MODULE_DEVICE_TABLE is used to extract the device information out of the
-driver and builds a table when being compiled. If using this macro,
-kernel can find the driver if available when the device is plugged in,
-and then loads that driver and initializes the device.
+When a spi device is unregistered and triggers a driver unbind, the
+driver might need to access the spi device. So, don't have the
+controller clean up the spi device before the driver is unbound. Clean
+up the spi device after the driver is unbound.
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Link: https://lore.kernel.org/r/20210512093534.243040-1-zhang.lyra@gmail.com
+Fixes: c7299fea6769 ("spi: Fix spi device unregister flow")
+Reported-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210505164734.175546-1-saravanak@google.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-sprd.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-sprd.c b/drivers/spi/spi-sprd.c
-index b41a75749b49..28e70db9bbba 100644
---- a/drivers/spi/spi-sprd.c
-+++ b/drivers/spi/spi-sprd.c
-@@ -1068,6 +1068,7 @@ static const struct of_device_id sprd_spi_of_match[] = {
- 	{ .compatible = "sprd,sc9860-spi", },
- 	{ /* sentinel */ }
- };
-+MODULE_DEVICE_TABLE(of, sprd_spi_of_match);
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 125116ab3386..e067c54e87dd 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -717,15 +717,15 @@ void spi_unregister_device(struct spi_device *spi)
+ 	if (!spi)
+ 		return;
  
- static struct platform_driver sprd_spi_driver = {
- 	.driver = {
+-	spi_cleanup(spi);
+-
+ 	if (spi->dev.of_node) {
+ 		of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
+ 		of_node_put(spi->dev.of_node);
+ 	}
+ 	if (ACPI_COMPANION(&spi->dev))
+ 		acpi_device_clear_enumerated(ACPI_COMPANION(&spi->dev));
+-	device_unregister(&spi->dev);
++	device_del(&spi->dev);
++	spi_cleanup(spi);
++	put_device(&spi->dev);
+ }
+ EXPORT_SYMBOL_GPL(spi_unregister_device);
+ 
 -- 
 2.30.2
 
