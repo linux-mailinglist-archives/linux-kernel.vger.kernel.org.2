@@ -2,95 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D303A718B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6F33A718F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhFNVtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:49:51 -0400
-Received: from hera.aquilenet.fr ([185.233.100.1]:52634 "EHLO
-        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhFNVtt (ORCPT
+        id S232057AbhFNVuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229793AbhFNVt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:49:49 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 2BDCE2E2;
-        Mon, 14 Jun 2021 23:47:44 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id WNKugrCMqcPX; Mon, 14 Jun 2021 23:47:43 +0200 (CEST)
-Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 0A19490;
-        Mon, 14 Jun 2021 23:47:42 +0200 (CEST)
-Received: from samy by begin with local (Exim 4.94.2)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1lsuQn-008DZQ-LV; Mon, 14 Jun 2021 23:47:41 +0200
-Date:   Mon, 14 Jun 2021 23:47:41 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        jani.nikula@linux.intel.com, gene@collinsnet.net,
-        w.d.hubbs@gmail.com, steve.holmes88@gmail.com,
-        speakup@linux-speakup.org, gregkh@linuxfoundation.org,
-        rdunlap@infradead.org, grandmaster@al2klimov.de,
-        chris@the-brannons.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] docs: Convert the Speakup guide to rst
-Message-ID: <20210614214741.enkzldkcug66ikym@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        jani.nikula@linux.intel.com, gene@collinsnet.net,
-        w.d.hubbs@gmail.com, steve.holmes88@gmail.com,
-        speakup@linux-speakup.org, gregkh@linuxfoundation.org,
-        rdunlap@infradead.org, grandmaster@al2klimov.de,
-        chris@the-brannons.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210607132914.20480-1-igormtorrente@gmail.com>
- <87r1h415mk.fsf@meer.lwn.net>
+        Mon, 14 Jun 2021 17:49:59 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E76C061767;
+        Mon, 14 Jun 2021 14:47:56 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 19236734;
+        Mon, 14 Jun 2021 21:47:56 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 19236734
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1623707276; bh=MvUJ+5EiecI6zpctop5SsbtiTktCOl2AJ0Y+lhAM2gM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=C5q0RSfcJdn74DsCaf0QvOETlT+D4jS2I/3njMXfS14whfwk6KR6OkRlAGLnAMkgK
+         8OxObgmGiAgrcyHHrTx4gEPSdwr2uOFEMYBK0S4hAYKtrlXWsi7Cr561vrT12UmBpT
+         2Wv9664ZiTLR28chuEtt/brdJzGmpYTIEezbSccPBBVqEO6yWFrxmwg6QTE/oHbeG9
+         9h8UEbN8FQkKBwLw9AkmCIUG5YY33TOakaug2FgdmJjuRAEdwQP6TaQwwztAIJw7MH
+         OvRy6hT3ljODD9/4ZECf9eFtycZ7xjG9JRIHcABu6jzs+u4K6Natyal6f02RTeTHn6
+         JH8oFVyd4Um8A==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        joe@perches.com, linux-doc@vger.kernel.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: Re: [PATCH v4] docs: checkpatch: Document and segregate more
+ checkpatch message types
+In-Reply-To: <20210614141132.6881-1-dwaipayanray1@gmail.com>
+References: <20210614141132.6881-1-dwaipayanray1@gmail.com>
+Date:   Mon, 14 Jun 2021 15:47:55 -0600
+Message-ID: <87mtrs15kk.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1h415mk.fsf@meer.lwn.net>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
-X-Spamd-Bar: --
-Authentication-Results: hera.aquilenet.fr
-X-Rspamd-Server: hera
-X-Rspamd-Queue-Id: 2BDCE2E2
-X-Spamd-Result: default: False [-2.50 / 15.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         HAS_ORG_HEADER(0.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[gmail.com];
-         BAYES_HAM(-3.00)[100.00%]
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonathan Corbet, le lun. 14 juin 2021 15:46:43 -0600, a ecrit:
-> Igor Matheus Andrade Torrente <igormtorrente@gmail.com> writes:
-> 
-> > v4: Reverts the licensing change to a dual-licensing
-> >     'GPL-2.0 OR GFDL-1.2-no-invariants-or-later'.
-> >
-> >     And, therefore, this patch should only be accepted when we have
-> >     all acks from the copyright owners.
-> 
-> What's the status of that?  I'd like to get this work merged for 5.14 if
-> possible...
+Dwaipayan Ray <dwaipayanray1@gmail.com> writes:
 
-We are still waiting for some author ack on the licence change.
+> Add and document more checkpatch message types. About 50% of all
+> message types are documented now.
+>
+> In addition to this:
+>
+> - Create a new subsection 'Indentation and Line Breaks'.
+> - Rename subsection 'Comment style' to simply 'Comments'.
+> - Refactor some of the existing types to appropriate subsections.
+>
+> Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Tested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 
-Samuel
+Applied, thanks.
+
+jon
