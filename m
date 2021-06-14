@@ -2,283 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251D63A5BD1
+	by mail.lfdr.de (Postfix) with ESMTP id DC4483A5BD3
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 05:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbhFNDZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 23:25:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232320AbhFNDZG (ORCPT
+        id S232296AbhFND3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 23:29:35 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:26430 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232234AbhFND3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 23:25:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623640983;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DH6kGuqwSpyXtcecevk99gjqJDJGvAzEG8igZ3sFLDE=;
-        b=a0E+gbJ404sPFbXC51m0g1Sg1AYrbNJD01Clm1WwB1ff0pdJe1+hDptrZSJhJA/R+Uow8t
-        PbYzdHsP5yndYPwaL6d02FKNl4DtSYSCCvl/ydRLn1DUTulDrv86mS3g4AT5wmdZgcXCj7
-        Uh4aQdEyeBkX6ioQ095H+iFoWgU6GP0=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-3e4DwTBrPFC_DyFT_e_usg-1; Sun, 13 Jun 2021 23:23:02 -0400
-X-MC-Unique: 3e4DwTBrPFC_DyFT_e_usg-1
-Received: by mail-ot1-f70.google.com with SMTP id q20-20020a9d7c940000b02903f5a4101f8eso6388564otn.17
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 20:23:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=DH6kGuqwSpyXtcecevk99gjqJDJGvAzEG8igZ3sFLDE=;
-        b=kAqXkiQ+Ai+gMKVF07jcvcOekdSplrh0F/Kr3ipq2tReu+7ch9ZYa7wb0JHjdH6XF4
-         OMpmpuK5BcCyf/PWDfRRNHLf2TuaiwTCOr8aP8+Hjijo5UfKZ9iTMm8dG0tdli1L/zXi
-         45ngVANG3j7uw3PZszO56BCuZvnhxYhjjANGK7nidR4Xv25O7oOV2KRK9kuP6PbBQodv
-         uccJOdZFTnkmP1+f5nQEjZqz2eMghDKPXXp1N/lzWjbRZtMGHYO3rpvJnkR95YMsJ+gP
-         yah2Kpc4V4xFOpoOFIqPmW9jZnHnm/p4UVj4Oxbo/Sjd6EmnYGSCPmqs1abqeX6mokgZ
-         oKXA==
-X-Gm-Message-State: AOAM5322nHAMqsJVIa7WmDPJyHSSohdeMWozb6b63FsXqjmA0k5Q5CsQ
-        lsErUU+Fm1fhXX0crlYL2dwPvi5Ml4/EctUM4RXqkktf2y0GJjofxFCwjYl0X1ERHbl2sP9CeIV
-        nSUtj6ZuWFq+rK3V14lv+r0Pl
-X-Received: by 2002:a4a:d781:: with SMTP id c1mr11469391oou.23.1623640981480;
-        Sun, 13 Jun 2021 20:23:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw6xToi4wIBsXCCzc9rWc2XuIt2xUM51JIjsKt+2k+TNY3lc6glz0mU52oI39ABCxtmA6uP+Q==
-X-Received: by 2002:a4a:d781:: with SMTP id c1mr11469382oou.23.1623640981204;
-        Sun, 13 Jun 2021 20:23:01 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id c205sm2706192oib.20.2021.06.13.20.22.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 20:23:00 -0700 (PDT)
-Date:   Sun, 13 Jun 2021 21:22:58 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Kirti Wankhede" <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <20210613212258.6f2a2dac.alex.williamson@redhat.com>
-In-Reply-To: <MWHPR11MB1886C2A0A8AA3000EBD5F8E18C319@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <YMCy48Xnt/aphfh3@8bytes.org>
-        <20210609123919.GA1002214@nvidia.com>
-        <YMDC8tOMvw4FtSek@8bytes.org>
-        <20210609150009.GE1002214@nvidia.com>
-        <YMDjfmJKUDSrbZbo@8bytes.org>
-        <20210609101532.452851eb.alex.williamson@redhat.com>
-        <20210609102722.5abf62e1.alex.williamson@redhat.com>
-        <20210609184940.GH1002214@nvidia.com>
-        <20210610093842.6b9a4e5b.alex.williamson@redhat.com>
-        <BN6PR11MB187579A2F88C77ED2131CEF08C349@BN6PR11MB1875.namprd11.prod.outlook.com>
-        <20210611153850.7c402f0b.alex.williamson@redhat.com>
-        <MWHPR11MB1886C2A0A8AA3000EBD5F8E18C319@MWHPR11MB1886.namprd11.prod.outlook.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Sun, 13 Jun 2021 23:29:30 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15E3R4eS003247;
+        Mon, 14 Jun 2021 03:27:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=Hw9TRLrxvdpdujVDMMzJirV9OICy4AmTWEU6cvq4KUY=;
+ b=vQsCcgpH8n9H28jAh38k/2D/9qTV3QISSFnvaqEnkONsyvQnAPSQF+224Mq38So7JBOG
+ H61NxM4DVDv3jPcRFDVOzSMWnKCOQRyMWevyPKeWoXdKxXQzcqgw0WY0rjbkTpSuDTAv
+ cDhObaMe2szmE5o6u4t9WW63dm2ifAkmM/mJdFZPqmcAk1ltNmlul5L9xqqu41GWbbzd
+ 4tEUIGbpnaw9C8XbbE70t89iWL7HfNZ/VTGuI/73egLX/b6BhzTLXyjA1GhzPZ9JDBEB
+ O7w9kGWuTLojEcSHEIY9MZiabgOIZEE1qMCVNEVdU9L0mq+zKUlFe8SgCE2dHq0Z7Xxr KA== 
+Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 395t6ug242-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 03:27:04 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15E3R3lb012820;
+        Mon, 14 Jun 2021 03:27:03 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
+        by aserp3030.oracle.com with ESMTP id 3959chtw4p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 03:27:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LspWqBrfHpZWFMkVLHH5KwSjQ0F0/XbIkxRiZfxPNBrOr4sURdtYqP3A7BJMKAvSn2rhqPnqaebkpZw7MylJ/TWjJH44tBHYwozSvq3Rm3rGt9K1AWwwJ2hCo/CAJ78zuF8xbpFK3Fu8tVRQrdGeghohLbxKcyo7tgNmh3NojERyuYMMB6YtEZZunATL33J5E4KuWstswSQ3fPKpo+20sqh4AJZOPJfwANSyiw9Owo3ZX2VIuJbcI7roS40R84nylvyGGNRWBeMtRznBZo5TP9dhegkGN0YnQmH0x8ojzoSe0jMUcMoxYqvZ3MYc6YSTqRflyH3JVyPGrjo1IB0qCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hw9TRLrxvdpdujVDMMzJirV9OICy4AmTWEU6cvq4KUY=;
+ b=cpa1/fzIlSYQTsmot3IxaaFqT8nKtwPae2+hFqLvqyNRZWcPwBC3dNFQXP0wKzFCR/HvxTWgoO1qbvFqA+UQHACx5GOQnNOOhaeZD9t/+mpjEqaCezenJv/zOqlNnnIXpPXlorks+SkeiA7XABnN8w5K2oEyOE0vJ+Xk/qbWcYt1RxuCtC7zNyZQcyGQruEfq0vxRfIL6NK84dVat72/iB4LC06PbxFjNYxSfrtGRdGmr9tqBA3uJSGXjjvwPxo9EdXQ5iwxI+Kb4vgM/JOsjBloSC8dM7+Sqg9+eTpBXoU5lfPwcREyrc80hhYGqpqT4N6wfDmaP7wWZcoDx/7eDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hw9TRLrxvdpdujVDMMzJirV9OICy4AmTWEU6cvq4KUY=;
+ b=PTThjpUxs5EI39/o8+MUHNLqC4OCWheO7pYDXNA0o7d5rhkP+eUgvSgUuDsjT50/hUYwsSPYYlRJ9OXRzc+K484JYNBOE1vNgbJ3j8LB/QePNJHGHzHsn2LIwotfhpNRBZtrBN+zMznSbmgowJZWt4ySHCJO7Xapg8aMioCQJdU=
+Received: from CY4PR10MB1989.namprd10.prod.outlook.com (2603:10b6:903:11a::12)
+ by CY4PR10MB1349.namprd10.prod.outlook.com (2603:10b6:903:2a::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Mon, 14 Jun
+ 2021 03:27:00 +0000
+Received: from CY4PR10MB1989.namprd10.prod.outlook.com
+ ([fe80::2cda:5611:238a:17a3]) by CY4PR10MB1989.namprd10.prod.outlook.com
+ ([fe80::2cda:5611:238a:17a3%8]) with mapi id 15.20.4219.025; Mon, 14 Jun 2021
+ 03:27:00 +0000
+From:   Haakon Bugge <haakon.bugge@oracle.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on the
+ ib_port_attribute intead of kobj's
+Thread-Topic: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
+ the ib_port_attribute intead of kobj's
+Thread-Index: AQHXW3XC7qLq8SZSTkiH41zCfEamxasIV9WAgAAefoCAAAclgIAAAusAgAXurYCAAA5IAIAEZf6A
+Date:   Mon, 14 Jun 2021 03:27:00 +0000
+Message-ID: <92A96585-DAE5-46C5-8D2A-2EED92F75FDF@oracle.com>
+References: <cover.1623053078.git.leonro@nvidia.com>
+ <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
+ <YL3z/xpm5EYHFuZs@kroah.com> <20210607121411.GC1002214@nvidia.com>
+ <YL4TkfVlTellmnc+@kroah.com> <20210607125012.GE1002214@nvidia.com>
+ <8685A354-4D41-4805-BDC5-365216CEAF40@oracle.com>
+ <YMMb9NZ0nHRTullc@kroah.com>
+In-Reply-To: <YMMb9NZ0nHRTullc@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.100.0.2.22)
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=oracle.com;
+x-originating-ip: [51.175.204.144]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0437c7f4-2120-4639-755a-08d92ee445a5
+x-ms-traffictypediagnostic: CY4PR10MB1349:
+x-microsoft-antispam-prvs: <CY4PR10MB1349D98C8A85555D402018E0FD319@CY4PR10MB1349.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OT7HDaLrG8ZKbVsmBUrwQ7GXzNaQLkOeD9oIrkJlwLxg4CvlwwvA8x2BoGKO6KwfE3syAXO2ZSC1SCzVrHy0VqT4ekkZEVKUcc4kEFP2E7jycxfdxteis0ROHsCVa1VzGNA7kusY54bazMMg3gB829Y8ld14ra4f+FmoopXoMbQy9CtLbaNLWkIBphnjejgb/+7YHV/Bkpb0I7C6ZitirZcmejFFXhxgofeuxFXXbc0jvzCyRXv5ht2sycaTaWHGqSDej2kCYDsA/3DgChtdKQl+eccecr76HHEQDJJscqPKV41xhBQ/3dC/E+Mg9xCdN/HOD//IJHqlRWEoSjVXMhZEdAPm1ChaPZjc6PGV4YH7+eLA5vY2FlcY297DVmlW5vuQg8UTYjerX/s85iakLJRCO2Y9ylVxPggym/zMKufYqhIeUWNqGso97+W2HWw6u9qfIs34FOr6/d4bNpgdbzCEEKTuawQ3/pklXMnOZ2/YlsdEWS6YVenlJAGlAO3qnfPZzO2bCiTVUR9a9HBuT2sVHSvcHFqppOoD9bvm7BF97jTj5sPBu/kEY5aNbdHdsAfLFcslagqk/WW5IK42AcRs7IyT/gDEKuG+2A7Yjq//UvxfYF9P5EbYQnr3vSqvy7vcAM3dqDQfL7qAXnjGYtuc4AM3SSDLDtloAhTE2uA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1989.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(376002)(396003)(366004)(122000001)(8676002)(64756008)(53546011)(38100700002)(71200400001)(66446008)(66476007)(66556008)(8936002)(66946007)(6506007)(76116006)(44832011)(7416002)(91956017)(5660300002)(54906003)(66574015)(33656002)(4326008)(2906002)(316002)(26005)(6486002)(2616005)(6512007)(6916009)(86362001)(83380400001)(186003)(36756003)(478600001)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eHVMVjdKeDhXZDZDanY1dXhMSExVN2ZwZnZWbXI1eHp2RGlTNzYxSFYzS09V?=
+ =?utf-8?B?NURyWXlTODNjMEx4U0FMNlZXMnl1RWxCZFlwRjE4SVZEK0wxZ3dvSXFFeElF?=
+ =?utf-8?B?QnJaMkp6QVRnbGtMN3NZYy9jaVVnS2oxWnQ1Y1Q1N2lLQW56dXIvb21sSmpn?=
+ =?utf-8?B?VFIvMmttZkxkeDl6c0pHSmtiUlFaUVdYZk9mMTFKUHhDdCs2NmpEOGFGcGNZ?=
+ =?utf-8?B?a3R0aGk4aGIvR0hJcVR4WUVoY2FaUUdOTEtUdUxKeGVZclNMRHJnOENRdlBS?=
+ =?utf-8?B?d04wb2lpN28vV0E2NWlrUlJVVmE0aWYyMDBob2JWemxBS1g1bEFSTG8yN2lG?=
+ =?utf-8?B?Z1ZRUnVnLzcvRUZjOUFSakdBbnBKRE5oVWs2VVdEUmphOUY1dU0xdVlzSkNn?=
+ =?utf-8?B?eDRGZHNLKzRCMm5sbW84K3dScGJDOHNEWnBmckJnbi9yRVJISnQ0WUhWbUc1?=
+ =?utf-8?B?L0Nyb0NtdjgrSVRXajNwbG9QRkdKSlBBZ3IvWWREK2M1VE5lRVZ6Z25aR29E?=
+ =?utf-8?B?WVg3SDhKSHFnYkJCdjVYZTFRUjAxT3ZqajNSU2huSzhnOGUyaDZZNGZhZklI?=
+ =?utf-8?B?ek9xNGxjaGZRMHRnclgzY1JwQUVYdWNSVVV6R0tIZDMxUXQxK2tvTmgrOW4z?=
+ =?utf-8?B?ZXdaVWV1UDlGclFqQ3krQzZkWEh6YkdlSkloMFZSRFVacENneVZJY0UrazRu?=
+ =?utf-8?B?K0dERHJhcVB2MXlmZDJoQU1mWWN2ODNJcGUyMjBBanRhWWNiTG83cmI3SUxi?=
+ =?utf-8?B?MkVLaWpwWm1wOUticTBiaXB6YVp4Qm9jYzNhVHhXVmRlMlpkY1dTTUxYMm84?=
+ =?utf-8?B?QmM2TVNCWkdCaVlyQUhwS0Z6MVQ2eGVqWE1oV3p6SHZsUEsrUFBoMTNWYS96?=
+ =?utf-8?B?b09xZGkzNUl6VjJmMmsrR09LcDJFRjVKOU11K2xTenpJSmRqaTNhMzVjdzJU?=
+ =?utf-8?B?WnFIY2paY2pYUHc3b3RNcDJQU1dEMUNZbTgvMjdwZ0lnL1FJekQ2L0JoOEhy?=
+ =?utf-8?B?WFJTRG56NFIrN2YrNmN2VGk5ck9kZ2RlKzZBeFJXUDFRa3ZZMUNIL2xFZEh2?=
+ =?utf-8?B?US9OZ2NUL2lKcDR6UFRPa3puY1dsZnBqTWtmZXY3T3BVWTF4UVArQmVNQldh?=
+ =?utf-8?B?S0tDZ0hWVFR4R1B3dzZOWmRKWVRIUWltQ21QZjZhbGZldW1zOHNVQ3FFeTdS?=
+ =?utf-8?B?VVI5dld5bzZZSkZQTHRwZUJKbTc1RlprelRibVk1OFdWOGJ5Q09KU01sS3h4?=
+ =?utf-8?B?WlFiNFFISXhwVW02VThrVkVPSmxpR1RSMWxRL3ZTMHZ1bzRCNStqVHkzZHhi?=
+ =?utf-8?B?eHFueFdrODkraTEzeEx3MHRRYllMVTVTcGZoeEJxZUFoeDcrQmJsLzhYZUJW?=
+ =?utf-8?B?RDh4T0lGUnpQYnNnV283bUx0S3Z5RUF4K1FQazhLcGh5S096THZKUGVPVmdV?=
+ =?utf-8?B?U0RoT21USllZVzZlcXFhTXZZcUtCY1lOb2NUa1ozc1hOcDltdWk0dU96L1dO?=
+ =?utf-8?B?NU44eXJjc1ltYW1hTWtORVdkak94bXJReWc0MHZzQmRYMVVyRzVIK2oxQTAx?=
+ =?utf-8?B?UlVKc2xPUGJyNzJpTFNDYmFaSHlSc2Fsc3E1YmtKckZWd0tGMnNLOVp6RE5y?=
+ =?utf-8?B?dnQvTG5WbStYeGgrRWRlL0JwVktYQ1l2OUE1Z1ZhKzB6NGhnb2tKbGsrNVRv?=
+ =?utf-8?B?RmRva0tYd0kxMUlKVW50VVUxZ05rMmt0UmRqbmt1VlMwaDFMMGxQUjNRYmZT?=
+ =?utf-8?Q?8KYEYqcznDdBEGmfqXmmdSkF7EyhQafyBRx92WN?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B93D5F9C79B9F54981114C347DBF968A@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1989.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0437c7f4-2120-4639-755a-08d92ee445a5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2021 03:27:00.3589
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YTdbWU6vaJAOf7z6X4b2gQbWlgng384+MtgyAv5UE+vAyNXoCz7i4l5CB/8IGzoI8girW5gFw+fhS4G70xBjGg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1349
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10014 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106140023
+X-Proofpoint-ORIG-GUID: N1KDN3HUx4q3aP90Gqy1RQIuZ70wWfL8
+X-Proofpoint-GUID: N1KDN3HUx4q3aP90Gqy1RQIuZ70wWfL8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 03:09:31 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
-
-> > From: Alex Williamson <alex.williamson@redhat.com>
-> > Sent: Saturday, June 12, 2021 5:39 AM
-> > 
-> > On Fri, 11 Jun 2021 00:58:35 +0000
-> > "Tian, Kevin" <kevin.tian@intel.com> wrote:
-> >   
-> > > Hi, Alex,
-> > >  
-> > > > From: Alex Williamson <alex.williamson@redhat.com>
-> > > > Sent: Thursday, June 10, 2021 11:39 PM
-> > > >
-> > > > On Wed, 9 Jun 2021 15:49:40 -0300
-> > > > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > >  
-> > > > > On Wed, Jun 09, 2021 at 10:27:22AM -0600, Alex Williamson wrote:
-> > > > >  
-> > > > > > > > It is a kernel decision, because a fundamental task of the kernel is  
-> > to  
-> > > > > > > > ensure isolation between user-space tasks as good as it can. And if  
-> > a  
-> > > > > > > > device assigned to one task can interfer with a device of another  
-> > task  
-> > > > > > > > (e.g. by sending P2P messages), then the promise of isolation is  
-> > > > broken.  
-> > > > > > >
-> > > > > > > AIUI, the IOASID model will still enforce IOMMU groups, but it's not  
-> > an  
-> > > > > > > explicit part of the interface like it is for vfio.  For example the
-> > > > > > > IOASID model allows attaching individual devices such that we have
-> > > > > > > granularity to create per device IOASIDs, but all devices within an
-> > > > > > > IOMMU group are required to be attached to an IOASID before they  
-> > can  
-> > > > be  
-> > > > > > > used.  
-> > > > >
-> > > > > Yes, thanks Alex
-> > > > >  
-> > > > > > > It's not entirely clear to me yet how that last bit gets
-> > > > > > > implemented though, ie. what barrier is in place to prevent device
-> > > > > > > usage prior to reaching this viable state.  
-> > > > >
-> > > > > The major security checkpoint for the group is on the VFIO side.  We
-> > > > > must require the group before userspace can be allowed access to any
-> > > > > device registers. Obtaining the device_fd from the group_fd does this
-> > > > > today as the group_fd is the security proof.
-> > > > >
-> > > > > Actually, thinking about this some more.. If the only way to get a
-> > > > > working device_fd in the first place is to get it from the group_fd
-> > > > > and thus pass a group-based security check, why do we need to do
-> > > > > anything at the ioasid level?
-> > > > >
-> > > > > The security concept of isolation was satisfied as soon as userspace
-> > > > > opened the group_fd. What do more checks in the kernel accomplish?  
-> > > >
-> > > > Opening the group is not the extent of the security check currently
-> > > > required, the group must be added to a container and an IOMMU model
-> > > > configured for the container *before* the user can get a devicefd.
-> > > > Each devicefd creates a reference to this security context, therefore
-> > > > access to a device does not exist without such a context.  
-> > >
-> > > IIUC each device has a default domain when it's probed by iommu driver
-> > > at boot time. This domain includes an empty page table, implying that
-> > > device is already in a security context before it's probed by device driver.  
-> > 
-> > The default domain could be passthrough though, right?  
-> 
-> Good point.
-> 
-> >   
-> > > Now when this device is added to vfio, vfio creates another security
-> > > context through above sequence. This sequence requires the device to
-> > > switch from default security context to this new one, before it can be
-> > > accessed by user.  
-> > 
-> > This is true currently, we use group semantics with the type1 IOMMU
-> > backend to attach all devices in the group to a secure context,
-> > regardless of the default domain.
-> >   
-> > > Then I wonder whether it's really necessary. As long as a device is in
-> > > a security context at any time, access to a device can be allowed. The
-> > > user itself should ensure that the access happens only after the device
-> > > creates a reference to the new security context that is desired by this
-> > > user.
-> > >
-> > > Then what does group really bring to us?  
-> > 
-> > By definition an IOMMU group is the smallest set of devices that we
-> > can consider isolated from all other devices.  Therefore devices in a
-> > group are not necessarily isolated from each other.  Therefore if any
-> > device within a group is not isolated, the group is not isolated.  VFIO
-> > needs to know when it's safe to provide userspace access to the device,
-> > but the device isolation is dependent on the group isolation.  The
-> > group is therefore part of this picture whether implicit or explicit.
-> >   
-> > > With this new proposal we just need to make sure that a device cannot
-> > > be attached to any IOASID before all devices in its group are bound to
-> > > the IOASIDfd. If we want to start with a vfio-like policy, then all devices
-> > > in the group must be attached to the same IOASID. Or as Jason suggests,
-> > > they can attach to different IOASIDs (if in the group due to !ACS) if the
-> > > user wants, or have some devices attached while others detached since
-> > > both are in a security context anyway.  
-> > 
-> > But if it's the device attachment to the IOASID that provides the
-> > isolation and the user might attach a device to multiple IOASIDs within
-> > the same IOASIDfd, and presumably make changes to the mapping of device
-> > to IOASID dynamically, are we interrupting user access around each of
-> > those changes?  How would vfio be able to track this, and not only
-> > track it per device, but for all devices in the group.  Suggesting a
-> > user needs to explicitly attach every device in the group is also a
-> > semantic change versus existing vfio, where other devices in the group
-> > must only be considered to be in a safe state for the group to be
-> > usable.
-> > 
-> > The default domain may indeed be a solution to the problem, but we need
-> > to enforce a secure default domain for all devices in the group.  To me
-> > that suggests that binding the *group* to an IOASIDfd is the point at
-> > which device access becomes secure.  VFIO should be able to consider
-> > that the IOASIDfd binding has taken over ownership of the DMA context
-> > for the device and it will always be either an empty, isolated, default
-> > domain or a user defined IOASID.  
-> 
-> Yes, this is one way of enforcing the group security.
-> 
-> In the meantime, I'm thinking about another way whether group 
-> security can be enforced in the iommu layer to relax the uAPI design. 
-> If a device can be always blocked from accessing memory in the 
-> IOMMU before it's bound to a driver or more specifically before
-> the driver moves it to a new security context, then there is no need
-> for VFIO to track whether IOASIDfd has taken over ownership of
-> the DMA context for all devices within a group.
-
-But we know we don't have IOMMU level isolation between devices in the
-same group, so I don't see how this helps us.
-
-> But as you said this cannot be achieved via existing default domain
-> approach. So far a device is always attached to a domain:
-> 
-> - DOMAIN_IDENTITY: a default domain without DMA protection
-> - DOMAIN_DMA: a default domain with DMA protection via DMA 
->   API and iommu core
-> - DOMAIN_UNMANAGED: a driver-created domain which is not
->    managed by iommu core.
-> 
-> The special sequence in current vfio group design is to mitigate
-> the 1st case, i.e. if a device is left in passthrough mode before
-> bound to VFIO it's definitely insecure to allow user to access it.
-> Then the sequence ensures that the user access is granted on it
-> only after all devices within a group switch to a security context.
-> 
-> Now if the new proposed scheme can be supported, a device
-> is always in a security context (block-dma) before it's switched 
-> to a new security context and existing domain types should be 
-> applied only in the new context when the device starts to do 
-> DMAs. For VFIO case this switch happens explicitly when attaching 
-> the device to an IOASID. For kernel driver it's implicit e.g. could
-> happen when the 1st DMA API call is received. 
-> 
-> If this works I didn't see the need for vfio to keep the sequence. 
-> VFIO still keeps group fd to claim ownership of all devices in a 
-> group. Once it's done, vfio doesn't need to track the device attach 
-> status and user access can be always granted regardless of 
-> how the attach status changes. Moving a device from IOASID1 
-> to IOASID2 involves detaching from IOASID1 (back to blocked
-> dma context) and then reattaching to IOASID2 (switch to a
-> new security context).
-> 
-> Following this direction even IOASIDfd doesn't need to verify
-> the group attach upon such guarantee from the iommu layer. 
-> The devices within a group can be in different security contexts,
-> e.g. with some devices attached to GPA IOASID while others not 
-> attached. In this way vfio userspace could choose to not attach 
-> every device of a group to sustain the current semantics.
-
-It seems like this entirely misses the point of groups with multiple
-devices.  If we had IOMMU level isolation between all devices, we'd
-never have multi-device groups.  Thanks,
-
-Alex
-
+DQoNCj4gT24gMTEgSnVuIDIwMjEsIGF0IDEwOjE2LCBHcmVnIEtIIDxncmVna2hAbGludXhmb3Vu
+ZGF0aW9uLm9yZz4gd3JvdGU6DQo+IA0KPiBPbiBGcmksIEp1biAxMSwgMjAyMSBhdCAwNzoyNTo0
+NkFNICswMDAwLCBIYWFrb24gQnVnZ2Ugd3JvdGU6DQo+PiANCj4+IA0KPj4+IE9uIDcgSnVuIDIw
+MjEsIGF0IDE0OjUwLCBKYXNvbiBHdW50aG9ycGUgPGpnZ0BudmlkaWEuY29tPiB3cm90ZToNCj4+
+PiANCj4+PiBPbiBNb24sIEp1biAwNywgMjAyMSBhdCAwMjozOTo0NVBNICswMjAwLCBHcmVnIEtI
+IHdyb3RlOg0KPj4+PiBPbiBNb24sIEp1biAwNywgMjAyMSBhdCAwOToxNDoxMUFNIC0wMzAwLCBK
+YXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+Pj4+PiBPbiBNb24sIEp1biAwNywgMjAyMSBhdCAxMjoy
+NTowM1BNICswMjAwLCBHcmVnIEtIIHdyb3RlOg0KPj4+Pj4+IE9uIE1vbiwgSnVuIDA3LCAyMDIx
+IGF0IDExOjE3OjM1QU0gKzAzMDAsIExlb24gUm9tYW5vdnNreSB3cm90ZToNCj4+Pj4+Pj4gRnJv
+bTogSmFzb24gR3VudGhvcnBlIDxqZ2dAbnZpZGlhLmNvbT4NCj4+Pj4+Pj4gDQo+Pj4+Pj4+IFRo
+aXMgY29kZSBpcyB0cnlpbmcgdG8gYXR0YWNoIGEgbGlzdCBvZiBjb3VudGVycyBncm91cGVkIGlu
+dG8gNCBncm91cHMgdG8NCj4+Pj4+Pj4gdGhlIGliX3BvcnQgc3lzZnMuIEluc3RlYWQgb2YgY3Jl
+YXRpbmcgYSBidW5jaCBvZiBrb2JqZWN0cyBzaW1wbHkgZXhwcmVzcw0KPj4+Pj4+PiBldmVyeXRo
+aW5nIG5hdHVyYWxseSBhcyBhbiBpYl9wb3J0X2F0dHJpYnV0ZSBhbmQgYWRkIGEgc2luZ2xlDQo+
+Pj4+Pj4+IGF0dHJpYnV0ZV9ncm91cHMgbGlzdC4NCj4+Pj4+Pj4gDQo+Pj4+Pj4+IFJlbW92ZSBh
+bGwgdGhlIG5ha2VkIGtvYmplY3QgbWFuaXB1bGF0aW9ucy4NCj4+Pj4+PiANCj4+Pj4+PiBNdWNo
+IG5pY2VyLg0KPj4+Pj4+IA0KPj4+Pj4+IEJ1dCB3aHkgZG8geW91IG5lZWQgeW91ciBjb3VudGVy
+cyB0byBiZSBhdG9taWMgaW4gdGhlIGZpcnN0IHBsYWNlPyAgV2hhdA0KPj4+Pj4+IGFyZSB0aGV5
+IGNvdW50aW5nIHRoYXQgcmVxdWlyZXMgdGhpcz8gIA0KPj4+Pj4gDQo+Pj4+PiBUaGUgd3JpdGUg
+c2lkZSBvZiB0aGUgY291bnRlciBpcyBiZWluZyB1cGRhdGVkIGZyb20gY29uY3VycmVudCBrZXJu
+ZWwNCj4+Pj4+IHRocmVhZHMgd2l0aG91dCBsb2NraW5nLCBzbyB0aGlzIGlzIGFuIGF0b21pYyBi
+ZWNhdXNlIHRoZSB3cml0ZSBzaWRlDQo+Pj4+PiBuZWVkcyBhdG9taWNfYWRkKCkuDQo+Pj4+IA0K
+Pj4+PiBTbyB0aGUgYXRvbWljIHdyaXRlIGZvcmNlcyBhIGxvY2sgOigNCj4+PiANCj4+PiBPZiBj
+b3Vyc2UsIGJ1dCBhIHNpbmdsZSBhdG9taWMgaXMgY2hlYXBlciB0aGFuIHRoZSBkb3VibGUgYXRv
+bWljIGluIGENCj4+PiBmdWxsIHNwaW5sb2NrLg0KPj4+IA0KPj4+Pj4gTWFraW5nIHRoZW0gYSBu
+YWtlZCB1NjQgd2lsbCBjYXVzZSBzaWduaWZpY2FudCBjb3JydXB0aW9uIG9uIHRoZSB3cml0ZQ0K
+Pj4+Pj4gc2lkZSwgYW5kIHBhY2tldCBjb3VudGVycyB0aGF0IGFyZSBub3QgYWNjdXJhdGUgYWZ0
+ZXIgcXVpZXNjZW5jZSBhcmUNCj4+Pj4+IG5vdCB2ZXJ5IHVzZWZ1bCB0aGluZ3MuDQo+Pj4+IA0K
+Pj4+PiBIb3cgImFjY3VyYXRlIiBkbyB0aGVzZSBoYXZlIHRvIGJlPw0KPj4+IA0KPj4+IFRoZXkg
+aGF2ZSB0byBiZSBhY2N1cmF0ZS4gVGhleSBhcmUgbmV0d29ya2luZyBwYWNrZXQgY291bnRlcnMu
+IFdoYXQgaXMNCj4+PiB0aGUgcG9pbnQgb2YgYnVybmluZyBDUFUgY3ljbGVzIGtlZXBpbmcgdHJh
+Y2sgb2YgaW5hY2N1cmF0ZSBkYXRhPw0KPj4gDQo+PiBDb25zaWRlciBhIENQVSB3aXRoIGEgMzIt
+Yml0IHdpZGUgZGF0YXBhdGggdG8gbWVtb3J5LCB3aGljaCByZWFkcyBhbmQgd3JpdGVzIHRoZSBt
+b3N0IHNpZ25pZmljYW50IDQtYnl0ZSB3b3JkIGZpcnN0Og0KPiANCj4gV2hhdCBDUFUgaXMgdGhh
+dD8NCg0KSHlwb3RoZXRpY2FsMzIgOi0pDQoNCj4+ICAgIE1lbW9yeSAgICAgICAgICAgICAgICAg
+ICBDUFUxICAgICAgICAgICAgICAgICAgIENQVTINCj4+IE1TVyAgICAgICAgIExTVyAgICAgICAg
+TVNXICAgICAgICAgTFNXICAgICAgICBNU1cgICAgICAgICBMU1cNCj4+IDB4MCAgMHhmZmZmZmZm
+Zg0KPj4gMHgwICAweGZmZmZmZmZmICAgICAgICAweDANCj4+IDB4MCAgMHhmZmZmZmZmZiAgICAg
+ICAgMHgwICAweGZmZmZmZmZmDQo+PiAweDAgIDB4ZmZmZmZmZmYgICAgICAgIDB4MSAgICAgICAg
+IDB4MCAgICAgICAgICAgICAgICAgICAgICAgICBjcHUxIGhhcyBpbmNyZW1lbnRlZCBpdHMgcmVn
+aXN0ZXINCj4+IDB4MSAgMHhmZmZmZmZmZiAgICAgICAgMHgxICAgICAgICAgMHgwICAgICAgICAg
+ICAgICAgICAgICAgICAgIGNwdTEgaGFzIHdyaXR0ZW4gbXN3DQo+PiAweDEgIDB4ZmZmZmZmZmYg
+ICAgICAgIDB4MSAgICAgICAgIDB4MCAgICAgICAgMHgxICAgICAgICAgICAgICBjcHUyIGhhcyBy
+ZWFkIG1zdw0KPj4gMHgxICAweGZmZmZmZmZmICAgICAgICAweDEgICAgICAgICAweDAgICAgICAg
+IDB4MSAgMHhmZmZmZmZmZg0KPj4gMHgxICAgICAgICAgMHgwICAgICAgICAweDEgICAgICAgICAw
+eDAgICAgICAgIDB4MiAgICAgICAgIDB4MA0KPj4gMHgyICAgICAgICAgMHgwICAgICAgICAweDEg
+ICAgICAgICAweDAgICAgICAgIDB4MiAgICAgICAgIDB4MA0KPj4gMHgyICAgICAgICAgMHgwICAg
+ICAgICAweDEgICAgICAgICAweDAgICAgICAgIDB4MiAgICAgICAgIDB4MA0KPj4gDQo+PiANCj4+
+IEkgd291bGQgc2F5IHRoYXQgMHgyMDAwMDAwMDAgdnMuIDB4MTAwMDAwMDAxIGlzIG1vcmUgdGhh
+biBpbmFjY3VyYXRlIQ0KPiANCj4gVHJ1ZSwgdGhlbiBtYXliZSB0aGVzZSBzaG91bGQganVzdCBi
+ZSAzMmJpdCBjb3VudGVycyA6KQ0KDQpIb3cgbG9uZyBjYW4gd2UgdGhlbiBydW4gd2l0aG91dCB3
+cmFwcGluZz8gT3VyIFVFSyBpcyBzZWN1cml0eSB1cGRhdGVkIGJ5IG1lYW5zIG9mIGtzcGxpY2Us
+IGFuZCBzaW5jZSB0aGUgaW50cm9kdWN0aW9uIG9mIFNwZWN0cmUvTWVsdGRvd24gQ1BVIGZpeGVz
+IGluIDIwMTgsIHdlIGhhdmUgYmVlbiBhYmxlIHRvIHVwZGF0ZSB0aGUga2VybmVscyBydW5uaW5n
+IHdydC4gc2VjdXJpdHkgZml4ZXMuDQoNCkkgc2VlIG5vIGhhcm0gYnkgdXNpbmcgYW4gYXRvbWlj
+IDY0LWJpdCBhZGQuIFllcywgaXQgc2VyaWFsaXplcyB0aGUgcGlwZWxpbmUgYW5kIGxvY2tzIHRo
+ZSBjYWNoZS1saW5lIGluIHRoZSBmaXJzdC1sZXZlbCBjYWNoZSBmb3IgYXMgbG9uZyBhcyBpdCB0
+YWtlcyB0byBmb3IgYSBSTVcgb24gaXQuIENvbXBhcmVkIHRvIHN1cnJvdW5kIGFuIG9yZGluYXJ5
+IGFkZCB3aXRoIGxvY2svdW5sb2NrLCBhbiBhdG9taWMgaW5jcmVtZW50IGlzIHN0cm9uZ2x5IHBy
+ZWZlcnJlZCBpbiBteSBvcGluaW9uLg0KDQpPcmRpbmFyeSBhZGQgd2l0aG91dCBsb2NraW5nIGxl
+YWRzIHRvIHRoZSBpc3N1ZSBhYm92ZSBvbiBzeXN0ZW1zIHdpdGggMzItYml0IHdpZGUgbWVtb3J5
+IGRhdGEgcGF0aHMuDQoNClVzaW5nIDMyLWJpdCBjb3VudGVycyByYWlzZXMgdGhlIGlzc3VlIG9m
+IHdyYXBwaW5nIGluIHN5c3RlbXMgcnVubmluZyBmb3IgeWVhcnMgYW5kIGhhdmluZyBhIGhpZ2gg
+ZnJlcXVlbmN5IG9mIElCIGNvbm5lY3Rpb24gZm9ybWluZyBhbmQgcmVzdXJyZWN0aW9ucy4NCg0K
+DQpUaHhzLCBIw6Vrb24NCg0KDQo+IHRoYW5rcywNCj4gDQo+IGdyZWcgay1oDQoNCg==
