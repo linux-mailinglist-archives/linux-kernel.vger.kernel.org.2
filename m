@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414E13A656C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D033A6553
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236113AbhFNLhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:37:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50566 "EHLO mail.kernel.org"
+        id S236045AbhFNLhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:37:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235667AbhFNLWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:22:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DE3B613DE;
-        Mon, 14 Jun 2021 10:52:50 +0000 (UTC)
+        id S235336AbhFNLWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:22:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46CA361481;
+        Mon, 14 Jun 2021 10:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667971;
-        bh=My65Kwd5cXlKH8qkBXnqvUC7VxLOqkOtHvLz0idZcEo=;
+        s=korg; t=1623667973;
+        bh=7ys6ZJKH+Wz9SGxsaI3CUEtNvjkyrEdX0c3Ise/YfRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yj1+Y8IK8BnY9DUFIk5bIl7ECD+08Dg5NvGGFxw9mc/ijXkA7UA0FaWdRuR9e1mPu
-         OslpgmWSZumsgq3N5QCraNgzQ04nhN8kAMF6IhfONRxPsMJpFEV3VZAxw1wGqG32N8
-         r2UchZLB3HeL6jMW7Bd++/iAJ9A2o1WCauldqxz0=
+        b=S17wA3NArEQzOK9AehOK7GFAcAZwcm4yvXwYHQcncyyuLii982e/PQ282pbYPj8ZJ
+         iqqPCK6NN32bqbSgEjynZproq1ugJRFJ1IPVj9qu80sQDwnqmwjmIPzSoCeCAyqusi
+         SvzNGjTeVPZ4UtT5rcBH7KF2xjU5Vh8vB0T2p3Rk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.12 146/173] ASoC: core: Fix Null-point-dereference in fmt_single_name()
-Date:   Mon, 14 Jun 2021 12:27:58 +0200
-Message-Id: <20210614102703.027551716@linuxfoundation.org>
+Subject: [PATCH 5.12 147/173] ASoC: meson: gx-card: fix sound-dai dt schema
+Date:   Mon, 14 Jun 2021 12:27:59 +0200
+Message-Id: <20210614102703.058936062@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -42,34 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-commit 41daf6ba594d55f201c50280ebcd430590441da1 upstream.
+commit d031d99b02eaf7363c33f5b27b38086cc8104082 upstream.
 
-Check the return value of devm_kstrdup() in case of
-Null-point-dereference.
+There is a fair amount of warnings when running 'make dtbs_check' with
+amlogic,gx-sound-card.yaml.
 
-Fixes: 45dd9943fce0 ("ASoC: core: remove artificial component and DAI name constraint")
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Link: https://lore.kernel.org/r/20210524024941.159952-1-wangkefeng.wang@huawei.com
+Ex:
+arch/arm64/boot/dts/amlogic/meson-gxm-q200.dt.yaml: sound: dai-link-0:sound-dai:0:1: missing phandle tag in 0
+arch/arm64/boot/dts/amlogic/meson-gxm-q200.dt.yaml: sound: dai-link-0:sound-dai:0:2: missing phandle tag in 0
+arch/arm64/boot/dts/amlogic/meson-gxm-q200.dt.yaml: sound: dai-link-0:sound-dai:0: [66, 0, 0] is too long
+
+The reason is that the sound-dai phandle provided has cells, and in such
+case the schema should use 'phandle-array' instead of 'phandle'.
+
+Fixes: fd00366b8e41 ("ASoC: meson: gx: add sound card dt-binding documentation")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20210524093448.357140-1-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/soc-core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2223,6 +2223,8 @@ static char *fmt_single_name(struct devi
- 		return NULL;
+--- a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+@@ -57,7 +57,7 @@ patternProperties:
+           rate
  
- 	name = devm_kstrdup(dev, devname, GFP_KERNEL);
-+	if (!name)
-+		return NULL;
+       sound-dai:
+-        $ref: /schemas/types.yaml#/definitions/phandle
++        $ref: /schemas/types.yaml#/definitions/phandle-array
+         description: phandle of the CPU DAI
  
- 	/* are we a "%s.%d" name (platform and SPI components) */
- 	found = strstr(name, dev->driver->name);
+     patternProperties:
+@@ -71,7 +71,7 @@ patternProperties:
+ 
+         properties:
+           sound-dai:
+-            $ref: /schemas/types.yaml#/definitions/phandle
++            $ref: /schemas/types.yaml#/definitions/phandle-array
+             description: phandle of the codec DAI
+ 
+         required:
 
 
