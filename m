@@ -2,105 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A721A3A6FFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D9B3A7001
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhFNURR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:17:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57458 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbhFNURM (ORCPT
+        id S234407AbhFNUSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233094AbhFNUSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:17:12 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623701708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GcF4L/PJ2zhQ+1ZAZQJ1sut/3O3JGVdorF5KDH2wryk=;
-        b=bthr06o5x2i8IZjR3Haeu0ZciLSDnGUrZ7jN0bfYkWFQGNzY1myCS/VInmVTN7pRZqtV3C
-        9ABSDqtpIZxlv7sEfPad5c3SXMUJnBUd05FIflwqldbsReVekOn1czyQS0rz6A7iCnTgt+
-        znrOGeB+KMw3FwqIZQTYSnzF4S/qvQRovfsBjr0/pzCCWDA8of1FmyMPALy00UQ2EJqzx7
-        oNmXCfFlzyNrJsVkxdFyKSO8nfziPLauO/Abq/SfiDe4PRc1IPOjjAOQkNOBemQJWuv9mI
-        2XX86qgcO65+LnBjkHG1flAjRe9r4vUj8wR1FM1sdCfNHiPWK9gBh3kAUXoCTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623701708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GcF4L/PJ2zhQ+1ZAZQJ1sut/3O3JGVdorF5KDH2wryk=;
-        b=inhyMISw2Ofl1EV3VJbhyra2OS5jt80np7iwugxUcVGnRxzirp2tueMeGU9jQEdQzeatqz
-        KIiDo+vZcFGWMRDw==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
+        Mon, 14 Jun 2021 16:18:35 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D33AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:16:17 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso12066040otu.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hOOlcHmoJBs6LQNLgT05L8MZVpTB0XNq9JFGsS9UAmY=;
+        b=YdJ/kzTceSN94t2UrgrvaDVjmYdqq/+un1rAO6TKwE1MUTJT1Zeo/Boqf5onMt+mL/
+         hmk56MPSs7jZeCFPKR/exvnfIPzAMmKbHflF7THbfbAez+YSJpCEGwnbiTlYwkOooOEA
+         PUNxOVYoUJ5ZhD2rxvEQtjhUmvKt/v6gFSC5k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hOOlcHmoJBs6LQNLgT05L8MZVpTB0XNq9JFGsS9UAmY=;
+        b=hUvkPOf3qT45shG7z42THzB4ynscPBA24cdT0JQTKCOtAy0CJZKFIGT9NIMJ7Nkjpv
+         ApfO76HVwgCXp0Zlqs9wAwr9rQcKvpgGRe+heiGgLVFMlvCaKCfUwLLJ83PjBcNDGQHk
+         taPsq8lQxpL2b9zPMEpmlfAhFmbIUeLc1kV/LQBcIaAcklnKdJHwusu8fpK/8bVwO8wA
+         rWdxw3CYD+IajVFh0snxoT87OyK4XyDfGoiBZS3pHqdWKmoGXdf4Iq6gtdOJHbFhX3IX
+         PA71b+zdCFmCNNxf6L9ksjNQBpKq6e2D7VfXZ2N7ur0Abxz9DvpK4EFuS+Nldo6BsL5p
+         juGg==
+X-Gm-Message-State: AOAM531QePnKPWN0DhYqXgpBMbRHtxopYFT2RieKFv/bdQ/6+Vjbsw0V
+        M3xtji8c0KThoaw0hHGIigV3Hw==
+X-Google-Smtp-Source: ABdhPJw1WFHlL52QYsydZyxdmDIQlaJFxO/pMyttFGCSrVmvo4WbwgmvznQBGndync8tE4sSUVPJ6Q==
+X-Received: by 2002:a9d:7f8e:: with SMTP id t14mr15079324otp.49.1623701776807;
+        Mon, 14 Jun 2021 13:16:16 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x2sm3259215oog.10.2021.06.14.13.16.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 13:16:16 -0700 (PDT)
+Subject: Re: [PATCH v8 5/5] selftests/sgx: Refine the test enclave to have
+ storage
+To:     Jarkko Sakkinen <jarkko@kernel.org>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [patch] x86/fpu: x86/fpu: Preserve supervisor states in sanitize_restored_user_xstate()
-In-Reply-To: <20210614154408.673478623@linutronix.de>
-References: <20210614154408.673478623@linutronix.de>
-Date:   Mon, 14 Jun 2021 22:15:08 +0200
-Message-ID: <877diwursj.ffs@nanos.tec.linutronix.de>
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210610083021.392269-1-jarkko@kernel.org>
+ <20210610083021.392269-5-jarkko@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <b1bf69f5-e203-d69e-d15d-3fb5e98b63dd@linuxfoundation.org>
+Date:   Mon, 14 Jun 2021 14:16:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210610083021.392269-5-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sanitize_restored_user_xstate() preserves the supervisor states only
-when the fx_only argument is zero, which allows unpriviledged user space
-to put supervisor states back into init state.
+On 6/10/21 2:30 AM, Jarkko Sakkinen wrote:
+> Extend the enclave to have two operations: ENCL_OP_PUT and ENCL_OP_GET.
+> ENCL_OP_PUT stores value inside the enclave address space and
+> ENCL_OP_GET reads it. The internal buffer can be later extended to be
+> variable size, and allow reclaimer tests.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+>   tools/testing/selftests/sgx/defines.h     | 10 ++++
+>   tools/testing/selftests/sgx/main.c        | 57 ++++++++++++++++++-----
+>   tools/testing/selftests/sgx/test_encl.c   | 19 +++++++-
+>   tools/testing/selftests/sgx/test_encl.lds |  3 +-
+>   4 files changed, 74 insertions(+), 15 deletions(-)
+> 
 
-Preserve them unconditionally.
+Test output before applying the series:
 
-Fixes: 5d6b6a6f9b5c ("x86/fpu/xstate: Update sanitize_restored_xstate() for supervisor xstates")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
----
- arch/x86/kernel/fpu/signal.c |   26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
+TAP version 13
+1..1
+# selftests: sgx: test_sgx
+# Unable to open /dev/sgx_enclave: No such file or directory
+# 1..0 # SKIP cannot load enclaves
+ok 1 selftests: sgx: test_sgx # SKIP
 
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -221,28 +221,18 @@ sanitize_restored_user_xstate(union fpre
- 
- 	if (use_xsave()) {
- 		/*
--		 * Note: we don't need to zero the reserved bits in the
--		 * xstate_header here because we either didn't copy them at all,
--		 * or we checked earlier that they aren't set.
-+		 * Clear all features bit which are not set in
-+		 * user_xfeatures and clear all extended features
-+		 * for fx_only mode.
- 		 */
-+		u64 mask = fx_only ? XFEATURE_MASK_FPSSE : user_xfeatures;
- 
- 		/*
--		 * 'user_xfeatures' might have bits clear which are
--		 * set in header->xfeatures. This represents features that
--		 * were in init state prior to a signal delivery, and need
--		 * to be reset back to the init state.  Clear any user
--		 * feature bits which are set in the kernel buffer to get
--		 * them back to the init state.
--		 *
--		 * Supervisor state is unchanged by input from userspace.
--		 * Ensure supervisor state bits stay set and supervisor
--		 * state is not modified.
-+		 * Supervisor state has to be preserved. The sigframe
-+		 * restore can only modify user features, i.e. @mask
-+		 * cannot contain them.
- 		 */
--		if (fx_only)
--			header->xfeatures = XFEATURE_MASK_FPSSE;
--		else
--			header->xfeatures &= user_xfeatures |
--					     xfeatures_mask_supervisor();
-+		header->xfeatures &= mask | xfeatures_mask_supervisor();
- 	}
- 
- 	if (use_fxsr()) {
+Test output after applying second patch
+
+selftests/sgx: Migrate to kselftest harness
+
+Output changes to the following. It doesn't look like the second
+patch adds any new tests. What is the point in running the tests
+that fail if /dev/sgx_enclave is missing.
+
+Unfortunately this series doesn't have a cover letter that explains
+what this series is doing. I don't like the fact that the test
+output and behavior changes when migrating the test to kselftest
+harness. Shouldn't the output stay the same as in skip the tests
+if /dev/sgx_enclave fails.
+
+TAP version 13
+1..1
+# selftests: sgx: test_sgx
+# TAP version 13
+# 1..3
+# # Starting 3 tests from 2 test cases.
+# #  RUN           enclave.unclobbered_vdso ...
+# Unable to open /dev/sgx_enclave: No such file or directory
+# ok 2 # SKIP cannot load enclaves
+# # Planned tests != run tests (3 != 1)
+# # Totals: pass:0 fail:0 xfail:0 xpass:0 skip:1 error:0
+# # unclobbered_vdso: Test failed at step #4
+# #          FAIL  enclave.unclobbered_vdso
+# not ok 1 enclave.unclobbered_vdso
+# #  RUN           enclave.clobbered_vdso ...
+# Unable to open /dev/sgx_enclave: No such file or directory
+# ok 3 # SKIP cannot load enclaves
+# # Planned tests != run tests (3 != 2)
+# # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:1 error:0
+# # clobbered_vdso: Test failed at step #4
+# #          FAIL  enclave.clobbered_vdso
+# not ok 2 enclave.clobbered_vdso
+# #  RUN           enclave.clobbered_vdso_and_user_function ...
+# Unable to open /dev/sgx_enclave: No such file or directory
+# ok 4 # SKIP cannot load enclaves
+# # Totals: pass:0 fail:2 xfail:0 xpass:0 skip:1 error:0
+# # clobbered_vdso_and_user_function: Test failed at step #4
+# #          FAIL  enclave.clobbered_vdso_and_user_function
+# not ok 3 enclave.clobbered_vdso_and_user_function
+# # FAILED: 0 / 3 tests passed.
+# # Totals: pass:0 fail:3 xfail:0 xpass:0 skip:0 error:0
+not ok 1 selftests: sgx: test_sgx # exit=1
+
+thanks,
+-- Shuah
