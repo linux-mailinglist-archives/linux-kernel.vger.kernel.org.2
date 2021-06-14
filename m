@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F913A640B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F47C3A640E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236142AbhFNLU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
+        id S233085AbhFNLUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:20:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234608AbhFNLIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:08:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C88AE61444;
-        Mon, 14 Jun 2021 10:46:13 +0000 (UTC)
+        id S235090AbhFNLIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:08:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 935A66144D;
+        Mon, 14 Jun 2021 10:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667574;
-        bh=0yn5oIrFm35hUqC5US8/HECgH6nifrQYsV0i59dutGI=;
+        s=korg; t=1623667577;
+        bh=m3BaQTZ/6l3QDGfsJ6g3XgvYV3LZ6UeWgkbRpTyBvbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DfiSqsYMx6Cz7Ia6Da8PwVA4Z/L+X1Ah7Zx28xlKZtJIKHNdvs7WvMiV59Eu9+1Vw
-         7Ts4qDf9iNMR0zVpRRfHuEavPoIOEW5SBn4S+rpKqpdYHqEh7YjKbL9v/6A7CuJkyI
-         4EsYAKi/q8UtrzOCh3VU7KKm7TgkNtFWnPAxlkqM=
+        b=pd4gX1MLn+EIjg+518raISsOAw0nLzRWR+Yvyi/6SBD9jDfmR9OePXnBMovrW0Dgr
+         KTHPmZSrhMbT92ah18/iFMAPT0/egWCa8Xn/AjRqSDlpXrKBpioIuHu0qImeilEPOG
+         xdeLYZ1Uy8xeNDiLJednOc5c3fJjceu3rm1R+rSM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org,
         Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.10 124/131] NFS: Fix use-after-free in nfs4_init_client()
-Date:   Mon, 14 Jun 2021 12:28:05 +0200
-Message-Id: <20210614102657.227678117@linuxfoundation.org>
+Subject: [PATCH 5.10 125/131] NFSv4: Fix second deadlock in nfs4_evict_inode()
+Date:   Mon, 14 Jun 2021 12:28:06 +0200
+Message-Id: <20210614102657.259178632@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -39,38 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit 476bdb04c501fc64bf3b8464ffddefc8dbe01577 upstream.
+commit c3aba897c6e67fa464ec02b1f17911577d619713 upstream.
 
-KASAN reports a use-after-free when attempting to mount two different
-exports through two different NICs that belong to the same server.
+If the inode is being evicted but has to return a layout first, then
+that too can cause a deadlock in the corner case where the server
+reboots.
 
-Olga was able to hit this with kernels starting somewhere between 5.7
-and 5.10, but I traced the patch that introduced the clear_bit() call to
-4.13. So something must have changed in the refcounting of the clp
-pointer to make this call to nfs_put_client() the very last one.
-
-Fixes: 8dcbec6d20 ("NFSv41: Handle EXCHID4_FLAG_CONFIRMED_R during NFSv4.1 migration")
-Cc: stable@vger.kernel.org # 4.13+
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/nfs4client.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/nfs4proc.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/fs/nfs/nfs4client.c
-+++ b/fs/nfs/nfs4client.c
-@@ -435,8 +435,8 @@ struct nfs_client *nfs4_init_client(stru
- 		 */
- 		nfs_mark_client_ready(clp, -EPERM);
- 	}
--	nfs_put_client(clp);
- 	clear_bit(NFS_CS_TSM_POSSIBLE, &clp->cl_flags);
-+	nfs_put_client(clp);
- 	return old;
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -9629,15 +9629,20 @@ int nfs4_proc_layoutreturn(struct nfs4_l
+ 			&task_setup_data.rpc_client, &msg);
  
- error:
+ 	dprintk("--> %s\n", __func__);
++	lrp->inode = nfs_igrab_and_active(lrp->args.inode);
+ 	if (!sync) {
+-		lrp->inode = nfs_igrab_and_active(lrp->args.inode);
+ 		if (!lrp->inode) {
+ 			nfs4_layoutreturn_release(lrp);
+ 			return -EAGAIN;
+ 		}
+ 		task_setup_data.flags |= RPC_TASK_ASYNC;
+ 	}
+-	nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1, 0);
++	if (!lrp->inode)
++		nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1,
++				   1);
++	else
++		nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1,
++				   0);
+ 	task = rpc_run_task(&task_setup_data);
+ 	if (IS_ERR(task))
+ 		return PTR_ERR(task);
 
 
