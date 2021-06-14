@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A32B3A63E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770123A62D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbhFNLSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:18:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39540 "EHLO mail.kernel.org"
+        id S234804AbhFNLFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:05:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233581AbhFNLFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:05:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7652E6143C;
-        Mon, 14 Jun 2021 10:45:12 +0000 (UTC)
+        id S234127AbhFNK4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:56:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67BDB615A0;
+        Mon, 14 Jun 2021 10:41:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667512;
-        bh=t1apAFcKnChawuQSjozl9083sakNTpf2c52zazEponU=;
+        s=korg; t=1623667262;
+        bh=Wb0yrOsNBITxibtbVHVNRT/x69LMKfbv31E2OITjUbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0zagj/XbCNT4gFzb32NeFiygl75jUJrEtuw8bxkeBiZDjxE2zHx9+Nlu3Yw3KP2OH
-         zq9YHn5FA2tyLWX+EdYzbeb+U/zZTI7dTTPZ4x+hqp5CuzXl6EY35nKzN25CToifoO
-         c50XZwsTbvT+/oUmxXKBRZ+enMvMIk2hsZ/NqMz0=
+        b=DT4MvtIoB2hmO7ust3XsqD5y2KitAAUIU6ZmxTR+CjUTAeZ6q0+MEIF07R+1sXpE0
+         hvJwZKQwqfKIqG26HWHn5vtV7WtO4mBy2hbSCUfrZC4sezgtYsKC+H1kVV0yiCcQBF
+         5hUYOTiLaMDe6qdFpulmUqbEp+RZkPQsKjGIE9JU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH 5.10 100/131] drm/msm/a6xx: fix incorrectly set uavflagprd_inv field for A650
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 63/84] regulator: max77620: Use device_set_of_node_from_dev()
 Date:   Mon, 14 Jun 2021 12:27:41 +0200
-Message-Id: <20210614102656.393911957@linuxfoundation.org>
+Message-Id: <20210614102648.523245205@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Marek <jonathan@marek.ca>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit b4387eaf3821a4c4241ac3a556e13244eb1fdaa5 upstream.
+commit 6f55c5dd1118b3076d11d9cb17f5c5f4bc3a1162 upstream.
 
-Value was shifted in the wrong direction, resulting in the field always
-being zero, which is incorrect for A650.
+The MAX77620 driver fails to re-probe on deferred probe because driver
+core tries to claim resources that are already claimed by the PINCTRL
+device. Use device_set_of_node_from_dev() helper which marks OF node as
+reused, skipping erroneous execution of pinctrl_bind_pins() for the PMIC
+device on the re-probe.
 
-Fixes: d0bac4e9cd66 ("drm/msm/a6xx: set ubwc config for A640 and A650")
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210513171431.18632-4-jonathan@marek.ca
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210523224243.13219-2-digetx@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/max77620-regulator.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -486,7 +486,7 @@ static void a6xx_set_ubwc_config(struct
- 		rgb565_predicator << 11 | amsbc << 4 | lower_bit << 1);
- 	gpu_write(gpu, REG_A6XX_TPL1_NC_MODE_CNTL, lower_bit << 1);
- 	gpu_write(gpu, REG_A6XX_SP_NC_MODE_CNTL,
--		uavflagprd_inv >> 4 | lower_bit << 1);
-+		uavflagprd_inv << 4 | lower_bit << 1);
- 	gpu_write(gpu, REG_A6XX_UCHE_MODE_CNTL, lower_bit << 21);
- }
+--- a/drivers/regulator/max77620-regulator.c
++++ b/drivers/regulator/max77620-regulator.c
+@@ -814,6 +814,13 @@ static int max77620_regulator_probe(stru
+ 	config.dev = dev;
+ 	config.driver_data = pmic;
  
++	/*
++	 * Set of_node_reuse flag to prevent driver core from attempting to
++	 * claim any pinmux resources already claimed by the parent device.
++	 * Otherwise PMIC driver will fail to re-probe.
++	 */
++	device_set_of_node_from_dev(&pdev->dev, pdev->dev.parent);
++
+ 	for (id = 0; id < MAX77620_NUM_REGS; id++) {
+ 		struct regulator_dev *rdev;
+ 		struct regulator_desc *rdesc;
 
 
