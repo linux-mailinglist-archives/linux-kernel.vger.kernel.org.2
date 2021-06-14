@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519F23A6A91
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75A53A6ABA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233859AbhFNPiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233644AbhFNPix (ORCPT
+        id S234152AbhFNPpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:45:39 -0400
+Received: from muminek.juszkiewicz.com.pl ([213.251.184.221]:44950 "EHLO
+        muminek.juszkiewicz.com.pl" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232776AbhFNPpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:38:53 -0400
-Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B6EC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:36:49 -0700 (PDT)
-Received: from tux.applied-asynchrony.com (p5ddd760d.dip0.t-ipconnect.de [93.221.118.13])
-        by mail.itouring.de (Postfix) with ESMTPSA id 59CF61259D3;
-        Mon, 14 Jun 2021 17:36:46 +0200 (CEST)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 02209F01606;
-        Mon, 14 Jun 2021 17:36:45 +0200 (CEST)
-Subject: Re: [PATCH 5.10 000/131] 5.10.44-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-References: <20210614102652.964395392@linuxfoundation.org>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <83a2f94d-dd6e-2796-ad04-2f92ac3e583d@applied-asynchrony.com>
-Date:   Mon, 14 Jun 2021 17:36:45 +0200
+        Mon, 14 Jun 2021 11:45:35 -0400
+X-Greylist: delayed 356 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Jun 2021 11:45:34 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by muminek.juszkiewicz.com.pl (Postfix) with ESMTP id B76D5260657;
+        Mon, 14 Jun 2021 17:37:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=juszkiewicz.com.pl;
+        s=mail; t=1623685052;
+        bh=3e9HH+VzgjsfX5+R84xh1L7i/6vHLNzstnqfbyxutG8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZsTv0HczxkVdVyhfcUbF9K/tcM46nYLM5Y/iHgfaMbDdv5G6BWgebYRfRo3KQEicP
+         kMctJHD1lDH2H36Gsal55obmZEreWmykNGJZNk4nHzfCdW4sN+pS53QtDizria3IjX
+         gKBb4v6XQX+CG9b6JpFzR1u5YxIJbMxg6KUpoi4Y=
+X-Virus-Scanned: Debian amavisd-new at juszkiewicz.com.pl
+Received: from muminek.juszkiewicz.com.pl ([127.0.0.1])
+        by localhost (muminek.juszkiewicz.com.pl [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8vKLDKml5FLQ; Mon, 14 Jun 2021 17:37:29 +0200 (CEST)
+Received: from puchatek.lan (83.11.32.185.ipv4.supernova.orange.pl [83.11.32.185])
+        by muminek.juszkiewicz.com.pl (Postfix) with ESMTPSA id 248BB2600CD;
+        Mon, 14 Jun 2021 17:37:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=juszkiewicz.com.pl;
+        s=mail; t=1623685049;
+        bh=3e9HH+VzgjsfX5+R84xh1L7i/6vHLNzstnqfbyxutG8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mhDVWvqlSGZ/palOhvR7qRv/tiJuVDJtMwuT6mpGata8+thKFWdwwgwkVh/ZLzeMU
+         uIjk9mU7877pkM8+FxqF32aBHHi8V4TblMS+YUgIYlGSGkDRZhoEejO7kTixJsyGqo
+         t7t7vNUaW+U5Y/2Zetzkg2phC2HQOh3fq/mHnfSQ=
+From:   Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arch@vger.kernel.org,
+        Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Subject: [PATCH] quota: finish disable quotactl_path syscall
+Date:   Mon, 14 Jun 2021 17:37:12 +0200
+Message-Id: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-14 12:26, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.44 release.
+In commit 5b9fedb31e47 ("quota: Disable quotactl_path syscall") Jan Kara
+disabled quotactl_path syscall on several architectures.
 
-Hmm..I build my kernel with BTF for bpftrace and this gives me:
+This commit disables it on all architectures using unified list of
+system calls:
 
-...
-   CC      init/version.o
-   AR      init/built-in.a
-   LD      vmlinux.o
-   MODPOST vmlinux.symvers
-   MODINFO modules.builtin.modinfo
-   GEN     modules.builtin
-   LD      .tmp_vmlinux.btf
-   BTF     .btf.vmlinux.bin.o
-   LD      .tmp_vmlinux.kallsyms1
-   KSYMS   .tmp_vmlinux.kallsyms1.S
-   AS      .tmp_vmlinux.kallsyms1.S
-   LD      .tmp_vmlinux.kallsyms2
-   KSYMS   .tmp_vmlinux.kallsyms2.S
-   AS      .tmp_vmlinux.kallsyms2.S
-   LD      vmlinux
-   BTFIDS  vmlinux
-FAILED unresolved symbol migrate_enable
+- arm64
+- arc
+- csky
+- h8300
+- hexagon
+- nds32
+- nios2
+- openrisc
+- riscv (32/64)
 
-thanks to:
+CC: Jan Kara <jack@suse.cz>
+CC: Christian Brauner <christian.brauner@ubuntu.com>
+CC: Sascha Hauer <s.hauer@pengutronix.de>
+Link: https://lore.kernel.org/lkml/20210512153621.n5u43jsytbik4yze@wittgenstein
 
-> Jiri Olsa <jolsa@kernel.org>
->      bpf: Add deny list of btf ids check for tracing programs
+Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+---
+ include/uapi/asm-generic/unistd.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-When I revert this it builds fine, just like before. Maybe a missing
-requirement or followup fix? I didn't find anything with a quick search.
-Using gcc-11, if it matters.
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+index 6de5a7fc066b..d2a942086fcb 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -863,8 +863,7 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
+ __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
+ #define __NR_mount_setattr 442
+ __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
+-#define __NR_quotactl_path 443
+-__SYSCALL(__NR_quotactl_path, sys_quotactl_path)
++/* 443 is reserved for quotactl_path */
+ 
+ #define __NR_landlock_create_ruleset 444
+ __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
+-- 
+2.31.1
 
--h
