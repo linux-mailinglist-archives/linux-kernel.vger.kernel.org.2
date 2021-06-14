@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE0E3A5F33
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622773A5F39
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhFNJiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:38:12 -0400
-Received: from mail-qt1-f178.google.com ([209.85.160.178]:46078 "EHLO
-        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232528AbhFNJiL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:38:11 -0400
-Received: by mail-qt1-f178.google.com with SMTP id l17so7988834qtq.12;
-        Mon, 14 Jun 2021 02:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=BwLjKWDoIuboclHNzBKSWqFVNk7NANaHk7eW7w1fojQ=;
-        b=NSenXLth4ExLalDSsPdx1a/0En/1GiMUEWVLE1c9oTCt+ltSE6PoiCUjw4wRTXnWv8
-         dbdvEmd0Zx2cyggbnePNGBTVsFhSS2X1gRmVyAB1i8Tf0Hx5j9aVFZSyXehXtFRlqqh3
-         mhhf3NgoE/37JgviAQIln2r595REzo0HjIO6InwZsSooBuRPKxAcJ0FKiXtyco6DjYtx
-         mEa46nX9g8A5kBiFkN+61MEpTJo1XHVnCmdUOdCXeenBTOIU0CftMAI9M60WCOYY4Mkk
-         3aynH5wpJNNZEg/flyDwcmD35qtwLsM339I+wYcfoNCxHQA7jCW4dqoV8RBE9aQvsO/y
-         rM2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=BwLjKWDoIuboclHNzBKSWqFVNk7NANaHk7eW7w1fojQ=;
-        b=rdB8epFh6M1Dk0aWYaNPJjd2l/bSjSp5sEn3fUE4w0/COuBNrbQc1GVkdf8IOTFzI4
-         yLoUkEKnuEYEoL1WmIWDn3ncJ70rgWeAcTUtn6YrtfYrMJ/cITojYx1FTp0/gKlFZy7B
-         9E0ZGv6lUuUiys8EZPWtiIZ0b+nQdwoJx+jgDYjRl58p5eXQ1o3daank+J9e85IcmqSo
-         rq85gX4/UkopD1vhPuotExHBbRhA3CIc3mh8zPG17BMWXQwgJHGR30z4DpjRn/6qdcMK
-         oNdHgoM+PLdH9Z380VlXI2WFSERipxAaIbs0Vcbi0fawRfebggpy2E6tkPGQW9PiC65B
-         5BLQ==
-X-Gm-Message-State: AOAM532xXzcbatCZ7UB5k7tjReHtiWhEWiBsu7XWy7RRzWVq14aJRIyA
-        9OU9VNNrCVtts8TfVuKqr2A=
-X-Google-Smtp-Source: ABdhPJxPDuTJ9Z4g2Bn1ljNEHiu6Qv3EmX7yNvDm1YA4tZMupp6hTU8Gh8HJK1CkfnCzIOwLaL2blQ==
-X-Received: by 2002:ac8:5558:: with SMTP id o24mr15734991qtr.18.1623663308342;
-        Mon, 14 Jun 2021 02:35:08 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id h12sm9397095qkj.52.2021.06.14.02.35.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 02:35:07 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     sieberf@amazon.com
-Cc:     sj38.park@gmail.com, Jonathan.Cameron@Huawei.com, acme@kernel.org,
-        akpm@linux-foundation.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
-        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
-        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
-        guoju.fgj@alibaba-inc.com, linux-damon@amazon.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@suse.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
-        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
-        sjpark@amazon.de, snu@amazon.de, vbabka@suse.cz,
-        vdavydov.dev@gmail.com, zgf574564920@gmail.com
-Subject: Re: [PATCH v29 09/13] mm/damon/dbgfs: Support multiple contexts
-Date:   Mon, 14 Jun 2021 09:35:02 +0000
-Message-Id: <20210614093502.16797-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <98a75d0c-2d1a-807e-050b-fb8e7d92f447@amazon.com>
+        id S232700AbhFNJkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:40:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232528AbhFNJkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 05:40:22 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB29D611CE;
+        Mon, 14 Jun 2021 09:38:19 +0000 (UTC)
+Received: from [185.219.108.64] (helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lsj2v-007ORw-Nk; Mon, 14 Jun 2021 10:38:17 +0100
+Date:   Mon, 14 Jun 2021 10:38:17 +0100
+Message-ID: <87a6nsrdkm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Subject: Re: [RFC PATCH v1 05/10] irqchip: Add ACLINT software interrupt driver
+In-Reply-To: <CAAhSdy2e9BsgtTL3ETRC-dvHW9hgKmgRi87Gsk+vUT-kMsJ4NQ@mail.gmail.com>
+References: <20210612160422.330705-1-anup.patel@wdc.com>
+        <20210612160422.330705-6-anup.patel@wdc.com>
+        <878s3et831.wl-maz@kernel.org>
+        <CAAhSdy2e9BsgtTL3ETRC-dvHW9hgKmgRi87Gsk+vUT-kMsJ4NQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anup@brainfault.org, anup.patel@wdc.com, palmer@dabbelt.com, palmerdabbelt@google.com, paul.walmsley@sifive.com, tglx@linutronix.de, daniel.lezcano@linaro.org, robh+dt@kernel.org, atish.patra@wdc.com, Alistair.Francis@wdc.com, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
-
-On Mon, 14 Jun 2021 11:30:12 +0200 <sieberf@amazon.com> wrote:
-
-> +    new_dir = debugfs_create_dir(name, root);
-> +    dbgfs_dirs[dbgfs_nr_ctxs] = new_dir;
+On Sun, 13 Jun 2021 13:25:40 +0100,
+Anup Patel <anup@brainfault.org> wrote:
 > 
-> debugfs_create_dir might return ERR_PTR, should this be checked?
+> On Sun, Jun 13, 2021 at 3:11 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > I'm sorry, but this really isn't an irqchip driver. This is a piece of
+> > arch-specific code that uses *none* of the irq subsystem abstractions
+> > apart from the IRQCHIP_DECLARE() macro.
+> 
+> Yes, I was not sure we can call it IRQCHIP hence the RFC PATCH.
+> 
+> Both ACLINT MSWI and SSWI are special devices providing only IPI
+> support so I will re-think how to fit this.
 
-Greg, the maintainer of debugfs, recommended to just ignore that:
-https://lore.kernel.org/linux-mm/YB1kZaD%2F7omxXztF@kroah.com/
+It depends on how you think of IPIs in your architecture.
 
+arm64 (and even now 32bit) have been moved to a mode where IPIs are
+normal interrupts, as it helps with other things such as our pseudo
+NMIs, and reduces code duplication. MIPS has done the same for a long
+time (they don't have dedicated HW for that).
 
-Thanks,
-SeongJae Park
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
