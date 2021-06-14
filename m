@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200A73A6FEB
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6C43A6FEC
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhFNUM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:12:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:45860 "EHLO foss.arm.com"
+        id S234606AbhFNUNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:13:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:45888 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234590AbhFNUMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:12:48 -0400
+        id S235489AbhFNUMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 16:12:51 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1804913D5;
-        Mon, 14 Jun 2021 13:10:45 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C36F12FC;
+        Mon, 14 Jun 2021 13:10:47 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41EAF3F694;
-        Mon, 14 Jun 2021 13:10:43 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A64893F694;
+        Mon, 14 Jun 2021 13:10:45 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Jamie Iles <jamie@nuviainc.com>,
         D Scott Phillips OS <scott@os.amperecomputing.com>,
         lcherian@marvell.com
-Subject: [PATCH v4 18/24] x86/resctrl: Make ctrlval arrays the same size
-Date:   Mon, 14 Jun 2021 20:09:35 +0000
-Message-Id: <20210614200941.12383-19-james.morse@arm.com>
+Subject: [PATCH v4 19/24] x86/resctrl: Apply offset correction when config is staged
+Date:   Mon, 14 Jun 2021 20:09:36 +0000
+Message-Id: <20210614200941.12383-20-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210614200941.12383-1-james.morse@arm.com>
 References: <20210614200941.12383-1-james.morse@arm.com>
@@ -42,93 +42,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CODE and DATA resources report a num_closid that is half the
-actual size supported by the hardware. This behaviour is visible
-to user-space when CDP is enabled.
-The CODE and DATA resources have their own ctrlval arrays which are half
-the size of the underlying hardware because num_closid was already
-adjusted. One holds the odd configurations values, the other even.
+When resctrl comes to copy the CAT MSR values from the ctrl_val[] array
+into hardware, it applies an offset adjustment based on the type of the
+resource. CODE and DATA resources have their closid mapped into an
+odd/even range. This mapping is based on a property of the resource.
 
-Before the CDP resources can be merged, the 'half the closids'
-behaviour needs to be implemented by schemata_list_create(), but
-this causes the ctrl_val[] array to be full sized.
+This happens once the new control value has been written to the ctrl_val[]
+array. Once the CDP resources are merged, there will only be a single
+property that needs to cover both odd/even mappings to the single
+ctrl_val[] array. The offset adjustment must be applied before the new
+value is written to the array.
 
-Remove the logic from the architecture specific rdt_get_cdp_config()
-setup, and add it to schemata_list_create(). Functions that
-walk take num_closid directly from struct rdt_hw_resource also
-have to halve num_closid as only the lower half of each array is
-in use. domain_setup_ctrlval() and reset_all_ctrls() both copy
-struct rdt_hw_resource's num_closid to a struct msr_param. Correct
-the value here. This is temporary as a subsequent patch will merge
-the all three ctrl_val[] arrays such that when CDP is in use, the
-CODA/DATA layout in the array matches the hardware. reset_all_ctrls()'s
-loop over the whole of ctrl_val[] is not touched as this is harmless,
-and will be required as it is once the resources are merged.
+Move the logic from cat_wrmsr() to resctrl_arch_update_domains().
+The value provided to apply_config() is now an index in the array,
+not the closid. The parameters provided via struct msr_param are now
+indexes too. As resctrl's use of closid is a u32, struct msr_param's
+type is changed to match.
+With this, the CODE and DATA resources only use the odd or even
+indexes in the array. This allows the temporary num_closid/2 fixes in
+domain_setup_ctrlval() and reset_all_ctrls() to be removed.
 
 Reviewed-by: Jamie Iles <jamie@nuviainc.com>
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
-No changes since v3.
+Changes since v3:
+ * Fixed a fat-fingered 'unsinged u32' - oops!
+ * Fixed a spelling mistake.
 
 Changes since v2:
  * Shuffled commit message,
+
+Changes since v1:
+ * Removing the patch that moved the closid to the staged config means the
+   min/max and return from apply_config() appears here.
 ---
- arch/x86/kernel/cpu/resctrl/core.c     | 10 +++++++++-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c |  9 +++++++++
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/resctrl/core.c        | 15 +----------
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 32 +++++++++++++++++------
+ arch/x86/kernel/cpu/resctrl/internal.h    |  4 +--
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  7 -----
+ 4 files changed, 27 insertions(+), 31 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index a2cbd2832d73..0d18227a366b 100644
+index 0d18227a366b..15b57f70564b 100644
 --- a/arch/x86/kernel/cpu/resctrl/core.c
 +++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -363,7 +363,7 @@ static void rdt_get_cdp_config(int level, int type)
- 	struct rdt_resource *r = &rdt_resources_all[type].resctrl;
+@@ -195,11 +195,6 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 	},
+ };
+ 
+-static unsigned int cbm_idx(struct rdt_resource *r, unsigned int closid)
+-{
+-	return closid * r->cache.cbm_idx_mult + r->cache.cbm_idx_offset;
+-}
+-
+ /*
+  * cache_alloc_hsw_probe() - Have to probe for Intel haswell server CPUs
+  * as they do not have CPUID enumeration support for Cache allocation.
+@@ -438,7 +433,7 @@ cat_wrmsr(struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r)
  	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
  
--	hw_res->num_closid = hw_res_l->num_closid / 2;
-+	hw_res->num_closid = hw_res_l->num_closid;
- 	r->cache.cbm_len = r_l->cache.cbm_len;
- 	r->default_ctrl = r_l->default_ctrl;
- 	r->cache.shareable_bits = r_l->cache.shareable_bits;
-@@ -549,6 +549,14 @@ static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
+ 	for (i = m->low; i < m->high; i++)
+-		wrmsrl(hw_res->msr_base + cbm_idx(r, i), hw_dom->ctrl_val[i]);
++		wrmsrl(hw_res->msr_base + i, hw_dom->ctrl_val[i]);
+ }
+ 
+ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
+@@ -549,14 +544,6 @@ static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
  
  	m.low = 0;
  	m.high = hw_res->num_closid;
-+
-+	/*
-+	 * temporary: the array is full-size, but cat_wrmsr() still re-maps
-+	 * the index.
-+	 */
-+	if (hw_res->conf_type != CDP_NONE)
-+		m.high /= 2;
-+
+-
+-	/*
+-	 * temporary: the array is full-size, but cat_wrmsr() still re-maps
+-	 * the index.
+-	 */
+-	if (hw_res->conf_type != CDP_NONE)
+-		m.high /= 2;
+-
  	hw_res->msr_update(d, &m, r);
  	return 0;
  }
+diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+index 72a8cf52de47..ebeab130f7eb 100644
+--- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
++++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+@@ -246,17 +246,29 @@ static int parse_line(char *line, struct resctrl_schema *s,
+ 	return -EINVAL;
+ }
+ 
+-static void apply_config(struct rdt_hw_domain *hw_dom,
+-			 struct resctrl_staged_config *cfg, int closid,
++static u32 cbm_idx(struct rdt_resource *r, unsigned int closid)
++{
++	if (r->rid == RDT_RESOURCE_MBA)
++		return closid;
++
++	return closid * r->cache.cbm_idx_mult + r->cache.cbm_idx_offset;
++}
++
++static bool apply_config(struct rdt_hw_domain *hw_dom,
++			 struct resctrl_staged_config *cfg, u32 idx,
+ 			 cpumask_var_t cpu_mask, bool mba_sc)
+ {
+ 	struct rdt_domain *dom = &hw_dom->resctrl;
+ 	u32 *dc = !mba_sc ? hw_dom->ctrl_val : hw_dom->mbps_val;
+ 
+-	if (cfg->new_ctrl != dc[closid]) {
++	if (cfg->new_ctrl != dc[idx]) {
+ 		cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
+-		dc[closid] = cfg->new_ctrl;
++		dc[idx] = cfg->new_ctrl;
++
++		return true;
+ 	}
++
++	return false;
+ }
+ 
+ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+@@ -269,11 +281,12 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+ 	struct rdt_domain *d;
+ 	bool mba_sc;
+ 	int cpu;
++	u32 idx;
+ 
+ 	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
+-	msr_param.low = closid;
++	msr_param.low = cbm_idx(r, closid);
+ 	msr_param.high = msr_param.low + 1;
+ 	msr_param.res = r;
+ 
+@@ -285,7 +298,9 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+ 			if (!cfg->have_new_ctrl)
+ 				continue;
+ 
+-			apply_config(hw_dom, cfg, closid, cpu_mask, mba_sc);
++			idx = cbm_idx(r, closid);
++			if (!apply_config(hw_dom, cfg, idx, cpu_mask, mba_sc))
++				continue;
+ 		}
+ 	}
+ 
+@@ -405,11 +420,12 @@ void resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
+ 			     u32 closid, enum resctrl_conf_type type, u32 *value)
+ {
+ 	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
++	u32 idx = cbm_idx(r, closid);
+ 
+ 	if (!is_mba_sc(r))
+-		*value = hw_dom->ctrl_val[closid];
++		*value = hw_dom->ctrl_val[idx];
+ 	else
+-		*value = hw_dom->mbps_val[closid];
++		*value = hw_dom->mbps_val[idx];
+ }
+ 
+ static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int closid)
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index af230135ad7c..ce3abbe33f78 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -327,8 +327,8 @@ static inline struct rdt_hw_domain *resctrl_to_arch_dom(struct rdt_domain *r)
+  */
+ struct msr_param {
+ 	struct rdt_resource	*res;
+-	int			low;
+-	int			high;
++	u32			low;
++	u32			high;
+ };
+ 
+ static inline bool is_llc_occupancy_enabled(void)
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 740d2d0ff4df..e8006e332d1a 100644
+index e8006e332d1a..bc0fd909ee31 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -2154,6 +2154,8 @@ static int schemata_list_create(void)
- 		s->res = r;
- 		s->conf_type = resctrl_to_arch_res(r)->conf_type;
- 		s->num_closid = resctrl_arch_get_num_closid(r);
-+		if (resctrl_arch_get_cdp_enabled(r->rid))
-+			s->num_closid /= 2;
- 
- 		ret = snprintf(s->name, sizeof(s->name), r->name);
- 		if (ret >= sizeof(s->name)) {
-@@ -2366,6 +2368,13 @@ static int reset_all_ctrls(struct rdt_resource *r)
+@@ -2368,13 +2368,6 @@ static int reset_all_ctrls(struct rdt_resource *r)
  	msr_param.low = 0;
  	msr_param.high = hw_res->num_closid;
  
-+	/*
-+	 * temporary: the array is full-sized, but cat_wrmsr() still re-maps
-+	 * the index.
-+	 */
-+	if (hw_res->cdp_enabled)
-+		msr_param.high /= 2;
-+
+-	/*
+-	 * temporary: the array is full-sized, but cat_wrmsr() still re-maps
+-	 * the index.
+-	 */
+-	if (hw_res->cdp_enabled)
+-		msr_param.high /= 2;
+-
  	/*
  	 * Disable resource control for this resource by setting all
  	 * CBMs in all domains to the maximum mask value. Pick one CPU
