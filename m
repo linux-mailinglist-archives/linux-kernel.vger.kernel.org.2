@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA9C3A657A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECBB3A6575
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236067AbhFNLjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:39:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50346 "EHLO mail.kernel.org"
+        id S235939AbhFNLij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:38:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236083AbhFNLYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:24:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87816619A4;
-        Mon, 14 Jun 2021 10:53:12 +0000 (UTC)
+        id S235917AbhFNLYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:24:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB425619A7;
+        Mon, 14 Jun 2021 10:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667993;
-        bh=xUB+5haVyfZ6/Te4FM6aKzN6f+tae7Y4/VUJ0QdmrsE=;
+        s=korg; t=1623667995;
+        bh=xQasJXoVujPa56MbKuyaLQzvLXZxPivhwoPvLlnTKvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jCMokc6ntJAqyix6Jmx3e2ovbt6yd0TBON7nzw3xzO72aOO/LdH4a+cX0KuCGXYTY
-         8A+QE5OFUHWtZyGaAH7K9OUC8bwL4iKMYkW7VGwFL3O1AbgtnO3LrLuzjDYt/Vgm6q
-         gRWEbD1d9aL3xyXsA9RomFui6Px8of0FEqdgkzC0=
+        b=RQetFahZuNXDKxqgQKtk1Hk3rC/MW7YFPTvanUxShcDzq8otYt70b9xQHNxF+J/4Q
+         S2Mv2CJBf2rswhXZkv4WlCypmWyKdVvPo7jzE8H4MlHoddexlzD9xH84T8taIO0sem
+         xvJhnMw5jSl/Pw2QddPeVErUZWYVjBmyA3h/iz/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Kyle Tso <kyletso@google.com>
-Subject: [PATCH 5.12 153/173] dt-bindings: connector: Replace BIT macro with generic bit ops
-Date:   Mon, 14 Jun 2021 12:28:05 +0200
-Message-Id: <20210614102703.256886274@linuxfoundation.org>
+        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.12 154/173] sched/fair: Keep load_avg and load_sum synced
+Date:   Mon, 14 Jun 2021 12:28:06 +0200
+Message-Id: <20210614102703.286907102@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -39,63 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kyle Tso <kyletso@google.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
 
-commit 9257bd80b917cc7908abd27ed5a5211964563f62 upstream.
+commit 7c7ad626d9a0ff0a36c1e2a3cfbbc6a13828d5eb upstream.
 
-BIT macro is not defined. Replace it with generic bit operations.
+when removing a cfs_rq from the list we only check _sum value so we must
+ensure that _avg and _sum stay synced so load_sum can't be null whereas
+load_avg is not after propagating load in the cgroup hierarchy.
 
-Fixes: 630dce2810b9 ("dt-bindings: connector: Add SVDM VDO properties")
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Kyle Tso <kyletso@google.com>
-Link: https://lore.kernel.org/r/20210527121029.583611-1-kyletso@google.com
+Use load_avg to compute load_sum similarly to what is done for util_sum
+and runnable_sum.
+
+Fixes: 0e2d2aaaae52 ("sched/fair: Rewrite PELT migration propagation")
+Reported-by: Odin Ugedal <odin@uged.al>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Odin Ugedal <odin@uged.al>
+Link: https://lkml.kernel.org/r/20210527122916.27683-2-vincent.guittot@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/dt-bindings/usb/pd.h |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ kernel/sched/fair.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
---- a/include/dt-bindings/usb/pd.h
-+++ b/include/dt-bindings/usb/pd.h
-@@ -163,10 +163,10 @@
- #define UFP_VDO_VER1_2		2
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3494,10 +3494,9 @@ update_tg_cfs_runnable(struct cfs_rq *cf
+ static inline void
+ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
+ {
+-	long delta_avg, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
++	long delta, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
+ 	unsigned long load_avg;
+ 	u64 load_sum = 0;
+-	s64 delta_sum;
+ 	u32 divider;
  
- /* Device Capability */
--#define DEV_USB2_CAPABLE	BIT(0)
--#define DEV_USB2_BILLBOARD	BIT(1)
--#define DEV_USB3_CAPABLE	BIT(2)
--#define DEV_USB4_CAPABLE	BIT(3)
-+#define DEV_USB2_CAPABLE	(1 << 0)
-+#define DEV_USB2_BILLBOARD	(1 << 1)
-+#define DEV_USB3_CAPABLE	(1 << 2)
-+#define DEV_USB4_CAPABLE	(1 << 3)
+ 	if (!runnable_sum)
+@@ -3544,13 +3543,13 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq
+ 	load_sum = (s64)se_weight(se) * runnable_sum;
+ 	load_avg = div_s64(load_sum, divider);
  
- /* Connector Type */
- #define UFP_RECEPTACLE		2
-@@ -191,9 +191,9 @@
+-	delta_sum = load_sum - (s64)se_weight(se) * se->avg.load_sum;
+-	delta_avg = load_avg - se->avg.load_avg;
++	delta = load_avg - se->avg.load_avg;
  
- /* Alternate Modes */
- #define UFP_ALTMODE_NOT_SUPP	0
--#define UFP_ALTMODE_TBT3	BIT(0)
--#define UFP_ALTMODE_RECFG	BIT(1)
--#define UFP_ALTMODE_NO_RECFG	BIT(2)
-+#define UFP_ALTMODE_TBT3	(1 << 0)
-+#define UFP_ALTMODE_RECFG	(1 << 1)
-+#define UFP_ALTMODE_NO_RECFG	(1 << 2)
+ 	se->avg.load_sum = runnable_sum;
+ 	se->avg.load_avg = load_avg;
+-	add_positive(&cfs_rq->avg.load_avg, delta_avg);
+-	add_positive(&cfs_rq->avg.load_sum, delta_sum);
++
++	add_positive(&cfs_rq->avg.load_avg, delta);
++	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
+ }
  
- /* USB Highest Speed */
- #define UFP_USB2_ONLY		0
-@@ -217,9 +217,9 @@
-  * <4:0>   :: Port number
-  */
- #define DFP_VDO_VER1_1		1
--#define HOST_USB2_CAPABLE	BIT(0)
--#define HOST_USB3_CAPABLE	BIT(1)
--#define HOST_USB4_CAPABLE	BIT(2)
-+#define HOST_USB2_CAPABLE	(1 << 0)
-+#define HOST_USB3_CAPABLE	(1 << 1)
-+#define HOST_USB4_CAPABLE	(1 << 2)
- #define DFP_RECEPTACLE		2
- #define DFP_CAPTIVE		3
- 
+ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum)
 
 
