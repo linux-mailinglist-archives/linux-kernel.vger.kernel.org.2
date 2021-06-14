@@ -2,48 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A608F3A61BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568A93A6264
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbhFNKvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:51:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50290 "EHLO mail.kernel.org"
+        id S235312AbhFNLAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:00:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234076AbhFNKnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:43:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBA166143A;
-        Mon, 14 Jun 2021 10:36:05 +0000 (UTC)
+        id S234428AbhFNKwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:52:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F9561004;
+        Mon, 14 Jun 2021 10:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666966;
-        bh=AcXyFvkwlsC4GaaYcoqaYqJinasl6uD/dU1qPWauWYo=;
+        s=korg; t=1623667169;
+        bh=HschcZvN4hezXY4DSCghgaTzlnM+FqVxKmRTWtTIU9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2IvG5WOKnqLR/cZZNXelgYZ9Aa/aS5MbCxIssY+lVU8XlSUpa0QITqH51zAi2I0vA
-         522LNcmNd7TiL3lOVDI5ehUXcMpPWwEaqozR+Cu3vjLPWi8D5EtlbfMhJX1RH5W87B
-         NAGEYuKjC1lgUHNNVYuYc+V8pKXS+5nXXVVDeQI0=
+        b=Rz2BRchpePftd0aTJoAxCvqz/BG3K2b5KRztXhwVUlgcN8xmcpLwZwJk6ijP1OVuF
+         1aXRS6LoUsASjlF4CY16tJk6qzmAn9yuRjVLflvAGoKFOO3OEbZejDan/59/akHnNl
+         L/5hqG8+Z92Hyejs4ksuUZoX80kDpl0D4Mu96SF8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Felipe Balbi <balbi@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael R Sweet <msweet@msweet.org>,
-        Mike Christie <michael.christie@oracle.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        Sudhakar Panneerselvam <sudhakar.panneerselvam@oracle.com>,
-        Wei Ming Chen <jj251510319013@gmail.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Zqiang <qiang.zhang@windriver.com>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 4.19 47/67] usb: fix various gadgets null ptr deref on 10gbps cabling.
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 5.4 52/84] usb: typec: wcove: Use LE to CPU conversion when accessing msg->header
 Date:   Mon, 14 Jun 2021 12:27:30 +0200
-Message-Id: <20210614102645.377303131@linuxfoundation.org>
+Message-Id: <20210614102648.135395887@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,159 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 90c4d05780d47e14a50e11a7f17373104cd47d25 upstream.
+commit d5ab95da2a41567440097c277c5771ad13928dad upstream.
 
-This avoids a null pointer dereference in
-f_{ecm,eem,hid,loopback,printer,rndis,serial,sourcesink,subset,tcm}
-by simply reusing the 5gbps config for 10gbps.
+As LKP noticed the Sparse is not happy about strict type handling:
+   .../typec/tcpm/wcove.c:380:50: sparse:     expected unsigned short [usertype] header
+   .../typec/tcpm/wcove.c:380:50: sparse:     got restricted __le16 const [usertype] header
 
-Fixes: eaef50c76057 ("usb: gadget: Update usb_assign_descriptors for SuperSpeedPlus")
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Michael R Sweet <msweet@msweet.org>
-Cc: Mike Christie <michael.christie@oracle.com>
-Cc: Pawel Laszczak <pawell@cadence.com>
-Cc: Peter Chen <peter.chen@nxp.com>
-Cc: Sudhakar Panneerselvam <sudhakar.panneerselvam@oracle.com>
-Cc: Wei Ming Chen <jj251510319013@gmail.com>
-Cc: Will McVicker <willmcvicker@google.com>
-Cc: Zqiang <qiang.zhang@windriver.com>
-Reviewed-By: Lorenzo Colitti <lorenzo@google.com>
+Fix this by switching to use pd_header_cnt_le() instead of pd_header_cnt()
+in the affected code.
+
+Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
+Fixes: 3c4fb9f16921 ("usb: typec: wcove: start using tcpm for USB PD support")
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210609172202.83377-1-andriy.shevchenko@linux.intel.com
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Link: https://lore.kernel.org/r/20210608044141.3898496-1-zenczykowski@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_ecm.c        |    2 +-
- drivers/usb/gadget/function/f_eem.c        |    2 +-
- drivers/usb/gadget/function/f_hid.c        |    3 ++-
- drivers/usb/gadget/function/f_loopback.c   |    2 +-
- drivers/usb/gadget/function/f_printer.c    |    3 ++-
- drivers/usb/gadget/function/f_rndis.c      |    2 +-
- drivers/usb/gadget/function/f_serial.c     |    2 +-
- drivers/usb/gadget/function/f_sourcesink.c |    3 ++-
- drivers/usb/gadget/function/f_subset.c     |    2 +-
- drivers/usb/gadget/function/f_tcm.c        |    3 ++-
- 10 files changed, 14 insertions(+), 10 deletions(-)
+ drivers/usb/typec/tcpm/wcove.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_ecm.c
-+++ b/drivers/usb/gadget/function/f_ecm.c
-@@ -791,7 +791,7 @@ ecm_bind(struct usb_configuration *c, st
- 		fs_ecm_notify_desc.bEndpointAddress;
+--- a/drivers/usb/typec/tcpm/wcove.c
++++ b/drivers/usb/typec/tcpm/wcove.c
+@@ -377,7 +377,7 @@ static int wcove_pd_transmit(struct tcpc
+ 		const u8 *data = (void *)msg;
+ 		int i;
  
- 	status = usb_assign_descriptors(f, ecm_fs_function, ecm_hs_function,
--			ecm_ss_function, NULL);
-+			ecm_ss_function, ecm_ss_function);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_eem.c
-+++ b/drivers/usb/gadget/function/f_eem.c
-@@ -305,7 +305,7 @@ static int eem_bind(struct usb_configura
- 	eem_ss_out_desc.bEndpointAddress = eem_fs_out_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, eem_fs_function, eem_hs_function,
--			eem_ss_function, NULL);
-+			eem_ss_function, eem_ss_function);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -808,7 +808,8 @@ static int hidg_bind(struct usb_configur
- 		hidg_fs_out_ep_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, hidg_fs_descriptors,
--			hidg_hs_descriptors, hidg_ss_descriptors, NULL);
-+			hidg_hs_descriptors, hidg_ss_descriptors,
-+			hidg_ss_descriptors);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_loopback.c
-+++ b/drivers/usb/gadget/function/f_loopback.c
-@@ -207,7 +207,7 @@ autoconf_fail:
- 	ss_loop_sink_desc.bEndpointAddress = fs_loop_sink_desc.bEndpointAddress;
- 
- 	ret = usb_assign_descriptors(f, fs_loopback_descs, hs_loopback_descs,
--			ss_loopback_descs, NULL);
-+			ss_loopback_descs, ss_loopback_descs);
- 	if (ret)
- 		return ret;
- 
---- a/drivers/usb/gadget/function/f_printer.c
-+++ b/drivers/usb/gadget/function/f_printer.c
-@@ -1063,7 +1063,8 @@ autoconf_fail:
- 	ss_ep_out_desc.bEndpointAddress = fs_ep_out_desc.bEndpointAddress;
- 
- 	ret = usb_assign_descriptors(f, fs_printer_function,
--			hs_printer_function, ss_printer_function, NULL);
-+			hs_printer_function, ss_printer_function,
-+			ss_printer_function);
- 	if (ret)
- 		return ret;
- 
---- a/drivers/usb/gadget/function/f_rndis.c
-+++ b/drivers/usb/gadget/function/f_rndis.c
-@@ -789,7 +789,7 @@ rndis_bind(struct usb_configuration *c,
- 	ss_notify_desc.bEndpointAddress = fs_notify_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, eth_fs_function, eth_hs_function,
--			eth_ss_function, NULL);
-+			eth_ss_function, eth_ss_function);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_serial.c
-+++ b/drivers/usb/gadget/function/f_serial.c
-@@ -233,7 +233,7 @@ static int gser_bind(struct usb_configur
- 	gser_ss_out_desc.bEndpointAddress = gser_fs_out_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, gser_fs_function, gser_hs_function,
--			gser_ss_function, NULL);
-+			gser_ss_function, gser_ss_function);
- 	if (status)
- 		goto fail;
- 	dev_dbg(&cdev->gadget->dev, "generic ttyGS%d: %s speed IN/%s OUT/%s\n",
---- a/drivers/usb/gadget/function/f_sourcesink.c
-+++ b/drivers/usb/gadget/function/f_sourcesink.c
-@@ -431,7 +431,8 @@ no_iso:
- 	ss_iso_sink_desc.bEndpointAddress = fs_iso_sink_desc.bEndpointAddress;
- 
- 	ret = usb_assign_descriptors(f, fs_source_sink_descs,
--			hs_source_sink_descs, ss_source_sink_descs, NULL);
-+			hs_source_sink_descs, ss_source_sink_descs,
-+			ss_source_sink_descs);
- 	if (ret)
- 		return ret;
- 
---- a/drivers/usb/gadget/function/f_subset.c
-+++ b/drivers/usb/gadget/function/f_subset.c
-@@ -358,7 +358,7 @@ geth_bind(struct usb_configuration *c, s
- 		fs_subset_out_desc.bEndpointAddress;
- 
- 	status = usb_assign_descriptors(f, fs_eth_function, hs_eth_function,
--			ss_eth_function, NULL);
-+			ss_eth_function, ss_eth_function);
- 	if (status)
- 		goto fail;
- 
---- a/drivers/usb/gadget/function/f_tcm.c
-+++ b/drivers/usb/gadget/function/f_tcm.c
-@@ -2071,7 +2071,8 @@ static int tcm_bind(struct usb_configura
- 	uasp_fs_cmd_desc.bEndpointAddress = uasp_ss_cmd_desc.bEndpointAddress;
- 
- 	ret = usb_assign_descriptors(f, uasp_fs_function_desc,
--			uasp_hs_function_desc, uasp_ss_function_desc, NULL);
-+			uasp_hs_function_desc, uasp_ss_function_desc,
-+			uasp_ss_function_desc);
- 	if (ret)
- 		goto ep_fail;
- 
+-		for (i = 0; i < pd_header_cnt(msg->header) * 4 + 2; i++) {
++		for (i = 0; i < pd_header_cnt_le(msg->header) * 4 + 2; i++) {
+ 			ret = regmap_write(wcove->regmap, USBC_TX_DATA + i,
+ 					   data[i]);
+ 			if (ret)
 
 
