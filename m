@@ -2,148 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717E33A6B59
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385373A6B62
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234566AbhFNQO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
+        id S234607AbhFNQP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234511AbhFNQO0 (ORCPT
+        with ESMTP id S234572AbhFNQPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:14:26 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8637C0617AF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:12:07 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so11384020otl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0oFGZgzuK+wfWh3twXvjozyyp5mnxr4qBNBCoc1c4Vc=;
-        b=KUPJUELSmJyV98B+X/+cIUvTZ9qK865mR0u/qVLuiNlLxllgdbUkS1OgK1WWN8/0kn
-         x9IeyyK96IFCf+pp2n7uJTJbA03oqfpIATr4nejMBzhmXeE0pOm4+LiivxUGbVtaUQF3
-         X5eVUd+D4KsSpnrGANeTmogrhhw1E58moJ4SOLyRwJXDzjRKe6VXSz7u3WgbvnNc7E+G
-         1RPQaSat1SPzCxVRywkPZVvHD3ePFkSgeCwM1N996tTgRpSK1Hd0VIC8GnBarTFe0AHE
-         WhnkRJFalxBEMZjd2v/xgboeVWnpVkHmWlgTfHqq/MyavGE9TF/D+TpQf2kRHjdxdnnx
-         DzwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0oFGZgzuK+wfWh3twXvjozyyp5mnxr4qBNBCoc1c4Vc=;
-        b=UO/FlNuDE8XeFabz1s4rSUB7AzxzMLUsDEhSmlbl/76DimbGQMRigAPXUXbahXfUVp
-         MEHX56qnQ9MBdvd1vlXsm5BhSOm7HrJc4boGz54a2dMNcFXcQPYW7BU/S5sN+jVHzLC5
-         vb9rC0d4olcNcDZD/qnY7Ty+SmLZefhryLqUozk5CnTPReXGVMZvoguIYbzagHJaBLGL
-         VAYWQuf9nQtGK+LvZZ3b7ecEpUJ2535KuKbryq93ybiDs1aFnmNhxa3d21wP8YmbxRx3
-         d41qhGmeMN+r5ww6DXJKaAX39oWP0dCXxGbkyKMg9xlyp6d4DwT2BHqU4qSt7/wDeGx/
-         Gfyg==
-X-Gm-Message-State: AOAM532dEUhHMyH9se+pv9kOp8QANKDA3F3DnZo3RRUH5sBPmRpX5THT
-        fz6dhbb9KiPzfIjNkrCha4pttAAorihhuQ==
-X-Google-Smtp-Source: ABdhPJwHmnrT1SOKWGo7+pc9rThKvmW9tBakGXsNBZEVxmFc0VzMxdN22HDAGcmt5a/aMO3+wDXMFw==
-X-Received: by 2002:a9d:3e15:: with SMTP id a21mr14289365otd.366.1623687127068;
-        Mon, 14 Jun 2021 09:12:07 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id k84sm3033230oia.8.2021.06.14.09.12.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 09:12:06 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 11:12:04 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH 5/8] pinctrl: qcom/pinctrl-spmi-gpio: Add compatibles for
- pmic-gpios on SA8155p-adp
-Message-ID: <YMd/1C3oJ41A8g4p@yoga>
-References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
- <20210607113840.15435-6-bhupesh.sharma@linaro.org>
- <YMLR11+6A/6klgqJ@builder.lan>
- <CAH=2Ntwkk4Hw1VQcXu9y08jPHWf99EFmj=7GG0V4uuwbNK7c0A@mail.gmail.com>
+        Mon, 14 Jun 2021 12:15:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5666C061574;
+        Mon, 14 Jun 2021 09:13:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=i0UaLutP0pg/vUIZxWE/ltq43kwiXqxNum5X8NZGTo8=; b=U8Xwjjw6zrH3Oo18gWDo7ilt9p
+        upiw+9VDQglmP39R9+HNWCk7Sqn7eO5XapCgeXWrdgUR9RZ7rMLT9sXYv92lkl4BNM9rYNb4Dy5lW
+        THftCVWv6HOLtRgimjqkSiMw4oh0rpPMQ4Qh6NHr+67Di+rBJGWyk7zAJxge1UsYbMmeemy8ywDrH
+        mpm10YJRQA/lVwl63ZkhVEa3X2FaTuwRM461jqfzvo4CYXPXe9vZnx9pSu7275MR2vrKiyKN8COiQ
+        vW8UC/vEqhczEdN/94MrjoOxmkngWizKEfRJsbZwR/at5SAxogX7Ilu9qnB1/gpUW4wX9XCpaYyv3
+        mNRhgoLQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lspCI-005bOz-2a; Mon, 14 Jun 2021 16:12:25 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 18DAB9831CA; Mon, 14 Jun 2021 18:12:21 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 18:12:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
+        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
+Message-ID: <20210614161221.GC68749@worktop.programming.kicks-ass.net>
+References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
+ <20210614154246.GB13677@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAH=2Ntwkk4Hw1VQcXu9y08jPHWf99EFmj=7GG0V4uuwbNK7c0A@mail.gmail.com>
+In-Reply-To: <20210614154246.GB13677@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14 Jun 03:30 CDT 2021, Bhupesh Sharma wrote:
-
-> Hi Bjorn,
+On Mon, Jun 14, 2021 at 05:42:47PM +0200, Oleg Nesterov wrote:
+> Hi Peter, sorry for delay,
 > 
-> On Fri, 11 Jun 2021 at 08:30, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
+> On 06/11, Peter Zijlstra wrote:
 > >
-> > On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
-> >
-> > > SA8155p-adp PMICs (PMM8155AU_1 and PMM8155AU_2) expose
-> > > the following PMIC GPIO blocks:
-> > >
-> > > - PMM8155AU_1: gpio1-gpio10 (with holes on gpio2, gpio5, gpio7 and gpio8)
-> > > - PMM8155AU_2: gpio1-gpio10 (with holes on gpio2, gpio5, gpio7)
-> > >
-> > > Add support for the same in the pinctrl driver.
-> > >
-> > > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > > Cc: Liam Girdwood <lgirdwood@gmail.com>
-> > > Cc: Mark Brown <broonie@kernel.org>
-> > > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > Cc: Vinod Koul <vkoul@kernel.org>
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > Cc: Andy Gross <agross@kernel.org>
-> > > Cc: devicetree@vger.kernel.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > > Cc: linux-gpio@vger.kernel.org
-> > > Cc: bhupesh.linux@gmail.com
-> > > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > > ---
-> > >  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> > > index 00870da0c94e..890c44b6e198 100644
-> > > --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> > > +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> > > @@ -1127,6 +1127,10 @@ static const struct of_device_id pmic_gpio_of_match[] = {
-> > >       { .compatible = "qcom,pm8150b-gpio", .data = (void *) 12 },
-> > >       /* pm8150l has 12 GPIOs with holes on 7 */
-> > >       { .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
-> > > +     /* pmm8155au-1 has 10 GPIOs with holes on 2, 5, 7 and 8 */
-> > > +     { .compatible = "qcom,pmm8155au-1-gpio", .data = (void *) 10 },
-> >
-> > As noted in the binding, I think this should be "qcom,pmm8155au-gpio"
-> > and please skip the comment about the holes.
+> > +/* Recursion relies on tail-call optimization to not blow away the stack */
+> > +static bool __frozen(struct task_struct *p)
+> > +{
+> > +	if (p->state == TASK_FROZEN)
+> > +		return true;
+> > +
+> > +	/*
+> > +	 * If stuck in TRACED, and the ptracer is FROZEN, we're frozen too.
+> > +	 */
+> > +	if (task_is_traced(p))
+> > +		return frozen(rcu_dereference(p->parent));
 > 
-> Similar to what I noted in the binding patch review thread, the pmic
-> gpio holes seem different as per the downstream dtsi.
-> 
-> So, please let me know and if required, I can make the suggested change in v2.
-> 
+> Why does it use frozen(), not __frozen() ?
 
-As noted in the binding, this really seems like software configuration.
-So we should deal with this in DT (e.g. by not referencing the gpios
-that Linux shouldn't touch), rather than the driver.
+(because I'm an idiot :/)
 
-Regards,
-Bjorn
+> This looks racy, p->parent can resume this task and then enter
+> __refrigerator().
 
-> Thanks,
-> Bhupesh
+But this is about the child, we won't report it frozen, unless the
+parent is also frozen. If the parent is frozen, it cannot resume the
+task.
+
+The other way around, if the parent resumes the task and then gets
+frozen, then we'll wait until the task gets frozen.
+
+That is, I don't see the race. Maybe it's been too warm, but could you
+spell it out?
+
+> Plus this task can be SIGKILL'ed even if it is traced.
+
+Hurmm.. *that* is a problem.
+
+> > +	/*
+> > +	 * If stuck in STOPPED and the parent is FROZEN, we're frozen too.
+> > +	 */
+> > +	if (task_is_stopped(p))
+> > +		return frozen(rcu_dereference(p->real_parent));
 > 
-> > > +     /* pmm8155au-2 has 10 GPIOs with holes on 2, 5 and 7 */
-> > > +     { .compatible = "qcom,pmm8155au-2-gpio", .data = (void *) 10 },
-> > >       { .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
-> > >       { .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
-> > >       { .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
-> > > --
-> > > 2.31.1
-> > >
+> (you could use ->parent in this case too and unify this check with the
+> "traced" case above)
+
+Are you sure? The way I read the code ptrace_attach() will change
+->parent, but STOPPED is controlled by the jobctl.
+
+> I don't understand. How this connects to ->parent or ->real_parent?
+> SIGCONT can come from anywhere and wake this stopped task up?
+
+Could be me who's not understanding, I thought only the real parent
+could do that.
+
+> I guess you do this to avoid freezable_schedule() in ptrace/signal_stop,
+> and we can't use TASK_STOPPED|TASK_FREEZABLE, it should not run after
+> thaw()... But see above, we can't rely on __frozen(parent).
+
+I do this because freezing puts a task in TASK_FROZEN, and that cannot
+preserve TAKS_STOPPED or TASK_TRACED without being subject to wakups
+from those bits. I suppose I can add TASK_FROZEN_STOPPED and
+TASK_FROZEN_TRACED bits. Let me try that... (tomorrow, brain is cooked).
