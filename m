@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677AD3A6406
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6272B3A642E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236041AbhFNLUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:20:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39676 "EHLO mail.kernel.org"
+        id S235159AbhFNLV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:21:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234341AbhFNLHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:07:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B92F161931;
-        Mon, 14 Jun 2021 10:46:05 +0000 (UTC)
+        id S235180AbhFNLJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:09:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A47F61934;
+        Mon, 14 Jun 2021 10:46:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667566;
-        bh=MRpctEw6FPJxcbjka1V1PqzgPH93sBQyofjXrHn/N78=;
+        s=korg; t=1623667596;
+        bh=nu+nOGoMoJeQ4qAVP6L4bIpjHxDHoW5h7IIKNTJNzmg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WLtNvaORvDjzCp+8t2+XhWliQ6kDEPypphFc44NvT71WQDW2SAgUr04txLhvmo68v
-         ibi2CNeHspNhk5mM2r1T2eW+m1O9W6JOgAogpuJ1okBX4zWhkyPdPVEmYC9PzypzNM
-         BF492mCgeu1Wv7991k2bSkmeeLuQfz8f9z8Agjeg=
+        b=ycOaV6gaWbEQ4fz6f9g2DHkD9nHLYGRanFS2gfPt+1Y6WPm/JBqSchB5MHDakg6G5
+         K/QvOBXxsEVm+f4vQpikrqgz3Gw0uLiUp07tneaxazyt9G+RbvhEyE1YcjO4o6uRyK
+         o3b4JI+ldrAEd9/d76QgnvaIAUH/YOVi79fQQ+bM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+142c9018f5962db69c7e@syzkaller.appspotmail.com,
-        Marco Elver <elver@google.com>,
+        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.10 113/131] perf: Fix data race between pin_count increment/decrement
-Date:   Mon, 14 Jun 2021 12:27:54 +0200
-Message-Id: <20210614102656.852209876@linuxfoundation.org>
+Subject: [PATCH 5.10 114/131] sched/fair: Keep load_avg and load_sum synced
+Date:   Mon, 14 Jun 2021 12:27:55 +0200
+Message-Id: <20210614102656.896703672@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -41,48 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
 
-commit 6c605f8371159432ec61cbb1488dcf7ad24ad19a upstream.
+commit 7c7ad626d9a0ff0a36c1e2a3cfbbc6a13828d5eb upstream.
 
-KCSAN reports a data race between increment and decrement of pin_count:
+when removing a cfs_rq from the list we only check _sum value so we must
+ensure that _avg and _sum stay synced so load_sum can't be null whereas
+load_avg is not after propagating load in the cgroup hierarchy.
 
-  write to 0xffff888237c2d4e0 of 4 bytes by task 15740 on cpu 1:
-   find_get_context		kernel/events/core.c:4617
-   __do_sys_perf_event_open	kernel/events/core.c:12097 [inline]
-   __se_sys_perf_event_open	kernel/events/core.c:11933
-   ...
-  read to 0xffff888237c2d4e0 of 4 bytes by task 15743 on cpu 0:
-   perf_unpin_context		kernel/events/core.c:1525 [inline]
-   __do_sys_perf_event_open	kernel/events/core.c:12328 [inline]
-   __se_sys_perf_event_open	kernel/events/core.c:11933
-   ...
+Use load_avg to compute load_sum similarly to what is done for util_sum
+and runnable_sum.
 
-Because neither read-modify-write here is atomic, this can lead to one
-of the operations being lost, resulting in an inconsistent pin_count.
-Fix it by adding the missing locking in the CPU-event case.
-
-Fixes: fe4b04fa31a6 ("perf: Cure task_oncpu_function_call() races")
-Reported-by: syzbot+142c9018f5962db69c7e@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
+Fixes: 0e2d2aaaae52 ("sched/fair: Rewrite PELT migration propagation")
+Reported-by: Odin Ugedal <odin@uged.al>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210527104711.2671610-1-elver@google.com
+Reviewed-by: Odin Ugedal <odin@uged.al>
+Link: https://lkml.kernel.org/r/20210527122916.27683-2-vincent.guittot@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/events/core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ kernel/sched/fair.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4547,7 +4547,9 @@ find_get_context(struct pmu *pmu, struct
- 		cpuctx = per_cpu_ptr(pmu->pmu_cpu_context, cpu);
- 		ctx = &cpuctx->ctx;
- 		get_ctx(ctx);
-+		raw_spin_lock_irqsave(&ctx->lock, flags);
- 		++ctx->pin_count;
-+		raw_spin_unlock_irqrestore(&ctx->lock, flags);
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3501,10 +3501,9 @@ update_tg_cfs_runnable(struct cfs_rq *cf
+ static inline void
+ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
+ {
+-	long delta_avg, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
++	long delta, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
+ 	unsigned long load_avg;
+ 	u64 load_sum = 0;
+-	s64 delta_sum;
+ 	u32 divider;
  
- 		return ctx;
- 	}
+ 	if (!runnable_sum)
+@@ -3551,13 +3550,13 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq
+ 	load_sum = (s64)se_weight(se) * runnable_sum;
+ 	load_avg = div_s64(load_sum, divider);
+ 
+-	delta_sum = load_sum - (s64)se_weight(se) * se->avg.load_sum;
+-	delta_avg = load_avg - se->avg.load_avg;
++	delta = load_avg - se->avg.load_avg;
+ 
+ 	se->avg.load_sum = runnable_sum;
+ 	se->avg.load_avg = load_avg;
+-	add_positive(&cfs_rq->avg.load_avg, delta_avg);
+-	add_positive(&cfs_rq->avg.load_sum, delta_sum);
++
++	add_positive(&cfs_rq->avg.load_avg, delta);
++	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
+ }
+ 
+ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum)
 
 
