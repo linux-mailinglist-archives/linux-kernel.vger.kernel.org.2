@@ -2,132 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8AC3A6252
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADD13A6215
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbhFNK7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbhFNKug (ORCPT
+        id S233689AbhFNKzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:55:32 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:42536 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233847AbhFNKsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:50:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69912C0611C6;
-        Mon, 14 Jun 2021 03:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BT1NtYIux4JLaeybPfCOT8uueCBZvOTndG6fM411rmw=; b=ehBof3aMHlzMx886GSIXylvzUK
-        uZri8LTBRJaYrh+M5TasVMYcRFbnzh8VUiHFL+Eb4XYAnryHDEjhyr9E+3pa3tId+0KV2/MVO8jmR
-        dJ9uGarsIbTa2orDHYMzwAahs5Vz2w8eY9kbT0CTYMWmjrWvzKqGHhqKlbnorsdfexMK+XU/9QpR4
-        +v+8zz+MQcpSD+gB0q+0Dknk/bzpoNWJ1MUUKBuqwpWDKgdrbUoq6gtL0l4jkjRUKDvsHNm5vmz01
-        XUNykyufR8Z0x+NoOHZv21g5P//b8Vt3b/A06My4i5bO8YdNwxOlFSG81SRVjO090UGTvJ8Qo+Gcn
-        UKflDZow==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lsk5N-005HsH-Ok; Mon, 14 Jun 2021 10:44:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E35923001E3;
-        Mon, 14 Jun 2021 12:44:52 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C7B322C178C03; Mon, 14 Jun 2021 12:44:52 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 12:44:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        andreyknvl@gmail.com, dvyukov@google.com, elver@google.com,
-        johannes.berg@intel.com, oberpar@linux.vnet.ibm.com,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
- infrastructure
-Message-ID: <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
-References: <20210111081821.3041587-1-morbo@google.com>
- <20210407211704.367039-1-morbo@google.com>
- <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net>
- <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
- <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
- <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
- <20210612202505.GG68208@worktop.programming.kicks-ass.net>
- <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
- <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net>
- <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
+        Mon, 14 Jun 2021 06:48:19 -0400
+Received: by mail-wr1-f52.google.com with SMTP id c5so13996741wrq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8d/+A3nrsnLJMgR/AIVYK9SWox/OsVV6RfKVCOtelGA=;
+        b=RZ4RiiLQhy0zOTYNVjuHga3qM0UGB6CNFpcu61gCFgtGKxmVQf1HR8N9tTEMGHIXx8
+         zkvLalvqidxCcNwtrk7n/c63E7saX5t2wMsOxreXm2M81o0HK6SjZuzE0OxLjvkXskBJ
+         zWXXFyIvw+wX+xp15Gx3Z8xZZOuAYgdv4mwpsHRm0pfTYdqXtyh3GcIm1bj47taUb5YO
+         qyBtFzR1lW5R9a1gOybKje62SpkbVGPxggciRHW9MX8MFINsvHPvKmRVAamxxGtU/Ww/
+         hD5GCl/ohMah/6Rhi508JURocnRQHwY8VQRhKfCh2LI43CJVZxxjFTfVvq880zAozZ+j
+         FMcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8d/+A3nrsnLJMgR/AIVYK9SWox/OsVV6RfKVCOtelGA=;
+        b=JtzS9Y7o7g5baGJrHz0s2GyT3Q0r1SZ0kr4/TNtuNbRBEeaVQ1kjjzZKYGovWzLWse
+         M2KHlTUArubT08ngqAZPsNXUkQpZznDlKXiqn0aOaCygnvvIHkgaH4Cwx6/H6TdFdNT+
+         CtvwwGFpG4+i7k77KCSqJK0hKiFA50czMFa3hdXkc68ULLg3SPIAJ6DLZ4iUuOarssl7
+         6R/JiN1I+ivBDWrEYu7sv/zzcDiNp3CGB/lFxEwhaPZirCaguRWtZmt+MPRju04kpoB8
+         vP7cE8O8TC2E9YDthNT7helwnkHZNwgGaC2DUN+6Oz5BtOz1QzkLb7yLgtJvg9kGJ6qj
+         I6YQ==
+X-Gm-Message-State: AOAM532tJNCCS+1gTl4y11w9D0tAHvTP8O4DRDL28uVP1l+j7HgSg2FK
+        WgPk5JQhamRRh0XldJR2EIOg8Q==
+X-Google-Smtp-Source: ABdhPJyLXiN6JycbTN1svrMiyzlNZjRab04Oc3sN833/qLym10qO7qGkP2CV4Pc2qBxhpZWFnhb5qw==
+X-Received: by 2002:adf:a195:: with SMTP id u21mr17680126wru.367.1623667501217;
+        Mon, 14 Jun 2021 03:45:01 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id r18sm15843544wro.62.2021.06.14.03.45.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Jun 2021 03:45:00 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] nvmem: core: introduce cells parser
+To:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>
+References: <20210608190327.22071-1-vadym.kochan@plvision.eu>
+ <20210608190327.22071-2-vadym.kochan@plvision.eu>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <43023500-dd6a-5180-057e-cecc1f1b6500@linaro.org>
+Date:   Mon, 14 Jun 2021 11:44:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
+In-Reply-To: <20210608190327.22071-2-vadym.kochan@plvision.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 02:39:41AM -0700, Bill Wendling wrote:
-> On Mon, Jun 14, 2021 at 2:01 AM Peter Zijlstra <peterz@infradead.org> wrote:
 
-> > Because having GCOV, KCOV and PGO all do essentially the same thing
-> > differently, makes heaps of sense?
-> >
-> It does when you're dealing with one toolchain without access to another.
 
-Here's a sekrit, don't tell anyone, but you can get a free copy of GCC
-right here:
+On 08/06/2021 20:03, Vadym Kochan wrote:
+> Current implementation does not allow to register cells for already
+> registered nvmem device and requires that this should be done before. But
+> there might a driver which needs to parse the nvmem device and after
+> register a cells table.
+> 
+> Introduce nvmem_parser API which allows to register cells parser which
+> is called during nvmem device registration. During this stage the parser
+> can read the nvmem device and register the cells table.
+> 
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> ---
+> v2:
+>      1) Added nvmem_parser_data so parser implementation
+>         should fill it with cells table and lookups which
+>         will be registered by core.c after cells_parse was
+>         succeed.
+> 
+>      2) Removed cells_remove callback from nvmem_parser_config which
+>         is not needed because cells table & lookups are
+>         registered/unregistered automatically by core.
+> 
+>      3) Use new device property to read cells parser name during nvmem
+>         registration. Removed of_node usage.
+> 
+>      4) parser's module refcount is incremented/decremented on each parser
+>         bind/unbind to nvmem device.
+> 
+>   drivers/nvmem/core.c           | 178 +++++++++++++++++++++++++++++++++
+>   include/linux/nvmem-provider.h |  31 ++++++
+>   2 files changed, 209 insertions(+)
+> 
+> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> index bca671ff4e54..648373ced6d4 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -39,6 +39,7 @@ struct nvmem_device {
+>   	nvmem_reg_read_t	reg_read;
+>   	nvmem_reg_write_t	reg_write;
+>   	struct gpio_desc	*wp_gpio;
+> +	struct nvmem_parser_data *parser_data;
 
-  https://gcc.gnu.org/
+This should be renamed to nvmem_cell_info_parser or something on those 
+lines to avoid any misunderstanding on what exactly this parser is about.
 
-We also have this linux-toolchains list (Cc'ed now) that contains folks
-from both sides.
+May be can totally avoid this by using parser name only during register.
 
-> > I understand that the compilers actually generates radically different
-> > instrumentation for the various cases, but essentially they're all
-> > collecting (function/branch) arcs.
-> >
-> That's true, but there's no one format for profiling data that's
-> usable between all compilers. I'm not even sure there's a good way to
-> translate between, say, gcov and llvm's format. To make matters more
-> complicated, each compiler's format is tightly coupled to a specific
-> version of that compiler. And depending on *how* the data is collected
-> (e.g. sampling or instrumentation), it may not give us the full
-> benefit of FDO/PGO.
+>   	void *priv;
+>   };
+>   
+> @@ -57,6 +58,13 @@ struct nvmem_cell {
+>   	struct list_head	node;
+>   };
+>   
+> +struct nvmem_parser {
+> +	struct list_head	head;
+> +	nvmem_parse_t		cells_parse;
+> +	const char		*name;
+> +	struct module		*owner;
+> +};
+> +
+>   static DEFINE_MUTEX(nvmem_mutex);
+>   static DEFINE_IDA(nvmem_ida);
+>   
+> @@ -66,6 +74,9 @@ static LIST_HEAD(nvmem_cell_tables);
+>   static DEFINE_MUTEX(nvmem_lookup_mutex);
+>   static LIST_HEAD(nvmem_lookup_list);
+>   
+> +static DEFINE_MUTEX(nvmem_parser_mutex);
+> +static LIST_HEAD(nvmem_parser_list);
+> +
+>   static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
+>   
+>   static int __nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+> @@ -418,6 +429,118 @@ static struct bus_type nvmem_bus_type = {
+>   	.name		= "nvmem",
+>   };
+>   
+> +static struct nvmem_parser *__nvmem_parser_get(const char *name)
+> +{
+> +	struct nvmem_parser *tmp, *parser = NULL;
+> +
+> +	list_for_each_entry(tmp, &nvmem_parser_list, head) {
+> +		if (strcmp(name, tmp->name) == 0) {
+> +			parser = tmp;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!parser)
+> +		return ERR_PTR(-EPROBE_DEFER);
+> +
+> +	if (!try_module_get(parser->owner)) {
+> +		pr_err("could not increase module refcount for parser %s\n",
+> +		       parser->name);
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	}
+> +
+> +	return parser;
+> +}
+> +
+> +static void nvmem_parser_put(const struct nvmem_parser *parser)
+> +{
+> +	module_put(parser->owner);
+> +}
+> +
+> +static int nvmem_parser_bind(struct nvmem_device *nvmem, const char *name)
+> +{
+Do we really need parser bind/unbind mechanisms for what we are trying 
+to do here.
 
-I'm thinking that something simple like:
+It's just simply parsing cell info during nvmem register, do we really 
+care if parser is there or not after that?
 
-struct arc {
-	u64	from;
-	u64	to;
-	u64	nr;
-	u64	cntrs[0];
-};
+code can be probably made much simpler by just doing this in nvmem_register
 
-goes a very long way. Stick a header on that says how large cntrs[] is,
-and some other data (like load offset and whatnot) and you should be
-good.
+parser_get()
+parse_get_cell_info()
+parser_put()
 
-Combine that with the executable image (say /proc/kcore) to recover
-what's @from (call, jmp or conditional branch) and I'm thinking one
-ought to be able to construct lots of useful data.
+AFAIU, that is all we need.
 
-I've also been led to believe that the KCOV data format is not in fact
-dependent on which toolchain is used.
+> +	struct nvmem_parser_data *data;
+> +	struct nvmem_parser *parser;
+> +	int err;
+> +
+> +	mutex_lock(&nvmem_parser_mutex);
+> +
+> +	parser = __nvmem_parser_get(name);
+> +	err = PTR_ERR_OR_ZERO(parser);
+> +	if (!err) { > +		data = kzalloc(sizeof(*data), GFP_KERNEL);
+> +		if (data) {
+> +			data->parser = parser;
+> +			nvmem->parser_data = data;
+> +		} else {
+> +			nvmem_parser_put(parser);
+> +			err = -ENOMEM;
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&nvmem_parser_mutex);
+> +
+> +	return err;
+> +}
+> +
+> +static void nvmem_parser_unbind(const struct nvmem_device *nvmem)
+> +{
+> +	struct nvmem_parser_data *data = nvmem->parser_data;
+> +
+> +	if (data->table.cells) {
+> +		nvmem_del_cell_table(&data->table);
+> +		kfree(data->table.cells);
+who has allocated memory for this, its confusing for this to be freed in 
+core.
+> +	}
+> +	if (data->lookup) { > +		nvmem_del_cell_lookups(data->lookup, data->nlookups);
+> +		kfree(data->lookup);
+> +	}
+> +
+> +	nvmem_parser_put(data->parser);
+> +}
+> +
+> +static void nvmem_parser_data_register(struct nvmem_device *nvmem,
+> +				       struct nvmem_parser_data *data)
+> +{
+> +	if (data->table.cells) {
+> +		if (!data->table.nvmem_name)
+> +			data->table.nvmem_name = nvmem_dev_name(nvmem);
+> +
+> +		nvmem_add_cell_table(&data->table);
+> +	}
+> +
+> +	if (data->lookup) {
+Why do we need lookups?
+the cells are already associated with provider. lookups are normally 
+used for associating devices with nvmemcell more for old non-dt machine 
+code.
 
-> > I'm thinking it might be about time to build _one_ infrastructure for
-> > that and define a kernel arc format and call it a day.
-> >
-> That may be nice, but it's a rather large request.
+you can remove this.
+> +		struct nvmem_cell_lookup *lookup = &data->lookup[0];
+> +		int i = 0;
+> +
+> +		for (i = 0; i < data->nlookups; i++, lookup++) {
+> +			if (!lookup->nvmem_name)
+> +				lookup->nvmem_name = nvmem_dev_name(nvmem);
+> +
+> +			if (!lookup->dev_id)
+> +				lookup->dev_id = data->parser->name;
+> +		}
+> +
+> +		nvmem_add_cell_lookups(data->lookup, data->nlookups);
+> +	}
+> +}
+> +
 
-Given GCOV just died, perhaps you can look at what KCOV does and see if
-that can be extended to do as you want. KCOV is actively used and
-we actually tripped over all the fun little noinstr bugs at the time.
+--srini
