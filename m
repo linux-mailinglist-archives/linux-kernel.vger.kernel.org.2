@@ -2,76 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDB43A6E49
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 20:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F353A6E50
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 20:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbhFNSk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 14:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhFNSkz (ORCPT
+        id S233529AbhFNSpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 14:45:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43963 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233071AbhFNSo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 14:40:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4E5C061574;
-        Mon, 14 Jun 2021 11:38:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4tHLuqmgdgsWH9+Oan4cN/C2KwNR0UqEdUEL10Y7OWA=; b=A/q5A9ocg4uEv/akQNc9poVyAA
-        WAdjFOB5BQpqVtcMB6RyDLgtzXUGv2kiTvL6im0d//2rt3l1dpdtfrWVbkb/mJHxHOiqWShhxSc37
-        6rthibJdTvbUr1jd4BDnHYe7etM+DnqfEKRVE3wv59djWu3wJ0i+c4Ul62fqDQSH4+z32alAbNkZa
-        wd6+ZiIDGTjdkSgR/uxukUHtW3QcXn6BFC0+7BXZz6nFWJTrHq4klMPSAcf6GNLD5PHne8hu5iTWh
-        w8+kMUTRZJHOduBp35oBVBLYqNdUbBeNsj2wPeCFnCiU/y/xJ5VaQbdioReqkyLwnfVnw+vg3RnAx
-        126qNDqQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lsrTI-005ij6-6b; Mon, 14 Jun 2021 18:38:12 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C0DEB982D9F; Mon, 14 Jun 2021 20:38:01 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 20:38:01 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
-        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
-Message-ID: <20210614183801.GE68749@worktop.programming.kicks-ass.net>
-References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
- <20210614154246.GB13677@redhat.com>
- <20210614161221.GC68749@worktop.programming.kicks-ass.net>
- <20210614165422.GC13677@redhat.com>
+        Mon, 14 Jun 2021 14:44:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623696176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tYPULGJaxNrE7OW2+HTX1onKHypT59LT86+cAi5+zC8=;
+        b=EdVaYHWjrnEUNLk62q89GjOeZvQ1W6pOo4ydOpZrBlONQnOmNQb7TNcqr/ssNjyOxvXuzc
+        R8iDTZMqtvPvS0312xisDOTvorv9aySflxQ82aar5SmyB7ZDEtxeXzUiOLvhOOUvwLvvAY
+        6yYCCjUdLOoksPqK/91OX0G3MOWBGy8=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-m1YhphXWN0WbFYoX7J-CrA-1; Mon, 14 Jun 2021 14:42:54 -0400
+X-MC-Unique: m1YhphXWN0WbFYoX7J-CrA-1
+Received: by mail-oo1-f72.google.com with SMTP id c25-20020a4ad7990000b029020e67cc1879so7464151oou.18
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 11:42:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=tYPULGJaxNrE7OW2+HTX1onKHypT59LT86+cAi5+zC8=;
+        b=gtPyY9mQnHGvtJevS/Qx5PHpYGF0ZijpHwV/mrJQngJzWE+B1b20v8AAhoxcSljbHQ
+         /qURGrTJ2KXtfeCAGvD9Ja2sYA0Lpfmsz4wPJpMdicG5hDCG7n0thsWvvnKZ3ZTbHZDo
+         Th03vJmUDvx4bbfI0C57UlzBGxUBhxmwf73GOJEmvSWDrdKOhz2UmADzqhuYTHFlaoB4
+         AMfVRIn1W3ZxlkwTGE2uZeM8CRd/FQLvtMfmolc+K190me01LiM7+aB6haGA9mZaovNt
+         hzdQSyZEzz2m/FDX4/p+LoaBQbFKuCGF0LPTKmIIR1wAF/+Bo+eP5DBIJxK4DqzYoCYR
+         c1pw==
+X-Gm-Message-State: AOAM533c3ZxgnFYaSMfn2QIDK4SAKsQLNg6ak6sNFjyqCpdUgwnFEVyb
+        9aXDmJMEEpovgfoVSTeSHGC6aYZ/+rmER7lHNm41ov4Zj0t3grjKUeAm/GHER+DVJMIy++e4Q+/
+        /V7hBnLuxGePfeISUy6IzNk+j
+X-Received: by 2002:a05:6830:2476:: with SMTP id x54mr14672490otr.293.1623696173803;
+        Mon, 14 Jun 2021 11:42:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzySs6LU2JHVe6vycK52lrxMvVRLCBOGMepzyqQPlZ6Jiia1Sb3dldrBYFR/i4+kUid/t1iDA==
+X-Received: by 2002:a05:6830:2476:: with SMTP id x54mr14672464otr.293.1623696173516;
+        Mon, 14 Jun 2021 11:42:53 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id a7sm3265107ooo.9.2021.06.14.11.42.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 11:42:53 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 12:42:50 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, <cohuck@redhat.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <aviadye@nvidia.com>, <oren@nvidia.com>, <shahafs@nvidia.com>,
+        <parav@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
+        <ACurrid@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>,
+        <kevin.tian@intel.com>, <hch@infradead.org>, <targupta@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <liulongfang@huawei.com>,
+        <yan.y.zhao@intel.com>
+Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
+ binding
+Message-ID: <20210614124250.0d32537c.alex.williamson@redhat.com>
+In-Reply-To: <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
+References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
+        <20210603160809.15845-10-mgurtovoy@nvidia.com>
+        <20210608152643.2d3400c1.alex.williamson@redhat.com>
+        <20210608224517.GQ1002214@nvidia.com>
+        <20210608192711.4956cda2.alex.williamson@redhat.com>
+        <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614165422.GC13677@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 06:54:23PM +0200, Oleg Nesterov wrote:
-> On 06/14, Peter Zijlstra wrote:
+On Sun, 13 Jun 2021 11:19:46 +0300
+Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
 
-> > > I guess you do this to avoid freezable_schedule() in ptrace/signal_stop,
-> > > and we can't use TASK_STOPPED|TASK_FREEZABLE, it should not run after
-> > > thaw()... But see above, we can't rely on __frozen(parent).
-> >
-> > I do this because freezing puts a task in TASK_FROZEN, and that cannot
-> > preserve TAKS_STOPPED or TASK_TRACED without being subject to wakups
-> 
-> Yes, yes, this is what I tried to say.
+> On 6/9/2021 4:27 AM, Alex Williamson wrote:
+> > On Tue, 8 Jun 2021 19:45:17 -0300
+> > Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > =20
+> >> On Tue, Jun 08, 2021 at 03:26:43PM -0600, Alex Williamson wrote: =20
+> >>>> drivers that specifically opt into this feature and the driver now h=
+as
+> >>>> the opportunity to provide a proper match table that indicates what =
+HW
+> >>>> it can properly support. vfio-pci continues to support everything. =
+=20
+> >>> In doing so, this also breaks the new_id method for vfio-pci. =20
+> >> Does it? How? The driver_override flag is per match entry not for the
+> >> entire device so new_id added things will work the same as before as
+> >> their new match entry's flags will be zero. =20
+> > Hmm, that might have been a testing issue; combining driverctl with
+> > manual new_id testing might have left a driver_override in place.
+> >    =20
+> >>> Sorry, with so many userspace regressions, crippling the
+> >>> driver_override interface with an assumption of such a narrow focus,
+> >>> creating a vfio specific match flag, I don't see where this can go.
+> >>> Thanks, =20
+> >> On the other hand it overcomes all the objections from the last go
+> >> round: how userspace figures out which driver to use with
+> >> driver_override and integrating the universal driver into the scheme.
+> >>
+> >> pci_stub could be delt with by marking it for driver_override like
+> >> vfio_pci. =20
+> > By marking it a "vfio driver override"? :-\
+> > =20
+> >> But driverctl as a general tool working with any module is not really
+> >> addressable.
+> >>
+> >> Is the only issue the blocking of the arbitary binding? That is not a
+> >> critical peice of this, IIRC =20
+> > We can't break userspace, which means new_id and driver_override need
+> > to work as they do now.  There are scads of driver binding scripts in
+> > the wild, for vfio-pci and other drivers.  We can't assume such a
+> > narrow scope.  Thanks, =20
+>=20
+> what about the following code ?
+>=20
+> @@ -152,12 +152,28 @@ static const struct pci_device_id=20
+> *pci_match_device(struct pci_driver *drv,
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&drv->dynids.lock=
+);
+>=20
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!found_id)
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 found_id =3D pci_match_id(drv->id_table, dev);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (found_id)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 return found_id;
 
-OK, thanks for all that. Clearly I need to stare at this code longer and
-harder.
+a) A dynamic ID match always works regardless of driver override...
 
-One more thing; if I add additional state bits to preserve
-__TASK_{TRACED,STOPPED}, then I need to figure out at thaw time if we've
-missed a wakeup or not.
+>=20
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* driver_override will always matc=
+h, send a dummy id */
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!found_id && dev->driver_overri=
+de)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 found_id =3D pci_match_id(drv->id_t=
+able, dev);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (found_id) {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 /*
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 * if we found id in the static table, we must fulfill the
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 * matching flags (i.e. if PCI_ID_F_DRIVER_OVERRIDE flag =
+is
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 * set, driver_override should be provided).
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 */
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 bool is_driver_override =3D
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (found_id->fla=
+gs & PCI_ID_F_DRIVER_OVERRIDE) !=3D 0;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 if ((is_driver_override && !dev->driver_override) ||
 
-Do we have sufficient state for that? If so, don't we then also not have
-sufficient state to tell if a task should've been TRACED/STOPPED in the
-first place?
+b) A static ID match fails if the driver provides an override flag and
+the device does not have an override set, or...=20
 
-If not, I probably should add this... I'll go dig.
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (dev->driver_override && !is_driver_ov=
+erride))
+
+c) The device has an override set and the driver does not support the
+override flag.
+
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return NULL;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (dev->driver_override) {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 /*
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 * if we didn't find suitable id in the static table,
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 * driver_override will still , send a dummy id
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 */
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 found_id =3D &pci_device_id_any;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>=20
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return found_id;
+>  =C2=A0}
+>=20
+>=20
+> dynamic ids (new_id) works as before.
+>=20
+> Old driver_override works as before.
+
+This is deceptively complicated, but no, I don't believe it does.  By
+my understanding of c) an "old" driver can no longer use
+driver_override for binding a known device.  It seems that if we have a
+static ID match, then we cannot have a driver_override set for the
+device in such a case.  This is a userspace regression.
+
+> For "new" driver_override we must fulfill the new rules.
+
+For override'able drivers, the static table is almost useless other
+than using it for modules.alias support and potentially to provide
+driver_data.  As above, I find this all pretty confusing and I'd advise
+trying to write a concise set of rules outlining the behavior of
+driver_override vs dynamic IDs vs static IDs vs "override'able" driver
+flags.  I tried, I can't, it's convoluted and full of exceptions.
+Thanks,
+
+Alex
+
