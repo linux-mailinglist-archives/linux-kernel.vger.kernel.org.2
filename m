@@ -2,165 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B299A3A6AC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042343A6ACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhFNPq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234324AbhFNPqr (ORCPT
+        id S233534AbhFNPrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:47:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60175 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233135AbhFNPrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:46:47 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B6EC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:44:44 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id cb9so47184142edb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RDbZQDD7AmQpkyAX6ICSISTpnsH7HuGUW0N98X9N/EE=;
-        b=QLnDJ7DCxTPhuCiOL9yo4mFPStyjZcXD8J0TdMiJgYzcwvVx56zPBN7tsiFNRrwhjb
-         1+tq+6/KM8oPwHverw7uBB1QyV0hP9TNfX20NG2UsecrG+NB71oC7/scbySJH5xzt85v
-         X92b8e7/fkRAfkD4LW1wBBOBX36wy5MoCeVEkUqnAW/h2NBO3cG4Nl8fdPlyrphZ9PPy
-         GFJ20NblRLy8dZWSMdfLbHVM+J4r1yTWYUA1+Gh2pkrf0R9u3O8QkrOg8FHGRTvJR6o9
-         u33yXfy17HRj0B6NeaiUmGN5cncK5Nc4lkG4etcPMd733J0exWSfnf0mL3Rs/aNjOqHk
-         6EZg==
+        Mon, 14 Jun 2021 11:47:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623685542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=41vHZWdRm3PEdn+fE/Pjl4Zp1BFWR3ixLX62Tshij1E=;
+        b=b2H4mj1sFKJ9H2m8Dt87bVQUb5vbdg8JHY52HpSyJ7NYK/KHeAHr/bFQMrdbag7najfK++
+        JBmHKbXNKdT4MHtDsropgTDtLmvDfxCgcp/bVQjZyLae8UBoZYtYWdF8Yx6qx0MdOcf74j
+        gJeKCa7I4vdEwkncLxZ+l5xdgghsNNs=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-216-kq33hoyvPlifVAayLvqbwQ-1; Mon, 14 Jun 2021 11:45:41 -0400
+X-MC-Unique: kq33hoyvPlifVAayLvqbwQ-1
+Received: by mail-lf1-f70.google.com with SMTP id q7-20020ac24a670000b02902fb0c2530e1so5372558lfp.17
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:45:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RDbZQDD7AmQpkyAX6ICSISTpnsH7HuGUW0N98X9N/EE=;
-        b=UbqO2UUotGmRSfaTG26pkXcWfsS1bnEiofS7aj2UhuyEG0YcdGk8hmgFRMXAies19G
-         PfqF3H2Mw2fUpSWYkj97l5jx+KNDXCHkz/yamgJA+MeGxuyavTzotbl1khWq1FQLaqWm
-         Dk+8QzgQHksWLxsk5n2lVJZD2f9XPvAlfCOuo4F+HjeIHA58todWfhQf7Br5VFdzmWFl
-         mWo7KSCRd4qBqGfJ3sEFSBCbRWAdy0TmO/theB7j8FuHS260WWr0Auv2PGT1cxlisuWM
-         JoB9eA7mXrfyde5kzep2/AgU/z+oqBMrtccfIZw/4e2Z/e/ss8a3UQc0C2+qwy0IBWow
-         AmZQ==
-X-Gm-Message-State: AOAM531yvLtmwO+xbjaHTR/bEZX+iGAzZB0VuEqVA2+tpRR2UW06CJPW
-        nBSVpzpUVYkcq1DQItYHFb8=
-X-Google-Smtp-Source: ABdhPJxl8Fs3MY4BL+NcceRSjy9R8ujcdP6JAovT1hNYe6usVWcHDl7k4SyAneAs/Jme+ZSgMthutQ==
-X-Received: by 2002:aa7:c3d0:: with SMTP id l16mr17769700edr.65.1623685482722;
-        Mon, 14 Jun 2021 08:44:42 -0700 (PDT)
-Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
-        by smtp.gmail.com with ESMTPSA id dy19sm9182284edb.68.2021.06.14.08.44.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 08:44:42 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2] x86/resctrl: Fix kernel-doc in internal.h
-Date:   Mon, 14 Jun 2021 17:44:38 +0200
-Message-Id: <20210614154438.17075-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=41vHZWdRm3PEdn+fE/Pjl4Zp1BFWR3ixLX62Tshij1E=;
+        b=deu5zSujoBND4aa0uotpC5lHEwdgBua25gWcLSOC3sSsoUPtaqo0iuN8kg2ZOIjfOk
+         nSI3q6tDGzCZXv5NKsbKsuNobKbUUHXdxd+AwW+PFVYFWV6XrqKS0zVDXnCzX9fvw/9s
+         QFMsmb3PsZNOHxJzVB5QjCuHhKfCUkHtcn5N0lsXRj5oxG9p4RurVIH/tmdMLYGeGH8g
+         Z6MmpPOoSZa1p0CDu2qKxxyuIyaAIvmMj1E/d3B0At/OBxjXGw2iyz2o/zNX3rih3MED
+         D9WXOW8KUuaGsxJPB61MQs0HNRtrhtRRjdoZPTQ24v7FA62Qvkb/tfMXr8A5b4QoSBhU
+         HdaA==
+X-Gm-Message-State: AOAM530m6GrguyjRZrVFVgDMxD2s13TcM27AK+VESZd+gZLHjzgRVEm4
+        XGRUKJE1rlxKv9bBKUNIZDRaqommG8Dvppo3pDld7091C9O0ZTIJGFYHAdIH528oAHmfJsRLT7g
+        YP7tjGE/s/+pSprAwGKXXXxTTc50d0FajiNCGRrhK
+X-Received: by 2002:a2e:a410:: with SMTP id p16mr14088501ljn.426.1623685539847;
+        Mon, 14 Jun 2021 08:45:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGMuwpF19PlaoWXsZvplQQb+P5uJB/sEiVQPqQHZoCGniIsXd7N2HvGw6qvXxWaTZCh/d42gq62iQqvhtU9dU=
+X-Received: by 2002:a2e:a410:: with SMTP id p16mr14088490ljn.426.1623685539700;
+ Mon, 14 Jun 2021 08:45:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210612123639.329047-1-yury.norov@gmail.com> <20210612123639.329047-6-yury.norov@gmail.com>
+In-Reply-To: <20210612123639.329047-6-yury.norov@gmail.com>
+From:   Alexey Klimov <aklimov@redhat.com>
+Date:   Mon, 14 Jun 2021 16:45:29 +0100
+Message-ID: <CAFBcO+9+kiqo-5RXqVuFGdA4yAV0o=zeJaenLZ5zryP-CQfAQQ@mail.gmail.com>
+Subject: Re: [PATCH 5/8] lib: add find_first_and_bit()
+To:     Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     linux-arch@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description of undocumented parameters. Issues detected by
-scripts/kernel-doc.
+On Sat, Jun 12, 2021 at 1:36 PM Yury Norov <yury.norov@gmail.com> wrote:
+>
+> Currently find_first_and_bit() is an alias to find_next_and_bit(). However,
+> it is widely used in cpumask, so it worth to optimize it. This patch adds
+> its own implementation for find_first_and_bit().
+>
+> On x86_64 find_bit_benchmark says:
+>
+> Before (#define find_first_and_bit(...) find_next_and_bit(..., 0):
+> Start testing find_bit() with random-filled bitmap
+> [  140.291468] find_first_and_bit:           46890919 ns,  32671 iterations
+> Start testing find_bit() with sparse bitmap
+> [  140.295028] find_first_and_bit:               7103 ns,      1 iterations
+>
+> After:
+> Start testing find_bit() with random-filled bitmap
+> [  162.574907] find_first_and_bit:           25045813 ns,  32846 iterations
+> Start testing find_bit() with sparse bitmap
+> [  162.578458] find_first_and_bit:               4900 ns,      1 iterations
+>
+> (Thanks to Alexey Klimov for thorough testing.)
+>
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Tested-by: Alexey Klimov <aklimov@redhat.com>
 
-v1->v2: According to a first review by Reinette Chartre, remove changes
-unrelated to the subject of this patch and modify the descriptions of
-two parameters.
- 
- arch/x86/kernel/cpu/resctrl/internal.h | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+[..]
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index c4d320d02fd5..ac691af0174b 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -70,6 +70,7 @@ DECLARE_STATIC_KEY_FALSE(rdt_mon_enable_key);
-  * struct mon_evt - Entry in the event list of a resource
-  * @evtid:		event id
-  * @name:		name of the event
-+ * @list:		entry in &rdt_resource->evt_list
-  */
- struct mon_evt {
- 	u32			evtid;
-@@ -78,10 +79,13 @@ struct mon_evt {
- };
- 
- /**
-- * struct mon_data_bits - Monitoring details for each event file
-- * @rid:               Resource id associated with the event file.
-+ * union mon_data_bits - Monitoring details for each event file
-+ * @priv:	       Used to store monitoring event data in @u
-+ * 		       as kernfs private data
-+ * @rid:               Resource id associated with the event file
-  * @evtid:             Event id associated with the event file
-  * @domid:             The domain to which the event file belongs
-+ * @u:		       Name of the bit fields struct
-  */
- union mon_data_bits {
- 	void *priv;
-@@ -119,6 +123,7 @@ enum rdt_group_type {
-  * @RDT_MODE_PSEUDO_LOCKSETUP: Resource group will be used for Pseudo-Locking
-  * @RDT_MODE_PSEUDO_LOCKED: No sharing of this resource group's allocations
-  *                          allowed AND the allocations are Cache Pseudo-Locked
-+ * @RDT_NUM_MODES: Total number of modes
-  *
-  * The mode of a resource group enables control over the allowed overlap
-  * between allocations associated with different resource groups (classes
-@@ -142,7 +147,7 @@ enum rdtgrp_mode {
- 
- /**
-  * struct mongroup - store mon group's data in resctrl fs.
-- * @mon_data_kn		kernlfs node for the mon_data directory
-+ * @mon_data_kn:		kernlfs node for the mon_data directory
-  * @parent:			parent rdtgrp
-  * @crdtgrp_list:		child rdtgroup node list
-  * @rmid:			rmid for this rdtgroup
-@@ -282,11 +287,11 @@ struct rftype {
- /**
-  * struct mbm_state - status for each MBM counter in each domain
-  * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
-- * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
-+ * @prev_msr:	Value of IA32_QM_CTR for this RMID last time we read it
-  * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
-- * @prev_bw	The most recent bandwidth in MBps
-- * @delta_bw	Difference between the current and previous bandwidth
-- * @delta_comp	Indicates whether to compute the delta_bw
-+ * @prev_bw:	The most recent bandwidth in MBps
-+ * @delta_bw:	Difference between the current and previous bandwidth
-+ * @delta_comp:	Indicates whether to compute the delta_bw
-  */
- struct mbm_state {
- 	u64	chunks;
-@@ -450,17 +455,19 @@ struct rdt_parse_data {
-  * @name:		Name to use in "schemata" file
-  * @num_closid:		Number of CLOSIDs available
-  * @cache_level:	Which cache level defines scope of this resource
-- * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
-+ * @default_ctrl:	Specifies default cache cbm or memory B/W percent
-  * @msr_base:		Base MSR address for CBMs
-  * @msr_update:		Function pointer to update QOS MSRs
-  * @data_width:		Character width of data when displaying
-  * @domains:		All domains for this resource
-  * @cache:		Cache allocation related data
-+ * @membw:		Memory bandwidth allocation related data
-  * @format_str:		Per resource format string to show domain value
-  * @parse_ctrlval:	Per resource function pointer to parse control values
-  * @evt_list:		List of monitoring events
-  * @num_rmid:		Number of RMIDs available
-  * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
-+ * @mbm_width:		Width of memory bandwidth monitoring hardware counter
-  * @fflags:		flags to choose base and info files
-  */
- struct rdt_resource {
--- 
-2.32.0
+Best regards,
+Alexey
 
