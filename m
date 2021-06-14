@@ -2,70 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E953A710A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9D53A710D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234907AbhFNVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:13:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36745 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234420AbhFNVNh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:13:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623705093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Mn8+GlgrQdOA/I1bTqxQYRGsb/yRw3f+Z55lqaAtNs=;
-        b=UcYrLSHQK/9feBnYo/opWDwuzhaayyXq8gB2bjyyTppYP1zNNgZey8bN1K0jC8w2bnXbeA
-        N+gjQhOoSIDxU6Zn7z1SkGtmkyfwrKdyaoZ9eUiI8vrBg7+LISvvvuyzC0+J+uHnErQbA3
-        yWUDsNijWvZWfbJtefaOB8tgRcQBWRE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-3bfqkI24OYSv0GZSCObOOQ-1; Mon, 14 Jun 2021 17:11:30 -0400
-X-MC-Unique: 3bfqkI24OYSv0GZSCObOOQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7B7C1084F42;
-        Mon, 14 Jun 2021 21:11:28 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A5445D9CA;
-        Mon, 14 Jun 2021 21:11:27 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YMd5BqIKucO6rW4R@casper.infradead.org>
-References: <YMd5BqIKucO6rW4R@casper.infradead.org> <YMdpxbYafHnE0F8N@casper.infradead.org> <162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk> <162367682522.460125.5652091227576721609.stgit@warthog.procyon.org.uk> <475131.1623685101@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, jlayton@kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] afs: Fix afs_write_end() to handle short writes
+        id S235036AbhFNVOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:14:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:48826 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230081AbhFNVON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 17:14:13 -0400
+IronPort-SDR: y8FGsDgLVd7QHJfyO3XxwDaq2yRWhHdsqvGCHVw2J6t/ReyDNsUcprSE6XxUfT5MHSVeoODT9a
+ rwzerIkzudCQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="185573933"
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="185573933"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 14:12:09 -0700
+IronPort-SDR: FyPmzqLr9XfZCM6bpRVuOMJ5+WX3qvFnyjED0JLtLXKsMFYkWQYlWDm+hoqlyJbtwjpXfJ05ue
+ Bqbco+ebJS7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="487534264"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Jun 2021 14:12:08 -0700
+Date:   Mon, 14 Jun 2021 14:12:22 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH v2 1/3] x86/msr: Define new bits in TSX_FORCE_ABORT MSR
+Message-ID: <9add61915b4a4eedad74fbd869107863a28b428e.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
+References: <cover.b592910a3829c87c83cf5605718c415c80c0c4a9.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <501526.1623705086.1@warthog.procyon.org.uk>
-Date:   Mon, 14 Jun 2021 22:11:26 +0100
-Message-ID: <501527.1623705086@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.b592910a3829c87c83cf5605718c415c80c0c4a9.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+Intel client processors that support IA32_TSX_FORCE_ABORT MSR related to
+perf counter interaction [1] received a microcode update that deprecates
+Transactional Synchronization Extension (TSX) feature. MSR
+IA32_TSX_FORCE_ABORT bit FORCE_ABORT_RTM now defaults to 1, writes to
+this bit are ignored. A new bit TSX_CPUID_CLEAR clears the TSX related
+CPUID bits.
 
-> > means you can't get there unless PageUptodate() is true by that point.
-> 
-> Isn't the point of an assertion to check that this is true?
+Below is the summary of changes to IA32_TSX_FORCE_ABORT MSR:
 
-The assertion was meant to check that that it was true given that the page was
-set uptodate somewhere else before this function was even called.  With this
-patch, however, it's now set in this function if it wasn't already right at
-the top - so the assertion should now be redundant.  I can put it back if you
-really insist.
+  Bit 0: FORCE_ABORT_RTM (legacy bit, new default=1) Status bit that
+  indicates if RTM transactions are always aborted. This bit is
+  essentially !SDV_ENABLE_RTM(Bit 2). Writes to this bit are ignored.
 
-David
+  Bit 1: TSX_CPUID_CLEAR (new bit, default=0) When set, CPUID.HLE = 0
+  and CPUID.RTM = 0.
+
+  Bit 2: SDV_ENABLE_RTM (new bit, default=0) When clear, XBEGIN will
+  always abort with EAX code 0. When set, XBEGIN will not be forced to
+  abort (but will always abort in SGX enclaves). This bit is intended to
+  be used on developer systems. If this bit is set transactional
+  atomicity correctness is not certain.
+
+Performance monitoring counter 3 is usable in all cases, regardless of
+the value of above bits.
+
+A new CPUID bit CPUID.RTM_ALWAYS_ABORT (CPUID 7.EDX[11]) is added to
+indicate the status of always abort behavior.
+
+Define these new CPUID and MSR bits.
+
+[1] Performance Monitoring Impact of Intel® Transactional Synchronization Extension Memory
+    http://cdrdv2.intel.com/v1/dl/getContent/604224 (Document ID 604224)
+
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Tested-by: Neelima Krishnan <neelima.krishnan@intel.com>
+---
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ arch/x86/include/asm/msr-index.h   | 4 ++++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index ac37830ae941..21c1855b5c14 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -378,6 +378,7 @@
+ #define X86_FEATURE_AVX512_VP2INTERSECT (18*32+ 8) /* AVX-512 Intersect for D/Q */
+ #define X86_FEATURE_SRBDS_CTRL		(18*32+ 9) /* "" SRBDS mitigation MSR available */
+ #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
++#define X86_FEATURE_RTM_ALWAYS_ABORT	(18*32+11) /* "" RTM transaction always aborts */
+ #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
+ #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
+ #define X86_FEATURE_HYBRID_CPU		(18*32+15) /* "" This part has CPUs of more than one type */
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 211ba3375ee9..a7c413432b33 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -772,6 +772,10 @@
+ 
+ #define MSR_TFA_RTM_FORCE_ABORT_BIT	0
+ #define MSR_TFA_RTM_FORCE_ABORT		BIT_ULL(MSR_TFA_RTM_FORCE_ABORT_BIT)
++#define MSR_TFA_TSX_CPUID_CLEAR_BIT	1
++#define MSR_TFA_TSX_CPUID_CLEAR		BIT_ULL(MSR_TFA_TSX_CPUID_CLEAR_BIT)
++#define MSR_TFA_SDV_ENABLE_RTM_BIT	2
++#define MSR_TFA_SDV_ENABLE_RTM		BIT_ULL(MSR_TFA_SDV_ENABLE_RTM_BIT)
+ 
+ /* P4/Xeon+ specific */
+ #define MSR_IA32_MCG_EAX		0x00000180
+-- 
+git-series 0.9.1
 
