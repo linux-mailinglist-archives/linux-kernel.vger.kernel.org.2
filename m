@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909403A64ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629813A6329
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235151AbhFNLa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:30:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45470 "EHLO mail.kernel.org"
+        id S235731AbhFNLLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:11:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235087AbhFNLQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:16:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A564A61971;
-        Mon, 14 Jun 2021 10:50:01 +0000 (UTC)
+        id S234914AbhFNK7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:59:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39B8261626;
+        Mon, 14 Jun 2021 10:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667802;
-        bh=zdW9g7x9tBO1D7Vv/ypeiPNb5pWPmL0EbyMnOs1qUbM=;
+        s=korg; t=1623667347;
+        bh=uOsOqwolP7c9rOMG4+2LkO2+PqcZGbkXk1XA/biK5Uw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e1CKDS8l7yErj+GZl3NpNDKqyMDqrdYl7m/9VLqI0QaHCUxUVpD95O4ffkC3ql7Z9
-         2xp5DEQ6PsLgjI0ddU0OpL89oWBqtO4JugM6nm3RA4L4j8+Iow+WHPvVwVppPh/sBd
-         fuIV5tryRhx11NIK+V5auVqU5RUQVNBm2AVtPaQA=
+        b=Z43WhbQtVmN3UZex6WxCkHAzeBEN8VkmNNTXLT11h+gRjsoqhXT39xzIA9Fprvndb
+         a9vcfmyKOh2a+B6ItzrPdBVfjNlqjxTIZDBA9u11LiWCk1sAon9O2javPERgiyF8Td
+         mqf0UuxYydtGNgPICfhDiiq7/aBcjg8fuuINSvIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 063/173] KVM: x86: Unload MMU on guest TLB flush if TDP disabled to force MMU sync
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 034/131] MIPS: Fix kernel hang under FUNCTION_GRAPH_TRACER and PREEMPT_TRACER
 Date:   Mon, 14 Jun 2021 12:26:35 +0200
-Message-Id: <20210614102700.260682623@linuxfoundation.org>
+Message-Id: <20210614102654.168086233@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +41,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-commit b53e84eed08b88fd3ff59e5c2a7f1a69d4004e32 upstream.
+[ Upstream commit 78cf0eb926cb1abeff2106bae67752e032fe5f3e ]
 
-When using shadow paging, unload the guest MMU when emulating a guest TLB
-flush to ensure all roots are synchronized.  From the guest's perspective,
-flushing the TLB ensures any and all modifications to its PTEs will be
-recognized by the CPU.
+When update the latest mainline kernel with the following three configs,
+the kernel hangs during startup:
 
-Note, unloading the MMU is overkill, but is done to mirror KVM's existing
-handling of INVPCID(all) and ensure the bug is squashed.  Future cleanup
-can be done to more precisely synchronize roots when servicing a guest
-TLB flush.
+(1) CONFIG_FUNCTION_GRAPH_TRACER=y
+(2) CONFIG_PREEMPT_TRACER=y
+(3) CONFIG_FTRACE_STARTUP_TEST=y
 
-If TDP is enabled, synchronizing the MMU is unnecessary even if nested
-TDP is in play, as a "legacy" TLB flush from L1 does not invalidate L1's
-TDP mappings.  For EPT, an explicit INVEPT is required to invalidate
-guest-physical mappings; for NPT, guest mappings are always tagged with
-an ASID and thus can only be invalidated via the VMCB's ASID control.
+When update the latest mainline kernel with the above two configs (1)
+and (2), the kernel starts normally, but it still hangs when execute
+the following command:
 
-This bug has existed since the introduction of KVM_VCPU_FLUSH_TLB.
-It was only recently exposed after Linux guests stopped flushing the
-local CPU's TLB prior to flushing remote TLBs (see commit 4ce94eabac16,
-"x86/mm/tlb: Flush remote and local TLBs concurrently"), but is also
-visible in Windows 10 guests.
+echo "function_graph" > /sys/kernel/debug/tracing/current_tracer
 
-Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-Fixes: f38a7b75267f ("KVM: X86: support paravirtualized help for TLB shootdowns")
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-[sean: massaged comment and changelog]
-Message-Id: <20210531172256.2908-1-jiangshanlai@gmail.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Without CONFIG_PREEMPT_TRACER=y, the above two kinds of kernel hangs
+disappeared, so it seems that CONFIG_PREEMPT_TRACER has some influences
+with function_graph tracer at the first glance.
+
+I use ejtag to find out the epc address is related with preempt_enable()
+in the file arch/mips/lib/mips-atomic.c, because function tracing can
+trace the preempt_{enable,disable} calls that are traced, replace them
+with preempt_{enable,disable}_notrace to prevent function tracing from
+going into an infinite loop, and then it can fix the kernel hang issue.
+
+By the way, it seems that this commit is a complement and improvement of
+commit f93a1a00f2bd ("MIPS: Fix crash that occurs when function tracing
+is enabled").
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/mips/lib/mips-atomic.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2982,6 +2982,19 @@ static void kvm_vcpu_flush_tlb_all(struc
- static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
+diff --git a/arch/mips/lib/mips-atomic.c b/arch/mips/lib/mips-atomic.c
+index de03838b343b..a9b72eacfc0b 100644
+--- a/arch/mips/lib/mips-atomic.c
++++ b/arch/mips/lib/mips-atomic.c
+@@ -37,7 +37,7 @@
+  */
+ notrace void arch_local_irq_disable(void)
  {
- 	++vcpu->stat.tlb_flush;
-+
-+	if (!tdp_enabled) {
-+               /*
-+		 * A TLB flush on behalf of the guest is equivalent to
-+		 * INVPCID(all), toggling CR4.PGE, etc., which requires
-+		 * a forced sync of the shadow page tables.  Unload the
-+		 * entire MMU here and the subsequent load will sync the
-+		 * shadow page tables, and also flush the TLB.
-+		 */
-+		kvm_mmu_unload(vcpu);
-+		return;
-+	}
-+
- 	static_call(kvm_x86_tlb_flush_guest)(vcpu);
- }
+-	preempt_disable();
++	preempt_disable_notrace();
  
+ 	__asm__ __volatile__(
+ 	"	.set	push						\n"
+@@ -53,7 +53,7 @@ notrace void arch_local_irq_disable(void)
+ 	: /* no inputs */
+ 	: "memory");
+ 
+-	preempt_enable();
++	preempt_enable_notrace();
+ }
+ EXPORT_SYMBOL(arch_local_irq_disable);
+ 
+@@ -61,7 +61,7 @@ notrace unsigned long arch_local_irq_save(void)
+ {
+ 	unsigned long flags;
+ 
+-	preempt_disable();
++	preempt_disable_notrace();
+ 
+ 	__asm__ __volatile__(
+ 	"	.set	push						\n"
+@@ -78,7 +78,7 @@ notrace unsigned long arch_local_irq_save(void)
+ 	: /* no inputs */
+ 	: "memory");
+ 
+-	preempt_enable();
++	preempt_enable_notrace();
+ 
+ 	return flags;
+ }
+@@ -88,7 +88,7 @@ notrace void arch_local_irq_restore(unsigned long flags)
+ {
+ 	unsigned long __tmp1;
+ 
+-	preempt_disable();
++	preempt_disable_notrace();
+ 
+ 	__asm__ __volatile__(
+ 	"	.set	push						\n"
+@@ -106,7 +106,7 @@ notrace void arch_local_irq_restore(unsigned long flags)
+ 	: "0" (flags)
+ 	: "memory");
+ 
+-	preempt_enable();
++	preempt_enable_notrace();
+ }
+ EXPORT_SYMBOL(arch_local_irq_restore);
+ 
+-- 
+2.30.2
+
 
 
