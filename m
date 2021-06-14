@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEB83A61BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89723A6294
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbhFNKvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50444 "EHLO mail.kernel.org"
+        id S234408AbhFNLBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:01:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233820AbhFNKoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:44:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D13EB61446;
-        Mon, 14 Jun 2021 10:36:08 +0000 (UTC)
+        id S234018AbhFNKwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:52:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F22BA6147D;
+        Mon, 14 Jun 2021 10:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666969;
-        bh=0PEOkMy6BleViziz664TLBeeJPhIJrUK18ritYu7c/I=;
+        s=korg; t=1623667175;
+        bh=TxUPBybTXrdBKhJ2d5K76pBOCVAEfFMYwRZhWsQqSI8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zfQRXPk3Sn2IYtD1E5SR9e1bof94fu3jnLjkK/oa2gcSa5Gu2cuWUXu+n8WwCRoRm
-         +chPVSKjjCF/Snn9zGEj3aeUr+xxh1xp+8bkEUu0XpWkaIgl23kMMDC3RAXl1aEkja
-         1eAjGrttWzw3UpQuSjmsxPTh5xoewNZjIIH8Yz8k=
+        b=KttWnJvmP/VqOO1bX18Lzb/yHnTzQUrS33XfjfybwLTUakYRBtW4vXYAN481b/REm
+         7m8ufafIO6+XEzVlRUB5baZqtR8fzpin5S1Tg6ji/u6uQup0pi8uIYrJOoRagrB1qC
+         8ZBQdC0l9QBV+lPEM2un5ZamurZvILs2OIt0uR4U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 4.19 48/67] usb: fix various gadget panics on 10gbps cabling
-Date:   Mon, 14 Jun 2021 12:27:31 +0200
-Message-Id: <20210614102645.408498498@linuxfoundation.org>
+        stable@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH 5.4 54/84] usb: gadget: f_fs: Ensure io_completion_wq is idle during unbind
+Date:   Mon, 14 Jun 2021 12:27:32 +0200
+Message-Id: <20210614102648.202962924@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +38,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Wesley Cheng <wcheng@codeaurora.org>
 
-commit 032e288097a553db5653af552dd8035cd2a0ba96 upstream.
+commit 6fc1db5e6211e30fbb1cee8d7925d79d4ed2ae14 upstream.
 
-usb_assign_descriptors() is called with 5 parameters,
-the last 4 of which are the usb_descriptor_header for:
-  full-speed (USB1.1 - 12Mbps [including USB1.0 low-speed @ 1.5Mbps),
-  high-speed (USB2.0 - 480Mbps),
-  super-speed (USB3.0 - 5Gbps),
-  super-speed-plus (USB3.1 - 10Gbps).
+During unbind, ffs_func_eps_disable() will be executed, resulting in
+completion callbacks for any pending USB requests.  When using AIO,
+irrespective of the completion status, io_data work is queued to
+io_completion_wq to evaluate and handle the completed requests.  Since
+work runs asynchronously to the unbind() routine, there can be a
+scenario where the work runs after the USB gadget has been fully
+removed, resulting in accessing of a resource which has been already
+freed. (i.e. usb_ep_free_request() accessing the USB ep structure)
 
-The differences between full/high/super-speed descriptors are usually
-substantial (due to changes in the maximum usb block size from 64 to 512
-to 1024 bytes and other differences in the specs), while the difference
-between 5 and 10Gbps descriptors may be as little as nothing
-(in many cases the same tuning is simply good enough).
+Explicitly drain the io_completion_wq, instead of relying on the
+destroy_workqueue() (in ffs_data_put()) to make sure no pending
+completion work items are running.
 
-However if a gadget driver calls usb_assign_descriptors() with
-a NULL descriptor for super-speed-plus and is then used on a max 10gbps
-configuration, the kernel will crash with a null pointer dereference,
-when a 10gbps capable device port + cable + host port combination shows up.
-(This wouldn't happen if the gadget max-speed was set to 5gbps, but
-it of course defaults to the maximum, and there's no real reason to
-artificially limit it)
-
-The fix is to simply use the 5gbps descriptor as the 10gbps descriptor,
-if a 10gbps descriptor wasn't provided.
-
-Obviously this won't fix the problem if the 5gbps descriptor is also
-NULL, but such cases can't be so trivially solved (and any such gadgets
-are unlikely to be used with USB3 ports any way).
-
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210609024459.1126080-1-zenczykowski@gmail.com
+Link: https://lore.kernel.org/r/1621644261-1236-1-git-send-email-wcheng@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/config.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/usb/gadget/function/f_fs.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/gadget/config.c
-+++ b/drivers/usb/gadget/config.c
-@@ -164,6 +164,14 @@ int usb_assign_descriptors(struct usb_fu
- {
- 	struct usb_gadget *g = f->config->cdev->gadget;
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -3585,6 +3585,9 @@ static void ffs_func_unbind(struct usb_c
+ 		ffs->func = NULL;
+ 	}
  
-+	/* super-speed-plus descriptor falls back to super-speed one,
-+	 * if such a descriptor was provided, thus avoiding a NULL
-+	 * pointer dereference if a 5gbps capable gadget is used with
-+	 * a 10gbps capable config (device port + cable + host port)
-+	 */
-+	if (!ssp)
-+		ssp = ss;
++	/* Drain any pending AIO completions */
++	drain_workqueue(ffs->io_completion_wq);
 +
- 	if (fs) {
- 		f->fs_descriptors = usb_copy_descriptors(fs);
- 		if (!f->fs_descriptors)
+ 	if (!--opts->refcnt)
+ 		functionfs_unbind(ffs);
+ 
 
 
