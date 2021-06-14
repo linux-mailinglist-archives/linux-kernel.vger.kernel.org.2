@@ -2,66 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA923A7175
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF7A3A7176
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbhFNVhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhFNVhA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:37:00 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC02C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:34:44 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id p5-20020a9d45450000b029043ee61dce6bso5190111oti.8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 14:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=F2CCCKKRYyKhK6w54cEYBR1fqEzkgZcbtv0dqGb7e4E=;
-        b=ZSY1rLZwza9380Bj1Fp0oWa4bb8YnoQk5EXz7TNWNh5d8cv4M6n7xKK1+RpDJ/g8Ge
-         p3D8AVsgRiuZ/BwgWxM70ma8P5kKmhx13i4xPI5tVkxFTmasVCaP1Hs7FgP9BM2mF+Hl
-         W0JUdIg5CvuVly4vHNiXpdUOixQ1N1i9a+bb4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F2CCCKKRYyKhK6w54cEYBR1fqEzkgZcbtv0dqGb7e4E=;
-        b=ZdZDvS45gZABpTNFecc/uPRBUMQFfGj5u+VDVRUVW8m14pkNF4EkSnRA1e32r+l3br
-         QVV3YnN/DVXWOVh6tIapJvyImVR+gKn7W7S5K17OudKfuiihRPvYULRpzoh8za+taya2
-         gsQJ1QZGEN7VVK0/YbL5ZcFZkbDr+2PcKr/J1rVnQ+GmsX6S0MdI19FEkL8oC71G0qqA
-         ixI+os+8lkm7fW5e5jfQAl9Bsg81G9LRDKD1NFh44wimOtjw0AArsJAsUj3djRF3ETnY
-         dU81hz9ICzMtZR07/i2FjzBWcUphxT3hUl52au2kCEAo8bFK+n1dnx3rkZvCHLvD8QPl
-         OlmQ==
-X-Gm-Message-State: AOAM532NfvVf47nG+9LcQw6mAdpR/IKjGv0Pwyxbz0lN5Fr8G7a48w64
-        z87QOdNjMWIy4bdgHeMeUB9zVw==
-X-Google-Smtp-Source: ABdhPJz/dWPck9iUhsOPX0NxKOCRduFfOUt01421264WcHJ3jvBe8hSUA+/rLl88ivee9L6BaW5iTg==
-X-Received: by 2002:a9d:1b05:: with SMTP id l5mr15077667otl.335.1623706483652;
-        Mon, 14 Jun 2021 14:34:43 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z6sm3325035oiz.39.2021.06.14.14.34.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 14:34:43 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/130] 5.10.44-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210614161424.091266895@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <44660c85-b4ad-0816-b60c-299595cf9ec1@linuxfoundation.org>
-Date:   Mon, 14 Jun 2021 15:34:41 -0600
+        id S232671AbhFNVjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:39:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27355 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232594AbhFNVjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 17:39:42 -0400
+IronPort-SDR: xNAy/e81YPOv5q2pRvUeDxLnViQFJMJSdqoI6AeBxMOL85C8THaQFnsmhaLN8+Pk/0MKFmiRHc
+ pTt6/gI/yx2g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="205915643"
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="205915643"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 14:37:36 -0700
+IronPort-SDR: I7Mm/rg0UCZZSwPpyzexFGL4qtaF+Ik80rtJg56L1lyH6oB6n5oaE4My+rXSyFLwbyQoddeNAk
+ vfOPvuVvRedQ==
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="621154130"
+Received: from unknown (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.156.97])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 14:37:35 -0700
+Subject: Re: [PATCH v1 05/11] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210602022136.2186759-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YMcXvzD2o7rWsl0W@zn.tnic>
+ <b0dff409-d084-bfc1-c260-e1732b5e8ee5@linux.intel.com>
+ <YMe34ptb8CCV7Vg9@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <ba91c178-406f-834c-e49c-06fa1d953971@linux.intel.com>
+Date:   Mon, 14 Jun 2021 14:37:32 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210614161424.091266895@linuxfoundation.org>
+In-Reply-To: <YMe34ptb8CCV7Vg9@zn.tnic>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,29 +60,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/14/21 10:15 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.44 release.
-> There are 130 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+
+
+On 6/14/21 1:11 PM, Borislav Petkov wrote:
+> On Mon, Jun 14, 2021 at 12:45:45PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+>> May be I should define a macro for it and use Mov to keep it uniform
+>> with other register updates.
 > 
-> Responses should be made by Wed, 16 Jun 2021 16:13:59 +0000.
-> Anything received after that time might be too late.
+> Macro?
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> There's the, well, *MOV* instruction, if you insist on keeping it
+> uniform. But this is not about keeping it uniform - it is about having
+> the code as clear as understandable as possible:
 > 
-> thanks,
 > 
-> greg k-h
+> 	/* Set RAX to TDCALL leaf function 0 */
+> 	xor %eax, %eax
+> 
+> Plain and simple and clear why the XORing is done.
+
+Ok. I will fix the comment.
+
+
+>> With the trace support, they should be able to see the flow before making
+>> the tdx_*_call(). That should be enough clue for debug right?
+> 
+> Are you expecting all those cloud users to trace their guests just to
+> figure that out? I'm sceptical they will...
+> 
+> Rather, I'd try to allocate a special error value that
+> do_tdx_hypercall() returns in %eax and then have the wrapper which will
+> puts %r10 on the stack, check that error value and panic with a nice
+> error message.
 > 
 
-Compiled and booted on my test system. No dmesg regressions.
+I will add r10 to struct tdx_hypercall_output and return it to callers to
+check it.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-thanks,
--- Shuah
+> 
+> Btw, where is that function used? Gurgling, it shows it in some MMIO
+> patch, I'm guessing that's still coming.
+> 
+> As to how to do it properly, you pass in
+> 
+> 	struct tdx_hypercall_output *out
+> 
+> as a function parameter and caller can pick out whatever it wants from
+> that struct.
+
+It looks like it is used only in MMIO use case now. I think we don't need
+it anymore. I will remove it.
+
+> 
+> Thx.
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
