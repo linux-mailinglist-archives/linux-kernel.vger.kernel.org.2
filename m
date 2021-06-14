@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346053A60E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0264C3A6263
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhFNKjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:39:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39142 "EHLO mail.kernel.org"
+        id S235267AbhFNLAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:00:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232911AbhFNKf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:35:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF2C613EE;
-        Mon, 14 Jun 2021 10:32:51 +0000 (UTC)
+        id S234311AbhFNKw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:52:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 536FE6147F;
+        Mon, 14 Jun 2021 10:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666771;
-        bh=Qr9pE1eXosZU4d7fe/+B6rCTVSYSYg7RlK/F8Cv6GlU=;
+        s=korg; t=1623667164;
+        bh=HkXy/29+KCg0SHfbfQwmDgrjiU6bCvAaME+XJXMrYqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ilygBoZS7LFntXezoCcHHft/8p7He3NkAYVIacIyhOcn6MjypE4hN2bYpwyZw6HMU
-         Acld2yfZOaiEahvfio+dY/dcPNbhlG18bE9+SGNvrKdrXgNKK2ctgciQfhoeTe0mFx
-         LRn/cVSMWge9J+WMTy8Wnv5jEk7Lf7up9wdmifdk=
+        b=em5Bf7cjUuMkQ9sWhbkI7ZDlrWO0WFHNvaKHycQN1WPGCIZ5gx3PiMfAd/iK+FPSi
+         CqOb0noVTw6kNBXcWdyRoOvDSuvTbkIsXyj6gfVU81jlpZh9a5m7OJ8perQWsBMuoh
+         Eop2h7WOtVO5awPiCKJGQbtJYXc7wWA2mlxqLQKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        =?UTF-8?q?NOMURA=20JUNICHI ?= <junichi.nomura@nec.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 08/49] cgroup: disable controllers at parse time
-Date:   Mon, 14 Jun 2021 12:27:01 +0200
-Message-Id: <20210614102642.133919412@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 24/84] net: appletalk: cops: Fix data race in cops_probe1
+Date:   Mon, 14 Jun 2021 12:27:02 +0200
+Message-Id: <20210614102647.178562986@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shakeel Butt <shakeelb@google.com>
+From: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
 
-[ Upstream commit 45e1ba40837ac2f6f4d4716bddb8d44bd7e4a251 ]
+[ Upstream commit a4dd4fc6105e54393d637450a11d4cddb5fabc4f ]
 
-This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
-too early usage of static_branch_disable()"). The commit 6041186a3258
-("init: initialize jump labels before command line option parsing") has
-moved the jump_label_init() before parse_args() which has made the
-commit a3e72739b7a7 unnecessary. On the other hand there are
-consequences of disabling the controllers later as there are subsystems
-doing the controller checks for different decisions. One such incident
-is reported [1] regarding the memory controller and its impact on memory
-reclaim code.
+In cops_probe1(), there is a write to dev->base_addr after requesting an
+interrupt line and registering the interrupt handler cops_interrupt().
+The handler might be called in parallel to handle an interrupt.
+cops_interrupt() tries to read dev->base_addr leading to a potential
+data race. So write to dev->base_addr before calling request_irq().
 
-[1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4@nec.com
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Reported-by: NOMURA JUNICHI(野村　淳一) <junichi.nomura@nec.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Tested-by: Jun'ichi Nomura <junichi.nomura@nec.com>
+Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cgroup/cgroup.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/net/appletalk/cops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index ada060e628ce..99783685f3d9 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5219,8 +5219,6 @@ int __init cgroup_init_early(void)
- 	return 0;
- }
- 
--static u16 cgroup_disable_mask __initdata;
--
- /**
-  * cgroup_init - cgroup initialization
-  *
-@@ -5278,12 +5276,8 @@ int __init cgroup_init(void)
- 		 * disabled flag and cftype registration needs kmalloc,
- 		 * both of which aren't available during early_init.
- 		 */
--		if (cgroup_disable_mask & (1 << ssid)) {
--			static_branch_disable(cgroup_subsys_enabled_key[ssid]);
--			printk(KERN_INFO "Disabling %s control group subsystem\n",
--			       ss->name);
-+		if (!cgroup_ssid_enabled(ssid))
- 			continue;
--		}
- 
- 		if (cgroup1_ssid_disabled(ssid))
- 			printk(KERN_INFO "Disabling %s control group subsystem in v1 mounts\n",
-@@ -5642,7 +5636,10 @@ static int __init cgroup_disable(char *str)
- 			if (strcmp(token, ss->name) &&
- 			    strcmp(token, ss->legacy_name))
- 				continue;
--			cgroup_disable_mask |= 1 << i;
-+
-+			static_branch_disable(cgroup_subsys_enabled_key[i]);
-+			pr_info("Disabling %s control group subsystem\n",
-+				ss->name);
- 		}
+diff --git a/drivers/net/appletalk/cops.c b/drivers/net/appletalk/cops.c
+index b3c63d2f16aa..5c89c2eff891 100644
+--- a/drivers/net/appletalk/cops.c
++++ b/drivers/net/appletalk/cops.c
+@@ -325,6 +325,8 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			break;
  	}
- 	return 1;
+ 
++	dev->base_addr = ioaddr;
++
+ 	/* Reserve any actual interrupt. */
+ 	if (dev->irq) {
+ 		retval = request_irq(dev->irq, cops_interrupt, 0, dev->name, dev);
+@@ -332,8 +334,6 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			goto err_out;
+ 	}
+ 
+-	dev->base_addr = ioaddr;
+-
+         lp = netdev_priv(dev);
+         spin_lock_init(&lp->lock);
+ 
 -- 
 2.30.2
 
