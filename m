@@ -2,61 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F223A6AB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DB03A6AB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbhFNPor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232776AbhFNPoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:44:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D2F761185;
-        Mon, 14 Jun 2021 15:42:42 +0000 (UTC)
-Date:   Mon, 14 Jun 2021 16:42:40 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, mark.rutland@arm.com, shan.gavin@gmail.com
-Subject: Re: [PATCH] arm64: mm: Pass origial fault address to
- handle_mm_fault()
-Message-ID: <20210614154239.GF30667@arm.com>
-References: <20210614122701.100515-1-gshan@redhat.com>
+        id S233944AbhFNPo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:44:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39364 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232776AbhFNPo6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 11:44:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623685375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IPwviCtPh++s8Xk5zz8ZTKLFy3Lywm0qH1bDrqc5rXg=;
+        b=cr82mFeCitBxgXtFUwvKQnQGkfL9M980OLFJlz7EO8tmIvjLXZjZIKCv7U1sgiGJx2KphU
+        2U/dEt4yREPXTGpjpsxzC9NsQLqyAdTFFiusAkyuGrmz8J4rjmLW0DIdNKsuT2Bs1V57qC
+        7WN8Jgj/QRvMJnz7G+FgAgzmBRvkDzE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-25EVXOF9OUGRcT9s-qQWUg-1; Mon, 14 Jun 2021 11:42:53 -0400
+X-MC-Unique: 25EVXOF9OUGRcT9s-qQWUg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCEB3800D55;
+        Mon, 14 Jun 2021 15:42:51 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.47])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 8D9B760C0F;
+        Mon, 14 Jun 2021 15:42:48 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 14 Jun 2021 17:42:51 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 17:42:47 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
+        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
+Message-ID: <20210614154246.GB13677@redhat.com>
+References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614122701.100515-1-gshan@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 08:27:01PM +0800, Gavin Shan wrote:
-> Currently, the lower bits of fault address is cleared before it's
-> passed to handle_mm_fault(). It's unnecessary since generic code
-> does same thing since the commit 1a29d85eb0f19 ("mm: use vmf->address
-> instead of of vmf->virtual_address").
-> 
-> This passes the original fault address to handle_mm_fault() in case
-> the generic code needs to know the exact fault address.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/mm/fault.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> index 871c82ab0a30..e2883237216d 100644
-> --- a/arch/arm64/mm/fault.c
-> +++ b/arch/arm64/mm/fault.c
-> @@ -504,7 +504,7 @@ static vm_fault_t __do_page_fault(struct mm_struct *mm, unsigned long addr,
->  	 */
->  	if (!(vma->vm_flags & vm_flags))
->  		return VM_FAULT_BADACCESS;
-> -	return handle_mm_fault(vma, addr & PAGE_MASK, mm_flags, regs);
-> +	return handle_mm_fault(vma, addr, mm_flags, regs);
+Hi Peter, sorry for delay,
 
-This seems to match most of the other architectures (arch/arm also masks
-out the bottom bits). So:
+On 06/11, Peter Zijlstra wrote:
+>
+> +/* Recursion relies on tail-call optimization to not blow away the stack */
+> +static bool __frozen(struct task_struct *p)
+> +{
+> +	if (p->state == TASK_FROZEN)
+> +		return true;
+> +
+> +	/*
+> +	 * If stuck in TRACED, and the ptracer is FROZEN, we're frozen too.
+> +	 */
+> +	if (task_is_traced(p))
+> +		return frozen(rcu_dereference(p->parent));
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Why does it use frozen(), not __frozen() ?
+
+This looks racy, p->parent can resume this task and then enter
+__refrigerator().
+
+Plus this task can be SIGKILL'ed even if it is traced.
+
+
+> +	/*
+> +	 * If stuck in STOPPED and the parent is FROZEN, we're frozen too.
+> +	 */
+> +	if (task_is_stopped(p))
+> +		return frozen(rcu_dereference(p->real_parent));
+
+(you could use ->parent in this case too and unify this check with the
+"traced" case above)
+
+I don't understand. How this connects to ->parent or ->real_parent?
+SIGCONT can come from anywhere and wake this stopped task up?
+
+
+I guess you do this to avoid freezable_schedule() in ptrace/signal_stop,
+and we can't use TASK_STOPPED|TASK_FREEZABLE, it should not run after
+thaw()... But see above, we can't rely on __frozen(parent).
+
+Oleg.
+
