@@ -2,111 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5960B3A60BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD57A3A60AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbhFNKhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:37:19 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:45855 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233102AbhFNKel (ORCPT
+        id S233476AbhFNKgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233354AbhFNKdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:34:41 -0400
-Received: by mail-oo1-f43.google.com with SMTP id q20-20020a4a6c140000b029024915d1bd7cso2523327ooc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:32:38 -0700 (PDT)
+        Mon, 14 Jun 2021 06:33:55 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42FEC06124A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:31:44 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id e22so8244806pgv.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a3zVS6nyi7LiL4xn1RNS2VQkLq9gRbTSKDhN/ZJSarM=;
-        b=FAyM5z53qVuI7g5skOJEti9RDZqIbJt0/3K/mjKqfLf0ipT1HoDrm0xpsDboofxzlA
-         mwuTZHM9E8FuZa4rhdTkkeqwLYDf/Nv90nU8z0wEPH/RjywIvYrVnJmFMZq1nWy/3ksY
-         byvogLI1Na5YRXurst+e6TFQNSwnEAefuQbQ2oN3JB/yeF4hjW3jAxptQS02OXcJgk43
-         5zj4cm18eGPOWdatgkAFfDTUgx34PUD+s4RNYcP7XmzC6UrAitd/JEghOKbVbhNN5E3i
-         CDDN9t6Oa+XSBaDEuDqLL+XXVhHa1ZZbXAYP4pqM87vnFETCcQjIxYtuTcCOBtBvqhqR
-         xveQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5czHbgzL3vY6Ionk62XhjUjH2/4cs72SA1CSkTg6PxA=;
+        b=l3ZMBxK7Aa/svGlWGrMLOHpEP4wDXqs1JHU32VVfm3F+p+WoN56/hU2KJmWHCMu2Mw
+         M5nlz8JQB+xuTJFtFjUTlN1PfnNxWnw46/w1lA/0nRJDOqVWY2//sHvkX4b51JbgmfX7
+         8W2yUuToXt6Rzy0PSqaHjndqb1QL2tZ0zgEfCE4IvqPeU0Em5oyNuz03dVjyA3odBtsY
+         pwxsmoBtjvb0xpjRJs3Q4f/0aXsFGVXfqAPiTSdj86vLOqH7CXBDvEdCPj+5O7s2Pfi5
+         DtAGHdB+xhGyDqj/L6pui28CKMA7lXWf+wdbUJIUK1a/Y8ezW+Wr7BnwTpuU0BYF6mvG
+         Kx2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a3zVS6nyi7LiL4xn1RNS2VQkLq9gRbTSKDhN/ZJSarM=;
-        b=MRzXzsM+JSJKhHDPtg2103HRQDYgk8UL7EpwssMCOJAaFF4R35VFTI3UHx+pgNTjdR
-         eZ+OnCxcVMRzZey4LX14bCLl/U+2MGm1mR9oxrvtd+84nAXAH03AhrWiCvCrIyTcdaaP
-         mEMhahJtF/j5crzK90/nhaJsZUe64r8F4VOPnvSSYvgMJ7DtAQC1Uj+Hab/+4SneAer9
-         AKy2HOW6yMMnlyeDrqvkZu4KnvKgPXWZrkvRP8oMMo9fp0UPi46XnKabH9diZqScfKd4
-         G7fzTN0Lb4Bt86bpdUsM/2/6sbU9r/mATJMzJbu9GRW9ar6KuAwxJzw25xUtc5Bnrdw/
-         Dl/Q==
-X-Gm-Message-State: AOAM533M6DLT2pQVt7FyOKbg4hWolexCaasLw1ydF0OlHykvVgSWGDvN
-        lCWBzbhsX3ZbZxgRHWZ4wG4Pt6ZMiNOPpBVDa/PgrA==
-X-Google-Smtp-Source: ABdhPJxQU9aS5c7LhdzMGD9O5VDN8lHkLArVFi8SlZOhS7/4OwgF7vi2WhiUmkc1b51ySGandx+KwIHmKaBN6Y5Fuv0=
-X-Received: by 2002:a4a:c101:: with SMTP id s1mr12588790oop.54.1623666698514;
- Mon, 14 Jun 2021 03:31:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5czHbgzL3vY6Ionk62XhjUjH2/4cs72SA1CSkTg6PxA=;
+        b=Dq2CXKG89v2SkwuTgzLSokgfKzEDpBuvZK+EnW1owkvATUHnYN0ddQ3Ir9pnJhGHV6
+         kFvGytY0DcclD5ZBmAwTj0/94j/b1N8VfsdAvw08l4+t899D21Rv+ZXZHcpJXMGUSunV
+         gLDV2y7Tw8Uz/Cfawd/9HJJu0bZ0EODrYjQKRyDTl5C6D91Tzn+MlLxw38ZhmaYI0ajV
+         3U6dt74eJHYMg3xTrKy8KvuhlVpzj+xZF94xNpUIzjFggVhY/jXsHBw1AQQu9yYPxdn9
+         rRrDFepWjL4oSP7Z/9Be4vL5lBoinoIius7xl/LTKrrFLdwB9CqLEtz4CwWHsqCw/kDw
+         z2Wg==
+X-Gm-Message-State: AOAM533XelvSfiwmISsk+HHRoNoXv/IfChCIS7Mlh8jmC2ZC82KcqksM
+        B5NvAsqaEBvJWF2OVl8NxB2vEQ==
+X-Google-Smtp-Source: ABdhPJxtrODYELtqQd7tArOOHD3a3oEBoqsqMIcjSrue0N37nrUp/fqbom9HnmPqpbhCDl9+ARCXEg==
+X-Received: by 2002:aa7:949d:0:b029:2ef:d1ca:ddd3 with SMTP id z29-20020aa7949d0000b02902efd1caddd3mr21218663pfk.39.1623666704331;
+        Mon, 14 Jun 2021 03:31:44 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id t1sm11445865pjo.33.2021.06.14.03.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 03:31:43 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 16:01:41 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/5] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
+Message-ID: <20210614103141.nnrd4sn756os52wh@vireshk-i7>
+References: <20210608222926.2707768-1-thara.gopinath@linaro.org>
+ <20210608222926.2707768-4-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-References: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
-In-Reply-To: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 14 Jun 2021 12:31:27 +0200
-Message-ID: <CANpmjNN2Jv=2AqH0ZbwrVwSG9XMzkyHGdhM6tYhoK5DokYbnig@mail.gmail.com>
-Subject: Re: [PATCH] gcov,x86: Mark GCOV broken for x86
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>, johannes.berg@intel.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608222926.2707768-4-thara.gopinath@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 at 12:17, Peter Zijlstra <peterz@infradead.org> wrote:
-> As recently discovered, there is no function attribute to disable the
-> -fprofile-generate instrumentation. As such, GCOV is fundamentally
-> incompatible with architectures that rely on 'noinstr' for correctness.
-
-GCOV today uses only -fprofile-arcs -ftest-coverage. But the problem
-is the same: https://godbolt.org/z/fr9cs4sar
-
-> Until such time as that compilers have added a function attribute to
-> disable this instrumentation, mark GCOV as broken.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On 08-06-21, 18:29, Thara Gopinath wrote:
+> Add interrupt support to notify the kernel of h/w initiated frequency
+> throttling by LMh. Convey this to scheduler via thermal presssure
+> interface.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 > ---
->  arch/x86/Kconfig    | 2 +-
->  kernel/gcov/Kconfig | 4 ++++
->  2 files changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 86dae426798b..c0f8c9d4c31a 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -75,7 +75,7 @@ config X86
->         select ARCH_HAS_FAST_MULTIPLIER
->         select ARCH_HAS_FILTER_PGPROT
->         select ARCH_HAS_FORTIFY_SOURCE
-> -       select ARCH_HAS_GCOV_PROFILE_ALL
-> +       select ARCH_HAS_GCOV_BROKEN
->         select ARCH_HAS_KCOV                    if X86_64 && STACK_VALIDATION
->         select ARCH_HAS_MEM_ENCRYPT
->         select ARCH_HAS_MEMBARRIER_SYNC_CORE
-> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-> index 58f87a3092f3..74b028a66ebe 100644
-> --- a/kernel/gcov/Kconfig
-> +++ b/kernel/gcov/Kconfig
-> @@ -1,10 +1,14 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  menu "GCOV-based kernel profiling"
->
-> +config ARCH_HAS_GCOV_BROKEN
-> +       def_bool n
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 100 ++++++++++++++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index f86859bf76f1..95e17330aa9d 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/pm_opp.h>
+>  #include <linux/slab.h>
+> +#include <linux/interrupt.h>
+>  
+>  #define LUT_MAX_ENTRIES			40U
+>  #define LUT_SRC				GENMASK(31, 30)
+> @@ -22,10 +23,13 @@
+>  #define CLK_HW_DIV			2
+>  #define LUT_TURBO_IND			1
+>  
+> +#define HZ_PER_KHZ			1000
 > +
->  config GCOV_KERNEL
->         bool "Enable gcov-based kernel profiling"
->         depends on DEBUG_FS
->         depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
-> +       depends on !ARCH_HAS_GCOV_BROKEN
->         select CONSTRUCTORS
->         default n
->         help
+>  struct qcom_cpufreq_soc_data {
+>  	u32 reg_enable;
+>  	u32 reg_freq_lut;
+>  	u32 reg_volt_lut;
+> +	u32 reg_current_vote;
+>  	u32 reg_perf_state;
+>  	u8 lut_row_size;
+>  };
+> @@ -33,7 +37,11 @@ struct qcom_cpufreq_soc_data {
+>  struct qcom_cpufreq_data {
+>  	void __iomem *base;
+>  	struct resource *res;
+> +	struct delayed_work lmh_dcvs_poll_work;
+>  	const struct qcom_cpufreq_soc_data *soc_data;
+> +	cpumask_var_t cpus;
+> +	unsigned long throttled_freq;
+> +	int lmh_dcvs_irq;
+>  };
+>  
+>  static unsigned long cpu_hw_rate, xo_rate;
+> @@ -251,10 +259,79 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
+>  	}
+>  }
+>  
+> +static inline unsigned long qcom_lmh_vote_to_freq(u32 val)
+> +{
+> +	return (val & 0x3FF) * 19200;
+> +}
+> +
+> +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
+> +{
+> +	struct cpufreq_policy policy;
+> +	struct dev_pm_opp *opp;
+> +	struct device *dev;
+> +	unsigned long max_capacity, capacity, freq_hz;
+> +	unsigned int val, freq;
+> +
+> +	val = readl_relaxed(data->base + data->soc_data->reg_current_vote);
+> +	freq = qcom_lmh_vote_to_freq(val);
+> +	freq_hz = freq * HZ_PER_KHZ;
+> +
+> +	/* Do I need to calculate ceil and floor ? */
+
+You don't know ?
+
+> +	dev = get_cpu_device(cpumask_first(data->cpus));
+> +	opp = dev_pm_opp_find_freq_floor(dev, &freq_hz);
+> +	if (IS_ERR(opp) && PTR_ERR(opp) == -ERANGE)
+> +		opp = dev_pm_opp_find_freq_ceil(dev, &freq_hz);
+> +
+> +	data->throttled_freq = freq_hz / HZ_PER_KHZ;
+> +
+
+What exactly are we trying to do here ? A comment would be good as
+well.
+
+> +	cpufreq_get_policy(&policy, cpumask_first(data->cpus));
+> +
+> +	/* Update thermal pressure */
+> +	max_capacity = arch_scale_cpu_capacity(cpumask_first(data->cpus));
+
+Set capacity of a single CPU from a policy ?
+
+> +	capacity = data->throttled_freq * max_capacity;
+> +	capacity /= policy.cpuinfo.max_freq;
+> +	/* Don't pass boost capacity to scheduler */
+> +	if (capacity > max_capacity)
+> +		capacity = max_capacity;
+> +	arch_set_thermal_pressure(data->cpus, max_capacity - capacity);
+
+You should really be using policy->cpus instead of allocating
+data->cpus..
+
+> +}
+> +
+> +static void qcom_lmh_dcvs_poll(struct work_struct *work)
+> +{
+> +	struct qcom_cpufreq_data *data;
+> +
+> +	data = container_of(work, struct qcom_cpufreq_data, lmh_dcvs_poll_work.work);
+> +
+> +	qcom_lmh_dcvs_notify(data);
+
+You should really move the below stuff the disable_irq_nosync(), it
+will make your life easier.
+
+> +	/**
+> +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
+> +	 * polling and switch back to interrupt mechanism
+> +	 */
+> +	if (data->throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(data->cpus)))
+> +		/* Clear the existing interrupts and enable it back */
+> +		enable_irq(data->lmh_dcvs_irq);
+> +	else
+> +		mod_delayed_work(system_highpri_wq, &data->lmh_dcvs_poll_work,
+> +				 msecs_to_jiffies(10));
+> +}
+> +
+> +static irqreturn_t qcom_lmh_dcvs_handle_irq(int irq, void *data)
+> +{
+> +	struct qcom_cpufreq_data *c_data = data;
+> +
+> +	/* Disable interrupt and enable polling */
+> +	disable_irq_nosync(c_data->lmh_dcvs_irq);
+> +	qcom_lmh_dcvs_notify(c_data);
+> +	mod_delayed_work(system_highpri_wq, &c_data->lmh_dcvs_poll_work, msecs_to_jiffies(10));
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct qcom_cpufreq_soc_data qcom_soc_data = {
+>  	.reg_enable = 0x0,
+>  	.reg_freq_lut = 0x110,
+>  	.reg_volt_lut = 0x114,
+> +	.reg_current_vote = 0x704,
+
+Should this be a different patch ?
+
+>  	.reg_perf_state = 0x920,
+>  	.lut_row_size = 32,
+>  };
+> @@ -285,6 +362,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  	void __iomem *base;
+>  	struct qcom_cpufreq_data *data;
+>  	int ret, index;
+> +	bool lmh_mitigation_enabled = false;
+
+You just overwrite it below, no need to initialize it.
+
+>  
+>  	cpu_dev = get_cpu_device(policy->cpu);
+>  	if (!cpu_dev) {
+> @@ -305,6 +383,8 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  
+>  	index = args.args[0];
+>  
+> +	lmh_mitigation_enabled = of_property_read_bool(pdev->dev.of_node, "qcom,support-lmh");
+> +
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, index);
+>  	if (!res) {
+>  		dev_err(dev, "failed to get mem resource %d\n", index);
+> @@ -329,6 +409,11 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  		goto unmap_base;
+>  	}
+>  
+> +	if (!alloc_cpumask_var(&data->cpus, GFP_KERNEL)) {
+> +		ret = -ENOMEM;
+> +		goto unmap_base;
+> +	}
+> +
+>  	data->soc_data = of_device_get_match_data(&pdev->dev);
+>  	data->base = base;
+>  	data->res = res;
+> @@ -347,6 +432,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  		goto error;
+>  	}
+>  
+> +	cpumask_copy(data->cpus, policy->cpus);
+>  	policy->driver_data = data;
+>  
+>  	ret = qcom_cpufreq_hw_read_lut(cpu_dev, policy);
+> @@ -370,6 +456,20 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  			dev_warn(cpu_dev, "failed to enable boost: %d\n", ret);
+>  	}
+>  
+> +	if (lmh_mitigation_enabled) {
+
+Shouldn't you move the allocation and setting of data->cpus here ? I
+suggest creating a separate routine for all initialization around this
+stuff.
+
+> +		data->lmh_dcvs_irq = platform_get_irq(pdev, index);
+> +		if (data->lmh_dcvs_irq < 0) {
+> +			ret = data->lmh_dcvs_irq;
+> +			goto error;
+> +		}
+> +		ret = devm_request_irq(dev, data->lmh_dcvs_irq, qcom_lmh_dcvs_handle_irq,
+> +				       0, "dcvsh-irq", data);
+
+I would rather pass policy as data here.
+
+> +		if (ret) {
+> +			dev_err(dev, "Error %d registering irq %x\n", ret, data->lmh_dcvs_irq);
+> +			goto error;
+> +		}
+> +		INIT_DEFERRABLE_WORK(&data->lmh_dcvs_poll_work, qcom_lmh_dcvs_poll);
+> +	}
+>  	return 0;
+>  error:
+>  	kfree(data);
+
+-- 
+viresh
