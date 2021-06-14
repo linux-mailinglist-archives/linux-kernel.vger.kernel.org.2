@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80F63A6312
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325D43A64AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbhFNLJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:09:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36242 "EHLO mail.kernel.org"
+        id S234092AbhFNL15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:27:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234633AbhFNK6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:58:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D70CD61625;
-        Mon, 14 Jun 2021 10:41:46 +0000 (UTC)
+        id S235389AbhFNLN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:13:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64CF5611BE;
+        Mon, 14 Jun 2021 10:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667307;
-        bh=oP5uqppbhMT+aMCdFfU/PluXUbOZINnOeEafkkCOHEQ=;
+        s=korg; t=1623667728;
+        bh=TV+TxsLCTq4YVM8Ca2NcWvrrpZeNG75TMCp4WcD7JfM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AS2O2X6r2NliIQ2O2WrBZ2HUXSwWf/i19PcswvLXA/wjbB2/Rz82ONgxuTDxLV3nE
-         NFf2DhQCTjPPTk/VDN7vuuNBDheHQvS71Tq55sYI0bNoXCS+IDScmx375L9gpcllXL
-         zbwf6KTgXZciDIpaftoItUqYyJFIRRk2mqh2DuNY=
+        b=E5ue1YHllCaiNXisatY9WFwZcmHiAfpzqdt8zidRIce2lexi+waCWBjqkpLB4fK4n
+         Zd5BL2cMWpj6zQjI/aMsWJA5+IqKMHa9vrwaXE70C7gJjd6qFaviKrPw+fndxJU6lu
+         4WZBRnGHWHhExCHvjl2RQF2NESla7v6K5o2yQNfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        =?UTF-8?q?NOMURA=20JUNICHI ?= <junichi.nomura@nec.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 021/131] cgroup: disable controllers at parse time
-Date:   Mon, 14 Jun 2021 12:26:22 +0200
-Message-Id: <20210614102653.726907409@linuxfoundation.org>
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.12 051/173] ALSA: hda/realtek: headphone and mic dont work on an Acer laptop
+Date:   Mon, 14 Jun 2021 12:26:23 +0200
+Message-Id: <20210614102659.852263281@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +39,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shakeel Butt <shakeelb@google.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit 45e1ba40837ac2f6f4d4716bddb8d44bd7e4a251 ]
+commit 57c9e21a49b1c196cda28f54de9a5d556ac93f20 upstream.
 
-This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
-too early usage of static_branch_disable()"). The commit 6041186a3258
-("init: initialize jump labels before command line option parsing") has
-moved the jump_label_init() before parse_args() which has made the
-commit a3e72739b7a7 unnecessary. On the other hand there are
-consequences of disabling the controllers later as there are subsystems
-doing the controller checks for different decisions. One such incident
-is reported [1] regarding the memory controller and its impact on memory
-reclaim code.
+There are 2 issues on this machine, the 1st one is mic's plug/unplug
+can't be detected, that is because the mic is set to manual detecting
+mode, need to apply ALC255_FIXUP_XIAOMI_HEADSET_MIC to set it to auto
+detecting mode. The other one is headphone's plug/unplug can't be
+detected by pulseaudio, that is because the pulseaudio will use
+ucm2/sof-hda-dsp on this machine, and the ucm2 only handle
+'Headphone Jack', but on this machine the headphone's pincfg sets the
+location to Front, then the alsa mixer name is "Front Headphone Jack"
+instead of "Headphone Jack", so override the pincfg to change location
+to Left.
 
-[1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4@nec.com
-
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Reported-by: NOMURA JUNICHI(野村　淳一) <junichi.nomura@nec.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Tested-by: Jun'ichi Nomura <junichi.nomura@nec.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BugLink: http://bugs.launchpad.net/bugs/1930188
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20210608024600.6198-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/cgroup/cgroup.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ sound/pci/hda/patch_realtek.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 5d1fdf7c3ec6..c8b811e039cc 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5665,8 +5665,6 @@ int __init cgroup_init_early(void)
- 	return 0;
- }
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6560,6 +6560,7 @@ enum {
+ 	ALC285_FIXUP_HP_SPECTRE_X360,
+ 	ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP,
+ 	ALC623_FIXUP_LENOVO_THINKSTATION_P340,
++	ALC255_FIXUP_ACER_HEADPHONE_AND_MIC,
+ };
  
--static u16 cgroup_disable_mask __initdata;
--
- /**
-  * cgroup_init - cgroup initialization
-  *
-@@ -5725,12 +5723,8 @@ int __init cgroup_init(void)
- 		 * disabled flag and cftype registration needs kmalloc,
- 		 * both of which aren't available during early_init.
- 		 */
--		if (cgroup_disable_mask & (1 << ssid)) {
--			static_branch_disable(cgroup_subsys_enabled_key[ssid]);
--			printk(KERN_INFO "Disabling %s control group subsystem\n",
--			       ss->name);
-+		if (!cgroup_ssid_enabled(ssid))
- 			continue;
--		}
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -8132,6 +8133,15 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC283_FIXUP_HEADSET_MIC,
+ 	},
++	[ALC255_FIXUP_ACER_HEADPHONE_AND_MIC] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x21, 0x03211030 }, /* Change the Headphone location to Left */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC255_FIXUP_XIAOMI_HEADSET_MIC
++	},
+ };
  
- 		if (cgroup1_ssid_disabled(ssid))
- 			printk(KERN_INFO "Disabling %s control group subsystem in v1 mounts\n",
-@@ -6245,7 +6239,10 @@ static int __init cgroup_disable(char *str)
- 			if (strcmp(token, ss->name) &&
- 			    strcmp(token, ss->legacy_name))
- 				continue;
--			cgroup_disable_mask |= 1 << i;
-+
-+			static_branch_disable(cgroup_subsys_enabled_key[i]);
-+			pr_info("Disabling %s control group subsystem\n",
-+				ss->name);
- 		}
- 	}
- 	return 1;
--- 
-2.30.2
-
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8168,6 +8178,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+ 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XPS),
+ 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell Latitude E6440", ALC292_FIXUP_DELL_E7X),
+@@ -8722,6 +8733,7 @@ static const struct hda_model_fixup alc2
+ 	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
+ 	{.id = ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP, .name = "alc287-ideapad-bass-spk-amp"},
+ 	{.id = ALC623_FIXUP_LENOVO_THINKSTATION_P340, .name = "alc623-lenovo-thinkstation-p340"},
++	{.id = ALC255_FIXUP_ACER_HEADPHONE_AND_MIC, .name = "alc255-acer-headphone-and-mic"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
 
 
