@@ -2,163 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036493A7266
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C2D3A726B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhFNXRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 19:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58884 "EHLO
+        id S229979AbhFNXWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 19:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhFNXRF (ORCPT
+        with ESMTP id S229649AbhFNXWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 19:17:05 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07693C061574;
-        Mon, 14 Jun 2021 16:15:02 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 642CCC01E; Tue, 15 Jun 2021 01:15:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623712500; bh=YNHbzCcTw605EWb92v6BlUcB7/rLkS8l6j0Q1u4Lez0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qB4vMmhW3qrAv6Fks6HEGpbqHF1DtTGAlf40pTNk56BRtTxA0FRdQtqbUixAegtyS
-         bDQZUX5NGsvWZ0vHNq+Jpn5rO2FTtgosIOzicn2wT8aCtDloRkdZ+hXk7P0LqVAJWl
-         87l0dtnJJsvWNuGs9RtUuWLLfJKP1xXZ5MPCQymva6p3Ru/JQyyiTd882xs/KtkBJR
-         OQbvKbp5QbXRT31L2p2ez9KXmPNW+PYCAeuXYNa59jHPm2sEZ8+yeSwKWWAddQ8Fyl
-         cD2OHrZPnvEpFGL8ZeGBD4O2HqFg8vSl8OyFiBkr9Vjy/95iKs5B4hXSS9I92E/65H
-         C6jnfSF395+Qw==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id E8A9DC01B;
-        Tue, 15 Jun 2021 01:14:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623712499; bh=YNHbzCcTw605EWb92v6BlUcB7/rLkS8l6j0Q1u4Lez0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FCg9F5JYNQdxDgxtDks08ZMoDOu77ORt5v6I7StqGhTaI/pOhMfqOAv5Nq5fM2ew5
-         KtGdBQ5huIKE+Gxqz/tM2AdxUMe+tlmHzVr0OD2efGltKFb8mjukcJou5bI33ek9c7
-         wPuHsXO1QdQInvwelLUbRWyCARg7T7Y7aXSEBnxcnXLVqqeU45UCWO3DZAMjUBDcex
-         XstotTMxgnPx+0uajNHu3x4sHNJ0E47rN4AM5faTXW6NSV3I6nVphqpTTsZYIrwj8+
-         EubW3gjztJZ/zQ+3oMb5OSx9M/fEtp9eq/NxaGzzMZh6abb71DHUIgirNJdPXQs5+j
-         oMPtyYrSAYBiQ==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 9b7c43a8;
-        Mon, 14 Jun 2021 23:14:52 +0000 (UTC)
-Date:   Tue, 15 Jun 2021 08:14:37 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Vivek Goyal <vgoyal@redhat.com>, viro@zeniv.linux.org.uk
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        dgilbert@redhat.com, v9fs-developer@lists.sourceforge.net,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] init/do_mounts.c: Add root="fstag:<tag>" syntax for root
- device
-Message-ID: <YMfi3Q50b1wV+lDW@codewreck.org>
-References: <20210608153524.GB504497@redhat.com>
- <YMCPPCbjbRoPAEcL@stefanha-x1.localdomain>
- <20210609154543.GA579806@redhat.com>
- <YMHKZhfT0CUgeLno@stefanha-x1.localdomain>
- <YMHOXn2cpGh1T9vz@codewreck.org>
- <YMXyW0KXc3HqdUAj@codewreck.org>
- <20210614142804.GA869400@redhat.com>
+        Mon, 14 Jun 2021 19:22:41 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C335C061574;
+        Mon, 14 Jun 2021 16:20:37 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3nVh4Nb4z9sW7;
+        Tue, 15 Jun 2021 09:20:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623712834;
+        bh=5aw13fDrCtD8VZ6UF825fYXfnyx98F0GAmobfvc9I34=;
+        h=Date:From:To:Cc:Subject:From;
+        b=A+Y0jWNKIW1cajyrVnIVP4wiu/7igdqG5ChxYUfxDZJuzv4Q7xiDyuKa63WJFe+uq
+         fVdPsDq2Dbg5hX32gBLaZlgmciBBBKA/yHuW97l9MO3t8l3VWDIlP4FixIf5Q6aLzT
+         Q8VzRtUDNY1Vaf2J9ng2N2e6JI7eK+FzGPg5+slV27vHBqkLd0QbXtUax6kgAt5jXh
+         goBsKnbHsDY5b3oDginVtKJAG51ze7dEQv/mLxs6wc9+B37hTR5tCppugYtvUXRZh+
+         NELbE7Z3q16YRFKOluaz8QCGCmftGNVEU04UKAYeZi+IrNY7JvOJgWuQ6IMuaGIN2n
+         RKhoKM+IW/meg==
+Date:   Tue, 15 Jun 2021 09:20:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: linux-next: manual merge of the arm64 tree with the arm tree
+Message-ID: <20210615092025.7c474d57@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210614142804.GA869400@redhat.com>
+Content-Type: multipart/signed; boundary="Sig_/CS4iZbUdB8pe4eI8_l9r8nU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vivek Goyal wrote on Mon, Jun 14, 2021 at 10:28:04AM -0400:
-> I am not a big fan of nobdev_filesystems array but I really don't feel
-> comfortable opening up this code by default to all filesystems having
-> flag FS_REQUIRES_DEV. Use cases of this code path are not well documented
-> and something somewhere will be broken and called regression.
-> 
-> I think nobdev_filesystems is sort of a misfit. Even mtd, ubi, cifs
-> and nfs are nobdev filesystems but they are not covered by this.
+--Sig_/CS4iZbUdB8pe4eI8_l9r8nU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I think it's fine being able to have these root mounted both ways, then
-eventually removing the old fs-specific options after a period of
-deprecation to have a unique and simple interface.
+Hi all,
 
-Maybe it's just a bit of a dream big attitude :-)
+Today's linux-next merge of the arm64 tree got a conflict in:
 
-> > I'd bite the bullet and use FS_REQUIRES_DEV (and move this part of the
-> > code just a bit below after the root_wait check just in case it matters,
-> 
-> Problem with moving this below root_wait check is that if user boots
-> with root_wait option for virtiofs/9p, it will loop infitely. Reason
-> being that ROOT_DEV=0 and device will never show up.
+  arch/arm64/kernel/process.c
 
-Hm, well, then don't use root_wait?! would be my first reaction.
+between commit:
 
-The reason I suggested to move below would be that there might be
-filesystems which handle both a block device and no block device, and
-for these we wouldn't want to break root_wait which would become kind of
-a switch saying "this really is a block device usecase even if the fs
-doesn't require dev" -- that's also the reason I was mostly optimistic
-even if we make it generic for all filesystems, there'd be this way out
-even if the thing is compiled in.
+  ab6cef1d1447 ("ARM: 9095/1: ARM64: Remove arm_pm_restart()")
 
+from the arm tree and commit:
 
-Ultimately if we go through the explicit whitelist that's not required
-anyway, and in that case it's probably better to check before as you've
-said.
+  b5df5b8307b1 ("arm64: idle: don't instrument idle code with KCOV")
 
+from the arm64 tree.
 
-> I am assuming that for out use cases, device will need to be present
-> at the time of boot. We can't have a notion of waiting for device to
-> show up.
-> 
-> > but at that point if something would mount with /dev/root but not with
-> > the raw root=argument then they probably do require a device!)
-> > 
-> > It could also be gated by a config option like e.g. CONFIG_ROOT_NFS and
-> > others all are to make sure it doesn't impact anyone who doesn't want to
-> > be impacted - I'm sure some people want to make sure their device
-> > doesn't boot off a weird root if someone manages to change kernel params
-> > so would want a way of disabling the option...
-> 
-> I guess I could do that. Given more than one filesystem will use this
-> option (virtiofs and 9p to begin with), so we will have to have a 
-> config option name which is little more generic and not filesystem
-> specific like CONFIG_ROOT_NFS or CONFIG_ROOT_CIFS.
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-Well there's the builtin check you added, and there's the ability to
-root boot from it that's historically always been separated.
+--=20
+Cheers,
+Stephen Rothwell
 
-The builtin checks you added actually doesn't matter all that much to
-me. I mean, it'll pass this step, but fail as it cannot mount later
-anyway, and it was an explicit request to have this filesystem in the
-command line: you've changed an error that says "I cannot mount 9p!" to
-"I cannot find root-device!" so it's not really a big deal.
+diff --cc arch/arm64/kernel/process.c
+index 5591725cebcc,161e8df31a0d..000000000000
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@@ -72,63 -71,8 +71,6 @@@ EXPORT_SYMBOL(__stack_chk_guard)
+  void (*pm_power_off)(void);
+  EXPORT_SYMBOL_GPL(pm_power_off);
+ =20
+- static void noinstr __cpu_do_idle(void)
+- {
+- 	dsb(sy);
+- 	wfi();
+- }
+-=20
+- static void noinstr __cpu_do_idle_irqprio(void)
+- {
+- 	unsigned long pmr;
+- 	unsigned long daif_bits;
+-=20
+- 	daif_bits =3D read_sysreg(daif);
+- 	write_sysreg(daif_bits | PSR_I_BIT | PSR_F_BIT, daif);
+-=20
+- 	/*
+- 	 * Unmask PMR before going idle to make sure interrupts can
+- 	 * be raised.
+- 	 */
+- 	pmr =3D gic_read_pmr();
+- 	gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
+-=20
+- 	__cpu_do_idle();
+-=20
+- 	gic_write_pmr(pmr);
+- 	write_sysreg(daif_bits, daif);
+- }
+-=20
+- /*
+-  *	cpu_do_idle()
+-  *
+-  *	Idle the processor (wait for interrupt).
+-  *
+-  *	If the CPU supports priority masking we must do additional work to
+-  *	ensure that interrupts are not masked at the PMR (because the core will
+-  *	not wake up if we block the wake up signal in the interrupt controller=
+).
+-  */
+- void noinstr cpu_do_idle(void)
+- {
+- 	if (system_uses_irq_prio_masking())
+- 		__cpu_do_idle_irqprio();
+- 	else
+- 		__cpu_do_idle();
+- }
+-=20
+- /*
+-  * This is our default idle handler.
+-  */
+- void noinstr arch_cpu_idle(void)
+- {
+- 	/*
+- 	 * This should do all the clock switching and wait for interrupt
+- 	 * tricks
+- 	 */
+- 	cpu_do_idle();
+- 	raw_local_irq_enable();
+- }
+ -void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
+--
+  #ifdef CONFIG_HOTPLUG_CPU
+  void arch_cpu_idle_dead(void)
+  {
 
+--Sig_/CS4iZbUdB8pe4eI8_l9r8nU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-What I was advocating for is the whole feature being gated by some
-option - my example with an embdedded device having 9p builtin (because
-for some reason they have everything builtin) but not wanting to boot on
-a tcp 9p rootfs still stands even if we're limiting this to a few
-filesystems.
+-----BEGIN PGP SIGNATURE-----
 
-If you're keeping the idea of tags CONFIG_ROOT_TAGS ?
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDH5DkACgkQAVBC80lX
+0Gziugf6ArWTkIJDHRWSyEnq/LcWXknrOEZK9XvX9/I38seZ4s/BjGbU2MvZeHaN
+ID/JHL0Ok6LZMRcOGoQfMwnGknEH8JvKAJIgExaK6M9huRHoj+iN3BagsH++yJFt
+tXiaEz58mOQDF5xILGcpUicC9SRIPcv6VhYSILHu3RWZO25S8OT2WOyom1Rd9sPR
+02Gpni8DHQp1rD+Dhoc2vZTzUdZXlNC6IpdZOQ6fgt4mpXcZQF5BF24wMEmNewpT
+13cVxr/2/K3/+Se0OiAfwQZJL8aN+h2h++uALKOIHK3UUaIpNFTyK/q9Uc798555
+cHrJJFNbJASDVeDiFfdLxMqZ/skOHA==
+=tSq3
+-----END PGP SIGNATURE-----
 
-
-> > Also, matter-of-factedly, how is this going to be picked up?
-> > Is the plan to send it directly to Linus as part of the next virtiofs
-> > PR? Going through Al Viro?
-> 
-> I was hoping that this patch can be routed through Al Viro.
-
-Sounds good to me as well - I've upgraded him to To: to get his
-attention.
-(v2 has been sent as "[PATCH v2 0/2] Add support to boot virtiofs and
-9pfs as rootfs"; I'll review/retest in the next few days)
-
--- 
-Dominique
+--Sig_/CS4iZbUdB8pe4eI8_l9r8nU--
