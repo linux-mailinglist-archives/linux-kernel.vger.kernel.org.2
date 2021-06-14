@@ -2,131 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7853B3A7272
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FBB3A7288
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbhFNX2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 19:28:22 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57901 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhFNX2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 19:28:21 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3ndM2Z21z9sW7;
-        Tue, 15 Jun 2021 09:26:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623713176;
-        bh=t6ATnoOYPpJMGmFo2AhsznoFooeXAebu8YAy2+PmRf4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hlHYPDkJ9U1VK5YsUTN/MHCDzPVyTz8m+GWsBoOYXQLj6GNC7eQz8tWbvwHzbNslG
-         G4UObBcyDtM6WQhJHq6CBmh/uFkYED+RMC+BcY4HxmNnR73YUDmNRbe5YfdJF9VaMD
-         4vmUrS4/Y/3r+XeoZLM5Kh4tl2XpbO+qVNo+JAgByUwVL1ZXpfmnQeSM0TK9hZ8Kpa
-         UIP+WTW0l5ilxFMaeyzRdcOe1cAX+so6wxZXjstOaryPrjo4EuZTOvUT/F+RvoiNTC
-         PsshRp1TCji6ThCl7XfpVKjVCYeN88ds9V4yVgwH8gxIsG6T2SWG4qQMgj8J5lGrb5
-         ry3ucflahNDxg==
-Date:   Tue, 15 Jun 2021 09:26:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: linux-next: manual merge of the risc-v tree with Linus' tree
-Message-ID: <20210615092614.2adc91af@canb.auug.org.au>
+        id S231286AbhFNXiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 19:38:13 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:33760 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhFNXiM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 19:38:12 -0400
+Received: by mail-pj1-f54.google.com with SMTP id k22-20020a17090aef16b0290163512accedso789678pjz.0;
+        Mon, 14 Jun 2021 16:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lr6aILUoCbQ0hKwSxYI3cPDsVRTQKFfkYKOXdzGE+8Y=;
+        b=QnHLJOqXafWl0e3J2N2LKnzvddczLeLXNBfNP5AcHP3c60nLsDNpaFEbGVB6fp3z7Z
+         OJo14j2hO9ECwtGMveRrWJTFqafDlIL4Q4esiUU45+XpQe4JM21qHACPmCfXWCXZOoc/
+         OOjFKZbiQ3AWpZ2TBD2//u3CF0rcjZT1AzeJnQvGsdp0FfWQw3OySrR2yzIWrAKIQ61U
+         j+vph7uVJ6yrglDy93CfNh8B1a6Ujqsg/O42nmqgBHDSvKq7MatenMGZ9GExeNJ6btg0
+         73CxzwKYyk3pDdDyzT/2u0yXBAmtgR+Bj939d9cypfo83mDng2e5dQbmmdzNS4IZHs4c
+         XEWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lr6aILUoCbQ0hKwSxYI3cPDsVRTQKFfkYKOXdzGE+8Y=;
+        b=geVenMZUWrvxCWr1TQTX0Ad4dUEy27GuWzvP+MLevwX5BeJhiCYCMMqnVpifE8roix
+         YRXotra4lnFUzXgiob7Vngg4/lKBBKrThZYbz9cCA02P5amrjKre7nzj/YC6Y8TQvUTL
+         S0vY4mxWtNTNgrH9S0BWNHTVm8KAEwTKkwn+2tQRhh/zV6DaZ249z9v5LTZbwVD1tSce
+         Qe2GnT56ccSqJxgm7Z9AQHnOGxKdTceAiyM2Fj7r6Vqzk8t4V3FdJS61mpQi9zbMlf0X
+         klmSRSZEtyPp+G2y2wqY9s/5J3gjhp6IC7vJVsU/cVX3h0HxUXIvEkZfpI2LxjhrI4Z3
+         JIzg==
+X-Gm-Message-State: AOAM533KdjQnxGSg572RvXAmQRfmnJl0IkLXwmtIi8fsVq5CViDewdi5
+        Gb3u7YS/zVtdYK+oUP1GuiE=
+X-Google-Smtp-Source: ABdhPJzeU2mJGkBEiQkypCz/F5fvh7ADZhdu/3wyH2ITec5XcWTsIN5i4qV1USqwzLmTvik8YSBOxw==
+X-Received: by 2002:a17:90b:3b92:: with SMTP id pc18mr21241387pjb.100.1623713708821;
+        Mon, 14 Jun 2021 16:35:08 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id q9sm10149196pjd.9.2021.06.14.16.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 16:35:08 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 07:35:00 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     David Miller <davem@davemloft.net>
+Cc:     changbin.du@gmail.com, viro@zeniv.linux.org.uk, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, xiyou.wangcong@gmail.com,
+        David.Laight@ACULAB.COM, christian.brauner@ubuntu.com
+Subject: Re: [PATCH v4] net: make get_net_ns return error if NET_NS is
+ disabled
+Message-ID: <20210614233500.5xkkyzmbu7dzymxv@mail.google.com>
+References: <20210611142959.92358-1-changbin.du@gmail.com>
+ <20210614.121234.1863995090731912256.davem@davemloft.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_bx4Ib2ZuFtz2k.2p9MMZOB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614.121234.1863995090731912256.davem@davemloft.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_bx4Ib2ZuFtz2k.2p9MMZOB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 14, 2021 at 12:12:34PM -0700, David Miller wrote:
+> 
+> I applied an earlie5r version of this chsange already, so you will
+> need to send relative fixups.
+>
+That version is fine. This one just does a rebase.
 
-Hi all,
+> Thank you.
 
-Today's linux-next merge of the risc-v tree got a conflict in:
-
-  arch/riscv/Kconfig
-
-between commit:
-
-  42e0e0b453bc ("riscv: code patching only works on !XIP_KERNEL")
-
-from Linus' tree and commits:
-
-  3332f4190674 ("riscv: mremap speedup - enable HAVE_MOVE_PUD and HAVE_MOVE=
-_PMD")
-  14512690a165 ("riscv: Enable HAVE_ARCH_HUGE_VMAP for 64BIT")
-
-from the risc-v tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
+-- 
 Cheers,
-Stephen Rothwell
-
-diff --cc arch/riscv/Kconfig
-index 18ec0f9bb8d5,227033595994..000000000000
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@@ -61,11 -60,12 +61,12 @@@ config RISC
-  	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
-  	select HANDLE_DOMAIN_IRQ
-  	select HAVE_ARCH_AUDITSYSCALL
-+ 	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT
- -	select HAVE_ARCH_JUMP_LABEL
- -	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- +	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
- +	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
-  	select HAVE_ARCH_KASAN if MMU && 64BIT
-  	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
- -	select HAVE_ARCH_KGDB
- +	select HAVE_ARCH_KGDB if !XIP_KERNEL
-  	select HAVE_ARCH_KGDB_QXFER_PKT
-  	select HAVE_ARCH_MMAP_RND_BITS if MMU
-  	select HAVE_ARCH_SECCOMP_FILTER
-@@@ -80,9 -81,11 +82,11 @@@
-  	select HAVE_GCC_PLUGINS
-  	select HAVE_GENERIC_VDSO if MMU && 64BIT
-  	select HAVE_IRQ_TIME_ACCOUNTING
- -	select HAVE_KPROBES
- -	select HAVE_KPROBES_ON_FTRACE
- -	select HAVE_KRETPROBES
- +	select HAVE_KPROBES if !XIP_KERNEL
- +	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
- +	select HAVE_KRETPROBES if !XIP_KERNEL
-+ 	select HAVE_MOVE_PMD
-+ 	select HAVE_MOVE_PUD
-  	select HAVE_PCI
-  	select HAVE_PERF_EVENTS
-  	select HAVE_PERF_REGS
-
---Sig_/_bx4Ib2ZuFtz2k.2p9MMZOB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDH5ZYACgkQAVBC80lX
-0GwLYwgAjT/kEjzysOIaR0F47ozyxwFQnwcWbCWU2p1Plzmo0/6t4wGzznrNNbAK
-spUeP8u1TQWt/HVC/TkT/GkSvGss6LmSCm5l8WY1+MzvTw43nFwqZHZkhTrLyKCv
-IUGTsjUcPwl+KO+LkphpYbsGTknnswNhXthAMNi4OS4DP1+NDmeLzFymNzYAmrXE
-jcX4XhG0LPO6UQIx0ZJz02Jqxg9utYBhwLSO+WFxsqLMN8NTr9xfgHOym7HG+qiu
-yPOcURkeJVhlL0MfCT1wu951vDm+wNherOTcY/BJVi2bI8NUlAXHGCg1IGQrxYTL
-7qHVwWVLdaeHS4Q//POUi0kqQCFvxA==
-=O1qM
------END PGP SIGNATURE-----
-
---Sig_/_bx4Ib2ZuFtz2k.2p9MMZOB--
+Changbin Du
