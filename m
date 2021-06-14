@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B416C3A62F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B18A3A64D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234852AbhFNLG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:06:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
+        id S236075AbhFNL3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:29:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234443AbhFNK46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:56:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB5CF6162C;
-        Mon, 14 Jun 2021 10:41:14 +0000 (UTC)
+        id S235705AbhFNLOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:14:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0836E6120E;
+        Mon, 14 Jun 2021 10:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667275;
-        bh=Eadg3O4eVjpUaIYIZY4RSD/AbxTgxm/jljOAk0mObGM=;
+        s=korg; t=1623667759;
+        bh=GYnBavskh1K21ICisCRLOl5jmMjynEhXhWNdlUbVhYM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GeTbV16eAI79IIYmr3FBZDkY7KbKGkfYtMrubrt9vIzZjGgKt8MgiPdizV+R8s5p9
-         KqP4iiN0SBeZqDpnzJju934JL9l5cXL+ZKn43k8NJ+gypR47frVpwud7NlM8kObpz2
-         SL6vFAnl/eEaQB4rKwIWhl+qIYBfozPHGyR90DqA=
+        b=c6Cvkif1LQ9itMD0Bb8rIcMyaeYhnt6O3utoYRfB5SqTJB7SwFYgVCtEE91xBQpbK
+         W3fH4FJs+Bz7gZgs37iAaapWLmxG41Bi5LijhPwx/Fu67yQPUnF6d1OSC5UmztWqEm
+         PrKBZlZr693irZFNjaewpk9aB32vOCjXzPuW7l8s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 001/131] proc: Track /proc/$pid/attr/ opener mm_struct
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 030/173] scsi: hisi_sas: Drop free_irq() of devm_request_irq() allocated irq
 Date:   Mon, 14 Jun 2021 12:26:02 +0200
-Message-Id: <20210614102653.013097380@linuxfoundation.org>
+Message-Id: <20210614102659.151131206@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,65 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit 591a22c14d3f45cc38bd1931c593c221df2f1881 upstream.
+[ Upstream commit 7907a021e4bbfa29cccacd2ba2dade894d9a7d4c ]
 
-Commit bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
-tried to make sure that there could not be a confusion between the opener of
-a /proc/$pid/attr/ file and the writer. It used struct cred to make sure
-the privileges didn't change. However, there were existing cases where a more
-privileged thread was passing the opened fd to a differently privileged thread
-(during container setup). Instead, use mm_struct to track whether the opener
-and writer are still the same process. (This is what several other proc files
-already do, though for different reasons.)
+irqs allocated with devm_request_irq() should not be freed using
+free_irq(). Doing so causes a dangling pointer and a subsequent double
+free.
 
-Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
-Reported-by: Andrea Righi <andrea.righi@canonical.com>
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
-Fixes: bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210519130519.2661938-1-yangyingliang@huawei.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Acked-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/base.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2675,6 +2675,11 @@ out:
- }
- 
- #ifdef CONFIG_SECURITY
-+static int proc_pid_attr_open(struct inode *inode, struct file *file)
-+{
-+	return __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
-+}
-+
- static ssize_t proc_pid_attr_read(struct file * file, char __user * buf,
- 				  size_t count, loff_t *ppos)
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+index 4580e081e489..b21246b1ba99 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+@@ -4799,14 +4799,14 @@ hisi_sas_v3_destroy_irqs(struct pci_dev *pdev, struct hisi_hba *hisi_hba)
  {
-@@ -2705,7 +2710,7 @@ static ssize_t proc_pid_attr_write(struc
- 	int rv;
+ 	int i;
  
- 	/* A task may only write when it was the opener. */
--	if (file->f_cred != current_real_cred())
-+	if (file->private_data != current->mm)
- 		return -EPERM;
+-	free_irq(pci_irq_vector(pdev, 1), hisi_hba);
+-	free_irq(pci_irq_vector(pdev, 2), hisi_hba);
+-	free_irq(pci_irq_vector(pdev, 11), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 1), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 2), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 11), hisi_hba);
+ 	for (i = 0; i < hisi_hba->cq_nvecs; i++) {
+ 		struct hisi_sas_cq *cq = &hisi_hba->cq[i];
+ 		int nr = hisi_sas_intr_conv ? 16 : 16 + i;
  
- 	rcu_read_lock();
-@@ -2755,9 +2760,11 @@ out:
+-		free_irq(pci_irq_vector(pdev, nr), cq);
++		devm_free_irq(&pdev->dev, pci_irq_vector(pdev, nr), cq);
+ 	}
+ 	pci_free_irq_vectors(pdev);
  }
- 
- static const struct file_operations proc_pid_attr_operations = {
-+	.open		= proc_pid_attr_open,
- 	.read		= proc_pid_attr_read,
- 	.write		= proc_pid_attr_write,
- 	.llseek		= generic_file_llseek,
-+	.release	= mem_release,
- };
- 
- #define LSM_DIR_OPS(LSM) \
+-- 
+2.30.2
+
 
 
