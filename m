@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B2E3A6E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5105A3A6E86
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233274AbhFNTFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        id S233681AbhFNTFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232864AbhFNTFJ (ORCPT
+        with ESMTP id S233387AbhFNTFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:05:09 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109ECC061574;
-        Mon, 14 Jun 2021 12:03:06 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id v11so7101275ply.6;
-        Mon, 14 Jun 2021 12:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=c4vDBA2pQI9Hg281lK4bF+Io/SUS60zAjWWC6JvvRXE=;
-        b=NswVS50DD9YLApfMNsn5nSEXFv646/tKu6pvUkAT6OsPE7nal5U7C0y9KYAXiRiaag
-         snqXGiJtB/wtr7zUuEPRUZEe6pth+IHd0ZN3s1pXWGHWZN7pcJ3pZ26GLqVlGKKfzCIu
-         B+tFIcbELehqu9vkbkByBamZ0DTlZAJ8d0DcZ3UyhuaEKOcRQPaHpxdf2DXEzcPhaHKW
-         Dgj5SlccUckuercqnVF4ekTfOQs81WYyzIG0XRKPalcCYumQYYeeqLF2Kgg0eEWiFBhj
-         qvV5E/3IshlHQ8629wRcDL/Usj4CsKQgVrHwQy06YKFFrbFH3Qn8aVf6Cf7JrR0v/32P
-         zObw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=c4vDBA2pQI9Hg281lK4bF+Io/SUS60zAjWWC6JvvRXE=;
-        b=SiishmYv1g8Fa95LXlqwQiExekofJcvHSX0EKe5GSuH7d3NSnez36Jm3gO5pfPDW42
-         KPBpQGzRGKKTEtJVzjX91QQQpqzVawvYESJ65nkHosLDoGQz8hFEgB+zq2+4NSEuUYxV
-         qpS4WYsRN8a/uic1KRFQoj1KUuKct8hnDqjprcFy6WvXg9FZZR1cpPCZsRe8a/oTGjwz
-         YAQus6ZmA3pTTn5ASyextiR3nFaLx6oQosa3yrW31HCglBhoxcpJgJuLT0KkRyd/ie0J
-         UypKhbzlWPAC7byF/644vV+o2j27jxF+EVA5bOU3l0if4BtX9WBQFCLYn9VcvdW0xpmb
-         bPnw==
-X-Gm-Message-State: AOAM533PZj/QeLLcL4Yd6eG5HF0f1VBYkD7bXovpVHdiub5FH5IsuIpT
-        fPm3rBzsUoNmnqZnmSEnbN7ecdwB3D9RexRyyyOJ0A==
-X-Google-Smtp-Source: ABdhPJwYdV1RMgyR0GrTbSErQ0r24XMhXLrfv5d4AnAqv0tjOwrvJZ39OXgLsLsrXj4CBzrwIeZLig==
-X-Received: by 2002:a17:90a:6286:: with SMTP id d6mr624299pjj.87.1623697381872;
-        Mon, 14 Jun 2021 12:03:01 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id d15sm186287pjr.47.2021.06.14.12.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 12:03:01 -0700 (PDT)
-Message-ID: <60c7a7e5.1c69fb81.a4ca7.0c60@mx.google.com>
-Date:   Mon, 14 Jun 2021 12:03:01 -0700 (PDT)
-X-Google-Original-Date: Mon, 14 Jun 2021 19:02:55 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210614161424.091266895@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/130] 5.10.44-rc2 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 14 Jun 2021 15:05:15 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AE8C061574;
+        Mon, 14 Jun 2021 12:03:12 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f09b9000b7fffe760596043.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:b900:b7f:ffe7:6059:6043])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A45541EC036C;
+        Mon, 14 Jun 2021 21:03:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623697390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/3kMPVen/9z57u2UbxMExDvEmMgUhoVDDFZvPh6gxAo=;
+        b=XuoyLLRbZevtMCxqnibgVla732fFMZoVlK33TxMxxQUlxz3GPgAFbXE3jlB7UUUjg6h99/
+        IW7ku0XcDx5s+rQByrGWw/+wnwKTUcUOpIc/hNQClxs8DtchLYYBiXCS9e+kBMK2z47Q4/
+        1uleZYgfef/L0DIl2EU1wsc7OXHxoMw=
+Date:   Mon, 14 Jun 2021 21:03:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 11/22] x86/sev: Add helper for validating
+ pages in early enc attribute changes
+Message-ID: <YMen5wVqR31D/Q4z@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-12-brijesh.singh@amd.com>
+ <YMI02+k2zk9eazjQ@zn.tnic>
+ <d0759889-94df-73b0-4285-fa064eb187cd@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d0759889-94df-73b0-4285-fa064eb187cd@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 18:15:07 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.44 release.
-> There are 130 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 16 Jun 2021 16:13:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Jun 14, 2021 at 07:45:11AM -0500, Brijesh Singh wrote:
+> IMO, there is no need to add a warning. This case should happen if its
+> either a hypervisor bug or hypervisor does not follow the GHCB
+> specification. I followed the SEV-ES vmgexit handling  and it does not
+> warn if the hypervisor returns a wrong response code. We simply
+> terminate the guest.
 
-5.10.44-rc2 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+This brings my regular user-friendliness question: will the guest user
+know what happened or will the guest simply disappear/freeze without any
+hint as to what has happened so that a post-mortem analysis would turn
+out hard to decipher?
 
+> I did thought about reusing the VMGEXIT defined macro
+> SNP_PAGE_STATE_{PRIVATE, SHARED} but I was not sure if you will be okay
+> with that.
+
+Yeah, I think that makes stuff simpler. Unless there's something
+speaking against it which we both are not thinking of right now.
+
+> Additionally now both the function name and macro name will
+> include the "SNP". The call will look like this:
+> 
+> snp_prep_memory(paddr, SNP_PAGE_STATE_PRIVATE)
+
+Yap, looks ok to me.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
