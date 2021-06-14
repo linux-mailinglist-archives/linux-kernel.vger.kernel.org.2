@@ -2,432 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFFB3A5F69
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327FA3A5F73
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbhFNJxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:53:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55264 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232752AbhFNJxL (ORCPT
+        id S232820AbhFNJy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232815AbhFNJy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:53:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A7E5B21978;
-        Mon, 14 Jun 2021 09:51:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623664267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ADpTy1Zsz+YbXQxTcfSvsIEb4OaYKOLvMPfGISmBi/w=;
-        b=oDbB5BUJOLmHLTQP8nZZcsRjKHsbYgE4ls1yW45QOQ+bxakqgfUmYAAcc7fgDAM5K+MLJx
-        /hRShLJJw6s8W0Uffd8bew356/OX9BPKLzD+RSh4xODqQDGPiFHUDMbNIML++FDskYAAKb
-        njvKpF2N60hMC7a1HvlDg2LzmMFewW8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623664267;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ADpTy1Zsz+YbXQxTcfSvsIEb4OaYKOLvMPfGISmBi/w=;
-        b=BjyVGykxE34GN41hhuif4YcFLs81vP53GGU3gwK+M5Tcybqa4Uqclf0F/GfrY1YaOfcex+
-        VETnzjnEc25usXCw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 8CCACA3B87;
-        Mon, 14 Jun 2021 09:51:07 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 668161F2B82; Mon, 14 Jun 2021 11:51:07 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 11:51:07 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: require ->set_page_dirty to be explicitly wire up
-Message-ID: <20210614095107.GD26615@quack2.suse.cz>
-References: <20210614061512.3966143-1-hch@lst.de>
- <20210614061512.3966143-4-hch@lst.de>
+        Mon, 14 Jun 2021 05:54:27 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C98EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 02:52:24 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id g4so9417266pjk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 02:52:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tyrwULaDA/8yLqlpZdEOiGOlczFmIcq5jIHr0JXrByc=;
+        b=igPrVeoHcTmiAINqhls6RiJIDB5nLDcSwdZ3KpExZuE8yIUZMRE1RVmBm+B0fXRIyB
+         6ew0i/Ft0rDT+XS5FZf4NnMvWhY8OhRlIhSSvjrha4+p9GtHzdWDfp/C9QLrdWDJsxmX
+         qxp4xFgElsZTEkQTGWYkHbx6zEz7RFqykq/1SlcX5WQ9RjPmy16hpDvvmEmmv0A3GcL6
+         HLSCp5yL4L6wJ82932X6X9djic9QkAGXl4cCM25kjm+J1bMx1Q53X9ivtme2uTZv8kKI
+         Wgc+c7O5qFXbU1v8N5gb7swqmNalHRSEHxyDVGXgnzJPySQT21tPHhCi6QkTzJn/52ZU
+         shVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tyrwULaDA/8yLqlpZdEOiGOlczFmIcq5jIHr0JXrByc=;
+        b=aXsZp6YY62EyM1JZAE88yRE8kkSv8Tbjy9SvzhKWtczK2HE8yDyrcD59pDDN70vsom
+         5R23uTZyUZ6c6yNEetZeqwxohxCgNPshzj4EuOjkSo37/ggefL+nS+0i+cVnQpqbQCe+
+         hgjLlE+xo9diCjgKy+jKQkZwjcp8jpqy5ZNWw4NNgYafVQNkZiN6vxE/sqlEs1Z9yGr4
+         t6btKn0oF2aiXpjMRVJD46fW07N4aTPMb2BPlolqNfK4pB7LELBhS6CDIbWBmi0ggU0D
+         jPeirMRosGmEClXpF+XQrfqyS0SCgdO2MmZEZC6H6bJnL5VcRBCHqX3jVZuEJyLVNckt
+         bpoA==
+X-Gm-Message-State: AOAM533Xtler6zNOlzdWdEHM1pLBb3LmnLBxg3akoNCgxWdDxmDdouLI
+        HXZkr4M2oUFjQTo16opowRXgCw==
+X-Google-Smtp-Source: ABdhPJzrnSMBDHqHbJTk9n5Gre9pL7dGgqKtzvv6r3635rG525QZ1LkuwmofSJGB7i19czbV3jBH/Q==
+X-Received: by 2002:a17:90a:2d8e:: with SMTP id p14mr17631924pjd.131.1623664343718;
+        Mon, 14 Jun 2021 02:52:23 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id v1sm12224241pfi.194.2021.06.14.02.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 02:52:23 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 15:22:21 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <20210614095221.7qngyzhbxbckolpj@vireshk-i7>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
+ <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
+ <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
+ <0478822f-9d10-deb8-86ae-3b4ac3bb0c6c@metux.net>
+ <CAHp75Vf0+bCnnD3wtkrPvFbr2k3A0r3eWNp87PyksiC7euaqdw@mail.gmail.com>
+ <d127bb4c-722d-536b-c89f-4c40cbaa6479@metux.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614061512.3966143-4-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <d127bb4c-722d-536b-c89f-4c40cbaa6479@metux.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14-06-21 08:15:12, Christoph Hellwig wrote:
-> Remove the CONFIG_BLOCK default to __set_page_dirty_buffers and just
-> wire that method up for the missing instances.
+On 14-06-21, 11:17, Enrico Weigelt, metux IT consult wrote:
+> On 14.06.21 10:12, Andy Shevchenko wrote:
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Make sense. Did you somehow autogenerate this? If this patch would race
-with addition of new aops struct, we'd get null-ptr-defer out of that so
-maybe providing the script would be better. But other than that the changes
-look good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-
-								Honza
-
-> ---
->  fs/adfs/inode.c     |  1 +
->  fs/affs/file.c      |  2 ++
->  fs/bfs/file.c       |  1 +
->  fs/block_dev.c      |  1 +
->  fs/exfat/inode.c    |  1 +
->  fs/ext2/inode.c     |  2 ++
->  fs/fat/inode.c      |  1 +
->  fs/gfs2/meta_io.c   |  2 ++
->  fs/hfs/inode.c      |  2 ++
->  fs/hfsplus/inode.c  |  2 ++
->  fs/hpfs/file.c      |  1 +
->  fs/jfs/inode.c      |  1 +
->  fs/minix/inode.c    |  1 +
->  fs/nilfs2/mdt.c     |  1 +
->  fs/ocfs2/aops.c     |  1 +
->  fs/omfs/file.c      |  1 +
->  fs/sysv/itree.c     |  1 +
->  fs/udf/file.c       |  1 +
->  fs/udf/inode.c      |  1 +
->  fs/ufs/inode.c      |  1 +
->  mm/page-writeback.c | 18 ++++--------------
->  21 files changed, 29 insertions(+), 14 deletions(-)
+> > That's why we have a thing called standard. And AFAIU virtio API/ABIs
+> > should be officially registered and standardized.
 > 
-> diff --git a/fs/adfs/inode.c b/fs/adfs/inode.c
-> index fb7ee026d101..adbb3a1edcbf 100644
-> --- a/fs/adfs/inode.c
-> +++ b/fs/adfs/inode.c
-> @@ -73,6 +73,7 @@ static sector_t _adfs_bmap(struct address_space *mapping, sector_t block)
->  }
->  
->  static const struct address_space_operations adfs_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= adfs_readpage,
->  	.writepage	= adfs_writepage,
->  	.write_begin	= adfs_write_begin,
-> diff --git a/fs/affs/file.c b/fs/affs/file.c
-> index d91b0133d95d..75ebd2b576ca 100644
-> --- a/fs/affs/file.c
-> +++ b/fs/affs/file.c
-> @@ -453,6 +453,7 @@ static sector_t _affs_bmap(struct address_space *mapping, sector_t block)
->  }
->  
->  const struct address_space_operations affs_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage = affs_readpage,
->  	.writepage = affs_writepage,
->  	.write_begin = affs_write_begin,
-> @@ -833,6 +834,7 @@ static int affs_write_end_ofs(struct file *file, struct address_space *mapping,
->  }
->  
->  const struct address_space_operations affs_aops_ofs = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage = affs_readpage_ofs,
->  	//.writepage = affs_writepage_ofs,
->  	.write_begin = affs_write_begin_ofs,
-> diff --git a/fs/bfs/file.c b/fs/bfs/file.c
-> index 0dceefc54b48..7f8544abf636 100644
-> --- a/fs/bfs/file.c
-> +++ b/fs/bfs/file.c
-> @@ -188,6 +188,7 @@ static sector_t bfs_bmap(struct address_space *mapping, sector_t block)
->  }
->  
->  const struct address_space_operations bfs_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= bfs_readpage,
->  	.writepage	= bfs_writepage,
->  	.write_begin	= bfs_write_begin,
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 6cc4d4cfe0c2..eb34f5c357cf 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1754,6 +1754,7 @@ static int blkdev_writepages(struct address_space *mapping,
->  }
->  
->  static const struct address_space_operations def_blk_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= blkdev_readpage,
->  	.readahead	= blkdev_readahead,
->  	.writepage	= blkdev_writepage,
-> diff --git a/fs/exfat/inode.c b/fs/exfat/inode.c
-> index 1803ef3220fd..ca37d4344361 100644
-> --- a/fs/exfat/inode.c
-> +++ b/fs/exfat/inode.c
-> @@ -491,6 +491,7 @@ int exfat_block_truncate_page(struct inode *inode, loff_t from)
->  }
->  
->  static const struct address_space_operations exfat_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= exfat_readpage,
->  	.readahead	= exfat_readahead,
->  	.writepage	= exfat_writepage,
-> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-> index 68178b2234bd..bf41f579ed3e 100644
-> --- a/fs/ext2/inode.c
-> +++ b/fs/ext2/inode.c
-> @@ -961,6 +961,7 @@ ext2_dax_writepages(struct address_space *mapping, struct writeback_control *wbc
->  }
->  
->  const struct address_space_operations ext2_aops = {
-> +	.set_page_dirty		= __set_page_dirty_buffers,
->  	.readpage		= ext2_readpage,
->  	.readahead		= ext2_readahead,
->  	.writepage		= ext2_writepage,
-> @@ -975,6 +976,7 @@ const struct address_space_operations ext2_aops = {
->  };
->  
->  const struct address_space_operations ext2_nobh_aops = {
-> +	.set_page_dirty		= __set_page_dirty_buffers,
->  	.readpage		= ext2_readpage,
->  	.readahead		= ext2_readahead,
->  	.writepage		= ext2_nobh_writepage,
-> diff --git a/fs/fat/inode.c b/fs/fat/inode.c
-> index bab9b202b496..de0c9b013a85 100644
-> --- a/fs/fat/inode.c
-> +++ b/fs/fat/inode.c
-> @@ -342,6 +342,7 @@ int fat_block_truncate_page(struct inode *inode, loff_t from)
->  }
->  
->  static const struct address_space_operations fat_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= fat_readpage,
->  	.readahead	= fat_readahead,
->  	.writepage	= fat_writepage,
-> diff --git a/fs/gfs2/meta_io.c b/fs/gfs2/meta_io.c
-> index d68184ebbfdd..7c9619997355 100644
-> --- a/fs/gfs2/meta_io.c
-> +++ b/fs/gfs2/meta_io.c
-> @@ -89,11 +89,13 @@ static int gfs2_aspace_writepage(struct page *page, struct writeback_control *wb
->  }
->  
->  const struct address_space_operations gfs2_meta_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.writepage = gfs2_aspace_writepage,
->  	.releasepage = gfs2_releasepage,
->  };
->  
->  const struct address_space_operations gfs2_rgrp_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.writepage = gfs2_aspace_writepage,
->  	.releasepage = gfs2_releasepage,
->  };
-> diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
-> index 3fc5cb346586..4a95a92546a0 100644
-> --- a/fs/hfs/inode.c
-> +++ b/fs/hfs/inode.c
-> @@ -159,6 +159,7 @@ static int hfs_writepages(struct address_space *mapping,
->  }
->  
->  const struct address_space_operations hfs_btree_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= hfs_readpage,
->  	.writepage	= hfs_writepage,
->  	.write_begin	= hfs_write_begin,
-> @@ -168,6 +169,7 @@ const struct address_space_operations hfs_btree_aops = {
->  };
->  
->  const struct address_space_operations hfs_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= hfs_readpage,
->  	.writepage	= hfs_writepage,
->  	.write_begin	= hfs_write_begin,
-> diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
-> index 8ea447e5c470..70e8374ddac4 100644
-> --- a/fs/hfsplus/inode.c
-> +++ b/fs/hfsplus/inode.c
-> @@ -156,6 +156,7 @@ static int hfsplus_writepages(struct address_space *mapping,
->  }
->  
->  const struct address_space_operations hfsplus_btree_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= hfsplus_readpage,
->  	.writepage	= hfsplus_writepage,
->  	.write_begin	= hfsplus_write_begin,
-> @@ -165,6 +166,7 @@ const struct address_space_operations hfsplus_btree_aops = {
->  };
->  
->  const struct address_space_operations hfsplus_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= hfsplus_readpage,
->  	.writepage	= hfsplus_writepage,
->  	.write_begin	= hfsplus_write_begin,
-> diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
-> index 077c25128eb7..c3a49aacf20a 100644
-> --- a/fs/hpfs/file.c
-> +++ b/fs/hpfs/file.c
-> @@ -196,6 +196,7 @@ static int hpfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->  }
->  
->  const struct address_space_operations hpfs_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage = hpfs_readpage,
->  	.writepage = hpfs_writepage,
->  	.readahead = hpfs_readahead,
-> diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
-> index 6f65bfa9f18d..3663dd5a23bc 100644
-> --- a/fs/jfs/inode.c
-> +++ b/fs/jfs/inode.c
-> @@ -356,6 +356,7 @@ static ssize_t jfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
->  }
->  
->  const struct address_space_operations jfs_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= jfs_readpage,
->  	.readahead	= jfs_readahead,
->  	.writepage	= jfs_writepage,
-> diff --git a/fs/minix/inode.c b/fs/minix/inode.c
-> index a532a99bbe81..a71f1cf894b9 100644
-> --- a/fs/minix/inode.c
-> +++ b/fs/minix/inode.c
-> @@ -442,6 +442,7 @@ static sector_t minix_bmap(struct address_space *mapping, sector_t block)
->  }
->  
->  static const struct address_space_operations minix_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage = minix_readpage,
->  	.writepage = minix_writepage,
->  	.write_begin = minix_write_begin,
-> diff --git a/fs/nilfs2/mdt.c b/fs/nilfs2/mdt.c
-> index c0361ce45f62..97769fe4d588 100644
-> --- a/fs/nilfs2/mdt.c
-> +++ b/fs/nilfs2/mdt.c
-> @@ -434,6 +434,7 @@ nilfs_mdt_write_page(struct page *page, struct writeback_control *wbc)
->  
->  
->  static const struct address_space_operations def_mdt_aops = {
-> +	.set_page_dirty		= __set_page_dirty_buffers,
->  	.writepage		= nilfs_mdt_write_page,
->  };
->  
-> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
-> index 1294925ac94a..b3517de178ff 100644
-> --- a/fs/ocfs2/aops.c
-> +++ b/fs/ocfs2/aops.c
-> @@ -2454,6 +2454,7 @@ static ssize_t ocfs2_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
->  }
->  
->  const struct address_space_operations ocfs2_aops = {
-> +	.set_page_dirty		= __set_page_dirty_buffers,
->  	.readpage		= ocfs2_readpage,
->  	.readahead		= ocfs2_readahead,
->  	.writepage		= ocfs2_writepage,
-> diff --git a/fs/omfs/file.c b/fs/omfs/file.c
-> index 11e733aab25d..89725b15a64b 100644
-> --- a/fs/omfs/file.c
-> +++ b/fs/omfs/file.c
-> @@ -372,6 +372,7 @@ const struct inode_operations omfs_file_inops = {
->  };
->  
->  const struct address_space_operations omfs_aops = {
-> +	.set_page_dirty = __set_page_dirty_buffers,
->  	.readpage = omfs_readpage,
->  	.readahead = omfs_readahead,
->  	.writepage = omfs_writepage,
-> diff --git a/fs/sysv/itree.c b/fs/sysv/itree.c
-> index 8b2e99b7bc9f..749385015a8d 100644
-> --- a/fs/sysv/itree.c
-> +++ b/fs/sysv/itree.c
-> @@ -495,6 +495,7 @@ static sector_t sysv_bmap(struct address_space *mapping, sector_t block)
->  }
->  
->  const struct address_space_operations sysv_aops = {
-> +	.set_page_dirty = __set_page_dirty_buffers,
->  	.readpage = sysv_readpage,
->  	.writepage = sysv_writepage,
->  	.write_begin = sysv_write_begin,
-> diff --git a/fs/udf/file.c b/fs/udf/file.c
-> index 2846dcd92197..1baff8ddb754 100644
-> --- a/fs/udf/file.c
-> +++ b/fs/udf/file.c
-> @@ -125,6 +125,7 @@ static int udf_adinicb_write_end(struct file *file, struct address_space *mappin
->  }
->  
->  const struct address_space_operations udf_adinicb_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= udf_adinicb_readpage,
->  	.writepage	= udf_adinicb_writepage,
->  	.write_begin	= udf_adinicb_write_begin,
-> diff --git a/fs/udf/inode.c b/fs/udf/inode.c
-> index 0dd2f93ac048..4917670860a0 100644
-> --- a/fs/udf/inode.c
-> +++ b/fs/udf/inode.c
-> @@ -235,6 +235,7 @@ static sector_t udf_bmap(struct address_space *mapping, sector_t block)
->  }
->  
->  const struct address_space_operations udf_aops = {
-> +	.set_page_dirty	= __set_page_dirty_buffers,
->  	.readpage	= udf_readpage,
->  	.readahead	= udf_readahead,
->  	.writepage	= udf_writepage,
-> diff --git a/fs/ufs/inode.c b/fs/ufs/inode.c
-> index debc282c1bb4..ac628de69601 100644
-> --- a/fs/ufs/inode.c
-> +++ b/fs/ufs/inode.c
-> @@ -526,6 +526,7 @@ static sector_t ufs_bmap(struct address_space *mapping, sector_t block)
->  }
->  
->  const struct address_space_operations ufs_aops = {
-> +	.set_page_dirty = __set_page_dirty_buffers,
->  	.readpage = ufs_readpage,
->  	.writepage = ufs_writepage,
->  	.write_begin = ufs_write_begin,
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 0062d5c57d41..081fa02236c2 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -32,7 +32,6 @@
->  #include <linux/sysctl.h>
->  #include <linux/cpu.h>
->  #include <linux/syscalls.h>
-> -#include <linux/buffer_head.h> /* __set_page_dirty_buffers */
->  #include <linux/pagevec.h>
->  #include <linux/timer.h>
->  #include <linux/sched/rt.h>
-> @@ -2546,13 +2545,9 @@ EXPORT_SYMBOL(redirty_page_for_writepage);
->  /*
->   * Dirty a page.
->   *
-> - * For pages with a mapping this should be done under the page lock
-> - * for the benefit of asynchronous memory errors who prefer a consistent
-> - * dirty state. This rule can be broken in some special cases,
-> - * but should be better not to.
-> - *
-> - * If the mapping doesn't provide a set_page_dirty a_op, then
-> - * just fall through and assume that it wants buffer_heads.
-> + * For pages with a mapping this should be done under the page lock for the
-> + * benefit of asynchronous memory errors who prefer a consistent dirty state.
-> + * This rule can be broken in some special cases, but should be better not to.
->   */
->  int set_page_dirty(struct page *page)
->  {
-> @@ -2560,7 +2555,6 @@ int set_page_dirty(struct page *page)
->  
->  	page = compound_head(page);
->  	if (likely(mapping)) {
-> -		int (*spd)(struct page *) = mapping->a_ops->set_page_dirty;
->  		/*
->  		 * readahead/lru_deactivate_page could remain
->  		 * PG_readahead/PG_reclaim due to race with end_page_writeback
-> @@ -2573,11 +2567,7 @@ int set_page_dirty(struct page *page)
->  		 */
->  		if (PageReclaim(page))
->  			ClearPageReclaim(page);
-> -#ifdef CONFIG_BLOCK
-> -		if (!spd)
-> -			spd = __set_page_dirty_buffers;
-> -#endif
-> -		return (*spd)(page);
-> +		return mapping->a_ops->set_page_dirty(page);
->  	}
->  	if (!PageDirty(page)) {
->  		if (!TestSetPageDirty(page))
-> -- 
-> 2.30.2
+> Absolutely.
 > 
+> I've submitted my spec to virtio folks last nov, but this wasn't in form
+> of patch against their tex-based documentation yet (just ascii text),
+> thus laying around in the pipeline.
+> 
+> (meanwhile the actual implementation is running in the field for over
+> 6 month now)
+> 
+> Viresh picked it up, but made something totally different out of it.
+> I wonder why he didn't consult me first.
+
+Here I asked you on 26th of May, if you would be fine if I take it
+forward as you didn't do anything with it formally in the last 5-6
+months (Yes I know you were busy with other stuff).
+
+https://lore.kernel.org/linux-doc/20210526033206.5v362hdywb55msve@vireshk-i7/
+
+You chose not to reply.
+
+I did the same before picking up the kernel code. You chose not to
+reply.
+
+I am not inclined to do offlist discussions as they aren't fruitful
+eventually, and it is better to do these discussions over open lists,
+so others can chime in as well.
+
+> All that needed to be done was
+> translated the ascii documentation into tex and rephrase a bit in order
+> to match the formal terminology and structure used in virtio specs.
+
+Not really. There were things lagging, which are normally caught in
+reviews and fixed/updated. But that never happened in this case. You
+only sent the specs once to virtio list, that too as an attachment and
+it never made it to the virtio guys there (as the list doesn't take
+attachments).
+
+https://www.mail-archive.com/virtio-dev@lists.oasis-open.org/msg06946.html
+
+> This makes me very unhappy.
+
+I know you have solutions running in products which depend on the
+layout of the config structure or request/responses, based on your
+original write-up, but unless something is merged in open source code
+or specification, it is going to get changed, normally because of
+reviews.
+
+And you will be required to change things based on reviews, you just
+can't say that I have products running the code and so I won't change
+it. That is why people say, Upstream first. So you don't get into this
+mess. Yes, this is tough and that's the way it is.
+
+You keep saying that I have changed the original specification too
+much, which is incorrect, I tried to point out earlier what all is
+changed and why.
+
+https://lore.kernel.org/linux-gpio/CAKohpokxSoSVtAJkL-T_OOoS8dW-gYG1Gs5=_DwebvJETE48Xw@mail.gmail.com/
+
+You chose not to reply to that.
+
+Lemme say this again. This is a generic protocol we are trying to
+define here. It needs to take everyone's view into account and their
+use cases. We are required here to collaborate. A solution thought to
+be good enough for one person or use-case, isn't going to fly.
+
+The changes I did to it are required to make it useful for the generic
+solution for a protocol.
+
+I am sure there would be shortcomings, like the one identified by
+Jean-Philippe Brucker, where he asked to add offset of the gpios-name
+thing. He made a sensible suggestion, which I am required to
+incorporate. I just can't reply to him and say I won't change it
+because I have already designed my product based on this.
+
+Lets try to improve the code and specification here and make it work
+for both of us by giving very specific feedback on wherever you think
+the protocol or code is not efficient or correct. Being unhappy isn't
+going make anything better.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+viresh
