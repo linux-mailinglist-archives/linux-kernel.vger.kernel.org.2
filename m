@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A3D3A62C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900943A6444
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235120AbhFNLEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:04:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59780 "EHLO mail.kernel.org"
+        id S233819AbhFNLWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:22:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234731AbhFNKyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:54:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F619613FB;
-        Mon, 14 Jun 2021 10:40:08 +0000 (UTC)
+        id S234722AbhFNLGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:06:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA28F6192B;
+        Mon, 14 Jun 2021 10:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667209;
-        bh=RRh9Rbk+Z1e0LlT0TvpDul0SsHCyvMlCq7t2RGLhUnc=;
+        s=korg; t=1623667532;
+        bh=VDGTvehYTiZwDYip8hKvER9rrmV2fTvKrE5Cf+RAinE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MRJ70QcvaNjPPqztmfv/BSbCEy1pe8cmlrfz1rBgPmJwHioLkYMcEDV+cLNX1JSYb
-         9XtoGMvJdtaqiyTwuA6lX5iOi7p6KrEb8ei4rFrygPB9JEqyQWkUC7cJTH8+eEa97K
-         Aqex94azUvgAYqr7jURDUVDV1ZLZhvZzhSGajiqM=
+        b=fyA8Hl4XcCn5/pkub97vHCJvrxGTRqIifWQO5XtFH7d9+BxtYr3Owlv+t4Jo080Xs
+         bQ0qHISGPZmtbLKQUbFfiKhozOg3SwYZ4+Zt/D6Ic7nH183gkPQtipC9qINtFgRaGV
+         2IWdKmdNLwgErDe31tHi5F4d+F6JAlOkXR2tSsAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.4 69/84] sched/fair: Make sure to update tg contrib for blocked load
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH 5.10 106/131] vmlinux.lds.h: Avoid orphan section with !SMP
 Date:   Mon, 14 Jun 2021 12:27:47 +0200
-Message-Id: <20210614102648.710506045@linuxfoundation.org>
+Message-Id: <20210614102656.601568681@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Guittot <vincent.guittot@linaro.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 02da26ad5ed6ea8680e5d01f20661439611ed776 upstream.
+commit d4c6399900364facd84c9e35ce1540b6046c345f upstream.
 
-During the update of fair blocked load (__update_blocked_fair()), we
-update the contribution of the cfs in tg->load_avg if cfs_rq's pelt
-has decayed.  Nevertheless, the pelt values of a cfs_rq could have
-been recently updated while propagating the change of a child. In this
-case, cfs_rq's pelt will not decayed because it has already been
-updated and we don't update tg->load_avg.
+With x86_64_defconfig and the following configs, there is an orphan
+section warning:
 
-__update_blocked_fair
-  ...
-  for_each_leaf_cfs_rq_safe: child cfs_rq
-    update cfs_rq_load_avg() for child cfs_rq
-    ...
-    update_load_avg(cfs_rq_of(se), se, 0)
-      ...
-      update cfs_rq_load_avg() for parent cfs_rq
-		-propagation of child's load makes parent cfs_rq->load_sum
-		 becoming null
-        -UPDATE_TG is not set so it doesn't update parent
-		 cfs_rq->tg_load_avg_contrib
-  ..
-  for_each_leaf_cfs_rq_safe: parent cfs_rq
-    update cfs_rq_load_avg() for parent cfs_rq
-      - nothing to do because parent cfs_rq has already been updated
-		recently so cfs_rq->tg_load_avg_contrib is not updated
-    ...
-    parent cfs_rq is decayed
-      list_del_leaf_cfs_rq parent cfs_rq
-	  - but it still contibutes to tg->load_avg
+CONFIG_SMP=n
+CONFIG_AMD_MEM_ENCRYPT=y
+CONFIG_HYPERVISOR_GUEST=y
+CONFIG_KVM=y
+CONFIG_PARAVIRT=y
 
-we must set UPDATE_TG flags when propagting pending load to the parent
+ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/cpu/vmware.o' being placed in section `.data..decrypted'
+ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/kvm.o' being placed in section `.data..decrypted'
 
-Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
-Reported-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Odin Ugedal <odin@uged.al>
-Link: https://lkml.kernel.org/r/20210527122916.27683-3-vincent.guittot@linaro.org
+These sections are created with DEFINE_PER_CPU_DECRYPTED, which
+ultimately turns into __PCPU_ATTRS, which in turn has a section
+attribute with a value of PER_CPU_BASE_SECTION + the section name. When
+CONFIG_SMP is not set, the base section is .data and that is not
+currently handled in any linker script.
+
+Add .data..decrypted to PERCPU_DECRYPTED_SECTION, which is included in
+PERCPU_INPUT -> PERCPU_SECTION, which is include in the x86 linker
+script when either CONFIG_X86_64 or CONFIG_SMP is unset, taking care of
+the warning.
+
+Fixes: ac26963a1175 ("percpu: Introduce DEFINE_PER_CPU_DECRYPTED")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1360
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com> # build
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210506001410.1026691-1-nathan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sched/fair.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/asm-generic/vmlinux.lds.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7660,7 +7660,7 @@ static bool __update_blocked_fair(struct
- 		/* Propagate pending load changes to the parent, if any: */
- 		se = cfs_rq->tg->se[cpu];
- 		if (se && !skip_blocked_update(se))
--			update_load_avg(cfs_rq_of(se), se, 0);
-+			update_load_avg(cfs_rq_of(se), se, UPDATE_TG);
- 
- 		/*
- 		 * There can be a lot of idle CPU cgroups.  Don't let fully
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -971,6 +971,7 @@
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+ #define PERCPU_DECRYPTED_SECTION					\
+ 	. = ALIGN(PAGE_SIZE);						\
++	*(.data..decrypted)						\
+ 	*(.data..percpu..decrypted)					\
+ 	. = ALIGN(PAGE_SIZE);
+ #else
 
 
