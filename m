@@ -2,113 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C733A71CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0413A71D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhFNWOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 18:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
+        id S231195AbhFNWRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhFNWOx (ORCPT
+        with ESMTP id S229536AbhFNWRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 18:14:53 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0CCC061574;
-        Mon, 14 Jun 2021 15:12:35 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id c12so11696338pfl.3;
-        Mon, 14 Jun 2021 15:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tfaE+ckEfdYiVmVZT4kEyQZOGqZRS3O95UKV5ziD/LM=;
-        b=PTUG4iIiYxk8tOELSf72zXlEnMuz60cKGRFeGulxWkr7bWPyJ+V7s6UjKINBryR8UK
-         Ij0Mn7Vf6a8bDjCDCEd5lJMOIl8Ei0i8bGGoTv87rjeujjpUOfSjeiARMD4B+gV9fD/o
-         Teyf1fiQl3bEYb8PAmZUT8tvTocx8JxYQZlAiB5xLZFbMSyRjutBpJHPAZeZwurQmQIn
-         +M/N+/j3XLFCe0jihu5SICEtKivUmct7+7HSs6XnbMy2a++U+4orr1AFQZTGidd+SVQM
-         eQKJ9FepQrWxymxTH+BlYecFNXB1aUE1FGTT2JhPHEewlozwLiwGfpFXy5Qe/HfgfGx4
-         SkvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tfaE+ckEfdYiVmVZT4kEyQZOGqZRS3O95UKV5ziD/LM=;
-        b=QCbvlxz6uvXKPR5SWPtBiI+wD2BwVl4dW3N2u3ZvKugZbtVHhgKt6aaScaMUE8kRsX
-         QzgIaydYi/WR08xVphVg/Au2/boNaQ7i9Tmh52/pAjJFA8FwCVlGwls9lfdiWOK0zj+w
-         JtRXJeyXqrKFw5Dj04Ijs2T4oIGgyj3Ce3qrr8VBUgB18e5vwAFf/dx3T5KVqp5ziym2
-         vAqTQG/BI7mNkMsTu0LIyS3O3iBQU+mQF0ZV2vLep07i8VqqhGqjSppeuIYJSuWAbrsk
-         6RrkdKzqveIJ42ujvX7xtJ1XWnKRbFZ6Z+dqnhJITUjnKGZ1Xgpm9og6+VpD/BdkzEHY
-         sG4w==
-X-Gm-Message-State: AOAM5302D1ItDXjxts8t12ST/ZlOHlTDSuk0yXhgfb4YnoWNgFjh2VfW
-        m68UO6LSxr5RDVWA9P/sXrQ=
-X-Google-Smtp-Source: ABdhPJz99UtJzCwMKEZFhBhS8Wj+/+Sxwia8HuoR2wtMHTOw+5BAJzGB+AJiBLgGsu6FBo3E5TYc5g==
-X-Received: by 2002:a62:e21a:0:b029:2ea:26c5:2ec3 with SMTP id a26-20020a62e21a0000b02902ea26c52ec3mr1241436pfi.8.1623708754599;
-        Mon, 14 Jun 2021 15:12:34 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:2a26:15ba:dc71:c4ba])
-        by smtp.gmail.com with ESMTPSA id m7sm7872812pgr.62.2021.06.14.15.12.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 15:12:33 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 15:12:31 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH][next] Input: Fix fall-through warning for Clang
-Message-ID: <YMfUT7pvBWreiR1K@google.com>
-References: <20210607214852.GA65141@embeddedor>
- <91eef5ab3143ae8fadb8eb2969aecba5f3e7ad98.camel@perches.com>
+        Mon, 14 Jun 2021 18:17:43 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DD6C061574;
+        Mon, 14 Jun 2021 15:15:39 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E2A1945E;
+        Tue, 15 Jun 2021 00:15:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623708938;
+        bh=uof6MHaXIUCea8ZGufIpi8adFFgRzaC/cX7r8VPzFfc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sG1TQO+Nl15DBxFBkLJdveiJPNBNvgaRucmDjpMNbeykvqBGk0pXObhBmPrq0DUW/
+         hgyPRiEhX8iinkkMkdcOoluZwsFMEWkvGZq4oWFKIDG2mrOtIEyzqmbykLJbyzU+TL
+         atNDbj6Xh80iOQl9CMu4QROaxtATFQxpiqxT1n1Y=
+Date:   Tue, 15 Jun 2021 01:15:18 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
+        kernel@pengutronix.de, kernel@puri.sm, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mchehab@kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org, shawnguo@kernel.org,
+        slongerbeam@gmail.com, m.felsch@pengutronix.de
+Subject: Re: [PATCH v4 1/3] dt-bindings: media: document the
+ nxp,imx8mq-mipi-csi2 receiver phy and controller
+Message-ID: <YMfU9jjGU49IKe3Y@pendragon.ideasonboard.com>
+References: <20210614121522.2944593-1-martin.kepplinger@puri.sm>
+ <20210614121522.2944593-2-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <91eef5ab3143ae8fadb8eb2969aecba5f3e7ad98.camel@perches.com>
+In-Reply-To: <20210614121522.2944593-2-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+Hi Martin,
 
-On Mon, Jun 07, 2021 at 03:02:40PM -0700, Joe Perches wrote:
-> On Mon, 2021-06-07 at 16:48 -0500, Gustavo A. R. Silva wrote:
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-> > warning by explicitly adding a fallthrough; statement.
-> []
-> > diff --git a/drivers/input/joystick/sidewinder.c b/drivers/input/joystick/sidewinder.c
-> []
-> > @@ -660,6 +660,7 @@ static int sw_connect(struct gameport *gameport, struct gameport_driver *drv)
-> >  					fallthrough;
-> >  				case 45:				/* Ambiguous packet length */
-> >  					if (j <= 40) {			/* ID length less or eq 40 -> FSP */
-> > +					fallthrough;
-> >  				case 43:
-> >  						sw->type = SW_ID_FSP;
-> >  						break;
-> 
-> Yuck.  Super ugly.  There's no need to play games with indentation.
+Thank you for the patch.
 
-Yeah, the original code is not pretty :(
+On Mon, Jun 14, 2021 at 02:15:20PM +0200, Martin Kepplinger wrote:
+> The i.MX8MQ SoC integrates a different MIPI CSI receiver as the i.MX8MM so
+> describe the DT bindings for it.
+> 
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> ---
+>  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 171 ++++++++++++++++++
+>  1 file changed, 171 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+> new file mode 100644
+> index 000000000000..4fed224ebfdd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+> @@ -0,0 +1,171 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/nxp,imx8mq-mipi-csi2.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX8MQ MIPI CSI-2 receiver
+> +
+> +maintainers:
+> +  - Martin Kepplinger <martin.kepplinger@puri.sm>
+> +
+> +description: |-
+> +  This binding covers the CSI-2 RX PHY and host controller included in the
+> +  NXP i.MX8MQ SoC. It handles the sensor/image input and process for all the
+> +  input imaging devices.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx8mq-mipi-csi2
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: core is the RX Controller Core Clock input. This clock
+> +                     must be exactly equal to or faster than the receive
+> +                     byteclock from the RX DPHY.
+> +      - description: esc is the Rx Escape Clock. This must be the same escape
+> +                     clock that the RX DPHY receives.
+> +      - description: pxl is the pixel clock (phy_ref up to 333Mhz).
+> +      - description: clko2 is the CLKO2 clock root.
+> +                     See the reference manual for details.
 
-> 
-> Perhaps the simpler:
-> 
-> 				case 43:
-> 					sw->type = SW_ID_FSP;
-> 					break;
-> 				case 45:				/* Ambiguous packet length */
-> 					if (j <= 40) {			/* ID length less or eq 40 -> FSP */
-> 						sw->type = SW_ID_FSP;
-> 						break;
-> 					}
-> 					sw->number++;
-> 					fallthrough;
-> 
-> 
+Copying comments from 4/4:
 
-Could you resubmit this version properly formatted?
+I can't figure out what the clko2 clock is used for based on the
+datasheet. It seems to be a clock output by the SoC on GPIO1_IO15, and
+doesn't seem to belong here.
 
-Thanks.
- 
+Regarding core, esc and pix, do these clock correspond to the clk,
+clk_esc and clk_ui listed in table 13-36 (section 13.8.3.3.1 "RX Local
+Interface Description") of the TRM ? If so, should they be renamed
+accordingly, to either "clk", "clk_esc" and "clk_ui", or, if we want to
+drop the prefixes, "core", "esc" and "ui" ?
+
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core
+> +      - const: esc
+> +      - const: pxl
+> +      - const: clko2
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  fsl,mipi-phy-gpr:
+> +    description: |
+> +      The phandle to the imx8mq syscon iomux-gpr with the register
+> +      for setting RX_ENABLE for the mipi receiver.
+> +
+> +      The format should be as follows:
+> +      <gpr req_gpr>
+> +      gpr is the phandle to general purpose register node.
+> +      req_gpr is the gpr register offset of RX_ENABLE for the mipi phy.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    items:
+> +      items:
+> +        - description: The 'gpr' is the phandle to general purpose register node.
+> +        - description: The 'req_gpr' is the gpr register offset containing
+> +                       CSI2_1_RX_ENABLE or CSI2_2_RX_ENABLE respectively.
+> +          maximum: 0xff
+
+I'll let Rob comment on this one :-)
+
+> +
+> +  interconnects:
+> +    maxItems: 1
+> +
+> +  interconnect-names:
+> +    const: dram
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/$defs/port-base
+> +        unevaluatedProperties: false
+> +        description:
+> +          Input port node, single endpoint describing the CSI-2 transmitter.
+> +
+> +        properties:
+> +          endpoint:
+> +            $ref: video-interfaces.yaml#
+> +            unevaluatedProperties: false
+> +
+> +            properties:
+> +              data-lanes:
+> +                items:
+> +                  minItems: 1
+> +                  maxItems: 4
+> +                  items:
+> +                    - const: 1
+> +                    - const: 2
+> +                    - const: 3
+> +                    - const: 4
+> +
+> +            required:
+> +              - data-lanes
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          Output port node
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +  - resets
+> +  - fsl,mipi-phy-gpr
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/imx8mq-clock.h>
+> +    #include <dt-bindings/interconnect/imx8mq.h>
+> +
+> +    csi@30a70000 {
+> +        compatible = "fsl,imx8mq-mipi-csi2";
+> +        reg = <0x30a70000 0x1000>;
+> +        clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
+> +                 <&clk IMX8MQ_CLK_CSI1_ESC>,
+> +                 <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
+> +                 <&clk IMX8MQ_CLK_CLKO2>;
+> +        clock-names = "core", "esc", "pxl", "clko2";
+> +        assigned-clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
+> +                          <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
+> +                          <&clk IMX8MQ_CLK_CSI1_ESC>;
+> +        assigned-clock-rates = <266000000>, <200000000>, <66000000>;
+> +        assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_266M>,
+> +                                 <&clk IMX8MQ_SYS2_PLL_1000M>,
+> +                                 <&clk IMX8MQ_SYS1_PLL_800M>;
+> +        power-domains = <&pgc_mipi_csi1>;
+> +        resets = <&src>;
+> +        fsl,mipi-phy-gpr = <&iomuxc_gpr 0x88>;
+> +        interconnects = <&noc IMX8MQ_ICM_CSI1 &noc IMX8MQ_ICS_DRAM>;
+> +        interconnect-names = "dram";
+> +
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            port@0 {
+> +                reg = <0>;
+> +
+> +                imx8mm_mipi_csi_in: endpoint {
+> +                    remote-endpoint = <&imx477_out>;
+> +                    data-lanes = <1 2 3 4>;
+> +                };
+> +            };
+> +
+> +            port@1 {
+> +                reg = <1>;
+> +
+> +                imx8mm_mipi_csi_out: endpoint {
+> +                    remote-endpoint = <&csi_in>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +...
+
 -- 
-Dmitry
+Regards,
+
+Laurent Pinchart
