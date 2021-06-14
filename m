@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDAF3A5EC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0E63A5ECF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhFNJEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbhFNJEM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:04:12 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3685FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 02:02:10 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id CA9A2C020; Mon, 14 Jun 2021 11:02:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623661325; bh=AE8xWq3+O6y8F4JIxC9P1TzjZjOLXYNQVdQLQm0W2PY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=3ISs6qI8xXvss0UhLXH7OC25/miPDXriKk7/HaF77S72iDnZbySAYKvv4xyBjM5hX
-         nHwbnBI8IxPwHdcP2mR8VoAwn624EIFIpk28AcOvyDW9m21l5UEMC/Nx5VwSkspQZo
-         AQfe+U8K9FE9makBwwWuDniWr+5s7+DxSLhVDKGG20b8BCmvzepHyfWdrevLzt0Oh8
-         OwD9s0Jmwxi/Y9HS4vcJ8IIzUPMx+vz6h2h4HWcsD3KSHhzKlebZx8fye2NO4y3zis
-         kVQc+TRhaR9RKXf5xJUZziSwfB2sSpZ3V8OSPzuQHpt3y+FQA/xgCXVqQlq+gfG64J
-         ZWL8ySBHfBs0w==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 17624C01B;
-        Mon, 14 Jun 2021 11:02:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1623661324; bh=AE8xWq3+O6y8F4JIxC9P1TzjZjOLXYNQVdQLQm0W2PY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O1rsHoPVY22AMd4p7M+BgKFly+4EE6cYp8gmk0Mm8Sbi7fW4uGFQQjEzHl/1Au0mA
-         mFlFh1o4zuEvkPEJELUswT6QHeCxZ6UvaYB+bzNVwc5z3hj90IQknbh5IKYow7HKkr
-         zrAYvK58PRZlqvYPxexGngL260zjelfN3qer0QLd39EdQ59jkM39UZ0BsYepLiu+lj
-         BnQ6ZJR7a+84I5T6VRHMgIsGQornIU/xD6NgMvVXMUqIB71s/bw9yLc7mtdG3yLS4r
-         r+RK451He4pIyklmmsE7kvcAalQdcQI588/CJ2Any0jJg4OMbR/IUvETv4k6OcisCO
-         MVHMEsxynqJ4g==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id df5f9604;
-        Mon, 14 Jun 2021 09:01:59 +0000 (UTC)
-Date:   Mon, 14 Jun 2021 18:01:44 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
-Subject: Re: [PATCH v3 0/3] 9p: add support for root file systems
-Message-ID: <YMca+N0UiGNZ1lSm@codewreck.org>
-References: <20210606230922.77268-1-changbin.du@gmail.com>
- <YMcaEq95T+1GxZz2@localhost>
+        id S232663AbhFNJHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:07:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:58204 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232602AbhFNJHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 05:07:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C54F61FB;
+        Mon, 14 Jun 2021 02:05:40 -0700 (PDT)
+Received: from e112269-lin.arm.com (autoplooker.cambridge.arm.com [10.1.194.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 062103F694;
+        Mon, 14 Jun 2021 02:05:37 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v15 0/7] MTE support for KVM guest
+Date:   Mon, 14 Jun 2021 10:05:18 +0100
+Message-Id: <20210614090525.4338-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YMcaEq95T+1GxZz2@localhost>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Josh Triplett wrote on Mon, Jun 14, 2021 at 01:57:54AM -0700:
-> On Mon, Jun 07, 2021 at 07:09:19AM +0800, Changbin Du wrote:
-> > Just like cifs and nfs, this short series enables rootfs support for 9p.
-> > Bellow is an example which mounts v9fs with tag 'r' as rootfs in qemu
-> > guest via virtio transport.
-> > 
-> >   $ qemu-system-x86_64 -enable-kvm -cpu host -m 1024 \
-> >         -virtfs local,path=$rootfs_dir,mount_tag=r,security_model=passthrough,id=r \
-> >         -kernel /path/to/linux/arch/x86/boot/bzImage -nographic \
-> >         -append "root=/dev/v9fs v9fsroot=r,trans=virtio rw console=ttyS0 3"
-> 
-> Rather than inventing a pseudo-device /dev/v9fs for this, would it
-> potentially work to use the existing rootfstype and rootflags options
-> for this? rootfstype already determines what filesystem should be used
-> to mount the root, and rootflags already provides options for that
-> filesystem.
-> 
-> For instance, for the above example:
-> rootfstype=9p root=r rootflags=trans=virtio
-> 
-> That would require a bit of fiddling to make rootfstype=9p allow a root
-> that's just the mount_tag. If that isn't an option, then even with
-> root=/dev/v9fs I think it still makes sense to use the existing
-> rootflags for "trans=virtio" rather than creating a new "v9fsroot"
-> option for that.
+This series adds support for using the Arm Memory Tagging Extensions
+(MTE) in a KVM guest.
 
-This doesn't work as is because of the way the code is written, if
-there's no block device associated with a root=x option right now it
-will lead to kernel panic.
+I realise there are still open questions[1] around the performance of
+this series (the 'big lock', tag_sync_lock, introduced in the first
+patch). But there should be no impact on non-MTE workloads and until we
+get real MTE-enabled hardware it's hard to know whether there is a need
+for something more sophisticated or not. Peter Collingbourne's patch[3]
+to clear the tags at page allocation time should hide more of the impact
+for non-VM cases. So the remaining concern is around VM startup which
+could be effectively serialised through the lock.
 
-I replied with folks in Cc but there's another thread on linux-fsdevel@
-with a more generic approach that will build a list of filesystems which
-don't require such a block device (either hardcoded with virtiofs and 9p
-or based on FS_REQUIRES_DEV), thread started there but there's a second
-patch hidden an more discussion below:
-https://lore.kernel.org/linux-fsdevel/20210608153524.GB504497@redhat.com/
+Changes since v14[2]:
 
+ * Dropped "Handle MTE tags zeroing" patch in favour of Peter's similar
+   patch[3] (now in arm64 tree).
 
-My preferred approach right now would be to go with their approach, and
-adjust the documentation Changbin Du wrote here, to have the best of
-both worlds.
+ * Improved documentation following Catalin's review.
+
+[1]: https://lore.kernel.org/r/874ke7z3ng.wl-maz%40kernel.org
+[2]: https://lore.kernel.org/r/20210607110816.25762-1-steven.price@arm.com/
+[3]: https://lore.kernel.org/r/20210602235230.3928842-4-pcc@google.com/
+
+Steven Price (7):
+  arm64: mte: Handle race when synchronising tags
+  arm64: mte: Sync tags for pages where PTE is untagged
+  KVM: arm64: Introduce MTE VM feature
+  KVM: arm64: Save/restore MTE registers
+  KVM: arm64: Expose KVM_ARM_CAP_MTE
+  KVM: arm64: ioctl to fetch/store tags in a guest
+  KVM: arm64: Document MTE capability and ioctl
+
+ Documentation/virt/kvm/api.rst             | 57 +++++++++++++++
+ arch/arm64/include/asm/kvm_arm.h           |  3 +-
+ arch/arm64/include/asm/kvm_emulate.h       |  3 +
+ arch/arm64/include/asm/kvm_host.h          | 12 ++++
+ arch/arm64/include/asm/kvm_mte.h           | 66 +++++++++++++++++
+ arch/arm64/include/asm/mte-def.h           |  1 +
+ arch/arm64/include/asm/mte.h               |  8 ++-
+ arch/arm64/include/asm/pgtable.h           | 22 +++++-
+ arch/arm64/include/asm/sysreg.h            |  3 +-
+ arch/arm64/include/uapi/asm/kvm.h          | 11 +++
+ arch/arm64/kernel/asm-offsets.c            |  2 +
+ arch/arm64/kernel/mte.c                    | 54 ++++++++++++--
+ arch/arm64/kvm/arm.c                       | 16 +++++
+ arch/arm64/kvm/guest.c                     | 82 ++++++++++++++++++++++
+ arch/arm64/kvm/hyp/entry.S                 |  7 ++
+ arch/arm64/kvm/hyp/exception.c             |  3 +-
+ arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 21 ++++++
+ arch/arm64/kvm/mmu.c                       | 42 ++++++++++-
+ arch/arm64/kvm/reset.c                     |  3 +-
+ arch/arm64/kvm/sys_regs.c                  | 32 +++++++--
+ include/uapi/linux/kvm.h                   |  2 +
+ 21 files changed, 429 insertions(+), 21 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_mte.h
 
 -- 
-Dominique
+2.20.1
+
