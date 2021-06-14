@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC4A3A60A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E273A6042
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhFNKgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:36:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
+        id S233140AbhFNKcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:32:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233049AbhFNKdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:33:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2685613DB;
-        Mon, 14 Jun 2021 10:31:38 +0000 (UTC)
+        id S232959AbhFNKbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:31:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6F5561004;
+        Mon, 14 Jun 2021 10:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666699;
-        bh=pRZKCB11Y1RaFzUQ/1+BDKUuk6ySaDfkvp+je0BzTVU=;
+        s=korg; t=1623666586;
+        bh=DisSFzvAF6qGHSND4P9j6dJWTVSDaAQaOnbyeJ5apR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3frHW5dPWvFElWH2A9KIu59pDbRQmC82YEtvMlrFfV9wno62VRrDTzU5+SXG+AaD
-         jJgu15OXSkdDk2fPRe0Ae44KWiBrHAuostEo+vDTpsLcrsKBcJiaOxSo1mIMdbtbkE
-         VWmNtEfmnXLh167Q8cbOfcKyXHd37eif0eiggKTw=
+        b=XOnyOd+V/dtEUEo26o0HTrIUzU+Dl9QtkXzUwZuimjzWVar45/xbmBiDBT2WKpBHd
+         Iy2/AAReZPdOziwvmhGcrGy7zbgOBNRdmF5Z6zXRr7aociQ8/TfoJI+Xc8PsWPV5xr
+         ekte8QeVstZrOHKCRsdXnRvbNVEGemXU8K+EFrkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 4.9 32/42] usb: fix various gadget panics on 10gbps cabling
+        stable@vger.kernel.org, Dai Ngo <dai.ngo@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.4 32/34] NFSv4: nfs4_proc_set_acl needs to restore NFS_CAP_UIDGID_NOMAP on error.
 Date:   Mon, 14 Jun 2021 12:27:23 +0200
-Message-Id: <20210614102643.726804048@linuxfoundation.org>
+Message-Id: <20210614102642.612229879@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
+References: <20210614102641.582612289@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Dai Ngo <dai.ngo@oracle.com>
 
-commit 032e288097a553db5653af552dd8035cd2a0ba96 upstream.
+commit f8849e206ef52b584cd9227255f4724f0cc900bb upstream.
 
-usb_assign_descriptors() is called with 5 parameters,
-the last 4 of which are the usb_descriptor_header for:
-  full-speed (USB1.1 - 12Mbps [including USB1.0 low-speed @ 1.5Mbps),
-  high-speed (USB2.0 - 480Mbps),
-  super-speed (USB3.0 - 5Gbps),
-  super-speed-plus (USB3.1 - 10Gbps).
+Currently if __nfs4_proc_set_acl fails with NFS4ERR_BADOWNER it
+re-enables the idmapper by clearing NFS_CAP_UIDGID_NOMAP before
+retrying again. The NFS_CAP_UIDGID_NOMAP remains cleared even if
+the retry fails. This causes problem for subsequent setattr
+requests for v4 server that does not have idmapping configured.
 
-The differences between full/high/super-speed descriptors are usually
-substantial (due to changes in the maximum usb block size from 64 to 512
-to 1024 bytes and other differences in the specs), while the difference
-between 5 and 10Gbps descriptors may be as little as nothing
-(in many cases the same tuning is simply good enough).
+This patch modifies nfs4_proc_set_acl to detect NFS4ERR_BADOWNER
+and NFS4ERR_BADNAME and skips the retry, since the kernel isn't
+involved in encoding the ACEs, and return -EINVAL.
 
-However if a gadget driver calls usb_assign_descriptors() with
-a NULL descriptor for super-speed-plus and is then used on a max 10gbps
-configuration, the kernel will crash with a null pointer dereference,
-when a 10gbps capable device port + cable + host port combination shows up.
-(This wouldn't happen if the gadget max-speed was set to 5gbps, but
-it of course defaults to the maximum, and there's no real reason to
-artificially limit it)
+Steps to reproduce the problem:
 
-The fix is to simply use the 5gbps descriptor as the 10gbps descriptor,
-if a 10gbps descriptor wasn't provided.
+ # mount -o vers=4.1,sec=sys server:/export/test /tmp/mnt
+ # touch /tmp/mnt/file1
+ # chown 99 /tmp/mnt/file1
+ # nfs4_setfacl -a A::unknown.user@xyz.com:wrtncy /tmp/mnt/file1
+ Failed setxattr operation: Invalid argument
+ # chown 99 /tmp/mnt/file1
+ chown: changing ownership of ‘/tmp/mnt/file1’: Invalid argument
+ # umount /tmp/mnt
+ # mount -o vers=4.1,sec=sys server:/export/test /tmp/mnt
+ # chown 99 /tmp/mnt/file1
+ #
 
-Obviously this won't fix the problem if the 5gbps descriptor is also
-NULL, but such cases can't be so trivially solved (and any such gadgets
-are unlikely to be used with USB3 ports any way).
-
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210609024459.1126080-1-zenczykowski@gmail.com
+v2: detect NFS4ERR_BADOWNER and NFS4ERR_BADNAME and skip retry
+       in nfs4_proc_set_acl.
+Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/config.c |    8 ++++++++
+ fs/nfs/nfs4proc.c |    8 ++++++++
  1 file changed, 8 insertions(+)
 
---- a/drivers/usb/gadget/config.c
-+++ b/drivers/usb/gadget/config.c
-@@ -168,6 +168,14 @@ int usb_assign_descriptors(struct usb_fu
- {
- 	struct usb_gadget *g = f->config->cdev->gadget;
- 
-+	/* super-speed-plus descriptor falls back to super-speed one,
-+	 * if such a descriptor was provided, thus avoiding a NULL
-+	 * pointer dereference if a 5gbps capable gadget is used with
-+	 * a 10gbps capable config (device port + cable + host port)
-+	 */
-+	if (!ssp)
-+		ssp = ss;
-+
- 	if (fs) {
- 		f->fs_descriptors = usb_copy_descriptors(fs);
- 		if (!f->fs_descriptors)
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -4887,6 +4887,14 @@ static int nfs4_proc_set_acl(struct inod
+ 	do {
+ 		err = __nfs4_proc_set_acl(inode, buf, buflen);
+ 		trace_nfs4_set_acl(inode, err);
++		if (err == -NFS4ERR_BADOWNER || err == -NFS4ERR_BADNAME) {
++			/*
++			 * no need to retry since the kernel
++			 * isn't involved in encoding the ACEs.
++			 */
++			err = -EINVAL;
++			break;
++		}
+ 		err = nfs4_handle_exception(NFS_SERVER(inode), err,
+ 				&exception);
+ 	} while (exception.retry);
 
 
