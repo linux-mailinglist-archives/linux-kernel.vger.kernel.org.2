@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473563A6CA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042083A6CAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbhFNRFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        id S235418AbhFNRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235074AbhFNRFw (ORCPT
+        with ESMTP id S234104AbhFNRG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:05:52 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39F3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 10:03:49 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lspzw-0089t0-Fc; Mon, 14 Jun 2021 17:03:40 +0000
-Date:   Mon, 14 Jun 2021 17:03:40 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jhih Ming Huang <fbihjmeric@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, maqianga@uniontech.com,
-        marcocesati@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rtw_security: fix cast to restricted __le32
-Message-ID: <YMeL7PjstV601pbN@zeniv-ca.linux.org.uk>
-References: <20210613122858.1433252-1-fbihjmeric@gmail.com>
- <YMX7SRSPgvMA/Pw1@kroah.com>
- <CAKgboZ8QUQpiinL0xCxUmcp6nEVU20jXkDXbrK_QisUMiLEo1A@mail.gmail.com>
- <YMdkN9cft6KHcFn3@zeniv-ca.linux.org.uk>
- <CAKgboZ9P2afm7-eOE3COrKVDkFZ_g288KfJAyQiwzC6fN75VmA@mail.gmail.com>
+        Mon, 14 Jun 2021 13:06:29 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70AFC061574;
+        Mon, 14 Jun 2021 10:04:26 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6BAB2436;
+        Mon, 14 Jun 2021 19:04:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623690264;
+        bh=Y6kZhAkHeLzvqk5DlBXOp7E5flMwNJLdlCS66qJQBw4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ph27wsm4B+vgQE2k+3XExxZ+SvZ9IQ9M6uaCtKdV77+K2aHdR/42PuEM/CazY1PiC
+         aG6CKC868MtvJFcCKX6vOUYGteZ2xxZ7v/Veq5TJe9MmXaZ34HY8LhB5urthe3h2uM
+         xg+XGQVnk6/n+9rPVd+G4X7sYqeyeBG7lTMeUIsU=
+Date:   Mon, 14 Jun 2021 20:04:04 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v3 5/8] media: v4l2-core: return -ENODEV from ioctl when
+ not registered
+Message-ID: <YMeMBKUc1X7hsMjO@pendragon.ideasonboard.com>
+References: <20210614103409.3154127-1-arnd@kernel.org>
+ <20210614103409.3154127-6-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKgboZ9P2afm7-eOE3COrKVDkFZ_g288KfJAyQiwzC6fN75VmA@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210614103409.3154127-6-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 11:27:03PM +0800, Jhih Ming Huang wrote:
+Hi Arnd,
 
-> Thanks for your explanation.
+Thank you for the patch.
+
+On Mon, Jun 14, 2021 at 12:34:06PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> To clarify, even though it might be false positives in some senses,
-> following "hold the variable native-endian and check the conversion
-> done correctly"
-> is much easier than the other way. And it's exactly the current implementation.
+> I spotted a minor difference is handling of unregistered devices
+> between native and compat ioctls: the native handler never tries
+> to call into the driver if a device is not marked as registered.
 > 
-> So it's better to keep the current implementation and ignore the
-> warnings, right?
+> I did not check whether this can cause issues in the kernel, or
+> just a different between return codes, but it clearly makes
+> sense that both should behave the same way.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Umm...  If that's the case, the warnings should go away if you use
-cpu_to_le32() for conversions from native to l-e and le32_to_cpu()
-for conversions from l-e to native.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-IOW, the choice between those should annotate what's going on.
+> ---
+>  drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> index 0ca75f6784c5..47aff3b19742 100644
+> --- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> +++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> @@ -1244,6 +1244,9 @@ long v4l2_compat_ioctl32(struct file *file, unsigned int cmd, unsigned long arg)
+>  	if (!file->f_op->unlocked_ioctl)
+>  		return ret;
+>  
+> +	if (!video_is_registered(vdev))
+> +		return -ENODEV;
+> +
+>  	if (_IOC_TYPE(cmd) == 'V' && _IOC_NR(cmd) < BASE_VIDIOC_PRIVATE)
+>  		ret = file->f_op->unlocked_ioctl(file, cmd,
+>  					(unsigned long)compat_ptr(arg));
 
-In your case doing
-	*((u32 *)crc) = le32_to_cpu((__force __le32)~crc32_le(~0, payload, length - 4));
-is wrong - you have
-crc32_le(...) native-endian
-~crc32_le(...) - ditto
-le32_to_cpu(~crc32_le(...)) - byteswapped native-endian on b-e, unchanged on
-l-e.  So result will be little-endian representation of ~crc32(...) in all
-cases.  IOW, it's cpu_to_le32(~crc32_le(...)), misannotated as native-endian
-instead of little-endian it actually is.
+-- 
+Regards,
 
-Then you store that value (actually __le32) into *(u32 *)crc.  Seeing that
-crc is u8[4] there, that *(u32 *) is misleading - you are actually storing
-__le32 there (and, AFAICS, doing noting with the result).  The same story
-in rtw_tkip_decrypt(), only there you do use the result later.
-
-So just make it __le32 crc and
-	crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
-with
-			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
-			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
-turned into
-			if (memcmp(&crc, payload + length - 4, 4) != 0)
-(or (crc != get_unaligned((__le32 *)(payload + length - 4))),
-for that matter, to document what's going on and let the damn thing
-pick the optimal implementation for given architecture).
-
-Incidentally, your secmicgetuint32() is simply get_unaligned_le32()
-and secmicputuint32() - put_unaligned_le32().  No need to reinvent
-that wheel...
-
+Laurent Pinchart
