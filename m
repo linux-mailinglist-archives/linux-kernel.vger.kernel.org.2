@@ -2,132 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8BD3A7106
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E953A710A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbhFNVNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:13:14 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25529 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233920AbhFNVNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:13:13 -0400
-IronPort-SDR: 0AXDrIy49w2eJvugQexQoMvt0FyiGPjR/Ws7rEaXGBerGGUqZquKHC40P0Yb74fxAPkhFWlqO1
- KjYfiay9VmtA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="205912953"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="205912953"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 14:11:08 -0700
-IronPort-SDR: sAqXJHJZlKjI+aulJ9ns1ke13lR6LlBdA3eSWPXWSl9zh2sUb1QEyrH+uaS+L/hGeVaT1M9mIz
- tueBnYyRw8pQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="451719735"
-Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Jun 2021 14:11:07 -0700
-Date:   Mon, 14 Jun 2021 14:11:21 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tony Luck <tony.luck@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Victor Ding <victording@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Anand K Mistry <amistry@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH v2 0/3] TSX force abort
-Message-ID: <cover.b592910a3829c87c83cf5605718c415c80c0c4a9.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
+        id S234907AbhFNVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:13:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36745 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234420AbhFNVNh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 17:13:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623705093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Mn8+GlgrQdOA/I1bTqxQYRGsb/yRw3f+Z55lqaAtNs=;
+        b=UcYrLSHQK/9feBnYo/opWDwuzhaayyXq8gB2bjyyTppYP1zNNgZey8bN1K0jC8w2bnXbeA
+        N+gjQhOoSIDxU6Zn7z1SkGtmkyfwrKdyaoZ9eUiI8vrBg7+LISvvvuyzC0+J+uHnErQbA3
+        yWUDsNijWvZWfbJtefaOB8tgRcQBWRE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-33-3bfqkI24OYSv0GZSCObOOQ-1; Mon, 14 Jun 2021 17:11:30 -0400
+X-MC-Unique: 3bfqkI24OYSv0GZSCObOOQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7B7C1084F42;
+        Mon, 14 Jun 2021 21:11:28 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A5445D9CA;
+        Mon, 14 Jun 2021 21:11:27 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YMd5BqIKucO6rW4R@casper.infradead.org>
+References: <YMd5BqIKucO6rW4R@casper.infradead.org> <YMdpxbYafHnE0F8N@casper.infradead.org> <162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk> <162367682522.460125.5652091227576721609.stgit@warthog.procyon.org.uk> <475131.1623685101@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, jlayton@kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] afs: Fix afs_write_end() to handle short writes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <501526.1623705086.1@warthog.procyon.org.uk>
+Date:   Mon, 14 Jun 2021 22:11:26 +0100
+Message-ID: <501527.1623705086@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v1->v2:
-- Avoid Reading TSX_FORCE_ABORT MSR for detecting new microcode.
-- In tsx_init() move force abort detection before cmdline parsing.
-- Drop tsx=fake patch, not enough use cases to justify the patch.
-- Rebase to v5.13-rc6.
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Introduction
-============
-On some Intel processors [1] a microcode update will always abort
-Transactional Synchronization Extensions (TSX) transactions by default. These
-CPUs were previously affected by the TSX memory ordering issue [2]. A
-workaround was earlier added to perf related to memory ordering which is no
-longer required(because TSX is defeatured on these systems). This series adds
-support for new bits added to TSX_FORCE_ABORT MSR and CPUID to enumerate new
-abort behavior and to bypass the workaround.
+> > means you can't get there unless PageUptodate() is true by that point.
+> 
+> Isn't the point of an assertion to check that this is true?
 
-Roadmap to this series
-======================
+The assertion was meant to check that that it was true given that the page was
+set uptodate somewhere else before this function was even called.  With this
+patch, however, it's now set in this function if it wasn't already right at
+the top - so the assertion should now be redundant.  I can put it back if you
+really insist.
 
-0001:	Define new CPUID and MSR bits that are added by the microcode update.
-	(The new CPUID.RTM_ALWAYS_ABORT is not shown in /proc/cpuinfo)
-
-0002:	When new microcode is enumerated bypass perf counter workaround for [1].
-	Perf workaround is no longer required after the microcode update.
-
-0003:	Clear CPUID.RTM and CPUID.HLE when TSX is defeatured, so that software
-	does not enumerate and try to use TSX.
-
-Thanks,
-Pawan
-
-[1] Intel® TSX Memory and Performance Monitoring Update for Intel® Processors
-    https://www.intel.com/content/www/us/en/support/articles/000059422/processors.html
-
-[2] Performance Monitoring Impact of Intel® Transactional Synchronization Extension Memory
-    http://cdrdv2.intel.com/v1/dl/getContent/604224 (Document ID 604224)
-
-Pawan Gupta (3):
-  x86/msr: Define new bits in TSX_FORCE_ABORT MSR
-  perf/x86/intel: Do not deploy workaround when TSX is deprecated
-  x86/tsx: Clear CPUID bits when TSX always force aborts
-
- arch/x86/events/intel/core.c       | 10 +++++++-
- arch/x86/include/asm/cpufeatures.h |  1 +-
- arch/x86/include/asm/msr-index.h   |  4 +++-
- arch/x86/kernel/cpu/cpu.h          |  2 ++-
- arch/x86/kernel/cpu/intel.c        |  4 ++-
- arch/x86/kernel/cpu/tsx.c          | 37 +++++++++++++++++++++++++++++--
- 6 files changed, 54 insertions(+), 4 deletions(-)
-
-base-commit: 009c9aa5be652675a06d5211e1640e02bbb1c33d
--- 
-git-series 0.9.1
+David
 
