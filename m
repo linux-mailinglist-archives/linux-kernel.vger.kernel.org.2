@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D2B3A61FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791C23A6100
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbhFNKyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:54:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50772 "EHLO mail.kernel.org"
+        id S232853AbhFNKlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:41:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233936AbhFNKq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:46:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47CBA61456;
-        Mon, 14 Jun 2021 10:37:12 +0000 (UTC)
+        id S232930AbhFNKgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:36:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98BCB6140C;
+        Mon, 14 Jun 2021 10:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667032;
-        bh=Md0RXpy04ehwWoOEmlRZlFIo2H+7yqFYIWQf7EfyhDI=;
+        s=korg; t=1623666793;
+        bh=rJwQ8JNJf/FiSjcMsTT6fiAExBFWieH1t/uc1j0yzGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CA9qb5CAY1ASTyDXqLW4FMKePiucDdyvVTomtRkwFsy80pw6J0ITXKCuZV/KS45JV
-         lDeRW6RqG8RtPDNOpR+qtRPrjLEHJRIDy8GfUwVrSPhTzBMt/q8ookrrXji1dwmQOO
-         8KGBoUmDwkvWJVXIVRof3Sont8yPVecMLoBOe8/0=
+        b=lhAnzxpA8JHboIBId/Ci+L/f5AMGpQCGBFX0JZtnlxAY9nR753g9Z8BRFINOKQWxm
+         Wbf1AaoFF3m4KemYqVUf6YFcvrxn8QpRDZTyaNTgkdjR9TweMVae/ptRm3VyuZJlBq
+         w3atTvvbKHiwmdKUmDcNT0t/ZA4uVwukL2u3zFEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        George McCollister <george.mccollister@gmail.com>,
+        Alexandre GRIVEAUX <agriveaux@deutnet.info>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 42/67] USB: serial: ftdi_sio: add NovaTech OrionMX product ID
+Subject: [PATCH 4.14 32/49] USB: serial: omninet: add device id for Zyxel Omni 56K Plus
 Date:   Mon, 14 Jun 2021 12:27:25 +0200
-Message-Id: <20210614102645.221100410@linuxfoundation.org>
+Message-Id: <20210614102642.922239254@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George McCollister <george.mccollister@gmail.com>
+From: Alexandre GRIVEAUX <agriveaux@deutnet.info>
 
-commit bc96c72df33ee81b24d87eab953c73f7bcc04f29 upstream.
+commit fc0b3dc9a11771c3919eaaaf9d649138b095aa0f upstream.
 
-Add PID for the NovaTech OrionMX so it can be automatically detected.
+Add device id for Zyxel Omni 56K Plus modem, this modem include:
 
-Signed-off-by: George McCollister <george.mccollister@gmail.com>
+USB chip:
+NetChip
+NET2888
+
+Main chip:
+901041A
+F721501APGF
+
+Another modem using the same chips is the Zyxel Omni 56K DUO/NEO,
+could be added with the right USB ID.
+
+Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/ftdi_sio.c     |    1 +
- drivers/usb/serial/ftdi_sio_ids.h |    1 +
- 2 files changed, 2 insertions(+)
+ drivers/usb/serial/omninet.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -601,6 +601,7 @@ static const struct usb_device_id id_tab
- 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
- 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONLX_PLUS_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORION_IO_PID) },
-+	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONMX_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_SYNAPSE_SS200_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX2_PID) },
---- a/drivers/usb/serial/ftdi_sio_ids.h
-+++ b/drivers/usb/serial/ftdi_sio_ids.h
-@@ -581,6 +581,7 @@
- #define FTDI_NT_ORIONLXM_PID		0x7c90	/* OrionLXm Substation Automation Platform */
- #define FTDI_NT_ORIONLX_PLUS_PID	0x7c91	/* OrionLX+ Substation Automation Platform */
- #define FTDI_NT_ORION_IO_PID		0x7c92	/* Orion I/O */
-+#define FTDI_NT_ORIONMX_PID		0x7c93	/* OrionMX */
+--- a/drivers/usb/serial/omninet.c
++++ b/drivers/usb/serial/omninet.c
+@@ -29,6 +29,7 @@
  
- /*
-  * Synapse Wireless product ids (FTDI_VID)
+ #define ZYXEL_VENDOR_ID		0x0586
+ #define ZYXEL_OMNINET_ID	0x1000
++#define ZYXEL_OMNI_56K_PLUS_ID	0x1500
+ /* This one seems to be a re-branded ZyXEL device */
+ #define BT_IGNITIONPRO_ID	0x2000
+ 
+@@ -43,6 +44,7 @@ static int omninet_port_remove(struct us
+ 
+ static const struct usb_device_id id_table[] = {
+ 	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNINET_ID) },
++	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNI_56K_PLUS_ID) },
+ 	{ USB_DEVICE(ZYXEL_VENDOR_ID, BT_IGNITIONPRO_ID) },
+ 	{ }						/* Terminating entry */
+ };
 
 
