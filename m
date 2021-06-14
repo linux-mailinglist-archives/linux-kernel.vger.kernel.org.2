@@ -2,21 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77D43A6AC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AEB3A6AC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhFNPqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:46:17 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:50492 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234107AbhFNPqN (ORCPT
+        id S234349AbhFNPq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234154AbhFNPqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:46:13 -0400
+        Mon, 14 Jun 2021 11:46:16 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCDC1C061574;
+        Mon, 14 Jun 2021 08:44:12 -0700 (PDT)
 Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:1f5e:e45f:238:7e73])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3669C1F42B15;
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id F08BC1F42B19;
         Mon, 14 Jun 2021 16:44:09 +0100 (BST)
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
@@ -26,9 +29,9 @@ Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH 1/4] dt-bindings: phy: rockchip: USB2: remove useless #phy-cells property
-Date:   Mon, 14 Jun 2021 17:43:56 +0200
-Message-Id: <20210614154359.805555-2-benjamin.gaignard@collabora.com>
+Subject: [PATCH 2/4] dt-bindings: phy: rockchip: USB2: Add compatible for rk3568
+Date:   Mon, 14 Jun 2021 17:43:57 +0200
+Message-Id: <20210614154359.805555-3-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210614154359.805555-1-benjamin.gaignard@collabora.com>
 References: <20210614154359.805555-1-benjamin.gaignard@collabora.com>
@@ -38,34 +41,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'#phy-cells' property is needed in host-port and otg-port nodes but
-not in parent nodes. Remove it from the JSON schema.
+Add "rockchip,rk3568-usb2phy" in compatible list of the USB2 phy.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- .../devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml         | 2 --
- 1 file changed, 2 deletions(-)
+ .../devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml          | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml b/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
-index fb29ad807b68f..b14387a48f6a3 100644
+index b14387a48f6a3..a1420d5e44be7 100644
 --- a/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
 +++ b/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
-@@ -119,7 +119,6 @@ required:
-   - reg
-   - clock-output-names
-   - "#clock-cells"
--  - "#phy-cells"
-   - host-port
-   - otg-port
+@@ -18,6 +18,7 @@ properties:
+       - rockchip,rk3366-usb2phy
+       - rockchip,rk3399-usb2phy
+       - rockchip,rv1108-usb2phy
++      - rockchip,rk3568-usb2phy
  
-@@ -137,7 +136,6 @@ examples:
-       clock-names = "phyclk";
-       clock-output-names = "clk_usbphy0_480m";
-       #clock-cells = <0>;
--      #phy-cells = <0>;
- 
-       u2phy0_host: host-port {
-         #phy-cells = <0>;
+   reg:
+     maxItems: 1
 -- 
 2.25.1
 
