@@ -2,64 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA583A5E5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2143E3A5E5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhFNI3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:29:36 -0400
-Received: from smtpbgeu2.qq.com ([18.194.254.142]:36868 "EHLO smtpbgeu2.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232649AbhFNI32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:29:28 -0400
-X-QQ-mid: bizesmtp33t1623659228tqhe5zyy
-Received: from localhost.localdomain (unknown [182.148.12.171])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 14 Jun 2021 16:26:56 +0800 (CST)
-X-QQ-SSF: 01000000002000208000B00A0000000
-X-QQ-FEAT: W+AYcr2Wk+kZ5GFSs4IxJ6w+11ZcgN9j9EMiUIEPTZkRgzJ9a8cg/UZzUy7qI
-        ry70wZJ0iW5wdg6Kt6UYwzz0GpA6lWBPUM1917CWfVb/ET0SZCVMC2HBfThnfmA+Ns+Co2u
-        +bknxkzUIRILumQNGWyOVoYv+bMfL9PjNb/HfCf7+pti6+X1I+40PPM5iaoRLzeR+h+4R9Y
-        wPvDMJqrQ6ObC2lcWee1+SXYs/+QxonWe7Le56g2h+MsewgMoPXgAYF6I8VDi70iu+hoKNj
-        gjDvIKH8prYwIVs5zndIzM+HylnG+88RHhcUegT6uEMGwp
-X-QQ-GoodBg: 0
-From:   Huilong Deng <denghuilong@cdjrlc.com>
-To:     morbidrsa@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Huilong Deng <denghuilong@cdjrlc.com>
-Subject: [PATCH] mcb: Remove trailing semicolon in macros
-Date:   Mon, 14 Jun 2021 16:26:33 +0800
-Message-Id: <20210614082633.20770-1-denghuilong@cdjrlc.com>
-X-Mailer: git-send-email 2.31.1
+        id S232635AbhFNI3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:29:05 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:42756 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232546AbhFNI3E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 04:29:04 -0400
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lshvw-0003nA-QZ; Mon, 14 Jun 2021 08:27:01 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lshvu-0004j9-MJ; Mon, 14 Jun 2021 09:27:00 +0100
+Subject: Re: [PATCH 2/2] ubd: use blk_mq_alloc_disk and blk_cleanup_disk
+To:     Christoph Hellwig <hch@lst.de>,
+        Richard Weinberger <richard@nod.at>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+References: <20210614060759.3965724-1-hch@lst.de>
+ <20210614060759.3965724-3-hch@lst.de>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <847f7608-1d11-1410-5394-b5aa5de9f45e@cambridgegreys.com>
+Date:   Mon, 14 Jun 2021 09:26:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210614060759.3965724-3-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgforeign:qybgforeign2
-X-QQ-Bgrelay: 1
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Macros should not use a trailing semicolon.
 
-Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
----
- include/linux/mcb.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mcb.h b/include/linux/mcb.h
-index 71dd10a3d928..f6efb16f9d1b 100644
---- a/include/linux/mcb.h
-+++ b/include/linux/mcb.h
-@@ -120,7 +120,7 @@ extern int __must_check __mcb_register_driver(struct mcb_driver *drv,
- 	__mcb_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
- extern void mcb_unregister_driver(struct mcb_driver *driver);
- #define module_mcb_driver(__mcb_driver)		\
--	module_driver(__mcb_driver, mcb_register_driver, mcb_unregister_driver);
-+	module_driver(__mcb_driver, mcb_register_driver, mcb_unregister_driver)
- extern void mcb_bus_add_devices(const struct mcb_bus *bus);
- extern int mcb_device_register(struct mcb_bus *bus, struct mcb_device *dev);
- extern struct mcb_bus *mcb_alloc_bus(struct device *carrier);
+On 14/06/2021 07:07, Christoph Hellwig wrote:
+> Use blk_mq_alloc_disk and blk_cleanup_disk to simplify the gendisk and
+> request_queue allocation.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   arch/um/drivers/ubd_kern.c | 44 ++++++++++++--------------------------
+>   1 file changed, 14 insertions(+), 30 deletions(-)
+> 
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index f508d45f7a69..0b86aa1b12f1 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -825,7 +825,6 @@ static void ubd_device_release(struct device *dev)
+>   {
+>   	struct ubd *ubd_dev = dev_get_drvdata(dev);
+>   
+> -	blk_cleanup_queue(ubd_dev->queue);
+>   	blk_mq_free_tag_set(&ubd_dev->tag_set);
+>   	*ubd_dev = ((struct ubd) DEFAULT_UBD);
+>   }
+> @@ -865,17 +864,12 @@ static const struct attribute_group *ubd_attr_groups[] = {
+>   	NULL,
+>   };
+>   
+> -static int ubd_disk_register(int major, u64 size, int unit,
+> -			     struct gendisk **disk_out)
+> +static void ubd_disk_register(int major, u64 size, int unit,
+> +			      struct gendisk *disk)
+>   {
+> -	struct gendisk *disk;
+> -
+> -	disk = alloc_disk(1 << UBD_SHIFT);
+> -	if(disk == NULL)
+> -		return -ENOMEM;
+> -
+>   	disk->major = major;
+>   	disk->first_minor = unit << UBD_SHIFT;
+> +	disk->minors = 1 << UBD_SHIFT;
+>   	disk->fops = &ubd_blops;
+>   	set_capacity(disk, size / 512);
+>   	sprintf(disk->disk_name, "ubd%c", 'a' + unit);
+> @@ -889,9 +883,6 @@ static int ubd_disk_register(int major, u64 size, int unit,
+>   	disk->private_data = &ubd_devs[unit];
+>   	disk->queue = ubd_devs[unit].queue;
+>   	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
+> -
+> -	*disk_out = disk;
+> -	return 0;
+>   }
+>   
+>   #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
+> @@ -903,6 +894,7 @@ static const struct blk_mq_ops ubd_mq_ops = {
+>   static int ubd_add(int n, char **error_out)
+>   {
+>   	struct ubd *ubd_dev = &ubd_devs[n];
+> +	struct gendisk *disk;
+>   	int err = 0;
+>   
+>   	if(ubd_dev->file == NULL)
+> @@ -927,32 +919,24 @@ static int ubd_add(int n, char **error_out)
+>   	if (err)
+>   		goto out;
+>   
+> -	ubd_dev->queue = blk_mq_init_queue(&ubd_dev->tag_set);
+> -	if (IS_ERR(ubd_dev->queue)) {
+> -		err = PTR_ERR(ubd_dev->queue);
+> +	disk = blk_mq_alloc_disk(&ubd_dev->tag_set, ubd_dev);
+> +	if (IS_ERR(disk)) {
+> +		err = PTR_ERR(disk);
+>   		goto out_cleanup_tags;
+>   	}
+> +	ubd_dev->queue = disk->queue;
+>   
+> -	ubd_dev->queue->queuedata = ubd_dev;
+>   	blk_queue_write_cache(ubd_dev->queue, true, false);
+> -
+>   	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
+>   	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
+> -	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, &ubd_gendisk[n]);
+> -	if(err){
+> -		*error_out = "Failed to register device";
+> -		goto out_cleanup_tags;
+> -	}
+> -
+> -	err = 0;
+> -out:
+> -	return err;
+> +	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
+> +	ubd_gendisk[n] = disk;
+> +	return 0;
+>   
+>   out_cleanup_tags:
+>   	blk_mq_free_tag_set(&ubd_dev->tag_set);
+> -	if (!(IS_ERR(ubd_dev->queue)))
+> -		blk_cleanup_queue(ubd_dev->queue);
+> -	goto out;
+> +out:
+> +	return err;
+>   }
+>   
+>   static int ubd_config(char *str, char **error_out)
+> @@ -1055,7 +1039,7 @@ static int ubd_remove(int n, char **error_out)
+>   	ubd_gendisk[n] = NULL;
+>   	if(disk != NULL){
+>   		del_gendisk(disk);
+> -		put_disk(disk);
+> +		blk_cleanup_disk(disk);
+>   	}
+>   
+>   	err = 0;
+> 
+
+This does not build for me when applied to master:
+
+
+arch/um/drivers/ubd_kern.c: In function ‘ubd_add’:
+arch/um/drivers/ubd_kern.c:922:9: error: implicit declaration of function ‘blk_mq_alloc_disk’; did you mean ‘blk_mq_alloc_request’? [-Werror=implicit-function-declaration]
+   disk = blk_mq_alloc_disk(&ubd_dev->tag_set, ubd_dev);
+          ^~~~~~~~~~~~~~~~~
+          blk_mq_alloc_request
+arch/um/drivers/ubd_kern.c:922:7: warning: assignment to ‘struct gendisk *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   disk = blk_mq_alloc_disk(&ubd_dev->tag_set, ubd_dev);
+        ^
+arch/um/drivers/ubd_kern.c: In function ‘ubd_remove’:
+arch/um/drivers/ubd_kern.c:1042:3: error: implicit declaration of function ‘blk_cleanup_disk’; did you mean ‘blk_cleanup_queue’? [-Werror=implicit-function-declaration]
+    blk_cleanup_disk(disk);
+
 -- 
-2.31.1
-
-
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
