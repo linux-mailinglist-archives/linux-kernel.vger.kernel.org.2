@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6F73A6316
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F54B3A64AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235241AbhFNLJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:09:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35246 "EHLO mail.kernel.org"
+        id S235108AbhFNL2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:28:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234654AbhFNK63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A39D61621;
-        Mon, 14 Jun 2021 10:41:52 +0000 (UTC)
+        id S235391AbhFNLN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:13:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE87C61964;
+        Mon, 14 Jun 2021 10:48:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667312;
-        bh=Fc+crT+MQ7uPWXUWq37Qz0Bxk9fUg9q6YScfSXTxNFs=;
+        s=korg; t=1623667731;
+        bh=Y4GepoBGy3IMv2faAQj2zfnwyNallRPTXK13Vh+jl/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sdA/D+sBFdiGV+O+mbcKXJ8E9fLXZLSNm7AcDDU1J5Z/5TiPxFJp0cwJsEY/MQLN8
-         dGzmg4mi1QDxgo4FlQ9DneIWassG/mgeduxkQcWxEJ+LTA5uay01lfP8n1tIpkKncu
-         YCKLjju4nqavQuiqHDduXPD6CHMSNTeY2Rg9E48s=
+        b=GBHGaUZTfysHW0lV1qrdigqL4isbmJQf9+htsWqyUYjrE5AhC+y3NTdYV+K9tU7ps
+         SDoQbzCF0/bkb/LgS4OVdIDsLbPMZ9VibMTqIzYi+ufqS5ddSlFbhDmHvIu7hx5vl6
+         MWcDQyCiDtLnlq4AWgdnTiubdmfJM3kR+Ce318tA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 023/131] net/qla3xxx: fix schedule while atomic in ql_sem_spinlock
+        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.12 052/173] ALSA: hda/realtek: fix mute/micmute LEDs and speaker for HP Elite Dragonfly G2
 Date:   Mon, 14 Jun 2021 12:26:24 +0200
-Message-Id: <20210614102653.787719438@linuxfoundation.org>
+Message-Id: <20210614102659.891174818@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,108 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Jeremy Szu <jeremy.szu@canonical.com>
 
-[ Upstream commit 13a6f3153922391e90036ba2267d34eed63196fc ]
+commit 15d295b560e6dd45f839a53ae69e4f63b54eb32f upstream.
 
-When calling the 'ql_sem_spinlock', the driver has already acquired the
-spin lock, so the driver should not call 'ssleep' in atomic context.
+The HP Elite Dragonfly G2 using ALC285 codec which using 0x04 to control
+mute LED and 0x01 to control micmute LED.
+In the other hand, there is no output from right channel of speaker.
+Therefore, add a quirk to make it works.
 
-This bug can be fixed by using 'mdelay' instead of 'ssleep'.
-
-The KASAN's log reveals it:
-
-[    3.238124 ] BUG: scheduling while atomic: swapper/0/1/0x00000002
-[    3.238748 ] 2 locks held by swapper/0/1:
-[    3.239151 ]  #0: ffff88810177b240 (&dev->mutex){....}-{3:3}, at:
-__device_driver_lock+0x41/0x60
-[    3.240026 ]  #1: ffff888107c60e28 (&qdev->hw_lock){....}-{2:2}, at:
-ql3xxx_probe+0x2aa/0xea0
-[    3.240873 ] Modules linked in:
-[    3.241187 ] irq event stamp: 460854
-[    3.241541 ] hardirqs last  enabled at (460853): [<ffffffff843051bf>]
-_raw_spin_unlock_irqrestore+0x4f/0x70
-[    3.242245 ] hardirqs last disabled at (460854): [<ffffffff843058ca>]
-_raw_spin_lock_irqsave+0x2a/0x70
-[    3.242245 ] softirqs last  enabled at (446076): [<ffffffff846002e4>]
-__do_softirq+0x2e4/0x4b1
-[    3.242245 ] softirqs last disabled at (446069): [<ffffffff811ba5e0>]
-irq_exit_rcu+0x100/0x110
-[    3.242245 ] Preemption disabled at:
-[    3.242245 ] [<ffffffff828ca5ba>] ql3xxx_probe+0x2aa/0xea0
-[    3.242245 ] Kernel panic - not syncing: scheduling while atomic
-[    3.242245 ] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
-5.13.0-rc1-00145
--gee7dc339169-dirty #16
-[    3.242245 ] Call Trace:
-[    3.242245 ]  dump_stack+0xba/0xf5
-[    3.242245 ]  ? ql3xxx_probe+0x1f0/0xea0
-[    3.242245 ]  panic+0x15a/0x3f2
-[    3.242245 ]  ? vprintk+0x76/0x150
-[    3.242245 ]  ? ql3xxx_probe+0x2aa/0xea0
-[    3.242245 ]  __schedule_bug+0xae/0xe0
-[    3.242245 ]  __schedule+0x72e/0xa00
-[    3.242245 ]  schedule+0x43/0xf0
-[    3.242245 ]  schedule_timeout+0x28b/0x500
-[    3.242245 ]  ? del_timer_sync+0xf0/0xf0
-[    3.242245 ]  ? msleep+0x2f/0x70
-[    3.242245 ]  msleep+0x59/0x70
-[    3.242245 ]  ql3xxx_probe+0x307/0xea0
-[    3.242245 ]  ? _raw_spin_unlock_irqrestore+0x3a/0x70
-[    3.242245 ]  ? pci_device_remove+0x110/0x110
-[    3.242245 ]  local_pci_probe+0x45/0xa0
-[    3.242245 ]  pci_device_probe+0x12b/0x1d0
-[    3.242245 ]  really_probe+0x2a9/0x610
-[    3.242245 ]  driver_probe_device+0x90/0x1d0
-[    3.242245 ]  ? mutex_lock_nested+0x1b/0x20
-[    3.242245 ]  device_driver_attach+0x68/0x70
-[    3.242245 ]  __driver_attach+0x124/0x1b0
-[    3.242245 ]  ? device_driver_attach+0x70/0x70
-[    3.242245 ]  bus_for_each_dev+0xbb/0x110
-[    3.242245 ]  ? rdinit_setup+0x45/0x45
-[    3.242245 ]  driver_attach+0x27/0x30
-[    3.242245 ]  bus_add_driver+0x1eb/0x2a0
-[    3.242245 ]  driver_register+0xa9/0x180
-[    3.242245 ]  __pci_register_driver+0x82/0x90
-[    3.242245 ]  ? yellowfin_init+0x25/0x25
-[    3.242245 ]  ql3xxx_driver_init+0x23/0x25
-[    3.242245 ]  do_one_initcall+0x7f/0x3d0
-[    3.242245 ]  ? rdinit_setup+0x45/0x45
-[    3.242245 ]  ? rcu_read_lock_sched_held+0x4f/0x80
-[    3.242245 ]  kernel_init_freeable+0x2aa/0x301
-[    3.242245 ]  ? rest_init+0x2c0/0x2c0
-[    3.242245 ]  kernel_init+0x18/0x190
-[    3.242245 ]  ? rest_init+0x2c0/0x2c0
-[    3.242245 ]  ? rest_init+0x2c0/0x2c0
-[    3.242245 ]  ret_from_fork+0x1f/0x30
-[    3.242245 ] Dumping ftrace buffer:
-[    3.242245 ]    (ftrace buffer empty)
-[    3.242245 ] Kernel Offset: disabled
-[    3.242245 ] Rebooting in 1 seconds.
-
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210605082539.41797-1-jeremy.szu@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/qlogic/qla3xxx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-index 27740c027681..a83b3d69a656 100644
---- a/drivers/net/ethernet/qlogic/qla3xxx.c
-+++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-@@ -114,7 +114,7 @@ static int ql_sem_spinlock(struct ql3_adapter *qdev,
- 		value = readl(&port_regs->CommonRegs.semaphoreReg);
- 		if ((value & (sem_mask >> 16)) == sem_bits)
- 			return 0;
--		ssleep(1);
-+		mdelay(1000);
- 	} while (--seconds);
- 	return -1;
- }
--- 
-2.30.2
-
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8307,6 +8307,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x86c7, "HP Envy AiO 32", ALC274_FIXUP_HP_ENVY_GPIO),
++	SND_PCI_QUIRK(0x103c, 0x8716, "HP Elite Dragonfly G2 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8730, "HP ProBook 445 G7", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
 
 
