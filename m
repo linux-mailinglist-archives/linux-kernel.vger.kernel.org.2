@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46223A6F8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E5A3A6F91
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235578AbhFNT44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:56:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52984 "EHLO mail.kernel.org"
+        id S235644AbhFNT5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:57:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235518AbhFNT4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:56:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B6D3611EE;
-        Mon, 14 Jun 2021 19:54:48 +0000 (UTC)
+        id S235500AbhFNT4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:56:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC0E4611CA;
+        Mon, 14 Jun 2021 19:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623700488;
-        bh=YzulUFMFki/iYiWjf8Var0pCv66AUmtnxzcZgz7kSHc=;
+        s=k20201202; t=1623700491;
+        bh=YkjBzaYQqVslcwFlFmdUZmUuJIrU93d/ciBUzYyyyz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A19LLbD3NvVDOSHJTkzTIi1NZHF26MsG7BJ6+awHPVUtnnWmTYE8FEhNB/lrxMV4U
-         EMKMWqWP5y+6AvTPKbN7fZpGm3t0FVaQbVTv4cfSoV2pFBqTae/6ekMy+o9V4NdNsc
-         UzGat7jDYk4+L6kkGNaxU9t+bgGmgHfni2IJZV422GDdo/8p5xQjbpYizvAM4XGT0D
-         uwVFUR7JXAynpwxVy4lW0uF4m/F4uupRY/Eqgb+z83qDFR6uIWpnE81SwDG+Yv8kfV
-         y4AX9LlZbQQTc0NPMAGiQ+ivRxAAh/VDREch9Uw63KyNNpXkBc7QAB1tETmKKdbSB0
-         O9ntoBlQpODpg==
+        b=T8RPq4WeGUCKsqhc15G349HkYbxWxvMReLKrkk4aV84zFI9hQpQJMIW7w/Pcd3iTL
+         vogvUEoVQEXVz77lCaDzV83BUGltnZSpdUAYSWjVV+kg+N4+Z16WmMcCh2uUG48/nx
+         DfrqpuM9zNBf1Df+T4UZD2ux4kIiN6Rc2oZt2hU7VM3V2VioquySVlXTKM5w2x/6yP
+         Btn04SdjZj6IwPoADpfwfZ6PBnYZfz6fMg32Rm4r2GP2VucUZnTiGZ2aJ/uTPUh7N4
+         i3+ilXgqbtvjmU0zDjt2rWvo3GAwNXfE/Fh29hPcBvjhYg9Lmo2qI4f9SxCBiuo8W3
+         oXzSF6Do2HpWQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     agross@kernel.org, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, perex@perex.cz,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
-        robh+dt@kernel.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com,
-        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        judyhsiao@chromium.org, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: qcom: Add four speaker support on MI2S secondary
-Date:   Mon, 14 Jun 2021 20:53:42 +0100
-Message-Id: <162369994008.34524.16929754677790147790.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
+        codrin.ciubotariu@microchip.com
+Subject: Re: [PATCH -next] ASoC: atmel-pdmic: Use devm_platform_get_and_ioremap_resource()
+Date:   Mon, 14 Jun 2021 20:53:43 +0100
+Message-Id: <162369994010.34524.16386719671018487251.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210609133039.4648-1-srivasam@codeaurora.org>
-References: <20210609133039.4648-1-srivasam@codeaurora.org>
+In-Reply-To: <20210611035351.3878091-1-yangyingliang@huawei.com>
+References: <20210611035351.3878091-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,10 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 19:00:39 +0530, Srinivasa Rao Mandadapu wrote:
-> Add four speaker support on MI2S secondary block
-> by using I2S SD1 line on gpio52 pin, and add channel map
-> control support in the lpass-cpu audio driver.
+On Fri, 11 Jun 2021 11:53:51 +0800, Yang Yingliang wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 
 Applied to
 
@@ -58,8 +52,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: Add four speaker support on MI2S secondary
-      commit: c223f41c1a52bfe10f1d3311679b1d1f9813e500
+[1/1] ASoC: atmel-pdmic: Use devm_platform_get_and_ioremap_resource()
+      commit: 92570939c8b952272f630f807f8ddfac58411869
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
