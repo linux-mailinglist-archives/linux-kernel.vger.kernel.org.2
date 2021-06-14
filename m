@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BC63A64CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A243A6323
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235940AbhFNL30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:29:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
+        id S235590AbhFNLKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235585AbhFNLO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:14:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B862613D9;
-        Mon, 14 Jun 2021 10:49:11 +0000 (UTC)
+        id S234829AbhFNK7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 426B561431;
+        Mon, 14 Jun 2021 10:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667752;
-        bh=tAgHRmkXbDK9L6KTY2aEI9h5uKtmlvcQL2UoUrvwWgI=;
+        s=korg; t=1623667336;
+        bh=9DsQAlrXIIkKDZkN+WHC7MUMFp4igyRwhLat0llSGY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SqAZUb85oG0Y9FwaJV+H/gCNEGqAW3WLG4w/gdg5KAMdii8oO1KD1U/XwtDNo4b+d
-         2ppBETH1/jCs1Xi+w+MHBFuU1ZaSCIPmmrJtcJcK0Be4IF+BBThLPx+AVbP2IzZmhZ
-         NXQXLyYykAFleSBZzhHxbVSUhTHXAz/iKvR+JpDU=
+        b=hZ2DkqmY9G0gq2icMBArsze8U7S3D1fo4pV2yLmr2wB8JKbjRkVJpk9ga4dWaJY6g
+         Jp7uKnZP1EgkBsn3nYM5zHhB+Wug/a2vnUXx4XyDVPJE2vlO80ocCn2lCm2vaMvhl3
+         VKjqgvhTBBQ/JX+FiecGLopkY0aaJFvP3ZWyExWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 5.12 059/173] drm: Fix use-after-free read in drm_getunique()
-Date:   Mon, 14 Jun 2021 12:26:31 +0200
-Message-Id: <20210614102700.127017027@linuxfoundation.org>
+        Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 031/131] net: appletalk: cops: Fix data race in cops_probe1
+Date:   Mon, 14 Jun 2021 12:26:32 +0200
+Message-Id: <20210614102654.070736168@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
 
-commit b436acd1cf7fac0ba987abd22955d98025c80c2b upstream.
+[ Upstream commit a4dd4fc6105e54393d637450a11d4cddb5fabc4f ]
 
-There is a time-of-check-to-time-of-use error in drm_getunique() due
-to retrieving file_priv->master prior to locking the device's master
-mutex.
+In cops_probe1(), there is a write to dev->base_addr after requesting an
+interrupt line and registering the interrupt handler cops_interrupt().
+The handler might be called in parallel to handle an interrupt.
+cops_interrupt() tries to read dev->base_addr leading to a potential
+data race. So write to dev->base_addr before calling request_irq().
 
-An example can be seen in the crash report of the use-after-free error
-found by Syzbot:
-https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+Found by Linux Driver Verification project (linuxtesting.org).
 
-In the report, the master pointer was used after being freed. This is
-because another process had acquired the device's master mutex in
-drm_setmaster_ioctl(), then overwrote fpriv->master in
-drm_new_set_master(). The old value of fpriv->master was subsequently
-freed before the mutex was unlocked.
-
-To fix this, we lock the device's master mutex before retrieving the
-pointer from from fpriv->master. This patch passes the Syzbot
-reproducer test.
-
-Reported-by: syzbot+c3a706cec1ea99e1c693@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210608110436.239583-1-desmondcheongzx@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_ioctl.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/appletalk/cops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -118,17 +118,18 @@ int drm_getunique(struct drm_device *dev
- 		  struct drm_file *file_priv)
- {
- 	struct drm_unique *u = data;
--	struct drm_master *master = file_priv->master;
-+	struct drm_master *master;
- 
--	mutex_lock(&master->dev->master_mutex);
-+	mutex_lock(&dev->master_mutex);
-+	master = file_priv->master;
- 	if (u->unique_len >= master->unique_len) {
- 		if (copy_to_user(u->unique, master->unique, master->unique_len)) {
--			mutex_unlock(&master->dev->master_mutex);
-+			mutex_unlock(&dev->master_mutex);
- 			return -EFAULT;
- 		}
+diff --git a/drivers/net/appletalk/cops.c b/drivers/net/appletalk/cops.c
+index ba8e70a8e312..6b12ce822e51 100644
+--- a/drivers/net/appletalk/cops.c
++++ b/drivers/net/appletalk/cops.c
+@@ -327,6 +327,8 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			break;
  	}
- 	u->unique_len = master->unique_len;
--	mutex_unlock(&master->dev->master_mutex);
-+	mutex_unlock(&dev->master_mutex);
  
- 	return 0;
- }
++	dev->base_addr = ioaddr;
++
+ 	/* Reserve any actual interrupt. */
+ 	if (dev->irq) {
+ 		retval = request_irq(dev->irq, cops_interrupt, 0, dev->name, dev);
+@@ -334,8 +336,6 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			goto err_out;
+ 	}
+ 
+-	dev->base_addr = ioaddr;
+-
+         lp = netdev_priv(dev);
+         spin_lock_init(&lp->lock);
+ 
+-- 
+2.30.2
+
 
 
