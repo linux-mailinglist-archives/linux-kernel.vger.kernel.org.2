@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF413A71CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C733A71CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhFNWOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 18:14:05 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39183 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231226AbhFNWOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 18:14:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3lzd5KfFz9sW4;
-        Tue, 15 Jun 2021 08:11:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623708717;
-        bh=Fij6i0iOv5D+lzV77efCPEQp99R7jOV/kigxL0k9Gu0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ORjhtp4AmPvLYoCDl0rLFgm727b14AnZd/XRFGi0hZWIYjZn1VTlgQjKM7oYPMK8/
-         YP4zim5aJpfhe2vULnyYPwbdBGs2jVvxPlMfEqGHQFr8j125bWGKbdUSzgGS27erES
-         TSXxIdzerRJAgJkQgqV/hMROyb8RrsnYjppa4m+lC3CEXnZVdAhYCruGQyi9qt7GEs
-         5+5loSdoYe56CzKNOSOWzN4wA2MrXWjOOE16jsOWGYbB2EoHCEF8iQjXj6Y0LSDBI3
-         9371R9XyfC9D1PNPOMsR4G7FC0EpgO2xwWqc90owBUFGa94Ajzq7T4uB+MmTqBKh/a
-         Oe4D3uhZ3Bnxw==
-Date:   Tue, 15 Jun 2021 08:11:56 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the sound-asoc tree
-Message-ID: <20210615081156.708089b1@canb.auug.org.au>
+        id S231620AbhFNWOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhFNWOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 18:14:53 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0CCC061574;
+        Mon, 14 Jun 2021 15:12:35 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c12so11696338pfl.3;
+        Mon, 14 Jun 2021 15:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tfaE+ckEfdYiVmVZT4kEyQZOGqZRS3O95UKV5ziD/LM=;
+        b=PTUG4iIiYxk8tOELSf72zXlEnMuz60cKGRFeGulxWkr7bWPyJ+V7s6UjKINBryR8UK
+         Ij0Mn7Vf6a8bDjCDCEd5lJMOIl8Ei0i8bGGoTv87rjeujjpUOfSjeiARMD4B+gV9fD/o
+         Teyf1fiQl3bEYb8PAmZUT8tvTocx8JxYQZlAiB5xLZFbMSyRjutBpJHPAZeZwurQmQIn
+         +M/N+/j3XLFCe0jihu5SICEtKivUmct7+7HSs6XnbMy2a++U+4orr1AFQZTGidd+SVQM
+         eQKJ9FepQrWxymxTH+BlYecFNXB1aUE1FGTT2JhPHEewlozwLiwGfpFXy5Qe/HfgfGx4
+         SkvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tfaE+ckEfdYiVmVZT4kEyQZOGqZRS3O95UKV5ziD/LM=;
+        b=QCbvlxz6uvXKPR5SWPtBiI+wD2BwVl4dW3N2u3ZvKugZbtVHhgKt6aaScaMUE8kRsX
+         QzgIaydYi/WR08xVphVg/Au2/boNaQ7i9Tmh52/pAjJFA8FwCVlGwls9lfdiWOK0zj+w
+         JtRXJeyXqrKFw5Dj04Ijs2T4oIGgyj3Ce3qrr8VBUgB18e5vwAFf/dx3T5KVqp5ziym2
+         vAqTQG/BI7mNkMsTu0LIyS3O3iBQU+mQF0ZV2vLep07i8VqqhGqjSppeuIYJSuWAbrsk
+         6RrkdKzqveIJ42ujvX7xtJ1XWnKRbFZ6Z+dqnhJITUjnKGZ1Xgpm9og6+VpD/BdkzEHY
+         sG4w==
+X-Gm-Message-State: AOAM5302D1ItDXjxts8t12ST/ZlOHlTDSuk0yXhgfb4YnoWNgFjh2VfW
+        m68UO6LSxr5RDVWA9P/sXrQ=
+X-Google-Smtp-Source: ABdhPJz99UtJzCwMKEZFhBhS8Wj+/+Sxwia8HuoR2wtMHTOw+5BAJzGB+AJiBLgGsu6FBo3E5TYc5g==
+X-Received: by 2002:a62:e21a:0:b029:2ea:26c5:2ec3 with SMTP id a26-20020a62e21a0000b02902ea26c52ec3mr1241436pfi.8.1623708754599;
+        Mon, 14 Jun 2021 15:12:34 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:2a26:15ba:dc71:c4ba])
+        by smtp.gmail.com with ESMTPSA id m7sm7872812pgr.62.2021.06.14.15.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 15:12:33 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 15:12:31 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH][next] Input: Fix fall-through warning for Clang
+Message-ID: <YMfUT7pvBWreiR1K@google.com>
+References: <20210607214852.GA65141@embeddedor>
+ <91eef5ab3143ae8fadb8eb2969aecba5f3e7ad98.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hN9ecARLt=ZpVfTkbGV=fgc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <91eef5ab3143ae8fadb8eb2969aecba5f3e7ad98.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hN9ecARLt=ZpVfTkbGV=fgc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Joe,
 
-Hi all,
+On Mon, Jun 07, 2021 at 03:02:40PM -0700, Joe Perches wrote:
+> On Mon, 2021-06-07 at 16:48 -0500, Gustavo A. R. Silva wrote:
+> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a
+> > warning by explicitly adding a fallthrough; statement.
+> []
+> > diff --git a/drivers/input/joystick/sidewinder.c b/drivers/input/joystick/sidewinder.c
+> []
+> > @@ -660,6 +660,7 @@ static int sw_connect(struct gameport *gameport, struct gameport_driver *drv)
+> >  					fallthrough;
+> >  				case 45:				/* Ambiguous packet length */
+> >  					if (j <= 40) {			/* ID length less or eq 40 -> FSP */
+> > +					fallthrough;
+> >  				case 43:
+> >  						sw->type = SW_ID_FSP;
+> >  						break;
+> 
+> Yuck.  Super ugly.  There's no need to play games with indentation.
 
-In commit
+Yeah, the original code is not pretty :(
 
-  da0363f7bfd3 ("ASoC: qcom: Fix for DMA interrupt clear reg overwriting")
+> 
+> Perhaps the simpler:
+> 
+> 				case 43:
+> 					sw->type = SW_ID_FSP;
+> 					break;
+> 				case 45:				/* Ambiguous packet length */
+> 					if (j <= 40) {			/* ID length less or eq 40 -> FSP */
+> 						sw->type = SW_ID_FSP;
+> 						break;
+> 					}
+> 					sw->number++;
+> 					fallthrough;
+> 
+> 
 
-Fixes tag
+Could you resubmit this version properly formatted?
 
-  Fixes: commit c5c8635a04711 ("ASoC: qcom: Add LPASS platform driver")
-
-has these problem(s):
-
-  - leading word 'commit' unexpected
-
-Also, please keep all the tags in the commit message together at the end.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/hN9ecARLt=ZpVfTkbGV=fgc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDH1CwACgkQAVBC80lX
-0GxW8Qf/cFTUSDnnDHyIMCvZ41bMD9dFuYrHpln/qbXwH5/mo17/856gLlCHBktZ
-OVeNQS5io3mVyAoHbIlaW2bgbvNEk9D0yOYvFgVMirlJE/yEOEQPgasdDMrwc8Ne
-njhK62SMDQ7GzdLdMBmSMAAuDvIpA6N20oMQo3Ae8L6RaTq3e/jpG31gsX2EkC4Y
-fjBgjNRp4UA/0Gm6wZ5jH/oYuXzznczDsGasVUrpEedWpy6naUX4VO9AScpK6pEm
-pGAh7YCzzcE8cZn0hl/j8ElSBe4AycI+jPgDMTuUZGz0Ra1zEJp9iNcG8UL7Yjyv
-fJug+fzby9uYWKVETk9x4a6du3Iz6Q==
-=Xdar
------END PGP SIGNATURE-----
-
---Sig_/hN9ecARLt=ZpVfTkbGV=fgc--
+Thanks.
+ 
+-- 
+Dmitry
