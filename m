@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F483A6F38
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099E83A6F90
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbhFNTiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbhFNTiU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:38:20 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5354C061574;
-        Mon, 14 Jun 2021 12:36:17 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id u18so6530073plc.0;
-        Mon, 14 Jun 2021 12:36:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Cyr83LbV58MwQpyUsJoGsMK99Ov9lne0HxCQCyb3otE=;
-        b=VxsfX32q72o8gxVzAsamkw2uV4jB4r/Cfb0xKBri+rAASUmeC4B0gjQaq8tJDLcu4y
-         qCp0NG9hH26zDd6LHl8CsNmlEDg86n98SMwxRKq1ztZ9Z2nbKoL5wryPkbpLboSBg0G6
-         KU3boFNKyNXOhadVjE0MG9+MgTdkC/8+QlEohmiqMePuWrx/wpAqpTWQXaJL+lP/UGoE
-         tDU3buRhBrM7b1v1dcJq79hvXFrSCQdlfCynqe5M81twlM9EWPpEmMTJxEJJ+WdXLcf7
-         jQCrLt6aLOu0Pb5o+jOi2mPz3fKK+dbh8jf106RxEPETkCzItnC+1B6CGHzlfk0ox51X
-         fLDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cyr83LbV58MwQpyUsJoGsMK99Ov9lne0HxCQCyb3otE=;
-        b=rJsx/ALpqJL9ZZbhFgnS4S+WqQKzO92dNJsMjkVnjprBT5RLy5yO/M4uyS/USGUVdb
-         03gcypl7St2dr7C/Ar4aZK1ZB4+t+JkrrwuNcrhlvnlqdMKB6aLsdNy7tsq42xBxuuEL
-         vc+JQc0NwjJQCrDD301tPwQHCmIA20Ky+iiPBRERGnLJNLljM2J5/IGDPPeie8pOweb8
-         cekjA0bHFZYkq6UHmfl1jUxVSO+qdllYMPtxmuVovxSaaXugK8yhKEPv8OrNg1JPckhi
-         lpSvdqfD5Ntec8P9BslynnRVz5GTIoovE45mZEBocbQLvZoHinQOfAKWwTPFLEvMJ3U/
-         +fgA==
-X-Gm-Message-State: AOAM533Fwj7XQ1dbqq0ESTPy+r0jqBQQoWxujmfUA8Wp4YhSBfqy0DGc
-        naaDicGINX07Gvfjm58IaBVtzv2snMw=
-X-Google-Smtp-Source: ABdhPJxiudasxnIesbYkf7TF0HkdTwzgMIYtOKXR7sgKRxUIm+gc7jXc6yxmiQpiEpp2wN0G7cEO3w==
-X-Received: by 2002:a17:90a:5b0a:: with SMTP id o10mr744115pji.143.1623699376997;
-        Mon, 14 Jun 2021 12:36:16 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id p14sm14418216pgb.2.2021.06.14.12.36.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 12:36:16 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/131] 5.10.44-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210614102652.964395392@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <1ad5d266-0537-2dfb-c3ff-32262c64affe@gmail.com>
-Date:   Mon, 14 Jun 2021 12:36:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        id S235589AbhFNT47 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Jun 2021 15:56:59 -0400
+Received: from [119.45.241.97] ([119.45.241.97]:52030 "HELO aadq.top"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with SMTP
+        id S235559AbhFNT4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:56:53 -0400
+X-Greylist: delayed 965 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Jun 2021 15:56:52 EDT
+Received: from johnlewis.com ([34.210.103.201])
+        (envelope-sender <robert.turner44@johnlewis.com>)
+        by 10.206.0.6 with ESMTP
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 03:38:42 +0800
+Reply-To: robert_turner@johnlewis-trading.com,
+          pippawicks.sales@johnlewis-trading.com
+From:   John Lewis Partnersip <robert.turner44@johnlewis.com>
+To:     linux-kernel@vger.kernel.org
+Subject: Product Inquiry [JL]  06/14/2021..
+Date:   14 Jun 2021 19:38:42 +0000
+Message-ID: <20210614182206.4128818FDE01B25A@johnlewis.com>
 MIME-Version: 1.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear linux-kernel
+
+The famous brand John Lewis Partnership, is UK's largest multi-
+channel retailer with over 126 shops and multiple expansion in 
+Africa furnished by European/Asian/American products. We are 
+sourcing new products to attract new customers and also retain 
+our existing ones, create new partnerships with companies dealing 
+with different kinds of goods globally.
+
+Your company's products are of interest to our market as we have 
+an amazing market for your products.
+
+Provide us your current catalog through email to review more. We 
+hope to be able to order with you and start a long-term friendly,
+respectable and solid business partnership. Please we would 
+appreciate it if you could send us your stock availability via 
+email if any.
+
+Our payment terms are 15 days net in Europe, 30 days Net in UK 
+and 30 days net in Asia/USA as we operate with over 5297 
+suppliers around the globe for the past 50 years now. For 
+immediate response Send your reply to robert_turner@johnlewis-
+trading.com for us to be able to 
+treat with care and urgency.
 
 
-On 6/14/2021 3:26 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.44 release.
-> There are 131 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Best Regards
 
-On ARCH_BRCMSTB using 32-bit and 64-bit kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Rob Turner
+Head Of Procurement Operations
+John Lewis & Partners.
+robert_turner@johnlewis-trading.com
+Tel: +44-7451-274090
+WhatsApp: +447497483925
+www.johnlewis.com
+REGISTERED OFFICE: 171 VICTORIA STREET, LONDON SW1E 5NN  
