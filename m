@@ -2,189 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21773A5E5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D643A5E67
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhFNI3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232640AbhFNI3V (ORCPT
+        id S232606AbhFNIdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:33:15 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:43000 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232546AbhFNIdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:29:21 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570D1C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:27:19 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j2so19608027lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:27:19 -0700 (PDT)
+        Mon, 14 Jun 2021 04:33:14 -0400
+Received: by mail-oi1-f175.google.com with SMTP id s23so13579699oiw.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lKShWs6TAgVDNzfvLDvoWvURVhGxJq2LT0tIZHvVVo0=;
-        b=tN6TUcF1TaNeAv5IgKoqjQFB0qVI0cHpgVdomlqe+8Pj3SSETdMRfS7bj0kO71T7C9
-         On/qnrk8Yi6Rp9P9MPKQejEJj+M1+uvKuBgoUmmyegx3spH/RDiAgP/ruvV1HVaD5kDS
-         fEUhLAISCUTrPZm3WmOjpufgAiCbN5S5ZAlaN1wnCVZAW3JGI8n7uzr8GibXmqzYaOQ3
-         i8XiNp07KWXX8VbPtK6W6qWbomiNDwD173c6milPN/HNRDRy/4FTU45XIH6/QRThKsiq
-         oiZwJVAjcdLM2GSF2v63/zDQh3yDPINJ8QiyerHYl98+6nxfL6KB8TXJrDRCEo/y2IHC
-         LGJA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QSAHKTcFLCX8/C+Bt+qS/8aN90gNtcFpqWMBF4o9Lj8=;
+        b=VxonmO7//XNFF8uHng7+ibIJaaO64cmwcIbhuWWcRpu/HZC9Vw4PUvNSjFlajDj6A+
+         k15Onk8ncCro83SlDNSU7GWY8afW2uvs+Bv3R4wHcW+KPAkbYs+FTuBfCFY2LWQH5dmJ
+         /y4weBRLHacyVQOkSitblHkwFMKQZ+qqgNQtuRK1Jo2BxYotu0dmCYSVtLG+kEclv1NW
+         CD6I6QaH0BSFKeEAG+trxVzJDtllSmsGLwhrNbQo0RE2ijIZvSihb5qe5W9UK4E5raNC
+         butaxzrAlZ6SFSkaCGX8G2TTOrQNpCR25EhCtUBEaiAP2RQSRWJ1WCiKysdjRMziZg73
+         GzXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lKShWs6TAgVDNzfvLDvoWvURVhGxJq2LT0tIZHvVVo0=;
-        b=hwwX4h3eMksxvDhonSuvOEKYv1F8pQYBte26vBHCVrlEmo01oCzUFhHYaz/HM5FMhN
-         WLmqgdPHlRykB1vIvt6tmvKUrgwPX1Z7aVrD40BwRty18NRCkN7ieF5KG1b2CfkNMWIu
-         XIHf6hA5OhGcmNfXwNvwsarltEqK3t5uklGbjBusjI+ItPpzeYMQ3/5/7MS339J00p8/
-         0A2iwvYYLuoGmQMU5xQQBr0r8ui5GfSgQtm1PdFnM44SECMFxipMJguP8xgQ1F5nOSNR
-         Po8TL16wgK94wFLjf1WC6YdlsDfLCwVYDwpcpgDBYwVVzbntjnoZCA//qsh/m/OsUQ0S
-         Nx1A==
-X-Gm-Message-State: AOAM530ecKtCa2yl45xWsSenfofFRnstjMZyksC/va5EWpYzvc5++wah
-        bovql2WpHfOHMq5BZgwR6VS3EQ==
-X-Google-Smtp-Source: ABdhPJz42E9QOqr7X/zeify/amV4v5uusvVtstK1olJuD9DDoUwb8Z/vy6Y/+TZYLNLJI9S0U9Lmng==
-X-Received: by 2002:a05:6512:398a:: with SMTP id j10mr11424003lfu.636.1623659237016;
-        Mon, 14 Jun 2021 01:27:17 -0700 (PDT)
-Received: from jade (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id a1sm1406066lfu.45.2021.06.14.01.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 01:27:16 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 10:27:15 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/8] optee: Clear stale cache entries during
- initialization
-Message-ID: <20210614082715.GC1033436@jade>
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
- <20210610210913.536081-5-tyhicks@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QSAHKTcFLCX8/C+Bt+qS/8aN90gNtcFpqWMBF4o9Lj8=;
+        b=VwzP+qyjgLgYTjImBM1LyF+sFnNSPTWy5tMw3zaF9qeRj4VNJqmRWD+VMXRcBGHT/3
+         k3mQRcK5+N3bFK8I8f6B8bfFPwkuHIxim7Q/QDrm3B/dQifcQ6Qn4ub1HfvbiBk7Qcug
+         6QFJEJJFXgYBheNmezYaFSnVd2KJZcrOgoXQzSIzkxVFmzhCJmfsDbfdrLJxeI4H6IKz
+         pHHW76ftPfgmS2JuPYsQyc/5ssbEqQNZw+3zNbhYCR1oqjNJIbkHDvZv6EwqVmDTOrVZ
+         b0fCWqXR+CeNRyQCqDykfLhjnwAz/xWzmUxqKpyZV+V5uZuFlTiXwmMONcSl+iiV6nay
+         rBdQ==
+X-Gm-Message-State: AOAM532yltNvmztpjVXXVpG2Ya+2IjKDOaOJYd3D3Rm9zcVnzzMZfkBs
+        +nr7pV9HaA8KkbLVcIlPu+fgBYNcvwXcJsjhU2+v1Q==
+X-Google-Smtp-Source: ABdhPJz/rFMYq32ngA97nWv9bcy6sRojEmIB+U6ypCZQVoSHnGd1gzxCypoSPG3LS0SUdLiasD1CgGdr6DWCs/LTaCU=
+X-Received: by 2002:aca:4bd7:: with SMTP id y206mr9866132oia.40.1623659411792;
+ Mon, 14 Jun 2021 01:30:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210610210913.536081-5-tyhicks@linux.microsoft.com>
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+ <20210607113840.15435-6-bhupesh.sharma@linaro.org> <YMLR11+6A/6klgqJ@builder.lan>
+In-Reply-To: <YMLR11+6A/6klgqJ@builder.lan>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Mon, 14 Jun 2021 14:00:01 +0530
+Message-ID: <CAH=2Ntwkk4Hw1VQcXu9y08jPHWf99EFmj=7GG0V4uuwbNK7c0A@mail.gmail.com>
+Subject: Re: [PATCH 5/8] pinctrl: qcom/pinctrl-spmi-gpio: Add compatibles for
+ pmic-gpios on SA8155p-adp
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        bhupesh.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 04:09:09PM -0500, Tyler Hicks wrote:
-> The shm cache could contain invalid addresses if
-> optee_disable_shm_cache() was not called from the .shutdown hook of the
-> previous kernel before a kexec. These addresses could be unmapped or
-> they could point to mapped but unintended locations in memory.
-> 
-> Clear the shared memory cache, while being careful to not translate the
-> addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
-> initialization. Once all pre-cache shm objects are removed, proceed with
-> enabling the cache so that we know that we can handle cached shm objects
-> with confidence later in the .shutdown hook.
-> 
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> ---
->  drivers/tee/optee/call.c          | 11 ++++++++++-
->  drivers/tee/optee/core.c          | 13 +++++++++++--
->  drivers/tee/optee/optee_private.h |  2 +-
->  3 files changed, 22 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> index 6e6eb836e9b6..5dcba6105ed7 100644
-> --- a/drivers/tee/optee/call.c
-> +++ b/drivers/tee/optee/call.c
-> @@ -419,8 +419,10 @@ void optee_enable_shm_cache(struct optee *optee)
->   * optee_disable_shm_cache() - Disables caching of some shared memory allocation
->   *			      in OP-TEE
->   * @optee:	main service struct
-> + * @is_mapped:	true if the cached shared memory addresses were mapped by this
-> + *		kernel, are safe to dereference, and should be freed
->   */
-> -void optee_disable_shm_cache(struct optee *optee)
-> +void optee_disable_shm_cache(struct optee *optee, bool is_mapped)
->  {
->  	struct optee_call_waiter w;
->  
-> @@ -439,6 +441,13 @@ void optee_disable_shm_cache(struct optee *optee)
->  		if (res.result.status == OPTEE_SMC_RETURN_OK) {
->  			struct tee_shm *shm;
->  
-> +			/*
-> +			 * Shared memory references that were not mapped by
-> +			 * this kernel must be ignored to prevent a crash.
-> +			 */
-> +			if (!is_mapped)
-> +				continue;
-> +
->  			shm = reg_pair_to_ptr(res.result.shm_upper32,
->  					      res.result.shm_lower32);
->  			tee_shm_free(shm);
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index 0987074d7ed0..6974e1104bd4 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -589,7 +589,7 @@ static int optee_remove(struct platform_device *pdev)
->  	 * reference counters and also avoid wild pointers in secure world
->  	 * into the old shared memory range.
->  	 */
-> -	optee_disable_shm_cache(optee);
-> +	optee_disable_shm_cache(optee, true);
+Hi Bjorn,
 
-Naked "true" or "false" parameters are normally not very descriptive.
-Would it make sense to write this as:
-optee_disable_shm_cache(optee, true /*is_mapped*/);
-instead (same for the other call sites in this patch)? That way it would
-be easier to see what it is that is true or false.
+On Fri, 11 Jun 2021 at 08:30, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
+>
+> > SA8155p-adp PMICs (PMM8155AU_1 and PMM8155AU_2) expose
+> > the following PMIC GPIO blocks:
+> >
+> > - PMM8155AU_1: gpio1-gpio10 (with holes on gpio2, gpio5, gpio7 and gpio8)
+> > - PMM8155AU_2: gpio1-gpio10 (with holes on gpio2, gpio5, gpio7)
+> >
+> > Add support for the same in the pinctrl driver.
+> >
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: Liam Girdwood <lgirdwood@gmail.com>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Andy Gross <agross@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-gpio@vger.kernel.org
+> > Cc: bhupesh.linux@gmail.com
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> > index 00870da0c94e..890c44b6e198 100644
+> > --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> > +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> > @@ -1127,6 +1127,10 @@ static const struct of_device_id pmic_gpio_of_match[] = {
+> >       { .compatible = "qcom,pm8150b-gpio", .data = (void *) 12 },
+> >       /* pm8150l has 12 GPIOs with holes on 7 */
+> >       { .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
+> > +     /* pmm8155au-1 has 10 GPIOs with holes on 2, 5, 7 and 8 */
+> > +     { .compatible = "qcom,pmm8155au-1-gpio", .data = (void *) 10 },
+>
+> As noted in the binding, I think this should be "qcom,pmm8155au-gpio"
+> and please skip the comment about the holes.
 
-/Jens
+Similar to what I noted in the binding patch review thread, the pmic
+gpio holes seem different as per the downstream dtsi.
 
->  
->  	/*
->  	 * The two devices have to be unregistered before we can free the
-> @@ -619,7 +619,7 @@ static int optee_remove(struct platform_device *pdev)
->   */
->  static void optee_shutdown(struct platform_device *pdev)
->  {
-> -	optee_disable_shm_cache(platform_get_drvdata(pdev));
-> +	optee_disable_shm_cache(platform_get_drvdata(pdev), true);
->  }
->  
->  static int optee_probe(struct platform_device *pdev)
-> @@ -716,6 +716,15 @@ static int optee_probe(struct platform_device *pdev)
->  	optee->memremaped_shm = memremaped_shm;
->  	optee->pool = pool;
->  
-> +	/*
-> +	 * Ensure that there are no pre-existing shm objects before enabling
-> +	 * the shm cache so that there's no chance of receiving an invalid
-> +	 * address during shutdown. This could occur, for example, if we're
-> +	 * kexec booting from an older kernel that did not properly cleanup the
-> +	 * shm cache.
-> +	 */
-> +	optee_disable_shm_cache(optee, false);
-> +
->  	optee_enable_shm_cache(optee);
->  
->  	if (optee->sec_caps & OPTEE_SMC_SEC_CAP_DYNAMIC_SHM)
-> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> index e25b216a14ef..16d8c82213e7 100644
-> --- a/drivers/tee/optee/optee_private.h
-> +++ b/drivers/tee/optee/optee_private.h
-> @@ -158,7 +158,7 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
->  int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session);
->  
->  void optee_enable_shm_cache(struct optee *optee);
-> -void optee_disable_shm_cache(struct optee *optee);
-> +void optee_disable_shm_cache(struct optee *optee, bool is_mapped);
->  
->  int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
->  		       struct page **pages, size_t num_pages,
-> -- 
-> 2.25.1
-> 
+So, please let me know and if required, I can make the suggested change in v2.
+
+Thanks,
+Bhupesh
+
+> > +     /* pmm8155au-2 has 10 GPIOs with holes on 2, 5 and 7 */
+> > +     { .compatible = "qcom,pmm8155au-2-gpio", .data = (void *) 10 },
+> >       { .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
+> >       { .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
+> >       { .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
+> > --
+> > 2.31.1
+> >
