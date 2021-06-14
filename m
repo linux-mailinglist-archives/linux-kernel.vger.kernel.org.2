@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412943A650D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6743A6322
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236226AbhFNLct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48534 "EHLO mail.kernel.org"
+        id S235560AbhFNLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233111AbhFNLSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:18:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7F561982;
-        Mon, 14 Jun 2021 10:51:04 +0000 (UTC)
+        id S234805AbhFNK7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:59:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD4C761624;
+        Mon, 14 Jun 2021 10:42:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667865;
-        bh=Bge5c0b/iT0SVxCvuVyMopNP2QY2m1T1tH3IZCXBjfk=;
+        s=korg; t=1623667342;
+        bh=npJIYwLCb96T/I4WoQE1LIJIu3exBkwb3M1PVGN9pJI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RG0xpaERbqYqLwVCrgMwkRlxy+w6+LmcGqXqznXoOfBXU63Tg39WWhYmE4nXCyMHv
-         smKl8i54n7LNBKpbKeMSjYLgVqQvMMSBM9UMAx1Qf//PNeIgYbu56cKto2eukj6Nv3
-         XnRMG8mi6Sqw9rETMQwBJTH9hteFOnj1ZaxrylBw=
+        b=hsg2CBj9yvsI/Ji56CavpdsNuKpB8+mKLayy4cQkwFZsBsfmKYrDaVAY6yniBJoVR
+         BFakoBbH4dpnnKt8SaDbpI4XFZoBoCDSvEqhWxL7GpJjxGRuDMMYaIR4CftDxFLXU1
+         Bq1o80HYxuMAN6bA6R4LuCriYyUQ5qZPsEmkMdFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tor Vic <torvic9@mailbox.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.12 061/173] x86, lto: Pass -stack-alignment only on LLD < 13.0.0
-Date:   Mon, 14 Jun 2021 12:26:33 +0200
-Message-Id: <20210614102700.196041570@linuxfoundation.org>
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 033/131] nvme-fabrics: decode host pathing error for connect
+Date:   Mon, 14 Jun 2021 12:26:34 +0200
+Message-Id: <20210614102654.136593031@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tor Vic <torvic9@mailbox.org>
+From: Hannes Reinecke <hare@suse.de>
 
-commit 2398ce80152aae33b9501ef54452e09e8e8d4262 upstream.
+[ Upstream commit 4d9442bf263ac45d495bb7ecf75009e59c0622b2 ]
 
-Since LLVM commit 3787ee4, the '-stack-alignment' flag has been dropped
-[1], leading to the following error message when building a LTO kernel
-with Clang-13 and LLD-13:
+Add an additional decoding for 'host pathing error' during connect.
 
-    ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
-    '-stack-alignment=8'.  Try 'ld.lld --help'
-    ld.lld: Did you mean '--stackrealign=8'?
-
-It also appears that the '-code-model' flag is not necessary anymore
-starting with LLVM-9 [2].
-
-Drop '-code-model' and make '-stack-alignment' conditional on LLD < 13.0.0.
-
-These flags were necessary because these flags were not encoded in the
-IR properly, so the link would restart optimizations without them. Now
-there are properly encoded in the IR, and these flags exposing
-implementation details are no longer necessary.
-
-[1] https://reviews.llvm.org/D103048
-[2] https://reviews.llvm.org/D52322
-
-Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/1377
-Signed-off-by: Tor Vic <torvic9@mailbox.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/f2c018ee-5999-741e-58d4-e482d5246067@mailbox.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/Makefile |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvme/host/fabrics.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -192,8 +192,9 @@ endif
- KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
+diff --git a/drivers/nvme/host/fabrics.c b/drivers/nvme/host/fabrics.c
+index 8575724734e0..7015fba2e512 100644
+--- a/drivers/nvme/host/fabrics.c
++++ b/drivers/nvme/host/fabrics.c
+@@ -336,6 +336,11 @@ static void nvmf_log_connect_error(struct nvme_ctrl *ctrl,
+ 			cmd->connect.recfmt);
+ 		break;
  
- ifdef CONFIG_LTO_CLANG
--KBUILD_LDFLAGS	+= -plugin-opt=-code-model=kernel \
--		   -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-+ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
-+KBUILD_LDFLAGS	+= -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-+endif
- endif
- 
- ifdef CONFIG_X86_NEED_RELOCS
++	case NVME_SC_HOST_PATH_ERROR:
++		dev_err(ctrl->device,
++			"Connect command failed: host path error\n");
++		break;
++
+ 	default:
+ 		dev_err(ctrl->device,
+ 			"Connect command failed, error wo/DNR bit: %d\n",
+-- 
+2.30.2
+
 
 
