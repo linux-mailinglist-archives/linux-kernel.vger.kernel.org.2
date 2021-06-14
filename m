@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB053A6A29
+	by mail.lfdr.de (Postfix) with ESMTP id B95E53A6A2A
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233660AbhFNP2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        id S233772AbhFNP25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233560AbhFNP2T (ORCPT
+        with ESMTP id S233569AbhFNP2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 11:28:19 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2787C061787
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:26:02 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id g8so17364208ejx.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:26:02 -0700 (PDT)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A15EC06124A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:26:04 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id t3so47083773edc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 08:26:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=y086/3Vb8l/j6MijbS9GRLbZljtg5wwxE96eR+fUbxY=;
-        b=v69WUXvWTGhZ5AAFUMPyL0zcf/t3WyZzaZHhwB9jyxOjwCkXw9qeNMeh0tERU4bsT2
-         QCycoaZPVO8z2Y6/m5Bzq+gGnp/hky5yS6kTlQCYWcKrjmPV/AdP9L+raedXyWIL3MxP
-         ocuNHKKiKThmCTOhTzDydo7/l78xmq+ttA0qEYsf92HPRP7OgZCARHNFdV/uKcXf349C
-         6YoQJf3Eaj+lg7yqwlWDLzOP6QiMXOg1EEWZkNhIs+nNqycLu4KGJgcVGj0IESIeQRyV
-         ZcwynvF7kRuwlTk1O9y165YhFLqwrtbJTYld4+/mVIzyHkVnkun7duSD7Q2wVVGdLe5S
-         q9tg==
+        bh=1PJmBZf2G/3VuzRVB8MuhLk6fPYGXd52C/maYloIeUA=;
+        b=fKQ/35piKP8FwlgqjdA28gAS7WG1+WW8KfL5wxq293ZVo8oK6jg5OLs2TXdV57B36F
+         px6yUUMwPsm0eL8EVdLN4wDARQhkUFDaXX4lLWnv3IUSIpL3gy8myXWrGGZNri1N0oZO
+         dgONx9JxkSEClcPR8sGCZ2ZMgmf0OJjw6OLd4GGk5eVSFgqIWMXLdDdN+nNcFIMT2bdo
+         Mk95Vd5RetifJmy4o0FUh9lyRfuMh9CixZKVjjUf251AO3HfDASFh/sB8Se4Vcpx99B3
+         9GcO5K6X/XHKO2avrfOfEiZwccgiD2BjvPzL/ZrkF4RLxCF61IgB5Tcl76bRn+EAk+bB
+         PBbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=y086/3Vb8l/j6MijbS9GRLbZljtg5wwxE96eR+fUbxY=;
-        b=M0C7/x4mzRYruXoPhuYpnfhRJCJQi/gKkE68wtvllnZAAI+EnatA4CM9zBlmNs+EVi
-         IkbxsvuNQY2WwMKQhY0Co7SaB3CFYHtHLcLOR2RNzf6FmcuTSEX1doKrZQcrNy2wuR5T
-         KGJ5LU8GjODbseUhPUEAvK54tehCqfHN0nbTdK5CfK4Pr/koFGVhnvlG3R9x9XjnAb7w
-         LSvqA7zgM1zjragU+gdoPfH8dGUmSVD6g9sw/MqkVe0+3DnjqCBM7ecpDt2POj5LLl4L
-         6Etrp51sPnCA5mpgLYerts0u3syISdTHecnEfYqScg5iqsri5mdgYAxJTs6hWzY4ZHN/
-         /hZw==
-X-Gm-Message-State: AOAM533ePTb39noHjKcjAJ6wm35aZ4K4886t7i3hKQBZoOvWdPP5zMWR
-        VPsZVpYRxZhAytN2kAPKmHHaB926O+CZj4UV
-X-Google-Smtp-Source: ABdhPJxt9YZsUJHl3F6lcV2jTPN/+KSjz6rdUToRPkBhvFBUe82kAIulrMvMh+8g2zZlXXtH2jsmBw==
-X-Received: by 2002:a17:906:71d2:: with SMTP id i18mr16548883ejk.373.1623684361115;
-        Mon, 14 Jun 2021 08:26:01 -0700 (PDT)
+        bh=1PJmBZf2G/3VuzRVB8MuhLk6fPYGXd52C/maYloIeUA=;
+        b=BTyfKAHMeJ96wj02BwsH4dleyo/TL/+6I+Q0fhxB+WQLVYftZxSvgPC91o9kSiJx3c
+         kkK9kuo9D8fZ41pGuNzP4/IM50atGsfLE4AP1bPwEpAvankTR0c2mCztW5/s/y+wi8Cq
+         UAbaqUxgS2FLlBhdQraFLsovhNJg8MZzwAU7wljk4by+s+F/YgpXERR1/vxGOh/KwN3B
+         2pvNL72mMu7VmOnxZQcJHo4Cej5og9axHJZMsulwXJWAZhEDpHQRUtpGAB0oClMObwDl
+         9rXYHUMqVxvURZ4gkl3Zi+Ni7Rk6o0eNkTtHFf1X2ULHPiToT6VU3goJC8ntEX/p6lNL
+         gzIw==
+X-Gm-Message-State: AOAM531bEjM8CZBOaev8Zf+78dxYl0cETDe7cHulaD/bqJy5w7bL5791
+        eaa+sDCf2OnrjylYkjp6hYj+qX1HMOqpYC7R
+X-Google-Smtp-Source: ABdhPJzkwewvDWdyQwvMoAGW7UYt0cSYOWDv+AsxY7k56dVo9nzTd3UgPQupKpyketYASP9JGP8YHg==
+X-Received: by 2002:a05:6402:487:: with SMTP id k7mr17432002edv.315.1623684362472;
+        Mon, 14 Jun 2021 08:26:02 -0700 (PDT)
 Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
-        by smtp.gmail.com with ESMTPSA id k21sm9240943edo.41.2021.06.14.08.26.00
+        by smtp.gmail.com with ESMTPSA id u21sm7444151ejm.89.2021.06.14.08.26.02
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Jun 2021 08:26:00 -0700 (PDT)
+        Mon, 14 Jun 2021 08:26:02 -0700 (PDT)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
@@ -55,9 +55,9 @@ To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 12/33] arm64: zynqmp: Add missing mio-bank properties to dc1 and dc5
-Date:   Mon, 14 Jun 2021 17:25:20 +0200
-Message-Id: <2b2ab31639c706651dfd319f5b6bc59e68f111b6.1623684253.git.michal.simek@xilinx.com>
+Subject: [PATCH v2 13/33] arm64: zynqmp: Wire DP and DPDMA for dc1/dc4
+Date:   Mon, 14 Jun 2021 17:25:21 +0200
+Message-Id: <dbbd212bcc587e835d6df2f91622f5baa124bff5.1623684253.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1623684253.git.michal.simek@xilinx.com>
 References: <cover.1623684253.git.michal.simek@xilinx.com>
@@ -67,51 +67,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing mio-bank properties to zc1751 dc1 and dc5 boards.
-The same change was done by commit 63481699d6e3 ("arm64: dts: zynqmp: Add
-missing mio-bank properties to sdhcis").
+Enable Display Port and Display Port DMA for zc1751 dc1 and dc4.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
 Changes in v2: None
 
- arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts | 2 ++
- arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts | 1 +
- 2 files changed, 3 insertions(+)
+ arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts |  8 ++++++++
+ arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts | 10 +++++++++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
-index f57cb5356cef..dd129347174a 100644
+index dd129347174a..460aba6e7990 100644
 --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
 +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
-@@ -364,6 +364,7 @@ &sdhci0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_sdhci0_default>;
- 	bus-width = <8>;
-+	xlnx,mio-bank = <0>;
+@@ -391,3 +391,11 @@ &usb0 {
+ 	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
+ 	maximum-speed = "super-speed";
  };
- 
- /* SD1 with level shifter */
-@@ -371,6 +372,7 @@ &sdhci1 {
++
++&zynqmp_dpdma {
++	status = "okay";
++};
++
++&zynqmp_dpsub {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts
+index 2366cd9f091a..8046f0df0f35 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts
+@@ -2,7 +2,7 @@
+ /*
+  * dts file for Xilinx ZynqMP zc1751-xm018-dc4
+  *
+- * (C) Copyright 2015 - 2019, Xilinx, Inc.
++ * (C) Copyright 2015 - 2021, Xilinx, Inc.
+  *
+  * Michal Simek <michal.simek@xilinx.com>
+  */
+@@ -176,3 +176,11 @@ &uart1 {
+ &watchdog0 {
  	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_sdhci1_default>;
-+	xlnx,mio-bank = <1>;
  };
- 
- &uart0 {
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts
-index 6c9460a0707c..ae2d03d98322 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts
-@@ -407,6 +407,7 @@ &sdhci0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_sdhci0_default>;
- 	no-1-8-v;
-+	xlnx,mio-bank = <0>;
- };
- 
- &ttc0 {
++
++&zynqmp_dpdma {
++	status = "okay";
++};
++
++&zynqmp_dpsub {
++	status = "okay";
++};
 -- 
 2.32.0
 
