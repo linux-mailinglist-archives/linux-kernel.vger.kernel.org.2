@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475D13A70D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194D53A70CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbhFNU6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233438AbhFNU6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:58:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5531D6128A;
-        Mon, 14 Jun 2021 20:56:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623704203;
-        bh=E1qZ+2Ke4P/ssD7Vsx+wfQ8T0WTXGzCGKuvQKbgQf+8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hFzecTgqr4WHAiH4iAbmbmyw8fvFcuy2xUNVlSpSP1bxPxPzPjMBSmj9B18bsVxj1
-         O0zkWtcJcIwg7hfklwkIB77R6H9/SXCDmy2FB/+QFIASp91Q4B7A5Yl7bFiFt4xYtO
-         wWOd+wV0lSiEzzQyrraoYvJf9UXhv6dkJXYQM7ZBMhiFqvCiL/4W6W/3MRoz+UvDcJ
-         PC9maYM6CsTLOCS/gUiS/up+IvYZdZInonSFDVkuYaXdMQ0rNZl4sk15zjNtHfmKsg
-         Y/IvPrfD9CXyIeKHtnAD8fUQQCWkAcuSwPEDumjx4a4bigeopmhUncFbiV80vau9FP
-         x7mKEFhtV7qIQ==
-Received: by mail-wr1-f51.google.com with SMTP id r9so15920824wrz.10;
-        Mon, 14 Jun 2021 13:56:43 -0700 (PDT)
-X-Gm-Message-State: AOAM530BM+EfPP2NH3sqf5+CLloyXEl5shMOdyZMokExyJ0t1Gwnkpo2
-        xomZscBm7uq6YYRkPtbUk9eOGZTOVs6hCrrfCpA=
-X-Google-Smtp-Source: ABdhPJyS6ZvM6TWKj9v+SDxahX4oGQrEvfPKU9E67fPz08XeIGZePXDDDposyCthauq0Sf7fAc0gQdSrNRWqWXDqWk8=
-X-Received: by 2002:a5d:4050:: with SMTP id w16mr20973530wrp.99.1623704201928;
- Mon, 14 Jun 2021 13:56:41 -0700 (PDT)
+        id S234586AbhFNU5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233920AbhFNU5S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 16:57:18 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2089CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:55:02 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id c11so21982208ljd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qBa3/WQ3AGZ6PKm/jM3ch14S6swJuVHrhcyrw+AJEwA=;
+        b=plPsxy+9kEuGVZdGaNjNczNmZJ0tvHqF3H0S1tUuIqh7/xY432HUjpxYkrQFuUVHni
+         V11wMaoN3lfHvndqx0GkwuPcks5mhAUb7sx2hlWE8hn7Lfp55uPTVNtjzC93MYzFe5vr
+         G6Y1ioiUkY4+3H/iyYs/HQgUadwwcqWBmK8xLLldeHzrc5/tm8xOAmD5MRZyQK0WKtAT
+         AHoma2r218DBdEcpt6Sc68FMcw0Q4cOvQ5jC3ujfDWxq1cnAutW/k/c5JPKEGDRZ70oC
+         SER7qkXRrSvC7YiQN6BJqMG+gqGn3NvpxeblBjBhcyF91jlHPT2a2XFclZR1zKwwYUsL
+         1Q+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qBa3/WQ3AGZ6PKm/jM3ch14S6swJuVHrhcyrw+AJEwA=;
+        b=kpjWe9Rxv6Qm6xSTRH/8sILSOgC/YbbAbVVq8318Z7us8M7vX/RhcaPCAJUZI/zpDZ
+         eCp4xGIHh0Qzz8mpA6Yxrx+VjCDoriUJsamI/kfrx2QAOzo9/jd7X22AH0GOB2KHhEfW
+         er2GrfYeXOZb7ZH82YT9lJP5/nEH+ur/h3dryn9B3upwWrlUXzblPyhf/LQqelsVSKJT
+         zO0S0ZD76T+GFvEb5SSqyF8ZBx6Cv0OWnqEedKHd2Z569PICKGbnly1Rf1ukT7stEEdK
+         XXqI2Sea5SsIOh9+9tGRolwM7t9vvwZXYcO98XxwohST30sw9+2Zy4TV0Rbc8+2f2fo7
+         tQQw==
+X-Gm-Message-State: AOAM530nbERDeSvxJsd5hm6DgoOaIBGuZL/qTcsmsXq5UAQXDdZu3zkI
+        DpSC4aZxZbMoQmLrqD0cpKgOEARSLjOTwjZj1qNdJw==
+X-Google-Smtp-Source: ABdhPJziluN+Qde4u/nmKfseLf3GXYc4iUTl/Helm6ApNjM5cEdQz1WJWpT0G1fFxRHLZsFY6CJ7K66WzcjjLiyYUIg=
+X-Received: by 2002:a2e:3c06:: with SMTP id j6mr14789034lja.495.1623704100254;
+ Mon, 14 Jun 2021 13:55:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
- <20210614102119.qifm5sj7fpg54iqo@vireshk-i7> <CAK8P3a10yObfX_dFMSsqW_fGugdtz0nutJFwDB_OY0DebdGjXQ@mail.gmail.com>
- <0100017a0a9264cc-57668c56-fdbf-412a-9f82-9bf95f5c653e-000000@email.amazonses.com>
- <CAK8P3a0-cVF=n1OxURZM8yXLKCPAAgBnZNXZVUzxA8m2ZzjP1A@mail.gmail.com> <CAKfTPtDya2gY5nxvEA7mFQN2myQEocVz2Ugc4Of4rkNiUtpgiw@mail.gmail.com>
-In-Reply-To: <CAKfTPtDya2gY5nxvEA7mFQN2myQEocVz2Ugc4Of4rkNiUtpgiw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 14 Jun 2021 22:54:37 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2SmZcqrJcget=7-p07GsHqAfiDgzjEQOC6NHwaFydgPQ@mail.gmail.com>
-Message-ID: <CAK8P3a2SmZcqrJcget=7-p07GsHqAfiDgzjEQOC6NHwaFydgPQ@mail.gmail.com>
-Subject: Re: [Stratos-dev] [PATCH V3 1/3] gpio: Add virtio-gpio driver
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jason Wang <jasowang@redhat.com>
+References: <7631bab7-a8ab-f884-ab54-f4198976125c@mailbox.org>
+In-Reply-To: <7631bab7-a8ab-f884-ab54-f4198976125c@mailbox.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 14 Jun 2021 13:54:48 -0700
+Message-ID: <CAKwvOdmWYuOqOp7BNjaLM5p+Tumvs+N2iLe23PYEz-WsXU=-fA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] Makefile: Pass -warn-stack-size only on LLD < 13.0.0
+To:     Tor Vic <torvic9@mailbox.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 3:24 PM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
-> On Mon, 14 Jun 2021 at 15:00, Arnd Bergmann <arnd@kernel.org> wrote:
-> > On Mon, Jun 14, 2021 at 2:50 PM Vincent Guittot via Stratos-dev <stratos-dev@op-lists.linaro.org> wrote:>
-> >
-> > But this example seem to be completely different from the ones I mentioned:
-> > The scmi node that you have here looks like it shows up under the root of the
-> > device tree, not below the virtio device that implements the scmi transport.
+On Sun, Jun 13, 2021 at 6:07 AM Tor Vic <torvic9@mailbox.org> wrote:
 >
-> I was thinking of something like below:
+> Since LLVM commit fc018eb, the '-warn-stack-size' flag has been dropped
+> [1], leading to the following error message when building with Clang-13
+> and LLD-13:
 >
->     deviceX: deviceX@YYYYYYY {
->         ...
->         gpio = <&virtio_gpio 0>;
->         ...
->     };
+>     ld.lld: error: -plugin-opt=-: ld.lld: Unknown command line argument
+>     '-warn-stack-size=2048'.  Try: 'ld.lld --help'
+>     ld.lld: Did you mean '--asan-stack=2048'?
 >
->     virtio_mmio@a000000 {
->         dma-coherent;
->         interrupts = <0x0 0x10 0x1>;
->         reg = <0x0 0xa000000 0x0 0x200>;
->         compatible = "virtio,mmio";
+> In the same way as with commit 2398ce80152a ("x86, lto: Pass
+> -stack-alignment only on LLD < 13.0.0") , make '-warn-stack-size'
+> conditional on LLD < 13.0.0.
 >
->         virtio_gpio: protocol@22 {
->             reg = <0x22>;
->         };
+> [1] https://reviews.llvm.org/D103928
+>
+> Fixes: 24845dcb170e ("Makefile: LTO: have linker check -Wframe-larger-than")
+> Cc: stable@vger.kernel.org
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1377
+> Signed-off-by: Tor Vic <torvic9@mailbox.org>
 
-Encoding the device ID as "reg" seems somewhat odd, especially since there
-can only be one child for each virtio device. The other bus types use the
-"compatible" property instead of "reg" for this purpose. This is still
-redundant,
-since the type is also known from the contents, but it seems less unusual.
+Thanks for the patch!
 
-The gpio node in the example is usually called "gpio" or "gpio-controller", and
-it would then need the "gpio-controller" and "#gpio-cells" properties so other
-nodes can refer to it by phandle.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-       Arnd
+> ---
+>  Makefile | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 144d4f8b7eb3..51a1b6b2c2ab 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -929,11 +929,14 @@ CC_FLAGS_LTO      += -fvisibility=hidden
+>  # Limit inlining across translation units to reduce binary size
+>  KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
+>
+> -# Check for frame size exceeding threshold during prolog/epilog insertion.
+> +# Check for frame size exceeding threshold during prolog/epilog insertion
+> +# when using lld < 13.0.0.
+>  ifneq ($(CONFIG_FRAME_WARN),0)
+> +ifeq ($(shell test $(CONFIG_LLD_VERSION) -lt 130000; echo $$?),0)
+>  KBUILD_LDFLAGS += -plugin-opt=-warn-stack-size=$(CONFIG_FRAME_WARN)
+>  endif
+>  endif
+> +endif
+>
+>  ifdef CONFIG_LTO
+>  KBUILD_CFLAGS  += -fno-lto $(CC_FLAGS_LTO)
+> --
+> 2.32.0
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
