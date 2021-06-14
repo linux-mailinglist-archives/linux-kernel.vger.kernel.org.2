@@ -2,79 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF2A3A6807
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEB73A6818
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhFNNhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:37:34 -0400
-Received: from mail-yb1-f177.google.com ([209.85.219.177]:38683 "EHLO
-        mail-yb1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233287AbhFNNha (ORCPT
+        id S233815AbhFNNj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233298AbhFNNjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:37:30 -0400
-Received: by mail-yb1-f177.google.com with SMTP id m9so15476656ybo.5;
-        Mon, 14 Jun 2021 06:35:27 -0700 (PDT)
+        Mon, 14 Jun 2021 09:39:19 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E51DC061574;
+        Mon, 14 Jun 2021 06:37:16 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso10113572pjb.0;
+        Mon, 14 Jun 2021 06:37:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jjeb2VBZlHsMDUPadrsr3uON+trO752pZHCWpt5WtHQ=;
-        b=PJ35xyFVTzv/+suvuO3wLsMl2ome1H3nJs2WPwL2tfdai6MF4Xr4Tzp3NkbBDZQ6px
-         jrdeZmfji2yZz2nerme9LNjHMAnISVHEnuRsGYTkOG6EHitziq7JyfhhE+NDsQZ2WW32
-         +J2zSlMcIl0/D9BdQDMZ3WeEmIYCUYx2aCtlwn/HCOXbhIS9qHFVnEJXB5USYQ0paxqi
-         8nK/0Q0LVJe99gEDWJ3EMk+tcUBubZ5tPAJCcBBy0534cSTi0+C7YqI5USQxoSowbjH7
-         yrLYRH/AE92rqXJ9ad6ZdJTKL2pLfLSKsUCOAVxDs8N8UhkiVPf6BcTGpF6wCVY5tA+6
-         kPBA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L2zqO1GmHtYJk6YxBI1sWe6jLyKPpb1AfJC8K4R6e5k=;
+        b=Cxb1/imPkH0J0mCr4lfArmxBVSP9MZn7j5y/xPOvK408iNpZ/trCx7iTSB97b+6h2r
+         GH8FYPrOC4Fgm9Z7GYXw2Q6TAfu1pePiEZj/1/rkvJ46B3Wt5yANQsUnBs0W0Zpx2yUg
+         FUCFHCSdOksAFWye+3qd6MfK6evFhwMm5txRVoHom2eNUq2iAZevoB1ovrJLeR2+pngA
+         zIKmOSyFmyM+dI38qtVe8XxjSsIv9gPiitEg81toKRhlb1r2KrcyYfURTl4AM29GboLz
+         j4D3UMpwPezOe7xh7mP/Tz2Ele5K3oJYUbWnr9/m79e2/FDBSwGRnqztvf0n1OEzcoie
+         ma5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jjeb2VBZlHsMDUPadrsr3uON+trO752pZHCWpt5WtHQ=;
-        b=pGlifrfIciaQ0P+kLJ/fLVSHVvC7Tnpb/18hWRwSMXr6NgMIDNk6jBLpS6T6AZRL7p
-         E7e8qEwWxMEKDvOORwrW2f7CrZf9t9ndG1EaszvhmR335UmxfnI4zNqyAYQInEDIn3HC
-         HIYTINpseCBaCa5YL/QYGnqsINH0PFnErTvfnEVjgjCUJPUTxcTQ4spNpmQuMe2Fd9dn
-         CqjWs/1PSrTxqjLg+nyts19mpZJsBiM1TrHA5dtO2QQLEcf2oDrUw9waufLPDSEtU4sb
-         vvrXeer5Fvna1z3WBkz2rVWtiorsHGGJYCNwgA1yTF/3jWvRFQKXseClSkh7hzE+oxjV
-         s1Ag==
-X-Gm-Message-State: AOAM533sy30NqDRjNlf9HNLb5Wy6sVJNUYYarwn7hZ9pGoPEkktmMjQI
-        e+u0VqFspidFZjiYpGipyoN1ZIWXI2zzWe3Z920=
-X-Google-Smtp-Source: ABdhPJyFwHZpRU74JDJMgDYk1WERGTnTqTksGdZ8EaZrxK/tuJc0NHSS3jIS9xxtboEFCHv0OKpxB7UkBau+FvUFGTA=
-X-Received: by 2002:a25:b8c:: with SMTP id 134mr24998511ybl.332.1623677667645;
- Mon, 14 Jun 2021 06:34:27 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L2zqO1GmHtYJk6YxBI1sWe6jLyKPpb1AfJC8K4R6e5k=;
+        b=NdFN1MCv40Q8A0eLJMYLSctH3f1NdwefHxOqHizrrotFIuZjvRmlgrb48FFvVWVFVT
+         PodghbAk3kL2Mp30craPSabpo42/T36iZ//8Wghlpop32fZ4Q/jKunRZDuQUe0/ZL8p4
+         yLmMsZB30CGDtEnAaNJhqlfqEYFFBMaeNDWu3mtecpb3p5ClLWslV26qWpjZRIWAww0M
+         QH3VLbTpPe4FeTsWPQxz7dcfsR2WG2xcqdm6RIL8dfqrmwsM6izLl8ZCidtFZUjy5Q+n
+         Pff4yI470SdGvmQcA84IrWuF1OxJk20Uq372/fYF1mB9amAL4vmmVMPwP5w8qw/0UM0t
+         meJg==
+X-Gm-Message-State: AOAM531TR5lW3biAmmbK/MLAGj9qvgBkEJNqhui0kSgyN64zcj2uuzJq
+        BSvi5RmKiHoJJVIhdweqGGo=
+X-Google-Smtp-Source: ABdhPJzc3ULYnZUK4PYU2Lj8UKWkUEgb6rd9+REx3GFM6TekjZ3ClxH5FkBxfIYNNF665iBfi2dSTw==
+X-Received: by 2002:a17:902:b585:b029:f6:5cd5:f128 with SMTP id a5-20020a170902b585b02900f65cd5f128mr16662490pls.43.1623677835908;
+        Mon, 14 Jun 2021 06:37:15 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id 125sm12375806pfg.52.2021.06.14.06.37.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 06:37:15 -0700 (PDT)
+Subject: Re: [RFC PATCH V3 08/11] swiotlb: Add bounce buffer remap address
+ setting function
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        arnd@arndb.de, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, Tianyu.Lan@microsoft.com,
+        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+References: <20210530150628.2063957-1-ltykernel@gmail.com>
+ <20210530150628.2063957-9-ltykernel@gmail.com>
+ <20210607064312.GB24478@lst.de>
+ <48516ce3-564c-419e-b355-0ce53794dcb1@gmail.com>
+ <20210614071223.GA30171@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <3e64e59b-7440-69a5-75c5-43225f3d6c0a@gmail.com>
+Date:   Mon, 14 Jun 2021 21:37:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210612160422.330705-1-anup.patel@wdc.com> <20210612160422.330705-11-anup.patel@wdc.com>
-In-Reply-To: <20210612160422.330705-11-anup.patel@wdc.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Mon, 14 Jun 2021 21:34:15 +0800
-Message-ID: <CAEUhbmUGSWOS7iG209BqTWBgTc63xPm1L_0xNBhKXVnu7Wpjjg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 10/10] MAINTAINERS: Add entry for RISC-V ACLINT drivers
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210614071223.GA30171@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 12:08 AM Anup Patel <anup.patel@wdc.com> wrote:
->
-> Add myself as maintainer for RISC-V ACLINT drivers.
->
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> ---
->  MAINTAINERS | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
 
-Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+
+On 6/14/2021 3:12 PM, Christoph Hellwig wrote:
+> On Mon, Jun 07, 2021 at 10:56:47PM +0800, Tianyu Lan wrote:
+>> These addresses in extra address space works as system memory mirror. The
+>> shared memory with host in Isolation VM needs to be accessed via extra
+>> address space which is above shared gpa boundary.
+> 
+> Why?
+> 
+
+The shared_gpa_boundary in the AMD SEV SNP spec is called virtual top of
+memory(vTOM). Memory addresses below vTOM are automatically treated as
+private while memory above vTOM is treated as shared. Using vTOM to
+separate memory in this way avoids the need to augment the standard x86
+page tables with C-bit markings, simplifying guest OS software.
