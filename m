@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4283A631B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6374E3A64C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235413AbhFNLKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:10:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36694 "EHLO mail.kernel.org"
+        id S235666AbhFNL3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:29:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234755AbhFNK7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:59:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 591BD6142B;
-        Mon, 14 Jun 2021 10:42:11 +0000 (UTC)
+        id S235467AbhFNLOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:14:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BB7661242;
+        Mon, 14 Jun 2021 10:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667331;
-        bh=4CVml7otjDJGwBs2cMscAqEdXLLanjVXMjd5sFkOvo0=;
+        s=korg; t=1623667749;
+        bh=SFAV6JONZscqsQay6VWZtgYL8AY1KB8MG4hRcvLumLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQ3xDdHAJ0dWa1VxArTcbI0OicLrEe8pKYhh2iY7S6lmynhlcx6XAHD86QAiiPHOF
-         MDZYWj+c+A+bzTJC5VrFkkTdGGZTsiQSZip38Ar/YfGVh8Aok5OP/VQOlikf9CvfPX
-         B4bXmB+mI8ko8NpvfUoSsCW2Nk2M9AXqLKc2gHN8=
+        b=RWUw9riKXzBkZDbeHM9v7aCr/1/KXsb9g/EfQFJSKitRo0vGAnb3CURJyC7Kccbix
+         lcCy2EM00TK5cQHn5wA6RwI59hLR5KYZWIFKlrxWVgR7/5cyl6oYTHcuPcmPnCSIrm
+         NojABw5++ux1cYCX6v4bccgChPtlCk6qsFcuCgxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
-        Dmitry Bogdanov <d.bogdanov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 029/131] scsi: target: qla2xxx: Wait for stop_phase1 at WWN removal
+        stable@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.12 058/173] ACPI: Pass the same capabilities to the _OSC regardless of the query flag
 Date:   Mon, 14 Jun 2021 12:26:30 +0200
-Message-Id: <20210614102653.999205807@linuxfoundation.org>
+Message-Id: <20210614102700.095347454@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,82 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-[ Upstream commit 2ef7665dfd88830f15415ba007c7c9a46be7acd8 ]
+commit 159d8c274fd92438ca6d7068d7a5eeda157227f4 upstream.
 
-Target de-configuration panics at high CPU load because TPGT and WWPN can
-be removed on separate threads.
+Commit 719e1f561afb ("ACPI: Execute platform _OSC also with query bit
+clear") makes acpi_bus_osc_negotiate_platform_control() not only query
+the platforms capabilities but it also commits the result back to the
+firmware to report which capabilities are supported by the OS back to
+the firmware
 
-TPGT removal requests a reset HBA on a separate thread and waits for reset
-complete (phase1). Due to high CPU load that HBA reset can be delayed for
-some time.
+On certain systems the BIOS loads SSDT tables dynamically based on the
+capabilities the OS claims to support. However, on these systems the
+_OSC actually clears some of the bits (under certain conditions) so what
+happens is that now when we call the _OSC twice the second time we pass
+the cleared values and that results errors like below to appear on the
+system log:
 
-WWPN removal does qlt_stop_phase2(). There it is believed that phase1 has
-already completed and thus tgt.tgt_ops is subsequently cleared. However,
-tgt.tgt_ops is needed to process incoming traffic and therefore this will
-cause one of the following panics:
+  ACPI BIOS Error (bug): Could not resolve symbol [\_PR.PR00._CPC], AE_NOT_FOUND (20210105/psargs-330)
+  ACPI Error: Aborting method \_PR.PR01._CPC due to previous error (AE_NOT_FOUND) (20210105/psparse-529)
 
-NIP qlt_reset+0x7c/0x220 [qla2xxx]
-LR  qlt_reset+0x68/0x220 [qla2xxx]
-Call Trace:
-0xc000003ffff63a78 (unreliable)
-qlt_handle_imm_notify+0x800/0x10c0 [qla2xxx]
-qlt_24xx_atio_pkt+0x208/0x590 [qla2xxx]
-qlt_24xx_process_atio_queue+0x33c/0x7a0 [qla2xxx]
-qla83xx_msix_atio_q+0x54/0x90 [qla2xxx]
+In addition the ACPI 6.4 spec says following [1]:
 
-or
+  If the OS declares support of a feature in the Support Field in one
+  call to _OSC, then it must preserve the set state of that bit
+  (declaring support for that feature) in all subsequent calls.
 
-NIP qlt_24xx_handle_abts+0xd0/0x2a0 [qla2xxx]
-LR  qlt_24xx_handle_abts+0xb4/0x2a0 [qla2xxx]
-Call Trace:
-qlt_24xx_handle_abts+0x90/0x2a0 [qla2xxx] (unreliable)
-qlt_24xx_process_atio_queue+0x500/0x7a0 [qla2xxx]
-qla83xx_msix_atio_q+0x54/0x90 [qla2xxx]
+Based on the above we can fix the issue by passing the same set of
+capabilities to the platform wide _OSC in both calls regardless of the
+query flag.
 
-or
+While there drop the context.ret.length checks which were wrong to begin
+with (as the length is number of bytes not elements). This is already
+checked in acpi_run_osc() that also returns an error in that case.
 
-NIP qlt_create_sess+0x90/0x4e0 [qla2xxx]
-LR  qla24xx_do_nack_work+0xa8/0x180 [qla2xxx]
-Call Trace:
-0xc0000000348fba30 (unreliable)
-qla24xx_do_nack_work+0xa8/0x180 [qla2xxx]
-qla2x00_do_work+0x674/0xbf0 [qla2xxx]
-qla2x00_iocb_work_fn
+Includes fixes by Hans de Goede.
 
-The patch fixes the issue by serializing qlt_stop_phase1() and
-qlt_stop_phase2() functions to make WWPN removal wait for phase1
-completion.
+[1] https://uefi.org/specs/ACPI/6.4/06_Device_Configuration/Device_Configuration.html#sequence-of-osc-calls
 
-Link: https://lore.kernel.org/r/20210415203554.27890-1-d.bogdanov@yadro.com
-Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213023
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1963717
+Fixes: 719e1f561afb ("ACPI: Execute platform _OSC also with query bit clear")
+Cc: 5.12+ <stable@vger.kernel.org> # 5.12+
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_target.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/acpi/bus.c |   27 ++++++++-------------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
-index dcae8f071c35..8d4976725a75 100644
---- a/drivers/scsi/qla2xxx/qla_target.c
-+++ b/drivers/scsi/qla2xxx/qla_target.c
-@@ -1559,10 +1559,12 @@ void qlt_stop_phase2(struct qla_tgt *tgt)
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -330,32 +330,21 @@ static void acpi_bus_osc_negotiate_platf
+ 	if (ACPI_FAILURE(acpi_run_osc(handle, &context)))
  		return;
- 	}
  
-+	mutex_lock(&tgt->ha->optrom_mutex);
- 	mutex_lock(&vha->vha_tgt.tgt_mutex);
- 	tgt->tgt_stop = 0;
- 	tgt->tgt_stopped = 1;
- 	mutex_unlock(&vha->vha_tgt.tgt_mutex);
-+	mutex_unlock(&tgt->ha->optrom_mutex);
+-	capbuf_ret = context.ret.pointer;
+-	if (context.ret.length <= OSC_SUPPORT_DWORD) {
+-		kfree(context.ret.pointer);
+-		return;
+-	}
++	kfree(context.ret.pointer);
  
- 	ql_dbg(ql_dbg_tgt_mgt, vha, 0xf00c, "Stop of tgt %p finished\n",
- 	    tgt);
--- 
-2.30.2
-
+-	/*
+-	 * Now run _OSC again with query flag clear and with the caps
+-	 * supported by both the OS and the platform.
+-	 */
++	/* Now run _OSC again with query flag clear */
+ 	capbuf[OSC_QUERY_DWORD] = 0;
+-	capbuf[OSC_SUPPORT_DWORD] = capbuf_ret[OSC_SUPPORT_DWORD];
+-	kfree(context.ret.pointer);
+ 
+ 	if (ACPI_FAILURE(acpi_run_osc(handle, &context)))
+ 		return;
+ 
+ 	capbuf_ret = context.ret.pointer;
+-	if (context.ret.length > OSC_SUPPORT_DWORD) {
+-		osc_sb_apei_support_acked =
+-			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_APEI_SUPPORT;
+-		osc_pc_lpi_support_confirmed =
+-			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_PCLPI_SUPPORT;
+-		osc_sb_native_usb4_support_confirmed =
+-			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
+-	}
++	osc_sb_apei_support_acked =
++		capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_APEI_SUPPORT;
++	osc_pc_lpi_support_confirmed =
++		capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_PCLPI_SUPPORT;
++	osc_sb_native_usb4_support_confirmed =
++		capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
+ 
+ 	kfree(context.ret.pointer);
+ }
 
 
