@@ -2,138 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812E13A5EDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DA93A5EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbhFNJIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:08:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:58362 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232713AbhFNJIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:08:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A4BB1FB;
-        Mon, 14 Jun 2021 02:06:02 -0700 (PDT)
-Received: from e112269-lin.arm.com (autoplooker.cambridge.arm.com [10.1.194.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 817AE3F694;
-        Mon, 14 Jun 2021 02:05:59 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v15 7/7] KVM: arm64: Document MTE capability and ioctl
-Date:   Mon, 14 Jun 2021 10:05:25 +0100
-Message-Id: <20210614090525.4338-8-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210614090525.4338-1-steven.price@arm.com>
-References: <20210614090525.4338-1-steven.price@arm.com>
+        id S232655AbhFNJOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232528AbhFNJOk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 05:14:40 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC26C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 02:12:21 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id u18so10064239pfk.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 02:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4yyICwHMIJCbXq2c7BEGBVunI5RWt4gLljDerJ9bJhA=;
+        b=ET+yJ2YpQh1nx70SZ+2L3LmRnVHxt0PqmvwWpzaonmZgwK4v58J+iDsJArycAeunGg
+         tKgrNB2bx3GXCj4hriyFV3gIyPygHrpBHUbvrpyBJx0c+pLO24tErnSVRq/ELWYzqPf7
+         wFHnJZzy8YFgD4BOv+2lw0abWp1Zja88mP2l5qzb7AemZVmlcJwIDfsqwA47CKvxPEZX
+         +I9XRGd6O22GfnSveAE7svaFLPZk+JTEP2fIzFbkLcVBK+NzeGZEgz8lh+JI/O+XZRn4
+         5JcTugxdxoBehzQMuVxsBu+CLmUBV38tQqd7r6WFQa+9Bx2Cm/L3tjvZ9BCBzNQJvQ+T
+         HQUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4yyICwHMIJCbXq2c7BEGBVunI5RWt4gLljDerJ9bJhA=;
+        b=tOeYpft1Hpc/s9HcqqodwJv//ZC66F++wazEdYGZdcM8eDyGRjwe4crcVir1zHBQzC
+         Ru2AEzQlH8l38wRAvhU1YaHGEAC5BIQiJR8d/ooBXHwZYNX1fhw/1ek4Z+mBwkn7L3ex
+         No1zDMad0U6SMUwC8/6boi5txQJi+09vp409ume52NcLb6KZSAqRzqvC2OXnwwDmntE2
+         AMsTBbgFcq8gUL99+Ls7/huocnM0WSuc1c0uPx33LGeG0RXOjyvXKX5UuHtt6k86lJJt
+         vFon94c1CfMjEw/Nv9yDkQKwwdjV9CgFX/XHe66ELs7xTQzm9fQWU5bE5TUI6UxcVlzH
+         JYKQ==
+X-Gm-Message-State: AOAM530ofIZhjZFIDMZdJe2LZPL/4E2X59FL9SxwDhLxNFlYTiv2bgdK
+        xfkS+uw8YNFpDjuJSVR2Y6Mlxg==
+X-Google-Smtp-Source: ABdhPJzowyA4WkHFIZhVs8SkkNub47xJidNz0hMfmu9V1ygHyOQLgkMNrgUWSu8Xb77+wTBgpgZOOw==
+X-Received: by 2002:a62:e404:0:b029:2ee:f086:726f with SMTP id r4-20020a62e4040000b02902eef086726fmr20669526pfh.7.1623661941123;
+        Mon, 14 Jun 2021 02:12:21 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id q23sm12331418pff.175.2021.06.14.02.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 02:12:20 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 14:42:18 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <20210614091218.mj5hdx4xhy4vho5x@vireshk-i7>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
+ <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
+ <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
+ <0478822f-9d10-deb8-86ae-3b4ac3bb0c6c@metux.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0478822f-9d10-deb8-86ae-3b4ac3bb0c6c@metux.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
-granting a guest access to the tags, and provides a mechanism for the
-VMM to enable it.
+On 14-06-21, 10:07, Enrico Weigelt, metux IT consult wrote:
+> On 11.06.21 10:01, Viresh Kumar wrote:
+> 
+> > No, QEMU passes the raw messages to the backend daemon running in host
+> > userspace (which shares a socket with qemu). The backend understands
+> > the virtio/vhost protocols and so won't be required to change at all
+> > if we move from Qemu to something else. And that's what we (Linaro)
+> > are looking to do here with Project Stratos.
 
-A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
-access the tags of a guest without having to maintain a PROT_MTE mapping
-in userspace. The above capability gates access to the ioctl.
+This is one of the ways of using it, via a backend running in host
+userspace, maybe there are other ways of making this work which I may
+not have explored, like handling this within qemu.
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- Documentation/virt/kvm/api.rst | 57 ++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+> Note that this is completely different from my approach that I've posted
+> in autumn last year. Viresh's protocol hasn't much in common with mine.
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 22d077562149..d412928e50cd 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -5034,6 +5034,43 @@ see KVM_XEN_VCPU_SET_ATTR above.
- The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
- with the KVM_XEN_VCPU_GET_ATTR ioctl.
- 
-+4.130 KVM_ARM_MTE_COPY_TAGS
-+---------------------------
-+
-+:Capability: KVM_CAP_ARM_MTE
-+:Architectures: arm64
-+:Type: vm ioctl
-+:Parameters: struct kvm_arm_copy_mte_tags
-+:Returns: number of bytes copied, < 0 on error (-EINVAL for incorrect
-+          arguments, -EFAULT if memory cannot be accessed).
-+
-+::
-+
-+  struct kvm_arm_copy_mte_tags {
-+	__u64 guest_ipa;
-+	__u64 length;
-+	void __user *addr;
-+	__u64 flags;
-+	__u64 reserved[2];
-+  };
-+
-+Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
-+``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
-+field must point to a buffer which the tags will be copied to or from.
-+
-+``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
-+``KVM_ARM_TAGS_FROM_GUEST``.
-+
-+The size of the buffer to store the tags is ``(length / 16)`` bytes
-+(granules in MTE are 16 bytes long). Each byte contains a single tag
-+value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
-+``PTRACE_POKEMTETAGS``.
-+
-+If an error occurs before any data is copied then a negative error code is
-+returned. If some tags have been copied before an error occurs then the number
-+of bytes successfully copied is returned. If the call completes successfully
-+then ``length`` is returned.
-+
- 5. The kvm_run structure
- ========================
- 
-@@ -6362,6 +6399,26 @@ default.
- 
- See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
- 
-+7.26 KVM_CAP_ARM_MTE
-+--------------------
-+
-+:Architectures: arm64
-+:Parameters: none
-+
-+This capability indicates that KVM (and the hardware) supports exposing the
-+Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
-+VMM before creating any VCPUs to allow the guest access. Note that MTE is only
-+available to a guest running in AArch64 mode and enabling this capability will
-+cause attempts to create AArch32 VCPUs to fail.
-+
-+When enabled the guest is able to access tags associated with any memory given
-+to the guest. KVM will ensure that the tags are maintained during swap or
-+hibernation of the host; however the VMM needs to manually save/restore the
-+tags as appropriate if the VM is migrated.
-+
-+When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
-+perform a bulk copy of tags to/from the guest.
-+
- 8. Other capabilities.
- ======================
- 
+The protocol hasn't changed in a sense on how it can be used. Yes few
+things have moved around, new operations were introduced, but nothing
+that will make a change at this level. We are trying to use the
+protocol in one of the possible ways and yours can be different.
+
 -- 
-2.20.1
-
+viresh
