@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96E23A6274
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA563A60AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhFNLAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:00:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
+        id S232836AbhFNKgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234530AbhFNKw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:52:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1737613DE;
-        Mon, 14 Jun 2021 10:39:37 +0000 (UTC)
+        id S233340AbhFNKdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:33:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7D55613DF;
+        Mon, 14 Jun 2021 10:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667178;
-        bh=VFaFoZI8Jf3hiK1LJWeiBM4kXUVgxHwhSn6DJcGEqJU=;
+        s=korg; t=1623666704;
+        bh=qAyWlKYsRaqsYNZ/X0tJbf424IHsyqX75u33bU2u25w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BsPTXem1WWhVHXMG7pcdqQvQRh79ceipsftxyZs9sItSFlou1rrp8Rkqj03CckLtu
-         TIhAvg1zHC/sMJrlpn1kMGEqhldnwcdmtzTTzB2lVjDv/ZorMGTPhpVhQt5C7uX35T
-         pW8WIhXgLue6BT8sRsqwv43tRii3J4ZtcpkWVd0Q=
+        b=uoIsmtGF3mtbjM+nb2K7YhBx0FTeaabjvGkelGCeDg3kfCXVGRWZXHAaaxeMGrvhc
+         t98Vp6jSjhMPioMqMs4huki2zJPZQl5gJi6Cmj8V31yjrQZmkhQMfBS2veyvNiK8qq
+         2dZngll5KDRElFOdviaEMxs/FrN/y8rd7TCodVI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        George McCollister <george.mccollister@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 55/84] USB: serial: ftdi_sio: add NovaTech OrionMX product ID
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        yinbinbin <yinbinbin@alibabacloud.com>,
+        Wetp Zhang <wetp.zy@linux.alibaba.com>,
+        James Wang <jnwang@linux.alibaba.com>,
+        Liangyan <liangyan.peng@linux.alibaba.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.9 42/42] tracing: Correct the length check which causes memory corruption
 Date:   Mon, 14 Jun 2021 12:27:33 +0200
-Message-Id: <20210614102648.241902030@linuxfoundation.org>
+Message-Id: <20210614102644.046924902@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +44,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George McCollister <george.mccollister@gmail.com>
+From: Liangyan <liangyan.peng@linux.alibaba.com>
 
-commit bc96c72df33ee81b24d87eab953c73f7bcc04f29 upstream.
+commit 3e08a9f9760f4a70d633c328a76408e62d6f80a3 upstream.
 
-Add PID for the NovaTech OrionMX so it can be automatically detected.
+We've suffered from severe kernel crashes due to memory corruption on
+our production environment, like,
 
-Signed-off-by: George McCollister <george.mccollister@gmail.com>
+Call Trace:
+[1640542.554277] general protection fault: 0000 [#1] SMP PTI
+[1640542.554856] CPU: 17 PID: 26996 Comm: python Kdump: loaded Tainted:G
+[1640542.556629] RIP: 0010:kmem_cache_alloc+0x90/0x190
+[1640542.559074] RSP: 0018:ffffb16faa597df8 EFLAGS: 00010286
+[1640542.559587] RAX: 0000000000000000 RBX: 0000000000400200 RCX:
+0000000006e931bf
+[1640542.560323] RDX: 0000000006e931be RSI: 0000000000400200 RDI:
+ffff9a45ff004300
+[1640542.560996] RBP: 0000000000400200 R08: 0000000000023420 R09:
+0000000000000000
+[1640542.561670] R10: 0000000000000000 R11: 0000000000000000 R12:
+ffffffff9a20608d
+[1640542.562366] R13: ffff9a45ff004300 R14: ffff9a45ff004300 R15:
+696c662f65636976
+[1640542.563128] FS:  00007f45d7c6f740(0000) GS:ffff9a45ff840000(0000)
+knlGS:0000000000000000
+[1640542.563937] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[1640542.564557] CR2: 00007f45d71311a0 CR3: 000000189d63e004 CR4:
+00000000003606e0
+[1640542.565279] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+0000000000000000
+[1640542.566069] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+0000000000000400
+[1640542.566742] Call Trace:
+[1640542.567009]  anon_vma_clone+0x5d/0x170
+[1640542.567417]  __split_vma+0x91/0x1a0
+[1640542.567777]  do_munmap+0x2c6/0x320
+[1640542.568128]  vm_munmap+0x54/0x70
+[1640542.569990]  __x64_sys_munmap+0x22/0x30
+[1640542.572005]  do_syscall_64+0x5b/0x1b0
+[1640542.573724]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1640542.575642] RIP: 0033:0x7f45d6e61e27
+
+James Wang has reproduced it stably on the latest 4.19 LTS.
+After some debugging, we finally proved that it's due to ftrace
+buffer out-of-bound access using a debug tool as follows:
+[   86.775200] BUG: Out-of-bounds write at addr 0xffff88aefe8b7000
+[   86.780806]  no_context+0xdf/0x3c0
+[   86.784327]  __do_page_fault+0x252/0x470
+[   86.788367]  do_page_fault+0x32/0x140
+[   86.792145]  page_fault+0x1e/0x30
+[   86.795576]  strncpy_from_unsafe+0x66/0xb0
+[   86.799789]  fetch_memory_string+0x25/0x40
+[   86.804002]  fetch_deref_string+0x51/0x60
+[   86.808134]  kprobe_trace_func+0x32d/0x3a0
+[   86.812347]  kprobe_dispatcher+0x45/0x50
+[   86.816385]  kprobe_ftrace_handler+0x90/0xf0
+[   86.820779]  ftrace_ops_assist_func+0xa1/0x140
+[   86.825340]  0xffffffffc00750bf
+[   86.828603]  do_sys_open+0x5/0x1f0
+[   86.832124]  do_syscall_64+0x5b/0x1b0
+[   86.835900]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+commit b220c049d519 ("tracing: Check length before giving out
+the filter buffer") adds length check to protect trace data
+overflow introduced in 0fc1b09ff1ff, seems that this fix can't prevent
+overflow entirely, the length check should also take the sizeof
+entry->array[0] into account, since this array[0] is filled the
+length of trace data and occupy addtional space and risk overflow.
+
+Link: https://lkml.kernel.org/r/20210607125734.1770447-1-liangyan.peng@linux.alibaba.com
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Xunlei Pang <xlpang@linux.alibaba.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b220c049d519 ("tracing: Check length before giving out the filter buffer")
+Reviewed-by: Xunlei Pang <xlpang@linux.alibaba.com>
+Reviewed-by: yinbinbin <yinbinbin@alibabacloud.com>
+Reviewed-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
+Tested-by: James Wang <jnwang@linux.alibaba.com>
+Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/ftdi_sio.c     |    1 +
- drivers/usb/serial/ftdi_sio_ids.h |    1 +
- 2 files changed, 2 insertions(+)
+ kernel/trace/trace.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -611,6 +611,7 @@ static const struct usb_device_id id_tab
- 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
- 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONLX_PLUS_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORION_IO_PID) },
-+	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONMX_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_SYNAPSE_SS200_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX2_PID) },
---- a/drivers/usb/serial/ftdi_sio_ids.h
-+++ b/drivers/usb/serial/ftdi_sio_ids.h
-@@ -581,6 +581,7 @@
- #define FTDI_NT_ORIONLXM_PID		0x7c90	/* OrionLXm Substation Automation Platform */
- #define FTDI_NT_ORIONLX_PLUS_PID	0x7c91	/* OrionLX+ Substation Automation Platform */
- #define FTDI_NT_ORION_IO_PID		0x7c92	/* Orion I/O */
-+#define FTDI_NT_ORIONMX_PID		0x7c93	/* OrionMX */
- 
- /*
-  * Synapse Wireless product ids (FTDI_VID)
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2083,7 +2083,7 @@ trace_event_buffer_lock_reserve(struct r
+ 	    (entry = this_cpu_read(trace_buffered_event))) {
+ 		/* Try to use the per cpu buffer first */
+ 		val = this_cpu_inc_return(trace_buffered_event_cnt);
+-		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
++		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
+ 			trace_event_setup(entry, type, flags, pc);
+ 			entry->array[0] = len;
+ 			return entry;
 
 
