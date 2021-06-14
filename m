@@ -2,110 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1053A6C4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFDF3A6C4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234897AbhFNQq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:46:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55074 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233492AbhFNQq6 (ORCPT
+        id S234941AbhFNQrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233492AbhFNQrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:46:58 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 17D911FD29;
-        Mon, 14 Jun 2021 16:44:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623689095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jiBilChEIMtNgnA7zL0fhlqMNcZV7ysuCVLtr+JJY4=;
-        b=dqqNqv9HDbiRa9/Eb/N7cPF4huGJbP/qSv1NbtonRwJngSTTYYeecznIRCRJiLZMLNPcDt
-        2nXCXI8PgUxWfzVLP3ze/Q2s9exG2/CQ0hqUCgDz38BWj3fjKWxl56mQ/OkaQ1Ev7RVfHl
-        uJYuNKsw/2zGiErBfLqEnmbZXBIrw2c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623689095;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jiBilChEIMtNgnA7zL0fhlqMNcZV7ysuCVLtr+JJY4=;
-        b=jid7hJRG71RaGnaqheo9HEVk6y9irRygn7BEuEM/LLWMk+QgD5ZsVKDL+AE+5CyTquxhIt
-        GLyogOiSWgSI3RCw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 01236A3BA6;
-        Mon, 14 Jun 2021 16:44:54 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D3C291F2B82; Mon, 14 Jun 2021 18:44:54 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 18:44:54 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH] quota: finish disable quotactl_path syscall
-Message-ID: <20210614164454.GC29751@quack2.suse.cz>
-References: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
+        Mon, 14 Jun 2021 12:47:20 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944B1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:45:17 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id o10-20020a17090aac0ab029016e92770073so348421pjq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XE6H10v+4K87NjIk8prkM4d2wneLI3dvub+7esrDVfg=;
+        b=R0hyyNf1j+XUxrhZftIz5PLMAsBn54xSfjcVXYP907o++1arq7NfEa45NVVz42sL8q
+         GBGVdvdrlosa2afujLnozFUBk6Ce/L8avJARYyxS3JFAO5Z8PE/vZQfhledSVQX6FneX
+         nwVEInObC20oR9SLh5V7CUs1c+gzSpjgElVt4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XE6H10v+4K87NjIk8prkM4d2wneLI3dvub+7esrDVfg=;
+        b=myBHFZNvuZv2yZc9/Kb/aPz72LQ7/bV+rxlNlB4jDqgZ/BXBk48P9kFYri8abfbFgu
+         tmGhz6g97y3gMEURcl9N/U4c3v8K7Iq0h8qfMW3EXlSKM3LW+ItLSUWz6mt2Q1w8rpMf
+         snovZ5H6FVjNRNUFU/bwmvc+z1giHMtqbyc5LMNeXTiffm3RO1uOi4cNQ9UdkI4qNhbB
+         +elMeEgtl24wuKvunq9mik53b7GKbTWOc60Ca9602VBiHZ464+H9GEtVIP642I6Zf/kK
+         v9Vs+3JsK0qNAdrx1TiFS2jEUA7NW6Gbo0HZ6MObilRW45aaqs56A+G8LLBfYB4XYVRu
+         XaYw==
+X-Gm-Message-State: AOAM533ahV+w7Bs3jeOqx15sTooGTgfJkhGVVcyXefaHhpNAGK6+VHS8
+        rrI+g2fJbFWw+5pPXVSi7hk/6w==
+X-Google-Smtp-Source: ABdhPJwcnxSn1eMsO+zkQwEPX5UKACvwFkKztnZW0P/eg+HPzt4AjZie3C6XQvs4YKSO1foMkaDXbA==
+X-Received: by 2002:a17:90b:901:: with SMTP id bo1mr20049707pjb.0.1623689117081;
+        Mon, 14 Jun 2021 09:45:17 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ms5sm20953pjb.19.2021.06.14.09.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 09:45:16 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 09:45:15 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     youling257 <youling257@gmail.com>
+Cc:     torvalds@linux-foundation.org, christian.brauner@ubuntu.com,
+        andrea.righi@canonical.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, regressions@lists.linux.dev,
+        linux-security-module@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>
+Subject: Re: [PATCH] proc: Track /proc/$pid/attr/ opener mm_struct
+Message-ID: <202106140941.7CE5AE64@keescook>
+References: <20210608171221.276899-1-keescook@chromium.org>
+ <20210614100234.12077-1-youling257@gmail.com>
+ <202106140826.7912F27CD@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614153712.313707-1-marcin@juszkiewicz.com.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <202106140826.7912F27CD@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14-06-21 17:37:12, Marcin Juszkiewicz wrote:
-> In commit 5b9fedb31e47 ("quota: Disable quotactl_path syscall") Jan Kara
-> disabled quotactl_path syscall on several architectures.
-> 
-> This commit disables it on all architectures using unified list of
-> system calls:
-> 
-> - arm64
-> - arc
-> - csky
-> - h8300
-> - hexagon
-> - nds32
-> - nios2
-> - openrisc
-> - riscv (32/64)
-> 
-> CC: Jan Kara <jack@suse.cz>
-> CC: Christian Brauner <christian.brauner@ubuntu.com>
-> CC: Sascha Hauer <s.hauer@pengutronix.de>
-> Link: https://lore.kernel.org/lkml/20210512153621.n5u43jsytbik4yze@wittgenstein
-> 
-> Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+On Mon, Jun 14, 2021 at 08:32:35AM -0700, Kees Cook wrote:
+> On Mon, Jun 14, 2021 at 06:02:34PM +0800, youling257 wrote:
+> > I used mainline kernel on android, this patch cause "failed to retrieve pid context" problem.
+> > 
+> > 06-14 02:15:51.165  1685  1685 E ServiceManager: SELinux: getpidcon(pid=1682) failed to retrieve pid context.
 
-Aha, I've missed that one. Thanks for catching this. Arnd, will you take
-this patch or should I take it through my tree?
+I found getpidcon() in libselinux:
+https://github.com/SELinuxProject/selinux/blob/master/libselinux/src/procattr.c#L159
 
-								Honza
+> > 06-14 02:15:51.166  1685  1685 E ServiceManager: add_service('batteryproperties',1) uid=0 - PERMISSION DENIED
+> > 06-14 02:15:51.166  1682  1682 I ServiceManager: addService() batteryproperties failed (err -1 - no service manager yet?).  Retrying...
+> > 06-14 02:15:51.197  1685  1685 E ServiceManager: SELinux: getpidcon(pid=1695) failed to retrieve pid context.
+> > 06-14 02:15:51.197  1685  1685 E ServiceManager: add_service('android.security.keystore',1) uid=1017 - PERMISSION DENIED
+> > 06-14 02:15:51.198  1695  1695 I ServiceManager: addService() android.security.keystore failed (err -1 - no service manager yet?).  Retrying...
+> > 06-14 02:15:51.207  1685  1685 E ServiceManager: SELinux: getpidcon(pid=1708) failed to retrieve pid context.
+> > 06-14 02:15:51.207  1685  1685 E ServiceManager: add_service('android.service.gatekeeper.IGateKeeperService',1) uid=1000 - PERMISSION DENIED
+> > 06-14 02:15:51.207  1708  1708 I ServiceManager: addService() android.service.gatekeeper.IGateKeeperService failed (err -1 - no service manager yet?).  Retrying...
+> > 06-14 02:15:51.275  1685  1685 E ServiceManager: SELinux: getpidcon(pid=1693) failed to retrieve pid context.
+> > 06-14 02:15:51.275  1692  1692 I cameraserver: ServiceManager: 0xf6d309e0
+> > 06-14 02:15:51.275  1685  1685 E ServiceManager: add_service('drm.drmManager',1) uid=1019 - PERMISSION DENIED
+> > 06-14 02:15:51.276  1693  1693 I ServiceManager: addService() drm.drmManager failed (err -1 - no service manager yet?).  Retrying...
+> > 
+> 
+> Argh. Are you able to uncover what userspace is doing here?
 
-> ---
->  include/uapi/asm-generic/unistd.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+It looks like this is a case of attempting to _read_ the attr file, and
+the new opener check was requiring the opener/target relationship pass
+the mm_access() checks, which is clearly too strict.
+
+> So far, my test cases are:
 > 
-> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-> index 6de5a7fc066b..d2a942086fcb 100644
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -863,8 +863,7 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
->  __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
->  #define __NR_mount_setattr 442
->  __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
-> -#define __NR_quotactl_path 443
-> -__SYSCALL(__NR_quotactl_path, sys_quotactl_path)
-> +/* 443 is reserved for quotactl_path */
->  
->  #define __NR_landlock_create_ruleset 444
->  __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
-> -- 
-> 2.31.1
-> 
+> 1) self: open, write, close: allowed
+> 2) self: open, clone thread. thread: change privileges, write, close: allowed
+> 3) self: open, give to privileged process. privileged process: write: reject
+
+I've now added:
+
+4) self: open privileged process's attr, read, close: allowed
+
+Can folks please test this patch to double-check?
+
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 7118ebe38fa6..7c55301674e0 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2676,7 +2676,14 @@ static int proc_pident_readdir(struct file *file, struct dir_context *ctx,
+ #ifdef CONFIG_SECURITY
+ static int proc_pid_attr_open(struct inode *inode, struct file *file)
+ {
+-	return __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
++	struct mm_struct *mm = __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
++
++	/* Reads do not require mm_struct access. */
++	if (IS_ERR(mm))
++		mm = NULL;
++
++	file->private_data = mm;
++	return 0;
+ }
+ 
+ static ssize_t proc_pid_attr_read(struct file * file, char __user * buf,
+@@ -2709,7 +2716,7 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
+ 	int rv;
+ 
+ 	/* A task may only write when it was the opener. */
+-	if (file->private_data != current->mm)
++	if (!file->private_data || file->private_data != current->mm)
+ 		return -EPERM;
+ 
+ 	rcu_read_lock();
+
+
+Wheee.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Kees Cook
