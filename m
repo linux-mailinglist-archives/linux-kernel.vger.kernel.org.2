@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B916D3A6801
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0C43A67FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhFNNge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
+        id S234038AbhFNNgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233394AbhFNNg1 (ORCPT
+        with ESMTP id S233394AbhFNNgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:36:27 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B48EC061767;
-        Mon, 14 Jun 2021 06:34:10 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id i4so15502828ybe.2;
-        Mon, 14 Jun 2021 06:34:10 -0700 (PDT)
+        Mon, 14 Jun 2021 09:36:22 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972EEC061766;
+        Mon, 14 Jun 2021 06:34:07 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id bp38so21243163lfb.0;
+        Mon, 14 Jun 2021 06:34:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U+SdEsE9+NsUTLittnWGiiMKDOH2BJaHKTxZALGDAWI=;
-        b=odDKde/DM6oE49cy3R0RkXQ2Tts09TwaXlTAmv7uXRYwG5gYpH/g9yJ5rRkAsvqA8T
-         xX6ciaKwcMQrgy2tZfpjoKSf2tVn+qaFLus4OQzg+hy5GhChOJ+Yq6qPjg3lgm2woGrL
-         z9akMmOKCGPSTTM93SBkVMT/EG1jfScimZWgshFW+V580ZYtrG9zaOKy/5V/8qGn++sp
-         4umb3xpP+Mq7sdnGVNXEATUAQsL2dyBIN30KN2pdZLkQ1o924eeIYYc+kD6UL3Yuh0Js
-         Zcg1Q51H6hSqfOPqXyqfBy3gigJvPWJE/tP4C1SPCwyUACQVzjjx75Ura+bvWmu6wRXY
-         VQYw==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=y+VpVa/Mc1+kFCgRsz56WptJ2EZlhOZN6aWdeyarFVI=;
+        b=XmuESoouVc/r6kZdVBYkje+JZAMeYXN3l+u2/CEUJmYTVI3rRrGWDATCLHlH/nMhIU
+         AMb9rp/mLhgbE4wwm+vOvADqPpcDIqBVDZq7XxE398qNeKRh0Bi1tVahCS2GEXHLTecG
+         iW9jF4CTmnyjHOi494BGqYZ6fsrG9dEAmh9u8b93W0UMN+6JZdUh/sh1xLljHyaStk5V
+         V6fSbv1IVdlKCheWECR4shY9ltLAdpqyaBYFkoHnZDnUN/GegVZ0RHG0iNF1in9Gj35p
+         n8FJeNI2PrycRv6ZzDLw/k+M7lWkyMtVyDiBTSikaTofkWSFZJ2w+8fxSXnmwEVDwBVG
+         ogOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U+SdEsE9+NsUTLittnWGiiMKDOH2BJaHKTxZALGDAWI=;
-        b=cy46teI6CIaTKWxINouon6sqRKhj5preofo3Pa+RbmogJW4uB74bd/gCP20KFGeBAz
-         L7i5RdXPtE3X2daAeoohe+/iQ6jadff7NG6pKg7djroZlUBlHM4VDP5d9ng8BQzb3u7p
-         v+vbuI541Udln/5exCFFBiMdBcScqXPzEiHpJNjGBvlGtPwfQYaElBEBnoOibdPHwdFo
-         koi2fNrLS9HybDsZiDXcgSYTiFOy6kzCSQXox0yEHp9+fagsPHIyKu8LIcBnp5oalYNR
-         kSgd7CXZuTAOOgN46RQvhjsL49E25jl2YXeNs9kbS51hxDYEKWTY8qJmgS4BF1/A5JZ0
-         xWbA==
-X-Gm-Message-State: AOAM532up4FNoNH1X3Z0qDJyTt6cHCBd0tKBpgZPdtUfn7dtZYhdp+lF
-        TrW+9dA0/QQdMcK7EyLNuFzkrUMU3DGcOVY4KVk=
-X-Google-Smtp-Source: ABdhPJxOuvrD1lbWJO5WRvUKJRABbIIp7EzJ3EsdDZZFObuYxZUwyekjwK6Kgbos33FF8PzqvrZgeDv6CuYhmYlJFzs=
-X-Received: by 2002:a25:c016:: with SMTP id c22mr26522386ybf.387.1623677649546;
- Mon, 14 Jun 2021 06:34:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210612160422.330705-1-anup.patel@wdc.com> <20210612160422.330705-3-anup.patel@wdc.com>
-In-Reply-To: <20210612160422.330705-3-anup.patel@wdc.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Mon, 14 Jun 2021 21:33:57 +0800
-Message-ID: <CAEUhbmWPUcjXtXveOrYWzfSBq34SO34eM6Fb8HDeT0hfHA2SwA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 02/10] RISC-V: Use common print prefix in smp.c
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=y+VpVa/Mc1+kFCgRsz56WptJ2EZlhOZN6aWdeyarFVI=;
+        b=MqGUbYLRek34gVhU/bamnm24pm2T6pLVv9SFRPf1WJxFXiVNxs+oVGXSBtnz3X3/Jz
+         Ola37a6gRsQjYYoYJ16lL3AyR+Xva5B4F4bSD8ti8lQF9ERPYYYOhNp6j7EN2051+5/p
+         T7GTO3B/1VQl66YXXRJCj+wTvhi/0CgU3+D8dI5u7N/koz4xZAo/hMIeifRKKD3TdTQ7
+         VkdHWBBCx7/0zS83vm/alovGtF0q8IxdkDl/kn+1YomRtr1JSmZdmP6ujBPuY4g6xFY4
+         e6RffC7HUhP2Pii/mh3gSnX4zNWzM+hibs2lFh4BxeDLUmK3sOAmZyqGpjMqskSswIZL
+         fsfA==
+X-Gm-Message-State: AOAM530n1QAFmWS7EQjD0PoKzbVC+62enKVbAaU6IYMmiNVkKYya873o
+        Lb9BBwpOkOeTWZZLADNyuaM=
+X-Google-Smtp-Source: ABdhPJyAEIRZ7T8Bcy7B3MxB9ivA7zWCG4wfzOrjH8mWXFik1quzXUsOomybWlj9iwugKVYc7WzhnQ==
+X-Received: by 2002:a05:6512:3d8f:: with SMTP id k15mr12457575lfv.362.1623677645915;
+        Mon, 14 Jun 2021 06:34:05 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.24])
+        by smtp.gmail.com with ESMTPSA id w24sm1486513lfl.123.2021.06.14.06.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 06:34:05 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 16:34:01 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     alex.aring@gmail.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: Suggestions on how to debug kernel crashes where printk and gdb
+ both does not work
+Message-ID: <20210614163401.52807197@gmail.com>
+In-Reply-To: <CAD-N9QUUCSpZjg5RwdKBNF7xx127E6fUowTZkUhm66C891Fpkg@mail.gmail.com>
+References: <CAD-N9QUUCSpZjg5RwdKBNF7xx127E6fUowTZkUhm66C891Fpkg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 12:06 AM Anup Patel <anup.patel@wdc.com> wrote:
->
-> We add "#define pr_fmt()" in smp.c to use "riscv:" as common
-> print prefix for all pr_xyz() statements in this file.
->
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> ---
->  arch/riscv/kernel/smp.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
+On Mon, 14 Jun 2021 21:22:43 +0800
+Dongliang Mu <mudongliangabcd@gmail.com> wrote:
 
-Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+> Dear kernel developers,
+> 
+> I was trying to debug the crash - memory leak in hwsim_add_one [1]
+> recently. However, I encountered a disgusting issue: my breakpoint and
+> printk/pr_alert in the functions that will be surely executed do not
+> work. The stack trace is in the following. I wrote this email to ask
+> for some suggestions on how to debug such cases?
+> 
+> Thanks very much. Looking forward to your reply.
+> 
+
+Hi, Dongliang!
+
+This bug is not similar to others on the dashboard. I spent some time
+debugging it a week ago. The main problem here, that memory
+allocation happens in the boot time:
+
+> [<ffffffff84359255>] kernel_init+0xc/0x1a7 init/main.c:1447
+
+and reproducer simply tries to
+free this data. You can use ftrace to look at it. Smth like this: 
+
+$ echo 'hwsim_*' > $TRACE_DIR/set_ftrace_filter
+
+would work.
+
+
+With regards,
+Pavel Skripkin
