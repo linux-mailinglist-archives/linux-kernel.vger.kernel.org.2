@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCED3A5FED
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D083A5FF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232806AbhFNKXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:23:33 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:4433 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232809AbhFNKX2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:23:28 -0400
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3S883j3Yz6yfl;
-        Mon, 14 Jun 2021 18:18:16 +0800 (CST)
-Received: from [10.67.100.138] (10.67.100.138) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 14 Jun 2021 18:21:24 +0800
-Subject: Re: [PATCH net-next 04/11] net: z85230: remove redundant
- initialization for statics
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Guangbin Huang <huangguangbin2@huawei.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
-        <ms@dev.tdt.de>, <willemb@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1623569903-47930-1-git-send-email-huangguangbin2@huawei.com>
- <1623569903-47930-5-git-send-email-huangguangbin2@huawei.com>
- <YMYw4kJ/Erq6fbVh@lunn.ch>
-From:   "lipeng (Y)" <lipeng321@huawei.com>
-Message-ID: <a39c53f5-2b87-22c4-1df2-d92988682362@huawei.com>
-Date:   Mon, 14 Jun 2021 18:21:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <YMYw4kJ/Erq6fbVh@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.100.138]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
+        id S232851AbhFNKYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:24:10 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:47637 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232809AbhFNKYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:24:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623666118; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Y4R+CI7JZXnnd2CPaAK0ArA0rsN6FK6Bg7xXP9MJpmM=; b=ucRHq88mDCcMQf84wLy2ubkTpPBhvgtxehcjhfbK55D7W2Rm7X3wcULCRdv/IfzMhxFEfOYw
+ MtEYSK9aK1d8QE7h+FJi7RQHACEAWlxGM+ijvFyLcldtc1FKRyWMJ/H3qFlVAdh9T39Umoo0
+ GQxOM5YPyAK2Fvp2Yyy/laLbWu4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60c72dc4e27c0cc77f3e122f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 10:21:56
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8CC15C4323A; Mon, 14 Jun 2021 10:21:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BCB26C4338A;
+        Mon, 14 Jun 2021 10:21:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BCB26C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
+        sibis@codeaurora.org, manivannan.sadhasivam@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>
+Subject: [PATCH V4 0/2] soc: qcom: aoss: Expose send for generic usecase 
+Date:   Mon, 14 Jun 2021 15:51:32 +0530
+Message-Id: <1623666094-2924-1-git-send-email-deesin@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[Changes from V3]
+Add qmp_put declaration in qcom_aoss.h
 
-在 2021/6/14 0:22, Andrew Lunn 写道:
-> On Sun, Jun 13, 2021 at 03:38:16PM +0800, Guangbin Huang wrote:
->> From: Peng Li <lipeng321@huawei.com>
->>
->> Should not initialise statics to 0.
->>
->> Signed-off-by: Peng Li <lipeng321@huawei.com>
->> Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
->> ---
->>   drivers/net/wan/z85230.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wan/z85230.c b/drivers/net/wan/z85230.c
->> index 94ed9a2..f815bb5 100644
->> --- a/drivers/net/wan/z85230.c
->> +++ b/drivers/net/wan/z85230.c
->> @@ -685,7 +685,7 @@ irqreturn_t z8530_interrupt(int irq, void *dev_id)
->>   {
->>   	struct z8530_dev *dev=dev_id;
->>   	u8 intr;
->> -	static volatile int locker=0;
->> +	static int locker;
-> Is the volatile unneeded? Please document that in the commit message.
->
->     Andrew
-> .
-Hi,  Andrew:
+Deepak Kumar Singh (2):
+  soc: qcom: aoss: Expose send for generic usecase
+  soc: qcom: aoss: Add debugfs entry
 
-When i create this patch, it will WARNING: Use of volatile is usually 
-wrong: see Documentation/process/volatile-considered-harmful.rst
-According to the file in kernel: 
-Documentation/process/volatile-considered-​harmful.rst
-the "volatile" type class should not be used.
-So i remove  "volatile" in this patch.
+ drivers/soc/qcom/qcom_aoss.c       | 109 ++++++++++++++++++++++++++++++++++++-
+ include/linux/soc/qcom/qcom_aoss.h |  38 +++++++++++++
+ 2 files changed, 145 insertions(+), 2 deletions(-)
+ create mode 100644 include/linux/soc/qcom/qcom_aoss.h
 
-I will add the reason in commit log Next version.
-
-Thanks.
-
-Peng Li
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
