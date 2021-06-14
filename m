@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CDB3A5DEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEF23A5DE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbhFNHym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:54:42 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3226 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbhFNHyj (ORCPT
+        id S232509AbhFNHuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:50:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46569 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232492AbhFNHuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:54:39 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G3Nm307LTz6F9F6;
-        Mon, 14 Jun 2021 15:45:39 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 14 Jun 2021 09:52:34 +0200
-Received: from [10.47.95.26] (10.47.95.26) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 14 Jun
- 2021 08:52:33 +0100
-Subject: Re: [PATCH v12 5/5] iommu: Remove mode argument from
- iommu_set_dma_strict()
-To:     Lu Baolu <baolu.lu@linux.intel.com>, <joro@8bytes.org>,
-        <will@kernel.org>, <dwmw2@infradead.org>, <robin.murphy@arm.com>
-CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
-        <chenxiang66@hisilicon.com>
-References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
- <1623414043-40745-6-git-send-email-john.garry@huawei.com>
- <1b58516d-73d5-0c40-11de-58b998ec803e@linux.intel.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <3b1c277e-fd8a-64d7-4fcb-1a4d64fbcfd4@huawei.com>
-Date:   Mon, 14 Jun 2021 08:46:30 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Mon, 14 Jun 2021 03:50:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623656883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVVQDAqE2mNu93zrjVnb7Wt06L1/09jtCkVYdV1XAfc=;
+        b=YkWQLAGs4500hMYddsrdqMOqX2wgsZO1Qbz7DTWm7u7/0mrEdXZ7NKBrFzhdX3isi5JD7r
+        uA1TKyZSpVPbfl66vUu8xMvW51gpYiLdI2xwpWC2leibv5I+oRUkZcvyPRaqbC089mnVlR
+        5dYYkepuyC1YAnLj9rRvXXsJAcGZJfo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-PYEspA8oMfSNlmzn4T1dkw-1; Mon, 14 Jun 2021 03:48:02 -0400
+X-MC-Unique: PYEspA8oMfSNlmzn4T1dkw-1
+Received: by mail-ed1-f69.google.com with SMTP id x8-20020aa7d3880000b029038fe468f5f4so19666091edq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:48:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=uVVQDAqE2mNu93zrjVnb7Wt06L1/09jtCkVYdV1XAfc=;
+        b=UbbSCsn2UjWPLCKOB0urZZ+UmbAbhGSp9NYgm/pehHjkv/o/a1pYIeIAfhnIxjS5Oh
+         gJh1dZLEdNYHJjAizrbCHy/j/iTOecs0Lr2hKm+s8WfAWcgGthpnnGFLb186N/XORT35
+         UMXWtD6KME73bFE8Z4E86xIpy9i+dEmyFB8cklNtEik3WMYyFPqBqgalxFXB8vcA0tKi
+         ul3QEyq+MO8k9KIsdyT44IJ1TURK+UWV29qHieSWHquZQkyPBLnw6eSsaajZ+fEgcHD6
+         vZfGOPqfhwBosmLVyLH/FEcutYroEe1qPDmiA0iHoEZUKdrpxiLRpeO4Uhespo1LQydb
+         HX5A==
+X-Gm-Message-State: AOAM530v7Nzv7DPmZ2Fm6R0CRsVt/IEtxxFRlbq5gc38OGzyhc41HxbT
+        SnbvDgR0g2GV3Ej3u19OgMDl2winNW/xxMiCUw5CVwYMX3+AnQoFPL3MnaXZFQkTCZ0KeaCnqZO
+        8v1bDS4ZjWKRA+Poubxplhqtg
+X-Received: by 2002:aa7:cb19:: with SMTP id s25mr15927086edt.194.1623656881435;
+        Mon, 14 Jun 2021 00:48:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzR5ViPXNZ/W1P6S7MeGqL1karb6GMvkiVX7a6Cj3XRWtU7Ght+0fiIaUQS7VaSMZPx0qyfEA==
+X-Received: by 2002:aa7:cb19:: with SMTP id s25mr15927063edt.194.1623656881266;
+        Mon, 14 Jun 2021 00:48:01 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id h8sm6839060ejj.22.2021.06.14.00.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 00:48:00 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v5 0/7] Hyper-V nested virt enlightenments for SVM
+In-Reply-To: <50dea657-ef03-4bde-b9c7-75d9e18157ea@redhat.com>
+References: <cover.1622730232.git.viremana@linux.microsoft.com>
+ <5af1ccce-a07d-5a13-107b-fc4c4553dd4d@redhat.com>
+ <683fa50765b29f203cb4b0953542dc43226a7a2f.camel@redhat.com>
+ <878s3gybuk.fsf@vitty.brq.redhat.com>
+ <50dea657-ef03-4bde-b9c7-75d9e18157ea@redhat.com>
+Date:   Mon, 14 Jun 2021 09:47:59 +0200
+Message-ID: <87wnqwx4y8.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1b58516d-73d5-0c40-11de-58b998ec803e@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.95.26]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/06/2021 03:23, Lu Baolu wrote:
-> On 2021/6/11 20:20, John Garry wrote:
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index ccbd5d4c1a50..146cb71c7441 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -350,10 +350,9 @@ static int __init iommu_dma_setup(char *str)
->>   }
->>   early_param("iommu.strict", iommu_dma_setup);
->> -void iommu_set_dma_strict(bool strict)
->> +void iommu_set_dma_strict(void)
->>   {
->> -    if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
->> -        iommu_dma_strict = strict;
->> +        iommu_dma_strict = true;
->>   }
-> 
-> Will this change break the functionality of iommu.strict?
-> 
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-No, iommu_dma_strict is written directly in iommu_dma_setup() for 
-iommu.strict cmdline processing.
+> CONFIG_HYPERV=m is possible.
 
-Here I'm just saying that anyone that who uses iommu_set_dma_strict(bool 
-strict) always passes true, so I just remove that argument and simplify 
-that function.
+We've stubmled upon this multiple times already. Initially, the whole
+Hyper-V support code was a module (what's now in drivers/hv/) but then
+some core functionallity was moved out to arch/x86/ but we didn't add a
+new config back then. Still suffering :-)
 
-Thanks,
-John
+Ideally, we would want to have 
+
+CONFIG_HYPERV_GUEST=y/n for what's in arch/x86/ (just like CONFIG_KVM_GUEST)
+CONFIG_HYPERV_VMBUS=y/n/m for what's in drivers/hv
+
+-- 
+Vitaly
 
