@@ -2,111 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6158F3A6773
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487823A6777
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 15:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhFNNL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 09:11:57 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:43581 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233428AbhFNNLx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:11:53 -0400
-Received: by mail-wm1-f47.google.com with SMTP id 3-20020a05600c0243b029019f2f9b2b8aso12758617wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 06:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:organization:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R81uREkUogO+0I18Z26XftVz6AP1SWmqajE8u/Zgwak=;
-        b=ZDzj1DcTYJDDnMMrH9pPIe9zXsQZgj4quciaM6vTD+poAcJu9VFol+t4P61zd3Gvwa
-         S/PoI8z72mftg8JnNBgWJfjW6htEKBAy73V/rd7u3SoZpa6bXl+C6CoMmZLk8R5DaTSW
-         1FX1CynwJKuNxWVrgKuDMuwS+2wCfoc8GuQEkhqcvZ/52O2EKT2bmYHjEhFXymRBHbzb
-         RywDDxyTizGHPB6DDVhLRyaxraMfQiRbx103UDeJRWqLTQ1mX1yxdwhGBVDf1YzJm2mW
-         PEtDq4BZMAbQckPrkG3FHnzRLx5B9ghbxaXkp0SOfKLlyIqddKzs9BWPTawJkz006Z5F
-         FFrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=R81uREkUogO+0I18Z26XftVz6AP1SWmqajE8u/Zgwak=;
-        b=JvDbQNqZ2NcxSGSkR4/lQSST8wPxiS4lF3kav+jXm/N6OTSvekHL5WsBXpUnANhw0j
-         Wu0q+uXDZuBhGtJhSk5gHVJqRSTpOvDzfn4nH5UACnRUBMlXpRdLSDoWzfHGhKAGJCET
-         NwNQfHRziSz4C+5++Hmi6Zvqy5PpsiZIvgqHjSLtKjpJKyqbAgiDdzS3mHZaA3QlXGG8
-         QH5iuPfG0t2iji7UECu1cMr1X5O/lxLPWSid1igOmG4mGTpGO59qmDikoRazurtEyxQ9
-         DdFSVRzy7+EhmSW5pvKhfgp/AecG6mzcR3uxPyqw3epMqyxGspZvhxGqIhxDp1+K475o
-         FPYA==
-X-Gm-Message-State: AOAM530/W74+u2YLvgbB3gtElkbpb5i/wCZ6gJFsrTUB9ynCb3T/gaKF
-        6tzoHjyAy5fUMIjBhxz628+JV2GvAuVLT2v7
-X-Google-Smtp-Source: ABdhPJzvOJIpH5I9fsn1C5b8nZomvpQk/22c28tDkwiaE/NCXB8ERgCGdtQ8w2UsbrpGkGyabOiuOQ==
-X-Received: by 2002:a7b:c5cd:: with SMTP id n13mr16341336wmk.97.1623676129021;
-        Mon, 14 Jun 2021 06:08:49 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:f0d4:3c02:f06a:77bb? ([2a01:e0a:90c:e290:f0d4:3c02:f06a:77bb])
-        by smtp.gmail.com with ESMTPSA id h18sm8957878wrs.64.2021.06.14.06.08.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 06:08:48 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] spi: meson-spicc: fix a wrong goto jump for
- avoiding memory leak.
-To:     zpershuai <zpershuai@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1623562172-22056-1-git-send-email-zpershuai@gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <b3ea2ad6-6341-df56-9d09-e3e832f8f316@baylibre.com>
-Date:   Mon, 14 Jun 2021 15:08:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233561AbhFNNMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 09:12:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233218AbhFNNMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 09:12:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BF1161283;
+        Mon, 14 Jun 2021 13:10:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623676216;
+        bh=xfG+15qfU2qDVl0eiFPWbh7ntq4741jr7zJ1kibSdg4=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=PzhqGZctfs8zQ1H1f+SgYYt+nsM6jl8vnVX1ShfBSN4ZF2GlHCYp2JncFsuCOOjNa
+         6JlazVeFDQRK2wihhKxk8gmCYguenRuG1xMXposF5GaeYn3iJfXoq//gQ3ayX0D6pX
+         D0ifSdaQDYAHByKrTuuTVbOFIdl6dk0sZ/e0HdZCKoNwcOyCV12QVFDk/P1DFr5WU7
+         GOXaW98biM1G5WFi2AmiMovqaSuF9T8RXXX87cvVczeS5IrpZjYao/auCEDC2V/jGc
+         G5a8AmIkFp3cNk66eE/HQxnzYVWEXZ1DShlaegzaQjgB9MhQNmZyv8x30t19/LrM9u
+         Z2HpzIuEkt6Bw==
+Date:   Mon, 14 Jun 2021 15:10:13 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Austin Kim <austindh.kim@gmail.com>
+cc:     srinivas.pandruvada@linux.intel.com, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        austin.kim@lge.com
+Subject: Re: [PATCH] HID: intel-ish-hid: Fix minor typos in comments
+In-Reply-To: <20210527071637.GA1516@raspberrypi>
+Message-ID: <nycvar.YFH.7.76.2106141510040.28378@cbobk.fhfr.pm>
+References: <20210527071637.GA1516@raspberrypi>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <1623562172-22056-1-git-send-email-zpershuai@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 27 May 2021, Austin Kim wrote:
 
-On 13/06/2021 07:29, zpershuai wrote:
-> In meson_spifc_probe function, when enable the device pclk clock is
-> error, it should use clk_disable_unprepare to release the core clock.
+> Change "poiner" to "pointer" in comments.
 > 
-> Signed-off-by: zpershuai <zpershuai@gmail.com>
+> Signed-off-by: Austin Kim <austindh.kim@gmail.com>
 > ---
->  drivers/spi/spi-meson-spicc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  drivers/hid/intel-ish-hid/ishtp-fw-loader.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-> index d675334..b2c4621 100644
-> --- a/drivers/spi/spi-meson-spicc.c
-> +++ b/drivers/spi/spi-meson-spicc.c
-> @@ -725,7 +725,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
->  	ret = clk_prepare_enable(spicc->pclk);
->  	if (ret) {
->  		dev_err(&pdev->dev, "pclk clock enable failed\n");
-> -		goto out_master;
-> +		goto out_core_clk;
->  	}
->  
->  	device_reset_optional(&pdev->dev);
-> @@ -764,9 +764,11 @@ static int meson_spicc_probe(struct platform_device *pdev)
->  	return 0;
->  
->  out_clk:
-> -	clk_disable_unprepare(spicc->core);
->  	clk_disable_unprepare(spicc->pclk);
->  
-> +out_core_clk:
-> +	clk_disable_unprepare(spicc->core);
-> +
->  out_master:
->  	spi_master_put(master);
->  
-> 
+> diff --git a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
+> index d20d74a890e9..1b486f262747 100644
+> --- a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
+> +++ b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
+> @@ -456,7 +456,7 @@ static void loader_cl_event_cb(struct ishtp_cl_device *cl_device)
+>  /**
+>   * ish_query_loader_prop() -  Query ISH Shim firmware loader
+>   * @client_data:	Client data instance
+> - * @fw:			Poiner to firmware data struct in host memory
+> + * @fw:			Pointer to firmware data struct in host memory
+>   * @fw_info:		Loader firmware properties
+>   *
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Applied.
+
+-- 
+Jiri Kosina
+SUSE Labs
+
