@@ -2,118 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546F43A6C76
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEAB3A6C7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbhFNQyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbhFNQyN (ORCPT
+        id S234891AbhFNQ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:56:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49299 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234371AbhFNQ4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:54:13 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77856C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:52:10 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id x13so8149021vsf.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:52:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qI8JpFMh7+nrwzVv1jWVM5ml0OUiY5MJQrtGKYX8w3k=;
-        b=eVGDtJeB3NP1YU2OckLCU2+if7afqsRRCInB7mMgNIybpYLMLgzkFefYdr+bFXX+Pb
-         hWcIUU4wrrjVcAsG1xldBIq8Y/94R08Z6b34qYhl6CuMujqc5WzJp0a92p7n3NJrE2rR
-         hZcpCcTurdeVtAylilTWhvpgauRPC9zSn5DSXQR4TfY97RCg91PTjlFD8AoTHiTTUC+J
-         NyaY6Uy/QmLvbqKT116GwLKOiEHJBfMhjIiP+bmqKTYNElNCgk3UTFw4VXNzphhE41uK
-         xTC9JbDWs64guA4T+VE3waJTio+tKZzVPhJflJEFzbs7rxQYfM+fcvIoEstDI4HJDSWQ
-         Bkbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qI8JpFMh7+nrwzVv1jWVM5ml0OUiY5MJQrtGKYX8w3k=;
-        b=WhYCRHottj4OdWdW/l7rmDagtqo4nhIvpc/SWQY9j2GKPydYBfAOQwKbwtFM0JVV09
-         XLXI0TkdjDCbEldnS3NgJZFiKQhvMK/NmaS/z9/ztQMH25uzqffz5kKf2fneUQBmirfj
-         72uPn9XDJFoRtkLvUAVnqRnZscVvA9Yggfu5jwwefylOVfleYFafjKq81iMmTFoD8WR7
-         +MlOg0AqUYZn83B8cHLhbO+XWfKT5IruD/RikrQ8GrDgqDi1S6xbuYSES0ZYysA7bJpt
-         XGCiKivvLpLNLq8lL5/yi6wFSh0NGmD65cak/p3do+9Id9iW4pfZw6CkTZ0gM9nKDQky
-         bFbA==
-X-Gm-Message-State: AOAM533/ZULpXDzFmaiVPt7XG1FP9vNsn+1tKDfSUsBb0I4t8gOxOx4g
-        mCimK0C9JCARLa5NjZLblblciSMVWNq52kCKdqlyeg==
-X-Google-Smtp-Source: ABdhPJwTOtTYWIw8/DHdS2gKarUJzdUDIoUmiwbV/4/1y92NutyH5q2jqvt2X7yb7d5Ds03TnsjJOYAamVmKwRFgULo=
-X-Received: by 2002:a05:6102:2378:: with SMTP id o24mr292281vsa.12.1623689527787;
- Mon, 14 Jun 2021 09:52:07 -0700 (PDT)
+        Mon, 14 Jun 2021 12:56:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623689672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5UZ4I1ViyrqDSpBZUqCRFFwEAWXTuZyzQaEF1SQ5YV8=;
+        b=Q3EAZdJ6ekZprJKaA4jMOJomi2avn8491UrroKjBl4+dOyejRUdcVOQZK1FUc0WgMjOX+H
+        pn8oo+Uetk2COLXdFEU3km5dMZHM8Tl3SRxhtCTByyvdPs0Pne5GMJAQ2b/cyc2y9cZq75
+        8BezeLFiIoI1VhtV8u5QN1e2FSENykw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-qkZsRJmKMuqaRyKLTCb_Ow-1; Mon, 14 Jun 2021 12:54:29 -0400
+X-MC-Unique: qkZsRJmKMuqaRyKLTCb_Ow-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C4678015F5;
+        Mon, 14 Jun 2021 16:54:27 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.47])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C136E60657;
+        Mon, 14 Jun 2021 16:54:24 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 14 Jun 2021 18:54:27 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 18:54:23 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
+        Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] freezer,sched: Rewrite core freezer logic
+Message-ID: <20210614165422.GC13677@redhat.com>
+References: <YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net>
+ <20210614154246.GB13677@redhat.com>
+ <20210614161221.GC68749@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210613151223.563736-1-kyletso@google.com>
-In-Reply-To: <20210613151223.563736-1-kyletso@google.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Mon, 14 Jun 2021 09:51:31 -0700
-Message-ID: <CAPTae5JHHYO=y7279pFcHrt1oD3HHU8m3qkdb1vmNkbf6rLpqA@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Relax disconnect threshold during power negotiation
-To:     Kyle Tso <kyletso@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614161221.GC68749@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kyle,
-
-The change doesn't seem to handle the cases where the partner does not
-accept the request i.e.
-       "case PD_CTRL_REJECT:
-        case PD_CTRL_WAIT:
-        case PD_CTRL_NOT_SUPP:"
-We should fall back to the disconnect threshold based on the
-previously negotiated voltage levels in those cases.
-
-Regards,
-Badhri
-
-
-On Sun, Jun 13, 2021 at 8:13 AM Kyle Tso <kyletso@google.com> wrote:
+On 06/14, Peter Zijlstra wrote:
 >
-> If the voltage is being decreased in power negotiation, the Source will
-> set the power supply to operate at the new voltage level before sending
-> PS_RDY. Relax the disconnect threshold for Sink after receiving Accept
-> Message to ensure the relaxed setting is enabled before the voltage
-> collapse. And the real threshold will be set after Sink receives PS_RDY
-> Message.
+> On Mon, Jun 14, 2021 at 05:42:47PM +0200, Oleg Nesterov wrote:
+> >
+> > > +	/*
+> > > +	 * If stuck in TRACED, and the ptracer is FROZEN, we're frozen too.
+> > > +	 */
+> > > +	if (task_is_traced(p))
+> > > +		return frozen(rcu_dereference(p->parent));
+> >
+> > This looks racy, p->parent can resume this task and then enter
+> > __refrigerator().
 >
-> Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
-> Cc: Badhri Jagan Sridharan <badhri@google.com>
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> But this is about the child, we won't report it frozen, unless the
+> parent is also frozen. If the parent is frozen, it cannot resume the
+> task.
+
+Yes, but...
+
+> The other way around, if the parent resumes the task and then gets
+> frozen,
+
+Yes ...
+
+> then we'll wait until the task gets frozen.
+
+how/where will we wait until the tracee gets frozen ?
+
+Again, suppose that p->parent resumes p and gets frozen after the
+task_is_traced(p) check and before the frozen(p->parent) check.
+
+Then try_to_freeze_tasks() can succeed with todo == 0 and miss the
+running "p" ?
+
+> > > +	 * If stuck in STOPPED and the parent is FROZEN, we're frozen too.
+> > > +	 */
+> > > +	if (task_is_stopped(p))
+> > > +		return frozen(rcu_dereference(p->real_parent));
+> >
+> > (you could use ->parent in this case too and unify this check with the
+> > "traced" case above)
 >
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 0db685d5d9c0..9f3f37da71b6 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2646,6 +2646,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->                 switch (port->state) {
->                 case SNK_NEGOTIATE_CAPABILITIES:
->                         port->pps_data.active = false;
-> +                       /* Voltage is going to be at new level. Relax the threshold here. */
-> +                       tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
->                         tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
->                         break;
->                 case SNK_NEGOTIATE_PPS_CAPABILITIES:
-> @@ -2656,6 +2658,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->                         port->req_supply_voltage = port->pps_data.req_out_volt;
->                         port->req_current_limit = port->pps_data.req_op_curr;
->                         power_supply_changed(port->psy);
-> +                       /* Voltage is going to be at new level. Relax the threshold here. */
-> +                       tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, 0);
->                         tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
->                         break;
->                 case SOFT_RESET_SEND:
-> --
-> 2.32.0.272.g935e593368-goog
+> Are you sure? The way I read the code ptrace_attach() will change
+> ->parent, but STOPPED is controlled by the jobctl.
+
+Yes, sorry I was not clear. let me add more details.
+
+task_is_stopped() is only possible if task is not ptraced, see the
+"if (!current->ptrace)" check before set_special_state(TASK_STOPPED)
+in do_signal_stop(). And if the task is not traced, then
+task->parent == task->real_parent.
+
+> > I don't understand. How this connects to ->parent or ->real_parent?
+> > SIGCONT can come from anywhere and wake this stopped task up?
 >
+> Could be me who's not understanding, I thought only the real parent
+> could do that.
+
+No, any task can do this, as long as check_kill_permission() succeeds.
+Even the kernel can send SIGCONT, say, you can use F_SETSIG(SIGCONT).
+
+> > I guess you do this to avoid freezable_schedule() in ptrace/signal_stop,
+> > and we can't use TASK_STOPPED|TASK_FREEZABLE, it should not run after
+> > thaw()... But see above, we can't rely on __frozen(parent).
+>
+> I do this because freezing puts a task in TASK_FROZEN, and that cannot
+> preserve TAKS_STOPPED or TASK_TRACED without being subject to wakups
+
+Yes, yes, this is what I tried to say.
+
+Oleg.
+
