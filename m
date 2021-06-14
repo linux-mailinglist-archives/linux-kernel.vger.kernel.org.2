@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A683A621A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0185D3A60BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbhFNKzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50472 "EHLO mail.kernel.org"
+        id S233756AbhFNKh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:37:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233462AbhFNKsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:48:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 102C8613DB;
-        Mon, 14 Jun 2021 10:37:46 +0000 (UTC)
+        id S233158AbhFNKfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:35:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F82B613FB;
+        Mon, 14 Jun 2021 10:32:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667067;
-        bh=iydd7/lLe2YBZgNs0P8XUJkIKV85aOB++zFFoo+tm/o=;
+        s=korg; t=1623666731;
+        bh=SpOydMFzaW6qAJGWLNkx5P9NWvVXb61Ob3BYyb0G9rY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xx1LRQl0ihPioKg8O957iPODS1DZgbmP+5PzOEo45+a22PjbO4qgiDULibjRGtZCQ
-         W37kA1klKfsGGIU5CvxkfJvmr+dFab4Cexno4HDe60A/aiaJKbmZAbkSTNCeJ7ysuA
-         V1gUaHgaHk2DqcFfWTqEkMMfDZYmsVUKIGQS/V+8=
+        b=g7izT2GRWkIfG0/4lDKs2w0nscSf2BcLKf5FNPkhUH9vuCYhGnvVPKzSShKbOz4ID
+         hDHjMMkVSKELUx2IIEBf7pj6eRNtXMgYB/mOpzgYz37YUkGHiMWcgPtc7W+5dPoApP
+         RAsS8NVFWNhyHye0/Zb60hy4MWI6J9OJXoJXUZmQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/84] wq: handle VM suspension in stall detection
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 01/49] proc: Track /proc/$pid/attr/ opener mm_struct
 Date:   Mon, 14 Jun 2021 12:26:54 +0200
-Message-Id: <20210614102646.898872924@linuxfoundation.org>
+Message-Id: <20210614102641.906244590@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
+References: <20210614102641.857724541@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,89 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 940d71c6462e8151c78f28e4919aa8882ff2054e ]
+commit 591a22c14d3f45cc38bd1931c593c221df2f1881 upstream.
 
-If VCPU is suspended (VM suspend) in wq_watchdog_timer_fn() then
-once this VCPU resumes it will see the new jiffies value, while it
-may take a while before IRQ detects PVCLOCK_GUEST_STOPPED on this
-VCPU and updates all the watchdogs via pvclock_touch_watchdogs().
-There is a small chance of misreported WQ stalls in the meantime,
-because new jiffies is time_after() old 'ts + thresh'.
+Commit bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
+tried to make sure that there could not be a confusion between the opener of
+a /proc/$pid/attr/ file and the writer. It used struct cred to make sure
+the privileges didn't change. However, there were existing cases where a more
+privileged thread was passing the opened fd to a differently privileged thread
+(during container setup). Instead, use mm_struct to track whether the opener
+and writer are still the same process. (This is what several other proc files
+already do, though for different reasons.)
 
-wq_watchdog_timer_fn()
-{
-	for_each_pool(pool, pi) {
-		if (time_after(jiffies, ts + thresh)) {
-			pr_emerg("BUG: workqueue lockup - pool");
-		}
-	}
-}
-
-Save jiffies at the beginning of this function and use that value
-for stall detection. If VM gets suspended then we continue using
-"old" jiffies value and old WQ touch timestamps. If IRQ at some
-point restarts the stall detection cycle (pvclock_touch_watchdogs())
-then old jiffies will always be before new 'ts + thresh'.
-
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reported-by: Andrea Righi <andrea.righi@canonical.com>
+Tested-by: Andrea Righi <andrea.righi@canonical.com>
+Fixes: bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/workqueue.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ fs/proc/base.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 5d7092e32912..8f41499d8257 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -50,6 +50,7 @@
- #include <linux/uaccess.h>
- #include <linux/sched/isolation.h>
- #include <linux/nmi.h>
-+#include <linux/kvm_para.h>
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2528,6 +2528,11 @@ out:
+ }
  
- #include "workqueue_internal.h"
- 
-@@ -5734,6 +5735,7 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
- {
- 	unsigned long thresh = READ_ONCE(wq_watchdog_thresh) * HZ;
- 	bool lockup_detected = false;
-+	unsigned long now = jiffies;
- 	struct worker_pool *pool;
- 	int pi;
- 
-@@ -5748,6 +5750,12 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
- 		if (list_empty(&pool->worklist))
- 			continue;
- 
-+		/*
-+		 * If a virtual machine is stopped by the host it can look to
-+		 * the watchdog like a stall.
-+		 */
-+		kvm_check_and_clear_guest_paused();
+ #ifdef CONFIG_SECURITY
++static int proc_pid_attr_open(struct inode *inode, struct file *file)
++{
++	return __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
++}
 +
- 		/* get the latest of pool and touched timestamps */
- 		pool_ts = READ_ONCE(pool->watchdog_ts);
- 		touched = READ_ONCE(wq_watchdog_touched);
-@@ -5766,12 +5774,12 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
- 		}
+ static ssize_t proc_pid_attr_read(struct file * file, char __user * buf,
+ 				  size_t count, loff_t *ppos)
+ {
+@@ -2558,7 +2563,7 @@ static ssize_t proc_pid_attr_write(struc
+ 	struct task_struct *task = get_proc_task(inode);
  
- 		/* did we stall? */
--		if (time_after(jiffies, ts + thresh)) {
-+		if (time_after(now, ts + thresh)) {
- 			lockup_detected = true;
- 			pr_emerg("BUG: workqueue lockup - pool");
- 			pr_cont_pool_info(pool);
- 			pr_cont(" stuck for %us!\n",
--				jiffies_to_msecs(jiffies - pool_ts) / 1000);
-+				jiffies_to_msecs(now - pool_ts) / 1000);
- 		}
- 	}
+ 	/* A task may only write when it was the opener. */
+-	if (file->f_cred != current_real_cred())
++	if (file->private_data != current->mm)
+ 		return -EPERM;
  
--- 
-2.30.2
-
+ 	length = -ESRCH;
+@@ -2601,9 +2606,11 @@ out_no_task:
+ }
+ 
+ static const struct file_operations proc_pid_attr_operations = {
++	.open		= proc_pid_attr_open,
+ 	.read		= proc_pid_attr_read,
+ 	.write		= proc_pid_attr_write,
+ 	.llseek		= generic_file_llseek,
++	.release	= mem_release,
+ };
+ 
+ static const struct pid_entry attr_dir_stuff[] = {
 
 
