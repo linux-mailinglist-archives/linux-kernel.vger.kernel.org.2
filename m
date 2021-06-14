@@ -2,234 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278D73A6AD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40773A6ADC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbhFNPsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:48:23 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:34337 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233985AbhFNPsS (ORCPT
+        id S234425AbhFNPtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:49:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26784 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234465AbhFNPtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:48:18 -0400
-Received: by mail-ot1-f50.google.com with SMTP id w22-20020a0568304116b02904060c6415c7so8909346ott.1;
-        Mon, 14 Jun 2021 08:46:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=toPUT2S1k5OdAiBpsMpdY9PJGsGmpvlDZZQEqj7J4K8=;
-        b=UN44xwqWVaSLArQynXoiLhaKpdZWAejrpxOhMrunmOoESvGtUN72UGT/ukBmJdjwvb
-         CtrLTRlMwHp7Ewgwua1t+DpQquZIsf8Jkl+UMlj85tNXE/NqPbZK8EfyJc+vaYeaLlxQ
-         xxhUTK+OhWAWVSYSTrM9TMFC0ByctyoVLu7537KL8cHt/5qtfvtZbE2y2n/AGEdgZRnZ
-         98W1+YxYj2ZHONAX8b0WSDBFx7+yVGqI10MdHXBzeTuTQMV8J0zejJQsGpOMqp7slp2q
-         rO2uQq5rF0c40li5fl7/mqZo7ADUCoJcCW8nZnGJZB47FPqtFIUfYGlt+R4Q6URtPp+7
-         /S1Q==
-X-Gm-Message-State: AOAM531Tx6LCKmD/KHghDQyaRhCZrXvaH1vXXUwgbklXMU93/1o6JdlP
-        4Ad8USwuEfZcIdMLZBthNZhufAMVRnJAOniG8Cw=
-X-Google-Smtp-Source: ABdhPJxI6CokphsCMyrl2sgFpJssavunGyo5E2JfiSLIKArok1Yi/ETvJBzr7x5Lx4uNkiOWqjX+RKHKMXrPM/cry28=
-X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr14381825otb.206.1623685575508;
- Mon, 14 Jun 2021 08:46:15 -0700 (PDT)
+        Mon, 14 Jun 2021 11:49:10 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EFY9ZQ018819;
+        Mon, 14 Jun 2021 11:46:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=iufwgfEldV70ORNGlohIey8QqufRHIAQPypVoFkjH/c=;
+ b=g5x7zp+PG7xMDBOuvoeGo9SJ/yZacwobEq+73EjXMaihu3jab/BcA97o3+s1Dd1UcrAF
+ oZ1tY2Q5WHIdtGt1BK6YiesgPewW04WfNcxfPFrLFg7S1tTm5+AIOsezdtqn1cmz+0UH
+ hpw9cBsUS71JbcTQnqIQXRz8c/HeAVVzJ8aMiQX3IuxjVZ2WtFkf7opH5EFmYfk8jao7
+ 3JWl8F82SvdVEjnGzzlGYdDfPhOJQIvaVQhAnv67y7COBbb/+ib23AZ2y6FcZnUYim8o
+ tJ/b6qlbqohVEmUbdiHkM/PbKRfY+F35/cVDKVEtmoD4qN9SDUm99wmpsABZloGOHf5S 9Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39671apvn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 11:46:34 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15EFYEt1019125;
+        Mon, 14 Jun 2021 11:46:33 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39671apvm1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 11:46:33 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15EFguoA031047;
+        Mon, 14 Jun 2021 15:46:31 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 394m6hs1nx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 15:46:31 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15EFkThE35258682
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 15:46:29 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 54824AE055;
+        Mon, 14 Jun 2021 15:46:29 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2DB6AE045;
+        Mon, 14 Jun 2021 15:46:28 +0000 (GMT)
+Received: from localhost (unknown [9.85.73.215])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Jun 2021 15:46:28 +0000 (GMT)
+Date:   Mon, 14 Jun 2021 21:16:26 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH -tip v7 03/13] kprobes: treewide: Remove
+ trampoline_address from kretprobe_trampoline_handler()
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org,
+        bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, kernel-team@fb.com,
+        kuba@kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        Abhishek Sagar <sagar.abhishek@gmail.com>, tglx@linutronix.de,
+        X86 ML <x86@kernel.org>, yhs@fb.com
+References: <162209754288.436794.3904335049560916855.stgit@devnote2>
+        <162209757191.436794.12654958417415894884.stgit@devnote2>
+In-Reply-To: <162209757191.436794.12654958417415894884.stgit@devnote2>
 MIME-Version: 1.0
-References: <1623415027-36130-1-git-send-email-tanxiaofei@huawei.com>
-In-Reply-To: <1623415027-36130-1-git-send-email-tanxiaofei@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 14 Jun 2021 17:46:04 +0200
-Message-ID: <CAJZ5v0gvzZ-64AJuEsOg2M=veZYz+9ciG5wFEQT7ghki2SNpPA@mail.gmail.com>
-Subject: Re: [PATCH v7] ACPI / APEI: fix the regression of synchronous
- external aborts occur in user-mode
-To:     Xiaofei Tan <tanxiaofei@huawei.com>,
-        James Morse <james.morse@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1623685371.y5qy4nxer2.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9fhSx89odVf5INJWR2yl-7U9AFcZNx8R
+X-Proofpoint-ORIG-GUID: UohyzDTtlp9FN-x5xY_KM1UScthLuuh-
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-14_10:2021-06-14,2021-06-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
+ suspectscore=0 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106140099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 2:40 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
->
-> Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
-> synchronise with APEI's irq work"), do_sea() would unconditionally
-> signal the affected task from the arch code. Since that change,
-> the GHES driver sends the signals.
->
-> This exposes a problem as errors the GHES driver doesn't understand
-> or doesn't handle effectively are silently ignored. It will cause
-> the errors get taken again, and circulate endlessly. User-space task
-> get stuck in this loop.
->
-> Existing firmware on Kunpeng9xx systems reports cache errors with the
-> 'ARM Processor Error' CPER records.
->
-> Do memory failure handling for ARM Processor Error Section just like
-> for Memory Error Section.
+Hi Masami,
 
-Still, I'm not convinced that this is the right way to address the problem.
-
-In particular, is it guaranteed that "ARM Processor Error" will always
-mean "memory failure" on all platforms?
-
-If not, doing a platform-specific quirk might be better.
-
-James, I need you to hear from you here I suppose.
-
-> Fixes: 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea() synchronise with APEI's irq work")
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> Reviewed-by: James Morse <james.morse@arm.com>
->
+Masami Hiramatsu wrote:
+> Remove trampoline_address from kretprobe_trampoline_handler().
+> Instead of passing the address, kretprobe_trampoline_handler()
+> can use new kretprobe_trampoline_addr().
+>=20
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Tested-by: Andrii Nakryik <andrii@kernel.org>
 > ---
-> Changes since v5:
-> - Do some changes following James's suggestions: 1) optimize commit log
-> 2) use err_info->length instead of err_info++' 3) some coding style
-> advice.
->
-> Changes since v4:
-> - 1. Change the patch name from " ACPI / APEI: do memory failure on the
-> physical address reported by ARM processor error section" to this
-> more proper one.
-> - 2. Add a comment in the code to tell why not filter out corrected
-> error in an uncorrected section.
->
-> Changes since v3:
-> - Print unhandled error following James Morse's advice.
->
-> Changes since v2:
-> - Updated commit log
+>  Changes in v3:
+>    - Remove wrong kretprobe_trampoline declaration from
+>      arch/x86/include/asm/kprobes.h.
+>  Changes in v2:
+>    - Remove arch_deref_entry_point() from comment.
 > ---
->  drivers/acpi/apei/ghes.c | 81 ++++++++++++++++++++++++++++++++++++++----------
->  1 file changed, 64 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index fce7ade..0c8330e 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
->         gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
->  }
->
-> -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
-> -                                      int sev)
-> +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
->  {
->         unsigned long pfn;
-> -       int flags = -1;
-> -       int sec_sev = ghes_severity(gdata->error_severity);
-> -       struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
->
->         if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
->                 return false;
->
-> -       if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
-> -               return false;
-> -
-> -       pfn = mem_err->physical_addr >> PAGE_SHIFT;
-> +       pfn = PHYS_PFN(physical_addr);
->         if (!pfn_valid(pfn)) {
->                 pr_warn_ratelimited(FW_WARN GHES_PFX
->                 "Invalid address in generic error data: %#llx\n",
-> -               mem_err->physical_addr);
-> +               physical_addr);
->                 return false;
->         }
->
-> +       memory_failure_queue(pfn, flags);
-> +       return true;
-> +}
-> +
-> +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
-> +                                      int sev)
+>  arch/arc/kernel/kprobes.c          |    2 +-
+>  arch/arm/probes/kprobes/core.c     |    3 +--
+>  arch/arm64/kernel/probes/kprobes.c |    3 +--
+>  arch/csky/kernel/probes/kprobes.c  |    2 +-
+>  arch/ia64/kernel/kprobes.c         |    5 ++---
+>  arch/mips/kernel/kprobes.c         |    3 +--
+>  arch/parisc/kernel/kprobes.c       |    4 ++--
+>  arch/powerpc/kernel/kprobes.c      |    2 +-
+>  arch/riscv/kernel/probes/kprobes.c |    2 +-
+>  arch/s390/kernel/kprobes.c         |    2 +-
+>  arch/sh/kernel/kprobes.c           |    2 +-
+>  arch/sparc/kernel/kprobes.c        |    2 +-
+>  arch/x86/include/asm/kprobes.h     |    1 -
+>  arch/x86/kernel/kprobes/core.c     |    2 +-
+>  include/linux/kprobes.h            |   18 +++++++++++++-----
+>  kernel/kprobes.c                   |    3 +--
+>  16 files changed, 29 insertions(+), 27 deletions(-)
+>=20
+
+<snip>
+
+> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> index d65c041b5c22..65dadd4238a2 100644
+> --- a/include/linux/kprobes.h
+> +++ b/include/linux/kprobes.h
+> @@ -205,15 +205,23 @@ extern void arch_prepare_kretprobe(struct kretprobe=
+_instance *ri,
+>  				   struct pt_regs *regs);
+>  extern int arch_trampoline_kprobe(struct kprobe *p);
+> =20
+> +void kretprobe_trampoline(void);
+> +/*
+> + * Since some architecture uses structured function pointer,
+> + * use dereference_function_descriptor() to get real function address.
+> + */
+> +static nokprobe_inline void *kretprobe_trampoline_addr(void)
 > +{
-> +       int flags = -1;
-> +       int sec_sev = ghes_severity(gdata->error_severity);
-> +       struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
-> +
-> +       if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
-> +               return false;
-> +
->         /* iff following two events can be handled properly by now */
->         if (sec_sev == GHES_SEV_CORRECTED &&
->             (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
-> @@ -470,14 +477,56 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->         if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
->                 flags = 0;
->
-> -       if (flags != -1) {
-> -               memory_failure_queue(pfn, flags);
-> -               return true;
-> -       }
-> +       if (flags != -1)
-> +               return ghes_do_memory_failure(mem_err->physical_addr, flags);
->
->         return false;
->  }
->
-> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
-> +{
-> +       struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> +       bool queued = false;
-> +       int sec_sev, i;
-> +       char *p;
-> +
-> +       log_arm_hw_error(err);
-> +
-> +       sec_sev = ghes_severity(gdata->error_severity);
-> +       if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
-> +               return false;
-> +
-> +       p = (char *)(err + 1);
-> +       for (i = 0; i < err->err_info_num; i++) {
-> +               struct cper_arm_err_info *err_info = (struct cper_arm_err_info *)p;
-> +               bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
-> +               bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
-> +               const char *error_type = "unknown error";
-> +
-> +               /*
-> +                * The field (err_info->error_info & BIT(26)) is fixed to set to
-> +                * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
-> +                * firmware won't mix corrected errors in an uncorrected section,
-> +                * and don't filter out 'corrected' error here.
-> +                */
-> +               if (is_cache && has_pa) {
-> +                       queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
-> +                       p += err_info->length;
-> +                       continue;
-> +               }
-> +
-> +               if (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs))
-> +                       error_type = cper_proc_error_type_strs[err_info->type];
-> +
-> +               pr_warn_ratelimited(FW_WARN GHES_PFX
-> +                                   "Unhandled processor error type: %s\n",
-> +                                   error_type);
-> +               p += err_info->length;
-> +       }
-> +
-> +       return queued;
-> +}
-> +
->  /*
->   * PCIe AER errors need to be sent to the AER driver for reporting and
->   * recovery. The GHES severities map to the following AER severities and
-> @@ -605,9 +654,7 @@ static bool ghes_do_proc(struct ghes *ghes,
->                         ghes_handle_aer(gdata);
->                 }
->                 else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
-> -                       struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> -
-> -                       log_arm_hw_error(err);
-> +                       queued = ghes_handle_arm_hw_error(gdata, sev);
->                 } else {
->                         void *err = acpi_hest_get_payload(gdata);
->
-> --
-> 2.8.1
->
+> +	return dereference_function_descriptor(kretprobe_trampoline);
+
+I'm afraid this won't work correctly. For kernel functions, please use=20
+dereference_kernel_function_descriptor() which checks if the function=20
+has a descriptor before dereferencing it.
+
+
+Thanks,
+Naveen
+
