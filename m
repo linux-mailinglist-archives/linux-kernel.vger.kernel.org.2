@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3273A63CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903183A62BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234725AbhFNLRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:17:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
+        id S233666AbhFNLDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:03:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235131AbhFNLEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:04:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8794C61920;
-        Mon, 14 Jun 2021 10:45:01 +0000 (UTC)
+        id S235008AbhFNKzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:55:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FECC613F5;
+        Mon, 14 Jun 2021 10:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667502;
-        bh=41nKey4KNd6oAa0ShWkGLQ/9Rt5ckOWSjJEfbJE8Q9s=;
+        s=korg; t=1623667230;
+        bh=QVRniQ23F28hetsXUPr2x7jvH45IlWS8c4oUUaiPqCE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nT2mj+YhNEOHD+C5ZJ80wwhpOCdt0NdaED8xag7XikYjyevJbEhe+fHE48n4OjHBg
-         qs0zyugSm2ywnLwFGr0QMF4o7Jh3PtfVu8R7XzX4f8ihrQv3z5rpMfblVTrWfVAZnx
-         Bcr1zaCfwC1wMQ6coZJXE2sQrYlG9XeYiqd4o9cE=
+        b=lz2dLc1X9XcaRGfE06p35gFERMwgB65Ev4ITMP7YojPWkOsFXB82W5hJ+TU9mA/6r
+         UwcKMxIkv6+2beDERZ46icgfSzJ+96jQWJcyrkFSE+Q9fF+fQXti/b4BI2CJ8HWFcV
+         LXxisizU7AZrB+3Vyu//UUv9yC6mTd9CAsrWBpAk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Li <chenli@uniontech.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.10 096/131] phy: usb: Fix misuse of IS_ENABLED
+        stable@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.com>
+Subject: [PATCH 5.4 59/84] usb: gadget: eem: fix wrong eem header operation
 Date:   Mon, 14 Jun 2021 12:27:37 +0200
-Message-Id: <20210614102656.267398824@linuxfoundation.org>
+Message-Id: <20210614102648.382666092@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Li <chenli@uniontech.com>
+From: Linyu Yuan <linyyuan@codeaurora.com>
 
-commit 7c2fc79250cafa1a29befeb60163028ec4720814 upstream.
+commit 305f670846a31a261462577dd0b967c4fa796871 upstream.
 
-While IS_ENABLED() is perfectly fine for CONFIG_* symbols, it is not
-for other symbols such as __BIG_ENDIAN that is provided directly by
-the compiler.
+when skb_clone() or skb_copy_expand() fail,
+it should pull skb with lengh indicated by header,
+or not it will read network data and check it as header.
 
-Switch to use CONFIG_CPU_BIG_ENDIAN instead of __BIG_ENDIAN.
-
-Signed-off-by: Chen Li <chenli@uniontech.com>
-Reviewed-by: Al Cooper <alcooperx@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Fixes: 94583a41047e ("phy: usb: Restructure in preparation for adding 7216 USB support")
-Link: https://lore.kernel.org/r/87czuggpra.wl-chenli@uniontech.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Linyu Yuan <linyyuan@codeaurora.com>
+Link: https://lore.kernel.org/r/20210608233547.3767-1-linyyuan@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/phy/broadcom/phy-brcm-usb-init.h |    4 ++--
+ drivers/usb/gadget/function/f_eem.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/phy/broadcom/phy-brcm-usb-init.h
-+++ b/drivers/phy/broadcom/phy-brcm-usb-init.h
-@@ -78,7 +78,7 @@ static inline u32 brcm_usb_readl(void __
- 	 * Other architectures (e.g., ARM) either do not support big endian, or
- 	 * else leave I/O in little endian mode.
- 	 */
--	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
-+	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
- 		return __raw_readl(addr);
- 	else
- 		return readl_relaxed(addr);
-@@ -87,7 +87,7 @@ static inline u32 brcm_usb_readl(void __
- static inline void brcm_usb_writel(u32 val, void __iomem *addr)
- {
- 	/* See brcmnand_readl() comments */
--	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
-+	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
- 		__raw_writel(val, addr);
- 	else
- 		writel_relaxed(val, addr);
+--- a/drivers/usb/gadget/function/f_eem.c
++++ b/drivers/usb/gadget/function/f_eem.c
+@@ -497,7 +497,7 @@ static int eem_unwrap(struct gether *por
+ 			skb2 = skb_clone(skb, GFP_ATOMIC);
+ 			if (unlikely(!skb2)) {
+ 				DBG(cdev, "unable to unframe EEM packet\n");
+-				continue;
++				goto next;
+ 			}
+ 			skb_trim(skb2, len - ETH_FCS_LEN);
+ 
+@@ -507,7 +507,7 @@ static int eem_unwrap(struct gether *por
+ 						GFP_ATOMIC);
+ 			if (unlikely(!skb3)) {
+ 				dev_kfree_skb_any(skb2);
+-				continue;
++				goto next;
+ 			}
+ 			dev_kfree_skb_any(skb2);
+ 			skb_queue_tail(list, skb3);
 
 
