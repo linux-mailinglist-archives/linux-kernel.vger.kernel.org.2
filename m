@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC263A6501
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D1E3A6392
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235751AbhFNLcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47642 "EHLO mail.kernel.org"
+        id S233570AbhFNLPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:15:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235490AbhFNLSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:18:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC8E61461;
-        Mon, 14 Jun 2021 10:50:46 +0000 (UTC)
+        id S234685AbhFNLCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:02:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB32F61878;
+        Mon, 14 Jun 2021 10:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667847;
-        bh=NSP+BLBJ7LAdZlU+gQgdLHQNFu00bXtVP9SR0x4Xnzc=;
+        s=korg; t=1623667431;
+        bh=J5V1QVOgXXFiFt0IqM+CYK36Ta3RwIHNPWq3G/S5GvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XUP5FOgG6e7Q+uNQeC0GrLm3SraIaGZUku7GPmKlQ5rVe7dLcK5szMHCnzuxYsxB4
-         jZ9JFUZiiCo3EiW8kwWk49EMdGuUkuaRdk8fMQv9jL/laHXdvHUogQhWwswNJzPvMj
-         2l4SSExPxKQG0DsfR1EPUD3lPpOVkgCDosXHcuGE=
+        b=FwL+H3UpeTGVHRcFAuFbjhjiLmwADwz678Rd/V8xNd1lIZOHmWi9AQ+RACARLgsKV
+         FrZJSAfoQ9MRjGmY+bbxzYaZAteFUDq2qSfLQX5vgrukwE4E5iaj3w3KrP+BqYEUeI
+         Pw9tLSk3pgoOTujin7kQwrvH5Mu1QHbc0/hYfM78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Mayank Rana <mrana@codeaurora.org>,
-        Jack Pham <jackp@codeaurora.org>
-Subject: [PATCH 5.12 096/173] usb: typec: ucsi: Clear PPM capability data in ucsi_init() error path
-Date:   Mon, 14 Jun 2021 12:27:08 +0200
-Message-Id: <20210614102701.361298122@linuxfoundation.org>
+        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
+Subject: [PATCH 5.10 068/131] usb: f_ncm: only first packet of aggregate needs to start timer
+Date:   Mon, 14 Jun 2021 12:27:09 +0200
+Message-Id: <20210614102655.341281623@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mayank Rana <mrana@codeaurora.org>
+From: Maciej Żenczykowski <maze@google.com>
 
-commit f247f0a82a4f8c3bfed178d8fd9e069d1424ee4e upstream.
+commit 1958ff5ad2d4908b44a72bcf564dfe67c981e7fe upstream.
 
-If ucsi_init() fails for some reason (e.g. ucsi_register_port()
-fails or general communication failure to the PPM), particularly at
-any point after the GET_CAPABILITY command had been issued, this
-results in unwinding the initialization and returning an error.
-However the ucsi structure's ucsi_capability member retains its
-current value, including likely a non-zero num_connectors.
-And because ucsi_init() itself is done in a workqueue a UCSI
-interface driver will be unaware that it failed and may think the
-ucsi_register() call was completely successful.  Later, if
-ucsi_unregister() is called, due to this stale ucsi->cap value it
-would try to access the items in the ucsi->connector array which
-might not be in a proper state or not even allocated at all and
-results in NULL or invalid pointer dereference.
+The reasoning for this change is that if we already had
+a packet pending, then we also already had a pending timer,
+and as such there is no need to reschedule it.
 
-Fix this by clearing the ucsi->cap value to 0 during the error
-path of ucsi_init() in order to prevent a later ucsi_unregister()
-from entering the connector cleanup loop.
+This also prevents packets getting delayed 60 ms worst case
+under a tiny packet every 290us transmit load, by keeping the
+timeout always relative to the first queued up packet.
+(300us delay * 16KB max aggregation / 80 byte packet =~ 60 ms)
 
-Fixes: c1b0bc2dabfa ("usb: typec: Add support for UCSI interface")
-Cc: stable@vger.kernel.org
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Mayank Rana <mrana@codeaurora.org>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Link: https://lore.kernel.org/r/20210609073535.5094-1-jackp@codeaurora.org
+As such the first packet is now at most delayed by 300us.
+
+Under low transmit load, this will simply result in us sending
+a shorter aggregate, as originally intended.
+
+This patch has the benefit of greatly reducing (by ~10 factor
+with 1500 byte frames aggregated into 16 kiB) the number of
+(potentially pretty costly) updates to the hrtimer.
+
+Cc: Brooke Basile <brookebasile@gmail.com>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Link: https://lore.kernel.org/r/20210608085438.813960-1-zenczykowski@gmail.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/ucsi/ucsi.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/gadget/function/f_ncm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -1253,6 +1253,7 @@ err_unregister:
- 	}
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1101,11 +1101,11 @@ static struct sk_buff *ncm_wrap_ntb(stru
+ 			ncm->ndp_dgram_count = 1;
  
- err_reset:
-+	memset(&ucsi->cap, 0, sizeof(ucsi->cap));
- 	ucsi_reset_ppm(ucsi);
- err:
- 	return ret;
+ 			/* Note: we skip opts->next_ndp_index */
+-		}
+ 
+-		/* Delay the timer. */
+-		hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
+-			      HRTIMER_MODE_REL_SOFT);
++			/* Start the timer. */
++			hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
++				      HRTIMER_MODE_REL_SOFT);
++		}
+ 
+ 		/* Add the datagram position entries */
+ 		ntb_ndp = skb_put_zero(ncm->skb_tx_ndp, dgram_idx_len);
 
 
