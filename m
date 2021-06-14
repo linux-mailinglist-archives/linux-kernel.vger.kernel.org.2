@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC2A3A6A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A3F3A6A69
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233903AbhFNPcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234031AbhFNPcU (ORCPT
+        id S233234AbhFNPdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:33:44 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24832 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233269AbhFNPdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:32:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BC6C061787;
-        Mon, 14 Jun 2021 08:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BOAPjwbtdUFJhW0vGZOZuptTrlFMtA9QPhXUlP40eQY=; b=XkpzfRqmBRHXIKnme9t/VjQIKy
-        Zat1XtfRe8V7UJlt6lovmkDrp/eMfRPtb/+QgqmUj125U4i8ZvOeY1iGnrFE0srCupfWZ0n+xDQ8f
-        c0aKSmY8opAMCTNDU0GFm6gD8PpZz62ETmtzFsX6e3QXGaVa1D0MmK7Jc1DXHtK5ANiaSEzNekGWp
-        2xKx51/J7g0W27PgOqsE1IGKK158UN2CyOQuzGDjN7PBTMA0DmqpO62efsKOg9YXc0xG6mLQ80Yiv
-        c0u4GkVlSZLub+dEctSHP+a2CRKM4X+iyw5zU/gx7THbI5bfNERC+C+HGdEYoj1jDqmAcCfvMZkLf
-        3PtQfg0Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lsoUv-005YqL-2Y; Mon, 14 Jun 2021 15:27:47 +0000
-Date:   Mon, 14 Jun 2021 16:27:33 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        aviadye@nvidia.com, oren@nvidia.com, shahafs@nvidia.com,
-        parav@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
-        kevin.tian@intel.com, targupta@nvidia.com,
-        shameerali.kolothum.thodi@huawei.com, liulongfang@huawei.com,
-        yan.y.zhao@intel.com
-Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
- binding
-Message-ID: <YMd1ZSCZLjaE4TFb@infradead.org>
-References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
- <20210603160809.15845-10-mgurtovoy@nvidia.com>
- <20210608152643.2d3400c1.alex.williamson@redhat.com>
- <20210608224517.GQ1002214@nvidia.com>
- <20210608192711.4956cda2.alex.williamson@redhat.com>
- <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
- <YMbrxP/5D4vVLE0j@infradead.org>
- <1f7ad5bc-5297-6ddd-9539-a2439f3314fa@nvidia.com>
+        Mon, 14 Jun 2021 11:33:36 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EF5iB1192491;
+        Mon, 14 Jun 2021 11:31:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=hLsXeOBkv72opN43YUx6sNzvlPUqUR08kd4/eoVxwjI=;
+ b=BCYhBHJVEvA0iUmH/tQi+2Tn28ts+5LVJlgPSbI2xRTUgG0eMh+wr1HuFchfAO26k0CB
+ sBbJD+rWkm5eM7Ya91vX/9ML6Oh2CLcQEogmqhYk3JB7vvmEHyd4ESx5yrdeY36ApNLM
+ lRQ5uF+TMkruWE1nDRcxdGAnJ7WDPZr689cs17zgu1UJPCbuxpq8kU2fTBKfZIH3qxvX
+ Xh4yNA7O8aRWXknTYeBRVzSWaDVMokpCP086aLAo1EUoMzELDQtFARVp/uDAwsz4fO5c
+ v02XlEmtEH3FzATl7fCUpWQd3s99QJrRX568XtWTTvIaoYLHuVQyFKa+ApdRkTsHgoHg hw== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3967cmngpj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 11:30:59 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15EFNfUI026676;
+        Mon, 14 Jun 2021 15:30:57 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 394mj8rjab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Jun 2021 15:30:57 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15EFTtPH21037538
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Jun 2021 15:29:55 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3597A4064;
+        Mon, 14 Jun 2021 15:30:54 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A958A405B;
+        Mon, 14 Jun 2021 15:30:54 +0000 (GMT)
+Received: from localhost (unknown [9.85.73.215])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Jun 2021 15:30:54 +0000 (GMT)
+Date:   Mon, 14 Jun 2021 21:00:52 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
+        <20210610191643.d24e7d56d102567070fe8386@kernel.org>
+        <1623419180.o4u5xf72jm.naveen@linux.ibm.com>
+        <20210611154021.008537b0@gandalf.local.home>
+In-Reply-To: <20210611154021.008537b0@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f7ad5bc-5297-6ddd-9539-a2439f3314fa@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1623684632.0k2j6ky7k3.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: MpC_ZTVqH_XNESWeO5BGGYkM1N90qWMR
+X-Proofpoint-GUID: MpC_ZTVqH_XNESWeO5BGGYkM1N90qWMR
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-14_09:2021-06-14,2021-06-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1015 suspectscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106140098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 11:18:32AM +0300, Max Gurtovoy wrote:
->   *			into a static list of equivalent device types,
->   *			instead of using it as a pointer.
-> + * @flags:		PCI flags of the driver. Bitmap of pci_id_flags enum.
->   */
->  struct pci_device_id {
->  	__u32 vendor, device;		/* Vendor and device ID or PCI_ANY_ID*/
->  	__u32 subvendor, subdevice;	/* Subsystem ID's or PCI_ANY_ID */
->  	__u32 class, class_mask;	/* (class,subclass,prog-if) triplet */
->  	kernel_ulong_t driver_data;	/* Data private to the driver */
-> +	__u32 flags;
->  };
+Steven Rostedt wrote:
+> On Fri, 11 Jun 2021 19:25:38 +0530
+> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>=20
+>> We also have perf_event_open() as an interface to add probes, and I=20
+>> don't think it would be helpful to require all tools to utilize the=20
+>> error log from tracefs for this purpose.
+>=20
+> The there should be a perf interface to read the errors. I agree with
+> Masami. Let's not have console logs for probe errors.
 
-Isn't struct pci_device_id a userspace ABI due to MODULE_DEVICE_TABLE()?
+Ok, understood.
+
+
+Thanks,
+Naveen
+
