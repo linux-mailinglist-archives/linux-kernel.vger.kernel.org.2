@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DED3A6129
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47353A61D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhFNKow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:44:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40542 "EHLO mail.kernel.org"
+        id S234146AbhFNKwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:52:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233825AbhFNKiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:38:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D2661242;
-        Mon, 14 Jun 2021 10:33:51 +0000 (UTC)
+        id S234400AbhFNKpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:45:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDABA6144B;
+        Mon, 14 Jun 2021 10:36:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666832;
-        bh=uODCy0NfaMyVhFlnfZ3ODB4zEI5OEA519WoqO15KXU8=;
+        s=korg; t=1623666991;
+        bh=U9b19LqfA6gAVxSQN6qm/Ym1F4SLPLWT3NMoMmEoC/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1CsaaqDE/cgT0YOlXrSMUEKzlKCrqd4YWHpAQP4eRS/5z0QFbWRCgL+YiyDIbEBVN
-         YGbEUAgmDr+sAkqvv7cF17imoWPQHWiVlTBGMuSReBvy/nwhidyhqn7nxLQrtzfEyC
-         s/8qT/gan+zYi7Gs6EHHYCJ8lr53cniRBDHY8e6k=
+        b=TwQ64jpr61DT7I52GywblKh32by0/6DLA/kPKJGpMI9a4u75Qr/GBxMwLq3IIRFBr
+         ajhFl3brtUP40WR8tIiJUjIrby5xj+tZvtx4jHBC30Nhjt7nOj4eVZD6dwFOW9QOp8
+         b4lTsBZcc01vJbYopQsgl5SuXL+v5vGuB3MoAvP0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Hannes Reinecke <hare@suse.de>,
-        John Garry <john.garry@huawei.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.14 46/49] scsi: core: Put .shost_dev in failure path if host state changes to RUNNING
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 56/67] NFS: Fix a potential NULL dereference in nfs_get_client()
 Date:   Mon, 14 Jun 2021 12:27:39 +0200
-Message-Id: <20210614102643.363691505@linuxfoundation.org>
+Message-Id: <20210614102645.657262029@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.857724541@linuxfoundation.org>
-References: <20210614102641.857724541@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 11714026c02d613c30a149c3f4c4a15047744529 upstream.
+[ Upstream commit 09226e8303beeec10f2ff844d2e46d1371dc58e0 ]
 
-scsi_host_dev_release() only frees dev_name when host state is
-SHOST_CREATED. After host state has changed to SHOST_RUNNING,
-scsi_host_dev_release() no longer cleans up.
+None of the callers are expecting NULL returns from nfs_get_client() so
+this code will lead to an Oops.  It's better to return an error
+pointer.  I expect that this is dead code so hopefully no one is
+affected.
 
-Fix this by doing a put_device(&shost->shost_dev) in the failure path when
-host state is SHOST_RUNNING. Move get_device(&shost->shost_gendev) before
-device_add(&shost->shost_dev) so that scsi_host_cls_release() can do a put
-on this reference.
-
-Link: https://lore.kernel.org/r/20210602133029.2864069-4-ming.lei@redhat.com
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: Hannes Reinecke <hare@suse.de>
-Reported-by: John Garry <john.garry@huawei.com>
-Tested-by: John Garry <john.garry@huawei.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 31434f496abb ("nfs: check hostname in nfs_get_client")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/hosts.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/nfs/client.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/hosts.c
-+++ b/drivers/scsi/hosts.c
-@@ -256,12 +256,11 @@ int scsi_add_host_with_dma(struct Scsi_H
+diff --git a/fs/nfs/client.c b/fs/nfs/client.c
+index 07c5ddd5d6d5..78b6f8bc9d76 100644
+--- a/fs/nfs/client.c
++++ b/fs/nfs/client.c
+@@ -407,7 +407,7 @@ struct nfs_client *nfs_get_client(const struct nfs_client_initdata *cl_init)
  
- 	device_enable_async_suspend(&shost->shost_dev);
+ 	if (cl_init->hostname == NULL) {
+ 		WARN_ON(1);
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 	}
  
-+	get_device(&shost->shost_gendev);
- 	error = device_add(&shost->shost_dev);
- 	if (error)
- 		goto out_del_gendev;
- 
--	get_device(&shost->shost_gendev);
--
- 	if (shost->transportt->host_size) {
- 		shost->shost_data = kzalloc(shost->transportt->host_size,
- 					 GFP_KERNEL);
-@@ -298,6 +297,11 @@ int scsi_add_host_with_dma(struct Scsi_H
-  out_del_dev:
- 	device_del(&shost->shost_dev);
-  out_del_gendev:
-+	/*
-+	 * Host state is SHOST_RUNNING so we have to explicitly release
-+	 * ->shost_dev.
-+	 */
-+	put_device(&shost->shost_dev);
- 	device_del(&shost->shost_gendev);
-  out_disable_runtime_pm:
- 	device_disable_async_suspend(&shost->shost_gendev);
+ 	/* see if the client already exists */
+-- 
+2.30.2
+
 
 
