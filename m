@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5836A3A625E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B883A6266
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235073AbhFNK77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:59:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59166 "EHLO mail.kernel.org"
+        id S235100AbhFNLAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:00:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233418AbhFNKva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:51:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C8D761468;
-        Mon, 14 Jun 2021 10:39:03 +0000 (UTC)
+        id S234408AbhFNKvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:51:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C51026141E;
+        Mon, 14 Jun 2021 10:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667143;
-        bh=PJCHUOnPsfmfTKawRglE0mNQZYvumCPzUssiOqy18PE=;
+        s=korg; t=1623667146;
+        bh=VaC8lxO+Yb6LTt5M4AdLOsNK6KJfCFhz8h3znSUBdGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s+Kknzn63FfU2fioysroTZs9Qp/eXsLCfNed2sgEbDnMSwu2OHyx08PZrZm7SryTZ
-         6hWEZvu3fV60GMhFIoSaY327cV4rTumEfAgK70ujXthC7wnoLBorPBMJF11aJgwjpU
-         gDRRit4TId7Va2a6Piw2iRfOgjhR5CdpheZwu2no=
+        b=Kj8XXdSMKoqtFfkC+rQlPOm7DwAzAB7YcpPEy/AuCPv9+PEeib3Vb0EraRs8j54xc
+         aAZ77TIrZXGHRK7GKIyXgGr0w8yS1kjNHlSzP/7v355DDMM7k2REFCuXFDUGsDwEAf
+         +WFg+oYdruD5Xzb6y/+8bAY5YxU8p9JWlaV3nD6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>,
+        stable@vger.kernel.org,
+        syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 43/84] btrfs: return value from btrfs_mark_extent_written() in case of error
-Date:   Mon, 14 Jun 2021 12:27:21 +0200
-Message-Id: <20210614102647.828704712@linuxfoundation.org>
+Subject: [PATCH 5.4 44/84] btrfs: promote debugging asserts to full-fledged checks in validate_super
+Date:   Mon, 14 Jun 2021 12:27:22 +0200
+Message-Id: <20210614102647.868538780@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
 References: <20210614102646.341387537@linuxfoundation.org>
@@ -39,42 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ritesh Harjani <riteshh@linux.ibm.com>
+From: Nikolay Borisov <nborisov@suse.com>
 
-commit e7b2ec3d3d4ebeb4cff7ae45cf430182fa6a49fb upstream.
+commit aefd7f7065567a4666f42c0fc8cdb379d2e036bf upstream.
 
-We always return 0 even in case of an error in btrfs_mark_extent_written().
-Fix it to return proper error value in case of a failure. All callers
-handle it.
+Syzbot managed to trigger this assert while performing its fuzzing.
+Turns out it's better to have those asserts turned into full-fledged
+checks so that in case buggy btrfs images are mounted the users gets
+an error and mounting is stopped. Alternatively with CONFIG_BTRFS_ASSERT
+disabled such image would have been erroneously allowed to be mounted.
 
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
+CC: stable@vger.kernel.org # 5.4+
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
+[ add uuids to the messages ]
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/file.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/disk-io.c |   26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1163,7 +1163,7 @@ int btrfs_mark_extent_written(struct btr
- 	int del_nr = 0;
- 	int del_slot = 0;
- 	int recow;
--	int ret;
-+	int ret = 0;
- 	u64 ino = btrfs_ino(inode);
- 
- 	path = btrfs_alloc_path();
-@@ -1384,7 +1384,7 @@ again:
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2463,6 +2463,24 @@ static int validate_super(struct btrfs_f
+ 		ret = -EINVAL;
  	}
- out:
- 	btrfs_free_path(path);
--	return 0;
-+	return ret;
- }
  
- /*
++	if (memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid,
++		   BTRFS_FSID_SIZE)) {
++		btrfs_err(fs_info,
++		"superblock fsid doesn't match fsid of fs_devices: %pU != %pU",
++			fs_info->super_copy->fsid, fs_info->fs_devices->fsid);
++		ret = -EINVAL;
++	}
++
++	if (btrfs_fs_incompat(fs_info, METADATA_UUID) &&
++	    memcmp(fs_info->fs_devices->metadata_uuid,
++		   fs_info->super_copy->metadata_uuid, BTRFS_FSID_SIZE)) {
++		btrfs_err(fs_info,
++"superblock metadata_uuid doesn't match metadata uuid of fs_devices: %pU != %pU",
++			fs_info->super_copy->metadata_uuid,
++			fs_info->fs_devices->metadata_uuid);
++		ret = -EINVAL;
++	}
++
+ 	if (memcmp(fs_info->fs_devices->metadata_uuid, sb->dev_item.fsid,
+ 		   BTRFS_FSID_SIZE) != 0) {
+ 		btrfs_err(fs_info,
+@@ -2837,14 +2855,6 @@ int open_ctree(struct super_block *sb,
+ 
+ 	disk_super = fs_info->super_copy;
+ 
+-	ASSERT(!memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid,
+-		       BTRFS_FSID_SIZE));
+-
+-	if (btrfs_fs_incompat(fs_info, METADATA_UUID)) {
+-		ASSERT(!memcmp(fs_info->fs_devices->metadata_uuid,
+-				fs_info->super_copy->metadata_uuid,
+-				BTRFS_FSID_SIZE));
+-	}
+ 
+ 	features = btrfs_super_flags(disk_super);
+ 	if (features & BTRFS_SUPER_FLAG_CHANGING_FSID_V2) {
 
 
