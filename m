@@ -2,148 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708163A6B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505B13A6B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbhFNQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:03:33 -0400
-Received: from mail-bn7nam10on2087.outbound.protection.outlook.com ([40.107.92.87]:24673
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234444AbhFNQDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:03:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=axgmic8ptwh+1Xru0uKQ7wXNY2DRztrC+9I4NMM9CPNUJK2bZkV8TJZaaXvJfFrCXXXncRx/WFc/9ov/PyIKlyxk0Rcz0rb4cxovzGP34aqkuwBMeyMkZYhn1FZnIvkSHusc5rT8Ut0zdS4q9EbznC05FycHvoD0PC3G7ZC5ViTFm5olR5w1xMiYrPlBWj9iBjzhaAfXEKEFh4A77NeXTbHEdfjCLXsbKulGcr4oG0vr9Sv5FmA9trToKk7OqBTYFf3o0Sr9laZlZy/sUSYXStQa11/hRpJb4X888i7WJE0WC2KPwNqCIsoUXU7iRwHyI3qM/+yKwS+c58O0VaIsFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HU6HPLvBEPe7VsjiY4cN745HvK5WWzsRChIwlYj/tFQ=;
- b=R0HEQeelXgWEbxOU0v8ES2YNf54AOiy/QQ70C6yLimtF5OggdiElXlWvYw02T73dFzxS2MRaH6XJn1A50AHncj745vjmcU8WGPo3FTQ12LVLxTE6y11E3o0XjJ/XLglOF3s9Oagq7dPVqu3IRgVn5xswlQwHaJHdNsx+Pbw2e4C7vbevBb+rtt1GxduBmF1wbEcxv8bjbmCt1YKxFFwC46g3AwLAMFlLuHgMy2jZP9emzkwoGsY5gXi9I+GSSlxxHGUtvJqgp0wB1epsLjsMAjRIqQ/0KXMqQJBdvYHXx1kJUct570MsrixnzB4MCIhcsmR+s4eWbmsZYgHWqrlLNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HU6HPLvBEPe7VsjiY4cN745HvK5WWzsRChIwlYj/tFQ=;
- b=rohn6VQOp6t40O1B/hlN6lYy19k9DFsknkvchkpTL0vkfek7SrUGL/UkgenlGLXSDY7G73ilsJVrnPN1HBtzHGZ9YJzz7CjCQu/0eDsMHlgbWFhd4iW90v+HLArasuB4z4o8oQf/w2W9ZW4azOubkJyLxG8jpP2MGPp+IdlRn2/u4/IWc9bptK8ji5mwMFbvAZI5b/ljUcbYhkMUBL0mxTZGg7jqDc6KXl+KGd7h18WcQBZauuMWr90Sub83Wi0FSmNSDkutl1lHLoTbLCMad5yjW5U9FfsmmeYVcz7oylHd2/u/0HgkpDcJSeRx+1rbnDbE1ZGPw5SLQKE6Ow//Cg==
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5318.namprd12.prod.outlook.com (2603:10b6:208:31d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Mon, 14 Jun
- 2021 16:01:27 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.025; Mon, 14 Jun 2021
- 16:01:27 +0000
-Date:   Mon, 14 Jun 2021 13:01:25 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, aviadye@nvidia.com, oren@nvidia.com,
-        shahafs@nvidia.com, parav@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
-        yishaih@nvidia.com, kevin.tian@intel.com, targupta@nvidia.com,
-        shameerali.kolothum.thodi@huawei.com, liulongfang@huawei.com,
-        yan.y.zhao@intel.com
-Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
- binding
-Message-ID: <20210614160125.GK1002214@nvidia.com>
-References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
- <20210603160809.15845-10-mgurtovoy@nvidia.com>
- <20210608152643.2d3400c1.alex.williamson@redhat.com>
- <20210608224517.GQ1002214@nvidia.com>
- <20210608192711.4956cda2.alex.williamson@redhat.com>
- <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
- <YMbrxP/5D4vVLE0j@infradead.org>
- <1f7ad5bc-5297-6ddd-9539-a2439f3314fa@nvidia.com>
- <YMd1ZSCZLjaE4TFb@infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMd1ZSCZLjaE4TFb@infradead.org>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR06CA0008.namprd06.prod.outlook.com
- (2603:10b6:208:23d::13) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S234326AbhFNQGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:06:02 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30642 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233901AbhFNQF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 12:05:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623686636; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=h/MYTAGzh1yqIwqzV/V7jJRRMLxM6iJicH91XeZOxsI=; b=WOtE3kuKuKTC4BDJ669fAO76A+Swm9wIt3IObHMKbNYBj+aFb/qB49aFHeTaWR6B332LfSw+
+ ph3WycB7IH9rrxSN72DaBpGSe2E6i8n0+egqLvy9F7GOAo9FxbzNu0TCJWMTsAuhqy/iBO2y
+ o1gCKuGJgn/nc5Y6nR0Nl26Pp98=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60c77db2e27c0cc77f903b9a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 16:02:58
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9B563C433D3; Mon, 14 Jun 2021 16:02:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F07B8C43460;
+        Mon, 14 Jun 2021 16:02:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F07B8C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org
+Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+        <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
+        <20210521135152.GL70095@thinkpad>
+Date:   Mon, 14 Jun 2021 19:02:38 +0300
+In-Reply-To: <20210521135152.GL70095@thinkpad> (Manivannan Sadhasivam's
+        message of "Fri, 21 May 2021 19:21:52 +0530")
+Message-ID: <87h7i0juxt.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR06CA0008.namprd06.prod.outlook.com (2603:10b6:208:23d::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Mon, 14 Jun 2021 16:01:26 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lsp1i-006pjY-08; Mon, 14 Jun 2021 13:01:26 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d5e27681-8f62-43a5-4cea-08d92f4daa6d
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5318:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5318992CEA4E0EEA336A5DF2C2319@BL1PR12MB5318.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8wUbUVd2VaKQOjYnaWQL4E7POwhaRwwX7JlL3uMX/zS19CQAxM5T/yb+1KSzGiEFplsLwnAc9zm9Uu+Ut8rpu0t/VYEWsPfubA7nSe9M9c7eVooEtqjcVDvbgBB2KFyB5n+EJ1iJ0TPJOrltghi1prNjBDpL0LEEkr/Sc+gJFt+xHyPzlU3xDkrJA/Z/xzhpXP+a/zASeFqZjgHOIP1OvIs3MzSNoyYVYhL7VhHKkkla3xgOJYVcePhlSXpM42UPehAyEyIYG/d4CcJFCbkZPQ4run/vwZsZhFKnI8NXVhtJgMRJbw2uxQH0rAemxF+rJ3L2Fl8vZsHsIXJFZArPqwhxXbhM4ixIglinMLb68lDWvBM0EFxX6qPbDtefJ3gKFA4l7NwOE9jnWfmDjkNVQEA041mINYXS3u+MPIDSz3cZtRiTRH0DOhseBGnV2Wc9VkFBf8qo7GwgMkMgfDB0INUiddSr6mbWixkxOdthnedJ61H8RUqCYTeoH7w6YZkGUGJsP8+0/2S2CoclhJnN2X9qWi1HtmMdxFuGkstt193avXOEbOkcrEHKuMUw5NZBhwa4tkaxcgRnqUkR6FFc2+4d6b9h4jKzq08rITk/ntA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(346002)(376002)(39860400002)(478600001)(4326008)(36756003)(6916009)(426003)(2616005)(8676002)(8936002)(2906002)(9786002)(38100700002)(186003)(4744005)(5660300002)(54906003)(1076003)(316002)(86362001)(26005)(66476007)(9746002)(33656002)(66556008)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Q2O5k/WP3nB8/UKefjeCMsRMp7tJQO24ZIiu+dkh/LR9JZPoLAdQ+QfSQYgc?=
- =?us-ascii?Q?E93JmPvZM87h/gK5RYt+vdQBzh/of9ECpzARnF+Lec6Q/Wzcq24n6avlviEr?=
- =?us-ascii?Q?KjyFkPje1hZ6TnGPLZL1i6XT2r3FKiEkoQu9ZBAVpw3bTBoUoRDTfUqSMP5P?=
- =?us-ascii?Q?2ZTDRUGbvyAtNPeAsXis0V3KIwwRoXnZk7Y7edJpITwfBf0tyC1QTN1+Inf2?=
- =?us-ascii?Q?SnOXIv9MKXucx5h7kwdDFdDSHFzM1ePkeu8PG/E1R4Wgs0Quf4Vae4K3quJo?=
- =?us-ascii?Q?5fjCDlwogp6sngUMYnbZhAReA+NyJayd82PZq8qUjK06Uh1QzsesHcI93ORW?=
- =?us-ascii?Q?R2iVAXEhn7zL+7m9THfKv/Ahgw3ZJLTQCM3ztH2WF5aUiQwQsUkkpucnke4h?=
- =?us-ascii?Q?Uekto/9XU92MEZyhyiwnryPYUsev3N8gzO+f1JoOeAuWBzRMBAWTidpgzGGI?=
- =?us-ascii?Q?qRC+OvMtOBMWPQzGZSuZb/JS58k2ppuFXXAVht2MwIY30sItV7doWUbhmmb/?=
- =?us-ascii?Q?hTDDspx7jFGa8ls/rnUo43OnRGDAvSbNKwPaMRUR1zstgajFQYffRPkxl7h+?=
- =?us-ascii?Q?veD3Z2Ar9J3if/a9IEz5O5xisF7BYtHwYLUsEwkfopX01HC+tvdvXlrjzU+w?=
- =?us-ascii?Q?o5TlqtPvCItxS7/w4/kSW4XxeD7i2PKhYjluS/0d0O/mMIWc+8Bv4MJ5lBLg?=
- =?us-ascii?Q?0y6Yvk8npBInHS9eYwJtBqpHBD2tpk+HAjxHa8dL05sslIMst6tYfsigsCbX?=
- =?us-ascii?Q?lpx2ybBy6OERM1GwQjrGP553Y1VMOHv/z2MdAc1isAs68m/i8CS970MK/z49?=
- =?us-ascii?Q?lrxpf1q7I7zp9BJgvGva6IAKqXn2dlDdasJV5Ufc4e1735mlam1mUhUTIhV8?=
- =?us-ascii?Q?zTvgo6m9GJMFSFkI78cdQZaYE0is7oxsqfNrD5f4rP3pFHBpplc8wqRpa8wL?=
- =?us-ascii?Q?PJgKHYPFFc0+TAkwKbhVZtlHA+t+SmzqMnqfnwzevnDb3G6mFNLBeA+bZrJW?=
- =?us-ascii?Q?5162+uYVZl1ysS9b/VhtF8XOcWGof0MFwexzRUGb9mazSEOye6SXb2McO7Np?=
- =?us-ascii?Q?Mf/p7RwLfR7xoschURjstw8am/KmmkMPn1kjcsgtrF6cMvEI3lPvHd6etJEH?=
- =?us-ascii?Q?Uvl533uKqcHq9broq8Ts36+KGobS4PDpmTgyTNdWP/AQoMGVUiQH3iVkbb4i?=
- =?us-ascii?Q?Yx7oOxh3BpH9zygfQDKiZ5a11v+ScOf+IkUxKF4/yhjrS/QVa06uF/H8lvWZ?=
- =?us-ascii?Q?rrB1P3V3Ue7chB3xMG+fLfIzfHcIf7eaQhPMZqbWLg49tAQjCvgM4ZIq2Xev?=
- =?us-ascii?Q?FN2+tX0Qdr253kmKJASeZdU6?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5e27681-8f62-43a5-4cea-08d92f4daa6d
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2021 16:01:27.1079
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hl8MH2urncrFzEVeYhTWoie4TjJuHJ64aBvL2H58+u+ltu324mzUoRzgadwxIvrQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5318
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 04:27:33PM +0100, Christoph Hellwig wrote:
-> On Mon, Jun 14, 2021 at 11:18:32AM +0300, Max Gurtovoy wrote:
-> >   *			into a static list of equivalent device types,
-> >   *			instead of using it as a pointer.
-> > + * @flags:		PCI flags of the driver. Bitmap of pci_id_flags enum.
-> >   */
-> >  struct pci_device_id {
-> >  	__u32 vendor, device;		/* Vendor and device ID or PCI_ANY_ID*/
-> >  	__u32 subvendor, subdevice;	/* Subsystem ID's or PCI_ANY_ID */
-> >  	__u32 class, class_mask;	/* (class,subclass,prog-if) triplet */
-> >  	kernel_ulong_t driver_data;	/* Data private to the driver */
-> > +	__u32 flags;
-> >  };
-> 
-> Isn't struct pci_device_id a userspace ABI due to MODULE_DEVICE_TABLE()?
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
 
-Not that I can find, it isn't under include/uapi and the way to find
-this information is by looking for symbols starting with "__mod_"
+> On Thu, May 06, 2021 at 12:51:43PM -0700, Bhaumik Bhatt wrote:
+>> MHI driver requires register space length to add range checks and
+>> prevent memory region accesses outside of that for MMIO space.
+>> Set it before registering the MHI controller.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>
+> Kalle, should we do immutable branch for this patch or I can pick it up via MHI
+> tree (if there are no other patches expected from ath11k for this controller)?
 
-Debian Code Search says the only place with '"__mod_"' is in
-file2alias.c at least
+I'm not expecting any conflicts with this, and if there are, they should
+be easy for Stephen or Linus to fix. So it's easiest to route this via
+your tree. But I'm not giving my ack yet, see below.
 
-Do you know of something? If yes this file should be moved
+I'm worried that this patchset breaks bisect. Every patch in the
+patchset should not break existing functionality, what if only patches
+1-3 are included in the tree but not patch 4? Wouldn't ath11k be broken
+then? I didn't review the whole patchset, but I suspect the fix is to
+include the ath11k change in the actual mhi patch which changes the
+functionality. So that way we would not have a separate ath11k patch at
+all.
 
-Jason
+Also I'm not able to test this patchset at the moment. Can someone else
+help and do a quick test with QCA6390 to verify these doesn't break
+ath11k?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
