@@ -2,115 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE503A5EFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2B93A5F00
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbhFNJRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        id S232684AbhFNJTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhFNJRA (ORCPT
+        with ESMTP id S232528AbhFNJTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:17:00 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F9DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 02:14:43 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id h12so10102902pfe.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 02:14:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KENaF6daomgz5scNtXqZjtsZnSgCNhEWOpxx4RhJ4Yw=;
-        b=VJx+kBHFYVtSRtJbdOXkmjTmPuh/Y5FBlscGVnemlXQ3z5mQXpwXFHZoLmqxiGjhtw
-         2svtmA0s+JTY622IJYpBay/e18FAtFK/RPkWfhhZuYCViUuRfEMXq1g4zNG5foQm83d6
-         /7vAoP1BIr5vfyTnu69CjoTZcvGzNZdYn7HShgbPX3tKMk/cMTVatGYnzhWyH+/9M/jY
-         igBoSRq2zPYW5clyihkJiXhHvWbACfbXXZiP8lZmeCsjJx4bzSosRmGKuiHBLWcHiIFW
-         IUk0fA+Np1DkJepm6lBOeLr/0E7lWKK9O6mUo6p0CwBt8dxpY1ePRhBm3GZz9A3/kq2L
-         mhzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KENaF6daomgz5scNtXqZjtsZnSgCNhEWOpxx4RhJ4Yw=;
-        b=XO3B17aYwQLeRrg/TA0CLiopcGDJBJbKk4TsUyJ17Q5d+mYBW47jlYCI67MFXAPTPD
-         0zGT5WiAA9Y9LXBOL2T+a1oraAkdw4nIxSBYTRozPgb6ejNNJnvWK6EVyTdyDvRhenL3
-         /Xn+0+6gwTD9qHJN6poVDE38xXsQ/7gQ0kG3XcB0FdbrQHd+B9wZQCTr6ct87bMuKz2P
-         2pmw8nydImkwMMQ9ANh9C4/MmFfXjb8ApPk9ehM8VDJgsD+VTncCg5xb8zXSQqAsNCv0
-         aNMeDqqcdN4weNehFtDhTCy6nyio1giF3/Ezhd/W6sWtSTXD6ynJ4y3RiHzECfUzxEDt
-         5yiA==
-X-Gm-Message-State: AOAM5301iD488a1EuT2puzgmvxJ02QEN6Qo4q8EWuZjlx0EzEW6KIR7v
-        pl6gN98ko5a8Y4dXEPHaDIZEFQ==
-X-Google-Smtp-Source: ABdhPJzZLhEjeNg7mvi5U/yF0J7tUlxRUljd+rBr+kbJUkO3TmIBNVQe5LHoPiXGtU3JUsIhK4bRTQ==
-X-Received: by 2002:a63:4653:: with SMTP id v19mr15988605pgk.240.1623662083282;
-        Mon, 14 Jun 2021 02:14:43 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id w21sm12531959pfq.143.2021.06.14.02.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 02:14:42 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 14:44:41 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-Message-ID: <20210614091441.b6gaei3dgx73skvt@vireshk-i7>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
- <20210611035623.z4f2ynumzozigqnv@vireshk-i7>
- <CAMuHMdVrtSnFpPbB0P3Wxqm1D6vU1_cnh3ypsZJRNF6ueKdAsw@mail.gmail.com>
- <20210611080122.tlkidv6bowuka6fw@vireshk-i7>
- <0478822f-9d10-deb8-86ae-3b4ac3bb0c6c@metux.net>
- <CAHp75Vf0+bCnnD3wtkrPvFbr2k3A0r3eWNp87PyksiC7euaqdw@mail.gmail.com>
+        Mon, 14 Jun 2021 05:19:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3160C061574;
+        Mon, 14 Jun 2021 02:17:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wr1eqezgKE+EC2ay7cbljK5Hx/4WVtHnmh+ygNM8Bls=; b=Knvz8m7IgZ/JC0F5PlCV7i4/UP
+        TyuPU6/SW1JDuAyTSr6lxW7MjO0ao4bHFbtEZFClXoCA69JCAowVIA9noXNB+b1cj32Q9oL6Ap+Ls
+        LUu6xw9XhUOaC/9M8MTAmJFq1YKdbP4YN+374CEOKtDJROk6oPiL4scmOHF8h7PxzAAq1VO2tv7r5
+        XVjI/M4YJ3RaWHQHyzPCRw1ddL8VEXqzwPoXIk4DP6/rb4bK2FZHcpAXGmN5hYKD6/Ak/d5Pzgwcj
+        RqmE7gLXkw+B3vKaZa1/7eMcGQ+1mg0LS05opHR+YiMHtsQp0juoNwLq7SK1GDLHIHd6DAFbPaPgS
+        s+tvt7qQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lsiiJ-006zFk-AO; Mon, 14 Jun 2021 09:17:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D4CA63001E3;
+        Mon, 14 Jun 2021 11:17:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B09212026A646; Mon, 14 Jun 2021 11:17:02 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 11:17:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     syzbot <syzbot+df16599805dec43e5fc2@syzkaller.appspotmail.com>
+Cc:     bp@alien8.de, hpa@zytor.com, jirislaby@kernel.org,
+        jpoimboe@redhat.com, jthierry@redhat.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [syzbot] BUG: stack guard page was hit in preempt_count_add
+Message-ID: <YMcejm3Df4d668B7@hirez.programming.kicks-ass.net>
+References: <0000000000002cf2d905c4b38bee@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75Vf0+bCnnD3wtkrPvFbr2k3A0r3eWNp87PyksiC7euaqdw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <0000000000002cf2d905c4b38bee@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-06-21, 11:12, Andy Shevchenko wrote:
-> On Mon, Jun 14, 2021 at 11:08 AM Enrico Weigelt, metux IT consult
-> <lkml@metux.net> wrote:
-> >
-> > On 11.06.21 10:01, Viresh Kumar wrote:
-> >
-> > > No, QEMU passes the raw messages to the backend daemon running in host
-> > > userspace (which shares a socket with qemu). The backend understands
-> > > the virtio/vhost protocols and so won't be required to change at all
-> > > if we move from Qemu to something else. And that's what we (Linaro)
-> > > are looking to do here with Project Stratos.
-> >
-> > Note that this is completely different from my approach that I've posted
-> > in autumn last year. Viresh's protocol hasn't much in common with mine.
+On Sun, Jun 13, 2021 at 10:58:16PM -0700, syzbot wrote:
+> Hello,
 > 
-> That's why we have a thing called standard. And AFAIU virtio API/ABIs
-> should be officially registered and standardized.
+> syzbot found the following issue on:
+> 
+> HEAD commit:    2aa8eca6 net: appletalk: fix some mistakes in grammar
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10c653afd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a43776cd214e447a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=df16599805dec43e5fc2
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+df16599805dec43e5fc2@syzkaller.appspotmail.com
+> 
+> BUG: stack guard page was hit at ffffc90009defff8 (stack is ffffc90009df0000..ffffc90009df7fff)
 
-Yes and here is the latest version (which is based on the work done by
-Enrico earlier). It isn't accepted yet and is under review.
+Something bond/netdev blows the stack, see below..
 
-https://lists.oasis-open.org/archives/virtio-comment/202106/msg00022.html
+> kernel stack overflow (double-fault): 0000 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 17591 Comm: syz-executor.0 Not tainted 5.13.0-rc3-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:get_lock_parent_ip include/linux/ftrace.h:841 [inline]
+> RIP: 0010:preempt_latency_start kernel/sched/core.c:4780 [inline]
+> RIP: 0010:preempt_latency_start kernel/sched/core.c:4777 [inline]
+> RIP: 0010:preempt_count_add+0x6f/0x140 kernel/sched/core.c:4805
+> Code: 05 16 f0 b2 7e 0f b6 c0 3d f4 00 00 00 7f 64 65 8b 05 05 f0 b2 7e 25 ff ff ff 7f 39 c3 74 03 5b 5d c3 48 8b 5c 24 10 48 89 df <e8> 8c cd 0b 00 85 c0 75 35 65 48 8b 2c 25 00 f0 01 00 48 8d bd f0
+> RSP: 0018:ffffc90009df0000 EFLAGS: 00010246
+> RAX: 0000000000000001 RBX: ffffffff81331a80 RCX: 1ffffffff20f20e4
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81331a80
+> RBP: 0000000000000001 R08: 0000000000000001 R09: ffffc90009df0140
+> R10: fffff520013be033 R11: 0000000000000000 R12: ffffc90009df0188
+> R13: fffff520013be029 R14: ffffc90009df0140 R15: ffffc90009df0140
+> FS:  00007f6395c14700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffc90009defff8 CR3: 0000000094018000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  unwind_next_frame+0x120/0x1ce0 arch/x86/kernel/unwind_orc.c:428
+>  __unwind_start+0x51b/0x800 arch/x86/kernel/unwind_orc.c:699
+>  unwind_start arch/x86/include/asm/unwind.h:60 [inline]
+>  arch_stack_walk+0x5c/0xe0 arch/x86/kernel/stacktrace.c:24
+>  stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:428 [inline]
+>  __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
+>  kasan_slab_alloc include/linux/kasan.h:236 [inline]
+>  slab_post_alloc_hook mm/slab.h:524 [inline]
+>  slab_alloc_node mm/slub.c:2913 [inline]
+>  kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2949
+>  __alloc_skb+0x20b/0x340 net/core/skbuff.c:414
+>  alloc_skb include/linux/skbuff.h:1112 [inline]
+>  nlmsg_new include/net/netlink.h:953 [inline]
 
--- 
-viresh
+>  rtmsg_ifinfo_build_skb+0x72/0x1a0 net/core/rtnetlink.c:3791
+>  rtmsg_ifinfo_event net/core/rtnetlink.c:3827 [inline]
+>  rtmsg_ifinfo_event net/core/rtnetlink.c:3818 [inline]
+>  rtnetlink_event+0x123/0x1d0 net/core/rtnetlink.c:5603
+
+
+>  notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+>  call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2121
+>  call_netdevice_notifiers_extack net/core/dev.c:2133 [inline]
+>  call_netdevice_notifiers net/core/dev.c:2147 [inline]
+>  netdev_features_change net/core/dev.c:1493 [inline]
+>  netdev_sync_lower_features net/core/dev.c:9814 [inline]
+>  __netdev_update_features+0x95d/0x17d0 net/core/dev.c:9961
+>  netdev_change_features+0x61/0xb0 net/core/dev.c:10033
+>  bond_compute_features+0x56c/0xaa0 drivers/net/bonding/bond_main.c:1329
+>  bond_slave_netdev_event drivers/net/bonding/bond_main.c:3431 [inline]
+>  bond_netdev_event+0x5d6/0xa80 drivers/net/bonding/bond_main.c:3471
+
+And this piece repeats at least 9 times... bond_* calls
+netdev_change_features, which calls a notifiers chain which includes
+bond_netdev_event and around it goes, until the stack gives out.
+
+
+
