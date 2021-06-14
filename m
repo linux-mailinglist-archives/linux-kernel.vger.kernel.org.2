@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9A93A6326
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616B33A6508
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235656AbhFNLLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:11:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36098 "EHLO mail.kernel.org"
+        id S234791AbhFNLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234943AbhFNK7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:59:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1513661433;
-        Mon, 14 Jun 2021 10:42:37 +0000 (UTC)
+        id S235661AbhFNLSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:18:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D9861356;
+        Mon, 14 Jun 2021 10:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667358;
-        bh=nMoXu4Rj5BAwggJQLcsitBWS13DPTnpb6qGqGl8H2Uc=;
+        s=korg; t=1623667854;
+        bh=RG+0vC/LwpzoJJ5+UUroxxJrHorNwIQs3bem0xBL81M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EF2w9m53JOPwKq2KLN9kDHIxJKvAfpUamRIpWKM4rxz3b/WPP1M+6BtflBPmwFyC1
-         p5eeDM0SQi/YFFsA8Y676QgrCKBsj00ELrHsCvNkxKSg1BBjG14krpU3Br9AAOcjHf
-         /9Srj3H4PVOS//7dueF3I5IA1ek0PlP2XmD1jvGM=
+        b=bN+HdrZYmRgH/AAkdvRb39ozWVsNN1KMQFOerRiLkDvhmXAVHnCz+HOnpL+R/c/NL
+         iljXMRyuKmtkBoOuuVtL+r+IXCBH0CqG3wnpeNdzVUHx6jr++fdZ6Qru8vZEtAwDWZ
+         rEjmlnaSBEHYPJTFonnYtIs5aOQv5N4gv2t0wz38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yi Zhang <yi.zhang@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 038/131] nvmet: fix false keep-alive timeout when a controller is torn down
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH 5.12 067/173] usb: misc: brcmstb-usb-pinmap: check return value after calling platform_get_resource()
 Date:   Mon, 14 Jun 2021 12:26:39 +0200
-Message-Id: <20210614102654.310783798@linuxfoundation.org>
+Message-Id: <20210614102700.391201438@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,83 +38,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit aaeadd7075dc9e184bc7876e9dd7b3bada771df2 ]
+commit fbf649cd6d64d40c03c5397ecd6b1ae922ba7afc upstream.
 
-Controller teardown flow may take some time in case it has many I/O
-queues, and the host may not send us keep-alive during this period.
-Hence reset the traffic based keep-alive timer so we don't trigger
-a controller teardown as a result of a keep-alive expiration.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 517c4c44b323 ("usb: Add driver to allow any GPIO to be used for 7211 USB signals")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210605080914.2057758-1-yangyingliang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/target/core.c  | 15 +++++++++++----
- drivers/nvme/target/nvmet.h |  2 +-
- 2 files changed, 12 insertions(+), 5 deletions(-)
+ drivers/usb/misc/brcmstb-usb-pinmap.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-index 8b939e9db470..9a8fa2e582d5 100644
---- a/drivers/nvme/target/core.c
-+++ b/drivers/nvme/target/core.c
-@@ -379,10 +379,10 @@ static void nvmet_keep_alive_timer(struct work_struct *work)
- {
- 	struct nvmet_ctrl *ctrl = container_of(to_delayed_work(work),
- 			struct nvmet_ctrl, ka_work);
--	bool cmd_seen = ctrl->cmd_seen;
-+	bool reset_tbkas = ctrl->reset_tbkas;
+--- a/drivers/usb/misc/brcmstb-usb-pinmap.c
++++ b/drivers/usb/misc/brcmstb-usb-pinmap.c
+@@ -263,6 +263,8 @@ static int __init brcmstb_usb_pinmap_pro
+ 		return -EINVAL;
  
--	ctrl->cmd_seen = false;
--	if (cmd_seen) {
-+	ctrl->reset_tbkas = false;
-+	if (reset_tbkas) {
- 		pr_debug("ctrl %d reschedule traffic based keep-alive timer\n",
- 			ctrl->cntlid);
- 		schedule_delayed_work(&ctrl->ka_work, ctrl->kato * HZ);
-@@ -792,6 +792,13 @@ void nvmet_sq_destroy(struct nvmet_sq *sq)
- 	percpu_ref_exit(&sq->ref);
+ 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!r)
++		return -EINVAL;
  
- 	if (ctrl) {
-+		/*
-+		 * The teardown flow may take some time, and the host may not
-+		 * send us keep-alive during this period, hence reset the
-+		 * traffic based keep-alive timer so we don't trigger a
-+		 * controller teardown as a result of a keep-alive expiration.
-+		 */
-+		ctrl->reset_tbkas = true;
- 		nvmet_ctrl_put(ctrl);
- 		sq->ctrl = NULL; /* allows reusing the queue later */
- 	}
-@@ -942,7 +949,7 @@ bool nvmet_req_init(struct nvmet_req *req, struct nvmet_cq *cq,
- 	}
- 
- 	if (sq->ctrl)
--		sq->ctrl->cmd_seen = true;
-+		sq->ctrl->reset_tbkas = true;
- 
- 	return true;
- 
-diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index ea96487b5424..4bf6d21290c2 100644
---- a/drivers/nvme/target/nvmet.h
-+++ b/drivers/nvme/target/nvmet.h
-@@ -166,7 +166,7 @@ struct nvmet_ctrl {
- 	struct nvmet_subsys	*subsys;
- 	struct nvmet_sq		**sqs;
- 
--	bool			cmd_seen;
-+	bool			reset_tbkas;
- 
- 	struct mutex		lock;
- 	u64			cap;
--- 
-2.30.2
-
+ 	pdata = devm_kzalloc(&pdev->dev,
+ 			     sizeof(*pdata) +
 
 
