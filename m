@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6783A71E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580C93A71F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhFNW3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 18:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhFNW3u (ORCPT
+        id S231176AbhFNWfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:35:20 -0400
+Received: from fallback17.m.smailru.net ([94.100.176.130]:42984 "EHLO
+        fallback17.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhFNWfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 18:29:50 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A58C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 15:27:31 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id v22so23626191lfa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 15:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GyMEdvibDhNly5uv8Pg1ye0etmkB4AI1saE08dXRZGQ=;
-        b=CieIEi/iGNQyWJNFbKIHRIgbLgNnYag7g5rwxBwWEodRzQ4LnFGHePWi4p05Wor4PG
-         hpkU1XMCTuwbEl0SkJxr7of+mSAKPT9pviUumSarrCyLLWKx3vWPk+Jxey6rZRi8oIuU
-         4bul0vRlbBzzA6JY3I51ReoS0LXJwjsGCqvnWoRCnoN0Fte6LYqa/eRBIaDEqoAEI27C
-         +Bk8zJMOGtA12aYNVcKFZmbH7UJg0b7RfB5RubDr638V5ReoxQRcHeV0LqcTTPuS4VXb
-         KYZnn4TX9qMBF2LCG2iIx8MiWYQm9VeMU8Vxa6uCmesxrxR8KP20c8U7iSNOA+lze1S6
-         eF7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GyMEdvibDhNly5uv8Pg1ye0etmkB4AI1saE08dXRZGQ=;
-        b=IFFTUu/WJCloEsTlC5n/hURJ8q9paHrgdFtHG78QKRiSLeMAJA0jCOomUChOMHRLor
-         xOX1oUDXZEhM7f+9C6FgMiL7xeeLSiIkB5b2kS3IK0i5m9KsW8Zkb/shXvH+1fbPA8Mq
-         lMGN9oI9izUD1xPaUZwq4FXoopysIQJg7ZOkBCJZgOCek5wg7gWBfFgL25fpkgfD5heT
-         kLY4MKmvzdItOJnr44atfMgphxeYpRXjoj0YyXrl+aeLY7Dtpd+Aigbgse88WWfFDiqJ
-         lsSKXEn6k1oqJIOnnFu0hZZY/21GM5M8HGOc/VrPNF/7Jf+0gCGjoRpwZ1P6e+eM2uJ2
-         Mq8g==
-X-Gm-Message-State: AOAM530XMOZlQ73HN1rGvVkMUtPSJLuYr+due5Or6YzbEds1MuOp6Dfc
-        770YIr6iFHh6Uqzds6wtHoY=
-X-Google-Smtp-Source: ABdhPJxKLMnzGgglyYmSVpkXVmtvE+RBZRJ6kBszwfAfWjHDGpBFQq+c9i1QDt8DaAEQE5rRA/Y9Bw==
-X-Received: by 2002:a19:ec14:: with SMTP id b20mr13726725lfa.244.1623709649642;
-        Mon, 14 Jun 2021 15:27:29 -0700 (PDT)
-Received: from hyperiorarchmachine.localnet (dcx7x4yffpgq---2xhdgy-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:8461:5bff:fed3:30ca])
-        by smtp.gmail.com with ESMTPSA id y5sm1603918lfs.265.2021.06.14.15.27.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 15:27:29 -0700 (PDT)
-From:   jarmo.tiitto@gmail.com
-To:     Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        morbo@google.com
-Subject: Re: [RFC PATCH 0/5] pgo: Add PGO support for module profile data
-Date:   Tue, 15 Jun 2021 01:27:28 +0300
-Message-ID: <2164227.uJ0V1KJIEf@hyperiorarchmachine>
-In-Reply-To: <202106141455.45C7B198D7@keescook>
-References: <20210612032425.11425-1-jarmo.tiitto@gmail.com> <202106140904.484E2337C@keescook> <202106141455.45C7B198D7@keescook>
+        Mon, 14 Jun 2021 18:35:17 -0400
+X-Greylist: delayed 464 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Jun 2021 18:35:17 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
+        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=ebl3xdhYGvj9/7812T4hnqlfSVRcvMkfrf7lI/JJuGY=;
+        b=TBm9gPs2NThc9NrLyWwN7NYMMffszEVTcqNW7DIVdrTdWXCu5dzKVAufnjGUCNz/GcbjyHdYf0Y9CVpnorvcUTYxFPPBd+Geh+XT9ce0DZjh6SEtXLrs9Urh+5o67TN0GII6gPNrs9pN7eJKEDrs6Br3gvT88aSHac3qR2CTsh0=;
+Received: from [10.161.25.37] (port=59954 helo=smtp60.i.mail.ru)
+        by fallback17.m.smailru.net with esmtp (envelope-from <cerg2010cerg2010@mail.ru>)
+        id 1lsv1M-0005DM-8I
+        for linux-kernel@vger.kernel.org; Tue, 15 Jun 2021 01:25:28 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
+        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=ebl3xdhYGvj9/7812T4hnqlfSVRcvMkfrf7lI/JJuGY=;
+        b=Zgi+f/EkoALcTwn+8By6jR2eAbJbH7CXOSlWa73HGvb6fPa0Hokb3BbVwp+hGXpqUqvz3FSx9WDUb5GLyvrLC6RW7MIYpPX2EbPs1wZtcrOSga7kHZTMHptQrtmc20e7i+IqK/1skLYcWeggJ5kgTAHpaz0GxW5J5mqbZlMmp6M=;
+Received: by smtp60.i.mail.ru with esmtpa (envelope-from <cerg2010cerg2010@mail.ru>)
+        id 1lsv1J-0006ZD-7K; Tue, 15 Jun 2021 01:25:25 +0300
+From:   Sergey Larin <cerg2010cerg2010@mail.ru>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Larin <cerg2010cerg2010@mail.ru>
+Subject: [PATCH] mfd: max8907: Remove IRQF_NO_AUTOEN flag
+Date:   Tue, 15 Jun 2021 01:24:20 +0300
+Message-Id: <20210614222420.89865-1-cerg2010cerg2010@mail.ru>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-7564579A: B8F34718100C35BD
+X-77F55803: 4F1203BC0FB41BD9D5B0DA836B685C549A9F97C297FFF2C725C7934AD8E7B4B9182A05F538085040D8C23678FB9131890731DF87AAC3A0203DE02A7433ECA3F6CBC43DA4EF8F4D22
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE72AC9FB60380F23AEEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637889C00975665ABF68638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8A5A2B37DCE303AB09BCA39370C33E1E36F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE74601F13E4625331C9FA2833FD35BB23D9E625A9149C048EE26055571C92BF10FCB629EEF1311BF91D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8B1BE95B8C87527B4BA471835C12D1D977C4224003CC836476EB9C4185024447017B076A6E789B0E975F5C1EE8F4F765FCF3ED982F7DACF4823AA81AA40904B5D9CF19DD082D7633A078D18283394535A93AA81AA40904B5D98AA50765F7900637BCD0514DF617FB8BEC76A7562686271EEC990983EF5C03292E808ACE2090B5E14AD6D5ED66289B5259CC434672EE63711DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C3CE5B583A975D522235872C767BF85DA2F004C90652538430E4A6367B16DE6309
+X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2368A440D3B0F6089093C9A16E5BC824A2A04A2ABAA09D25379311020FFC8D4ADA41A69504E55846B5BD3A1831C588AAA
+X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C9EE13681E9091B6A47B025F20016DF3BB7424071B622A3639C2B6934AE262D3EE7EAB7254005DCED894F55CB5DA17CFA1E0A4E2319210D9B64D260DF9561598F01A9E91200F654B02120514CE2D1D3528E8E86DC7131B365E7726E8460B7C23C
+X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D34D2AC226BFD4557242EE9E73A605945236A7B65BBAED91E9CC42E7486D109BC5127FD1A8F8AE7ADEA1D7E09C32AA3244CB4FC9908D82E1B20582E9B5BC75251BB55E75C8D0ED9F6EEFACE5A9C96DEB163
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj6OL1iHTyIM2wgcD/h9NS9Q==
+X-Mailru-Sender: 24CCEAA761B392C83D438B890C7CDC3C766863BE20904A4C0731DF87AAC3A020BDDB26EEA8DAF3A6CAD91EC71FC00F3837D2A27E1A8065646C7A2150F6097340301919DCEDD5454186FA049C4F996C4B5FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
+X-4EC0790: 1
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B4F6336583864642B6A590A1161B3E79A697EF4D9042F6ED7B68F3CF0E9FE49B69F384871053BAF99D1282D362B0295F312529BCDF440715E5637D4C2AD75762ED
+X-7FA49CB5: 0D63561A33F958A5CD19D37C32E8FED108F20E416C356CE269AC95DD5B60E6A1CACD7DF95DA8FC8BD5E8D9A59859A8B6520746E264B47742CC7F00164DA146DAFE8445B8C89999728AA50765F7900637CA7571BDE729DAE7389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC83775554D4E35D8F5F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C4CB6874B0BCFF0B803F1AB874ED890284AD6D5ED66289B52698AB9A7B718F8C442539A7722CA490CD5E8D9A59859A8B61E7D461CEF46D50775ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
+X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2AD77751E876CB595E8F7B195E1C978316F07A8264902B0B68513B07AB14EF0B5
+X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C9EE13681E9091B6AB35704D5C1A74434A75EFB80FF2805B99C2B6934AE262D3EE7EAB7254005DCED3A96BCF046FC1CF1DC48ACC2A39D04F89CDFB48F4795C241BDAD6C7F3747799A
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj6OL1iHTyIM0sJx4yJT+RQQ==
+X-Mailru-MI: 1000000000800
+X-Mailru-Sender: A5480F10D64C9005631A4012884FA16315411C38BCF2BF9BBAB9D78B9276F05BD776CA2DFBE07C79CAD91EC71FC00F3837D2A27E1A8065646C7A2150F6097340301919DCEDD5454186FA049C4F996C4B5FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook wrote tiistaina 15. kes=C3=A4kuuta 2021 0.57.46 EEST:
-> On Sat, Jun 12, 2021 at 06:24:21AM +0300, Jarmo Tiitto wrote:
-> > [...]
-> > The patches itself are based on Kees/for-next/clang/features tree
-> > where I have two of my bug fix patches already in. :-)
->=20
-> BTW, due to the (soon to be addressed) requirements of noinstr[1],
-> I've removed PGO from my -next tree, and moved it into its own tree in
-> "for-next/clang/pgo".
->=20
-> -Kees
->=20
-> [1] https://lore.kernel.org/lkml/202106140921.5E591BD@keescook/
->=20
-> --
-> Kees Cook
+IRQF_NO_AUTOEN flag doesn't go well with IRQF_SHARED flag - the
+check in request_threaded_irq fails and exits with EINVAL.
 
-Yeah, I noticed that. Actually, I think we really should wait for that noin=
-str=20
-stuff since:
+So we ignore the flag and enable it on the first IRQ request. No
+interrupt should arrive from the chip as all interrupts are masked
+by default.
 
-> There is an lockup that only occurs during bare metal run after +15min, s=
-o I=20
-> haven't been able to catch it in VM.
-> I suspect this is caused by the RCU locking I added such that it results =
-in=20
-> recursive calls into __llvm_profile_instrument_target()
+Signed-off-by: Sergey Larin <cerg2010cerg2010@mail.ru>
+---
+ drivers/mfd/max8907.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-That basically means LLVM is instrumenting code that I call from
-__llvm_profile_instrument_target() resulting in nice cycle of doom.
-Sigh...
-
-I wrote fix for this but it would be nice to be sure the compiler
-doesn't pull the rug under my toes. :-)
-=2D-
-Jarmo
-
+diff --git a/drivers/mfd/max8907.c b/drivers/mfd/max8907.c
+index 40e70ab88956..41f566e6a096 100644
+--- a/drivers/mfd/max8907.c
++++ b/drivers/mfd/max8907.c
+@@ -229,7 +229,7 @@ static int max8907_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	ret = regmap_add_irq_chip(max8907->regmap_gen, max8907->i2c_gen->irq,
+-				  IRQF_ONESHOT | IRQF_SHARED | IRQF_NO_AUTOEN,
++				  IRQF_ONESHOT | IRQF_SHARED,
+ 				  -1, &max8907_chg_irq_chip,
+ 				  &max8907->irqc_chg);
+ 	if (ret != 0) {
+@@ -253,8 +253,6 @@ static int max8907_i2c_probe(struct i2c_client *i2c,
+ 		goto err_irqc_rtc;
+ 	}
+ 
+-	enable_irq(max8907->i2c_gen->irq);
+-
+ 	ret = mfd_add_devices(max8907->dev, -1, max8907_cells,
+ 			      ARRAY_SIZE(max8907_cells), NULL, 0, NULL);
+ 	if (ret != 0) {
+-- 
+2.32.0
 
