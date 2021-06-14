@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CDF3A68BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1D53A68BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbhFNOMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:12:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24204 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233293AbhFNOMp (ORCPT
+        id S234479AbhFNOMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:12:48 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3235 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234323AbhFNOMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:12:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623679841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5VrGrghkNvFrliY5Q4Xm/jGj5MiDa9nv/G4jvjsxRj0=;
-        b=gqjxYoG6bfPwx9u6hcUxHmZUGrwhCwovKi1jy+Jf1msb1igFqH0fi4p3WEWbLOMj7QvPUs
-        0NAOVcBqvIHGkZ4eUeuoloZYz11ILtwO4tMs75bRDXhAsTnLw80l9jBF7+wSu+sczzWzLh
-        zw3lV/9pHEdGKw3O2k1x4IKUf0xFgcc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-336-ZJLCkTrfMUCtFHKrFfLamQ-1; Mon, 14 Jun 2021 10:10:37 -0400
-X-MC-Unique: ZJLCkTrfMUCtFHKrFfLamQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 683AECC628;
-        Mon, 14 Jun 2021 14:10:36 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.47])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2A7005D6A8;
-        Mon, 14 Jun 2021 14:10:33 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 14 Jun 2021 16:10:36 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 16:10:33 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Olivier Langlois <olivier@trillion01.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-Message-ID: <20210614141032.GA13677@redhat.com>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
- <87eeda7nqe.fsf@disp2133>
- <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
- <87pmwt6biw.fsf@disp2133>
- <87czst5yxh.fsf_-_@disp2133>
- <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
- <87y2bh4jg5.fsf@disp2133>
- <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
- <87sg1p4h0g.fsf_-_@disp2133>
+        Mon, 14 Jun 2021 10:12:46 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G3Y5H5SsYz6G8p9;
+        Mon, 14 Jun 2021 22:01:07 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 14 Jun 2021 16:10:42 +0200
+Received: from localhost (10.52.124.209) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 14 Jun
+ 2021 15:10:41 +0100
+Date:   Mon, 14 Jun 2021 15:10:36 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <virtio-dev@lists.oasis-open.org>, <sudeep.holla@arm.com>,
+        <james.quinlan@broadcom.com>, <f.fainelli@gmail.com>,
+        <etienne.carriere@linaro.org>, <vincent.guittot@linaro.org>,
+        <souvik.chakravarty@arm.com>, <igor.skalkin@opensynergy.com>,
+        <peter.hilber@opensynergy.com>, <alex.bennee@linaro.org>,
+        <jean-philippe@linaro.org>, <mikhail.golubev@opensynergy.com>,
+        <anton.yakovlev@opensynergy.com>,
+        <Vasyl.Vavrychuk@opensynergy.com>,
+        <Andriy.Tryshnivskyy@opensynergy.com>
+Subject: Re: [PATCH v4 12/16] firmware: arm_scmi: Add message passing
+ abstractions for transports
+Message-ID: <20210614151036.00000409@Huawei.com>
+In-Reply-To: <20210611165937.701-13-cristian.marussi@arm.com>
+References: <20210611165937.701-1-cristian.marussi@arm.com>
+        <20210611165937.701-13-cristian.marussi@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sg1p4h0g.fsf_-_@disp2133>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.209]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric, et al, sorry for delay, I didn't read emails several days.
+On Fri, 11 Jun 2021 17:59:33 +0100
+Cristian Marussi <cristian.marussi@arm.com> wrote:
 
-On 06/10, Eric W. Biederman wrote:
->
-> v2: Don't remove the now unnecessary code in prepare_signal.
+> From: Peter Hilber <peter.hilber@opensynergy.com>
+> 
+> Add abstractions for future transports using message passing, such as
+> virtio. Derive the abstractions from the shared memory abstractions.
+> 
+> Abstract the transport SDU through the opaque struct scmi_msg_payld.
+> Also enable the transport to determine all other required information
+> about the transport SDU.
+> 
+> Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+> ---
+...
+> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> index b783ae058c8a..fa4075336580 100644
+> --- a/drivers/firmware/arm_scmi/common.h
+> +++ b/drivers/firmware/arm_scmi/common.h
+> @@ -410,6 +410,21 @@ void shmem_clear_channel(struct scmi_shared_mem __iomem *shmem);
+>  bool shmem_poll_done(struct scmi_shared_mem __iomem *shmem,
+>  		     struct scmi_xfer *xfer);
+>  
+> +/* declarations for message passing transports */
+> +struct scmi_msg_payld;
+> +
+> +/** Maximum overhead of message w.r.t. struct scmi_desc.max_msg_size */
 
-No, that code is still needed. Otherwise any fatal signal will be
-turned into SIGKILL.
+Doesn't look to be kernel-doc..
 
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -519,7 +519,7 @@ static bool dump_interrupted(void)
->  	 * but then we need to teach dump_write() to restart and clear
->  	 * TIF_SIGPENDING.
->  	 */
-> -	return signal_pending(current);
-> +	return fatal_signal_pending(current) || freezing(current);
->  }
-
-
-Well yes, this is what the comment says.
-
-But note that there is another reason why dump_interrupted() returns true
-if signal_pending(), it assumes thagt __dump_emit()->__kernel_write() may
-fail anyway if signal_pending() is true. Say, pipe_write(), or iirc nfs,
-perhaps something else...
-
-That is why zap_threads() clears TIF_SIGPENDING. Perhaps it should clear
-TIF_NOTIFY_SIGNAL as well and we should change io-uring to not abuse the
-dumping threads?
-
-Or perhaps we should change __dump_emit() to clear signal_pending() and
-restart __kernel_write() if it fails or returns a short write.
-
-Otherwise the change above doesn't look like a full fix to me.
-
-Oleg.
-
+> +#define SCMI_MSG_MAX_PROT_OVERHEAD (2 * sizeof(__le32))
