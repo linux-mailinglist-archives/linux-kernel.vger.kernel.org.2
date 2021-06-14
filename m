@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B934E3A62E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CFB3A64CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234048AbhFNLGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:06:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
+        id S236019AbhFNL3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:29:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234382AbhFNK4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:56:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FAE661581;
-        Mon, 14 Jun 2021 10:41:20 +0000 (UTC)
+        id S235662AbhFNLOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:14:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD1086195F;
+        Mon, 14 Jun 2021 10:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667280;
-        bh=Yj6PSnT7sMaVAfUtyqwp/ioxZKN6h05NLJ/hGU0xVfA=;
+        s=korg; t=1623667767;
+        bh=9DsQAlrXIIkKDZkN+WHC7MUMFp4igyRwhLat0llSGY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gqBbD8JMEyfImRrrF2mtiAnAHklN+O9twZPju/IPsHFyhakLliClBHRiGqNeB/ZEw
-         PSjhFKsAQb4zDYA8+9SiXoagoGlp/q7frLXF1WTytsZqZPcDQDbA64AU8MXGtjmPEc
-         cMmQs8Hh/Qwt/wPy3lOp8VjZmOSZBnpzZQwnc4kM=
+        b=2a+nf3zCtYQeXiQHvRL4lnGAbs2bQgWj1Z5kMLx9R1KGy+fxdhb4Et2Y1XbL1YUfK
+         Ym7VaOJ8P9K0ucCTh/m8A9to4aIGhAxpMTtbbmSUAduuK3smPGqaoNfGEOsuMCkhtV
+         YBf12krsfiCdTPoNDfHLHji4pIFpzhfveR6GIk0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Mark Brown <broonie@kernel.org>,
+        Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 003/131] ASoC: amd: fix for pcm_read() error
-Date:   Mon, 14 Jun 2021 12:26:04 +0200
-Message-Id: <20210614102653.081896115@linuxfoundation.org>
+Subject: [PATCH 5.12 033/173] net: appletalk: cops: Fix data race in cops_probe1
+Date:   Mon, 14 Jun 2021 12:26:05 +0200
+Message-Id: <20210614102659.245682967@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,115 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+From: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
 
-[ Upstream commit 6879e8e759bf9e05eaee85e32ca1a936e6b46da1 ]
+[ Upstream commit a4dd4fc6105e54393d637450a11d4cddb5fabc4f ]
 
-Below phython script throwing pcm_read() error.
+In cops_probe1(), there is a write to dev->base_addr after requesting an
+interrupt line and registering the interrupt handler cops_interrupt().
+The handler might be called in parallel to handle an interrupt.
+cops_interrupt() tries to read dev->base_addr leading to a potential
+data race. So write to dev->base_addr before calling request_irq().
 
-import subprocess
+Found by Linux Driver Verification project (linuxtesting.org).
 
-p = subprocess.Popen(["aplay -t raw -D plughw:1,0 /dev/zero"], shell=True)
-subprocess.call(["arecord -Dhw:1,0 --dump-hw-params"], shell=True)
-subprocess.call(["arecord -Dhw:1,0 -fdat -d1 /dev/null"], shell=True)
-p.kill()
-
-Handling ACP global external interrupt enable register
-causing this issue.
-This register got updated wrongly when there is active
-stream causing interrupts disabled for active stream.
-Refactored code to handle enabling and disabling external interrupts.
-
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Link: https://lore.kernel.org/r/1619555017-29858-1-git-send-email-Vijendar.Mukunda@amd.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 10 ----------
- sound/soc/amd/raven/acp3x.h         |  1 +
- sound/soc/amd/raven/pci-acp3x.c     | 15 +++++++++++++++
- 3 files changed, 16 insertions(+), 10 deletions(-)
+ drivers/net/appletalk/cops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 417cda24030c..2447a1e6e913 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -237,10 +237,6 @@ static int acp3x_dma_open(struct snd_soc_component *component,
- 		return ret;
+diff --git a/drivers/net/appletalk/cops.c b/drivers/net/appletalk/cops.c
+index ba8e70a8e312..6b12ce822e51 100644
+--- a/drivers/net/appletalk/cops.c
++++ b/drivers/net/appletalk/cops.c
+@@ -327,6 +327,8 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			break;
  	}
  
--	if (!adata->play_stream && !adata->capture_stream &&
--	    !adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
--		rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
++	dev->base_addr = ioaddr;
++
+ 	/* Reserve any actual interrupt. */
+ 	if (dev->irq) {
+ 		retval = request_irq(dev->irq, cops_interrupt, 0, dev->name, dev);
+@@ -334,8 +336,6 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			goto err_out;
+ 	}
+ 
+-	dev->base_addr = ioaddr;
 -
- 	i2s_data->acp3x_base = adata->acp3x_base;
- 	runtime->private_data = i2s_data;
- 	return ret;
-@@ -367,12 +363,6 @@ static int acp3x_dma_close(struct snd_soc_component *component,
- 		}
- 	}
+         lp = netdev_priv(dev);
+         spin_lock_init(&lp->lock);
  
--	/* Disable ACP irq, when the current stream is being closed and
--	 * another stream is also not active.
--	 */
--	if (!adata->play_stream && !adata->capture_stream &&
--		!adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
--		rv_writel(0, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
- 	return 0;
- }
- 
-diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
-index 03fe93913e12..c3f0c8b7545d 100644
---- a/sound/soc/amd/raven/acp3x.h
-+++ b/sound/soc/amd/raven/acp3x.h
-@@ -77,6 +77,7 @@
- #define ACP_POWER_OFF_IN_PROGRESS	0x03
- 
- #define ACP3x_ITER_IRER_SAMP_LEN_MASK	0x38
-+#define ACP_EXT_INTR_STAT_CLEAR_MASK 0xFFFFFFFF
- 
- struct acp3x_platform_info {
- 	u16 play_i2s_instance;
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index 77f2d9389606..df83d2ce75ea 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -76,6 +76,19 @@ static int acp3x_reset(void __iomem *acp3x_base)
- 	return -ETIMEDOUT;
- }
- 
-+static void acp3x_enable_interrupts(void __iomem *acp_base)
-+{
-+	rv_writel(0x01, acp_base + mmACP_EXTERNAL_INTR_ENB);
-+}
-+
-+static void acp3x_disable_interrupts(void __iomem *acp_base)
-+{
-+	rv_writel(ACP_EXT_INTR_STAT_CLEAR_MASK, acp_base +
-+		  mmACP_EXTERNAL_INTR_STAT);
-+	rv_writel(0x00, acp_base + mmACP_EXTERNAL_INTR_CNTL);
-+	rv_writel(0x00, acp_base + mmACP_EXTERNAL_INTR_ENB);
-+}
-+
- static int acp3x_init(struct acp3x_dev_data *adata)
- {
- 	void __iomem *acp3x_base = adata->acp3x_base;
-@@ -93,6 +106,7 @@ static int acp3x_init(struct acp3x_dev_data *adata)
- 		pr_err("ACP3x reset failed\n");
- 		return ret;
- 	}
-+	acp3x_enable_interrupts(acp3x_base);
- 	return 0;
- }
- 
-@@ -100,6 +114,7 @@ static int acp3x_deinit(void __iomem *acp3x_base)
- {
- 	int ret;
- 
-+	acp3x_disable_interrupts(acp3x_base);
- 	/* Reset */
- 	ret = acp3x_reset(acp3x_base);
- 	if (ret) {
 -- 
 2.30.2
 
