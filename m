@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF4B3A6306
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCFA3A64A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbhFNLIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:08:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
+        id S232871AbhFNL1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:27:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234512AbhFNK53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:57:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BADE6161C;
-        Mon, 14 Jun 2021 10:41:36 +0000 (UTC)
+        id S235005AbhFNLMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:12:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 254FC61459;
+        Mon, 14 Jun 2021 10:48:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667296;
-        bh=Jz2m3vwdQJW755VD9qnYrdVv0PeunQwMOP0ikzH8SC4=;
+        s=korg; t=1623667715;
+        bh=xyGAN+5Pig/3cTnb5J+Mn3As5Qv1hz14TFNrYQbKNRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tifwBfwV3GOVfag2XA8j8rWT8ZwJAwFxSX8QAPsENlGiiTsjUuCuuwo7ydA+acBUD
-         Zw38iqSxWuyaIG69O+pwh8BShKfGkl2ZicK6rQ85nOk/m9Hiz9a6VmHWOhEJ8acRU2
-         VAAdW0J00FoHPvmBs57KB36PoF4qQpkz5Je4eEk4=
+        b=lCFLHPXZhqWZ/T5NC3DG4Y7e4BhR6yRI1GjKw9sAdD23k2GLSU6rfohc52FtSYCWz
+         SXHojzygxNvbPTzfkjMmh6BkZo79cst3zUOMvF/ETiaXshANFADnKtrWnbZyG1OMmP
+         s2EaDBWd2wzJFpX6Pej6+lzuWUsHpKUflSCBEqtE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 017/131] isdn: mISDN: netjet: Fix crash in nj_probe:
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Saravana Kannan <saravanak@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 5.12 046/173] spi: Cleanup on failure of initial setup
 Date:   Mon, 14 Jun 2021 12:26:18 +0200
-Message-Id: <20210614102653.575864161@linuxfoundation.org>
+Message-Id: <20210614102659.690754837@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,166 +42,265 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit 9f6f852550d0e1b7735651228116ae9d300f69b3 ]
+[ Upstream commit 2ec6f20b33eb4f62ab90bdcd620436c883ec3af6 ]
 
-'nj_setup' in netjet.c might fail with -EIO and in this case
-'card->irq' is initialized and is bigger than zero. A subsequent call to
-'nj_release' will free the irq that has not been requested.
+Commit c7299fea6769 ("spi: Fix spi device unregister flow") changed the
+SPI core's behavior if the ->setup() hook returns an error upon adding
+an spi_device:  Before, the ->cleanup() hook was invoked to free any
+allocations that were made by ->setup().  With the commit, that's no
+longer the case, so the ->setup() hook is expected to free the
+allocations itself.
 
-Fix this bug by deleting the previous assignment to 'card->irq' and just
-keep the assignment before 'request_irq'.
+I've identified 5 drivers which depend on the old behavior and am fixing
+them up hereinafter: spi-bitbang.c spi-fsl-spi.c spi-omap-uwire.c
+spi-omap2-mcspi.c spi-pxa2xx.c
 
-The KASAN's log reveals it:
+Importantly, ->setup() is not only invoked on spi_device *addition*:
+It may subsequently be called to *change* SPI parameters.  If changing
+these SPI parameters fails, freeing memory allocations would be wrong.
+That should only be done if the spi_device is finally destroyed.
+I am therefore using a bool "initial_setup" in 4 of the affected drivers
+to differentiate between the invocation on *adding* the spi_device and
+any subsequent invocations: spi-bitbang.c spi-fsl-spi.c spi-omap-uwire.c
+spi-omap2-mcspi.c
 
-[    3.354615 ] WARNING: CPU: 0 PID: 1 at kernel/irq/manage.c:1826
-free_irq+0x100/0x480
-[    3.355112 ] Modules linked in:
-[    3.355310 ] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
-5.13.0-rc1-00144-g25a1298726e #13
-[    3.355816 ] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    3.356552 ] RIP: 0010:free_irq+0x100/0x480
-[    3.356820 ] Code: 6e 08 74 6f 4d 89 f4 e8 5e ac 09 00 4d 8b 74 24 18
-4d 85 f6 75 e3 e8 4f ac 09 00 8b 75 c8 48 c7 c7 78 c1 2e 85 e8 e0 cf f5
-ff <0f> 0b 48 8b 75 c0 4c 89 ff e8 72 33 0b 03 48 8b 43 40 4c 8b a0 80
-[    3.358012 ] RSP: 0000:ffffc90000017b48 EFLAGS: 00010082
-[    3.358357 ] RAX: 0000000000000000 RBX: ffff888104dc8000 RCX:
-0000000000000000
-[    3.358814 ] RDX: ffff8881003c8000 RSI: ffffffff8124a9e6 RDI:
-00000000ffffffff
-[    3.359272 ] RBP: ffffc90000017b88 R08: 0000000000000000 R09:
-0000000000000000
-[    3.359732 ] R10: ffffc900000179f0 R11: 0000000000001d04 R12:
-0000000000000000
-[    3.360195 ] R13: ffff888107dc6000 R14: ffff888107dc6928 R15:
-ffff888104dc80a8
-[    3.360652 ] FS:  0000000000000000(0000) GS:ffff88817bc00000(0000)
-knlGS:0000000000000000
-[    3.361170 ] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    3.361538 ] CR2: 0000000000000000 CR3: 000000000582e000 CR4:
-00000000000006f0
-[    3.362003 ] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[    3.362175 ] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[    3.362175 ] Call Trace:
-[    3.362175 ]  nj_release+0x51/0x1e0
-[    3.362175 ]  nj_probe+0x450/0x950
-[    3.362175 ]  ? pci_device_remove+0x110/0x110
-[    3.362175 ]  local_pci_probe+0x45/0xa0
-[    3.362175 ]  pci_device_probe+0x12b/0x1d0
-[    3.362175 ]  really_probe+0x2a9/0x610
-[    3.362175 ]  driver_probe_device+0x90/0x1d0
-[    3.362175 ]  ? mutex_lock_nested+0x1b/0x20
-[    3.362175 ]  device_driver_attach+0x68/0x70
-[    3.362175 ]  __driver_attach+0x124/0x1b0
-[    3.362175 ]  ? device_driver_attach+0x70/0x70
-[    3.362175 ]  bus_for_each_dev+0xbb/0x110
-[    3.362175 ]  ? rdinit_setup+0x45/0x45
-[    3.362175 ]  driver_attach+0x27/0x30
-[    3.362175 ]  bus_add_driver+0x1eb/0x2a0
-[    3.362175 ]  driver_register+0xa9/0x180
-[    3.362175 ]  __pci_register_driver+0x82/0x90
-[    3.362175 ]  ? w6692_init+0x38/0x38
-[    3.362175 ]  nj_init+0x36/0x38
-[    3.362175 ]  do_one_initcall+0x7f/0x3d0
-[    3.362175 ]  ? rdinit_setup+0x45/0x45
-[    3.362175 ]  ? rcu_read_lock_sched_held+0x4f/0x80
-[    3.362175 ]  kernel_init_freeable+0x2aa/0x301
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  kernel_init+0x18/0x190
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  ret_from_fork+0x1f/0x30
-[    3.362175 ] Kernel panic - not syncing: panic_on_warn set ...
-[    3.362175 ] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
-5.13.0-rc1-00144-g25a1298726e #13
-[    3.362175 ] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    3.362175 ] Call Trace:
-[    3.362175 ]  dump_stack+0xba/0xf5
-[    3.362175 ]  ? free_irq+0x100/0x480
-[    3.362175 ]  panic+0x15a/0x3f2
-[    3.362175 ]  ? __warn+0xf2/0x150
-[    3.362175 ]  ? free_irq+0x100/0x480
-[    3.362175 ]  __warn+0x108/0x150
-[    3.362175 ]  ? free_irq+0x100/0x480
-[    3.362175 ]  report_bug+0x119/0x1c0
-[    3.362175 ]  handle_bug+0x3b/0x80
-[    3.362175 ]  exc_invalid_op+0x18/0x70
-[    3.362175 ]  asm_exc_invalid_op+0x12/0x20
-[    3.362175 ] RIP: 0010:free_irq+0x100/0x480
-[    3.362175 ] Code: 6e 08 74 6f 4d 89 f4 e8 5e ac 09 00 4d 8b 74 24 18
-4d 85 f6 75 e3 e8 4f ac 09 00 8b 75 c8 48 c7 c7 78 c1 2e 85 e8 e0 cf f5
-ff <0f> 0b 48 8b 75 c0 4c 89 ff e8 72 33 0b 03 48 8b 43 40 4c 8b a0 80
-[    3.362175 ] RSP: 0000:ffffc90000017b48 EFLAGS: 00010082
-[    3.362175 ] RAX: 0000000000000000 RBX: ffff888104dc8000 RCX:
-0000000000000000
-[    3.362175 ] RDX: ffff8881003c8000 RSI: ffffffff8124a9e6 RDI:
-00000000ffffffff
-[    3.362175 ] RBP: ffffc90000017b88 R08: 0000000000000000 R09:
-0000000000000000
-[    3.362175 ] R10: ffffc900000179f0 R11: 0000000000001d04 R12:
-0000000000000000
-[    3.362175 ] R13: ffff888107dc6000 R14: ffff888107dc6928 R15:
-ffff888104dc80a8
-[    3.362175 ]  ? vprintk+0x76/0x150
-[    3.362175 ]  ? free_irq+0x100/0x480
-[    3.362175 ]  nj_release+0x51/0x1e0
-[    3.362175 ]  nj_probe+0x450/0x950
-[    3.362175 ]  ? pci_device_remove+0x110/0x110
-[    3.362175 ]  local_pci_probe+0x45/0xa0
-[    3.362175 ]  pci_device_probe+0x12b/0x1d0
-[    3.362175 ]  really_probe+0x2a9/0x610
-[    3.362175 ]  driver_probe_device+0x90/0x1d0
-[    3.362175 ]  ? mutex_lock_nested+0x1b/0x20
-[    3.362175 ]  device_driver_attach+0x68/0x70
-[    3.362175 ]  __driver_attach+0x124/0x1b0
-[    3.362175 ]  ? device_driver_attach+0x70/0x70
-[    3.362175 ]  bus_for_each_dev+0xbb/0x110
-[    3.362175 ]  ? rdinit_setup+0x45/0x45
-[    3.362175 ]  driver_attach+0x27/0x30
-[    3.362175 ]  bus_add_driver+0x1eb/0x2a0
-[    3.362175 ]  driver_register+0xa9/0x180
-[    3.362175 ]  __pci_register_driver+0x82/0x90
-[    3.362175 ]  ? w6692_init+0x38/0x38
-[    3.362175 ]  nj_init+0x36/0x38
-[    3.362175 ]  do_one_initcall+0x7f/0x3d0
-[    3.362175 ]  ? rdinit_setup+0x45/0x45
-[    3.362175 ]  ? rcu_read_lock_sched_held+0x4f/0x80
-[    3.362175 ]  kernel_init_freeable+0x2aa/0x301
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  kernel_init+0x18/0x190
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  ret_from_fork+0x1f/0x30
-[    3.362175 ] Dumping ftrace buffer:
-[    3.362175 ]    (ftrace buffer empty)
-[    3.362175 ] Kernel Offset: disabled
-[    3.362175 ] Rebooting in 1 seconds..
+In spi-pxa2xx.c, it seems the ->setup() hook can only fail on spi_device
+addition, not any subsequent calls.  It therefore doesn't need the bool.
 
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+It's worth noting that 5 other drivers already perform a cleanup if the
+->setup() hook fails.  Before c7299fea6769, they caused a double-free
+if ->setup() failed on spi_device addition.  Since the commit, they're
+fine.  These drivers are: spi-mpc512x-psc.c spi-pl022.c spi-s3c64xx.c
+spi-st-ssc4.c spi-tegra114.c
+
+(spi-pxa2xx.c also already performs a cleanup, but only in one of
+several error paths.)
+
+Fixes: c7299fea6769 ("spi: Fix spi device unregister flow")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: Saravana Kannan <saravanak@google.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com> # pxa2xx
+Link: https://lore.kernel.org/r/f76a0599469f265b69c371538794101fa37b5536.1622149321.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/isdn/hardware/mISDN/netjet.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/spi/spi-bitbang.c     | 18 ++++++++++++++----
+ drivers/spi/spi-fsl-spi.c     |  4 ++++
+ drivers/spi/spi-omap-uwire.c  |  9 ++++++++-
+ drivers/spi/spi-omap2-mcspi.c | 33 ++++++++++++++++++++-------------
+ drivers/spi/spi-pxa2xx.c      |  9 ++++++++-
+ 5 files changed, 54 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/netjet.c b/drivers/isdn/hardware/mISDN/netjet.c
-index ee925b58bbce..2a1ddd47a096 100644
---- a/drivers/isdn/hardware/mISDN/netjet.c
-+++ b/drivers/isdn/hardware/mISDN/netjet.c
-@@ -1100,7 +1100,6 @@ nj_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		card->typ = NETJET_S_TJ300;
+diff --git a/drivers/spi/spi-bitbang.c b/drivers/spi/spi-bitbang.c
+index 1a7352abd878..3d8948a17095 100644
+--- a/drivers/spi/spi-bitbang.c
++++ b/drivers/spi/spi-bitbang.c
+@@ -181,6 +181,8 @@ int spi_bitbang_setup(struct spi_device *spi)
+ {
+ 	struct spi_bitbang_cs	*cs = spi->controller_state;
+ 	struct spi_bitbang	*bitbang;
++	bool			initial_setup = false;
++	int			retval;
  
- 	card->base = pci_resource_start(pdev, 0);
--	card->irq = pdev->irq;
- 	pci_set_drvdata(pdev, card);
- 	err = setup_instance(card);
- 	if (err)
+ 	bitbang = spi_master_get_devdata(spi->master);
+ 
+@@ -189,22 +191,30 @@ int spi_bitbang_setup(struct spi_device *spi)
+ 		if (!cs)
+ 			return -ENOMEM;
+ 		spi->controller_state = cs;
++		initial_setup = true;
+ 	}
+ 
+ 	/* per-word shift register access, in hardware or bitbanging */
+ 	cs->txrx_word = bitbang->txrx_word[spi->mode & (SPI_CPOL|SPI_CPHA)];
+-	if (!cs->txrx_word)
+-		return -EINVAL;
++	if (!cs->txrx_word) {
++		retval = -EINVAL;
++		goto err_free;
++	}
+ 
+ 	if (bitbang->setup_transfer) {
+-		int retval = bitbang->setup_transfer(spi, NULL);
++		retval = bitbang->setup_transfer(spi, NULL);
+ 		if (retval < 0)
+-			return retval;
++			goto err_free;
+ 	}
+ 
+ 	dev_dbg(&spi->dev, "%s, %u nsec/bit\n", __func__, 2 * cs->nsecs);
+ 
+ 	return 0;
++
++err_free:
++	if (initial_setup)
++		kfree(cs);
++	return retval;
+ }
+ EXPORT_SYMBOL_GPL(spi_bitbang_setup);
+ 
+diff --git a/drivers/spi/spi-fsl-spi.c b/drivers/spi/spi-fsl-spi.c
+index d0e5aa18b7ba..bdf94cc7be1a 100644
+--- a/drivers/spi/spi-fsl-spi.c
++++ b/drivers/spi/spi-fsl-spi.c
+@@ -440,6 +440,7 @@ static int fsl_spi_setup(struct spi_device *spi)
+ {
+ 	struct mpc8xxx_spi *mpc8xxx_spi;
+ 	struct fsl_spi_reg __iomem *reg_base;
++	bool initial_setup = false;
+ 	int retval;
+ 	u32 hw_mode;
+ 	struct spi_mpc8xxx_cs *cs = spi_get_ctldata(spi);
+@@ -452,6 +453,7 @@ static int fsl_spi_setup(struct spi_device *spi)
+ 		if (!cs)
+ 			return -ENOMEM;
+ 		spi_set_ctldata(spi, cs);
++		initial_setup = true;
+ 	}
+ 	mpc8xxx_spi = spi_master_get_devdata(spi->master);
+ 
+@@ -475,6 +477,8 @@ static int fsl_spi_setup(struct spi_device *spi)
+ 	retval = fsl_spi_setup_transfer(spi, NULL);
+ 	if (retval < 0) {
+ 		cs->hw_mode = hw_mode; /* Restore settings */
++		if (initial_setup)
++			kfree(cs);
+ 		return retval;
+ 	}
+ 
+diff --git a/drivers/spi/spi-omap-uwire.c b/drivers/spi/spi-omap-uwire.c
+index 71402f71ddd8..df28c6664aba 100644
+--- a/drivers/spi/spi-omap-uwire.c
++++ b/drivers/spi/spi-omap-uwire.c
+@@ -424,15 +424,22 @@ done:
+ static int uwire_setup(struct spi_device *spi)
+ {
+ 	struct uwire_state *ust = spi->controller_state;
++	bool initial_setup = false;
++	int status;
+ 
+ 	if (ust == NULL) {
+ 		ust = kzalloc(sizeof(*ust), GFP_KERNEL);
+ 		if (ust == NULL)
+ 			return -ENOMEM;
+ 		spi->controller_state = ust;
++		initial_setup = true;
+ 	}
+ 
+-	return uwire_setup_transfer(spi, NULL);
++	status = uwire_setup_transfer(spi, NULL);
++	if (status && initial_setup)
++		kfree(ust);
++
++	return status;
+ }
+ 
+ static void uwire_cleanup(struct spi_device *spi)
+diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
+index d4c9510af393..3596bbe4b776 100644
+--- a/drivers/spi/spi-omap2-mcspi.c
++++ b/drivers/spi/spi-omap2-mcspi.c
+@@ -1032,8 +1032,22 @@ static void omap2_mcspi_release_dma(struct spi_master *master)
+ 	}
+ }
+ 
++static void omap2_mcspi_cleanup(struct spi_device *spi)
++{
++	struct omap2_mcspi_cs	*cs;
++
++	if (spi->controller_state) {
++		/* Unlink controller state from context save list */
++		cs = spi->controller_state;
++		list_del(&cs->node);
++
++		kfree(cs);
++	}
++}
++
+ static int omap2_mcspi_setup(struct spi_device *spi)
+ {
++	bool			initial_setup = false;
+ 	int			ret;
+ 	struct omap2_mcspi	*mcspi = spi_master_get_devdata(spi->master);
+ 	struct omap2_mcspi_regs	*ctx = &mcspi->ctx;
+@@ -1051,35 +1065,28 @@ static int omap2_mcspi_setup(struct spi_device *spi)
+ 		spi->controller_state = cs;
+ 		/* Link this to context save list */
+ 		list_add_tail(&cs->node, &ctx->cs);
++		initial_setup = true;
+ 	}
+ 
+ 	ret = pm_runtime_get_sync(mcspi->dev);
+ 	if (ret < 0) {
+ 		pm_runtime_put_noidle(mcspi->dev);
++		if (initial_setup)
++			omap2_mcspi_cleanup(spi);
+ 
+ 		return ret;
+ 	}
+ 
+ 	ret = omap2_mcspi_setup_transfer(spi, NULL);
++	if (ret && initial_setup)
++		omap2_mcspi_cleanup(spi);
++
+ 	pm_runtime_mark_last_busy(mcspi->dev);
+ 	pm_runtime_put_autosuspend(mcspi->dev);
+ 
+ 	return ret;
+ }
+ 
+-static void omap2_mcspi_cleanup(struct spi_device *spi)
+-{
+-	struct omap2_mcspi_cs	*cs;
+-
+-	if (spi->controller_state) {
+-		/* Unlink controller state from context save list */
+-		cs = spi->controller_state;
+-		list_del(&cs->node);
+-
+-		kfree(cs);
+-	}
+-}
+-
+ static irqreturn_t omap2_mcspi_irq_handler(int irq, void *data)
+ {
+ 	struct omap2_mcspi *mcspi = data;
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 0cc767283674..825cc5b2ab2f 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -1254,6 +1254,8 @@ static int setup_cs(struct spi_device *spi, struct chip_data *chip,
+ 		chip->gpio_cs_inverted = spi->mode & SPI_CS_HIGH;
+ 
+ 		err = gpiod_direction_output(gpiod, !chip->gpio_cs_inverted);
++		if (err)
++			gpiod_put(chip->gpiod_cs);
+ 	}
+ 
+ 	return err;
+@@ -1267,6 +1269,7 @@ static int setup(struct spi_device *spi)
+ 	struct driver_data *drv_data =
+ 		spi_controller_get_devdata(spi->controller);
+ 	uint tx_thres, tx_hi_thres, rx_thres;
++	int err;
+ 
+ 	switch (drv_data->ssp_type) {
+ 	case QUARK_X1000_SSP:
+@@ -1413,7 +1416,11 @@ static int setup(struct spi_device *spi)
+ 	if (drv_data->ssp_type == CE4100_SSP)
+ 		return 0;
+ 
+-	return setup_cs(spi, chip, chip_info);
++	err = setup_cs(spi, chip, chip_info);
++	if (err)
++		kfree(chip);
++
++	return err;
+ }
+ 
+ static void cleanup(struct spi_device *spi)
 -- 
 2.30.2
 
