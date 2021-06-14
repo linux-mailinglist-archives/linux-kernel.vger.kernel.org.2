@@ -2,193 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DBC3A698A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BFB3A698D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbhFNPFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:05:48 -0400
-Received: from mail-il1-f180.google.com ([209.85.166.180]:44916 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbhFNPFr (ORCPT
+        id S233350AbhFNPGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhFNPGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:05:47 -0400
-Received: by mail-il1-f180.google.com with SMTP id i17so12450373ilj.11;
-        Mon, 14 Jun 2021 08:03:44 -0700 (PDT)
+        Mon, 14 Jun 2021 11:06:32 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E30CC061574;
+        Mon, 14 Jun 2021 08:04:15 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id r14so20505536ljd.10;
+        Mon, 14 Jun 2021 08:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=amLIRuKnX8etVBSiINMJCmDXT6ZlQpwL3htcwT0iYfw=;
+        b=HqNjQ+tMbZJq5JAwtGeHbUE3rr52qEq/eM/9wyt39c/Oi45aL+/qQ2BV6XglFCeAOc
+         41sv5B+PJ0ZvQqdOdZP4byrqsI61Po7CIz47VUnyMyU8f9aaun2VfrB6Zj4hb2UHkOkH
+         +NwNTv0CqYoPnkVLpgXYaZxxdY511dBFMGhgqg/+nuKquX3QOn0tkiFqBVi+nij+5OxU
+         lCgmvm62M1hfH8K5PmifI8NxKoM9qPEZDPfNJEpRS2TNwCteVvE5klB4WTKVf3nzI8Y2
+         B3rgFvtNw6PAlN4lGELO6SMEFwfaITgmfDaNMd2zFwAuEtVOPLVJBEpWklxyL4LTxZzM
+         BKwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ORcJk31TiVnuEogk3RJcUiauMJCVCh/REeNy+uWJyuI=;
-        b=Q30pWdmsyox1BEsn8LU2WQR4fhKxEL5SZFm96nZM/hXxLPhBPLKzs31+ZD4e17Druv
-         3AfPTyY9LflPD0Ux3ID8wyzan9wRioikfdlMO263W/KgMzANMkDj4hCILT86v46BLd7Q
-         PFmSixOx8Yu5iID9nM1LqS20cbC0d+aIbKpkvl5wX5Nz3ab0CKXhgF603EYJBhNAMBIW
-         S68PYwT9qA59oaW/xgdvvse6DCzliRIaDfD+mxmtXReXBgPyD9DaLXf9lCguiQPFPsGs
-         7lKWxzwLNC8MDlMnaBwJo+FD4bXzkEUrolV12VFGEjwKbgjz630hAB6FUZZBEalB5emT
-         Pyaw==
-X-Gm-Message-State: AOAM5319XGqf/GWu7QFPZoQN32WlX1i/W56aXzNoTvO9ghR2EFgahK96
-        Km9qvob7m8xCoHf1H0L7F51wBjTMjg==
-X-Google-Smtp-Source: ABdhPJxevxIhIoghxuFi1Czoup2tc4Tf11I/KvnTMIECwiSsVK/e/doraZRmwywMjpT9+SnmMWGoQw==
-X-Received: by 2002:a92:190f:: with SMTP id 15mr13571076ilz.45.1623683023926;
-        Mon, 14 Jun 2021 08:03:43 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id i13sm7633657ilr.16.2021.06.14.08.03.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 08:03:42 -0700 (PDT)
-Received: (nullmailer pid 758861 invoked by uid 1000);
-        Mon, 14 Jun 2021 15:03:41 -0000
-Date:   Mon, 14 Jun 2021 09:03:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     gregkh@linuxfoundation.org, michal.simek@xilinx.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, shubhrajyoti.datta@xilinx.com,
-        navam@xilinx.com, peter.crosthwaite@xilinx.com,
-        soren.brinkmann@xilinx.com
-Subject: Re: [PATCH] dt-bindings: serial: convert Cadence UART bindings to
- YAML
-Message-ID: <20210614150341.GA747048@robh.at.kernel.org>
-References: <20210613213359.296400-1-iwamatsu@nigauri.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=amLIRuKnX8etVBSiINMJCmDXT6ZlQpwL3htcwT0iYfw=;
+        b=mETNk4H5RC9htRIxfCK/RX5ckr6jY8n0EqgBg4jszzQKj7O4kzlKzJg9H6Gp+rQ222
+         k201r403sf8j2nZfwBKoknHliFWbaWu7YHrf3+ghLRJ9snihvpY3gbeazHD2WjlSpUNg
+         R0teNpH1OfzpqlCL6ghU8Hk871fKvpLtfIid3INrnRw9pgDL94Ss+c3VzkUh9VP2EZS8
+         HbxIbaoicxsWTR1kCwM3kAecO+d7UtNwpfZJrhppOPnXD5546K1xN59PHJaM83ksesy7
+         7heCE8tuBupdiywDCWgkTWv8R9KR1IMbRIi7oA9XC/xzidB7ZND6gLagPNl7Eup5jSEc
+         zPxg==
+X-Gm-Message-State: AOAM530tnZgR9pXGTRk+MlA0h87BRC5heTnaysoIP7FCzZZ1Xn5G7Av0
+        Rl4AkLZuCnIGQzrEHjq9urW4luEDlRWw7GR3pOg=
+X-Google-Smtp-Source: ABdhPJxHddSXn7MQEp2UzCg15YgRi/rclsfAe5DXKS289hueqMrow1G88LUOOdzToY/PLKHRHzJnJCnx8KUSm8YacgE=
+X-Received: by 2002:a2e:2f03:: with SMTP id v3mr13547128ljv.168.1623683053157;
+ Mon, 14 Jun 2021 08:04:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210613213359.296400-1-iwamatsu@nigauri.org>
+References: <1622616875-22740-1-git-send-email-u0084500@gmail.com> <20210611201643.GA1583875@robh.at.kernel.org>
+In-Reply-To: <20210611201643.GA1583875@robh.at.kernel.org>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Mon, 14 Jun 2021 23:04:01 +0800
+Message-ID: <CADiBU39Prz99ZLtkYdcM9XDQsd0nKKeiEGjW3wq=u75JGjwX=g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] regulator: mt6360: Add optional mediatek.power-off-sequence
+ in bindings document
+To:     Rob Herring <robh@kernel.org>
+Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+        matthias.bgg@gmail.com, gene_chen@richtek.com,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, cy_huang <cy_huang@richtek.com>,
+        gene.chen.richtek@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 06:33:59AM +0900, Nobuhiro Iwamatsu wrote:
-> Convert serial for Cadence UART bindings documentation to YAML.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-> ---
->  .../devicetree/bindings/serial/cdns,uart.txt  | 27 --------
->  .../devicetree/bindings/serial/cdns,uart.yaml | 68 +++++++++++++++++++
->  2 files changed, 68 insertions(+), 27 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/serial/cdns,uart.txt
->  create mode 100644 Documentation/devicetree/bindings/serial/cdns,uart.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/cdns,uart.txt b/Documentation/devicetree/bindings/serial/cdns,uart.txt
-> deleted file mode 100644
-> index 4efc560f90abbd..00000000000000
-> --- a/Documentation/devicetree/bindings/serial/cdns,uart.txt
-> +++ /dev/null
-> @@ -1,27 +0,0 @@
-> -Binding for Cadence UART Controller
-> -
-> -Required properties:
-> -- compatible :
-> -  Use "xlnx,xuartps","cdns,uart-r1p8" for Zynq-7xxx SoC.
-> -  Use "xlnx,zynqmp-uart","cdns,uart-r1p12" for Zynq Ultrascale+ MPSoC.
-> -- reg: Should contain UART controller registers location and length.
-> -- interrupts: Should contain UART controller interrupts.
-> -- clocks: Must contain phandles to the UART clocks
-> -  See ../clocks/clock-bindings.txt for details.
-> -- clock-names: Tuple to identify input clocks, must contain "uart_clk" and "pclk"
-> -  See ../clocks/clock-bindings.txt for details.
-> -
-> -
-> -Optional properties:
-> -- cts-override : Override the CTS modem status signal. This signal will
-> -  always be reported as active instead of being obtained from the modem status
-> -  register. Define this if your serial port does not use this pin
-> -
-> -Example:
-> -	uart@e0000000 {
-> -		compatible = "cdns,uart-r1p8";
-> -		clocks = <&clkc 23>, <&clkc 40>;
-> -		clock-names = "uart_clk", "pclk";
-> -		reg = <0xE0000000 0x1000>;
-> -		interrupts = <0 27 4>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/serial/cdns,uart.yaml b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
-> new file mode 100644
-> index 00000000000000..ce467fa464bfd0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
-> @@ -0,0 +1,68 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/serial/cdns,uart.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cadence UART Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Michal Simek <michal.simek@xilinx.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/serial.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - description: UART controller for Zynq-7xxx SoC
-> +        items:
-> +          - enum:
-> +            - xlnx,xuartps
-> +            - cdns,uart-r1p8
+Hi, Rob:
 
-What you want is:
+Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B46=E6=9C=8812=E6=97=A5 =
+=E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=884:16=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Wed, Jun 02, 2021 at 02:54:34PM +0800, cy_huang wrote:
+> > From: ChiYuan Huang <cy_huang@richtek.com>
+> >
+> > Add optional mediatek.power-off-sequence in bindings document.
+> >
+> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > ---
+> > Hi,
+> >
+> > Originally, we think it must write in platform dependent code like as b=
+ootloader.
+> > But after the evaluation, it must write only when system normal HALT or=
+ POWER_OFF.
+> > For the other cases, just follow HW immediate off by default.
+>
+> Wouldn't this be handled by PSCI implementation?
+No, the current application default on powers buck1/buck2/ldo7/ldo6
+are for Dram power.
+It's not the soc core power. It seems not appropriate  to implement
+like as PSCI.
+MT6360 play the role for the subpmic in the SOC application reference desig=
+n.
+>
+> > ---
+> >  .../devicetree/bindings/regulator/mt6360-regulator.yaml       | 11 +++=
+++++++++
+> >  1 file changed, 11 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/regulator/mt6360-regulat=
+or.yaml b/Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml
+> > index a462d99..eaf36e2 100644
+> > --- a/Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml
+> > +++ b/Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml
+> > @@ -24,6 +24,16 @@ properties:
+> >    LDO_VIN3-supply:
+> >      description: Input supply phandle(s) for LDO6/7
+> >
+> > +  mediatek,power-off-sequence:
+> > +    description: |
+> > +      Power off sequence time selection for BUCK1/BUCK2/LDO7/LDO6, res=
+petively.
+> > +      Cause these regulators are all default-on power. Each value from=
+ 0 to 63,
+> > +      and step is 1. Each step means 2 millisecond delay.
+> > +      Therefore, the power off sequence delay time range is from 0ms t=
+o 126ms.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint8-array"
+> > +    minItems: 4
+> > +    maxItems: 4
+>
+> So this is the delay between BUCK1 and BUCK2, then BUCK2 to LDO7, etcc?
+No. you may misunderstand. there's an external 'Enable' pin that's
+connected to the main pmic.
+The starting point of delay time are all from  the external 'Enable' H to L=
+.
+Not one-by-one delay time,
+> If we wanted to express this in DT, we'd made this generic which would
+> need to be more flexible. A poweroff delay in each regulator (similar to
+> the existing power on delay) would be sufficient for what you need I
+> think.
+Power on sequence already defined by the part number, It's not decided by S=
+W.
+So for the flexibility, I implement it in DT.
 
-items:
-  - const: xlnx,xuartps
-  - const: cdns,uart-r1p8
+Duel to there're many part number MT6360 P/UP/LP, etc.
+The difference are the power on sequence.
 
-> +      - description: UART controller for Zynq Ultrascale+ MPSoC
-> +        items:
-> +          - enum:
-> +            - xlnx,zynqmp-uart
-> +            - cdns,uart-r1p12
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: uart_clk
-> +      - const: pclk
-> +
-> +  cts-override:
-> +    description: |
-> +      Override the CTS modem status signal. This signal will
-> +      always be reported as active instead of being obtained
-> +      from the modem status register. Define this if your serial
-> +      port does not use this pin.
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
+Do you have any suggestion about this situation?
 
-unevaluatedProperties: false
-
-because you could have child nodes with attached devices.
-
-> +
-> +examples:
-> +  - |
-> +    serial@e0000000 {
-> +      compatible = "cdns,uart-r1p8";
-
-This is wrong based on what the binding said.
-
-> +      clocks = <&clkc 23>, <&clkc 40>;
-> +      clock-names = "uart_clk", "pclk";
-> +      reg = <0xE0000000 0x1000>;
-> +      interrupts = <0 27 4>;
-> +    };
-> -- 
-> 2.32.0
+PS: Due to DRAM power usage , sometimes it also need to customized by
+the DRAM that customer choosed.
+It may differ from external DRAM part choosen following by JEDEC spec.
+>
+> Rob
