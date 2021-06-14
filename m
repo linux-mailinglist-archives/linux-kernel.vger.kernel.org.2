@@ -2,124 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F10E3A726C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7853B3A7272
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhFNXXS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Jun 2021 19:23:18 -0400
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:46692 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhFNXXR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 19:23:17 -0400
-Received: by mail-ej1-f41.google.com with SMTP id he7so19070052ejc.13;
-        Mon, 14 Jun 2021 16:21:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Mjn4ljykZJX6wf5SsiiT1XVgNk3B8Z6jPKynaaT/71I=;
-        b=VIRgXpsuhqtsUgP4Sc+c3rNb+XHO2ePoTdBRKWtxphcYidm2V1zAcV2fycMQIl9DG0
-         0L20E/YrQTTyYeWEQNq1B6jNp3rl3XEuiyLb1Q5L9eTzbOQd/xmdUN7qFA/kxibsSUvJ
-         SUDGuo9pSEGmeOp2YfV7G+goM12HqwWZ6tR6Ihz1IttsQ3EoXMW9IGakeGohwciiRJc5
-         l/449PYEl5uxlCJR2aiikNXGvuCRR1422823PZsWsGyWSuRimIbELrSZFSBk+G86yhql
-         EVH7/2eC4dW122VcWLge53JCfKhePwERAqUTpMPNkplRc9VaO1Ioi9eeKLd9vesq6Qy6
-         dquw==
-X-Gm-Message-State: AOAM5331AwnfK1JyOwBz6vjIyiIcOJCySRLOpqQXQyV9hsPv3/ITZzTI
-        lFtRu8uo8ZgGrRo9D86+2II=
-X-Google-Smtp-Source: ABdhPJyUmP/3hRcpGOQzPA/32Bp362+ANYKYRrh35FuBJdG3GgsfIbntCk0vm3fVrykLXRJM5SpXEg==
-X-Received: by 2002:a17:906:26db:: with SMTP id u27mr17664140ejc.532.1623712873308;
-        Mon, 14 Jun 2021 16:21:13 -0700 (PDT)
-Received: from localhost (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
-        by smtp.gmail.com with ESMTPSA id y20sm4862456ejm.44.2021.06.14.16.21.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 16:21:12 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 01:21:07 +0200
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, peppe.cavallaro@st.com,
-        alexandre.torgue@foss.st.com, kuba@kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, drew@beagleboard.org, kernel@esmil.dk
-Subject: Re: [PATCH net-next] stmmac: align RX buffers
-Message-ID: <20210615012107.577ead86@linux.microsoft.com>
-In-Reply-To: <20210614.125111.1519954686951337716.davem@davemloft.net>
-References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
-        <20210614.125111.1519954686951337716.davem@davemloft.net>
-Organization: Microsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229939AbhFNX2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 19:28:22 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57901 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229649AbhFNX2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 19:28:21 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G3ndM2Z21z9sW7;
+        Tue, 15 Jun 2021 09:26:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623713176;
+        bh=t6ATnoOYPpJMGmFo2AhsznoFooeXAebu8YAy2+PmRf4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hlHYPDkJ9U1VK5YsUTN/MHCDzPVyTz8m+GWsBoOYXQLj6GNC7eQz8tWbvwHzbNslG
+         G4UObBcyDtM6WQhJHq6CBmh/uFkYED+RMC+BcY4HxmNnR73YUDmNRbe5YfdJF9VaMD
+         4vmUrS4/Y/3r+XeoZLM5Kh4tl2XpbO+qVNo+JAgByUwVL1ZXpfmnQeSM0TK9hZ8Kpa
+         UIP+WTW0l5ilxFMaeyzRdcOe1cAX+so6wxZXjstOaryPrjo4EuZTOvUT/F+RvoiNTC
+         PsshRp1TCji6ThCl7XfpVKjVCYeN88ds9V4yVgwH8gxIsG6T2SWG4qQMgj8J5lGrb5
+         ry3ucflahNDxg==
+Date:   Tue, 15 Jun 2021 09:26:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: linux-next: manual merge of the risc-v tree with Linus' tree
+Message-ID: <20210615092614.2adc91af@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; boundary="Sig_/_bx4Ib2ZuFtz2k.2p9MMZOB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 12:51:11 -0700 (PDT)
-David Miller <davem@davemloft.net> wrote:
+--Sig_/_bx4Ib2ZuFtz2k.2p9MMZOB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> But thois means the ethernet header will be misaliugned and this will
-> kill performance on some cpus as misaligned accessed are resolved
-> wioth a trap handler.
-> 
-> Even on cpus that don't trap, the access will be slower.
-> 
-> Thanks.
+Hi all,
 
-Isn't the IP header which should be aligned to avoid expensive traps?
-From include/linux/skbuff.h:
+Today's linux-next merge of the risc-v tree got a conflict in:
 
- * Since an ethernet header is 14 bytes network drivers often end up with
- * the IP header at an unaligned offset. The IP header can be aligned by
- * shifting the start of the packet by 2 bytes. Drivers should do this
- * with:
- *
- * skb_reserve(skb, NET_IP_ALIGN);
+  arch/riscv/Kconfig
 
-But the problem here really is not the header alignment, the problem is
-that the rx buffer is copied into an skb, and the two buffers have
-different alignments.
-If I add this print, I get this for every packet:
+between commit:
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5460,6 +5460,8 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
-+               printk("skb->data alignment: %lu\n", (uintptr_t)skb->data & 7);
-+               printk("xdp.data alignment: %lu\n" , (uintptr_t)xdp.data & 7);
-                skb_copy_to_linear_data(skb, xdp.data, buf1_len);
+  42e0e0b453bc ("riscv: code patching only works on !XIP_KERNEL")
 
-[ 1060.967768] skb->data alignment: 2
-[ 1060.971174] xdp.data alignment: 0
-[ 1061.967589] skb->data alignment: 2
-[ 1061.970994] xdp.data alignment: 0
+from Linus' tree and commits:
 
-And many architectures do an optimized memcpy when the low order bits of the
-two pointers match, to name a few:
+  3332f4190674 ("riscv: mremap speedup - enable HAVE_MOVE_PUD and HAVE_MOVE=
+_PMD")
+  14512690a165 ("riscv: Enable HAVE_ARCH_HUGE_VMAP for 64BIT")
 
-arch/alpha/lib/memcpy.c:
-	/* If both source and dest are word aligned copy words */
-	if (!((unsigned int)dest_w & 3) && !((unsigned int)src_w & 3)) {
+from the risc-v tree.
 
-arch/xtensa/lib/memcopy.S:
-	/*
-	 * Destination and source are word-aligned, use word copy.
-	 */
-	# copy 16 bytes per iteration for word-aligned dst and word-aligned src
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-arch/openrisc/lib/memcpy.c:
-	/* If both source and dest are word aligned copy words */
-	if (!((unsigned int)dest_w & 3) && !((unsigned int)src_w & 3)) {
+--=20
+Cheers,
+Stephen Rothwell
 
-And so on. With my patch I (mis)align the two buffer at an offset 2
-(NET_IP_ALIGN) so the data can be copied faster:
+diff --cc arch/riscv/Kconfig
+index 18ec0f9bb8d5,227033595994..000000000000
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@@ -61,11 -60,12 +61,12 @@@ config RISC
+  	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+  	select HANDLE_DOMAIN_IRQ
+  	select HAVE_ARCH_AUDITSYSCALL
++ 	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT
+ -	select HAVE_ARCH_JUMP_LABEL
+ -	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ +	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+ +	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+  	select HAVE_ARCH_KASAN if MMU && 64BIT
+  	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+ -	select HAVE_ARCH_KGDB
+ +	select HAVE_ARCH_KGDB if !XIP_KERNEL
+  	select HAVE_ARCH_KGDB_QXFER_PKT
+  	select HAVE_ARCH_MMAP_RND_BITS if MMU
+  	select HAVE_ARCH_SECCOMP_FILTER
+@@@ -80,9 -81,11 +82,11 @@@
+  	select HAVE_GCC_PLUGINS
+  	select HAVE_GENERIC_VDSO if MMU && 64BIT
+  	select HAVE_IRQ_TIME_ACCOUNTING
+ -	select HAVE_KPROBES
+ -	select HAVE_KPROBES_ON_FTRACE
+ -	select HAVE_KRETPROBES
+ +	select HAVE_KPROBES if !XIP_KERNEL
+ +	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+ +	select HAVE_KRETPROBES if !XIP_KERNEL
++ 	select HAVE_MOVE_PMD
++ 	select HAVE_MOVE_PUD
+  	select HAVE_PCI
+  	select HAVE_PERF_EVENTS
+  	select HAVE_PERF_REGS
 
-[   16.648485] skb->data alignment: 2
-[   16.651894] xdp.data alignment: 2
-[   16.714260] skb->data alignment: 2
-[   16.717688] xdp.data alignment: 2
+--Sig_/_bx4Ib2ZuFtz2k.2p9MMZOB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Does this make sense?
+-----BEGIN PGP SIGNATURE-----
 
-Regards,
--- 
-per aspera ad upstream
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDH5ZYACgkQAVBC80lX
+0GwLYwgAjT/kEjzysOIaR0F47ozyxwFQnwcWbCWU2p1Plzmo0/6t4wGzznrNNbAK
+spUeP8u1TQWt/HVC/TkT/GkSvGss6LmSCm5l8WY1+MzvTw43nFwqZHZkhTrLyKCv
+IUGTsjUcPwl+KO+LkphpYbsGTknnswNhXthAMNi4OS4DP1+NDmeLzFymNzYAmrXE
+jcX4XhG0LPO6UQIx0ZJz02Jqxg9utYBhwLSO+WFxsqLMN8NTr9xfgHOym7HG+qiu
+yPOcURkeJVhlL0MfCT1wu951vDm+wNherOTcY/BJVi2bI8NUlAXHGCg1IGQrxYTL
+7qHVwWVLdaeHS4Q//POUi0kqQCFvxA==
+=O1qM
+-----END PGP SIGNATURE-----
+
+--Sig_/_bx4Ib2ZuFtz2k.2p9MMZOB--
