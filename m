@@ -2,90 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B943A71E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DAB3A71EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 00:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhFNW1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 18:27:43 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47951 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhFNW1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 18:27:42 -0400
-IronPort-SDR: 0od/GL/+NNiRXXG9lTAO5nci3OhucSKjeS4FxvxorVyvkMJkdydE0DbfVPdNvv7JfWpriODw6c
- rtp3sx42hFMw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="267036265"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="267036265"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 15:25:37 -0700
-IronPort-SDR: f3cWHzUgT7jOHyd18r0lRpwulvZFohRS6R6d8U3a3GjP0mGiz8IX9Deg8m4O6CSPo1Ke9C6ZtZ
- iemaKmp/xt/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="471452825"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Jun 2021 15:25:37 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 14 Jun 2021 15:25:37 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 14 Jun 2021 15:25:37 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.008;
- Mon, 14 Jun 2021 15:25:37 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        Robert Richter <rric@kernel.org>
-Subject: RE: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA
- feature bit is not exposed
-Thread-Topic: [PATCH] EDAC/mce_amd: Reduce unnecessary spew in dmesg if SMCA
- feature bit is not exposed
-Thread-Index: AQHXYWNK3FqBHVBWmECrS7erxBQl9KsUhEiA//+OjFA=
-Date:   Mon, 14 Jun 2021 22:25:36 +0000
-Message-ID: <16a34b6834f94f139444c2ff172645e9@intel.com>
-References: <20210614212129.227698-1-Smita.KoralahalliChannabasappa@amd.com>
- <YMfRxX/M4rJ5gM/R@zn.tnic>
-In-Reply-To: <YMfRxX/M4rJ5gM/R@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231524AbhFNWaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 18:30:05 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:39573 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231187AbhFNW36 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 18:29:58 -0400
+Received: by mail-pl1-f175.google.com with SMTP id v11so7397522ply.6;
+        Mon, 14 Jun 2021 15:27:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=2wHRYHn3irCXYL7For+pyhXkLVm13sKB64rDtBd32VI=;
+        b=PqSXodK6N07bLspEMMWcvPzitnStxehhQAiPSELS8T8LHkqJ0thnWFLh49SdacSsY2
+         mwfEWmZE7gfRIKKrAJKzf0VnP2FQu83DYScL0qtL+6yBz6jC1D5neNbKVRIq4KsrpMRl
+         iCPzp1pYJ1cP2aDk2+Dpen5zvQYeeZLZPGYVT6X2hqVbQF+MvERc2iXu6jx6u/pnw5TQ
+         lw22OikSINSCmlJW/cE92LS/dSqsVtBmKWHpdhqov40mrW+SFoZLlAVSRfuerKVbXygy
+         N/bQ7S8MIEF8SQrb/cElur2NuQ7OL7I6/uGHuF/rCCsZ2J/13LS4CUGB5siOxSzSuS12
+         I55Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=2wHRYHn3irCXYL7For+pyhXkLVm13sKB64rDtBd32VI=;
+        b=Y+cU/HPfXO5c/xoeDQy+MFb4TXwWaQ5TNBHbgMp3GFhHWSBqmHwWHYwPkikRzfz8Qe
+         GacRkim1qF5uwBPPHIbjtGDUArgOzIH1OJf5FAkdRHT/2VhvY30qBuPx1jEqOYMjozge
+         avUrqiemtjyw3Itu8MgDQ2PHndI5UxP3D4z69g6ybxp2kp1p+WQLkk84zxi4ZLEqTqbG
+         yx05kQdVC1IjludNm3gJCTNi6fnrsnnqlm145ddJ+vRhSLvk7clb2js72Jh9/JDyn8n/
+         4AVTiF1vd1O4tPop2v++UWmKhCkjG5t0J/HGF6Kv8Sw+WA4DwFUxLW0h9EeC91nNA5oq
+         KB8g==
+X-Gm-Message-State: AOAM532lcb88IouolVlZTQHkDgQBx1CU1GITEqFWNeR8xxOWiZj489cm
+        lfP4OACDBP2pVCC2E9I5sFU=
+X-Google-Smtp-Source: ABdhPJygbvcn8zCklBMa7quiEyd7aRA7FuUVFrWXN9QUvOlCU/oXa2HsIJAJXO6Bh4uxWBVrg4utBg==
+X-Received: by 2002:a17:902:8d92:b029:113:91e7:89d6 with SMTP id v18-20020a1709028d92b029011391e789d6mr1282283plo.85.1623709601728;
+        Mon, 14 Jun 2021 15:26:41 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:108d:81dd:b77d:48cd? ([2001:df0:0:200c:108d:81dd:b77d:48cd])
+        by smtp.gmail.com with ESMTPSA id j4sm433096pjv.7.2021.06.14.15.26.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 15:26:41 -0700 (PDT)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <87sg1p30a1.fsf@disp2133>
+ <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+ <87pmwsytb3.fsf@disp2133>
+ <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133>
+ <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+Date:   Tue, 15 Jun 2021 10:26:33 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <87eed4v2dc.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBCdXQgYXBwYXJlbnRseSB0aG9zZSB3cm9uZyBlcnJvciBtZXNzYWdlcyBidWcgcGVvcGxlIG9u
-IGEgcmVndWxhciBiYXNpcw0KPiBhbmQgSSdtIHRpcmVkIG9mIHR5cGluZyB0aGlzIGVhY2ggdGlt
-ZSBzbyBJJ2xsIHRha2UgYSBkaWZmZXJlbnQgdmVyc2lvbg0KPiBvZiB0aGlzIHBhdGNoOiBjaGVj
-ayBYODZfRkVBVFVSRV9IWVBFUlZJU09SIG9uIGVudHJ5IGluIG1jZV9hbWRfaW5pdCgpDQo+IGFu
-ZCByZXR1cm4gLUVOT0RFViBpZiBzZXQuDQo+DQo+IFNvIHRoYXQgdGhpcyBpcyBkb25lIG9uY2Ug
-YW5kIGZvciBhbGwuDQoNCkkgZXhwZWN0IGFsbCB0aGUgSW50ZWwgRURBQyBkcml2ZXJzIHRoYXQg
-bG9hZCBiYXNlZCBvbiBDUFUgbW9kZWwgaGF2ZSBzaW1pbGFyDQppc3N1ZXMuIE1heWJlIHRoZXkg
-YXJlbid0IHdoaW5pbmcgYXMgbG91ZGx5IGFib3V0IG5vdCBiZWluZyBhYmxlIHRvIGZpbmQgdGhl
-DQptZW1vcnkgY29udHJvbGxlciBkZXZpY2VzPw0KDQpUaGV5IHNob3VsZCBhbHNvIGNoZWNrIGZv
-ciBYODZfRkVBVFVSRV9IWVBFUlZJU09SIHRvby4NCg0KJCBnaXQgZ3JlcCAtbCB4ODZfbWF0Y2hf
-Y3B1IC0tIGRyaXZlcnMvZWRhYw0KZHJpdmVycy9lZGFjL2FtZDY0X2VkYWMuYw0KZHJpdmVycy9l
-ZGFjL2kxMG5tX2Jhc2UuYw0KZHJpdmVycy9lZGFjL2llaF9lZGFjLmMNCmRyaXZlcnMvZWRhYy9w
-bmQyX2VkYWMuYw0KZHJpdmVycy9lZGFjL3NiX2VkYWMuYw0KZHJpdmVycy9lZGFjL3NreF9iYXNl
-LmMNCg0KVGhvdWdoIHBlcmhhcHMgdGhpcyBpcyBhbiBpc3N1ZSBvdXRzaWRlIG9mIEVEQUMgYW5k
-IHg4Nl9tYXRjaF9jcHUoKQ0KY291bGQgZG8gdGhlIEhZUEVSVklTT1IgY2hlY2sgYW5kIHJldHVy
-biBubyBtYXRjaC4gVGhlIGZldyBjYWxsZXJzDQp3aG8gd2FudCB0byBiZWxpZXZlIHRoZSBmaWN0
-aW9uYWwgQ1BVIG1vZGVsIG51bWJlciBwYXNzZWQgaW4gYnkgdGhlDQpWTU0gd291bGQgbmVlZCB0
-byB1c2Ugc29tZSBuZXcgdmFyaWFudCBvZiB0aGUgY2FsbD8NCg0KLVRvbnkNCg0KDQo=
+Hi Eric,
+
+On 15/06/21 4:26 am, Eric W. Biederman wrote:
+> Michael Schmitz <schmitzmic@gmail.com> writes:
+>
+>> On second thought, I'm not certain what adding another empty stack frame would
+>> achieve here.
+>>
+>> On m68k, 'frame' already is a new stack frame, for running the new thread
+>> in. This new frame does not have any user context at all, and it's explicitly
+>> wiped anyway.
+>>
+>> Unless we save all user context on the stack, then push that context to a new
+>> save frame, and somehow point get_signal to look there for IO threads
+>> (essentially what Eric suggested), I don't see how this could work?
+>>
+>> I must be missing something.
+> It is only designed to work well enough so that ptrace will access
+> something well defined when ptrace accesses io_uring tasks.
+>
+> The io_uring tasks are special in that they are user process
+> threads that never run in userspace.  So as long as everything
+> ptrace can read is accessible on that process all is well.
+OK, I'm testing a patch that would save extra context in 
+sys_io_uring_setup, which ought to ensure that for m68k.
+> Having stared a bit longer at the code I think the short term
+> fix for both of PTRACE_EVENT_EXIT and io_uring is to guard
+> them both with CONFIG_HAVE_ARCH_TRACEHOOK.
+
+Fair enough :-)
+
+Cheers,
+
+     Michael
+
+>
+> Today CONFIG_HAVE_ARCH_TRACEHOOK guards access to /proc/self/syscall.
+> Which out of necessity ensures that user context is always readable.
+> Which seems to solve both the PTRACE_EVENT_EXIT and the io_uring
+> problems.
+>
+> What I especially like about that is there are a lot of other reasons
+> to encourage architectures in a CONFIG_HAVE_ARCH_TRACEHOOK direction.
+> I think the biggies are getting architectures to store the extra
+> saved state on context switch into some place in task_struct
+> and to implement the regset view of registers.
+>
+> Hmm. This is odd. CONFIG_HAVE_ARCH_TRACEHOOK is supposed to imply
+> CORE_DUMP_USE_REGSET.  But alpha, csky, h8300, m68k, microblaze, nds32
+> don't implement CORE_DUMP_USE_REGSET but nds32 implements
+> CONFIG_ARCH_HAVE_TRACEHOOK.
+>
+> I will keep digging and see what clean code I can come up with.
+>
+> Eric
