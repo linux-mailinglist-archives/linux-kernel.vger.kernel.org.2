@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4A33A64EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF903A6360
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbhFNLbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:31:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45480 "EHLO mail.kernel.org"
+        id S234544AbhFNLML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235094AbhFNLQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:16:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14A296197E;
-        Mon, 14 Jun 2021 10:50:16 +0000 (UTC)
+        id S233542AbhFNLAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:00:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29B17616E8;
+        Mon, 14 Jun 2021 10:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667817;
-        bh=J5V1QVOgXXFiFt0IqM+CYK36Ta3RwIHNPWq3G/S5GvI=;
+        s=korg; t=1623667403;
+        bh=VZ/ENGE4XB58SeaMCsAVSvMQ7wntz0LNTmoyEOmP4LE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BGTGlxwk3/pYBr78/9ANVfQKwg6NwMYdxiSiINX7V56gFkiwPxba1gyasnXFj4SKn
-         VnYkHyFLSMjHsSQ1eVHvIAhK9NYwcvzJgp8c1RzmtOjwZ3Xc+teQZUk5nDqjw6GgZX
-         IMW9HerLxeMmVQ6XCuAuuLiVE/3AhCr4iB/AXj4I=
+        b=TIuoK9Nga9WOkOndn0L7SFN4oNBJ43B9JeITt7dnXiTl8o+Y9u+CfTyi8z8+utRuq
+         Rqt3a7cigS/N2s+/nRk5gcI9V0tNMqaQc6hD+ipAZ46X9eR69J+o71LxF35LofZtxp
+         /RO23A6Vt5EidqcWL8xRkPOx5JWg8UtJE0E6c1MY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
-        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 5.12 086/173] usb: f_ncm: only first packet of aggregate needs to start timer
-Date:   Mon, 14 Jun 2021 12:26:58 +0200
-Message-Id: <20210614102701.028134047@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Artemiy Margaritov <artemiy.margaritov@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 058/131] kvm: avoid speculation-based attacks from out-of-range memslot accesses
+Date:   Mon, 14 Jun 2021 12:26:59 +0200
+Message-Id: <20210614102654.991383789@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
-References: <20210614102658.137943264@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 1958ff5ad2d4908b44a72bcf564dfe67c981e7fe upstream.
+commit da27a83fd6cc7780fea190e1f5c19e87019da65c upstream.
 
-The reasoning for this change is that if we already had
-a packet pending, then we also already had a pending timer,
-and as such there is no need to reschedule it.
+KVM's mechanism for accessing guest memory translates a guest physical
+address (gpa) to a host virtual address using the right-shifted gpa
+(also known as gfn) and a struct kvm_memory_slot.  The translation is
+performed in __gfn_to_hva_memslot using the following formula:
 
-This also prevents packets getting delayed 60 ms worst case
-under a tiny packet every 290us transmit load, by keeping the
-timeout always relative to the first queued up packet.
-(300us delay * 16KB max aggregation / 80 byte packet =~ 60 ms)
+      hva = slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE
 
-As such the first packet is now at most delayed by 300us.
+It is expected that gfn falls within the boundaries of the guest's
+physical memory.  However, a guest can access invalid physical addresses
+in such a way that the gfn is invalid.
 
-Under low transmit load, this will simply result in us sending
-a shorter aggregate, as originally intended.
+__gfn_to_hva_memslot is called from kvm_vcpu_gfn_to_hva_prot, which first
+retrieves a memslot through __gfn_to_memslot.  While __gfn_to_memslot
+does check that the gfn falls within the boundaries of the guest's
+physical memory or not, a CPU can speculate the result of the check and
+continue execution speculatively using an illegal gfn. The speculation
+can result in calculating an out-of-bounds hva.  If the resulting host
+virtual address is used to load another guest physical address, this
+is effectively a Spectre gadget consisting of two consecutive reads,
+the second of which is data dependent on the first.
 
-This patch has the benefit of greatly reducing (by ~10 factor
-with 1500 byte frames aggregated into 16 kiB) the number of
-(potentially pretty costly) updates to the hrtimer.
+Right now it's not clear if there are any cases in which this is
+exploitable.  One interesting case was reported by the original author
+of this patch, and involves visiting guest page tables on x86.  Right
+now these are not vulnerable because the hva read goes through get_user(),
+which contains an LFENCE speculation barrier.  However, there are
+patches in progress for x86 uaccess.h to mask kernel addresses instead of
+using LFENCE; once these land, a guest could use speculation to read
+from the VMM's ring 3 address space.  Other architectures such as ARM
+already use the address masking method, and would be susceptible to
+this same kind of data-dependent access gadgets.  Therefore, this patch
+proactively protects from these attacks by masking out-of-bounds gfns
+in __gfn_to_hva_memslot, which blocks speculation of invalid hvas.
 
-Cc: Brooke Basile <brookebasile@gmail.com>
-Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Link: https://lore.kernel.org/r/20210608085438.813960-1-zenczykowski@gmail.com
-Cc: stable <stable@vger.kernel.org>
+Sean Christopherson noted that this patch does not cover
+kvm_read_guest_offset_cached.  This however is limited to a few bytes
+past the end of the cache, and therefore it is unlikely to be useful in
+the context of building a chain of data dependent accesses.
+
+Reported-by: Artemiy Margaritov <artemiy.margaritov@gmail.com>
+Co-developed-by: Artemiy Margaritov <artemiy.margaritov@gmail.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_ncm.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/linux/kvm_host.h |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -1101,11 +1101,11 @@ static struct sk_buff *ncm_wrap_ntb(stru
- 			ncm->ndp_dgram_count = 1;
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1104,7 +1104,15 @@ __gfn_to_memslot(struct kvm_memslots *sl
+ static inline unsigned long
+ __gfn_to_hva_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
+ {
+-	return slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE;
++	/*
++	 * The index was checked originally in search_memslots.  To avoid
++	 * that a malicious guest builds a Spectre gadget out of e.g. page
++	 * table walks, do not let the processor speculate loads outside
++	 * the guest's registered memslots.
++	 */
++	unsigned long offset = array_index_nospec(gfn - slot->base_gfn,
++						  slot->npages);
++	return slot->userspace_addr + offset * PAGE_SIZE;
+ }
  
- 			/* Note: we skip opts->next_ndp_index */
--		}
- 
--		/* Delay the timer. */
--		hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
--			      HRTIMER_MODE_REL_SOFT);
-+			/* Start the timer. */
-+			hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
-+				      HRTIMER_MODE_REL_SOFT);
-+		}
- 
- 		/* Add the datagram position entries */
- 		ntb_ndp = skb_put_zero(ncm->skb_tx_ndp, dgram_idx_len);
+ static inline int memslot_id(struct kvm *kvm, gfn_t gfn)
 
 
