@@ -2,280 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1CE3A64C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F293A64D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbhFNL2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:28:43 -0400
-Received: from mail-eopbgr70117.outbound.protection.outlook.com ([40.107.7.117]:28738
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235449AbhFNLOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:14:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NZdwyrREOLl8uIIAQ41O9BfUwcLbKNNmWhe0+/b3vmRCWRN/IlS9lfw8C/PMa0pRIoe7KO6y+oaWnk4LCsymILzDWClu+tdJNl23hlP/BU+YANeavZxdgv8pVa7Kv56GkZ2PrI/TPoXYdBLokbSlqpOAHT+HBI7f/eYCk/pvNR7Tc+wDoxXirrorxrMKeZHJ5HWt6F5CEsrDxqeFIufPiwYPv7mlOjWoPflEXVbM55kMQ39VCNa2pL56nnsNe2waSy9G2670qbp9M0rNZfHww3W6VXwvaoTMJMRYkOPY9pk8wts73rQvynYwSDbCNPTY47SGl/dFvdebrZM3mp8NNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S8fcXJuROxqeInq1RchMCbj7+OLNuyY4zfvnxjiCZ1A=;
- b=W+ryq2LSuZnOH5qUm5TmFXesrBwsBe61zMlEffMJ/X6DhdJPhVwlIo6If5r0Zlv/P1BNyReNe9A06m5Sn9DvnY9iTY9WVEWSzSdfmdXrD0hgGuy+yyHcKxZhpUqMMvGeD8jFpfUnsvhRssYy5nsUkfsU1PmdBDeaqiV358KcyMDkFgIBJo0IYhYoTIvlh9uFjiJz2J8hzP+YWJdOsTc/4iZeoUcrPI1WhPBSSYWv/QkSxtNrGe/nMP4Qw09jixB3rsvF2rp2tgfOnlsS9tPFtPEzS+AknH3b2qys27Vosa1XUt7v/VCoPGGywWFrotJzFFhIWo6yiNap+K1YfQXXsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silk.us; dmarc=pass action=none header.from=silk.us; dkim=pass
- header.d=silk.us; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=KAMINARIO.onmicrosoft.com; s=selector2-KAMINARIO-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S8fcXJuROxqeInq1RchMCbj7+OLNuyY4zfvnxjiCZ1A=;
- b=oXEkV70uoWoE29mQbFvCwScqEFtuCqBR6qAV+uIkayG2Waz7pkPpo5q41pQiF2fyQ5D0osxi36hNtDxRRGPcGrGa8EG1WmPGsJhlg5/ekYkpR6kWK9e+OLQX5iepKMeIfkT16fo1u8mm6WuEsmGQGwBFVzD8SYfy0Tdo8de4pIk=
-Received: from AM6PR04MB5639.eurprd04.prod.outlook.com (2603:10a6:20b:ad::22)
- by AM5PR0401MB2657.eurprd04.prod.outlook.com (2603:10a6:203:38::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Mon, 14 Jun
- 2021 11:12:03 +0000
-Received: from AM6PR04MB5639.eurprd04.prod.outlook.com
- ([fe80::91d3:83e4:d90:a710]) by AM6PR04MB5639.eurprd04.prod.outlook.com
- ([fe80::91d3:83e4:d90:a710%7]) with mapi id 15.20.4219.025; Mon, 14 Jun 2021
- 11:12:03 +0000
-From:   David Mozes <david.mozes@silk.us>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: futex/call -to plist_for_each_entry_safe with head=NULL
-Thread-Topic: futex/call -to plist_for_each_entry_safe with head=NULL
-Thread-Index: AQHXYE57zRithvFGzkuN4Iof4OaWJKsSXfgAgAD2lgA=
-Date:   Mon, 14 Jun 2021 11:12:03 +0000
-Message-ID: <AM6PR04MB5639FBD246251DEF694AB02FF1319@AM6PR04MB5639.eurprd04.prod.outlook.com>
-References: <AM6PR04MB563958D1E2CA011493F4BCC8F1329@AM6PR04MB5639.eurprd04.prod.outlook.com>
- <YMZkwsa4yQ/SsMW/@casper.infradead.org>
-In-Reply-To: <YMZkwsa4yQ/SsMW/@casper.infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=silk.us;
-x-originating-ip: [80.179.89.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9650d3b3-b6e0-46e5-d8ad-08d92f253d22
-x-ms-traffictypediagnostic: AM5PR0401MB2657:
-x-microsoft-antispam-prvs: <AM5PR0401MB2657797CA1D25200D25DDAA6F1319@AM5PR0401MB2657.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UdeJk3XDcscG9QQwc263vKz0nOC3FK06jPgKrrlAvSMc+ZFQ5A0qmRSV7vgPPGCCBsNl5GRjf8vMeKolqv0OiFNZBkcahP7FOXm+8TIVYt2qqkDJMIb6SH+N2K/lvySSPtSk9gebuTPMAZLJrfFH8Z/gXIerAmFgiHvXivjFtRudVTrq4NMkuhozgcCHNJdEdJIbXenUMnD9usxGRQt/JQUAIMPIz+c3J23w636sKJ5nfh96wLB/XH1fHGEp/EfcfyYOQsMiSsZehqXOcjL7TGRy5l1eTUe57DHJ/Z6vOuk+gDD72A1m0OfUj5tctZmmwdUdL6+rt0nTfJYy1+Mf6Gf08w0gW6QabMN0Co0PWUKtMkvziLIXH6/waLW9JXTikNXq7m648jhzqurKImtOSC3757ZRRlFIaRljd3YJwHO2LmGUo4H8Z66nQVt5QwG6NLGEcjmsoDx0hNEVVBT/2oeInp2tVC4J4dAIH6TRAREd82NmT+fn8Rp72wJDsvRImAB7tPypTUAuUklu5dYQl/VE5rk012vnlh3IioY0+2Zc51rHXLSlZdwPfHGbLNYWsskH9rIekOeKaulbnKt2vC+eA0DGCrGqluTPKOXzfzX+HCoIdrVLU5A7V4N3GSBom6c68GziUS5OkufRdFdBvQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5639.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(39850400004)(396003)(366004)(316002)(26005)(55016002)(9686003)(186003)(4326008)(122000001)(38100700002)(8676002)(54906003)(2906002)(8936002)(478600001)(66946007)(83380400001)(53546011)(6916009)(6506007)(5660300002)(44832011)(7696005)(86362001)(52536014)(76116006)(45080400002)(33656002)(64756008)(71200400001)(66476007)(66556008)(66446008)(80162007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?7CwdztlxTlQ/ksaM/RoulPxnu00LNAemVcJQW4K6ext6xoqyd4KSrseo8L?=
- =?iso-8859-1?Q?snyEeNDQ71EnvCFobq32b5bVqXbE0yjoKfhky6iIyHqij8i84bVL5wwE6P?=
- =?iso-8859-1?Q?KJd+kAyAZ5FhZ1iHwTBaCqmCXtS0KvrDKDOJcQZlIi/8S8GHEzh4/evanF?=
- =?iso-8859-1?Q?/f7f1+lNW8nhf+Gj6PE1PkE7ag6mEKoaX5/UuGprkssGidPxNXmVsL7QEP?=
- =?iso-8859-1?Q?a/96IRpMOzRdVgJa1KbOkJXaaNh9g+hlJL8FAAgGF9LgahUbId2J1i5JkE?=
- =?iso-8859-1?Q?MbawUvsPn7WVozMPKP+d9+SU6IEJ9EjwogC09TEcl8cuVjj0W+Y7EsWAlI?=
- =?iso-8859-1?Q?4CrW8+WvaaEpRu1iWK5kktIRckQI3Wt4aE2KHcjxoL4AwgAb4ZuX+8V9A+?=
- =?iso-8859-1?Q?TKmR3juYVbJZTHqI/CUkl7/dfGNNZTCppCA8KAEZ7CFGdX+O+4bujSqODY?=
- =?iso-8859-1?Q?7vsW0u05jSZL0CKcxiiG8JPep7i+46gvkR/xQUYltjfiIMe0x3ZANz36XW?=
- =?iso-8859-1?Q?mJ/TL2fbBGx+2YSOpwAYu4+xrYTt7HZzcD3THv32tpnmF5XC6st6vat8t3?=
- =?iso-8859-1?Q?iKrCtHUsQxmFjuv4dluUVFWX0qXFrwMlXZ7PZe1Y9vEvM46nrm6xNg428B?=
- =?iso-8859-1?Q?0FwZia4UCDGMILMkmq/TqR8o8Z74U4r/13gXJxSfvELLTj3KtLo4fVap0N?=
- =?iso-8859-1?Q?6j8cojVUDZ15fn1xL9U6dbbLBWf0g2VeAwiFe3xBS0n9TZeMGUt2oSbFfx?=
- =?iso-8859-1?Q?x5ECS4hn++86jxBolsyzvGQj9wW1/Z0vdxSXD4kbOX/NdV474yLtkG7Pw6?=
- =?iso-8859-1?Q?qA8QA0unCtpgCoQpt236dZckwIPxpiE3cWglLMswtP10wkg7c7p+2TE6vg?=
- =?iso-8859-1?Q?SJvIzXfKKoAqMsOkvYLPmXO9tg7DuRiKwXVc8ylPhUNR52sKM7+7YUSS9x?=
- =?iso-8859-1?Q?Q22pCMRNinlcuoPqcvgTurMBzMaO2bozS8uDxD7gyjrwv6DXweg93JZ+Va?=
- =?iso-8859-1?Q?Prc5QYqVwjIXlO83ufaYgPPrIwReDdXjj8W/5Cs5cuXd554vLfd0PnCJTX?=
- =?iso-8859-1?Q?42kpc51PdiIMifksP6gYEpakbqiQT8QQr6QJB9bFwcWHiowwk3HF169l/N?=
- =?iso-8859-1?Q?Umpc0yBrQ1wVBjBrcuTzR3aqVg/sQwTO7HO1GBf9/UoCc26EzPlUiuNVfR?=
- =?iso-8859-1?Q?S5uAxv1aR7IFu3mRqY8r+EXOfE7QwKTBlBE3sa85A4r7NGAwppF+RcucXs?=
- =?iso-8859-1?Q?Tk0hyLt/koWYAdITs0pT0TSC0ud91hV+7A/wxjNAMCLvOwHyTReoHxxyqG?=
- =?iso-8859-1?Q?mQNR3KIyBAus34Z7p7B9V0olTdXfr/ytJM6oa+rXC2XfQak=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S236046AbhFNL3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:29:42 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:39650 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235696AbhFNLOi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:14:38 -0400
+Received: by mail-io1-f72.google.com with SMTP id n1-20020a6b8b010000b02904be419d64eeso14350094iod.6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 04:12:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=NeLkXXASh21M69mAfwaOBicjaWen+btZJMPkBkicr9U=;
+        b=pZrUjX6KJMZBSfppAa2n4zzMXAIAHOMlmYI/Ol55EnD++tB4koTkQKzS0wSsQ4u3Rc
+         gw9dmxoiTMQyQAYbloSgyYrGo6ilKcK2YzPcJ9Vm1jqY9hDYkcGBH/bKjsORgiQFN43F
+         5ZbnEV4pimkcVaxWouvLULHsypWazKO8wCOLOjJ8k0xQIJWr64kEaFaHCR/9At3NkBig
+         N4ECU/qUAHLqAMa338bbahSRiJWl5ZfMm5+jm9m49Hk1/eiiEGhyjaRD31sahS+N4H/B
+         EoGEq4ayKnF8Zf0FHBWdY3KRySdYVTQckd78CKEGg1kUkHOUiKkdVVEDvXpZb2eMapV5
+         xYTw==
+X-Gm-Message-State: AOAM533JY6TK0laZTr+fDp1yLh0TIeqFP3pVwSCQB++Non14F682mvLS
+        3aaI5A8Xzs1HhRLIURoLojR7Jp7yRgl9QegvamZUWy620WWv
+X-Google-Smtp-Source: ABdhPJxomWz0H427AcDUAWX1WQpbscXIHwlYAOFYZDEwUW8frxVyLHSC+3M7w4ggUvSf0/Aw7apxIxsZ6u/F8vbsTtF2C5kbaIZU
 MIME-Version: 1.0
-X-OriginatorOrg: silk.us
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5639.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9650d3b3-b6e0-46e5-d8ad-08d92f253d22
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2021 11:12:03.5235
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4a3c5477-cb0e-470b-aba6-13bd9debb76b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7gzvupXTEBJHyST0axpZ4b7cyL9hbAgDTWGGgc8xYBz6XHOivDdy0sm5aRhM7pHBvTEgFPIULSv6h+TYqSZYhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0401MB2657
+X-Received: by 2002:a05:6638:168d:: with SMTP id f13mr16430226jat.124.1623669140859;
+ Mon, 14 Jun 2021 04:12:20 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 04:12:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005fb5a005c4b7ee3f@google.com>
+Subject: [syzbot] INFO: trying to register non-static key in ath9k_wmi_event_tasklet
+From:   syzbot <syzbot+31d54c60c5b254d6f75b@syzkaller.appspotmail.com>
+To:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Matthew
+Hello,
 
-1) You are probably correct regarding the place the actual crash happened u=
-nless something happens in-betweens....
-But that what the gdb told us in addition, the RDI shows us the value of 0x=
-00000246.=20
+syzbot found the following issue on:
 
+HEAD commit:    e89bb428 usb: gadget: u_audio: add real feedback implement..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=124450f7d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=33d364f85e0000cd
+dashboard link: https://syzkaller.appspot.com/bug?extid=31d54c60c5b254d6f75b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1205b4ebd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148b2570300000
 
-Jun 10 20:49:40 c-node04 kernel: [97562.144463] BUG: unable to handle kerne=
-l NULL pointer dereference at 0000000000000246
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] PGD 2012ee4067 P4D 2012ee40=
-67 PUD 20135a0067 PMD 0
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] Oops: 0000 [#1] SMP
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] CPU: 36 PID: 12668 Comm: ST=
-AR4BLKS0_WORK Kdump: loaded Tainted: G        W  OE     4.19.149-KM6 #1
-Jun 10 20:49:40 c-node04 kram: rpoll(0x7fe624135b90, 85, 50) returning 0 ti=
-mes: 0, 0, 0, 2203, 0 ccount 42
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] Hardware name: Microsoft Co=
-rporation Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] RIP: 0010:do_futex+0xdf/0xa=
-90
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] Code: 08 4c 8d 6d 08 48 8b =
-3a 48 8d 72 e8 49 39 d5 4c 8d 67 e8 0f 84 89 00 00 00 31 c0 44 89 3c 24 41 =
-89 df 44 89 f3 41 89 c6 eb 16 <49> 8b 7c
-24 18 49 8d 54 24 18 4c 89 e6 4c 39 ea 4c 8d 67 e8 74 58
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] RSP: 0018:ffff97f6ea8bbdf0 =
-EFLAGS: 00010283
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] RAX: 00007f6db1a5d000 RBX: =
-0000000000000001 RCX: ffffa5530c5f0140
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] RDX: ffff97f6e4287d58 RSI: =
-ffff97f6e4287d40 RDI: 0000000000000246
-Jun 10 20:49:40 c-node04 kram: rpoll(0x7fe62414a860, 2, 50) returning 0 tim=
-es: 0, 0, 0, 2191, 0 ccount 277
-Jun 10 20:49:40 c-node04 kernel: [97562.145450] RBP: ffffa5530c5bd580 R08: =
-00007f6db1a5d9c0 R09: 0000000000000001
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+31d54c60c5b254d6f75b@syzkaller.appspotmail.com
 
-
-2) In addition, we got a second crash on the same function a few lines abov=
-e the previous one=20
-
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? pointer+0x137/0x350
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  printk+0x58/0x6f
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  panic+0xce/0x238
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? do_futex+0xa3d/0xa90
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  __stack_chk_fail+0x15/0x20
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  do_futex+0xa3d/0xa90
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? plist_add+0xc1/0xf0
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? plist_add+0xc1/0xf0
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? plist_del+0x5f/0xb0
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  __schedule+0x243/0x830
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? schedule+0x28/0x80
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? exit_to_usermode_loop+0x=
-57/0xe0
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? prepare_exit_to_usermode=
-+0x70/0x90
-Jun 12 11:20:43 c-node06 kernel: [91837.319613]  ? retint_user+0x8/0x8
-
-
-(gdb) l *do_futex+0xa3d
-0xffffffff8113985d is in do_futex (kernel/futex.c:1742).
-1737			if (!(flags & FLAGS_SHARED)) {
-1738				cond_resched();
-1739				goto retry_private;
-1740			}
-1741=09
-1742			put_futex_key(&key2);
-1743			put_futex_key(&key1);
-1744			cond_resched();
-1745			goto retry;
-1746		}
-(gdb)
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 0 PID: 10 Comm: ksoftirqd/0 Not tainted 5.13.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x143/0x1db lib/dump_stack.c:120
+ assign_lock_key kernel/locking/lockdep.c:937 [inline]
+ register_lock_class+0x1077/0x1180 kernel/locking/lockdep.c:1249
+ __lock_acquire+0x102/0x5230 kernel/locking/lockdep.c:4781
+ lock_acquire kernel/locking/lockdep.c:5512 [inline]
+ lock_acquire+0x19d/0x700 kernel/locking/lockdep.c:5477
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ ath9k_wmi_event_tasklet+0x231/0x3f0 drivers/net/wireless/ath/ath9k/wmi.c:172
+ tasklet_action_common.constprop.0+0x201/0x2e0 kernel/softirq.c:784
+ __do_softirq+0x1b0/0x944 kernel/softirq.c:559
+ run_ksoftirqd kernel/softirq.c:921 [inline]
+ run_ksoftirqd+0x21/0x50 kernel/softirq.c:913
+ smpboot_thread_fn+0x3ec/0x870 kernel/smpboot.c:165
+ kthread+0x38c/0x460 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 10 at drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:656 ath9k_htc_txstatus+0x3bb/0x500 drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:656
+Modules linked in:
+CPU: 0 PID: 10 Comm: ksoftirqd/0 Not tainted 5.13.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ath9k_htc_txstatus+0x3bb/0x500 drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:656
+Code: de e8 69 6c 3d fe 84 db 75 27 e8 c0 65 3d fe 48 89 ef 48 83 c4 38 5b 5d 41 5c 41 5d 41 5e 41 5f e9 7a be b3 02 e8 a5 65 3d fe <0f> 0b e9 36 fd ff ff e8 99 65 3d fe 49 8d 7c 24 08 41 83 e5 fe 48
+RSP: 0018:ffffc900000afce0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000100
+RDX: ffff888100289b40 RSI: ffffffff8303b1eb RDI: 0000000000000003
+RBP: ffff888119fe480d R08: 0000000000000000 R09: 000000000000001c
+R10: ffffffff8303af1e R11: 000000000000000c R12: ffff88811d52b1e0
+R13: 000000000000001c R14: ffff888119fe480c R15: ffff888119fe480c
+FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001038 CR3: 0000000007825000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ath9k_wmi_event_tasklet+0x306/0x3f0 drivers/net/wireless/ath/ath9k/wmi.c:179
+ tasklet_action_common.constprop.0+0x201/0x2e0 kernel/softirq.c:784
+ __do_softirq+0x1b0/0x944 kernel/softirq.c:559
+ run_ksoftirqd kernel/softirq.c:921 [inline]
+ run_ksoftirqd+0x21/0x50 kernel/softirq.c:913
+ smpboot_thread_fn+0x3ec/0x870 kernel/smpboot.c:165
+ kthread+0x38c/0x460 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
 
-Closer to the         double_lock_hb(hb1, hb2) you mention.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
-Regarding running without proprietary modules, we didn't manage to reproduc=
-e, but we are getting half of the  IO load while this problem happens
-
-Thx
-David=20
-
-
-
------Original Message-----
-From: Matthew Wilcox <willy@infradead.org>=20
-Sent: Sunday, June 13, 2021 11:04 PM
-To: David Mozes <david.mozes@silk.us>
-Cc: linux-fsdevel@vger.kernel.org; Thomas Gleixner <tglx@linutronix.de>; In=
-go Molnar <mingo@redhat.com>; Peter Zijlstra <peterz@infradead.org>; Darren=
- Hart <dvhart@infradead.org>; linux-kernel@vger.kernel.org
-Subject: Re: futex/call -to plist_for_each_entry_safe with head=3DNULL
-
-On Sun, Jun 13, 2021 at 12:24:52PM +0000, David Mozes wrote:
-> Hi *,
-> Under a very high load of io traffic, we got the below=A0 BUG trace.
-> We can see that:
-> plist_for_each_entry_safe(this, next,=A0&hb1->chain, list) {
-> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (match_futex (&this->key=
-, &key1))
-> =A0
-> were called with hb1 =3D NULL at futex_wake_up function.
-> And there is no protection on the code regarding such a scenario.
-> =A0
-> The NULL can=A0 be geting from:
-> hb1 =3D hash_futex(&key1);
-> =A0
-> How can we protect against such a situation?
-
-Can you reproduce it without loading proprietary modules?
-
-Your analysis doesn't quite make sense:
-
-        hb1 =3D hash_futex(&key1);
-        hb2 =3D hash_futex(&key2);
-
-retry_private:
-        double_lock_hb(hb1, hb2);
-
-If hb1 were NULL, then the oops would come earlier, in double_lock_hb().
-
-> RIP: 0010:do_futex+0xdf/0xa90
-> =A0
-> 0xffffffff81138eff is in do_futex (kernel/futex.c:1748).
-> 1743=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 put_futex_key(&key1);
-> 1744=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 cond_resched();
-> 1745=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 goto retry;
-> 1746=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
-> 1747=A0=A0=A0=A0=A0=A0
-> 1748=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 pl=
-ist_for_each_entry_safe(this, next, &hb1->chain, list) {
-> 1749=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (match_futex (&this->key, =
-&key1)) {
-> 1750=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 if (this->pi_state || this->rt_waiter) {
-> 1751=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ret =3D =
--EINVAL;
-> 1752=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 goto out=
-_unlock;
-> (gdb)
-> =A0
-> =A0
-> =A0
-> plist_for_each_entry_safe(this, next, &hb1->chain, list) {
-> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (match_futex (&this->key=
-, &key1)) {
-> =A0
-> =A0
-> =A0
-> =A0
-> This happened in kernel=A0 4.19.149 running on Azure vm
-> =A0
-> =A0
-> Thx
-> David
-> Reply=20
-> Forward=20
-> MO
->=20
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
