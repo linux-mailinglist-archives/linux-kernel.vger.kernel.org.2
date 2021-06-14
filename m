@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59D23A652B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F99B3A652C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236806AbhFNLe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:34:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50484 "EHLO mail.kernel.org"
+        id S236825AbhFNLe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:34:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236107AbhFNLUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236108AbhFNLUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 07:20:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7B0661476;
-        Mon, 14 Jun 2021 10:51:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41F1C61990;
+        Mon, 14 Jun 2021 10:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667911;
-        bh=WzbHPJH1jThMmcmFAYZbvNRc1O1KAViqzOLf2jjuhcE=;
+        s=korg; t=1623667913;
+        bh=41nKey4KNd6oAa0ShWkGLQ/9Rt5ckOWSjJEfbJE8Q9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k/QsA5h2BfYdINiJc6IacxsFO2psZgnh7QubON2x2KK5OCXiWNRn7i/oVWSGH6ejJ
-         4WBxBu16GlAnjKl4XJmoiaO+2L0FMJmRP80FF0FDxG6Qsi7g9YGVxgVRiEMfCMe6ZW
-         MEswisxIDp6Wj87nKXpHfCH5t1F3N8lprUIUwa7E=
+        b=rjPcfJJcbtRqjHibYyrMyRO+cfy/4h8tqcMcF5xMJ7bkOL502v1XBokSKNccRKbAT
+         nbPnDXhOOSlwn/nEG7zOp0fEoVyEzk6tOW+T1+N5yNJSCoGHLSIcom1RjzpVLrltRx
+         3T/zbYUu69zMnjck4gLwM5uGzOG26u2QVJXXcijs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.12 122/173] regulator: rtmv20: Fix .set_current_limit/.get_current_limit callbacks
-Date:   Mon, 14 Jun 2021 12:27:34 +0200
-Message-Id: <20210614102702.231410644@linuxfoundation.org>
+        stable@vger.kernel.org, Chen Li <chenli@uniontech.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.12 123/173] phy: usb: Fix misuse of IS_ENABLED
+Date:   Mon, 14 Jun 2021 12:27:35 +0200
+Message-Id: <20210614102702.261109384@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -40,77 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: Chen Li <chenli@uniontech.com>
 
-commit 86ab21cc39e6b99b7065ab9008c90bec5dec535a upstream.
+commit 7c2fc79250cafa1a29befeb60163028ec4720814 upstream.
 
-Current code does not set .curr_table and .n_linear_ranges settings,
-so it cannot use the regulator_get/set_current_limit_regmap helpers.
-If we setup the curr_table, it will has 200 entries.
-Implement customized .set_current_limit/.get_current_limit callbacks
-instead.
+While IS_ENABLED() is perfectly fine for CONFIG_* symbols, it is not
+for other symbols such as __BIG_ENDIAN that is provided directly by
+the compiler.
 
-Fixes: b8c054a5eaf0 ("regulator: rtmv20: Adds support for Richtek RTMV20 load switch regulator")
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Reviewed-by: ChiYuan Huang <cy_huang@richtek.com>
-Link: https://lore.kernel.org/r/20210530124101.477727-1-axel.lin@ingics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Switch to use CONFIG_CPU_BIG_ENDIAN instead of __BIG_ENDIAN.
+
+Signed-off-by: Chen Li <chenli@uniontech.com>
+Reviewed-by: Al Cooper <alcooperx@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 94583a41047e ("phy: usb: Restructure in preparation for adding 7216 USB support")
+Link: https://lore.kernel.org/r/87czuggpra.wl-chenli@uniontech.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/regulator/rtmv20-regulator.c |   42 +++++++++++++++++++++++++++++++++--
- 1 file changed, 40 insertions(+), 2 deletions(-)
+ drivers/phy/broadcom/phy-brcm-usb-init.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/regulator/rtmv20-regulator.c
-+++ b/drivers/regulator/rtmv20-regulator.c
-@@ -103,9 +103,47 @@ static int rtmv20_lsw_disable(struct reg
- 	return 0;
- }
- 
-+static int rtmv20_lsw_set_current_limit(struct regulator_dev *rdev, int min_uA,
-+					int max_uA)
-+{
-+	int sel;
-+
-+	if (min_uA > RTMV20_LSW_MAXUA || max_uA < RTMV20_LSW_MINUA)
-+		return -EINVAL;
-+
-+	if (max_uA > RTMV20_LSW_MAXUA)
-+		max_uA = RTMV20_LSW_MAXUA;
-+
-+	sel = (max_uA - RTMV20_LSW_MINUA) / RTMV20_LSW_STEPUA;
-+
-+	/* Ensure the selected setting is still in range */
-+	if ((sel * RTMV20_LSW_STEPUA + RTMV20_LSW_MINUA) < min_uA)
-+		return -EINVAL;
-+
-+	sel <<= ffs(rdev->desc->csel_mask) - 1;
-+
-+	return regmap_update_bits(rdev->regmap, rdev->desc->csel_reg,
-+				  rdev->desc->csel_mask, sel);
-+}
-+
-+static int rtmv20_lsw_get_current_limit(struct regulator_dev *rdev)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(rdev->regmap, rdev->desc->csel_reg, &val);
-+	if (ret)
-+		return ret;
-+
-+	val &= rdev->desc->csel_mask;
-+	val >>= ffs(rdev->desc->csel_mask) - 1;
-+
-+	return val * RTMV20_LSW_STEPUA + RTMV20_LSW_MINUA;
-+}
-+
- static const struct regulator_ops rtmv20_regulator_ops = {
--	.set_current_limit = regulator_set_current_limit_regmap,
--	.get_current_limit = regulator_get_current_limit_regmap,
-+	.set_current_limit = rtmv20_lsw_set_current_limit,
-+	.get_current_limit = rtmv20_lsw_get_current_limit,
- 	.enable = rtmv20_lsw_enable,
- 	.disable = rtmv20_lsw_disable,
- 	.is_enabled = regulator_is_enabled_regmap,
+--- a/drivers/phy/broadcom/phy-brcm-usb-init.h
++++ b/drivers/phy/broadcom/phy-brcm-usb-init.h
+@@ -78,7 +78,7 @@ static inline u32 brcm_usb_readl(void __
+ 	 * Other architectures (e.g., ARM) either do not support big endian, or
+ 	 * else leave I/O in little endian mode.
+ 	 */
+-	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
++	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
+ 		return __raw_readl(addr);
+ 	else
+ 		return readl_relaxed(addr);
+@@ -87,7 +87,7 @@ static inline u32 brcm_usb_readl(void __
+ static inline void brcm_usb_writel(u32 val, void __iomem *addr)
+ {
+ 	/* See brcmnand_readl() comments */
+-	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(__BIG_ENDIAN))
++	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
+ 		__raw_writel(val, addr);
+ 	else
+ 		writel_relaxed(val, addr);
 
 
