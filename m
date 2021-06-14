@@ -2,164 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E373A3A5B58
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 03:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6813A5B6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 03:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhFNBeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 21:34:37 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:60161 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232076AbhFNBef (ORCPT
+        id S232301AbhFNBqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 21:46:31 -0400
+Received: from mail-pj1-f43.google.com ([209.85.216.43]:50980 "EHLO
+        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232076AbhFNBq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 21:34:35 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 9EF2719F0;
-        Sun, 13 Jun 2021 21:32:32 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 13 Jun 2021 21:32:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        qGkGzluDZKwa6XNj5xwftgaTKUt7kFu8R2chJvRiqtA=; b=kSEVafMle+mzaEWA
-        E+shbM5uq2ESPTlJ4jVr37M2oOiAFvmb6c3sObYI+/CUj5kqebj6RDWOynPMOFlQ
-        0zK6s2Bqw4UNeRsEIeWvHQMqiknV7+Zelvju2OZ+/emhbmmKqREe50LCkDJJMG97
-        0Sge0X5NSY4aknqkJdpUCdHvQh9qLmOnq4KCbGQHAxNETkJHqCMhuwtsK/EDTU5Q
-        aE/xlI9PBA9EDqk9J8WK8Z2R5NBY6mZJUbY8DxOkEZ3EZCEVzDdOdnlTtGqw5nQZ
-        /OwJE4Vh8FumCAbGL7uQtnmLPXWte/IxYO+GqHSZKz5sUIGaWeyIGMtl39LjtNOw
-        2JRwvw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=qGkGzluDZKwa6XNj5xwftgaTKUt7kFu8R2chJvRiq
-        tA=; b=dsoboGMSUo9hLvBGc5pxH9hvyrpgzV88QtaPavpkt2NQPJUJ+gHpooUrB
-        XqvPV3YTMEt6mUtflbJ9XgV1YXP4INjgAHbKbrIF5779azRRYEOb5w6rzv+maIlA
-        nUo8JB3CkBD3SAg3ve0ycsS0HmDJqQd7efE9dl0FdW+dN0sz1jhfykXRU70Ohq5d
-        ldthLqDxH0u0+o8fcJDBUwnzBMSFfyz371uT1vbKAHit6W13P53HBVIY08uzqL6j
-        z2wT3JE/B16VjHdkKua+d2oGfXsdOQRIcLVx5O7Vt09CKM5eWI7ZxSKbd7pJIgUX
-        XqmAuBsRdGxWrllymYtrtImxQp0CQ==
-X-ME-Sender: <xms:r7HGYIKRwvgtran1mwE6TSgThbdlfEMkAYKYa2vezHtWBRuCyUQ1kA>
-    <xme:r7HGYILcYOFs8et1lyDVKgYLGLfpfZTfy16mw2QaEqtKP12IBUkmajDnW_MBhrrGC
-    _t46D-0Tfw9>
-X-ME-Received: <xmr:r7HGYIsHk_dQjwhnAgGNO5JvieXmD16WNVcFJ1DbEYT8IQExaZgjiMJpj7Z-SLpV2QSm0CDLn6RW1qKm1vDAxGGhK0E2vg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedvgedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:r7HGYFaEaEWdqWuej5wGIw7CRSMN-lTp_IIleVPccaCmXRok-oEX4A>
-    <xmx:r7HGYPZg8UM8rrsWsL9i8ef4YxaPG37AaPv4nbGVtI7g_jWh_RBWMQ>
-    <xmx:r7HGYBDpkQJ0LZLTEXLC7344BZtec4IMSUE9zelWa9_AYAhmVaGv7g>
-    <xmx:sLHGYNBftKTmWUXQiO6d0GngIXaqw0jOOiDAiMFYiFvX1tXBrkEIbLekQG4>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 13 Jun 2021 21:32:26 -0400 (EDT)
-Message-ID: <43fe46a18bdc2e46f62a07f1e4a9b3d042ef3c01.camel@themaw.net>
-Subject: Re: [PATCH v6 5/7] kernfs: use i_lock to protect concurrent inode
- updates
-From:   Ian Kent <raven@themaw.net>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 14 Jun 2021 09:32:22 +0800
-In-Reply-To: <YMQRzl4guvQQJwG0@zeniv-ca.linux.org.uk>
-References: <162322846765.361452.17051755721944717990.stgit@web.messagingengine.com>
-         <162322868275.361452.17585267026652222121.stgit@web.messagingengine.com>
-         <YMQRzl4guvQQJwG0@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Sun, 13 Jun 2021 21:46:29 -0400
+Received: by mail-pj1-f43.google.com with SMTP id g4so8837953pjk.0;
+        Sun, 13 Jun 2021 18:44:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=s8HHkJ4WlcLlM03GCDtnOd/qhhxc0/fO0Q0vY0qJ314=;
+        b=XHbnG+SrCP3rhNfx/ZO71zt3yptvdw6NbpkCVtrlp3nR09bXYz4L3QyjJBEi5HNGjD
+         hcrd2KFJG6bhBPewpjr/+5DhLjP91Ejja1RbOfAVD6Md1J7+BzwCO+zp9ZxJgxzSL2hU
+         4VzjwHhzipCWZ7Kny71455I0IZ5/9sAGkBN9uQ6mUdTE83i2pNvGPWB361EsgaP7+QLq
+         xzhfLdZlgzphhees4WATHq1Ij7uEoCqDRy+JEiCBnPrLMt/6COEa+DJv6cBn0W4u71Ym
+         YXCf5Fpd2QP+L6OWKTPelN/+9iijusNt0N28QCSTVAp7jT+NQe484Gxv6NyiD406bHzh
+         qBVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=s8HHkJ4WlcLlM03GCDtnOd/qhhxc0/fO0Q0vY0qJ314=;
+        b=XK9une36mRLlVpuEnGbw2IKE4EqDJADQ3GSVLMcSpM8sPbBLi5gAROe9yrgM8tPwqc
+         mVTltneepBs0H8U4J28ueu73mw4q0e6hF/FEmS8s4dm75O5pInM/6wbFnLpejTVYgq0R
+         GMSlPEw+c2wBGar5rmntrauLEiwCVYoamZCVDAEWMVWU2/Q3p3+xYk+tIV6CH5FbNxN+
+         /yJ7YKHS7SQYMN0VHRlp9z+Edq+83ZvMFJzSSSR45LgkSQxI0E9gePLJ3l3ogMWK/vJw
+         qkCf+hSnSgsQyFN01qceixrmFD88ChYUb1Lo2zqLvSb44Tg2rGHjcLmLAuz9jtyp+4AE
+         szVw==
+X-Gm-Message-State: AOAM530yWkcKWdvWHvTs6qaMIX8vCiKgc6fg6IcuHqQMvTVguj5wwrJ/
+        nQDmZCJRriaX0iRX3HsWTko=
+X-Google-Smtp-Source: ABdhPJx3/zfJfT3bPQCrd7KvSfVnrhtd1O1XTSyBJxFwzf5N4L15Sf72FDBf02reLr9U/3bI6Uexfw==
+X-Received: by 2002:a17:902:e887:b029:10d:9e21:7805 with SMTP id w7-20020a170902e887b029010d9e217805mr14605911plg.17.1623634995244;
+        Sun, 13 Jun 2021 18:43:15 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id z9sm10912166pfc.101.2021.06.13.18.43.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Jun 2021 18:43:14 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 11:43:09 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v3 2/2] KVM: s390: fix for hugepage vmalloc
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>, borntraeger@de.ibm.com,
+        Catalin Marinas <catalin.marinas@arm.com>, cohuck@redhat.com,
+        david@redhat.com, frankja@linux.ibm.com,
+        Christoph Hellwig <hch@infradead.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>
+References: <20210610154220.529122-1-imbrenda@linux.ibm.com>
+        <20210610154220.529122-3-imbrenda@linux.ibm.com>
+In-Reply-To: <20210610154220.529122-3-imbrenda@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <1623634582.4gf5ql7njz.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-06-12 at 01:45 +0000, Al Viro wrote:
-> On Wed, Jun 09, 2021 at 04:51:22PM +0800, Ian Kent wrote:
-> > The inode operations .permission() and .getattr() use the kernfs
-> > node
-> > write lock but all that's needed is to keep the rb tree stable
-> > while
-> > updating the inode attributes as well as protecting the update
-> > itself
-> > against concurrent changes.
-> 
-> Huh?  Where does it access the rbtree at all?  Confused...
-> 
-> > diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-> > index 3b01e9e61f14e..6728ecd81eb37 100644
-> > --- a/fs/kernfs/inode.c
-> > +++ b/fs/kernfs/inode.c
-> > @@ -172,6 +172,7 @@ static void kernfs_refresh_inode(struct
-> > kernfs_node *kn, struct inode *inode)
-> >  {
-> >         struct kernfs_iattrs *attrs = kn->iattr;
-> >  
-> > +       spin_lock(&inode->i_lock);
-> >         inode->i_mode = kn->mode;
-> >         if (attrs)
-> >                 /*
-> > @@ -182,6 +183,7 @@ static void kernfs_refresh_inode(struct
-> > kernfs_node *kn, struct inode *inode)
-> >  
-> >         if (kernfs_type(kn) == KERNFS_DIR)
-> >                 set_nlink(inode, kn->dir.subdirs + 2);
-> > +       spin_unlock(&inode->i_lock);
-> >  }
-> 
-> Even more so - just what are you serializing here?  That code
-> synchronizes inode
-> metadata with those in kernfs_node.  Suppose you've got two threads
-> doing
-> ->permission(); the first one gets through kernfs_refresh_inode() and
-> goes into
-> generic_permission().  No locks are held, so kernfs_refresh_inode()
-> from another
-> thread can run in parallel with generic_permission().
-> 
-> If that's not a problem, why two kernfs_refresh_inode() done in
-> parallel would
-> be a problem?
-> 
-> Thread 1:
->         permission
->                 done refresh, all locks released now
-> Thread 2:
->         change metadata in kernfs_node
-> Thread 2:
->         permission
->                 goes into refresh, copying metadata into inode
-> Thread 1:
->                 generic_permission()
-> No locks in common between the last two operations, so
-> we generic_permission() might see partially updated metadata.
-> Either we don't give a fuck (in which case I don't understand
-> what purpose does that ->i_lock serve) *or* we need the exclusion
-> to cover a wider area.
+Sorry, catching up with email, I should have replied here originally.
 
-This didn't occur to me, obviously.
+Excerpts from Claudio Imbrenda's message of June 11, 2021 1:42 am:
+> The Create Secure Configuration Ultravisor Call does not support using
+> large pages for the virtual memory area. This is a hardware limitation.
+>=20
+> This patch replaces the vzalloc call with an almost equivalent call to
+> the newly introduced vmalloc_no_huge function, which guarantees that
+> only small pages will be used for the backing.
+>=20
+> The new call will not clear the allocated memory, but that has never
+> been an actual requirement.
 
-It seems to me this can happen with the original code too although
-using a mutex might reduce the likelihood of it happening.
+Since it seems like you will submit another version, I think it would
+make things clear to change "fix" to "prepare", which should avoid
+misleading the reader and tripping up automatic backporting things.
 
-Still ->permission() is meant to be a read-only function so the VFS
-shouldn't need to care about it.
+You could also add the first paragraph as a comment in the code?
 
-Do you have any suggestions on how to handle this.
-Perhaps the only way is to ensure the inode is updated only in
-functions that are expected to do this.
+Otherwise it looks good to me.
 
-Ian
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
 
+>=20
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Christoph Hellwig <hch@infradead.org>
+> ---
+>  arch/s390/kvm/pv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+> index 813b6e93dc83..ad7c6d7cc90b 100644
+> --- a/arch/s390/kvm/pv.c
+> +++ b/arch/s390/kvm/pv.c
+> @@ -140,7 +140,7 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
+>  	/* Allocate variable storage */
+>  	vlen =3D ALIGN(virt * ((npages * PAGE_SIZE) / HPAGE_SIZE), PAGE_SIZE);
+>  	vlen +=3D uv_info.guest_virt_base_stor_len;
+> -	kvm->arch.pv.stor_var =3D vzalloc(vlen);
+> +	kvm->arch.pv.stor_var =3D vmalloc_no_huge(vlen);
+>  	if (!kvm->arch.pv.stor_var)
+>  		goto out_err;
+>  	return 0;
+> --=20
+> 2.31.1
+>=20
+>=20
