@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCBB3A65A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90FC3A65AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbhFNLlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:41:40 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:38572 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234858AbhFNLaj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:30:39 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EBGNoM008371;
-        Mon, 14 Jun 2021 11:28:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=UBr0mxXGOr/GU1YsyNaM9bJ9e+absS4JOoW0zLQJXyo=;
- b=Qidcon2UutIn59XAeII/SEUc0ae9kch0lwy6DQOboh+IhZSvGr3bRGbMU5eOz9+O79lF
- xhITHT+afs7LPB1Rr8zSgZdA1AdwbyEK7M4x7M73mG4/H1+Y+cV4KNX1LxYkNP4hWGbD
- QP8RdcChcV8i1r1fOJ96i6j9JRKxRG0AwSFiS3ravuf3QsYKbDcaoOKYT2Nj1Sfs48Ht
- iLLJ5JVYnQSp/cXov8foxVkxNylVe0escf3lSQHSBRNi520RRma9euoQ2lbv85aaUet/
- cJxrV+dHHd8D1idjXKG7fvP7fkQYqCUzhXgq6Ohz/7aKeVXURphPBFwB3/GuKs7EjqMM VQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 395y1kr451-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 11:28:28 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15EBNmM0148015;
-        Mon, 14 Jun 2021 11:28:27 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 394mr68w0v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 11:28:27 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15EBQthY159302;
-        Mon, 14 Jun 2021 11:28:27 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 394mr68vyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 11:28:27 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15EBSL4J001717;
-        Mon, 14 Jun 2021 11:28:21 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Jun 2021 04:28:20 -0700
-Date:   Mon, 14 Jun 2021 14:28:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: dsa: b53: Fix dereference of null dev
-Message-ID: <20210614112812.GL1955@kadam>
-References: <20210612144407.60259-1-colin.king@canonical.com>
+        id S235933AbhFNLlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:41:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234923AbhFNLar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:30:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CD2261057;
+        Mon, 14 Jun 2021 11:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623670121;
+        bh=3JCgb2d2Kf5Ts1j/kSKpvVV46p9odt+P0FjGxU7En2o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uMPp4sHiQd6sK49rC1Yr35ZUjMwjvhYMBLAj+vqvlme2HfiJeHG5pN8hrp36Ht86k
+         5UwgXZi2T7Xn78jv186Wlh/mxqBjmzOXIMQYzdN62khgbnLQdX3Q8s/61d8hk3xvZi
+         CzF2F1MPgVgpRLgCbBkQuKUQfXoM98je/vrqq+V8DLZdVi0r0tKrww5T7hAwpwMZ+s
+         AokGrSud8h1c49qBp8KUYJIFxwinaZNuZSF1a6sxRs8VpDXwe4jF4FC/r7XvOdoz+H
+         z4YVtCv2XR5fuDkzIYMPR4evFcqefxUHogtY0yKmK+VKdV80EWYAxPxXa17VvZdPZU
+         vjzAImNOEWJFQ==
+Date:   Mon, 14 Jun 2021 16:58:31 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Add Ethernet DTS for Actions Semi Owl S500 SoCs
+Message-ID: <20210614112831.GB38584@thinkpad>
+References: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210612144407.60259-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: HcFCDBaJcFp97NqqodYLJviMfx1GWnd_
-X-Proofpoint-GUID: HcFCDBaJcFp97NqqodYLJviMfx1GWnd_
+In-Reply-To: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 03:44:07PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Fri, Jun 11, 2021 at 12:11:31PM +0300, Cristian Ciocaltea wrote:
+> This patchset adds the required DTS changes for providing the ethernet
+> functionality on the Actions S500 SoCs family.
 > 
-> Currently pointer priv is dereferencing dev before dev is being null
-> checked so a potential null pointer dereference can occur. Fix this
-> by only assigning and using priv if dev is not-null.
+> For the moment I have been able to test the Ethernet MAC on the RoseaplePi
+> SBC only.
 > 
-> Addresses-Coverity: ("Dereference before null check")
-> Fixes: 16994374a6fc ("net: dsa: b53: Make SRAB driver manage port interrupts")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/dsa/b53/b53_srab.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+> Also, please note the patches depend on some clock changes that are
+> currently under review:
+> https://lore.kernel.org/lkml/cover.1623354574.git.cristian.ciocaltea@gmail.com/
 > 
-> diff --git a/drivers/net/dsa/b53/b53_srab.c b/drivers/net/dsa/b53/b53_srab.c
-> index aaa12d73784e..e77ac598f859 100644
-> --- a/drivers/net/dsa/b53/b53_srab.c
-> +++ b/drivers/net/dsa/b53/b53_srab.c
-> @@ -629,11 +629,13 @@ static int b53_srab_probe(struct platform_device *pdev)
->  static int b53_srab_remove(struct platform_device *pdev)
->  {
->  	struct b53_device *dev = platform_get_drvdata(pdev);
-> -	struct b53_srab_priv *priv = dev->priv;
->  
-> -	b53_srab_intr_set(priv, false);
-> -	if (dev)
-> +	if (dev) {
 
-This is the remove function and "dev" can't be NULL at this point.
-Better to just remove the NULL check.
+Waiting for the clk patches to be merged...
 
-regards,
-dan carpenter
+Thanks,
+Mani
 
+> Thanks,
+> Cristi
+> 
+> Changes in v2:
+> - Added Reviewed-by tag from Mani in patch 1/2
+> - Joined the groups sharing common function "eth_rmii" and switch the
+>   order of "ref_clk-pinconf" and "phy_clk-pinmux", per Mani's review,
+>   in patch 2/2
+> 
+> Cristian Ciocaltea (2):
+>   ARM: dts: owl-s500: Add ethernet support
+>   ARM: dts: owl-s500-roseapplepi: Add ethernet support
+> 
+>  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 45 ++++++++++++++++++++++
+>  arch/arm/boot/dts/owl-s500.dtsi            | 10 +++++
+>  2 files changed, 55 insertions(+)
+> 
+> -- 
+> 2.32.0
+> 
