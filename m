@@ -2,130 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7800F3A5DD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997513A5DD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhFNHmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:42:08 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11733 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbhFNHmG (ORCPT
+        id S232569AbhFNHm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:42:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46594 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232536AbhFNHmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:42:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623656404; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=d98WEJQYbmSI8pIjO0mRBl0EjEkT413AeWk1pMXSvV8=; b=WUKficYNOPtNM5HBDh9etySKUmOfrOqdUL5Eaq8oGXXu/Oy4PUhYFodj1N/bwSnmV6T9JD0F
- ZkpW1ZrMHIz1XZNpDINJ1guMhUvrnNT8apCRCASjJg25WNLN8xEi6tEwHwpYyAm/oML1Hwpk
- w46NDL8BFwza4D9HcWqn2tE3Jx8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60c707c4ed59bf69cc6992c0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 07:39:48
- GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 60694C433F1; Mon, 14 Jun 2021 07:39:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95FAEC433D3;
-        Mon, 14 Jun 2021 07:39:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 95FAEC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
-Date:   Mon, 14 Jun 2021 00:39:42 -0700
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3: gadget: Disable gadget IRQ during pullup
- disable
-Message-ID: <20210614073942.GB25299@jackp-linux.qualcomm.com>
-References: <1621571037-1424-1-git-send-email-wcheng@codeaurora.org>
- <87h7i60ye8.fsf@kernel.org>
- <724ba69a-8c67-4b4b-3e6a-a5834b09e6e1@codeaurora.org>
- <a59a81c1-367f-b4b0-b6bf-dbe91ab3613d@codeaurora.org>
- <87wnr0zwxs.fsf@kernel.org>
+        Mon, 14 Jun 2021 03:42:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623656422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pO1bs4aCeAGMi6QoUevwRlfOuXmOwF8LHg6aMdXgv4A=;
+        b=hYLKn+44wPWyjXfOHUpW3g+7Q/VZqyfvPr2mqS8QinqL74T3LkVCgOPeqLwncUop5o9Fuh
+        iucUHp6NqHcgFCQlf5T9dWqrfb+Qur2Supj1YdGJLa96bV3DVA1HRTgNpTIe1vsBRqb9wE
+        FcpfVRpJdBDTdMtjApcWQiLsnM6aRXo=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-TQ41e3XSN-OIoLANqed5Bg-1; Mon, 14 Jun 2021 03:40:21 -0400
+X-MC-Unique: TQ41e3XSN-OIoLANqed5Bg-1
+Received: by mail-ej1-f69.google.com with SMTP id nd10-20020a170907628ab02903a324b229bfso2689279ejc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:40:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=pO1bs4aCeAGMi6QoUevwRlfOuXmOwF8LHg6aMdXgv4A=;
+        b=Me38k8uzrW0KKVLRZFEsVbof9W1FhcSKqY/pH8x4o4FozKJA7v+A0MTY1I4xCITDIY
+         GxpIsG5fHP6qM2oLJMhWbXrNQPGRMx83w/0j0EkpUK8gE3nH7w4bXSEe6+35lC6ZS0eq
+         ayz82F0lq+Xtf6RNA7S3Bz21GQbyYH0FNFWIrmu52hrKpbnn0qDOzfhD4tfSi1Ai/eed
+         KP7K686CRGYw29EXmbt2VQsK67IfLqwR0e2NO7J0DruS2FsTbGesq58xn04yHK7Zi+Eu
+         ikVJiB0TJJrg0AO4aDbTRfX1s21yFQYEXHhgfpqgwaioIEqeK2kUYutDemvCXljQed8I
+         aGVw==
+X-Gm-Message-State: AOAM531Fk9h5MpaJudRPhyuO1ebkbB5lSZ8p5W2IY7QBF8bBGUsDRif8
+        GPFUeYVcKRSSgxl62f4IM3Uh+10wqP9VLfdPvipkdDMDuAeSWQgnN/toMbn1esV0Vk+U/P88rwo
+        6QAAtP7ASIBgmyHmrAvRJsqCc
+X-Received: by 2002:a17:906:5f99:: with SMTP id a25mr14108182eju.45.1623656420104;
+        Mon, 14 Jun 2021 00:40:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyHtYGUGNum+bcwXR+N/ohsUHAg9NGqifx/V1ATCaqzSQSYy3WvGVLoJyEXGm5FMnXAxqJu6w==
+X-Received: by 2002:a17:906:5f99:: with SMTP id a25mr14108166eju.45.1623656419835;
+        Mon, 14 Jun 2021 00:40:19 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id au11sm6707061ejc.88.2021.06.14.00.40.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 00:40:19 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 0/4] KVM: x86: hyper-v: Conditionally allow SynIC
+ with APICv/AVIC
+In-Reply-To: <f294faba4e5d25aba8773f36170d1309236edd3b.camel@redhat.com>
+References: <20210609150911.1471882-1-vkuznets@redhat.com>
+ <f294faba4e5d25aba8773f36170d1309236edd3b.camel@redhat.com>
+Date:   Mon, 14 Jun 2021 09:40:18 +0200
+Message-ID: <87zgvsx5b1.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wnr0zwxs.fsf@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:23:43AM +0300, Felipe Balbi wrote:
-> Wesley Cheng <wcheng@codeaurora.org> writes:
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-<snip>
+> On Wed, 2021-06-09 at 17:09 +0200, Vitaly Kuznetsov wrote:
+>> Changes since v2:
+>> - First two patches got merged, rebase.
+>> - Use 'enable_apicv =3D avic =3D ...' in PATCH1 [Paolo]
+>> - Collect R-b tags for PATCH2 [Sean, Max]
+>> - Use hv_apicv_update_work() to get out of SRCU lock [Max]
+>> - "KVM: x86: Check for pending interrupts when APICv is getting disabled"
+>>   added.
+>>=20
+>> Original description:
+>>=20
+>> APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
+>> SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It =
+is,
+>> however, possible to track whether the feature was actually used by the
+>> guest and only inhibit APICv/AVIC when needed.
+>>=20
+>> The series can be tested with the followin hack:
+>>=20
+>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>> index 9a48f138832d..65a9974f80d9 100644
+>> --- a/arch/x86/kvm/cpuid.c
+>> +++ b/arch/x86/kvm/cpuid.c
+>> @@ -147,6 +147,13 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+>>                                            vcpu->arch.ia32_misc_enable_m=
+sr &
+>>                                            MSR_IA32_MISC_ENABLE_MWAIT);
+>>         }
+>> +
+>> +       /* Dirty hack: force HV_DEPRECATING_AEOI_RECOMMENDED. Not to be =
+merged! */
+>> +       best =3D kvm_find_cpuid_entry(vcpu, HYPERV_CPUID_ENLIGHTMENT_INF=
+O, 0);
+>> +       if (best) {
+>> +               best->eax &=3D ~HV_X64_APIC_ACCESS_RECOMMENDED;
+>> +               best->eax |=3D HV_DEPRECATING_AEOI_RECOMMENDED;
+>> +       }
+>>  }
+>>  EXPORT_SYMBOL_GPL(kvm_update_cpuid_runtime);
+>>=20=20
+>> Vitaly Kuznetsov (4):
+>>   KVM: x86: Use common 'enable_apicv' variable for both APICv and AVIC
+>>   KVM: x86: Drop vendor specific functions for APICv/AVIC enablement
+>>   KVM: x86: Check for pending interrupts when APICv is getting disabled
+>>   KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in
+>>     use
+>>=20
+>>  arch/x86/include/asm/kvm_host.h |  9 +++++-
+>>  arch/x86/kvm/hyperv.c           | 51 +++++++++++++++++++++++++++++----
+>>  arch/x86/kvm/svm/avic.c         | 14 ++++-----
+>>  arch/x86/kvm/svm/svm.c          | 22 ++++++++------
+>>  arch/x86/kvm/svm/svm.h          |  2 --
+>>  arch/x86/kvm/vmx/capabilities.h |  1 -
+>>  arch/x86/kvm/vmx/vmx.c          |  2 --
+>>  arch/x86/kvm/x86.c              | 18 ++++++++++--
+>>  8 files changed, 86 insertions(+), 33 deletions(-)
+>>=20
+>
+> Hi!
+>
+> I hate to say it, but at least one of my VMs doesn't boot amymore
+> with avic=3D1, after the recent updates. I'll bisect this soon,
+> but this is likely related to this series.
+>
+> I will also review this series very soon.
+>
+> When the VM fails, it hangs on the OVMF screen and I see this
+> in qemu logs:
+>
+> KVM: injection failed, MSI lost (Operation not permitted)
+> KVM: injection failed, MSI lost (Operation not permitted)
+> KVM: injection failed, MSI lost (Operation not permitted)
+> KVM: injection failed, MSI lost (Operation not permitted)
+> KVM: injection failed, MSI lost (Operation not permitted)
+> KVM: injection failed, MSI lost (Operation not permitted)
+>
 
-> > Hi Felipe,
-> >
-> > Let me share the ftrace snippets as well:
-> >
-> > USB FTRACE:
-> >
-> > <idle>-0    [002]   304.567900:  dwc3_gadget_ep_cmd name=ep0out cmd=1030  param0=0  param1=4026523648  param2=0  cmd_status=0
-> > <idle>-0    [004]   304.583225:  dwc3_gadget_ep_cmd name=ep1out cmd=134152  param0=0  param1=0  param2=0  cmd_status=0
-> >
-> > //We don't have any logging in pullup disable, but this is when that
-> > occurs, as we start to see -ESHUTDOWN statuses due to stop active
-> > transfer.
-> 
-> argh, maybe we should add :-)
-> 
-> I noticed that the logs here look different. Did you modify dwc3 trace
-> events or is it a special tracer (just curious)? Anyway...
+-EPERM?? Interesting... strace(1) may come handy...
 
-These logs come from an internal tool that extracts the traces from a
-complete RAM dump from a crashed device. One of the limitations is that
-the script doesn't (yet) understand the event printk-formats so we're
-left with just the raw field contents of the TP_STRUCT__entry. Not
-pretty at all but it's *lot* better than nothing especially for
-post-mortem analysis.
+$ git grep EPERM kvm/queue arch/x86/kvm/=20
+kvm/queue:arch/x86/kvm/x86.c:           ret =3D -KVM_EPERM;
+(just this one)
 
-Yes there is crash-utility [1] which does all of this already but
-logistically our internal tooling is not very well equipped (i.e. is
-Windows-based) to make use of this, not without going through some
-hoops. Been meaning to play around with it some more though to reduce
-the need for our home-rolled solution.
+kvm_emulate_hypercall():
+...
+b3646477d458f arch/x86/kvm/x86.c (Jason Baron                2021-01-14 22:=
+27:56 -0500  8433)   if (static_call(kvm_x86_get_cpl)(vcpu) !=3D 0) {
+07708c4af1346 arch/x86/kvm/x86.c (Jan Kiszka                 2009-08-03 18:=
+43:28 +0200  8434)           ret =3D -KVM_EPERM;
+696ca779a928d arch/x86/kvm/x86.c (Radim Kr=C4=8Dm=C3=A1=C5=99              =
+ 2018-05-24 17:50:56 +0200  8435)           goto out;
+07708c4af1346 arch/x86/kvm/x86.c (Jan Kiszka                 2009-08-03 18:=
+43:28 +0200  8436)   }
+...
 
-[1] https://github.com/crash-utility
+Doesn't seem we have any updates here, curious what your bisection will
+point us to.
 
-> > <idle>-0    [004]   304.583237:  dwc3_gadget_giveback name=ep1out req=1243650560  actual=0  length=16384  status=4294967188  zero=0 short_not_ok=0  no_interrupt=0
-> > <idle>-0    [004]   304.583275:  dwc3_gadget_giveback name=ep1out req=1243645440  actual=0  length=16384  status=4294967188  zero=0 short_not_ok=0  no_interrupt=0
-> > <idle>-0    [004]   304.583282:  dwc3_gadget_giveback name=ep1out req=1243648256  actual=0  length=16384  status=4294967188  zero=0 short_not_ok=0  no_interrupt=0
-> > <idle>-0    [004]   304.583312:  dwc3_gadget_giveback name=ep1out req=4075146240  actual=0  length=16384  status=4294967188  zero=0 short_not_ok=0  no_interrupt=0
-> > ...
-> > //USB gadget disconnect is printed AFTER the pullup(0) routine is complete.
-> > <idle>-0    [004]   304.584240:  usb_gadget_disconnect   speed=3 max_speed=6  state=7  mA=500  sg_supported=1  is_otg=0 is_a_peripheral=0  b_hnp_enable=0  a_hnp_support=0 hnp_polling_support=0  host_request_flag=0  quirk_ep_out_aligned_size=0 quirk_altset_not_supp=0  quirk_stall_not_supp=0  quirk_zlp_not_supp=0 is_selfpowered=0  deactivated=0  connected=1  ret=4294967186
-> >
-> > ---------------------------------------------------------
-> > CPU2 SCHED FTRACE:
-> >
-> > kworker/u16:5-192    [002]   304.583354:  irq_handler_entry   irq=343 name=dwc3-msm
-> > kworker/u16:5-192    [002]   304.583356:  irq_handler_exit   irq=343 ret=0
-> > kworker/u16:5-192    [002]   304.583358:  irq_handler_entry   irq=343 name=dwc3
-> > kworker/u16:5-192    [002]   304.583366:  irq_handler_exit   irq=343 ret=2
-> > kworker/u16:5-192    [002]   304.583377:  sched_wakeup comm=irq/343-dwc3  pid=20174  prio=100  success=1  target_cpu=2
-> > kworker/u16:5-192   [002]  304.583411: sched_switch: prev_comm=kworker/u16:5 prev_pid=192 prev_prio=120 prev_state=R ==> next_comm=irq/343-dwc3 next_pid=20174 next_prio=100
-> > irq/343-dwc3-20174    [002]   304.583454:  irq_handler_entry   irq=343 name=dwc3-msm
-> > irq/343-dwc3-20174    [002]   304.583455:  irq_handler_exit   irq=343 ret=0
-> > irq/343-dwc3-20174    [002]   304.583458:  irq_handler_entry   irq=343 name=dwc3
-> > irq/343-dwc3-20174    [002]   304.583465:  irq_handler_exit   irq=343 ret=2
+--=20
+Vitaly
 
-Jack
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
