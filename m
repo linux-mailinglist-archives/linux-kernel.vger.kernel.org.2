@@ -2,140 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E343A6CF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75843A6D01
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 19:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235315AbhFNRT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        id S235598AbhFNRUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbhFNRT5 (ORCPT
+        with ESMTP id S235584AbhFNRUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:19:57 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6BCC061574;
-        Mon, 14 Jun 2021 10:17:54 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id s26so11284850ioe.9;
-        Mon, 14 Jun 2021 10:17:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YxPDELQZv5KQu91nvNkyWlai5VfpWwl2aTEBH7Wb1nc=;
-        b=XDOaJdAnxxwX4agHirquiySlTlcaoMZX64px5SotcIJSUajAYiiT1OKggH78t8C210
-         t0x9VuqpeLUmPJTZ4yt0aD/uemDAQTxAEGDhbSlGR7squXnzFmDhZUeT6WdyPtZk8n8y
-         mz3ewakUYJjsr2KnNUL3d0ioOPo0vI69edcxyyRf8fc654RnC51xN9EGlnvFOwRBu7On
-         xl/BuqD3/jVk9j+fEmFmL8Az47Ow/d4RGTGnq10zxYqXcp5g1ldj5qZrC4M2ssyEeUZ8
-         F2z5gRrwfLWjYn+TIefrWatNy4q7uSTJLfd4nomU9fmYABT+qet1weDZwnGdFT2BhwYP
-         ucBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YxPDELQZv5KQu91nvNkyWlai5VfpWwl2aTEBH7Wb1nc=;
-        b=Td2mBwsyj8DVw9vGYCR3PdhMT+jg+GvKa/FXZQQhILknmfrN0Jzqa0Sm+J6tPwIAjy
-         RMeetoDsGHLXDUzIxH5J7Qy45gNrW2ITpncYqK+mt2MxqgWJ0lwkCui3zgXLiE7e8QKv
-         0DDFzOHlFewKvZ3mvShNGlmwpGZvW3Xy70sAFBRT4bCug+EzQ0MIRpk26vGM6HNbP1F0
-         989hacwObxL5/dDmfFzdDXZhbP84evf8640t/IInF/ytLxpei43OsZOIW91VHRVLDV+1
-         5S1oMEUAeo0F6O7LhjXL/dt2gz4WwApjk6NVTbTH2tu3uJ/orJrlRKULCwEPLerQTWQO
-         NMzA==
-X-Gm-Message-State: AOAM531d4wQi+fe0QUcUJZOrbcTWUWaJMM9LobBfeCp6wpeXJVtpHt1u
-        2HXOSk6/NqSlGvWtsw77JgzOlxf/TXIvndedtOs=
-X-Google-Smtp-Source: ABdhPJy+yWiwE0T4hi6fct+9hbPY7t+9S9Yah7kKj7u+SKnI66SWvlSYDkK7wuVr8Vm/Dt3DFDgda6G5xeewQfye+2s=
-X-Received: by 2002:a6b:287:: with SMTP id 129mr15514482ioc.182.1623691073584;
- Mon, 14 Jun 2021 10:17:53 -0700 (PDT)
+        Mon, 14 Jun 2021 13:20:35 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D24AC061574;
+        Mon, 14 Jun 2021 10:18:31 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4A0DE436;
+        Mon, 14 Jun 2021 19:18:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1623691109;
+        bh=y4O1JbwGNn7Lc7BvWKPLAYq6GZW6ySim0hDnS/u1k6U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vXz6o1CWvFrWEsBJP66uAKayqetLWBTzstcZZXB+SOeZK35OZyLXgrNIsfra3B0fV
+         6MQuyWmI2/PoOcvxa1fQwJNT9QTBUPLL3Zv/rVaUb1vzPo8/43j4Yvw6hoIRPCifC6
+         /sPjiQRe9hnL4a7UpVpY2IYhnDtCDCGOo8ynsVi8=
+Date:   Mon, 14 Jun 2021 20:18:09 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v3 7/8] media: subdev: fix compat_ioctl32
+Message-ID: <YMePUYfDzdsErRab@pendragon.ideasonboard.com>
+References: <20210614103409.3154127-1-arnd@kernel.org>
+ <20210614103409.3154127-8-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210610115058.3779341-1-libaokun1@huawei.com>
-In-Reply-To: <20210610115058.3779341-1-libaokun1@huawei.com>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Mon, 14 Jun 2021 19:17:47 +0200
-Message-ID: <CAOi1vP8rH-Ehq+_4zS7upkqvrdSJjiZw_qCMNomii1vmJ9C=Cw@mail.gmail.com>
-Subject: Re: [PATCH -next] libceph: fix doc warnings in cls_lock_client.c
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>, yangjihong1@huawei.com,
-        yukuai3@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210614103409.3154127-8-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 1:41 PM Baokun Li <libaokun1@huawei.com> wrote:
->
-> Add description to fixes the following W=1 kernel build warning(s):
->
->  net/ceph/cls_lock_client.c:28: warning: Function parameter or
->   member 'osdc' not described in 'ceph_cls_lock'
->  net/ceph/cls_lock_client.c:28: warning: Function parameter or
->   member 'oid' not described in 'ceph_cls_lock'
->  net/ceph/cls_lock_client.c:28: warning: Function parameter or
->   member 'oloc' not described in 'ceph_cls_lock'
->
->  net/ceph/cls_lock_client.c:93: warning: Function parameter or
->   member 'osdc' not described in 'ceph_cls_unlock'
->  net/ceph/cls_lock_client.c:93: warning: Function parameter or
->   member 'oid' not described in 'ceph_cls_unlock'
->  net/ceph/cls_lock_client.c:93: warning: Function parameter or
->   member 'oloc' not described in 'ceph_cls_unlock'
->
->  net/ceph/cls_lock_client.c:143: warning: Function parameter or
->   member 'osdc' not described in 'ceph_cls_break_lock'
->  net/ceph/cls_lock_client.c:143: warning: Function parameter or
->   member 'oid' not described in 'ceph_cls_break_lock'
->  net/ceph/cls_lock_client.c:143: warning: Function parameter or
->   member 'oloc' not described in 'ceph_cls_break_lock'
->
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Hi Arnd,
+
+Thank you for the patch.
+
+On Mon, Jun 14, 2021 at 12:34:08PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The adv7842 and si4713 drivers each define one private ioctl command that
+> are handled through the subdev_ioctl() helpers, but that don't work in
+
+s/don't/doesn't/
+
+> compat mode because this does not handle private ioctl commands.
+> 
+> The compat_ioctl32 callback for subdevs has outdated calling conventions,
+> but as there are no users of that, it is easy to change the function
+> pointer type and the caller to make it behave the same way as the normal
+> ioctl callback and hook in the two drivers that need no argument
+> conversion.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  net/ceph/cls_lock_client.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/net/ceph/cls_lock_client.c b/net/ceph/cls_lock_client.c
-> index 17447c19d937..82b7f3e3862f 100644
-> --- a/net/ceph/cls_lock_client.c
-> +++ b/net/ceph/cls_lock_client.c
-> @@ -10,7 +10,9 @@
->
->  /**
->   * ceph_cls_lock - grab rados lock for object
-> - * @oid, @oloc: object to lock
-> + * @osdc: working on this ceph osd client
-> + * @oid: object to lock
-> + * @oloc: object to lock
->   * @lock_name: the name of the lock
->   * @type: lock type (CEPH_CLS_LOCK_EXCLUSIVE or CEPH_CLS_LOCK_SHARED)
->   * @cookie: user-defined identifier for this instance of the lock
-> @@ -82,7 +84,9 @@ EXPORT_SYMBOL(ceph_cls_lock);
->
->  /**
->   * ceph_cls_unlock - release rados lock for object
-> - * @oid, @oloc: object to lock
-> + * @osdc: working on this ceph osd client
-> + * @oid: object to lock
-> + * @oloc: object to lock
->   * @lock_name: the name of the lock
->   * @cookie: user-defined identifier for this instance of the lock
->   */
-> @@ -130,7 +134,9 @@ EXPORT_SYMBOL(ceph_cls_unlock);
->
->  /**
->   * ceph_cls_break_lock - release rados lock for object for specified client
-> - * @oid, @oloc: object to lock
-> + * @osdc: working on this ceph osd client
-> + * @oid: object to lock
-> + * @oloc: object to lock
->   * @lock_name: the name of the lock
->   * @cookie: user-defined identifier for this instance of the lock
->   * @locker: current lock owner
+>  drivers/media/i2c/adv7842.c           |  3 +++
+>  drivers/media/radio/si4713/si4713.c   |  3 +++
+>  drivers/media/v4l2-core/v4l2-subdev.c | 19 ++++++++++++++++---
+>  include/media/v4l2-subdev.h           |  3 +--
+>  4 files changed, 23 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+> index 78e61fe6f2f0..cd6df4f52f33 100644
+> --- a/drivers/media/i2c/adv7842.c
+> +++ b/drivers/media/i2c/adv7842.c
+> @@ -3293,6 +3293,9 @@ static const struct v4l2_ctrl_ops adv7842_ctrl_ops = {
+>  static const struct v4l2_subdev_core_ops adv7842_core_ops = {
+>  	.log_status = adv7842_log_status,
+>  	.ioctl = adv7842_ioctl,
+> +#ifdef CONFIG_COMPAT
+> +	.compat_ioctl32 = adv7842_ioctl,
+> +#endif
+>  	.interrupt_service_routine = adv7842_isr,
+>  	.subscribe_event = adv7842_subscribe_event,
+>  	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+> diff --git a/drivers/media/radio/si4713/si4713.c b/drivers/media/radio/si4713/si4713.c
+> index adbf43ff6a21..ae7e477774e3 100644
+> --- a/drivers/media/radio/si4713/si4713.c
+> +++ b/drivers/media/radio/si4713/si4713.c
+> @@ -1398,6 +1398,9 @@ static const struct v4l2_ctrl_ops si4713_ctrl_ops = {
+>  
+>  static const struct v4l2_subdev_core_ops si4713_subdev_core_ops = {
+>  	.ioctl		= si4713_ioctl,
+> +#ifdef CONFIG_COMPAT
+> +	.compat_ioctl32	= si4713_ioctl,
+> +#endif
 
-Applied with a minor tweak.
+Should we drop v4l2_subdev_core_ops.compat_ioctl32 and call
+v4l2_subdev_core_ops.ioctl from subdev_do_compat_ioctl32() ? New drivers
+should design custom ioctls in a way that doesn't require compat code.
 
-Thanks,
+>  };
+>  
+>  static const struct v4l2_subdev_tuner_ops si4713_subdev_tuner_ops = {
+> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+> index bf3aa9252458..fbd176d6c415 100644
+> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+> @@ -686,13 +686,26 @@ static long subdev_ioctl(struct file *file, unsigned int cmd,
+>  }
+>  
+>  #ifdef CONFIG_COMPAT
+> -static long subdev_compat_ioctl32(struct file *file, unsigned int cmd,
+> -	unsigned long arg)
+> +static long subdev_do_compat_ioctl32(struct file *file, unsigned int cmd, void *arg)
+>  {
+>  	struct video_device *vdev = video_devdata(file);
+>  	struct v4l2_subdev *sd = vdev_to_v4l2_subdev(vdev);
+> +	struct mutex *lock = vdev->lock;
+> +	long ret = -ENODEV;
+>  
+> -	return v4l2_subdev_call(sd, core, compat_ioctl32, cmd, arg);
+> +	if (lock && mutex_lock_interruptible(lock))
+> +		return -ERESTARTSYS;
+> +	if (video_is_registered(vdev))
+> +		ret = v4l2_subdev_call(sd, core, compat_ioctl32, cmd, arg);
+> +	if (lock)
+> +		mutex_unlock(lock);
+> +	return ret;
+> +}
+> +
+> +static long subdev_compat_ioctl32(struct file *file, unsigned int cmd,
+> +	unsigned long arg)
+> +{
+> +	return video_usercopy(file, cmd, arg, subdev_do_compat_ioctl32);
+>  }
+>  #endif
+>  
+> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> index d0e9a5bdb08b..42aa1f6c7c3f 100644
+> --- a/include/media/v4l2-subdev.h
+> +++ b/include/media/v4l2-subdev.h
+> @@ -195,8 +195,7 @@ struct v4l2_subdev_core_ops {
+>  	int (*s_gpio)(struct v4l2_subdev *sd, u32 val);
+>  	long (*ioctl)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
+>  #ifdef CONFIG_COMPAT
+> -	long (*compat_ioctl32)(struct v4l2_subdev *sd, unsigned int cmd,
+> -			       unsigned long arg);
+> +	long (*compat_ioctl32)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
+>  #endif
+>  #ifdef CONFIG_VIDEO_ADV_DEBUG
+>  	int (*g_register)(struct v4l2_subdev *sd, struct v4l2_dbg_register *reg);
 
-                Ilya
+-- 
+Regards,
+
+Laurent Pinchart
