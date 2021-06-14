@@ -2,82 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA623A5E43
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4953A5E4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbhFNIUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:20:45 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:41448 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232530AbhFNIUn (ORCPT
+        id S232625AbhFNIWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:22:23 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:34587 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232568AbhFNIWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:20:43 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-195-7lJORaaoNCKWXPve2GavIw-1; Mon, 14 Jun 2021 09:18:38 +0100
-X-MC-Unique: 7lJORaaoNCKWXPve2GavIw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 14 Jun
- 2021 09:18:37 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Mon, 14 Jun 2021 09:18:37 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
-        Dave Chinner <david@fromorbit.com>
-CC:     Dave Chinner <dchinner@redhat.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        "Allison Henderson" <allison.henderson@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Linux-Next <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "noreply@ellerman.id.au" <noreply@ellerman.id.au>
-Subject: RE: [PATCH] xfs: Fix 64-bit division on 32-bit in
- xlog_state_switch_iclogs()
-Thread-Topic: [PATCH] xfs: Fix 64-bit division on 32-bit in
- xlog_state_switch_iclogs()
-Thread-Index: AQHXXo7VbmU6/rUPA0ycA+xJ6PrQ66sTKT0g
-Date:   Mon, 14 Jun 2021 08:18:37 +0000
-Message-ID: <7478840c18fc45379697609757c6c747@AcuMS.aculab.com>
-References: <20210610110001.2805317-1-geert@linux-m68k.org>
- <20210610220155.GQ664593@dread.disaster.area>
- <CAMuHMdWp3E3QDnbGDcTZsCiQNP3pLV2nXVmtOD7OEQO8P-9egQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWp3E3QDnbGDcTZsCiQNP3pLV2nXVmtOD7OEQO8P-9egQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 14 Jun 2021 04:22:21 -0400
+Received: by mail-ot1-f41.google.com with SMTP id w22-20020a0568304116b02904060c6415c7so7711004ott.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uKKGjhbeg0B0pKWCQNCe7um9AkbBnP2WvySTEIvvkOk=;
+        b=Uhis+g582+5K2zRjimIe24IVA3XkBcXb7RMCMBxQBe2VQLc44N9mD+KyQQsxIlKEp/
+         +ePMaEu1IoqYc5jXeO2IKw1tUiMcEx/t1fdYO15cFz7minxO0IqjHkeyJWTNi8ZZ0shO
+         OkfrOkGGvtQKL/wUo6ZanBpClCgKjflVY1Uz4CnBi+NaYM0Ya4VyqewQI1WxAjACLmk7
+         OiSP4rY1i+njCUuiR4yDoBAw4EDKMPUMPuAsDP0qyZNM7v6GPtVGfBrIuRqR/Ig1u3Mf
+         uiy+V3kzJDYTphulSz0pgVmYNIaBONTlw2U/WoaqoSxComtJAYE1Gl39chUogeZrwjcb
+         M1Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uKKGjhbeg0B0pKWCQNCe7um9AkbBnP2WvySTEIvvkOk=;
+        b=ZtnkRoK45X6XvT8MLaZhHigrygXUSGaQuKSO29gqEnddnbJ+p8WXiczFExTff+lVCH
+         9v3YkW0OJoyO7HpOtnBnL6Htn81267LLH3ZD3zfBfhRsnvbG7MZCtSw2A5F8dqLgMJZr
+         EiaHO6z5jkiW9st9TJwLPefKM622Vh8iRky/2k4Djxhj4+xmVYKFqxTqzsUwbGZ1/sXY
+         6y2n1XCEVqd+cC8p7Wd5IfT5I2imyqiHzzUIvdNw4GaNjNTXeKwISqPN6Wtgn31edRdw
+         Dnr1pIKPiFAK6eYZ3pAdGaYbVWKTuZby+uvpY79p7Y6pVBf8u7ec4/UlxoX2HrLcG6Gf
+         zNQQ==
+X-Gm-Message-State: AOAM531DKJ4JaSSoB6TpFKWGj3cyuliUETDMheSEJNaj1QrlX/PSri7M
+        NNWnEXbwojUxAh4YH0mn/DSvqML5ObT5khQnIA7cyQ==
+X-Google-Smtp-Source: ABdhPJxBDo0O2EeYl93hlJpqgDDaLnFsFjvBy49fSG3rWvzSl1xzv0jzJYQ2C0W9+Fo8I8zDFQzfqAdwA3kAkUvKCNU=
+X-Received: by 2002:a9d:1726:: with SMTP id i38mr11907743ota.51.1623658758080;
+ Mon, 14 Jun 2021 01:19:18 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+ <20210607113840.15435-9-bhupesh.sharma@linaro.org> <YMLJsieGd+G+/kxK@builder.lan>
+In-Reply-To: <YMLJsieGd+G+/kxK@builder.lan>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Mon, 14 Jun 2021 13:49:07 +0530
+Message-ID: <CAH=2NtxHXi1nduzRtVZA5YfMjWeCxPCC-y6gwTbT5nYH+OxqGw@mail.gmail.com>
+Subject: Re: [PATCH 8/8] arm64: dts: qcom: sa8155p-adp: Add base dts file
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        bhupesh.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuDQo+IFNlbnQ6IDExIEp1bmUgMjAyMSAwNzo1NQ0KPiBI
-aSBEYXZlLA0KPiANCj4gT24gRnJpLCBKdW4gMTEsIDIwMjEgYXQgMTI6MDIgQU0gRGF2ZSBDaGlu
-bmVyIDxkYXZpZEBmcm9tb3JiaXQuY29tPiB3cm90ZToNCj4gPiBPbiBUaHUsIEp1biAxMCwgMjAy
-MSBhdCAwMTowMDowMVBNICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6DQouLi4NCj4g
-PiA2NCBiaXQgZGl2aXNpb24gb24gMzIgYml0IHBsYXRmb3JtcyBpcyBzdGlsbCBhIHByb2JsZW0g
-aW4gdGhpcyBkYXkNCj4gPiBhbmQgYWdlPw0KPiANCj4gVGhleSdyZSBub3QgYSBwcm9ibGVtLiAg
-QnV0IHlvdSBzaG91bGQgdXNlIHRoZSByaWdodCBvcGVyYXRpb25zIGZyb20NCj4gPGxpbnV4L21h
-dGg2NC5oPiwgaWZmIHlvdSByZWFsbHkgbmVlZCB0aGVzZSBleHBlbnNpdmUgb3BlcmF0aW9ucy4N
-Cg0KKDY0Yml0KSBkaXZpc2lvbiBpc24ndCBleGFjdGx5IGNoZWFwIG9uIDY0Yml0IGNwdXMuDQoN
-ClNvbWUgdGltaW5nIHRhYmxlcyBmb3IgeDg2IGdpdmUgbGF0ZW5jaWVzIG9mIHdlbGwgb3ZlciAx
-IGJpdC9jbG9jaw0KZm9yIEludGVsIGNwdXMsIEFNRCByeXplbiBtYW5hZ2UgMiBiaXRzL2Nsb2Nr
-Lg0KU2lnbmVkIGRpdmlkZSBpcyBhbHNvIHNpZ25pZmljYW50bHkgbW9yZSBleHBlbnNpdmUgdGhh
-bg0KdW5zaWduZWQgZGl2aWRlLg0KDQpJbnRlZ2VyIGRpdmlkZSBwZXJmb3JtYW5jZSBpcyBjbGVh
-cmx5IG5vdCBpbXBvcnRhbnQgZW5vdWdoDQp0byB0aHJvdyBzaWxpY29uIGF0Lg0KVGhlIHNhbWUg
-dGFibGVzIHNob3cgZmRpdiBoYXZpbmcgYSBsYXRlbmN5IG9mIDE2IGNsb2Nrcy4NCg0KCURhdmlk
-DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
-YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
-IChXYWxlcykNCg==
+Hello Bjorn,
 
+On Fri, 11 Jun 2021 at 07:55, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
+>
+> > Add base DTS file for sa8155p-adp and enable boot to console,
+>
+> Please spell out "sa8155-adp", i.e. "Add base DTS for SA8155p Automotive
+> Development Platform."
+
+Ok, will do.
+
+> > tlmm reserved range and also include pmic file(s).
+> >
+> > SA8155p-adp board is based on sm8150 Qualcomm Snapdragon SoC.
+> >
+>
+> It's not based on sm8150, it's based on sa8155p, so let's express this
+> as "The SA8155p platform is similar to the SM8150, so use this as base
+> for now", to document why we decided to do this.
+>
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: Liam Girdwood <lgirdwood@gmail.com>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Andy Gross <agross@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-gpio@vger.kernel.org
+> > Cc: bhupesh.linux@gmail.com
+>
+> This would go into the git history as "I specifically asked for input
+> from these people", so please keep this list shorter (but for a change
+> like this it's probably better to omit it completely)
+
+Ok, will keep it shorter for future series.
+
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/Makefile        |   1 +
+> >  arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 363 +++++++++++++++++++++++
+> >  2 files changed, 364 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> > index 456502aeee49..38d3a4728871 100644
+> > --- a/arch/arm64/boot/dts/qcom/Makefile
+> > +++ b/arch/arm64/boot/dts/qcom/Makefile
+> > @@ -71,6 +71,7 @@ dtb-$(CONFIG_ARCH_QCOM)     += sdm845-xiaomi-beryllium.dtb
+> >  dtb-$(CONFIG_ARCH_QCOM)      += sdm850-lenovo-yoga-c630.dtb
+> >  dtb-$(CONFIG_ARCH_QCOM)      += sm8150-hdk.dtb
+> >  dtb-$(CONFIG_ARCH_QCOM)      += sm8150-mtp.dtb
+> > +dtb-$(CONFIG_ARCH_QCOM)      += sa8155p-adp.dtb
+> >  dtb-$(CONFIG_ARCH_QCOM)      += sm8250-hdk.dtb
+> >  dtb-$(CONFIG_ARCH_QCOM)      += sm8250-mtp.dtb
+> >  dtb-$(CONFIG_ARCH_QCOM)      += sm8350-hdk.dtb
+> > diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> > new file mode 100644
+> > index 000000000000..470d740e060a
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> > @@ -0,0 +1,363 @@
+> > +// SPDX-License-Identifier: BSD-3-Clause
+> > +/*
+> > + * Copyright (c) 2021, Linaro Limited
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> > +#include <dt-bindings/gpio/gpio.h>
+> > +#include "sm8150.dtsi"
+> > +#include "pmm8155au_1.dtsi"
+> > +#include "pmm8155au_2.dtsi"
+> > +
+> > +/ {
+> > +     model = "Qualcomm Technologies, Inc. SA8155P ADP";
+> > +     compatible = "qcom,sa8155p-adp";
+> > +
+> > +     aliases {
+> > +             serial0 = &uart2;
+> > +     };
+> > +
+> > +     chosen {
+> > +             stdout-path = "serial0:115200n8";
+> > +     };
+> > +
+> > +     vreg_3p3: vreg_3p3_regulator {
+> > +             compatible = "regulator-fixed";
+> > +             regulator-name = "vreg_3p3";
+> > +             regulator-min-microvolt = <3300000>;
+> > +             regulator-max-microvolt = <3300000>;
+> > +     };
+> > +
+> > +     /*
+> > +      * Apparently RPMh does not provide support for PM8150 S4 because it
+> > +      * is always-on; model it as a fixed regulator.
+> > +      */
+>
+> You can reduce this to
+>
+>         /* S4A is always on and not controllable through RPMh */
+>
+
+Ok, I wanted to keep it similar to the comment we have for sm815o-mtp,
+but this is fine as well.
+
+> > +     vreg_s4a_1p8: smps4 {
+> > +             compatible = "regulator-fixed";
+> > +             regulator-name = "vreg_s4a_1p8";
+> > +
+> > +             regulator-min-microvolt = <1800000>;
+> > +             regulator-max-microvolt = <1800000>;
+> > +
+> > +             regulator-always-on;
+> > +             regulator-boot-on;
+> > +
+> > +             vin-supply = <&vreg_3p3>;
+> > +     };
+> > +};
+> > +
+> > +&apps_rsc {
+> > +     pmm8155au-1-rpmh-regulators {
+> > +             compatible = "qcom,pmm8155au-1-rpmh-regulators";
+> > +             qcom,pmic-id = "a";
+> > +
+> > +             vdd-s1-supply = <&vreg_3p3>;
+> > +             vdd-s2-supply = <&vreg_3p3>;
+> > +             vdd-s3-supply = <&vreg_3p3>;
+> > +             vdd-s4-supply = <&vreg_3p3>;
+> > +             vdd-s5-supply = <&vreg_3p3>;
+> > +             vdd-s6-supply = <&vreg_3p3>;
+> > +             vdd-s7-supply = <&vreg_3p3>;
+> > +             vdd-s8-supply = <&vreg_3p3>;
+> > +             vdd-s9-supply = <&vreg_3p3>;
+> > +             vdd-s10-supply = <&vreg_3p3>;
+> > +
+> > +             vdd-l1-l8-l11-supply = <&vreg_s6a_0p92>;
+> > +             vdd-l2-l10-supply = <&vreg_3p3>;
+> > +             vdd-l3-l4-l5-l18-supply = <&vreg_s6a_0p92>;
+> > +             vdd-l6-l9-supply = <&vreg_s6a_0p92>;
+> > +             vdd-l7-l12-l14-l15-supply = <&vreg_s5a_2p04>;
+> > +             vdd-l13-l16-l17-supply = <&vreg_3p3>;
+> > +
+> > +             vreg_s5a_2p04: smps5 {
+> > +                     regulator-min-microvolt = <1904000>;
+> > +                     regulator-max-microvolt = <2000000>;
+> > +             };
+> > +
+> > +             vreg_s6a_0p92: smps6 {
+> > +                     regulator-min-microvolt = <920000>;
+> > +                     regulator-max-microvolt = <1128000>;
+> > +             };
+> > +
+> > +             vdda_wcss_pll:
+>
+> This is the "label" of the pad which the regulator typically is
+> connected to (rather than a denotion of which regulator it is). So even
+> though we have these in some of the other boards, I would prefer if you
+> skip them and only use the vreg_xyz_abc variant.
+
+Ok.
+
+> > +             vreg_l1a_0p752: ldo1 {
+> > +                     regulator-min-microvolt = <752000>;
+> > +                     regulator-max-microvolt = <752000>;
+> > +                     regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> > +             };
+> [..]
+> > +&usb_1_dwc3 {
+> > +     dr_mode = "peripheral";
+>
+> We have enough pieces to handle mode switching on this platform, but as
+> discussed, lets leave it as "peripheral" until your local setup is back
+> online.
+
+Sure, in later patches, I can try playing more with this configuration.
+
+Regards,
+Bhupesh
