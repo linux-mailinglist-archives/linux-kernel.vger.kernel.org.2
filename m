@@ -2,79 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DF13A5E1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81123A5E13
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 10:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbhFNILv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 04:11:51 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3228 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232528AbhFNILu (ORCPT
+        id S232574AbhFNIJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 04:09:17 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:44853 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232530AbhFNIJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:11:50 -0400
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G3P0s5vvHz6H7n1;
-        Mon, 14 Jun 2021 15:56:45 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 14 Jun 2021 10:09:46 +0200
-Received: from [10.47.95.26] (10.47.95.26) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 14 Jun
- 2021 09:09:46 +0100
-Subject: Re: [PATCH v12 3/5] iommu/vt-d: Add support for IOMMU default DMA
- mode build options
-To:     Lu Baolu <baolu.lu@linux.intel.com>, <joro@8bytes.org>,
-        <will@kernel.org>, <dwmw2@infradead.org>, <robin.murphy@arm.com>
-CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
-        <chenxiang66@hisilicon.com>
-References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
- <1623414043-40745-4-git-send-email-john.garry@huawei.com>
- <f3940a3f-d1c1-148d-e4b5-51cecf924ff5@linux.intel.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <03675e2f-c3a6-ce33-ef96-f9ae544b2d13@huawei.com>
-Date:   Mon, 14 Jun 2021 09:03:43 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Mon, 14 Jun 2021 04:09:15 -0400
+Received: by mail-oi1-f171.google.com with SMTP id a26so13455808oie.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 01:06:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bkT0W8uF7vg3HLg+/9Z/pWJKuKWmGeE2SVQvx5LKoY8=;
+        b=UPTHRDNfA8Agg10whsqifThnxL2XjDZWqPqDnpeLhEUooT4NmCe8JfPKSJeaZCeJ7T
+         duay+rmg3IWUMsdK2KaBXhhxErIf5IjOCQWgVAQXStBy/ZtCuSoCE6M21G4lWI+hnhtK
+         7IS8SESV7paEmVd97VAO2rC4HKupVRjlanCMbYifeOsGVm4Yl8ywWJ3gnkLUsvwnyXhy
+         Jx5yZm1CGq2McGnagYUi8AhwukGzYNZfeGg/XhFtMF48GiD3TItTducF4ygbfN0aaX0S
+         ijifl9upHRJvZIZBZq0dbfnWN0PSIdDMQvidCXX6jQ1NT811qraW2OIoPT981otoOInM
+         AwyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bkT0W8uF7vg3HLg+/9Z/pWJKuKWmGeE2SVQvx5LKoY8=;
+        b=oKMC1Rw7p9VwUWDWgF3wetpgOPGI95AYrnMJpAWD47ZORE9OWhQ5zd8zh11gjXqFSH
+         B0RbC0jsR9+o+TcJE8HXzYRjNfbZhy3lR/3pCHnzqBlLkCNfJD2FJESXYl2TEYZnmaF+
+         s6sHGoh4VaGQmcI3zFo3UHd6Qx7VNSktMtsZ2TgXqU03xOhTPdhxDhqmPcfbCD3PXQP6
+         ZkmJ5n9YqjVeNAYJCeugvV1cw2TNao8sIept2Dwqvmsre1cxwH+vq4ujS4X4KjeYnjJz
+         2+KUuodh+u7L1e2NOoHUAXmhWmvrT/vXzYCPQmhMbUuAP5TLFyC3k24qhOjSRPzLiufl
+         +utw==
+X-Gm-Message-State: AOAM531V7kJU6dkc/Ar/P+9M4SWafWXZMujG4cmPx5aHeEuZpfP/52Kh
+        8rqrWKylhc1s4Xm0cudpsRcOZlJzowEafW97iEi9Qw==
+X-Google-Smtp-Source: ABdhPJxLGI90FU0D09Sa6LTFm9kRaJq46LUpOxjQeVzGELvxHKc/mMDygnvOtyuLc2Ha+iDkSFNEg8AgoMa2VA/mcds=
+X-Received: by 2002:aca:fc91:: with SMTP id a139mr5053908oii.12.1623657958977;
+ Mon, 14 Jun 2021 01:05:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f3940a3f-d1c1-148d-e4b5-51cecf924ff5@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.95.26]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+ <20210607113840.15435-2-bhupesh.sharma@linaro.org> <YMLO56Rr7UGUy8vo@builder.lan>
+In-Reply-To: <YMLO56Rr7UGUy8vo@builder.lan>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Mon, 14 Jun 2021 13:35:48 +0530
+Message-ID: <CAH=2NtyV=qMn32d9nE7qBheTscUejF1UwVZSc99uiv_P65S03Q@mail.gmail.com>
+Subject: Re: [PATCH 1/8] dt-bindings: qcom: rpmh-regulator: Add compatible for
+ SA8155p-adp board pmics
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        bhupesh.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/06/2021 03:14, Lu Baolu wrote:
-> On 2021/6/11 20:20, John Garry wrote:
->> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
->> index 2a71347611d4..4467353f981b 100644
->> --- a/drivers/iommu/Kconfig
->> +++ b/drivers/iommu/Kconfig
->> @@ -94,6 +94,7 @@ choice
->>       prompt "IOMMU default DMA mode"
->>       depends on IOMMU_DMA
->> +    default IOMMU_DEFAULT_LAZY if INTEL_IOMMU
->>       default IOMMU_DEFAULT_STRICT
-> 
-> If two default values are different. Which one will be overridden?
+Hello Bjorn,
 
-If I understand your question correctly, I think you are asking if both 
-are set:
-CONFIG_IOMMU_DEFAULT_LAZY=y
-CONFIG_IOMMU_DEFAULT_STRICT=y
+Thanks for the review comments.
 
-If this happens, then make defconfig complains about both being set, and 
-selects the 2nd, whatever that is.
+On Fri, 11 Jun 2021 at 08:18, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Mon 07 Jun 06:38 CDT 2021, Bhupesh Sharma wrote:
+>
+> > Add compatible strings for pmm8155au_1 and pmm8155au_2 pmics
+> > found on SA8155p-adp board.
+> >
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: Liam Girdwood <lgirdwood@gmail.com>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Andy Gross <agross@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-gpio@vger.kernel.org
+> > Cc: bhupesh.linux@gmail.com
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >  .../devicetree/bindings/regulator/qcom,rpmh-regulator.yaml      | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> > index e561a5b941e4..ea5cd71aa0c7 100644
+> > --- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> > +++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> > @@ -55,6 +55,8 @@ properties:
+> >        - qcom,pm8009-1-rpmh-regulators
+> >        - qcom,pm8150-rpmh-regulators
+> >        - qcom,pm8150l-rpmh-regulators
+> > +      - qcom,pmm8155au-1-rpmh-regulators
+> > +      - qcom,pmm8155au-2-rpmh-regulators
+>
+> Looking at the component documentation and the schematics I think the
+> component is "PMM8155AU" and we have two of them.
+>
+> Unless I'm mistaken we should have the compatible describe the single
+> component and we should have DT describe the fact that we have 2 of
+> them.
 
-If neither are set, then IOMMU_DEFAULT_LAZY is set if INTEL_IOMMU is 
-set, otherwise IOMMU_DEFAULT_STRICT.
+If we refer to the PM8155AU device specifications, there are two
+regulators mentioned there PMM8155AU_1 and PMM8155AU_2. Although most
+parameters of the regulators seem similar the smps regulator summary
+for both appear different (Transient Load, mA ratings etc).
+
+Although most of these differences don't probably matter to the Linux
+world, others like the gpios on the pmic are different.
+
+So, IMO, it makes sense to mention the different pmic types on the board.
+
+Please let me know your views on the same.
 
 Thanks,
-John
+Bhupesh
+
+>
+> >        - qcom,pm8350-rpmh-regulators
+> >        - qcom,pm8350c-rpmh-regulators
+> >        - qcom,pm8998-rpmh-regulators
+> > --
+> > 2.31.1
+> >
