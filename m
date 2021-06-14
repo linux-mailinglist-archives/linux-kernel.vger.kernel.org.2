@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F5D3A60BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CC23A6293
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhFNKhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:37:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40118 "EHLO mail.kernel.org"
+        id S234391AbhFNLBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233197AbhFNKea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:34:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6627D61356;
-        Mon, 14 Jun 2021 10:31:57 +0000 (UTC)
+        id S234010AbhFNKwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:52:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1A1061438;
+        Mon, 14 Jun 2021 10:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666718;
-        bh=5bqUyuGC4qPAzcsbT4hkqG7eCZ5cUtOm6k0n5Fu7zvY=;
+        s=korg; t=1623667162;
+        bh=4b+kN5kgYUJozpZ0feh5k1wvn1s8BWKCOUy7nfMwHoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JkIg3n3gr6Qyb/qhcmBRUVah5XVM9EAHxUimGbfnSV5gwjD1xpLl93Ur20HblxbpX
-         qgq43OC3u7uTZelmQQ58b1y+ppwsqLoxvcwARt73Hi/ZNHove8ylT3Qg6LFtlYtN3k
-         Sac1pM7mNem/eWDAz3njAi1sX5LEZ7I/yzTndPyM=
+        b=UiHXHkUyDmY7wNJ2aKwFWwmSxJ+v0uYZQKEsBHQoX2oEG8CpXeYb7UgbsMkLeLUfC
+         aqVLpGZWDrEzwU3A22O7xlI7TF6Le2QsFS8uAtsGInHGOwAo/EDx6+40sW/RamGHS1
+         QynO4GUsWx88smzloHBD/YyfjjkEZ7coHmtoPRTM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.9 37/42] kvm: fix previous commit for 32-bit builds
+        stable@vger.kernel.org,
+        Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
+Subject: [PATCH 5.4 50/84] usb: dwc3: ep0: fix NULL pointer exception
 Date:   Mon, 14 Jun 2021 12:27:28 +0200
-Message-Id: <20210614102643.881341114@linuxfoundation.org>
+Message-Id: <20210614102648.065885218@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,33 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
 
-commit 4422829e8053068e0225e4d0ef42dc41ea7c9ef5 upstream.
+commit d00889080ab60051627dab1d85831cd9db750e2a upstream.
 
-array_index_nospec does not work for uint64_t on 32-bit builds.
-However, the size of a memory slot must be less than 20 bits wide
-on those system, since the memory slot must fit in the user
-address space.  So just store it in an unsigned long.
+There is no validation of the index from dwc3_wIndex_to_dep() and we might
+be referring a non-existing ep and trigger a NULL pointer exception. In
+certain configurations we might use fewer eps and the index might wrongly
+indicate a larger ep index than existing.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+By adding this validation from the patch we can actually report a wrong
+index back to the caller.
+
+In our usecase we are using a composite device on an older kernel, but
+upstream might use this fix also. Unfortunately, I cannot describe the
+hardware for others to reproduce the issue as it is a proprietary
+implementation.
+
+[   82.958261] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000a4
+[   82.966891] Mem abort info:
+[   82.969663]   ESR = 0x96000006
+[   82.972703]   Exception class = DABT (current EL), IL = 32 bits
+[   82.978603]   SET = 0, FnV = 0
+[   82.981642]   EA = 0, S1PTW = 0
+[   82.984765] Data abort info:
+[   82.987631]   ISV = 0, ISS = 0x00000006
+[   82.991449]   CM = 0, WnR = 0
+[   82.994409] user pgtable: 4k pages, 39-bit VAs, pgdp = 00000000c6210ccc
+[   83.000999] [00000000000000a4] pgd=0000000053aa5003, pud=0000000053aa5003, pmd=0000000000000000
+[   83.009685] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+[   83.026433] Process irq/62-dwc3 (pid: 303, stack limit = 0x000000003985154c)
+[   83.033470] CPU: 0 PID: 303 Comm: irq/62-dwc3 Not tainted 4.19.124 #1
+[   83.044836] pstate: 60000085 (nZCv daIf -PAN -UAO)
+[   83.049628] pc : dwc3_ep0_handle_feature+0x414/0x43c
+[   83.054558] lr : dwc3_ep0_interrupt+0x3b4/0xc94
+
+...
+
+[   83.141788] Call trace:
+[   83.144227]  dwc3_ep0_handle_feature+0x414/0x43c
+[   83.148823]  dwc3_ep0_interrupt+0x3b4/0xc94
+[   83.181546] ---[ end trace aac6b5267d84c32f ]---
+
+Signed-off-by: Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210608162650.58426-1-marian.c.rotariu@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/kvm_host.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/dwc3/ep0.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -939,8 +939,8 @@ __gfn_to_hva_memslot(struct kvm_memory_s
- 	 * table walks, do not let the processor speculate loads outside
- 	 * the guest's registered memslots.
- 	 */
--	unsigned long offset = array_index_nospec(gfn - slot->base_gfn,
--						  slot->npages);
-+	unsigned long offset = gfn - slot->base_gfn;
-+	offset = array_index_nospec(offset, slot->npages);
- 	return slot->userspace_addr + offset * PAGE_SIZE;
- }
+--- a/drivers/usb/dwc3/ep0.c
++++ b/drivers/usb/dwc3/ep0.c
+@@ -292,6 +292,9 @@ static struct dwc3_ep *dwc3_wIndex_to_de
+ 		epnum |= 1;
+ 
+ 	dep = dwc->eps[epnum];
++	if (dep == NULL)
++		return NULL;
++
+ 	if (dep->flags & DWC3_EP_ENABLED)
+ 		return dep;
  
 
 
