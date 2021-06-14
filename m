@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56A03A6A9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134BA3A6AA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233966AbhFNPkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:40:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39565 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233910AbhFNPkd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:40:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623685110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qKSz/LRN00+0nJv4NZOhjKiU+MuuvkiLXHI2jFvDWTo=;
-        b=cyMp5Rykvxo818HDegBz1uUFprdy7qBaujMADKgU0NscvK7QryAAGEIh52P8rAmINnYSiV
-        AhWii7QmJmE1aZhCJUSb3gItD/pSVTOSvmO+nWyeJdfL8Tc5ce/r2tiD13E4/GUYBU9V3f
-        pFDy2AogffPb/JexZ80DpnvOXIcHcHM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-7bpBxVSNPlCeR3mvDSJyDA-1; Mon, 14 Jun 2021 11:38:26 -0400
-X-MC-Unique: 7bpBxVSNPlCeR3mvDSJyDA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0652619253C6;
-        Mon, 14 Jun 2021 15:38:24 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B766219C46;
-        Mon, 14 Jun 2021 15:38:22 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YMdpxbYafHnE0F8N@casper.infradead.org>
-References: <YMdpxbYafHnE0F8N@casper.infradead.org> <162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk> <162367682522.460125.5652091227576721609.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, jlayton@kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] afs: Fix afs_write_end() to handle short writes
+        id S234035AbhFNPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:41:12 -0400
+Received: from mga18.intel.com ([134.134.136.126]:40942 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233152AbhFNPlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 11:41:08 -0400
+IronPort-SDR: gQoQ5+LNFNlElHAC6dwAj+ghuYrlDTeLYTWL7Ao/DRQn6ybizSwowfwoQYoJmKwvNY5CLZMxl3
+ r5JREoykPeKw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="193142174"
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="193142174"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 08:38:36 -0700
+IronPort-SDR: nXB+o2lftYb+8ZQVIni4sNzCodz4iHpH5vgavLM2BcWwUAsYWe9HiotFtrd/EIIZFFPJAOFyOv
+ 9X98THdYkptw==
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
+   d="scan'208";a="403925114"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 08:38:33 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1lsofW-002Gdz-3K; Mon, 14 Jun 2021 18:38:30 +0300
+Date:   Mon, 14 Jun 2021 18:38:30 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Dave Young <dyoung@redhat.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Javier =?iso-8859-1?B?VGnh?= <javier.tia@gmail.com>,
+        kexec@lists.infradead.org, Eric Biederman <ebiederm@xmission.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed
+ kernel
+Message-ID: <YMd39tIPercgljll@smile.fi.intel.com>
+References: <20161202195416.58953-1-andriy.shevchenko@linux.intel.com>
+ <YLdEZoSWI41fcTB1@smile.fi.intel.com>
+ <YLdG91qspr19heDS@smile.fi.intel.com>
+ <YLss6ZNPMIXleLLF@dhcp-128-65.nay.redhat.com>
+ <YL5HvUqtsDXx5CzM@smile.fi.intel.com>
+ <YL5U/zSb50SnbLgW@smile.fi.intel.com>
+ <YL9hxPdPj0dYMyaD@dhcp-128-65.nay.redhat.com>
+ <CAHp75VcPuf6BLGf7Y3RO2M-gHMFZMTeb4ftnj_tbGS4TxvThxA@mail.gmail.com>
+ <YMCsSqzmG4jb1Ojo@dhcp-128-65.nay.redhat.com>
+ <YMQ62d1EFFjRcv6w@dhcp-128-65.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <475130.1623685101.1@warthog.procyon.org.uk>
-Date:   Mon, 14 Jun 2021 16:38:21 +0100
-Message-ID: <475131.1623685101@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMQ62d1EFFjRcv6w@dhcp-128-65.nay.redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
-
-> > -	ASSERT(PageUptodate(page));
-> > -
-> >  	if (PagePrivate(page)) {
-> >  		priv = page_private(page);
-> >  		f = afs_page_dirty_from(page, priv);
+On Sat, Jun 12, 2021 at 12:40:57PM +0800, Dave Young wrote:
+> > Probably it is doable to have kexec on 32bit efi working
+> > without runtime service support, that means no need the trick of fixed
+> > mapping.
+> > 
+> > If I can restore my vm to boot 32bit efi on this weekend then I may provide some draft
+> > patches for test.
 > 
-> Why are you removing this assertion?  Does AFS now support dirty,
-> partially-uptodate pages?  If so, a subsequent read() to that
-> page is going to need to be careful to only read the parts of the page
-> from the server that haven't been written ...
+> Unfortunately I failed to setup a 32bit efi guest,  here are some
+> untested draft patches, please have a try.
 
-Because the previous hunk in the patch:
+Thanks for the patches.
 
-	+	if (!PageUptodate(page)) {
-	+		if (copied < len) {
-	+			copied = 0;
-	+			goto out;
-	+		}
-	+
-	+		SetPageUptodate(page);
-	+	}
+As previously, I have reverted my hacks and applied your patches (also I
+dropped patches from previous mail against kernel and kexec-tools) for both
+kernel and user space on first and second environments.
 
-means you can't get there unless PageUptodate() is true by that point.
+It does NOT solve the issue.
 
-David
+If there is no idea pops up soon, I'm going to resend my series that
+workarounds the issue.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
