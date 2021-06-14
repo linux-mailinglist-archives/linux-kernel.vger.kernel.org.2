@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F663A62C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977DF3A63DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235234AbhFNLFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:05:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59282 "EHLO mail.kernel.org"
+        id S235364AbhFNLR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:17:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234012AbhFNKzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:55:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1066461584;
-        Mon, 14 Jun 2021 10:40:55 +0000 (UTC)
+        id S235201AbhFNLFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:05:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1416B61403;
+        Mon, 14 Jun 2021 10:45:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667256;
-        bh=0PEOkMy6BleViziz664TLBeeJPhIJrUK18ritYu7c/I=;
+        s=korg; t=1623667507;
+        bh=cTfb+w7TafjN96srb5yUS/4AqjOJf/Z69ZTCAqZQoAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rbo0PxC8+tX1KuQY/Q9wfB1RgJMQE5VnUDBjkUUeVwwDiFkwaGaoW8It6MMlghwdV
-         msdYs1b/jz34lFtXwYA07nbNtueUhXxdvqwygPEv54VlG96zuP9lonfduDKxdSO74g
-         02o9igil3iH+yBiqhyamnOoQs2WBLggZmIgQBSmU=
+        b=H84ougQ4tBlMhH70Ba/M2P2VVRLXg5BkpFYiiFZIHilLVLRgivq3Ah5wJQkXgoD9S
+         93jH0faBOh0cLvI3AUgmTA+VfnzpNX5fBhHum3qOqD5+Ay1DKQeTNekPUF12l9WTjs
+         V9Te1f/dUvI6mj29eJ0JCCpKFI4m8JSzNYSOrVHw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Subject: [PATCH 5.4 61/84] usb: fix various gadget panics on 10gbps cabling
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 5.10 098/131] usb: typec: mux: Fix copy-paste mistake in typec_mux_match
 Date:   Mon, 14 Jun 2021 12:27:39 +0200
-Message-Id: <20210614102648.454109883@linuxfoundation.org>
+Message-Id: <20210614102656.334509706@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-commit 032e288097a553db5653af552dd8035cd2a0ba96 upstream.
+commit 142d0b24c1b17139f1aaaacae7542a38aa85640f upstream.
 
-usb_assign_descriptors() is called with 5 parameters,
-the last 4 of which are the usb_descriptor_header for:
-  full-speed (USB1.1 - 12Mbps [including USB1.0 low-speed @ 1.5Mbps),
-  high-speed (USB2.0 - 480Mbps),
-  super-speed (USB3.0 - 5Gbps),
-  super-speed-plus (USB3.1 - 10Gbps).
+Fix the copy-paste mistake in the return path of typec_mux_match(),
+where dev is considered a member of struct typec_switch rather than
+struct typec_mux.
 
-The differences between full/high/super-speed descriptors are usually
-substantial (due to changes in the maximum usb block size from 64 to 512
-to 1024 bytes and other differences in the specs), while the difference
-between 5 and 10Gbps descriptors may be as little as nothing
-(in many cases the same tuning is simply good enough).
+The two structs are identical in regards to having the struct device as
+the first entry, so this provides no functional change.
 
-However if a gadget driver calls usb_assign_descriptors() with
-a NULL descriptor for super-speed-plus and is then used on a max 10gbps
-configuration, the kernel will crash with a null pointer dereference,
-when a 10gbps capable device port + cable + host port combination shows up.
-(This wouldn't happen if the gadget max-speed was set to 5gbps, but
-it of course defaults to the maximum, and there's no real reason to
-artificially limit it)
-
-The fix is to simply use the 5gbps descriptor as the 10gbps descriptor,
-if a 10gbps descriptor wasn't provided.
-
-Obviously this won't fix the problem if the 5gbps descriptor is also
-NULL, but such cases can't be so trivially solved (and any such gadgets
-are unlikely to be used with USB3 ports any way).
-
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210609024459.1126080-1-zenczykowski@gmail.com
+Fixes: 3370db35193b ("usb: typec: Registering real device entries for the muxes")
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210610002132.3088083-1-bjorn.andersson@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/config.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/usb/typec/mux.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/config.c
-+++ b/drivers/usb/gadget/config.c
-@@ -164,6 +164,14 @@ int usb_assign_descriptors(struct usb_fu
- {
- 	struct usb_gadget *g = f->config->cdev->gadget;
+--- a/drivers/usb/typec/mux.c
++++ b/drivers/usb/typec/mux.c
+@@ -239,7 +239,7 @@ find_mux:
+ 	dev = class_find_device(&typec_mux_class, NULL, fwnode,
+ 				mux_fwnode_match);
  
-+	/* super-speed-plus descriptor falls back to super-speed one,
-+	 * if such a descriptor was provided, thus avoiding a NULL
-+	 * pointer dereference if a 5gbps capable gadget is used with
-+	 * a 10gbps capable config (device port + cable + host port)
-+	 */
-+	if (!ssp)
-+		ssp = ss;
-+
- 	if (fs) {
- 		f->fs_descriptors = usb_copy_descriptors(fs);
- 		if (!f->fs_descriptors)
+-	return dev ? to_typec_switch(dev) : ERR_PTR(-EPROBE_DEFER);
++	return dev ? to_typec_mux(dev) : ERR_PTR(-EPROBE_DEFER);
+ }
+ 
+ /**
 
 
