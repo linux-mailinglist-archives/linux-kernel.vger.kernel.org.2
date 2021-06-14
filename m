@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D8B3A603C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658953A6094
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbhFNKch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:32:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38154 "EHLO mail.kernel.org"
+        id S233099AbhFNKfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:35:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232900AbhFNKbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD063611C1;
-        Mon, 14 Jun 2021 10:29:29 +0000 (UTC)
+        id S233188AbhFNKdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:33:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A682611CA;
+        Mon, 14 Jun 2021 10:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666570;
-        bh=IWcj35moBMRAi6GKXI6qr+oAyytUajacGc4eZxWAa3g=;
+        s=korg; t=1623666666;
+        bh=eds8IOZtnGhaffiJTb92aYTjf9GAJf65MJFEnvDn35c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0QSWKwQLrgY+CX88TOUvglP4Yf/WsYX7r5zMybROA2NgYlVigPw4/Aa6WEwsgF9Mc
-         isfYRB9zYoliKx5aziWsTAtGLcrniKdGo/a1ZT+cFXcGJWCmSt/TfE8PrVqd5t4Rby
-         F+bosU3Fhm73vvVXSP+6Mjy2cUbyCH9gdT650NfI=
+        b=p52qRJfstU7B4Cj/qlO3E+SyPNHB3O62SU5C3tDhA3zPdulrEZWdejQ0FUKG4Rs+k
+         k8//GZzWDA+UViAhly7cacUKr4zhdTkn+xGcmBeGDpiUs1Qa5Dg6tugSnehlXDC0a3
+         1vbVNVvHvkDMz+iTSv1QGgDylNjd6Fp9AJ3IlGng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.com>
-Subject: [PATCH 4.4 27/34] usb: gadget: eem: fix wrong eem header operation
+        stable@vger.kernel.org,
+        George McCollister <george.mccollister@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 27/42] USB: serial: ftdi_sio: add NovaTech OrionMX product ID
 Date:   Mon, 14 Jun 2021 12:27:18 +0200
-Message-Id: <20210614102642.454007917@linuxfoundation.org>
+Message-Id: <20210614102643.569927932@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
+In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
+References: <20210614102642.700712386@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,41 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linyu Yuan <linyyuan@codeaurora.com>
+From: George McCollister <george.mccollister@gmail.com>
 
-commit 305f670846a31a261462577dd0b967c4fa796871 upstream.
+commit bc96c72df33ee81b24d87eab953c73f7bcc04f29 upstream.
 
-when skb_clone() or skb_copy_expand() fail,
-it should pull skb with lengh indicated by header,
-or not it will read network data and check it as header.
+Add PID for the NovaTech OrionMX so it can be automatically detected.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Linyu Yuan <linyyuan@codeaurora.com>
-Link: https://lore.kernel.org/r/20210608233547.3767-1-linyyuan@codeaurora.org
+Signed-off-by: George McCollister <george.mccollister@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_eem.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/ftdi_sio.c     |    1 +
+ drivers/usb/serial/ftdi_sio_ids.h |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/usb/gadget/function/f_eem.c
-+++ b/drivers/usb/gadget/function/f_eem.c
-@@ -498,7 +498,7 @@ static int eem_unwrap(struct gether *por
- 			skb2 = skb_clone(skb, GFP_ATOMIC);
- 			if (unlikely(!skb2)) {
- 				DBG(cdev, "unable to unframe EEM packet\n");
--				continue;
-+				goto next;
- 			}
- 			skb_trim(skb2, len - ETH_FCS_LEN);
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -606,6 +606,7 @@ static const struct usb_device_id id_tab
+ 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONLX_PLUS_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORION_IO_PID) },
++	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONMX_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_SYNAPSE_SS200_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX2_PID) },
+--- a/drivers/usb/serial/ftdi_sio_ids.h
++++ b/drivers/usb/serial/ftdi_sio_ids.h
+@@ -580,6 +580,7 @@
+ #define FTDI_NT_ORIONLXM_PID		0x7c90	/* OrionLXm Substation Automation Platform */
+ #define FTDI_NT_ORIONLX_PLUS_PID	0x7c91	/* OrionLX+ Substation Automation Platform */
+ #define FTDI_NT_ORION_IO_PID		0x7c92	/* Orion I/O */
++#define FTDI_NT_ORIONMX_PID		0x7c93	/* OrionMX */
  
-@@ -509,7 +509,7 @@ static int eem_unwrap(struct gether *por
- 			if (unlikely(!skb3)) {
- 				DBG(cdev, "unable to realign EEM packet\n");
- 				dev_kfree_skb_any(skb2);
--				continue;
-+				goto next;
- 			}
- 			dev_kfree_skb_any(skb2);
- 			skb_queue_tail(list, skb3);
+ /*
+  * Synapse Wireless product ids (FTDI_VID)
 
 
