@@ -2,267 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1273A7007
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E80C3A701C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbhFNUTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:19:02 -0400
-Received: from lilium.sigma-star.at ([109.75.188.150]:59192 "EHLO
-        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234444AbhFNUSo (ORCPT
+        id S234164AbhFNUUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:20:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25770 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235110AbhFNUTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:18:44 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lilium.sigma-star.at (Postfix) with ESMTP id 7C89818190E4A;
-        Mon, 14 Jun 2021 22:16:38 +0200 (CEST)
-Received: from lilium.sigma-star.at ([127.0.0.1])
-        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id EytU5U21JfDt; Mon, 14 Jun 2021 22:16:37 +0200 (CEST)
-Received: from lilium.sigma-star.at ([127.0.0.1])
-        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Yxr3TtJK9DNP; Mon, 14 Jun 2021 22:16:37 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     keyrings@vger.kernel.org
-Cc:     David Gstir <david@sigma-star.at>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fabio Estevam <festevam@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Bottomley <jejb@linux.ibm.com>,
-        James Morris <jmorris@namei.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Richard Weinberger <richard@nod.at>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 3/3] doc: trusted-encrypted: add DCP as new trust source
-Date:   Mon, 14 Jun 2021 22:16:20 +0200
-Message-Id: <20210614201620.30451-4-richard@nod.at>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210614201620.30451-1-richard@nod.at>
-References: <20210614201620.30451-1-richard@nod.at>
+        Mon, 14 Jun 2021 16:19:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623701828;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6BGYUcTx5tsZwPa17u6H+0H1QgwUbqfF91m+1x+AxEk=;
+        b=AzFEmhZwQ/OuhtZUl5vGQxof5gUqEmsaMxT6S/uUzZJan0HTpN7OwlNBueEpDpAzISoWOK
+        OauZJSEh9dCHEGTRnFOHXx/SxoIKRDjkH/K4NkNzqX7Gg2GEHWTVH60KU/Gh6fJSkJhZj7
+        C6NfJrSKkVDLzEMqHvI72BQQnwokwmk=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-546-HsZvzmO1PgG-ChRijwcg7w-1; Mon, 14 Jun 2021 16:17:06 -0400
+X-MC-Unique: HsZvzmO1PgG-ChRijwcg7w-1
+Received: by mail-ot1-f71.google.com with SMTP id 35-20020a9d03260000b029040539236725so6918095otv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 13:17:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6BGYUcTx5tsZwPa17u6H+0H1QgwUbqfF91m+1x+AxEk=;
+        b=GNJUh/IzwXnQwTp5I/oBpAIwvnT/UBAxfiB1zoBfYm8oVS7B0qA69iMi2gT5UGufPQ
+         nkUXGhei1VThsMZYe3uimxEX0uTsliTfhZNgZR1KWAz/CnaB4qSZ9ACYp3sa+jI5L7Kh
+         JVWcO1aCdJL1mJ7LWjlPwwff0iGxD+T1MXn5r4ZH2jNNTnbN/IRDw4V1h3E48+eKV0Eu
+         9KMPdW/atGIDWk31jtwg5Ks231QIui23pLFD3vL1VPl2pSUrvQtGF6K6pev/pSlkX2xl
+         1k+jSXWWxD1rtlm1a3MzQ+ZvHlxSKTCWaxsd/JqNwDDn41sgTeObABQWYRd5sTHL2d60
+         7ROg==
+X-Gm-Message-State: AOAM531ceAz/ur8ZD2l47b8mrbjHQtF3tKIcY1uM8biwoG8Wvl4kiOMt
+        EKgMFoCEHq9U3G5mfjSXNKdJSO/lFQdmNPGJ3YiWSsCywy6yychaC82a5CSKbnZXgpB3cKVxDKX
+        6klYttBL8/z9yCXuHuJl55L17
+X-Received: by 2002:a9d:ea2:: with SMTP id 31mr15359826otj.200.1623701825792;
+        Mon, 14 Jun 2021 13:17:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxStQ7LCZTicbomt7siOy4OuZfVD05aIA2Dix5G42Cxc5pR7KAybcNVdBiEuXhJuxkEq35kJg==
+X-Received: by 2002:a9d:ea2:: with SMTP id 31mr15359806otj.200.1623701825558;
+        Mon, 14 Jun 2021 13:17:05 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b198sm408535oii.19.2021.06.14.13.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 13:17:05 -0700 (PDT)
+From:   trix@redhat.com
+To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
+        michal.simek@xilinx.com, gregkh@linuxfoundation.org,
+        krzysztof.kozlowski@canonical.com, nava.manne@xilinx.com,
+        yilun.xu@intel.com, davidgow@google.com, fpacheco@redhat.com,
+        richard.gong@intel.com, luca@lucaceresoli.net
+Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH v4 0/4] fpga: reorganize to subdirs
+Date:   Mon, 14 Jun 2021 13:16:43 -0700
+Message-Id: <20210614201648.3358206-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Gstir <david@sigma-star.at>
+From: Tom Rix <trix@redhat.com>
 
-Update the documentation for trusted and encrypted KEYS with DCP as new
-trust source:
+The incoming xrt patchset has a toplevel subdir xrt/
+The current fpga/ uses a single dir with filename prefixes to subdivide owners
+For consistency, there should be only one way to organize the fpga/ dir.
+Because the subdir model scales better, refactor to use it.
+The discussion wrt xrt is here:
+https://lore.kernel.org/linux-fpga/68e85a4f-4a10-1ff9-0443-aa565878c855@redhat.com/
 
-- Describe security properties of DCP trust source
-- Describe key usage
-- Document blob format
+Follow drivers/net/ethernet/ which has control configs
+NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+Since fpgas do not have many vendors, drop the 'VENDOR' and use
+FPGA_BLA.
 
-Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc: David Gstir <david@sigma-star.at>
-Cc: David Howells <dhowells@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: James Bottomley <jejb@linux.ibm.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: keyrings@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-integrity@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-security-module@vger.kernel.org
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Co-developed-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: David Gstir <david@sigma-star.at>
----
- .../security/keys/trusted-encrypted.rst       | 84 ++++++++++++++++++-
- 1 file changed, 83 insertions(+), 1 deletion(-)
+There are several new subdirs
+altera/
+dfl/
+lattice/
+xilinx/
 
-diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Document=
-ation/security/keys/trusted-encrypted.rst
-index 80d5a5af62a1..e8413122e4bc 100644
---- a/Documentation/security/keys/trusted-encrypted.rst
-+++ b/Documentation/security/keys/trusted-encrypted.rst
-@@ -35,6 +35,11 @@ safe.
-          Rooted to Hardware Unique Key (HUK) which is generally burnt in=
- on-chip
-          fuses and is accessible to TEE only.
-=20
-+     (3) DCP (Data Co-Processor: crypto accelerator of various i.MX SoCs=
-)
-+
-+         Rooted to a one-time programmable key (OTP) that is generally b=
-urnt in
-+         the on-chip fuses and is accessbile to the DCP encryption engin=
-e only.
-+
-   *  Execution isolation
-=20
-      (1) TPM
-@@ -46,6 +51,12 @@ safe.
-          Customizable set of operations running in isolated execution
-          environment verified via Secure/Trusted boot process.
-=20
-+     (3) DCP
-+
-+         Fixed set of cryptographic operations running in isolated execu=
-tion
-+         environment. Only basic blob key encryption is executed there.
-+         The actual key sealing/unsealing is done on main processor/kern=
-el space.
-+
-   * Optional binding to platform integrity state
-=20
-      (1) TPM
-@@ -63,6 +74,11 @@ safe.
-          Relies on Secure/Trusted boot process for platform integrity. I=
-t can
-          be extended with TEE based measured boot process.
-=20
-+     (3) DCP
-+
-+         Relies on Secure/Trusted boot process (called HAB by vendor) fo=
-r
-+         platform integrity.
-+
-   *  Interfaces and APIs
-=20
-      (1) TPM
-@@ -74,10 +90,14 @@ safe.
-          TEEs have well-documented, standardized client interface and AP=
-Is. For
-          more details refer to ``Documentation/staging/tee.rst``.
-=20
-+     (3) DCP
-+
-+         Vendor-specific API that is implemented as part of the DCP cryp=
-to driver in
-+         ``drivers/crypto/mxs-dcp.c``.
-=20
-   *  Threat model
-=20
--     The strength and appropriateness of a particular TPM or TEE for a g=
-iven
-+     The strength and appropriateness of a particular TPM, TEE or DCP fo=
-r a given
-      purpose must be assessed when using them to protect security-releva=
-nt data.
-=20
-=20
-@@ -103,6 +123,14 @@ access control policy within the trust source.
-      from platform specific hardware RNG or a software based Fortuna CSP=
-RNG
-      which can be seeded via multiple entropy sources.
-=20
-+  * DCP (Data Co-Processor: crypto accelerator of various i.MX SoCs)
-+
-+     The DCP hardware device itself does not provide a dedicated RNG int=
-erface,
-+     so the kernel default RNG is used. SoCs with DCP like the i.MX6ULL =
-do have
-+     a dedicated hardware RNG that is independent from DCP which can be =
-enabled
-+     to back the kernel RNG.
-+
-+
- Encrypted Keys
- --------------
-=20
-@@ -188,6 +216,19 @@ Usage::
- specific to TEE device implementation.  The key length for new keys is a=
-lways
- in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
-=20
-+Trusted Keys usage: DCP
-+-----------------------
-+
-+Usage::
-+
-+    keyctl add trusted name "new keylen" ring
-+    keyctl add trusted name "load hex_blob" ring
-+    keyctl print keyid
-+
-+"keyctl print" returns an ASCII hex copy of the sealed key, which is in =
-format
-+specific to this DCP key-blob implementation.  The key length for new ke=
-ys is
-+always in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
-+
- Encrypted Keys usage
- --------------------
-=20
-@@ -370,3 +411,44 @@ string length.
- privkey is the binary representation of TPM2B_PUBLIC excluding the
- initial TPM2B header which can be reconstructed from the ASN.1 octed
- string length.
-+
-+DCP Blob Format
-+---------------
-+
-+The Data Co-Processor (DCP) provides hardware-bound AES keys using its
-+AES encryption engine only. It does not provide direct key sealing/unsea=
-ling.
-+To make DCP hardware encryption keys usable as trust source, we define
-+our own custom format that uses a hardware-bound key to secure the seali=
-ng
-+key stored in the key blob.
-+
-+Whenever a new tusted key using DCP is generated, we generate a random 1=
-28-bit
-+blob encryption key (BEK) and 128-bit nonce. The BEK and nonce are used =
-to
-+encrypt the trusted key payload using AES-128-GCM.
-+
-+The BEK itself is encrypted using the hardware-bound key using the DCP's=
- AES
-+encryption engine with AES-128-ECB. The encrypted BEK, generated nonce,
-+BEK-encrypted payload and authentication tag make up the blob format tog=
-ether
-+with a version number, payload length and authentication tag::
-+
-+    /*
-+     * struct dcp_blob_fmt - DCP BLOB format.
-+     *
-+     * @fmt_version: Format version, currently being %1
-+     * @blob_key: Random AES 128 key which is used to encrypt @payload,
-+     *            @blob_key itself is encrypted with OTP or UNIQUE devic=
-e key in
-+     *            AES-128-ECB mode by DCP.
-+     * @nonce: Random nonce used for @payload encryption.
-+     * @payload_len: Length of the plain text @payload.
-+     * @payload: The payload itself, encrypted using AES-128-GCM and @bl=
-ob_key,
-+     *           GCM auth tag of size AES_BLOCK_SIZE is attached at the =
-end of it.
-+     *
-+     * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + @pa=
-yload_len +
-+     * AES_BLOCK_SIZE.
-+     */
-+    struct dcp_blob_fmt {
-+            __u8 fmt_version;
-+            __u8 blob_key[AES_KEYSIZE_128];
-+            __u8 nonce[AES_KEYSIZE_128];
-+            __le32 payload_len;
-+            __u8 payload[0];
-+    } __packed;
---=20
-2.26.2
+Each subdir has a Kconfig that has a new/reused
+
+if FPGA_BLA
+  ... existing configs ...
+endif FPGA_BLA
+
+Which is sourced into the main fpga/Kconfig
+
+Each subdir has a Makefile whose transversal is controlled in the
+fpga/Makefile by
+
+obj-$(CONFIG_FPGA_BLA) += bla/
+
+Some cleanup to arrange thing alphabetically and make fpga/Makefile's
+whitespace look more like net/'s
+
+Changes from
+v1
+  Drop renaming files
+  Cleanup makefiles
+
+v2
+  Expand commit messages
+  Add SPDX to Kconfig
+  Expand new Kconfig variable help messages
+
+v3
+  Update Documentation/fpga/dfl.rst for fpga/dfl/
+
+Tom Rix (4):
+  fpga: dfl: reorganize to subdir layout
+  fpga: xilinx: reorganize to subdir layout
+  fpga: altera: reorganize to subdir layout
+  fpga: lattice: reorganize to subdir layout
+
+ Documentation/fpga/dfl.rst                    |   4 +-
+ MAINTAINERS                                   |   2 +-
+ drivers/fpga/Kconfig                          | 204 +-----------------
+ drivers/fpga/Makefile                         |  47 +---
+ drivers/fpga/altera/Kconfig                   |  85 ++++++++
+ drivers/fpga/altera/Makefile                  |  12 ++
+ drivers/fpga/{ => altera}/altera-cvp.c        |   0
+ drivers/fpga/{ => altera}/altera-fpga2sdram.c |   0
+ .../fpga/{ => altera}/altera-freeze-bridge.c  |   0
+ drivers/fpga/{ => altera}/altera-hps2fpga.c   |   0
+ .../{ => altera}/altera-pr-ip-core-plat.c     |   0
+ drivers/fpga/{ => altera}/altera-pr-ip-core.c |   0
+ drivers/fpga/{ => altera}/altera-ps-spi.c     |   0
+ drivers/fpga/{ => altera}/socfpga-a10.c       |   0
+ drivers/fpga/{ => altera}/socfpga.c           |   0
+ drivers/fpga/{ => altera}/stratix10-soc.c     |   0
+ drivers/fpga/{ => altera}/ts73xx-fpga.c       |   0
+ drivers/fpga/dfl/Kconfig                      |  83 +++++++
+ drivers/fpga/dfl/Makefile                     |  16 ++
+ drivers/fpga/{ => dfl}/dfl-afu-dma-region.c   |   0
+ drivers/fpga/{ => dfl}/dfl-afu-error.c        |   0
+ drivers/fpga/{ => dfl}/dfl-afu-main.c         |   0
+ drivers/fpga/{ => dfl}/dfl-afu-region.c       |   0
+ drivers/fpga/{ => dfl}/dfl-afu.h              |   0
+ drivers/fpga/{ => dfl}/dfl-fme-br.c           |   0
+ drivers/fpga/{ => dfl}/dfl-fme-error.c        |   0
+ drivers/fpga/{ => dfl}/dfl-fme-main.c         |   0
+ drivers/fpga/{ => dfl}/dfl-fme-mgr.c          |   0
+ drivers/fpga/{ => dfl}/dfl-fme-perf.c         |   0
+ drivers/fpga/{ => dfl}/dfl-fme-pr.c           |   0
+ drivers/fpga/{ => dfl}/dfl-fme-pr.h           |   0
+ drivers/fpga/{ => dfl}/dfl-fme-region.c       |   0
+ drivers/fpga/{ => dfl}/dfl-fme.h              |   0
+ drivers/fpga/{ => dfl}/dfl-n3000-nios.c       |   0
+ drivers/fpga/{ => dfl}/dfl-pci.c              |   0
+ drivers/fpga/{ => dfl}/dfl.c                  |   0
+ drivers/fpga/{ => dfl}/dfl.h                  |   0
+ drivers/fpga/lattice/Kconfig                  |  29 +++
+ drivers/fpga/lattice/Makefile                 |   4 +
+ drivers/fpga/{ => lattice}/ice40-spi.c        |   0
+ drivers/fpga/{ => lattice}/machxo2-spi.c      |   0
+ drivers/fpga/xilinx/Kconfig                   |  55 +++++
+ drivers/fpga/xilinx/Makefile                  |   6 +
+ .../fpga/{ => xilinx}/xilinx-pr-decoupler.c   |   0
+ drivers/fpga/{ => xilinx}/xilinx-spi.c        |   0
+ drivers/fpga/{ => xilinx}/zynq-fpga.c         |   0
+ drivers/fpga/{ => xilinx}/zynqmp-fpga.c       |   0
+ 47 files changed, 305 insertions(+), 242 deletions(-)
+ create mode 100644 drivers/fpga/altera/Kconfig
+ create mode 100644 drivers/fpga/altera/Makefile
+ rename drivers/fpga/{ => altera}/altera-cvp.c (100%)
+ rename drivers/fpga/{ => altera}/altera-fpga2sdram.c (100%)
+ rename drivers/fpga/{ => altera}/altera-freeze-bridge.c (100%)
+ rename drivers/fpga/{ => altera}/altera-hps2fpga.c (100%)
+ rename drivers/fpga/{ => altera}/altera-pr-ip-core-plat.c (100%)
+ rename drivers/fpga/{ => altera}/altera-pr-ip-core.c (100%)
+ rename drivers/fpga/{ => altera}/altera-ps-spi.c (100%)
+ rename drivers/fpga/{ => altera}/socfpga-a10.c (100%)
+ rename drivers/fpga/{ => altera}/socfpga.c (100%)
+ rename drivers/fpga/{ => altera}/stratix10-soc.c (100%)
+ rename drivers/fpga/{ => altera}/ts73xx-fpga.c (100%)
+ create mode 100644 drivers/fpga/dfl/Kconfig
+ create mode 100644 drivers/fpga/dfl/Makefile
+ rename drivers/fpga/{ => dfl}/dfl-afu-dma-region.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-afu-error.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-afu-main.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-afu-region.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-afu.h (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-br.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-error.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-main.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-mgr.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-perf.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-pr.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-pr.h (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme-region.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-fme.h (100%)
+ rename drivers/fpga/{ => dfl}/dfl-n3000-nios.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl-pci.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl.c (100%)
+ rename drivers/fpga/{ => dfl}/dfl.h (100%)
+ create mode 100644 drivers/fpga/lattice/Kconfig
+ create mode 100644 drivers/fpga/lattice/Makefile
+ rename drivers/fpga/{ => lattice}/ice40-spi.c (100%)
+ rename drivers/fpga/{ => lattice}/machxo2-spi.c (100%)
+ create mode 100644 drivers/fpga/xilinx/Kconfig
+ create mode 100644 drivers/fpga/xilinx/Makefile
+ rename drivers/fpga/{ => xilinx}/xilinx-pr-decoupler.c (100%)
+ rename drivers/fpga/{ => xilinx}/xilinx-spi.c (100%)
+ rename drivers/fpga/{ => xilinx}/zynq-fpga.c (100%)
+ rename drivers/fpga/{ => xilinx}/zynqmp-fpga.c (100%)
+
+-- 
+2.26.3
 
