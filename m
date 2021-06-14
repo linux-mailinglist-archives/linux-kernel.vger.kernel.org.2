@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A713A63A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107263A638E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbhFNLPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:15:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39158 "EHLO mail.kernel.org"
+        id S235776AbhFNLOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:14:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234665AbhFNLCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:02:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C05956143F;
-        Mon, 14 Jun 2021 10:44:07 +0000 (UTC)
+        id S234688AbhFNLCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:02:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AB7E61445;
+        Mon, 14 Jun 2021 10:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667448;
-        bh=4b+kN5kgYUJozpZ0feh5k1wvn1s8BWKCOUy7nfMwHoA=;
+        s=korg; t=1623667450;
+        bh=SFqTcPLp68F4X8oUQPz8AjYKwnZ3gBqyHspDLVrGtfg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zACPv/aKwGLzkC7rztGmFOmzXhAmzSRAhNB4Bj9Bl2aWmQS6vJnakm5lldUV7kXHj
-         F6gWn6z1KcLNoCv6G4cPVZXGuYwF45wfjd4KNLPfs1VZ0dg3Gpp7N8dZsFGE9+9Gs/
-         rlJ/4SrvZEJEyuipez0wEoiM8SoHIWbBpIJjS6KI=
+        b=G1x5M+lOSarbckwswfYLFYIihfXQK99PG/w5u0HH93x9v8pglPVbcKo120UVAu4vY
+         VixdzeI28/uHOr+CNrzyROsD30Z5fgnPySIA5AjeOPvV5FU/Fenxv5FGCLxHQ6nME8
+         9PXMi1772oUydGBR0Tf2+39FfOiX0vEUNbiXODYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
-Subject: [PATCH 5.10 074/131] usb: dwc3: ep0: fix NULL pointer exception
-Date:   Mon, 14 Jun 2021 12:27:15 +0200
-Message-Id: <20210614102655.543399418@linuxfoundation.org>
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH 5.10 075/131] usb: musb: fix MUSB_QUIRK_B_DISCONNECT_99 handling
+Date:   Mon, 14 Jun 2021 12:27:16 +0200
+Message-Id: <20210614102655.575358948@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -39,67 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
+From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 
-commit d00889080ab60051627dab1d85831cd9db750e2a upstream.
+commit b65ba0c362be665192381cc59e3ac3ef6f0dd1e1 upstream.
 
-There is no validation of the index from dwc3_wIndex_to_dep() and we might
-be referring a non-existing ep and trigger a NULL pointer exception. In
-certain configurations we might use fewer eps and the index might wrongly
-indicate a larger ep index than existing.
+In commit 92af4fc6ec33 ("usb: musb: Fix suspend with devices
+connected for a64"), the logic to support the
+MUSB_QUIRK_B_DISCONNECT_99 quirk was modified to only conditionally
+schedule the musb->irq_work delayed work.
 
-By adding this validation from the patch we can actually report a wrong
-index back to the caller.
+This commit badly breaks ECM Gadget on AM335X. Indeed, with this
+commit, one can observe massive packet loss:
 
-In our usecase we are using a composite device on an older kernel, but
-upstream might use this fix also. Unfortunately, I cannot describe the
-hardware for others to reproduce the issue as it is a proprietary
-implementation.
-
-[   82.958261] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000a4
-[   82.966891] Mem abort info:
-[   82.969663]   ESR = 0x96000006
-[   82.972703]   Exception class = DABT (current EL), IL = 32 bits
-[   82.978603]   SET = 0, FnV = 0
-[   82.981642]   EA = 0, S1PTW = 0
-[   82.984765] Data abort info:
-[   82.987631]   ISV = 0, ISS = 0x00000006
-[   82.991449]   CM = 0, WnR = 0
-[   82.994409] user pgtable: 4k pages, 39-bit VAs, pgdp = 00000000c6210ccc
-[   83.000999] [00000000000000a4] pgd=0000000053aa5003, pud=0000000053aa5003, pmd=0000000000000000
-[   83.009685] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[   83.026433] Process irq/62-dwc3 (pid: 303, stack limit = 0x000000003985154c)
-[   83.033470] CPU: 0 PID: 303 Comm: irq/62-dwc3 Not tainted 4.19.124 #1
-[   83.044836] pstate: 60000085 (nZCv daIf -PAN -UAO)
-[   83.049628] pc : dwc3_ep0_handle_feature+0x414/0x43c
-[   83.054558] lr : dwc3_ep0_interrupt+0x3b4/0xc94
-
+$ ping 192.168.0.100
 ...
+15 packets transmitted, 3 received, 80% packet loss, time 14316ms
 
-[   83.141788] Call trace:
-[   83.144227]  dwc3_ep0_handle_feature+0x414/0x43c
-[   83.148823]  dwc3_ep0_interrupt+0x3b4/0xc94
-[   83.181546] ---[ end trace aac6b5267d84c32f ]---
+Reverting this commit brings back a properly functioning ECM
+Gadget. An analysis of the commit seems to indicate that a mistake was
+made: the previous code was not falling through into the
+MUSB_QUIRK_B_INVALID_VBUS_91, but now it is, unless the condition is
+taken.
 
-Signed-off-by: Marian-Cristian Rotariu <marian.c.rotariu@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210608162650.58426-1-marian.c.rotariu@gmail.com
+Changing the logic to be as it was before the problematic commit *and*
+only conditionally scheduling musb->irq_work resolves the regression:
+
+$ ping 192.168.0.100
+...
+64 packets transmitted, 64 received, 0% packet loss, time 64475ms
+
+Fixes: 92af4fc6ec33 ("usb: musb: Fix suspend with devices connected for a64")
+Cc: stable@vger.kernel.org
+Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Drew Fustini <drew@beagleboard.org>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Link: https://lore.kernel.org/r/20210528140446.278076-1-thomas.petazzoni@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/ep0.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/musb/musb_core.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/usb/dwc3/ep0.c
-+++ b/drivers/usb/dwc3/ep0.c
-@@ -292,6 +292,9 @@ static struct dwc3_ep *dwc3_wIndex_to_de
- 		epnum |= 1;
- 
- 	dep = dwc->eps[epnum];
-+	if (dep == NULL)
-+		return NULL;
-+
- 	if (dep->flags & DWC3_EP_ENABLED)
- 		return dep;
- 
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -2009,9 +2009,8 @@ static void musb_pm_runtime_check_sessio
+ 			schedule_delayed_work(&musb->irq_work,
+ 					      msecs_to_jiffies(1000));
+ 			musb->quirk_retries--;
+-			break;
+ 		}
+-		fallthrough;
++		break;
+ 	case MUSB_QUIRK_B_INVALID_VBUS_91:
+ 		if (musb->quirk_retries && !musb->flush_irq_work) {
+ 			musb_dbg(musb,
 
 
