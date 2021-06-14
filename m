@@ -2,226 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCB43A6B5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53BB3A6B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234596AbhFNQO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:14:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51775 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234572AbhFNQO5 (ORCPT
+        id S234595AbhFNQQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232920AbhFNQQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:14:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623687173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U/Ya1k1nXvvGjrRExG8q3FmOawUUZX1h7T0TrtPnmSM=;
-        b=goCD3QgnotXIocEKYMZfH5VHj3SH8r1CrIdjRuQFOmtK6s+T5uQqMNdX+tp8hgxvd59hUz
-        Zw6bfEueQUOIzXiqINcQEnru9p01MTzM8XGKRMqFz0ADajzLjaxBcAW7mEhF2pvRVOYqTY
-        qwnMqK75yMAG7Qw98a7xk8IyGizTIW8=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-qIrTKRU6P6yLqHvQCAisZw-1; Mon, 14 Jun 2021 12:12:52 -0400
-X-MC-Unique: qIrTKRU6P6yLqHvQCAisZw-1
-Received: by mail-lf1-f70.google.com with SMTP id n4-20020a0565120ac4b02902fdd8d82fa6so5435632lfu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:12:52 -0700 (PDT)
+        Mon, 14 Jun 2021 12:16:25 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F21C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:14:20 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id y7so15147102wrh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=5NTJSky9UX3JbuB9riY3wCYfXDpCwy2c7hzO0kF4AHA=;
+        b=cQlneAJ2FGGaOQDcRsxQ0qzQWjRJEBaB+BnYeo1fcwoB3uI/wdYdhHSWozMiccdCGA
+         e9OG+px2oYaaPF/rpXMtzooGqQ1m0UlW4YQ+wgsL2C/U/FrO4BPAcxpVCtFBvWWHU5G4
+         Gi4Hi0Dmubn7kewf0/bOBJNPX2rdhi9bpfH0O+8Vqy/Csvce06dKeontzCtPl8JnqFQ0
+         8nQ41S/gu2GvibXNpb3jxH9TVEv/qxUGgkpuhgV9P3gxsV1Xs+XTUExL+fItXKSxmC9Q
+         3OcxxC8i9SgGs7GT/fY+JNnjACjSNyafBxT5V7qtO6DTJLzCX1IY9QK/RjnRSt9RsVuz
+         AI8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U/Ya1k1nXvvGjrRExG8q3FmOawUUZX1h7T0TrtPnmSM=;
-        b=Ph6qS8orHe2/kjx3CjD/S39FSa+J2bqetiICIii/WEZpHC1NDSipjYxtWU8ilse/bn
-         lMf8alxhu8u7PYSg9BtBBcptr6OAsMkmGb/yEYwUAZcKhjATgReHSPVZpjzYnaLSwxQg
-         U84cqpSI0+tU6ExahQTtKgL5Pt5ptmUo5eGPh1TAa14pLzIL2+cq+AM8mPbewPz7OwCN
-         zWuo+MdBX78/xvrTQ5pTVCZgdBMdTdd1gx85240bjMGKl9TwneKcJOWFMF5ZdF/TyKkl
-         JKj86IAQxoH1e8zpVXGulZSSDcb9/BTbHq8vyFlvKgKyak95g+LgxVFwJsj2Pcet09LN
-         QdhQ==
-X-Gm-Message-State: AOAM5309Y3QAm6ejvEJKPuuQ0tUentzjrT4GohF5oOmkE6rFwjFo+neN
-        gdpAXei3EeLnzWraDDCKjrx4y5HEgpbvbyQUabuNwOjKPvZhprHrBHxl2qS5WjOlpWK8/yb1kEO
-        IxKO6Yo8p42QomaYRJNL2wSAHqh3iW7uKK42sqIkS
-X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr8877569lfr.647.1623687170838;
-        Mon, 14 Jun 2021 09:12:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwAbGhpPvqkcHhSsuAdQ1FpWwNWtaQWb83YFBtFmuq7Xr7R/t1YH4+Rj9W+tz1cElNmEXnhxmp8Ko9KgVy5pjU=
-X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr8877529lfr.647.1623687170605;
- Mon, 14 Jun 2021 09:12:50 -0700 (PDT)
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=5NTJSky9UX3JbuB9riY3wCYfXDpCwy2c7hzO0kF4AHA=;
+        b=Yom8O1mWTXUIynq2i/tWBiOOQVzPJhVaNCRXAKLrEEFZIeqfJTTE9BlC3jbr8eeTGt
+         7yypx0hw2H89LAra3Qvv785ZAX0GEH6oyTfCeX1mPNq0sLVNXFpaD3mPEH/uZMkFCO0J
+         8i5WAcJNiGuS/cYo0AG8HgVUG6sgoD0oFspC50U47kNFQXkofEnBIKZGdlQT1X9L03YG
+         XPtgLKEV/+isavtF2mc0Rzqr8tvQvv8Q34CBeCmjmeiZBWK61PMdFtJZtsdzfjyRNdEI
+         g43Y/Pk6PqX9xGK2dND38AkI2Ygqj0bvET4s6qwi8uyJp6rP27Je4LWUr6u/JFYTe3cH
+         uWYw==
+X-Gm-Message-State: AOAM531w0ibJuopMfFuvCmR1Ff7U69o0LSEXCPuWWZNIjsSU0P+VzJEs
+        mWv1CSt2ORwnQ6QWaLGySWbvvJ//3TYetA==
+X-Google-Smtp-Source: ABdhPJwmVVq/+XJ2raM8GGHVfgihJMni6wIbDKFMs3dXt/UObgAIVyU7ArQIozCCMOC9I0gZPfyXsA==
+X-Received: by 2002:adf:a45a:: with SMTP id e26mr19879581wra.222.1623687259015;
+        Mon, 14 Jun 2021 09:14:19 -0700 (PDT)
+Received: from [192.168.1.152] ([102.64.138.153])
+        by smtp.gmail.com with ESMTPSA id v16sm17166169wrr.6.2021.06.14.09.14.15
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Mon, 14 Jun 2021 09:14:18 -0700 (PDT)
+Message-ID: <60c7805a.1c69fb81.f541f.0d03@mx.google.com>
+From:   Vanina curth <ritundailb9004@gmail.com>
+X-Google-Original-From: Vanina curth
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
- <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
- <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
- <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
- <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
- <87zgwo9u79.ffs@nanos.tec.linutronix.de> <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
- <CAFki+L=QTOu_O=1uNobVMi2s9mbcxXgSdTLADCpeBWBoPAikgQ@mail.gmail.com>
-In-Reply-To: <CAFki+L=QTOu_O=1uNobVMi2s9mbcxXgSdTLADCpeBWBoPAikgQ@mail.gmail.com>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 14 Jun 2021 12:12:38 -0400
-Message-ID: <CAFki+LkJ9kj0TMz8dhGXLXdfwgYLibkMCRvKBwVVX5+F-DP37w@mail.gmail.com>
-Subject: Re: [PATCH] genirq: Provide new interfaces for affinity hints
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Reply to me
+To:     Recipients <Vanina@vger.kernel.org>
+Date:   Mon, 14 Jun 2021 16:14:09 +0000
+Reply-To: curtisvani9008@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 1:00 PM Nitesh Lal <nilal@redhat.com> wrote:
->
-> On Fri, May 21, 2021 at 8:03 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > The discussion about removing the side effect of irq_set_affinity_hint() of
-> > actually applying the cpumask (if not NULL) as affinity to the interrupt,
-> > unearthed a few unpleasantries:
-> >
-> >   1) The modular perf drivers rely on the current behaviour for the very
-> >      wrong reasons.
-> >
-> >   2) While none of the other drivers prevents user space from changing
-> >      the affinity, a cursorily inspection shows that there are at least
-> >      expectations in some drivers.
-> >
-> > #1 needs to be cleaned up anyway, so that's not a problem
-> >
-> > #2 might result in subtle regressions especially when irqbalanced (which
-> >    nowadays ignores the affinity hint) is disabled.
-> >
-> > Provide new interfaces:
-> >
-> >   irq_update_affinity_hint() - Only sets the affinity hint pointer
-> >   irq_apply_affinity_hint()  - Set the pointer and apply the affinity to
-> >                                the interrupt
-> >
-> > Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
-> > document it to be phased out.
-> >
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > Link: https://lore.kernel.org/r/20210501021832.743094-1-jesse.brandeburg@intel.com
-> > ---
-> > Applies on:
-> >    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-> > ---
-> >  include/linux/interrupt.h |   41 ++++++++++++++++++++++++++++++++++++++++-
-> >  kernel/irq/manage.c       |    8 ++++----
-> >  2 files changed, 44 insertions(+), 5 deletions(-)
-> >
-> > --- a/include/linux/interrupt.h
-> > +++ b/include/linux/interrupt.h
-> > @@ -328,7 +328,46 @@ extern int irq_force_affinity(unsigned i
-> >  extern int irq_can_set_affinity(unsigned int irq);
-> >  extern int irq_select_affinity(unsigned int irq);
-> >
-> > -extern int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m);
-> > +extern int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
-> > +                                    bool setaffinity);
-> > +
-> > +/**
-> > + * irq_update_affinity_hint - Update the affinity hint
-> > + * @irq:       Interrupt to update
-> > + * @cpumask:   cpumask pointer (NULL to clear the hint)
-> > + *
-> > + * Updates the affinity hint, but does not change the affinity of the interrupt.
-> > + */
-> > +static inline int
-> > +irq_update_affinity_hint(unsigned int irq, const struct cpumask *m)
-> > +{
-> > +       return __irq_apply_affinity_hint(irq, m, true);
-> > +}
-> > +
-> > +/**
-> > + * irq_apply_affinity_hint - Update the affinity hint and apply the provided
-> > + *                          cpumask to the interrupt
-> > + * @irq:       Interrupt to update
-> > + * @cpumask:   cpumask pointer (NULL to clear the hint)
-> > + *
-> > + * Updates the affinity hint and if @cpumask is not NULL it applies it as
-> > + * the affinity of that interrupt.
-> > + */
-> > +static inline int
-> > +irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m)
-> > +{
-> > +       return __irq_apply_affinity_hint(irq, m, true);
-> > +}
-> > +
-> > +/*
-> > + * Deprecated. Use irq_update_affinity_hint() or irq_apply_affinity_hint()
-> > + * instead.
-> > + */
-> > +static inline int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
-> > +{
-> > +       return irq_apply_affinity_hint(irq, cpumask);
->
-> Another change required here, the above should be 'm' instead of 'cpumask'.
-
-I am going to and make the suggested changes to this patch and will post it
-with driver patches.
-Please let me know if there are any objections to that.
-
->
-> > +}
-> > +
-> >  extern int irq_update_affinity_desc(unsigned int irq,
-> >                                     struct irq_affinity_desc *affinity);
-> >
-> > --- a/kernel/irq/manage.c
-> > +++ b/kernel/irq/manage.c
-> > @@ -487,7 +487,8 @@ int irq_force_affinity(unsigned int irq,
-> >  }
-> >  EXPORT_SYMBOL_GPL(irq_force_affinity);
-> >
-> > -int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
-> > +int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
-> > +                             bool setaffinity)
-> >  {
-> >         unsigned long flags;
-> >         struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-> > @@ -496,12 +497,11 @@ int irq_set_affinity_hint(unsigned int i
-> >                 return -EINVAL;
-> >         desc->affinity_hint = m;
-> >         irq_put_desc_unlock(desc, flags);
-> > -       /* set the initial affinity to prevent every interrupt being on CPU0 */
-> > -       if (m)
-> > +       if (m && setaffinity)
-> >                 __irq_set_affinity(irq, m, false);
-> >         return 0;
-> >  }
-> > -EXPORT_SYMBOL_GPL(irq_set_affinity_hint);
-> > +EXPORT_SYMBOL_GPL(__irq_apply_affinity_hint);
-> >
-> >  static void irq_affinity_notify(struct work_struct *work)
-> >  {
-> >
->
->
-> --
-> Thanks
-> Nitesh
-
-
-
--- 
-Thanks
-Nitesh
-
+How are you? I'm Vanina. I'm interested to know you and I would like to kno=
+w more about you and establish relationship with you. i will wait for your =
+response. thank you.
