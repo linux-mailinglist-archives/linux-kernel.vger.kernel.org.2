@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428A23A60A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894E63A620F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhFNKgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
+        id S233818AbhFNKz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:55:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233331AbhFNKdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:33:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1F48610CD;
-        Mon, 14 Jun 2021 10:31:35 +0000 (UTC)
+        id S233845AbhFNKsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:48:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 688C56145A;
+        Mon, 14 Jun 2021 10:37:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666696;
-        bh=4aPX0//u/3JeT8vGv8fonz1hEqbVWhCL/+IXpbQsW7U=;
+        s=korg; t=1623667062;
+        bh=Gui2hudISqEfdhqO0LlkhxgmBIPBJErNssutgA9Cb14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ibK9ZTbEvSqwA+H6uDoeY50M3sXpzXD5URftkUJM1WYdAQo1tLacv2WzOeB8o/ng6
-         +TlmgYeQq4r7xDBOFB8KAoZWbsBisTU30N/1HbmwdqDTwrIS387wGDhpV4X5ZpgkrT
-         VYOgiTIdrK9pNXjAoS5QyB+1VfN2KxjiXhvyfZbw=
+        b=gaD4kv4nSBINmAsCqJVWU3XG4d01A1fbgwzKlXPAG/veVH0yKdAtJHbGzYh2HdVif
+         eTPkvRjyanIBZ+uX0D5//FZFgOM53qHaMthg9mql9JZsMcLW2GKThQX38LhWwxIf4G
+         4kmsvrmgImdeI0lLkUPmSYf5MdcBMsGcb+Y1bfuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 01/42] proc: Track /proc/$pid/attr/ opener mm_struct
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 14/84] net: mdiobus: get rid of a BUG_ON()
 Date:   Mon, 14 Jun 2021 12:26:52 +0200
-Message-Id: <20210614102642.750066628@linuxfoundation.org>
+Message-Id: <20210614102646.833389249@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,65 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 591a22c14d3f45cc38bd1931c593c221df2f1881 upstream.
+[ Upstream commit 1dde47a66d4fb181830d6fa000e5ea86907b639e ]
 
-Commit bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
-tried to make sure that there could not be a confusion between the opener of
-a /proc/$pid/attr/ file and the writer. It used struct cred to make sure
-the privileges didn't change. However, there were existing cases where a more
-privileged thread was passing the opened fd to a differently privileged thread
-(during container setup). Instead, use mm_struct to track whether the opener
-and writer are still the same process. (This is what several other proc files
-already do, though for different reasons.)
+We spotted a bug recently during a review where a driver was
+unregistering a bus that wasn't registered, which would trigger this
+BUG_ON().  Let's handle that situation more gracefully, and just print
+a warning and return.
 
-Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
-Reported-by: Andrea Righi <andrea.righi@canonical.com>
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
-Fixes: bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/base.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/phy/mdio_bus.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2493,6 +2493,11 @@ out:
- }
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 229e480179ff..5bf06eac04ba 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -453,7 +453,8 @@ void mdiobus_unregister(struct mii_bus *bus)
+ 	struct mdio_device *mdiodev;
+ 	int i;
  
- #ifdef CONFIG_SECURITY
-+static int proc_pid_attr_open(struct inode *inode, struct file *file)
-+{
-+	return __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
-+}
-+
- static ssize_t proc_pid_attr_read(struct file * file, char __user * buf,
- 				  size_t count, loff_t *ppos)
- {
-@@ -2523,7 +2528,7 @@ static ssize_t proc_pid_attr_write(struc
- 	struct task_struct *task = get_proc_task(inode);
+-	BUG_ON(bus->state != MDIOBUS_REGISTERED);
++	if (WARN_ON_ONCE(bus->state != MDIOBUS_REGISTERED))
++		return;
+ 	bus->state = MDIOBUS_UNREGISTERED;
  
- 	/* A task may only write when it was the opener. */
--	if (file->f_cred != current_real_cred())
-+	if (file->private_data != current->mm)
- 		return -EPERM;
- 
- 	length = -ESRCH;
-@@ -2561,9 +2566,11 @@ out_no_task:
- }
- 
- static const struct file_operations proc_pid_attr_operations = {
-+	.open		= proc_pid_attr_open,
- 	.read		= proc_pid_attr_read,
- 	.write		= proc_pid_attr_write,
- 	.llseek		= generic_file_llseek,
-+	.release	= mem_release,
- };
- 
- static const struct pid_entry attr_dir_stuff[] = {
+ 	for (i = 0; i < PHY_MAX_ADDR; i++) {
+-- 
+2.30.2
+
 
 
