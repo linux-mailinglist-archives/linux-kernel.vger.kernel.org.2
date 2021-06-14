@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE313A6517
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62C93A659D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235047AbhFNLd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:33:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52795 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235725AbhFNLTU (ORCPT
+        id S235510AbhFNLl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236059AbhFNL3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:19:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623669436;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mW1OhhDo4BbGrvSu5PYyNkiZcO4Nso/XH9TpPHO3tX8=;
-        b=RK8D9LTf5CY/pQrCwLVXpsHWsDjHYLFLdV1LSK6to1kvgIKI/4dFJcQz73PT4dJkYwZw44
-        aG4rdLgo98nu11fPE4b4Gp2zHF8DyWYCdcTtOZ2usRBZ9gUfiZanY83jyFSlCZEr0qwrwY
-        e9GUTAEInXHKmRmKEM+SoqDAO4+nb+c=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-ec5Ex6nHPiy7ePk0BMn3zg-1; Mon, 14 Jun 2021 07:17:14 -0400
-X-MC-Unique: ec5Ex6nHPiy7ePk0BMn3zg-1
-Received: by mail-ej1-f72.google.com with SMTP id q7-20020a1709063607b02903f57f85ac45so2901658ejb.15
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 04:17:14 -0700 (PDT)
+        Mon, 14 Jun 2021 07:29:44 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3820C0611FA;
+        Mon, 14 Jun 2021 04:24:00 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso12776846wmh.4;
+        Mon, 14 Jun 2021 04:24:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KkYDjNEVEUYWRsNoTrKu5VhSupn5YZcqZPCCTeGuQLE=;
+        b=SB4A5QIKc6qUAIZ+jcYTcKSADf/lridtue5zfa/P6SM+1kOjyKfrklP91/CMSjRNzR
+         FynuIjnZPCci+QQn0SK0sShi1pWnLXkGAklnpAScfFmbnL/wQZfGWIyGq4Dw8f8oHJ1Y
+         CZB0XafCi4mOGZuv54cunVkatH4ZfMZZXyJp1gn3p/+xATYw99s4o3zf/2YsdxtsJoI8
+         rIdIGGw7EhlfR283JEt8yLGA9ljL3qnfpXl5MnpEuMvTjV5ZnYqjXUTcZFNDwFQpUpqh
+         XtE/V6bBXuZarkV06b81erWIbPuo9t/nIuFPuk4SY8R1NzlrrCk5GnJ0/eNFtpCYznqi
+         SPOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mW1OhhDo4BbGrvSu5PYyNkiZcO4Nso/XH9TpPHO3tX8=;
-        b=OvYYiZU0weRm/IhnFxCbwu6fmCt3pWNnkBh6GHtln9uJ8byS86vtS03pM4hc5BjWKM
-         lstLOx7DQzKkKTiOXRj3nC0QTMX25JPqrZQF4jnE35bVCTvQEbKwG+hu2CR6W2C2iUgG
-         qnbIeVm+McTBGuM9nIBJN5y91ex/+JJMCrzRX4hxIhEiVWJI/pSZ4ri/U0u2iOInkT2H
-         PlE8EZudziqunkK6m6jZDlSH6tSlAb3r2qWkmWDRfCHfZv9BjAmyobmVu7Zx2a26fTJH
-         xYXN+c+LMB6X4r7MmFw/fX0207nMuWlu8C4vlBfD0soB94RKoUOBEQR+F8iixFjf++Dw
-         6XCQ==
-X-Gm-Message-State: AOAM533WmqgzLM6qVT7edj/Xs+Lg9RmJapne2JaflZpAMy1SoHaioRDs
-        du+DmjWhfTiQOwy1LKu9mCY/uS9gupffAP9Hnc7N1bO1B63iEf+JPISyO+aDqzJ5gr8LycrE8hm
-        jtyIyIj751tpBDHxh3Q5Hcx9Z
-X-Received: by 2002:a17:906:b74a:: with SMTP id fx10mr14622063ejb.248.1623669433806;
-        Mon, 14 Jun 2021 04:17:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTrZC854XsPGiSNTA3MALRfR8LN8qGTzOISTOOj/IDn7AHGzR1WW2pb8jHa6tJKhC285AzvQ==
-X-Received: by 2002:a17:906:b74a:: with SMTP id fx10mr14622049ejb.248.1623669433667;
-        Mon, 14 Jun 2021 04:17:13 -0700 (PDT)
-Received: from krava ([83.240.60.126])
-        by smtp.gmail.com with ESMTPSA id y20sm3602394ejm.44.2021.06.14.04.17.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KkYDjNEVEUYWRsNoTrKu5VhSupn5YZcqZPCCTeGuQLE=;
+        b=dCPrTEA7U7y+FijX6SOTFjeF0BZdrSR1OBhU/m8/wqOAUo3dMQgxKN2yMTtsshN8Gf
+         IfW/EUKAIik2vXGXRnQY8m8M2WKhu0ZhSBCpg8lD1AgGF8HZlOSbYqf2/Rp5VsMJSOz7
+         pbkI7MqFI0n+h9ysFlubTXPXu2SThj136Bg/oMfYQnnOuxw9ArQhfTq9jP93onS00Jcc
+         VL5qSKyvryLZwY7p4hNvkjBsslFHefgpB8GZ9uy02uoz2oJOodicAyV7MSkLOQ0kLlyj
+         OgqwvPmMFMRpWefLztq5FXHl2z9dGBniveMZ0yueF8JOkXiOTeR5N/HG3Wa52TW//vVM
+         4l9Q==
+X-Gm-Message-State: AOAM531bV8MokqAO57BXxTsZxzHwxlY10V53ReIAEZRgps4oCIh8KE/F
+        JB8YY0+sA3P80o3+XVSb2/E=
+X-Google-Smtp-Source: ABdhPJwMRKNNvHww700Fm13czmA35T1evBYSuPXN6rQDjEwkAhz/muPptE2GB5DfPED68EPgBqHnvw==
+X-Received: by 2002:a1c:7c13:: with SMTP id x19mr32257413wmc.96.1623669839413;
+        Mon, 14 Jun 2021 04:23:59 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d62:e800:a8e7:80e:6e34:237d])
+        by smtp.gmail.com with ESMTPSA id w13sm17269485wrc.31.2021.06.14.04.23.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 04:17:09 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 13:17:08 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: libperf : Can not create event group
-Message-ID: <YMc6tBoIQiUQkRbq@krava>
-References: <OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+        Mon, 14 Jun 2021 04:23:58 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Yu Chen <chenyu56@huawei.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH v2 0/3] Rectify file references for dt-bindings in MAINTAINERS
+Date:   Mon, 14 Jun 2021 13:23:46 +0200
+Message-Id: <20210614112349.26108-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 07:17:53AM +0000, nakamura.shun@fujitsu.com wrote:
-> Hello.
-> 
-> perf_evsel__open cannot create an event group because it set group_fd
-> to -1 when it ran perf_event_open.
-> Is there any reason why group_fd is fixed at -1?
+Hi Rob,
 
-hi,
-there'no leader link on this level yet (in struct evsel)
-so this is not implemented at the moment
+here is a patch series that cleans up some file references for dt-bindings
+in MAINTAINERS. It applies cleanly on next-20210611.
 
-jirka
+This is a v2 of the still relevant patches from the first submission
+of the patch series (see Links) send out 2021-03-15 and resent on 2021-04-19.
 
-> 
-> Best Regards
-> Shunsuke
+
+Could you pick this series for your devicetree bindings tree?
+
+No functional change, just cleaning up MAINTAINERS.
+
+Lukas
+
+Link: https://lore.kernel.org/lkml/20210315160451.7469-1-lukas.bulwahn@gmail.com/
+Link: https://lore.kernel.org/lkml/20210419092609.3692-1-lukas.bulwahn@gmail.com/
+
+Adjustment from original to resend version:
+  - drop subsumed patches
+
+Adjustment to resend version:
+  - add Fixes-tags as requested by Nobuhiro Iwamatsu
+
+Lukas Bulwahn (3):
+  MAINTAINERS: rectify entry for ARM/TOSHIBA VISCONTI ARCHITECTURE
+  MAINTAINERS: rectify entry for HIKEY960 ONBOARD USB GPIO HUB DRIVER
+  MAINTAINERS: rectify entry for INTEL KEEM BAY DRM DRIVER
+
+ MAINTAINERS | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+-- 
+2.17.1
 
