@@ -2,160 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FA53A5DC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24253A5DCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbhFNHjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:39:24 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:46732 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbhFNHjW (ORCPT
+        id S232555AbhFNHk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:40:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29216 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232492AbhFNHkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:39:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623656240; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=qpgcKRTavkio4Ka0FRWV7DpBkMfRvza49DuvO6fLFdo=; b=vgChnwY8DBClsl5I9TCpx7uHD3QUniWz2JY4TfKHHKCDfymn9MWlBmD6v+y4AMcAib3UWeyg
- 7FsJ82oDj1swTTKaIuqW8H3nfkKEtpYxR6ymMkmEnZARMHMrwQIyfEB+jvXxgBaYqrqGJZJl
- w63kC8OW+qdhCRsa+W9zcfDCC7U=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60c7072fe27c0cc77fb43399 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 07:37:19
- GMT
-Sender: sanm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 00702C433F1; Mon, 14 Jun 2021 07:37:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.108] (unknown [124.123.160.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sanm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7FBB4C43460;
-        Mon, 14 Jun 2021 07:37:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7FBB4C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sanm@codeaurora.org
-Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
-To:     Jack Pham <jackp@codeaurora.org>, Felipe Balbi <balbi@kernel.org>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm@vger.kernel.org
-References: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
- <87r1hjcvf6.fsf@kernel.org> <70be179c-d36b-de6f-6efc-2888055b1312@arm.com>
- <YLi/u9J5f+nQO4Cm@kroah.com> <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com>
- <877djbc8xq.fsf@kernel.org> <20210603173632.GA25299@jackp-linux.qualcomm.com>
- <87mts6avnn.fsf@kernel.org> <20210607180023.GA23045@jackp-linux.qualcomm.com>
- <87sg1q1129.fsf@kernel.org> <20210610153346.GA26872@jackp-linux.qualcomm.com>
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-Message-ID: <d9ab95a1-f901-6bfe-899b-e4577d14cb52@codeaurora.org>
-Date:   Mon, 14 Jun 2021 13:07:11 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 14 Jun 2021 03:40:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623656299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R4JweKietmrpHO3kHqxbaCMf9WXh4WBEfPXNjcfKC8o=;
+        b=TcFZAh8AywpOB0Ahd23FzWrYfuPGY/jduqXLsqWLAn8b3VR/NSbo1OrxxRkmgjPQVylNlg
+        Ik0Jno8yBcZej3OpWT+y4BEEfNuleGJr/lUIHvnkNXrIs9I1qiB05FDWHDUr/ogGMqBQs+
+        s37dS8q8H879KLKJ3wlJko7PCnbptTs=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-nBuQTbMvMESbkYXaTMMlug-1; Mon, 14 Jun 2021 03:38:17 -0400
+X-MC-Unique: nBuQTbMvMESbkYXaTMMlug-1
+Received: by mail-wm1-f72.google.com with SMTP id a25-20020a7bc1d90000b029019dd2ac7025so5316148wmj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:38:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=R4JweKietmrpHO3kHqxbaCMf9WXh4WBEfPXNjcfKC8o=;
+        b=WewfTdh/RFLzseftxC3rHt39wWA5eQaPRXuIM34sExsr+fFiGjHXFA2cadQfp8Gy9C
+         Hrw1JjCrPO8yBgh4oNpdLjNcMA77ZatUjqgEgXjXlxCFsObAVO7WdkTJW6JBjDxJqtIA
+         gj9JFvnSuIlP7QBFijefPEMsTELT7gh9H0KrtnS/ISaTiI5kmqYDAdEoR7EmtZf57h9o
+         riw+3xBtqIAsPXRTJXLHe0aykRjr1d379GG5X/xJSOarZjckjucyvrJeXgpmgd3tlHxE
+         +d1EPzmFIGR/vW193lTUnZTcAvddk1rzB2OkWuK8oX45M/fGjZaE3xLLQ1r7zwzQvLSH
+         Ou9A==
+X-Gm-Message-State: AOAM533LAgRjJ9Gu5Y6Vj9G+8kunolUqPjyjvO7dDPaPRMi1hFc+VhzQ
+        XaPsQ0nuhXMR/Qye4J4JbAk7hgo+GuKGQsxB1B2u/gVO9e5BIzSkTyjkABhdcnsOCF//eIyo0qn
+        mO82fsaeeMNsnykQeAZ5DgSs4
+X-Received: by 2002:a7b:c193:: with SMTP id y19mr15277296wmi.172.1623656296604;
+        Mon, 14 Jun 2021 00:38:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyiDCyK5qKp7sWrxYZFklPpDnGx/uaKSOKDgbTy9j/tF+JnQhm1Y4ZozM2kmm0E0zLgTVtwow==
+X-Received: by 2002:a7b:c193:: with SMTP id y19mr15277278wmi.172.1623656296417;
+        Mon, 14 Jun 2021 00:38:16 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c66ca.dip0.t-ipconnect.de. [91.12.102.202])
+        by smtp.gmail.com with ESMTPSA id q20sm19456718wrf.45.2021.06.14.00.38.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 00:38:16 -0700 (PDT)
+To:     Hillf Danton <hdanton@sina.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+References: <YMO+CoYnCgObRtOI@DESKTOP-1V8MEUQ.localdomain>
+ <20210612021115.2136-1-hdanton@sina.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: vmemmap alloc failure in hot_add_req()
+Message-ID: <951ddbaf-3d74-7043-4866-3809ff991cfd@redhat.com>
+Date:   Mon, 14 Jun 2021 09:38:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210610153346.GA26872@jackp-linux.qualcomm.com>
+In-Reply-To: <20210612021115.2136-1-hdanton@sina.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 6/10/2021 9:03 PM, Jack Pham wrote:
-> On Thu, Jun 10, 2021 at 01:11:42PM +0300, Felipe Balbi wrote:
->> Jack Pham <jackp@codeaurora.org> writes:
->>> On Fri, Jun 04, 2021 at 11:20:12AM +0300, Felipe Balbi wrote:
->>>> Jack Pham <jackp@codeaurora.org> writes:
->>>>>>>>>> Alexandru Elisei <alexandru.elisei@arm.com> writes:
->>>>>>>>>>> I've been able to bisect the panic and the offending commit is 568262bf5492 ("usb:
->>>>>>>>>>> dwc3: core: Add shutdown callback for dwc3"). I can provide more diagnostic
->>>>>>>>>>> information if needed and I can help test the fix.
->>>>>>>>>> if you simply revert that commit in HEAD, does the problem really go
->>>>>>>>>> away?
->>>>>>>>> Kernel built from commit 324c92e5e0ee, which is the kernel tip today, the panic is
->>>>>>>>> there. Reverting the offending commit, 568262bf5492, makes the panic disappear.
->>>>>>>> Want to send a revert so I can take it now?
->>>>>>> I can send a revert, but Felipe was asking Sandeep (the commit author) for a fix,
->>>>>>> so I'll leave it up to Felipe to decide how to proceed.
->>>>>> I'm okay with a revert. Feel free to add my Acked-by: Felipe Balbi
->>>>>> <balbi@kernel.org> or it.
->>>>>>
->>>>>> Sandeep, please send a new version that doesn't encounter the same
->>>>>> issue. Make sure to test by reloading the driver in a tight loop for
->>>>>> several iterations.
->>>>> This would probably be tricky to test on other "glue" drivers as the
->>>>> problem appears to be specific only to dwc3_of_simple.  It looks like
->>>>> both dwc3_of_simple and the dwc3 core now (due to 568262bf5492) each
->>>>> implement respective .shutdown callbacks. The latter is simply a wrapper
->>>>> around dwc3_remove(). And from the panic call stack above we see that
->>>>> dwc3_of_simple_shutdown() calls of_platform_depopulate() which will
->>>>> again call dwc3_remove() resulting in the double remove.
->>>>>
->>>>> So would an alternative approach be to protect against dwc3_remove()
->>>>> getting called multiple times? IMO it'd be a bit messy to have to add
->>>> no, I  don't think so. That sounds like a workaround. We should be able
->>>> to guarantee that ->remove() doesn't get called twice using the driver
->>>> model properly.
->>> Completely fair.  So then having a .shutdown callback that directly calls
->>> dwc3_remove() is probably not the right thing to do as it completely
->>> bypasses the driver model so if and when the driver core does later
->>> release the device from the driver that's how we end up with the double
->>> remove.
->> yeah, I would agree with that.
+On 12.06.21 04:11, Hillf Danton wrote:
+> On Fri, 11 Jun 2021 12:48:26 -0700 Nathan Chancellor wrote:
+>> Hi all,
 >>
->>>>> additional checks there to know if it had already been called. So maybe
->>>>> avoid it altogether--should dwc3_of_simple_shutdown() just skip calling
->>>>> of_platform_depopulate()?
->>>> I don't know what the idiomatic is nowadays, but at least early on, we
->>>> had to call depopulate.
->>> So any suggestions on how to fix the original issue Sandeep was trying
->>> to fix with 568262bf5492? Maybe implement .shutdown in dwc3_qcom and have
->>> it follow what dwc3_of_simple does with of_platform_depopulate()? But
->>> then wouldn't other "glues" want/need to follow suit?
->> I think we can implement shutdown in core, but we need to careful with
->> it. Instead of just blindly calling remove, let's extract the common
->> parts to another internal function that both remove and shutdown
->> call. debugfs removal should not be part of that generic method :-)
-> Hi Sandeep,
->
-> Upon re-reading your description in 568262bf5492 it sounds like the
-> original intention of your patch is basically to quiesce the HW so that
-> it doesn't continue to run after SMMU/IOMMU is disabled right?
->
-> If that is the case, couldn't we simply call only dwc3_core_exit_mode()
-> assuming there is no other requirement to do any other cleanup/teardown
-> (PHYs, clocks, resets, runtime PM, et al)? This function should do the
-> bare minimum of stopping the controller in whatever mode (host or
-> peripheral) it is currently operating in.
+>> I am occasionally seeing a kernel warning when running virtual machines
+>> in Hyper-V, which usually happens a minute or so after boot. It does not
+>> happen on every boot and it is reproducible on at least v5.10. I think
+>> it might have something to do with constant reboots, which I do when
+>> testing various kernels.
+>>
+>> The stack trace is as follows:
+>>
+>> [   49.215291] kworker/0:1: vmemmap alloc failure: order:9, mode:0x4cc0(GFP_KERNEL|__GFP_RETRY_MAYFAIL), nodemask=(null),cpuset=/,mems_allowed=0
+>> [   49.215299] CPU: 0 PID: 18 Comm: kworker/0:1 Not tainted 5.13.0-rc5 #1
+>> [   49.215301] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 11/01/2019
+>> [   49.215302] Workqueue: events hot_add_req [hv_balloon]
+> 
+> Apart from order:9 (mm Cced), events_unbound is the right workqueue instead
+> because the report shows the risk that hot_add_req could block other pending
+> events longer than thought. Any special reason for the events wq?
+> 
+>> [   49.215307] Call Trace:
+>> [   49.215310]  dump_stack+0x76/0x94
+>> [   49.215314]  warn_alloc.cold+0x78/0xdc
+>> [   49.215316]  ? __alloc_pages+0x200/0x230
+>> [   49.215319]  vmemmap_alloc_block+0x86/0xdc
+>> [   49.215323]  vmemmap_populate+0x10e/0x31c
+>> [   49.215324]  __populate_section_memmap+0x38/0x4e
+>> [   49.215326]  sparse_add_section+0x12c/0x1cf
+>> [   49.215329]  __add_pages+0xa9/0x130
+>> [   49.215330]  add_pages+0x12/0x60
+>> [   49.215333]  add_memory_resource+0x180/0x300
+>> [   49.215335]  __add_memory+0x3b/0x80
+>> [   49.215336]  add_memory+0x2e/0x50
+>> [   49.215337]  hot_add_req+0x3fc/0x5a0 [hv_balloon]
+>> [   49.215340]  process_one_work+0x214/0x3e0
+>> [   49.215342]  worker_thread+0x4d/0x3d0
+>> [   49.215344]  ? process_one_work+0x3e0/0x3e0
+>> [   49.215345]  kthread+0x133/0x150
+>> [   49.215347]  ? kthread_associate_blkcg+0xc0/0xc0
+>> [   49.215348]  ret_from_fork+0x22/0x30
+>> [   49.215351] Mem-Info:
+>> [   49.215352] active_anon:251 inactive_anon:140868 isolated_anon:0
+>>                  active_file:47497 inactive_file:88505 isolated_file:0
+>>                  unevictable:8 dirty:14 writeback:0
+>>                  slab_reclaimable:12013 slab_unreclaimable:11403
+>>                  mapped:131701 shmem:12671 pagetables:3140 bounce:0
+>>                  free:41388 free_pcp:37 free_cma:0
+>> [   49.215355] Node 0 active_anon:1004kB inactive_anon:563472kB active_file:189988kB inactive_file:354020kB unevictable:32kB isolated(anon):0kB isolated(file):0kB mapped:526804kB dirty:56kB writeback:0kB shmem:50684kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB kernel_stack:5904kB pagetables:12560kB all_unreclaimable? no
+>> [   49.215358] Node 0 DMA free:6496kB min:480kB low:600kB high:720kB reserved_highatomic:0KB active_anon:0kB inactive_anon:3120kB active_file:2584kB inactive_file:2792kB unevictable:0kB writepending:0kB present:15996kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+>> [   49.215361] lowmem_reserve[]: 0 1384 1384 1384 1384
+>> [   49.215364] Node 0 DMA32 free:159056kB min:44572kB low:55712kB high:66852kB reserved_highatomic:0KB active_anon:1004kB inactive_anon:560352kB active_file:187004kB inactive_file:350864kB unevictable:32kB writepending:56kB present:1555760kB managed:1432388kB mlocked:32kB bounce:0kB free_pcp:172kB local_pcp:0kB free_cma:0kB
+>> [   49.215367] lowmem_reserve[]: 0 0 0 0 0
+>> [   49.215369] Node 0 DMA: 17*4kB (UM) 13*8kB (M) 10*16kB (M) 3*32kB (ME) 3*64kB (UME) 4*128kB (UME) 1*256kB (E) 2*512kB (UE) 2*1024kB (ME) 1*2048kB (E) 0*4096kB = 6508kB
+>> [   49.215377] Node 0 DMA32: 8061*4kB (UME) 5892*8kB (UME) 2449*16kB (UME) 604*32kB (UME) 207*64kB (UME) 49*128kB (UM) 7*256kB (M) 1*512kB (M) 0*1024kB 0*2048kB 0*4096kB = 159716kB
+>> [   49.215388] 148696 total pagecache pages
+>> [   49.215388] 0 pages in swap cache
+>> [   49.215389] Swap cache stats: add 0, delete 0, find 0/0
+>> [   49.215390] Free swap  = 0kB
+>> [   49.215390] Total swap = 0kB
+>> [   49.215391] 392939 pages RAM
+>> [   49.215391] 0 pages HighMem/MovableOnly
+>> [   49.215391] 31002 pages reserved
+>> [   49.215392] 0 pages cma reserved
+>> [   49.215393] 0 pages hwpoisoned
+>>
+>> Is this a known issue and/or am I doing something wrong? I only noticed
+>> this because there are times when I am compiling something intensive in
+>> the VM such as LLVM and the VM runs out of memory even though I have
+>> plenty of free memory on the host but I am not sure if this warning is
+>> related to that issue.
 
-Yes that was the intention. I will call only dwc3_core_exit_mode()
+Hi,
 
-and check. Is there any way we can do from dwc3 qcom glue driver to
+Is hotplugged memory getting onlined automatically (either from user 
+space via a udev script or via the kernel, for example, with 
+CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE)?
 
-avoid problems for other glue drivers?
+If it's not getting onlined, you easily sport after hotplug e.g., via 
+"lsmem" that there are quite some offline memory blocks.
+
+Note that x86_64 code will fallback from populating huge pages to 
+populating base pages for the vmemmap; this can happen easily when under 
+memory pressure.
+
+If adding memory would fail completely, you'd see another "hot_add 
+memory failed error is ..." error message from hyper-v in the kernel 
+log. If that doesn't show up, it's simply suboptimal, but hotplugging 
+memory still succeeded.
 
 
->> Anything in that generic method should, probably, be idempotent.
-> Yes we'll need to ensure that dwc3_core_exit_mode() can be called
-> multiple times without additional side effects. At first glance this
-> probably means setting dwc->xhci and dwc->gadget to NULL from
-> dwc3_host_exit() and dwc3_gadget_exit(), respectively.
+Note: we could support "memmap_on_memory" in some cases (e.g., no memory 
+holes in hotadded range) when hotplugging memory blocks via hyper-v, 
+which would result in this warning less trigger less frequently.
 
-Ok. Is there any way to test this ?
+-- 
+Thanks,
 
+David / dhildenb
 
->
-> Thanks,
-> Jack
