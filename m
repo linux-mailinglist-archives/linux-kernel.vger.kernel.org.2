@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772803A63FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192D23A6400
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235829AbhFNLTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:19:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39218 "EHLO mail.kernel.org"
+        id S235882AbhFNLTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235278AbhFNLHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:07:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB80E6192E;
-        Mon, 14 Jun 2021 10:45:47 +0000 (UTC)
+        id S235108AbhFNLG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:06:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 620AA6128A;
+        Mon, 14 Jun 2021 10:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667548;
-        bh=TUTo1GsdjuW143Sof0pwTsd3oqXK0ENbz1qo1DDTrGg=;
+        s=korg; t=1623667550;
+        bh=VFaFoZI8Jf3hiK1LJWeiBM4kXUVgxHwhSn6DJcGEqJU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a05qneJDtouX/c4kyORk5svc0GVLT/nnjkj9eVGnq+HvYPfddx8WkWk4ogrItq/1b
-         23Neje0UX8jZRWyj+HhmDb8wIw14LOok40HI3EpxXgnJkY2YjNXXp4fscu42W/Wo3H
-         UE956tmvYxtckAiK35kbDiHezyLN26cC7WhFUOOE=
+        b=LfUy10y6v6U2YWuY1GUhdfCLTmRMx4U9h+ArScmuISyUukOoAhtCArRT2z3r4TlCo
+         9/cj9zeB45AJgqH8HVPW25tqZyNzyZW/j0QaQ9c/hma4qDbeERsoC6/eapBnf//YX4
+         QCHutO/0TsFaVTHLtOoSNNxbVIBRFA1MsW+suHM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 5.10 080/131] usb: gadget: f_fs: Ensure io_completion_wq is idle during unbind
-Date:   Mon, 14 Jun 2021 12:27:21 +0200
-Message-Id: <20210614102655.740009123@linuxfoundation.org>
+        stable@vger.kernel.org,
+        George McCollister <george.mccollister@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 081/131] USB: serial: ftdi_sio: add NovaTech OrionMX product ID
+Date:   Mon, 14 Jun 2021 12:27:22 +0200
+Message-Id: <20210614102655.770908802@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
 References: <20210614102652.964395392@linuxfoundation.org>
@@ -38,42 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <wcheng@codeaurora.org>
+From: George McCollister <george.mccollister@gmail.com>
 
-commit 6fc1db5e6211e30fbb1cee8d7925d79d4ed2ae14 upstream.
+commit bc96c72df33ee81b24d87eab953c73f7bcc04f29 upstream.
 
-During unbind, ffs_func_eps_disable() will be executed, resulting in
-completion callbacks for any pending USB requests.  When using AIO,
-irrespective of the completion status, io_data work is queued to
-io_completion_wq to evaluate and handle the completed requests.  Since
-work runs asynchronously to the unbind() routine, there can be a
-scenario where the work runs after the USB gadget has been fully
-removed, resulting in accessing of a resource which has been already
-freed. (i.e. usb_ep_free_request() accessing the USB ep structure)
+Add PID for the NovaTech OrionMX so it can be automatically detected.
 
-Explicitly drain the io_completion_wq, instead of relying on the
-destroy_workqueue() (in ffs_data_put()) to make sure no pending
-completion work items are running.
-
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1621644261-1236-1-git-send-email-wcheng@codeaurora.org
+Signed-off-by: George McCollister <george.mccollister@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_fs.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/serial/ftdi_sio.c     |    1 +
+ drivers/usb/serial/ftdi_sio_ids.h |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -3566,6 +3566,9 @@ static void ffs_func_unbind(struct usb_c
- 		ffs->func = NULL;
- 	}
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -611,6 +611,7 @@ static const struct usb_device_id id_tab
+ 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONLX_PLUS_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORION_IO_PID) },
++	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONMX_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_SYNAPSE_SS200_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX2_PID) },
+--- a/drivers/usb/serial/ftdi_sio_ids.h
++++ b/drivers/usb/serial/ftdi_sio_ids.h
+@@ -581,6 +581,7 @@
+ #define FTDI_NT_ORIONLXM_PID		0x7c90	/* OrionLXm Substation Automation Platform */
+ #define FTDI_NT_ORIONLX_PLUS_PID	0x7c91	/* OrionLX+ Substation Automation Platform */
+ #define FTDI_NT_ORION_IO_PID		0x7c92	/* Orion I/O */
++#define FTDI_NT_ORIONMX_PID		0x7c93	/* OrionMX */
  
-+	/* Drain any pending AIO completions */
-+	drain_workqueue(ffs->io_completion_wq);
-+
- 	if (!--opts->refcnt)
- 		functionfs_unbind(ffs);
- 
+ /*
+  * Synapse Wireless product ids (FTDI_VID)
 
 
