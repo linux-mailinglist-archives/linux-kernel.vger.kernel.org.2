@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFE83A5FEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCED3A5FED
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhFNKXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbhFNKX2 (ORCPT
+        id S232806AbhFNKXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:23:33 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4433 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232809AbhFNKX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Jun 2021 06:23:28 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94042C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:21:22 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id g22so3162160pgk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YZpft7OI/68AkdpRkEG65YPdqz6N6jjlPeJBBm/DAcc=;
-        b=ZEy9JljT0S7v4JKqlZp2tbrvTcXn7OssJFRLOCaLdsngU1E0T6hHlKfSOiLofzz+Qd
-         CYD89wjmQkJ5qg24VB+qPG1CnGLkXuNVaRjZBqMFxJaq/qlIrixiP8M7mzSgo4aunXgX
-         uaYZReiLfSn/RF8T5pFp5dg577Aj4ePvKGNXgtLNhY8SJF2CSwV8F4wLY1rH66F7Bf8V
-         aMW6O23psUcC5KK3Z4bqR0a2fUmCTqtHdn1hopGeMV45XRZRBqg8ZEsYR0Ri60IiODOv
-         Y9QGP+Tgn3YheWVxFMqjQdkb8ga4uJ1eUqNycNFbG5579Ztpkw2Po4hruC9fiShU+8nY
-         6Ygw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YZpft7OI/68AkdpRkEG65YPdqz6N6jjlPeJBBm/DAcc=;
-        b=t5syWGfTddvY16n+F1J6Yw/UyXf25JsNsgLl9kGx1y9aVgkiSv0HzU8GtGVdZDTsvM
-         9sy5CKQmsUvTcfoEYsT/wynwTtS40BdYOLaD2SVK6ZX4fVturEvPyBZMk62ttUQsVb7H
-         31pu3UwgMUieeYdFdxLfRxYTZu/7h8Fu5A6vnWVe1Trbyw7JIcZaMdnk60lWX+WQ0Ymj
-         YxhBpB7KLbX5vISqv+FNkFRQd4bFvLYl1caaC4aXoo2V1JlHxhqxO+Oeg3+Q0lTE9a1G
-         OZHEjwH8yT0WtBL1dgsMOVYT/wI9SpOJXQyfllg4Brcik52axgKXguLmDehyZywfVPft
-         JBkw==
-X-Gm-Message-State: AOAM532gzTnuzsI/1eeMvK4heitjBXwmjwnHHbVMbXZVKvGrcJOiDNXg
-        +jFKbg7rIRKfH50D8iwAvldX3w==
-X-Google-Smtp-Source: ABdhPJxqBUAdifrUMvs2Xcf/ymaxIYCbX+e1eFh0GE+mXpPaQBN6YqQMBz8f9vC6UKEwRGT9SoikIA==
-X-Received: by 2002:a65:42c3:: with SMTP id l3mr16224536pgp.259.1623666082072;
-        Mon, 14 Jun 2021 03:21:22 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id k25sm12058962pfa.213.2021.06.14.03.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 03:21:21 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 15:51:19 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-Message-ID: <20210614102119.qifm5sj7fpg54iqo@vireshk-i7>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3S883j3Yz6yfl;
+        Mon, 14 Jun 2021 18:18:16 +0800 (CST)
+Received: from [10.67.100.138] (10.67.100.138) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 14 Jun 2021 18:21:24 +0800
+Subject: Re: [PATCH net-next 04/11] net: z85230: remove redundant
+ initialization for statics
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Guangbin Huang <huangguangbin2@huawei.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
+        <ms@dev.tdt.de>, <willemb@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1623569903-47930-1-git-send-email-huangguangbin2@huawei.com>
+ <1623569903-47930-5-git-send-email-huangguangbin2@huawei.com>
+ <YMYw4kJ/Erq6fbVh@lunn.ch>
+From:   "lipeng (Y)" <lipeng321@huawei.com>
+Message-ID: <a39c53f5-2b87-22c4-1df2-d92988682362@huawei.com>
+Date:   Mon, 14 Jun 2021 18:21:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <YMYw4kJ/Erq6fbVh@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.100.138]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-06-21, 15:22, Arnd Bergmann wrote:
-> Can you give an example of how this would be hooked up to other drivers
-> using those gpios. Can you give an example of how using the "gpio-keys" or
-> "gpio-leds" drivers in combination with virtio-gpio looks like in the DT?
-> 
-> Would qemu simply add the required DT properties to the device node that
-> corresponds to the virtio device in this case?
-> 
-> From what I can tell, both the mmio and pci variants of virtio can have their
-> dev->of_node populated, but I don't see the logic in register_virtio_device()
-> that looks up the of_node of the virtio_device that the of_gpio code then
-> tries to refer to.
 
-To be honest, I haven't tried this yet and I was expecting it to be
-already taken care of. I was relying on the DTB automatically
-generated by Qemu to get the driver probed and didn't have a look at
-it as well.
+在 2021/6/14 0:22, Andrew Lunn 写道:
+> On Sun, Jun 13, 2021 at 03:38:16PM +0800, Guangbin Huang wrote:
+>> From: Peng Li <lipeng321@huawei.com>
+>>
+>> Should not initialise statics to 0.
+>>
+>> Signed-off-by: Peng Li <lipeng321@huawei.com>
+>> Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+>> ---
+>>   drivers/net/wan/z85230.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/wan/z85230.c b/drivers/net/wan/z85230.c
+>> index 94ed9a2..f815bb5 100644
+>> --- a/drivers/net/wan/z85230.c
+>> +++ b/drivers/net/wan/z85230.c
+>> @@ -685,7 +685,7 @@ irqreturn_t z8530_interrupt(int irq, void *dev_id)
+>>   {
+>>   	struct z8530_dev *dev=dev_id;
+>>   	u8 intr;
+>> -	static volatile int locker=0;
+>> +	static int locker;
+> Is the volatile unneeded? Please document that in the commit message.
+>
+>     Andrew
+> .
+Hi,  Andrew:
 
-I now understand that it won't be that straight forward. The same must
-be true for adding an i2c device to an i2c bus over virtio (The way I
-tested that earlier was by using the sysfs file to add a device to a
-bus).
+When i create this patch, it will WARNING: Use of volatile is usually 
+wrong: see Documentation/process/volatile-considered-harmful.rst
+According to the file in kernel: 
+Documentation/process/volatile-considered-​harmful.rst
+the "volatile" type class should not be used.
+So i remove  "volatile" in this patch.
 
-This may be something lacking generally for virtio-pci thing, not
-sure though.
+I will add the reason in commit log Next version.
 
--- 
-viresh
+Thanks.
+
+Peng Li
+
+
