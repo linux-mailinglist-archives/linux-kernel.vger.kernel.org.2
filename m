@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A243A6323
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6713A64CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235590AbhFNLKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36770 "EHLO mail.kernel.org"
+        id S235920AbhFNL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:29:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234829AbhFNK7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:59:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 426B561431;
-        Mon, 14 Jun 2021 10:42:16 +0000 (UTC)
+        id S235536AbhFNLOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:14:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F079B6195A;
+        Mon, 14 Jun 2021 10:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667336;
-        bh=9DsQAlrXIIkKDZkN+WHC7MUMFp4igyRwhLat0llSGY8=;
+        s=korg; t=1623667754;
+        bh=Ijj6w/xRH62dLAhfw625MvzJ53wokV09FozBDVbrmOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hZ2DkqmY9G0gq2icMBArsze8U7S3D1fo4pV2yLmr2wB8JKbjRkVJpk9ga4dWaJY6g
-         Jp7uKnZP1EgkBsn3nYM5zHhB+Wug/a2vnUXx4XyDVPJE2vlO80ocCn2lCm2vaMvhl3
-         VKjqgvhTBBQ/JX+FiecGLopkY0aaJFvP3ZWyExWM=
+        b=nJ4BoHUiernA8zKKP2hn9ZPJSvt+RgG5Q8u4F1d/hIFoUROdSQ7DDIiGu8BVuQFId
+         FACnFihHrEpZHWa32LLIj5abpySxhwrRWeSmtDUjsxU1pJRb6wG41Ns5+amhOJ5U6L
+         eAEw3APhrX+u4mpmk3U8zBJ6/aa+0P/tsuHcC8ow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 031/131] net: appletalk: cops: Fix data race in cops_probe1
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.12 060/173] drm: Lock pointer access in drm_master_release()
 Date:   Mon, 14 Jun 2021 12:26:32 +0200
-Message-Id: <20210614102654.070736168@linuxfoundation.org>
+Message-Id: <20210614102700.159634610@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-[ Upstream commit a4dd4fc6105e54393d637450a11d4cddb5fabc4f ]
+commit c336a5ee984708db4826ef9e47d184e638e29717 upstream.
 
-In cops_probe1(), there is a write to dev->base_addr after requesting an
-interrupt line and registering the interrupt handler cops_interrupt().
-The handler might be called in parallel to handle an interrupt.
-cops_interrupt() tries to read dev->base_addr leading to a potential
-data race. So write to dev->base_addr before calling request_irq().
+This patch eliminates the following smatch warning:
+drivers/gpu/drm/drm_auth.c:320 drm_master_release() warn: unlocked access 'master' (line 318) expected lock '&dev->master_mutex'
 
-Found by Linux Driver Verification project (linuxtesting.org).
+The 'file_priv->master' field should be protected by the mutex lock to
+'&dev->master_mutex'. This is because other processes can concurrently
+modify this field and free the current 'file_priv->master'
+pointer. This could result in a use-after-free error when 'master' is
+dereferenced in subsequent function calls to
+'drm_legacy_lock_master_cleanup()' or to 'drm_lease_revoke()'.
 
-Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+An example of a scenario that would produce this error can be seen
+from a similar bug in 'drm_getunique()' that was reported by Syzbot:
+https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+
+In the Syzbot report, another process concurrently acquired the
+device's master mutex in 'drm_setmaster_ioctl()', then overwrote
+'fpriv->master' in 'drm_new_set_master()'. The old value of
+'fpriv->master' was subsequently freed before the mutex was unlocked.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210609092119.173590-1-desmondcheongzx@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/appletalk/cops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_auth.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/appletalk/cops.c b/drivers/net/appletalk/cops.c
-index ba8e70a8e312..6b12ce822e51 100644
---- a/drivers/net/appletalk/cops.c
-+++ b/drivers/net/appletalk/cops.c
-@@ -327,6 +327,8 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
- 			break;
- 	}
+--- a/drivers/gpu/drm/drm_auth.c
++++ b/drivers/gpu/drm/drm_auth.c
+@@ -314,9 +314,10 @@ int drm_master_open(struct drm_file *fil
+ void drm_master_release(struct drm_file *file_priv)
+ {
+ 	struct drm_device *dev = file_priv->minor->dev;
+-	struct drm_master *master = file_priv->master;
++	struct drm_master *master;
  
-+	dev->base_addr = ioaddr;
-+
- 	/* Reserve any actual interrupt. */
- 	if (dev->irq) {
- 		retval = request_irq(dev->irq, cops_interrupt, 0, dev->name, dev);
-@@ -334,8 +336,6 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
- 			goto err_out;
- 	}
+ 	mutex_lock(&dev->master_mutex);
++	master = file_priv->master;
+ 	if (file_priv->magic)
+ 		idr_remove(&file_priv->master->magic_map, file_priv->magic);
  
--	dev->base_addr = ioaddr;
--
-         lp = netdev_priv(dev);
-         spin_lock_init(&lp->lock);
- 
--- 
-2.30.2
-
 
 
