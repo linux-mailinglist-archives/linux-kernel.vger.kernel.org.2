@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836293A5B7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 04:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F453A5B7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 04:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhFNCNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Jun 2021 22:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        id S232344AbhFNCOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Jun 2021 22:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232269AbhFNCNr (ORCPT
+        with ESMTP id S232336AbhFNCOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Jun 2021 22:13:47 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9FAC061574;
-        Sun, 13 Jun 2021 19:11:31 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id w4so12266674qvr.11;
-        Sun, 13 Jun 2021 19:11:31 -0700 (PDT)
+        Sun, 13 Jun 2021 22:14:42 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92770C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 19:12:28 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g4so8866616pjk.0
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 19:12:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=/pYpS7z9b3a/6qRwLgr21klDpDKmQtlWnOviQqkYZ5Y=;
-        b=MXFiXfB//FGQvrfCVcyKi13yZLX8QO3gQ1Fs8a+3hEVU+pqPP7gM0F8+tFH0i61t1z
-         a9OS7MAgUfMo4ti4QzqUs8m63FSCEYOHEZwTPrZuk+0nbW9/lwXyelMxcwzXsznBm0ge
-         /FJ3NDdxgT5PHQggefPEe0VId1ROWsP28XLOLKyyf5LfECNU5eIFfetf4GaWNjxxREN6
-         wfPWARvyXRWxNYkSzTCWhzsEQHquYAsoMqeljVSo6At7Zuhk0J584TDYFA0sMaRH9ZOT
-         ChHz4ax7eCED4sgUbe8AQKUtUpKngCIuYB0UdKqj4ghFpzesfNw3YbINupGepEBWOPqf
-         FPZA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SQnybCIkX2nlwJQ89tO2iOaMNTDW/dZcZ/YUuyKE+JM=;
+        b=dboEhjcUsrGWHDsB4gZx0K17gVrE8vYYHbocPhRD1C+3zDTTZoYiM7y5R/I+lKxBpq
+         dPiBvn+5PF3B4IY7xy79asZZEvTj92v85KGjQFsJMrp83/xeYmODXycgIoDkDqePs8Bz
+         LSzxwcsmXZS9MBUSsqUcxGvHyC6sENC1YN1uHqOCIABgUGdAuDKrEZR4YCmEYod+LY75
+         1alzg5gyNGCpioQL4AOmoxa4pcTHb27GaYPX92BLObuUzzzTkP3nUfbExvvtii1AEdvO
+         Ii2TE0tdpQfrGV0p27go35g6fxfCF02Jd5CgENt5C5TSrBgZl08D5pXusmD9rGTm7zwf
+         0QQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=/pYpS7z9b3a/6qRwLgr21klDpDKmQtlWnOviQqkYZ5Y=;
-        b=r8CzcGkDL+ZIegGygQty0QAxUidHj0eoKiVERaEOCZoP+cqR/MhVFtOx5UJdGuiq7C
-         6+/KoPXAgNv8QdWD5pq+lNGcu4NCzRsHwXeo9u6k/9ehP0dDiM4oCXPUZ8TcEpqGgRuR
-         Kux0mVGjWXY4tZsVVM+fQZeDRdav0N/tEy+NGM7ScDOIs9amIvLL5MRyeiI8wPskcnOr
-         q8oWn4CuQ2URbJTibffvFzaBmLu36j+M6xF6GpjHDN6GyisR3OAwBB/3PhwgEP+KA+Ng
-         ZYMyu4NA1TVgNChi9b0E0smSUyJqnZq+2EFhkpFWomCmEKPmrwa1mINxgs2ZTFrT80bQ
-         cmTA==
-X-Gm-Message-State: AOAM533lbZ5PvV713QgGLE2Ggeo2r+bH3vVk2Ww+fraqaXsqzSuiq1BY
-        TmWfzT/RnZ0OKvYVjm7JYy16rnvsYFR+6zyxRb4=
-X-Google-Smtp-Source: ABdhPJwxRYJeq9Jsx574+RgiHVOKhUsOAnplR8AyrKgoOtsl57ncyd0oeoda6WAU93g3Y6VdAofllw==
-X-Received: by 2002:a0c:9e68:: with SMTP id z40mr16402873qve.17.1623636691013;
-        Sun, 13 Jun 2021 19:11:31 -0700 (PDT)
-Received: from tobias-VirtualBox (ool-18ba8988.dyn.optonline.net. [24.186.137.136])
-        by smtp.gmail.com with ESMTPSA id o5sm8747078qta.51.2021.06.13.19.11.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SQnybCIkX2nlwJQ89tO2iOaMNTDW/dZcZ/YUuyKE+JM=;
+        b=eV8ZsP+oeowg5C2eSYt5FSRcr5wn0XXB3nkC/TRXrmMR7Ol9IY8ZxDJdELsTjAjXG1
+         SbMQaCgsde2zGSR3kjYMuVkJc48PER2i+D5My+MeEhI6tWbZC2SRkqDlkIH/k2FXfRTi
+         RUrBielXWqzg2CG2qPyRgX6cUFA5LHno8OqhlNMKlahspYggL1PcStvsfCRlTNI6opQu
+         aVMTogGvMk+pTsrhCbTIq9dDK8dZKWprbcRXZi6VjMOZsSFADf2rTaeSZL8uS4Vp67cJ
+         WBCT+5F3O9r1cJOe2pmfWIpMsE9fqnGXUwqvifBjjRibr1NC8FImikpjOKOKgGr/sy3+
+         MUFA==
+X-Gm-Message-State: AOAM5317JynIVWyV8HG/vnGWTWrsuRwnvix/pBhHESKpwZka1WtEUfTr
+        gijs0LQHRNWCKjUGuXUlPA==
+X-Google-Smtp-Source: ABdhPJyhzSQEB1ODo82x1PnndemLBZxpkBIIv8tiryw0zjoY7SA5yX4sOfXeuyewMRHwrmY4TGhCTQ==
+X-Received: by 2002:a17:902:d4d0:b029:113:fb3d:3644 with SMTP id o16-20020a170902d4d0b0290113fb3d3644mr14578776plg.58.1623636745667;
+        Sun, 13 Jun 2021 19:12:25 -0700 (PDT)
+Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
+        by smtp.gmail.com with ESMTPSA id z14sm10952986pfn.11.2021.06.13.19.12.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 19:11:30 -0700 (PDT)
-Date:   Sun, 13 Jun 2021 22:11:30 -0400
-From:   Tobias Alam <tobiasalam@gmail.com>
-To:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        Sun, 13 Jun 2021 19:12:25 -0700 (PDT)
+From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Ding Hui <dinghui@sangfor.com.cn>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: qlge: change msleep to usleep_range
-Message-ID: <YMa60p5dl0LMV/9D@tobias-VirtualBox>
+Subject: [PATCH v1 0/6] mm/hwpoison: fix unpoison_memory()
+Date:   Mon, 14 Jun 2021 11:12:06 +0900
+Message-Id: <20210614021212.223326-1-nao.horiguchi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch changes msleep() to usleep_range() based on
-Documentation/timers/timers-howto.txt. It suggests using usleep_range()
-for small msec(1ms - 20ms) because msleep() will often sleep longer than
-the desired value. Issue found by checkpatch.
+Hi,
 
-Signed-off-by: Tobias Alam <tobiasalam@gmail.com>
+This patchset is suggesting to adjust unpoison_memory() to the new way of
+isolation and refcounting of hwpoisoned pages.
+
+As mentioned in [1], NR_FREE_PAGES is incremented via newly added function
+undoing take_page_off_buddy(), so the counter is consistent with this series.
+
+It depends on some other hwpoison-related patches (not mainlined but in linux-mm),
+so I listed the dependencies here:
+
+  - mm/hwpoison: do not lock page again when me_huge_page() successfully recovers
+  - mm/memory-failure: make sure wait for page writeback in memory_failure
+  - mm,hwpoison: make get_hwpoison_page() call get_any_page()
+  - mm,hwpoison: fix race with hugetlb page allocation
+  - mm,hwpoison: Send SIGBUS with error virutal address
+  - mm,hwpoison: Return -EHWPOISON to denote that the page has already been poisoned
+  - mm/memory-failure: Use a mutex to avoid memory_failure() races
+
+Or GitHub branch I pushed for easy patch access might be helpful for reviewers.
+
+  git fetch https://github.com/nhoriguchi/linux hwpoison
+
+[1] https://lore.kernel.org/linux-mm/20210527003436.GA3543069@hori.linux.bs1.fc.nec.co.jp/
+
+Thanks,
+Naoya Horiguchi
 ---
- drivers/staging/qlge/qlge_ethtool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Summary:
 
-diff --git a/drivers/staging/qlge/qlge_ethtool.c b/drivers/staging/qlge/qlge_ethtool.c
-index b70570b7b467..87d60115ac67 100644
---- a/drivers/staging/qlge/qlge_ethtool.c
-+++ b/drivers/staging/qlge/qlge_ethtool.c
-@@ -553,7 +553,7 @@ static int qlge_run_loopback_test(struct qlge_adapter *qdev)
- 		atomic_inc(&qdev->lb_count);
- 	}
- 	/* Give queue time to settle before testing results. */
--	msleep(2);
-+	usleep_range(2000, 2100);
- 	qlge_clean_lb_rx_ring(&qdev->rx_ring[0], 128);
- 	return atomic_read(&qdev->lb_count) ? -EIO : 0;
- }
--- 
-2.30.2
+Naoya Horiguchi (6):
+      mm/hwpoison: mf_mutex for soft offline and unpoison
+      mm/hwpoison: remove race consideration
+      mm/hwpoison: introduce MF_MSG_PAGETABLE
+      mm/hwpoison: remove MF_MSG_BUDDY_2ND and MF_MSG_POISONED_HUGE
+      mm/hwpoison: make some kernel pages handlable
+      mm/hwpoison: fix unpoison_memory()
 
+ include/linux/mm.h         |   4 +-
+ include/linux/page-flags.h |   4 ++
+ include/ras/ras_event.h    |   3 +-
+ mm/memory-failure.c        | 176 +++++++++++++++++++++++++--------------------
+ mm/page_alloc.c            |  19 +++++
+ 5 files changed, 126 insertions(+), 80 deletions(-)
