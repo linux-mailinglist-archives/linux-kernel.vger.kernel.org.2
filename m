@@ -2,177 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A433A7072
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A721A3A6FFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235524AbhFNUdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233479AbhFNUdK (ORCPT
+        id S233510AbhFNURR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:17:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57458 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233682AbhFNURM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:33:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EDDC061574;
-        Mon, 14 Jun 2021 13:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=ar7nQVYv2B1JNHOxI2UudAKG3cCri+N4AutaF8gvmKE=; b=wDhsy6Y3+qQzx3cs1P66WYh5Lq
-        Tc/HoPtOf2TZ/Uy0UQPa/pFFtA/sXoVjaG6MNyzn4T94uRMHvALZ5C208golm55KOGBbDDpuWXXxr
-        Svb/BLT3WZ9xYHpmSrPQpf1pBGAEUBRDHftYfVQT1/gRQe+5R8w/Nu1N2TJOAGl2wFkzAJUOWPB4F
-        +ONcZPNTd7WtRV08vOgdeR7b099rdtM7qb9kjw+oTqzyNz7rZrx17sYDiWQhDZDRIi82IDael+pdY
-        5D8CSb+F8uZyRCqGld5MZZPXq3KrVdXzXPrTyaVUaqwDf7SO7D318Wg1wl8v1QqAvMG4IDrydttW6
-        K1MQoaRg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lstDK-005o5x-Vk; Mon, 14 Jun 2021 20:29:59 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     akpm@linux-foundation.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: [PATCH v11 25/33] mm/filemap: Add folio_end_writeback()
-Date:   Mon, 14 Jun 2021 21:14:27 +0100
-Message-Id: <20210614201435.1379188-26-willy@infradead.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210614201435.1379188-1-willy@infradead.org>
-References: <20210614201435.1379188-1-willy@infradead.org>
+        Mon, 14 Jun 2021 16:17:12 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623701708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GcF4L/PJ2zhQ+1ZAZQJ1sut/3O3JGVdorF5KDH2wryk=;
+        b=bthr06o5x2i8IZjR3Haeu0ZciLSDnGUrZ7jN0bfYkWFQGNzY1myCS/VInmVTN7pRZqtV3C
+        9ABSDqtpIZxlv7sEfPad5c3SXMUJnBUd05FIflwqldbsReVekOn1czyQS0rz6A7iCnTgt+
+        znrOGeB+KMw3FwqIZQTYSnzF4S/qvQRovfsBjr0/pzCCWDA8of1FmyMPALy00UQ2EJqzx7
+        oNmXCfFlzyNrJsVkxdFyKSO8nfziPLauO/Abq/SfiDe4PRc1IPOjjAOQkNOBemQJWuv9mI
+        2XX86qgcO65+LnBjkHG1flAjRe9r4vUj8wR1FM1sdCfNHiPWK9gBh3kAUXoCTQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623701708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GcF4L/PJ2zhQ+1ZAZQJ1sut/3O3JGVdorF5KDH2wryk=;
+        b=inhyMISw2Ofl1EV3VJbhyra2OS5jt80np7iwugxUcVGnRxzirp2tueMeGU9jQEdQzeatqz
+        KIiDo+vZcFGWMRDw==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [patch] x86/fpu: x86/fpu: Preserve supervisor states in sanitize_restored_user_xstate()
+In-Reply-To: <20210614154408.673478623@linutronix.de>
+References: <20210614154408.673478623@linutronix.de>
+Date:   Mon, 14 Jun 2021 22:15:08 +0200
+Message-ID: <877diwursj.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an end_page_writeback() wrapper function for users that are not yet
-converted to folios.
+sanitize_restored_user_xstate() preserves the supervisor states only
+when the fx_only argument is zero, which allows unpriviledged user space
+to put supervisor states back into init state.
 
-folio_end_writeback() is less than half the size of end_page_writeback()
-at just 105 bytes compared to 228 bytes, due to removing all the
-compound_head() calls.  The 30 byte wrapper function makes this a net
-saving of 93 bytes.
+Preserve them unconditionally.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Jeff Layton <jlayton@kernel.org>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+Fixes: 5d6b6a6f9b5c ("x86/fpu/xstate: Update sanitize_restored_xstate() for supervisor xstates")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
 ---
- include/linux/pagemap.h |  3 ++-
- mm/filemap.c            | 43 ++++++++++++++++++++---------------------
- mm/folio-compat.c       |  6 ++++++
- 3 files changed, 29 insertions(+), 23 deletions(-)
+ arch/x86/kernel/fpu/signal.c |   26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 051f51f6d642..2aa20394b103 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -756,7 +756,8 @@ static inline int wait_on_page_locked_killable(struct page *page)
- int put_and_wait_on_page_locked(struct page *page, int state);
- void wait_on_page_writeback(struct page *page);
- int wait_on_page_writeback_killable(struct page *page);
--extern void end_page_writeback(struct page *page);
-+void end_page_writeback(struct page *page);
-+void folio_end_writeback(struct folio *folio);
- void wait_for_stable_page(struct page *page);
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -221,28 +221,18 @@ sanitize_restored_user_xstate(union fpre
  
- void page_endio(struct page *page, bool is_write, int err);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 3688c1f0651a..eb95a95d90c5 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1175,11 +1175,11 @@ static void wake_up_page_bit(struct page *page, int bit_nr)
- 	spin_unlock_irqrestore(&q->lock, flags);
- }
+ 	if (use_xsave()) {
+ 		/*
+-		 * Note: we don't need to zero the reserved bits in the
+-		 * xstate_header here because we either didn't copy them at all,
+-		 * or we checked earlier that they aren't set.
++		 * Clear all features bit which are not set in
++		 * user_xfeatures and clear all extended features
++		 * for fx_only mode.
+ 		 */
++		u64 mask = fx_only ? XFEATURE_MASK_FPSSE : user_xfeatures;
  
--static void wake_up_page(struct page *page, int bit)
-+static void folio_wake(struct folio *folio, int bit)
- {
--	if (!PageWaiters(page))
-+	if (!folio_waiters(folio))
- 		return;
--	wake_up_page_bit(page, bit);
-+	wake_up_page_bit(&folio->page, bit);
- }
- 
- /*
-@@ -1516,39 +1516,38 @@ int wait_on_page_private_2_killable(struct page *page)
- EXPORT_SYMBOL(wait_on_page_private_2_killable);
- 
- /**
-- * end_page_writeback - end writeback against a page
-- * @page: the page
-+ * folio_end_writeback - End writeback against a folio.
-+ * @folio: The folio.
-  */
--void end_page_writeback(struct page *page)
-+void folio_end_writeback(struct folio *folio)
- {
- 	/*
--	 * TestClearPageReclaim could be used here but it is an atomic
--	 * operation and overkill in this particular case. Failing to
--	 * shuffle a page marked for immediate reclaim is too mild to
--	 * justify taking an atomic operation penalty at the end of
--	 * ever page writeback.
-+	 * folio_test_clear_reclaim_flag() could be used here but it is an
-+	 * atomic operation and overkill in this particular case. Failing
-+	 * to shuffle a folio marked for immediate reclaim is too mild
-+	 * a gain to justify taking an atomic operation penalty at the
-+	 * end of every folio writeback.
- 	 */
--	if (PageReclaim(page)) {
--		struct folio *folio = page_folio(page);
--		ClearPageReclaim(page);
-+	if (folio_reclaim(folio)) {
-+		folio_clear_reclaim_flag(folio);
- 		folio_rotate_reclaimable(folio);
+ 		/*
+-		 * 'user_xfeatures' might have bits clear which are
+-		 * set in header->xfeatures. This represents features that
+-		 * were in init state prior to a signal delivery, and need
+-		 * to be reset back to the init state.  Clear any user
+-		 * feature bits which are set in the kernel buffer to get
+-		 * them back to the init state.
+-		 *
+-		 * Supervisor state is unchanged by input from userspace.
+-		 * Ensure supervisor state bits stay set and supervisor
+-		 * state is not modified.
++		 * Supervisor state has to be preserved. The sigframe
++		 * restore can only modify user features, i.e. @mask
++		 * cannot contain them.
+ 		 */
+-		if (fx_only)
+-			header->xfeatures = XFEATURE_MASK_FPSSE;
+-		else
+-			header->xfeatures &= user_xfeatures |
+-					     xfeatures_mask_supervisor();
++		header->xfeatures &= mask | xfeatures_mask_supervisor();
  	}
  
- 	/*
--	 * Writeback does not hold a page reference of its own, relying
-+	 * Writeback does not hold a folio reference of its own, relying
- 	 * on truncation to wait for the clearing of PG_writeback.
--	 * But here we must make sure that the page is not freed and
--	 * reused before the wake_up_page().
-+	 * But here we must make sure that the folio is not freed and
-+	 * reused before the folio_wake().
- 	 */
--	get_page(page);
--	if (!test_clear_page_writeback(page))
-+	folio_get(folio);
-+	if (!test_clear_page_writeback(&folio->page))
- 		BUG();
- 
- 	smp_mb__after_atomic();
--	wake_up_page(page, PG_writeback);
--	put_page(page);
-+	folio_wake(folio, PG_writeback);
-+	folio_put(folio);
- }
--EXPORT_SYMBOL(end_page_writeback);
-+EXPORT_SYMBOL(folio_end_writeback);
- 
- /*
-  * After completing I/O on a page, call this routine to update the page
-diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-index 91b3d00a92f7..526843d03d58 100644
---- a/mm/folio-compat.c
-+++ b/mm/folio-compat.c
-@@ -17,3 +17,9 @@ void unlock_page(struct page *page)
- 	return folio_unlock(page_folio(page));
- }
- EXPORT_SYMBOL(unlock_page);
-+
-+void end_page_writeback(struct page *page)
-+{
-+	return folio_end_writeback(page_folio(page));
-+}
-+EXPORT_SYMBOL(end_page_writeback);
--- 
-2.30.2
-
+ 	if (use_fxsr()) {
