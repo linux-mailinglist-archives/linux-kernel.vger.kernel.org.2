@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A418C3A6EBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817A13A6EC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbhFNTUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233169AbhFNTUx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:20:53 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C65C061574;
-        Mon, 14 Jun 2021 12:18:37 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id e1so7119919pld.13;
-        Mon, 14 Jun 2021 12:18:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZCJbIJV/nfxgcCIcUtBDKRwC0IFsKldYz04bEu2ohmQ=;
-        b=JZ1Op034ncom0Ie0M+ChMI7vDG5AUnNbS7ogJV5xxk4j12uIzpB9A3IeSlY3Br6fg5
-         lVPXpyr2ubTzY5jaDlx4/wKr7BJgtHF8m2jWKEdZlovoOogfThhKjnFLpfsRYAFgJiRV
-         mC92IlX5oVfcOBgLMSpg9JlW/8KKwk8LFiAIYvoq1hrF2tYj3qbBgKDG2Y5djN8/yW0u
-         ApUdvOvo7xkWJ4q902z/YnP6S2tQKlF+JFtxpOKyd4YUptQ8+c9uCU65bI809Ru7kCWF
-         Xmimyd3bSqkB9MYLXaadmpAHdTVlulUWBLDFUUJMHvrEM6URPW1c+gC2XalIcyOqXhwE
-         Cerw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZCJbIJV/nfxgcCIcUtBDKRwC0IFsKldYz04bEu2ohmQ=;
-        b=MzffjkdlrRBjpbgc2tNaB83JMJSzRhULn0MzOYNZb7odVBdSsHSQHgAeJwaft7bZ0c
-         HTwddfHyek7Shq54w0IZ4R0c8/GWNCFJuhKummaowuue3ZPyKSWN1ETXUd/irT3MUBIA
-         nrMw4fJRTscYsSi89Uyh5DTRHlqVdJeEG6ZwTuW2KpydHscAASGV5NHHZVxBQClkn2iY
-         Z4yfciVJvYyxqxrpcB/wibfrCyfnCGZsoIAG90anD1IqtxO/M7vF8AqFOWTnVFTp+9JO
-         boR9vwq0s67X+q3/0O0AqBT39oq1hJIB+k5kHMqJ/r3fd6696EZk/G37wbXJGKicm8r5
-         nZYQ==
-X-Gm-Message-State: AOAM530z3pzUJdUdn45raSjspY4gr6fWCCga+iAHf/VILUa0pFqoN3s1
-        pwkHkaPlFvwQRosadpJGkEeuaXpD3Rs=
-X-Google-Smtp-Source: ABdhPJxT8jDHY2Ff0Xf2ZtwrEconnb86cTAF1g0JunV4SK184w1v6gI/6rbixCpavNdwGOPhtqnVEg==
-X-Received: by 2002:a17:902:bb90:b029:11a:cf7c:997c with SMTP id m16-20020a170902bb90b029011acf7c997cmr587482pls.80.1623698316376;
-        Mon, 14 Jun 2021 12:18:36 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id n37sm12901390pfv.47.2021.06.14.12.18.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 12:18:35 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/84] 5.4.126-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210614102646.341387537@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a1f35e79-2105-eb71-818a-7a617a495679@gmail.com>
-Date:   Mon, 14 Jun 2021 12:18:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        id S233989AbhFNTV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:21:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233048AbhFNTVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:21:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDE5461076;
+        Mon, 14 Jun 2021 19:19:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623698391;
+        bh=NQBklGVerSpRXCeIFhcT9srvsqM7Ilq8/ae/R7QiO8k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VbuCgKGrQtzWpphJqRBuup/QMyyieIWlT8MaOR0amac2RPFzK4hHxClIBbXaY/lCs
+         a3Xy0T/iOKMY8VMyLPB3emTUcf1hSEncDUkTKRDOvQLY5FvZKSA7k0aTBjFzakJ55I
+         Gp7vRtarSmSuAq9B/+uCKBqChCw4diQSo8r43+WqE3teuBtrANLlBD+3+QgO5jNdVY
+         FRLQzxJqvXF8lR65Im54A4wVW5DxBGCYyfkLs9aR92zr47W4IAZAmYoW4pGC62Nysh
+         YuUxqvvIVZXnYvkIlkVe2liUclfJmvicz1zJz4C2stbTjKuZUnZPPVlryhnfD7Bcb9
+         938yesVJT+BZA==
+Date:   Mon, 14 Jun 2021 22:19:48 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
+        dwmw2@infradead.org, zohar@linux.ibm.com, nayna@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/4] Add support for ECDSA-signed kernel modules
+Message-ID: <20210614191948.io4waff5aisah36q@kernel.org>
+References: <20210610125623.1553792-1-stefanb@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610125623.1553792-1-stefanb@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/14/2021 3:26 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.126 release.
-> There are 84 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Jun 10, 2021 at 08:56:19AM -0400, Stefan Berger wrote:
+> This series adds support for ECDSA-signed kernel modules. It also
+> attempts to address a kbuild issue where a developer created an ECDSA
+> key for signing kernel modules and then builds an older version of the
+> kernel, when bisecting the kernel for example, that does not support
+> ECDSA keys.
 > 
-> Responses should be made by Wed, 16 Jun 2021 10:26:30 +0000.
-> Anything received after that time might be too late.
+> The first patch addresses the kbuild issue of needing to delete that
+> ECDSA key if it is in certs/signing_key.pem and trigger the creation
+> of an RSA key. However, for this to work this patch would have to be
+> backported to previous versions of the kernel but would also only work
+> for the developer if he/she used a stable version of the kernel to which
+> this patch was applied. So whether this patch actually achieves the
+> wanted effect is not always guaranteed.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.126-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
+> The 2nd patch adds the support for the ECSDA-signed kernel modules.
 > 
-> thanks,
+> This patch depends on the ECDSA support series currently queued here:
+> https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/log/?h=ecc
 > 
-> greg k-h
+>   Stefan
+> 
+> v6:
+>   - Patch 2/4 is fixing V4's 1/2 and 4/4 is fixing V4's 2/2. Both fixup
+>     patches to be squashed.
+> 
+> v5:
+>   - do not touch the key files if openssl is not installed; likely
+>     addresses an issue pointed out by kernel test robot
+> 
+> v4:
+>   - extending 'depends on' with MODULES to (IMA_APPRAISE_MODSIG && MODULES)
+>   
+> v3: - added missing OIDs for ECDSA signed hashes to pkcs7_sig_note_pkey_algo
+>   - added recommendation to use string hash to Kconfig help text
+> 
+> v2:
+>   - Adjustment to ECDSA key detector string in 2/2
+>   - Rephrased cover letter and patch descriptions with Mimi
+> 
+> 
+> Stefan Berger (4):
+>   certs: Trigger creation of RSA module signing key if it's not an RSA
+>     key
+>   certs: Check whether openssl tool is available
+>   certs: Add support for using elliptic curve keys for signing modules
+>   certs: Adjustment due to 'Check whether openssl tool is available'
+> 
+>  certs/Kconfig                         | 26 ++++++++++++++++++++++++++
+>  certs/Makefile                        | 21 +++++++++++++++++++++
+>  crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
+>  3 files changed, 55 insertions(+)
+> 
+> -- 
+> 2.29.2
+> 
+> 
 
-On ARCH_BRCMSTB using 32-bit and 64-bit kernels:
+Since you know the commit ID's in
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
+
+you could just use fixes-tags and send exactly two patch series. Works
+better with various tools (e.g. https://pypi.org/project/b4/)
+
+/Jarkko
