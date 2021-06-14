@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE873A5F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866053A5F4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 11:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhFNJpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 05:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbhFNJpa (ORCPT
+        id S232749AbhFNJph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 05:45:37 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:44350 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232744AbhFNJpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 05:45:30 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63291C061574;
-        Mon, 14 Jun 2021 02:43:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ETFQhOUX2dsG9gREBmqiOQps3x5gpXqUMNQJ3wfT6Yg=; b=c0LWLb5kWkk69XyynbofGfm9Y/
-        8Ucr6BslI9dOYy2tl5m0qdRsAl03nWuupvHPaj+wcXfZsz3RYGD1XN1M8Ef0pxqHkL4fhz/5G4wTG
-        bJNBruP5iCaXvfu5Ahmv2+srePDahYyXhgx+g+njfJIkL6Bd3BFM7AztvNyqO2M1A9Miad+6GRp75
-        gV4+2qqIKibte9L1Qp14dOOl5cgfN4JRhOgjkF/8/gXVNFF2EoBvsCjep21LbbC4+cDUPy51RXH/4
-        0IgDFZSC1hGREjfx54AGZ3W9It98IQWNmrCFr6KU63taaJ/p88WR1NcjH9AIihPdBrr4Vy6/Ku5h+
-        Lyd3OS7w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lsj7b-006zkq-64; Mon, 14 Jun 2021 09:43:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E63C300252;
-        Mon, 14 Jun 2021 11:43:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E7DAE2C08E387; Mon, 14 Jun 2021 11:43:12 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 11:43:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        andreyknvl@gmail.com, dvyukov@google.com, elver@google.com,
-        johannes.berg@intel.com, oberpar@linux.vnet.ibm.com, mliska@suse.cz
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
- infrastructure
-Message-ID: <YMcksKbnVGyi6jHy@hirez.programming.kicks-ass.net>
-References: <20210111081821.3041587-1-morbo@google.com>
- <20210407211704.367039-1-morbo@google.com>
- <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net>
- <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
- <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net>
- <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
- <20210612202505.GG68208@worktop.programming.kicks-ass.net>
- <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
- <CAGG=3QUFRM85bpyjdokO93=Nem_w7-784-_qihP1P_CJMOsdqg@mail.gmail.com>
- <CAGG=3QUrhVi37sYtybTUAZMpCDjB_pw+1OdkbZKvL6+UQrbMbQ@mail.gmail.com>
+        Mon, 14 Jun 2021 05:45:36 -0400
+X-UUID: 2280b04b37d64c36a56d8f194ed1c122-20210614
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=2A1f6XDFYkwNi91DySc3Su3T4fsohrPpjEGF06tNFnQ=;
+        b=SBUeaOmz+99G+xVqEAXLyeMecqXktYYNXnqyV1pCb4fjdhH6ppbkCx4mUJf3m0l3fGnKJesr3wTrpQt/R7Csy2wgD1gSVt3ukNjj5e05noFfdKyjdH4Zc68gu8vt7iLFK2ylo6vS4drZfX0q2vqj4qfFnVpfryXnt3L2UGDzfJM=;
+X-UUID: 2280b04b37d64c36a56d8f194ed1c122-20210614
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <james.lo@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 527362104; Mon, 14 Jun 2021 17:43:30 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 14 Jun 2021 17:43:29 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 14 Jun 2021 17:43:29 +0800
+Message-ID: <d23e965b271fea96b75bf72b888eb281e514237e.camel@mediatek.com>
+Subject: Re: [PATCH] soc: mediatek: pwarp: delete confusing comments
+From:   James Lo <james.lo@mediatek.com>
+To:     <matthias.bgg@kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Date:   Mon, 14 Jun 2021 17:43:29 +0800
+In-Reply-To: <20210611111307.29038-1-matthias.bgg@kernel.org>
+References: <20210611111307.29038-1-matthias.bgg@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGG=3QUrhVi37sYtybTUAZMpCDjB_pw+1OdkbZKvL6+UQrbMbQ@mail.gmail.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 11:07:26AM -0700, Bill Wendling wrote:
+DQpUaGFuayB5b3UgZm9yIHlvdXIga2luZCBhc3Npc3RhbmNlLg0KDQpNYW55IHRoYW5rcw0KSmFt
+ZXMgTG8NCg0KDQpPbiBGcmksIDIwMjEtMDYtMTEgYXQgMTM6MTMgKzAyMDAsIG1hdHRoaWFzLmJn
+Z0BrZXJuZWwub3JnIHdyb3RlOg0KPiBGcm9tOiBNYXR0aGlhcyBCcnVnZ2VyIDxtYXR0aGlhcy5i
+Z2dAZ21haWwuY29tPg0KPiANCj4gQ29tbWVudHMgc3VnZ3Vlc3QgdGhhdCBNVDgxOTUgYXJiX2Vu
+X2FsbCBhbmQgaW50X2VuX2FsbCB2YWx1ZXMgbmVlZA0KPiB0bw0KPiBiZSBjb25maXJtZWQuIEJ1
+dCBhY3R1YWxseSB0aGVzZSB2YWx1ZXMgYXJlIGNvcnJlY3QuDQo+IA0KPiBTdWdnZXN0ZWQtYnk6
+IEphbWVzIExvIDxqYW1lcy5sb0BtZWRpYXRlay5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IE1hdHRo
+aWFzIEJydWdnZXIgPG1hdHRoaWFzLmJnZ0BnbWFpbC5jb20+DQo+IA0KPiAtLS0NCj4gDQo+ICBk
+cml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMgfCA0ICsrLS0NCj4gIDEgZmlsZSBj
+aGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtaWMtd3JhcC5jDQo+IGIvZHJpdmVycy9zb2Mv
+bWVkaWF0ZWsvbXRrLXBtaWMtd3JhcC5jDQo+IGluZGV4IDk1MmJjNTU0ZjQ0My4uMTE4ZWI0YWNk
+ZWI2IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMN
+Cj4gKysrIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtaWMtd3JhcC5jDQo+IEBAIC0yMDQ3
+LDggKzIwNDcsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHBtaWNfd3JhcHBlcl90eXBlDQo+IHB3
+cmFwX210ODE4MyA9IHsNCj4gIHN0YXRpYyBzdHJ1Y3QgcG1pY193cmFwcGVyX3R5cGUgcHdyYXBf
+bXQ4MTk1ID0gew0KPiAgCS5yZWdzID0gbXQ4MTk1X3JlZ3MsDQo+ICAJLnR5cGUgPSBQV1JBUF9N
+VDgxOTUsDQo+IC0JLmFyYl9lbl9hbGwgPSAweDc3N2YsIC8qIE5FRUQgQ09ORklSTSAqLw0KPiAt
+CS5pbnRfZW5fYWxsID0gMHgxODAwMDAsIC8qIE5FRUQgQ09ORklSTSAqLw0KPiArCS5hcmJfZW5f
+YWxsID0gMHg3NzdmLA0KPiArCS5pbnRfZW5fYWxsID0gMHgxODAwMDAsDQo+ICAJLmludDFfZW5f
+YWxsID0gMCwNCj4gIAkuc3BpX3cgPSBQV1JBUF9NQU5fQ01EX1NQSV9XUklURSwNCj4gIAkud2R0
+X3NyYyA9IFBXUkFQX1dEVF9TUkNfTUFTS19BTEwsDQo=
 
-> > > Now, for the "nointr" issue. I'll see if we need an additional change for that.
-> > >
-> > The GCOV implementation disables profiling in those directories where
-> > instrumentation would fail. We do the same. Both clang and gcc seem to
-> > treat the no_instrument_function attribute similarly.
-
-Both seem to emit instrumentation, so they're both, simliarly, *broken*.
-
-noinstr *MUST* disable all compiler generated instrumentation. Also see:
-
-  https://lkml.kernel.org/r/20210527194448.3470080-1-elver@google.com
-
-I'll go mark GCOV support as BROKEN for x86.
