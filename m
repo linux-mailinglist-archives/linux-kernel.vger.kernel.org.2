@@ -2,50 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985EF3A69F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE0E3A69FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 17:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbhFNPXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 11:23:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233414AbhFNPXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 11:23:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93BE8613D3;
-        Mon, 14 Jun 2021 15:21:16 +0000 (UTC)
-Date:   Mon, 14 Jun 2021 16:21:14 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/mm: Drop SECTION_[SHIFT|SIZE|MASK]
-Message-ID: <20210614152113.GE30667@arm.com>
-References: <1623658706-7182-1-git-send-email-anshuman.khandual@arm.com>
+        id S233518AbhFNPYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 11:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233387AbhFNPYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 11:24:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC43C061574;
+        Mon, 14 Jun 2021 08:22:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=j1qkA0UBRXmvTXxhVjG/l5z+lefptA704EV3PoN5jFk=; b=IFif+/oeJCeFESO9YTRGsltVL2
+        i3QUP5oCRIxlWMygISDjFMuE7BECa725GGCbCMX2+ArTR+SbiNGEX3Fd3KXX+/FEvGSynNSlnUZWi
+        UAtIWYj5vLgnhfCCf39nZn8Fz4X1MI5JTGJ/5RsHGA3k33v3w7y9+rmUpJGYFlzknIjntDhrT26Bt
+        WUx0rCPE4MyDFJaC+CoeX1cSkFkLfRQYbsBWLucbgEL2UAmouFyaffB0/ueYb2AtEZKX6aV9hR8aD
+        /5V3sdwAWzxIsTUjLw1XJh6Ofwdp8r1jnrETyXKkqlwToPgIloSXHB4/tPU6yMG5PW9Rt+u3wJ9fz
+        LANxu78g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lsoP5-005YXM-9W; Mon, 14 Jun 2021 15:21:45 +0000
+Date:   Mon, 14 Jun 2021 16:21:31 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, cohuck@redhat.com, david@redhat.com,
+        linux-mm@kvack.org, Uladzislau Rezki <urezki@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v4 1/2] mm/vmalloc: add vmalloc_no_huge
+Message-ID: <YMdz+xnsUsf3iLeB@infradead.org>
+References: <20210614132357.10202-1-imbrenda@linux.ibm.com>
+ <20210614132357.10202-2-imbrenda@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1623658706-7182-1-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210614132357.10202-2-imbrenda@linux.ibm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 01:48:26PM +0530, Anshuman Khandual wrote:
-> SECTION_[SHIFT|SIZE|MASK] are essentially PMD_[SHIFT|SIZE|MASK]. But these
-> create confusion being similar to generic sparsemem memory sections, which
-> are derived from SECTION_SIZE_BITS. Section references have always implied
-> PMD level block mapping. Instead just use all PMD level macros which would
-> make it explicit and also remove confusion with sparsmem memory sections.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+On Mon, Jun 14, 2021 at 03:23:56PM +0200, Claudio Imbrenda wrote:
+> +void *vmalloc_no_huge(unsigned long size)
+> +{
+> +	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END, GFP_KERNEL, PAGE_KERNEL,
+> +				    VM_NO_HUGE_VMAP, NUMA_NO_NODE, __builtin_return_address(0));
 
-The clean-up looks good to me:
+Please avoid the overly long lines in favor of something actually
+human-readable like:
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+			GFP_KERNEL, PAGE_KERNEL, VM_NO_HUGE_VMAP,
+			NUMA_NO_NODE, __builtin_return_address(0));
