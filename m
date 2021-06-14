@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4203A609B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1EA3A6162
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhFNKgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:36:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40262 "EHLO mail.kernel.org"
+        id S233370AbhFNKqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:46:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233300AbhFNKdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:33:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F3C5613CD;
-        Mon, 14 Jun 2021 10:31:17 +0000 (UTC)
+        id S234070AbhFNKjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:39:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47EE061414;
+        Mon, 14 Jun 2021 10:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666677;
-        bh=E6GCpnjXoy0GnnZgk+K+vySBdeE28MgkGez8YrcYwOE=;
+        s=korg; t=1623666872;
+        bh=YAHO9S77zDrb16uNAp74QXiyHXooFeikNgDRDGGH4Bw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TvZSJmwF7x4TIgShAUBnk3DKCsbhUFwwrKzWa+W1+fjMEd6f0afhmBklO/lARIef9
-         YQFp3NE4dtb28jfWVMKdRx3VVou5dUkPoA7XqCakpWxs+qOOEl17othZTn+K/s2P0x
-         2lk5xs91WICgpI1580LCxWcPn9RHET4mBMpCQF3Y=
+        b=bxVFIarIrEqTfgHSYM7nPSPXkIahfveTWXB3WcpexjB0zAsei9i8n+8+JTt3pDTjK
+         FP6yMdv0botV/i39a8QkmEvdmp6r2NkCYotATTxprzEBvt80NeQMxlra0EhsfKq8we
+         sHjy9sEGjB5AdJAxLsxKpLdjgc8x9Z8jI/ciHM+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 04/42] isdn: mISDN: netjet: Fix crash in nj_probe:
+        stable@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 12/67] wq: handle VM suspension in stall detection
 Date:   Mon, 14 Jun 2021 12:26:55 +0200
-Message-Id: <20210614102642.850576434@linuxfoundation.org>
+Message-Id: <20210614102644.196065247@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,166 +40,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-[ Upstream commit 9f6f852550d0e1b7735651228116ae9d300f69b3 ]
+[ Upstream commit 940d71c6462e8151c78f28e4919aa8882ff2054e ]
 
-'nj_setup' in netjet.c might fail with -EIO and in this case
-'card->irq' is initialized and is bigger than zero. A subsequent call to
-'nj_release' will free the irq that has not been requested.
+If VCPU is suspended (VM suspend) in wq_watchdog_timer_fn() then
+once this VCPU resumes it will see the new jiffies value, while it
+may take a while before IRQ detects PVCLOCK_GUEST_STOPPED on this
+VCPU and updates all the watchdogs via pvclock_touch_watchdogs().
+There is a small chance of misreported WQ stalls in the meantime,
+because new jiffies is time_after() old 'ts + thresh'.
 
-Fix this bug by deleting the previous assignment to 'card->irq' and just
-keep the assignment before 'request_irq'.
+wq_watchdog_timer_fn()
+{
+	for_each_pool(pool, pi) {
+		if (time_after(jiffies, ts + thresh)) {
+			pr_emerg("BUG: workqueue lockup - pool");
+		}
+	}
+}
 
-The KASAN's log reveals it:
+Save jiffies at the beginning of this function and use that value
+for stall detection. If VM gets suspended then we continue using
+"old" jiffies value and old WQ touch timestamps. If IRQ at some
+point restarts the stall detection cycle (pvclock_touch_watchdogs())
+then old jiffies will always be before new 'ts + thresh'.
 
-[    3.354615 ] WARNING: CPU: 0 PID: 1 at kernel/irq/manage.c:1826
-free_irq+0x100/0x480
-[    3.355112 ] Modules linked in:
-[    3.355310 ] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
-5.13.0-rc1-00144-g25a1298726e #13
-[    3.355816 ] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    3.356552 ] RIP: 0010:free_irq+0x100/0x480
-[    3.356820 ] Code: 6e 08 74 6f 4d 89 f4 e8 5e ac 09 00 4d 8b 74 24 18
-4d 85 f6 75 e3 e8 4f ac 09 00 8b 75 c8 48 c7 c7 78 c1 2e 85 e8 e0 cf f5
-ff <0f> 0b 48 8b 75 c0 4c 89 ff e8 72 33 0b 03 48 8b 43 40 4c 8b a0 80
-[    3.358012 ] RSP: 0000:ffffc90000017b48 EFLAGS: 00010082
-[    3.358357 ] RAX: 0000000000000000 RBX: ffff888104dc8000 RCX:
-0000000000000000
-[    3.358814 ] RDX: ffff8881003c8000 RSI: ffffffff8124a9e6 RDI:
-00000000ffffffff
-[    3.359272 ] RBP: ffffc90000017b88 R08: 0000000000000000 R09:
-0000000000000000
-[    3.359732 ] R10: ffffc900000179f0 R11: 0000000000001d04 R12:
-0000000000000000
-[    3.360195 ] R13: ffff888107dc6000 R14: ffff888107dc6928 R15:
-ffff888104dc80a8
-[    3.360652 ] FS:  0000000000000000(0000) GS:ffff88817bc00000(0000)
-knlGS:0000000000000000
-[    3.361170 ] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    3.361538 ] CR2: 0000000000000000 CR3: 000000000582e000 CR4:
-00000000000006f0
-[    3.362003 ] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[    3.362175 ] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[    3.362175 ] Call Trace:
-[    3.362175 ]  nj_release+0x51/0x1e0
-[    3.362175 ]  nj_probe+0x450/0x950
-[    3.362175 ]  ? pci_device_remove+0x110/0x110
-[    3.362175 ]  local_pci_probe+0x45/0xa0
-[    3.362175 ]  pci_device_probe+0x12b/0x1d0
-[    3.362175 ]  really_probe+0x2a9/0x610
-[    3.362175 ]  driver_probe_device+0x90/0x1d0
-[    3.362175 ]  ? mutex_lock_nested+0x1b/0x20
-[    3.362175 ]  device_driver_attach+0x68/0x70
-[    3.362175 ]  __driver_attach+0x124/0x1b0
-[    3.362175 ]  ? device_driver_attach+0x70/0x70
-[    3.362175 ]  bus_for_each_dev+0xbb/0x110
-[    3.362175 ]  ? rdinit_setup+0x45/0x45
-[    3.362175 ]  driver_attach+0x27/0x30
-[    3.362175 ]  bus_add_driver+0x1eb/0x2a0
-[    3.362175 ]  driver_register+0xa9/0x180
-[    3.362175 ]  __pci_register_driver+0x82/0x90
-[    3.362175 ]  ? w6692_init+0x38/0x38
-[    3.362175 ]  nj_init+0x36/0x38
-[    3.362175 ]  do_one_initcall+0x7f/0x3d0
-[    3.362175 ]  ? rdinit_setup+0x45/0x45
-[    3.362175 ]  ? rcu_read_lock_sched_held+0x4f/0x80
-[    3.362175 ]  kernel_init_freeable+0x2aa/0x301
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  kernel_init+0x18/0x190
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  ret_from_fork+0x1f/0x30
-[    3.362175 ] Kernel panic - not syncing: panic_on_warn set ...
-[    3.362175 ] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
-5.13.0-rc1-00144-g25a1298726e #13
-[    3.362175 ] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    3.362175 ] Call Trace:
-[    3.362175 ]  dump_stack+0xba/0xf5
-[    3.362175 ]  ? free_irq+0x100/0x480
-[    3.362175 ]  panic+0x15a/0x3f2
-[    3.362175 ]  ? __warn+0xf2/0x150
-[    3.362175 ]  ? free_irq+0x100/0x480
-[    3.362175 ]  __warn+0x108/0x150
-[    3.362175 ]  ? free_irq+0x100/0x480
-[    3.362175 ]  report_bug+0x119/0x1c0
-[    3.362175 ]  handle_bug+0x3b/0x80
-[    3.362175 ]  exc_invalid_op+0x18/0x70
-[    3.362175 ]  asm_exc_invalid_op+0x12/0x20
-[    3.362175 ] RIP: 0010:free_irq+0x100/0x480
-[    3.362175 ] Code: 6e 08 74 6f 4d 89 f4 e8 5e ac 09 00 4d 8b 74 24 18
-4d 85 f6 75 e3 e8 4f ac 09 00 8b 75 c8 48 c7 c7 78 c1 2e 85 e8 e0 cf f5
-ff <0f> 0b 48 8b 75 c0 4c 89 ff e8 72 33 0b 03 48 8b 43 40 4c 8b a0 80
-[    3.362175 ] RSP: 0000:ffffc90000017b48 EFLAGS: 00010082
-[    3.362175 ] RAX: 0000000000000000 RBX: ffff888104dc8000 RCX:
-0000000000000000
-[    3.362175 ] RDX: ffff8881003c8000 RSI: ffffffff8124a9e6 RDI:
-00000000ffffffff
-[    3.362175 ] RBP: ffffc90000017b88 R08: 0000000000000000 R09:
-0000000000000000
-[    3.362175 ] R10: ffffc900000179f0 R11: 0000000000001d04 R12:
-0000000000000000
-[    3.362175 ] R13: ffff888107dc6000 R14: ffff888107dc6928 R15:
-ffff888104dc80a8
-[    3.362175 ]  ? vprintk+0x76/0x150
-[    3.362175 ]  ? free_irq+0x100/0x480
-[    3.362175 ]  nj_release+0x51/0x1e0
-[    3.362175 ]  nj_probe+0x450/0x950
-[    3.362175 ]  ? pci_device_remove+0x110/0x110
-[    3.362175 ]  local_pci_probe+0x45/0xa0
-[    3.362175 ]  pci_device_probe+0x12b/0x1d0
-[    3.362175 ]  really_probe+0x2a9/0x610
-[    3.362175 ]  driver_probe_device+0x90/0x1d0
-[    3.362175 ]  ? mutex_lock_nested+0x1b/0x20
-[    3.362175 ]  device_driver_attach+0x68/0x70
-[    3.362175 ]  __driver_attach+0x124/0x1b0
-[    3.362175 ]  ? device_driver_attach+0x70/0x70
-[    3.362175 ]  bus_for_each_dev+0xbb/0x110
-[    3.362175 ]  ? rdinit_setup+0x45/0x45
-[    3.362175 ]  driver_attach+0x27/0x30
-[    3.362175 ]  bus_add_driver+0x1eb/0x2a0
-[    3.362175 ]  driver_register+0xa9/0x180
-[    3.362175 ]  __pci_register_driver+0x82/0x90
-[    3.362175 ]  ? w6692_init+0x38/0x38
-[    3.362175 ]  nj_init+0x36/0x38
-[    3.362175 ]  do_one_initcall+0x7f/0x3d0
-[    3.362175 ]  ? rdinit_setup+0x45/0x45
-[    3.362175 ]  ? rcu_read_lock_sched_held+0x4f/0x80
-[    3.362175 ]  kernel_init_freeable+0x2aa/0x301
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  kernel_init+0x18/0x190
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  ? rest_init+0x2c0/0x2c0
-[    3.362175 ]  ret_from_fork+0x1f/0x30
-[    3.362175 ] Dumping ftrace buffer:
-[    3.362175 ]    (ftrace buffer empty)
-[    3.362175 ] Kernel Offset: disabled
-[    3.362175 ] Rebooting in 1 seconds..
-
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/isdn/hardware/mISDN/netjet.c | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/workqueue.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/netjet.c b/drivers/isdn/hardware/mISDN/netjet.c
-index afde4edef9ae..6dea4c180c49 100644
---- a/drivers/isdn/hardware/mISDN/netjet.c
-+++ b/drivers/isdn/hardware/mISDN/netjet.c
-@@ -1114,7 +1114,6 @@ nj_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		card->typ = NETJET_S_TJ300;
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 1cc49340b68a..f278e2f584fd 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -49,6 +49,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/sched/isolation.h>
+ #include <linux/nmi.h>
++#include <linux/kvm_para.h>
  
- 	card->base = pci_resource_start(pdev, 0);
--	card->irq = pdev->irq;
- 	pci_set_drvdata(pdev, card);
- 	err = setup_instance(card);
- 	if (err)
+ #include "workqueue_internal.h"
+ 
+@@ -5555,6 +5556,7 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
+ {
+ 	unsigned long thresh = READ_ONCE(wq_watchdog_thresh) * HZ;
+ 	bool lockup_detected = false;
++	unsigned long now = jiffies;
+ 	struct worker_pool *pool;
+ 	int pi;
+ 
+@@ -5569,6 +5571,12 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
+ 		if (list_empty(&pool->worklist))
+ 			continue;
+ 
++		/*
++		 * If a virtual machine is stopped by the host it can look to
++		 * the watchdog like a stall.
++		 */
++		kvm_check_and_clear_guest_paused();
++
+ 		/* get the latest of pool and touched timestamps */
+ 		pool_ts = READ_ONCE(pool->watchdog_ts);
+ 		touched = READ_ONCE(wq_watchdog_touched);
+@@ -5587,12 +5595,12 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
+ 		}
+ 
+ 		/* did we stall? */
+-		if (time_after(jiffies, ts + thresh)) {
++		if (time_after(now, ts + thresh)) {
+ 			lockup_detected = true;
+ 			pr_emerg("BUG: workqueue lockup - pool");
+ 			pr_cont_pool_info(pool);
+ 			pr_cont(" stuck for %us!\n",
+-				jiffies_to_msecs(jiffies - pool_ts) / 1000);
++				jiffies_to_msecs(now - pool_ts) / 1000);
+ 		}
+ 	}
+ 
 -- 
 2.30.2
 
