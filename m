@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFF03A6F89
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CAE3A6F8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235462AbhFNT4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:56:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52816 "EHLO mail.kernel.org"
+        id S235530AbhFNT4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235431AbhFNT4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:56:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8061961166;
-        Mon, 14 Jun 2021 19:54:37 +0000 (UTC)
+        id S235350AbhFNT4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 15:56:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B0DB611CA;
+        Mon, 14 Jun 2021 19:54:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623700478;
-        bh=pAy8hb0JREvJmAqiUmn7CzdeFDCPGZ+DIr+aVZz2BEk=;
+        s=k20201202; t=1623700480;
+        bh=OFqLWt9YcU2q5M/HjfpqEhWhcGqRS3yWcy7sAyaGMeE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ju/HX5vV8IwE5JqhLjIaobzhNplWVaQZ+HEflYqDGIL2BDa9doZ0uyM3HQevv/xob
-         9pdcpF1fBe7pwIefHfCai8Fvr+xmPdrc635Xo/cmoJ8jqkBpMF1Ke73TstfbUWRV0x
-         yyfrCWNkafzeiMWSSCSNNCTCRKsJtGDicbJ9BIN3IICbnaL9QpCL2bi/tXSZpWd0AS
-         nF4NXQ/w/QpG2MFbaSJ26SuMvwJiZ5raOOx5tOMmvW1kSuFox2kGGeyFsyXQT//lr7
-         pOPg8fevxDEkVK9GayZT3xI+4vOx1/7JfNk0P9TCVpu20ui82MR+W3GgqBEmK1J4bA
-         uA+UgpEqxX2bA==
+        b=XXHHa4xq/Isu9+95fpnbyi2ZUuVcWVETqOU2y5lYYjop2Z0KMVbhP99crM0rdDsD0
+         MmwcnZuz6xNJx8gLnUL3pkCyU4tHYbxoF2AP57ivb7ZUTvaKnJJXfkOtWKM8+gbnVc
+         z9vnoM8eg9dpGInpzCPv0moeAhHkdqNPEfK7zZER93LoN5HgFN67rx9M9WKqq8Umfa
+         D9QyOkL1yrYAk8h0i2owJypIHiSZ7qPegPaURJ3hYaLaMDtKbiTgoLV35d6zln1GRP
+         Sfyk/nM9dKthDNMD0AmoOLGy4NsMvkl6C+RgK/L/ORbju9cSDjO2rGYFu+4hzAMsEr
+         89swlSD9TdVSg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sander Vanheule <sander@svanheule.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Adrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH v2 0/2] Clause-22/Clause-45 MDIO regmap support fixups
-Date:   Mon, 14 Jun 2021 20:53:38 +0100
-Message-Id: <162370010329.40759.11124251694693409838.b4-ty@kernel.org>
+To:     timur@kernel.org, tiwai@suse.com, Zhongjun Tan <hbut_tan@163.com>,
+        nicoleotsuka@gmail.com, shengjiu.wang@gmail.com,
+        lgirdwood@gmail.com, festevam@gmail.com, perex@perex.cz,
+        Xiubo.Lee@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Tan Zhongjun <tanzhongjun@yulong.com>,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] ASoC:fsl_spdif:Remove superfluous error message around platform_get_irq()
+Date:   Mon, 14 Jun 2021 20:53:39 +0100
+Message-Id: <162369994008.34524.18042209109927514476.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1623244066.git.sander@svanheule.net>
-References: <cover.1623244066.git.sander@svanheule.net>
+In-Reply-To: <20210610040037.1064-1-hbut_tan@163.com>
+References: <20210610040037.1064-1-hbut_tan@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,27 +44,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Jun 2021 15:10:02 +0200, Sander Vanheule wrote:
-> A proposed patch to make C22 access more strict [1], was posted in reply to an
-> RFC series which also added C45 register access [2]. It appears that as a
-> result, the original RFC patches got merged instead.
-> 
-> Access functions are corrected to return -ENXIO, instead of silently ignoring
-> any invalid high bits in the register offset.
-> Additionally, a warning about a discarded const qualifier is fixed.
-> 
-> [...]
+On Thu, 10 Jun 2021 12:00:37 +0800, Zhongjun Tan wrote:
+> The platform_get_irq() prints error message telling that interrupt is
+> missing, hence there is no need to duplicated that message.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/2] regmap: mdio: Fix regmap_bus pointer constness
-      commit: ce62df2290bb86b39f826a835d6060bc3b43dae7
-[2/2] regmap: mdio: Reject invalid addresses
-      commit: 0df0240946b1ffbe852fa302c04c0d322229c9ce
+[1/1] ASoC:fsl_spdif:Remove superfluous error message around platform_get_irq()
+      commit: 2e8a8adb96a335a04f1697dd4314f5569521328f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
