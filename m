@@ -2,143 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799613A6BD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4323A6BD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234745AbhFNQeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:34:00 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:33743 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234589AbhFNQd7 (ORCPT
+        id S234731AbhFNQdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234589AbhFNQdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:33:59 -0400
-Received: by mail-oi1-f179.google.com with SMTP id t140so14969485oih.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:31:57 -0700 (PDT)
+        Mon, 14 Jun 2021 12:33:38 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C257C061574;
+        Mon, 14 Jun 2021 09:31:35 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id nd37so9941436ejc.3;
+        Mon, 14 Jun 2021 09:31:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M+AF+mCkpp4kl1lOa7pY3pKoyZ9EzI3bIOnjriCC7ec=;
-        b=jDHx4M/TAH39G2PaYBua5rrq7uf9nxNWz19BlA8WjwVFX7cjutzxxOlpLEPy3AiSEi
-         LPC7X6Hl5TvxU0Nmr8qonCWhylXaVmH+yZu9yQohe0hAt5wi2wqLb0ppa3TPHcYj4FPg
-         +xHCZ4ccLdQarlmppKqLZLzEWEpbbjMPJn/U6DL0QUdoyb2lgqqynCsp+RQoCc6U3Ljm
-         NDv9jHAXaCwyicXO72hYHY33mUJ5FWeyIlF6QrXbVAuUXwNiSmvB4OWJ0j7pYMynFqnr
-         +yYizd+bQihhOJOyAHOAJcsuUOZPX9jxxYyBzEu+XozZYF5RBTGt60ETgOBqfrmuWqSy
-         7EXA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Zlmxi2wCgt9WhbtdmvFXQwYxxvsh3PG6DG0dZOeCj8M=;
+        b=oYEjwtSw1ps8mtrR4cJTl6qYja4hUIlPpys5trsCq74B+IRJcUtSedDyvxzUrqoLh3
+         FM88Sjtn4wnILy4IKzv3XlCKVnKIRHfY2uFkvTXBpdak58ISgbzhIhOS4Yu2YVULKAJg
+         l3dwAb0CeRU3GkiqtsrvCKYKBTeOo3Kx1SC/2HCyKmUmCzRMv5o9zOaBwlWWYO5tTfej
+         /hsTtqtmD9tS8Kq1yMwRpBwv0ckkb9vtedPUugM/RHm5xS/N4Rof4lbNlq0xP/YBRCIR
+         qZvJgrmJSg6gGVQk7jqVJZ3Q4bAM71hhZx3hcKIx/CFIgf/1iur2bVfOjeTcjNV2xU/2
+         8/6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M+AF+mCkpp4kl1lOa7pY3pKoyZ9EzI3bIOnjriCC7ec=;
-        b=LgxpVIqHXOSsT8OakNshPrEILeHq/Jdhh0zMY3iFD+3gBjzImhMBQqVEtpUuNQZiqL
-         MSj0COsQF3Pbcwd31dzEjZ0M7CQaDGaqHhEHw+VE4JnqvP92sW18IWVNlF18XkYDnLYD
-         Ipc5xOzU2YV57AlME8Qq8ylQdFjPtUeTQeu66jEGKQlyrdXqR/q1nsCPRf7LvXBA1SOa
-         giPq/jo1sVxJu/wJy+71HsHrmqoSLbrrp6XjCl9vj+8fUsJfyBqayxxML0yTiCHHZ7be
-         iEp+pYt65zeBb2vuqk2RiAgDk5uK4kuBLX4HlRDG8/gR8nnM2QM4RWM7+DoA739leR2u
-         Obdw==
-X-Gm-Message-State: AOAM5333Bw8w+X8bl45HXXEG8F00gU2vdzjl7bFAE6lCFolEhKI2DfsE
-        uwByDcCzyrOwGwX+FP7D5XIF5g==
-X-Google-Smtp-Source: ABdhPJzjl6Cfpe9v4eOyRAmwGqbG4q5aSjdR3OUYr6L/+u6Z4Fx5DhToxlH/X+/0dbLsfpVtwKE0xA==
-X-Received: by 2002:a05:6808:b11:: with SMTP id s17mr10524824oij.62.1623688256779;
-        Mon, 14 Jun 2021 09:30:56 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n7sm3122251oom.37.2021.06.14.09.30.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Zlmxi2wCgt9WhbtdmvFXQwYxxvsh3PG6DG0dZOeCj8M=;
+        b=WxMKRZFzoURoiwVysG7gHe1mLGf+xjF1bRC4SxYxasrqYA54CiwBCyxiWvErl9IcH1
+         NvkqoG6vEa2SSRwhXQDQcLfd7CJ+Hm5ii5lP5JmZdS1BawBv5C9XpnHpe3Vq2auchxAT
+         aKwy4e+p6nGbBmY/8t6tmlqtwXCBeh9CXfwMoEvbcqFDT74F7y1xBAhkXjtPrVBhmHQI
+         MTlAMUOr/3u1vB5Yn9kOHipuR2zwHyVY5OLjJ3OB2WQN7XV+bAxxw/ZzbrZNSRfU6igT
+         pZnKOwfThjfhDr4THySXvvZRW5pg1mgTqjyw1zhMEh7lJ/HscSNNBeQLCYoOUIrBGAwr
+         5OWQ==
+X-Gm-Message-State: AOAM532vVL706sNAd9n6OqM6bwmlTDmIBZ9/GOVCgAKTm+3Gnst9dFwH
+        bkKAonf9N9xuxk+MgLOYcvU=
+X-Google-Smtp-Source: ABdhPJzHoirpErYXI6gCLkKFOD+VtOVFU/oE4C7pVu5IM7atl14XV25sRPwkvKtViQinTNnZPgFY4w==
+X-Received: by 2002:a17:906:b754:: with SMTP id fx20mr15347815ejb.201.1623688293747;
+        Mon, 14 Jun 2021 09:31:33 -0700 (PDT)
+Received: from kista.localnet (cpe1-4-249.cable.triera.net. [213.161.4.249])
+        by smtp.gmail.com with ESMTPSA id h24sm7701239ejy.35.2021.06.14.09.31.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 09:30:56 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 11:30:54 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     sbhanu@codeaurora.org
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
-        okukatla@codeaurora.org, djakov@kernel.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        agross@kernel.org
-Subject: Re: [PATCH V1] arm64: dts: qcom: sc7180: Added xo clock for eMMC and
- Sd card
-Message-ID: <YMeEPg7EPC5E/MfW@builder.lan>
-References: <1623309107-27833-1-git-send-email-sbhanu@codeaurora.org>
- <YMLm96edhIYOJF+E@builder.lan>
- <1230be3c7f350b1f33110df2a9744e15@codeaurora.org>
+        Mon, 14 Jun 2021 09:31:33 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Maxime Ripard <maxime@cerno.tech>, Guo Ren <guoren@kernel.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
+        Wei Wu =?utf-8?B?KOWQtOS8nyk=?= <lazyparser@gmail.com>,
+        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: Re: [RFC PATCH v2 09/11] riscv: soc: Initial DTS for Allwinner D1 NeZha board
+Date:   Mon, 14 Jun 2021 18:31:31 +0200
+Message-ID: <4070697.crMumLFoW0@kista>
+In-Reply-To: <CAJF2gTTfMAGbHv3PN_0BmA1pRqU1UvZny4mKg14AtWKjAm8=vw@mail.gmail.com>
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org> <20210614153341.z2nkx6sazaahhjfd@gilmour> <CAJF2gTTfMAGbHv3PN_0BmA1pRqU1UvZny4mKg14AtWKjAm8=vw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1230be3c7f350b1f33110df2a9744e15@codeaurora.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14 Jun 06:55 CDT 2021, sbhanu@codeaurora.org wrote:
-
-> On 2021-06-11 10:00, Bjorn Andersson wrote:
-> > On Thu 10 Jun 02:11 CDT 2021, Shaik Sajida Bhanu wrote:
-> > 
-> > > Added xo clock for eMMC and Sd card.
-> > 
-> > Was about to push out my branch of patches, but before I do. Can you
-> > please describe WHY this is needed?
-> > 
-> > Regards,
-> > Bjorn
+Dne ponedeljek, 14. junij 2021 ob 18:28:28 CEST je Guo Ren napisal(a):
+> On Mon, Jun 14, 2021 at 11:33 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > On Mon, Jun 07, 2021 at 04:07:37PM +0800, Guo Ren wrote:
+> > > On Mon, Jun 7, 2021 at 3:24 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> > > > > +             reset: reset-sample {
+> > > > > +                     compatible = "thead,reset-sample";
+> > > > > +                     plic-delegate = <0x0 0x101ffffc>;
+> > > > > +             };
+> > > >
+> > > > This compatible is not documented anywhere?
+> > >
+> > > It used by opensbi (riscv runtime firmware), not in Linux. But I think
+> > > we should keep it.
+> >
+> > This should have a documentation still.
 > 
-> We are making use of this clock in dll register value calculation,
-> The default PoR value is also same as calculated value for
-> HS200/HS400/SDR104 modes.
-> But just not to rely on default register values we need this entry.
+> Could we detail the above in [1]?
+
+All DT nodes must be documented in
+Documentation/devicetree/bindings folder in yaml format, so DTs can be machine 
+verified.
+
+Best regards,
+Jernej
+
+> 
+> 1: https://github.com/riscv/opensbi/blob/master/docs/platform/thead-c9xx.md
+> 
+> >
+> > Maxime
+> 
+> 
+> 
+> -- 
+> Best Regards
+>  Guo Ren
+> 
+> ML: https://lore.kernel.org/linux-csky/
+> 
 > 
 
-That is the perfect thing to include in a commit message!
 
-I rewrote yours and applied the change, but please next time do describe
-the "why" of your change.
-
-Regards,
-Bjorn
-
-> > 
-> > > 
-> > > Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/sc7180.dtsi | 10 ++++++----
-> > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > > b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > > index 295844e..5bb6bd4 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > > @@ -701,8 +701,9 @@
-> > >  			interrupt-names = "hc_irq", "pwr_irq";
-> > > 
-> > >  			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
-> > > -					<&gcc GCC_SDCC1_AHB_CLK>;
-> > > -			clock-names = "core", "iface";
-> > > +					<&gcc GCC_SDCC1_AHB_CLK>,
-> > > +					<&rpmhcc RPMH_CXO_CLK>;
-> > > +			clock-names = "core", "iface","xo";
-> > >  			interconnects = <&aggre1_noc MASTER_EMMC 0 &mc_virt SLAVE_EBI1 0>,
-> > >  					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_EMMC_CFG 0>;
-> > >  			interconnect-names = "sdhc-ddr","cpu-sdhc";
-> > > @@ -2666,8 +2667,9 @@
-> > >  			interrupt-names = "hc_irq", "pwr_irq";
-> > > 
-> > >  			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
-> > > -					<&gcc GCC_SDCC2_AHB_CLK>;
-> > > -			clock-names = "core", "iface";
-> > > +					<&gcc GCC_SDCC2_AHB_CLK>,
-> > > +					<&rpmhcc RPMH_CXO_CLK>;
-> > > +			clock-names = "core", "iface", "xo";
-> > > 
-> > >  			interconnects = <&aggre1_noc MASTER_SDCC_2 0 &mc_virt SLAVE_EBI1
-> > > 0>,
-> > >  					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_SDCC_2 0>;
-> > > --
-> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> > > member
-> > > of Code Aurora Forum, hosted by The Linux Foundation
-> > > 
