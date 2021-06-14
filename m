@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD793A6521
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22543A6523
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235696AbhFNLeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:34:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49422 "EHLO mail.kernel.org"
+        id S236639AbhFNLeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:34:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235946AbhFNLTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:19:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C27360FF1;
-        Mon, 14 Jun 2021 10:51:33 +0000 (UTC)
+        id S235993AbhFNLUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:20:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C0BB61057;
+        Mon, 14 Jun 2021 10:51:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667893;
-        bh=4yqS63Nlty9BQgN5/vRi8CSRUdAiStEWYbVkTK3ky20=;
+        s=korg; t=1623667898;
+        bh=GpfU/dJtA0DE9ufFGk4z6/di0+hAra5dAU9YzJeEG6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FSFcaAzyqsHhhDO4zsnAKQ887axNgjlwtweSguLB4y7bTvgF+3LsD6noZw3C7w3ig
-         iQcaDP2MHOM1X7BgbFm6nKPQ1AhsKtyT/0iYVDTqC9ulkgR9KvoElqqETTGhBBjgYJ
-         zwSUIUuT6hQJVtKhyqqDT7AFjS/3y4/Iy7PcLdEA=
+        b=AJfUDRTkVkF9aOI46gPFtrT200eYiaurYncI3vduAGhHoWMnjp1SyMO81oRNrJxOX
+         qD/azrDTYg5fpX7h8zUhOEVjqLb31Ewa2pME/Q8bMxqyPAsC/L1y4WepG5Ip5kD+F0
+         QIrOhLmTjo1U1QQY9EAR2kfRQ2JITHREjfzClIv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        Adam Ward <Adam.Ward.opensource@diasemi.com>,
+        Christoph Fritz <chf.fritz@googlemail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.12 116/173] regulator: da9121: Return REGULATOR_MODE_INVALID for invalid mode
-Date:   Mon, 14 Jun 2021 12:27:28 +0200
-Message-Id: <20210614102702.027710933@linuxfoundation.org>
+Subject: [PATCH 5.12 117/173] regulator: fan53880: Fix missing n_voltages setting
+Date:   Mon, 14 Jun 2021 12:27:29 +0200
+Message-Id: <20210614102702.059812751@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -42,53 +42,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Axel Lin <axel.lin@ingics.com>
 
-commit 0b1e552673724832b08d49037cdeeac634a3b319 upstream.
+commit 34991ee96fd8477479dd15adadceb6b28b30d9b0 upstream.
 
--EINVAL is not a valid return value for .of_map_mode, return
-REGULATOR_MODE_INVALID instead.
-
-Fixes: 65ac97042d4e ("regulator: da9121: add mode support")
+Fixes: e6dea51e2d41 ("regulator: fan53880: Add initial support")
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
-Link: https://lore.kernel.org/r/20210517052721.1063375-1-axel.lin@ingics.com
+Acked-by: Christoph Fritz <chf.fritz@googlemail.com>
+Link: https://lore.kernel.org/r/20210517105325.1227393-1-axel.lin@ingics.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/regulator/da9121-regulator.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/regulator/fan53880.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/regulator/da9121-regulator.c
-+++ b/drivers/regulator/da9121-regulator.c
-@@ -280,7 +280,7 @@ static unsigned int da9121_map_mode(unsi
- 	case DA9121_BUCK_MODE_FORCE_PFM:
- 		return REGULATOR_MODE_STANDBY;
- 	default:
--		return -EINVAL;
-+		return REGULATOR_MODE_INVALID;
- 	}
- }
- 
-@@ -317,7 +317,7 @@ static unsigned int da9121_buck_get_mode
- {
- 	struct da9121 *chip = rdev_get_drvdata(rdev);
- 	int id = rdev_get_id(rdev);
--	unsigned int val;
-+	unsigned int val, mode;
- 	int ret = 0;
- 
- 	ret = regmap_read(chip->regmap, da9121_mode_field[id].reg, &val);
-@@ -326,7 +326,11 @@ static unsigned int da9121_buck_get_mode
- 		return -EINVAL;
- 	}
- 
--	return da9121_map_mode(val & da9121_mode_field[id].msk);
-+	mode = da9121_map_mode(val & da9121_mode_field[id].msk);
-+	if (mode == REGULATOR_MODE_INVALID)
-+		return -EINVAL;
-+
-+	return mode;
- }
- 
- static const struct regulator_ops da9121_buck_ops = {
+--- a/drivers/regulator/fan53880.c
++++ b/drivers/regulator/fan53880.c
+@@ -51,6 +51,7 @@ static const struct regulator_ops fan538
+ 		      REGULATOR_LINEAR_RANGE(800000, 0xf, 0x73, 25000),	\
+ 		},							\
+ 		.n_linear_ranges = 2,					\
++		.n_voltages =	   0x74,				\
+ 		.vsel_reg =	   FAN53880_LDO ## _num ## VOUT,	\
+ 		.vsel_mask =	   0x7f,				\
+ 		.enable_reg =	   FAN53880_ENABLE,			\
+@@ -76,6 +77,7 @@ static const struct regulator_desc fan53
+ 		      REGULATOR_LINEAR_RANGE(600000, 0x1f, 0xf7, 12500),
+ 		},
+ 		.n_linear_ranges = 2,
++		.n_voltages =	   0xf8,
+ 		.vsel_reg =	   FAN53880_BUCKVOUT,
+ 		.vsel_mask =	   0x7f,
+ 		.enable_reg =	   FAN53880_ENABLE,
+@@ -95,6 +97,7 @@ static const struct regulator_desc fan53
+ 		      REGULATOR_LINEAR_RANGE(3000000, 0x4, 0x70, 25000),
+ 		},
+ 		.n_linear_ranges = 2,
++		.n_voltages =	   0x71,
+ 		.vsel_reg =	   FAN53880_BOOSTVOUT,
+ 		.vsel_mask =	   0x7f,
+ 		.enable_reg =	   FAN53880_ENABLE_BOOST,
 
 
