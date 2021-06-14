@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025933A6073
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E3F3A624B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbhFNKep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:34:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39592 "EHLO mail.kernel.org"
+        id S233995AbhFNK6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233115AbhFNKcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:32:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C5B26120E;
-        Mon, 14 Jun 2021 10:30:39 +0000 (UTC)
+        id S233869AbhFNKu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:50:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FD656145C;
+        Mon, 14 Jun 2021 10:38:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666639;
-        bh=06HxnxtIEZnzYB12uT+NogL52PJZi6xTPiWFgKmivTo=;
+        s=korg; t=1623667108;
+        bh=J7r/lrRoLtgpXhPKTHPUodPNJJKZXvNW2z4QxIPjKlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I7HBNVVfYgaHvyVXjNZg9NUSCIF/zgBdw04W5VyaFaTr2+Ifwg3sw4+fVWBlB0Cnj
-         GAYEnnz0k9dZGQ/Mp/4medl3hDPoviS8USNCr+0lOiMpZCbw9y8Pv1LG1uS7bUpfgI
-         /k8bivqMDuk1im3E4HON9euwzG/bPNi+yk8iYlD0=
+        b=DxjPcMHFiFD+5SoP37F1YZiDsYvrbvsUwejWEogi8l8nz0xgzeU5b4PkhPaIXaVCf
+         PmryfxmKIjhYB1cuK2vU5eMAQlN7xHQOJUzqIx0aqIX0KEXK1H7f/hWV7SANUoS413
+         BxjjHYIgMZaoLsHZCcrZ7ZFY6inw5VF9cOeTpmw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Chris Packham <chris.packham@alliedtelesis.co.nz>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 18/42] powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P1010 i2c controllers
+Subject: [PATCH 5.4 31/84] powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P2041 i2c controllers
 Date:   Mon, 14 Jun 2021 12:27:09 +0200
-Message-Id: <20210614102643.284682624@linuxfoundation.org>
+Message-Id: <20210614102647.416431625@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
+References: <20210614102646.341387537@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +43,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-[ Upstream commit 19ae697a1e4edf1d755b413e3aa38da65e2db23b ]
+[ Upstream commit 7adc7b225cddcfd0f346d10144fd7a3d3d9f9ea7 ]
 
-The i2c controllers on the P1010 have an erratum where the documented
-scheme for i2c bus recovery will not work (A-004447). A different
-mechanism is needed which is documented in the P1010 Chip Errata Rev L.
+The i2c controllers on the P2040/P2041 have an erratum where the
+documented scheme for i2c bus recovery will not work (A-004447). A
+different mechanism is needed which is documented in the P2040 Chip
+Errata Rev Q (latest available at the time of writing).
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/boot/dts/fsl/p1010si-post.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/powerpc/boot/dts/fsl/p2041si-post.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi b/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-index af12ead88c5f..404f570ebe23 100644
---- a/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-+++ b/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-@@ -122,7 +122,15 @@
+diff --git a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+index 872e4485dc3f..ddc018d42252 100644
+--- a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
++++ b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+@@ -371,7 +371,23 @@
  	};
  
- /include/ "pq3-i2c-0.dtsi"
-+	i2c@3000 {
+ /include/ "qoriq-i2c-0.dtsi"
++	i2c@118000 {
 +		fsl,i2c-erratum-a004447;
 +	};
 +
- /include/ "pq3-i2c-1.dtsi"
-+	i2c@3100 {
++	i2c@118100 {
 +		fsl,i2c-erratum-a004447;
 +	};
 +
- /include/ "pq3-duart-0.dtsi"
- /include/ "pq3-espi-0.dtsi"
- 	spi0: spi@7000 {
+ /include/ "qoriq-i2c-1.dtsi"
++	i2c@119000 {
++		fsl,i2c-erratum-a004447;
++	};
++
++	i2c@119100 {
++		fsl,i2c-erratum-a004447;
++	};
++
+ /include/ "qoriq-duart-0.dtsi"
+ /include/ "qoriq-duart-1.dtsi"
+ /include/ "qoriq-gpio-0.dtsi"
 -- 
 2.30.2
 
