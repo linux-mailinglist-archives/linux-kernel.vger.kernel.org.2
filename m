@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22EA3A61A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B8E3A6171
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233679AbhFNKuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:50:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50058 "EHLO mail.kernel.org"
+        id S232921AbhFNKr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:47:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233568AbhFNKna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:43:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E36761437;
-        Mon, 14 Jun 2021 10:36:01 +0000 (UTC)
+        id S234107AbhFNKkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:40:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD18C613FB;
+        Mon, 14 Jun 2021 10:34:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666961;
-        bh=hWG69ZQ7oXZQhDv+R0Z1/05FRfBv7Ecuh1J/C1TuPJc=;
+        s=korg; t=1623666867;
+        bh=ZtxehVz2Sev0JmXg+Wbx8qTYj628Umm5tc0JbJLEaQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S/Z818I4O4lJbYb07OlBmwk1jk4nZKS2QI60nTZwY7he/sjh56KzScwQ454+tjdQC
-         r5nmZxxciEO0yFgKI4YhYPajShhrh4T+e6gSUppcPcBtbgRpCz1xm5IR/iHcATtb1H
-         lyedCtNPGpBNh2ola4XDtsrRCRfyaA4s8X9/y/5Y=
+        b=hLkKLy425inNAW0ybcHPvixVKiMsdhxr6Dkazujt8Szs4Jveca/kno5/0T62cEOjU
+         qITgtvPkC2+xpasIfm2KYATL5CZfvZ1T2ssnQfc2QPjKDYL7CjmRMi6TVcRrMb+XyB
+         S4FET0EtQNP56nlnCGQ2MOjLyyc0vYDxLOLLvnn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Wen Yang <wenyang@linux.alibaba.com>
-Subject: [PATCH 4.19 01/67] perf/core: Fix endless multiplex timer
-Date:   Mon, 14 Jun 2021 12:26:44 +0200
-Message-Id: <20210614102643.844029584@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 02/67] proc: Track /proc/$pid/attr/ opener mm_struct
+Date:   Mon, 14 Jun 2021 12:26:45 +0200
+Message-Id: <20210614102643.875096342@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
 References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,74 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Kees Cook <keescook@chromium.org>
 
-commit 90c91dfb86d0ff545bd329d3ddd72c147e2ae198 upstream.
+commit 591a22c14d3f45cc38bd1931c593c221df2f1881 upstream.
 
-Kan and Andi reported that we fail to kill rotation when the flexible
-events go empty, but the context does not. XXX moar
+Commit bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
+tried to make sure that there could not be a confusion between the opener of
+a /proc/$pid/attr/ file and the writer. It used struct cred to make sure
+the privileges didn't change. However, there were existing cases where a more
+privileged thread was passing the opened fd to a differently privileged thread
+(during container setup). Instead, use mm_struct to track whether the opener
+and writer are still the same process. (This is what several other proc files
+already do, though for different reasons.)
 
-Fixes: fd7d55172d1e ("perf/cgroups: Don't rotate events for cgroups unnecessarily")
-Reported-by: Andi Kleen <ak@linux.intel.com>
-Reported-by: Kan Liang <kan.liang@linux.intel.com>
-Tested-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Wen Yang <wenyang@linux.alibaba.com>
-Link: https://lkml.kernel.org/r/20200305123851.GX2596@hirez.programming.kicks-ass.net
+Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reported-by: Andrea Righi <andrea.righi@canonical.com>
+Tested-by: Andrea Righi <andrea.righi@canonical.com>
+Fixes: bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/events/core.c |   20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ fs/proc/base.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -2086,6 +2086,7 @@ __perf_remove_from_context(struct perf_e
- 
- 	if (!ctx->nr_events && ctx->is_active) {
- 		ctx->is_active = 0;
-+		ctx->rotate_necessary = 0;
- 		if (ctx->task) {
- 			WARN_ON_ONCE(cpuctx->task_ctx != ctx);
- 			cpuctx->task_ctx = NULL;
-@@ -2952,12 +2953,6 @@ static void ctx_sched_out(struct perf_ev
- 	if (!ctx->nr_active || !(is_active & EVENT_ALL))
- 		return;
- 
--	/*
--	 * If we had been multiplexing, no rotations are necessary, now no events
--	 * are active.
--	 */
--	ctx->rotate_necessary = 0;
--
- 	perf_pmu_disable(ctx->pmu);
- 	if (is_active & EVENT_PINNED) {
- 		list_for_each_entry_safe(event, tmp, &ctx->pinned_active, active_list)
-@@ -2967,6 +2962,13 @@ static void ctx_sched_out(struct perf_ev
- 	if (is_active & EVENT_FLEXIBLE) {
- 		list_for_each_entry_safe(event, tmp, &ctx->flexible_active, active_list)
- 			group_sched_out(event, cpuctx, ctx);
-+
-+		/*
-+		 * Since we cleared EVENT_FLEXIBLE, also clear
-+		 * rotate_necessary, is will be reset by
-+		 * ctx_flexible_sched_in() when needed.
-+		 */
-+		ctx->rotate_necessary = 0;
- 	}
- 	perf_pmu_enable(ctx->pmu);
- }
-@@ -3705,6 +3707,12 @@ ctx_event_to_rotate(struct perf_event_co
- 				      typeof(*event), group_node);
- 	}
- 
-+	/*
-+	 * Unconditionally clear rotate_necessary; if ctx_flexible_sched_in()
-+	 * finds there are unschedulable events, it will set it again.
-+	 */
-+	ctx->rotate_necessary = 0;
-+
- 	return event;
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2535,6 +2535,11 @@ out:
  }
  
+ #ifdef CONFIG_SECURITY
++static int proc_pid_attr_open(struct inode *inode, struct file *file)
++{
++	return __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
++}
++
+ static ssize_t proc_pid_attr_read(struct file * file, char __user * buf,
+ 				  size_t count, loff_t *ppos)
+ {
+@@ -2565,7 +2570,7 @@ static ssize_t proc_pid_attr_write(struc
+ 	int rv;
+ 
+ 	/* A task may only write when it was the opener. */
+-	if (file->f_cred != current_real_cred())
++	if (file->private_data != current->mm)
+ 		return -EPERM;
+ 
+ 	rcu_read_lock();
+@@ -2613,9 +2618,11 @@ out:
+ }
+ 
+ static const struct file_operations proc_pid_attr_operations = {
++	.open		= proc_pid_attr_open,
+ 	.read		= proc_pid_attr_read,
+ 	.write		= proc_pid_attr_write,
+ 	.llseek		= generic_file_llseek,
++	.release	= mem_release,
+ };
+ 
+ static const struct pid_entry attr_dir_stuff[] = {
 
 
