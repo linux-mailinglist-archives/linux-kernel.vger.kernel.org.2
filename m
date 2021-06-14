@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588D03A6648
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84DC3A664E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 14:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbhFNMNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 08:13:08 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:47162 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232559AbhFNMNG (ORCPT
+        id S233141AbhFNMPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 08:15:09 -0400
+Received: from mail-ej1-f47.google.com ([209.85.218.47]:34752 "EHLO
+        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232559AbhFNMPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:13:06 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15EC67uX029012;
-        Mon, 14 Jun 2021 12:10:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=PRI3ZbgvF7XvhqI9wXPGuawQLkmg0GBcZQdugIdIQU4=;
- b=D4vxZRGzqAsXDpbqLet4KrkleKx2phlVOy+1OWM9pPy9E0TL5YcYvQFO/eJcAVIfBi9p
- c+V7Ie3RP5sWcC0bSEs0sl85ApzR+YPxuicOeTxfB/GunSw7Ccv2e4Jv5K9SlAamrL2G
- wzja/4FhDTY0ijvOnWZRbapQZYpUP/ewUJi2SNbwiteexGmVz22hJ1EzVHuAwdmo1pXd
- dAs8kqGG5aOUEwIkuqSYhAEI/Wfq9SoDbWodfEjevjl3HaXHsjXeW54rGvL+WsG4qtyD
- JRHr9C5ApPLQH4TzQ9gK/MySceG+WN2J9GxvDfNcMlROqbIKFo4tBLamclV+BSrKQ+3Q xw== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 395x06g4y3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 12:10:43 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15ECAgip168196;
-        Mon, 14 Jun 2021 12:10:42 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 394mr6b4s3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 12:10:42 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15ECAgPi168072;
-        Mon, 14 Jun 2021 12:10:42 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 394mr6b4r7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Jun 2021 12:10:42 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15ECAdnV007959;
-        Mon, 14 Jun 2021 12:10:39 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Jun 2021 12:10:39 +0000
-Date:   Mon, 14 Jun 2021 15:10:32 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        linux@roeck-us.net, straube.linux@gmail.com, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8188eu: convert DBG_88E calls in
- core/rtw_sta_mgt.c
-Message-ID: <20210614121032.GN1955@kadam>
-References: <20210612232831.1325-1-phil@philpotter.co.uk>
+        Mon, 14 Jun 2021 08:15:07 -0400
+Received: by mail-ej1-f47.google.com with SMTP id g8so16323077ejx.1;
+        Mon, 14 Jun 2021 05:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QLUxngfo3tVRsn8lxTbb2M+pKAJYV8dDKHPOOPKoTaQ=;
+        b=Bj60gfN//81FbKFsw8vmSYFyf9l4j9EcZ0FHlmCCiJcTgaPTWPvMz3ngEb9cFeox2L
+         J83g7X5gNn3rMiZorcToT8ihZhR+lKo5lAd4MFbFK9oidU39PP++s1KJSFjYh+W0KFYM
+         vzQhA2si4N0QYZYCurTZQwmm62tpOiJciqqQdyWcTprMZB9bEgalOVS4DhGUi9WIWxVg
+         JPySx84ag9rRTknbLwUECGucgre11bGerEFYkvHuBSMftO+UnGBuzZBd60mZVBX7COMW
+         VD1v7uyuqhxwYz58bE8GJKcENz3JsTvSJGQ9guFMp6e8tjylv3ZSCu6vONo+BxS04h1X
+         yqeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QLUxngfo3tVRsn8lxTbb2M+pKAJYV8dDKHPOOPKoTaQ=;
+        b=q+4PiH6EVKSWoTL2MAWKIL/OtfDTsTGQ+J1c8z0TU45i8ksLZFqngy2ShtH80NcMGL
+         kgf8mqTTyUEVM0JSf4IozyVrpg2FcUWUUaQg37pSZg+Acs7y92mDgXBjgcuHk6zSq8BT
+         4oAN4aTGld4++vGEuZwU0HOmEogzsgtZMRQ9iOKGdZqc2OzOSS9jUaMdvzEij3gBSUc8
+         2uHbkH/T5ntxxuemjhj+tOzGKCgCpVlQLiOcu35QI2aobDTZawrO42WS8e06esSI28bz
+         SQxmr/ryYh5MKQMi39dUUkcM78MuaSa9AN9VyzzfJRDVCYtTUxM4dp1OgCwO5tIE+hW1
+         1SLg==
+X-Gm-Message-State: AOAM533n4ggDpq/3YJtqvaL0xP+1QXK3zH6wYpatetdMQT34JkEN9b8P
+        6G3FDsNwPdgEykHL7g1lL7k=
+X-Google-Smtp-Source: ABdhPJy07Ww7kdGvvKtp/A8GhghbKQudQ2gRCkoXtVyIPHcVKEBxj97capoDt0Od0XC0i+mtJmK6XA==
+X-Received: by 2002:a17:906:3b99:: with SMTP id u25mr15017293ejf.539.1623672710305;
+        Mon, 14 Jun 2021 05:11:50 -0700 (PDT)
+Received: from BV030612LT ([188.24.178.25])
+        by smtp.gmail.com with ESMTPSA id o26sm8687476edi.15.2021.06.14.05.11.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 05:11:49 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 15:11:47 +0300
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Add Ethernet DTS for Actions Semi Owl S500 SoCs
+Message-ID: <20210614121147.GA1876517@BV030612LT>
+References: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
+ <20210614112831.GB38584@thinkpad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210612232831.1325-1-phil@philpotter.co.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: bWqRKij9z9hHX_2MxOzgKrSytKjtUhhu
-X-Proofpoint-GUID: bWqRKij9z9hHX_2MxOzgKrSytKjtUhhu
+In-Reply-To: <20210614112831.GB38584@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 12:28:31AM +0100, Phillip Potter wrote:
-> Convert both calls to the DBG_88E macro in core/rtw_sta_mgt.c into
-> netdev_dbg calls. The DBG_88E macro is unnecessary, as visibility of
-> debug messages can be controlled more precisely by just using debugfs.
-> It is important to keep these messages still, as they are displayable
-> via a kernel module parameter when using DBG_88E.
+On Mon, Jun 14, 2021 at 04:58:31PM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Jun 11, 2021 at 12:11:31PM +0300, Cristian Ciocaltea wrote:
+> > This patchset adds the required DTS changes for providing the ethernet
+> > functionality on the Actions S500 SoCs family.
+> > 
+> > For the moment I have been able to test the Ethernet MAC on the RoseaplePi
+> > SBC only.
+> > 
+> > Also, please note the patches depend on some clock changes that are
+> > currently under review:
+> > https://lore.kernel.org/lkml/cover.1623354574.git.cristian.ciocaltea@gmail.com/
+> > 
 > 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> ---
->  drivers/staging/rtl8188eu/core/rtw_sta_mgt.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> Waiting for the clk patches to be merged...
+
+Thanks, Mani!
+
+Hopefully Stephen is going to pick them up in time..
+
+Kind regards,
+Cristi
+
+> Thanks,
+> Mani
 > 
-> diff --git a/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c b/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
-> index 5af7af5f5a5a..ad1d851a2f69 100644
-> --- a/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
-> +++ b/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
-> @@ -113,17 +113,20 @@ u32 _rtw_init_sta_priv(struct sta_priv *pstapriv)
->  inline int rtw_stainfo_offset(struct sta_priv *stapriv, struct sta_info *sta)
->  {
->  	int offset = (((u8 *)sta) - stapriv->pstainfo_buf) / sizeof(struct sta_info);
-> +	struct net_device *pnetdev = stapriv->padapter->pnetdev;
->  
->  	if (!stainfo_offset_valid(offset))
-> -		DBG_88E("%s invalid offset(%d), out of range!!!", __func__, offset);
-> +		netdev_dbg(pnetdev, "invalid offset(%d), out of range!!!", offset);
->  
->  	return offset;
->  }
->  
->  inline struct sta_info *rtw_get_stainfo_by_offset(struct sta_priv *stapriv, int offset)
->  {
-> +	struct net_device *pnetdev = stapriv->padapter->pnetdev;
-> +
->  	if (!stainfo_offset_valid(offset))
-> -		DBG_88E("%s invalid offset(%d), out of range!!!", __func__, offset);
-> +		netdev_dbg(pnetdev, "invalid offset(%d), out of range!!!", offset);
-
-This should be an error and the code should handle it correctly instead
-of reading beyond the end of the struct.
-
-regards,
-dan carpenter
-
+> > Thanks,
+> > Cristi
+> > 
+> > Changes in v2:
+> > - Added Reviewed-by tag from Mani in patch 1/2
+> > - Joined the groups sharing common function "eth_rmii" and switch the
+> >   order of "ref_clk-pinconf" and "phy_clk-pinmux", per Mani's review,
+> >   in patch 2/2
+> > 
+> > Cristian Ciocaltea (2):
+> >   ARM: dts: owl-s500: Add ethernet support
+> >   ARM: dts: owl-s500-roseapplepi: Add ethernet support
+> > 
+> >  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 45 ++++++++++++++++++++++
+> >  arch/arm/boot/dts/owl-s500.dtsi            | 10 +++++
+> >  2 files changed, 55 insertions(+)
+> > 
+> > -- 
+> > 2.32.0
+> > 
