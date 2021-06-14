@@ -2,154 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2454D3A65EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932793A65F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhFNLpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:45:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22687 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235981AbhFNLm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:42:57 -0400
-IronPort-SDR: R8J25+u7MI8wt3DnkSEcaL5sT384Apirexw/y+BdZwoB3jWcNF+Z0oC7Z6sYYRi3uCR7XVQFpj
- Mw0Bo+K9fc9A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10014"; a="269645485"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="269645485"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 04:40:50 -0700
-IronPort-SDR: vYpJpvw8/EcNsCbeO+xrLrbwmmYTykp8jv1fVZMFVPYMm2KeIdFBBxOcu4PmGXYiHAbF+29gvr
- DrebkfzxIQNA==
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; 
-   d="scan'208";a="484056862"
-Received: from ideak-desk.fi.intel.com ([10.237.68.141])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2021 04:40:49 -0700
-Date:   Mon, 14 Jun 2021 14:40:45 +0300
-From:   Imre Deak <imre.deak@intel.com>
-To:     Thomas Voegtle <tv@lio96.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Khaled Almahallawy <khaled.almahallawy@intel.com>,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>
-Subject: Re: Warning at drivers/gpu/drm/i915/intel_runtime_pm.c:638
-Message-ID: <20210614114045.GA828547@ideak-desk.fi.intel.com>
-References: <cea1f9a-52e0-b83-593d-52997fe1aaf6@er-systems.de>
+        id S236146AbhFNLrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232901AbhFNLqA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:46:00 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5BAC061787
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 04:41:16 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id u24so46048662edy.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 04:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Khk9VJiAZEUo5jow78IwItFdk7LfK4jmTWSp67zs44=;
+        b=GOcz1YcHwn9vgKrtti2m3vYVfzrDbyOPJ4rqWNtz5qRjBuNylB9OmfA+OA851kfhOd
+         BF0XxYRjtjYnmPF/YS37wERJomtTZfzB38tGS+6n+pCpdSFhxJnUSVgm82ewx33tcdl/
+         vLLvnBF5Ve1MG1pM2zXwRHRAFPwIJJfrFgR5Ygjx6MBdMiwxgX3Q8B1LvMsRjkTz8CTQ
+         MOmBG+TPI2AFgOJCaehq32t79EG7CBA18uQa3bal0btKG6YYTbLhtNhO4N2210c8cNY4
+         ufxqnAg7dCaNM+TcVX0XYjw+moDzfHkRWqFuPWM2YQJd+0dSMcUq3qlTsgsy6D/FE1B3
+         8eyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Khk9VJiAZEUo5jow78IwItFdk7LfK4jmTWSp67zs44=;
+        b=jy3ZHpIeeXi0QRrRDkCr0BNVrnHdCXO7skPV3goeNp08NUiiOLuDld5dufUzs6WtGr
+         Qie/SIBG51mbwu1H38YLg1z0OJqFkr/xXO4Xb2jzzVtOxdxsIeEiZ2h/udO3xSF4n25r
+         9qkB6teVaWVUxkx/BDvCynLH0JR37P9Lv3OQ0xmwI1wEYJEAUkOducHtJr6PjwFp2h5x
+         TNRJP6ePx+ik19dWRQ0CUfAR13hzbrp+JSRfxKumX+kTttab3XQOSgXlq7kDTyzs/jlf
+         XPKqrEmfY6IqccjJYIIxOQZS3AEdPFnpsdIkfEGEoghf90pZZEFDaprDAIqY/oJKNFW1
+         HrQw==
+X-Gm-Message-State: AOAM531/V5OPuLYPEv76Xr/pN/lhVQgzVZCUKfSx+OrzdP79XbPjhEzh
+        UU8KrNBucE8/ReLXNHnzccx+4KUWXfqgssIqx1+U
+X-Google-Smtp-Source: ABdhPJyhQe4FspCtePZL4R+lsIGJyMDxloE0ZMAT1bxKdZe0dGF+U6TxsG6Fv6fhzpvKMieNH1Ah5Oi1lMk6W8RARPU=
+X-Received: by 2002:aa7:dc42:: with SMTP id g2mr16365775edu.362.1623670873184;
+ Mon, 14 Jun 2021 04:41:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cea1f9a-52e0-b83-593d-52997fe1aaf6@er-systems.de>
+References: <20210111081821.3041587-1-morbo@google.com> <20210407211704.367039-1-morbo@google.com>
+ <YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net> <CAGG=3QXjD1DQjACu=CQQSP=whue-14Pw8FcNcXrJZfLC_E+y9w@mail.gmail.com>
+ <YMT5xZsZMX0PpDKQ@hirez.programming.kicks-ass.net> <CAGG=3QVHkkJ236mCJ8Jt_6JtgYtWHV9b4aVXnoj6ypc7GOnc0A@mail.gmail.com>
+ <20210612202505.GG68208@worktop.programming.kicks-ass.net>
+ <CAGG=3QUZ9tXGNLhbOr+AFDTJABDujZuaG1mYaLKdTcJZguEDWw@mail.gmail.com>
+ <YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net> <CAGG=3QVPCuAx9UMTOzQp+8MJk8KVyOfaYeV0yehpVwbCaYMVpg@mail.gmail.com>
+ <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
+In-Reply-To: <YMczJGPsxSWNgJMG@hirez.programming.kicks-ass.net>
+From:   Bill Wendling <morbo@google.com>
+Date:   Mon, 14 Jun 2021 04:41:01 -0700
+Message-ID: <CAGG=3QVqbuhocgx0sJmqEkTkHo0Q=K5+7+2X6ONvcX7cVZc1+w@mail.gmail.com>
+Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        andreyknvl@gmail.com, dvyukov@google.com, elver@google.com,
+        johannes.berg@intel.com, oberpar@linux.vnet.ibm.com,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jun 14, 2021 at 3:45 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> On Mon, Jun 14, 2021 at 02:39:41AM -0700, Bill Wendling wrote:
+> > On Mon, Jun 14, 2021 at 2:01 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> > > Because having GCOV, KCOV and PGO all do essentially the same thing
+> > > differently, makes heaps of sense?
+> > >
+> > It does when you're dealing with one toolchain without access to another.
+>
+> Here's a sekrit, don't tell anyone, but you can get a free copy of GCC
+> right here:
+>
+>   https://gcc.gnu.org/
+>
+> We also have this linux-toolchains list (Cc'ed now) that contains folks
+> from both sides.
+>
+Your sarcasm is not useful.
 
-thanks for the report.
-
-It looks like a pre-SKL machine, so I presume
-
-commit ("d339ef1c4d6b") drm/i915: Uninit the DMC FW loader state during shutdown
-
-in the
-
-https://cgit.freedesktop.org/drm-tip/log/
-
-branch will not help. Could you open a ticket at
-https://gitlab.freedesktop.org/drm/intel/-/issues/new
-(you need a freedesktop.org GitLab account for this)
-
-booting a CONFIG_DRM_I915_DEBUG_RUNTIME_PM=y kernel with the
-drm.debug=0xe param and providing the dmesg log captured after
-reproducing the problem?
-
-Thanks,
-Imre
-
-On Sun, Jun 13, 2021 at 08:11:48PM +0200, Thomas Voegtle wrote:
-> 
-> Hi,
-> 
-> since 5.13.0-rcX I get that warning below when shutting down or reboot.
-> There is only this warning I have no other problems with the driver.
-> Shutdown or reboot is successful.
-> 
-> I bisected it down to:
-> 
-> commit 7962893ecb853aa7c8925ce237ab6c4274cfc1c7
-> Author: Imre Deak <imre.deak@intel.com>
-> Date:   Wed Jan 27 20:19:09 2021 +0200
-> 
->     drm/i915: Disable runtime power management during shutdown
-> 
-> 
-> ...
-> [  OK  ] Reached target Shutdown.
-> [   43.142532] ------------[ cut here ]------------
-> [   43.147160] i915 0000:00:02.0: i915 raw-wakerefs=1 wakelocks=1 on cleanup
-> [   43.153949] WARNING: CPU: 3 PID: 1 at
-> drivers/gpu/drm/i915/intel_runtime_pm.c:638
-> intel_runtime_pm_driver_release+0x42/0x50
-> [   43.165069] CPU: 3 PID: 1 Comm: systemd-shutdow Not tainted
-> 5.13.0-rc5-i5-00235-g43cb5d49a99b #333
-> [   43.174019] Hardware name: To Be Filled By O.E.M. To Be Filled By
-> O.E.M./H81 Pro BTC R2.0, BIOS P1.20 07/22/2014
-> [   43.184176] RIP: 0010:intel_runtime_pm_driver_release+0x42/0x50
-> [   43.190096] Code: fc 10 0f b7 d9 48 8b 6f 50 48 85 ed 74 23 e8 05 c4 10
-> 00 45 89 e0 89 d9 48 89 ea 48 89 c6 48 c7 c7 c0 96 07 94 e8 0e 8c b6 ff <0f>
-> 0b 5b 5d 41
-> 5c c3 48 8b 2f eb d8 66 90 48 8b 87 68 99 ff ff 48
-> [   43.208842] RSP: 0018:ffffb2028002bd30 EFLAGS: 00010282
-> [   43.214069] RAX: 0000000000000000 RBX: 0000000000000001 RCX:
-> 00000000ffff7fff
-> [   43.221200] RDX: ffffb2028002bb50 RSI: 00000000ffff7fff RDI:
-> 0000000000000003
-> [   43.228324] RBP: ffff971840982e80 R08: 0000000000000000 R09:
-> 0000000000000001
-> [   43.235448] R10: 0000000000000000 R11: ffffb2028002bb48 R12:
-> 0000000000000001
-> [   43.242572] R13: ffffffff940a33d3 R14: ffff971840a22948 R15:
-> 0000000000000000
-> [   43.249696] FS:  00007f1bba03a1c0(0000) GS:ffff971a53780000(0000)
-> knlGS:0000000000000000
-> [   43.257776] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   43.263519] CR2: 00007f1bb97d94a0 CR3: 00000001080b8002 CR4:
-> 00000000001706e0
-> [   43.270645] Call Trace:
-> [   43.273089]  device_shutdown+0x149/0x1f0
-> [   43.277015]  kernel_restart+0x9/0x50
-> [   43.280593]  __do_sys_reboot+0xe7/0x1d0
-> [   43.284433]  ? vfs_writev+0xb4/0x150
-> [   43.288014]  ? __cond_resched+0x10/0x40
-> [   43.291851]  ? task_work_run+0x6c/0xa0
-> [   43.295604]  do_syscall_64+0x5d/0x70
-> [   43.299185]  ? syscall_exit_to_user_mode+0x20/0x40
-> [   43.303978]  ? do_syscall_64+0x69/0x70
-> [   43.307730]  ? exc_page_fault+0x201/0x600
-> [   43.311741]  ? asm_exc_page_fault+0x8/0x30
-> [   43.315841]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   43.320894] RIP: 0033:0x7f1bb95177d6
-> [   43.324475] Code: 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44
-> 00 00 48 63 d7 be 69 19 12 28 48 c7 c7 ad de e1 fe b8 a9 00 00 00 0f 05 <48>
-> 3d 00 f0 ff
-> ff 77 02 f3 c3 48 8b 15 91 06 2c 00 f7 d8 64 89 02
-> [   43.343218] RSP: 002b:00007fffea4c3cc8 EFLAGS: 00000202 ORIG_RAX:
-> 00000000000000a9
-> [   43.350785] RAX: ffffffffffffffda RBX: 0000000001234567 RCX:
-> 00007f1bb95177d6
-> [   43.357909] RDX: 0000000001234567 RSI: 0000000028121969 RDI:
-> fffffffffee1dead
-> [   43.365041] RBP: 0000000000000000 R08: 0000000000000000 R09:
-> 0000000000000000
-> [   43.372166] R10: 0000000000000002 R11: 0000000000000202 R12:
-> 0000000000000000
-> [   43.379291] R13: 00007fffea4c3e78 R14: 0000000000000000 R15:
-> 0000000000000000
-> [   43.386422] ---[ end trace be6a3ef0677f3d04 ]---
-> [   43.391174] reboot: Restarting system
-> 
-> 
-> Hope this useful for you,
-> 
->       Thomas
-> 
-> 
+> > > I understand that the compilers actually generates radically different
+> > > instrumentation for the various cases, but essentially they're all
+> > > collecting (function/branch) arcs.
+> > >
+> > That's true, but there's no one format for profiling data that's
+> > usable between all compilers. I'm not even sure there's a good way to
+> > translate between, say, gcov and llvm's format. To make matters more
+> > complicated, each compiler's format is tightly coupled to a specific
+> > version of that compiler. And depending on *how* the data is collected
+> > (e.g. sampling or instrumentation), it may not give us the full
+> > benefit of FDO/PGO.
+>
+> I'm thinking that something simple like:
+>
+> struct arc {
+>         u64     from;
+>         u64     to;
+>         u64     nr;
+>         u64     cntrs[0];
+> };
+>
+> goes a very long way. Stick a header on that says how large cntrs[] is,
+> and some other data (like load offset and whatnot) and you should be
+> good.
+>
+> Combine that with the executable image (say /proc/kcore) to recover
+> what's @from (call, jmp or conditional branch) and I'm thinking one
+> ought to be able to construct lots of useful data.
+>
+> I've also been led to believe that the KCOV data format is not in fact
+> dependent on which toolchain is used.
+>
+> > > I'm thinking it might be about time to build _one_ infrastructure for
+> > > that and define a kernel arc format and call it a day.
+> > >
+> > That may be nice, but it's a rather large request.
+>
+> Given GCOV just died, perhaps you can look at what KCOV does and see if
+> that can be extended to do as you want. KCOV is actively used and
+> we actually tripped over all the fun little noinstr bugs at the time.
