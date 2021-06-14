@@ -2,242 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765B13A6597
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BEB3A659A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237248AbhFNLlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:41:05 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24353 "EHLO m43-7.mailgun.net"
+        id S235588AbhFNLlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235163AbhFNL1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:27:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623669927; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=LHTJHs8WLtG+cQlDY6gAWUCMiRc/oQhmi+dCZfmozBQ=;
- b=N4Mjtb6OpsSzx9bmxpeAN7n09/o92qXGJXslZvxZwSFETchmTjCK7tQlk61vHc4/DEqXUqqP
- C/ZJWetLOlgjVqi8J7mw2fo7lw6HbFWbvF2kEXTf4IrSAtPhbkx3hWP1hGv/C3gJ8TuCKZXx
- oQBNivhcvFuUJ+jO9d7KtxkaJYw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60c73ca38491191eb34ab6ea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 11:25:23
- GMT
-Sender: sbhanu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C5846C0091E; Mon, 14 Jun 2021 11:25:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sbhanu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48FF6C43145;
-        Mon, 14 Jun 2021 11:25:18 +0000 (UTC)
+        id S236127AbhFNL3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:29:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64100610A1;
+        Mon, 14 Jun 2021 11:27:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623670064;
+        bh=2rY2tAo241vX6ekFHgV1yvqOPbGBmy18m5WLXiLqfeE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iOuiFxjSh80/mdRceoX2xOb5QbpLlHTQbi+rVVDf2f2VlXYzWQ8Ize0UMp/alOLaF
+         AoOxZuDyYT4+GWocZ49wSxFKUrPDfxEWAGyYKlnU/Jgqo+mIVbBVuMaLmnni/mMiBv
+         L9Ulk/ntWSNtHpUtjH4WFaAZ4sc21qCsB6BhM7grhPC7ZN1nH4n1xJCejKkuGuyApt
+         ao1/BEpgn+k8QggMfxP6JXc4dWOEtSLugtluKJUxMvIVPYovSvlWSTX4R+xcPuS3zQ
+         bihwlM5ANdd+WJQExzG902nQ9A3cQ3HzU0lTSxAdLry3+BJ5rlYCuumxkD2n6F8+G+
+         S+VRXos4WvSaA==
+Date:   Mon, 14 Jun 2021 16:57:33 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] ARM: dts: owl-s500-roseapplepi: Add ethernet
+ support
+Message-ID: <20210614112733.GA38584@thinkpad>
+References: <cover.1623401998.git.cristian.ciocaltea@gmail.com>
+ <d0e1fbf81984127f0352eb740c7129424b5e40f9.1623401998.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Jun 2021 16:55:17 +0530
-From:   sbhanu@codeaurora.org
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
-        okukatla@codeaurora.org, djakov@kernel.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Subject: Re: [PATCH V3] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
- card
-In-Reply-To: <793c9596-73f3-42b2-291e-1c728e279e28@somainline.org>
-References: <1623252028-20467-1-git-send-email-sbhanu@codeaurora.org>
- <793c9596-73f3-42b2-291e-1c728e279e28@somainline.org>
-Message-ID: <1c22c4f5ca372988491181b3d0bd55e8@codeaurora.org>
-X-Sender: sbhanu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0e1fbf81984127f0352eb740c7129424b5e40f9.1623401998.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-10 02:15, Konrad Dybcio wrote:
-> Hi,
+On Fri, Jun 11, 2021 at 12:11:33PM +0300, Cristian Ciocaltea wrote:
+> Add pinctrl configuration for enabling the Ethernet MAC on RoseapplePi
+> SBC. Additionally, provide the necessary properties for the generic S500
+> ethernet node in order to setup PHY and MDIO.
 > 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani 
+
+> ---
+>  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 45 ++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
 > 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> index 3900cfc..8b159d1 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> @@ -11,6 +11,7 @@
->>  #include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
->>  #include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
->>  #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
->> +#include <dt-bindings/gpio/gpio.h>
->>  #include "sc7280.dtsi"
->>  #include "pm7325.dtsi"
->>  #include "pmr735a.dtsi"
->> @@ -272,6 +273,36 @@
->>  	status = "okay";
->>  };
->> 
->> +&sdhc_1 {
->> +	status = "okay";
->> +
->> +	pinctrl-names = "default", "sleep";
->> +	pinctrl-0 = <&sdc1_clk &sdc1_cmd &sdc1_data &sdc1_rclk>;
->> +	pinctrl-1 = <&sdc1_clk_sleep &sdc1_cmd_sleep &sdc1_data_sleep 
->> &sdc1_rclk_sleep>;
+> diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> index b8c5db2344aa..eb555f385283 100644
+> --- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> +++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> @@ -225,6 +225,27 @@ bias1-pinconf {
+>  			bias-pull-down;
+>  		};
+>  	};
+> +
+> +	ethernet_pins: ethernet-pins {
+> +		eth_rmii-pinmux {
+> +			groups = "rmii_txd0_mfp", "rmii_txd1_mfp",
+> +				 "rmii_rxd0_mfp", "rmii_rxd1_mfp",
+> +				 "rmii_txen_mfp", "rmii_rxen_mfp",
+> +				 "rmii_crs_dv_mfp", "rmii_ref_clk_mfp";
+> +			function = "eth_rmii";
+> +		};
+> +
+> +		phy_clk-pinmux {
+> +			groups = "clko_25m_mfp";
+> +			function = "clko_25m";
+> +		};
+> +
+> +		ref_clk-pinconf {
+> +			groups = "rmii_ref_clk_drv";
+> +			drive-strength = <2>;
+> +		};
+> +
+> +	};
+>  };
+>  
+>  /* uSD */
+> @@ -241,6 +262,30 @@ &mmc0 {
+>  	vqmmc-supply = <&sd_vcc>;
+>  };
+>  
+> +&ethernet {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&ethernet_pins>;
+> +	phy-mode = "rmii";
+> +	phy-handle = <&eth_phy>;
+> +	status = "okay";
+> +
+> +	mdio {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		reset-gpios = <&pinctrl 88 GPIO_ACTIVE_LOW>; /* GPIOC24 */
+> +		reset-delay-us = <10000>;
+> +		reset-post-delay-us = <150000>;
+> +
+> +		eth_phy: ethernet-phy@3 {
+> +			reg = <0x3>;
+> +			max-speed = <100>;
+> +			interrupt-parent = <&sirq>;
+> +			interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
+> +		};
+> +	};
+> +};
+> +
+>  &twd_timer {
+>  	status = "okay";
+>  };
+> -- 
+> 2.32.0
 > 
-> Please condense these pins into a since sdc1_on_state/sdc1_off_state
-> (check sdc1_state_on in [1])
-> 
-Sure
-> 
-> 
->> +
->> +	non-removable;
->> +	no-sd;
->> +	no-sdio;
->> +
->> +	vmmc-supply = <&vreg_l7b_2p9>;
->> +	vqmmc-supply = <&vreg_l19b_1p8>;
->> +
->> +};
->> +
->> +&sdhc_2 {
->> +	status = "okay";
->> +
->> +	pinctrl-names = "default", "sleep";
->> +	pinctrl-0 = <&sdc2_clk &sdc2_cmd &sdc2_data &sd_cd>;
->> +	pinctrl-1 = <&sdc2_clk_sleep &sdc2_cmd_sleep &sdc2_data_sleep>;
-> 
-> Ditto
-> 
-Sure
-> 
-> 
->> +&tlmm {
->> +	sdc1_clk: sdc1-clk {
->> +		pins = "sdc1_clk";
->> +		bias-disable;
->> +		drive-strength = <16>;
->> +	};
->> +
->> +	sdc1_cmd: sdc1-cmd {
->> +		pins = "sdc1_cmd";
->> +		bias-pull-up;
->> +		drive-strength = <10>;
->> +	};
->> +
->> +	sdc1_data: sdc1-data {
->> +		pins = "sdc1_data";
->> +		bias-pull-up;
->> +		drive-strength = <10>;
->> +	};
->> +	sdc1_rclk: sdc1-rclk {
->> +		pins = "sdc1_rclk";
->> +		bias-pull-down;
->> +	};
->> +
->> +	sdc2_clk: sdc2-clk {
->> +		pins = "sdc2_clk";
->> +		bias-disable;
->> +		drive-strength = <16>;
->> +	};
->> +
->> +	sdc2_cmd: sdc2-cmd {
->> +		pins = "sdc2_cmd";
->> +		bias-pull-up;
->> +		drive-strength = <10>;
->> +	};
->> +
->> +	sdc2_data: sdc2-data {
->> +		pins = "sdc2_data";
->> +		bias-pull-up;
->> +		drive-strength = <10>;
->> +	};
->> +
->> +	sd_cd: sd-cd {
-> 
-> Please make it sdc2 to keep things coherent.
-> 
-Sure
-> 
-> 
->> +		pins = "gpio91";
->> +		bias-pull-up;
->> +	};
->> +
->> +};
-> 
-> Why are you defining on_state pins in the device dt and sleep state in
-> the SoC one?
-> 
-> Most devices share a common config for these, often coming from MTP or
-> QRD boards
-> 
-> and it makes little to no sense to define these separately every time,
-> because if you hit the
-> 
-> rare case of needing to make a change against that, it's probably just
-> drive-strength.
-> 
-I have made this change as per Doug Anderson comment on patch V2 
-(https://lore.kernel.org/patchwork/patch/1399453/#1598871)
-And along with drive-strength change, on some of boards Sd card gpio pin 
-also may change right.
-> 
-> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 0b6f119..eab6f7b 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -24,6 +24,11 @@
->> 
->>  	chosen { };
->> 
->> +	aliases {
->> +		mmc1 = &sdhc_1;
->> +		mmc2 = &sdhc_2;
->> +	};
-> 
-> This is board specific. Something might have a SDIO Wi-Fi card on it.
-we are assuming eMMC and SD support available on all boards and if any 
-board supports SDIO Wi-Fi card
-they can add aliases for SDIO Wi-Fi card in that particular board device 
-DT file.
-> 
-> 
-> 
->> +			mmc-ddr-1_8v;
->> +			mmc-hs200-1_8v;
->> +			mmc-hs400-1_8v;
->> +			mmc-hs400-enhanced-strobe;
-> 
-> These properties should probably be in the device DT, unless the SoC 
-> controller
-> 
-> can only support these speeds and only at 1.8v
-> 
-we are keeping these flags in SOC file because all platforms would 
-support these modes,
-and yes we support only these and at 1.8V.
-> 
-> 
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/commit/?h=for-next&id=35a4a8b6e9b133cf3a7d059ad4cf0e24cb4bd029
-> 
-> 
-> Konrad
