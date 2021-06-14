@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FBB3A7288
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068493A728B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhFNXiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 19:38:13 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:33760 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhFNXiM (ORCPT
+        id S231664AbhFNXig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 19:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231499AbhFNXif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 19:38:12 -0400
-Received: by mail-pj1-f54.google.com with SMTP id k22-20020a17090aef16b0290163512accedso789678pjz.0;
-        Mon, 14 Jun 2021 16:36:08 -0700 (PDT)
+        Mon, 14 Jun 2021 19:38:35 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4FBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 16:36:18 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id q16so14248046qkm.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 16:36:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lr6aILUoCbQ0hKwSxYI3cPDsVRTQKFfkYKOXdzGE+8Y=;
-        b=QnHLJOqXafWl0e3J2N2LKnzvddczLeLXNBfNP5AcHP3c60nLsDNpaFEbGVB6fp3z7Z
-         OJo14j2hO9ECwtGMveRrWJTFqafDlIL4Q4esiUU45+XpQe4JM21qHACPmCfXWCXZOoc/
-         OOjFKZbiQ3AWpZ2TBD2//u3CF0rcjZT1AzeJnQvGsdp0FfWQw3OySrR2yzIWrAKIQ61U
-         j+vph7uVJ6yrglDy93CfNh8B1a6Ujqsg/O42nmqgBHDSvKq7MatenMGZ9GExeNJ6btg0
-         73CxzwKYyk3pDdDyzT/2u0yXBAmtgR+Bj939d9cypfo83mDng2e5dQbmmdzNS4IZHs4c
-         XEWw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tzJYum4jPDYdUZOzxiE2EDYoA//UFqDYCYrMpSJjOzc=;
+        b=J4coD/Yq3Y+IWgXlsye2jcl1NSGH//FV5ng79LOcvQO18tNKoWLiXcbslqFwjaJLuZ
+         HKVIz8wuW2qkYevTBXTtBvxOGUT4MGiGBfw8WfQFYDyiRStW8P9OnseLP4+gU/NiLKLS
+         AaOCj2p3HzGDOnFcKOCNiWhgo4b5HT5uTGUJmfo2w4fstlkYdnJTqIX/RJtWmuabYBEY
+         gw8YBCQZqBIFrf1S8STV25xmozk1W6CGzvyP3nWcpv4mvUUWudj0BKjDDVUwQ7dxeRG/
+         i0ZVNQkYkIS4EskS2lifvpKtZbZYspufOcVBiLnsxyO/VNAxD+z4WkWoj+ScPHQrdFiC
+         tnwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lr6aILUoCbQ0hKwSxYI3cPDsVRTQKFfkYKOXdzGE+8Y=;
-        b=geVenMZUWrvxCWr1TQTX0Ad4dUEy27GuWzvP+MLevwX5BeJhiCYCMMqnVpifE8roix
-         YRXotra4lnFUzXgiob7Vngg4/lKBBKrThZYbz9cCA02P5amrjKre7nzj/YC6Y8TQvUTL
-         S0vY4mxWtNTNgrH9S0BWNHTVm8KAEwTKkwn+2tQRhh/zV6DaZ249z9v5LTZbwVD1tSce
-         Qe2GnT56ccSqJxgm7Z9AQHnOGxKdTceAiyM2Fj7r6Vqzk8t4V3FdJS61mpQi9zbMlf0X
-         klmSRSZEtyPp+G2y2wqY9s/5J3gjhp6IC7vJVsU/cVX3h0HxUXIvEkZfpI2LxjhrI4Z3
-         JIzg==
-X-Gm-Message-State: AOAM533KdjQnxGSg572RvXAmQRfmnJl0IkLXwmtIi8fsVq5CViDewdi5
-        Gb3u7YS/zVtdYK+oUP1GuiE=
-X-Google-Smtp-Source: ABdhPJzeU2mJGkBEiQkypCz/F5fvh7ADZhdu/3wyH2ITec5XcWTsIN5i4qV1USqwzLmTvik8YSBOxw==
-X-Received: by 2002:a17:90b:3b92:: with SMTP id pc18mr21241387pjb.100.1623713708821;
-        Mon, 14 Jun 2021 16:35:08 -0700 (PDT)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id q9sm10149196pjd.9.2021.06.14.16.35.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 16:35:08 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 07:35:00 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     changbin.du@gmail.com, viro@zeniv.linux.org.uk, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, xiyou.wangcong@gmail.com,
-        David.Laight@ACULAB.COM, christian.brauner@ubuntu.com
-Subject: Re: [PATCH v4] net: make get_net_ns return error if NET_NS is
- disabled
-Message-ID: <20210614233500.5xkkyzmbu7dzymxv@mail.google.com>
-References: <20210611142959.92358-1-changbin.du@gmail.com>
- <20210614.121234.1863995090731912256.davem@davemloft.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tzJYum4jPDYdUZOzxiE2EDYoA//UFqDYCYrMpSJjOzc=;
+        b=TYKLV9MkEuoCQ/v2ax22tqMiYq1OMid4INLEm4cA2AHJA4DKHgNLXx/rpPMXgITk+7
+         Q69DgFZqr+hrfnSvOU8p6ToHvC3IJ+rOGdCXq/iF2xOr5R95k/NMFWCeGH6NZFzWIgvm
+         0JOBDfBugjGFLkCyS7Lf31mxKiX95jB164JxfLl3o2m4/4z53yZPyfWRaahzpsFvedg6
+         IOF1PuVEXEq9Mu4UPBQsRJnZKYZm3WIpDRenvMlB8id6TPIjNggNHeLixSdV1UBFPU9N
+         s2yTf5gP6WypknKq/kW7Yj1S1A5cZhioiqe5pSkolrz2/HkNtKPASfD82zP8SZaMe3U2
+         L/8g==
+X-Gm-Message-State: AOAM533wNBhXVAwk0/Fg4T/jSBhxhVcahdG3BZ0NPWW5qrETyqoyVS5J
+        +sHodxEvy41mBXg3zBBHqlOf488h5hR5XTWViVu7cA==
+X-Google-Smtp-Source: ABdhPJzHAtJv0exi/Hya7peRe/J8A+9ovUirjHPA6xZwwO4/jwWy8tb7RSIWJAMy54GQ//vqPC99EkkUlU5U4/Voa18=
+X-Received: by 2002:a37:c58:: with SMTP id 85mr18364587qkm.276.1623713777603;
+ Mon, 14 Jun 2021 16:36:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614.121234.1863995090731912256.davem@davemloft.net>
+References: <20210422120459.447350175@infradead.org> <20210422123309.039845339@infradead.org>
+In-Reply-To: <20210422123309.039845339@infradead.org>
+From:   Josh Don <joshdon@google.com>
+Date:   Mon, 14 Jun 2021 16:36:06 -0700
+Message-ID: <CABk29NtA4UxM-XqJ0v+5UOZEfgHTozF5VeqVGpLcR3Ci4z806g@mail.gmail.com>
+Subject: Re: [PATCH 18/19] sched: prctl() core-scheduling interface
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Xiangling Kong <xiangling@google.com>,
+        Benjamin Segall <bsegall@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 12:12:34PM -0700, David Miller wrote:
-> 
-> I applied an earlie5r version of this chsange already, so you will
-> need to send relative fixups.
+On Thu, Apr 22, 2021 at 5:36 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-That version is fine. This one just does a rebase.
+> From: Chris Hyser <chris.hyser@oracle.com>
+>
+> This patch provides support for setting and copying core scheduling
+> 'task cookies' between threads (PID), processes (TGID), and process
+> groups (PGID).
 
-> Thank you.
+[snip]
 
--- 
-Cheers,
-Changbin Du
+Internally, we have lots of trusted processes that don't have a
+security need for coresched cookies. However, these processes could
+still decide to create cookies for themselves, which will degrade
+machine capacity and performance for other jobs on the machine.
+
+Any thoughts on whether it would be desirable to have the ability to
+restrict use of SCHED_CORE_CREATE? Perhaps a new SCHED_CORE capability
+would be appropriate?
+
+- Josh
