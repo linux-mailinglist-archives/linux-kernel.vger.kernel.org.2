@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAB13A68A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607043A68A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234355AbhFNOFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:05:07 -0400
-Received: from mail-pf1-f177.google.com ([209.85.210.177]:44586 "EHLO
-        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbhFNOFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:05:05 -0400
-Received: by mail-pf1-f177.google.com with SMTP id u18so10601295pfk.11;
-        Mon, 14 Jun 2021 07:03:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=rxN6qots3gftmYmzarjE1MfJoAMa+HkQ1sXzj7TBE+4=;
-        b=lob5dTvi9uizmuj+tUdDynOO9jvwCr0ZDF8C0p4XA9CUWjEtUEb4iP5nx/JU49Tg6g
-         1NEuc8YpZRgt6emmX0JgxGoUCX/0QsQGKoaVhVkni76t0b07YLZyrWFLmiGsB+kmOLLg
-         4UL6Gu3vMUGV1h+1wNe9nqsGAjHmU73fzjrX0JABmg15fBfUzfRybKW1jJMHVAG1IO91
-         jri9BfiF2YfZLHo/5JC3PWFkvLFrqfyZ9D2+n+DKVdgprQhrObhku+FpfJAg627OR/bt
-         1dAsjGYImXJV1kwo+CxN5NJPF/IzD5Q4EfR8saUOdOIs5hMGSl6reCvLeVGdWDJg0KSz
-         6RWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=rxN6qots3gftmYmzarjE1MfJoAMa+HkQ1sXzj7TBE+4=;
-        b=E6fxsI8VYyiNZVvw+AODUso2bCml69iHOvCr62ewWpNavOJQrjGiHcz4j+2RUfv7D4
-         ZfRf0BXANSArzMUROVLyHb6cuBoxYL7UTZ6HOMA6dipMgmqhYCl9vozP7+VtoT8R1jAI
-         H1b1Y488g/WDPYTacFVtBejK2BP07/DqUVja2eBi+PqfmDjbXxPiHcMGIpE1D2VuZ1/8
-         dkaHkC0kC3HKo57uUF2CFNaCcmQJMNEFktldogw2z8G4IdY0FYYiRLowFNO0tubR/iHJ
-         6H6MNmmdj+5zvkNZItJdDJJLxfyybKQ7/VeYGuitaOCoVK/Xvgb1+nDr7CG3+EIowvIl
-         kRqw==
-X-Gm-Message-State: AOAM533EhJ8Xh74CpRYmY97Lyvg7m6pMrQg2kZOkPQT8q+jkGth+LLJc
-        snyyDiZOPoshxQ4qZOJXIQo=
-X-Google-Smtp-Source: ABdhPJyva6fsoFPamr3e/ZFu0g9Kw0nLUqIcZlXw8VINUW4Wv9YM/Ic7v/Mdt/3OQEjODPy2UTKMJQ==
-X-Received: by 2002:a63:ce4f:: with SMTP id r15mr17119844pgi.387.1623679322246;
-        Mon, 14 Jun 2021 07:02:02 -0700 (PDT)
-Received: from [192.168.1.8] ([50.47.106.83])
-        by smtp.gmail.com with ESMTPSA id h18sm13273645pgl.87.2021.06.14.07.01.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 07:01:55 -0700 (PDT)
-Message-ID: <2bf51ac723cb097685dd4c89926599d939d31765.camel@gmail.com>
-Subject: Re: [PATCH -next] drm/hyperv: Remove unused variable
-From:   Deepak Rawat <drawat.floss@gmail.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Pu Lehui <pulehui@huawei.com>, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     zhangjinhao2@huawei.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Date:   Mon, 14 Jun 2021 07:01:51 -0700
-In-Reply-To: <078d9bb5-e7af-4961-f4c1-cd3ab415cff4@suse.de>
-References: <20210609024940.34933-1-pulehui@huawei.com>
-         <078d9bb5-e7af-4961-f4c1-cd3ab415cff4@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 
+        id S234376AbhFNOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:05:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:36916 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233293AbhFNOF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 10:05:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7549B1FB;
+        Mon, 14 Jun 2021 07:03:53 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 855953F70D;
+        Mon, 14 Jun 2021 07:03:50 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 15:03:47 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        igor.skalkin@opensynergy.com, peter.hilber@opensynergy.com,
+        alex.bennee@linaro.org, jean-philippe@linaro.org,
+        mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
+        Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v4 00/16] Introduce SCMI VirtIO transport
+Message-ID: <20210614140347.GB35368@e120937-lin>
+References: <20210611165937.701-1-cristian.marussi@arm.com>
+ <YMdA+GkgJ+GONuJr@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMdA+GkgJ+GONuJr@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-09 at 09:46 +0200, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 09.06.21 um 04:49 schrieb Pu Lehui:
-> > Fixes gcc '-Wunused-const-variable' warning:
-> >    drivers/gpu/drm/hyperv/hyperv_drm_modeset.c:152:23: warning:
-> >      'hyperv_modifiers' defined but not used [-Wunused-const-
-> > variable=]
+Hi Christoph,
+
+On Mon, Jun 14, 2021 at 12:43:52PM +0100, Christoph Hellwig wrote:
+> On Fri, Jun 11, 2021 at 05:59:21PM +0100, Cristian Marussi wrote:
+> > Hi all,
 > > 
-> > Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> > ---
-> >   drivers/gpu/drm/hyperv/hyperv_drm_modeset.c | 5 -----
-> >   1 file changed, 5 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-> > b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-> > index 02718e3e859e..3f83493909e6 100644
-> > --- a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-> > +++ b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-> > @@ -149,11 +149,6 @@ static const uint32_t hyperv_formats[] = {
-> >         DRM_FORMAT_XRGB8888,
-> >   };
-> >   
-> > -static const uint64_t hyperv_modifiers[] = {
-> > -       DRM_FORMAT_MOD_LINEAR,
-> > -       DRM_FORMAT_MOD_INVALID
-> > -};
+> > I'm posting this V4 series starting from the work done up to V3 by
+> > OpenSynergy.
 > 
-> This constant should rather be used in the call to 
-> drm_simple_display_pipe_init(). [1]
+> Who is 'OpenSynergy'?
 > 
-> Best regards
-> Thomas
+> > The main aim of this rework is to simplify where possible the SCMI VirtIO
+> > support added in V3 by adding upfront and then using some new mechanisms in
+> > the SCMI Core Transport layer.
 > 
-> [1] 
-> https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c#n161
-> 
-> 
+> And what is 'SCMI', and why would anyone want a new virtio transport?
 
-Hi Pu,
+I'll start answering this last question first : SCMI stands for System Control
+and Management Interface whose latest specification can be found at:
 
-Thanks for the patch. Is it possible to send another patch as per
-suggestion by Thomas. There is a kernel test robot failure as well.
+https://developer.arm.com/documentation/den0056/latest
 
-Deepak
+The spec aims to provide a common way to handle power & performance related
+needs by standardizing a set of protocols (clocks, power domains, sensors,
+voltages, resets, etc..) to enable an SCMI agent (Kernel) to talk to an
+external System Control Processor entity which acts as an SCMI Platform and
+satisfies (or denies) such requests in a centralized manner for the Kernel
+and any other SCMI agent present on system.
 
+Such SCMI stack can be indeed deployed in a variety of way depending on
+where the SCP running the SCMI Platofrm if physically situated: an
+external microntroller ? part of the EL-3 Platform firmware ? some
+functionality embedded in an Hypervisor ? a guest acting as an SCP ?
+
+Support for SCMI is already in mainline as of today under:
+
+	drivers/firmware/arm_scmi
+
+But the currently existing transport mechanisms through which the SCMI agent
+and the platform talks are based on mailboxes or SMCs.
+
+In case the SCMI Stack is deployed in a virtualized environment we need
+some sort of SCMI transport that runs on VirtIO to establish comms
+between the VMs.
+
+OpenSynergy is an ARM partner who has deployed a virtualized SCMI stack
+in their own product and developed this series up to V3, taking care
+also the proposed related VirtIO spec changes:
+
+https://lists.oasis-open.org/archives/virtio-comment/202102/msg00018.html
+
+Such proposed VirtIO changes expose a new VirtiIO SCMI Device that represents
+the SCMI platform running the SCMI Server fw which answers the SCMI Kernel
+Agent requests.
+
+Similar approaches with virtualized SCMI stacks are being developed by
+Linaro and other partners as far as I know.
+
+I picked up this series from V4 since it was apparent that some changes were
+needed in the core SCMI stack to better integrate this new VirtIO transport
+that OpenSynergy developed up to V3.
+
+Hope to have been clear and concise (not really :D) enough.
+
+Thanks,
+Cristian
