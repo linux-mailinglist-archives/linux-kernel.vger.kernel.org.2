@@ -2,136 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8ADF3A5C48
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 06:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216433A5C53
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 06:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhFNEvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 00:51:14 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56582 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbhFNEvM (ORCPT
+        id S231912AbhFNFBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 01:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhFNFBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 00:51:12 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15E4n3FD096428;
-        Sun, 13 Jun 2021 23:49:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623646143;
-        bh=l0Dp6sAEeHHHEtSDphW6ZwsASXVOpwcEUsPl5t6puTQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=wEiNU64ib9qKHZBUseePp1U0Xnvif42LDtvbCFPrFpge5A1oRd8OQvUAj79G4oyvx
-         LkZ4KuYlISfqYXktxbpXMIp5H2AsWDh6rB31MV3pRHtRZQ568IrX7IyPJlCEH4w0DN
-         GnUVAA+HFHlS16cAdqOIPldZYLXwDPQZH1uZDP4A=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15E4n3FF046083
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 13 Jun 2021 23:49:03 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 13
- Jun 2021 23:49:03 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Sun, 13 Jun 2021 23:49:03 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15E4mxZk053498;
-        Sun, 13 Jun 2021 23:49:00 -0500
-Subject: Re: [PATCH] arm64: dts: ti: k3-am64-main: Add SYSFW reserved ranges
- in OCRAM
-To:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
-References: <20210609140604.9490-1-vigneshr@ti.com>
- <20210611191640.lczsliyzasjie6lm@dismantle>
- <84e5865f-e107-f0e1-ca8b-b6bd655e92e6@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <36ff3c65-2f5e-2997-9fb5-a5e8d3230a75@ti.com>
-Date:   Mon, 14 Jun 2021 10:18:57 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 14 Jun 2021 01:01:37 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2714DC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 21:59:20 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id c11so18349591ljd.6
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Jun 2021 21:59:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ae2sGmnqiafGpuWnShlikcWXJP2A5utePL11oAYx5aI=;
+        b=NAAP+EWNZ66EIB+mX5KsbpBAMu2kqperPWf9E6Pq+VdW/tf9gAc3E88xMeorgNZXy6
+         UzSrIXt+BFk1cWNH8wZGx1N6sfHchs1kS5OoI+5k0h/LLS2r8JTfBs/nnyPkh/CV0oC1
+         LNKzbum+VoFubXzWQO5cAW6/uxIJUge1sYSGwqpmgvfDgkrUVTdoaS4HbM5TCO7RmKEL
+         HsvqlMcgzXqDPdXkOfAeB7i7jKXuXyTL7Y1rqUuuidC86JEsZCcKsr9I3sBb7JqnF/V/
+         jOMFafSmqsKoYHHk91gYRMkkLESXpMphDm3FJu6CPdPB/Yhw3m+RbBPzF2ccwHRvTa4Y
+         dMZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ae2sGmnqiafGpuWnShlikcWXJP2A5utePL11oAYx5aI=;
+        b=S9X5muo457Voyy05sUqRyOyevyn1acwftj18JwW5oPXmdRKs40F8RpPbjq337qRlEE
+         PN0b18zhFZrUF4nfZ8eGE43HK8ig7DWutcLqknnDLG2sSnoPItsMAmVgZ5QCbw08Gl/H
+         ovgS1BZQcymSeDNVl8GIhwesovKWQ03+oRu8npyqUk/dn6UhHhUaT5Tg1RXGe25VNTEB
+         PllZmMnUjOfkbAwdk0R/5lVLkz8hQG9uwu3znylCpI4FUs1cSJAmUIvQtlg1epJYtN5w
+         O/ovVIAMtZwPhQwhTTC4uNeXEqSshD5vNhoJUsBOjTur2GA8j+5sWsLuUcU0BavUhAQd
+         KNFg==
+X-Gm-Message-State: AOAM532+NmukuIXtMNl1FKnc8WHRhokTiBtteTigMM38lIep9E4Q7KPN
+        E2fBM8SiLpf/WXE2LW31n1UHfr9wlPW1UWJALJGCzA==
+X-Google-Smtp-Source: ABdhPJxMEZCOqRHZ/rT+toHbj1PDH5Ir/Ex4Nd7qTb3XnhWNkcY6+QLj1MGDzNJMjuJpuOAz8T4K1E61dl2gqfeAp88=
+X-Received: by 2002:a2e:a16e:: with SMTP id u14mr11905659ljl.343.1623646758112;
+ Sun, 13 Jun 2021 21:59:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <84e5865f-e107-f0e1-ca8b-b6bd655e92e6@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
+ <20210610210913.536081-7-tyhicks@linux.microsoft.com> <CAFA6WYMcGGkAAWxK2vmM8CNsgTKJpegkZZjJZy4pvXhKe9WGvA@mail.gmail.com>
+ <20210611130958.GR4910@sequoia> <20210611131619.GS4910@sequoia>
+ <CAFA6WYPJXmeepe=4EiiA0_MUz=KsAGnbwY98FfEm1Z2EaGxz-w@mail.gmail.com> <20210613081607.GT4910@sequoia>
+In-Reply-To: <20210613081607.GT4910@sequoia>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 14 Jun 2021 10:29:05 +0530
+Message-ID: <CAFA6WYP=8dTZB_ffeTG5FfThLuxcegdKM_UjOtkDOt6H80bBqw@mail.gmail.com>
+Subject: Re: [PATCH v4 6/8] tee: Support kernel shm registration without
+ dma-buf backing
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        op-tee@lists.trustedfirmware.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vignesh,
+On Sun, 13 Jun 2021 at 13:46, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+>
+> On 2021-06-12 13:49:38, Sumit Garg wrote:
+> > On Fri, 11 Jun 2021 at 18:46, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+> > >
+> > > On 2021-06-11 08:10:01, Tyler Hicks wrote:
+> > > > On 2021-06-11 10:46:20, Sumit Garg wrote:
+> > > > > On Fri, 11 Jun 2021 at 02:39, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+> > > > > >
+> > > > > > Uncouple the registration of kernel shared memory buffers from the
+> > > > > > TEE_SHM_DMA_BUF flag. Drivers may wish to allocate multi-page contiguous
+> > > > > > shared memory regions but do not need them to be backed by a dma-buf
+> > > > > > when the memory region is only used by the driver.
+> > > > > >
+> > > > > > If the TEE implementation does not require shared memory to be
+> > > > > > registered, clear the flag prior to calling the corresponding pool alloc
+> > > > > > function. Update the OP-TEE driver to respect TEE_SHM_REGISTER, rather
+> > > > > > than TEE_SHM_DMA_BUF, when deciding whether to (un)register on
+> > > > > > alloc/free operations.
+> > > > >
+> > > > > > The AMD-TEE driver continues to ignore the
+> > > > > > TEE_SHM_REGISTER flag.
+> > > > > >
+> > > > >
+> > > > > That's the main point that no other TEE implementation would honour
+> > > > > TEE_SHM_REGISTER and I think it's just the incorrect usage of
+> > > > > TEE_SHM_REGISTER flag to suffice OP-TEE underlying implementation.
+> > > > >
+> > > > > > Allow callers of tee_shm_alloc_kernel_buf() to allocate and register a
+> > > > > > shared memory region without the backing of dma-buf.
+> > > > > >
+> > > > > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > > > > ---
+> > > > > >  drivers/tee/optee/shm_pool.c |  5 ++---
+> > > > > >  drivers/tee/tee_shm.c        | 13 +++++++++++--
+> > > > > >  2 files changed, 13 insertions(+), 5 deletions(-)
+> > > > > >
+> > > > >
+> > > > > This patch is just mixing two separate approaches to TEE shared
+> > > > > memory. Have a look at alternative suggestions below.
+> > > > >
+> > > > > > diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
+> > > > > > index da06ce9b9313..6054343a29fb 100644
+> > > > > > --- a/drivers/tee/optee/shm_pool.c
+> > > > > > +++ b/drivers/tee/optee/shm_pool.c
+> > > > > > @@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> > > > > >         shm->paddr = page_to_phys(page);
+> > > > > >         shm->size = PAGE_SIZE << order;
+> > > > > >
+> > > > > > -       if (shm->flags & TEE_SHM_DMA_BUF) {
+> > > > > > +       if (shm->flags & TEE_SHM_REGISTER) {
+> > > > >
+> > > > > Here you can just do following check instead:
+> > > > >
+> > > > >        if (!(shm->flags & TEE_SHM_PRIV)) {
+> > > >
+> > > > This is a bug fix series that's intended to fix the current and older
+> > > > kernels. tee_shm_alloc_anon_kernel_buf()/TEE_SHM_PRIV is not present in
+> > > > older kernels and isn't required to fix these kexec/kdump bugs. Your
+> > > > suggestion feels like something that should be done in the allocator
+> > > > rewrite that Jens is working on to clean all of this up going forward.
+> > >
+> > > I want to add that I do fully agree with you that TEE_SHM_REGISTER is an
+> > > OP-TEE thing and not a TEE thing. Ideally, it wouldn't be defined in
+> > > tee_drv.h and would be completely private to the OP-TEE driver.
+> > > Likewise, I don't think that tee_shm_register() should exist (certainly
+> > > not at the TEE level) because it only works with OP-TEE.
+> >
+> > I think there is some confusion going on. tee_shm_register() is a
+> > standard interface that is listed in TEE client API specification as
+> > an alternative approach to tee_shm_alloc(). As I earlier mentioned,
+> > please read through "3.2.4. Shared Memory" in TEE Client API
+> > Specification.
+>
+> Thanks for the reminder to go read this spec. I had forgotten to read it
+> after you previously mentioned it.
+>
+> Yes, there was confusion on my part due to reading the code but not
+> discovering/reading the spec prior to now.
+>
+> > In the initial times, OP-TEE only supported tee_shm_alloc() approach
+> > but with the addition of dynamic shared memory feature it became
+> > possible to support tee_shm_register() as well but we had to add new
+> > capability as TEE_GEN_CAP_REG_MEM in order to maintain OP-TEE
+> > backwards compatibility. It can very well be the same case for AMD-TEE
+> > which currently only supports tee_shm_alloc() approach.
+> >
+> > The reason for confusion here seems to be that OP-TEE driver is
+> > providing a way to leverage dynamic shared memory approach in order to
+> > implement tee_shm_alloc() but that doesn't mean at TEE level we should
+> > intermix both approaches via using TEE_SHM_REGISTER to implement
+> > tee_shm_alloc().
+>
+> I think that was the reason for my confusion. I didn't understand why
+> AMD-TEE didn't have the same need to register memory.
+>
+> >
+> > >
+> > > That said, I think the first step is to fix the kexec/kdump bugs and the
+> > > second step is to clean up the code to remove the layering violation of
+> > > exposing shm registration from the TEE interfaces.
+> > >
+> >
+> > Doesn't the following patch sound suitable to be backported to a
+> > stable kernel? It has even less changes compared to your patch as well
+> > :).
+> >
+> > -Sumit
+> >
+> > -------------------------------------------
+> > Subject: [PATCH] tee: Correct inappropriate usage of TEE_SHM_DMA_BUF flag
+> >
+> > Currently TEE_SHM_DMA_BUF flag has been inappropriately used to not
+>
+> I think the "not" at the end of this line should be removed, right?
+>
 
-On 12/06/21 12:51 pm, Vignesh Raghavendra wrote:
-> +Aswath
-> 
-> On 6/12/21 12:46 AM, Nishanth Menon wrote:
->> On 19:36-20210609, Vignesh Raghavendra wrote:
->>> Last 256K of OCRAM (256K@0x701c0000) is reserved for SYSFW usage. Hence
->>> add an entry in DT so that its not used for generic pool memory
->>> allocation.
->>
->> Are you really sure?? I know that I had set a budget for 16K in sysfw
->> when I did the memory split up for sysfw of which 16k is actually used.
->>
->> Not sure where this 256K bucket started off from.. am I missing
->> something here?
->>
-> 
-> Per: http://software-dl.ti.com/tisci/esd/latest/5_soc_doc/am64x/firewalls.html
-> 
-> 24	dmsc	0x44060000	0x4407BFFF	dmsc,rwcd	 	 // alias for 0x701E0000
-> 24	dmsc	0x701FC000	0x701FFFFF	sproxy_private,rwcd	 	 
-> 24	dmsc	0x4407C000	0x4407FFFF	sproxy_private,rwcd	 	 
-> 24	dmsc	0x701C0000	0x701DFFFF	everyone,rwcd	 	 
-> 
-> So it looks like only 128K@0x701E0000 is firewalled off. 
-> Will update the patch.
-> 
-> This makes me wonder why ATF is being moved to 0x701a0000-0x701c0000
-> leaving a hole at 0x701C0000-0x701DFFFF? 
-> 
-> 
+No, actually shared memory allocated for OP-TEE driver internal usage
+didn't enable this flag while in all other invocations TEE_SHM_DMA_BUF
+is enabled as the driver's private shared memory isn't required to be
+registered with OP-TEE.
 
-The reason for leaving the hole at 0x701C0000-0x701DFFFF was because
-initially there was a bug in SYSFW which lead to the usage of the above
-region too by it. However, this bug was recently fixed and the the above
-region can be used for ATF.
+> > register shared memory allocated for private usage by underlying TEE
+> > driver: OP-TEE in this case. So rather add a new flag as TEE_SHM_PRIV
+> > that can be utilized by underlying TEE drivers for private allocation
+> > and usage of shared memory.
+> >
+> > With this corrected, allow tee_shm_alloc_kernel_buf() to allocate a
+> > shared memory region without the backing of dma-buf.
+>
+> I noticed a couple things wrong with this patch during testing.
+>
 
-Thanks,
-Aswath
+Yeah you are right. Apologies for my oversight as this patch was
+compile tested only.
 
->>
->>>
->>> Without this certain drivers using SRAM as generic shared memory pool
->>> may end up being allocated memory from this range and will lead to boot
->>> time crash when the reserved range is accessed (due to firewall
->>> violation).
->>>
->>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->>> ---
->>>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 4 ++++
->>>  1 file changed, 4 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
->>> index f1c42ef05e52..77b88e536534 100644
->>> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
->>> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
->>> @@ -16,6 +16,10 @@ oc_sram: sram@70000000 {
->>>  		atf-sram@0 {
->>>  			reg = <0x0 0x1a000>;
->>>  		};
->>> +
->>> +		dmsc-sram@1c0000 {
->>> +			reg = <0x1c0000 0x40000>;
->>
->>> +		};
->>>  	};
->>>  
->>>  	gic500: interrupt-controller@1800000 {
->>> -- 
->>> 2.31.1
->>>
->>
+> The first is obviously an oversight. tee_shm_alloc() needs to be updated
+> to accept the TEE_SHM_PRIV or it'll throw an "invalid shm flags ..."
+> error.
+>
 
+Agree.
+
+> The second issue is a little more unclear. I am testing these patches
+> along with a debugging patch that prints a bit of info when
+> optee_shm_register() or optee_shm_unregister() is called so that I can
+> track the (un)registrations. I built a kernel with my v4 series but with
+> this patch in place of my 'tee: Support kernel shm registration without
+> dma-buf backing' patch. I performed 10x kexec operations and then let
+> the system set idle for a while. After a while of sitting idle, I
+> noticed a couple calls to optee_shm_register() that I hadn't seen before
+> (and haven't seen again). It made me worried that your patch could
+> result in us registering shared memory that we previously weren't
+> registering so I decided to try to perform another kexec operation to
+> ensure that the two shms were properly unregistered. At this point, the
+> system became unresponsive and I wasn't able to get a stack trace or any
+> more useful information about what happened.
+>
+> Unfortunately, my debugging patch was only printing the shm's virtual
+> address and the shm's size. The shm's size was 4096 bytes.
+>
+> My current thought is that the two new/unexpected calls to
+> optee_shm_register() were triggered by one of the tee_shm_alloc()'s in
+> drivers/tee/optee/rpc.c. Neither of those shm allocations would have
+> been registered before your change but they both would be after your
+> change. I think the easy fix is to use the TEE_SHM_PRIV flag for both of
+> the allocations in rpc.c. Do you agree? If so, I'll make these changes
+> and fold this patch into my series and send out a v5.
+
+Yeah I agree, please use TEE_SHM_PRIV for private shm allocations in
+drivers/tee/optee/rpc.c as well.
+
+>
+> I still can't explain why the system became unresponsive after the two
+> registrations...
+
+Probably the two registrations created a cyclic loop and cores got
+hung in there.
+
+-Sumit
+
+>
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  drivers/tee/optee/call.c     | 2 +-
+> >  drivers/tee/optee/core.c     | 3 ++-
+> >  drivers/tee/optee/shm_pool.c | 8 ++++++--
+> >  drivers/tee/tee_shm.c        | 2 +-
+> >  include/linux/tee_drv.h      | 1 +
+> >  5 files changed, 11 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+> > index 6132cc8d014c..faaa13c9172b 100644
+> > --- a/drivers/tee/optee/call.c
+> > +++ b/drivers/tee/optee/call.c
+> > @@ -184,7 +184,7 @@ static struct tee_shm *get_msg_arg(struct
+> > tee_context *ctx, size_t num_params,
+> >         struct optee_msg_arg *ma;
+> >
+> >         shm = tee_shm_alloc(ctx, OPTEE_MSG_GET_ARG_SIZE(num_params),
+> > -                           TEE_SHM_MAPPED);
+> > +                           TEE_SHM_MAPPED | TEE_SHM_PRIV);
+> >         if (IS_ERR(shm))
+> >                 return shm;
+> >
+> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> > index ddb8f9ecf307..eac0e91ec559 100644
+> > --- a/drivers/tee/optee/core.c
+> > +++ b/drivers/tee/optee/core.c
+> > @@ -277,7 +277,8 @@ static void optee_release(struct tee_context *ctx)
+> >         if (!ctxdata)
+> >                 return;
+> >
+> > -       shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg), TEE_SHM_MAPPED);
+> > +       shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg),
+> > +                           TEE_SHM_MAPPED | TEE_SHM_PRIV);
+> >         if (!IS_ERR(shm)) {
+> >                 arg = tee_shm_get_va(shm, 0);
+> >                 /*
+> > diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
+> > index d767eebf30bd..3b4a3853a10f 100644
+> > --- a/drivers/tee/optee/shm_pool.c
+> > +++ b/drivers/tee/optee/shm_pool.c
+> > @@ -27,7 +27,11 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> >         shm->paddr = page_to_phys(page);
+> >         shm->size = PAGE_SIZE << order;
+> >
+> > -       if (shm->flags & TEE_SHM_DMA_BUF) {
+> > +       /*
+> > +        * Shared memory private to the OP-TEE driver doesn't need
+> > +        * to be registered with OP-TEE.
+> > +        */
+> > +       if (!(shm->flags & TEE_SHM_PRIV)) {
+> >                 unsigned int nr_pages = 1 << order, i;
+> >                 struct page **pages;
+> >
+> > @@ -52,7 +56,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+> >  static void pool_op_free(struct tee_shm_pool_mgr *poolm,
+> >                          struct tee_shm *shm)
+> >  {
+> > -       if (shm->flags & TEE_SHM_DMA_BUF)
+> > +       if (!(shm->flags & TEE_SHM_PRIV))
+> >                 optee_shm_unregister(shm->ctx, shm);
+> >
+> >         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+> > diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> > index c425ad80d6a6..f8b73e734094 100644
+> > --- a/drivers/tee/tee_shm.c
+> > +++ b/drivers/tee/tee_shm.c
+> > @@ -207,7 +207,7 @@ EXPORT_SYMBOL_GPL(tee_shm_alloc);
+> >   */
+> >  struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
+> >  {
+> > -       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
+> > +       return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED);
+> >  }
+> >  EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
+>
+> This was a malformed patch due to this hunk. I think an empty line was
+> left out of the context.
+>
+> Tyler
+>
+> > diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+> > index 8990f7628387..3ebfea0781f1 100644
+> > --- a/include/linux/tee_drv.h
+> > +++ b/include/linux/tee_drv.h
+> > @@ -27,6 +27,7 @@
+> >  #define TEE_SHM_USER_MAPPED    BIT(4)  /* Memory mapped in user space */
+> >  #define TEE_SHM_POOL           BIT(5)  /* Memory allocated from pool */
+> >  #define TEE_SHM_KERNEL_MAPPED  BIT(6)  /* Memory mapped in kernel space */
+> > +#define TEE_SHM_PRIV           BIT(7)  /* Memory private to TEE driver */
+> >
+> >  struct device;
+> >  struct tee_device;
+> >
