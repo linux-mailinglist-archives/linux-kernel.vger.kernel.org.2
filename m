@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958323A625B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09413A6194
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbhFNK7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:59:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52688 "EHLO mail.kernel.org"
+        id S234158AbhFNKtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:49:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234050AbhFNKvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:51:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 603FC61464;
-        Mon, 14 Jun 2021 10:38:52 +0000 (UTC)
+        id S233690AbhFNKmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:42:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7FB961435;
+        Mon, 14 Jun 2021 10:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667133;
-        bh=D6ZED7p3zja0m7Hj1BJucKeJYgz7zyrlAByLjarxpyk=;
+        s=korg; t=1623666943;
+        bh=4NsMjT+sUGfxs8b+//qVp6ie1TiegTq4fopWQeusz/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gek5h/2sNfwq9cQhWclcygp2oC/eMm74rVqBbV5eWZhUR5qudsDw7Oe/HMdr97N4M
-         YYM4MT91obLcAkR84dZw9lXzAgSJlfzPM6679loelCG82jADTKlCjnT+kZJH5iz3tE
-         hQOIFMzHEsbXEGOtdweIRSx9zi0DKe/8yr1vYoOQ=
+        b=uq7fcNUvRVl4ItSUrm+FCsqrS64SRFf8mPNiOCfxCg7ryy7izVnNYtZVMiVkiPtun
+         bWXnAzUYk3FW5aJ5ClQ0JzRhOSGFYHSB39FwcxZWng+tVtnVyTzzUq5Z36raPTn8JM
+         4pqVi+lBUNeRpCBcC5o1JYrJ+jbj8JPCLmDaUby8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 5.4 40/84] drm: Lock pointer access in drm_master_release()
-Date:   Mon, 14 Jun 2021 12:27:18 +0200
-Message-Id: <20210614102647.732502686@linuxfoundation.org>
+        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
+Subject: [PATCH 4.19 36/67] usb: f_ncm: only first packet of aggregate needs to start timer
+Date:   Mon, 14 Jun 2021 12:27:19 +0200
+Message-Id: <20210614102644.991868711@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Maciej Żenczykowski <maze@google.com>
 
-commit c336a5ee984708db4826ef9e47d184e638e29717 upstream.
+commit 1958ff5ad2d4908b44a72bcf564dfe67c981e7fe upstream.
 
-This patch eliminates the following smatch warning:
-drivers/gpu/drm/drm_auth.c:320 drm_master_release() warn: unlocked access 'master' (line 318) expected lock '&dev->master_mutex'
+The reasoning for this change is that if we already had
+a packet pending, then we also already had a pending timer,
+and as such there is no need to reschedule it.
 
-The 'file_priv->master' field should be protected by the mutex lock to
-'&dev->master_mutex'. This is because other processes can concurrently
-modify this field and free the current 'file_priv->master'
-pointer. This could result in a use-after-free error when 'master' is
-dereferenced in subsequent function calls to
-'drm_legacy_lock_master_cleanup()' or to 'drm_lease_revoke()'.
+This also prevents packets getting delayed 60 ms worst case
+under a tiny packet every 290us transmit load, by keeping the
+timeout always relative to the first queued up packet.
+(300us delay * 16KB max aggregation / 80 byte packet =~ 60 ms)
 
-An example of a scenario that would produce this error can be seen
-from a similar bug in 'drm_getunique()' that was reported by Syzbot:
-https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+As such the first packet is now at most delayed by 300us.
 
-In the Syzbot report, another process concurrently acquired the
-device's master mutex in 'drm_setmaster_ioctl()', then overwrote
-'fpriv->master' in 'drm_new_set_master()'. The old value of
-'fpriv->master' was subsequently freed before the mutex was unlocked.
+Under low transmit load, this will simply result in us sending
+a shorter aggregate, as originally intended.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210609092119.173590-1-desmondcheongzx@gmail.com
+This patch has the benefit of greatly reducing (by ~10 factor
+with 1500 byte frames aggregated into 16 kiB) the number of
+(potentially pretty costly) updates to the hrtimer.
+
+Cc: Brooke Basile <brookebasile@gmail.com>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Link: https://lore.kernel.org/r/20210608085438.813960-1-zenczykowski@gmail.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_auth.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_ncm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/drm_auth.c
-+++ b/drivers/gpu/drm/drm_auth.c
-@@ -268,9 +268,10 @@ int drm_master_open(struct drm_file *fil
- void drm_master_release(struct drm_file *file_priv)
- {
- 	struct drm_device *dev = file_priv->minor->dev;
--	struct drm_master *master = file_priv->master;
-+	struct drm_master *master;
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1104,11 +1104,11 @@ static struct sk_buff *ncm_wrap_ntb(stru
+ 			ncm->ndp_dgram_count = 1;
  
- 	mutex_lock(&dev->master_mutex);
-+	master = file_priv->master;
- 	if (file_priv->magic)
- 		idr_remove(&file_priv->master->magic_map, file_priv->magic);
+ 			/* Note: we skip opts->next_ndp_index */
+-		}
  
+-		/* Delay the timer. */
+-		hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
+-			      HRTIMER_MODE_REL_SOFT);
++			/* Start the timer. */
++			hrtimer_start(&ncm->task_timer, TX_TIMEOUT_NSECS,
++				      HRTIMER_MODE_REL_SOFT);
++		}
+ 
+ 		/* Add the datagram position entries */
+ 		ntb_ndp = skb_put_zero(ncm->skb_tx_ndp, dgram_idx_len);
 
 
