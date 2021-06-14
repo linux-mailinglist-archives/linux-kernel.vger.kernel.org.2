@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226A03A62B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86D43A642D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbhFNLDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
+        id S235277AbhFNLVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:21:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234918AbhFNKyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:54:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16F4D61421;
-        Mon, 14 Jun 2021 10:40:32 +0000 (UTC)
+        id S235182AbhFNLJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:09:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB9B61451;
+        Mon, 14 Jun 2021 10:46:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667233;
-        bh=bfOx840UlMxdmMXX6b+SvDRfCUz5JLk4e5sCadeekFY=;
+        s=korg; t=1623667599;
+        bh=HmGtk6wuKZAXH34pl1mKpHWctvshAXn+rd+v+AcQs48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3bPypBspYUUDguBFTuom/0zXmfA9cJLIy/rO45c/vPX0jJ4xGfAbNvGf1QBRQnY5
-         pSmpND1GNsDrRdhlJOMk0sQjBMwgZbbV53XcZn6fEwIleaZxu4hWGWDWixWgQnsr6e
-         rcn1lBrsWZMo8e/WGDTah/dF4zYU1Rc88E2N/kf4=
+        b=lasZa5fFtdO0EyNqejtiWdfI2zxv38csHVc0bDz66DnIEAyCEn8RDCwRylWuBh4FS
+         w8nnfmBlXlKmGfpZpU1vasCZPgBbfDsINY+P23F0peKFBrShMBLqtlc9ab6S7oTI+m
+         gLDIVqxs6kKMtJhUhqzFEdnXFp7aQIlZENcPnQfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.4 77/84] NFSv4: Fix second deadlock in nfs4_evict_inode()
-Date:   Mon, 14 Jun 2021 12:27:55 +0200
-Message-Id: <20210614102648.987021905@linuxfoundation.org>
+        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.10 115/131] sched/fair: Make sure to update tg contrib for blocked load
+Date:   Mon, 14 Jun 2021 12:27:56 +0200
+Message-Id: <20210614102656.928017018@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
 
-commit c3aba897c6e67fa464ec02b1f17911577d619713 upstream.
+commit 02da26ad5ed6ea8680e5d01f20661439611ed776 upstream.
 
-If the inode is being evicted but has to return a layout first, then
-that too can cause a deadlock in the corner case where the server
-reboots.
+During the update of fair blocked load (__update_blocked_fair()), we
+update the contribution of the cfs in tg->load_avg if cfs_rq's pelt
+has decayed.  Nevertheless, the pelt values of a cfs_rq could have
+been recently updated while propagating the change of a child. In this
+case, cfs_rq's pelt will not decayed because it has already been
+updated and we don't update tg->load_avg.
 
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+__update_blocked_fair
+  ...
+  for_each_leaf_cfs_rq_safe: child cfs_rq
+    update cfs_rq_load_avg() for child cfs_rq
+    ...
+    update_load_avg(cfs_rq_of(se), se, 0)
+      ...
+      update cfs_rq_load_avg() for parent cfs_rq
+		-propagation of child's load makes parent cfs_rq->load_sum
+		 becoming null
+        -UPDATE_TG is not set so it doesn't update parent
+		 cfs_rq->tg_load_avg_contrib
+  ..
+  for_each_leaf_cfs_rq_safe: parent cfs_rq
+    update cfs_rq_load_avg() for parent cfs_rq
+      - nothing to do because parent cfs_rq has already been updated
+		recently so cfs_rq->tg_load_avg_contrib is not updated
+    ...
+    parent cfs_rq is decayed
+      list_del_leaf_cfs_rq parent cfs_rq
+	  - but it still contibutes to tg->load_avg
+
+we must set UPDATE_TG flags when propagting pending load to the parent
+
+Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
+Reported-by: Odin Ugedal <odin@uged.al>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Odin Ugedal <odin@uged.al>
+Link: https://lkml.kernel.org/r/20210527122916.27683-3-vincent.guittot@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/nfs4proc.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -9342,15 +9342,20 @@ int nfs4_proc_layoutreturn(struct nfs4_l
- 			&task_setup_data.rpc_client, &msg);
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7960,7 +7960,7 @@ static bool __update_blocked_fair(struct
+ 		/* Propagate pending load changes to the parent, if any: */
+ 		se = cfs_rq->tg->se[cpu];
+ 		if (se && !skip_blocked_update(se))
+-			update_load_avg(cfs_rq_of(se), se, 0);
++			update_load_avg(cfs_rq_of(se), se, UPDATE_TG);
  
- 	dprintk("--> %s\n", __func__);
-+	lrp->inode = nfs_igrab_and_active(lrp->args.inode);
- 	if (!sync) {
--		lrp->inode = nfs_igrab_and_active(lrp->args.inode);
- 		if (!lrp->inode) {
- 			nfs4_layoutreturn_release(lrp);
- 			return -EAGAIN;
- 		}
- 		task_setup_data.flags |= RPC_TASK_ASYNC;
- 	}
--	nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1, 0);
-+	if (!lrp->inode)
-+		nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1,
-+				   1);
-+	else
-+		nfs4_init_sequence(&lrp->args.seq_args, &lrp->res.seq_res, 1,
-+				   0);
- 	task = rpc_run_task(&task_setup_data);
- 	if (IS_ERR(task))
- 		return PTR_ERR(task);
+ 		/*
+ 		 * There can be a lot of idle CPU cgroups.  Don't let fully
 
 
