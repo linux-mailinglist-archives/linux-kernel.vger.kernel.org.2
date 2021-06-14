@@ -2,146 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFDF3A6C4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445AD3A6C52
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234941AbhFNQrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
+        id S234973AbhFNQrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233492AbhFNQrU (ORCPT
+        with ESMTP id S233492AbhFNQrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:47:20 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944B1C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:45:17 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o10-20020a17090aac0ab029016e92770073so348421pjq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:45:17 -0700 (PDT)
+        Mon, 14 Jun 2021 12:47:48 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646CDC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:45:45 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id n17-20020a4ae1d10000b029024a49ea822bso2800593oot.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 09:45:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XE6H10v+4K87NjIk8prkM4d2wneLI3dvub+7esrDVfg=;
-        b=R0hyyNf1j+XUxrhZftIz5PLMAsBn54xSfjcVXYP907o++1arq7NfEa45NVVz42sL8q
-         GBGVdvdrlosa2afujLnozFUBk6Ce/L8avJARYyxS3JFAO5Z8PE/vZQfhledSVQX6FneX
-         nwVEInObC20oR9SLh5V7CUs1c+gzSpjgElVt4=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PFSRmp8JKTSq2aEG0094DvugKBOda8AdaRxBNubaTys=;
+        b=KgD39h1HjXt/ebnoAuXPxq3c2WU46s43ejAz2HDZX7yR3/teArjfZ3uNpnoGuOeDuA
+         JXJ45b12d6ILvZCnpTQjkhNFAYYOwabWL+kNbIeirF2RjOyg81uKl4OOj3q//zR4HLFz
+         zFNlZRAJnXwIKR1/t9z9LuAVdLHqz38WMRMQg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XE6H10v+4K87NjIk8prkM4d2wneLI3dvub+7esrDVfg=;
-        b=myBHFZNvuZv2yZc9/Kb/aPz72LQ7/bV+rxlNlB4jDqgZ/BXBk48P9kFYri8abfbFgu
-         tmGhz6g97y3gMEURcl9N/U4c3v8K7Iq0h8qfMW3EXlSKM3LW+ItLSUWz6mt2Q1w8rpMf
-         snovZ5H6FVjNRNUFU/bwmvc+z1giHMtqbyc5LMNeXTiffm3RO1uOi4cNQ9UdkI4qNhbB
-         +elMeEgtl24wuKvunq9mik53b7GKbTWOc60Ca9602VBiHZ464+H9GEtVIP642I6Zf/kK
-         v9Vs+3JsK0qNAdrx1TiFS2jEUA7NW6Gbo0HZ6MObilRW45aaqs56A+G8LLBfYB4XYVRu
-         XaYw==
-X-Gm-Message-State: AOAM533ahV+w7Bs3jeOqx15sTooGTgfJkhGVVcyXefaHhpNAGK6+VHS8
-        rrI+g2fJbFWw+5pPXVSi7hk/6w==
-X-Google-Smtp-Source: ABdhPJwcnxSn1eMsO+zkQwEPX5UKACvwFkKztnZW0P/eg+HPzt4AjZie3C6XQvs4YKSO1foMkaDXbA==
-X-Received: by 2002:a17:90b:901:: with SMTP id bo1mr20049707pjb.0.1623689117081;
-        Mon, 14 Jun 2021 09:45:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id ms5sm20953pjb.19.2021.06.14.09.45.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 09:45:16 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 09:45:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     youling257 <youling257@gmail.com>
-Cc:     torvalds@linux-foundation.org, christian.brauner@ubuntu.com,
-        andrea.righi@canonical.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, regressions@lists.linux.dev,
-        linux-security-module@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>
-Subject: Re: [PATCH] proc: Track /proc/$pid/attr/ opener mm_struct
-Message-ID: <202106140941.7CE5AE64@keescook>
-References: <20210608171221.276899-1-keescook@chromium.org>
- <20210614100234.12077-1-youling257@gmail.com>
- <202106140826.7912F27CD@keescook>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PFSRmp8JKTSq2aEG0094DvugKBOda8AdaRxBNubaTys=;
+        b=UBgJI162UWoDuco7PTMljU9J8EjV/dhY/XsRjkCH+l8JtQrGqElQEgdeu3fifYlB8D
+         yUGuyhnZECisvBVNjgDaZPXRVUGaf97Zoz0aYA2g2/iLUVekE36P+GAcSw56jMXKM6gx
+         TPSyHUABj12iFOIrTJlNCJKvPv3jjEgCTZ1gOa66H7zpA62lWNcBiLt+TulYEJ0bmDFl
+         lzSZnt/zQAxxztJopykiYoSYv+qwNQPSNo/+NuolGIiwIQHqX61x846W/MFAqI2FW2+0
+         Ox6c3k7RN04v54pnH1qEl2n0IpC5hU6Wq55qVRM6cNRHw8hD7xZnIPFjQFdKo58AYA8v
+         engw==
+X-Gm-Message-State: AOAM531D3UfZpCeUqkNtpywDcP/mjoV+e8WkHkt6Ebks2m0XODvLga+6
+        LtnruzwzmyTu93eVdMCXgygPsw==
+X-Google-Smtp-Source: ABdhPJzNffNtbA5YBzkOiXlPRc7yVP3MO7ZyIGJJfvUK2X+q/StJjff0bpIYpjn33GPrU8GyTzUu5Q==
+X-Received: by 2002:a4a:91cb:: with SMTP id e11mr2229118ooh.53.1623689144764;
+        Mon, 14 Jun 2021 09:45:44 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 2sm3359048ota.58.2021.06.14.09.45.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 09:45:44 -0700 (PDT)
+Subject: Re: [PATCH v8 3/5] selftests/sgx: Dump enclave memory map
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210610083021.392269-1-jarkko@kernel.org>
+ <20210610083021.392269-3-jarkko@kernel.org>
+ <bb39b6af-5921-64e8-793b-5ef4b150153e@linuxfoundation.org>
+ <20210612042723.vp26eafhyzrv7t66@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <c18409da-dd2b-c813-d7dd-bad81db102bd@linuxfoundation.org>
+Date:   Mon, 14 Jun 2021 10:45:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202106140826.7912F27CD@keescook>
+In-Reply-To: <20210612042723.vp26eafhyzrv7t66@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 08:32:35AM -0700, Kees Cook wrote:
-> On Mon, Jun 14, 2021 at 06:02:34PM +0800, youling257 wrote:
-> > I used mainline kernel on android, this patch cause "failed to retrieve pid context" problem.
-> > 
-> > 06-14 02:15:51.165  1685  1685 E ServiceManager: SELinux: getpidcon(pid=1682) failed to retrieve pid context.
-
-I found getpidcon() in libselinux:
-https://github.com/SELinuxProject/selinux/blob/master/libselinux/src/procattr.c#L159
-
-> > 06-14 02:15:51.166  1685  1685 E ServiceManager: add_service('batteryproperties',1) uid=0 - PERMISSION DENIED
-> > 06-14 02:15:51.166  1682  1682 I ServiceManager: addService() batteryproperties failed (err -1 - no service manager yet?).  Retrying...
-> > 06-14 02:15:51.197  1685  1685 E ServiceManager: SELinux: getpidcon(pid=1695) failed to retrieve pid context.
-> > 06-14 02:15:51.197  1685  1685 E ServiceManager: add_service('android.security.keystore',1) uid=1017 - PERMISSION DENIED
-> > 06-14 02:15:51.198  1695  1695 I ServiceManager: addService() android.security.keystore failed (err -1 - no service manager yet?).  Retrying...
-> > 06-14 02:15:51.207  1685  1685 E ServiceManager: SELinux: getpidcon(pid=1708) failed to retrieve pid context.
-> > 06-14 02:15:51.207  1685  1685 E ServiceManager: add_service('android.service.gatekeeper.IGateKeeperService',1) uid=1000 - PERMISSION DENIED
-> > 06-14 02:15:51.207  1708  1708 I ServiceManager: addService() android.service.gatekeeper.IGateKeeperService failed (err -1 - no service manager yet?).  Retrying...
-> > 06-14 02:15:51.275  1685  1685 E ServiceManager: SELinux: getpidcon(pid=1693) failed to retrieve pid context.
-> > 06-14 02:15:51.275  1692  1692 I cameraserver: ServiceManager: 0xf6d309e0
-> > 06-14 02:15:51.275  1685  1685 E ServiceManager: add_service('drm.drmManager',1) uid=1019 - PERMISSION DENIED
-> > 06-14 02:15:51.276  1693  1693 I ServiceManager: addService() drm.drmManager failed (err -1 - no service manager yet?).  Retrying...
-> > 
+On 6/11/21 10:27 PM, Jarkko Sakkinen wrote:
+> On Fri, Jun 11, 2021 at 04:45:19PM -0600, Shuah Khan wrote:
+>> On 6/10/21 2:30 AM, Jarkko Sakkinen wrote:
+>>> Often, it's useful to check whether /proc/self/maps looks sane when
+>>> dealing with memory mapped objects, especially when they are JIT'ish
+>>> dynamically constructed objects. Therefore, dump "/dev/sgx_enclave"
+>>> matching lines from the memory map in FIXTURE_SETUP().
+>>>
+>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+>>> ---
+>>>    tools/testing/selftests/sgx/main.c | 14 ++++++++++++++
+>>>    1 file changed, 14 insertions(+)
+>>>
+>>> diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
+>>> index 6da19b6bf287..14030f8b85ff 100644
+>>> --- a/tools/testing/selftests/sgx/main.c
+>>> +++ b/tools/testing/selftests/sgx/main.c
+>>> @@ -117,6 +117,8 @@ FIXTURE_SETUP(enclave)
+>>>    	Elf64_Sym *sgx_enter_enclave_sym = NULL;
+>>>    	struct vdso_symtab symtab;
+>>>    	struct encl_segment *seg;
+>>> +	char maps_line[256];
+>>> +	FILE *maps_file;
+>>>    	unsigned int i;
+>>>    	void *addr;
+>>> @@ -167,6 +169,18 @@ FIXTURE_SETUP(enclave)
+>>>    	memset(&self->run, 0, sizeof(self->run));
+>>>    	self->run.tcs = self->encl.encl_base;
+>>> +	maps_file = fopen("/proc/self/maps", "r");
+>>
+>> I almost applied these. Does this require root access, if so,
+>> please add logic to skip the test if non-root user runs it.
+>>
+>> Same comments for all other paths that might require root access.
 > 
-> Argh. Are you able to uncover what userspace is doing here?
-
-It looks like this is a case of attempting to _read_ the attr file, and
-the new opener check was requiring the opener/target relationship pass
-the mm_access() checks, which is clearly too strict.
-
-> So far, my test cases are:
+> As Dave stated, it does not. A process can inspect its own state
+> through /proc/self path. E.g. Chrome web browser uses /proc/self/exe
+> to initialize multiple instances of itself for browser tabs...
 > 
-> 1) self: open, write, close: allowed
-> 2) self: open, clone thread. thread: change privileges, write, close: allowed
-> 3) self: open, give to privileged process. privileged process: write: reject
 
-I've now added:
+Ah yes. I missed the self part. Thanks for clarifying.
 
-4) self: open privileged process's attr, read, close: allowed
+> As far as other things go, this patch set does not bind to any other
+> new OS resources.
+> 
 
-Can folks please test this patch to double-check?
+Thank you. I will apply these for 5.14-rc1.
 
+thanks,
+-- Shuah
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 7118ebe38fa6..7c55301674e0 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2676,7 +2676,14 @@ static int proc_pident_readdir(struct file *file, struct dir_context *ctx,
- #ifdef CONFIG_SECURITY
- static int proc_pid_attr_open(struct inode *inode, struct file *file)
- {
--	return __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
-+	struct mm_struct *mm = __mem_open(inode, file, PTRACE_MODE_READ_FSCREDS);
-+
-+	/* Reads do not require mm_struct access. */
-+	if (IS_ERR(mm))
-+		mm = NULL;
-+
-+	file->private_data = mm;
-+	return 0;
- }
- 
- static ssize_t proc_pid_attr_read(struct file * file, char __user * buf,
-@@ -2709,7 +2716,7 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
- 	int rv;
- 
- 	/* A task may only write when it was the opener. */
--	if (file->private_data != current->mm)
-+	if (!file->private_data || file->private_data != current->mm)
- 		return -EPERM;
- 
- 	rcu_read_lock();
-
-
-Wheee.
-
--- 
-Kees Cook
