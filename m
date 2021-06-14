@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9579D3A6BF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AA63A6BF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234653AbhFNQjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 12:39:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55720 "EHLO
+        id S234692AbhFNQjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 12:39:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55740 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233072AbhFNQjt (ORCPT
+        with ESMTP id S233153AbhFNQju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 12:39:49 -0400
-Message-Id: <20210614154408.673478623@linutronix.de>
+        Mon, 14 Jun 2021 12:39:50 -0400
+Message-Id: <20210614155353.658707307@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623688665;
+        s=2020; t=1623688666;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9DmInKGdwliNu4OWT76ZVubFVe/qP+O3lIqVt9WvDO8=;
-        b=3DU5jWpJlNtW2QCmvv3FfA/yUAyT+6txOxC8ebftn4u5JLq76Vyrk/exXIN6fooP3+QDOv
-        8+uK96QFiqyW6DjP2JzCuv7Gn9iqOqVj2otAIThsXYvIFU6lxzNCSeUQOtNMHiKwVRuESx
-        zEi5oOk6F4gsAHtCP3/DAt7t0r+al5Z6A87Sy40Pw6L7IIzgSLrf7y6rsI/hoLToenF0FI
-        0/eh9Lvjj/piMmJAperajNWnzjzLB55kKExUPOT6cJHeLmZ+7AOAD/Hsvyu2EeIEicAwLT
-        OPvnHaq98I6X+Udr939/1jwUUzY0R42pEZ/xdXnBkTglxEK/jM930JfilieMhg==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=sgptCqwazHrrUQbLGDvWvkWN4HvYgcn0Vjf8UKM6zI0=;
+        b=AoQhk1/dIp05jUPL4pLRjCJ6UZyvYFS2sFMRVHSCKKMgAnPar8vVaE6tA5jtwDas+ykXTU
+        8VoR8VvhUthHEXmZJ6rW/VZdayvcD8RzQUk/vABZDxPYy8T7XrTdIrciu6Q92VgsYbun5i
+        Lg6tI6lB/z3cKIvAZhsEF81kWG7d6hd3L8fRwRhaojTAEIlgSaI7vjLNlzBzAkGda22D+h
+        pti6FSG89+86U97iEW++VuKCPQQfVMwlwAp1BNkpL6sDxzjQJpZdgrvNWV1BpvwYzk99R9
+        zbNKQozMUf6m1V9Ehfq+YZJidrniNLyPztMohLL+ALgtTsU2C38/DnWPZSFAew==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623688665;
+        s=2020e; t=1623688666;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9DmInKGdwliNu4OWT76ZVubFVe/qP+O3lIqVt9WvDO8=;
-        b=y7teIuVLud+m/79S7lRzdXLB9YeEwSHRCJQArJtMH6tM6KukDBaUCxgrqIBdBVEusTxent
-        B/mzTXnmqKwraSBg==
-Date:   Mon, 14 Jun 2021 17:44:08 +0200
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=sgptCqwazHrrUQbLGDvWvkWN4HvYgcn0Vjf8UKM6zI0=;
+        b=6xQe5yoPWda8gnaqB19zyYrq7u+kE/ITJhQ9n9J5r/haENOZe5Y9E7ruZCiJFIMpmJRqBO
+        2wMxEQj5VNM9nLAA==
+Date:   Mon, 14 Jun 2021 17:44:09 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,58 +44,166 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V2 00/52] x86/fpu: Spring cleaning and PKRU sanitizing
+Subject: [patch V2 01/52] x86/fpu: Make init_fpstate correct with optimized XSAVE
+References: <20210614154408.673478623@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlIG1haW4gcGFydHMgb2YgdGhpcyBzZXJpZXMgYXJlOgoKICAtIFlldCBtb3JlIGJ1ZyBmaXhl
-cwoKICAtIFNpbXBsaWZpY2F0aW9uIGFuZCByZW1vdmFsL3JlcGxhY2VtZW50IG9mIHJlZHVuZGFu
-dCBhbmQvb3IKICAgIG92ZXJlbmdpbmVlcmVkIGNvZGUuCgogIC0gTmFtZSBzcGFjZSBjbGVhbnVw
-IGFzIHRoZSBleGlzdGluZyBuYW1lcyB3ZXJlIGp1c3QgYSBwZXJtYW5lbnQgc291cmNlCiAgICBv
-ZiBjb25mdXNpb24uCgogIC0gQ2xlYXIgc2VwZXJhdGlvbiBvZiB1c2VyIEFCSSBhbmQga2VybmVs
-IGludGVybmFsIHN0YXRlIGhhbmRsaW5nLgoKICAtIFJlbW92YWwgb2YgUEtSVSBmcm9tIGJlaW5n
-IFhTVEFURSBtYW5hZ2VkIGluIHRoZSBrZXJuZWwgYmVjYXVzZSBQS1JVCiAgICBoYXMgdG8gYmUg
-ZWFnZXJseSByZXN0b3JlZCBvbiBjb250ZXh0IHN3aXRjaCBhbmQga2VlcGluZyBpdCBpbiBzeW5j
-CiAgICBpbiB0aGUgeHN0YXRlIGJ1ZmZlciBpcyBqdXN0IHBvaW50bGVzcyBvdmVyaGVhZCBhbmQg
-ZnJhZ2lsZS4KCiAgICBUaGUga2VybmVsIHN0aWxsIFhTQVZFcyBQS1JVIG9uIGNvbnRleHQgc3dp
-dGNoIGJ1dCB0aGUgdmFsdWUgaW4gdGhlCiAgICBidWZmZXIgaXMgbm90IGxvbmdlciB1c2VkIGFu
-ZCBuZXZlciByZXN0b3JlZCBmcm9tIHRoZSBidWZmZXIuCgogICAgVGhpcyBzdGlsbCBuZWVkcyB0
-byBiZSBjbGVhbmVkIHVwLCBidXQgdGhlIHNlcmllcyBpcyBhbHJlYWR5IDQwKwogICAgcGF0Y2hl
-cyBsYXJnZSBhbmQgdGhlIGNsZWFudXAgb2YgdGhpcyBpcyBub3QgYSBmdW5jdGlvbmFsIHByb2Js
-ZW0uCgogICAgVGhlIGZ1bmN0aW9uYWwgaXNzdWVzIG9mIFBLUlUgbWFuYWdlbWVudCBhcmUgZnVs
-bHkgYWRkcmVzc2VkIHdpdGggdGhlCiAgICBzZXJpZXMgYXMgaXMuCgpJdCBhcHBsaWVzIG9uIHRv
-cCBvZgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGlw
-L3RpcC5naXQgbWFzdGVyCgphbmQgaXMgYWxzbyBhdmFpbGFibGUgdmlhIGdpdDoKCiAgZ2l0Oi8v
-Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IHg4
-Ni9mcHUKClRoaXMgaXMgYSBmb2xsb3cgdXAgdG8gVjEgd2hpY2ggY2FuIGJlIGZvdW5kIGhlcmU6
-CgogICAgIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTA2MTExNjE1MjMuNTA4OTA4MDI0
-QGxpbnV0cm9uaXguZGUKCkNoYW5nZXMgdnMuIFYxOgoKICAtIEZpeCB0aGUgYnJva2VuIGluaXRf
-ZnBzdGF0ZSBpbml0aWFsaXphdGlvbgoKICAtIE1ha2UgeHN0YXRlIGNvcHkgdG8gcHRyYWNlIHdv
-cmsgY29ycmVjdGx5CgogIC0gU2FuaXRpemUgdGhlIHJlZ3NldCBmdW5jdGlvbnMgbW9yZSBhbmQg
-Z2V0IHJpZCBvZgogICAgZnBzdGF0ZV9zYW5pdGl6ZV94c3RhdGUoKS4KCiAgLSBBZGRyZXNzZWQg
-cmV2aWV3IGNvbW1lbnRzCgogIC0gUGlja2VkIHVwIHRhZ3MKClRoYW5rcywKCgl0Z2x4Ci0tLQog
-YXJjaC94ODYvZXZlbnRzL2ludGVsL2xici5jICAgICAgICAgIHwgICAgNiAKIGFyY2gveDg2L2lu
-Y2x1ZGUvYXNtL2ZwdS9pbnRlcm5hbC5oICB8ICAxNzkgKysrLS0tLS0tLQogYXJjaC94ODYvaW5j
-bHVkZS9hc20vZnB1L3hzdGF0ZS5oICAgIHwgICA3MCArKy0KIGFyY2gveDg2L2luY2x1ZGUvYXNt
-L3BndGFibGUuaCAgICAgICB8ICAgNTcgLS0tCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wa2V5cy5o
-ICAgICAgICAgfCAgICA5IAogYXJjaC94ODYvaW5jbHVkZS9hc20vcGtydS5oICAgICAgICAgIHwg
-ICA2MiArKysKIGFyY2gveDg2L2luY2x1ZGUvYXNtL3Byb2Nlc3Nvci5oICAgICB8ICAgIDkgCiBh
-cmNoL3g4Ni9pbmNsdWRlL2FzbS9zcGVjaWFsX2luc25zLmggfCAgIDE0IAogYXJjaC94ODYva2Vy
-bmVsL2NwdS9jb21tb24uYyAgICAgICAgIHwgICAyOSAtCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L2Nv
-cmUuYyAgICAgICAgICAgfCAgMjQyICsrKysrKysrKy0tLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUv
-aW5pdC5jICAgICAgICAgICB8ICAgIDQgCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3JlZ3NldC5jICAg
-ICAgICAgfCAgMTc3ICsrKystLS0tLQogYXJjaC94ODYva2VybmVsL2ZwdS9zaWduYWwuYyAgICAg
-ICAgIHwgICA1OSArLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUveHN0YXRlLmMgICAgICAgICB8ICA2
-MjAgKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGFyY2gveDg2L2tlcm5lbC9w
-cm9jZXNzLmMgICAgICAgICAgICB8ICAgMTkgKwogYXJjaC94ODYva2VybmVsL3Byb2Nlc3NfNjQu
-YyAgICAgICAgIHwgICAyOCArCiBhcmNoL3g4Ni9rdm0vc3ZtL3Nldi5jICAgICAgICAgICAgICAg
-fCAgICAxIAogYXJjaC94ODYva3ZtL3g4Ni5jICAgICAgICAgICAgICAgICAgIHwgICA1NiArLS0K
-IGFyY2gveDg2L21tL2V4dGFibGUuYyAgICAgICAgICAgICAgICB8ICAgIDIgCiBhcmNoL3g4Ni9t
-bS9mYXVsdC5jICAgICAgICAgICAgICAgICAgfCAgICAyIAogYXJjaC94ODYvbW0vcGtleXMuYyAg
-ICAgICAgICAgICAgICAgIHwgICAyMiAtCiBpbmNsdWRlL2xpbnV4L3BrZXlzLmggICAgICAgICAg
-ICAgICAgfCAgICA0IAogMjIgZmlsZXMgY2hhbmdlZCwgODE4IGluc2VydGlvbnMoKyksIDg1MyBk
-ZWxldGlvbnMoLSkKCgo=
+The XSAVE init code initializes all enabled and supported components with
+XRSTOR(S) to init state. Then it XSAVEs the state of the components back
+into init_fpstate which is used in several places to fill in the init state
+of components.
+
+This works correctly with XSAVE, but not with XSAVEOPT and XSAVES because
+those use the init optimization and skip writing state of components which
+are in init state. So init_fpstate.xsave still contains all zeroes after
+this operation.
+
+There are two ways to solve that:
+
+   1) Use XSAVE unconditionally, but that requires to reshuffle the buffer when
+      XSAVES is enabled because XSAVES uses compacted format.
+
+   2) Save the components which are known to have a non-zero init state by other
+      means.
+
+Looking deeper #2 is the right thing to do because all components the
+kernel supports have all-zeroes init state except the legacy features (FP,
+SSE). Those cannot be hardcoded because the states are not identical on all
+CPUs, but they can be saved with FXSAVE which avoids all conditionals.
+
+Use FXSAVE to save the legacy FP/SSE components in init_fpstate along with
+a BUILD_BUG_ON() which reminds developers to validate that a newly added
+component has all zeroes init state. As a bonus remove the now unused
+copy_xregs_to_kernel_booting() crutch.
+
+The XSAVE and reshuffle method can still be implemented in the unlikely
+case that components are added which have a non-zero init state and no
+other means to save them. For now FXSAVE is just simple and good enough.
+
+Add fxsave_to_kernel() for that purpose. The duplication with
+copy_fxregs_to_kernel() is cleaned up later.
+
+Fixes: 6bad06b76892 ("x86, xsave: Use xsaveopt in context-switch path when supported")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+---
+V2: New patch.
+---
+ arch/x86/include/asm/fpu/internal.h |   30 +++++++--------------------
+ arch/x86/kernel/fpu/xstate.c        |   39 +++++++++++++++++++++++++++++++++---
+ 2 files changed, 44 insertions(+), 25 deletions(-)
+
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -204,6 +204,14 @@ static inline void copy_fxregs_to_kernel
+ 		asm volatile("fxsaveq %[fx]" : [fx] "=m" (fpu->state.fxsave));
+ }
+ 
++static inline void fxsave_to_kernel(struct fxregs_state *fx)
++{
++	if (IS_ENABLED(CONFIG_X86_32))
++		asm volatile( "fxsave %[fx]" : [fx] "=m" (*fx));
++	else
++		asm volatile("fxsaveq %[fx]" : [fx] "=m" (*fx));
++}
++
+ /* These macros all use (%edi)/(%rdi) as the single memory argument. */
+ #define XSAVE		".byte " REX_PREFIX "0x0f,0xae,0x27"
+ #define XSAVEOPT	".byte " REX_PREFIX "0x0f,0xae,0x37"
+@@ -270,28 +278,6 @@ static inline void copy_fxregs_to_kernel
+ 
+ /*
+  * This function is called only during boot time when x86 caps are not set
+- * up and alternative can not be used yet.
+- */
+-static inline void copy_xregs_to_kernel_booting(struct xregs_state *xstate)
+-{
+-	u64 mask = xfeatures_mask_all;
+-	u32 lmask = mask;
+-	u32 hmask = mask >> 32;
+-	int err;
+-
+-	WARN_ON(system_state != SYSTEM_BOOTING);
+-
+-	if (boot_cpu_has(X86_FEATURE_XSAVES))
+-		XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
+-	else
+-		XSTATE_OP(XSAVE, xstate, lmask, hmask, err);
+-
+-	/* We should never fault when copying to a kernel buffer: */
+-	WARN_ON_FPU(err);
+-}
+-
+-/*
+- * This function is called only during boot time when x86 caps are not set
+  * up and alternative can not be used yet.
+  */
+ static inline void copy_kernel_to_xregs_booting(struct xregs_state *xstate)
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -441,12 +441,35 @@ static void __init print_xstate_offset_s
+ }
+ 
+ /*
++ * All supported features have either init state all zeros or are
++ * handled in setup_init_fpu() individually. This is an explicit
++ * feature list and does not use XFEATURE_MASK*SUPPORTED to catch
++ * newly added supported features at build time and make people
++ * actually look at the init state for the new feature.
++ */
++#define XFEATURES_INIT_FPSTATE_HANDLED		\
++	(XFEATURE_MASK_FP |			\
++	 XFEATURE_MASK_SSE |			\
++	 XFEATURE_MASK_YMM |			\
++	 XFEATURE_MASK_OPMASK |			\
++	 XFEATURE_MASK_ZMM_Hi256 |		\
++	 XFEATURE_MASK_Hi16_ZMM	 |		\
++	 XFEATURE_MASK_PKRU |			\
++	 XFEATURE_MASK_BNDREGS |		\
++	 XFEATURE_MASK_BNDCSR |			\
++	 XFEATURE_MASK_PASID)
++
++/*
+  * setup the xstate image representing the init state
+  */
+ static void __init setup_init_fpu_buf(void)
+ {
+ 	static int on_boot_cpu __initdata = 1;
+ 
++	BUILD_BUG_ON((XFEATURE_MASK_USER_SUPPORTED |
++		      XFEATURE_MASK_SUPERVISOR_SUPPORTED) !=
++		     XFEATURES_INIT_FPSTATE_HANDLED);
++
+ 	WARN_ON_FPU(!on_boot_cpu);
+ 	on_boot_cpu = 0;
+ 
+@@ -466,10 +489,20 @@ static void __init setup_init_fpu_buf(vo
+ 	copy_kernel_to_xregs_booting(&init_fpstate.xsave);
+ 
+ 	/*
+-	 * Dump the init state again. This is to identify the init state
+-	 * of any feature which is not represented by all zero's.
++	 * All components are now in init state. Read the state back so
++	 * that init_fpstate contains all non-zero init state. This is only
++	 * working with XSAVE, but not with XSAVEOPT and XSAVES because
++	 * those use the init optimization which skips writing data for
++	 * components in init state. So XSAVE could be used, but that would
++	 * require to reshuffle the data when XSAVES is available because
++	 * XSAVES uses xstate compaction. But doing so is a pointless
++	 * exercise because most components have an all zeros init state
++	 * except for the legacy ones (FP and SSE). Those can be saved with
++	 * FXSAVE into the legacy area. Adding new features requires to
++	 * ensure that init state is all zeroes or if not to add the
++	 * necessary handling here.
+ 	 */
+-	copy_xregs_to_kernel_booting(&init_fpstate.xsave);
++	fxsave_to_kernel(&init_fpstate.fxsave);
+ }
+ 
+ static int xfeature_uncompacted_offset(int xfeature_nr)
+
