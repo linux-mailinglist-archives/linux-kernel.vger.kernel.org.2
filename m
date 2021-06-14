@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629813A6329
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AAA3A64F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235731AbhFNLLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:11:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
+        id S235605AbhFNLbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:31:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234914AbhFNK7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:59:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39B8261626;
-        Mon, 14 Jun 2021 10:42:27 +0000 (UTC)
+        id S235393AbhFNLSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:18:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 574D66197B;
+        Mon, 14 Jun 2021 10:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667347;
-        bh=uOsOqwolP7c9rOMG4+2LkO2+PqcZGbkXk1XA/biK5Uw=;
+        s=korg; t=1623667830;
+        bh=SuNRfKdAgHONuvn55sL2Mwc3vdvXTSbH+v/ybpCwBK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z43WhbQtVmN3UZex6WxCkHAzeBEN8VkmNNTXLT11h+gRjsoqhXT39xzIA9Fprvndb
-         a9vcfmyKOh2a+B6ItzrPdBVfjNlqjxTIZDBA9u11LiWCk1sAon9O2javPERgiyF8Td
-         mqf0UuxYydtGNgPICfhDiiq7/aBcjg8fuuINSvIA=
+        b=Uk5nASwXKHDGvczq2syP6V8PWtodgXur7dC7zRCRVcEnrDIybNNtKCRAz8Vr/bWAD
+         EVFefPeZ5qEd/yYheclvmKzHM79Ta5asgTJ4OeNsavntx1xBbCaz3M/heyXiFMl9Vn
+         iQ5NakX6SfvPDVG3gNN/XeOKb9VzBMeLeZCzO160=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 034/131] MIPS: Fix kernel hang under FUNCTION_GRAPH_TRACER and PREEMPT_TRACER
-Date:   Mon, 14 Jun 2021 12:26:35 +0200
-Message-Id: <20210614102654.168086233@linuxfoundation.org>
+        stable@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.12 064/173] KVM: X86: MMU: Use the correct inherited permissions to get shadow page
+Date:   Mon, 14 Jun 2021 12:26:36 +0200
+Message-Id: <20210614102700.290767360@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,105 +39,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-[ Upstream commit 78cf0eb926cb1abeff2106bae67752e032fe5f3e ]
+commit b1bd5cba3306691c771d558e94baa73e8b0b96b7 upstream.
 
-When update the latest mainline kernel with the following three configs,
-the kernel hangs during startup:
+When computing the access permissions of a shadow page, use the effective
+permissions of the walk up to that point, i.e. the logic AND of its parents'
+permissions.  Two guest PxE entries that point at the same table gfn need to
+be shadowed with different shadow pages if their parents' permissions are
+different.  KVM currently uses the effective permissions of the last
+non-leaf entry for all non-leaf entries.  Because all non-leaf SPTEs have
+full ("uwx") permissions, and the effective permissions are recorded only
+in role.access and merged into the leaves, this can lead to incorrect
+reuse of a shadow page and eventually to a missing guest protection page
+fault.
 
-(1) CONFIG_FUNCTION_GRAPH_TRACER=y
-(2) CONFIG_PREEMPT_TRACER=y
-(3) CONFIG_FTRACE_STARTUP_TEST=y
+For example, here is a shared pagetable:
 
-When update the latest mainline kernel with the above two configs (1)
-and (2), the kernel starts normally, but it still hangs when execute
-the following command:
+   pgd[]   pud[]        pmd[]            virtual address pointers
+                     /->pmd1(u--)->pte1(uw-)->page1 <- ptr1 (u--)
+        /->pud1(uw-)--->pmd2(uw-)->pte2(uw-)->page2 <- ptr2 (uw-)
+   pgd-|           (shared pmd[] as above)
+        \->pud2(u--)--->pmd1(u--)->pte1(uw-)->page1 <- ptr3 (u--)
+                     \->pmd2(uw-)->pte2(uw-)->page2 <- ptr4 (u--)
 
-echo "function_graph" > /sys/kernel/debug/tracing/current_tracer
+  pud1 and pud2 point to the same pmd table, so:
+  - ptr1 and ptr3 points to the same page.
+  - ptr2 and ptr4 points to the same page.
 
-Without CONFIG_PREEMPT_TRACER=y, the above two kinds of kernel hangs
-disappeared, so it seems that CONFIG_PREEMPT_TRACER has some influences
-with function_graph tracer at the first glance.
+(pud1 and pud2 here are pud entries, while pmd1 and pmd2 here are pmd entries)
 
-I use ejtag to find out the epc address is related with preempt_enable()
-in the file arch/mips/lib/mips-atomic.c, because function tracing can
-trace the preempt_{enable,disable} calls that are traced, replace them
-with preempt_{enable,disable}_notrace to prevent function tracing from
-going into an infinite loop, and then it can fix the kernel hang issue.
+- First, the guest reads from ptr1 first and KVM prepares a shadow
+  page table with role.access=u--, from ptr1's pud1 and ptr1's pmd1.
+  "u--" comes from the effective permissions of pgd, pud1 and
+  pmd1, which are stored in pt->access.  "u--" is used also to get
+  the pagetable for pud1, instead of "uw-".
 
-By the way, it seems that this commit is a complement and improvement of
-commit f93a1a00f2bd ("MIPS: Fix crash that occurs when function tracing
-is enabled").
+- Then the guest writes to ptr2 and KVM reuses pud1 which is present.
+  The hypervisor set up a shadow page for ptr2 with pt->access is "uw-"
+  even though the pud1 pmd (because of the incorrect argument to
+  kvm_mmu_get_page in the previous step) has role.access="u--".
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+- Then the guest reads from ptr3.  The hypervisor reuses pud1's
+  shadow pmd for pud2, because both use "u--" for their permissions.
+  Thus, the shadow pmd already includes entries for both pmd1 and pmd2.
+
+- At last, the guest writes to ptr4.  This causes no vmexit or pagefault,
+  because pud1's shadow page structures included an "uw-" page even though
+  its role.access was "u--".
+
+Any kind of shared pagetable might have the similar problem when in
+virtual machine without TDP enabled if the permissions are different
+from different ancestors.
+
+In order to fix the problem, we change pt->access to be an array, and
+any access in it will not include permissions ANDed from child ptes.
+
+The test code is: https://lore.kernel.org/kvm/20210603050537.19605-1-jiangshanlai@gmail.com/
+Remember to test it with TDP disabled.
+
+The problem had existed long before the commit 41074d07c78b ("KVM: MMU:
+Fix inherited permissions for emulated guest pte updates"), and it
+is hard to find which is the culprit.  So there is no fixes tag here.
+
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Message-Id: <20210603052455.21023-1-jiangshanlai@gmail.com>
+Cc: stable@vger.kernel.org
+Fixes: cea0f0e7ea54 ("[PATCH] KVM: MMU: Shadow page table caching")
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/lib/mips-atomic.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ Documentation/virt/kvm/mmu.rst |    4 ++--
+ arch/x86/kvm/mmu/paging_tmpl.h |   14 +++++++++-----
+ 2 files changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/lib/mips-atomic.c b/arch/mips/lib/mips-atomic.c
-index de03838b343b..a9b72eacfc0b 100644
---- a/arch/mips/lib/mips-atomic.c
-+++ b/arch/mips/lib/mips-atomic.c
-@@ -37,7 +37,7 @@
-  */
- notrace void arch_local_irq_disable(void)
- {
--	preempt_disable();
-+	preempt_disable_notrace();
+--- a/Documentation/virt/kvm/mmu.rst
++++ b/Documentation/virt/kvm/mmu.rst
+@@ -171,8 +171,8 @@ Shadow pages contain the following infor
+     shadow pages) so role.quadrant takes values in the range 0..3.  Each
+     quadrant maps 1GB virtual address space.
+   role.access:
+-    Inherited guest access permissions in the form uwx.  Note execute
+-    permission is positive, not negative.
++    Inherited guest access permissions from the parent ptes in the form uwx.
++    Note execute permission is positive, not negative.
+   role.invalid:
+     The page is invalid and should not be used.  It is a root page that is
+     currently pinned (by a cpu hardware register pointing to it); once it is
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -90,8 +90,8 @@ struct guest_walker {
+ 	gpa_t pte_gpa[PT_MAX_FULL_LEVELS];
+ 	pt_element_t __user *ptep_user[PT_MAX_FULL_LEVELS];
+ 	bool pte_writable[PT_MAX_FULL_LEVELS];
+-	unsigned pt_access;
+-	unsigned pte_access;
++	unsigned int pt_access[PT_MAX_FULL_LEVELS];
++	unsigned int pte_access;
+ 	gfn_t gfn;
+ 	struct x86_exception fault;
+ };
+@@ -418,13 +418,15 @@ retry_walk:
+ 		}
  
- 	__asm__ __volatile__(
- 	"	.set	push						\n"
-@@ -53,7 +53,7 @@ notrace void arch_local_irq_disable(void)
- 	: /* no inputs */
- 	: "memory");
+ 		walker->ptes[walker->level - 1] = pte;
++
++		/* Convert to ACC_*_MASK flags for struct guest_walker.  */
++		walker->pt_access[walker->level - 1] = FNAME(gpte_access)(pt_access ^ walk_nx_mask);
+ 	} while (!is_last_gpte(mmu, walker->level, pte));
  
--	preempt_enable();
-+	preempt_enable_notrace();
- }
- EXPORT_SYMBOL(arch_local_irq_disable);
+ 	pte_pkey = FNAME(gpte_pkeys)(vcpu, pte);
+ 	accessed_dirty = have_ad ? pte_access & PT_GUEST_ACCESSED_MASK : 0;
  
-@@ -61,7 +61,7 @@ notrace unsigned long arch_local_irq_save(void)
- {
- 	unsigned long flags;
+ 	/* Convert to ACC_*_MASK flags for struct guest_walker.  */
+-	walker->pt_access = FNAME(gpte_access)(pt_access ^ walk_nx_mask);
+ 	walker->pte_access = FNAME(gpte_access)(pte_access ^ walk_nx_mask);
+ 	errcode = permission_fault(vcpu, mmu, walker->pte_access, pte_pkey, access);
+ 	if (unlikely(errcode))
+@@ -463,7 +465,8 @@ retry_walk:
+ 	}
  
--	preempt_disable();
-+	preempt_disable_notrace();
+ 	pgprintk("%s: pte %llx pte_access %x pt_access %x\n",
+-		 __func__, (u64)pte, walker->pte_access, walker->pt_access);
++		 __func__, (u64)pte, walker->pte_access,
++		 walker->pt_access[walker->level - 1]);
+ 	return 1;
  
- 	__asm__ __volatile__(
- 	"	.set	push						\n"
-@@ -78,7 +78,7 @@ notrace unsigned long arch_local_irq_save(void)
- 	: /* no inputs */
- 	: "memory");
+ error:
+@@ -642,7 +645,7 @@ static int FNAME(fetch)(struct kvm_vcpu
+ 	bool huge_page_disallowed = exec && nx_huge_page_workaround_enabled;
+ 	struct kvm_mmu_page *sp = NULL;
+ 	struct kvm_shadow_walk_iterator it;
+-	unsigned direct_access, access = gw->pt_access;
++	unsigned int direct_access, access;
+ 	int top_level, level, req_level, ret;
+ 	gfn_t base_gfn = gw->gfn;
  
--	preempt_enable();
-+	preempt_enable_notrace();
- 
- 	return flags;
- }
-@@ -88,7 +88,7 @@ notrace void arch_local_irq_restore(unsigned long flags)
- {
- 	unsigned long __tmp1;
- 
--	preempt_disable();
-+	preempt_disable_notrace();
- 
- 	__asm__ __volatile__(
- 	"	.set	push						\n"
-@@ -106,7 +106,7 @@ notrace void arch_local_irq_restore(unsigned long flags)
- 	: "0" (flags)
- 	: "memory");
- 
--	preempt_enable();
-+	preempt_enable_notrace();
- }
- EXPORT_SYMBOL(arch_local_irq_restore);
- 
--- 
-2.30.2
-
+@@ -674,6 +677,7 @@ static int FNAME(fetch)(struct kvm_vcpu
+ 		sp = NULL;
+ 		if (!is_shadow_present_pte(*it.sptep)) {
+ 			table_gfn = gw->table_gfn[it.level - 2];
++			access = gw->pt_access[it.level - 2];
+ 			sp = kvm_mmu_get_page(vcpu, table_gfn, addr, it.level-1,
+ 					      false, access);
+ 		}
 
 
