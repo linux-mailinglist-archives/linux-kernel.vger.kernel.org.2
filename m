@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4603A5FE8
+	by mail.lfdr.de (Postfix) with ESMTP id EDFE83A5FEA
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhFNKX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:23:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:59676 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232745AbhFNKXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:23:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 628391FB;
+        id S232834AbhFNKXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232815AbhFNKX2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:23:28 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94042C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:21:22 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id g22so3162160pgk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 03:21:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YZpft7OI/68AkdpRkEG65YPdqz6N6jjlPeJBBm/DAcc=;
+        b=ZEy9JljT0S7v4JKqlZp2tbrvTcXn7OssJFRLOCaLdsngU1E0T6hHlKfSOiLofzz+Qd
+         CYD89wjmQkJ5qg24VB+qPG1CnGLkXuNVaRjZBqMFxJaq/qlIrixiP8M7mzSgo4aunXgX
+         uaYZReiLfSn/RF8T5pFp5dg577Aj4ePvKGNXgtLNhY8SJF2CSwV8F4wLY1rH66F7Bf8V
+         aMW6O23psUcC5KK3Z4bqR0a2fUmCTqtHdn1hopGeMV45XRZRBqg8ZEsYR0Ri60IiODOv
+         Y9QGP+Tgn3YheWVxFMqjQdkb8ga4uJ1eUqNycNFbG5579Ztpkw2Po4hruC9fiShU+8nY
+         6Ygw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YZpft7OI/68AkdpRkEG65YPdqz6N6jjlPeJBBm/DAcc=;
+        b=t5syWGfTddvY16n+F1J6Yw/UyXf25JsNsgLl9kGx1y9aVgkiSv0HzU8GtGVdZDTsvM
+         9sy5CKQmsUvTcfoEYsT/wynwTtS40BdYOLaD2SVK6ZX4fVturEvPyBZMk62ttUQsVb7H
+         31pu3UwgMUieeYdFdxLfRxYTZu/7h8Fu5A6vnWVe1Trbyw7JIcZaMdnk60lWX+WQ0Ymj
+         YxhBpB7KLbX5vISqv+FNkFRQd4bFvLYl1caaC4aXoo2V1JlHxhqxO+Oeg3+Q0lTE9a1G
+         OZHEjwH8yT0WtBL1dgsMOVYT/wI9SpOJXQyfllg4Brcik52axgKXguLmDehyZywfVPft
+         JBkw==
+X-Gm-Message-State: AOAM532gzTnuzsI/1eeMvK4heitjBXwmjwnHHbVMbXZVKvGrcJOiDNXg
+        +jFKbg7rIRKfH50D8iwAvldX3w==
+X-Google-Smtp-Source: ABdhPJxqBUAdifrUMvs2Xcf/ymaxIYCbX+e1eFh0GE+mXpPaQBN6YqQMBz8f9vC6UKEwRGT9SoikIA==
+X-Received: by 2002:a65:42c3:: with SMTP id l3mr16224536pgp.259.1623666082072;
+        Mon, 14 Jun 2021 03:21:22 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id k25sm12058962pfa.213.2021.06.14.03.21.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 14 Jun 2021 03:21:21 -0700 (PDT)
-Received: from [10.57.5.127] (unknown [10.57.5.127])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF17A3F694;
-        Mon, 14 Jun 2021 03:21:17 -0700 (PDT)
-Subject: Re: [PATCH v3 1/3] thermal: cpufreq_cooling: Update also offline CPUs
- per-cpu thermal_pressure
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        peterz@infradead.org, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, qperret@google.com,
-        dietmar.eggemann@arm.com, vincent.donnefort@arm.com,
-        Beata.Michalska@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        rostedt@goodmis.org, segall@google.com, mgorman@suse.de,
-        bristot@redhat.com, thara.gopinath@linaro.org,
-        amit.kachhap@gmail.com, amitk@kernel.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org
-References: <20210610150324.22919-1-lukasz.luba@arm.com>
- <20210610150324.22919-2-lukasz.luba@arm.com>
- <20210614101213.enhmoyupag5d556r@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <7c807ba7-5fb5-d6e0-0af5-cc68e085947a@arm.com>
-Date:   Mon, 14 Jun 2021 11:21:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+Date:   Mon, 14 Jun 2021 15:51:19 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <20210614102119.qifm5sj7fpg54iqo@vireshk-i7>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210614101213.enhmoyupag5d556r@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a11YhcEOjauWc872BQv+SO-E5+gnz7Lk6UK42iVw7Oyfg@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/14/21 11:12 AM, Viresh Kumar wrote:
-> On 10-06-21, 16:03, Lukasz Luba wrote:
->> The thermal pressure signal gives information to the scheduler about
->> reduced CPU capacity due to thermal. It is based on a value stored in a
->> per-cpu 'thermal_pressure' variable. The online CPUs will get the new
->> value there, while the offline won't. Unfortunately, when the CPU is back
->> online, the value read from per-cpu variable might be wrong (stale data).
->> This might affect the scheduler decisions, since it sees the CPU capacity
->> differently than what is actually available.
->>
->> Fix it by making sure that all online+offline CPUs would get the proper
->> value in their per-cpu variable when thermal framework sets capping.
->>
->> Fixes: f12e4f66ab6a3 ("thermal/cpu-cooling: Update thermal pressure in case of a maximum frequency capping")
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/cpufreq_cooling.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
->> index eeb4e4b76c0b..43b1ae8a7789 100644
->> --- a/drivers/thermal/cpufreq_cooling.c
->> +++ b/drivers/thermal/cpufreq_cooling.c
->> @@ -478,7 +478,7 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
->>   	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
->>   	if (ret >= 0) {
->>   		cpufreq_cdev->cpufreq_state = state;
->> -		cpus = cpufreq_cdev->policy->cpus;
->> +		cpus = cpufreq_cdev->policy->related_cpus;
->>   		max_capacity = arch_scale_cpu_capacity(cpumask_first(cpus));
->>   		capacity = frequency * max_capacity;
->>   		capacity /= cpufreq_cdev->policy->cpuinfo.max_freq;
+On 10-06-21, 15:22, Arnd Bergmann wrote:
+> Can you give an example of how this would be hooked up to other drivers
+> using those gpios. Can you give an example of how using the "gpio-keys" or
+> "gpio-leds" drivers in combination with virtio-gpio looks like in the DT?
 > 
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Would qemu simply add the required DT properties to the device node that
+> corresponds to the virtio device in this case?
 > 
+> From what I can tell, both the mmio and pci variants of virtio can have their
+> dev->of_node populated, but I don't see the logic in register_virtio_device()
+> that looks up the of_node of the virtio_device that the of_gpio code then
+> tries to refer to.
 
-Thank you Viresh!
+To be honest, I haven't tried this yet and I was expecting it to be
+already taken care of. I was relying on the DTB automatically
+generated by Qemu to get the driver probed and didn't have a look at
+it as well.
 
-Regards,
-Lukasz
+I now understand that it won't be that straight forward. The same must
+be true for adding an i2c device to an i2c bus over virtio (The way I
+tested that earlier was by using the sysfs file to add a device to a
+bus).
+
+This may be something lacking generally for virtio-pci thing, not
+sure though.
+
+-- 
+viresh
