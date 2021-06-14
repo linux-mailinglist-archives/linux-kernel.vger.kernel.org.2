@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6363A6098
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE043A616F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233551AbhFNKf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:35:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40518 "EHLO mail.kernel.org"
+        id S233991AbhFNKrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:47:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233282AbhFNKdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:33:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE08661242;
-        Mon, 14 Jun 2021 10:31:27 +0000 (UTC)
+        id S234137AbhFNKkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:40:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6AA06141F;
+        Mon, 14 Jun 2021 10:34:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666688;
-        bh=QoxxFQ0dAv0B4Il9IHIAqp5Qvs1fImb2V7//DS7Y33k=;
+        s=korg; t=1623666883;
+        bh=ckN1z2tVaQ1YA+b0uaeb4c69ZdcSbgwlSMC8rFkpyDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RRXgsEuJMSCa5MUBAe4hLJeO1I1RU7dcGih5y5ENKB+xA5rtt2DBEP/SEehX4nBfS
-         v9c3RT1Cbrpx3FZMCGJ3x3k3S/kcoKT4xaEa4h3KgmeTgYPU6FgfCTtjZijFzBgbIt
-         QamESDlTbIF0A4wwQiYElgUpRi6C4G72FW4e53zs=
+        b=N8Yvo6uXIRpk+Ixwt5VnGT5valatYlHj7Z5evYFbzkrZr5l1zloCOW9Ny0LoP5QFQ
+         yHQSu8hEL7/JsjsZVZwYEx6QDVcxZ0ZGLz2N1+ziX4lY9bq40Wh7wtub4LaYgbb0er
+         0NKnA7Z947UC4rgv94c+TR/msxeYubalvaH6Xv9o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        =?UTF-8?q?NOMURA=20JUNICHI ?= <junichi.nomura@nec.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/42] cgroup: disable controllers at parse time
+        stable@vger.kernel.org, Matt Wang <wwentao@vmware.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 16/67] scsi: vmw_pvscsi: Set correct residual data length
 Date:   Mon, 14 Jun 2021 12:26:59 +0200
-Message-Id: <20210614102642.971915343@linuxfoundation.org>
+Message-Id: <20210614102644.320631875@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shakeel Butt <shakeelb@google.com>
+From: Matt Wang <wwentao@vmware.com>
 
-[ Upstream commit 45e1ba40837ac2f6f4d4716bddb8d44bd7e4a251 ]
+[ Upstream commit e662502b3a782d479e67736a5a1c169a703d853a ]
 
-This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
-too early usage of static_branch_disable()"). The commit 6041186a3258
-("init: initialize jump labels before command line option parsing") has
-moved the jump_label_init() before parse_args() which has made the
-commit a3e72739b7a7 unnecessary. On the other hand there are
-consequences of disabling the controllers later as there are subsystems
-doing the controller checks for different decisions. One such incident
-is reported [1] regarding the memory controller and its impact on memory
-reclaim code.
+Some commands (such as INQUIRY) may return less data than the initiator
+requested. To avoid conducting useless information, set the right residual
+count to make upper layer aware of this.
 
-[1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4@nec.com
+Before (INQUIRY PAGE 0xB0 with 128B buffer):
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Reported-by: NOMURA JUNICHI(野村　淳一) <junichi.nomura@nec.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Tested-by: Jun'ichi Nomura <junichi.nomura@nec.com>
+$ sg_raw -r 128 /dev/sda 12 01 B0 00 80 00
+SCSI Status: Good
+
+Received 128 bytes of data:
+ 00 00 b0 00 3c 01 00 00 00 00 00 00 00 00 00 00 00 ...<............
+ 10 00 00 00 00 00 01 00 00 00 00 00 40 00 00 08 00 ...........@....
+ 20 80 00 00 00 00 00 00 00 00 00 20 00 00 00 00 00 .......... .....
+ 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+ 40 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+ 50 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+ 60 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+ 70 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+
+After:
+
+$ sg_raw -r 128 /dev/sda 12 01 B0 00 80 00
+SCSI Status: Good
+
+Received 64 bytes of data:
+00 00 b0 00 3c 01 00 00 00 00 00 00 00 00 00 00 00 ...<............
+10 00 00 00 00 00 01 00 00 00 00 00 40 00 00 08 00 ...........@....
+20 80 00 00 00 00 00 00 00 00 00 20 00 00 00 00 00 .......... .....
+30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+
+[mkp: clarified description]
+
+Link: https://lore.kernel.org/r/03C41093-B62E-43A2-913E-CFC92F1C70C3@vmware.com
+Signed-off-by: Matt Wang <wwentao@vmware.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cgroup.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/scsi/vmw_pvscsi.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/cgroup.c b/kernel/cgroup.c
-index 684d02f343b4..3e0fca894a8b 100644
---- a/kernel/cgroup.c
-+++ b/kernel/cgroup.c
-@@ -5636,8 +5636,6 @@ int __init cgroup_init_early(void)
- 	return 0;
- }
+diff --git a/drivers/scsi/vmw_pvscsi.c b/drivers/scsi/vmw_pvscsi.c
+index 64eb8ffb2ddf..2c707b5c7b0b 100644
+--- a/drivers/scsi/vmw_pvscsi.c
++++ b/drivers/scsi/vmw_pvscsi.c
+@@ -574,7 +574,13 @@ static void pvscsi_complete_request(struct pvscsi_adapter *adapter,
+ 		case BTSTAT_SUCCESS:
+ 		case BTSTAT_LINKED_COMMAND_COMPLETED:
+ 		case BTSTAT_LINKED_COMMAND_COMPLETED_WITH_FLAG:
+-			/* If everything went fine, let's move on..  */
++			/*
++			 * Commands like INQUIRY may transfer less data than
++			 * requested by the initiator via bufflen. Set residual
++			 * count to make upper layer aware of the actual amount
++			 * of data returned.
++			 */
++			scsi_set_resid(cmd, scsi_bufflen(cmd) - e->dataLen);
+ 			cmd->result = (DID_OK << 16);
+ 			break;
  
--static u16 cgroup_disable_mask __initdata;
--
- /**
-  * cgroup_init - cgroup initialization
-  *
-@@ -5695,12 +5693,8 @@ int __init cgroup_init(void)
- 		 * disabled flag and cftype registration needs kmalloc,
- 		 * both of which aren't available during early_init.
- 		 */
--		if (cgroup_disable_mask & (1 << ssid)) {
--			static_branch_disable(cgroup_subsys_enabled_key[ssid]);
--			printk(KERN_INFO "Disabling %s control group subsystem\n",
--			       ss->name);
-+		if (!cgroup_ssid_enabled(ssid))
- 			continue;
--		}
- 
- 		if (cgroup_ssid_no_v1(ssid))
- 			printk(KERN_INFO "Disabling %s control group subsystem in v1 mounts\n",
-@@ -6143,7 +6137,10 @@ static int __init cgroup_disable(char *str)
- 			if (strcmp(token, ss->name) &&
- 			    strcmp(token, ss->legacy_name))
- 				continue;
--			cgroup_disable_mask |= 1 << i;
-+
-+			static_branch_disable(cgroup_subsys_enabled_key[i]);
-+			pr_info("Disabling %s control group subsystem\n",
-+				ss->name);
- 		}
- 	}
- 	return 1;
 -- 
 2.30.2
 
