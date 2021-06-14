@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030B43A719C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B3F3A71A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 23:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhFNV6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 17:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhFNV51 (ORCPT
+        id S229613AbhFNV7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 17:59:40 -0400
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:39703 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231636AbhFNV6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 17:57:27 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB967C061767;
-        Mon, 14 Jun 2021 14:55:23 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so209840pjn.1;
-        Mon, 14 Jun 2021 14:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n7uYeUnQHRN8Nl6Ldfot2gZEPq2ram/9bJnItzNoEn8=;
-        b=qFvwtZCDo7ulnyTgkW4rxRCqOTQdLDn3Xcw0Q3DUlBGwAmY42uhj5Au4cBVnjvdUCI
-         OzIHIc8f5jiTkv+AmdB6IMHGFWCNEj9UqZg8Gk5DhsUpBRe0pYumeOwk0aPom9DwumRX
-         1k+wlpZPYHLAGOjb2RZkV+lC3G9U5HddNvPqvdZXUvPytr8dNH+KwRrozOrxedVTQZkF
-         1G9or7xzKx1jnrRShrx4PLwiS/Zf03r/nk27Lh2xQSKmRgmawAOyMPFP79zdt3I5pjQR
-         qXH8w7LVzlvmNKJs4lNpF5su5/i6X2XKMqTwtWdLWqSxujSxUhV51DqhjuqJmRe78ion
-         u0eg==
+        Mon, 14 Jun 2021 17:58:33 -0400
+Received: by mail-pf1-f181.google.com with SMTP id k15so11665374pfp.6;
+        Mon, 14 Jun 2021 14:56:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n7uYeUnQHRN8Nl6Ldfot2gZEPq2ram/9bJnItzNoEn8=;
-        b=alEhdBZafsGB1evCAHN9+hcj9yPcIUHC2vO/zZCeMyLmsf9tJyXSOvHKmgxspMoPsU
-         OyOVPt8WH91eqma4VwDUL14xQGF1/Sf5ejjX33EnOVwHx1UF1KVMEQdhDnKmIorE7hL2
-         6JQCL091U03dgGeNnLgD2I1EooRoJqJMWhJmfILBMK83uPI4WyA8OGGwAMSdVytUcKYK
-         VyrrYZqpVrWrFeKf3nBii6Xx+73rAbz8eEuzj4sVBwxSPu5+pubfWOTCX7ig68/gsrY4
-         PvRVI+MPmlOgOx8SQxA/VsgqoteH9WzHkvamyOkJhqSsNvq4xXny5JSx4aQTZp8YAY+P
-         S3qA==
-X-Gm-Message-State: AOAM530lo9wwIn5MwquHsA8ELMkfJvVr/tYWHYifnkuiT4Zw0eHXOaAF
-        N+ZtUYkb0apNe9FH4oIKL68=
-X-Google-Smtp-Source: ABdhPJx2GE4PSoxUgNiWHnou2aRLJd4bY3YT/54u9rZ9X3gDoY+PSjirSFav7AY8wWB8Ozmkr5SIcg==
-X-Received: by 2002:a17:902:d386:b029:11a:6d87:a7db with SMTP id e6-20020a170902d386b029011a6d87a7dbmr1193907pld.31.1623707723196;
-        Mon, 14 Jun 2021 14:55:23 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:2a26:15ba:dc71:c4ba])
-        by smtp.gmail.com with ESMTPSA id t12sm13874891pfc.133.2021.06.14.14.55.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S1XQUH/m8RP26gVRUSs66tHIaokdTzVysKqV1d4GWGY=;
+        b=GOD1KW7OG2PS04sdTk8J0W66ZBf+uS8XAAkpy/5+AF02yMs9H9LrmYznQi0FHWRAXI
+         rEFVBh3q/mLvLNnYIiyvKkY3N/WKiTFz2CefiFT8nhm/gHbp+z5B1bBWxfI7TsHtLbP5
+         +r/mUHOm2QKpJwREP5KHQ0lNzjZGX7i9Bu6DL1OCqTPtKoQ/6TR57iqRXDhkVQY7p/WB
+         ak97dmaKDVgWTZbqUgrVASkn6DPBfg3yz8Qy1FcGSmBkELQuTWrWDm7G9vS8JPdqNXYj
+         AOrhLikQQ0UeEGfhQQhEuYoqPTpd+2tQE+hDdhbmRnI9rxLZ2MXCXl0aY62xogaHjTir
+         JiDw==
+X-Gm-Message-State: AOAM531Aq2GVGxbvQL3RNlYYDnghx6vD0n4tBjm9HyObXrTdCqudS+yG
+        gRXqKURXYIenyuhHLANyQeY=
+X-Google-Smtp-Source: ABdhPJyGmG1xDZh+iEl6WQKrlTuny9a9lOx2NDPfV5j6TCBImjrIfVRrfu35gzZCSoTj7hmD3SijpQ==
+X-Received: by 2002:a62:5e05:0:b029:2fb:2ee4:2b9c with SMTP id s5-20020a625e050000b02902fb2ee42b9cmr1112264pfb.0.1623707777777;
+        Mon, 14 Jun 2021 14:56:17 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id ig1sm13024465pjb.27.2021.06.14.14.56.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 14:55:22 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 14:55:19 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
-Message-ID: <YMfQR8iM9be5Qg8+@google.com>
-References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
- <20210613233041.128961-4-alexander.sverdlin@gmail.com>
+        Mon, 14 Jun 2021 14:56:17 -0700 (PDT)
+From:   Moritz Fischer <mdf@kernel.org>
+To:     mathias.nyman@intel.com
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH] usb: renesas-xhci: Replace BIT(15) with macro
+Date:   Mon, 14 Jun 2021 14:56:14 -0700
+Message-Id: <20210614215614.240489-1-mdf@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210613233041.128961-4-alexander.sverdlin@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+Replace BIT(15) with RENESAS_ROM_STATUS_ROM_EXISTS.
 
-On Mon, Jun 14, 2021 at 01:30:37AM +0200, Alexander Sverdlin wrote:
-> Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
-> to Common Clock Framework.
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+---
+ drivers/usb/host/xhci-pci-renesas.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Can this be merged standalone?
-
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> ---
->  drivers/input/keyboard/ep93xx_keypad.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
-> index c8194333d612..e0e931e796fa 100644
-> --- a/drivers/input/keyboard/ep93xx_keypad.c
-> +++ b/drivers/input/keyboard/ep93xx_keypad.c
-> @@ -157,7 +157,7 @@ static int ep93xx_keypad_open(struct input_dev *pdev)
->  
->  	if (!keypad->enabled) {
->  		ep93xx_keypad_config(keypad);
-> -		clk_enable(keypad->clk);
-> +		clk_prepare_enable(keypad->clk);
->  		keypad->enabled = true;
->  	}
->  
-> @@ -169,7 +169,7 @@ static void ep93xx_keypad_close(struct input_dev *pdev)
->  	struct ep93xx_keypad *keypad = input_get_drvdata(pdev);
->  
->  	if (keypad->enabled) {
-> -		clk_disable(keypad->clk);
-> +		clk_disable_unprepare(keypad->clk);
->  		keypad->enabled = false;
-
-While we are at it, I wonder about handling suspend/resume. I see that
-we disable the clock even if keyboard is configured as a wakeup source.
-Is it really capable of waking up the system when clock is off?
-
-Thanks.
-
+diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
+index f97ac9f52bf4..5923844ed821 100644
+--- a/drivers/usb/host/xhci-pci-renesas.c
++++ b/drivers/usb/host/xhci-pci-renesas.c
+@@ -197,7 +197,7 @@ static int renesas_check_rom_state(struct pci_dev *pdev)
+ 	if (err)
+ 		return pcibios_err_to_errno(err);
+ 
+-	if (rom_state & BIT(15)) {
++	if (rom_state & RENESAS_ROM_STATUS_ROM_EXISTS) {
+ 		/* ROM exists */
+ 		dev_dbg(&pdev->dev, "ROM exists\n");
+ 
 -- 
-Dmitry
+2.31.1
+
