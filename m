@@ -2,35 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D5D3A61B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FA93A604F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhFNKu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46840 "EHLO mail.kernel.org"
+        id S233237AbhFNKdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:33:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234042AbhFNKnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:43:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD9D46143E;
-        Mon, 14 Jun 2021 10:36:03 +0000 (UTC)
+        id S232982AbhFNKb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:31:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B528561206;
+        Mon, 14 Jun 2021 10:29:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666964;
-        bh=SuggtihpMsh9fAJvUMIoF5EAElH+Je4DslMuUDnCI9Y=;
+        s=korg; t=1623666578;
+        bh=oorC/DVzdfQ70Y7BRI3uAUe33u5+TE6kQK7sH2MujVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XxWEdP6GNce62y3UbyCfKR3CBj1zrpAbuTX8tS/KNHCQenbOWgEglIRc4k9BMpYBg
-         gmEqC0mPSH70/9uxFRE0F509vLxsWn2+vlQ0BcbzAJCwJfQvdfQ7lGbGddcepy1z6r
-         NDPm5MStQMHTvGTFdDYoiUspNwrS3/BdpXE426Qs=
+        b=PAuUoVrrFmpSWum5fjPqD3RpozNm8GHOWUKdWXfZPEz0XtavVANbL+6z+APdU8t31
+         9hLg2761gY2vo9poLuyNWFy29lrzTjYi5er/bp3wEyUYDqRKtEVTqsZEC915iaO7zH
+         thGsMdRf67nayLg6kB08zj5iqUVwytkEudJQYGEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        Jack Pham <jackp@codeaurora.org>
-Subject: [PATCH 4.19 38/67] usb: dwc3: debugfs: Add and remove endpoint dirs dynamically
+        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 30/34] perf session: Correct buffer copying when peeking events
 Date:   Mon, 14 Jun 2021 12:27:21 +0200
-Message-Id: <20210614102645.069216678@linuxfoundation.org>
+Message-Id: <20210614102642.545748223@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
-References: <20210614102643.797691914@linuxfoundation.org>
+In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
+References: <20210614102641.582612289@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,122 +47,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+From: Leo Yan <leo.yan@linaro.org>
 
-commit 8d396bb0a5b62b326f6be7594d8bd46b088296bd upstream.
+[ Upstream commit 197eecb6ecae0b04bd694432f640ff75597fed9c ]
 
-The DWC3 DebugFS directory and files are currently created once
-during probe.  This includes creation of subdirectories for each
-of the gadget's endpoints.  This works fine for peripheral-only
-controllers, as dwc3_core_init_mode() calls dwc3_gadget_init()
-just prior to calling dwc3_debugfs_init().
+When peeking an event, it has a short path and a long path.  The short
+path uses the session pointer "one_mmap_addr" to directly fetch the
+event; and the long path needs to read out the event header and the
+following event data from file and fill into the buffer pointer passed
+through the argument "buf".
 
-However, for dual-role controllers, dwc3_core_init_mode() will
-instead call dwc3_drd_init() which is problematic in a few ways.
-First, the initial state must be determined, then dwc3_set_mode()
-will have to schedule drd_work and by then dwc3_debugfs_init()
-could have already been invoked.  Even if the initial mode is
-peripheral, dwc3_gadget_init() happens after the DebugFS files
-are created, and worse so if the initial state is host and the
-controller switches to peripheral much later.  And secondly,
-even if the gadget endpoints' debug entries were successfully
-created, if the controller exits peripheral mode, its dwc3_eps
-are freed so the debug files would now hold stale references.
+The issue is in the long path that it copies the event header and event
+data into the same destination address which pointer "buf", this means
+the event header is overwritten.  We are just lucky to run into the
+short path in most cases, so we don't hit the issue in the long path.
 
-So it is best if the DebugFS endpoint entries are created and
-removed dynamically at the same time the underlying dwc3_eps are.
-Do this by calling dwc3_debugfs_create_endpoint_dir() as each
-endpoint is created, and conversely remove the DebugFS entry when
-the endpoint is freed.
+This patch adds the offset "hdr_sz" to the pointer "buf" when copying
+the event data, so that it can reserve the event header which can be
+used properly by its caller.
 
-Fixes: 41ce1456e1db ("usb: dwc3: core: make dwc3_set_mode() work properly")
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Peter Chen <peter.chen@kernel.org>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Link: https://lore.kernel.org/r/20210529192932.22912-1-jackp@codeaurora.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 5a52f33adf02 ("perf session: Add perf_session__peek_event()")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20210605052957.1070720-1-leo.yan@linaro.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/debug.h   |    3 +++
- drivers/usb/dwc3/debugfs.c |   21 ++-------------------
- drivers/usb/dwc3/gadget.c  |    3 +++
- 3 files changed, 8 insertions(+), 19 deletions(-)
+ tools/perf/util/session.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/dwc3/debug.h
-+++ b/drivers/usb/dwc3/debug.h
-@@ -653,9 +653,12 @@ static inline const char *dwc3_gadget_ge
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index 5b392662d100..1029225ee417 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -1255,6 +1255,7 @@ int perf_session__peek_event(struct perf_session *session, off_t file_offset,
+ 	if (event->header.size < hdr_sz || event->header.size > buf_sz)
+ 		return -1;
  
++	buf += hdr_sz;
+ 	rest = event->header.size - hdr_sz;
  
- #ifdef CONFIG_DEBUG_FS
-+extern void dwc3_debugfs_create_endpoint_dir(struct dwc3_ep *dep);
- extern void dwc3_debugfs_init(struct dwc3 *);
- extern void dwc3_debugfs_exit(struct dwc3 *);
- #else
-+static inline void dwc3_debugfs_create_endpoint_dir(struct dwc3_ep *dep)
-+{  }
- static inline void dwc3_debugfs_init(struct dwc3 *d)
- {  }
- static inline void dwc3_debugfs_exit(struct dwc3 *d)
---- a/drivers/usb/dwc3/debugfs.c
-+++ b/drivers/usb/dwc3/debugfs.c
-@@ -725,30 +725,14 @@ static void dwc3_debugfs_create_endpoint
- 	}
- }
- 
--static void dwc3_debugfs_create_endpoint_dir(struct dwc3_ep *dep,
--		struct dentry *parent)
-+void dwc3_debugfs_create_endpoint_dir(struct dwc3_ep *dep)
- {
- 	struct dentry		*dir;
- 
--	dir = debugfs_create_dir(dep->name, parent);
-+	dir = debugfs_create_dir(dep->name, dep->dwc->root);
- 	dwc3_debugfs_create_endpoint_files(dep, dir);
- }
- 
--static void dwc3_debugfs_create_endpoint_dirs(struct dwc3 *dwc,
--		struct dentry *parent)
--{
--	int			i;
--
--	for (i = 0; i < dwc->num_eps; i++) {
--		struct dwc3_ep	*dep = dwc->eps[i];
--
--		if (!dep)
--			continue;
--
--		dwc3_debugfs_create_endpoint_dir(dep, parent);
--	}
--}
--
- void dwc3_debugfs_init(struct dwc3 *dwc)
- {
- 	struct dentry		*root;
-@@ -777,7 +761,6 @@ void dwc3_debugfs_init(struct dwc3 *dwc)
- 				    &dwc3_testmode_fops);
- 		debugfs_create_file("link_state", S_IRUGO | S_IWUSR, root, dwc,
- 				    &dwc3_link_state_fops);
--		dwc3_debugfs_create_endpoint_dirs(dwc, root);
- 	}
- }
- 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2255,6 +2255,8 @@ static int dwc3_gadget_init_endpoint(str
- 	INIT_LIST_HEAD(&dep->started_list);
- 	INIT_LIST_HEAD(&dep->cancelled_list);
- 
-+	dwc3_debugfs_create_endpoint_dir(dep);
-+
- 	return 0;
- }
- 
-@@ -2298,6 +2300,7 @@ static void dwc3_gadget_free_endpoints(s
- 			list_del(&dep->endpoint.ep_list);
- 		}
- 
-+		debugfs_remove_recursive(debugfs_lookup(dep->name, dwc->root));
- 		kfree(dep);
- 	}
- }
+ 	if (readn(fd, buf, rest) != (ssize_t)rest)
+-- 
+2.30.2
+
 
 
