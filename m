@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62143A6386
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5BE3A64F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235426AbhFNLOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:14:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37752 "EHLO mail.kernel.org"
+        id S235463AbhFNLb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:31:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234378AbhFNLBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:01:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 003C461864;
-        Mon, 14 Jun 2021 10:43:30 +0000 (UTC)
+        id S234615AbhFNLRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:17:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B04FE6197D;
+        Mon, 14 Jun 2021 10:50:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667411;
-        bh=YV5/Yb7PaY3u2uKpCLqzCY3uL8Md7KaRVh0jHHSiMRE=;
+        s=korg; t=1623667825;
+        bh=nzAyjLyV03WC2pA/xt/1Q15MP5i9n0ZYniC4TeU6imA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SLH8iNX/5D6Dt1L7Dd5ZxeXAIc2trZCyiKv5eEdj6pci5WfDVPC0qha1SB51l383
-         zpBKrCNdtWUz6A7EUCblHi5uzsIB+xrUARdThlJTvBPpUyoDtjqP17emzwt3qGkvVc
-         xfQ5LpxfQW+LjuhMwckcbC1xVJ4zSrxPIQeq9E3M=
+        b=wqAZh5WFZRt+h7aupX8codwi1z25YSj+NN8vCSRzWTHFyH29nsGFuS/Ar0NnwuLo7
+         YGVxG9hrlpIHNkCZc6GoymPHYhaP+HU7+4D5od4uU6SQ88i/rT+HCoS6aH7dsua8gC
+         75UPuTpRIqbA8rMpiQbDKw10QVy0j67lqS/7TFI8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Oleksandr Shchirskyi <oleksandr.shchirskyi@linux.intel.com>,
-        Oleksandr Shchirskyi <oleksandr.shchirskyi@intel.com>,
-        Xiao Ni <xni@redhat.com>, Song Liu <song@kernel.org>
-Subject: [PATCH 5.10 060/131] async_xor: check src_offs is not NULL before updating it
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 5.12 089/173] usb: dwc3: meson-g12a: Disable the regulator in the error handling path of the probe
 Date:   Mon, 14 Jun 2021 12:27:01 +0200
-Message-Id: <20210614102655.053157239@linuxfoundation.org>
+Message-Id: <20210614102701.123181634@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
-References: <20210614102652.964395392@linuxfoundation.org>
+In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
+References: <20210614102658.137943264@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Ni <xni@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 9be148e408df7d361ec5afd6299b7736ff3928b0 upstream.
+commit 1d0d3d818eafe1963ec1eaf302175cd14938188e upstream.
 
-When PAGE_SIZE is greater than 4kB, multiple stripes may share the same
-page. Thus, src_offs is added to async_xor_offs() with array of offsets.
-However, async_xor() passes NULL src_offs to async_xor_offs(). In such
-case, src_offs should not be updated. Add a check before the update.
+If an error occurs after a successful 'regulator_enable()' call,
+'regulator_disable()' must be called.
 
-Fixes: ceaf2966ab08(async_xor: increase src_offs when dropping destination page)
-Cc: stable@vger.kernel.org # v5.10+
-Reported-by: Oleksandr Shchirskyi <oleksandr.shchirskyi@linux.intel.com>
-Tested-by: Oleksandr Shchirskyi <oleksandr.shchirskyi@intel.com>
-Signed-off-by: Xiao Ni <xni@redhat.com>
-Signed-off-by: Song Liu <song@kernel.org>
+Fix the error handling path of the probe accordingly.
+
+The remove function doesn't need to be fixed, because the
+'regulator_disable()' call is already hidden in 'dwc3_meson_g12a_suspend()'
+which is called via 'pm_runtime_set_suspended()' in the remove function.
+
+Fixes: c99993376f72 ("usb: dwc3: Add Amlogic G12A DWC3 glue")
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/79df054046224bbb0716a8c5c2082650290eec86.1621616013.git.christophe.jaillet@wanadoo.fr
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- crypto/async_tx/async_xor.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/dwc3/dwc3-meson-g12a.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/crypto/async_tx/async_xor.c
-+++ b/crypto/async_tx/async_xor.c
-@@ -233,7 +233,8 @@ async_xor_offs(struct page *dest, unsign
- 		if (submit->flags & ASYNC_TX_XOR_DROP_DST) {
- 			src_cnt--;
- 			src_list++;
--			src_offs++;
-+			if (src_offs)
-+				src_offs++;
- 		}
+--- a/drivers/usb/dwc3/dwc3-meson-g12a.c
++++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
+@@ -775,13 +775,13 @@ static int dwc3_meson_g12a_probe(struct
  
- 		/* wait for any prerequisite operations */
+ 	ret = priv->drvdata->usb_init(priv);
+ 	if (ret)
+-		goto err_disable_clks;
++		goto err_disable_regulator;
+ 
+ 	/* Init PHYs */
+ 	for (i = 0 ; i < PHY_COUNT ; ++i) {
+ 		ret = phy_init(priv->phys[i]);
+ 		if (ret)
+-			goto err_disable_clks;
++			goto err_disable_regulator;
+ 	}
+ 
+ 	/* Set PHY Power */
+@@ -819,6 +819,10 @@ err_phys_exit:
+ 	for (i = 0 ; i < PHY_COUNT ; ++i)
+ 		phy_exit(priv->phys[i]);
+ 
++err_disable_regulator:
++	if (priv->vbus)
++		regulator_disable(priv->vbus);
++
+ err_disable_clks:
+ 	clk_bulk_disable_unprepare(priv->drvdata->num_clks,
+ 				   priv->drvdata->clks);
 
 
