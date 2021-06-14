@@ -2,83 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CFF3A6939
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DF43A693D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 16:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbhFNOtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 10:49:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51218 "EHLO mail.kernel.org"
+        id S233100AbhFNOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 10:49:18 -0400
+Received: from tux.runtux.com ([176.9.82.136]:41532 "EHLO tux.runtux.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232798AbhFNOtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 10:49:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50B756054E;
-        Mon, 14 Jun 2021 14:46:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623682003;
-        bh=+o9b6y5kWybkxYBzKA6EBU6w59vTl9WPx7qNYYNQuqs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2JTsY/mpVYRSuI8bgbBTK2QoLAz8VnT2unhc+OM7HqRwhTjR+NOZ7SdHkf16txPwt
-         vI5MPtv3CXZqam1quJrb2bnG9Rw37z/ntye/BtpN0J+uEdskBox5fP3SU3pbdKUuYj
-         X03z2/LJ1YQxEliUKkQPNPp7xxt0LZ9Mce6ZZGRs=
-Date:   Mon, 14 Jun 2021 16:46:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 2/6] staging: rtl8188eu: fix usb_submit_urb error handling
-Message-ID: <YMdr0alJDEGfsqOA@kroah.com>
-References: <20210612180019.20387-1-martin@kaiser.cx>
- <20210612180019.20387-2-martin@kaiser.cx>
+        id S233006AbhFNOtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 10:49:16 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by tux.runtux.com (Postfix) with ESMTP id 019906F13A;
+        Mon, 14 Jun 2021 16:47:11 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
+Received: from tux.runtux.com ([127.0.0.1])
+        by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id EOYoaGeA4CcL; Mon, 14 Jun 2021 16:47:10 +0200 (CEST)
+Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
+        (Authenticated sender: postmaster@runtux.com)
+        by tux.runtux.com (Postfix) with ESMTPSA id 213FE6EFC2;
+        Mon, 14 Jun 2021 16:47:09 +0200 (CEST)
+Received: by bee.priv.zoo (Postfix, from userid 1002)
+        id 8720946E; Mon, 14 Jun 2021 16:47:09 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 16:47:09 +0200
+From:   Ralf Schlatterbeck <rsc@runtux.com>
+To:     Mirko Vogt <mirko-dev|linux@nanl.de>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] spi-sun6i: Fix chipselect/clock bug
+Message-ID: <20210614144709.2oxoutizjh2sii4r@runtux.com>
+References: <20210520100656.rgkdexdvrddt3upy@runtux.com>
+ <20210521173011.1c602682@slackpad.fritz.box>
+ <20210521201913.2gapcmrzynxekro7@runtux.com>
+ <YK0LR3077RUsSYti@sirena.org.uk>
+ <20210527113920.ncpzrpst2d6rij3t@runtux.com>
+ <0418aba2-6bca-8de1-9f72-2fb10007fc81@nanl.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210612180019.20387-2-martin@kaiser.cx>
+In-Reply-To: <0418aba2-6bca-8de1-9f72-2fb10007fc81@nanl.de>
+X-ray:  beware
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 08:00:15PM +0200, Martin Kaiser wrote:
-> -EPERM should be handled like any other error.
-
-Why?  This is not "any other error" for the usb core, right?
-
-> 
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->  drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c b/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
-> index ec07b2017fb7..0ceb05f3884f 100644
-> --- a/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
-> +++ b/drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c
-> @@ -366,7 +366,6 @@ u32 usb_read_port(struct adapter *adapter, u32 addr, struct recv_buf *precvbuf)
->  	struct usb_device *pusbd = pdvobj->pusbdev;
->  	int err;
->  	unsigned int pipe;
-> -	u32 ret = _SUCCESS;
->  
->  	if (adapter->bDriverStopped || adapter->bSurpriseRemoved ||
->  	    adapter->pwrctrlpriv.pnp_bstop_trx) {
-> @@ -403,10 +402,10 @@ u32 usb_read_port(struct adapter *adapter, u32 addr, struct recv_buf *precvbuf)
->  			  precvbuf);/* context is precvbuf */
->  
->  	err = usb_submit_urb(purb, GFP_ATOMIC);
-> -	if ((err) && (err != (-EPERM)))
-> -		ret = _FAIL;
-
-if -EPERM returns from this function, someone set the "reject" bit on
-the urb.
-
-Can this driver do that?  Where did this check originally come from, as
-it feels like this was added for a good reason.
-
-If this patch is "correct", I need a better changelog text explaining
-why it is so :)
-
-thanks,
-
-greg k-h
+I've reposted as v2 in a new thread.
+-- 
+Ralf Schlatterbeck
