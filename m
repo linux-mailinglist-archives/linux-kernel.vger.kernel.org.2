@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658953A6094
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227DB3A6195
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233099AbhFNKfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:35:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40062 "EHLO mail.kernel.org"
+        id S234197AbhFNKtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:49:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233188AbhFNKdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:33:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A682611CA;
-        Mon, 14 Jun 2021 10:31:06 +0000 (UTC)
+        id S232847AbhFNKml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:42:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46B0C61434;
+        Mon, 14 Jun 2021 10:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666666;
-        bh=eds8IOZtnGhaffiJTb92aYTjf9GAJf65MJFEnvDn35c=;
+        s=korg; t=1623666940;
+        bh=2SgvNj6ou6VNa7dm/tdITAyo9EzdsLrOwNOltAcAyho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p52qRJfstU7B4Cj/qlO3E+SyPNHB3O62SU5C3tDhA3zPdulrEZWdejQ0FUKG4Rs+k
-         k8//GZzWDA+UViAhly7cacUKr4zhdTkn+xGcmBeGDpiUs1Qa5Dg6tugSnehlXDC0a3
-         1vbVNVvHvkDMz+iTSv1QGgDylNjd6Fp9AJ3IlGng=
+        b=G29Hv3Ox6qcodcgaFMhrerYMMLEPCK5yLkXNVuVt+Jc/1kZxL8fEx5nUZy8kh6b+6
+         BfZa7mKXRH/b2AQiwmGXYXaML3kPJH5hqOA5Wl3qYz4BPNnXJY74vhuVorKtvm7r+U
+         Y4ptUbM5SzPdcYKJkuelji6ukq7g4ovaPZzWd3XE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        George McCollister <george.mccollister@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 27/42] USB: serial: ftdi_sio: add NovaTech OrionMX product ID
+        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@nokia.com>,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
+Subject: [PATCH 4.19 35/67] USB: f_ncm: ncm_bitrate (speed) is unsigned
 Date:   Mon, 14 Jun 2021 12:27:18 +0200
-Message-Id: <20210614102643.569927932@linuxfoundation.org>
+Message-Id: <20210614102644.953669068@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102642.700712386@linuxfoundation.org>
-References: <20210614102642.700712386@linuxfoundation.org>
+In-Reply-To: <20210614102643.797691914@linuxfoundation.org>
+References: <20210614102643.797691914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George McCollister <george.mccollister@gmail.com>
+From: Maciej Żenczykowski <maze@google.com>
 
-commit bc96c72df33ee81b24d87eab953c73f7bcc04f29 upstream.
+commit 3370139745853f7826895293e8ac3aec1430508e upstream.
 
-Add PID for the NovaTech OrionMX so it can be automatically detected.
+[  190.544755] configfs-gadget gadget: notify speed -44967296
 
-Signed-off-by: George McCollister <george.mccollister@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+This is because 4250000000 - 2**32 is -44967296.
+
+Fixes: 9f6ce4240a2b ("usb: gadget: f_ncm.c added")
+Cc: Brooke Basile <brookebasile@gmail.com>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Cc: Yauheni Kaliuta <yauheni.kaliuta@nokia.com>
+Cc: Linux USB Mailing List <linux-usb@vger.kernel.org>
+Acked-By: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210608005344.3762668-1-zenczykowski@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/ftdi_sio.c     |    1 +
- drivers/usb/serial/ftdi_sio_ids.h |    1 +
- 2 files changed, 2 insertions(+)
+ drivers/usb/gadget/function/f_ncm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -606,6 +606,7 @@ static const struct usb_device_id id_tab
- 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
- 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONLX_PLUS_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORION_IO_PID) },
-+	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONMX_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_SYNAPSE_SS200_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX2_PID) },
---- a/drivers/usb/serial/ftdi_sio_ids.h
-+++ b/drivers/usb/serial/ftdi_sio_ids.h
-@@ -580,6 +580,7 @@
- #define FTDI_NT_ORIONLXM_PID		0x7c90	/* OrionLXm Substation Automation Platform */
- #define FTDI_NT_ORIONLX_PLUS_PID	0x7c91	/* OrionLX+ Substation Automation Platform */
- #define FTDI_NT_ORION_IO_PID		0x7c92	/* Orion I/O */
-+#define FTDI_NT_ORIONMX_PID		0x7c93	/* OrionMX */
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -583,7 +583,7 @@ static void ncm_do_notify(struct f_ncm *
+ 		data[0] = cpu_to_le32(ncm_bitrate(cdev->gadget));
+ 		data[1] = data[0];
  
- /*
-  * Synapse Wireless product ids (FTDI_VID)
+-		DBG(cdev, "notify speed %d\n", ncm_bitrate(cdev->gadget));
++		DBG(cdev, "notify speed %u\n", ncm_bitrate(cdev->gadget));
+ 		ncm->notify_state = NCM_NOTIFY_CONNECT;
+ 		break;
+ 	}
 
 
