@@ -2,179 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24253A5DCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7800F3A5DD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 09:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhFNHk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 03:40:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29216 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232492AbhFNHkX (ORCPT
+        id S232558AbhFNHmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 03:42:08 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11733 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232492AbhFNHmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:40:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623656299;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R4JweKietmrpHO3kHqxbaCMf9WXh4WBEfPXNjcfKC8o=;
-        b=TcFZAh8AywpOB0Ahd23FzWrYfuPGY/jduqXLsqWLAn8b3VR/NSbo1OrxxRkmgjPQVylNlg
-        Ik0Jno8yBcZej3OpWT+y4BEEfNuleGJr/lUIHvnkNXrIs9I1qiB05FDWHDUr/ogGMqBQs+
-        s37dS8q8H879KLKJ3wlJko7PCnbptTs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-nBuQTbMvMESbkYXaTMMlug-1; Mon, 14 Jun 2021 03:38:17 -0400
-X-MC-Unique: nBuQTbMvMESbkYXaTMMlug-1
-Received: by mail-wm1-f72.google.com with SMTP id a25-20020a7bc1d90000b029019dd2ac7025so5316148wmj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 00:38:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=R4JweKietmrpHO3kHqxbaCMf9WXh4WBEfPXNjcfKC8o=;
-        b=WewfTdh/RFLzseftxC3rHt39wWA5eQaPRXuIM34sExsr+fFiGjHXFA2cadQfp8Gy9C
-         Hrw1JjCrPO8yBgh4oNpdLjNcMA77ZatUjqgEgXjXlxCFsObAVO7WdkTJW6JBjDxJqtIA
-         gj9JFvnSuIlP7QBFijefPEMsTELT7gh9H0KrtnS/ISaTiI5kmqYDAdEoR7EmtZf57h9o
-         riw+3xBtqIAsPXRTJXLHe0aykRjr1d379GG5X/xJSOarZjckjucyvrJeXgpmgd3tlHxE
-         +d1EPzmFIGR/vW193lTUnZTcAvddk1rzB2OkWuK8oX45M/fGjZaE3xLLQ1r7zwzQvLSH
-         Ou9A==
-X-Gm-Message-State: AOAM533LAgRjJ9Gu5Y6Vj9G+8kunolUqPjyjvO7dDPaPRMi1hFc+VhzQ
-        XaPsQ0nuhXMR/Qye4J4JbAk7hgo+GuKGQsxB1B2u/gVO9e5BIzSkTyjkABhdcnsOCF//eIyo0qn
-        mO82fsaeeMNsnykQeAZ5DgSs4
-X-Received: by 2002:a7b:c193:: with SMTP id y19mr15277296wmi.172.1623656296604;
-        Mon, 14 Jun 2021 00:38:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyiDCyK5qKp7sWrxYZFklPpDnGx/uaKSOKDgbTy9j/tF+JnQhm1Y4ZozM2kmm0E0zLgTVtwow==
-X-Received: by 2002:a7b:c193:: with SMTP id y19mr15277278wmi.172.1623656296417;
-        Mon, 14 Jun 2021 00:38:16 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c66ca.dip0.t-ipconnect.de. [91.12.102.202])
-        by smtp.gmail.com with ESMTPSA id q20sm19456718wrf.45.2021.06.14.00.38.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 00:38:16 -0700 (PDT)
-To:     Hillf Danton <hdanton@sina.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-References: <YMO+CoYnCgObRtOI@DESKTOP-1V8MEUQ.localdomain>
- <20210612021115.2136-1-hdanton@sina.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: vmemmap alloc failure in hot_add_req()
-Message-ID: <951ddbaf-3d74-7043-4866-3809ff991cfd@redhat.com>
-Date:   Mon, 14 Jun 2021 09:38:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 14 Jun 2021 03:42:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623656404; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=d98WEJQYbmSI8pIjO0mRBl0EjEkT413AeWk1pMXSvV8=; b=WUKficYNOPtNM5HBDh9etySKUmOfrOqdUL5Eaq8oGXXu/Oy4PUhYFodj1N/bwSnmV6T9JD0F
+ ZkpW1ZrMHIz1XZNpDINJ1guMhUvrnNT8apCRCASjJg25WNLN8xEi6tEwHwpYyAm/oML1Hwpk
+ w46NDL8BFwza4D9HcWqn2tE3Jx8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60c707c4ed59bf69cc6992c0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Jun 2021 07:39:48
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 60694C433F1; Mon, 14 Jun 2021 07:39:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95FAEC433D3;
+        Mon, 14 Jun 2021 07:39:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 95FAEC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
+Date:   Mon, 14 Jun 2021 00:39:42 -0700
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Disable gadget IRQ during pullup
+ disable
+Message-ID: <20210614073942.GB25299@jackp-linux.qualcomm.com>
+References: <1621571037-1424-1-git-send-email-wcheng@codeaurora.org>
+ <87h7i60ye8.fsf@kernel.org>
+ <724ba69a-8c67-4b4b-3e6a-a5834b09e6e1@codeaurora.org>
+ <a59a81c1-367f-b4b0-b6bf-dbe91ab3613d@codeaurora.org>
+ <87wnr0zwxs.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210612021115.2136-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wnr0zwxs.fsf@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.06.21 04:11, Hillf Danton wrote:
-> On Fri, 11 Jun 2021 12:48:26 -0700 Nathan Chancellor wrote:
->> Hi all,
->>
->> I am occasionally seeing a kernel warning when running virtual machines
->> in Hyper-V, which usually happens a minute or so after boot. It does not
->> happen on every boot and it is reproducible on at least v5.10. I think
->> it might have something to do with constant reboots, which I do when
->> testing various kernels.
->>
->> The stack trace is as follows:
->>
->> [   49.215291] kworker/0:1: vmemmap alloc failure: order:9, mode:0x4cc0(GFP_KERNEL|__GFP_RETRY_MAYFAIL), nodemask=(null),cpuset=/,mems_allowed=0
->> [   49.215299] CPU: 0 PID: 18 Comm: kworker/0:1 Not tainted 5.13.0-rc5 #1
->> [   49.215301] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 11/01/2019
->> [   49.215302] Workqueue: events hot_add_req [hv_balloon]
+On Fri, Jun 11, 2021 at 10:23:43AM +0300, Felipe Balbi wrote:
+> Wesley Cheng <wcheng@codeaurora.org> writes:
+
+<snip>
+
+> > Hi Felipe,
+> >
+> > Let me share the ftrace snippets as well:
+> >
+> > USB FTRACE:
+> >
+> > <idle>-0    [002]   304.567900:  dwc3_gadget_ep_cmd name=ep0out cmd=1030  param0=0  param1=4026523648  param2=0  cmd_status=0
+> > <idle>-0    [004]   304.583225:  dwc3_gadget_ep_cmd name=ep1out cmd=134152  param0=0  param1=0  param2=0  cmd_status=0
+> >
+> > //We don't have any logging in pullup disable, but this is when that
+> > occurs, as we start to see -ESHUTDOWN statuses due to stop active
+> > transfer.
 > 
-> Apart from order:9 (mm Cced), events_unbound is the right workqueue instead
-> because the report shows the risk that hot_add_req could block other pending
-> events longer than thought. Any special reason for the events wq?
+> argh, maybe we should add :-)
 > 
->> [   49.215307] Call Trace:
->> [   49.215310]  dump_stack+0x76/0x94
->> [   49.215314]  warn_alloc.cold+0x78/0xdc
->> [   49.215316]  ? __alloc_pages+0x200/0x230
->> [   49.215319]  vmemmap_alloc_block+0x86/0xdc
->> [   49.215323]  vmemmap_populate+0x10e/0x31c
->> [   49.215324]  __populate_section_memmap+0x38/0x4e
->> [   49.215326]  sparse_add_section+0x12c/0x1cf
->> [   49.215329]  __add_pages+0xa9/0x130
->> [   49.215330]  add_pages+0x12/0x60
->> [   49.215333]  add_memory_resource+0x180/0x300
->> [   49.215335]  __add_memory+0x3b/0x80
->> [   49.215336]  add_memory+0x2e/0x50
->> [   49.215337]  hot_add_req+0x3fc/0x5a0 [hv_balloon]
->> [   49.215340]  process_one_work+0x214/0x3e0
->> [   49.215342]  worker_thread+0x4d/0x3d0
->> [   49.215344]  ? process_one_work+0x3e0/0x3e0
->> [   49.215345]  kthread+0x133/0x150
->> [   49.215347]  ? kthread_associate_blkcg+0xc0/0xc0
->> [   49.215348]  ret_from_fork+0x22/0x30
->> [   49.215351] Mem-Info:
->> [   49.215352] active_anon:251 inactive_anon:140868 isolated_anon:0
->>                  active_file:47497 inactive_file:88505 isolated_file:0
->>                  unevictable:8 dirty:14 writeback:0
->>                  slab_reclaimable:12013 slab_unreclaimable:11403
->>                  mapped:131701 shmem:12671 pagetables:3140 bounce:0
->>                  free:41388 free_pcp:37 free_cma:0
->> [   49.215355] Node 0 active_anon:1004kB inactive_anon:563472kB active_file:189988kB inactive_file:354020kB unevictable:32kB isolated(anon):0kB isolated(file):0kB mapped:526804kB dirty:56kB writeback:0kB shmem:50684kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB kernel_stack:5904kB pagetables:12560kB all_unreclaimable? no
->> [   49.215358] Node 0 DMA free:6496kB min:480kB low:600kB high:720kB reserved_highatomic:0KB active_anon:0kB inactive_anon:3120kB active_file:2584kB inactive_file:2792kB unevictable:0kB writepending:0kB present:15996kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
->> [   49.215361] lowmem_reserve[]: 0 1384 1384 1384 1384
->> [   49.215364] Node 0 DMA32 free:159056kB min:44572kB low:55712kB high:66852kB reserved_highatomic:0KB active_anon:1004kB inactive_anon:560352kB active_file:187004kB inactive_file:350864kB unevictable:32kB writepending:56kB present:1555760kB managed:1432388kB mlocked:32kB bounce:0kB free_pcp:172kB local_pcp:0kB free_cma:0kB
->> [   49.215367] lowmem_reserve[]: 0 0 0 0 0
->> [   49.215369] Node 0 DMA: 17*4kB (UM) 13*8kB (M) 10*16kB (M) 3*32kB (ME) 3*64kB (UME) 4*128kB (UME) 1*256kB (E) 2*512kB (UE) 2*1024kB (ME) 1*2048kB (E) 0*4096kB = 6508kB
->> [   49.215377] Node 0 DMA32: 8061*4kB (UME) 5892*8kB (UME) 2449*16kB (UME) 604*32kB (UME) 207*64kB (UME) 49*128kB (UM) 7*256kB (M) 1*512kB (M) 0*1024kB 0*2048kB 0*4096kB = 159716kB
->> [   49.215388] 148696 total pagecache pages
->> [   49.215388] 0 pages in swap cache
->> [   49.215389] Swap cache stats: add 0, delete 0, find 0/0
->> [   49.215390] Free swap  = 0kB
->> [   49.215390] Total swap = 0kB
->> [   49.215391] 392939 pages RAM
->> [   49.215391] 0 pages HighMem/MovableOnly
->> [   49.215391] 31002 pages reserved
->> [   49.215392] 0 pages cma reserved
->> [   49.215393] 0 pages hwpoisoned
->>
->> Is this a known issue and/or am I doing something wrong? I only noticed
->> this because there are times when I am compiling something intensive in
->> the VM such as LLVM and the VM runs out of memory even though I have
->> plenty of free memory on the host but I am not sure if this warning is
->> related to that issue.
+> I noticed that the logs here look different. Did you modify dwc3 trace
+> events or is it a special tracer (just curious)? Anyway...
 
-Hi,
+These logs come from an internal tool that extracts the traces from a
+complete RAM dump from a crashed device. One of the limitations is that
+the script doesn't (yet) understand the event printk-formats so we're
+left with just the raw field contents of the TP_STRUCT__entry. Not
+pretty at all but it's *lot* better than nothing especially for
+post-mortem analysis.
 
-Is hotplugged memory getting onlined automatically (either from user 
-space via a udev script or via the kernel, for example, with 
-CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE)?
+Yes there is crash-utility [1] which does all of this already but
+logistically our internal tooling is not very well equipped (i.e. is
+Windows-based) to make use of this, not without going through some
+hoops. Been meaning to play around with it some more though to reduce
+the need for our home-rolled solution.
 
-If it's not getting onlined, you easily sport after hotplug e.g., via 
-"lsmem" that there are quite some offline memory blocks.
+[1] https://github.com/crash-utility
 
-Note that x86_64 code will fallback from populating huge pages to 
-populating base pages for the vmemmap; this can happen easily when under 
-memory pressure.
+> > <idle>-0    [004]   304.583237:  dwc3_gadget_giveback name=ep1out req=1243650560  actual=0  length=16384  status=4294967188  zero=0 short_not_ok=0  no_interrupt=0
+> > <idle>-0    [004]   304.583275:  dwc3_gadget_giveback name=ep1out req=1243645440  actual=0  length=16384  status=4294967188  zero=0 short_not_ok=0  no_interrupt=0
+> > <idle>-0    [004]   304.583282:  dwc3_gadget_giveback name=ep1out req=1243648256  actual=0  length=16384  status=4294967188  zero=0 short_not_ok=0  no_interrupt=0
+> > <idle>-0    [004]   304.583312:  dwc3_gadget_giveback name=ep1out req=4075146240  actual=0  length=16384  status=4294967188  zero=0 short_not_ok=0  no_interrupt=0
+> > ...
+> > //USB gadget disconnect is printed AFTER the pullup(0) routine is complete.
+> > <idle>-0    [004]   304.584240:  usb_gadget_disconnect   speed=3 max_speed=6  state=7  mA=500  sg_supported=1  is_otg=0 is_a_peripheral=0  b_hnp_enable=0  a_hnp_support=0 hnp_polling_support=0  host_request_flag=0  quirk_ep_out_aligned_size=0 quirk_altset_not_supp=0  quirk_stall_not_supp=0  quirk_zlp_not_supp=0 is_selfpowered=0  deactivated=0  connected=1  ret=4294967186
+> >
+> > ---------------------------------------------------------
+> > CPU2 SCHED FTRACE:
+> >
+> > kworker/u16:5-192    [002]   304.583354:  irq_handler_entry   irq=343 name=dwc3-msm
+> > kworker/u16:5-192    [002]   304.583356:  irq_handler_exit   irq=343 ret=0
+> > kworker/u16:5-192    [002]   304.583358:  irq_handler_entry   irq=343 name=dwc3
+> > kworker/u16:5-192    [002]   304.583366:  irq_handler_exit   irq=343 ret=2
+> > kworker/u16:5-192    [002]   304.583377:  sched_wakeup comm=irq/343-dwc3  pid=20174  prio=100  success=1  target_cpu=2
+> > kworker/u16:5-192   [002]  304.583411: sched_switch: prev_comm=kworker/u16:5 prev_pid=192 prev_prio=120 prev_state=R ==> next_comm=irq/343-dwc3 next_pid=20174 next_prio=100
+> > irq/343-dwc3-20174    [002]   304.583454:  irq_handler_entry   irq=343 name=dwc3-msm
+> > irq/343-dwc3-20174    [002]   304.583455:  irq_handler_exit   irq=343 ret=0
+> > irq/343-dwc3-20174    [002]   304.583458:  irq_handler_entry   irq=343 name=dwc3
+> > irq/343-dwc3-20174    [002]   304.583465:  irq_handler_exit   irq=343 ret=2
 
-If adding memory would fail completely, you'd see another "hot_add 
-memory failed error is ..." error message from hyper-v in the kernel 
-log. If that doesn't show up, it's simply suboptimal, but hotplugging 
-memory still succeeded.
-
-
-Note: we could support "memmap_on_memory" in some cases (e.g., no memory 
-holes in hotadded range) when hotplugging memory blocks via hyper-v, 
-which would result in this warning less trigger less frequently.
-
+Jack
 -- 
-Thanks,
-
-David / dhildenb
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
