@@ -2,153 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9F03A72BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1983A72BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 01:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhFNX6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 19:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        id S231804AbhFNX6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 19:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhFNX6n (ORCPT
+        with ESMTP id S231499AbhFNX6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 19:58:43 -0400
-Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EE9C0617AF;
+        Mon, 14 Jun 2021 19:58:52 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8DFC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 16:56:41 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id v13so7495954ple.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 16:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2hZ/fLKjk/CGa8mnGkTM9do02TlLwRcH/q+h0ZKU7YY=;
+        b=EpO4Jyl3aeBWQqUeRYC87rEUTL0cCpUevsHit8s+C4YnZ051NpzaLV/m5ZadnYO29y
+         gt9q7hURxiIRzT4Nwu5e9rz+4p50Dx2WAr4i1dea+wPiYdFRnWaNEJUvB7CIp/s4mkBx
+         lH2Qegd0Rz3HuJB3s6hGeSj3CmI8i+QX7WDwsbR1nCJkIxaMRgCreyJh0AKf9zYt3nh4
+         r1MVy9omNGnz26G1yIJqivH+9jVIlC7Ff2L4abvSJGTfXo8f7I+55Nm0Fb4GrN/NcsWL
+         p6wKowFBMCSeTdVOeOpVewgBYRGDWfpLx0wMGfp18hbJVCZjsVnjTJgMM5OOFKblZGWh
+         8SEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2hZ/fLKjk/CGa8mnGkTM9do02TlLwRcH/q+h0ZKU7YY=;
+        b=fw1HtidrSWyo+KrKoFvvZiijYd73O8C1rzM47/1YBX9OAzRm48sXBZAzHMXbg8pUQ0
+         gxx6Am33a+rcUh2lcMqizZTcWODVKIywPdYqeLAlTSxghDzC86cmE6nBmYF22genDbEv
+         DzsDtQ7YfxFBcMeI7/nze3N7b2e6rKjDFSXzX9pMjQgYwkruqH57SS/059O4ROBFdAIQ
+         mgteawIpzoA170ZeT6VCSIY2+RnQOidNKIagSnWBxXr1Dh3d/IZ6TAsJ61Q5W/JXWRhm
+         JvSmv2ZQfj45zBj+pSU4KMB4b88SiBiVAMwS7u55tli4nDbD+R9j+AuIvcMV+oN9adal
+         OQ3A==
+X-Gm-Message-State: AOAM531HZ88WnRBfZGXQo/2QkpjdSz/hy6s8pnWVE9lwQW1tzNGSfQ58
+        RLe+/oFu9RGtH0PpM2tsYmA=
+X-Google-Smtp-Source: ABdhPJxM0zND9y0Z3ugZx173hcRK4jjSxC/NXhHPLxjDcnI7+QUFtc6Ruky8sME6kmiiv/FyLuDjHg==
+X-Received: by 2002:a17:90b:3ec3:: with SMTP id rm3mr22241049pjb.105.1623715000470;
+        Mon, 14 Jun 2021 16:56:40 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id v6sm13694092pfi.46.2021.06.14.16.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 14 Jun 2021 16:56:39 -0700 (PDT)
-Received: from localhost.localdomain (83.6.168.161.neoplus.adsl.tpnet.pl [83.6.168.161])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 45AD01F955;
-        Tue, 15 Jun 2021 01:56:37 +0200 (CEST)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64: dts: qcom: sm8250: Add GPI DMA nodes
-Date:   Tue, 15 Jun 2021 01:56:30 +0200
-Message-Id: <20210614235630.445501-3-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614235630.445501-1-konrad.dybcio@somainline.org>
-References: <20210614235630.445501-1-konrad.dybcio@somainline.org>
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     pmladek@suse.com, senozhatsky@chromium.org
+Cc:     Punit Agrawal <punitagrawal@gmail.com>, rostedt@goodmis.org,
+        john.ogness@linutronix.de, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] printk: Move EXPORT_SYMBOL() closer to vprintk definition
+Date:   Tue, 15 Jun 2021 08:56:35 +0900
+Message-Id: <20210614235635.887365-1-punitagrawal@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add and configure GPI DMA nodes to enable the way for peripherals to make
-DMA transfers.
+Commit 28e1745b9fa2 ("printk: rename vprintk_func to vprintk") while
+improving readability by removing vprintk indirection, inadvertently
+placed the EXPORT_SYMBOL() for the newly renamed function at the end
+of the file.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+For reader sanity, and as is convention move the EXPORT_SYMBOL()
+declaration just after the end of the function.
+
+Fixes: 28e1745b9fa2 ("printk: rename vprintk_func to vprintk")
+Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+--
+Hi,
+
+The out-of-place EXPORT_SYMBOL() caused an unexpected conflict while
+attempting to rebase the RT patches onto newer kernels.
+
+Generally I avoid sending trivial changes on their own but this one is
+a little hard to overlook. Also it felt like an obvious oversight in
+the original patch.
+
+Please consider merging.
+
+Thanks,
+Punit
 ---
-Changes since v1:
-- Use the right compatible :facepalm:
+ kernel/printk/printk_safe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 64 ++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index d45b6aa6fd05..806973d6ba55 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -8,6 +8,7 @@
- #include <dt-bindings/clock/qcom,gcc-sm8250.h>
- #include <dt-bindings/clock/qcom,gpucc-sm8250.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
-+#include <dt-bindings/dma/qcom-gpi.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interconnect/qcom,osm-l3.h>
- #include <dt-bindings/interconnect/qcom,sm8250.h>
-@@ -520,6 +521,26 @@ opp-120000000 {
- 			};
- 		};
+diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
+index 7a1414622051..94232186fccb 100644
+--- a/kernel/printk/printk_safe.c
++++ b/kernel/printk/printk_safe.c
+@@ -391,6 +391,7 @@ asmlinkage int vprintk(const char *fmt, va_list args)
+ 	/* No obstacles. */
+ 	return vprintk_default(fmt, args);
+ }
++EXPORT_SYMBOL(vprintk);
  
-+		gpi_dma2: dma-controller@800000 {
-+			compatible = "qcom,sm8250-gpi-dma";
-+			reg = <0 0x00800000 0 0x70000>;
-+			interrupts = <GIC_SPI 588 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 589 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 590 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 591 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 592 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 593 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 594 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 595 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 596 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 597 IRQ_TYPE_LEVEL_HIGH>;
-+			dma-channels = <10>;
-+			dma-channel-mask = <0x3f>;
-+			iommus = <&apps_smmu 0x76 0x0>;
-+			#dma-cells = <3>;
-+			status = "disabled";
-+		};
-+
- 		qupv3_id_2: geniqup@8c0000 {
- 			compatible = "qcom,geni-se-qup";
- 			reg = <0x0 0x008c0000 0x0 0x6000>;
-@@ -715,6 +736,29 @@ spi19: spi@894000 {
- 			};
- 		};
- 
-+		gpi_dma0: dma-controller@900000 {
-+			compatible = "qcom,sm8250-gpi-dma";
-+			reg = <0 0x00900000 0 0x70000>;
-+			interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
-+			dma-channels = <15>;
-+			dma-channel-mask = <0x7ff>;
-+			iommus = <&apps_smmu 0x5b6 0x0>;
-+			#dma-cells = <3>;
-+			status = "disabled";
-+		};
-+
- 		qupv3_id_0: geniqup@9c0000 {
- 			compatible = "qcom,geni-se-qup";
- 			reg = <0x0 0x009c0000 0x0 0x6000>;
-@@ -962,6 +1006,26 @@ spi7: spi@99c000 {
- 			};
- 		};
- 
-+		gpi_dma1: dma-controller@a00000 {
-+			compatible = "qcom,sm8250-gpi-dma";
-+			reg = <0 0x00a00000 0 0x70000>;
-+			interrupts = <GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 293 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 294 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 295 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 296 IRQ_TYPE_LEVEL_HIGH>;
-+			dma-channels = <10>;
-+			dma-channel-mask = <0x3f>;
-+			iommus = <&apps_smmu 0x56 0x0>;
-+			#dma-cells = <3>;
-+			status = "disabled";
-+		};
-+
- 		qupv3_id_1: geniqup@ac0000 {
- 			compatible = "qcom,geni-se-qup";
- 			reg = <0x0 0x00ac0000 0x0 0x6000>;
+ void __init printk_safe_init(void)
+ {
+@@ -411,4 +412,3 @@ void __init printk_safe_init(void)
+ 	/* Flush pending messages that did not have scheduled IRQ works. */
+ 	printk_safe_flush();
+ }
+-EXPORT_SYMBOL(vprintk);
 -- 
-2.32.0
+2.30.2
 
