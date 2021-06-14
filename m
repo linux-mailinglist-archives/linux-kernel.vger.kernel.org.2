@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E4F3A62E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B1B3A63E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhFNLGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35366 "EHLO mail.kernel.org"
+        id S234527AbhFNLSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:18:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233755AbhFNK4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:56:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B644615FF;
-        Mon, 14 Jun 2021 10:41:06 +0000 (UTC)
+        id S234174AbhFNLFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:05:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B15BD61929;
+        Mon, 14 Jun 2021 10:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667267;
+        s=korg; t=1623667522;
         bh=AdvAlk2XjJ93Yp9FH0iy+xJSk6GCoKJdFtkav7fB8AY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fp9MZ+uPmyqYSVJliR6NeNvfb+k/TFPVRANHunDEE58rew45mlSlM6AurRumhyvaJ
-         +GyjBxQssiR+dujRU6GFXPQVFC8nC53f0NfcJK+JuBwC3zjhELKV4ZilK12XGx3RKG
-         CV+NRwlGX38O3vsoEWatV3oSourRh4an9RQVEdH8=
+        b=jWAmN57gN9QzvvgFBv9K44V6noccRKGByWam0mszsH9S2sCFqjsFZutIdv+CS3KsG
+         iuormMTZkeal7Vkaw2vACmJOlAI6AvuX1O+LQXy1MTj0mFZF82+XkdrWqLOi3Tr9oj
+         MD9jcHjnzN4jnoczetyFVUWlRL5L5nprOEuw0kjA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.4 65/84] RDMA/ipoib: Fix warning caused by destroying non-initial netns
-Date:   Mon, 14 Jun 2021 12:27:43 +0200
-Message-Id: <20210614102648.585805988@linuxfoundation.org>
+Subject: [PATCH 5.10 103/131] RDMA/ipoib: Fix warning caused by destroying non-initial netns
+Date:   Mon, 14 Jun 2021 12:27:44 +0200
+Message-Id: <20210614102656.505845280@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102646.341387537@linuxfoundation.org>
-References: <20210614102646.341387537@linuxfoundation.org>
+In-Reply-To: <20210614102652.964395392@linuxfoundation.org>
+References: <20210614102652.964395392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
