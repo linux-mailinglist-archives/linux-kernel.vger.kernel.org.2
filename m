@@ -2,180 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1763A6EA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537BE3A6EAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbhFNTR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233169AbhFNTR0 (ORCPT
+        id S233923AbhFNTRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:17:47 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37582 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233169AbhFNTRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:17:26 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB39C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 12:15:10 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id j2so22707995lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 12:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wy8kQavMtXmWXRWEMXyBLTsbu5eZVxKlmyQPGuM6Q58=;
-        b=FWr0n7oPVWQ+3ixl2B6aJCUI1aaCUd3rD6xJGopgi+G3S51eI5WKQ6RLQjpPrczgUw
-         Uv0FHlvR2bzE518D6Y8Nnd/A9KiVMaCI2gSxXq8KXbC9nPq7xPZUmdAb20/xqNrBMm2Q
-         CGXZz1OHoOXQIUe+85wv+Fkcar+3OSXseqHfWbcgWwW0BU6jkdXwsT97JMQNw7Tf/2+X
-         p7oPoA/6/h+DD9SL5oa6HWhxT5QuVdVfooxkkHO+C3hr+rcIBRMMAX8k0bck9jBNCTh1
-         Jm3gyrqgrVOn9jD0nZlU0ZGZpJBRY8kw5pL418zBh/RpWSEEhpl0Xk+GqptBgSYtL73c
-         9Cyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wy8kQavMtXmWXRWEMXyBLTsbu5eZVxKlmyQPGuM6Q58=;
-        b=uODHapUIBZDXk1aJ3YojI115lmyM4goYDQRBgsobmmk1q1SSl5rUWiUFz69zHr1GCQ
-         PL2yPnPgarITrLXG1b/JOEcSyTYMIsfCAeIlbqPxLopCQUatRpWeMC1nDkRjtT3BUUg0
-         lVtLhI0ye/ePCpNSFQZ/l2Y2v+uK6DU/NkmI24vVyHktvgU8NVWcnWQM6X2+60tT0wcF
-         SosFVMS5z0Qi8XhCaIU52HKK4zHZQ7oxu3zoaiSi0HsRMxwuUlyri6k1OUBiuULehdSk
-         hUXhF0x/0izu5RfZuMImIoY+KnzBMUMiYSmKswoI4eEI3iPkzcpi2FMD4lG9+UeovFFA
-         Rfqg==
-X-Gm-Message-State: AOAM5329rezTD6ZrZO1DiP/bb74l0ulm/VqU7hQyugTr/GaszWpRazF8
-        sP6ZfNmILXFhUQUuKoxXKEdiFg==
-X-Google-Smtp-Source: ABdhPJzy3L13GiiOVq+u0errQIuLZDbWTXWtPICnFywU3zpYMn5wnv69XzZ5bLPGkSg6b7LUTT5JwA==
-X-Received: by 2002:a19:480a:: with SMTP id v10mr12826757lfa.565.1623698108333;
-        Mon, 14 Jun 2021 12:15:08 -0700 (PDT)
-Received: from jade (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id i5sm1559817lfe.113.2021.06.14.12.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 12:15:07 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 21:15:06 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/8] optee: Clear stale cache entries during
- initialization
-Message-ID: <20210614191506.GA1373417@jade>
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
- <20210610210913.536081-5-tyhicks@linux.microsoft.com>
- <20210614082715.GC1033436@jade>
- <20210614190646.GW4910@sequoia>
+        Mon, 14 Jun 2021 15:17:46 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15EJFOB8042719;
+        Mon, 14 Jun 2021 14:15:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623698124;
+        bh=45zAPLvQCJnaXG/Xt6NAJCtou400q1d7LTyzDd2Q70c=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=AG0VBXIdeICzBJk0cSMUut2tcmYZKRpgYlYEI9/EGxBReEfvo6lf1mpvTKao+AM2c
+         8Qgsy4smY61YxETRYJ98jSqV13KjQHdb5wVoAmRcwP+LaHUn9V53Na18f1l1eSjOYY
+         +1oZBeqW7lxnV0JYdQVz0WnXJf4Jm5nOkVY/wjNI=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15EJFOmF039932
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Jun 2021 14:15:24 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 14
+ Jun 2021 14:15:24 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 14 Jun 2021 14:15:24 -0500
+Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15EJFNau072913;
+        Mon, 14 Jun 2021 14:15:23 -0500
+Subject: Re: [RFC PATCH] dt-bindings: hwlock: sun6i: Fix various warnings in
+ binding
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, <devicetree@vger.kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>, <linux-sunxi@lists.linux.dev>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20210603144216.10327-1-s-anna@ti.com>
+ <CAL_Jsq+mhJgFZniXYTVf5ZEM84APhm2w_ozLJg_pFtgz+W_wYw@mail.gmail.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <cd7ab36e-76f3-3d13-6896-6d812c66b0e3@ti.com>
+Date:   Mon, 14 Jun 2021 14:15:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210614190646.GW4910@sequoia>
+In-Reply-To: <CAL_Jsq+mhJgFZniXYTVf5ZEM84APhm2w_ozLJg_pFtgz+W_wYw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 02:06:46PM -0500, Tyler Hicks wrote:
-> On 2021-06-14 10:27:15, Jens Wiklander wrote:
-> > On Thu, Jun 10, 2021 at 04:09:09PM -0500, Tyler Hicks wrote:
-> > > The shm cache could contain invalid addresses if
-> > > optee_disable_shm_cache() was not called from the .shutdown hook of the
-> > > previous kernel before a kexec. These addresses could be unmapped or
-> > > they could point to mapped but unintended locations in memory.
-> > > 
-> > > Clear the shared memory cache, while being careful to not translate the
-> > > addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
-> > > initialization. Once all pre-cache shm objects are removed, proceed with
-> > > enabling the cache so that we know that we can handle cached shm objects
-> > > with confidence later in the .shutdown hook.
-> > > 
-> > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > ---
-> > >  drivers/tee/optee/call.c          | 11 ++++++++++-
-> > >  drivers/tee/optee/core.c          | 13 +++++++++++--
-> > >  drivers/tee/optee/optee_private.h |  2 +-
-> > >  3 files changed, 22 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> > > index 6e6eb836e9b6..5dcba6105ed7 100644
-> > > --- a/drivers/tee/optee/call.c
-> > > +++ b/drivers/tee/optee/call.c
-> > > @@ -419,8 +419,10 @@ void optee_enable_shm_cache(struct optee *optee)
-> > >   * optee_disable_shm_cache() - Disables caching of some shared memory allocation
-> > >   *			      in OP-TEE
-> > >   * @optee:	main service struct
-> > > + * @is_mapped:	true if the cached shared memory addresses were mapped by this
-> > > + *		kernel, are safe to dereference, and should be freed
-> > >   */
-> > > -void optee_disable_shm_cache(struct optee *optee)
-> > > +void optee_disable_shm_cache(struct optee *optee, bool is_mapped)
-> > >  {
-> > >  	struct optee_call_waiter w;
-> > >  
-> > > @@ -439,6 +441,13 @@ void optee_disable_shm_cache(struct optee *optee)
-> > >  		if (res.result.status == OPTEE_SMC_RETURN_OK) {
-> > >  			struct tee_shm *shm;
-> > >  
-> > > +			/*
-> > > +			 * Shared memory references that were not mapped by
-> > > +			 * this kernel must be ignored to prevent a crash.
-> > > +			 */
-> > > +			if (!is_mapped)
-> > > +				continue;
-> > > +
-> > >  			shm = reg_pair_to_ptr(res.result.shm_upper32,
-> > >  					      res.result.shm_lower32);
-> > >  			tee_shm_free(shm);
-> > > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > > index 0987074d7ed0..6974e1104bd4 100644
-> > > --- a/drivers/tee/optee/core.c
-> > > +++ b/drivers/tee/optee/core.c
-> > > @@ -589,7 +589,7 @@ static int optee_remove(struct platform_device *pdev)
-> > >  	 * reference counters and also avoid wild pointers in secure world
-> > >  	 * into the old shared memory range.
-> > >  	 */
-> > > -	optee_disable_shm_cache(optee);
-> > > +	optee_disable_shm_cache(optee, true);
-> > 
-> > Naked "true" or "false" parameters are normally not very descriptive.
-> > Would it make sense to write this as:
-> > optee_disable_shm_cache(optee, true /*is_mapped*/);
-> > instead (same for the other call sites in this patch)? That way it would
-> > be easier to see what it is that is true or false.
+Hi Bjorn,
+
+On 6/7/21 8:19 AM, Rob Herring wrote:
+> On Thu, Jun 3, 2021 at 9:42 AM Suman Anna <s-anna@ti.com> wrote:
+>>
+>> The allwinner,sun6i-a31-hwspinlock.yaml binding has a mismatched
+>> $id and fails to compile the example due to undefined args specifier
+>> values for clocks and resets. Fix both of these issues.
+>>
+>> Fixes: f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock")
+>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>> ---
+>> Hi Wilken,
+>>
+>> This fixes the warnings for now on linux-next, but I think the example
+>> should be including sun6i-a31-ccu.h files instead to be accurate, and
+>> those files are missing the definitions for CLK_BUS_SPINLOCK and
+>> RST_BUS_SPINLOCK. Feel free to send a newer version or do an incremental
+>> patch on top.
+>>
+>> regards
+>> Suman
+>>
+>>  .../bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml      | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> Yeah, I understand the issue with the naked bools. What about turning
-> 'optee_disable_shm_cache(struct optee *optee, bool is_mapped)' into
-> '__optee_disable_shm_cache(struct optee *optee, bool is_mapped)' and
-> introducing these two wrappers:
-> 
-> /**
->  * optee_disable_shm_cache() - Disables caching of mapped shared memory
->  *                             allocations in OP-TEE
->  * @optee:     main service struct
->  */
-> void optee_disable_shm_cache(struct optee *optee)
-> {
->        return __optee_disable_shm_cache(optee, true);
-> }
-> 
-> /**
->  * optee_disable_unmapped_shm_cache() - Disables caching of shared memory
->  *                                      allocations in OP-TEE which are not
->  *                                      currently mapped
->  * @optee:     main service struct
->  */
-> void optee_disable_unmapped_shm_cache(struct optee *optee)
-> {
->        return __optee_disable_shm_cache(optee, false);
-> }
-> 
-> Existing callers of optee_disable_shm_cache() remain unchanged and we just add
-> one caller of optee_disable_unmapped_shm_cache() with this patch.
+> Acked-by: Rob Herring <robh@kernel.org>
 > 
 
-Sounds good.
+Gentle ping, can you pick up this patch and the remoteproc pas binding
+indentations fixes please so that linux-next is sane w.r.t these?
 
-Jens
+regards
+Suman
