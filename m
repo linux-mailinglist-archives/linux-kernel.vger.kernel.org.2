@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580B43A652A
+	by mail.lfdr.de (Postfix) with ESMTP id A59D23A652B
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 13:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236788AbhFNLeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 07:34:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47926 "EHLO mail.kernel.org"
+        id S236806AbhFNLe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 07:34:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236102AbhFNLUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 07:20:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8272461466;
-        Mon, 14 Jun 2021 10:51:48 +0000 (UTC)
+        id S236107AbhFNLUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 07:20:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7B0661476;
+        Mon, 14 Jun 2021 10:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623667909;
-        bh=m/z4NCzBVNnu9gE2TcAg+9IsY7y1E/UfVr9f9PZL5HQ=;
+        s=korg; t=1623667911;
+        bh=WzbHPJH1jThMmcmFAYZbvNRc1O1KAViqzOLf2jjuhcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XMAC71qRj71h27R4Z9ZqYOFm/Zc05CT5QoNX5oZcrk1LnJw2Di2vTcnfrfWEh67+Y
-         pEB82AIh2QsJ2GIB8b3gSCO2aOldMgO0CrNgA/x03IEovSgO6SdHD8MQMcVMezYtvI
-         EPQ91xHEEi8BTX+hzPFDNgu4sIB5ej8jhWFVPdco=
+        b=k/QsA5h2BfYdINiJc6IacxsFO2psZgnh7QubON2x2KK5OCXiWNRn7i/oVWSGH6ejJ
+         4WBxBu16GlAnjKl4XJmoiaO+2L0FMJmRP80FF0FDxG6Qsi7g9YGVxgVRiEMfCMe6ZW
+         MEswisxIDp6Wj87nKXpHfCH5t1F3N8lprUIUwa7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.12 121/173] regulator: atc260x: Fix n_voltages and min_sel for pickable linear ranges
-Date:   Mon, 14 Jun 2021 12:27:33 +0200
-Message-Id: <20210614102702.193125021@linuxfoundation.org>
+Subject: [PATCH 5.12 122/173] regulator: rtmv20: Fix .set_current_limit/.get_current_limit callbacks
+Date:   Mon, 14 Jun 2021 12:27:34 +0200
+Message-Id: <20210614102702.231410644@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210614102658.137943264@linuxfoundation.org>
 References: <20210614102658.137943264@linuxfoundation.org>
@@ -42,79 +42,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Axel Lin <axel.lin@ingics.com>
 
-commit 1963fa67d78674a110bc9b2a8b1e226967692f05 upstream.
+commit 86ab21cc39e6b99b7065ab9008c90bec5dec535a upstream.
 
-The .n_voltages was missed for pickable linear ranges, fix it.
-The min_sel for each pickable range should be starting from 0.
-Also fix atc260x_ldo_voltage_range_sel setting (bit 5 - LDO<N>_VOL_SEL
-in datasheet).
+Current code does not set .curr_table and .n_linear_ranges settings,
+so it cannot use the regulator_get/set_current_limit_regmap helpers.
+If we setup the curr_table, it will has 200 entries.
+Implement customized .set_current_limit/.get_current_limit callbacks
+instead.
 
-Fixes: 3b15ccac161a ("regulator: Add regulator driver for ATC260x PMICs")
+Fixes: b8c054a5eaf0 ("regulator: rtmv20: Adds support for Richtek RTMV20 load switch regulator")
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Reviewed-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Link: https://lore.kernel.org/r/20210528230147.363974-1-axel.lin@ingics.com
+Reviewed-by: ChiYuan Huang <cy_huang@richtek.com>
+Link: https://lore.kernel.org/r/20210530124101.477727-1-axel.lin@ingics.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/regulator/atc260x-regulator.c |   19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/regulator/rtmv20-regulator.c |   42 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 40 insertions(+), 2 deletions(-)
 
---- a/drivers/regulator/atc260x-regulator.c
-+++ b/drivers/regulator/atc260x-regulator.c
-@@ -28,16 +28,16 @@ static const struct linear_range atc2609
- 
- static const struct linear_range atc2609a_ldo_voltage_ranges0[] = {
- 	REGULATOR_LINEAR_RANGE(700000, 0, 15, 100000),
--	REGULATOR_LINEAR_RANGE(2100000, 16, 28, 100000),
-+	REGULATOR_LINEAR_RANGE(2100000, 0, 12, 100000),
- };
- 
- static const struct linear_range atc2609a_ldo_voltage_ranges1[] = {
- 	REGULATOR_LINEAR_RANGE(850000, 0, 15, 100000),
--	REGULATOR_LINEAR_RANGE(2100000, 16, 27, 100000),
-+	REGULATOR_LINEAR_RANGE(2100000, 0, 11, 100000),
- };
- 
- static const unsigned int atc260x_ldo_voltage_range_sel[] = {
--	0x0, 0x1,
-+	0x0, 0x20,
- };
- 
- static int atc260x_dcdc_set_voltage_time_sel(struct regulator_dev *rdev,
-@@ -411,7 +411,7 @@ enum atc2609a_reg_ids {
- 	.owner = THIS_MODULE, \
+--- a/drivers/regulator/rtmv20-regulator.c
++++ b/drivers/regulator/rtmv20-regulator.c
+@@ -103,9 +103,47 @@ static int rtmv20_lsw_disable(struct reg
+ 	return 0;
  }
  
--#define atc2609a_reg_desc_ldo_range_pick(num, n_range) { \
-+#define atc2609a_reg_desc_ldo_range_pick(num, n_range, n_volt) { \
- 	.name = "LDO"#num, \
- 	.supply_name = "ldo"#num, \
- 	.of_match = of_match_ptr("ldo"#num), \
-@@ -421,6 +421,7 @@ enum atc2609a_reg_ids {
- 	.type = REGULATOR_VOLTAGE, \
- 	.linear_ranges = atc2609a_ldo_voltage_ranges##n_range, \
- 	.n_linear_ranges = ARRAY_SIZE(atc2609a_ldo_voltage_ranges##n_range), \
-+	.n_voltages = n_volt, \
- 	.vsel_reg = ATC2609A_PMU_LDO##num##_CTL0, \
- 	.vsel_mask = GENMASK(4, 1), \
- 	.vsel_range_reg = ATC2609A_PMU_LDO##num##_CTL0, \
-@@ -458,12 +459,12 @@ static const struct regulator_desc atc26
- 	atc2609a_reg_desc_ldo_bypass(0),
- 	atc2609a_reg_desc_ldo_bypass(1),
- 	atc2609a_reg_desc_ldo_bypass(2),
--	atc2609a_reg_desc_ldo_range_pick(3, 0),
--	atc2609a_reg_desc_ldo_range_pick(4, 0),
-+	atc2609a_reg_desc_ldo_range_pick(3, 0, 29),
-+	atc2609a_reg_desc_ldo_range_pick(4, 0, 29),
- 	atc2609a_reg_desc_ldo(5),
--	atc2609a_reg_desc_ldo_range_pick(6, 1),
--	atc2609a_reg_desc_ldo_range_pick(7, 0),
--	atc2609a_reg_desc_ldo_range_pick(8, 0),
-+	atc2609a_reg_desc_ldo_range_pick(6, 1, 28),
-+	atc2609a_reg_desc_ldo_range_pick(7, 0, 29),
-+	atc2609a_reg_desc_ldo_range_pick(8, 0, 29),
- 	atc2609a_reg_desc_ldo_fixed(9),
- };
- 
++static int rtmv20_lsw_set_current_limit(struct regulator_dev *rdev, int min_uA,
++					int max_uA)
++{
++	int sel;
++
++	if (min_uA > RTMV20_LSW_MAXUA || max_uA < RTMV20_LSW_MINUA)
++		return -EINVAL;
++
++	if (max_uA > RTMV20_LSW_MAXUA)
++		max_uA = RTMV20_LSW_MAXUA;
++
++	sel = (max_uA - RTMV20_LSW_MINUA) / RTMV20_LSW_STEPUA;
++
++	/* Ensure the selected setting is still in range */
++	if ((sel * RTMV20_LSW_STEPUA + RTMV20_LSW_MINUA) < min_uA)
++		return -EINVAL;
++
++	sel <<= ffs(rdev->desc->csel_mask) - 1;
++
++	return regmap_update_bits(rdev->regmap, rdev->desc->csel_reg,
++				  rdev->desc->csel_mask, sel);
++}
++
++static int rtmv20_lsw_get_current_limit(struct regulator_dev *rdev)
++{
++	unsigned int val;
++	int ret;
++
++	ret = regmap_read(rdev->regmap, rdev->desc->csel_reg, &val);
++	if (ret)
++		return ret;
++
++	val &= rdev->desc->csel_mask;
++	val >>= ffs(rdev->desc->csel_mask) - 1;
++
++	return val * RTMV20_LSW_STEPUA + RTMV20_LSW_MINUA;
++}
++
+ static const struct regulator_ops rtmv20_regulator_ops = {
+-	.set_current_limit = regulator_set_current_limit_regmap,
+-	.get_current_limit = regulator_get_current_limit_regmap,
++	.set_current_limit = rtmv20_lsw_set_current_limit,
++	.get_current_limit = rtmv20_lsw_get_current_limit,
+ 	.enable = rtmv20_lsw_enable,
+ 	.disable = rtmv20_lsw_disable,
+ 	.is_enabled = regulator_is_enabled_regmap,
 
 
