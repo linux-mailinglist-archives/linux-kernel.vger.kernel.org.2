@@ -2,199 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C813A6E8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71863A6E8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 21:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhFNTI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 15:08:56 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:58830 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhFNTIw (ORCPT
+        id S233378AbhFNTJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 15:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232802AbhFNTJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 15:08:52 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1E5AB20B83C2;
-        Mon, 14 Jun 2021 12:06:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1E5AB20B83C2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623697609;
-        bh=GyTTjrY1m6FZD8r7ati75j2Y/QHH6dR94ffl12D95/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gzMlK8A9qDasP6aFEbh9BZrnV6PYy21iOtrYeg3xfSc+qo8Mhb8QRxbdMrSPSCzB6
-         zlxnVn/y5MSAwrArDpeXykmGwhfIPAsp9NnL+HSqH1s9QKzb7zBN5OQBoIKJn1Z81q
-         6L55T6eBH9yA4IgnuCwDMvnqAVvcVxXeXcb6lkqw=
-Date:   Mon, 14 Jun 2021 14:06:46 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/8] optee: Clear stale cache entries during
- initialization
-Message-ID: <20210614190646.GW4910@sequoia>
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
- <20210610210913.536081-5-tyhicks@linux.microsoft.com>
- <20210614082715.GC1033436@jade>
+        Mon, 14 Jun 2021 15:09:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2000C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 12:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jHMfvfn96Syem9p1AP7b59njyn4/ckJ/ZaF1o8/iL74=; b=DS6M5F0A8qXoVGrL6KIhJZ557i
+        qVXd4AjQmSZywsN6TKU6Pe9k3Uq5Zv3yF2azMLfHIiJrj1koXw6xpbdrDuYMINXGEAIy6FvWT58tS
+        k5+v6RIy/RFyEcX3YTBWW/+xF3SpI5jlI3tb+CTPntCcHPoBk0HqKEXWFN6HEtU6E/+bFSDibQCem
+        meVPH3J0ylY3AybeU3kotAeNWqq6tv72R6mCHhvxxdoZiXUpw33Fnp7SwUviWnMJe0iJ0+WkXBzqF
+        gmeRsiZokbxEKql/env3crCnHZwVq/GzhkrXMoYOJpnG8sxDiEhNZzW+sX7INx1tVOsA083SOxJGU
+        ICh0Y5ig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lsrvJ-005jnj-VU; Mon, 14 Jun 2021 19:07:14 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 94E4D982D9F; Mon, 14 Jun 2021 21:07:00 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 21:07:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fangrui Song <maskray@google.com>
+Cc:     ndesaulniers@google.com, x86@kernel.org, oberpar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, johannes.berg@intel.com,
+        nathan@kernel.org, keescook@chromium.org, elver@google.com,
+        mark.rutland@arm.com
+Subject: Re: [PATCH] gcov,x86: Mark GCOV broken for x86
+Message-ID: <20210614190700.GF68749@worktop.programming.kicks-ass.net>
+References: <CAKwvOdmPTi93n2L0_yQkrzLdmpxzrOR7zggSzonyaw2PGshApw@mail.gmail.com>
+ <20210614183135.hfuaowojnq4alo44@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614082715.GC1033436@jade>
+In-Reply-To: <20210614183135.hfuaowojnq4alo44@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-14 10:27:15, Jens Wiklander wrote:
-> On Thu, Jun 10, 2021 at 04:09:09PM -0500, Tyler Hicks wrote:
-> > The shm cache could contain invalid addresses if
-> > optee_disable_shm_cache() was not called from the .shutdown hook of the
-> > previous kernel before a kexec. These addresses could be unmapped or
-> > they could point to mapped but unintended locations in memory.
-> > 
-> > Clear the shared memory cache, while being careful to not translate the
-> > addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
-> > initialization. Once all pre-cache shm objects are removed, proceed with
-> > enabling the cache so that we know that we can handle cached shm objects
-> > with confidence later in the .shutdown hook.
-> > 
-> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > ---
-> >  drivers/tee/optee/call.c          | 11 ++++++++++-
-> >  drivers/tee/optee/core.c          | 13 +++++++++++--
-> >  drivers/tee/optee/optee_private.h |  2 +-
-> >  3 files changed, 22 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> > index 6e6eb836e9b6..5dcba6105ed7 100644
-> > --- a/drivers/tee/optee/call.c
-> > +++ b/drivers/tee/optee/call.c
-> > @@ -419,8 +419,10 @@ void optee_enable_shm_cache(struct optee *optee)
-> >   * optee_disable_shm_cache() - Disables caching of some shared memory allocation
-> >   *			      in OP-TEE
-> >   * @optee:	main service struct
-> > + * @is_mapped:	true if the cached shared memory addresses were mapped by this
-> > + *		kernel, are safe to dereference, and should be freed
-> >   */
-> > -void optee_disable_shm_cache(struct optee *optee)
-> > +void optee_disable_shm_cache(struct optee *optee, bool is_mapped)
-> >  {
-> >  	struct optee_call_waiter w;
-> >  
-> > @@ -439,6 +441,13 @@ void optee_disable_shm_cache(struct optee *optee)
-> >  		if (res.result.status == OPTEE_SMC_RETURN_OK) {
-> >  			struct tee_shm *shm;
-> >  
-> > +			/*
-> > +			 * Shared memory references that were not mapped by
-> > +			 * this kernel must be ignored to prevent a crash.
-> > +			 */
-> > +			if (!is_mapped)
-> > +				continue;
-> > +
-> >  			shm = reg_pair_to_ptr(res.result.shm_upper32,
-> >  					      res.result.shm_lower32);
-> >  			tee_shm_free(shm);
-> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > index 0987074d7ed0..6974e1104bd4 100644
-> > --- a/drivers/tee/optee/core.c
-> > +++ b/drivers/tee/optee/core.c
-> > @@ -589,7 +589,7 @@ static int optee_remove(struct platform_device *pdev)
-> >  	 * reference counters and also avoid wild pointers in secure world
-> >  	 * into the old shared memory range.
-> >  	 */
-> > -	optee_disable_shm_cache(optee);
-> > +	optee_disable_shm_cache(optee, true);
+On Mon, Jun 14, 2021 at 11:31:35AM -0700, Fangrui Song wrote:
+> __attribute__((no_instrument_function)) seems specific to
+> -finstrument-functions.  Somehow -pg uses it as well. The name may not be
+> generic, so it may be odd to exclude various instrumentations (there are a ton)
+> under this generic attribute.
 > 
-> Naked "true" or "false" parameters are normally not very descriptive.
-> Would it make sense to write this as:
-> optee_disable_shm_cache(optee, true /*is_mapped*/);
-> instead (same for the other call sites in this patch)? That way it would
-> be easier to see what it is that is true or false.
+> I'd like to understand the definition of notrace and noinstr.
 
-Yeah, I understand the issue with the naked bools. What about turning
-'optee_disable_shm_cache(struct optee *optee, bool is_mapped)' into
-'__optee_disable_shm_cache(struct optee *optee, bool is_mapped)' and
-introducing these two wrappers:
+notrace came first; it disallows tracing (fentry/mcount) on specific
+functions where tracing is unsafe, like inside the tracer itself.
 
-/**
- * optee_disable_shm_cache() - Disables caching of mapped shared memory
- *                             allocations in OP-TEE
- * @optee:     main service struct
- */
-void optee_disable_shm_cache(struct optee *optee)
-{
-       return __optee_disable_shm_cache(optee, true);
-}
+noinstr is fairly recent, we lifted a whole bunch of code from asm to C
+(because it's something that every arch ends up having to do and pretty
+much every arch did it wrong, so we're slowly lifting it into arch
+neutral code).
 
-/**
- * optee_disable_unmapped_shm_cache() - Disables caching of shared memory
- *                                      allocations in OP-TEE which are not
- *                                      currently mapped
- * @optee:     main service struct
- */
-void optee_disable_unmapped_shm_cache(struct optee *optee)
-{
-       return __optee_disable_shm_cache(optee, false);
-}
+We now call into C before the full (kernel) C runtime is properly setup.
+Consider it crt0 if you will. But it's sprinkled throughout arch code
+and not nicely isolated to a few .c files.
 
-Existing callers of optee_disable_shm_cache() remain unchanged and we just add
-one caller of optee_disable_unmapped_shm_cache() with this patch.
+For this we require that noinstr avoids any and all compiler
+instrumentation; this really is C as C was intended, portable assembler
+style usage (/me runs).
 
-Tyler
+> With value profiling disabled, clang -fprofile-generate/gcc
+> -fprofile-arcs don't add function calls. They just increment a counter
+> in a writable section.  Why isn't that allowed for noinstr functions?
 
-> 
-> /Jens
-> 
-> >  
-> >  	/*
-> >  	 * The two devices have to be unregistered before we can free the
-> > @@ -619,7 +619,7 @@ static int optee_remove(struct platform_device *pdev)
-> >   */
-> >  static void optee_shutdown(struct platform_device *pdev)
-> >  {
-> > -	optee_disable_shm_cache(platform_get_drvdata(pdev));
-> > +	optee_disable_shm_cache(platform_get_drvdata(pdev), true);
-> >  }
-> >  
-> >  static int optee_probe(struct platform_device *pdev)
-> > @@ -716,6 +716,15 @@ static int optee_probe(struct platform_device *pdev)
-> >  	optee->memremaped_shm = memremaped_shm;
-> >  	optee->pool = pool;
-> >  
-> > +	/*
-> > +	 * Ensure that there are no pre-existing shm objects before enabling
-> > +	 * the shm cache so that there's no chance of receiving an invalid
-> > +	 * address during shutdown. This could occur, for example, if we're
-> > +	 * kexec booting from an older kernel that did not properly cleanup the
-> > +	 * shm cache.
-> > +	 */
-> > +	optee_disable_shm_cache(optee, false);
-> > +
-> >  	optee_enable_shm_cache(optee);
-> >  
-> >  	if (optee->sec_caps & OPTEE_SMC_SEC_CAP_DYNAMIC_SHM)
-> > diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> > index e25b216a14ef..16d8c82213e7 100644
-> > --- a/drivers/tee/optee/optee_private.h
-> > +++ b/drivers/tee/optee/optee_private.h
-> > @@ -158,7 +158,7 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
-> >  int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session);
-> >  
-> >  void optee_enable_shm_cache(struct optee *optee);
-> > -void optee_disable_shm_cache(struct optee *optee);
-> > +void optee_disable_shm_cache(struct optee *optee, bool is_mapped);
-> >  
-> >  int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
-> >  		       struct page **pages, size_t num_pages,
-> > -- 
-> > 2.25.1
-> > 
-> 
+Because you can get exceptions from memory accesses just fine, which, if
+you're inside an exception handler and haven't dealt with recursion
+conditions yet, can be fatal.
+
+> I can understand why -fpatchable-function-entry= is excluded:
+> -fpatchable-function-entry= causes the section
+> __patchable_function_entries and the kernel may change the nops into
+> call instructions. And a function call may not be suitable for certain
+> functions.  But I don't understand why incrementing a counter should
+> be disallowed.
+
+A memory access can generate #PF, #DB, #VE, #VC, #MC from the top of my
+head.
+
+Also that's what you do today, GCC emits calls, and those can cause even
+more 'fun'.
+
