@@ -2,203 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2143A706D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D5F3A707A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 22:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235536AbhFNUcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 16:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        id S235642AbhFNUdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 16:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234626AbhFNUcV (ORCPT
+        with ESMTP id S234837AbhFNUdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 16:32:21 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5CC061574;
-        Mon, 14 Jun 2021 13:30:16 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id c11so21906496ljd.6;
-        Mon, 14 Jun 2021 13:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/hnnncj7vzT6xrqQOtqK95hj1J3zQcIX0GD5ENHwYGs=;
-        b=Sf/C6jQAejQ7QgbqyKgzN5j9RKIEIYJ5qRCASL/CGyadtbYOldpIm39EE+PC/IKXuf
-         P8tJ6EJIryYoPG1+Fy2KA1D+ZHhcsLap7Y8VKeDn1AnPFqUxZ+rNJ4xuw8fmFAzS0n7F
-         DbJG3wesc2UbKZsKsj+rHOO9uXSbn86OdUlQalg6+3hnLjAJ/AhVrRQjFzYaXK+ynlfZ
-         IwG6Lx/G3uFxuU+hEOIPhrvgt/LS6Bg1CNUWUv3FIcqdaSjwP8Aim+e1DsTbUoskgPFH
-         07q4i7KlMmaO5Q4Z4XqSLYnOmdSguEV8WZjDyE3riaIy+dUZzZ6zOsOy/NnRPDA1TL14
-         TEig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/hnnncj7vzT6xrqQOtqK95hj1J3zQcIX0GD5ENHwYGs=;
-        b=TaZwYsptwrnXkdtpktSroOvEm+uT1+8XrfqQuL5Nmwk3+iToA6UsxnNUySDmNxtw68
-         aWDE/8tt5H5kOKtrPcdiiMrtkZFglPtXq9y4rXYhbMSuhpQOlonGZM1/LyDHxoyp+u87
-         Z/Ym+S+/LxDY3WdjRk1U7lixWHB+wB1SgibXHuTq4jQsup3DvOQR0GMue8uGCYvSMIYs
-         MLPSSYY8gHG9hdG0oWq9JmlT+WCAsY5OBYdkpywhN/5bM07ji+++K8Sv1yL0hsuDOO0V
-         0FdghefG/ct1VtFsUqgpiSyUtbOgN7nWrFHE7jUn8w08TP1qc1SvqO4FaoUg7S1J1Ngn
-         leiA==
-X-Gm-Message-State: AOAM531lu4WKRlrtEvnVdxQmxEXB5cgoy8bPud54jCSuH83HFfopfyQU
-        ddhAiXX/cVV5FgKLNLr9hkM=
-X-Google-Smtp-Source: ABdhPJwIAkPoePHhzl7KL6lSn4/Ac+1NH4oqgxaj2w/nYPwdN8ocoZPG8abc63Nw9LkwP5vtZ0O+8w==
-X-Received: by 2002:a2e:9959:: with SMTP id r25mr14631258ljj.317.1623702614608;
-        Mon, 14 Jun 2021 13:30:14 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.24])
-        by smtp.gmail.com with ESMTPSA id d4sm1574079lfk.295.2021.06.14.13.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 13:30:14 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 23:30:11 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     alex.aring@gmail.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        stefan@datenfreihafen.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: Suggestions on how to debug kernel crashes where printk and gdb
- both does not work
-Message-ID: <20210614233011.79ebe38a@gmail.com>
-In-Reply-To: <CAD-N9QXUrv7zjSyUjsJsWO6KZDhGYtkTCK9U_ZuPA7awJ8P3Yw@mail.gmail.com>
-References: <CAD-N9QUUCSpZjg5RwdKBNF7xx127E6fUowTZkUhm66C891Fpkg@mail.gmail.com>
-        <20210614163401.52807197@gmail.com>
-        <CAD-N9QV5_91A6n5QcrafmQRbqH_qzFRatno-6z0i7q-V9VnLzg@mail.gmail.com>
-        <20210614172512.799db10d@gmail.com>
-        <CAD-N9QUhQT8pG8Une8Fac1pJaiVd_mi9AU2c_nkPjTi36xbutQ@mail.gmail.com>
-        <20210614174727.6a38b584@gmail.com>
-        <CAD-N9QXUrv7zjSyUjsJsWO6KZDhGYtkTCK9U_ZuPA7awJ8P3Yw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Mon, 14 Jun 2021 16:33:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1529C061574;
+        Mon, 14 Jun 2021 13:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=oLLLTybt6Z91a0kIv3xIdAEU1n7lZTlXnFyQJqMvtF8=; b=TvR0ZqyUJf4Ys+7i7FqC7Z0Nk1
+        3db2HxKENj+zP0waxehxWY/pB+6cNLmgJAXSW1ZrhjjL+JInh6p3i0ZKLDDCy+4siwNMBy5ycy+BI
+        k3eptLQFx14UtVBibbz9SFgfkN4jKbcbu4/j33TSPuHw5iEO5Je6Wv2za/ulNEUSRKBG8+hmGH7/w
+        g40CoQnTpDXZWep3RKK6WB4eeS1xdFhrq2fdHOl3tnOH2yGLSmSX9yhO2JhPZHu/tLHnA2i452Gz8
+        3PgAB+/eQOrudawQbWN6VG+0yOshvsQpi4IegLtVRqrr5msXD7mgrYT0heDMQp010LXfGkbhWjvEd
+        lxKZmpbw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lstE7-005o9s-H4; Mon, 14 Jun 2021 20:30:52 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     akpm@linux-foundation.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: [PATCH v11 26/33] mm/writeback: Add folio_wait_writeback()
+Date:   Mon, 14 Jun 2021 21:14:28 +0100
+Message-Id: <20210614201435.1379188-27-willy@infradead.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210614201435.1379188-1-willy@infradead.org>
+References: <20210614201435.1379188-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 23:04:03 +0800
-Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+wait_on_page_writeback_killable() only has one caller, so convert it to
+call folio_wait_writeback_killable().  For the wait_on_page_writeback()
+callers, add a compatibility wrapper around folio_wait_writeback().
 
-> On Mon, Jun 14, 2021 at 10:47 PM Pavel Skripkin
-> <paskripkin@gmail.com> wrote:
-> >
-> > On Mon, 14 Jun 2021 22:40:55 +0800
-> > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> >
-> > > On Mon, Jun 14, 2021 at 10:25 PM Pavel Skripkin
-> > > <paskripkin@gmail.com> wrote:
-> > > >
-> > > > On Mon, 14 Jun 2021 22:19:10 +0800
-> > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> > > >
-> > > > > On Mon, Jun 14, 2021 at 9:34 PM Pavel Skripkin
-> > > > > <paskripkin@gmail.com> wrote:
-> > > > > >
-> > > > > > On Mon, 14 Jun 2021 21:22:43 +0800
-> > > > > > Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> > > > > >
-> > > > > > > Dear kernel developers,
-> > > > > > >
-> > > > > > > I was trying to debug the crash - memory leak in
-> > > > > > > hwsim_add_one [1] recently. However, I encountered a
-> > > > > > > disgusting issue: my breakpoint and printk/pr_alert in the
-> > > > > > > functions that will be surely executed do not work. The
-> > > > > > > stack trace is in the following. I wrote this email to
-> > > > > > > ask for some suggestions on how to debug such cases?
-> > > > > > >
-> > > > > > > Thanks very much. Looking forward to your reply.
-> > > > > > >
-> > > > > >
-> > > > > > Hi, Dongliang!
-> > > > > >
-> > > > > > This bug is not similar to others on the dashboard. I spent
-> > > > > > some time debugging it a week ago. The main problem here,
-> > > > > > that memory allocation happens in the boot time:
-> > > > > >
-> > > > > > > [<ffffffff84359255>] kernel_init+0xc/0x1a7
-> > > > > > > init/main.c:1447
-> > > > > >
-> > > > >
-> > > > > Oh, nice catch. No wonder why my debugging does not work. :(
-> > > > >
-> > > > > > and reproducer simply tries to
-> > > > > > free this data. You can use ftrace to look at it. Smth like
-> > > > > > this:
-> > > > > >
-> > > > > > $ echo 'hwsim_*' > $TRACE_DIR/set_ftrace_filter
-> > > > >
-> > > > > Thanks for your suggestion.
-> > > > >
-> > > > > Do you have any conclusions about this case? If you have found
-> > > > > out the root cause and start writing patches, I will turn my
-> > > > > focus to other cases.
-> > > >
-> > > > No, I had some busy days and I have nothing about this bug for
-> > > > now. I've just traced the reproducer execution and that's all :)
-> > > >
-> > > > I guess, some error handling paths are broken, but Im not sure
-> > >
-> > > In the beginning, I agreed with you. However, after I manually
-> > > checked functions: hwsim_probe (initialization) and  hwsim_remove
-> > > (cleanup), then things may be different. The cleanup looks
-> > > correct to me. I would like to debug but stuck with the debugging
-> > > process.
-> > >
-> > > And there is another issue: the cleanup function also does not
-> > > output anything or hit the breakpoint. I don't quite understand
-> > > it since the cleanup is not at the boot time.
-> > >
-> > > Any idea?
-> > >
-> >
-> > Output from ftrace (syzkaller repro):
-> >
-> > root@syzkaller:~# cat /sys/kernel/tracing/trace
-> > # tracer: function_graph
-> > #
-> > # CPU  DURATION                  FUNCTION CALLS
-> > # |     |   |                     |   |   |   |
-> >  1)               |  hwsim_del_radio_nl() {
-> >  1)               |    hwsim_del() {
-> >  1)               |      hwsim_edge_unsubscribe_me() {
-> >  1) ! 310.041 us  |        hwsim_free_edge();
-> >  1) ! 665.221 us  |      }
-> >  1) * 52999.05 us |    }
-> >  1) * 53035.38 us |  }
-> >
-> > Cleanup function is not the case, I think :)
-> 
-> It seems like I spot the incorrect cleanup function (hwsim_remove is
-> the right one is in my mind). Let me learn how to use ftrace to log
-> the executed functions and then discuss this case with you guys.
-> 
+Turning PageWriteback() into folio_writeback() eliminates a call
+to compound_head() which saves 8 bytes and 15 bytes in the two
+functions.  Unfortunately, that is more than offset by adding the
+wait_on_page_writeback compatibility wrapper for a net increase in text
+of 7 bytes.
 
-Hmmm, I think, there is a mess with lists.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jeff Layton <jlayton@kernel.org>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+---
+ fs/afs/write.c          |  9 ++++----
+ include/linux/pagemap.h |  3 ++-
+ mm/folio-compat.c       |  6 ++++++
+ mm/page-writeback.c     | 48 ++++++++++++++++++++++++++++-------------
+ 4 files changed, 46 insertions(+), 20 deletions(-)
 
-I just want to share my debug results, I have no idea about the fix for
-now.
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 3edb6204b937..22b1c4d43687 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -832,7 +832,8 @@ int afs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+  */
+ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ {
+-	struct page *page = thp_head(vmf->page);
++	struct folio *folio = page_folio(vmf->page);
++	struct page *page = &folio->page;
+ 	struct file *file = vmf->vma->vm_file;
+ 	struct inode *inode = file_inode(file);
+ 	struct afs_vnode *vnode = AFS_FS_I(inode);
+@@ -851,7 +852,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 		return VM_FAULT_RETRY;
+ #endif
+ 
+-	if (wait_on_page_writeback_killable(page))
++	if (folio_wait_writeback_killable(folio))
+ 		return VM_FAULT_RETRY;
+ 
+ 	if (lock_page_killable(page) < 0)
+@@ -861,8 +862,8 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	 * details the portion of the page we need to write back and we might
+ 	 * need to redirty the page if there's a problem.
+ 	 */
+-	if (wait_on_page_writeback_killable(page) < 0) {
+-		unlock_page(page);
++	if (folio_wait_writeback_killable(folio) < 0) {
++		folio_unlock(folio);
+ 		return VM_FAULT_RETRY;
+ 	}
+ 
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 2aa20394b103..341720c8ab56 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -755,7 +755,8 @@ static inline int wait_on_page_locked_killable(struct page *page)
+ 
+ int put_and_wait_on_page_locked(struct page *page, int state);
+ void wait_on_page_writeback(struct page *page);
+-int wait_on_page_writeback_killable(struct page *page);
++void folio_wait_writeback(struct folio *folio);
++int folio_wait_writeback_killable(struct folio *folio);
+ void end_page_writeback(struct page *page);
+ void folio_end_writeback(struct folio *folio);
+ void wait_for_stable_page(struct page *page);
+diff --git a/mm/folio-compat.c b/mm/folio-compat.c
+index 526843d03d58..41275dac7a92 100644
+--- a/mm/folio-compat.c
++++ b/mm/folio-compat.c
+@@ -23,3 +23,9 @@ void end_page_writeback(struct page *page)
+ 	return folio_end_writeback(page_folio(page));
+ }
+ EXPORT_SYMBOL(end_page_writeback);
++
++void wait_on_page_writeback(struct page *page)
++{
++	return folio_wait_writeback(page_folio(page));
++}
++EXPORT_SYMBOL_GPL(wait_on_page_writeback);
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 0062d5c57d41..c8bc78cd0f2b 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2818,33 +2818,51 @@ int __test_set_page_writeback(struct page *page, bool keep_write)
+ }
+ EXPORT_SYMBOL(__test_set_page_writeback);
+ 
+-/*
+- * Wait for a page to complete writeback
++/**
++ * folio_wait_writeback - Wait for a folio to finish writeback.
++ * @folio: The folio to wait for.
++ *
++ * If the folio is currently being written back to storage, wait for the
++ * I/O to complete.
++ *
++ * Context: Sleeps.  Must be called in process context and with
++ * no spinlocks held.  Caller should hold a reference on the folio.
++ * If the folio is not locked, writeback may start again after writeback
++ * has finished.
+  */
+-void wait_on_page_writeback(struct page *page)
++void folio_wait_writeback(struct folio *folio)
+ {
+-	while (PageWriteback(page)) {
+-		trace_wait_on_page_writeback(page, page_mapping(page));
+-		wait_on_page_bit(page, PG_writeback);
++	while (folio_writeback(folio)) {
++		trace_wait_on_page_writeback(&folio->page, folio_mapping(folio));
++		wait_on_page_bit(&folio->page, PG_writeback);
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(wait_on_page_writeback);
++EXPORT_SYMBOL_GPL(folio_wait_writeback);
+ 
+-/*
+- * Wait for a page to complete writeback.  Returns -EINTR if we get a
+- * fatal signal while waiting.
++/**
++ * folio_wait_writeback_killable - Wait for a folio to finish writeback.
++ * @folio: The folio to wait for.
++ *
++ * If the folio is currently being written back to storage, wait for the
++ * I/O to complete or a fatal signal to arrive.
++ *
++ * Context: Sleeps.  Must be called in process context and with
++ * no spinlocks held.  Caller should hold a reference on the folio.
++ * If the folio is not locked, writeback may start again after writeback
++ * has finished.
++ * Return: 0 on success, -EINTR if we get a fatal signal while waiting.
+  */
+-int wait_on_page_writeback_killable(struct page *page)
++int folio_wait_writeback_killable(struct folio *folio)
+ {
+-	while (PageWriteback(page)) {
+-		trace_wait_on_page_writeback(page, page_mapping(page));
+-		if (wait_on_page_bit_killable(page, PG_writeback))
++	while (folio_writeback(folio)) {
++		trace_wait_on_page_writeback(&folio->page, folio_mapping(folio));
++		if (wait_on_page_bit_killable(&folio->page, PG_writeback))
+ 			return -EINTR;
+ 	}
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(wait_on_page_writeback_killable);
++EXPORT_SYMBOL_GPL(folio_wait_writeback_killable);
+ 
+ /**
+  * wait_for_stable_page() - wait for writeback to finish, if necessary.
+-- 
+2.30.2
 
-In hwsim_probe() edge for phy->idx = 1 is allocated, then reproduces
-sends a request to delete phy with idx == 0, so this check in
-hwsim_edge_unsubscribe_me():
-
-	if (e->endpoint->idx == phy->idx) { 
-		... clean up code ...
-	}
-
-won't be passed and edge won't be freed (because it was allocated for
-phy with idx == 1). Allocated edge for phy 1 becomes leaked after
-hwsim_del(). I can't really see the code where phy with idx == 1 can
-be deleted from list...
-
-Maybe, it's kmemleak bug. Similar strange case was with this one
-https://syzkaller.appspot.com/bug?id=3a325b8389fc41c1bc94de0f4ac437ed13cce584.
-I find it strange, that I could reach leaked pointers after kmemleak reported a
-leak. Im not familiar with kmemleak internals and I might be wrong 
-
-
-With regards,
-Pavel Skripkin
