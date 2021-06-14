@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276333A6C8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCD73A6C90
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 18:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234588AbhFNRBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 13:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233206AbhFNRBP (ORCPT
+        id S235003AbhFNRBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 13:01:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46925 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233606AbhFNRBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 13:01:15 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD52EC061574;
-        Mon, 14 Jun 2021 09:59:11 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 681D3A59;
-        Mon, 14 Jun 2021 18:59:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1623689949;
-        bh=TTzEHwOuhgSM39sroCCujZmwX9sHOPc/YKGwgSdMLOw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TXA1lrj7Ogj8VCiIJkQWIZ0+cVLqkwICv4YBmxgUJ1deC6tg7jESEKsWPIa4Ro85f
-         fCFiZZWVcoYY3MmGjHFADEbCgDddU6WBZwdAp/vXKzGMrJA8R2GJGzSsx+Mt7ySzmG
-         Q0DJlIp53YGMYykmlAB9pPwqgZcD/+mjb6CO486U=
-Date:   Mon, 14 Jun 2021 19:58:49 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v3 3/8] media: v4l2-core: fix whitespace damage in
- video_get_user()
-Message-ID: <YMeKycZz/GOcb4rc@pendragon.ideasonboard.com>
-References: <20210614103409.3154127-1-arnd@kernel.org>
- <20210614103409.3154127-4-arnd@kernel.org>
+        Mon, 14 Jun 2021 13:01:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623689970;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A1DiCAo4wwoXOYCvkCpDxMFPghUwqg5DmekoJo7gNLs=;
+        b=LscqaFy+VDwHmV7SYAbkRbnopWGuotkDYhJQVMyB5q8jfHDwSMV88rt7eIggPQ39tkTxQD
+        0kwnKb5z5bQpNyYTcpoVP79pZ30IMWob7zE2D8+5IzEYaBkHC64fFxfF2OZ7j0tAS/L9q7
+        PE4qW+2nlA1eWGWQz0UsXmdgxLK9sxQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-DvzPQ2bSMkywCqnS2oZ3RQ-1; Mon, 14 Jun 2021 12:59:26 -0400
+X-MC-Unique: DvzPQ2bSMkywCqnS2oZ3RQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A11A10B7462;
+        Mon, 14 Jun 2021 16:59:25 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.47])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DEF2810023B5;
+        Mon, 14 Jun 2021 16:59:22 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 14 Jun 2021 18:59:24 +0200 (CEST)
+Date:   Mon, 14 Jun 2021 18:59:21 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Olivier Langlois <olivier@trillion01.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>
+Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
+Message-ID: <20210614165920.GD13677@redhat.com>
+References: <87eeda7nqe.fsf@disp2133>
+ <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+ <87pmwt6biw.fsf@disp2133>
+ <87czst5yxh.fsf_-_@disp2133>
+ <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
+ <87y2bh4jg5.fsf@disp2133>
+ <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
+ <87sg1p4h0g.fsf_-_@disp2133>
+ <20210614141032.GA13677@redhat.com>
+ <87o8c8tnae.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614103409.3154127-4-arnd@kernel.org>
+In-Reply-To: <87o8c8tnae.fsf@disp2133>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On 06/14, Eric W. Biederman wrote:
+>
+> I would very much like some clarity on TIF_NOTIFY_SIGNAL.  At the very
+> least it would be nice if it could get renamed TIF_NOTIFY_TASK_WORK.
 
-Thank you for the patch.
+No, no, no ;)
 
-On Mon, Jun 14, 2021 at 12:34:04PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The initialization was indented with an extra tab in most lines,
-> remove them to get the normal coding style.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+I think that, for example, freezer should be changed to use
+set_notify_signal() rather than fake_signal_wake_up(). Livepatch.
+And probably it will have more users.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> I don't understand the logic with well enough of adding work to
+> non-io_uring threads with task_work_add to understand why that happens
+> in the first place.
 
-> ---
->  drivers/media/v4l2-core/v4l2-ioctl.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index f19e56116e53..d94389145479 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -3142,18 +3142,18 @@ static int video_get_user(void __user *arg, void *parg,
->  
->  			*vb = (struct v4l2_buffer) {
->  				.index		= vb32.index,
-> -					.type		= vb32.type,
-> -					.bytesused	= vb32.bytesused,
-> -					.flags		= vb32.flags,
-> -					.field		= vb32.field,
-> -					.timestamp.tv_sec	= vb32.timestamp.tv_sec,
-> -					.timestamp.tv_usec	= vb32.timestamp.tv_usec,
-> -					.timecode	= vb32.timecode,
-> -					.sequence	= vb32.sequence,
-> -					.memory		= vb32.memory,
-> -					.m.userptr	= vb32.m.userptr,
-> -					.length		= vb32.length,
-> -					.request_fd	= vb32.request_fd,
-> +				.type		= vb32.type,
-> +				.bytesused	= vb32.bytesused,
-> +				.flags		= vb32.flags,
-> +				.field		= vb32.field,
-> +				.timestamp.tv_sec	= vb32.timestamp.tv_sec,
-> +				.timestamp.tv_usec	= vb32.timestamp.tv_usec,
-> +				.timecode	= vb32.timecode,
-> +				.sequence	= vb32.sequence,
-> +				.memory		= vb32.memory,
-> +				.m.userptr	= vb32.m.userptr,
-> +				.length		= vb32.length,
-> +				.request_fd	= vb32.request_fd,
->  			};
->  			break;
->  		}
+Same here.
 
--- 
-Regards,
+Oleg.
 
-Laurent Pinchart
