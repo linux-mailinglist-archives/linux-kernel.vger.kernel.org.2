@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4019C3A603A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EDD3A6039
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Jun 2021 12:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhFNKce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 06:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38226 "EHLO mail.kernel.org"
+        id S233068AbhFNKcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 06:32:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232911AbhFNKba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:31:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C387611C0;
-        Mon, 14 Jun 2021 10:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623666567;
-        bh=garON5RXTgVwCiYSp8F7v2qJyPtTNSWSja2qsVwO0NE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YgNCOnGqkkypU9KU2pXYvoagSgAgy2ZsOWA6bbdtHjJ1jlJQSs4SvEBDoExHHNQ1z
-         KO0Z/G1gl77RfF1nLFAAD6rvskU99HOP+KDynPndQ46vBp9XmoIuYqlAVCFoGwjAnl
-         lTxj8Db3ptBZXzJH74HJHl7slatFjXg3Yelhg/Sc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 26/34] USB: serial: quatech2: fix control-request directions
-Date:   Mon, 14 Jun 2021 12:27:17 +0200
-Message-Id: <20210614102642.422090356@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210614102641.582612289@linuxfoundation.org>
-References: <20210614102641.582612289@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232908AbhFNKbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 06:31:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9DE5611CA;
+        Mon, 14 Jun 2021 10:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623666560;
+        bh=lSeXCd4lcJ0tTuMRN1HC4nFi6fATD6bu2jRIYot55WM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ko+f3laW2JB91Bc8p/Oxg7X5WOwVgspcCNOv3A/lGSGEFNFS0RZvmjPLuYLC37Zcy
+         FF9Dek5SERjFhw7J0R/SYulTkkNhuB7AHoVw8oRuFfOJ0s+PaQQxGisqrDS7gpFPCR
+         QvF8Bnzkm1llBwn7Wbiv9RAO9utRIAeIzYZKupieuN3qykkxjbQpnJjoh+0Yf3Dhw0
+         oPNCkTTmURuV3paBgSq0WXDOYnyO6zJw4pbcZv1nbBQobOKVXsq+iwcV4kTxpobuJr
+         P6oy/IKGBLvjmeECmOOFzOTa+jUm0VQFR6flZtRyTXMmmfxYQia41zd08i/CPRLS4W
+         LB+/BYqXHoPBQ==
+Date:   Mon, 14 Jun 2021 11:29:02 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mason Zhang <mason.zhang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
+        hanks.chen@mediatek.com, linux-kernel@vger.kernel.org,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] dt-binding: mediatek: mt6779: update spi document
+Message-ID: <20210614102902.GA5646@sirena.org.uk>
+References: <1623413625.22727.10.camel@mbjsdccf07>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+Content-Disposition: inline
+In-Reply-To: <1623413625.22727.10.camel@mbjsdccf07>
+X-Cookie: Some restrictions may apply.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
 
-commit eb8dbe80326c3d44c1e38ee4f40e0d8d3e06f2d0 upstream.
+--LZvS9be/3tNcYl/X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+On Fri, Jun 11, 2021 at 08:13:45PM +0800, Mason Zhang wrote:
 
-Fix the three requests which erroneously used usb_rcvctrlpipe().
+> 	I'm sorry to disturb you, this patch is stay here for a long time, Do
+> you have any suggestions about this patch?=20
+> 	We hope this patch will be merged as soon as possible,If you have any
+> concern, I will fix it in time.
 
-Fixes: f7a33e608d9a ("USB: serial: add quatech2 usb to serial driver")
-Cc: stable@vger.kernel.org      # 3.5
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/serial/quatech2.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
---- a/drivers/usb/serial/quatech2.c
-+++ b/drivers/usb/serial/quatech2.c
-@@ -419,7 +419,7 @@ static void qt2_close(struct usb_serial_
- 
- 	/* flush the port transmit buffer */
- 	i = usb_control_msg(serial->dev,
--			    usb_rcvctrlpipe(serial->dev, 0),
-+			    usb_sndctrlpipe(serial->dev, 0),
- 			    QT2_FLUSH_DEVICE, 0x40, 1,
- 			    port_priv->device_port, NULL, 0, QT2_USB_TIMEOUT);
- 
-@@ -429,7 +429,7 @@ static void qt2_close(struct usb_serial_
- 
- 	/* flush the port receive buffer */
- 	i = usb_control_msg(serial->dev,
--			    usb_rcvctrlpipe(serial->dev, 0),
-+			    usb_sndctrlpipe(serial->dev, 0),
- 			    QT2_FLUSH_DEVICE, 0x40, 0,
- 			    port_priv->device_port, NULL, 0, QT2_USB_TIMEOUT);
- 
-@@ -701,7 +701,7 @@ static int qt2_attach(struct usb_serial
- 	int status;
- 
- 	/* power on unit */
--	status = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
-+	status = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
- 				 0xc2, 0x40, 0x8000, 0, NULL, 0,
- 				 QT2_USB_TIMEOUT);
- 	if (status < 0) {
+--LZvS9be/3tNcYl/X
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDHL20ACgkQJNaLcl1U
+h9CsAQf+Nn4HRlnSP3tQV0DnMF2cdXi1Iq99YwPbLlaUcaR573n/pt3ERW1fG+RQ
+Buc3s5ft40NrHag2fnlP1plJY3hlhBvcjyyPvK+JhJanfYd0YmiOAuMAssVASA0E
+QDPO76npJtv1EJ+Y5ZmNec2Xyt9kpbbHVZrk/kQ1Uv01p/a/wXRLNN55ZYmeQ2kQ
+xFObSTgbJEEZtl/WXK5A7EDT7kfUSQO2kQIwHDI2AmiCOtE0WbqEYALgdd0ijAx9
+IAvq6Cte2W8E5S6bWtyJ/0wL7VFdyI+e8fIuhoaNK56cttomrsfDy/maEDQIRukA
+Vj8gFPHEmIY2r4tRjLbrBcwg1baueQ==
+=nGK1
+-----END PGP SIGNATURE-----
+
+--LZvS9be/3tNcYl/X--
