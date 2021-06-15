@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438533A885E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13923A8865
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhFOSTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
+        id S231364AbhFOSVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbhFOSTu (ORCPT
+        with ESMTP id S230000AbhFOSVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:19:50 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8D4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:17:45 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:bda0:7de0:767e:26f9])
-        by michel.telenet-ops.be with bizsmtp
-        id HWHf250034N5gS306WHffn; Tue, 15 Jun 2021 20:17:42 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ltDd4-00HYOR-Hd; Tue, 15 Jun 2021 20:17:38 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ltDd3-005qAT-P4; Tue, 15 Jun 2021 20:17:37 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 3/3] arm64: kdump: Remove custom linux,elfcorehdr parsing
-Date:   Tue, 15 Jun 2021 20:17:27 +0200
-Message-Id: <169c69d085fc235592208d4669785a3f94248f28.1623780059.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1623780059.git.geert+renesas@glider.be>
-References: <cover.1623780059.git.geert+renesas@glider.be>
+        Tue, 15 Jun 2021 14:21:30 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627A1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:19:25 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id i13so5236405lfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:19:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Av+6lPQlyv+Sn6WN/JAS+BG6bGNrpjaP5opx8sV0nnc=;
+        b=WQuQwtCiT/eoKl6qV5lHYx4lH+0EDr7+nOJYQ1h6yvBunl0woPiervNHkI2DWuHNMS
+         q2DNf1dI8WkF30DAo2o970Na/Exs7H+KKRGluFxJ9QUdoPaAT85CHvggye+xAbjL8yy7
+         H4ASmIp9BBpePbCJfnUYj3imRXf4Pc4Dds7lg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Av+6lPQlyv+Sn6WN/JAS+BG6bGNrpjaP5opx8sV0nnc=;
+        b=M/AEAtwu0bkiUQJfVjx5m8kUUkTjGhZ46L1q9JeX6qWm43GFAbvsCCZIfn7TPTDdQr
+         LnoFxvzDy01YiUh2OJ1JkcB+LqNwrRLHy7+f1fludx5ftsdBhLp9EX1pHzk8011hQNS4
+         rF9cTF1WjLdJef2pZfc/5YyKPfpGGL2ZMIpXOWYfgK7OuTpMK0flhPbyOtF9R6Sna5Su
+         NLWeRN5gFB6tlkKP4WmDOMkxCjbM26ep5zXL13FgRTjsrbeDwNdQ+lb3lJIYdWlaVeL4
+         mu3RvCW5AXvHPbYzK9e3QSfwg7FRUPD61a0IhC/j9swqBCUHP/qUAa8ldgYIS4FrAN+z
+         iEOQ==
+X-Gm-Message-State: AOAM532Asr8/2jj80p0QoL6CgRs1ucTxKfPXExG3taxhm6yG3+TJkWNs
+        lRVDzJnsfrtfg6y68r9+OfDS6MwrMwgpkU+G
+X-Google-Smtp-Source: ABdhPJweSl0Q89PmKC6w+XxeO4vbmQq77v17ImkmzI9dWx4DD14TwStzTm4Nv27wv4Sy/X7AwYHDuQ==
+X-Received: by 2002:ac2:5f7a:: with SMTP id c26mr488292lfc.515.1623781163521;
+        Tue, 15 Jun 2021 11:19:23 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id v19sm1885211lfp.92.2021.06.15.11.19.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 11:19:23 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id j2so28377322lfg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:19:23 -0700 (PDT)
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr468018lfs.377.1623781160087;
+ Tue, 15 Jun 2021 11:19:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210608171221.276899-1-keescook@chromium.org>
+ <20210614100234.12077-1-youling257@gmail.com> <202106140826.7912F27CD@keescook>
+ <202106140941.7CE5AE64@keescook> <CAOzgRdZJeN6sQWP=Ou0H3bTrp+7ijKuJikG-f4eer5f1oVjrCQ@mail.gmail.com>
+ <202106141503.B3144DFE@keescook> <CAOzgRdahaEjtk4jS5N=FQEDbsZVnB+-=xD+-WtV9zD9Tgbm0Hg@mail.gmail.com>
+In-Reply-To: <CAOzgRdahaEjtk4jS5N=FQEDbsZVnB+-=xD+-WtV9zD9Tgbm0Hg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 15 Jun 2021 11:19:04 -0700
+X-Gmail-Original-Message-ID: <CAHk-=winAqy0sjgog9oEsjoBWOGJscFYEc3-=nvtzbyjTw_b+g@mail.gmail.com>
+Message-ID: <CAHk-=winAqy0sjgog9oEsjoBWOGJscFYEc3-=nvtzbyjTw_b+g@mail.gmail.com>
+Subject: Re: [PATCH] proc: Track /proc/$pid/attr/ opener mm_struct
+To:     youling 257 <youling257@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, regressions@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the architecture-specific code for handling the
-"linux,elfcorehdr" property under the "/chosen" node in DT, as the
-platform-agnostic handling in the FDT core code already takes care of
-this.
+On Mon, Jun 14, 2021 at 6:55 PM youling 257 <youling257@gmail.com> wrote:
+>
+> if try to find problem on userspace, i used linux 5.13rc6 on old
+> android 7 cm14.1, not aosp android 11.
+> http://git.osdn.net/view?p=android-x86/system-core.git;a=blob;f=init/service.cpp;h=a5334f447fc2fc34453d2f6a37523bedccadc690;hb=refs/heads/cm-14.1-x86#l457
+>
+>  457         if (!seclabel_.empty()) {
+>  458             if (setexeccon(seclabel_.c_str()) < 0) {
+>  459                 ERROR("cannot setexeccon('%s'): %s\n",
+>  460                       seclabel_.c_str(), strerror(errno));
+>  461                 _exit(127);
+>  462             }
+>  463         }
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- arch/arm64/mm/init.c | 21 ---------------------
- 1 file changed, 21 deletions(-)
+I have no idea where the cm14.1 libraries are. Does anybody know where
+the matching source code for setexeccon() would be?
 
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 6e1ca044ca907cd0..af06bfb6e2838d0f 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -125,25 +125,6 @@ static void __init reserve_crashkernel(void)
- #endif /* CONFIG_KEXEC_CORE */
- 
- #ifdef CONFIG_CRASH_DUMP
--static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
--		const char *uname, int depth, void *data)
--{
--	const __be32 *reg;
--	int len;
--
--	if (depth != 1 || strcmp(uname, "chosen") != 0)
--		return 0;
--
--	reg = of_get_flat_dt_prop(node, "linux,elfcorehdr", &len);
--	if (!reg || (len < (dt_root_addr_cells + dt_root_size_cells)))
--		return 1;
--
--	elfcorehdr_addr = dt_mem_next_cell(dt_root_addr_cells, &reg);
--	elfcorehdr_size = dt_mem_next_cell(dt_root_size_cells, &reg);
--
--	return 1;
--}
--
- /*
-  * reserve_elfcorehdr() - reserves memory for elf core header
-  *
-@@ -154,8 +135,6 @@ static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
-  */
- static void __init reserve_elfcorehdr(void)
- {
--	of_scan_flat_dt(early_init_dt_scan_elfcorehdr, NULL);
--
- 	if (!elfcorehdr_size)
- 		return;
- 
--- 
-2.25.1
+For me - obviously not on cm14.1 - all "setexeccon()" does is
 
+   n = openat(AT_FDCWD, "/proc/thread-self/attr/exec", O_RDWR|O_CLOEXEC)
+   write(n, string, len)
+   close(n)
+
+and if that fails, it would seem to indicate that proc_mem_open()
+failed. Which would be mm_access() failing. But I don't see how that
+can be the case, because mm_access() explicitly allows "mm ==
+current->mm" (which the above clearly should be).
+
+youling, can you double-check with the current -git tree? But as far
+as I can tell, my minimal patch is exactly the same as Kees' patch
+(just smaller and simpler).
+
+Kees, do you see anything?
+
+           Linus
