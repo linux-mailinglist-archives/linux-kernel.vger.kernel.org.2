@@ -2,61 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B48E3A78D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7102C3A78D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhFOIOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230482AbhFOIOA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:14:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED19C061574;
-        Tue, 15 Jun 2021 01:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OtM1MtK/V9fA4aa2itcOdpgo19UPGo/YGDTF5kwIUQ0=; b=PfGSnynkOoxSAG2smELhAqGyAV
-        F5k58xqRMvkFw197DcPwWE/jpVUErvTNWK2FvP1Yt3TaJAH7T9/C1iE67BCjCSurcv7X1zBASKCym
-        RQqUZYRbw8rfkSQk4Bn5PQSJXO5YXaPDRHGhSVDr2ZqgmdONJ2AjX26acBh2tyEBAdElAtU9lE1DM
-        lbj6sBp4ZZQFzoMI5ceYoA3VuJv5YQlA5Rb8y8ezekCRh7kqGQNWN0BNVPqKeM+XNWwKSQo1kP9/R
-        AeGtyoF4nxyQbvl+fV/IzehPU3iUg7Rsu1h9N44Oks7ThHPnuApNVpNgoPDwx8DTn4EsfZBViAKeB
-        5uFBBh4w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lt4AO-006ETY-TZ; Tue, 15 Jun 2021 08:11:29 +0000
-Date:   Tue, 15 Jun 2021 09:11:24 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, smfrench@gmail.com,
-        stfrench@microsoft.com, willy@infradead.org,
-        aurelien.aptel@gmail.com, linux-cifsd-devel@lists.sourceforge.net,
-        senozhatsky@chromium.org, sandeen@sandeen.net, aaptel@suse.com,
-        hch@infradead.org, viro@zeniv.linux.org.uk,
-        ronniesahlberg@gmail.com, hch@lst.de, dan.carpenter@oracle.com,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Hyunchul Lee <hyc.lee@gmail.com>
-Subject: Re: [PATCH v4 03/10] cifsd: add trasport layers
-Message-ID: <YMhgrNGLhORjok1H@infradead.org>
-References: <20210602034847.5371-1-namjae.jeon@samsung.com>
- <CGME20210602035816epcas1p240598e76247034278ad45dc0827b2be7@epcas1p2.samsung.com>
- <20210602034847.5371-4-namjae.jeon@samsung.com>
+        id S230514AbhFOINm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:13:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230455AbhFOINl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:13:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AD4A6115C;
+        Tue, 15 Jun 2021 08:11:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623744697;
+        bh=wACaGLtj/6SSwIcMHapX5+E6FVJndfKV+xnX/hVV5yU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mqLx0LMxmPN3w4ZKpBdCOFZMSeMnw3fH+CC9ddy+5JDCfO342CPzDPFQyhIICXuu/
+         TZFU2UHIajARimhSYGzgDZWQVKqZirc+aMJ5kewqfFKYG+K65rO29Mj8p6X1bg7ZIZ
+         OVmmzmqRV+3bSnYhISqnIVAEVivzRox2/cRxdDcVdDvAB7WajY1lKubI5kOH4cw0a1
+         0R778k9ffjWWB2JVOAK3MKl0CLRm+7vsolVayl+FM3PkJ3APr88+CH1Tgt1LJBPBV3
+         0jxOWff6tSQ6Y2ex6ai6qIE7itrKNLukK03m3y1oFFsV2z5BMZa1OY1CPfOthW7fFX
+         LfAa57/YBEbmA==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: qcom: sm8350-mtp: Use mdt files for firmware
+Date:   Tue, 15 Jun 2021 13:41:24 +0530
+Message-Id: <20210615081124.3209637-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602034847.5371-4-namjae.jeon@samsung.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 12:48:40PM +0900, Namjae Jeon wrote:
-> This adds transport layers(tcp, rdma, ipc).
+As discussed in [1], we should keep one of the file formats for firmware
+and not change.
 
-Please split this into one patch for each, which is a much more sensible
-patch split that many of the others.
+So to simplify we chose to use mdt for firmware file. This would enable
+folks to work with upstream linux-firmware as well as downstream
+firmwares.
 
-This also seems to include a lot of mgmt/ code.
+So switch it for SM8350 which is a new platform, so switch can be done
+safely.
+
+[1]: http://lore.kernel.org/r/CALAqxLXn6wFBAxRkThxWg5RvTuFEX80kHPt8BVja1CpAB-qzGA@mail.gmail.com
+
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+
+Changes in v2:
+ - Add more details about the switch in changelog
+
+ arch/arm64/boot/dts/qcom/sm8350-mtp.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+index 93740444dd1e..d859305f1f75 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+@@ -40,7 +40,7 @@ vph_pwr: vph-pwr-regulator {
+ 
+ &adsp {
+ 	status = "okay";
+-	firmware-name = "qcom/sm8350/adsp.mbn";
++	irmware-name = "qcom/sm8350/adsp.mdt";
+ };
+ 
+ &apps_rsc {
+@@ -278,12 +278,12 @@ vreg_l13c_3p0: ldo13 {
+ 
+ &cdsp {
+ 	status = "okay";
+-	firmware-name = "qcom/sm8350/cdsp.mbn";
++	firmware-name = "qcom/sm8350/cdsp.mdt";
+ };
+ 
+ &mpss {
+ 	status = "okay";
+-	firmware-name = "qcom/sm8350/modem.mbn";
++	firmware-name = "qcom/sm8350/modem.mdt";
+ };
+ 
+ &qupv3_id_1 {
+@@ -292,7 +292,7 @@ &qupv3_id_1 {
+ 
+ &slpi {
+ 	status = "okay";
+-	firmware-name = "qcom/sm8350/slpi.mbn";
++	firmware-name = "qcom/sm8350/slpi.mdt";
+ };
+ 
+ &tlmm {
+-- 
+2.31.1
+
