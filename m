@@ -2,88 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E603A8B7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981273A8B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhFOV7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbhFOV7m (ORCPT
+        id S231474AbhFOWBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 18:01:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22853 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230184AbhFOWBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:59:42 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A446AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:57:37 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id t40so171356oiw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RJ68jEOpuKbwPmRBXZsD218+2YyKdOc58eK+Zob4jtE=;
-        b=sSrAx1gK+umcERhNw6FVQB9nmF/D8HEu1PmrO3+WQxDAJYyoyAXkU6ZooNYw/wVtc7
-         uS+fKIl1FRSBCLWIVHHbRxhqEz4sUMxPy8K/pVtJ4afuWWadqN5QztOKSjmybrH9YOYc
-         G1dsbyRXE5dQn4Ta9MXBZG/l2GJU2Y2uCwjL4dxYvPrfdukXdcregfkKG3QP39jEXQvb
-         aVPeRSfPCiK4cZRXAmyPY/pAf8PbitTnd4Av8C3h0I41qWWj3HhJB/x69USYyT2ZHxpp
-         /nGzc+dqMfcLP5XgOGJwXG9QrsaArQlfIID0EHQy41atFc6WTzzGsoYPcKruS9lBJm45
-         HN1g==
+        Tue, 15 Jun 2021 18:01:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623794344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W7cgHmI/gY2s/cNCLnCs84lkX84ZA7FhfJX6tc1qG9M=;
+        b=hoorowNG4iE9Flpu++CFnonczrb5NRbpca3+9WFQ6KZvs/JMQn4Ow1V87AuAVuRIphCkhM
+        +4oh7XTZ4bdG0vqUE8hbWI75NyTyOnVhtixZFE7GA9JZpHKhbLjXW/dAt9rCrJARdxi6nE
+        nLLsyNvSTFpqo+PlFMLUYVkEqnrwcdg=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-hoAN_zusP0O0c3JQ6jqU4A-1; Tue, 15 Jun 2021 17:59:03 -0400
+X-MC-Unique: hoAN_zusP0O0c3JQ6jqU4A-1
+Received: by mail-ot1-f70.google.com with SMTP id 108-20020a9d0bf50000b02903d55be6ada3so167218oth.22
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:59:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RJ68jEOpuKbwPmRBXZsD218+2YyKdOc58eK+Zob4jtE=;
-        b=XhMxfIx6trUMVM6Yz/TIbhXpUYKBnLpKTw2IF5SnNgG8mR28vhM9Z8xMgVosZt1odg
-         8JndZcBtQFT651uqe0Y0dMKoyyF2GuvfmRIQpu2b+aOGymlgfdpCsXsQ7eVr9NB+ruGW
-         QMsP6teavYUJXAUq5/5X2JDmLIxPQczkNwT9HyuZ9N8ltNEC4rxqYMnxaEZ3HAnepbqx
-         vQwdSCRJWvCv7YdzLUngevSTQrZKapMHFNSwZqya+yahvY9HHvSmP+q692YIV7E+B6In
-         08cSG8FmDAXVo7d5MNDGe13hmKp08r130Golor8ecllAuSHyb/7YRMGnwNfnAoyBzsM3
-         NfvA==
-X-Gm-Message-State: AOAM531qgLKO7OvyJAW03XnKhwOBRC7pEUG3v0ptkv3xrWu1T05rRTzq
-        6BQOTSYt7GwlFC1Nm5a+Stb3h0KZ8ngsHQ==
-X-Google-Smtp-Source: ABdhPJy7jg90sjXl0YaBshGHsHTC0xz41iTkdqrbBIZMvbZbbeZv3mWWwBHd1KOj23u1LBLFaDK3dA==
-X-Received: by 2002:aca:618a:: with SMTP id v132mr4670614oib.144.1623794256966;
-        Tue, 15 Jun 2021 14:57:36 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id d20sm53842otq.62.2021.06.15.14.57.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 14:57:36 -0700 (PDT)
-Subject: Re: cleanup ubd gendisk registration
-To:     Christoph Hellwig <hch@lst.de>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-References: <20210614060759.3965724-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <920a6605-f920-ef10-55a0-733219abee6b@kernel.dk>
-Date:   Tue, 15 Jun 2021 15:57:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=W7cgHmI/gY2s/cNCLnCs84lkX84ZA7FhfJX6tc1qG9M=;
+        b=C69cPV6/gi9OxcawGNFbZY+rGlgTGY2KGb7BZxevh6G3PT563bL36ffpHPMXNg0Qs4
+         HiKI1If2nG4G8bK7bE7uOuEYXwkN0swIUpsqXV2YJyejY1wUdqgDGQYnjGcG3IEINIgi
+         ahEj5bbg5E+1CQUFubo9OIpEllDr9OjRdaTijkB+R9MyW+1B2TSYEoHBp2FniPN76Lmi
+         qt+cDOV/qLAEiUeb31iunMMQ6bhPCgpXRvYDqEBfJLFZxOgO1JUILi9ALw0BAK6fSgs7
+         kqOj4Tmv3gFwvkEpBfyu6sFo3DA0uJSK6MjpL0Sk7X+ARuQo+3HbsoV023mEvu+aC0Eq
+         mJWg==
+X-Gm-Message-State: AOAM531ESGvE7J/BZYIS8R7N+Rag+G3BA5xT7K7jggMN+m2oMa67xy0U
+        dauhwOoYmEuHHvazA/jqvc+DKv+VV445uHfujInEYi+3CHKsUGuscpM2F1K8kKXUUBgKqWxYnwe
+        79N8FssjApMqoE83R/wb3MO9o
+X-Received: by 2002:a54:448f:: with SMTP id v15mr4802897oiv.18.1623794342552;
+        Tue, 15 Jun 2021 14:59:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzgoUZm5iWJHlHHKTYYvgOHDjaVmus83U433QE/SuvDL7VLCWAmMP+Y3MsN2kn+ubYK7kwPA==
+X-Received: by 2002:a54:448f:: with SMTP id v15mr4802866oiv.18.1623794342194;
+        Tue, 15 Jun 2021 14:59:02 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id v14sm58471ote.15.2021.06.15.14.59.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 14:59:01 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 15:59:00 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        aviadye@nvidia.com, oren@nvidia.com, shahafs@nvidia.com,
+        parav@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        kevin.tian@intel.com, hch@infradead.org, targupta@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, liulongfang@huawei.com,
+        yan.y.zhao@intel.com
+Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
+ binding
+Message-ID: <20210615155900.51f09c15.alex.williamson@redhat.com>
+In-Reply-To: <20210615204216.GY1002214@nvidia.com>
+References: <20210603160809.15845-10-mgurtovoy@nvidia.com>
+        <20210608152643.2d3400c1.alex.williamson@redhat.com>
+        <20210608224517.GQ1002214@nvidia.com>
+        <20210608192711.4956cda2.alex.williamson@redhat.com>
+        <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
+        <20210614124250.0d32537c.alex.williamson@redhat.com>
+        <70a1b23f-764d-8b3e-91a4-bf5d67ac9f1f@nvidia.com>
+        <20210615090029.41849d7a.alex.williamson@redhat.com>
+        <20210615150458.GR1002214@nvidia.com>
+        <20210615102049.71a3c125.alex.williamson@redhat.com>
+        <20210615204216.GY1002214@nvidia.com>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210614060759.3965724-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/14/21 12:07 AM, Christoph Hellwig wrote:
-> Hi all,
+On Tue, 15 Jun 2021 17:42:16 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> On Tue, Jun 15, 2021 at 10:20:49AM -0600, Alex Williamson wrote:
+> > On Tue, 15 Jun 2021 12:04:58 -0300
+> > Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >   
+> > > On Tue, Jun 15, 2021 at 09:00:29AM -0600, Alex Williamson wrote:
+> > >   
+> > > > "vfio" override in PCI-core plays out for other override types.  Also I
+> > > > don't think dynamic IDs should be handled uniquely, new_id_store()
+> > > > should gain support for flags and userspace should be able to add new
+> > > > dynamic ID with override-only matches to the table.  Thanks,    
+> > > 
+> > > Why? Once all the enforcement is stripped out the only purpose of the
+> > > new flag is to signal a different prepration of modules.alias - which
+> > > won't happen for the new_id path anyhow  
+> > 
+> > Because new_id allows the admin to insert a new pci_device_id which has
+> > been extended to include a flags field and intentionally handling
+> > dynamic IDs differently from static IDs seems like generally a bad
+> > thing.    
 > 
-> this series sits on top of Jens' for-5.14/block branch and tries to
-> convert ubd to the new gendisk and request_queue registration helpers.
-> As part of that I found that the ide emulation code currently registers
-> two gendisk for a request_queue which leads to a bunch of problems we've
-> avoided in other drivers (only the mmc subsystem has a similar issue).
-> Given that the legacy IDE driver isn't practically used any more and
-> modern userspace doesn't hard code specific block drivers, so I think
-> we can just drop it.  Let me know if this is ok.
+> I'd agree with you if there was a functional difference at runtime,
+> but since that was all removed, I don't think we should touch new_id.
+> 
+> This ends up effectively being only a kbuild related patch that
+> changes how modules.alias is built.
 
-Applied, thanks.
+But it wasn't all removed.  The proposal had:
 
--- 
-Jens Axboe
+ a) Short circuit the dynamic ID match
+ b) Fail a driver-override-only match without a driver_override
+ c) Fail a non-driver-override-only match with a driver_override
+
+Max is only proposing removing c).
+
+b) alone is a functional, runtime difference.  As per my previous
+example, think about using it as effectively an anti-match.  Userspace
+can create dynamic entries that will be matched before static entries
+that can demote a driver to not be able to bind to a device
+automatically.  That's functional and useful, I can't think of any
+other way we have to effectively remove a static match entry from a
+driver.  Thanks,
+
+Alex
 
