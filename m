@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9103A82CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C203A82DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbhFOO3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:29:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230519AbhFOO2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:28:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E7006148E;
-        Tue, 15 Jun 2021 14:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623767179;
-        bh=YBPTf/6+PVpbr1NQY+Q90GleIgQdpyqztKsc/hv/Hso=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KU5VOauoPOaiMDCAYN3Fm2eo9EoZpxO7FdW2QrJw52mgxFtPJWa7qlrd30gCmHaT5
-         JTu7AEOJuQM0LV/AcjW2D3hXQiibixloQqNn3QenMK/qyscnmuoNBAEOsmyCNQkNtS
-         nogVPjlPwN4OzhV3DJlVW6VTX2elZ7MOpfb0mttQsxRwjCQzf4TwI7IjIjopIoRCRF
-         CYDs4Y6kxKMWi5CUfC7egi3IbntIWCFUTMLQFdhP1oFgkGYhi0rF4Pe+d/c+R1jscL
-         x+5WRYmiYsSKbzrZP1ximp9ExoODwsVZKcSztVV94ot7Uyq9sFQmGxJIi6WHcNVxRE
-         O6frABYWyKT4w==
-Date:   Tue, 15 Jun 2021 15:26:14 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/mm: Fix ttbr0 values stored in struct thread_info
- for software-pan
-Message-ID: <20210615142614.GA20934@willie-the-truck>
-References: <1623749578-11231-1-git-send-email-anshuman.khandual@arm.com>
- <20210615142539.GJ26027@arm.com>
+        id S231256AbhFOObA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:31:00 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34093 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhFOOa5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 10:30:57 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1ltA3b-00045E-Fl; Tue, 15 Jun 2021 14:28:47 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ice: remove redundant continue statement in a for-loop
+Date:   Tue, 15 Jun 2021 15:28:47 +0100
+Message-Id: <20210615142847.60161-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615142539.GJ26027@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 03:25:39PM +0100, Catalin Marinas wrote:
-> On Tue, Jun 15, 2021 at 03:02:58PM +0530, Anshuman Khandual wrote:
-> > When using CONFIG_ARM64_SW_TTBR0_PAN, a task's thread_info::ttbr0 must be
-> > the TTBR0_EL1 value used to run userspace. With 52-bit PAs, the PA must be
-> > packed into the TTBR using phys_to_ttbr(), but we forget to do this in some
-> > of the SW PAN code. Thus, if the value is installed into TTBR0_EL1 (as may
-> > happen in the uaccess routines), this could result in UNPREDICTABLE
-> > behaviour.
-> > 
-> > Since hardware with 52-bit PA support almost certainly has HW PAN, which
-> > will be used in preference, this shouldn't be a practical issue, but let's
-> > fix this for consistency.
-> 
-> I'm ok with fixing this for consistency. We should never hit those paths
-> unless someone built hardware with 52-bit PA (8.2) but without PAN (8.1)
-> and it would not be architecture compliant.
-> 
-> I'll leave it with Will for 5.14, it's no a fix that needs urgent
-> queuing.
-> 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Cheers, I'll pick it up.
+The continue statement in the for-loop is redundant. Re-work the hw_lock
+check to remove it.
 
-Will
+Addresses-Coverity: ("Continue has no effect")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/intel/ice/ice_ptp_hw.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ice/ice_ptp_hw.c b/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
+index 267312fad59a..3eca0e4eab0b 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
++++ b/drivers/net/ethernet/intel/ice/ice_ptp_hw.c
+@@ -410,13 +410,11 @@ bool ice_ptp_lock(struct ice_hw *hw)
+ 	for (i = 0; i < MAX_TRIES; i++) {
+ 		hw_lock = rd32(hw, PFTSYN_SEM + (PFTSYN_SEM_BYTES * hw->pf_id));
+ 		hw_lock = hw_lock & PFTSYN_SEM_BUSY_M;
+-		if (hw_lock) {
+-			/* Somebody is holding the lock */
+-			usleep_range(10000, 20000);
+-			continue;
+-		} else {
++		if (!hw_lock)
+ 			break;
+-		}
++
++		/* Somebody is holding the lock */
++		usleep_range(10000, 20000);
+ 	}
+ 
+ 	return !hw_lock;
+-- 
+2.31.1
+
