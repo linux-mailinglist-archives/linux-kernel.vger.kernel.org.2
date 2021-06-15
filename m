@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DB33A73B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3973A73F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhFOCZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:25:43 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12620 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhFOCZe (ORCPT
+        id S230349AbhFOCbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:31:22 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:10057 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230302AbhFOCbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:25:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623723810; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=oVcZW/NhMjIKbb/5EskJEuyYnbpkb92vyLDQsMrP+YU=; b=CD+3ZJLVL9G5y0BxUj69q7ZcCXOaQQgGrenR9UACK0JJOoEzRRy3ODP2ypK2xULYfL6pX+Kr
- FuuLCiULYvLugJhiX6OZNwTy+IHxCvjCrY9cwA1AP089rSRbtmeLB4f1ayqaaq5Q1aLys7f5
- +3Ktpwgctv7TZFcqzTp2bUKwFSo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60c80bc22eaeb98b5e0e773c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 02:09:06
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BD819C43144; Tue, 15 Jun 2021 02:09:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3926C4360C;
-        Tue, 15 Jun 2021 02:09:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D3926C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, agross@kernel.org
-Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, psodagud@codeaurora.org
-Subject: [PATCH 2/2] remoteproc: qcom: Add full coredump fallback mechanism
-Date:   Mon, 14 Jun 2021 19:08:50 -0700
-Message-Id: <1623722930-29354-3-git-send-email-sidgup@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623722930-29354-1-git-send-email-sidgup@codeaurora.org>
-References: <1623722930-29354-1-git-send-email-sidgup@codeaurora.org>
+        Mon, 14 Jun 2021 22:31:20 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G3sD16pGXzZdcf;
+        Tue, 15 Jun 2021 10:08:01 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 10:10:56 +0800
+Received: from [10.67.109.184] (10.67.109.184) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 10:10:56 +0800
+Subject: Re: [PATCH -next] drm/hyperv: Remove unused variable
+To:     Deepak Rawat <drawat.floss@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>
+CC:     <zhangjinhao2@huawei.com>, <linux-hyperv@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+References: <20210609024940.34933-1-pulehui@huawei.com>
+ <078d9bb5-e7af-4961-f4c1-cd3ab415cff4@suse.de>
+ <2bf51ac723cb097685dd4c89926599d939d31765.camel@gmail.com>
+From:   Pu Lehui <pulehui@huawei.com>
+Message-ID: <5944abf7-7535-f425-fdc3-58e6bd032186@huawei.com>
+Date:   Tue, 15 Jun 2021 10:10:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <2bf51ac723cb097685dd4c89926599d939d31765.camel@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a remoteproc's firmware does not support minidump but the driver
-adds an ID, the minidump driver does not collect any coredumps when
-the remoteproc crashes. This hinders the purpose of coredump
-collection. This change adds a fallback mechanism in the event of a
-crash.
 
-Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
----
- drivers/remoteproc/qcom_common.c   | 9 +++++++--
- drivers/remoteproc/qcom_q6v5_pas.c | 1 +
- 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-index 4b91e3c..1e754dd 100644
---- a/drivers/remoteproc/qcom_common.c
-+++ b/drivers/remoteproc/qcom_common.c
-@@ -163,12 +163,17 @@ void qcom_minidump(struct rproc *rproc, unsigned int minidump_id)
- 	 */
- 	if (subsystem->regions_baseptr == 0 ||
- 	    le32_to_cpu(subsystem->status) != 1 ||
--	    le32_to_cpu(subsystem->enabled) != MD_SS_ENABLED ||
--	    le32_to_cpu(subsystem->encryption_status) != MD_SS_ENCR_DONE) {
-+	    le32_to_cpu(subsystem->enabled) != MD_SS_ENABLED) {
-+		return rproc_coredump(rproc);
-+	}
-+
-+	if (le32_to_cpu(subsystem->encryption_status) != MD_SS_ENCR_DONE) {
- 		dev_err(&rproc->dev, "Minidump not ready, skipping\n");
- 		return;
- 	}
- 
-+	rproc_coredump_cleanup(rproc);
-+
- 	ret = qcom_add_minidump_segments(rproc, subsystem);
- 	if (ret) {
- 		dev_err(&rproc->dev, "Failed with error: %d while adding minidump entries\n", ret);
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index b921fc2..9f29619 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -274,6 +274,7 @@ static const struct rproc_ops adsp_minidump_ops = {
- 	.start = adsp_start,
- 	.stop = adsp_stop,
- 	.da_to_va = adsp_da_to_va,
-+	.parse_fw = qcom_register_dump_segments,
- 	.load = adsp_load,
- 	.panic = adsp_panic,
- 	.coredump = adsp_minidump,
--- 
-Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+On 2021/6/14 22:01, Deepak Rawat wrote:
+> On Wed, 2021-06-09 at 09:46 +0200, Thomas Zimmermann wrote:
+>> Hi
+>>
+>> Am 09.06.21 um 04:49 schrieb Pu Lehui:
+>>> Fixes gcc '-Wunused-const-variable' warning:
+>>>     drivers/gpu/drm/hyperv/hyperv_drm_modeset.c:152:23: warning:
+>>>       'hyperv_modifiers' defined but not used [-Wunused-const-
+>>> variable=]
+>>>
+>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>>> ---
+>>>    drivers/gpu/drm/hyperv/hyperv_drm_modeset.c | 5 -----
+>>>    1 file changed, 5 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+>>> b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+>>> index 02718e3e859e..3f83493909e6 100644
+>>> --- a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+>>> +++ b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+>>> @@ -149,11 +149,6 @@ static const uint32_t hyperv_formats[] = {
+>>>          DRM_FORMAT_XRGB8888,
+>>>    };
+>>>    
+>>> -static const uint64_t hyperv_modifiers[] = {
+>>> -       DRM_FORMAT_MOD_LINEAR,
+>>> -       DRM_FORMAT_MOD_INVALID
+>>> -};
+>>
+>> This constant should rather be used in the call to
+>> drm_simple_display_pipe_init(). [1]
+>>
+>> Best regards
+>> Thomas
+>>
+>> [1]
+>> https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c#n161
+>>
+>>
+> 
+> Hi Pu,
+> 
+> Thanks for the patch. Is it possible to send another patch as per
+> suggestion by Thomas. There is a kernel test robot failure as well.
+> 
+> Deepak
+> 
+> .
+> 
+Hi Deepak,
 
+Thanks for your reply, I will send v2 soon.
+
+Best regards
+Lehui
