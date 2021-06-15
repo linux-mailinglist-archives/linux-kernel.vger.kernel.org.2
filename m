@@ -2,100 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CF43A7CF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8343A7CF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhFOLOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhFOLOg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:14:36 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6579CC061574;
-        Tue, 15 Jun 2021 04:12:31 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G45JF0vBQz9sRK;
-        Tue, 15 Jun 2021 21:12:28 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623755549;
-        bh=YFJ3U4Cngjq499MyEt86iJ9OObreMpZMft2dQ2wS75E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rBPK4kv+lyprU2Or5W3g2hzVA5TggSJ2760v2dwAZjxqNXpa8XBKr86xcxTRIyGxn
-         /cdGgfnj9iROEYELPr5lk90Gd61LOi6BtaCA5Ts/k0kLswdkaUCb0rzGf7DbX53sQm
-         KNGgYuVmyA31YTJIw4qHyH+ZnYn0/o15eJjxdac1V/wzHjF9A0wefqxWltD6AruOZh
-         wA1cEcSD5KQXXvGxNnJoq2gLCJUt4LxjSkHXUh9YJnqw7TvEnB7bgLc0U8J39qcB6j
-         U/GqXGFLzd6UyF8V+DiArVIcp1fp13sCaQNaPIjMnvwhrYCpauWgxBhqmPWGXcSY5R
-         2voFv5FcY5Gkw==
-Date:   Tue, 15 Jun 2021 21:12:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the net-next tree
-Message-ID: <20210615211227.4c2ef3e3@canb.auug.org.au>
+        id S231202AbhFOLOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:14:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230436AbhFOLOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 07:14:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16B996145A;
+        Tue, 15 Jun 2021 11:12:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623755567;
+        bh=WxY5rkcQS0EHPv/TtiTjUoaRUw6sqGDv93IItc7eQDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uiONthO1S4skT70c+w+dfv0BbT+jk4V1NWc8h1S5xPPjiyUp18prJoR5GYWJ5xrHq
+         7h8hwjOIvzILTpBA50BTHIvkmy2dkVwFqfZN3TzBW6UbK8YUP5dPCPC+Zv/d0fQLsP
+         v/Q1o01nm2x2ANUcVeP83+m7vOHvd0oyixcQEmOhc/XRq++U0eSf+s3BdRfXStVlsQ
+         GSy5BTH3iHqYWc/k3wO+KFRcBII0MG0ovXWcIRvtUxMfFXyR3+fV2mqEC63Ves++q+
+         F9/7rX41b1rUhRm06YDMpLG6Vs9Bil9dVfsReTDvtI1K9fAD2h2LsyeODPqDNJwGW7
+         h9l1nUworz8LQ==
+Date:   Tue, 15 Jun 2021 12:12:28 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH v2 06/10] regulator: qcom-rpmh: Add new regulator found
+ on SA8155p adp board
+Message-ID: <20210615111228.GB5149@sirena.org.uk>
+References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
+ <20210615074543.26700-7-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/OMoN/uDR87LL4dZBNP30X8s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0eh6TmSyL6TZE2Uz"
+Content-Disposition: inline
+In-Reply-To: <20210615074543.26700-7-bhupesh.sharma@linaro.org>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/OMoN/uDR87LL4dZBNP30X8s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+--0eh6TmSyL6TZE2Uz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-After merging the net-next tree, today's linux-next build (htmldocs)
-produced these warnings:
+On Tue, Jun 15, 2021 at 01:15:39PM +0530, Bhupesh Sharma wrote:
 
-Documentation/firmware-guide/acpi/dsd/phy.rst:33: WARNING: Unexpected inden=
-tation.
-Documentation/firmware-guide/acpi/dsd/phy.rst:35: WARNING: Definition list =
-ends without a blank line; unexpected unindent.
-Documentation/firmware-guide/acpi/dsd/phy.rst:39: WARNING: Definition list =
-ends without a blank line; unexpected unindent.
-Documentation/firmware-guide/acpi/dsd/phy.rst:40: WARNING: Block quote ends=
- without a blank line; unexpected unindent.
-Documentation/firmware-guide/acpi/dsd/phy.rst:64: WARNING: Unexpected inden=
-tation.
-Documentation/firmware-guide/acpi/dsd/phy.rst:84: WARNING: Unexpected inden=
-tation.
-Documentation/firmware-guide/acpi/dsd/phy.rst:102: WARNING: Unexpected inde=
-ntation.
-Documentation/firmware-guide/acpi/dsd/phy.rst: WARNING: document isn't incl=
-uded in any toctree
+> +	{
+> +		.compatible = "qcom,pmm8155au-rpmh-regulators",
+> +		.data = pmm8155au_vreg_data,
+> +	},
 
-Introduced by commit
+This is adding a new compatible so it needs a matching update to the DT
+binding.
 
-  e71305acd81c ("Documentation: ACPI: DSD: Document MDIO PHY")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/OMoN/uDR87LL4dZBNP30X8s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--0eh6TmSyL6TZE2Uz
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDIixsACgkQAVBC80lX
-0GzGgQf/SfzKqZP5EcCNVK2dmoJYGQWbTGwgdDebydhapE7Qg32vQ1VuAw6vkbsP
-N1WF8/MPuMKESbw0y8bRop19IRPypDPzyWUzcQvM3tzIUVqq8p0UXMTrGWgldmOJ
-fcLVh3CNz43G2srCOtHJCo17hdDZ61sX04TfT/NLlMwFvRXSsPX75pkvD+7el4HF
-CTlkH5BFJ+K/5d/NwWiWPGEzQw7OffrxTT8jdUrC9sXFXGUFlZp4VnKaSFGct3Eg
-2MDTRZOql1rZeuuwqjRkrL8mCaCspT/BuO7ETV1GWo0GpJwwpJ4M+gsfrV/xt2lB
-HNdnNPX3+Ep0lSTsXUnpCiD/wg6mig==
-=S65Z
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIixwACgkQJNaLcl1U
+h9DmWwf+I+6UuRxm1bqPiKDzx81Hg6sNX9011K7cArsSXzcFymC7fLz4D3UUJ4IQ
+pmA3xcRHxfCUkTS4xwDaNXMY6QaS6q/G9/UaWn64DWcfF4AIdgOwj/oxFypoAt8f
+48Jt7NyaMYK1EFHoZan91D49xCu+dAMrKo+6jI29kH6ZrP+XzoVxAN8KXPKLxa+M
+VqQKyWg73/97XppC6FJnv8xleWHDrkO8FXPDDXeMB0r+TnGzG7fjvUlFenkxDdbS
+39Vh6uuyvRyuxpQBXSOyV2BNvhXqhFVjhyrzC1c4+T6p0nn//rIclqVzwalZy9Xi
+dyV7IuGmP//Y7nii3Kqo86AtpwKyKA==
+=nLmw
 -----END PGP SIGNATURE-----
 
---Sig_/OMoN/uDR87LL4dZBNP30X8s--
+--0eh6TmSyL6TZE2Uz--
