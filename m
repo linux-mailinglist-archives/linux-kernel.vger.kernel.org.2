@@ -2,80 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309113A7B65
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C9B3A7B99
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhFOKHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:07:23 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6507 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhFOKHU (ORCPT
+        id S231533AbhFOKRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:17:51 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:46883 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231289AbhFOKRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:07:20 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G43lH6BjBzZhJt;
-        Tue, 15 Jun 2021 18:02:19 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 18:05:06 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 18:05:05 +0800
-Subject: Re: [PATCH] KVM: arm64: Trival coding style fixes for all
- vgic-related files
-To:     Marc Zyngier <maz@kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
-        <yuzenghui@huawei.com>, <wanghaibin.wang@huawei.com>
-References: <20210615035019.35808-1-wangyanan55@huawei.com>
- <87o8c7ihlf.wl-maz@kernel.org>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <df4aa056-e15b-ae5f-ace1-1f6e5561dfd8@huawei.com>
-Date:   Tue, 15 Jun 2021 18:05:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 15 Jun 2021 06:17:49 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 7B9CECC5B1;
+        Tue, 15 Jun 2021 10:06:54 +0000 (UTC)
+Received: (Authenticated sender: paul@opendingux.net)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id ABEC0C0010;
+        Tue, 15 Jun 2021 10:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opendingux.net;
+        s=gm1; t=1623751590;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XuVVJBxzTq/nezMzQHmQ1iVQtTJi09b38NBbn1HjEvw=;
+        b=JHYLsSG9c/DxPug2+3SS07gd9NSKQdIOHICPsS6HGrJIp5dhUaBO4zub1qz10DE6zncynR
+        MAot7LCUhW/EFVNxL0XBzz51PoBF6avWqVYnPEkGmRRfgViAKEg79y9sFwxNhftod0dWIU
+        Uby73qZbDhZZC2Q0XIHgTBadil6EHZEBEWQO2q16MYtxJCQHyg4yYiYmKNZ7V+80Dm5uZK
+        KM/s42LdGBMV8JceVMNeTMfX3Y530BiykAx/xqHcVU/Z6BiO5/262Gab7IZXWJNoKqZQba
+        x+OYathox+vQMl54ravzHVrSAUfD6zrJzz1g/qBNA0U/GB7DPey2ecs24cSt2g==
+Date:   Tue, 15 Jun 2021 11:06:17 +0100
+From:   Paul Cercueil <paul@opendingux.net>
+Subject: Re: [PATCH] USB: DWC2: Add VBUS overcurrent detection control.
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        hminas@synopsys.com, paul@crapouillou.net,
+        linux-mips@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com,
+        Dragan =?iso-8859-2?b?yGXoYXZhYw==?= <dragancecavac@yahoo.com>
+Message-Id: <HQMQUQ.3AEG9G7WVQKQ2@opendingux.net>
+In-Reply-To: <YMh3bpRjyTZC2Hsd@kroah.com>
+References: <1616513066-62025-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <YFoJ0Z6K4B5smbQx@kroah.com>
+        <20210615161456.2dd501a1@zhouyanjie-virtual-machine>
+        <8BJQUQ.QJOE5WOSWVBU@opendingux.net> <YMh3bpRjyTZC2Hsd@kroah.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-In-Reply-To: <87o8c7ihlf.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
-
-On 2021/6/15 17:48, Marc Zyngier wrote:
-> On Tue, 15 Jun 2021 04:50:19 +0100,
-> Yanan Wang <wangyanan55@huawei.com> wrote:
->> These fixes introduce no functional change but just adjustment about
->> coding style issues for ARM64 vgic code. They mainly include identation
->> fix of function parameters/arguments, identation fix of structure
->> initialization, identation fix of comment, also the deletion of some
->> superfluous space lines.
-> Please don't. This sort of patches bring little value, and make the
-> backporting of important fixes more difficult because of pointless
-> context change.
-Oh, this is an point that I didn't notice but indeed worths considering.
-> Fixing these cosmetic details is fine when you are modifying the
-> code. But as a standalone patch, this brings more pain than benefit.
-Ok, I will just drop this stuff. Sorry for the noise.
-
-Thanks,
-Yanan
-> Thanks,
+Le mar., juin 15 2021 at 11:48:30 +0200, Greg KH=20
+<gregkh@linuxfoundation.org> a =C3=A9crit :
+> On Tue, Jun 15, 2021 at 09:52:20AM +0100, Paul Cercueil wrote:
+>>  Hi Zhou,
+>>=20
+>>  Le mar., juin 15 2021 at 16:16:39 +0800, =E5=91=A8=E7=90=B0=E6=9D=B0=20
+>> <zhouyanjie@wanyeetech.com>
+>>  a =C3=A9crit :
+>>  > Hi Greg,
+>>  >
+>>  > Sorry for taking so long to reply.
+>>  >
+>>  > =E4=BA=8E Tue, 23 Mar 2021 16:31:29 +0100
+>>  > Greg KH <gregkh@linuxfoundation.org> =E5=86=99=E9=81=93:
+>>  >
+>>  > >  On Tue, Mar 23, 2021 at 11:24:26PM +0800, =E5=91=A8=E7=90=B0=E6=9D=
+=B0 (Zhou=20
+>> Yanjie)
+>>  > > wrote:
+>>  > >  > Introduce configurable option for enabling GOTGCTL register
+>>  > >  > bits VbvalidOvEn and VbvalidOvVal. Once selected it disables
+>>  > >  > VBUS overcurrent detection.
+>>  > >  >
+>>  > >  > This patch is derived from Dragan =C4=8Ce=C4=8Davac (in the kern=
+el=20
+>> 3.18
+>>  > >  > tree of CI20). It is very useful for the MIPS Creator=20
+>> CI20(r1).
+>>  > >  > Without this patch, CI20's OTG port has a great probability=20
+>> to
+>>  > >  > face overcurrent warning, which breaks the OTG functionality.
+>>  > >  >
+>>  > >  > Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)=20
+>> <zhouyanjie@wanyeetech.com>
+>>  > >  > Signed-off-by: Dragan =C4=8Ce=C4=8Davac <dragancecavac@yahoo.com=
 >
-> 	M.
->
+>>  > >  > ---
+>>  > >  >  drivers/usb/dwc2/Kconfig | 6 ++++++
+>>  > >  >  drivers/usb/dwc2/core.c  | 9 +++++++++
+>>  > >  >  2 files changed, 15 insertions(+)
+>>  > >  >
+>>  > >  > diff --git a/drivers/usb/dwc2/Kconfig=20
+>> b/drivers/usb/dwc2/Kconfig
+>>  > >  > index c131719..e40d187 100644
+>>  > >  > --- a/drivers/usb/dwc2/Kconfig
+>>  > >  > +++ b/drivers/usb/dwc2/Kconfig
+>>  > >  > @@ -94,4 +94,10 @@ config USB_DWC2_DEBUG_PERIODIC
+>>  > >  >  	  non-periodic transfers, but of course the debug logs
+>>  > >  > will be incomplete. Note that this also disables some debug
+>>  > > messages
+>>  > >  >  	  for which the transfer type cannot be deduced.
+>>  > >  > +
+>>  > >  > +config USB_DWC2_DISABLE_VOD
+>>  > >  > +	bool "Disable VBUS overcurrent detection"
+>>  > >  > +	help
+>>  > >  > +	  Say Y here to switch off VBUS overcurrent detection. It
+>>  > >  > enables USB
+>>  > >  > +	  functionality blocked by overcurrent detection.
+>>  > >
+>>  > >  Why would this be a configuration option?  Shouldn't this be=20
+>> dynamic
+>>  > >  and just work properly automatically?
+>>  > >
+>>  > >  You should not have to do this on a build-time basis, it=20
+>> should be
+>>  > >  able to be detected and handled properly at run-time for all
+>>  > > devices.
+>>  > >
+>>  >
+>>  > I consulted the original author Dragan =C4=8Ce=C4=8Davac, he think si=
+nce=20
+>> this is
+>>  > a feature which disables overcurrent detection, so we are not=20
+>> sure if
+>>  > it could be harmful for some devices. Therefore he advise against
+>>  > enabling it in runtime, and in favor that user explicitely has to
+>>  > enable it.
+>>=20
+>>  This could still be enabled at runtime, though, via a module=20
+>> parameter.
+>>  Leave it enabled by default, and those who want to disable it can=20
+>> do it.
+>=20
+> This is not the 1990's, please NEVER add new module parameters,
+
+First time I hear this.
+
+> especially ones that are somehow supposed to be device-specific.
+>=20
+> Remember, module options are code-wide, not device-specific.
+
+Right. I thought "just make the option available on devices that=20
+support it" but that's not how it works.
+
+-Paul
+
+> Just do this based on the device type, or something else dynamic, do=20
+> NOT
+> make this be forced to be selected by a kernel configuration option=20
+> or a
+> random module option at runtime.
+>=20
+> thanks,
+>=20
+> greg k-h
+
 
