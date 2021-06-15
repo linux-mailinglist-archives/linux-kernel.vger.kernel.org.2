@@ -2,87 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159B83A78FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C3B3A7900
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhFOI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:27:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:56602 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhFOI1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:27:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C362D6E;
-        Tue, 15 Jun 2021 01:25:17 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF4AC3F694;
-        Tue, 15 Jun 2021 01:25:15 -0700 (PDT)
-Subject: Re: [PATCH v12 3/5] iommu/vt-d: Add support for IOMMU default DMA
- mode build options
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, dwmw2@infradead.org
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linuxarm@huawei.com, thunder.leizhen@huawei.com,
-        chenxiang66@hisilicon.com
-References: <1623414043-40745-1-git-send-email-john.garry@huawei.com>
- <1623414043-40745-4-git-send-email-john.garry@huawei.com>
- <f3940a3f-d1c1-148d-e4b5-51cecf924ff5@linux.intel.com>
- <03675e2f-c3a6-ce33-ef96-f9ae544b2d13@huawei.com>
- <824db374-dc82-a9ea-b162-2f51e70ef999@linux.intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c3e1bb30-e1a9-08d7-0787-06a0bb119461@arm.com>
-Date:   Tue, 15 Jun 2021 09:25:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231147AbhFOI23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 04:28:29 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:54837 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230190AbhFOI22 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:28:28 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id t4Okla3YIhg8Zt4OnlNW8I; Tue, 15 Jun 2021 10:26:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1623745582; bh=ZTRCW0WiskrdGzlsdFEoxXqcFBj3Oe5Up1ZbP3p2TBk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=fWnTzbWpL6estA1ZiGUwLO5SYRs+9GN61S+GMVVkuFC0IHN1upNXWOM+5rHyexxfA
+         qaQjxenCkd6RZ7CbwemTasilI9WfGMjXe202Tf6DbBWqdBd3hrve541uRxToKFekc0
+         NNOJgPcYcv9O7289RdLW69/pi9CzUQZZPq1F1sBooPaLEDkxMD86PZ2Ifu/tKLCgr8
+         Nv+jgYvJBGK4jX2ygSiecaxym/bpgJS4R+aa5pHl549SK7RCvKAulG04wl63XSTgz7
+         fILt8Oxzox6khidNPIuNEKih0j2+ODC5OcQYj1l+IVqdRboQp2FuV7Avf6fbqJ+MwX
+         hNOwL0eUZ/7vQ==
+Subject: Re: [PATCH v3 7/8] media: subdev: fix compat_ioctl32
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+References: <20210614103409.3154127-1-arnd@kernel.org>
+ <20210614103409.3154127-8-arnd@kernel.org>
+ <YMePUYfDzdsErRab@pendragon.ideasonboard.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <2d988daa-cb25-9f0d-8309-99f4de2a1e58@xs4all.nl>
+Date:   Tue, 15 Jun 2021 10:26:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <824db374-dc82-a9ea-b162-2f51e70ef999@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMePUYfDzdsErRab@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfC6HRC5tsAQ+zZpT9lCPZYDj7PDQI8U97USdIDIZr7hy5NKtwvbfGEmlLFf9sQraFpyNO9GieEIKeXnpOA5MRP9m7gO187WMrzNr6lzQIOGeV5KW9ySr
+ PsOMhhG4psR7d/eJailZjbc1PHdeC+tvOnUFOY1SAPJafVUwmyjddvwkYW+VUtYaXB3sGSMsWbRBstTLhR+9v6tW8slZCKYFfUF2W1D83ww5Ig78rfGxW/Cd
+ 7sfmCDWdpO/W8GEqkx8A8stD43QpFZaIBrsB0ZQQ8N2gO7dOe+ProKx/bmsDUwqIQgKlgHHlSJ43xI+Gg7FsYWIp2EBhqSbKPWa5UyRCFywkd7innOQ3FLoe
+ GsNd9eKE+TsVDhyoZoq53LppD43xNluSIIMaTUL9+qHVbUkNfwhHiIMMNOk5LJqH7vWLGo2MiQdwo61Rf4wcKL31lN+o/agvYz2BZmKTKM+yUW9k4SLZ241V
+ LFdXHRjfxEMkhe2ZUxw9NmWwyFBqkymgW+ixUTEf/PRouCwEeealriZmUDl0ciwwMMc1pZYgtCXzzOwt99g5Liazw8HiBQOBYGELAYHXPmETs9F2NIKc0W1o
+ B273mWu6B+jMZU4WlotYvUihw8DFnay/ZBXD+NTqtaBpwgsOn8wYTuyT0s2cDrGV2mCIRzt7ScGy48Fpu1D4Gl6Woyy0rFvjlBI7mUGXlpiILXAiaoGokd85
+ D4HYpFeEPfeQREzfH39Pi3TPXOhe1Tm6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-15 08:26, Lu Baolu wrote:
-> Hi John,
+On 14/06/2021 19:18, Laurent Pinchart wrote:
+> Hi Arnd,
 > 
-> On 6/14/21 4:03 PM, John Garry wrote:
->> On 12/06/2021 03:14, Lu Baolu wrote:
->>> On 2021/6/11 20:20, John Garry wrote:
->>>> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
->>>> index 2a71347611d4..4467353f981b 100644
->>>> --- a/drivers/iommu/Kconfig
->>>> +++ b/drivers/iommu/Kconfig
->>>> @@ -94,6 +94,7 @@ choice
->>>>       prompt "IOMMU default DMA mode"
->>>>       depends on IOMMU_DMA
->>>> +    default IOMMU_DEFAULT_LAZY if INTEL_IOMMU
->>>>       default IOMMU_DEFAULT_STRICT
->>>
->>> If two default values are different. Which one will be overridden?
+> Thank you for the patch.
+> 
+> On Mon, Jun 14, 2021 at 12:34:08PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
 >>
->> If I understand your question correctly, I think you are asking if 
->> both are set:
->> CONFIG_IOMMU_DEFAULT_LAZY=y
->> CONFIG_IOMMU_DEFAULT_STRICT=y
+>> The adv7842 and si4713 drivers each define one private ioctl command that
+>> are handled through the subdev_ioctl() helpers, but that don't work in
+> 
+> s/don't/doesn't/
+> 
+>> compat mode because this does not handle private ioctl commands.
 >>
->> If this happens, then make defconfig complains about both being set, 
->> and selects the 2nd, whatever that is.
+>> The compat_ioctl32 callback for subdevs has outdated calling conventions,
+>> but as there are no users of that, it is easy to change the function
+>> pointer type and the caller to make it behave the same way as the normal
+>> ioctl callback and hook in the two drivers that need no argument
+>> conversion.
+>>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>  drivers/media/i2c/adv7842.c           |  3 +++
+>>  drivers/media/radio/si4713/si4713.c   |  3 +++
+>>  drivers/media/v4l2-core/v4l2-subdev.c | 19 ++++++++++++++++---
+>>  include/media/v4l2-subdev.h           |  3 +--
+>>  4 files changed, 23 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+>> index 78e61fe6f2f0..cd6df4f52f33 100644
+>> --- a/drivers/media/i2c/adv7842.c
+>> +++ b/drivers/media/i2c/adv7842.c
+>> @@ -3293,6 +3293,9 @@ static const struct v4l2_ctrl_ops adv7842_ctrl_ops = {
+>>  static const struct v4l2_subdev_core_ops adv7842_core_ops = {
+>>  	.log_status = adv7842_log_status,
+>>  	.ioctl = adv7842_ioctl,
+>> +#ifdef CONFIG_COMPAT
+>> +	.compat_ioctl32 = adv7842_ioctl,
+>> +#endif
+>>  	.interrupt_service_routine = adv7842_isr,
+>>  	.subscribe_event = adv7842_subscribe_event,
+>>  	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+>> diff --git a/drivers/media/radio/si4713/si4713.c b/drivers/media/radio/si4713/si4713.c
+>> index adbf43ff6a21..ae7e477774e3 100644
+>> --- a/drivers/media/radio/si4713/si4713.c
+>> +++ b/drivers/media/radio/si4713/si4713.c
+>> @@ -1398,6 +1398,9 @@ static const struct v4l2_ctrl_ops si4713_ctrl_ops = {
+>>  
+>>  static const struct v4l2_subdev_core_ops si4713_subdev_core_ops = {
+>>  	.ioctl		= si4713_ioctl,
+>> +#ifdef CONFIG_COMPAT
+>> +	.compat_ioctl32	= si4713_ioctl,
+>> +#endif
 > 
-> On x86, Intel or AMD, this will be
+> Should we drop v4l2_subdev_core_ops.compat_ioctl32 and call
+> v4l2_subdev_core_ops.ioctl from subdev_do_compat_ioctl32() ? New drivers
+> should design custom ioctls in a way that doesn't require compat code.
+
+I agree, we can drop it completely.
+
+I'll skip this patch, but I'll take the other 7 patches and make a v3 PR with
+updated Reviewed-by tags from Laurent.
+
+Regards,
+
+	Hans
+
 > 
->      prompt "IOMMU default DMA mode"
->        depends on IOMMU_DMA
->        default IOMMU_DEFAULT_LAZY
->        default IOMMU_DEFAULT_STRICT
+>>  };
+>>  
+>>  static const struct v4l2_subdev_tuner_ops si4713_subdev_tuner_ops = {
+>> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+>> index bf3aa9252458..fbd176d6c415 100644
+>> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+>> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+>> @@ -686,13 +686,26 @@ static long subdev_ioctl(struct file *file, unsigned int cmd,
+>>  }
+>>  
+>>  #ifdef CONFIG_COMPAT
+>> -static long subdev_compat_ioctl32(struct file *file, unsigned int cmd,
+>> -	unsigned long arg)
+>> +static long subdev_do_compat_ioctl32(struct file *file, unsigned int cmd, void *arg)
+>>  {
+>>  	struct video_device *vdev = video_devdata(file);
+>>  	struct v4l2_subdev *sd = vdev_to_v4l2_subdev(vdev);
+>> +	struct mutex *lock = vdev->lock;
+>> +	long ret = -ENODEV;
+>>  
+>> -	return v4l2_subdev_call(sd, core, compat_ioctl32, cmd, arg);
+>> +	if (lock && mutex_lock_interruptible(lock))
+>> +		return -ERESTARTSYS;
+>> +	if (video_is_registered(vdev))
+>> +		ret = v4l2_subdev_call(sd, core, compat_ioctl32, cmd, arg);
+>> +	if (lock)
+>> +		mutex_unlock(lock);
+>> +	return ret;
+>> +}
+>> +
+>> +static long subdev_compat_ioctl32(struct file *file, unsigned int cmd,
+>> +	unsigned long arg)
+>> +{
+>> +	return video_usercopy(file, cmd, arg, subdev_do_compat_ioctl32);
+>>  }
+>>  #endif
+>>  
+>> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+>> index d0e9a5bdb08b..42aa1f6c7c3f 100644
+>> --- a/include/media/v4l2-subdev.h
+>> +++ b/include/media/v4l2-subdev.h
+>> @@ -195,8 +195,7 @@ struct v4l2_subdev_core_ops {
+>>  	int (*s_gpio)(struct v4l2_subdev *sd, u32 val);
+>>  	long (*ioctl)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
+>>  #ifdef CONFIG_COMPAT
+>> -	long (*compat_ioctl32)(struct v4l2_subdev *sd, unsigned int cmd,
+>> -			       unsigned long arg);
+>> +	long (*compat_ioctl32)(struct v4l2_subdev *sd, unsigned int cmd, void *arg);
+>>  #endif
+>>  #ifdef CONFIG_VIDEO_ADV_DEBUG
+>>  	int (*g_register)(struct v4l2_subdev *sd, struct v4l2_dbg_register *reg);
 > 
-> which will be default, LAZY or STRICT? Will it cause complains?
 
-See Documentation/kbuild/kconfig-language.rst:
-
-   A config option can have any number of default values. If multiple
-   default values are visible, only the first defined one is active.
-
-
-Robin.
