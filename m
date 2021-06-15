@@ -2,121 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663B33A87E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE9E3A87E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhFORkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhFORkw (ORCPT
+        id S230259AbhFORnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:43:01 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51296 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhFORnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:40:52 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3AEC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:38:47 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id e22so12049961pgv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:38:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gJUa+0hx0rbXUFX7mmxsZwfywyMDtRYFDwhkW7Df8yU=;
-        b=av/65a3p3BRVNG9XKFdJYeO2wWiTcfNj42ljpHRPMF3DlyK+jxaAhqBukh2qrhdn6m
-         QGmP698y/f4Yl//cY6O8iLmNL6VkQqw+FVzzydBgFDdlhSNQ9EpiFSj7/HLh4mE+9CaI
-         TMk6M8DwJAwcme41wPmz/dkbmT7KMgPCbPOjc1tzRm8cdq+oaChK/q7UeiUgQJWsVPJ1
-         JrzAgmitVjWOHYJoovf6Tdukxo0H3KvRKw1hKZM55d3ZiMr/axZW3yeAds7xR0gJLLIZ
-         TzDdxoxwDJgp0axoJLndMMeeFEIgKtNorS7NLMYx2Lnxccy9Qqw1FUU/MvnoiiZGXyMN
-         aoSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gJUa+0hx0rbXUFX7mmxsZwfywyMDtRYFDwhkW7Df8yU=;
-        b=cFqCCQEV8kvB/QNmHiJTKwGAs13J+VRqycjaBQLVvQcmrGO8Gq8X8PjjoCuQkVg/pv
-         2VjBPz0OarnO4Hqnomj5cpyPtPh6r1CClQjF0TfjHjnsKN18qavWKJajNnPEb1ING11n
-         glW9aLI3oOjrxAKRzjBEFK54OcwgJArEYwoqTPHKYix/C4SipbATtG04ZMsfb2Uhv8fD
-         pTU5kuQbCzgku/0wITgaG0ck1Cv9WLsHhpSDx+x+3GNioKeFDFS+6QE9mqZoo9DftXKf
-         A6+0z3WX4VYmJrsiI9KUe3BoEno599cSeauxCeLIg3y4CZDO7KBLdcCH/zRrXTBbxd+Z
-         0YwQ==
-X-Gm-Message-State: AOAM531DUBp18L2tErjW+5l0LalKKDSa5BCnHKj+yJIc3OP3w9Qc8zOw
-        F5DuSWcIjytUA6HmWr3PVYT9KQ==
-X-Google-Smtp-Source: ABdhPJzhFC5MnbVlCw95sMop5xCn8FjnlLM2ZmtVXznZRxY77CLmYGUe/53p1b9WNGHPLjw1eozhDQ==
-X-Received: by 2002:a65:6884:: with SMTP id e4mr630624pgt.71.1623778726964;
-        Tue, 15 Jun 2021 10:38:46 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id mr23sm16168435pjb.12.2021.06.15.10.38.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 10:38:45 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 11:38:44 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 2/4] rpmsg: ctrl: Introduce RPMSG_RELEASE_DEV_IOCTL
-Message-ID: <20210615173844.GA604521@p14s>
-References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
- <20210604091406.15901-3-arnaud.pouliquen@foss.st.com>
+        Tue, 15 Jun 2021 13:43:00 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4BD7221A62;
+        Tue, 15 Jun 2021 17:40:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623778855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bd9ZGnUHEBK7lgiBT0DUsGcTVfKNMNmVpmEg/gStdvE=;
+        b=iekzqTVHLlSbRlXJVDwwcmO0FYwmx1l12l5MGhvhEg6eRnYMtfNG6hg/PoMOC/3zAucH4i
+        R4fmrKXOWwm8M/h9MTPOrWbqVkct+SeTg4E00Bdl5eCM/btdNHO6IvSCxW40KfA9C7VlWk
+        qETqefLuLSdFmHcen7RlXVIXz7deVco=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623778855;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bd9ZGnUHEBK7lgiBT0DUsGcTVfKNMNmVpmEg/gStdvE=;
+        b=u4lIbYf6GCAUr2m8NRlCiUGlR2T0v3LUx/PzeL9W+Coa8NzAvmFBTHkZz0EhJcNt9KNONh
+        L4JmxeMzTB3SaqDg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 374D5118DD;
+        Tue, 15 Jun 2021 17:40:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623778855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bd9ZGnUHEBK7lgiBT0DUsGcTVfKNMNmVpmEg/gStdvE=;
+        b=iekzqTVHLlSbRlXJVDwwcmO0FYwmx1l12l5MGhvhEg6eRnYMtfNG6hg/PoMOC/3zAucH4i
+        R4fmrKXOWwm8M/h9MTPOrWbqVkct+SeTg4E00Bdl5eCM/btdNHO6IvSCxW40KfA9C7VlWk
+        qETqefLuLSdFmHcen7RlXVIXz7deVco=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623778855;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bd9ZGnUHEBK7lgiBT0DUsGcTVfKNMNmVpmEg/gStdvE=;
+        b=u4lIbYf6GCAUr2m8NRlCiUGlR2T0v3LUx/PzeL9W+Coa8NzAvmFBTHkZz0EhJcNt9KNONh
+        L4JmxeMzTB3SaqDg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id CMhRDCfmyGDuHwAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 15 Jun 2021 17:40:55 +0000
+Date:   Tue, 15 Jun 2021 19:40:45 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V2 08/52] x86/fpu: Sanitize xstateregs_set()
+Message-ID: <YMjmHcW1HPbHfkMF@zn.tnic>
+References: <20210614154408.673478623@linutronix.de>
+ <20210614155354.534061373@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210604091406.15901-3-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210614155354.534061373@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
-
-On Fri, Jun 04, 2021 at 11:14:04AM +0200, Arnaud Pouliquen wrote:
-> Implement the RPMSG_RELEASE_DEV_IOCTL to allow the user application to
-> release a rpmsg device created either by the remote processor or with
-> the RPMSG_CREATE_DEV_IOCTL call.
-> Depending on the back-end implementation, the associated rpmsg driver is
-> removed and a NS destroy rpmsg can be sent to the remote processor.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/rpmsg/rpmsg_ctrl.c | 7 +++++++
->  include/uapi/linux/rpmsg.h | 5 +++++
->  2 files changed, 12 insertions(+)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> index 4aa962df3661..cb19e32d05e1 100644
-> --- a/drivers/rpmsg/rpmsg_ctrl.c
-> +++ b/drivers/rpmsg/rpmsg_ctrl.c
-> @@ -98,6 +98,13 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->  		}
->  		break;
+On Mon, Jun 14, 2021 at 05:44:16PM +0200, Thomas Gleixner wrote:
+> @@ -108,10 +110,10 @@ int xstateregs_set(struct task_struct *t
+>  		  const void *kbuf, const void __user *ubuf)
+>  {
+>  	struct fpu *fpu = &target->thread.fpu;
+> -	struct xregs_state *xsave;
+> +	struct xregs_state *tmpbuf = NULL;
+>  	int ret;
 >  
-> +	case RPMSG_RELEASE_DEV_IOCTL:
-> +		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
-> +		if (ret)
-> +			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
-> +				chinfo.name, ret);
-> +		break;
+> -	if (!boot_cpu_has(X86_FEATURE_XSAVE))
+> +	if (!static_cpu_has(X86_FEATURE_XSAVE))
+
+cpu_feature_enabled() - we're going to use only that thing from now on
+for simplicity.
+
+> +	if (!kbuf) {
+> +		tmpbuf = vmalloc(count);
+> +		if (!tmpbuf)
+> +			return -ENOMEM;
 > +
-
-Please move the content of this patch in 1/4.  
-
->  	default:
->  		ret = -EINVAL;
+> +		if (copy_from_user(tmpbuf, ubuf, count)) {
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
 >  	}
-> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
-> index f9d5a74e7801..38639ba37438 100644
-> --- a/include/uapi/linux/rpmsg.h
-> +++ b/include/uapi/linux/rpmsg.h
-> @@ -38,4 +38,9 @@ struct rpmsg_endpoint_info {
->   */
->  #define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
 >  
-> +/**
-> + * Release a local rpmsg device.
-> + */
-> +#define RPMSG_RELEASE_DEV_IOCTL	_IOW(0xb5, 0x4, struct rpmsg_endpoint_info)
+> -	/*
+> -	 * mxcsr reserved bits must be masked to zero for security reasons.
+> -	 */
+> -	xsave->i387.mxcsr &= mxcsr_feature_mask;
+> -
+> -	/*
+> -	 * In case of failure, mark all states as init:
+> -	 */
+> -	if (ret)
+> -		fpstate_init(&fpu->state);
+> +	fpu__prepare_write(fpu);
+
+Yikes, why isn't this function called
+
+fpu_invalidate_state(fpu)
+
+?!
+
+As in, what it does...
+
+> @@ -1196,14 +1196,16 @@ int copy_kernel_to_xstate(struct xregs_s
+>  	 */
+>  	xsave->header.xfeatures |= hdr.xfeatures;
+>  
+> +	/* mxcsr reserved bits must be masked to zero for historical reasons. */
+
+Wasn't that comment supposed to get some love?
+
+https://lkml.kernel.org/r/87k0n0w3p8.ffs@nanos.tec.linutronix.de
+
+> +	xsave->i387.mxcsr &= mxcsr_feature_mask;
 > +
->  #endif
-> -- 
-> 2.17.1
-> 
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
