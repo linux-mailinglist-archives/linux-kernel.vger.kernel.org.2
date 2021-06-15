@@ -2,70 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A973A7833
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542093A780E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhFOHqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:46:18 -0400
-Received: from relay02.th.seeweb.it ([5.144.164.163]:58273 "EHLO
-        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhFOHqF (ORCPT
+        id S229725AbhFOHiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhFOHiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:46:05 -0400
-X-Greylist: delayed 499 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Jun 2021 03:46:04 EDT
-Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 7B07A1F4B5;
-        Tue, 15 Jun 2021 09:35:38 +0200 (CEST)
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: Add support for SONY Xperia 1 II
- / 5 II (Edo platform)
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-References: <20210612192358.62602-1-konrad.dybcio@somainline.org>
- <20210612192358.62602-3-konrad.dybcio@somainline.org>
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-Message-ID: <50fd5f94-f1e6-575d-6ffe-11f89bc35d3d@somainline.org>
-Date:   Tue, 15 Jun 2021 09:35:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 15 Jun 2021 03:38:08 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B6EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:36:03 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id c14so19152986ybk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:36:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FiHlyLuUa3tZCav6PYZXXh3LRDHbc9dbclb37lqJuto=;
+        b=Lj091RFix2zPvpogz5p5LdebddNeJdjYhl7ike3heeve0IV+zr8FbvMfa5boUhBvEn
+         8Qohw188DvTIWj4YwES6CQDgWN0sjfaGD7khAw9mneew6Nw7ZxI46rxNEZ9NS8Yaf8WM
+         JSBXF2f1QT/0aaGmZLdg+VC2jqY4H4ObDhNT5MYtYDZjsRsDDMbKd+gCtylEtvv9YW1E
+         cd/W6r0h5fWQchAhXH+Mf9n3tKmVL36oOXP/Sv/5+3+5dHIY7MT0Uv/YH9YjfgKi5ZK0
+         0WOlUUgPef88x0WTH5FP1teaX/lm+cKHTqXAbpM19uUqZhAuZXKfGkeulLqxW+btnu+z
+         aUQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FiHlyLuUa3tZCav6PYZXXh3LRDHbc9dbclb37lqJuto=;
+        b=uehGuSvTmPZTZRNA6DzQgaGgX6egOOthyq9OxwhqS6weT8l7p3a3REROlD0sq95jor
+         jjf3O5/TLAeIQos5We8wAKqedH0Hdjjnrbahg1R1J3EMpLTMA/9YMskVL4ANU44R9uxm
+         UFNb/xowDqjgk+Yw8O9KpYQ9GpGoYs+DocN4ejnu1iWoKXKiWttFoCYy3idE3h+Dh+oF
+         YxEdgdXhkSNku5lC4qb17Ncpm9AUeutEPm8CHApGxedaQReQWeq7BQ0OebWO4yh9DeWD
+         5mgtEtJj+6GLMpfGVFFo+aGa/D9csRjkSj34/8lf0BdQ4+nKzmKiWCw2ktFKEfIPolah
+         K8zg==
+X-Gm-Message-State: AOAM5314rT7LpcfTZtBOYbV+J2xziF8aAU6p1L4PBmyTgOLIUcpIrRTj
+        rAzWuDvZpeBqcy6ZPu4AiejDTAB3BsvfKrZn0WZyZw==
+X-Google-Smtp-Source: ABdhPJzdGFQxWe21ANRSmXBVitacBxnIOPRm3MIDlYfUzjRXfQG5wsicrDB8szqBrZNCFfB3zfTRQ1PXAtmq1DMVEGo=
+X-Received: by 2002:a25:bb84:: with SMTP id y4mr28981183ybg.450.1623742562323;
+ Tue, 15 Jun 2021 00:36:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210612192358.62602-3-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210604015238.2422145-1-zenczykowski@gmail.com> <20210604015238.2422145-2-zenczykowski@gmail.com>
+In-Reply-To: <20210604015238.2422145-2-zenczykowski@gmail.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Tue, 15 Jun 2021 00:35:51 -0700
+Message-ID: <CANP3RGc8PmPOjTGkDmbjzEVBezcQuNMcg17qpJx2aLU9juM_5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: do not change gso_size during bpf_skb_change_proto()
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        Willem de Bruijn <willemb@google.com>, yhs@fb.com,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>, songliubraving@fb.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/12/21 9:23 PM, Konrad Dybcio wrote:
-> Add support for SONY Xperia 1 II and 5 II smartphones (read one/five mark two).
-> They are based on the Qualcomm SM8250 chipset and both feature 5G modems. There
-> also exists a third Edo board, namely the Xperia PRO (PDX204), but it's $2500
-> and no developers have obtained it so far (to my knowledge).
-> 
-> The devices are affected by a scary UFS behaviour where sending a certain UFS
-> command (which is worked around on downstream) renders the device unbootable,
-> by effectively erasing the bootloader. Therefore UFS AND UFSPHY are strictly
-> disabled for now.
-> 
-> Downstream workaround:
-> https://github.com/kholk/kernel/commit/2e7a9ee1c91a016baa0b826a7752ec45663a0561
-> 
-> Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+On Thu, Jun 3, 2021 at 6:52 PM Maciej =C5=BBenczykowski
+<zenczykowski@gmail.com> wrote:
+>
+> From: Maciej =C5=BBenczykowski <maze@google.com>
+>
+> This is technically a backwards incompatible change in behaviour,
+> but I'm going to argue that it is very unlikely to break things,
+> and likely to fix *far* more then it breaks.
+>
+> In no particular order, various reasons follow:
+>
+> (a) I've long had a bug assigned to myself to debug a super rare kernel
+> crash on Android Pixel phones which can (per stacktrace) be traced back
+> to bpf clat ipv6 to ipv4 protocol conversion causing some sort of ugly
+> failure much later on during transmit deep in the GSO engine, AFAICT
+> precisely because of this change to gso_size, though I've never been able
+> to manually reproduce it.
+> I believe it may be related to the particular network offload support
+> of attached usb ethernet dongle being used for tethering off of an
+> IPv6-only cellular connection.  The reason might be we end up with more
+> segments than max permitted, or with a gso packet with only one segment..=
+.
+> (either way we break some assumption and hit a BUG_ON)
+>
+> (b) There is no check that the gso_size is > 20 when reducing it by 20,
+> so we might end up with a negative (or underflowing) gso_size or
+> a gso_size of 0.  This can't possibly be good.
+> Indeed this is probably somehow exploitable (or at least can result
+> in a kernel crash) by delivering crafted packets and perhaps triggering
+> an infinite loop or a divide by zero...
+> As a reminder: gso_size (mss) is related to mtu, but not directly
+> derived from it: gso_size/mss may be significantly smaller then
+> one would get by deriving from local mtu.  And on some nics (which
+> do loose mtu checking on receive, it may even potentially be larger,
+> for example my work pc with 1500 mtu can receive 1520 byte frames
+> [and sometimes does due to bugs in a vendor plat46 implementation]).
+> Indeed even just going from 21 to 1 is potentially problematic because
+> it increases the number of segments by a factor of 21 (think DoS,
+> or some other crash due to too many segments).
+>
+> (c) It's always safe to not increase the gso_size, because it doesn't
+> result in the max packet size increasing.  So the skb_increase_gso_size()
+> call was always unnecessary for correctness (and outright undesirable, se=
+e
+> later).  As such the only part which is potentially dangerous (ie. could
+> cause backwards compatibility issues) is the removal of the
+> skb_decrease_gso_size() call.
+>
+> (d) If the packets are ultimately destined to the local device, then
+> there is absolutely no benefit to playing around with gso_size.
+> It only matters if the packets will egress the device.  ie. we're
+> either forwarding, or transmitting from the device.
+>
+> (e) This logic only triggers for packets which are GSO.  It does not
+> trigger for skbs which are not GSO.  It will not convert a non-GSO mtu
+> sized packet into a GSO packet (and you don't even know what the mtu is,
+> so you can't even fix it).  As such your transmit path must *already* be
+> able to handle an mtu 20 bytes larger then your receive path (for ipv4
+> to ipv6 translation) - and indeed 28 bytes larger due to ipv4 fragments.
+> Thus removing the skb_decrease_gso_size() call doesn't actually increase
+> the size of the packets your transmit side must be able to handle.
+> ie. to handle non-GSO max-mtu packets, the ipv4/ipv6 device/route mtus
+> must already be set correctly.  Since for example with an ipv4 egress mtu
+> of 1500, ipv4 to ipv6 translation will already build 1520 byte ipv6 frame=
+s,
+> so you need a 1520 byte device mtu.  This means if your ipv6 device's
+> egress mtu is 1280, your ipv4 route must be 1260 (and actually 1252,
+> because of the need to handle fragments).  This is to handle normal non-G=
+SO
+> packets.  Thus the reduction is simply not needed for GSO packets,
+> because when they're correctly built, they will already be the right size=
+.
+>
+> (f) TSO/GSO should be able to exactly undo GRO: the number of packets
+> (TCP segments) should not be modified, so that TCP's mss counting works
+> correctly (this matters for congestion control).
+> If protocol conversion changes the gso_size, then the number of TCP segme=
+nts
+> may increase or decrease.  Packet loss after protocol conversion can resu=
+lt
+> in partial loss of mss segments that the sender sent.  How's the sending
+> TCP stack going to react to receiving ACKs/SACKs in the middle of the
+> segments it sent?
+>
+> (g) skb_{decrease,increase}_gso_size() are already no-ops for GSO_BY_FRAG=
+S
+> case (besides triggering WARN_ON_ONCE). This means you already cannot
+> guarantee that gso_size (and thus resulting packet mtu) is changed.
+> ie. you must assume it won't be changed.
+>
+> (h) changing gso_size is outright buggy for UDP GSO packets, where framin=
+g
+> matters (I believe that's also the case for SCTP, but it's already exclud=
+ed
+> by [g]).  So the only remaining case is TCP, which also doesn't want it
+> (see [f]).
+>
+> (i) see also the reasoning on the previous attempt at fixing this
+> (commit fa7b83bf3b156c767f3e4a25bbf3817b08f3ff8e) which shows
+> that the current behaviour causes TCP packet loss:
+>
+>   In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
+>   coalesced packet payload can be > MSS, but < MSS + 20.
+>
+>   bpf_skb_proto_6_to_4() will upgrade the MSS and it can be > the payload
+>   length. After then tcp_gso_segment checks for the payload length if it
+>   is <=3D MSS. The condition is causing the packet to be dropped.
+>
+>   tcp_gso_segment():
+>     [...]
+>     mss =3D skb_shinfo(skb)->gso_size;
+>     if (unlikely(skb->len <=3D mss)) goto out;
+>     [...]
+>
+> Thus changing the gso_size is simply a very bad idea.
+> Increasing is unnecessary and buggy, and decreasing can go negative.
+>
+> Cc: Dongseok Yi <dseok.yi@samsung.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Fixes: 6578171a7ff0 ("bpf: add bpf_skb_change_proto helper")
+> Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
+> ---
+>  net/core/filter.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 04848de3e058..953b6c31b803 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3263,8 +3263,6 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb=
+)
+>                         shinfo->gso_type |=3D  SKB_GSO_TCPV6;
+>                 }
+>
+> -               /* Due to IPv6 header, MSS needs to be downgraded. */
+> -               skb_decrease_gso_size(shinfo, len_diff);
+>                 /* Header must be checked, and gso_segs recomputed. */
+>                 shinfo->gso_type |=3D SKB_GSO_DODGY;
+>                 shinfo->gso_segs =3D 0;
+> @@ -3304,8 +3302,6 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb=
+)
+>                         shinfo->gso_type |=3D  SKB_GSO_TCPV4;
+>                 }
+>
+> -               /* Due to IPv4 header, MSS can be upgraded. */
+> -               skb_increase_gso_size(shinfo, len_diff);
+>                 /* Header must be checked, and gso_segs recomputed. */
+>                 shinfo->gso_type |=3D SKB_GSO_DODGY;
+>                 shinfo->gso_segs =3D 0;
+> --
+> 2.32.0.rc1.229.g3e70b5a671-goog
 
-Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+This patch series (ie. this patch and the previous revert) seems to
+have gotten no response, and we're running out of time, since it
+reverts the newly added api.
 
-Thanks!
+Opinions?
