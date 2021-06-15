@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDE43A8BE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 00:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024123A8BE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Jun 2021 00:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhFOWia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 18:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
+        id S231250AbhFOWic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 18:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhFOWiX (ORCPT
+        with ESMTP id S229868AbhFOWiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 18:38:23 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FF8C061574
+        Tue, 15 Jun 2021 18:38:24 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6209C061574
         for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 15:36:18 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id b205so57833wmb.3
+Received: by mail-wr1-x42f.google.com with SMTP id o3so310720wri.8
         for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 15:36:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tNq1hkaBq71fJWtllv0ekTPqyTFUx2WNRfW/B4flVec=;
-        b=cRpfli8rafsnR+XOZiK4XGetJvdhfh385XH/doGVE8g7bjz1KP+ZopCKOUs0X2RZ8j
-         06fh5m67bgT97DYuajoTfRAr0zsohDeYEBhzUGSZKqxirl8Bu0HnZO0d9TfIxpeHsMUR
-         zj1y2/KLbZz9XWCZBAucNsNM3LwjABJGprJ2Li3wSillVsu5gqjNnmW8OnrzsXJTd5EJ
-         Lt0ZGuecn1sjz3WldloVu4T6kOB7YckEUlGhitsO17En1Xw8w5jexGEEqu/kTU3GGoBy
-         f4gSp5snoL3AEbk6wP1VSiTrZFhy8YclKTm/IMYsqFgZ09DMUFvxzkwUZX3rlixCOIJC
-         bGdQ==
+        bh=RaOTK3g0zqpY6FTUa07hoHHI34NBW0k+fGFJWzcItbc=;
+        b=BP7lOTgCOWk8v9ayR47eJY05HepsREWjZMn3ffnZu2M8F0EZvxmEGPOeR9AXNTlMFl
+         dExSp+xbOQ0hWFsgARQFneVvxO7P5eqBg6gme5GE6CaizLsAaWAFusgN1VDUfcK8TY9v
+         Of+yQu0EHWdNN7Nsdyxv6fs/D4HTqOIHFkJxCbscnk5tvGIx0rbqsOloprb6xG8tZjTT
+         ZhHzcFpRFBXosYJqBrmQlSwxATZgYdMvbOabsNvHY21wKxL0K+d0aaKrBpT2TtZ+Qe0F
+         CHEkwMdkMfV/+E+e1kcKJpdV+o05HNZt7vf5msyxgpHvrI2MSE5lwKO34gSvSrcjGUlb
+         HB+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tNq1hkaBq71fJWtllv0ekTPqyTFUx2WNRfW/B4flVec=;
-        b=N/jeqEIyMVT9O9MeDLovBaEkF1S9+k0/B1br/DU99whnRZO2vAGNBkmxLszaRKL/Mi
-         r1FKWWNqdM8LAu3mVNrfW4v8PoxI39cORLWPdmi9aAiU13BuStf2/ohAacJhC4FFHDLK
-         paMY/ulKGvykB0xj+WCcc+SUAVDMWYLbICTMmVOuDLtj/2vEmdj8E/JMoNLJBmkay9RX
-         fWU8JRKLBbJr+I8Dxd0uUG+1+FIMcgSsMUqnbRselFqHCkTBFOTVJzStbMiUvjwasN42
-         cTGfUx8IPg8TEVh5RuXK/OgQvucye9yGUrry13sV26k+VlfRmmI/5LTfHnsOiJpjXMVj
-         K52A==
-X-Gm-Message-State: AOAM531YHQgkS7PuVzC/ZABVqo45CEwSsv6POvSfWFLsJrqjDeHbFjfQ
-        RfP6JhGcDCROdwHQq6ylLVwzpg==
-X-Google-Smtp-Source: ABdhPJyed4RT4BFqwWEhS7jfnGc5DNI2kZ/Jexdao47MBEf0CtgdKiOOtySZArYUWEYTuEMbGKKZjg==
-X-Received: by 2002:a1c:770b:: with SMTP id t11mr7869410wmi.79.1623796576728;
-        Tue, 15 Jun 2021 15:36:16 -0700 (PDT)
+        bh=RaOTK3g0zqpY6FTUa07hoHHI34NBW0k+fGFJWzcItbc=;
+        b=aA2wzfwVtU/c1ksuD0T/I3Mf1J8MZeaZFRvdm5vTzH6bvpGizpuystVE6WE7CgdIhk
+         ni73ZGOlhVMc6y6R1hNfYhBRinOLf9pVH3+CEKfkJYJGs3iW2BLGll6du42U4cDbI+RX
+         DpqSKfiYr1Xht8JKUAuKKwO0wdZr3Hk1W/+KRDw/JMftwM1OAaA0Q5AbY81fSBJE5VOH
+         hUkEwGplGglDLd249FDaPPBe6kH0SMvgLJdUV7dIJaI7Dm3EmEDpIvn8xaKLh02CyHsM
+         1yd4PMXvP1iAnkO+TqpKME3XuAdfwuvlVBah3TqXgux1MNSn3qFaCOJsMvCtdDI6d9or
+         JSow==
+X-Gm-Message-State: AOAM533+HtNHOPVwrjoCHNtppviNV94sMSCGEwlwJr5yyW7by7UiFYoB
+        U3QUeEMkSbst4mQwr4NGmuvI+A==
+X-Google-Smtp-Source: ABdhPJzpUl1ww9fwb+x4SxKrpOKWY5YdEbXAEQvz8d5+e0BDszytx40NjOb71vbJbSCID08FKQMtUg==
+X-Received: by 2002:a5d:58c1:: with SMTP id o1mr1508776wrf.420.1623796577597;
+        Tue, 15 Jun 2021 15:36:17 -0700 (PDT)
 Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
         by smtp.gmail.com with ESMTPSA id m23sm3934791wml.27.2021.06.15.15.36.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 15:36:16 -0700 (PDT)
+        Tue, 15 Jun 2021 15:36:17 -0700 (PDT)
 From:   Phillip Potter <phil@philpotter.co.uk>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
         linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH 5/7] staging: rtl8188eu: remove unused variable from os_dep/ioctl_linux.c
-Date:   Tue, 15 Jun 2021 23:36:05 +0100
-Message-Id: <20210615223607.13863-6-phil@philpotter.co.uk>
+Subject: [PATCH 6/7] staging: rtl8188eu: remove unused variables from hal/rtl8188e_cmd.c
+Date:   Tue, 15 Jun 2021 23:36:06 +0100
+Message-Id: <20210615223607.13863-7-phil@philpotter.co.uk>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210615223607.13863-1-phil@philpotter.co.uk>
 References: <20210615223607.13863-1-phil@philpotter.co.uk>
@@ -64,36 +64,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove set but unused variable 'reason' from within the file
-os_dep/ioctl_linux.c in the function rtw_wx_set_mlme, as it is
-triggering a kernel test robot warning.
+Remove set but unused variables from within the file hal/rtl8188e_cmd.c
+in the function rtl8188e_set_FwMediaStatus_cmd, as they are triggering
+kernel test robot warnings.
 
 Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 ---
- drivers/staging/rtl8188eu/os_dep/ioctl_linux.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/staging/rtl8188eu/hal/rtl8188e_cmd.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-index 12f845c17aa5..3b8386245017 100644
---- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-@@ -978,15 +978,12 @@ static int rtw_wx_set_mlme(struct net_device *dev,
- 			   union iwreq_data *wrqu, char *extra)
+diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_cmd.c b/drivers/staging/rtl8188eu/hal/rtl8188e_cmd.c
+index 19c8976c2e01..f2969e160ac3 100644
+--- a/drivers/staging/rtl8188eu/hal/rtl8188e_cmd.c
++++ b/drivers/staging/rtl8188eu/hal/rtl8188e_cmd.c
+@@ -177,12 +177,8 @@ void rtl8188e_set_FwPwrMode_cmd(struct adapter *adapt, u8 Mode)
+ 
+ void rtl8188e_set_FwMediaStatus_cmd(struct adapter *adapt, __le16 mstatus_rpt)
  {
- 	int ret = 0;
--	u16 reason;
- 	struct adapter *padapter = netdev_priv(dev);
- 	struct iw_mlme *mlme = (struct iw_mlme *)extra;
+-	u8 opmode, macid;
+ 	u16 mst_rpt = le16_to_cpu(mstatus_rpt);
  
- 	if (!mlme)
- 		return -1;
- 
--	reason = mlme->reason_code;
+-	opmode = (u8)mst_rpt;
+-	macid = (u8)(mst_rpt >> 8);
 -
- 	switch (mlme->cmd) {
- 	case IW_MLME_DEAUTH:
- 		if (!rtw_set_802_11_disassociate(padapter))
+ 	FillH2CCmd_88E(adapt, H2C_COM_MEDIA_STATUS_RPT, sizeof(mst_rpt), (u8 *)&mst_rpt);
+ }
+ 
 -- 
 2.30.2
 
