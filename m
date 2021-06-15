@@ -2,177 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA84B3A73EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FDD3A7448
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhFOC3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhFOC3M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:29:12 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5696C0613A2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:27:07 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id k25so19816586eja.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:27:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OnwcoTRfTznBR5FwE2vr68m/QZ2qvUP7gDh4qe1Pg+o=;
-        b=eFgmZGaMyD2CgAnRsuEZXlPOuXj3vUt19Qq6GQdcMW+mpoif+bfcRjhUyUikAGamnj
-         J5cSJGpjRDAjxug0w7rWweFRdou/pZiIttH75lRDs0XoAuUaVDb/83B1axdLvgi8sslV
-         65dibn8Bxcolp9BXqjYlHPtRWb5SQydOSXO3gbbYTOiLuEkQCRJBEqbV4ogxKKIpGEUK
-         +9SggoZaoBSTgAmfAJnr1J1ALrIoOqN9rAv4Tl2Zv1uwxMUYYc0GMu34lzyTDHQi/yTd
-         rxgysyxouCrDNPZAwgp0tKGfTXSUTH6GT5wzMXFEiI+D9ujFW1mZXSBY3BLKxYiSfwUx
-         lQmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OnwcoTRfTznBR5FwE2vr68m/QZ2qvUP7gDh4qe1Pg+o=;
-        b=Agug3kO9giHUxVAl8grGzf8KrWSI6ZDEAnpJKrgrupPopbHEQFbk9mzZkI1EZkOvfO
-         Nc6LxY9v3XMSTEt32fafLgMtb/ro79XiRn+PUfEh/r8YXT1RVqAE8Jw+VsxRCbshdWi9
-         8Dpz2m7QQYwS3pJwTdlkjoRp+8wv+idG4c/dWCYR4o6/h3YI57TsnvfJoeCQynm08+tU
-         K4JIbBIp6LI/05mV+njc36gURr/Q1XTMLqnX9GcsnTUttOGNlDrx7fi/6r/in5uzMHPt
-         TmevByvjsbGS7+Qm/AYG8fswnirxVAyNyAxrOxn4VuSrgvfkq7KsAVMmeTJ1TDwH7+oP
-         fy7g==
-X-Gm-Message-State: AOAM531vLWGHN/4Eav0KMEk/fBxVuZCUpEXfjMbYgu9Z/aMZFHqprjBW
-        VJsBEImxK7ztv71Fk3qJ9v2xHqurhNVCK2TLekg=
-X-Google-Smtp-Source: ABdhPJzAdbApzsofpW2WZ48tmpCbGJakUt6XAViULJJrKjZyUuf0ylbjMmD3uX6ehAnjYVbIBCTSMVq1OUwm/HPpVbY=
-X-Received: by 2002:a17:906:2c4a:: with SMTP id f10mr17928384ejh.493.1623724026406;
- Mon, 14 Jun 2021 19:27:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210601033319.100737-1-gshan@redhat.com> <76516781-6a70-f2b0-f3e3-da999c84350f@redhat.com>
- <0c0eb8c8-463d-d6f1-3cec-bbc0af0a229c@redhat.com> <b45b26ea-a6ac-934c-2467-c6e829b5d3ad@redhat.com>
-In-Reply-To: <b45b26ea-a6ac-934c-2467-c6e829b5d3ad@redhat.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 14 Jun 2021 19:26:55 -0700
-Message-ID: <CAKgT0Ue9SQ8=ju1m6ftKTb4Tai9EJ5NQhnB_uk-DzMc19-R4cQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm/page_reporting: Adjust threshold according to MAX_ORDER
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Gavin Shan <gshan@redhat.com>, linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        shan.gavin@gmail.com, Anshuman Khandual <anshuman.khandual@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S230291AbhFOCsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:48:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230190AbhFOCsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Jun 2021 22:48:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35A78613B6;
+        Tue, 15 Jun 2021 01:07:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623719228;
+        bh=rG3719QpCm03Pct6ZPmHY7NKA0ZnZcb/msTIuT6DEZo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eZANhhaATJcoaqqX0CoZzMiB5xCfNlYG9Su3V18leTk1kBzL+YIkFqHlxg/UX47Ec
+         nThGgd50wdgXkXS9MLOBIdYfmlZgT7VWzuhOZMWPDnMtb2Ywfxy1uVvuUJINMWiF2+
+         gdzUpU6w6uD2uzM6UDARM48ODr7UcAhW6S9+huTM=
+Date:   Mon, 14 Jun 2021 18:07:06 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 7/8] all: replace find_next{,_zero}_bit with
+ find_first{,_zero}_bit where appropriate
+Message-Id: <20210614180706.1e8564854bfed648dd4c039b@linux-foundation.org>
+In-Reply-To: <CAHp75VeXJcPai=w3Fbx11TPf_CZTusD6U_E2R+XSaCcebV7uBw@mail.gmail.com>
+References: <20210612123639.329047-1-yury.norov@gmail.com>
+        <20210612123639.329047-8-yury.norov@gmail.com>
+        <CAHp75VerU1NJMweWCR7MsE9hiMFZyJP8m751OFKmGrJ1gVhMWw@mail.gmail.com>
+        <YMVSHCY9yEocmfVD@yury-ThinkPad>
+        <CAHp75VeXJcPai=w3Fbx11TPf_CZTusD6U_E2R+XSaCcebV7uBw@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 4:03 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 11.06.21 09:44, Gavin Shan wrote:
-> > On 6/1/21 6:01 PM, David Hildenbrand wrote:
-> >> On 01.06.21 05:33, Gavin Shan wrote:
-> >>> The PAGE_REPORTING_MIN_ORDER is equal to @pageblock_order, taken as
-> >>> minimal order (threshold) to trigger page reporting. The page reporti=
-ng
-> >>> is never triggered with the following configurations and settings on
-> >>> aarch64. In the particular scenario, the page reporting won't be trig=
-gered
-> >>> until the largest (2 ^ (MAX_ORDER-1)) free area is achieved from the
-> >>> page freeing. The condition is very hard, or even impossible to be me=
-t.
-> >>>
-> >>>     CONFIG_ARM64_PAGE_SHIFT:              16
-> >>>     CONFIG_HUGETLB_PAGE:                  Y
-> >>>     CONFIG_HUGETLB_PAGE_SIZE_VARIABLE:    N
-> >>>     pageblock_order:                      13
-> >>>     CONFIG_FORCE_MAX_ZONEORDER:           14
-> >>>     MAX_ORDER:                            14
-> >>>
-> >>> The issue can be reproduced in VM, running kernel with above configur=
-ations
-> >>> and settings. The 'memhog' is used inside the VM to access 512MB anon=
-ymous
-> >>> area. The QEMU's RSS doesn't drop accordingly after 'memhog' exits.
-> >>>
-> >>>     /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64          =
-\
-> >>>     -accel kvm -machine virt,gic-version=3Dhost                      =
-  \
-> >>>     -cpu host -smp 8,sockets=3D2,cores=3D4,threads=3D1 -m 4096M,maxme=
-m=3D64G \
-> >>>     -object memory-backend-ram,id=3Dmem0,size=3D2048M                =
-    \
-> >>>     -object memory-backend-ram,id=3Dmem1,size=3D2048M                =
-    \
-> >>>     -numa node,nodeid=3D0,cpus=3D0-3,memdev=3Dmem0                   =
-      \
-> >>>     -numa node,nodeid=3D1,cpus=3D4-7,memdev=3Dmem1                   =
-      \
-> >>>       :                                                              =
-\
-> >>>     -device virtio-balloon-pci,id=3Dballoon0,free-page-reporting=3Dye=
-s
-> >>>
-> >>> This tries to fix the issue by adjusting the threshold to the smaller=
- value
-> >>> of @pageblock_order and (MAX_ORDER/2). With this applied, the QEMU's =
-RSS
-> >>> drops after 'memhog' exits.
-> >>
-> >> IIRC, we use pageblock_order to
-> >>
-> >> a) Reduce the free page reporting overhead. Reporting on small chunks =
-can make us report constantly with little system activity.
-> >>
-> >> b) Avoid splitting THP in the hypervisor, avoiding downgraded VM perfo=
-rmance.
-> >>
-> >> c) Avoid affecting creation of pageblock_order pages while hinting is =
-active. I think there are cases where "temporary pulling sub-pageblock page=
-s" can negatively affect creation of pageblock_order pages. Concurrent comp=
-action would be one of these cases.
-> >>
-> >> The monstrosity called aarch64 64k is really special in that sense, be=
-cause a) does not apply because pageblocks are just very big, b) does somet=
-imes not apply because either our VM isn't backed by (rare) 512MB THP or us=
-es 4k with 2MB THP and c) similarly doesn't apply in smallish VMs because w=
-e don't really happen to create 512MB THP either way.
-> >>
-> >>
-> >> For example, going on x86-64 from reporting 2MB to something like 32KB=
- is absolutely undesired.
-> >>
-> >> I think if we want to go down that path (and I am not 100% sure yet if=
- we want to), we really want to treat only the special case in a special wa=
-y. Note that even when doing it only for aarch64 with 64k, you will still e=
-nd up splitting THP in a hypervisor if it uses 64k base pages (b)) and can =
-affect creation of THP, for example, when compacting (c), so there is a neg=
-ative side to that.
-> >>
-> >
-> > [Remove Alexander from the cc list as his mail isn't reachable]
-> >
->
-> [adding his gmail address which should be the right one]
->
-> > David, thanks for your time to review and sorry for the delay and late =
-response.
-> > I spent some time to get myself familiar with the code, but there are s=
-till some
-> > questions to me, explained as below.
-> >
-> > Yes, @pageblock_order is currently taken as page reporting threshold. I=
-t will
-> > incur more overhead if the threshold is decreased as you said in (a).
->
-> Right. Alex did quite some performance/overhead evaluation when
-> introducing this feature. Changing the reporting granularity on most
-> setups (esp., x86-64) is not desired IMHO.
+On Sun, 13 Jun 2021 12:41:38 +0300 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Yes, generally reporting pages comes at a fairly high cost so it is
-important to find the right trade-off between the size of the page and
-the size of the batch of pages being reported. If the size of the
-pages is reduced it maybe important to increase the batch size in
-order to avoid paying too much in the way of overhead.
+> On Sunday, June 13, 2021, Yury Norov <yury.norov@gmail.com> wrote:
+> 
+> > On Sun, Jun 13, 2021 at 12:47:31AM +0300, Andy Shevchenko wrote:
+> > > On Sat, Jun 12, 2021 at 3:39 PM Yury Norov <yury.norov@gmail.com> wrote:
+> > > >
+> > > > find_first{,_zero}_bit is a more effective analogue of 'next' version
+> > if
+> > > > start == 0. This patch replaces 'next' with 'first' where things look
+> > > > trivial.
+> > >
+> > > Depending on the maintainers (but I think there will be at least few
+> > > in this case) they would like to have this be split on a per-driver
+> > > basis.
+> > > I counted 17 patches. I would split.
+> > >
+> > > Since many of them are independent you may send without Cc'ing all
+> > > non-relevant people in each case.
+> >
+> > submitting-patches.rst says:
+> >
+> >         On the other hand, if you make a single change to numerous files,
+> >         group those changes into a single patch.  Thus a single logical
+> > change
+> >         is contained within a single patch.
+> >
+> > Also refer 96d4f267e40f9 ("Remove 'type' argument from access_ok()
+> > functioin.")
+> 
+> 
+> Mixing arch and non arch is not good, fs stuff can be separated as well,
+> so, at least 4 patches. Otherwise it might be not good for bissection /
+> reverting.
 
-The other main reason for holding to pageblock_order on x86 is to
-avoid THP splitting. Anything smaller than pageblock_order will
-trigger THP splitting which will significantly hurt the performance of
-the VM in general as it forces it down to order 0 pages.
+Actually I don't have a problem taking/merging splatterpatches like
+this one, as long as all relevant maintainers are cc'ed throughout. 
+
+If they review/test/ack then great.  If they don't then their stuff
+breaks during -rc and they get to fix it (this almost never happens
+anyway).
+
+If the splatterpatch is prepared as a series of patches then that's OK
+as well.  I'll queue them all up behind linux-next so I can see when
+maintainers have merged them and drop the individual patches as/when
+needed.
+
+On balance...  I guess individual patches is a bit better because the
+more diligent maintainers will sometimes merge them and get them better
+tested.  But in practice, 95% of maintainers will eyeball it, say "yeah
+fine" and let Andrew handle it.
+
