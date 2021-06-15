@@ -2,98 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9160D3A79E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F043A79E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhFOJQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:16:28 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:30212 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231171AbhFOJQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:16:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1623748459;
-  x=1655284459;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JZioGxoS30UGTMxh0YlC+V9a3psok5zllOcCyvoePeY=;
-  b=bDosFGD52rRmdKiAurai0dN+89401b5OFAQS93U3C34cmFW4RYDeyGAG
-   X6M+V8xRJ53lHwzjNjnAVS26AiD2mSecVFwXM+VV6wmeDmjHZzyot7XE/
-   tjfpUXLFkaH6p8y7MbCxrjjHZP1c01LAdjFlfYCrZs9n9JvLR+r/u2vKK
-   Trc37EXtYhG4whm3rCv09tXxMScqmGjN2UWTx2aPNlmi9hOL238Xc7BrA
-   L9FpxEqzaAOWjtOZagUSLaNDNai22ZJgiGSknk1Jfamld3TdK5rXuseyR
-   lihizVNXGrc5td1ia1CVelG5lIr8Iy6NozRDBrjXx32mJ5DjxiSHGEbG/
-   Q==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] tpm: Fix crash on tmprm release
-Date:   Tue, 15 Jun 2021 11:14:09 +0200
-Message-ID: <20210615091410.17007-2-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210615091410.17007-1-vincent.whitchurch@axis.com>
-References: <20210615091410.17007-1-vincent.whitchurch@axis.com>
+        id S231250AbhFOJQa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 05:16:30 -0400
+Received: from out28-123.mail.aliyun.com ([115.124.28.123]:50984 "EHLO
+        out28-123.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231209AbhFOJQY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 05:16:24 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07603748|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.166083-0.00128143-0.832635;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.KSYsb6a_1623748456;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KSYsb6a_1623748456)
+          by smtp.aliyun-inc.com(10.147.42.197);
+          Tue, 15 Jun 2021 17:14:17 +0800
+Date:   Tue, 15 Jun 2021 17:14:14 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Paul Cercueil <paul@opendingux.net>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, hminas@synopsys.com,
+        paul@crapouillou.net, linux-mips@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        sernia.zhou@foxmail.com,
+        Dragan =?UTF-8?B?xIxlxI1hdmFj?= <dragancecavac@yahoo.com>
+Subject: Re: [PATCH] USB: DWC2: Add VBUS overcurrent detection control.
+Message-ID: <20210615171414.2020ad9b@zhouyanjie-virtual-machine>
+In-Reply-To: <8BJQUQ.QJOE5WOSWVBU@opendingux.net>
+References: <1616513066-62025-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <YFoJ0Z6K4B5smbQx@kroah.com>
+        <20210615161456.2dd501a1@zhouyanjie-virtual-machine>
+        <8BJQUQ.QJOE5WOSWVBU@opendingux.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the tpm_tis module is removed (or a system shutdown is triggered)
-while the tpmrm device is use, the kernel crashes due to chip->ops being
-NULL:
+于 Tue, 15 Jun 2021 09:52:20 +0100
+Paul Cercueil <paul@opendingux.net> 写道:
 
- # exec 3<>/dev/tpmrm0
- # rmmod tpm_tis
- # exit
- ==================================================================
- BUG: KASAN: null-ptr-deref in tpm_chip_start+0x2d/0x120 [tpm]
- Read of size 8 at addr 0000000000000060 by task sh/994
+> Hi Zhou,
+> 
+> Le mar., juin 15 2021 at 16:16:39 +0800, 周琰杰 
+> <zhouyanjie@wanyeetech.com> a écrit :
+> > Hi Greg,
+> > 
+> > Sorry for taking so long to reply.
+> > 
+> > 于 Tue, 23 Mar 2021 16:31:29 +0100
+> > Greg KH <gregkh@linuxfoundation.org> 写道:
+> >   
+> >>  On Tue, Mar 23, 2021 at 11:24:26PM +0800, 周琰杰 (Zhou Yanjie) 
+> >> wrote:  
+> >>  > Introduce configurable option for enabling GOTGCTL register
+> >>  > bits VbvalidOvEn and VbvalidOvVal. Once selected it disables
+> >>  > VBUS overcurrent detection.
+> >>  >
+> >>  > This patch is derived from Dragan Čečavac (in the kernel 3.18
+> >>  > tree of CI20). It is very useful for the MIPS Creator CI20(r1).
+> >>  > Without this patch, CI20's OTG port has a great probability to
+> >>  > face overcurrent warning, which breaks the OTG functionality.
+> >>  >
+> >>  > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> >>  > Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
+> >>  > ---
+> >>  >  drivers/usb/dwc2/Kconfig | 6 ++++++
+> >>  >  drivers/usb/dwc2/core.c  | 9 +++++++++
+> >>  >  2 files changed, 15 insertions(+)
+> >>  >
+> >>  > diff --git a/drivers/usb/dwc2/Kconfig b/drivers/usb/dwc2/Kconfig
+> >>  > index c131719..e40d187 100644
+> >>  > --- a/drivers/usb/dwc2/Kconfig
+> >>  > +++ b/drivers/usb/dwc2/Kconfig
+> >>  > @@ -94,4 +94,10 @@ config USB_DWC2_DEBUG_PERIODIC
+> >>  >  	  non-periodic transfers, but of course the debug logs
+> >>  > will be incomplete. Note that this also disables some debug   
+> >> messages  
+> >>  >  	  for which the transfer type cannot be deduced.
+> >>  > +
+> >>  > +config USB_DWC2_DISABLE_VOD
+> >>  > +	bool "Disable VBUS overcurrent detection"
+> >>  > +	help
+> >>  > +	  Say Y here to switch off VBUS overcurrent detection.
+> >>  > It enables USB
+> >>  > +	  functionality blocked by overcurrent detection.  
+> >> 
+> >>  Why would this be a configuration option?  Shouldn't this be
+> >> dynamic and just work properly automatically?
+> >> 
+> >>  You should not have to do this on a build-time basis, it should be
+> >>  able to be detected and handled properly at run-time for all 
+> >> devices.
+> >>   
+> > 
+> > I consulted the original author Dragan Čečavac, he think since this 
+> > is
+> > a feature which disables overcurrent detection, so we are not sure
+> > if it could be harmful for some devices. Therefore he advise against
+> > enabling it in runtime, and in favor that user explicitely has to
+> > enable it.  
+> 
+> This could still be enabled at runtime, though, via a module
+> parameter. Leave it enabled by default, and those who want to disable
+> it can do it.
+> 
+> Also, overcurrent detection is just "detection", so enabling or 
+> disabling it won't change the fact that you can get overcurrent 
+> conditions, right?
 
- Call Trace:
-  kasan_report.cold.13+0x10f/0x111
-  tpm_chip_start+0x2d/0x120 [tpm]
-  tpm2_del_space+0x2c/0xa0 [tpm]
-  tpmrm_release+0x3f/0x50 [tpm]
-  __fput+0x110/0x3c0
-  task_work_run+0x94/0xd0
-  do_exit+0x683/0x13e0
-  do_group_exit+0x8b/0x140
-  do_syscall_64+0x3c/0x80
- ==================================================================
+emmm, the main problem now is that there is a phenomenon on CI20 r1
+(JZ4780) and CU1000 (X1000) that even if there is no overcurrent
+(nothing is connected), there is still a high probability (about every
+10 times it will be 6 to 7 times) an overcurrent warning appears (even
+when just finish detect the OTG driver during the kernel startup),
+which then causes the OTG function to not work normally before the
+system restarts.
 
-Fix this by making tpm2_del_space() use tpm_try_get_ops().  The latter
-already includes the calls to tpm_chip_start() and tpm_chip_stop().
+Thanks and best regards!
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/char/tpm/tpm2-space.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm2-space.c b/drivers/char/tpm/tpm2-space.c
-index 784b8b3cb903..e1111261021f 100644
---- a/drivers/char/tpm/tpm2-space.c
-+++ b/drivers/char/tpm/tpm2-space.c
-@@ -58,12 +58,10 @@ int tpm2_init_space(struct tpm_space *space, unsigned int buf_size)
- 
- void tpm2_del_space(struct tpm_chip *chip, struct tpm_space *space)
- {
--	mutex_lock(&chip->tpm_mutex);
--	if (!tpm_chip_start(chip)) {
-+	if (!tpm_try_get_ops(chip)) {
- 		tpm2_flush_sessions(chip, space);
--		tpm_chip_stop(chip);
-+		tpm_put_ops(chip);
- 	}
--	mutex_unlock(&chip->tpm_mutex);
- 	kfree(space->context_buf);
- 	kfree(space->session_buf);
- }
--- 
-2.28.0
+> 
+> -Paul
+> 
+> >>  If you know this is needed for a specific type of device, detect
+> >> it and make the change then, otherwise this could break working 
+> >> systems,
+> >>  right?  
+> > 
+> > According to the information provided by Dragan Čečavac, this 
+> > function
+> > (select whether to enable over-current detection through the otgctl
+> > register) don't seem to be available for all dwc2 controllers, so it
+> > might make sense to add MACH_INGENIC dependency to
+> > USB_DWC2_DISABLE_VOD, which could provide additional protection from
+> > unwanted usage.
+> > 
+> > Thanks and best regards!
+> >   
+> >> 
+> >>  thanks,
+> >> 
+> >>  greg k-h  
+> 
 
