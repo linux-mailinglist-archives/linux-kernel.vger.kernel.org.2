@@ -2,147 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9833A7F12
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBC73A7F17
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhFONVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:21:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:35084 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230374AbhFONVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:21:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97B2911D4;
-        Tue, 15 Jun 2021 06:19:08 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.9.115])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FADA3F719;
-        Tue, 15 Jun 2021 06:19:05 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 14:19:02 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, lkft-triage@lists.linaro.org,
-        regressions@lists.linux.dev,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
-Message-ID: <20210615131902.GB47121@C02TD0UTHF1T.local>
-References: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
- <20210615124745.GA47121@C02TD0UTHF1T.local>
+        id S231145AbhFONVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:21:47 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:45865 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFONVo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:21:44 -0400
+Received: by mail-ua1-f51.google.com with SMTP id v17so2258750uar.12;
+        Tue, 15 Jun 2021 06:19:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hwbhacSscetqLBTLgthyShGc1NVfqwfpItyjtKy47b4=;
+        b=oB7/cUqeCoPjlotpzegS64bEK2g0W7gdwGbGoj7JLqZsNokxIJ/HajGH4iEPq2OuYj
+         uifeei4qCiFD0NJMoPUyHjgEXUUUafTNZ+JkO6FmfC1vnEwkxBOnDolf8PfH7bSjl7+c
+         J2UyYSiOvVxXhv0KgQAOPHpk6SqtucmOw5EG7oR6YJm3bVTKhYoIEmXim0fSoB9q6B/o
+         cnp75a7F7vHz5oQEyFlWdLTf0VqRy9/ulvkCR+wF9cCgl4G1k8TYAotybtjjVYOD1lLW
+         W6+v1U2XhUUQxCKm4do0Z1xhCrvBlyOb9uU9mJNG0YNlhmg5403lJgjmOL2AUwIJqDOv
+         eM+g==
+X-Gm-Message-State: AOAM531onW6xBrWHRP3rcwO/yTKAjDXTc5qH4rrHtGegYejzAmU5Vn3m
+        SdLhvmxQSrgsh0rF4gc1oTT0sQOdvUm526PqBjU=
+X-Google-Smtp-Source: ABdhPJzx0IHLF5Qs1kLRoM3ndyDSsmRQ/L3tZsFxSpTdBz/sGirmBpBGoDZABz+NRthYCP5Pg+lEcqqowARL4/piAq0=
+X-Received: by 2002:ab0:63d9:: with SMTP id i25mr17823298uap.106.1623763179009;
+ Tue, 15 Jun 2021 06:19:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615124745.GA47121@C02TD0UTHF1T.local>
+References: <20210419005539.22729-1-mick@ics.forth.gr> <20210419005539.22729-6-mick@ics.forth.gr>
+In-Reply-To: <20210419005539.22729-6-mick@ics.forth.gr>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Jun 2021 15:19:27 +0200
+Message-ID: <CAMuHMdW=23SPXwqcjD+30M_d0azdze2=ChZM-PF1brf9bCNtrA@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] RISC-V: Add crash kernel support
+To:     Nick Kossifidis <mick@ics.forth.gr>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 01:47:45PM +0100, Mark Rutland wrote:
-> On Tue, Jun 15, 2021 at 04:41:25PM +0530, Naresh Kamboju wrote:
-> > Following kernel crash reported while boot linux next 20210615 tag on qemu_arm64
-> > with allmodconfig build.
-> > 
-> > [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
-> > [    0.000000] Linux version 5.13.0-rc6-next-20210615
-> > (tuxmake@ac7978cddede) (aarch64-linux-gnu-gcc (Debian 11.1.0-1)
-> > 11.1.0, GNU ld (GNU Binutils for Debian) 2.36.50.20210601) #1 SMP
-> > PREEMPT Tue Jun 15 10:20:51 UTC 2021
-> > [    0.000000] Machine model: linux,dummy-virt
-> > [    0.000000] earlycon: pl11 at MMIO 0x0000000009000000 (options '')
-> > [    0.000000] printk: bootconsole [pl11] enabled
-> > [    0.000000] efi: UEFI not found.
-> > [    0.000000] NUMA: No NUMA configuration found
-> > [    0.000000] NUMA: Faking a node at [mem
-> > 0x0000000040000000-0x00000000bfffffff]
-> > [    0.000000] NUMA: NODE_DATA [mem 0xbfc00d40-0xbfc03fff]
-> > [    0.000000] ------------[ cut here ]------------
-> > [    0.000000] kernel BUG at arch/arm64/mm/physaddr.c:27!
-> > [    0.000000] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-> > [    0.000000] Modules linked in:
-> > [    0.000000] CPU: 0 PID: 0 Comm: swapper Tainted: G                T
-> > 5.13.0-rc6-next-20210615 #1 c150a8161d8ff395c5ae7ee0c3c8f22c3689fae4
-> > [    0.000000] Hardware name: linux,dummy-virt (DT)
-> > [    0.000000] pstate: 404000c5 (nZcv daIF +PAN -UAO -TCO BTYPE=--)
-> > [    0.000000] pc : __phys_addr_symbol+0x44/0xc0
-> > [    0.000000] lr : __phys_addr_symbol+0x44/0xc0
-> > [    0.000000] sp : ffff800014287b00
-> > [    0.000000] x29: ffff800014287b00 x28: fc49a9b89db36f0a x27: ffffffffffffffff
-> > [    0.000000] x26: 0000000000000280 x25: 0000000000000010 x24: ffff8000145a8000
-> > [    0.000000] x23: 0000000008000000 x22: 0000000000000010 x21: 0000000000000000
-> > [    0.000000] x20: ffff800010000000 x19: ffff00007fc00d40 x18: 0000000000000000
-> > [    0.000000] x17: 00000000003ee000 x16: 00000000bfc12000 x15: 0000001000000000
-> > [    0.000000] x14: 000000000000de8c x13: 0000001000000000 x12: 00000000f1f1f1f1
-> > [    0.000000] x11: dfff800000000000 x10: ffff700002850eea x9 : 0000000000000000
-> > [    0.000000] x8 : ffff00007fbe0d40 x7 : 0000000000000000 x6 : 000000000000003f
-> > [    0.000000] x5 : 0000000000000040 x4 : 0000000000000005 x3 : ffff8000142bb0c0
-> > [    0.000000] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
-> > [    0.000000] Call trace:
-> > [    0.000000]  __phys_addr_symbol+0x44/0xc0
-> > [    0.000000]  sparse_init_nid+0x98/0x6d0
-> 
-> From the looks of it, this is pgdat_to_phys, as introduced in next
-> commit:
-> 
->   e1db6ef7336d817c ("mm/sparse: fix check_usemap_section_nr warnings")
-> 
-> It appears thta allmodconfig doesn't have CONFIG_NEED_MULTIPLE_NODES=y,
-> but does have CONFIG_NUMA=y, and so *does* use the dynamically-allocated
-> node_data array (since contig_page_data is only defined for !NUMA).
-> 
-> I don't think that commit is correct.
+Hi Nick,
 
-Looking some more, it looks like that's correct in isolation, but it
-clashes with commit:
+CC rob, dt
 
-  5831eedad2ac6f38 ("mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA")
+Thanks for your patch, which is now commit 5640975003d0234d ("RISC-V:
+Add crash kernel support") in v5.13-rc1.
 
-... and I reckon it'd be clearer and more robust to define
-pgdat_to_phys() in the same ifdefs as contig_page_data so that
-these, stay in-sync. e.g. have:
+On Mon, Apr 19, 2021 at 2:56 AM Nick Kossifidis <mick@ics.forth.gr> wrote:
+> This patch allows Linux to act as a crash kernel for use with
+> kdump. Userspace will let the crash kernel know about the
+> memory region it can use through linux,usable-memory property
+> on the /memory node (overriding its reg property), and about the
+> memory region where the elf core header of the previous kernel
+> is saved, through a reserved-memory node with a compatible string
+> of "linux,elfcorehdr". This approach is the least invasive and
+> re-uses functionality already present.
 
-| #ifdef CONFIG_NUMA
-| #define pgdat_to_phys(x)	virt_to_phys(x)
-| #else /* CONFIG_NUMA */
-| 
-| extern struct pglist_data contig_page_data;
-| ...
-| #define pgdat_to_phys(x)	__pa_symbol(&contig_page_data)
-|
-| #endif /* CONIFIG_NUMA */
+This does not match
+https://github.com/devicetree-org/dt-schema/blob/master/schemas/chosen.yaml#L77:
 
-... which'd also make clear that contig_page_data is the *only* expected
-pglist_data.
+    $ref: types.yaml#/definitions/uint64-array
+    maxItems: 2
+    description:
+      This property (currently used only on arm64) holds the memory range,
+      the address and the size, of the elf core header which mainly describes
+      the panicked kernel\'s memory layout as PT_LOAD segments of elf format.
 
-Thanks,
-Mark.
+Hence "linux,elfcorehdr" should be a property of the /chosen node,
+instead of a memory node with a compatible value of "linux,elfcorehdr".
 
-> Thanks,
-> Mark.
-> 
-> > [    0.000000]  sparse_init+0x460/0x4d4
-> > [    0.000000]  bootmem_init+0x110/0x340
-> > [    0.000000]  setup_arch+0x1b8/0x2e0
-> > [    0.000000]  start_kernel+0x110/0x870
-> > [    0.000000]  __primary_switched+0xa8/0xb0
-> > [    0.000000] Code: 940ccf23 eb13029f 54000069 940cce60 (d4210000)
-> > [    0.000000] random: get_random_bytes called from
-> > oops_exit+0x54/0xc0 with crng_init=0
-> > [    0.000000] ---[ end trace 0000000000000000 ]---
-> > [    0.000000] Kernel panic - not syncing: Oops - BUG: Fatal exception
-> > [    0.000000] ---[ end Kernel panic - not syncing: Oops - BUG: Fatal
-> > exception ]---
-> > 
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > 
-> > --
-> > Linaro LKFT
-> > https://lkft.linaro.org
+> I tested this on riscv64 qemu and it works as expected, you
+> may test it by retrieving the dmesg of the previous kernel
+> through /proc/vmcore, using the vmcore-dmesg utility from
+> kexec-tools.
+>
+> v4:
+>  * Rebase on top of "fixes" branch
+>
+> v3:
+>  * Rebase
+>
+> v2:
+>  * Use linux,usable-memory on /memory instead of a new binding
+
+This part seems to have been removed in v3 and later?
+Note that "linux,usable-memory-range" should be a property of the
+/chosen node, too, cfr.
+https://github.com/devicetree-org/dt-schema/blob/master/schemas/chosen.yaml#L85
+
+>  * Use a reserved-memory node for ELF core header
+>
+> Signed-off-by: Nick Kossifidis <mick@ics.forth.gr>
+
+
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -653,6 +666,26 @@ static void __init reserve_crashkernel(void)
+>  }
+>  #endif /* CONFIG_KEXEC_CORE */
+>
+> +#ifdef CONFIG_CRASH_DUMP
+> +/*
+> + * We keep track of the ELF core header of the crashed
+> + * kernel with a reserved-memory region with compatible
+> + * string "linux,elfcorehdr". Here we register a callback
+> + * to populate elfcorehdr_addr/size when this region is
+> + * present. Note that this region will be marked as
+> + * reserved once we call early_init_fdt_scan_reserved_mem()
+> + * later on.
+> + */
+> +static int elfcore_hdr_setup(struct reserved_mem *rmem)
+> +{
+> +       elfcorehdr_addr = rmem->base;
+> +       elfcorehdr_size = rmem->size;
+> +       return 0;
+> +}
+> +
+> +RESERVEDMEM_OF_DECLARE(elfcorehdr, "linux,elfcorehdr", elfcore_hdr_setup);
+> +#endif
+> +
+>  void __init paging_init(void)
+>  {
+>         setup_vm_final();
+> --
+> 2.26.2
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
