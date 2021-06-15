@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FC43A7778
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71433A7777
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhFOHC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:02:27 -0400
-Received: from m12-13.163.com ([220.181.12.13]:46556 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhFOHCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:02:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=0d+6Q
-        DjQqm2k4gejTiAFSIHmhOWpq1SXRcL3sEt28mY=; b=SpIBUvU/4WSAc5AD0CZg+
-        a/n83z3nMPeZYqrW2YTqLZdpPmU0CGldrfLxB+2wzJIrc5R2QDXNbKE8wcwM1PAy
-        4icsvKKjHCzbexKWWNYlodCMzYcaePw3686eHZ69zwdDGQo8doroWRpr6OUnY3QL
-        W/147Ap8qJAmJbUEPMeWOw=
-Received: from localhost.localdomain (unknown [218.17.89.111])
-        by smtp9 (Coremail) with SMTP id DcCowAAXK6ziT8hgk2j+GQ--.4532S2;
-        Tue, 15 Jun 2021 14:59:52 +0800 (CST)
-From:   ChunyouTang <tangchunyou@163.com>
-To:     robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        tangchunyou <tangchunyou@163.icubecorp.cn>
-Subject: [PATCH 2/2] drm/panfrost:report the full raw fault information instead
-Date:   Tue, 15 Jun 2021 14:59:36 +0800
-Message-Id: <20210615065936.897-1-tangchunyou@163.com>
-X-Mailer: git-send-email 2.30.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowAAXK6ziT8hgk2j+GQ--.4532S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw15XrWrZFy3Kry3Cw17Wrg_yoWfZwc_u3
-        W7ZrnxXrsIyFn0kwsayan7urySvryUZw40yw1xGr9Fk3W5A3sFg3s2vrs8Zr18Ww45ZF1D
-        tanFqF1Fyry7KjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5QzV5UUUUU==
-X-Originating-IP: [218.17.89.111]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiHgiyUVSIvNiP8gAAsw
+        id S230096AbhFOHCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:02:20 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:48133 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229488AbhFOHCL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:02:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UcURDlO_1623740392;
+Received: from localhost(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0UcURDlO_1623740392)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 15 Jun 2021 15:00:06 +0800
+From:   Hui Zhu <teawater@gmail.com>
+To:     david@redhat.com, mst@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Hui Zhu <teawaterz@linux.alibaba.com>
+Subject: [RFC] virtio-mem: virtio_mem_init: Access bb_size just in BBM mode
+Date:   Tue, 15 Jun 2021 14:59:48 +0800
+Message-Id: <20210615065948.23493-1-teawater@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: tangchunyou <tangchunyou@163.icubecorp.cn>
+From: Hui Zhu <teawaterz@linux.alibaba.com>
 
-of the low 8 bits.
+/* In BBM, we also want at least two big blocks. */
+vm->offline_threshold = max_t(uint64_t, 2 * vm->bbm.bb_size,
+			      vm->offline_threshold);
+This line does not modify vm->offline_threshold depending on the data in
+vm->sbm that shares this address is 0 in SBM mode.
+I think it might be difficult to make sure when we change this in the
+future.
 
-Signed-off-by: tangchunyou <tangchunyou@163.icubecorp.cn>
+This commit adds an if to make sure that this line just be executed in
+BBM mode.
+
+Signed-off-by: Hui Zhu <teawaterz@linux.alibaba.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/virtio/virtio_mem.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-index 1fffb6a0b24f..d2d287bbf4e7 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-@@ -33,7 +33,7 @@ static irqreturn_t panfrost_gpu_irq_handler(int irq, void *data)
- 		address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO);
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 10ec60d..8185916 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -2472,8 +2472,9 @@ static int virtio_mem_init(struct virtio_mem *vm)
+ 	vm->offline_threshold = max_t(uint64_t, 2 * memory_block_size_bytes(),
+ 				      VIRTIO_MEM_DEFAULT_OFFLINE_THRESHOLD);
+ 	/* In BBM, we also want at least two big blocks. */
+-	vm->offline_threshold = max_t(uint64_t, 2 * vm->bbm.bb_size,
+-				      vm->offline_threshold);
++	if (!vm->in_sbm)
++		vm->offline_threshold = max_t(uint64_t, 2 * vm->bbm.bb_size,
++					      vm->offline_threshold);
  
- 		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
--			 fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status & 0xFF),
-+			 fault_status, panfrost_exception_name(pfdev, fault_status & 0xFF),
- 			 address);
- 
- 		if (state & GPU_IRQ_MULTIPLE_FAULT)
+ 	dev_info(&vm->vdev->dev, "start address: 0x%llx", vm->addr);
+ 	dev_info(&vm->vdev->dev, "region size: 0x%llx", vm->region_size);
 -- 
-2.25.1
-
+1.8.3.1
 
