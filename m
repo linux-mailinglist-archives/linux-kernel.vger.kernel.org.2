@@ -2,58 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA0C3A7AFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF563A7AC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhFOJql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58170 "EHLO mail.kernel.org"
+        id S231537AbhFOJij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:38:39 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:56350 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230519AbhFOJql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:46:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D562613ED;
-        Tue, 15 Jun 2021 09:44:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623750276;
-        bh=vx6hr4RNu4Z2Nf2Z3lL6itYQPkp8P7oEiUd8XdLIBBo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2r8nL1/tNgnQUEZ6/vLjLAGZnkMEJHTuF6PgVvJqbG36yINLCS0PBdf1xddCC3Zah
-         tvYvMZ+Fl1338n9QDH22+kIFng7dMyH9veFfBuI6bVYzJH6uPhEyVNNnHEvQb4MLKc
-         EcsM0t20vJ8m+rYMkULSDYZODfENAFPPMssoEJXw=
-Date:   Tue, 15 Jun 2021 11:44:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Moritz Fischer <mdf@kernel.org>, maz@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>
-Subject: Re: [PATCH] usb: renesas-xhci: Fix handling of unknown ROM state
-Message-ID: <YMh2gnQl9c93mlu+@kroah.com>
-References: <20210615022514.245274-1-mdf@kernel.org>
- <YMhTddYjJwDcNau/@kroah.com>
- <YMhcV39CtSx0F45o@vkoul-mobl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMhcV39CtSx0F45o@vkoul-mobl>
+        id S231187AbhFOJii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 05:38:38 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7FF6B1A049D;
+        Tue, 15 Jun 2021 11:36:32 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 37EBC1A0466;
+        Tue, 15 Jun 2021 11:36:26 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AC0D040338;
+        Tue, 15 Jun 2021 17:36:17 +0800 (+08)
+From:   Yangbo Lu <yangbo.lu@nxp.com>
+To:     netdev@vger.kernel.org
+Cc:     Yangbo Lu <yangbo.lu@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
+        Sebastien Laveze <sebastien.laveze@nxp.com>
+Subject: [net-next, v3, 00/10] ptp: support virtual clocks and timestamping
+Date:   Tue, 15 Jun 2021 17:45:07 +0800
+Message-Id: <20210615094517.48752-1-yangbo.lu@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 01:22:55PM +0530, Vinod Koul wrote:
-> On 15-06-21, 09:15, Greg KH wrote:
-> > On Mon, Jun 14, 2021 at 07:25:14PM -0700, Moritz Fischer wrote:
-> > > If the ROM status returned is unknown (RENESAS_ROM_STATUS_NO_RESULT)
-> > > we need to attempt loading the firmware rather than just skipping
-> > > it all together.
-> > 
-> > How can this happen?  Can you provide more information here?
-> 
-> Sometimes ROM load seems to return unknown status, this helps in those
-> cases by doing attempting RAM load. The status should be success of
-> fail, here it is neither :(
+Current PTP driver exposes one PTP device to user which binds network
+interface/interfaces to provide timestamping. Actually we have a way
+utilizing timecounter/cyclecounter to virtualize any number of PTP
+clocks based on a same free running physical clock for using.
+The purpose of having multiple PTP virtual clocks is for user space
+to directly/easily use them for multiple domains synchronization.
 
-Then this needs to be added to the changelog text please.
+user
+space:     ^                                  ^
+           | SO_TIMESTAMPING new flag:        | Packets with
+           | SOF_TIMESTAMPING_BIND_PHC        | TX/RX HW timestamps
+           v                                  v
+         +--------------------------------------------+
+sock:    |     sock (new member sk_bind_phc)          |
+         +--------------------------------------------+
+           ^                                  ^
+           | ethtool_op_get_phc_vclocks       | Convert HW timestamps
+           |                                  | to sk_bind_phc
+           v                                  v
+         +--------------+--------------+--------------+
+vclock:  | ptp1         | ptp2         | ptpN         |
+         +--------------+--------------+--------------+
+pclock:  |             ptp0 free running              |
+         +--------------------------------------------+
 
-thanks,
+The block diagram may explain how it works. Besides the PTP virtual
+clocks, the packet HW timestamp converting to the bound PHC is also
+done in sock driver. For user space, PTP virtual clocks can be
+created via sysfs, and extended SO_TIMESTAMPING API (new flag
+SOF_TIMESTAMPING_BIND_PHC) can be used to bind one PTP virtual clock
+for timestamping.
 
-greg k-h
+The test tool timestamping.c (together with linuxptp phc_ctl tool) can
+be used to verify:
+
+  # echo 4 > /sys/class/ptp/ptp0/n_vclocks
+  [  129.399472] ptp ptp0: new virtual clock ptp2
+  [  129.404234] ptp ptp0: new virtual clock ptp3
+  [  129.409532] ptp ptp0: new virtual clock ptp4
+  [  129.413942] ptp ptp0: new virtual clock ptp5
+  [  129.418257] ptp ptp0: guarantee physical clock free running
+  #
+  # phc_ctl /dev/ptp2 set 10000
+  # phc_ctl /dev/ptp3 set 20000
+  #
+  # timestamping eno0 2 SOF_TIMESTAMPING_TX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 2 SOF_TIMESTAMPING_RX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 3 SOF_TIMESTAMPING_TX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 3 SOF_TIMESTAMPING_RX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+
+Changes for v2:
+	- Converted to num_vclocks for creating virtual clocks.
+	- Guranteed physical clock free running when using virtual
+	  clocks.
+	- Fixed build warning.
+	- Updated copyright.
+Changes for v3:
+	- Supported PTP virtual clock in default in PTP driver.
+	- Protected concurrency of ptp->num_vclocks accessing.
+	- Supported PHC vclocks query via ethtool.
+	- Extended SO_TIMESTAMPING API for PHC binding.
+	- Converted HW timestamps to PHC bound, instead of previous
+	  binding domain value to PHC idea.
+	- Other minor fixes.
+
+Yangbo Lu (10):
+  ptp: add ptp virtual clock driver framework
+  ptp: support ptp physical/virtual clocks conversion
+  ptp: track available ptp vclocks information
+  ptp: add kernel API ptp_get_vclocks_index()
+  ethtool: add a new command for getting PHC virtual clocks
+  ptp: add kernel API ptp_convert_timestamp()
+  net: sock: extend SO_TIMESTAMPING for PHC binding
+  net: socket: support hardware timestamp conversion to PHC bound
+  selftests/net: timestamping: support binding PHC
+  MAINTAINERS: add entry for PTP virtual clock driver
+
+ Documentation/ABI/testing/sysfs-ptp        |  13 ++
+ MAINTAINERS                                |   7 +
+ drivers/ptp/Makefile                       |   2 +-
+ drivers/ptp/ptp_clock.c                    |  27 ++-
+ drivers/ptp/ptp_private.h                  |  34 ++++
+ drivers/ptp/ptp_sysfs.c                    |  95 +++++++++
+ drivers/ptp/ptp_vclock.c                   | 212 +++++++++++++++++++++
+ include/linux/ethtool.h                    |   2 +
+ include/linux/ptp_clock_kernel.h           |  29 ++-
+ include/net/sock.h                         |   8 +-
+ include/uapi/linux/ethtool.h               |  14 ++
+ include/uapi/linux/ethtool_netlink.h       |  15 ++
+ include/uapi/linux/net_tstamp.h            |  17 +-
+ include/uapi/linux/ptp_clock.h             |   5 +
+ net/core/sock.c                            |  65 ++++++-
+ net/ethtool/Makefile                       |   2 +-
+ net/ethtool/common.c                       |  24 +++
+ net/ethtool/common.h                       |   2 +
+ net/ethtool/ioctl.c                        |  27 +++
+ net/ethtool/netlink.c                      |  10 +
+ net/ethtool/netlink.h                      |   2 +
+ net/ethtool/phc_vclocks.c                  |  86 +++++++++
+ net/mptcp/sockopt.c                        |  10 +-
+ net/socket.c                               |  19 +-
+ tools/testing/selftests/net/timestamping.c |  62 ++++--
+ 25 files changed, 750 insertions(+), 39 deletions(-)
+ create mode 100644 drivers/ptp/ptp_vclock.c
+ create mode 100644 net/ethtool/phc_vclocks.c
+
+
+base-commit: 89212e160b81e778f829b89743570665810e3b13
+-- 
+2.25.1
+
