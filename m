@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126FD3A81A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356E33A819F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhFOODR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhFOODP (ORCPT
+        id S230380AbhFOOCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:02:08 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4922 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhFOOCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:03:15 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8B8C061574;
-        Tue, 15 Jun 2021 07:01:09 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id gt18so4272195ejc.11;
-        Tue, 15 Jun 2021 07:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JsgNJW5wIP1wTY7QeUlV4IUxG5/Fna3sXYQD6HqLWoE=;
-        b=UH54iboglCqZMsyMxaNx1cykI8qEc0gVz47KT1RhFpE0pCCL6YoqjQckTNNTXQdDs2
-         Abds+du6hJAjYTyqllnZa7Ou8d+TzUS3xf4axeT1oe9slGnxUOpPf9kS6Q9LimkxgWYI
-         AC4WcTvLlM1pUxaGjTj7cen+PMrAXt4k4aEWhxsiVDa78FIeNfom1KUm8c3z0ywgyvSd
-         XlKYSkikqbaCwRiLmKkFnrG8MfHejTpUkm7H5vD+23fLHhQFYQok75cB19CEaJzpjUWA
-         SLaY5JLnDOXej3FXartZTjG61DJKHcm+DMbatHy5ZuiM23E09AWr1fjy9yfKbfFEayI4
-         HKpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JsgNJW5wIP1wTY7QeUlV4IUxG5/Fna3sXYQD6HqLWoE=;
-        b=Yn6oow986U4IIDWXGfcYHyW9v5SPj6ODglHSi4Vd9M1Lm06daH/nmw7JhkPGNG5cHl
-         u0ALqAVQgaI9s0X25iK1fGD2Y58vH6qTUMhanR4kvB+qWqgDs7KCmGjaY4FQR2MQymRv
-         E45gOo98jb0Nm/ZhfgOFy+ux/dFvJmTgBYMNsFR4VY79zU5u1kAgzl9Gbh677YJuIS8u
-         45yjLzfjOun4XI6MZXiF9s6TpE7IF376R+KNuNo4a9kbSeHtWRjW5QzOAzOm3bhSeKlZ
-         gknnICqwwSO6rkNftXbdZ0+Tq+CvFTb7MkyqbmcBml0H8yvjgGHVYP1m2OCNmEryhOr7
-         Z0Zw==
-X-Gm-Message-State: AOAM531S6NCuaBS6U0kxTrg5f2Sj16C44uC0RDL8PHa3fvioLMdubyX3
-        0XJ+xCqjrmJL8Dj87uiq+EE=
-X-Google-Smtp-Source: ABdhPJxvfsmJPHywGAB0aAnPn2QYmgFyJLTx9cz4bFNoJLzejT3gfx3slPC8yum+K4Y/NzmFFKyVfA==
-X-Received: by 2002:a17:906:dbc4:: with SMTP id yc4mr2556302ejb.119.1623765668368;
-        Tue, 15 Jun 2021 07:01:08 -0700 (PDT)
-Received: from skbuf ([188.26.224.68])
-        by smtp.gmail.com with ESMTPSA id z7sm10046836ejm.122.2021.06.15.07.01.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 07:01:08 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 17:01:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next][V2] net: pcs: xpcs: Fix a less than zero u16
- comparison error
-Message-ID: <20210615140106.4qqygvptmx4yctwb@skbuf>
-References: <20210615135253.59159-1-colin.king@canonical.com>
+        Tue, 15 Jun 2021 10:02:05 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G48xs0H3gz706r;
+        Tue, 15 Jun 2021 21:56:49 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 21:59:58 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
+ 2021 21:59:57 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <viro@zeniv.linux.org.uk>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>, "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH] poll: mark racy accesses on pwq->triggered
+Date:   Tue, 15 Jun 2021 22:08:57 +0800
+Message-ID: <20210615140857.3804405-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615135253.59159-1-colin.king@canonical.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 02:52:53PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the check for the u16 variable val being less than zero is
-> always false because val is unsigned. Fix this by using the int
-> variable for the assignment and less than zero check.
-> 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: f7380bba42fd ("net: pcs: xpcs: add support for NXP SJA1110")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-> V2: Fix typo in subject and align the following 2 lines after the 
->     val = ret & ... assignment.  Thanks to Vladimir Oltean for spotting
->     these.
-> ---
+Fix data races to pwq->triggered by using READ_ONCE and WRITE_ONCE.
+These accesses are expected to be racy per comment.
 
-Thanks.
+Original KCSAN report:
+==================================================================
+BUG: KCSAN: data-race in do_sys_poll / pollwake
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+write to 0xffffc90000883c70 of 4 bytes by task 9351 on cpu 1:
+ __pollwake fs/select.c:197 [inline]
+ pollwake+0xa7/0xf0 fs/select.c:217
+ __wake_up_common+0xbc/0x130 kernel/sched/wait.c:93
+ __wake_up_common_lock kernel/sched/wait.c:123 [inline]
+ __wake_up_sync_key+0x83/0xc0 kernel/sched/wait.c:190
+ pipe_write+0x88b/0xd20 fs/pipe.c:580
+ call_write_iter include/linux/fs.h:1903 [inline]
+ new_sync_write fs/read_write.c:518 [inline]
+ vfs_write+0x6d2/0x7c0 fs/read_write.c:605
+ ksys_write+0xce/0x180 fs/read_write.c:658
+ __do_sys_write fs/read_write.c:670 [inline]
+ __se_sys_write fs/read_write.c:667 [inline]
+ __x64_sys_write+0x3e/0x50 fs/read_write.c:667
+ do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+read to 0xffffc90000883c70 of 4 bytes by task 9353 on cpu 3:
+ poll_schedule_timeout fs/select.c:242 [inline]
+ do_poll fs/select.c:961 [inline]
+ do_sys_poll+0x940/0xb80 fs/select.c:1011
+ __do_sys_poll fs/select.c:1069 [inline]
+ __se_sys_poll+0xce/0x1c0 fs/select.c:1057
+ __x64_sys_poll+0x3f/0x50 fs/select.c:1057
+ do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 3 PID: 9353 Comm: scp Not tainted 5.10.0-rc5-csan #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
+         BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+==================================================================
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 5f820f648c92a ("poll: allow f_op->poll to sleep")
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ fs/select.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/select.c b/fs/select.c
+index 945896d0ac9e..e71b4d1a2606 100644
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -194,7 +194,7 @@ static int __pollwake(wait_queue_entry_t *wait, unsigned mode, int sync, void *k
+ 	 * and is paired with smp_store_mb() in poll_schedule_timeout.
+ 	 */
+ 	smp_wmb();
+-	pwq->triggered = 1;
++	WRITE_ONCE(pwq->triggered, 1);
+ 
+ 	/*
+ 	 * Perform the default wake up operation using a dummy
+@@ -239,7 +239,7 @@ static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
+ 	int rc = -EINTR;
+ 
+ 	set_current_state(state);
+-	if (!pwq->triggered)
++	if (!READ_ONCE(pwq->triggered))
+ 		rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
+ 	__set_current_state(TASK_RUNNING);
+ 
+-- 
+2.31.1
+
