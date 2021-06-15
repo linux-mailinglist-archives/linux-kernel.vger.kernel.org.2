@@ -2,164 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943AC3A7562
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E77F3A7569
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 05:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbhFODuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 23:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhFODuk (ORCPT
+        id S231150AbhFODwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 23:52:22 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:10067 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhFODwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 23:50:40 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEDAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:48:35 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id f84so18567994ybg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 20:48:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yin680PxT32vvsFD3cgHVsiUYZwQgvezq1Xoe5O317c=;
-        b=Gtt8sv2KPRSl3UIUPDmkHcCj5XNL9oJgV5f0w/jrE0nVN+X7LEPbj9GYDUSZUOLt59
-         3+4MSm+kzX1CI1uGiVaMTwsYAjxaniKbGnZQBvQQOMCgjMcIrw7G40ZbTN8dxIyH2vTy
-         dKjtCe62Q/S9r2ydzl4PIPvj4jNGchg1hh5t2ix/VFXfOdANxJNieil5BlOsOVxZpVrs
-         AEthIhdk68OmQIK4voYsCn/fr+djO8sbdGu27V3Zh1eTSj0m0VNFDMbdYmK7lMVsSx9G
-         mlSdeWF4kfTvsg+SO1jRk9voBPSf8IFk2Otha7XhpL6LcpMnVUXbiFCqO22Ss8eqkv4l
-         Fl1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yin680PxT32vvsFD3cgHVsiUYZwQgvezq1Xoe5O317c=;
-        b=UzcJLwGPtoHtakkSQtmhEQoIqse1Nd/aQ5gtc0F/mCcolfdQB2UDvJ/tQNA0/FeTwP
-         kXReEDH5pIr66lNkM90GoS6iBZP6WslmWPqpv96udxRWjVxLYKvQNYHvW4+MTtnMx65v
-         GO+ObR8m0hRSq8EeMgJ5dwPI+ZIlsoIZEekCDDGMrYOXiZziWCQ/5OoVaDX4MIJ7izp6
-         2VYDMrFdDCJfpow9mfxFDKK2lrTgR/WWd4SIL9ncFaUHM7os+xziJedTlWIiEO+aKSXh
-         bU2PzR/pGOpfmhpCmJ9TV2XXfXg61/HzD4PwAVxKeuqYYvX/aquF8nMv/Pu3gTTz3cIH
-         OVrw==
-X-Gm-Message-State: AOAM532a2f3mWNhKvsm+FG+fDyjs2+Xo0KOdj2eDFsR3q40/r5u2Fl2j
-        fsP7sUR5sFmmfdf0Q1F+E8hR8DNTsQTOLVWxU0U=
-X-Google-Smtp-Source: ABdhPJw9ZI06p4bfDSpDF6e0BS6jWeKMJll3l4TO6xyULMQ8kEUfjDXChwtGw/ohDBpgxouXzBoBnVm+ngQlBvjB6Ek=
-X-Received: by 2002:a25:607:: with SMTP id 7mr3224929ybg.343.1623728915277;
- Mon, 14 Jun 2021 20:48:35 -0700 (PDT)
+        Mon, 14 Jun 2021 23:52:21 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G3vQd02WFzZf1J;
+        Tue, 15 Jun 2021 11:47:21 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 11:50:01 +0800
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 11:50:01 +0800
+Subject: Re: [PATCH -next] ACPI: sysfs: fix doc warnings in device_sysfs.c
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        "Yue Haibing" <yuehaibing@huawei.com>, <yangjihong1@huawei.com>,
+        yu kuai <yukuai3@huawei.com>
+References: <20210610113501.3439670-1-libaokun1@huawei.com>
+ <CAJZ5v0ivf6xN0pd4Ub6YuKCwDUpXLcEZywdT+JPKa=1qTOH-iA@mail.gmail.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <02304aec-c4d5-a9d8-ae8e-6803b6dee602@huawei.com>
+Date:   Tue, 15 Jun 2021 11:50:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <cover.1621516826.git.christophe.leroy@csgroup.eu> <d54c63dcac6d190e1cc0d2fe3259d6e621928cdf.1621516826.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <d54c63dcac6d190e1cc0d2fe3259d6e621928cdf.1621516826.git.christophe.leroy@csgroup.eu>
-From:   Jordan Niethe <jniethe5@gmail.com>
-Date:   Tue, 15 Jun 2021 13:48:23 +1000
-Message-ID: <CACzsE9qX3TT07QXBECdB4EJq70KGB0UPn3kfk3WfS-jTQgaAvQ@mail.gmail.com>
-Subject: Re: [PATCH v2 09/12] powerpc/inst: Refactor PPC32 and PPC64 versions
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJZ5v0ivf6xN0pd4Ub6YuKCwDUpXLcEZywdT+JPKa=1qTOH-iA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:50 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+
+在 2021/6/14 23:26, Rafael J. Wysocki 写道:
+> On Thu, Jun 10, 2021 at 1:25 PM Baokun Li <libaokun1@huawei.com> wrote:
+>> Fixes the following W=1 kernel build warning(s):
+>>
+>>   drivers/acpi/device_sysfs.c:278: warning: Function parameter or
+>>    member 'dev' not described in 'acpi_device_uevent_modalias'
+>>   drivers/acpi/device_sysfs.c:278: warning: Function parameter or
+>>    member 'env' not described in 'acpi_device_uevent_modalias'
+>>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+>>    member 'dev' not described in 'acpi_device_modalias'
+>>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+>>    member 'buf' not described in 'acpi_device_modalias'
+>>   drivers/acpi/device_sysfs.c:323: warning: Function parameter or
+>>    member 'size' not described in 'acpi_device_modalias'
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   drivers/acpi/device_sysfs.c | 7 +++++--
+>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+>> index fa2c1c93072c..3b08efa88ba5 100644
+>> --- a/drivers/acpi/device_sysfs.c
+>> +++ b/drivers/acpi/device_sysfs.c
+>> @@ -268,7 +268,8 @@ int __acpi_device_uevent_modalias(struct acpi_device *adev,
+>>
+>>   /**
+>>    * acpi_device_uevent_modalias - uevent modalias for ACPI-enumerated devices.
+>> - *
+>> + * @dev: Struct device.
+>> + * @env: Uevent kobject.
+> This doesn't appear to be accurate.
 >
-> ppc_inst() ppc_inst_prefixed() ppc_inst_swab() can easily
-> be made common to both PPC32 and PPC64.
+> @env doesn't point to a kobject.
+
+I didn't quite understand that variable.
+
+But I saw the same paramter in  'drivers/misc/mei/bus.c +1001' where has 
+comments.
+
+So I copied that comments here.
+
+
+  997 /**
+  998  * mei_cl_device_uevent - me client bus uevent handler
+  999  *
+1000  * @dev: device
+1001  * @env: uevent kobject
+1002  *
+1003  * Return: 0 on success -ENOMEM on when add_uevent_var fails
+1004  */
+1005 static int mei_cl_device_uevent(struct device *dev, struct 
+kobj_uevent_env *env)
+
+
+Thank you for your advice.
+
+I'm about to send a patch v2 with the changes suggested by you.
+
+Best Regards.
+
+
 >
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/include/asm/inst.h | 49 +++++++++------------------------
->  1 file changed, 13 insertions(+), 36 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/inst.h b/arch/powerpc/include/asm/inst.h
-> index 32d318c3b180..e009e94e90b2 100644
-> --- a/arch/powerpc/include/asm/inst.h
-> +++ b/arch/powerpc/include/asm/inst.h
-> @@ -60,9 +60,9 @@ static inline int ppc_inst_primary_opcode(struct ppc_inst x)
->         return ppc_inst_val(x) >> 26;
->  }
->
-> -#ifdef CONFIG_PPC64
->  #define ppc_inst(x) ((struct ppc_inst){ .val = (x) })
->
-> +#ifdef CONFIG_PPC64
->  #define ppc_inst_prefix(x, y) ((struct ppc_inst){ .val = (x), .suffix = (y) })
->
->  static inline u32 ppc_inst_suffix(struct ppc_inst x)
-> @@ -70,57 +70,34 @@ static inline u32 ppc_inst_suffix(struct ppc_inst x)
->         return x.suffix;
->  }
->
-> -static inline bool ppc_inst_prefixed(struct ppc_inst x)
-> -{
-> -       return ppc_inst_primary_opcode(x) == OP_PREFIX;
-> -}
-> +#else
-> +#define ppc_inst_prefix(x, y) ppc_inst(x)
->
-> -static inline struct ppc_inst ppc_inst_swab(struct ppc_inst x)
-> +static inline u32 ppc_inst_suffix(struct ppc_inst x)
->  {
-> -       return ppc_inst_prefix(swab32(ppc_inst_val(x)), swab32(ppc_inst_suffix(x)));
-> +       return 0;
->  }
->
-> +#endif /* CONFIG_PPC64 */
-> +
->  static inline struct ppc_inst ppc_inst_read(const unsigned int *ptr)
->  {
-> -       u32 val, suffix;
-> -
-> -       val = *ptr;
-> -       if ((val >> 26) == OP_PREFIX) {
-> -               suffix = *(ptr + 1);
-> -               return ppc_inst_prefix(val, suffix);
-> -       } else {
-> -               return ppc_inst(val);
-> -       }
-> +       if (IS_ENABLED(CONFIG_PPC64) && (*ptr >> 26) == OP_PREFIX)
-> +               return ppc_inst_prefix(*ptr, *(ptr + 1));
-> +       else
-> +               return ppc_inst(*ptr);
->  }
->
-> -#else
-> -
-> -#define ppc_inst(x) ((struct ppc_inst){ .val = x })
-> -
-> -#define ppc_inst_prefix(x, y) ppc_inst(x)
-> -
->  static inline bool ppc_inst_prefixed(struct ppc_inst x)
->  {
-> -       return false;
-> -}
-> -
-> -static inline u32 ppc_inst_suffix(struct ppc_inst x)
-> -{
-> -       return 0;
-> +       return IS_ENABLED(CONFIG_PPC64) && ppc_inst_primary_opcode(x) == OP_PREFIX;
->  }
->
->  static inline struct ppc_inst ppc_inst_swab(struct ppc_inst x)
->  {
-> -       return ppc_inst(swab32(ppc_inst_val(x)));
-> -}
-> -
-> -static inline struct ppc_inst ppc_inst_read(const unsigned int *ptr)
-> -{
-> -       return ppc_inst(*ptr);
-> +       return ppc_inst_prefix(swab32(ppc_inst_val(x)), swab32(ppc_inst_suffix(x)));
->  }
->
-> -#endif /* CONFIG_PPC64 */
-> -
->  static inline bool ppc_inst_equal(struct ppc_inst x, struct ppc_inst y)
->  {
->         if (ppc_inst_val(x) != ppc_inst_val(y))
-> --
-> 2.25.0
->
-Reviewed by: Jordan Niethe <jniethe5@gmail.com>
+>>    * Create the uevent modalias field for ACPI-enumerated devices.
+>>    *
+>>    * Because other buses do not support ACPI HIDs & CIDs, e.g. for a device with
+>> @@ -313,7 +314,9 @@ static int __acpi_device_modalias(struct acpi_device *adev, char *buf, int size)
+>>
+>>   /**
+>>    * acpi_device_modalias - modalias sysfs attribute for ACPI-enumerated devices.
+>> - *
+>> + * @dev: Struct device.
+>> + * @buf: The buffer.
+>> + * @size: Size of the buffer.
+>>    * Create the modalias sysfs attribute for ACPI-enumerated devices.
+>>    *
+>>    * Because other buses do not support ACPI HIDs & CIDs, e.g. for a device with
+>> --
+>> 2.31.1
+>>
+> .
