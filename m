@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3273A7E62
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0633A7E6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhFOMux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:50:53 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4787 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhFOMuw (ORCPT
+        id S230304AbhFOMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230079AbhFOMzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:50:52 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G47KY6PWYzXg87;
-        Tue, 15 Jun 2021 20:43:45 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 20:48:46 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
- 2021 20:48:45 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-imx@nxp.com>
-CC:     <shawnguo@kernel.org>
-Subject: [PATCH -next v2 2/2] ARM: imx: add missing clk_disable_unprepare()
-Date:   Tue, 15 Jun 2021 20:52:39 +0800
-Message-ID: <20210615125239.1348845-3-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210615125239.1348845-1-yangyingliang@huawei.com>
-References: <20210615125239.1348845-1-yangyingliang@huawei.com>
+        Tue, 15 Jun 2021 08:55:38 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F31C061574;
+        Tue, 15 Jun 2021 05:53:33 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id n17so24928042ljg.2;
+        Tue, 15 Jun 2021 05:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c1U1U7WWFRJoYARUYS6HMhPRMf1OckltvDZenHaEUBI=;
+        b=G5hxMwnpOqxfrrPp4VNLf7uX0aqO/REvGMvAtOtWaysvkawIYYgwBCyzcMrYjbNI3m
+         ZKbtl3knL+ybNayV31LMALfAuC1Gp0uBDHJ49NoUsnw4HBmt7a706lu+GU7WA6vtNixf
+         RFHme9msLJxWkZonHXR6s7ktZ9ozqZ5iCiRNUd0nLnt+W8RAm/3O27liRO0IjjaMUhMP
+         eJMU/wsGOB31sz9B0eV368lee2D6AA6uChoPweDDw1L26+KQuKwxwRa4IBJxKelChDan
+         hrMEuHoOAh9fevQmtVYsYgH3nOaMtMbwkgNflAgfW7blBuFBhCudNPndAHBg23I1NbxX
+         Ljcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c1U1U7WWFRJoYARUYS6HMhPRMf1OckltvDZenHaEUBI=;
+        b=UvbdIoj7Tq/kAiIHcoxnRrIxyfFuSOJoNn4ckRpg+M3+QkESv16EqIMYagY8G1Luq8
+         5hvXlbXnT2TE5UiQZqPaG4uavwUf+qgPNZyDbEbXVSiuDi575DijCOm+iJ/kMQDgG4PO
+         J9zNm5tNhz42Udi+5XxrNgfFS0M5r2QFGcRxMdCbPv6vFbdSBvKs2IR1IQFL+WoA9l14
+         EyoggP6gNuwim7iK/bjDpFG1qs2vwBcBGm2Yd0rakzXIyphsm0ZlXvvED/9jzWoSbtQv
+         JgrAnRDRgVBIeaj/Dlgt9DE7yafnsqjjz+3jGfOhA7/gZiMQj7BqjUjQNqJTCBpUvjpS
+         AQHw==
+X-Gm-Message-State: AOAM5335eoVEzy/iIGC8KYdLkWr13iJyEcPjehuuSzw61PrM7x6X8UCQ
+        N+wolFvrbL8Hj5uM5PL5feoJ2nDhvrw=
+X-Google-Smtp-Source: ABdhPJx8us4Tn3EhUsI/Mz/K68HDmv+iMde9y5SSqCztziOgqTF+/G0AnoBuEQERwnJ9yyY7kiAalg==
+X-Received: by 2002:a2e:580e:: with SMTP id m14mr17997013ljb.197.1623761611229;
+        Tue, 15 Jun 2021 05:53:31 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-31-25.dynamic.spd-mgts.ru. [94.29.31.25])
+        by smtp.googlemail.com with ESMTPSA id h4sm1807089lft.184.2021.06.15.05.53.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 05:53:30 -0700 (PDT)
+Subject: Re: [PATCH v1 03/10] ARM: tegra: acer-a500: Bump thermal trips by 10C
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210510202600.12156-1-digetx@gmail.com>
+ <20210510202600.12156-4-digetx@gmail.com>
+ <20210514211601.GA1969@qmqm.qmqm.pl>
+ <ecc89faf-97f5-65e9-0eb8-93c8414c69e5@linaro.org>
+ <eedb5792-d3a5-78b3-ec89-b26d2e45f9c4@gmail.com>
+ <c65a732d-b203-a1a0-e90b-0aa0664cfb55@linaro.org>
+ <e73b64b2-77a8-3671-1fc6-0bf77e2287c4@gmail.com>
+ <1abadc69-1dd1-5939-c089-37a84be4781b@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <60a280c3-e67f-ff3a-9f0e-7d12fc125c5b@gmail.com>
+Date:   Tue, 15 Jun 2021 15:53:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+In-Reply-To: <1abadc69-1dd1-5939-c089-37a84be4781b@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clock source is prepared and enabled by clk_prepare_enable()
-in probe function, but no disable or unprepare in remove and
-error path.
+13.06.2021 21:19, Daniel Lezcano пишет:
+> On 13/06/2021 02:25, Dmitry Osipenko wrote:
+> 
+> [ ... ]
+> 
+>>> You should set the trip points close to the functioning boundary
+>>> temperature given in the hardware specification whatever the resulting
+>>> heating effect is on the device.
+>>>
+>>> The thermal zone is there to protect the silicon and the system from a
+>>> wild reboot.
+>>>
+>>> If the Nexus 7 is too hot after the changes, then you may act on the
+>>> sources of the heat. For instance, set the the highest OPP to turbo or
+>>> remove it, or, if there is one, change the thermal daemon to reduce the
+>>> overall power consumption.
+>>> In case you are interested in: https://lwn.net/Articles/839318/
+>>
+>> The DTPM is a very interesting approach. For now Tegra still misses some
+>> basics in mainline kernel which have a higher priority, so I think it
+>> should be good enough to perform the in-kernel thermal management for
+>> the starter. We may consider a more complex solutions later on if will
+>> be necessary.
+>>
+>> What I'm currently thinking to do is:
+>>
+>> 1. Set up the trips of SoC/CPU core thermal zones in accordance to the
+>> silicon limits.
+>>
+>> 2. Set up the skin trips in accordance to the device limits.
+>>
+>> The breached skin trips will cause a mild throttling, while the SoC/CPU
+>> trips will be allowed to cause the severe throttling. Does this sound
+>> good to you?
+> 
+> The skin temperature must be managed from userspace. The kernel is
+> unable to do a smart thermal management given different thermal zones
+> but if the goal is to go forward and prevent the tablet to be hot
+> temporarily until the other hardware support is there, I think it is
+> acceptable.
 
-Fixes: 9454a0caff6a ("ARM: imx: add mmdc ipg clock operation for mmdc")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- arch/arm/mach-imx/mmdc.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
-index 8e57691aafe2..4a6f1359e1e9 100644
---- a/arch/arm/mach-imx/mmdc.c
-+++ b/arch/arm/mach-imx/mmdc.c
-@@ -103,6 +103,7 @@ struct mmdc_pmu {
- 	struct perf_event *mmdc_events[MMDC_NUM_COUNTERS];
- 	struct hlist_node node;
- 	struct fsl_mmdc_devtype_data *devtype_data;
-+	struct clk *mmdc_ipg_clk;
- };
- 
- /*
-@@ -463,11 +464,13 @@ static int imx_mmdc_remove(struct platform_device *pdev)
- 	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
- 	perf_pmu_unregister(&pmu_mmdc->pmu);
- 	iounmap(pmu_mmdc->mmdc_base);
-+	clk_disable_unprepare(pmu_mmdc->mmdc_ipg_clk);
- 	kfree(pmu_mmdc);
- 	return 0;
- }
- 
--static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_base)
-+static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_base,
-+			      struct clk *mmdc_ipg_clk)
- {
- 	struct mmdc_pmu *pmu_mmdc;
- 	char *name;
-@@ -495,6 +498,7 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
- 	}
- 
- 	mmdc_num = mmdc_pmu_init(pmu_mmdc, mmdc_base, &pdev->dev);
-+	pmu_mmdc->mmdc_ipg_clk = mmdc_ipg_clk;
- 	if (mmdc_num == 0)
- 		name = "mmdc";
- 	else
-@@ -568,9 +572,11 @@ static int imx_mmdc_probe(struct platform_device *pdev)
- 	val &= ~(1 << BP_MMDC_MAPSR_PSD);
- 	writel_relaxed(val, reg);
- 
--	err = imx_mmdc_perf_init(pdev, mmdc_base);
--	if (err)
-+	err = imx_mmdc_perf_init(pdev, mmdc_base, mmdc_ipg_clk);
-+	if (err) {
- 		iounmap(mmdc_base);
-+		clk_disable_unprepare(mmdc_ipg_clk);
-+	}
- 
- 	return err;
- }
--- 
-2.25.1
-
+The current goal is to get maximum from what we already have, thank you.
