@@ -2,195 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2D03A7E01
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26083A7E0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhFOMUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:20:18 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:33345 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhFOMUQ (ORCPT
+        id S230360AbhFOMU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhFOMUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:20:16 -0400
-Received: by mail-vs1-f45.google.com with SMTP id j8so4772614vsd.0;
-        Tue, 15 Jun 2021 05:18:11 -0700 (PDT)
+        Tue, 15 Jun 2021 08:20:54 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090B0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:18:50 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id v7so2530981pgl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:18:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=BjaJWmLI4zeDm18Vg5X74JWuITkJZC2dhqIVbVw40Co=;
+        b=j/uLtBYQmNFLEeBv/HfEFw2GHGYufZmNAl7p+p9LYgkj5b0yjrlz/Rh8hw4my0HoRK
+         2yGncAkgsWaBdqWOYsKW7+27cGfp1FZB+3X7Fa6soZRmAEx7L3xg0S8FKAmw4TAMaZEq
+         WuKMl47jery2ywBNb+yjIGqd4IMGxW73AG20rXr/ndBS16itLKrgw6lAAriXvUlk4TEq
+         xEAqOlba2FPvUHTp1Xe+hieGQLmORGQ2sRPVh/so+GK+i+yw0nEPwR1L2/B6nqz84gT0
+         hwAlXJSmT7OBkOhp6g35nPuqO4QZLW8nydUVjuPd+jZZzuu6jwyU1WzGOb4N9UIlM8Ke
+         98yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jrlwSWatHznx383NLiMm7Z2IuN1e5i6noGzyC8CFebk=;
-        b=JXgz3Hk+7sIEaidPVL0SjP1aAxZguujDNAUK4cz9GPtzwTgirq8WWB3HoXQhkSYGkB
-         QOd9ExbCf3xlkp/alTx6m9LayVnrDGHGP7L2aI8qPwTYtew+pjUCQRvBwKRR7xL1zfYa
-         1Wtj+oFR79fULkbH6/2E6ANthEXHa1a7oeG7D6esCAXgT0MbLjWOPDDVSfeRJTfKAq22
-         O/7DZIjIn/1luKveEk2JbOX4/O2YTg1NY+GvBApFTiYiO2oM9SOWjw8FqROIVFW7k/tH
-         73EsJW8PpaC88s6oAAcWPw/C0euP014L7eEZjMedipVBhIE2AGzKVtK3Ud1UrewlNoYl
-         0f5Q==
-X-Gm-Message-State: AOAM530ruPR+f+h2nkXM7AH1VpzbH9kXv46gJ8JtRkrWWNMng0IhbR+6
-        HvYvu7P4J1SD26nrRjnH0CVDZOL/18/qbNTBbLM=
-X-Google-Smtp-Source: ABdhPJyWLBtsARFbraykVxhSly+mYdsijjLf5u4llpgj1CcBtHFQinLCCrvpCrriX7X558sqTXYumrMOgaLjD7ZGGnM=
-X-Received: by 2002:a05:6102:2011:: with SMTP id p17mr4770704vsr.40.1623759490847;
- Tue, 15 Jun 2021 05:18:10 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=BjaJWmLI4zeDm18Vg5X74JWuITkJZC2dhqIVbVw40Co=;
+        b=Zrlk9ZPlbuJt9bcThrMnuq/RRtwErkJ2QZ2EhLe4uEqIzioPMTkJnJzdSW2Hn/mEQa
+         +uz75CVV8kDx468/xE9Gmw4RUmTQWkXIoHFM6jfJtfjmjTwT4WfNXtQDxtZVM4l0gr8b
+         N/pAA6xflWehY33/9/h2+YigRrp9Ob5hdN1dUUF/7f8U0JuNMc/60qJxpGeHI1yqLRy1
+         2uWh/XdYEL4xNokIdeC9/M3NTdyDxwnwX43tL1fnU2x4Kj5JkKJZhmAnQ9NOTjKdTBmy
+         jHzAil6CGVkdMeALmMo4cQyo5/7V7zwe2DvqhLc0mdsWS1nV/9pl4mKq5jJjJwQTPFEe
+         YOZA==
+X-Gm-Message-State: AOAM532vDaOhq8q/hohVQIA18bVJ9Aeqs97ikfDzwMYS7VFdzzeTIWUB
+        2pT58mtxfOXZZ3XqMY8mDsFVfXFLqVXkKCaCZfw=
+X-Google-Smtp-Source: ABdhPJyRSx07sFbvfeA2d/Q/xBu4zdRDo/vYc/54P1ZKR6B0IUqx2gdasrs1cJto8yLWDEaF+yK/B9tdHbaNhxuKZDo=
+X-Received: by 2002:aa7:8d4a:0:b029:2e8:df53:cbd6 with SMTP id
+ s10-20020aa78d4a0000b02902e8df53cbd6mr4152122pfe.13.1623759529448; Tue, 15
+ Jun 2021 05:18:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210221174930.27324-1-nramas@linux.microsoft.com> <20210221174930.27324-6-nramas@linux.microsoft.com>
-In-Reply-To: <20210221174930.27324-6-nramas@linux.microsoft.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Jun 2021 14:17:59 +0200
-Message-ID: <CAMuHMdVSuNS4edh-zM0_sbC0i1AAjQ9Y0n_8Mjz=3CALkW4pgg@mail.gmail.com>
-Subject: Re: [PATCH v19 05/13] of: Add a common kexec FDT setup function
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, dmitry.kasatkin@gmail.com,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Sender: kennethglayswiss@gmail.com
+Received: by 2002:a17:90a:1bc9:0:0:0:0 with HTTP; Tue, 15 Jun 2021 05:18:48
+ -0700 (PDT)
+From:   hauck man <hauckpristman@gmail.com>
+Date:   Tue, 15 Jun 2021 05:18:48 -0700
+X-Google-Sender-Auth: F8UGKQXzo38_B43pRy5YF_1k1qM
+Message-ID: <CAJjrk10aYazH--gmHdAsD+S1jXqrpHs_gmnY9NB7-nFa=6_Azw@mail.gmail.com>
+Subject: URGENT RESPONSE
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lakshmi and Rob,
-
-On Sun, Feb 21, 2021 at 6:52 PM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
-> From: Rob Herring <robh@kernel.org>
->
-> Both arm64 and powerpc do essentially the same FDT /chosen setup for
-> kexec.  The differences are either omissions that arm64 should have
-> or additional properties that will be ignored.  The setup code can be
-> combined and shared by both powerpc and arm64.
->
-> The differences relative to the arm64 version:
->  - If /chosen doesn't exist, it will be created (should never happen).
->  - Any old dtb and initrd reserved memory will be released.
->  - The new initrd and elfcorehdr are marked reserved.
->  - "linux,booted-from-kexec" is set.
->
-> The differences relative to the powerpc version:
->  - "kaslr-seed" and "rng-seed" may be set.
->  - "linux,elfcorehdr" is set.
->  - Any existing "linux,usable-memory-range" is removed.
->
-> Combine the code for setting up the /chosen node in the FDT and updating
-> the memory reservation for kexec, for powerpc and arm64, in
-> of_kexec_alloc_and_setup_fdt() and move it to "drivers/of/kexec.c".
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-
-> --- /dev/null
-> +++ b/drivers/of/kexec.c
-
-> +/*
-> + * of_kexec_alloc_and_setup_fdt - Alloc and setup a new Flattened Device Tree
-> + *
-> + * @image:             kexec image being loaded.
-> + * @initrd_load_addr:  Address where the next initrd will be loaded.
-> + * @initrd_len:                Size of the next initrd, or 0 if there will be none.
-> + * @cmdline:           Command line for the next kernel, or NULL if there will
-> + *                     be none.
-> + * @extra_fdt_size:    Additional size for the new FDT buffer.
-> + *
-> + * Return: fdt on success, or NULL errno on error.
-> + */
-> +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
-> +                                  unsigned long initrd_load_addr,
-> +                                  unsigned long initrd_len,
-> +                                  const char *cmdline, size_t extra_fdt_size)
-> +{
-
-> +       /* Did we boot using an initrd? */
-> +       prop = fdt_getprop(fdt, chosen_node, "linux,initrd-start", NULL);
-> +       if (prop) {
-> +               u64 tmp_start, tmp_end, tmp_size;
-> +
-> +               tmp_start = fdt64_to_cpu(*((const fdt64_t *) prop));
-> +
-> +               prop = fdt_getprop(fdt, chosen_node, "linux,initrd-end", NULL);
-> +               if (!prop) {
-> +                       ret = -EINVAL;
-> +                       goto out;
-> +               }
-> +
-> +               tmp_end = fdt64_to_cpu(*((const fdt64_t *) prop));
-
-Some kernel code assumes "linux,initrd-{start,end}" are 64-bit,
-other code assumes 32-bit.
-linux/Documentation/arm/uefi.rst says 64-bit,
-dt-schema/schemas/chosen.yaml says 32-bit.
-
-> +
-> +               /*
-> +                * kexec reserves exact initrd size, while firmware may
-> +                * reserve a multiple of PAGE_SIZE, so check for both.
-> +                */
-> +               tmp_size = tmp_end - tmp_start;
-> +               ret = fdt_find_and_del_mem_rsv(fdt, tmp_start, tmp_size);
-> +               if (ret == -ENOENT)
-> +                       ret = fdt_find_and_del_mem_rsv(fdt, tmp_start,
-> +                                                      round_up(tmp_size, PAGE_SIZE));
-> +               if (ret == -EINVAL)
-> +                       goto out;
-> +       }
-> +
-> +       /* add initrd-* */
-> +       if (initrd_load_addr) {
-> +               ret = fdt_setprop_u64(fdt, chosen_node, FDT_PROP_INITRD_START,
-> +                                     initrd_load_addr);
-> +               if (ret)
-> +                       goto out;
-> +
-> +               ret = fdt_setprop_u64(fdt, chosen_node, FDT_PROP_INITRD_END,
-> +                                     initrd_load_addr + initrd_len);
-> +               if (ret)
-> +                       goto out;
-> +
-> +               ret = fdt_add_mem_rsv(fdt, initrd_load_addr, initrd_len);
-> +               if (ret)
-> +                       goto out;
-> +
-> +       } else {
-> +               ret = fdt_delprop(fdt, chosen_node, FDT_PROP_INITRD_START);
-> +               if (ret && (ret != -FDT_ERR_NOTFOUND))
-> +                       goto out;
-> +
-> +               ret = fdt_delprop(fdt, chosen_node, FDT_PROP_INITRD_END);
-> +               if (ret && (ret != -FDT_ERR_NOTFOUND))
-> +                       goto out;
-> +       }
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Sir / Madam,
+
+Hi Friend I am the auditing director of the International Finance Bank
+Plc bf I want to transfer an abandoned sum of 10.5 millions USD  to
+your account.50% will be for you.
+No risk involved. Contact me for more details.
+Kindly reply me back to my alternative email address (hauckpristman@gmail.com)
+Thanks
+Mr Huck Pristman.
