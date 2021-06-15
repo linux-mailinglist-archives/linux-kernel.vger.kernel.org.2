@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E2B3A864D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD02F3A864A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFOQXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:23:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230064AbhFOQXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230218AbhFOQXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 15 Jun 2021 12:23:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DF9361444;
-        Tue, 15 Jun 2021 16:20:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623774055;
-        bh=A//FjPnGORFN1egULK4FZVmE0QZM3H3vbfVdYalLmUc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ek5PoI3owNGFiVWfrlGzFsEjl1OXF8eMSZ+XnTlXa38ATH+k0MpBoDeJEtVTmoDVw
-         f+U1pAJrJmD6FnwIlw8aLpiB4gHpus0Bs22Kryciz+ZNnzlPMRSrYkcHbhBoOYIRQt
-         XSV8kTfkd/pQJh055pq/uVe6klnKmElVuyEg0jDpvH8sGApcEo/6J2D4cXz5mCLXSR
-         tYKtjO3uuRc32MYCToKKPESeIC0jy0F8XR3oBWU6R4bP76U48C2Slng0tV0SrPNfBV
-         CoO/xMgyXKoeZGe/V1R2cs4HNoJqY1oIiDS28dpnib9twl5obhiChJweu9De62vCfV
-         epbXJ1KHRBqJQ==
-Received: by mail-ed1-f52.google.com with SMTP id s6so51898363edu.10;
-        Tue, 15 Jun 2021 09:20:55 -0700 (PDT)
-X-Gm-Message-State: AOAM532KEg/WOQlsJTaOvFZJ1LmTm9XPJ4yIeketLdpQTxJV6VEZ3Slp
-        RdUsxQcsOYwaqjbKhRHTZq/3aRk+c7UiurcdcQ==
-X-Google-Smtp-Source: ABdhPJyBoxVJH3xF/WxVEUjQE0taHKPI2RIQWJ9pzI7pv0ojHASmCzM2k5cttEz8Fq9s6n+PeW9P9ZdJDmC15Fiqz5k=
-X-Received: by 2002:a05:6402:1911:: with SMTP id e17mr347145edz.62.1623774054092;
- Tue, 15 Jun 2021 09:20:54 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27226 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229734AbhFOQW7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 12:22:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623774054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5YLb7ACF6OGDsiDttoNGN/jmPZF5LwN2Lq0fsg6CwmA=;
+        b=Qs3aJ88PkO0RPqXAO1YSgA1uKqwKZS94Y031QcN8YimbnRfeFvIlD1KrbTCz3Gy2xxj4Nj
+        VXlLnBJuHqTHlnsx/+HBPNmR9Mx0RtzGWdsj8SjtVDziplh7kGFvpzgOLMrch8ZnOyITpF
+        LvQKD95VNF9AqVvCCw+/gdTqezfM934=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-eC9I07GgN3-vxCQ7_bfNWg-1; Tue, 15 Jun 2021 12:20:53 -0400
+X-MC-Unique: eC9I07GgN3-vxCQ7_bfNWg-1
+Received: by mail-ot1-f69.google.com with SMTP id 88-20020a9d06e10000b029030513a66c79so9762061otx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:20:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=5YLb7ACF6OGDsiDttoNGN/jmPZF5LwN2Lq0fsg6CwmA=;
+        b=jwA6kwm6UBreBuc/OQVxgqe8jGF1eb3YIeLuLbbXUZHmpxNtzSTPd32bp+/GCejUqr
+         BLSqF0FPF81ODnUezbeCXxeqG/Ir03ujBExLAiy87JFgexrna3MrgAx77g8gGIvGPiAU
+         rW+EQkhwyBA1MQh9z31/rmMwB0HrVsFN8fjIund4voEd0Z80ZvyBsWOj9vs/yM/xmW/o
+         k3B86YpPEvPttGFYxTFFFmUkCMF8Q4dOG5fMUcHIqzlaZLz221hR4/UQdvEBD6WY2wSj
+         smBcwNuAMy4z7GUzDLgMrPsh6r7y/Su3W/Yt+SCqR9DEi0FEZpNdOVZ6YHSaDtszUT7/
+         oqDQ==
+X-Gm-Message-State: AOAM530J6GDwZgrNpIY0RrMPoyFiNZJBCYP+U7KuGQsWC3MSGS+Q2mpf
+        EoxvbSTgS81Azi0M+zlPZV8cHW0DEqcZ6JVpaRhtK8nSWxsBF9G89pSR4nKIE1bdiBO04XgfQcn
+        RCyxc7MGiANFQ/8ycKpDSuUcc
+X-Received: by 2002:a05:6830:1b6e:: with SMTP id d14mr103330ote.186.1623774052214;
+        Tue, 15 Jun 2021 09:20:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyia4e+2A6jNajuBcsHnPXEmwnB7xgOKEtv+OceRghWjC+MtI4+dG+D2ydJXrE/Pzhxmdxkfw==
+X-Received: by 2002:a05:6830:1b6e:: with SMTP id d14mr103321ote.186.1623774052047;
+        Tue, 15 Jun 2021 09:20:52 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id f63sm4221750otb.36.2021.06.15.09.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 09:20:51 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 10:20:49 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        aviadye@nvidia.com, oren@nvidia.com, shahafs@nvidia.com,
+        parav@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        kevin.tian@intel.com, hch@infradead.org, targupta@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, liulongfang@huawei.com,
+        yan.y.zhao@intel.com
+Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
+ binding
+Message-ID: <20210615102049.71a3c125.alex.williamson@redhat.com>
+In-Reply-To: <20210615150458.GR1002214@nvidia.com>
+References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
+        <20210603160809.15845-10-mgurtovoy@nvidia.com>
+        <20210608152643.2d3400c1.alex.williamson@redhat.com>
+        <20210608224517.GQ1002214@nvidia.com>
+        <20210608192711.4956cda2.alex.williamson@redhat.com>
+        <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
+        <20210614124250.0d32537c.alex.williamson@redhat.com>
+        <70a1b23f-764d-8b3e-91a4-bf5d67ac9f1f@nvidia.com>
+        <20210615090029.41849d7a.alex.williamson@redhat.com>
+        <20210615150458.GR1002214@nvidia.com>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210509184519.15816-1-alex.nemirovsky@cortina-access.com>
- <20210509184519.15816-2-alex.nemirovsky@cortina-access.com>
- <YMiUpK/+PjsoCU1W@kroah.com> <CFD14D63-4537-4A91-861C-71B74E2CFAE6@cortina-access.com>
- <YMi1jOL6y+eUK3Df@kroah.com> <B71C5D02-EDBE-4AAD-AF1B-2FD467BE075A@cortina-access.com>
- <CAL_JsqKDf9W-1KHUoFFCoLareLKf0CAVMU6CXR22xW3hWM_8yg@mail.gmail.com> <9937DB34-7757-4A54-BCC6-AF5514FD7F1D@cortina-access.com>
-In-Reply-To: <9937DB34-7757-4A54-BCC6-AF5514FD7F1D@cortina-access.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 15 Jun 2021 10:20:42 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLHdi29Du1F=e1N471tnsziWpH7TPO_caDF3SrjvHS-iw@mail.gmail.com>
-Message-ID: <CAL_JsqLHdi29Du1F=e1N471tnsziWpH7TPO_caDF3SrjvHS-iw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: serial: Convert Cortina-Access UART
- to json-schema
-To:     Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Li <jason.li@cortina-access.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:06 AM Alex Nemirovsky
-<Alex.Nemirovsky@cortina-access.com> wrote:
->
->
->
-> > On Jun 15, 2021, at 8:44 AM, Rob Herring <robh+dt@kernel.org> wrote:
-> >
-> > On Tue, Jun 15, 2021 at 8:39 AM Alex Nemirovsky
-> > <Alex.Nemirovsky@cortina-access.com> wrote:
-> >>
-> >>
-> >>
-> >>> On Jun 15, 2021, at 7:13 AM, Greg Kroah-Hartman <gregkh@linuxfoundati=
-on.org> wrote:
-> >>>
-> >>> On Tue, Jun 15, 2021 at 01:36:39PM +0000, Alex Nemirovsky wrote:
-> >>>> MAINTAINERS modification was made in the initial version 1.  We made=
- no changes to it since then,
-> >>>> thus not sure what we could at to  Changelog which would add value o=
-r clarity for others
-> >>>> from the v1.
-> >>>>
-> >>>>> On Jun 15, 2021, at 4:53 AM, Greg Kroah-Hartman <gregkh@linuxfounda=
-tion.org> wrote:
-> >>>>>
-> >>>>> On Sun, May 09, 2021 at 11:45:17AM -0700, Alex Nemirovsky wrote:
-> >>>>>> From: Jason Li <jason.li@cortina-access.com>
-> >>>>>>
-> >>>>>> Convert the Cortina-Access UART binding to DT schema format.
-> >>>>>>
-> >>>>>> Signed-off-by: Jason Li <jason.li@cortina-access.com>
-> >>>>>> ---
-> >>>>>> .../serial/cortina-access,serial.yaml         | 46 +++++++++++++++=
-++++
-> >>>>>> .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
-> >>>>>> MAINTAINERS                                   |  6 +++
-> >>>>>
-> >>>>> You are also adding a MAINTAINERS entry here, which is not listed i=
-n the
-> >>>>> changelog text, so I couldn't take it anyway :(
-> >>>
-> >>> Add the maintainers entry in the first patch, with the driver please.
-> >>
-> >> The change to MAINTAINERS here add a new file into the DT documentatio=
-n.
-> >> Should it not be grouped into the dt-binding portion and reviewed by t=
-he DT time for which this patch
-> >> is CC=E2=80=99ed to? Why would moving the DT documentation file that i=
-s introduced be into the first patch, which is the
-> >> serial driver itself be the correct approach?
-> >
-> > The binding doesn't actually need a MAINTAINERS entry (though having
-> > one is fine). get_maintainers.pl will also pull emails from the
-> > binding schema.
-> >
-> > Rob
->
-> Hi Rob,
-> It sounds like you are find with patch 2/3 from a DT point of view.  Coul=
-d we review the rest from the DT point of view
-> to get either feedback for changes or ACK these, so we can unblock this s=
-eries?
+On Tue, 15 Jun 2021 12:04:58 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Can't say I've seen it as I only see replies in my mail. Did this
-originally go to the DT list? If not, it's never in my queue[1].
+> On Tue, Jun 15, 2021 at 09:00:29AM -0600, Alex Williamson wrote:
+> 
+> > "vfio" override in PCI-core plays out for other override types.  Also I
+> > don't think dynamic IDs should be handled uniquely, new_id_store()
+> > should gain support for flags and userspace should be able to add new
+> > dynamic ID with override-only matches to the table.  Thanks,  
+> 
+> Why? Once all the enforcement is stripped out the only purpose of the
+> new flag is to signal a different prepration of modules.alias - which
+> won't happen for the new_id path anyhow
 
-Rob
+Because new_id allows the admin to insert a new pci_device_id which has
+been extended to include a flags field and intentionally handling
+dynamic IDs differently from static IDs seems like generally a bad
+thing.  For example, maybe the admin wants to specify nouveau as only
+an override match for all 10de: class vga devices.  Thanks,
 
-[1] https://patchwork.ozlabs.org/project/devicetree-bindings/list/
+Alex
+
