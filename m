@@ -2,256 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958BE3A88ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CD73A88F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFOS4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhFOS4V (ORCPT
+        id S231303AbhFOS4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:56:35 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:35101 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhFOS4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:56:21 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD9DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:54:16 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id e22so12207099pgv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:54:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=2ACARb2OHjYtM8uD12/aj9c2MPs3FdaKsjjUZsSDgRU=;
-        b=dFhZ9Q1ZWyPaAtn6vDYshJvBAJRXL+r5Cmmd9vQXGdqIUOblds8OPmUQwDVdV9HDgC
-         Z6ZQlmwGgq+RAQS3ybRQ9Af+TXTWLRcF4AKAcF30Sm1m0JujWbQiNl86VFz9yyJLKiqw
-         ztDyAPYdz+hCLuywRhhP8JOalSaxiue85qDVPJWFi+YIsPT7+cLBTOetkLL/6ySqAIob
-         eTh/VrJTDaIvd9xM2PGKMy2z1LWwx/2RJgGLq8eZCOEjK+ql8sBR3fN4kWqapaZpuERN
-         NBjp4QyjeSTlfxxiqWHZ51VmoEX5GO0DiRHriOJiSNZUuFTpWk73tm8wXLBubJjfkl7r
-         kFXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=2ACARb2OHjYtM8uD12/aj9c2MPs3FdaKsjjUZsSDgRU=;
-        b=uZ6pqlKvNkNzhha65UM5aN/BSbYnDZapuRCk5/9b4sV+VPdFFI02L401ozEDTduqhz
-         a3tkx+ExCFBLZKrTG55IHdPsBEjToKJr0YS6QS2AEVQx/gGO7O2uVerZcj6RfNu0Yfsk
-         E4zI2DO7QWUHBhqNfLRGyofO43B9Mi/mgQFYs95p9SlfR/GulOqiM2KtpR3gm2pq5W4F
-         7tdJ3C3aje771fqdABshDF4L1iP2NYpTlUeOBEKFzjYA22uUfSBEPNQ9V5cDoHidNS5C
-         fiP0zDiPJrjLSFxpwrH+n8jQa1cJenmVUn8lk0IXeQeShSY8ha4shWUtvjLjZtvX3Pto
-         FArw==
-X-Gm-Message-State: AOAM5310zmKSgNXfr+y/cfKKm+EfxtiM7jpKuf0oUqktFNxjuwGeAaIV
-        Vhzt3rRvGaNECv6DQINSTLs=
-X-Google-Smtp-Source: ABdhPJx0Xt0KX5S/R5+hY+GWDA4NQKhTMqDFyha1xSK7kOvx1M0ART6PMpE4gmIhd5qWAj0YDJ/cEA==
-X-Received: by 2002:aa7:920d:0:b029:2d9:2ead:70dd with SMTP id 13-20020aa7920d0000b02902d92ead70ddmr5575030pfo.67.1623783255160;
-        Tue, 15 Jun 2021 11:54:15 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id 20sm15880137pfi.170.2021.06.15.11.54.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Jun 2021 11:54:14 -0700 (PDT)
-From:   Nadav Amit <nadav.amit@gmail.com>
-Message-Id: <2A56E50B-D577-4F84-8C95-D13042C96147@gmail.com>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_D4CD0FDC-849F-4E78-8CA9-CFD674D2A337";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH v3 4/6] iommu: Factor iommu_iotlb_gather_is_disjoint() out
-Date:   Tue, 15 Jun 2021 11:54:13 -0700
-In-Reply-To: <20210615102947.GB20225@willie-the-truck>
-Cc:     Joerg Roedel <joro@8bytes.org>, Jiajun Cao <caojiajun@vmware.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-To:     Will Deacon <will@kernel.org>
-References: <20210607182541.119756-1-namit@vmware.com>
- <20210607182541.119756-5-namit@vmware.com>
- <20210611135746.GC15776@willie-the-truck>
- <D76DA59C-023F-43D1-B4ED-BFA65D9D064F@gmail.com>
- <20210615102947.GB20225@willie-the-truck>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Tue, 15 Jun 2021 14:56:34 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6C97B100006;
+        Tue, 15 Jun 2021 18:54:21 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20210330022144.150edc6e@xhacker>
+ <20210330022521.2a904a8c@xhacker> <87o8ccqypw.fsf@igel.home>
+ <20210612002334.6af72545@xhacker> <87bl8cqrpv.fsf@igel.home>
+ <20210614010546.7a0d5584@xhacker> <87im2hsfvm.fsf@igel.home>
+ <20210615004928.2d27d2ac@xhacker>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <ab536c78-ba1c-c65c-325a-8f9fba6e9d46@ghiti.fr>
+Date:   Tue, 15 Jun 2021 20:54:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210615004928.2d27d2ac@xhacker>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jisheng,
 
---Apple-Mail=_D4CD0FDC-849F-4E78-8CA9-CFD674D2A337
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+Le 14/06/2021 à 18:49, Jisheng Zhang a écrit :
+> From: Jisheng Zhang <jszhang@kernel.org>
+> 
+> Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid breaking W^X")
+> breaks booting with one kind of config file, I reproduced a kernel panic
+> with the config:
+> 
+> [    0.138553] Unable to handle kernel paging request at virtual address ffffffff81201220
+> [    0.139159] Oops [#1]
+> [    0.139303] Modules linked in:
+> [    0.139601] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #1
+> [    0.139934] Hardware name: riscv-virtio,qemu (DT)
+> [    0.140193] epc : __memset+0xc4/0xfc
+> [    0.140416]  ra : skb_flow_dissector_init+0x1e/0x82
+> [    0.140609] epc : ffffffff8029806c ra : ffffffff8033be78 sp : ffffffe001647da0
+> [    0.140878]  gp : ffffffff81134b08 tp : ffffffe001654380 t0 : ffffffff81201158
+> [    0.141156]  t1 : 0000000000000002 t2 : 0000000000000154 s0 : ffffffe001647dd0
+> [    0.141424]  s1 : ffffffff80a43250 a0 : ffffffff81201220 a1 : 0000000000000000
+> [    0.141654]  a2 : 000000000000003c a3 : ffffffff81201258 a4 : 0000000000000064
+> [    0.141893]  a5 : ffffffff8029806c a6 : 0000000000000040 a7 : ffffffffffffffff
+> [    0.142126]  s2 : ffffffff81201220 s3 : 0000000000000009 s4 : ffffffff81135088
+> [    0.142353]  s5 : ffffffff81135038 s6 : ffffffff8080ce80 s7 : ffffffff80800438
+> [    0.142584]  s8 : ffffffff80bc6578 s9 : 0000000000000008 s10: ffffffff806000ac
+> [    0.142810]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 0000000000000000
+> [    0.143042]  t5 : 0000000000000155 t6 : 00000000000003ff
+> [    0.143220] status: 0000000000000120 badaddr: ffffffff81201220 cause: 000000000000000f
+> [    0.143560] [<ffffffff8029806c>] __memset+0xc4/0xfc
+> [    0.143859] [<ffffffff8061e984>] init_default_flow_dissectors+0x22/0x60
+> [    0.144092] [<ffffffff800010fc>] do_one_initcall+0x3e/0x168
+> [    0.144278] [<ffffffff80600df0>] kernel_init_freeable+0x1c8/0x224
+> [    0.144479] [<ffffffff804868a8>] kernel_init+0x12/0x110
+> [    0.144658] [<ffffffff800022de>] ret_from_exception+0x0/0xc
+> [    0.145124] ---[ end trace f1e9643daa46d591 ]---
+> 
+> After some investigation, I think I found the root cause: commit
+> 2bfc6cd81bd ("move kernel mapping outside of linear mapping") moves
+> BPF JIT region after the kernel:
+> 
+> The &_end is unlikely aligned with PMD size, so the front bpf jit
+> region sits with part of kernel .data section in one PMD size mapping.
+> But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro() is
+> called to make the first bpf jit prog ROX, we will make part of kernel
+> .data section RO too, so when we write to, for example memset the
+> .data section, MMU will trigger a store page fault.
 
+Good catch, we make sure no physical allocation happens between _end and 
+the next PMD aligned address, but I missed this one.
 
+> 
+> To fix the issue, we need to ensure the BPF JIT region is PMD size
+> aligned. This patch acchieve this goal by restoring the BPF JIT region
+> to original position, I.E the 128MB before kernel .text section.
 
-> On Jun 15, 2021, at 3:29 AM, Will Deacon <will@kernel.org> wrote:
->=20
-> On Fri, Jun 11, 2021 at 09:50:31AM -0700, Nadav Amit wrote:
->>=20
->>=20
->>> On Jun 11, 2021, at 6:57 AM, Will Deacon <will@kernel.org> wrote:
->>>=20
->>> On Mon, Jun 07, 2021 at 11:25:39AM -0700, Nadav Amit wrote:
->>>> From: Nadav Amit <namit@vmware.com>
->>>>=20
->>>> Refactor iommu_iotlb_gather_add_page() and factor out the logic =
-that
->>>> detects whether IOTLB gather range and a new range are disjoint. To =
-be
->>>> used by the next patch that implements different gathering logic =
-for
->>>> AMD.
->>>>=20
->>>> Cc: Joerg Roedel <joro@8bytes.org>
->>>> Cc: Will Deacon <will@kernel.org>
->>>> Cc: Jiajun Cao <caojiajun@vmware.com>
->>>> Cc: Robin Murphy <robin.murphy@arm.com>
->>>> Cc: Lu Baolu <baolu.lu@linux.intel.com>
->>>> Cc: iommu@lists.linux-foundation.org
->>>> Cc: linux-kernel@vger.kernel.org>
->>>> Signed-off-by: Nadav Amit <namit@vmware.com>
->>>> ---
->>>> include/linux/iommu.h | 41 =
-+++++++++++++++++++++++++++++++++--------
->>>> 1 file changed, 33 insertions(+), 8 deletions(-)
->>>=20
->>> [...]
->>>=20
->>>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->>>> index f254c62f3720..b5a2bfc68fb0 100644
->>>> --- a/include/linux/iommu.h
->>>> +++ b/include/linux/iommu.h
->>>> @@ -497,6 +497,28 @@ static inline void iommu_iotlb_sync(struct =
-iommu_domain *domain,
->>>> 	iommu_iotlb_gather_init(iotlb_gather);
->>>> }
->>>>=20
->>>> +/**
->>>> + * iommu_iotlb_gather_is_disjoint - Checks whether a new range is =
-disjoint
->>>> + *
->>>> + * @gather: TLB gather data
->>>> + * @iova: start of page to invalidate
->>>> + * @size: size of page to invalidate
->>>> + *
->>>> + * Helper for IOMMU drivers to check whether a new range is and =
-the gathered
->>>> + * range are disjoint.
->>>=20
->>> I can't quite parse this. Delete the "is"?
->>=20
->> Indeed. Will do (I mean I will do ;-) )
->>=20
->>>=20
->>>>   For many IOMMUs, flushing the IOMMU in this case is
->>>> + * better than merging the two, which might lead to unnecessary =
-invalidations.
->>>> + */
->>>> +static inline
->>>> +bool iommu_iotlb_gather_is_disjoint(struct iommu_iotlb_gather =
-*gather,
->>>> +				    unsigned long iova, size_t size)
->>>> +{
->>>> +	unsigned long start =3D iova, end =3D start + size - 1;
->>>> +
->>>> +	return gather->end !=3D 0 &&
->>>> +		(end + 1 < gather->start || start > gather->end + 1);
->>>> +}
->>>> +
->>>> +
->>>> /**
->>>> * iommu_iotlb_gather_add_range - Gather for address-based TLB =
-invalidation
->>>> * @gather: TLB gather data
->>>> @@ -533,20 +555,16 @@ static inline void =
-iommu_iotlb_gather_add_page(struct iommu_domain *domain,
->>>> 					       struct iommu_iotlb_gather =
-*gather,
->>>> 					       unsigned long iova, =
-size_t size)
->>>> {
->>>> -	unsigned long start =3D iova, end =3D start + size - 1;
->>>> -
->>>> 	/*
->>>> 	 * If the new page is disjoint from the current range or is =
-mapped at
->>>> 	 * a different granularity, then sync the TLB so that the gather
->>>> 	 * structure can be rewritten.
->>>> 	 */
->>>> -	if (gather->pgsize !=3D size ||
->>>> -	    end + 1 < gather->start || start > gather->end + 1) {
->>>> -		if (gather->pgsize)
->>>> -			iommu_iotlb_sync(domain, gather);
->>>> -		gather->pgsize =3D size;
->>>> -	}
->>>> +	if ((gather->pgsize && gather->pgsize !=3D size) ||
->>>> +	    iommu_iotlb_gather_is_disjoint(gather, iova, size))
->>>> +		iommu_iotlb_sync(domain, gather);
->>>>=20
->>>> +	gather->pgsize =3D size;
->>>=20
->>> Why have you made this unconditional? I think it's ok, but just not =
-sure
->>> if it's necessary or not.
->>=20
->> In regard to gather->pgsize, this function had (and has) an
->> invariant, in which gather->pgsize always represents the flushing
->> granularity of its range. Arguably, =E2=80=9Csize" should never be
->> zero, but lets assume for the matter of discussion that it might.
->>=20
->> If =E2=80=9Csize=E2=80=9D equals to =E2=80=9Cgather->pgsize=E2=80=9D, =
-then the assignment in
->> question has no impact.
->>=20
->> Otherwise, if =E2=80=9Csize=E2=80=9D is non-zero, then =
-iommu_iotlb_sync() would
->> initialize the size and range (see iommu_iotlb_gather_init()),
->> and the invariant is kept.
->>=20
->> Otherwise, =E2=80=9Csize=E2=80=9D is zero, and =E2=80=9Cgather=E2=80=9D=
- already holds a range,
->> so gather->pgsize is non-zero and
->> (gather->pgsize && gather->pgsize !=3D size) is true. Therefore,
->> again, iommu_iotlb_sync() would be called and initialize the
->> size.
->>=20
->> I think that this change makes the code much simpler to read.
->> It probably has no performance impact as =E2=80=9Cgather=E2=80=9D is =
-probably
->> cached and anyhow accessed shortly after.
->=20
-> Thanks. I was just interested in whether it had a functional impact (I =
-don't
-> think it does) or whether it was just cleanup.
->=20
-> With the updated comment:
->=20
-> Acked-by: Will Deacon <will@kernel.org>
+But I disagree with your solution: I made sure modules and BPF programs 
+get their own virtual regions to avoid worst case scenario where one 
+could allocate all the space and leave nothing to the other (we are 
+limited to +- 2GB offset). Why don't just align BPF_JIT_REGION_START to 
+the next PMD aligned address?
 
-Thanks. I will add the explanation to the commit log, but not to the =
-code in order not to inflate it too much.
+Again, good catch, thanks,
 
+Alex
 
---Apple-Mail=_D4CD0FDC-849F-4E78-8CA9-CFD674D2A337
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmDI91UACgkQHaAqSaba
-D1rwyg/9GoaoYMhf+uaP86OBxYda+U2uFAA6GQ4ACRS1JKC9ki8j2OVNzmbK5+df
-qYvA/Fp5MZ3dBfr7xEEwvM6AseNjSYRS84EF62x04ZxePRmNtTQ0Xw47qIGjJXLy
-T39Qep/p84leB1e7caGN6ZjLlODllJk7ocPFx5fiKAb0mrQtMCz4D49GYCCregx4
-Ml0oJo5LhngS+XK8+Iz32fmDUaShKnLuRqqNWM15VKTVGVz0L5TKPKFd2JH1uFne
-/ynBYON5HSIUcxtlWfGT3xLnTiQJPqVGpDzS0Q4ZaJ8RkloNwd3/qwIsuhkNmPSR
-9wgr+5S33LdjRmoOMQHmVVPsDqJFDNWbYL37Ceb2qdNsuZH9L1DwonKPJrHPcWo5
-q3frnvsrSo66zyO0GLldDCmMYTOuy++7RN4aJTGNZTzi7qKuR/E195AvkCm4KmVK
-HK+DQZy26g6hBb5SzHA6EPof6nex3cAbCJeBk2WVHRMBsOb3TMUkFW+X8Qywh98m
-cvk4yNm4IaSTyjG5nAnbXwgSjSVPVvF3MEHXVtEaTMJ+bHINLxyDcCtXcXOqVA6A
-irgb/+9B7iwnzNHrCo9Srq3s6liUbeEIGo04G4JG1UxGmAkR8AGySgtZhxvelQIZ
-OpnBE5FKGV8MgXoNUFTdif7zRG1dZRAM3MtAIP0/CWwB9JYcfyU=
-=7m8F
------END PGP SIGNATURE-----
-
---Apple-Mail=_D4CD0FDC-849F-4E78-8CA9-CFD674D2A337--
+> 
+> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>   arch/riscv/include/asm/pgtable.h | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 9469f464e71a..380cd3a7e548 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -30,9 +30,8 @@
+>   
+>   #define BPF_JIT_REGION_SIZE	(SZ_128M)
+>   #ifdef CONFIG_64BIT
+> -/* KASLR should leave at least 128MB for BPF after the kernel */
+> -#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+> -#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
+> +#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
+> +#define BPF_JIT_REGION_END	(MODULES_END)
+>   #else
+>   #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>   #define BPF_JIT_REGION_END	(VMALLOC_END)
+> 
