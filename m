@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45143A7BA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD813A7B9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhFOKTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:19:43 -0400
-Received: from mga06.intel.com ([134.134.136.31]:54852 "EHLO mga06.intel.com"
+        id S231415AbhFOKTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:19:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231152AbhFOKTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:19:42 -0400
-IronPort-SDR: zJvxWL3SMzkKDtL/UTjKqMOjFpoqv/Zv9MGM8erslzeyqmvn7lXsymXXYm+nFFhLicjdtf9p51
- Ay6m3iDVYo9A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="267110232"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="267110232"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 03:17:37 -0700
-IronPort-SDR: 0jGvotN3Aeu01qs4h7Jw8N0+w6kDLY+14kGthGCf+lfI89+P2rMfbVL+lz2RWQSfbgdx9SHip3
- oWzbeM7Olieg==
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="421079165"
-Received: from tmonfort-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.212.223.245])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 03:17:35 -0700
-From:   Kai Huang <kai.huang@intel.com>
-To:     linux-sgx@vger.kernel.org, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bp@alien8.de, seanjc@google.com,
-        jarkko@kernel.org, dave.hansen@intel.com, tglx@linutronix.de,
-        mingo@redhat.com, Yang Zhong <yang.zhong@intel.com>,
-        Kai Huang <kai.huang@intel.com>
-Subject: [PATCH] x86/sgx: Add missing xa_destroy() when virtual EPC is destroyed
-Date:   Tue, 15 Jun 2021 22:16:39 +1200
-Message-Id: <20210615101639.291929-1-kai.huang@intel.com>
-X-Mailer: git-send-email 2.31.1
+        id S231152AbhFOKTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:19:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E26461426;
+        Tue, 15 Jun 2021 10:17:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623752236;
+        bh=h/OhBuRJp1n80pXmzsW7V7YT5v9wdMx+nLtKRZZvje4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tflOmO1j3m7wSBM1cbG1DaCU1L5jL8vr3Ef4oR3cSFPARYnd+jdUitN81uSmlVkzt
+         PJOs9J/gyjoXly3yK+wdLUEml+9HRDdKiwyr0CDuw0G6y63pwe4XvxNPQQK4jYvVfB
+         667TCKpXc9x4l+20h1fmYd4CcoaAiY9rAr5l63wc=
+Date:   Tue, 15 Jun 2021 12:17:14 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] cxgb4: fix wrong shift.
+Message-ID: <YMh+KitE/UXqidNn@kroah.com>
+References: <20210615095651.GA7479@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615095651.GA7479@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xa_destroy() needs to be called to destroy virtual EPC's page arra
-before calling kfree() to free the virtual EPC.  Currently it is not
-calaled.  Add the missing xa_destroy() to fix.
+On Tue, Jun 15, 2021 at 11:56:51AM +0200, Pavel Machek wrote:
+> While fixing coverity warning, commit
+> dd2c79677375c37f8f9f8d663eb4708495d595ef introduced typo in shift
+> value. Fix that.
+>     
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> 
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+> index 22c9ac922eba..6260b3bebd2b 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+> @@ -198,7 +198,7 @@ static void set_nat_params(struct adapter *adap, struct filter_entry *f,
+>  				      WORD_MASK, f->fs.nat_lip[3] |
+>  				      f->fs.nat_lip[2] << 8 |
+>  				      f->fs.nat_lip[1] << 16 |
+> -				      (u64)f->fs.nat_lip[0] << 25, 1);
+> +				      (u64)f->fs.nat_lip[0] << 24, 1);
+>  		}
+>  	}
+>  
+> 
 
-Fixes: 540745ddbc70 ("x86/sgx: Introduce virtual EPC for use by KVM guests")
-Tested-by: Yang Zhong <yang.zhong@intel.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
- arch/x86/kernel/cpu/sgx/virt.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 6ad165a5c0cc..64511c4a5200 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -212,6 +212,7 @@ static int sgx_vepc_release(struct inode *inode, struct file *file)
- 		list_splice_tail(&secs_pages, &zombie_secs_pages);
- 	mutex_unlock(&zombie_secs_pages_lock);
- 
-+	xa_destroy(&vepc->page_array);
- 	kfree(vepc);
- 
- 	return 0;
--- 
-2.31.1
+<formletter>
 
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
+
+</formletter>
