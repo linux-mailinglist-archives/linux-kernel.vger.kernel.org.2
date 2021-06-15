@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C660F3A804B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DFA3A8052
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhFONiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbhFONiG (ORCPT
+        id S231335AbhFONiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:38:24 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12095 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231482AbhFONiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:38:06 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEEAC061574;
-        Tue, 15 Jun 2021 06:36:00 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id z8so18381726wrp.12;
-        Tue, 15 Jun 2021 06:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1ETlHjLF4DNWkPBtZCHd24Q+TUjKL0nGJVODuHjOW7g=;
-        b=Co418qMT6oHFJRT2fESErSI8KQJgJnFO7h8Ad5E7jXdhni9/CSu0aQc1joPdaRF9Ig
-         /JIobPIRfBZm+iZ00gfiPmUkE9TOhvJrqJLZKBPEvmS8Q0S2XioqJXUuuAYRrpDE7+Lz
-         FRezBhpiVn0vHyfCnBSbR/FMkd90RQy8r3dg/r90lA3pat73IN73ZMn1LCrIxfE/Yiue
-         Yf0rnkaW8bYHIaxWvLiuocA75dz9R/ME0ob206JPws7sym3h/f4h1+MLv7/pw3UZY/Ez
-         0GS/vPnnEAh0WC8kPJbu9HB4CnHevGtfb2OIvkrxomvv5uooDH3akodk8HeVQCh7VJvC
-         Jr/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1ETlHjLF4DNWkPBtZCHd24Q+TUjKL0nGJVODuHjOW7g=;
-        b=E0E3OPFe/BpvOVrFymR9aq0ptsko5PdRIqVnqrOQ1kc7VqazxYKWThMZdfmonosXSo
-         JTBr7/GFSVRmrm7rhsb6vDU4Q/5RJbqYEKQiU7X6nM+LELQGLnUIMZhYCruuUxlgCaZ/
-         Hv/zasHdAb6mdtXq0Q207loai99bSZv9A6fqNttkKUWBloI/UrvHXo3zNDB9iU4BagD2
-         Q7JNvyGPJG2fg3yKul/SKXiXgiyWLrAkypNOZfRwx3mwQNa6ssw5g5l1+1VD9DdnqleW
-         1DzLuUxH6Ir6LkqwkhH0aqXUJHMZFMS3H3bJOsrm1t8vDRoG516caKbN/OeJSzJmvnLs
-         V5Fw==
-X-Gm-Message-State: AOAM5313ZnFuLd2MSgm7RZiQnKYZxN6Zcf6LRFGUynScMBsuvvyHdUvm
-        68qSBCOmk+D+j92RxHIfd+FdOWB6T+kg5ZaB
-X-Google-Smtp-Source: ABdhPJx8zxygOh6GxQN2YJa+wUMci86P6bk/R5GVT+J0BnL9Se1gJex26K/Z8VGp10qPlFfCzCbxLw==
-X-Received: by 2002:adf:dd0f:: with SMTP id a15mr19414169wrm.321.1623764158577;
-        Tue, 15 Jun 2021 06:35:58 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.209])
-        by smtp.gmail.com with ESMTPSA id c12sm1728554wrw.46.2021.06.15.06.35.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 06:35:58 -0700 (PDT)
-Subject: Re: [PATCH][next][V2] io_uring: Fix incorrect sizeof operator for
- copy_from_user call
-To:     Colin King <colin.king@canonical.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210615130011.57387-1-colin.king@canonical.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <b6790793-c6ab-5d41-d483-3f978557e904@gmail.com>
-Date:   Tue, 15 Jun 2021 14:35:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 15 Jun 2021 09:38:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623764174; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=oCyt5HP1cG0mwjB/oFPGtagilcICyOfoCjGxAwOTsPg=;
+ b=AFfvdpzTPfUojbH2cM/d6oSUVr3AzTKx1Y/kvVk6+wy6KwUJpAd9qWv7Nyc7oxwRm2PA5wxn
+ 7XLLT16W3ke25x0QMGi7jUhCjdQTB7ejptq23Fr6aa/iyQgmmBhVz6PHcokBDh1x1s8qSzRK
+ c6YTRRq8+PKDiYcjsPo0ra+ofzk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60c8acc3e27c0cc77f1e9b6a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:36:03
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 98B79C43460; Tue, 15 Jun 2021 13:36:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1A3BC43217;
+        Tue, 15 Jun 2021 13:36:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1A3BC43217
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210615130011.57387-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] wl1251: Fix possible buffer overflow in
+ wl1251_cmd_scan
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210428115508.25624-1-leegib@gmail.com>
+References: <20210428115508.25624-1-leegib@gmail.com>
+To:     Lee Gibson <leegib@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lee Gibson <leegib@gmail.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615133602.98B79C43460@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:36:02 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 2:00 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Static analysis is warning that the sizeof being used is should be
-> of *data->tags[i] and not data->tags[i]. Although these are the same
-> size on 64 bit systems it is not a portable assumption to assume
-> this is true for all cases.  Fix this by using a temporary pointer
-> tag_slot to make the code a clearer.
-> 
-> Addresses-Coverity: ("Sizeof not portable")
-> Fixes: d878c81610e1 ("io_uring: hide rsrc tag copy into generic helpers")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Lee Gibson <leegib@gmail.com> wrote:
 
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> Function wl1251_cmd_scan calls memcpy without checking the length.
+> Harden by checking the length is within the maximum allowed size.
+> 
+> Signed-off-by: Lee Gibson <leegib@gmail.com>
 
-> ---
-> V2: Use temp variable tag_slot, this makes code clearer as suggested by
->     Pavel Begunkov.
-> ---
->  fs/io_uring.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index d665c9419ad3..7538d0878ff5 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -7230,8 +7230,10 @@ static int io_rsrc_data_alloc(struct io_ring_ctx *ctx, rsrc_put_fn *do_put,
->  	if (utags) {
->  		ret = -EFAULT;
->  		for (i = 0; i < nr; i++) {
-> -			if (copy_from_user(io_get_tag_slot(data, i), &utags[i],
-> -					   sizeof(data->tags[i])))
-> +			u64 *tag_slot = io_get_tag_slot(data, i);
-> +
-> +			if (copy_from_user(tag_slot, &utags[i],
-> +					   sizeof(*tag_slot)))
->  				goto fail;
->  		}
->  	}
-> 
+Patch applied to wireless-drivers-next.git, thanks.
+
+d10a87a3535c wl1251: Fix possible buffer overflow in wl1251_cmd_scan
 
 -- 
-Pavel Begunkov
+https://patchwork.kernel.org/project/linux-wireless/patch/20210428115508.25624-1-leegib@gmail.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
