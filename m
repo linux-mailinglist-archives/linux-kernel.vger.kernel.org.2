@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D613A8337
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A223A833A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhFOOvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhFOOvY (ORCPT
+        id S230321AbhFOOwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:52:40 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:4696 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229937AbhFOOwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:51:24 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6242C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:49:18 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id x24so21889403lfr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YyEZLduH7/iFgJwKc9vp/hqM3Vrl8HD6DqfsbR4sDVg=;
-        b=HprZFfL4N7GTrn8vzzdG12NKJmO6iMJi+xyICKDRcSKmjzKtel9myIFjJw+b/IqOei
-         66xHWiWeVwCuAn9OGrcgF1N0Ubrlt+z1LoJA1YKBS1nPPucqAaEIoAv/rXFNEUogqMR6
-         xyEDcW2Pf1Ls1yhJOp8n844CnafVRsw4Toy54=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YyEZLduH7/iFgJwKc9vp/hqM3Vrl8HD6DqfsbR4sDVg=;
-        b=BZuBtgnTVT0tsnrLmLI5MKgDPbC9PIhzQhst70wK82sZdVCHIaSzBA9JeWnD6ycZ+I
-         OMctwcvaCS79RpyfXCUSKJQf1F+/tM62hCJ2qAEG4YWVNtoP0r/iI3PzA0Y7GzZun3I6
-         XvUEEFi8TrsVeHzyR09yAgpPL/Q5tH3x3N7x//ew7qZ1IoRH6F4tAc/DwH5a+A4kec8a
-         tIl3H1njrmhlZOJeocZV8DJJUzTG6ueOi6qIKd/FFDfuLKALPyjlFnuxUB3f5xwz1BqF
-         F6k9S70m1cqktI4a81P8zRGaJqVqNCsD1JGpGXZKgarWEj/ktO33qub7+kavzHnC10Jc
-         seMA==
-X-Gm-Message-State: AOAM531ppfACOH+4Xl4yGTTdISwIQKQ2ai4R7U0e20XJrufZycP5U0DZ
-        6xoi2O4JOrzyNJlXxY9vl/xirpU2Lp3Fh7llQEc=
-X-Google-Smtp-Source: ABdhPJyfiWXVkZIVRrIiYUxumCrCRMBCGan+d1JZx72AQNJeYSTEdKkkbws8rPsrScZeuf/PleuniA==
-X-Received: by 2002:ac2:5e36:: with SMTP id o22mr16648115lfg.320.1623768557048;
-        Tue, 15 Jun 2021 07:49:17 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id d9sm1826835lfv.47.2021.06.15.07.49.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 07:49:16 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id p7so27529387lfg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:49:16 -0700 (PDT)
-X-Received: by 2002:a05:6512:3d13:: with SMTP id d19mr15953159lfv.41.1623768556044;
- Tue, 15 Jun 2021 07:49:16 -0700 (PDT)
+        Tue, 15 Jun 2021 10:52:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1623768635; x=1655304635;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=h7JitUKvd260OU0nQerm2mqsf2MMNeE1rFFHSDrosFY=;
+  b=a0iHLL829tBpaU4JPI++sn/iuJDZXlAVmWgfs2KU7z3WUPS+KETsZlk9
+   bwXkJd/EXYYwHNWPknG+egYOWP5zx5N9wimRu3kXVJXB8DpSAqRqV72pQ
+   7b3GEW7gfUkaf1R10F/857VLsURiBvmNFY9M/hUQpBKVsjvBi4ypS3GIk
+   M=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 15 Jun 2021 07:50:34 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Jun 2021 07:50:34 -0700
+Received: from [10.111.175.185] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 15 Jun
+ 2021 07:50:32 -0700
+Subject: Re: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, <lkft-triage@lists.linaro.org>,
+        <regressions@lists.linux.dev>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+References: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
+ <20210615124745.GA47121@C02TD0UTHF1T.local>
+ <20210615131902.GB47121@C02TD0UTHF1T.local>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <076665b9-9fb1-71da-5f7d-4d2c7f892103@quicinc.com>
+Date:   Tue, 15 Jun 2021 10:50:31 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
-In-Reply-To: <162375813191.653958.11993495571264748407.stgit@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Jun 2021 07:49:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
-Message-ID: <CAHk-=whARK9gtk0BPo8Y0EQqASNG9SfpF1MRqjxf43OO9F0vag@mail.gmail.com>
-Subject: Re: [PATCH] afs: fix no return statement in function returning non-void
-To:     David Howells <dhowells@redhat.com>
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tom Rix <trix@redhat.com>, linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210615131902.GB47121@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03g.na.qualcomm.com (10.85.0.49) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 4:55 AM David Howells <dhowells@redhat.com> wrote:
->
-> From: Zheng Zengkai <zhengzengkai@huawei.com>
->
-> Add missing return to fix following compilation issue:
->
-> fs/afs/dir.c: In function =E2=80=98afs_dir_set_page_dirty=E2=80=99:
-> fs/afs/dir.c:51:1: error: no return statement in function
-> returning non-void [-Werror=3Dreturn-type]
 
-This warning is actively wrong, and the patch is the wrong thing to do.
 
-What compiler / architecture / config?
+On 6/15/2021 9:19 AM, Mark Rutland wrote:
+> Looking some more, it looks like that's correct in isolation, but it
+> clashes with commit:
+> 
+>   5831eedad2ac6f38 ("mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA")
 
-Because BUG() should have an "unreachable()", and the compiler should
-know that a return statement isn't needed (and adding it shouldn't
-make any difference).
-
-And it's not warning for me when I build that code. So I really think
-the real bug is entirely somewhere else, and this patch is papering
-over the real problem.
-
-               Linus
+Just a data point. Reverting the commit alone fixed the same crash for me.
