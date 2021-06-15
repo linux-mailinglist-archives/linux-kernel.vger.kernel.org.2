@@ -2,67 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623443A7FEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53153A8047
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbhFONdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:33:44 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:6377 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhFONd3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:33:29 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G48Hw0xzdz63cB;
-        Tue, 15 Jun 2021 21:27:24 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 21:31:22 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
- 2021 21:31:21 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>
-Subject: [PATCH -next] ASoC: hisilicon: Use devm_platform_get_and_ioremap_resource()
-Date:   Tue, 15 Jun 2021 21:35:15 +0800
-Message-ID: <20210615133515.1376290-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S231396AbhFONhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:37:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:35585 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231226AbhFONhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:37:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623764137; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=IvhcmHK9rrc0H3C7Q/rH7Dq5/EUXIwP0eRrpBUHzJik=;
+ b=Ys0jo9GVcyMar8IKfULEdXANz5sfASkjnsx8QQl4JvxWSHqHUtV2OgJudRjjM3fUlK2ZsBVC
+ DSkdT8hgNL8obKhma6mLJ2QvQTBzrE/GGOQ0Q92Q1Cn4KBHVN2PsT1f3N23/jQ857kiFdpFA
+ kFBd5fMwSzYEgHL9oWgI3rSLpfE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60c8aca7e27c0cc77f1ddd21 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:35:35
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A213AC4338A; Tue, 15 Jun 2021 13:35:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8EA2C4323A;
+        Tue, 15 Jun 2021 13:35:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A8EA2C4323A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wilc1000: Fix clock name binding
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210428025445.81953-1-tudor.ambarus@microchip.com>
+References: <20210428025445.81953-1-tudor.ambarus@microchip.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc:     <ajay.kathat@microchip.com>, <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <gregkh@linuxfoundation.org>, <adham.abozaeid@microchip.com>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <cristian.birsan@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615133534.A213AC4338A@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:35:34 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code.
+Tudor Ambarus <tudor.ambarus@microchip.com> wrote:
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- sound/soc/hisilicon/hi6210-i2s.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> Documentation/devicetree/bindings/net/wireless/microchip,wilc1000.yaml
+> requires an "rtc" clock name.
+> drivers/net/wireless/microchip/wilc1000/sdio.c is using "rtc" clock name
+> as well. Comply with the binding in wilc1000/spi.c too.
+> 
+> Fixes: 854d66df74ae ("staging: wilc1000: look for rtc_clk clock in spi mode")
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index ff05b9779e4b..a297d4af5099 100644
---- a/sound/soc/hisilicon/hi6210-i2s.c
-+++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -556,8 +556,7 @@ static int hi6210_i2s_probe(struct platform_device *pdev)
- 	i2s->dev = dev;
- 	spin_lock_init(&i2s->lock);
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	i2s->base = devm_ioremap_resource(dev, res);
-+	i2s->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(i2s->base))
- 		return PTR_ERR(i2s->base);
- 
+Patch applied to wireless-drivers-next.git, thanks.
+
+d4f23164cff0 wilc1000: Fix clock name binding
+
 -- 
-2.25.1
+https://patchwork.kernel.org/project/linux-wireless/patch/20210428025445.81953-1-tudor.ambarus@microchip.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
