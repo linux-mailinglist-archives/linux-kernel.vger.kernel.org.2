@@ -2,122 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663B03A7DEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A6E3A7DED
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhFOMMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
+        id S230205AbhFOMMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhFOMMM (ORCPT
+        with ESMTP id S229557AbhFOMMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:12:12 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA9DC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:10:08 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id k8so7765937lja.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:10:08 -0700 (PDT)
+        Tue, 15 Jun 2021 08:12:39 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C499DC061574;
+        Tue, 15 Jun 2021 05:10:33 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id a11so18049799wrt.13;
+        Tue, 15 Jun 2021 05:10:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WNpdr2S1NDbOx7bwbHaY+rxGjF1pZI1K0hiTte/Oqqs=;
-        b=hn6SsOwGYHR0CT0tDtiihzIzNVHWuJ5IrzWQY7kMPAPAkOcNK/166MPvX5oPF0j2qO
-         9T/1zTMuqXEJ4b6ZgOC6Knr2m2Yqb2HfB8NrNqGrd4izzEpDRZwQu15NaWtzVMNqbTZ3
-         7dJdgKBsPI3lfkwZM1wMH/372Y7ijszwqY2alGxa0ROsPoSE9JOK9BrBKfBi1ucrs+q6
-         Y7asH2E5+HafTOB16GdKR1Br5TfolOTf9iW970559LAuX/4rScPQ7EzCAw+yJ8GcPiNj
-         XGtWxud65paFus1Ok5qmMCntw4zfOD+Qwpb0VTJslYHXyUYBkuT6DesWQVfZvQ4GEa/3
-         i25A==
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MnTVDNZDJ8uaspdU4WgOPERRfxkGjiPv5nnzxm+C6TA=;
+        b=LJmckYGcNlTBozVh/1wJp7v7AtkT1IyZX+ToQFDeX7Y8FFiYzb/Xh2J/Kd1olwtZU5
+         OZDGQKtBxqUhJXU2KrRelOwMY4rq+efzlfgGnNzvC52qVHo9omFkVYuIh0QnM+rf7ys9
+         eBfptzCY8AoieVHU9tEj/P7X6NONGeAwtLkxlBJvXa2Baik+IAHs90GfIfJwjznadJ+N
+         P1HElj7PCKZ9yvPkD2qeUFbci69ObY9cBkXcBFvhQAOPmVNGSTd4TujEKM62ZsghZBDj
+         M6BuOGergg1kKTHxcJeBX+6SRnviDyohNwhtTTdgtRreSAEltH5xE84bQ+5pK3zwvmk3
+         VCMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WNpdr2S1NDbOx7bwbHaY+rxGjF1pZI1K0hiTte/Oqqs=;
-        b=cXlQsWxwRBrN02jMG5Mw2pSB/ysd7Hynzj2sSINdsipl7FdjGbx/OSYARhFsm23H3Z
-         pPJygaOarLkhbzFNPZN+HQl/pw/BiVIedvcUsRxX7IFxI6JAaUAoiq0Jw8z1MB2AeEeL
-         7Xnken7JC1Y91mO7H4Ez/TkcxnJATfKjsPFs8op6/gaEFFklHR1z5r1n+IOFUAer0o6b
-         M4voZ6xQe5fcpS54+dLo0anUKpbA5hVy9VD0kGC0rdiAKFqkIEKGzlrm+B9AP1WlENyA
-         dscOtjAJKGaf+Y4QgEN4YbrrF7ClrU26ufQUF7qwRP822xZnuOv9G65d74fuHoR9CtyA
-         0t6w==
-X-Gm-Message-State: AOAM531EfkRwo8Aah87KU1IuVHVLERp4+VDsENjLYnnq0qeGm1bynGfa
-        XZlOEjWjfVUDSWjogQtCQfsEPghggfUkkJE5yLC2wg==
-X-Google-Smtp-Source: ABdhPJw8A6vOZsaQEDsWTxdTmFkA/8e8Rr9IEnGktDJsMz7Tqoh1ranC3q6kCm2luqXihS9dlvk8IM++pXxR3peUytE=
-X-Received: by 2002:a2e:b5ae:: with SMTP id f14mr17742867ljn.94.1623759005720;
- Tue, 15 Jun 2021 05:10:05 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MnTVDNZDJ8uaspdU4WgOPERRfxkGjiPv5nnzxm+C6TA=;
+        b=OUIiRVkHGOa3o6+WIWf4Nb8mJQ48DUUtqIeFgu2aXH+XMq8JnaiemW78c8FgBf4Umq
+         GqtCkpARdmobhkj+DQBZwTwkFRuiyVOKJpvcAAhN/31Ompj/Qbc+y5g92sz6E3XccPAA
+         VFtfNFuDGHZuqgj/amcvaXtOkEXX8kNwvGXd+dw9bSTYG4ERaocZEqv72S/OVJP85qbs
+         8n2CYxgBURZRTwVdjii8n/e7+SZfmlIdF5h7tXkPKs6+Ed3hYpHiqeZ3L8n1KIHtjdQ3
+         HdPKqPtnos9KC0eK1nlrb3ZRlMvaWqXpy/8EnPYZoUMKGOj9suh7mIcYHhxwqWCoJUPv
+         ZiMg==
+X-Gm-Message-State: AOAM532WpRKsPphKesfMLbGTmwEFRp6Hn3/+y+xlTXko3NNLCtdcrGm3
+        TwcN5hEmZBZ7noKkczeq6/b3H0pDVfecPo1R
+X-Google-Smtp-Source: ABdhPJyZXEKLPhXtFSgYY9uZGPJHsGgBo/xrw+OXrBn7VrqcLFWGTlyPvv8BaooMhvp/V1FoWPA0Ow==
+X-Received: by 2002:a5d:5102:: with SMTP id s2mr24405908wrt.347.1623759032245;
+        Tue, 15 Jun 2021 05:10:32 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.209])
+        by smtp.gmail.com with ESMTPSA id i15sm18244039wmq.23.2021.06.15.05.10.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 05:10:31 -0700 (PDT)
+To:     Colin Ian King <colin.king@canonical.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210615104541.50529-1-colin.king@canonical.com>
+ <3dcc6900-8361-d52c-003d-21318aa80156@canonical.com>
+ <d606818f-2e13-fbea-970b-eab9080d7f15@gmail.com>
+ <067e8830-f6ec-612a-2c8a-8da459f659d1@canonical.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH][next] io_uring: Fix incorrect sizeof operator for
+ copy_from_user call
+Message-ID: <9b2b2cdf-e273-d188-b022-c821b05ce23b@gmail.com>
+Date:   Tue, 15 Jun 2021 13:10:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210615012014.1100672-1-jannh@google.com> <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
-In-Reply-To: <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 15 Jun 2021 14:09:38 +0200
-Message-ID: <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with split_huge_page()
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <067e8830-f6ec-612a-2c8a-8da459f659d1@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
-> On 6/14/21 6:20 PM, Jann Horn wrote:
-> > try_grab_compound_head() is used to grab a reference to a page from
-> > get_user_pages_fast(), which is only protected against concurrent
-> > freeing of page tables (via local_irq_save()), but not against
-> > concurrent TLB flushes, freeing of data pages, or splitting of compound
-> > pages.
-[...]
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+On 6/15/21 12:35 PM, Colin Ian King wrote:
+> On 15/06/2021 12:30, Pavel Begunkov wrote:
+>> On 6/15/21 11:47 AM, Colin Ian King wrote:
+>>> On 15/06/2021 11:45, Colin King wrote:
+>>>> From: Colin Ian King <colin.king@canonical.com>
+>>>>
+>>>> Static analysis is warning that the sizeof being used is should be
+>>>> of *data->tags[i] and not data->tags[i]. Although these are the same
+>>>> size on 64 bit systems it is not a portable assumption to assume
+>>>> this is true for all cases.
+>>>>
+>>>> Addresses-Coverity: ("Sizeof not portable")
+>>>> Fixes: d878c81610e1 ("io_uring: hide rsrc tag copy into generic helpers")
+>>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>>> ---
+>>>>  fs/io_uring.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>>>> index d665c9419ad3..6b1a70449749 100644
+>>>> --- a/fs/io_uring.c
+>>>> +++ b/fs/io_uring.c
+>>>> @@ -7231,7 +7231,7 @@ static int io_rsrc_data_alloc(struct io_ring_ctx *ctx, rsrc_put_fn *do_put,
+>>>>  		ret = -EFAULT;
+>>>>  		for (i = 0; i < nr; i++) {
+>>>>  			if (copy_from_user(io_get_tag_slot(data, i), &utags[i],
+>>>> -					   sizeof(data->tags[i])))
+>>>> +					   sizeof(*data->tags[i])))
+>>>>  				goto fail;
+>>>>  		}
+>>>>  	}
+>>>>
+>>
+> 
+> 
+>> Yep, thanks Colin. I think `sizeof(io_get_tag_slot(data, i))`
+>> would be less confusing. Or
+>>
+>> u64 *tag_slot = io_get_tag_slot(data, i);
+>> copy_from_user(tag_slot, ..., sizeof(*tag_slot));
+>>
+> BTW, Coverity is complaining about:
+> 
+> 7220                return -ENOMEM;
+> 
+> Wrong sizeof argument (SIZEOF_MISMATCH)
+> 
+> suspicious_sizeof: Passing argument nr * 8UL /* sizeof
+> (data->tags[0][0]) */ to function io_alloc_page_table and then casting
+> the return value to u64 ** is suspicious.
+> 
+> 7221        data->tags = (u64 **)io_alloc_page_table(nr *
+> sizeof(data->tags[0][0]));
 
-Thanks!
+Ah, this one. We want it to be indexed linearly, but can't allocate
+as much, so together with io_get_tag_slot() it hides two level
+tables from us, providing linear indexing.
 
-[...]
-> > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
-> >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
-> >               return NULL;
-> >       if (unlikely(!page_cache_add_speculative(head, refs)))
-> >               return NULL;
-> > +
-> > +     /*
-> > +      * At this point we have a stable reference to the head page; but it
-> > +      * could be that between the compound_head() lookup and the refcount
-> > +      * increment, the compound page was split, in which case we'd end up
-> > +      * holding a reference on a page that has nothing to do with the page
-> > +      * we were given anymore.
-> > +      * So now that the head page is stable, recheck that the pages still
-> > +      * belong together.
-> > +      */
-> > +     if (unlikely(compound_head(page) != head)) {
->
-> I was just wondering about what all could happen here. Such as: page gets split,
-> reallocated into a different-sized compound page, one that still has page pointing
-> to head. I think that's OK, because we don't look at or change other huge page
-> fields.
->
-> But I thought I'd mention the idea in case anyone else has any clever ideas about
-> how this simple check might be insufficient here. It seems fine to me, but I
-> routinely lack enough imagination about concurrent operations. :)
+> 
+> Not sure if that's a false positive or not. This kind of indirection
+> makes my brain melt.
 
-Hmmm... I think the scariest aspect here is probably the interaction
-with concurrent allocation of a compound page on architectures with
-store-store reordering (like ARM). *If* the page allocator handled
-compound pages with lockless, non-atomic percpu freelists, I think it
-might be possible that the zeroing of tail_page->compound_head in
-put_page() could be reordered after the page has been freed,
-reallocated and set to refcount 1 again?
+So, this one should be a false positive. But agree about the
+indirection, it's not the first sizeof bug you found. Any
+better ideas how to push it to the type system?
 
-That shouldn't be possible at the moment, but it is still a bit scary.
+I think something like below would make more sense
 
+#define copy_from_user_typed(from, to) \
+    assert(typeof(from) == typeof(to)),
+    copy_from_user(from, to, sizeof(*from));
 
-I think the lockless page cache code also has to deal with somewhat
-similar ordering concerns when it uses page_cache_get_speculative(),
-e.g. in mapping_get_entry() - first it looks up a page pointer with
-xas_load(), and any access to the page later on would be a _dependent
-load_, but if the page then gets freed, reallocated, and inserted into
-the page cache again before the refcount increment and the re-check
-using xas_reload(), then there would be no data dependency from
-xas_reload() to the following use of the page...
+-- 
+Pavel Begunkov
