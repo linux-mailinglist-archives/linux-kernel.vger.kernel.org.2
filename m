@@ -2,129 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A133A8B6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822533A8B71
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhFOVyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFOVyz (ORCPT
+        id S231286AbhFOV4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:56:54 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57422 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230045AbhFOV4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:54:55 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE50CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:52:49 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id b37so720318ljr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0XQnzVjTuP7aBILPyoyVQYQXqE/KQql4/BGG/kkVsjE=;
-        b=gGfsNADVzHheLJtshFSvaD/DGD7MMjGpXn9cuW+cqCUX2Xd2zmn5p3v+yDXFjhYjtK
-         PDLnOr1KKcT1OLCV6DmMntBGhrfUy0fxFML9PTdLQwix8Sd1hhPKRkJq6T0G7E4Ih+NA
-         bygB5L8TqSiTWvrpf2PeCWl4nP29lwEvs0p8hAUMjE225soFkN2+WNABhSNuB+euV8Q/
-         HSj4o5EqiwXTsqhpK8SRG3q2fz0JovM5ppq9RUlGel+tygTg+OEql0sia8kFjIp7n0lC
-         rSEFJnNMUDNnbVoVZyuQrRWa9O1SgCOtrk9ljun/mmLILGGgE16kacXSjSAUEPM4K2jZ
-         iBoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0XQnzVjTuP7aBILPyoyVQYQXqE/KQql4/BGG/kkVsjE=;
-        b=K7KGhUUkSh1tt+6a9bcIreLxGNNoCOAca6zxC+XX++Qv6Ud06ypNpxW+AP+KzDDpcs
-         vBlmo+Nl0JcxKiFRDcJYXaGLLPJG8xFWz4mhKF9/pne8J48HsUtI/yy6zY9STPDxtgfE
-         gpAOYH2+MGdW1BEy917pqSiRpD3T5CionxyHvCmsINr4AkRy5pYU2NZxvtUXghyAXdT6
-         NyC4N0DlHRebvnibqTkyoFm/PVviJCc76tm0UBeahOLsqhQmCYBGfaYxKa+S/9a1wsaZ
-         XFrUCFJ1ytdrlq0JUOSX0I5tPGuX2eKiB/JnQtSvsQGe4FJ6ayY2137mFV7ShOUEJsfs
-         JYwQ==
-X-Gm-Message-State: AOAM532IB2s5qIIHREOXzp3bCIZ0q/qQY7S3scDYdJSieCDxAOC+nepm
-        p50+d05yYHDXHCz3yitShcythMaB4XiPWnyIZzZUyg==
-X-Google-Smtp-Source: ABdhPJwJu/tvSMtLHSaZgYb0ugWasxEscMYkOfpr1bpGAqWcyf39Efy4gbX1yv+dRzvE6RNhfOZX1SkRbib2UJyn5IE=
-X-Received: by 2002:a05:651c:3c6:: with SMTP id f6mr1450704ljp.456.1623793968085;
- Tue, 15 Jun 2021 14:52:48 -0700 (PDT)
+        Tue, 15 Jun 2021 17:56:53 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ltH19-0009sn-8n; Tue, 15 Jun 2021 23:54:43 +0200
+Received: from [85.7.101.30] (helo=linux-3.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ltH18-000IMK-PK; Tue, 15 Jun 2021 23:54:42 +0200
+Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        Kurt Manucredo <fuzzybritches0@gmail.com>,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
+        keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        nathan@kernel.org, ndesaulniers@google.com,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
+References: <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
+ <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
+ <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com> <202106101002.DF8C7EF@keescook>
+ <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
+ <85536-177443-curtm@phaethon>
+ <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com> <YMkAbNQiIBbhD7+P@gmail.com>
+ <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
+ <YMkcYn4dyZBY/ze+@gmail.com> <YMkdx1VB0i+fhjAY@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4713f6e9-2cfb-e2a6-c42d-b2a62f035bf2@iogearbox.net>
+Date:   Tue, 15 Jun 2021 23:54:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210615174435.4174364-1-shakeelb@google.com> <20210615174435.4174364-2-shakeelb@google.com>
- <YMj/s26uF+cQOB2D@cmpxchg.org>
-In-Reply-To: <YMj/s26uF+cQOB2D@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 15 Jun 2021 14:52:37 -0700
-Message-ID: <CALvZod6Hpema0uMcnMGPS+_2iZuxc8JqkjHRVBeEGp-vdcpPYA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] memcg: periodically flush the memcg stats
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YMkdx1VB0i+fhjAY@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26202/Tue Jun 15 13:21:24 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:29 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> Hey Shakeel,
->
-> On Tue, Jun 15, 2021 at 10:44:35AM -0700, Shakeel Butt wrote:
-> > At the moment memcg stats are read in four contexts:
-> >
-> > 1. memcg stat user interfaces
-> > 2. dirty throttling
-> > 3. page fault
-> > 4. memory reclaim
-> >
-> > Currently the kernel flushes the stats for first two cases. Flushing the
-> > stats for remaining two casese may have performance impact. Always
-> > flushing the memcg stats on the page fault code path may negatively
-> > impacts the performance of the applications. In addition flushing in the
-> > memory reclaim code path, though treated as slowpath, can become the
-> > source of contention for the global lock taken for stat flushing because
-> > when system or memcg is under memory pressure, many tasks may enter the
-> > reclaim path.
-> >
-> > Instead of synchronously flushing the stats, this patch adds support of
-> > asynchronous periodic flushing of the memcg stats. For now the flushing
-> > period is hardcoded to 2*HZ but that can be changed later through maybe
-> > sysctl if need arise.
->
-> I'm concerned that quite a lot can happen in terms of reclaim and page
-> faults in 2 seconds. It's conceivable that the error of a fixed 2s
-> flush can actually exceed the error of a fixed percpu batch size.
->
+On 6/15/21 11:38 PM, Eric Biggers wrote:
+> On Tue, Jun 15, 2021 at 02:32:18PM -0700, Eric Biggers wrote:
+>> On Tue, Jun 15, 2021 at 11:08:18PM +0200, Daniel Borkmann wrote:
+>>> On 6/15/21 9:33 PM, Eric Biggers wrote:
+>>>> On Tue, Jun 15, 2021 at 07:51:07PM +0100, Edward Cree wrote:
+>>>>>
+>>>>> As I understand it, the UBSAN report is coming from the eBPF interpreter,
+>>>>>    which is the *slow path* and indeed on many production systems is
+>>>>>    compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
+>>>>> Perhaps a better approach to the fix would be to change the interpreter
+>>>>>    to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
+>>>>>    bitnesses), thus matching the behaviour of most chips' shift opcodes.
+>>>>> This would shut up UBSAN, without affecting JIT code generation.
+>>>>
+>>>> Yes, I suggested that last week
+>>>> (https://lkml.kernel.org/netdev/YMJvbGEz0xu9JU9D@gmail.com).  The AND will even
+>>>> get optimized out when compiling for most CPUs.
+>>>
+>>> Did you check if the generated interpreter code for e.g. x86 is the same
+>>> before/after with that?
+>>
+>> Yes, on x86_64 with gcc 10.2.1, the disassembly of ___bpf_prog_run() is the same
+>> both before and after (with UBSAN disabled).  Here is the patch I used:
+>>
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index 5e31ee9f7512..996db8a1bbfb 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -1407,12 +1407,30 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+>>   		DST = (u32) DST OP (u32) IMM;	\
+>>   		CONT;
+>>   
+>> +	/*
+>> +	 * Explicitly mask the shift amounts with 63 or 31 to avoid undefined
+>> +	 * behavior.  Normally this won't affect the generated code.
 
-Yes, that is possible.
+The last one should probably be more specific in terms of 'normally', e.g. that
+it is expected that the compiler is optimizing this away for archs like x86. Is
+arm64 also covered by this ... do you happen to know on which archs this won't
+be the case?
 
-> The way the global vmstat implementation manages error is doing both:
-> ratelimiting and timelimiting. It uses percpu batching to limit the
-> error when it gets busy, and periodic flushing to limit the length of
-> time consumers of those stats could be stuck trying to reach a state
-> that the batching would otherwise prevent from being reflected.
->
-> Maybe we can use a combination of ratelimiting and timelimiting too?
->
-> We shouldn't flush on every fault, but what about a percpu ratelimit
-> that would at least bound the error to NR_CPU instead of nr_cgroups?
->
+Additionally, I think such comment should probably be more clear in that it also
+needs to give proper guidance to JIT authors that look at the interpreter code to
+see what they need to implement, in other words, that they don't end up copying
+an explicit AND instruction emission if not needed there.
 
-Couple questions here:
+>> +	 */
+>> +#define ALU_SHIFT(OPCODE, OP)		\
+>> +	ALU64_##OPCODE##_X:		\
+>> +		DST = DST OP (SRC & 63);\
+>> +		CONT;			\
+>> +	ALU_##OPCODE##_X:		\
+>> +		DST = (u32) DST OP ((u32)SRC & 31);	\
+>> +		CONT;			\
+>> +	ALU64_##OPCODE##_K:		\
+>> +		DST = DST OP (IMM & 63);	\
+>> +		CONT;			\
+>> +	ALU_##OPCODE##_K:		\
+>> +		DST = (u32) DST OP ((u32)IMM & 31);	\
+>> +		CONT;
 
-First, to convert the error bound to NR_CPU from nr_cgroups, I think
-we have to move from (delta > threshold) comparison to
-(num_update_events > threshold). Previously an increment event
-followed by decrement would keep the delta to 0 (or same) but after
-this change num_update_events would be 2. Is that ok?
+For the *_K cases these are explicitly rejected by the verifier already. Is this
+required here nevertheless to suppress UBSAN false positive?
 
-Second, do we want to synchronously flush the stats when we cross the
-threshold on update or asynchronously by queuing the flush with zero
-delay?
+>>   	ALU(ADD,  +)
+>>   	ALU(SUB,  -)
+>>   	ALU(AND,  &)
+>>   	ALU(OR,   |)
+>> -	ALU(LSH, <<)
+>> -	ALU(RSH, >>)
+>> +	ALU_SHIFT(LSH, <<)
+>> +	ALU_SHIFT(RSH, >>)
+>>   	ALU(XOR,  ^)
+>>   	ALU(MUL,  *)
+>>   #undef ALU
+> 
+> Note, I missed the arithmetic right shifts later on in the function.  Same
+> result there, though.
+> 
+> - Eric
+> 
 
-> For thundering herds during reclaim: as long as they all tried to
-> flush from the root, only one of them would actually need to do the
-> work, and we could use trylock. If the lock is already taken, you can
-> move on knowing that somebody is already doing the shared flush work.
-
-Yes, this makes sense.
