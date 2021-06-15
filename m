@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDDD3A7DE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663B03A7DEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 14:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhFOMJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 08:09:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230208AbhFOMJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:09:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 179EC61241;
-        Tue, 15 Jun 2021 12:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623758868;
-        bh=51lCS61A39XhM9W1OqX+D9RXpYRQiY7gp/eyopa45Mo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KzqBDUOSt8FTB+s4fEoItuGcRH/2ZSne4v3OKSnPuAmiJ9/Zidx4dh/K9pm6sTAOG
-         ay/04EpMAH5Xu8ytpxDjc/MkBxsbWkIYAnW/92HBwCqRv/gAiu0OhkXL/31pPLbwb0
-         MQ2O0wpKF3qiCRlOL0vsCkK4qRC5mv9+s3kSIWQ7W/mAYOIOiuXU97uLRId3JsPufo
-         GMg3/A4T2vsCvKHOKBg8kBSPgO6Tn+WOdhuSlbiZ8U9kBQKT3MRxDAKOhLhcPezXIt
-         7PTgllxYjp0bgj/RJWouKNLAKiWMKV6dkK+X7D3rujOBzSuldoNUL77yt4untHiecM
-         AmGx/soYvvzXA==
-Date:   Tue, 15 Jun 2021 17:37:45 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-Message-ID: <YMiYEZDgutW+KRsO@vkoul-mobl>
-References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
- <CAOMZO5CNjpek0vkDrMyTmfbnr2cLcquck6QQBqXLBiyTDKPXvA@mail.gmail.com>
- <VE1PR04MB6688017E125D42C5DCB3C17D89309@VE1PR04MB6688.eurprd04.prod.outlook.com>
- <YMhDvlPrFvSZP//I@vkoul-mobl>
- <VE1PR04MB6688E8EECC03C5290DE10BC089309@VE1PR04MB6688.eurprd04.prod.outlook.com>
+        id S230052AbhFOMMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 08:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhFOMMM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 08:12:12 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA9DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:10:08 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id k8so7765937lja.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 05:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WNpdr2S1NDbOx7bwbHaY+rxGjF1pZI1K0hiTte/Oqqs=;
+        b=hn6SsOwGYHR0CT0tDtiihzIzNVHWuJ5IrzWQY7kMPAPAkOcNK/166MPvX5oPF0j2qO
+         9T/1zTMuqXEJ4b6ZgOC6Knr2m2Yqb2HfB8NrNqGrd4izzEpDRZwQu15NaWtzVMNqbTZ3
+         7dJdgKBsPI3lfkwZM1wMH/372Y7ijszwqY2alGxa0ROsPoSE9JOK9BrBKfBi1ucrs+q6
+         Y7asH2E5+HafTOB16GdKR1Br5TfolOTf9iW970559LAuX/4rScPQ7EzCAw+yJ8GcPiNj
+         XGtWxud65paFus1Ok5qmMCntw4zfOD+Qwpb0VTJslYHXyUYBkuT6DesWQVfZvQ4GEa/3
+         i25A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WNpdr2S1NDbOx7bwbHaY+rxGjF1pZI1K0hiTte/Oqqs=;
+        b=cXlQsWxwRBrN02jMG5Mw2pSB/ysd7Hynzj2sSINdsipl7FdjGbx/OSYARhFsm23H3Z
+         pPJygaOarLkhbzFNPZN+HQl/pw/BiVIedvcUsRxX7IFxI6JAaUAoiq0Jw8z1MB2AeEeL
+         7Xnken7JC1Y91mO7H4Ez/TkcxnJATfKjsPFs8op6/gaEFFklHR1z5r1n+IOFUAer0o6b
+         M4voZ6xQe5fcpS54+dLo0anUKpbA5hVy9VD0kGC0rdiAKFqkIEKGzlrm+B9AP1WlENyA
+         dscOtjAJKGaf+Y4QgEN4YbrrF7ClrU26ufQUF7qwRP822xZnuOv9G65d74fuHoR9CtyA
+         0t6w==
+X-Gm-Message-State: AOAM531EfkRwo8Aah87KU1IuVHVLERp4+VDsENjLYnnq0qeGm1bynGfa
+        XZlOEjWjfVUDSWjogQtCQfsEPghggfUkkJE5yLC2wg==
+X-Google-Smtp-Source: ABdhPJw8A6vOZsaQEDsWTxdTmFkA/8e8Rr9IEnGktDJsMz7Tqoh1ranC3q6kCm2luqXihS9dlvk8IM++pXxR3peUytE=
+X-Received: by 2002:a2e:b5ae:: with SMTP id f14mr17742867ljn.94.1623759005720;
+ Tue, 15 Jun 2021 05:10:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6688E8EECC03C5290DE10BC089309@VE1PR04MB6688.eurprd04.prod.outlook.com>
+References: <20210615012014.1100672-1-jannh@google.com> <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
+In-Reply-To: <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 15 Jun 2021 14:09:38 +0200
+Message-ID: <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with split_huge_page()
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-06-21, 06:36, Robin Gong wrote:
-> On 15/06/21 14:08 Vinod Koul <vkoul@kernel.org> wrote:
-> > On 15-06-21, 01:55, Robin Gong wrote:
-> > > On 06/11/21 21:51 Fabio Estevam <festevam@gmail.com> wrote:
-> > 
-> > > > Without this series, SPI DMA does not work on i.MX8MM:
-> > > >
-> > > >  [   41.315984] spi_master spi1: I/O Error in DMA RX
-> > > >
-> > > > I applied your series and SPI DMA works now:
-> > > >
-> > > > Reviewed-by: Fabio Estevam <festevam@gmail.com>
-> > > Thanks Fabio.
-> > > Hello Vinod, Mark,
-> > > Is my patch set good enough to merge? I remember someone else are
-> > > requesting it from last year like Fabio.
-> > 
-> > I have acked the last dmaengine patch, is there any else required from me?
-> > Which tree will be this merged thru?
-> Thanks Vinod, mainline is enough I think. 
+On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> On 6/14/21 6:20 PM, Jann Horn wrote:
+> > try_grab_compound_head() is used to grab a reference to a page from
+> > get_user_pages_fast(), which is only protected against concurrent
+> > freeing of page tables (via local_irq_save()), but not against
+> > concurrent TLB flushes, freeing of data pages, or splitting of compound
+> > pages.
+[...]
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-I meant which subsystem tree will this go thru :)
+Thanks!
 
--- 
-~Vinod
+[...]
+> > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+> >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
+> >               return NULL;
+> >       if (unlikely(!page_cache_add_speculative(head, refs)))
+> >               return NULL;
+> > +
+> > +     /*
+> > +      * At this point we have a stable reference to the head page; but it
+> > +      * could be that between the compound_head() lookup and the refcount
+> > +      * increment, the compound page was split, in which case we'd end up
+> > +      * holding a reference on a page that has nothing to do with the page
+> > +      * we were given anymore.
+> > +      * So now that the head page is stable, recheck that the pages still
+> > +      * belong together.
+> > +      */
+> > +     if (unlikely(compound_head(page) != head)) {
+>
+> I was just wondering about what all could happen here. Such as: page gets split,
+> reallocated into a different-sized compound page, one that still has page pointing
+> to head. I think that's OK, because we don't look at or change other huge page
+> fields.
+>
+> But I thought I'd mention the idea in case anyone else has any clever ideas about
+> how this simple check might be insufficient here. It seems fine to me, but I
+> routinely lack enough imagination about concurrent operations. :)
+
+Hmmm... I think the scariest aspect here is probably the interaction
+with concurrent allocation of a compound page on architectures with
+store-store reordering (like ARM). *If* the page allocator handled
+compound pages with lockless, non-atomic percpu freelists, I think it
+might be possible that the zeroing of tail_page->compound_head in
+put_page() could be reordered after the page has been freed,
+reallocated and set to refcount 1 again?
+
+That shouldn't be possible at the moment, but it is still a bit scary.
+
+
+I think the lockless page cache code also has to deal with somewhat
+similar ordering concerns when it uses page_cache_get_speculative(),
+e.g. in mapping_get_entry() - first it looks up a page pointer with
+xas_load(), and any access to the page later on would be a _dependent
+load_, but if the page then gets freed, reallocated, and inserted into
+the page cache again before the refcount increment and the re-check
+using xas_reload(), then there would be no data dependency from
+xas_reload() to the following use of the page...
