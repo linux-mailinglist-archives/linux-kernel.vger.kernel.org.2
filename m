@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA603A89C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737FD3A89C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhFOTxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 15:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56514 "EHLO
+        id S230377AbhFOTyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 15:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhFOTxF (ORCPT
+        with ESMTP id S229749AbhFOTyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:53:05 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDC1C061574;
-        Tue, 15 Jun 2021 12:51:00 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id u18so256424pfk.11;
-        Tue, 15 Jun 2021 12:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Tmn7Qs27sSC17wg+6pi/G56sByOCg1rr24W9UoH5oRo=;
-        b=AEW3YvA+PHWywV7H/jrnAFE/mjA14AFvBLdSP2YYo+4IbWudhW3aVLiFuXdZ/Frdj1
-         3PNNkpRk4v05vttaidUgqZQ416Q+ePKHPQfyyyAijo5H1PCUkvHom1N24AMHax47oc+R
-         sZrNibho2qVqps++bIFyYuv4a6gkp5KyJyycLpOfXi93MQLfNU8zpstODqfLIwvnNvfp
-         ygl+8PnDM1/3/heskVFoNqS7Q35oGRLbMFlxCDWk99Xss+6H3n8hSHpDCfJPj4S/tjVA
-         3UyDAhVwZmm129op8ErQJOTPadoEvQDETHuHcjs8zUmBDTaUnbXC1bbELL/v5FwkBVvy
-         UO1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Tmn7Qs27sSC17wg+6pi/G56sByOCg1rr24W9UoH5oRo=;
-        b=QFyqPiow3S9Ikzr0RRWgcl3QhXf5uy3pE88v32709dDEHNxJAs0Ie6XYr/ymiY+ijT
-         kp9HYUVDcUGUUvIG2UgIkYMcF9F7VNb9T6SrLev2StdeJnmTP8UG+ki40vcPTcTPEmrb
-         h3WBv16s4KFgnR4As0kxMDVocxvdFBXHXEeqIBH8+ZkHeml102UvbOE6vefyfjXHVNej
-         yMGt1EC/AKciGKk/GItfDZHtoLqSggeZ4kCdBnPFbV+yKICw9KNUe+DNsX1Rq7uxIVba
-         tXP/WhMEwu9kLfhllxC8obR73dUUQ/ICNcziTngoiQYCF5KallPGIbgzlAU6SPnSO1A3
-         9RsQ==
-X-Gm-Message-State: AOAM5316NItXf3UcoGp+CwJKKagvl4oZP2K0o1drss9Y4H0XRhPcOZTB
-        JNV9U1pvoI3BB8EELMldDVYLqeuSIYanlug4LKR/bAv3WuoVKo8j
-X-Google-Smtp-Source: ABdhPJyaFJ17QXCrI4dW/f6IRBXohJ1AwMqYeFCfuAe7mj1IAIfIYLVGSnzcTEuIG2mMv/Hlh2ci/uEIyNxxFEX+CB8=
-X-Received: by 2002:a05:6a00:139c:b029:2f7:102c:5393 with SMTP id
- t28-20020a056a00139cb02902f7102c5393mr6179944pfg.40.1623786659779; Tue, 15
- Jun 2021 12:50:59 -0700 (PDT)
+        Tue, 15 Jun 2021 15:54:08 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839B1C061574;
+        Tue, 15 Jun 2021 12:52:03 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 60B1D620D; Tue, 15 Jun 2021 15:52:00 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 60B1D620D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1623786720;
+        bh=oM0LZltQSkc1niBCAeKehrloS9a/z0+/caFSXoWiLTc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DjpmFJ+vgnlPBEHHCIphRFx/JfeIpIj7sjCxXfBU42Eq91TwJ3ZTpHpn9ggq17qAj
+         wSgo5xANP5mGtWCzYfxJbqTO1FZPuwcR6O1ip15ZW83GZj0xn/L7CGhsQxVV6QGDT8
+         1+FPLXgjSJCMGYFu/8aIG3JKQ28FjG78Xbw2CVS0=
+Date:   Tue, 15 Jun 2021 15:52:00 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     syzbot <syzbot+314d9a0380418b51606b@syzkaller.appspotmail.com>
+Cc:     chuck.lever@oracle.com, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] general protection fault in
+ nfsd_reply_cache_free_locked (2)
+Message-ID: <20210615195200.GE11877@fieldses.org>
+References: <000000000000a6561705c42681d8@google.com>
 MIME-Version: 1.0
-References: <20210613183520.2247415-1-mw@semihalf.com> <20210613183520.2247415-2-mw@semihalf.com>
- <YMZdvt4xlev3JQhF@lunn.ch> <CAHp75VdMsYJMCwH2o14e7nJBTj6A38dkcZJ+0WQfnW=keOyoAg@mail.gmail.com>
- <CAPv3WKeubNaxpv442d57bEqA1ZtPcTXOswcsuCsregW_2Akdww@mail.gmail.com>
-In-Reply-To: <CAPv3WKeubNaxpv442d57bEqA1ZtPcTXOswcsuCsregW_2Akdww@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 15 Jun 2021 22:50:43 +0300
-Message-ID: <CAHp75VfO5p-SpDWhJ+BFuG3-2YW+4-rBn-SLR2s0z8Po-CHcqA@mail.gmail.com>
-Subject: Re: [net-next: PATCH 1/3] net: mvmdio: add ACPI support
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "jaz@semihalf.com" <jaz@semihalf.com>,
-        "gjb@semihalf.com" <gjb@semihalf.com>,
-        "upstream@semihalf.com" <upstream@semihalf.com>,
-        "Samer.El-Haj-Mahmoud@arm.com" <Samer.El-Haj-Mahmoud@arm.com>,
-        "jon@solid-run.com" <jon@solid-run.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000a6561705c42681d8@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 6:09 PM Marcin Wojtas <mw@semihalf.com> wrote:
-> niedz., 13 cze 2021 o 22:08 Andy Shevchenko
-> <andy.shevchenko@gmail.com> napisa=C5=82(a):
-> > On Sunday, June 13, 2021, Andrew Lunn <andrew@lunn.ch> wrote:
+This isn't the first report:
 
-> > The better approach is to switch to devm_get_clk_optional() as I have d=
-one in several drivers, IIRC recently in mvpp2
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/com=
-mit/?id=3Dcf3399b731d36bc780803ff63e4d480a1efa33ac
->
-> Yes, this would be a nice improvement, however the
-> devm_get_clk_optional requires clock name (type char *) - mvmdio uses
-> raw indexes, so this helper unfortunately seems to be not applicable.
+	https://syzkaller.appspot.com/bug?extid=a29df412692980277f9d
 
-As far as I can read the code it smells like devm_clk_bulk_get_optional().
-Am I mistaken?
+but I'm not managing yet to see why it happens....
 
---=20
-With Best Regards,
-Andy Shevchenko
+--b.
+
+On Sun, Jun 06, 2021 at 10:42:26PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    231bc539 Merge branch 'for-linus' of git://git.kernel.org/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=101f596bd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8a9e9956ca52a5f6
+> dashboard link: https://syzkaller.appspot.com/bug?extid=314d9a0380418b51606b
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+314d9a0380418b51606b@syzkaller.appspotmail.com
+> 
+> general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+> CPU: 0 PID: 25304 Comm: kworker/u4:12 Not tainted 5.13.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: netns cleanup_net
+> RIP: 0010:nfsd_reply_cache_free_locked+0x31/0x3b0 fs/nfsd/nfscache.c:123
+> Code: 54 49 89 fc 55 48 89 f5 53 48 89 d3 48 83 ec 08 e8 94 f5 1c ff 48 8d 7d 61 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 c3 02 00 00
+> RSP: 0018:ffffc90017a07b68 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: ffff888017997000 RCX: 0000000000000000
+> RDX: 0000000000000002 RSI: ffffffff8257e6ec RDI: 0000000000000011
+> RBP: ffffffffffffffb0 R08: 0000000000000800 R09: ffffffff902278af
+> R10: ffffffff8257f56e R11: 0000000000084087 R12: ffff888000118680
+> R13: 0000000000018680 R14: ffffed10000230d1 R15: ffff888000118680
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffe0630ed17 CR3: 0000000017232000 CR4: 00000000001526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  nfsd_reply_cache_shutdown+0x153/0x2d0 fs/nfsd/nfscache.c:222
+>  nfsd_exit_net+0x15f/0x490 fs/nfsd/nfsctl.c:1503
+>  ops_exit_list+0xb0/0x160 net/core/net_namespace.c:175
+>  cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:595
+>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> Modules linked in:
+> ---[ end trace 0af87ae802e1324a ]---
+> RIP: 0010:nfsd_reply_cache_free_locked+0x31/0x3b0 fs/nfsd/nfscache.c:123
+> Code: 54 49 89 fc 55 48 89 f5 53 48 89 d3 48 83 ec 08 e8 94 f5 1c ff 48 8d 7d 61 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 c3 02 00 00
+> RSP: 0018:ffffc90017a07b68 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: ffff888017997000 RCX: 0000000000000000
+> RDX: 0000000000000002 RSI: ffffffff8257e6ec RDI: 0000000000000011
+> RBP: ffffffffffffffb0 R08: 0000000000000800 R09: ffffffff902278af
+> R10: ffffffff8257f56e R11: 0000000000084087 R12: ffff888000118680
+> R13: 0000000000018680 R14: ffffed10000230d1 R15: ffff888000118680
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00005618fcbf1160 CR3: 000000001518e000 CR4: 00000000001526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
