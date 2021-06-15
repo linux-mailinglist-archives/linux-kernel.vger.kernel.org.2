@@ -2,155 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D321A3A8B57
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BA23A8B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhFOVrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:47:02 -0400
-Received: from mga18.intel.com ([134.134.136.126]:63778 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229782AbhFOVrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:47:01 -0400
-IronPort-SDR: fezhpbZpVnX1O42OfEOTYQJ2ZFTQM9s5NzNGfd8tFRA3zJX15vNeDvxSpIB7dfWNX1PzcfMh4l
- vUYeJKk1hb2w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10016"; a="193383226"
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="193383226"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 14:44:56 -0700
-IronPort-SDR: 9D5efK5r7/spYE4iMzis4Odt9TH7fvsnCLpHdSfUhevqPcV5aIvQZD/RM453BPUAyJMyO0zTiM
- 4+3D1oSjryDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,276,1616482800"; 
-   d="scan'208";a="421259648"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 15 Jun 2021 14:44:55 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ltGre-0000f9-Cq; Tue, 15 Jun 2021 21:44:54 +0000
-Date:   Wed, 16 Jun 2021 05:44:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- eb7f1579243fb0c278b883f830302ce3b3dc20c3
-Message-ID: <60c91f30.1E/A4QVOSKXr6a15%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231384AbhFOVrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:47:45 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:33684 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230390AbhFOVrl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:47:41 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-33-72N-gABBMLOshMFf5vULMw-1; Tue, 15 Jun 2021 22:45:31 +0100
+X-MC-Unique: 72N-gABBMLOshMFf5vULMw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 15 Jun
+ 2021 22:45:31 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Tue, 15 Jun 2021 22:45:31 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Maciej W. Rozycki'" <macro@orcam.me.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 0/4] serial: 8250: Fixes for Oxford Semiconductor 950
+ UARTs
+Thread-Topic: [PATCH 0/4] serial: 8250: Fixes for Oxford Semiconductor 950
+ UARTs
+Thread-Index: AQHXYgmrMOUHbNNmBkylhf24FzI3QKsVmsuw
+Date:   Tue, 15 Jun 2021 21:45:31 +0000
+Message-ID: <aff02581e694421eba04afc2fc3644df@AcuMS.aculab.com>
+References: <alpine.DEB.2.21.2106071700090.1601@angie.orcam.me.uk>
+ <YMiX7LAEtL0uQuVl@kroah.com>
+ <alpine.DEB.2.21.2106151602120.61948@angie.orcam.me.uk>
+ <YMjMpQtLeP3xceYR@kroah.com>
+ <alpine.DEB.2.21.2106151805460.61948@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2106151805460.61948@angie.orcam.me.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: eb7f1579243fb0c278b883f830302ce3b3dc20c3  Merge branch 'objtool/core'
+RnJvbTogTWFjaWVqIFcuIFJvenlja2kNCj4gU2VudDogMTUgSnVuZSAyMDIxIDE4OjEzDQouLi4N
+Cj4gIEFzIEkgaGF2ZSBub3RlZCBhYm92ZSB0aGVyZSBpcyBhIGRhdGEgdHlwZSBzaWduZWRuZXNz
+IGRpZmZlcmVuY2UgYmV0d2Vlbg0KPiBgbWNyX21hc2snIGFuZCBVQVJUX01DUl9DTEtTRUwuICBT
+byB3ZSBoYXZlIHRoZSB2YWx1ZSBvZiAweDgwICgxMjgpLg0KPiBPbmNlIGJpdHdpc2UtY29tcGxl
+bWVudGVkIGl0IGJlY29tZXMgMHhmZmZmZmY3ZiAoLTEyOSkuICBPbmNlIGFzc2lnbmVkIHRvDQo+
+IGBtY3JfbWFzaycgaG93ZXZlciBpdCBiZWNvbWVzIDB4N2YgKDEyNyksIHdoaWNoIGlzIGNvbnNp
+ZGVyZWQgYW4gdW5zYWZlDQo+IGNvbnZlcnNpb24gYmV0d2VlbiBzaWduZWQgYW5kIHVuc2lnbmVk
+IGludGVnZXJzIGJ5IEdDQywgd2hpY2ggaXMgd2h5IHRoZQ0KPiBjb21waWxlciBjb21wbGFpbnMg
+YWJvdXQgaXQuDQoNCkJsYW1lIHRoZSBpc28gQyBzdGFuZGFyZHMgY29tbWl0dGVlIGZvciBtYWtp
+bmcgaW50ZWdlciBwcm9tb3Rpb25zDQondmFsdWUgcHJlc2VydmluZycgaW5zdGVhZCBvZiAnc2ln
+biBwcmVzZXJ2aW5nJyBhcyB0aGV5IHdlcmUgaW4gSyZSIEMuDQoNClRyeSB1c2luZyBeIDB4ZmZ1
+IGluc3RlYWQgb2Ygfi4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
+ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
+UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-elapsed time: 727m
-
-configs tested: 93
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                          tiger_defconfig
-powerpc                  storcenter_defconfig
-microblaze                          defconfig
-powerpc                     kilauea_defconfig
-mips                           ip22_defconfig
-arm                     davinci_all_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                     sequoia_defconfig
-mips                   sb1250_swarm_defconfig
-arm                         s3c6400_defconfig
-powerpc                      bamboo_defconfig
-arm                         s5pv210_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                         cobalt_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20210615
-x86_64               randconfig-a004-20210615
-x86_64               randconfig-a002-20210615
-x86_64               randconfig-a003-20210615
-x86_64               randconfig-a006-20210615
-x86_64               randconfig-a005-20210615
-i386                 randconfig-a002-20210615
-i386                 randconfig-a006-20210615
-i386                 randconfig-a004-20210615
-i386                 randconfig-a001-20210615
-i386                 randconfig-a005-20210615
-i386                 randconfig-a003-20210615
-i386                 randconfig-a015-20210615
-i386                 randconfig-a013-20210615
-i386                 randconfig-a016-20210615
-i386                 randconfig-a012-20210615
-i386                 randconfig-a014-20210615
-i386                 randconfig-a011-20210615
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210615
-x86_64               randconfig-a015-20210615
-x86_64               randconfig-a011-20210615
-x86_64               randconfig-a012-20210615
-x86_64               randconfig-a014-20210615
-x86_64               randconfig-a016-20210615
-x86_64               randconfig-a013-20210615
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
