@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CB63A814B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8780B3A814C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhFONuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:50:14 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:10075 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFONuM (ORCPT
+        id S231293AbhFONuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:50:16 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4918 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhFONuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:50:12 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G48hQ5mvFzZfCM;
-        Tue, 15 Jun 2021 21:45:10 +0800 (CST)
+        Tue, 15 Jun 2021 09:50:13 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G48h90JYmz706s;
+        Tue, 15 Jun 2021 21:44:57 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 21:48:05 +0800
+ 15.1.2176.2; Tue, 15 Jun 2021 21:48:06 +0800
 Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
  (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
@@ -26,9 +26,9 @@ Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
 From:   Yang Yingliang <yangyingliang@huawei.com>
 To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
 CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>
-Subject: [PATCH -next 3/5] ASoC: img-parallel-out: Use devm_platform_get_and_ioremap_resource()
-Date:   Tue, 15 Jun 2021 21:51:58 +0800
-Message-ID: <20210615135200.1661695-3-yangyingliang@huawei.com>
+Subject: [PATCH -next 4/5] ASoC: img-spdif-in: Use devm_platform_get_and_ioremap_resource()
+Date:   Tue, 15 Jun 2021 21:51:59 +0800
+Message-ID: <20210615135200.1661695-4-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210615135200.1661695-1-yangyingliang@huawei.com>
 References: <20210615135200.1661695-1-yangyingliang@huawei.com>
@@ -48,16 +48,16 @@ code.
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/img/img-parallel-out.c | 3 +--
+ sound/soc/img/img-spdif-in.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index 4da49a42e854..ce0f08d3777c 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -222,8 +222,7 @@ static int img_prl_out_probe(struct platform_device *pdev)
+diff --git a/sound/soc/img/img-spdif-in.c b/sound/soc/img/img-spdif-in.c
+index 46ff8a3621d5..6364eb742f6d 100644
+--- a/sound/soc/img/img-spdif-in.c
++++ b/sound/soc/img/img-spdif-in.c
+@@ -732,8 +732,7 @@ static int img_spdif_in_probe(struct platform_device *pdev)
  
- 	prl->dev = &pdev->dev;
+ 	spdif->dev = &pdev->dev;
  
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 -	base = devm_ioremap_resource(&pdev->dev, res);
