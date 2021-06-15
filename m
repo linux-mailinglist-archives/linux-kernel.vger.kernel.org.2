@@ -2,166 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897393A76D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A56C3A76D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhFOGII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:08:08 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19572 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229493AbhFOGID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:08:03 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15F63wol093434;
-        Tue, 15 Jun 2021 02:05:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=WtH/0GDuIM1RFrGrskoqpH7PQOp/BTeVrZxhlAFHRZE=;
- b=GYAL7E+IBczpE20iirgmXA+QGaLlxmti+TTIaY5GP88Og/0eu1azEVxCsIKGMmqSGaLv
- B+GnZaDGUVLKMS7AqrR5vXurEc3y/1nz8ulDhJlZlLXo2o2rxcQz86J7MrclDmWHz1vm
- ymnlgeR1JHjLba9SC4vA32X0Z2BjswXdkiivqHGII0xOV9iyuaikzB5owrTeYORrJ7X0
- CJKRc+aXnBBACi1z8c212wIjeWgoTTvPsNhuWfx3G6Z6KGqUJ4vcEsF4Ey4e/EpXuy0H
- IEreGo3eeEmeynztulaIWac2bhJ6vMgTTCCw2CC6eMOvi0Bzke6Hps8hiWm66YHKmHAy rQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 396mp0jxsq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 02:05:42 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15F64YO7096086;
-        Tue, 15 Jun 2021 02:05:42 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 396mp0jxs1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 02:05:42 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15F5wL8u021010;
-        Tue, 15 Jun 2021 06:05:40 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 394mj8gq4v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 06:05:40 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15F65bFa23396680
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 06:05:37 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A1C544C05C;
-        Tue, 15 Jun 2021 06:05:37 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4204D4C052;
-        Tue, 15 Jun 2021 06:05:36 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.174.39])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 15 Jun 2021 06:05:36 +0000 (GMT)
-Date:   Tue, 15 Jun 2021 09:05:34 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Arm64 crash while reading memory sysfs
-Message-ID: <YMhDLs6/g51FJewr@linux.ibm.com>
-References: <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
- <YK9e0LgDOfCFo6TM@linux.ibm.com>
- <ce5a5920-3046-21b5-42c0-2237ec1eef13@quicinc.com>
- <YK/HKMgajBCwpLt8@linux.ibm.com>
- <20210527175047.GK8661@arm.com>
- <20210527155644.7792b4eaa16ec56645e1080c@linux-foundation.org>
- <YLB8AvgC2Ov6N6Pt@linux.ibm.com>
- <daaf6faa-b5c1-b201-28c9-07f8e1fe4a82@arm.com>
- <YMcSkvXrsDMPLicd@linux.ibm.com>
- <20210614171351.8c778c335896285020846666@linux-foundation.org>
+        id S230081AbhFOGIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:08:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhFOGH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 02:07:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45A5261403;
+        Tue, 15 Jun 2021 06:05:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623737152;
+        bh=Sy29Y3LT3i5EaFLnNZYEUnT/LCJHTOdlUMaNhuACiNs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B5601PbOXwYO+bP/NreNlZnZh+spkPaKvsCeHjhUktkv2tNUpYWxNKSorlLaWjfPL
+         max8kLu7bJe3f8P7kHZXszLVfG9JZZ8e+ZycMbkDfmKkUBgOGLEzPIAUOYJ5sVKZwA
+         I4ii0mVDqpwOHrSBkAiNw/LX/oT6GTusiMFptHW0=
+Date:   Tue, 15 Jun 2021 08:05:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        Peter Chen <peter.chen@kernel.org>,
+        Jack Pham <jackp@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: Re: [PATCH 5.10 000/130] 5.10.44-rc2 review
+Message-ID: <YMhDPjbfTFpUtTs3@kroah.com>
+References: <20210614161424.091266895@linuxfoundation.org>
+ <CA+G9fYsfvtr7NNcb0bvEZpYYotdY7Uf+wMY22iLhr0weZ8Om3g@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210614171351.8c778c335896285020846666@linux-foundation.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ONjhl6Cd2f0Rg7KK76Xke8-q58659v2P
-X-Proofpoint-GUID: 4XK5RnCoR-Oq6yLfqMGeL2qj-lbPtTqP
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-15_03:2021-06-14,2021-06-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 spamscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106150036
+In-Reply-To: <CA+G9fYsfvtr7NNcb0bvEZpYYotdY7Uf+wMY22iLhr0weZ8Om3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 05:13:51PM -0700, Andrew Morton wrote:
-> On Mon, 14 Jun 2021 11:25:54 +0300 Mike Rapoport <rppt@linux.ibm.com> wrote:
+On Tue, Jun 15, 2021 at 09:41:26AM +0530, Naresh Kamboju wrote:
+> Hi Greg,
 > 
-> > On Tue, Jun 08, 2021 at 12:36:21PM +0530, Anshuman Khandual wrote:
-> > > 
-> > > 
-> > > On 5/28/21 10:43 AM, Mike Rapoport wrote:
-> > > > On Thu, May 27, 2021 at 03:56:44PM -0700, Andrew Morton wrote:
-> > > >> On Thu, 27 May 2021 18:50:48 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > >>
-> > > >>>> Can you please try Anshuman's patch "arm64/mm: Drop HAVE_ARCH_PFN_VALID":
-> > > >>>>
-> > > >>>> https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
-> > > >>>>
-> > > >>>> It seems to me that the check for memblock_is_memory() in
-> > > >>>> arm64::pfn_valid() is what makes init_unavailable_range() to bail out for
-> > > >>>> section parts that are not actually populated and then we have
-> > > >>>> VM_BUG_ON_PAGE(PagePoisoned(p)) for these pages.
-> > > >>>
-> > > >>> I acked Anshuman's patch, I think they all need to go in together.
-> > > >>
-> > > >> That's neat.   Specifically which patches are we referring to here?
-> > > > 
-> > > > arm64: drop pfn_valid_within() and simplify pfn_valid():
-> > > > https://lore.kernel.org/lkml/20210511100550.28178-5-rppt@kernel.org
-> > > > 
-> > > > arm64/mm: Drop HAVE_ARCH_PFN_VALID:
-> > > > https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
-> > > 
-> > > I dont see the above patch (which drops HAVE_ARCH_PFN_VALID on arm64) on linux-next
-> > > i.e. next-20210607. I might have missed some earlier context here but do not we want
-> > > to fallback on generic pfn_valid() after Mike's series ?
-> > 
-> > Andrew,
-> > 
-> > Can you please pick the two patches above?
+> On Mon, 14 Jun 2021 at 21:45, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.10.44 release.
+> > There are 130 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 16 Jun 2021 16:13:59 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> I already had
+> The following kernel crash reported on stable rc 5.10.44-rc2 arm64 db845c board.
 > 
-> include-linux-mmzoneh-add-documentation-for-pfn_valid.patch
-> memblock-update-initialization-of-reserved-pages.patch
-> arm64-decouple-check-whether-pfn-is-in-linear-map-from-pfn_valid.patch
-> arm64-drop-pfn_valid_within-and-simplify-pfn_valid.patch
+> [    5.127966] dwc3-qcom a6f8800.usb: failed to get usb-ddr path: -517
+> [    5.145567] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000002
+> [    5.154451] Mem abort info:
+> [    5.157296]   ESR = 0x96000004
+> [    5.160401]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    5.165771]   SET = 0, FnV = 0
+> [    5.168873]   EA = 0, S1PTW = 0
+> [    5.172064] Data abort info:
+> [    5.174980]   ISV = 0, ISS = 0x00000004
+> [    5.178860]   CM = 0, WnR = 0
+> [    5.181872] [0000000000000002] user address but active_mm is swapper
+> [    5.188293] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [    5.193922] Modules linked in:
+> [    5.197022] CPU: 4 PID: 57 Comm: kworker/4:3 Not tainted 5.10.44-rc2 #1
+> [    5.203697] Hardware name: Thundercomm Dragonboard 845c (DT)
+> [    5.204022] ufshcd-qcom 1d84000.ufshc: ufshcd_print_pwr_info:[RX,
+> TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
+> [    5.209434] Workqueue: events deferred_probe_work_func
+> [    5.221786] ufshcd-qcom 1d84000.ufshc:
+> ufshcd_find_max_sup_active_icc_level: Regulator capability was not
+> set, actvIccLevel=0
+> [    5.226541] pstate: 60c00005 (nZCv daif +PAN +UAO -TCO BTYPE=--)
+> [    5.226551] pc : inode_permission+0x2c/0x178
+> [    5.226559] lr : lookup_one_len_common+0xac/0x100
 > 
-> and I just added
+> ref:
+> https://lkft.validation.linaro.org/scheduler/job/2899138#L2873
 > 
-> arm64-mm-drop-have_arch_pfn_valid.patch
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 > 
-> so I think we're all good now?
+> There is a crash like this reported and discussed on the mailing thread.
+> https://lore.kernel.org/linux-usb/20210608105656.10795-1-peter.chen@kernel.org/
 
-Yes. 
- 
-> and I don't think any of this is needed in 5.13 or -stable, correct?
+Is this crash just on shutdown?  That's what that commit was fixing, but
+it is resolving an error that should not be in the 5.10.y tree.
 
-Right.
- 
-> I still have question marks over
-> 
-> https://lkml.kernel.org/r/YJ0Fhs5krPJ0FgiV@kernel.org and
-> https://lkml.kernel.org/r/d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com
-> 
-> Is this all OK now?
+thanks,
 
-Yes, it is.
-
--- 
-Sincerely yours,
-Mike.
+greg k-h
