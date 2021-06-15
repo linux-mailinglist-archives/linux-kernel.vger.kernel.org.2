@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA913A7F0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1E63A7F0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhFONUd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 09:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhFONUa (ORCPT
+        id S230403AbhFONUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:20:43 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:26458 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230360AbhFONUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:20:30 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0506EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:18:25 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lt8xD-0007qa-D2; Tue, 15 Jun 2021 15:18:07 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lt8xB-0000Sh-75; Tue, 15 Jun 2021 15:18:05 +0200
-Message-ID: <2e369015776577c6c32ec2f7d05e35f796edf713.camel@pengutronix.de>
-Subject: Re: [PATCH 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Ban Tao <fengzheng923@gmail.com>, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        mripard@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
-        samuel@sholland.org, krzk@kernel.org
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Date:   Tue, 15 Jun 2021 15:18:05 +0200
-In-Reply-To: <20210615130326.2044-1-fengzheng923@gmail.com>
-References: <20210615130326.2044-1-fengzheng923@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 15 Jun 2021 09:20:41 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-3-4Fuj9aaaNA-wL3sLBMdlZw-1; Tue, 15 Jun 2021 14:18:34 +0100
+X-MC-Unique: 4Fuj9aaaNA-wL3sLBMdlZw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 15 Jun
+ 2021 14:18:34 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Tue, 15 Jun 2021 14:18:34 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bin Meng' <bmeng.cn@gmail.com>
+CC:     Matteo Croce <mcroce@linux.microsoft.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        "Drew Fustini" <drew@beagleboard.org>
+Subject: RE: [PATCH 1/3] riscv: optimized memcpy
+Thread-Topic: [PATCH 1/3] riscv: optimized memcpy
+Thread-Index: AQHXYY/3XkdMIImxVUmoQbZ37iIZIqsUw3iggAA3zwCAABG+cA==
+Date:   Tue, 15 Jun 2021 13:18:33 +0000
+Message-ID: <1632006872b04c64be828fa0c4e4eae0@AcuMS.aculab.com>
+References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
+ <20210615023812.50885-2-mcroce@linux.microsoft.com>
+ <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
+ <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
+In-Reply-To: <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ban,
+RnJvbTogQmluIE1lbmcNCj4gU2VudDogMTUgSnVuZSAyMDIxIDE0OjA5DQo+IA0KPiBPbiBUdWUs
+IEp1biAxNSwgMjAyMSBhdCA0OjU3IFBNIERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0QGFjdWxh
+Yi5jb20+IHdyb3RlOg0KPiA+DQouLi4NCj4gPiBJJ20gc3VycHJpc2VkIHRoYXQgdGhlIEMgbG9v
+cDoNCj4gPg0KPiA+ID4gKyAgICAgICAgICAgICBmb3IgKDsgY291bnQgPj0gYnl0ZXNfbG9uZzsg
+Y291bnQgLT0gYnl0ZXNfbG9uZykNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAqZC51bG9u
+ZysrID0gKnMudWxvbmcrKzsNCj4gPg0KPiA+IGVuZHMgdXAgYmVpbmcgZmFzdGVyIHRoYW4gdGhl
+IEFTTSAncmVhZCBsb3RzJyAtICd3cml0ZSBsb3RzJyBsb29wLg0KPiANCj4gSSBiZWxpZXZlIHRo
+YXQncyBiZWNhdXNlIHRoZSBhc3NlbWJseSB2ZXJzaW9uIGhhcyBzb21lIHVuYWxpZ25lZA0KPiBh
+Y2Nlc3MgY2FzZXMsIHdoaWNoIGVuZCB1cCBiZWluZyB0cmFwLW4tZW11bGF0ZWQgaW4gdGhlIE9w
+ZW5TQkkNCj4gZmlybXdhcmUsIGFuZCB0aGF0IGlzIGEgYmlnIG92ZXJoZWFkLg0KDQpBaCwgdGhh
+dCB3b3VsZCBtYWtlIHNlbnNlIHNpbmNlIHRoZSBhc20gdXNlciBjb3B5IGNvZGUNCndhcyBicm9r
+ZW4gZm9yIG1pc2FsaWduZWQgY29waWVzLg0KSSBzdXNwZWN0IG1lbWNweSgpIHdhcyBicm9rZW4g
+dGhlIHNhbWUgd2F5Lg0KDQpJJ20gc3VycHJpc2VkIElQX05FVF9BTElHTiBpc24ndCBzZXQgdG8g
+MiB0byB0cnkgdG8NCmF2b2lkIGFsbCB0aGVzZSBtaXNhbGlnbmVkIGNvcGllcyBpbiB0aGUgbmV0
+d29yayBzdGFjay4NCkFsdGhvdWdoIGF2b2lkaW5nIDhuKzQgYWxpZ25lZCBkYXRhIGlzIHJhdGhl
+ciBoYXJkZXIuDQoNCk1pc2FsaWduZWQgY29waWVzIGFyZSBqdXN0IGJlc3QgYXZvaWRlZCAtIHJl
+YWxseSBldmVuIG9uIHg4Ni4NClRoZSAncmVhbCBmdW4nIGlzIHdoZW4gdGhlIGFjY2VzcyBjcm9z
+c2VzIFRMQiBib3VuZGFyaWVzLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
+a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
+IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-On Tue, 2021-06-15 at 21:03 +0800, Ban Tao wrote:
-> The Allwinner H6 and later SoCs have an DMIC block
-> which is capable of capture.
-> 
-> Signed-off-by: Ban Tao <fengzheng923@gmail.com>
-[...]
-> diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
-> new file mode 100644
-> index 000000000000..78d512d93974
-> --- /dev/null
-> +++ b/sound/soc/sunxi/sun50i-dmic.c
-> @@ -0,0 +1,408 @@
-[...]
-> +	host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-> +	if (IS_ERR(host->rst) && PTR_ERR(host->rst) == -EPROBE_DEFER) {
-> +		ret = -EPROBE_DEFER;
-> +		dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
-> +		return ret;
-> +	}
-
-Please don't ignore errors. For example:
-
-	if (IS_ERR(host->rst))
-		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
-				     "Failed to  get reset\n");
-
-devm_reset_control_get_optional_exclusive() will return NULL if no reset
-is specified in the device tree.
-
-> +	if (!IS_ERR(host->rst))
-> +		reset_control_deassert(host->rst);
-
-Then this is not necessary. Just use:
-
-	reset_control_deassert(host->rst);
-
-regards
-Philipp
