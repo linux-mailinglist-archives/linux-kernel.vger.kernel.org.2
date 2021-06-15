@@ -2,181 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728443A78E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051683A78E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 10:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhFOISd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 04:18:33 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30885 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhFOISc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:18:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623744988; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=QsV4USUbbbPQTl+lm85+hMNaNWVGlA8gz14j/hxs48E=; b=TGKxrFsw1yemuGXBEsBVd78KTdU5o46NomPPbG59aQUvFQ0w+rcRyWffYMCoVBT9NpPm2KF1
- OZ901+0WGu38UBJcJgWF97G537hSer4lAluAghZB/F7RcrXXdu/r0dzAWUQLmy7jwtakc/Ku
- iBk8h7DlmaEdUlHcUuduobyDlZM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60c861d7e570c0561920e669 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 08:16:23
- GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 78459C4323A; Tue, 15 Jun 2021 08:16:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E2395C4338A;
-        Tue, 15 Jun 2021 08:16:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E2395C4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
-Date:   Tue, 15 Jun 2021 01:16:18 -0700
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        Peter Chen <peter.chen@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: Re: [PATCH 5.10 000/130] 5.10.44-rc2 review
-Message-ID: <20210615081618.GB10432@jackp-linux.qualcomm.com>
-References: <20210614161424.091266895@linuxfoundation.org>
- <CA+G9fYsfvtr7NNcb0bvEZpYYotdY7Uf+wMY22iLhr0weZ8Om3g@mail.gmail.com>
- <YMhDPjbfTFpUtTs3@kroah.com>
- <20210615070747.GB31646@jackp-linux.qualcomm.com>
- <YMhStNjyczSNkfkm@kroah.com>
+        id S230526AbhFOISv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 04:18:51 -0400
+Received: from out28-50.mail.aliyun.com ([115.124.28.50]:43064 "EHLO
+        out28-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhFOISt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 04:18:49 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08489759|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.494894-0.00593734-0.499169;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.KSX0zZM_1623745001;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KSX0zZM_1623745001)
+          by smtp.aliyun-inc.com(10.147.41.138);
+          Tue, 15 Jun 2021 16:16:42 +0800
+Date:   Tue, 15 Jun 2021 16:16:39 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     hminas@synopsys.com, paul@crapouillou.net,
+        linux-mips@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com,
+        Dragan =?UTF-8?B?xIxlxI1hdmFj?= <dragancecavac@yahoo.com>
+Subject: Re: [PATCH] USB: DWC2: Add VBUS overcurrent detection control.
+Message-ID: <20210615161456.2dd501a1@zhouyanjie-virtual-machine>
+In-Reply-To: <YFoJ0Z6K4B5smbQx@kroah.com>
+References: <1616513066-62025-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <YFoJ0Z6K4B5smbQx@kroah.com>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMhStNjyczSNkfkm@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 09:11:48AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Jun 15, 2021 at 12:07:47AM -0700, Jack Pham wrote:
-> > Hi Greg,
+Hi Greg,
+
+Sorry for taking so long to reply.
+
+于 Tue, 23 Mar 2021 16:31:29 +0100
+Greg KH <gregkh@linuxfoundation.org> 写道:
+
+> On Tue, Mar 23, 2021 at 11:24:26PM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> > Introduce configurable option for enabling GOTGCTL register
+> > bits VbvalidOvEn and VbvalidOvVal. Once selected it disables
+> > VBUS overcurrent detection.
 > > 
-> > On Tue, Jun 15, 2021 at 08:05:50AM +0200, Greg Kroah-Hartman wrote:
-> > > On Tue, Jun 15, 2021 at 09:41:26AM +0530, Naresh Kamboju wrote:
-> > > > On Mon, 14 Jun 2021 at 21:45, Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > This is the start of the stable review cycle for the 5.10.44 release.
-> > > > > There are 130 patches in this series, all will be posted as a response
-> > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > let me know.
-> > > > >
-> > > > > Responses should be made by Wed, 16 Jun 2021 16:13:59 +0000.
-> > > > > Anything received after that time might be too late.
-> > > > >
-> > > > > The whole patch series can be found in one patch at:
-> > > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc2.gz
-> > > > > or in the git tree and branch at:
-> > > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > > > > and the diffstat can be found below.
-> > > > >
-> > > > > thanks,
-> > > > >
-> > > > > greg k-h
-> > > > 
-> > > > The following kernel crash reported on stable rc 5.10.44-rc2 arm64 db845c board.
-> > > > 
-> > > > [    5.127966] dwc3-qcom a6f8800.usb: failed to get usb-ddr path: -517
+> > This patch is derived from Dragan Čečavac (in the kernel 3.18
+> > tree of CI20). It is very useful for the MIPS Creator CI20(r1).
+> > Without this patch, CI20's OTG port has a great probability to
+> > face overcurrent warning, which breaks the OTG functionality.
 > > 
-> > Looks like -EPROBE_DEFER happened here due to a not-yet-probed
-> > dependency (interconnect driver).  This leads to dwc3_qcom_probe()
-> > unwinding and calling of_platform_depopulate() which triggers the
-> > "child" dwc3's driver remove callback dwc3_remove()...
+> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
+> > ---
+> >  drivers/usb/dwc2/Kconfig | 6 ++++++
+> >  drivers/usb/dwc2/core.c  | 9 +++++++++
+> >  2 files changed, 15 insertions(+)
 > > 
-> > > > [    5.145567] Unable to handle kernel NULL pointer dereference at
-> > > > virtual address 0000000000000002
-> > > > [    5.154451] Mem abort info:
-> > > > [    5.157296]   ESR = 0x96000004
-> > > > [    5.160401]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > > > [    5.165771]   SET = 0, FnV = 0
-> > > > [    5.168873]   EA = 0, S1PTW = 0
-> > > > [    5.172064] Data abort info:
-> > > > [    5.174980]   ISV = 0, ISS = 0x00000004
-> > > > [    5.178860]   CM = 0, WnR = 0
-> > > > [    5.181872] [0000000000000002] user address but active_mm is swapper
-> > > > [    5.188293] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> > > > [    5.193922] Modules linked in:
-> > > > [    5.197022] CPU: 4 PID: 57 Comm: kworker/4:3 Not tainted 5.10.44-rc2 #1
-> > > > [    5.203697] Hardware name: Thundercomm Dragonboard 845c (DT)
-> > > > [    5.204022] ufshcd-qcom 1d84000.ufshc: ufshcd_print_pwr_info:[RX,
-> > > > TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
-> > > > [    5.209434] Workqueue: events deferred_probe_work_func
-> > > > [    5.221786] ufshcd-qcom 1d84000.ufshc:
-> > > > ufshcd_find_max_sup_active_icc_level: Regulator capability was not
-> > > > set, actvIccLevel=0
-> > > > [    5.226541] pstate: 60c00005 (nZCv daif +PAN +UAO -TCO BTYPE=--)
-> > > > [    5.226551] pc : inode_permission+0x2c/0x178
-> > > > [    5.226559] lr : lookup_one_len_common+0xac/0x100
-> > > > 
-> > > > ref:
-> > > > https://lkft.validation.linaro.org/scheduler/job/2899138#L2873
-> > > > 
-> > > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > > 
-> > > > There is a crash like this reported and discussed on the mailing thread.
-> > > > https://lore.kernel.org/linux-usb/20210608105656.10795-1-peter.chen@kernel.org/
-> > > 
-> > > Is this crash just on shutdown?  That's what that commit was fixing, but
-> > > it is resolving an error that should not be in the 5.10.y tree.
-> > 
-> > Peter reported and fixed it based on reproducing the crash from shutting
-> > down but in my manual testing I found that it could be triggered any
-> > time dwc3_remove() is called, though I surmised it would be a rare
-> > occurence.  In this particular case however Naresh is reporting it is
-> > triggered even during bootup since dwc3-qcom would add its
-> > dwc3 child, but because it encounters a probe deferral it has to
-> > subsequently trigger the dwc3 driver remove callback right after it was
-> > just probed.
-> > 
-> > So I think it would be good if Peter's follow-up change
-> > (2a042767814b in your usb-next branch) can please go into stable as well
-> > as it should help not only for the shutdown/reboot case.  Otherwise,
-> > my change "usb: dwc3: debugfs: Add and remove endpoint dirs
-> > dynamically" could be simply be dropped until they can go in together.
+> > diff --git a/drivers/usb/dwc2/Kconfig b/drivers/usb/dwc2/Kconfig
+> > index c131719..e40d187 100644
+> > --- a/drivers/usb/dwc2/Kconfig
+> > +++ b/drivers/usb/dwc2/Kconfig
+> > @@ -94,4 +94,10 @@ config USB_DWC2_DEBUG_PERIODIC
+> >  	  non-periodic transfers, but of course the debug logs
+> > will be incomplete. Note that this also disables some debug messages
+> >  	  for which the transfer type cannot be deduced.
+> > +
+> > +config USB_DWC2_DISABLE_VOD
+> > +	bool "Disable VBUS overcurrent detection"
+> > +	help
+> > +	  Say Y here to switch off VBUS overcurrent detection. It
+> > enables USB
+> > +	  functionality blocked by overcurrent detection.  
 > 
-> That will all have to wait until 5.14-rc1 as these patches are not
-> queued up to hit Linus's tree until then.  I was not aware that this
-> problem was showing up anywhere except in linux-next.
+> Why would this be a configuration option?  Shouldn't this be dynamic
+> and just work properly automatically?
 > 
-> If we need a fix in 5.13-final before then, please let me know and
-> submit it so that I can take it in my tree and get it to Linus quickly.
+> You should not have to do this on a build-time basis, it should be
+> able to be detected and handled properly at run-time for all devices.
+> 
 
-Sure. I just responded to one of your auto-replies about Peter's patch
-"usb: dwc3: core: fix kernel panic when do reboot" getting accepted for
-usb-next and asked if you can take it for usb-linus for 5.13-final asap
-as well. Or did you mean I should submit a new separate patch?
+I consulted the original author Dragan Čečavac, he think since this is
+a feature which disables overcurrent detection, so we are not sure if
+it could be harmful for some devices. Therefore he advise against
+enabling it in runtime, and in favor that user explicitely has to
+enable it.
 
-As for this failure in $subject on 5.10.44-rc2, I think the prudent
-thing would be to drop my patch "usb: dwc3: debugfs: Add and remove
-endpoint dirs dynamically" from the stable queue altogether and revisit
-it later (when it can go in along with Peter's fix).  I hope it's not
-too late to NAK it (at least for now) on stable?
+> If you know this is needed for a specific type of device, detect it
+> and make the change then, otherwise this could break working systems,
+> right?
 
-Sorry for the mess.
-Jack
+According to the information provided by Dragan Čečavac, this function
+(select whether to enable over-current detection through the otgctl
+register) don't seem to be available for all dwc2 controllers, so it
+might make sense to add MACH_INGENIC dependency to
+USB_DWC2_DISABLE_VOD, which could provide additional protection from
+unwanted usage.
+
+Thanks and best regards!
+
+> 
+> thanks,
+> 
+> greg k-h
