@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9143A7F1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A95C3A7F1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFONYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:24:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229943AbhFONYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:24:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E83DE6145D;
-        Tue, 15 Jun 2021 13:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623763357;
-        bh=gEckdQ1fONPY0GbSS0QNPbmgrAH5DwXuznd4hNS52tE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B9/fxC+xANRpAHRXgng3cAOOBxa1PwWHSbfVjGlfAEA3M4uPI8U4B/1wxV73oyaB0
-         zeXyCIBUrdHFwf2j2FoGKtTvftVQYWlenq/RplHaAWbimVQ5PeD3aVKEVVnano1m2D
-         7fl5panuQIw00osH8J/CLKBGcTibRmv6EJoVMbkXbQwNcZo3frdCCFUGpKpDpFQc6S
-         TsJeUXqHO/z2tcl6VTNA0BMb8gXacIxsSoZNVB7HL4PyqmQOfRQaNJwwhzCdUWsRql
-         J3cpQGM6bXWwI8JgySNLdRj7j4b3EPjmCG2osaPHbYciASLL5TSPeshsS3tV5Smi+g
-         g+eZK9IcZcQ5g==
-Date:   Tue, 15 Jun 2021 14:22:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ban Tao <fengzheng923@gmail.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        mripard@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
-        p.zabel@pengutronix.de, samuel@sholland.org, krzk@kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
-Message-ID: <20210615132207.GG5149@sirena.org.uk>
-References: <20210615130326.2044-1-fengzheng923@gmail.com>
+        id S230319AbhFONY4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 09:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhFONYy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:24:54 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48348C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:22:50 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lt91e-0008I0-IR; Tue, 15 Jun 2021 15:22:42 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lt91b-00014w-Rg; Tue, 15 Jun 2021 15:22:39 +0200
+Message-ID: <2800a872ff4260fc7a942f2f2ea1c9e3603b13d7.camel@pengutronix.de>
+Subject: Re: [PATCH net-next v4 02/10] net: sparx5: add the basic sparx5
+ driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Steen Hegelund <steen.hegelund@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Simon Horman <simon.horman@netronome.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>
+Date:   Tue, 15 Jun 2021 15:22:39 +0200
+In-Reply-To: <20210615085034.1262457-3-steen.hegelund@microchip.com>
+References: <20210615085034.1262457-1-steen.hegelund@microchip.com>
+         <20210615085034.1262457-3-steen.hegelund@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+sHJum3is6Tsg7/J"
-Content-Disposition: inline
-In-Reply-To: <20210615130326.2044-1-fengzheng923@gmail.com>
-X-Cookie: See store for details.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steen,
 
---+sHJum3is6Tsg7/J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 15, 2021 at 09:03:26PM +0800, Ban Tao wrote:
-
-Other than a few small things this looks good:
-
-> +M:	Ban Tao <fengzheng923@gmail.com>
-> +L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
-> +F:	sound/soc/sunxi/sun50i-dmic.c
-
-Not the binding document?
-
-> @@ -0,0 +1,408 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * ALSA SoC DMIC Audio Layer
-> + *
-> + * Copyright 2021 Ban Tao <fengzheng923@gmail.com>
-> + *
-
-Please make the entire comment a C++ one so things look more
-intentional.
-
-> +static void sun50i_snd_rxctrl_enable(struct snd_pcm_substream *substream,
-> +				    struct sun50i_dmic_dev *host, bool enable)
+On Tue, 2021-06-15 at 10:50 +0200, Steen Hegelund wrote:
+> This adds the Sparx5 basic SwitchDev driver framework with IO range
+> mapping, switch device detection and core clock configuration.
+> 
+> Support for ports, phylink, netdev, mactable etc. are in the following
+> patches.
+> 
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+[...]
+> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+> new file mode 100644
+> index 000000000000..892bbbaacbd6
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+> @@ -0,0 +1,743 @@
+[...]
+> +static int mchp_sparx5_probe(struct platform_device *pdev)
 > +{
-> +	if (enable) {
+[...]
+> +	/* Do switch core reset if available */
+> +	reset = devm_reset_control_get_optional_shared(&pdev->dev, "switch");
 
-> +	} else {
+Please don't ignore errors here. For example:
 
-> +static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, int cmd,
-> +			       struct snd_soc_dai *dai)
-> +{
-> +	int ret = 0;
-> +	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
-> +
-> +	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
-> +		return -EINVAL;
-> +
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +		sun50i_snd_rxctrl_enable(substream, host, true);
-> +		break;
-> +
-> +	case SNDRV_PCM_TRIGGER_STOP:
-> +	case SNDRV_PCM_TRIGGER_SUSPEND:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +		sun50i_snd_rxctrl_enable(substream, host, false);
-> +		break;
+	if (IS_ERR(reset))
+		return dev_err_probe(&pdev->dev, PTR_ERR(reset),
+				     "Failed to get reset.\n");
 
-This is the only caller of _rxctrl_enable() and _rxctrl_enable() shares
-no code between the two cases - just inline _rxctrl_enable() here, it's
-clearer what's going on.
+> 	reset_control_reset(reset);
 
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	base = devm_ioremap_resource(&pdev->dev, res);
-
-devm_platform_ioremap_resource()
-
---+sHJum3is6Tsg7/J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDIqX4ACgkQJNaLcl1U
-h9BFogf/Tnpp6hX2cq5N3NCHguSmWr1ckDT5UzZ3tO6YlJxdzXVMe22vxaLJDy4q
-Zlm/Gl8BtlPgD3JaDGanLEd/hgmKWnYa0wPL4Xiun7ETkZtDpUBn2vsn/18zj/Vi
-NvetwyxxDuh8SKNZi/mDlBzOWwzESHPvdsb9fYm9vNKJq39+/qlrGdjhnfzk5cSe
-MxHNaRf6/DuZ7aWWlKFMUa8RNg8lokH/9glCEVfo7U0mqBIdwJE3ihP9HgLGnKOx
-QDwWn7mdiF1BUehsZ7Q0NFd8POMl0CWFMv3x5Lg5qQ2VJ8XfvNvLQA6Rb1/tz69C
-TVUrQ9PedgJniopAz/WN57nQwApKng==
-=fxZ7
------END PGP SIGNATURE-----
-
---+sHJum3is6Tsg7/J--
+regards
+Philipp
