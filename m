@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE443A806A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A523A808A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhFONk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:40:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:14834 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhFONjS (ORCPT
+        id S231756AbhFONko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231760AbhFONju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:39:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623764233; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=NRI2lSngvSXad61YyzZ7ljzijSbW4H1D1VGOsKwJUo0=;
- b=Q2MfysqQGvPAtvpcLyEbO9oV/d9OFfH+30No+dP3KyP2IFACUYd6yalXeYMaaxWA/Bb19du0
- xe9v4fdXksrU0HHx2ovlSVSDpCVhtt7iPs90KmyDUyIFmx9U2yodmwv188sDO0nOE/AQXmYu
- P2mUvqT23ne1dH9lbaYzEZLbeIU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60c8ad082eaeb98b5ef0e781 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:37:12
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D450FC43145; Tue, 15 Jun 2021 13:37:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A01AC433D3;
-        Tue, 15 Jun 2021 13:37:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2A01AC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Tue, 15 Jun 2021 09:39:50 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF75AC061280;
+        Tue, 15 Jun 2021 06:37:42 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id y7so18368800wrh.7;
+        Tue, 15 Jun 2021 06:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=WvejBb7soWFLyesjzzMqLYg5v4yiPo+2THvt1OF5cEM=;
+        b=Z1psfP9mEuoAKWaXTcZUZGKsR873PLGtZ9ZuS0HTjzIh85pfeDTaOMzl4WgDrL9Ks+
+         yJTnvRrqv/pLYROL2BUtLI+WrFLGjSZLZi2GSyxJISEFJw5W8jOA88VaNIjxpyTb8cEX
+         wiHIweFVSlYFAP8tfrdxtnxt0Dw44w19SO8SDRQSmqMVJmFxn5I4rGROcrZWRo6CCHH9
+         WJD/xwEi4hLIjtawOt5LGE20LMfofOi2fwjZsat9h9AY8J0a9JyFt4N8aqAtiBb0jqJQ
+         /DurASBxlD4dd/rdzC+vlW/aI07ZqlPlLVqzrmV/WPixK12t7PAhfK+TBr0fjRfNHpQ2
+         fc6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WvejBb7soWFLyesjzzMqLYg5v4yiPo+2THvt1OF5cEM=;
+        b=qLw8jIBvqBEgqnjveAtIFCggaEeqA+PXTtwM4x8isusVvOGz/N+QoB1cTB6IhDPrbw
+         dLdieaMxN0cSHIhMZ67AahfatyC5cIJFeti2/ZKYOOCMP6s6/QizgrzPUjbKwocs1eFL
+         N6nPORVK9Eh2xJuolfN8qXPIBrm6mkIztZw5TZ1V63/k8+o44Z5e7mSnwAhSxC3FU8of
+         EtIpBWfQDLeWf65s2+Hwg/aWgr83BmMwP/puPG5LLTaZN6qb9XBZVb2xzX76U/WRpW3O
+         //n9eCqmeLzb0Km9J/wK0O9Wa+o8yFNHi87AOl4XtB3lpPH9gK3o1DK3arttUMAwZv8R
+         mFIw==
+X-Gm-Message-State: AOAM530xStLyXtLpV8W1TQpgQjcSLLHLq1aFCXNiS9BI2wYHU3qKmL5b
+        m51nP8byPbP9K0l/xP4HwxGfjDmZyOqfXdjs
+X-Google-Smtp-Source: ABdhPJxoH8a6wyINgazM0d7JbtU2LGkvXDqkvHIYLkP3Dt+/U9CTi8msXiNTw/Q5hDezm0rbiezxuw==
+X-Received: by 2002:a5d:48ca:: with SMTP id p10mr25367599wrs.87.1623764261167;
+        Tue, 15 Jun 2021 06:37:41 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.209])
+        by smtp.gmail.com with ESMTPSA id z5sm19804632wrv.67.2021.06.15.06.37.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 06:37:40 -0700 (PDT)
+Subject: Re: [PATCH -next] io_uring: Remove unneeded if-null-free check
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>, axboe@kernel.dk,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210602065410.104240-1-zhengyongjun3@huawei.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <f0c13c14-f036-594a-7e5b-356eb6adceaf@gmail.com>
+Date:   Tue, 15 Jun 2021 14:37:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <20210602065410.104240-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Subject: Re: zd1211rw: Prefer pr_err over printk error msg
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210506044838.GA7260@user>
-References: <20210506044838.GA7260@user>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     dsd@gentoo.org, kune@deine-taler.de, davem@davemloft.net,
-        kuba@kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210615133712.D450FC43145@smtp.codeaurora.org>
-Date:   Tue, 15 Jun 2021 13:37:12 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Saurav Girepunje <saurav.girepunje@gmail.com> wrote:
-
-> In zd_usb.c usb_init we can prefer pr_err() over printk KERN_ERR
-> log level.
+On 6/2/21 7:54 AM, Zheng Yongjun wrote:
+> Eliminate the following coccicheck warning:
 > 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> fs/io_uring.c:6056:4-9: WARNING: NULL check before some freeing functions is not needed.
+> fs/io_uring.c:1744:2-7: WARNING: NULL check before some freeing functions is not needed.
+> fs/io_uring.c:3340:2-7: WARNING: NULL check before some freeing functions is not needed.
+> fs/io_uring.c:4612:2-7: WARNING: NULL check before some freeing functions is not needed.
+> fs/io_uring.c:4375:2-7: WARNING: NULL check before some freeing functions is not needed.
+> fs/io_uring.c:3441:2-7: WARNING: NULL check before some freeing functions is not needed.
 
-Patch applied to wireless-drivers-next.git, thanks.
+Take a look at the comments right above changed lines.
 
-29d97219f403 zd1211rw: Prefer pr_err over printk error msg
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  fs/io_uring.c | 18 ++++++------------
+>  1 file changed, 6 insertions(+), 12 deletions(-)
+[...]
+>  	/* it's reportedly faster than delegating the null check to kfree() */
+> -	if (iovec)
+> -		kfree(iovec);
+> +	kfree(iovec);
+[...]
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210506044838.GA7260@user/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Pavel Begunkov
