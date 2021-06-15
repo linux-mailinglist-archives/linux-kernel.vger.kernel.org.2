@@ -2,76 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0EB3A86D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473B23A86D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhFOQtP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Jun 2021 12:49:15 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:52109 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbhFOQtN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:49:13 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 25CBA200009;
-        Tue, 15 Jun 2021 16:47:05 +0000 (UTC)
-Date:   Tue, 15 Jun 2021 18:47:04 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Rob Herring <robherring2@gmail.com>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: linux-next: manual merge of the devicetree tree with the mtd
- tree
-Message-ID: <20210615184704.4204347f@xps13>
-In-Reply-To: <20210615125958.541c275c@canb.auug.org.au>
-References: <20210615125958.541c275c@canb.auug.org.au>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229659AbhFOQu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:50:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:40768 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhFOQuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 12:50:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C12213A1;
+        Tue, 15 Jun 2021 09:48:50 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44E133F694;
+        Tue, 15 Jun 2021 09:48:48 -0700 (PDT)
+Subject: Re: [PATCH v4 00/24] x86/resctrl: Merge the CDP resources
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, "Luck, Tony" <tony.luck@intel.com>
+References: <20210614200941.12383-1-james.morse@arm.com>
+ <cc452592-491f-3ddf-983a-8669ad12df9a@intel.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <4d2ba7c1-395b-d1ec-c92b-f906e2a551a1@arm.com>
+Date:   Tue, 15 Jun 2021 17:48:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <cc452592-491f-3ddf-983a-8669ad12df9a@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Hi Reinette,
 
-Stephen Rothwell <sfr@canb.auug.org.au> wrote on Tue, 15 Jun 2021
-12:59:58 +1000:
+On 15/06/2021 17:16, Reinette Chatre wrote:
+> On 6/14/2021 1:09 PM, James Morse wrote:
+>> This series re-folds the resctrl code so the CDP resources (L3CODE et al)
+>> behaviour is all contained in the filesystem parts, with a minimum amount
+>> of arch specific code.
 
-> Hi all,
-> 
-> Today's linux-next merge of the devicetree tree got a conflict in:
-> 
->   Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-> 
-> between commit:
-> 
->   6947ad674944 ("dt-bindings: mtd: Convert ti, am654-hbmc.txt to YAML schema")
-> 
-> from the mtd tree and commit:
-> 
->   9b358af7c818 ("dt-bindings: mux: Convert mux controller bindings to schema")
-> 
-> from the devicetree tree.
-> 
-> I fixed it up (the latter removed the file, so I just did that) and can
-> carry the fix as necessary. This is now fixed as far as linux-next is
-> concerned, but any non trivial conflicts should be mentioned to your
-> upstream maintainer when your tree is submitted for merging.  You may
-> also want to consider cooperating with the maintainer of the conflicting
-> tree to minimise any particularly complex conflicts.
-> 
+[..]
 
-Thanks for the warning. Indeed the txt file being touched by
-9b358af7c818 is being updated into a yaml file which does not reference
-the mux binding anymore.
+>> This series collapses the CODE/DATA resources, moving all the user-visible
+>> resctrl ABI into what becomes the filesystem code. CDP becomes the type of
+>> configuration being applied to a cache. This is done by adding a
+>> struct resctrl_schema to the parts of resctrl that will move to fs. This
+>> holds the arch-code resource that is in use for this schema, along with
+>> other properties like the name, and whether the configuration being applied
+>> is CODE/DATA/BOTH.
+>>
+>> This lets us fold the extra resources out of the arch code so that they
+>> don't need to be duplicated if the equivalent feature to CDP is missing, or
+>> implemented in a different way.
 
-Rob, how do you want to proceed?
+[...]
 
-Thanks,
-Miquèl
+>> This series is based on v5.12-rc6, and can be retrieved from:
+>> git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/resctrl_merge_cdp/v4
+
+
+> For the most part I think this series looks good. The one thing I am concerned about is
+> the resctrl user interface change. On a system that supports L3 CDP there is a visible
+> change when CDP is not enabled:
+> 
+> Before this series:
+> # cat schemata
+>    L3:0=fffff;1=fffff
+> 
+> After this series:
+> # cat schemata
+> L3:0=fffff;1=fffff
+
+Hmm, I thought I'd fixed this with v2, ... I see this is subtly different.
+
+This could be tweaked by getting schemata_list_add() to include the length of the longest
+suffix if the resource supports CDP, but its not enabled. (Discovering that means
+cdp_capable moves to be something the 'fs' bits of resctrl can see.)
+
+I'm a little nervous 'adding 4 spaces' because user-space expects them. (I agree if it
+breaks user-space it has to be done). I guess this is the problem with string parsing as
+part of the interface!
+
+I assume that in the (distant) future having CDP capable resources with names more than 2
+characters isn't going to be a problem. (I don't have an example)
+
+
+> There are a few user space tools that parse the resctrl schemata file and it may be easier
+> to keep the interface consistent than to find and audit them all to ensure they will keep
+> working.
+
+
+> Apart from that, I do think that the dmesg change that Babu pointed out deserves a mention
+> in the cover letter. I agree with your response in this regard but this is indeed a user
+> visible change and if anybody has issue with that then mentioning it in the cover letter
+> will hopefully catch it sooner.
+
+Ah, okay.
+
+
+> A heads-up is that there are some kernel-doc fixups in the works that will conflict with
+> your series. You yourself fix at least one of these kernel-doc issues in this series - the
+> description of mbm_width in the first patch. I will ask the submitter of the kernel-doc
+> fixups to use your text to help with the merging.
+
+Please point me at something to rebase onto!
+(as far as I can see, tip/x86/cache hasn't moved)
+
+
+> Finally, I did catch a few typos that I will respond to individually.
+
+Thanks!
+
+James
