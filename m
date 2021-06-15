@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A523A808A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F783A8084
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhFONko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbhFONju (ORCPT
+        id S230469AbhFONki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:40:38 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:36708 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhFONjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:39:50 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF75AC061280;
-        Tue, 15 Jun 2021 06:37:42 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id y7so18368800wrh.7;
-        Tue, 15 Jun 2021 06:37:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=WvejBb7soWFLyesjzzMqLYg5v4yiPo+2THvt1OF5cEM=;
-        b=Z1psfP9mEuoAKWaXTcZUZGKsR873PLGtZ9ZuS0HTjzIh85pfeDTaOMzl4WgDrL9Ks+
-         yJTnvRrqv/pLYROL2BUtLI+WrFLGjSZLZi2GSyxJISEFJw5W8jOA88VaNIjxpyTb8cEX
-         wiHIweFVSlYFAP8tfrdxtnxt0Dw44w19SO8SDRQSmqMVJmFxn5I4rGROcrZWRo6CCHH9
-         WJD/xwEi4hLIjtawOt5LGE20LMfofOi2fwjZsat9h9AY8J0a9JyFt4N8aqAtiBb0jqJQ
-         /DurASBxlD4dd/rdzC+vlW/aI07ZqlPlLVqzrmV/WPixK12t7PAhfK+TBr0fjRfNHpQ2
-         fc6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WvejBb7soWFLyesjzzMqLYg5v4yiPo+2THvt1OF5cEM=;
-        b=qLw8jIBvqBEgqnjveAtIFCggaEeqA+PXTtwM4x8isusVvOGz/N+QoB1cTB6IhDPrbw
-         dLdieaMxN0cSHIhMZ67AahfatyC5cIJFeti2/ZKYOOCMP6s6/QizgrzPUjbKwocs1eFL
-         N6nPORVK9Eh2xJuolfN8qXPIBrm6mkIztZw5TZ1V63/k8+o44Z5e7mSnwAhSxC3FU8of
-         EtIpBWfQDLeWf65s2+Hwg/aWgr83BmMwP/puPG5LLTaZN6qb9XBZVb2xzX76U/WRpW3O
-         //n9eCqmeLzb0Km9J/wK0O9Wa+o8yFNHi87AOl4XtB3lpPH9gK3o1DK3arttUMAwZv8R
-         mFIw==
-X-Gm-Message-State: AOAM530xStLyXtLpV8W1TQpgQjcSLLHLq1aFCXNiS9BI2wYHU3qKmL5b
-        m51nP8byPbP9K0l/xP4HwxGfjDmZyOqfXdjs
-X-Google-Smtp-Source: ABdhPJxoH8a6wyINgazM0d7JbtU2LGkvXDqkvHIYLkP3Dt+/U9CTi8msXiNTw/Q5hDezm0rbiezxuw==
-X-Received: by 2002:a5d:48ca:: with SMTP id p10mr25367599wrs.87.1623764261167;
-        Tue, 15 Jun 2021 06:37:41 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.209])
-        by smtp.gmail.com with ESMTPSA id z5sm19804632wrv.67.2021.06.15.06.37.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 06:37:40 -0700 (PDT)
-Subject: Re: [PATCH -next] io_uring: Remove unneeded if-null-free check
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, axboe@kernel.dk,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210602065410.104240-1-zhengyongjun3@huawei.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <f0c13c14-f036-594a-7e5b-356eb6adceaf@gmail.com>
-Date:   Tue, 15 Jun 2021 14:37:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 15 Jun 2021 09:39:41 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3FBC920B83DE;
+        Tue, 15 Jun 2021 06:37:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3FBC920B83DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623764257;
+        bh=nodB4PIcC8nFUjJXE/cS3JeyunNLJfPdZ+FTM5WBP3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pUbGylFgj3+J+uh7xGxRVT1Qj+gghypKLZLYKaJlegBjtTjotBcjFgeI10Kj+CGjM
+         fW+seh8raZWTSLPTEZpLC5WNgYdMbBBqtEHpdGHpsd646kJgDPVngkOGnaVEOU0f9u
+         c8aarTUQ4MlJ7ey484Y/rIhfU+XaT7LaB74/ZfEI=
+Date:   Tue, 15 Jun 2021 08:37:34 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
+Cc:     Allen Pais <apais@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vikas Gupta <vikas.gupta@broadcom.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 0/8] tee: Improve support for kexec and kdump
+Message-ID: <20210615133734.GY4910@sequoia>
+References: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
+ <CAHUa44ErgoxT3L1W-ouoQwUg1fNC-zagOOgy=KBuGN_pETnYaw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210602065410.104240-1-zhengyongjun3@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHUa44ErgoxT3L1W-ouoQwUg1fNC-zagOOgy=KBuGN_pETnYaw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/21 7:54 AM, Zheng Yongjun wrote:
-> Eliminate the following coccicheck warning:
+On 2021-06-15 09:23:25, Jens Wiklander wrote:
+> It looks like we're almost done now. Thanks for your patience to see
+> this through.
 > 
-> fs/io_uring.c:6056:4-9: WARNING: NULL check before some freeing functions is not needed.
-> fs/io_uring.c:1744:2-7: WARNING: NULL check before some freeing functions is not needed.
-> fs/io_uring.c:3340:2-7: WARNING: NULL check before some freeing functions is not needed.
-> fs/io_uring.c:4612:2-7: WARNING: NULL check before some freeing functions is not needed.
-> fs/io_uring.c:4375:2-7: WARNING: NULL check before some freeing functions is not needed.
-> fs/io_uring.c:3441:2-7: WARNING: NULL check before some freeing functions is not needed.
+> I suppose it makes most sense to take this via my tree, but before I
+> can do that I'll need acks from the maintainers of
+> drivers/char/tpm/tpm_ftpm_tee.c ("tpm_ftpm_tee: Free and unregister
+> TEE shared memory during kexec") and
+> drivers/firmware/broadcom/tee_bnxt_fw.c ("firmware: tee_bnxt: Release
+> TEE shm, session, and context during kexec").
 
-Take a look at the comments right above changed lines.
+@Rafał Miłecki, we just need an ack from you for the tee_bnxt_fw.c
+change:
+
+ https://lore.kernel.org/lkml/20210614223317.999867-9-tyhicks@linux.microsoft.com/
+
+Jarkko just gave us an ack for tpm_ftpm_tee.c on the v4 series:
+
+ https://lore.kernel.org/lkml/20210615130411.hvpnaxnhimjloiz3@kernel.org/
+
+The patch tpm_ftpm_tee.c patch didn't change from v4 to v5 and the
+underlying concept of not using TEE_SHM_DMA_BUF remained the same so I
+don't think we need a separate v5 ack.
+
+Tyler
 
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  fs/io_uring.c | 18 ++++++------------
->  1 file changed, 6 insertions(+), 12 deletions(-)
-[...]
->  	/* it's reportedly faster than delegating the null check to kfree() */
-> -	if (iovec)
-> -		kfree(iovec);
-> +	kfree(iovec);
-[...]
-
--- 
-Pavel Begunkov
+> Cheers,
+> Jens
+> 
