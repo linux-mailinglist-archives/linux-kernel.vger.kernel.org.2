@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0DC3A7760
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C9A3A7763
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhFOGw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhFOGww (ORCPT
+        id S230038AbhFOGxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:53:49 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:37420 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229493AbhFOGxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:52:52 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694A8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 23:50:48 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id g18so47636887edq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 23:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XiBpXEQV/jtPOVHF+9E1iztsI24wyA4vFp/2KFQcCf0=;
-        b=WtAAidMy9F4exzDJfO7hneU+2cqQD+fK+fGYY17fEvCuQy22+ch9mJ0RW/COiZu6Tm
-         toaHRA8IFtvUnBEzX64Mly/FVR26T2Z6VPcrk/cgUBR2F4pw2YXgTkV2vkbOBabvD2Qv
-         LhrbCB4b7u9sC4W19XEZFle7B7mFSBMcyo438=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XiBpXEQV/jtPOVHF+9E1iztsI24wyA4vFp/2KFQcCf0=;
-        b=f6KmrVU4vV46W/nMTGBeKsVP4ZQzmD4tKnazkkQw8nvvQ8zUcFYWr8yUdxSSOB7Ve/
-         1eJtJIVQtpBx/4d4KD/YuAi8z1c9XAwzKkxhhGn6CxYCodWbbTJSkKvG9UHKdmziumVK
-         y8vXmMj4AKyU0QOnklIPlVf4LOOPsOZqt1r8SG3PC67EuqkX40OYW6jYxSt2ktbj9UBz
-         CPa79MJfCRGJJ0eY4HxOjqms+eVpJnBNbCE5g0mz1daLFgFaoWHayFJsCj20pvPKf4I/
-         i0hBtLtrO0Ysy1kxHchGsUMhf3kaezdJ1HxMOmppxpZqRAjZX18lrsWdIdmRmPokzlx3
-         payg==
-X-Gm-Message-State: AOAM531W2qq8yMCVy0UmZp6W3kT8NjJFldeSieRnHxtZVQlUYf3rY1Ln
-        0GSPVP5iR4cPCJ6DKhLyYk/cS+dYprZ3w61C
-X-Google-Smtp-Source: ABdhPJwC2mr97QCTGnSccli6U5fr9wKWG0cXkuUnB8GvBvbikVXnacMRr2rvxXsepdx+aN1bu0fhmA==
-X-Received: by 2002:a05:6402:c8:: with SMTP id i8mr21524215edu.380.1623739846726;
-        Mon, 14 Jun 2021 23:50:46 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.64.110])
-        by smtp.gmail.com with ESMTPSA id h24sm9152788ejy.35.2021.06.14.23.50.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 23:50:46 -0700 (PDT)
-Subject: Re: [PATCH] printk: Move EXPORT_SYMBOL() closer to vprintk definition
-To:     Punit Agrawal <punitagrawal@gmail.com>, pmladek@suse.com,
-        senozhatsky@chromium.org
-Cc:     rostedt@goodmis.org, john.ogness@linutronix.de,
-        linux-kernel@vger.kernel.org
-References: <20210614235635.887365-1-punitagrawal@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <8c16059d-6e58-a3e4-25ef-7e2bcabecd86@rasmusvillemoes.dk>
-Date:   Tue, 15 Jun 2021 08:50:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 15 Jun 2021 02:53:47 -0400
+X-UUID: c282a59e0cc94007bb756791991e096e-20210615
+X-UUID: c282a59e0cc94007bb756791991e096e-20210615
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1436944670; Tue, 15 Jun 2021 14:51:41 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 15 Jun 2021 14:51:40 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 15 Jun 2021 14:51:40 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <rostedt@goodmis.org>
+CC:     <ardb@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-next@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
+        <peterz@infradead.org>, <sfr@canb.auug.org.au>,
+        <yj.chiang@mediatek.com>
+Subject: Re: linux-next: build failure after merge of the ftrace tree
+Date:   Tue, 15 Jun 2021 14:51:40 +0800
+Message-ID: <20210615065140.22032-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210610110638.7e84912d@oasis.local.home>
+References: <20210610110638.7e84912d@oasis.local.home>
 MIME-Version: 1.0
-In-Reply-To: <20210614235635.887365-1-punitagrawal@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/2021 01.56, Punit Agrawal wrote:
-> Commit 28e1745b9fa2 ("printk: rename vprintk_func to vprintk") while
-> improving readability by removing vprintk indirection, inadvertently
-> placed the EXPORT_SYMBOL() for the newly renamed function at the end
-> of the file.
 > 
-> For reader sanity, and as is convention move the EXPORT_SYMBOL()
-> declaration just after the end of the function.
+> On Thu, 10 Jun 2021 10:26:39 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> Fixes: 28e1745b9fa2 ("printk: rename vprintk_func to vprintk")
-> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> --
-> Hi,
+> > On Thu, Jun 10, 2021 at 06:08:25PM +1000, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > After merging the ftrace tree, today's linux-next build (powerpc
+> > > allyesconfig) failed like this:
+> > > 
+> > > Cannot find symbol for section 255: .text.opal_int_set_mfrr.
+> > > arch/powerpc/platforms/powernv/opal-call.o: failed
+> > > 
+> > > and many more similar.
+> > > 
+> > > Caused by commit
+> > > 
+> > >   9e419de4c678 ("recordmcount: Correct st_shndx handling")  
+> > 
+> > Argh.. lemme try and reproduce :/
 > 
-> The out-of-place EXPORT_SYMBOL() caused an unexpected conflict while
-> attempting to rebase the RT patches onto newer kernels.
+> I'll go and revert this patch, and wait for a new version from Peter.
 > 
-> Generally I avoid sending trivial changes on their own but this one is
-> a little hard to overlook. Also it felt like an obvious oversight in
-> the original patch.
+> Hmm, crap, this is also sent to Linus. I'll stop that too.
+> 
+> -- Steve
 
-Yes, indeed, sorry about that, and thanks for fixing it.
+I found the the build fail is because PPC64 is big endian and this
+patch use st_shndx directyly.
 
-> Please consider merging.
+Here is the case which cause this problem:
+recordmcount search symbol for txtndx = 255(0xff), but the
+corresponding symbol has st_shndx = 0xff00(bit endian) which
+equals SHN_LORESERVE, so the updated get_symindex() return 0.
 
-Petr, as this is causing trouble for the -rt patchset, please consider
-if this could make it to Linus before v5.13 release.
+I send the patch v2 to fix it.
+https://lore.kernel.org/lkml/20210615064720.21950-1-mark-pk.tsai@mediatek.com/
 
-Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-
-Rasmus
+Below is the test environment I used:
+https://musl.cc/powerpc64-linux-musl-cross.tgz
+make allyesconfig CROSS_COMPILE=powerpc64-linux-musl- ARCH=powerpc
+make vmlinux CROSS_COMPILE=powerpc64-linux-musl- ARCH=powerpc
