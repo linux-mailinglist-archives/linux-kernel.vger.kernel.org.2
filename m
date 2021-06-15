@@ -2,163 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6395F3A81A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCC03A81AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhFOOEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58640 "EHLO mail.kernel.org"
+        id S231270AbhFOOEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:04:40 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29155 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231196AbhFOOEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:04:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E26EF613F5;
-        Tue, 15 Jun 2021 14:02:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623765720;
-        bh=QlhAPeeyHHRjIGhNphYkDKi45QaQ5wrJVvOCJ5iwTZk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rfpjv29R77uGBM9GpyweyP2mn6gvWGVSvO308lsxC06nt7DZixmwM+/1HVYX+4DvO
-         MwqsUg6CAI/HB/Xg8d9KL6y5YnKIidcgnIzNPyvipMP/PsYTIcRbnhBzPcaw2YCruz
-         FpiOnjAIoK7dYGKFuOnLSvZLNIqrAij0CEhDgX+m3AS5p/+qihR1rVKVWWeLyltBql
-         uMvbNF7+FnpOmXJrx46WF6kAd25Ww7xeSEHEaloHSu4J8x+HdIAxzUliJrATrzXMpn
-         +tLzcopXpl+0IFezIjCTDJnBO/1jaBY1A51ZjSAaWbqCl0nZNNACIgo+ElwtZI8t+B
-         XbglZB58igmpA==
-Received: by mail-wr1-f46.google.com with SMTP id o3so18474052wri.8;
-        Tue, 15 Jun 2021 07:02:00 -0700 (PDT)
-X-Gm-Message-State: AOAM530YXyJS+tbzk2+fN4hL2sZzcXuVBDugIIQoGoVvuMjQeKBKjYjS
-        WZNN/VTLBicVzZqef+rNA3FKXd4nNVsTywbezw==
-X-Google-Smtp-Source: ABdhPJxVqI8MHrcAWKd/OVKi4zXYd9o5Ej5sqMSK1SDKoChQIuRHCXHX7nfhLloiCMRd7u65oO394YM97kSgD621jRA=
-X-Received: by 2002:a17:906:85d5:: with SMTP id i21mr20560813ejy.360.1623765708507;
- Tue, 15 Jun 2021 07:01:48 -0700 (PDT)
+        id S230120AbhFOOEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 10:04:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623765749; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=8/f/DvtNejt87+u8IhG8UM7+m+gixlDyoZukRJXkyHQ=;
+ b=DUDgpqnljS4pXUe6BVpCE7YuaPi2Haw7hSW8ZZkMY/QPTyhCHbXEW4YmngbvbiegXhiU5/bv
+ Z+rnf33m7KHJnrhT19NjWUv+aDM5eD3vi5V8smq4eFXw6GokcUwcaVWT5oVexxjs8nBbhHEs
+ zJc1V2Ey2UXl1Bq3+yQxpwnpQYE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60c8b2c9e27c0cc77f45b6df (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 14:01:45
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1E897C433D3; Tue, 15 Jun 2021 14:01:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9544DC433D3;
+        Tue, 15 Jun 2021 14:01:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9544DC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210221174930.27324-1-nramas@linux.microsoft.com>
- <20210221174930.27324-6-nramas@linux.microsoft.com> <CAMuHMdVSuNS4edh-zM0_sbC0i1AAjQ9Y0n_8Mjz=3CALkW4pgg@mail.gmail.com>
-In-Reply-To: <CAMuHMdVSuNS4edh-zM0_sbC0i1AAjQ9Y0n_8Mjz=3CALkW4pgg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 15 Jun 2021 08:01:35 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ2x7zbyP3fAacdfHOWjCVjg6XhraV2YkoBJdZ2jXAMEA@mail.gmail.com>
-Message-ID: <CAL_JsqJ2x7zbyP3fAacdfHOWjCVjg6XhraV2YkoBJdZ2jXAMEA@mail.gmail.com>
-Subject: Re: [PATCH v19 05/13] of: Add a common kexec FDT setup function
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, dmitry.kasatkin@gmail.com,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 01/11] net: ath: ath5k: Fix wrong function name in
+ comments
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210517050141.61488-2-shenyang39@huawei.com>
+References: <20210517050141.61488-2-shenyang39@huawei.com>
+To:     Yang Shen <shenyang39@huawei.com>
+Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Yang Shen" <shenyang39@huawei.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Nick Kossifidis" <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615140145.1E897C433D3@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 14:01:45 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 6:18 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Lakshmi and Rob,
->
-> On Sun, Feb 21, 2021 at 6:52 PM Lakshmi Ramasubramanian
-> <nramas@linux.microsoft.com> wrote:
-> > From: Rob Herring <robh@kernel.org>
-> >
-> > Both arm64 and powerpc do essentially the same FDT /chosen setup for
-> > kexec.  The differences are either omissions that arm64 should have
-> > or additional properties that will be ignored.  The setup code can be
-> > combined and shared by both powerpc and arm64.
-> >
-> > The differences relative to the arm64 version:
-> >  - If /chosen doesn't exist, it will be created (should never happen).
-> >  - Any old dtb and initrd reserved memory will be released.
-> >  - The new initrd and elfcorehdr are marked reserved.
-> >  - "linux,booted-from-kexec" is set.
-> >
-> > The differences relative to the powerpc version:
-> >  - "kaslr-seed" and "rng-seed" may be set.
-> >  - "linux,elfcorehdr" is set.
-> >  - Any existing "linux,usable-memory-range" is removed.
-> >
-> > Combine the code for setting up the /chosen node in the FDT and updating
-> > the memory reservation for kexec, for powerpc and arm64, in
-> > of_kexec_alloc_and_setup_fdt() and move it to "drivers/of/kexec.c".
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->
-> > --- /dev/null
-> > +++ b/drivers/of/kexec.c
->
-> > +/*
-> > + * of_kexec_alloc_and_setup_fdt - Alloc and setup a new Flattened Device Tree
-> > + *
-> > + * @image:             kexec image being loaded.
-> > + * @initrd_load_addr:  Address where the next initrd will be loaded.
-> > + * @initrd_len:                Size of the next initrd, or 0 if there will be none.
-> > + * @cmdline:           Command line for the next kernel, or NULL if there will
-> > + *                     be none.
-> > + * @extra_fdt_size:    Additional size for the new FDT buffer.
-> > + *
-> > + * Return: fdt on success, or NULL errno on error.
-> > + */
-> > +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
-> > +                                  unsigned long initrd_load_addr,
-> > +                                  unsigned long initrd_len,
-> > +                                  const char *cmdline, size_t extra_fdt_size)
-> > +{
->
-> > +       /* Did we boot using an initrd? */
-> > +       prop = fdt_getprop(fdt, chosen_node, "linux,initrd-start", NULL);
-> > +       if (prop) {
-> > +               u64 tmp_start, tmp_end, tmp_size;
-> > +
-> > +               tmp_start = fdt64_to_cpu(*((const fdt64_t *) prop));
-> > +
-> > +               prop = fdt_getprop(fdt, chosen_node, "linux,initrd-end", NULL);
-> > +               if (!prop) {
-> > +                       ret = -EINVAL;
-> > +                       goto out;
-> > +               }
-> > +
-> > +               tmp_end = fdt64_to_cpu(*((const fdt64_t *) prop));
->
-> Some kernel code assumes "linux,initrd-{start,end}" are 64-bit,
-> other code assumes 32-bit.
+Yang Shen <shenyang39@huawei.com> wrote:
 
-It can be either. The above code was a merge of arm64 and powerpc both
-of which use 64-bit and still only runs on those arches. It looks like
-some powerpc platforms may use 32-bit, but this would have been broken
-before.
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/ath/ath5k/pcu.c:865: warning: expecting prototype for at5k_hw_stop_rx_pcu(). Prototype was for ath5k_hw_stop_rx_pcu() instead
+> 
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: Nick Kossifidis <mickflemm@gmail.com>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Yang Shen <shenyang39@huawei.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-The code in drivers/of/fdt.c handles either case. We should probably
-refactor early_init_dt_check_for_initrd() and this function to use a
-common routine.
+3 patches applied to ath-next branch of ath.git, thanks.
 
-> linux/Documentation/arm/uefi.rst says 64-bit,
-> dt-schema/schemas/chosen.yaml says 32-bit.
+3b0c7b2415e5 ath5k: Fix wrong function name in comments
+2d1f8673ad6c ath: Fix wrong function name in comments
+9d1bb2289b42 wil6210: Fix wrong function name in comments
 
-We should fix that.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210517050141.61488-2-shenyang39@huawei.com/
 
-Rob
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
