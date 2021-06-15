@@ -2,89 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73DA3A83BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D933A83C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhFOPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhFOPPm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:15:42 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324E9C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:13:37 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id r7so3055686qta.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=INX7H6XxUTAVbwgV5PMueO86g/kTATWT2HWC/q8m03E=;
-        b=Lpcg96UfcrHiH3Nyy8ukJUz0gllsoQBs9pKtqzq7AkElQPEGWZLL1crv+MO4vjA7XH
-         y0beMwxf9TL5+eXYJKMHElQAdrzQr7eqyrk2CF8q4xhLCqZYL1OM3vk2hqtkW3hykTZs
-         he8X3IKzOSJY/vIXS8bNwJZa7XngB0QJOffllg/YQsriGHzb3bzH6P/UDGogewn0WxWM
-         jAiJkTKdv0LUwCLw6XRy0Ms9wCEgnh84YMX44UEHRQ8H2QFYMFE7sE8/Oj0w6uOumjYP
-         pZNqYZf3BeZBMPEfzwNg3xQ3KW4YU8UDrAhtPdDEPBgrdFh6TlkhBQRDI7GZlJSZ8mUZ
-         uidA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=INX7H6XxUTAVbwgV5PMueO86g/kTATWT2HWC/q8m03E=;
-        b=USoSt7Amrus84V2Z9AIf9yeML7lU37qw7exh4vbi5TWGtTkRwlvLhGBW3/wTNwGQOM
-         30lQk3yidL/z99WYB9IsueTnRPIw4tVqBlKXoEHL38d/C0MKAAZymtFpxCBd6ABqrzSC
-         bwmjJu13eLcVfGDYWqPjyUqkw/RLOvSiZiJ5OAW/QSmlvABRV1qJ5377tGUF6sianFED
-         Q/kgvF5YJ5YUfzepIWWan9jI3sm5t1TZMkXhgkfTHOEOBbsAyMIczCfuGxP7YI6+rUp2
-         hiJwXDRiT8tAIGsNlwwRWvbKF0u95dsht0cXE50tr6VWzQuwAACsGis7RoXq7/jgBFrl
-         nrzA==
-X-Gm-Message-State: AOAM530vkbAgUOIBMhB04PUcv2lwd/1w/p1duSg+pfIt9Uki6ZvO4ZPs
-        sibzG2hzUkiCaR7w80MRfJyVTrMX7zfXAuldCiT3uQ==
-X-Google-Smtp-Source: ABdhPJy/hI4Ht9IcKgP9E0y1PkP86xyD/hl/gG/Z/oqdlJ/mXFapXe/6vf2wDgq927qTtpy1Fqw3xgzF4N7t63KV+cc=
-X-Received: by 2002:ac8:6f11:: with SMTP id g17mr70081qtv.343.1623770016398;
- Tue, 15 Jun 2021 08:13:36 -0700 (PDT)
+        id S231396AbhFOPQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:16:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230314AbhFOPQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:16:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DED8A611CE;
+        Tue, 15 Jun 2021 15:14:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623770068;
+        bh=IzB5h1ZE9j+R3TQcYq1sBmFD5Zy2pT3QMw3r4msr8HQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uSU45e6y6uDykQa/k+PLIsz9MZpxn4MWPlx/9lPC7E2taushKD9MQyuy5J882K2Of
+         95ip4ywIYi0GruqTaK0lOQ/VFhXFcnw4bgAX141tA3gng3akj9LfQyeiomGU/F+DWc
+         6nA0gJIgEIvh4z51hhrrY8mHaoQsCr8C+YSzAiJM=
+Date:   Tue, 15 Jun 2021 17:14:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v4 1/4] devres: Make locking straight forward in
+ release_nodes()
+Message-ID: <YMjD0kUXZasI+vyY@kroah.com>
+References: <20210517122946.53161-1-andriy.shevchenko@linux.intel.com>
+ <YK421dBVoXLElvKB@smile.fi.intel.com>
+ <YMM3HYt2q5i35OUv@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210613183520.2247415-1-mw@semihalf.com> <20210613183520.2247415-2-mw@semihalf.com>
- <YMZaZx3oZ7tYCEPH@lunn.ch>
-In-Reply-To: <YMZaZx3oZ7tYCEPH@lunn.ch>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Tue, 15 Jun 2021 17:13:24 +0200
-Message-ID: <CAPv3WKefzp=F8UtWNYP+DNiyuBA9X0TzyONUuRVeMT8xKRbGEg@mail.gmail.com>
-Subject: Re: [net-next: PATCH 1/3] net: mvmdio: add ACPI support
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMM3HYt2q5i35OUv@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jun 11, 2021 at 01:12:45PM +0300, Andy Shevchenko wrote:
+> On Wed, May 26, 2021 at 02:53:57PM +0300, Andy Shevchenko wrote:
+> > On Mon, May 17, 2021 at 03:29:43PM +0300, Andy Shevchenko wrote:
+> > > It seems for the sake of saving stack memory of couple of pointers,
+> > > the locking in release_nodes() callers becomes interesting.
+> > > 
+> > > Replace this logic with a straight forward locking and unlocking scheme.
+> > 
+> > Any comments on the series?
+> 
+> Greg, Rafael, anything I should do here?
 
-niedz., 13 cze 2021 o 21:20 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
->
-> > -     ret =3D of_mdiobus_register(bus, pdev->dev.of_node);
-> > +     if (pdev->dev.of_node)
-> > +             ret =3D of_mdiobus_register(bus, pdev->dev.of_node);
-> > +     else if (is_acpi_node(pdev->dev.fwnode))
-> > +             ret =3D acpi_mdiobus_register(bus, pdev->dev.fwnode);
-> > +     else
-> > +             ret =3D -EINVAL;
->
->
-> This seems like something which could be put into fwnode_mdio.c.
->
+Sorry for the delay.  This looks good to me, and it's a step forward
+into adding tracing to the driver core, which I've wanted to add for a
+while now.
 
-Agree - I'll create a simple fwnode_mdiobus_register() helper there.
+So I'll take it, thanks!
 
-Best regards,
-Marcin
+greg k-h
