@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E643A7D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3493A7D56
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhFOLwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:52:07 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46309 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229520AbhFOLwF (ORCPT
+        id S230167AbhFOLh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:37:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56986 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229869AbhFOLh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:52:05 -0400
-X-UUID: 2134e75a28344fc692e2cae3d9fa2cc9-20210615
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:CC:To:From:Subject:Message-ID; bh=BQai6nPOMiPUv4Z4xtBBlvgjSddYYRIO1ZSIjhf4Hns=;
-        b=jISEheLo3L/jd5EqTxNRyxbR0yv1EVUZh/yzJZS5J2BQihrZ1PzdrW/Z4Q9dPZgR+9CQ0yS4bzhrpHXngA00JreNEi/+vAO/q+iaHYVKc1rPBvUxUhIAMujmQ7JmrnItAKzeNpsTA77+w2FfOHW841fZN5kvc1EZhRf5UPd/UlY=;
-X-UUID: 2134e75a28344fc692e2cae3d9fa2cc9-20210615
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 497994196; Tue, 15 Jun 2021 19:49:57 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Jun 2021 19:49:55 +0800
-Received: from [10.15.20.246] (10.15.20.246) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Jun 2021 19:49:55 +0800
-Message-ID: <1623756935.15299.3.camel@mbjsdccf07>
-Subject: [PATCH v2 1/1] arm64: dts: mediatek: add MT6779 spi master dts node
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
-        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
-Date:   Tue, 15 Jun 2021 19:35:35 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 15 Jun 2021 07:37:58 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lt7MG-0007BD-Ml; Tue, 15 Jun 2021 11:35:52 +0000
+Subject: Re: [PATCH][next] io_uring: Fix incorrect sizeof operator for
+ copy_from_user call
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210615104541.50529-1-colin.king@canonical.com>
+ <3dcc6900-8361-d52c-003d-21318aa80156@canonical.com>
+ <d606818f-2e13-fbea-970b-eab9080d7f15@gmail.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <067e8830-f6ec-612a-2c8a-8da459f659d1@canonical.com>
+Date:   Tue, 15 Jun 2021 12:35:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <d606818f-2e13-fbea-970b-eab9080d7f15@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpUaGlzIHBhdGNoIGFkZCBzcGkgbWFzdGVyIGR0cyBub2RlIGZvdCBNVDY3NzkgU09DLg0KDQpT
-aWduZWQtb2ZmLWJ5OiBNYXNvbiBaaGFuZyA8TWFzb24uWmhhbmdAbWVkaWF0ZWsuY29tPg0KLS0t
-DQogYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSB8IDExMiArKysrKysr
-KysrKysrKysrKysrKysrKw0KIDEgZmlsZSBjaGFuZ2VkLCAxMTIgaW5zZXJ0aW9ucygrKQ0KDQpk
-aWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSBiL2Fy
-Y2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kNCmluZGV4IDM3MGYzMDlkMzJk
-ZS4uYzgxZTc2ODY1ZDFiIDEwMDY0NA0KLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRl
-ay9tdDY3NzkuZHRzaQ0KKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3Nzku
-ZHRzaQ0KQEAgLTIxOSw2ICsyMTksMTE4IEBADQogCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCiAJ
-CX07DQogDQorCQlzcGkwOiBzcGkwQDExMDBhMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10Njc3OS1zcGkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkj
-YWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRl
-ayxwYWQtc2VsZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDwwIDB4MTEwMGEwMDAgMCAweDEwMDA+Ow0K
-KwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDMgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJ
-CWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJPCZ0b3Bj
-a2dlbiBDTEtfVE9QX1NQST4sDQorCQkJCTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTA+Ow0K
-KwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCisJ
-CX07DQorDQorCQlzcGkxOiBzcGkxQDExMDEwMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10Njc3OS1zcGkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkj
-YWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRl
-ayxwYWQtc2VsZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDwwIDB4MTEwMTAwMDAgMCAweDEwMDA+Ow0K
-KwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDcgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJ
-CWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJPCZ0b3Bj
-a2dlbiBDTEtfVE9QX1NQST4sDQorCQkJCTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTE+Ow0K
-KwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCisJ
-CX07DQorDQorCQlzcGkyOiBzcGkyQDExMDEyMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10Njc3OS1zcGkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJCQkj
-YWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRpYXRl
-ayxwYWQtc2VsZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDwwIDB4MTEwMTIwMDAgMCAweDEwMDA+Ow0K
-KwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNTIgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KKwkJ
-CWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJIDwmdG9w
-Y2tnZW4gQ0xLX1RPUF9TUEk+LA0KKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEkyPjsN
-CisJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQor
-CQl9Ow0KKw0KKwkJc3BpMzogc3BpM0AxMTAxMzAwMCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRp
-YXRlayxtdDY3Nzktc3BpIiwNCisJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQorCQkJ
-I2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJI3NpemUtY2VsbHMgPSA8MD47DQorCQkJbWVkaWF0
-ZWsscGFkLXNlbGVjdCA9IDwwPjsNCisJCQlyZWcgPSA8MCAweDExMDEzMDAwIDAgMHgxMDAwPjsN
-CisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTUzIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCisJ
-CQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQorCQkJCSA8JnRv
-cGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJIDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTM+
-Ow0KKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsN
-CisJCX07DQorDQorCQlzcGk0OiBzcGk0QDExMDE4MDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1l
-ZGlhdGVrLG10Njc3OS1zcGkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCisJ
-CQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQltZWRp
-YXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KKwkJCXJlZyA9IDwwIDB4MTEwMTgwMDAgMCAweDEwMDA+
-Ow0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNTYgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0K
-KwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCisJCQkJIDwm
-dG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJ
-ND47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsi
-Ow0KKwkJfTsNCisNCisJCXNwaTU6IHNwaTVAMTEwMTkwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0K
-KwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KKwkJCW1l
-ZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAgMHgxMTAxOTAwMCAwIDB4MTAw
-MD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1NyBJUlFfVFlQRV9MRVZFTF9MT1cgMD47
-DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KKwkJCQk8
-JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJ
-NT47DQorCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsi
-Ow0KKwkJfTsNCisNCisJCXNwaTY6IHNwaTZAMTEwMWQwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQorCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0K
-KwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KKwkJCW1l
-ZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQorCQkJcmVnID0gPDAgMHgxMTAxZDAwMCAwIDB4MTAw
-MD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0NCBJUlFfVFlQRV9MRVZFTF9MT1cgMD47
-DQorCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KKwkJCQkg
-PCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQorCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9T
-UEk2PjsNCisJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNs
-ayI7DQorCQl9Ow0KKw0KKwkJc3BpNzogc3BpN0AxMTAxZTAwMCB7DQorCQkJY29tcGF0aWJsZSA9
-ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCisJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7
-DQorCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJI3NpemUtY2VsbHMgPSA8MD47DQorCQkJ
-bWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCisJCQlyZWcgPSA8MCAweDExMDFlMDAwIDAgMHgx
-MDAwPjsNCisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQ1IElSUV9UWVBFX0xFVkVMX0xPVyAw
-PjsNCisJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQorCQkJ
-CSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCisJCQkJIDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJB
-X1NQSTc+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGkt
-Y2xrIjsNCisJCX07DQorDQogCQlhdWRpbzogY2xvY2stY29udHJvbGxlckAxMTIxMDAwMCB7DQog
-CQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktYXVkaW8iLCAic3lzY29uIjsNCiAJCQly
-ZWcgPSA8MCAweDExMjEwMDAwIDAgMHgxMDAwPjsNCg0KDQpIaSBNYXR0aGlhczoNCg0KCUk7bSBz
-b3JyeSB0byBkaXN0dXJiIHlvdSBhZ2FpbiwNCglJIGhhdmUgdXBkYXRlIGNvbW1pdCBtZXNzYWdl
-IGZvciB0aGlzIHBhdGNoLCBJcyB0aGVyZSBhbnkgb3RoZXIgcXVlc3Rpb25zIGFib3V0IHRoaXMg
-cGF0Y2g/DQoNClRoYW5rcw0KTWFzb24NCg0K
+On 15/06/2021 12:30, Pavel Begunkov wrote:
+> On 6/15/21 11:47 AM, Colin Ian King wrote:
+>> On 15/06/2021 11:45, Colin King wrote:
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> Static analysis is warning that the sizeof being used is should be
+>>> of *data->tags[i] and not data->tags[i]. Although these are the same
+>>> size on 64 bit systems it is not a portable assumption to assume
+>>> this is true for all cases.
+>>>
+>>> Addresses-Coverity: ("Sizeof not portable")
+>>> Fixes: d878c81610e1 ("io_uring: hide rsrc tag copy into generic helpers")
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>> ---
+>>>  fs/io_uring.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>>> index d665c9419ad3..6b1a70449749 100644
+>>> --- a/fs/io_uring.c
+>>> +++ b/fs/io_uring.c
+>>> @@ -7231,7 +7231,7 @@ static int io_rsrc_data_alloc(struct io_ring_ctx *ctx, rsrc_put_fn *do_put,
+>>>  		ret = -EFAULT;
+>>>  		for (i = 0; i < nr; i++) {
+>>>  			if (copy_from_user(io_get_tag_slot(data, i), &utags[i],
+>>> -					   sizeof(data->tags[i])))
+>>> +					   sizeof(*data->tags[i])))
+>>>  				goto fail;
+>>>  		}
+>>>  	}
+>>>
+> 
 
+
+> Yep, thanks Colin. I think `sizeof(io_get_tag_slot(data, i))`
+> would be less confusing. Or
+> 
+> u64 *tag_slot = io_get_tag_slot(data, i);
+> copy_from_user(tag_slot, ..., sizeof(*tag_slot));
+> 
+BTW, Coverity is complaining about:
+
+7220                return -ENOMEM;
+
+Wrong sizeof argument (SIZEOF_MISMATCH)
+
+suspicious_sizeof: Passing argument nr * 8UL /* sizeof
+(data->tags[0][0]) */ to function io_alloc_page_table and then casting
+the return value to u64 ** is suspicious.
+
+7221        data->tags = (u64 **)io_alloc_page_table(nr *
+sizeof(data->tags[0][0]));
+
+Not sure if that's a false positive or not. This kind of indirection
+makes my brain melt.
+
+Colin
