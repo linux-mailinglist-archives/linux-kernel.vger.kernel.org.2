@@ -2,61 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0B93A8B68
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8663A8B6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhFOVxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:53:21 -0400
-Received: from fgw21-7.mail.saunalahti.fi ([62.142.5.82]:42402 "EHLO
-        fgw21-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231354AbhFOVxU (ORCPT
+        id S231461AbhFOVxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhFOVxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:53:20 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw21.mail.saunalahti.fi (Halon) with ESMTP
-        id cdd81c57-ce23-11eb-9eb8-005056bdd08f;
-        Wed, 16 Jun 2021 00:51:13 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2 1/1] platform/chrome: cros_ec_typec: Put fwnode in error case during ->probe()
-Date:   Wed, 16 Jun 2021 00:51:11 +0300
-Message-Id: <20210615215111.377348-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 15 Jun 2021 17:53:38 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B96C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:51:32 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id w22-20020a0568304116b02904060c6415c7so441754ott.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:51:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ItJk9Ghv8yIkGYbLPfxSoCvBmnCbXTpV0jG4iHLpYy4=;
+        b=IIrYpJa1hivGRct/dLtO++4CKQg5+Kk1ellVgLIkdWDt4YtQukExWRcZZSo7v7u4IW
+         84qPpddurdeZIvw1faFGdBcvUk6oQDV4cV7QqlY61SMjXTxRU0epWuSkUAYiOXgdgXgE
+         9pB7Wjk5l4UK5Xwr5NhtZ4/WaWllm8EUUMzubjmoXyV4XpPcetX6+7giaLMHZ+MKyGK8
+         FvAOCn7Qphuy38voaBNlCDtTS3oh7iI2vVH4LuZaN1UedpZWeMnzCUgvHr24B3zm6TxM
+         0BPvb7v8nzsZnAA5QB9RK3hSDzr9iJgV9ocqDipql9WGL4XbJoxNoHv2x0bq+mN8nOk5
+         lgEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ItJk9Ghv8yIkGYbLPfxSoCvBmnCbXTpV0jG4iHLpYy4=;
+        b=ixrifBnbbNHtJD0QBdXJkDqURRalmJZkMoAZBfBPEN8+c62sGw4Gs8FxFV4XE1YPsU
+         RSQ6Jqs+K/ihDeIiPzYuHtWdbXBLHBEZVsBAPztkpnbjYohFk8dM2L19gmCk65zcuSJC
+         E6MSUq5SBD9QUxbHNvOYzYdTNjWZ2vjz6777vRjOQfZMbPriFwtumvJM4eiqjVVqwpvF
+         erqz+3Jsy99iOWghJNBD87OQlPFZitT2FozUsChU827SPAjDEWBohio3s3dQRXc2fslE
+         5VF2zsc7LOVjZ6bhJMIjjKvyaJ8R1U5IWFbispwi9ZFaSZQiXpLVstD3RxAdzRb0CB4h
+         JoBA==
+X-Gm-Message-State: AOAM531LmH018NgpvNASoPponKS4oz8Wd2HHZ2pGYJNVAXBstegBRk0t
+        6+ME2vgOvOyTMDZZWarDj+g/puWv/RU/pQ==
+X-Google-Smtp-Source: ABdhPJw/JMvl2ceUXyIaVlgQVpTb/hJ0k9r80GjS13z6Cz0jpk+1XV6b3uTTZhk31n/DqEJzHzm0gQ==
+X-Received: by 2002:a05:6830:93:: with SMTP id a19mr1100081oto.17.1623793891829;
+        Tue, 15 Jun 2021 14:51:31 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id s187sm36343oig.6.2021.06.15.14.51.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 14:51:31 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: store back buffer in case of failure
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Olivier Langlois <olivier@trillion01.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <60c83c12.1c69fb81.e3bea.0806SMTPIN_ADDED_MISSING@mx.google.com>
+ <93256513-08d8-5b15-aa98-c1e83af60b54@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b5b37477-985e-54da-fc34-4de389112365@kernel.dk>
+Date:   Tue, 15 Jun 2021 15:51:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <93256513-08d8-5b15-aa98-c1e83af60b54@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-device_for_each_child_node() bumps a reference counting of a returned variable.
-We have to balance it whenever we return to the caller.
+Ditto for this one, don't see it in my email nor on the list.
 
-Fixes: fdc6b21e2444 ("platform/chrome: Add Type C connector class driver")
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Prashant Malani <pmalani@chromium.org>
----
-v2: added comment (Prashant), added Rb tag (Prashant)
- drivers/platform/chrome/cros_ec_typec.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index 27c068c4c38d..99fdc1156392 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -375,6 +375,8 @@ static int cros_typec_init_ports(struct cros_typec_data *typec)
- 	return 0;
- 
- unregister_ports:
-+	/* Drop the referece that bumped by device_for_each_child_node() */
-+	fwnode_handle_put(fwnode);
- 	cros_unregister_ports(typec);
- 	return ret;
- }
 -- 
-2.32.0
+Jens Axboe
 
