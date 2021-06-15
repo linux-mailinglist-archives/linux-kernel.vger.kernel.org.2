@@ -2,146 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95943A77BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249403A77C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 09:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhFOHN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 03:13:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229613AbhFOHNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 03:13:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6168A61410;
-        Tue, 15 Jun 2021 07:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623741111;
-        bh=qq/ltstnHBRgFuUEtXgNnx2Y5nwR5+8wMcmbcF5JWts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ClznI/0By212tEnW2pOji52vuipOFI/VKAv++PTlEdJxydXyIlF7Fyx/YJF4YztB0
-         75qxt297lsV6PHpKelwcHpOn9nlkWJPzyGbr2msSRKRSTsz1aZm0yGmnQhycRqtipR
-         DrN/Vqq2sZ9H3dJo0Xkh7WnnJMaE54AuAw+HlVUc=
-Date:   Tue, 15 Jun 2021 09:11:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jack Pham <jackp@codeaurora.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S230152AbhFOHQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 03:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhFOHQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 03:16:45 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3290C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:14:39 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id gt18so2302433ejc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 00:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=euuI3sy0vUASeXoR3VF/cB0ofsJ2xtWE3m2SATxLwmE=;
+        b=AomJNf88QS9O+s+qQw3D2dxQMVlYRACJ3W6XV/Qfc9QG0D0RMI5MlxK9IjvvJIfClI
+         5zXWKP6nSPEoagEG9oFTv/mhIC7PoaOzqpANzJ5ugqNtCLdKU6Jlc9TgwIf0qa3UIqnp
+         YEc2nN5Za8ELHgcu0qqnD0SgUiv8OTTTmTsiY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=euuI3sy0vUASeXoR3VF/cB0ofsJ2xtWE3m2SATxLwmE=;
+        b=RkndxXsa6zD1lMhC4XZ6E8lIj7sKNY8u/bA6AzitLgB9hC/bbKqIOHBbR86QiEtMoG
+         Mj6pbHHxjHuCLhXjp4BPNjIDn6168Uk1unUg7J6g+xyuIC+Bj22Wfh4SRgwkW5tTDqC1
+         7OgntIh/3DSJuG3KYSmSi36SRXCLilrt7cEMB0eJm8NTatrOsv6VHInApFrnu+KolcI4
+         gCrUnoSeegnhRTKybFNKU/IBwE2L+Zs+0k5gHkUd9lRGNfUa+aZNdyybl7vq2J3qReBC
+         mjaN1tx/ojNUKPq/rxtaWRZ981VIiYrcquUk2hK/e5oNfD5hWrrmHU4RLTFkV2RsyDPD
+         qSVA==
+X-Gm-Message-State: AOAM531yA5LXbzCJHEzXnPQ5WFbeXOOpzdZM0kbvh85bY3KiLBxE87jA
+        rP3jgBJUNakJP++f8MXEYRLgOA==
+X-Google-Smtp-Source: ABdhPJzjxFXKFZC7HNcQTYqrBtjgNTWh3xNtZtvIBwbS9EkxpwWTAToHGPC1F1FjdetgeI8BTV58aQ==
+X-Received: by 2002:a17:906:25db:: with SMTP id n27mr18868513ejb.170.1623741278609;
+        Tue, 15 Jun 2021 00:14:38 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.64.110])
+        by smtp.gmail.com with ESMTPSA id br21sm9160791ejb.124.2021.06.15.00.14.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 00:14:38 -0700 (PDT)
+Subject: Re: [PATCH RFCv3 2/3] lib/vsprintf.c: make %pD print full path for
+ file
+To:     Justin He <Justin.He@arm.com>, Petr Mladek <pmladek@suse.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        Peter Chen <peter.chen@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: Re: [PATCH 5.10 000/130] 5.10.44-rc2 review
-Message-ID: <YMhStNjyczSNkfkm@kroah.com>
-References: <20210614161424.091266895@linuxfoundation.org>
- <CA+G9fYsfvtr7NNcb0bvEZpYYotdY7Uf+wMY22iLhr0weZ8Om3g@mail.gmail.com>
- <YMhDPjbfTFpUtTs3@kroah.com>
- <20210615070747.GB31646@jackp-linux.qualcomm.com>
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <20210611155953.3010-1-justin.he@arm.com>
+ <20210611155953.3010-3-justin.he@arm.com> <YMd4ixry8ztzlG/e@alley>
+ <AM6PR08MB4376D26EFD5886B7CF21EFCFF7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <113d9380-8493-1bde-9c76-992f4ce675d9@rasmusvillemoes.dk>
+Date:   Tue, 15 Jun 2021 09:14:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615070747.GB31646@jackp-linux.qualcomm.com>
+In-Reply-To: <AM6PR08MB4376D26EFD5886B7CF21EFCFF7309@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:07:47AM -0700, Jack Pham wrote:
-> Hi Greg,
+On 15/06/2021 08.48, Justin He wrote:
+> Hi Petr
 > 
-> On Tue, Jun 15, 2021 at 08:05:50AM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Jun 15, 2021 at 09:41:26AM +0530, Naresh Kamboju wrote:
-> > > On Mon, 14 Jun 2021 at 21:45, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.10.44 release.
-> > > > There are 130 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Wed, 16 Jun 2021 16:13:59 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.44-rc2.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > > 
-> > > The following kernel crash reported on stable rc 5.10.44-rc2 arm64 db845c board.
-> > > 
-> > > [    5.127966] dwc3-qcom a6f8800.usb: failed to get usb-ddr path: -517
-> 
-> Looks like -EPROBE_DEFER happened here due to a not-yet-probed
-> dependency (interconnect driver).  This leads to dwc3_qcom_probe()
-> unwinding and calling of_platform_depopulate() which triggers the
-> "child" dwc3's driver remove callback dwc3_remove()...
-> 
-> > > [    5.145567] Unable to handle kernel NULL pointer dereference at
-> > > virtual address 0000000000000002
-> > > [    5.154451] Mem abort info:
-> > > [    5.157296]   ESR = 0x96000004
-> > > [    5.160401]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > > [    5.165771]   SET = 0, FnV = 0
-> > > [    5.168873]   EA = 0, S1PTW = 0
-> > > [    5.172064] Data abort info:
-> > > [    5.174980]   ISV = 0, ISS = 0x00000004
-> > > [    5.178860]   CM = 0, WnR = 0
-> > > [    5.181872] [0000000000000002] user address but active_mm is swapper
-> > > [    5.188293] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> > > [    5.193922] Modules linked in:
-> > > [    5.197022] CPU: 4 PID: 57 Comm: kworker/4:3 Not tainted 5.10.44-rc2 #1
-> > > [    5.203697] Hardware name: Thundercomm Dragonboard 845c (DT)
-> > > [    5.204022] ufshcd-qcom 1d84000.ufshc: ufshcd_print_pwr_info:[RX,
-> > > TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
-> > > [    5.209434] Workqueue: events deferred_probe_work_func
-> > > [    5.221786] ufshcd-qcom 1d84000.ufshc:
-> > > ufshcd_find_max_sup_active_icc_level: Regulator capability was not
-> > > set, actvIccLevel=0
-> > > [    5.226541] pstate: 60c00005 (nZCv daif +PAN +UAO -TCO BTYPE=--)
-> > > [    5.226551] pc : inode_permission+0x2c/0x178
-> > > [    5.226559] lr : lookup_one_len_common+0xac/0x100
-> > > 
-> > > ref:
-> > > https://lkft.validation.linaro.org/scheduler/job/2899138#L2873
-> > > 
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > 
-> > > There is a crash like this reported and discussed on the mailing thread.
-> > > https://lore.kernel.org/linux-usb/20210608105656.10795-1-peter.chen@kernel.org/
-> > 
-> > Is this crash just on shutdown?  That's what that commit was fixing, but
-> > it is resolving an error that should not be in the 5.10.y tree.
-> 
-> Peter reported and fixed it based on reproducing the crash from shutting
-> down but in my manual testing I found that it could be triggered any
-> time dwc3_remove() is called, though I surmised it would be a rare
-> occurence.  In this particular case however Naresh is reporting it is
-> triggered even during bootup since dwc3-qcom would add its
-> dwc3 child, but because it encounters a probe deferral it has to
-> subsequently trigger the dwc3 driver remove callback right after it was
-> just probed.
-> 
-> So I think it would be good if Peter's follow-up change
-> (2a042767814b in your usb-next branch) can please go into stable as well
-> as it should help not only for the shutdown/reboot case.  Otherwise,
-> my change "usb: dwc3: debugfs: Add and remove endpoint dirs
-> dynamically" could be simply be dropped until they can go in together.
 
-That will all have to wait until 5.14-rc1 as these patches are not
-queued up to hit Linus's tree until then.  I was not aware that this
-problem was showing up anywhere except in linux-next.
+>>> +   /* no filling space at all */
+>>> +   if (buf >= end || !buf)
+>>> +           return buf + reserved_size;
+>>> +
+>>> +   /* small space for long name */
+>>> +   if (buf < end && prepend_len < 0)
+>>> +           return string_truncate(buf, end, p, dpath_len, spec);
+>>
+>> We need this only because we allowed to write the path behind
+>> spec.field_width. Do I get it right?
+> 
+> Both of field_width and precision:
+> "%.14pD" or "%8.14pD"
 
-If we need a fix in 5.13-final before then, please let me know and
-submit it so that I can take it in my tree and get it to Linus quickly.
+Precision is never gonna be used with %p (or any of its kernel
+extensions) because gcc would tell you
 
-thanks,
+foo.c:5:13: warning: precision used with ‘%p’ gnu_printf format [-Wformat=]
+    5 |  printf("%.5p\n", foo);
 
-greg k-h
+and there's no way -Wformat is going to be turned off to allow that usage.
+
+IOW, there's no need to add complexity to make "%.3pD" of something that
+would normally print "/foo/bar" merely print "/fo", similar to what a
+precision with %s would mean.
+
+As for field width, I don't know if it's worth honouring, but IIRC the
+original %pd and %pD did that (that's where we have widen_string etc. from).
+
+Other %p extensions put the field with to some other use (e.g. the
+bitmap and hex string printing), so they obviously cannot simultaneously
+use it in the traditional sense.
+
+Rasmus
