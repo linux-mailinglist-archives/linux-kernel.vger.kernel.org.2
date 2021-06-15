@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD073A8B45
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A847D3A8B4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhFOVlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbhFOVlk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:41:40 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEF9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:39:35 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso358577otu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CVEv/IgDHzRWElqNAWTEDnLSe7O3k6kaEe7gdNKBwXs=;
-        b=L7xnKUuBZnqcumMzDuO51h3ey7Upob+cfoa9yJzYNKjrprkDxr6Lvyk9hh3EeWcND1
-         obGIVDNN5GP+2fZL1kRLpnDklbdretnXhk5xG8M782Li0lJT8pjLUluKOxxQok4wYoc6
-         5hU2Re9fJj8zyxg3Zqn9OtVcW9hgzegr0UyHVzzKKibLfrY7feATVBs9RdcSFEuH9KB7
-         JVx8AQdqljz1vxP16CMmeIAjihCuczkgM5I2Qm8qXRTegl2rekwJNR131ZljD5EY9HC0
-         oqCQkjcrvzAtdvg49IunU8NI+mosF1ZaJLo61UsbP6RB1dMjzQRV9IoVeeTALlchSgsl
-         JXcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CVEv/IgDHzRWElqNAWTEDnLSe7O3k6kaEe7gdNKBwXs=;
-        b=Hj1dr9lqz6Ts/x8ISyyZQajHBjUlJ7YccdaKTCe2/2/9dQrbmJGqGCwYi3c/V0Im7D
-         rn6fWTuUmt4LQxIZxZ2sg3gLQgs63BRNxBKE5+4vI9bVIiOrg8Sk5Yk74qSBDbAwucGw
-         3GnxADfrFnV9dUxXjkZliA9mN+TulHR5rPzQ6K12bJDqGAD1hbAiKpm8iIG4VH9Kn28p
-         0yu6edcgBmBK1uM4ejctPrU2mF95wn1eFwvjflasxWcFFF4BpB6RMeTD7sNdsSTFl7ie
-         j+6dOpglAwivTZqPS4cLLsVs16QMwvsaiwuw1rJWoZVZChPJ5u2zG1Tg9AMxJVUW668I
-         7A7Q==
-X-Gm-Message-State: AOAM532+arSMzJi5lYamDziVKF3bV/UKHwC1hja4ZMVkISTOjhAIaPY8
-        g1Ng1TxBdaeCA+ZJi6a1Bxl/UHGSFvmM6w==
-X-Google-Smtp-Source: ABdhPJzpIzcrtFLmozksgx/FN5kkj2i/e/VGxdP5QqTdJZnr11gu97Em+EN5wpKa/S90U58uzpK+Gg==
-X-Received: by 2002:a9d:7b45:: with SMTP id f5mr1057063oto.183.1623793174961;
-        Tue, 15 Jun 2021 14:39:34 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id x199sm30093oif.5.2021.06.15.14.39.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 14:39:34 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: Fix comment of io_get_sqe
-To:     Fam Zheng <fam.zheng@bytedance.com>, linux-kernel@vger.kernel.org
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        fam@euphon.net
-References: <20210604164256.12242-1-fam.zheng@bytedance.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e12382b6-5c29-c8c0-6874-ad5e2befce1e@kernel.dk>
-Date:   Tue, 15 Jun 2021 15:39:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231251AbhFOVmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230081AbhFOVmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 17:42:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0551D610A2;
+        Tue, 15 Jun 2021 21:40:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623793249;
+        bh=/oWKsJvcxdMz4Rzoy3pE+j7Iv7xWCF+ZYupP97KOmKo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aXR0SfR6dp9FSdmaNvBHqVz5z8mnf/59BkVJt86UYIU+BSZg1J9jqV0YZyRBggCCY
+         deA2wkpV7slrL1m5RFdACByKIx00u6VNdusvpHIFF5c74mZu7Y5xWfmnAOx8ZUI9P5
+         033jQAWEknB1kr+QzXRiqTyX+tPaEZvoz9ArleVckiZm6J4iJ+aMNg8z91qpPYUMbQ
+         OBEPSjWULqgs5M4bp+qX3ywFFj3HjJadoBqH5om/V1INIU4S28x9gAwLsWuoUG/3Qh
+         7bq8GzfljmU2sHmL6w/7VgxxuKVWa9+pvZdHVi0BOaWjaApMvmqfKAvKthsjqeTP20
+         g9d66GgdII56g==
+Received: by mail-qk1-f177.google.com with SMTP id c18so441632qkc.11;
+        Tue, 15 Jun 2021 14:40:48 -0700 (PDT)
+X-Gm-Message-State: AOAM530csdEHuU+c0oHSdWvqqTA8ckCygCGIwF5FxBgybvnZmAPklGqw
+        EK9isBpxSFmWDwVQVcGDzsun0TwsQwLnS6qO3g==
+X-Google-Smtp-Source: ABdhPJz/0cruuS8J7a6V1fXkhT9dT8IPshEj5fOX6o+PdZ6Rz1bo0/Pa0u1uPJxt+3RO+D9aKPcUX5aWfodohh+B8wk=
+X-Received: by 2002:a37:a2d3:: with SMTP id l202mr1708344qke.311.1623793248238;
+ Tue, 15 Jun 2021 14:40:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210604164256.12242-1-fam.zheng@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210603103814.95177-1-manivannan.sadhasivam@linaro.org>
+ <20210603103814.95177-3-manivannan.sadhasivam@linaro.org> <YLw744UeM6fj/xoS@builder.lan>
+In-Reply-To: <YLw744UeM6fj/xoS@builder.lan>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 15 Jun 2021 15:40:36 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq++bSPiKcgWUr6AJbJfidPNpUSFCtarRGEV4GP7fb8yPw@mail.gmail.com>
+Message-ID: <CAL_Jsq++bSPiKcgWUr6AJbJfidPNpUSFCtarRGEV4GP7fb8yPw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] PCI: dwc: Add Qualcomm PCIe Endpoint controller driver
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Siddartha Mohanadoss <smohanad@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/4/21 10:42 AM, Fam Zheng wrote:
-> The sqe_ptr argument has been gone since 709b302faddf (io_uring:
-> simplify io_get_sqring, 2020-04-08), made the return value of the
-> function. Update the comment accordingly.
+On Sat, Jun 5, 2021 at 9:07 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Thu 03 Jun 05:38 CDT 2021, Manivannan Sadhasivam wrote:
+>
+> > Add driver support for Qualcomm PCIe Endpoint controller driver based on
+> > the Designware core with added Qualcomm specific wrapper around the
+> > core. The driver support is very basic such that it supports only
+> > enumeration, PCIe read/write, and MSI. There is no ASPM and PM support
+> > for now but these will be added later.
+> >
+> > The driver is capable of using the PERST# and WAKE# side-band GPIOs for
+> > operation and written on top of the DWC PCI framework.
+> >
+> > Co-developed-by: Siddartha Mohanadoss <smohanad@codeaurora.org>
+> > Signed-off-by: Siddartha Mohanadoss <smohanad@codeaurora.org>
+> > [mani: restructured the driver and fixed several bugs for upstream]
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>
+> Really nice to see this working!
 
-Applied, thanks.
+[...]
 
--- 
-Jens Axboe
+> > +static void qcom_pcie_ep_configure_tcsr(struct qcom_pcie_ep *pcie_ep)
+> > +{
+> > +     writel_relaxed(0x0, pcie_ep->tcsr + TCSR_PCIE_PERST_EN);
+>
+> Please avoid _relaxed accessor unless there's a strong reason, and if so
+> document it.
 
+Uhhh, what!? That's the wrong way around from what I've ever seen
+anyone say. Have you ever looked at the resulting code on arm32 with
+OMAP enabled? It's just a memory barrier and an indirect function call
+on every access.
+
+Use readl/writel if you have an ordering requirement WRT DMA,
+otherwise use relaxed variants.
+
+> > +     writel_relaxed(0x0, pcie_ep->tcsr + TCSR_PERST_SEPARATION_ENABLE);
+> > +}
+> > +
+
+[...]
+
+> > +static struct platform_driver qcom_pcie_ep_driver = {
+> > +     .probe  = qcom_pcie_ep_probe,
+> > +     .driver = {
+> > +             .name           = "qcom-pcie-ep",
+>
+> Skip the indentation of the '='.
+>
+> > +             .suppress_bind_attrs = true,
+>
+> Why do we suppress_bind_attrs?
+
+Because remove is not handled.
+
+Rob
