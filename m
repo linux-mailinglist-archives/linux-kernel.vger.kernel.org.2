@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21BB3A8A27
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7D93A8A2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 22:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhFOUbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 16:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
+        id S230393AbhFOUdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 16:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhFOUbW (ORCPT
+        with ESMTP id S230001AbhFOUdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 16:31:22 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FEEC061767
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:29:17 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id z12so4050048edc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:29:17 -0700 (PDT)
+        Tue, 15 Jun 2021 16:33:23 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCE4C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:31:18 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id i34so35784pgl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 13:31:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2tUb3d+vrU01SWNkHnqFTp6elP7WYKyt6weZt4gpH4c=;
-        b=C/5aCfxMDXSWhUT85X6FPMeKiIG3eCf+CiG388aSOsCzVxxv5aUtvXkMKfZpqeLgpN
-         fgcM5N8j89oL+w3ZpjZPwEWjWHi2z2VaseFPqcMwyqdgN3nV5MMxGwOT/FglPkhBsV5i
-         TivylFGYXHo2LuYghMO2RtojnU5N/Gcao841b15cz6djORQYc7QFzSvGHQeBGyWJflFx
-         ZJWeO6LTWwS1IYQLQ4uCTk9UvjjH/Cv67l2kXMMw8LOOzOCRRnqX4lFWIiri/IsmgIyJ
-         Wcpd0wwUjs7tvN54hzMk0Z8fb6GloOjscB0TqT4YYsQ9w/MG6AZSH5Z3jTni91p1Ht0f
-         Ri5w==
+        bh=E37caVuTY/B9zLuR73njZ9AALMNS/tHeRKYxMrSzEz0=;
+        b=FouooHKK5Kv2tVo8iojLmqiMmOTU9q3Rr281xjbmdGbDUtZoNIGJWCGUW2XEji6pNr
+         1s0h/FW6x9gn923CrLnBDZvR0PUIeXH2PoOwM9cIYs6ww0NK8IA6NdOqWj2EX8lnOL/K
+         69iojuLQeqoh2FaW1HaoLmD2MoRVKs8Muky1vRhWoQadCnQjKVlt18zskNGvQ//2eOOF
+         3vAngz7c3jupjoqhEvcCnWAvFE4D8PALRb5UztCCse6USes7CS432aLGYiHrG3Eio4Pc
+         6ZzzW8TLMHalJS9w7xkQBBxkIcd0OPevTBrlQQl+B5E8wP58FtqZTtoX6jaHqYbh+xo3
+         PKMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2tUb3d+vrU01SWNkHnqFTp6elP7WYKyt6weZt4gpH4c=;
-        b=IMQFO7YgmQy6onDzTuW9q8ACy0EJdDmYfJdvplxehikCf9zO36vmCiHRg0MXSFeIVO
-         70cC7DX4fal4xFbR9k44xc1KDnu49WFd0eW/zfSYJLBY6AyZOC8+Pprc9kuYlj67C/5G
-         guSXftTgFXS/n+4e/leJcEkqPwj2nlvOV6OQpGRofaP0yh+xPsXcD7QK5OZN0ZVm0S/E
-         Hw2nKl6pnj5B2xF8Za/0uQajNjkFB8NJsVLo7fZVYwjvE4ianwaJPxLwH8Fm1GPp4aeE
-         3UTGzbb0+NwjN5UVAoQUWzpFanNJ4UMeEqL5CllUs0Ais1XCyLahnjKPX0ke8+sbrpKe
-         4clg==
-X-Gm-Message-State: AOAM532CEi+Mb67WorLbqSNu0QG8JScM1AZ8fYGZ2wQvnPMA17KP6qzF
-        D/KCxm2jOIlF1J10S01rMLP0NzB+3k5YasKjQdSj
-X-Google-Smtp-Source: ABdhPJyIIf4T2qpxVYty/GeKWpL9QElM+VR5KcvlIvOv6Q3SbIJCtwCMaN1Q56/SUMI/5U1TH0kNi4wFZuV4iL2X08M=
-X-Received: by 2002:a05:6402:1771:: with SMTP id da17mr1679082edb.31.1623788955775;
- Tue, 15 Jun 2021 13:29:15 -0700 (PDT)
+        bh=E37caVuTY/B9zLuR73njZ9AALMNS/tHeRKYxMrSzEz0=;
+        b=j2TcB7OqVo6L3GQXyqtH0v7izZfYGKk44h4nuSBB6+2Nqk9L1V4XxCi4tW05gljvJi
+         pXhlLb8c2bLtjMMTO7vVU5+8h/aCDKajPzA07WC+zCj/mKSWOzZdNZdtRp+Brz15aUfH
+         5Ra8g59CL8cG6HHkjldV0xnTPF2jeo3d/VbOVRswL6NR7rl7qOXoiYC5zQLYP2Ie3bbO
+         DkxBKExfd/uAUX83ccDh9fWkDsNhBC/IoIx4C1kVEnugXF5G1Bv42qo4F0WKdgWDMkM+
+         E1KWwADlYxrAkxe22jZWg88yKyJ0t1hDESMWaV08iAVr9XycS7lGNtMWc7fdfB8l08o+
+         6k0g==
+X-Gm-Message-State: AOAM531bHRUKVr/YfzGL9PfsP1UVfNuTZYtQt1Zcejw/Ktl4V1TaElDy
+        jYjcDjXWiC2q8/lrmqBxeKZsXQKCAGxaFu6+K+KaOw==
+X-Google-Smtp-Source: ABdhPJwn9DXyFZU6dAUW0NVQXX6D8A9PaVBK/VPolhPO1bdCq7C7jvnewfwRIyGRDuiDs3a8xxpJcKlTSl7yTyTwa8s=
+X-Received: by 2002:a63:d0d:: with SMTP id c13mr1332243pgl.384.1623789077303;
+ Tue, 15 Jun 2021 13:31:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615021444.2306687-1-liushixin2@huawei.com>
-In-Reply-To: <20210615021444.2306687-1-liushixin2@huawei.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 15 Jun 2021 16:29:04 -0400
-Message-ID: <CAHC9VhRGsDZE5JVctD8DuX6nghh1nLK6qUNsO=S5HNcddEibVQ@mail.gmail.com>
-Subject: Re: [PATCH -next v3] netlabel: Fix memory leak in netlbl_mgmt_add_common
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210513193204.816681-1-davidgow@google.com> <20210513193204.816681-7-davidgow@google.com>
+In-Reply-To: <20210513193204.816681-7-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 15 Jun 2021 13:31:06 -0700
+Message-ID: <CAFd5g45oA_Fiwbntg0RrHs8K37A57CSbUy+4_pFGQOUT=dPW4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 07/10] thunderbolt: test: Remove sone casts which are
+ no longer required
+To:     David Gow <davidgow@google.com>
+Cc:     Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 9:43 PM Liu Shixin <liushixin2@huawei.com> wrote:
+On Thu, May 13, 2021 at 12:36 PM David Gow <davidgow@google.com> wrote:
 >
-> Hulk Robot reported memory leak in netlbl_mgmt_add_common.
-> The problem is non-freed map in case of netlbl_domhsh_add() failed.
+> With some of the stricter type checking in KUnit's EXPECT macros
+> removed, several casts in the thunderbolt KUnit tests are no longer
+> required.
 >
-> BUG: memory leak
-> unreferenced object 0xffff888100ab7080 (size 96):
->   comm "syz-executor537", pid 360, jiffies 4294862456 (age 22.678s)
->   hex dump (first 32 bytes):
->     05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     fe 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
->   backtrace:
->     [<0000000008b40026>] netlbl_mgmt_add_common.isra.0+0xb2a/0x1b40
->     [<000000003be10950>] netlbl_mgmt_add+0x271/0x3c0
->     [<00000000c70487ed>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320
->     [<000000001f2ff614>] genl_rcv_msg+0x2bf/0x4f0
->     [<0000000089045792>] netlink_rcv_skb+0x134/0x3d0
->     [<0000000020e96fdd>] genl_rcv+0x24/0x40
->     [<0000000042810c66>] netlink_unicast+0x4a0/0x6a0
->     [<000000002e1659f0>] netlink_sendmsg+0x789/0xc70
->     [<000000006e43415f>] sock_sendmsg+0x139/0x170
->     [<00000000680a73d7>] ____sys_sendmsg+0x658/0x7d0
->     [<0000000065cbb8af>] ___sys_sendmsg+0xf8/0x170
->     [<0000000019932b6c>] __sys_sendmsg+0xd3/0x190
->     [<00000000643ac172>] do_syscall_64+0x37/0x90
->     [<000000009b79d6dc>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> Remove the unnecessary casts, making the conditions clearer.
 >
-> Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
-> v1->v2: According to Dongliang's and Paul's advices, simplify the code.
-> v2->v3: Fix the style error.
->
->  net/netlabel/netlabel_mgmt.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
+> Signed-off-by: David Gow <davidgow@google.com>
 
-Thanks for the updated patch, it looks good to me.  I see it's already
-been merged, but for posterity's sake ...
-
-Acked-by: Paul Moore <paul@paul-moore.com>
-
--- 
-paul moore
-www.paul-moore.com
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
