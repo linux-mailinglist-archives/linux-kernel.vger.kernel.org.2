@@ -2,143 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822533A8B71
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36543A8B77
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhFOV4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:56:54 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57422 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbhFOV4x (ORCPT
+        id S231346AbhFOV5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhFOV5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:56:53 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltH19-0009sn-8n; Tue, 15 Jun 2021 23:54:43 +0200
-Received: from [85.7.101.30] (helo=linux-3.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltH18-000IMK-PK; Tue, 15 Jun 2021 23:54:42 +0200
-Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        nathan@kernel.org, ndesaulniers@google.com,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
-References: <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
- <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
- <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com> <202106101002.DF8C7EF@keescook>
- <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
- <85536-177443-curtm@phaethon>
- <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com> <YMkAbNQiIBbhD7+P@gmail.com>
- <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
- <YMkcYn4dyZBY/ze+@gmail.com> <YMkdx1VB0i+fhjAY@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4713f6e9-2cfb-e2a6-c42d-b2a62f035bf2@iogearbox.net>
-Date:   Tue, 15 Jun 2021 23:54:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 15 Jun 2021 17:57:33 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF084C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:55:27 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id i17so467504ilj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gGlMil9gXKdK98e+z/3//0TEFr3A94FGVQzcCF7IEdg=;
+        b=E4n+xiU6XmWOto6x2oSKuUqg2Y3hZugY9I+InERxKH2yDgoypfGzeYm/zUcDsuVgGv
+         YAgCOFaxAKVvwJo2xWx8EwQ6T775mKH02/W8MY7JdDXMymNvvl34Lqdv2k6eWwKNmpJ2
+         hKHQxlHRfGZvDh+wZ6DNEw551U1ZdDPC3mXY4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gGlMil9gXKdK98e+z/3//0TEFr3A94FGVQzcCF7IEdg=;
+        b=ZcoJsiIJnLuCN7v9GWGhmxCNrD6+fxl2efQj8m7V8WbFYRQjv48iKNcF7T4AFN4hjL
+         ryFKTKVDUfLyRmvyXUQZu93FcjjlbB//i3coD5pjBeLW1zII+TNX+zoFR7z1Scqr5q6Z
+         5i1bpcODGOLQtvBeOUseLGmOs5jnSMrRoAgs+rr/aXM90lJpqhmFjRjMY1sSdveCtmnM
+         aJ+0lASSei8Aq0ENmO3OHQ8cafYmxZeqkw/VN6ZIXNGaNcZXgpvqaWxr+WiIhjJVuwB7
+         ORkQcXGBrd/WgZm6NPtF5KuomLNnGlG2R7DOFBdI0f8WmQggg/LPvbwiK0JHnY38iBF6
+         GTpA==
+X-Gm-Message-State: AOAM530iCFWo0AsiisQV+abbf4Bo7aPADqKH1YQ1rxduXYcrv8rl3oQ9
+        nKnPq70l8QJyB5O5AttGZ196vQ==
+X-Google-Smtp-Source: ABdhPJw0IoVMLrcQF6VHs508bDV1rbR9v5A1SXOl7hjsDfXWcFRqvfFr0np1QIn9PrKEnOo0RQ9C6Q==
+X-Received: by 2002:a05:6e02:11b1:: with SMTP id 17mr1027938ilj.225.1623794127136;
+        Tue, 15 Jun 2021 14:55:27 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id k10sm161902ion.38.2021.06.15.14.55.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 14:55:26 -0700 (PDT)
+Subject: Re: [PATCH v8 5/5] selftests/sgx: Refine the test enclave to have
+ storage
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210610083021.392269-1-jarkko@kernel.org>
+ <20210610083021.392269-5-jarkko@kernel.org>
+ <b1bf69f5-e203-d69e-d15d-3fb5e98b63dd@linuxfoundation.org>
+ <20210615131359.zrfvi36sjdpxghzl@kernel.org>
+ <20210615131553.5y3jssldqc3sv2ge@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <adcc7797-db49-4dbc-ef87-5c12ad1d6a44@linuxfoundation.org>
+Date:   Tue, 15 Jun 2021 15:55:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YMkdx1VB0i+fhjAY@gmail.com>
+In-Reply-To: <20210615131553.5y3jssldqc3sv2ge@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26202/Tue Jun 15 13:21:24 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/21 11:38 PM, Eric Biggers wrote:
-> On Tue, Jun 15, 2021 at 02:32:18PM -0700, Eric Biggers wrote:
->> On Tue, Jun 15, 2021 at 11:08:18PM +0200, Daniel Borkmann wrote:
->>> On 6/15/21 9:33 PM, Eric Biggers wrote:
->>>> On Tue, Jun 15, 2021 at 07:51:07PM +0100, Edward Cree wrote:
->>>>>
->>>>> As I understand it, the UBSAN report is coming from the eBPF interpreter,
->>>>>    which is the *slow path* and indeed on many production systems is
->>>>>    compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
->>>>> Perhaps a better approach to the fix would be to change the interpreter
->>>>>    to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
->>>>>    bitnesses), thus matching the behaviour of most chips' shift opcodes.
->>>>> This would shut up UBSAN, without affecting JIT code generation.
+On 6/15/21 7:15 AM, Jarkko Sakkinen wrote:
+> On Tue, Jun 15, 2021 at 04:14:02PM +0300, Jarkko Sakkinen wrote:
+>> On Mon, Jun 14, 2021 at 02:16:15PM -0600, Shuah Khan wrote:
+>>> On 6/10/21 2:30 AM, Jarkko Sakkinen wrote:
+>>>> Extend the enclave to have two operations: ENCL_OP_PUT and ENCL_OP_GET.
+>>>> ENCL_OP_PUT stores value inside the enclave address space and
+>>>> ENCL_OP_GET reads it. The internal buffer can be later extended to be
+>>>> variable size, and allow reclaimer tests.
 >>>>
->>>> Yes, I suggested that last week
->>>> (https://lkml.kernel.org/netdev/YMJvbGEz0xu9JU9D@gmail.com).  The AND will even
->>>> get optimized out when compiling for most CPUs.
+>>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+>>>> ---
+>>>>    tools/testing/selftests/sgx/defines.h     | 10 ++++
+>>>>    tools/testing/selftests/sgx/main.c        | 57 ++++++++++++++++++-----
+>>>>    tools/testing/selftests/sgx/test_encl.c   | 19 +++++++-
+>>>>    tools/testing/selftests/sgx/test_encl.lds |  3 +-
+>>>>    4 files changed, 74 insertions(+), 15 deletions(-)
+>>>>
 >>>
->>> Did you check if the generated interpreter code for e.g. x86 is the same
->>> before/after with that?
+>>> Test output before applying the series:
+>>>
+>>> TAP version 13
+>>> 1..1
+>>> # selftests: sgx: test_sgx
+>>> # Unable to open /dev/sgx_enclave: No such file or directory
+>>> # 1..0 # SKIP cannot load enclaves
+>>> ok 1 selftests: sgx: test_sgx # SKIP
+>>>
+>>> Test output after applying second patch
+>>>
+>>> selftests/sgx: Migrate to kselftest harness
+>>>
+>>> Output changes to the following. It doesn't look like the second
+>>> patch adds any new tests. What is the point in running the tests
+>>> that fail if /dev/sgx_enclave is missing.
+>>>
+>>> Unfortunately this series doesn't have a cover letter that explains
+>>> what this series is doing. I don't like the fact that the test
+>>> output and behavior changes when migrating the test to kselftest
+>>> harness. Shouldn't the output stay the same as in skip the tests
+>>> if /dev/sgx_enclave fails.
 >>
->> Yes, on x86_64 with gcc 10.2.1, the disassembly of ___bpf_prog_run() is the same
->> both before and after (with UBSAN disabled).  Here is the patch I used:
+>> I get what you are saying but actually I do not know how with
+>> fixtures I can skip "the rest" when FIXTURE_SETUP() fails.
 >>
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index 5e31ee9f7512..996db8a1bbfb 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -1407,12 +1407,30 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
->>   		DST = (u32) DST OP (u32) IMM;	\
->>   		CONT;
->>   
->> +	/*
->> +	 * Explicitly mask the shift amounts with 63 or 31 to avoid undefined
->> +	 * behavior.  Normally this won't affect the generated code.
+>> The reason for the output below is that with fixtures for all
+>> tests enclave is initialized for each test case. And it kind of
+>> makes sense because all tests start from the clean expected
+>> state.
+>>
+>> I don't how to do that with zero change in the output.
+>>
 
-The last one should probably be more specific in terms of 'normally', e.g. that
-it is expected that the compiler is optimizing this away for archs like x86. Is
-arm64 also covered by this ... do you happen to know on which archs this won't
-be the case?
+Yeah. I took a look at the FIXTURE. Doesn't look like it is possible.
 
-Additionally, I think such comment should probably be more clear in that it also
-needs to give proper guidance to JIT authors that look at the interpreter code to
-see what they need to implement, in other words, that they don't end up copying
-an explicit AND instruction emission if not needed there.
-
->> +	 */
->> +#define ALU_SHIFT(OPCODE, OP)		\
->> +	ALU64_##OPCODE##_X:		\
->> +		DST = DST OP (SRC & 63);\
->> +		CONT;			\
->> +	ALU_##OPCODE##_X:		\
->> +		DST = (u32) DST OP ((u32)SRC & 31);	\
->> +		CONT;			\
->> +	ALU64_##OPCODE##_K:		\
->> +		DST = DST OP (IMM & 63);	\
->> +		CONT;			\
->> +	ALU_##OPCODE##_K:		\
->> +		DST = (u32) DST OP ((u32)IMM & 31);	\
->> +		CONT;
-
-For the *_K cases these are explicitly rejected by the verifier already. Is this
-required here nevertheless to suppress UBSAN false positive?
-
->>   	ALU(ADD,  +)
->>   	ALU(SUB,  -)
->>   	ALU(AND,  &)
->>   	ALU(OR,   |)
->> -	ALU(LSH, <<)
->> -	ALU(RSH, >>)
->> +	ALU_SHIFT(LSH, <<)
->> +	ALU_SHIFT(RSH, >>)
->>   	ALU(XOR,  ^)
->>   	ALU(MUL,  *)
->>   #undef ALU
+>> The reason to do this change is to make it easy to add more tests,
+>> and return correct status codes to the framework.
 > 
-> Note, I missed the arithmetic right shifts later on in the function.  Same
-> result there, though.
-> 
-> - Eric
+> To add: everything I did I based purely to the existing kernel
+> documentation, following the examples on how to use fixture.
 > 
 
+I will pick these up and will add a note to the last commit that
+output changes, so test rings that run kselftest are aware of the
+change.
+
+thanks,
+-- Shuah
