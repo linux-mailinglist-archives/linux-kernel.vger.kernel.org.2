@@ -2,367 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8AD3A88D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3F43A88E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 20:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhFOSwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 14:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
+        id S230527AbhFOSxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 14:53:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbhFOSwR (ORCPT
+        with ESMTP id S229943AbhFOSxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:52:17 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25D3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:50:11 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id 5so5068496qkc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 11:50:11 -0700 (PDT)
+        Tue, 15 Jun 2021 14:53:16 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E918C061574;
+        Tue, 15 Jun 2021 11:51:11 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id y7so19401513wrh.7;
+        Tue, 15 Jun 2021 11:51:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xzUcgkT3sG8sp6kZgX9h/y1VkhP/02QxOi1ygYmoj1g=;
-        b=nn++HBcrR7EE0OLBnpNyBNvA/P9rWvSGoH7dN+smO9lBoiMZ2jZjX9J/WnGDnnaAuR
-         D8k4uA3/hSrJ+9xf7Vme7YIa+dh/UuetCqTydMlLhilCv+r+g7Fz50ZGR1MzHUpIVABD
-         8vjXNm9EiBnRtbIq8UVkh4W3KaWNJ/51Up/ty0Z32Gd+KTfBCKmKOmG8CFC4cWwn5y1J
-         Q59N8bPjJgskQjEqA5dDshwLYinbLjaWPFD622v/3htWZzi14E2fnfT7GHcsZ7cUoN13
-         tnDTxXbVjVFKpH4+YxP8Cmm1ZXntz4CUNyiBrOlPBCjdtoRSAaJOii59pS31cjgT3MsW
-         yvKg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QojazdBWoM3SyAlRdVHgqcAEHJPhAD/lO190hYA/8jw=;
+        b=keYPy5Ik8+o66m6E25AGSE/i051lEKyA7J37a24FhFdDO+zv5FEgFaR9O03PJ1iQWC
+         rivCZbjUHnzjLG67BYdOEW9k3DlTpVilMw7prbTimR5sju+pTpc0bqkk9sNNJo0g2NYH
+         +tQqnRDPbUyABwcAqU+H0EY5xFOgIlUVk7N2FY+xmUXHMbnn6FFl3im0LV3xsT6hHSc1
+         j4WroaJNJbp4Jl68hvVssfgRfioRbqQhcsBwHsXHwdqP+GT/9N4E2IHpVjhYRqjRs675
+         kemdVE3OdgzrWMM2DYxy/Hmw9LEbi7Lojr6gze/7EZSGLIy3DZqPN2oAkaTujgKXgnCR
+         /tJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xzUcgkT3sG8sp6kZgX9h/y1VkhP/02QxOi1ygYmoj1g=;
-        b=Cz1X0Imd/sLjJzCaxH5uuVaFK6bPhgJ1wf8nyAQz7/pVp1DJsaFld8+slFNk29/HZb
-         I2WlvGLy2hD3vHHkg9ocTtj2UjLd4IF3Za9+AktIe3cfzSPgd6XRRfy2ICLyBzs15a03
-         PZWeJNdWKHBttYmKgM66a9F49UHOW0kz/q6F/F1WnPjDNCHQ5XRPCVXBlZKg9NbqA7+x
-         31M8MHc2ls+ozXhTVeSbS3/3iiF8VsXJuUwgP6x8g1w4zmt0QqU1Z5jZZw+xZVb4jW74
-         DSXj9lzRMG+7PlcNi9dDqSnmluZhxj7jI//3hmkKfngMZxl+FR45D/0Kk0YiVMfyVUnw
-         LPjg==
-X-Gm-Message-State: AOAM533bH/xIsl1BRqRWhYnVTKWYHRo7cDyOw2PKK9mXaWSElZxMGMnd
-        ZMZmd/19ltQuTcgo7LaExGMpnw==
-X-Google-Smtp-Source: ABdhPJy1oNiwDcOUPIir/7we0kQI88PN9mlyvaxx/nwHNNJKGJhhsVCGp5tzBDQZ2SEvl132Y4dxFQ==
-X-Received: by 2002:a37:e02:: with SMTP id 2mr1164399qko.198.1623783010765;
-        Tue, 15 Jun 2021 11:50:10 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id h14sm12387530qtp.46.2021.06.15.11.50.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 11:50:10 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 14:50:09 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 4/4] vfs: keep inodes with page cache off the inode
- shrinker LRU
-Message-ID: <YMj2YbqJvVh1busC@cmpxchg.org>
-References: <20210614211904.14420-1-hannes@cmpxchg.org>
- <20210614211904.14420-4-hannes@cmpxchg.org>
- <20210615062640.GD2419729@dread.disaster.area>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QojazdBWoM3SyAlRdVHgqcAEHJPhAD/lO190hYA/8jw=;
+        b=lyfKKkHCJdPQPSOHLVAPTZuIX5S6UdXOU+3yYa8apF2xs7n0/PorkJf4jlNcDhzc9O
+         rKRt+lOs25Bp6FonCs/ry7/lP1LMiCfMVpSDgzy413JmcqEN2kPRMTnvSvqfn+47Yt4v
+         F7uresEuNigGoghN8Mpf7urXOK+1FHSHCy1+UcLuBUt4RwI19R/O3WJmrYhFvJcc539L
+         aUVSNMMcR/l5nXaeEINNGEjDEuNP6K4dyyMDMf0EMGza36DVWq+BN78yRiUn+pKk92Tt
+         cQ2Us97ZxrjVMqmvOjYJf7cUxZVsYQnIkDXRoqLQqMeOwPHE6iL9Tdpr22fZq1ES5nVO
+         fX8A==
+X-Gm-Message-State: AOAM530gmWNXZFzZnyOhLMndNBwaGpTYN6xMd90F04VnNazpZxq0Y542
+        ajm36RYTLtlRpqDywHM0nvM=
+X-Google-Smtp-Source: ABdhPJwB6XJA9CTa5qdtOSQ4XzUu9peP7FYU4f0dbek7wM8P79YQW/nuPW3hilLe77UeROzfim0Hdg==
+X-Received: by 2002:a5d:658a:: with SMTP id q10mr618994wru.258.1623783069593;
+        Tue, 15 Jun 2021 11:51:09 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id v15sm2900252wmj.39.2021.06.15.11.51.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 11:51:09 -0700 (PDT)
+Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+To:     Kurt Manucredo <fuzzybritches0@gmail.com>, ebiggers@kernel.org,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+Cc:     keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, nathan@kernel.org,
+        ndesaulniers@google.com, clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
+References: <87609-531187-curtm@phaethon>
+ <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
+ <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
+ <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
+ <202106091119.84A88B6FE7@keescook>
+ <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
+ <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
+ <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com> <202106101002.DF8C7EF@keescook>
+ <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
+ <85536-177443-curtm@phaethon>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com>
+Date:   Tue, 15 Jun 2021 19:51:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615062640.GD2419729@dread.disaster.area>
+In-Reply-To: <85536-177443-curtm@phaethon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 04:26:40PM +1000, Dave Chinner wrote:
-> On Mon, Jun 14, 2021 at 05:19:04PM -0400, Johannes Weiner wrote:
-> > Historically (pre-2.5), the inode shrinker used to reclaim only empty
-> > inodes and skip over those that still contained page cache. This
-> > caused problems on highmem hosts: struct inode could put fill lowmem
-> > zones before the cache was getting reclaimed in the highmem zones.
-> > 
-> > To address this, the inode shrinker started to strip page cache to
-> > facilitate reclaiming lowmem. However, this comes with its own set of
-> > problems: the shrinkers may drop actively used page cache just because
-> > the inodes are not currently open or dirty - think working with a
-> > large git tree. It further doesn't respect cgroup memory protection
-> > settings and can cause priority inversions between containers.
-> > 
-> > Nowadays, the page cache also holds non-resident info for evicted
-> > cache pages in order to detect refaults. We've come to rely heavily on
-> > this data inside reclaim for protecting the cache workingset and
-> > driving swap behavior. We also use it to quantify and report workload
-> > health through psi. The latter in turn is used for fleet health
-> > monitoring, as well as driving automated memory sizing of workloads
-> > and containers, proactive reclaim and memory offloading schemes.
-> > 
-> > The consequences of dropping page cache prematurely is that we're
-> > seeing subtle and not-so-subtle failures in all of the above-mentioned
-> > scenarios, with the workload generally entering unexpected thrashing
-> > states while losing the ability to reliably detect it.
-> > 
-> > To fix this on non-highmem systems at least, going back to rotating
-> > inodes on the LRU isn't feasible. We've tried (commit a76cf1a474d7
-> > ("mm: don't reclaim inodes with many attached pages")) and failed
-> > (commit 69056ee6a8a3 ("Revert "mm: don't reclaim inodes with many
-> > attached pages"")). The issue is mostly that shrinker pools attract
-> > pressure based on their size, and when objects get skipped the
-> > shrinkers remember this as deferred reclaim work. This accumulates
-> > excessive pressure on the remaining inodes, and we can quickly eat
-> > into heavily used ones, or dirty ones that require IO to reclaim, when
-> > there potentially is plenty of cold, clean cache around still.
-> > 
-> > Instead, this patch keeps populated inodes off the inode LRU in the
-> > first place - just like an open file or dirty state would. An
-> > otherwise clean and unused inode then gets queued when the last cache
-> > entry disappears. This solves the problem without reintroducing the
-> > reclaim issues, and generally is a bit more scalable than having to
-> > wade through potentially hundreds of thousands of busy inodes.
-> > 
-> > Locking is a bit tricky because the locks protecting the inode state
-> > (i_lock) and the inode LRU (lru_list.lock) don't nest inside the
-> > irq-safe page cache lock (i_pages.xa_lock). Page cache deletions are
-> > serialized through i_lock, taken before the i_pages lock, to make sure
-> > depopulated inodes are queued reliably. Additions may race with
-> > deletions, but we'll check again in the shrinker. If additions race
-> > with the shrinker itself, we're protected by the i_lock: if
-> > find_inode() or iput() win, the shrinker will bail on the elevated
-> > i_count or I_REFERENCED; if the shrinker wins and goes ahead with the
-> > inode, it will set I_FREEING and inhibit further igets(), which will
-> > cause the other side to create a new instance of the inode instead.
+On 15/06/2021 17:42, Kurt Manucredo wrote:
+> Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
+> kernel/bpf/core.c:1414:2.
 > 
-> This makes an awful mess of the inode locking and, to me, is a
-> serious layering violation....
+> The shift-out-of-bounds happens when we have BPF_X. This means we have
+> to go the same way we go when we want to avoid a divide-by-zero. We do
+> it in do_misc_fixups().
 
-The direction through the layers is no different than set_page_dirty()
-calling mark_inode_dirty() from under the page lock.
+Shifts by more than insn_bitness are legal in the eBPF ISA; they are
+ implementation-defined behaviour, rather than UB, and have been made
+ legal for performance reasons.  Each of the JIT backends compiles the
+ eBPF shift operations to machine instructions which produce
+ implementation-defined results in such a case; the resulting contents
+ of the register may be arbitrary but program behaviour as a whole
+ remains defined.
+Guard checks in the fast path (i.e. affecting JITted code) will thus
+ not be accepted.
+The case of division by zero is not truly analogous, as division
+ instructions on many of the JIT-targeted architectures will raise a
+ machine exception / fault on division by zero, whereas (to the best of
+ my knowledge) none will do so on an out-of-bounds shift.
+(That said, it would be possible to record from the verifier division
+ instructions in the program which are known never to be passed zero as
+ divisor, and eliding the fixup patch in those cases.  However, the
+ extra complexity may not be worthwhile.)
 
-This is simply where the state change of the inode originates. What's
-the benefit of having the code pretend otherwise?
+As I understand it, the UBSAN report is coming from the eBPF interpreter,
+ which is the *slow path* and indeed on many production systems is
+ compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
+Perhaps a better approach to the fix would be to change the interpreter
+ to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
+ bitnesses), thus matching the behaviour of most chips' shift opcodes.
+This would shut up UBSAN, without affecting JIT code generation.
 
-> > index e89df447fae3..c9956fac640e 100644
-> > --- a/include/linux/pagemap.h
-> > +++ b/include/linux/pagemap.h
-> > @@ -23,6 +23,56 @@ static inline bool mapping_empty(struct address_space *mapping)
-> >  	return xa_empty(&mapping->i_pages);
-> >  }
-> >  
-> > +/*
-> > + * mapping_shrinkable - test if page cache state allows inode reclaim
-> > + * @mapping: the page cache mapping
-> > + *
-> > + * This checks the mapping's cache state for the pupose of inode
-> > + * reclaim and LRU management.
-> > + *
-> > + * The caller is expected to hold the i_lock, but is not required to
-> > + * hold the i_pages lock, which usually protects cache state. That's
-> > + * because the i_lock and the list_lru lock that protect the inode and
-> > + * its LRU state don't nest inside the irq-safe i_pages lock.
-> > + *
-> > + * Cache deletions are performed under the i_lock, which ensures that
-> > + * when an inode goes empty, it will reliably get queued on the LRU.
-> > + *
-> > + * Cache additions do not acquire the i_lock and may race with this
-> > + * check, in which case we'll report the inode as shrinkable when it
-> > + * has cache pages. This is okay: the shrinker also checks the
-> > + * refcount and the referenced bit, which will be elevated or set in
-> > + * the process of adding new cache pages to an inode.
-> > + */
-> 
-> .... because you're expanding the inode->i_lock to now cover the
-> page cache additions and removal and that massively increases the
-> scope of the i_lock. The ilock is for internal inode serialisation
-> purposes, not serialisation with external subsystems that inodes
-> interact with like mappings.
-
-I'm expanding it to cover another state change in the inode that
-happens to originate in the mapping.
-
-Yes, it would have been slightly easier if the inode locks nested
-under the page cache locks, like they do for dirty state. This way we
-could have updated the inode from the innermost context where the
-mapping state changes, which would have been a bit more compact.
-
-Unfortunately, the i_pages lock is irq-safe - to deal with writeback
-completion changing cache state from IRQ context. We'd have to make
-the i_lock and the list_lru lock irq-safe as well, and I'm not sure
-that is more desirable than ordering the locks the other way.
-
-Doing it this way means annotating a few more deletion entry points.
-But there are a limited number of ways for pages to leave the page
-cache - reclaim and truncation - so it's within reason.
-
-The i_lock isn't expanded to cover additions, if you take a look at
-the code. That would have been a much larger surface area indeed.
-
-> > +static inline bool mapping_shrinkable(struct address_space *mapping)
-> > +{
-> > +	void *head;
-> > +
-> > +	/*
-> > +	 * On highmem systems, there could be lowmem pressure from the
-> > +	 * inodes before there is highmem pressure from the page
-> > +	 * cache. Make inodes shrinkable regardless of cache state.
-> > +	 */
-> > +	if (IS_ENABLED(CONFIG_HIGHMEM))
-> > +		return true;
-> > +
-> > +	/* Cache completely empty? Shrink away. */
-> > +	head = rcu_access_pointer(mapping->i_pages.xa_head);
-> > +	if (!head)
-> > +		return true;
-> > +
-> > +	/*
-> > +	 * The xarray stores single offset-0 entries directly in the
-> > +	 * head pointer, which allows non-resident page cache entries
-> > +	 * to escape the shadow shrinker's list of xarray nodes. The
-> > +	 * inode shrinker needs to pick them up under memory pressure.
-> > +	 */
-> > +	if (!xa_is_node(head) && xa_is_value(head))
-> > +		return true;
-> > +
-> > +	return false;
-> > +}
-> 
-> It just occurred to me: mapping_shrinkable() == available for
-> shrinking, not "mapping can be shrunk by having pages freed from
-> it".
-> 
-> If this lives, it really needs a better name and API - this isn't
-> applying a check of whether the mapping can be shrunk, it indicates
-> whether the inode hosting the mapping is considered freeable or not.
-
-Right, it indicates whether the state of the mapping translates to the
-inode being eligigble for shrinker reclaim or not.
-
-I've used mapping_populated() in a previous version, but this function
-here captures additional reclaim policy (highmem setups e.g.), so it's
-not a suitable name for it.
-
-This is the best I could come up with, so I'm open to suggestions.
-
-> > @@ -260,9 +260,13 @@ void delete_from_page_cache(struct page *page)
-> >  	struct address_space *mapping = page_mapping(page);
-> >  
-> >  	BUG_ON(!PageLocked(page));
-> > +	spin_lock(&mapping->host->i_lock);
-> >  	xa_lock_irq(&mapping->i_pages);
-> >  	__delete_from_page_cache(page, NULL);
-> >  	xa_unlock_irq(&mapping->i_pages);
-> > +	if (mapping_shrinkable(mapping))
-> > +		inode_add_lru(mapping->host);
-> > +	spin_unlock(&mapping->host->i_lock);
-> >  
-> 
-> This, to me is an example of the layering problesm here. No mapping
-> specific function should be using locks that belong to the mapping
-> host for internal mapping serialisation.
-> 
-> Especially considering that inode_add_lru() is defined in
-> fs/internal.h - nothing outside the core fs code should really be
-> using inode_add_lru(), just lik enothing outside of fs code should
-> be using the inode->i_lock for anything.
-
-Again, it's no different than dirty state propagation. That's simply
-the direction in which this information flows through the stack.
-
-We can encapsulate it all into wrapper/API functions if you prefer,
-but it doesn't really change the direction in which the information
-travels, nor the lock scoping.
-
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index cc5d7cd75935..6dd5ef8a11bc 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1055,6 +1055,8 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
-> >  	BUG_ON(!PageLocked(page));
-> >  	BUG_ON(mapping != page_mapping(page));
-> >  
-> > +	if (!PageSwapCache(page))
-> > +		spin_lock(&mapping->host->i_lock);
-> >  	xa_lock_irq(&mapping->i_pages);
-> >  	/*
-> >  	 * The non racy check for a busy page.
-> > @@ -1123,6 +1125,9 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
-> >  			shadow = workingset_eviction(page, target_memcg);
-> >  		__delete_from_page_cache(page, shadow);
-> >  		xa_unlock_irq(&mapping->i_pages);
-> > +		if (mapping_shrinkable(mapping))
-> > +			inode_add_lru(mapping->host);
-> > +		spin_unlock(&mapping->host->i_lock);
-> >  
-> 
-> No. Inode locks have absolutely no place serialising core vmscan
-> algorithms.
-
-What if, and hear me out on this one, core vmscan algorithms change
-the state of the inode?
-
-The alternative to propagating this change from where it occurs is
-simply that the outer layer now has to do stupid things to infer it -
-essentially needing to busy poll. See below.
-
-> Really, all this complexity because:
-> 
-> | The issue is mostly that shrinker pools attract pressure based on
-> | their size, and when objects get skipped the shrinkers remember this
-> | as deferred reclaim work.
-> 
-> And so you want inodes with reclaimable mappings to avoid being
-> considered deferred work for the inode shrinker. That's what is
-> occuring because we are currently returning LRU_RETRY to them, or
-> would also happen if we returned LRU_SKIP or LRU_ROTATE just to
-> ignore them.
-> 
-> However, it's trivial to change inode_lru_isolate() to do something
-> like:
-> 
-> 	if (inode_has_buffers(inode) || inode->i_data.nrpages) {
-> 		if (!IS_ENABLED(CONFIG_HIGHMEM)) {
-> 			spin_unlock(&inode->i_lock);
-> 			return LRU_ROTATE_NODEFER;
-> 		}
-> 		.....
-> 	}
-
-Yeah, that's busy polling. It's simple and inefficient.
-
-We can rotate the busy inodes to the end of the list when we see them,
-but all *new* inodes get placed ahead of them and push them out the
-back. If you have a large set of populated inodes paired with an
-ongoing stream of metadata operations creating one-off inodes, you end
-up continuously shoveling through hundreds of thousand of the same
-pinned inodes to get to the few reclaimable ones mixed in.
-
-Meanwhile, the MM is standing by, going "You know, I could tell you
-exactly when those actually become reclaimable..."
-
-If you think this is the more elegant implementation, simply because
-it follows a made-up information hierarchy that doesn't actually map
-to the real world, then I don't know what to tell you.
-
-We take i_count and dirty inodes off the list because it's silly to
-rotate them over and over, when we could just re-add them the moment
-the pin goes away. It's not a stretch to do the same for populated
-inodes, which usually make up a much bigger share of the pool.
-
-> And in __list_lru_walk_one() just add:
-> 
-> 		case LRU_ROTATE_NODEFER:
-> 			isolated++;
-> 			/* fallthrough */
-> 		case LRU_ROTATE:
-> 			list_move_tail(item, &l->list);
-> 			break;
-> 
-> And now inodes with active page cache  rotated to the tail of the
-> list and are considered to have had work done on them. Hence they
-> don't add to the work accumulation that the shrinker infrastructure
-> defers, and so will allow the page reclaim to do it's stuff with
-> page reclaim before such inodes will get reclaimed.
-> 
-> That's *much* simpler than your proposed patch and should get you
-> pretty much the same result.
-
-It solves the deferred work buildup, but it's absurdly inefficient.
-
-So no, unfortunately I disagree with your assessment of this patch and
-the arguments you've made in support of that. There is precedent for
-propagating state change from the page cache to the inode, and doing
-so is vastly more elegant and efficient than having the outer layer
-abuse its own aging machinery to busy poll that state.
+-ed
