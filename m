@@ -2,86 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C9A3A7763
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0E63A7766
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhFOGxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:53:49 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:37420 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229493AbhFOGxr (ORCPT
+        id S229908AbhFOGzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhFOGzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:53:47 -0400
-X-UUID: c282a59e0cc94007bb756791991e096e-20210615
-X-UUID: c282a59e0cc94007bb756791991e096e-20210615
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1436944670; Tue, 15 Jun 2021 14:51:41 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Jun 2021 14:51:40 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Jun 2021 14:51:40 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <rostedt@goodmis.org>
-CC:     <ardb@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-next@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
-        <peterz@infradead.org>, <sfr@canb.auug.org.au>,
-        <yj.chiang@mediatek.com>
-Subject: Re: linux-next: build failure after merge of the ftrace tree
-Date:   Tue, 15 Jun 2021 14:51:40 +0800
-Message-ID: <20210615065140.22032-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210610110638.7e84912d@oasis.local.home>
-References: <20210610110638.7e84912d@oasis.local.home>
+        Tue, 15 Jun 2021 02:55:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C298C061574;
+        Mon, 14 Jun 2021 23:53:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HjqockSIfBbywK4+NYwBOmrFJ3f5fy0pM7CjjlotpPw=; b=Hb/kwJ8t4jmHWjBHR9cw2/GUN0
+        Za3ApHmavr4okvhH8OnZ7KI18mt0S8WR5Oz704W/FyQE3AuTOB8AKlA2rcp9DLO/R5JXk7+sIOgph
+        WoYvfoRo+6sFmU4D80e+bzpxWQDpG+Zrrj4MKwsVgOY0evtx3fXRmyRbKVXEIDMUxThsuDzFCcVwf
+        3j0ZbgnP6g3RCwBFADY+pjBI3VTItkFEVufT+aRspwgmYgYaOora+BorDssyLfspLkNCnLepSr6vR
+        ABLQFcJc+EYyKXop476njYyvnCoods/Xzw4x+Zzz+K61xP54T7Ic1qB3sF1nBpoG3GxBeYLxAGgGd
+        WMrQFy/Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lt2w6-006BMm-9v; Tue, 15 Jun 2021 06:52:37 +0000
+Date:   Tue, 15 Jun 2021 07:52:34 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/7] signal: Add unsafe_copy_siginfo_to_user()
+Message-ID: <YMhOMoKKvew0YYCt@infradead.org>
+References: <b813c1f4d3dab2f51300eac44d99029aa8e57830.1623739212.git.christophe.leroy@csgroup.eu>
+ <684939dcfef612fac573d1b983a977215b71f64d.1623739212.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <684939dcfef612fac573d1b983a977215b71f64d.1623739212.git.christophe.leroy@csgroup.eu>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
-> On Thu, 10 Jun 2021 10:26:39 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Thu, Jun 10, 2021 at 06:08:25PM +1000, Stephen Rothwell wrote:
-> > > Hi all,
-> > > 
-> > > After merging the ftrace tree, today's linux-next build (powerpc
-> > > allyesconfig) failed like this:
-> > > 
-> > > Cannot find symbol for section 255: .text.opal_int_set_mfrr.
-> > > arch/powerpc/platforms/powernv/opal-call.o: failed
-> > > 
-> > > and many more similar.
-> > > 
-> > > Caused by commit
-> > > 
-> > >   9e419de4c678 ("recordmcount: Correct st_shndx handling")  
-> > 
-> > Argh.. lemme try and reproduce :/
-> 
-> I'll go and revert this patch, and wait for a new version from Peter.
-> 
-> Hmm, crap, this is also sent to Linus. I'll stop that too.
-> 
-> -- Steve
+On Tue, Jun 15, 2021 at 06:41:01AM +0000, Christophe Leroy wrote:
+> +	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
+> +			    sizeof(struct kernel_siginfo), label);	\
+> +	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
+> +} while (0)
 
-I found the the build fail is because PPC64 is big endian and this
-patch use st_shndx directyly.
-
-Here is the case which cause this problem:
-recordmcount search symbol for txtndx = 255(0xff), but the
-corresponding symbol has st_shndx = 0xff00(bit endian) which
-equals SHN_LORESERVE, so the updated get_symindex() return 0.
-
-I send the patch v2 to fix it.
-https://lore.kernel.org/lkml/20210615064720.21950-1-mark-pk.tsai@mediatek.com/
-
-Below is the test environment I used:
-https://musl.cc/powerpc64-linux-musl-cross.tgz
-make allyesconfig CROSS_COMPILE=powerpc64-linux-musl- ARCH=powerpc
-make vmlinux CROSS_COMPILE=powerpc64-linux-musl- ARCH=powerpc
+unsafe_clear_user does not exist at this point, and even your later
+patch only adds it for powerpc.
