@@ -2,124 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E7B3A7A80
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47963A7A85
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhFOJaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230242AbhFOJao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:30:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE92261433;
-        Tue, 15 Jun 2021 09:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623749320;
-        bh=j5S6FfkLlDjYfSjyx+hqYrqgXmhxauWUu0zvHyqD00k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a3KhUZlHloUuEb42snthxC1h+pJDOlnHi4MWxz/lgwZ17fOZVYJQHYIxl/roiHKnx
-         i1HWHDotfuPDtd2w7T0yAaaMFKUH89b3Z/e6rXVJ441KfI+GHtCmljbYFhO+YRfOwX
-         r+NOcgcG1vXMCYCJ6KZrCUKvSY6IcM2EmBXWUtKCGl/TRYnWZ9ta83SdB1hzOeE+GT
-         uHmwgfh4kYvx5DdAA/YmGp0VSzsLQL7SGmG1UKVHbnOgLox7m/4/4eSH0AZ9tBQPRz
-         7MjjryBFnUdzRNu7dQoUgvHjb5fziEH/oG1u0MjVBINp2njjb09eVJOmCQ5D8bAipA
-         q8aXQxOuXGrWw==
-Received: by mail-lf1-f49.google.com with SMTP id x24so20285907lfr.10;
-        Tue, 15 Jun 2021 02:28:40 -0700 (PDT)
-X-Gm-Message-State: AOAM530sw9Q7BPkydwFrLbYZDalstZ1QxGhJVRZ5G0fo4kyQ3M2Ad8dI
-        GAjn2CvO4Pj2g1j6/2LZzwtVS40Tarlngi/+ev4=
-X-Google-Smtp-Source: ABdhPJzNz1ykPpmEfVQJ9wH1ea7bPl9WQPbFKW5ePg0Hnp7r2VMDIEQIjgiBB4veo+d3GAXdlMX6TxF51nDUbucH0sk=
-X-Received: by 2002:a05:6512:3d13:: with SMTP id d19mr14982734lfv.41.1623749319009;
- Tue, 15 Jun 2021 02:28:39 -0700 (PDT)
+        id S231363AbhFOJbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:31:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38162 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231262AbhFOJbX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 05:31:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623749358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ddDGAncBsIbSDpDEwrQeyMoy5+E2nrkF5TMzoiroJvQ=;
+        b=TsEkiv+JopuwzFrO4bic5Caa1XdNx6Ty4un5MRm+k9erulBb7V8KmDOfxKQAxoZ7bJLAPS
+        Lmel3+euxtWOeQECgUNiJJ+tB8Tjm7kxRj2AGlaKFPyUQwQmLwV3rUmvvVDA11CK6fn8Qa
+        zwBLl5hJX9zq+IPV1pBwfcgQ1I7j5Ls=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-wADnIl3GPcO137S60aXM2A-1; Tue, 15 Jun 2021 05:29:17 -0400
+X-MC-Unique: wADnIl3GPcO137S60aXM2A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 552E5100A97C;
+        Tue, 15 Jun 2021 09:29:08 +0000 (UTC)
+Received: from x1.com (ovpn-113-40.rdu2.redhat.com [10.10.113.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 269F35B698;
+        Tue, 15 Jun 2021 09:29:02 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V4 00/12] hwlat improvements and osnoise/timerlat tracers
+Date:   Tue, 15 Jun 2021 11:28:39 +0200
+Message-Id: <cover.1623746916.git.bristot@redhat.com>
 MIME-Version: 1.0
-References: <1623693067-53886-1-git-send-email-guoren@kernel.org>
- <1623693067-53886-3-git-send-email-guoren@kernel.org> <CAAhSdy2NTw2fHmCztXHXi+FExC12qHH0nziO7wuHOp+Ufk08KA@mail.gmail.com>
-In-Reply-To: <CAAhSdy2NTw2fHmCztXHXi+FExC12qHH0nziO7wuHOp+Ufk08KA@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 15 Jun 2021 17:28:27 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT8BFyCNP4OtAaQLDYCPH+v5w5o3u02g9pQbBaE=kA_mw@mail.gmail.com>
-Message-ID: <CAJF2gTT8BFyCNP4OtAaQLDYCPH+v5w5o3u02g9pQbBaE=kA_mw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 2/2] riscv: pgtable: Add "PBMT" extension supported
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Drew Fustini <drew@beagleboard.org>,
-        liush <liush@allwinnertech.com>,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:11 PM Anup Patel <anup@brainfault.org> wrote:
->
-> On Mon, Jun 14, 2021 at 11:22 PM <guoren@kernel.org> wrote:
-> >
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > "PBMT" - Page-Based Memory Types (see Link for detail), current it
-> > has defined 3 memory types [62:61] in PTE:
-> >  - WB 00 "Cacheable 'main memory'"
-> >  - NC 01 "Noncacheable 'main memory'"
-> >  - IO 11 "Non-cacheable non-idempotent 'I/O'"
-> >
-> > The patch not only implements the current PBMT extension but also
-> > considers future scalability. It uses 3 words of image header to
-> > store 8 memory types' values plus a mask value. That means there
-> > are still 5 memory types reserved for future scalability.
->
-> This is the worst work-around to the Linux RISC-V patch acceptance
-> policy.
->
-> Passing PTE attributes in the Linux Image header means boot-loaders
-> will have to update the image header before jumping to Linux kernel.
-> Basically, this is changing the Linux boot-process by adding platform
-> specific image header updation step.
->
-> Further, this patch is doing too many things in one-go. I needs to be
-> broken down into smaller fine-grained patches.
-Next time, I'll separate it into below patches:
- - riscv: pgtable: Fixup _PAGE_CHG_MASK usage
- - riscv: pgtable: Add "PBMT" extension supported
- - riscv: pgtable: Add vendor custom "PBMT" definitions interface
-How?
+This series proposes a set of improvements and new features for the
+tracing subsystem to facilitate the debugging of low latency
+deployments.
 
->
-> I totally disapprove of this patch in it's current shape since the
-> Linux boot-protocol should not have any platform specific part.
-I think you mean we shouldn't modify the uImage header.
+Currently, hwlat runs on a single CPU at a time, migrating across a
+set of CPUs in a round-robin fashion. This series improves hwlat 
+to allow hwlat to run on multiple CPUs in parallel, increasing the
+chances of detecting a hardware latency, at the cost of using more
+CPU time.
 
-How about parsing dtb before setup_vm (It's a very early stage before
-mmu enabled)?  eg:
-        cpus {
-                ...
-                rv64-pbmt-extension;
-                rv64-pbmt-custom-remapping = <[mask] [type0] [type1] [type2]>;
+It also proposes a new tracer named osnoise, that aims to help users
+of isolcpus= (or a similar method) to measure how much noise the OS
+and the hardware add to the isolated application. The osnoise tracer
+bases on the hwlat detector code. The difference is that, instead of
+sampling with interrupts disabled, the osnoise tracer samples the CPU with
+interrupts and preemption enabled. In this way, the sampling thread will
+suffer any source of noise from the OS. The detection and classification
+of the type of noise are then made by observing the entry points of NMIs,
+IRQs, SoftIRQs, and threads. If none of these sources of noise is detected,
+the tool associates the noise with the hardware. The tool periodically
+prints a status, printing the total noise of the period, the max single
+noise observed, the percentage of CPU available for the task, along with
+the counters of each source of the noise. To debug the sources of noise,
+the tracer also adds a set of tracepoints that print any NMI, IRQ, SofIRQ,
+and thread occurrence. These tracepoints print the starting time and the
+noise's net duration at the end of the noise. In this way, it reduces the
+number of tracepoints (one instead of two) and the need to manually
+accounting the contribution of each noise independently.
 
->
-> Also, please don't CC RVI mailing list for Linux patches because
-> the people can post to RVI mailing list only by joining it.
-Okay, I'll remove the RVI mailing list. If I needed to, I would send a
-notification email to RVI separately.
+Finaly, the timerlat tracer aims to help the preemptive kernel developers
+to find sources of wakeup latencies of real-time threads. The tracer
+creates a per-cpu kernel thread with real-time priority. The tracer thread
+sets a periodic timer to wakeup itself, and goes to sleep waiting for the
+timer to fire. At the wakeup, the thread then computes a wakeup latency
+value as the difference between the current time and the absolute time
+that the timer was set to expire. The tracer prints two lines at every
+activation. The first is the timer latency observed at the hardirq context
+before the activation of the thread. The second is the timer latency
+observed by the thread, which is the same level that cyclictest reports.
+The ACTIVATION ID field serves to relate the irq execution to its
+respective thread execution. The tracer is build on top of osnoise tracer,
+and the osnoise: events can be used to trace the source of interference
+from NMI, IRQs and other threads. It also enables the capture of the
+stacktrace at the IRQ context, which helps to identify the code path
+that can cause thread delay.
 
---
-Best Regards
- Guo Ren
+Changes from v3:
+ - Remove /** from comments (Rostedt)
+ - Support hotplug operations (Rostedt)
+ - Change the name of ull_config to trace_min_max - and
+   improve patch description (Rostedt)
+ - Remove leftovers from older versions (Juri Lelli)
+ - Remove printk from main loop - use trace buffer instead
+   (Rostedt)
+ - Move the arch specific code to arch/*/kernel/trace.c (Rostedt)
+ - Improve timerlat documentation (Rostedt)
+ - Add () around params usage of "value" on __print_ns_to_secs(value)
+   (Rostedt)
+ - Rename osnoise/stop_tracing* files (Rostedt)
+ - Reduce the size of the per-cpu data to store stack tracers on
+   timerlat (Rostedt)
+ - Add osn_* prefix to structures (Rostedt)
+ - Fix stop tracing to work with trace instances (Rostedt)
+ - Changing osnoise/cpus restarts the threads accordingly (Rostedt)
+ - Lots of cosmetics/typos changes (Rostedt)
 
-ML: https://lore.kernel.org/linux-csky/
+Changes from v2:
+ - osnoise sample reports in nanoseconds (as all other osnoise tracepoints)
+   (Bristot)
+ - Remove divisions from osnoise main loop (Bristot)
+ - Make the tracers work well when starting via kernel-cmdline
+   (Red Hat's performance team need)
+ - Rename main/interrupt functions (Bristot)
+ - Fix timerlat reset (Juri Lelli)
+ - Fix timerlat start (Juri Lelli)
+
+Changes from v1:
+ - Remove `` from RST (Corbet)
+ - Add RST files to the index (Corbet)
+ - Fix text and typos (Rostedt)
+ - Remove the cpus from hwlat (Rostedt)
+ - Remove the disable_migrate/fallback to mode none on hwlat (Rostedt)
+ - Add a generic way to read/write u64 and use it on
+   hwlat/osnoise/timerlat (Rostedt)
+ - Make osnoise/timerlat to work properly with trace-cmd/tracer
+   instances (Rostedt)
+ - osnoise using the tracing_threshold (Rostedt)
+ - Rearrange tracepoint structure to avoid "holes" (Rostedt)
+
+*** BLURB HERE ***
+
+Daniel Bristot de Oliveira (11):
+  trace/hwlat: Fix Clark's email
+  trace/hwlat: Implement the mode config option
+  trace/hwlat: Switch disable_migrate to mode none
+  trace/hwlat: Implement the per-cpu mode
+  trace/hwlat: Support hotplug operations
+  trace: Add a generic function to read/write u64 values from tracefs
+  trace/hwlat: Use trace_min_max_param for width and window params
+  trace/hwlat: Remove printk from sampling loop
+  trace: Add osnoise tracer
+  trace: Add timerlat tracer
+  trace/osnoise: Support hotplug operations
+
+Steven Rostedt (1):
+  trace: Add __print_ns_to_secs() and __print_ns_without_secs() helpers
+
+ Documentation/trace/hwlat_detector.rst  |   13 +-
+ Documentation/trace/index.rst           |    2 +
+ Documentation/trace/osnoise-tracer.rst  |  152 ++
+ Documentation/trace/timerlat-tracer.rst |  181 ++
+ arch/x86/kernel/Makefile                |    1 +
+ arch/x86/kernel/trace.c                 |  238 +++
+ include/linux/ftrace_irq.h              |   13 +
+ include/trace/events/osnoise.h          |  142 ++
+ include/trace/trace_events.h            |   25 +
+ kernel/trace/Kconfig                    |   62 +
+ kernel/trace/Makefile                   |    1 +
+ kernel/trace/trace.c                    |   92 ++
+ kernel/trace/trace.h                    |   29 +-
+ kernel/trace/trace_entries.h            |   41 +
+ kernel/trace/trace_hwlat.c              |  494 ++++--
+ kernel/trace/trace_osnoise.c            | 2004 +++++++++++++++++++++++
+ kernel/trace/trace_osnoise.h            |    9 +
+ kernel/trace/trace_output.c             |  119 +-
+ 18 files changed, 3469 insertions(+), 149 deletions(-)
+ create mode 100644 Documentation/trace/osnoise-tracer.rst
+ create mode 100644 Documentation/trace/timerlat-tracer.rst
+ create mode 100644 arch/x86/kernel/trace.c
+ create mode 100644 include/trace/events/osnoise.h
+ create mode 100644 kernel/trace/trace_osnoise.c
+ create mode 100644 kernel/trace/trace_osnoise.h
+
+-- 
+2.31.1
+
