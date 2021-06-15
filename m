@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765BE3A807C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE443A806A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhFONkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231727AbhFONjU (ORCPT
+        id S231374AbhFONk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:40:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:14834 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231721AbhFONjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:39:20 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C63C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:37:15 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id m13-20020a17090b068db02901656cc93a75so1814637pjz.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 06:37:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BAFuvMVTI8ErK40EaLynbxPtz/61ySZ5UuelaAMUdxI=;
-        b=GbD/lo+6pXWXlwjbLn9pyTbB5AaspJgIq34FPWtuwYm4nhGIUB23LWbGE9QHb9NlGf
-         wx0GhWvRMvk/gcSuYCPxVjn1HPeoNHZuLpfAYaW/nEJ2XDEBnCHhoO/zZ50f0X0k6vew
-         l5yCic7H/oKEN/lU0dMohimZD4S460ff5PLOij5Qwlxw3xmKjF/TdM0WZPTi9psBATgp
-         HJWC3DoANi1MNDfCTR4i9bRZe9GJD2aJJJDvUQH7uQfVy3SEPDNBWYLIa3xdGPGVExMh
-         ARc4miF1vKbqhR8U6k01C9aA2apa5PE5ozGmEpEhTgEonqWBLkitrviYzozungtYybVn
-         16MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BAFuvMVTI8ErK40EaLynbxPtz/61ySZ5UuelaAMUdxI=;
-        b=O2o7Qso6NVs/AyE92BsK3N3wT7ybEk63/kX640I7dqor9OD+OVoStoZ6i8CQgYRY8W
-         /hcsRP5YmBP5duuvUlDUru9LB8bX1SSghM4/+p+5CWDWAwn0U5IF+bT43RHRwZnsYhpz
-         APrqi/FasmAepaCNx/wEJcu3qoHXuTKAj3D2uZKAya3sSBEjbwsKPvrLwU1psWz65Yh2
-         32yVUozMbfIStMYTqq5O7bh3A8j7DuTsfDSkRkO1agDgABdX26Id66A2cdsPNuSzlG/A
-         crq1Xg4/ZBKoVl/cS46NnNGCEZ1UmFkuRyQvHs7HAybimXngj0wcJhxHqwbidx/mZrtF
-         GVRg==
-X-Gm-Message-State: AOAM533POa81rMBDEjwU+VLGQMNAJfa7zSb4/niQzlmv0M5yo3vRUMGl
-        bahK8CqNDX83M7V4+yufWxXm
-X-Google-Smtp-Source: ABdhPJwoqwjSryoH/57hb8eBeT2IuD5kPN8qctWYRDy6V7ViKbT7qRe3IedaTW6gB8+tiDGuu3DQxw==
-X-Received: by 2002:a17:90a:1fc9:: with SMTP id z9mr2673055pjz.234.1623764234735;
-        Tue, 15 Jun 2021 06:37:14 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:85:d63b:22d3:eb6:40c6:5ead])
-        by smtp.gmail.com with ESMTPSA id c207sm15522136pfb.86.2021.06.15.06.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 06:37:14 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        smohanad@codeaurora.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] PCI: endpoint: Add custom notifier support
-Date:   Tue, 15 Jun 2021 19:07:04 +0530
-Message-Id: <20210615133704.88169-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 15 Jun 2021 09:39:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623764233; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=NRI2lSngvSXad61YyzZ7ljzijSbW4H1D1VGOsKwJUo0=;
+ b=Q2MfysqQGvPAtvpcLyEbO9oV/d9OFfH+30No+dP3KyP2IFACUYd6yalXeYMaaxWA/Bb19du0
+ xe9v4fdXksrU0HHx2ovlSVSDpCVhtt7iPs90KmyDUyIFmx9U2yodmwv188sDO0nOE/AQXmYu
+ P2mUvqT23ne1dH9lbaYzEZLbeIU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60c8ad082eaeb98b5ef0e781 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:37:12
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D450FC43145; Tue, 15 Jun 2021 13:37:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A01AC433D3;
+        Tue, 15 Jun 2021 13:37:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2A01AC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: zd1211rw: Prefer pr_err over printk error msg
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210506044838.GA7260@user>
+References: <20210506044838.GA7260@user>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     dsd@gentoo.org, kune@deine-taler.de, davem@davemloft.net,
+        kuba@kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615133712.D450FC43145@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:37:12 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for passing the custom notifications between the endpoint
-controller and the function driver. This helps in passing the
-notifications that are more specific to the controller and corresponding
-function driver. The opaque `data` arugument in pci_epc_custom_notify()
-function can be used to carry the event specific data that helps in
-differentiating the events.
+Saurav Girepunje <saurav.girepunje@gmail.com> wrote:
 
-For instance, the Qcom EPC device generates specific events such as
-MHI_A7, BME, DSTATE_CHANGE, PM_TURNOFF etc... These events needs to be
-passed to the function driver for proper handling. Hence, this custom
-notifier can be used to pass these events.
+> In zd_usb.c usb_init we can prefer pr_err() over printk KERN_ERR
+> log level.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/endpoint/pci-epc-core.c | 19 +++++++++++++++++++
- include/linux/pci-epc.h             |  1 +
- include/linux/pci-epf.h             |  1 +
- 3 files changed, 21 insertions(+)
+Patch applied to wireless-drivers-next.git, thanks.
 
-diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-index adec9bee72cf..86b6934c6297 100644
---- a/drivers/pci/endpoint/pci-epc-core.c
-+++ b/drivers/pci/endpoint/pci-epc-core.c
-@@ -658,6 +658,25 @@ void pci_epc_init_notify(struct pci_epc *epc)
- }
- EXPORT_SYMBOL_GPL(pci_epc_init_notify);
- 
-+/**
-+ * pci_epc_custom_notify() - Notify the EPF device about the custom events
-+ *			     in the EPC device
-+ * @epc: EPC device that generates the custom notification
-+ * @data: Data for the custom notifier
-+ *
-+ * Invoke to notify the EPF device about the custom events in the EPC device.
-+ * This notifier can be used to pass the EPC specific custom events that are
-+ * shared with the EPF device.
-+ */
-+void pci_epc_custom_notify(struct pci_epc *epc, void *data)
-+{
-+	if (!epc || IS_ERR(epc))
-+		return;
-+
-+	atomic_notifier_call_chain(&epc->notifier, CUSTOM, data);
-+}
-+EXPORT_SYMBOL_GPL(pci_epc_custom_notify);
-+
- /**
-  * pci_epc_destroy() - destroy the EPC device
-  * @epc: the EPC device that has to be destroyed
-diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-index b82c9b100e97..13140fdbcdf6 100644
---- a/include/linux/pci-epc.h
-+++ b/include/linux/pci-epc.h
-@@ -203,6 +203,7 @@ int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf,
- 		    enum pci_epc_interface_type type);
- void pci_epc_linkup(struct pci_epc *epc);
- void pci_epc_init_notify(struct pci_epc *epc);
-+void pci_epc_custom_notify(struct pci_epc *epc, void *data);
- void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf,
- 			enum pci_epc_interface_type type);
- int pci_epc_write_header(struct pci_epc *epc, u8 func_no,
-diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
-index 6833e2160ef1..8d740c5cf0e3 100644
---- a/include/linux/pci-epf.h
-+++ b/include/linux/pci-epf.h
-@@ -20,6 +20,7 @@ enum pci_epc_interface_type;
- enum pci_notify_event {
- 	CORE_INIT,
- 	LINK_UP,
-+	CUSTOM,
- };
- 
- enum pci_barno {
+29d97219f403 zd1211rw: Prefer pr_err over printk error msg
+
 -- 
-2.25.1
+https://patchwork.kernel.org/project/linux-wireless/patch/20210506044838.GA7260@user/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
