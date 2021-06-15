@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CA43A8810
+	by mail.lfdr.de (Postfix) with ESMTP id EFADA3A8811
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhFORuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        id S231288AbhFORu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbhFORue (ORCPT
+        with ESMTP id S229919AbhFORu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:50:34 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D43C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:48:27 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id k5so118917pjj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:48:27 -0700 (PDT)
+        Tue, 15 Jun 2021 13:50:56 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE14CC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:48:51 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id q15so75216ioi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:48:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1zxWWH5viqfAr6sUMJsjqthPFquxVNQ/+2gZK8GZHEU=;
-        b=W1KDjeJo1cBehCZp2FSA8WVvWq4LYFsAmqIeEOVO58/J/QguNi9YAWBPsskjFVIbpx
-         0LPXzEcxwXLZ+tgAuxVMYfJXbBeQXUCUZUqWn/U9K9TDHIL/WCN1Ho1sBP7WyqZSgZPo
-         WlV48EsL9I0E2wgh0EEHPKDyn/eqvJXS8jAiMfnl+I+2dZjS5MiGV71YSVpY+R0JQTtE
-         6VXYyI9ol518Gak+0Q/+2iZ6VlubHQxfIfDdA9ZkJW1Nho8mZxglpB5/FK/XdZCaPdZM
-         m81n9n8dF/h4dWf4QILpUcpHShIEB/nIoy0jdLM088PCEh0Y8r3FZlx5PhGgYnwj+rq+
-         B+OQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OMBjXE0nRB8hM4ofcPKfdh+yz7lSZL32Yvdx3/K1Jlo=;
+        b=hKxtm8WFh9YoGvi0n7W5NAiFIcqM6qTSjF8UPIf1AJdLVuS9d4lDmVdlZ2CbC3LEBh
+         OzNJQHSrOk7cyez+SEwLHyCLXJL+2nOUoUL45k8eDRYJrmDlPzX+LSlA6AEqRjebAi/E
+         Uw19hk04bLMxvlKlW+t9l6GIpAqjntY+JrygE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1zxWWH5viqfAr6sUMJsjqthPFquxVNQ/+2gZK8GZHEU=;
-        b=j1Cfzp9CAdHusNz0mHWYsn86qqwFoai0/uEEndLHYLU9IPlWs1KxWtdjATYSa/j//q
-         sMv11/187AioP8QLMoDtiqVyfWpDtYR+fUs3k20NEtz2kpmtGGSVL8lFFV/C+h+vOqvq
-         B8CW9IPMvrLUf+Dc4waUY3kH9CpaPu3GKpcyAzhlVy4YwgvgYMR60W8NqLlkGw8ppVRy
-         0fWrCFXJ5bWrdY6J56LD+BatoJLWeLHolXMkHsmLB6ubhrkGZOpBfZC/5s4cs3530c+R
-         0Jzmu7mfq8GZUyDMWSJhx7WSThihRFoDDUELymKWB+ykqQDaSEgi9xu3cPHX0QIdFQht
-         cyzw==
-X-Gm-Message-State: AOAM533R2uIawkxJ/bg+or5qPP5ata6xlT9aHwsD85WCsgd4ddKg1a0A
-        4azPT9XF2qFz+qL9Bk2IONqk2Q==
-X-Google-Smtp-Source: ABdhPJyszR7HGXp7Wtg+9mMiJpdT9xu41oqbEma8mNjUvAEcaTvlZie+cr1iuLr904fwvWGPoqFQww==
-X-Received: by 2002:a17:90a:5998:: with SMTP id l24mr358719pji.169.1623779307427;
-        Tue, 15 Jun 2021 10:48:27 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 11sm16696147pge.57.2021.06.15.10.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 10:48:26 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 11:48:24 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 4/4] rpmsg: Add a removable attribute to the rpmsg device
-Message-ID: <20210615174824.GC604521@p14s>
-References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
- <20210604091406.15901-5-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OMBjXE0nRB8hM4ofcPKfdh+yz7lSZL32Yvdx3/K1Jlo=;
+        b=ZVbJrhwymZcczViVfwbiNv1IZcawT8aibPeNMF9IoXRkD+/CcJFJmDVqhrPxukTaf6
+         n18EzSD2D5eVQI8FgSWMHrMSgbEJ1jN5N4WQef2OADPRUspOWrMG50j9x1cipjHZlyh6
+         y/f2Ff9I6GsVojuIYHCEM7Jgs1NAoN4x/XmQnywcrQG5vj0Q17m2uwLQjyB4zYuzuqG0
+         A5VB61EmX5m+ghRn/jYa8KZUGVUzu7SmEQmt0oXOu5owvXa2j6gBv49mso1fBHwp9s2M
+         aGBFjcJnQ1co0eAce+riYdnrh2VP1f1X6qVEqA55TxgZsRcKlGexMypkMxkMuIa3sD4W
+         WYUA==
+X-Gm-Message-State: AOAM5322WE2+AJEwYtPtr1RR/pySzs2Vf3m9yTNv6pKvF32z3p7f+WhN
+        UrRbd231WmTdrHsmIW5YSezjvA==
+X-Google-Smtp-Source: ABdhPJzRmw+gb2MPsjwBJ8v4iy5MCoEBD646f5nqJkHMdAYrFtY+hr/mpSeNhJ0hTqIQ7KCPKyuOrQ==
+X-Received: by 2002:a02:838c:: with SMTP id z12mr387399jag.89.1623779331309;
+        Tue, 15 Jun 2021 10:48:51 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id e14sm9444583ile.2.2021.06.15.10.48.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 10:48:50 -0700 (PDT)
+Subject: Re: [PATCH -next] usbip: tools: Convert list_for_each to entry
+ variant
+To:     Zou Wei <zou_wei@huawei.com>, valentina.manea.m@gmail.com,
+        shuah@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <1623740319-15988-1-git-send-email-zou_wei@huawei.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e86d8888-e8a2-bb20-4295-26442af455fa@linuxfoundation.org>
+Date:   Tue, 15 Jun 2021 11:48:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604091406.15901-5-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <1623740319-15988-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 11:14:06AM +0200, Arnaud Pouliquen wrote:
-> Adds a new attribute to the rpmsg device to expose in sysfs the
-> the removability of an rpmsg device.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+On 6/15/21 12:58 AM, Zou Wei wrote:
+> convert list_for_each() to list_for_each_entry() where
+> applicable.
+>  > Reported-by: Hulk Robot <hulkci@huawei.com>
+
+What is the report? Please include the reports.
+
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 > ---
->  drivers/rpmsg/rpmsg_core.c | 2 ++
->  1 file changed, 2 insertions(+)
+>   tools/usb/usbip/libsrc/usbip_host_common.c | 4 +---
+>   tools/usb/usbip/src/usbipd.c               | 8 ++------
+>   2 files changed, 3 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> index e5daee4f9373..b2543ef4a92f 100644
-> --- a/drivers/rpmsg/rpmsg_core.c
-> +++ b/drivers/rpmsg/rpmsg_core.c
-> @@ -413,6 +413,7 @@ rpmsg_show_attr(src, src, "0x%x\n");
->  rpmsg_show_attr(dst, dst, "0x%x\n");
->  rpmsg_show_attr(announce, announce ? "true" : "false", "%s\n");
->  rpmsg_string_attr(driver_override, driver_override);
-> +rpmsg_show_attr(removable, us_removable ? "true" : "false", "%s\n");
->  
->  static ssize_t modalias_show(struct device *dev,
->  			     struct device_attribute *attr, char *buf)
-> @@ -435,6 +436,7 @@ static struct attribute *rpmsg_dev_attrs[] = {
->  	&dev_attr_src.attr,
->  	&dev_attr_announce.attr,
->  	&dev_attr_driver_override.attr,
-> +	&dev_attr_removable.attr,
 
-And this patch shouldn't be needed if we move forward with my recommendation on
-patch 3/4.
+Please explain why this change is necessary. Is it a good
+idea to explain what happens if you don't make this change?
 
->  	NULL,
->  };
->  ATTRIBUTE_GROUPS(rpmsg_dev);
-> -- 
-> 2.17.1
-> 
+thanks,
+-- Shuah
