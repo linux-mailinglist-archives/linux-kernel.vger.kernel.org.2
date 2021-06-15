@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82353A8431
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B423A8436
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231730AbhFOPm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:42:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230076AbhFOPm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:42:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5B926157E;
-        Tue, 15 Jun 2021 15:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623771652;
-        bh=R1lzwn4EZIxPO8oXEuZ8VG4LT9RGo6Ard6iLzIwP2JQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wtSYN8r4q4/Zh9esQibVqaHKRkX3DVgXjNRldozHsT/EVhQ055clIl3CJfZYA6fzN
-         Wqr0powO7agvpY3Z5FBfWHxUdxFqst1muSBbxFsna3jy5XOdURGB5rrceNHye7NGR3
-         WSgYuU2gdcHIway1QrotrDDPSNW6D3hwWkjN3IvA=
-Date:   Tue, 15 Jun 2021 17:40:50 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>
-Cc:     Jason Li <jason.li@cortina-access.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/3] dt-bindings: serial: Convert Cortina-Access UART
- to json-schema
-Message-ID: <YMjKAhP19Q53jsnC@kroah.com>
-References: <20210509184519.15816-1-alex.nemirovsky@cortina-access.com>
- <20210509184519.15816-2-alex.nemirovsky@cortina-access.com>
- <YMiUpK/+PjsoCU1W@kroah.com>
- <CFD14D63-4537-4A91-861C-71B74E2CFAE6@cortina-access.com>
- <YMi1jOL6y+eUK3Df@kroah.com>
- <B71C5D02-EDBE-4AAD-AF1B-2FD467BE075A@cortina-access.com>
+        id S230352AbhFOPnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:43:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231574AbhFOPnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:43:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623771665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+FBbMlPbm2yEsz/fG8YH2jekqKDOwBTLfpao5h+P4iE=;
+        b=achTvUJCk9CTMJom2MVNv10T8by8FZE7TDSUvrxFA6Kp6a7Cj9NE+dnURCVVyVVtBR4ouw
+        K8iqTe3mf9SKwT8UOenBNGfsJwhEH7D4Y9k7NlL2QG8LZj2z1ZSATCArVrtmgj3fDGHFs5
+        g1r2ErTgHmIyYWRNfsQpcHy6LOsS+Gw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-123-HYLFvtjLPVmsp_FlL6GAug-1; Tue, 15 Jun 2021 11:41:04 -0400
+X-MC-Unique: HYLFvtjLPVmsp_FlL6GAug-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D3941936B79;
+        Tue, 15 Jun 2021 15:41:02 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC15160C13;
+        Tue, 15 Jun 2021 15:40:59 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] netfs: Add MAINTAINERS record
+From:   David Howells <dhowells@redhat.com>
+To:     jlayton@kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
+        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 15 Jun 2021 16:40:59 +0100
+Message-ID: <162377165897.729347.292567369593752239.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <B71C5D02-EDBE-4AAD-AF1B-2FD467BE075A@cortina-access.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 02:39:08PM +0000, Alex Nemirovsky wrote:
-> 
-> 
-> > On Jun 15, 2021, at 7:13 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > 
-> > On Tue, Jun 15, 2021 at 01:36:39PM +0000, Alex Nemirovsky wrote:
-> >> MAINTAINERS modification was made in the initial version 1.  We made no changes to it since then,
-> >> thus not sure what we could at to  Changelog which would add value or clarity for others
-> >> from the v1.
-> >> 
-> >>> On Jun 15, 2021, at 4:53 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >>> 
-> >>> On Sun, May 09, 2021 at 11:45:17AM -0700, Alex Nemirovsky wrote:
-> >>>> From: Jason Li <jason.li@cortina-access.com>
-> >>>> 
-> >>>> Convert the Cortina-Access UART binding to DT schema format.
-> >>>> 
-> >>>> Signed-off-by: Jason Li <jason.li@cortina-access.com>
-> >>>> ---
-> >>>> .../serial/cortina-access,serial.yaml         | 46 +++++++++++++++++++
-> >>>> .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
-> >>>> MAINTAINERS                                   |  6 +++
-> >>> 
-> >>> You are also adding a MAINTAINERS entry here, which is not listed in the
-> >>> changelog text, so I couldn't take it anyway :(
-> > 
-> > Add the maintainers entry in the first patch, with the driver please.
-> 
-> The change to MAINTAINERS here add a new file into the DT documentation. 
-> Should it not be grouped into the dt-binding portion and reviewed by the DT time for which this patch
-> is CC’ed to? Why would moving the DT documentation file that is introduced be into the first patch, which is the 
-> serial driver itself be the correct approach?
+Add a MAINTAINERS record for the new netfs helper library.
 
-Add it as a stand-alone patch at the end of the series, that just adds
-the MAINTAINERS entry.
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+cc: linux-mm@kvack.org
+cc: linux-cachefs@redhat.com
+cc: linux-afs@lists.infradead.org
+cc: linux-nfs@vger.kernel.org
+cc: linux-cifs@vger.kernel.org
+cc: ceph-devel@vger.kernel.org
+cc: v9fs-developer@lists.sourceforge.net
+cc: linux-fsdevel@vger.kernel.org
+---
 
-thanks,
+ MAINTAINERS |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-greg k-h
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bc0ceef87b73..364465f20e81 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12878,6 +12878,15 @@ NETWORKING [WIRELESS]
+ L:	linux-wireless@vger.kernel.org
+ Q:	http://patchwork.kernel.org/project/linux-wireless/list/
+ 
++NETWORK FILESYSTEM HELPER LIBRARY
++M:	David Howells <dhowells@redhat.com>
++M:	Jeff Layton <jlayton@kernel.org>
++L:	linux-cachefs@redhat.com (moderated for non-subscribers)
++S:	Supported
++F:	Documentation/filesystems/netfs_library.rst
++F:	fs/netfs/
++F:	include/linux/netfs.h
++
+ NETXEN (1/10) GbE SUPPORT
+ M:	Manish Chopra <manishc@marvell.com>
+ M:	Rahul Verma <rahulv@marvell.com>
+
+
