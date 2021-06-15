@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E103A82AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2733A82AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhFOOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
+        id S231645AbhFOOYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbhFOOWy (ORCPT
+        with ESMTP id S231786AbhFOOWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Jun 2021 10:22:54 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12292C061767;
-        Tue, 15 Jun 2021 07:16:03 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id o21so746253pll.6;
-        Tue, 15 Jun 2021 07:16:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=y0N7iXHC9NRZHHT1sVsEGqpkSzM7RgjJPUfTTbkEtZg=;
-        b=U+IUdmgUEQLyg9NYxoe1XHbdwrMCJytqYvgfrqYeCNRAUZ4CRRki7/XSQWfz50QprR
-         OgdN19KPf9OQqmyNmRfW6JSaW6VzF+DWsmsWotYE2jWnHlWCnDEt6wsT2ILMSszDTdz8
-         PwFCB6fHM/QzYTb5S7IVyktaI7xUr8+Yu6IKpaXDjNnR2H3/YVZc9a1QQjGlgaJOxjJZ
-         6VCuaen8H4JL9qbX4Hl3L+MDKlGTTu9hsBWQbeTWlPMwqeTMvyHfDToVoF14dUBTpKsc
-         h9l4hCG20Yk/SCVjvGYddsmG/t/q+ubXT50S2mTeZcV5KgCBgOvcpWcBDPB2MACkyBV8
-         F37A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y0N7iXHC9NRZHHT1sVsEGqpkSzM7RgjJPUfTTbkEtZg=;
-        b=INjdepTAOViHpMud88LXUIE3Ufcwc1O2eyLsxzt0b9mzj72puLzSG8cONUnga/7Mw0
-         N+Jx74zAfv3QLfylmQbYNYLsevA0CO/O3o8UlHynt/cJHz19Yo8hrS44Bp44DA6cdiry
-         GYQTcjsC3HhMTmAwIjYx68gNQTNJ1cA4HW6af93cSfaTvgrQnL5LfHS/DIAc0c9ZLBrJ
-         69Uq8UOc0cVIGzNezb1blIcwysBr3hjNd94b8fJZYBEcrE3mG+70LSvsCADF2iJgVbk9
-         8JyQUR9Iddl1ziSeYttVy5yBvLI3JXhhWonrhQMDD0PXt1ER5QQ1hr1OJshCODAVnk4x
-         +5+Q==
-X-Gm-Message-State: AOAM531XYDtvgGRkxz4juxNUj+Vv6HhQYCw46k/quanrV236oXTmBBkg
-        B3n614wvkbixFozduRx/F7bls5zTw3c=
-X-Google-Smtp-Source: ABdhPJxRRY90sW6KWr0RQgfZt3FHCbFXC+zq1UXzijlTdTWZTK70JUMqYj58/5/Rfy0+R6Ir4zJZiw==
-X-Received: by 2002:a17:902:9f93:b029:104:9bae:f56a with SMTP id g19-20020a1709029f93b02901049baef56amr4130671plq.75.1623766562127;
-        Tue, 15 Jun 2021 07:16:02 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id c7sm16356683pgh.72.2021.06.15.07.15.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 07:16:01 -0700 (PDT)
-Subject: Re: [PATCH v5 0/8] tee: Improve support for kexec and kdump
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Vikas Gupta <vikas.gupta@broadcom.com>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
- <CAHUa44ErgoxT3L1W-ouoQwUg1fNC-zagOOgy=KBuGN_pETnYaw@mail.gmail.com>
- <20210615133734.GY4910@sequoia>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <944c1df8-3e9f-0026-c83c-d778f42fa1b3@gmail.com>
-Date:   Tue, 15 Jun 2021 07:15:58 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365DDC061145;
+        Tue, 15 Jun 2021 07:16:10 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 03970734;
+        Tue, 15 Jun 2021 14:16:09 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 03970734
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1623766570; bh=9jVLOrXePqCK4mSCuMv8GHJ8fp2BhHDIGx1d1jJxisA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=sEG/k5gS8MR0zT7N48MxNxI3aG3JzjPFtFzU4I/iMJaEsfXXhEtr+OO2VxdaS3tQR
+         Ez6OzWlnrEnRKMRMbbP6YBflNkcwYcmRjF/qhcj8O2pl9sVe9TxQtgdfb+6m/cYLTg
+         BRyp5mwNVlbRv45jyqSm6d6Ehb5Zj966EK3f//ehsCgq5MfcKSHsv2rHthvZlY5EWg
+         D/LvBhgvFwBlfgHB83adVw6MffhSr4CLg7RgQa/dTee8AV8/+uH870nkuJUQGST7Er
+         ZkWGbRhrzJ9CKcvkcNAqRzD93VdNVVW+isLVwKzIb6GXWRBV5VF0TIEFrPWz1uIqhH
+         UlYA9T8tW4SoQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        oleksandr.mazur@plvision.eu, jiri@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vadym Kochan <vadym.kochan@plvision.eu>, andrew@lunn.ch,
+        nikolay@nvidia.com, idosch@idosch.org, sfr@canb.auug.org.au,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] documentation: networking: devlink: fix prestera.rst
+ formatting that causes build errors
+In-Reply-To: <20210615134847.22107-1-oleksandr.mazur@plvision.eu>
+References: <20210615134847.22107-1-oleksandr.mazur@plvision.eu>
+Date:   Tue, 15 Jun 2021 08:16:09 -0600
+Message-ID: <87sg1jz00m.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <20210615133734.GY4910@sequoia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Oleksandr Mazur <oleksandr.mazur@plvision.eu> writes:
 
+> Fixes: a5aee17deb88 ("documentation: networking: devlink: add prestera switched driver Documentation")
+>
+> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+> ---
+>  Documentation/networking/devlink/devlink-trap.rst | 1 +
+>  Documentation/networking/devlink/index.rst        | 1 +
+>  Documentation/networking/devlink/prestera.rst     | 4 ++--
+>  3 files changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/networking/devlink/devlink-trap.rst b/Documentation/networking/devlink/devlink-trap.rst
+> index 935b6397e8cf..ef8928c355df 100644
+> --- a/Documentation/networking/devlink/devlink-trap.rst
+> +++ b/Documentation/networking/devlink/devlink-trap.rst
+> @@ -497,6 +497,7 @@ drivers:
+>  
+>    * :doc:`netdevsim`
+>    * :doc:`mlxsw`
+> +  * :doc:`prestera`
 
-On 6/15/2021 6:37 AM, Tyler Hicks wrote:
-> On 2021-06-15 09:23:25, Jens Wiklander wrote:
->> It looks like we're almost done now. Thanks for your patience to see
->> this through.
->>
->> I suppose it makes most sense to take this via my tree, but before I
->> can do that I'll need acks from the maintainers of
->> drivers/char/tpm/tpm_ftpm_tee.c ("tpm_ftpm_tee: Free and unregister
->> TEE shared memory during kexec") and
->> drivers/firmware/broadcom/tee_bnxt_fw.c ("firmware: tee_bnxt: Release
->> TEE shm, session, and context during kexec").
-> 
-> @Rafał Miłecki, we just need an ack from you for the tee_bnxt_fw.c
-> change:
-> 
->  https://lore.kernel.org/lkml/20210614223317.999867-9-tyhicks@linux.microsoft.com/
+Please, rather than using :doc: tags, just give the file name:
 
-Rafal is listed as the maintainer of drivers/firmware/broadcom/ but he
-did not author that file, Vikas did, adding him.
--- 
-Florian
+  * Documentation/networking/dev-link/prestera
+
+(and fix the others while you're in the neighborhood).  Our automarkup
+magic will make the links work in the HTML docs, and the result is more
+readable for people reading the plain text.
+
+Thanks,
+
+jon
