@@ -2,91 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA6A3A880C
+	by mail.lfdr.de (Postfix) with ESMTP id A069C3A880E
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbhFORs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
+        id S231515AbhFORsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhFORsZ (ORCPT
+        with ESMTP id S231320AbhFORsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:48:25 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C68CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:46:20 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id x13so10279141vsf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:46:20 -0700 (PDT)
+        Tue, 15 Jun 2021 13:48:42 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245A4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:46:38 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id e20so12116434pgg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 10:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nyGASXjZK6+KaCFSY7M57pQho7eXR3tu7GtXUlEdjrI=;
-        b=L/qX46GD8snGzvccBZlifarMswFYhBDW1qSLHsFffckOgg/GzJ9C1qZ2SlxXCnbF3n
-         aCAGRoAuHyruQsWR0hf0CwR9tUuPFMOuIOc+X6R32nl1hJrf9gNNSXI2ldriRak6CcrA
-         ldORFDeCc5ect6ffiKNvx9xS24m4v2ncV6hULVja935vO1q0otxWMuI+fWY4nDaRA/65
-         ANfSnKLKO1CMeop3L99hLm59yObrVS/8nneMIFyxD1pNveTGvr2PE04sXtzo8p7+Kwaa
-         i9D9H4ugxuTV9VBZ+e3jDKSfzGDXVrVFZTt8xJQFzxwyFfYwB4V5u9Mlv71Hq0pQQvj7
-         uo0A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wddwTSMBbde5fomYmsiyLam28xGB6dPV0cf1qnti6ic=;
+        b=RZ9l3hLv315HQzf74YqNq66u68piUTOQ4YEdk1ODigk1fSGwtzivrrZDNRdC1PncLw
+         +/svDhoxXmOGWyK2ocUeeV1vZ8t1+fkxrXImy6iXlOkYFGKuQpCv64AD6tFy/HrX6iz/
+         FnYgYtfx1j9DWUArUfF8//Mgo2ORXezFC+sLEZfdj2kkVJcO6a39Mfo8cnX7n3S0RPeR
+         hu/b0fiIPcVSkZy5gZ9+Eu/CxoRGngDnWRIvC+oopFUYiWzDsM1qPXttNasNrcocf/AG
+         0LsHVkwMMwAdporoK9/ao3Xrys5wzNeDwqsGMNCHhiheVgm/cCF2btVyKUVfQaAEnsXM
+         PAvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nyGASXjZK6+KaCFSY7M57pQho7eXR3tu7GtXUlEdjrI=;
-        b=TDh+lamLUN8kNWZ3vlVPLiSQO/olxpJK+I/s69np77mWvGnXpXKMHlUJQtS6pY/M12
-         gWjGGx8i2ttOfuzHq5jh4ONE9XI3tKCEiOz0I8LZOGUGQBEf73KniukYD8XnFrPo3aF+
-         W13Xy1NmmGV+HHZ/VrHJUlHNGpH2o9uiGq3kZx8SgH9o6UN5s5sPoNSf1V/vG3/87zOB
-         CpYLG61yjh13moaZwuymD3f9zRSbEZlAgMAv9aj1d9XwwcNRgaC96R+3HTx8x+2hgMSa
-         wQe4csDYAsoBYlf2eoHSuVlF4rpQbLK7goBvi7U/a0rZVk7cG5/1VfDz4XlpHAeJHqHz
-         kcpA==
-X-Gm-Message-State: AOAM530zIhK5/i2hhR42sK0DmE15wF5Ir6KUXn5g/cIn9X5MXvXmeBvC
-        SUi+hzCdsZC559p04fn0TejPbsQHI+tz0AP3hUnidg==
-X-Google-Smtp-Source: ABdhPJxAHcDuOVlus4gjMRwSFbeAYLv4eiEq85ZPvI766hdWcE2C0hfBadGUAp2NzI/VRs4/2rcp1fFkxQfkI1hZ3OA=
-X-Received: by 2002:a67:df93:: with SMTP id x19mr6894195vsk.49.1623779179091;
- Tue, 15 Jun 2021 10:46:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wddwTSMBbde5fomYmsiyLam28xGB6dPV0cf1qnti6ic=;
+        b=lRRgfCXZ0Ad3l1eY/IvoriEvLbEbzUsJ81/JrbwaVQjdRGN/5/DYTbFAzzHQ8L6201
+         t8VlFnvo1sTTx7phqBeAgMtU1YKtBLabvw+FKi+/cqfrfer8VkgLd7k4FEU0vsFljTuY
+         mPMxI+NZrq/OvxKe+UWc5k67npHghgtkPN6WLPbfDm/0TuNGWmEKox7DwphHA70uICQV
+         hldPgWkLQDV22r4dJpAgrsfVse3T7R/d9pjJ30YVNtewZ04DI+fPd8EvN3nmakiv3TH8
+         7navabkjyxWvIfkc7jUXBPEFtOGN4yaXhipU5TDs1Y8GdnhLRG6/qTDwOyHvo7jOt/XK
+         k5uw==
+X-Gm-Message-State: AOAM530RklzV81HSvOt3kG2GMi+ccEr+XcfTowYMiKRGy1fZx0yJnHBA
+        qXgq5tOAjyuCf4j4YiWhcgTCVQ==
+X-Google-Smtp-Source: ABdhPJwFCtkBDaxNtqg+71URNkezF2YmFzdj1QOm2PfqazbyIO6ce3Jmtz4NDXGXw9U1bAuAzSYkhw==
+X-Received: by 2002:a05:6a00:d65:b029:2ec:2bfa:d0d1 with SMTP id n37-20020a056a000d65b02902ec2bfad0d1mr5502974pfv.14.1623779197593;
+        Tue, 15 Jun 2021 10:46:37 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id f15sm16463659pgg.23.2021.06.15.10.46.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 10:46:36 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 11:46:34 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 3/4] rpmsg: ctrl: Add check on rpmsg device removability
+ from user space
+Message-ID: <20210615174634.GB604521@p14s>
+References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
+ <20210604091406.15901-4-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-References: <20210615173206.1646477-1-kyletso@google.com>
-In-Reply-To: <20210615173206.1646477-1-kyletso@google.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Tue, 15 Jun 2021 10:45:42 -0700
-Message-ID: <CAPTae5KaCiXEOdNY-Ct3a0uaCDd8onmtM_bSaGzy0fkooJMC1g@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Ignore Vsafe0v in PR_SWAP_SNK_SRC_SOURCE_ON
- state
-To:     Kyle Tso <kyletso@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604091406.15901-4-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:32 AM Kyle Tso <kyletso@google.com> wrote:
->
-> In PR_SWAP_SNK_SRC_SOURCE_ON state, Vsafe0v is expected as well so do
-> nothing here to avoid state machine going into SNK_UNATTACHED.
->
-> Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-Reviewed-by: Badhri Jagan Sridharan <badhri@google.com>
+On Fri, Jun 04, 2021 at 11:14:05AM +0200, Arnaud Pouliquen wrote:
+> Using the RPMSG_RELEASE_DEV_IOCTL is possible to remove any
+> rpmsg device (such as the rpmsg ns or the rpmsg ctrldev).
+> 
+> Add a new field to store the removability of the device.
+> 
+> By default the rpmsg device can not be removed by user space. It is
+> set to 1 by the rpmsg ctrl on RPMSG_CREATE_DEV_IOCTL request, but
+> could also be set by an rpmsg driver during probe.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 > ---
->  drivers/usb/typec/tcpm/tcpm.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 197556038ba4..e11e9227107d 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -5212,6 +5212,7 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
->                 }
->                 break;
->         case PR_SWAP_SNK_SRC_SINK_OFF:
-> +       case PR_SWAP_SNK_SRC_SOURCE_ON:
->                 /* Do nothing, vsafe0v is expected during transition */
->                 break;
->         default:
-> --
-> 2.32.0.272.g935e593368-goog
->
+>  drivers/rpmsg/rpmsg_ctrl.c | 17 ++++++++++++++++-
+>  include/linux/rpmsg.h      |  2 ++
+>  2 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+> index cb19e32d05e1..e93c6ec49038 100644
+> --- a/drivers/rpmsg/rpmsg_ctrl.c
+> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+> @@ -74,6 +74,7 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>  	struct rpmsg_endpoint_info eptinfo;
+>  	struct rpmsg_channel_info chinfo;
+>  	struct rpmsg_device *rpdev;
+> +	struct device *dev;
+>  	int ret = 0;
+>  
+>  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
+> @@ -95,11 +96,25 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>  		if (!rpdev) {
+>  			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
+>  			ret = -ENXIO;
+> +		} else {
+> +			/* Allow user space to release the device. */
+> +			rpdev->us_removable = 1;
+
+As a rule of thumb I try really hard to avoid introducing new flags.  In this case we
+can attain the same result by looking at chinfo->name, chinfo->src and
+chinfo->dst.  I would introduce a new inline function in rpmsg_internal.h,
+something like rpmsg_chrdev_is_ctrl_dev(), and compare the specifics in chinfo
+to rpdev->id.name, rpdev->src and rpdev->dst.  If they all match then the
+operation is refused.
+
+That way we don't introduce a new flag and there is also no need to call
+rpmsg_find_device() twice.
+
+Thanks,
+Mathieu
+
+>  		}
+>  		break;
+>  
+>  	case RPMSG_RELEASE_DEV_IOCTL:
+> -		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
+> +		dev = rpmsg_find_device(ctrldev->rpdev->dev.parent, &chinfo);
+> +		if (!dev)
+> +			ret =  -ENXIO;
+> +
+> +		/* Verify that rpmsg device removal is allowed. */
+> +		if (!ret) {
+> +			rpdev = to_rpmsg_device(dev);
+> +			if (!rpdev->us_removable)
+> +				ret = -EACCES;
+> +		}
+> +		if (!ret)
+> +			ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
+>  		if (ret)
+>  			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
+>  				chinfo.name, ret);
+> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+> index d97dcd049f18..3642aad1a789 100644
+> --- a/include/linux/rpmsg.h
+> +++ b/include/linux/rpmsg.h
+> @@ -47,6 +47,7 @@ struct rpmsg_channel_info {
+>   * @ept: the rpmsg endpoint of this channel
+>   * @announce: if set, rpmsg will announce the creation/removal of this channel
+>   * @little_endian: True if transport is using little endian byte representation
+> + * @us_removable: True if userspace application has permission to remove the rpmsg device
+>   */
+>  struct rpmsg_device {
+>  	struct device dev;
+> @@ -57,6 +58,7 @@ struct rpmsg_device {
+>  	struct rpmsg_endpoint *ept;
+>  	bool announce;
+>  	bool little_endian;
+> +	bool us_removable;
+>  
+>  	const struct rpmsg_device_ops *ops;
+>  };
+> -- 
+> 2.17.1
+> 
