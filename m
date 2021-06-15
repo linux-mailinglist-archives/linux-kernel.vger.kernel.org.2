@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409263A7681
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020FC3A7683
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhFOFd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 01:33:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29684 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229463AbhFOFdz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 01:33:55 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15F52two066095;
-        Tue, 15 Jun 2021 01:31:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=4Jo+wloOhTVpusr0tEvEX1Il4b2ovzD+qqFolo8u2Qw=;
- b=otetFQybVWYPMWV9+gjzOVHXhIKEvv9WfEl7CxaLjEdmQiCoZPWJLVgtV+4IsXGq1i4D
- 60C0tJlqDUSsnkOgNeLizN03/3IiEVC1Iuh2oOozM7TB0Imr9U4RgRcOwFhdH78uzQBu
- ZO++809G9UrjNJy7YVW2nAIwJ8KCFRFmGQNC6yujOHT/cEFU39e52xsrQmtNnSaT8cME
- hE10jclvpBk8cGUoW9MDz2h02vbNRzqUQr3kFuoNFyZfx1+Gn4UgfsAtT5DmKEgzaOTK
- 8jjLqlcRPy5bahDu7CSXKdoUI8KKSeTLjJWYhbVfiazoV/dPLZ8QnhaoM5KbMNiF2zbL eA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 396jvqm919-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 01:31:43 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15F53F8E067435;
-        Tue, 15 Jun 2021 01:31:42 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 396jvqm90e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 01:31:42 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15F54F88011819;
-        Tue, 15 Jun 2021 05:09:55 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 394mj8gpse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Jun 2021 05:09:55 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15F59qp923462324
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Jun 2021 05:09:52 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B12EEAE053;
-        Tue, 15 Jun 2021 05:09:52 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B498AAE045;
-        Tue, 15 Jun 2021 05:09:50 +0000 (GMT)
-Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.73.10])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Jun 2021 05:09:50 +0000 (GMT)
-From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
-To:     mpe@ellerman.id.au, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        psampat@linux.ibm.com, pratik.r.sampat@gmail.com
-Subject: [PATCH] cpufreq:powernv: Fix init_chip_info initialization in numa=off
-Date:   Tue, 15 Jun 2021 10:39:49 +0530
-Message-Id: <20210615050949.10071-1-psampat@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
+        id S230215AbhFOFeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 01:34:14 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50658 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230038AbhFOFeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 01:34:13 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1lt1gD-0006u3-8A; Tue, 15 Jun 2021 13:32:05 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lt1g7-0001R0-Bs; Tue, 15 Jun 2021 13:31:59 +0800
+Date:   Tue, 15 Jun 2021 13:31:59 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     syzbot <syzbot+e4c1dd36fc6b98c50859@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, steffen.klassert@secunet.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in xfrm_selector_match
+Message-ID: <20210615053159.GA5412@gondor.apana.org.au>
+References: <000000000000008a6c05c46e45a4@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: SKDaanE3us43nTJ6FyQPr1iywCTVjCJa
-X-Proofpoint-ORIG-GUID: lfsQl-IxXxWbt6VI71loKXch2L3mrSBW
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-15_03:2021-06-14,2021-06-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- priorityscore=1501 suspectscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 adultscore=0 spamscore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106150029
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000008a6c05c46e45a4@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the numa=off kernel command-line configuration init_chip_info() loops
-around the number of chips and attempts to copy the cpumask of that node
-which is NULL for all iterations after the first chip.
+On Thu, Jun 10, 2021 at 12:19:26PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    13c62f53 net/sched: act_ct: handle DNAT tuple collision
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16635470300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e4c1dd36fc6b98c50859
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+e4c1dd36fc6b98c50859@syzkaller.appspotmail.com
+> 
+> UBSAN: shift-out-of-bounds in ./include/net/xfrm.h:838:23
+> shift exponent -64 is negative
+> CPU: 0 PID: 12625 Comm: syz-executor.1 Not tainted 5.13.0-rc3-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+>  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+>  addr4_match include/net/xfrm.h:838 [inline]
+>  __xfrm4_selector_match net/xfrm/xfrm_policy.c:201 [inline]
+>  xfrm_selector_match.cold+0x35/0x3a net/xfrm/xfrm_policy.c:227
+>  xfrm_state_look_at+0x16d/0x440 net/xfrm/xfrm_state.c:1022
 
-Hence adding a check to bail out after the first initialization if there
-is only one node.
+This appears to be an xfrm_state object with an IPv4 selector
+that somehow has a prefixlen (d or s) of 96.
 
-Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
-Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-Reported-by: Shirisha Ganta <shirishaganta1@ibm.com>
----
- drivers/cpufreq/powernv-cpufreq.c | 2 ++
- 1 file changed, 2 insertions(+)
+AFAICS this is not possible through xfrm_user.  OTOH it is not
+obvious that af_key is entirely consistent in how it verifies
+the prefix length, in particular, it seems to be possible for
+two addresses with conflicting families to be provided as src/dst.
 
-diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-index e439b43c19eb..663f9c4b5e3a 100644
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -1078,6 +1078,8 @@ static int init_chip_info(void)
- 		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
- 		for_each_cpu(cpu, &chips[i].mask)
- 			per_cpu(chip_info, cpu) =  &chips[i];
-+		if (num_possible_nodes() == 1)
-+			break;
- 	}
- 
- free_and_return:
+Can you confirm that this is indeed using af_key (a quick read
+of the syzbot log seems to indicate that this is the case)?
+
+Thanks,
 -- 
-2.30.2
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
