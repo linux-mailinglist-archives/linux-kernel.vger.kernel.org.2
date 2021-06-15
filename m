@@ -2,230 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879543A837C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668D13A8385
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 17:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhFOPCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 11:02:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27502 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230076AbhFOPCj (ORCPT
+        id S231466AbhFOPEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 11:04:05 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44818 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFOPED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:02:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623769234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kvDRHIPTMWRdjunH7atJ0Ekx4bg6biP+/uO+nH2vm70=;
-        b=ULQlAKTBrc+7LnNpz62EUUADfVOLOZW3mW0VMp5xBJj3MJf0t6o4qFmDqrbIMpYld+DJGy
-        cYlx1nfcdevV4nSCJUogCsvrr6Pn60YAJ6bnkH5cUrhfq5m5PWIMUEEfy5wqxqFgD+YkCV
-        jQUPly/ndtDgfFwCeBHK+B09UhZxcGk=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-MB5863zxMc6j015A5aNf9A-1; Tue, 15 Jun 2021 11:00:32 -0400
-X-MC-Unique: MB5863zxMc6j015A5aNf9A-1
-Received: by mail-ot1-f71.google.com with SMTP id n4-20020a9d6f040000b029041298cb18cdso7315958otq.21
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 08:00:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=kvDRHIPTMWRdjunH7atJ0Ekx4bg6biP+/uO+nH2vm70=;
-        b=e54YZhjExWjiHcODeG+3p+IPCdOp2R4dLBgljWagdJjcVbBrbcRTfWHJkUQwAI9F5v
-         473w3YNght6RO/PsnBKJkkJ81lRzcGfvKBuwDD4I12cS7GiZIc6ZmmpQZnE+3mW8sKwx
-         CgtxFxs0U819u33+BROi8/Cq/ucgRiUnd+gsqlMcKkXe90EimsENqkTauVquW36xJ/R6
-         UBZ9ORUM0AEm2hxpLIESolejC6UbfEzs7HM8KN9ocW6q+zlhZWpCxDCYiD43QaL9W/i/
-         mJ/PlvKYjjuKAhT5SLu4iIYjRFTsgFUPiCG+nZCjJLRFAKOTPzLMQ7TVRnSVeO6x7JlN
-         AEGQ==
-X-Gm-Message-State: AOAM532m0gsqWSCHsCRTtFCTJkgKZTKQntPq/YVyYe5LJXiBFiUh+gzb
-        9oLV9z6Ysv0vzEEHKE8QVnrIR6+8376t7jAQRmdD6VywGjcyXdzgurk6N4F3aIgmXYVkrV8qO4g
-        0NpZD3YHk0BDnthhiW8X1sMZx
-X-Received: by 2002:a9d:20a2:: with SMTP id x31mr17536687ota.263.1623769231658;
-        Tue, 15 Jun 2021 08:00:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGruaBJPm457fRiRlGb85/ee6++hhEpRZjrPbDGmDqUi5CKE5wvS9jZkzN+6NgP3pDJ3f/Zg==
-X-Received: by 2002:a9d:20a2:: with SMTP id x31mr17536660ota.263.1623769231344;
-        Tue, 15 Jun 2021 08:00:31 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id u10sm4050146otj.75.2021.06.15.08.00.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 08:00:30 -0700 (PDT)
-Date:   Tue, 15 Jun 2021 09:00:29 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, <cohuck@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <aviadye@nvidia.com>, <oren@nvidia.com>, <shahafs@nvidia.com>,
-        <parav@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
-        <ACurrid@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>,
-        <kevin.tian@intel.com>, <hch@infradead.org>, <targupta@nvidia.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <liulongfang@huawei.com>,
-        <yan.y.zhao@intel.com>
-Subject: Re: [PATCH 09/11] PCI: add matching checks for driver_override
- binding
-Message-ID: <20210615090029.41849d7a.alex.williamson@redhat.com>
-In-Reply-To: <70a1b23f-764d-8b3e-91a4-bf5d67ac9f1f@nvidia.com>
-References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
-        <20210603160809.15845-10-mgurtovoy@nvidia.com>
-        <20210608152643.2d3400c1.alex.williamson@redhat.com>
-        <20210608224517.GQ1002214@nvidia.com>
-        <20210608192711.4956cda2.alex.williamson@redhat.com>
-        <117a5e68-d16e-c146-6d37-fcbfe49cb4f8@nvidia.com>
-        <20210614124250.0d32537c.alex.williamson@redhat.com>
-        <70a1b23f-764d-8b3e-91a4-bf5d67ac9f1f@nvidia.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 15 Jun 2021 11:04:03 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15FF1r1a077794;
+        Tue, 15 Jun 2021 10:01:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623769313;
+        bh=SMNC3bHLVtX6F1a9DdwqvZyoa3Nt8WWDSWIEdLIOPoU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=BGdXCCgwQv70d7YqQ/UoGt5nRhae0NBbQ91+EnLDmTQQZkG7h/VGg4ZHtTHv8Hb96
+         i79DIbeKTWxcRoCDOqSQq2rwdzM63C7Z3zrgzDVz8juJ7iUqoXmph6tXY9ftJZ5Qdk
+         M3hRqtJrVI7Z9Mm7tmWEsBiNUHYV+Uiuyu78EjIU=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15FF1rWn003443
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Jun 2021 10:01:53 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 15
+ Jun 2021 10:01:53 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 15 Jun 2021 10:01:53 -0500
+Received: from [10.250.233.8] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15FF1nb2003998;
+        Tue, 15 Jun 2021 10:01:50 -0500
+Subject: Re: [PATCH] PCI: endpoint: Add custom notifier support
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
+        <smohanad@codeaurora.org>
+References: <20210615133704.88169-1-manivannan.sadhasivam@linaro.org>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <9021212f-aa5d-770d-c455-c632dd79e7f8@ti.com>
+Date:   Tue, 15 Jun 2021 20:31:48 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210615133704.88169-1-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 02:12:15 +0300
-Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+Hi Manivannan,
 
-> On 6/14/2021 9:42 PM, Alex Williamson wrote:
-> > On Sun, 13 Jun 2021 11:19:46 +0300
-> > Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-> > =20
-> >> On 6/9/2021 4:27 AM, Alex Williamson wrote: =20
-> >>> On Tue, 8 Jun 2021 19:45:17 -0300
-> >>> Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >>>    =20
-> >>>> On Tue, Jun 08, 2021 at 03:26:43PM -0600, Alex Williamson wrote: =20
-> >>>>>> drivers that specifically opt into this feature and the driver now=
- has
-> >>>>>> the opportunity to provide a proper match table that indicates wha=
-t HW
-> >>>>>> it can properly support. vfio-pci continues to support everything.=
- =20
-> >>>>> In doing so, this also breaks the new_id method for vfio-pci. =20
-> >>>> Does it? How? The driver_override flag is per match entry not for the
-> >>>> entire device so new_id added things will work the same as before as
-> >>>> their new match entry's flags will be zero. =20
-> >>> Hmm, that might have been a testing issue; combining driverctl with
-> >>> manual new_id testing might have left a driver_override in place.
-> >>>       =20
-> >>>>> Sorry, with so many userspace regressions, crippling the
-> >>>>> driver_override interface with an assumption of such a narrow focus,
-> >>>>> creating a vfio specific match flag, I don't see where this can go.
-> >>>>> Thanks, =20
-> >>>> On the other hand it overcomes all the objections from the last go
-> >>>> round: how userspace figures out which driver to use with
-> >>>> driver_override and integrating the universal driver into the scheme.
-> >>>>
-> >>>> pci_stub could be delt with by marking it for driver_override like
-> >>>> vfio_pci. =20
-> >>> By marking it a "vfio driver override"? :-\
-> >>>    =20
-> >>>> But driverctl as a general tool working with any module is not really
-> >>>> addressable.
-> >>>>
-> >>>> Is the only issue the blocking of the arbitary binding? That is not a
-> >>>> critical peice of this, IIRC =20
-> >>> We can't break userspace, which means new_id and driver_override need
-> >>> to work as they do now.  There are scads of driver binding scripts in
-> >>> the wild, for vfio-pci and other drivers.  We can't assume such a
-> >>> narrow scope.  Thanks, =20
-> >> what about the following code ?
-> >>
-> >> @@ -152,12 +152,28 @@ static const struct pci_device_id
-> >> *pci_match_device(struct pci_driver *drv,
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&drv->dynids.=
-lock);
-> >>
-> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!found_id)
-> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 found_id =3D pci_match_id(drv->id_table, dev);
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (found_id)
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 return found_id; =20
-> > a) A dynamic ID match always works regardless of driver override...
-> > =20
-> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* driver_override will always m=
-atch, send a dummy id */
-> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!found_id && dev->driver_ove=
-rride)
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 found_id =3D pci_match_id(drv->i=
-d_table, dev);
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (found_id) {
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 /*
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 * if we found id in the static table, we must fulfill=
- the
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 * matching flags (i.e. if PCI_ID_F_DRIVER_OVERRIDE fl=
-ag is
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 * set, driver_override should be provided).
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 */
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 bool is_driver_override =3D
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (found_id->=
-flags & PCI_ID_F_DRIVER_OVERRIDE) !=3D 0;
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 if ((is_driver_override && !dev->driver_override) || =20
-> > b) A static ID match fails if the driver provides an override flag and
-> > the device does not have an override set, or...
-> > =20
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (dev->driver_override && !is_driver=
-_override)) =20
-> > c) The device has an override set and the driver does not support the
-> > override flag.
-> > =20
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return NULL;
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (dev->driver_override)=
- {
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 /*
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 * if we didn't find suitable id in the static table,
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 * driver_override will still , send a dummy id
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 */
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 found_id =3D &pci_device_id_any;
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >>
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return found_id;
-> >>   =C2=A0}
-> >>
-> >>
-> >> dynamic ids (new_id) works as before.
-> >>
-> >> Old driver_override works as before. =20
-> > This is deceptively complicated, but no, I don't believe it does.  By
-> > my understanding of c) an "old" driver can no longer use
-> > driver_override for binding a known device.  It seems that if we have a
-> > static ID match, then we cannot have a driver_override set for the
-> > device in such a case.  This is a userspace regression. =20
->=20
-> If I'll remove condition c) everyone will be happy ?
->=20
-> I really would like to end this ongoing discussion and finally have a=20
-> clear idea of what we want.
->=20
-> By clear I mean C code.
->=20
-> If we'll continue raising ideas we'll never reach our goal. And my goal=20
-> is the next merge window.
+On 15/06/21 7:07 pm, Manivannan Sadhasivam wrote:
+> Add support for passing the custom notifications between the endpoint
+> controller and the function driver. This helps in passing the
+> notifications that are more specific to the controller and corresponding
+> function driver. The opaque `data` arugument in pci_epc_custom_notify()
+> function can be used to carry the event specific data that helps in
+> differentiating the events.
+> 
+> For instance, the Qcom EPC device generates specific events such as
+> MHI_A7, BME, DSTATE_CHANGE, PM_TURNOFF etc... These events needs to be
+> passed to the function driver for proper handling. Hence, this custom
+> notifier can be used to pass these events.
 
-Bjorn would ultimately need to make the call on that, I don't see an
-obvious regression if c) is dropped.  pci-stub and pci-pf-stub should
-be included in the proposal so we can better understand how creating a
-"vfio" override in PCI-core plays out for other override types.  Also I
-don't think dynamic IDs should be handled uniquely, new_id_store()
-should gain support for flags and userspace should be able to add new
-dynamic ID with override-only matches to the table.  Thanks,
+Bus master enable and PME events sounds generic events and not QCOM
+specific. Also this patch should be sent along with how it's going to be
+used in function driver.
 
-Alex
+In general my preference would be to add only well defined notifiers
+given that the endpoint function drivers are generic.
 
+Thanks
+Kishon
+
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/endpoint/pci-epc-core.c | 19 +++++++++++++++++++
+>  include/linux/pci-epc.h             |  1 +
+>  include/linux/pci-epf.h             |  1 +
+>  3 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
+> index adec9bee72cf..86b6934c6297 100644
+> --- a/drivers/pci/endpoint/pci-epc-core.c
+> +++ b/drivers/pci/endpoint/pci-epc-core.c
+> @@ -658,6 +658,25 @@ void pci_epc_init_notify(struct pci_epc *epc)
+>  }
+>  EXPORT_SYMBOL_GPL(pci_epc_init_notify);
+>  
+> +/**
+> + * pci_epc_custom_notify() - Notify the EPF device about the custom events
+> + *			     in the EPC device
+> + * @epc: EPC device that generates the custom notification
+> + * @data: Data for the custom notifier
+> + *
+> + * Invoke to notify the EPF device about the custom events in the EPC device.
+> + * This notifier can be used to pass the EPC specific custom events that are
+> + * shared with the EPF device.
+> + */
+> +void pci_epc_custom_notify(struct pci_epc *epc, void *data)
+> +{
+> +	if (!epc || IS_ERR(epc))
+> +		return;
+> +
+> +	atomic_notifier_call_chain(&epc->notifier, CUSTOM, data);
+> +}
+> +EXPORT_SYMBOL_GPL(pci_epc_custom_notify);
+> +
+>  /**
+>   * pci_epc_destroy() - destroy the EPC device
+>   * @epc: the EPC device that has to be destroyed
+> diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
+> index b82c9b100e97..13140fdbcdf6 100644
+> --- a/include/linux/pci-epc.h
+> +++ b/include/linux/pci-epc.h
+> @@ -203,6 +203,7 @@ int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf,
+>  		    enum pci_epc_interface_type type);
+>  void pci_epc_linkup(struct pci_epc *epc);
+>  void pci_epc_init_notify(struct pci_epc *epc);
+> +void pci_epc_custom_notify(struct pci_epc *epc, void *data);
+>  void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf,
+>  			enum pci_epc_interface_type type);
+>  int pci_epc_write_header(struct pci_epc *epc, u8 func_no,
+> diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+> index 6833e2160ef1..8d740c5cf0e3 100644
+> --- a/include/linux/pci-epf.h
+> +++ b/include/linux/pci-epf.h
+> @@ -20,6 +20,7 @@ enum pci_epc_interface_type;
+>  enum pci_notify_event {
+>  	CORE_INIT,
+>  	LINK_UP,
+> +	CUSTOM,
+>  };
+>  
+>  enum pci_barno {
+> 
