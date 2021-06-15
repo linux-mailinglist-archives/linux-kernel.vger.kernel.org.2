@@ -2,154 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577103A7725
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527B63A772D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhFOGid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:38:33 -0400
-Received: from mail-eopbgr70073.outbound.protection.outlook.com ([40.107.7.73]:8423
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S229898AbhFOGkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:40:00 -0400
+Received: from mail-bn8nam12on2055.outbound.protection.outlook.com ([40.107.237.55]:7040
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229463AbhFOGib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:38:31 -0400
+        id S229488AbhFOGj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 02:39:58 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UolVsf7Xl+NCZMRi0IPfY6Zz3LEW+bTMs0PvPBrshCasTXuDuUeyGTKCaZqMiV6US/xgvcx8chg293ejBW8BBrHlJGuIDpUZpTQo9i8fP8xQ7/dyxIYSTZxrDU5pFfaqF1+8wN2cORRUjXcuDgo1c+CdBWU8UpSjUmDC4iyJlm/6XbpHnfsAgrPGcAZ7m6JeicA3OGbfpwBj/zQfehmDcvCpt1T9WEsQrF/Lg400rDOGXMfOiNzDC0bMMaZH77QwuOJbsDDpGHAMKjkSMMqnWdF6c1LU4v18pHIFX2/nk/3e7bJ7SCiv7QpVv0SYBA1d1PwH/NdoKt7Egz5H7/YwGg==
+ b=ETWLxL2YegBWM0pwHrqCWtOzLXu7dPm/jhobQG5tx+z0zVH2mVE9JXFjb4zSf/B6VVq5EZzOimo6TqoJ/b2SDNndsJhCpdcHsFM6ko7xz/LJhCvtJ3BtzZbEujrA4RWnOrLFeOhj51tSFfQ7elTWgxWsS70wFpS7R/l26tebaIx+/bl/f6rDuq/uXI5pGw9d2MKXXw7kJb5Px4vhkqb6Wnsq7CSBek8Fulvkqdlkn7T8cjQcwqCEUscfq1x1SfjJgmk3/be/5D8s3z+i83bKQqbfEjnDXKssLbW5urzCkaKJgOFKpoj+9ZiDzKzA2rUF/KLmsi3/CbRQF8ALh9X9JQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+JM7+sgeCV3PNK1US8rPO8Dfufib2IZaKxHTC+IQ250=;
- b=W3VXYrDTHYCvmeDD8lR15WxjwtGmJ5CAg+qvZFtaMBCD6yKla1tqRSDLfnCgQR+RG4ZrDc0WOSFJ2VDS8/SdHhBXe829n1UzMpitIDpH0IinhksNM3WvZViz43ecKXJiDsDHg8Dr3YYycu6dAQCHNJEVdcxZ4t0cPHGMyjp7g8AF8X1QXnobxL7/J0FPJmYILJtWWNdyMSg0xERfTdk2mDDjqdTmZ4+AhLAl0N+DKmhwdV2SR0Bv4p/XqzfaO9L+7mbpdD1MobQbvDIYEGL6+cvPQgwn7gjZmXMwS+wLu4yMAjoUayoKL+zYbrRXosaEoF4XE594vupz1gxnjnmfyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ bh=BLvY8I88nEOqAREMACPw8oxrUTmzXT3CQkFP2um3mF0=;
+ b=AKkGWJ3rc7pz7PfFIjRdikSGc34CEE3wfnuQRBYUzdVqsgIlD3EPAFkK7Dsfgz/KpD2EO5Ujs7sY1i7aV9LORSHVwPH7hnanO42zkktQwWLMbFqvK+7R3cdEqlAvamLY4h0skgc7AqkcQdMdYqE9cckwzyfue9L+8/tKXnTLzDqEyIM4C1NGPt4YNTZcQM8DoIOPpwEf27qMP2br1VHqCK/TR+e+xzKQGyivJTwJh9bboSErXcw8nQIMjwXUxC4Ok7O4gn5LG8nZ3kVN044rCDhxAKP27dh2Q4SfVEwIgpnf0AlpdreuUEhRqfto5vHW1L3bbKvMQsDNAqDoytekVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=kvack.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+JM7+sgeCV3PNK1US8rPO8Dfufib2IZaKxHTC+IQ250=;
- b=W2lppunz+H6ghSLcrBu1bTRubQlzSssKPuNZrpl5+g1jxVpSfbM4ymdbDJ0sfBevh6i/6t6RYF9gxWL690nVJdODH1wBhyLQErEmmROZFuXFZH/KO/d+wY7j1R+GFNSFPnGBmtpEA+xLu3Uq8sxgOZjt7Zcu2E7mpO6rs4g5YeY=
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com (2603:10a6:803:127::25)
- by VE1PR04MB7469.eurprd04.prod.outlook.com (2603:10a6:800:1b0::15) with
+ bh=BLvY8I88nEOqAREMACPw8oxrUTmzXT3CQkFP2um3mF0=;
+ b=DSKM3UoUHktjqhm02DPTLqCU/cYKQeMZB7vlrTx6lYqkwO+8l2JSf0+i+k2Xm6bqnBx4YB2b61tUQ6Oass4lzDpmqq26ao3UG0Z8ma1XvilFXLBXAM9pr5lI3hqFMfUdfMzpns2G+A0EbKtAc2ITcDjfuAZqWM5pOTR70toHT57yUdHhskJtiyWbsKxiO/8srlmYG6Mos3jjjiROGqTPacACGsje0V0e7Wx2CBPOc+TnbsM0jJfMzfmF17bgkPM9R3RcK93kQN6o39hAyqs8nWWe2VehodOUj8qT+LQvDPob+u1RtZv0ocp7RN9uNElkysgiZbZlbzmWIbn9ZKfOSg==
+Received: from BN6PR16CA0032.namprd16.prod.outlook.com (2603:10b6:405:14::18)
+ by DM6PR12MB3659.namprd12.prod.outlook.com (2603:10b6:5:14a::31) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.24; Tue, 15 Jun
- 2021 06:36:24 +0000
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::ed27:a6b2:74fc:8ef2]) by VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::ed27:a6b2:74fc:8ef2%6]) with mapi id 15.20.4219.025; Tue, 15 Jun 2021
- 06:36:24 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Fabio Estevam <festevam@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-Thread-Topic: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-Thread-Index: AQHXK33LUkqD6t3KUUabL8+87acFPqsPOqgAgAV+imCAAElmAIAABENQ
-Date:   Tue, 15 Jun 2021 06:36:24 +0000
-Message-ID: <VE1PR04MB6688E8EECC03C5290DE10BC089309@VE1PR04MB6688.eurprd04.prod.outlook.com>
-References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
- <CAOMZO5CNjpek0vkDrMyTmfbnr2cLcquck6QQBqXLBiyTDKPXvA@mail.gmail.com>
- <VE1PR04MB6688017E125D42C5DCB3C17D89309@VE1PR04MB6688.eurprd04.prod.outlook.com>
- <YMhDvlPrFvSZP//I@vkoul-mobl>
-In-Reply-To: <YMhDvlPrFvSZP//I@vkoul-mobl>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 71d7bb9f-c803-4909-ab6a-08d92fc7e56e
-x-ms-traffictypediagnostic: VE1PR04MB7469:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB7469489940FE52D788C7390289309@VE1PR04MB7469.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ailfJ6aS7zzOlR6fhAi2RUdT1uTSGHYHstnVTTf5o1+JSJhWJIAL1GLan0/qx9nIXJ0orWpfn9aKlIGPqtqTR9AYKxEmuiubWblsO1aD5UL//fOXQeEZs4BXg8ZHtzTH7EgxwfPpCypAkAaabd6d4rprKnQI+fbOgfDlvKDhqag5QbrtgGp21wWmsVDPKZ5edphhnHdGXkczzXYISr/4F8b7VcVlQFM754PFdc1MlSQiN4lzt4IsVaq9ywHC4EC8ouF2/w1lbV5QGFN85K+WMvvGj/kD8Tp50e81kB8eJCxLpLhtartsG+l6uYoaTv7V086UmudLotHxLtdAnNFD/SOCN6Msl/ffdH9ASDHZTMGPB/ertrGtoxhFtErIHE+cuSHtAbq99OXlr3zj/RM1e9aVfFuJP6z0JFJ8D37mszeQStfyBTLoiEg9Ze+PUiX8h/XKvt/OTPrku1Pq/pKk8IAN8/74TpMKpEaizwJ/6pLuwLwQhoGZXzXxj3LRgF/JoCly0Cv1lzoVay3OIGEIZ1eHnOO+GUixGPIEIYRS0uQYbLAAtMYo6GqQctXlFP/xxHXx+LbFc++2K0OnH31AID7Vy8nTPn+Ikgh8tWSX4MM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(136003)(39860400002)(33656002)(8936002)(2906002)(54906003)(6916009)(316002)(7696005)(478600001)(86362001)(4744005)(7416002)(9686003)(5660300002)(64756008)(71200400001)(66446008)(4326008)(6506007)(76116006)(66946007)(52536014)(66476007)(55016002)(8676002)(66556008)(53546011)(83380400001)(186003)(122000001)(38100700002)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?tSx1klPIORTV4tbDkj+TbiihO5cXxOTYjG+OpGRAUtLjVp68rbLq0vJvDD?=
- =?iso-8859-1?Q?66uUWq06Zu66CiHG8Z0xwqNyCUGYEUrU8/vHjTkyjYrWaCyZtrAVr4R3Li?=
- =?iso-8859-1?Q?D3o3MXfWd4TsGgrLQFa7EhaZAYqWPGhrXcRLshJPAWe+pu4TGGsvsJr0In?=
- =?iso-8859-1?Q?S7cbdrDuwBOK73Fy5B26n71MyV56XpKGBkzg8Gbuxigx/d7wz4rUDw98OP?=
- =?iso-8859-1?Q?xldo8JT/SFDvl4oUyqyNdnjayM/zCZqlB79XJ34A1jFsTIh5yhAlmhkHfv?=
- =?iso-8859-1?Q?8bicQ6HsFrzjBVGfzcbbhg9EnJ71zlY43hG9jjlwvv2mEWbDl3efPfPgru?=
- =?iso-8859-1?Q?c5NaK5OsDOgPC3fhABzyUoBdWY0MpYhGRYdnBGEBR+TiXhlz93V96b0UPn?=
- =?iso-8859-1?Q?4KIPS/znxlZwpajdMm/29uGDJMn7D+jrBO9iQMdIBawd/LuA8AhsuMuPAJ?=
- =?iso-8859-1?Q?dVhp4mpwgjXRRqyDkMiRwqUSgJT/u/B45DYAxnc3hTzV3I+/EBhPPTgDSk?=
- =?iso-8859-1?Q?BqMBY0W6mk6+B4z8YBd/Y1uJnurPSQgZh2zik6ZD+esZiSWPnz+cwwd+cH?=
- =?iso-8859-1?Q?+/ANK1UG/MNXSYFmitln0KLRNAfXqiceHvMrTgL5WNgDHs3KPOfpP++A3z?=
- =?iso-8859-1?Q?C1wESgx6T3kPOLTiyfulkWHHOontj9JQUjTiOG+JNBy82Ef9obiLEAPkRp?=
- =?iso-8859-1?Q?uBK2DSuJi26uOYpPopgZkBa6uVSNTY9MWVr5awEa1ExG2IxPEJ3KzWZfZl?=
- =?iso-8859-1?Q?iLKL9tdvqMLjYyXWFnZXaVSeKG//VcGck+tqPbtm5gK56a/zeOuqSt/n3G?=
- =?iso-8859-1?Q?QHs1mU0S6qfp8p04HOGtAXmkmW7mGGK/s1zEOKszKm/hVoLkozeXrK0GC8?=
- =?iso-8859-1?Q?797a7yxWXtdtfnRWRZNNv9fJ//jIcMRVyZ1FlJAjhd/KcKitNLCHqldot/?=
- =?iso-8859-1?Q?poelf4Xu/oBs80Cz+6ayENYlHet0zOMHMa2xAH7frS7BxsqOPtj12BnzqB?=
- =?iso-8859-1?Q?A2zR5RzEusyGpNSJXDVrfXPwVJGPQCHzo5JOWWmaYT3K+0l3gnqc8pJAbv?=
- =?iso-8859-1?Q?BUa47rpSe+QD1aFnQdROjRKMDHMWorWTp8MXH3H3ZyqoG63u4wRhJ2xG+o?=
- =?iso-8859-1?Q?nkYUOfZpEDYtAlcunZLggd6+StejQKNDlnW0nDzeYky3Tl/RWdupF3Z5qz?=
- =?iso-8859-1?Q?EEMYUM6xzvrH+3+/NndF5DIGQvb2tvjG5JCBcZ1l+Nc8pRDNhKDFRnbAti?=
- =?iso-8859-1?Q?SciWcfAv/0ypUDntnQ5fwQV8bpIVm7WsIZBxY3S50dfiz3sYN+u2zyHGKa?=
- =?iso-8859-1?Q?uWML5uNDLbzLBjJOlRLDJgOxIX4+pqgG9neZ1Et+0VWoQ8NsWRzjjeeMdP?=
- =?iso-8859-1?Q?xvoHwk/7ZW?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Tue, 15 Jun
+ 2021 06:37:52 +0000
+Received: from BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:405:14:cafe::e1) by BN6PR16CA0032.outlook.office365.com
+ (2603:10b6:405:14::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend
+ Transport; Tue, 15 Jun 2021 06:37:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT061.mail.protection.outlook.com (10.13.177.144) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4219.21 via Frontend Transport; Tue, 15 Jun 2021 06:37:52 +0000
+Received: from [10.2.81.70] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 15 Jun
+ 2021 06:37:52 +0000
+Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with
+ split_huge_page()
+To:     Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>, <stable@vger.kernel.org>
+References: <20210615012014.1100672-1-jannh@google.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
+Date:   Mon, 14 Jun 2021 23:37:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6688.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71d7bb9f-c803-4909-ab6a-08d92fc7e56e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2021 06:36:24.2649
+In-Reply-To: <20210615012014.1100672-1-jannh@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4fe914a5-4ac5-4496-fb4b-08d92fc81a1c
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3659:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB365979230FD11D2250D48B4BA8309@DM6PR12MB3659.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2SPGz6+Z8R+YEg9lQl+jwqlOArBTrGvQ+wwnTJsAzTZtR41AXZG0qknRUtLMT8Zc3r2/ZzQxJt24JnxYuZ+QECFd99ZhG0hi28omcvDi3IO+67qfg0pv73JHT0bQCxVrDn0y1vVuv68miENcxLo87XVcIMTXtXjl0oD537k7ojISrK3GxrQr9pOw05GJ+rVj3hi5lH5VNPZVeqv5XlyBHl0j3xmTbc1+SJ1OfkjoS45VJ7itaMTFS+Qef/jBSEZuwUjTMHSSATHXvpEK7FRkFrzQg96+q26mQ//wpISvc2HM1KZV9JQ4SpvLU2lBz3L7tDEy2K92nTRlms2rVgNse7TET7eD6FJWuF/qlfEGSafguqSkKpCt6BTy6lFAav2kJ4zsOWBW3fkayTf/2KsrhuYaBLyzgchFINkQwjvR63Qar5peOZMXyUcpFWImJxdi5TXkIGCUyQcALE3TjGYRAFSB2lKb1/KzlyaYUZ58lYM0xS9AfZe1k66x4KrDus92dXcX7qTolKbh98k/n7dxYHAXj5EBEq3PFIGeHyQMkCkso64WIgBiw9hTh2dRbAqBjgI5zazC0u5vruw9UVxDtfvEnO3CRC/wpQm2cPtTsMx3fAzcrxPAw7qTl20M234ukZtTTWzoH81Bfc3a6herHgB06T7zmSU86NBGjA8zD0e4u+XI/UCRwT4ZSmFbjbzgh2T8JulrqU6gMeoyb9SL6A==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(46966006)(36840700001)(70206006)(70586007)(8676002)(8936002)(5660300002)(82740400003)(47076005)(356005)(7636003)(31686004)(53546011)(2906002)(31696002)(16576012)(186003)(4326008)(86362001)(478600001)(36906005)(83380400001)(54906003)(316002)(82310400003)(110136005)(2616005)(26005)(336012)(426003)(36756003)(16526019)(36860700001)(14583001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2021 06:37:52.5868
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 79+/KejoIlNV62LvCog5TtkJJkTo7c5BOz6psiFCPZCXaNI+er+LxaoyvoSYUWsmbgl2RkvWIlpdpw5M3J6/SQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7469
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fe914a5-4ac5-4496-fb4b-08d92fc81a1c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3659
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/21 14:08 Vinod Koul <vkoul@kernel.org> wrote:
-> On 15-06-21, 01:55, Robin Gong wrote:
-> > On 06/11/21 21:51 Fabio Estevam <festevam@gmail.com> wrote:
->=20
-> > > Without this series, SPI DMA does not work on i.MX8MM:
-> > >
-> > >  [   41.315984] spi_master spi1: I/O Error in DMA RX
-> > >
-> > > I applied your series and SPI DMA works now:
-> > >
-> > > Reviewed-by: Fabio Estevam <festevam@gmail.com>
-> > Thanks Fabio.
-> > Hello Vinod, Mark,
-> > Is my patch set good enough to merge? I remember someone else are
-> > requesting it from last year like Fabio.
->=20
-> I have acked the last dmaengine patch, is there any else required from me=
-?
-> Which tree will be this merged thru?
-Thanks Vinod, mainline is enough I think.=20
+On 6/14/21 6:20 PM, Jann Horn wrote:
+> try_grab_compound_head() is used to grab a reference to a page from
+> get_user_pages_fast(), which is only protected against concurrent
+> freeing of page tables (via local_irq_save()), but not against
+> concurrent TLB flushes, freeing of data pages, or splitting of compound
+> pages.
+> 
+> Because no reference is held to the page when try_grab_compound_head()
+> is called, the page may have been freed and reallocated by the time its
+> refcount has been elevated; therefore, once we're holding a stable
+> reference to the page, the caller re-checks whether the PTE still points
+> to the same page (with the same access rights).
+> 
+> The problem is that try_grab_compound_head() has to grab a reference on
+> the head page; but between the time we look up what the head page is and
+> the time we actually grab a reference on the head page, the compound
+> page may have been split up (either explicitly through split_huge_page()
+> or by freeing the compound page to the buddy allocator and then
+> allocating its individual order-0 pages).
+> If that happens, get_user_pages_fast() may end up returning the right
+> page but lifting the refcount on a now-unrelated page, leading to
+> use-after-free of pages.
+> 
+> To fix it:
+> Re-check whether the pages still belong together after lifting the
+> refcount on the head page.
+> Move anything else that checks compound_head(page) below the refcount
+> increment.
+> 
+> This can't actually happen on bare-metal x86 (because there, disabling
+> IRQs locks out remote TLB flushes), but it can happen on virtualized x86
+> (e.g. under KVM) and probably also on arm64. The race window is pretty
+> narrow, and constantly allocating and shattering hugepages isn't exactly
+> fast; for now I've only managed to reproduce this in an x86 KVM guest with
+> an artificially widened timing window (by adding a loop that repeatedly
+> calls `inl(0x3f8 + 5)` in `try_get_compound_head()` to force VM exits,
+> so that PV TLB flushes are used instead of IPIs).
+> 
+> As requested on the list, also replace the existing VM_BUG_ON_PAGE()
+> with a warning and bailout. Since the existing code only performed the
+> BUG_ON check on DEBUG_VM kernels, ensure that the new code also only
+> performs the check under that configuration - I don't want to mix two
+> logically separate changes together too much.
+> The macro VM_WARN_ON_ONCE_PAGE() doesn't return a value on !DEBUG_VM,
+> so wrap the whole check in an #ifdef block.
+> An alternative would be to change the VM_WARN_ON_ONCE_PAGE() definition
+> for !DEBUG_VM such that it always returns false, but since that would
+> differ from the behavior of the normal WARN macros, it might be too
+> confusing for readers.
+> 
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Kirill A. Shutemov <kirill@shutemov.name>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: stable@vger.kernel.org
+> Fixes: 7aef4172c795 ("mm: handle PTE-mapped tail pages in gerneric fast gup implementaiton")
+> Signed-off-by: Jann Horn <jannh@google.com>
+
+Looks good. I'll poke around maybe tomorrow and see if there is anything
+that might possibly improve the VM_WARN*() macro situation, as a follow up.
+
+One small question below, but in any case,
+
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+
+> ---
+>   mm/gup.c | 58 +++++++++++++++++++++++++++++++++++++++++---------------
+>   1 file changed, 43 insertions(+), 15 deletions(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 3ded6a5f26b2..90262e448552 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -43,8 +43,25 @@ static void hpage_pincount_sub(struct page *page, int refs)
+>   
+>   	atomic_sub(refs, compound_pincount_ptr(page));
+>   }
+>   
+> +/* Equivalent to calling put_page() @refs times. */
+> +static void put_page_refs(struct page *page, int refs)
+> +{
+> +#ifdef CONFIG_DEBUG_VM
+> +	if (VM_WARN_ON_ONCE_PAGE(page_ref_count(page) < refs, page))
+> +		return;
+> +#endif
+> +
+> +	/*
+> +	 * Calling put_page() for each ref is unnecessarily slow. Only the last
+> +	 * ref needs a put_page().
+> +	 */
+> +	if (refs > 1)
+> +		page_ref_sub(page, refs - 1);
+> +	put_page(page);
+> +}
+> +
+>   /*
+>    * Return the compound head page with ref appropriately incremented,
+>    * or NULL if that failed.
+>    */
+> @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+>   	if (WARN_ON_ONCE(page_ref_count(head) < 0))
+>   		return NULL;
+>   	if (unlikely(!page_cache_add_speculative(head, refs)))
+>   		return NULL;
+> +
+> +	/*
+> +	 * At this point we have a stable reference to the head page; but it
+> +	 * could be that between the compound_head() lookup and the refcount
+> +	 * increment, the compound page was split, in which case we'd end up
+> +	 * holding a reference on a page that has nothing to do with the page
+> +	 * we were given anymore.
+> +	 * So now that the head page is stable, recheck that the pages still
+> +	 * belong together.
+> +	 */
+> +	if (unlikely(compound_head(page) != head)) {
+
+I was just wondering about what all could happen here. Such as: page gets split,
+reallocated into a different-sized compound page, one that still has page pointing
+to head. I think that's OK, because we don't look at or change other huge page
+fields.
+
+But I thought I'd mention the idea in case anyone else has any clever ideas about
+how this simple check might be insufficient here. It seems fine to me, but I
+routinely lack enough imagination about concurrent operations. :)
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+> +		put_page_refs(head, refs);
+> +		return NULL;
+> +	}
+> +
+>   	return head;
+>   }
+>   
+>   /*
+> @@ -94,25 +126,28 @@ __maybe_unused struct page *try_grab_compound_head(struct page *page,
+>   		if (unlikely((flags & FOLL_LONGTERM) &&
+>   			     !is_pinnable_page(page)))
+>   			return NULL;
+>   
+> +		/*
+> +		 * CAUTION: Don't use compound_head() on the page before this
+> +		 * point, the result won't be stable.
+> +		 */
+> +		page = try_get_compound_head(page, refs);
+> +		if (!page)
+> +			return NULL;
+> +
+>   		/*
+>   		 * When pinning a compound page of order > 1 (which is what
+>   		 * hpage_pincount_available() checks for), use an exact count to
+>   		 * track it, via hpage_pincount_add/_sub().
+>   		 *
+>   		 * However, be sure to *also* increment the normal page refcount
+>   		 * field at least once, so that the page really is pinned.
+>   		 */
+> -		if (!hpage_pincount_available(page))
+> -			refs *= GUP_PIN_COUNTING_BIAS;
+> -
+> -		page = try_get_compound_head(page, refs);
+> -		if (!page)
+> -			return NULL;
+> -
+>   		if (hpage_pincount_available(page))
+>   			hpage_pincount_add(page, refs);
+> +		else
+> +			page_ref_add(page, refs * (GUP_PIN_COUNTING_BIAS - 1));
+>   
+>   		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED,
+>   				    orig_refs);
+>   
+> @@ -134,16 +169,9 @@ static void put_compound_head(struct page *page, int refs, unsigned int flags)
+>   		else
+>   			refs *= GUP_PIN_COUNTING_BIAS;
+>   	}
+>   
+> -	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
+> -	/*
+> -	 * Calling put_page() for each ref is unnecessarily slow. Only the last
+> -	 * ref needs a put_page().
+> -	 */
+> -	if (refs > 1)
+> -		page_ref_sub(page, refs - 1);
+> -	put_page(page);
+> +	put_page_refs(page, refs);
+>   }
+>   
+>   /**
+>    * try_grab_page() - elevate a page's refcount by a flag-dependent amount
+> 
+> base-commit: 614124bea77e452aa6df7a8714e8bc820b489922
+> 
 
