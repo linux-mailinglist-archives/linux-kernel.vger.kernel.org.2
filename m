@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9B73A8101
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595883A8107
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhFONnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231664AbhFONnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:43:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE7FF61433;
-        Tue, 15 Jun 2021 13:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623764466;
-        bh=AmuY6XD93X0kTalsW/ktIsUgGaB7gMa/K3RM1ePXtkc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RYzFtT3KnyoPmfW+TmI2uQX9IiuXWK9CcJPOirhiZW9JVyPUSaXlaalpKYKzqYn3/
-         Tder3II8QhY1R/j7mXF4Ro0AWES0Ln1RrAZwezoweQSq+HESxVvomJSNh7Pv/sn0Vu
-         9DUG46+AUVXI9EFLqva38G6U3m8N6+K25nEeXMYjeshRSqR7agi4iND/sGpiAx87dV
-         MI4EAH5cjgkbqqNLXRI+D5/XJcL+mIRuA44aHFX//kejY7qtIZg2OIY7vY8q4H3Uog
-         leHERmJ+AEFfxST4ubCCFcfuelZDgvddIxImjSpzYZoMkfXZjZ4h7QyaTMbwChM2AH
-         NQcUB4O1Ig0lg==
-Date:   Tue, 15 Jun 2021 15:41:00 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] module: add elf_check_module_arch for module
- specific elf arch checks
-Message-ID: <YMit7PZwiB87ig2u@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de>
-References: <20210611093959.821525-1-npiggin@gmail.com>
- <20210611093959.821525-2-npiggin@gmail.com>
- <YMdGWjBOmcstBwOl@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de>
- <1623722110.amu32mwaqs.astroid@bobo.none>
- <YMiaZOqhHck9iy0n@p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de>
- <20210615125057.GF5077@gate.crashing.org>
+        id S231797AbhFONn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:43:57 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56274 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231964AbhFONnT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:43:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623764475; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=DK3Tduj6WlNA4XTIQukfQbq6VdSpL/NzxsUFxSPPKBs=;
+ b=n5ejrE/YsxYP+WcaLh1TvbOxn0EjIC8b0Fy1bSBhIWfWBPgeWSewJvMJ/7CfEHYG3q/7HmRQ
+ fhIbwknc1TtAB8G6d1BvwGWK1iVAJe43cMHHqDPVmz1dFJOxrN+Yia4i8ataRY3FX/UAsR3v
+ 7OOy8zMNRNHyMg4erdCMYZKA/qY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60c8adf2abfd22a3dc94f806 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 13:41:06
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DEE84C43147; Tue, 15 Jun 2021 13:41:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2DE4DC43145;
+        Tue, 15 Jun 2021 13:41:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2DE4DC43145
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210615125057.GF5077@gate.crashing.org>
-X-OS:   Linux p200300cbcf109700df096d564fe976c3.dip0.t-ipconnect.de
- 5.12.9-1-default x86_64
+Content-Transfer-Encoding: 7bit
+Subject: Re: rtlwifi: Fix spelling of 'download'
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210521062734.21284-1-dingsenjie@163.com>
+References: <20210521062734.21284-1-dingsenjie@163.com>
+To:     dingsenjie@163.com
+Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ding Senjie <dingsenjie@yulong.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615134104.DEE84C43147@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 13:41:04 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Segher Boessenkool [15/06/21 07:50 -0500]:
->On Tue, Jun 15, 2021 at 02:17:40PM +0200, Jessica Yu wrote:
->> +int __weak elf_check_module_arch(Elf_Ehdr *hdr)
->> +{
->> +       return 1;
->> +}
->
->But is this a good idea?  It isn't useful to be able to attempt to load
->a module not compiled for your architecture, and it increases the attack
->surface tremendously.  These checks are one of the few things that can
->*not* be weak symbols, imo.
+dingsenjie@163.com wrote:
 
-Hm, could you please elaborate a bit more? This patchset is adding
-extra Elf header checks specifically for powerpc, and the module
-loader usually provides arch-specific hooks via weak symbols. We are
-just providing an new hook here, which should act as a no-op if it
-isn't used.
+> From: Ding Senjie <dingsenjie@yulong.com>
+> 
+> downlaod -> download
+> 
+> Signed-off-by: Ding Senjie <dingsenjie@yulong.com>
 
-So if an architecture wants to provide extra header checks, it can do
-so by overriding the new weak symbol. Otherwise, the weak function acts as
-a noop. We also already have the existing elf_check_arch() check for each
-arch and that is *not* a weak symbol.
+Patch applied to wireless-drivers-next.git, thanks.
+
+03611cc526f9 rtlwifi: Fix spelling of 'download'
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210521062734.21284-1-dingsenjie@163.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
