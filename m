@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF043A7EB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B693A7EB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 15:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhFONK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 09:10:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:34890 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229951AbhFONK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:10:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B891311D4;
-        Tue, 15 Jun 2021 06:08:22 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8234F3F719;
-        Tue, 15 Jun 2021 06:08:21 -0700 (PDT)
-Subject: Re: [PATCH v3 2/6] iommu/amd: Do not use flush-queue when NpCache is
- on
-To:     Nadav Amit <nadav.amit@gmail.com>, Joerg Roedel <joro@8bytes.org>
-Cc:     Nadav Amit <namit@vmware.com>, Will Deacon <will@kernel.org>,
-        Jiajun Cao <caojiajun@vmware.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210607182541.119756-1-namit@vmware.com>
- <20210607182541.119756-3-namit@vmware.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <afd4e764-a003-32eb-c50e-a77543772db0@arm.com>
-Date:   Tue, 15 Jun 2021 14:08:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230146AbhFONLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 09:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhFONLH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 09:11:07 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62425C061574;
+        Tue, 15 Jun 2021 06:09:02 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id q21so20368942ybg.8;
+        Tue, 15 Jun 2021 06:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sMoUsP+kTPDRNp3NldXN+6OEKu9qLojvf+qqhyJ9SvI=;
+        b=e2K8Av2mPhp/Qeq3KR/ThAvnqvDFvMbejy/3Ex/owuKzje5Y+wwd9CsaR90l/bXbGJ
+         kdqtd2J+YMSQ7wycS5aBVY2UliD5oBSunimr+X4dkG+Wx53oya8zvYk/d+2LuKuQDMHk
+         1divJo+iYnTBNUHIiP1bujE5Wnvj29JmhoW9yQHCmXGmP5S/EtgnVlm/hdHNUvl5CCST
+         SO6xRhB2a2ceKa+8RF02NdHUVs0chn4sbbnG5SNX/cx5vhyW7g2Xm5YGzh8d46vMFZVd
+         vrEDf4jcScYNQ04YJugroFYx+OxQz1Fne/K6s0JaL2BG2N87f3YGPkDYEwn0X1Sv5DUI
+         7Cxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sMoUsP+kTPDRNp3NldXN+6OEKu9qLojvf+qqhyJ9SvI=;
+        b=udUpgEp+CfNSlFBgpZJZ3kiBBVrvU5OudBXBfhYHNPaJNwZnq0KGmNYeT4ru+s4DOJ
+         Wvb0ZJLoXAj3BjfR0ZGEv6/mMZqzIYUdDXaKcLf4c3qKbYhnP/Z1h9KimEoHcrH0vsOy
+         D7y330k8t3SjMMTCzOej2inB35m+gkALbWbAS0U/GikSg3hF2o4X1Emrj8EaCjmOD+3g
+         IZQy64LGTq0nt+MQiSilInly4mgekY6PbNwlZ1TRA9fOVKBDSI3G+4MNk7Rz3vAN+i9O
+         mV/JdXbr8JzeeEoxT94sv+5dn4T0VnDGIN0G8PR7WGpg5Oa9hMfCdtadd6/5fcF17CmU
+         SA0Q==
+X-Gm-Message-State: AOAM532GmibZCod/NbPB6gSHRBx8j2nDLBiHWlpQNkGKGSd54GBeEzV8
+        b0x4FmfTZV67fZ/IfpnzzdqMKhPhuKmln8M/KqVUrAyI
+X-Google-Smtp-Source: ABdhPJzqnqyJZ1wDf7Pt24OTXE9VQutGzT6s5BF+/eUK7LCanbzAlwyIlJMFKWxTx4KlYzWXOWf4uy5yzQIhIDzKAys=
+X-Received: by 2002:a25:2e43:: with SMTP id b3mr31849821ybn.152.1623762541678;
+ Tue, 15 Jun 2021 06:09:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210607182541.119756-3-namit@vmware.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
+ <20210615023812.50885-2-mcroce@linux.microsoft.com> <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
+In-Reply-To: <6cff2a895db94e6fadd4ddffb8906a73@AcuMS.aculab.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Tue, 15 Jun 2021 21:08:50 +0800
+Message-ID: <CAEUhbmV+Vi0Ssyzq1B2RTkbjMpE21xjdj2MSKdLydgW6WuCKtA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] riscv: optimized memcpy
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-07 19:25, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> Do not use flush-queue on virtualized environments, where the NpCache
-> capability of the IOMMU is set. This is required to reduce
-> virtualization overheads.
-> 
-> This change follows a similar change to Intel's VT-d and a detailed
-> explanation as for the rationale is described in commit 29b32839725f
-> ("iommu/vt-d: Do not use flush-queue when caching-mode is on").
-> 
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Jiajun Cao <caojiajun@vmware.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Lu Baolu <baolu.lu@linux.intel.com>
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Nadav Amit <namit@vmware.com>
-> ---
->   drivers/iommu/amd/init.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index d006724f4dc2..ba3b76ed776d 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -1850,8 +1850,13 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
->   	if (ret)
->   		return ret;
->   
-> -	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE))
-> +	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE)) {
-> +		if (!amd_iommu_unmap_flush)
-> +			pr_warn_once("IOMMU batching is disabled due to virtualization");
+On Tue, Jun 15, 2021 at 4:57 PM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Matteo Croce
+> > Sent: 15 June 2021 03:38
+> >
+> > Write a C version of memcpy() which uses the biggest data size allowed,
+> > without generating unaligned accesses.
+>
+> I'm surprised that the C loop:
+>
+> > +             for (; count >= bytes_long; count -= bytes_long)
+> > +                     *d.ulong++ = *s.ulong++;
+>
+> ends up being faster than the ASM 'read lots' - 'write lots' loop.
 
-Nit: you can just use pr_warn() (or arguably pr_info()) since the 
-explicit conditions already only match once. Speaking of which, it might 
-be better to use amd_iommu_np_cache instead, since other patches are 
-planning to clean up the last remnants of amd_iommu_unmap_flush.
+I believe that's because the assembly version has some unaligned
+access cases, which end up being trap-n-emulated in the OpenSBI
+firmware, and that is a big overhead.
 
-Robin.
+>
+> Especially since there was an earlier patch to convert
+> copy_to/from_user() to use the ASM 'read lots' - 'write lots' loop
+> instead of a tight single register copy loop.
+>
+> I'd also guess that the performance needs to be measured on
+> different classes of riscv cpu.
+>
+> A simple cpu will behave differently to one that can execute
+> multiple instructions per clock.
+> Any form of 'out of order' execution also changes things.
+> The other big change is whether the cpu can to a memory
+> read and write in the same clock.
+>
+> I'd guess that riscv exist with some/all of those features.
 
-> +
->   		amd_iommu_np_cache = true;
-> +		amd_iommu_unmap_flush = true;
-> +	}
->   
->   	init_iommu_perf_ctr(iommu);
->   
-> 
+Regards,
+Bin
