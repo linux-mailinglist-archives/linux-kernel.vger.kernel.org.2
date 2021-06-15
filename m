@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BAE3A76E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6763A76EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 08:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFOGKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 02:10:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhFOGKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 02:10:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D26D4613FA;
-        Tue, 15 Jun 2021 06:08:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623737282;
-        bh=oNg+lpbroPJmXQTgaVwv9UgXlBPuvAUCTA/4UHKJM8g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ppUlInrszUcsKMKm12Jri0gV0R+A1BCeujX5cDapcNvXY11xj0LVd1TPjdM13Er/O
-         phmAY/qrRf8fT8Lc7Su+P72mqJMs/8MZ4SpCeA5ncb1NCTT+H9JTM6cvrm0DyicNOE
-         MmTlORyubMdevVTNW692NawUXugmKVfqZWFPj84KOFpZrOnMJ7mevLIPb2UxZh5xsa
-         SdtDg9Dd0dJ+Z/kr8+0RxPPt/9pBJfLObmpTjZB55yaiO8bdK1kvz2dnEcGyfJ39b8
-         DnrMb75rLHfsf0HUCyMBEoisOMqEfvhduexATyNTzFLPS020hBVBjNV4911DNFitR7
-         gVxJSHmsykFCg==
-Date:   Tue, 15 Jun 2021 11:37:58 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH v14 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-Message-ID: <YMhDvlPrFvSZP//I@vkoul-mobl>
-References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
- <CAOMZO5CNjpek0vkDrMyTmfbnr2cLcquck6QQBqXLBiyTDKPXvA@mail.gmail.com>
- <VE1PR04MB6688017E125D42C5DCB3C17D89309@VE1PR04MB6688.eurprd04.prod.outlook.com>
+        id S229960AbhFOGPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 02:15:33 -0400
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:37408 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhFOGP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 02:15:29 -0400
+Received: by mail-lj1-f182.google.com with SMTP id k8so6465914lja.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 23:13:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/Qpjst8fUK2jK/roldcWP3QnKsbToK1R2ztKok4xwGQ=;
+        b=FO7OyLBUqH9lVESxRW/FhgL+Bzro1rII7fOPt6HBd43A1JAmnAPYGDgO1GuvvatCpg
+         1/xoUNV1rVZfjcqEerMYcZUgNAqUiMeyZuz97Kuhjao1HC5ozkBXMTIGR07Hxx9SONE5
+         //7KOACDA+bpgyKJnXd/Uy96NTOE+v/PWygxbGHVifQAehWPh98aZXmUn3du3Clhik8C
+         /fATFJ/Xtnb7CrIafQ3NRQc0JTckau0Bhyx2wVXsp0E5Jl6o8RqhSFWKst9evynLrON8
+         3XF21CVuXLbZBg0g4sJ7ObrnaWr7tnbPCJefj027brgRT50rI+Lsu4JQfUVwe4H5Xa4Y
+         2pmw==
+X-Gm-Message-State: AOAM533Ti713L6asz87K7XQe46BdBBNDUvoh52MNPZGM8cGch4MT2acJ
+        Y4xC5WQ2lBIqQ3fqHe+ZUw34I1vbcvM=
+X-Google-Smtp-Source: ABdhPJy61jxmtBw0XcLrWVfWzZx3LpWmvmn1dWxC7JwkwTxy+YmL+tnJbTP9tl1DCKT/ec+kVBvCWw==
+X-Received: by 2002:a05:651c:1202:: with SMTP id i2mr16183629lja.323.1623737603819;
+        Mon, 14 Jun 2021 23:13:23 -0700 (PDT)
+Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id h12sm2049998ljg.59.2021.06.14.23.13.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 23:13:23 -0700 (PDT)
+Subject: Re: [RESEND PATCH] coccinelle: misc: minmax: suppress patch
+ generation for err returns
+To:     Julia Lawall <Julia.Lawall@lip6.fr>
+Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+References: <20210428060350.57661-1-efremov@linux.com>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <6296d731-60d3-1ceb-226d-ded9d2d5a1f9@linux.com>
+Date:   Tue, 15 Jun 2021 09:13:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6688017E125D42C5DCB3C17D89309@VE1PR04MB6688.eurprd04.prod.outlook.com>
+In-Reply-To: <20210428060350.57661-1-efremov@linux.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-06-21, 01:55, Robin Gong wrote:
-> On 06/11/21 21:51 Fabio Estevam <festevam@gmail.com> wrote: 
+Ping?
 
-> > Without this series, SPI DMA does not work on i.MX8MM:
-> > 
-> >  [   41.315984] spi_master spi1: I/O Error in DMA RX
-> > 
-> > I applied your series and SPI DMA works now:
-> > 
-> > Reviewed-by: Fabio Estevam <festevam@gmail.com>
-> Thanks Fabio.
-> Hello Vinod, Mark, 
-> Is my patch set good enough to merge? I remember someone else are
-> requesting it from last year like Fabio. 
-
-I have acked the last dmaengine patch, is there any else required from
-me? Which tree will be this merged thru?
-
--- 
-~Vinod
+On 4/28/21 9:03 AM, Denis Efremov wrote:
+> There is a standard idiom for "if 'ret' holds an error, return it":
+> 	return ret < 0 ? ret : 0;
+> 
+> Developers prefer to keep the things as they are because stylistic
+> change to "return min(ret, 0);" breaks readability.
+> 
+> Let's suppress automatic generation for this type of patches.
+> 
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+>  scripts/coccinelle/misc/minmax.cocci | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
+> index eccdd3eb3452..fcf908b34f27 100644
+> --- a/scripts/coccinelle/misc/minmax.cocci
+> +++ b/scripts/coccinelle/misc/minmax.cocci
+> @@ -116,16 +116,32 @@ func(...)
+>  	...>
+>  }
+>  
+> +// Don't generate patches for errcode returns.
+> +@errcode depends on patch@
+> +position p;
+> +identifier func;
+> +expression x;
+> +binary operator cmp = {<, <=};
+> +@@
+> +
+> +func(...)
+> +{
+> +	<...
+> +	return ((x) cmp@p 0 ? (x) : 0);
+> +	...>
+> +}
+> +
+>  @pmin depends on patch@
+>  identifier func;
+>  expression x, y;
+>  binary operator cmp = {<=, <};
+> +position p != errcode.p;
+>  @@
+>  
+>  func(...)
+>  {
+>  	<...
+> --	((x) cmp (y) ? (x) : (y))
+> +-	((x) cmp@p (y) ? (x) : (y))
+>  +	min(x, y)
+>  	...>
+>  }
+> 
