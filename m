@@ -2,58 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79133A7631
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 06:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477243A7641
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 07:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhFOE6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 00:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48348 "EHLO mail.kernel.org"
+        id S230291AbhFOFGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 01:06:24 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50656 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhFOE6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 00:58:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 188AC613DA;
-        Tue, 15 Jun 2021 04:56:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623732977;
-        bh=NRGdtYDLvpCd+/uSyt1rDy8DtVDlYObyw/BBM2ESELg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mLnV0J1JV2NotD7G0fMaeniEAsvdI/ryPu6oPWnXY2U3InxqVUGCzWWJkd4NBmOSE
-         2HR/FqST6AgnTIQxs/4s9cneWaaIcqzo6w8d2oZdJbgtqPQyx8TJTkQY3K058Pn4Fx
-         AngERUkdeTtZ1abv0L4JQVVWtv/edwywvFqeZe3c=
-Date:   Tue, 15 Jun 2021 06:56:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] remoteproc: core: Move cdev add before device add
-Message-ID: <YMgy7eg3wde0eVfe@kroah.com>
-References: <1623723671-5517-1-git-send-email-sidgup@codeaurora.org>
- <1623723671-5517-2-git-send-email-sidgup@codeaurora.org>
+        id S229463AbhFOFGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 01:06:22 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1lt1Ec-0006cw-4n; Tue, 15 Jun 2021 13:03:34 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lt1E3-0001MR-0g; Tue, 15 Jun 2021 13:02:59 +0800
+Date:   Tue, 15 Jun 2021 13:02:59 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ira Weiny <ira.weiny@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-arch@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 09/16] ps3disk: use memcpy_{from,to}_bvec
+Message-ID: <20210615050258.GA5208@gondor.apana.org.au>
+References: <20210608160603.1535935-1-hch@lst.de>
+ <20210608160603.1535935-10-hch@lst.de>
+ <20210609014822.GT3697498@iweiny-DESK2.sc.intel.com>
+ <20210611065338.GA31210@lst.de>
+ <20210612040743.GG1600546@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1623723671-5517-2-git-send-email-sidgup@codeaurora.org>
+In-Reply-To: <20210612040743.GG1600546@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 07:21:08PM -0700, Siddharth Gupta wrote:
-> When cdev_add is called after device_add has been called there is no
-> way for the userspace to know about the addition of a cdev as cdev_add
-> itself doesn't trigger a uevent notification, or for the kernel to
-> know about the change to devt. This results in two problems:
->  - mknod is never called for the cdev and hence no cdev appears on
->    devtmpfs.
->  - sysfs links to the new cdev are not established.
+On Fri, Jun 11, 2021 at 09:07:43PM -0700, Ira Weiny wrote:
+>
+> More recently this was added:
 > 
-> The cdev needs to be added and devt assigned before device_add() is
-> called in order for the relevant sysfs and devtmpfs entries to be
-> created and the uevent to be properly populated.
+> 7e34e0bbc644 crypto: omap-crypto - fix userspace copied buffer access
+> 
+> I'm CC'ing Tero and Herbert to see why they added the SLAB check.
 
-So this means no one ever ran this code on a system that used devtmpfs?
+Probably because the generic Crypto API has the same check.  This
+all goes back to
 
-How was it ever tested?
+commit 4f3e797ad07d52d34983354a77b365dfcd48c1b4
+Author: Herbert Xu <herbert@gondor.apana.org.au>
+Date:   Mon Feb 9 14:22:14 2009 +1100
 
+    crypto: scatterwalk - Avoid flush_dcache_page on slab pages
+
+    It's illegal to call flush_dcache_page on slab pages on a number
+    of architectures.  So this patch avoids doing so if PageSlab is
+    true.
+
+    In future we can move the flush_dcache_page call to those page
+    cache users that actually need it.
+
+    Reported-by: David S. Miller <davem@davemloft.net>
+    Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+But I can't find any emails discussing this so let me ask Dave
+directly and see if he can tell us what the issue was or might
+have been.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
