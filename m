@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED813A7C3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111BB3A7C39
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhFOKpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:45:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:59552 "EHLO foss.arm.com"
+        id S231499AbhFOKpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:45:03 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48812 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231374AbhFOKpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:45:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74DB3D6E;
-        Tue, 15 Jun 2021 03:43:01 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DB1C3F694;
-        Tue, 15 Jun 2021 03:43:00 -0700 (PDT)
-Subject: Re: [PATCH v3 3/6] iommu: Improve iommu_iotlb_gather helpers
-To:     Nadav Amit <nadav.amit@gmail.com>, Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>, Jiajun Cao <caojiajun@vmware.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210607182541.119756-1-namit@vmware.com>
- <20210607182541.119756-4-namit@vmware.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <07969028-d807-cad1-2a01-8efc87390157@arm.com>
-Date:   Tue, 15 Jun 2021 11:42:34 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231327AbhFOKpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 06:45:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623753778; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=26jUmp4vDfJYFJ+Qjl7Y8g8Lair1pch9T7baqcUuAJ4=;
+ b=JuAytaaGwyD8m2xFezCRts0WrIdb8bA+bMDq8O/AgT5oDk55rhjz6rG3AHtoCWNZVEXw456P
+ Q3DeLx5K98ZgnLpbhxrGrZXgZ3Jz4ffWhsYJkfcZ2mZW7uDP83KcryW0EUpeiO/VJ2gQr9jj
+ n1ii0BZMy7l5TJY0hF3LsVY0djQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60c88420b6ccaab753a548fb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 10:42:40
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 57EF3C433F1; Tue, 15 Jun 2021 10:42:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC250C433F1;
+        Tue, 15 Jun 2021 10:42:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CC250C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210607182541.119756-4-namit@vmware.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+Subject: Re: brcmsmac: Drop unnecessary NULL check after container_of
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210511235629.1686038-1-linux@roeck-us.net>
+References: <20210511235629.1686038-1-linux@roeck-us.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Arend van Spriel <aspriel@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210615104240.57EF3C433F1@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 10:42:40 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-07 19:25, Nadav Amit wrote:
-> From: Robin Murphy <robin.murphy@arm.com>
-> 
-> The Mediatek driver is not the only one which might want a basic
-> address-based gathering behaviour, so although it's arguably simple
-> enough to open-code, let's factor it out for the sake of cleanliness.
-> Let's also take this opportunity to document the intent of these
-> helpers for clarity.
-> 
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Jiajun Cao <caojiajun@vmware.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Lu Baolu <baolu.lu@linux.intel.com>
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Guenter Roeck <linux@roeck-us.net> wrote:
 
-Nit: missing your signoff.
-
-> ---
+> The parameter passed to ai_detach() is guaranteed to never be NULL
+> because it is checked by the caller. Consequently, the result of
+> container_of() on it is also never NULL, and a NULL check on it
+> is unnecessary. Even without that, the NULL check would still be
+> unnecessary because the subsequent kfree() can handle NULL arguments.
+> On top of all that, it is misleading to check the result of container_of()
+> against NULL because the position of the contained element could change,
+> which would make the check invalid. Remove it.
 > 
-> Changes from Robin's version:
-> * Added iommu_iotlb_gather_add_range() stub !CONFIG_IOMMU_API
-
-Out of curiosity, is there any config in which a stub is actually 
-needed? Unlike iommu_iotlb_gather_init(), I would have thought that 
-these helpers should only ever be called by driver code which already 
-depends on IOMMU_API.
-
-Thanks,
-Robin.
-
-> * Use iommu_iotlb_gather_add_range() in iommu_iotlb_gather_add_page()
-> ---
->   drivers/iommu/mtk_iommu.c |  5 +----
->   include/linux/iommu.h     | 43 ++++++++++++++++++++++++++++++++++-----
->   2 files changed, 39 insertions(+), 9 deletions(-)
+> This change was made automatically with the following Coccinelle script.
 > 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index e06b8a0e2b56..0af4a91ac7da 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -523,10 +523,7 @@ static size_t mtk_iommu_unmap(struct iommu_domain *domain,
->   	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
->   	unsigned long end = iova + size - 1;
->   
-> -	if (gather->start > iova)
-> -		gather->start = iova;
-> -	if (gather->end < end)
-> -		gather->end = end;
-> +	iommu_iotlb_gather_add_range(gather, iova, size);
->   	return dom->iop->unmap(dom->iop, iova, size, gather);
->   }
->   
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 32d448050bf7..f254c62f3720 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -497,6 +497,38 @@ static inline void iommu_iotlb_sync(struct iommu_domain *domain,
->   	iommu_iotlb_gather_init(iotlb_gather);
->   }
->   
-> +/**
-> + * iommu_iotlb_gather_add_range - Gather for address-based TLB invalidation
-> + * @gather: TLB gather data
-> + * @iova: start of page to invalidate
-> + * @size: size of page to invalidate
-> + *
-> + * Helper for IOMMU drivers to build arbitrarily-sized invalidation commands
-> + * where only the address range matters, and simply minimising intermediate
-> + * syncs is preferred.
-> + */
-> +static inline void iommu_iotlb_gather_add_range(struct iommu_iotlb_gather *gather,
-> +						unsigned long iova, size_t size)
-> +{
-> +	unsigned long end = iova + size - 1;
-> +
-> +	if (gather->start > iova)
-> +		gather->start = iova;
-> +	if (gather->end < end)
-> +		gather->end = end;
-> +}
-> +
-> +/**
-> + * iommu_iotlb_gather_add_page - Gather for page-based TLB invalidation
-> + * @domain: IOMMU domain to be invalidated
-> + * @gather: TLB gather data
-> + * @iova: start of page to invalidate
-> + * @size: size of page to invalidate
-> + *
-> + * Helper for IOMMU drivers to build invalidation commands based on individual
-> + * pages, or with page size/table level hints which cannot be gathered if they
-> + * differ.
-> + */
->   static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
->   					       struct iommu_iotlb_gather *gather,
->   					       unsigned long iova, size_t size)
-> @@ -515,11 +547,7 @@ static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
->   		gather->pgsize = size;
->   	}
->   
-> -	if (gather->end < end)
-> -		gather->end = end;
-> -
-> -	if (gather->start > start)
-> -		gather->start = start;
-> +	iommu_iotlb_gather_add_range(gather, iova, size);
->   }
->   
->   /* PCI device grouping function */
-> @@ -702,6 +730,11 @@ static inline void iommu_iotlb_sync(struct iommu_domain *domain,
->   {
->   }
->   
-> +static inline void iommu_iotlb_gather_add_range(struct iommu_iotlb_gather *gather,
-> +						unsigned long iova, size_t size)
-> +{
-> +}
-> +
->   static inline phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain, dma_addr_t iova)
->   {
->   	return 0;
+> @@
+> type t;
+> identifier v;
+> statement s;
+> @@
 > 
+> <+...
+> (
+>   t v = container_of(...);
+> |
+>   v = container_of(...);
+> )
+>   ...
+>   when != v
+> - if (\( !v \| v == NULL \) ) s
+> ...+>
+> 
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+
+Patch applied to wireless-drivers-next.git, thanks.
+
+34fe7038a3b3 brcmsmac: Drop unnecessary NULL check after container_of
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210511235629.1686038-1-linux@roeck-us.net/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
