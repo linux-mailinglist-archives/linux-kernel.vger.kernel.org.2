@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48F63A896E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB673A8973
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFOTXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 15:23:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:44104 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhFOTXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:23:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20A9CED1;
-        Tue, 15 Jun 2021 12:21:03 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21FC73F694;
-        Tue, 15 Jun 2021 12:21:02 -0700 (PDT)
-Subject: Re: [PATCH v3 5/6] iommu/amd: Tailored gather logic for AMD
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Jiajun Cao <caojiajun@vmware.com>,
-        Will Deacon <will@kernel.org>
-References: <20210607182541.119756-1-namit@vmware.com>
- <20210607182541.119756-6-namit@vmware.com>
- <1913c012-e6c0-1d5e-01b3-5f6da367c6bd@arm.com>
- <7549686F-1F53-475D-950C-8F44A2165475@vmware.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <4343ee2f-896f-e8cc-0c63-31c7e98467f2@arm.com>
-Date:   Tue, 15 Jun 2021 20:20:55 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230481AbhFOTYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 15:24:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20882 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229946AbhFOTY3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 15:24:29 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15FJ3ige068549;
+        Tue, 15 Jun 2021 15:21:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=CbeQvqjWYMEKIm/ohd1i/mP8vgkL07rDKlVpu0ojC1c=;
+ b=EbTJXgQyBbHny+WfsPb8xFRbI2X5tr2lfEa+Yo5wMgLKy2+q4VNDKTABBouQmxV/J1Gk
+ 1BrV87Gb/sTAQcL8BDrgB9g6t8oP/gaKKGBIg4JCEDyiSsPNIv/qnF7oO4dpyIw90nyJ
+ VvVaq3LXfV63g3IYLpBu797ZoDKggVGeHqTaPJwTaIMoznSbWE9e5Jw/OkTE/Pbh6rGS
+ xW26tnb/4c6TARHVeTrGPSJgjw/hs4PdOe6lNOhVnuPUit1OqiXqp83QQx5IvC3+blKw
+ QuH+XzOxslnHvHPTtzgVvpgaiZd4hU5Jg3RiA3Tsh+8QBlH4niLJw7crK/+KWbhnT+5A gQ== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3970pmk4nh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Jun 2021 15:21:44 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15FJLfc7019130;
+        Tue, 15 Jun 2021 19:21:41 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 394mj90wsf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Jun 2021 19:21:41 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15FJKYbP26149338
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Jun 2021 19:20:34 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 191DC4C044;
+        Tue, 15 Jun 2021 19:21:39 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 64A1F4C040;
+        Tue, 15 Jun 2021 19:21:35 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.174.39])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 15 Jun 2021 19:21:35 +0000 (GMT)
+Date:   Tue, 15 Jun 2021 22:21:32 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Qian Cai <quic_qiancai@quicinc.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, lkft-triage@lists.linaro.org,
+        regressions@lists.linux.dev,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
+Message-ID: <YMj9vHhHOiCVN4BF@linux.ibm.com>
+References: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
+ <20210615124745.GA47121@C02TD0UTHF1T.local>
+ <20210615131902.GB47121@C02TD0UTHF1T.local>
+ <076665b9-9fb1-71da-5f7d-4d2c7f892103@quicinc.com>
 MIME-Version: 1.0
-In-Reply-To: <7549686F-1F53-475D-950C-8F44A2165475@vmware.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <076665b9-9fb1-71da-5f7d-4d2c7f892103@quicinc.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7__BV3WxWPyUURMkkduVQYEarOn1Xzpx
+X-Proofpoint-ORIG-GUID: 7__BV3WxWPyUURMkkduVQYEarOn1Xzpx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-15_07:2021-06-15,2021-06-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
+ priorityscore=1501 adultscore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 malwarescore=0 impostorscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106150119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-15 19:14, Nadav Amit wrote:
+On Tue, Jun 15, 2021 at 10:50:31AM -0400, Qian Cai wrote:
 > 
 > 
->> On Jun 15, 2021, at 5:55 AM, Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2021-06-07 19:25, Nadav Amit wrote:
->>> From: Nadav Amit <namit@vmware.com>
->>> AMD's IOMMU can flush efficiently (i.e., in a single flush) any range.
->>> This is in contrast, for instnace, to Intel IOMMUs that have a limit on
->>> the number of pages that can be flushed in a single flush.  In addition,
->>> AMD's IOMMU do not care about the page-size, so changes of the page size
->>> do not need to trigger a TLB flush.
->>> So in most cases, a TLB flush due to disjoint range or page-size changes
->>> are not needed for AMD. Yet, vIOMMUs require the hypervisor to
->>> synchronize the virtualized IOMMU's PTEs with the physical ones. This
->>> process induce overheads, so it is better not to cause unnecessary
->>> flushes, i.e., flushes of PTEs that were not modified.
->>> Implement and use amd_iommu_iotlb_gather_add_page() and use it instead
->>> of the generic iommu_iotlb_gather_add_page(). Ignore page-size changes
->>> and disjoint regions unless "non-present cache" feature is reported by
->>> the IOMMU capabilities, as this is an indication we are running on a
->>> physical IOMMU. A similar indication is used by VT-d (see "caching
->>> mode"). The new logic retains the same flushing behavior that we had
->>> before the introduction of page-selective IOTLB flushes for AMD.
->>> On virtualized environments, check if the newly flushed region and the
->>> gathered one are disjoint and flush if it is. Also check whether the new
->>> region would cause IOTLB invalidation of large region that would include
->>> unmodified PTE. The latter check is done according to the "order" of the
->>> IOTLB flush.
->>
->> If it helps,
->>
->> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+> On 6/15/2021 9:19 AM, Mark Rutland wrote:
+> > Looking some more, it looks like that's correct in isolation, but it
+> > clashes with commit:
+> > 
+> >   5831eedad2ac6f38 ("mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA")
 > 
-> Thanks!
-> 
-> 
->> I wonder if it might be more effective to defer the alignment-based splitting part to amd_iommu_iotlb_sync() itself, but that could be investigated as another follow-up.
-> 
-> Note that the alignment-based splitting is only used for virtualized AMD IOMMUs, so it has no impact for most users.
-> 
-> Right now, the performance is kind of bad on VMs since AMD’s IOMMU driver does a full IOTLB flush whenever it unmaps more than a single page. So, although your idea makes sense, I do not know exactly how to implement it right now, and regardless it is likely to provide much lower performance improvements than those that avoiding full IOTLB flushes would.
-> 
-> Having said that, if I figure out a way to implement it, I would give it a try (although I am admittedly afraid of a complicated logic that might cause subtle, mostly undetectable bugs).
+> Just a data point. Reverting the commit alone fixed the same crash for me.
 
-I was mainly thinking that when you observe a change in "order" and sync 
-to avoid over-invalidating adjacent pages, those pages may still be part 
-of the current unmap and you've just not seen them added yet. Hence 
-simply gathering contiguous pages regardless of alignment, then breaking 
-the total range down into appropriately-aligned commands in the sync 
-once you know you've seen everything, seems like it might allow issuing 
-fewer commands overall. But I haven't quite grasped the alignment rules 
-either, so possibly this is moot anyway.
+Yeah, that commit didn't take into the account the change in
+pgdat_to_phys().
 
-Robin.
+The patch below should fix it. In the long run I think we should get rid of
+contig_page_data and allocate NODE_DATA(0) for !NUMA case as well.
+
+Andrew, can you please add this as a fixup to "mm: replace
+CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA"?
+
+
+diff --git a/mm/sparse.c b/mm/sparse.c
+index a0e9cdb5bc38..6326cdf36c4f 100644
+--- a/mm/sparse.c
++++ b/mm/sparse.c
+@@ -347,7 +347,7 @@ size_t mem_section_usage_size(void)
+ 
+ static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
+ {
+-#ifndef CONFIG_NEED_MULTIPLE_NODES
++#ifndef CONFIG_NUMA
+ 	return __pa_symbol(pgdat);
+ #else
+ 	return __pa(pgdat);
+
+-- 
+Sincerely yours,
+Mike.
