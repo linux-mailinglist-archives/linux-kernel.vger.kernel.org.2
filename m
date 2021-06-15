@@ -2,151 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57FD3A73EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30903A73E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 04:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhFOC2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Jun 2021 22:28:54 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:6364 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbhFOC2w (ORCPT
+        id S231931AbhFOC1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Jun 2021 22:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231922AbhFOC12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Jun 2021 22:28:52 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G3rZS16pFz62Gt;
-        Tue, 15 Jun 2021 09:38:56 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 09:42:53 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
- 2021 09:42:53 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Paul Moore <paul@paul-moore.com>,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next v3] netlabel: Fix memory leak in netlbl_mgmt_add_common
-Date:   Tue, 15 Jun 2021 10:14:44 +0800
-Message-ID: <20210615021444.2306687-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        Mon, 14 Jun 2021 22:27:28 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FD6C0613A2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:25:24 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c12so12104951pfl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Jun 2021 19:25:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bb+UZyvF103OTFB+0oPWDOXa4REu4kZb3WG5Dmt+tLs=;
+        b=djhNl/bpEcNYfgOtTfUrpPCUBgvF5eX69I7/ZWGqOVvSpEWM6gcZ0URW4tIVQQnhWC
+         6SVFL5enr0JvmIqakrJWdsfNkQFFp9mlZ1pgp2NWAz/R+gIdABlQkbKe9MBtNV6hO7Tz
+         tny8vYeBX8DFxcRNA71AlLIKkm8+F3IEAw9JnxyX1pdZcplCm6J3r0/jJjvh/wQXWoQL
+         EVQoWohGLrQRT4xc2bv3StU7lOYi71HGdQo3OkAU90H3NnGvrp9hPZv2kuEFubIHOEZL
+         gi5FxCspuhjq3QTuLxAbzwQJdI1BO4n4G2OZ9wu4yDzhTcfpQXGtNi4irnwT3r8+sZHm
+         qerA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bb+UZyvF103OTFB+0oPWDOXa4REu4kZb3WG5Dmt+tLs=;
+        b=UOqww1Ir9moLSRJd38FwBN+TT/KyyC5SlMB/0eLYVpQcd2nGVda37FurUHk7cIqxYS
+         XgqlT7z49B0VAUJ5fwzWuYZ7eI465/gDbF3dWFlIYOSMrLNp6Jgb9+DeC0dx+is+Q0pH
+         syLn00+BxTX4cNnAYsCDFDYvgjpOPd8JOrjNIPsgHYrZGV7ciNc5Ikjt9FgeOqu8z0HF
+         KgSNqCNoWuF/6Za7k67IqVGzN8eyGWzSAKzdVZGAzUsfW7y+9N6UePNIAVtebnRLlLBa
+         R71jKUdINkKP5LGnfQzqJP0YtWeJcPLqbISjyBF9Gty0+kQxAARKNBU/8wgwYFybK6nc
+         dI+A==
+X-Gm-Message-State: AOAM533ERO0+pA5709LU95VU1/0F7bKXP6V/eRxC4Ihy8KWIsMlTL7dR
+        oCBmfQDIzVDF4evjtfuCfS6rC3B4H5iIXDcIw4s=
+X-Google-Smtp-Source: ABdhPJzbMNp+OJh6qTIIxfA2u8gNSm96l1xJmy6ecfpAeYhxlOm0wk0kQKK7cE5allybroyVbt6jag==
+X-Received: by 2002:a63:d511:: with SMTP id c17mr1255540pgg.219.1623723334490;
+        Mon, 14 Jun 2021 19:15:34 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id a9sm628494pjm.51.2021.06.14.19.15.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 19:15:33 -0700 (PDT)
+Subject: Re: [PATCH 2/2] drm: Protect drm_master pointers in drm_lease.c
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210612125426.6451-1-desmondcheongzx@gmail.com>
+ <20210612125426.6451-3-desmondcheongzx@gmail.com>
+ <CACvgo51r3NK_ddQPPD9vBzkJq7A4CcYS4nawxZqqDB8FXK5gcA@mail.gmail.com>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <7bd0d514-efc6-8118-0b28-dfa0bcf5d842@gmail.com>
+Date:   Tue, 15 Jun 2021 10:15:29 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CACvgo51r3NK_ddQPPD9vBzkJq7A4CcYS4nawxZqqDB8FXK5gcA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hulk Robot reported memory leak in netlbl_mgmt_add_common.
-The problem is non-freed map in case of netlbl_domhsh_add() failed.
+On 15/6/21 3:41 am, Emil Velikov wrote:
+> On Sat, 12 Jun 2021 at 13:55, Desmond Cheong Zhi Xi
+> <desmondcheongzx@gmail.com> wrote:
+>>
+>> This patch ensures that the device's master mutex is acquired before
+>> accessing pointers to struct drm_master that are subsequently
+>> dereferenced. Without the mutex, the struct drm_master may be freed
+>> concurrently by another process calling drm_setmaster_ioctl(). This
+>> could then lead to use-after-free errors.
+>>
+>> Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>> ---
+> 
+> <snip>
+> 
+>> @@ -578,6 +594,7 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
+>>          /* Hook up the fd */
+>>          fd_install(fd, lessee_file);
+>>
+>> +       mutex_unlock(&dev->master_mutex);
+> 
+> I was going to suggest pushing the unlock call further up - after the
+> drm_lease_create call. Although that would make the error path rather
+> messy, so let's keep it as-is.
+> 
+> <snip>
+> 
+>> @@ -662,7 +684,7 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
+>>          struct drm_mode_get_lease *arg = data;
+>>          __u32 __user *object_ids = (__u32 __user *) (uintptr_t) (arg->objects_ptr);
+>>          __u32 count_objects = arg->count_objects;
+>> -       struct drm_master *lessee = lessee_priv->master;
+>> +       struct drm_master *lessee;
+>>          struct idr *object_idr;
+>>          int count;
+>>          void *entry;
+>> @@ -678,8 +700,10 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
+>>
+>>          DRM_DEBUG_LEASE("get lease for %d\n", lessee->lessee_id);
+>>
+>> +       mutex_lock(&dev->master_mutex);
+> 
+> As-is we're dereferencing an uninitialised pointer in DRM_DEBUG_LEASE.
+> Move the lock and assignment before the DRM_DEBUG_LEASE, just like
+> you've done in the list ioctl.
+> 
+> With this fix, the patch is;
+> Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+> 
+> -Emil
+> 
 
-BUG: memory leak
-unreferenced object 0xffff888100ab7080 (size 96):
-  comm "syz-executor537", pid 360, jiffies 4294862456 (age 22.678s)
-  hex dump (first 32 bytes):
-    05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    fe 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01  ................
-  backtrace:
-    [<0000000008b40026>] netlbl_mgmt_add_common.isra.0+0xb2a/0x1b40
-    [<000000003be10950>] netlbl_mgmt_add+0x271/0x3c0
-    [<00000000c70487ed>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320
-    [<000000001f2ff614>] genl_rcv_msg+0x2bf/0x4f0
-    [<0000000089045792>] netlink_rcv_skb+0x134/0x3d0
-    [<0000000020e96fdd>] genl_rcv+0x24/0x40
-    [<0000000042810c66>] netlink_unicast+0x4a0/0x6a0
-    [<000000002e1659f0>] netlink_sendmsg+0x789/0xc70
-    [<000000006e43415f>] sock_sendmsg+0x139/0x170
-    [<00000000680a73d7>] ____sys_sendmsg+0x658/0x7d0
-    [<0000000065cbb8af>] ___sys_sendmsg+0xf8/0x170
-    [<0000000019932b6c>] __sys_sendmsg+0xd3/0x190
-    [<00000000643ac172>] do_syscall_64+0x37/0x90
-    [<000000009b79d6dc>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
-v1->v2: According to Dongliang's and Paul's advices, simplify the code.
-v2->v3: Fix the style error.
+Good catch, thanks for the feedback Emil. I'll fix this up in a v2 patchset.
 
- net/netlabel/netlabel_mgmt.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/net/netlabel/netlabel_mgmt.c b/net/netlabel/netlabel_mgmt.c
-index e664ab990941..032b7d7b32c7 100644
---- a/net/netlabel/netlabel_mgmt.c
-+++ b/net/netlabel/netlabel_mgmt.c
-@@ -76,6 +76,7 @@ static const struct nla_policy netlbl_mgmt_genl_policy[NLBL_MGMT_A_MAX + 1] = {
- static int netlbl_mgmt_add_common(struct genl_info *info,
- 				  struct netlbl_audit *audit_info)
- {
-+	void *pmap = NULL;
- 	int ret_val = -EINVAL;
- 	struct netlbl_domaddr_map *addrmap = NULL;
- 	struct cipso_v4_doi *cipsov4 = NULL;
-@@ -175,6 +176,7 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 			ret_val = -ENOMEM;
- 			goto add_free_addrmap;
- 		}
-+		pmap = map;
- 		map->list.addr = addr->s_addr & mask->s_addr;
- 		map->list.mask = mask->s_addr;
- 		map->list.valid = 1;
-@@ -183,10 +185,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 			map->def.cipso = cipsov4;
- 
- 		ret_val = netlbl_af4list_add(&map->list, &addrmap->list4);
--		if (ret_val != 0) {
--			kfree(map);
--			goto add_free_addrmap;
--		}
-+		if (ret_val != 0)
-+			goto add_free_map;
- 
- 		entry->family = AF_INET;
- 		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
-@@ -223,6 +223,7 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 			ret_val = -ENOMEM;
- 			goto add_free_addrmap;
- 		}
-+		pmap = map;
- 		map->list.addr = *addr;
- 		map->list.addr.s6_addr32[0] &= mask->s6_addr32[0];
- 		map->list.addr.s6_addr32[1] &= mask->s6_addr32[1];
-@@ -235,10 +236,8 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 			map->def.calipso = calipso;
- 
- 		ret_val = netlbl_af6list_add(&map->list, &addrmap->list6);
--		if (ret_val != 0) {
--			kfree(map);
--			goto add_free_addrmap;
--		}
-+		if (ret_val != 0)
-+			goto add_free_map;
- 
- 		entry->family = AF_INET6;
- 		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
-@@ -248,10 +247,12 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
- 
- 	ret_val = netlbl_domhsh_add(entry, audit_info);
- 	if (ret_val != 0)
--		goto add_free_addrmap;
-+		goto add_free_map;
- 
- 	return 0;
- 
-+add_free_map:
-+	kfree(pmap);
- add_free_addrmap:
- 	kfree(addrmap);
- add_doi_put_def:
--- 
-2.18.0.huawei.25
-
+Best wishes,
+Desmond
