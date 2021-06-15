@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6CE3A87C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958E53A87D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhFORfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:35:18 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:34916 "EHLO
+        id S231736AbhFORg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:36:26 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:34925 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231146AbhFORex (ORCPT
+        with ESMTP id S231341AbhFORfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 13:34:53 -0400
-X-UUID: 903d1f8434e54ddabce44268d6df31bd-20210616
-X-UUID: 903d1f8434e54ddabce44268d6df31bd-20210616
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        Tue, 15 Jun 2021 13:35:00 -0400
+X-UUID: 3fcc64b316c44cc6971b1d2739854cb4-20210616
+X-UUID: 3fcc64b316c44cc6971b1d2739854cb4-20210616
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <tinghan.shen@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1992062278; Wed, 16 Jun 2021 01:32:44 +0800
+        with ESMTP id 202066784; Wed, 16 Jun 2021 01:32:49 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Wed, 16 Jun 2021 01:32:42 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
@@ -31,10 +31,10 @@ CC:     <devicetree@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
         <seiya.wang@mediatek.com>, <wenst@google.com>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Zhiqiang Ma <zhiqiang.ma@mediatek.com>
-Subject: [PATCH 02/27] arm64: dts: mt8195: add pinctrl node
-Date:   Wed, 16 Jun 2021 01:32:09 +0800
-Message-ID: <20210615173233.26682-3-tinghan.shen@mediatek.com>
+        Henry Chen <henryc.chen@mediatek.com>
+Subject: [PATCH 03/27] arm64: dts: mt8195: add pwrap node
+Date:   Wed, 16 Jun 2021 01:32:10 +0800
+Message-ID: <20210615173233.26682-4-tinghan.shen@mediatek.com>
 X-Mailer: git-send-email 2.15.GIT
 In-Reply-To: <20210615173233.26682-1-tinghan.shen@mediatek.com>
 References: <20210615173233.26682-1-tinghan.shen@mediatek.com>
@@ -45,55 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhiqiang Ma <zhiqiang.ma@mediatek.com>
+From: Henry Chen <henryc.chen@mediatek.com>
 
-add support of pinctrl for mt8195 soc.
+Add pwrap node to SOC MT8195.
 
-Signed-off-by: Zhiqiang Ma <zhiqiang.ma@mediatek.com>
+Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8195.dtsi | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 8cda62f736b3..640f09100bb7 100644
+index 640f09100bb7..bbb1e008e522 100644
 --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
 +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/pinctrl/mt8195-pinfunc.h>
- #include <dt-bindings/reset/ti-syscon.h>
- 
- / {
-@@ -288,6 +289,27 @@
- 			};
+@@ -322,6 +322,18 @@
+ 			clocks = <&clk26m>;
  		};
  
-+		pio: pinctrl@10005000 {
-+			compatible = "mediatek,mt8195-pinctrl";
-+			reg = <0 0x10005000 0 0x1000>,
-+			      <0 0x11d10000 0 0x1000>,
-+			      <0 0x11d30000 0 0x1000>,
-+			      <0 0x11d40000 0 0x1000>,
-+			      <0 0x11e20000 0 0x1000>,
-+			      <0 0x11eb0000 0 0x1000>,
-+			      <0 0x11f40000 0 0x1000>,
-+			      <0 0x1000b000 0 0x1000>;
-+			reg-names = "iocfg0", "iocfg_bm", "iocfg_bl",
-+				    "iocfg_br", "iocfg_lm", "iocfg_rb",
-+				    "iocfg_tl", "eint";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&pio 0 0 144>;
-+			interrupt-controller;
-+			interrupts = <GIC_SPI 235 IRQ_TYPE_LEVEL_HIGH 0>;
-+			#interrupt-cells = <2>;
++		pwrap: pwrap@10024000 {
++			compatible = "mediatek,mt8195-pwrap", "syscon";
++			reg = <0 0x10024000 0 0x1000>;
++			reg-names = "pwrap";
++			interrupts = <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH 0>;
++			clocks = <&infracfg_ao CLK_INFRA_AO_PMIC_AP>,
++				 <&infracfg_ao CLK_INFRA_AO_PMIC_TMR>;
++			clock-names = "spi", "wrap";
++			assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
++			assigned-clock-parents = <&topckgen CLK_TOP_ULPOSC_D10>;
 +		};
 +
- 		watchdog: watchdog@10007000 {
- 			compatible = "mediatek,mt8195-wdt", "mediatek,mt6589-wdt";
- 			reg = <0 0x10007000 0 0x100>;
+ 		uart0: serial@11001100 {
+ 			compatible = "mediatek,mt8195-uart", "mediatek,mt6577-uart";
+ 			reg = <0 0x11001100 0 0x100>;
 -- 
 2.18.0
 
