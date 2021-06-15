@@ -2,174 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C037C3A7A78
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EE93A7A7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 11:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhFOJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 05:27:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38992 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhFOJ1c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 05:27:32 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DA9E5219D9;
-        Tue, 15 Jun 2021 09:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623749127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wkrt2I7n4dqe/apiwY6bErCGbPoxzB9wmIHRvqFeTUk=;
-        b=KPw+PR0I7Ui6aI5VMEpGCUYtCc1YQUamG6vEkNWwcTx/HEJqoIvBhR7p6l2aFjr6XpcO92
-        ltwhlIHRvrSjlukY7sxCiDzDZTEbdo2v3qH8d/IDIG76AH9LPhlqCH6AhbeftehFpVOqRY
-        CrLl7nqo4bP2x2A6cEDRl4Kj3Xh4qoo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623749127;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wkrt2I7n4dqe/apiwY6bErCGbPoxzB9wmIHRvqFeTUk=;
-        b=Cp/UPq4BCBgiwlrvmcPb0HPvrbfK9sLEEPW7dF8RycIh/l8c7iVSZWwaFMPX4uFnNt0Ewg
-        2XZZSS+zDOrZpbAQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id B28A2118DD;
-        Tue, 15 Jun 2021 09:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623749127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wkrt2I7n4dqe/apiwY6bErCGbPoxzB9wmIHRvqFeTUk=;
-        b=KPw+PR0I7Ui6aI5VMEpGCUYtCc1YQUamG6vEkNWwcTx/HEJqoIvBhR7p6l2aFjr6XpcO92
-        ltwhlIHRvrSjlukY7sxCiDzDZTEbdo2v3qH8d/IDIG76AH9LPhlqCH6AhbeftehFpVOqRY
-        CrLl7nqo4bP2x2A6cEDRl4Kj3Xh4qoo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623749127;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wkrt2I7n4dqe/apiwY6bErCGbPoxzB9wmIHRvqFeTUk=;
-        b=Cp/UPq4BCBgiwlrvmcPb0HPvrbfK9sLEEPW7dF8RycIh/l8c7iVSZWwaFMPX4uFnNt0Ewg
-        2XZZSS+zDOrZpbAQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id sPysKgdyyGCzeQAALh3uQQ
-        (envelope-from <tzimmermann@suse.de>); Tue, 15 Jun 2021 09:25:27 +0000
-Subject: Re: [PATCH v2 -next] drm/hyperv: Fix unused const variable
- 'hyperv_modifiers'
-To:     Pu Lehui <pulehui@huawei.com>, drawat.floss@gmail.com,
-        airlied@linux.ie, daniel@ffwll.ch
-Cc:     zhangjinhao2@huawei.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20210609024940.34933-1-pulehui@huawei.com>
- <20210615031401.231751-1-pulehui@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <c1b10848-d2f1-ddd2-8a69-a356f70da089@suse.de>
-Date:   Tue, 15 Jun 2021 11:25:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231286AbhFOJ2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 05:28:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231249AbhFOJ2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 05:28:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3C4C61432;
+        Tue, 15 Jun 2021 09:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623749167;
+        bh=ysXE/y+QAGb8h7lBlVwFdUaiG4ulp9691EwnClnpiPw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ltj3upRZDSv0lisL9uSpML8p7k8nql/Kcs9bD6lVWV1r+GEaBA9GzFRpJAq+LumR1
+         YqkzCIOkfqEBfg2SfNqm9bFcc2MdJvUv0OcF1sduLdF/YrdkPveXM0q+I+qSkzdPWO
+         eBPAhtfMYs93tQ4HweLwCgq+xubZnHZrLl+sPkYD3q/0wKWAgbE2X0ot8k6DLCiEoS
+         d1qy9dBnOg/3YDuMnZvhZ8W7WGfO7Z7ToB3K61HfxsAKkOAkur/lNg7vkFRim+vdl5
+         K0SSGz1+gKrGp27mHThH3Z0RefL3RApX3ro6SxGh/eCRyJ9ckfE9yhkTeGDOPwlVlx
+         ODE0elsN2657Q==
+Date:   Tue, 15 Jun 2021 10:26:02 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Qi Liu <liuqi115@huawei.com>, mark.rutland@arm.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, zhangshaokun@hisilicon.com
+Subject: Re: [PATCH v6 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+Message-ID: <20210615092601.GA19878@willie-the-truck>
+References: <1622467951-32114-1-git-send-email-liuqi115@huawei.com>
+ <1622467951-32114-3-git-send-email-liuqi115@huawei.com>
+ <20210611162347.GA16284@willie-the-truck>
+ <20210614102025.0000222b@Huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210615031401.231751-1-pulehui@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ndFCefi0rNgLGvXQF3Uw0UuWJRtVF2RX4"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614102025.0000222b@Huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ndFCefi0rNgLGvXQF3Uw0UuWJRtVF2RX4
-Content-Type: multipart/mixed; boundary="zEJlwBFnUtuFl5yIxH4kjjKDlu3GQO33D";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Pu Lehui <pulehui@huawei.com>, drawat.floss@gmail.com, airlied@linux.ie,
- daniel@ffwll.ch
-Cc: zhangjinhao2@huawei.com, linux-hyperv@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Message-ID: <c1b10848-d2f1-ddd2-8a69-a356f70da089@suse.de>
-Subject: Re: [PATCH v2 -next] drm/hyperv: Fix unused const variable
- 'hyperv_modifiers'
-References: <20210609024940.34933-1-pulehui@huawei.com>
- <20210615031401.231751-1-pulehui@huawei.com>
-In-Reply-To: <20210615031401.231751-1-pulehui@huawei.com>
+On Mon, Jun 14, 2021 at 10:20:25AM +0100, Jonathan Cameron wrote:
+> On Fri, 11 Jun 2021 17:23:48 +0100
+> Will Deacon <will@kernel.org> wrote:
+> 
+> > On Mon, May 31, 2021 at 09:32:31PM +0800, Qi Liu wrote:
+> > > PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
+> > > to sample bandwidth, latency, buffer occupation etc.
+> > > 
+> > > Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
+> > > registered as a PMU in /sys/bus/event_source/devices, so users can
+> > > select target PMU, and use filter to do further sets.
+> > > 
+> > > Filtering options contains:
+> > > event        - select the event.
+> > > subevent     - select the subevent.
+> > > port         - select target Root Ports. Information of Root Ports
+> > >                are shown under sysfs.
+> > > bdf          - select requester_id of target EP device.
+> > > trig_len     - set trigger condition for starting event statistics.
+> > > trigger_mode - set trigger mode. 0 means starting to statistic when
+> > >                bigger than trigger condition, and 1 means smaller.
+> > > thr_len      - set threshold for statistics.
+> > > thr_mode     - set threshold mode. 0 means count when bigger than
+> > >                threshold, and 1 means smaller.
+> > > 
+> > > Reviewed-by: John Garry <john.garry@huawei.com>
+> > > Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> > > ---
+> > >  MAINTAINERS                                |    6 +
+> > >  drivers/perf/Kconfig                       |    2 +
+> > >  drivers/perf/Makefile                      |    1 +
+> > >  drivers/perf/pci/Kconfig                   |   16 +
+> > >  drivers/perf/pci/Makefile                  |    2 +
+> > >  drivers/perf/pci/hisilicon/Makefile        |    3 +
+> > >  drivers/perf/pci/hisilicon/hisi_pcie_pmu.c | 1019 ++++++++++++++++++++++++++++  
+> > 
+> > Can we keep this under drivers/perf/hisilicon/ please? I don't see the
+> > need to create a 'pci' directory here.
+> 
+> https://lore.kernel.org/linux-pci/20190103154439.GC16311@edgewater-inn.cambridge.arm.com/
+> 
+> Discussion back in 2018 about where to put these...
 
---zEJlwBFnUtuFl5yIxH4kjjKDlu3GQO33D
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I don't remember that at all :)
 
-Hi
+> Though, perf/pci/hisilicon does seem over the top in terms of depth, maybe perf/pci/
+> or just give up on that plan and put them (for now at least) in per company directories.
 
-Am 15.06.21 um 05:14 schrieb Pu Lehui:
-> There is a gcc '-Wunused-const-variable' warning:
->    drivers/gpu/drm/hyperv/hyperv_drm_modeset.c:152:23: warning:
->      'hyperv_modifiers' defined but not used [-Wunused-const-variable=3D=
-]
->=20
-> while the variable should be used in drm_simple_display_pipe_init()
-> as suggested by Thomas, let's fix it.
+I think perf/hisilicon makes the most sense. We can always move it later
+if we need to.
 
-Thanks a lot! I added your patch to drm-misc-next-fixes.
-
-Best regards
-Thomas
-
->=20
-> Fixes: 76c56a5affeb ("drm/hyperv: Add DRM driver for hyperv synthetic v=
-ideo device")
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
->   drivers/gpu/drm/hyperv/hyperv_drm_modeset.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c b/drivers/gpu/=
-drm/hyperv/hyperv_drm_modeset.c
-> index 02718e3e859e..3aaee4730ec6 100644
-> --- a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-> +++ b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-> @@ -163,7 +163,7 @@ static inline int hyperv_pipe_init(struct hyperv_dr=
-m_device *hv)
->   					   &hyperv_pipe_funcs,
->   					   hyperv_formats,
->   					   ARRAY_SIZE(hyperv_formats),
-> -					   NULL,
-> +					   hyperv_modifiers,
->   					   &hv->connector);
->   	if (ret)
->   		return ret;
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---zEJlwBFnUtuFl5yIxH4kjjKDlu3GQO33D--
-
---ndFCefi0rNgLGvXQF3Uw0UuWJRtVF2RX4
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmDIcgcFAwAAAAAACgkQlh/E3EQov+BD
-Bw//Xqc6PQ7vXQPGpR0cdFSqVsZ/bQtd3M97nBU4bLbHf7pVoq8r6uTaxsO9L2oB8bEuoUdI0uct
-MaccFeHxIKNuOQEKrztR3OhwjRA18HNyEa/BrKyCn3Vl4rySgBdpyxk3Wz4dYrQDGuirAlts3+Sy
-zE/T0FS4OKCeUPZB3CEnmMTPazlUz4mPNTX7BNb0Lu4EN3mFMUlC0olHLzySwuvumNX7dJ1fssww
-2bFQT+a1awY5actNRIJHkROEdt8Ahls41E3ArlZ8lEe74TbIEsYyOvB70IuuLeUQlTRmk/dnbb4G
-N/xln9Jpb+UAOM6oc3D7MbPBqtYWcfSqrhmpL29bybjwumz70awDy1LknbxYrQP1TkMrmgajRrus
-lOJoRri4+iDlPlVA4J4zxJ4Za/Y1n89uivOgHbnZVUJXPbG/Zega7i8nuIoVn76Ts1+y3mpqhhgg
-yWYZ7AhpgNvD47GgAFmYrcPcqrArpo8en5sk6FngOth8DZ/ln1ugd9vIwHpYjs0HwlS8VQzG7SRo
-cCeQxCdvES+5QAhzgNpCab3RbCGstW3BOkFgpeClD1Gjwki6zbfWrfFJEpXaPGnhVJX80APKGi9L
-Hpt+x0cD8uRJnUFdlHT7IHm+YC2FxLWg2shKbQPBDqcl/RWfa+n6towlmJvIThcsg0jJVFzjK4P2
-dfI=
-=zEWF
------END PGP SIGNATURE-----
-
---ndFCefi0rNgLGvXQF3Uw0UuWJRtVF2RX4--
+Will
