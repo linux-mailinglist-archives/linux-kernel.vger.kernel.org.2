@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565003A82E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481973A82F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhFOOeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFOOd6 (ORCPT
+        id S231301AbhFOOfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:35:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230292AbhFOOfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:33:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34907C061574;
-        Tue, 15 Jun 2021 07:31:54 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623767511;
+        Tue, 15 Jun 2021 10:35:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623767621;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rt3yFJiMu77ZYCwr1cccTLFnhODd3+YmwPn0lN+fbco=;
-        b=NAyoQ1QtvCCaqhhmXRMFAPUMH+TEf5xI2QnJ0OeDz3lSjTwFhE70R++9hR8f24B1sNXxVt
-        raVXGyMmLz5JIBLw0dze2JdU4ELf5aqd3b/eYVX9h3M41rN1uzmcasKhN819lUR+qBtFVV
-        50bIRZccTDD3aFCgHtckIiMRvq2fxrZQbIDe+g/jLkoRg4/F6YnM6DaXrCLbbaMKZB0FVp
-        Jbz2X9P+XjDSd1VZ/LCCIkSST/hrQz17Zsf1wGEeiC73jRoAJ43Sf2CUwVPqAm59UXyOO0
-        NB8k8ValDD61+Tw7QZ7RZOJGKKuWweSFhfPHEFW3SIZRxw+cAoxqhwHjTgUzGw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623767511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rt3yFJiMu77ZYCwr1cccTLFnhODd3+YmwPn0lN+fbco=;
-        b=T5ypvlpHrwms/m3Dq1Gw/r3IgxZmlDqYCtV8CCblc6FjpwL8I+9p2rIgdW+sut4RipQWne
-        dNspmvK+QJCJztBA==
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tony Luck <tony.luck@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Victor Ding <victording@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Anand K Mistry <amistry@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] TSX force abort
-In-Reply-To: <cover.b592910a3829c87c83cf5605718c415c80c0c4a9.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
-References: <cover.b592910a3829c87c83cf5605718c415c80c0c4a9.1623704845.git-series.pawan.kumar.gupta@linux.intel.com>
-Date:   Tue, 15 Jun 2021 16:31:51 +0200
-Message-ID: <87pmwngpwo.ffs@nanos.tec.linutronix.de>
+        bh=C+PEwO1vuzVKwcAXZ/qn4zNQsNTC2ftksP1m6DzEJUg=;
+        b=eixCCYeQL9TgOQiWaHfB24I/lFrIz6lrAyO7Q9eyMog4lSiG0AncJiLKuwLR4UDTvJ08Uz
+        f0DmBxqNmM+Sey8L+xcKOQSI/ECpBRP/Rjsgf5Q/OkvSNEB+FHMAvj+Ao6PGY7WnY9FnB3
+        9/N8G+VvA3MSj5nRrgDpPwcnU8whV98=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-N8y_9QEyM9S7zXZXPI1SZA-1; Tue, 15 Jun 2021 10:33:32 -0400
+X-MC-Unique: N8y_9QEyM9S7zXZXPI1SZA-1
+Received: by mail-pl1-f197.google.com with SMTP id t5-20020a170902e845b0290102b8314d05so6004034plg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 07:33:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=C+PEwO1vuzVKwcAXZ/qn4zNQsNTC2ftksP1m6DzEJUg=;
+        b=dL1hfF/oecK6YMDTXXJb3CYdVUXl25hTti46VGZPomqy7lHd5b5N071IEntcixNSqW
+         cgTBu0x/HRqtsrfWII3mNuGNMHHUh8xzpFCESemDnst23IYaQS5Fn36S4aBRbM5/P3BM
+         s3E8AfFjZ7zJW8CwjyzOeOr2EowKh3cL+nX39srO8p9v4veVpbzJiH2g9C4CwYmlz6HG
+         cE4wvWEIX1siqZ6xVZX8B0E+bGtyDvvceoB12UUz38/quaN1xowel2IOfi/I4d+utxUo
+         s07MH4GYRrk05hu1GbGx+8UTc7D3uyBzuPpmk+Tqjle6IpNo9yKrKHN55SMCBkopyPRH
+         zMRA==
+X-Gm-Message-State: AOAM530yLr2RjIr8wOO+OCQK1ty1tA8And4btXBig0NNu5c3E78sAhYV
+        fRzdiZQ+2OIXx8GdJZFDrEj8Ivad7t8cLR2J6CgKfT4KgyvHDMUXRMjzyitJ4RPfMC6VO3bdfpm
+        OSIGj/iEQ+oTy3rjItzGLkl1F2yyYgSSvg5z3Z5m/EiAxQ/lAZulX2cWtgJTNV/2jXdGjIPRLlo
+        Wb
+X-Received: by 2002:a17:90a:6b42:: with SMTP id x2mr10714909pjl.16.1623767610732;
+        Tue, 15 Jun 2021 07:33:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzoLgAmk1b7+hVi09blQTTsivWllOjkeEFAcRwAwvRRMpCJnIURaBSkCjKYxfrUksdkBYUPgA==
+X-Received: by 2002:a17:90a:6b42:: with SMTP id x2mr10714866pjl.16.1623767610322;
+        Tue, 15 Jun 2021 07:33:30 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id o16sm13419988pfk.129.2021.06.15.07.33.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 07:33:29 -0700 (PDT)
+Subject: Re: [PATCH] vhost-vdpa: log warning message if vhost_vdpa_remove gets
+ blocked
+To:     Gautam Dawar <gdawar.xilinx@gmail.com>
+Cc:     martinh@xilinx.com, hanand@xilinx.com, gdawar@xilinx.com,
+        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210606132909.177640-1-gdawar.xilinx@gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <aa866c72-c3d9-9022-aa5b-b5a9fc9e946a@redhat.com>
+Date:   Tue, 15 Jun 2021 22:33:22 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210606132909.177640-1-gdawar.xilinx@gmail.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14 2021 at 14:11, Pawan Gupta wrote:
-> v1->v2:
-> - Avoid Reading TSX_FORCE_ABORT MSR for detecting new microcode.
-> - In tsx_init() move force abort detection before cmdline parsing.
-> - Drop tsx=fake patch, not enough use cases to justify the patch.
-> - Rebase to v5.13-rc6.
 
-Aside of the "/* Network style" comment in 2/3 this looks good!
+ÔÚ 2021/6/6 ÏÂÎç9:29, Gautam Dawar Ð´µÀ:
+> From: Gautam Dawar <gdawar@xilinx.com>
+>
+> If some module invokes vdpa_device_unregister (usually in the module
+> unload function) when the userspace app (eg. QEMU) which had opened
+> the vhost-vdpa character device is still running, vhost_vdpa_remove()
+> function will block indefinitely in call to wait_for_completion().
+>
+> This causes the vdpa_device_unregister caller to hang and with a
+> usual side-effect of rmmod command not returning when this call
+> is in the module_exit function.
+>
+> This patch converts the wait_for_completion call to its timeout based
+> counterpart (wait_for_completion_timeout) and also adds a warning
+> message to alert the user/administrator about this hang situation.
+>
+> To eventually fix this problem, a mechanism will be required to let
+> vhost-vdpa module inform the userspace of this situation and
+> userspace will close the descriptor of vhost-vdpa char device.
+> This will enable vhost-vdpa to continue with graceful clean-up.
+>
+> Signed-off-by: Gautam Dawar <gdawar@xilinx.com>
+> ---
+>   drivers/vhost/vdpa.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index bfa4c6ef554e..572b64d09b06 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -1091,7 +1091,11 @@ static void vhost_vdpa_remove(struct vdpa_device *vdpa)
+>   		opened = atomic_cmpxchg(&v->opened, 0, 1);
+>   		if (!opened)
+>   			break;
+> -		wait_for_completion(&v->completion);
+> +		wait_for_completion_timeout(&v->completion,
+> +					    msecs_to_jiffies(1000));
+> +		dev_warn_ratelimited(&v->dev,
+> +				     "%s waiting for /dev/%s to be closed\n",
+> +				     __func__, dev_name(&v->dev));
+>   	} while (1);
+>   
+>   	put_device(&v->dev);
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
