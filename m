@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F26F3A8ACC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14343A8AE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 23:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhFOVPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 17:15:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36257 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230520AbhFOVPl (ORCPT
+        id S231381AbhFOVRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 17:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhFOVRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 17:15:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623791616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z9BxiMkkA5JkSd5RMw8LSeeVOT4OFFDIz9KbyEQ6tEQ=;
-        b=LWqdOr8ZdCNovpv6sdsc/+MiEic6acladXSd8Mom7HjWdfzogHON0fJDuy8Yzx4dDYWsuX
-        0WlUNczfHT97Ii0zuVdnUlTkam/cZduoe6eub8uzCRkI+DbQOgGkHtHXH3d8p/LXW/Lc9+
-        +25JwN8V5V5C0A6f8jN/GPZOJnMDWLM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-UbjIBEhvMUuLkN36CnNXVA-1; Tue, 15 Jun 2021 17:13:35 -0400
-X-MC-Unique: UbjIBEhvMUuLkN36CnNXVA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C15F801B16;
-        Tue, 15 Jun 2021 21:13:34 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.9.144])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1D0D010016F4;
-        Tue, 15 Jun 2021 21:13:30 +0000 (UTC)
-Date:   Tue, 15 Jun 2021 17:13:28 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] sched/fair: Age the average idle time
-Message-ID: <YMkX+MMVV0aMjmR8@lorien.usersys.redhat.com>
-References: <20210615111611.GH30378@techsingularity.net>
- <20210615204228.GB4272@worktop.programming.kicks-ass.net>
+        Tue, 15 Jun 2021 17:17:35 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DCCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:15:30 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id n7so149247wri.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 14:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6hvY4p5FF5eRnjuVWtkxhk1sjqpIeEICM36lTpspsRo=;
+        b=UNOtbmg8IykFWJLTe3LZrUM4+emn9ygP8Nv4M3/uEvjow42Pcb416HxY+4EHahSdUU
+         tC559WSm7kLd8z6ITAzHvA1XM08bIpw9z9CW4fqEWt614jnc2B6mIhsawAyI0e7/8owk
+         l92MiF/aan37AdvW06wh4j+2s12JAyL96I0/J4uZHB97CpieJ4JhoidZ1kR9U8mIvtsd
+         EwN8x3rRq3RPYw907Cev0iP/DhVhhstIcxe7x3cXbdJMIexmeNhHYipaPG0CjEEAyWu+
+         LZcBm3eIsF95JPoyv/47eX7K+oeR386PDpjeMLJp45+TWRD19IBaAQPktB9hK6JHliAJ
+         Pn1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6hvY4p5FF5eRnjuVWtkxhk1sjqpIeEICM36lTpspsRo=;
+        b=XsmkMqZUqoqU2RD+hcDQ+ZkcVKzgYs65CKW3CqwYMECNQmUy5DLC8e8Lo6R+Ld3rVX
+         PkofKORpZOXGF8BqX2JCq8r4ZCcCKo9lTifkklUXWfcYQohzPbF8reLR6XMdvkCmE2PL
+         FuX6ZJo+Em2doPBJuNFZces89mDVEiTAZRgfeObZ1hVYoIXz7RN1VPQ7ihRpGuYmQxQK
+         oxeCFg/m7lo4RzWO53by7Hz2H9JT6yT2tsI0fctzz0O60r4SvK2/kNxOXaaNCwfbQSuF
+         NLZd/OdmkXbjK9h7Zni0c8f15iQcvSpoKc1YFUg0LrOri4/xsLsYcQhJiTYmOhse0Qc8
+         vD4A==
+X-Gm-Message-State: AOAM533rWY4mohf4eo+q4VRSz+ij8cInGiNNqqyp3Y7VHe0TcAhpFT+h
+        5koLi967yrCMVQ2YTUqQKH3TFrCUMYhLOyyB2mI=
+X-Google-Smtp-Source: ABdhPJztyfH6kHtajiE7qiBm6RgPWmSj0Q+K26uQGnvOp3Fi0OO9sbkUR3pRTNVBepiTBY7SFOuYmw==
+X-Received: by 2002:adf:de91:: with SMTP id w17mr1256773wrl.352.1623791729144;
+        Tue, 15 Jun 2021 14:15:29 -0700 (PDT)
+Received: from KernelVM (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id u15sm3032636wmq.48.2021.06.15.14.15.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 14:15:28 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 22:15:26 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 03/28] staging: rtl8188eu: remove all DBG_88E calls from
+ core/rtw_mlme_ext.c
+Message-ID: <YMkYbs9pV7IbZnMo@KernelVM>
+References: <20210615001507.1171-1-phil@philpotter.co.uk>
+ <20210615001507.1171-4-phil@philpotter.co.uk>
+ <20210615103213.GA1861@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210615204228.GB4272@worktop.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210615103213.GA1861@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:42:28PM +0200 Peter Zijlstra wrote:
-> On Tue, Jun 15, 2021 at 12:16:11PM +0100, Mel Gorman wrote:
-> > From: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > 
-> > This is a partial forward-port of Peter Ziljstra's work first posted
-> > at https://lore.kernel.org/lkml/20180530142236.667774973@infradead.org/.
+On Tue, Jun 15, 2021 at 01:32:13PM +0300, Dan Carpenter wrote:
+> On Tue, Jun 15, 2021 at 01:14:42AM +0100, Phillip Potter wrote:
+> > @@ -4510,8 +4311,7 @@ void mlmeext_joinbss_event_callback(struct adapter *padapter, int join_res)
+> >  	rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_CONNECT, 0);
+> >  
+> >  exit_mlmeext_joinbss_event_callback:
+> > -
+> > -	DBG_88E("=>%s\n", __func__);
+> > +	return;
+> >  }
 > 
-> It's patches 2 and 3 together, right?
+> You'll have to delete the return and the exit_mlmeext_joinbss_event_callback
+> label in a follow on patch because it introduces a checkpatch warning.
 > 
-> > His Signed-off has been removed because it is modified but will be restored
-> > if he says it's still ok.
+> (I'm not concerned about introducing checkpatch warnings in this patch
+> too much because fixing them in one got makes the patch a little more
+> complicated to review.  So it's not necessarily even a wrong thing to
+> introduce a checkpatch warning.  Just remember to remove it later.  Or
+> don't remember because eventually someone else will take care of it).
 > 
-> I suppose the SoB will auto-magically re-appear if I apply it :-)
+> regards,
+> dan carpenter
 > 
-> > The patch potentially matters when a socket was multiple LLCs as the
-> > maximum search depth is lower. However, some of the test results were
-> > suspiciously good (e.g. specjbb2005 gaining 50% on a Zen1 machine) and
-> > other results were not dramatically different to other mcahines.
-> > 
-> > Given the nature of the patch, Peter's full series is not being forward
-> > ported as each part should stand on its own. Preferably they would be
-> > merged at different times to reduce the risk of false bisections.
-> 
-> I'm tempted to give it a go.. anyone object?
-> 
+> >  
+> >  void mlmeext_sta_add_event_callback(struct adapter *padapter, struct sta_info *psta)
+>  
 
-Fwiw, I have some perf tests running on v1.  But I don't know if the
-results will be in before I'm AFK next week. I suppose we could pull
-it back out if something really bad comes up.
+Dear Dan,
 
-Seems like a reasonable change to me on the surface.
+Thanks, I'll get this done.
 
-
-Cheers,
+Regards,
 Phil
--- 
-
