@@ -2,133 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C76A3A8602
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8FF3A85F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 18:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhFOQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 12:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
+        id S231583AbhFOQDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 12:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbhFOQFu (ORCPT
+        with ESMTP id S231486AbhFOQDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:05:50 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687A9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:03:45 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id i13so51872102edb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:03:45 -0700 (PDT)
+        Tue, 15 Jun 2021 12:03:50 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BD5C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:01:46 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id f70so27289100qke.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 09:01:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jATvgsyjbjceyrk+GBlriKazySRs/GnMPU1wY1FrMxc=;
-        b=bRjftlF1KH3Qf7vluE8mcq94YTQQsSdT+NNa4G6UIFaOc+t7Z8AhxerVKlAfdFn6JL
-         P8DYpM5QIqe5QRqupmzMnQw1GKkmCsTEd41bOUflKXB1Tt7+WVOtyRoGq27ista5h7br
-         a01euiqXr1kiiQNLKvhZLo5c4TgYbplcWxbc770tc2UU4i9iBzb+A6zR/BkxySbQWCO+
-         I6Mn/gEWu1daF7bXCz+ayOpF1Q/2GEPzCxbff5YgahqTx5hTsGK0RHA4E3k5HWV6IOKD
-         NGhdhJLlAFVKtUrO7+MSDf/T6KDk0kdfx474X0f46Qr++DE8RHl9JUcuFEZSJ3EPdhq9
-         34GQ==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7C7EVveR2N28ai5r9/J+2yOqz+gY5pQumT6AbxDu9NQ=;
+        b=BMDmDwevRAQ/jZtfGP7p38zmpe9NJVDCl+GWwBgJ4KO/Ve2LeGgmD7Qj6TTdeSUewV
+         rmTwm91IMkKMHCOrZXNL0KEmd1YUcfnCR6Y18iF/KIN6Y0mnI+Fh4YURVYOn071j2bTw
+         FJF8aUtMSOX4S+wBwhW/LG3zFECq46pFpONoo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jATvgsyjbjceyrk+GBlriKazySRs/GnMPU1wY1FrMxc=;
-        b=Srns1N/i6IdkxG0Be6QK7OEMT/omAIeF3VFFFKvcrSconuPZ1LpwScckljmTwMxPdi
-         C2rMIO03rRrc0pCxANGWxegNUmfmxb0jTWaDQEQrMHAZlXxcqxXnsTPIa6SaVverp5yL
-         wKYop4d9OG4Uwdvo0TAUQEMd1K6O0/EGnixWsChplAAPhbvDCxN582ws8A/jxjGuqhd/
-         C+HkdCVmNF2/azE+6XZSMEawdtml8pHvmtFIrrqxLJVo/cMslssVrLVIDBiF3SsAQrNL
-         /+EWj0Zg1080lOiLSOZAGD3mPe4cPic4xlzSGvJphAQOjZ/TPGlK8k7xkairS5YH24+A
-         8G9A==
-X-Gm-Message-State: AOAM531r4ooBCjb6EnydBzApOfWZEWd6wNB39gLZYjmxsUB0LHW7adl6
-        H+LgJurLW8UyHVLbG7J5My4=
-X-Google-Smtp-Source: ABdhPJzm/yP5KvqDx7Z+PdOI9aLGuAf0o0swGNa0VlH0BzL/Upo9HKLTdyQrYcy3k3FFbjsYbS7HUw==
-X-Received: by 2002:a50:eb92:: with SMTP id y18mr138663edr.249.1623773024056;
-        Tue, 15 Jun 2021 09:03:44 -0700 (PDT)
-Received: from yoga-910.localhost ([188.26.224.68])
-        by smtp.gmail.com with ESMTPSA id b1sm1640061ejz.54.2021.06.15.09.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 09:03:43 -0700 (PDT)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-To:     shawnguo@kernel.org
-Cc:     leoyang.li@nxp.com, linux-kernel@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH 3/3] arm64: dts: ls1088ardb: update PHY nodes with IRQ information
-Date:   Tue, 15 Jun 2021 19:03:37 +0300
-Message-Id: <20210615160337.1320644-4-ciorneiioana@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210615160337.1320644-1-ciorneiioana@gmail.com>
-References: <20210615160337.1320644-1-ciorneiioana@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7C7EVveR2N28ai5r9/J+2yOqz+gY5pQumT6AbxDu9NQ=;
+        b=hnoNQq9hBMV/yMhuYNeLs8snizJTgsizqoswvXotxk6VQO+AMGl5FF34hxB6klIWsm
+         2CDqEW4Hz5fkR/dHy2xl2MbeVEm5gWdqBMWK3z1Ggoa7yzeE9w/Euhd2DWlTlVNpXkdo
+         dmKCpehtJxdZtn0Fb6jthruqXl7uyRkLWjEUIsHY8IGswiBQRkzAYGqqUNhGe5bYJi+n
+         hRbwl9hkvYB31z3jl1tWR3jCV4HqeXKM5rmy4zpGuoy6LtfGb5veveU4YaOsdOMkq60O
+         1BQ+lRoPGC5+tzPINBiDgHFTCWdrlFcFEjrTpDAaeA1SKYXS0WFDwgDRmqAbMHT9h0Dc
+         VdLA==
+X-Gm-Message-State: AOAM5338MA+vG35Ma1qX2ERkeeWBRu/IcuvF5us/QawnIyx/zQhEuZ2T
+        ayxFcqk7Ivd7KsRIQ3WouO+H4F7kpcSmh5MkYPiM4w==
+X-Google-Smtp-Source: ABdhPJwMhLK3ojmLgXGBYK7lXx8LuQWFcV18TBkTwaLl6+qHJap0zIeFZXk+ggFYSjpX/FOfrM6i9m3q1kO7mfCsLi8=
+X-Received: by 2002:a05:620a:a87:: with SMTP id v7mr340087qkg.468.1623772905288;
+ Tue, 15 Jun 2021 09:01:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAFr9PXnBb7OmOAMumDodC+0usWqRT-RXwC+YUHZ2Y43Xe_uTQQ@mail.gmail.com>
+ <20210615152840.GD11724@lx2k>
+In-Reply-To: <20210615152840.GD11724@lx2k>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Wed, 16 Jun 2021 01:03:49 +0900
+Message-ID: <CAFr9PXkeqryzutzpV6woskee_SwbDMJFgxPtspvTk0-VS6A5xA@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: mstar for v5.14 v2
+To:     Olof Johansson <olof@lixom.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, SoC Team <soc@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+Hi Olof,
 
-Describe the IRQs for both the QSGMII PHYs and the 10GBASE-R PHY found
-on the LS1088ARDB board.
+On Wed, 16 Jun 2021 at 00:31, Olof Johansson <olof@lixom.net> wrote:
+> This time it seems like you based your branch on 5.14-rc5, which is a newer -rc
+> than what we have the rest of our trees on. The general rule of thumb is to
+> base it on the oldest meaningful rc for the release (rc1 or rc2, most of the
+> time). We normally base our tree on rc2 or so, in this case I went forward to
+> rc3 earlier.
 
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Sorry, I hadn't even thought of that but it makes sense.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-index bf7b43ab1293..1bfbce69cc8b 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-@@ -83,34 +83,42 @@ &emdio1 {
- 	status = "okay";
- 
- 	mdio1_phy5: ethernet-phy@c {
-+		interrupts-extended = <&extirq 1 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0xc>;
- 	};
- 
- 	mdio1_phy6: ethernet-phy@d {
-+		interrupts-extended = <&extirq 1 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0xd>;
- 	};
- 
- 	mdio1_phy7: ethernet-phy@e {
-+		interrupts-extended = <&extirq 1 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0xe>;
- 	};
- 
- 	mdio1_phy8: ethernet-phy@f {
-+		interrupts-extended = <&extirq 1 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0xf>;
- 	};
- 
- 	mdio1_phy1: ethernet-phy@1c {
-+		interrupts-extended = <&extirq 1 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0x1c>;
- 	};
- 
- 	mdio1_phy2: ethernet-phy@1d {
-+		interrupts-extended = <&extirq 1 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0x1d>;
- 	};
- 
- 	mdio1_phy3: ethernet-phy@1e {
-+		interrupts-extended = <&extirq 1 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0x1e>;
- 	};
- 
- 	mdio1_phy4: ethernet-phy@1f {
-+		interrupts-extended = <&extirq 1 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0x1f>;
- 	};
- };
-@@ -120,6 +128,7 @@ &emdio2 {
- 
- 	mdio2_aquantia_phy: ethernet-phy@0 {
- 		compatible = "ethernet-phy-ieee802.3-c45";
-+		interrupts-extended = <&extirq 2 IRQ_TYPE_LEVEL_LOW>;
- 		reg = <0x0>;
- 	};
- };
--- 
-2.31.1
+> (Maybe you had the same base last time around, and I missed it -- my tooling
+> failed out on the S-o-b checking before I noticed)
 
+Last one was rc5 too.
+
+> To avoid another roundtrip here, I'll apply the two patches directly, but
+> please keep it in mind in the future, especially once you have more material
+> for a cycle.
+
+Thanks for doing that and the hand holding. I think I can manage to
+get it right next time. :)
+
+I have one DTS patch I would like to get into 5.14 for the watchdog
+driver that was recently accepted.
+Is it still ok to send a PR for that one or is it too late now? I
+think I read the cut off is around rc6.
+
+Thanks,
+
+Daniel
