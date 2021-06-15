@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A6C3A871A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EED3A871B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 19:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhFORLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 13:11:10 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:10212 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229493AbhFORK4 (ORCPT
+        id S231476AbhFORLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 13:11:12 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:34909 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230457AbhFORK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Jun 2021 13:10:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -17,19 +17,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1623776931; x=1655312931;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=H6YXXaA72lhIwfvaqkBYUyVRVQLeQOAd+Giz9XXvNpA=;
-  b=b9LjkMQwphtS1lmcWzXuu/oIRH981hCF2GolHQ0XM4JGBnGdHlY7AXcc
-   AMIA9uUMmFA0huA/Lps33mWdiSkYFbz66XiV98RhuvT6AuAe5BDR8lGds
-   WFAFlLVtCIVTpeS41cH4U6T4IH3dCbILNzVqC5VfQ2JgiqsgPlLwumpUs
-   g=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 15 Jun 2021 10:08:51 -0700
+  bh=sxWsrx4i4RcguP2ruhmRSpZY5bZXyPiuYAMWoJj1fSY=;
+  b=MsGZsvFjZ/74mQEos4lBM6RapocyUNJq9bFL/R7zvyasXvSdGIF/09Um
+   kPUS9G7JSgYK+HVdZ1Z1RjSOnkqJd6LQCttWl0ahYZ2tkUOdtCabZN7Ui
+   KL7SuirsfHCy3PJsXYAjZUexSB5s35tZmE7p9H8l5hHBfwsAnTtEmOUas
+   8=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 15 Jun 2021 10:08:51 -0700
 X-QCInternal: smtphost
 Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Jun 2021 10:08:51 -0700
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Jun 2021 10:08:51 -0700
 Received: from th-lint-040.qualcomm.com (10.80.80.8) by
  nasanexm03e.na.qualcomm.com (10.85.0.48) with Microsoft SMTP Server (TLS) id
- 15.0.1497.18; Tue, 15 Jun 2021 10:08:50 -0700
+ 15.0.1497.18; Tue, 15 Jun 2021 10:08:51 -0700
 From:   Georgi Djakov <quic_c_gdjako@quicinc.com>
 To:     <will@kernel.org>, <robin.murphy@arm.com>
 CC:     <joro@8bytes.org>, <isaacm@codeaurora.org>,
@@ -37,9 +37,9 @@ CC:     <joro@8bytes.org>, <isaacm@codeaurora.org>,
         <iommu@lists.linux-foundation.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <djakov@kernel.org>
-Subject: [PATCH v6 05/15] iommu: Use bitmap to calculate page size in iommu_pgsize()
-Date:   Tue, 15 Jun 2021 10:08:23 -0700
-Message-ID: <1623776913-390160-6-git-send-email-quic_c_gdjako@quicinc.com>
+Subject: [PATCH v6 06/15] iommu: Split 'addr_merge' argument to iommu_pgsize() into separate parts
+Date:   Tue, 15 Jun 2021 10:08:24 -0700
+Message-ID: <1623776913-390160-7-git-send-email-quic_c_gdjako@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1623776913-390160-1-git-send-email-quic_c_gdjako@quicinc.com>
 References: <1623776913-390160-1-git-send-email-quic_c_gdjako@quicinc.com>
@@ -54,68 +54,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Will Deacon <will@kernel.org>
 
-Avoid the potential for shifting values by amounts greater than the
-width of their type by using a bitmap to compute page size in
-iommu_pgsize().
+The 'addr_merge' parameter to iommu_pgsize() is a fabricated address
+intended to describe the alignment requirements to consider when
+choosing an appropriate page size. On the iommu_map() path, this address
+is the logical OR of the virtual and physical addresses.
+
+Subsequent improvements to iommu_pgsize() will need to check the
+alignment of the virtual and physical components of 'addr_merge'
+independently, so pass them in as separate parameters and reconstruct
+'addr_merge' locally.
+
+No functional change.
 
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
 Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
 ---
- drivers/iommu/iommu.c | 31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
+ drivers/iommu/iommu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 5419c4b9f27a..80e471ada358 100644
+index 80e471ada358..80e14c139d40 100644
 --- a/drivers/iommu/iommu.c
 +++ b/drivers/iommu/iommu.c
-@@ -8,6 +8,7 @@
+@@ -2375,12 +2375,13 @@ phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain, dma_addr_t iova)
+ }
+ EXPORT_SYMBOL_GPL(iommu_iova_to_phys);
  
- #include <linux/device.h>
- #include <linux/kernel.h>
-+#include <linux/bits.h>
- #include <linux/bug.h>
- #include <linux/types.h>
- #include <linux/init.h>
-@@ -2378,30 +2379,22 @@ static size_t iommu_pgsize(struct iommu_domain *domain,
- 			   unsigned long addr_merge, size_t size)
+-static size_t iommu_pgsize(struct iommu_domain *domain,
+-			   unsigned long addr_merge, size_t size)
++static size_t iommu_pgsize(struct iommu_domain *domain, unsigned long iova,
++			   phys_addr_t paddr, size_t size)
  {
  	unsigned int pgsize_idx;
-+	unsigned long pgsizes;
+ 	unsigned long pgsizes;
  	size_t pgsize;
++	unsigned long addr_merge = paddr | iova;
  
--	/* Max page size that still fits into 'size' */
--	pgsize_idx = __fls(size);
-+	/* Page sizes supported by the hardware and small enough for @size */
-+	pgsizes = domain->pgsize_bitmap & GENMASK(__fls(size), 0);
+ 	/* Page sizes supported by the hardware and small enough for @size */
+ 	pgsizes = domain->pgsize_bitmap & GENMASK(__fls(size), 0);
+@@ -2433,7 +2434,7 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+ 	pr_debug("map: iova 0x%lx pa %pa size 0x%zx\n", iova, &paddr, size);
  
--	/* need to consider alignment requirements ? */
--	if (likely(addr_merge)) {
--		/* Max page size allowed by address */
--		unsigned int align_pgsize_idx = __ffs(addr_merge);
--		pgsize_idx = min(pgsize_idx, align_pgsize_idx);
--	}
--
--	/* build a mask of acceptable page sizes */
--	pgsize = (1UL << (pgsize_idx + 1)) - 1;
--
--	/* throw away page sizes not supported by the hardware */
--	pgsize &= domain->pgsize_bitmap;
-+	/* Constrain the page sizes further based on the maximum alignment */
-+	if (likely(addr_merge))
-+		pgsizes &= GENMASK(__ffs(addr_merge), 0);
+ 	while (size) {
+-		size_t pgsize = iommu_pgsize(domain, iova | paddr, size);
++		size_t pgsize = iommu_pgsize(domain, iova, paddr, size);
  
--	/* make sure we're still sane */
--	BUG_ON(!pgsize);
-+	/* Make sure we have at least one suitable page size */
-+	BUG_ON(!pgsizes);
+ 		pr_debug("mapping: iova 0x%lx pa %pa pgsize 0x%zx\n",
+ 			 iova, &paddr, pgsize);
+@@ -2521,8 +2522,9 @@ static size_t __iommu_unmap(struct iommu_domain *domain,
+ 	 * or we hit an area that isn't mapped.
+ 	 */
+ 	while (unmapped < size) {
+-		size_t pgsize = iommu_pgsize(domain, iova, size - unmapped);
++		size_t pgsize;
  
--	/* pick the biggest page */
--	pgsize_idx = __fls(pgsize);
--	pgsize = 1UL << pgsize_idx;
-+	/* Pick the biggest page size remaining */
-+	pgsize_idx = __fls(pgsizes);
-+	pgsize = BIT(pgsize_idx);
- 
- 	return pgsize;
- }
++		pgsize = iommu_pgsize(domain, iova, iova, size - unmapped);
+ 		unmapped_page = ops->unmap(domain, iova, pgsize, iotlb_gather);
+ 		if (!unmapped_page)
+ 			break;
