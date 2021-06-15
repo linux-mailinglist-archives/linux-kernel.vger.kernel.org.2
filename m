@@ -2,72 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA93A3A7CDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F354A3A7CE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 13:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhFOLM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 07:12:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:60988 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230028AbhFOLMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:12:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCD171063;
-        Tue, 15 Jun 2021 04:10:20 -0700 (PDT)
-Received: from [10.163.86.116] (unknown [10.163.86.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 890503F719;
-        Tue, 15 Jun 2021 04:10:18 -0700 (PDT)
-Subject: Re: [PATCH] arm64: mm: Pass origial fault address to
- handle_mm_fault()
-To:     Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, mark.rutland@arm.com, shan.gavin@gmail.com
-References: <20210614122701.100515-1-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <9f1c6198-a367-e3dd-f0c6-9cad7c267e39@arm.com>
-Date:   Tue, 15 Jun 2021 16:41:03 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231169AbhFOLNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 07:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhFOLNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 07:13:42 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA8CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:11:37 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id ho18so21911744ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Jun 2021 04:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=k1SSaOFL103AMAONbChdnTYHUZQvV/y1/SVM/t/fuc4=;
+        b=mWBbAmB0J77L2TOkDbqBoNLfNRJy6g+fNM+blXTiF0xY4cgZW1J2rTKLqw26JVKJ8J
+         ao6Jil/T5PKryfPJqzklFDqBlOLLCEq3leUVetnhfhjLuP1RZyPk3WSsGrWWFdVkWslK
+         2CUiW5IJR72m2ENpUEuc37B7YWR+6oHeqkst7DUjzMxbl3aHyQ0rZuYBrH4M+bnXe0lC
+         R28WUqvZ+zWkTFAyKolJsOJd9epVY2852y1AmN7PXypYQSnuIqlqgUhP51r6F+FK1zjn
+         UYt/eFKh1aBbt0EKO1dyaJVEV1EsXiIjvyx01AAN3+uY3ZdfZL7qDa45YU/XJDb1s26g
+         gxnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=k1SSaOFL103AMAONbChdnTYHUZQvV/y1/SVM/t/fuc4=;
+        b=lmq2p5z4y+K71WIqGcY8xNRhqDulcNQMYoVTst2iU4psEXEEmiEBu59sV/GUfRh9n0
+         yMxIK4ixOrVP07hmAHI5C6WtGGdgGKDHLz+odhIIX1qSd36953BRWB88LOP7iIitSbKl
+         vZ7Q6FT6CeoP35EMn0voKTR6Q/An87BzkQ6G39hoosREtQEo1A19sIzgfp0vxWRlo3j7
+         qpLCn0JU5vGcoviWcPl9/Y03sC9T1hvPZcV5NCwFsOPTGOEQfOTVHFTEGezr6py007el
+         Np5HYhPqUMtbhzMOHl39RzRpQ3tJ4nTG9i3o5xWP/5KEoydEgxQvCKCmFskmN+Rt3RM+
+         gigA==
+X-Gm-Message-State: AOAM531UjBVbfwCnzreGKqgc9VpUdlOhxaiTwB40AobvtSBSF2CbtM6S
+        /TOa+GjQaEqoq/TgRfhwB1/wA4O1GfiFYkE4gEP5OA==
+X-Google-Smtp-Source: ABdhPJzACpUJFPW4Jg/dbptIEAjHCRIid2wjLyxhMrJQ+DpOlTjF33IgJ9FqqaxZOlKgGWumnKTXH/qJTbO8ftH9cec=
+X-Received: by 2002:a17:906:9d05:: with SMTP id fn5mr19815485ejc.133.1623755496317;
+ Tue, 15 Jun 2021 04:11:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210614122701.100515-1-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Jun 2021 16:41:25 +0530
+Message-ID: <CA+G9fYvvm2tW5QAe9hzPgs7sV8udsoufxs0Qu6N0ZjV0Z686vw@mail.gmail.com>
+Subject: [next] [arm64] kernel BUG at arch/arm64/mm/physaddr.c
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, lkft-triage@lists.linaro.org,
+        regressions@lists.linux.dev
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Following kernel crash reported while boot linux next 20210615 tag on qemu_arm64
+with allmodconfig build.
 
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[    0.000000] Linux version 5.13.0-rc6-next-20210615
+(tuxmake@ac7978cddede) (aarch64-linux-gnu-gcc (Debian 11.1.0-1)
+11.1.0, GNU ld (GNU Binutils for Debian) 2.36.50.20210601) #1 SMP
+PREEMPT Tue Jun 15 10:20:51 UTC 2021
+[    0.000000] Machine model: linux,dummy-virt
+[    0.000000] earlycon: pl11 at MMIO 0x0000000009000000 (options '')
+[    0.000000] printk: bootconsole [pl11] enabled
+[    0.000000] efi: UEFI not found.
+[    0.000000] NUMA: No NUMA configuration found
+[    0.000000] NUMA: Faking a node at [mem
+0x0000000040000000-0x00000000bfffffff]
+[    0.000000] NUMA: NODE_DATA [mem 0xbfc00d40-0xbfc03fff]
+[    0.000000] ------------[ cut here ]------------
+[    0.000000] kernel BUG at arch/arm64/mm/physaddr.c:27!
+[    0.000000] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+[    0.000000] Modules linked in:
+[    0.000000] CPU: 0 PID: 0 Comm: swapper Tainted: G                T
+5.13.0-rc6-next-20210615 #1 c150a8161d8ff395c5ae7ee0c3c8f22c3689fae4
+[    0.000000] Hardware name: linux,dummy-virt (DT)
+[    0.000000] pstate: 404000c5 (nZcv daIF +PAN -UAO -TCO BTYPE=--)
+[    0.000000] pc : __phys_addr_symbol+0x44/0xc0
+[    0.000000] lr : __phys_addr_symbol+0x44/0xc0
+[    0.000000] sp : ffff800014287b00
+[    0.000000] x29: ffff800014287b00 x28: fc49a9b89db36f0a x27: ffffffffffffffff
+[    0.000000] x26: 0000000000000280 x25: 0000000000000010 x24: ffff8000145a8000
+[    0.000000] x23: 0000000008000000 x22: 0000000000000010 x21: 0000000000000000
+[    0.000000] x20: ffff800010000000 x19: ffff00007fc00d40 x18: 0000000000000000
+[    0.000000] x17: 00000000003ee000 x16: 00000000bfc12000 x15: 0000001000000000
+[    0.000000] x14: 000000000000de8c x13: 0000001000000000 x12: 00000000f1f1f1f1
+[    0.000000] x11: dfff800000000000 x10: ffff700002850eea x9 : 0000000000000000
+[    0.000000] x8 : ffff00007fbe0d40 x7 : 0000000000000000 x6 : 000000000000003f
+[    0.000000] x5 : 0000000000000040 x4 : 0000000000000005 x3 : ffff8000142bb0c0
+[    0.000000] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
+[    0.000000] Call trace:
+[    0.000000]  __phys_addr_symbol+0x44/0xc0
+[    0.000000]  sparse_init_nid+0x98/0x6d0
+[    0.000000]  sparse_init+0x460/0x4d4
+[    0.000000]  bootmem_init+0x110/0x340
+[    0.000000]  setup_arch+0x1b8/0x2e0
+[    0.000000]  start_kernel+0x110/0x870
+[    0.000000]  __primary_switched+0xa8/0xb0
+[    0.000000] Code: 940ccf23 eb13029f 54000069 940cce60 (d4210000)
+[    0.000000] random: get_random_bytes called from
+oops_exit+0x54/0xc0 with crng_init=0
+[    0.000000] ---[ end trace 0000000000000000 ]---
+[    0.000000] Kernel panic - not syncing: Oops - BUG: Fatal exception
+[    0.000000] ---[ end Kernel panic - not syncing: Oops - BUG: Fatal
+exception ]---
 
-On 6/14/21 5:57 PM, Gavin Shan wrote:
-> Currently, the lower bits of fault address is cleared before it's
-> passed to handle_mm_fault(). It's unnecessary since generic code
-> does same thing since the commit 1a29d85eb0f19 ("mm: use vmf->address
-> instead of of vmf->virtual_address").
-> 
-> This passes the original fault address to handle_mm_fault() in case
-> the generic code needs to know the exact fault address.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/mm/fault.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> index 871c82ab0a30..e2883237216d 100644
-> --- a/arch/arm64/mm/fault.c
-> +++ b/arch/arm64/mm/fault.c
-> @@ -504,7 +504,7 @@ static vm_fault_t __do_page_fault(struct mm_struct *mm, unsigned long addr,
->  	 */
->  	if (!(vma->vm_flags & vm_flags))
->  		return VM_FAULT_BADACCESS;
-> -	return handle_mm_fault(vma, addr & PAGE_MASK, mm_flags, regs);
-> +	return handle_mm_fault(vma, addr, mm_flags, regs);
->  }
->  
->  static bool is_el0_instruction_abort(unsigned int esr)
-> 
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-FWIW
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+--
+Linaro LKFT
+https://lkft.linaro.org
