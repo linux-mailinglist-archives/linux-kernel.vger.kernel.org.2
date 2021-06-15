@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23423A81BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802CB3A81BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 16:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhFOOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 10:06:32 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:43791 "EHLO
+        id S230079AbhFOOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 10:06:45 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32984 "EHLO
         so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbhFOOGG (ORCPT
+        with ESMTP id S231309AbhFOOGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:06:06 -0400
+        Tue, 15 Jun 2021 10:06:30 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623765842; h=Date: Message-Id: Cc: To: References:
+ s=smtp; t=1623765865; h=Date: Message-Id: Cc: To: References:
  In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=uSOjW2PIXQ8WAoXFoxYSHFnVzsjgBvCSgyXBJHrOxfM=;
- b=BvQttXKjxC5/5l0JBcx2kJ+h5fz/9xTuA+1INTTRuysqWTqNV7kjJ9gqLXpjCEiLemZu8Vqx
- Ragc2eaRT2V5R1P2n+uj1RiTvrp18fa8EKPfq0Wi709yQnuqkmEEmSVyFg7NwgwioYHop2Ox
- zH4ioqZzLb1q2TFQL9n1W6Fwch0=
+ Content-Type: Sender; bh=6gTr9j1nBUFiHxj5nPNVd48BotsR10twO1JUZtyLItc=;
+ b=d0O6XkOoGvwLZvJXGcgnE9k+oAOBXlpeXva0MlFOznGbJer8o2Pi9m01BlgbnM/Et5/blyPt
+ NLIUkcjZq3JrhRUWOG5DUG+/ljOTOTv8N+sUR+3CGBVrg7TSTikFz4Xr57PKnTCR9sqO6PXz
+ CA1UrGgpiUgGCCKhjRmD7D9gpxU=
 X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60c8b2e7f726fa4188bacb28 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 14:02:15
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60c8b333e570c05619f746cb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Jun 2021 14:03:31
  GMT
 Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 73C95C433D3; Tue, 15 Jun 2021 14:02:14 +0000 (UTC)
+        id 14CBDC4338A; Tue, 15 Jun 2021 14:03:31 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -40,49 +40,51 @@ Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA6C8C433D3;
-        Tue, 15 Jun 2021 14:02:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA6C8C433D3
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D690C4338A;
+        Tue, 15 Jun 2021 14:03:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2D690C4338A
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath11k: Fix an error handling path in
- 'ath11k_core_fetch_board_data_api_n()'
+Subject: Re: [PATCH] ath10k: Fix an error code in ath10k_add_interface()
 From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <e959eb544f3cb04258507d8e25a6f12eab126bde.1621676864.git.christophe.jaillet@wanadoo.fr>
-References: <e959eb544f3cb04258507d8e25a6f12eab126bde.1621676864.git.christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, kuba@kernel.org, bperumal@codeaurora.org,
-        akolli@codeaurora.org, milehu@codeaurora.org, lkp@intel.com,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <1621939577-62218-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1621939577-62218-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
 User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210615140214.73C95C433D3@smtp.codeaurora.org>
-Date:   Tue, 15 Jun 2021 14:02:14 +0000 (UTC)
+Message-Id: <20210615140331.14CBDC4338A@smtp.codeaurora.org>
+Date:   Tue, 15 Jun 2021 14:03:31 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+Yang Li <yang.lee@linux.alibaba.com> wrote:
 
-> All error paths but this one 'goto err' in order to release some
-> resources.
-> Fix this.
+> When the code execute this if statement, the value of ret is 0.
+> However, we can see from the ath10k_warn() log that the value of
+> ret should be -EINVAL.
 > 
-> Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Clean up smatch warning:
+> 
+> drivers/net/wireless/ath/ath10k/mac.c:5596 ath10k_add_interface() warn:
+> missing error code 'ret'
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Fixes: ccec9038c721 ("ath10k: enable raw encap mode and software crypto engine")
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-515bda1d1e51 ath11k: Fix an error handling path in ath11k_core_fetch_board_data_api_n()
+e9ca70c735ce ath10k: Fix an error code in ath10k_add_interface()
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/e959eb544f3cb04258507d8e25a6f12eab126bde.1621676864.git.christophe.jaillet@wanadoo.fr/
+https://patchwork.kernel.org/project/linux-wireless/patch/1621939577-62218-1-git-send-email-yang.lee@linux.alibaba.com/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
