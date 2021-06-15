@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491AB3A7C6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CBC3A7C78
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 12:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhFOKw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 06:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
+        id S231773AbhFOKyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 06:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhFOKwX (ORCPT
+        with ESMTP id S231686AbhFOKyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 06:52:23 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3672C061574;
-        Tue, 15 Jun 2021 03:50:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G44pc1wrhz9sW6;
-        Tue, 15 Jun 2021 20:50:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623754217;
-        bh=kO1C+iwbV2lIeJjjcEexTAXcxADc2F6p643JpBF/YXQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iWDTx5b7ty/cBR7s7zgNJobgs6aoZxYSlMlwaL3lci63n7UMDM4tApFan0LAxa5RV
-         +rtzx7Vdcv0EWzczKKpfLLZyrxWOsojyfgxTXX0AAxKZRUGdHBoP9mGIOorTmXKHlF
-         qtX40WAElqnLwdXnRdoq1lvt74SENbnDAL+nEzuevvBdoEtbdys33XzOkzNnlpEH8r
-         8fmLYjfaBY6o49CXrXtm8BgfoMfuqNz9fsaYPfSYbDNduZUh8piDCJWTrvO+pKcJr+
-         zjxRbWFifbuwNyMZFF9LU6TNUlZJYVUDyKly9A3+FYuzuJ832M3jbzqAjkn1DEuzqP
-         2ekjR6uxysErw==
-Date:   Tue, 15 Jun 2021 20:50:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the akpm-current tree
-Message-ID: <20210615205015.62c35978@canb.auug.org.au>
+        Tue, 15 Jun 2021 06:54:05 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8ABC061574;
+        Tue, 15 Jun 2021 03:52:01 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 10:51:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623754316;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DHegQvt3cfTnKJX3SVNaRFA4QjL5I7lSJOFQNJlyBqU=;
+        b=jv35iWtIfZhIFhsfKohLOZY3Qyw8SeaWpzCRs5/O5oeL3gsAWRagkGvawaqlWceQudw37a
+        O2aXQD3boVkWvLvyQV1N5Xky+6rRsfiufNYKcDEsaKdpZfU0EcPy5vfg7jfdJKeV73Meeo
+        BcDRqydPR15BkgW6yulMrhIOAkATrEg+4ycezzlwGkDK7G9TWcPJZ/fkLUtxtdXsUC4rRL
+        OrjTHLgWyOx/206+lfVpI1VAC+ICQSE/YJZg35uO8HQ4RMSJjE+MIfEbC49TXPgYz2vkTH
+        ybvDW/QR7TMUHozb+LevZBjcBTKpN31nW11Fnr/VTmreyKZSwh4/XfArnOuXjw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623754316;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DHegQvt3cfTnKJX3SVNaRFA4QjL5I7lSJOFQNJlyBqU=;
+        b=qhgNffPF+w1ZYuJmaOXEa5ygkzFcTVsx0PyDg8uUnF7V/Vn9J8bcvkUFJij7aKROw1Sg9I
+        t7ygeglkgBlwIVCA==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/sev: Propagate #GP if getting linear instruction
+ address failed
+Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210614135327.9921-7-joro@8bytes.org>
+References: <20210614135327.9921-7-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yu1Y5hZLN/zdua8pDSzLnfu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Message-ID: <162375431608.19906.8487681008973797088.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yu1Y5hZLN/zdua8pDSzLnfu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The following commit has been merged into the x86/sev branch of tip:
 
-Hi all,
+Commit-ID:     07570cef5e5c3fcec40f82a9075abb4c1da63319
+Gitweb:        https://git.kernel.org/tip/07570cef5e5c3fcec40f82a9075abb4c1da63319
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Mon, 14 Jun 2021 15:53:27 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 15 Jun 2021 11:55:26 +02:00
 
-After merging the akpm-current tree, today's linux-next build (htmldocs)
-produced these warnings:
+x86/sev: Propagate #GP if getting linear instruction address failed
 
-include/linux/kernel.h:1: warning: 'kstrtol' not found
-include/linux/kernel.h:1: warning: 'kstrtoul' not found
+When an instruction is fetched from user-space, segmentation needs to
+be taken into account. This means that getting the linear address of an
+instruction can fail. Hardware would raise a #GP exception in that case,
+but the #VC exception handler would emulate it as a page-fault.
 
-Introduced by commit
+The insn_fetch_from_user*() functions now provide the relevant
+information in case of a failure. Use that and propagate a #GP when the
+linear address of an instruction to fetch could not be calculated.
 
-  af137d888395 ("kernel.h: split out kstrtox() and simple_strtox() to a sep=
-arate header")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210614135327.9921-7-joro@8bytes.org
+---
+ arch/x86/kernel/sev.c |  9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-They are referenced in Documentation/core-api/kernel-api.rst.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/yu1Y5hZLN/zdua8pDSzLnfu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDIhecACgkQAVBC80lX
-0GztJwf/ecHPQ64oxX1iE344jdwyAmGTQ5ihtz/PcA56tCcPZVWzxVEyYqQdMUgS
-8NQeQoog82wVDNURpGBJVtd1DIj/85lXoKkg+Vfo2e+HPCT2vGkzp+v7vtOnOQ01
-YIdptiaT/N5ufOIfA44uIYiXFj8NQCJVL15c5EuwMtQNy5k5CCqLbqizLqPymW9b
-bBdy7Bgemch9boytr9tvzGOmg+FquMvVn4YOysu2VO+7oz8zrA0vfCp6hXU8ykL+
-M7i729satEwrOz+LKKBm98VyhLBDzul3Ezg8o5u9jnqtPEjfHEbdyRHhfk0C+0eo
-FDwFEha7aaudcOxOuLkEgcaIEtMs7g==
-=t5lF
------END PGP SIGNATURE-----
-
---Sig_/yu1Y5hZLN/zdua8pDSzLnfu--
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index a1eeaa7..8178db0 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -261,11 +261,18 @@ static enum es_result __vc_decode_user_insn(struct es_em_ctxt *ctxt)
+ 	int insn_bytes;
+ 
+ 	insn_bytes = insn_fetch_from_user_inatomic(ctxt->regs, buffer);
+-	if (insn_bytes <= 0) {
++	if (insn_bytes == 0) {
++		/* Nothing could be copied */
+ 		ctxt->fi.vector     = X86_TRAP_PF;
+ 		ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
+ 		ctxt->fi.cr2        = ctxt->regs->ip;
+ 		return ES_EXCEPTION;
++	} else if (insn_bytes == -EINVAL) {
++		/* Effective RIP could not be calculated */
++		ctxt->fi.vector     = X86_TRAP_GP;
++		ctxt->fi.error_code = 0;
++		ctxt->fi.cr2        = 0;
++		return ES_EXCEPTION;
+ 	}
+ 
+ 	if (!insn_decode_from_regs(&ctxt->insn, ctxt->regs, buffer, insn_bytes))
