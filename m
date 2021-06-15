@@ -2,184 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E213A89AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DE83A89B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Jun 2021 21:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhFOTkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Jun 2021 15:40:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229749AbhFOTkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:40:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D82EC6128B;
-        Tue, 15 Jun 2021 19:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623785896;
-        bh=5l1ZFT8n68dLKsHaNbbcXWI0cE3aK5mhMAWBOGIyy8U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RyHch98AyjWmixU727i2K4FRDR0ecbNN4d58jY+sqZY4a4Lca14z0NHl3Kttyyvu6
-         wVEcpH/wGXvtFUzzedfxBduKn9TWFhY9QdyiiN+Nxolsztgua7JQTSrZuq4bOoMSJ3
-         Els1szhTI6l66HnAN0dH4+ub4/LagYHKOJfHKiBKnIczFTdLlAOaAK0mFS8P5C5au6
-         vaqvM2ec9R/WjMMWob96ALnlBc6NkcdbXZDBbG8DtUkRHU2GHDwsA4Di9J6coDCxSj
-         bMS1J/f4VGws90YqAXEOy+02zG+JqLsXRsuLv4vA9x8j35YsFpQpIxFTwkEZDk4EYD
-         UHq5ZKi88saxw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 86D5F40B1A; Tue, 15 Jun 2021 16:38:12 -0300 (-03)
-Date:   Tue, 15 Jun 2021 16:38:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Parallelizing vmlinux BTF encoding. was Re: [RFT] Testing 1.22
-Message-ID: <YMkBpBfqW+AcpyNN@kernel.org>
-References: <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
- <YLFIW9fd9ZqbR3B9@kernel.org>
- <CAEf4BzYCCWM0WBz0w+vL1rVBjGvLZ7wVtgJCUVr3D-NmVK0MEg@mail.gmail.com>
- <YLjtwB+nGYvcCfgC@kernel.org>
- <CAEf4BzbQ9w2smTMK5uwGGjyZ_mjDy-TGxd6m8tiDd3T_nJ7khQ@mail.gmail.com>
- <YL4dGFsfb0ZzgxlR@kernel.org>
- <CAEf4BzYLXyjkmO6ZySUxFHu1HcctPQK3j3vAPXVWFJ8qvGe8kw@mail.gmail.com>
- <YL9pxDFIYQEUODM5@kernel.org>
- <YMj5CzF92pTjcbhO@kernel.org>
- <CAEf4BzaDNim+kFQx64i9EZogctGZNFigQBsog7eC6DjrfjTbEA@mail.gmail.com>
+        id S230161AbhFOToE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Jun 2021 15:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhFOToB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Jun 2021 15:44:01 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705BEC061574;
+        Tue, 15 Jun 2021 12:41:55 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso317368pjp.2;
+        Tue, 15 Jun 2021 12:41:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f6/i5s8IOzCUxNSyaYvlK4MuXc588RPfZhmyhczPhoM=;
+        b=WBPbfro2NwATm3JEz1Lg4fLKfLoX9TbPrF2j5G6OvxuIWu42YzPvjntCGsNjz+hlRd
+         OCMLh+uE8u7spUQyarI/anBiSczOW3GVEkR4erCABZJ0Zgrzh9F3ZvxRFfimRRR0Y1cz
+         rpPPtbnlrZyB3qU0YGCwDJnD1VIi6fejznBKQ0SYBb/NR23U/2hWucitbpc1nkw5XJna
+         Ob9Q5ZDVZmU02N653mtAnfxUXiaK6YSNOU+bn/8I8oGryfv8nvn2KOPSIdxth6CwkWqJ
+         PrVWhedUUw67dIhd/VZebA4YdrsD4tu6HlvlVMu4ViGGxbHpXl/zPjabcD26F5AnB9Gh
+         KC2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f6/i5s8IOzCUxNSyaYvlK4MuXc588RPfZhmyhczPhoM=;
+        b=tF0+6iuzAUpr7oso4O8vNd65TBbSgBNfrlbSg9i/xK3nZBmTQU2RXRnq8+djJWeoAB
+         kcHOUq5V6+O3+V4pDeQOz0WWDoNn6LaeVgronQ1E+ix1VrqePkur276xEu9A86Z/Aubc
+         oLtcC5wPm5v++ZqvD8d0o6lzB2bZ4GechYjJTppeJTwOZHDs4XkVJ5/WRn41HOhmbpuF
+         56PF67Z6+LZ3FxTRyQ/hHXow5sQwZML5866MKYD7aGbfXz1wvoXGz7nCnzrLHeRGBbJ3
+         vXwo0Tz4x5+5sdfb7WY9WH/s5R+dI0LNqA2jFeq7fQAnZmKGjCRSIxwobrGuMzkPkiIJ
+         uYNw==
+X-Gm-Message-State: AOAM533j2zkWYZPGdBa9FV0pJOFt+1CWkr+S9jjumhQxCBq3AhFbyLlo
+        /uIlcSRFQQ8CHK0kqdxs0Zo=
+X-Google-Smtp-Source: ABdhPJwGP9achyFY7LVCoQp+gaF/JatGoWlCKrtrfiNATf+SFZF8Hi0GvRMlCM+ICP1uQ4JVzP6Bbg==
+X-Received: by 2002:a17:902:b181:b029:fc:c069:865c with SMTP id s1-20020a170902b181b02900fcc069865cmr5728006plr.28.1623786114824;
+        Tue, 15 Jun 2021 12:41:54 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:c700:bb55:c690:c756])
+        by smtp.gmail.com with ESMTPSA id n69sm16483124pfd.132.2021.06.15.12.41.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 12:41:53 -0700 (PDT)
+Date:   Tue, 15 Jun 2021 12:41:51 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Yizhuo Zhai <yzhai003@ucr.edu>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: hideep - fix the uninitialized use in
+ hideep_nvm_unlock()
+Message-ID: <YMkCfykNyHtuMUkY@google.com>
+References: <CABvMjLRuGPgEJ3Ef7=sBk3m3oa+3HuyV9mVY0ZCYuHK=rJRA4w@mail.gmail.com>
+ <YMjuPtKtiaVLLO0q@google.com>
+ <CABvMjLSKe2ojoVTZOwv_Dr4P4rsDa334vBc_-T8sMTPUJ-f==g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaDNim+kFQx64i9EZogctGZNFigQBsog7eC6DjrfjTbEA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CABvMjLSKe2ojoVTZOwv_Dr4P4rsDa334vBc_-T8sMTPUJ-f==g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jun 15, 2021 at 12:13:55PM -0700, Andrii Nakryiko escreveu:
-> On Tue, Jun 15, 2021 at 12:01 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+On Tue, Jun 15, 2021 at 11:57:36AM -0700, Yizhuo Zhai wrote:
+> Hi Demitry:
+> 
+> Thanks for your quick response, following your advice, a careful way
+> is changing the return type of  "hideep_nvm_unlock()" from void to
+> int, and its caller "hideep_program_nvm()" also needs to add the
+> return check.
+> 
+> If this sounds ok, I would go ahead to modify the patch accordingly.
 
-> > Em Tue, Jun 08, 2021 at 09:59:48AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Mon, Jun 07, 2021 at 05:53:59PM -0700, Andrii Nakryiko escreveu:
-> > > > I think it's very fragile and it will be easy to get
-> > > > broken/invalid/incomplete BTF. Yonghong already brought up the case
+Yes, this sounds right.
 
-> > > I thought about that as it would be almost like the compiler generating
-> > > BTF, but you are right, the vmlinux prep process is a complex beast and
-> > > probably it is best to go with the second approach I outlined and you
-> > > agreed to be less fragile, so I'll go with that, thanks for your
-> > > comments.
-
-> > So, just to write some notes here from what I saw so far:
-
-> > 1. In the LTO cases there are inter-CU references, so the current code
-> > combines all CUs into one and we end up not being able to parallelize
-> > much. LTO is expensive, so... I'll leave it for later, but yeah, I don't
-> > think the current algorithm is ideal, can be improved.
- 
-> Yeah, let's worry about LTO later.
- 
-> > 2. The case where there's no inter CU refs, which so far is the most
-> > common, seems easier, we create N threads, all sharing the dwarf_loader
-> > state and the btf_encoder, as-is now. we can process one CU per thread,
-> > and as soon as we finish it, just grab a lock and call
-> > btf_encoder__encode_cu() with the just produced CU data structures
-> > (tags, types, functions, variables, etc), consume them and delete the
-> > CU.
+> 
+> On Tue, Jun 15, 2021 at 11:15 AM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
 > >
-> > So each thread will consume one CU, push it to the 'struct btf' class
-> > as-is now and then ask for the next CU, using the dwarf_loader state,
-> > still under that lock, then go back to processing dwarf tags, then
-> > lock, btf add types, rinse, repeat.
+> > Hi Yizhuo,
+> >
+> > On Tue, Jun 15, 2021 at 10:26:09AM -0700, Yizhuo Zhai wrote:
+> > > Inside function hideep_nvm_unlock(), variable "unmask_code" could
+> > > be uninitialized if hideep_pgm_r_reg() returns error, however, it
+> > > is used in the later if statement after an "and" operation, which
+> > > is potentially unsafe.
+> >
+> > I do not think that simply initializing the variable makes the code
+> > behave any better. If we want to fix this properly we need to check for
+> > errors returned by hideep_pgm_r_reg() and hideep_pgm_w_reg() and exit
+> > this function early, signalling the caller about errors.
+> >
+> > >
+> > > Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+> > > ---
+> > >  drivers/input/touchscreen/hideep.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/input/touchscreen/hideep.c
+> > > b/drivers/input/touchscreen/hideep.c
+> > > index ddad4a82a5e5..49b713ad4384 100644
+> > > --- a/drivers/input/touchscreen/hideep.c
+> > > +++ b/drivers/input/touchscreen/hideep.c
+> > > @@ -363,7 +363,7 @@ static int hideep_enter_pgm(struct hideep_ts *ts)
+> > >
+> > >  static void hideep_nvm_unlock(struct hideep_ts *ts)
+> > >  {
+> > > -       u32 unmask_code;
+> > > +       u32 unmask_code = 0;
+> > >
+> > >         hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_SFR_RPAGE);
+> > >         hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
+> > > --
+> > > 2.17.1
+> >
+> > Thanks.
+> >
+> > --
+> > Dmitry
 > 
-> Hmm... wouldn't keeping a "local" per-thread struct btf and just keep
-> appending to it for each processed CU until we run out of CUs be
-> simpler?
-
-I thought about this as a logical next step, I would love to have a
-'btf__merge_argv(struct btf *btf[]), is there one?
-
-But from what I've read after this first paragraph of yours, lemme try
-to rephrase:
-
-1. pahole calls btf_encoder__new(...)
-
-   Creates a single struct btf.
-
-2. dwarf_loader will create N threads, each will call a
-dwarf_get_next_cu() that is locked and will return a CU to process, when
-it finishes this CU, calls btf_encoder__encode_cu() under an all-threads
-lock. Rinse repeat.
-
-Until all the threads have consumed all CUs.
-
-then btf_encoder__encode(), which should be probably renamed to
-btf_econder__finish() will call btf__dedup(encoder->btf) and write ELF
-or raw file.
-
-My first reaction to your first paragraph was:
-
-Yeah, we can have multiple 'struct btf' instances, one per thread, that
-will each contain a subset of DWARF CU's encoded as BTF, and then I have
-to merge the per-thread BTF and then dedup. O think my rephrase above is
-better, no?
-
-> So each thread does as much as possible locally without any
-> locks. And only at the very end we merge everything together and then
-> dedup. Or we can even dedup inside each worker before merging final
-> btf, that probably would give quite a lot of speed up and some memory
-> saving. Would be interesting to experiment with that.
 > 
-> So I like the idea of a fixed pool of threads (can be customized, and
-> I'd default to num_workers == num_cpus), but I think we can and should
-> keep them independent for as long as possible.
+> 
+> -- 
+> Kind Regards,
+> 
+> Yizhuo Zhai
+> 
+> Computer Science, Graduate Student
+> University of California, Riverside
 
-Sure, this should map the whatever the user passes to -j in the kernel
-make command line, if nothing is passed as an argument, then default to
-getconf(_NPROCESSORS_ONLN).
-
-There is a nice coincidence here where we probably don't care about -J
-anymore and want to deal only with -j (detached btf) that is the same as
-what 'make' expects to state how many "jobs" (thread pool size) the user
-wants 8-)
- 
-> Another disadvantage of generating small struct btf and then lock +
-> merge is that we don't get as efficient string re-use, we'll churn
-> more on string memory allocation. Keeping bigger local struct btfs
-> allow for more efficient memory re-use (and probably a tiny bit of CPU
-> savings).
-
-I think we're in the same page, the contention for adding the CU to a
-single 'struct btf' (amongst all DWARF loading threads) after we just
-produced it should be minimal, so we grab all the advantages: locality
-of reference, minimal contention as DWARF reading/creating the pahole
-internal, neutral, data structures should be higher than adding
-types/functions/variables via the libbpf BTF API.
-
-I.e. we can leave paralellizing the BTF _encoding_ for later, what we're
-trying to do now is to paralellize the DWARF _loading_, right?
- 
-> So please consider that, it also seems simpler overall.
- 
-> > The ordering will be different than what we have now, as some smaller
-> > CUs (object files with debug) will be processed faster so will get its
-> > btf encoding slot faster, but that, at btf__dedup() time shouldn't make
-> > a difference, right?
- 
-> Right, order doesn't matter.
- 
-> > I think I'm done with refactoring the btf_encoder code, which should be
-> > by now a thin layer on top of the excellent libbpf BTF API, just getting
-> > what the previous loader (DWARF) produced and feeding libbpf.
- 
-> Great.
- 
-> > I thought about fancy thread pools, etc, researching some pre-existing
-> > thing or doing some kthread + workqueue lifting from the kernel but will
-> > instead start with the most spartan code, we can improve later.
- 
-> Agree, simple is good. Really curious how much faster we can get. I
-> think anything fancy will give a relatively small improvement. The
-> biggest one will come from any parallelization.
-
-And I think that is possible, modulo elfutils libraries saying no, I
-hope that will not be the case.
-
-- Arnaldo
+-- 
+Dmitry
